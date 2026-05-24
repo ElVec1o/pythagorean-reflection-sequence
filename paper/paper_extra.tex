@@ -1,0 +1,397 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{lmodern}
+\usepackage[final,expansion=false]{microtype}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref}
+\usepackage{xurl}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!50!black,
+  citecolor=blue!50!black,
+  pdftitle={The Universal Right-Triangle Reflection Sequence -- Companion (conjectures and partial progress)},
+  pdfauthor={Vico Bonfioli},
+}
+\usepackage{parskip}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\titleformat{\section}{\normalfont\Large\bfseries\color{blue!40!black}}{\thesection.}{0.6em}{}
+
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{observation}{Numerical observation}
+\theoremstyle{plain}
+
+\title{\textbf{Companion document: partial results, conjectures, and computational evidence}\\[0.3em]
+\large Supplement to \emph{The Universal Right-Triangle Reflection Sequence}}
+\author{Vico Bonfioli}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\paragraph{Preface.}
+This companion document collects partial results, conjectures, and
+computational evidence supporting the program of the main paper
+\texttt{paper.tex}.  \textbf{Nothing here is claimed as a theorem.}
+All results are explicitly conditional or empirical: each is labelled
+either as a \emph{conjecture} (a target statement we believe but have
+not proved), as a \emph{conditional proposition} (a deduction valid
+under a hypothesis that is itself only empirically verified at a finite
+horizon), or as a \emph{numerical observation} (a finite computational
+record).  Cross-references to theorems of the main paper use the same
+labels.
+
+\section{The transcendence program for $\beta_2$: conjecture and three attack routes}
+\label{sec:transcendence-program}
+
+Define the asymptotic ratio
+\[
+\beta_2 \;:=\; \lim_{d \to \infty} \frac{u_{d+1}}{u_d}
+\]
+of the universal right-triangle reflection sequence (existence is
+empirical; the latest BFS data through depth $42$ places the ratio in
+the narrow window $[1.4718, 1.5019]$ depending on the extrapolation
+method).
+
+\begin{conjecture}[Transcendence of $\beta_2$]
+\label{conj:beta2-transcendence}
+$\beta_2$ is transcendental over $\mathbb{Q}$, and the generating
+function $U(t) = \sum_{d \ge 0} u_d t^d$ is transcendental over
+$\mathbb{Q}(t)$.
+\end{conjecture}
+
+We collect three independent attack routes.  Each rests on a different
+finite-horizon hypothesis that is empirically verified and structurally
+attackable; the routes are logically independent and would each
+individually settle Conjecture~\ref{conj:beta2-transcendence}.
+
+\subsection{Route 1: Christol mod-$p$ via the explicit cyclic-module structure}
+\label{ssec:christol-route}
+
+Let $\rho_{\mathrm{abs}}: W \to Q \ltimes M$ be the universal
+realisation of the main paper (\S4) with $Q = D_\infty \times \mathbb{Z}/2$
+and $M = \mathbb{Z}[Q]/(Y+1, c+1)$.  For each prime $p$, write
+\[
+S_p \;:=\; \bigl\{\,(\pi(g),\, m \bmod p) \;:\; (g,m) = \rho_{\mathrm{abs}}(w),\ w \in W \,\bigr\}
+\;\subset\; Q \times (M/pM).
+\]
+
+\begin{proposition}[Mod-$p$ state space is infinite]
+\label{prop:modp-state-infinite}
+For every prime $p$, $|S_p| = \infty$.  In particular the infinite
+family $\{((XY)^n, t_n) : n \ge 1\}$ (with $t_n$ the translation part
+of $\rho_{\mathrm{abs}}((R_0 R_2)^n) \bmod p$) consists of pairwise
+distinct elements of $Q \times (M/pM)$.
+\end{proposition}
+
+\emph{Sketch.}  $XY$ has infinite order in $D_\infty$, so the
+$Q$-components $(XY)^n$ are pairwise distinct.  This alone suffices for
+infinity of $S_p$ via projection.  The stronger separation on the
+$(M/pM)$-coordinate, used in Route~1 below, follows from the witness
+monomial $(XY)^{n-1} X \cdot h$ surviving reduction modulo $p$ by the
+cyclic-module relations $(Y+1)h = (c+1)h = 0$.
+
+\paragraph{Numerical record.}
+An exact-arithmetic Rust BFS in $\mathbb{F}_p[Q]$ enumerates $S_p(d) :=
+\{\rho_{\mathrm{abs}}(w) \bmod p : |w|_W \le d\}$ at three primes:
+\[
+\begin{array}{c|c|c|c}
+p & d_{\max} & |S_p(d_{\max})| & \beta_p \text{ (ratio fit, last 10 depths)} \\ \hline
+3 & 42 & 65\,428\,964 & 1.4681 \\
+5 & 40 & 62\,736\,544 & 1.5048 \\
+7 & 40 & 65\,724\,148 & 1.5077
+\end{array}
+\]
+The implementation uses the fixed-degree truncation justified by
+$(Y+1)h = (c+1)h = 0$, which bounds the support of any reachable
+$m \in M/pM$ by $O(d)$ monomials.
+
+\begin{proposition}[$\beta_2$ transcendence --- Christol route, conditional]
+\label{prop:beta2-christol}
+Conditional on the Myhill--Nerode separation hypothesis (the states
+associated to $\{((XY)^n, t_n)\}_{n \ge 1}$ in the $p$-DFAO for
+$u_d \bmod p$ are pairwise distinct future-equivalence classes), $U(t)$
+is transcendental over $\mathbb{Q}(t)$ and $\beta_2$ is transcendental
+over $\mathbb{Q}$.
+\end{proposition}
+
+\emph{Sketch.}  Under the separation hypothesis the $p$-DFAO has
+infinitely many states, hence (Allouche--Shallit Thm.~6.6.2) the
+$p$-kernel of $U(t) \bmod p$ is infinite, so by Christol 1979 $U(t)
+\bmod p$ is not algebraic over $\mathbb{F}_p(t)$.  Adamczewski--Bell
+2017 lifts this to non-algebraicity of $U(t)$ over $\mathbb{Q}(t)$, and
+Flajolet--Sedgewick (\emph{Analytic Combinatorics} Thm.~VII.7) implies
+$\beta_2$ transcendental.
+
+\subsection{Route 2: D-finite exclusion}
+\label{ssec:dfinite-route}
+
+\begin{proposition}[No D-finite recurrence at low complexity]
+\label{prop:no-dfinite}
+On $u_0, \ldots, u_{42}$, no D-finite (P-recursive) recurrence of order
+$k \le 9$ with polynomial-in-$d$ coefficients of degree $m \le 7$
+exists ($47$ tested $(k, m)$-pairs, exact integer linear algebra
+modulo the Mersenne prime $2^{61} - 1$).
+\end{proposition}
+
+\begin{proposition}[$\beta_2$ transcendence --- D-finite route, conditional]
+\label{prop:beta2-dfinite}
+Conditional on extending Proposition~\ref{prop:no-dfinite} from
+$(k \le 9, m \le 7)$ to all $(k, m) \in \mathbb{N}^2$, $\beta_2$ is
+transcendental over $\mathbb{Q}$.
+\end{proposition}
+
+\emph{Sketch.}  By Stanley \emph{Enumerative Combinatorics} Vol.~2
+Thm.~6.4.6, every power series algebraic over $\mathbb{Q}(t)$ is
+D-finite.  Excluding D-finite at all $(k, m)$ excludes algebraic, hence
+(Flajolet--Sedgewick VII.7) transcendence of $\beta_2$.  The natural
+structural target for the extension is a Gr\"obner-basis argument on
+the skew-polynomial ring $\mathbb{Q}\langle n, S\rangle$ acting against
+the cyclic-module relations $(Y+1)h = (c+1)h = 0$.
+
+\subsection{Route 3: Mahler structure}
+\label{ssec:mahler-route}
+
+\begin{conjecture}[$U(t)$ is not a class-(1) Mahler function]
+\label{conj:not-class1-mahler}
+$U(t)$ is not a Mahler function of class (1) in the sense of
+Adamczewski--Faverjon 2020.
+\end{conjecture}
+
+Were Conjecture~\ref{conj:not-class1-mahler} established, the Adamczewski--Faverjon
+framework would yield a third independent route to transcendence of
+$\beta_2$, parallel to Propositions~\ref{prop:beta2-christol} and~\ref{prop:beta2-dfinite}.
+
+\subsection{Joint picture}
+
+The three conditionals are logically independent.  For
+Conjecture~\ref{conj:beta2-transcendence} to fail, all three hypotheses
+would have to fail simultaneously.
+
+\section{Structural exclusions for $U(t)$ at low complexity}
+\label{sec:structural-negatives}
+
+The following finite linear-algebra exclusions on $u_0, \ldots, u_{42}$
+constrain the form of $U(t)$ at the verifiable horizon.
+
+\begin{proposition}[No low-order linear recurrence]
+\label{prop:no-recurrence}
+The sequence $u_0, \ldots, u_{38}$ satisfies no linear recurrence over
+$\mathbb{Q}$ of order $\le 19$.  (Equivalently: for every $k \le 19$,
+the system $u_n = \sum_{j=1}^k c_j u_{n-j}$ has empty rational solution
+set on the available terms.)
+\end{proposition}
+
+\begin{proposition}[No nonlinear or modular structure at low complexity]
+\label{prop:no-recurrence-strong}
+On $u_0, \ldots, u_{42}$:
+\begin{enumerate}
+\item[\textnormal{(i)}] No D-finite recurrence with $k \le 9$ and
+$m \le 7$ (Proposition~\ref{prop:no-dfinite}).
+\item[\textnormal{(ii)}] No nonlinear polynomial relation $\sum_\alpha q_\alpha(n)\,u_n^{\alpha_0} \cdots u_{n-w}^{\alpha_w} = 0$
+with lookback $w \le 5$, total $u$-degree $|\alpha| \le 3$, and
+coefficient degree $\le 2$.
+\item[\textnormal{(iii)}] No non-trivial modular linear recurrence at
+any modulus $m \in \{3, 4, \ldots, 101\}$ except $m = 2$, where the
+order-$2$ Fibonacci recurrence $u_d \equiv u_{d-1} + u_{d-2} \pmod 2$
+holds throughout the tested range.
+\end{enumerate}
+\end{proposition}
+
+\begin{proposition}[Coefficient-height gap]
+\label{prop:height-gap}
+$\log u_d = c \cdot d + o(d)$ with $c \approx 0.404$ (linear regression
+on $d \in [25, 42]$, $R^2 \ge 0.999$).  Consequently $u_d$ is not the
+value sequence of any $k$-automatic integer sequence (Bell--Coons /
+Adamczewski--Bell height-gap theorem) and is not the coefficient
+sequence of any Mahler function of bounded complexity.
+\end{proposition}
+
+\begin{proposition}[Mod-$2$ algebraicity]
+\label{prop:mod2-automaton}
+$u_d \bmod 2$ is purely $3$-periodic: $u_d \equiv 1$ for $d \not\equiv 0 \pmod 3$
+or $d \le 2$, and $u_d \equiv 0$ otherwise.  Equivalently
+$u_d \equiv u_{d-1} + u_{d-2} \pmod 2$ for $d \ge 2$.  Hence
+$U(t) \in \mathbb{F}_2[[t]]$ is algebraic over $\mathbb{F}_2(t)$ via a
+$4$-state finite automaton.
+
+\emph{Caveat.}  This is a characteristic-$2$ statement and does not
+lift to algebraicity over $\mathbb{Q}(t)$.
+\end{proposition}
+
+\section{Universality class: scope and known examples}
+\label{sec:universality-class}
+
+The mechanism that proves universality in the main paper
+(Theorem~\ref{thm:universality}) --- a cyclic-ideal identification
+$I_A \cap I_B = \mathbb{Z}[Q]\cdot h$ with explicit central generator
+$h$ inside the linear quotient $Q$ of a free product $W = A * B$ ---
+admits a natural class of free-product reflection systems.
+
+\begin{conjecture}[Open question: scope of the cyclic-ideal mechanism]
+\label{conj:universality-class}
+Characterise the pairs $(W, \rho)$ for which the cyclic-ideal mechanism
+of Theorem~\ref{thm:universality} applies and yields universality of
+the orbit-growth sequence across the family of geometric realisations.
+\end{conjecture}
+
+Two examples are currently known.
+
+\paragraph{Example A: right triangles.}  $A = V_4$, $B = \mathbb{Z}/2$,
+$Q = D_\infty \times \mathbb{Z}/2$, $h = (c-1)(Y-1)$.  This is the main
+paper's Theorem~\ref{thm:universality}.
+
+\paragraph{Example B: hyperbolic two-right-angle quadrilaterals.}
+$A = B = V_4$, $W = V_4 * V_4$, $Q = D_\infty \times \mathbb{Z}/2$,
+$h = c - 1$ (no $(Y-1)$ factor needed: centrality of $c$ alone suffices
+when both factors of the free product contain $c$).
+
+\paragraph{Cases where the mechanism is structurally blocked.}  Acute
+and obtuse triangle reflection groups have no central involution
+playing the role of $c$.  Equilateral and other triangle groups with
+all finite Coxeter labels lack the free-product structure.  The
+rectangle group $D_\infty \times D_\infty$ is a direct product, not a
+free product.  Right-corner orthoschemes in dimension $n \ge 3$ carry
+cross-relations $(R_i R_j)^2 = 1$ between generators of distinct
+free-product factors, again destroying the $W = A * B$ structure;
+universality in this cyclic-ideal sense is therefore specific to
+dimension~2.
+
+\section{Structural reading of universality (algebraic-channel BFS)}
+\label{sec:univ-algebraic}
+
+Fix $\rho_{a,b}: W \to \mathrm{Aff}(\mathbb{R}^2)$.  Let $Y$ denote the
+linear part of $\rho_{a,b}(R_2)$ and $v_2$ its translation part.  The
+identity $Y v_2 = -v_2$ holds for every $(a, b)$ and is the image of a
+single canonical word $w_\star \in W$.  Let $N_{\rm alg}$ be the normal
+closure of $w_\star$ in $W$.
+
+\begin{observation}[Empirical algebraic form of universality]
+\label{obs:alg-structural}
+Through depth $22$, on the four test right triangles $(3, 4), (5, 12),
+(1, 2), (7, 24)$, the equivalence relation on canonical Coxeter words
+generated by $Y v_2 + v_2$ in $\mathbb{Z}[D_\infty]$ exactly recovers
+the affine equivalence relation.  Equivalently: $N(T) = N_{\rm alg}$ on
+the depth-$\le 22$ filtration for every tested $T$.
+\end{observation}
+
+A five-channel parallel BFS verifies this with cumulative state count
+$118\,938$ at depth $22$ in every channel.  Reading: the eight
+length-$10$ affine relations of Theorem~\ref{thm:symbolic} are not
+sporadic length-$10$ coincidences but the first eight consequences of
+the single quadratic relation $Y v_2 + v_2 = 0$, made visible by the
+canonical-word filtration.
+
+\section{Empirical evidence against finite confluent rewriting}
+\label{sec:rewriting}
+
+\paragraph{Knuth--Bendix experiment.}
+GAP \texttt{KBMAG} ran Knuth--Bendix completion on $W$ together with
+the eight length-$10$ affine relations of Theorem~\ref{thm:symbolic};
+the procedure produced $32\,730$ derived rules in approximately $8$
+seconds of \texttt{kbprog} computation before hitting the equation-count
+cap, never reaching confluence.  This is empirical evidence (not a
+proof) that $W/N$ has no finite confluent rewriting system in shortlex
+on the standard generators.
+
+\paragraph{Antol\'in--Ciobanu route (structurally blocked).}
+The Antol\'in--Ciobanu rationality theorem for conjugacy-growth series
+of non-elementary acylindrically hyperbolic groups does not apply to
+$U(t)$: the quotient $W / \ker(\rho_{\mathrm{abs}})$ has image inside
+$Q \ltimes M \subseteq (\mathbb{Z} \wr \mathbb{Z}) \rtimes V_4$, a
+finitely-presented virtually metabelian group, which is not
+acylindrically hyperbolic.
+
+\section{Class A and Class B in 3D}
+\label{sec:classes-AB}
+
+The 3D right-corner orthoscheme reflection groups fall into three
+faithfulness regimes by leg-symmetry, the unconditional Class~C case
+being treated in the main paper (Theorem~\ref{thm:master-C-uncond}).
+
+\paragraph{Class A ($a = b = c$, $S_3$-symmetric, polynomial growth).}
+The $(1, 1, 1)$ cube-corner orthoscheme is the fundamental chamber of
+the affine Weyl group $\widetilde{C}_3$.  For $n \ge 1$,
+$u_n = (8 n^2 + c_{n \bmod 5})/5$ with $c = (10, 12, 13, 13, 12)$, with
+asymptotic $u_n \sim (8/5) n^2$.  Order-$7$ linear recurrence with
+characteristic polynomial $(x-1)^3 \Phi_5(x)$, obtained from the
+parabolic Poincar\'e series $W_A(t) = N(t) / ((1-t)^3 \Phi_5(t))$ with
+$N(t) = 2 + 3t^2 + 3t^3 + 3t^4 + t^5 + 4t^6$.  This is a clean
+restatement of standard affine-Weyl-group material (Bourbaki Ch.~VI~§4;
+Humphreys \S4.7) and is recorded here for completeness.
+
+\paragraph{Class B (exactly two equal legs, intermediate exponential rate).}
+Through depth $18$ the sequence on $(1, 1, 2)$ is
+$1, 4, 9, 18, 35, 67, 129, 249, 480, 925, 1783, 3437, 6625, 12770,
+24591, 47298, 90948, 174939, 336544$, with empirical ratio settling
+around $\approx 1.92$.  No order-$\le 9$ linear recurrence over
+$\mathbb{Q}$ fits the depth-$18$ data.  No closed form is known.
+
+\section{Other deferred material}
+\label{sec:deferred}
+
+The following items were deferred from the main paper to this
+supplement and remain available in earlier drafts of the project:
+\begin{itemize}[leftmargin=*,itemsep=0.15em]
+\item Numerical and structural analysis of the representation gap
+$\beta_n$ vs.\ $r_n$ across dimensions.
+\item Collision-class enumeration to depth $30$, the structural
+sequence battery, the $\sqrt{3}$-asymptotic of $\delta_d - 2 z_d$, and
+the crossover $\delta_d > u_d$ for $d \ge 24$.
+\item $\{3, 4, 5\}$-cascade observation for maximal outerplanar graphs
+on $n \le 15$ vertices, the slack/denominator/precision analysis, and
+the cascade-existence conjecture.
+\item The standard 3-simplex remark and merged length-$10$-relation
+cascades from Pythagorean triples sharing a common edge length.
+\item Per-script hardware envelopes and runtime tables for the BFS
+implementations.
+\end{itemize}
+
+These items are unchanged from earlier supplementary drafts and are
+recorded here as a placeholder; consult the project repository for the
+detailed records.
+
+\section*{References}
+
+References to literature are as in the main paper.  The additional
+references invoked by the conditional routes above are:
+\begin{itemize}[leftmargin=2em,itemsep=0.2em]
+\item G.~Christol, \emph{Ensembles presque p\'eriodiques
+$k$-reconnaissables}, TCS 9 (1979), 141--145.
+\item J.-P.~Allouche, J.~Shallit, \emph{Automatic Sequences},
+Cambridge University Press, 2003.
+\item B.~Adamczewski, J.~P.~Bell, \emph{On the algebraic dependence of
+$p$-automatic series and $G$-functions over function fields of
+positive characteristic}, J.~Number Theory 180 (2017), 559--586.
+\item J.~P.~Bell, M.~Coons, \emph{A Mahler dichotomy for analytic
+functions of bounded height}, J.~Number Theory 137 (2014), 91--115.
+\item B.~Adamczewski, J.~P.~Bell, \emph{A problem about Mahler
+functions}, Annali Sc.~Norm.~Sup.~Pisa (5) 14 (2015), 541--562.
+\item B.~Adamczewski, J.~P.~Bell, M.~Coons, \emph{A height gap theorem
+for coefficients of Mahler functions}, J.~Eur.~Math.~Soc.\ 2023.
+\item B.~Adamczewski, C.~Faverjon, \emph{Mahler's method in several
+variables and finite automata}, Compositio Math.\ 156 (2020).
+\item R.~P.~Stanley, \emph{Enumerative Combinatorics}, Vol.~2,
+Cambridge University Press, 1999.  Thm.~6.4.6 (algebraic $\Rightarrow$
+D-finite).
+\item P.~Flajolet, R.~Sedgewick, \emph{Analytic Combinatorics},
+Cambridge University Press, 2009.  Thm.~VII.7.
+\item Y.~Antol\'in, L.~Ciobanu, \emph{Formal conjugacy growth series
+and language complexity}, Math.\ Z.\ 285 (2017), no.~3, 1015--1041.
+\end{itemize}
+
+\end{document}

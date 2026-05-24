@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# LaTeX build artefacts (PDFs are committed; intermediates are not)
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Rust
+target/
+**/target/
+
+# Editor scratch
+.vscode/
+.idea/
+*.swp
+*~

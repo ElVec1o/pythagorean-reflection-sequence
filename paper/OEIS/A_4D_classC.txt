@@ -1,0 +1,27 @@
+%I A______ (placeholder)
+
+%S 1,5,14,33,75,169,380,854,1919,4312,9689
+
+%N BFS layer sizes of the 4D right-corner orthoscheme reflection group with four pairwise distinct positive perpendicular legs.
+
+%C The 4D right-corner orthoscheme has vertex V_0 with four mutually perpendicular legs of pairwise distinct positive lengths. W is the reflection group on the five bounding faces; a(n) is the number of distinct affine isometries at minimal W-word-length n.
+
+%C For pairwise distinct legs the affine representation is unconditionally faithful in every dimension n >= 3 (Bonfioli 2026, Theorem of Class C unconditional faithfulness, via Schur-complement identity det Q_n = -prod a_i^2 and Mordell descent), so a(n) attains the Steinberg upper bound exactly.
+
+%F G.f.: (1 + t)^3 / (1 - 2 t - t^2 + t^3).
+
+%F Linear recurrence: a(n) = 2 a(n-1) + a(n-2) - a(n-3) for n >= 4.
+
+%F Asymptotic ratio a(n+1)/a(n) -> 1 + 2 cos(2 pi / 7) = 2.2469796..., the largest real root of x^3 - x^2 - 2 x + 1 (the n = 4 case of r_n = 1 + 2 cos(2 pi / (n+3))).
+
+%H V. Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, 2026.
+
+%Y Cf. A______ (3D pairwise distinct legs), A______ (5D), A______ (6D).
+
+%K nonn,easy,more
+
+%O 0,2
+
+%E More terms needed.
+
+%A Vico Bonfioli, 2026

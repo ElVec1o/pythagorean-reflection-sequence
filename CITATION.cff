@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+title: "The Universal Right-Triangle Reflection Sequence (Unequal Legs)"
+message: "If you use this work, please cite it using the metadata below."
+type: software
+authors:
+  - given-names: Vico
+    family-names: Bonfioli
+    affiliation: "Independent researcher"
+abstract: >
+  For every right triangle in the plane with positive unequal rational
+  legs, the BFS orbit-growth sequence of its three side-reflections is
+  the same sequence u_d, independent of the triangle. The sequence
+  begins 1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, ...; for 1 <= n <= 9
+  it agrees with the Fibonacci numbers F(n+3); at n = 10 it first
+  deviates by exactly 8, accounted for by eight explicit length-10
+  affine relations symbolically verified over Q(a,b). The kernel of
+  the side-reflection representation is identified as the cyclic left
+  ideal Z[Q] . h with h = (c-1)(Y-1), where c is the half-turn around
+  the right-angle vertex (central in the linear quotient Q). The
+  closed-form n-dimensional asymptotic ratio is
+  r_n = 1 + 2 cos(2 pi / (n+3)), and the affine representation is
+  unconditionally faithful in every dimension n >= 3 for pairwise
+  distinct legs (Schur-complement identity plus Mordell descent on
+  Cremona elliptic curves 24a1 and 72a2).
+keywords:
+  - right-triangle reflection group
+  - Coxeter groups
+  - orbit growth
+  - cyclic ideal
+  - Fibonacci sequence
+  - orthoscheme
+  - Mordell descent
+  - faithfulness
+license: CC-BY-4.0
+license-url: "https://creativecommons.org/licenses/by/4.0/"
+repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
+date-released: 2026-05-24
+identifiers: []
+references:
+  - type: book
+    authors:
+      - given-names: James
+        family-names: Humphreys
+    title: "Reflection Groups and Coxeter Groups"
+    publisher: "Cambridge University Press"
+    year: 1990
+    series-title: "Cambridge Studies in Advanced Mathematics"
+    volume: 29

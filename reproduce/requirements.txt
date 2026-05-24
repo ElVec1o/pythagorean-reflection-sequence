@@ -1,0 +1,5 @@
+# All computations use only the Python standard library.
+# (fractions, math, itertools, json, argparse, time, os, sys, multiprocessing)
+#
+# No third-party dependencies are required.
+# Tested on Python 3.10, 3.12, 3.14.

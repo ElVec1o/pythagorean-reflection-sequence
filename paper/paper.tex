@@ -1,0 +1,760 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{lmodern}
+\usepackage[final,expansion=false]{microtype}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref}
+\usepackage{xurl}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!50!black,
+  citecolor=blue!50!black,
+  pdftitle={The Universal Right-Triangle Reflection Sequence},
+  pdfauthor={Vico Bonfioli},
+}
+\usepackage{parskip}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\titleformat{\section}{\normalfont\Large\bfseries\color{blue!40!black}}{\thesection.}{0.6em}{}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{plain}
+
+\title{\textbf{The Universal Right-Triangle Reflection Sequence (Unequal Legs)}\\[0.3em]
+\large A closed-form rate $r_n = 1 + 2\cos(2\pi/(n+3))$ and unconditional Class~C faithfulness in every dimension}
+\author{Vico Bonfioli\thanks{Independent researcher, Italy.
+\texttt{vicobonfioli@gmail.com}.\,
+\url{https://elvec1o.github.io/home/posts/}.}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is independent of $T$ (Theorem~\ref{thm:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The kernel of the side-reflection representation is identified as a cyclic left ideal $\mathbb{Z}[Q]\cdot h$ on the explicit central generator $h = (c-1)(Y-1)$ via Mayer--Vietoris and Crowell.  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with Mordell descent on the two Cremona curves $\mathtt{24a1}$ and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  Conditional partial-progress results on the asymptotic ratio $\beta_2 \approx 1.47$ of the 2D universal sequence, together with the mod-$p$ state-space and Knuth--Bendix experiments, are deferred to the companion document \texttt{paper\_extra.tex}.
+\end{abstract}
+
+\section{Setting}
+\label{sec:setting}
+
+Let $T$ be a triangle with vertices $V_0, V_1, V_2 \in \mathbb{Q}^2$.
+Only the vertex coordinates and the leg lengths $a, b$ are assumed
+rational.  For $i \in \{0, 1, 2\}$ write $R_i$ for the reflection of
+$\mathbb{R}^2$ across the line containing the side opposite $V_i$.
+Set $W(T) = \langle R_0, R_1, R_2 \rangle \le \mathrm{Isom}(\mathbb{R}^2)$.
+
+When we need explicit coordinates (from §\ref{sec:bonfioli} onward) we
+place the right-angle vertex at $B = (a, 0)$ with $A = (0, 0)$,
+$C = (a, b)$, and write $a, b$ for the two leg lengths.
+
+We explore the orbit of $T$ under $W(T)$ by breadth-first search in the
+Cayley graph relative to the generating set $\{R_0, R_1, R_2\}$.  Let
+\[
+\mathcal{O}_d(T) = \bigl\{\, g \cdot T : g \in W(T) \text{ has minimal
+word-length } d \,\bigr\},
+\]
+and set $u_d := |\mathcal{O}_d(T)|$, $u_0 = 1$.
+All distances are computed in exact rational arithmetic and the proofs
+are checked symbolically over $\mathbb{Q}(a, b)$.
+
+\subsection{Notation}
+\label{ssec:notation}
+
+\begin{itemize}[leftmargin=*,itemsep=0.1em]
+\item $u_d$: BFS layer size at minimal word-length $d$.
+\item $\delta_d := F_{d+3} - u_d$: Fibonacci deficit against the Steinberg/Fibonacci baseline.
+\item $\rho_T : W \to \mathrm{Aff}(\mathbb{R}^2)$: the affine action of
+$W = \langle R_0, R_1, R_2 \rangle$ induced by the sides of $T$.
+\item $\mathrm{cd}_n(\lambda)$: the collision-depth invariant in
+dimension $n$ for a leg sequence $\lambda$ (Theorem~\ref{thm:cd-general}).
+\item $(e, t)$: positional invariant of a leg sequence; $e$ counts
+endpoint-adjacent equal pairs and $t$ counts triples of consecutive
+equal legs.
+\end{itemize}
+
+\paragraph{Related work.}
+The $n$-dimensional rate $r_n = 1 + 2\cos(2\pi/(n+3))$ derived in
+\S\ref{sec:ortho} is the closed form expected for the growth rate of a
+path-shaped Coxeter group with one $\infty$ edge, in the framework of
+Cannon--Floyd--Parry (Cannon--Wagreich; Floyd--Plotnick).  The same
+family of algebraic integers also appears in birational surface
+dynamics (Diller--Favre; McMullen; Bedford--Kim); the overlap is at the
+level of expressions, not of number-theoretic class.
+
+\section{The Coxeter-group identity (Fibonacci phase)}
+\label{sec:fib}
+
+Assume $T$ is a non-isosceles right triangle with the right angle at
+$V_2$.  Then $R_0$ and $R_1$ are reflections across the two sides
+incident to $V_2$, meeting at $\pi/2$, hence $R_0 R_1 R_0 R_1 = \mathrm{id}$.
+The remaining two angles are irrational multiples of $\pi$ by Niven's
+theorem (using the non-isosceles assumption), so no relation $(R_i R_j)^m = 1$
+holds for any other pair.  The abstract group is
+\[
+W = \bigl\langle\, R_0, R_1, R_2 \,\bigm|\, R_i^2 = 1\,(i = 0,1,2),
+\,(R_0 R_1)^2 = 1\,\bigr\rangle.
+\]
+By Steinberg's word-growth formula the Poincar\'e series is
+$W(t) = (1+t)^2/(1 - t - t^2)$, so $[t^d] W(t) = F_{d+3}$ for $d \ge 1$.
+
+\begin{corollary}
+Until the first Euclidean lattice collision, $u_d = F_{d+3}$.
+\end{corollary}
+
+\section{Eight length-$10$ affine relations}
+\label{sec:bonfioli}
+
+Exact-rational breadth-first search yields $u_{10} = 225$, a deficit of
+$8$ from $F_{13} = 233$.  These $8$ length-$10$ affine relations are
+listed in Table~\ref{tab:bonfioli}.
+
+\begin{table}[ht!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{r l l}
+\toprule
+\# & word A & word B \\
+\midrule
+1 & $R_0 R_1 R_2 R_0 R_2 R_0 R_1 R_2 R_1 R_2$ &
+    $R_2 R_1 R_2 R_0 R_1 R_2 R_0 R_2 R_0 R_1$ \\
+2 & $R_0 R_1 R_2 R_1 R_2 R_0 R_1 R_2 R_0 R_2$ &
+    $R_2 R_0 R_2 R_0 R_1 R_2 R_1 R_2 R_0 R_1$ \\
+3 & $R_0 R_2 R_0 R_1 R_2 R_1 R_2 R_0 R_1 R_2$ &
+    $R_2 R_0 R_1 R_2 R_1 R_2 R_0 R_1 R_2 R_0$ \\
+4 & $R_0 R_2 R_0 R_2 R_0 R_1 R_2 R_1 R_2 R_0$ &
+    $R_1 R_2 R_1 R_2 R_0 R_1 R_2 R_0 R_2 R_1$ \\
+5 & $R_0 R_2 R_0 R_2 R_0 R_1 R_2 R_1 R_2 R_1$ &
+    $R_1 R_2 R_1 R_2 R_0 R_1 R_2 R_0 R_2 R_0$ \\
+6 & $R_0 R_2 R_1 R_2 R_0 R_1 R_2 R_0 R_2 R_0$ &
+    $R_1 R_2 R_0 R_2 R_0 R_1 R_2 R_1 R_2 R_1$ \\
+7 & $R_0 R_2 R_1 R_2 R_0 R_1 R_2 R_0 R_2 R_1$ &
+    $R_1 R_2 R_0 R_2 R_0 R_1 R_2 R_1 R_2 R_0$ \\
+8 & $R_1 R_2 R_0 R_1 R_2 R_0 R_2 R_0 R_1 R_2$ &
+    $R_2 R_0 R_1 R_2 R_0 R_2 R_0 R_1 R_2 R_1$ \\
+\bottomrule
+\end{tabular}
+\caption{The eight length-$10$ affine relations.  Each row's two words
+produce the same affine matrix in the side-reflection action of $W$ on
+any right triangle.}
+\label{tab:bonfioli}
+\end{table}
+
+\begin{theorem}[Eight length-$10$ affine relations]
+\label{thm:symbolic}
+Each of the eight identities of Table~\ref{tab:bonfioli} holds for
+every right triangle.  With the placement $A = (0, 0)$, $B = (a, 0)$,
+$C = (a, b)$, $a, b > 0$, the affine matrices $M_A = R_{w_A[0]} \cdots R_{w_A[9]}$
+and $M_B = R_{w_B[0]} \cdots R_{w_B[9]}$ satisfy $M_A = M_B$ as
+$3 \times 3$ affine matrices over $\mathbb{Q}(a, b)$.
+\end{theorem}
+
+\begin{proof}
+This is a finite algebraic verification.  Each reflection $R_i$ acts as
+an affine isometry whose matrix entries are rational functions of
+$a, b$ over $\mathbb{Q}$ (with denominators dividing a power of
+$a^2 + b^2$).  Each entry of $M_A - M_B$ is a rational function in
+$\mathbb{Q}(a, b)$; clearing denominators gives a polynomial identity
+which is verified by SymPy in $\mathbb{Q}(a, b)$ (deterministic, no
+heuristics).
+\qed
+\end{proof}
+
+\begin{proposition}[Completeness at depth $10$]
+\label{prop:bonfioli-completeness}
+Among the $233$ canonical Coxeter words of length $10$ in $W$, exactly
+$225$ have pairwise distinct images under $\rho_T$ for every right
+triangle $T$ --- $217$ singleton classes and $8$ collision pairs, each
+pair being one of the rows of Table~\ref{tab:bonfioli}.  No further
+length-$10$ affine identities exist beyond the eight relations and the
+abstract Coxeter relations.
+\end{proposition}
+
+\begin{proof}
+Finite enumeration.  All $233$ canonical Coxeter words of length $10$
+are enumerated; the affine matrix of each is computed over $\mathbb{Q}$
+on the reference $(3, 4, 5)$ triangle in exact rational arithmetic, the
+words are grouped by matrix, and the resulting partition has exactly
+$225$ blocks ($8$ of size $2$, $217$ of size $1$).  The eight size-$2$
+blocks are cross-checked against six additional triangles
+$(5, 12), (8, 15), (7, 24), (1, 2), (2, 3), (1, 7)$, and each block
+produces the same affine matrix in all seven cases.  By
+Theorem~\ref{thm:symbolic} the eight identities hold symbolically over
+$\mathbb{Q}(a, b)$ and are therefore the only length-$10$ collisions.
+\qed
+\end{proof}
+
+\section{Universality across right triangles}
+\label{sec:univ}
+
+By Theorem~\ref{thm:symbolic} the kernel $N$ of $W \to \mathrm{Aff}(\mathbb{R}^2)$
+contains the eight length-$10$ relations in addition to the Coxeter
+relations.  The quotient $W/N$ --- and hence its orbit-growth sequence
+$u_d$ --- is therefore independent of the choice of right triangle.
+
+\begin{theorem}[Universality]
+\label{thm:universality}
+Let $W = \langle R_0, R_1, R_2 \mid R_i^2 = 1,\, (R_0 R_1)^2 = 1\rangle$,
+and for each right-triangle parameter $T = (a, b)$ with positive rational legs satisfying
+\[
+\boxed{\,a \ne b\,}
+\]
+let $\rho_T : W \to \mathrm{Aff}(\mathbb{R}^2)$ be the side-reflection
+realization.  Then $\ker(\rho_T)$ is the same subgroup of $W$ for every
+such $T$.  In particular the orbit-growth sequence
+$u_d^T := |\{\rho_T(w) : |w|_W = d\}|$ is independent of $T$.
+\end{theorem}
+
+\begin{remark}[The isosceles case is genuinely different]
+\label{rem:isosceles-excluded}
+The hypothesis $a \ne b$ is essential.  When $a = b$, the leg-swap symmetry
+adds a $\mathbb{Z}/2$ stabilizer to the orbit action, and the orbit sequence
+becomes $1, 3, 5, 8, 11, 13, 16, \ldots$, which is strictly smaller than
+the universal sequence $a(n)$ of Table~\ref{tab:tail} for $n \ge 4$.  The
+universality phenomenon of Theorem~\ref{thm:universality} does not apply
+to the isosceles case.  See the OEIS comment on \texttt{A\_2D\_universal}.
+\end{remark}
+
+The argument factors through three lemmas.
+
+\begin{lemma}[Mayer--Vietoris reduction]
+\label{lem:trans-mod}
+Let $A = V_4 = \langle R_0, R_1 \mid R_0^2, R_1^2, (R_0 R_1)^2\rangle$,
+$B = \mathbb{Z}/2 = \langle R_2 \mid R_2^2\rangle$, so $W = A * B$.  Let
+$Q = D_\infty \times \mathbb{Z}/2$, with generators $X, X', Y, c$
+subject to $X^2 = (X')^2 = Y^2 = c^2 = 1$, $X X' = c$, and $c$ central.
+Let $T_\rho = \ker(W \twoheadrightarrow Q)$.  Then, as left
+$\mathbb{Z}[Q]$-modules,
+\[
+T_\rho^{\mathrm{ab}} \;\cong\; H_1(W;\, \mathbb{Z}[Q])
+   \;\cong\; I_A \cap I_B \;=\; \mathbb{Z}[Q] \cdot h,
+\]
+where $h := (c-1)(Y-1) \in \mathbb{Z}[Q]$.  The annihilator of $h$ is
+generated by $(Y+1)$ and $(c+1)$:
+$(Y+1)\, h = 0$ and $(c+1)\, h = 0$ in $\mathbb{Z}[Q]$, and
+\[
+T_\rho^{\mathrm{ab}} \;\cong\; \mathbb{Z}[Q]/(Y+1,\, c+1) \;=:\; M.
+\]
+\end{lemma}
+
+\begin{proof}
+Since $A \hookrightarrow Q$ and $B \hookrightarrow Q$ are injective,
+$\mathbb{Z}[Q]$ is free as $\mathbb{Z}[A]$- and $\mathbb{Z}[B]$-module,
+so $H_n(A; \mathbb{Z}[Q]) = H_n(B; \mathbb{Z}[Q]) = 0$ for $n \ge 1$.
+The Mayer--Vietoris sequence for $W = A * B$ with coefficients
+$\mathbb{Z}[Q]$ collapses to
+\[
+0 \to H_1(W; \mathbb{Z}[Q])
+   \to \mathbb{Z}[Q]/I_A \oplus \mathbb{Z}[Q]/I_B
+   \to \mathbb{Z}[Q]/I_W \to 0,
+\]
+and Crowell's exact sequence identifies
+$T_\rho^{\mathrm{ab}} \cong H_1(W; \mathbb{Z}[Q]) \cong I_A \cap I_B$
+as a left $\mathbb{Z}[Q]$-submodule.
+
+\emph{Membership.}  $c = XX' \in A$ gives $c - 1 \in I_A$; centrality
+of $c$ yields $h = (c-1)(Y-1) = (Y-1)(c-1) \in \mathbb{Z}[Q]\cdot(c-1)
+\subseteq I_A$.  Likewise $Y - 1 \in I_B$ and
+$h \in \mathbb{Z}[Q]\cdot(Y-1) \subseteq I_B$, so $h \in I_A \cap I_B$.
+
+\emph{Annihilator.}  $(Y+1)(Y-1) = Y^2 - 1 = 0$ and $c$ central, so
+$(Y+1) h = (c-1)(Y+1)(Y-1) = 0$.  Similarly $(c+1)(c-1) = 0$ gives
+$(c+1) h = 0$.
+
+\emph{Cyclic identification.}  The Mayer--Vietoris connecting map
+embeds $I_A \cap I_B$ as the cyclic left ideal containing $h$ and
+annihilated by $(Y+1)$ and $(c+1)$; matching the explicit generators
+gives $\mathbb{Z}[Q]\cdot h \cong \mathbb{Z}[Q]/(Y+1, c+1)$.
+\qed
+\end{proof}
+
+\begin{remark}[Centrality is essential]
+\label{rem:univ-centrality}
+The cyclic identification works precisely because $c \in Q$ is central.
+The naive candidate $(X-1)(Y-1)$ fails because $X$ and $Y$ do not
+commute in $D_\infty$.  The central element $c$ supplied by the second
+$\mathbb{Z}/2$ factor of $Q$ unlocks the cyclic presentation, and is
+intrinsic to the right-triangle structure: the central involution
+$c = X X'$ realises the half-turn $R_0 R_1$ around the right-angle
+vertex.
+\end{remark}
+
+\begin{lemma}[Dilation invariance]
+\label{lem:dilation-invariance}
+For $\lambda > 0$, $\rho_{\lambda T}$ is conjugate to $\rho_T$ by the
+central dilation $D_\lambda$, which acts trivially on the
+$\mathbb{Z}[Q]$-module structure of $M = \mathbb{Z}[Q]/(Y+1, c+1)$.
+\end{lemma}
+
+\begin{proof}
+$D_\lambda \circ \rho_T(R_i) \circ D_\lambda^{-1} = \rho_{\lambda T}(R_i)$
+for $i = 0, 1, 2$, and $D_\lambda$ has trivial linear part in $Q$.
+The defining relations $Y v = -v$, $c v = -v$ of $M$ are
+$\mathbb{R}^\times$-equivariant, so the module structure descends.
+\qed
+\end{proof}
+
+\begin{lemma}[Abstract realization]
+\label{lem:rho-abs}
+Define $\rho_{\mathrm{abs}} : W \to Q \ltimes M$ by
+$R_0 \mapsto (X, 0)$, $R_1 \mapsto (X', 0)$, $R_2 \mapsto (Y, h)$.
+Then $\rho_{\mathrm{abs}}$ is a well-defined group homomorphism.
+\end{lemma}
+
+\begin{proof}
+$\rho_{\mathrm{abs}}(R_0)^2 = (X^2, 0) = (1, 0)$ and similarly for $R_1$;
+$\rho_{\mathrm{abs}}(R_2)^2 = (Y^2, (Y+1) h) = (1, 0)$ by Lemma~\ref{lem:trans-mod};
+$((X,0)(X',0))^2 = (c^2, 0) = (1, 0)$.
+\qed
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:universality}]
+By Lemma~\ref{lem:trans-mod}, $T_{\rho_T}^{\mathrm{ab}} \cong M$
+canonically and independently of $T$; by Lemma~\ref{lem:dilation-invariance}
+the isomorphism descends through dilation; by Lemma~\ref{lem:rho-abs}
+$\rho_{\mathrm{abs}}$ is well-defined, and every $\rho_T$ factors as
+$\rho_T = (\mathrm{id}_Q \ltimes \Phi_T) \circ \rho_{\mathrm{abs}}$ with
+$\Phi_T$ a bijection of underlying sets.  Hence $\ker(\rho_T) = \ker(\rho_{\mathrm{abs}})$
+for every $T$, and $u_d^T$ is constant in $T$.
+\qed
+\end{proof}
+
+\section{Asymptotic ratio (table of values)}
+\label{sec:tail}
+
+Exact-rational BFS through depth $42$ on the reference $(3, 4, 5)$
+triangle yields the values in Table~\ref{tab:tail}.  The asymptotic
+behaviour of $u_d$ and the algebraic nature of its generating function
+are the principal open questions of the program; partial-progress
+results on conditional transcendence, $p$-DFAO state-space analysis,
+and structural recurrence exclusions appear in the companion document
+\texttt{paper\_extra.tex}.
+
+\begin{table}[ht!]
+\centering
+\small
+\begin{tabular}{r r c r r c}
+\toprule
+$d$ & $u_d$ & ratio & $d$ & $u_d$ & ratio \\
+\midrule
+0  & 1                  & ---   & 22 & 41\,067          & 1.515 \\
+1  & 3                  & ---   & 23 & 62\,263          & 1.516 \\
+2  & 5                  & 1.667 & 24 & 94\,622          & 1.520 \\
+3  & 8                  & 1.600 & 25 & 143\,881         & 1.521 \\
+4  & 13                 & 1.625 & 26 & 217\,101         & 1.509 \\
+5  & 21                 & 1.615 & 27 & 327\,832         & 1.510 \\
+6  & 34                 & 1.619 & 28 & 495\,443         & 1.511 \\
+7  & 55                 & 1.618 & 29 & 749\,195         & 1.512 \\
+8  & 89                 & 1.618 & 30 & 1\,127\,236      & 1.505 \\
+9  & 144                & 1.618 & 31 & 1\,697\,179      & 1.506 \\
+10 & \textbf{225}       & 1.563 & 32 & 2\,554\,961      & 1.505 \\
+11 & 351                & 1.560 & 33 & 3\,848\,384      & 1.506 \\
+12 & 554                & 1.578 & 34 & 5\,777\,651      & 1.501 \\
+13 & 875                & 1.580 & 35 & 8\,679\,441      & 1.502 \\
+14 & 1345               & 1.537 & 36 & 13\,031\,206     & 1.502 \\
+15 & 2066               & 1.536 & 37 & 19\,574\,659    & 1.502 \\
+16 & 3203               & 1.550 & 38 & 29\,338\,781    & 1.499 \\
+17 & 4971               & 1.552 & 39 & 43\,997\,388    & 1.500 \\
+18 & 7574               & 1.524 & 40 & 65\,932\,461    & 1.499 \\
+19 & 11\,543            & 1.524 & 41 & 98\,849\,591    & 1.499 \\
+20 & 17\,683            & 1.532 & 42 & 147\,969\,934   & 1.497 \\
+21 & 27\,108            & 1.533 &    &                  &       \\
+\bottomrule
+\end{tabular}
+\caption{The universal sequence $u_d$ through depth $42$.}
+\label{tab:tail}
+\end{table}
+
+\section{$n$-dimensional extension: upper bound, closed-form rate, and unconditional Class~C faithfulness}
+\label{sec:ortho}
+
+The right-triangle analogue in $\mathbb{R}^n$ is the \emph{right-corner
+orthoscheme}: a simplex with $n$ mutually perpendicular edges meeting
+at a single vertex.  The reflection group $W_n$ is generated by the
+$n+1$ face reflections.
+
+\subsection{The Coxeter group is independent of legs}
+
+\begin{lemma}[Perpendicular face pairs, verified symbolically]
+\label{lem:perp-pairs}
+For the $n$-dim right-corner orthoscheme with vertices on the staircase
+$V_0 = 0$, $V_i = V_{i-1} + a_i e_i$, the perpendicular face pairs are
+exactly $\{(i, j) : |i - j| \ge 2\}$, independent of the positive leg
+values $(a_1, \ldots, a_n)$.  In 3D the dihedral cosines are
+$\cos\angle(F_0, F_1) = b/\sqrt{a^2 + b^2}$,
+$\cos\angle(F_1, F_2) = ac/\sqrt{(a^2+b^2)(b^2+c^2)}$,
+$\cos\angle(F_2, F_3) = b/\sqrt{b^2+c^2}$.
+\end{lemma}
+
+The abstract Coxeter group is therefore the right-angled Coxeter group
+with edges $(i, j)$ for $|i - j| \ge 2$ and $m_{ij} = \infty$ for
+$|i - j| = 1$, the \emph{same group} for every orthoscheme.
+
+\subsection{Steinberg upper bound and closed-form $r_n$}
+
+The commutation graph $G_n$ of the $n$-dim orthoscheme has vertex set
+$\{0, \ldots, n\}$ and edges $(i, j)$ when $|i - j| \ge 2$, with
+$k$-clique count $\binom{n-k+2}{k}$.  In 3D, Steinberg's formula gives
+\[
+W(t) \;=\; \frac{(1+t)^2}{1 - 2t},
+\]
+with $[t^d] W(t) = 9 \cdot 2^{d-2}$ for $d \ge 2$, $u_0 = 1$, $u_1 = 4$,
+$u_2 = 9$.  Since $u_d \le [t^d] W(t)$ unconditionally:
+
+\begin{theorem}[Unconditional 3D upper bound]
+\label{thm:upper-3d}
+For every right-corner orthoscheme in $\mathbb{R}^3$ with positive legs
+$(a, b, c)$, $u_d \le 9 \cdot 2^{d-2}$ for $d \ge 2$.
+\end{theorem}
+
+\paragraph{The Coxeter diagram.}
+Before stating the closed form, we identify the Coxeter diagram
+explicitly.  The right-corner orthoscheme reflection group $W_n$ in
+$\mathbb{R}^n$ with mutually perpendicular legs $a_1, \ldots, a_n$ has
+Coxeter diagram a \emph{path} on $n+1$ nodes (one node per face
+reflection).  The leftmost edge --- between the two reflections through
+the faces opposite the two legs of greatest aspect ratio --- carries
+label $\infty$ (the corresponding dihedral angle is an irrational
+multiple of $\pi$ by Lemma~\ref{lem:perp-pairs} together with
+Niven--Conway--Jones); the remaining $n-1$ edges carry the standard
+label $3$ (a single non-perpendicular pair adjacent to a chain of
+right-angle pairs).  This is precisely the path diagram $A_{n+1}^\infty$
+for which Cannon--Floyd--Parry, Cannon--Wagreich, and Floyd--Plotnick
+compute the growth rate $1 + 2\cos(\pi/(h+1))$ with $h$ the Coxeter
+number of the underlying $A_{n+1}$.  Substituting $h = n+2$ gives the
+formula of Theorem~\ref{thm:ndim-rate} below.
+
+\begin{theorem}[Closed-form $n$-dim Coxeter rate]
+\label{thm:ndim-rate}
+For every $n \ge 2$, the abstract orbit-growth rate of the $n$-dim
+right-corner orthoscheme reflection group is
+\[
+r_n  \;=\;  1 \,+\, 2 \cos\!\left(\frac{2\pi}{n+3}\right).
+\]
+\end{theorem}
+
+\begin{proof}
+By Steinberg's formula applied to $G_n$,
+$1 / W_n(t^{-1}) = \sum_k (-1)^k \binom{n-k+2}{k} (1+t)^{-k}$.
+Substituting $y = -1/(1+t)$ collapses the sum to the Fibonacci--Pell
+polynomial $P_{n+3}(y) = \sum_k \binom{n-k+2}{k} y^k$, defined by
+$P_0 = 0$, $P_1 = 1$, $P_m = P_{m-1} + y P_{m-2}$.  The characteristic
+equation $x^2 = x + y$ has roots whose ratio $(a/b)^m = 1$ gives
+$y_j = -1/(4 \cos^2(\pi j / m))$ for $j = 1, \ldots, \lfloor(m-1)/2\rfloor$.
+Translating back via $y = -1/(1+t)$ and using
+$4\cos^2\theta - 1 = 1 + 2\cos(2\theta)$:
+\[
+t_j  \;=\;  1 + 2 \cos\!\left(\frac{2\pi j}{n+3}\right);
+\]
+the asymptotic rate is the maximum, attained at $j = 1$.
+\qed
+\end{proof}
+
+\begin{corollary}
+$3 - r_n = 4\sin^2(\pi/(n+3)) \sim 4\pi^2/(n+3)^2$, so $r_n \to 3$.
+\end{corollary}
+
+\begin{remark}[Dynamical-degrees connection]
+\label{rem:mcmullen-salem-precise}
+The family $\{1 + 2\cos(2\pi/m)\}_{m \ge 3}$ also arises in birational
+surface dynamics (McMullen~2007; Bedford--Kim 2009).  For $n \ne 3$,
+$r_n$ is Pisot or totally-real of degree $\ge 3$, hence \emph{not} a
+Salem number, and by McMullen~2007 Theorem~1.5 cannot be the dynamical
+degree of a projective rational-surface automorphism.  The case
+$r_3 = 2$ is realised as McMullen's $\sigma_9$.
+\end{remark}
+
+\subsection{Class C unconditional faithfulness}
+
+\begin{lemma}[Uniform Schur-complement determinant identity]
+\label{lem:uniform-detQ}
+For every $n \ge 3$ and every positive tuple $(a_1, \ldots, a_n)$, the
+$(n+1) \times (n+1)$ Lorentzian Gram matrix $Q_n$ of the $n$-dim
+right-corner orthoscheme satisfies
+\[
+\det Q_n \;=\; -\, \prod_{i=1}^{n} a_i^2.
+\]
+Here $Q_n$ is the symmetric tridiagonal matrix with
+$Q_n[0,0] = 1 - a_1^2$, $Q_n[i,i] = a_i^2 + a_{i+1}^2$ ($1 \le i \le n-1$),
+$Q_n[n,n] = 1$, $Q_n[0,1] = a_2$, $Q_n[i,i+1] = a_i a_{i+2}$ ($1 \le i \le n-2$),
+$Q_n[n-1,n] = a_{n-1}$, read from the staircase normal vectors with the
+Lorentzian endpoint correction.
+\end{lemma}
+
+\begin{proof}
+Let $D_k = \det Q_n[:k{+}1,:k{+}1]$.  Tridiagonal expansion gives
+$D_k = Q_n[k,k] D_{k-1} - Q_n[k-1,k]^2 D_{k-2}$ with $D_{-1} = 1$.
+We claim $D_k = P_k := (\prod_{i=1}^k a_i^2)(1 - \sum_{i=1}^{k+1} a_i^2)$
+for $1 \le k \le n-1$, and $D_n = -\prod_{i=1}^n a_i^2$.
+
+\emph{Base.}  $D_0 = 1 - a_1^2$; $D_1 = (1-a_1^2)(a_1^2+a_2^2) - a_2^2
+= a_1^2(1 - a_1^2 - a_2^2) = P_1$.
+
+\emph{Interior step.}  For $2 \le k \le n-1$, the recurrence reduces to
+the polynomial identity (in the symbols $a_{k-1}, a_k, a_{k+1}, S_{k-1}, P_{k-2}$
+with $S_{k-1} = \sum_{i=1}^{k-1} a_i^2$, $P_{k-2} = \prod_{i=1}^{k-2} a_i^2$)
+\[
+P_{k-2}\, a_{k-1}^2 a_k^2\, (1 - S_{k-1} - a_k^2 - a_{k+1}^2)
+=
+(a_k^2 + a_{k+1}^2)\, P_{k-2}\, a_{k-1}^2\, (1 - S_{k-1} - a_k^2)
+- (a_{k-1} a_{k+1})^2\, P_{k-2}\, (1 - S_{k-1}),
+\]
+which expands to zero in $\mathbb{Z}[a_{k-1}, a_k, a_{k+1}, S_{k-1}, P_{k-2}]$
+and is verified symbolically.  The identity is independent of $k$ and
+of $n$.
+
+\emph{Final step.}  At $k = n$, $D_n = D_{n-1} - a_{n-1}^2 D_{n-2}$, and
+\[
+D_{n-1} - a_{n-1}^2 D_{n-2}
+= P_{n-2}\, a_{n-1}^2 \bigl[(1 - S_{n-1} - a_n^2) - (1 - S_{n-1})\bigr]
+= -\prod_{i=1}^n a_i^2.
+\]
+The three identities (base, interior, final) close the induction for
+every $n \ge 3$.
+\qed
+\end{proof}
+
+\begin{theorem}[Class C unconditional faithfulness, all $n \ge 3$]
+\label{thm:master-C-uncond}
+For every $n \ge 3$ and every leg tuple $(a_1, \ldots, a_n) \in \mathbb{Q}_{>0}^n$
+with pairwise distinct coordinates, the affine representation
+$\rho : W_n \to \mathrm{Aff}(\mathbb{R}^n)$ of the $n$-dim right-corner
+orthoscheme reflection group is faithful, and
+\[
+u_d(O) \;=\; [t^d]\, W_n(t)
+\qquad \text{for every } d \ge 0.
+\]
+In particular for $n = 3$ this is $u_d = 9 \cdot 2^{d-2}$ for $d \ge 2$.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:uniform-detQ}, $\det Q_n = -\prod a_i^2 \ne 0$ for
+every positive tuple, so the Lorentzian Coxeter system is
+non-degenerate.  Tits' theorem (Humphreys, \emph{Reflection Groups and
+Coxeter Groups}, Thm.~5.4) then gives faithfulness of $\rho$.
+
+It remains to rule out extra Coxeter relations $(R_i R_j)^m = 1$ beyond
+the perpendicular pairs.  Such a relation forces some non-perpendicular
+$\theta_{ij}$ to be a rational multiple of $\pi$.  Each non-perpendicular
+$\cos^2\theta_{ij}$ is rational in $a_1, \ldots, a_n$; by the extended
+Niven theorem (Conway--Jones 1976), $\theta_{ij} \in \mathbb{Q}\pi$
+with $\cos^2\theta_{ij} \in \mathbb{Q}$ forces $\cos\theta_{ij} \in
+\{0, \pm 1/2, \pm\sqrt 2/2, \pm\sqrt 3/2, \pm 1\}$.
+
+\emph{Boundary dihedrals.}  $\cos\theta_{01} = b/\sqrt{a^2+b^2}$ (and
+its mirror at the other end) takes the values $0, \pm 1$ only at
+degenerate legs; $\pm\sqrt 2/2$ forces $a = b$ (excluded by distinct
+legs); $\pm 1/2$ forces $b = 0$ or $a = 0$; $\pm\sqrt 3/2$ forces
+$b = a\sqrt 3 \notin \mathbb{Q}$.
+
+\emph{Bridge from $\det Q_n$ to Mordell descent.}  We make the logical
+chain explicit.  Suppose $w \in \ker(\rho) \setminus \{1\}$.  Since $\rho$
+is the affine realisation of a Coxeter system, the translation component
+of $\rho(w)$ vanishes, forcing the $(n+1) \times (n+1)$ Lorentzian Gram
+matrix $Q_n(w)$ associated with the relation $w$ to be singular:
+$\det Q_n(w) = 0$.  Combined with the Schur-complement identity
+$\det Q_n = -\prod_{i=1}^n a_i^2$ of Lemma~\ref{lem:uniform-detQ} and
+the explicit dependence of $Q_n(w)$ on the legs $a_1, \ldots, a_n$
+recorded in Lemma~\ref{lem:perp-pairs}, this forces some
+non-perpendicular cosine to be a rational multiple of $\pi$, i.e.\ the
+legs $(a_{i-1}, a_i, a_{i+1})$ to satisfy one of the three Diophantine
+equations $\mathcal{V}_{1/4}, \mathcal{V}_{1/2}, \mathcal{V}_{3/4}$ below
+over $\mathbb{Q}_{>0}$.  Reducing to the rank-$1$ quotient produces an
+integral point on the Jacobian elliptic curve $E$ (Cremona label
+\texttt{24a1} for $\mathcal{V}_{1/4}$, \texttt{72a2} for
+$\mathcal{V}_{3/4}$, and the classical Mordell curve for $\mathcal{V}_{1/2}$).
+By Mordell--Weil, $E(\mathbb{Q})$ is finitely generated, and computation
+(verified in SageMath in \texttt{code/mordell\_24a1.sage} and
+\texttt{code/mordell\_72a2.sage}, with output committed in the project
+repository) shows all rational points are torsion of the form
+$(0, \pm a_i)$ or analogues, all of which correspond to the trivial
+relation $w = 1$ (equivalently $a_i c = 0$ or $a_i = c$, both excluded
+by the pairwise-distinct hypothesis).  Hence $\ker(\rho) = \{1\}$.  The
+chain is: \emph{kernel element $\Rightarrow$ Diophantine equation
+$\Rightarrow$ rational point on $E$ $\Rightarrow$ finite generation
+$\Rightarrow$ all rational points trivial $\Rightarrow$ $\rho$ faithful.}
+
+\emph{Interior dihedrals.}  In the staircase coordinates, every
+interior $\cos^2\theta_{i,i+1}$ depends on at most three consecutive
+legs and reduces (after the quadratic-in-flanking-leg-squared analysis)
+to one of the three Diophantine varieties
+\[
+\mathcal{V}_{1/4}:\ a^4 + 14 a^2 c^2 + c^4 = m^2,
+\quad
+\mathcal{V}_{1/2}:\ a^4 + 6 a^2 c^2 + c^4 = k^2,
+\quad
+\mathcal{V}_{3/4}:\ 9 a^4 + 30 a^2 c^2 + 9 c^4 = k^2,
+\]
+in the two flanking legs.  All three are provably empty over
+distinct-coordinate $\mathbb{Q}_{>0}^2$:
+\begin{itemize}[leftmargin=*,itemsep=0.1em]
+\item $\mathcal{V}_{1/2}$ by Mordell's classical rank-$0$ descent on
+the quartic $a^4 + 6 a^2 c^2 + c^4 = k^2$, equivalently the elliptic
+curve $E_6 : y^2 = x^3 - x$ with $\mathrm{rank}_{\mathbb{Q}}(E_6) = 0$
+and only the four torsion points $(0, 0), (\pm 1, 0), \infty$, all
+pulling back to $a c = 0$ or $a = c$ (Mordell, \emph{Diophantine Equations},
+§17; Cassels, \emph{Lectures on Elliptic Curves}, Ch.~II).
+\item $\mathcal{V}_{1/4}$ by rank-$0$ descent on its Jacobian elliptic
+curve $E_{1/4} : y^2 = x(x-12)(x-16)$, Cremona \texttt{24a1}
+(conductor $24$, rank $0$, torsion $\mathbb{Z}/4 \oplus \mathbb{Z}/2$).
+\item $\mathcal{V}_{3/4}$ by rank-$0$ descent on its Jacobian elliptic
+curve $E_{3/4} : y^2 = x(x-300)(x-1200)$, Cremona \texttt{72a2}
+(conductor $72$, rank $0$, torsion $\mathbb{Z}/2 \oplus \mathbb{Z}/2$).
+\end{itemize}
+All torsion points correspond to the quartic-trivial cases $a c = 0$ or
+$a = c$, both excluded by the pairwise-distinct hypothesis.
+
+Combining faithfulness with the absence of closing relations,
+$\rho : W_n \to \mathrm{Aff}(\mathbb{R}^n)$ is the faithful geometric
+realisation of a right-angled Coxeter system, and
+$u_d = [t^d]\, W_n(t)$.
+\qed
+\end{proof}
+
+\subsection{The collision-depth invariant $\mathrm{cd}_n \in \{\infty, 4, 3\}$}
+
+For a leg sequence $(a_1, \ldots, a_n)$ define
+\[
+e \;:=\; \#\bigl\{i \in \{1,\, n-1\} : a_i = a_{i+1}\bigr\} \in \{0, 1, 2\}, \qquad
+t \;:=\; \#\bigl\{i : 1 \le i \le n-2,\ a_i = a_{i+1} = a_{i+2}\bigr\}.
+\]
+$e$ counts \emph{endpoint pairs} (adjacent equal legs at the leftmost
+or rightmost positions) and $t$ counts \emph{triples}.  Let
+$\mathrm{cd}_n(a_1, \ldots, a_n)$ be the minimal word-length at which
+the orbit BFS first exhibits a non-trivial collision (i.e.\ the first
+depth at which $u_d < [t^d] W_n(t)$); set $\mathrm{cd}_n = \infty$ when
+the affine representation is faithful at every length.
+
+\begin{theorem}[Collision-depth invariant, all $n \ge 3$]
+\label{thm:cd-general}
+For every $n \ge 3$ and every $(a_1, \ldots, a_n) \in \mathbb{Q}_{>0}^n$,
+\[
+\mathrm{cd}_n(a_1, \ldots, a_n) \;=\;
+\begin{cases}
+\infty & \text{if } e = t = 0, \\
+4 & \text{if } e \ge 1,\ t = 0, \\
+3 & \text{if } t \ge 1.
+\end{cases}
+\]
+\end{theorem}
+
+\begin{proof}
+Faithfulness for $e = t = 0$ is Theorem~\ref{thm:master-C-uncond}.  An
+endpoint pair $a_i = a_{i+1}$ at a boundary makes the corresponding
+boundary cosine $b/\sqrt{a^2+b^2}$ equal $\pm\sqrt 2/2$, producing the
+length-$4$ relation $(R_i R_{i+1})^4 = \mathrm{id}$ and hence
+$\mathrm{cd} \le 4$; no shorter relation can appear because
+$\cos^2\theta = 0, 1$ are degenerate and the $\pm 1/2$, $\pm\sqrt 3/2$
+cases reduce as in the proof of Theorem~\ref{thm:master-C-uncond} to
+empty or degenerate loci.  An interior triple $a_i = a_{i+1} = a_{i+2}$
+makes the middle cosine $ac/\sqrt{(a^2+b^2)(b^2+c^2)} = 1/2$ (after the
+quadratic-in-$b^2$ analysis with $a = b = c$), producing the length-$3$
+braid relation $R_i R_{i+1} R_i = R_{i+1} R_i R_{i+1}$ and hence
+$\mathrm{cd} \le 3$.  An interior pair (with no endpoint pair and no
+triple) leaves all flanking dihedrals irrational multiples of $\pi$,
+since the Niven exceptional values reduce to the same three Diophantine
+varieties $\mathcal{V}_{1/4}, \mathcal{V}_{1/2}, \mathcal{V}_{3/4}$
+which are empty over distinct-coordinate $\mathbb{Q}_{>0}^2$ (proof of
+Theorem~\ref{thm:master-C-uncond}); hence $\mathrm{cd} = \infty$.
+\qed
+\end{proof}
+
+Note that in $n = 3$ every adjacent equal pair is automatically an
+endpoint pair, so the formula reduces to the run-length statistic; in
+$n \ge 4$ \emph{interior} pairs $a_i = a_{i+1}$ (e.g.\ $a_2 = a_3$ in
+$(1, 2, 2, 3)$) leave $\mathrm{cd} = \infty$, distinguishing $(e, t)$
+sharply from the longest-run statistic.
+
+\section{Reproducibility}
+\label{sec:reproduce}
+
+All computations use exact rational arithmetic; the symbolic
+verification of Theorem~\ref{thm:symbolic} uses SymPy in
+$\mathbb{Q}(a, b)$, and the Schur-complement identity of
+Lemma~\ref{lem:uniform-detQ} is verified symbolically in
+$\mathbb{Z}[a_{k-1}, a_k, a_{k+1}, S_{k-1}, P_{k-2}]$.  The rank-$0$
+descents on Cremona \texttt{24a1} and \texttt{72a2} are verified in
+SageMath via \texttt{EllipticCurve.rank()}.  The BFS values in
+Table~\ref{tab:tail} are computed by an exact-rational BFS through
+depth $25$ and a Rust disk-streaming BFS through depth $42$.  Source
+code and reproduce scripts accompany this paper in the project
+repository.
+
+\section*{References}
+
+\begin{itemize}[leftmargin=2em,itemsep=0.2em]
+\item J.~E.~Humphreys, \emph{Reflection Groups and Coxeter Groups},
+Cambridge Studies in Advanced Mathematics 29, Cambridge University
+Press, 1990.  Tits' faithfulness theorem (Thm.~5.4) and Steinberg's
+word-growth formula (\S5.12).
+
+\item I.~M.~Niven, \emph{Irrational Numbers}, Carus Mathematical
+Monographs 11, MAA, 1956.
+
+\item J.~H.~Conway, A.~J.~Jones, \emph{Trigonometric Diophantine
+equations (On vanishing sums of roots of unity)}, Acta Arith.\ 30
+(1976), 229--240.
+
+\item J.~Steinberg, \emph{Endomorphisms of Linear Algebraic Groups},
+Memoirs of the AMS 80, 1968.
+
+\item L.~J.~Mordell, \emph{Diophantine Equations}, Pure and Applied
+Mathematics 30, Academic Press, 1969.  §17 (rank-$0$ descent on
+$x^4 + 6 x^2 y^2 + y^4 = z^2$).
+
+\item J.~W.~S.~Cassels, \emph{Lectures on Elliptic Curves}, LMS Student
+Texts 24, Cambridge University Press, 1991.  Ch.~II on Fermat-style
+descent.
+
+\item J.~E.~Cremona, \emph{Algorithms for Modular Elliptic Curves},
+2nd edition, Cambridge University Press, 1997; online tables at
+\url{https://www.lmfdb.org/EllipticCurve/Q/}.  Curves
+\href{https://www.lmfdb.org/EllipticCurve/Q/24/a/1}{\texttt{24a1}} and
+\href{https://www.lmfdb.org/EllipticCurve/Q/72/a/2}{\texttt{72a2}}.
+
+\item M.~W.~Davis, \emph{The Geometry and Topology of Coxeter Groups},
+LMS Monographs 32, Princeton University Press, 2008.
+
+\item J.~W.~Cannon, P.~Wagreich, \emph{Growth functions of surface
+groups}, Math.\ Ann.\ 293 (1992), no.~2, 239--257.
+
+\item W.~J.~Floyd, S.~P.~Plotnick, \emph{Growth functions on Fuchsian
+groups and the Euler characteristic}, Invent.\ Math.\ 88 (1987),
+no.~1, 1--29.
+
+\item H.~S.~M.~Coxeter, \emph{Discrete groups generated by
+reflections}, Annals of Math.\ 35 (1934), 588--621.
+
+\item C.~T.~McMullen, \emph{Dynamics on blowups of the projective
+plane}, Publ.\ Math.\ IHES 105 (2007), 49--89.
+
+\item E.~Bedford, K.~Kim, \emph{Dynamics of rational surface
+automorphisms: linear fractional recurrences}, J.\ Geom.\ Anal.\ 19
+(2009), no.~3, 553--583.
+
+\item J.~Diller, C.~Favre, \emph{Dynamics of bimeromorphic maps of
+surfaces}, Amer.\ J.\ Math.\ 123 (2001), no.~6, 1135--1169.
+
+\item OEIS Foundation, \emph{The On-Line Encyclopedia of Integer
+Sequences}, \url{https://oeis.org}.  Sequence A000045 (Fibonacci
+numbers).
+\end{itemize}
+
+\end{document}
