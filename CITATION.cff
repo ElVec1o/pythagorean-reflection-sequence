@@ -34,8 +34,19 @@ keywords:
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
-date-released: 2026-05-24
-identifiers: []
+date-released: 2026-05-25
+version: 1.0.0
+doi: 10.5281/zenodo.20370090
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.20370090
+    description: "Concept DOI (always resolves to the latest archived release)"
+  - type: doi
+    value: 10.5281/zenodo.20370091
+    description: "DOI for the v1.0.0 archived release"
+  - type: other
+    value: "OEIS A396406"
+    description: "OEIS sequence identifier (under review)"
 references:
   - type: book
     authors:

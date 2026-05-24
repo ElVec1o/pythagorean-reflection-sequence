@@ -1,5 +1,8 @@
 # The Universal Right-Triangle Reflection Sequence
 
+[![DOI](https://zenodo.org/badge/1235839920.svg)](https://doi.org/10.5281/zenodo.20370090)
+[![OEIS](https://img.shields.io/badge/OEIS-A396406-blue)](https://oeis.org/A396406)
+
 A structural rigidity theorem in the geometry of right-triangle reflection groups:
 for every right triangle in the plane with **positive unequal** rational legs, the
 BFS orbit-growth sequence of its three side-reflections is the *same* sequence
