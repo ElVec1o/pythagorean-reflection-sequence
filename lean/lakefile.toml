@@ -1,0 +1,5 @@
+name = "RightTriangleReflection"
+defaultTargets = ["RightTriangleReflection"]
+
+[[lean_lib]]
+name = "RightTriangleReflection"

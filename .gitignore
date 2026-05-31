@@ -29,3 +29,8 @@ target/
 .idea/
 *.swp
 *~
+
+# Lean
+.lake/
+build/
+lakefile.olean
