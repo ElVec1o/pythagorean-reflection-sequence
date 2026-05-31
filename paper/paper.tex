@@ -32,6 +32,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
 \newtheorem{example}[theorem]{Example}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
@@ -48,7 +49,7 @@
 \maketitle
 
 \begin{abstract}
-For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is independent of $T$ (Theorem~\ref{thm:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The kernel of the side-reflection representation is identified as a cyclic left ideal $\mathbb{Z}[Q]\cdot h$ on the explicit central generator $h = (c-1)(Y-1)$ via Mayer--Vietoris and Crowell.  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  The eight length-$10$ relations, the Schur-complement identity, and the universality of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  Conditional partial-progress results on the asymptotic ratio $\beta_2 \approx 1.47$ of the 2D universal sequence, together with the mod-$p$ state-space and Knuth--Bendix experiments, are deferred to the companion document \texttt{paper\_extra.tex}.
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent --- proven through depth $22$ and conjectured in general (Theorem~\ref{thm:universality}, Conjecture~\ref{conj:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The kernel of the side-reflection representation is identified as a cyclic left ideal $\mathbb{Z}[Q]\cdot h$ on the explicit central generator $h = (c-1)(Y-1)$ via Mayer--Vietoris and Crowell.  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  Conditional partial-progress results on the asymptotic ratio $\beta_2 \approx 1.47$ of the 2D universal sequence, together with the mod-$p$ state-space and Knuth--Bendix experiments, are deferred to the companion document \texttt{paper\_extra.tex}.
 \end{abstract}
 
 \section{Setting}
@@ -97,6 +98,13 @@ Cannon--Floyd--Parry (Cannon--Wagreich; Floyd--Plotnick).  The same
 family of algebraic integers also appears in birational surface
 dynamics (Diller--Favre; McMullen; Bedford--Kim); the overlap is at the
 level of expressions, not of number-theoretic class.
+Isola--Piergallini (\emph{On the generic triangle group}, 2014--2015)
+establish that the reflection group of a generic triangle is the
+expected free product / Coxeter group with no unexpected relations; our
+unequal-leg right-triangle results are the precedent's exact rational
+analogue, replacing genericity by an explicit Diophantine
+($\mathbb{Q}$-rational) faithfulness criterion and adding the
+closed-form growth data.
 
 \section{The Coxeter-group identity (Fibonacci phase)}
 \label{sec:fib}
@@ -215,10 +223,12 @@ $\mathbb{Q}(a, b)$ and are therefore the only length-$10$ collisions.
 
 By Theorem~\ref{thm:symbolic} the kernel $N$ of $W \to \mathrm{Aff}(\mathbb{R}^2)$
 contains the eight length-$10$ relations in addition to the Coxeter
-relations.  The quotient $W/N$ --- and hence its orbit-growth sequence
-$u_d$ --- is therefore independent of the choice of right triangle.
+relations, and these relations hold symbolically over $\mathbb{Q}(a, b)$
+--- so the collision structure they encode is $T$-independent.  We now
+record precisely what this establishes about $u_d^T$, and separate it
+cleanly from the all-depths statement, which remains a conjecture.
 
-\begin{theorem}[Universality]
+\begin{theorem}[Universality, established through depth $22$]
 \label{thm:universality}
 Let $W = \langle R_0, R_1, R_2 \mid R_i^2 = 1,\, (R_0 R_1)^2 = 1\rangle$,
 and for each right-triangle parameter $T = (a, b)$ with positive rational legs satisfying
@@ -226,10 +236,48 @@ and for each right-triangle parameter $T = (a, b)$ with positive rational legs s
 \boxed{\,a \ne b\,}
 \]
 let $\rho_T : W \to \mathrm{Aff}(\mathbb{R}^2)$ be the side-reflection
-realization.  Then $\ker(\rho_T)$ is the same subgroup of $W$ for every
-such $T$.  In particular the orbit-growth sequence
-$u_d^T := |\{\rho_T(w) : |w|_W = d\}|$ is independent of $T$.
+realization, with $u_d^T := |\{\rho_T(w) : |w|_W = d\}|$.  Then:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=*,itemsep=0.1em]
+\item Every $\rho_T$ has the \emph{same} linear quotient
+$W \twoheadrightarrow Q$, determined by the reflection pattern and
+independent of the legs; hence the translation kernel
+$T_{\rho_T} = \ker(W \to Q)$ and its abelianization
+$T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ are the same $T$-independent
+$\mathbb{Z}[Q]$-module for every such $T$
+(Lemma~\ref{lem:trans-mod}, Remark~\ref{rem:univ-robust}).
+\item The eight length-$10$ relations of Table~\ref{tab:bonfioli} hold
+over $\mathbb{Q}(a, b)$ for every such $T$ (Theorem~\ref{thm:symbolic});
+consequently the depth-$\le 10$ collision structure, and in particular
+$u_d^T$ for $0 \le d \le 10$, is independent of $T$.
+\item $u_d^T$ is independent of $T$ for all $0 \le d \le 22$; this is
+certified symbolically over $\mathbb{Q}(a, b)$, simultaneously for every
+right triangle with positive unequal legs, by the Lean~4 theorem
+\texttt{universal\_layers\_through\_22}
+(Remark~\ref{rem:lean-universality}).
+\end{enumerate}
 \end{theorem}
+
+\begin{conjecture}[All-depths universality]
+\label{conj:universality}
+For every right-triangle parameter $T = (a, b)$ with positive rational
+unequal legs, $\ker(\rho_T)$ is the same subgroup of $W$, so $u_d^T$ is
+independent of $T$ for \emph{all} $d \ge 0$.
+\end{conjecture}
+
+\begin{remark}[Status of the all-depths statement]
+\label{rem:univ-conj-status}
+Conjecture~\ref{conj:universality} is verified through depth $22$
+(Theorem~\ref{thm:universality}(iii)) and is supported by the
+$T$-independent structural facts of (i)--(ii): the common linear quotient
+$Q$, the $T$-independent translation module $I_A \cap I_B$, and the
+symbolic depth-$\le 10$ relations.  These establish that
+$\ker(\rho_{\mathrm{abs}}) \subseteq \ker(\rho_T)$ for every $T$ (see the
+factorization below); what is \emph{not} proven in general is the reverse
+inclusion $\ker(\rho_T) \subseteq \ker(\rho_{\mathrm{abs}})$ uniformly in
+$T$, i.e.\ that no leg-dependent extra collision appears at some depth
+$> 22$.  We do not have a complete argument for this and state it
+honestly as open.
+\end{remark}
 
 \begin{remark}[The isosceles case is genuinely different]
 \label{rem:isosceles-excluded}
@@ -238,13 +286,13 @@ adds a $\mathbb{Z}/2$ stabilizer to the orbit action, and the orbit sequence
 becomes $1, 3, 5, 8, 11, 13, 16, \ldots$, which is strictly smaller than
 the universal sequence $a(n)$ of Table~\ref{tab:tail} for $n \ge 4$.  The
 universality phenomenon of Theorem~\ref{thm:universality} does not apply
-to the isosceles case.  See the OEIS comment on \texttt{A\_2D\_universal}.
+to the isosceles case.  See the OEIS entry \href{https://oeis.org/A396406}{A396406}
+and its comments.
 \end{remark}
 
 \begin{remark}[Formal verification of universality through depth $22$]
 \label{rem:lean-universality}
-The structural argument below proves Theorem~\ref{thm:universality} for
-all depths.  Independently, the universality of the orbit-growth sequence
+The $T$-independence of the orbit-growth sequence
 has been \emph{machine-verified} for depths $0 \le d \le 22$ in Lean~4
 (theorem \texttt{universal\_layers\_through\_22} in
 \texttt{lean/with\_mathlib/ComputableUniversality.lean}).  That proof
@@ -260,10 +308,13 @@ the layer counts are exactly
 \emph{simultaneously for every right triangle with positive unequal
 legs}.  This kernel-checked certificate matches the depth reached by the
 independent multi-triangle reproduction of \S\ref{sec:tail} and removes
-any reliance on a single specialization for $d \le 22$.
+any reliance on a single specialization for $d \le 22$.  It establishes
+Theorem~\ref{thm:universality}(iii); it does \emph{not} establish the
+all-depths Conjecture~\ref{conj:universality}.
 \end{remark}
 
-The argument factors through three lemmas.
+The structural facts behind Theorem~\ref{thm:universality}(i)
+factor through three lemmas.
 
 \begin{lemma}[Mayer--Vietoris reduction]
 \label{lem:trans-mod}
@@ -275,14 +326,18 @@ Let $T_\rho = \ker(W \twoheadrightarrow Q)$.  Then, as left
 $\mathbb{Z}[Q]$-modules,
 \[
 T_\rho^{\mathrm{ab}} \;\cong\; H_1(W;\, \mathbb{Z}[Q])
-   \;\cong\; I_A \cap I_B \;=\; \mathbb{Z}[Q] \cdot h,
+   \;\cong\; I_A \cap I_B,
 \]
-where $h := (c-1)(Y-1) \in \mathbb{Z}[Q]$.  The annihilator of $h$ is
-generated by $(Y+1)$ and $(c+1)$:
-$(Y+1)\, h = 0$ and $(c+1)\, h = 0$ in $\mathbb{Z}[Q]$, and
-\[
-T_\rho^{\mathrm{ab}} \;\cong\; \mathbb{Z}[Q]/(Y+1,\, c+1) \;=:\; M.
-\]
+and this module is independent of $T$.  Setting
+$h := (c-1)(Y-1) \in \mathbb{Z}[Q]$, the cyclic submodule
+$\mathbb{Z}[Q]\cdot h \subseteq I_A \cap I_B$ satisfies
+$\mathbb{Z}[Q]\cdot h \cong \mathbb{Z}[Q]/(Y+1,\, c+1) =: M$, since the
+annihilator of $h$ is generated by $(Y+1)$ and $(c+1)$:
+$(Y+1)\, h = 0$ and $(c+1)\, h = 0$ in $\mathbb{Z}[Q]$.  The equality
+$I_A \cap I_B = \mathbb{Z}[Q]\cdot h$ (equivalently
+$T_\rho^{\mathrm{ab}} \cong M$) is established for the finite quotients
+$N \le 16$ and conjectured in general; see the proof.  None of the
+universality results depend on it (Remark~\ref{rem:univ-robust}).
 \end{lemma}
 
 \begin{proof}
@@ -309,23 +364,33 @@ $h \in \mathbb{Z}[Q]\cdot(Y-1) \subseteq I_B$, so $h \in I_A \cap I_B$.
 $(Y+1) h = (c-1)(Y+1)(Y-1) = 0$.  Similarly $(c+1)(c-1) = 0$ gives
 $(c+1) h = 0$.
 
-\emph{Equality $I_A \cap I_B = \mathbb{Z}[Q]\cdot h$.}  Membership and the
-annihilator computation give a surjection of left $\mathbb{Z}[Q]$-modules
+\emph{The inclusion $\mathbb{Z}[Q]\cdot h \subseteq I_A \cap I_B$, and
+evidence for equality.}  Membership and the annihilator computation give a
+surjection of left $\mathbb{Z}[Q]$-modules
 $\mathbb{Z}[Q]/(Y+1, c+1) \twoheadrightarrow \mathbb{Z}[Q]\cdot h
-\subseteq I_A \cap I_B$, $1 \mapsto h$.  For the reverse inclusion, write
-$Q = D_\infty \times \langle c\rangle$ with $D_\infty = \langle X, Y\rangle$
-and let $t = XY$ generate the translation subgroup
+\subseteq I_A \cap I_B$, $1 \mapsto h$, so $\mathbb{Z}[Q]\cdot h \cong M$.
+We have \emph{not} obtained a complete proof of the reverse inclusion
+$I_A \cap I_B \subseteq \mathbb{Z}[Q]\cdot h$ over the infinite group
+$Q$.  What we can certify is the following.  Write
+$Q = D_\infty \times \langle c\rangle$ with $D_\infty = \langle X,
+Y\rangle$ and let $t = XY$ generate the translation subgroup
 $\langle t\rangle \cong \mathbb{Z}$.  In each finite quotient
 $D_{2N} \times \langle c\rangle$ (where $t^N = 1$) a direct group-algebra
-computation gives $\dim(I_A \cap I_B) = \dim(\mathbb{Z}[Q]\cdot h) + 1$,
-the one-dimensional excess being spanned by the rotation-norm element
-$\nu_N = \sum_{k=0}^{N-1} t^k$ (verified for $3 \le N \le 16$ in
+computation gives $\dim(I_A \cap I_B) = \dim(\mathbb{Z}[Q]\cdot h) + 1$
+for $3 \le N \le 16$, the one-dimensional excess being spanned by the
+rotation-norm element $\nu_N = \sum_{k=0}^{N-1} t^k$ (verified in
 \texttt{code/ideal/intersection\_norm.sage}).  The norm $\nu_N$ is the
 standard artifact of the finite cyclic group $\langle t\rangle / t^N$; it
 has no analogue in the torsion-free $\langle t\rangle \cong \mathbb{Z}$ of
 the infinite group $Q$, where $\sum_k t^k$ is not an element of
-$\mathbb{Z}[Q]$.  Hence the excess vanishes in $Q$, so
-$I_A \cap I_B = \mathbb{Z}[Q]\cdot h \cong \mathbb{Z}[Q]/(Y+1, c+1) =: M$.
+$\mathbb{Z}[Q]$.  This is strong evidence that the excess vanishes in $Q$
+and hence that $I_A \cap I_B = \mathbb{Z}[Q]\cdot h \cong M$; we record the
+identification $I_A \cap I_B \cong M$ as established for $N \le 16$ and
+conjectural in the infinite limit.  Nothing downstream depends on the
+equality: by Remark~\ref{rem:univ-robust} the universality results
+(Theorem~\ref{thm:universality}) use only the $T$-independence of
+$I_A \cap I_B$, which is immediate from the Mayer--Vietoris
+identification above and does not require its cyclic form.
 \qed
 \end{proof}
 
@@ -336,11 +401,13 @@ $T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ be \emph{independent of $T$}.
 This is manifest from the Mayer--Vietoris identification, whose right-hand
 side $I_A \cap I_B$ is a purely group-theoretic object attached to
 $W = A * B \twoheadrightarrow Q$, with no reference to the geometric
-realization of any triangle.  The explicit cyclic form
-$M = \mathbb{Z}[Q]/(Y+1, c+1)$ established above is used only to write the
-abstract realization $\rho_{\mathrm{abs}}$ down concretely
-(Lemma~\ref{lem:rho-abs}); the universality conclusion itself does not
-depend on it.
+realization of any triangle.  The cyclic submodule
+$\mathbb{Z}[Q]\cdot h \cong M = \mathbb{Z}[Q]/(Y+1, c+1)$ established above
+is used only to write the abstract realization $\rho_{\mathrm{abs}}$ down
+concretely (Lemma~\ref{lem:rho-abs}), which needs only the annihilator
+relations $(Y+1)h = (c+1)h = 0$; neither the universality conclusion nor
+$\rho_{\mathrm{abs}}$ depends on the conjectural full equality
+$I_A \cap I_B = \mathbb{Z}[Q]\cdot h$.
 \end{remark}
 
 \begin{remark}[Centrality is essential]
@@ -357,15 +424,17 @@ vertex.
 \begin{lemma}[Dilation invariance]
 \label{lem:dilation-invariance}
 For $\lambda > 0$, $\rho_{\lambda T}$ is conjugate to $\rho_T$ by the
-central dilation $D_\lambda$, which acts trivially on the
-$\mathbb{Z}[Q]$-module structure of $M = \mathbb{Z}[Q]/(Y+1, c+1)$.
+central dilation $D_\lambda$.  In particular $\ker(\rho_{\lambda T}) =
+\ker(\rho_T)$, so the kernel depends only on the similarity class of $T$,
+i.e.\ only on the shape ratio $b/a$.
 \end{lemma}
 
 \begin{proof}
 $D_\lambda \circ \rho_T(R_i) \circ D_\lambda^{-1} = \rho_{\lambda T}(R_i)$
-for $i = 0, 1, 2$, and $D_\lambda$ has trivial linear part in $Q$.
-The defining relations $Y v = -v$, $c v = -v$ of $M$ are
-$\mathbb{R}^\times$-equivariant, so the module structure descends.
+for $i = 0, 1, 2$, since reflecting across a line and then rescaling
+about the centre is the same as rescaling and reflecting across the
+scaled line.  Conjugation is a group automorphism of
+$\mathrm{Aff}(\mathbb{R}^2)$, so $\ker(\rho_{\lambda T}) = \ker(\rho_T)$.
 \qed
 \end{proof}
 
@@ -384,25 +453,51 @@ $((X,0)(X',0))^2 = (c^2, 0) = (1, 0)$.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:universality}]
-Every $\rho_T$ has the same linear quotient $W \twoheadrightarrow Q$
-(determined by the reflection pattern, not the leg lengths), so the
-translation kernel $T_{\rho_T} = \ker(W \to Q)$ is the same subgroup of
-$W$ for all $T$, and by Lemma~\ref{lem:trans-mod} its abelianization is
-$T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ --- a purely
-group-theoretic module independent of $T$
-(Remark~\ref{rem:univ-robust}).  By Lemma~\ref{lem:rho-abs}
+\emph{(i)}  Every $\rho_T$ has the same linear quotient
+$W \twoheadrightarrow Q$, determined by the reflection pattern and not by
+the leg lengths: the two legs meet at a right angle, so $R_0, R_1$ map to
+the two order-$2$ generators $X, X'$ of the dihedral/central structure of
+$Q$, and $R_2$ maps to $Y$, uniformly in $T$.  Hence the translation
+kernel $T_{\rho_T} = \ker(W \to Q)$ is the same subgroup of $W$ for all
+$T$, and by Lemma~\ref{lem:trans-mod} its abelianization is
+$T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ --- a purely group-theoretic
+module independent of $T$ (Remark~\ref{rem:univ-robust}).
+
+\emph{(ii)}  The eight identities of Table~\ref{tab:bonfioli} hold as
+$3 \times 3$ affine matrices over $\mathbb{Q}(a, b)$
+(Theorem~\ref{thm:symbolic}), so each is in $\ker(\rho_T)$ for every $T$;
+combined with the abstract Coxeter relations and the depth-$10$
+completeness of Proposition~\ref{prop:bonfioli-completeness}, the
+collision partition of the length-$\le 10$ Coxeter words --- and hence
+$u_d^T$ for $0 \le d \le 10$ --- is the same for every $T$.
+
+\emph{(iii)}  This is the content of the Lean~4 certificate
+\texttt{universal\_layers\_through\_22}
+(Remark~\ref{rem:lean-universality}), which deduplicates the symbolic
+affine images $\rho_{(a,b)}(w) \in \mathrm{Aff}(\mathbb{Q}(a,b))$ over
+$\mathbb{Q}(a,b)$ and certifies the layer counts $u_0, \dots, u_{22}$
+simultaneously for every right triangle with positive unequal legs.
+
+\emph{What this does not prove.}  By Lemma~\ref{lem:rho-abs}
 $\rho_{\mathrm{abs}} : W \to Q \ltimes M$ is well-defined, and for each
 $T$ the realization $\rho_T$ factors as
 $\rho_T = (\mathrm{id}_Q \ltimes \Phi_T) \circ \rho_{\mathrm{abs}}$,
 where $\Phi_T : M \to \mathbb{R}^2$ is the $\mathbb{Z}[Q]$-linear map
-sending the generator $h$ to the translation $t(\rho_T(R_2))$.  By
-Lemma~\ref{lem:dilation-invariance} $\Phi_T$ is \emph{injective} for
-every nondegenerate $T$ (the image lattice has the same rank as $M$,
-the dilation acting as a nonzero scalar on each $\mathbb{Z}[Q]$-isotypic
-component), so
-$\ker(\rho_T) = \ker(\rho_{\mathrm{abs}})$ for every $T$.  As the
-right-hand side is independent of $T$, the orbit-growth sequence
-$u_d^T = |\{\rho_T(w) : |w| = d\}|$ is constant in $T$.
+sending the generator $h$ to the translation $t(\rho_T(R_2))$.  This
+factorization gives the inclusion
+$\ker(\rho_{\mathrm{abs}}) \subseteq \ker(\rho_T)$ for every $T$ for
+free.  The reverse inclusion $\ker(\rho_T) \subseteq
+\ker(\rho_{\mathrm{abs}})$ --- equivalently, injectivity of $\Phi_T$ ---
+would yield $\ker(\rho_T) = \ker(\rho_{\mathrm{abs}})$ for all $T$ and
+hence all-depths $T$-independence.  We do \emph{not} establish this:
+$M = \mathbb{Z}[Q]/(Y+1, c+1)$ is free of rank $1$ over
+$\mathbb{Z}[t^{\pm 1}]$ ($t = XY$), hence of infinite rank as an abelian
+group, and Lemma~\ref{lem:dilation-invariance} only relates $\rho_{\lambda
+T}$ to $\rho_T$ within a single similarity class --- it does not compare
+distinct shapes $b/a$ and does not force $\Phi_T$ injective.  The
+all-depths statement is therefore left as
+Conjecture~\ref{conj:universality}
+(see Remark~\ref{rem:univ-conj-status}).
 \qed
 \end{proof}
 
@@ -546,8 +641,7 @@ The family $\{1 + 2\cos(2\pi/m)\}_{m \ge 3}$ also arises in birational
 surface dynamics (McMullen~2007; Bedford--Kim 2009).  For $n \ne 3$,
 $r_n$ is Pisot or totally-real of degree $\ge 3$, hence \emph{not} a
 Salem number, and by McMullen~2007 Theorem~1.5 cannot be the dynamical
-degree of a projective rational-surface automorphism.  The case
-$r_3 = 2$ is realised as McMullen's $\sigma_9$.
+degree of a projective rational-surface automorphism.
 \end{remark}
 
 \subsection{Class C unconditional faithfulness}
@@ -587,13 +681,19 @@ P_{k-2}\, a_{k-1}^2 a_k^2\, (1 - S_{k-1} - a_k^2 - a_{k+1}^2)
 \]
 which expands to zero in $\mathbb{Z}[a_{k-1}, a_k, a_{k+1}, S_{k-1}, P_{k-2}]$
 and is verified symbolically.  The identity is independent of $k$ and
-of $n$.  The base, inductive, and boundary steps are formally verified
-in Lean~4 (theorems \texttt{schur\_base\_step}, \texttt{schur\_k2\_step},
+of $n$.  The general-$n$ determinant identity is thus a complete
+mathematical proof by the standard tridiagonal cofactor (three-term)
+expansion together with this induction.  The individual \emph{algebraic
+steps} of the induction --- base, $k = 2$, inductive, and boundary ---
+are additionally ring-checked in Lean~4 (theorems
+\texttt{schur\_base\_step}, \texttt{schur\_k2\_step},
 \texttt{schur\_inductive\_step}, \texttt{schur\_boundary\_step} in
 \texttt{lean/with\_mathlib/SchurGeneral.lean}, each discharged by the
-\texttt{ring} tactic), and the determinant identity
-$\det Q_n = -\prod_{i=1}^n a_i^2$ itself is machine-checked for
-$n = 2, \dots, 10$ on explicit leg sequences in
+\texttt{ring} tactic and hence kernel-checked); Lean does \emph{not}
+prove the general-$n$ determinant identity, which is the mathematical
+induction above.  Separately, the determinant identity
+$\det Q_n = -\prod_{i=1}^n a_i^2$ is checked by \texttt{native\_decide}
+for $n = 2, \dots, 10$ on explicit leg sequences in
 \texttt{lean/RightTriangleReflection.lean}.
 
 \emph{Final step.}  At $k = n$, $D_n = D_{n-1} - a_{n-1}^2 D_{n-2}$, and
@@ -776,11 +876,25 @@ makes the middle cosine $ac/\sqrt{(a^2+b^2)(b^2+c^2)} = 1/2$ (after the
 quadratic-in-$b^2$ analysis with $a = b = c$), producing the length-$3$
 braid relation $R_i R_{i+1} R_i = R_{i+1} R_i R_{i+1}$ and hence
 $\mathrm{cd} \le 3$.  An interior pair (with no endpoint pair and no
-triple) leaves all flanking dihedrals irrational multiples of $\pi$,
-since the Niven exceptional values reduce to the same three Diophantine
-varieties $\mathcal{V}_{1/4}, \mathcal{V}_{1/2}, \mathcal{V}_{3/4}$
-which are empty over distinct-coordinate $\mathbb{Q}_{>0}^2$ (proof of
-Theorem~\ref{thm:master-C-uncond}); hence $\mathrm{cd} = \infty$.
+triple) leaves all flanking dihedrals irrational multiples of $\pi$, by
+the following elementary argument.  For an isolated interior equal pair
+$a_i = a_{i+1} = a$ with neighbouring leg $c$ ($c \ne a$, else a triple),
+the relevant dihedral is governed by three consecutive legs $(a, a, c)$,
+so by Lemma~\ref{lem:perp-pairs} (with middle leg equal to $a$)
+\[
+\cos^2\theta = \frac{a^2 c^2}{(a^2 + a^2)(a^2 + c^2)}
+             = \frac{c^2}{2\,(a^2 + c^2)},
+\]
+\emph{not} the generic distinct-leg expression.  Setting this equal to
+the Niven values gives: $\tfrac14 \Rightarrow c^2 = a^2$ (i.e.\ $c = a$, a
+triple, excluded); $\tfrac12 \Rightarrow$ no solution
+($c^2 = a^2 + c^2$ is impossible); $\tfrac34 \Rightarrow c^2 = -3a^2$,
+impossible over the reals.  The values $0, 1$ are degenerate.  Hence no
+flanking dihedral of an isolated interior pair is a rational multiple of
+$\pi$ --- an elementary computation requiring no elliptic curve --- so
+$\mathrm{cd} = \infty$.  (The $\cos^2\theta = c^2/(2(a^2+c^2))$ formula
+and the three Niven specializations are confirmed symbolically in
+SageMath.)
 \qed
 \end{proof}
 
@@ -821,9 +935,12 @@ $\det Q_n = -\prod a_i^2$ for $n = 2,\dots,10$.  A second development
 depending on Mathlib (\texttt{with\_mathlib/}) proves the eight length-$10$
 relations symbolically over $\mathbb{Q}(a,b)$
 (Theorem~\ref{thm:symbolic}), the algebraic steps of the Schur induction
-(Lemma~\ref{lem:uniform-detQ}), and the universality of the orbit-growth
-sequence through depth $22$ (Remark~\ref{rem:lean-universality}), the
-last holding simultaneously for all right triangles with unequal legs.
+(Lemma~\ref{lem:uniform-detQ}), and the $T$-independence of the
+orbit-growth sequence through depth $22$
+(Theorem~\ref{thm:universality}(iii), Remark~\ref{rem:lean-universality}),
+the last holding simultaneously for all right triangles with unequal
+legs.  The all-depths statement (Conjecture~\ref{conj:universality})
+is not machine-verified and remains open.
 The \texttt{ring}-based theorems (the symbolic length-$10$ relations and
 the Schur induction steps) are verified entirely by the Lean kernel; the
 remaining results use \texttt{native\_decide}, whose trusted base
@@ -887,9 +1004,14 @@ automorphisms: linear fractional recurrences}, J.\ Geom.\ Anal.\ 19
 \item J.~Diller, C.~Favre, \emph{Dynamics of bimeromorphic maps of
 surfaces}, Amer.\ J.\ Math.\ 123 (2001), no.~6, 1135--1169.
 
+\item S.~Isola, R.~Piergallini, \emph{On the generic triangle group},
+arXiv:1405.1881 [math.MG], 2014--2015.
+
 \item OEIS Foundation, \emph{The On-Line Encyclopedia of Integer
 Sequences}, \url{https://oeis.org}.  Sequence A000045 (Fibonacci
-numbers).
+numbers) and Sequence
+\href{https://oeis.org/A396406}{A396406} (the universal
+right-triangle reflection sequence $u_d$).
 \end{itemize}
 
 \end{document}
