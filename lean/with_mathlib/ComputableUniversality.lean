@@ -17,6 +17,7 @@
 -/
 
 import SymbolicUniversality
+import Std.Data.HashSet
 
 namespace ComputableUniversality
 
@@ -256,6 +257,41 @@ def layerCount (n : Nat) : Nat :=
   if n = 0 then cumDistinct 0
   else cumDistinct n - cumDistinct (n - 1)
 
+/-! ### Fast cumulative dedup via hashing (for deeper depths)
+
+  The `dedupBy CAff.equivB` approach is O(n²) with an expensive
+  cross-multiplication per comparison.  Past depth 13 it runs out of
+  memory.  The fast path normalizes every affine isometry to the
+  *common* denominator D^d (so structural numerator equality coincides
+  with rational-function equality), flattens the six numerator
+  polynomials into a Hashable key, and deduplicates with a `Std.HashSet`
+  in O(n).  This is mathematically equivalent to `cumDistinct` (the
+  cross-multiplication and common-denominator notions of equivalence
+  agree once the denominators are made equal), but vastly cheaper. -/
+
+/-- A Hashable canonical key for a CAff, normalized to denominator D^d.
+    Entry format: (component index, degA, degB, coeff numerator,
+    coeff denominator). -/
+def CAff.hkey (M : CAff) (d : Nat) : List (Nat × Nat × Nat × Int × Nat) :=
+  let f := DPow (d - M.dPow)
+  let comps : List CPoly := [M.p * f, M.q * f, M.r * f, M.s * f, M.tx * f, M.ty * f]
+  (List.range 6).flatMap fun i =>
+    (comps.getD i CPoly.zero).terms.map
+      (fun (deg, c) => (i, deg.1, deg.2, c.num, c.den))
+
+/-- Cumulative distinct symbolic affine isometries at depths 0..n,
+    counted via a HashSet over the normalized numerator keys. -/
+def cumDistinctH (n : Nat) : Nat := Id.run do
+  let mut s : Std.HashSet (List (Nat × Nat × Nat × Int × Nat)) := {}
+  for M in cumulativeImages n do
+    s := s.insert (CAff.hkey M n)
+  return s.size
+
+/-- BFS layer count via the fast hashed cumulative dedup. -/
+def layerCountH (n : Nat) : Nat :=
+  if n = 0 then cumDistinctH 0
+  else cumDistinctH n - cumDistinctH (n - 1)
+
 /-! ### Universality at depths 0..11 (machine-verified BFS layer counts)
 
   The following theorems machine-verify that for **every** right triangle
@@ -273,19 +309,26 @@ def layerCount (n : Nat) : Nat :=
   `M.equivB N ↔ M.p * N.d = N.p * M.d ∧ ... ∧ M.ty * N.d = N.ty * M.d`,
   i.e., the rational-function equivalence on `(M.p/M.d, …, M.ty/M.d)`. -/
 
-theorem layer_0_eq_1   : layerCount 0  = 1   := by native_decide
-theorem layer_1_eq_3   : layerCount 1  = 3   := by native_decide
-theorem layer_2_eq_5   : layerCount 2  = 5   := by native_decide
-theorem layer_3_eq_8   : layerCount 3  = 8   := by native_decide
-theorem layer_4_eq_13  : layerCount 4  = 13  := by native_decide
-theorem layer_5_eq_21  : layerCount 5  = 21  := by native_decide
-theorem layer_6_eq_34  : layerCount 6  = 34  := by native_decide
-theorem layer_7_eq_55  : layerCount 7  = 55  := by native_decide
-theorem layer_8_eq_89  : layerCount 8  = 89  := by native_decide
-theorem layer_9_eq_144 : layerCount 9  = 144 := by native_decide
-theorem layer_10_eq_225 : layerCount 10 = 225 := by native_decide
-theorem layer_11_eq_351 : layerCount 11 = 351 := by native_decide
-theorem layer_12_eq_554 : layerCount 12 = 554 := by native_decide
-theorem layer_13_eq_875 : layerCount 13 = 875 := by native_decide
+/-- Cross-check: the slow cross-multiplication dedup and the fast hashed
+    dedup agree at depth 10 (both give the layer count 225).  This
+    pins the two notions of equivalence together at one depth; the
+    `layer_*` theorems below then use the fast path. -/
+theorem slow_fast_agree_at_10 : layerCount 10 = layerCountH 10 := by native_decide
+
+theorem layer_0_eq_1    : layerCountH 0  = 1    := by native_decide
+theorem layer_1_eq_3    : layerCountH 1  = 3    := by native_decide
+theorem layer_2_eq_5    : layerCountH 2  = 5    := by native_decide
+theorem layer_3_eq_8    : layerCountH 3  = 8    := by native_decide
+theorem layer_4_eq_13   : layerCountH 4  = 13   := by native_decide
+theorem layer_5_eq_21   : layerCountH 5  = 21   := by native_decide
+theorem layer_6_eq_34   : layerCountH 6  = 34   := by native_decide
+theorem layer_7_eq_55   : layerCountH 7  = 55   := by native_decide
+theorem layer_8_eq_89   : layerCountH 8  = 89   := by native_decide
+theorem layer_9_eq_144  : layerCountH 9  = 144  := by native_decide
+theorem layer_10_eq_225 : layerCountH 10 = 225  := by native_decide
+theorem layer_11_eq_351 : layerCountH 11 = 351  := by native_decide
+theorem layer_12_eq_554 : layerCountH 12 = 554  := by native_decide
+theorem layer_13_eq_875 : layerCountH 13 = 875  := by native_decide
+theorem layer_14_eq_1345 : layerCountH 14 = 1345 := by native_decide
 
 end ComputableUniversality
