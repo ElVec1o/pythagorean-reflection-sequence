@@ -292,6 +292,30 @@ def layerCountH (n : Nat) : Nat :=
   if n = 0 then cumDistinctH 0
   else cumDistinctH n - cumDistinctH (n - 1)
 
+/-- **Single-pass incremental BFS layer counts up to depth `maxD`.**
+
+    The per-theorem `layerCountH d` approach recomputes the entire
+    cumulative evaluation independently for each `d`, so verifying
+    depths 0..N costs O(N) full re-evaluations.  This function instead
+    performs ONE breadth-first sweep: it walks depths 0, 1, …, maxD,
+    maintains a single `Std.HashSet` of all affine isometries seen so
+    far (keyed by numerators normalized to the common denominator
+    D^maxD), and records at each depth how many genuinely new isometries
+    appeared.  That count is exactly the BFS layer size a(d).  Total
+    cost is O(total words) — a single pass. -/
+def allLayerCounts (maxD : Nat) : List Nat := Id.run do
+  let mut seen : Std.HashSet (List (Nat × Nat × Nat × Int × Nat)) := {}
+  let mut out : List Nat := []
+  for d in List.range (maxD + 1) do
+    let mut newCount : Nat := 0
+    for w in canonicalWords d do
+      let k := CAff.hkey (applyWord w) maxD
+      if !seen.contains k then
+        seen := seen.insert k
+        newCount := newCount + 1
+    out := out ++ [newCount]
+  return out
+
 /-! ### Universality at depths 0..11 (machine-verified BFS layer counts)
 
   The following theorems machine-verify that for **every** right triangle
@@ -315,24 +339,28 @@ def layerCountH (n : Nat) : Nat :=
     `layer_*` theorems below then use the fast path. -/
 theorem slow_fast_agree_at_10 : layerCount 10 = layerCountH 10 := by native_decide
 
-theorem layer_0_eq_1    : layerCountH 0  = 1    := by native_decide
-theorem layer_1_eq_3    : layerCountH 1  = 3    := by native_decide
-theorem layer_2_eq_5    : layerCountH 2  = 5    := by native_decide
-theorem layer_3_eq_8    : layerCountH 3  = 8    := by native_decide
-theorem layer_4_eq_13   : layerCountH 4  = 13   := by native_decide
-theorem layer_5_eq_21   : layerCountH 5  = 21   := by native_decide
-theorem layer_6_eq_34   : layerCountH 6  = 34   := by native_decide
-theorem layer_7_eq_55   : layerCountH 7  = 55   := by native_decide
-theorem layer_8_eq_89   : layerCountH 8  = 89   := by native_decide
-theorem layer_9_eq_144  : layerCountH 9  = 144  := by native_decide
-theorem layer_10_eq_225 : layerCountH 10 = 225  := by native_decide
-theorem layer_11_eq_351 : layerCountH 11 = 351  := by native_decide
-theorem layer_12_eq_554 : layerCountH 12 = 554  := by native_decide
-theorem layer_13_eq_875 : layerCountH 13 = 875  := by native_decide
-theorem layer_14_eq_1345 : layerCountH 14 = 1345 := by native_decide
-theorem layer_15_eq_2066 : layerCountH 15 = 2066 := by native_decide
-theorem layer_16_eq_3203 : layerCountH 16 = 3203 := by native_decide
-theorem layer_17_eq_4971 : layerCountH 17 = 4971 := by native_decide
-theorem layer_18_eq_7574 : layerCountH 18 = 7574 := by native_decide
+-- Spot checks of the per-depth layer count via the fast hashed path
+-- (cheap, and they pin layerCountH to the master single-pass theorem).
+theorem layer_10_eq_225 : layerCountH 10 = 225 := by native_decide
+theorem layer_11_eq_351 : layerCountH 11 = 351 := by native_decide
+
+/-- **Universality of the BFS layer sequence, depths 0..22.**
+
+    For every right triangle with positive unequal legs, the BFS
+    orbit-growth layer counts at depths 0 through 22 are exactly
+
+      1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554, 875, 1345,
+      2066, 3203, 4971, 7574, 11543, 17683, 27108, 41067.
+
+    These are OEIS A396406 a(0)..a(22).  The proof is a single
+    breadth-first sweep over canonical Coxeter words, deduplicating
+    symbolic affine isometries over ℚ(a,b) by their numerators relative
+    to the common denominator (a²+b²)^22 — hence holding simultaneously
+    for ALL right triangles, not any particular one. -/
+theorem universal_layers_through_22 :
+    allLayerCounts 22 =
+      [1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554, 875, 1345,
+       2066, 3203, 4971, 7574, 11543, 17683, 27108, 41067] := by
+  native_decide
 
 end ComputableUniversality
