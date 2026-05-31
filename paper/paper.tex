@@ -49,7 +49,7 @@
 \maketitle
 
 \begin{abstract}
-For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent --- proven through depth $22$ and conjectured in general (Theorem~\ref{thm:universality}, Conjecture~\ref{conj:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent, proven through depth $22$ and conjectured in general (Theorem~\ref{thm:universality}, Conjecture~\ref{conj:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
 \end{abstract}
 
 \section{Setting}
@@ -198,7 +198,7 @@ specializations.
 \label{prop:bonfioli-completeness}
 Among the $233$ canonical Coxeter words of length $10$ in $W$, exactly
 $225$ have pairwise distinct images under $\rho_T$ for every right
-triangle $T$ --- $217$ singleton classes and $8$ collision pairs, each
+triangle $T$: $217$ singleton classes and $8$ collision pairs, each
 pair being one of the rows of Table~\ref{tab:bonfioli}.  No further
 length-$10$ affine identities exist beyond the eight relations and the
 abstract Coxeter relations.
@@ -223,10 +223,10 @@ $\mathbb{Q}(a, b)$ and are therefore the only length-$10$ collisions.
 
 By Theorem~\ref{thm:symbolic} the kernel $N$ of $W \to \mathrm{Aff}(\mathbb{R}^2)$
 contains the eight length-$10$ relations in addition to the Coxeter
-relations, and these relations hold symbolically over $\mathbb{Q}(a, b)$
---- so the collision structure they encode is $T$-independent.  We now
-record precisely what this establishes about $u_d^T$, and separate it
-cleanly from the all-depths statement, which remains a conjecture.
+relations, and these relations hold symbolically over $\mathbb{Q}(a, b)$,
+so the collision structure they encode is $T$-independent.  We record
+what this establishes about $u_d^T$, separately from the all-depths
+statement, which remains a conjecture.
 
 \begin{theorem}[Universality, established through depth $22$]
 \label{thm:universality}
@@ -264,7 +264,7 @@ unequal legs, $\ker(\rho_T)$ is the same subgroup of $W$, so $u_d^T$ is
 independent of $T$ for \emph{all} $d \ge 0$.
 \end{conjecture}
 
-\begin{remark}[Status of the all-depths statement]
+\begin{remark}[The all-depths statement]
 \label{rem:univ-conj-status}
 Conjecture~\ref{conj:universality} is verified through depth $22$
 (Theorem~\ref{thm:universality}(iii)) and is supported by the
@@ -275,11 +275,10 @@ $\ker(\rho_{\mathrm{abs}}) \subseteq \ker(\rho_T)$ for every $T$ (see the
 factorization below); what is \emph{not} proven in general is the reverse
 inclusion $\ker(\rho_T) \subseteq \ker(\rho_{\mathrm{abs}})$ uniformly in
 $T$, i.e.\ that no leg-dependent extra collision appears at some depth
-$> 22$.  We do not have a complete argument for this and state it
-honestly as open.
+$> 22$.  Whether this reverse inclusion holds for all $T$ is open.
 \end{remark}
 
-\begin{remark}[The isosceles case is genuinely different]
+\begin{remark}[The isosceles case]
 \label{rem:isosceles-excluded}
 The hypothesis $a \ne b$ is essential.  When $a = b$, the leg-swap symmetry
 adds a $\mathbb{Z}/2$ stabilizer to the orbit action, and the orbit sequence
@@ -398,7 +397,7 @@ identification above and does not require its cyclic form.
 \label{rem:univ-robust}
 Theorem~\ref{thm:universality} requires only that the translation module
 $T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ be \emph{independent of $T$}.
-This is manifest from the Mayer--Vietoris identification, whose right-hand
+This follows from the Mayer--Vietoris identification, whose right-hand
 side $I_A \cap I_B$ is a purely group-theoretic object attached to
 $W = A * B \twoheadrightarrow Q$, with no reference to the geometric
 realization of any triangle.  The cyclic submodule
@@ -410,7 +409,7 @@ $\rho_{\mathrm{abs}}$ depends on the conjectural full equality
 $I_A \cap I_B = \mathbb{Z}[Q]\cdot h$.
 \end{remark}
 
-\begin{remark}[Centrality is essential]
+\begin{remark}[Role of centrality]
 \label{rem:univ-centrality}
 The cyclic identification works precisely because $c \in Q$ is central.
 The naive candidate $(X-1)(Y-1)$ fails because $X$ and $Y$ do not
@@ -460,7 +459,7 @@ the two order-$2$ generators $X, X'$ of the dihedral/central structure of
 $Q$, and $R_2$ maps to $Y$, uniformly in $T$.  Hence the translation
 kernel $T_{\rho_T} = \ker(W \to Q)$ is the same subgroup of $W$ for all
 $T$, and by Lemma~\ref{lem:trans-mod} its abelianization is
-$T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ --- a purely group-theoretic
+$T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$, a purely group-theoretic
 module independent of $T$ (Remark~\ref{rem:univ-robust}).
 
 \emph{(ii)}  The eight identities of Table~\ref{tab:bonfioli} hold as
@@ -468,8 +467,8 @@ $3 \times 3$ affine matrices over $\mathbb{Q}(a, b)$
 (Theorem~\ref{thm:symbolic}), so each is in $\ker(\rho_T)$ for every $T$;
 combined with the abstract Coxeter relations and the depth-$10$
 completeness of Proposition~\ref{prop:bonfioli-completeness}, the
-collision partition of the length-$\le 10$ Coxeter words --- and hence
-$u_d^T$ for $0 \le d \le 10$ --- is the same for every $T$.
+collision partition of the length-$\le 10$ Coxeter words (and hence
+$u_d^T$ for $0 \le d \le 10$) is the same for every $T$.
 
 \emph{(iii)}  This is the content of the Lean~4 certificate
 \texttt{universal\_layers\_through\_22}
@@ -487,13 +486,13 @@ sending the generator $h$ to the translation $t(\rho_T(R_2))$.  This
 factorization gives the inclusion
 $\ker(\rho_{\mathrm{abs}}) \subseteq \ker(\rho_T)$ for every $T$ for
 free.  The reverse inclusion $\ker(\rho_T) \subseteq
-\ker(\rho_{\mathrm{abs}})$ --- equivalently, injectivity of $\Phi_T$ ---
+\ker(\rho_{\mathrm{abs}})$, equivalently injectivity of $\Phi_T$,
 would yield $\ker(\rho_T) = \ker(\rho_{\mathrm{abs}})$ for all $T$ and
 hence all-depths $T$-independence.  We do \emph{not} establish this:
 $M = \mathbb{Z}[Q]/(Y+1, c+1)$ is free of rank $1$ over
 $\mathbb{Z}[t^{\pm 1}]$ ($t = XY$), hence of infinite rank as an abelian
 group, and Lemma~\ref{lem:dilation-invariance} only relates $\rho_{\lambda
-T}$ to $\rho_T$ within a single similarity class --- it does not compare
+T}$ to $\rho_T$ within a single similarity class; it does not compare
 distinct shapes $b/a$ and does not force $\Phi_T$ injective.  The
 all-depths statement is therefore left as
 Conjecture~\ref{conj:universality}
@@ -684,7 +683,7 @@ and is verified symbolically.  The identity is independent of $k$ and
 of $n$.  The general-$n$ determinant identity is thus a complete
 mathematical proof by the standard tridiagonal cofactor (three-term)
 expansion together with this induction.  The individual \emph{algebraic
-steps} of the induction --- base, $k = 2$, inductive, and boundary ---
+steps} of the induction (base, $k = 2$, inductive, and boundary)
 are additionally ring-checked in Lean~4 (theorems
 \texttt{schur\_base\_step}, \texttt{schur\_k2\_step},
 \texttt{schur\_inductive\_step}, \texttt{schur\_boundary\_step} in
@@ -734,15 +733,16 @@ m_{ij} = 2 \ (|i-j| \ge 2), \qquad m_{i,i+1} = \infty \ (0 \le i \le n-1),
 i.e.\ that the orthoscheme introduces \emph{no} relation $(R_i R_j)^m = 1$
 beyond the perpendicular pairs.  We prove~\eqref{eq:intended-coxeter}; the
 theorem then follows from Tits' theorem applied to the resulting Coxeter
-system (end of proof).  We emphasize that non-degeneracy of $Q_n$
+system (end of proof).  Non-degeneracy of $Q_n$
 (Lemma~\ref{lem:uniform-detQ}) does \emph{not} by itself give
 faithfulness: a non-degenerate Gram form is compatible with a rational
-dihedral angle.  Indeed the isosceles case $a = b$ has
+dihedral angle.  The isosceles case $a = b$ has
 $\det Q_n = -\prod a_i^2 \ne 0$ yet $\theta_{01} = \pi/4$, giving the
-extra relation $(R_0 R_1)^4 = 1$ --- the $\mathrm{cd} = 4$ case of
-Theorem~\ref{thm:cd-general}.  The content of the proof is therefore the
-angle-irrationality argument that follows; $\det Q_n \ne 0$ enters only
-to confirm the simplex is non-degenerate for all positive legs.
+extra relation $(R_0 R_1)^4 = 1$, the $\mathrm{cd} = 4$ case of
+Theorem~\ref{thm:cd-general}.  The argument therefore reduces to showing
+every non-perpendicular dihedral angle is an irrational multiple of
+$\pi$; $\det Q_n \ne 0$ enters only to confirm the simplex is
+non-degenerate for all positive legs.
 
 \emph{Step 1 (dihedral angles $\leftrightarrow$ relations).}  For two
 faces meeting along a codimension-$2$ ridge, $R_i, R_j$ generate a finite
@@ -762,7 +762,7 @@ with rational squared cosine satisfies $\cos\theta_{i,i+1} \in
 \{0, \pm\tfrac12, \pm\tfrac{\sqrt2}{2}, \pm\tfrac{\sqrt3}{2}, \pm 1\}$,
 i.e.\ $\cos^2\theta_{i,i+1} \in \{0, \tfrac14, \tfrac12, \tfrac34, 1\}$.
 The values $0$ (perpendicular) and $1$ (degenerate simplex) are
-excluded, so a genuine extra relation requires
+excluded, so an extra relation requires
 $\cos^2\theta_{i,i+1} \in \{\tfrac14, \tfrac12, \tfrac34\}$, i.e.\
 $\theta_{i,i+1} \in \{\pi/3, \pi/4, \pi/6\}$.
 
@@ -891,18 +891,18 @@ triple, excluded); $\tfrac12 \Rightarrow$ no solution
 ($c^2 = a^2 + c^2$ is impossible); $\tfrac34 \Rightarrow c^2 = -3a^2$,
 impossible over the reals.  The values $0, 1$ are degenerate.  Hence no
 flanking dihedral of an isolated interior pair is a rational multiple of
-$\pi$ --- an elementary computation requiring no elliptic curve --- so
+$\pi$ (an elementary computation requiring no elliptic curve), so
 $\mathrm{cd} = \infty$.  (The $\cos^2\theta = c^2/(2(a^2+c^2))$ formula
 and the three Niven specializations are confirmed symbolically in
 SageMath.)
 \qed
 \end{proof}
 
-Note that in $n = 3$ every adjacent equal pair is automatically an
+In $n = 3$ every adjacent equal pair is automatically an
 endpoint pair, so the formula reduces to the run-length statistic; in
 $n \ge 4$ \emph{interior} pairs $a_i = a_{i+1}$ (e.g.\ $a_2 = a_3$ in
 $(1, 2, 2, 3)$) leave $\mathrm{cd} = \infty$, distinguishing $(e, t)$
-sharply from the longest-run statistic.
+from the longest-run statistic.
 
 \section{Reproducibility}
 \label{sec:reproduce}
