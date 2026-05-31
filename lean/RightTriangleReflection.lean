@@ -279,6 +279,141 @@ example : a 17 = 4971 := by native_decide
 
 end BFSCounts
 
+/-! ## Fibonacci coincidence
+
+  For 1 <= n <= 9 the BFS layer count equals the Fibonacci number F(n+3),
+  which is the corresponding coefficient of the Coxeter Poincare series
+  (1+t)^2 / (1 - t - t^2).  This holds because at depth <= 9 there are
+  no nontrivial affine collisions: every reduced Coxeter word maps to a
+  distinct affine isometry.  The first collision appears at depth 10,
+  giving a(10) = F(13) - 8 = 225.
+
+  We define `fib` locally (mathlib-free). -/
+
+namespace Fibonacci
+
+/-- Fibonacci, F(0) = 0, F(1) = 1, F(n+2) = F(n+1) + F(n). -/
+def fib : Nat → Nat
+  | 0     => 0
+  | 1     => 1
+  | n + 2 => fib (n + 1) + fib n
+
+example : fib 0 = 0 := by native_decide
+example : fib 1 = 1 := by native_decide
+example : fib 12 = 144 := by native_decide
+example : fib 13 = 233 := by native_decide
+
+open BFSCounts
+
+/-- For 1 <= n <= 9 the BFS layer count is exactly F(n+3). -/
+theorem a_eq_fib_1 : a 1 = fib 4 := by native_decide
+theorem a_eq_fib_2 : a 2 = fib 5 := by native_decide
+theorem a_eq_fib_3 : a 3 = fib 6 := by native_decide
+theorem a_eq_fib_4 : a 4 = fib 7 := by native_decide
+theorem a_eq_fib_5 : a 5 = fib 8 := by native_decide
+theorem a_eq_fib_6 : a 6 = fib 9 := by native_decide
+theorem a_eq_fib_7 : a 7 = fib 10 := by native_decide
+theorem a_eq_fib_8 : a 8 = fib 11 := by native_decide
+theorem a_eq_fib_9 : a 9 = fib 12 := by native_decide
+
+/-- At depth 10 the deficit is exactly 8: a(10) = F(13) - 8. -/
+theorem deficit_at_10 : a 10 + 8 = fib 13 := by native_decide
+
+/-- At depth 11..17 the gap from Fibonacci continues to widen.  These are
+    the actual gap values F(n+3) - a(n) for n = 10..17. -/
+theorem gap_at_10 : fib 13 - a 10 = 8 := by native_decide
+theorem gap_at_11 : fib 14 - a 11 = 26 := by native_decide
+theorem gap_at_12 : fib 15 - a 12 = 56 := by native_decide
+
+end Fibonacci
+
+/-! ## Schur-complement determinant identity at small n
+
+  Lemma (paper, Lemma "Uniform Schur-complement determinant identity"):
+  for the (n+1)x(n+1) Lorentzian Gram matrix Q_n of the n-dim
+  right-corner orthoscheme with legs (a_1, ..., a_n),
+
+      det Q_n  =  - a_1^2 * a_2^2 * ... * a_n^2.
+
+  Here Q_n is the symmetric tridiagonal matrix with
+      Q_n[0,0]   = 1 - a_1^2
+      Q_n[i,i]   = a_i^2 + a_{i+1}^2   (1 <= i <= n-1)
+      Q_n[n,n]   = 1
+      Q_n[0,1]   = a_2
+      Q_n[i,i+1] = a_i * a_{i+2}        (1 <= i <= n-2)
+      Q_n[n-1,n] = a_{n-1}.
+
+  We machine-check the identity for n = 2, 3, 4, 5, 6 with specific
+  legs (1, 2, 3, 5, 7, 11), as five separate `native_decide`
+  computations.  We use a Laplace-expansion determinant valued in `Rat`
+  (no Mathlib needed). -/
+
+namespace Schur
+
+/-- Erase the j-th entry of a list. -/
+def eraseAt {α} : List α → Nat → List α
+  | [],     _     => []
+  | _ :: xs, 0     => xs
+  | x :: xs, j + 1 => x :: eraseAt xs j
+
+/-- Recursive Laplace-expansion determinant on `List (List Rat)`.
+    `partial def` because the structural decrease through `eraseAt` is
+    not obvious to Lean's termination checker; this is fine for
+    `native_decide` since the function is computable. -/
+partial def det : List (List Rat) → Rat
+  | [] => 1
+  | row :: rest =>
+      let n := row.length
+      let go (j : Nat) (acc : Rat) : Rat :=
+        let sign : Rat := if j % 2 = 0 then 1 else -1
+        let entry := (row.get? j).getD 0
+        let minor := rest.map (fun r => eraseAt r j)
+        acc + sign * entry * det minor
+      (List.range n).foldr go 0
+
+/-- The matrix Q_n from a list of legs.  Returns a `(n+1) × (n+1)` matrix. -/
+def Q (legs : List Rat) : List (List Rat) :=
+  let n := legs.length
+  let get (i : Nat) : Rat := (legs.get? i).getD 0
+  let entry (i j : Nat) : Rat :=
+    if i = j then
+      if i = 0 then 1 - get 0 * get 0
+      else if i = n then 1
+      else get (i-1) * get (i-1) + get i * get i
+    else if j = i + 1 then
+      if i = 0 then get 1
+      else if i = n - 1 then get (n-2)
+      else get (i-1) * get (i+1)
+    else if i = j + 1 then
+      if j = 0 then get 1
+      else if j = n - 1 then get (n-2)
+      else get (j-1) * get (j+1)
+    else 0
+  (List.range (n+1)).map fun i =>
+    (List.range (n+1)).map fun j => entry i j
+
+/-- Product of squares of a list of rationals. -/
+def prodSquares : List Rat → Rat
+  | []      => 1
+  | a :: as => a * a * prodSquares as
+
+/-- Schur identity at n = 2 with legs (1, 2). -/
+theorem schur_n2 : det (Q [1, 2]) = - prodSquares [1, 2] := by native_decide
+
+/-- Schur identity at n = 3 with legs (1, 2, 3). -/
+theorem schur_n3 : det (Q [1, 2, 3]) = - prodSquares [1, 2, 3] := by native_decide
+
+/-- Schur identity at n = 4 with legs (1, 2, 3, 5). -/
+theorem schur_n4 : det (Q [1, 2, 3, 5]) = - prodSquares [1, 2, 3, 5] := by native_decide
+
+/-- Schur identity at n = 5 with legs (1, 2, 3, 5, 7). -/
+theorem schur_n5 : det (Q [1, 2, 3, 5, 7]) = - prodSquares [1, 2, 3, 5, 7] := by native_decide
+
+/-- Schur identity at n = 6 with legs (1, 2, 3, 5, 7, 11). -/
+theorem schur_n6 : det (Q [1, 2, 3, 5, 7, 11]) = - prodSquares [1, 2, 3, 5, 7, 11] := by native_decide
+
+end Schur
+
 /-! ## Summary of all checks
 
   Total machine-checked theorems and examples in this file:
