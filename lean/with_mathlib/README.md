@@ -1,25 +1,28 @@
 # Symbolic verification (with Mathlib)
 
 This is a **separate Lean project** that requires Mathlib.  It proves
-that Relation #1 of Table 1 of the paper holds **symbolically over
-ℚ(a, b)** — that is, for every right triangle with positive unequal
-rational legs, not just on the concrete triangles checked in the
-parent `RightTriangleReflection.lean` file.
+that **all eight relations of Table 1 of the paper hold symbolically
+over ℚ(a, b)** — that is, simultaneously for every right triangle with
+positive unequal rational legs, not just on the concrete triangles
+checked in the parent `RightTriangleReflection.lean` file.
 
 This is the strongest machine-checked statement of the universality
 phenomenon currently in the artifact:
 
-> **`theorem rel1_symbolic`**: the two length-10 words
-> `R_0 R_1 R_2 R_0 R_2 R_0 R_1 R_2 R_1 R_2` and
-> `R_2 R_1 R_2 R_0 R_1 R_2 R_0 R_2 R_0 R_1`
-> evaluate to the same element of `Aff(ℚ(a, b))`.
+> **`theorem rel1_symbolic` through `rel8_symbolic`**: each pair of
+> length-10 words in Table 1 evaluates to the same element of
+> `Aff(ℚ(a, b))` for the affine isometry encoding described in the
+> file.  Proved by the `ring` tactic over `MvPolynomial (Fin 2) ℚ`.
 
 ## Hardware requirements
 
-- Disk: **~12 GB** (Mathlib cache, persistent)
+- Disk: **~10 GB** (Mathlib cache, persistent)
 - RAM: ~4 GB during `lake build`
-- First-time install: ~30–60 minutes (mostly downloading and unpacking
+- First-time install: ~15–45 minutes (mostly downloading and unpacking
   the prebuilt Mathlib cache)
+- Subsequent rebuilds: ~40 seconds for the 8 symbolic theorems
+- Lean toolchain: pinned to `leanprover/lean4:v4.20.0` via
+  `lean-toolchain` (matches Mathlib `v4.20.0`)
 
 ## One-time install
 
