@@ -2,6 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/1235839920.svg)](https://doi.org/10.5281/zenodo.20370090)
 [![OEIS](https://img.shields.io/badge/OEIS-A396406-blue)](https://oeis.org/A396406)
+[![Lean](https://img.shields.io/badge/Lean%204-checked-success)](./lean/)
 
 A structural rigidity theorem in the geometry of right-triangle reflection groups:
 for every right triangle in the plane with **positive unequal** rational legs, the
@@ -55,6 +56,7 @@ onward. The universality theorem applies only to the unequal-leg regime.
 | `code/rust_bfs/` | Disk-streaming BFS implementation (Rust). Computes $u_d$ to depth 42. |
 | `code/rust_christol_bfs/` | Mod-$p$ BFS implementation for the universal realization (Rust). Used for the Christol attack route in `paper_extra`. |
 | `code/g_modules/` | Selected symbolic verification scripts for the universality proof and the McMullen-bridge negative result. |
+| `lean/` | **Lean 4 machine-checked verification** of the eight length-10 affine relations and the half-turn matrix on the (3,4,5) triangle. Core Lean only — no Mathlib. Builds in ~10s. |
 | `reproduce/` | Minimal Python scripts for end-to-end recomputation. |
 | `data/` | Raw JSON output of the verification run. |
 | `LICENSE.md`, `CITATION.cff` | License (CC-BY-4.0 text / MIT code) and citation metadata. |
