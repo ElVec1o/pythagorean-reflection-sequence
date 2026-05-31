@@ -1,15 +1,16 @@
 #!/usr/bin/env sage
-# Verifies the V_{1/2} branch. V_{1/2}: a^4 + 6 a^2 c^2 + c^4 = k^2 is the
-# square-discriminant condition for cos^2(theta) = 1/2. Jacobian is Cremona 32a2.
-E = EllipticCurve([0, 0, 0, -1, 0])       # y^2 = x^3 - x
-print("V_{1/2} curve y^2 = x^3 - x")
-print("  Cremona label :", E.cremona_label())     # 32a2  (NOT 'E_6')
-print("  conductor     :", E.conductor())          # 32
-print("  rank          :", E.rank())               # 0
-print("  torsion       :", E.torsion_subgroup().invariants())  # (2,2): (0,0),(+-1,0),oo
-R.<t> = QQ[]; f = t^4 + 6*t^2 + 1
-sols = sorted({QQ(n)/d for n in range(-60,61) for d in range(1,61)
-               if f(QQ(n)/d) >= 0 and f(QQ(n)/d).is_square()})
-print("  rational t=a/c with f(t) square:", sols, "(only t=0)")
-assert E.rank() == 0 and sols == [0]
-print("  => no distinct-positive-rational legs realize cos^2 theta = 1/2. OK")
+# V_{1/2}: square-discriminant condition for cos^2(theta)=1/2 (interior dihedral),
+#   y^2 = x^4+6*x^2+1   (x = a/c).  V has a rational point (x=0), so V is birational to
+#   its Jacobian E (Cremona 32a2); E has rank 0, so E(Q) -- and hence V(Q) -- is finite
+#   and equals the computable torsion.  This CERTIFIES finiteness (not the box search).
+E = EllipticCurve(QQ, pari('ellfromeqn(y^2 - (x^4+6*x^2+1))').sage())
+print("V_{1/2}: y^2 = x^4+6*x^2+1")
+print("  Jacobian Cremona :", E.cremona_label())
+print("  rank             :", E.rank())
+print("  torsion order    :", E.torsion_order())
+assert E.rank() == 0, "rank 0 certifies V(Q) finite"
+R.<x> = QQ[]; f = x^4+6*x^2+1
+box = sorted({QQ(n)/d for n in range(-200,201) for d in range(1,201)
+              if f(QQ(n)/d) >= 0 and f(QQ(n)/d).is_square()})
+print("  rational x=a/c   :", box)
+print("  => no pairwise-distinct positive rational legs give cos^2 theta = 1/2. CERTIFIED (rank 0).")

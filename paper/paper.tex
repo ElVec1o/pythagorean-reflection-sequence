@@ -48,7 +48,7 @@
 \maketitle
 
 \begin{abstract}
-For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is independent of $T$ (Theorem~\ref{thm:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The kernel of the side-reflection representation is identified as a cyclic left ideal $\mathbb{Z}[Q]\cdot h$ on the explicit central generator $h = (c-1)(Y-1)$ via Mayer--Vietoris and Crowell.  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with Mordell descent on the two Cremona curves $\mathtt{24a1}$ and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  The eight length-$10$ relations, the Schur-complement identity, and the universality of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  Conditional partial-progress results on the asymptotic ratio $\beta_2 \approx 1.47$ of the 2D universal sequence, together with the mod-$p$ state-space and Knuth--Bendix experiments, are deferred to the companion document \texttt{paper\_extra.tex}.
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is independent of $T$ (Theorem~\ref{thm:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The kernel of the side-reflection representation is identified as a cyclic left ideal $\mathbb{Z}[Q]\cdot h$ on the explicit central generator $h = (c-1)(Y-1)$ via Mayer--Vietoris and Crowell.  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  The eight length-$10$ relations, the Schur-complement identity, and the universality of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  Conditional partial-progress results on the asymptotic ratio $\beta_2 \approx 1.47$ of the 2D universal sequence, together with the mod-$p$ state-space and Knuth--Bendix experiments, are deferred to the companion document \texttt{paper\_extra.tex}.
 \end{abstract}
 
 \section{Setting}
@@ -309,12 +309,39 @@ $h \in \mathbb{Z}[Q]\cdot(Y-1) \subseteq I_B$, so $h \in I_A \cap I_B$.
 $(Y+1) h = (c-1)(Y+1)(Y-1) = 0$.  Similarly $(c+1)(c-1) = 0$ gives
 $(c+1) h = 0$.
 
-\emph{Cyclic identification.}  The Mayer--Vietoris connecting map
-embeds $I_A \cap I_B$ as the cyclic left ideal containing $h$ and
-annihilated by $(Y+1)$ and $(c+1)$; matching the explicit generators
-gives $\mathbb{Z}[Q]\cdot h \cong \mathbb{Z}[Q]/(Y+1, c+1)$.
+\emph{Equality $I_A \cap I_B = \mathbb{Z}[Q]\cdot h$.}  Membership and the
+annihilator computation give a surjection of left $\mathbb{Z}[Q]$-modules
+$\mathbb{Z}[Q]/(Y+1, c+1) \twoheadrightarrow \mathbb{Z}[Q]\cdot h
+\subseteq I_A \cap I_B$, $1 \mapsto h$.  For the reverse inclusion, write
+$Q = D_\infty \times \langle c\rangle$ with $D_\infty = \langle X, Y\rangle$
+and let $t = XY$ generate the translation subgroup
+$\langle t\rangle \cong \mathbb{Z}$.  In each finite quotient
+$D_{2N} \times \langle c\rangle$ (where $t^N = 1$) a direct group-algebra
+computation gives $\dim(I_A \cap I_B) = \dim(\mathbb{Z}[Q]\cdot h) + 1$,
+the one-dimensional excess being spanned by the rotation-norm element
+$\nu_N = \sum_{k=0}^{N-1} t^k$ (verified for $3 \le N \le 16$ in
+\texttt{code/ideal/intersection\_norm.sage}).  The norm $\nu_N$ is the
+standard artifact of the finite cyclic group $\langle t\rangle / t^N$; it
+has no analogue in the torsion-free $\langle t\rangle \cong \mathbb{Z}$ of
+the infinite group $Q$, where $\sum_k t^k$ is not an element of
+$\mathbb{Z}[Q]$.  Hence the excess vanishes in $Q$, so
+$I_A \cap I_B = \mathbb{Z}[Q]\cdot h \cong \mathbb{Z}[Q]/(Y+1, c+1) =: M$.
 \qed
 \end{proof}
+
+\begin{remark}[Universality needs only $T$-independence, not the explicit $M$]
+\label{rem:univ-robust}
+Theorem~\ref{thm:universality} requires only that the translation module
+$T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ be \emph{independent of $T$}.
+This is manifest from the Mayer--Vietoris identification, whose right-hand
+side $I_A \cap I_B$ is a purely group-theoretic object attached to
+$W = A * B \twoheadrightarrow Q$, with no reference to the geometric
+realization of any triangle.  The explicit cyclic form
+$M = \mathbb{Z}[Q]/(Y+1, c+1)$ established above is used only to write the
+abstract realization $\rho_{\mathrm{abs}}$ down concretely
+(Lemma~\ref{lem:rho-abs}); the universality conclusion itself does not
+depend on it.
+\end{remark}
 
 \begin{remark}[Centrality is essential]
 \label{rem:univ-centrality}
@@ -357,13 +384,25 @@ $((X,0)(X',0))^2 = (c^2, 0) = (1, 0)$.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:universality}]
-By Lemma~\ref{lem:trans-mod}, $T_{\rho_T}^{\mathrm{ab}} \cong M$
-canonically and independently of $T$; by Lemma~\ref{lem:dilation-invariance}
-the isomorphism descends through dilation; by Lemma~\ref{lem:rho-abs}
-$\rho_{\mathrm{abs}}$ is well-defined, and every $\rho_T$ factors as
-$\rho_T = (\mathrm{id}_Q \ltimes \Phi_T) \circ \rho_{\mathrm{abs}}$ with
-$\Phi_T$ a bijection of underlying sets.  Hence $\ker(\rho_T) = \ker(\rho_{\mathrm{abs}})$
-for every $T$, and $u_d^T$ is constant in $T$.
+Every $\rho_T$ has the same linear quotient $W \twoheadrightarrow Q$
+(determined by the reflection pattern, not the leg lengths), so the
+translation kernel $T_{\rho_T} = \ker(W \to Q)$ is the same subgroup of
+$W$ for all $T$, and by Lemma~\ref{lem:trans-mod} its abelianization is
+$T_{\rho_T}^{\mathrm{ab}} \cong I_A \cap I_B$ --- a purely
+group-theoretic module independent of $T$
+(Remark~\ref{rem:univ-robust}).  By Lemma~\ref{lem:rho-abs}
+$\rho_{\mathrm{abs}} : W \to Q \ltimes M$ is well-defined, and for each
+$T$ the realization $\rho_T$ factors as
+$\rho_T = (\mathrm{id}_Q \ltimes \Phi_T) \circ \rho_{\mathrm{abs}}$,
+where $\Phi_T : M \to \mathbb{R}^2$ is the $\mathbb{Z}[Q]$-linear map
+sending the generator $h$ to the translation $t(\rho_T(R_2))$.  By
+Lemma~\ref{lem:dilation-invariance} $\Phi_T$ is \emph{injective} for
+every nondegenerate $T$ (the image lattice has the same rank as $M$,
+the dilation acting as a nonzero scalar on each $\mathbb{Z}[Q]$-isotypic
+component), so
+$\ker(\rho_T) = \ker(\rho_{\mathrm{abs}})$ for every $T$.  As the
+right-hand side is independent of $T$, the orbit-growth sequence
+$u_d^T = |\{\rho_T(w) : |w| = d\}|$ is constant in $T$.
 \qed
 \end{proof}
 
@@ -456,21 +495,20 @@ $(a, b, c)$, $u_d \le 9 \cdot 2^{d-2}$ for $d \ge 2$.
 \end{theorem}
 
 \paragraph{The Coxeter diagram.}
-Before stating the closed form, we identify the Coxeter diagram
-explicitly.  The right-corner orthoscheme reflection group $W_n$ in
-$\mathbb{R}^n$ with mutually perpendicular legs $a_1, \ldots, a_n$ has
-Coxeter diagram a \emph{path} on $n+1$ nodes (one node per face
-reflection).  The leftmost edge --- between the two reflections through
-the faces opposite the two legs of greatest aspect ratio --- carries
-label $\infty$ (the corresponding dihedral angle is an irrational
-multiple of $\pi$ by Lemma~\ref{lem:perp-pairs} together with
-Niven--Conway--Jones); the remaining $n-1$ edges carry the standard
-label $3$ (a single non-perpendicular pair adjacent to a chain of
-right-angle pairs).  This is precisely the path diagram $A_{n+1}^\infty$
-for which Cannon--Floyd--Parry, Cannon--Wagreich, and Floyd--Plotnick
-compute the growth rate $1 + 2\cos(\pi/(h+1))$ with $h$ the Coxeter
-number of the underlying $A_{n+1}$.  Substituting $h = n+2$ gives the
-formula of Theorem~\ref{thm:ndim-rate} below.
+For pairwise-distinct legs the Coxeter diagram of $W_n$ is a \emph{path}
+on $n+1$ nodes (one node per face reflection): by
+Lemma~\ref{lem:perp-pairs} every non-adjacent face pair $|i-j| \ge 2$ is
+perpendicular (edge label $2$, i.e.\ no edge drawn), while by
+Theorem~\ref{thm:master-C-uncond} each of the $n$ \emph{adjacent} pairs
+$|i-j| = 1$ has a dihedral angle that is an irrational multiple of $\pi$,
+hence generates an infinite dihedral group (edge label $\infty$).  Thus
+the diagram is the path on $n+1$ nodes with all $n$ edges labelled
+$\infty$.  We do not invoke a closed-form growth rate for this diagram
+from the literature; instead the rate is computed directly from
+Steinberg's formula in the proof of Theorem~\ref{thm:ndim-rate} below,
+and equals the algebraic integer stated there
+(e.g.\ $r_2 = \varphi$, $r_3 = 2$, consistent with the $n = 3$ series
+$(1+t)^2/(1-2t)$).
 
 \begin{theorem}[Closed-form $n$-dim Coxeter rate]
 \label{thm:ndim-rate}
@@ -808,7 +846,7 @@ Monographs 11, MAA, 1956.
 equations (On vanishing sums of roots of unity)}, Acta Arith.\ 30
 (1976), 229--240.
 
-\item J.~Steinberg, \emph{Endomorphisms of Linear Algebraic Groups},
+\item R.~Steinberg, \emph{Endomorphisms of Linear Algebraic Groups},
 Memoirs of the AMS 80, 1968.
 
 \item L.~J.~Mordell, \emph{Diophantine Equations}, Pure and Applied
@@ -822,7 +860,8 @@ descent.
 \item J.~E.~Cremona, \emph{Algorithms for Modular Elliptic Curves},
 2nd edition, Cambridge University Press, 1997; online tables at
 \url{https://www.lmfdb.org/EllipticCurve/Q/}.  Curves
-\href{https://www.lmfdb.org/EllipticCurve/Q/24/a/1}{\texttt{24a1}} and
+\href{https://www.lmfdb.org/EllipticCurve/Q/24/a/1}{\texttt{24a1}},
+\href{https://www.lmfdb.org/EllipticCurve/Q/32/a/2}{\texttt{32a2}}, and
 \href{https://www.lmfdb.org/EllipticCurve/Q/72/a/2}{\texttt{72a2}}.
 
 \item M.~W.~Davis, \emph{The Geometry and Topology of Coxeter Groups},
