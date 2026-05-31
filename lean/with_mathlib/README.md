@@ -33,14 +33,14 @@ phenomenon currently in the artifact:
 > `dedupBy CAff.equivB`.  Together these give 13 machine-checked
 > theorems:
 >
-> > `layer_d_eq_X` for $d = 0, 1, \ldots, 12$, asserting
+> > `layer_d_eq_X` for $d = 0, 1, \ldots, 13$, asserting
 > > $\text{layerCount}\ d = a(d)$ where the BFS layer counts are exactly
-> > **1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554**.
+> > **1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554, 875**.
 >
 > Each theorem is dispatched by `native_decide` on the cumulative
 > symbolic dedup over $\mathbb{Q}[a,b]$.  Build times scale roughly
 > geometrically: depth 10 is seconds, depth 11 is ~2.5 min, depth 12 is
-> ~6.5 min on a modern Mac mini.
+> ~6.5 min, depth 13 is ~19 min on a modern Mac mini.
 
 ## Hardware requirements
 
