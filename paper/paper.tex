@@ -48,7 +48,7 @@
 \maketitle
 
 \begin{abstract}
-For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is independent of $T$ (Theorem~\ref{thm:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The kernel of the side-reflection representation is identified as a cyclic left ideal $\mathbb{Z}[Q]\cdot h$ on the explicit central generator $h = (c-1)(Y-1)$ via Mayer--Vietoris and Crowell.  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with Mordell descent on the two Cremona curves $\mathtt{24a1}$ and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  Conditional partial-progress results on the asymptotic ratio $\beta_2 \approx 1.47$ of the 2D universal sequence, together with the mod-$p$ state-space and Knuth--Bendix experiments, are deferred to the companion document \texttt{paper\_extra.tex}.
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is independent of $T$ (Theorem~\ref{thm:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The kernel of the side-reflection representation is identified as a cyclic left ideal $\mathbb{Z}[Q]\cdot h$ on the explicit central generator $h = (c-1)(Y-1)$ via Mayer--Vietoris and Crowell.  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with Mordell descent on the two Cremona curves $\mathtt{24a1}$ and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  The eight length-$10$ relations, the Schur-complement identity, and the universality of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  Conditional partial-progress results on the asymptotic ratio $\beta_2 \approx 1.47$ of the 2D universal sequence, together with the mod-$p$ state-space and Knuth--Bendix experiments, are deferred to the companion document \texttt{paper\_extra.tex}.
 \end{abstract}
 
 \section{Setting}
@@ -173,7 +173,14 @@ $a, b$ over $\mathbb{Q}$ (with denominators dividing a power of
 $a^2 + b^2$).  Each entry of $M_A - M_B$ is a rational function in
 $\mathbb{Q}(a, b)$; clearing denominators gives a polynomial identity
 which is verified by SymPy in $\mathbb{Q}(a, b)$ (deterministic, no
-heuristics).
+heuristics).  All eight identities have additionally been
+\emph{formally verified} in the Lean~4 proof assistant: the theorems
+\texttt{rel1\_symbolic}, \dots, \texttt{rel8\_symbolic} in
+\texttt{lean/with\_mathlib/SymbolicVerification.lean} discharge each of
+the six resulting polynomial identities over
+$\mathbb{Q}[a,b]$ by the \texttt{ring} tactic, so the identities hold
+with kernel-checked certainty for every right triangle, not merely on a
+sample of specializations.
 \qed
 \end{proof}
 
@@ -230,6 +237,28 @@ becomes $1, 3, 5, 8, 11, 13, 16, \ldots$, which is strictly smaller than
 the universal sequence $a(n)$ of Table~\ref{tab:tail} for $n \ge 4$.  The
 universality phenomenon of Theorem~\ref{thm:universality} does not apply
 to the isosceles case.  See the OEIS comment on \texttt{A\_2D\_universal}.
+\end{remark}
+
+\begin{remark}[Formal verification of universality through depth $22$]
+\label{rem:lean-universality}
+The structural argument below proves Theorem~\ref{thm:universality} for
+all depths.  Independently, the universality of the orbit-growth sequence
+has been \emph{machine-verified} for depths $0 \le d \le 22$ in Lean~4
+(theorem \texttt{universal\_layers\_through\_22} in
+\texttt{lean/with\_mathlib/ComputableUniversality.lean}).  That proof
+carries out a single breadth-first sweep over the canonical Coxeter words
+of $W$, deduplicating the symbolic affine images
+$\rho_{(a,b)}(w) \in \mathrm{Aff}(\mathbb{Q}(a,b))$ by their numerators
+relative to the common denominator $(a^2+b^2)^{22}$, and certifies that
+the layer counts are exactly
+\[
+1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554, 875, 1345,
+2066, 3203, 4971, 7574, 11543, 17683, 27108, 41067
+\]
+\emph{simultaneously for every right triangle with positive unequal
+legs}.  This kernel-checked certificate matches the depth reached by the
+independent multi-triangle reproduction of \S\ref{sec:tail} and removes
+any reliance on a single specialization for $d \le 22$.
 \end{remark}
 
 The argument factors through three lemmas.
@@ -518,7 +547,14 @@ P_{k-2}\, a_{k-1}^2 a_k^2\, (1 - S_{k-1} - a_k^2 - a_{k+1}^2)
 \]
 which expands to zero in $\mathbb{Z}[a_{k-1}, a_k, a_{k+1}, S_{k-1}, P_{k-2}]$
 and is verified symbolically.  The identity is independent of $k$ and
-of $n$.
+of $n$.  The base, inductive, and boundary steps are formally verified
+in Lean~4 (theorems \texttt{schur\_base\_step}, \texttt{schur\_k2\_step},
+\texttt{schur\_inductive\_step}, \texttt{schur\_boundary\_step} in
+\texttt{lean/with\_mathlib/SchurGeneral.lean}, each discharged by the
+\texttt{ring} tactic), and the determinant identity
+$\det Q_n = -\prod_{i=1}^n a_i^2$ itself is machine-checked for
+$n = 2, \dots, 10$ on explicit leg sequences in
+\texttt{lean/RightTriangleReflection.lean}.
 
 \emph{Final step.}  At $k = n$, $D_n = D_{n-1} - a_{n-1}^2 D_{n-2}$, and
 \[
@@ -696,6 +732,25 @@ Table~\ref{tab:tail} are computed by an exact-rational BFS through
 depth $25$ and a Rust disk-streaming BFS through depth $42$.  Source
 code and reproduce scripts accompany this paper in the project
 repository.
+
+\paragraph{Formal (machine-checked) verification.}
+Several of the computational claims are additionally certified in the
+Lean~4 proof assistant, in the \texttt{lean/} subtree of the project
+repository.  A core, Mathlib-free development
+(\texttt{RightTriangleReflection.lean}) machine-checks the basic Coxeter
+relations, all eight length-$10$ relations and their explicit affine
+matrices on the $(3,4,5)$ triangle, a direct breadth-first reconstruction
+of $a(0),\dots,a(17)$, the Fibonacci coincidence $a(n) = F_{n+3}$ for
+$1 \le n \le 9$, and the determinant identity
+$\det Q_n = -\prod a_i^2$ for $n = 2,\dots,10$.  A second development
+depending on Mathlib (\texttt{with\_mathlib/}) proves the eight length-$10$
+relations symbolically over $\mathbb{Q}(a,b)$
+(Theorem~\ref{thm:symbolic}), the algebraic steps of the Schur induction
+(Lemma~\ref{lem:uniform-detQ}), and the universality of the orbit-growth
+sequence through depth $22$ (Remark~\ref{rem:lean-universality}), the
+last holding simultaneously for all right triangles with unequal legs.
+Each Lean theorem is checked by the kernel; building the projects
+re-verifies every claim.
 
 \section*{References}
 
