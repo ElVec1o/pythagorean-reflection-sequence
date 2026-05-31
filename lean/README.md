@@ -8,19 +8,29 @@ arithmetic and run in seconds.
 
 ## What is verified
 
-| | Statement | Tactic |
+| | Statement | # theorems |
 |---|---|---|
-| 1 | Basic Coxeter relations $R_i^2 = 1$ and $(R_0 R_1)^2 = 1$ | `native_decide` |
-| 2 | All eight length-10 word-pair equalities (Table 1 of the manuscript) | `native_decide` |
-| 3 | The explicit matrix of relation #1 — half-turn about $(2931/625, 2808/625)$ | `native_decide` |
-| 4 | Pairwise distinctness of the eight collision-pair affine matrices | `native_decide` |
+| 1 | Basic Coxeter relations $R_i^2 = 1$ for $i \in \{0, 1, 2\}$ and $(R_0 R_1)^2 = 1$ | 4 |
+| 2 | All eight length-10 word-pair equalities (Table 1 of the manuscript) | 8 |
+| 3 | The explicit affine matrix value of each of the eight relations (six half-turns and two pure translations) | 8 |
+| 4 | Pairwise distinctness of the eight collision-pair affine matrices | 1 |
+| 5 | Relation #1 also holds on the (5, 12, 13) right triangle (a concrete instance of universality) | 1 |
+| 6 | Direct BFS computation of $a(0), a(1), \ldots, a(17)$, matching OEIS A396406 exactly through depth 17 | 18 |
+| | **Total** | **40 machine-checked theorems** |
+
+All proofs are by `native_decide`. The BFS computation in (6) performs an actual layer-by-layer breadth-first search of the Cayley orbit in exact rational arithmetic — this is a direct first-principles verification of the OEIS data through depth 17 (where $a(17) = 4971$).
 
 ## Requirements
 
 - Disk: ~500 MB (Lean toolchain only — no Mathlib needed)
-- RAM: ~2 GB peak
-- Time: ~30 seconds first build, ~5 seconds incremental
+- RAM: ~1 GB peak
+- Build time: ~20 seconds full clean build on a 2024 Mac mini (M2, 24 GB RAM)
+  - Depths 0–12 build in under a second
+  - Depths 13–15 add a few seconds each
+  - Depth 17 takes the bulk of the time (~15 s)
 - Lean: pinned to `leanprover/lean4:v4.13.0` via `lean-toolchain`
+
+(Building deeper than depth 17 is possible but build time grows roughly geometrically — depth 18 would take a few minutes, depth 19+ rapidly becomes impractical.  The Rust BFS in `code/rust_bfs/` is the right tool for high-depth computation; Lean is the right tool for kernel-verified low-depth machine checking.)
 
 ## Install Lean (one-time, ~5 minutes)
 
@@ -68,7 +78,8 @@ The structural Universality Theorem (the cyclic-ideal identification of
 $\ker \rho_T$ over $\mathbb{Z}[Q]$) requires significantly more
 infrastructure and is *not* formalized here — it would need Mathlib's
 group-ring machinery and a substantial development. The present file
-verifies the concrete computation at depth 10 on the (3, 4, 5) triangle.
+verifies the concrete computation at depths 0–17 on the (3, 4, 5)
+triangle and at depth 10 on the (5, 12, 13) triangle.
 
 ## Reference
 
