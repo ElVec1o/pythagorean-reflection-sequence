@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["SymbolicVerification", "SchurGeneral"]
+defaultTargets = ["SymbolicVerification", "SchurGeneral", "SymbolicUniversality"]
 
 [[require]]
 name = "mathlib"
@@ -11,3 +11,6 @@ name = "SymbolicVerification"
 
 [[lean_lib]]
 name = "SchurGeneral"
+
+[[lean_lib]]
+name = "SymbolicUniversality"
