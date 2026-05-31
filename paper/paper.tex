@@ -105,6 +105,16 @@ unequal-leg right-triangle results are the precedent's exact rational
 analogue, replacing genericity by an explicit Diophantine
 ($\mathbb{Q}$-rational) faithfulness criterion and adding the
 closed-form growth data.
+The rotation number $\zeta_T = (a+bi)/(a-bi)$ governing our translation
+module is exactly the rotation number of the generalized-pinwheel
+\emph{substitution} tilings of Sadun, built from a right triangle, and
+of the statistical circular symmetry studied by Frettl\"oh; those works
+analyze tiling-space invariants (MLD class, cohomology, patch
+frequencies), a different object from the reflection-group word-growth
+sequence $u_d$ studied here, and do not address it.  The shape-dependence
+of the minimal polynomial of $\zeta_T$ (cf.\ Remark~\ref{rem:univ-conj-status})
+is the natural place a difference between shapes could appear, but
+whether it affects the orbit counts $u_d$ is open.
 
 \section{The Coxeter-group identity (Fibonacci phase)}
 \label{sec:fib}
@@ -276,6 +286,25 @@ factorization below); what is \emph{not} proven in general is the reverse
 inclusion $\ker(\rho_T) \subseteq \ker(\rho_{\mathrm{abs}})$ uniformly in
 $T$, i.e.\ that no leg-dependent extra collision appears at some depth
 $> 22$.  Whether this reverse inclusion holds for all $T$ is open.
+
+A concrete candidate obstruction makes the shape-dependence explicit.
+Chasing $\ker(\rho_T)$ through the translation module, its restriction
+there corresponds to the ideal of integer Laurent polynomials in
+$t = XY$ (the rotation generator) that vanish at the rotation number
+$\zeta_T = (a+bi)/(a-bi)$, a Gaussian-rational point on the unit circle.
+By Niven's theorem $\zeta_T$ is not a root of unity, and its minimal
+polynomial \emph{depends on the shape}: e.g.\ $(a,b)=(1,2)$ gives
+$\zeta_T = (-3+4i)/5$ with minimal polynomial $5t^2 + 6t + 5$, while
+$(a,b)=(3,4)$ gives $\zeta_T = (-7+24i)/25$ with minimal polynomial
+$25t^2 + 14t + 25$, and the ideals these generate in
+$\mathbb{Z}[t^{\pm 1}]$ differ.  All-depths universality therefore
+requires that the word-difference sets arising in the BFS never realize
+an element distinguishing these shape-dependent ideals; equivalently,
+that a structural constraint prevents such an element from appearing at
+any depth.  This non-distinguishing is verified through depth $22$ by
+the proof above and through depth $30$ by exact-rational BFS for the
+shapes $(1,2)$ and $(3,4)$; we do not know whether it holds in general,
+and we make no claim that it must hold or that it must fail.
 \end{remark}
 
 \begin{remark}[The isosceles case]
@@ -1035,6 +1064,13 @@ surfaces}, Amer.\ J.\ Math.\ 123 (2001), no.~6, 1135--1169.
 
 \item S.~Isola, R.~Piergallini, \emph{On the generic triangle group},
 arXiv:1405.1881 [math.MG], 2014--2015.
+
+\item L.~Sadun, \emph{Some generalizations of the pinwheel tiling},
+Discrete Comput.\ Geom.\ 20 (1998), 79--110; arXiv:math/9712263.
+
+\item D.~Frettl\"oh, \emph{Substitution tilings with statistical
+circular symmetry}, European J.\ Combin.\ 29 (2008), no.~8,
+1881--1893.
 
 \item OEIS Foundation, \emph{The On-Line Encyclopedia of Integer
 Sequences}, \url{https://oeis.org}.  Sequence A000045 (Fibonacci
