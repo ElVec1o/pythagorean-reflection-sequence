@@ -330,5 +330,9 @@ theorem layer_11_eq_351 : layerCountH 11 = 351  := by native_decide
 theorem layer_12_eq_554 : layerCountH 12 = 554  := by native_decide
 theorem layer_13_eq_875 : layerCountH 13 = 875  := by native_decide
 theorem layer_14_eq_1345 : layerCountH 14 = 1345 := by native_decide
+theorem layer_15_eq_2066 : layerCountH 15 = 2066 := by native_decide
+theorem layer_16_eq_3203 : layerCountH 16 = 3203 := by native_decide
+theorem layer_17_eq_4971 : layerCountH 17 = 4971 := by native_decide
+theorem layer_18_eq_7574 : layerCountH 18 = 7574 := by native_decide
 
 end ComputableUniversality
