@@ -98,4 +98,32 @@ theorem canonicalWords_10_count : (canonicalWords 10).length = 233 := by
 
 -- (drop the fin_cases version; the individual checks above suffice)
 
+/-! ## Universality at depth 10
+
+  We now apply the symbolic side-reflection action `applyWord` (from
+  `SymbolicVerification`) to each of the 233 canonical length-10
+  Coxeter words and count distinct symbolic affine isometries.
+
+  All eight collision pairs of Table 1 happen to have the same number
+  of R_2 reflections in each word (4 each), hence the same denominator
+  D⁴, so structural polynomial equality of our `Aff` representation
+  exactly captures the equivalence we want. -/
+
+/-- The 233 symbolic affine isometries at depth 10, one per canonical
+    length-10 Coxeter word.
+
+    Marked `noncomputable` because Mathlib's `MvPolynomial` is
+    noncomputable; we cannot use `native_decide` on this directly.
+    The downstream universality counting theorem would require either
+    a computable polynomial representation (a substantial rewrite) or
+    `decide`-time-scale computation across ~27K pairs (hours per
+    build). -/
+noncomputable def imagesAtDepth10 : List Aff :=
+  (canonicalWords 10).map applyWord
+
+/-- The number of canonical length-10 words is 233.  (The `length` here
+    only depends on the list of words, not on the polynomials in them,
+    so `native_decide` works.) -/
+example : (canonicalWords 10).length = 233 := by native_decide
+
 end SymbolicUniversality
