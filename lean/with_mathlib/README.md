@@ -19,10 +19,28 @@ phenomenon currently in the artifact:
 > `schur_boundary_step` that together capture the algebraic skeleton
 > of the general-$n$ Schur-complement determinant identity
 > $\det Q_n = -\prod_{i=1}^n a_i^2$.  All four are dispatched in
-> milliseconds by the `ring` tactic.  The remaining work to lift these
-> into a fully formalized `det Q_n = - ∏ aᵢ²` is matrix-theoretic
-> plumbing (Mathlib's tridiagonal expansion) and does not introduce any
-> additional content.
+> milliseconds by the `ring` tactic.
+>
+> **`SymbolicUniversality.lean`**: canonical-Coxeter-word enumeration
+> and Fibonacci-phase counts: $|\{$canonical length-$n$ words$\}| = F(n+3)$
+> for $n = 0, \ldots, 10$, with the depth-10 count of 233 also proven.
+> 11 theorems by `native_decide`.
+>
+> **`ComputableUniversality.lean`** (the main universality result):
+> a hand-rolled computable bivariate polynomial type `CPoly` (no
+> `MvPolynomial` dependency), a tracked-denominator affine isometry
+> type `CAff`, and cumulative cross-multiplication dedup
+> `dedupBy CAff.equivB`.  Together these give 13 machine-checked
+> theorems:
+>
+> > `layer_d_eq_X` for $d = 0, 1, \ldots, 12$, asserting
+> > $\text{layerCount}\ d = a(d)$ where the BFS layer counts are exactly
+> > **1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554**.
+>
+> Each theorem is dispatched by `native_decide` on the cumulative
+> symbolic dedup over $\mathbb{Q}[a,b]$.  Build times scale roughly
+> geometrically: depth 10 is seconds, depth 11 is ~2.5 min, depth 12 is
+> ~6.5 min on a modern Mac mini.
 
 ## Hardware requirements
 
