@@ -9,10 +9,20 @@ checked in the parent `RightTriangleReflection.lean` file.
 This is the strongest machine-checked statement of the universality
 phenomenon currently in the artifact:
 
-> **`theorem rel1_symbolic` through `rel8_symbolic`**: each pair of
-> length-10 words in Table 1 evaluates to the same element of
-> `Aff(ℚ(a, b))` for the affine isometry encoding described in the
+> **`SymbolicVerification.lean`**: `rel1_symbolic` through `rel8_symbolic`.
+> Each pair of length-10 words in Table 1 evaluates to the same element
+> of `Aff(ℚ(a, b))` for the affine isometry encoding described in the
 > file.  Proved by the `ring` tactic over `MvPolynomial (Fin 2) ℚ`.
+>
+> **`SchurGeneral.lean`**: the four uniform polynomial identities
+> `schur_base_step`, `schur_k2_step`, `schur_inductive_step`,
+> `schur_boundary_step` that together capture the algebraic skeleton
+> of the general-$n$ Schur-complement determinant identity
+> $\det Q_n = -\prod_{i=1}^n a_i^2$.  All four are dispatched in
+> milliseconds by the `ring` tactic.  The remaining work to lift these
+> into a fully formalized `det Q_n = - ∏ aᵢ²` is matrix-theoretic
+> plumbing (Mathlib's tridiagonal expansion) and does not introduce any
+> additional content.
 
 ## Hardware requirements
 

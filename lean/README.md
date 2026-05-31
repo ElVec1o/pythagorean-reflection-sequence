@@ -17,8 +17,8 @@ arithmetic and run in seconds.
 | 5 | Relation #1 also holds on the (5, 12, 13) right triangle (a concrete instance of universality) | 1 |
 | 6 | Direct BFS computation of $a(0), a(1), \ldots, a(17)$, matching OEIS A396406 exactly through depth 17 | 18 |
 | 7 | Fibonacci coincidence: $a(n) = F(n+3)$ for $1 \le n \le 9$, with deficit-of-8 break at $n = 10$ formalized as $a(10) + 8 = F(13)$ | 13 |
-| 8 | Schur-complement determinant identity $\det Q_n = -\prod_{i=1}^n a_i^2$ for $n = 2, 3, 4, 5, 6$ on the leg sequences $(1), (1,2), (1,2,3), (1,2,3,5), (1,2,3,5,7), (1,2,3,5,7,11)$ | 5 |
-| | **Total** | **62 machine-checked theorems** |
+| 8 | Schur-complement determinant identity $\det Q_n = -\prod_{i=1}^n a_i^2$ for $n = 2, 3, 4, 5, 6, 7, 8, 10$ on concrete leg sequences (the last one being $(1,2,3,5,7,11,13,17,19,23)$, an $11 \times 11$ determinant) | 8 |
+| | **Total** | **65 machine-checked theorems** |
 
 All proofs are by `native_decide`. The BFS computation in (6) performs an actual layer-by-layer breadth-first search of the Cayley orbit in exact rational arithmetic — this is a direct first-principles verification of the OEIS data through depth 17 (where $a(17) = 4971$).
 
