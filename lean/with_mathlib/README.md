@@ -33,14 +33,26 @@ phenomenon currently in the artifact:
 > `dedupBy CAff.equivB`.  Together these give 13 machine-checked
 > theorems:
 >
-> > `layer_d_eq_X` for $d = 0, 1, \ldots, 13$, asserting
-> > $\text{layerCount}\ d = a(d)$ where the BFS layer counts are exactly
-> > **1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554, 875**.
+> > `universal_layers_through_22 : allLayerCounts 22 = [1, 3, 5, 8, 13,
+> > 21, 34, 55, 89, 144, 225, 351, 554, 875, 1345, 2066, 3203, 4971,
+> > 7574, 11543, 17683, 27108, 41067]`
+> >
+> > i.e. the BFS layer counts $a(0)..a(22)$ of OEIS A396406 are exactly
+> > the universal sequence, for **every** right triangle with positive
+> > unequal legs.
 >
-> Each theorem is dispatched by `native_decide` on the cumulative
-> symbolic dedup over $\mathbb{Q}[a,b]$.  Build times scale roughly
-> geometrically: depth 10 is seconds, depth 11 is ~2.5 min, depth 12 is
-> ~6.5 min, depth 13 is ~19 min on a modern Mac mini.
+> The proof is a single `native_decide` performing one breadth-first
+> sweep over canonical Coxeter words, deduplicating symbolic affine
+> isometries over $\mathbb{Q}(a,b)$ by their numerators relative to the
+> common denominator $(a^2+b^2)^{22}$ — hence holding simultaneously for
+> all triangles, not any specific one.  Build time ~22 min on a Mac mini
+> (M2, 24 GB).  Depth 22 matches the depth reached by the paper's
+> independent multi-triangle verification.
+>
+> `slow_fast_agree_at_10`, `universality_at_depth_10`, `layer_10_eq_225`,
+> and `layer_11_eq_351` are retained as cheaper cross-checks pinning the
+> two equivalence notions (slow cross-multiplication vs. fast hashed
+> common-denominator) together.
 
 ## Hardware requirements
 
