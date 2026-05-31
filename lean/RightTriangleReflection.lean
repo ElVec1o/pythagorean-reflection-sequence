@@ -418,6 +418,9 @@ theorem schur_n7 : det (Q [1, 2, 3, 5, 7, 11, 13]) = - prodSquares [1, 2, 3, 5, 
 /-- Schur identity at n = 8 with legs (1, 2, 3, 5, 7, 11, 13, 17). -/
 theorem schur_n8 : det (Q [1, 2, 3, 5, 7, 11, 13, 17]) = - prodSquares [1, 2, 3, 5, 7, 11, 13, 17] := by native_decide
 
+/-- Schur identity at n = 9 with legs (1, 2, 3, 5, 7, 11, 13, 17, 19). -/
+theorem schur_n9 : det (Q [1, 2, 3, 5, 7, 11, 13, 17, 19]) = - prodSquares [1, 2, 3, 5, 7, 11, 13, 17, 19] := by native_decide
+
 /-- Schur identity at n = 10 with legs (1, 2, 3, 5, 7, 11, 13, 17, 19, 23). -/
 theorem schur_n10 :
     det (Q [1, 2, 3, 5, 7, 11, 13, 17, 19, 23]) =

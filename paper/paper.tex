@@ -115,7 +115,8 @@ By Steinberg's word-growth formula the Poincar\'e series is
 $W(t) = (1+t)^2/(1 - t - t^2)$, so $[t^d] W(t) = F_{d+3}$ for $d \ge 1$.
 
 \begin{corollary}
-Until the first Euclidean lattice collision, $u_d = F_{d+3}$.
+For $1 \le d \le 9$ (i.e.\ until the first Euclidean lattice collision at
+$d = 10$), $u_d = F_{d+3}$.  (At $d = 0$, $u_0 = 1 \ne F_3 = 2$.)
 \end{corollary}
 
 \section{Eight length-$10$ affine relations}
@@ -176,11 +177,12 @@ which is verified by SymPy in $\mathbb{Q}(a, b)$ (deterministic, no
 heuristics).  All eight identities have additionally been
 \emph{formally verified} in the Lean~4 proof assistant: the theorems
 \texttt{rel1\_symbolic}, \dots, \texttt{rel8\_symbolic} in
-\texttt{lean/with\_mathlib/SymbolicVerification.lean} discharge each of
-the six resulting polynomial identities over
-$\mathbb{Q}[a,b]$ by the \texttt{ring} tactic, so the identities hold
-with kernel-checked certainty for every right triangle, not merely on a
-sample of specializations.
+\texttt{lean/with\_mathlib/SymbolicVerification.lean} each discharge the
+six affine-matrix-entry identities (over $\mathbb{Q}[a,b]$) defining
+$M_A = M_B$ by the \texttt{ring} tactic.  As these proofs use only
+\texttt{ring}, they are checked by the Lean kernel, so the identities
+hold for every right triangle, not merely on a sample of
+specializations.
 \qed
 \end{proof}
 
@@ -581,86 +583,118 @@ In particular for $n = 3$ this is $u_d = 9 \cdot 2^{d-2}$ for $d \ge 2$.
 \end{theorem}
 
 \begin{proof}
-By Lemma~\ref{lem:uniform-detQ}, $\det Q_n = -\prod a_i^2 \ne 0$ for
-every positive tuple, so the Lorentzian Coxeter system is
-non-degenerate.  Tits' theorem (Humphreys, \emph{Reflection Groups and
-Coxeter Groups}, Thm.~5.4) then gives faithfulness of $\rho$.
+Write $S = \{R_0, \ldots, R_n\}$ for the face reflections and let
+$m_{ij} \in \{2, 3, \ldots, \infty\}$ be the order of $R_i R_j$ in the
+group $W_n^{\mathrm{geo}} = \langle S\rangle$ actually generated inside
+$\mathrm{Isom}(\mathbb{R}^n)$.  Faithfulness of $\rho$ together with the
+identity $u_d(O) = [t^d]\, W_n(t)$ is equivalent to the assertion that
+$(m_{ij})$ equals the intended right-angled matrix
+\begin{equation}
+m_{ij} = 2 \ (|i-j| \ge 2), \qquad m_{i,i+1} = \infty \ (0 \le i \le n-1),
+\tag{$\ast$}\label{eq:intended-coxeter}
+\end{equation}
+i.e.\ that the orthoscheme introduces \emph{no} relation $(R_i R_j)^m = 1$
+beyond the perpendicular pairs.  We prove~\eqref{eq:intended-coxeter}; the
+theorem then follows from Tits' theorem applied to the resulting Coxeter
+system (end of proof).  We emphasize that non-degeneracy of $Q_n$
+(Lemma~\ref{lem:uniform-detQ}) does \emph{not} by itself give
+faithfulness: a non-degenerate Gram form is compatible with a rational
+dihedral angle.  Indeed the isosceles case $a = b$ has
+$\det Q_n = -\prod a_i^2 \ne 0$ yet $\theta_{01} = \pi/4$, giving the
+extra relation $(R_0 R_1)^4 = 1$ --- the $\mathrm{cd} = 4$ case of
+Theorem~\ref{thm:cd-general}.  The content of the proof is therefore the
+angle-irrationality argument that follows; $\det Q_n \ne 0$ enters only
+to confirm the simplex is non-degenerate for all positive legs.
 
-It remains to rule out extra Coxeter relations $(R_i R_j)^m = 1$ beyond
-the perpendicular pairs.  Such a relation forces some non-perpendicular
-$\theta_{ij}$ to be a rational multiple of $\pi$.  Each non-perpendicular
-$\cos^2\theta_{ij}$ is rational in $a_1, \ldots, a_n$; by the extended
-Niven theorem (Conway--Jones 1976), $\theta_{ij} \in \mathbb{Q}\pi$
-with $\cos^2\theta_{ij} \in \mathbb{Q}$ forces $\cos\theta_{ij} \in
-\{0, \pm 1/2, \pm\sqrt 2/2, \pm\sqrt 3/2, \pm 1\}$.
+\emph{Step 1 (dihedral angles $\leftrightarrow$ relations).}  For two
+faces meeting along a codimension-$2$ ridge, $R_i, R_j$ generate a finite
+dihedral group of order $2m$ iff the dihedral angle $\theta_{ij} = \pi/m$
+for an integer $m \ge 2$, and an infinite dihedral group (no relation)
+iff $\theta_{ij} \notin \pi\mathbb{Q}$.  By Lemma~\ref{lem:perp-pairs}
+the pairs with $|i-j| \ge 2$ are perpendicular ($m_{ij} = 2$), giving the
+right-angled edges of~\eqref{eq:intended-coxeter}.  It remains to show
+every non-perpendicular $\theta_{i,i+1}$ is an irrational multiple
+of~$\pi$.
 
-\emph{Boundary dihedrals.}  $\cos\theta_{01} = b/\sqrt{a^2+b^2}$ (and
-its mirror at the other end) takes the values $0, \pm 1$ only at
-degenerate legs; $\pm\sqrt 2/2$ forces $a = b$ (excluded by distinct
-legs); $\pm 1/2$ forces $b = 0$ or $a = 0$; $\pm\sqrt 3/2$ forces
-$b = a\sqrt 3 \notin \mathbb{Q}$.
+\emph{Step 2 (Niven--Conway--Jones constraint).}  By
+Lemma~\ref{lem:perp-pairs} each non-perpendicular $\cos^2\theta_{i,i+1}$
+is rational in the legs.  If some $\theta_{i,i+1} \in \pi\mathbb{Q}$,
+then by the extended Niven theorem (Conway--Jones 1976) a rational angle
+with rational squared cosine satisfies $\cos\theta_{i,i+1} \in
+\{0, \pm\tfrac12, \pm\tfrac{\sqrt2}{2}, \pm\tfrac{\sqrt3}{2}, \pm 1\}$,
+i.e.\ $\cos^2\theta_{i,i+1} \in \{0, \tfrac14, \tfrac12, \tfrac34, 1\}$.
+The values $0$ (perpendicular) and $1$ (degenerate simplex) are
+excluded, so a genuine extra relation requires
+$\cos^2\theta_{i,i+1} \in \{\tfrac14, \tfrac12, \tfrac34\}$, i.e.\
+$\theta_{i,i+1} \in \{\pi/3, \pi/4, \pi/6\}$.
 
-\emph{Bridge from $\det Q_n$ to Mordell descent.}  We make the logical
-chain explicit.  Suppose $w \in \ker(\rho) \setminus \{1\}$.  Since $\rho$
-is the affine realisation of a Coxeter system, the translation component
-of $\rho(w)$ vanishes, forcing the $(n+1) \times (n+1)$ Lorentzian Gram
-matrix $Q_n(w)$ associated with the relation $w$ to be singular:
-$\det Q_n(w) = 0$.  Combined with the Schur-complement identity
-$\det Q_n = -\prod_{i=1}^n a_i^2$ of Lemma~\ref{lem:uniform-detQ} and
-the explicit dependence of $Q_n(w)$ on the legs $a_1, \ldots, a_n$
-recorded in Lemma~\ref{lem:perp-pairs}, this forces some
-non-perpendicular cosine to be a rational multiple of $\pi$, i.e.\ the
-legs $(a_{i-1}, a_i, a_{i+1})$ to satisfy one of the three Diophantine
-equations $\mathcal{V}_{1/4}, \mathcal{V}_{1/2}, \mathcal{V}_{3/4}$ below
-over $\mathbb{Q}_{>0}$.  Reducing to the rank-$1$ quotient produces an
-integral point on the Jacobian elliptic curve $E$ (Cremona label
-\texttt{24a1} for $\mathcal{V}_{1/4}$, \texttt{72a2} for
-$\mathcal{V}_{3/4}$, and the classical Mordell curve for $\mathcal{V}_{1/2}$).
-By Mordell--Weil, $E(\mathbb{Q})$ is finitely generated, and computation
-(verified in SageMath in \texttt{code/mordell\_24a1.sage} and
-\texttt{code/mordell\_72a2.sage}, with output committed in the project
-repository) shows all rational points are torsion of the form
-$(0, \pm a_i)$ or analogues, all of which correspond to the trivial
-relation $w = 1$ (equivalently $a_i c = 0$ or $a_i = c$, both excluded
-by the pairwise-distinct hypothesis).  Hence $\ker(\rho) = \{1\}$.  The
-chain is: \emph{kernel element $\Rightarrow$ Diophantine equation
-$\Rightarrow$ rational point on $E$ $\Rightarrow$ finite generation
-$\Rightarrow$ all rational points trivial $\Rightarrow$ $\rho$ faithful.}
+\emph{Step 3 (boundary dihedrals; elementary).}  The end edges have
+$\cos^2\theta_{01} = b^2/(a^2+b^2)$ in the local two-leg notation
+$(a, b) = (a_1, a_2)$, and symmetrically at the far end.  Setting this
+equal to $\tfrac14, \tfrac12, \tfrac34$ forces $b^2 = \tfrac13 a^2$,
+$b^2 = a^2$, $b^2 = 3 a^2$ respectively: the first and third give
+$b/a \in \{1/\sqrt3, \sqrt3\} \notin \mathbb{Q}$, contradicting
+rationality of the legs; the middle gives $a = b$, excluded by the
+pairwise-distinct hypothesis.  No boundary dihedral is a rational
+multiple of $\pi$, and no elliptic curve is needed here.
 
-\emph{Interior dihedrals.}  In the staircase coordinates, every
-interior $\cos^2\theta_{i,i+1}$ depends on at most three consecutive
-legs and reduces (after the quadratic-in-flanking-leg-squared analysis)
-to one of the three Diophantine varieties
+\emph{Step 4 (interior dihedrals; square-discriminant $\to$ Mordell).}
+An interior edge involves three consecutive legs $(a, b, c) =
+(a_i, a_{i+1}, a_{i+2})$ with $b$ the middle leg, and by
+Lemma~\ref{lem:perp-pairs}
+\[
+\cos^2\theta_{i,i+1} = \frac{a^2 c^2}{(a^2+b^2)(b^2+c^2)}.
+\]
+Setting this equal to a Niven value $\tfrac14, \tfrac12, \tfrac34$ and
+clearing denominators yields a quadratic in $B := b^2$.  Since the legs
+are rational, $B = b^2 \in \mathbb{Q}$, so this quadratic has a rational
+root only if its discriminant is a rational square.  The three
+discriminants are, up to a positive rational square factor, exactly the
+Diophantine varieties
 \[
 \mathcal{V}_{1/4}:\ a^4 + 14 a^2 c^2 + c^4 = m^2,
 \quad
 \mathcal{V}_{1/2}:\ a^4 + 6 a^2 c^2 + c^4 = k^2,
 \quad
-\mathcal{V}_{3/4}:\ 9 a^4 + 30 a^2 c^2 + 9 c^4 = k^2,
+\mathcal{V}_{3/4}:\ 9 a^4 + 30 a^2 c^2 + 9 c^4 = k^2
 \]
-in the two flanking legs.  All three are provably empty over
-distinct-coordinate $\mathbb{Q}_{>0}^2$:
+in the two flanking legs (this square-discriminant condition is the
+correct origin of the three varieties).  A rational interior angle thus
+forces a rational point on one of $\mathcal{V}_{1/4}, \mathcal{V}_{1/2},
+\mathcal{V}_{3/4}$ with $a, c \in \mathbb{Q}_{>0}$.  Each is a genus-$1$
+curve in $t = a/c$ whose Jacobian has rank $0$, so each has only finitely
+many rational points:
 \begin{itemize}[leftmargin=*,itemsep=0.1em]
-\item $\mathcal{V}_{1/2}$ by Mordell's classical rank-$0$ descent on
-the quartic $a^4 + 6 a^2 c^2 + c^4 = k^2$, equivalently the elliptic
-curve $E_6 : y^2 = x^3 - x$ with $\mathrm{rank}_{\mathbb{Q}}(E_6) = 0$
-and only the four torsion points $(0, 0), (\pm 1, 0), \infty$, all
-pulling back to $a c = 0$ or $a = c$ (Mordell, \emph{Diophantine Equations},
-§17; Cassels, \emph{Lectures on Elliptic Curves}, Ch.~II).
-\item $\mathcal{V}_{1/4}$ by rank-$0$ descent on its Jacobian elliptic
-curve $E_{1/4} : y^2 = x(x-12)(x-16)$, Cremona \texttt{24a1}
-(conductor $24$, rank $0$, torsion $\mathbb{Z}/4 \oplus \mathbb{Z}/2$).
-\item $\mathcal{V}_{3/4}$ by rank-$0$ descent on its Jacobian elliptic
-curve $E_{3/4} : y^2 = x(x-300)(x-1200)$, Cremona \texttt{72a2}
-(conductor $72$, rank $0$, torsion $\mathbb{Z}/2 \oplus \mathbb{Z}/2$).
+\item $\mathcal{V}_{1/4}$: Jacobian $y^2 = x(x-12)(x-16)$, Cremona
+\texttt{24a1} (conductor $24$, rank $0$, torsion
+$\mathbb{Z}/4 \oplus \mathbb{Z}/2$); rational points $t = a/c \in
+\{-1, 0, 1\}$.
+\item $\mathcal{V}_{1/2}$: Jacobian $y^2 = x^3 - x$, Cremona
+\texttt{32a2} (conductor $32$, rank $0$, torsion
+$\mathbb{Z}/2 \oplus \mathbb{Z}/2$, the four points
+$(0,0), (\pm 1, 0), \infty$); rational points $t = 0$.
+\item $\mathcal{V}_{3/4}$: Jacobian $y^2 = x(x-300)(x-1200)$, Cremona
+\texttt{72a2} (conductor $72$, rank $0$, torsion
+$\mathbb{Z}/2 \oplus \mathbb{Z}/2$); rational points $t = 0$.
 \end{itemize}
-All torsion points correspond to the quartic-trivial cases $a c = 0$ or
-$a = c$, both excluded by the pairwise-distinct hypothesis.
+Every such point gives $a c = 0$ or $a = \pm c$, all excluded by the
+pairwise-distinct, strictly positive hypothesis on the legs.  (Ranks,
+torsion, Cremona labels, and the rational-point determinations are
+verified in SageMath in \texttt{code/mordell/mordell\_24a1.sage},
+\texttt{mordell\_32a2.sage}, \texttt{mordell\_72a2.sage}, with output
+committed in the project repository.)  Hence no interior dihedral is a
+rational multiple of $\pi$ either.
 
-Combining faithfulness with the absence of closing relations,
-$\rho : W_n \to \mathrm{Aff}(\mathbb{R}^n)$ is the faithful geometric
-realisation of a right-angled Coxeter system, and
-$u_d = [t^d]\, W_n(t)$.
+\emph{Conclusion.}  By Steps 3--4 no non-perpendicular $\theta_{i,i+1}$
+lies in $\pi\mathbb{Q}$, so $m_{i,i+1} = \infty$, and with Step 1 the
+geometric Coxeter matrix is exactly~\eqref{eq:intended-coxeter}.  Thus
+$W_n^{\mathrm{geo}}$ is the Coxeter system with matrix
+\eqref{eq:intended-coxeter}, and Tits' theorem (Humphreys,
+\emph{Reflection Groups and Coxeter Groups}, Thm.~5.4) applied to
+\emph{this established system} gives faithfulness of the geometric
+representation $\rho$.  Consequently
+$u_d(O) = \#\{w : \ell(w) = d\} = [t^d]\, W_n(t)$; for $n = 3$ this is
+$9 \cdot 2^{d-2}$ for $d \ge 2$.
 \qed
 \end{proof}
 
@@ -726,8 +760,11 @@ verification of Theorem~\ref{thm:symbolic} uses SymPy in
 $\mathbb{Q}(a, b)$, and the Schur-complement identity of
 Lemma~\ref{lem:uniform-detQ} is verified symbolically in
 $\mathbb{Z}[a_{k-1}, a_k, a_{k+1}, S_{k-1}, P_{k-2}]$.  The rank-$0$
-descents on Cremona \texttt{24a1} and \texttt{72a2} are verified in
-SageMath via \texttt{EllipticCurve.rank()}.  The BFS values in
+descents on the Cremona curves \texttt{24a1}, \texttt{32a2}, and
+\texttt{72a2} (for $\mathcal{V}_{1/4}, \mathcal{V}_{1/2},
+\mathcal{V}_{3/4}$ respectively) are verified in SageMath via
+\texttt{EllipticCurve.rank()} and a direct rational-point determination,
+in \texttt{code/mordell/}.  The BFS values in
 Table~\ref{tab:tail} are computed by an exact-rational BFS through
 depth $25$ and a Rust disk-streaming BFS through depth $42$.  Source
 code and reproduce scripts accompany this paper in the project
@@ -749,8 +786,12 @@ relations symbolically over $\mathbb{Q}(a,b)$
 (Lemma~\ref{lem:uniform-detQ}), and the universality of the orbit-growth
 sequence through depth $22$ (Remark~\ref{rem:lean-universality}), the
 last holding simultaneously for all right triangles with unequal legs.
-Each Lean theorem is checked by the kernel; building the projects
-re-verifies every claim.
+The \texttt{ring}-based theorems (the symbolic length-$10$ relations and
+the Schur induction steps) are verified entirely by the Lean kernel; the
+remaining results use \texttt{native\_decide}, whose trusted base
+additionally includes the Lean compiler and the correctness of the
+hand-rolled \texttt{partial} functions for polynomial determinant and
+deduplication.  Building the projects re-verifies every claim.
 
 \section*{References}
 
