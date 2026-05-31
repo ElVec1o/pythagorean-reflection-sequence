@@ -948,6 +948,35 @@ additionally includes the Lean compiler and the correctness of the
 hand-rolled \texttt{partial} functions for polynomial determinant and
 deduplication.  Building the projects re-verifies every claim.
 
+\section*{On the use of AI}
+
+This paper was produced through extended human--AI collaboration, and we
+state the division of labour plainly.  The author is an independent
+researcher (and AI red-teamer), not a professional mathematician.  The
+mathematical development was AI-led under human direction: the principal
+model was Anthropic's Claude, cross-checked against other large language
+models in a multi-model, adversarial, peer-review-style process that
+caught and corrected several errors during development.  Concretely, the
+AI did the bulk of the work of deriving and writing the proofs and the
+text; it wrote the exact-rational breadth-first search and the Rust
+disk-streaming implementation; it produced the SymPy and SageMath
+symbolic verifications and the elliptic-curve (rank-$0$ descent)
+computations for the three Cremona curves; and it carried out the Lean~4
+formalization, including the eight length-$10$ relations and the Schur
+induction steps as kernel-checked \texttt{ring} proofs and the depth-$22$
+universality certificate via \texttt{native\_decide}.
+
+The author's role was to direct the investigation, to choose and pose
+the problems and the lines of attack, to run the adversarial
+cross-checking between models, and to verify that the computational
+artifacts (the BFS code, the SymPy/SageMath scripts, and the Lean
+developments) actually run and reproduce the stated results.  The author
+takes responsibility for the final text and for any remaining errors.
+The formal Lean~4 certificates are offered precisely so that the central
+machine-verifiable claims do not rest on trust in either the human or the
+AI contributors: they are checked by the Lean kernel (or, where noted,
+by \texttt{native\_decide}) and can be re-run independently.
+
 \section*{References}
 
 \begin{itemize}[leftmargin=2em,itemsep=0.2em]

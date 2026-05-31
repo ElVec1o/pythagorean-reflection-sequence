@@ -98,6 +98,22 @@ Seven sequences are prepared for OEIS submission (see `paper/OEIS/`):
 Vico Bonfioli (independent researcher). Contact via GitHub issues or via
 the corresponding-author address listed in the paper PDF.
 
+## On the use of AI
+
+This work was produced through extended human–AI collaboration. The
+mathematical development was AI-led under human direction: the principal
+model was Anthropic's Claude, cross-checked against other large language
+models in a multi-model, adversarial review process. The AI derived and
+wrote the proofs and the paper text, wrote the exact-rational BFS and Rust
+code, produced the SymPy/SageMath symbolic and elliptic-curve (rank-0
+descent) verifications, and carried out the Lean 4 formalization. The
+author (an independent researcher, not a professional mathematician)
+directed the investigation, ran the cross-checking, verified that the
+computational artifacts run and reproduce, and is responsible for the
+final text and any remaining errors. The Lean 4 certificates are provided
+precisely so the central machine-verifiable claims need not rest on trust
+in either the human or the AI contributors.
+
 ## License
 
 - Text and papers: CC-BY-4.0.
