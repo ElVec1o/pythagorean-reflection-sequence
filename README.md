@@ -56,7 +56,8 @@ onward. The universality theorem applies only to the unequal-leg regime.
 | `code/rust_bfs/` | Disk-streaming BFS implementation (Rust). Computes $u_d$ to depth 42. |
 | `code/rust_christol_bfs/` | Mod-$p$ BFS implementation for the universal realization (Rust). Used for the Christol attack route in `paper_extra`. |
 | `code/g_modules/` | Selected symbolic verification scripts for the universality proof and the McMullen-bridge negative result. |
-| `lean/` | **Lean 4 machine-checked verification** of the eight length-10 affine relations and the half-turn matrix on the (3,4,5) triangle. Core Lean only — no Mathlib. Builds in ~10s. |
+| `lean/` | **Lean 4 machine-checked verification** — 62 theorems, no Mathlib needed. Covers Coxeter relations, all 8 length-10 word equalities + matrix values, BFS computation of $a(0)..a(17)$, Fibonacci coincidence, and Schur $\det Q_n = -\prod a_i^2$ for $n = 2..6$. Builds in ~20s. |
+| `lean/with_mathlib/` | **Lean 4 + Mathlib symbolic verification** — proves all eight Table-1 relations hold over $\mathbb{Q}(a,b)$, i.e. simultaneously for every right triangle. Builds in ~40s after Mathlib cache. |
 | `reproduce/` | Minimal Python scripts for end-to-end recomputation. |
 | `data/` | Raw JSON output of the verification run. |
 | `LICENSE.md`, `CITATION.cff` | License (CC-BY-4.0 text / MIT code) and citation metadata. |
