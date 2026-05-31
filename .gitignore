@@ -34,3 +34,6 @@ target/
 .lake/
 build/
 lakefile.olean
+
+# Sage preparse artifacts
+*.sage.py
