@@ -286,5 +286,6 @@ theorem layer_9_eq_144 : layerCount 9  = 144 := by native_decide
 theorem layer_10_eq_225 : layerCount 10 = 225 := by native_decide
 theorem layer_11_eq_351 : layerCount 11 = 351 := by native_decide
 theorem layer_12_eq_554 : layerCount 12 = 554 := by native_decide
+theorem layer_13_eq_875 : layerCount 13 = 875 := by native_decide
 
 end ComputableUniversality
