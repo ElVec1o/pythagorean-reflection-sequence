@@ -65,6 +65,17 @@ outright. The conjecture is thereby reduced from an infinite group-theoretic
 verification to a concrete combinatorial-arithmetic invariant of the translation
 module.
 
+## Certified result (certify.py)
+
+`certify.py D` proves universality at all depths <= D for EVERY unequal-leg
+rational triangle, by combining the height theorem (c_T > 4D^2 unconditional)
+with a one-sided-exact modular evaluation of the full symbolic ball at every
+candidate rotation number with c_T <= 4D^2 (distinct mod q => distinct in Q(i)).
+Run at **D = 26** (636,805 ball elements, 862 candidates, ~2 min, < 1 GB RAM):
+all candidates collision-free. This extends the Lean kernel-checked record
+(depth 22) by four layers; trust base is Python/NumPy modular arithmetic.
+Now Theorem in the paper (S "An arithmetic effective universality theorem").
+
 ## Realistic next steps
 
 - Prove the P(1)-invariance lemma (easy induction) and the linear height bound
