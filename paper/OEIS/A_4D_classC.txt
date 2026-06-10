@@ -6,7 +6,7 @@
 
 %C The 4D right-corner orthoscheme has vertex V_0 with four mutually perpendicular legs of pairwise distinct positive lengths. W is the reflection group on the five bounding faces; a(n) is the number of distinct affine isometries at minimal W-word-length n.
 
-%C a(n) equals the coefficients of the exact Coxeter (Steinberg-Solomon) Poincare growth series of this diagram: a path on the five generators in which consecutive pairs are labelled infinity and non-consecutive pairs are perpendicular (m = 2, commuting). The realized growth is not the free-Coxeter maximum, since the perpendicular facet pairs commute.
+%C a(n) equals the coefficients of the exact Coxeter (Steinberg-Solomon) Poincaré growth series of this diagram: a path on the five generators in which consecutive pairs are labelled infinity and non-consecutive pairs are perpendicular (m = 2, commuting). The realized growth is not the free-Coxeter maximum, since the perpendicular facet pairs commute.
 
 %C Leg-independence (Class C): for pairwise distinct legs every consecutive dihedral angle is an irrational multiple of pi (Niven-Conway-Jones), which reduces faithfulness to rank-0 descent on specific elliptic curves; hence the affine representation is faithful, the realized growth equals the abstract Coxeter word-growth, and a(n) is a leg-independent closed form. This is proven (Bonfioli 2026), not conjectural.
 

@@ -31,7 +31,13 @@ only cross-reference them.
    4D (2,1,-1) order_03; 6D (3,0,-3) order_03; 3D-C (2) order_01; 5D=A396927 was
    (3,-1,-1) order_03. (3D-B has NO recurrence -> no such link, keep hard,more.)
    Michel asked for this on A396927; pre-supplying it avoids the round-trip.
-5. After pasting, re-read the live diff once and confirm (1)-(4) before clicking
+5. **Cross-refs for a shared recurrence.** Do NOT single out one sequence with an
+   idiosyncratic phrase like "same denominator polynomial" — many sequences share any
+   given signature. Instead cite the canonical relative (e.g. the named growth-rate /
+   Pell / metallic-mean sequence) and 1-2 sibling sequences with the SAME signature,
+   then rely on the Rec index link for the rest. Use "Poincaré" (with the accent), not
+   "Poincare". (Both were Michel asks on A396927.)
+6. After pasting, re-read the live diff once and confirm (1)-(5) before clicking
    propose. These are the things that wasted review cycles already.
 
 ---

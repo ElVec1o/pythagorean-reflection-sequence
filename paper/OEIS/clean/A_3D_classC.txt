@@ -8,7 +8,7 @@
 
 %C This is the base case (dimension 3) of the Class C family of right-corner orthoschemes.
 
-%C a(n) equals the coefficients of the exact Coxeter (Steinberg-Solomon) Poincare growth series of this diagram: a path on four nodes whose three consecutive pairs are labelled infinity and whose non-consecutive pairs are perpendicular (m = 2, hence commuting). The realized growth is therefore strictly below the free-Coxeter maximum.
+%C a(n) equals the coefficients of the exact Coxeter (Steinberg-Solomon) Poincaré growth series of this diagram: a path on four nodes whose three consecutive pairs are labelled infinity and whose non-consecutive pairs are perpendicular (m = 2, hence commuting). The realized growth is therefore strictly below the free-Coxeter maximum.
 
 %C Leg-independence (theorem): for pairwise distinct legs every consecutive dihedral angle is an irrational multiple of pi (Niven-Conway-Jones), which reduces the relevant non-degeneracy to rank-0 descent on specific elliptic curves; hence the affine representation of W is faithful, the realized growth equals the abstract Coxeter word-growth, and a(n) is a leg-independent closed form.
 
