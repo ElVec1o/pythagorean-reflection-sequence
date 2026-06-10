@@ -778,6 +778,112 @@ falsifiable by direct BFS all along: the first deviation sits at depth
 $33$, just beyond the depth-$30$ range to which the $(1,2)$ shape had
 ever been pushed.
 
+\subsection{The generic group is virtually the wreath product
+$\mathbb{Z} \wr \mathbb{Z}$}
+\label{ssec:lamplighter}
+
+Theorem~\ref{thm:translation-lattice} identifies the abstract
+isomorphism type of the generic group, and it turns out to be a central
+object of geometric group theory.
+
+\begin{theorem}[Lamplighter structure]
+\label{thm:lamplighter}
+Let $W_{\mathrm{gen}}$ denote the symbolic (generic) side-reflection
+group.  The set $H$ of elements whose linear part is a pure rotation
+$t^k$ is a normal subgroup of index $4$, and
+\[
+H \;=\; \mathcal{T} \rtimes \langle r \rangle
+\;\cong\; \mathbb{Z}[t^{\pm 1}] \rtimes_t \mathbb{Z}
+\;=\; \mathbb{Z} \wr \mathbb{Z},
+\qquad r = R_x R_h,
+\]
+the wreath product of $\mathbb{Z}$ by $\mathbb{Z}$.  Hence
+$W_{\mathrm{gen}}$ --- equivalently, the side-reflection group of
+\emph{every} right triangle with transcendental leg ratio
+(Corollary~\ref{cor:dichotomy}) --- is virtually
+$\mathbb{Z} \wr \mathbb{Z}$.  In particular it is:
+\begin{enumerate}[label=(\roman*),itemsep=0.1em]
+\item metabelian-by-finite, hence \emph{amenable}, while of
+exponential growth --- the coexistence for which
+$\mathbb{Z} \wr \mathbb{Z}$ is the textbook example, here realized by
+three mirrors of a Euclidean triangle;
+\item \emph{not finitely presentable}: by Baumslag's theorem
+(G.~Baumslag, \emph{Wreath products and finitely presented groups},
+Math.\ Z.\ 75 (1961), 22--28) the wreath product $A \wr B$ with
+$A \neq 1$ is finitely presented only when $B$ is finite, and finite
+presentability is a commensurability invariant.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$H$ is the kernel of the composite
+$W_{\mathrm{gen}} \twoheadrightarrow \widetilde Q \to
+\widetilde Q / \langle t \rangle$, where
+$\widetilde Q = \{\pm t^k \sigma^\delta\}$ is the linear-part
+quotient; $\langle t \rangle$ is normal in $\widetilde Q$ (the sign
+is central and $\sigma t \sigma^{-1} = t^{-1}$) of index $4$, so $H$
+is normal of index $4$.  Any element of $H$ with linear part $t^k$
+differs from $r^k$ by a pure translation, so
+$H = \mathcal{T}\,\langle r \rangle$ with
+$\langle r \rangle \cap \mathcal{T} = 1$, an internal semidirect
+product.  By Theorem~\ref{thm:translation-lattice},
+$f \mapsto 2(t-1)f$ is a $\mathbb{Z}[t^{\pm 1}]$-module isomorphism
+$\mathbb{Z}[t^{\pm 1}] \to \mathcal{T}$, and conjugation by $r$ acts
+on $\mathcal{T}$ as multiplication by $t$; since
+$\mathbb{Z}[t^{\pm 1}] = \bigoplus_{k \in \mathbb{Z}}
+\mathbb{Z}\,t^k$ with $t$ acting as the shift, the semidirect product
+is precisely $\mathbb{Z} \wr \mathbb{Z}$.  Amenability follows since
+$\mathcal{T}$ is abelian and $\widetilde Q$ is virtually abelian, so
+$W_{\mathrm{gen}}$ is metabelian-by-finite; exponential growth is
+classical for $\mathbb{Z} \wr \mathbb{Z}$ and passes to
+commensurable groups (consistently, by Milnor--Wolf a solvable group
+of non-polynomial growth must have exponential growth).
+\end{proof}
+
+Three consequences reframe the whole subject.
+
+\emph{(a) The algebraic shapes are the metabelian approximations.}
+For rational $T$ the specialized group $\rho_T(W)$ is virtually
+$\mathbb{Z}[\zeta_T^{\pm 1}] \rtimes_{\zeta_T} \mathbb{Z}$, a
+finitely generated metabelian affine group (a relative of the solvable
+Baumslag--Solitar groups); the isosceles case $c_T = 1$ degenerates to
+the crystallographic wallpaper group.  The one-parameter family of
+right triangles thus interpolates
+\[
+\text{wallpaper } (c_T = 1) \;\longrightarrow\;
+\text{solvable affine } (c_T < \infty) \;\longrightarrow\;
+\text{lamplighter } (\text{transcendental ratio}),
+\]
+and every right-triangle side-reflection group, of any shape, is
+amenable.
+
+\emph{(b) The deviation theory is a quantified convergence of marked
+groups.}  The sandwich of Corollary~\ref{cor:sandwich} says exactly
+that the Cayley ball of $\rho_T(W)$ (reflection generators) is
+isometric to that of $W_{\mathrm{gen}}$ up to radius $n_T \asymp c_T$:
+the rational-triangle groups converge to the virtually-lamplighter
+group in the space of marked groups, with \emph{exactly linear} rate
+in the arithmetic complexity of the shape, and with the first
+approximation girth measured ($n_{(1,2)} = 33$).  This places the
+present family inside the program of quantifying residual finiteness
+and group approximations (cf.\ K.~Bou-Rabee, \emph{Quantifying the
+residual finiteness of groups}, J.\ Algebra 323 (2010), 729--737)
+with completely explicit constants.
+
+\emph{(c) The growth question becomes a lamplighter growth question.}
+The sequence $u_d$ of \href{https://oeis.org/A396406}{A396406} is the
+growth series of a virtually-$\mathbb{Z}\wr\mathbb{Z}$ group with
+respect to the geometric \emph{reflection} generating set.  Growth
+series of wreath products with respect to standard generating sets can
+be rational (Parry, \emph{Growth series of some wreath products},
+Trans.\ Amer.\ Math.\ Soc.\ 331 (1992), 751--759), while the present
+data admits no recurrence of order $\le 19$; whether $\beta_2$ and the
+generating function of $u_d$ are algebraic is therefore a well-posed
+open problem about lamplighter growth in a non-standard generating set
+--- and the failure of finite presentability (Theorem~
+\ref{thm:lamplighter}(ii)) explains in hindsight why the Knuth--Bendix
+completion experiments of the companion document could never terminate.
+
 The structural facts behind Theorem~\ref{thm:universality}(i)
 factor through three lemmas.
 
