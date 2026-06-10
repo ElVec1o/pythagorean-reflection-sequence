@@ -43,7 +43,8 @@ for d in range(D):
 print(f"[{time.time()-T0:6.1f}s] BFS done. depth {D}, ball {len(ball)}")
 print("layer counts:", counts)
 EXPECT=[1,3,5,8,13,21,34,55,89,144,225,351,554,875,1345,2066,3203,4971,7574,
-        11543,17683,27108,41067,62263,94622,143881,217101,327832,495443,749195,1127236]
+        11543,17683,27108,41067,62263,94622,143881,217101,327832,495443,749195,
+        1127236,1697179,2554961,3848384,5777651,8679441,13031206,19574659,29338781]
 assert counts == EXPECT[:D+1], "SYMBOLIC COUNTS DO NOT MATCH UNIVERSAL SEQUENCE"
 print("symbolic counts == universal sequence: OK")
 
@@ -89,7 +90,7 @@ def sqrt_m1(q):
     raise RuntimeError
 
 # ---------- candidates ----------
-BOUND=4*D*D
+BOUND=2*D   # c_T | gcd(lead,const) and |extremes| <= 2D  =>  c_T <= 2D
 cands=[]   # (x,y,c)
 LIM=2*BOUND   # both-odd case: c=(x^2+y^2)/2 <= 4D^2  =>  x^2+y^2 <= 8D^2
 import math as m

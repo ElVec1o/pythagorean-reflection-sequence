@@ -68,13 +68,17 @@ module.
 ## Certified result (certify.py)
 
 `certify.py D` proves universality at all depths <= D for EVERY unequal-leg
-rational triangle, by combining the height theorem (c_T > 4D^2 unconditional)
-with a one-sided-exact modular evaluation of the full symbolic ball at every
-candidate rotation number with c_T <= 4D^2 (distinct mod q => distinct in Q(i)).
-Run at **D = 26** (636,805 ball elements, 862 candidates, ~2 min, < 1 GB RAM):
+rational triangle. SHARPENED BOUND: since D(zeta_T)=0 forces the primitive
+minimal polynomial Phi_T = c t^2 - e t + c to divide D in Z[t] (Gauss), c_T
+divides BOTH extreme coefficients, so c_T <= 2D (not 4D^2). The candidate set
+collapses (depth 30: just 16 rotation numbers, c in {5,13,17,25,29,37,41,53});
+each is killed by one-sided-exact modular evaluation of the full symbolic ball
+(distinct mod q => distinct in Q(i)).
+Run at **D = 30** (3,336,511 ball elements, 16 candidates, ~3 min, ~2 GB RAM):
 all candidates collision-free. This extends the Lean kernel-checked record
-(depth 22) by four layers; trust base is Python/NumPy modular arithmetic.
-Now Theorem in the paper (S "An arithmetic effective universality theorem").
+(depth 22) by eight layers; trust base is Python/NumPy modular arithmetic.
+Now Theorems in the paper (S "An arithmetic effective universality theorem"):
+effective bound u_d^T = u_d for all d < c_T/2, plus universality through 30.
 
 ## Realistic next steps
 

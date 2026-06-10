@@ -49,7 +49,7 @@
 \maketitle
 
 \begin{abstract}
-For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent, proven through depth $26$ and conjectured in general (Theorem~\ref{thm:universality}, Theorem~\ref{thm:universality-26}, Conjecture~\ref{conj:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  A triangle-independent symbolic normal form reduces extra collisions to the vanishing of bounded-height integer Laurent polynomials at the rotation number $\zeta_T = (a+bi)/(a-bi)$; the rational root theorem over $\mathbb{Z}[i]$ then yields an effective all-depths theorem --- every triangle whose reduced denominator norm $c_T$ exceeds $4d^2$ is universal at depth $d$ (Theorem~\ref{thm:effective-universality}) --- and, combined with a finite modular certificate over the remaining candidates, universality through depth $26$ for all unequal-leg rational triangles (Theorem~\ref{thm:universality-26}).  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent, proven through depth $30$ and conjectured in general (Theorem~\ref{thm:universality}, Theorem~\ref{thm:universality-30}, Conjecture~\ref{conj:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  A triangle-independent symbolic normal form reduces extra collisions to the vanishing of bounded-height integer Laurent polynomials at the rotation number $\zeta_T = (a+bi)/(a-bi)$; Gauss's lemma applied to the shape-dependent minimal polynomial $\Phi_T$ then yields an effective all-depths theorem --- a deviation at depth $d$ forces $c_T$ to divide both extreme coefficients of a realized word-difference, so every triangle with $c_T > 2d$ is universal at depth $d$ (Theorem~\ref{thm:effective-universality}) --- and, combined with a finite modular certificate over the sparse remaining candidates, universality through depth $30$ for all unequal-leg rational triangles (Theorem~\ref{thm:universality-30}).  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
 \end{abstract}
 
 \section{Setting}
@@ -115,7 +115,7 @@ sequence $u_d$ studied here, and do not address it.  The shape-dependence
 of the minimal polynomial of $\zeta_T$ (cf.\ Remark~\ref{rem:univ-conj-status})
 is the natural place a difference between shapes could appear; in
 \S\ref{ssec:arith-univ} we bound this effect effectively (it cannot
-affect $u_d$ unless $c_T \le 4d^2$), but whether it ever affects the
+affect $u_d$ unless $c_T \le 2d$), but whether it ever affects the
 orbit counts at all remains open.
 
 \section{The Coxeter-group identity (Fibonacci phase)}
@@ -304,13 +304,14 @@ requires that the word-difference sets arising in the BFS never realize
 an element distinguishing these shape-dependent ideals; equivalently,
 that a structural constraint prevents such an element from appearing at
 any depth.  This non-distinguishing is verified through depth $22$ by
-the proof above, through depth $26$ uniformly in $T$ by the arithmetic
+the proof above, through depth $30$ uniformly in $T$ by the arithmetic
 certificate of \S\ref{ssec:arith-univ}, and through depth $30$ by
 exact-rational BFS for the shapes $(1,2)$ and $(3,4)$.
 Theorem~\ref{thm:effective-universality} bounds the obstruction
 quantitatively: a shape-dependent collision at depth $d$ forces the
-reduced denominator norm $c_T$ to divide the squared extreme
-coefficients of a realized word-difference, so $c_T \le 4d^2$; whether
+shape's minimal polynomial $\Phi_T$ to divide a realized
+word-difference, hence $c_T$ to divide its extreme coefficients, so
+$c_T \le 2d$; whether
 the obstruction ever materializes remains open, and we make no claim
 that it must hold or that it must fail.
 \end{remark}
@@ -432,12 +433,18 @@ and $c_T \ge 5$; moreover $c_T = 1$ if and only if the triangle is
 isosceles (in which case $\zeta_T \in \{\pm i\}$ is a root of unity, and
 the orbit count genuinely degenerates,
 Remark~\ref{rem:isosceles-excluded}).
-\item If $u_e^T \neq u_e$ for some $e \le d$, then $c_T \le 4d^2$.
-Consequently \emph{every} triangle with $c_T > 4d^2$ satisfies
-universality at all depths $\le d$; equivalently, for every unequal-leg
-rational triangle,
+\item Let $\Phi_T(t) = c_T\, t^2 - e_T\, t + c_T \in \mathbb{Z}[t]$
+be the primitive integer polynomial with roots $\zeta_T^{\pm 1}$ (the
+shape-dependent minimal polynomial of
+Remark~\ref{rem:univ-conj-status}; e.g.\ $5t^2+6t+5$ for $(1,2)$).  If
+$u_e^T \neq u_e$ for some $e \le d$, then $\Phi_T$ divides a realized
+word-difference in $\mathbb{Z}[t]$; in particular $c_T$ divides
+\emph{both extreme coefficients} of that difference, so
+$c_T \le 2d$.  Consequently \emph{every} triangle with $c_T > 2d$
+satisfies universality at all depths $\le d$; equivalently, for every
+unequal-leg rational triangle,
 \[
-u_d^T = u_d \quad\text{for all } d < \tfrac{1}{2}\sqrt{c_T}\, .
+u_d^T = u_d \quad\text{for all } d < \tfrac{1}{2}\, c_T \, .
 \]
 \end{enumerate}
 \end{theorem}
@@ -454,41 +461,55 @@ $\equiv 1 \pmod 4$ is $5$.  Finally $c_T = 1$ iff $\zeta_T$ is a unit of
 $\mathbb{Z}[i]$, i.e.\ $\zeta_T \in \{\pm 1, \pm i\}$, which for
 positive legs means $a = b$.
 
-(ii) Take $D \neq 0$ as in \eqref{eq:collision-vanishing}, built from
-two ball elements of depth $\le d$; by
-Lemma~\ref{lem:symbolic-form} its coefficients are bounded by $2d$ in
-absolute value.  Normalize $\widetilde D = t^m D \in \mathbb{Z}[t]$ with
-$\widetilde D(0) \neq 0$.  Since
-$\widetilde D(\mu/\lambda) = 0$ with $\gcd(\mu, \lambda) = 1$, the
-rational root theorem in $\mathbb{Z}[i]$ gives
-$\lambda \mid \mathrm{lead}(\widetilde D)$ and
-$\mu \mid \mathrm{const}(\widetilde D)$.  Taking norms,
-$c_T = N(\lambda) \le |\mathrm{lead}(\widetilde D)|^2 \le (2d)^2$.
+(ii) Since $a, b > 0$, $\zeta_T$ is non-real, so its minimal polynomial
+over $\mathbb{Q}$ has degree $2$, with the conjugate root
+$\overline{\zeta_T} = \zeta_T^{-1}$; the primitive integer
+representative is $\Phi_T(t) = c_T t^2 - e_T t + c_T$ with
+$e_T = 2(a^2-b^2)$ when $a + b$ is odd and $e_T = a^2 - b^2$ when $a, b$
+are both odd ($\Phi_T$ is primitive: an odd prime dividing $c_T$ and
+$e_T$ would divide both $a^2+b^2$ and $a^2-b^2$, hence both $a$ and
+$b$).  Take $D \neq 0$ as in \eqref{eq:collision-vanishing}, built from
+two ball elements of depth $\le d$; by Lemma~\ref{lem:symbolic-form}
+its coefficients are bounded by $2d$ in absolute value.  Normalize
+$\widetilde D = t^m D \in \mathbb{Z}[t]$ with
+$\widetilde D(0) \neq 0$.  Since $\widetilde D$ has integer
+coefficients and vanishes at $\zeta_T$, Gauss's lemma gives
+$\widetilde D = \Phi_T \cdot E$ with $E \in \mathbb{Z}[t]$.
+Comparing top and bottom coefficients,
+$\mathrm{lead}(\widetilde D) = c_T\, \mathrm{lead}(E)$ and
+$\mathrm{const}(\widetilde D) = c_T\, \mathrm{const}(E)$, so $c_T$
+divides both extreme coefficients of $\widetilde D$ and
+$c_T \le |\mathrm{lead}(\widetilde D)| \le 2d$.
 \end{proof}
 
 Theorem~\ref{thm:effective-universality}(ii) is, to our knowledge, the
 first \emph{all-depths} universality statement: for each fixed depth it
-reduces the conjecture to the finitely many triangles with
-$c_T \le 4d^2$, and those can be checked mechanically.  Evaluating the
-entire symbolic ball at each candidate $\zeta$ in the finite field
-$\mathbb{F}_q$ (choosing $q \equiv 1 \pmod 4$ so that
-$i \in \mathbb{F}_q$, and $q \nmid c_T$) is \emph{one-sided exact}:
-images distinct mod $q$ are distinct in $\mathbb{Q}(i)$.  Running this
-certificate at depth $26$ (ball of $636{,}805$ symbolic elements,
-$862$ candidate rotation numbers with $c_T \le 2704$, two independent
-$31$-bit primes; script \texttt{code/zeta\_probe/certify.py}, total
-runtime about two minutes) found every candidate collision-free.
-Combined with Theorem~\ref{thm:effective-universality}(ii) for
-$c_T > 2704$ this proves:
+reduces the conjecture to the finitely many shapes with
+$c_T \le 2d$ --- by (i) these are very sparse: at depth $30$ the
+splitting condition leaves only
+$c_T \in \{5, 13, 17, 25, 29, 37, 41, 53\}$
+($16$ rotation numbers in all; e.g.\ $45 = 3^2 \cdot 5$ and $49 = 7^2$
+are excluded because $3$ and $7$ are inert) --- and those can be checked
+mechanically.  Evaluating the entire symbolic
+ball at each candidate $\zeta$ in the finite field $\mathbb{F}_q$
+(choosing $q \equiv 1 \pmod 4$ so that $i \in \mathbb{F}_q$, and
+$q \nmid c_T$) is \emph{one-sided exact}: images distinct mod $q$ are
+distinct in $\mathbb{Q}(i)$.  Running this certificate at depth $30$
+(ball of $3{,}336{,}511$ symbolic elements, $16$ candidate rotation
+numbers with $c_T \le 60$, two independent $31$-bit primes; script
+\texttt{code/zeta\_probe/certify.py}, total runtime under three
+minutes) found every candidate collision-free.  Combined with
+Theorem~\ref{thm:effective-universality}(ii) for $c_T > 60$ this
+proves:
 
-\begin{theorem}[Universality through depth 26]
-\label{thm:universality-26}
+\begin{theorem}[Universality through depth 30]
+\label{thm:universality-30}
 For every right triangle with positive unequal rational legs,
-$u_d^T = u_d$ for all $0 \le d \le 26$.
+$u_d^T = u_d$ for all $0 \le d \le 30$.
 \end{theorem}
 
-Theorem~\ref{thm:universality-26} extends the kernel-checked Lean bound
-of Remark~\ref{rem:lean-universality} by four further layers at
+Theorem~\ref{thm:universality-30} extends the kernel-checked Lean bound
+of Remark~\ref{rem:lean-universality} by eight further layers at
 negligible computational cost; the trust base is the Python/NumPy
 modular-arithmetic script rather than the Lean kernel.  We note two
 structural facts visible in the same computations, recorded here as
