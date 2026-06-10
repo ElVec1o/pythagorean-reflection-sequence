@@ -6,17 +6,22 @@
 
 %C The 4D right-corner orthoscheme has vertex V_0 with four mutually perpendicular legs of pairwise distinct positive lengths. W is the reflection group on the five bounding faces; a(n) is the number of distinct affine isometries at minimal W-word-length n.
 
-%C For pairwise distinct legs the affine representation is unconditionally faithful in every dimension n >= 3 (Bonfioli 2026, Theorem of Class C unconditional faithfulness, via Schur-complement identity det Q_n = -prod a_i^2 and Mordell descent), so a(n) attains the Steinberg upper bound exactly.
+%C a(n) equals the coefficients of the exact Coxeter (Steinberg-Solomon) Poincare growth series of this diagram: a path on the five generators in which consecutive pairs are labelled infinity and non-consecutive pairs are perpendicular (m = 2, commuting). The realized growth is not the free-Coxeter maximum, since the perpendicular facet pairs commute.
+
+%C Leg-independence (Class C): for pairwise distinct legs every consecutive dihedral angle is an irrational multiple of pi (Niven-Conway-Jones), which reduces faithfulness to rank-0 descent on specific elliptic curves; hence the affine representation is faithful, the realized growth equals the abstract Coxeter word-growth, and a(n) is a leg-independent closed form. This is proven (Bonfioli 2026), not conjectural.
 
 %F G.f.: (1 + t)^3 / (1 - 2 t - t^2 + t^3).
 
 %F Linear recurrence: a(n) = 2 a(n-1) + a(n-2) - a(n-3) for n >= 4.
 
-%F Asymptotic ratio a(n+1)/a(n) -> 1 + 2 cos(2 pi / 7) = 2.2469796..., the largest real root of x^3 - x^2 - 2 x + 1 (the n = 4 case of r_n = 1 + 2 cos(2 pi / (n+3))).
+%F Asymptotic ratio a(n+1)/a(n) -> 1 + 2 cos(2 pi / 7) = 2.2469796..., the largest real root of x^3 - 2 x^2 - x + 1 (the reciprocal polynomial of the g.f. denominator 1 - 2 t - t^2 + t^3).
 
 %H V. Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, 2026.
 
-%Y Cf. A______ (3D pairwise distinct legs), A______ (5D), A______ (6D).
+%H V. Bonfioli, <a href="https://doi.org/10.5281/zenodo.20370090">Data and proofs (Zenodo)</a>, doi:10.5281/zenodo.20370090, 2026.
+
+%Y Cf. A396406 (2D right-triangle reflection sequence, unequal legs).
+%Y Cf. A008137 (3D all-equal-legs cube corner; affine Weyl group B~_3 growth series).
 
 %K nonn,easy,more
 
@@ -24,4 +29,4 @@
 
 %E More terms needed.
 
-%A Vico Bonfioli, 2026
+%A _Vico Bonfioli_, 2026
