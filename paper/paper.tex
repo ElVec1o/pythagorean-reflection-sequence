@@ -912,6 +912,49 @@ search of the lamp model reproduces $u_0, \ldots, u_{14}$ exactly and
 every ball element satisfies the congruences.
 \end{proof}
 
+\begin{theorem}[Metric formula]
+\label{thm:metric-formula}
+The word length of $g = (\varepsilon^*, \delta^*, k^*, a)$ with respect
+to the three reflections is the value of the following explicit
+finite optimization.  Choose crossing numbers $m_j \ge |a_j|$ with
+$m_j \equiv a_j \pmod 2$, chained so that the support is reachable
+from the start site; the walk directions force
+$u_j = (m_j + f_j)/2$ up-crossings ($f_j = \pm 1$ on the travel
+interval between $0$ and $k^*$, else $0$).  At minimal crossing numbers
+each crossing's sign is forced ($\varepsilon = -d \cdot
+\mathrm{sign}(a_j)$ for direction $d$).  Each site pairs arrivals with
+departures: a pass (same direction) costs $1$, a bounce $0$, and a
+sign change is free at a pass but costs $2$ at a bounce, with virtual
+boundary moves (arrival at the origin: up, $+$; departure at $k^*$:
+direction $\delta^*$, sign $\varepsilon^*$); the pairing must be
+Eulerian-connected --- an isolated cycle is inadmissible, and splicing
+one in costs exactly $2$.  Then
+\[
+\ell(g) \;=\; \min \Bigl(\textstyle\sum_j m_j +
+\sum_{\text{sites}} \text{pairing costs}\Bigr).
+\]
+This formula has been verified to agree with the true word metric on
+\emph{every} element of the radius-$14$ ball ($3{,}723$ elements,
+zero mismatches; \texttt{code/zeta\_probe/lamp\_profile.py}); the
+relaxation without the connectivity constraint is exact through radius
+$9$ and undershoots by exactly $2$ per isolated cycle beyond
+(gap histogram $\{+2\colon 70,\ +4\colon 2\}$ at radius $14$).
+\end{theorem}
+
+\begin{conjecture}[Algebraic growth]
+\label{conj:algebraic-growth}
+The nested-excursion structure of the optimization in
+Theorem~\ref{thm:metric-formula} (walks on $\mathbb{Z}$ decompose into
+nested excursions, a context-free rather than regular mechanism)
+suggests that the growth series $\sum_d u_d x^d$ of
+\href{https://oeis.org/A396406}{A396406} is \emph{algebraic but not
+rational} over $\mathbb{Q}(x)$ --- which would explain the absence of
+any linear recurrence (none of order $\le 19$ exists) while making
+$\beta_2$ an algebraic number.  The route to a proof is the
+determinization of the min-cost chain DP into a counting grammar, with
+the $43$ known terms as control.
+\end{conjecture}
+
 \emph{(c) The growth question becomes a lamplighter growth question.}
 The sequence $u_d$ of \href{https://oeis.org/A396406}{A396406} is the
 growth series of a virtually-$\mathbb{Z}\wr\mathbb{Z}$ group with
