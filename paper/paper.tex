@@ -49,7 +49,7 @@
 \maketitle
 
 \begin{abstract}
-For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent through depth $30$ (Theorem~\ref{thm:universality-30}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The natural conjecture that this independence persists at all depths is \textbf{refuted}: for every rational --- indeed every algebraic --- shape we construct an explicit nontrivial word in $\ker \rho_T$ (a product of conjugated glide-reflection squares realizing the translation $2(t^{-1}-1)\mu_T(t)$, which evaluates to $0$ at the rotation number $\zeta_T$), so each fixed shape deviates from the universal sequence at a first depth $n_T$ sandwiched by $\max(31, c_T/2) \le n_T \le 24c_T + 8$ (Theorem~\ref{thm:non-universality}, Corollary~\ref{cor:sandwich}).  The universal sequence is thus exactly the orbit growth of the \emph{generic} right triangle, realized precisely by transcendental leg ratios (Corollary~\ref{cor:dichotomy}).  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  A triangle-independent symbolic normal form reduces extra collisions to the vanishing of bounded-height integer Laurent polynomials at the rotation number $\zeta_T = (a+bi)/(a-bi)$; Gauss's lemma applied to the shape-dependent minimal polynomial $\mu_T$ then yields an effective all-depths theorem --- a deviation at depth $d$ forces $c_T$ to divide both extreme coefficients of a realized word-difference, so every triangle with $c_T > 2d$ is universal at depth $d$ (Theorem~\ref{thm:effective-universality}) --- and, combined with a finite modular certificate over the sparse remaining candidates, universality through depth $30$ for all unequal-leg rational triangles (Theorem~\ref{thm:universality-30}).  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent through depth $32$, and this is sharp: the $(1,2)$ triangle deviates at depth $33$ (Theorem~\ref{thm:universality-30}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The natural conjecture that this independence persists at all depths is \textbf{refuted}: for every rational --- indeed every algebraic --- shape we construct an explicit nontrivial word in $\ker \rho_T$ (a product of conjugated glide-reflection squares realizing the translation $2(t^{-1}-1)\mu_T(t)$, which evaluates to $0$ at the rotation number $\zeta_T$), so each fixed shape deviates from the universal sequence at a first depth $n_T$ sandwiched by $\max(31, c_T/2) \le n_T \le 24c_T + 8$ (Theorem~\ref{thm:non-universality}, Corollary~\ref{cor:sandwich}).  The universal sequence is thus exactly the orbit growth of the \emph{generic} right triangle, realized precisely by transcendental leg ratios (Corollary~\ref{cor:dichotomy}).  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  A triangle-independent symbolic normal form reduces extra collisions to the vanishing of bounded-height integer Laurent polynomials at the rotation number $\zeta_T = (a+bi)/(a-bi)$; Gauss's lemma applied to the shape-dependent minimal polynomial $\mu_T$ then yields an effective all-depths theorem --- a deviation at depth $d$ forces $c_T$ to divide both extreme coefficients of a realized word-difference, so every triangle with $c_T > 2d$ is universal at depth $d$ (Theorem~\ref{thm:effective-universality}) --- and, combined with a finite modular certificate over the sparse remaining candidates, sharp uniform universality through depth $32$ (Theorem~\ref{thm:universality-30}).  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
 \end{abstract}
 
 \section{Setting}
@@ -521,19 +521,25 @@ minutes) found every candidate collision-free.  Combined with
 Theorem~\ref{thm:effective-universality}(ii) for $c_T > 60$ this
 proves:
 
-\begin{theorem}[Universality through depth 30]
+\begin{theorem}[Sharp uniform universality: depth 32]
 \label{thm:universality-30}
 For every right triangle with positive unequal rational legs,
-$u_d^T = u_d$ for all $0 \le d \le 30$.
+$u_d^T = u_d$ for all $0 \le d \le 32$.  The bound is \emph{sharp}:
+the $(1,2)$ triangle satisfies $u_{33}^{(1,2)} = u_{33} - 30 =
+3{,}848{,}354 < u_{33}$, so depth $32$ is the exact threshold below
+which the orbit count is shape-independent.
 \end{theorem}
 
-Theorem~\ref{thm:universality-30} extends the kernel-checked Lean bound
-of Remark~\ref{rem:lean-universality} by eight further layers at
-negligible computational cost; the trust base is the Python/NumPy
-modular-arithmetic script rather than the Lean kernel.  In light of the
-next subsection, Theorem~\ref{thm:universality-30} is best read as a
-\emph{lower bound on the first deviation depth}: $n_T \ge 31$ for
-every unequal-leg rational triangle.
+The certificate was run in Python/NumPy at depth $30$
+(\texttt{certify.py}) and re-implemented in Rust
+(\texttt{certify38\_rust/}) through depth $36$: the generic layer
+counts match the published values through depth $36$, all $22$
+candidate rotation numbers with $c_T \le 72$ are collision-free through
+depth $32$, and the single collision beyond is the $(1,2)$ deviation
+quantified below.  The trust base is exact modular arithmetic with two
+independent $31$-bit primes rather than the Lean kernel; it extends the
+kernel-checked Lean bound of Remark~\ref{rem:lean-universality} by ten
+further layers.
 
 \subsection{Resolution of the conjecture: every algebraic shape
 eventually deviates}
@@ -622,13 +628,15 @@ For every unequal-leg rational triangle let
 $n_T := \min\{d : u_d^T \neq u_d\}$, which is finite by
 Theorem~\ref{thm:non-universality}.  Then
 \[
-\max\bigl(31,\ \tfrac{1}{2}\,c_T\bigr) \;\le\; n_T \;\le\;
+\max\bigl(33,\ \tfrac{1}{2}\,c_T\bigr) \;\le\; n_T \;\le\;
 6\,(2c_T + |e_T|) + 8 \;\le\; 24\,c_T + 8,
 \]
 the lower bounds by Theorem~\ref{thm:effective-universality}(ii) and
 Theorem~\ref{thm:universality-30}, the upper bound by the witness
 word.  The first deviation depth is pinned to linear growth in the
-arithmetic complexity $c_T$ of the shape.
+arithmetic complexity $c_T$ of the shape.  The bounds are realistic:
+for $(1,2)$ they read $33 \le n_{(1,2)} \le 104$, and the measured
+value is $n_{(1,2)} = 33$ --- the certified lower bound is attained.
 \end{corollary}
 
 \begin{corollary}[Transcendence dichotomy]
@@ -666,13 +674,28 @@ generic sequence are certified shape-independent
 $u_{31}, \ldots, u_{38}$ were computed by exact BFS of the $(3,4)$
 triangle; they equal the generic terms provided $n_{(3,4)} > 38$, which
 is consistent with --- but not yet implied by --- the sandwich
-$31 \le n_{(3,4)} \le 392$.  Extending the certificate of
-Theorem~\ref{thm:universality-30} to depth $38$ (a straightforward port
-of \texttt{certify.py} to a compiled language) would settle this; we
-flag it as the one outstanding verification.  A falsifiable near-term
-prediction of Theorem~\ref{thm:non-universality}: exact BFS of the
-$(1,2)$ triangle must deviate from the generic sequence at some depth
-$n_{(1,2)} \in [31, 104]$.
+$31 \le n_{(3,4)} \le 392$.  The Rust port of the certificate (\texttt{certify38\_rust/}) has
+settled this through depth $36$: $u_{31}, \ldots, u_{36}$ are certified
+generic, with $u_{37}, u_{38}$ to follow from the depth-$38$ run.
+
+\textbf{The predicted deviation has been observed.}
+Theorem~\ref{thm:non-universality} predicted
+$n_{(1,2)} \in [31, 104]$; the certificate finds
+\[
+n_{(1,2)} = 33:
+\]
+the $(1,2)$ triangle agrees with the generic sequence through depth
+$32$ and merges exactly $30$ pairs of generic elements at depth $33$
+($u_{33}^{(1,2)} = 3{,}848{,}354$ versus $u_{33} = 3{,}848{,}384$), the
+deficit growing to $123$ by depth $34$ and $1{,}159$ by depth $36$
+(each verified with two independent $31$-bit primes).  The other
+$c_T = 5$ shape $(1,3)$ --- with the \emph{different} minimal
+polynomial $5t^2 - 8t + 5$ --- remains collision-free through depth
+$36$, confirming that the deviation depth is governed by the shape's
+minimal polynomial, not merely by $c_T$.  The conjecture was thus
+falsifiable by direct BFS all along: the first deviation sits at depth
+$33$, just beyond the depth-$30$ range to which the $(1,2)$ shape had
+ever been pushed.
 
 The structural facts behind Theorem~\ref{thm:universality}(i)
 factor through three lemmas.

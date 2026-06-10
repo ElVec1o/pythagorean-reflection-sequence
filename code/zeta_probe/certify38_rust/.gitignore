@@ -1,0 +1,4 @@
+target/
+certify38_state/
+*.log
+*_final.txt

@@ -1,0 +1,585 @@
+// certify38 — uniform-in-T universality certificate at depth D (default 38).
+//
+// WHAT IT PROVES (if all checks pass):
+//   n_T > D for EVERY right triangle with positive unequal rational legs,
+//   i.e. the orbit-growth sequence of every such triangle equals the generic
+//   (symbolic) sequence through depth D.  In particular, for D = 38, the
+//   published OEIS A396406 terms a(31)..a(38) (computed from the (3,4)
+//   triangle alone) are certified to be the generic terms.
+//
+// METHOD:
+//   Pass 1: exact symbolic BFS over the triangle-independent normal form
+//     (eps, delta, k, P), P an integer Laurent polynomial; layer counts are
+//     compared against the published A396406 values.
+//   Pass 2: by the effective theorem (Gauss's lemma on the shape's minimal
+//     polynomial mu_T = c t^2 - e t + c), a deviation at depth <= D forces
+//     c_T <= 2D.  The finitely many candidate rotation numbers zeta with
+//     c <= 2D are each checked by evaluating the ENTIRE symbolic ball at
+//     zeta modulo a 31-bit prime q == 1 (mod 4).  Distinct mod q implies
+//     distinct in Q(i), so a full-count result is an exact certificate.
+//     Any deficit is re-checked with a second independent prime.
+//
+// CRASH SAFETY: BFS layers are checkpointed to ./certify38_state/ball.bin
+//   (+ layers.txt); completed candidates are recorded in results.txt.
+//   Re-running the same command resumes where it left off.
+//
+// Usage:  cargo run --release            (depth 38)
+//         cargo run --release -- 20      (smaller depth, for testing)
+
+use std::collections::HashSet;
+use std::fs::{self, OpenOptions};
+use std::io::{BufWriter, Read, Write};
+use std::time::Instant;
+
+const PUBLISHED: [u64; 39] = [
+    1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554, 875, 1345, 2066, 3203, 4971, 7574, 11543,
+    17683, 27108, 41067, 62263, 94622, 143881, 217101, 327832, 495443, 749195, 1127236, 1697179,
+    2554961, 3848384, 5777651, 8679441, 13031206, 19574659, 29338781,
+];
+
+#[derive(Clone)]
+struct Elem {
+    eps: i8,
+    delta: u8,
+    k: i16,
+    p: Vec<(i16, i16)>, // sorted by exponent ascending; no zero coeffs
+}
+
+fn merge_add(a: &[(i16, i16)], b: &[(i16, i16)]) -> Vec<(i16, i16)> {
+    let mut out = Vec::with_capacity(a.len() + b.len());
+    let (mut i, mut j) = (0usize, 0usize);
+    while i < a.len() || j < b.len() {
+        if j >= b.len() || (i < a.len() && a[i].0 < b[j].0) {
+            out.push(a[i]);
+            i += 1;
+        } else if i >= a.len() || b[j].0 < a[i].0 {
+            out.push(b[j]);
+            j += 1;
+        } else {
+            let c = a[i].1 + b[j].1;
+            if c != 0 {
+                out.push((a[i].0, c));
+            }
+            i += 1;
+            j += 1;
+        }
+    }
+    out
+}
+
+// compose: (g o h), i.e. apply h first.  General law:
+//   delta_g = 0:  (eg*eh, dh,   kg+kh, eg*t^kg*Ph        + Pg)
+//   delta_g = 1:  (eg*eh, 1-dh, kg-kh, eg*t^kg*Ph(t^-1)  + Pg)
+fn compose(g: &Elem, h: &Elem) -> Elem {
+    let eps = g.eps * h.eps;
+    if g.delta == 0 {
+        let terms: Vec<(i16, i16)> = h
+            .p
+            .iter()
+            .map(|&(e, c)| (e + g.k, (g.eps as i16) * c))
+            .collect();
+        Elem {
+            eps,
+            delta: h.delta,
+            k: g.k + h.k,
+            p: merge_add(&terms, &g.p),
+        }
+    } else {
+        let terms: Vec<(i16, i16)> = h
+            .p
+            .iter()
+            .rev()
+            .map(|&(e, c)| (g.k - e, (g.eps as i16) * c))
+            .collect();
+        Elem {
+            eps,
+            delta: 1 - h.delta,
+            k: g.k - h.k,
+            p: merge_add(&terms, &g.p),
+        }
+    }
+}
+
+const OFF: i16 = 120; // exponent/k offset for byte encoding (|k|,|e| <= D <= 60 safe)
+
+fn encode(e: &Elem, buf: &mut Vec<u8>) {
+    buf.clear();
+    buf.push(if e.eps > 0 { 1 } else { 0 });
+    buf.push(e.delta);
+    buf.push((e.k + OFF) as u8);
+    buf.push(e.p.len() as u8);
+    for &(ex, c) in &e.p {
+        buf.push((ex + OFF) as u8);
+        let cb = c.to_le_bytes();
+        buf.push(cb[0]);
+        buf.push(cb[1]);
+    }
+}
+
+fn decode(buf: &[u8], pos: &mut usize) -> Elem {
+    let eps = if buf[*pos] == 1 { 1i8 } else { -1i8 };
+    let delta = buf[*pos + 1];
+    let k = buf[*pos + 2] as i16 - OFF;
+    let n = buf[*pos + 3] as usize;
+    let mut p = Vec::with_capacity(n);
+    let mut q = *pos + 4;
+    for _ in 0..n {
+        let ex = buf[q] as i16 - OFF;
+        let c = i16::from_le_bytes([buf[q + 1], buf[q + 2]]);
+        p.push((ex, c));
+        q += 3;
+    }
+    *pos = q;
+    Elem { eps, delta, k, p }
+}
+
+fn rec_len(buf: &[u8], pos: usize) -> usize {
+    4 + 3 * (buf[pos + 3] as usize)
+}
+
+// ---------- modular arithmetic ----------
+fn pow_mod(mut b: u64, mut e: u64, m: u64) -> u64 {
+    let mut r = 1u64;
+    b %= m;
+    while e > 0 {
+        if e & 1 == 1 {
+            r = r * b % m;
+        }
+        b = b * b % m;
+        e >>= 1;
+    }
+    r
+}
+fn is_prime(n: u64) -> bool {
+    for p in [2u64, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37] {
+        if n % p == 0 {
+            return n == p;
+        }
+    }
+    let mut d = n - 1;
+    let mut r = 0;
+    while d % 2 == 0 {
+        d /= 2;
+        r += 1;
+    }
+    'outer: for a in [2u64, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37] {
+        let mut x = pow_mod(a, d, n);
+        if x == 1 || x == n - 1 {
+            continue;
+        }
+        for _ in 0..r - 1 {
+            x = x * x % n;
+            if x == n - 1 {
+                continue 'outer;
+            }
+        }
+        return false;
+    }
+    true
+}
+fn sqrt_m1(q: u64) -> u64 {
+    for z in 2..1000u64 {
+        let i = pow_mod(z, (q - 1) / 4, q);
+        if i * i % q == q - 1 {
+            return i;
+        }
+    }
+    panic!("no sqrt(-1) mod {}", q);
+}
+fn inv_mod(a: u64, q: u64) -> u64 {
+    pow_mod(a, q - 2, q)
+}
+fn gcd(a: u64, b: u64) -> u64 {
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
+}
+
+struct Logger {
+    f: std::fs::File,
+}
+impl Logger {
+    fn new(path: &str) -> Logger {
+        Logger {
+            f: OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(path)
+                .unwrap(),
+        }
+    }
+    fn log(&mut self, s: &str) {
+        println!("{}", s);
+        let _ = writeln!(self.f, "{}", s);
+        let _ = self.f.flush();
+    }
+}
+
+fn main() {
+    let t0 = Instant::now();
+    let args: Vec<String> = std::env::args().collect();
+    let depth: usize = if args.len() > 1 {
+        args[1].parse().expect("depth must be an integer")
+    } else {
+        38
+    };
+    assert!(depth <= 60, "encoding supports depth <= 60");
+    let bound = 2 * depth as u64; // c_T <= 2d at any deviation depth <= d
+
+    let state = "certify38_state";
+    fs::create_dir_all(state).unwrap();
+    let ball_path = format!("{}/ball_d{}.bin", state, depth);
+    let layers_path = format!("{}/layers_d{}.txt", state, depth);
+    let results_path = format!("{}/results_d{}.txt", state, depth);
+    let mut lg = Logger::new(&format!("certify{}.log", depth));
+
+    lg.log(&format!(
+        "=== certify38 ===  depth {}  candidate bound c <= {}  (started)",
+        depth, bound
+    ));
+
+    // ---------- resume info ----------
+    let mut done_layers: Vec<(usize, u64, u64)> = Vec::new(); // (d, count, end_offset)
+    if let Ok(txt) = fs::read_to_string(&layers_path) {
+        for line in txt.lines() {
+            let v: Vec<&str> = line.split_whitespace().collect();
+            if v.len() == 3 {
+                done_layers.push((
+                    v[0].parse().unwrap(),
+                    v[1].parse().unwrap(),
+                    v[2].parse().unwrap(),
+                ));
+            }
+        }
+    }
+
+    // ---------- Pass 1: symbolic BFS with checkpointing ----------
+    let gens = [
+        Elem { eps: 1, delta: 1, k: 0, p: vec![] },
+        Elem { eps: -1, delta: 1, k: 0, p: vec![] },
+        Elem { eps: 1, delta: 1, k: -1, p: vec![(-1, -1), (0, 1)] },
+    ];
+
+    let mut ball: Vec<u8>; // flat records, layers in order
+    let mut counts: Vec<u64>;
+    {
+        let mut seen: HashSet<Box<[u8]>> = HashSet::with_capacity(1 << 20);
+        let mut frontier_off: Vec<(usize, usize)>; // (pos,len) into ball
+        let mut buf = Vec::new();
+
+        if !done_layers.is_empty() {
+            // resume: load ball.bin up to last completed offset, rebuild seen
+            let (last_d, _, end_off) = *done_layers.last().unwrap();
+            lg.log(&format!(
+                "[resume] found {} completed layers (through depth {}), rebuilding state...",
+                done_layers.len(),
+                last_d
+            ));
+            let mut f = fs::File::open(&ball_path).expect("ball.bin missing for resume");
+            ball = Vec::with_capacity(end_off as usize);
+            f.take(end_off).read_to_end(&mut ball).unwrap();
+            // rebuild seen + last frontier offsets
+            let last_start = if done_layers.len() >= 2 {
+                done_layers[done_layers.len() - 2].2 as usize
+            } else {
+                0
+            };
+            frontier_off = Vec::new();
+            let mut pos = 0usize;
+            while pos < ball.len() {
+                let l = rec_len(&ball, pos);
+                seen.insert(ball[pos..pos + l].to_vec().into_boxed_slice());
+                if pos >= last_start {
+                    frontier_off.push((pos, l));
+                }
+                pos += l;
+            }
+            counts = done_layers.iter().map(|x| x.1).collect();
+            lg.log(&format!(
+                "[resume] {} elements restored, frontier {}, {:.1}s",
+                seen.len(),
+                frontier_off.len(),
+                t0.elapsed().as_secs_f64()
+            ));
+        } else {
+            // fresh start
+            let _ = fs::remove_file(&ball_path);
+            let _ = fs::remove_file(&layers_path);
+            let _ = fs::remove_file(&results_path);
+            ball = Vec::new();
+            let ident = Elem { eps: 1, delta: 0, k: 0, p: vec![] };
+            encode(&ident, &mut buf);
+            seen.insert(buf.clone().into_boxed_slice());
+            frontier_off = vec![(0, buf.len())];
+            ball.extend_from_slice(&buf);
+            counts = vec![1];
+            let mut lf = OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(&layers_path)
+                .unwrap();
+            writeln!(lf, "0 1 {}", ball.len()).unwrap();
+            let mut bf = OpenOptions::new()
+                .create(true)
+                .write(true)
+                .open(&ball_path)
+                .unwrap();
+            bf.write_all(&ball).unwrap();
+        }
+
+        // expand layers
+        for d in counts.len()..=depth {
+            let mut next_off: Vec<(usize, usize)> = Vec::new();
+            let layer_start = ball.len();
+            for &(pos, len) in &frontier_off {
+                let mut p = pos;
+                let _ = len;
+                let h = decode(&ball, &mut p);
+                for g in &gens {
+                    let ne = compose(g, &h);
+                    encode(&ne, &mut buf);
+                    if !seen.contains(buf.as_slice()) {
+                        seen.insert(buf.clone().into_boxed_slice());
+                        let at = ball.len();
+                        ball.extend_from_slice(&buf);
+                        next_off.push((at, buf.len()));
+                    }
+                }
+            }
+            let cnt = next_off.len() as u64;
+            counts.push(cnt);
+            // checkpoint: append new layer bytes + record
+            let mut bf = OpenOptions::new().append(true).open(&ball_path).unwrap();
+            bf.write_all(&ball[layer_start..]).unwrap();
+            bf.flush().unwrap();
+            let mut lf = OpenOptions::new().append(true).open(&layers_path).unwrap();
+            writeln!(lf, "{} {} {}", d, cnt, ball.len()).unwrap();
+            let pubv = if d < PUBLISHED.len() { PUBLISHED[d] as i64 } else { -1 };
+            let status = if pubv < 0 {
+                "(no published value)".to_string()
+            } else if pubv as u64 == cnt {
+                "OK".to_string()
+            } else {
+                format!("*** MISMATCH vs published {} ***", pubv)
+            };
+            lg.log(&format!(
+                "[bfs] layer {:2}: {:>10}  {}  [{:.1}s, ball {}]",
+                d,
+                cnt,
+                status,
+                t0.elapsed().as_secs_f64(),
+                seen.len()
+            ));
+            frontier_off = next_off;
+        }
+        lg.log(&format!(
+            "[bfs] done. ball = {} elements, {} MB flat, {:.1}s",
+            seen.len(),
+            ball.len() / 1_000_000,
+            t0.elapsed().as_secs_f64()
+        ));
+        // seen dropped here (frees RAM before pass 2)
+    }
+
+    let nball: u64 = counts.iter().sum();
+
+    // published-vs-generic comparison summary
+    let mut mismatches: Vec<String> = Vec::new();
+    for d in 0..=depth.min(PUBLISHED.len() - 1) {
+        if counts[d] != PUBLISHED[d] {
+            mismatches.push(format!(
+                "depth {}: generic {} vs published {}",
+                d, counts[d], PUBLISHED[d]
+            ));
+        }
+    }
+
+    // ---------- Pass 2: candidate evaluation ----------
+    // candidates: coprime x>y>=1, c = (x^2+y^2)/2 if both odd else x^2+y^2, 5 <= c <= bound
+    let mut cands: Vec<(u64, u64, u64)> = Vec::new();
+    let lim = 2 * bound;
+    let mut x = 2u64;
+    while x * x <= lim {
+        for y in 1..x {
+            let s = x * x + y * y;
+            if s > lim {
+                break;
+            }
+            if gcd(x, y) != 1 {
+                continue;
+            }
+            let c = if x % 2 == 1 && y % 2 == 1 { s / 2 } else { s };
+            if c >= 5 && c <= bound {
+                cands.push((x, y, c));
+            }
+        }
+        x += 1;
+    }
+    cands.sort_by_key(|t| t.2);
+    lg.log(&format!(
+        "[eval] {} candidate rotation numbers with c <= {}",
+        cands.len(),
+        bound
+    ));
+
+    let mut done_cands: HashSet<(u64, u64)> = HashSet::new();
+    let mut prior_fail = 0u64;
+    if let Ok(txt) = fs::read_to_string(&results_path) {
+        for line in txt.lines() {
+            let v: Vec<&str> = line.split_whitespace().collect();
+            if v.len() >= 4 {
+                done_cands.insert((v[0].parse().unwrap(), v[1].parse().unwrap()));
+                if v[3] != "CLEAN" {
+                    prior_fail += 1;
+                }
+            }
+        }
+        if !done_cands.is_empty() {
+            lg.log(&format!(
+                "[resume] {} candidates already checked, skipping them",
+                done_cands.len()
+            ));
+        }
+    }
+
+    let q1: u64 = 2_000_000_033;
+    let q2: u64 = 1_900_000_097;
+    assert!(is_prime(q1) && q1 % 4 == 1);
+    assert!(is_prime(q2) && q2 % 4 == 1);
+
+    let eval_candidate = |xx: u64, yy: u64, q: u64, ball: &[u8], keys: &mut Vec<u128>| -> u64 {
+        let iq = sqrt_m1(q);
+        let num = (xx + yy * iq) % q;
+        let den = (xx + q - yy * iq % q) % q;
+        let z = num * inv_mod(den, q) % q;
+        let zin = inv_mod(z, q);
+        // power table for exponents -OFF..=OFF
+        let n_pow = 2 * OFF as usize + 1;
+        let mut pw = vec![0u64; n_pow];
+        let mut cur = pow_mod(zin, OFF as u64, q);
+        for e in 0..n_pow {
+            pw[e] = cur;
+            cur = cur * z % q;
+        }
+        keys.clear();
+        let mut pos = 0usize;
+        while pos < ball.len() {
+            let eps = ball[pos];
+            let delta = ball[pos + 1];
+            let kk = ball[pos + 2];
+            let n = ball[pos + 3] as usize;
+            let mut v: u64 = 0;
+            let mut p = pos + 4;
+            for _ in 0..n {
+                let ei = ball[p] as usize; // already offset by OFF
+                let c = i16::from_le_bytes([ball[p + 1], ball[p + 2]]) as i64;
+                let cm = (c.rem_euclid(q as i64)) as u64;
+                v = (v + cm * pw[ei]) % q;
+                p += 3;
+            }
+            let cls: u64 = ((kk as u64) << 2) | ((delta as u64) << 1) | (eps as u64);
+            keys.push(((cls as u128) << 64) | v as u128);
+            pos = p;
+        }
+        keys.sort_unstable();
+        let mut distinct = 1u64;
+        for i in 1..keys.len() {
+            if keys[i] != keys[i - 1] {
+                distinct += 1;
+            }
+        }
+        distinct
+    };
+
+    // reload ball flat (it is still in memory? we kept `ball` in scope) — yes, `ball` lives on.
+    // NOTE: ball was moved out of the inner scope: re-read from disk to keep code simple.
+    let ball_bytes = fs::read(&ball_path).unwrap();
+    let mut keys: Vec<u128> = Vec::with_capacity(nball as usize);
+
+    let mut n_fail = prior_fail;
+    let todo: Vec<(u64, u64, u64)> = cands
+        .iter()
+        .filter(|(x, y, _)| !done_cands.contains(&(*x, *y)))
+        .cloned()
+        .collect();
+    for (idx, (xx, yy, c)) in todo.iter().enumerate() {
+        let d1 = eval_candidate(*xx, *yy, q1, &ball_bytes, &mut keys);
+        let mut verdict = "CLEAN";
+        let mut deficit = nball - d1;
+        if d1 != nball {
+            // recheck with independent prime
+            let d2 = eval_candidate(*xx, *yy, q2, &ball_bytes, &mut keys);
+            if d2 != nball {
+                verdict = "COLLISION";
+                deficit = nball - d2;
+                n_fail += 1;
+            } else {
+                verdict = "CLEAN"; // q1 had accidental modular collision only
+                deficit = 0;
+            }
+        }
+        let mut rf = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&results_path)
+            .unwrap();
+        writeln!(rf, "{} {} {} {} deficit={}", xx, yy, c, verdict, deficit).unwrap();
+        lg.log(&format!(
+            "[eval {:>3}/{}] legs ({},{})  c={:<3}  {}  deficit={}  [{:.1}s]",
+            idx + 1 + done_cands.len(),
+            cands.len(),
+            xx,
+            yy,
+            c,
+            verdict,
+            deficit,
+            t0.elapsed().as_secs_f64()
+        ));
+    }
+
+    // ---------- final verdict ----------
+    let mut out = String::new();
+    out.push_str("==================== FINAL RESULT (paste this back) ====================\n");
+    out.push_str(&format!(
+        "certify38  depth={}  ball={}  candidates={}  runtime={:.0}s\n",
+        depth,
+        nball,
+        cands.len(),
+        t0.elapsed().as_secs_f64()
+    ));
+    if mismatches.is_empty() {
+        out.push_str(&format!(
+            "GENERIC LAYER COUNTS: match published A396406 a(0)..a({}) exactly.\n",
+            depth.min(PUBLISHED.len() - 1)
+        ));
+    } else {
+        out.push_str("GENERIC LAYER COUNTS: *** MISMATCH vs published A396406 ***\n");
+        for m in &mismatches {
+            out.push_str(&format!("  {}\n", m));
+        }
+    }
+    if n_fail == 0 {
+        out.push_str(&format!(
+            "CANDIDATES: all clean. CERTIFIED: n_T > {} for every unequal-leg rational\n\
+             triangle (c <= {} checked exhaustively; c > {} excluded by the effective\n\
+             theorem c_T <= 2d).",
+            depth, bound, bound
+        ));
+        if depth >= 38 && mismatches.is_empty() {
+            out.push_str(
+                "\nCONSEQUENCE: published A396406 terms a(31)..a(38) ARE the generic terms.",
+            );
+        }
+    } else {
+        out.push_str(&format!(
+            "CANDIDATES: {} COLLISION(S) found — see {} for details.\n\
+             A deviation occurs at depth <= {} for those shapes.",
+            n_fail, results_path, depth
+        ));
+    }
+    out.push_str("\n=========================================================================");
+    lg.log(&out);
+    fs::write(format!("certify{}_final.txt", depth), &out).unwrap();
+}
