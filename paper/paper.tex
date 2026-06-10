@@ -49,7 +49,7 @@
 \maketitle
 
 \begin{abstract}
-For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent, proven through depth $30$ and conjectured in general (Theorem~\ref{thm:universality}, Theorem~\ref{thm:universality-30}, Conjecture~\ref{conj:universality}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  A triangle-independent symbolic normal form reduces extra collisions to the vanishing of bounded-height integer Laurent polynomials at the rotation number $\zeta_T = (a+bi)/(a-bi)$; Gauss's lemma applied to the shape-dependent minimal polynomial $\Phi_T$ then yields an effective all-depths theorem --- a deviation at depth $d$ forces $c_T$ to divide both extreme coefficients of a realized word-difference, so every triangle with $c_T > 2d$ is universal at depth $d$ (Theorem~\ref{thm:effective-universality}) --- and, combined with a finite modular certificate over the sparse remaining candidates, universality through depth $30$ for all unequal-leg rational triangles (Theorem~\ref{thm:universality-30}).  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
+For every right triangle $T$ in the plane with positive \textbf{unequal} rational legs, the BFS orbit-growth sequence $u_d^T$ under the group of side-reflections is $T$-independent through depth $30$ (Theorem~\ref{thm:universality-30}); we call the common sequence the \emph{universal right-triangle reflection sequence}.  The natural conjecture that this independence persists at all depths is \textbf{refuted}: for every rational --- indeed every algebraic --- shape we construct an explicit nontrivial word in $\ker \rho_T$ (a product of conjugated glide-reflection squares realizing the translation $2(t^{-1}-1)\mu_T(t)$, which evaluates to $0$ at the rotation number $\zeta_T$), so each fixed shape deviates from the universal sequence at a first depth $n_T$ sandwiched by $\max(31, c_T/2) \le n_T \le 24c_T + 8$ (Theorem~\ref{thm:non-universality}, Corollary~\ref{cor:sandwich}).  The universal sequence is thus exactly the orbit growth of the \emph{generic} right triangle, realized precisely by transcendental leg ratios (Corollary~\ref{cor:dichotomy}).  The translation kernel of the side-reflection representation is computed via Mayer--Vietoris and Crowell as the $\mathbb{Z}[Q]$-module $I_A \cap I_B$, conjecturally the cyclic ideal $\mathbb{Z}[Q]\cdot h$ on the central generator $h = (c-1)(Y-1)$ (established for the finite quotients $N \le 16$).  In every dimension $n \ge 2$, the right-corner orthoscheme reflection group has closed-form Coxeter--Steinberg growth rate $r_n = 1 + 2\cos(2\pi/(n+3))$ (Theorem~\ref{thm:ndim-rate}).  For pairwise distinct legs the affine representation is unconditionally faithful in every dimension $n \ge 3$ (Theorem~\ref{thm:master-C-uncond}), via a uniform Schur-complement determinant identity $\det Q_n = -\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) together with rank-$0$ descent on the three Cremona curves $\mathtt{24a1}$, $\mathtt{32a2}$, and $\mathtt{72a2}$.  A dimension-independent collision-depth invariant $\mathrm{cd}_n(\lambda) \in \{\infty, 4, 3\}$ determined by the $(e, t)$-partition statistics of the leg sequence (Theorem~\ref{thm:cd-general}) classifies first-collision behaviour across all dimensions.  A triangle-independent symbolic normal form reduces extra collisions to the vanishing of bounded-height integer Laurent polynomials at the rotation number $\zeta_T = (a+bi)/(a-bi)$; Gauss's lemma applied to the shape-dependent minimal polynomial $\mu_T$ then yields an effective all-depths theorem --- a deviation at depth $d$ forces $c_T$ to divide both extreme coefficients of a realized word-difference, so every triangle with $c_T > 2d$ is universal at depth $d$ (Theorem~\ref{thm:effective-universality}) --- and, combined with a finite modular certificate over the sparse remaining candidates, universality through depth $30$ for all unequal-leg rational triangles (Theorem~\ref{thm:universality-30}).  The eight length-$10$ relations, the Schur-complement identity, and the $T$-independence of the orbit-growth sequence through depth $22$ are formally machine-verified in the Lean~4 proof assistant (\S\ref{sec:reproduce}).  For the 2D universal sequence the consecutive ratios $u_{d+1}/u_d$ are empirically near $1.50$ at the computed depths (descending to $\approx 1.497$ at depth $42$); the exact asymptotic ratio $\beta_2$, and the algebraic nature of the generating function, remain open and are studied in the companion document \texttt{paper\_extra.tex}, together with the mod-$p$ state-space and Knuth--Bendix experiments.
 \end{abstract}
 
 \section{Setting}
@@ -115,8 +115,8 @@ sequence $u_d$ studied here, and do not address it.  The shape-dependence
 of the minimal polynomial of $\zeta_T$ (cf.\ Remark~\ref{rem:univ-conj-status})
 is the natural place a difference between shapes could appear; in
 \S\ref{ssec:arith-univ} we bound this effect effectively (it cannot
-affect $u_d$ unless $c_T \le 2d$), but whether it ever affects the
-orbit counts at all remains open.
+affect $u_d$ unless $c_T \le 2d$); in \S\ref{ssec:non-universality} we
+show it \emph{always} eventually does, at a depth linear in $c_T$.
 
 \section{The Coxeter-group identity (Fibonacci phase)}
 \label{sec:fib}
@@ -238,7 +238,9 @@ contains the eight length-$10$ relations in addition to the Coxeter
 relations, and these relations hold symbolically over $\mathbb{Q}(a, b)$,
 so the collision structure they encode is $T$-independent.  We record
 what this establishes about $u_d^T$, separately from the all-depths
-statement, which remains a conjecture.
+statement, which is \emph{resolved --- negatively --- } in
+\S\ref{ssec:non-universality}: every rational shape eventually
+deviates, at a depth linear in its arithmetic complexity.
 
 \begin{theorem}[Universality, established through depth $22$]
 \label{thm:universality}
@@ -269,12 +271,20 @@ right triangle with positive unequal legs, by the Lean~4 theorem
 \end{enumerate}
 \end{theorem}
 
-\begin{conjecture}[All-depths universality]
+\begin{conjecture}[All-depths universality --- now refuted]
 \label{conj:universality}
 For every right-triangle parameter $T = (a, b)$ with positive rational
 unequal legs, $\ker(\rho_T)$ is the same subgroup of $W$, so $u_d^T$ is
 independent of $T$ for \emph{all} $d \ge 0$.
 \end{conjecture}
+
+We state the conjecture in its original form for the record; it is
+\textbf{false}, for every $T$, by the explicit construction of
+Theorem~\ref{thm:non-universality} below.  The correct statement is the
+deviation-depth sandwich of Corollary~\ref{cor:sandwich}: $u_d^T$
+agrees with the generic sequence $u_d$ exactly up to a first deviation
+depth $n_T$ that is \emph{linear} in the arithmetic complexity $c_T$ of
+the shape.
 
 \begin{remark}[The all-depths statement]
 \label{rem:univ-conj-status}
@@ -287,7 +297,9 @@ $\ker(\rho_{\mathrm{abs}}) \subseteq \ker(\rho_T)$ for every $T$ (see the
 factorization below); what is \emph{not} proven in general is the reverse
 inclusion $\ker(\rho_T) \subseteq \ker(\rho_{\mathrm{abs}})$ uniformly in
 $T$, i.e.\ that no leg-dependent extra collision appears at some depth
-$> 22$.  Whether this reverse inclusion holds for all $T$ is open.
+$> 22$.  This reverse inclusion in fact fails for \emph{every} $T$
+(Theorem~\ref{thm:non-universality}); the certified content of the
+present section is that it holds \emph{through depth $30$}.
 
 A concrete candidate obstruction makes the shape-dependence explicit.
 Chasing $\ker(\rho_T)$ through the translation module, its restriction
@@ -309,11 +321,13 @@ certificate of \S\ref{ssec:arith-univ}, and through depth $30$ by
 exact-rational BFS for the shapes $(1,2)$ and $(3,4)$.
 Theorem~\ref{thm:effective-universality} bounds the obstruction
 quantitatively: a shape-dependent collision at depth $d$ forces the
-shape's minimal polynomial $\Phi_T$ to divide a realized
+shape's minimal polynomial $\mu_T$ to divide a realized
 word-difference, hence $c_T$ to divide its extreme coefficients, so
-$c_T \le 2d$; whether
-the obstruction ever materializes remains open, and we make no claim
-that it must hold or that it must fail.
+$c_T \le 2d$.  The obstruction \emph{does} materialize:
+Theorem~\ref{thm:non-universality} constructs, for every $T$, an
+explicit word-difference divisible by $\mu_T$, of length
+$O(c_T)$ --- so the deviation is real, merely pushed beyond the reach
+of every computation previously performed.
 \end{remark}
 
 \begin{remark}[The isosceles case]
@@ -324,7 +338,12 @@ becomes $1, 3, 5, 8, 11, 13, 16, \ldots$, which is strictly smaller than
 the universal sequence $a(n)$ of Table~\ref{tab:tail} for $n \ge 4$.  The
 universality phenomenon of Theorem~\ref{thm:universality} does not apply
 to the isosceles case.  See the OEIS entry \href{https://oeis.org/A396406}{A396406}
-and its comments.
+and its comments.  In the framework of \S\ref{ssec:arith-univ} the
+isosceles case is the extreme instance $c_T = 1$ of
+Theorem~\ref{thm:non-universality}: $\zeta_T = i$ is a root of unity,
+the kernel of $\rho_T$ contains the translation lattice multiple
+$2(t-1)(t^2+1)$, and the deviation arrives at depth $4$ rather than at
+depth $\sim c_T$.
 \end{remark}
 
 \begin{remark}[Formal verification of universality through depth $22$]
@@ -433,11 +452,11 @@ and $c_T \ge 5$; moreover $c_T = 1$ if and only if the triangle is
 isosceles (in which case $\zeta_T \in \{\pm i\}$ is a root of unity, and
 the orbit count genuinely degenerates,
 Remark~\ref{rem:isosceles-excluded}).
-\item Let $\Phi_T(t) = c_T\, t^2 - e_T\, t + c_T \in \mathbb{Z}[t]$
+\item Let $\mu_T(t) = c_T\, t^2 - e_T\, t + c_T \in \mathbb{Z}[t]$
 be the primitive integer polynomial with roots $\zeta_T^{\pm 1}$ (the
 shape-dependent minimal polynomial of
 Remark~\ref{rem:univ-conj-status}; e.g.\ $5t^2+6t+5$ for $(1,2)$).  If
-$u_e^T \neq u_e$ for some $e \le d$, then $\Phi_T$ divides a realized
+$u_e^T \neq u_e$ for some $e \le d$, then $\mu_T$ divides a realized
 word-difference in $\mathbb{Z}[t]$; in particular $c_T$ divides
 \emph{both extreme coefficients} of that difference, so
 $c_T \le 2d$.  Consequently \emph{every} triangle with $c_T > 2d$
@@ -464,9 +483,9 @@ positive legs means $a = b$.
 (ii) Since $a, b > 0$, $\zeta_T$ is non-real, so its minimal polynomial
 over $\mathbb{Q}$ has degree $2$, with the conjugate root
 $\overline{\zeta_T} = \zeta_T^{-1}$; the primitive integer
-representative is $\Phi_T(t) = c_T t^2 - e_T t + c_T$ with
+representative is $\mu_T(t) = c_T t^2 - e_T t + c_T$ with
 $e_T = 2(a^2-b^2)$ when $a + b$ is odd and $e_T = a^2 - b^2$ when $a, b$
-are both odd ($\Phi_T$ is primitive: an odd prime dividing $c_T$ and
+are both odd ($\mu_T$ is primitive: an odd prime dividing $c_T$ and
 $e_T$ would divide both $a^2+b^2$ and $a^2-b^2$, hence both $a$ and
 $b$).  Take $D \neq 0$ as in \eqref{eq:collision-vanishing}, built from
 two ball elements of depth $\le d$; by Lemma~\ref{lem:symbolic-form}
@@ -474,7 +493,7 @@ its coefficients are bounded by $2d$ in absolute value.  Normalize
 $\widetilde D = t^m D \in \mathbb{Z}[t]$ with
 $\widetilde D(0) \neq 0$.  Since $\widetilde D$ has integer
 coefficients and vanishes at $\zeta_T$, Gauss's lemma gives
-$\widetilde D = \Phi_T \cdot E$ with $E \in \mathbb{Z}[t]$.
+$\widetilde D = \mu_T \cdot E$ with $E \in \mathbb{Z}[t]$.
 Comparing top and bottom coefficients,
 $\mathrm{lead}(\widetilde D) = c_T\, \mathrm{lead}(E)$ and
 $\mathrm{const}(\widetilde D) = c_T\, \mathrm{const}(E)$, so $c_T$
@@ -511,21 +530,149 @@ $u_d^T = u_d$ for all $0 \le d \le 30$.
 Theorem~\ref{thm:universality-30} extends the kernel-checked Lean bound
 of Remark~\ref{rem:lean-universality} by eight further layers at
 negligible computational cost; the trust base is the Python/NumPy
-modular-arithmetic script rather than the Lean kernel.  We note two
-structural facts visible in the same computations, recorded here as
-data: through depth $16$, among all $666{,}913$ same-class difference
-pairs the gcd of the two extreme coefficients contains a prime
-$\equiv 1 \pmod 4$ in only $12$ cases, all of the form
-$\mathrm{const}\cdot t^j (t-1)$ --- and $(t-1) \mid D$ holds for
-\emph{every} difference, unconditionally, by the $P_w(1) = 0$ clause of
-Lemma~\ref{lem:symbolic-form}.  Since $t - 1$ vanishes only at a root of
-unity, Niven's theorem already excludes this factor from ever producing
-a collision.  A proof that the extreme coefficients of all realized
-differences avoid split primes (equivalently, that the dangerous factor
-never strengthens beyond cyclotomic ones) would, by
-Theorem~\ref{thm:effective-universality}, settle
-Conjecture~\ref{conj:universality} in full; we leave this as the
-sharpest currently visible route.
+modular-arithmetic script rather than the Lean kernel.  In light of the
+next subsection, Theorem~\ref{thm:universality-30} is best read as a
+\emph{lower bound on the first deviation depth}: $n_T \ge 31$ for
+every unequal-leg rational triangle.
+
+\subsection{Resolution of the conjecture: every algebraic shape
+eventually deviates}
+\label{ssec:non-universality}
+
+The obstruction of Remark~\ref{rem:univ-conj-status} does materialize
+--- for \emph{every} algebraic shape, at an explicitly bounded depth.
+The mechanism is elementary Euclidean geometry: because the two legs
+meet at a right angle, $R_x R_y$ is the half-turn about the right-angle
+vertex, so $R_x R_y R_h$ is a \emph{glide reflection} along the
+hypotenuse --- and the square of a glide reflection is a pure
+translation.
+
+\begin{lemma}[Glide-square translation lattice]
+\label{lem:glide-square}
+In the symbolic group, $\tau := (R_x R_y R_h)^2$ is the pure
+translation by $2(t^{-1}-1)$, i.e.\ the tuple
+$(1, 0, 0,\, 2(t^{-1}-1))$.  Writing $r := R_x R_h$ (rotation, linear
+part $t$) and $\mathcal{T}$ for the subgroup of pure translations of
+the symbolic group, conjugates $r^k \tau^{m} r^{-k}$ are the
+translations by $2m\,t^k(t^{-1}-1)$, and products of these realize
+\[
+2(t-1)\,\mathbb{Z}[t^{\pm 1}] \;\subseteq\; \mathcal{T}.
+\]
+\end{lemma}
+
+\begin{proof}
+$R_x R_y \colon z \mapsto -z$, so
+$g := R_x R_y R_h \colon z \mapsto -\zeta^{-1}\bar z - (1 -
+\zeta^{-1})$, and
+$g^2(z) = -\zeta^{-1}\,\overline{g(z)} - (1-\zeta^{-1}) = z +
+2(\zeta^{-1}-1)$, an identity of symbolic tuples (it uses only
+$\zeta\bar\zeta = 1$).  Conjugating a translation by the rotation
+$r^k$ multiplies its vector by $t^k$; translations commute, so products
+realize $2(t^{-1}-1) f(t)$ for every $f \in \mathbb{Z}[t^{\pm 1}]$.
+\end{proof}
+
+The lattice $2(t-1)\mathbb{Z}[t^{\pm 1}]$ is an \emph{ideal}: it
+contains a multiple of every integer polynomial --- in particular of
+every shape's minimal polynomial $\mu_T$.  That single observation
+refutes the conjecture.
+
+\begin{theorem}[Non-universality: resolution of
+Conjecture~\ref{conj:universality}]
+\label{thm:non-universality}
+Conjecture~\ref{conj:universality} is false --- for every unequal-leg
+rational triangle.  Explicitly, with $\mu_T(t) = c_T t^2 - e_T t + c_T$
+as in Theorem~\ref{thm:effective-universality}, the word
+\[
+w_T \;=\; \tau^{\,c_T}\; r\; \tau^{\,-e_T}\; r\;
+\tau^{\,c_T}\; r^{-2},
+\qquad \tau = (R_x R_y R_h)^2, \quad r = R_x R_h,
+\]
+is a nontrivial element of the symbolic group --- the pure translation
+by $2(t^{-1}-1)\,\mu_T(t) \neq 0$ --- of word-length
+$6(2c_T + |e_T|) + 8 \le 24\,c_T + 8$, whereas $\rho_T(w_T)$ is the
+\emph{identity} isometry: its translation vector is
+$2(\zeta_T^{-1}-1)\,\mu_T(\zeta_T) = 0$.  Hence
+$\ker(\rho_T) \supsetneq \ker(\rho_{\mathrm{abs}})$, and
+$u_d^T < u_d$ for some $d \le 6(2c_T + |e_T|) + 8$.
+
+More generally, for legs $(1, \beta)$ with $\beta$ any positive
+algebraic number $\neq 1$, the same construction applied to the
+primitive integer minimal polynomial of $\zeta_T$ produces a nontrivial
+kernel element.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:glide-square} the word $w_T$ is the symbolic
+translation by $2(t^{-1}-1)\,(c_T - e_T\,t + c_T\,t^2) =
+2(t^{-1}-1)\,\mu_T(t)$, a nonzero Laurent polynomial, so $w_T \neq 1$
+in the symbolic group; its letter count is
+$6c_T + 2 + 6|e_T| + 2 + 6c_T + 4$.  Under $\rho_T$ the translation
+vector is the evaluation at $t = \zeta_T$, which vanishes because
+$\mu_T(\zeta_T) = 0$.  A nontrivial kernel element of length $\ell$
+forces $\bigl|\rho_T(B_\ell)\bigr| < |B_\ell|$ for the symbolic
+$\ell$-ball, hence a strictly smaller layer count at some depth
+$\le \ell$.  The witness has been verified in exact rational
+arithmetic for $(a,b) = (1,2)$ (length $104$), $(3,4)$ (length $392$),
+and $(1,3)$ (length $116$): \texttt{code/zeta\_probe/witness.py}.
+\end{proof}
+
+\begin{corollary}[Deviation-depth sandwich]
+\label{cor:sandwich}
+For every unequal-leg rational triangle let
+$n_T := \min\{d : u_d^T \neq u_d\}$, which is finite by
+Theorem~\ref{thm:non-universality}.  Then
+\[
+\max\bigl(31,\ \tfrac{1}{2}\,c_T\bigr) \;\le\; n_T \;\le\;
+6\,(2c_T + |e_T|) + 8 \;\le\; 24\,c_T + 8,
+\]
+the lower bounds by Theorem~\ref{thm:effective-universality}(ii) and
+Theorem~\ref{thm:universality-30}, the upper bound by the witness
+word.  The first deviation depth is pinned to linear growth in the
+arithmetic complexity $c_T$ of the shape.
+\end{corollary}
+
+\begin{corollary}[Transcendence dichotomy]
+\label{cor:dichotomy}
+For a right triangle with legs $(1, \beta)$, $\beta > 0$,
+$\beta \neq 1$: the representation $\rho_T$ is faithful on the
+symbolic group --- equivalently, $u_d^T = u_d$ for \emph{all}
+$d \ge 0$ --- if and only if $\beta$ is transcendental.
+\end{corollary}
+
+\begin{proof}
+$\zeta_T = (1+i\beta)/(1-i\beta)$ is algebraic iff $\beta$ is.  If
+$\beta$ is transcendental, a kernel element would by
+Lemma~\ref{lem:symbolic-form} and the argument before
+\eqref{eq:collision-vanishing} be a pure translation with a nonzero
+integer Laurent polynomial vanishing at $\zeta_T$ --- impossible.  If
+$\beta$ is algebraic, multiply the primitive integer minimal polynomial
+of $\zeta_T$ by the lattice of Lemma~\ref{lem:glide-square} as in
+Theorem~\ref{thm:non-universality}.
+\end{proof}
+
+Thus the ``universal'' sequence $u_d$ is precisely the orbit-growth
+sequence of the \emph{generic} right triangle: it is realized exactly
+by the (uncountably many) shapes with transcendental leg ratio, while
+every rational --- indeed every algebraic --- shape agrees with it
+through depth $\approx c_T$ and then falls strictly below, the
+isosceles square-triangle ($c_T = 1$, deviation at depth $4$) being the
+extreme case of the same phenomenon.  Every computation previously
+reported is consistent with the sandwich: all certified and BFS-verified
+ranges lie below the deviation depths of the shapes used.
+
+\paragraph{Data provenance.}  Terms $u_0, \ldots, u_{30}$ of the
+generic sequence are certified shape-independent
+(Theorem~\ref{thm:universality-30}).  The published terms
+$u_{31}, \ldots, u_{38}$ were computed by exact BFS of the $(3,4)$
+triangle; they equal the generic terms provided $n_{(3,4)} > 38$, which
+is consistent with --- but not yet implied by --- the sandwich
+$31 \le n_{(3,4)} \le 392$.  Extending the certificate of
+Theorem~\ref{thm:universality-30} to depth $38$ (a straightforward port
+of \texttt{certify.py} to a compiled language) would settle this; we
+flag it as the one outstanding verification.  A falsifiable near-term
+prediction of Theorem~\ref{thm:non-universality}: exact BFS of the
+$(1,2)$ triangle must deviate from the generic sequence at some depth
+$n_{(1,2)} \in [31, 104]$.
 
 The structural facts behind Theorem~\ref{thm:universality}(i)
 factor through three lemmas.
@@ -703,15 +850,16 @@ $\ker(\rho_{\mathrm{abs}}) \subseteq \ker(\rho_T)$ for every $T$ for
 free.  The reverse inclusion $\ker(\rho_T) \subseteq
 \ker(\rho_{\mathrm{abs}})$, equivalently injectivity of $\Phi_T$,
 would yield $\ker(\rho_T) = \ker(\rho_{\mathrm{abs}})$ for all $T$ and
-hence all-depths $T$-independence.  We do \emph{not} establish this:
+hence all-depths $T$-independence.  This is in fact \emph{false}:
+$\Phi_T$ is \emph{never} injective for rational (or algebraic) shapes.
 $M = \mathbb{Z}[Q]/(Y+1, c+1)$ is free of rank $1$ over
 $\mathbb{Z}[t^{\pm 1}]$ ($t = XY$), hence of infinite rank as an abelian
-group, and Lemma~\ref{lem:dilation-invariance} only relates $\rho_{\lambda
-T}$ to $\rho_T$ within a single similarity class; it does not compare
-distinct shapes $b/a$ and does not force $\Phi_T$ injective.  The
-all-depths statement is therefore left as
-Conjecture~\ref{conj:universality}
-(see Remark~\ref{rem:univ-conj-status}).
+group, while its image under $\Phi_T$ lies in the rank-$2$ abelian group
+$\mathbb{R}^2$ --- and Theorem~\ref{thm:non-universality} exhibits an
+explicit nonzero kernel element, the multiple
+$2(t-1)\mu_T$ of the shape's minimal polynomial.  The all-depths
+statement of Conjecture~\ref{conj:universality} fails accordingly
+(see \S\ref{ssec:non-universality}).
 \qed
 \end{proof}
 
@@ -1155,7 +1303,9 @@ orbit-growth sequence through depth $22$
 (Theorem~\ref{thm:universality}(iii), Remark~\ref{rem:lean-universality}),
 the last holding simultaneously for all right triangles with unequal
 legs.  The all-depths statement (Conjecture~\ref{conj:universality})
-is not machine-verified and remains open.
+is \emph{false} (Theorem~\ref{thm:non-universality}); the explicit
+witness words are verified in exact rational arithmetic by
+\texttt{code/zeta\_probe/witness.py}, not in Lean.
 The \texttt{ring}-based theorems (the symbolic length-$10$ relations and
 the Schur induction steps) are verified entirely by the Lean kernel; the
 remaining results use \texttt{native\_decide}, whose trusted base

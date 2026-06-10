@@ -80,17 +80,38 @@ all candidates collision-free. This extends the Lean kernel-checked record
 Now Theorems in the paper (S "An arithmetic effective universality theorem"):
 effective bound u_d^T = u_d for all d < c_T/2, plus universality through 30.
 
+## RESOLUTION (witness.py): the conjecture is FALSE
+
+The wall had a tunnel — going the other way. The set of realized differences is
+the pure-translation subgroup T of the symbolic group, and T is an IDEAL:
+(R_x R_y R_h)^2 is a glide-reflection square = pure translation by 2(t^-1 - 1)
+(the right angle makes R_xR_y a half-turn, so R_xR_yR_h is a glide along the
+hypotenuse). Conjugating by rotations and multiplying:
+
+    2(t-1) Z[t^{±1}]  ⊆  T.
+
+An ideal contains a multiple of EVERY integer polynomial — in particular of every
+shape's minimal polynomial mu_T. So  w_T = tau^c r tau^{-e} r tau^c r^{-2}
+(tau = glide square, r = R_xR_h) is a nontrivial symbolic element of length
+6(2c+|e|)+8 <= 24c+8 that rho_T maps to the IDENTITY. Universality is false for
+every rational (indeed algebraic) shape; first deviation depth n_T satisfies
+
+    max(31, c_T/2)  <=  n_T  <=  24 c_T + 8        (sandwich)
+
+and rho_T is faithful on the symbolic group iff the leg ratio is TRANSCENDENTAL.
+witness.py verifies the witness in exact rational arithmetic: (1,2) length 104,
+(3,4) length 392, (1,3) length 116 — all map to the identity isometry while
+being nonzero symbolic translations. Everything previously computed is
+consistent: all deviations lie beyond depth 42. The isosceles depth-4 collapse
+is the extreme case c_T = 1 of the same phenomenon.
+
 ## Realistic next steps
 
-- Prove the P(1)-invariance lemma (easy induction) and the linear height bound
-  (easy induction) → publishable effective-universality theorem as-is.
-- Port the screen to Rust and push the per-depth certified universality beyond the
-  Lean depth-22 record (ball growth ~1.5^d; depth ~26–30 looks feasible on 24 GB).
-- Hunt for a proof of the "no split prime divides both extremes" invariant; this is
-  the full conjecture's crux.
-
-Honest status: items 1–4 are computational findings plus elementary number theory;
-nothing here proves the all-depths conjecture yet. But it converts it into a finite,
-attackable arithmetic question and yields new effective theorems immediately.
+- Port certify.py to Rust and run at depth 38 to settle whether the published
+  a(31)..a(38) (computed from the (3,4) triangle) equal the generic terms
+  (open: n_{(3,4)} in [31, 392]).
+- Determine T exactly (is T = 2(t-1)Z[t^{±1}]?) — would give the exact minimal
+  kernel elements and sharpen the sandwich constants.
+- Find n_{(1,2)} exactly (prediction: in [31, 104]).
 
 Run: `python3 probe.py 18`, `python3 probe3.py 15`, `python3 probe4.py 16`.
