@@ -444,12 +444,14 @@ fn main() {
         }
     }
 
-    let q1: u64 = 2_000_000_033;
-    let q2: u64 = 1_900_000_097;
-    assert!(is_prime(q1) && q1 % 4 == 1);
-    assert!(is_prime(q2) && q2 % 4 == 1);
+    // four independent primes == 1 (mod 4); CLEAN under ANY single prime is exact.
+    let primes: [u64; 4] = [2_000_000_033, 1_900_000_097, 1_800_000_049, 1_700_000_009];
+    for &q in &primes {
+        assert!(is_prime(q) && q % 4 == 1, "bad prime {}", q);
+    }
 
-    let eval_candidate = |xx: u64, yy: u64, q: u64, ball: &[u8], keys: &mut Vec<u128>| -> u64 {
+    // returns (distinct_count, collision_pairs as element-offset pairs)
+    let eval_candidate = |xx: u64, yy: u64, q: u64, ball: &[u8], keys: &mut Vec<u128>, offs: &[u32]| -> (u64, Vec<(u32, u32)>) {
         let iq = sqrt_m1(q);
         let num = (xx + yy * iq) % q;
         let den = (xx + q - yy * iq % q) % q;
@@ -465,6 +467,7 @@ fn main() {
         }
         keys.clear();
         let mut pos = 0usize;
+        let mut idx: u32 = 0;
         while pos < ball.len() {
             let eps = ball[pos];
             let delta = ball[pos + 1];
@@ -480,44 +483,97 @@ fn main() {
                 p += 3;
             }
             let cls: u64 = ((kk as u64) << 2) | ((delta as u64) << 1) | (eps as u64);
-            keys.push(((cls as u128) << 64) | v as u128);
+            // pack: [cls:10][value:31] in high 64, element index in low 32
+            keys.push((((cls as u128) << 96) | ((v as u128) << 32)) | idx as u128);
             pos = p;
+            idx += 1;
         }
         keys.sort_unstable();
         let mut distinct = 1u64;
-        for i in 1..keys.len() {
-            if keys[i] != keys[i - 1] {
+        let mut pairs: Vec<(u32, u32)> = Vec::new();
+        let mut g_start = 0usize;
+        for i in 1..=keys.len() {
+            if i == keys.len() || (keys[i] >> 32) != (keys[i - 1] >> 32) {
+                let glen = i - g_start;
+                if glen > 1 && pairs.len() < 2_000_000 {
+                    for a in g_start..i {
+                        for b in (a + 1)..i {
+                            let ia = (keys[a] & 0xffff_ffff) as u32;
+                            let ib = (keys[b] & 0xffff_ffff) as u32;
+                            pairs.push((ia.min(ib).min(offs.len() as u32 - 1), ia.max(ib)));
+                        }
+                    }
+                }
+                g_start = i;
+            }
+            if i < keys.len() && (keys[i] >> 32) != (keys[i - 1] >> 32) {
                 distinct += 1;
             }
         }
-        distinct
+        (distinct, pairs)
     };
 
-    // reload ball flat (it is still in memory? we kept `ball` in scope) — yes, `ball` lives on.
-    // NOTE: ball was moved out of the inner scope: re-read from disk to keep code simple.
     let ball_bytes = fs::read(&ball_path).unwrap();
+    // element index -> record offset (for pair export)
+    let mut offs: Vec<u32> = Vec::with_capacity(nball as usize);
+    {
+        let mut pos = 0usize;
+        while pos < ball_bytes.len() {
+            offs.push(pos as u32);
+            pos += rec_len(&ball_bytes, pos);
+        }
+    }
     let mut keys: Vec<u128> = Vec::with_capacity(nball as usize);
 
     let mut n_fail = prior_fail;
+    let mut exported: Vec<String> = Vec::new();
     let todo: Vec<(u64, u64, u64)> = cands
         .iter()
         .filter(|(x, y, _)| !done_cands.contains(&(*x, *y)))
         .cloned()
         .collect();
     for (idx, (xx, yy, c)) in todo.iter().enumerate() {
-        let d1 = eval_candidate(*xx, *yy, q1, &ball_bytes, &mut keys);
-        let mut verdict = "CLEAN";
+        let (d1, p1) = eval_candidate(*xx, *yy, primes[0], &ball_bytes, &mut keys, &offs);
+        let mut verdict = String::from("CLEAN");
         let mut deficit = nball - d1;
         if d1 != nball {
-            // recheck with independent prime
-            let d2 = eval_candidate(*xx, *yy, q2, &ball_bytes, &mut keys);
-            if d2 != nball {
-                verdict = "COLLISION";
-                deficit = nball - d2;
-                n_fail += 1;
-            } else {
-                verdict = "CLEAN"; // q1 had accidental modular collision only
+            // intersect collision pairs across the remaining primes:
+            // a TRUE collision pair collides modulo EVERY prime.
+            let mut surv: HashSet<(u32, u32)> = p1.into_iter().collect();
+            for &q in &primes[1..] {
+                if surv.is_empty() {
+                    break;
+                }
+                let (_, pq) = eval_candidate(*xx, *yy, q, &ball_bytes, &mut keys, &offs);
+                let pq: HashSet<(u32, u32)> = pq.into_iter().collect();
+                surv.retain(|p| pq.contains(p));
+            }
+            if surv.is_empty() {
+                verdict = String::from("CLEAN"); // modular accidents only
                 deficit = 0;
+            } else {
+                // export surviving pairs for exact verification in Q(i)
+                let fname = format!("{}/pairs_d{}_{}_{}.txt", state, depth, xx, yy);
+                let mut pf = BufWriter::new(fs::File::create(&fname).unwrap());
+                writeln!(pf, "# x={} y={} c={} pairs={}", xx, yy, c, surv.len()).unwrap();
+                let dump = |o: u32, pf: &mut BufWriter<fs::File>| {
+                    let mut p = o as usize;
+                    let e = decode(&ball_bytes, &mut p);
+                    write!(pf, "{} {} {} {}", e.eps, e.delta, e.k, e.p.len()).unwrap();
+                    for (ex, cc) in e.p {
+                        write!(pf, " {} {}", ex, cc).unwrap();
+                    }
+                };
+                for (a, b) in &surv {
+                    dump(offs[*a as usize], &mut pf);
+                    write!(pf, " | ").unwrap();
+                    dump(offs[*b as usize], &mut pf);
+                    writeln!(pf).unwrap();
+                }
+                verdict = format!("SUSPECT({} pairs -> {})", surv.len(), fname);
+                deficit = surv.len() as u64;
+                exported.push(fname);
+                n_fail += 1;
             }
         }
         let mut rf = OpenOptions::new()
@@ -574,10 +630,19 @@ fn main() {
         }
     } else {
         out.push_str(&format!(
-            "CANDIDATES: {} COLLISION(S) found — see {} for details.\n\
-             A deviation occurs at depth <= {} for those shapes.",
-            n_fail, results_path, depth
+            "CANDIDATES: {} shape(s) have pairs colliding mod ALL {} primes — see {}.\n\
+             Run the exact checker on each exported pairs file for the final word:\n\
+                 python3 ../exact_check.py certify38_state/pairs_d{}_X_Y.txt\n\
+             (a pair confirmed there is an exact deviation; refuted pairs are\n\
+             modular accidents).",
+            n_fail,
+            primes.len(),
+            results_path,
+            depth
         ));
+        for f in &exported {
+            out.push_str(&format!("\n  exported: {}", f));
+        }
     }
     out.push_str("\n=========================================================================");
     lg.log(&out);

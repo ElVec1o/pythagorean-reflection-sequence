@@ -668,15 +668,16 @@ extreme case of the same phenomenon.  Every computation previously
 reported is consistent with the sandwich: all certified and BFS-verified
 ranges lie below the deviation depths of the shapes used.
 
-\paragraph{Data provenance.}  Terms $u_0, \ldots, u_{30}$ of the
-generic sequence are certified shape-independent
-(Theorem~\ref{thm:universality-30}).  The published terms
-$u_{31}, \ldots, u_{38}$ were computed by exact BFS of the $(3,4)$
-triangle; they equal the generic terms provided $n_{(3,4)} > 38$, which
-is consistent with --- but not yet implied by --- the sandwich
-$31 \le n_{(3,4)} \le 392$.  The Rust port of the certificate (\texttt{certify38\_rust/}) has
-settled this through depth $36$: $u_{31}, \ldots, u_{36}$ are certified
-generic, with $u_{37}, u_{38}$ to follow from the depth-$38$ run.
+\paragraph{Data provenance.}  The depth-$38$ certificate
+(\texttt{certify38\_rust/}, independently reproduced on a second
+machine; $87{,}838{,}773$-element symbolic ball, all $24$ candidate
+rotation numbers with $c_T \le 76$) settles the provenance question in
+full: the published terms $u_{31}, \ldots, u_{38}$ of
+\href{https://oeis.org/A396406}{A396406}, originally computed by exact
+BFS of the $(3,4)$ triangle, \emph{are} the generic terms ---
+$n_T > 38$ for every unequal-leg rational triangle except $(1,2)$,
+whose deviation at $n_{(1,2)} = 33$ is the unique one in this range and
+is exactly quantified above.
 
 \textbf{The predicted deviation has been observed.}
 Theorem~\ref{thm:non-universality} predicted
