@@ -1,0 +1,9 @@
+%% DROPPED -- DO NOT SUBMIT.
+%% The 3D cube-corner orthoscheme with legs (1,1,1) is the affine Weyl group
+%% B~_3, whose growth series is ALREADY in OEIS as A008137
+%% ("Coordination sequence ... growth series for the affine Coxeter/Weyl group B_3").
+%% Verified: A008137 matches the corrected BFS (a(0)=1,4,9,17,28,42,...) for 41 terms,
+%% with the same g.f. and recurrence. This is a duplicate, not a new sequence.
+%% (The earlier draft here also had wrong data: a(0)=2 instead of 1, and wrong a(21..30).)
+%% ACTION: cite A008137 as the all-equal-legs (Class A) member of the family in the
+%% Class C entries' cross-references. Do not file a separate submission.

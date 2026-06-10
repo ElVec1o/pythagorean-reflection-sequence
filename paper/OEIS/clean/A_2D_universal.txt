@@ -1,0 +1,34 @@
+%I A______ (placeholder)
+
+%S 1,3,5,8,13,21,34,55,89,144,225,351,554,875,1345,2066,3203,4971,7574,
+%T 11543,17683,27108,41067,62263,94622,143881,217101,327832,495443,
+%U 749195,1127236,1697179,2554961,3848384,5777651,8679441,13031206,19574659,29338781
+
+%N Number of distinct affine isometries reached at minimal word-length n in the BFS Cayley orbit of the side-reflection group of a right triangle in the plane with positive unequal rational legs; the sequence is independent of the triangle.
+
+%C Let T be a right triangle in Q^2 with positive unequal legs a, b and right angle at vertex V_2. Let R_0, R_1, R_2 be reflections across its three sides, and W = <R_0, R_1, R_2> with relations R_i^2 = 1 and (R_legs)^2 = 1. Then a(n) is the number of distinct elements rho_T(w) in Aff(R^2) at minimal W-word-length n.
+
+%C The sequence is independent of the triangle T (for all positive unequal rational legs), via a kernel identification rho_T factoring through a single abstract realization (Bonfioli 2026).
+
+%C For 1 <= n <= 9, a(n) = F(n+3) (Fibonacci, A000045). The first deficit from the Fibonacci/Steinberg upper bound F(n+3) occurs at n = 10: a(10) = 225 = F(13) - 8, accounted for by exactly 8 explicit length-10 affine relations.
+
+%C The isosceles case (a = b) is genuinely different: the leg-swap symmetry produces an additional stabilizer and a strictly smaller sequence (1, 3, 5, 8, 11, 13, 16, ...) from depth 4 onward.
+
+%C Computed by exact-rational BFS on (3, 4, 5) to depth 38; independently reproduced on (5, 12, 13), (7, 24, 25), and (1, 2, sqrt 5) through depth 22, and on nine Pythagorean triples through depth 25.
+
+%C Empirically a(n+1)/a(n) approaches a limit near 1.4718; the exact algebraic nature of this growth rate is open. No linear recurrence of order <= 19 over Q is consistent with the data; algebraicity and holonomicity are ruled out within tested bidegree windows.
+
+%F a(n) = A000045(n+3) for 1 <= n <= 9.
+
+%F a(n) <= [t^n] (1+t)^2/(1-t-t^2) for all n >= 0 (Steinberg upper bound), with strict inequality for n >= 10.
+
+%H V. Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, 2026.
+
+%Y Cf. A000045 (Fibonacci; equals a(n) for 1 <= n <= 9).
+%Y 3D analogues: A______ (3D cube corner, legs (1,1,1)), A______ (3D one equal pair, legs (1,1,2)), A______ (3D all distinct).
+
+%K nonn,nice,hard,more
+
+%O 0,2
+
+%A Vico Bonfioli, 2026

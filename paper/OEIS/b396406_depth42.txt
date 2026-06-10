@@ -1,0 +1,49 @@
+# b396406.txt: Table of n, a(n) for n = 0..42.
+# a(n) = number of distinct affine isometries at word-length n in the
+# side-reflection group of a right triangle with positive unequal rational legs.
+# Computed by exact-rational breadth-first search; the disk-streaming Rust
+# implementation reaching depth 42 is linked from A396406 (see the Rust program).
+0 1
+1 3
+2 5
+3 8
+4 13
+5 21
+6 34
+7 55
+8 89
+9 144
+10 225
+11 351
+12 554
+13 875
+14 1345
+15 2066
+16 3203
+17 4971
+18 7574
+19 11543
+20 17683
+21 27108
+22 41067
+23 62263
+24 94622
+25 143881
+26 217101
+27 327832
+28 495443
+29 749195
+30 1127236
+31 1697179
+32 2554961
+33 3848384
+34 5777651
+35 8679441
+36 13031206
+37 19574659
+38 29338781
+39 43997388
+40 65932461
+41 98849591
+42 147969934
+
