@@ -39,6 +39,7 @@ print(aseq(27))
 
 ----- LINKS -----
 Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
+<a href="/index/Rec#order_01">Index entries for linear recurrences with constant coefficients</a>, signature (2).
 
 ----- CROSSREFS -----
 For n >= 2 the tail equals A005010 (9*2^n) reindexed; the doubling factor is A000079 (powers of 2).

@@ -36,6 +36,7 @@ print(aseq(25))
 
 ----- LINKS -----
 Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
+<a href="/index/Rec#order_03">Index entries for linear recurrences with constant coefficients</a>, signature (3,0,-3).
 
 ----- CROSSREFS -----
 Cf. A396406 (2D right-triangle reflection sequence, unequal legs).

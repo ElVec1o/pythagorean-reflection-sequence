@@ -24,8 +24,15 @@ only cross-reference them.
    verified extent and keywords hard,more cover it.)
 3. **No b-file.** Data sections are complete; a b-file the same length as DATA gets
    removed (this happened on A396406).
-4. After pasting, re-read the live diff once and confirm BOTH (1) and (2) before
-   clicking propose. These are the two things that wasted review cycles already.
+4. **Linear-recurrence index link + easy keyword.** Any sequence with a
+   constant-coefficient linear recurrence MUST carry, in LINKS, the standard line
+   `<a href="/index/Rec#order_0N">Index entries for linear recurrences with constant
+   coefficients</a>, signature (...)`, and keyword `easy`. Signatures already wired in:
+   4D (2,1,-1) order_03; 6D (3,0,-3) order_03; 3D-C (2) order_01; 5D=A396927 was
+   (3,-1,-1) order_03. (3D-B has NO recurrence -> no such link, keep hard,more.)
+   Michel asked for this on A396927; pre-supplying it avoids the round-trip.
+5. After pasting, re-read the live diff once and confirm (1)-(4) before clicking
+   propose. These are the things that wasted review cycles already.
 
 ---
 
