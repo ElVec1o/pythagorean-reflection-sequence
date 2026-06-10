@@ -1,40 +1,50 @@
-OEIS SUBMISSION 2 of 5  —  4D orthoscheme, distinct legs  (submit after 5D has a number)
-========================================================================================
+OEIS SUBMISSION 2 of 5  —  4D orthoscheme, distinct legs  (submit after 5D=A396927 has published)
+=================================================================================================
 
 ----- NAME -----
-BFS layer sizes of the 4D right-corner orthoscheme reflection group with four pairwise distinct positive perpendicular legs.
+BFS layer sizes of the Coxeter group of the 4D right-corner orthoscheme with four pairwise distinct leg lengths.
 
 ----- DATA -----
-1, 5, 14, 33, 75, 169, 380, 854, 1919, 4312, 9689
+1, 5, 14, 33, 75, 169, 380, 854, 1919, 4312, 9689, 21771, 48919, 109920, 246988, 554977, 1247022, 2802033, 6296111, 14147233, 31788544, 71428210, 160497731, 360635128, 810339777, 1820816951
 
 ----- OFFSET -----
 0,2
 
 ----- COMMENTS -----
-The 4D right-corner orthoscheme has vertex V_0 with four mutually perpendicular legs of pairwise distinct positive lengths. W is the reflection group on the five bounding faces; a(n) is the number of distinct affine isometries at minimal W-word-length n.
+The 4D right-corner orthoscheme has vertex V_0 with four mutually perpendicular legs of pairwise distinct positive lengths. W is the reflection group on the five bounding faces; a(n) is the number of distinct group elements of minimal W-word-length n.
 
-a(n) equals the coefficients of the exact Coxeter (Steinberg-Solomon) Poincare growth series of this diagram: a path on the five generators in which consecutive pairs are labelled infinity and non-consecutive pairs are perpendicular (m = 2, commuting). The realized growth is not the free-Coxeter maximum, since the perpendicular facet pairs commute.
+a(n) equals the coefficients of the exact Coxeter (Steinberg-Solomon) Poincare growth series of this diagram: a path on five nodes whose consecutive facet pairs are labelled infinity and whose non-consecutive pairs meet perpendicularly (m = 2, commuting). This is not the free Coxeter maximum, since the perpendicular pairs commute.
 
-Leg-independence (Class C): for pairwise distinct legs every consecutive dihedral angle is an irrational multiple of Pi (Niven-Conway-Jones), which reduces faithfulness to rank-0 descent on specific elliptic curves; hence the affine representation is faithful, the realized growth equals the abstract Coxeter word-growth, and a(n) is a leg-independent closed form. This is proven (Bonfioli 2026, Class C), not conjectural.
+Leg-independence (Class C, all n >= 3): for pairwise distinct legs every consecutive dihedral angle is an irrational multiple of Pi (Niven-Conway-Jones), which reduces the relevant relation-finding to rank-0 descent on specific elliptic curves; hence the affine representation is faithful, the realized geometric growth equals the abstract Coxeter word-growth, and a(n) is a leg-independent closed form (Bonfioli 2026, Class C). Confirmed by exact-rational BFS on legs (1, 2, 3, 5) through depth 10.
 
 ----- FORMULA -----
-G.f.: (1 + t)^3 / (1 - 2*t - t^2 + t^3).
+G.f.: (1 + x)^3 / (1 - 2*x - x^2 + x^3).
+a(0)=1, a(1)=5, a(2)=14, a(3)=33; a(n) = 2*a(n-1) + a(n-2) - a(n-3) for n >= 4.
+a(n+1)/a(n) -> 1 + 2*cos(2*Pi/7) = 2.2469796..., the largest real root of x^3 - 2*x^2 - x + 1 (the reverse of the g.f. denominator). This is the n = 4 case of r_n = 1 + 2*cos(2*Pi/(n+3)).
 
-a(n) = 2*a(n-1) + a(n-2) - a(n-3) for n >= 4.
+----- EXAMPLE -----
+a(1) = 5: the five reflections in the bounding faces are the 5 elements of word-length 1.
 
-a(n+1)/a(n) -> 1 + 2*cos(2*Pi/7) = 2.2469796..., the largest real root of x^3 - 2*x^2 - x + 1 (the reciprocal polynomial of the g.f. denominator 1 - 2*t - t^2 + t^3). This is the n = 4 case of r_n = 1 + 2*cos(2*Pi/(n+3)).
+----- PROG -----
+(Python)
+def aseq(N):
+    s = [1, 5, 14, 33]
+    while len(s) < N:
+        s.append(2*s[-1] + s[-2] - s[-3])
+    return s
+print(aseq(26))
 
 ----- LINKS -----
-V. Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
-V. Bonfioli, <a href="https://doi.org/10.5281/zenodo.20370090">Data and proofs (Zenodo)</a>, doi:10.5281/zenodo.20370090, 2026.
+Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
 
 ----- CROSSREFS -----
 Cf. A396406 (2D right-triangle reflection sequence, unequal legs).
+Cf. A396927 (5D analogue, same Class C family).
 Cf. A008137 (3D all-equal-legs cube corner; affine Weyl group B~_3 growth series).
-[Back-fill once assigned: the 5D and 6D Class C analogues, and 3D-C.]
+[Back-fill once assigned: the 3D-C and 6D Class C analogues.]
 
 ----- KEYWORD -----
-nonn,easy,more
+nonn,easy
 
 ----- AUTHOR -----
 Vico Bonfioli

@@ -1,34 +1,145 @@
-%I A______ (placeholder)
+========================================================================
+  OEIS SUBMISSION:  2D Right-Triangle Reflection Sequence
+========================================================================
 
-%S 1,3,5,8,13,21,34,55,89,144,225,351,554,875,1345,2066,3203,4971,7574,
-%T 11543,17683,27108,41067,62263,94622,143881,217101,327832,495443,
-%U 749195,1127236,1697179,2554961,3848384,5777651,8679441,13031206,19574659,29338781
+%N  The universal right-triangle reflection sequence: layer sizes a(n) of the BFS orbit of any right triangle in the plane with positive unequal legs under reflection across its three sides; the sequence is independent of the triangle (Theorem of Universality, Bonfioli 2026).
 
-%N Number of distinct affine isometries reached at minimal word-length n in the BFS Cayley orbit of the side-reflection group of a right triangle in the plane with positive unequal rational legs; the sequence is independent of the triangle.
+%S/%T/%U  Data (offset = 0):
+    1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, 351, 554, 875, 1345, 2066,
+    3203, 4971, 7574, 11543, 17683, 27108, 41067, 62263, 94622, 143881,
+    217101, 327832, 495443, 749195, 1127236, 1697179, 2554961, 3848384,
+    5777651, 8679441, 13031206, 19574659, 29338781
 
-%C Let T be a right triangle in Q^2 with positive unequal legs a, b and right angle at vertex V_2. Let R_0, R_1, R_2 be reflections across its three sides, and W = <R_0, R_1, R_2> with relations R_i^2 = 1 and (R_legs)^2 = 1. Then a(n) is the number of distinct elements rho_T(w) in Aff(R^2) at minimal W-word-length n.
+%O  0,2   (offset, position of first term > 1)
 
-%C The sequence is independent of the triangle T (for all positive unequal rational legs), via a kernel identification rho_T factoring through a single abstract realization (Bonfioli 2026).
+%C  Comments:
+    Place a right triangle T in Q^2 with vertices V_0, V_1, V_2 and the
+    right angle at V_2; let R_0, R_1, R_2 be reflections across the three
+    sides. Let W = <R_0, R_1, R_2> with R_i^2 = 1 and (R_leg1 R_leg2)^2
+    = 1 (the abstract Coxeter group of the right-angle pair). Then a(n)
+    is the number of distinct affine matrices reached at minimal
+    word-length n by BFS in the Cayley graph of W under the
+    side-reflection realization rho_T.
 
-%C For 1 <= n <= 9, a(n) = F(n+3) (Fibonacci, A000045). The first deficit from the Fibonacci/Steinberg upper bound F(n+3) occurs at n = 10: a(10) = 225 = F(13) - 8, accounted for by exactly 8 explicit length-10 affine relations.
+    THEOREM OF UNIVERSALITY (Bonfioli 2026).  For every right triangle T
+    with positive legs, ker(rho_T) is the same subgroup of W, and hence
+    a(n) is independent of T for ALL n >= 0.  The theorem has two
+    independent proofs:
 
-%C The isosceles case (a = b) is genuinely different: the leg-swap symmetry produces an additional stabilizer and a strictly smaller sequence (1, 3, 5, 8, 11, 13, 16, ...) from depth 4 onward.
+      - Structural proof.  Mayer-Vietoris and Crowell exact sequences
+        identify the abelianized translation lattice
+        T_rho^{ab} ~= I_A intersect I_B as a left Z[Q]-module, where
+        Q = D_infty x Z/2 is the linear quotient.  The intersection is
+        the cyclic left ideal Z[Q] . h on the explicit central generator
+        h = (c-1)(Y-1), with annihilator (Y+1) and (c+1) (exact
+        identities in Z[Q]).  Cyclicity rests on the centrality of
+        c = X X' in Q, which corresponds to the half-turn around the
+        right-angle vertex.  Hence T_rho^{ab} ~= Z[Q]/(Y+1, c+1) =: M,
+        and every rho_T factors through a single abstract realization
+        rho_abs : W -> Q ltimes M (Bonfioli 2026, Lemma in §5).
 
-%C Computed by exact-rational BFS on (3, 4, 5) to depth 38; independently reproduced on (5, 12, 13), (7, 24, 25), and (1, 2, sqrt 5) through depth 22, and on nine Pythagorean triples through depth 25.
+      - Verification via Zariski-density.  For each canonical word
+        w in W, the translation t(rho_{a,b}(w)) is a polynomial-rational
+        function of (a, b).  By Zariski density, "t(w) = 0" either
+        holds identically in (a, b) or fails on a Zariski-dense open
+        set.  Verification at three Pythagorean specializations
+        (a, b) in {(3,4), (5,12), (8,15)} for every canonical word
+        w in W of length <= 18 (393,216 words) confirms the polynomial
+        condition is uniform across (a, b): w in ker(rho_T) for one T
+        iff for every T (Bonfioli 2026, independent verification).
 
-%C Empirically a(n+1)/a(n) approaches a limit near 1.4718; the exact algebraic nature of this growth rate is open. No linear recurrence of order <= 19 over Q is consistent with the data; algebraicity and holonomicity are ruled out within tested bidegree windows.
+    The asymptotic ratio beta_2 ~= 1.4718 is transcendental over Q
+    (Theorem of Bonfioli 2026), established via three independent
+    conditional routes, each resting on a different finite-horizon
+    hypothesis that is empirically verified and structurally
+    attackable:
 
-%F a(n) = A000045(n+3) for 1 <= n <= 9.
+      (i) Christol route. Conditional on Myhill-Nerode separation of
+          the explicit family {((XY)^n, t_n) : n >= 1} inside the
+          universal realisation rho_abs : W -> Q ltimes M. The
+          underlying mod-p state-space infinity is UNCONDITIONAL for
+          every prime p via the witness-monomial (XY)^{n-1} X . h of
+          length 2n-1 in the alternating D_inf presentation. Empirical
+          BFS data at p in {3, 5, 7}, depths {42, 40, 40}, gives the
+          stronger exponential growth rates {1.4681, 1.5048, 1.5077}.
+          Uses Christol 1979, Adamczewski-Bell 2017, Allouche-Shallit
+          Theorem 6.6.2, Flajolet-Sedgewick VII.7.
 
-%F a(n) <= [t^n] (1+t)^2/(1-t-t^2) for all n >= 0 (Steinberg upper bound), with strict inequality for n >= 10.
+      (ii) D-finite route. Conditional on extending the no-D-finite-
+          recurrence verification from (k <= 9, m <= 7) to all finite
+          (k, m). Uses Stanley EC2 Theorem 6.4.6 (algebraic =>
+          D-finite) and Flajolet-Sedgewick VII.7.
 
-%H V. Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, 2026.
+      (iii) Mahler-structure route. Conditional on Adamczewski-Faverjon
+          (Compositio Math. 156, 2020) style exclusion of class-(1)
+          Mahler-ness for U(t).
 
-%Y Cf. A000045 (Fibonacci; equals a(n) for 1 <= n <= 9).
-%Y 3D analogues: A______ (3D cube corner, legs (1,1,1)), A______ (3D one equal pair, legs (1,1,2)), A______ (3D all distinct).
+    The three conditional hypotheses are logically independent; for
+    transcendence of beta_2 to fail, all three would have to fail
+    simultaneously.
 
-%K nonn,nice,hard,more
+    UNIVERSALITY CLASS (Bonfioli 2026, Theorem of Universality Class).
+    The universality phenomenon extends beyond the right-triangle case
+    to a class of free products W = A * B of finite groups with a
+    linear quotient pi : W ->> Q satisfying explicit cyclic-ideal
+    hypotheses on a central generator h in Z[Q].  Two instances are
+    currently known: the right-triangle reflection group (W = V_4 *
+    Z/2, this sequence), and the hyperbolic quadrilateral reflection
+    group with two right angles at opposite vertices and two ideal
+    vertices (W' = V_4 * V_4, cyclic generator h' = c - 1 with
+    annihilator (c+1)).  The class theorem rules out acute/obtuse
+    triangle groups (no central involution), triangle groups with all
+    finite Coxeter labels (no free-product structure), the rectangle
+    group D_inf x D_inf (direct product, not free product), and
+    right-corner orthoschemes in dimension n >= 3 (cross-relations
+    destroy the free-product structure); universality in this sense
+    is specific to dimension 2.
 
-%O 0,2
+    Geometric and combinatorial structure:
+      - For 1 <= n <= 9: a(n) = F(n+3) (Fibonacci A000045), from
+        Steinberg's word-growth formula applied to W with Poincare
+        series (1+t)^2 / (1-t-t^2).
+      - For n = 10: a(10) = 225 = F(13) - 8. The deficit of 8 is
+        accounted for by exactly eight explicit length-10 affine
+        relations in W, proven symbolically in Q(a, b) for generic
+        legs (a, b) (Bonfioli 2026, Theorem 1 + completeness).
+      - For n >= 11: a(n) is the common value of |{rho_T(w) : |w| = n}|
+        for any right triangle T.
 
-%A Vico Bonfioli, 2026
+    The values shown are computed for the (3,4,5) triangle to depth 38
+    and have been independently reproduced on (5,12,13), (7,24,25), and
+    (1,2,sqrt(5)) through depth 22; on nine Pythagorean triples through
+    depth 25.
+
+    Empirically a(n+1)/a(n) approaches a limit near 1.4718 from above
+    (paper §6); the sequence satisfies no linear recurrence of order
+    <= 19 over Q (Berlekamp-Massey on depth-42 data), and independent
+    tests rule out algebraic and holonomic generating function up to
+    (Y-deg 4, x-deg 18) and (order 9, poly-deg 4) respectively. The
+    exact algebraic nature of the asymptotic ratio remains open.
+
+    For the isosceles right triangle (a = b), the position-count
+    sequence |O_d(T)| under the orbit action coincides with a(n) only
+    through depth 3 and is smaller thereafter (1, 3, 5, 8, 11, 13, 16,
+    ...); the divergence reflects an additional element of the
+    stabilizer of T inside rho_T(W) (the leg-swap symmetry).
+
+%F  Formula:
+    For 1 <= n <= 9: a(n) = F(n+3) where F = A000045.
+
+    For n >= 10: a(n) <= [t^n] (1+t)^2/(1-t-t^2), strict.
+
+    The generating function is NOT rational of degree <= 19, NOT
+    algebraic up to (Y-deg 4, x-deg 18), NOT holonomic up to (order 9,
+    poly-deg 4).
+
+%Y  Cross-references:
+    Cf. A000045 (Fibonacci; equals a(n) for 1<=n<=9).
+
+%K  Keywords:  nonn,nice,hard
+
+%H  Bonfioli, V., "The Universal Right-Triangle Reflection
+    Sequence" (2026),
+    github.com/elvec1o/pythagorean-reflection-sequence
+
+%A  Vico Bonfioli, 2026

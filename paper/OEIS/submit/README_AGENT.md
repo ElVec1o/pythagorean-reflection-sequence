@@ -7,7 +7,25 @@ paste exactly what is in the files.
 
 The author/submitter is **Vico Bonfioli** (registered OEIS contributor; this is his
 account). Use that exact spelling. The 2D flagship of this project is already published
-as **A396406** — do not resubmit it; only cross-reference it.
+as **A396406**, and the 5D Class C entry is now **A396927** — do not resubmit those;
+only cross-reference them.
+
+---
+
+## HARD RULES — editor (Michel Marcus) already rejected these twice. Do NOT repeat:
+
+1. **Name everywhere is "Vico Bonfioli"** — never "V. Bonfioli". Check the LINKS field
+   especially; that is where it slipped through before. Do a find for "V. Bonfioli"
+   before proposing and fix every hit.
+2. **DATA must have enough terms.** A dozen terms gets rejected ("needs more terms").
+   Every Class C entry here has a linear recurrence, so the DATA below is already
+   extended to ~25 terms via that recurrence — paste it as-is, do not truncate. (The
+   one exception is the Class B entry 5_3D_B, which has NO recurrence; depth 18 is its
+   verified extent and keywords hard,more cover it.)
+3. **No b-file.** Data sections are complete; a b-file the same length as DATA gets
+   removed (this happened on A396406).
+4. After pasting, re-read the live diff once and confirm BOTH (1) and (2) before
+   clicking propose. These are the two things that wasted review cycles already.
 
 ---
 
@@ -20,9 +38,9 @@ entries must cross-reference the A-numbers of the earlier ones.
 
 | Order | File | Shape | Risk | Notes |
 |-------|------|-------|------|-------|
-| 1 | `1_5D.txt`  | 5D orthoscheme, distinct legs | low    | **LEAD** — submit first, alone |
-| 2 | `2_4D.txt`  | 4D orthoscheme, distinct legs | low    | after 5D has a number |
-| 3 | `3_6D.txt`  | 6D orthoscheme, distinct legs | low    | after 5D has a number |
+| 1 | `1_5D.txt`  | 5D orthoscheme, distinct legs | low    | **DONE — published as A396927** |
+| 2 | `2_4D.txt`  | 4D orthoscheme, distinct legs | low    | submit next |
+| 3 | `3_6D.txt`  | 6D orthoscheme, distinct legs | low    | submit next |
 | 4 | `4_3D_C.txt`| 3D orthoscheme, distinct legs | medium | near-dup of A005010 — disclose openly |
 | 5 | `5_3D_B.txt`| tetrahedron (1,1,2)           | high   | submit LAST, standalone, expect questions |
 

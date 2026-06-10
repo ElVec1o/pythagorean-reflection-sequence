@@ -21,9 +21,9 @@
 
 %C Direct linear-algebra tests on the depth-18 data rule out a linear recurrence over Q of order <= 9.
 
-%H V. Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">Pythagorean reflection sequence (repository)</a>, 2026.
+%H Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">Pythagorean reflection sequence (repository)</a>, 2026.
 
-%H V. Bonfioli, <a href="https://doi.org/10.5281/zenodo.20370090">A Universal Right-Triangle Reflection Sequence (Zenodo)</a>, 2026. [Title cited for reference; the "universal"/leg-independence result it establishes applies to the pairwise-distinct case (Class C), not to this Class B sequence.]
+%H Vico Bonfioli, <a href="https://doi.org/10.5281/zenodo.20370090">A Universal Right-Triangle Reflection Sequence (Zenodo)</a>, 2026. [Title cited for reference; the "universal"/leg-independence result it establishes applies to the pairwise-distinct case (Class C), not to this Class B sequence.]
 
 %Y Cf. A396406 (2D right-triangle reflection sequence).
 %Y Cf. A251704 (tetranacci variant; agrees with this sequence on a(6)..a(13) but diverges at a(14)).
