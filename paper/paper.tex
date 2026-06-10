@@ -870,6 +870,48 @@ and group approximations (cf.\ K.~Bou-Rabee, \emph{Quantifying the
 residual finiteness of groups}, J.\ Algebra 323 (2010), 729--737)
 with completely explicit constants.
 
+\begin{theorem}[Normal form and lamp model]
+\label{thm:normal-form}
+An abstract tuple $(\varepsilon, \delta, k, P)$ lies in
+$W_{\mathrm{gen}}$ if and only if
+\[
+P(1) = 0
+\qquad\text{and}\qquad
+P \;\equiv\; (1+t)\bigl(1 + t + \cdots + t^{|k|-1}\bigr)\,
+t^{\min(k,0)} \pmod 2 .
+\]
+(The mod-$2$ class is the dihedral cocycle of
+Theorem~\ref{thm:translation-lattice}; it depends only on $k$.)  In
+particular the word and membership problems are solved explicitly.
+Moreover, writing $P = \sum_j a_j\,(t^{j+1} - t^j)$ in the edge basis,
+right multiplication by the generators acts as an \emph{edge
+lamplighter} on $\mathbb{Z}$:
+\[
+R_x \colon \delta \mapsto 1 - \delta, \qquad
+R_y \colon (\varepsilon, \delta) \mapsto (-\varepsilon, 1-\delta),
+\]
+and $R_h$ moves the walker one site (down if $\delta = 0$, up if
+$\delta = 1$), deposits $+\varepsilon$ resp.\ $-\varepsilon$ on the
+traversed edge, and flips $\delta$.  Consecutive moves therefore bounce
+by default, straight travel and deposit-sign changes being paid for in
+$R_x, R_y$ letters.
+\end{theorem}
+
+\begin{proof}
+Necessity of the congruences is Lemma~\ref{lem:symbolic-form} and
+Theorem~\ref{thm:translation-lattice} (the mod-$2$ image of an element
+is determined by its image in the dihedral quotient, hence by $k$; the
+representative $r^k$ has $P_{r^k} = (1-t)(1 + \cdots + t^{k-1})$).
+Sufficiency: the realized translation polynomials with a fixed linear
+part form a single coset of $\mathcal{T}$, and the two congruences cut
+out exactly one such coset, since a difference satisfying both lies in
+$2\mathbb{Z}[t^{\pm 1}] \cap (t-1)\mathbb{Z}[t^{\pm 1}] =
+2(t-1)\mathbb{Z}[t^{\pm 1}] = \mathcal{T}$.  The lamp dynamics is the
+composition law read in the edge basis; as a check, a breadth-first
+search of the lamp model reproduces $u_0, \ldots, u_{14}$ exactly and
+every ball element satisfies the congruences.
+\end{proof}
+
 \emph{(c) The growth question becomes a lamplighter growth question.}
 The sequence $u_d$ of \href{https://oeis.org/A396406}{A396406} is the
 growth series of a virtually-$\mathbb{Z}\wr\mathbb{Z}$ group with
@@ -883,6 +925,16 @@ open problem about lamplighter growth in a non-standard generating set
 --- and the failure of finite presentability (Theorem~
 \ref{thm:lamplighter}(ii)) explains in hindsight why the Knuth--Bendix
 completion experiments of the companion document could never terminate.
+By Theorem~\ref{thm:normal-form} the problem is now fully explicit:
+$u_d$ counts walk-and-deposit configurations of cost $d$ in the edge
+lamplighter, where a walk on $\mathbb{Z}$ pays one letter per move,
+bounces for free, and pays one letter per straight-through step or
+bundled sign change (two if unbundled); the growth series is the
+counting series of this decorated travelling-salesman model, the same
+type of computation carried out for other wreath-product metrics by
+Parry and by Cleary--Taback, but here with lamp group $\mathbb{Z}$ and
+the reflection cost table.  We leave its evaluation --- and with it the
+algebraicity of $\beta_2$ --- as the now sharply-posed open problem.
 
 The structural facts behind Theorem~\ref{thm:universality}(i)
 factor through three lemmas.
