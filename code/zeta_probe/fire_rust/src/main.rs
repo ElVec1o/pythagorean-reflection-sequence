@@ -801,6 +801,407 @@ fn main() {
             );
         }
         "fire" => fire(d),
+        "deep" => deep(d),
         _ => eprintln!("usage: fire [verify|fire] D"),
     }
+}
+
+// ==================== deep mode: the counting grammar ====================
+// The data scan is rebuilt as a phase automaton with NO absolute positions:
+//   I  -> (L)* -> [Mp* | Mm*] -> (Rz)* -> CLOSE      (k = #M-steps; k=0 skips M)
+// L-zone: edges left of min(0,k): even deposits, first edge nonzero, m>=2.
+// Mp/Mm: travel edges (k>0 / k<0): odd deposits, f=+1/-1; start/end virtuals
+//   are injected at the phase-entry sites.  Rz: even deposits right of
+//   max(0,k), m>=2, closure allowed only right after a nonzero edge.
+// State = (phase, reduced min-plus profile vector).  The memo of states IS
+// the determinized counting automaton; path counts by cost give u_d.
+
+use std::collections::VecDeque;
+
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+enum Phase {
+    I,
+    L,
+    Mp,
+    Mm,
+    Rz { lastnz: bool },
+}
+
+type Vred = Vec<(Profile, u32)>; // sorted, min cost = 0
+
+fn reduce(v: HashMap<Profile, u32>, cap: u32) -> Option<(u32, Vred)> {
+    if v.is_empty() {
+        return None;
+    }
+    let mn = *v.values().min().unwrap();
+    let mut out: Vec<(Profile, u32)> = v
+        .into_iter()
+        .filter(|(_, c)| c - mn <= cap)
+        .map(|(p, c)| (p, c - mn))
+        .collect();
+    out.sort();
+    Some((mn, out))
+}
+
+// apply one edge (a_j, fj, injections) to a reduced vector; min-plus over configs
+fn edge_transfer(
+    v: &Vred,
+    aj: i32,
+    fj: i32,
+    inj_start: bool,
+    inj_end: bool,
+    end_side: u8,
+    end_sign: i8,
+    min_m: i32,
+    cap: u32,
+) -> Option<(u32, Vred)> {
+    let mut base = aj.abs().max(fj.abs()).max(min_m);
+    if (base - aj.abs()) % 2 != 0 {
+        base += 1;
+    }
+    let mut nv: HashMap<Profile, u32> = HashMap::new();
+    for (prof, c0) in v {
+        if prof.done {
+            continue; // closed walks accept no further edges
+        }
+        for lam in 0..3 {
+            let m = base + 2 * lam;
+            if m == 0 && (aj != 0 || fj != 0) {
+                continue;
+            }
+            let u = (m + fj) / 2;
+            let dn = (m - fj) / 2;
+            if u < 0 || dn < 0 {
+                continue;
+            }
+            for pu in 0..=u {
+                let t = aj + dn - u + 2 * pu;
+                if t % 2 != 0 {
+                    continue;
+                }
+                let pdv = t / 2;
+                if pdv < 0 || pdv > dn {
+                    continue;
+                }
+                let res = site_transfer(
+                    prof, u as u8, dn as u8, pu as u8, pdv as u8, inj_start, inj_end, end_side,
+                    end_sign,
+                );
+                for (sc, np) in res {
+                    let val = c0 + m as u32 + sc;
+                    if val <= cap + 60 {
+                        let e = nv.entry(np).or_insert(u32::MAX);
+                        if val < *e {
+                            *e = val;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    reduce(nv, cap)
+}
+
+// closure: final site with pending injections; returns min closing cost
+fn closure_cost(
+    v: &Vred,
+    inj_start: bool,
+    inj_end: bool,
+    end_side: u8,
+    end_sign: i8,
+) -> Option<u32> {
+    let mut best = u32::MAX;
+    for (prof, c0) in v {
+        if prof.done {
+            if prof.sp && prof.ep {
+                best = best.min(*c0);
+            }
+            continue;
+        }
+        let res = site_transfer(prof, 0, 0, 0, 0, inj_start, inj_end, end_side, end_sign);
+        for (sc, np) in res {
+            if np.done && np.sp && np.ep {
+                best = best.min(c0 + sc);
+            }
+        }
+    }
+    if best == u32::MAX {
+        None
+    } else {
+        Some(best)
+    }
+}
+
+fn deep(maxd: u32) {
+    let t0 = Instant::now();
+    let mut hist = vec![0u64; (maxd + 1) as usize];
+    let mut total_states = 0usize;
+    for &(eps_t, dl_t) in &[(1i8, 0u8), (1, 1), (-1, 0), (-1, 1)] {
+        let end_side: u8 = if dl_t == 1 { 1 } else { 0 };
+        let end_sign: i8 = eps_t;
+        // automaton states
+        let mut ids: HashMap<(Phase, Vred), usize> = HashMap::new();
+        let mut trans: Vec<Vec<(u32, usize)>> = Vec::new(); // state -> (cost, target)
+        let mut accept: Vec<Option<u32>> = Vec::new(); // closure cost
+        let empty: Vred = vec![(
+            Profile { comps: vec![], done: false, sp: false, ep: false },
+            0,
+        )];
+        let mut get_id = |ph: Phase, v: Vred, trans: &mut Vec<Vec<(u32, usize)>>, accept: &mut Vec<Option<u32>>, ids: &mut HashMap<(Phase, Vred), usize>, queue: &mut VecDeque<usize>, keys: &mut Vec<(Phase, Vred)>| -> usize {
+            let key = (ph, v);
+            if let Some(&i) = ids.get(&key) {
+                return i;
+            }
+            let i = ids.len();
+            ids.insert(key.clone(), i);
+            keys.push(key);
+            trans.push(Vec::new());
+            accept.push(None);
+            queue.push_back(i);
+            i
+        };
+        let mut queue: VecDeque<usize> = VecDeque::new();
+        let mut keys: Vec<(Phase, Vred)> = Vec::new();
+        let init = get_id(Phase::I, empty.clone(), &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+        while let Some(sid) = queue.pop_front() {
+            let (ph, v) = keys[sid].clone();
+            // closure
+            let acc = match ph {
+                Phase::I => closure_cost(&v, true, true, end_side, end_sign),
+                Phase::L => closure_cost(&v, true, true, end_side, end_sign),
+                Phase::Mp => closure_cost(&v, false, true, end_side, end_sign),
+                Phase::Mm => closure_cost(&v, true, false, end_side, end_sign),
+                Phase::Rz { lastnz } => {
+                    if lastnz {
+                        closure_cost(&v, false, false, end_side, end_sign)
+                    } else {
+                        None
+                    }
+                }
+            };
+            accept[sid] = acc;
+            // transitions: enumerate successor edges by phase
+            let mut push = |ph2: Phase,
+                            aj: i32,
+                            fj: i32,
+                            is_: bool,
+                            ie: bool,
+                            minm: i32,
+                            trans: &mut Vec<Vec<(u32, usize)>>,
+                            accept: &mut Vec<Option<u32>>,
+                            ids: &mut HashMap<(Phase, Vred), usize>,
+                            queue: &mut VecDeque<usize>,
+                            keys: &mut Vec<(Phase, Vred)>| {
+                if let Some((dc, nv)) =
+                    edge_transfer(&v, aj, fj, is_, ie, end_side, end_sign, minm, maxd)
+                {
+                    if dc <= maxd {
+                        let tid = get_id(ph2, nv, trans, accept, ids, queue, keys);
+                        trans[sid].push((dc, tid));
+                    }
+                }
+            };
+            let evens: Vec<i32> = {
+                let mut z = vec![0];
+                let mut x = 2;
+                while x <= maxd as i32 {
+                    z.push(x);
+                    z.push(-x);
+                    x += 2;
+                }
+                z
+            };
+            let odds: Vec<i32> = {
+                let mut z = vec![];
+                let mut x = 1;
+                while x <= maxd as i32 {
+                    z.push(x);
+                    z.push(-x);
+                    x += 2;
+                }
+                z
+            };
+            match ph {
+                Phase::I => {
+                    for &a in &evens {
+                        if a != 0 {
+                            // first L edge (nonzero)
+                            push(Phase::L, a, 0, false, false, 2, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                        }
+                    }
+                    for &a in &odds {
+                        push(Phase::Mp, a, 1, true, false, 1, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                        push(Phase::Mm, a, -1, false, true, 1, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                    for &a in &evens {
+                        // k=0, first R edge (may be zero gap)
+                        push(Phase::Rz { lastnz: a != 0 }, a, 0, true, true, 2, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                }
+                Phase::L => {
+                    for &a in &evens {
+                        push(Phase::L, a, 0, false, false, 2, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                    for &a in &odds {
+                        push(Phase::Mp, a, 1, true, false, 1, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                        push(Phase::Mm, a, -1, false, true, 1, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                    for &a in &evens {
+                        push(Phase::Rz { lastnz: a != 0 }, a, 0, true, true, 2, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                }
+                Phase::Mp => {
+                    for &a in &odds {
+                        push(Phase::Mp, a, 1, false, false, 1, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                    for &a in &evens {
+                        push(Phase::Rz { lastnz: a != 0 }, a, 0, false, true, 2, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                }
+                Phase::Mm => {
+                    for &a in &odds {
+                        push(Phase::Mm, a, -1, false, false, 1, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                    for &a in &evens {
+                        push(Phase::Rz { lastnz: a != 0 }, a, 0, true, false, 2, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                }
+                Phase::Rz { .. } => {
+                    for &a in &evens {
+                        push(Phase::Rz { lastnz: a != 0 }, a, 0, false, false, 2, &mut trans, &mut accept, &mut ids, &mut queue, &mut keys);
+                    }
+                }
+            }
+            if ids.len() % 2000 == 0 {
+                eprintln!(
+                    "[{:7.1}s] variant ({},{}): {} states discovered, queue {}",
+                    t0.elapsed().as_secs_f64(),
+                    eps_t,
+                    dl_t,
+                    ids.len(),
+                    queue.len()
+                );
+            }
+            if ids.len() > 3_000_000 {
+                eprintln!("STATE EXPLOSION (>3M) — automaton not finite at this budget; aborting variant");
+                break;
+            }
+        }
+        let n = ids.len();
+        total_states += n;
+        eprintln!(
+            "[{:7.1}s] variant ({},{}): automaton complete: {} states",
+            t0.elapsed().as_secs_f64(),
+            eps_t,
+            dl_t,
+            n
+        );
+        // path-count DP by cost
+        let mut c = vec![vec![0u64; n]; (maxd + 1) as usize];
+        c[0][init] = 1;
+        for d in 0..=maxd {
+            for s in 0..n {
+                let cnt = c[d as usize][s];
+                if cnt == 0 {
+                    continue;
+                }
+                if let Some(acc) = accept[s] {
+                    let fd = d + acc;
+                    if fd <= maxd {
+                        hist[fd as usize] += cnt;
+                    }
+                }
+                for &(dc, t) in &trans[s] {
+                    let nd = d + dc;
+                    if nd <= maxd {
+                        c[nd as usize][t] += cnt;
+                    }
+                }
+            }
+        }
+    }
+    println!("\nautomaton states (4 variants total): {}", total_states);
+    println!("computed (theory only): {:?}", hist);
+    let lim = (maxd + 1).min(PUB.len() as u32) as usize;
+    println!("published             : {:?}", &PUB[..lim]);
+    let ok = hist[..lim].iter().zip(PUB[..lim].iter()).all(|(a, b)| a == b);
+    println!(
+        "{}",
+        if ok {
+            "MATCH — the theory generates A396406"
+        } else {
+            "MISMATCH"
+        }
+    );
+    if (maxd as usize) >= PUB.len() {
+        println!("NEW TERMS beyond all prior computation:");
+        for d in PUB.len()..=(maxd as usize) {
+            println!("  u_{} = {}", d, hist[d]);
+        }
+    }
+    // recurrence hunt on computed terms (exact, i128)
+    if ok {
+        let terms: Vec<i128> = hist.iter().map(|&x| x as i128).collect();
+        for ord in 1..=((terms.len() as i32 - 8) / 2).max(0) as usize {
+            if let Some(coef) = find_recurrence(&terms, ord) {
+                println!("LINEAR RECURRENCE FOUND, order {}: {:?}", ord, coef);
+                println!("characteristic polynomial: x^{} - sum coef_i x^(order-i); beta_2 = largest real root", ord);
+                return;
+            }
+        }
+        println!("no linear recurrence of order <= {} over Q fits the computed terms", ((terms.len() as i32 - 8) / 2).max(0));
+    }
+}
+
+// exact rational recurrence finder via fraction-free Gaussian elimination
+fn find_recurrence(t: &[i128], ord: usize) -> Option<Vec<f64>> {
+    let need = 2 * ord + 4;
+    if t.len() < need {
+        return None;
+    }
+    // solve sum_{i=1..ord} c_i * t[n-i] = t[n] for n = ord..ord+ord-1, verify on rest
+    let rows = ord;
+    let mut a = vec![vec![0f64; ord + 1]; rows];
+    for r in 0..rows {
+        let n = ord + r;
+        for i in 0..ord {
+            a[r][i] = t[n - 1 - i] as f64;
+        }
+        a[r][ord] = t[n] as f64;
+    }
+    // gaussian
+    for col in 0..ord {
+        let mut piv = col;
+        for r in col..rows {
+            if a[r][col].abs() > a[piv][col].abs() {
+                piv = r;
+            }
+        }
+        if a[piv][col].abs() < 1e-9 {
+            return None;
+        }
+        a.swap(col, piv);
+        let p = a[col][col];
+        for r in 0..rows {
+            if r != col {
+                let f = a[r][col] / p;
+                for cc in col..=ord {
+                    a[r][cc] -= f * a[col][cc];
+                }
+            }
+        }
+    }
+    let coef: Vec<f64> = (0..ord).map(|i| a[i][ord] / a[i][i]).collect();
+    // exact verification over ALL terms with rounded rational coefficients?
+    // verify in f64 with tight tolerance over the full range
+    for n in ord..t.len() {
+        let mut s = 0f64;
+        for i in 0..ord {
+            s += coef[i] * t[n - 1 - i] as f64;
+        }
+        if (s - t[n] as f64).abs() > 0.5 {
+            return None;
+        }
+    }
+    Some(coef)
 }
