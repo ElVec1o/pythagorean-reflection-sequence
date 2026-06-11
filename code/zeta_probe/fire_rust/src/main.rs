@@ -801,7 +801,11 @@ fn main() {
             );
         }
         "fire" => fire(d),
-        "deep" => deep(d),
+        "deep" => {
+            let c: u32 = args.get(3).and_then(|s| s.parse().ok()).unwrap_or(d);
+            eprintln!("deep: budget {}, lag cap {}", d, c);
+            deep(d, c)
+        }
         _ => eprintln!("usage: fire [verify|fire] D"),
     }
 }
@@ -932,7 +936,7 @@ fn closure_cost(
     }
 }
 
-fn deep(maxd: u32) {
+fn deep(maxd: u32, lagcap: u32) {
     let t0 = Instant::now();
     let mut hist = vec![0u64; (maxd + 1) as usize];
     let mut total_states = 0usize;
@@ -993,7 +997,7 @@ fn deep(maxd: u32) {
                             queue: &mut VecDeque<usize>,
                             keys: &mut Vec<(Phase, Vred)>| {
                 if let Some((dc, nv)) =
-                    edge_transfer(&v, aj, fj, is_, ie, end_side, end_sign, minm, maxd)
+                    edge_transfer(&v, aj, fj, is_, ie, end_side, end_sign, minm, lagcap)
                 {
                     if dc <= maxd {
                         let tid = get_id(ph2, nv, trans, accept, ids, queue, keys);

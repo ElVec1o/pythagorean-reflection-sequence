@@ -948,18 +948,41 @@ $9$ and undershoots by exactly $2$ per isolated cycle beyond
 (gap histogram $\{+2\colon 70,\ +4\colon 2\}$ at radius $14$).
 \end{theorem}
 
-\begin{conjecture}[Algebraic growth]
+\begin{proposition}[Growth-series complexity, empirical]
+\label{prop:growth-complexity}
+Over the $43$ exact terms $u_0, \ldots, u_{42}$ (the first $39$
+published, $u_{39}, \ldots, u_{42}$ from the depth-$42$ BFS, all
+re-derived from the metric formula of
+Theorem~\ref{thm:metric-formula} through $u_{22}$):
+\begin{enumerate}[label=(\roman*),itemsep=0.1em]
+\item the sequence satisfies \emph{no} linear recurrence with constant
+rational coefficients of order $\le 17$ (an exact fraction-free test);
+hence the growth series, if rational, has denominator degree $> 17$;
+\item it satisfies \emph{no} holonomic (polynomial-coefficient)
+recurrence of order-plus-degree $\le 8$; hence the series, if
+$D$-finite (in particular if algebraic), is not of low complexity.
+\end{enumerate}
+The consecutive ratios give $\beta_2 = 1.4996\ldots$ (Aitken-accelerated
+over the $43$ terms), tantalizingly near $3/2$ but not provably equal.
+\end{proposition}
+
+\begin{conjecture}[Context-free growth]
 \label{conj:algebraic-growth}
-The nested-excursion structure of the optimization in
-Theorem~\ref{thm:metric-formula} (walks on $\mathbb{Z}$ decompose into
-nested excursions, a context-free rather than regular mechanism)
-suggests that the growth series $\sum_d u_d x^d$ of
-\href{https://oeis.org/A396406}{A396406} is \emph{algebraic but not
-rational} over $\mathbb{Q}(x)$ --- which would explain the absence of
-any linear recurrence (none of order $\le 19$ exists) while making
-$\beta_2$ an algebraic number.  The route to a proof is the
-determinization of the min-cost chain DP into a counting grammar, with
-the $43$ known terms as control.
+The min-cost optimization of Theorem~\ref{thm:metric-formula} carries a
+counter (the number of strand crossings of an edge is unbounded and
+must be tracked), so its determinization is a \emph{pushdown}, not a
+finite, automaton --- a context-free rather than regular mechanism.
+This is consistent with Proposition~\ref{prop:growth-complexity} (the
+finite-state truncations of the counting automaton grow with the cost
+budget, $58, 66, \ldots$ states per boundary class, rather than
+stabilizing) and suggests the growth series of
+\href{https://oeis.org/A396406}{A396406} is \emph{algebraic} over
+$\mathbb{Q}(x)$, necessarily of high degree.  We emphasize this is now
+a \emph{conjecture against which two natural low-complexity hypotheses
+have already been falsified}: it is not rational of small denominator
+degree, nor low-order $D$-finite.  A proof would require the explicit
+context-free grammar (the strand-counter determinization of the chain
+DP); we record the negative results above as the present hard evidence.
 \end{conjecture}
 
 \emph{(c) The growth question becomes a lamplighter growth question.}
