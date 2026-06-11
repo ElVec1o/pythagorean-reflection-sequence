@@ -935,7 +935,14 @@ one in costs exactly $2$.  Then
 \]
 This formula has been verified to agree with the true word metric on
 \emph{every} element of the radius-$14$ ball ($3{,}723$ elements,
-zero mismatches; \texttt{code/zeta\_probe/lamp\_profile.py}); the
+zero mismatches; \texttt{code/zeta\_probe/lamp\_profile.py});
+moreover, enumerating the elements from the normal form of
+Theorem~\ref{thm:normal-form} and counting them by the lengths this
+formula assigns reproduces $u_0, \ldots, u_{22}$ of
+\href{https://oeis.org/A396406}{A396406} exactly, with no breadth-first
+search anywhere in the pipeline
+(\texttt{code/zeta\_probe/fire\_rust/}, independently run on a second
+machine); the
 relaxation without the connectivity constraint is exact through radius
 $9$ and undershoots by exactly $2$ per isolated cycle beyond
 (gap histogram $\{+2\colon 70,\ +4\colon 2\}$ at radius $14$).
