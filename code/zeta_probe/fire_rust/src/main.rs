@@ -1148,42 +1148,64 @@ fn deep(maxd: u32, lagcap: u32) {
         }
         let n = ids.len();
         total_states += n;
-        // shape census: saturate strand counts at 2 (quotient out the counter)
-        let mut shapes: std::collections::HashSet<String> = std::collections::HashSet::new();
-        for ((ph, v), _) in ids.iter() {
-            let mut sig = format!("{:?}|", ph);
-            let mut comps_sig: Vec<String> = v
-                .iter()
-                .map(|(p, off)| {
-                    let cc: Vec<String> = p
-                        .comps
+        // multi-signature census: which quotient collapses the state space?
+        if std::env::args().any(|a| a == "census1") {
+            let mut s_strand: std::collections::HashSet<String> = Default::default();
+            let mut s_nprof: std::collections::HashSet<String> = Default::default();
+            let mut s_noff: std::collections::HashSet<String> = Default::default();
+            let mut s_both: std::collections::HashSet<String> = Default::default();
+            let mut max_strand = 0u8;
+            let mut max_comps = 0usize;
+            let mut max_profs = 0usize;
+            let mut max_off = 0u32;
+            for ((ph, v), _) in ids.iter() {
+                max_profs = max_profs.max(v.len());
+                for (p, off) in v.iter() {
+                    max_off = max_off.max(*off);
+                    max_comps = max_comps.max(p.comps.len());
+                    for c in &p.comps {
+                        for z in 0..4 {
+                            max_strand = max_strand.max(c.0[z]);
+                        }
+                    }
+                }
+                let mk = |cap_strand: bool, keep_off: bool, keep_all_profs: bool| -> String {
+                    let mut parts: Vec<String> = v
                         .iter()
-                        .map(|c| {
-                            format!(
-                                "[{},{},{},{},{},{}]",
-                                c.0[0].min(2), c.0[1].min(2), c.0[2].min(2), c.0[3].min(2),
-                                c.1, c.2
-                            )
+                        .map(|(p, off)| {
+                            let cc: Vec<String> = p
+                                .comps
+                                .iter()
+                                .map(|c| {
+                                    if cap_strand {
+                                        format!("[{},{},{},{}]", c.0[0].min(1), c.0[1].min(1), c.0[2].min(1), c.0[3].min(1))
+                                    } else {
+                                        format!("[{},{},{},{}]", c.0[0], c.0[1], c.0[2], c.0[3])
+                                    }
+                                })
+                                .collect();
+                            let mut cs = cc;
+                            cs.sort();
+                            format!("({};{}{})", cs.join(""), p.sp as u8 + 2 * p.ep as u8,
+                                if keep_off { format!(";{}", off) } else { String::new() })
                         })
                         .collect();
-                    format!("({};{};{};{})", cc.join(""), p.done, p.sp as u8 + 2 * p.ep as u8, off)
-                })
-                .collect();
-            comps_sig.sort();
-            sig.push_str(&comps_sig.join("+"));
-            shapes.insert(sig);
-        }
-        eprintln!(
-            "[{:7.1}s] variant ({},{}): automaton complete: {} states, {} SHAPES (counter saturated at 2)",
-            t0.elapsed().as_secs_f64(),
-            eps_t,
-            dl_t,
-            n,
-            shapes.len()
-        );
-        if std::env::args().any(|a| a == "census1") {
-            // census mode: only the first variant
-            println!("CENSUS: budget {}, states {}, shapes {}", maxd, n, shapes.len());
+                    parts.sort();
+                    if !keep_all_profs {
+                        parts.dedup();
+                    }
+                    format!("{:?}|{}", ph, parts.join("+"))
+                };
+                s_strand.insert(mk(true, true, true));
+                s_noff.insert(mk(false, false, true));
+                s_both.insert(mk(true, false, true));
+                s_nprof.insert(mk(true, false, false));
+            }
+            println!(
+                "CENSUS budget {}: states {} | strand-cap1 {} | no-offsets {} | both {} | dedup-profs {} || max: strand {}, comps {}, profs {}, off {}",
+                maxd, n, s_strand.len(), s_noff.len(), s_both.len(), s_nprof.len(),
+                max_strand, max_comps, max_profs, max_off
+            );
             return;
         }
         // path-count DP by cost

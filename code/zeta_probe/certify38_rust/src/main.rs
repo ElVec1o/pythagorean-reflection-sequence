@@ -275,12 +275,35 @@ fn ldist() {
     let mut bestj = 99;
     let mut bestf = "";
     // f = 1:   2(t-1)mu        ;  f = 1+t:  2(t^2-1)mu
-    let fams: [(&str, Vec<(i16, i32)>); 2] = [
-        ("1", vec![(3, c), (2, -(e + c)), (1, c + e), (0, -c)]),
-        ("1+t", vec![(4, c), (3, -e), (2, 0), (1, e), (0, -c)]),
+    // 2(t-1) * mu * f for several f; coefficients of (t-1)(c t^2 - e t + c) * f
+    // base (t-1)mu: [c, -(e+c), (c+e), -c] for t^3..t^0
+    let base: [i64; 4] = [c as i64, -((e + c) as i64), (c + e) as i64, -(c as i64)];
+    let fpolys: Vec<(&str, Vec<i64>)> = vec![
+        ("1", vec![1]),
+        ("1+t", vec![1, 1]),
+        ("(1+t)^2", vec![1, 2, 1]),
+        ("1+t+t^2", vec![1, 1, 1]),
+        ("1+t^2", vec![1, 0, 1]),
+        ("1-t", vec![1, -1]),
+        ("1+t+t^2+t^3", vec![1, 1, 1, 1]),
     ];
+    let mut fams: Vec<(String, Vec<(i16, i32)>)> = Vec::new();
+    for (nm, f) in &fpolys {
+        let mut prod = vec![0i64; f.len() + 4];
+        for (i, &fc) in f.iter().enumerate() {
+            for (j, &bc) in base.iter().enumerate() {
+                prod[i + (3 - j)] += fc * bc;   // base index j is exponent 3-j
+            }
+        }
+        let coeffs: Vec<(i16, i32)> = prod
+            .iter()
+            .enumerate()
+            .map(|(ex, &v)| (ex as i16, v as i32))
+            .collect();
+        fams.push((nm.to_string(), coeffs));
+    }
     for (fname, coeffs) in &fams {
-    for j0 in -4i16..=0 {
+    for j0 in -5i16..=0 {
         let mut p: Vec<(i16, i16)> = coeffs
             .iter()
             .filter(|&&(_, v)| v != 0)
