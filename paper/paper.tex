@@ -754,17 +754,21 @@ grows with the degree and height of $f$.
 \label{rem:nT-values}
 Theorem~\ref{thm:midpoint} converts the first-deviation depth into a
 \emph{shortest-vector problem in the word metric} --- the analogue, for
-this lamplighter metric, of a shortest-lattice-vector computation.  Two
-consequences of the measured value $n_{(1,2)} = 33$: first,
-$L_{(1,2)} \in \{65, 66\}$ exactly; second, since the $f = 1$ kernel
-element has edge deposits $(2c_T,\, -2e_T,\, 2c_T)$ with coefficient
-sum $4c_T + 2|e_T| = 32$ and $2 \cdot 32 + 2 = 66$, the shortest
-kernel word costs almost exactly \emph{two letters per unit of
-deposit}.  We record the resulting prediction --- $n_T = 4c_T + 2|e_T| + O(1)$
-(two letters per unit of deposit, halved by the midpoint; for $(1,2)$
-the exact value $4c_T + 2|e_T| + 1 = 33$ matches the measurement),
-sign-pattern dependent --- as a computable, falsifiable refinement of
-the sandwich: the certificate data already separates the
+this lamplighter metric, of a shortest-lattice-vector computation, and
+it exhibits the classical shortest-vector phenomenon: \emph{the
+shortest kernel element is not the obvious generator}.  Extracting the
+kernel polynomials from all $30$ exactly-verified depth-$33$ collision
+pairs of the $(2,1)$ shape shows that every one uses the multiplier
+$f = \pm t^{j}(1+t)$ --- never $f = 1$.  The reason is coefficient
+cancellation: $(t^2-1)\mu_T$ has coefficient sum $22$ against $32$ for
+$(t-1)\mu_T$, and indeed a meet-in-the-middle computation over the
+radius-$34$ ball ($L = \min_g d(g) + d(g^{-1}w)$ over $17{,}214{,}686$
+ball elements) certifies $L_{(2,1)} = 66$ exactly, attained by
+$f = t^{-4}(1+t)$, while the $f = 1$ element has length $> 68$.  Thus
+$n_{(2,1)} = \lceil 66/2 \rceil = 33$ is \emph{re-derived from first
+principles}, in exact agreement with the measured deviation depth ---
+the invariant $n_T$ is now computed, not merely observed.  We record as the computable, falsifiable
+refinement of the sandwich: the certificate data already separates the
 two sign patterns, since the shape $(1,3)$ ($e_T = +8$, alternating
 deposits) satisfies $n_{(1,3)} > 38$, strictly later than the
 all-positive pattern of $(1,2)$ would suggest.

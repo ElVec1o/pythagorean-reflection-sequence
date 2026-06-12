@@ -1148,13 +1148,44 @@ fn deep(maxd: u32, lagcap: u32) {
         }
         let n = ids.len();
         total_states += n;
+        // shape census: saturate strand counts at 2 (quotient out the counter)
+        let mut shapes: std::collections::HashSet<String> = std::collections::HashSet::new();
+        for ((ph, v), _) in ids.iter() {
+            let mut sig = format!("{:?}|", ph);
+            let mut comps_sig: Vec<String> = v
+                .iter()
+                .map(|(p, off)| {
+                    let cc: Vec<String> = p
+                        .comps
+                        .iter()
+                        .map(|c| {
+                            format!(
+                                "[{},{},{},{},{},{}]",
+                                c.0[0].min(2), c.0[1].min(2), c.0[2].min(2), c.0[3].min(2),
+                                c.1, c.2
+                            )
+                        })
+                        .collect();
+                    format!("({};{};{};{})", cc.join(""), p.done, p.sp as u8 + 2 * p.ep as u8, off)
+                })
+                .collect();
+            comps_sig.sort();
+            sig.push_str(&comps_sig.join("+"));
+            shapes.insert(sig);
+        }
         eprintln!(
-            "[{:7.1}s] variant ({},{}): automaton complete: {} states",
+            "[{:7.1}s] variant ({},{}): automaton complete: {} states, {} SHAPES (counter saturated at 2)",
             t0.elapsed().as_secs_f64(),
             eps_t,
             dl_t,
-            n
+            n,
+            shapes.len()
         );
+        if std::env::args().any(|a| a == "census1") {
+            // census mode: only the first variant
+            println!("CENSUS: budget {}, states {}, shapes {}", maxd, n, shapes.len());
+            return;
+        }
         // path-count DP by cost
         let mut c = vec![vec![0u64; n]; (maxd + 1) as usize];
         c[0][init] = 1;

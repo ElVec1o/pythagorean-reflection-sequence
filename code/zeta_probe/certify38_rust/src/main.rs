@@ -217,7 +217,111 @@ impl Logger {
     }
 }
 
+fn inverse(g: &Elem) -> Elem {
+    if g.delta == 0 {
+        // (eps,0,-k, -eps * t^{-k} P)
+        let p: Vec<(i16, i16)> = g.p.iter().map(|&(e, c)| (e - g.k, -(g.eps as i16) * c)).collect();
+        let mut p = p; p.sort();
+        Elem { eps: g.eps, delta: 0, k: -g.k, p }
+    } else {
+        // (eps,1,k, P') with P'(t) = -eps * t^{k} P(t^{-1})
+        let p: Vec<(i16, i16)> = g.p.iter().map(|&(e, c)| (g.k - e, -(g.eps as i16) * c)).collect();
+        let mut p = p; p.sort();
+        Elem { eps: g.eps, delta: 1, k: g.k, p }
+    }
+}
+
+fn ldist() {
+    // usage: certify38 ldist D c e   -- exact length of the shortest kernel
+    // element 2(t-1) mu t^{j0} (j0 in -2..=0) via meet-in-the-middle over
+    // the radius-D ball: L = min_g d(g) + d(g^{-1} w).
+    let t0 = Instant::now();
+    let args: Vec<String> = std::env::args().collect();
+    let d_max: u32 = args[2].parse().unwrap();
+    let c: i32 = args[3].parse().unwrap();
+    let e: i32 = args[4].parse().unwrap();
+    // BFS with distances in RAM
+    let gens = [
+        Elem { eps: 1, delta: 1, k: 0, p: vec![] },
+        Elem { eps: -1, delta: 1, k: 0, p: vec![] },
+        Elem { eps: 1, delta: 1, k: -1, p: vec![(-1, -1), (0, 1)] },
+    ];
+    let mut dist: std::collections::HashMap<Box<[u8]>, u8> = std::collections::HashMap::new();
+    let ident = Elem { eps: 1, delta: 0, k: 0, p: vec![] };
+    let mut buf = Vec::new();
+    encode(&ident, &mut buf);
+    dist.insert(buf.clone().into_boxed_slice(), 0);
+    let mut frontier = vec![ident];
+    for d in 0..d_max {
+        let mut nxt = Vec::new();
+        for el in &frontier {
+            for g in &gens {
+                let ne = compose(g, el);
+                encode(&ne, &mut buf);
+                if !dist.contains_key(buf.as_slice()) {
+                    dist.insert(buf.clone().into_boxed_slice(), (d + 1) as u8);
+                    nxt.push(ne);
+                }
+            }
+        }
+        frontier = nxt;
+        if d % 5 == 4 {
+            eprintln!("[{:6.1}s] bfs layer {} done, ball {}", t0.elapsed().as_secs_f64(), d + 1, dist.len());
+        }
+    }
+    eprintln!("[{:6.1}s] ball({}) = {}", t0.elapsed().as_secs_f64(), d_max, dist.len());
+    // kernel elements: P_w = 2(t-1) mu t^{j0},  mu = c t^2 - e t + c
+    let mut best = u32::MAX;
+    let mut bestj = 99;
+    let mut bestf = "";
+    // f = 1:   2(t-1)mu        ;  f = 1+t:  2(t^2-1)mu
+    let fams: [(&str, Vec<(i16, i32)>); 2] = [
+        ("1", vec![(3, c), (2, -(e + c)), (1, c + e), (0, -c)]),
+        ("1+t", vec![(4, c), (3, -e), (2, 0), (1, e), (0, -c)]),
+    ];
+    for (fname, coeffs) in &fams {
+    for j0 in -4i16..=0 {
+        let mut p: Vec<(i16, i16)> = coeffs
+            .iter()
+            .filter(|&&(_, v)| v != 0)
+            .map(|&(ex, v)| (ex + j0, (2 * v) as i16))
+            .collect();
+        let _ = fname;
+        p.sort();
+        let w = Elem { eps: 1, delta: 0, k: 0, p };
+        // L = min over g in ball of d(g) + d(g^{-1} w)
+        let mut lmin = u32::MAX;
+        for (key, &dg) in &dist {
+            let mut pos = 0usize;
+            let g = decode(key, &mut pos);
+            let h = compose(&inverse(&g), &w);
+            encode(&h, &mut buf);
+            if let Some(&dh) = dist.get(buf.as_slice()) {
+                let l = dg as u32 + dh as u32;
+                if l < lmin {
+                    lmin = l;
+                }
+            }
+        }
+        eprintln!("[{:6.1}s] f={} j0={}: L = {:?}", t0.elapsed().as_secs_f64(), fname, j0, if lmin == u32::MAX { None } else { Some(lmin) });
+        if lmin < best { best = lmin; bestj = j0; bestf = fname; }
+    }
+    }
+    if best == u32::MAX {
+        println!("shape (c={}, e={}): kernel element NOT factorable within ball({}) — L > {}", c, e, d_max, 2 * d_max);
+    } else {
+        println!("shape (c={}, e={}): L = {} (f={}, j0={})  =>  n_T = {}", c, e, best, bestf, bestj, (best + 1) / 2);
+    }
+}
+
 fn main() {
+    {
+        let args: Vec<String> = std::env::args().collect();
+        if args.get(1).map(|s| s.as_str()) == Some("ldist") {
+            ldist();
+            return;
+        }
+    }
     let t0 = Instant::now();
     let args: Vec<String> = std::env::args().collect();
     let depth: usize = if args.len() > 1 {
