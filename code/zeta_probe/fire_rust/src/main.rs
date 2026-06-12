@@ -801,6 +801,61 @@ fn main() {
             );
         }
         "fire" => fire(d),
+        "kernel" => {
+            // kernel c e : compute L_T = min length of a nontrivial kernel
+            // element for the shape with mu_T = c t^2 - e t + c, minimizing
+            // over a catalog of multipliers f and placements j0; then
+            // n_T = ceil(L_T / 2).
+            let c: i32 = args.get(2).and_then(|s| s.parse().ok()).expect("c");
+            let e: i32 = args.get(3).and_then(|s| s.parse().ok()).expect("e");
+            // catalog of f as coefficient vectors (low degree first)
+            let catalog_full = args.get(4).map(|s| s == "full").unwrap_or(false);
+            let mut cat: Vec<(&str, Vec<i32>)> = vec![("1", vec![1])];
+            if catalog_full {
+                cat.extend(vec![
+                    ("1+t", vec![1, 1]),
+                    ("1-t", vec![1, -1]),
+                    ("1+t+t2", vec![1, 1, 1]),
+                    ("1-t+t2", vec![1, -1, 1]),
+                    ("1+t2", vec![1, 0, 1]),
+                    ("1-t2", vec![1, 0, -1]),
+                ]);
+            }
+            let mut best = u32::MAX;
+            let mut bestdesc = String::new();
+            for (name, f) in &cat {
+                // mu * f  with mu = (c, -e, c)
+                let mu = [c, -e, c];
+                let mut prod = vec![0i32; f.len() + 2];
+                for (i, &fc) in f.iter().enumerate() {
+                    for (j, &mc) in mu.iter().enumerate() {
+                        prod[i + j] += fc * mc;
+                    }
+                }
+                // edge deposits a_j = 2 * coeff_j of (mu f), placed at j0..
+                for j0 in -2i32..=0 {
+                    let mut a: HashMap<i32, i32> = HashMap::new();
+                    for (i, &p) in prod.iter().enumerate() {
+                        if p != 0 {
+                            a.insert(j0 + i as i32, 2 * p);
+                        }
+                    }
+                    if a.is_empty() { continue; }
+                    if let Some(l) = solve(1, 0, 0, &a) {
+                        if l < best {
+                            best = l;
+                            bestdesc = format!("f={} j0={} deposits={:?}", name, j0, {
+                                let mut v: Vec<(i32,i32)> = a.iter().map(|(&k,&v)|(k,v)).collect();
+                                v.sort(); v
+                            });
+                        }
+                    }
+                }
+                eprintln!("  f={} done, best so far {}", name, best);
+            }
+            println!("shape (c={}, e={}): L_T = {}  =>  n_T = {}", c, e, best, (best + 1) / 2);
+            println!("  attained by {}", bestdesc);
+        }
         "deep" => {
             let c: u32 = args.get(3).and_then(|s| s.parse().ok()).unwrap_or(d);
             eprintln!("deep: budget {}, lag cap {}", d, c);

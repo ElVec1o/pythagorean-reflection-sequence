@@ -719,6 +719,57 @@ value is $n_{(1,2)} = 33$ --- the certified lower bound is attained.
 $\max(39, c_T)$ for every shape other than $(1,2)$.)
 \end{corollary}
 
+\begin{theorem}[The deviation depth is a shortest-vector length]
+\label{thm:midpoint}
+For every unequal-leg rational triangle,
+\[
+n_T \;=\; \Bigl\lceil \tfrac{1}{2}\, L_T \Bigr\rceil,
+\qquad
+L_T \;:=\; \min_{0 \neq f \in \mathbb{Z}[t^{\pm 1}]}
+\ell\bigl(\text{translation by } 2(t-1)\,\mu_T\, f\bigr),
+\]
+the length of the shortest nontrivial element of $\ker \rho_T$ in the
+word metric of Theorem~\ref{thm:metric-formula}.
+\end{theorem}
+
+\begin{proof}
+By Corollary~\ref{cor:kernel-classification} the nontrivial kernel
+elements are exactly the translations $2(t-1)\mu_T f$, $f \neq 0$.
+If $w \in \ker\rho_T$ has length $L$, write $w = g_1 g_2$ along a
+geodesic with $\ell(g_1) = \lceil L/2 \rceil$ and
+$\ell(g_2) = \lfloor L/2 \rfloor$.  Then $g_1$ and $g_2^{-1}$ are
+distinct elements of the ball of radius $\lceil L/2 \rceil$ (the
+generating set is symmetric) with $g_1 = w\, g_2^{-1}$, so they map to
+the same isometry --- a collision inside the ball of radius
+$\lceil L/2 \rceil$, so $n_T \le \lceil L_T/2 \rceil$.  Conversely a
+deviation at depth $d$ produces two distinct ball-$d$ elements with
+equal image, whose quotient is a kernel element of length $\le 2d$;
+hence $L_T \le 2 n_T$, i.e.\ $n_T \ge \lceil L_T/2 \rceil$.  The
+minimum is over a finite effective set: the metric formula bounds
+$\ell$ from below by the coefficient sum of $2(t-1)\mu_T f$, which
+grows with the degree and height of $f$.
+\end{proof}
+
+\begin{remark}[The invariant $n_T$, computed and predicted]
+\label{rem:nT-values}
+Theorem~\ref{thm:midpoint} converts the first-deviation depth into a
+\emph{shortest-vector problem in the word metric} --- the analogue, for
+this lamplighter metric, of a shortest-lattice-vector computation.  Two
+consequences of the measured value $n_{(1,2)} = 33$: first,
+$L_{(1,2)} \in \{65, 66\}$ exactly; second, since the $f = 1$ kernel
+element has edge deposits $(2c_T,\, -2e_T,\, 2c_T)$ with coefficient
+sum $4c_T + 2|e_T| = 32$ and $2 \cdot 32 + 2 = 66$, the shortest
+kernel word costs almost exactly \emph{two letters per unit of
+deposit}.  We record the resulting prediction --- $n_T = 4c_T + 2|e_T| + O(1)$
+(two letters per unit of deposit, halved by the midpoint; for $(1,2)$
+the exact value $4c_T + 2|e_T| + 1 = 33$ matches the measurement),
+sign-pattern dependent --- as a computable, falsifiable refinement of
+the sandwich: the certificate data already separates the
+two sign patterns, since the shape $(1,3)$ ($e_T = +8$, alternating
+deposits) satisfies $n_{(1,3)} > 38$, strictly later than the
+all-positive pattern of $(1,2)$ would suggest.
+\end{remark}
+
 \begin{corollary}[Transcendence dichotomy]
 \label{cor:dichotomy}
 For a right triangle with legs $(1, \beta)$, $\beta > 0$,
@@ -980,9 +1031,20 @@ stabilizing) and suggests the growth series of
 $\mathbb{Q}(x)$, necessarily of high degree.  We emphasize this is now
 a \emph{conjecture against which two natural low-complexity hypotheses
 have already been falsified}: it is not rational of small denominator
-degree, nor low-order $D$-finite.  A proof would require the explicit
-context-free grammar (the strand-counter determinization of the chain
-DP); we record the negative results above as the present hard evidence.
+degree, nor low-order $D$-finite.  A proof now has a named route: the finite-state truncations grow
+\emph{linearly} in the cost budget (per boundary class:
+$58, 66, 86, 94$ at budgets $12, 14, 16, 18$), which is the signature
+of finitely many profile \emph{shapes} crossed with a single unbounded
+counter --- i.e.\ of a polynomial functional equation in \emph{one
+catalytic variable} (the crossing count of the current edge).  By the
+theorem of Bousquet-M\'elou and Jehanne (\emph{Polynomial equations
+with one catalytic variable, algebraic series and map enumeration},
+J.~Combin.\ Theory Ser.~B 96 (2006), 623--672), solutions of such
+systems are algebraic; exhibiting the system explicitly --- the
+strand-counter determinization of the chain DP --- would therefore
+prove the conjecture.  We record the negative results above as the
+present hard evidence, and the catalytic-variable structure as the
+roadmap.
 \end{conjecture}
 
 \emph{(c) The growth question becomes a lamplighter growth question.}
