@@ -1,8 +1,0 @@
-# DROPPED -- DO NOT SUBMIT.
-# This b-file belonged to the abandoned 3D Class A (cube-corner, legs (1,1,1)) draft,
-# which is a DUPLICATE of A008137 (affine Weyl group B~_3 growth series).
-# Its first line "0 2" was also wrong: the true BFS layer-0 count is 1 (the identity).
-# Verified correct data (= A008137), depths 0..26:
-#   1,4,9,17,28,42,60,81,105,132,162,196,233,273,316,362,412,465,521,580,642,
-#   708,777,849,924,1002,1084
-# Use A008137's own b-file; do not submit this.
