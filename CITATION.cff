@@ -8,24 +8,32 @@ authors:
     affiliation: "Independent researcher"
 abstract: >
   For every right triangle in the plane with positive unequal rational
-  legs, the BFS orbit-growth sequence of its three side-reflections is
-  the same sequence u_d, independent of the triangle. The sequence
-  begins 1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 225, ...; for 1 <= n <= 9
-  it agrees with the Fibonacci numbers F(n+3); at n = 10 it first
-  deviates by exactly 8, accounted for by eight explicit length-10
-  affine relations symbolically verified over Q(a,b). The kernel of
-  the side-reflection representation is identified as the cyclic left
-  ideal Z[Q] . h with h = (c-1)(Y-1), where c is the half-turn around
-  the right-angle vertex (central in the linear quotient Q). The
+  legs, the BFS orbit-growth sequence of its three side-reflections
+  agrees with one common sequence u_d (OEIS A396406) through depth 32,
+  and this is sharp: the (1,2) triangle deviates at depth 33. The
+  natural all-depths universality conjecture is refuted -- for every
+  rational, indeed every algebraic, shape an explicit nontrivial kernel
+  element (a conjugated product of glide-reflection squares) forces a
+  first deviation at depth n_T between max(33, c_T) and 24 c_T + 8. The
+  common sequence is exactly the orbit growth of the generic right
+  triangle (transcendental leg ratio), whose group is virtually the
+  lamplighter Z wr Z; its translation lattice 2(t-1)Z[t] and the kernel
+  of every algebraic specialization are computed exactly, and the word
+  metric is solved by an explicit lamplighter optimization. The
   closed-form n-dimensional asymptotic ratio is
   r_n = 1 + 2 cos(2 pi / (n+3)), and the affine representation is
   unconditionally faithful in every dimension n >= 3 for pairwise
-  distinct legs (Schur-complement identity plus Mordell descent on
-  Cremona elliptic curves 24a1 and 72a2).
+  distinct legs (uniform Schur-complement identity det Q_n = -prod a_i^2
+  plus rank-0 descent on Cremona elliptic curves 24a1, 32a2, 72a2). The
+  growth series of A396406 is conjecturally algebraic of high degree
+  (consistent with Parry's theorem on tour-cost wreath-product growth);
+  no low-complexity closed form exists.
 keywords:
   - right-triangle reflection group
   - Coxeter groups
   - orbit growth
+  - lamplighter group
+  - wreath product
   - cyclic ideal
   - Fibonacci sequence
   - orthoscheme
@@ -46,7 +54,7 @@ identifiers:
     description: "DOI for the v1.0.0 archived release"
   - type: other
     value: "OEIS A396406"
-    description: "OEIS sequence identifier (under review)"
+    description: "OEIS sequence identifier (published)"
 references:
   - type: book
     authors:
