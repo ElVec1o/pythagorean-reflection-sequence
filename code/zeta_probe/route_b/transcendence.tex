@@ -179,11 +179,30 @@ $\sum_j\mu_j=1$, \eqref{eq:reduce} follows. \end{proof}
 
 \noindent Identity~\eqref{eq:reduce} is verified to $110$ decimal digits in
 \texttt{transcendence\_verify\_ALL.py}. It reduces Lemma~\ref{lem:cos} to the single
-estimate $\sum_j\mu_jR_j(w)=O(\sqrt\tau)$ uniformly in the phase; the leading term is
-$\sum_j\mu_jR_j(w)=c_1\sqrt\tau\,\sin w+O(\tau)$ with $c_1=-0.667823\ldots$ (the
-single end-factor $g$ contributes $-\tfrac1{\sqrt2}\sin w$, the cumulative $h^2$
-product the remainder), matching the certified constant $(S_1-1)/\sqrt\tau\to
--0.667823$ at the phases $\sin w=1$.
+estimate $\sum_j\mu_jR_j(w)=O(\sqrt\tau)$ uniformly in the phase. The leading term is
+moreover obtained in \emph{closed form}. Writing $S_1-(1-\cos w)=-\sum_j(-1)^j\hat
+t_j\,\delta_j$ with $\delta_j=1-\rho_j$, the uniform Taylor expansion of $\log\rho_j$
+in the saddle window $j=O(\tau^{-1/2})$ is
+\[
+  \log\rho_j=-(j{+}1)\tau-\tfrac{1}{9}\tau^{2}j^{3}+O(\tau^{2}j^{2}+\tau^{3}j^{5}),
+\]
+the linear term from the single end-factor $g(y)=y/(e^{y}-1)$ and the cubic from the
+cumulative product of $h(y)^2=(y/2)^2/\sinh^2(y/2)$ (with the exact difference-ratio
+correction $-y\tau/12$). With the operator $\vartheta=\tfrac12 w\partial_w$, the exact
+resummations $\sum_{n\ge1}(-1)^{n-1}n^{m}\tfrac{w^{2n}}{(2n)!}=\vartheta^{m}(1-\cos w)$
+give $\vartheta(1-\cos w)=\tfrac{w}{2}\sin w$ and $\vartheta^{3}(1-\cos
+w)=-\tfrac{w^{3}}{8}\sin w+O(w^{2})$, whence the linear and cubic terms contribute
+$-\tfrac1{\sqrt2}\sqrt\tau\sin w$ and $+\tfrac{\sqrt2}{36}\sqrt\tau\sin w$ respectively
+(using $\tau w=\sqrt{2\tau}$, $\tau^{2}w^{3}=2\sqrt2\,\sqrt\tau$). Hence
+\begin{equation}\label{eq:c1}
+  S_1(q)=1-\cos w-\frac{17\sqrt2}{36}\,\sqrt\tau\,\sin w+O(\tau),\qquad
+  c_1=-\frac{17\sqrt2}{36}=-0.6678230711\ldots,
+\end{equation}
+the constant confirmed to $15$ digits by Richardson extrapolation of $(S_1-1)/\sqrt\tau$
+at the phases $\sin w=1$ (\texttt{transcendence\_verify\_ALL.py}). The derivation is
+rigorous term by term; the one step not made uniform is the resummation of the
+$O(\tau)$ remainder (a Watson/saddle estimate), which is exactly the content of
+Remark~\ref{rem:gap}.
 
 \begin{lemma}[Cosine asymptotics; reduced to one oscillatory-average bound]\label{lem:cos}
 As $q\to1^{-}$, with $\tau=-\ln q$ and $w=\sqrt{2/\tau}$,

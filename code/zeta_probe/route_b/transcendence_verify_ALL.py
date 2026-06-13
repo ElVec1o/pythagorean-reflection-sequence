@@ -148,6 +148,12 @@ for tau in [mp.mpf('0.01'), mp.mpf('0.002')]:
 PASS.append(("lem:dom  0<t_j<=that_j, rho_j decreasing to 0", ok_dom))
 PASS.append(("lem:reduce  S_1=(1-cos w)+sum mu_j R_j(w) to 90+ digits", ok_reduce))
 
+# (7) Closed-form leading constant:  (S_1-1)/sqrt(tau) -> -17*sqrt(2)/36 at sin w = 1.
+c1=-17*mp.sqrt(2)/36
+w=(2*160+mp.mpf(1)/2)*mp.pi; tau=2/w**2
+s=Sk(1,tau,dps_for(w)); approx=(s-1)/mp.sqrt(tau)
+PASS.append(("c_1 = -17*sqrt(2)/36 = -0.667823071 (leading asymptotic)", abs(approx-c1)<mp.mpf('1e-5')))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")

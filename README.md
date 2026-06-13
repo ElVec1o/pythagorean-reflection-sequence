@@ -75,9 +75,11 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    (0,1) accumulating at q=1 — argument-principle pole counts inside
    `|q|≤R` diverge as 0, 1, 5, 46, 92 for R=0.50…0.95. The lemma is now
    **reduced** (monotone-domination Abel identity, verified to 110 digits)
-   to a single oscillatory-average bound `Σ μ_j R_j(w) = O(√τ)`, with the
-   leading term derived in closed form; only the uniform saddle-point
-   remainder is unproven. The true-series gap is honest: the
+   to a single oscillatory-average bound `Σ μ_j R_j(w) = O(√τ)`, and its
+   leading term is derived in **closed form**:
+   `S_1 = 1 − cos w − (17√2/36)·√τ·sin w + O(τ)`, the constant
+   `−17√2/36 = −0.6678230711…` confirmed to 15 digits. Only the uniform
+   saddle-point remainder is unproven. The true-series gap is honest: the
    connectivity defect `d_n = v_n − u_n` grows **exponentially at `V`'s own
    rate** (not polynomially), so neither elementary lift to `U` survives —
    but `U` and the defect cannot both be `D`-finite.

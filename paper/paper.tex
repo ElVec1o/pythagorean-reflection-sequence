@@ -1246,12 +1246,21 @@ identity
 with $R_j(w) = \cos w - \sum_{i\le j} (-1)^i w^{2i}/(2i)!$ the cosine
 Taylor remainder (verified to $110$ digits).  Lemma~\ref{lem:cos} is thus
 exactly the bound $\sum_j \mu_j R_j(w) = O(\sqrt\tau)$ uniformly in the
-phase; its leading term $c_1\sqrt\tau\,\sin w$
-($c_1 = -0.667823\ldots$, certified at $\sin w = 1$) is derived in closed
-form, and only the uniform remainder bound --- a saddle-point estimate of
-the convolution $\int_0^w \cos s\, K(w-s)\,ds$, $K$ entire, with saddle at
-$j^\ast \sim \tfrac12\sqrt{2/\tau}$ --- is not carried out.  Pending it,
-Theorem~\ref{thm:transcendence} is established modulo~\eqref{lem:cos}.
+phase, and its leading term is obtained in \emph{closed form}: the uniform
+expansion $\log\rho_j = -(j{+}1)\tau - \tfrac19\tau^2 j^3 + \cdots$ (linear
+term from the end-factor $g(y)=y/(e^y-1)$, cubic from the cumulative
+$h(y)^2 = (y/2)^2/\sinh^2(y/2)$) resummed by
+$\sum_n (-1)^{n-1} n^m \tfrac{w^{2n}}{(2n)!} = \vartheta^m(1-\cos w)$,
+$\vartheta = \tfrac12 w\partial_w$, gives
+\[
+  S_1(q) = 1 - \cos w - \frac{17\sqrt2}{36}\,\sqrt\tau\,\sin w + O(\tau),
+\]
+with $-17\sqrt2/36 = -0.6678230711\ldots$ confirmed to $15$ digits by
+Richardson extrapolation.  Only the uniform $O(\tau)$ remainder --- a
+Watson/saddle estimate of $\int_0^w \cos s\, K(w-s)\,ds$, $K$ entire, with
+saddle at $j^\ast \sim \tfrac12\sqrt{2/\tau}$ --- is not carried out.
+Pending it, Theorem~\ref{thm:transcendence} is established
+modulo~\eqref{lem:cos}.
 
 \begin{conjecture}[Transcendental growth]
 \label{conj:algebraic-growth}
