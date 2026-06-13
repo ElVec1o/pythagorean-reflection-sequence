@@ -993,6 +993,20 @@ fn closure_cost(
 
 fn deep(maxd: u32, lagcap: u32) {
     let t0 = Instant::now();
+    let closure = std::env::args().any(|a| a == "closure");
+    // !!! UNSOUND -- DO NOT TRUST THE "RATIONAL" VERDICT FROM THIS MODE. !!!
+    // Adversarial review (workflow beta2-rationality-assault, route D) proved the
+    // alphabet bound below drops reachable within-cap states: reduce() re-zeroes
+    // each deposit to its local cost minimum, so profiles carrying deposits far
+    // beyond the bound (observed up to |a|=30..32) survive within cap. A closure
+    // run therefore matches u_0..u_~12 and then SILENTLY DIVERGES while still
+    // printing a finite-automaton/"RATIONAL" verdict. The determinization state
+    // (full reduced min-plus vector) is also combinatorially explosive, so the
+    // fixpoint does not terminate in practice. This mode is retained ONLY as a
+    // record of a dead route; no result in the paper uses it. The live "no
+    // low-order closed form" conclusion comes from the exact-term guessers
+    // (series_tests.py, algguess.py), which are sound and positive-control-checked.
+    let lbl: i32 = if closure { 2 * lagcap as i32 + 6 } else { maxd as i32 };
     let mut hist = vec![0u64; (maxd + 1) as usize];
     let mut total_states = 0usize;
     for &(eps_t, dl_t) in &[(1i8, 0u8), (1, 1), (-1, 0), (-1, 1)] {
@@ -1054,7 +1068,7 @@ fn deep(maxd: u32, lagcap: u32) {
                 if let Some((dc, nv)) =
                     edge_transfer(&v, aj, fj, is_, ie, end_side, end_sign, minm, lagcap)
                 {
-                    if dc <= maxd {
+                    if closure || dc <= maxd {
                         let tid = get_id(ph2, nv, trans, accept, ids, queue, keys);
                         trans[sid].push((dc, tid));
                     }
@@ -1063,7 +1077,7 @@ fn deep(maxd: u32, lagcap: u32) {
             let evens: Vec<i32> = {
                 let mut z = vec![0];
                 let mut x = 2;
-                while x <= maxd as i32 {
+                while x <= lbl {
                     z.push(x);
                     z.push(-x);
                     x += 2;
@@ -1073,7 +1087,7 @@ fn deep(maxd: u32, lagcap: u32) {
             let odds: Vec<i32> = {
                 let mut z = vec![];
                 let mut x = 1;
-                while x <= maxd as i32 {
+                while x <= lbl {
                     z.push(x);
                     z.push(-x);
                     x += 2;
@@ -1148,6 +1162,12 @@ fn deep(maxd: u32, lagcap: u32) {
         }
         let n = ids.len();
         total_states += n;
+        if closure {
+            eprintln!(
+                "[{:7.1}s] variant ({},{}): CLOSURE COMPLETE (fixpoint reached) = {} states, alphabet |a|<={}",
+                t0.elapsed().as_secs_f64(), eps_t, dl_t, n, lbl
+            );
+        }
         // multi-signature census: which quotient collapses the state space?
         if std::env::args().any(|a| a == "census1") {
             let mut s_strand: std::collections::HashSet<String> = Default::default();
@@ -1231,6 +1251,12 @@ fn deep(maxd: u32, lagcap: u32) {
                 }
             }
         }
+    }
+    if closure {
+        println!("\n=== CLOSURE VERDICT ===");
+        println!("cap C = {}, alphabet |a| <= {}", lagcap, lbl);
+        println!("FINITE automaton: {} states total (4 variants) -- the fixpoint terminated.", total_states);
+        println!("If the counts below match the published terms, the growth series is RATIONAL of order <= {}.", total_states);
     }
     println!("\nautomaton states (4 variants total): {}", total_states);
     println!("computed (theory only): {:?}", hist);

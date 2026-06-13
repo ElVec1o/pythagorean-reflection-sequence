@@ -1010,15 +1010,32 @@ published, $u_{39}, \ldots, u_{42}$ from the depth-$42$ BFS, all
 re-derived from the metric formula of
 Theorem~\ref{thm:metric-formula} through $u_{22}$):
 \begin{enumerate}[label=(\roman*),itemsep=0.1em]
-\item the sequence satisfies \emph{no} linear recurrence with constant
-rational coefficients of order $\le 17$ (an exact fraction-free test);
-hence the growth series, if rational, has denominator degree $> 17$;
+\item the sequence satisfies \emph{no} constant-coefficient linear
+recurrence of order $\le 21$ (the maximal order testable on $43$ terms
+with positive margin); hence the growth series, if rational, has
+denominator degree $> 21$;
 \item it satisfies \emph{no} holonomic (polynomial-coefficient)
-recurrence of order-plus-degree $\le 8$; hence the series, if
-$D$-finite (in particular if algebraic), is not of low complexity.
+recurrence within the box $(\mathrm{order}+1)(\deg+1) \le 32$ (margins
+$4$ to $40$); hence the series, if $D$-finite, is not of low complexity;
+\item it satisfies \emph{no} algebraic equation $P(x, F) = 0$ with
+$\deg_F P \le 6$ and $\deg_x P \le 14$ (every one of $29$ tested
+$(\deg_x, \deg_F)$ cells gives a full-column-rank coefficient matrix,
+over-determined by $7$ to $34$ equations); hence $F$, if algebraic, has
+high degree.
 \end{enumerate}
-The consecutive ratios give $\beta_2 = 1.4996\ldots$ (Aitken-accelerated
-over the $43$ terms), tantalizingly near $3/2$ but not provably equal.
+All three are exact fraction-free nullspace searches; the same machinery
+recovers the Fibonacci recurrence and generating-function relation and
+the Catalan holonomic recurrence on positive controls, so the negatives
+are genuine and not detector artifacts.  The consecutive ratios give
+$\beta_2 = 1.4995 \pm 0.001$ (about three trustworthy significant
+figures; the error is not a single geometric term --- the convergence
+rate oscillates in sign --- so naive Aitken/Shanks/Wynn lock spuriously
+onto $1.52$ and must be discarded, while robust windowed estimators
+cluster at $1.4993$).  The value $3/2$ lies $\approx 0.0007$ from the
+median estimate, inside the error bar: it is consistent with the data
+but not confirmed, and an inverse-symbolic search (\texttt{identify},
+PSLQ to degree $4$ at height $10^6$, and the family $1 + 2\cos(2\pi/k)$)
+returns no candidate at this precision.
 \end{proposition}
 
 \begin{conjecture}[Context-free growth]
@@ -1027,28 +1044,30 @@ The min-cost optimization of Theorem~\ref{thm:metric-formula} carries a
 counter (the number of strand crossings of an edge is unbounded and
 must be tracked), so its determinization is a \emph{pushdown}, not a
 finite, automaton --- a context-free rather than regular mechanism.
-This is consistent with Proposition~\ref{prop:growth-complexity} (the
-finite-state truncations of the counting automaton grow with the cost
-budget, $58, 66, \ldots$ states per boundary class, rather than
-stabilizing) and suggests the growth series of
-\href{https://oeis.org/A396406}{A396406} is \emph{algebraic} over
-$\mathbb{Q}(x)$, necessarily of high degree.  We emphasize this is now
-a \emph{conjecture against which two natural low-complexity hypotheses
-have already been falsified}: it is not rational of small denominator
-degree, nor low-order $D$-finite.  A proof now has a named route: the finite-state truncations grow
-\emph{linearly} in the cost budget (per boundary class:
-$58, 66, 86, 94$ at budgets $12, 14, 16, 18$), which is the signature
-of finitely many profile \emph{shapes} crossed with a single unbounded
-counter --- i.e.\ of a polynomial functional equation in \emph{one
-catalytic variable} (the crossing count of the current edge).  By the
-theorem of Bousquet-M\'elou and Jehanne (\emph{Polynomial equations
-with one catalytic variable, algebraic series and map enumeration},
-J.~Combin.\ Theory Ser.~B 96 (2006), 623--672), solutions of such
-systems are algebraic; exhibiting the system explicitly --- the
-strand-counter determinization of the chain DP --- would therefore
-prove the conjecture.  We record the negative results above as the
-present hard evidence, and the catalytic-variable structure as the
-roadmap.
+This is consistent with Proposition~\ref{prop:growth-complexity}: the
+finite-state truncations of the counting automaton grow roughly
+\emph{linearly} in the cost budget ($58, 66, 86, 94$ states per
+boundary class at budgets $12, 14, 16, 18$) while every internal
+coordinate stays bounded (strand counts $\le 1$, components $\le 7$,
+profiles $\le 20$, cost-offsets $\le 6$), the signature of finitely
+many profile \emph{shapes} crossed with a single unbounded counter ---
+a polynomial functional equation in \emph{one catalytic variable} (the
+crossing count $t$ of the current edge).  Writing the edge-by-edge DP as
+a transfer operator over the bounded interface profiles and eliminating
+them yields an equation
+$\mathrm{Pol}(x, t, F(x,t), F_1(x), \ldots, F_k(x)) = 0$; by the theorem
+of Bousquet-M\'elou and Jehanne (\emph{Polynomial equations with one
+catalytic variable, algebraic series and map enumeration}, J.~Combin.\
+Theory Ser.~B 96 (2006), 623--672) its solution $F$ is then algebraic
+over $\mathbb{Q}(x)$.  The one unverified step is that the
+no-isolated-cycle (Eulerian-connectivity) constraint of
+Theorem~\ref{thm:metric-formula} --- which is \emph{global} along the
+edge chain --- admits an \emph{a priori bounded} local encoding; the
+census supports this (components $\le 7$) but does not prove it, and it
+is exactly the term the relaxed DP undercounts ($+2$ per isolated cycle
+beyond radius $9$).  We record this catalytic-variable reduction as the
+route to a proof and the (strengthened) negative results of
+Proposition~\ref{prop:growth-complexity} as the present hard evidence.
 \end{conjecture}
 
 \emph{(c) The growth question becomes a lamplighter growth question.}
