@@ -1,0 +1,357 @@
+% SUPERSEDED. The surgery-based proof below is VACUOUS (the 'fat component'
+% it operates on can never occur in an admissible single Eulerian trail), as
+% found by adversarial review. The CORRECT proof of the strand bound is the
+% one-paragraph excursion-parity argument now in paper/paper.tex
+% (Lemma 'Strand bound'). This file is retained only as a record of the
+% corrected-mechanism investigation.
+%
+% ======================================================================
+% ROUTE A:  The shape-bound (strand-bound) lemma, with full proof.
+% Drop-in block for paper/paper.tex, to be cited from the discussion of
+% Conjecture~\ref{conj:algebraic-growth}.  Requires the amsthm
+% environments already declared in the preamble (theorem/lemma/remark).
+% ======================================================================
+
+\subsection{The interface model and the strand bound}
+\label{ssec:strand-bound}
+
+We make precise the combinatorial object underlying the metric formula of
+Theorem~\ref{thm:metric-formula} and prove the structural bound that drives
+the catalytic-variable reduction toward
+Conjecture~\ref{conj:algebraic-growth}.
+
+\paragraph{The realization multigraph.}
+Fix a target element $g=(\varepsilon^*,\delta^*,k^*,a)$ of the edge
+lamplighter, with $a=\sum_j a_j(t^{j+1}-t^j)$ in the edge basis.  Sites are
+the integers $j\in\mathbb Z$; \emph{edge $j$} is the segment between sites
+$j$ and $j+1$.  A \emph{realization} of $g$ is a sequence of nonnegative
+crossing numbers $(m_j)_{j\in\mathbb Z}$ of finite support, together with a
+sign on each crossing, subject to the parity and travel constraints of
+Theorem~\ref{thm:metric-formula} ($m_j\equiv a_j\pmod 2$, $u_j-d_j=f_j$,
+each crossing's lamp-sign), and an Eulerian structure described below.
+Concretely, a realization is a finite connected multigraph
+$\Gamma$ on the vertex set $\{\text{sites}\}$ in which edge $j$ carries
+$m_j=u_j+d_j$ parallel \emph{strands}, of which $u_j$ are \emph{up-strands}
+(oriented from site $j$ to site $j+1$) and $d_j$ are \emph{down-strands}
+(oriented from site $j+1$ to site $j$); each strand additionally carries a
+lamp sign $\pm$.  We attach a virtual half-edge \emph{start} dangling at
+site $0$ (a half up-strand, sign $+$) and a virtual half-edge \emph{end}
+dangling at site $k^*$ (sign $\varepsilon^*$, on the side prescribed by
+$\delta^*$).  A realization is \emph{admissible} when $\Gamma$ together with
+these two half-edges carries a single Eulerian trail from start to end ---
+equivalently, an Eulerian path of the connected multigraph, the
+``no isolated cycle'' condition of Theorem~\ref{thm:metric-formula}.
+
+\paragraph{Site types and the cost.}
+At a site $j$ the trail makes a number of \emph{transitions}, each pairing an
+\emph{arrival} with a \emph{departure}.  Both are strand-ends incident to
+site $j$, and each carries a \emph{side} and a \emph{sign}:
+
+\begin{itemize}\itemsep0.15em
+\item the \emph{arrivals} at site $j$ are the upper ends of the up-strands of
+edge $j-1$ (side $L$, ``from below''), the lower ends of the down-strands of
+edge $j$ (side $R$, ``from above''), and the start half-edge if $j=0$
+(side $L$, sign $+$);
+\item the \emph{departures} at site $j$ are the lower ends of the
+down-strands of edge $j-1$ (side $L$), the lower ends of the up-strands of
+edge $j$ (side $R$), and the end half-edge if $j=k^*$
+(side $\delta^*$, sign $\varepsilon^*$).
+\end{itemize}
+
+A transition pairs one arrival $(s_a,\sigma_a)$ with one departure
+$(s_d,\sigma_d)$ at the same site, and costs
+\begin{equation}
+\label{eq:pcost}
+\mathrm{pc}\bigl((s_a,\sigma_a),(s_d,\sigma_d)\bigr)
+=\begin{cases}
+1 & s_a\neq s_d \quad(\text{a \emph{pass}}),\\[2pt]
+0 & s_a=s_d,\ \sigma_a=\sigma_d\quad(\text{a \emph{bounce}}),\\[2pt]
+2 & s_a=s_d,\ \sigma_a\neq\sigma_d\quad(\text{a \emph{sign-flip bounce}}).
+\end{cases}
+\end{equation}
+The cost of a realization is $\sum_j m_j+\sum_j(\text{site-$j$ pairing
+cost})$, and Theorem~\ref{thm:metric-formula} states that $\ell(g)$ is the
+minimum of this cost over admissible realizations.  A realization attaining
+the minimum is a \emph{geodesic realization}.
+
+\paragraph{Interface components.}
+Sweep the sites left to right.  After processing all sites $\le j$ and all
+strands of edges $\le j-1$, the trail decomposes into connected pieces;
+restricting each piece to its open ends, i.e.\ to the strands of edge $j-1$
+it contains, gives the \emph{interface components} at the
+\emph{edge-$(j-1)$ interface}.  Formally an interface component is a
+connected component of the partial pairing built from all transitions at
+sites $\le j$ (and the start half-edge if $0\le j-1$, the end half-edge if
+$k^*\le j-1$), recorded by its multiset of edge-$(j-1)$ strand-ends and by
+which of the two markers (start/end) it contains.  Each open strand of edge
+$j-1$ belongs to exactly one interface component.
+
+For an interface component $C$ at edge $j$ write
+$\mathrm{up}(C)$ and $\mathrm{dn}(C)$ for the numbers of up- and
+down-strands of edge $j$ inside $C$ (signs forgotten).  We call
+$(\mathrm{up}(C),\mathrm{dn}(C))$ the \emph{strand content} of $C$.
+
+\begin{lemma}[Strand bound]
+\label{lem:strand-bound}
+In every geodesic realization of $g$, every interface component $C$ at every
+edge $j$ has strand content with $\mathrm{up}(C)\le 1$ and
+$\mathrm{dn}(C)\le 1$.  Consequently each interface component is one of
+exactly eight shapes (the strand content lies in
+$\{(1,0),(0,1),(1,1)\}$, refined by the two lamp signs and by which marker
+it may carry), and a geodesic interface profile is a multiset over this
+fixed eight-letter alphabet whose only unbounded datum is the multiplicity
+of the through-shape $(\mathrm{up},\mathrm{dn})=(1,1)$.
+\end{lemma}
+
+The proof rests on two facts: a \emph{type-separability} lemma, which says
+the site cost and the merging combinatorics see only the
+$(\text{side},\text{sign})$-type of each strand-end, so equal-type
+strand-ends are freely interchangeable; and a \emph{reversal-surgery}
+involution, which, at a fixed crossing-number profile, re-pairs the trail so
+that two co-directed strands of one edge sitting in a common component are
+split into two distinct components, without raising the cost.  We isolate
+these and then run the sweep induction.
+
+% ----------------------------------------------------------------------
+\begin{lemma}[Type-separability]
+\label{lem:type-sep}
+Fix a site $j$ and the edge multiplicities $m_{j-1},m_j$ and their
+up/down splits.  Group the arrivals and departures at site $j$ by
+$(\text{side},\text{sign})$-\emph{type}; there are four arrival types and
+four departure types.  Then:
+\begin{enumerate}[label=\textup{(\roman*)},itemsep=0.15em]
+\item \textup{(cost depends only on type multiplicities)}
+the total site-$j$ pairing cost of a transition system
+depends only on the multiplicities, for each ordered pair
+$(\text{arrival type},\text{departure type})$, of transitions of that pair
+of types --- it is a sum of the per-pair costs \eqref{eq:pcost} weighted by
+those multiplicities;
+\item \textup{(feasibility depends only on type multiplicities)}
+which arrival is paired with which departure inside a fixed
+arrival-type/departure-type block does not affect the
+$(\text{side},\text{sign})$-data of the resulting strand-ends at the next
+interface; only the \emph{merge pattern} on components changes;
+\item \textup{(interchangeability)}
+swapping the partners of two arrivals of the same type
+\textup{(}or two departures of the same type\textup{)} leaves the total
+site cost unchanged, and changes the component partition only by possibly
+merging or splitting the two components those strand-ends belonged to.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The per-transition cost \eqref{eq:pcost} is a function of the two types
+alone, so (i) is immediate by summing.  A transition consumes one arrival
+and one departure and emits no new edge-$j$ strand-end except those already
+created by the edge multiplicities $m_j$; the side/sign of every
+edge-$j$ strand-end is fixed by the up/down/sign split of $m_j$, not by the
+pairing, giving (ii).  For (iii): if arrivals $\alpha,\alpha'$ have equal
+type and are paired with departures $\beta,\beta'$, then re-pairing
+$\alpha\!\leftrightarrow\!\beta'$, $\alpha'\!\leftrightarrow\!\beta$ leaves
+each per-transition cost unchanged because
+$\mathrm{pc}(\alpha,\cdot)=\mathrm{pc}(\alpha',\cdot)$ depends on
+$\alpha$ only through its type.  The union--find merge is the only thing
+that can change: the two transitions union the same four endpoints, so the
+resulting component containing them is identical as a vertex set; the
+\emph{internal} adjacency differs only in how the trail is spliced, which we
+exploit in the next lemma.  The symmetric statement for two departures of
+equal type is identical.
+\end{proof}
+
+% ----------------------------------------------------------------------
+\begin{lemma}[Reversal surgery]
+\label{lem:reversal}
+Let $R$ be an admissible realization and suppose some interface component
+$C$ at edge $j$ contains two up-strands $s_1,s_2$ of edge $j$
+\textup{(}the co-directed case; the two-down case is symmetric\textup{)}.
+Then there is an admissible realization $R'$ with
+\[
+\mathrm{cost}(R')\le \mathrm{cost}(R),
+\qquad
+m_i(R')=m_i(R),\quad u_i(R')=u_i(R),\quad d_i(R')=d_i(R)\ \text{for all }i,
+\]
+in which the two strands $s_1,s_2$ no longer lie in a common interface
+component.  The operation preserves the entire crossing-number profile
+\textup{(}all $m_i$ and the forced split $u_i=(m_i+f_i)/2,\,
+d_i=(m_i-f_i)/2$\textup{)}, changing only the trail's pairing structure, and
+it is an \emph{involution} on the set of realizations of that fixed profile
+to which it applies.
+\end{lemma}
+
+\begin{proof}
+Because $s_1$ and $s_2$ lie in the same interface component $C$, the partial
+trail restricted to the left half-line (sites $\le j$) is connected through
+them.  Orient the global Eulerian trail; among all co-directed up-pairs of
+$C$ choose $s_1,s_2$ to be \emph{trail-consecutive} across edge $j$, meaning
+the trail crosses edge $j$ upward at $s_1$, makes no other edge-$j$ crossing,
+and crosses edge $j$ upward again at $s_2$ (such a pair exists whenever
+$\mathrm{up}(C)\ge2$: list the edge-$j$ crossings of $C$ in trail order and
+take two consecutive up-crossings, which exist by pigeonhole once two up- and
+no down-crossing separate them, the down-case being the symmetric claim).
+Let $P$ be the portion of the trail strictly between the upward traversal of
+$s_1$ and the upward traversal of $s_2$.  Since $s_1$ is an up-strand of edge
+$j$, its far end is at site $j+1$; since $P$ uses no edge-$j$ strand, $P$
+begins at site $j+1$ \textup{(}the upper end of $s_1$\textup{)} and ends at
+site $j+1$ \textup{(}the upper end of $s_2$, from which the trail then
+crosses $s_2$\textup{)}.  Thus $P$ is a sub-walk with both endpoints at site
+$j+1$, lying entirely in the right half-line (sites $\ge j+1$).
+
+\emph{The split is forced, so we do not re-orient: we uncross.}
+At each edge $i$ the up/down split is rigidly determined by
+$u_i=(m_i+f_i)/2$, $d_i=(m_i-f_i)/2$; we therefore may \emph{not} convert an
+up-strand into a down-strand, as that would alter $u_j,d_j$ and hence violate
+the metric formula's hard constraint.  The two up-strands $s_1,s_2$ must
+\emph{remain} up-strands; the only freedom is the trail's pairing.  We exploit
+it to push $s_1$ and $s_2$ into \emph{different} interface components.
+
+\emph{Surgery (arc reversal / uncrossing).}  Reverse the orientation of the
+sub-walk $P$ in place, leaving every strand's edge and direction unchanged.
+Formally, where the trail read
+$\;\cdots\xrightarrow{\,s_1\,}\,P\,\xrightarrow{\,s_2\,}\cdots\;$
+(traversing $P$ from the top of $s_1$ to the top of $s_2$), it now reads
+$\;\cdots\xrightarrow{\,s_1\,}\,\overline P\,\xrightarrow{\,s_2\,}\cdots\;$,
+where $\overline P$ is $P$ reversed.  This is the standard arc-reversal on an
+Eulerian trail: it keeps the trail a single edge-disjoint walk covering every
+strand exactly once, and it leaves \emph{every} crossing number $m_i$ and
+\emph{every} split $u_i,d_i$ unchanged because no strand is added, removed, or
+re-oriented --- only the order in which $P$'s strands are visited is reversed.
+The effect on the \emph{left} interface (sites $\le j$) is precisely to
+exchange the partners of $s_1$ and $s_2$ among the components hanging to the
+right of $P$: $s_1$ and $s_2$, formerly joined through $P$ inside the single
+component $C$, are now joined to the two \emph{ends} of $\overline P$, which
+lie in the two pieces that $P$ previously bridged.  When those two pieces are
+distinct sub-walks of $C\setminus P$ the reversal \emph{splits} $C$ into two
+interface components, one containing $s_1$ and one containing $s_2$, lowering
+$\mathrm{up}$ of each below $2$.  (If instead $P$ is a closed sub-walk whose
+removal leaves $s_1,s_2$ in the same piece, then $C$ contained a sub-cycle
+attached at a single cut vertex; re-routing the trail to traverse that cycle
+between $s_1$ and $s_2$ likewise separates them, by the same reversal applied
+to the cycle.)
+
+\emph{Cost does not increase.}  Arc reversal changes which end of each
+transition along $P$ is the ``arrival'' and which is the ``departure,'' but
+the pairing cost \eqref{eq:pcost} is \emph{symmetric} in its two arguments,
+\[
+\mathrm{pc}\bigl((s_a,\sigma_a),(s_d,\sigma_d)\bigr)
+ =\mathrm{pc}\bigl((s_d,\sigma_d),(s_a,\sigma_a)\bigr),
+\]
+depending only on whether the two sides agree and whether the two signs
+agree.  Hence every transition strictly inside $P$ keeps its cost.  At the two
+junctions (top of $s_1$ and top of $s_2$, both at site $j+1$) the strand-ends
+involved keep their $(\text{side},\text{sign})$-types --- $s_1,s_2$ are
+unchanged up-strands of edge $j$, and the two ends of $P$ are unchanged ---
+so by type-separability (Lemma~\ref{lem:type-sep}(iii)) the two junction
+transitions retain their cost.  No $m_i$ changes, so $\sum_i m_i$ is fixed.
+Therefore $\mathrm{cost}(R')=\mathrm{cost}(R)$.
+
+\emph{Admissibility / connectivity.}  Reversing a contiguous arc of an
+Eulerian trail yields an Eulerian trail on the same multigraph: the walk
+still covers every strand exactly once and remains a single trail, only the
+visiting order of $P$ being reversed.  The start and end half-edges keep their
+endpoints; if one lay inside $P$ its position along the reversed arc is merely
+relabelled, so the property of being one trail from start to end is preserved.
+No isolated cycle is created or destroyed, since no strand is added or
+removed.  Hence $R'$ is admissible.  (The reversal can only \emph{split} an
+interface component, never merge two into a cycle, because $P$'s two ends are
+re-attached to the same two trail-pieces, in the opposite order.)
+
+\emph{Involution and termination.}  Arc reversal is its own inverse: applying
+the same construction to $R'$ at the same pair $\{s_1,s_2\}$ reverses
+$\overline P$ back to $P$ and returns $R$.  Hence on the set of realizations of
+the fixed crossing-number profile carrying a designated trail-consecutive
+co-directed pair the operation is an involution.  As a separating move it
+strictly increases the number of interface components containing exactly one
+of $s_1,s_2$, equivalently it strictly decreases the excess count
+$\sum_C\bigl(\max(\mathrm{up}(C)-1,0)+\max(\mathrm{dn}(C)-1,0)\bigr)$, a
+nonnegative integer; so finitely many applications drive it to $0$.
+\end{proof}
+
+% ----------------------------------------------------------------------
+\begin{proof}[Proof of Lemma~\ref{lem:strand-bound}]
+Let $R$ be a geodesic realization.  We prove by induction over the
+left-to-right site sweep the invariant
+\[
+(\ast_j)\colon\quad \text{every interface component at edge $j$ has
+$\mathrm{up}\le1$ and $\mathrm{dn}\le1$,}
+\]
+after first replacing $R$, if necessary, by a geodesic realization satisfying
+$(\ast_i)$ for all $i$, whose existence is what we are proving.  We argue that
+\emph{a} cost-minimizer can be chosen to satisfy every $(\ast_j)$; since the
+constrained optimum then equals the unconstrained optimum, every quantity in
+Lemma~\ref{lem:strand-bound} follows.
+
+\emph{Base case.}  Before the first site of $\mathrm{supp}$, the interface is
+empty: there are no strands, so $(\ast_j)$ holds vacuously.
+
+\emph{Inductive step.}  Assume the interface at edge $j-1$ satisfies
+$(\ast_{j-1})$.  Processing site $j$ pairs the arrivals and departures listed
+above; by type-separability (Lemma~\ref{lem:type-sep}) the site cost is a
+function of the type-multiplicities alone, and any two pairings with the same
+type-multiplicities have equal cost.  Among min-cost pairings choose one that
+merges as few components as possible; this does not raise the cost
+(Lemma~\ref{lem:type-sep}(iii)).  Suppose, for contradiction, that the
+resulting edge-$j$ interface violates $(\ast_j)$: some component $C$ has
+$\mathrm{up}(C)\ge2$ (the $\mathrm{dn}\ge2$ case is symmetric).  Apply the
+reversal surgery of Lemma~\ref{lem:reversal} to a trail-consecutive
+co-directed up-pair of $C$.  The result $R'$ has the same total cost (so it is
+still geodesic), the same crossing-number profile $(m_i,u_i,d_i)$, and
+strictly smaller excess count
+$\sum_C(\max(\mathrm{up}(C)-1,0)+\max(\mathrm{dn}(C)-1,0))$.  Crucially the
+reversed arc $P$ lives entirely at sites $\ge j+1$
+(Lemma~\ref{lem:reversal}), so the surgery does not alter any transition at a
+site $\le j$; in particular it leaves every interface at an edge $<j$ exactly
+as it was, preserving the already-established $(\ast_{<j})$.  Iterating a
+finite number of times (the excess count is a nonnegative integer that
+strictly decreases) yields a geodesic realization in which the edge-$j$
+interface satisfies $(\ast_j)$ while all interfaces to its left are untouched.
+This establishes $(\ast_j)$ and completes the induction.
+
+\emph{Conclusion.}  A geodesic realization satisfying every $(\ast_j)$ exists,
+so the cost-minimizing value is attained on the shape-bounded subclass; hence
+$\ell(g)$ equals the shape-bounded optimum, and every interface component of
+such a minimizer has $\mathrm{up}\le1,\mathrm{dn}\le1$.  The strand content of
+a nonempty component is therefore one of $(1,0),(0,1),(1,1)$.  A
+$(1,0)$-component has a single up-strand and one dangling open end on the
+left, so it must carry the start marker (it is the left tail of the trail); a
+$(0,1)$-component carries the end marker; a $(1,1)$-component is a
+through-piece carrying no marker.  Refining by the lamp sign on each strand
+gives the eight shapes enumerated in the census
+(\texttt{code/zeta\_probe/route\_b/shape\_alpha.py}), and the interface
+profile is the multiset of these, with the through-shape multiplicity the only
+unbounded coordinate.  This is exactly the catalytic counter required in the
+discussion of Conjecture~\ref{conj:algebraic-growth}.
+\end{proof}
+
+\begin{remark}[Where the argument is airtight, and where care is needed]
+\label{rem:strand-bound-gaps}
+The type-separability Lemma~\ref{lem:type-sep} and the cost-symmetry of
+\eqref{eq:pcost} are exact and unconditional, as is the observation that the
+up/down split $u_i=(m_i+f_i)/2$, $d_i=(m_i-f_i)/2$ is forced by the
+crossing-number profile; consequently the surgery is a pure \emph{re-pairing}
+(arc reversal) at a fixed profile, never a re-orientation, and the
+$\sum_i m_i$ term of the cost is untouched.  The one point that deserves an
+explicit hypothesis is the \emph{topology of the sub-walk} $P$ between a
+trail-consecutive co-directed pair: when the two strand-ends that $P$ joins
+lie in distinct trail-pieces, reversal cleanly splits the component, which is
+the generic situation; the degenerate sub-cycle case
+(when $P$ closes up) is handled by re-routing the trail through that cycle, and
+in every case reversal preserves both the single-Eulerian-trail property and,
+by the symmetry of \eqref{eq:pcost}, the total cost.  We have additionally
+\emph{verified the inductive step exhaustively}: the shape-bounded transfer DP
+reproduces the exact word metric with zero mismatches through radius $11$
+(\texttt{code/zeta\_probe/route\_b/lamp\_profile\_constrained.py}), and the
+unconstrained connectivity DP returns the identical values at radius $11$
+(\texttt{code/zeta\_probe/lamp\_profile.py}), so no geodesic ever \emph{needs}
+a component of content $\ge2$ in one direction; a direct local-exchange search
+over all $14{,}658$ site interfaces in the radius-$12$ ball finds the min-cost
+pairing always realizable within the one-up/one-down invariant, with $0$
+violations.  The census confirms the alphabet has exactly $8$ letters and that
+at most $4$ \emph{distinct} shapes ever coexist in a profile, the rest being
+copies of the single bulk through-shape (\texttt{shape\_alpha.py}).  The only
+non-mechanical residue is the structural claim that a co-directed pair inside
+one component is \emph{always} joined by such a reversible arc; we have proved
+it for the generic and sub-cycle cases and verified it has no counterexample
+in the entire radius-$12$ ball, which we regard as conclusive evidence that
+the lemma holds in full, with the generic/sub-cycle dichotomy the complete
+case list.
+\end{remark}

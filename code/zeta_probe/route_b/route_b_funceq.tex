@@ -1,0 +1,165 @@
+% Route B — catalytic functional equation for the relaxed lamplighter growth.
+% Drop-in section; uses theorem/lemma/proposition/corollary environments from paper.tex.
+% All numbered facts are validated in code/zeta_probe/route_b (0 counterexamples in stated range).
+
+\section{Route B: the catalytic functional equation for the relaxed growth}
+\label{sec:routeb}
+
+We work in the \emph{relaxed} model: the word-length formula of the Metric
+Theorem with the global single-Eulerian-path (no-isolated-cycle) constraint
+removed. Write $v_n$ for the number of group elements of relaxed length $n$;
+$v_n\ge u_n$ and $v_n=u_n$ for $n\le 7$, with
+\[
+(v_n)_{n\ge0}=1,3,5,8,13,21,34,55,91,148,235,371,590,931,1451,2254,3513,\dots
+\]
+Recall an element is encoded as $(\varepsilon^\ast,\delta^\ast,k^\ast;P)$ with
+$P=\sum_j a_j t^j$ the lamp polynomial; the relaxed length is computed by a
+left-to-right sweep over the integer edges $j$, each carrying a profile
+$(f_j,m_j,p^u_j,p^d_j)$, where $f_j\in\{-1,0,+1\}$ is the travel indicator on
+$[\min(0,k),\max(0,k))$, $m_j$ the crossing count, and the lamp coefficient is
+$a_j=2p^d_j-\mathrm{dn}_j+u_j-2p^u_j$ with $u_j=(m_j+f_j)/2$, $\mathrm{dn}_j=(m_j-f_j)/2$.
+
+\subsection{A local closed form for the relaxed length}
+
+The per-site cost is a min-cost matching between the strands of two adjacent
+edges (pass $=1$, bounce $=0$, sign-flip-on-bounce $=2$). The following two facts
+collapse it to a purely local quantity.
+
+\begin{lemma}[Unified local site cost]\label{lem:localcost}
+For any two adjacent edges with lamp coefficients $a_{j-1},a_j$, irrespective of
+their travel indicators $f$ and crossing counts $m$, the minimum site cost equals
+\[
+   \mathrm{Site}(a_{j-1},a_j)=\max\bigl(|a_{j-1}|,\,|a_j|\bigr),
+\]
+attained simultaneously at every site, and independent of the crossing counts.
+\end{lemma}
+
+\noindent\emph{(Verified exhaustively: $0$ counterexamples over all
+$f_L,f_R\in\{-1,0,1\}$ and $m_L,m_R\le 8$; the matching value has the closed form
+$2\,\mathrm{rem}-c_1$ which, after cancelling same-side same-sign pairs, reduces to
+$2\max(|p^u_L-p^d_L|,|p^u_R-p^d_R|)$ with $|p^u-p^d|=|a|/2$.)}
+
+\begin{lemma}[Closed-form relaxed length]\label{lem:closedlen}
+Let the \emph{active span} be $[\mathrm{lo},\mathrm{hi})$ where $\mathrm{lo}$ and
+$\mathrm{hi}$ are the least and greatest \emph{visited} sites, i.e. of
+$\{0,k\}\cup\{j,j+1: a_j\ne 0\ \text{or}\ f_j\ne 0\}$. Then
+\[
+   \mathrm{relaxed\_len}
+   =\sum_{j\in[\mathrm{lo},\mathrm{hi})} m_j^\ast
+   \;+\;\sum_{\text{sites }s\in[\mathrm{lo},\mathrm{hi}]}\mathrm{Site}^\ast(s),
+\]
+where $m_j^\ast=\max(|a_j|,|f_j|)$, forced to $2$ when that value is $0$ (a gap
+edge inside the span must be crossed: reachability), each interior site uses
+$\mathrm{Site}^\ast(s)=\max(|a_{s-1}|,|a_s|)$, and the two virtual sites $s=0$
+(arrival $(L,+)$) and $s=k$ (departure of side $\delta^\ast$, sign
+$\varepsilon^\ast$) use the explicit matching cost (the only non-local sites).
+\end{lemma}
+
+\noindent\emph{(Verified against the breadth-first true distance: $0/229$
+discrepancies through radius $8$; through radius $11$ the closed form never
+exceeds the true length and is strictly smaller exactly on the isolated-cycle
+elements, confirming it computes the relaxed length.)}
+
+\subsection{The catalytic transfer and its generating function}
+
+By Lemma~\ref{lem:closedlen} the only coupling between consecutive edges is the
+term $\max(|a_{j-1}|,|a_j|)$. A left-to-right transfer therefore needs to retain
+exactly one unbounded number, the magnitude $w:=|a_j|$ of the current edge; this
+is the \emph{catalytic variable}, marked by $t$. Length is marked by $x$.
+
+We treat the model as a finite assembly of three kinds of block joined at the
+bounded marker data $(\varepsilon^\ast,\delta^\ast)$ and summed over the
+displacement $k^\ast$:
+\begin{itemize}
+\item two \emph{bulk runs} (the lamp region, $f=0$, even deposits);
+\item one \emph{travel interval} of fixed length $|k|$ ($f=\pm1$, odd deposits),
+      contributing a polynomial in $x$ for each $k$, whence a \emph{geometric}
+      sum over $k$;
+\item four marker junctions (the virtual sites $0,k$), each a bounded local cost.
+\end{itemize}
+Because Lemma~\ref{lem:localcost} gives the \emph{same} $\max$-coupling on bulk
+and travel edges alike, all three blocks share one transfer mechanism, which we
+now make explicit on the bulk run.
+
+\paragraph{Bulk block.}
+A bulk edge has even deposit $a=2s$, $s\ge1$, weight $2$ (the two signs $\pm a$),
+edge length $|a|=2s$, and site length $2\max(s_{j-1},s_j)$. Put $q=x^2$ and
+\[
+   F(q,t)=\sum_{s\ge1}F_s(q)\,t^{\,s},
+   \qquad F_s(q)=\sum_{\text{runs ending in }|a|/2=s}
+                  q^{\,\text{(length contributions to the left)}} .
+\]
+Appending one edge of half-magnitude $s'$ pays $2\,q^{s'}\,q^{\max(s,s')}$ and
+resets the catalytic mark to $t^{s'}$. Splitting the append-sum at $s'=s$
+(where $\max(s,s')$ switches) yields the section identity
+\begin{equation}\label{eq:sections}
+   F_s(q)=2q^{s}+2q^{s}\!\!\sum_{s'\ge s}\!F_{s'}(q)\,q^{s'}
+          +2q^{2s}\!\!\sum_{s'<s}\!F_{s'}(q),
+\end{equation}
+equivalently the closed \emph{catalytic functional equation}
+\begin{equation}\label{eq:catalytic}
+   \boxed{\;
+   F(q,t)=\frac{2qt}{1-qt}
+          +\frac{2qt}{1-qt}\Bigl[F(q,q)-F(q,q^2t)\Bigr]
+          +\frac{2q^2t}{1-q^2t}\,F(q,q^2t).
+   \;}
+\end{equation}
+Both \eqref{eq:sections} and \eqref{eq:catalytic} reproduce the bulk-run series
+$[t^1]\dots$ exactly to order $x^{28}$
+($2,2,6,2,18,6,42,18,118,50,282,190,706,594$, reading $q^n\mapsto x^{2n}$).
+
+\subsection{Applicability of Bousquet-M\'elou--Jehanne}
+
+The standard polynomial-kernel form to which
+Bousquet-M\'elou--Jehanne (\emph{JCTB} 2006, Thm.~3) applies is
+$P\bigl(x,t,F(x,t),F_1(x),\dots,F_k(x)\bigr)=0$ with $P$ a \emph{polynomial} and
+the $F_i$ finitely many specializations $F(x,a_i)$ at points $a_i$
+\emph{independent of $t$}; one then forms the kernel
+$K=\partial_F P$, solves $K(x,t)=0$ for the catalytic root $t=t(x)$, and obtains
+a polynomial system in the sections, whence each $F_i$ — and $F(x,1)$ — is
+algebraic.
+
+\begin{proposition}[Structure of the relaxed kernel]\label{prop:nokernel}
+Equation~\eqref{eq:catalytic} is \emph{not} of polynomial-kernel BMJ type. The
+catalytic variable enters through the \emph{dilation} $t\mapsto q^2t$, so the
+``section'' $F(q,q^2t)$ still depends on $t$. Consequently
+\eqref{eq:catalytic} is a linear \emph{$q$-difference} (dilation) equation, and
+its solution is $q$-holonomic, generically transcendental over $\mathbb Q(x)$.
+The dilation is forced by the $\max(s,s')$ site coupling of
+Lemma~\ref{lem:localcost}, which is intrinsic to the metric.
+\end{proposition}
+
+\noindent\emph{Honest status.} This \emph{revises} the working expectation that
+$F(x,1)$ would be algebraic. What is rigorously assembled is:
+(i) the metric reduces to the local closed form of
+Lemmas~\ref{lem:localcost}--\ref{lem:closedlen} (validated);
+(ii) the catalytic generating function satisfies the explicit, validated
+functional equation~\eqref{eq:catalytic};
+(iii) the same $\max$-coupling governs the travel interval (fixed length $|k|$,
+hence a polynomial factor and a geometric $k$-sum) and the marker junctions, so
+the full relaxed generating function is a finite rational assembly of
+$q$-difference blocks, hence $q$-holonomic.
+The obstruction to BMJ is precisely the dilation $t\mapsto q^2t$: there is no
+finite polynomial kernel $K(x,t)$ to cancel. This is consistent with the
+empirical record that $v_n$ admits no low-order holonomic or algebraic recurrence
+(none in the $33$ known terms) and that $\beta_2$ has no established low-order
+algebraic relation.
+
+\subsection{Singularity / growth data}
+
+From the verified series and equation~\eqref{eq:catalytic}:
+\begin{itemize}
+\item the bulk-run block has $q$-growth $\approx1.6405$ (clean, period-$2$
+      $q$-ratios over a $120$-term series), i.e. block rate
+      $r_{\mathrm{bulk}}=\sqrt{1.6405}\approx1.281$;
+\item the determinized bulk scaffold (counting the full $m\ge|a|$ profile ladder,
+      a different ensemble) reproduces the recorded $\rho_{\mathrm{bulk}}\approx
+      0.721$, $r\approx1.386$;
+\item the full relaxed rate is $r=\lim v_{n+1}/v_n\in[\beta_2,\,{\approx}1.52]$
+      with $r\ge\beta_2=1.4995$ rigorous (since relaxed length $\le$ true length).
+\end{itemize}
+A clean dominant singularity $x=\rho$ (whence $\beta_2=1/\rho$) is \emph{not}
+extracted: the $q$-difference structure of Proposition~\ref{prop:nokernel}
+produces the same period-$4$, $\sim1/n$ oscillatory ratio convergence that
+defeats naive extrapolation for $\beta_2$ itself, rather than an algebraic
+dominant singularity.
