@@ -123,6 +123,31 @@ dv=mp.diff(lambda q: 1-Sk(1,-mp.log(q),80), qz)
 s0z=Sk(0,-mp.log(qz),80)
 PASS.append(("sample bulk pole is SIMPLE (deriv!=0) with S_0!=0", abs(dv)>mp.mpf('1e-3') and abs(s0z)>mp.mpf('1e-3')))
 
+# (6) Monotone domination (lem:dom) + EXACT cosine reduction (lem:reduce):
+#     0 < t_j <= that_j, rho_j=t_j/that_j decreasing to 0, and
+#     S_1 = (1-cos w) + sum_j mu_j R_j(w),  mu_j=rho_{j-1}-rho_j>=0, sum mu_j=1,
+#     R_j(w)=cos w - sum_{i<=j}(-1)^i w^{2i}/(2i)!   (cosine Taylor remainder).
+ok_dom=True; ok_reduce=True
+for tau in [mp.mpf('0.01'), mp.mpf('0.002')]:
+    mp.mp.dps=120
+    w=mp.sqrt(2/tau); J=int(6/float(tau))+200
+    t=[]; prod=mp.mpf(1)
+    for j in range(J):
+        t.append(alpha(1+2*j,tau)*prod); prod*=-(alpha(2+2*j,tau)-alpha(1+2*j,tau))
+    that=[(2/tau)**(j+1)/mp.factorial(2*j+2) for j in range(J)]
+    rho=[t[j]/that[j] for j in range(J)]
+    if not (all(0<rho[j]<=1+mp.mpf('1e-60') for j in range(J)) and
+            all(rho[j]<=rho[j-1]+mp.mpf('1e-60') for j in range(1,J)) and rho[J-1]<mp.mpf('1e-3')):
+        ok_dom=False
+    mu=[(1 if j==0 else rho[j-1])-rho[j] for j in range(J)]
+    S1=sum((-1)**j*t[j] for j in range(J)); cw=mp.cos(w)
+    Cj=mp.mpf(0); rhs=1-cw
+    for j in range(J):
+        Cj+=(-1)**j*w**(2*j)/mp.factorial(2*j); rhs+=mu[j]*(cw-Cj)
+    if abs(S1-rhs)>mp.mpf('1e-90') or abs(sum(mu)-1)>mp.mpf('1e-90'): ok_reduce=False
+PASS.append(("lem:dom  0<t_j<=that_j, rho_j decreasing to 0", ok_dom))
+PASS.append(("lem:reduce  S_1=(1-cos w)+sum mu_j R_j(w) to 90+ digits", ok_reduce))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")

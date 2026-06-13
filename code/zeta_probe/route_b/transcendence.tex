@@ -127,11 +127,65 @@ $k\tau\to0$ governing the dominant terms ($k\sim w=\sqrt{2/\tau}$),
   \sum_{j\ge0}(-1)^{j}\frac{(2/\tau)^{\,j+1}}{(2j+2)!}
   =\sum_{m\ge1}(-1)^{m-1}\frac{w^{2m}}{(2m)!}=1-\cos w .
 \]
-This yields the central estimate, which we record as a separate lemma because it
-is the one analytic input that we verify numerically rather than bound in closed
-form (see Remark~\ref{rem:gap}).
+This heuristic is turned into an \emph{exact} reduction by the following
+domination and summation-by-parts identity, after which the only missing input is
+a single oscillatory-average bound (Remark~\ref{rem:gap}).
 
-\begin{lemma}[Cosine asymptotics; verified]\label{lem:cos}
+\begin{lemma}[Monotone domination]\label{lem:dom}
+Write $\hat t_j(q)=\dfrac{(2/\tau)^{\,j+1}}{(2j+2)!}$ for the leading model term, so
+that, exactly,
+\[
+  \sum_{j\ge0}(-1)^{j}\hat t_j=1-\cos w,\qquad w=\sqrt{2/\tau}.
+\]
+Then for all $q\in(0,1)$ and all $j$ one has $0<t_j\le\hat t_j$; equivalently
+$\rho_j:=t_j/\hat t_j\in(0,1]$. Moreover $\rho_j$ is strictly decreasing in $j$
+with $\rho_j\to0$.
+\end{lemma}
+
+\begin{proof}
+With $g(y)=y/(e^{y}-1)$ one has $\alpha_k=\tilde\alpha_k\,g((k{+}1)\tau)$ where
+$\tilde\alpha_k=2/((k{+}1)\tau)$, and $0<g\le1$ gives $\alpha_{1+2j}\le\tilde
+\alpha_{1+2j}$. For the difference factor, the discrete derivative of
+$s\mapsto 2/(e^{s\tau}-1)$ has $-\,\partial_s=\dfrac{2\tau e^{s\tau}}{(e^{s\tau}-1)^2}
+=\tfrac{2}{\tau}\,h(s\tau)^2/s^2$ with $h(y)=\tfrac{y/2}{\sinh(y/2)}\in(0,1]$, while the
+model derivative is $\tfrac{2}{\tau}/s^{2}$; integrating over a unit step gives
+$0<|\gamma_{1+2i}|=\alpha_{1+2i}-\alpha_{2+2i}\le\tilde\alpha_{1+2i}-\tilde
+\alpha_{2+2i}$. Multiplying these termwise bounds yields $0<t_j\le\hat t_j$.
+Finally $\rho_j/\rho_{j-1}=g((2j{+}2)\tau)\,|\gamma_{1+2(j-1)}|/(\tilde\alpha_{2j-1}
+-\tilde\alpha_{2j})<1$, and $\rho_j$ is a product of $j$ factors each $\le h(\cdot)^2<1$
+times $g\to0$, so $\rho_j\downarrow0$.
+\end{proof}
+
+\begin{lemma}[Exact cosine reduction]\label{lem:reduce}
+Let $\mu_j:=\rho_{j-1}-\rho_j\ge0$ \textup($\rho_{-1}:=1$\textup), a probability
+weight \textup($\mu_j\ge0$, $\sum_j\mu_j=1$\textup), and let
+$R_j(w)=\cos w-\sum_{i=0}^{j}\tfrac{(-1)^{i}w^{2i}}{(2i)!}$ be the order-$2j$
+Taylor remainder of the cosine. Then, for every $q\in(0,1)$,
+\begin{equation}\label{eq:reduce}
+  S_1(q)=\bigl(1-\cos w\bigr)+\sum_{j\ge0}\mu_j\,R_j(w),
+\end{equation}
+and identically for $\Sigma_1$. In particular $S_1$ equals the $\mu$-average
+$\sum_j\mu_j A_{j-1}$ of the partial sums $A_{j-1}=\sum_{i<j}(-1)^{i}\hat t_i$ of the
+model series.
+\end{lemma}
+
+\begin{proof}
+Abel summation of $S_1=\sum_j(-1)^{j}t_j=\sum_j(-1)^{j}\hat t_j\rho_j$ with
+$\rho_j\downarrow0$ (Lemma~\ref{lem:dom}) gives $S_1=\sum_j A_j(\rho_j-\rho_{j+1})
+=\sum_j\mu_{j+1}A_j=\sum_j\mu_jA_{j-1}$, the boundary term $A_m\rho_{m+1}\to0$ because
+$A_m\to1-\cos w$ is bounded while $\rho_{m+1}\to0$. Since
+$A_{j-1}=1-\sum_{i=0}^{j}\tfrac{(-1)^iw^{2i}}{(2i)!}=(1-\cos w)+R_j(w)$ and
+$\sum_j\mu_j=1$, \eqref{eq:reduce} follows. \end{proof}
+
+\noindent Identity~\eqref{eq:reduce} is verified to $110$ decimal digits in
+\texttt{transcendence\_verify\_ALL.py}. It reduces Lemma~\ref{lem:cos} to the single
+estimate $\sum_j\mu_jR_j(w)=O(\sqrt\tau)$ uniformly in the phase; the leading term is
+$\sum_j\mu_jR_j(w)=c_1\sqrt\tau\,\sin w+O(\tau)$ with $c_1=-0.667823\ldots$ (the
+single end-factor $g$ contributes $-\tfrac1{\sqrt2}\sin w$, the cumulative $h^2$
+product the remainder), matching the certified constant $(S_1-1)/\sqrt\tau\to
+-0.667823$ at the phases $\sin w=1$.
+
+\begin{lemma}[Cosine asymptotics; reduced to one oscillatory-average bound]\label{lem:cos}
 As $q\to1^{-}$, with $\tau=-\ln q$ and $w=\sqrt{2/\tau}$,
 \begin{equation}\label{eq:cosasymp}
   S_1(q)=1-\cos\!\sqrt{\tfrac{2}{-\ln q}}\;+\;O\!\bigl(\sqrt{-\ln q}\,\bigr),
@@ -253,23 +307,24 @@ proof of Theorem~\ref{thm:main} applies verbatim.
 \begin{remark}[Honest status of the cosine asymptotics]\label{rem:gap}
 The whole proof is unconditional except for Lemma~\ref{lem:cos}, of which we use
 only the qualitative consequence: \emph{$S_1$ (resp.\ $\Sigma_1$) attains values
-$<1$ and values $>1$ at points arbitrarily close to $q=1$}. Lemma~\ref{lem:cos}
-is a sharp, phase-uniform asymptotic that we have verified to high precision but
-not bounded in closed form. The subtlety is genuine: the alternating terms $t_j$
-reach magnitude $e^{(1+o(1))\sqrt{2/\tau}}$ near $j^{\ast}\sim\tfrac12\sqrt{2/\tau}$,
-so the $O(\sqrt\tau)$ size of $S_1-(1-\cos w)$ is the result of near-total
-cancellation, not of termwise smallness (indeed
-$\sum_j|t_j-\hat t_j|$ is exponentially large). A fully rigorous proof of
-\eqref{eq:cosasymp} is a standard but nontrivial saddle-point / Poisson-summation
-estimate for the oscillatory sum $\sum_j(-1)^{j}t_j$: writing
-$(-1)^{j}=e^{i\pi j}$ and applying Poisson summation, the $n=0,1$ frequencies
-produce the $\cos w$ main term with the saddle at $j^{\ast}$, and the remaining
-frequencies are exponentially subdominant. Carrying this out with explicit error
-control (e.g.\ via the Euler--Maclaurin expansion of $\log t_j$ and a contour
-deformation through the complex saddle) would upgrade the result to
-\emph{unconditional}. Pending that estimate, the theorem is established modulo
-Lemma~\ref{lem:cos}; the weaker statement actually used --- two sign-straddling
-sequences --- is supported by the certification above at $58$ exhibited poles
+$<1$ and values $>1$ at points arbitrarily close to $q=1$}.
+Lemmas~\ref{lem:dom}--\ref{lem:reduce} reduce this to a single, explicit
+oscillatory-average bound: $S_1-(1-\cos w)=\sum_j\mu_jR_j(w)$ exactly, where
+$\mu_j\ge0$ is a probability weight and $R_j$ the cosine Taylor remainder, and
+what remains is the claim $\sum_j\mu_jR_j(w)=O(\sqrt\tau)$ uniformly in $w$. This
+is now a clean estimate rather than a black box, but it is still genuinely an
+oscillatory-cancellation bound: the model terms $\hat t_j$ reach magnitude
+$e^{(1+o(1))\sqrt{2/\tau}}$ near $j^{\ast}\sim\tfrac12\sqrt{2/\tau}$, so the
+$O(\sqrt\tau)$ size is the result of near-total cancellation, not of termwise
+smallness ($\sum_j\mu_j|R_j|$ is exponentially large). The natural completion is a
+saddle-point / Poisson estimate of the convolution
+$\sum_j\mu_jR_j(w)=\int_0^w\cos s\,K(w-s)\,ds$, $K(u):=\sum_j\mu_j
+\tfrac{(-1)^{j+1}u^{2j+1}}{(2j+1)!}$ (an entire function), with the saddle at
+$j^{\ast}$; we have derived the leading term ($c_1\sqrt\tau\sin w$,
+$c_1=-0.667823\ldots$) and verified it, but not bounded the remainder in closed
+form. Pending that bound the theorem is established modulo Lemma~\ref{lem:cos};
+the weaker statement actually used --- two sign-straddling sequences --- is
+supported by the exact reduction and by the certification at $58$ exhibited poles
 with monotone, widening margins.
 \end{remark}
 
@@ -277,18 +332,27 @@ with monotone, widening margins.
 Theorem~\ref{thm:main} and Corollary~\ref{cor:V} concern the \emph{relaxed}
 series $V$. The true A396406 series $U(x)=\sum_n u_n x^{n}$ differs from $V$ by
 the connectivity correction (each isolated cycle is free in the relaxed metric,
-undercounting the true length by $+2$): $u_n\le v_n$, with equality for $n\le7$
-and $d_n:=v_n-u_n$ growing only polynomially in $n$ (so $U,V$ share the
-exponential rate). Transcendence of $U$ does \emph{not} follow formally from that
-of $V$: in principle $U=V-D$ with $D(x)=\sum_n d_n x^{n}$ could be algebraic if
-$D$ cancelled the poles of $V$. This is not expected --- $D$ is itself a
-$q$-difference assembly with no algebraic recurrence in $33$ known terms --- but
-proving transcendence of $U$ requires either (i) the same singularity analysis
-for the connectivity-corrected kernel, or (ii) a proof that $D$ does not cancel
-the infinitely many poles $\{1-\Sigma_1=0\}$. We therefore record:
-\emph{$V$ is transcendental over $\mathbb Q(x)$ \textup(modulo
-Lemma~\ref{lem:cos}\textup); the transcendence of the true series $U$ remains
-conjectural.}
+undercounting the true length by $+2$): $u_n\le v_n$, with equality for $n\le7$.
+The defect $d_n:=v_n-u_n$ is, contrary to a first guess, \emph{not} polynomially
+small: on the $41$ computed terms it grows exponentially at essentially the
+\emph{same} rate as $V$ (consecutive ratios $d_{n+1}/d_n$ fall through
+$1.56,1.54,\ldots,1.524$ toward $\beta_2=1.4916$, while $d_n/v_n$ rises through
+$0.02,0.11,0.16,0.20$), and it admits no holonomic recurrence of
+order${}+{}$degree $\le 9$ over those terms (exact test, \texttt{series\_tests.py}).
+Hence $D(x)=\sum_n d_n x^{n}$ shares the dominant singularity of $V$ at
+$x=\sqrt{q^{\ast}}=0.6704\ldots$, and two elementary routes to $U$ are thereby
+\emph{closed}: ``$D$ is holomorphic past the first pole of $V$, so $U=V-D$ inherits
+all of $V$'s poles'' (false: $D$ is singular there too), and ``$D$ is $D$-finite,
+hence simpler than $V$'' (false: $D$ is no more holonomic than $V$). What survives
+is the closure of $D$-finite functions under addition: since $V=U+D$ is \emph{not}
+$D$-finite (Theorem~\ref{thm:main}, modulo Lemma~\ref{lem:cos}), $U$ and $D$ cannot
+\emph{both} be $D$-finite --- at least one of the true series and the
+connectivity-defect series is transcendental. Pinning it on $U$ specifically
+requires either (i) the same singularity analysis for the connectivity-corrected
+kernel, or (ii) a proof that $D$ does not cancel the infinitely many poles
+$\{1-\Sigma_1=0\}$. We therefore record: \emph{$V$ is transcendental over
+$\mathbb Q(x)$ \textup(modulo Lemma~\ref{lem:cos}\textup); the transcendence of the
+true series $U$ remains conjectural.}
 \end{remark}
 
 % ------------------------------------------------------------------

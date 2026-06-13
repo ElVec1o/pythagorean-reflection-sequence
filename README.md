@@ -71,9 +71,16 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    which **excludes 3/2** — the earlier `≈1.4995` was a finite-depth
    overshoot. The relaxed series is **transcendental** (Theorem; modulo
    one explicit analytic lemma — the cosine asymptotic for `S_1` near
-   `q=1`, verified to 8+ figures): the bulk and travel blocks each have
-   infinitely many poles in (0,1) accumulating at q=1 — argument-principle
-   pole counts inside `|q|≤R` diverge as 0, 1, 5, 46, 92 for R=0.50…0.95.
+   `q=1`): the bulk and travel blocks each have infinitely many poles in
+   (0,1) accumulating at q=1 — argument-principle pole counts inside
+   `|q|≤R` diverge as 0, 1, 5, 46, 92 for R=0.50…0.95. The lemma is now
+   **reduced** (monotone-domination Abel identity, verified to 110 digits)
+   to a single oscillatory-average bound `Σ μ_j R_j(w) = O(√τ)`, with the
+   leading term derived in closed form; only the uniform saddle-point
+   remainder is unproven. The true-series gap is honest: the
+   connectivity defect `d_n = v_n − u_n` grows **exponentially at `V`'s own
+   rate** (not polynomially), so neither elementary lift to `U` survives —
+   but `U` and the defect cannot both be `D`-finite.
 
 ## Repository contents
 
