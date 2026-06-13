@@ -64,9 +64,14 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    recurrence of order ≤ 21, no holonomic recurrence within
    `(order+1)(deg+1) ≤ 32`, and no algebraic equation with `deg_F ≤ 6`,
    `deg_x ≤ 14` (all exact, positive-control validated). Consistent with Parry's
-   theorem on tour-cost wreath-product growth, the series is **conjecturally
-   algebraic of high degree**; the asymptotic ratio is `β₂ = 1.4995 ± 0.001`
-   (near, but not provably equal to, 3/2).
+   theorem on tour-cost wreath-product growth, the series the lamplighter
+   transfer yields an explicit **q-difference functional equation** (the
+   catalytic variable enters by dilation `t → q²t`), so the kernel method
+   does not apply and the series is **conjecturally q-holonomic /
+   transcendental**, not algebraic. Unfolding the equation pins the
+   asymptotic ratio: **β₂ ≤ 1.49161778…** (the exact relaxed growth rate,
+   a rigorous upper bound), which **excludes 3/2** — the earlier `≈1.4995`
+   was a finite-depth overshoot.
 
 ## Repository contents
 
