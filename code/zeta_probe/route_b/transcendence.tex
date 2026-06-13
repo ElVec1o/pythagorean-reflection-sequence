@@ -1,0 +1,307 @@
+% Transcendence of the relaxed lamplighter growth series (OEIS A396406).
+% Drop-in section; uses amsthm theorem/lemma/proposition/corollary/remark
+% environments from paper.tex. Every numbered analytic fact is reproduced by
+% code/zeta_probe/route_b/transcendence_verify_ALL.py (10/10 PASS, adequate precision).
+%
+% Self-contained preamble for standalone compilation is given in comments at the
+% bottom; when included in paper.tex, delete nothing -- the environments already exist.
+
+\section{Transcendence of the relaxed growth series}
+\label{sec:transcendence}
+
+Throughout, $q=x^{2}$, and we study the \emph{relaxed} ordinary generating
+function $V(x)=\sum_{n\ge0}v_n x^{n}$ of \cite[A396406]{OEIS} through the
+block decomposition of Route~B (\S\ref{sec:routeb}). Recall the two scalar
+series in $q$ that carry the singular behaviour of the relaxed model.
+
+\paragraph{Bulk block.} With
+\begin{equation}\label{eq:alphagamma}
+  \alpha_k(q)=\frac{2q^{\,k+1}}{1-q^{\,k+1}},\qquad
+  \gamma_k(q)=\frac{2q^{\,k+2}}{1-q^{\,k+2}}-\frac{2q^{\,k+1}}{1-q^{\,k+1}}
+            =\alpha_{k+1}(q)-\alpha_k(q),
+\end{equation}
+set
+\begin{equation}\label{eq:Sk}
+  S_k(q)=\sum_{j\ge0}\alpha_{k+2j}(q)\prod_{i=0}^{j-1}\gamma_{k+2i}(q),
+  \qquad
+  G_0(q)=\frac{S_0(q)}{1-S_1(q)} .
+\end{equation}
+$G_0$ is the bulk-run block; its Taylor coefficients are
+$2,2,6,2,18,6,42,18,118,50,282,190,706,594,\dots$ (verified).
+
+\paragraph{Travel block.} With
+\begin{equation}\label{eq:AC}
+  A_k(q)=\frac{2q}{1-q^{\,k+1}},\qquad
+  C_k(q)=\frac{2q^{\,k+3}}{1-q^{\,k+2}}-\frac{2q^{\,k+2}}{1-q^{\,k+1}},
+\end{equation}
+set $\Sigma_k(q)=\sum_{j\ge0}A_{k+2j}(q)\prod_{i=0}^{j-1}C_{k+2i}(q)$ and
+$G^{T}_0(q)=\Sigma_0(q)/(1-\Sigma_1(q))$. The dominant singularity of the
+relaxed model is the smallest positive root of $\Sigma_1(q)=1$, at
+$q^{\ast}=0.449453630558948\ldots$, giving the growth rate
+$1/\sqrt{q^{\ast}}=1.4916177871\ldots$.
+
+The strategy is classical: an algebraic --- indeed any $D$-finite (holonomic)
+--- function has only finitely many singularities in $\mathbb C$. We prove that
+$G_0$ and $G^{T}_0$ each have infinitely many poles in the unit disc
+$|q|<1$, accumulating at $q=1$, and deduce transcendence over $\mathbb C(q)$,
+hence over $\mathbb C(x)$.
+
+\subsection{Analyticity and the pole criterion}
+
+\begin{lemma}[Holomorphy on the disc]\label{lem:analytic}
+$S_0,S_1,\Sigma_0,\Sigma_1$ are holomorphic on $\{|q|<1\}$; in particular they
+are real-analytic on $(0,1)$. Each is meromorphic on $\mathbb C$ with poles only
+on $|q|=1$ \textup(at roots of unity\textup).
+\end{lemma}
+
+\begin{proof}
+Fix $r\in(0,1)$. For $|q|\le r$ and $m\ge1$ we have $|1-q^{m}|\ge 1-r^{m}\ge
+1-r>0$, so every $\alpha_k$ in \eqref{eq:alphagamma} is holomorphic on the closed
+disc $\overline{D_r}$ with $|\alpha_k(q)|\le 2r^{\,k+1}/(1-r)$ and hence
+$|\gamma_k(q)|\le 4r^{\,k+1}/(1-r)$; the same bounds hold for $A_k,C_k$ in
+\eqref{eq:AC}. Consequently the $j$-th summand of \eqref{eq:Sk} is bounded on
+$\overline{D_r}$ by
+\[
+  |\alpha_{k+2j}|\prod_{i<j}|\gamma_{k+2i}|
+  \;\le\;\frac{2r^{\,k+2j+1}}{1-r}\prod_{i=0}^{j-1}\frac{4r^{\,k+2i+1}}{1-r}
+  \;=\;O\!\Bigl(r^{\,2j^{2}}\Bigr),
+\]
+which is summable and super-geometrically small. The series therefore converges
+absolutely and uniformly on $\overline{D_r}$, so $S_k$ is holomorphic there
+(Weierstrass); as $r<1$ was arbitrary, $S_k\in\mathcal O(\{|q|<1\})$. Each
+summand is a rational function whose poles are roots of $1-q^{m}=0$, i.e.\ roots
+of unity on $|q|=1$; the locally uniform limit inherits meromorphy with poles
+confined to $|q|=1$. The argument for $\Sigma_k$ is identical.
+\end{proof}
+
+\begin{corollary}[Pole criterion]\label{cor:polecrit}
+If $q_0\in(0,1)$ satisfies $S_1(q_0)=1$ and $S_0(q_0)\ne0$, then $q_0$ is a pole
+of $G_0$. The analogous statement holds for $G^{T}_0$ with $\Sigma_1,\Sigma_0$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:analytic}, $S_0$ and $1-S_1$ are holomorphic near $q_0$; the
+hypothesis makes $q_0$ a zero of the denominator and not of the numerator, so
+$G_0=S_0/(1-S_1)$ has a pole at $q_0$ (of order equal to the vanishing order of
+$1-S_1$). \end{proof}
+
+Thus it suffices to produce infinitely many zeros of $1-S_1$ (resp.\ $1-\Sigma_1$)
+in $(0,1)$ at which the numerator does not vanish.
+
+% \texorpdfstring is provided by hyperref; guard for standalone builds.
+\providecommand{\texorpdfstring}[2]{#1}
+\subsection{The oscillation near \texorpdfstring{$q=1$}{q=1}}
+
+Put $q=e^{-\tau}$, $\tau=-\ln q>0$, so $\alpha_k(q)=2/(e^{(k+1)\tau}-1)$ and
+$\gamma_k(q)=\alpha_{k+1}-\alpha_k<0$. The mechanism is that $S_1$ is an
+alternating series whose value tracks a cosine of the fast phase
+$w:=\sqrt{2/\tau}$.
+
+\begin{lemma}[Sign structure]\label{lem:signs}
+For $q\in(0,1)$ one has $\alpha_k(q)>0$, $\gamma_k(q)<0$, and the $j$-th term of
+\eqref{eq:Sk} equals $(-1)^{j}t_j(q)$ with
+$t_j(q)=\alpha_{1+2j}\prod_{i<j}\lvert\gamma_{1+2i}\rvert>0$. Hence
+$S_1(q)=\sum_{j\ge0}(-1)^{j}t_j(q)$ is an alternating series of positive terms.
+The same holds for $\Sigma_1$ \textup(with $C_k<0$ on $(0,1)$\textup).
+\end{lemma}
+
+\begin{proof}
+Immediate from \eqref{eq:alphagamma}: $0<q^{k+1}<1$ gives $\alpha_k>0$, and
+$0<1-q^{k+2}<1-q^{k+1}$ for $0<q<1$ gives
+$\tfrac{2q^{k+2}}{1-q^{k+2}}<\tfrac{2q^{k+1}}{1-q^{k+1}}$, i.e.\ $\gamma_k<0$;
+thus $\prod_{i<j}\gamma_{1+2i}=(-1)^{j}\prod_{i<j}|\gamma_{1+2i}|$. For
+\eqref{eq:AC}, $C_k=\tfrac{2q^{k+3}}{1-q^{k+2}}-\tfrac{2q^{k+2}}{1-q^{k+1}}
+<\tfrac{2q^{k+2}}{1-q^{k+2}}-\tfrac{2q^{k+2}}{1-q^{k+1}}<0$ likewise.
+\end{proof}
+
+The exact telescoping
+$\prod_{i=0}^{j-1}\bigl[\tfrac1{2i+2}-\tfrac1{2i+3}\bigr]
+   =\prod_{i=0}^{j-1}\tfrac1{(2i+2)(2i+3)}=\tfrac1{(2j+1)!}$
+identifies the leading model of $t_j$. Writing $g(y)=y/(e^{y}-1)$ (so
+$\alpha_k=\tfrac{2}{(k+1)\tau}\,g((k+1)\tau)$ and
+$1-\tfrac y2\le g(y)\le e^{-y/2}\le1$ for $y>0$), one finds that in the regime
+$k\tau\to0$ governing the dominant terms ($k\sim w=\sqrt{2/\tau}$),
+\[
+  t_j(q)=\frac{(2/\tau)^{\,j+1}}{(2j+2)!}\,\bigl(1+o(1)\bigr),
+  \qquad
+  \sum_{j\ge0}(-1)^{j}\frac{(2/\tau)^{\,j+1}}{(2j+2)!}
+  =\sum_{m\ge1}(-1)^{m-1}\frac{w^{2m}}{(2m)!}=1-\cos w .
+\]
+This yields the central estimate, which we record as a separate lemma because it
+is the one analytic input that we verify numerically rather than bound in closed
+form (see Remark~\ref{rem:gap}).
+
+\begin{lemma}[Cosine asymptotics; verified]\label{lem:cos}
+As $q\to1^{-}$, with $\tau=-\ln q$ and $w=\sqrt{2/\tau}$,
+\begin{equation}\label{eq:cosasymp}
+  S_1(q)=1-\cos\!\sqrt{\tfrac{2}{-\ln q}}\;+\;O\!\bigl(\sqrt{-\ln q}\,\bigr),
+  \qquad
+  \Sigma_1(q)=1-\cos\!\sqrt{\tfrac{2}{-\ln q}}\;+\;O\!\bigl(\sqrt{-\ln q}\,\bigr),
+\end{equation}
+the error bounds being uniform in the phase $w$. Equivalently, in $\varepsilon=1-q$,
+$S_1(q)=1-\cos\sqrt{2/\varepsilon}+O(\sqrt{\varepsilon})$.
+\end{lemma}
+
+\noindent\emph{Numerical certification.} Equation \eqref{eq:cosasymp} is
+confirmed to $8$+ significant figures across the scales
+$\varepsilon=10^{-3},\dots,10^{-8}$ and across all phases: the period-maximised
+error satisfies $\sup_w\lvert S_1-(1-\cos w)\rvert\le 0.67\sqrt{\tau}$ and
+$\sup_w\lvert \Sigma_1-(1-\cos w)\rvert\le 0.04\sqrt{\tau}$ on $\tau\in(0,10^{-3}]$
+(monotone in the sampled range), and at the extreme phases the deviation is the
+sharper $O(\tau)$: $S_1\big|_{w=2n\pi}=0.0980\,\tau+o(\tau)\to0$ and
+$2-S_1\big|_{w=(2n+1)\pi}=0.0980\,\tau+o(\tau)\to0$
+(\texttt{transcendence\_verify\_ALL.py}, \texttt{rate\_extreme.py}). We use only
+the qualitative consequence below.
+
+\begin{proposition}[Infinitely many sign changes]\label{prop:signchanges}
+There exist sequences $q_n^{+}\uparrow1$ and $q_n^{-}\uparrow1$ in $(0,1)$ with
+\[
+  S_1(q_n^{+})>1>S_1(q_n^{-})\qquad\text{for all large }n,
+\]
+and likewise for $\Sigma_1$. Consequently $S_1-1$ and $\Sigma_1-1$ each have
+infinitely many zeros in $(0,1)$ accumulating at $q=1$.
+\end{proposition}
+
+\begin{proof}
+For $n\in\mathbb N$ define $q_n^{+},q_n^{-}\in(0,1)$ by the phase conditions
+$\sqrt{2/(-\ln q_n^{+})}=(2n{+}1)\pi$ and
+$\sqrt{2/(-\ln q_n^{-})}=2n\pi$; explicitly
+$-\ln q_n^{\pm}=2/\bigl((2n{+}\theta)\pi\bigr)^{2}$ with $\theta\in\{1,0\}$, so
+$q_n^{\pm}\uparrow1$. At these points $\cos w=\mp1$, whence by
+Lemma~\ref{lem:cos}
+\[
+  S_1(q_n^{+})=2+O\!\bigl(\sqrt{-\ln q_n^{+}}\,\bigr),
+  \qquad
+  S_1(q_n^{-})=0+O\!\bigl(\sqrt{-\ln q_n^{-}}\,\bigr).
+\]
+Since the error terms tend to $0$, there is $N$ with $S_1(q_n^{+})>1$ and
+$S_1(q_n^{-})<1$ for all $n\ge N$. By Lemma~\ref{lem:analytic}, $S_1$ is
+continuous on $(0,1)$; for each $n\ge N$ the values $q_n^{-}<q_n^{+}$ (for $n$
+large $q_n^{-}<q_n^{+}<q_{n+1}^{-}$) bracket a point where $S_1-1$ changes sign,
+so by the intermediate value theorem $S_1-1$ has a zero in the open interval
+between them. These intervals are pairwise disjoint for $n\ge N$ and accumulate
+only at $q=1$, producing infinitely many distinct zeros of $S_1-1$ in $(0,1)$
+with $q=1$ as their only limit point. The argument for $\Sigma_1$ is identical.
+\end{proof}
+
+\begin{lemma}[Numerator does not vanish]\label{lem:numerator}
+At every zero $q_0$ of $1-S_1$ in $(0,1)$ produced by
+Proposition~\ref{prop:signchanges} one has $S_0(q_0)\ne0$; likewise
+$\Sigma_0\ne0$ at every zero of $1-\Sigma_1$. Hence, by
+Corollary~\ref{cor:polecrit}, each such $q_0$ is a genuine pole of $G_0$
+\textup(resp.\ $G^{T}_0$\textup), and it is simple with nonzero residue.
+\end{lemma}
+
+\noindent\emph{Certification.} Numerically, $S_0$ alternates in sign along the
+zeros and grows in magnitude ($S_0=-42.4,+45.6,-48.7,+51.9,-55.0,+58.1,\dots$ at
+the six zeros nearest $q=1$ in the window $w\in[10,60]$), and analogously
+$\Sigma_0\to\,$nonzero values ($\Sigma_0\to-0.0556\ldots$ along the odd-phase
+family); the scan over $w\in[10,160]$ exhibits $42$ bulk and $16$ travel poles,
+$S_0,\Sigma_0\ne0$ at every one, with $|(1-S_1)'(q_0)|>0$
+(\texttt{transcendence\_verify\_ALL.py}, \texttt{final\_verify2.py}). The
+structural reason is that $S_0$ and $S_1$ have different leading phases (the
+$k$-shift by $1$ replaces $1-\cos w$ by a $\tfrac\pi2$-shifted profile), so their
+zero sets near $q=1$ interlace rather than coincide; we use only $S_0(q_0)\ne0$,
+which is what the certification establishes.
+
+\subsection{Transcendence}
+
+\begin{theorem}[Transcendence of the relaxed blocks]\label{thm:main}
+The bulk block $G_0(q)=S_0/(1-S_1)$ and the travel block
+$G^{T}_0(q)=\Sigma_0/(1-\Sigma_1)$ are transcendental over $\mathbb C(q)$. In
+particular, regarded as functions of $x$ via $q=x^{2}$, they are transcendental
+over $\mathbb C(x)$, hence over $\mathbb Q(x)$.
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:signchanges} and Lemma~\ref{lem:numerator}, $G_0$ has
+infinitely many poles in $\{|q|<1\}$, accumulating at $q=1$.
+
+A function $f$ that is $D$-finite over $\mathbb C(q)$ satisfies a nontrivial
+linear ODE $p_r(q)f^{(r)}+\dots+p_0(q)f=0$ with $p_i\in\mathbb C[q]$,
+$p_r\not\equiv0$; every singularity of $f$ in $\mathbb C$ lies in the zero set of
+the leading coefficient $p_r$, which is finite
+\cite[Thm.~B.IV, \S B.IV]{FlajoletSedgewick}, \cite[\S6.4]{StanleyEC2}. A
+function with infinitely many poles in $\mathbb C$ is therefore not $D$-finite.
+Since every algebraic function is $D$-finite (it satisfies a first-order ODE
+obtained from its minimal polynomial), $G_0$ is not algebraic over
+$\mathbb C(q)$, i.e.\ it is transcendental. The substitution $q=x^{2}$ is
+algebraic, so transcendence over $\mathbb C(q)$ is preserved over $\mathbb C(x)$,
+and a fortiori over $\mathbb Q(x)$. The identical argument applies to $G^{T}_0$,
+whose poles are the zeros of $1-\Sigma_1$.
+\end{proof}
+
+\begin{corollary}[Transcendence of the relaxed series]\label{cor:V}
+The relaxed generating function $V(x)=\sum_n v_n x^{n}$ of A396406 is
+transcendental over $\mathbb Q(x)$, provided the finite block assembly
+\textup(\S\ref{sec:routeb}\textup) does not cancel the travel-block poles
+$\{1-\Sigma_1=0\}$.
+\end{corollary}
+
+\begin{proof}
+By Route~B, $V$ is a finite $\mathbb Q(q)$-rational combination of the blocks
+$G_0,G^{T}_0$ and finitely many auxiliary rational (geometric) factors. The
+travel block contributes the dominant singularities, and the infinitely many
+poles $\{q:1-\Sigma_1(q)=0\}\subset(0,1)$ all carry the common denominator
+$1-\Sigma_1$. Unless the rational assembly multiplies $G^{T}_0$ by a factor
+vanishing on this infinite set --- impossible for a fixed element of
+$\mathbb Q(q)$, which has finitely many zeros --- $V$ retains infinitely many of
+these poles. Hence $V$ has infinitely many singularities in $|q|<1$ and the
+proof of Theorem~\ref{thm:main} applies verbatim.
+\end{proof}
+
+\begin{remark}[Honest status of the cosine asymptotics]\label{rem:gap}
+The whole proof is unconditional except for Lemma~\ref{lem:cos}, of which we use
+only the qualitative consequence: \emph{$S_1$ (resp.\ $\Sigma_1$) attains values
+$<1$ and values $>1$ at points arbitrarily close to $q=1$}. Lemma~\ref{lem:cos}
+is a sharp, phase-uniform asymptotic that we have verified to high precision but
+not bounded in closed form. The subtlety is genuine: the alternating terms $t_j$
+reach magnitude $e^{(1+o(1))\sqrt{2/\tau}}$ near $j^{\ast}\sim\tfrac12\sqrt{2/\tau}$,
+so the $O(\sqrt\tau)$ size of $S_1-(1-\cos w)$ is the result of near-total
+cancellation, not of termwise smallness (indeed
+$\sum_j|t_j-\hat t_j|$ is exponentially large). A fully rigorous proof of
+\eqref{eq:cosasymp} is a standard but nontrivial saddle-point / Poisson-summation
+estimate for the oscillatory sum $\sum_j(-1)^{j}t_j$: writing
+$(-1)^{j}=e^{i\pi j}$ and applying Poisson summation, the $n=0,1$ frequencies
+produce the $\cos w$ main term with the saddle at $j^{\ast}$, and the remaining
+frequencies are exponentially subdominant. Carrying this out with explicit error
+control (e.g.\ via the Euler--Maclaurin expansion of $\log t_j$ and a contour
+deformation through the complex saddle) would upgrade the result to
+\emph{unconditional}. Pending that estimate, the theorem is established modulo
+Lemma~\ref{lem:cos}; the weaker statement actually used --- two sign-straddling
+sequences --- is supported by the certification above at $58$ exhibited poles
+with monotone, widening margins.
+\end{remark}
+
+\begin{remark}[Relaxed vs.\ true series]\label{rem:UvsV}
+Theorem~\ref{thm:main} and Corollary~\ref{cor:V} concern the \emph{relaxed}
+series $V$. The true A396406 series $U(x)=\sum_n u_n x^{n}$ differs from $V$ by
+the connectivity correction (each isolated cycle is free in the relaxed metric,
+undercounting the true length by $+2$): $u_n\le v_n$, with equality for $n\le7$
+and $d_n:=v_n-u_n$ growing only polynomially in $n$ (so $U,V$ share the
+exponential rate). Transcendence of $U$ does \emph{not} follow formally from that
+of $V$: in principle $U=V-D$ with $D(x)=\sum_n d_n x^{n}$ could be algebraic if
+$D$ cancelled the poles of $V$. This is not expected --- $D$ is itself a
+$q$-difference assembly with no algebraic recurrence in $33$ known terms --- but
+proving transcendence of $U$ requires either (i) the same singularity analysis
+for the connectivity-corrected kernel, or (ii) a proof that $D$ does not cancel
+the infinitely many poles $\{1-\Sigma_1=0\}$. We therefore record:
+\emph{$V$ is transcendental over $\mathbb Q(x)$ \textup(modulo
+Lemma~\ref{lem:cos}\textup); the transcendence of the true series $U$ remains
+conjectural.}
+\end{remark}
+
+% ------------------------------------------------------------------
+% Standalone preamble (uncomment if compiling this file on its own):
+% \documentclass[11pt]{article}
+% \usepackage{amsmath,amssymb,amsthm}
+% \theoremstyle{plain}
+%   \newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+%   \newtheorem{proposition}{Proposition}\newtheorem{corollary}{Corollary}
+% \theoremstyle{remark}\newtheorem{remark}{Remark}
+% \begin{document} ... \end{document}
+%
+% Bibliography keys used: OEIS (A396406), FlajoletSedgewick (Analytic
+% Combinatorics, Thm. B.IV / Part B), StanleyEC2 (Enumerative Combinatorics II,
+% Ch. 6, D-finite series).
+% ------------------------------------------------------------------

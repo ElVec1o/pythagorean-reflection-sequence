@@ -1,0 +1,130 @@
+"""
+CONSOLIDATED reproducible verification for the transcendence theorem (A396406 relaxed series).
+Run: python3 transcendence_verify_ALL.py
+All claims printed with PASS/FAIL. Adequate precision throughout (dps scaled to the
+exponential size sqrt(2/tau) of the alternating terms; under-precision gives spurious blowup).
+"""
+import mpmath as mp, math
+
+# ---- BULK block ----
+def alpha(k,tau): return 2/(mp.e**((k+1)*tau)-1)          # = 2 q^{k+1}/(1-q^{k+1}), q=e^{-tau}
+def Sk(k,tau,dps):
+    mp.mp.dps=dps
+    tot=mp.mpf(0); prod=mp.mpf(1)
+    for j in range(3000000):
+        tot+=alpha(k+2*j,tau)*prod
+        prod*=(alpha(k+1+2*j,tau)-alpha(k+2*j,tau))       # gamma_{k+2j} (<0)
+        if abs(prod)<mp.mpf(10)**(-(dps-15)) and j>40: break
+    return tot
+# ---- TRAVEL block ----
+def Ak(k,tau):
+    q=mp.e**(-tau); return 2*q/(1-q**(k+1))
+def Ck(k,tau):
+    q=mp.e**(-tau); return 2*q**(k+3)/(1-q**(k+2)) - 2*q**(k+2)/(1-q**(k+1))
+def Sigk(k,tau,dps):
+    mp.mp.dps=dps
+    tot=mp.mpf(0); prod=mp.mpf(1)
+    for j in range(3000000):
+        tot+=Ak(k+2*j,tau)*prod
+        prod*=Ck(k+2*j,tau)
+        if abs(prod)<mp.mpf(10)**(-(dps-15)) and j>40: break
+    return tot
+def dps_for(w): return int(float(w)/math.log(10))+55
+PASS=[]
+
+# (0) Taylor coeffs of G_0 (bulk) reproduce 2,2,6,2,18,6,42,18,118,50,282,190,706,594
+# Use power-series arithmetic in q directly (alpha_k,gamma_k as series), exact rational.
+mp.mp.dps=60
+N=16
+def ps_alpha(k):   # 2 q^{k+1}/(1-q^{k+1}) = 2 sum_{m>=1} q^{m(k+1)}, truncated to deg N
+    c=[mp.mpf(0)]*(N+1)
+    m=1
+    while m*(k+1)<=N: c[m*(k+1)]=mp.mpf(2); m+=1
+    return c
+def ps_sub(a,b): return [a[i]-b[i] for i in range(N+1)]
+def ps_mul(a,b):
+    c=[mp.mpf(0)]*(N+1)
+    for i in range(N+1):
+        if a[i]==0: continue
+        for j in range(N+1-i):
+            if b[j]!=0: c[i+j]+=a[i]*b[j]
+    return c
+def ps_Sk(k):  # sum_j alpha_{k+2j} prod_{i<j} gamma_{k+2i}, truncated
+    tot=[mp.mpf(0)]*(N+1); prod=[mp.mpf(1)]+[mp.mpf(0)]*N
+    for j in range(N+2):
+        ak=ps_alpha(k+2*j); term=ps_mul(ak,prod)
+        tot=[tot[i]+term[i] for i in range(N+1)]
+        gk=ps_sub(ps_alpha(k+1+2*j),ps_alpha(k+2*j))  # gamma_{k+2j}=alpha_{k+1}-alpha_k? sign check below
+        prod=ps_mul(prod,gk)
+        if all(prod[i]==0 for i in range(N+1)): break
+    return tot
+# gamma_k = 2q^{k+2}/(1-q^{k+2}) - 2q^{k+1}/(1-q^{k+1}) = alpha_{k+1}-alpha_k
+S0p=ps_Sk(0); S1p=ps_Sk(1)
+# G0 = S0/(1-S1): invert (1-S1) as power series
+den=[mp.mpf(1)-S1p[0]]+[-S1p[i] for i in range(1,N+1)]
+inv=[mp.mpf(0)]*(N+1); inv[0]=1/den[0]
+for n in range(1,N+1):
+    inv[n]=-sum(den[k]*inv[n-k] for k in range(1,n+1))/den[0]
+G0p=ps_mul(S0p,inv)
+coeffs=[int(mp.nint(G0p[i])) for i in range(1,15)]
+tgt=[2,2,6,2,18,6,42,18,118,50,282,190,706,594]
+PASS.append(("G_0 Taylor coeffs match A396406 bulk data", coeffs==tgt))
+
+# (1) Travel singularity q*=0.44945363..., rate 1.4916177871
+qstar=mp.findroot(lambda q: Sigk(1,-mp.log(q),60)-1, mp.mpf('0.4495'))
+PASS.append(("travel q*=0.4494536305...", abs(qstar-mp.mpf('0.449453630558948'))<mp.mpf('1e-12')))
+PASS.append(("travel rate 1.4916177871", abs(1/mp.sqrt(qstar)-mp.mpf('1.4916177871'))<mp.mpf('1e-9')))
+
+# (2) Asymptotic model S_1 ~ 1-cos(sqrt(2/(-ln q))) with adequate precision (NO spurious blowup)
+ok_model=True; ok_inrange=True
+for le in [-3,-4,-5,-6,-7]:
+    eps=mp.mpf(10)**le; q=1-eps; tau=-mp.log(q); w=mp.sqrt(2/tau)
+    dps=dps_for(w); s=Sk(1,tau,dps)
+    if not (mp.mpf(-0.01)<=s<=mp.mpf(2.01)): ok_inrange=False
+    if abs(s-(1-mp.cos(w)))>mp.mpf('0.05'): ok_model=False
+PASS.append(("S_1 in [0,2], no precision-blowup (dps scaled)", ok_inrange))
+PASS.append(("S_1 ~ 1-cos(sqrt(2/(-ln q))) to <0.05", ok_model))
+
+# (3) Two extreme-phase limits => sign changes of S_1-1 (bulk) and Sigma_1-1 (travel)
+ok_b=True; ok_t=True
+for n in [8,16,32,64]:
+    wo=(2*n+1)*mp.pi; we=2*n*mp.pi
+    so=Sk(1,2/wo**2,dps_for(wo));  se=Sk(1,2/we**2,dps_for(we))
+    if not (so>1 and se<1): ok_b=False
+    To=Sigk(1,2/wo**2,dps_for(wo)); Te=Sigk(1,2/we**2,dps_for(we))
+    if not (To>1 and Te<1): ok_t=False
+PASS.append(("BULK: S_1>1 at w=(2n+1)pi and S_1<1 at w=2n*pi (n<=64)", ok_b))
+PASS.append(("TRAVEL: Sigma_1>1 at w=(2n+1)pi and <1 at w=2n*pi (n<=64)", ok_t))
+
+# (4) Genuine poles: count zeros of 1-S_1 and 1-Sigma_1 in a w-window; S_0, Sigma_0 nonzero there
+def count(S1f,S0f,wlo,whi,N):
+    zs=[]; prev=None; pw=None
+    for i in range(N+1):
+        w=wlo+(whi-wlo)*mp.mpf(i)/N
+        s=int(mp.sign(S1f(2/w**2,dps_for(w))-1))
+        if prev is not None and s!=0 and prev!=0 and s!=prev:
+            lo,hi=pw,w; fl=prev
+            for _ in range(70):
+                m=(lo+hi)/2; fm=int(mp.sign(S1f(2/m**2,dps_for(m))-1))
+                if fm==fl or fm==0: lo=m
+                else: hi=m
+            wz=(lo+hi)/2; s0=S0f(2/wz**2,dps_for(wz)); zs.append((wz,s0))
+        if s!=0: prev=s; pw=w
+    return zs
+zb=count(lambda t,d:Sk(1,t,d), lambda t,d:Sk(0,t,d), mp.mpf(10),mp.mpf(40),600)
+zt=count(lambda t,d:Sigk(1,t,d), lambda t,d:Sigk(0,t,d), mp.mpf(10),mp.mpf(40),600)
+PASS.append((f"BULK: {len(zb)} poles in w[10,40], all S_0!=0", len(zb)>=8 and all(abs(s0)>mp.mpf('1e-4') for _,s0 in zb)))
+PASS.append((f"TRAVEL: {len(zt)} poles in w[10,40], all Sigma_0!=0", len(zt)>=8 and all(abs(s0)>mp.mpf('1e-4') for _,s0 in zt)))
+
+# (5) simple pole + nonzero residue at a sample bulk zero
+mp.mp.dps=80
+qz=mp.findroot(lambda q: 1-Sk(1,-mp.log(q),80), mp.mpf('0.999338942380106116'))
+dv=mp.diff(lambda q: 1-Sk(1,-mp.log(q),80), qz)
+s0z=Sk(0,-mp.log(qz),80)
+PASS.append(("sample bulk pole is SIMPLE (deriv!=0) with S_0!=0", abs(dv)>mp.mpf('1e-3') and abs(s0z)>mp.mpf('1e-3')))
+
+print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
+for name,ok in PASS:
+    print(f"  [{'PASS' if ok else 'FAIL'}] {name}")
+print("="*64)
+print("ALL PASS" if all(ok for _,ok in PASS) else "SOME FAILED")

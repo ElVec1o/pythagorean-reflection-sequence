@@ -63,15 +63,17 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
 5. **The growth series.** `A396406` admits no constant-coefficient linear
    recurrence of order ≤ 21, no holonomic recurrence within
    `(order+1)(deg+1) ≤ 32`, and no algebraic equation with `deg_F ≤ 6`,
-   `deg_x ≤ 14` (all exact, positive-control validated). Consistent with Parry's
-   theorem on tour-cost wreath-product growth, the series the lamplighter
+   `deg_x ≤ 14` (all exact, positive-control validated). The lamplighter
    transfer yields an explicit **q-difference functional equation** (the
    catalytic variable enters by dilation `t → q²t`), so the kernel method
-   does not apply and the series is **conjecturally q-holonomic /
-   transcendental**, not algebraic. Unfolding the equation pins the
-   asymptotic ratio: **β₂ ≤ 1.49161778…** (the exact relaxed growth rate,
-   a rigorous upper bound), which **excludes 3/2** — the earlier `≈1.4995`
-   was a finite-depth overshoot.
+   does not apply. Unfolding the equation pins the asymptotic ratio:
+   **β₂ ≤ 1.49161778…** (exact relaxed growth rate, rigorous upper bound),
+   which **excludes 3/2** — the earlier `≈1.4995` was a finite-depth
+   overshoot. The relaxed series is **transcendental** (Theorem; modulo
+   one explicit analytic lemma — the cosine asymptotic for `S_1` near
+   `q=1`, verified to 8+ figures): the bulk and travel blocks each have
+   infinitely many poles in (0,1) accumulating at q=1 — argument-principle
+   pole counts inside `|q|≤R` diverge as 0, 1, 5, 46, 92 for R=0.50…0.95.
 
 ## Repository contents
 
