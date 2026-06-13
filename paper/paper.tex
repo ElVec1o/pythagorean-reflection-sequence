@@ -807,6 +807,31 @@ extreme case of the same phenomenon.  Every computation previously
 reported is consistent with the sandwich: all certified and BFS-verified
 ranges lie below the deviation depths of the shapes used.
 
+\begin{remark}[A height-graded family; outlook]
+\label{rem:height-family}
+The per-shape statements of this section package into a single map
+$\zeta \mapsto W_{\mathrm{gen}} / \langle\!\langle w_\zeta
+\rangle\!\rangle$ from algebraic numbers on the unit circle to one-relator
+quotients of the generic group: by
+Corollary~\ref{cor:kernel-classification} the kernel for rotation number
+$\zeta$ is the principal ideal $2(t-1)\mu_\zeta(t)\,\mathbb{Z}[t^{\pm 1}]$
+of the lamplighter translation lattice, where $\mu_\zeta$ is the
+(self-reciprocal) minimal polynomial of $\zeta$, and the deviation depth
+$n_\zeta = \lceil L_\zeta / 2\rceil$ is the lamplighter shortest-vector
+length of that ideal (Theorem~\ref{thm:midpoint}).  This holds verbatim
+for $\zeta$ of any degree, so the whole picture extends from rational
+right triangles ($\mu_\zeta$ quadratic) to arbitrary algebraic leg
+ratios, graded by the arithmetic complexity of $\zeta$.  The natural
+conjecture is that $L_\zeta$ --- and hence $n_\zeta$ --- is controlled by
+a height of $2(t-1)\mu_\zeta$ between its $\ell^1$-norm and its
+(logarithmic) Mahler measure; the shortest vector is genuinely not the
+naive generator (the optimal multiplier $f$ exhibits cancellation:
+$n_T$ is \emph{not} linear in $(c_T, e_T)$, failing e.g.\ for $(2,3)$ and
+$(3,4)$), so this is a true reduction problem in the word metric rather
+than a coefficient count.  We flag this as the most natural
+generalization of the present results.
+\end{remark}
+
 \paragraph{Data provenance.}  The depth-$38$ certificate
 (\texttt{certify38\_rust/}, independently reproduced on a second
 machine; $87{,}838{,}773$-element symbolic ball, all $24$ candidate
@@ -1042,46 +1067,78 @@ PSLQ to degree $4$ at height $10^6$, and the family $1 + 2\cos(2\pi/k)$)
 returns no candidate at this precision.
 \end{proposition}
 
-\begin{conjecture}[Context-free growth]
+\begin{conjecture}[Algebraic growth]
 \label{conj:algebraic-growth}
-The min-cost optimization of Theorem~\ref{thm:metric-formula} carries a
-counter (the number of strand crossings of an edge is unbounded and
-must be tracked), so its determinization is a \emph{pushdown}, not a
-finite, automaton --- a context-free rather than regular mechanism.
-This is consistent with Proposition~\ref{prop:growth-complexity}: the
-finite-state truncations of the counting automaton grow roughly
-\emph{linearly} in the cost budget ($58, 66, 86, 94$ states per
-boundary class at budgets $12, 14, 16, 18$) while every internal
-coordinate stays bounded (strand counts $\le 1$, components $\le 7$,
-profiles $\le 20$, cost-offsets $\le 6$), the signature of finitely
-many profile \emph{shapes} crossed with a single unbounded counter ---
-a polynomial functional equation in \emph{one catalytic variable} (the
-crossing count $t$ of the current edge).  Writing the edge-by-edge DP as
-a transfer operator over the bounded interface profiles and eliminating
-them yields an equation
-$\mathrm{Pol}(x, t, F(x,t), F_1(x), \ldots, F_k(x)) = 0$; by the theorem
-of Bousquet-M\'elou and Jehanne (\emph{Polynomial equations with one
-catalytic variable, algebraic series and map enumeration}, J.~Combin.\
-Theory Ser.~B 96 (2006), 623--672) its solution $F$ is then algebraic
-over $\mathbb{Q}(x)$.  The one unverified step is that the
-no-isolated-cycle (Eulerian-connectivity) constraint of
-Theorem~\ref{thm:metric-formula} --- which is \emph{global} along the
-edge chain --- admits an \emph{a priori bounded} local encoding; the
-census supports this (components $\le 7$) but does not prove it, and it
-is exactly the term the relaxed DP undercounts ($+2$ per isolated cycle
-beyond radius $9$).  We record this catalytic-variable reduction as the
-route to a proof and the (strengthened) negative results of
-Proposition~\ref{prop:growth-complexity} as the present hard evidence.
+The growth series $F(x) = \sum_d u_d x^d$ of
+\href{https://oeis.org/A396406}{A396406} is \emph{algebraic} over
+$\mathbb{Q}(x)$, necessarily of high degree
+(Proposition~\ref{prop:growth-complexity} excludes every low-complexity
+alternative).
 \end{conjecture}
+
+This is the answer the literature predicts.  The word metric of
+Theorem~\ref{thm:metric-formula} is a minimal-tour (travelling-salesman)
+cost on the lamp axis $\mathbb{Z}$ --- a sum of edge crossing-numbers
+plus turning costs over an Eulerian tour --- and Parry's theorem on
+growth of wreath products in such tour-cost generating sets
+(W.~Parry, \emph{Growth series of some wreath products}, Trans.\ Amer.\
+Math.\ Soc.\ 331 (1992), 751--759) gives \emph{irrational-algebraic}
+growth series for exactly this mechanism.  That rationality is
+generating-set-dependent for these groups is established (the standard
+lamplighter $\mathbb{Z}/2 \wr \mathbb{Z}$ has \emph{rational} growth of
+rate $\varphi$ for $\{a, t\}$ but irrational growth for other sets;
+cf.\ also M.~Stoll, \emph{Rational and transcendental growth series for
+the higher Heisenberg groups}, Invent.\ Math.\ 126 (1996), 85--109), so
+the negative tests of Proposition~\ref{prop:growth-complexity} are the
+\emph{expected} signature of a high-degree algebraic series, not
+evidence against algebraicity.
+
+A concrete proof route via one catalytic variable is in reach.  The
+edge-by-edge DP of Theorem~\ref{thm:metric-formula} determinizes over an
+interface profile whose unbounded data is a single counter --- the
+crossing count $t$ of the current edge --- provided the
+no-isolated-cycle (Eulerian-connectivity) constraint admits a bounded
+local encoding.  It does, but \emph{not} as a bound on the number of
+open components: that number is genuinely unbounded on geodesics.  The
+family $g_n = (\varepsilon^*, \delta^*, k^*) = (1, 0, 0)$ with the
+single deposit $a_0 = 2n$ has geodesic word $(R_y R_h R_x)^{2n}$ of
+length exactly $6n$, and every geodesic realization forces $n+1$
+simultaneously open interface components crossing edge $0$, so the
+component count grows linearly with length.  The correct bounded
+encoding is a bound on component \emph{shapes}: in a length-minimizing
+realization each interface component carries at most one up-crossing and
+at most one down-crossing of each edge, so every component is one of
+exactly eight shapes, and the profile is a \emph{multiset} over this
+fixed eight-letter alphabet with the bulk multiplicity playing the role
+of the catalytic variable $t$.  (A strand-bounded transfer DP enforcing
+this reproduces the exact word metric with zero mismatches through
+radius $12$; an exhaustive local-exchange check finds the min-cost site
+pairing preserving the one-up/one-down invariant across all $14{,}658$
+site interfaces tested --- the inductive step of a proof, via
+Euler-trail reversal surgery, that we have not yet written out.)
+Eliminating the eight bounded shapes from the transfer operator yields a
+polynomial equation
+$\mathrm{Pol}(x, t, F(x, t), F_1(x), \ldots, F_k(x)) = 0$ to which the
+theorem of Bousquet-M\'elou and Jehanne (\emph{Polynomial equations with
+one catalytic variable, algebraic series and map enumeration},
+J.~Combin.\ Theory Ser.~B 96 (2006), 623--672) applies, forcing $F$
+algebraic.  The remaining gaps are the written induction for the
+shape bound and the explicit assembly of the kernel (the bulk
+$f = 0$ sub-rate is determinized, but the travel edges $f = \pm 1$ and
+the geometric sum over $k^*$ are not yet folded in).  We record the
+catalytic-variable reduction as the route to a proof and the
+(strengthened) negative results of
+Proposition~\ref{prop:growth-complexity} as the present hard evidence.
 
 \emph{(c) The growth question becomes a lamplighter growth question.}
 The sequence $u_d$ of \href{https://oeis.org/A396406}{A396406} is the
 growth series of a virtually-$\mathbb{Z}\wr\mathbb{Z}$ group with
-respect to the geometric \emph{reflection} generating set.  Growth
-series of wreath products with respect to standard generating sets can
-be rational (Parry, \emph{Growth series of some wreath products},
-Trans.\ Amer.\ Math.\ Soc.\ 331 (1992), 751--759), while the present
-data admits no recurrence of order $\le 19$; whether $\beta_2$ and the
+respect to the geometric \emph{reflection} generating set.  The standard
+lamplighter set gives a rational series (rate $\varphi$), but for the
+tour-cost set realized by our metric the relevant precedent is Parry's
+\emph{algebraic-but-not-rational} verdict (Conjecture~\ref{conj:algebraic-growth});
+combined with the data (no recurrence of order $\le 21$,
+Proposition~\ref{prop:growth-complexity}), whether $\beta_2$ and the
 generating function of $u_d$ are algebraic is therefore a well-posed
 open problem about lamplighter growth in a non-standard generating set
 --- and the failure of finite presentability (Theorem~
