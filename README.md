@@ -78,8 +78,18 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    to a single oscillatory-average bound `Σ μ_j R_j(w) = O(√τ)`, and its
    leading term is derived in **closed form**:
    `S_1 = 1 − cos w − (17√2/36)·√τ·sin w + O(τ)`, the constant
-   `−17√2/36 = −0.6678230711…` confirmed to 15 digits. Only the uniform
-   saddle-point remainder is unproven. The true-series gap is honest: the
+   `−17√2/36 = −0.6678230711…` confirmed to 15 digits. **Half of that
+   constant is unconditional and uniform**: the geometric-collapse split
+   `E = T1 + T2` with `T1 = cos w − cos(w·e^{−τ/2})` (exact) obeys
+   `|T1| ≤ √(τ/2)` for all τ with no hypothesis, isolating the whole gap in
+   the structurally-smaller residue `T2`. Equivalently lem:cos reduces to
+   one self-contained bound `sup_{[0,w]}|K'| ≤ Cτ` on an explicit entire
+   function (s-oscillation eliminated, tail truncated) — a knife-edge
+   oscillatory estimate (μ_j fails Hankel positivity; no fixed-recurrence
+   theorem applies in the coupled limit). A 5-route multi-agent assault with
+   adversarial verification confirmed all routes reduce to this one
+   inequality; none closes it. The sign-straddle the transcendence theorem
+   needs is the weaker per-point bound `|T2| < 1` at `w = Nπ`. The true-series gap is honest: the
    connectivity defect `d_n = v_n − u_n` grows **exponentially at `V`'s own
    rate** (not polynomially), so neither elementary lift to `U` survives —
    but `U` and the defect cannot both be `D`-finite.

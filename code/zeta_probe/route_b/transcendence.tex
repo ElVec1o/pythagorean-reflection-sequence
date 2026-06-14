@@ -204,6 +204,102 @@ rigorous term by term; the one step not made uniform is the resummation of the
 $O(\tau)$ remainder (a Watson/saddle estimate), which is exactly the content of
 Remark~\ref{rem:gap}.
 
+\subsection{An unconditional half of the leading term}
+\label{ss:split}
+
+The formal $\sqrt\tau$ term splits into a piece that is \emph{unconditionally} bounded,
+uniformly in $w$, and a quantitatively smaller residue carrying the entire remaining gap.
+First rewrite the error by swapping the order of summation in \eqref{eq:reduce}: since
+$R_j(w)=\sum_{i>j}(-1)^{i}w^{2i}/(2i)!$ and $\sum_{j<i}\mu_j=1-\rho_{i-1}$,
+\begin{equation}\label{eq:Etele}
+  E:=S_1-(1-\cos w)=\sum_{i\ge1}(-1)^{i}\frac{w^{2i}}{(2i)!}\,(1-\rho_{i-1})
+\end{equation}
+(absolutely convergent, verified to $120$ digits). The domination of
+Lemma~\ref{lem:dom} sharpens to $\rho_{i}/\rho_{i-1}\le e^{-\tau}$, hence
+$\rho_{i-1}\le e^{-i\tau}$; writing $B_i:=-\log\rho_{i-1}-i\tau\ge0$ and
+$W:=w\,e^{-\tau/2}$, the split $1-\rho_{i-1}=(1-e^{-i\tau})+e^{-i\tau}(1-e^{-B_i})$
+inserted into \eqref{eq:Etele} (using $w^{2i}e^{-i\tau}=W^{2i}$) gives $E=T_1+T_2$ with
+\begin{equation}\label{eq:T1T2}
+  T_1=\sum_{i\ge1}(-1)^{i}\frac{w^{2i}}{(2i)!}(1-e^{-i\tau})=\cos w-\cos W,
+  \qquad
+  T_2=\sum_{i\ge1}(-1)^{i}\frac{W^{2i}}{(2i)!}\,(1-e^{-B_i}).
+\end{equation}
+
+\begin{proposition}[Unconditional uniform bound on $T_1$]\label{prop:T1}
+$T_1=\cos w-\cos\!\bigl(w e^{-\tau/2}\bigr)$ exactly, and for all $\tau>0$
+\[
+  |T_1|\;\le\; w\bigl(1-e^{-\tau/2}\bigr)\;\le\;\sqrt{\tau/2},
+\]
+uniformly in $w$; consequently $T_1=-\tfrac1{\sqrt2}\sqrt\tau\,\sin w+O(\tau)$ uniformly.
+\end{proposition}
+
+\begin{proof}
+The closed form is the evaluation of two convergent cosine series in \eqref{eq:T1T2}.
+The bound is $|\cos w-\cos W|\le|w-W|=w(1-e^{-\tau/2})$ (mean value theorem), and
+$1-e^{-\tau/2}\le\tau/2$, so $|T_1|\le w\tau/2=\sqrt{\tau/2}$. Expanding
+$w(1-e^{-\tau/2})=\tfrac{w\tau}2+O(w\tau^2)=\tfrac1{\sqrt2}\sqrt\tau+O(\tau^{3/2})$ and
+$\cos w-\cos(w-\tfrac{w\tau}2+\dots)=-\tfrac{w\tau}2\sin w+O((w\tau)^2)$ gives the stated
+expansion; both error terms are uniform in $w$. \end{proof}
+
+Thus $-\tfrac1{\sqrt2}$ --- the end-factor half of $c_1$ --- is established
+\emph{unconditionally and uniformly}. The residue
+$T_2=\sum_{j\ge0}c_j\,\widetilde R_j$, $c_j=e^{-B_j}(1-e^{-(\,\delta_j-\tau)})\in[0,\delta_j-\tau]$
+with $\delta_j=-\log(\rho_j/\rho_{j-1})$ and $\widetilde R_j$ the cosine remainder at
+argument $W$, is structurally identical to $E$ but with weights smaller by a factor
+$O(\tau^2 j^2)$; numerically $T_2=+\tfrac{\sqrt2}{36}\sqrt\tau\sin w+O(\tau)$, completing
+$c_1=-\tfrac1{\sqrt2}+\tfrac{\sqrt2}{36}=-\tfrac{17\sqrt2}{36}$. \textbf{The entire
+remaining gap is the single bound $|T_2|=O(\sqrt\tau)$ uniformly}; and the qualitative
+sign-straddle that suffices for Theorem~\ref{thm:main} needs only the much weaker
+\emph{per-point} bound $|T_2|<1$ at the discrete phases $w=N\pi$.
+
+\subsection{Equivalent reductions and the obstruction}
+\label{ss:obstruction}
+
+Two further rigorous reductions sharpen the target. From the integral form of the cosine
+remainder, $R_j(w)=\tfrac{(-1)^{j+1}}{(2j)!}\int_0^w(w-s)^{2j}\sin s\,ds$ (one integration
+by parts; boundary terms vanish), averaging against $\mu_j$ gives the exact convolution
+\begin{equation}\label{eq:conv}
+  E=\int_0^w \sin(s)\,K'(w-s)\,ds,\qquad
+  K'(u)=\sum_{j\ge0}\mu_j\frac{(-1)^{j+1}u^{2j}}{(2j)!}\ \ (\text{entire, even}),
+\end{equation}
+the interchange justified by domination ($\sum_j\mu_j u^{2j}/(2j)!\le\cosh u$). Hence
+$|E|\le w\sup_{[0,w]}|K'|$, eliminating the $s$-oscillation entirely; and
+$K'(0)=\mu_0=1-g(2\tau)\le\tau$ rigorously (the $[1/1]$ Pad\'e bound
+$(2-y)/(2+y)\le e^{-y}$). Moreover $|R_j(w)|\le \hat t_{j+1}=w^{2j+2}/(2j+2)!$ gives a
+super-exponential tail: for $J_0\ge2w$, $|\sum_{j\ge J_0}\mu_j R_j|\le\hat t_{J_0+1}
+\le(e/4)^{2J_0+2}=O(\tau^{\infty})$, so $E$ is a finite head of $O(w)$ terms up to a
+negligible error. Lemma~\ref{lem:cos} is therefore \emph{equivalent} to either of the clean
+self-contained estimates
+\[
+  \sup_{u\in[0,w]}|K'(u)|\le C\tau
+  \qquad\Longleftrightarrow\qquad
+  \|K\|_{L^1[0,w]}=O(\sqrt\tau)
+  \qquad\Longleftrightarrow\qquad
+  |T_2|=O(\sqrt\tau),
+\]
+for the explicit entire function $K'$ (equivalently $K(u)=\sum_j\mu_j(-1)^{j+1}u^{2j+1}/(2j+1)!$).
+
+\begin{remark}[Why this is a genuine oscillatory estimate, not bookkeeping]\label{rem:knife}
+The bound is a \emph{knife-edge}: the supremum of $|K'|$ on $[0,w]$ equals $\mu_0$ but is
+approached from below by the interior lobe near $u\approx\pi$ with vanishing relative margin
+$\sim 0.8\,\tau$. Hence no soft argument can close it: the weights $\mu_j$ provably fail
+Hankel positivity (the Hankel matrices $[\mu_{i+k}]$ have genuinely negative eigenvalues,
+persistent at $200$-digit precision), so $K'$ is \emph{not} the cosine transform of a
+positive measure and the Bochner bound $|K'(u)|\le K'(0)$ is unavailable; and monotonicity,
+contraction, and triangle/Abel bounds all fail (the partial sums of $K'$ overshoot like
+$e^{u}$). The remaining estimate is genuinely a uniform-in-$\tau$ saddle/Poisson estimate of
+an oscillatory sum in the coupled limit $\tau\to0$, $j\sim\tau^{-1/2}$, for which no
+off-the-shelf difference-equation theorem applies: Wong--Li \cite{WongLi1992}, Wang--Wong
+\cite{WangWong2003} and Costin--Costin \cite{CostinCostin1996} all require a \emph{fixed}
+recurrence with $n\to\infty$, whereas here the turning point $k\sim w=\sqrt{2/\tau}$ recedes
+\emph{jointly} with the index; and the false/partial-theta and Mellin harmonic-sum machineries
+(\cite{BringmannMilas2015}; \cite{FGD1995}) do not apply (the $q\to1$ behaviour is carried by
+the full Lambert-series corrections, not the leading $q$-powers, and $S_1$ is a sum of
+products, not a harmonic sum). This is recorded as the precise frontier, established by a
+five-route multi-agent assault with adversarial verification (all routes reduce to this one
+inequality; none closes it).
+\end{remark}
+
 \begin{lemma}[Cosine asymptotics; reduced to one oscillatory-average bound]\label{lem:cos}
 As $q\to1^{-}$, with $\tau=-\ln q$ and $w=\sqrt{2/\tau}$,
 \begin{equation}\label{eq:cosasymp}

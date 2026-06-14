@@ -1256,11 +1256,28 @@ $\vartheta = \tfrac12 w\partial_w$, gives
   S_1(q) = 1 - \cos w - \frac{17\sqrt2}{36}\,\sqrt\tau\,\sin w + O(\tau),
 \]
 with $-17\sqrt2/36 = -0.6678230711\ldots$ confirmed to $15$ digits by
-Richardson extrapolation.  Only the uniform $O(\tau)$ remainder --- a
-Watson/saddle estimate of $\int_0^w \cos s\, K(w-s)\,ds$, $K$ entire, with
-saddle at $j^\ast \sim \tfrac12\sqrt{2/\tau}$ --- is not carried out.
-Pending it, Theorem~\ref{thm:transcendence} is established
-modulo~\eqref{lem:cos}.
+Richardson extrapolation.  Half of this constant is moreover
+\emph{unconditional and uniform}: the geometric-collapse split
+$E := S_1 - (1-\cos w) = T_1 + T_2$ with
+$T_1 = \cos w - \cos(w e^{-\tau/2})$ (exact) obeys
+$|T_1| \le w(1-e^{-\tau/2}) \le \sqrt{\tau/2}$ for all $\tau$, giving
+$T_1 = -\tfrac1{\sqrt2}\sqrt\tau\,\sin w + O(\tau)$ with no hypothesis, and
+isolates the entire gap in the structurally-smaller residue $T_2$ (weights
+$O(\tau^2 j^2)$).  Equivalently, via the remainder integral
+$R_j = \tfrac{(-1)^{j+1}}{(2j)!}\int_0^w (w-s)^{2j}\sin s\,ds$, one gets the
+exact convolution $E = \int_0^w \sin s\,K'(w-s)\,ds$ ($K'$ entire, even,
+$K'(0)=\mu_0 \le \tau$) with a super-exponential tail truncation, reducing
+\eqref{lem:cos} to the single self-contained estimate
+$\sup_{[0,w]}|K'| \le C\tau$ (equivalently $|T_2| = O(\sqrt\tau)$).  This
+last bound is a genuine knife-edge oscillatory estimate, not bookkeeping:
+$\mu_j$ fails Hankel positivity (so no positive-measure/Bochner bound), and
+no fixed-recurrence asymptotic theorem (Wong--Li, \emph{J.\ Comput.\ Appl.\
+Math.}\ 41 (1992); Wang--Wong, \emph{Numer.\ Math.}\ 94 (2003);
+Costin--Costin, \emph{SIAM J.\ Math.\ Anal.}\ 27 (1996)) applies because the
+turning point $k\sim\sqrt{2/\tau}$ recedes jointly with the index.  Pending
+it, Theorem~\ref{thm:transcendence} is established modulo~\eqref{lem:cos};
+the qualitative sign-straddle that the theorem actually needs reduces to the
+weaker \emph{per-point} bound $|T_2| < 1$ at the phases $w = N\pi$.
 
 \begin{conjecture}[Transcendental growth]
 \label{conj:algebraic-growth}

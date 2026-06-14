@@ -154,6 +154,20 @@ w=(2*160+mp.mpf(1)/2)*mp.pi; tau=2/w**2
 s=Sk(1,tau,dps_for(w)); approx=(s-1)/mp.sqrt(tau)
 PASS.append(("c_1 = -17*sqrt(2)/36 = -0.667823071 (leading asymptotic)", abs(approx-c1)<mp.mpf('1e-5')))
 
+# (8) Geometric-collapse split (prop:T1): E = T1 + T2 with T1 = cos w - cos(w e^{-tau/2})
+#     EXACT and |T1| <= sqrt(tau/2) UNCONDITIONALLY/uniformly; T1 carries -(1/sqrt2)sqrt(tau)sin w,
+#     T2 the residual carries +(sqrt2/36)sqrt(tau)sin w.  (Half of c_1 is unconditional.)
+ok_split=True; ok_T1bound=True
+for n in [20,80]:
+    w=(2*n+mp.mpf(1)/2)*mp.pi; tau=2/w**2; dps=dps_for(w)
+    E=Sk(1,tau,dps)-(1-mp.cos(w))
+    T1=mp.cos(w)-mp.cos(w*mp.e**(-tau/2)); T2=E-T1
+    if not (abs(T1)<=mp.sqrt(tau/2)): ok_T1bound=False           # uniform bound, unconditional
+    if abs(T1/mp.sqrt(tau)-(-1/mp.sqrt(2)))>mp.mpf('1e-3'): ok_split=False   # T1 -> -1/sqrt2
+    if abs(T2/mp.sqrt(tau)-(mp.sqrt(2)/36))>mp.mpf('1e-3'): ok_split=False    # T2 -> +sqrt2/36
+PASS.append(("prop:T1  |T1|<=sqrt(tau/2) unconditional, T1=cos w-cos(w e^{-tau/2})", ok_T1bound))
+PASS.append(("split  T1->-(1/sqrt2)sqrt(t)sinw, T2->+(sqrt2/36)sqrt(t)sinw  (sum=c_1)", ok_split))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")
