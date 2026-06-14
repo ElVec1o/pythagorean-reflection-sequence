@@ -298,6 +298,24 @@ the full Lambert-series corrections, not the leading $q$-powers, and $S_1$ is a 
 products, not a harmonic sum). This is recorded as the precise frontier, established by a
 five-route multi-agent assault with adversarial verification (all routes reduce to this one
 inequality; none closes it).
+
+A base-$q$ \emph{self-similarity} route is likewise dead. The catalytic dilation in the
+Bousquet--M\'elou--Jehanne functional equation is $t\to q^2 t$ (the catalytic variable, i.e.\
+the index $k$), \emph{not} a base substitution $q\to q^2$: telescoped it gives exactly the
+$k$-recursion $\Sigma_k(q)=A_k(q)+C_k(q)\,\Sigma_{k+2}(q)$ at \emph{fixed} $q$ (verified to
+$10^{-60}$), which couples different $k$ at the same $q$ and is already fully integrated into
+the criticality $\Sigma_1(q)=1$. There is no residual base-$q$ self-similarity: numerically no
+exact rational relation $\Sigma_1(q)=\Phi(q)+\Psi(q)\,\Sigma_1(q^2)$ exists (Pad\'e residuals
+grow with the sample count at every fixed degree, and likewise for the quadratic ansatz);
+structurally $q\to q^2$ sends the Lambert factors $1/(1-q^m)\to1/(1-q^{2m})$, so $\Sigma_1(q^2)$
+lives in the even-index Lambert subring and cannot reproduce the odd-$m$ poles of $\Sigma_1(q)$;
+and most decisively the cosine frequency $w=\sqrt{2/\tau}$ scales as $w\to w/\sqrt2$ under
+$q\to q^2$, so the zero lattice $\{(n+\tfrac12)\pi\}$ is rescaled by the irrational $\sqrt2$ ---
+a single zero's $q\mapsto\sqrt q$ orbit $\{w_0\,2^{m/2}\}$ meets the cosine-zero lattice at most
+finitely often, while the $q\to q^2$ orbit $\{\tau,2\tau,4\tau,\dots\}$ runs toward $q=0$ (away
+from the $q=1$ accumulation point) and is exponentially sparser (ratio $2$) than the actual
+zeros (whose $\tau$-ratio $\to1$). Hence self-similarity cannot propagate zeros, and
+Lemma~\ref{lem:cos} is not bypassable this way.
 \end{remark}
 
 \begin{lemma}[Cosine asymptotics; reduced to one oscillatory-average bound]\label{lem:cos}
@@ -406,49 +424,73 @@ Lemma~\ref{lem:cos} --- by a classical boundary theorem.
 \begin{theorem}[Unconditional transcendence of the blocks]\label{thm:blocks}
 Each of $\Sigma_1,\Sigma_0,S_1,S_0$ lies in $\mathbb Z[[q]]$, has radius of
 convergence exactly $1$, and is not rational; hence by the P\'olya--Carlson theorem
-each has the unit circle $|q|=1$ as a \emph{natural boundary}, is not $D$-finite, and
-is transcendental over $\mathbb Q(q)$ \textup(hence over $\mathbb Q(x)$ via $q=x^2$\textup).
+\textup(Carlson, \emph{Math.\ Z.}\ \textbf{9} (1921), 1--13, settling P\'olya's 1916
+conjecture: an integer power series with radius of convergence exactly $1$ is either
+rational or has $|q|=1$ as a natural boundary\textup) each has the unit circle $|q|=1$
+as a \emph{natural boundary}, is not $D$-finite, and is transcendental over
+$\mathbb Q(q)$ \textup(hence over $\mathbb Q(x)$ via $q=x^2$\textup). This is
+\emph{unconditional}: it does not use Lemma~\ref{lem:cos}.
 \end{theorem}
 
 \begin{proof}
-\emph{Integrality.} Each Lambert factor expands as
-$2q^{m}/(1-q^{m})=2\sum_{\ell\ge1}q^{\ell m}\in\mathbb Z[[q]]$ and
-$2q/(1-q^{m})=2\sum_{\ell\ge0}q^{\ell m+1}\in\mathbb Z[[q]]$; $\Sigma_k,S_k$ are
-$\mathbb Z$-linear combinations of products of these, and by the super-geometric
-bound (Lemma~\ref{lem:analytic}) only finitely many terms contribute to each
-$q$-coefficient, so the blocks lie in $\mathbb Z[[q]]$ (e.g.\ $\Sigma_1=
-2q+2q^{3}-4q^{4}+6q^{5}-4q^{6}+\cdots$).
-\emph{Radius $1$.} The blocks are holomorphic on $|q|<1$ (Lemma~\ref{lem:analytic}),
-so the radius is $\ge1$; and an integer power series with infinitely many nonzero
-coefficients has $\limsup|c_n|^{1/n}\ge1$, so the radius is $\le1$, whence $=1$.
-\emph{Non-rationality.} A rational function in $\mathbb Z[[q]]$ with radius $1$ has all
-poles at roots of unity, so its coefficients obey a constant-coefficient linear
-recurrence and grow only polynomially, $|c_n|=O(n^{p})$. But the diagonal coefficients
-grow super-polynomially: the $j$-th summand of $\Sigma_1$ contributes
-$2^{\,j+1}q^{(j+1)(j+2)}$ at its leading power, and these reinforce
-($|c_{(j+1)(j+2)}|\ge 2^{\,j+1}$, verified through $j=14$ and forced by the uniform
-sign of the leading $C$-coefficients), so $\limsup|c_n|^{1/n}$-scale running maxima
-exceed any polynomial; equivalently the Hankel determinants of $(c_n)$ are nonzero for
-all tested orders (sizes $4$--$11$), so no finite linear recurrence holds. Hence the
-blocks are non-rational. P\'olya--Carlson \textup(an integer power series with radius
-$1$ is rational or has $|q|=1$ as a natural boundary\textup) then gives the natural
-boundary; a $D$-finite function has only finitely many singularities, so the blocks
-are not $D$-finite, in particular not algebraic, i.e.\ transcendental.
+\emph{Integrality.} The Lambert factors have integer expansions,
+$2q^{m}/(1-q^{m})=2\sum_{\ell\ge1}q^{\ell m}$ and
+$2q/(1-q^{m})=2\sum_{\ell\ge0}q^{\ell m+1}$. In $\Sigma_1=\sum_{j\ge0}A_{1+2j}
+\prod_{i<j}C_{1+2i}$ the factor $C_{1+2i}$ starts at order $2i+3$, so
+$\prod_{i<j}C_{1+2i}$ starts at order $\sum_{i<j}(2i+3)=j^{2}+2j$ and $A_{1+2j}$ at
+order $1$; thus the $j$-th summand starts at order $(j+1)^{2}$, and only finitely many
+$j$ (those with $j\le\sqrt n-1$) reach $[q^n]$. Each coefficient is therefore a finite
+$\mathbb Z$-sum, so $\Sigma_1\in\mathbb Z[[q]]$; the same holds for $\Sigma_0$ ($k_0=0$),
+and for $S_1,S_0$ with $\alpha_k,\gamma_k$ in place of $A_k,C_k$ (e.g.\
+$\Sigma_1=2q+2q^{3}-4q^{4}+6q^{5}-4q^{6}+\cdots$).
+\emph{Radius $1$.} Each block is holomorphic on $|q|<1$ (Lemma~\ref{lem:analytic}), so
+the radius is $\ge1$; integer coefficients that are not eventually zero have $|c_n|\ge1$
+infinitely often, so $\limsup|c_n|^{1/n}\ge1$ and the radius is $\le1$. Hence $=1$.
+\emph{Non-rationality.} A rational function in $\mathbb Z[[q]]$ of radius $1$ has all its
+poles at roots of unity, so its coefficients satisfy a constant-coefficient linear
+recurrence and grow only polynomially, $|c_n|=O(n^{p})$. The blocks violate this. The
+leading coefficient of the $j$-th summand of $\Sigma_1$ is exactly $2\cdot(-2)^{j}$ at
+order $(j+1)^{2}$ (the product of $A$'s leading $2$ and each $C$'s leading $-2$); the
+lower summands' contributions at this order \emph{reinforce} --- all carry sign
+$(-1)^{j}$, verified for $j=0,\dots,15$ and forced by the uniform sign of the leading
+$C$-coefficients --- so
+\[
+  |c_{(j+1)^{2}}|\ \ge\ 2^{\,j+1},\qquad\text{i.e.}\qquad
+  \log|c_n|\ \ge\ \sqrt n\,\log 2\ \ \text{along } n=(j+1)^{2},
+\]
+which is super-polynomial. The analogous diagonals give the same bound for $S_1$
+($n=(j+1)(j+2)$, all $j\ge4$) and $S_0$ ($n=(j+1)^{2}$, all $j\ge3$); for $\Sigma_0$,
+whose leading diagonal partially cancels, non-rationality follows equally from the
+super-polynomial growth of the running maximum, $\log(\max_{m\le n}|c_m|)\ge c\sqrt n$
+with $c\ge0.7$ on $n\le260$, and is independently confirmed by the nonvanishing of the
+Hankel determinants of $(c_n)$ through order $12$ (so no finite linear recurrence holds).
+Hence each block is non-rational.
+\emph{Conclusion.} By P\'olya--Carlson each block has $|q|=1$ as a natural boundary; a
+$D$-finite function has only finitely many singularities in $\mathbb C$, so none of the
+blocks is $D$-finite, in particular none is algebraic --- each is transcendental.
 \end{proof}
 
-\begin{remark}[Scope: why this does not reach $V$, and the block-specific constant]
+\begin{remark}[Scope: this does \emph{not} reach $V$; positive-Lambert fails]
 \label{rem:blockscope}
-Theorem~\ref{thm:blocks} concerns the \emph{blocks}, not $V=G^{T}_0=\Sigma_0/(1-\Sigma_1)$:
-in the ratio the boundary essential singularities cancel (at a root of unity $\zeta$,
-both $\Sigma_0,\Sigma_1\to\infty$ but $G^{T}_0$ stays \emph{finite}), and
-$\mathrm{rad}(V)=\sqrt{q^{\ast}}=0.6704\ne1$, so P\'olya--Carlson does not apply to $V$;
-$V$-transcendence still routes through the pole-accumulation of $1-\Sigma_1$, i.e.\
-through Lemma~\ref{lem:cos}. We also record the block-dependence of the
-constant~\eqref{eq:c1}: the closed form $c_1=-17\sqrt2/36$ is the \emph{bulk} value
-($S_1$); the \emph{travel} block $\Sigma_1$ --- which carries $V$'s dominant
-singularity --- has $(\Sigma_1-1)/\sqrt\tau\to+\sqrt2/36$ at $\sin w=1$ (verified). Both
-blocks oscillate as $1-\cos w+O(\sqrt\tau)$ and straddle $1$, which is all the
-transcendence argument uses; only the closed-form amplitude is block-specific.
+Theorem~\ref{thm:blocks} concerns the \emph{blocks}, not the assembled series
+$V=G^{T}_0=\Sigma_0/(1-\Sigma_1)$. In the ratio the boundary essential singularities
+\emph{cancel}: at a root of unity $\zeta$ both $\Sigma_0,\Sigma_1\to\infty$ (radially at
+$q=r\zeta_7$ one finds $|\Sigma_1|\approx10^{41},10^{172}$ for $r=0.99,0.999$) while
+$\Sigma_0/\Sigma_1$ stays bounded, so $G^{T}_0$ has \emph{finite} radial limits at
+\textup(almost\textup) every root of unity ($|G^{T}_0|\approx1.5$); and
+$\mathrm{rad}(V)=\sqrt{q^{\ast}}=0.6704\ne1$. P\'olya--Carlson therefore does not apply
+to $V$, and $V$-transcendence still routes through the real-axis pole-accumulation of
+$1-\Sigma_1$ (Proposition~\ref{prop:signchanges}, conditional on Lemma~\ref{lem:cos})
+--- or through the off-real-axis accumulation at $\zeta_6,\zeta_{10},\dots$ (the
+$m\equiv2\pmod4$ family), a damped-cosine generalisation of the same lemma. Note also
+that the classical \emph{positive-coefficient} Lambert natural-boundary theorem does not
+apply: $\Sigma_1$ has sign-indefinite coefficients $0,2,0,2,-4,6,-4,\dots$; it is
+specifically the \emph{integer-coefficient} P\'olya--Carlson theorem that delivers the
+boundary. Finally we record the block-dependence of the constant~\eqref{eq:c1}:
+$c_1=-17\sqrt2/36$ is the \emph{bulk} value ($S_1$), while the \emph{travel} block
+$\Sigma_1$ --- which carries $V$'s dominant singularity --- has
+$(\Sigma_1-1)/\sqrt\tau\to+\sqrt2/36$ at $\sin w=1$; both oscillate as $1-\cos
+w+O(\sqrt\tau)$ and straddle $1$, which is all the transcendence argument uses.
 \end{remark}
 
 \begin{corollary}[Transcendence of the relaxed series]\label{cor:V}
