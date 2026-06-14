@@ -243,6 +243,28 @@ for tau in [mp.mpf('0.02'),mp.mpf('0.005')]:
     if not (sC<=bound and sR<2*tau**mp.mpf(1.5)): ok_ms=False   # corr<=L1 bound; corr-L1=O(tau^1.5)
 PASS.append(("ss:modelsub  sup|corr|<=tau/6+.., corr-L1=O(tau^1.5) (knife-edge gone)", ok_ms))
 
+# (11) Lemma TAIL machinery (lem:tail): Touchard identity D_p=2^-p Re[e^iW T_p(iW)], T_p(w)=E[N^p]
+#      Poisson; per-p bound |D_p|<=2^-p T_p(w); R-control 0<=phi(y)<=y^2/24. (My earlier uniform-D_p
+#      claim was FALSE: sup|D_p|/(w/2)^p grows like 2^-p Bell -- corrected to Touchard/Poisson.)
+import sympy as _sp
+_x=_sp.symbols('x'); _W=_sp.symbols('W')
+def _Tou(p): return sum(_sp.functions.combinatorial.numbers.stirling(p,r,kind=2)*_x**r for r in range(p+1))
+_Ds=[_sp.cos(_W)]
+for _ in range(11): _Ds.append(_sp.simplify((_W/2)*_sp.diff(_Ds[-1],_W)))
+ok_tou=True; ok_pois=True; ok_phi=True
+for p in [3,6,10]:
+    Wv=mp.mpf('2.3'); dd=_sp.lambdify(_W,_Ds[p],'mpmath')(Wv)
+    Tp=_sp.lambdify(_x,_Tou(p),'mpmath'); dt=mp.re(mp.e**(1j*Wv)*Tp(1j*Wv))/2**p
+    if abs(dd-dt)>mp.mpf('1e-12'): ok_tou=False
+    w0=mp.mpf(5); Em=mp.nsum(lambda n: mp.mpf(n)**p*mp.e**(-w0)*w0**n/mp.factorial(n),[0,mp.inf])
+    if abs(Tp(w0)-Em)>mp.mpf('1e-8'): ok_pois=False
+phi=lambda y: mp.log(mp.sinh(y/2)/(y/2))
+for y in [mp.mpf(v) for v in [0.01,0.1,0.5,1,2,5,10,20]]:
+    if not (0<=phi(y)<=y**2/24+mp.mpf('1e-25')): ok_phi=False
+PASS.append(("lem:tail Touchard D_p=2^-p Re[e^iW T_p(iW)] (corrects false uniform-D_p)", ok_tou))
+PASS.append(("lem:tail Poisson-moment T_p(w)=E[N^p], N~Poisson(w)", ok_pois))
+PASS.append(("lem:tail R-control 0<=log(sinh(y/2)/(y/2))<=y^2/24", ok_phi))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")

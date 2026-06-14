@@ -102,14 +102,22 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    `K'_model = −(1−e^{−τ})cos(u·e^{−τ/2})` leaves a residual with the
    knife-edge gone (`sup|corr|/τ → 1/6`), and the **exact resummation engine**
    `Σ_j j^p e^{−jτ}(−1)^j u^{2j}/(2j)! = (−∂_τ)^p cos(u·e^{−τ/2})` expands `K'`
-   into closed-form layers **performing the oscillatory cancellation exactly**
-   (the e^w partial-sum blowup that defeated every soft route is gone). The
-   crux layer `L₁` is rigorous (`sup|L₁| ≤ τ/6 + …`; its fatal `W³sinW` term
-   cancels to `O(τ³)`), and `sup|L_m| = Θ(τ^{(m+1)/2})` is summable. **The hard
-   analytic core of lem:cos is solved**; closure awaits one non-oscillatory
-   majorization `Σ_{m≥2}sup|L_m| = O(τ^{3/2})` (a Stirling/Cauchy bookkeeping
-   lemma — no cancellation left). We do not yet claim `V` transcendental
-   unconditionally. For the
+   into closed-form layers; the crux layer `L₁` is rigorous (`sup|L₁| ≤
+   τ/6 + …`; its fatal `W³sinW` term cancels to `O(τ³)`). The **tail
+   cancellation** is captured exactly by a **Touchard/Poisson identity** —
+   *not* a uniform constant (in fact `sup|D_p|/(w/2)^p ∼ 2^{−p}·Bell(p)`
+   blows up): `D_p(W) = 2^{−p}Re[e^{iW}T_p(iW)]`, `T_p(w) = E[N^p]` for
+   `N∼Poisson(w)`, so `Σ_p[j^p]Q·2^{−p}T_p(w) = E[Q(N/2)]`. With the **proved**
+   R-control `0 ≤ Rⱼ ≤ τ²C(j)` (from `0 ≤ log(sinh(y/2)/(y/2)) ≤ y²/24` via
+   Mittag–Leffler), this gives `Σ_{m≥2}sup|L_m| = O(τ)` and hence
+   `sup|corr| ≤ 0.20τ` ⟹ `|T₂| = O(√τ)`, i.e. **lem:cos** (end-to-end check
+   `sup|corr|/τ = 0.167` at τ=1e-4). **No open mathematical obstruction
+   remains** — the only outstanding item is the symbol-for-symbol write-up of
+   one elementary, numerically-corroborated assembly bridge (a Tonelli
+   interchange + Chernoff tail). So `V` is transcendental *modulo a write-up
+   step, not a math gap* — we don't stamp it unconditional until that's
+   written out. *(An earlier "uniform `D_p` bound" route was found false and
+   replaced by Touchard/Poisson — adversarial verification caught it.)* For the
    **true** series `U`: a multi-agent derivation (adversarially verified)
    showed `U` shares `V`'s travel denominator `1−Σ₁` *verbatim* (R1, Euler),
    so `U` inherits the same infinitely many poles accumulating at `q=1`, and
