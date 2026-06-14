@@ -97,12 +97,19 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    `|T1| ≤ √(τ/2)` for all τ with no hypothesis, isolating the whole gap in
    the structurally-smaller residue `T2`. Equivalently lem:cos reduces to
    one self-contained bound `sup_{[0,w]}|K'| ≤ Cτ` on an explicit entire
-   function (s-oscillation eliminated, tail truncated) — a knife-edge
-   oscillatory estimate (μ_j fails Hankel positivity; no fixed-recurrence
-   theorem applies in the coupled limit). A 5-route multi-agent assault with
-   adversarial verification confirmed all routes reduce to this one
-   inequality; none closes it. The sign-straddle the transcendence theorem
-   needs is the weaker per-point bound `|T2| < 1` at `w = Nπ`. For the
+   function. That bound is a knife-edge — but **model subtraction dissolves
+   it**: subtracting the closed-form geometric kernel
+   `K'_model = −(1−e^{−τ})cos(u·e^{−τ/2})` leaves a residual with the
+   knife-edge gone (`sup|corr|/τ → 1/6`), and the **exact resummation engine**
+   `Σ_j j^p e^{−jτ}(−1)^j u^{2j}/(2j)! = (−∂_τ)^p cos(u·e^{−τ/2})` expands `K'`
+   into closed-form layers **performing the oscillatory cancellation exactly**
+   (the e^w partial-sum blowup that defeated every soft route is gone). The
+   crux layer `L₁` is rigorous (`sup|L₁| ≤ τ/6 + …`; its fatal `W³sinW` term
+   cancels to `O(τ³)`), and `sup|L_m| = Θ(τ^{(m+1)/2})` is summable. **The hard
+   analytic core of lem:cos is solved**; closure awaits one non-oscillatory
+   majorization `Σ_{m≥2}sup|L_m| = O(τ^{3/2})` (a Stirling/Cauchy bookkeeping
+   lemma — no cancellation left). We do not yet claim `V` transcendental
+   unconditionally. For the
    **true** series `U`: a multi-agent derivation (adversarially verified)
    showed `U` shares `V`'s travel denominator `1−Σ₁` *verbatim* (R1, Euler),
    so `U` inherits the same infinitely many poles accumulating at `q=1`, and

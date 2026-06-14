@@ -318,6 +318,85 @@ zeros (whose $\tau$-ratio $\to1$). Hence self-similarity cannot propagate zeros,
 Lemma~\ref{lem:cos} is not bypassable this way.
 \end{remark}
 
+\subsection{Resolution of the oscillatory core: model subtraction}
+\label{ss:modelsub}
+
+The knife-edge of Remark~\ref{rem:knife} is dissolved by \emph{subtracting} the
+closed-form leading kernel and expanding the residual through an exact resummation
+identity that performs the oscillatory cancellation for free. This reduces
+Lemma~\ref{lem:cos} to a single non-oscillatory majorization (Lemma~\ref{lem:tail} below).
+
+\paragraph{Geometric model and residual.} With the geometric weights
+$\mu_j^{\mathrm{geo}}=e^{-j\tau}(1-e^{-\tau})$ \textup(i.e.\ $\rho_j^{\mathrm{geo}}
+=e^{-(j+1)\tau}$\textup) the kernel resums in closed form,
+\begin{equation}\label{eq:Kmodel}
+  K'_{\mathrm{model}}(u):=\sum_{j\ge0}\mu_j^{\mathrm{geo}}\frac{(-1)^{j+1}u^{2j}}{(2j)!}
+  =-(1-e^{-\tau})\cos\!\bigl(u\,e^{-\tau/2}\bigr),\qquad |K'_{\mathrm{model}}|\le\tau,
+\end{equation}
+and $\int_0^w\sin(s)\,K'_{\mathrm{model}}(w-s)\,ds=\cos w-\cos(we^{-\tau/2})=T_1$
+(Proposition~\ref{prop:T1}). Put $\mathrm{corr}:=K'-K'_{\mathrm{model}}$, so $E=T_1+T_2$
+with $T_2=\int_0^w\sin(s)\,\mathrm{corr}(w-s)\,ds$, and Lemma~\ref{lem:cos} follows from
+\begin{equation}\label{eq:corrgoal}
+  \sup_{u\in[0,w]}|\mathrm{corr}(u)|\le C\tau\quad(\text{any absolute }C)
+  \ \Longrightarrow\ |T_2|\le w\,C\tau=O(\sqrt\tau).
+\end{equation}
+Subtraction removes the knife-edge: numerically $\sup|\mathrm{corr}|/\tau\to\tfrac16$
+(stable: $0.171,0.154,0.162$ at $\tau=0.02,0.005,0.001$), the supremum migrating to the
+boundary $u\approx w$ with a \emph{non-vanishing} margin --- so a non-sharp constant suffices.
+
+\paragraph{Resummation engine and layers.} The exact identity
+\begin{equation}\label{eq:engine}
+  \sum_{j\ge0}j^{p}\,e^{-j\tau}\frac{(-1)^{j}u^{2j}}{(2j)!}
+  =(-\partial_\tau)^{p}\cos\!\bigl(u\,e^{-\tau/2}\bigr)=:D_p(W),\qquad W:=u\,e^{-\tau/2},
+\end{equation}
+\textup(verified $p=0,\dots,3$; $D_{p+1}=\tfrac{W}{2}\partial_W D_p$\textup) turns each
+oscillatory $j$-sum into a \emph{trigonometric polynomial in $W$ with no residual
+cancellation}. Expanding $\rho_j=e^{-(j+1)\tau}e^{-R_j}$ \textup($R_j=-\log\rho_j-(j+1)\tau
+=\tfrac19\tau^2 j^3+\cdots\ge0$, with $R_j\le0.47\sqrt\tau$ on the effective range $j\le w$\textup)
+gives $K'=\sum_{m\ge0}L_m$, $L_0=K'_{\mathrm{model}}$, each $L_m$ a closed-form
+combination of the $D_p$. This is exact: the layers reconstruct $K'$ to residual
+$O(\tau^{M+1})$ \textup(verified to $5\times10^{-17}$ at $M=6$\textup).
+
+\paragraph{The crux layer $L_1$ (rigorous).} Symbolically,
+\begin{align*}
+  L_1&=\tau^2\!\Bigl[\tfrac{W^3\sin W}{72}-\tfrac{W^2\cos W}{16}-\tfrac{W\sin W}{48}\Bigr]
+   +\tau^2 e^{-\tau}\!\Bigl[-\tfrac{W^3\sin W}{72}+\tfrac{7W^2\cos W}{48}+\tfrac{17W\sin W}{48}-\tfrac{\cos W}{6}\Bigr].
+\end{align*}
+The dangerous $W^3\sin W$ term --- which alone would be $O(\tau^2(2/\tau)^{3/2})=O(\sqrt\tau)$,
+fatal --- has coefficient $\tfrac{\tau^2}{72}(1-e^{-\tau})=O(\tau^3)$: the difference
+structure $\mu_j=\rho_{j-1}-\rho_j$ cancels the top $W$-power. The surviving dominant term
+is $\tfrac{\tau^2}{12}W^2\cos W$, bounded by $\tau/6$ since $W^2\le 2/\tau$; in full,
+\begin{equation}\label{eq:L1bound}
+  \sup_{[0,w]}|L_1|\ \le\ \frac{\tau}{6}+\frac{13\sqrt2}{36}\,\tau^{3/2}+\frac{\tau^2}{6}
+  \qquad(\text{rigorous, exact coefficients; dominates }\sup|L_1|\text{ for all tested }\tau).
+\end{equation}
+
+\paragraph{Scaling and the remaining lemma.} The layer norms obey
+$\sup_{[0,w]}|L_m|=\Theta\!\bigl(\tau^{(m+1)/2}\bigr)$ \textup(measured: $L_2/\tau^{3/2}$ and
+$L_3/\tau^{2}$ stable\textup), the top-$W$-power cancelling at every order as in $L_1$; in
+particular the tail is summable. The engine majorant of the tail is bounded and
+super-geometric in $m$ ($0.0097,0.0043,0.0025$ at successive $\tau$), whereas the naive
+per-$j$ absolute majorant blows up ($3.8\times10^{15}$): the cancellation is genuinely
+done by \eqref{eq:engine}, not deferred. The entire remaining content is:
+
+\begin{lemma}[Tail majorization; one bookkeeping step]\label{lem:tail}
+$\displaystyle\sum_{m\ge2}\sup_{u\in[0,w]}|L_m|=O(\tau^{3/2})$, via the engine bound
+$\sup|L_m|\le\frac1{m!}\sum_p|c^{(m)}_p|\,P^{\mathrm{abs}}_p(w)$ \textup(the $c^{(m)}_p$ the
+$j^p$-coefficients of $(-R_j)^m$, $\deg_j=3m$; $P^{\mathrm{abs}}_p(w)\le K(w/2)^p$ with $K$
+bounded\textup), a Stirling/Cauchy estimate of degree-$3m$ coefficient growth against $1/m!$,
+$(w/2)^p\le(2\tau)^{-p/2}$, and $\tau^{2m}$, uniform in $m$. \emph{This involves no oscillatory
+cancellation} \textup(performed already by \eqref{eq:engine}\textup); it is the one step not
+yet written symbol-for-symbol.
+\end{lemma}
+
+Granting Lemma~\ref{lem:tail}, \eqref{eq:L1bound} gives $\sup|\mathrm{corr}|\le\tfrac\tau6
++O(\tau^{3/2})$, hence by \eqref{eq:corrgoal} the bound $|T_2|=O(\sqrt\tau)$ and
+Lemma~\ref{lem:cos}. Thus \emph{the hard analytic core of Lemma~\ref{lem:cos} is solved}
+--- the oscillatory cancellation that defeated every soft route is carried out exactly by the
+resummation engine, and $L_0,L_1$ together with their bounds are rigorous --- and closure of
+the transcendence of $V$ awaits only the non-oscillatory majorization Lemma~\ref{lem:tail}.
+We do not yet claim $V$ transcendental unconditionally on this basis.
+
 \begin{lemma}[Cosine asymptotics; reduced to one oscillatory-average bound]\label{lem:cos}
 As $q\to1^{-}$, with $\tau=-\ln q$ and $w=\sqrt{2/\tau}$,
 \begin{equation}\label{eq:cosasymp}

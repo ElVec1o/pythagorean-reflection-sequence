@@ -214,6 +214,35 @@ w=(2*120+mp.mpf(1)/2)*mp.pi; tau=2/w**2
 ct=(Sigk(1,tau,dps_for(w))-1)/mp.sqrt(tau)
 PASS.append(("rem:blockscope  travel c1 = +sqrt2/36 (bulk c1 = -17sqrt2/36)", abs(ct-mp.sqrt(2)/36)<mp.mpf('1e-5')))
 
+# (10) Model-subtraction (ss:modelsub): corr=K'-K'_model has sup~tau/6 (knife-edge gone);
+#      L_1 closed form bounds it, sup|L_1|<=tau/6+(13sqrt2/36)tau^1.5+tau^2/6; corr-L_1=O(tau^1.5).
+def Kpfull(u,mu,J):
+    tot=mp.mpf(0); term=mp.mpf(-1)
+    for j in range(J):
+        tot+=mu[j]*term; term*=-u*u/mp.mpf((2*j+1)*(2*j+2))
+        if abs(term)<mp.mpf(10)**-55 and (2*j)>float(u): break
+    return tot
+def L1cf(u,tau):
+    W=u*mp.e**(-tau/2); s=mp.sin(W); c=mp.cos(W)
+    A=W**3*s/72-W**2*c/16-W*s/48; B=-W**3*s/72+7*W**2*c/48+17*W*s/48-c/6
+    return tau**2*A+tau**2*mp.e**(-tau)*B
+ok_ms=True
+for tau in [mp.mpf('0.02'),mp.mpf('0.005')]:
+    mp.mp.dps=80; w=mp.sqrt(2/tau); J=int(8/float(tau))+300
+    t=[]; pr=mp.mpf(1)
+    for j in range(J):
+        t.append(alpha(1+2*j,tau)*pr); pr*=-(alpha(2+2*j,tau)-alpha(1+2*j,tau))
+    that=[(2/tau)**(j+1)/mp.factorial(2*j+2) for j in range(J)]
+    rho=[t[j]/that[j] for j in range(J)]; mu=[(1 if j==0 else rho[j-1])-rho[j] for j in range(J)]
+    amp=1-mp.e**(-tau); a=mp.e**(-tau/2)
+    sC=mp.mpf(0); sR=mp.mpf(0)
+    for i in range(0,701):
+        u=w*mp.mpf(i)/700
+        corr=Kpfull(u,mu,J)+amp*mp.cos(u*a); sC=max(sC,abs(corr)); sR=max(sR,abs(corr-L1cf(u,tau)))
+    bound=tau/6+(13*mp.sqrt(2)/36)*tau**mp.mpf(1.5)+tau**2/6
+    if not (sC<=bound and sR<2*tau**mp.mpf(1.5)): ok_ms=False   # corr<=L1 bound; corr-L1=O(tau^1.5)
+PASS.append(("ss:modelsub  sup|corr|<=tau/6+.., corr-L1=O(tau^1.5) (knife-edge gone)", ok_ms))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")
