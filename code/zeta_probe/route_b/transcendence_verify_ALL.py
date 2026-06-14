@@ -265,6 +265,30 @@ PASS.append(("lem:tail Touchard D_p=2^-p Re[e^iW T_p(iW)] (corrects false unifor
 PASS.append(("lem:tail Poisson-moment T_p(w)=E[N^p], N~Poisson(w)", ok_pois))
 PASS.append(("lem:tail R-control 0<=log(sinh(y/2)/(y/2))<=y^2/24", ok_phi))
 
+# (12) lem:tail CORRECTED assembly (finite truncation): the FULL abs-majorant Rbar diverges for
+#      j>pi/tau (Poisson tail), so truncate at N=2: Rbar^[2]=|f1|tau^2 Q1+|f2|tau^4 Q2 (fixed poly);
+#      remainder S_j=O(tau^{5/2}) on j<=2w; 2 E[Psi(Rbar^[2](N/2))]=O(tau) dominates true tail.
+try:
+    import sympy as _sp2
+    _y=_sp2.symbols('y'); _jj=_sp2.symbols('j'); _ii=_sp2.symbols('i')
+    _phi=_sp2.series(_sp2.log(_sp2.sinh(_y/2)/(_y/2)),_y,0,40).removeO()
+    _f=[_phi.coeff(_y,2*n) for n in range(1,12)]
+    _Q=[_sp2.lambdify(_jj,_sp2.summation((2*_ii+2)**(2*n)+(2*_ii+1)**(2*n)-1,(_ii,0,_jj)),'mpmath') for n in range(1,12)]
+    ok_div=True; ok_tail=True
+    for tau in [mp.mpf('0.02'),mp.mpf('0.005')]:
+        mp.mp.dps=45; w=mp.sqrt(2/tau)
+        # full Rbar diverges past j=pi/tau: grows with #terms there, stable below
+        below=[sum(abs(mp.mpf(str(_f[n-1])))*tau**(2*n)*_Q[n-1](w) for n in range(1,nt+1)) for nt in [4,9]]
+        above=[sum(abs(mp.mpf(str(_f[n-1])))*tau**(2*n)*_Q[n-1](mp.mpf('1.5')*mp.pi/tau) for n in range(1,nt+1)) for nt in [4,9]]
+        if not (abs(below[0]-below[1])<mp.mpf('1e-6') and above[1]>3*above[0]): ok_div=False  # converges below, diverges above
+        Rb2=lambda x: abs(mp.mpf(str(_f[0])))*tau**2*_Q[0](x)+abs(mp.mpf(str(_f[1])))*tau**4*_Q[1](x)
+        E=sum(mp.e**(-w)*w**N/mp.factorial(N)*(mp.e**Rb2(mp.mpf(N)/2)-1-Rb2(mp.mpf(N)/2)) for N in range(0,int(10*w)+50))
+        if not (2*E < mp.mpf('0.02')*tau): ok_tail=False  # 2E[Psi(Rbar^[2])] = O(tau), <0.02 tau
+    PASS.append(("lem:tail full majorant DIVERGES past j=pi/tau (=> truncation needed)", ok_div))
+    PASS.append(("lem:tail truncated 2E[Psi(Rbar^[2](N/2))] = O(tau) <= 0.02 tau (finite)", ok_tail))
+except Exception as _e:
+    PASS.append(("lem:tail truncated assembly (sympy)", False))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")
