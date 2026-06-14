@@ -66,10 +66,15 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    `deg_x ≤ 14` (all exact, positive-control validated). The lamplighter
    transfer yields an explicit **q-difference functional equation** (the
    catalytic variable enters by dilation `t → q²t`), so the kernel method
-   does not apply. Unfolding the equation pins the asymptotic ratio:
-   **β₂ ≤ 1.49161778…** (exact relaxed growth rate, rigorous upper bound),
-   which **excludes 3/2** — the earlier `≈1.4995` was a finite-depth
-   overshoot. The relaxed series is **transcendental** (Theorem; modulo
+   does not apply. Unfolding the equation pins the asymptotic ratio
+   **exactly**: **β₂ = 1.49161778…** (true growth rate, `= 1/√q*`,
+   `Σ₁(q*)=1`). This is unconditional: the travel block carries the
+   dominant singularity and is **connectivity-invariant** (every pure-travel
+   run is a single Euler trail, so true length = relaxed length there), so
+   the true series shares the relaxed travel denominator `1−Σ₁` verbatim and
+   the squeeze `tₙ ≤ uₙ ≤ vₙ` pins the rate. This **excludes 3/2** — the
+   earlier `≈1.4995` was a finite-depth overshoot. The relaxed series is
+   **transcendental** (Theorem; modulo
    one explicit analytic lemma — the cosine asymptotic for `S_1` near
    `q=1`): the bulk and travel blocks each have infinitely many poles in
    (0,1) accumulating at q=1 — argument-principle pole counts inside
@@ -89,10 +94,17 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    theorem applies in the coupled limit). A 5-route multi-agent assault with
    adversarial verification confirmed all routes reduce to this one
    inequality; none closes it. The sign-straddle the transcendence theorem
-   needs is the weaker per-point bound `|T2| < 1` at `w = Nπ`. The true-series gap is honest: the
-   connectivity defect `d_n = v_n − u_n` grows **exponentially at `V`'s own
-   rate** (not polynomially), so neither elementary lift to `U` survives —
-   but `U` and the defect cannot both be `D`-finite.
+   needs is the weaker per-point bound `|T2| < 1` at `w = Nπ`. For the
+   **true** series `U`: a multi-agent derivation (adversarially verified)
+   showed `U` shares `V`'s travel denominator `1−Σ₁` *verbatim* (R1, Euler),
+   so `U` inherits the same infinitely many poles accumulating at `q=1`, and
+   `U`-transcendence reduces — conditionally on the same lemma — to a single
+   numerator non-cancellation `N_U(q_m) ≠ 0`. This is strictly harder than
+   `V`'s analog: no closed-form `N_U` is validated (the naive "+2-per-cycle"
+   kernel miscounts `u_n` from `n=9`, where the defect is a distance-2
+   *bridge* costing `+2j`, not a unit cycle) and positivity can't settle it.
+   So `U`-transcendence stays **open** (≥1 of `U`, defect transcendental,
+   rigorously); only the growth **rate** `β₂` is now pinned exactly.
 
 ## Repository contents
 

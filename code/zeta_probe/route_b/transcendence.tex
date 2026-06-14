@@ -462,12 +462,37 @@ hence simpler than $V$'' (false: $D$ is no more holonomic than $V$). What surviv
 is the closure of $D$-finite functions under addition: since $V=U+D$ is \emph{not}
 $D$-finite (Theorem~\ref{thm:main}, modulo Lemma~\ref{lem:cos}), $U$ and $D$ cannot
 \emph{both} be $D$-finite --- at least one of the true series and the
-connectivity-defect series is transcendental. Pinning it on $U$ specifically
-requires either (i) the same singularity analysis for the connectivity-corrected
-kernel, or (ii) a proof that $D$ does not cancel the infinitely many poles
-$\{1-\Sigma_1=0\}$. We therefore record: \emph{$V$ is transcendental over
-$\mathbb Q(x)$ \textup(modulo Lemma~\ref{lem:cos}\textup); the transcendence of the
-true series $U$ remains conjectural.}
+connectivity-defect series is transcendental.
+
+A sharper structural fact pins the denominator (and the growth rate
+\emph{unconditionally}). \textbf{R1 (travel-block connectivity-invariance).} A
+pure-translation run on sites $0,\dots,k$ has slot multiplicities $m_j=|a_j|\ge1$,
+all odd (the deposit parity equals $f_j=\pm1$); the run's path-multigraph is
+connected, every interior vertex has even degree $m_{j-1}+m_j$, and exactly the two
+endpoints $0,k$ have odd degree, so by Euler's theorem it admits a single Eulerian
+trail. Hence the connectivity penalty vanishes on every travel run, true length $=$
+relaxed length there, and the travel block $\Sigma_0/(1-\Sigma_1)$ is \emph{identical}
+for $U$ and $V$ (verified on $1.9\times10^{7}$ runs, $0$ failures). Two consequences:
+\emph{(a)} the true growth rate is pinned \emph{exactly}, $\beta_2=1/\sqrt{q^{\ast}}
+=1.4916177871\ldots$, with no dependence on Lemma~\ref{lem:cos}: the pure-travel
+subcount $t_n\le u_n$ already grows at this rate (dominant pole $q^{\ast}$ genuine,
+$\Sigma_0(q^{\ast})=1.156\ne0$), and $t_n\le u_n\le v_n$ squeezes both flanks to the
+same rate; \emph{(b)} $U$ inherits $V$'s infinitely many travel poles
+$\{\Sigma_1(q)=1\}$ \emph{verbatim}, so $U$ is transcendental \emph{iff} its
+travel-block numerator $N_U$ fails to vanish at infinitely many of them. This is the
+exact analogue of $\Sigma_0(q_m)\ne0$ for $V$, but strictly harder: no closed form
+for $N_U$ is validated (the naive ``$+2$ per isolated cycle'' weighting --- which
+would give $N_U$ from $\Sigma_0$ by a dilation --- miscounts $u_n$ from $n=9$, where
+the defect is a \emph{distance-$2$ bridge} costing $+2j$ for bridge length $j$, not a
+unit cycle; \texttt{cycle\_weighted\_gf.py} gives $u_9=142$ vs.\ $144$), and
+positivity cannot settle it ($N_U$ sign-alternates near $q=1$). An unexploited lever:
+the \emph{bulk} denominator $1-\Sigma_1^{\mathrm{bulk}}$ likewise has infinitely many
+zeros $\{0.6096,0.9202,0.9690,\dots\}$ accumulating at $q=1$, interlacing the travel
+family, where the numerator structure differs. We therefore record: \emph{$V$ is
+transcendental over $\mathbb Q(x)$ \textup(modulo Lemma~\ref{lem:cos}\textup); the
+true growth rate is $\beta_2=1.4916177871\ldots$ exactly \textup(unconditional, via
+R1\textup); the transcendence of $U$ remains conjectural, reduced to the single
+non-vanishing condition $N_U(q_m)\ne0$ at infinitely many travel poles.}
 \end{remark}
 
 % ------------------------------------------------------------------
