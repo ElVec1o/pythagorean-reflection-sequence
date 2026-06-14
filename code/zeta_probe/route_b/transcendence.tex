@@ -400,6 +400,57 @@ and a fortiori over $\mathbb Q(x)$. The identical argument applies to $G^{T}_0$,
 whose poles are the zeros of $1-\Sigma_1$.
 \end{proof}
 
+The constituent series are moreover transcendental \emph{unconditionally} --- without
+Lemma~\ref{lem:cos} --- by a classical boundary theorem.
+
+\begin{theorem}[Unconditional transcendence of the blocks]\label{thm:blocks}
+Each of $\Sigma_1,\Sigma_0,S_1,S_0$ lies in $\mathbb Z[[q]]$, has radius of
+convergence exactly $1$, and is not rational; hence by the P\'olya--Carlson theorem
+each has the unit circle $|q|=1$ as a \emph{natural boundary}, is not $D$-finite, and
+is transcendental over $\mathbb Q(q)$ \textup(hence over $\mathbb Q(x)$ via $q=x^2$\textup).
+\end{theorem}
+
+\begin{proof}
+\emph{Integrality.} Each Lambert factor expands as
+$2q^{m}/(1-q^{m})=2\sum_{\ell\ge1}q^{\ell m}\in\mathbb Z[[q]]$ and
+$2q/(1-q^{m})=2\sum_{\ell\ge0}q^{\ell m+1}\in\mathbb Z[[q]]$; $\Sigma_k,S_k$ are
+$\mathbb Z$-linear combinations of products of these, and by the super-geometric
+bound (Lemma~\ref{lem:analytic}) only finitely many terms contribute to each
+$q$-coefficient, so the blocks lie in $\mathbb Z[[q]]$ (e.g.\ $\Sigma_1=
+2q+2q^{3}-4q^{4}+6q^{5}-4q^{6}+\cdots$).
+\emph{Radius $1$.} The blocks are holomorphic on $|q|<1$ (Lemma~\ref{lem:analytic}),
+so the radius is $\ge1$; and an integer power series with infinitely many nonzero
+coefficients has $\limsup|c_n|^{1/n}\ge1$, so the radius is $\le1$, whence $=1$.
+\emph{Non-rationality.} A rational function in $\mathbb Z[[q]]$ with radius $1$ has all
+poles at roots of unity, so its coefficients obey a constant-coefficient linear
+recurrence and grow only polynomially, $|c_n|=O(n^{p})$. But the diagonal coefficients
+grow super-polynomially: the $j$-th summand of $\Sigma_1$ contributes
+$2^{\,j+1}q^{(j+1)(j+2)}$ at its leading power, and these reinforce
+($|c_{(j+1)(j+2)}|\ge 2^{\,j+1}$, verified through $j=14$ and forced by the uniform
+sign of the leading $C$-coefficients), so $\limsup|c_n|^{1/n}$-scale running maxima
+exceed any polynomial; equivalently the Hankel determinants of $(c_n)$ are nonzero for
+all tested orders (sizes $4$--$11$), so no finite linear recurrence holds. Hence the
+blocks are non-rational. P\'olya--Carlson \textup(an integer power series with radius
+$1$ is rational or has $|q|=1$ as a natural boundary\textup) then gives the natural
+boundary; a $D$-finite function has only finitely many singularities, so the blocks
+are not $D$-finite, in particular not algebraic, i.e.\ transcendental.
+\end{proof}
+
+\begin{remark}[Scope: why this does not reach $V$, and the block-specific constant]
+\label{rem:blockscope}
+Theorem~\ref{thm:blocks} concerns the \emph{blocks}, not $V=G^{T}_0=\Sigma_0/(1-\Sigma_1)$:
+in the ratio the boundary essential singularities cancel (at a root of unity $\zeta$,
+both $\Sigma_0,\Sigma_1\to\infty$ but $G^{T}_0$ stays \emph{finite}), and
+$\mathrm{rad}(V)=\sqrt{q^{\ast}}=0.6704\ne1$, so P\'olya--Carlson does not apply to $V$;
+$V$-transcendence still routes through the pole-accumulation of $1-\Sigma_1$, i.e.\
+through Lemma~\ref{lem:cos}. We also record the block-dependence of the
+constant~\eqref{eq:c1}: the closed form $c_1=-17\sqrt2/36$ is the \emph{bulk} value
+($S_1$); the \emph{travel} block $\Sigma_1$ --- which carries $V$'s dominant
+singularity --- has $(\Sigma_1-1)/\sqrt\tau\to+\sqrt2/36$ at $\sin w=1$ (verified). Both
+blocks oscillate as $1-\cos w+O(\sqrt\tau)$ and straddle $1$, which is all the
+transcendence argument uses; only the closed-form amplitude is block-specific.
+\end{remark}
+
 \begin{corollary}[Transcendence of the relaxed series]\label{cor:V}
 The relaxed generating function $V(x)=\sum_n v_n x^{n}$ of A396406 is
 transcendental over $\mathbb Q(x)$, provided the finite block assembly

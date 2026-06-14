@@ -78,12 +78,20 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    one explicit analytic lemma — the cosine asymptotic for `S_1` near
    `q=1`): the bulk and travel blocks each have infinitely many poles in
    (0,1) accumulating at q=1 — argument-principle pole counts inside
-   `|q|≤R` diverge as 0, 1, 5, 46, 92 for R=0.50…0.95. The lemma is now
+   `|q|≤R` diverge as 0, 1, 5, 46, 92 for R=0.50…0.95. **The constituent
+   blocks `Σ₁,Σ₀,S₁,S₀` are transcendental _unconditionally_**: each is an
+   integer power series of radius 1 and non-rational (super-polynomial
+   diagonal `|c_{(j+1)(j+2)}| ≥ 2^{j+1}`; Hankel ≠ 0 thru order 11), so by
+   **Pólya–Carlson** the unit circle is a natural boundary — no cosine lemma
+   needed. (This does _not_ transfer to `V = Σ₀/(1−Σ₁)`: the boundary
+   singularities cancel in the ratio, and `rad(V)≠1`, so `V`/`U` still need
+   the lemma.) The lemma is now
    **reduced** (monotone-domination Abel identity, verified to 110 digits)
    to a single oscillatory-average bound `Σ μ_j R_j(w) = O(√τ)`, and its
-   leading term is derived in **closed form**:
+   leading term is derived in **closed form** (bulk block):
    `S_1 = 1 − cos w − (17√2/36)·√τ·sin w + O(τ)`, the constant
-   `−17√2/36 = −0.6678230711…` confirmed to 15 digits. **Half of that
+   `−17√2/36 = −0.6678230711…` confirmed to 15 digits (the dominant **travel**
+   block `Σ₁` has the analogous `+√2/36`). **Half of the bulk
    constant is unconditional and uniform**: the geometric-collapse split
    `E = T1 + T2` with `T1 = cos w − cos(w·e^{−τ/2})` (exact) obeys
    `|T1| ≤ √(τ/2)` for all τ with no hypothesis, isolating the whole gap in

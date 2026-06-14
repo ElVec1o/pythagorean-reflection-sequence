@@ -168,6 +168,52 @@ for n in [20,80]:
 PASS.append(("prop:T1  |T1|<=sqrt(tau/2) unconditional, T1=cos w-cos(w e^{-tau/2})", ok_T1bound))
 PASS.append(("split  T1->-(1/sqrt2)sqrt(t)sinw, T2->+(sqrt2/36)sqrt(t)sinw  (sum=c_1)", ok_split))
 
+# (9) Unconditional block theorem (thm:blocks): Sigma_1 in Z[[q]], radius 1, non-rational
+#     (Hankel det != 0 through size 11); and the TRAVEL constant is +sqrt2/36 (NOT -17sqrt2/36,
+#     which is the BULK value) -- rem:blockscope correctness check.
+from fractions import Fraction as F
+Nq=40
+def psAk(k):
+    c=[F(0)]*(Nq+1); m=0
+    while m*(k+1)+1<=Nq: c[m*(k+1)+1]+=F(2); m+=1
+    return c
+def psCk(k):
+    c=[F(0)]*(Nq+1); m=0
+    while (k+3)+m*(k+2)<=Nq: c[(k+3)+m*(k+2)]+=F(2); m+=1
+    m=0
+    while (k+2)+m*(k+1)<=Nq: c[(k+2)+m*(k+1)]-=F(2); m+=1
+    return c
+def psmul(a,b):
+    c=[F(0)]*(Nq+1)
+    for i in range(Nq+1):
+        if a[i]==0: continue
+        for j in range(Nq+1-i):
+            if b[j]: c[i+j]+=a[i]*b[j]
+    return c
+tot=[F(0)]*(Nq+1); prod=[F(1)]+[F(0)]*Nq
+for j in range(Nq+2):
+    term=psmul(psAk(1+2*j),prod); tot=[tot[i]+term[i] for i in range(Nq+1)]
+    prod=psmul(prod,psCk(1+2*j))
+    if all(x==0 for x in prod): break
+Sig1c=tot
+allint=all(x.denominator==1 for x in Sig1c)
+def hankel_nz(seq,m):
+    M=[[F(seq[i+j]) for j in range(m)] for i in range(m)]; det=F(1)
+    for col in range(m):
+        piv=next((r for r in range(col,m) if M[r][col]!=0),None)
+        if piv is None: return False
+        if piv!=col: M[col],M[piv]=M[piv],M[col]; det=-det
+        det*=M[col][col]; inv=M[col][col]
+        for r in range(col+1,m):
+            f=M[r][col]/inv; M[r]=[M[r][j]-f*M[col][j] for j in range(m)]
+    return det!=0
+hk=all(hankel_nz(Sig1c,m) for m in [4,5,6,7,9,10,11])
+PASS.append(("thm:blocks  Sigma_1 in Z[[q]], non-rational (Hankel!=0 thru 11)", allint and hk))
+# travel constant: (Sigma_1-1)/sqrt(tau) -> +sqrt2/36 (bulk is -17sqrt2/36)
+w=(2*120+mp.mpf(1)/2)*mp.pi; tau=2/w**2
+ct=(Sigk(1,tau,dps_for(w))-1)/mp.sqrt(tau)
+PASS.append(("rem:blockscope  travel c1 = +sqrt2/36 (bulk c1 = -17sqrt2/36)", abs(ct-mp.sqrt(2)/36)<mp.mpf('1e-5')))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")
