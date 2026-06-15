@@ -289,6 +289,47 @@ try:
 except Exception as _e:
     PASS.append(("lem:tail truncated assembly (sympy)", False))
 
+# (13) rem:mahler: Mahler's method EXCLUDED. Positive-controlled exact-rational search finds a genuine
+#      Mahler relation for the Fredholm series sum z^{2^k} (control) but NONE for u_n/v_n (d=2,3,4;m<=3;deg<=5).
+from fractions import Fraction as _Fr
+def _spow(c,d,N):
+    o=[_Fr(0)]*(N+1)
+    for n,cn in enumerate(c):
+        if n*d<=N: o[n*d]=_Fr(cn)
+    return o
+def _mahler(seq,ds=(2,3,4),ms=(1,2,3),dg=5):
+    N=len(seq)-1; found=False
+    for d in ds:
+        for m in ms:
+            fp=[_spow(seq,d**i,N) for i in range(m+1)]; Uu=(m+2)*(dg+1); rows=[]
+            for n in range(N+1):
+                row=[_Fr(0)]*Uu; col=0
+                for ii in range(m+1):
+                    for k in range(dg+1): row[col]=fp[ii][n-k] if 0<=n-k<=N else _Fr(0); col+=1
+                for k in range(dg+1): row[col]=_Fr(-1) if n==k else _Fr(0); col+=1
+                rows.append(row)
+            M=[r[:] for r in rows]; nr=len(M); piv=[]; r=0
+            for cc in range(Uu):
+                p=next((a for a in range(r,nr) if M[a][cc]!=0),None)
+                if p is None: continue
+                M[r],M[p]=M[p],M[r]; pv=M[r][cc]; M[r]=[x/pv for x in M[r]]
+                for a in range(nr):
+                    if a!=r and M[a][cc]!=0:
+                        f0=M[a][cc]; M[a]=[x-f0*y for x,y in zip(M[a],M[r])]
+                piv.append(cc); r+=1
+            for fc in [cc for cc in range(Uu) if cc not in piv]:
+                vv=[_Fr(0)]*Uu; vv[fc]=_Fr(1)
+                for ri,pc in enumerate(piv): vv[pc]=-M[ri][fc]
+                if any(x!=0 for x in vv[0:dg+1]) and any(x!=0 for x in vv[m*(dg+1):(m+1)*(dg+1)]): found=True; break
+            if found: return True
+    return False
+_fred=[0]*44
+for k in range(6):
+    if 2**k<44: _fred[2**k]=1
+_uu=[1,3,5,8,13,21,34,55,89,144,225,351,554,875,1345,2066,3203,4971,7574,11543,17683,27108,41067,62263,94622,143881,217101,327832,495443,749195,1127236,1697179,2554961,3848384,5777651,8679441,13031206,19574659,29338781,43997388,65932461,98849591,147969934]
+_vv=[1,3,5,8,13,21,34,55,91,148,235,371,590,931,1451,2254,3513,5455,8418,12959,19949,30640,46905,71699,109490,166969,254047,386192,586349,889599,1347444,2039911,3084135,4661368,7035665,10617513,16002526,24117471,36303371,54649900,82171011]
+PASS.append(("rem:mahler control (Fredholm) Mahler-found AND u_n,v_n NONE", _mahler(_fred,ds=(2,),ms=(1,),dg=2) and (not _mahler(_uu)) and (not _mahler(_vv))))
+
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}")

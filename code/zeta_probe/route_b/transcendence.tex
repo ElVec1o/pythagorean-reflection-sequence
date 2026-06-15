@@ -711,6 +711,27 @@ R1\textup); the transcendence of $U$ remains conjectural, reduced to the single
 non-vanishing condition $N_U(q_m)\ne0$ at infinitely many travel poles.}
 \end{remark}
 
+\begin{remark}[Mahler's method does not apply]\label{rem:mahler}
+One natural shortcut --- proving $U$ \textup(or $V$\textup) transcendental directly as a
+\emph{Mahler function} \textup(a non-rational solution of $\sum_{i=0}^m a_i(z)f(z^{d^i})=b(z)$,
+$a_i\in\mathbb Q[z]$, $d\ge2$, is transcendental over $\mathbb Q(z)$; Nishioka\textup) --- is
+\emph{excluded}, which also explains structurally why the kernel method of Bousquet-M\'elou--Jehanne
+fails here. The catalytic dilation $t\mapsto q^2t$ acts on the \emph{index}, not the base: telescoping
+$G_k=F(q,q^k)$ gives the fixed-$q$ recursion $\Sigma_k(q)=A_k(q)+C_k(q)\Sigma_{k+2}(q)$, equivalently
+$\alpha_k(q)=\alpha_0(q^{k+1})$ places the exponents on an \emph{arithmetic progression}
+\textup(Lambert/multiplicative structure\textup), never the geometric $q\mapsto q^d$ that a Mahler
+equation requires. A positive-controlled exact-rational search \textup(recovering the genuine relations
+for $\prod(1-z^{2^k})$ and the Fredholm series\textup) finds \emph{no} Mahler equation
+\textup($a_0a_m\ne0$, $d\in\{2,3,4\}$, $m\le3$\textup) satisfied by $u_n$, $v_n$, or the bulk block to
+$500$ terms. And the obstruction is order-independent: a $d$-Mahler function has only $O(\log(1/\varepsilon))$
+real interior poles within distance $\varepsilon$ of the boundary \textup(finitely many geometric
+$d$-orbits\textup), whereas the travel poles satisfy $1-q_n\sim(2/\pi^2)/n^2$ \textup(the
+Lemma~\ref{lem:cos} asymptotic\textup), giving the \emph{power-law} count $\Theta(\varepsilon^{-1/2})$;
+$\Theta(\varepsilon^{-1/2})\ne O(\log)$ for every $d$ and every number of orbits. \textup(The
+power-law step is conditional on Lemma~\ref{lem:cos}; the index-shift structure and the finite search are
+unconditional.\textup) Mahler's method therefore offers no bypass of the open condition $N_U(q_m)\ne0$.
+\end{remark}
+
 % ------------------------------------------------------------------
 % Standalone preamble (uncomment if compiling this file on its own):
 % \documentclass[11pt]{article}
