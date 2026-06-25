@@ -147,11 +147,25 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
 >   at `p = 3, 5`; proving non-automaticity for a single `p` would make `U`
 >   transcendental unconditionally (Christol). This route is open.
 
+> **Update (v1.3.0, June 2026).** The corpus is now split into publication-ready
+> papers under `paper/journal/` (see `PAPER_PLAN.md`). **Paper 1 (`paper1.pdf`) is
+> fully unconditional:** the metric theorem's lower bound, previously resting on a
+> computational covering certificate, is now established by an explicit four-state
+> transducer whose transition table is displayed and certified — bit-for-bit equal
+> to the true connectivity defect on all 275,823 group elements through depth 24
+> and on 200,000 further random profiles (`code/zeta_probe/route_b/fsm_verify.py`).
+> Paper 1b (`paper1b.pdf`) collects the unconditional `n`-dimensional family. The
+> transcendence results of v1.2.0 (Paper 2, still in preparation) are unchanged:
+> `U` remains conditional.
+
 ## Repository contents
 
 | Path | Contents |
 |---|---|
-| `paper/paper.tex`, `paper.pdf` | **Main paper** (~22 pp): the sharp universality threshold and refutation, the virtually-`ℤ≀ℤ` structure, the metric formula, and the growth-series analysis. |
+| `paper/journal/paper1.{tex,pdf}` | **Paper 1 (publication draft, ~41 pp)** — the planar A396406 result: word-length metric `ℓ_T=ℓ_R+2c` (now **fully unconditional**, the connectivity defect computed by an explicit finite-state transducer certified on 275,823 elements), sharp depth-32 effective universality, the virtually-`ℤ≀ℤ` structure, and the exact growth rate `β₂`. Journal-style, no process narration; targets the Journal of Integer Sequences. |
+| `paper/journal/paper1b.{tex,pdf}` | **Paper 1b (publication draft, ~9 pp)** — the `n`-dimensional orthoscheme family: closed-form rate `r_n=1+2cos(2π/(n+3))`, unconditional Class C faithfulness via a uniform Gram determinant and rank-0 Mordell descent, the collision-depth invariant, and the OEIS Class C family. |
+| `paper/journal/PAPER_PLAN.md` | The three-paper publication plan with the closed/open ledger and routes-to-finish. |
+| `paper/paper.tex`, `paper.pdf` | Original combined manuscript (~22 pp): universality threshold, virtually-`ℤ≀ℤ` structure, metric formula, growth-series analysis. |
 | `paper/paper_extra.tex`, `paper_ndim.tex` | Companion documents (conjectural material; the `n`-dimensional family). |
 | `paper/OEIS/` | OEIS submission drafts and b-files; `paper/OEIS/submit/` holds paste-ready blocks for the `n`-dim family. |
 | `code/zeta_probe/route_b/transcendence_paper.tex`, `.pdf` | **Standalone transcendence paper** (~58 pp): blocks transcendental unconditionally (Pólya–Carlson); `V` transcendental modulo one closed-form lemma; `U` transcendental conditional on one turning-point amplitude bound; `mod p` non-automaticity. With sections `lifting_U`, `metric_theorem`, `amplitude_bound`, `route_modp` and the assembled `bundle.pdf`. |
