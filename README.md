@@ -129,6 +129,24 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    So `U`-transcendence stays **open** (≥1 of `U`, defect transcendental,
    rigorously); only the growth **rate** `β₂` is now pinned exactly.
 
+> **Update (v1.2.0, June 2026) — current honest status.** The results above are
+> consolidated, with full proofs, in the standalone
+> [`code/zeta_probe/route_b/transcendence_paper.pdf`](code/zeta_probe/route_b/transcendence_paper.pdf).
+> Net status:
+> - **Blocks `Σ₁,Σ₀,S₁,S₀` — transcendental, unconditional** (Pólya–Carlson; no lemma).
+> - **`V` — transcendental, modulo one closed-form lemma** (`lem:T2abs`, a clean
+>   absolute-contour bound) plus Stirling. The lem:cos leading constant is now
+>   derived in closed form, `√2/36 = (1/24)·∑ k³` (Euler–Maclaurin discretisation).
+> - **`U` — transcendental, _conditional_ on a single turning-point
+>   amplitude-normalisation estimate** `R = P₁₂ − E = O(τ^{5/2})`. The new
+>   `amplitude_bound` section (Morita `q`-Bessel connection formula + a conserved
+>   Casoratian envelope) **reduces** the gate to exactly this one bound; it is
+>   numerically certain (`R/(τ^{5/2} sin w) → 1891√2/10368`, 21 digits, ~4×
+>   margin) but **not proved**. We do **not** claim `U` proved.
+> - **`mod p` evidence (unconditional):** `(uₙ mod p)` is maximally non-automatic
+>   at `p = 3, 5`; proving non-automaticity for a single `p` would make `U`
+>   transcendental unconditionally (Christol). This route is open.
+
 ## Repository contents
 
 | Path | Contents |
@@ -136,6 +154,8 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
 | `paper/paper.tex`, `paper.pdf` | **Main paper** (~22 pp): the sharp universality threshold and refutation, the virtually-`ℤ≀ℤ` structure, the metric formula, and the growth-series analysis. |
 | `paper/paper_extra.tex`, `paper_ndim.tex` | Companion documents (conjectural material; the `n`-dimensional family). |
 | `paper/OEIS/` | OEIS submission drafts and b-files; `paper/OEIS/submit/` holds paste-ready blocks for the `n`-dim family. |
+| `code/zeta_probe/route_b/transcendence_paper.tex`, `.pdf` | **Standalone transcendence paper** (~58 pp): blocks transcendental unconditionally (Pólya–Carlson); `V` transcendental modulo one closed-form lemma; `U` transcendental conditional on one turning-point amplitude bound; `mod p` non-automaticity. With sections `lifting_U`, `metric_theorem`, `amplitude_bound`, `route_modp` and the assembled `bundle.pdf`. |
+| `code/zeta_probe/tools/` | Consolidated verification suite: Rust high-precision tools (`u5b`, `u5b_gate`, `u_modp_rust`, `t1series`) and the Python checks in `verify_scripts/` (Casoratian, amplitude, q-Bessel, θ-Poisson, uniformity). See `tools/README.md`. |
 | `code/zeta_probe/` | The core machinery: the symbolic group model, the word-metric solver (`lamp_profile.py`), the kernel witnesses (`witness.py`), and the arithmetic certificates (`certify.py`, `certify38_rust/`, `fire_rust/`). See `code/zeta_probe/README.md` for an index. |
 | `code/rust_bfs/` | Disk-streaming exact-rational BFS (Rust); computes `u_d` to depth 42. |
 | `code/mordell/`, `code/ideal/`, `code/g_modules/` | Sage rank-0 descent scripts, the cyclic-ideal check, and symbolic verification scripts. |
@@ -170,8 +190,12 @@ cd code/rust_bfs && cargo build --release && ./target/release/*bfs* --depth 42
 |---|---|---|
 | [A396406](https://oeis.org/A396406) | 2D right triangle, unequal legs (the universal sequence) | **Published** |
 | [A396927](https://oeis.org/A396927) | 5D orthoscheme, distinct legs | **Published** |
-| `A_4D_classC`, `A_6D_classC`, `A_3D_classC` | 4D / 6D / 3D orthoschemes, distinct legs | Prepared (`paper/OEIS/submit/`) |
-| `A_3D_classB` | 3D tetrahedron `(1,1,2)` | Prepared (no closed form) |
+| [A397437](https://oeis.org/A397437) | 4D orthoscheme, distinct legs | In review |
+| [A397438](https://oeis.org/A397438) | 6D orthoscheme, distinct legs | In review |
+| [A397439](https://oeis.org/A397439) | 3D orthoscheme, distinct legs | In review |
+| `7D_classC` | 7D orthoscheme, distinct legs (growth `φ²`) | Prepared (`paper/OEIS/submit/`) |
+| `3D_classB` | 3D tetrahedron `(1,1,2)` | Prepared (no closed form) |
+| `V_relaxed`, `bulk_block` | relaxed companion of A396406; bulk catalytic block | Prepared (`paper/OEIS/submit/`) |
 | 3D cube corner `(1,1,1)` | — | **Dropped** (duplicate of [A008137](https://oeis.org/A008137)) |
 
 ## Author
