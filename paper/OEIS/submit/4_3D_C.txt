@@ -5,11 +5,10 @@ disclosed openly in CROSSREFS. If an editor flags it, AGREE and point to the dis
 it earns its place as the documented dim-3 member of the Class C family.
 
 ----- NAME -----
-BFS layer sizes of the Coxeter group of the 3D right-corner orthoscheme with three pairwise distinct leg lengths.
+Breadth-first search (BFS) layer sizes of the Coxeter group of the three-dimensional right-corner orthoscheme with three pairwise distinct leg lengths.
 
 ----- DATA -----
-1, 4, 9, 18, 36, 72, 144, 288, 576, 1152, 2304, 4608, 9216, 18432, 36864, 73728, 147456, 294912, 589824, 1179648, 2359296, 4718592, 9437184, 18874368, 37748736, 75497472, 150994944
-
+1, 4, 9, 18, 36, 72, 144, 288, 576, 1152, 2304, 4608, 9216, 18432, 36864, 73728, 147456, 294912, 589824, 1179648, 2359296, 4718592, 9437184, 18874368, 37748736, 75497472, 150994944, 301989888, 603979776, 1207959552, 2415919104, 4831838208, 9663676416
 ----- OFFSET -----
 0,2
 
@@ -28,6 +27,9 @@ a(n+1)/a(n) -> 2 for n >= 2; 2 = 1 + 2*cos(2*Pi/6) is the n = 3 instance of r_n 
 ----- EXAMPLE -----
 a(1) = 4: the four reflections in the bounding faces are the 4 elements of word-length 1.
 
+----- MATHEMATICA -----
+CoefficientList[Series[(1 + x)^2/(1 - 2 x), {x, 0, 32}], x]
+
 ----- PROG -----
 (Python)
 def aseq(N):
@@ -35,18 +37,20 @@ def aseq(N):
     while len(s) < N:
         s.append(2*s[-1])
     return s
-print(aseq(27))
+print(aseq(33))
 
 ----- LINKS -----
 Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
+Vico Bonfioli, <a href="https://doi.org/10.5281/zenodo.20370090">Data and proofs (Zenodo)</a>, doi:10.5281/zenodo.20370090, 2026.
 <a href="/index/Rec#order_01">Index entries for linear recurrences with constant coefficients</a>, signature (2).
 
 ----- CROSSREFS -----
 For n >= 2 the tail equals A005010 (9*2^n) reindexed; the doubling factor is A000079 (powers of 2).
+Cf. A003945 (g.f. (1+x)/(1-2*x)); here the numerator is squared, (1+x)^2/(1-2*x).
 Cf. A396406 (2D right-triangle reflection sequence, unequal legs).
-Cf. A396927 (5D analogue, same Class C family).
+Cf. A397437 (4D analogue) and A396927 (5D analogue), same Class C orthoscheme family.
 Cf. A008137 (3D all-equal-legs cube corner; affine Weyl group B~_3 growth series).
-[Back-fill once assigned: the 4D and 6D Class C analogues.]
+(Back-fill once assigned: the 6D and 7D Class C analogues.)
 
 ----- KEYWORD -----
 nonn,easy

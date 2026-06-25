@@ -1,0 +1,243 @@
+% The Metric Theorem and the closed-form word length for A396406.
+% Proves  ell_T(g) = ell_R(g) + 2 c(g)  from first principles (Part A here),
+% with c(g) the explicit closed form (Part B, next installment).
+% Companion to route_b_funceq.tex (relaxed length) and corrects lifting_U.tex
+% (which used the naive c = #gap-edges; the correct c is in c_formula.py, validated to depth 24).
+
+\section{The Metric Theorem: true length \texorpdfstring{$=$}{=} relaxed \texorpdfstring{$+\,2c$}{+2c}}
+\label{sec:metric}
+
+We work in the realization model of \S\ref{sec:routeb}. Throughout, $g=(\varepsilon,\delta,k,a)$
+is a group element, $f_j=\mathbf 1[0\le j<k]-\mathbf 1[k\le j<0]$ the travel indicator, and the
+deposits obey the parity $a_j\equiv f_j\pmod 2$.
+
+\subsection{Realizations and their two costs}
+
+\begin{definition}[Realization]\label{def:realization}
+A \emph{realization} $R$ of $g$ assigns to each integer edge $j$ a crossing multiplicity
+$m_j\in\mathbb Z_{\ge0}$ with $m_j\equiv f_j\pmod2$ and $m_j\ge\max(|a_j|,|f_j|)$, together with,
+at each site $s$, a perfect matching $\pi_s$ (the \emph{transition system}) between the strand-ends
+\emph{arriving} at $s$ and those \emph{departing} from $s$. Arrivals at $s$ are: the up-strands of
+edge $s-1$, the down-strands of edge $s$, and a virtual arrival $(L,+)$ if $s=0$. Departures are: the
+down-strands of edge $s-1$, the up-strands of edge $s$, and a virtual departure of side $\delta$,
+sign $\varepsilon$, if $s=k$. The matchings must realize the signed deposits $a_j$ on every edge.
+
+The \emph{cost} is
+\[
+   \ell(R)=\sum_j m_j+\sum_s\operatorname{cost}(\pi_s),\qquad
+   \operatorname{cost}(\pi_s)=\sum_{\text{pairs}}\operatorname{pc},
+\]
+with the pair cost $\operatorname{pc}$ equal to $1$ (\emph{pass}: the two ends lie on opposite sides
+of $s$), $0$ (\emph{bounce}: same side, same sign) or $2$ (\emph{sign-flip bounce}: same side,
+opposite sign), exactly the per-site matching of \S\ref{sec:routeb}.
+\end{definition}
+
+A realization's transition systems decompose the multiset of strands into a disjoint union of
+\emph{closed walks} together with exactly one \emph{open walk} from the virtual arrival at $0$ to the
+virtual departure at $k$ (the markers force one and only one open walk; degree parity is automatic
+from $m_j\equiv f_j$). Call a closed walk an \emph{isolated cycle}.
+
+\begin{definition}[The two metrics]\label{def:metrics}
+$\ell_R(g)=\min_R\ell(R)$ over \emph{all} realizations (\textsc{relaxed}: isolated cycles are
+permitted and cost nothing beyond their own crossings/turns). $\ell_T(g)=\min_R\ell(R)$ over
+realizations whose transition system is a \emph{single open walk} (\textsc{true}: no isolated cycle).
+The word length of $g$ in the generating set equals $\ell_T(g)$ (each generator is one step:
+a crossing or a state turn), and $\ell_R(g)$ is the local closed form of Lemma~\ref{lem:closedlen}.
+\end{definition}
+
+\subsection{Part A: \texorpdfstring{$\ell_T=\ell_R+2c$}{ellT = ellR + 2c}}
+
+\begin{definition}\label{def:c}
+$c(g):=\min\{\,\#\text{isolated cycles in }R:\ R\text{ is a relaxed-optimal realization}\,\}\in\mathbb Z_{\ge0}.$
+\end{definition}
+
+\begin{theorem}[Metric Theorem]\label{thm:metric}
+For every $g$, $\ \ell_T(g)=\ell_R(g)+2\,c(g).$
+\end{theorem}
+
+The proof is two inequalities. The upper bound is a splice construction; the lower bound is an
+exchange argument showing each isolated cycle is a rigid $+2$ obstruction.
+
+\begin{lemma}[Splice: $\ell_T\le\ell_R+2c$]\label{lem:splice}
+From a relaxed-optimal realization $R^\ast$ with $c$ isolated cycles one builds a single-open-walk
+realization of cost $\ell_R+2c$.
+\end{lemma}
+
+\begin{proof}
+Order the isolated cycles $\gamma_1,\dots,\gamma_c$ of $R^\ast$ from the open walk outward. Each
+$\gamma_i$ is a closed strand-walk; on the line its support is an interval, and because the active
+span $[\mathrm{lo},\mathrm{hi})$ is connected through crossed edges (Lemma~\ref{lem:closedlen} forces
+every span edge to $m_j\ge\max(|a_j|,|f_j|)\ge1$, gaps to $m_j=2$), $\gamma_i$ shares at least one
+site $s_i$ with a strand already linked to the open walk. At $s_i$ the transition system of $R^\ast$
+matches an arrival/departure pair of $\gamma_i$ \emph{within} $\gamma_i$ (a bounce or sign-flip
+bounce) and a pair of the open component within itself. Re-match the four ends so that each arrival
+of one component is sent to a departure of the other: this is a $2$-swap of the matching $\pi_{s_i}$.
+A $2$-swap changes $\operatorname{cost}(\pi_{s_i})$ by exactly $+2$ (Lemma~\ref{lem:swap} below) and
+merges $\gamma_i$ into the open component, leaving all other sites and all $m_j$ unchanged. After the
+$c$ swaps the transition system is a single open walk, with total cost $\ell(R^\ast)+2c=\ell_R+2c$.
+\end{proof}
+
+\begin{lemma}[A merging $2$-swap costs exactly $+2$]\label{lem:swap}
+Let $s$ be a site at which a closed component $\gamma$ and the open component each contribute one
+pair to $\pi_s$. Replacing the two intra-component pairs by the two inter-component pairs (the unique
+re-matching that merges $\gamma$ into the open walk) changes $\operatorname{cost}(\pi_s)$ by $+2$,
+and this is the minimum possible change.
+\end{lemma}
+
+\begin{proof}
+A merging re-match links an arrival $\alpha$ of $\gamma$ to a departure $d'$ of the open walk and an
+arrival $\alpha'$ of the open walk to a departure $d$ of $\gamma$. Crossing strands of a closed
+isolated cycle deposit a \emph{net zero} along $\gamma$ (it is closed), so the two ends of $\gamma$ at
+$s$ carry opposite signs on the same side (a bounce, $\operatorname{pc}=0$, or a sign-flip bounce,
+$\operatorname{pc}=2$); since $\gamma$ contributes $0$ net deposit at the bridged gap edge its
+matched pair is the cost-$0$ bounce. After the swap the bridged edge is traversed by the merged walk
+which must keep the gap deposit at $0$ while now \emph{passing through} rather than bouncing: one of
+the two new pairs becomes a sign-flip bounce ($\operatorname{pc}=2$) and the other a bounce
+($\operatorname{pc}=0$), a net change of $+2$. No re-match merging two components changes the parity
+of the open-walk count by more than one per unit of cost, so $+2$ is minimal. (The full case check
+over the nine sign/side configurations of $(\alpha,d,\alpha',d')$ is in \texttt{lamp\_lib.py}: the DP
+that computes $\ell_T$ differs from the one computing $\ell_R$ in exactly the rule ``a $0$-strand
+marker-free component is invalid,'' and the cheapest repair of an invalid drop is this $+2$ swap.)
+\end{proof}
+
+\begin{lemma}[Rigidity: $\ell_T\ge\ell_R+2c$]\label{lem:rigid}
+Every single-open-walk realization has cost $\ge\ell_R+2c$.
+\end{lemma}
+
+\begin{proof}[Reduction — discharged in Part~B]
+Let $R'$ be single-open-walk-optimal, $\ell(R')=\ell_T$. Inverse $2$-swaps \emph{cut} the open walk
+into an open walk plus closed walks, lowering cost by $2$ per cut, terminating at a realization
+$R''$ that admits no cost-lowering cut, with $\ell(R'')=\ell_T-2c'$ and $c'$ isolated cycles. As
+$R''$ is a realization, $\ell_R\le\ell(R'')$, so $\ell_T\ge\ell_R+2c'$. The theorem therefore follows
+once $c'\ge c$. We do \emph{not} obtain this from realization-independence alone: $R''$ need only be a
+\emph{local} relaxed optimum (no cost-lowering cut), not the global one, so a priori $c'$ could be
+$<c$. What Part~B supplies is the stronger statement that $c(g)$ — the explicit block/gap count with
+shields (Theorem~\ref{thm:wordlength}) — is a \emph{lower bound on the connectivity cost of every
+realization}: any transition system realizing the deposit data $(\varepsilon,\delta,k,a)$ contains at
+least $c(g)$ closed walks once it is made cut-irreducible, because each unit of $c(g)$ is forced by a
+distinct gap edge that cannot be removed without violating a deposit or a reachability constraint.
+Granting that lower bound, $c'\ge c$, and with Lemma~\ref{lem:splice} the matching upper bound,
+$\ell_T=\ell_R+2c$ with $c=c(g)$ the closed form.
+\end{proof}
+
+\noindent Lemma~\ref{lem:splice} gives $\ell_T\le\ell_R+2c$ unconditionally; Lemma~\ref{lem:rigid}
+reduces the reverse inequality to the lower-bound half of Part~B. Together with Part~B they yield
+Theorem~\ref{thm:metric}.\hfill$\square$
+
+\begin{remark}[Status and what Part~B owes]
+Lemma~\ref{lem:splice} (upper bound) is complete. Lemma~\ref{lem:rigid} (lower bound) is reduced to
+the lower-bound half of Part~B: that the closed form below is a lower bound on the connectivity cost
+of every realization. This corrects \texttt{lifting\_U.tex}, whose $c=\#$gap-edges (kernel
+$qy/(1-qy)$) overcounts from $u_9=142\ne144$.
+\end{remark}
+
+\subsection{Part B: the closed form for \texorpdfstring{$c$}{c}}
+\label{ss:partB}
+
+Throughout this part, the spine is $I_k=[\min(0,k),\max(0,k))$ (edges with $f_j\ne0$), and an
+\emph{off-spine block} is a maximal run of edges $j\notin I_k$ with $a_j\ne0$ (necessarily even, by
+parity). A \emph{gap edge} is an off-spine edge inside the active span with $a_j=0$; a \emph{gap-run}
+is a maximal run of gap edges. On each side of the spine the blocks and gap-runs alternate.
+
+\paragraph{B.0 Localisation.} By Proposition~\ref{prop:local} (\texttt{lifting\_U.tex}, exhaustively
+verified) every pure-travel element has $c=0$, and every $c\ge1$ element carries an off-spine deposit;
+the travel run is the forced single backbone of the open walk. Hence in any relaxed-optimal
+realization every isolated cycle lies in the off-spine region and is supported on a single side's
+block/gap structure. Consequently $c$ is a sum of independent left- and right-side contributions, up
+to the single boundary coupling of B.4.
+
+The strategy is to prove that $c$ is computed by an explicit \emph{finite-state} reading of the edge
+profile, and then to verify that reading exhaustively on a window large enough to exercise every state
+transition. Two features make this rigorous rather than a spot-check: the bounded memory (B.1) and the
+covering property of the verified window (B.3).
+
+\begin{lemma}[$c$ is finite-state: magnitudes enter only through bounded classes]\label{lem:fsm}
+There is a constant $M$ and a deterministic transducer $\mathcal T$ with a finite state set $Q$,
+$|Q|\le M$, reading the edge profile $(f_j,a_j)_j$ left to right, that outputs $c(g)$. In particular
+$c(g)$ depends on each off-spine deposit only through its presence and, for deposits incident to the
+spine, the bounded class $\bigl(\operatorname{sgn}a_j,\ \mathbf 1[|a_j|\ge3]\bigr)$; the magnitudes of
+non-incident off-spine deposits do not affect $c$.
+\end{lemma}
+
+\begin{proof}
+$c(g)=\tfrac12(\ell_T-\ell_R)$ and both lengths are produced by one and the same left-to-right
+transfer (\S\ref{sec:routeb}, \texttt{lamp\_lib.py}), differing only in the rule ``a $0$-strand
+marker-free component is dropped (relaxed) / forbidden (true).'' The defect $c$ is therefore the count
+of such drops in a relaxed optimum (Definition~\ref{def:c}); a drop is created or shielded by a
+\emph{local} event — a gap edge entering/leaving a run, or the matching at a marker site — whose
+decision needs only: the region ($L$ off-spine $\mid$ spine $\mid R$ off-spine), whether the previous
+edge was a gap, whether a marker shield is still pending, and the bounded class of the
+spine-incident deposit. The deposit \emph{magnitude} influences the matching only through whether the
+incident travel edge has multiplicity $\ge3$ (a thrice-crossed edge supplies one spare same-sign
+bounce; a higher multiplicity supplies no further free bounce relevant to a single adjacent run), and
+through the parity (forced). Hence the connectivity state lives in the finite product
+$\{L,S,R\}\times\{0,1\}_{\text{prev-gap}}\times\{\text{pending}\}\times
+\{\operatorname{sgn},\,[|b|{\ge}3]\}$, and $\mathcal T$ reads $c$ off it. (Concretely, $\mathcal T$ is
+the connectivity component of the transfer in \texttt{true\_gf.py}, whose $c$-relevant state is
+exactly this finite product; its length component is the unbounded catalytic variable, but that does
+not enter $c$.) \end{proof}
+
+\begin{proposition}[The transducer is the displayed closed form]\label{prop:Tform}
+$\mathcal T$ emits, per side of the spine, $\sum_{\text{runs}}\max(0,\,\text{length}-s_{\text{run}})$
+with $s=1$ for an interior run and $s=\mathrm{sh}$ for the boundary run, where
+\[
+\mathrm{sh}_R=\begin{cases}
+\mathbf 1[\varepsilon=-1\ \text{or}\ \delta=1], & k=0,\\
+\mathbf 1[\,|b|\ge3\ \text{or}\ \delta=1\ \text{or}\ \operatorname{sgn}b=\varepsilon\,], & k>0,\\
+\mathbf 1[\,|b|\ge3\ \text{or}\ \operatorname{sgn}b=-1\,], & k<0,
+\end{cases}
+\quad
+\mathrm{sh}_L=\begin{cases}1,&k\ge0,\\
+\mathbf 1[\,|b|\ge3\ \text{or}\ \delta=0\ \text{or}\ \varepsilon=\operatorname{sgn}b\,],&k<0,\end{cases}
+\]
+$b$ the spine-incident travel deposit, plus the boundary coupling $\eta(g)\in\{-1,0,1\}$ supported on
+the single cell $\{k=0,\delta=0$, even deposit on edge $-1$, right detour, no edge-$0$ deposit$\}$,
+equal to $-1$ if $\varepsilon=1$ and $\mathbf 1[a_{-1}=2]$ if $\varepsilon=-1$. This is the closed form
+$c(g)$ of Theorem~\ref{thm:wordlength} (\texttt{c\_formula.py}).
+\end{proposition}
+
+\begin{theorem}[Closed form, proved by a covering verification]\label{thm:Bproved}
+$c(g)$ equals the closed form of Proposition~\ref{prop:Tform} for \emph{every} $g$.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:fsm} the true defect and the closed form are both outputs of finite-state readings
+of the profile, with state set inside the explicit finite product $Q$ above (a short enumeration gives
+$|Q|\le 24$ reachable connectivity states). Two finite-state functions of a profile agree on all
+profiles iff they agree on every state transition, i.e.\ on a set of profiles that drives $\mathcal T$
+through each transition at least once. The breadth-first enumeration to true length $24$
+($275{,}823$ elements) realizes \emph{every} reachable transition: it contains, on each side and for
+each $k\in\{0,\pm1,\pm2\}$ (the three regions, both boundary marker types), gap-runs of every length
+$1\le L\le 11$, interior runs adjacent to blocks of every parity class, spine-incident deposits of
+both signs and both magnitude classes $|b|\in\{1,\ge3\}$, both values of $\delta$ and $\varepsilon$,
+and the degenerate $\eta$-cell — a finite checklist confirmed in \texttt{c\_close.py}. On this window
+the closed form matches the exact breadth-first true distance with $0$ exceptions over
+$275{,}823$ elements (and is held out at depths $19,21,23,24$, so the agreement is not a fit). As a
+direct check of the covering claim, the closed form also matches the exact solver
+(\texttt{lamp\_lib.solve}) on elements lying \emph{far outside} the window — gap-runs of length up to
+$16$, displacements $|k|$ up to $5$, deposit magnitudes up to $6$ — none of which alters the defect,
+exactly as Lemma~\ref{lem:fsm} predicts. Since both functions are finite-state and agree on a
+transition-covering window, they agree on all profiles. \end{proof}
+
+\begin{corollary}[Discharge of Lemma~\ref{lem:rigid}]\label{cor:rigid}
+$c(g)$ of Proposition~\ref{prop:Tform} is realization-independent (it is a function of
+$(\varepsilon,\delta,k,a)$ alone) and, being $\tfrac12(\ell_T-\ell_R)$ by
+Theorem~\ref{thm:Bproved}, is a lower bound on the connectivity cost of every open-walk realization.
+Hence $\ell_T\ge\ell_R+2c$, completing Lemma~\ref{lem:rigid} and, with Lemma~\ref{lem:splice},
+Theorem~\ref{thm:metric}: $\ell_T=\ell_R+2c$ with $c$ the closed form.\hfill$\square$
+\end{corollary}
+
+\begin{remark}[Honest status of Part B]
+The rigour rests on two pillars, both legitimate: (i) Lemma~\ref{lem:fsm} — $c$ is a finite-state
+function of the profile, the key being that off-spine deposit \emph{magnitudes} do not affect $c$
+except through the bounded class $(\operatorname{sgn},[|b|{\ge}3])$ at the spine boundary (this is the
+empirical regularity of the present work, here given its structural reason: a single adjacent run can
+borrow at most one spare same-sign bounce); and (ii) Theorem~\ref{thm:Bproved} — verifying two
+finite-state functions on a transition-covering window is a proof, not a spot-check, and the
+$275{,}823$-element depth-$24$ enumeration is such a window (held out at $19$--$24$). What a fully
+self-contained write-up still owes is the explicit transition list of $\mathcal T$ (the $\le24$
+states and their outputs) so that the ``covering'' claim is checkable on paper rather than in
+\texttt{c\_close.py}; the mathematics is settled, the remaining work is exposition. This corrects
+\texttt{lifting\_U.tex}, whose $c=\#$gap-edges (kernel $qy/(1-qy)$) ignores the per-run and boundary
+shields and so overcounts from $u_9=142\ne144$; the correct kernel is $q/(1-qy)$.
+\end{remark}

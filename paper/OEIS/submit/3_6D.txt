@@ -2,11 +2,10 @@ OEIS SUBMISSION 3 of 5  —  6D orthoscheme, distinct legs  (submit after 5D=A39
 =================================================================================================
 
 ----- NAME -----
-BFS layer sizes of the Coxeter group of the 6D right-corner orthoscheme with six pairwise distinct leg lengths.
+Breadth-first search (BFS) layer sizes of the Coxeter group of the six-dimensional right-corner orthoscheme with six pairwise distinct leg lengths.
 
 ----- DATA -----
-1, 7, 27, 82, 226, 597, 1545, 3957, 10080, 25605, 64944, 164592, 416961, 1056051, 2674377, 6772248, 17148591, 43422642, 109951182, 278407773, 704955393, 1785012633, 4519814580, 11444577561, 28978694784
-
+1, 7, 27, 82, 226, 597, 1545, 3957, 10080, 25605, 64944, 164592, 416961, 1056051, 2674377, 6772248, 17148591, 43422642, 109951182, 278407773, 704955393, 1785012633, 4519814580, 11444577561, 28978694784, 73376640612, 185796189153, 470452483107, 1191227527485, 3016294014996, 7637524595667, 19338891204546, 48967791568650
 ----- OFFSET -----
 0,2
 
@@ -25,6 +24,9 @@ a(n+1)/a(n) -> 1 + 2*cos(2*Pi/9) = 2.5320888..., the largest real root of x^3 - 
 ----- EXAMPLE -----
 a(1) = 7: the seven reflections in the bounding facets are the 7 elements of word-length 1.
 
+----- MATHEMATICA -----
+LinearRecurrence[{3, 0, -3}, {1, 7, 27, 82, 226}, 33]
+
 ----- PROG -----
 (Python)
 def aseq(N):
@@ -32,17 +34,18 @@ def aseq(N):
     while len(s) < N:
         s.append(3*s[-1] - 3*s[-3])
     return s
-print(aseq(25))
+print(aseq(33))
 
 ----- LINKS -----
 Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
+Vico Bonfioli, <a href="https://doi.org/10.5281/zenodo.20370090">Data and proofs (Zenodo)</a>, doi:10.5281/zenodo.20370090, 2026.
 <a href="/index/Rec#order_03">Index entries for linear recurrences with constant coefficients</a>, signature (3,0,-3).
 
 ----- CROSSREFS -----
 Cf. A396406 (2D right-triangle reflection sequence, unequal legs).
-Cf. A396927 (5D analogue, same Class C family).
+Cf. A397437 (4D analogue) and A396927 (5D analogue), same Class C orthoscheme family.
 Cf. A008137 (3D all-equal-legs cube corner; affine Weyl group B~_3 growth series).
-[Back-fill once assigned: the 3D-C and 4D Class C analogues.]
+(Back-fill once assigned: the 3D and 7D Class C analogues.)
 
 ----- KEYWORD -----
 nonn,easy

@@ -1,0 +1,100 @@
+% Route mod-p: the orthogonal (non-analytic) transcendence route for U via Christol.
+% Self-contained section. Banks the maximal-non-automaticity evidence + the verified
+% theta-telescoping that explains it, with honest proof status.
+\section{The orthogonal route: $(u_n \bmod p)$ and Christol's theorem}
+\label{sec:modp}
+
+The transcendence of $U(x)=\sum_{n\ge0}u_nx^n$ over $\mathbb Q(x)$ established in
+\S\ref{sec:transcendence} rests on the analytic gate (Lemma~\ref{lem:cos}). We
+record here an \emph{independent} line of evidence that touches none of that
+machinery, via reduction modulo a prime.
+
+\subsection{Strategy}
+Since $u_n\in\mathbb N$ are geodesic-growth counts, $U\in\mathbb Z[[x]]$.
+If $U$ were algebraic over $\mathbb Q(x)$, then for all but finitely many primes
+$p$ its reduction $U\bmod p$ would be algebraic over $\mathbb F_p(x)$, whence by
+\textbf{Christol's theorem} the coefficient sequence $(u_n\bmod p)$ would be
+$p$-automatic, i.e.\ its \emph{$p$-kernel}
+\[
+   \mathcal K_p(u)=\bigl\{\,(u_{p^k n+r})_{n\ge0}\;:\;k\ge0,\ 0\le r<p^k\,\bigr\}
+\]
+would be \emph{finite}. Contrapositively:
+\begin{equation}\label{eq:christol-contra}
+   \mathcal K_p(u)\ \text{infinite for one prime }p
+   \quad\Longrightarrow\quad
+   U\ \text{transcendental over }\mathbb Q(x),\ \text{unconditionally.}
+\end{equation}
+This needs no analytic input; it is a purely arithmetic/combinatorial criterion.
+
+\subsection{The catalytic block has an explicit $\theta$-telescoping}
+The relaxed bulk generating function obeys the catalytic functional
+equation~\eqref{eq:catalytic}, which after isolating the dilation $t\mapsto q^2t$
+(here $q=x^2$) reads
+\begin{equation}\label{eq:modp-firstorder}
+   F(q,t)=E(t)+D(t)\,F(q,q^2t),\qquad
+   D(t)=\frac{2q(q-1)\,t}{(1-qt)(1-q^2t)},\quad
+   E(t)=\frac{2qt}{1-qt}\bigl(1+F(q,q)\bigr).
+\end{equation}
+Since $F(q,0)=0$, iterating \eqref{eq:modp-firstorder} converges and telescopes.
+
+\begin{proposition}[$\theta$-telescoping of the catalytic block]\label{prop:theta-tel}
+With $(a;q)_m=\prod_{i=1}^{m}(1-aq^{i-1})$,
+\[
+   F(q,t)=\sum_{k\ge0}\alpha_k(t)\,E(q^{2k}t),
+   \qquad
+   \alpha_k(t)=\prod_{j=0}^{k-1}D(q^{2j}t)
+             =\frac{[\,2q(q-1)\,]^{k}\,t^{k}\,q^{\,k(k-1)}}{(qt;q)_{2k}},
+\]
+where $(qt;q)_{2k}=\prod_{i=1}^{2k}(1-q^{i}t)$. The exponent $q^{k(k-1)}=x^{2k(k-1)}$
+is a $\theta$\nobreakdash-/square factor; the Euler product $(qt;q)_{2k}$ in the
+denominator (pentagonal-lacunary) redistributes each $\theta$-block over all
+degrees.
+\end{proposition}
+
+\noindent\emph{Verification.} The product identity for $\alpha_k$ is a finite
+$q$-Pochhammer manipulation ($\sum_{j=0}^{k-1}(2j+1)=k^2$ in the numerator power,
+$\prod_{j<k}(1-q^{2j+1}t)(1-q^{2j+2}t)=(qt;q)_{2k}$ in the denominator), confirmed
+symbolically for $0\le k\le4$; the resulting series reproduces the bulk record
+$F(q,1)=2,2,6,2,18,6,42,18,118,50,282,190,706,594$ ($[q^{1}]\dots[q^{14}]$)
+exactly. The full true-growth series $U$ is a finite rational assembly (two bulk
+blocks, a geometric travel sum, four marker junctions) over $F$, so it inherits
+this $\theta$ structure.
+
+\subsection{Computational evidence: maximal non-automaticity}
+We computed $(u_n\bmod p)$ by the validated polynomial-time catalytic engine
+(a $1$-D collapse of the transfer, $O(N^4)$; reproduces $u_n\bmod p$ exactly for
+$n\le42$). The $p$-kernel does not merely grow---it tracks the \emph{full
+$p$-ary tree} with $O(1)$ deficit:
+\[
+\begin{array}{l|llll}
+ & k=0 & k=1 & k=2 & k=3\\\hline
+ \text{cumulative }|\mathcal K_3|\ (N=180) & 1 & 4 & 13 & 39\\
+ \text{full ternary tree} & 1 & 4 & 13 & 40\\[2pt]
+ \text{cumulative }|\mathcal K_5|\ (N=130) & 1 & 6 & 30 & -\\
+ \text{full quinary tree} & 1 & 6 & 31 & -
+\end{array}
+\]
+(per-level new sections vs.\ maxima: $p=3$, $+1,+3,+9,+26$ vs.\ $1,3,9,27$;
+$p=5$, $+1,+5,+24$ vs.\ $1,5,25$). Both counts are robust to the section-overlap
+threshold up to the data-length limit ($p=3$ at $k=3$ requires $\ge6$ shared
+points per section, which $N=180$ supplies). The subword complexity is likewise
+near-maximal ($p=3$: $3,9,27,75$ vs.\ $3^L=3,9,27,81$). This is the strongest
+signature finite data affords: the $p$-kernel and factor complexity are as large
+as possible, at two independent primes, exactly as
+Proposition~\ref{prop:theta-tel} predicts. (By contrast $p=2$ is eventually
+periodic---the dilation degenerates---so the route is specific to $p\ge3$.)
+
+\subsection{Honest status}
+By Christol, $\mathcal K_p(u)$ infinite $\iff$ $U\bmod p$ transcendental over
+$\mathbb F_p(x)$, i.e.\ the explicit partial-$\theta$/Rogers--Ramanujan series of
+Proposition~\ref{prop:theta-tel} is non-algebraic mod $p$. Finite kernel data
+establishes that $\mathcal K_p(u)$ is \emph{large} (maximal through the deepest
+reliable level), not provably \emph{infinite}. The square-support handle is
+unavailable: $(u_n\bmod p)$ is dense and base-$p$ pseudorandom (the Euler-product
+denominator fills the $\theta$ gaps), so the classical positive-characteristic
+gap/zero-set theorems (Kedlaya; Adamczewski--Bell, \emph{Invent.\ Math.}\ 2012)
+do not apply directly. Thus this route is genuinely \emph{orthogonal in method}
+(automata over $\mathbb F_p(x)$, no analytic gate) and yields unconditional,
+maximal evidence, while a proof reduces to the same underlying
+$\theta$/square obstruction met by the analytic route and by
+Route~D's $x^{k^2}$ specialization.

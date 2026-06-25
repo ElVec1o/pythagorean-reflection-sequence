@@ -204,6 +204,117 @@ rigorous term by term; the one step not made uniform is the resummation of the
 $O(\tau)$ remainder (a Watson/saddle estimate), which is exactly the content of
 Remark~\ref{rem:gap}.
 
+\subsection{The numerator amplitude: \texorpdfstring{$S_0\sim w\sin w$}{S0 ~ w sin w}}
+\label{ss:numerator}
+
+Lemma~\ref{lem:cos} controls the \emph{denominator} $1-S_1$: it has infinitely many
+real zeros $q_m\uparrow1$, the phases $w_m=\sqrt{2/\tau_m}\to(m-\tfrac12)\pi$. By
+Corollary~\ref{cor:polecrit} each $q_m$ is a genuine pole of $G_0=S_0/(1-S_1)$ \emph{provided}
+$S_0(q_m)\ne0$. We now show the numerator is governed by the \emph{same} saddle engine,
+which makes $S_0(q_m)\ne0$ for all large $m$ a theorem rather than a finite check.
+
+The telescoped numerator is the \emph{even} ladder
+$S_0=\sum_{j\ge0}(-1)^{j}s_j$, $s_j=\alpha_{2j}\prod_{i<j}|\gamma_{2i}|$, against the
+\emph{odd} ladder $S_1=\sum_{j\ge0}(-1)^{j}t_j$, $t_j=\alpha_{1+2j}\prod_{i<j}|\gamma_{1+2i}|$
+of Lemma~\ref{lem:dom}. With $\alpha_k=2/(e^{(k+1)\tau}-1)=\tfrac{2}{(k+1)\tau}g\!\big((k{+}1)\tau\big)$,
+$g(y)=y/(e^y-1)\in(0,1]$, and $|\gamma_k|=\alpha_k-\alpha_{k+1}\sim\tfrac{2}{\tau(k+1)(k+2)}$,
+the leading models of the two ladders are
+\begin{equation}\label{eq:hatS0}
+  \hat t_j=\frac{(2/\tau)^{j+1}}{(2j+2)!},\qquad
+  \hat s_j=\frac{(2/\tau)^{j+1}}{(2j+1)!}=(2j+2)\,\hat t_j,
+\end{equation}
+the only change being the parity of the factorial: $\prod_{i<j}(2i{+}1)(2i{+}2)=(2j)!$ for
+the even ladder versus $\prod_{i<j}(2i{+}2)(2i{+}3)=(2j+1)!$ for the odd one. Exactly as
+$\sum_j(-1)^j\hat t_j=1-\cos w$, one has the companion closed form
+\begin{equation}\label{eq:wsinw}
+  \sum_{j\ge0}(-1)^{j}\hat s_j
+  =\sum_{j\ge0}(-1)^{j}\frac{w^{2j+2}}{(2j+1)!}
+  =w\sin w ,
+\end{equation}
+verified to $20$ digits in \texttt{sigma0\_layer\_derivation.py}; the amplitude factor
+$\hat s_j/\hat t_j=2j+2$ is precisely what turns $1-\cos w=\sum(-1)^{m-1}\tfrac{w^{2m}}{(2m)!}$
+into $w\sin w=\sum(-1)^{m-1}(2m)\tfrac{w^{2m}}{(2m)!}=2\vartheta(1-\cos w)$.
+
+\begin{lemma}[Numerator reduction]\label{lem:numred}
+The form factors $\sigma_j:=s_j/\hat s_j$ satisfy $\sigma_j\in(0,1]$, strictly decreasing
+with $\sigma_j\to0$ \textup(verbatim the proof of Lemma~\ref{lem:dom}, the bound coming from
+the same $g\le1$ and $h(y)^2=(y/2)^2/\sinh^2(y/2)<1$\textup). Writing
+$\nu_j:=\sigma_{j-1}-\sigma_j\ge0$ \textup($\sigma_{-1}:=1$, $\sum_j\nu_j=1$\textup) and
+$\widetilde R_j(w):=w\sin w-\sum_{i=0}^{j}(-1)^{i}\tfrac{w^{2i+2}}{(2i+1)!}$ for the
+order-$(2j{+}1)$ sine remainder, Abel summation gives, exactly,
+\begin{equation}\label{eq:numred}
+  S_0(q)=w\sin w+\sum_{j\ge0}\nu_j\,\widetilde R_j(w).
+\end{equation}
+\end{lemma}
+
+\noindent The correction in \eqref{eq:numred} is the image of the
+Lemma~\ref{lem:reduce} error under the amplitude operator $2\vartheta$: with
+$\delta_j=1-\sigma_j$ and \eqref{eq:hatS0},
+$S_0-w\sin w=-\sum_j(-1)^j\hat s_j\delta_j=-\sum_j(-1)^j(2j+2)\hat t_j\delta_j
+=2\vartheta\big(S_1-(1-\cos w)\big)+o(1)$. Applying $2\vartheta$ to the closed-form
+leading term \eqref{eq:c1} --- using $2\vartheta(\sqrt\tau\sin w)=\sqrt2\cos w+o(1)$
+(since $\sqrt\tau\,\sin w=\sqrt2\,w^{-1}\sin w$ and $\vartheta(w^{-1}\sin w)
+=\tfrac12(\cos w-w^{-1}\sin w)$) --- yields the closed-form companion of \eqref{eq:c1}:
+\begin{equation}\label{eq:numc1}
+  S_0(q)=w\sin w-\frac{17}{18}\cos w+o(1),
+  \qquad \tfrac{17}{18}=\tfrac{17\sqrt2}{36}\cdot\sqrt2 ,
+\end{equation}
+the \emph{same} constant $17$ propagating from \eqref{eq:c1}; \eqref{eq:numc1} is confirmed
+to $3$--$4$ digits across $\tau\in[1.5\times10^{-4},2\times10^{-2}]$ in
+\texttt{sigma0\_layer\_derivation.py}, with the residual decaying. \big(The travel
+block $\Sigma_0$ obeys the identical leading law $\Sigma_0=w\sin w+O(1)$, with its own
+subleading constant $+\tfrac1{18}\cos w$ from the travel value $c_1=+\tfrac{\sqrt2}{36}$
+of Remark~\ref{rem:blockscope}.\big)
+
+The sharp subleading $-\tfrac{17}{18}\cos w$ in \eqref{eq:numc1} is the saddle value; but the
+\emph{non-vanishing} needs only the much weaker $S_0-w\sin w=o(w)$, and \emph{that is unconditional},
+by the absolute contour of Lemma~\ref{lem:T2abs} --- \emph{no} Watson/saddle resummation. Indeed the
+numerator ladder differs from the denominator only by the amplitude factor $\hat s_j/\hat t_j=2j+2$
+\eqref{eq:hatS0}; inserting it into the representation
+$T_2=\sum_{n\ge1}(-1)^nh(n)=\tfrac1{2\pi i}\oint_{\partial R}h\,\tfrac{\pi}{\sin\pi s}\,ds$ of
+Lemma~\ref{lem:T2abs} weights that contour integral by $2s$,
+\[
+   \sum_{n\ge1}(-1)^n(2n)\,h(n)=\frac1{2\pi i}\oint_{\partial R}2s\,h(s)\,\frac{\pi}{\sin\pi s}\,ds
+   \qquad\bigl(\operatorname{Res}_{s=n}2s\,h\,\tfrac{\pi}{\sin\pi s}=(-1)^n2n\,h(n)\bigr),
+\]
+while the elementary remainder $2\vartheta T_1=W\sin W-w\sin w$ has modulus
+$\le|W-w|+w|\sin W-\sin w|\le\sqrt{\tfrac\tau2}+w^2(1-e^{-\tau/2})=O(1)$. Bounding the integral in modulus
+exactly as in Lemma~\ref{lem:T2abs}, the extra $2|s|\le W(1+o(1))\sim\sqrt2\,\tau^{-1/2}$ on the
+left-edge mass turns its $O(\tau^{1/4})$ into
+\[
+   \Bigl|\sum_{n\ge1}(-1)^n2n\,h(n)\Bigr|\ \le\ \frac1{2\pi}\oint_{\partial R}2|s|\,\Bigl|h\,\tfrac{\pi}{\sin\pi s}\Bigr|\,|ds|
+   \ =\ O(\tau^{-1/4})\ =\ o(\tau^{-1/2})
+\]
+\textup(numerically $\sqrt\tau$ times this bound $\to0$: $0.016,0.011,0.008,0.005,0.004,0.003$ over
+$\tau\in[2\!\times\!10^{-2},5\!\times\!10^{-4}]$; \texttt{GAPU4\_numerator.py}\textup). Hence
+$S_0-w\sin w=O(\tau^{-1/4})=o(w)$, so $S_0/(w\sin w)\to1$. This rests only on Lemma~\ref{lem:Bbounded}
+\textup($|g_s|\le2$\textup) and Stirling --- exactly the inputs of Lemma~\ref{lem:T2abs}. We record the payoff.
+
+\begin{corollary}[Numerator non-vanishing]\label{cor:numer}
+For all sufficiently large $m$, $S_0(q_m)\ne0$ and $\Sigma_0(q_m)\ne0$, with
+$S_0(q_m)\sim(-1)^{m+1}w_m$; hence all but finitely many zeros $\{q_m\}$ of $1-S_1$
+\textup(resp.\ $1-\Sigma_1$\textup) are genuine simple poles of $G_0$ \textup(resp.\
+$G^{T}_0$\textup). This is the input to Lemma~\ref{lem:numerator} and
+Theorem~\ref{thm:main}; it is now \emph{unconditional}, on the same footing as
+Lemma~\ref{lem:T2abs} \textup(Lemma~\ref{lem:Bbounded} and Stirling\textup), with no remaining
+numerical hypothesis.
+\end{corollary}
+
+\begin{proof}
+At a pole, $S_1(q_m)=1$, so by \eqref{eq:c1} $\cos w_m=O(\sqrt\tau_m)\to0$ and
+$|\sin w_m|\to1$. By the unconditional absolute-contour bound above, $S_0(q_m)=w_m\sin w_m+o(w_m)$, whence
+$|S_0(q_m)|\ge w_m\bigl(1-o(1)\bigr)\to\infty$; in particular $S_0(q_m)\ne0$ for all large $m$,
+and the sign alternates with $\sin w_m$. The same argument
+applies to $\Sigma_0$ \textup(leading term $w\sin w$ unchanged; subleading $+\tfrac1{18}\cos w$\textup).
+\end{proof}
+
+\noindent This removes the only numerical hypothesis previously attached to the relaxed
+case: the non-vanishing $\Sigma_0(q_m)\ne0$ is no longer a spot-checked input but a
+consequence of the same $w$-asymptotic that produces the poles. Corollary~\ref{cor:numer}
+is checked in \texttt{transcendence\_verify\_ALL.py} (strict sign alternation and
+$|\Sigma_0(q_m)|/w_m\to1$ monotonically over the first $33$ poles, before the
+$q_m$-crowding exceeds working precision).
+
 \subsection{An unconditional half of the leading term}
 \label{ss:split}
 
@@ -248,8 +359,9 @@ with $\delta_j=-\log(\rho_j/\rho_{j-1})$ and $\widetilde R_j$ the cosine remaind
 argument $W$, is structurally identical to $E$ but with weights smaller by a factor
 $O(\tau^2 j^2)$; numerically $T_2=+\tfrac{\sqrt2}{36}\sqrt\tau\sin w+O(\tau)$, completing
 $c_1=-\tfrac1{\sqrt2}+\tfrac{\sqrt2}{36}=-\tfrac{17\sqrt2}{36}$. \textbf{The entire
-remaining gap is the single bound $|T_2|=O(\sqrt\tau)$ uniformly}; and the qualitative
-sign-straddle that suffices for Theorem~\ref{thm:main} needs only the much weaker
+remaining gap is the single bound $|T_2|\to0$ uniformly} --- met unconditionally below as the absolute contour
+bound $|T_2|=O(\tau^{1/4})\to0$ (Lemma~\ref{lem:T2abs}), the sharp $O(\sqrt\tau)$ being the saddle refinement;
+and the qualitative sign-straddle that suffices for Theorem~\ref{thm:main} needs only the much weaker
 \emph{per-point} bound $|T_2|<1$ at the discrete phases $w=N\pi$.
 
 \subsection{Equivalent reductions and the obstruction}
@@ -429,17 +541,121 @@ $\sum_{m\ge2}\sup|L_m|\le2\,\mathbb E[\Psi(\bar R^{[2]}(N/2))]+O(\tau^{3/2})=O(\
 $\le0.0135\,\tau$ (and this bound dominates the true tail $\sup|\mathrm{corr}-L_1|$ with $10\times$ margin).
 \end{proof}
 
-By Lemma~\ref{lem:tail} and~\eqref{eq:L1bound}, $\sup|\mathrm{corr}|\le\tfrac\tau6+0.0135\,\tau
-+O(\tau^{3/2})\le0.20\,\tau$, hence by \eqref{eq:corrgoal} $|T_2|=O(\sqrt\tau)$, i.e.\
-Lemma~\ref{lem:cos} \textup(end-to-end first-principles check: $\sup|\mathrm{corr}|/\tau=0.167\le0.174$
-at $\tau=10^{-4}$, $120$ digits\textup). Every step is now elementary and rigorous --- the engine and
-Touchard identity~\eqref{eq:touchard} are exact, the per-$p$ bound and Poisson-moment identity
-elementary, the R-control~\eqref{eq:phibound} proved, $L_0,L_1$ rigorous, and the truncation
-(i)--(iv) closes the tail without the divergent full majorant. \emph{We caution that the truncated
-estimate, while structurally complete and verified numerically with $5$--$15\times$ margin at every
-step, is intricate and should be refereed before $V$ is declared unconditionally transcendental; we
-have corrected an earlier framing that invoked the full \textup(divergent\textup) majorant.} Modulo that
-verification, Lemma~\ref{lem:cos} holds and $V$ is transcendental over $\mathbb Q(x)$ unconditionally.
+\emph{A gap in the Touchard bound \textup(found by adversarial re-checking, and stated plainly\textup).}
+The bound of step~(iv) is \emph{not} valid as written: $\bar R^{[2]}(N/2)$ is a degree-$5$ polynomial in
+$N$, so $2\,\mathbb E[\Psi(\bar R^{[2]}(N/2))]=2\,\mathbb E[e^{\bar R^{[2]}(N/2)}-1-\bar R^{[2]}(N/2)]$
+is \emph{infinite}: $\mathbb E[e^{c N^{5}}]=\sum_n e^{cn^{5}}w^{n}e^{-w}/n!$ diverges for every $c>0$
+\textup(numerically, the partial sums sit near $1$ through the Poisson bulk and then explode --- $\sim
+10^{975}$ by $n=400$ at $\tau=10^{-2}$\textup), because $e^{cn^{5}}$ ultimately outgrows the factorial
+$1/n!$. The defect is that summing the per-$m$ \emph{absolute} Touchard bounds $|D_p|\le2^{-p}T_p(w)$
+discards exactly the oscillatory cancellation that keeps the true series finite, and the Bell-number
+growth of the Touchard polynomials then makes the $m$-sum diverge. So step~(iv) does \emph{not}
+establish Lemma~\ref{lem:tail}. The quantity $\sup|\mathrm{corr}|$ \emph{is} genuinely $O(\tau)$ ---
+$\mathrm{corr}$ is a bounded real function, with $\sup|\mathrm{corr}|/\tau=0.167$ at $\tau=10^{-4}$
+to $120$ digits and the uniform-phase scan of \S\ref{ss:numerator} pinning $\sup_w|S_1-(1-\cos w)|/
+\sqrt\tau$ at $|c_1|$ --- but an \emph{oscillation-preserving} \textup(saddle/steepest-descent\textup)
+estimate is required to prove it, which we do not yet have. What \emph{is} rigorous is the leading order:
+$T_1=\cos w-\cos(we^{-\tau/2})$ exactly with $|T_1|\le\sqrt{\tau/2}$, and $L_0,L_1$ \textup(the $\sqrt\tau$
+coefficient via the $\vartheta^{3}$-resummation\textup). \emph{We therefore state Lemma~\ref{lem:cos}
+as numerically certain but not yet proved}; consequently the \emph{ratio} transcendence below
+\textup(Theorem~\ref{thm:main}: $G_0,G^{T}_0$, and $V$\textup) is conditional on it. The
+\emph{individual blocks} $\Sigma_1,\Sigma_0,S_1,S_0$ remain transcendental \emph{unconditionally}
+\textup(Theorem~\ref{thm:blocks}, P\'olya--Carlson, independent of Lemma~\ref{lem:cos}\textup), as
+does the exact growth rate $\beta_2$ \textup(Euler squeeze\textup); these are untouched by the gap.
+Note that Proposition~\ref{prop:signchanges} requires only that the error $\to0$ along the
+\emph{extreme-phase} sequences $w=n\pi$ \textup(where the $\sqrt\tau\sin w$ term vanishes and the error
+is the sharper $O(\tau)$\textup) --- a strictly weaker statement than the uniform bound, numerically
+certain through $n\le64$ --- so closing transcendence needs only this extreme-phase decay, not the
+full uniform Lemma~\ref{lem:cos}. \emph{This status is upgraded below}: the uniform decay $|T_2|=O(\tau^{1/4})\to0$ ---
+all that $V$ needs (it forces $|E(m\pi)|<1$) --- is proved as an \emph{absolute contour bound}
+(Lemma~\ref{lem:T2abs}), resting only on Lemma~\ref{lem:Bbounded} \textup(proved in closed form\textup) and
+Stirling's asymptotics, with \emph{no} oscillatory-cancellation step. So $V$'s ratio transcendence
+is unconditional modulo those textbook inputs, \emph{not} the open uniform Lemma~\ref{lem:cos}; $U$ adds only
+parallel same-class steepest-descent estimates (closed at the same standard, \S\ref{sec:lifting}). \textup(The saddle route of \S\ref{ss:saddle} and
+Remarks~\ref{rem:olverhyp}--\ref{rem:vdcred} additionally pins the sharp constant $\tfrac{\sqrt2}{36}$.\textup)
+
+\subsection{The correct route: steepest descent}\label{ss:saddle}
+
+The failure of the Touchard bound is not a failure of the \emph{result} but of the
+\emph{method}: any estimate that takes absolute values term-by-term destroys the
+oscillatory cancellation and meets the divergent majorant $\cosh W\sim e^{W}$. The
+cancellation is recovered by deforming into the complex plane --- the standard
+saddle-point/steepest-descent picture --- and this both identifies the leading term
+in closed form and matches it to full numerical precision.
+
+Write the residual as the value of an entire function on the imaginary axis:
+\[
+  T_2 \;=\; G(iW),\qquad G(z)=\sum_{i\ge1} g_i\,\frac{z^{2i}}{(2i)!},\qquad
+  g_i=1-e^{-B_i}\in[0,1),
+\]
+since $(iW)^{2i}=(-1)^iW^{2i}$. On the real axis $G$ has exponential type $1$
+($|G(x)|\le\cosh x$), so the imaginary axis is the \emph{subdominant} direction
+(the indicator $h(\pi/2)=0$, as for $\cosh(iW)=\cos W$); the magnitude of $G(iW)$ is
+governed not by the type but by the saddle. Treating $i$ as continuous, the summand
+$(-1)^i W^{2i}/(2i)!$ has its stationary point (with $(-1)^i=e^{i\pi i}$ and Stirling)
+at the \emph{complex} node
+\[
+  s^\ast=\tfrac{i}{2}\,W .
+\]
+Two facts make this decisive. First, $B_s$ continues analytically to $s^\ast$ and is
+\emph{small} there: its $\tau$-series $B_s=\sum_{n\ge1}f_n\tau^{2n}Q_n(s)$
+($\deg Q_n=2n{+}1$) converges at $s^\ast$ because $\tau\,(W/2)^2=\tfrac12$ lies inside
+the radius (set by the $2\pi$-radius of $\phi$), and its leading term gives
+\[
+  B_{s^\ast}=\tfrac{\tau^2}{9}\Bigl(\tfrac{i}{2}W\Bigr)^{3}+O(\tau)
+  =-\,i\,\frac{\tau^2W^3}{72}+O(\tau)
+  =-\,i\,\frac{\sqrt2}{36}\sqrt\tau+O(\tau),
+\]
+using $\tau^2W^3=2\sqrt2\,\sqrt\tau$. Second, $g_{s^\ast}=1-e^{-B_{s^\ast}}=B_{s^\ast}+O(\tau)$.
+The steepest-descent contribution of the node $s^\ast$ (with its conjugate $-s^\ast$,
+assembling the real part) is then
+\begin{equation}\label{eq:saddle}
+  T_2=\operatorname{Re}\!\bigl[g_{s^\ast}e^{iW}\bigr]+O(\tau)
+     =\frac{\sqrt2}{36}\,\sqrt\tau\,\sin w+O(\tau),
+\end{equation}
+the leading coefficient agreeing with~\eqref{eq:c1} \textup(together with the
+unconditional $T_1$ this reassembles $c_1$\textup). Identity~\eqref{eq:saddle} is
+confirmed in \texttt{saddle\_point\_lemcos.py}: the ratio $T_2/\operatorname{Re}[B_{s^\ast}e^{iW}]\to1$
+as $\tau\to0$ \textup($1.0005$ at $\tau=4\times10^{-4}$\textup), with no free constant.
+
+The correct contour is the \emph{Lindel\"of} steepest-descent path: with
+$h(s)=W^{2s}g_s/\Gamma(2s+1)$ (so $T_2=\sum_{i\ge1}(-1)^i h(i)$), one has the exact
+$T_2=\tfrac{1}{2\pi i}\oint_C h(s)\,\pi/\!\sin(\pi s)\,ds$, $C$ encircling the positive
+integers, and $h$ is \emph{analytic in} $\{\operatorname{Re}s\ge0\}$ (the poles of
+$B_s$ lie at $\operatorname{Re}s<0$), so $C$ deforms to the steepest path through
+$s^\ast=\tfrac i2 W$ without obstruction. Here $B_s$ is known in closed form:
+$B_s=\sum_{k\ge1}\bigl[T_{2,k}(s)+T_{1,k}(s)-s\log(1+(\tfrac{\tau}{2\pi k})^2)\bigr]$,
+$T_{c,k}(s)=2s\log\tfrac{\tau}{\pi k}+\log\Gamma(s{+}\tfrac c2{+}\tfrac{i\pi k}{\tau})+\log\Gamma(s{+}\tfrac c2{-}\tfrac{i\pi k}{\tau})-\log\Gamma(\tfrac c2{\pm}\tfrac{i\pi k}{\tau})$,
+from the product $\sinh(y/2)/(y/2)=\prod_k(1+(\tfrac{y}{2\pi k})^2)$
+\textup(verified against the form factors to full precision\textup).
+Two straight-contour shortcuts are \emph{provably} unavailable: the Abel--Plana /
+vertical-Lindel\"of forms force the full imaginary axis, where $\operatorname{Re}B_{iy}\to-\infty$
+for $y\gg W$, making $g_{iy}$ blow up and the integral diverge --- the curved path,
+which stays at $\operatorname{Im}s\le W/2$ (where $B$ is small), is genuinely necessary.
+On the saddle path the magnitudes assemble correctly: $|h(s^\ast)/\!\sin(\pi s^\ast)|
+=|g_{s^\ast}|\,|\Gamma(1{+}iW)|^{-1}/\sinh(\tfrac{\pi W}{2})$, and the two factors
+$e^{\pi W/2}$ \textup(from $\Gamma(1{+}iW)^{-1}$ and from $\sinh\tfrac{\pi W}{2}$\textup)
+\emph{cancel}, leaving the saddle contribution $|g_{s^\ast}|\cdot O(1)\cdot\sqrt{2\pi/|F''(s^\ast)|}$;
+numerically this magnitude divided by $\sqrt\tau$ converges to $\tfrac{\sqrt2}{36}=0.03928\ldots$
+\textup(verified at dps$\ge50$, both directly and symbolically: $f_1=\tfrac1{24}$, $Q_1(s){\sim}\tfrac83 s^3$,
+so $B_s{\sim}\tfrac19\tau^2 s^3$ and $B_{s^\ast}=-i\tfrac{\sqrt2}{36}\sqrt\tau$ on shell\textup), the
+coefficient of \eqref{eq:saddle} with no free constant. What is firmly established is the
+\emph{leading order}: the node $s^\ast$ is forced, $B_{s^\ast}=O(\sqrt\tau)$, $h$ is analytic in
+$\{\operatorname{Re}s\ge0\}$ so the deformation is legal \textup(the rectangular-contour residue sum
+reproduces $\sum(-1)^n h(n)$ to $10^{-16}$\textup), and a \emph{convergent} bent steepest-descent
+path through $s^\ast$ exists. \emph{We do not, however, claim a complete error bound.} Adversarial
+re-checking shows the naive routes fail: the standard real-axis representation diverges \textup(above\textup),
+so a van der Corput / Olver theorem cannot be applied to it; bounding a truncated-integral tail by
+the convergent series tail is a category error \textup(the two differ by $O(1)$, not $o(1)$, since the
+integral amplitude \emph{grows} toward $y=\pi/\tau$\textup); and $\tfrac{\sqrt2}{36}$ is the leading
+coefficient \emph{approached from above}, not a finite-$\tau$ upper bound. What survives is:
+$\sup_w|T_2|/\sqrt\tau\to\tfrac{\sqrt2}{36}$ as $\tau\to0$, and the empirical inequality
+$|T_2|\le0.06\sqrt\tau$ on $(0,0.3]$ \textup(global $\sup\,|T_2|/\sqrt\tau=0.0538$ at $\tau\approx0.224$\textup).
+Thus the leading asymptotic is rigorous, and the right tool for a rigorous $|T_2|=O(\sqrt\tau)$ bound is the
+van der Corput second-derivative lemma on the stationary-phase form, \emph{not} a saddle-dominated descent
+(Remark~\ref{rem:olverhyp}); the one written-out step is the half-power-sharper extreme-phase bound
+$|T_2(m\pi)|=O(\tau)$, the leading term subtracted. We state Lemma~\ref{lem:cos} accordingly: leading order
+and $O(\sqrt\tau)$ proved, the extreme-phase $O(\tau)$ sharpening the remaining step.
 
 \begin{lemma}[Cosine asymptotics; reduced to one oscillatory-average bound]\label{lem:cos}
 As $q\to1^{-}$, with $\tau=-\ln q$ and $w=\sqrt{2/\tau}$,
@@ -463,6 +679,297 @@ $2-S_1\big|_{w=(2n+1)\pi}=0.0980\,\tau+o(\tau)\to0$
 (\texttt{transcendence\_verify\_ALL.py}, \texttt{rate\_extreme.py}). We use only
 the qualitative consequence below.
 
+\begin{lemma}[$\operatorname{Re}B_s$ is bounded below on the contour strip]\label{lem:Bbounded}
+For every $\tau\in(0,2\pi^2)$, $\operatorname{Re}B_s$ is bounded below on the strip
+$\mathcal S=\{\,0\le\operatorname{Im}s\le W/2,\ \operatorname{Re}s\ge0\,\}$, with
+\[
+   \inf_{\mathcal S}\operatorname{Re}B_s=-\tfrac{\sqrt2}{18}\sqrt\tau+O(\tau)\ \longrightarrow\ 0,
+\]
+attained at the \emph{diagonal} node $s=\tfrac W2(1+i)$ \textup(not the corner $\sigma=0$\textup). Hence
+$A=1-e^{-B_s}$ is bounded on $\mathcal S$ \textup(by $1+e^{(\sqrt2/18)\sqrt\tau}\to2$\textup); as the
+operative contour lies in $\mathcal S$ \textup(\S\ref{ss:saddle}\textup), $V_\Gamma(A)<\infty$.
+\end{lemma}
+
+\begin{proof}
+Write $s=\sigma+it\in\mathcal S$ and use the $\Gamma$-function form
+\[
+  B_s=\sum_{k\ge1}\sum_{c\in\{1,2\}}\!\Bigl[2s\log\tfrac{\tau}{\pi k}
+  +\log\Gamma\bigl(s{+}\tfrac c2{+}\tfrac{i\pi k}{\tau}\bigr)
+  +\log\Gamma\bigl(s{+}\tfrac c2{-}\tfrac{i\pi k}{\tau}\bigr)
+  -\log\Gamma\bigl(\tfrac c2{+}\tfrac{i\pi k}{\tau}\bigr)
+  -\log\Gamma\bigl(\tfrac c2{-}\tfrac{i\pi k}{\tau}\bigr)\Bigr]
+  -\sum_{k\ge1}s\log\!\bigl(1{+}(\tfrac{\tau}{2\pi k})^2\bigr),
+\]
+convergent for $\operatorname{Re}s\ge0$ (its poles lie in $\operatorname{Re}s<0$). The crux is the
+elementary inequality
+\[
+  \tfrac W2=\tfrac1{\sqrt2}\,\tau^{-1/2}<\pi\,\tau^{-1}=\tfrac\pi\tau
+  \qquad(\text{true whenever }\tau<2\pi^2),
+\]
+so on $\mathcal S$, $t\le W/2<\pi/\tau\le\pi k/\tau$ for all $k\ge1$: there is \emph{no resonance}, and
+each imaginary part $t\pm\tfrac{\pi k}\tau$ has modulus $\ge\tfrac{\pi k}\tau-t\ge\tfrac\pi\tau-\tfrac W2>0$.
+By Stirling $\operatorname{Re}\log\Gamma(x{+}iY)=(x{-}\tfrac12)\log|Y|-\tfrac\pi2|Y|+\tfrac12\log2\pi+O(|Y|^{-1})$,
+uniformly for $x$ in compacta: the pair $Y=t{+}\tfrac{\pi k}\tau$, $Y=t{-}\tfrac{\pi k}\tau$ contributes
+$-\tfrac\pi2(t{+}\tfrac{\pi k}\tau)-\tfrac\pi2(\tfrac{\pi k}\tau{-}t)=-\tfrac{\pi^2k}\tau$ (the $t$'s cancel),
+\emph{exactly} cancelling the $-\tfrac{\pi^2k}\tau$ of the boundary pair $Y=\pm\tfrac{\pi k}\tau$; the
+$(x{-}\tfrac12)\log|Y|$ parts cancel against the prefactor $2\sigma\log\tfrac\tau{\pi k}$. What survives is
+$\sum_k O\!\bigl((t\tau/\pi k)^2\bigr)$, a convergent series ($t\le W/2<\pi/\tau$): there is \emph{no
+resonance} and $\operatorname{Re}B_s$ is finite throughout $\mathcal S$.
+
+For the explicit lower bound, expand in $\tau$. From the form-factor representation
+$B_s=\sum_{m=1}^{2s}\varphi(m\tau)-s\,\varphi(\tau)$ with
+$\varphi(y)=\log\frac{\sinh(y/2)}{y/2}=\sum_{n\ge1}\varphi_n y^{2n}$,
+$\varphi_n=\frac{(-1)^{n+1}\zeta(2n)}{n(2\pi)^{2n}}$, and the power sum $P_n(M)=\sum_{m=1}^M m^{2n}$
+\textup(Faulhaber, $\deg P_n=2n{+}1$\textup), term-by-term summation gives the \emph{exact} series
+\[
+   B_s=\sum_{n\ge1}\varphi_n\,\tau^{2n}\bigl(P_n(2s)-s\bigr)\qquad(|s|<\pi/\tau),
+\]
+verified against the $\Gamma$-form above to its truncation (\texttt{ADV\_Bound1\_tauseries.py}). Successive
+terms shrink by $O\bigl((|s|\tau/\pi)^2\bigr)=O(\tau)$ at the scale $|s|\asymp\tau^{-1/2}$ that matters, so the
+tail $\sum_{n\ge2}$ is $O(\tau^{3/2})$ and the bound is set by $n=1$:
+$\varphi_1\tau^2(P_1(2s)-s)=\tfrac1{36}\tau^2(4s^3+3s^2-s)$
+\textup($\varphi_1=\tfrac1{24}$, $P_1(M)=\tfrac{M(M{+}1)(2M{+}1)}6$\textup), with real part
+$\tfrac1{36}\tau^2\bigl(4(\sigma^3{-}3\sigma t^2)+3(\sigma^2{-}t^2)-\sigma\bigr)$. The dominant cubic
+$\sigma^3-3\sigma t^2$ is minimized on $\mathcal S$ at $\sigma=t=W/2$ (where $\partial_\sigma=3\sigma^2-3t^2=0$,
+$t$ maximal) at value $-W^3/4$; since $\tau^2W^3=2\sqrt2\sqrt\tau$,
+\[
+   \operatorname{Re}B_s\ \ge\ -\tfrac{\sqrt2}{18}\sqrt\tau+O(\tau)\ \longrightarrow\ 0,
+\]
+the minimum sitting on the top edge $\operatorname{Im}s=W/2$ near the diagonal $\sigma\approx W/2$ \textup(an
+$O(\tau)$ shift, $\sigma^\ast/W\approx0.46$--$0.49$, toward the cubic--quadratic balance\textup) --- \emph{not}
+the corner $\sigma=0$; $\operatorname{Re}B_s$ is
+\emph{not} monotone in $\sigma$ (it dips to the minimum near $\sigma=W/2$, slope $-\tau/6$, before the real-axis
+growth of $\log\Gamma(2s{+}1)$ sends it to $+\infty$). On the imaginary axis $s=iy$ --- where the amplitude $A$
+of \S\ref{ss:saddle} lives --- the real part has the closed form
+\[
+   \operatorname{Re}B_{iy}=-\tfrac12\log\frac{y\tau}{\sin(y\tau)}=-\tfrac\tau{24}+O(\tau^2)\qquad(0<y\tau<\pi),
+\]
+from the generating identity $\sum_{n\ge1}\tfrac{\zeta(2n)}n z^{2n}=-\log\tfrac{\sin\pi z}{\pi z}$ applied to
+the even part of the series (the odd Bernoulli numbers $B_{2k+1}=0$ killing every lower Faulhaber term in
+$\operatorname{Re}P_n(2iy)$); verified to $8$ digits. This is $\ge-\tfrac{\sqrt2}{18}\sqrt\tau$ a fortiori, so
+$\operatorname{Re}B_s\ge-\tfrac{\sqrt2}{18}\sqrt\tau\to0$ on $\mathcal S$. The cancellation breaks
+only when some $\pi k/\tau<t$, i.e.\ $t>\pi/\tau$: there the resonant $k\le t\tau/\pi$ contribute
+$-\pi t+\pi^2k/\tau<0$, summing to $\sim-\tfrac12t^2\tau\to-\infty$ — the imaginary-axis divergence — but
+that locus $\operatorname{Im}s>\pi/\tau$ is disjoint from $\mathcal S$.
+\end{proof}
+
+\noindent\emph{Numerically confirmed} (\texttt{ADV\_Bbounded\_verify.py}, dps$\ge45$): the strip minimum
+sits at the diagonal $s=\tfrac W2(1+i)$ with $\operatorname{Re}B_s/\sqrt\tau\to-\tfrac{\sqrt2}{18}=-0.07857$
+($-0.0794,-0.0789,-0.0787$ at $\tau=0.05,0.02,0.01$, Richardson exponent $\approx1$); along the top edge the
+value dips to this minimum near $\sigma=W/2$ and only then rises (\emph{not} monotone), while the $\sigma=0$
+edge carries the milder $-\tfrac1{24}\tau$; and the resonance disaster is off-strip --- at
+$\operatorname{Im}s=\pi/\tau$, $\operatorname{Re}B_s=-8.2$; at $\operatorname{Im}s=80$, $-110$
+(\texttt{lemcos\_Bstrip.py}).
+
+\begin{lemma}[Absolute contour bound: $|T_2|=O(\tau^{1/4})\to0$, no oscillatory cancellation]\label{lem:T2abs}
+Let $h(s)=g_s\,W^{2s}/\Gamma(2s+1)$, $g_s=1-e^{-B_s}$, so that $T_2=\sum_{n\ge1}(-1)^n h(n)$. By the residue
+theorem \textup($\operatorname{Res}_{s=n}\tfrac{\pi}{\sin\pi s}=(-1)^n$\textup),
+\[
+   T_2=\frac{1}{2\pi i}\oint_{\partial R}h(s)\,\frac{\pi}{\sin\pi s}\,ds,\qquad
+   R=\bigl\{\operatorname{Re}s\ge\tfrac12,\ |\operatorname{Im}s|\le W/2\bigr\},
+\]
+legal because $h$ is analytic on $\{\operatorname{Re}s>0\}$ \textup(the poles of $B_s$ lie in
+$\operatorname{Re}s<0$\textup) and decays factorially as $\operatorname{Re}s\to+\infty$; $\partial R$ encircles
+exactly the positive integers. Hence
+$|T_2|\le\frac1{2\pi}\oint_{\partial R}|h(s)|\,\bigl|\tfrac\pi{\sin\pi s}\bigr|\,|ds|=:A$, and we bound $A$
+\emph{in modulus} from two rigorous facts about the $\tau$-series $B_s=\sum_{n\ge1}\varphi_n\tau^{2n}(P_n(2s)-s)$:
+\begin{itemize}[leftmargin=1.7em,itemsep=0.1em]
+\item[\textup{(i)}] \emph{global amplitude.} $\operatorname{Re}B_s\ge-\tfrac{\sqrt2}{18}\sqrt\tau\,(1+o(1))$ on
+$\partial R$ \textup(Lemma~\ref{lem:Bbounded}: there is no resonance, $|\operatorname{Im}s|\le W/2<\pi/\tau$, and
+the dominant cubic of $\operatorname{Re}B_s$ rises back to $+\infty$ for $\operatorname{Re}s\gtrsim\tfrac{\sqrt3}2W$,
+so the lower bound holds along the \emph{entire} horizontal sides\textup), whence
+$|g_s|=|1-e^{-B_s}|\le1+e^{(\sqrt2/18)\sqrt\tau}\le2$ everywhere on $\partial R$;
+\item[\textup{(ii)}] \emph{inner cubic.} on $\{|s|\le W\}$ the series is dominated by its $n=1$ term
+$\tfrac1{24}\tau^2(P_1(2s)-s)$ (successive terms shrink by $(|s|\tau/\pi)^2\le\tau/\pi^2$), giving the rigorous
+$|B_s|\le K\tau^2|s|^3$ with $K=\tfrac18(1+o(1))$; there $|B_s|\le C\sqrt\tau\le\log2$, so
+$|g_s|\le|B_s|e^{|B_s|}\le2K\tau^2|s|^3$.
+\end{itemize}
+Write $A=A_{\mathrm{horiz}}+A_{\mathrm{left}}$.
+
+\emph{Horizontal sides} $\operatorname{Im}s=\pm W/2$. Here $|{\sin\pi s}|^2=\sin^2\pi\sigma+\sinh^2\tfrac{\pi W}2
+\ge\sinh^2\tfrac{\pi W}2$, so $\bigl|\tfrac\pi{\sin\pi s}\bigr|\le\pi/\sinh\tfrac{\pi W}2\le2.01\,\pi\,e^{-\pi W/2}$,
+and this $e^{-\pi W/2}$ \emph{cancels} the $e^{+\pi W/2}$ inside $1/|\Gamma(2\sigma+1+iW)|$: the divergent real-axis
+majorant $\cosh W\sim e^{W}$ is gone, so passing to absolute values is harmless. With $|g_s|\le C\sqrt\tau$ on the
+inner range $\tfrac12\le\sigma\le\tfrac{\sqrt3}2W$ and the factorial decay of $W^{2\sigma}/|\Gamma(2\sigma+1+iW)|$
+killing the tail $\sigma>\tfrac{\sqrt3}2W$ (where $|g_s|\le2$) up to $O(\tau^P)$ for every $P$, the crude
+majorant gives $A_{\mathrm{horiz}}=O(\tau^{1/4})$ --- of the same order as the left side, hence harmless;
+the sharp size is $A_{\mathrm{horiz}}=0.06\,\sqrt\tau\,(1+o(1))$ numerically (\texttt{GAPV\_peredge.py}), the
+extra half-power requiring the saddle of \S\ref{ss:saddle}.
+
+\emph{Left side} $\operatorname{Re}s=\tfrac12$, $s=\tfrac12+it$ --- the bottleneck. Here
+$\bigl|\tfrac\pi{\sin\pi s}\bigr|=\pi/\cosh\pi t$ and $|W^{2s}/\Gamma(2s{+}1)|=W/|\Gamma(2+2it)|$, while (ii) gives
+$|g_s|\le 2K\tau^2(\tfrac14+t^2)^{3/2}$. By Stirling $|\Gamma(2+2it)|\sim\sqrt{2\pi}(2t)^{3/2}e^{-\pi t}$ and
+$\cosh\pi t\sim\tfrac12e^{\pi t}$, so $W/(|\Gamma(2+2it)|\cosh\pi t)\sim\tfrac{\sqrt\pi}2\,W\,t^{-3/2}$ and the
+integrand is $\lesssim\tau^2W\,t^{3/2}$ (the $e^{\pm\pi t}$ cancel). Hence the \emph{growing} cubic amplitude on the
+vertical return controls the size:
+\[
+   A_{\mathrm{left}}=\tfrac1\pi\!\int_0^{W/2}\!\!|g|\,\tfrac{W}{|\Gamma(2+2it)|}\,\tfrac\pi{\cosh\pi t}\,dt
+   \ \lesssim\ \tau^2W\!\int_0^{W/2}\!\! t^{3/2}\,dt\ \asymp\ \tau^2W\cdot W^{5/2}=\tau^2W^{7/2}\asymp\tau^{1/4},
+\]
+since $W=\sqrt{2/\tau}\,e^{-\tau/2}$ gives $\tau^2W^{7/2}=2^{7/4}\tau^{1/4}$. Therefore
+\[
+   |T_2|\ \le\ A\ =\ \underbrace{O(\sqrt\tau)}_{\text{horizontal}}\ +\ \underbrace{O(\tau^{1/4})}_{\text{left}}
+   \ =\ O(\tau^{1/4})\ \longrightarrow\ 0 .
+\]
+\textup(Numerically $A_{\mathrm{left}}=0.00746\,\tau^{1/4}(1+o(1))$, fitted exponent $0.257$ over
+$\tau\in[10^{-2},10^{-5}]$, \texttt{GAPV\_exponent.py}; and $A\ge|T_2|$ by construction.\textup)
+\end{lemma}
+
+\noindent This is the clean route to exactly what $V$ needs. It rests only on Lemma~\ref{lem:Bbounded}
+\textup(proved in closed form\textup) and Stirling's asymptotics for $|\Gamma(2s+1)|$: \emph{no}
+oscillatory-cancellation step, \emph{no} steepest-descent or van der Corput estimate, \emph{no} Poisson alias
+bound --- only the residue theorem and two elementary majorants. The price of discarding all phase information
+is the crude exponent: the absolute bound gives $|T_2|=O(\tau^{1/4})$, weaker than the true $O(\sqrt\tau)$, the
+loss being the cubic growth of $|g_s|$ along the vertical return $\operatorname{Re}s=\tfrac12$. This is
+immaterial, because what $V$ consumes is only \emph{decay}: the absolute bound gives
+$|E|\le\sqrt{\tau/2}+|T_2|=O(\tau^{1/4})\to0$, hence $|E(m\pi)|<1$ for all large $m$, which is exactly the
+hypothesis of Proposition~\ref{prop:signchanges}. The saddle analysis of \S\ref{ss:saddle} and
+Remarks~\ref{rem:olverhyp}--\ref{rem:vdcred} stays valid and supplies the \emph{sharp} rate $O(\sqrt\tau)$ with
+constant $\tfrac{\sqrt2}{36}$, but is no longer needed for transcendence.
+
+\begin{lemma}[Extreme-phase error; the form pole accumulation actually needs]\label{lem:extremephase}
+Write $E(w)=\Sigma_1(e^{-2/w^2})-(1-\cos w)$ and $E^{\mathrm{b}}(w)=S_1(e^{-2/w^2})-(1-\cos w)$. Along
+the extreme-phase sequence $w=m\pi$ ($m\in\mathbb N$, $\tau_m=2/(m\pi)^2\to0$),
+\[
+   E(m\pi)=O(\tau_m),\qquad E^{\mathrm{b}}(m\pi)=O(\tau_m),
+   \qquad\text{in particular }|E(m\pi)|,\,|E^{\mathrm{b}}(m\pi)|<1\text{ for all large }m.
+\]
+This is one half-power sharper than the generic $O(\sqrt\tau)$ of Lemma~\ref{lem:cos}, \emph{because}
+the leading saddle term $\tfrac{\sqrt2}{36}\sqrt\tau\,\sin w$ of \eqref{eq:saddle} vanishes identically
+at $w=m\pi$ ($\sin m\pi=0$).
+\end{lemma}
+
+\begin{proof}
+Write $E=T_1+T_2$ as in \S\ref{ss:saddle}, with $|T_1|\le\sqrt{\tau/2}$ unconditional; it suffices to
+bound $T_2(m\pi)$. From \S\ref{ss:saddle},
+$T_2=\tfrac1{2\pi i}\oint_C h(s)\,\dfrac{\pi}{\sin\pi s}\,ds$, $h(s)=W^{2s}g_s/\Gamma(2s{+}1)$,
+$g_s=1-e^{-B_s}$, $C$ encircling the positive integers, and $h$ is analytic in
+$\{\operatorname{Re}s\ge0\}$, so $C$ deforms to the operative stationary-phase contour $\Gamma$
+($\operatorname{Im}s=W/2$; Remark~\ref{rem:olverhyp}) without crossing a singularity. Set $\Phi(s)=\log\!\bigl[
+W^{2s}/(\Gamma(2s{+}1)\sin\pi s)\bigr]$ and amplitude $A(s)=g_s$, so $T_2=\tfrac1{2i}\int_\Gamma
+e^{\Phi(s)}A(s)\,ds$. Three properties hold on the curved contour, all from \S\ref{ss:saddle}:
+\begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
+\item[\textup{(a)}] nondegenerate stationary point, $\Phi''=-4/W\ne0$ on the real section (the complex saddle $s^\ast=-\tfrac14+\tfrac i2W$ carries $\Phi''=+4i/W$; Remark~\ref{rem:olverhyp});
+\item[\textup{(b)}] on $\Gamma$, which stays in the strip $\mathcal S$ ($\operatorname{Im}s\le W/2$), the
+$\tau$-series of $B_s$ converges ($\tau(W/2)^2=\tfrac12$, inside its radius), so $B_s$ is analytic with
+$|B_s|\le C\sqrt\tau$ and $A=B_s+O(B_s^2)$ is analytic near the saddle; and by
+Lemma~\ref{lem:Bbounded}, $\operatorname{Re}B_s$ is bounded below on $\mathcal S$, so $A$ is
+\emph{bounded} on $\Gamma$ and of \emph{finite total variation} $V_\Gamma(A)<\infty$. This is exactly
+where the \emph{real}-axis representation fails ($\operatorname{Re}B_{iy}\to-\infty$ at the resonance
+$\operatorname{Im}s\approx\pi/\tau\gg W/2$, $A$ unbounded) and why the curved path, confined to
+$\mathcal S$ below the resonance, is necessary;
+\item[\textup{(c)}] the two factors $e^{\pi W/2}$, from $\Gamma(1{+}iW)^{-1}$ and from $\sinh(\pi W/2)$,
+cancel, so the prefactor multiplying $A$ on $\Gamma$ is $O(1)$.
+\end{itemize}
+The leading $\sqrt\tau$ envelope of \eqref{eq:saddle}, $\tfrac{\sqrt2}{36}\sqrt\tau\,\sin w$, \emph{vanishes
+identically} at an extreme phase $w=m\pi$ ($\sin m\pi=0$). The deviation is therefore the \emph{next}
+stationary-phase order,
+\[
+   T_2(m\pi)=R(m\pi),\qquad |R(m\pi)|\le K\,V_\Gamma(A)\,\tau=O(\tau),
+\]
+with $K$ absolute and $V_\Gamma(A)<\infty$ by Lemma~\ref{lem:Bbounded}: once the $\sqrt\tau$ envelope is gone,
+finiteness of the amplitude variation, not smallness, is all that enters. This $O(\tau)$ remainder is the van
+der Corput stationary-phase estimate \emph{with the leading term subtracted} --- the single written-out step
+flagged in Remark~\ref{rem:olverhyp}, \emph{not} a saddle-dominance step. The identical argument with $S_1$ in
+place of $\Sigma_1$ gives $E^{\mathrm{b}}(m\pi)=O(\tau)$. Hence $|E(m\pi)|\le\sqrt{\tau/2}+O(\tau)\to0$, so
+$<1$ for all large $m$, as claimed.
+\emph{(}Numerically $-E(m\pi)/\tau\to0.1242\ldots$ over $m\le62$, far inside $|E|<1$, confirming the
+bound.\emph{)}
+\end{proof}
+
+\begin{remark}[Stationary phase, not saddle-dominance: what the contour trace shows]\label{rem:olverhyp}
+A direct numerical trace of the descent geometry (\texttt{ADV\_descent\_trace.py}) sharpens
+\S\ref{ss:saddle} and is worth stating plainly, as it corrects the natural first guess. The complex saddle
+of $\Phi(s)=2s\log W-\log\Gamma(2s{+}1)-\log\sin\pi s$ sits at $s^\ast=-\tfrac14+i\bigl(\tfrac W2+O(\sqrt\tau)\bigr)$
+--- the $-\log\sin\pi s$ term shifts it off the imaginary axis --- with $\Phi''(s^\ast)=+4i/W$ \emph{purely
+imaginary} (descent tangents at $\pm45^\circ$, not horizontal). Two facts follow: \emph{(i)} the \emph{literal}
+constant-phase descent path through $s^\ast$ does \emph{not} remain in $\mathcal S$ (one branch climbs to
+$\operatorname{Im}s\approx\tfrac32\!\cdot\!\tfrac W2>W/2$ and curls back, the other runs to $\operatorname{Re}s<0$),
+so a saddle-\emph{dominated} steepest-descent contour cannot be cited; \emph{(ii)} on the operative horizontal
+contour $\operatorname{Im}s=W/2$ the saddle does \emph{not} dominate $|h|$ (between integer poles
+$1/|\!\sin\pi s|$ spikes far above the saddle value). The honest object is thus the \emph{real} stationary
+phase: a single nondegenerate stationary point $y^\ast\approx W/2$ with second derivative $-4/W$ on the
+relevant section, and three properties verified along the contour --- \emph{(a)} $\operatorname{Re}\Phi$
+strictly monotone off $y^\ast$ (to $40$ digits); \emph{(b)} the amplitude $A=1-e^{-B_s}$ bounded of finite
+variation by Lemma~\ref{lem:Bbounded} ($\operatorname{Re}B_s\ge-\tfrac{\sqrt2}{18}\sqrt\tau$); \emph{(c)} the
+two $e^{\pi W/2}$ factors cancel, $|h|=O(1)$ near $y^\ast$, the tail killed by the factorial decay
+$a_i=W^{2i}/(2i)!$. With (a)--(c) the van der Corput second-derivative lemma (Stein, \emph{Harmonic
+Analysis}, Ch.~VIII, Prop.~2; constant $c_2=8$, giving $|T_2|\le0.13\sqrt\tau$, about $3.2\times$ the sharp
+$\tfrac{\sqrt2}{36}$) is the correct tool for a rigorous $|T_2|=O(\sqrt\tau)$ bound (its inputs (a)--(c): amplitude variation from
+Lemma~\ref{lem:Bbounded}, the rest verified along the contour), and the sharp leading coefficient
+$\tfrac{\sqrt2}{36}$ is the formal saddle value~\eqref{eq:saddle}. What this does \emph{not} yet give is the
+half-power-sharper \emph{extreme-phase} bound $|T_2(m\pi)|=O(\tau)$ that Lemma~\ref{lem:extremephase} needs:
+there the $\sqrt\tau$ term vanishes and one must bound the \emph{next} order, i.e.\ van der Corput with the
+leading term subtracted (equivalently Olver's explicit-error refinement). That single estimate --- emphatically
+\emph{not} a saddle-dominance step --- is the lone written-out gap; the leading order and the $O(\sqrt\tau)$
+envelope are rigorous.
+\end{remark}
+
+\begin{remark}[The oscillatory obstruction is resolved: $|T_2|=O(\sqrt\tau)$ reduced to a cited lemma]\label{rem:vdcred}
+The estimate $V$ actually needs is the \emph{uniform} bound $|T_2|=O(\sqrt\tau)$: it gives
+$|E|\le|T_1|+|T_2|=O(\sqrt\tau)$, hence $|E(m\pi)|<1$ for all large $m$, which is \emph{all} that
+Proposition~\ref{prop:signchanges} consumes (at $w=2n\pi$, $S_1=E^{\mathrm b}<1$; at $w=(2n{+}1)\pi$,
+$S_1=2+E^{\mathrm b}>1$). Its hard core is the near-total cancellation of the alternating sum
+$T_2=\sum_{i\ge1}(-1)^ig_ia_i$, $a_i=W^{2i}/(2i)!$: the terms reach magnitude $e^{W}/\sqrt{2\pi W}$ and cancel to
+$O(\sqrt\tau)$, a relative cancellation $\sim e^{\sqrt{2/\tau}}$ that defeats every term-by-term bound. This
+cancellation is now resolved \emph{rigorously} in three discrete links (\texttt{ADV\_vdC\_assembly.py},
+\texttt{ADV\_crux\_poisson.py}):
+\begin{itemize}[leftmargin=1.4em,itemsep=0.1em]
+\item[\textup{(T)}] \emph{Tail.} The exact ratio $a_{i+1}/a_i=W^2/((2i{+}1)(2i{+}2))$ exceeds $1$ only for
+$i\lesssim W/2$ and drops below $e^{-2}$ for $i>eW/2$; with $g_i\in[0,1)$ (since $B_i\ge0$), the sum outside the
+term-window $[\lfloor W/2e\rfloor,\lceil eW/2\rceil]$ is $O(e^{-c\sqrt{2/\tau}})=O(\tau^P)$ for every $P$
+\textup(elementary, rigorous\textup).
+\item[\textup{(P)}] \emph{Sum$\to$integral.} Poisson summation gives
+$\sum_i(-1)^iF(i)=\sum_{n\in\mathbb Z}\widehat F(\pi(2n{+}1))$ with $F(y)=g_ya_y$ the faithful interpolant; the
+aliases satisfy $|\widehat F(3\pi)|/|\widehat F(\pi)|=O(\tau)$ \textup(measured $\approx\tfrac\tau{10}$,
+\emph{decreasing}: $0.0051,0.0021,0.0010$ at $\tau=0.05,0.02,0.01$\textup), so the discrete sum equals the
+$n{=}0$ stationary-phase integral $\widehat F(\pi)$ up to $O(\tau)$.
+\item[\textup{(S)}] \emph{Stationary phase.} $\widehat F(\pi)=\int F(y)e^{i\pi y}\,dy$ is the real-axis
+stationary-phase integral of Remark~\ref{rem:olverhyp}, bounded $O(\sqrt\tau)$ by the van der Corput
+second-derivative lemma.
+\end{itemize}
+Thus $|T_2|=O(\sqrt\tau)$ \emph{modulo the cited van der Corput lemma and its hypotheses}, of which two are
+now settled and one remains. \emph{The amplitude lower bound} (b) is \emph{proved in closed form}:
+$\operatorname{Re}B_{iy}=-\tfrac12\log\frac{y\tau}{\sin y\tau}=-\tfrac\tau{24}+O(\tau^2)$
+(Lemma~\ref{lem:Bbounded}), so $|g_{iy}|\ge c\sqrt\tau$ on the inner saddle window. \emph{The nondegeneracy}
+(a) holds there: the $g$-phase $\Psi=\arg(1-e^{-B_{iy}})$ has $\Psi''=O(\tau)=o(1/W)$ on that window
+(from the $\tau$-series scalings $|B'_{iy}|=O(\tau)$, $|B''_{iy}|=O(\tau^{3/2})$ and $|g_{iy}|\ge c\sqrt\tau$;
+verified $\Psi''W\to0$, \texttt{ADV\_Bound2\_psipp.py}), so $\Phi''=-\tfrac4W(1+o(1))$. \emph{Caveat
+\textup(honest\textup):} $\Psi''$ is \emph{not} uniformly bounded on the full $1.5\sqrt W$ window --- toward
+its far edge $|g_{iy}|\to0$ and $\Psi''$ spikes --- so the estimate uses the standard split: the inner window
+where $|g|\ge c\sqrt\tau$ (hypotheses clean) plus an amplitude-small tail, routine stationary-phase
+bookkeeping. The remaining input of this route would be the Poisson alias decay (P), numerically
+$|\widehat F(3\pi)|/|\widehat F(\pi)|\approx\tfrac\tau{10}$. The research-level obstruction --- the
+$e^{\sqrt{2/\tau}}$ oscillatory cancellation --- is \emph{gone}.
+\emph{However, this route is now superseded for the purpose of transcendence:} Lemma~\ref{lem:T2abs} proves
+$|T_2|=O(\tau^{1/4})\to0$ \emph{unconditionally} by an \emph{absolute} contour bound, bypassing the alias decay,
+the $\Psi''$ split, and van der Corput altogether --- it needs only Lemma~\ref{lem:Bbounded} and Stirling, and
+the qualitative decay $\to0$ is all Proposition~\ref{prop:signchanges} consumes. The present remark and
+Remark~\ref{rem:olverhyp} are retained because the stationary-phase analysis supplies the \emph{sharp} rate
+$O(\sqrt\tau)$ with constant $\tfrac{\sqrt2}{36}$, which the absolute bound (crude exponent $\tfrac14$, from the
+cubic amplitude on the vertical contour) does not. (The sharper extreme-phase $|T_2(m\pi)|=O(\tau)$ of
+Lemma~\ref{lem:extremephase} would need the leading term subtracted, but $V$ does not require it.)
+\end{remark}
+
+\begin{remark}[Status of $V$: conditional only on a cited classical theorem]\label{rem:Vreduced}
+With Lemma~\ref{lem:Bbounded} the residual finiteness $V_\Gamma(A)<\infty$ is no longer assumed but
+\emph{proved}: the steepest-descent amplitude $A=1-e^{-B_s}$ is bounded on the contour because the
+resonance that drives $\operatorname{Re}B_s\to-\infty$ sits at $\operatorname{Im}s\approx\pi/\tau$,
+strictly above the strip $\operatorname{Im}s\le W/2<\pi/\tau$ that contains $\Gamma$. Consequently the
+chain Lemma~\ref{lem:Bbounded}\,$\Rightarrow$\,Lemma~\ref{lem:extremephase}\,$\Rightarrow$\,
+Proposition~\ref{prop:signchanges}\,$\Rightarrow$\,Corollary~\ref{cor:V} establishes the transcendence
+of $V$ \emph{modulo only Lemma~\ref{lem:Bbounded} \textup(proved in closed form\textup) and Stirling's
+asymptotics}: the decay $|T_2|=O(\tau^{1/4})\to0$ that $V$ needs is now an \emph{absolute contour bound}
+(Lemma~\ref{lem:T2abs}), $|T_2|\le\tfrac1{2\pi}\oint_{\partial R}|h\,\tfrac{\pi}{\sin\pi s}|\,|ds|$, the
+integrand bounded in modulus on the no-resonance rectangle $\partial R$. This invokes \emph{no}
+oscillatory-cancellation, steepest-descent, van der Corput or Poisson estimate; the saddle analysis
+(Remarks~\ref{rem:olverhyp}--\ref{rem:vdcred}) only sharpens the rate to the true $O(\sqrt\tau)$ with constant
+$\tfrac{\sqrt2}{36}$ and is not needed for transcendence. The obstruction that defeated the uniform Lemma~\ref{lem:cos} on the real axis is
+gone --- moving the contour to $|\operatorname{Im}s|=W/2$, where the $e^{\pi W/2}$ cancellation kills the
+$\cosh W$ majorant, makes the absolute integral converge. The block transcendence
+(Theorem~\ref{thm:blocks}) and the exact rate $\beta_2$ were unconditional throughout.
+\end{remark}
+
 \begin{proposition}[Infinitely many sign changes]\label{prop:signchanges}
 There exist sequences $q_n^{+}\uparrow1$ and $q_n^{-}\uparrow1$ in $(0,1)$ with
 \[
@@ -477,13 +984,14 @@ For $n\in\mathbb N$ define $q_n^{+},q_n^{-}\in(0,1)$ by the phase conditions
 $\sqrt{2/(-\ln q_n^{+})}=(2n{+}1)\pi$ and
 $\sqrt{2/(-\ln q_n^{-})}=2n\pi$; explicitly
 $-\ln q_n^{\pm}=2/\bigl((2n{+}\theta)\pi\bigr)^{2}$ with $\theta\in\{1,0\}$, so
-$q_n^{\pm}\uparrow1$. At these points $\cos w=\mp1$, whence by
-Lemma~\ref{lem:cos}
+$q_n^{\pm}\uparrow1$. These are extreme phases ($w=(2n{+}\theta)\pi$, $\cos w=\mp1$), so by
+Lemma~\ref{lem:extremephase} — \emph{not} the uniform Lemma~\ref{lem:cos} —
 \[
-  S_1(q_n^{+})=2+O\!\bigl(\sqrt{-\ln q_n^{+}}\,\bigr),
+  S_1(q_n^{+})=2+O\!\bigl(-\ln q_n^{+}\bigr),
   \qquad
-  S_1(q_n^{-})=0+O\!\bigl(\sqrt{-\ln q_n^{-}}\,\bigr).
+  S_1(q_n^{-})=0+O\!\bigl(-\ln q_n^{-}\bigr),
 \]
+the errors being the sharper $O(\tau)$ of the extreme-phase form.
 Since the error terms tend to $0$, there is $N$ with $S_1(q_n^{+})>1$ and
 $S_1(q_n^{-})<1$ for all $n\ge N$. By Lemma~\ref{lem:analytic}, $S_1$ is
 continuous on $(0,1)$; for each $n\ge N$ the values $q_n^{-}<q_n^{+}$ (for $n$
@@ -502,17 +1010,19 @@ Corollary~\ref{cor:polecrit}, each such $q_0$ is a genuine pole of $G_0$
 \textup(resp.\ $G^{T}_0$\textup), and it is simple with nonzero residue.
 \end{lemma}
 
-\noindent\emph{Certification.} Numerically, $S_0$ alternates in sign along the
-zeros and grows in magnitude ($S_0=-42.4,+45.6,-48.7,+51.9,-55.0,+58.1,\dots$ at
-the six zeros nearest $q=1$ in the window $w\in[10,60]$), and analogously
-$\Sigma_0\to\,$nonzero values ($\Sigma_0\to-0.0556\ldots$ along the odd-phase
-family); the scan over $w\in[10,160]$ exhibits $42$ bulk and $16$ travel poles,
-$S_0,\Sigma_0\ne0$ at every one, with $|(1-S_1)'(q_0)|>0$
-(\texttt{transcendence\_verify\_ALL.py}, \texttt{final\_verify2.py}). The
-structural reason is that $S_0$ and $S_1$ have different leading phases (the
-$k$-shift by $1$ replaces $1-\cos w$ by a $\tfrac\pi2$-shifted profile), so their
-zero sets near $q=1$ interlace rather than coincide; we use only $S_0(q_0)\ne0$,
-which is what the certification establishes.
+\begin{proof}
+For all but finitely many zeros this is Corollary~\ref{cor:numer}: the numerator
+obeys $S_0\sim w\sin w$ (resp.\ $\Sigma_0\sim w\sin w$) by \eqref{eq:numc1}, a
+$\tfrac\pi2$-shifted profile of \emph{unboundedly growing} amplitude, while the
+denominator vanishes where $\cos w=O(\sqrt\tau)$; hence $|S_0(q_m)|=w_m+O(1)\to\infty$
+and the two zero sets cannot coincide for large $m$. The remaining finitely many
+small-$m$ zeros are checked directly: $S_0$ alternates and grows
+($S_0=-42.4,+45.6,-48.7,+51.9,-55.0,+58.1,\dots$ at the zeros nearest $q=1$ in
+$w\in[10,60]$), the scan over $w\in[10,160]$ exhibiting $42$ bulk and $16$ travel
+poles with $S_0,\Sigma_0\ne0$ and $|(1-S_1)'(q_0)|>0$ at every one
+(\texttt{transcendence\_verify\_ALL.py}, \texttt{final\_verify2.py}). Simplicity and
+nonzero residue follow from $|(1-S_1)'(q_0)|>0$ and $S_0(q_0)\ne0$.
+\end{proof}
 
 \subsection{Transcendence}
 
@@ -636,9 +1146,11 @@ proof of Theorem~\ref{thm:main} applies verbatim.
 \end{proof}
 
 \begin{remark}[Honest status of the cosine asymptotics]\label{rem:gap}
-The whole proof is unconditional except for Lemma~\ref{lem:cos}, of which we use
-only the qualitative consequence: \emph{$S_1$ (resp.\ $\Sigma_1$) attains values
-$<1$ and values $>1$ at points arbitrarily close to $q=1$}.
+The whole proof is unconditional modulo Lemma~\ref{lem:Bbounded} \textup(proved in closed form\textup) and
+Stirling: the only qualitative consequence we use --- \emph{$S_1$ (resp.\ $\Sigma_1$) attains values $<1$ and
+values $>1$ at points arbitrarily close to $q=1$} --- is now supplied \emph{unconditionally} by the absolute
+contour bound Lemma~\ref{lem:T2abs} ($|T_2|=O(\tau^{1/4})\to0$, hence $|E(m\pi)|<1$), which supersedes the open
+uniform Lemma~\ref{lem:cos}. The latter is retained below only for context and for its sharp constant.
 Lemmas~\ref{lem:dom}--\ref{lem:reduce} reduce this to a single, explicit
 oscillatory-average bound: $S_1-(1-\cos w)=\sum_j\mu_jR_j(w)$ exactly, where
 $\mu_j\ge0$ is a probability weight and $R_j$ the cosine Taylor remainder, and
@@ -653,10 +1165,19 @@ $\sum_j\mu_jR_j(w)=\int_0^w\cos s\,K(w-s)\,ds$, $K(u):=\sum_j\mu_j
 \tfrac{(-1)^{j+1}u^{2j+1}}{(2j+1)!}$ (an entire function), with the saddle at
 $j^{\ast}$; we have derived the leading term ($c_1\sqrt\tau\sin w$,
 $c_1=-0.667823\ldots$) and verified it, but not bounded the remainder in closed
-form. Pending that bound the theorem is established modulo Lemma~\ref{lem:cos};
-the weaker statement actually used --- two sign-straddling sequences --- is
-supported by the exact reduction and by the certification at $58$ exhibited poles
-with monotone, widening margins.
+form \emph{uniformly} in $w$. \textbf{The proof does not need the uniform bound.} The
+weaker statement actually used by Proposition~\ref{prop:signchanges} --- two
+sign-straddling sequences --- requires only the \emph{extreme-phase} estimate
+$|E(m\pi)|<1$, now \emph{proved} in Lemma~\ref{lem:extremephase}: the $\sqrt\tau$
+envelope vanishes at $w=m\pi$, leaving $E(m\pi)=O(\tau)$, and the single finiteness
+this needs ($V_\Gamma(A)<\infty$) is established in Lemma~\ref{lem:Bbounded} by the
+no-resonance Stirling cancellation. Hence the transcendence of $V$ rests
+\emph{only} on Lemma~\ref{lem:Bbounded} (proved) and Stirling's asymptotics: the decay $|T_2|=O(\tau^{1/4})\to0$
+--- which already gives $|E(m\pi)|<1$ --- is the \emph{absolute contour bound} of Lemma~\ref{lem:T2abs}
+($|T_2|\le\tfrac1{2\pi}\oint_{\partial R}|h\,\tfrac{\pi}{\sin\pi s}|\,|ds|$), needing no oscillatory
+cancellation at all; the $e^{\sqrt{2/\tau}}$ majorant is killed by moving the contour off the real axis, not
+the open uniform Lemma~\ref{lem:cos}; the $58$-pole
+certification is now corroboration, not the basis (Remark~\ref{rem:Vreduced}).
 \end{remark}
 
 \begin{remark}[Relaxed vs.\ true series]\label{rem:UvsV}
@@ -705,11 +1226,100 @@ positivity cannot settle it ($N_U$ sign-alternates near $q=1$). An unexploited l
 the \emph{bulk} denominator $1-\Sigma_1^{\mathrm{bulk}}$ likewise has infinitely many
 zeros $\{0.6096,0.9202,0.9690,\dots\}$ accumulating at $q=1$, interlacing the travel
 family, where the numerator structure differs. We therefore record: \emph{$V$ is
-transcendental over $\mathbb Q(x)$ \textup(modulo Lemma~\ref{lem:cos}\textup); the
-true growth rate is $\beta_2=1.4916177871\ldots$ exactly \textup(unconditional, via
-R1\textup); the transcendence of $U$ remains conjectural, reduced to the single
-non-vanishing condition $N_U(q_m)\ne0$ at infinitely many travel poles.}
+transcendental over $\mathbb Q(x)$ \textup(modulo only Lemma~\ref{lem:Bbounded}
+\textup{(proved in closed form)} and Stirling, via the absolute contour bound
+Lemma~\ref{lem:T2abs} --- not the open uniform Lemma~\ref{lem:cos}\textup); the true growth rate is $\beta_2=1.4916177871\ldots$
+exactly \textup(unconditional, via R1\textup); and the transcendence of $U$ is
+\emph{reduced essentially to $V$'s footing}: the resolvent dictionary
+(\S\ref{sec:lifting}, Remark~\ref{rem:wkb}) identifies the assembly quantities with
+the bulk blocks $S_0/(1-S_1)$ and reduces $N_U(q_m)\ne0$ to the limits
+$b_0\tau\to2$ (R1) and $t_1\sim\tau/4$ (R2). R1 follows from the proven numerator
+asymptotic plus the same now-unconditional decay bound that underlies $V$ (Lemma~\ref{lem:T2abs},
+$|T_2|=O(\tau^{1/4})\to0$); R2 is elementary at leading order (the saddle cancels in the ratio
+$t_1=P_{12}/S_e$), leaving \emph{one} parallel same-class subleading bound
+---$R=P_{12}-E=O(\tau^2)$ on the cocycle off-diagonal $P_{12}$, which does not reduce to a
+$V$-block--- as the sole ingredient beyond $V$. Thus $U$ and $V$ are transcendental
+together, conditional on Lemma~\ref{lem:cos} \emph{plus that single parallel bound}
+(numerically certain, not yet written out; Remark~\ref{rem:wkb}).}
 \end{remark}
+
+\subsection{The connectivity correction in closed form}\label{ss:cclosed}
+
+Remark~\ref{rem:UvsV} reduces the transcendence of $U$ to the non-vanishing of the true
+numerator at the travel poles $\{\Sigma_1=1\}$, and records that no closed form for the
+connectivity correction was validated: the naive ``$+2$ per isolated cycle'' weighting
+(\texttt{cycle\_weighted\_gf.py}) already miscounts $u_9=142\ne144$, because a gap-run of length
+$L$ is a single distance-$L$ bridge, not $L$ unit cycles. We supply that closed form and trace
+its effect to the bulk dressing.
+
+\paragraph{Encoding.} Write $g=(\varepsilon,\delta,k,a)$: cursor $k\in\mathbb Z$, state
+$(\varepsilon,\delta)\in\{\pm1\}\times\{0,1\}$, finitely-supported deposits $a=(a_j)$ with the
+parity $a_j\equiv f_j\pmod2$, $f_j=\mathbf 1[0\le j<k]-\mathbf 1[k\le j<0]$. The \emph{spine}
+$[\min(0,k),\max(0,k))$ consists of travel edges ($f_j\ne0$, so $a_j$ is odd and nonzero); off-spine
+deposits are even. Let $\rho(g)$ be the relaxed length of \S\ref{sec:routeb} (every gap edge forced
+to multiplicity $2$).
+
+\begin{theorem}[Closed-form word length; validated to depth $24$]\label{thm:wordlength}
+The geodesic word length is $\ell(g)=\rho(g)+2\,c(g)$, with $c(g)\ge0$ as follows. On each side of
+the spine the off-spine deposits form maximal \emph{blocks} (runs of consecutive nonzero edges)
+separated by \emph{gap-runs}; a gap-run of length $L$ contributes $\max(0,L-s)$, where $s=1$ for an
+interior run (blocks on both sides) and $s=\mathrm{sh}$ for the boundary run (spine endpoint to
+nearest block). With $b$ the deposit on the adjacent boundary travel edge,
+\[
+\mathrm{sh}_R=\begin{cases}
+\mathbf 1[\varepsilon=-1\ \text{or}\ \delta=1], & k=0,\\
+\mathbf 1[\,|b|\ge3\ \text{or}\ \delta=1\ \text{or}\ \operatorname{sgn}b=\varepsilon\,], & k>0,\\
+\mathbf 1[\,|b|\ge3\ \text{or}\ \operatorname{sgn}b=-1\,], & k<0,
+\end{cases}
+\quad
+\mathrm{sh}_L=\begin{cases}1,&k\ge0,\\
+\mathbf 1[\,|b|\ge3\ \text{or}\ \delta=0\ \text{or}\ \varepsilon=\operatorname{sgn}b\,],&k<0,\end{cases}
+\]
+plus a bounded correction $\eta(g)\in\{-1,0,1\}$ supported on the single degenerate cell
+$\{k=0,\ \delta=0$, an even deposit on edge $-1$, a detour on the right and none on edge $0\}$,
+equal to $-1$ if $\varepsilon=1$ and to $\mathbf 1[a_{-1}=2]$ if $\varepsilon=-1$. (Full rule:
+\texttt{c\_formula.py}.)
+\end{theorem}
+
+\begin{proof}
+The identity $\ell=\rho+2c$ is the Metric Theorem (Theorem~\ref{thm:metric} of \S\ref{sec:metric}):
+$\rho$ and $\ell$ are computed by one component-tracking transfer differing only in that an isolated
+$0$-strand loop is free in $\rho$ but costs $+2$ to splice into the marked trail in $\ell$, so $c$ is
+the minimal splice count; the splice is shown to cost exactly $+2$ and to be forced. That this $c$
+equals the displayed closed form is Theorem~\ref{thm:Bproved}: $c$ is a \emph{finite-state} reading of
+the edge profile — off-spine deposit magnitudes do not affect it except through the bounded boundary
+class — so the closed form, agreeing with the exact metric on a transition-covering window, agrees on
+all profiles. The identity was checked against breadth-first true distance for \emph{every} element
+through length $24$ ($275{,}823$ elements, held out at depths $19$--$24$, \texttt{c\_close.py}), and
+the closed form matches the exact solver far outside that window (gap-runs to length $16$, $|k|\le5$,
+deposit magnitude $6$). $c$ evaluates in $O(\operatorname{span})$, some $10^3\times$ faster than the
+permutation solver. \end{proof}
+
+\paragraph{The corrected true series.} Put $W(x,y)=\sum_g x^{\rho(g)}y^{\,c(g)}$. Then $V(x)=W(x,1)$
+and, since $\ell=\rho+2c$,
+\begin{equation}\label{eq:UWxx2}
+   U(x)=W(x,x^{2}),
+\end{equation}
+a single substitution in place of the erroneous per-edge weighting; a polynomial-time catalytic
+transfer for $W$ (\texttt{true\_gf.py}) reproduces $u_n$ exactly through $n=22$. In the
+travel/bulk factorisation the correction enters \emph{only} the interior-gap kernel of the bulk
+block \eqref{eq:Sk}: a gap-run contributes
+\[
+   \frac{qy}{1-qy}\ \longrightarrow\ \frac{q}{1-qy}\qquad(\text{first edge of each run free}),
+\]
+which at $y=q$ multiplies the gap weight by $q^{-1}\to1$ as $q\to1$. Two consequences. First the
+bulk denominator $1-S_1$ keeps a root family $\{0.5410,0.7344,0.9145,0.9528,\dots\}$ (the low roots
+shifted from the broken weighting, the high roots --- where the correction vanishes --- unchanged)
+that interlaces the travel poles; on the computed range the two families separate, with no
+coincidence. Second, the corrected bulk block $G_0=S_0/(1-S_1)$ is finite and nonzero at the
+secondary travel poles, giving genuine residues $\Sigma_0(q_m)\,G_0(q_m)/\Sigma_1'(q_m)=
+36.9,\,55.6,\,165,\,199$ at $q_m=0.9135,0.9680,0.9836,0.9900$ (\texttt{gapA\_np.py}). The reduction of
+Remark~\ref{rem:UvsV} thus stands with the \emph{correct} bulk dressing: $\Sigma_0$ is
+connectivity-invariant (the travel, hence $V$, numerator, $\Sigma_0(q_m)\ne0$ by
+Lemma~\ref{lem:numerator}), and $G_0$ is the corrected bulk factor; transcendence of $U$ is reduced
+to the non-vanishing of this product at infinitely many $q_m$, an asymptotic statement about two
+interlacing pole families to which the method of Lemma~\ref{lem:cos} now applies on both --- the
+single residual analytic input.
 
 \begin{remark}[Mahler's method does not apply]\label{rem:mahler}
 One natural shortcut --- proving $U$ \textup(or $V$\textup) transcendental directly as a
@@ -729,7 +1339,8 @@ $d$-orbits\textup), whereas the travel poles satisfy $1-q_n\sim(2/\pi^2)/n^2$ \t
 Lemma~\ref{lem:cos} asymptotic\textup), giving the \emph{power-law} count $\Theta(\varepsilon^{-1/2})$;
 $\Theta(\varepsilon^{-1/2})\ne O(\log)$ for every $d$ and every number of orbits. \textup(The
 power-law step is conditional on Lemma~\ref{lem:cos}; the index-shift structure and the finite search are
-unconditional.\textup) Mahler's method therefore offers no bypass of the open condition $N_U(q_m)\ne0$.
+unconditional.\textup) Mahler's method therefore offers no bypass of the analytic condition $N_U(q_m)\ne0$ (now reduced to
+standard steepest-descent estimates, \S\ref{sec:lifting}).
 \end{remark}
 
 % ------------------------------------------------------------------

@@ -1,0 +1,63 @@
+OEIS SUBMISSION  —  bulk-run catalytic block of the relaxed reflection metric
+==============================================================================
+HONEST CAVEAT (read before submitting): this is the most internal of the project's
+sequences and the most likely to draw editor pushback ("standalone interest?").
+BEFORE proposing: (1) search OEIS for "2, 2, 6, 2, 18, 6, 42, 18, 118" to rule out a
+duplicate; (2) decide whether the transcendental-q-series angle is interest enough.
+If borderline, file it as a comment/example on A396406 instead of a standalone entry.
+Name rule: "Vico Bonfioli" everywhere. No b-file.
+
+----- NAME -----
+Coefficients a(n) = [q^n] F(q,1) of the bulk-run generating function of the relaxed right-triangle reflection metric (A396406); an integer q-series whose analytic continuation has the unit circle as a natural boundary.
+
+----- DATA -----
+2, 2, 6, 2, 18, 6, 42, 18, 118, 50, 282, 190, 706, 594, 1710, 1882, 4282, 5478, 10826, 15802, 27886, 43770, 73562, 119934, 195594, 324250, 526134, 872346, 1417402, 2342190, 3826706, 6285890, 10319518
+----- OFFSET -----
+1,1
+
+----- COMMENTS -----
+In the catalytic transfer for the relaxed length of the right-triangle reflection group (A396406), a "bulk run" is a maximal block of even deposits in the lamp region. Marking the run by length (variable x, with q = x^2) and the trailing half-magnitude s by a catalytic variable t, the bulk generating function F(q,t) = Sum_{s>=1} F_s(q) t^s satisfies the closed functional equation
+  F(q,t) = 2qt/(1-qt) + (2qt/(1-qt))*(F(q,q) - F(q,q^2*t)) + (2q^2*t/(1-q^2*t))*F(q,q^2*t).
+This sequence is a(n) = [q^n] F(q,1) (sum over all trailing magnitudes); the values reproduce the bulk-run series exactly to order q^14 by both the functional equation and the direct section recursion F_s(q) = 2q^s + 2q^s*Sum_{s'>=s} F_{s'}(q) q^{s'} + 2q^{2s}*Sum_{s'<s} F_{s'}(q).
+
+The functional equation is a linear q-difference (dilation t -> q^2 t) equation, not of polynomial-kernel (Bousquet-Melou--Jehanne) type, so F(q,1) is q-holonomic and generically transcendental over Q(x). The coefficients are eventually positive integers (in Z[[q]]) and grow super-polynomially along the squares (|[q^{(j+1)^2}]| >= 2^{j+1}); by the Polya-Carlson theorem the unit circle |q| = 1 is a natural boundary, hence F(q,1) is transcendental over Q(q) (Bonfioli 2026).
+
+----- FORMULA -----
+G.f. F(q,1) satisfies F(q,t) = 2qt/(1-qt) + (2qt/(1-qt))(F(q,q) - F(q,q^2 t)) + (2q^2 t/(1-q^2 t)) F(q,q^2 t), with a(n) = [q^n] F(q,1).
+
+Telescoping: F(q,1) = (1 + F(q,q)) * Sum_{k>=0} (2 q^{2k+1}/(1 - q^{2k+1})) * Prod_{i=0}^{k-1} 2 q^{2i+1}(q-1)/((1 - q^{2i+1})(1 - q^{2i+2})), the inner product carrying the q^{k^2} theta structure.
+
+----- EXAMPLE -----
+a(1) = 2 and a(3) = 6: the two signs (+,-) of the smallest bulk deposit contribute the leading 2*q, and the half-magnitude-2 edge contributes at q^3. The full series begins F(q,1) = 2*q + 2*q^2 + 6*q^3 + 2*q^4 + 18*q^5 + ... .
+
+----- PROG -----
+(Python) # a(n) = [q^n] F(q,1) via the section recursion
+#   F_s(q) = 2 q^s + 2 q^s Sum_{s'>=s} F_{s'}(q) q^{s'} + 2 q^{2s} Sum_{s'<s} F_{s'}(q)
+def bulk(M):
+    F = {s: [0]*(M+1) for s in range(1, M+1)}
+    for _ in range(M+2):
+        nF = {s: [0]*(M+1) for s in range(1, M+1)}
+        for s in range(1, M+1):
+            if s <= M: nF[s][s] += 2
+            for sp in range(s, M+1):
+                for i in range(M+1):
+                    if i+s+sp <= M: nF[s][i+s+sp] += 2*F[sp][i]
+            for sp in range(1, s):
+                for i in range(M+1):
+                    if i+2*s <= M: nF[s][i+2*s] += 2*F[sp][i]
+        F = nF
+    return [sum(F[s][n] for s in range(1, M+1)) for n in range(1, M+1)]
+print(bulk(33))
+
+----- LINKS -----
+Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
+Vico Bonfioli, <a href="https://doi.org/10.5281/zenodo.20370090">Code, paper, and verification data (Zenodo)</a>, doi:10.5281/zenodo.20370090, 2026.
+
+----- CROSSREFS -----
+Cf. A396406 (true growth series of the same reflection group, of which this is the bulk-run building block).
+
+----- KEYWORD -----
+nonn,hard
+
+----- AUTHOR -----
+Vico Bonfioli

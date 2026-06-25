@@ -1,0 +1,276 @@
+% The amplitude bound  R = O(tau^{5/2})  for the U-gate, via the Hahn-Exton q-Bessel
+% connection formula (Morita 2011) and a modular (Poisson) estimate of its connection
+% coefficient.  Bulk-rigorous section: the oscillatory-bulk envelope and the connection-
+% coefficient MODULUS are proved here; the single-solution amplitude normalisation at the
+% turning point remains the lone input (same standing as lem:cos).  \input-able into the bundle.
+%
+% HONESTY MARKERS used below:
+%   \proved   = proved here from scratch
+%   \cited    = relies on a named published result (Morita; Olde Daalhuis)
+%   \checked  = independently verified numerically to high precision (script named)
+\providecommand{\proved}{\textsc{[proved]}}
+\providecommand{\cited}{\textsc{[cited]}}
+\providecommand{\checked}{\textsc{[checked]}}
+\section{The amplitude bound \texorpdfstring{$R=O(\tau^{5/2})$}{R=O(tau^5/2)}}
+\label{sec:amplitude}
+
+Recall (\S\ref{sec:lifting}, Remark~\ref{rem:qbessel}) that the gate residual is $R=P_{12}-E$, where
+$P_{12}=\tau^{3/2}\,Y_3$ is the travel-block amplitude, $Y_3$ is the third Jackson
+(Hahn--Exton) $q$-Bessel function $J^{(3)}_{3/2}(\,\cdot\,;q)$ evaluated at the pole, and
+$E$ is its classical (confluent, $q\to1$) Bessel approximant. The $s<1$ gate needs only
+\begin{equation}\label{eq:gate-need}
+   |R|\ \le\ K\,\tau^{5/2}\qquad\text{uniformly in the pole index }m,
+\end{equation}
+with \emph{any} finite $K$ (the slack is a full order: the gate margin is
+$\tfrac12-O(\sqrt\tau)$ against $|R|/\tau^{3/2}=O(\tau)$). This section \emph{reduces}
+\eqref{eq:gate-need} to a single turning-point amplitude estimate, proving rigorously the
+oscillatory-bulk envelope and the connection-coefficient modulus. Throughout $q=e^{-\tau}$,
+$\nu=\tfrac32$; the gate object $Y_3$ is the Hahn--Exton $q$-Bessel of \emph{nome $q^2$}
+(Remark~\ref{rem:qbessel}: its $q$-Pochhammer base is $q^2$). Writing Morita's theta-nome
+$p=e^{-\varepsilon}$ with $q$-Bessel nome $p^{2}=q^{2}=e^{-2\tau}$ gives $\varepsilon=\tau$;
+the $O(\tau)$ conclusions below are in any case independent of this normalising factor.
+
+\subsection{The connection formula and the strategy}
+By Morita's connection formula \cite{Morita2011}, derived by the $q$-Borel/$q$-Laplace
+transforms of Zhang, the $q$-Bessel function admits, for the analytic continuation between
+$x=0$ and $x=\infty$, the representation
+\begin{equation}\label{eq:morita}
+   J^{(3)}_{\nu}(x;q)\;=\;\kappa(x)\,\Phi_{+}(x)\;+\;\tilde\kappa(x)\,\Phi_{-}(x),
+\end{equation}
+where $\Phi_{\pm}(x)={}_1\varphi_1\!\big(0,p^{1\pm2\nu};p,p^{\mp2\nu}x\big)$ are the two
+$q$-Hankel (Floquet) solutions at infinity and the connection coefficients are the
+theta-quotients
+\begin{equation}\label{eq:kappa}
+   \kappa(x)=\frac{1}{(p^{-2\nu},p;p)_\infty}\,
+             \frac{\theta_p(-p^{2\nu+2}/x)}{\theta_p(-p^{\nu+2}/x)},\qquad
+   \theta_p(z)=\sum_{n\in\mathbb Z}p^{\,n(n-1)/2}z^{\,n},
+\end{equation}
+and $\tilde\kappa$ the companion with $\nu\mapsto-\nu$. The classical limit
+$\lim_{p\to1^-}$ of \eqref{eq:morita} reproduces the Hankel function $H^{(2)}_{2\nu}$
+\cite[Thm.~3.3]{Morita2011}; this is the leading term $E$.
+
+The residual $R$ is the \emph{subleading} ($O(\varepsilon)$) part of the confluent limit.
+Our strategy separates the two ways $J^{(3)}_\nu$ can deviate from $E$:
+its \emph{modulus} (amplitude) and its \emph{argument} (phase). The phase deviation is the
+$O(\sqrt\tau)$ shift of the pole location ($\sqrt2/36$ Euler--Maclaurin correction,
+Lemma~\ref{lem:cos}); it does not enter the amplitude, and at the pole its contribution to
+$R$ is $O(\tau)$ (\S below). The amplitude deviation has two parts: the connection-coefficient
+\emph{modulus} (Lemma~\ref{lem:kappa}) and the oscillatory-bulk envelope
+(Lemma~\ref{lem:caso}); the single-solution \emph{normalisation} that ties the bulk envelope
+to the classical Bessel is set at the turning point and is the lone input retained here.
+
+\subsection{Modular estimate of the connection coefficient}
+\begin{lemma}[modular subleading of $\kappa$]\label{lem:kappa}
+Let $E_x:=e^{2\pi i(\log x)/\varepsilon}$. As $\varepsilon\to0^+$, uniformly for $x$ in any
+compact set avoiding the zeros of $\theta_p(-p^{\nu+2}/x)$,
+\begin{equation}\label{eq:kappa-asy}
+   \kappa(x)\;=\;\kappa_0(x)\,\exp\!\Big(\tfrac{\varepsilon}{2}\,3\nu(\nu+1)\Big)\,
+              \big(1+O(e^{-4\pi^2/\varepsilon})\big),
+   \qquad
+   \kappa_0(x)=c_\nu\,e^{-i\nu\pi}x^{\nu}\,
+              \frac{1-e^{4\pi i\nu}E_x}{1-e^{2\pi i\nu}E_x},
+\end{equation}
+with $\kappa_0$ the leading (quasi-periodic) connection factor, whose $\varepsilon$-dependence
+is confined to the unit-modulus phase $E_x$, and $c_\nu$ the limit of the Pochhammer
+prefactor. In particular the \emph{amplitude} correction
+$|\kappa(x)|/|\kappa_0(x)|=\exp\!\big(\tfrac{\varepsilon}{2}3\nu(\nu+1)\big)=1+O(\tau)$ is
+\textbf{independent of $x$}.
+\end{lemma}
+
+\begin{proof}[Proof \textnormal{(\proved; Poisson summation)}]
+Write $b\in\{\nu+2,2\nu+2\}$ and $c=b-\tfrac12$. Completing the square in the exponent,
+\[
+   \theta_p(-p^{b}/x)
+   =\sum_{n\in\mathbb Z}(-1)^n x^{-n}e^{-\varepsilon[n(n-1)/2+bn]}
+   =e^{(\varepsilon/2)c^2}\sum_{n\in\mathbb Z} g(n),
+   \quad g(t)=e^{\alpha t}e^{-(\varepsilon/2)(t+c)^2},
+\]
+with $\alpha=i\pi-\log x$. The Gaussian $g$ has Fourier transform
+$\hat g(\xi)=\sqrt{2\pi/\varepsilon}\,e^{(\alpha-i\xi)^2/(2\varepsilon)}e^{-(\alpha-i\xi)c}$,
+so by the Poisson summation formula $\sum_n g(n)=\sum_k\hat g(2\pi k)$,
+\[
+   \theta_p(-p^{b}/x)=e^{(\varepsilon/2)c^2}\sqrt{2\pi/\varepsilon}
+      \sum_{k\in\mathbb Z}e^{(\alpha-2\pi i k)^2/(2\varepsilon)}e^{-(\alpha-2\pi i k)c}.
+\]
+Since $\operatorname{Re}(\alpha-2\pi ik)^2=(\log x)^2-\pi^2(1-2k)^2$ is maximised at the two
+indices $k\in\{0,1\}$ (both giving $(1-2k)^2=1$) and every other index is smaller by the
+factor $e^{-4\pi^2/\varepsilon}$, retaining $k=0,1$ and factoring out
+$e^{\alpha^2/(2\varepsilon)}e^{-\alpha c}$ gives, with
+$E_x=e^{2\pi i(\log x)/\varepsilon}$ (using
+$(\alpha-2\pi i)^2-\alpha^2=-4\pi i\alpha-4\pi^2$ and
+$e^{-2\pi i\alpha/\varepsilon}=e^{(2\pi^2+2\pi i\log x)/\varepsilon}$),
+\begin{equation}\label{eq:theta-single}
+   \theta_p(-p^{b}/x)=e^{(\varepsilon/2)c^2}\sqrt{2\pi/\varepsilon}\,
+      e^{\alpha^2/(2\varepsilon)}e^{-\alpha c}\big[\,1+e^{2\pi ic}E_x\,\big]
+      \big(1+O(e^{-4\pi^2/\varepsilon})\big).
+\end{equation}
+Form the quotient \eqref{eq:kappa} with $c_1=2\nu+\tfrac32$, $c_2=\nu+\tfrac32$. The
+$\varepsilon$-divergent, $x$-dependent factor $\sqrt{2\pi/\varepsilon}\,e^{\alpha^2/(2\varepsilon)}$
+\emph{cancels}, leaving
+\[
+   \frac{\theta_p(-p^{2\nu+2}/x)}{\theta_p(-p^{\nu+2}/x)}
+   =e^{(\varepsilon/2)(c_1^2-c_2^2)}\,e^{-(c_1-c_2)\alpha}\,
+    \frac{1+e^{2\pi ic_1}E_x}{1+e^{2\pi ic_2}E_x}\big(1+O(e^{-4\pi^2/\varepsilon})\big).
+\]
+Now $c_1-c_2=\nu$, $c_1^2-c_2^2=\nu(3\nu+3)=3\nu(\nu+1)$,
+$e^{-(c_1-c_2)\alpha}=e^{-i\nu\pi}x^{\nu}$, and $e^{2\pi ic_1}=-e^{4\pi i\nu}$,
+$e^{2\pi ic_2}=-e^{2\pi i\nu}$. Absorbing the Pochhammer prefactor of \eqref{eq:kappa} into
+$c_\nu$ yields \eqref{eq:kappa-asy}. The factor $e^{(\varepsilon/2)3\nu(\nu+1)}$ carries no
+$x$-dependence, and $|E_x|=1$, so the amplitude correction is the $x$-independent real number
+$e^{(\varepsilon/2)3\nu(\nu+1)}$.
+\end{proof}
+
+\begin{remark}[\checked]
+Equation~\eqref{eq:theta-single} matches the exact theta sum to $25$ digits, and the
+quotient factor $e^{(\varepsilon/2)3\nu(\nu+1)}=e^{5.625\,\varepsilon}$ (for $\nu=\tfrac32$)
+to machine precision at $\varepsilon=0.1,0.2$ (\texttt{theta\_poisson.py}).
+\end{remark}
+
+\subsection{The bulk amplitude: a conserved Casoratian}
+The amplitude of the oscillating solution away from the turning point is pinned, with no
+special-function input, by an exact conserved quantity of the underlying recurrence.
+
+\begin{lemma}[conserved Casoratian and the bulk envelope]\label{lem:caso}
+Sample the $q$-difference equation along $x_n=x_0q^{n/2}$ and put $u_n=u(x_n)$. Then
+$J^{(3)}_\nu$ obeys the three-term recurrence with \emph{unit outer coefficients}
+\begin{equation}\label{eq:rec}
+   u_{n+2}-B_n\,u_{n+1}+u_n=0,\qquad
+   B_n=(q^{\nu/2}+q^{-\nu/2})-q^{1-\nu/2}x_n^2 .
+\end{equation}
+Consequently:
+\textnormal{(i)} the Casoratian $C_n=u_{n+1}v_n-u_nv_{n+1}$ of any two solutions is
+\emph{exactly constant}, $C_n\equiv C$;
+\textnormal{(ii)} $G_n:=u_n^2-B_nu_nu_{n+1}+u_{n+1}^2$ satisfies the exact identity
+\begin{equation}\label{eq:Gid}
+   G_{n+1}-G_n=(B_n-B_{n+1})\,u_{n+1}u_{n+2};
+\end{equation}
+\textnormal{(iii)} on the oscillatory range $|B_n|<2$, with $\cos\psi_n=B_n/2$, the amplitude
+$A_n=\sqrt{G_n}/\sin\psi_n$ of a real solution obeys
+\begin{equation}\label{eq:env}
+   A_n=\gamma\,(4-B_n^2)^{-1/4}\,\big(1+O(\tau)\big)
+\end{equation}
+for a constant $\gamma$, uniformly on compacta of the bulk.
+\end{lemma}
+
+\begin{proof}[Proof \textnormal{(\proved; elementary)}]
+\textnormal{(i)} Using \eqref{eq:rec},
+$C_{n+1}=u_{n+2}v_{n+1}-u_{n+1}v_{n+2}=(B_nu_{n+1}-u_n)v_{n+1}-u_{n+1}(B_nv_{n+1}-v_n)
+=u_{n+1}v_n-u_nv_{n+1}=C_n$.
+\textnormal{(ii)} Substituting $u_{n+2}=B_nu_{n+1}-u_n$ into $G_{n+1}$ and simplifying gives
+\eqref{eq:Gid} (a one-line expansion).
+\textnormal{(iii)} For $u_n=A_n\cos\phi_n$ with $\phi_{n+1}-\phi_n=\psi_n$, the identity
+$\cos^2\phi_n-2\cos\psi_n\cos\phi_n\cos\phi_{n+1}+\cos^2\phi_{n+1}=\sin^2\psi_n$ gives
+$G_n=A_n^2\sin^2\psi_n$. Divide \eqref{eq:Gid} by $G_n$: the \emph{secular}
+(oscillation-averaged) part of $u_{n+1}u_{n+2}/G_n$ is $\dfrac{\cos\psi_n}{2\sin^2\psi_n}$, so
+$\Delta\log G_n=(B_n-B_{n+1})\dfrac{\cos\psi_n}{2\sin^2\psi_n}+(\text{osc.})$. Since
+$B_n=2\cos\psi_n$ we have $B_n-B_{n+1}=-\Delta B_n\approx 2\sin\psi_n\,\Delta\psi_n$, whence
+$\Delta\log G_n\approx\cot\psi_n\,\Delta\psi_n$, integrating to
+$\log G_n=\log\sin\psi_n+\mathrm{const}$, i.e.\ $G_n\propto\sin\psi_n=\tfrac12(4-B_n^2)^{1/2}$
+and $A_n\propto(4-B_n^2)^{-1/4}$. Fix a compact window $W_\delta=\{\,2-|B_n|\ge\delta\,\}$
+(so $\sin\psi_n\ge c_\delta>0$); the omitted oscillatory part has coefficient
+$a_n=(B_n-B_{n+1})\cos(\phi_{n+1}+\phi_{n+2})/(2\sin^2\psi_n)$ with
+$\sup_n|a_n|=O(\tau)$ and bounded variation $O(\tau)$ (since
+$B_n-B_{n+1}=q^{1-\nu/2}x_n^2(1-q)=O(\tau)$ varies smoothly), tested against the
+non-stationary phase $e^{i(\phi_{n+1}+\phi_{n+2})}$ whose partial sums are bounded by the
+Dirichlet kernel $1/\sin(\psi_{\delta})=C_\delta$ on $W_\delta$; Abel summation then bounds the
+accumulated contribution by $C_\delta(\sup|a_n|+\operatorname{Var}a_n)=O(\tau)$. This proves
+\eqref{eq:env} on $W_\delta$. The gate evaluates $R$ at argument $x\approx1$, where
+$B_n=2-x_n^2+O(\tau)$ sits a fixed $O(1)$ distance below $B=2$, i.e.\ interior to $W_\delta$
+for a $\tau$-independent $\delta$; the turning-point neighbourhood $\psi_n\to0$ is never
+encountered, and the constants are uniform in the pole index $m$.
+\end{proof}
+
+\begin{remark}[\checked]
+\eqref{eq:rec} holds to $10^{-35}$, the Casoratian \eqref{eq:Gid}/(i) is constant to
+$10^{-29}$ (spread $2.5\times10^{-29}$), and $A_n(4-B_n^2)^{1/4}$ is flat to relative
+$0.024\approx\tau$ across the oscillatory bulk (\texttt{casoratian2.py},
+\texttt{amplitude\_elem.py}).
+\end{remark}
+
+\subsection{Amplitude--phase decomposition and the bound}
+For $x$ in the oscillatory regime the two $q$-Hankel solutions are complex conjugates,
+$\Phi_{-}=\overline{\Phi_{+}}$ and $\tilde\kappa=\overline{\kappa}$ on the relevant locus,
+so \eqref{eq:morita} reads $J^{(3)}_\nu=2\operatorname{Re}\!\big(\kappa\,\Phi_{+}\big)
+=A(x)\cos\Theta(x)$ with amplitude $A=2|\kappa\,\Phi_+|$ and phase
+$\Theta=\arg(\kappa\Phi_+)$. Splitting each factor into modulus and argument,
+\begin{equation}\label{eq:ampphase}
+   \frac{A(x)}{A_{\mathrm{cl}}(x)}
+     =\frac{|\kappa|}{|\kappa_0|}\cdot\frac{|\Phi_+|}{|\Phi_{+,\mathrm{cl}}|},
+   \qquad
+   \Theta(x)-\Theta_{\mathrm{cl}}(x)
+     =\big(\arg\kappa-\arg\kappa_0\big)+\big(\arg\Phi_+-\arg\Phi_{+,\mathrm{cl}}\big),
+\end{equation}
+where the subscript $\mathrm{cl}$ denotes the $\varepsilon\to0$ (classical Bessel) value.
+
+\begin{theorem}[\proved\ \emph{modulo} the turning-point normalisation]\label{thm:R}
+The connection-coefficient modulus and the oscillatory-bulk envelope contribute
+$1+O(\tau)$ to the amplitude ratio $A(x)/A_{\mathrm{cl}}(x)$, uniformly in the pole index $m$
+(at the evaluation point $x\approx1$, interior to the bulk); the phase difference is
+$O(\sqrt\tau)$. \emph{Granting} the single-solution normalisation
+$\gamma/\gamma_{\mathrm{cl}}=1+O(\tau)$ (the turning-point amplitude, of the same standing as
+Lemma~\ref{lem:cos}), $A/A_{\mathrm{cl}}=1+O(\tau)$ and consequently
+\[
+   R=P_{12}-E=O(\tau^{5/2})\qquad\text{uniformly in }m,
+\]
+which establishes the gate condition \eqref{eq:gate-need}.
+\end{theorem}
+
+\begin{proof}
+\emph{Amplitude.} By Lemma~\ref{lem:kappa}, the connection-coefficient modulus correction
+$|\kappa|/|\kappa_0|=1+O(\tau)$ is $x$-independent. By Lemma~\ref{lem:caso}, the bulk envelope
+\emph{shape} is $(4-B_n^2)^{-1/4}$ with $B_n=2-x_n^2+O(\tau)$, so
+$|\Phi_+|/|\Phi_{+,\mathrm{cl}}|=(\gamma/\gamma_{\mathrm{cl}})\,(1+O(\tau))$. The conserved
+Casoratian pins only this envelope \emph{shape}; it does \textbf{not} fix the single-solution
+constant $\gamma$ (the Casoratian is bilinear, scaling with each solution). That constant is
+set by the $x\to0$ connection---the classical confluent limit of \cite[Thm.~3.3]{Morita2011},
+the lone input retained here, of the same standing as Lemma~\ref{lem:cos}. Granting
+$\gamma/\gamma_{\mathrm{cl}}=1+O(\tau)$, both factors are $1+O(\tau)$, so $A/A_{\mathrm{cl}}
+=1+O(\tau)$, uniform in $m$ since the connection-coefficient modulus is $x$-independent and the
+bulk envelope is uniform on the fixed window $W_\delta$ containing the pole.
+
+\emph{Phase.} $\arg\kappa-\arg\kappa_0=O(e^{-4\pi^2/\varepsilon})$ is exp-small by
+\eqref{eq:kappa-asy}; the $q$-Hankel phase correction is the pole shift, which by
+Lemma~\ref{lem:cos} is $-\tfrac{\sqrt2}{36}\sqrt\tau+O(\tau)$, so
+$\Theta-\Theta_{\mathrm{cl}}=O(\sqrt\tau)$.
+
+\emph{Assembly.} The pole is a \emph{zero} of $\cos\Theta_{\mathrm{cl}}$, so the leading
+classical value is the \emph{sine} branch $E=A_{\mathrm{cl}}\sin\Theta_{\mathrm{cl}}$ (up to the
+elementary prefactor of \S\ref{sec:lifting}). Writing $J^{(3)}_\nu=A\cos\Theta$ and expanding
+about $\Theta_{\mathrm{cl}}$,
+\[
+   \frac{R}{E}=\frac{A}{A_{\mathrm{cl}}}\Big[\cos(\Theta-\Theta_{\mathrm{cl}})
+     +\sin(\Theta-\Theta_{\mathrm{cl}})\cot\Theta_{\mathrm{cl}}\Big]-1 .
+\]
+Here $A/A_{\mathrm{cl}}=1+O(\tau)$ and $\cos(\Theta-\Theta_{\mathrm{cl}})-1=O(\tau)$; the cross
+term is $O(\tau)$ since $\sin(\Theta-\Theta_{\mathrm{cl}})=O(\sqrt\tau)$ and, the pole sitting
+at the sine extremum to $O(\sqrt\tau)$, $\cot\Theta_{\mathrm{cl}}=O(\sqrt\tau)$
+(Lemma~\ref{lem:cos}). Hence $R/E=O(\tau)$; with $E=O(\tau^{3/2})$ uniformly,
+$R=O(\tau^{5/2})$ uniformly in $m$.
+\end{proof}
+
+\begin{remark}[\checked]
+The amplitude correction is $x$-independent and $O(\tau)$: $(A/A_{\mathrm{cl}}-1)/\tau$
+evaluated on the $q$-Bessel at the classical extrema (where the $\sqrt\tau$ phase term
+vanishes) is \emph{flat} across an $8\times$ range of argument (spread $\approx\tau$),
+and end-to-end $J^{(3)}_{3/2}/J_{3/2}-1=O(\tau)$ with successive-difference ratio $\to2$
+(\texttt{uniformity2.py}, \texttt{qbessel\_order.py}; these illustrative runs use nome $q$,
+which scales the coefficient by a fixed factor versus the gate nome $q^2$ but leaves the
+qualitative $O(\tau)$ unchanged). The \emph{assembled} gate constant
+$|R|/\tau^{5/2}\to3.714$ uniformly to $m=200$ is computed at the actual gate object
+(\texttt{u5b\_gate}). These confirm the bound numerically; the only unverified step
+\emph{analytically} is the turning-point normalisation $\gamma/\gamma_{\mathrm{cl}}=1+O(\tau)$.
+\end{remark}
+
+\paragraph{Status and the lone residual.} Two ingredients are proved here from scratch:
+Lemma~\ref{lem:kappa} (the modular/Poisson estimate of the connection-coefficient
+\emph{modulus}) and Lemma~\ref{lem:caso} (the conserved-Casoratian bulk \emph{envelope}). What
+this section therefore establishes \emph{unconditionally} is the reduction of the gate bound
+\eqref{eq:gate-need} to a \emph{single} estimate: the single-solution amplitude normalisation
+$\gamma/\gamma_{\mathrm{cl}}=1+O(\tau)$ across the turning point $\psi_n\to0$, equivalently the
+$O(\tau)$ confluent correction to the $x\to0$ connection coefficient. This is the same input
+flagged in Remark~\ref{rem:qbessel}, of the same standing as the $\mathrm{lem:cos}$ saddle
+constant; its leading value (that $J^{(3)}_\nu\to$ classical Bessel) is Morita's confluent
+limit \cite[Thm.~3.3]{Morita2011}, \cite{OldeDaalhuis1994}. Numerically the bound is certain
+($|R|/\tau^{5/2}\to3.714$, $m\le200$); the residual is the \emph{proof} of that one $O(\tau)$
+turning-point normalisation, a $q$-Airy/uniform-Bessel matching estimate not carried out here.
+The two lemmas reduce the open atom to this single, named, classical-looking estimate.

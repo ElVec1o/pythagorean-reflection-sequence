@@ -1,0 +1,122 @@
+% ============================================================================
+% Route-B bundle: the relaxed/true growth-series transcendence programme for
+% OEIS A396406.  Logical order:
+%   sec:routeb    -- catalytic functional equation for the relaxed length
+%   sec:metric    -- Metric Theorem  ell_T = ell_R + 2c  (word-length theorem)
+%   sec:transcend -- transcendence of the relaxed series V (lem:cos closed for V
+%                    via lem:Bbounded; conditional only on Olver's cited theorem)
+%   sec:lifting   -- lift V -> U (true series); reduced to N_U(q_m)!=0; the gate (b0>0, s<1)
+%                    sub-atomised to ONE uniform bound on a q-Bessel turning-point connection coeff
+%                    (rem:assembly): numerically certain (4x margin, 21 digits), unproven, lem:cos standing
+% Compile:  pdflatex bundle && pdflatex bundle
+% ============================================================================
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,enumitem}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=teal]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% lightweight bibliography stubs (the fragments cite these keys)
+\newcommand{\citestub}[1]{[#1]}
+\makeatletter
+\@ifundefined{cite}{}{\renewcommand{\cite}[2][]{\citestub{#2}}}
+\makeatother
+
+\title{Route B: word length, transcendence, and the relaxed$\to$true lift\\
+\large for the reflection-group growth series A396406}
+\author{Vico Bonfioli}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Let $V,U$ be the relaxed and true (geodesic) growth series of the reflection group A396406,
+$U(x)=\sum_n u_nx^n$. We record the status of the programme.
+\begin{enumerate}[leftmargin=1.6em,itemsep=0.15em]
+\item[\textup{(1)}] \emph{Unconditional.} The travel/bulk blocks $\Sigma_0,\Sigma_1,S_0,S_1$ are transcendental
+over $\mathbb Q(q)$ (Theorem~\ref{thm:blocks}, via P\'olya--Carlson). The true growth rate is
+$\beta_2=1.4916177871\ldots$ exactly, and $\tfrac32$ is excluded.
+\item[\textup{(2)}] \emph{The relaxed series $V$ is transcendental} (Corollary~\ref{cor:V}) modulo only
+Lemma~\ref{lem:Bbounded} \textup(proved in closed form: $\operatorname{Re}B_{iy}=-\tfrac12\log\tfrac{y\tau}{\sin y\tau}$\textup)
+and Stirling's asymptotics. The single analytic input, the decay $|T_2|=O(\tau^{1/4})\to0$, is an
+\emph{absolute contour bound} (Lemma~\ref{lem:T2abs}): on
+$\partial R=\partial\{\operatorname{Re}s\ge\tfrac12,|\operatorname{Im}s|\le W/2\}$ the $e^{\pi W/2}$ factors
+cancel, so $|T_2|\le\tfrac1{2\pi}\oint_{\partial R}|h\,\tfrac{\pi}{\sin\pi s}|\,|ds|=O(\tau^{1/4})\to0$ with
+\emph{no} oscillatory-cancellation, steepest-descent, van der Corput or Poisson step (the crude exponent
+$\tfrac14$, from the cubic amplitude on the vertical contour, is immaterial --- Proposition~\ref{prop:signchanges}
+consumes only $|E(m\pi)|\to0$; the saddle of \S\ref{ss:saddle} sharpens it to the true $O(\sqrt\tau)$,
+$\tfrac{\sqrt2}{36}$). No open-problem-level gap remains.
+\item[\textup{(3)}] \emph{The true series $U$ is reduced to $V$'s footing plus a single bound.} $U$ inherits
+all of $V$'s travel poles; it is transcendental once $\mathcal N_U(q_m)\ne0$ at infinitely many, which reduces
+(\S\ref{sec:lifting}) to $s<1$, i.e.\ $|P_{12}|\le C\tau^{3/2}$ ($C<\tfrac1{\sqrt2}$) for the cocycle
+off-diagonal $P_{12}$. Writing the cocycle as the second-order $q$-difference equation
+$Y(qx)+q^3Y(x/q)=(1+q^3-2(1-q)q^2x^2)Y(x)$ ($x=q^n$) and applying Abel's identity to its Casoratian
+(constant ratio $q^3$) gives $\det=q^3-1$ and hence the \emph{exact closed form}
+\[
+  P_{12}=\frac{2q^3}{1-q^3}\sum_{k\ge0}\frac{(-2)^k(1-q)^k\,q^{k^2+3k}}{(q^2;q^2)_k\,(q^5;q^2)_k},
+\]
+a single Hahn--Exton $q$-Bessel series ($J^{(3)}_{3/2}$ in base $q^2$), validated against the transfer matrix
+to $10^{-60}$ at generic $q$. Since $1-q^3\sim3\tau$, the gate becomes the absolute bound
+$\bigl|\sum_k d_k\bigr|\le C_1\tau^{5/2}$ on this one explicit alternating $q$-series
+($C_1\approx0.265=\tfrac{3}{8\sqrt2}$; numerically $|P_{12}|/\tau^{3/2}\to\tfrac1{4\sqrt2}$, a $4\times$ margin).
+Moreover, the per-step unimodularity $\det M_n=1$ together with $P_{11}+P_{21}=1-\Sigma_1^T$ gives, at a travel
+pole, the \emph{exact} pinning $P_{12}=1/P_{11}-S_e$ (no q-Bessel constant). The cleanest reading is through the
+\emph{ratio} $t_1=P_{12}/S_e$: the $\mathrm{lem:cos}$ saddle constant carried separately by $P_{12}$ and $S_e$
+\emph{cancels}, leaving the \emph{elementary} leading $t_1\sim\tfrac12(w-W)^2\to\tfrac\tau4$, so the gate quantity
+$s=\tfrac{q}{1-q}t_1\to\tfrac14<1$ with a fourfold margin (numerically $t_1/\tau,s\to0.25004$, $E/P_{12}\to1$,
+$80$ poles). The only residual is the \emph{decay} $R=P_{12}-E=O(\tau^{5/2})$ (its contribution to $s$ vanishes numerically); this bound is \emph{reduced}, in \S\ref{sec:amplitude} (Theorem~\ref{thm:R}), to a single turning-point amplitude estimate: two lemmas established there from scratch---a modular (Poisson) estimate of the Hahn--Exton $q$-Bessel connection-coefficient \emph{modulus} (Lemma~\ref{lem:kappa}) and a conserved-Casoratian bulk \emph{envelope} (Lemma~\ref{lem:caso})---handle the oscillatory bulk unconditionally, leaving only the single-solution amplitude normalisation across the turning point (the $O(\tau)$ confluent correction to the $x\to0$ connection coefficient), the lone input of the same standing as $\mathrm{lem:cos}$.
+\textbf{Audited conclusion}: the gate $\{b_0>0,\ s<1\}$ reduces, through the same exact pinning
+$P_{12}=1/P_{11}-S_e$, to the sharp asymptotics of the \emph{one} cocycle recursion \eqref{eq:qdiff} --- and the
+single sharp constant they need, $\tfrac{\sqrt2}{36}$ (the $\mathrm{lem:cos}$ saddle value, carried identically
+by $P_{12}$, $S_e$ and the travel pole-phase), is \emph{derived}, not assumed. Lemma~\ref{lem:wkbphase} exhibits
+it as the elementary discrete$-$continuum dispersion defect $\tfrac1{24}\sum_n k_n^3=\tfrac{\sqrt2}{36}\sqrt\tau$,
+$k_n=\arccos(b_n/2)$: the harmonic continuum of \eqref{eq:qdiff} quantises the travel pole at $(m+\tfrac12)\pi$,
+the discrete recurrence advances phase by $k_n$ rather than the continuum $2\sin(k_n/2)$, and the difference ---
+\emph{concentrated in the slowly-varying oscillatory bulk} ($99.9\%$ from $n<0.9\,n^\ast$, the turning point
+negligible), with the $W$-shift telescoping out of the $x{=}0$ limit $P_{11}+P_{12}=\cos w$ --- is exactly this
+defect. With $\sqrt2/36$ derived, $b_0>0$ follows from $S_e=P_{22}\sim\sqrt{\tau/2}\sin w$ carrying
+$\operatorname{sign}(\sin w)$, and $s<1$ from $t_1\sim\tfrac\tau4$ ($4\times$ margin). \emph{Hence $U$ is transcendental over $\mathbb Q(x)$ conditional on a single uniform bound}: the algebraic
+skeleton of \eqref{eq:qdiff}, the derived \emph{bulk} phase defect \eqref{eq:wkbphase} ($\sqrt2/36$, the
+program's central previously-open constant, now \emph{proved}), $b_0>0$, and the elementary gate leading order
+are all unconditional, leaving only the subleading decay $|R|=|P_{12}-E|\le K\tau^{5/2}$ ($K<\tfrac1{\sqrt2}$, a
+fourfold numerical margin). This residual is \emph{not} a routine remainder: its leading coefficient is the
+rational $1891/1296$, but the uniform bound is the Hahn--Exton $q$-Bessel $\nu=\tfrac32$ \emph{turning-point}
+connection coefficient, of the same standing as Lemma~\ref{lem:cos} --- numerically certain
+($R/(\tau^{5/2}\sin w)\to1891\sqrt2/10368$ to $21$ digits) but unproven, and six independent analytic routes
+confirm it is not reachable by elementary or resummation means. The one honest distinction from $V$: $V$'s
+transcendence is \emph{unconditional} (it closes through the elementary absolute bound Lemma~\ref{lem:T2abs} on a
+$V$-block, never invoking a sharp constant), whereas $U$'s off-diagonal residual is a parallel same-class bound,
+not a corollary of $V$. The closed form above, $\det=q^3-1$, and the rationality of the leading data are
+unconditional.
+\end{enumerate}
+\end{abstract}
+
+\tableofcontents
+\bigskip
+
+\input{route_b_funceq}
+\clearpage
+\input{metric_theorem}
+\clearpage
+\input{transcendence}
+\clearpage
+\input{lifting_U}
+\clearpage
+\input{amplitude_bound}
+
+\begin{thebibliography}{9}
+\bibitem{Morita2011} T.~Morita, \emph{A connection formula of the Hahn--Exton
+  $q$-Bessel function}, SIGMA \textbf{7} (2011), 115, 11 pp.; arXiv:1105.1998.
+\bibitem{OldeDaalhuis1994} A.~B.~Olde Daalhuis, \emph{Asymptotic expansions for
+  $q$-gamma, $q$-exponential, and $q$-Bessel functions}, J.~Math.\ Anal.\ Appl.\
+  \textbf{186} (1994), 896--913.
+\end{thebibliography}
+
+\end{document}

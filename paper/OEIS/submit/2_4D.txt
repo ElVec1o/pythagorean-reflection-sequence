@@ -5,8 +5,7 @@ OEIS SUBMISSION 2 of 5  —  4D orthoscheme, distinct legs  (submit after 5D=A39
 BFS layer sizes of the Coxeter group of the 4D right-corner orthoscheme with four pairwise distinct leg lengths.
 
 ----- DATA -----
-1, 5, 14, 33, 75, 169, 380, 854, 1919, 4312, 9689, 21771, 48919, 109920, 246988, 554977, 1247022, 2802033, 6296111, 14147233, 31788544, 71428210, 160497731, 360635128, 810339777, 1820816951
-
+1, 5, 14, 33, 75, 169, 380, 854, 1919, 4312, 9689, 21771, 48919, 109920, 246988, 554977, 1247022, 2802033, 6296111, 14147233, 31788544, 71428210, 160497731, 360635128, 810339777, 1820816951, 4091338551, 9193154276, 20656830152, 46415476029, 104294627934, 234347901745, 526574955395
 ----- OFFSET -----
 0,2
 
@@ -32,17 +31,19 @@ def aseq(N):
     while len(s) < N:
         s.append(2*s[-1] + s[-2] - s[-3])
     return s
-print(aseq(26))
+print(aseq(33))
 
 ----- LINKS -----
 Vico Bonfioli, <a href="https://github.com/elvec1o/pythagorean-reflection-sequence">The Universal Right-Triangle Reflection Sequence (Unequal Legs)</a>, GitHub repository, 2026.
 <a href="/index/Rec#order_03">Index entries for linear recurrences with constant coefficients</a>, signature (2,1,-1).
 
 ----- CROSSREFS -----
+Cf. A006054 (same linear recurrence, signature (2,1,-1), and same growth rate 1 + 2*cos(2*Pi/7)).
+Cf. A106805 and A033303 (same g.f. denominator 1 - 2*x - x^2 + x^3, different numerator).
 Cf. A396406 (2D right-triangle reflection sequence, unequal legs).
-Cf. A396927 (5D analogue, same Class C family).
+Cf. A396927 (5D analogue, same Class C orthoscheme family).
 Cf. A008137 (3D all-equal-legs cube corner; affine Weyl group B~_3 growth series).
-[Back-fill once assigned: the 3D-C and 6D Class C analogues.]
+(Back-fill once assigned: the 3D, 6D and 7D Class C analogues.)
 
 ----- KEYWORD -----
 nonn,easy
