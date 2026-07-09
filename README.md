@@ -154,9 +154,36 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
 > transducer whose transition table is displayed and certified — bit-for-bit equal
 > to the true connectivity defect on all 275,823 group elements through depth 24
 > and on 200,000 further random profiles (`code/zeta_probe/route_b/fsm_verify.py`).
-> Paper 1b (`paper1b.pdf`) collects the unconditional `n`-dimensional family. The
-> transcendence results of v1.2.0 (Paper 2, still in preparation) are unchanged:
-> `U` remains conditional.
+> Paper 1b (`paper1b.pdf`) collects the unconditional `n`-dimensional family; the
+> transcendence study is now included as **Paper 2** (`paper2.pdf`), summarized in
+> the next section. `U` remains conditional throughout.
+
+## Transcendence (Paper 2)
+
+`paper2.pdf` (~9 pp) asks whether these growth series are algebraic or
+transcendental, and reports the answer in **honest tiers**:
+
+- **Building blocks — unconditional.** The catalytic q-series Σ₀, Σ₁, S₀, S₁ are
+  transcendental over ℚ(q): integer coefficients, radius exactly 1, and
+  super-polynomial growth along the squares (`|[q^{(j+1)²}]| ≥ 2^{j+1}`), so by
+  Pólya–Carlson the unit circle is a natural boundary
+  (`lean/with_mathlib/PolyaCarlson.lean`).
+- **Relaxed series V — unconditional.** V is transcendental over ℚ(x); its one
+  analytic input, a simple-saddle steepest-descent estimate, is proved
+  *self-contained* (Cauchy + Stirling + Gaussian integration + an explicit
+  bounded-variation bound; saddles `z* = ±iW/2`), not cited.
+- **True series U = A396406 — conditional, and flagged as such.** Via the exact
+  Abel identity `P₁₂ = (X·Sₑ − 1)/x`, transcendence of U reduces to a *single*
+  numerator amplitude bound at the pole, which holds numerically at the first 70
+  poles (4× margin) but is not yet in closed form. **U is never claimed
+  unconditional.**
+- **Orthogonal mod-p evidence.** The p-kernel of `(u_n mod p)` is the full
+  ternary tree through the accessible depth (`SigmaKernel.lean`, `UKernel.lean`)
+  — maximal finite-data evidence of non-automaticity, not a proof.
+
+Six Paper-2 atoms are machine-checked in `lean/with_mathlib/` (`GaussHS`,
+`AtomN`, `PolyaCarlson`, `SigmaKernel`, `UKernel`, `DiscreteConserved`); the
+numerical verification scripts are in `code/zeta_probe/route_b/`.
 
 ## Repository contents
 

@@ -25,9 +25,13 @@ abstract: >
   unconditionally faithful in every dimension n >= 3 for pairwise
   distinct legs (uniform Schur-complement identity det Q_n = -prod a_i^2
   plus rank-0 descent on Cremona elliptic curves 24a1, 32a2, 72a2). The
-  growth series of A396406 is conjecturally algebraic of high degree
-  (consistent with Parry's theorem on tour-cost wreath-product growth);
-  no low-complexity closed form exists.
+  algebraicity of the growth series of A396406 over Q(x) is open and no
+  low-complexity closed form exists; a companion study (Paper 2) proves
+  the catalytic building blocks transcendental over Q(q) unconditionally
+  (Polya-Carlson natural boundary) and the relaxed companion series V
+  transcendental over Q(x) via a self-contained steepest-descent estimate,
+  reducing the transcendence of A396406 itself to a single explicit
+  numerator bound (numerically verified, open in closed form).
 keywords:
   - right-triangle reflection group
   - Coxeter groups
@@ -39,11 +43,14 @@ keywords:
   - orthoscheme
   - Mordell descent
   - faithfulness
+  - transcendence
+  - q-series
+  - natural boundary
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
-date-released: 2026-06-25
-version: 1.3.0
+date-released: 2026-07-07
+version: 1.4.0
 doi: 10.5281/zenodo.20370090
 identifiers:
   - type: doi
