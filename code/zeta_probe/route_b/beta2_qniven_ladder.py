@@ -24,7 +24,11 @@ RESULTS (paper2 rem:betanumber, all verified here to ~40 digits):
    - z-Pade: remainder q^{3.5 n^2} vs height q-degree ~9 n^2;
    - z-continued fraction (convergents in Z[q,z], Pincherle limit = the H-ratio): geometric vs t^{n^2};
    - nu-ladder at the zero: J_{m+1/2}(x0) ~ C x0^m GEOMETRIC (q-factorial is geometric, unlike Niven's m!)
-     vs t^{m^2}; second-kind ladder's q^{m^2/2} cancels t^{m^2} but leaves s^{m^2/2} (q=s/t) -- only q=1/t survives.
+     vs t^{m^2}. [FULLY COSTED below, full_costing(): deg_q p_m = m^2 exactly; Poincare-Perron forbids any
+     theta-decaying solution in the nu-direction (distinct roots x0, 1/x0), for BOTH kinds -- the earlier
+     "q^{m^2/2} second-kind decay, q=1/t survives" claim was WRONG (prefactor cancelled by (q^{-nu+1};q)_inf);
+     cleared forms ~ t^{m^2} x0^{-m} -> inf for EVERY rational q=s/t including s=1; and the coefficients are
+     Z[q,X] with PURE t-power denominators: the cyclotomic lcm has NOTHING to compress. Combination DEAD.]
    - the b<->z swap 1phi1(0;q;q^2,z) = ((z;q^2)_inf/(q;q^2)_inf) 1phi1(0;z;q^2,q) conserves rho.
    OPEN DOOR: a q-irrationality criterion at rho=1/2 -- one notch beyond the proven rho>=1 theory.
 
@@ -84,3 +88,37 @@ if __name__ == "__main__":
         t = J(m + mp.mpf('0.5'), x0, q); l = Rpoly(m, mp.mpf('0.5'), x0, q) * J(mp.mpf('0.5'), x0, q)
         print(f"  m={m:>2}: J_(m+1/2)(x0)={mp.nstr(t,8)}  = R*J={mp.nstr(l,8)}  J/x0^m={mp.nstr(t/x0**m,8)}")
     print("\n=> J_{m+1/2}(x0) ~ 0.8164 * x0^m: geometric (q-factorial is geometric). rho=1/2 wall stands.")
+
+
+# ---------------------------------------------------------------------------
+# FULL COSTING of the cyclotomic-lcm + second-kind-ladder combination (2026-07-11).
+# Run: python3 -c "import beta2_qniven_ladder as B; B.full_costing()"
+# ---------------------------------------------------------------------------
+def full_costing():
+    """(A) deg_q p_m = m^2 EXACTLY (recurrence p_{m+1}=(X+1-q^{2m+1})p_m - X p_{m-1}):
+       at q=s/t the q-Lommel coefficients have PURE t^{m^2} denominators -- no cyclotomic
+       factors, so lcm-compression (little-q-Legendre style) has NOTHING to act on.
+       (B) Poincare-Perron: the m-recurrence coefficient -> x0+1/x0, distinct roots x0,1/x0
+       => ALL solutions geometric; NO theta-type q^{m^2} decay exists in the nu-direction
+       (the second kind's q^{nu^2/2} prefactor is cancelled by (q^{-nu+1};q)_inf of its
+       shifted argument x q^{-nu/2}). [Corrects the earlier q^{m^2/2}-decay claim: WRONG.]
+       (C) => cleared nu-ladder forms ~ t^{m^2} x0^{-m} -> infinity for EVERY rational
+       q=s/t INCLUDING s=1. The combination provably fails. Decay lives only in the
+       z-direction (irregular at z=inf, Newton slopes {0,1}, rho=1/2 Pochhammer weight);
+       arithmetic lives in the regular nu-direction (Z[q,X], geometric). They never meet."""
+    import sympy as sp
+    q, X = sp.symbols('q X')
+    P = [sp.Integer(1), X + 1 - q]
+    for m in range(1, 9):
+        P.append(sp.expand((X + 1 - q**(2*m+1))*P[-1] - X*P[-2]))
+    degs = [int(sp.degree(P[m], q)) for m in range(2, 10)]
+    print("deg_q p_m, m=2..9:", degs, "== m^2:", degs == [m*m for m in range(2, 10)])
+    mp.mp.dps = 40
+    qv = mp.mpf('0.5')
+    z1 = mp.findroot(lambda z: J(mp.mpf('-0.5'), mp.sqrt(z)/qv, qv).real, mp.mpf('0.43'))
+    x0 = mp.sqrt(z1)/qv
+    M = 60; u = {M+1: mp.mpf(0), M: mp.mpf(1)}
+    for m in range(M, 0, -1):
+        u[m-1] = ((1 - qv**(2*m+1))/x0 + x0)*u[m] - u[m+1]
+    print("minimal-solution ratio u_20/u_21 =", mp.nstr(u[20]/u[21], 8), " = x0 =", mp.nstr(x0, 8),
+          "(geometric; no q^{m^2} solution -- Poincare-Perron)")
