@@ -25,13 +25,16 @@ abstract: >
   unconditionally faithful in every dimension n >= 3 for pairwise
   distinct legs (uniform Schur-complement identity det Q_n = -prod a_i^2
   plus rank-0 descent on Cremona elliptic curves 24a1, 32a2, 72a2). The
-  algebraicity of the growth series of A396406 over Q(x) is open and no
-  low-complexity closed form exists; a companion study (Paper 2) proves
-  the catalytic building blocks transcendental over Q(q) unconditionally
-  (Polya-Carlson natural boundary) and the relaxed companion series V
-  transcendental over Q(x) via a self-contained steepest-descent estimate,
-  reducing the transcendence of A396406 itself to a single explicit
-  numerator bound (numerically verified, open in closed form).
+  companion study (Paper 2) proves the catalytic building blocks
+  transcendental over Q(q) unconditionally (Polya-Carlson natural
+  boundary) and both growth series -- the relaxed companion V and the
+  true series U = A396406 -- transcendental over Q(x), via self-contained
+  elementary asymptotics: exact sinh-product collapses of all three
+  series, expansions with exact rational constants, and a derived
+  pole-zero phase offset (sqrt2/8) tau^{3/2} that closes the numerator
+  gate at |P12|/tau^{3/2} -> 1/(4 sqrt2), a fourfold margin. In
+  particular the geodesic growth series of the side-reflection system
+  is not algebraic over Q(x); no low-complexity closed form exists.
 keywords:
   - right-triangle reflection group
   - Coxeter groups
@@ -49,8 +52,8 @@ keywords:
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
-date-released: 2026-07-07
-version: 1.4.0
+date-released: 2026-07-10
+version: 1.5.0
 doi: 10.5281/zenodo.20370090
 identifiers:
   - type: doi

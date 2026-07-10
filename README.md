@@ -158,9 +158,20 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
 > transcendence study is now included as **Paper 2** (`paper2.pdf`), summarized in
 > the next section. `U` remains conditional throughout.
 
+> **Update (v1.5.0, July 2026) — the U-gate is closed.** The single input that
+> kept `U` conditional — the numerator amplitude bound `R = O(τ^{5/2})` at the
+> travel poles — is now **derived** rather than numerically observed: the
+> amplitude series and the pole equation both collapse exactly to sinh-product
+> families, their phase expansions share the identical `√τ` term (the universal
+> curvature `c₃ = −τ²/9`, constant `√2/36`), and the pole–zero offset comes out
+> exactly `δw = (√2/8)τ^{3/2}`, giving `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2`. **`U`
+> is transcendental over ℚ(x) with the same analytic standing as `V`.** See the
+> updated section below and `paper2.pdf` (Remark on the derived numerator
+> amplitude); scripts `elemY3_verify.py`, `phase_match_verify.py`.
+
 ## Transcendence (Paper 2)
 
-`paper2.pdf` (~9 pp) asks whether these growth series are algebraic or
+`paper2.pdf` (~10 pp) asks whether these growth series are algebraic or
 transcendental, and reports the answer in **honest tiers**:
 
 - **Building blocks — unconditional.** The catalytic q-series Σ₀, Σ₁, S₀, S₁ are
@@ -168,15 +179,26 @@ transcendental, and reports the answer in **honest tiers**:
   super-polynomial growth along the squares (`|[q^{(j+1)²}]| ≥ 2^{j+1}`), so by
   Pólya–Carlson the unit circle is a natural boundary
   (`lean/with_mathlib/PolyaCarlson.lean`).
-- **Relaxed series V — unconditional.** V is transcendental over ℚ(x); its one
-  analytic input, a simple-saddle steepest-descent estimate, is proved
-  *self-contained* (Cauchy + Stirling + Gaussian integration + an explicit
-  bounded-variation bound; saddles `z* = ±iW/2`), not cited.
-- **True series U = A396406 — conditional, and flagged as such.** Via the exact
-  Abel identity `P₁₂ = (X·Sₑ − 1)/x`, transcendence of U reduces to a *single*
-  numerator amplitude bound at the pole, which holds numerically at the first 70
-  poles (4× margin) but is not yet in closed form. **U is never claimed
-  unconditional.**
+- **Relaxed series V — transcendental over ℚ(x).** Its one analytic input, a
+  simple-saddle steepest-descent estimate, is proved *self-contained* (Cauchy +
+  Stirling + Gaussian integration + an explicit bounded-variation bound; saddles
+  `z* = ±iW/2`), not cited.
+- **True series U = A396406 — transcendental over ℚ(x), on the same footing as
+  V (new in v1.5.0).** Via the exact identity `P₁₂ = (2q³/(1−q³))·Σ dₖ`, the one
+  remaining input — the numerator amplitude at the travel poles — is now
+  **derived in elementary closed form**: the terms collapse exactly to
+  sinh-products, every expansion constant is an exact rational
+  (`y* = (2/τ)e^{−τ−23τ²/36}`, `c₂ = −5τ²/12`, `c₃ = −τ²/9`, `c₅ = τ⁴/450`), and
+  the phase-matching of the travel-pole equation (which collapses to the *same*
+  sinh family) against the amplitude's zero gives the pole–zero offset
+  `δw = (√2/8)·τ^{3/2}` exactly — hence `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2`: the
+  numerator gate, **derived**, with a fourfold margin (and verified at the first
+  70 poles). The √τ phases of pole and zero agree identically — both produced by
+  the universal cubic curvature `c₃ = −τ²/9`, whose constant `√2/36` is the
+  lem:cos constant — which is *why* the travel poles track the zeros of `Y₃(1)`.
+  (`elemY3_verify.py`, `phase_match_verify.py`.) **Rigor level, stated honestly:**
+  identical to V — all coefficients derived elementarily and machine-verified,
+  remainders at the standard simple-saddle level; not formalized analysis.
 - **Orthogonal mod-p evidence.** The p-kernel of `(u_n mod p)` is the full
   ternary tree through the accessible depth (`SigmaKernel.lean`, `UKernel.lean`)
   — maximal finite-data evidence of non-automaticity, not a proof.
