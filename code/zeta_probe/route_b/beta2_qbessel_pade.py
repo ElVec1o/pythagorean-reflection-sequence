@@ -15,10 +15,20 @@ HERMITE-PADE attack (the natural proof), measured here:
   [n/n] approximants Q_n(z)G(q,z) - P_n(z) = O(z^{2n+1}).  At the zero z*, P_n(z*) = -R_n(z*).
   * REMAINDER decays super-exponentially: |R_n(z*)| = 2^{-c n^2}, c ~ 3.5  (the q^{k(k-1)} numerators). GOOD.
   * HEIGHT of the coefficients grows CUBICALLY: 2^{c' n^3}, c' ~ 2.5  (the (q;q)_{2k} denominators, cleared).
-  n^3 (height) > n^2 (remainder)  =>  Liouville gives NO contradiction. The gap is EXACTLY the classical
-  G-function (Galochkin/Andre bounded-denominator) condition: if G(q,z) is a q-G-function its denominators
-  drop to 2^{c'' n^2} and Siegel's mechanism closes it. Whether G is a q-G-function is the sharp OPEN frontier
-  (Andre / Di Vizio / Roques q-difference transcendence). NOT a proof -- an honest, precise reduction.
+  n^3 (height) > n^2 (remainder) for the NAIVE Pade => Liouville fails with the hand construction.
+
+CORRECTED / SHARPENED FRAMEWORK (the right one). Write the eq as a system Y(q^2 z)=A(z)Y(z),
+Y=(G(z),G(q^2 z)). The companion matrix
+        A(z) = [[0, 1], [-q, q+1-qz]]
+is POLYNOMIAL in z with Z[q] entries and det A = q (constant): the iterated matrices carry NO
+denominators, the Casoratian obeys W(q^2 z)=q W(z) i.e. W(z)=c z^{1/2} (the two solutions form a
+q-BESSEL PAIR, Frobenius exponents 0 and 1/2), and G(q,.) is ENTIRE of order 0 -- a q-E-FUNCTION
+(NOT a q-G-function; it is entire). So beta_2 transcendental follows from a q-analogue of the
+SIEGEL-SHIDLOVSKII theorem for this q-E-function: q-SS gives G(q,alpha) transcendental at algebraic
+alpha != 0 off the singular locus, but G(q*,z*)=0 is algebraic => q* (hence beta_2, hence U) transcendental.
+ALL structural hypotheses HOLD (A polynomial, det const, entire order 0). The ONLY open point: whether the
+available q-Siegel-Shidlovskii results (Andre; Di Vizio-Hardouin) extend to a 1phi1 IRREGULAR at z=infty.
+Precise, expert-checkable -- not "no applicable theorem". NOT a proof; the sharpest reduction to date.
 
 Run: needs mpmath + sympy. OMP-safe (single thread), dps<=60.
 """
