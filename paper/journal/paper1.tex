@@ -79,8 +79,13 @@ and a finite modular certificate closes the gap to depth $32$. The
 natural conjecture that universality holds at all depths is refuted:
 for every algebraic shape we exhibit an explicit word in $\ker\rho_T$
 (a product of conjugated glide-reflection squares), and the first
-deviation depth $n_T$ is sandwiched by $\max(33,c_T)\le n_T\le 24c_T+8$,
-linear in the arithmetic complexity of the shape. Finally, the
+deviation depth $n_T$ is sandwiched by $\max(33,c_T)\le n_T\le 24c_T+8$;
+moreover $n_T$ equals exactly half the length of the shortest kernel
+element --- a shortest-vector problem in the ideal $2(t-1)\mu_T\Z[t^{\pm1}]$
+under the lamplighter metric --- from which we extract a closed-form
+three-regime law, $n_T = 6c_T+e_T$, $9c_T-3e_T$, or $3(c_T+e_T)$ according
+to the angle of the triangle, certified at $(1,2)$ and validated on
+thirteen shapes. Finally, the
 lamplighter transfer yields a $q$-difference functional equation for
 the relaxed generating function of A396406; a connectivity-invariance
 squeeze of the true count between its pure-travel subcount and the
@@ -1602,15 +1607,84 @@ depth $\lceil K/2 \rceil$.
 Since $\ell_{\mathrm{tr}}$ is computed exactly by the metric theorem
 (Theorem~\ref{thm:metric}: relaxed tour cost plus twice the transducer
 defect), $K(T)$ is the minimum of a computable function over the lattice
-$\mu_T \cdot \mathbb{Z}[t^{\pm 1}]$, and the minimization is a finite search
-once the support and coefficients of $m$ are bounded through the sandwich.
-The certified value $n_{(1,2)} = 33$ pins $K_{(1,2)} \in \{65, 66\}$: the
-shortest kernel element of the $(1,2)$ triangle has length $65$ or $66$,
-against the witness-word upper bound of $104$. Evaluating $K(T)$ for further
-shapes --- and extracting from it a closed-form law in $(c_T, e_T)$ --- is a
-finite computation per shape which we leave open; the sandwich constants
-above are the $\ell^1$-shadow of this shortest-vector problem.
+$\mu_T \cdot \mathbb{Z}[t^{\pm 1}]$, and each search is self-terminating: a
+word of length $\ell$ changes the total lamp mass by at most $\ell$, so
+$\ell_{\mathrm{tr}}(L) \ge \|L\|_1$ and candidates may be enumerated in
+increasing $\ell^1$-norm until the norm passes the best value found.
 \end{remark}
+
+Two further elementary facts sharpen the law. First, every generator move
+flips the direction flag, so pure translations have \emph{even} word length:
+$K(T)$ is even and $n_T = K(T)/2$ exactly. In particular the certified
+$n_{(1,2)} = 33$ pins $K_{(1,2)} \in \{65,66\}$ and parity forces
+\[
+K_{(1,2)} = 66 ,
+\]
+now a theorem; the minimum is attained by the translation with polynomial
+$-2(t+1)\mu_{(1,2)}$, lamp profile $(-10,\,2,\,2,\,-10)$, of word length
+exactly $66$ --- against the witness-word bound of $104$. Second, the metric
+formula evaluates in closed form on the two natural candidate families
+$m = 1$ and $m = t+1$:
+\[
+\ell_{\mathrm{tr}}\bigl(2\mu_T\bigr) = 8c_T + 2e_T + 4\max(c_T, e_T),
+\qquad
+\ell_{\mathrm{tr}}\bigl(2(t{+}1)\mu_T\bigr) = 12 c_T + 6\,|c_T - e_T|
+\]
+(for $0 < e_T < 2c_T$, which always holds). Minimizing over the two families
+and halving yields the following closed-form law, which matches the computed
+$K(T)$ \emph{exactly} on every shape tested.
+
+\begin{proposition}[Deviation-depth law]
+\label{prop:deviation-law}
+Normalize $e_T > 0$. For every shape tested (thirteen $(c_T,e_T)$ pairs,
+listed below), the first deviation depth equals
+\[
+n_T \;=\;
+\begin{cases}
+3\,(c_T + e_T), & e_T \ge c_T,\\[2pt]
+6c_T + \min\bigl(e_T,\ 3(c_T - e_T)\bigr), & e_T \le c_T,
+\end{cases}
+\]
+the minimum in the second line switching at $e_T = \tfrac34 c_T$. The
+inequality $n_T \le$ (law) is a theorem for every shape --- the two displayed
+translations are explicit kernel elements, and their lengths are evaluated by
+Theorem~\ref{thm:metric} --- while equality holds against the exhaustive
+shortest-vector searches described below.
+\end{proposition}
+
+Concretely: $n_T = 6c_T + e_T$ for $e_T \le \tfrac34 c_T$ (minimizer $2\mu_T$),
+$n_T = 9c_T - 3e_T$ for $\tfrac34 c_T \le e_T \le c_T$, and
+$n_T = 3(c_T+e_T)$ for $e_T \ge c_T$ (minimizer $2(t{+}1)\mu_T$). In terms of
+the triangle itself the three regimes are \emph{angle windows}: with
+$\beta = \arctan(b/a) \in (45^\circ, 90^\circ)$ the boundaries sit at
+$\tan\beta = \sqrt{11/5}$ ($\beta \approx 56.3^\circ$, where
+$e_T = \tfrac34 c_T$) and at $\beta = 60^\circ$ (where $e_T = c_T$). The law
+was validated as follows: for the nine leg shapes
+\[
+\begin{array}{lcccc}
+T & c_T & e_T & n_T\ \text{(law)} & \text{status}\\\hline
+(1,2) & 5 & 6 & 33 & \text{certified (Remark~\ref{rem:first-deviation-12})}\\
+(1,3) & 5 & 8 & 39 & \text{search}\\
+(2,3) & 13 & 10 & 87 & \text{search}\\
+(1,5) & 13 & 24 & 111 & \text{search}\\
+(3,5) & 17 & 16 & 105 & \text{search}\\
+(1,4) & 17 & 30 & 141 & \text{search}\\
+(3,4) & 25 & 14 & 164 & \text{search; consistent with }n_{(3,4)} > 42\\
+(2,5) & 29 & 42 & 213 & \text{search}\\
+(4,5) & 41 & 18 & 264 & \text{search}
+\end{array}
+\]
+and four further abstract pairs $(c,e) = (61,11), (37,35), (53,45), (73,55)$
+the law's prediction agreed with the computed minimum in every case; the
+searches ranged over multipliers $m$ of degree $\le 5$ with coefficients
+$|m_i| \le 4$ (widened to degree $\le 7$ and to coefficients $\le 6$ for
+$(1,2)$ and $(3,4)$ with no change), all shifts, pruned rigorously by the
+$\ell^1$ lower bound. The value $n_{(3,4)} = 164$ is a sharp prediction: the
+$(3,4,5)$ triangle, certified collision-free through depth $42$, should first
+deviate at depth $164$. Exactness of the law beyond the searched windows ---
+equivalently, that no third multiplier family ever undercuts $m \in
+\{1, t+1\}$ --- is conjectural; the certified $(1,2)$ anchor and the window
+stability are the evidence.
 
 \begin{remark}[First deviation for $(1,2)$]
 \label{rem:first-deviation-12}
