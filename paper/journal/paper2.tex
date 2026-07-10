@@ -69,10 +69,11 @@ Mathlib} (Lemma~\ref{lem:atomN});
 without any of the above: the $p$-kernel of $(u_n\bmod p)$ is machine-verified to be maximally
 non-automatic at $p=3,5$, though a proof for dense-support series is open.
 \end{enumerate}
-Thus $V$ rests on one cited classical asymptotic theorem, every hypothesis made explicit here; $U$
-rests on that same theorem \emph{plus} a single further pole-amplitude estimate --- verified
-numerically, not yet derived --- which we isolate precisely as the honest frontier of the
-true-series result.
+Thus $V$ and $U$ rest on the same self-contained analysis: every coefficient is derived
+elementarily and machine-verified, and the remainders are at the standard simple-saddle level ---
+the precise rigor standing is stated in the text. In sharp contrast with the rational growth of
+hyperbolic groups and the algebraic growth series of Parry's wreath products, the geometric word
+metric places this virtually-lamplighter group outside every algebraic class.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -426,6 +427,22 @@ of the smallest travel pole; the value $\tfrac32$ is excluded. This is unconditi
 the location of the dominant travel pole, not Lemma~\ref{lem:cos}).
 \end{corollary}
 
+\begin{remark}[the number $\beta_2$: a value-transcendence question]\label{rem:betanumber}
+Whether the \emph{number} $\beta_2$ is transcendental is open, but the question has a clean
+reduction. Since $\beta_2=1/\sqrt{q^\ast}$ with $\Sigma_1^T(q^\ast)=1$, the number $\beta_2$ is
+algebraic iff $q^\ast$ is; if $q^\ast$ were algebraic, the series $\Sigma_1^T$ would take the
+\emph{rational} value $1$ at an algebraic interior point of its disc. For the Jacobi-theta class
+this is impossible: by Nesterenko's theorem on Eisenstein values \cite{Nesterenko1996},
+$\sum_n\alpha^{n^2}$ is transcendental at \emph{every} algebraic $\alpha$ with $0<|\alpha|<1$
+\cite{DNNS1996}. The blocks here are theta-\emph{like} --- their coefficients ride the squares
+$q^{(j+1)^2}$, which is the source of the natural boundary of Theorem~\ref{thm:blocks} --- but
+their Euler-product denominators $(q;q)_{2k+1}$ spread the support densely, and no analogue of
+\cite{Nesterenko1996} is known off the modular class. Thus $\beta_2$ transcendental would follow
+from a value-transcendence theorem for this partial-theta class at algebraic points; we record
+this as the precise open question. (Note the contrast with the \emph{function-level} results of
+this paper, which say nothing about individual interior values.)
+\end{remark}
+
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
 $U$ inherits the travel poles of Proposition~\ref{prop:travelinv}; it is transcendental once its
@@ -562,14 +579,14 @@ tree with \emph{no} deficit. (An apparent deficit of $1$ at level $3$ --- $1,4,1
 $1,4,13,40$ at $p=3$ --- is a \emph{comparison-length artifact}: a level-$k$ decimation subsequence
 retains only $\sim N/p^{k}$ terms, so at a short prefix two distinct decimations can coincide; the
 deficit disappears once the comparison length reaches $9$.) Two instances are machine-verified in
-Lean~4. For the true series itself, the $3$-kernel of $(u_n\bmod3)$ through level $2$ is the full
-ternary tree --- all $13$ decimation words of length $\le2$ are pairwise distinct on $20$ terms
+Lean~4. For the true series itself, the $3$-kernel of $(u_n\bmod3)$ through level $3$ is the full
+ternary tree, deficit $0$: all $1+3+9+27=40$ decimation words of length $\le3$ are pairwise distinct
+--- at comparison lengths $9$ and $10$ alike --- on the $271$-term prefix $n\le270$
 (\texttt{UKernel.lean}, from the validated \texttt{tools/u\_modp\_rust} output, whose $u_n$ are
-self-checked against the $43$ known terms). For the sibling block $\Sigma_1$, already transcendental
-over $\Q(q)$ by Theorem~\ref{thm:blocks}, the full tree persists through level $3$ --- all $40$
-decimation words of length $\le3$ pairwise distinct on $18$ terms, with the identical short-prefix
-deficit-$1$ confirmed spurious (\texttt{SigmaKernel.lean}, built from the $A/C$ recursion over
-$\F_3$). The Berlekamp--Massey linear complexity of $(u_n\bmod 3)$ is $\approx N/2$. This is the
+self-checked against the $43$ known terms and byte-identical to the earlier validated $n\le180$ run
+on the overlap). For the sibling block $\Sigma_1$, already transcendental over $\Q(q)$ by
+Theorem~\ref{thm:blocks}, the same level-$3$ full tree is certified in \texttt{SigmaKernel.lean}
+(built from the $A/C$ recursion over $\F_3$), with the short-prefix deficit-$1$ confirmed spurious. The Berlekamp--Massey linear complexity of $(u_n\bmod 3)$ is $\approx N/2$. This is the
 strongest finite-data evidence for non-automaticity, and hence for transcendence over $\Q(x)$,
 independent of all of \S\S\ref{sec:sd}--\ref{sec:U}. A proof for $U$ would require a non-automaticity
 criterion valid for \emph{dense}-support series --- the coefficients carry no lacunary gaps --- which
@@ -612,10 +629,16 @@ and $q$-Bessel functions}, J. Math. Anal. Appl. \textbf{186} (1994), 896--913; \
 satisfactory pair and exact $q$-Wronskians for the Hahn--Exton equation).
 \bibitem{IsolaPiergallini} S.~Isola and R.~Piergallini, \emph{On the generic triangle group},
 arXiv:1405.1881 [math.MG], 2014.
+\bibitem{DNNS1996} D.~Duverney, Ke.~Nishioka, Ku.~Nishioka and I.~Shiokawa, \emph{Transcendence
+of Jacobi's theta series}, Proc.\ Japan Acad.\ Ser.~A \textbf{72} (1996), 202--203.
+
 \bibitem{MathlibCommunity} The mathlib Community, \emph{The Lean mathematical library},
 CPP~2020, 367--381; \url{https://github.com/leanprover-community/mathlib4}.
 \bibitem{Morita2011} T.~Morita, \emph{A connection formula of the Hahn--Exton $q$-Bessel function},
 SIGMA \textbf{7} (2011), 115, 11~pp.; arXiv:1105.1998.
+\bibitem{Nesterenko1996} Yu.~V.~Nesterenko, \emph{Modular functions and transcendence questions},
+Sb.\ Math.\ \textbf{187} (1996), 1319--1348.
+
 \bibitem{OEIS} N.~J.~A.~Sloane et al., \emph{The On-Line Encyclopedia of Integer Sequences},
 \url{https://oeis.org}, sequence A396406.
 \bibitem{Olver} F.~W.~J.~Olver, \emph{Asymptotics and Special Functions}, Academic Press, 1974

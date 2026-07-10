@@ -1549,6 +1549,69 @@ floor. For every shape other than $(1,2)$ the depth-$38$ certificate
 sharpens the floor to $\max(39, c_T)$.
 \end{corollary}
 
+The sandwich can be replaced by an \emph{exact} characterization: the deviation
+depth is precisely half the length of the shortest nontrivial kernel element,
+a shortest-vector problem in the ideal of
+Corollary~\ref{cor:kernel-classification-restate} under the lamplighter word
+metric of Theorem~\ref{thm:metric}.
+
+\begin{proposition}[Exact deviation-depth law]
+\label{prop:exact-deviation}
+For every unequal-leg rational (indeed algebraic) shape $T$, let
+\[
+K(T) \;=\; \min\bigl\{\, \ell(g) \;:\; g \in \ker\rho_T,\ g \neq 1 \,\bigr\}
+\;=\; \min_{0 \neq m \in \mathbb{Z}[t^{\pm 1}]}
+      \ell_{\mathrm{tr}}\bigl(2(t-1)\,\mu_T\, m\bigr),
+\]
+where $\ell$ is the word length in the symbolic group and
+$\ell_{\mathrm{tr}}(P)$ denotes the length of the pure translation with lamp
+polynomial $P$. Then
+\[
+n_T \;=\; \bigl\lceil K(T)/2 \bigr\rceil .
+\]
+\end{proposition}
+
+\begin{proof}
+The second expression for $K(T)$ is
+Corollary~\ref{cor:kernel-classification-restate}: every nontrivial kernel
+element is a pure translation with polynomial $2(t-1)\mu_T m$.
+
+($n_T \ge \lceil K/2 \rceil$.) The image group is a quotient, so the
+$\rho_T$-word-length of an image is the minimum symbolic length over its
+fiber; hence the cumulative counts satisfy
+$\sum_{d' \le d} u_{d'}^T = \#\{\text{fibers meeting the symbolic ball of
+radius } d\}$, and the first depth at which the cumulative counts differ ---
+which is the first depth at which the layer counts differ --- is the first
+depth $d$ at which some fiber contains two distinct elements of the ball of
+radius $d$. If $g \neq h$ share a fiber, then $gh^{-1} \in \ker\rho_T
+\setminus \{1\}$, so $\ell(g) + \ell(h) \ge \ell(gh^{-1}) \ge K$ and
+$\max(\ell(g), \ell(h)) \ge \lceil K/2 \rceil$.
+
+($n_T \le \lceil K/2 \rceil$.) Let $g \in \ker\rho_T$ attain $\ell(g) = K$
+and split a geodesic word for $g$ as $w_1 w_2$ with
+$|w_1| = \lceil K/2 \rceil$, $|w_2| = \lfloor K/2 \rfloor$. Then $w_1$ and
+$w_2^{-1}$ have the same $\rho_T$-image but differ in the symbolic group
+(else $g = 1$), and both subwords are geodesic: if, say,
+$\ell(w_1) < |w_1|$, then $\ell(g) < K$, a contradiction. So the ball of
+radius $\lceil K/2 \rceil$ meets one fiber twice, and the counts deviate by
+depth $\lceil K/2 \rceil$.
+\end{proof}
+
+\begin{remark}[The deviation depth as a computable lattice problem]
+\label{rem:svp}
+Since $\ell_{\mathrm{tr}}$ is computed exactly by the metric theorem
+(Theorem~\ref{thm:metric}: relaxed tour cost plus twice the transducer
+defect), $K(T)$ is the minimum of a computable function over the lattice
+$\mu_T \cdot \mathbb{Z}[t^{\pm 1}]$, and the minimization is a finite search
+once the support and coefficients of $m$ are bounded through the sandwich.
+The certified value $n_{(1,2)} = 33$ pins $K_{(1,2)} \in \{65, 66\}$: the
+shortest kernel element of the $(1,2)$ triangle has length $65$ or $66$,
+against the witness-word upper bound of $104$. Evaluating $K(T)$ for further
+shapes --- and extracting from it a closed-form law in $(c_T, e_T)$ --- is a
+finite computation per shape which we leave open; the sandwich constants
+above are the $\ell^1$-shadow of this shortest-vector problem.
+\end{remark}
+
 \begin{remark}[First deviation for $(1,2)$]
 \label{rem:first-deviation-12}
 The threshold of Theorem~\ref{thm:universality-sharp} is attained at the

@@ -97,14 +97,14 @@ Quot.sound]` only, with no `sorry`.
 > over `𝔽₃(q)`. Axioms `[propext, Classical.choice, Lean.ofReduceBool, Quot.sound]`.
 >
 > **`UKernel.lean`** — the same certificate for the **actual** true series `u_n = A396406`
-> (not just the block). It embeds `(u_n mod 3)` for `n ≤ 180` — the validated output of the
-> polynomial-time engine `tools/u_modp_rust` (self-checked against the 43 known terms) — and
-> `native_decide`s (theorem `u_kernel_full_tree`) that the 3-kernel through level 2 is the full
-> ternary tree (13 decimation words of length ≤ 2 pairwise-distinct on 20 terms). So `u_n`'s
-> 3-kernel has ≥ 13 elements, no collapses. The apparent level-3 "deficit 1" seen at short
-> prefixes is a comparison-length artifact (the sibling `SigmaKernel.lean` shows the identical
-> deficit vanish to the full tree at level 3 once the prefix is adequate); level 3 for `u_n`
-> itself needs `n ≥ 243`, beyond the engine's reach here.
+> (not just the block), now at **level 3**. It embeds `(u_n mod 3)` for `n ≤ 270` — the validated
+> output of the polynomial-time engine `tools/u_modp_rust` (self-checked against the 43 known
+> terms; byte-identical to the earlier validated `n ≤ 180` run on the overlap) — and
+> `native_decide`s (theorem `u_kernel_full_tree`) that the 3-kernel through level 3 is the full
+> ternary tree: all `1+3+9+27 = 40` decimation words of length ≤ 3 pairwise-distinct (comparison
+> length 10; the tree is equally full at length 9). So `u_n`'s 3-kernel has ≥ 40 elements,
+> deficit 0, no collapses — the earlier level-3 "deficit 1" at short prefixes was a
+> comparison-length artifact, exactly as the sibling `SigmaKernel.lean` predicted.
 >
 > **`DiscreteConserved.lean`** — the two conserved quantities of the symmetric three-term
 > recurrence `w(n+1) = bₙ·wₙ − w(n-1)` underlying the block-`S_e` amplitude analysis.
