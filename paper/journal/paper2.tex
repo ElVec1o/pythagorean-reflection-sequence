@@ -57,21 +57,23 @@ P\'olya--Carlson theorem;
 $\tfrac32$ is excluded;
 \item[\textup{(iii)}] the relaxed series $V$ is transcendental over $\Q(x)$; its one analytic input, a
 simple-saddle steepest-descent estimate, we prove here from first principles (Cauchy's theorem, Stirling,
-elementary Gaussian integration) rather than cite, with every constant explicit. The true series $U$ is transcendental over $\Q(x)$ \emph{on the same footing}: by an exact,
-machine-checked identity it reduces to that same estimate plus one amplitude bound at the pole, and this
-bound is now \emph{derived} --- the amplitude has an elementary closed-form expansion with exact rational
+elementary Gaussian integration) rather than cite, with every constant explicit. For the true series $U$
+we prove: \emph{conditional on a single amplitude estimate $(\star)$ at the pole}, $U$ is transcendental
+over $\Q(x)$, on the same analytic footing as $V$. By an exact machine-checked identity $U$ reduces to
+$V$'s estimate plus $(\star)$; the amplitude has an elementary closed-form expansion with exact rational
 constants (Remark~\ref{rem:elemY3}), and matching its zero against the travel-pole equation gives
 $\delta w=\tfrac{\sqrt2}8\tau^{3/2}$, hence $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below
-the gate threshold $1/\sqrt2$. The turning-point amplitude atom on the $U$-side, long the
-special-function obstacle, is an explicit rational inequality \emph{formally verified in Lean~4 /
-Mathlib} (Lemma~\ref{lem:atomN});
+the gate threshold $1/\sqrt2$ --- which \emph{establishes $(\star)$ to leading order} and at the first
+$70$ poles; its residual $O(\tau)$ term we verify numerically but do not prove. The turning-point
+amplitude atom on the $U$-side, long the special-function obstacle, is an explicit rational inequality
+\emph{formally verified in Lean~4 / Mathlib} (Lemma~\ref{lem:atomN});
 \item[\textup{(iv)}] an orthogonal, analysis-free route via Christol's theorem would settle $U$
 without any of the above: the $p$-kernel of $(u_n\bmod p)$ is machine-verified to be maximally
 non-automatic at $p=3,5$, though a proof for dense-support series is open.
 \end{enumerate}
-Thus $V$ and $U$ rest on the same self-contained analysis: every coefficient is derived
-elementarily and machine-verified, and the remainders are at the standard simple-saddle level ---
-the precise rigor standing is stated in the text. In sharp contrast with the rational growth of
+Thus $V$ rests on self-contained analysis, and $U$ on the same analysis plus the single residual
+$(\star)$: every coefficient is derived elementarily and machine-verified, and the remainders are at the
+standard simple-saddle level --- the precise rigor standing is stated in the text. In sharp contrast with the rational growth of
 hyperbolic groups and the algebraic growth series of Parry's wreath products, the geometric word
 metric places this virtually-lamplighter group outside every algebraic class.
 \end{abstract}
@@ -86,9 +88,11 @@ generic triangle group \cite{IsolaPiergallini} rather than a Coxeter group, and 
 rational Coxeter case governed by Steinberg's formula \cite{StanleyEC2} --- its growth is not a
 priori rational. The sequence $u_n=1,3,5,8,13,21,34,55,89,\dots$ is \textup{OEIS~A396406}; it
 coincides with the Fibonacci numbers $F_{n+3}$ for $1\le n\le9$ and first deviates at $n=10$. This
-paper settles the arithmetic nature of both series: the relaxed companion $V$ and the true series
-$U$ are transcendental over $\Q(x)$, with every analytic input proved self-contained
-(\S\ref{sec:sd}; Remarks~\ref{rem:elemcos} and~\ref{rem:elemY3}).
+paper settles the arithmetic nature of both series: the relaxed companion $V$ is transcendental over
+$\Q(x)$ with every analytic input proved self-contained, and the true series $U$ is transcendental over
+$\Q(x)$ conditional on a single explicit amplitude estimate $(\star)$ at the pole --- derived to leading
+order and verified at the first $70$ poles, its $O(\tau)$ residual the sole remaining gap
+(\S\ref{sec:sd}; Remarks~\ref{rem:elemcos}, \ref{rem:elemY3}, and~\ref{rem:Ugap}).
 
 \paragraph{Context.} For word-growth series of groups, rationality is the norm in the classical
 families: hyperbolic groups have rational growth series with respect to every finite generating set
@@ -513,12 +517,17 @@ by \texttt{nlinarith}.
 \end{remark}
 
 \begin{theorem}\label{thm:U}
-The true growth series $U$ is transcendental over $\Q(x)$. Its analytic inputs are exactly those of
-Theorem~\ref{thm:V}: the reduction to the numerator gate \eqref{eq:gate} is exact and machine-checked;
-the denominator half of the gate is Lemma~\ref{lem:cos}, shared with $V$; and the numerator half is the
-derived amplitude expansion of Remark~\ref{rem:elemY3}, whose phase-matching against the travel-pole
-equation yields $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)<1/\sqrt2$ --- the gate, with a fourfold margin,
-verified besides at the first $70$ poles.
+Suppose the numerator amplitude estimate $(\star)$ holds: at every travel pole $q_m$ the amplitude
+$Y_3(1/q_m)$ agrees with its confluent leading part to relative order $O(\tau^2)$ --- equivalently
+$|P_{12}(q_m)|=O(\tau^{3/2})$. Then the true growth series $U$ is transcendental over $\Q(x)$.
+Every \emph{other} analytic input coincides with Theorem~\ref{thm:V}'s: the reduction to the numerator
+gate \eqref{eq:gate} is exact and machine-checked, and the denominator half of the gate is
+Lemma~\ref{lem:cos}, shared with $V$. The estimate $(\star)$ is \emph{derived to leading order} in
+Remark~\ref{rem:elemY3} --- phase-matching the amplitude's zero against the travel-pole equation gives
+$\delta w=\tfrac{\sqrt2}8\tau^{3/2}$, whence $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below
+the gate threshold $1/\sqrt2$ --- and it holds at the first $70$ poles; its residual $O(\tau)$ term (the
+amplitude drift from turning point to pole) is established numerically but not proved, and is the sole
+gap (Remark~\ref{rem:Ugap}).
 \end{theorem}
 
 \begin{proof}
@@ -532,7 +541,8 @@ exactly as for $V$. \emph{Numerator.} The remaining bound $R/E=O(\tau)$ is equiv
 $|P_{12}|=O(\tau^{3/2})$ at the pole; since $P_{12}=\tfrac{2q^3}{3(1-q^3)}Y_3(1/q)-\tfrac23S_e$ is an
 $O(\sqrt\tau)$ \emph{cancellation}, it demands $Y_3(1/q)$ at $X=w$ to relative order $O(\tau^2)$. This
 bound holds at every computed pole ($|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)=0.1768$, a $4\times$ margin
-below $1/\sqrt2$, over $m=4,\dots,70$), but is established there \emph{numerically}. Granting it,
+below $1/\sqrt2$, over $m=4,\dots,70$), but is established there \emph{numerically}; it is exactly the
+hypothesis $(\star)$. Under $(\star)$,
 $t_1/\tau=\tfrac14+O(\tau)$ and $s<1$ with positive margin at every pole, so $\mathcal N_U(q_m)\ne0$,
 and $U$ inherits infinitely many uncancelled poles accumulating at $q=1$, hence is transcendental.
 \end{proof}
@@ -566,7 +576,8 @@ $\Gamma_{q^2}(\tfrac12)=\sqrt\pi(1-\tfrac38\tau+O(\tau^2))$). The block-asymptot
 out \emph{elementarily} in Remark~\ref{rem:elemY3}: the numerator amplitude has a derived closed-form
 expansion with exact rational constants, and the phase-matching of the travel-pole equation against the
 amplitude's zero --- both collapsing to the same $\sinh$-product family --- derives the gate value
-$1/(4\sqrt2)$. $U$'s analytic inputs thereby coincide with $V$'s. (The orthogonal arithmetic route of
+$1/(4\sqrt2)$. $U$'s analytic inputs thereby coincide with $V$'s up to the $O(\tau)$ residual of
+$(\star)$. (The orthogonal arithmetic route of
 \S\ref{sec:modp} would settle $U$ without any of this analysis, but is itself open.)
 \end{remark}
 
@@ -600,16 +611,18 @@ estimate (Lemma~\ref{lem:cos}), which we now prove \emph{self-contained} --- by 
 Stirling's formula, elementary Gaussian integration, and the explicit bounded-variation bound of
 Lemma~\ref{lem:Bbounded}, the two saddles $z^\ast_\pm=\pm iW/2$ supplying the global cancellation that no
 partial-summation method can --- rather than by citing a general theorem. With that estimate in hand,
-\textbf{$V$ is transcendental over $\Q(x)$ unconditionally}. The true series $U$ now stands on the same footing: through the
-exact identity $P_{12}=\tfrac{2q^3}{1-q^3}\sum_kd_k$, its one further input --- the numerator amplitude
-at the pole --- is derived in elementary closed form, and the phase-matching of the travel-pole equation
-against the amplitude's zero gives $\delta w=\tfrac{\sqrt2}8\tau^{3/2}$, hence
-$|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)<1/\sqrt2$: the gate holds with a fourfold margin, and
-\textbf{$U$ is transcendental over $\Q(x)$} with the same analytic standing as $V$ --- every
-coefficient derived elementarily, remainders at the standard simple-saddle level of
-Lemma~\ref{lem:cos}. The turning-point amplitude atom on the $U$-side is the
-elementary rational bound of Lemma~\ref{lem:atomN}, formally verified in Lean~4. The independent mod-$p$
-route of \S\ref{sec:modp} would settle $U$ by a completely different mechanism, if a dense-support
+\textbf{$V$ is transcendental over $\Q(x)$ unconditionally}. The true series $U$ stands on the same
+footing up to a single residual: through the exact identity $P_{12}=\tfrac{2q^3}{1-q^3}\sum_kd_k$, its
+one further input --- the numerator amplitude at the pole, estimate $(\star)$ --- is derived in
+elementary closed form to leading order, and the phase-matching of the travel-pole equation against the
+amplitude's zero gives $\delta w=\tfrac{\sqrt2}8\tau^{3/2}$, hence
+$|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)<1/\sqrt2$: the gate holds with a fourfold margin, established to
+leading order and at the first $70$ poles. \textbf{Conditional on the $O(\tau)$ residual of $(\star)$
+--- verified numerically but not proved --- $U$ is transcendental over $\Q(x)$} with the same analytic
+standing as $V$: every coefficient derived elementarily, remainders at the standard simple-saddle level
+of Lemma~\ref{lem:cos}. The turning-point amplitude atom on the $U$-side is the elementary rational bound
+of Lemma~\ref{lem:atomN}, formally verified in Lean~4. The independent mod-$p$ route of
+\S\ref{sec:modp} would settle $U$ by a completely different mechanism, if a dense-support
 non-automaticity criterion can be found.
 
 \begin{thebibliography}{99}

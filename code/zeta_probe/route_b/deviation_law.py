@@ -14,7 +14,13 @@ Pipeline, all steps reproduced here:
  (3) PARITY: every generator move flips the direction flag, so pure translations have even
      length; with the certified n_(1,2) = 33 (=> K in {65,66}) this forces K_(1,2) = 66.
  (4) SEARCH: for each shape, enumerate multipliers m (degree <= 5, |m_i| <= 4, all shifts),
-     sorted by l1(L); the enumeration is self-terminating since ell_tr(L) >= ||L||_1.
+     sorted by l1(L); within this bounded-degree family the l1-prune (ell_tr >= ||L||_1) is
+     exhaustive. NB the l1 bound alone does NOT prove global termination -- mu_T has both roots
+     on |t|=1 (not roots of unity, Niven), so ||mu_T m||_1 can stall as deg m grows. Rigorous
+     finiteness is via the TRAVEL bound ell_tr >= 2*span(A) (deviation_lowerbound.py, paper1
+     lem:finite-svp), which caps deg m <= K/2. So these searches are exhaustive-within-window
+     (deg <= 5), NOT full theorems except at (1,2) [independently certified]; the closed-form
+     law's exactness for all shapes is conjectural.
  (5) LAW (validated on 13 (c,e) pairs; windows widened for (1,2),(3,4) with no change):
          n_T = 3(c+e)                 if e >= c
          n_T = 6c + min(e, 3(c-e))    if e <= c        (switch at e = 3c/4)

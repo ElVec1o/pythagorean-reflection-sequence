@@ -1602,15 +1602,56 @@ radius $\lceil K/2 \rceil$ meets one fiber twice, and the counts deviate by
 depth $\lceil K/2 \rceil$.
 \end{proof}
 
-\begin{remark}[The deviation depth as a computable lattice problem]
-\label{rem:svp}
-Since $\ell_{\mathrm{tr}}$ is computed exactly by the metric theorem
-(Theorem~\ref{thm:metric}: relaxed tour cost plus twice the transducer
-defect), $K(T)$ is the minimum of a computable function over the lattice
-$\mu_T \cdot \mathbb{Z}[t^{\pm 1}]$, and each search is self-terminating: a
-word of length $\ell$ changes the total lamp mass by at most $\ell$, so
-$\ell_{\mathrm{tr}}(L) \ge \|L\|_1$ and candidates may be enumerated in
-increasing $\ell^1$-norm until the norm passes the best value found.
+\begin{lemma}[Finite determination of $K(T)$]
+\label{lem:finite-svp}
+Write the kernel translation $2(t-1)\mu_T m$ in the edge basis of
+Theorem~\ref{thm:normal-form}: its deposit vector is the edge polynomial
+$A = 2\mu_T m$ (the quotient $P/(t-1)$ of the translation polynomial), every
+coefficient of which is even. Then
+\[
+   \ell_{\mathrm{tr}}\bigl(2(t-1)\mu_T\, m\bigr)\;\ge\;
+   \max\bigl(\|A\|_1,\ 2\operatorname{span}(A)\bigr),
+   \qquad
+   \operatorname{span}(A) = \bigl(\deg m-\operatorname{ord}m\bigr)+2 .
+\]
+Consequently, for every bound $B$ only finitely many multipliers $m$ --- up to the
+shift $m\mapsto t^{j}m$, under which $\ell_{\mathrm{tr}}$ is invariant --- satisfy
+$\ell_{\mathrm{tr}}\le B$: the travel term caps the degree spread at
+$\deg m-\operatorname{ord}m\le \tfrac B2-2$, and on each bounded-spread slice the
+injective linear map $m\mapsto\mu_T m$ is bounded below, $\|\mu_T m\|_1\ge
+\sigma\|m\|_\infty$ with $\sigma>0$, capping the coefficients. Hence the minimum
+$K(T)$ is attained and is computable, over an explicit finite set.
+\end{lemma}
+
+\begin{proof}
+By Theorem~\ref{thm:metric-formula} the crossing numbers obey $m_j\ge|a_j|$, so
+$\ell_{\mathrm{tr}}\ge\sum_j m_j\ge\|A\|_1$. A pure translation has linear part
+$k=0$ and is realized by a \emph{closed} walk on $\mathbb Z$; every edge between
+the extreme deposit sites $j_{\min},j_{\max}$ of $A$ is therefore crossed an even,
+hence $\ge2$, number of times --- a support edge because its deposit $|a_j|\ge2$
+is a nonzero even integer, a gap edge because a closed walk that reaches both
+sides of it crosses it and returns. There are $\operatorname{span}(A)+1$ such
+edges, so $\ell_{\mathrm{tr}}\ge\sum_j m_j\ge2\operatorname{span}(A)$. Since
+$\mu_T=c_Tt^2-e_Tt+c_T$ has nonzero extreme coefficients,
+$\operatorname{span}(2\mu_T m)=(\deg m-\operatorname{ord}m)+2$. Finiteness is then
+immediate: the bound $2\operatorname{span}\le B$ confines the degree spread, and
+$m\mapsto\mu_T m$ is injective ($\mathbb Z[t^{\pm1}]$ is a domain), so on the
+finite-dimensional slice of bounded spread it is bounded below in any two norms.
+\end{proof}
+
+\begin{remark}[why the travel term is needed]
+\label{rem:l1-insufficient}
+The span bound is not a convenience: because $\mu_T$ is a palindromic quadratic
+with $0<e_T<2c_T$, its two roots lie \emph{on} the unit circle (and, by Niven's
+theorem, are not roots of unity), so $\|\mu_T m\|_1$ need not grow with
+$\deg m$. The crossing bound $\ell_{\mathrm{tr}}\ge\|A\|_1$ alone therefore does
+\emph{not} terminate the search; it is the travel term $2\operatorname{span}(A)$,
+which grows with the degree spread, that makes $K(T)$ a finite computation. The
+roots-on-the-unit-circle fact is formally verified in Lean~4 / Mathlib
+(\texttt{DeviationLattice.lean}, theorem \texttt{mu\_root\_abs\_one}: every
+complex root of $c_Tt^2-e_Tt+c_T$ with $0<e_T<2c_T$ has modulus $1$; axioms
+\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, no
+\texttt{sorry}), as is the self-reciprocity of $\mu_T$.
 \end{remark}
 
 Two further elementary facts sharpen the law. First, every generator move
@@ -1647,9 +1688,11 @@ n_T \;=\;
 \]
 the minimum in the second line switching at $e_T = \tfrac34 c_T$. The
 inequality $n_T \le$ (law) is a theorem for every shape --- the two displayed
-translations are explicit kernel elements, and their lengths are evaluated by
-Theorem~\ref{thm:metric} --- while equality holds against the exhaustive
-shortest-vector searches described below.
+translations are explicit kernel elements, their lengths evaluated by
+Theorem~\ref{thm:metric}. Equality is a theorem at $(1,2)$ (the certified
+$n_{(1,2)} = 33$, Remark~\ref{rem:first-deviation-12}); at the further twelve
+shapes below it is verified by exhaustive bounded-degree shortest-vector search,
+the minimizer being $m \in \{1, t+1\}$ in every case.
 \end{proposition}
 
 Concretely: $n_T = 6c_T + e_T$ for $e_T \le \tfrac34 c_T$ (minimizer $2\mu_T$),
@@ -1658,8 +1701,11 @@ $n_T = 3(c_T+e_T)$ for $e_T \ge c_T$ (minimizer $2(t{+}1)\mu_T$). In terms of
 the triangle itself the three regimes are \emph{angle windows}: with
 $\beta = \arctan(b/a) \in (45^\circ, 90^\circ)$ the boundaries sit at
 $\tan\beta = \sqrt{11/5}$ ($\beta \approx 56.3^\circ$, where
-$e_T = \tfrac34 c_T$) and at $\beta = 60^\circ$ (where $e_T = c_T$). The law
-was validated as follows: for the nine leg shapes
+$e_T = \tfrac34 c_T$) and at $\beta = 60^\circ$ (where $e_T = c_T$); these two
+boundary identities ($e_T=c_T\Leftrightarrow b^2=3a^2$ and
+$e_T=\tfrac34c_T\Leftrightarrow5b^2=11a^2$) are formally verified in Lean
+(\texttt{DeviationLattice.lean}, \texttt{window\_60}, \texttt{window\_5637}). The
+law was validated as follows: for the nine leg shapes
 \[
 \begin{array}{lcccc}
 T & c_T & e_T & n_T\ \text{(law)} & \text{status}\\\hline
@@ -1675,16 +1721,27 @@ T & c_T & e_T & n_T\ \text{(law)} & \text{status}\\\hline
 \end{array}
 \]
 and four further abstract pairs $(c,e) = (61,11), (37,35), (53,45), (73,55)$
-the law's prediction agreed with the computed minimum in every case; the
-searches ranged over multipliers $m$ of degree $\le 5$ with coefficients
-$|m_i| \le 4$ (widened to degree $\le 7$ and to coefficients $\le 6$ for
-$(1,2)$ and $(3,4)$ with no change), all shifts, pruned rigorously by the
-$\ell^1$ lower bound. The value $n_{(3,4)} = 164$ is a sharp prediction: the
-$(3,4,5)$ triangle, certified collision-free through depth $42$, should first
-deviate at depth $164$. Exactness of the law beyond the searched windows ---
-equivalently, that no third multiplier family ever undercuts $m \in
-\{1, t+1\}$ --- is conjectural; the certified $(1,2)$ anchor and the window
-stability are the evidence.
+the law's prediction agreed with the computed minimum in every case, the
+minimizing multiplier always being $m \in \{1, t+1\}$ (up to shift and sign).
+The searches ranged over multipliers $m$ of degree $\le 5$ with coefficients
+$|m_i| \le 4$ (widened to degree $\le 7$ and coefficients $\le 6$ for $(1,2)$
+and $(3,4)$ with no change), over all shifts, pruned rigorously by the
+$\ell^1$ lower bound of Lemma~\ref{lem:finite-svp}. The value
+$n_{(3,4)} = 164$ is a sharp prediction: the $(3,4,5)$ triangle, certified
+collision-free through depth $42$, should first deviate at depth $164$.
+
+Two caveats fix the precise status. By Lemma~\ref{lem:finite-svp} each $K(T)$ is
+a well-defined finite computation, so the deviation depth is decidable for every
+shape; but the searches above are bounded in degree, whereas the lemma's travel
+cutoff only forces $\deg m \le K(T)/2$ (of order $c_T$). The tabulated equalities
+are therefore proved against multipliers of degree $\le 5$ (resp.\ $\le 7$), not
+against the full cutoff, so for the twelve searched shapes they are exhaustive-%
+within-window verifications rather than unconditional theorems; only $(1,2)$,
+whose value is independently certified, is a theorem outright. Exactness of the
+closed-form law for \emph{all} shapes --- equivalently, that no higher-degree
+multiplier ever undercuts $m \in \{1, t+1\}$ --- is conjectural; the certified
+$(1,2)$ anchor, the degree-$\le1$ minimizer across thirteen shapes, and the
+window stability are the evidence.
 
 \begin{remark}[First deviation for $(1,2)$]
 \label{rem:first-deviation-12}

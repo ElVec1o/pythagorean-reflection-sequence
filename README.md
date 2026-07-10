@@ -36,10 +36,19 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
    *algebraic*) shape we construct an explicit nontrivial element of `ker ρ_T`,
    a conjugated product of glide-reflection squares, so each shape deviates at a
    first depth `n_T` with `max(33, c_T) ≤ n_T ≤ 24·c_T + 8`, linear in the
-   arithmetic complexity `c_T` of the shape. The agreement through depth 30 is
-   re-proved uniformly by an arithmetic certificate (Gauss's lemma + rank-0
-   elliptic descent), and through depth 38 by a Rust certificate that also
-   confirms the published terms `a(31)…a(38)` are the generic ones.
+   arithmetic complexity `c_T` of the shape. More sharply, `n_T` equals exactly
+   half the length of the shortest kernel element — a shortest-vector problem in
+   the ideal `2(t−1)μ_T·ℤ[t^±]` under the lamplighter word metric — which is a
+   decidable finite computation (`lem:finite-svp`, the travel bound), and yields
+   a **closed-form three-regime law** `n_T = 6c+e`, `9c−3e`, or `3(c+e)`
+   according to the triangle's angle (boundaries at `tan β = √(11/5)` and
+   `β = 60°`, both machine-checked in `DeviationLattice.lean`): a theorem as an
+   upper bound, certified at `(1,2)`, and matched by exhaustive search on
+   thirteen shapes (sharp prediction: the `(3,4,5)` triangle first deviates at
+   depth 164). The agreement through depth 30 is re-proved uniformly by an
+   arithmetic certificate (Gauss's lemma + rank-0 elliptic descent), and through
+   depth 38 by a Rust certificate that also confirms the published terms
+   `a(31)…a(38)` are the generic ones.
 
 2. **Structure of the generic group.** The common sequence `u_d` is exactly the
    orbit growth of the *generic* right triangle — realized precisely by
@@ -158,16 +167,18 @@ different (`1, 3, 5, 8, 11, 13, 16, …`).
 > transcendence study is now included as **Paper 2** (`paper2.pdf`), summarized in
 > the next section. `U` remains conditional throughout.
 
-> **Update (v1.5.0, July 2026) — the U-gate is closed.** The single input that
-> kept `U` conditional — the numerator amplitude bound `R = O(τ^{5/2})` at the
-> travel poles — is now **derived** rather than numerically observed: the
-> amplitude series and the pole equation both collapse exactly to sinh-product
-> families, their phase expansions share the identical `√τ` term (the universal
-> curvature `c₃ = −τ²/9`, constant `√2/36`), and the pole–zero offset comes out
-> exactly `δw = (√2/8)τ^{3/2}`, giving `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2`. **`U`
-> is transcendental over ℚ(x) with the same analytic standing as `V`.** See the
-> updated section below and `paper2.pdf` (Remark on the derived numerator
-> amplitude); scripts `elemY3_verify.py`, `phase_match_verify.py`.
+> **Update (v1.7.0, July 2026) — honest status of the U-gate.** The numerator
+> amplitude gate is **derived to leading order**: the amplitude series and the
+> pole equation both collapse exactly to sinh-product families, their phase
+> expansions share the identical `√τ` term (the universal curvature `c₃ = −τ²/9`,
+> constant `√2/36`), and the pole–zero offset comes out exactly
+> `δw = (√2/8)τ^{3/2}`, giving `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2` (a fourfold
+> margin, verified at the first 70 poles). This is the estimate `(⋆)`. Its
+> **residual `O(τ)` term is verified numerically but not proved** — so
+> **`U` is transcendental over ℚ(x) *conditional on* `(⋆)`**, on the same
+> analytic footing as `V`. This is the single remaining gap, stated as such in
+> `thm:U` and Remark `rem:Ugap`. See `paper2.pdf`; scripts `elemY3_verify.py`,
+> `phase_match_verify.py`.
 
 ## Transcendence (Paper 2)
 
@@ -183,22 +194,25 @@ transcendental, and reports the answer in **honest tiers**:
   simple-saddle steepest-descent estimate, is proved *self-contained* (Cauchy +
   Stirling + Gaussian integration + an explicit bounded-variation bound; saddles
   `z* = ±iW/2`), not cited.
-- **True series U = A396406 — transcendental over ℚ(x), on the same footing as
-  V (new in v1.5.0).** Via the exact identity `P₁₂ = (2q³/(1−q³))·Σ dₖ`, the one
-  remaining input — the numerator amplitude at the travel poles — is now
-  **derived in elementary closed form**: the terms collapse exactly to
-  sinh-products, every expansion constant is an exact rational
-  (`y* = (2/τ)e^{−τ−23τ²/36}`, `c₂ = −5τ²/12`, `c₃ = −τ²/9`, `c₅ = τ⁴/450`), and
-  the phase-matching of the travel-pole equation (which collapses to the *same*
-  sinh family) against the amplitude's zero gives the pole–zero offset
-  `δw = (√2/8)·τ^{3/2}` exactly — hence `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2`: the
-  numerator gate, **derived**, with a fourfold margin (and verified at the first
-  70 poles). The √τ phases of pole and zero agree identically — both produced by
-  the universal cubic curvature `c₃ = −τ²/9`, whose constant `√2/36` is the
-  lem:cos constant — which is *why* the travel poles track the zeros of `Y₃(1)`.
-  (`elemY3_verify.py`, `phase_match_verify.py`.) **Rigor level, stated honestly:**
-  identical to V — all coefficients derived elementarily and machine-verified,
-  remainders at the standard simple-saddle level; not formalized analysis.
+- **True series U = A396406 — transcendental over ℚ(x), *conditional on one
+  explicit amplitude estimate* `(⋆)`.** Via the exact identity
+  `P₁₂ = (2q³/(1−q³))·Σ dₖ`, the one remaining input — the numerator amplitude at
+  the travel poles — is **derived to leading order in elementary closed form**:
+  the terms collapse exactly to sinh-products, every expansion constant is an
+  exact rational (`y* = (2/τ)e^{−τ−23τ²/36}`, `c₂ = −5τ²/12`, `c₃ = −τ²/9`,
+  `c₅ = τ⁴/450`), and the phase-matching of the travel-pole equation (which
+  collapses to the *same* sinh family) against the amplitude's zero gives the
+  pole–zero offset `δw = (√2/8)·τ^{3/2}` exactly — hence
+  `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2`: the numerator gate, with a fourfold margin
+  (verified at the first 70 poles). The √τ phases of pole and zero agree
+  identically — both produced by the universal cubic curvature `c₃ = −τ²/9`,
+  whose constant `√2/36` is the lem:cos constant — which is *why* the travel
+  poles track the zeros of `Y₃(1)`. (`elemY3_verify.py`, `phase_match_verify.py`.)
+  **Honest gap:** this establishes `(⋆)` to leading order and numerically at 70
+  poles, but its `O(τ)` residual (the amplitude drift from turning point to pole)
+  is **not proved**. So `U`'s transcendence is stated *conditional on `(⋆)`* —
+  the single remaining gap — on the same simple-saddle footing as `V` otherwise;
+  not formalized analysis.
 - **Orthogonal mod-p evidence.** The p-kernel of `(u_n mod p)` is the full
   ternary tree through the accessible depth (`SigmaKernel.lean`, `UKernel.lean`)
   — maximal finite-data evidence of non-automaticity, not a proof.

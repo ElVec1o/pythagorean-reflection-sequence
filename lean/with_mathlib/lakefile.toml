@@ -17,3 +17,9 @@ name = "SymbolicUniversality"
 
 [[lean_lib]]
 name = "ComputableUniversality"
+
+[[lean_lib]]
+name = "AtomN"
+
+[[lean_lib]]
+name = "DeviationLattice"
