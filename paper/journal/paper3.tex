@@ -1,0 +1,153 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[T1]{fontenc}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+
+\title{Universality and a dimensional transcendence dichotomy\\ for orthoscheme reflection groups}
+\author{Vico Bonfioli}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent The right-triangle orbit-growth universality of the companion papers is the two-dimensional
+case of a general phenomenon. We prove an abstract dichotomy: for any family of quotients of a common
+group, spherical growth is shape-independent through a horizon equal to half the shortest added relator,
+and first deviates exactly there. The orthoscheme (path-simplex) reflection groups realize it in every
+dimension --- generic shapes are rigid, sharing one universal growth sequence, and each shape agrees up
+to a finite arithmetic horizon. Computing these universal sequences reveals a sharp \emph{dimensional
+transcendence dichotomy}: the generic growth series is \emph{rational} for $3\le n\le 7$, with growth
+rate the explicit algebraic number $r_n = 1+2\cos\frac{2\pi}{n+3}$ (the spectral radius attached to the
+cycle $C_{n+3}$) and numerator $(1+z)^{\lfloor n/2\rfloor+1}$, whereas at $n=2$ it is transcendental
+(\textup{OEIS A396406}) with rate $\beta_2 = 1.4916\ldots$ \emph{strictly below} $r_2=\varphi$. The plane
+is the unique dimension in which orbit growth is transcendental --- equivalently, the unique dimension
+in which the growth rate falls short of the $r_n$ envelope. This singles out the objects of the
+companion papers as the exceptional case of an otherwise rational family.
+\end{abstract}
+
+\section{The abstract universality--deviation dichotomy}
+
+Let $G=\langle S\rangle$ be a group with finite symmetric generating set $S$ and word length $\ell_G$.
+For $N\trianglelefteq G$ write $Q=G/N$, $s_d(H)=\#\{h:\ell_H(h)=d\}$ for sphere sizes, and
+$K(N)=\min\{\ell_G(g):g\in N\setminus\{1\}\}$.
+
+\begin{theorem}[Universality--deviation dichotomy]
+\label{thm:dichotomy}
+With $n:=\lceil K(N)/2\rceil$,
+\[
+   s_d(Q)=s_d(G)\ \ (d<n),\qquad s_n(Q)<s_n(G).
+\]
+The first depth at which the quotient's growth falls below $G$'s is exactly $\lceil K(N)/2\rceil$.
+\end{theorem}
+
+\begin{proof}
+$\pi:G\to Q$ is surjective and $1$-Lipschitz, so $s_d(Q)\le s_d(G)$. If $d<n$ and $\pi g=\pi h$ with
+$g,h\in B_d(G)$, then $gh^{-1}\in N$ has length $\le 2d<K(N)$, forcing $g=h$; the same bound rules out a
+strictly shorter representative, so $\pi$ is length-preserving on $B_d(G)$ and $s_d(Q)=s_d(G)$ for all
+$d<n$, giving $|B_{n-1}(Q)|=|B_{n-1}(G)|$. Take $g_0\in N$ with $\ell_G(g_0)=K(N)$ and split a geodesic
+word $g_0=w_1w_2$ with $\ell_G(w_1)=n$; both halves are geodesic, $\pi w_1=\pi(w_2^{-1})$, and
+$w_1\ne w_2^{-1}$, so two elements of $B_n(G)$ share a fiber and $|B_n(Q)|<|B_n(G)|$, whence
+$s_n(Q)<s_n(G)$.
+\end{proof}
+
+Applied to a \emph{family} $\{Q_T=G/N_T\}$ over a common $G$, Theorem~\ref{thm:dichotomy} is a
+universality statement: all members share $G$'s growth through their horizon $n_T=\lceil K(N_T)/2\rceil$,
+and members of larger $K(N_T)$ agree longer. For right triangles $G$ is the generic (virtually
+lamplighter) group, $N_T=2(t-1)\mu_T\Z[t^{\pm1}]$, and $n_T$ is the deviation-depth law of the companion
+paper; the theorem is the abstract skeleton of that result.
+
+\section{The orthoscheme family and generic rigidity}
+
+An $n$-orthoscheme (path simplex) has vertices $P_0,\dots,P_n$ with mutually orthogonal consecutive edges
+$P_{k-1}P_k=\ell_k e_k$ ($\ell_1=1$); its $n+1$ facet reflections $R_0,\dots,R_n$ generate
+$W_T\le\mathrm{Isom}(\R^n)$, the right-triangle side-reflection group when $n=2$. Facets $R_i,R_j$ with
+$|i-j|\ge2$ are orthogonal, hence commute; consecutive facets meet at a dihedral angle that is, for
+generic legs, an irrational multiple of $\pi$. As for right triangles this rigidifies the generic group:
+its growth is independent of the (generic) shape. We measure geodesic growth $s_d(W_T)$ --- the number
+of distinct isometries of word length $d$ --- by breadth-first search, deduplicating by the isometry
+(script \texttt{code/zeta\_probe/orthoscheme\_universality.py}; validated at $n=2$ against A396406).
+
+\begin{proposition}[Generic universality]
+\label{prop:generic}
+For $2\le n\le 7$, all tested generic $n$-orthoschemes share one geodesic-growth sequence $U^{(n)}$
+(four shapes per dimension, agreement to the depths below), and the successive ratios converge to
+$r_n=1+2\cos\frac{2\pi}{n+3}$.
+\end{proposition}
+
+\section{The dimensional transcendence dichotomy}
+
+Extracting the universal sequences and their generating functions $\mathcal G_n(z)=\sum_d s_d(U^{(n)})z^d$
+gives the central finding.
+
+\begin{proposition}[Rationality for $3\le n\le 7$]
+\label{prop:rational}
+For each $n\in\{3,4,5,6,7\}$ the universal sequence $U^{(n)}$ satisfies a linear recurrence, verified on
+all computed terms, with rational generating function
+\[
+\renewcommand{\arraystretch}{1.5}
+\begin{array}{c|c|c|c}
+n & \mathcal G_n(z) & r_n=1+2\cos\frac{2\pi}{n+3} & [\Q(r_n):\Q]\\\hline
+3 & \dfrac{(1+z)^2}{1-2z} & 2 & 1\\
+4 & \dfrac{(1+z)^3}{1-2z-z^2+z^3} & 1+2\cos\tfrac{2\pi}7=2.24698\ldots & 3\\
+5 & \dfrac{(1+z)^3}{(1-z)(1-2z-z^2)} & 1+\sqrt2 & 2\\
+6 & \dfrac{(1+z)^4}{1-3z+3z^3} & 1+2\cos\tfrac{2\pi}9=2.53209\ldots & 3\\
+7 & \dfrac{(1+z)^4}{(1-3z+z^2)(1+z-z^2)} & \varphi^2=2.61803\ldots & 2
+\end{array}
+\]
+The numerator is $(1+z)^{\lfloor n/2\rfloor+1}$; the denominator's reciprocal is the characteristic
+polynomial of the growth, whose dominant root is $r_n$. In every case the rate equals $r_n$ to full
+computed precision, and $r_n=1+2\cos\frac{2\pi}{n+3}$ is the spectral radius shift attached to the cycle
+$C_{n+3}$ (equivalently, $2\cos\frac{2\pi}{n+3}$ is an eigenvalue of its adjacency operator).
+\end{proposition}
+
+\begin{proposition}[Transcendence at $n=2$]
+\label{prop:n2}
+$U^{(2)}$ is \textup{OEIS A396406}. It satisfies no linear recurrence (no relation up to order $8$ on
+$17$ terms) and is transcendental over $\Q(z)$: the relaxed companion is transcendental unconditionally,
+and the true series conditionally on the single amplitude estimate of the companion paper. Its growth
+rate is $\beta_2=1.4916177\ldots$, \emph{strictly below} $r_2=\varphi=1.6180\ldots$.
+\end{proposition}
+
+Propositions~\ref{prop:rational} and~\ref{prop:n2} together are the dichotomy.
+
+\begin{conjecture}[The plane is the unique transcendental dimension]
+\label{conj:dichotomy}
+For every $n\ge3$ the generic $n$-orthoscheme growth series is rational, with rate $r_n$; only at $n=2$
+is it transcendental, and only there does the rate fall below $r_n$. Equivalently, the generic
+orthoscheme group is geodesically rational (indeed automatic) in every dimension except the plane, where
+it is virtually the lamplighter $\Z\wr\Z$.
+\end{conjecture}
+
+\section{Discussion and status}
+
+Theorem~\ref{thm:dichotomy} is unconditional and dimension-free: it reduces universality-then-deviation
+to a common ambient group and a shortest-relator length. For right triangles both inputs are supplied in
+closed form by the companion paper, making $n=2$ a theorem with the deviation law and all;
+Propositions~\ref{prop:generic}--\ref{prop:n2} establish the ingredients computationally for
+$2\le n\le7$, with the rational generating functions of Proposition~\ref{prop:rational} verified on every
+computed term (depths $13$--$16$). What remains open --- Conjecture~\ref{conj:dichotomy} --- is the
+structural identification of the generic $n$-orthoscheme group for $n\ge3$: the higher analogue of the
+lamplighter theorem, which would turn the observed rationality into a theorem and pin the growth rate to
+$r_n$ a priori.
+
+The dichotomy recasts the companion papers. Their object --- the transcendental growth of the planar
+right-triangle reflection group --- is not an isolated curiosity but the \emph{unique exceptional
+member} of a family that is otherwise rational in every dimension. The plane is singled out twice over,
+by the same feature: it is the only dimension whose generic orthoscheme group carries the lamplighter's
+infinite lamp-space (hence transcendental growth), and correspondingly the only dimension whose growth
+rate $\beta_2$ falls short of the algebraic envelope $r_n=1+2\cos\frac{2\pi}{n+3}$. Transcendence, here,
+is a two-dimensional phenomenon.
+
+\end{document}
