@@ -113,7 +113,7 @@ shape-independent, and its exact exponential growth rate.
 
 \paragraph{The generic group.}
 When $T$ is a non-isosceles right triangle, the two legs meet at a
-right angle, so $(R_0R_1)^2=1$, while by Niven's theorem the remaining
+right angle, so $(R_0R_1)^2=1$, while by Niven's theorem \cite{Niven1956} the remaining
 two angles are irrational multiples of $\pi$ and force no further
 relation among the reflections. The abstract group is therefore the
 Coxeter group
@@ -252,10 +252,12 @@ that the finite-depth ratios — converging at rate $O(1/d)$ with a
 period-$4$ oscillation — had suggested.
 
 \paragraph{What is conditional and what is open.}
-The growth rate $\beta_2=1.4916177871\ldots$ is determined unconditionally in Section~\ref{sec:beta2} as $1/\sqrt{q^\ast}$, where $q^\ast$ is the least positive root of $\Sigma_1(q)=1$; in particular $\beta_2\neq 3/2$. Transcendence questions for the generating functions and for the number $\beta_2$ itself lie outside the present scope and are treated in a companion paper. Empirically the
-growth series of A396406 satisfies no low-order linear, holonomic, or
-low-degree algebraic relation over the $43$ known terms, consistent with
-its $q$-difference origin.
+The growth rate $\beta_2=1.4916177871\ldots$ is determined unconditionally in Section~\ref{sec:beta2} as $1/\sqrt{q^\ast}$, where $q^\ast$ is the least positive root of $\Sigma_1(q)=1$; in particular $\beta_2\neq 3/2$. Transcendence questions are treated in the companion paper \cite{Bonfioli2026b}, where the
+growth series of A396406 and of its relaxed companion are proved transcendental over $\Q(x)$
+(each catalytic building block unconditionally so, by a P\'olya--Carlson natural boundary);
+this explains the empirical absence, recorded below, of any low-order linear, holonomic, or
+low-degree algebraic relation over the $43$ known terms. The transcendence of the \emph{number}
+$\beta_2$ itself remains open.
 
 \paragraph{Reproducibility.}
 The eight length-$10$ affine relations and the shape-independence of
@@ -267,8 +269,7 @@ Lean sources are described in the reproducibility section.
 
 \paragraph{Related work.}
 The problem sits between Coxeter-group word-growth and the geometry of
-metabelian groups. Isola and Piergallini (\emph{On the generic triangle
-group}, 2014--2015) show that the reflection group of a generic triangle
+metabelian groups. Isola and Piergallini \cite{IsolaPiergallini} show that the reflection group of a generic triangle
 carries no unexpected relations; the present results are the explicit
 rational right-triangle analogue, replacing genericity by a Diophantine
 faithfulness criterion in $\zeta_T$ and adding exact word-growth data.
@@ -293,7 +294,6 @@ I'll revise this section to fix all the reviewer issues. Let me apply the releva
 
 Based on the reviewer issues, here is the corrected, complete LaTeX for this section:
 
-```latex
 \section{Setting and the Coxeter presentation}
 \label{sec:setting}
 
@@ -378,7 +378,7 @@ For the Coxeter group $W$ of Theorem~\ref{thm:coxeter-presentation},
 \end{proposition}
 
 \begin{proof}
-Steinberg's formula expresses the Poincar\'e series of a Coxeter system $(W,S)$ as
+Steinberg's formula \cite{Humphreys1990} expresses the Poincar\'e series of a Coxeter system $(W,S)$ as
 \[
   \frac{1}{W(t^{-1})} \;=\; \sum_{\substack{J \subseteq S \\ W_J \text{ finite}}} \frac{(-1)^{|J|}}{W_J(t)},
 \]
@@ -446,7 +446,6 @@ the number of abstract length-$d$ orbit elements identified by the affine action
 \label{rem:setting-notation}
 Throughout, $\rho_T \colon W \to \mathrm{Aff}(\mathbb{R}^2)$ denotes the affine action of the abstract Coxeter group $W = \langle R_0, R_1, R_2 \rangle$ induced by the mirrors of $T$, and $\zeta_T = (a + bi)/(a - bi)$ is the rotation number attached to the leg pair $(a,b)$; both enter the analysis from \S\ref{sec:bonfioli} onward. The results of this section — the presentation of Theorem~\ref{thm:coxeter-presentation}, the series of Proposition~\ref{prop:steinberg}, and the Fibonacci phase of Corollary~\ref{cor:fibonacci-phase} — are unconditional.
 \end{remark}
-```
 
 % ======== The eight length-10 relations and depth-10 completeness ========
 The real paper already has canonical labels. I now have everything needed. The corrected section uses the canonical labels (`tab:bonfioli`, `thm:symbolic`, `sec:setting`, `rem:isosceles-excluded`, `thm:translation-lattice`) consistent with the real manuscript, strips all narration/fences, fixes the editorializing remark, adds the unequal-leg hypothesis to the completeness proposition, reframes the cross-checks as corroboration, and includes the global notation dictionary line.
@@ -895,7 +894,6 @@ in \S\ref{sec:effective-universality}.
 % ======== Effective universality and the sharp depth-32 threshold ========
 Now here is the corrected, complete LaTeX for the section:
 
-```latex
 \section{Effective universality and the sharp depth-32 threshold}
 \label{sec:effective-universality}
 
@@ -1378,7 +1376,7 @@ the kernel classification (Corollary~\ref{cor:kernel-classification-restate}),
 the lamplighter description, and the membership criterion all rest.
 
 \begin{theorem}[Pure-translation lattice]
-\label{thm:translation-lattice}
+\label{thm:translation-lattice-symbolic}
 The pure-translation subgroup of the symbolic group is exactly the ideal
 \[
 \mathcal{T} \;=\; 2(t-1)\,\mathbb{Z}[t^{\pm 1}].
@@ -1946,8 +1944,7 @@ growth --- the coexistence for which $\mathbb{Z} \wr \mathbb{Z}$ is the
 standard example, here realised by three mirrors of a Euclidean
 triangle;
 \item \emph{not finitely presentable}: by Baumslag's theorem
-\cite[G.~Baumslag, \emph{Wreath products and finitely presented
-groups}, Math.\ Z.\ \textbf{75} (1961), 22--28]{Baumslag1961} the
+\cite{Baumslag1961} the
 wreath product $A \wr B$ with $A \neq 1$ is finitely presented only when
 $B$ is finite, and finite presentability is a commensurability
 invariant.
@@ -2052,7 +2049,7 @@ the content of Theorem~\ref{thm:translation-lattice}.
 \subsection{The translation lattice}
 
 \begin{theorem}[Translation lattice]
-\label{thm:translation-lattice}
+\label{thm:translation-lattice-restate}
 \[
 \mathcal{T}=2(t-1)\,\mathbb{Z}[t^{\pm1}].
 \]
@@ -2809,7 +2806,6 @@ generating functions $U$ and $V$ over $\mathbb Q(x)$ treated elsewhere in this
 paper, and in particular Theorem~\ref{thm:beta2} carries no dependence on the
 analytic cosine asymptotic used there.
 \end{remark}
-```
 
 % ======== Finite-horizon structural exclusions (appendix) ========
 Now I have the canonical labels. I'll output the corrected section with all process narration and provenance commentary stripped, no code fences, and consistent cross-references.
@@ -2983,7 +2979,6 @@ $D$-finite or transcendental is deferred to the companion document.
 
 % ======== Reproducibility: Lean and modular certificates ========
 
-```latex
 \section{Reproducibility: Lean and modular certificates}
 \label{sec:reproduce}
 
@@ -3303,5 +3298,34 @@ the shape-uniform universality through depth $22$. Modular-plus-exact
 certified (tier~iii) is the sharp universality through depth $32$ and the
 generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{thm:beta2}) is unconditional: its proof uses only the inequality $\ell_R\le\ell_T$ and the dominant-pole analysis of $\Sigma_1$, with no analytic remainder input. Every result in this paper is unconditional. The one computer-assisted step is the lower bound of the metric theorem (Theorem~\ref{thm:metric}), whose connectivity defect is computed by the explicit transducer of Definition~\ref{def:transducer} and certified equal to the true defect on the depth-$24$ enumeration ($275{,}823$ elements, held out at depths $19,21,23,24$); the transition table is finite and the certificate fully reproducible.
 \end{remark}
+
+
+\begin{thebibliography}{9}
+
+\bibitem{Baumslag1961} G.~Baumslag, \emph{Wreath products and finitely presented groups},
+Math.\ Z.\ \textbf{75} (1961), 22--28.
+
+\bibitem{Bonfioli2026b} V.~Bonfioli, \emph{Transcendence of a planar reflection-group growth
+series and its relaxed companion}, preprint (2026), \texttt{doi:10.5281/zenodo.20370090}.
+
+\bibitem{FlajoletSedgewick} P.~Flajolet and R.~Sedgewick, \emph{Analytic Combinatorics},
+Cambridge Univ.\ Press, 2009.
+
+\bibitem{Humphreys1990} J.~E.~Humphreys, \emph{Reflection Groups and Coxeter Groups}, Cambridge
+Studies in Advanced Mathematics~29, Cambridge Univ.\ Press, 1990.
+
+\bibitem{IsolaPiergallini} S.~Isola and R.~Piergallini, \emph{On the generic triangle group},
+arXiv:1405.1881 [math.MG], 2014--2015.
+
+\bibitem{MathlibCommunity} The mathlib Community, \emph{The Lean mathematical library},
+Proc.\ CPP 2020, ACM, 2020, 367--381.
+
+\bibitem{Niven1956} I.~Niven, \emph{Irrational Numbers}, Carus Mathematical Monographs~11,
+Math.\ Assoc.\ America, 1956.
+
+\bibitem{OEIS} N.~J.~A.~Sloane et al., \emph{The On-Line Encyclopedia of Integer Sequences},
+\texttt{https://oeis.org}, entry A396406.
+
+\end{thebibliography}
 
 \end{document}

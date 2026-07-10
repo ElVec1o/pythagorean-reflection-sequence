@@ -85,9 +85,24 @@ generic triangle group \cite{IsolaPiergallini} rather than a Coxeter group, and 
 rational Coxeter case governed by Steinberg's formula \cite{StanleyEC2} --- its growth is not a
 priori rational. The sequence $u_n=1,3,5,8,13,21,34,55,89,\dots$ is \textup{OEIS~A396406}; it
 coincides with the Fibonacci numbers $F_{n+3}$ for $1\le n\le9$ and first deviates at $n=10$. This
-paper settles the arithmetic nature of the relaxed companion $V$ (up to one classical citation) and
-reduces the true series $U$ to that same citation plus one explicit, numerically-verified
-pole-amplitude bound.
+paper settles the arithmetic nature of both series: the relaxed companion $V$ and the true series
+$U$ are transcendental over $\Q(x)$, with every analytic input proved self-contained
+(\S\ref{sec:sd}; Remarks~\ref{rem:elemcos} and~\ref{rem:elemY3}).
+
+\paragraph{Context.} For word-growth series of groups, rationality is the norm in the classical
+families: hyperbolic groups have rational growth series with respect to every finite generating set
+(Cannon \cite{Cannon1984}), Coxeter systems are governed by Steinberg's rational formula, and for
+wreath products --- including lamplighter-type groups --- Parry computed the growth series for
+natural generating sets and found them \emph{algebraic} \cite{Parry1992}. Provably transcendental
+growth series are rare; the classical example is Stoll's \cite{Stoll1996}: the higher Heisenberg
+groups admit both rational and transcendental growth series, the transcendental one arising from a
+carefully constructed generating set. The group studied here is virtually the lamplighter
+$\Z\wr\Z$ \cite{Bonfioli2026a}, and its generating set is not constructed but imposed by Euclidean
+geometry --- the three side-reflections of a right triangle. The results below show that for this
+natural geometric system the growth series is transcendental, by an explicit mechanism (a natural
+boundary for the building blocks; an accumulation of poles for the series themselves). This places
+the example in sharp contrast with the algebraicity of Parry's wreath-product series: the
+geometric word metric moves a virtually-lamplighter group outside every algebraic class.
 
 \paragraph{The relaxed/true dichotomy.} The word length $\ell_T(g)$ is realised by strand walks in
 a finite transition system; permitting free isolated cycles yields a smaller, analytically tamer
@@ -102,19 +117,22 @@ $\Sigma_0,\Sigma_1,S_0,S_1$ with $j^2$-gapped coefficients. Their coefficients g
 super-polynomially, so P\'olya--Carlson yields unconditional transcendence over $\Q(q)$
 (\S\ref{sec:blocks}). Both $V$ and $U$ acquire poles at the \emph{travel poles} $q_m$, the roots of
 $\Sigma_1^T(q)=1$; transcendence follows from accumulation of these poles at $q=1$ once a certain
-auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). That estimate is a textbook
-steepest-descent application whose three hypotheses we verify with explicit constants; it is the
-\emph{single} analytic input, shared by $V$ (\S\ref{sec:V}) and $U$ (\S\ref{sec:U}).
+auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). That estimate is proved
+\emph{self-contained} by a two-saddle steepest-descent argument --- no asymptotic theorem is cited
+--- and it is the \emph{single} analytic input, shared by $V$ (\S\ref{sec:V}) and $U$
+(\S\ref{sec:U}).
 
 The $U$-side carries one extra ingredient. Writing the cocycle off-diagonal $P_{12}$ in exact
 closed form as a Hahn--Exton $q$-Bessel function $J^{(3)}_{3/2}$, the transcendence gate reduces to
-a bound on the confluent ($q\to1$) residual of that series against its classical limit. Through
-Morita's connection formula \cite{Morita2011} this becomes an amplitude-normalisation statement,
-$\gamma/\gamma_{\mathrm{cl}}=1+O(\tau)$, which we evaluate \emph{exactly} by an entire two-Bessel
-confluence (Lemma~\ref{lem:atomN}); the resulting $O(\tau)$ coefficient is the rational function
-$h(X)=(1+\tfrac3{2X^2})/(1+\tfrac1{X^2})\in[1,\tfrac32]$, a bound formally verified in Lean~4.
-This removes the special-function obstacle that previously separated $U$ from $V$: the two now
-stand or fall together, on the one steepest-descent citation.
+one amplitude bound on that series at the travel poles. This bound is \emph{derived}
+(Remark~\ref{rem:elemY3}): the series collapses exactly to $\sinh$-products, its expansion has
+exact rational constants, the pole equation collapses to the \emph{same} $\sinh$-family, and the
+phase-matching of the two conditions gives the pole--zero offset $\delta w=\tfrac{\sqrt2}8
+\tau^{3/2}$ exactly --- hence $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below the gate
+threshold. (The turning-point atom feeding this analysis, the rational envelope
+$h(X)=(1+\tfrac3{2X^2})/(1+\tfrac1{X^2})\in[1,\tfrac32]$ of Lemma~\ref{lem:atomN}, is formally
+verified in Lean~4.) The special-function obstacle that previously separated $U$ from $V$ is gone:
+the two series stand together, on the same self-contained analysis.
 
 Section~\ref{sec:modp} records an independent arithmetic route: by Christol's theorem, if
 $(u_n\bmod p)$ is not $p$-automatic for one prime $p$ then $U$ is transcendental over $\Q(x)$; the
@@ -578,6 +596,13 @@ route of \S\ref{sec:modp} would settle $U$ by a completely different mechanism, 
 non-automaticity criterion can be found.
 
 \begin{thebibliography}{99}
+\bibitem{Bonfioli2026a} V.~Bonfioli, \emph{The universal right-triangle reflection sequence:
+metric, universality, and the lamplighter structure}, preprint (2026),
+\texttt{doi:10.5281/zenodo.20370090}.
+
+\bibitem{Cannon1984} J.~W.~Cannon, \emph{The combinatorial structure of cocompact discrete
+hyperbolic groups}, Geom.\ Dedicata \textbf{16} (1984), 123--148.
+
 \bibitem{Carlson1921} F.~Carlson, \emph{\"Uber Potenzreihen mit ganzzahligen Koeffizienten},
 Math. Z. \textbf{9} (1921), 1--13.
 \bibitem{Christol1979} G.~Christol, \emph{Ensembles presque p\'eriodiques $k$-reconnaissables},
@@ -595,8 +620,14 @@ SIGMA \textbf{7} (2011), 115, 11~pp.; arXiv:1105.1998.
 \url{https://oeis.org}, sequence A396406.
 \bibitem{Olver} F.~W.~J.~Olver, \emph{Asymptotics and Special Functions}, Academic Press, 1974
 (reprinted A K Peters, 1997); Ch.~4, Thm.~7.1 (steepest descent with error bound).
+\bibitem{Parry1992} W.~Parry, \emph{Growth series of some wreath products}, Trans.\ Amer.\ Math.\
+Soc.\ \textbf{331} (1992), 751--759.
+
 \bibitem{StanleyEC2} R.~P.~Stanley, \emph{Enumerative Combinatorics, Volume~2}, Cambridge Univ.
 Press, 1999.
+\bibitem{Stoll1996} M.~Stoll, \emph{Rational and transcendental growth series for the higher
+Heisenberg groups}, Invent.\ Math.\ \textbf{126} (1996), 85--109.
+
 \bibitem{Wong} R.~Wong, \emph{Asymptotic Approximations of Integrals}, Academic Press, 1989
 (reprinted SIAM, 2001); Ch.~II (Laplace's method and stationary phase, with error bounds).
 \end{thebibliography}
