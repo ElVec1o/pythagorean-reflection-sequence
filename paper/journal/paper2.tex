@@ -500,6 +500,35 @@ $q$-Siegel--Shidlovskii results \textup{(Andr\'e; Di~Vizio--Hardouin)} extend to
 \emph{irregular} at $z=\infty$ --- a precise, expert-checkable question, not an absence of theory. (Note
 the contrast with the \emph{function-level} results of this paper, which say nothing about individual
 interior values.)
+
+For \emph{irrationality} (weaker than transcendence) the classical architecture transports verbatim.
+$G$ and $H$ are Hahn--Exton (third Jackson) $q$-Bessel functions: $G(q,z)\propto
+J_{-1/2}(\sqrt z/q;q^2)$ and $H(q,z)\propto J_{+1/2}(\sqrt{z/q};q^2)$ (verified; the zeros correspond
+exactly), i.e.\ the $q$-analogues of $\cos$ and $\sin$ --- and $z^\ast$ is the $q$-analogue of
+$(\pi/2)^2$. Niven's irrationality proof for $\pi$ runs on the Lommel-polynomial ladder
+$J_{m+1/2}(r)=R_{m,1/2}(r)J_{1/2}(r)-R_{m-1,3/2}(r)J_{-1/2}(r)$ evaluated at the zero of $J_{-1/2}=
+\sqrt{2/\pi r}\cos$; the exact $q$-analogue of every ingredient exists (Koelink--Swarttouw): the ladder
+$J_{\nu+1}(x;q^2)=\bigl((1-q^{2\nu})/x+x\bigr)J_\nu-J_{\nu-1}$, the $q$-Lommel connection
+$J_{\nu+m}=R_{m,\nu}J_\nu-R_{m-1,\nu+1}J_{\nu-1}$ with $x^mR_{m,\nu}\in\Z[q,x^2]$, and the second-kind
+functions carrying $q^{m^2/2}$ prefactors --- all verified numerically for our pair. Moreover, since a
+rational zero would make $G(q^\ast,z^\ast)=0$ a \emph{rational value} at rational base and argument,
+$\beta_2$ is irrational as soon as this Hahn--Exton function omits the value $0$ at rational points ---
+a plain \emph{value-irrationality} statement, strictly weaker than every transcendence target above.
+What blocks even this is now a single quantified invariant: the \emph{arithmetic ratio} $\rho$ of the
+series ($b$-adic decay exponent of the terms over $b$-adic growth exponent of the cleared denominators,
+$q=s/t$ in lowest terms). Every proven $q$-irrationality theorem (Tschakaloff, $q$-exponential, the
+B\'ezivin--Bundschuh--V\"a\"an\"anen classes) lives at $\rho\ge1$, where the Pochhammer denominator
+itself supplies the decay; our $G$ has an independent $q^{k^2}$ numerator against the double Pochhammer
+$(q;q)_{2k}$, giving $\rho=\tfrac12$. All three classical constructions fail by exactly this margin,
+measured: the $z$-Pad\'e remainder $q^{3.5n^2}$ against height $q$-degree $\approx9n^2$; the
+$z$-direction continued fraction (convergents in $\Z[q,z]$, Pincherle limit the $H$-ratio) converges
+only geometrically against $t^{n^2}$ heights; and the $\nu$-ladder at the zero has
+$J_{m+1/2}(x_0)=R_{m,1/2}(x_0)J_{1/2}(x_0)\sim Cx_0^m$ --- geometric, because the $q$-factorial is
+geometric where Niven's $m!$ is super-exponential --- against $t^{m^2}$; the second-kind ladder's
+$q^{m^2/2}$ cancels the $t^{m^2}$ but leaves $s^{m^2/2}$, closing the gap only for $q=1/t$. The $b
+\leftrightarrow z$ transformation ${}_1\phi_1(0;q;q^2,z)=\frac{(z;q^2)_\infty}{(q;q^2)_\infty}
+{}_1\phi_1(0;z;q^2,q)$ redistributes but conserves $\rho$. The precise open door is thus a
+$q$-irrationality criterion at $\rho=\tfrac12$ --- one notch beyond the proven $\rho\ge1$ theory.
 \end{remark}
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
