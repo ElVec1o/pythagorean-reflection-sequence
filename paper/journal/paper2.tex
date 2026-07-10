@@ -483,8 +483,14 @@ $Y=(G(z),G(q^2z))^{\!\top}$, the companion matrix
 \]
 is \emph{polynomial} in $z$ with $\Z[q]$ entries and $\det A=q$, so the iterated matrices carry no
 denominators and the Casoratian obeys $W(q^2z)=qW(z)$, i.e.\ $W(z)=c\,z^{1/2}$: the two solutions form a
-$q$-Bessel pair with Frobenius exponents $0,\tfrac12$. Moreover $G(q,\cdot)$ is \emph{entire of order
-zero} --- a $q$-$E$-function, not a $q$-$G$-function. Hence $\beta_2$ transcendental would follow from a
+$q$-Bessel pair with Frobenius exponents $0,\tfrac12$. The second solution is explicit,
+$\widetilde G(z)=z^{1/2}H(z)$ with $H(z)=\sum_k(-1)^kq^{k^2}(1-q)z^k/(q;q)_{2k+1}$, and the pair satisfies
+the exact $q$-Wronskian identity
+\[
+   q\,G(z)\,H(q^2z)-G(q^2z)\,H(z)\;=\;q-1 ,
+\]
+so at the zero $z^\ast$ one has the clean relation $G(q^2z^\ast)H(z^\ast)=1-q$. Moreover $G(q,\cdot)$ is
+\emph{entire of order zero} --- a $q$-$E$-function, not a $q$-$G$-function. Hence $\beta_2$ transcendental would follow from a
 $q$-analogue of the Siegel--Shidlovskii theorem for this $q$-$E$-function: such a theorem gives
 $G(q,\alpha)$ transcendental at every algebraic $\alpha\ne0$ off the singular locus, whereas
 $G(q^\ast,z^\ast)=0$ is algebraic --- forcing $q^\ast$, and with it $\beta_2$, transcendental (and by the
