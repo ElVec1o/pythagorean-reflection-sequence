@@ -262,12 +262,13 @@ growth series of A396406 and of its relaxed companion are proved transcendental 
 (each catalytic building block unconditionally so, by a P\'olya--Carlson natural boundary);
 this explains the empirical absence, recorded below, of any low-order linear, holonomic, or
 low-degree algebraic relation over the $43$ known terms. The transcendence of the \emph{number}
-$\beta_2$ itself remains open. This transcendence is, moreover, a two-dimensional phenomenon: the
-same construction in higher dimensions --- the reflection groups of Euclidean orthoschemes (path
-simplices), of which the right triangle is the planar case --- has \emph{rational} generic growth
-for $3\le n\le 7$, with rate exactly $r_n=1+2\cos\frac{2\pi}{n+3}$, so the plane is the unique
-dimension whose orbit growth is transcendental and whose rate $\beta_2$ falls below the algebraic
-envelope $r_n$ \cite{Bonfioli2026c}.
+$\beta_2$ itself remains open. In higher dimensions --- the reflection groups of Euclidean
+orthoschemes (path simplices), of which the right triangle is the planar case --- the abstract
+right-angled Coxeter envelope has \emph{rational} growth with rate $r_n=1+2\cos\frac{2\pi}{n+3}$, but
+the geometric group is an amenable proper quotient of it, matching the rational envelope only up to a
+finite depth before deviating; the plane is the one dimension in which that deviation has been carried
+past its onset (at depth $10$) and found transcendental, and whether higher dimensions are eventually
+transcendental as well is open \cite{Bonfioli2026c}.
 
 \paragraph{Reproducibility.}
 The eight length-$10$ affine relations and the shape-independence of
@@ -351,19 +352,17 @@ Let $\Gamma$ be the abstract group obtained from the free product $\langle r_0\r
 
 \begin{theorem}[Coxeter presentation]
 \label{thm:coxeter-presentation}
-Let $T$ be a right triangle with the right angle at $V_2$ and with unequal legs $a \neq b$. Let $F = \langle r_0\rangle * \langle r_1\rangle * \langle r_2\rangle$ with the surjection $\pi \colon F \to W(T)$, $r_i \mapsto R_i$, and let $K = \ker \pi$. Then $K$ is the normal closure in $F$ of the single relator $(r_0 r_1)^2$, so that
+Let $T$ be a right triangle with the right angle at $V_2$ and with unequal legs $a \neq b$. Let
 \[
-  W(T) \;\cong\; W \;:=\; \bigl\langle\, R_0, R_1, R_2 \ \bigm|\ R_i^2 = 1\ (i=0,1,2),\ \ (R_0 R_1)^2 = 1 \,\bigr\rangle ,
+  W \;:=\; \bigl\langle\, R_0, R_1, R_2 \ \bigm|\ R_i^2 = 1\ (i=0,1,2),\ \ (R_0 R_1)^2 = 1 \,\bigr\rangle
 \]
-the Coxeter group whose diagram is the path on three nodes with edge labels $m(R_0,R_1) = 2$ and $m(R_0,R_2) = m(R_1,R_2) = \infty$. Equivalently, the only finite-order relation among distinct pairs is $(R_0 R_1)^2 = 1$; the products $R_0 R_2$ and $R_1 R_2$ have infinite order.
+be the Coxeter group whose diagram is the path on three nodes with edge labels $m(R_0,R_1) = 2$ and $m(R_0,R_2) = m(R_1,R_2) = \infty$. Then the pairwise rotation orders of the three mirrors of $T$ are exactly $m(R_0,R_1) = 2$, $m(R_0,R_2) = m(R_1,R_2) = \infty$, and consequently $r_i \mapsto R_i$ induces a \emph{surjection} $\rho_T \colon W \twoheadrightarrow W(T)$. This surjection is \emph{not} injective for any admissible shape: the affine action imposes further relations beyond $(R_0R_1)^2 = 1$, so $W(T)$ is a \emph{proper} quotient of $W$, and $\ker\rho_T \supsetneq \{1\}$. The first such relation is the object of Theorem~\ref{thm:non-universality-restate}; the abstract Coxeter group $W$ therefore serves only as an \emph{envelope} for $W(T)$.
 \end{theorem}
 
 \begin{proof}
-Each $R_i$ is a reflection, so $R_i^2 = 1$ in $W(T)$; thus $r_i^2 = 1$ already holds in $F$. The mirrors of $R_0$ and $R_1$ are the two legs of $T$ incident to $V_2$, which meet at angle $\pi/2$; hence $R_0 R_1$ is a rotation by $\pi$ and $(R_0 R_1)^2 = \mathrm{id}$, so $(r_0 r_1)^2 \in K$.
+Each $R_i$ is a reflection, so $R_i^2 = 1$; the mirrors of $R_0,R_1$ meet at $\pi/2$, so $R_0R_1$ is a half-turn and $(R_0R_1)^2 = 1$. Hence all defining relators of $W$ hold in $W(T)$, giving the surjection $\rho_T\colon W \twoheadrightarrow W(T)$. The remaining interior angles $\arctan(b/a)$, $\arctan(a/b)$ are, by Niven's theorem (a rational multiple of $\pi$ has rational tangent only for tangent in $\{0,\pm1\}$, excluded by $a\ne b$), irrational multiples of $\pi$; so $R_0R_2$ and $R_1R_2$ have infinite order and no bond $(R_iR_2)^m=1$ is forced. Thus the pairwise orders are exactly as stated, and $W$ is the largest group compatible with them.
 
-The remaining two interior angles, at $V_0$ and $V_1$, are $\arctan(b/a)$ and $\arctan(a/b)$. We claim neither is a rational multiple of $\pi$. Suppose, for contradiction, that $\arctan(b/a) = (p/q)\pi$ for integers $p, q$. Since $a, b \in \mathbb{Q}_{>0}$, its tangent $b/a$ is rational; by Niven's theorem the only rational multiples of $\pi$ whose tangent is rational have tangent in $\{0, \pm 1\}$. Thus $b/a \in \{0, \pm 1\}$; as $a, b > 0$ this forces $b/a = 1$, i.e.\ $a = b$, contradicting the non-isosceles hypothesis. Hence $\arctan(b/a)$ is an irrational multiple of $\pi$, and likewise for $\arctan(a/b)$. Consequently the product $R_i R_2$ for $i \in \{0,1\}$ is a rotation through an irrational multiple of $\pi$ and has infinite order, so no relation $(R_i R_2)^m = 1$ holds for any $m \ge 1$.
-
-By the standard structure theory for groups generated by reflections in the plane, $W(T)$ has the Coxeter presentation determined by the pairwise rotation orders $m(R_i, R_j)$, namely $m(R_0,R_1) = 2$ and $m(R_0,R_2) = m(R_1,R_2) = \infty$. Equivalently, $K$ is the normal closure of $(r_0 r_1)^2$ together with the relators $r_i^2$ defining $F$, so $W(T) \cong W$ with the stated diagram.
+The surjection is \emph{not} an isomorphism. Coxeter's structure theorem would identify $W(T)$ with $W$ only if the affine (Tits) representation $\rho_T$ were faithful; but $W(T)\le\mathrm{Isom}(\mathbb{R}^2)$ is amenable (indeed virtually lamplighter, \S\ref{sec:metric}), whereas $W\cong(\mathbb{Z}/2\times\mathbb{Z}/2)*\mathbb{Z}/2$ contains a free subgroup and is non-amenable. Hence $\ker\rho_T$ is nontrivial and $W(T)$ is a proper quotient. Explicitly, $\ker\rho_T$ is computed in Theorem~\ref{thm:non-universality-restate}: its shortest element has length $2n_T$, so $W(T)$ and $W$ have the same spherical growth only through depth $n_T-1$.
 \end{proof}
 
 \begin{remark}

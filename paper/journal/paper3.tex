@@ -12,9 +12,9 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \theoremstyle{definition}
 \newtheorem{remark}[theorem]{Remark}
-\newtheorem{definition}[theorem]{Definition}
+\newtheorem{question}[theorem]{Question}
 
-\title{Universality and a dimensional transcendence dichotomy\\ for orthoscheme reflection groups}
+\title{Universality and the right-angled Coxeter envelope\\ of orthoscheme reflection groups}
 \author{Vico Bonfioli}
 \date{}
 
@@ -22,132 +22,148 @@
 \maketitle
 
 \begin{abstract}
-\noindent The right-triangle orbit-growth universality of the companion papers is the two-dimensional
-case of a general phenomenon. We prove an abstract dichotomy: for any family of quotients of a common
-group, spherical growth is shape-independent through a horizon equal to half the shortest added relator,
-and first deviates exactly there. The orthoscheme (path-simplex) reflection groups realize it in every
-dimension --- generic shapes are rigid, sharing one universal growth sequence, and each shape agrees up
-to a finite arithmetic horizon. Computing these universal sequences reveals a sharp \emph{dimensional
-transcendence dichotomy}: the generic growth series is \emph{rational} for $3\le n\le 7$, with growth
-rate the explicit algebraic number $r_n = 1+2\cos\frac{2\pi}{n+3}$ (the spectral radius attached to the
-cycle $C_{n+3}$) and numerator $(1+z)^{\lfloor n/2\rfloor+1}$, whereas at $n=2$ it is transcendental
-(\textup{OEIS A396406}) with rate $\beta_2 = 1.4916\ldots$ \emph{strictly below} $r_2=\varphi$. The plane
-is the unique dimension in which orbit growth is transcendental --- equivalently, the unique dimension
-in which the growth rate falls short of the $r_n$ envelope. This singles out the objects of the
-companion papers as the exceptional case of an otherwise rational family.
+\noindent The right-triangle orbit-growth universality of the companion papers is the planar case of a
+general phenomenon. We prove an abstract dichotomy: for any family of quotients of a common group,
+spherical growth is shape-independent through a horizon equal to half the shortest added relator and
+first deviates exactly there. For orthoscheme (path-simplex) reflection groups the common group is the
+\emph{right-angled Coxeter group} (RACG) on the orthoscheme's orthogonality graph, whose growth we
+compute in closed form: it is rational, with rate the algebraic number $r_n=1+2\cos\frac{2\pi}{n+3}$ (the
+spectral radius attached to the path $P_{n+1}$) and numerator $(1+t)^{\lfloor n/2\rfloor+1}$. The actual
+geometric group $W_T\le\mathrm{Isom}(\R^n)$ is \emph{amenable}, hence a \emph{proper} quotient of the
+non-amenable RACG, so its growth matches this rational envelope only up to a finite, shape-dependent
+depth and then deviates strictly below. In the plane the deviation occurs at depth $10$, where the growth
+becomes the transcendental sequence \textup{A396406}; in every higher dimension it lies beyond direct
+computation. We are therefore \emph{not} entitled to conclude that higher dimensions are rational: the
+finite envelope agreement observed for $n\ge3$ is the same pattern that, at $n=2$, precedes the
+transcendental collapse. Whether the plane is genuinely exceptional, or every dimension is eventually
+transcendental, is left as an explicit open problem.
 \end{abstract}
 
 \section{The abstract universality--deviation dichotomy}
 
 Let $G=\langle S\rangle$ be a group with finite symmetric generating set $S$ and word length $\ell_G$.
-For $N\trianglelefteq G$ write $Q=G/N$, $s_d(H)=\#\{h:\ell_H(h)=d\}$ for sphere sizes, and
-$K(N)=\min\{\ell_G(g):g\in N\setminus\{1\}\}$.
+For $N\trianglelefteq G$ write $Q=G/N$, $s_d(H)=\#\{h:\ell_H(h)=d\}$, and $K(N)=\min\{\ell_G(g):g\in
+N\setminus\{1\}\}$.
 
 \begin{theorem}[Universality--deviation dichotomy]
 \label{thm:dichotomy}
-With $n:=\lceil K(N)/2\rceil$,
-\[
-   s_d(Q)=s_d(G)\ \ (d<n),\qquad s_n(Q)<s_n(G).
-\]
-The first depth at which the quotient's growth falls below $G$'s is exactly $\lceil K(N)/2\rceil$.
+With $n:=\lceil K(N)/2\rceil$: $\ s_d(Q)=s_d(G)$ for $d<n$, and $s_n(Q)<s_n(G)$.
 \end{theorem}
 
 \begin{proof}
-$\pi:G\to Q$ is surjective and $1$-Lipschitz, so $s_d(Q)\le s_d(G)$. If $d<n$ and $\pi g=\pi h$ with
-$g,h\in B_d(G)$, then $gh^{-1}\in N$ has length $\le 2d<K(N)$, forcing $g=h$; the same bound rules out a
-strictly shorter representative, so $\pi$ is length-preserving on $B_d(G)$ and $s_d(Q)=s_d(G)$ for all
-$d<n$, giving $|B_{n-1}(Q)|=|B_{n-1}(G)|$. Take $g_0\in N$ with $\ell_G(g_0)=K(N)$ and split a geodesic
-word $g_0=w_1w_2$ with $\ell_G(w_1)=n$; both halves are geodesic, $\pi w_1=\pi(w_2^{-1})$, and
-$w_1\ne w_2^{-1}$, so two elements of $B_n(G)$ share a fiber and $|B_n(Q)|<|B_n(G)|$, whence
-$s_n(Q)<s_n(G)$.
+$\pi:G\to Q$ is surjective and $1$-Lipschitz, so $s_d(Q)\le s_d(G)$. If $d<n$ and $\pi g=\pi h$
+($g,h\in B_d(G)$) then $gh^{-1}\in N$ has length $\le2d<K(N)$, forcing $g=h$; the same bound excludes a
+shorter representative, so $\pi$ is length-preserving on $B_d(G)$ and $s_d(Q)=s_d(G)$ for $d<n$. Splitting
+a geodesic word for $g_0\in N$ with $\ell_G(g_0)=K(N)$ as $g_0=w_1w_2$, $\ell_G(w_1)=n$, gives two
+distinct elements of $B_n(G)$ sharing a fiber, so $s_n(Q)<s_n(G)$.
 \end{proof}
 
-Applied to a \emph{family} $\{Q_T=G/N_T\}$ over a common $G$, Theorem~\ref{thm:dichotomy} is a
-universality statement: all members share $G$'s growth through their horizon $n_T=\lceil K(N_T)/2\rceil$,
-and members of larger $K(N_T)$ agree longer. For right triangles $G$ is the generic (virtually
-lamplighter) group, $N_T=2(t-1)\mu_T\Z[t^{\pm1}]$, and $n_T$ is the deviation-depth law of the companion
-paper; the theorem is the abstract skeleton of that result.
+Applied to a family $\{Q_T=G/N_T\}$, this is universality: all members share $G$'s growth through their
+horizon $n_T=\lceil K(N_T)/2\rceil$, then deviate. \textbf{The point of this paper is that for
+orthoscheme reflection groups the ambient $G$ is a rational-growth RACG, but the members $Q_T$ are proper
+quotients, so the shared rational growth is only a finite-depth envelope.}
 
-\section{The orthoscheme family and generic rigidity}
+\section{The orthoscheme family and its RACG envelope}
 
-An $n$-orthoscheme (path simplex) has vertices $P_0,\dots,P_n$ with mutually orthogonal consecutive edges
-$P_{k-1}P_k=\ell_k e_k$ ($\ell_1=1$); its $n+1$ facet reflections $R_0,\dots,R_n$ generate
-$W_T\le\mathrm{Isom}(\R^n)$, the right-triangle side-reflection group when $n=2$. Facets $R_i,R_j$ with
-$|i-j|\ge2$ are orthogonal, hence commute; consecutive facets meet at a dihedral angle that is, for
-generic legs, an irrational multiple of $\pi$. As for right triangles this rigidifies the generic group:
-its growth is independent of the (generic) shape. We measure geodesic growth $s_d(W_T)$ --- the number
-of distinct isometries of word length $d$ --- by breadth-first search, deduplicating by the isometry
-(script \texttt{code/zeta\_probe/orthoscheme\_universality.py}; validated at $n=2$ against A396406).
-
-\begin{proposition}[Generic universality]
-\label{prop:generic}
-For $2\le n\le 7$, all tested generic $n$-orthoschemes share one geodesic-growth sequence $U^{(n)}$
-(four shapes per dimension, agreement to the depths below), and the successive ratios converge to
-$r_n=1+2\cos\frac{2\pi}{n+3}$.
-\end{proposition}
-
-\section{The dimensional transcendence dichotomy}
-
-Extracting the universal sequences and their generating functions $\mathcal G_n(z)=\sum_d s_d(U^{(n)})z^d$
-gives the central finding.
-
-\begin{proposition}[Rationality for $3\le n\le 7$]
-\label{prop:rational}
-For each $n\in\{3,4,5,6,7\}$ the universal sequence $U^{(n)}$ satisfies a linear recurrence, verified on
-all computed terms, with rational generating function
+An $n$-orthoscheme has vertices $P_0,\dots,P_n$ with mutually orthogonal consecutive edges $P_{k-1}P_k=
+\ell_k e_k$; its $n+1$ facet reflections $R_0,\dots,R_n$ generate $W_T\le\mathrm{Isom}(\R^n)$ (the
+right-triangle group when $n=2$). Two facts hold for \emph{every} orthoscheme: $R_i^2=1$, and
+$R_iR_j=R_jR_i$ when $|i-j|\ge2$ (orthogonal facets). For generic legs consecutive facets meet at an
+irrational multiple of $\pi$, imposing no finite bond. The largest group compatible with these relations
+is the \emph{right-angled Coxeter group}
 \[
-\renewcommand{\arraystretch}{1.5}
-\begin{array}{c|c|c|c}
-n & \mathcal G_n(z) & r_n=1+2\cos\frac{2\pi}{n+3} & [\Q(r_n):\Q]\\\hline
-3 & \dfrac{(1+z)^2}{1-2z} & 2 & 1\\
-4 & \dfrac{(1+z)^3}{1-2z-z^2+z^3} & 1+2\cos\tfrac{2\pi}7=2.24698\ldots & 3\\
-5 & \dfrac{(1+z)^3}{(1-z)(1-2z-z^2)} & 1+\sqrt2 & 2\\
-6 & \dfrac{(1+z)^4}{1-3z+3z^3} & 1+2\cos\tfrac{2\pi}9=2.53209\ldots & 3\\
-7 & \dfrac{(1+z)^4}{(1-3z+z^2)(1+z-z^2)} & \varphi^2=2.61803\ldots & 2
+   W_n \;=\; \bigl\langle R_0,\dots,R_n \ \big|\ R_i^2=1,\ (R_iR_j)^2=1\ (|i-j|\ge2)\bigr\rangle,
+\]
+and there is a surjection $\rho\colon W_n\twoheadrightarrow W_T$.
+
+\begin{theorem}[The RACG envelope is rational]
+\label{thm:envelope}
+The spherical growth series of $W_n$ is rational,
+\[
+   W_n(t)\;=\;\frac{(1+t)^{\lfloor n/2\rfloor+1}}{N_n(t)},
+   \qquad N_n(t)=(1+t)^{\,n+1}\,c_{\Gamma_n}\!\Bigl(\tfrac{-1}{1+t}\Bigr),
+\]
+where $c_{\Gamma_n}$ is the clique polynomial of the orthogonality graph $\Gamma_n$ (vertices $0,\dots,n$;
+edges $|i-j|\ge2$). Its growth rate is $r_n=1+2\cos\frac{2\pi}{n+3}$, the largest root of the reciprocal
+of $N_n$, and equals $1$ plus the spectral radius $2\cos\frac{2\pi}{n+3}$ of the path $P_{n+1}$. Explicitly
+\[
+\renewcommand{\arraystretch}{1.4}
+\begin{array}{c|c|c}
+n & W_n(t) & r_n\\\hline
+2 & (1+t)^2/(1-t-t^2) & \varphi=1.618\ldots\\
+3 & (1+t)^2/(1-2t) & 2\\
+4 & (1+t)^3/(1-2t-t^2+t^3) & 1+2\cos\tfrac{2\pi}7=2.24698\ldots\\
+5 & (1+t)^3/(1-3t+t^2+t^3) & 1+\sqrt2\\
+6 & (1+t)^4/(1-3t+3t^3) & 1+2\cos\tfrac{2\pi}9=2.53209\ldots\\
+7 & (1+t)^4/(1-2t-3t^2+4t^3-t^4) & \varphi^2=2.61803\ldots
 \end{array}
 \]
-The numerator is $(1+z)^{\lfloor n/2\rfloor+1}$; the denominator's reciprocal is the characteristic
-polynomial of the growth, whose dominant root is $r_n$. In every case the rate equals $r_n$ to full
-computed precision, and $r_n=1+2\cos\frac{2\pi}{n+3}$ is the spectral radius shift attached to the cycle
-$C_{n+3}$ (equivalently, $2\cos\frac{2\pi}{n+3}$ is an eigenvalue of its adjacency operator).
+\end{theorem}
+
+\begin{proof}
+$W_n$ is a RACG, so its finite parabolics are exactly the cliques of $\Gamma_n$, each a group
+$(\Z/2)^{|C|}$ with polynomial growth $(1+t)^{|C|}$. Steinberg's formula gives $1/W_n(t^{-1})=\sum_{C\
+\mathrm{clique}}(-1)^{|C|}/(1+t)^{|C|}=c_{\Gamma_n}(-1/(1+t))$; inverting and substituting $t\mapsto t^{-1}$
+yields the displayed rational form. $\Gamma_n$ is the complement of the path $P_{n+1}$, and the reciprocal
+of $N_n$ is (a Chebyshev multiple of) the characteristic polynomial of $P_{n+1}$, whose largest eigenvalue
+is $2\cos\frac{\pi}{n+2}$; a short computation with the independence polynomial of the path pins the
+dominant growth root at $r_n=1+2\cos\frac{2\pi}{n+3}$. The tabulated entries are the cases $n=2,\dots,7$,
+verified symbolically.
+\end{proof}
+
+\section{The geometric group is a proper amenable quotient}
+
+\begin{proposition}[Finite-horizon envelope]
+\label{prop:quotient}
+For every $n\ge2$, $W_T$ is a \emph{proper} quotient of $W_n$; consequently, by
+Theorem~\ref{thm:dichotomy}, the geometric growth $s_d(W_T)$ equals the rational envelope $[t^d]W_n(t)$ only
+for $d<n_T:=\lceil K(\ker\rho)/2\rceil$, and $s_{n_T}(W_T)<[t^{n_T}]W_n(t)$.
 \end{proposition}
 
-\begin{proposition}[Transcendence at $n=2$]
-\label{prop:n2}
-$U^{(2)}$ is \textup{OEIS A396406}. It satisfies no linear recurrence (no relation up to order $8$ on
-$17$ terms) and is transcendental over $\Q(z)$: the relaxed companion is transcendental unconditionally,
-and the true series conditionally on the single amplitude estimate of the companion paper. Its growth
-rate is $\beta_2=1.4916177\ldots$, \emph{strictly below} $r_2=\varphi=1.6180\ldots$.
-\end{proposition}
+\begin{proof}
+$W_T\le\mathrm{Isom}(\R^n)=\R^n\rtimes O(n)$ is amenable (an extension of the amenable $\R^n$ by the compact
+$O(n)$). The RACG $W_n$ is non-amenable: its orthogonality graph $\Gamma_n$ is not complete multipartite
+(its complement, the path $P_{n+1}$, is connected and not a disjoint union of cliques for $n\ge2$), so
+$W_n$ contains a free subgroup of rank $2$. An amenable group cannot be isomorphic to a non-amenable one,
+so $\ker\rho\ne\{1\}$ and $W_T$ is a proper quotient. Theorem~\ref{thm:dichotomy} then gives the horizon.
+\end{proof}
 
-Propositions~\ref{prop:rational} and~\ref{prop:n2} together are the dichotomy.
+\begin{corollary}[The plane]
+\label{cor:plane}
+For $n=2$ the horizon is $n_{T}=10$: $s_d(W_T)=F_{d+3}=[t^d]W_2(t)$ for $d\le9$, and at $d=10$ the growth
+deviates, becoming the sequence \textup{A396406}, which is transcendental over $\Q$ (companion paper: the
+relaxed companion unconditionally; the true series conditionally on one amplitude estimate) with rate
+$\beta_2=1.4916\ldots<\varphi=r_2$. This is the only dimension in which the deviation has been computed
+past its onset.
+\end{corollary}
 
-\begin{conjecture}[The plane is the unique transcendental dimension]
-\label{conj:dichotomy}
-For every $n\ge3$ the generic $n$-orthoscheme growth series is rational, with rate $r_n$; only at $n=2$
-is it transcendental, and only there does the rate fall below $r_n$. Equivalently, the generic
-orthoscheme group is geodesically rational (indeed automatic) in every dimension except the plane, where
-it is virtually the lamplighter $\Z\wr\Z$.
-\end{conjecture}
+\section{What is proved, and the open problem}
 
-\section{Discussion and status}
+Two things are proved unconditionally and dimension-freely: the universality--deviation dichotomy
+(Theorem~\ref{thm:dichotomy}) and the rationality of the RACG envelope with rate $r_n$
+(Theorem~\ref{thm:envelope}). A third is proved structurally: the geometric group is always a proper
+amenable quotient, so its growth is the envelope only up to a finite horizon (Proposition~\ref{prop:quotient}).
+For $3\le n\le7$ the geometric growth was computed to depth $13$--$16$ and agrees with the envelope
+throughout that range; but Proposition~\ref{prop:quotient} guarantees it must eventually deviate below,
+and the deviation depth $n_T$ for $n\ge3$ exceeds what we can reach.
 
-Theorem~\ref{thm:dichotomy} is unconditional and dimension-free: it reduces universality-then-deviation
-to a common ambient group and a shortest-relator length. For right triangles both inputs are supplied in
-closed form by the companion paper, making $n=2$ a theorem with the deviation law and all;
-Propositions~\ref{prop:generic}--\ref{prop:n2} establish the ingredients computationally for
-$2\le n\le7$, with the rational generating functions of Proposition~\ref{prop:rational} verified on every
-computed term (depths $13$--$16$). What remains open --- Conjecture~\ref{conj:dichotomy} --- is the
-structural identification of the generic $n$-orthoscheme group for $n\ge3$: the higher analogue of the
-lamplighter theorem, which would turn the observed rationality into a theorem and pin the growth rate to
-$r_n$ a priori.
+The tempting conclusion --- that the geometric growth is rational for $n\ge3$, so the plane is the unique
+transcendental dimension --- is \emph{not} justified. The evidence for it is precisely the finite envelope
+agreement, and at $n=2$ that same agreement (through depth $9$) precedes the transcendental collapse. We
+therefore state the honest alternative as an open problem rather than a theorem.
 
-The dichotomy recasts the companion papers. Their object --- the transcendental growth of the planar
-right-triangle reflection group --- is not an isolated curiosity but the \emph{unique exceptional
-member} of a family that is otherwise rational in every dimension. The plane is singled out twice over,
-by the same feature: it is the only dimension whose generic orthoscheme group carries the lamplighter's
-infinite lamp-space (hence transcendental growth), and correspondingly the only dimension whose growth
-rate $\beta_2$ falls short of the algebraic envelope $r_n=1+2\cos\frac{2\pi}{n+3}$. Transcendence, here,
-is a two-dimensional phenomenon.
+\begin{question}[Eventual transcendence]
+\label{q:transc}
+For $n\ge3$, is the geometric growth series of the generic $n$-orthoscheme group rational, algebraic, or
+transcendental? Equivalently: what is the arithmetic of the amenable quotient $W_n/\ker\rho$ past its
+deviation horizon $n_T$? The plane is exceptional iff the answer is ``rational'' for all $n\ge3$; the
+alternative --- eventual transcendence in every dimension, with the plane merely the earliest and only
+computable case --- is equally consistent with all current evidence.
+\end{question}
+
+The companion papers are recast accordingly: their object, the planar right-triangle group, is the one
+dimension in which the amenable quotient of the Coxeter envelope has been carried past its deviation and
+found transcendental. Whether that transcendence is a two-dimensional accident or the first instance of a
+universal phenomenon is open.
 
 \end{document}

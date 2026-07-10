@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
-"""The dimensional transcendence dichotomy for orthoscheme reflection groups (Paper 3).
+"""Orthoscheme growth vs the right-angled Coxeter ENVELOPE (Paper 3) -- CORRECTED.
 
-Generic n-orthoscheme geodesic growth (distinct isometries by word length), computed by the
-validated engine of orthoscheme_universality.py. Extracting the generating functions:
+IMPORTANT CORRECTION (2026-07-10, caught by adversarial verification): the rational generating
+functions below are the growth of the abstract RIGHT-ANGLED COXETER ENVELOPE W_n, NOT the geometric
+group's true growth. The geometric group W_T <= Isom(R^n) is AMENABLE, hence a PROPER quotient of the
+NON-amenable RACG W_n, so its growth matches the rational envelope only up to a finite depth n_T, then
+deviates strictly below (universality-deviation theorem). At n=2 this deviation is at depth 10, where
+the growth becomes A396406 (transcendental). For 3<=n<=7 the geometric BFS matches the envelope to
+depth 13-16 ONLY because the deviation lies beyond reach -- it does NOT show the geometric growth is
+rational. THE "unique transcendental dimension" DICHOTOMY IS RETRACTED; see paper3.tex Question 'q:transc'.
 
-    n=2 : NOT rational (OEIS A396406), rate beta_2 = 1.4916... STRICTLY BELOW r_2 = phi = 1.618
-    n=3 : (1+z)^2 / (1-2z)                       rate 2
-    n=4 : (1+z)^3 / (1-2z-z^2+z^3)               rate r_4 = 1+2cos(2pi/7) = 2.24698 (deg 3)
-    n=5 : (1+z)^3 / ((1-z)(1-2z-z^2))            rate r_5 = 1+sqrt2 = 2.41421 (deg 2)
-    n=6 : (1+z)^4 / (1-3z+3z^3)                  rate r_6 = 1+2cos(2pi/9) = 2.53209 (deg 3)
-    n=7 : (1+z)^4 / ((1-3z+z^2)(1+z-z^2))        rate r_7 = phi^2 = 2.61803 (deg 2)
+RACG envelope generating functions W_n(t) (Steinberg + clique polynomial of the orthogonality graph;
+these ARE proven, and equal the geometric BFS up to each deviation horizon):
+    n=2 : (1+t)^2/(1-t-t^2)          rate phi=1.618   [geometric DEVIATES at depth 10 -> A396406]
+    n=3 : (1+t)^2/(1-2t)             rate 2
+    n=4 : (1+t)^3/(1-2t-t^2+t^3)     rate r_4=1+2cos(2pi/7)=2.24698
+    n=5 : (1+t)^3/(1-3t+t^2+t^3)     rate r_5=1+sqrt2
+    n=6 : (1+t)^4/(1-3t+3t^3)        rate r_6=1+2cos(2pi/9)=2.53209
+    n=7 : (1+t)^4/(1-2t-3t^2+4t^3-t^4) rate r_7=phi^2=2.61803
+numerator (1+t)^{floor(n/2)+1}; rate r_n=1+2cos(2pi/(n+3)) = 1 + spectral radius of the path P_{n+1}.
 
-So for 3<=n<=7 the growth is RATIONAL with rate the explicit algebraic number
-r_n = 1+2cos(2pi/(n+3)) (the spectral radius shift attached to the cycle C_{n+3}), numerator
-(1+z)^{floor(n/2)+1}; only n=2 is transcendental, and only there does the rate fall below r_n.
-THE PLANE IS THE UNIQUE TRANSCENDENTAL DIMENSION (verified 2<=n<=7).
-
-Uses hash-based dedup (memory-light) and float64; OMP_NUM_THREADS=1; the n=2 gate is exact (A396406).
-Heavy: n=6,7 to depth 13/12 take a few minutes. Reduce DEPTHS for a quick run.
+Below: the geometric BFS 'rational GF' detected for n>=3 is really this ENVELOPE (deviation unreached).
+Uses hash-based dedup (memory-light), float64, OMP_NUM_THREADS=1; n=2 gate exact (A396406, deviated).
 """
 import os
 os.environ["OMP_NUM_THREADS"] = "1"
@@ -83,10 +87,12 @@ if __name__ == "__main__":
         rn = float(1 + 2 * math.cos(2 * math.pi / (n + 3)))
         res = rational_gf(s, z)
         if res is None:
-            print(f"n={n}: NOT rational (transcendental).  rate beta_2=1.4916 < r_2={rn:.4f}   [A396406]")
+            print(f"n={n}: geometric growth NOT rational (deviated within reach). rate beta_2 < r_2={rn:.4f}  [A396406]")
         else:
             num, den, rate = res
             ok = abs(rate - rn) < 1e-4
-            print(f"n={n}: RATIONAL  GF=({num})/({den})   rate={rate:.5f}=r_{n}={rn:.5f} [{ok}]")
+            tag = "ENVELOPE (deviation unreached)" if n >= 3 else ""
+            print(f"n={n}: BFS matches RACG envelope ({num})/({den}) rate={rate:.5f}=r_{n}={rn:.5f} {tag}")
         del s; gc.collect()
-    print("\n=> the plane (n=2) is the UNIQUE transcendental dimension (verified 2<=n<=7).")
+    print("\n=> n=2 deviates at depth 10 (A396406, transcendental); n>=3 the deviation is beyond reach,")
+    print("   so the BFS only sees the RATIONAL ENVELOPE. Eventual transcendence for n>=3 is OPEN (paper3 q:transc).")
