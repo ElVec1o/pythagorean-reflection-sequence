@@ -448,10 +448,30 @@ $\sum_n\alpha^{n^2}$ is transcendental at \emph{every} algebraic $\alpha$ with $
 \cite{DNNS1996}. The blocks here are theta-\emph{like} --- their coefficients ride the squares
 $q^{(j+1)^2}$, which is the source of the natural boundary of Theorem~\ref{thm:blocks} --- but
 their Euler-product denominators $(q;q)_{2k+1}$ spread the support densely, and no analogue of
-\cite{Nesterenko1996} is known off the modular class. Thus $\beta_2$ transcendental would follow
-from a value-transcendence theorem for this partial-theta class at algebraic points; we record
-this as the precise open question. (Note the contrast with the \emph{function-level} results of
-this paper, which say nothing about individual interior values.)
+\cite{Nesterenko1996} is known off the modular class.
+
+Concretely the reduction localizes on a single confluent basic hypergeometric function. Writing
+$\Sigma_1^T(q)=1-S(q)$,
+\[
+   S(q)\;=\;\sum_{k\ge0}\frac{\bigl(-2(1-q)\bigr)^k q^{k^2}}{(q;q)_{2k}}
+   \;=\;{}_1\phi_1\!\bigl(0;q;q^2,\,2q(1-q)\bigr),
+\]
+a $q$-Bessel-class function (using $(q;q)_{2k}=(q;q^2)_k(q^2;q^2)_k$); $\beta_2$ is algebraic iff the
+least positive zero $q^\ast=0.449453630\ldots$ of $S$ is. We record what the natural tools give here,
+since it locates the difficulty precisely. First, $S$ is \emph{neither} $q$-holonomic \emph{nor} a
+Mahler function in $q$ (verified to $O(q^{48})$): the diagonal specialization $z=2q(1-q)$ ties the
+argument to the base and destroys the single-variable $q$-difference structure, so the methods of
+Mahler--Nishioka and of holonomy do not apply. Second, two elementary refinements fail
+\emph{decisively}, not for want of effort: an ultrametric argument is void --- the $v$-adic and
+archimedean sums of $S(\alpha)$ are unrelated numbers, so $|S(\alpha)|_v=1$ does not bound the real
+value --- and a Liouville/height bound is beaten by the $q$-Pochhammer denominators, whose growth over
+the conjugates of modulus $>1$ is cubic ($\sim\!K^3$) against the merely quadratic ($\sim\!K^2$) tail,
+Kronecker-sharply (equality would need Mahler measure $1$, i.e.\ a root of unity). The residual
+obstruction is exactly the irregular $q$-connection data of this ${}_1\phi_1$ --- the same
+transcendence wall met by the true series $U$. Thus $\beta_2$ transcendental would follow from a
+value-transcendence theorem for confluent basic hypergeometric functions along the diagonal; we
+record this as the precise open question. (Note the contrast with the \emph{function-level} results
+of this paper, which say nothing about individual interior values.)
 \end{remark}
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}

@@ -76,6 +76,49 @@ is the \emph{right-angled Coxeter group}
 \]
 and there is a surjection $\rho\colon W_n\twoheadrightarrow W_T$.
 
+Before computing the envelope we record that the ``generic growth'' is a well-defined object: it does
+not depend on which generic shape one picks. Let $F=\ast_{i=0}^{n}\langle r_i\rangle$ be the free
+product of $n+1$ copies of $\Z/2$, let $U=\{\ell=(\ell_1,\dots,\ell_n):\ell_i>0\}$ be the leg space
+($\ell_1=1$), and let $\rho_\ell\colon F\to\mathrm{Isom}(\R^n)$, $r_i\mapsto R_i(\ell)$, be the
+reflection representation; put $N_{\mathrm{gen}}=\bigcap_{\ell\in U}\ker\rho_\ell$.
+
+\begin{theorem}[Generic rigidity]
+\label{thm:rigidity}
+For every $n\ge2$ there is a co-null subset $U_{\mathrm{gen}}\subseteq U$ --- the complement of a
+countable union of proper real-algebraic subvarieties --- such that $\ker\rho_\ell=N_{\mathrm{gen}}$,
+hence $W_\ell\cong F/N_{\mathrm{gen}}$, for every $\ell\in U_{\mathrm{gen}}$. Consequently the geodesic
+growth $s_d(W_\ell)$ is constant on $U_{\mathrm{gen}}$, equal to $s_d(F/N_{\mathrm{gen}})$, and this
+generic value is the maximum of $s_d(W_\ell)$ over all $\ell\in U$. Moreover $U_{\mathrm{gen}}$ contains
+every $\ell$ whose coordinates are algebraically independent over $\Q$; in particular it is dense.
+\end{theorem}
+
+\begin{proof}
+Each facet normal $m_j(\ell)$ is a fixed polynomial vector in $\ell$ (a cofactor of the vertex
+differences, which are linear in $\ell$), so the reflection $R_j(\ell)=I-2\,m_jm_j^{\!\top}/(m_j\!\cdot\!m_j)$
+(with its translation) has entries in $\Q(\ell)$ with denominator the nonvanishing polynomial
+$m_j\!\cdot\!m_j$. Hence every entry of $\rho_\ell(v)=\prod_k R_{i_k}(\ell)$ lies in $\Q(\ell)$, and for
+each $v\in F$ the locus $V_v=\{\ell\in U:\rho_\ell(v)=I\}$ --- the simultaneous vanishing of finitely
+many rational functions, cleared of their nonvanishing denominators --- is Zariski-closed in the
+irreducible variety $U$. If $v\notin N_{\mathrm{gen}}$ then $\rho_\ell(v)\ne I$ for some $\ell$, so $V_v$
+is a \emph{proper} closed subvariety, of measure zero. As $F$ is countable,
+$B:=\bigcup_{v\in F\setminus N_{\mathrm{gen}}}V_v$ is a countable union of proper subvarieties;
+$U_{\mathrm{gen}}:=U\setminus B$ is co-null and dense. For $\ell\in U_{\mathrm{gen}}$ one has
+$N_{\mathrm{gen}}\subseteq\ker\rho_\ell$ (universal relations hold everywhere) and
+$\ker\rho_\ell\subseteq N_{\mathrm{gen}}$ (any $v\in\ker\rho_\ell\setminus N_{\mathrm{gen}}$ would place
+$\ell\in V_v\subseteq B$), so $\ker\rho_\ell=N_{\mathrm{gen}}$ and $W_\ell\cong F/N_{\mathrm{gen}}$.
+Isomorphic groups with the marked generators have identical geodesic growth, giving the constant value;
+for any $\ell$, $\ker\rho_\ell\supseteq N_{\mathrm{gen}}$ makes $W_\ell$ a quotient of
+$F/N_{\mathrm{gen}}$, so $s_d(W_\ell)\le s_d(F/N_{\mathrm{gen}})$, i.e.\ the generic value is the maximum.
+Finally each $V_v$ is defined over $\Q$; if the coordinates of $\ell$ are algebraically independent over
+$\Q$ then $\ell$ lies on no proper $\Q$-subvariety, so $\ell\notin B$, i.e.\ $\ell\in U_{\mathrm{gen}}$.
+Such $\ell$ exist since $\dim U=n-1\ge1$.
+\end{proof}
+
+The non-consecutive commuting relations $(R_iR_j)^2=1$ ($|i-j|\ge2$) hold identically in $\ell$ (the
+interior normals $m_j$ are supported on the two coordinates $\{j{-}1,j\}$, so non-adjacent normals are
+orthogonal for \emph{all} legs; verified symbolically for $n\le5$), so they lie in $N_{\mathrm{gen}}$ and
+$F/N_{\mathrm{gen}}$ is a quotient of the RACG $W_n$ below.
+
 \begin{theorem}[The RACG envelope is rational]
 \label{thm:envelope}
 The spherical growth series of $W_n$ is rational,
@@ -139,10 +182,12 @@ past its onset.
 
 \section{What is proved, and the open problem}
 
-Two things are proved unconditionally and dimension-freely: the universality--deviation dichotomy
-(Theorem~\ref{thm:dichotomy}) and the rationality of the RACG envelope with rate $r_n$
-(Theorem~\ref{thm:envelope}). A third is proved structurally: the geometric group is always a proper
-amenable quotient, so its growth is the envelope only up to a finite horizon (Proposition~\ref{prop:quotient}).
+Four things are proved unconditionally and dimension-freely: the universality--deviation dichotomy
+(Theorem~\ref{thm:dichotomy}); \emph{generic rigidity} (Theorem~\ref{thm:rigidity}), which makes ``the
+generic $n$-orthoscheme growth'' a well-defined object $s_d(F/N_{\mathrm{gen}})$ realized by a co-null set
+of shapes; the rationality of the RACG envelope with rate $r_n$ (Theorem~\ref{thm:envelope}); and,
+structurally, that the geometric group is always a proper amenable quotient, so its growth is the envelope
+only up to a finite horizon (Proposition~\ref{prop:quotient}).
 For $3\le n\le7$ the geometric growth was computed to depth $13$--$16$ and agrees with the envelope
 throughout that range; but Proposition~\ref{prop:quotient} guarantees it must eventually deviate below,
 and the deviation depth $n_T$ for $n\ge3$ exceeds what we can reach.
