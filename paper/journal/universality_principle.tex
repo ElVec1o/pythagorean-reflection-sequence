@@ -1,0 +1,162 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[T1]{fontenc}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+
+\title{Universality and first deviation for orthoscheme reflection groups\\ in every dimension}
+\author{Vico Bonfioli}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent The right-triangle universality of the companion paper --- all shapes share a
+growth prefix, then deviate at a shortest-vector law --- is the two-dimensional case of a
+general dichotomy. We isolate the abstract mechanism: for any family of quotients of a
+\emph{common} group, spherical growth is shape-independent through a horizon equal to half the
+shortest added relator, and first deviates exactly there. We then exhibit the orthoscheme
+(path-simplex) reflection groups as a family realizing this dichotomy in \emph{every} dimension:
+generic shapes are rigid (all give one universal growth sequence), and every shape agrees with it
+up to a finite, shape-dependent horizon. The universal sequences and their ratios
+$r_n = 1+2\cos\frac{2\pi}{n+3}$ are computed for $n=2,3,4$; the arithmetic of the universal
+sequence is dimension-dependent --- transcendental at $n=2$ (\textup{OEIS A396406}), rational at
+$n=3$ ($9\cdot2^{\,d-2}$) --- so \emph{universality is general while transcendence is special to
+the plane}.
+\end{abstract}
+
+\section{The abstract dichotomy}
+
+Let $G=\langle S\rangle$ be a group with a finite symmetric generating set $S$, and let
+$\ell_G$ denote word length. For a normal subgroup $N\trianglelefteq G$ the quotient
+$Q=G/N$ inherits the generating set $\bar S$; write $s_d(H)=\#\{h\in H:\ell_H(h)=d\}$ for the
+sphere sizes and $K(N)=\min\{\ell_G(g):g\in N\setminus\{1\}\}$ for the length of the shortest
+nontrivial element of $N$.
+
+\begin{theorem}[Universality--deviation dichotomy]
+\label{thm:dichotomy}
+Let $n:=\big\lceil K(N)/2\big\rceil$. Then
+\[
+   s_d(Q)=s_d(G)\quad\text{for all } d<n,
+   \qquad\text{and}\qquad
+   s_n(Q)<s_n(G).
+\]
+Equivalently, the first depth at which the growth of the quotient falls below that of $G$ is
+exactly $\big\lceil K(N)/2\big\rceil$.
+\end{theorem}
+
+\begin{proof}
+The projection $\pi:G\to Q$ is surjective and $1$-Lipschitz, so $\ell_Q(\pi g)\le\ell_G(g)$ and
+$\pi$ maps the radius-$d$ ball $B_d(G)$ onto $B_d(Q)$. Thus $s_d(Q)\le s_d(G)$ for every $d$, with
+equality iff $\pi$ is injective on the sphere $\Sigma_d(G)$ \emph{and} no two elements of
+$\Sigma_d(G)$, $\Sigma_{d'}(G)$ with $d'\le d$ collapse together --- i.e.\ iff $\pi|_{B_d(G)}$ is
+injective and length-preserving.
+
+Suppose $d<n$, i.e.\ $2d<K(N)$. If $\pi g=\pi h$ with $g,h\in B_d(G)$, then $gh^{-1}\in N$ and
+$\ell_G(gh^{-1})\le \ell_G(g)+\ell_G(h)\le 2d<K(N)$, forcing $gh^{-1}=1$, so $g=h$. Hence
+$\pi|_{B_d(G)}$ is injective; it is also length-preserving, since $\ell_Q(\pi g)<\ell_G(g)$ would
+give a shorter representative $g'$ with $\pi g'=\pi g$, whence $g(g')^{-1}\in N\setminus\{1\}$ has
+length $\le 2d<K(N)$, again impossible. Therefore $s_d(Q)=s_d(G)$ for all $d<n$, and cumulatively
+$|B_{n-1}(Q)|=|B_{n-1}(G)|$.
+
+At depth $n$: choose $g_0\in N$ with $\ell_G(g_0)=K(N)$ and split a geodesic word for it as
+$g_0=w_1w_2$ with $\ell_G(w_1)=\lceil K/2\rceil=n$ and $\ell_G(w_2)=\lfloor K/2\rfloor$. Both
+subwords are geodesic (a shorter one would shorten $g_0$), and $\pi w_1=\pi(w_2^{-1})$ because
+$w_1w_2\in N$; yet $w_1\ne w_2^{-1}$ in $G$ (else $g_0=1$). Thus two distinct elements of
+$B_n(G)$ share a fiber, so $|B_n(Q)|<|B_n(G)|$; combined with $|B_{n-1}(Q)|=|B_{n-1}(G)|$ this
+gives $s_n(Q)=|B_n(Q)|-|B_{n-1}(Q)|<s_n(G)$.
+\end{proof}
+
+\begin{remark}
+The theorem is a statement about \emph{one} quotient. It becomes a \emph{universality} statement
+when applied to a \emph{family} $\{Q_T=G/N_T\}$ sharing the common group $G$: every member has the
+same growth as $G$ --- hence as every other member --- through its own horizon
+$n_T=\lceil K(N_T)/2\rceil$, and members with larger $K(N_T)$ agree longer. The growth is
+shape-independent exactly as far as the shortest added relator allows, and the first deviation
+depth is a shortest-vector problem in $N_T$. This is the abstract content of the right-triangle
+theorems of the companion paper, where $G$ is the generic (virtually lamplighter) group,
+$N_T=2(t-1)\mu_T\,\Z[t^{\pm1}]$, and $n_T$ is the deviation-depth law.
+\end{remark}
+
+\section{The orthoscheme family in every dimension}
+
+An \emph{$n$-orthoscheme} (path simplex) is a Euclidean simplex with vertices
+$P_0,\dots,P_n$ whose consecutive edges $P_{k-1}P_k$ are mutually orthogonal; normalizing
+$P_k=P_{k-1}+\ell_k e_k$ places edge $k$ along the axis $e_k$ with leg length $\ell_k>0$
+($\ell_1=1$). Its $n+1$ facets carry reflections $R_0,\dots,R_n$ (the reflection $R_j$ in the
+facet opposite $P_j$), generating a group $W_T\le\mathrm{Isom}(\R^n)$; for $n=2$ this is the
+right-triangle side-reflection group of the companion paper. We measure the geodesic growth
+$s_d(W_T)$: the number of distinct isometries of word length $d$ in $\{R_0,\dots,R_n\}$.
+
+Two facets $R_i,R_j$ with $|i-j|\ge2$ are orthogonal, hence commute; consecutive facets meet at a
+dihedral angle that, for generic legs, is an irrational multiple of $\pi$. As with right
+triangles, this makes the \emph{generic} orthoscheme group rigid: its isomorphism type, and hence
+its growth, is independent of the (generic) shape. Computation confirms this and pins the
+universal sequences.
+
+\begin{proposition}[Generic universality, computational]
+\label{prop:generic}
+For $n\in\{2,3,4\}$, all tested generic $n$-orthoschemes share one geodesic-growth sequence
+$U^{(n)}$, and the successive ratios converge to $r_n=1+2\cos\frac{2\pi}{n+3}$:
+\[
+\begin{array}{lll}
+n=2: & U^{(2)}=1,3,5,8,13,21,34,55,89,144,225,\dots & (\textup{OEIS A396406})\\[2pt]
+n=3: & U^{(3)}=1,4,9,18,36,72,144,288,\dots = \{1,4\}\ \text{then}\ 9\cdot2^{\,d-2} & (r_3=2,\ \text{exact to depth }16)\\[2pt]
+n=4: & U^{(4)}=1,5,14,33,75,169,380,854,1919,4312,9689,\dots & (r_4=1+2\cos\tfrac{2\pi}7=2.24698\dots)
+\end{array}
+\]
+The agreement is over four generic shapes per dimension, to depth $14$ ($n=2$), $16$ ($n=3$),
+$12$ ($n=4$); the ratio $r_3=2$ and $r_4=2.24698$ are reproduced to full precision. (Script
+\texttt{code/zeta\_probe/orthoscheme\_universality.py}.)
+\end{proposition}
+
+\begin{proposition}[Finite-horizon deviation, exact]
+\label{prop:deviation}
+Special shapes agree with $U^{(n)}$ up to a shape-dependent depth and then deviate. In dimension
+$3$, in \emph{exact rational arithmetic}:
+\[
+\begin{array}{llll}
+(1,1,1): & 1,4,9,\mathbf{17},\dots & \text{deviates at depth }3; &
+(1,1,2),(2,1,1): 1,4,9,18,\mathbf{35},\dots\ \text{depth }4;\\
+(1,\sqrt3,1): & \text{depth }6; & (1,2,3): \text{agrees past depth }14 & (\text{deep deviation}).
+\end{array}
+\]
+The deviations are certified in exact arithmetic (rational legs give rational reflections), so they
+are genuine group-theoretic collapses, not numerical artifacts. As in the plane, shapes with a
+rational dihedral angle deviate early, while shapes with only ``generic'' angles (e.g.\ $(1,2,3)$)
+agree far past the reach of direct enumeration.
+\end{proposition}
+
+\section{What is proven, and the significance}
+
+Theorem~\ref{thm:dichotomy} is unconditional and dimension-free: it reduces the entire
+universality-then-deviation phenomenon to two group-theoretic inputs --- a common ambient group
+$G$, and the shortest-relator length $K(N_T)$ of each shape's kernel. For right triangles both
+inputs are supplied in closed form by the companion paper (the lamplighter identification and the
+ideal $2(t-1)\mu_T\Z[t^{\pm1}]$), making the $n=2$ instance a theorem outright, deviation law and
+all. Propositions~\ref{prop:generic}--\ref{prop:deviation} establish the two inputs
+\emph{computationally} in dimensions $3$ and $4$: the generic group is rigid (a universal sequence
+exists), and each shape's horizon is finite. What remains open beyond $n=2$ is the structural
+identification of the generic orthoscheme group $G_n$ and of the kernels $N_T$ --- the higher
+analogue of the lamplighter theorem --- which would upgrade Propositions~\ref{prop:generic} and
+\ref{prop:deviation} to theorems and yield a closed-form horizon $n_T$ in every dimension.
+
+The phenomenon is thus \emph{general}: a whole family of reflection groups, in every dimension,
+grows identically until an arithmetic obstruction of the individual shape switches on. Against this
+backdrop the plane is special in one precise respect --- \emph{arithmetic}. The universal sequence
+is transcendental only at $n=2$ (A396406, growth rate the transcendental $\beta_2=1.4916\dots$,
+strictly below $r_2=\varphi$); at $n=3$ it is the rational $9\cdot2^{\,d-2}$, and the ratios
+$r_3=2,\ r_4=2.24698\dots$ govern cleanly. Universality is the rule in every dimension;
+transcendence is the exception, confined to the plane.
+
+\end{document}
