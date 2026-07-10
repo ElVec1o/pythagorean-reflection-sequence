@@ -466,12 +466,26 @@ Mahler--Nishioka and of holonomy do not apply. Second, two elementary refinement
 archimedean sums of $S(\alpha)$ are unrelated numbers, so $|S(\alpha)|_v=1$ does not bound the real
 value --- and a Liouville/height bound is beaten by the $q$-Pochhammer denominators, whose growth over
 the conjugates of modulus $>1$ is cubic ($\sim\!K^3$) against the merely quadratic ($\sim\!K^2$) tail,
-Kronecker-sharply (equality would need Mahler measure $1$, i.e.\ a root of unity). The residual
-obstruction is exactly the irregular $q$-connection data of this ${}_1\phi_1$ --- the same
-transcendence wall met by the true series $U$. Thus $\beta_2$ transcendental would follow from a
-value-transcendence theorem for confluent basic hypergeometric functions along the diagonal; we
-record this as the precise open question. (Note the contrast with the \emph{function-level} results
-of this paper, which say nothing about individual interior values.)
+Kronecker-sharply (equality would need Mahler measure $1$, i.e.\ a root of unity). A more promising reformulation uses two variables. Set $G(q,z)={}_1\phi_1(0;q;q^2,z)=\sum_k(-1)^k
+q^{k(k-1)}z^k/(q;q)_{2k}$, so $S(q)=G(q,2q(1-q))$; unlike $S$, the function $G$ \emph{is} $q$-holonomic
+in $z$, satisfying the second-order $q$-difference equation
+\[
+   q\,G(q,z)\;-\;(q+1-qz)\,G(q,q^2z)\;+\;G(q,q^4z)\;=\;0 .
+\]
+One checks that $z^\ast:=2q^\ast(1-q^\ast)=0.4948901\ldots$ is the \emph{smallest positive zero} of
+$G(q^\ast,\cdot)$. Hence $\beta_2$ algebraic would force an \emph{algebraic zero of a $q$-Bessel-class
+function at an algebraic base} --- and the classical analogue is false: the zeros of the Bessel function
+$J_\nu$ are transcendental (Siegel). A $q$-analogue of Siegel's theorem for the zeros of ${}_1\phi_1$
+would therefore settle $\beta_2$. The natural proof is Hermite--Pad\'e: the $[n/n]$ approximants
+$Q_n(z)G(q,z)-P_n(z)=O(z^{2n+1})$ have a remainder that, thanks to the $q^{k(k-1)}$ numerators, decays
+super-exponentially, $|R_n(z^\ast)|=q^{\,c n^2(1+o(1))}$; were $z^\ast$ algebraic this would violate
+Liouville's inequality \emph{unless} the approximants' height grows at least as fast. It does: the
+$(q;q)_{2k}$ denominators force a \emph{cubic} height $\exp(c'n^3)$ against the \emph{quadratic}
+remainder. The two rates are the two sides of the $G$-function (Galochkin--Andr\'e bounded-denominator)
+condition; the open question, now sharp, is precisely whether $G(q,z)$ is a $q$-$G$-function, in which
+case its denominators drop to $\exp(c''n^2)$ and Siegel's mechanism closes both $\beta_2$ and (by the
+same $q$-connection core) $U$. (Note the contrast with the \emph{function-level} results of this paper,
+which say nothing about individual interior values.)
 \end{remark}
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
