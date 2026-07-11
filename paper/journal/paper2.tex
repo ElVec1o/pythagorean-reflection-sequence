@@ -715,11 +715,60 @@ $R_q(z)=-1$ is a functional-equation-consistent value that a nonconstant theta-q
 somewhere, and on the diagonal $z=2q(1-q)$ the theta-arguments appear algebraically dependent, so no
 current independence theorem (Bertrand, Nesterenko, Schneider--Lang) forbids it. The archimedean
 obstruction is thus the exact mirror of the proven finite-place balance: units ($\equiv1$) at every
-$p\mid st$, and a putative $-1$ at $\infty$, with neither forbidden. Closing this requires computing the
-explicit connection entries by $q$-Borel/$q$-Laplace summation of the slope-$1$ part at $z=\infty$ and
-testing their theta-arguments against a Bertrand-type rank criterion --- the single unrealized step, and
-the precise open problem this paper leaves.
+$p\mid st$, and a putative $-1$ at $\infty$, with neither forbidden. The required connection-entry
+computation is carried out below.
 \end{remark}
+
+\begin{proposition}[the connection entries, pinned]
+\label{prop:pinned}
+Write $Q=q^2$, $\theta_b(x)=\sum_{n\in\Z}b^{n(n-1)/2}x^n$. The equation for $G$ has, at $z=\infty$, the
+formal solution basis $f_1(z)=\theta_Q(-z)\,\hat g(z)$ and $f_2(z)=h(z)/\theta_Q(-z/q)$, where
+$h(z)=\sum_kc_kz^{-k}$ is \emph{convergent} (entire in $1/z$, $c_k=O(Q^{k^2/2})$) while
+$\hat g(z)=\sum_kb_kz^{-k}$, with
+$b_k=\bigl[-(q+1)Q\,b_{k-1}-Q^{3-k}b_{k-2}\bigr]/\bigl(q(Q^k-1)\bigr)$, is $q$-Gevrey divergent
+($b_k\asymp Q^{-k^2/4}$). Its $q$-Borel transform $\widehat B(\xi)=\sum_kb_kq^{k(k+1)/2}\xi^{-k}$ has
+geometric coefficients and satisfies
+$\widehat B(\xi)+\tfrac{q+1}{\xi}\widehat B(q\xi)+(\xi^{-2}-1)\widehat B(q^2\xi)=0$, which continues it
+meromorphically with poles confined to the spiral $+q^{-\mathbb{N}}$: the \emph{positive axis is the
+$q$-Stokes direction}, precisely where the zeros of $G$ lie ($\widehat B$ is regular at $-1$, where
+$\widehat B(-1)=(q+1)\widehat B(-q)$). The theta-kernel $q$-Laplace
+\[
+   g^{[\lambda]}(z)=\frac{\sum_{m\in\Z}q^{m(m-1)/2}(\lambda/z)^m\,\widehat B(\lambda q^m)}
+        {\theta_q(\lambda/z)},\qquad
+   f_1^{[\lambda]}=\theta_Q(-z)\,g^{[\lambda]}(z),
+\]
+(kernel normalization validated on convergent input to $34$ digits; $\lambda$ off the singular
+spirals) produces an exact solution: $Lf_1^{[\lambda]}\approx10^{-61}$. Writing
+$G=C_1f_1^{[\lambda]}+C_2^{[\lambda]}f_2$, numerically to $59$--$60$ digits:
+\begin{itemize}
+\item[\textup{(i)}] $C_1$ and $C_2^{[\lambda]}$ are $Q$-elliptic in $z$ (verified to $10^{-60}$);
+\item[\textup{(ii)}] $C_1$ is a \emph{constant}, independent of both $z$ and the resummation direction
+$\lambda$ (jumps $<10^{-60}$): the slope-$1$ component of $G$ is Stokes-invariant; all $q$-Stokes
+ambiguity is carried by $C_2^{[\lambda]}$, which is nonconstant elliptic with $\lambda^2$ in its zero
+divisor;
+\item[\textup{(iii)}] \textup{(dressing-product formula, verified to $59$ digits)}
+\[
+   C_1=\frac1{(Q;Q)_\infty\prod_{k\ge1}z_kQ^{\,k-1}}\;:
+\]
+the Stokes-invariant connection constant is the regularized product of the zero dressings --- the
+connection data and the zero data of $G$ are the \emph{same} arithmetic object;
+\item[\textup{(iv)}] at $q=q^\ast$ the entire apparatus evaluates: $C_1(q^\ast)=2.69898382616391375\ldots$,
+and the zero condition $G(q^\ast,z^\ast)=0$ takes the pinned form
+\[
+   C_2^{[\lambda]}(z^\ast)\;=\;-\,C_1\,\frac{f_1^{[\lambda]}(z^\ast)}{f_2(z^\ast)}
+   \;=\;0.011592994120624266\ldots\qquad(\lambda=\tfrac32),
+\]
+verified to $30$ digits. This is the explicit instance of the theta non-resonance: every object in it
+is now constructed.
+\end{itemize}
+\end{proposition}
+
+What the pinned form reveals is a closed loop: by \textup{(iii)} the connection constant carries
+exactly the arithmetic of the zeros themselves, so the non-resonance statement cannot import
+transcendence from the connection side alone --- consistent with, and sharpening, the obstruction
+analysis above. The remaining open steps are now concrete: the closed form of $C_2^{[\lambda]}$ as a
+theta quotient (its divisor is only partially mapped), and the Bertrand-rank analysis of the resulting
+theta-arguments on the diagonal $z=2q(1-q)$.
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
