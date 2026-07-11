@@ -544,6 +544,67 @@ creates the arithmetic deficit. The precise open door remains a $q$-irrationalit
 $\rho=\tfrac12$ --- one notch beyond the proven $\rho\ge1$ theory.
 \end{remark}
 
+The failure pattern above is not an artifact of particular constructions; it is forced by exact
+arithmetic facts, which we record as a theorem-level ledger.
+
+\begin{proposition}[Arithmetic no-go ledger at $\rho=\tfrac12$]
+\label{prop:nogo}
+Let $q=s/t\in(0,1)$ with $\gcd(s,t)=1$, and let $g_k=(-1)^kq^{k(k-1)}/(q;q)_{2k}$ be the Taylor
+coefficients of $G(q,\cdot)$. Then:
+\begin{itemize}
+\item[\textup{(i)}] \textup{(exact denominators)} in lowest terms
+$g_k=(-1)^k\,s^{k^2-k}\,t^{k^2+2k}\big/\prod_{i=1}^{2k}(t^i-s^i)$; in particular
+$\operatorname{den}(g_k)=\prod_{i=1}^{2k}(t^i-s^i)=t^{k(2k+1)(1+o(1))}$ exactly, while
+$|g_k|=(s/t)^{k^2(1+o(1))}$, so the arithmetic ratio is
+$\rho=\log(t/s)/(2\log t)\le\tfrac12$, with equality iff $s=1$.
+\item[\textup{(ii)}] \textup{($\nu$-ladder arithmetic)} the $q$-Lommel polynomials of
+Koelink--Swarttouw satisfy $\deg_qp_m=m^2$ exactly, with leading $q$-coefficient $(-1)^m$; hence at
+$q=s/t$ their denominators are the pure power $t^{m^2}$, carrying no cyclotomic structure.
+\item[\textup{(iii)}] \textup{($\nu$-direction regularity)} the ladder recurrence
+$u_{m+1}=\bigl((1-q^{2m+1})/x_0+x_0\bigr)u_m-u_{m-1}$ has coefficients converging exponentially to
+$x_0+1/x_0$ with distinct characteristic roots $x_0^{\pm1}$; by Poincar\'e--Perron every nonzero
+solution satisfies $|u_m|^{1/m}\to x_0^{\pm1}$. No theta-type ($q^{cm^2}$-decaying) solution exists
+in the $\nu$-direction, for either kind. Consequently the cleared $\nu$-ladder forms are
+$\gg t^{m^2}x_0^{-m}\to\infty$ for every rational $q$, including $s=1$.
+\item[\textup{(iv)}] \textup{(cyclotomic floor)} any linear form built over the coefficients
+$g_0,\dots,g_M$ has decay at best $q^{M^2(1+o(1))}$, while its cyclotomic support is
+$\{\Phi_d(t,s):d\le2M\}$; even if every $\Phi_d$ appeared at most \emph{once} --- the idealized best
+case of any lcm/acceleration argument --- the denominator exceeds
+$t^{\sum_{d\le2M}\varphi(d)}=t^{(12/\pi^2+o(1))M^2}$, and $12/\pi^2=1.2159\ldots>1$. Hence no
+cyclotomic-compression (Rhin--Viola-type) refinement of the Pad\'e, continued-fraction, or ladder
+families can produce integer forms tending to $0$. Moreover the true solved Pad\'e denominators
+contain growing \emph{non-cyclotomic} irreducible factors (at $n=3$, one of degree $26$ with
+coefficients up to $4$; no integer $d$ has $\varphi(d)=26$), which no lattice-of-cyclotomes argument
+addresses.
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+(i) $q^{k(k-1)}=s^{k(k-1)}/t^{k(k-1)}$ and $1/(q;q)_{2k}=t^{k(2k+1)}/\prod_{i\le2k}(t^i-s^i)$; the
+numerator $s^{k^2-k}t^{k^2+2k}$ is coprime to each factor since
+$\gcd(st,\,t^i-s^i)=1$. (ii) Induction: $p_{m+1}=(X+1-q^{2m+1})p_m-Xp_{m-1}$, and the top
+$q$-degree term of $p_{m+1}$ is $-q^{2m+1}\cdot(\text{top of }p_m)$, of degree $m^2+2m+1=(m+1)^2$,
+which cannot cancel against $Xp_{m-1}$ (degree $(m-1)^2$). (iii) The perturbation
+$(1-q^{2m+1})/x_0-1/x_0$ decays geometrically, so the Poincar\'e--Perron theorem applies with the
+limit equation $u_{m+1}=(x_0+1/x_0)u_m-u_{m-1}$, whose roots $x_0\ne1/x_0$ are simple. (iv) A form
+using $g_0,\dots,g_M$ vanishes to order at most $M$ at $z=0$, so its value at a fixed $z_0$ inside
+the disc is $\gg|g_{M+1}z_0^{M+1}|=q^{M^2(1+o(1))}$ in the truncation-based families; its
+denominators involve $(t^i-s^i)$ for $i\le2M$, i.e.\ $\Phi_d(t,s)$ for $d\le2M$, and
+$\sum_{d\le N}\varphi(d)=\tfrac3{\pi^2}N^2+O(N\log N)$ gives the floor with $N=2M$. The degree-$26$
+factor is exhibited by the exact $n=3$ computation
+(\texttt{code/zeta\_probe/route\_b/beta2\_qniven\_ladder.py}).
+\end{proof}
+
+\begin{remark}[scope]
+\label{rem:nogo-scope}
+Proposition~\ref{prop:nogo} closes every construction whose coefficients live in the natural
+$\Z[q^{\pm1},z]$-lattices of the $q$-difference module --- Taylor Pad\'e and Hermite--Pad\'e,
+the argument-direction continued fraction, the $\nu$-ladders of both kinds --- together with all
+cyclotomic-compression refinements of them. It does \emph{not} exclude a fundamentally different
+family of forms; producing one is exactly what a $\rho=\tfrac12$ criterion would mean. The ledger
+thereby locates $\beta_2$'s arithmetic at a precise frontier of $q$-Diophantine approximation.
+\end{remark}
+
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
 $U$ inherits the travel poles of Proposition~\ref{prop:travelinv}; it is transcendental once its

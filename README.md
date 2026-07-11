@@ -26,6 +26,19 @@ For `1 ≤ n ≤ 9`, `u_n = F(n+3)` (Fibonacci); the first deviation is at `n = 
 `u_10 = 225 = F(13) − 8`. The **isosceles** case (`a = b`) is genuinely
 different (`1, 3, 5, 8, 11, 13, 16, …`).
 
+## Corpus status (v2.0.0 — consolidated)
+
+Three companion papers in `paper/journal/`, every claim tiered honestly:
+
+| paper | headline | status |
+|---|---|---|
+| **Paper 1** (44 pp) | metric theorem `ℓ_T = ℓ_R + 2c`; virtually-lamplighter structure; universality sharp at 32/33; deviation depth `n_T = K(T)/2` + closed-form law; `β₂ = 1.4916177871…` exact | **unconditional** (law's general exactness conjectural; certified at (1,2)) |
+| **Paper 2** (14 pp) | blocks transcendental over ℚ(q); relaxed series `V` transcendental over ℚ(x); true series `U` transcendental **conditional on one amplitude estimate (⋆)**; `β₂`-as-a-number: reduced to a Hahn–Exton value question, with a proven no-go ledger (`ρ = 1/2`, cyclotomic floor `12/π² > 1`) locating the precise open frontier | **V unconditional; U conditional on (⋆); β₂ number-status open** |
+| **Paper 3** (4 pp) | universality–deviation dichotomy (dimension-free); generic rigidity (co-null shape set); rational RACG envelope with rate `r_n = 1+2cos(2π/(n+3))`; geometric group = proper amenable quotient (finite-horizon envelope) | **theorems unconditional; higher-dim arithmetic past the horizon open** |
+
+Machine-checked: Lean 4/Mathlib certificates in `lean/with_mathlib/` (no `sorry`);
+Rust certificates to depth 42; ~40 reproduction scripts under `code/zeta_probe/`.
+
 ## Main results
 
 1. **Sharp universality, then refutation.** For every right triangle with
