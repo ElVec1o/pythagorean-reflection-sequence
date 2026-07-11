@@ -258,3 +258,34 @@ def verify_closed_forms(qs='0.3'):
               sum(cj[j]*mp.mpc(z)**(-j) for j in range(m+1)) for m in range(70))
     lhs = poch_inf(q, q)*G(z)
     print("dressed-theta identity rel err:", mp.nstr(abs(lhs-rhs)/abs(lhs), 3))
+
+
+# ============================================================================
+# PROOF INGREDIENTS for L f1^{[lambda]} = 0 (paper2 prop, v2.6.0 -- now a THEOREM):
+# theta shifts theta_q(q^-2 x) = q^-3 x^2 theta_q(x), theta_q(q^-4 x) = q^-10 x^4 theta_q(x)
+# turn f1(Qz), f1(Q^2 z) into the same kernel sum with Bhat(lam q^{m+2}), Bhat(lam q^{m+4});
+# collecting coefficients yields q[Bhat(xi)+((q+1)/xi)Bhat(q xi)+(xi^-2-1)Bhat(q^2 xi)] = 0
+# identically (the proven functional equation of the product form). Casoratian covariance
+# Cas(Qz) = q Cas(z) (det A = q) proves C1, C2 elliptic; the peak-window argument along every
+# orbit class != [1]_Q proves C1 == 1/(q;q)_inf CONSTANT and lambda-independent.
+# ============================================================================
+def verify_solution_proof(qs='0.3', lam_='2.0'):
+    import mpmath as mp
+    q = mp.mpf(qs); Q = q*q; lam = mp.mpf(lam_)
+    th = lambda x, N=80: sum(q**(mp.mpf(n)*(n-1)/2)*mp.mpc(x)**n for n in range(-N, N+1))
+    def poch_inf(a0, base):
+        r = mp.mpf(1); xx = mp.mpc(a0)
+        for _ in range(500):
+            r *= (1-xx); xx *= base
+            if abs(xx) < mp.mpf(10)**-42: break
+        return r
+    Bh = lambda xi: 1/poch_inf(q**2/xi, q)
+    def T(z, shift=0, M=45):
+        num = sum(q**(mp.mpf(m)*(m-1)/2)*(lam/mp.mpc(z))**m*Bh(lam*q**(m+shift))
+                  for m in range(-M, M+1))
+        return num/th(lam/mp.mpc(z))
+    x = mp.mpc('0.7', '0.2'); z = mp.mpf('1.9')
+    print("theta shift q^-2:", mp.nstr(abs(th(x/q**2)-x**2/q**3*th(x)), 3))
+    print("reindex T(Qz):", mp.nstr(abs(T(Q*z)-T(z, 2))/abs(T(Q*z)), 3))
+    print("g-equation for explicit kernel sum:",
+          mp.nstr(abs(q*T(z)+((q+1)/z-q)*T(Q*z)+T(Q*Q*z)/(Q*z**2)), 3))

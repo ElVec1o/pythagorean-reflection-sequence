@@ -747,16 +747,30 @@ theta-kernel $q$-Laplace
 \]
 is then singular only for $\lambda q^{\Z}$ meeting the pole set, i.e.\ for the single class
 $[\lambda]\in q^{\Z}$ of $E_q=\C^*/q^{\Z}$ (the positive-real lattice class, near which the zeros of
-$G$ lie); every other class is regular. The kernel normalization was validated on convergent input to
-$34$ digits, and for $\lambda\notin q^{\Z}$ the sum produces an exact solution:
-$Lf_1^{[\lambda]}\approx10^{-61}$. Writing
+$G$ lie); every other class is regular. For $\lambda\notin q^{\Z}$ the bilateral sum converges
+absolutely on compacts of $\C^*\setminus(-\lambda q^{\Z})$ and $Lf_1^{[\lambda]}=0$ \emph{exactly}:
+the theta shifts $\theta_q(q^{-2}x)=q^{-3}x^2\theta_q(x)$ and $\theta_q(q^{-4}x)=q^{-10}x^4\theta_q(x)$
+turn $f_1^{[\lambda]}(Qz)$ and $f_1^{[\lambda]}(Q^2z)$ into the same kernel sum with
+$\widehat B(\lambda q^m)$ replaced by $\widehat B(\lambda q^{m+2})$, $\widehat B(\lambda q^{m+4})$;
+collecting the coefficient of $q^{m(m-1)/2}(\lambda/z)^m/\theta_q(\lambda/z)$ in
+$Lf_1^{[\lambda]}/\theta_Q(-z)$ then yields
+$q\bigl[\widehat B(\xi)+\tfrac{q+1}{\xi}\widehat B(q\xi)+(\xi^{-2}-1)\widehat B(q^2\xi)\bigr]$ at
+$\xi=\lambda q^m$, identically zero. (Each step was verified numerically to $40$ digits; the kernel
+normalization was validated on convergent input to $34$ digits, and $Lf_1^{[\lambda]}\approx10^{-61}$
+numerically.) Writing
 $G=C_1f_1^{[\lambda]}+C_2^{[\lambda]}f_2$, numerically to $59$--$60$ digits:
 \begin{itemize}
-\item[\textup{(i)}] $C_1$ and $C_2^{[\lambda]}$ are $Q$-elliptic in $z$ (verified to $10^{-60}$);
+\item[\textup{(i)}] since $\det A=q$, every Casoratian
+$\operatorname{Cas}(u,v)(z):=u(z)v(Qz)-u(Qz)v(z)$ of solutions satisfies
+$\operatorname{Cas}(Qz)=q\operatorname{Cas}(z)$ (immediate from $u(Q^2z)=a\,u(Qz)-q\,u(z)$), so
+$C_1=\operatorname{Cas}(G,f_2)/\operatorname{Cas}(f_1^{[\lambda]},f_2)$ and
+$C_2^{[\lambda]}=\operatorname{Cas}(f_1^{[\lambda]},G)/\operatorname{Cas}(f_1^{[\lambda]},f_2)$ are
+$Q$-elliptic --- proven, and verified to $10^{-60}$;
 \item[\textup{(ii)}] $C_1$ is a \emph{constant}, independent of both $z$ and the resummation direction
-$\lambda$ (jumps $<10^{-60}$): the slope-$1$ component of $G$ is Stokes-invariant; all $q$-Stokes
-ambiguity is carried by $C_2^{[\lambda]}$, which is nonconstant elliptic with $\lambda^2$ in its zero
-divisor;
+$\lambda$: this is proven in Theorem~\ref{thm:zeroproduct} below (the limit argument applies along
+every orbit class $\ne[1]_Q$, and ellipticity extends the value); the slope-$1$ component of $G$ is
+Stokes-invariant, and all $q$-Stokes ambiguity is carried by $C_2^{[\lambda]}$, nonconstant elliptic
+with $\lambda^2$ in its zero divisor;
 \item[\textup{(iii)}] \textup{(dressing-product formula, verified to $59$ digits)}
 \[
    C_1=\frac1{(Q;Q)_\infty\prod_{k\ge1}z_kQ^{\,k-1}}\;:
@@ -832,6 +846,12 @@ Proposition~\ref{prop:pinned}: along the negative axis (a regular class, $[-1]\n
 $g^{[\lambda]}(z)\to1$ and $f_2(z)/\theta_Q(-z)=O\bigl(1/(\theta_Q(R)\theta_Q(R/q))\bigr)\to0$, so
 the limit just computed is the entry $C_1$; hence $C_1=1/(q;q)_\infty$. The $H$-statement is
 identical with comparison function $\theta_Q(-qz)$ and ratio $(1-q)/(q;q)_\infty$.
+Finally, steps (1)--(2) apply verbatim along $z=uQ^{-N}$ for any $u\in\C^*$ whose orbit avoids the
+zero class $[1]_Q$ of $\theta_Q(-\,\cdot\,)$, using the standard theta lower bound
+$|\theta_Q(-z)|\ge c([u])\cdot(\text{peak term})$ off that class; along each such orbit
+$C_1(z)$ is constant (ellipticity) and $f_2/f_1\to0$, $g^{[\lambda]}\to1$, so
+$C_1([u])=1/(q;q)_\infty$ on every class $\ne[1]_Q$, and by meromorphy $C_1\equiv1/(q;q)_\infty$ ---
+for every regular $\lambda$. In particular $C_1$ is $z$- and $\lambda$-independent.
 \end{proof}
 
 \begin{remark}[Diophantine consequences at $z^\ast$]
@@ -858,7 +878,12 @@ $f_2$'s convergent one,
    \frac{g(z)\,G(Qz)+z^{-1}g(Qz)\,G(z)}
         {-(z/q)\,g(z)\,h(Qz)+z^{-1}g(Qz)\,h(z)}
 \]
-(verified against the Casoratian computation to $10^{-61}$), with divisor now fully described: an
+--- an identity: it is the ratio of the Casoratian evaluations
+$\operatorname{Cas}(f_1,G)=\theta_Q(-z)\bigl[g(z)G(Qz)+z^{-1}g(Qz)G(z)\bigr]$ and
+$\operatorname{Cas}(f_1,f_2)=\tfrac{\theta_Q(-z)}{\theta_Q(-z/q)}
+\bigl[-(z/q)g(z)h(Qz)+z^{-1}g(Qz)h(z)\bigr]$, both instances of
+$\theta_Q(Qw)=w^{-1}\theta_Q(w)$ (and verified numerically to $10^{-61}$) --- with divisor now fully
+described: an
 \emph{explicit} zero lattice $z\in q^{-1}Q^{\Z}$ from the theta factor (the computed zero at
 $z=1/q$, exact to $10^{-63}$), a direction-dependent zero at $z=\lambda^2$ arising from the exact
 \emph{resummation resonance}
