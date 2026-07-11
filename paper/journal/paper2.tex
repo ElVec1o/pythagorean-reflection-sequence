@@ -612,22 +612,25 @@ where it also converges (the valuations of the terms tend to $+\infty$).
 
 \begin{lemma}[adelic units]
 \label{lem:adelic-units}
-Let $q=s/t\in(0,1)$, $\gcd(s,t)=1$, and $z^\ast=2q(1-q)$. For every $k\ge1$,
+Let $q=s/t\in(0,1)$, $\gcd(s,t)=1$, and $z^\ast=2q(1-q)$. For every $k\ge1$ and every prime $p$:
+if $p\mid t$ with $e=v_p(t)$, then
 \[
-   v_t\bigl(g_kz^{\ast k}\bigr)=k^2,
-   \qquad
-   v_s\bigl(g_kz^{\ast k}\bigr)\ge k^2 .
+   v_p\bigl(g_kz^{\ast k}\bigr)\;=\;k^2e+k\,[\,p=2\,]\;\ge\;k^2 ,
 \]
-Consequently both finite-place avatars converge and satisfy $S_t\equiv1\pmod t$ and
-$S_s\equiv1\pmod s$: they are \emph{units}, in particular nonzero --- regardless of whether the real
-avatar vanishes.
+(exact, verified symbolically), and if $p\mid s$ then $v_p(g_kz^{\ast k})\ge k^2$. Consequently the
+series converges in $\Q_p$ for every $p\mid st$, and the finite-place avatars satisfy
+$S_p\equiv1\pmod{p^{\,v_p(st)}}$; in particular $S_t\equiv1\pmod t$ and $S_s\equiv1\pmod s$: they
+are \emph{units}, hence nonzero --- regardless of whether the real avatar vanishes.
 \end{lemma}
 
 \begin{proof}
-By Proposition~\ref{prop:nogo}\textup{(i)}, $v_t(g_k)=k^2+2k$ and $v_s(g_k)=k^2-k$. Since
-$z^\ast=2s(t-s)/t^2$ one has $v_t(z^\ast)=-2$ and $v_s(z^\ast)\ge1$, whence
-$v_t(g_kz^{\ast k})=k^2+2k-2k=k^2$ and $v_s(g_kz^{\ast k})\ge k^2-k+k=k^2$. Both exceed $0$ for
-$k\ge1$, so each avatar is $1$ plus a term of positive valuation.
+Each factor $t^i-s^i$ of $\operatorname{den}(g_k)$ is a $p$-unit for every $p\mid st$ (it is
+$\equiv-s^i$ or $\equiv t^i\bmod p$), so by Proposition~\ref{prop:nogo}\textup{(i)},
+$v_p(g_k)=(k^2+2k)e$ for $p\mid t$ and $v_p(g_k)=(k^2-k)\,v_p(s)$ for $p\mid s$. From
+$z^\ast=2s(t-s)/t^2$: for $p\mid t$, $v_p(t-s)=0$ and $v_p(z^\ast)=[\,p=2\,]-2e$, giving
+$v_p(g_kz^{\ast k})=(k^2+2k)e+k([\,p=2\,]-2e)=k^2e+k[\,p=2\,]$; for $p\mid s$,
+$v_p(z^\ast)=v_p(2s)\ge v_p(s)\ge1$, giving $v_p(g_kz^{\ast k})\ge(k^2-k)+k=k^2$. All are $\ge1$ for
+$k\ge1$, so each avatar is $1$ plus terms of positive valuation.
 \end{proof}
 
 \begin{remark}[exact adelic balance, and the shape of any future criterion]
@@ -645,9 +648,9 @@ above loses a factor $t^{ck^2}$ somewhere; a $\rho=\tfrac12$ criterion is theref
 purely \emph{archimedean cancellation} phenomenon. This suggests the precise principle that would
 settle $\beta_2$, which we record as a conjecture: for the irregular rank-two $q$-difference module
 with polynomial companion matrix and $\det A=q$, the vanishing locus is \emph{adelically rigid} ---
-the entire function $G_v(q,\cdot)$ cannot vanish at a rational point $z_0$ with
-$v_t(z_0)\ge-2,\ v_s(z_0)\ge1$ at one place $v$ of $\Q$ while its avatars at all other convergent
-places are units. The finite-place half of this rigidity is exactly Lemma~\ref{lem:adelic-units};
+the entire function $G_v(q,\cdot)$ cannot vanish at a rational point $z_0$ at which all finite-place
+avatars are units (as at $z_0=z^\ast$, by Lemma~\ref{lem:adelic-units}) at one place $v$ of $\Q$
+while the avatars at all other convergent places are units. The finite-place half of this rigidity is exactly Lemma~\ref{lem:adelic-units};
 its archimedean half implies $\beta_2\notin\Q$. This is a $q$-analogue, for irregular $q$-difference
 modules, of the place-uniformity enjoyed by $E$- and $G$-function values, where the exceptional sets
 of Siegel--Shidlovskii--Andr\'e theory are independent of the place.
