@@ -308,7 +308,7 @@ a point where an earlier draft overreached. The amplitude $\Psi(\cdot,q)$ is ent
 (numerically $|\Psi|$ already exceeds $300$ at $u=1,\ \tau=10^{-2}$), and its termwise limit
 $\cos(w\,e^{iu/2})$ \emph{differs} from $\Psi$ by an $O(1)$ factor at the dominant scale $j\sim\tau^{-1/2}$
 (where the subleading part of $(q;q)_{2j}$ is itself $O(1)$; numerically $\Psi/\cos(we^{iu/2})\approx0.62$).
-Estimating $S_e$ is therefore a genuine competition between this exponential growth and the Gaussian --- a
+The size of $S_e$ is therefore governed by the balance between this exponential growth and the Gaussian --- a
 simple \emph{complex} saddle at $u^\ast\approx-\sqrt{2\tau}$, of the same order of difficulty as the direct
 sum, \emph{not} a bounded-amplitude stationary-phase integral with trivial hypotheses. In particular the
 bounded-variation input of Lemma~\ref{lem:Bbounded} is \emph{not} eliminated by passing to \eqref{eq:HS};
@@ -341,7 +341,7 @@ all constants explicit and verified to ten digits (\texttt{elemcos\_verify.py}).
 the same reduction produces every subsequent coefficient as a finite combination of $W^k\sin W,\,W^k\cos W$,
 so it serves the $O(\tau^2)$-relative demand of the $U$-numerator in the same elementary terms. The one input
 it does \emph{not} render elementary is the remainder estimate --- that the alternating expansion is
-genuinely asymptotic with $O(\tau)$ error. That step is irreducibly a \emph{cancellation} statement, and demonstrably so: not only does the triangle
+asymptotic with $O(\tau)$ error. That step is a \emph{cancellation} statement: not only does the triangle
 inequality on $\sum_j(2/\tau)^j/(2j)!\,|\cdot|$ return $\cosh W\asymp e^{\sqrt{2/\tau}}$, but the partial
 sums of the $\cos W$ series themselves swing up to $\asymp e^{c\sqrt{2/\tau}}$ before cancelling to $O(1)$
 (numerically $\max_J|S_J|=9,\,48,\,1459,\,7.6\!\times\!10^4$ at $\tau=0.1,0.05,0.02,0.01$). Hence \emph{every}
@@ -355,7 +355,7 @@ Stirling's formula, elementary Gaussian integration, and the bounded-variation b
 Lemma~\ref{lem:Bbounded}.
 \end{remark}
 
-\begin{remark}[the same machinery derives the $U$-numerator amplitude]\label{rem:elemY3}
+\begin{remark}[derivation of the $U$-numerator amplitude]\label{rem:elemY3}
 The single $U$-side input --- the bound $|\sum_kd_k|\le\tfrac3{8\sqrt2}\tau^{5/2}$ at the travel poles on
 the one explicit series $P_{12}=\tfrac{2q^3}{1-q^3}\sum_kd_k$,
 $d_k=(-2)^k(1-q)^kq^{k^2+3k}/[(q^2;q^2)_k(q^5;q^2)_k]$ --- submits to the identical reduction. Writing
@@ -656,8 +656,8 @@ modules, of the place-uniformity enjoyed by $E$- and $G$-function values, where 
 of Siegel--Shidlovskii--Andr\'e theory are independent of the place.
 \end{remark}
 
-A concentrated attack on the archimedean half yielded, besides confirming its difficulty, several exact
-structural facts and a faithful reduction, which we record. All are verified numerically to $40$--$60$
+Further analysis of the archimedean obstruction yields several exact structural facts and a faithful
+reduction. All are verified numerically to $40$--$60$
 digits (\texttt{code/zeta\_probe/route\_b/beta2\_*.py}).
 
 \begin{proposition}[structure of the zero curve]
@@ -700,10 +700,10 @@ $\delta S=\sum_k a_k\bigl(k^2-\tfrac{kq}{1-q}+L_k\bigr)$ with
 $L_k=\sum_{i=1}^{2k} iq^i/(1-q^i)\to(1-E_2)/24$: $S$ carries \emph{every} finite Eisenstein truncation
 $L_k$, not merely the limit, which is precisely why it escapes the modular differential ring. Whether
 $S$ is differentially algebraic is itself open (no algebraic ODE of order $\le3$, degree $\le5$ over
-$260$ series terms); the honest statement is that the Nesterenko route is blocked \emph{modulo the
-differential transcendence of $S$}, a genuinely weaker-looking but still open input.
+$260$ series terms); the Nesterenko route is blocked \emph{modulo the differential transcendence of $S$}, which is itself
+open.
 
-\begin{remark}[the sharpest reduction, and where it stands]
+\begin{remark}[reduction to a theta non-resonance]
 \label{rem:sharpest}
 All routes converge on the same faithful reformulation: $\beta_2$ is irrational iff
 $G(q^\ast,z^\ast)\ne0$ is forced by the arithmetic, and (Ramis--Sauloy--Zhang) this is a
@@ -719,7 +719,7 @@ $p\mid st$, and a putative $-1$ at $\infty$, with neither forbidden. The require
 computation is carried out below.
 \end{remark}
 
-\begin{proposition}[the connection entries, pinned]
+\begin{proposition}[the connection entries]
 \label{prop:pinned}
 Write $Q=q^2$, $\theta_b(x)=\sum_{n\in\Z}b^{n(n-1)/2}x^n$. The equation for $G$ has, at $z=\infty$, the
 formal solution basis $f_1(z)=\theta_Q(-z)\,\hat g(z)$ and $f_2(z)=h(z)/\theta_Q(-z/q)$, where
@@ -792,7 +792,7 @@ $H$-statement is identical with the comparison function $\theta_Q(-qz)$ and the 
 $(1-q)/(q;q)_\infty$.
 \end{proof}
 
-\begin{remark}[the Diophantine shape at $z^\ast$, and where the arithmetic now lives]
+\begin{remark}[Diophantine consequences at $z^\ast$]
 \label{rem:zeroproduct-dioph}
 At $q=q^\ast$ the identity splits off the candidate rational zero:
 \[
@@ -825,11 +825,11 @@ $g^{[\lambda]}(\lambda^2)G(Q\lambda^2)+\lambda^{-2}g^{[\lambda]}(Q\lambda^2)G(\l
 and poles at the zeros of the $h$-bracket. Substituting into the pinned zero condition at $z^\ast$
 and cancelling the common theta factor reduces the entire $\beta_2$ question to \emph{one} relation
 between the two modular values $\theta_Q(-z^\ast),\ (q;q)_\infty$ and five values of the non-modular
-pair $(g^{[\lambda]},h)$ on the orbit of $z^\ast$ --- the final, irreducible form of the stone. The
+pair $(g^{[\lambda]},h)$ on the orbit of $z^\ast$. The
 remaining input is a transcendence/independence statement for those five values; supplying it is one
 of three research programs (a non-modular extension of Nesterenko's method via the deformation of this
 connection, a $\rho<\tfrac12$-regime irrationality criterion, or adelic rigidity
-of the vanishing locus), each genuinely beyond current theory.
+of the vanishing locus); none is currently available.
 \end{remark}
 
 The first of those programs now has its foundation: the deformation of the module in $q$ closes
@@ -858,6 +858,18 @@ current theorem supplies, is the zero-estimate half: a multiplicity bound for th
 $(\sigma,\delta)$-ring at $(q^\ast,z^\ast)$. This is the precise, well-posed form in which we leave
 the $\beta_2$ problem.
 \end{proposition}
+
+\begin{corollary}[equation of the zero curve]
+\label{cor:zerocurve}
+Implicit differentiation of $G(q,z_1(q))=0$ gives
+\[
+   z_1'(q)\;=\;-\,\frac{z_1\,(\delta G)(q,z_1)}{q\,(\theta G)(q,z_1)},
+\]
+with $\theta G,\delta G$ in the module of Proposition~\ref{prop:deformation}: the zero curve is an
+integral curve of the rank-$\le6$ system (formula checked against a finite-difference derivative to
+$20$ digits at $q=0.3$). The number $q^\ast$ is the crossing of this curve with the diagonal:
+$z_1(q^\ast)=2q^\ast(1-q^\ast)$ (residual $<10^{-27}$).
+\end{corollary}
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
@@ -959,7 +971,7 @@ $t_1/\tau=\tfrac14+O(\tau)$ and $s<1$ with positive margin at every pole, so $\m
 and $U$ inherits infinitely many uncancelled poles accumulating at $q=1$, hence is transcendental.
 \end{proof}
 
-\begin{remark}[the one remaining gap, stated honestly]\label{rem:Ugap}
+\begin{remark}[the remaining gap]\label{rem:Ugap}
 Lemma~\ref{lem:atomN} discharges the amplitude \emph{through the turning point} $X=\tfrac32$ --- the
 obstruction to any Liouville--Green treatment, and the one piece formerly thought to settle the
 $U$-side. It does \emph{not}, however, supply the amplitude at the \emph{pole} $X=w$ to the
@@ -967,7 +979,7 @@ $O(\tau^2)$-relative accuracy the numerator gate requires. There the two-Bessel 
 relative defect whose $O(1)$ part is exactly $\tfrac1{36}$ --- i.e.\ the classical
 turning-point-to-pole connection factor $\tfrac{36}{35}$, which is itself derivable and, once
 applied, matches $Y_3(1/q)$ to $O(\tau)$-relative --- and whose \emph{residual} $O(\tau)$ part (the
-amplitude drift from the turning point to the pole) is the genuine unknown. Because
+amplitude drift from the turning point to the pole) remains unproven. Because
 $P_{12}=\tfrac{2q^3}{3(1-q^3)}Y_3(1/q)-\tfrac23S_e$ is an $O(\sqrt\tau)$ cancellation, that residual
 is amplified to the size of $P_{12}$ itself; only $Y_3(1/q)$ to $O(\tau^2)$-relative --- a uniform
 pole-amplitude resummation of the \emph{same analytic class} as Lemma~\ref{lem:cos} --- closes it.
