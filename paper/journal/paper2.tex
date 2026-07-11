@@ -807,9 +807,29 @@ $(q;q^2)_\infty$ --- and \emph{all} remaining unknown arithmetic is provably con
 dressing product, equivalently to the $q$-Stokes cocycle $C_2^{[\lambda]}$: the non-modularity of the
 $\beta_2$ problem \emph{is} its $q$-Stokes data. A transcendence statement for that tail (an algebraic
 independence of the higher-zero dressings from the modular values, or a rigidity theorem for the
-$q$-Stokes cocycle) would settle $\beta_2$; no current theorem provides it. The remaining concrete
-steps are the closed form of $C_2^{[\lambda]}$ as a theta quotient and the Bertrand-rank analysis of
-the diagonal theta-arguments.
+$q$-Stokes cocycle) would settle $\beta_2$; no current theorem provides it.
+
+The cocycle itself is now explicit. Writing $g=g^{[\lambda]}$ for the resummed series and $h$ for
+$f_2$'s convergent one,
+\[
+   C_2^{[\lambda]}(z)\;=\;\theta_Q(-z/q)\,
+   \frac{g(z)\,G(Qz)+z^{-1}g(Qz)\,G(z)}
+        {-(z/q)\,g(z)\,h(Qz)+z^{-1}g(Qz)\,h(z)}
+\]
+(verified against the Casoratian computation to $10^{-61}$), with divisor now fully described: an
+\emph{explicit} zero lattice $z\in q^{-1}Q^{\Z}$ from the theta factor (the computed zero at
+$z=1/q$, exact to $10^{-63}$), a direction-dependent zero at $z=\lambda^2$ arising from the exact
+\emph{resummation resonance}
+$g^{[\lambda]}(\lambda^2)G(Q\lambda^2)+\lambda^{-2}g^{[\lambda]}(Q\lambda^2)G(\lambda^2)=0$
+(verified to $10^{-62}$; a structural identity of the theta-kernel summation at its own direction),
+and poles at the zeros of the $h$-bracket. Substituting into the pinned zero condition at $z^\ast$
+and cancelling the common theta factor reduces the entire $\beta_2$ question to \emph{one} relation
+between the two modular values $\theta_Q(-z^\ast),\ (q;q)_\infty$ and five values of the non-modular
+pair $(g^{[\lambda]},h)$ on the orbit of $z^\ast$ --- the final, irreducible form of the stone. The
+remaining input is a transcendence/independence statement for those five values; supplying it is one
+of three research programs (a non-modular extension of Nesterenko's method via the $q$-isomonodromy
+deformation of this connection, a $\rho<\tfrac12$-regime irrationality criterion, or adelic rigidity
+of the vanishing locus), each genuinely beyond current theory.
 \end{remark}
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}

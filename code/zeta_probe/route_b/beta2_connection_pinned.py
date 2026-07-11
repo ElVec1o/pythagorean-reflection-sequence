@@ -135,3 +135,37 @@ def verify_zeroproduct(qs='0.3'):
     prod = mp.mpf(1)
     for k, zk in enumerate(zs): prod *= zk*Q**k
     print(f"[q={qs}] prod z_k Q^(k-1) = {mp.nstr(prod, 25)}  vs (q;q^2)inf = {mp.nstr(poch_inf(q, Q), 25)}")
+
+
+# ============================================================================
+# THE q-STOKES COCYCLE, EXPLICIT (paper2 rem:zeroproduct-dioph, final form):
+#   C2^{[lam]}(z) = theta_Q(-z/q) * [g(z)G(Qz)+z^{-1}g(Qz)G(z)]
+#                                / [-(z/q)g(z)h(Qz)+z^{-1}g(Qz)h(z)]
+# (g = resummed series f1^{[lam]}/theta_Q(-z); h = f2*theta_Q(-z/q)).
+# Verified vs Casoratian computation: 1e-61. DIVISOR fully described:
+#  - EXPLICIT zero lattice z in q^{-1} Q^Z (theta factor) -- computed zero at
+#    z = 1/q exact to 1e-63 (the "mystery zero near 3.4" was exactly 10/3);
+#  - direction-dependent zero at z = lambda^2 from the RESUMMATION RESONANCE
+#    g(l^2)G(Ql^2) + l^{-2} g(Ql^2) G(l^2) = 0 (1e-62) -- a structural identity
+#    of theta-kernel summation at its own direction;
+#  - poles at the h-bracket zeros.
+# FINAL FORM OF THE OPEN PROBLEM: at z*, after cancelling the theta factor, the
+# beta_2 question is ONE relation between two modular values (theta_Q(-z*),
+# (q;q)_inf) and five non-modular (g,h)-orbit values. Cracking it = one of three
+# research programs (non-modular Nesterenko / rho<1/2 criterion / adelic rigidity).
+# ============================================================================
+def verify_C2_formula(qs='0.3', lam_='2.0'):
+    import mpmath as mp
+    S = build(qs); q, Q = S['q'], S['Q']; lam = mp.mpf(lam_)
+    th = S['theta_Q']
+    gres = lambda z: S['f1s'](z, lam)/th(-mp.mpc(z))
+    hser = lambda z: S['f2'](z)*th(-mp.mpc(z)/q)
+    G = S['G']
+    def C2f(z):
+        z = mp.mpc(z)
+        return th(-z/q)*(gres(z)*G(Q*z)+gres(Q*z)*G(z)/z) / \
+               (-(z/q)*gres(z)*hser(Q*z)+gres(Q*z)*hser(z)/z)
+    d = S['conn'](mp.mpf('1.3'), lam)[1]
+    print("C2 formula vs Casoratian:", mp.nstr(abs(d-C2f(mp.mpf('1.3')))/abs(d), 4))
+    print("zero at 1/q:", mp.nstr(abs(S['conn'](1/q, lam)[1]), 4),
+          "| resonance at lam^2:", mp.nstr(abs(gres(lam**2)*G(Q*lam**2)+gres(Q*lam**2)*G(lam**2)/lam**2), 4))
