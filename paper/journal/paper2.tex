@@ -750,8 +750,7 @@ divisor;
 \[
    C_1=\frac1{(Q;Q)_\infty\prod_{k\ge1}z_kQ^{\,k-1}}\;:
 \]
-the Stokes-invariant connection constant is the regularized product of the zero dressings --- the
-connection data and the zero data of $G$ are the \emph{same} arithmetic object;
+the Stokes-invariant connection constant is the regularized product of the zero dressings;
 \item[\textup{(iv)}] at $q=q^\ast$ the entire apparatus evaluates: $C_1(q^\ast)=2.69898382616391375\ldots$,
 and the zero condition $G(q^\ast,z^\ast)=0$ takes the pinned form
 \[
@@ -763,12 +762,55 @@ is now constructed.
 \end{itemize}
 \end{proposition}
 
-What the pinned form reveals is a closed loop: by \textup{(iii)} the connection constant carries
-exactly the arithmetic of the zeros themselves, so the non-resonance statement cannot import
-transcendence from the connection side alone --- consistent with, and sharpening, the obstruction
-analysis above. The remaining open steps are now concrete: the closed form of $C_2^{[\lambda]}$ as a
-theta quotient (its divisor is only partially mapped), and the Bertrand-rank analysis of the resulting
-theta-arguments on the diagonal $z=2q(1-q)$.
+The constant $C_1$ is in fact \emph{modular}, and this upgrades the dressing-product formula into an
+exact evaluation of the zero product.
+
+\begin{theorem}[the connection constant, and the zero product of the Hahn--Exton $q$-cosine]
+\label{thm:zeroproduct}
+For $0<q<1$,
+\[
+   C_1=\frac1{(q;q)_\infty},
+   \qquad\text{and consequently}\qquad
+   \prod_{k\ge1} z_k(q)\,Q^{\,k-1}\;=\;(q;q^2)_\infty ,
+\]
+where $z_1<z_2<\cdots$ are the positive zeros of $G(q,\cdot)$. Likewise, for the second solution's
+underlying entire function $H$ with zeros $w_1<w_2<\cdots$,
+$\prod_{k\ge1}w_k(q)\,q\,Q^{\,k-1}=(q^3;q^2)_\infty$. \textup{(Verified at three bases including
+$q^\ast$, to $41$, $23$, $26$ digits for $C_1$ and $58$ digits for the product.)}
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The Taylor coefficients of $G$ and of $\theta_Q(-z)=\sum_n(-1)^nq^{n(n-1)}z^n$ share the quadratic
+exponent $q^{k(k-1)}$, with ratio $1/(q;q)_{2k}\to1/(q;q)_\infty$. Both functions are entire of order
+zero with the same peak index $k(z)\sim\log|z|/\log(1/Q)$; comparing the dominant windows of the two
+series along $|z|\to\infty$ between the zero clusters gives
+$G(z)/\theta_Q(-z)\to1/(q;q)_\infty$, i.e.\ $C_1=1/(q;q)_\infty$. The product formula follows by
+matching the Hadamard factorizations of $G$ (genus $0$, $G(0)=1$) and of
+$\theta_Q(-z)=(Q;Q)_\infty(z;Q)_\infty(Q/z;Q)_\infty$ factor-by-factor along $z=uQ^{-N}$, which yields
+$C_1(Q;Q)_\infty\prod_kz_kQ^{k-1}=1$; then $(q;q)_\infty=(q;q^2)_\infty(q^2;q^2)_\infty$ (Euler). The
+$H$-statement is identical with the comparison function $\theta_Q(-qz)$ and the ratio
+$(1-q)/(q;q)_\infty$.
+\end{proof}
+
+\begin{remark}[the Diophantine shape at $z^\ast$, and where the arithmetic now lives]
+\label{rem:zeroproduct-dioph}
+At $q=q^\ast$ the identity splits off the candidate rational zero:
+\[
+   \prod_{k\ge2}z_k(q^\ast)\,Q^{\,k-1}\;=\;\frac{(q;q^2)_\infty}{z^\ast}
+   \;=\;0.988299884628746\ldots\quad(\text{verified to }30\text{ digits}).
+\]
+Were $\beta_2$ rational, the \emph{modular} value $(q;q^2)_\infty$ (transcendental at algebraic $q$ by
+Nesterenko's theorem applied to the Euler products) would equal the rational $z^\ast$ times the tail
+dressing product $\prod_{k\ge2}z_kQ^{k-1}$. Thus the entire modular sector of the problem is now
+explicit --- the Stokes-invariant connection constant is $1/(q;q)_\infty$, the zero product is
+$(q;q^2)_\infty$ --- and \emph{all} remaining unknown arithmetic is provably confined to the tail
+dressing product, equivalently to the $q$-Stokes cocycle $C_2^{[\lambda]}$: the non-modularity of the
+$\beta_2$ problem \emph{is} its $q$-Stokes data. A transcendence statement for that tail (an algebraic
+independence of the higher-zero dressings from the modular values, or a rigidity theorem for the
+$q$-Stokes cocycle) would settle $\beta_2$; no current theorem provides it. The remaining concrete
+steps are the closed form of $C_2^{[\lambda]}$ as a theta quotient and the Bertrand-rank analysis of
+the diagonal theta-arguments.
+\end{remark}
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 

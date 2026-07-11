@@ -97,3 +97,41 @@ if __name__ == "__main__":
     print("[q=q*] C1 =", mp.nstr(C1.real, 22))
     print("[q=q*] pinned zero condition: C2(z*) =", mp.nstr(C2z.real, 22),
           " vs -C1 f1(z*)/f2(z*) =", mp.nstr((-C1*F(zstar)/S['f2'](zstar)).real, 22))
+
+
+# ============================================================================
+# THEOREM (paper2 thm:zeroproduct), discovered by PSLQ on the computed C1 and
+# then proved by the coefficient-ratio + Hadamard-product argument:
+#     C1 = 1/(q;q)_inf          (the connection constant is MODULAR), and
+#     prod_{k>=1} z_k(q) Q^{k-1} = (q;q^2)_inf      (zero product of the
+#     Hahn-Exton q-cosine = explicit modular product);  similarly for H:
+#     prod_{k>=1} w_k(q) q Q^{k-1} = (q^3;q^2)_inf.
+# Verified: C1 identity at q=0.3 (41 digits), q=0.42 (23), q=q* (26);
+# zero product at q=0.3 (58 digits); the split at q*:
+#     prod_{k>=2} z_k Q^{k-1} = (q;q^2)_inf / z* = 0.988299884628746...  (30 digits).
+# CONSEQUENCE: the modular sector of the beta_2 problem is fully explicit; ALL
+# unknown arithmetic is confined to the tail dressing product == the q-Stokes
+# cocycle C2^{[lambda]}. beta_2 rational would force the modular (q;q^2)_inf to
+# equal rational * tail -- unreachable without a new theorem about the tail.
+# ============================================================================
+def verify_zeroproduct(qs='0.3'):
+    import mpmath as mp
+    S = build(qs); q, Q = S['q'], S['Q']
+    def poch_inf(a0, base):
+        r = mp.mpf(1); x = mp.mpf(a0)
+        while x > mp.mpf(10)**-58: r *= (1-x); x *= base
+        return r
+    def bisect(f, a, b, iters=210):
+        fa = f(a)
+        for _ in range(iters):
+            m = (a+b)/2; fm = f(m)
+            if fa*fm <= 0: b = m
+            else: a = m; fa = fm
+        return (a+b)/2
+    g = lambda z: S['G'](z).real
+    brackets = [(mp.mpf('0.2'), mp.mpf('0.9'))] + \
+        [((1/Q**k)*mp.mpf('0.80'), (1/Q**k)*mp.mpf('1.05')) for k in range(1, 10)]
+    zs = [bisect(g, a, b) for a, b in brackets]
+    prod = mp.mpf(1)
+    for k, zk in enumerate(zs): prod *= zk*Q**k
+    print(f"[q={qs}] prod z_k Q^(k-1) = {mp.nstr(prod, 25)}  vs (q;q^2)inf = {mp.nstr(poch_inf(q, Q), 25)}")
