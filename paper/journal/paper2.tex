@@ -605,6 +605,54 @@ family of forms; producing one is exactly what a $\rho=\tfrac12$ criterion would
 thereby locates $\beta_2$'s arithmetic at a precise frontier of $q$-Diophantine approximation.
 \end{remark}
 
+The remaining freedom can be narrowed further: the finite places of $\Q$ are provably useless here.
+The series $S(q)=\sum_k g_k z^{\ast k}$, $z^\ast=2q(1-q)$, has rational terms, so besides its real sum
+it possesses $s$-adic and $t$-adic \emph{avatars} --- the same series summed in $\Q_s$ and $\Q_t$,
+where it also converges (the valuations of the terms tend to $+\infty$).
+
+\begin{lemma}[adelic units]
+\label{lem:adelic-units}
+Let $q=s/t\in(0,1)$, $\gcd(s,t)=1$, and $z^\ast=2q(1-q)$. For every $k\ge1$,
+\[
+   v_t\bigl(g_kz^{\ast k}\bigr)=k^2,
+   \qquad
+   v_s\bigl(g_kz^{\ast k}\bigr)\ge k^2 .
+\]
+Consequently both finite-place avatars converge and satisfy $S_t\equiv1\pmod t$ and
+$S_s\equiv1\pmod s$: they are \emph{units}, in particular nonzero --- regardless of whether the real
+avatar vanishes.
+\end{lemma}
+
+\begin{proof}
+By Proposition~\ref{prop:nogo}\textup{(i)}, $v_t(g_k)=k^2+2k$ and $v_s(g_k)=k^2-k$. Since
+$z^\ast=2s(t-s)/t^2$ one has $v_t(z^\ast)=-2$ and $v_s(z^\ast)\ge1$, whence
+$v_t(g_kz^{\ast k})=k^2+2k-2k=k^2$ and $v_s(g_kz^{\ast k})\ge k^2-k+k=k^2$. Both exceed $0$ for
+$k\ge1$, so each avatar is $1$ plus a term of positive valuation.
+\end{proof}
+
+\begin{remark}[exact adelic balance, and the shape of any future criterion]
+\label{rem:adelic-balance}
+Lemma~\ref{lem:adelic-units} has two consequences. First, it extends the no-go ledger from the
+module's coefficient lattices to the \emph{values}: no divisibility or smallness can be sourced from
+the finite places, since the finite-place avatars are units --- a hypothetical rationality of
+$\beta_2$ would be a maximally place-asymmetric event, the real avatar vanishing while every finite
+avatar equals a unit $\equiv1$. Second, it makes the $\rho=\tfrac12$ balance exact in the sense of
+the product formula: the term $g_kz^{\ast k}$ carries archimedean decay $(s/t)^{k^2(1+o(1))}$,
+$s$-adic and $t$-adic numerator content $s^{k^2}t^{k^2}$, and denominator $t^{2k^2(1+o(1))}$ --- the
+books balance with \emph{zero margin} at the $k^2$ scale, so any successful construction must be
+lossless at all three places simultaneously and win at the geometric scale. Every mechanism surveyed
+above loses a factor $t^{ck^2}$ somewhere; a $\rho=\tfrac12$ criterion is therefore forced to be a
+purely \emph{archimedean cancellation} phenomenon. This suggests the precise principle that would
+settle $\beta_2$, which we record as a conjecture: for the irregular rank-two $q$-difference module
+with polynomial companion matrix and $\det A=q$, the vanishing locus is \emph{adelically rigid} ---
+the entire function $G_v(q,\cdot)$ cannot vanish at a rational point $z_0$ with
+$v_t(z_0)\ge-2,\ v_s(z_0)\ge1$ at one place $v$ of $\Q$ while its avatars at all other convergent
+places are units. The finite-place half of this rigidity is exactly Lemma~\ref{lem:adelic-units};
+its archimedean half implies $\beta_2\notin\Q$. This is a $q$-analogue, for irregular $q$-difference
+modules, of the place-uniformity enjoyed by $E$- and $G$-function values, where the exceptional sets
+of Siegel--Shidlovskii--Andr\'e theory are independent of the place.
+\end{remark}
+
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
 $U$ inherits the travel poles of Proposition~\ref{prop:travelinv}; it is transcendental once its
