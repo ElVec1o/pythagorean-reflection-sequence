@@ -656,6 +656,71 @@ modules, of the place-uniformity enjoyed by $E$- and $G$-function values, where 
 of Siegel--Shidlovskii--Andr\'e theory are independent of the place.
 \end{remark}
 
+A concentrated attack on the archimedean half yielded, besides confirming its difficulty, several exact
+structural facts and a faithful reduction, which we record. All are verified numerically to $40$--$60$
+digits (\texttt{code/zeta\_probe/route\_b/beta2\_*.py}).
+
+\begin{proposition}[structure of the zero curve]
+\label{prop:zerostructure}
+Write $Q=q^2$ and let $0<z_1(q)<z_2(q)<\cdots$ be the positive zeros of $G(q,\cdot)$.
+\begin{itemize}
+\item[\textup{(i)}] \textup{(base change)} $G(q,z)=\dfrac{(q^2;q^2)_\infty}{\sqrt q\,(q;q^2)_\infty}\,
+z^{1/4}\,J^{(3)}_{-1/2}\!\bigl(\sqrt z/q;\,q^2\bigr)$, where $J^{(3)}_\nu$ is the Hahn--Exton (third
+Jackson) $q$-Bessel function; thus $G$ is, up to an explicit prefactor, the \emph{Hahn--Exton
+$q$-cosine}, and its zeros are those of a classical, well-studied object.
+\item[\textup{(ii)}] \textup{(zero lattice)} $z_k(q)\,Q^{k}\to1$ as $k\to\infty$, with theta-suppressed
+dressing $\delta_k:=z_kQ^{k}-1=O(c^{k}Q^{k^2})$ (numerically $\delta_0=-0.5051,\ \delta_1=-1.17\cdot
+10^{-2},\ \delta_2=-1.03\cdot10^{-5},\dots$); $z^\ast=z_1(q^\ast)$ is the maximally dressed member,
+displaced from the bare lattice point $Q^{0}=1$ by an $O(1)$ correction --- it is \emph{not} a
+torsion/lattice point of the connection curve.
+\item[\textup{(iii)}] \textup{(power sums are rational)} the symmetric functions
+$\sigma_p(q):=\sum_{n\ge1}z_n(q)^{-p}$ lie in $\Q(q)$ for every $p\ge1$ (Newton's identities on the
+$\Q(q)$-coefficients $g_k$); e.g.\ $\sigma_1=1/((1-q)(1-q^2))$. Consequently
+$z^\ast(q)=\lim_{p\to\infty}\sigma_p(q)/\sigma_{p+1}(q)$ with geometric rate $(z_1/z_2)^p$, giving an
+all-orders $\Q(q)$-approximation of the zero curve.
+\end{itemize}
+\end{proposition}
+
+Two of the no-go's ingredients also sharpen. First, the \emph{cause} of $\rho=\tfrac12$ is exactly the
+\emph{double} Pochhammer: $\rho=\log(t/s)/(2\log t)$, and the factor $2$ in the denominator is the
+$2k$ in $(q;q)_{2k}$; a single Pochhammer would give $\rho>1$ (whence Liouville) when $t>s^2$. The
+intractability is intrinsic to the base-$q^2$ Hahn--Exton structure, not to the choice of construction.
+Second, the finite-place primes are \emph{disjoint} from $st$: $\prod_{i\le2N}(t^i-s^i)$ is coprime to
+$st$ (only the prime $2$, via lifting-the-exponent when $s,t$ are both odd, contributes an $O(N)$ term),
+so the arithmetic of every partial-sum denominator is supported off $\{s,t\}$ --- orthogonal to the
+unit residues of Lemma~\ref{lem:adelic-units}. The Hankel/determinantal escape is likewise closed
+exactly: $\det(g_{i+j})_{0\le i,j\le n}$ has denominator of \emph{cubic} archimedean size
+($\log|\!\operatorname{den}|\sim c\,n^3$), one power worse than the quadratic remainder.
+
+Finally, the Nesterenko route is blocked more precisely than by non-holonomicity alone. Nesterenko's
+method needs a finitely generated $\delta$-closed ($\delta=q\,d/dq$) $\C(q)$-algebra containing $S$,
+i.e.\ that $S$ be \emph{differentially algebraic}; non-holonomicity does not suffice (the quasimodular
+$E_2$ is non-holonomic yet $\delta$-algebraic). One computes
+$\delta S=\sum_k a_k\bigl(k^2-\tfrac{kq}{1-q}+L_k\bigr)$ with
+$L_k=\sum_{i=1}^{2k} iq^i/(1-q^i)\to(1-E_2)/24$: $S$ carries \emph{every} finite Eisenstein truncation
+$L_k$, not merely the limit, which is precisely why it escapes the modular differential ring. Whether
+$S$ is differentially algebraic is itself open (no algebraic ODE of order $\le3$, degree $\le5$ over
+$260$ series terms); the honest statement is that the Nesterenko route is blocked \emph{modulo the
+differential transcendence of $S$}, a genuinely weaker-looking but still open input.
+
+\begin{remark}[the sharpest reduction, and where it stands]
+\label{rem:sharpest}
+All routes converge on the same faithful reformulation: $\beta_2$ is irrational iff
+$G(q^\ast,z^\ast)\ne0$ is forced by the arithmetic, and (Ramis--Sauloy--Zhang) this is a
+\emph{theta non-resonance} statement --- the connection ratio $R_q(z)=[P_{21}\,y_{\mathrm{irr}}]/
+[P_{11}\,y_{\mathrm{reg}}]$, an explicit $\theta_{q^2}$-quotient, must satisfy $R_q(2q(1-q))\ne-1$ at
+every algebraic $q$. The evidence points toward truth: in the confluent limit $q\to1$ this is exactly
+Lindemann's theorem that $\cos$ has no algebraic zero. But the reduction is not yet shown \emph{easier}:
+$R_q(z)=-1$ is a functional-equation-consistent value that a nonconstant theta-quotient must attain
+somewhere, and on the diagonal $z=2q(1-q)$ the theta-arguments appear algebraically dependent, so no
+current independence theorem (Bertrand, Nesterenko, Schneider--Lang) forbids it. The archimedean
+obstruction is thus the exact mirror of the proven finite-place balance: units ($\equiv1$) at every
+$p\mid st$, and a putative $-1$ at $\infty$, with neither forbidden. Closing this requires computing the
+explicit connection entries by $q$-Borel/$q$-Laplace summation of the slope-$1$ part at $z=\infty$ and
+testing their theta-arguments against a Bertrand-type rank criterion --- the single unrealized step, and
+the precise open problem this paper leaves.
+\end{remark}
+
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
 $U$ inherits the travel poles of Proposition~\ref{prop:travelinv}; it is transcendental once its
