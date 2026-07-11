@@ -54,8 +54,12 @@ def build(qv):
 #  * the pinned zero condition at (q*, z*):
 #        C2^{[lam]}(z*) = -C1 f1^{[lam]}(z*)/f2(z*) = 0.011592994120624266...
 # Kernel normalization was validated on convergent input (34 digits, lambda-independent).
-# The Borel transform's poles lie on +q^{-N} only (B regular at -1, B(-1)=(q+1)B(-q)):
-# the POSITIVE axis is the q-Stokes direction -- exactly where G's zeros live.
+# CLOSED FORMS (v2.5.0 soundness pass; supersede the ladder): b_k = q^{k-k(k-1)/2}/(q;q)_k,
+# hence by Euler Bhat(xi) = 1/(q^2/xi;q)_inf -- poles EXACTLY on xi in q^{2+N0}; the
+# functional equation holds identically for the product form; singular q-Laplace classes =
+# the single class [lambda] in q^Z (positive-real lattice class, near which G's zeros lie).
+# CORRECTION: an earlier header claimed poles on +q^{-N} via a 0*inf fallacy at xi=1 (the
+# vanishing prefactor multiplies a genuine pole of Bhat(q^2 xi)); B(-1)=(q+1)B(-q) holds.
 # ============================================================================
 if __name__ == "__main__":
     import mpmath as mp
@@ -204,3 +208,53 @@ def verify_deformation(qs='0.31'):
     print("euler identity:", mp.nstr(abs(L(tG, z)+q*z*G(Q*z)), 4))
     print("deformation identity:",
           mp.nstr(abs(L(dG, z)-(-q*G(z)+q*(1+3*z)*G(Q*z)+4*q*tG(z)-2*a*tG(Q*z))), 4))
+
+
+# ============================================================================
+# CLOSED FORMS + FULL-PROOF INGREDIENTS (paper2 thm:zeroproduct, v2.5.0):
+#   b_j = q^{j-j(j-1)/2}/(q;q)_j;  Bhat(xi) = 1/(q^2/xi;q)_inf;
+#   DRESSED-THETA IDENTITY: (q;q)_inf G(z) = sum_m (-1)^m q^{m(m-1)} z^m P_m(1/z),
+#   P_m(w) = sum_{j<=m} b_j w^j -- the rearrangement that makes the C1 proof complete.
+# ============================================================================
+def verify_closed_forms(qs='0.3'):
+    import mpmath as mp
+    q = mp.mpf(qs)
+    def poch_inf(a0, base):
+        r = mp.mpf(1); x = mp.mpc(a0)
+        for _ in range(500):
+            r *= (1-x); x *= base
+            if abs(x) < mp.mpf(10)**-42: break
+        return r
+    # b_j closed form vs recursion
+    Q = q*q
+    bs = [mp.mpf(1)]
+    for k in range(1, 12):
+        bs.append((-(q+1)*Q*bs[k-1]-(Q**(3-k)*bs[k-2] if k >= 2 else 0))/(q*(Q**k-1)))
+    den = mp.mpf(1); ok = True
+    for j in range(1, 12):
+        den *= (1-q**j)
+        if abs(bs[j]-q**(mp.mpf(j)-mp.mpf(j)*(j-1)/2)/den) > mp.mpf(10)**-30: ok = False
+    print("b_j closed form == recursion (j<=11):", ok)
+    # Bhat closed form
+    xi = mp.mpf('1.7')
+    series = sum((q**2/xi)**k/mp.fprod([(1-q**i) for i in range(1, k+1)]) for k in range(60))
+    print("Bhat(1.7): series vs 1/(q^2/xi;q)inf rel err:",
+          mp.nstr(abs(series-1/poch_inf(q**2/xi, q))/abs(series), 3))
+    # dressed-theta identity
+    z = mp.mpf('3.7')
+    def G(zv, K=200):
+        t = mp.mpf(0); poch = mp.mpf(1)
+        for k in range(K):
+            if k > 0: poch *= (1-q**(2*k-1))*(1-q**(2*k))
+            term = mp.mpf((-1)**k)*q**(k*(k-1))*mp.mpc(zv)**k/poch
+            t += term
+            if k > 10 and abs(term) < mp.mpf(10)**-42: break
+        return t
+    cj = []; den = mp.mpf(1)
+    for j in range(70):
+        if j > 0: den *= (1-q**j)
+        cj.append(q**(mp.mpf(j)-mp.mpf(j)*(j-1)/2)/den)
+    rhs = sum(mp.mpf((-1)**m)*q**(m*(m-1))*mp.mpc(z)**m *
+              sum(cj[j]*mp.mpc(z)**(-j) for j in range(m+1)) for m in range(70))
+    lhs = poch_inf(q, q)*G(z)
+    print("dressed-theta identity rel err:", mp.nstr(abs(lhs-rhs)/abs(lhs), 3))

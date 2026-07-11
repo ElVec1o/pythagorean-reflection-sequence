@@ -724,21 +724,32 @@ computation is carried out below.
 Write $Q=q^2$, $\theta_b(x)=\sum_{n\in\Z}b^{n(n-1)/2}x^n$. The equation for $G$ has, at $z=\infty$, the
 formal solution basis $f_1(z)=\theta_Q(-z)\,\hat g(z)$ and $f_2(z)=h(z)/\theta_Q(-z/q)$, where
 $h(z)=\sum_kc_kz^{-k}$ is \emph{convergent} (entire in $1/z$, $c_k=O(Q^{k^2/2})$) while
-$\hat g(z)=\sum_kb_kz^{-k}$, with
-$b_k=\bigl[-(q+1)Q\,b_{k-1}-Q^{3-k}b_{k-2}\bigr]/\bigl(q(Q^k-1)\bigr)$, is $q$-Gevrey divergent
-($b_k\asymp Q^{-k^2/4}$). Its $q$-Borel transform $\widehat B(\xi)=\sum_kb_kq^{k(k+1)/2}\xi^{-k}$ has
-geometric coefficients and satisfies
-$\widehat B(\xi)+\tfrac{q+1}{\xi}\widehat B(q\xi)+(\xi^{-2}-1)\widehat B(q^2\xi)=0$, which continues it
-meromorphically with poles confined to the spiral $+q^{-\mathbb{N}}$: the \emph{positive axis is the
-$q$-Stokes direction}, precisely where the zeros of $G$ lie ($\widehat B$ is regular at $-1$, where
-$\widehat B(-1)=(q+1)\widehat B(-q)$). The theta-kernel $q$-Laplace
+$\hat g(z)=\sum_kb_kz^{-k}$ is $q$-Gevrey divergent, with the closed form
+\[
+   b_k=\frac{q^{\,k-k(k-1)/2}}{(q;q)_k}
+\]
+(equivalent to the recursion $b_k=[-(q+1)Q\,b_{k-1}-Q^{3-k}b_{k-2}]/(q(Q^k-1))$; verified
+symbolically for $k\le8$). By Euler's theorem $\sum_jx^j/(q;q)_j=1/(x;q)_\infty$, the $q$-Borel
+transform is therefore explicit:
+\[
+   \widehat B(\xi)=\sum_{k\ge0}b_k\,q^{k(k+1)/2}\xi^{-k}
+   =\sum_{k\ge0}\frac{(q^2/\xi)^k}{(q;q)_k}
+   =\frac1{(q^2/\xi;\,q)_\infty},
+\]
+meromorphic on $\C^*$ with poles exactly on $\xi\in q^{2+\mathbb{N}_0}$, and satisfying
+$\widehat B(\xi)+\tfrac{q+1}{\xi}\widehat B(q\xi)+(\xi^{-2}-1)\widehat B(q^2\xi)=0$ identically
+(direct computation from the product form; in particular $\widehat B(-1)=(q+1)\widehat B(-q)$). The
+theta-kernel $q$-Laplace
 \[
    g^{[\lambda]}(z)=\frac{\sum_{m\in\Z}q^{m(m-1)/2}(\lambda/z)^m\,\widehat B(\lambda q^m)}
         {\theta_q(\lambda/z)},\qquad
    f_1^{[\lambda]}=\theta_Q(-z)\,g^{[\lambda]}(z),
 \]
-(kernel normalization validated on convergent input to $34$ digits; $\lambda$ off the singular
-spirals) produces an exact solution: $Lf_1^{[\lambda]}\approx10^{-61}$. Writing
+is then singular only for $\lambda q^{\Z}$ meeting the pole set, i.e.\ for the single class
+$[\lambda]\in q^{\Z}$ of $E_q=\C^*/q^{\Z}$ (the positive-real lattice class, near which the zeros of
+$G$ lie); every other class is regular. The kernel normalization was validated on convergent input to
+$34$ digits, and for $\lambda\notin q^{\Z}$ the sum produces an exact solution:
+$Lf_1^{[\lambda]}\approx10^{-61}$. Writing
 $G=C_1f_1^{[\lambda]}+C_2^{[\lambda]}f_2$, numerically to $59$--$60$ digits:
 \begin{itemize}
 \item[\textup{(i)}] $C_1$ and $C_2^{[\lambda]}$ are $Q$-elliptic in $z$ (verified to $10^{-60}$);
@@ -779,17 +790,48 @@ $\prod_{k\ge1}w_k(q)\,q\,Q^{\,k-1}=(q^3;q^2)_\infty$. \textup{(Verified at three
 $q^\ast$, to $41$, $23$, $26$ digits for $C_1$ and $58$ digits for the product.)}
 \end{theorem}
 
-\begin{proof}[Proof sketch]
-The Taylor coefficients of $G$ and of $\theta_Q(-z)=\sum_n(-1)^nq^{n(n-1)}z^n$ share the quadratic
-exponent $q^{k(k-1)}$, with ratio $1/(q;q)_{2k}\to1/(q;q)_\infty$. Both functions are entire of order
-zero with the same peak index $k(z)\sim\log|z|/\log(1/Q)$; comparing the dominant windows of the two
-series along $|z|\to\infty$ between the zero clusters gives
-$G(z)/\theta_Q(-z)\to1/(q;q)_\infty$, i.e.\ $C_1=1/(q;q)_\infty$. The product formula follows by
-matching the Hadamard factorizations of $G$ (genus $0$, $G(0)=1$) and of
-$\theta_Q(-z)=(Q;Q)_\infty(z;Q)_\infty(Q/z;Q)_\infty$ factor-by-factor along $z=uQ^{-N}$, which yields
-$C_1(Q;Q)_\infty\prod_kz_kQ^{k-1}=1$; then $(q;q)_\infty=(q;q^2)_\infty(q^2;q^2)_\infty$ (Euler). The
-$H$-statement is identical with the comparison function $\theta_Q(-qz)$ and the ratio
-$(1-q)/(q;q)_\infty$.
+\begin{proof}
+\emph{(1) An exact identity.} From $(q;q)_{2k}=(q;q)_\infty/(q^{2k+1};q)_\infty$ and Euler's
+expansion $(x;q)_\infty=\sum_{j\ge0}(-1)^jq^{j(j-1)/2}x^j/(q;q)_j$ at $x=q^{2k+1}$, together with
+$k(k-1)+2kj=(k+j)(k+j-1)-j(j-1)$ and the substitution $m=k+j$, absolute convergence of the double
+sum permits the rearrangement
+\[
+   (q;q)_\infty\,G(z)\;=\;\sum_{m\ge0}(-1)^mq^{m(m-1)}z^m\,P_m(1/z),
+   \qquad
+   P_m(w):=\sum_{j=0}^m c_jw^j,\quad c_j=\frac{q^{\,j-j(j-1)/2}}{(q;q)_j}
+\]
+(the $c_j$ coincide with the $b_j$ of Proposition~\ref{prop:pinned}; identity checked symbolically
+through $z^8$ and numerically to $41$ digits).
+
+\emph{(2) The constant.} Fix $u<0$ and put $z=uQ^{-N}$. The moduli $q^{m(m-1)}|z|^m$ peak at
+$m_0=N+O(1)$ and decay like $q^{(m-m_0)^2+O(1)}$ away from it. For $1\le j\le m\le 2N$,
+$2Nj-j(j-1)/2\ge Nj$, so $|c_jz^{-j}|\le Cq^{Nj}|u|^{-j}$ and
+$|P_m(1/z)-1|\le C'q^{N}$ uniformly; the terms with $m>2N$ contribute a relative
+$O(q^{N^2})$. The negative-$m$ part of $\theta_Q(-z)$ is $O(|z|^{-1})$, negligible against the peak.
+Hence $(q;q)_\infty G(z)/\theta_Q(-z)\to1$ along $z=uQ^{-N}$, for each fixed $u<0$.
+
+\emph{(3) Geometric zero dressing.} On the circle $|z-Q^{1-k}|=\varepsilon q^kQ^{1-k}$ the identity
+of step (1) and the bounds of step (2) give
+$|(q;q)_\infty G-\theta_Q(-z)|\le Cq^k|\theta_Q(-z)|_{\text{peak}}$, while $\theta_Q(-z)$ has a
+simple zero at $Q^{1-k}$ with derivative bounded below there; Rouch\'e gives
+$z_k=Q^{1-k}(1+O(q^k))$, i.e.\ $\log(z_kQ^{k-1})=O(q^k)$, absolutely summable.
+
+\emph{(4) The product.} $G(z)=\prod_k(1-z/z_k)$ (order $0$, genus $0$, $G(0)=1$) and
+$\theta_Q(-z)=(Q;Q)_\infty(z;Q)_\infty(Q/z;Q)_\infty$ (Jacobi). Along $z=-R$, $R\to\infty$,
+\[
+   \frac{G(-R)}{\theta_Q(R)}
+   =\frac1{(Q;Q)_\infty(-Q/R;Q)_\infty}\prod_{k\ge1}\frac{1+R/z_k}{1+RQ^{k-1}} ,
+\]
+and for $x,y>0$ the function $R\mapsto\log\frac{1+Rx}{1+Ry}$ is monotone from $0$ to $\log(x/y)$, so
+each factor is dominated by $|\log(z_kQ^{k-1})|$, summable by step (3). Dominated convergence gives
+$G(-R)/\theta_Q(R)\to1/\bigl[(Q;Q)_\infty\prod_kz_kQ^{k-1}\bigr]$ as $R\to\infty$; evaluating along
+the subsequence $R=|u|Q^{-N}$ by step (2), the limit equals $1/(q;q)_\infty$, whence
+$\prod_kz_kQ^{k-1}=(q;q)_\infty/(Q;Q)_\infty=(q;q^2)_\infty$ by Euler's
+$(q;q)_\infty=(q;q^2)_\infty(q^2;q^2)_\infty$. Finally, in the basis of
+Proposition~\ref{prop:pinned}: along the negative axis (a regular class, $[-1]\notin q^{\Z}$) one has
+$g^{[\lambda]}(z)\to1$ and $f_2(z)/\theta_Q(-z)=O\bigl(1/(\theta_Q(R)\theta_Q(R/q))\bigr)\to0$, so
+the limit just computed is the entry $C_1$; hence $C_1=1/(q;q)_\infty$. The $H$-statement is
+identical with comparison function $\theta_Q(-qz)$ and ratio $(1-q)/(q;q)_\infty$.
 \end{proof}
 
 \begin{remark}[Diophantine consequences at $z^\ast$]
@@ -821,7 +863,8 @@ $f_2$'s convergent one,
 $z=1/q$, exact to $10^{-63}$), a direction-dependent zero at $z=\lambda^2$ arising from the exact
 \emph{resummation resonance}
 $g^{[\lambda]}(\lambda^2)G(Q\lambda^2)+\lambda^{-2}g^{[\lambda]}(Q\lambda^2)G(\lambda^2)=0$
-(verified to $10^{-62}$; a structural identity of the theta-kernel summation at its own direction),
+(verified to $10^{-62}$ at $\lambda\in\{\tfrac32,2,\tfrac{13}5\}$; a proof for general regular
+$\lambda$ is open),
 and poles at the zeros of the $h$-bracket. Substituting into the pinned zero condition at $z^\ast$
 and cancelling the common theta factor reduces the entire $\beta_2$ question to \emph{one} relation
 between the two modular values $\theta_Q(-z^\ast),\ (q;q)_\infty$ and five values of the non-modular
