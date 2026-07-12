@@ -496,7 +496,8 @@ $G(q,\alpha)$ transcendental at every algebraic $\alpha\ne0$ off the singular lo
 $G(q^\ast,z^\ast)=0$ is algebraic --- forcing $q^\ast$, and with it $\beta_2$, transcendental (and by the
 shared $q$-connection core, likewise $U$). All the structural hypotheses hold here (polynomial companion
 matrix, constant determinant, entire order-zero solution); the sole open point is whether the available
-$q$-Siegel--Shidlovskii results \textup{(Andr\'e; Di~Vizio--Hardouin)} extend to a ${}_1\phi_1$ that is
+$q$-Siegel--Shidlovskii results \textup{(Andr\'e; Di~Vizio--Hardouin; and the Siegel-method theory
+of \cite{AMV2007})} extend to a ${}_1\phi_1$ that is
 \emph{irregular} at $z=\infty$ --- a precise, expert-checkable question, not an absence of theory. (Note
 the contrast with the \emph{function-level} results of this paper, which say nothing about individual
 interior values.)
@@ -1094,15 +1095,31 @@ $\operatorname{rank}[A|b]=16$.)
 
 \begin{corollary}[differential transcendence of $G$]
 \label{cor:hypertranscendence}
-Assume the parametrized difference-Galois criterion of Hardouin--Singer, in the form developed for
-$q$-difference systems by Dreyfus--Hardouin--Roques: if the difference Galois group of a rank-$2$
-system contains $\mathrm{SL}_2$ and the system admits no integrability relation
-$\theta(A)=\sigma(B)A-AB+cA$ with rational $B,c$, then every nonzero solution is differentially
-transcendental over $\C(z)$. Then, by Theorem~\ref{thm:sl2} and
-Proposition~\ref{prop:nonintegrable}, for every $0<q<1$ the function $G(q,\cdot)$ satisfies no
-algebraic differential equation over $\C(z)$: the Hahn--Exton $q$-cosine is differentially
-transcendental.
+For every $0<q<1$ the function $G(q,\cdot)$ satisfies no algebraic differential equation over
+$\C(z)$: the Hahn--Exton $q$-cosine is differentially transcendental.
 \end{corollary}
+
+\begin{proof}[Proof, via parametrized difference-Galois theory]
+Our equation has \emph{constant} determinant $b=q$, so $\delta(b)/b=0$ and condition~(2) of
+\cite[Thm.~3.5]{ADR2021} is vacuously satisfiable: that theorem does not apply verbatim to
+constant-determinant equations, whose determinant direction is honestly differentially algebraic
+(the Casoratian is $c\,z^{1/2}$). The $\mathrm{SL}_2$ part of its proof carries over. By
+Theorem~\ref{thm:sl2} the difference Galois group contains $\mathrm{SL}_2(\C)$. By the dichotomy
+for Zariski-dense differential-algebraic subgroups of $\mathrm{SL}_2$ (Cassidy; in the form
+\cite[Prop.~2.10]{DHR2018}, as used in the $\mathrm{SL}_2$ case of the proof of
+\cite[Thm.~3.5]{ADR2021}), the $\delta$-Galois group over the $\delta$-closure
+$\widetilde{\mathcal C}$ either contains $\mathrm{SL}_2(\widetilde{\mathcal C})$ or is conjugate
+to a group of $\delta$-constant points, the latter if and only if the system is
+$\sigma\delta$-integrable up to a central twist --- excluded by
+Proposition~\ref{prop:nonintegrable} (this is why the twist $cA$ was included there). Hence
+$\mathrm{Gal}^\delta\supseteq\mathrm{SL}_2(\widetilde{\mathcal C})$; in particular the diagonal
+torus $\operatorname{diag}(c,c^{-1})$ acts, scaling a solution $f\mapsto cf$ for arbitrary
+$c\in\widetilde{\mathcal C}^{\,*}$ (the center is unavailable when the determinant is constant,
+but the diagonal torus suffices). If $P(f,\delta f,\dots,\delta^nf)=0$ were a nonzero algebraic
+differential relation, then $P(cf,c\,\delta f,\dots,c\,\delta^nf)=0$ for every
+$c\in\widetilde{\mathcal C}$; since $\delta$ acts nontrivially on the $\delta$-closure, Kolchin's
+density theorem \cite[Ch.~II]{Kolchin} produces $c$ violating this, a contradiction.
+\end{proof}
 
 The transcendence of the \emph{number} $q^\ast$ is a value-level statement, and the natural route ---
 Nesterenko's multiplicity method fed by Corollary~\ref{cor:hypertranscendence} --- meets a precise
@@ -1426,6 +1443,15 @@ of Jacobi's theta series}, Proc.\ Japan Acad.\ Ser.~A \textbf{72} (1996), 202--2
 
 \bibitem{MathlibCommunity} The mathlib Community, \emph{The Lean mathematical library},
 CPP~2020, 367--381; \url{https://github.com/leanprover-community/mathlib4}.
+\bibitem{ADR2021} C.~E.~Arreche, T.~Dreyfus, J.~Roques, \emph{Differential transcendence criteria
+for second-order linear difference equations and elliptic hypergeometric functions},
+J.~\'Ec.\ polytech.\ Math.\ \textbf{8} (2021), 147--168.
+\bibitem{AMV2007} M.~Amou, T.~Matala-aho, K.~V\"a\"an\"anen, \emph{On Siegel--Shidlovskii's theory
+for $q$-difference equations}, Acta Arith.\ \textbf{127} (2007), 309--335.
+\bibitem{DHR2018} T.~Dreyfus, C.~Hardouin, J.~Roques, \emph{Hypertranscendence of solutions of
+Mahler equations}, J.~Eur.\ Math.\ Soc.\ \textbf{20} (2018), 2209--2238.
+\bibitem{Kolchin} E.~R.~Kolchin, \emph{Differential Algebra and Algebraic Groups}, Academic Press,
+1973.
 \bibitem{Morita2011} T.~Morita, \emph{A connection formula of the Hahn--Exton $q$-Bessel function},
 SIGMA \textbf{7} (2011), 115, 11~pp.; arXiv:1105.1998.
 \bibitem{Nesterenko1996} Yu.~V.~Nesterenko, \emph{Modular functions and transcendence questions},
