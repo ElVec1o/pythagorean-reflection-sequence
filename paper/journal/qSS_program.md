@@ -101,3 +101,43 @@ of q*, specialize to the diagonal crossing. Straightforward once M1+M2 hold.
 
 The last item is the highest-value near-term move: it banks the proven function-level result and
 poses Conjecture Z where a specialist could pick up M2.
+
+---
+
+# M1 — the second-kind Padé construction (begun 2026-07-12)
+
+M1 asks for the explicit q-Siegel Padé-of-the-second-kind approximants for the irregular-at-∞
+Hahn–Exton system, their degree/order/arithmetic properties, and the reduction of irrationality to a
+single quantitative inequality (M2). Progress:
+
+## M1a — the diagonal second-kind form (DONE)
+The cleared truncation P_N(q) = (q;q)_{2N}·S_N(q) ∈ ℤ[q], S_N = Σ_{k≤N}(-2)^k q^{k²}(1-q)^k/(q;q)_{2k},
+is the second-kind approximant along the diagonal z = 2q(1-q). Verified (N ≤ 8):
+- **degree** deg P_N = 2N² + N (exact);
+- **remainder** |P_N(q*)| = q*^{N²(1+o(1))} (the ratio log|P_N(q*)|/N² → log q* = −0.7997…; measured
+  −1.38, −1.22, −1.13, −1.07, −1.03, −1.00 for N = 3..8);
+- **height** H(P_N) = e^{O(N)} (linear; log₂H/N → ~1.75 at q = 1/2) — the pentagonal sparsity of the
+  q-Pochhammer coefficients keeps the height small;
+- **clearing** P_N(s/t)·t^{2N²+N} ∈ ℤ.
+
+## M1b — the general-point / uniform construction (TODO, tractable, ~months)
+The Padé denominators of G(q,·) are the modified q-Lommel polynomials (Koelink–Swarttouw); the naive
+[n/n] Padé has only a geometric remainder z*^{2n}, so the q-adapted (theta-fast) construction of M1a is
+the correct object. What remains: (i) the construction at a general algebraic point z (not only the
+diagonal), (ii) uniformity in q over a neighbourhood of q*, (iii) the explicit q-Lommel identification
+of the denominators. All are adaptations that the solved connection theory (paper2 §connection:
+C₁ = 1/(q;q)∞, C₂ explicit, f₁/f₂ pinned) makes routine; none needs new ideas.
+
+## M1c — the reduction lemma (essentially done; formal statement pending)
+From M1a: **q* (hence β₂) is irrational if there is an infinite set of N with P_N(q*) ≠ 0 and
+|P_N(q*)| < t^{−(2N²+N)}.** With |P_N(q*)| = q*^{N²(1+o(1))} this is q*^{N²} < t^{−2N²}, i.e.
+log(t/s) > 2 log t, i.e. st < 1 — false. The deficit is the factor 2 in the degree 2N² = the double
+Pochhammer (q;q)_{2N}. Equivalently, a **single-Pochhammer** second-kind form of degree N²(1+o(1))
+with the same remainder would prove q* ≠ s/t for all s < √t (half of irrationality) immediately.
+
+## The margin inequality (the exact face of M2)
+M1 reduces irrationality to: *construct integer forms of degree D_N with |form(q*)| < t^{−D_N} for the
+Hahn–Exton diagonal.* We have |form| = q*^{N²} at D_N = 2N²; the requirement is D_N ≤ N²(1+o(1)) at the
+same remainder, i.e. **halve the effective degree, or double the remainder decay to q*^{2N²}.** Thirty
+distinct lattice constructions conserve the factor 2 (paper2 prop:nogo); breaking it is M2, equal in
+strength to β₂ itself.
