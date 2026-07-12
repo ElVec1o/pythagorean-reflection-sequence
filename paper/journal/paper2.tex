@@ -1090,6 +1090,47 @@ algebraic differential equation over $\C(z)$: the Hahn--Exton $q$-cosine is diff
 transcendental.
 \end{corollary}
 
+The transcendence of the \emph{number} $q^\ast$ is a value-level statement, and the natural route ---
+Nesterenko's multiplicity method fed by Corollary~\ref{cor:hypertranscendence} --- meets a precise
+structural obstruction, which we isolate.
+
+\begin{proposition}[the descent variable carries no finite differential ring]
+\label{prop:nofinitering}
+The deformation relation of Proposition~\ref{prop:deformation},
+$\delta G=-qG+q(1+3z)\,\sigma G+4q\,\theta G-2a\,\sigma\theta G$, expresses the $q$-derivative
+$\delta=q\partial_q$ of $G$ through the shifted value $\sigma G=G(q,q^2z)$. No irreducible curve of
+$\mathbb{A}^2_{(q,z)}$ other than a component of $\{z=0\}$ is invariant under $\sigma\colon(q,z)\mapsto
+(q,q^2z)$: for generic $q_0$ the intersection with the fibre $\{q=q_0\}$ is a finite set of complex
+numbers closed under multiplication by $q_0^2$ with $|q_0^2|<1$, hence $\{0\}$. In particular the
+diagonal $z=2q(1-q)$ and the zero curve $z=z_1(q)$ are not $\sigma$-invariant. Consequently the
+restriction to any such curve of the $(\sigma,\delta)$-module is not $\delta$-stable: iterating
+$\delta$ on $S(q)=G(q,2q(1-q))$ generates the values of $G$ along the entire $q^{2\Z}$-orbit of the
+diagonal (which contracts to $0$ with pairwise distinct, generically non-zero values --- e.g.\ at
+$q=q^\ast$, $G(q^\ast,z^\ast)=0$ while $G(q^\ast,q^2z^\ast)=0.7777\ldots\neq0$), and no
+finite-dimensional $\delta$-stable $\C(q)$-space contains $S$. \textup{(Consistent with the absence
+of an algebraic differential equation for $S$ of order $\le4$ and degree $\le5$: the coefficient
+matrices have full rank over $800$ series terms modulo a $31$-bit prime;
+\texttt{beta2\_diffalg\_search.py}.)}
+\end{proposition}
+
+\begin{remark}[the value-level descent as a joint multiplicity estimate]
+\label{rem:valuedescent}
+Nesterenko's method derives transcendence of a value from three ingredients: a finite ring closed
+under the relevant operator, a \emph{multiplicity estimate} bounding
+$\operatorname{ord}P(\text{generators})\le c\,(\deg P)^\kappa$, and routine analytic size/Siegel-lemma
+constructions. Theorem~\ref{thm:sl2} and Proposition~\ref{prop:nonintegrable} furnish precisely the
+nondegeneracy a multiplicity estimate consumes (no invariant subvariety; no first integral). But
+Proposition~\ref{prop:nofinitering} shows the first ingredient fails in the descent variable $q$: the
+finiteness of the $\beta_2$ module is intrinsically \emph{joint} in $(\sigma_z,\delta_q)$, and
+$\sigma_z$ is a non-infinitesimal $q$-lattice shift, outside the Pfaffian/differential multiplicity
+theories of Nesterenko and Binyamini. Thus the transcendence of $q^\ast=\beta_2^{-2}$ reduces to a
+\emph{joint $q$-difference--differential multiplicity estimate} for the rank-$\le6$ module at
+$(q^\ast,z^\ast)$: a bound $\operatorname{ord}_{(q^\ast,z^\ast)}P(G,\theta G,\delta G)\le c\,N^\kappa$
+($N=\deg P$) in the local ring, uniform along the $\sigma$-orbit. Such an estimate for finite
+$(\sigma,\delta)$-modules is not available in the literature; it is the sole non-routine input
+remaining, and the precise open problem on which the (ir)rationality of $\beta_2$ now turns.
+\end{remark}
+
 \begin{proposition}[effective non-rationality of $q^\ast$]
 \label{prop:effective}
 The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
