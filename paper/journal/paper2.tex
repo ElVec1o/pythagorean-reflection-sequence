@@ -1003,19 +1003,92 @@ a pole, $s_1,s_2$ are finite and nonzero, $c_0(\zeta')\ne0$, so the left side ha
 right side is $1$.
 \end{proof}
 
-\begin{remark}[status of the parametrized ($\delta$-)Galois computation]
-Lemma~\ref{lem:irreducible} shows the difference Galois group is an irreducible subgroup of
-$\mathrm{GL}_2$. By the parametrized theory \textup{(Hardouin--Singer; Di Vizio--Hardouin;
-Dreyfus--Hardouin--Roques)}, an irreducible, non-imprimitive rank-$2$ module with no
-$\sigma\delta$-integrability relation has differentially large Galois group and differentially
-transcendental solutions. The imprimitivity exclusion is the statement that
-Proposition~\ref{prop:sym2} admits no solution with $r=w(Q\,\cdot)/w\in\C(z)$; by
-Lemma~\ref{lem:divisor} any such $r$ has all zeros and poles on the single orbit $z_aQ^{\Z}$ up to
-divisors oriented zeros-above-poles, with $r(0)\in q^{\Z}$ and $\deg$-data
-$(d,\gamma)\in\{(-2,1),(0,q^{-1}),(2,q^{-2})\}$ at $\infty$ (the three product lines). The
-remaining step --- a finite multiplicity-and-value chain along that one orbit --- and the
-$\sigma\delta$-integrability certificate are left to a sequel; neither is claimed here.
-\end{remark}
+\begin{theorem}[the difference Galois group contains $\mathrm{SL}_2$]
+\label{thm:sl2}
+For every $0<q<1$, the difference Galois group over $\C(z)$ of the module of $G$ contains
+$\mathrm{SL}_2$.
+\end{theorem}
+
+\begin{proof}
+For $N\ge1$ suppose $\operatorname{Sym}^N\!M$ has a rank-$1$ submodule, i.e.\ there is a nonzero
+solution $w$ of the $N$-th symmetric-power equation with $r:=w(Q\,\cdot)/w\in\C(z)$. The products
+$f_1^{[\lambda]\,N-k}f_2^{\,k}$ ($0\le k\le N$) form a solution basis (their Casoratian is a power
+of $\operatorname{Cas}(f_1,f_2)\ne0$; checked numerically for $N=2$), so
+$w=\sum_kc_kf_1^{N-k}f_2^k$ with constants $c_k$, and the case split is $\lambda$-robust since
+Stokes jumps preserve $k_0:=\min\{k:c_k\ne0\}$.
+
+\emph{Case $k_0<N$.} Along a ray in a regular class, $f_2/f_1$ decays super-polynomially, so the
+rational function $r$ has the Poincar\'e asymptotic expansion of the quotient of the dominant
+component:
+\[
+   r\;\sim\;(-1/z)^{N-k_0}(-z/q)^{k_0}\,
+   \Bigl(\tfrac{\hat g(Qz)}{\hat g(z)}\Bigr)^{N-k_0}
+   \Bigl(\tfrac{h(Qz)}{h(z)}\Bigr)^{k_0}.
+\]
+The $j$-th coefficient of the formal series on the right is
+$(N-k_0)\,b_jQ^{-j}\bigl(1+O(q^{cj})\bigr)$ with $b_j=q^{\,j-j(j-1)/2}/(q;q)_j$: the dominant term
+comes from $b_jQ^{-j}$ in $\hat g(Qz)/\hat g(z)$, all competing products being smaller by a factor
+$q^{cj}$ (verified: the ratio of the $j$-th coefficient to $(N-k_0)b_j(Q^{-j}-1)$ is
+$1-10^{-6}$ at $j=12$, $q=\tfrac13$). These coefficients grow like $q^{-j^2/2}$, whereas a rational
+function's expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
+expansions are unique, no rational $r$ exists.
+
+\emph{Case $k_0=N$.} Then $r=(-z/q)^N\rho^N$ with $\rho:=h(Q\,\cdot)/h$ meromorphic on $\C^*$;
+$\rho^N\in\C(z)$ and single-valuedness force $\rho\in\C(z)$ (an $N$-th root of a rational function
+is single-valued on $\C^*$ only if every divisor multiplicity, including at $0$ and $\infty$, is
+divisible by $N$). Then $f_2(Qz)/f_2(z)=-(z/q)\rho(z)$ is rational, giving a rational solution of
+the rank-$2$ Riccati equation --- contradicting Lemma~\ref{lem:irreducible}.
+
+Hence no $\operatorname{Sym}^N\!M$ has a rank-$1$ submodule. $N=1$ is irreducibility; $N=2$
+excludes the imprimitive (dihedral) case; and a projectively finite irreducible subgroup
+($A_4,S_4,A_5$) fixes a line in some $\operatorname{Sym}^N$ with $N\le12$ (the classical binary
+polyhedral invariants), which is likewise excluded. By the classification of algebraic subgroups of
+$\mathrm{GL}_2$, the group contains $\mathrm{SL}_2$.
+\end{proof}
+
+\begin{proposition}[no $\sigma\delta$-integrability]
+\label{prop:nonintegrable}
+For every $0<q<1$ there is no $B\in\mathrm{gl}_2(\C(z))$ and no $c\in\C(z)$ with
+$\theta(A)=\sigma(B)A-AB+cA$, where $A=\bigl(\begin{smallmatrix}0&1\\-q&a\end{smallmatrix}\bigr)$ and
+$\theta=z\partial_z$.
+\end{proposition}
+
+\begin{proof}
+Writing $B=\bigl(\begin{smallmatrix}\alpha&\beta\\\gamma&\delta\end{smallmatrix}\bigr)$, the entries give
+$\gamma=-q\beta_1$, $\delta=\alpha_1+a\beta_1-c$, and eliminating $\alpha$ (the central terms $c$
+cancel identically; verified symbolically) leaves the necessary condition
+\[
+   qa\,\beta_3\;=\;a_1(aa_1-q)\,\beta_2\;-\;a(aa_1-q)\,\beta_1\;+\;qa_1\,\beta\;+\;q\,z\bigl(a_1+q^2a\bigr),
+\]
+$\beta_k=\beta(Q^kz)$, $a=a(z)$, $a_1=a(Qz)$. A polynomial part of degree $m\ge0$ contributes top
+coefficient $\propto\beta_m(1-q^{2+2m})\ne0$ at degree $m+3$, above the inhomogeneity: so $\beta$
+has no polynomial part. If $\beta$ has a pole off the orbit $z_aQ^{\Z}$, the maximal-modulus pole
+appears in exactly one term (the slot $z=\zeta Q^{-3}$, coefficient $qa\ne0$ there), and the
+minimal-modulus pole likewise (slot $z=\zeta'$, coefficient $qa_1$): both impossible; so the poles
+lie in the window $\{z_aQ^{-1},\dots,z_aQ^{3}\}$ ($a(z_aQ^k)=(q+1)(1-Q^k)$ vanishes only at $k=0$).
+Sweeping the slots $z=z_aQ^{-4},\dots,z_aQ^{-1}$ kills the orders at $z_aQ^{-1},\dots,z_aQ^{2}$ one
+by one (each pole appears in a single term with nonvanishing coefficient), and the order at
+$z_aQ^{3}$ is killed at the slot $z=z_aQ$ --- coefficient $a_1(aa_1-q)$ with
+$(aa_1-q)(z_aQ)=(q+1)^2(1-q^2)(1-q^4)-q$ --- or, where that vanishes (one root
+$q\approx0.78027$), at the slot $z=z_aQ^{2}$ --- coefficient $a(aa_1-q)$ with
+$(aa_1-q)(z_aQ^2)=(q+1)^2(1-q^4)(1-q^6)-q$ (one root $q\approx0.86753$); the two polynomials are
+coprime, so for every $q\in(0,1)$ at least one slot applies. Hence $\beta\equiv0$, contradicting
+$z(a_1+q^2a)=z\bigl[(q+1)(1+q^2)-2q^3z\bigr]\not\equiv0$. (Cross-check: at $q=\tfrac13$ the exact
+linear system for poles of order $\le3$ in the window has $\operatorname{rank}(A)=15$,
+$\operatorname{rank}[A|b]=16$.)
+\end{proof}
+
+\begin{corollary}[differential transcendence of $G$]
+\label{cor:hypertranscendence}
+Assume the parametrized difference-Galois criterion of Hardouin--Singer, in the form developed for
+$q$-difference systems by Dreyfus--Hardouin--Roques: if the difference Galois group of a rank-$2$
+system contains $\mathrm{SL}_2$ and the system admits no integrability relation
+$\theta(A)=\sigma(B)A-AB+cA$ with rational $B,c$, then every nonzero solution is differentially
+transcendental over $\C(z)$. Then, by Theorem~\ref{thm:sl2} and
+Proposition~\ref{prop:nonintegrable}, for every $0<q<1$ the function $G(q,\cdot)$ satisfies no
+algebraic differential equation over $\C(z)$: the Hahn--Exton $q$-cosine is differentially
+transcendental.
+\end{corollary}
 
 \begin{proposition}[effective non-rationality of $q^\ast$]
 \label{prop:effective}

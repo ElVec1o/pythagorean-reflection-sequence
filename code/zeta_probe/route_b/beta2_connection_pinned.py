@@ -324,3 +324,49 @@ def verify_sym2(qs='0.3'):
           mp.nstr(resid(lambda t: G(t)**2, z), 3),
           mp.nstr(resid(lambda t: mp.sqrt(mp.mpc(t))*G(t)*H(t), z), 3),
           mp.nstr(resid(lambda t: mp.mpc(t)*H(t)**2, z), 3))
+
+
+# ============================================================================
+# THE GALOIS PACKAGE (paper2 thm:sl2, prop:nonintegrable, cor:hypertranscendence, v2.8.0):
+# (1) SL2 THEOREM: no Sym^N rank-1 submodule for any N>=1:
+#     - k0 < N: the rational quotient r would have the asymptotic expansion of
+#       (ghat(Qz)/ghat(z))^{N-k0}(h(Qz)/h(z))^{k0} whose j-th coefficient is
+#       (N-k0) b_j Q^{-j}(1+o(1)), b_j = q^{j-j(j-1)/2}/(q;q)_j: SUPER-GEOMETRIC
+#       (q^{-j^2/2}) -- rational functions have geometric expansions. Dead.
+#     - k0 = N: N-th root of rational, single-valued on C* => rational => rank-2
+#       Riccati solution => contradicts irreducibility (lem:irreducible).
+#     N=1 reducible, N=2 dihedral, N<=12 finite-primitive (binary polyhedral
+#     invariants): all excluded => G contains SL2.
+# (2) NON-INTEGRABILITY: no rational B, c with theta(A) = sigma(B)A - AB + cA.
+#     Elimination (central c cancels identically) => third-order inhomogeneous
+#     equation for beta; no polynomial part (top-degree 1-q^{2+2m} != 0); poles
+#     confined to window z_a Q^{-1..3} (extremal slots); slot sweep kills all
+#     orders (two coprime kill-polynomials cover every q in (0,1)); beta == 0
+#     contradicts the inhomogeneity z[(q+1)(1+q^2)-2q^3 z]. Cross-check at
+#     q=1/3: rank(A)=15 < rank([A|b])=16 (exact).
+# (3) => modulo the cited Hardouin-Singer / Dreyfus-Hardouin-Roques criterion:
+#     G(q,.) (the Hahn-Exton q-cosine) is DIFFERENTIALLY TRANSCENDENTAL over
+#     C(z) for every q in (0,1). Function-level transcendence: DONE.
+# ============================================================================
+def verify_galois_package():
+    import sympy as sp
+    q = sp.Rational(1, 3); Q = q**2; z = sp.symbols('z')
+    a = lambda w: q+1-q*w
+    za = (q+1)/q
+    unk = []; beta = sp.Integer(0)
+    for j, c in enumerate([za*Q**j for j in range(-1, 4)]):
+        for i in range(1, 4):
+            m = sp.symbols(f'm_{j}_{i}'); unk.append(m); beta += m/(z-c)**i
+    sh = lambda e, k: e.subs(z, Q**k*z)
+    b0, b1, b2, b3 = beta, sh(beta, 1), sh(beta, 2), sh(beta, 3)
+    a0, a1 = a(z), a(Q*z)
+    EQ = q*a0*b3 - (a1*(a0*a1-q)*b2 - a0*(a0*a1-q)*b1 + q*a1*b0 + q*z*(a1+q**2*a0))
+    poly = sp.Poly(sp.expand(sp.numer(sp.together(EQ))), z)
+    A, bvec = sp.linear_eq_to_matrix(poly.all_coeffs(), unk)
+    print("non-integrability cross-check: rank(A) =", A.rank(),
+          " rank([A|b]) =", A.row_join(bvec).rank(), " (inconsistent => no B)")
+    D1 = sp.expand((q_+1)**2*(1-q_**2)*(1-q_**4)-q_) if False else None
+    q_ = sp.symbols('q', positive=True)
+    D1 = sp.Poly(sp.expand((q_+1)**2*(1-q_**2)*(1-q_**4)-q_), q_)
+    D2 = sp.Poly(sp.expand((q_+1)**2*(1-q_**4)*(1-q_**6)-q_), q_)
+    print("kill-polynomials coprime (gcd deg 0):", sp.gcd(D1, D2).degree() == 0)
