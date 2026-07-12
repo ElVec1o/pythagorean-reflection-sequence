@@ -289,3 +289,38 @@ def verify_solution_proof(qs='0.3', lam_='2.0'):
     print("reindex T(Qz):", mp.nstr(abs(T(Q*z)-T(z, 2))/abs(T(Q*z)), 3))
     print("g-equation for explicit kernel sum:",
           mp.nstr(abs(q*T(z)+((q+1)/z-q)*T(Q*z)+T(Q*Q*z)/(Q*z**2)), 3))
+
+
+# ============================================================================
+# SYMMETRIC SQUARE (paper2 prop:sym2, v2.7.1): products of solutions satisfy
+#   w(Q^3 z) = A1(A0A1-q)/A0 w(Q^2 z) + q(q-A0A1) w(Qz) + q^3 A1/A0 w(z),
+# A0=a(z), A1=a(Qz); char roots at 0 = {1, q, q^2}. Verified on G^2, z^(1/2)GH,
+# zH^2 (41-43 digits). Divisor-orientation lemma (paper2 lem:divisor): on orbits
+# off z_a Q^Z any rational sigma-quotient r has no pole at its top zero-or-pole
+# and no zero at its bottom one. [An earlier stronger "divisor localization"
+# claim had a gap (mixed zeros-above-poles configurations evade both extremal
+# evaluations) -- caught before shipping; only the oriented version is proven.]
+# ============================================================================
+def verify_sym2(qs='0.3'):
+    import mpmath as mp
+    S = build(qs); q, Q = S['q'], S['Q']
+    G = S['G']
+    def H(z, K=200):
+        t = mp.mpf(0)
+        for k in range(K):
+            den = mp.mpf(1)
+            for i in range(1, 2*k+2): den *= (1-q**i)
+            term = mp.mpf((-1)**k)*q**(k*k)*(1-q)*mp.mpc(z)**k/den
+            t += term
+            if k > 10 and abs(term) < mp.mpf(10)**-45: break
+        return t
+    a = lambda z: q+1-q*z
+    def resid(w, z):
+        A0 = a(z); A1 = a(Q*z)
+        return abs(w(Q**3*z) - (A1*(A0*A1-q)/A0*w(Q*Q*z) + q*(q-A0*A1)*w(Q*z)
+                                + q**3*A1/A0*w(z)))
+    z = mp.mpf('1.7')
+    print("sym2 residuals:",
+          mp.nstr(resid(lambda t: G(t)**2, z), 3),
+          mp.nstr(resid(lambda t: mp.sqrt(mp.mpc(t))*G(t)*H(t), z), 3),
+          mp.nstr(resid(lambda t: mp.mpc(t)*H(t)**2, z), 3))

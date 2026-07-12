@@ -972,16 +972,49 @@ nonzero root sets, and chains close at length two by coprimality. Summing multip
 $p\le r\le p$, so $p=r$ --- contradicting $|p-r|=1$.
 \end{proof}
 
+\begin{proposition}[the symmetric square]
+\label{prop:sym2}
+Products $w=y\tilde y$ of solutions of $L$ satisfy the third-order equation
+\[
+   w(Q^3z)\;=\;\frac{A_1(A_0A_1-q)}{A_0}\,w(Q^2z)\;+\;q\,(q-A_0A_1)\,w(Qz)\;+\;\frac{q^3A_1}{A_0}\,w(z),
+\]
+with $A_0=a(z)$, $A_1=a(Qz)$, obtained by eliminating the mixed product
+$m=y\,\tilde y(Q\,\cdot)+\tilde y\,y(Q\,\cdot)$ through $m(Qz)=2A_0\,w(Qz)-q\,m(z)$. Its
+characteristic roots at $z=0$ are $\{1,q,q^2\}$; verified on the solutions $G^2$, $z^{1/2}GH$,
+$zH^2$ to $41$--$43$ digits.
+\end{proposition}
+
+\begin{lemma}[divisor orientation]
+\label{lem:divisor}
+Let $r\in\C(z)^\times$ satisfy the rational-quotient relation of Proposition~\ref{prop:sym2},
+$r_0r_1r_2=c_2r_0r_1+c_1r_0+c_0$ with $r_k=r(Q^kz)$, $c_2=A_1(A_0A_1-q)/A_0$, $c_1=q(q-A_0A_1)$,
+$c_0=q^3A_1/A_0$. On every $Q$-orbit in $\C^*$ disjoint from the singular orbit $z_aQ^{\Z}$
+($z_a=(q+1)/q$, the zero of $a$), the maximal-modulus zero-or-pole of $r$ cannot be a pole, and the
+minimal-modulus zero-or-pole cannot be a zero.
+\end{lemma}
+
+\begin{proof}
+Off $z_aQ^{\Z}$ the $c_i$ are finite and $c_0\ne0$. If the maximal-modulus zero-or-pole $\zeta$ on
+such an orbit were a pole, evaluate at $z=Q^{-2}\zeta$: there $r_0,r_1$ are finite and nonzero (all
+higher-modulus orbit points carry no zero or pole), $r_2$ has a pole, so the left side has a pole
+while the right side is finite. If the minimal-modulus zero-or-pole $\zeta'$ were a zero, rewrite
+the relation for $s=1/r$ as $c_0s_0s_1s_2+c_1s_1s_2+c_2s_2=1$ and evaluate at $z=\zeta'$: $s_0$ has
+a pole, $s_1,s_2$ are finite and nonzero, $c_0(\zeta')\ne0$, so the left side has a pole while the
+right side is $1$.
+\end{proof}
+
 \begin{remark}[status of the parametrized ($\delta$-)Galois computation]
-Lemma~\ref{lem:irreducible} is the first input to the classification of difference Galois groups of
-rank-$2$ $q$-difference modules: the group is an irreducible subgroup of $\mathrm{GL}_2$. By the
-parametrized theory \textup{(Hardouin--Singer; Di Vizio--Hardouin; Dreyfus--Hardouin--Roques)},
-an irreducible, non-imprimitive rank-$2$ module whose equation admits no $\sigma\delta$-integrability
-relation has differentially large Galois group, and its solutions are differentially transcendental
-over $\C(z)$. The imprimitivity exclusion (no rank-$1$ submodule of the symmetric square) and the
-integrability certificate for this module are the two remaining verifications; both are
-finite Riccati-type computations of the same kind as Lemma~\ref{lem:irreducible} and are left to a
-sequel.
+Lemma~\ref{lem:irreducible} shows the difference Galois group is an irreducible subgroup of
+$\mathrm{GL}_2$. By the parametrized theory \textup{(Hardouin--Singer; Di Vizio--Hardouin;
+Dreyfus--Hardouin--Roques)}, an irreducible, non-imprimitive rank-$2$ module with no
+$\sigma\delta$-integrability relation has differentially large Galois group and differentially
+transcendental solutions. The imprimitivity exclusion is the statement that
+Proposition~\ref{prop:sym2} admits no solution with $r=w(Q\,\cdot)/w\in\C(z)$; by
+Lemma~\ref{lem:divisor} any such $r$ has all zeros and poles on the single orbit $z_aQ^{\Z}$ up to
+divisors oriented zeros-above-poles, with $r(0)\in q^{\Z}$ and $\deg$-data
+$(d,\gamma)\in\{(-2,1),(0,q^{-1}),(2,q^{-2})\}$ at $\infty$ (the three product lines). The
+remaining step --- a finite multiplicity-and-value chain along that one orbit --- and the
+$\sigma\delta$-integrability certificate are left to a sequel; neither is claimed here.
 \end{remark}
 
 \begin{proposition}[effective non-rationality of $q^\ast$]
