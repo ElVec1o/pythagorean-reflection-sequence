@@ -1145,6 +1145,27 @@ $(\sigma,\delta)$-modules is not available in the literature; it is the sole non
 remaining, and the precise open problem on which the (ir)rationality of $\beta_2$ now turns.
 \end{remark}
 
+\begin{remark}[backward-orbit normal form of the zero condition]
+\label{rem:backward}
+The zero condition admits a compression into a single explicit rational sequence. If $G(q,z_1)=0$,
+the three-term recurrence along the backward $\sigma$-orbit, $u_{-m}=\bigl(a(Q^{-m}z_1)u_{-m+1}
+-u_{-m+2}\bigr)/q$ with $u_n=G(q,Q^nz_1)$, loses one solution constant: $u_{-m}=u_1\,r_m(q)$ with
+$r_0=0$, $r_1=-1/q$, and $r_m\in\Q(q,z_1)$ computable by the same recurrence. The asymptotics of
+Theorem~\ref{thm:zeroproduct} then give the exact evaluation
+\[
+   \lim_{m\to\infty} r_m(q)\,Q^{m(m+1)/2}(-z_1)^{-m}
+   \;=\;\frac{\theta_Q(-z_1)}{(q;q)_\infty\,G(q,Qz_1)},
+\]
+with geometric rate $Q^m$ and $q$-Gevrey correction series $\sum_jb_jz_1^{-j}Q^{mj}$ (verified to
+$17$ digits at $q^\ast$ by $m=24$). Under the hypothesis $q^\ast=s/t$ the normalized terms are
+rationals of height $(st)^{m^2+O(m)}$ approximating the limit to $O(Q^m)$; accelerated forms that
+cancel $J$ correction terms gain decay $Q^{mJ}$ but pay the quadratic heights of the $b_j$, and the
+arithmetic ratio stays $\le\tfrac12$ --- the balance of Proposition~\ref{prop:nogo} once more. The
+normal form is recorded as the sharpest single-sequence statement of what any future method must
+exploit: the entire rationality hypothesis is equivalent to the arithmetic of this one explicit
+sequence.
+\end{remark}
+
 \begin{proposition}[effective non-rationality of $q^\ast$]
 \label{prop:effective}
 The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
