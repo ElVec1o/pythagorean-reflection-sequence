@@ -1183,6 +1183,21 @@ $q^\ast\ne s/t$ for all $s<\sqrt t$. No such representation exists within the
 Rogers--Ramanujan/Bailey framework: those transformations require the argument to be a $q$-power,
 and the argument here is the catalytic point $z=2q(1-q)$. In this precise sense the obstruction to
 $\beta_2$'s irrationality is the non-$q$-power (catalytic) argument itself.
+
+The catalytic locus is moreover \emph{seat-independent}. Writing $S(q)={}_1\phi_1(0;q;Q,z^\ast)$
+($Q=q^2$), the parameter--argument transformation
+${}_1\phi_1(0;b;Q,x)=\tfrac{(x;Q)_\infty}{(b;Q)_\infty}\,{}_1\phi_1(0;x;Q,b)$ gives the
+equivalent zero condition
+\[
+   T(q)\;:=\;{}_1\phi_1\bigl(0;\,2q(1-q);\,q^2,\,q\bigr)
+   \;=\;\sum_{k\ge0}\frac{(-1)^kq^{k^2}}{(q^2;q^2)_k\,(2q(1-q);q^2)_k}\;=\;0
+\]
+(verified to $51$ digits; the prefactor cannot vanish since $z^\ast<1$), in which the argument is
+the $q$-power $q$ and the catalytic value sits in the \emph{parameter} --- equivalently, $q^\ast$ is
+the point where the Hahn--Exton $q$-Bessel of $q$-dependent order $\nu(q)=\log_{q^2}(2q(1-q))-1$
+vanishes at the fixed argument $q^{-1/2}$. The clearing degree of $T$'s truncations is again
+$\sim2N^2$: the deficit is invariant under the swap, and in either seat it is the non-special value
+$2q(1-q)$ that lies outside every Rogers--Ramanujan/Bailey lattice.
 \end{remark}
 
 \begin{proposition}[effective non-rationality of $q^\ast$]
