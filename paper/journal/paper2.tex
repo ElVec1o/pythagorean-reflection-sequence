@@ -1100,25 +1100,21 @@ $\C(z)$: the Hahn--Exton $q$-cosine is differentially transcendental.
 \end{corollary}
 
 \begin{proof}[Proof, via parametrized difference-Galois theory]
-Our equation has \emph{constant} determinant $b=q$, so $\delta(b)/b=0$ and condition~(2) of
-\cite[Thm.~3.5]{ADR2021} is vacuously satisfiable: that theorem does not apply verbatim to
-constant-determinant equations, whose determinant direction is honestly differentially algebraic
-(the Casoratian is $c\,z^{1/2}$). The $\mathrm{SL}_2$ part of its proof carries over. By
-Theorem~\ref{thm:sl2} the difference Galois group contains $\mathrm{SL}_2(\C)$. By the dichotomy
-for Zariski-dense differential-algebraic subgroups of $\mathrm{SL}_2$ (Cassidy; in the form
-\cite[Prop.~2.10]{DHR2018}, as used in the $\mathrm{SL}_2$ case of the proof of
-\cite[Thm.~3.5]{ADR2021}), the $\delta$-Galois group over the $\delta$-closure
-$\widetilde{\mathcal C}$ either contains $\mathrm{SL}_2(\widetilde{\mathcal C})$ or is conjugate
-to a group of $\delta$-constant points, the latter if and only if the system is
-$\sigma\delta$-integrable up to a central twist --- excluded by
-Proposition~\ref{prop:nonintegrable} (this is why the twist $cA$ was included there). Hence
-$\mathrm{Gal}^\delta\supseteq\mathrm{SL}_2(\widetilde{\mathcal C})$; in particular the diagonal
-torus $\operatorname{diag}(c,c^{-1})$ acts, scaling a solution $f\mapsto cf$ for arbitrary
-$c\in\widetilde{\mathcal C}^{\,*}$ (the center is unavailable when the determinant is constant,
-but the diagonal torus suffices). If $P(f,\delta f,\dots,\delta^nf)=0$ were a nonzero algebraic
-differential relation, then $P(cf,c\,\delta f,\dots,c\,\delta^nf)=0$ for every
-$c\in\widetilde{\mathcal C}$; since $\delta$ acts nontrivially on the $\delta$-closure, Kolchin's
-density theorem \cite[Ch.~II]{Kolchin} produces $c$ violating this, a contradiction.
+We apply the parametrized ($\sigma,\theta$)-difference Galois theory with derivation
+$\theta=z\partial_z$. The determinant equation $\sigma(y)=\det(A)\,y=q\,y$ has the solution
+$y=z^{1/2}$ (indeed $\sigma(z^{1/2})=(Qz)^{1/2}=q\,z^{1/2}$, as $Q=q^2$), which is algebraic over $\C(z)$; hence the parametrized difference Galois group of $\sigma(y)=\det(A)y$
+lies in $\C^\times$. This is exactly the hypothesis of Dreyfus--Hardouin--Roques
+\cite[Prop.~2.9]{DHR2018}, which for a rank-$2$ system whose difference Galois group contains
+$\mathrm{SL}_2$ (here Theorem~\ref{thm:sl2}) gives the dichotomy: the parametrized group
+$\mathrm{Gal}^\theta$ either is conjugate into $\mathrm{GL}_2(\C)$ (all solutions differentially
+algebraic) or contains $\mathrm{SL}_2(\widetilde{\mathcal C})$ (all nonzero solutions
+differentially transcendental), and the \emph{first} alternative holds if and only if there exists
+$B\in\mathrm{gl}_2(\C(z))$ with $\theta(A)=\sigma(B)A-AB$ (their integrability condition~(7);
+$\theta(\det A)=0$ since $\det A=q$ is constant in $z$, so no trace term appears). By
+Proposition~\ref{prop:nonintegrable} no such $B$ exists --- indeed none exists even allowing a
+scalar twist $cA$. Therefore the second alternative holds:
+$\mathrm{Gal}^\theta\supseteq\mathrm{SL}_2(\widetilde{\mathcal C})$, and every nonzero solution,
+in particular $G(q,\cdot)$, is differentially transcendental over $\C(z)$.
 \end{proof}
 
 The transcendence of the \emph{number} $q^\ast$ is a value-level statement, and the natural route ---
@@ -1450,8 +1446,6 @@ J.~\'Ec.\ polytech.\ Math.\ \textbf{8} (2021), 147--168.
 for $q$-difference equations}, Acta Arith.\ \textbf{127} (2007), 309--335.
 \bibitem{DHR2018} T.~Dreyfus, C.~Hardouin, J.~Roques, \emph{Hypertranscendence of solutions of
 Mahler equations}, J.~Eur.\ Math.\ Soc.\ \textbf{20} (2018), 2209--2238.
-\bibitem{Kolchin} E.~R.~Kolchin, \emph{Differential Algebra and Algebraic Groups}, Academic Press,
-1973.
 \bibitem{Morita2011} T.~Morita, \emph{A connection formula of the Hahn--Exton $q$-Bessel function},
 SIGMA \textbf{7} (2011), 115, 11~pp.; arXiv:1105.1998.
 \bibitem{Nesterenko1996} Yu.~V.~Nesterenko, \emph{Modular functions and transcendence questions},
