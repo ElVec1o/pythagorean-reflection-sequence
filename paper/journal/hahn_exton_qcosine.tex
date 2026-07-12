@@ -1,0 +1,444 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue!50!black, urlcolor=blue!50!black, citecolor=blue!50!black,
+  pdftitle={Differential transcendence of the Hahn-Exton q-cosine and the arithmetic of its zeros},
+  pdfauthor={Vico Bonfioli}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\Cas}{Cas}
+
+\title{Differential transcendence of the Hahn--Exton $q$-cosine\\ and the arithmetic of its zeros}
+\author{Vico Bonfioli\thanks{Independent researcher. \texttt{vico@anvilstack.com}. Code and
+verification data: \url{https://github.com/ElVec1o/pythagorean-reflection-sequence}.}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $G(q,z)={}_1\phi_1(0;q;q^2,z)=\sum_{k\ge0}(-1)^kq^{k(k-1)}z^k/(q;q)_{2k}$, the Hahn--Exton (third
+Jackson) $q$-cosine. We prove that for every $0<q<1$ the difference Galois group over $\C(z)$ of the
+second-order $q$-difference equation satisfied by $G$ contains $\mathrm{SL}_2$, and that the equation
+admits no $\sigma\delta$-integrability relation; via the parametrized difference Galois theory of
+Hardouin--Singer and Dreyfus--Hardouin--Roques it follows that $G(q,\cdot)$ is differentially
+transcendental over $\C(z)$. We complement this function-level result with an exact evaluation of the
+regularized product of the positive zeros, $\prod_{k\ge1}z_k(q)\,q^{2(k-1)}=(q;q^2)_\infty$, a modular
+value. We then pose, and give effective evidence for, the arithmetic question that these results
+frame: the transcendence of the zeros $z_k(q)$ at algebraic $q$. This question specializes to the
+transcendence of a specific reflection-group growth constant $\beta_2$ (OEIS A396406), for which we
+prove an unconditional effective non-rationality bound.
+\end{abstract}
+
+\section{Introduction}
+
+The three Jackson $q$-analogues of the Bessel function are among the most-studied special functions of
+$q$-series. The third, due to Hahn and Exton, has the $q$-cosine and $q$-sine specializations
+\[
+   G(q,z):={}_1\phi_1(0;q;q^2,z)=\sum_{k\ge0}\frac{(-1)^kq^{k(k-1)}}{(q;q)_{2k}}z^k,
+\]
+which is, up to an explicit prefactor, $J^{(3)}_{-1/2}(\sqrt z/q;q^2)$; it is entire of order $0$ in
+$z$, and its positive zeros $0<z_1(q)<z_2(q)<\cdots$ are real and simple \cite{KS}. The analytic theory
+of these zeros --- orthogonality, interlacing, asymptotics --- is classical. Their \emph{arithmetic}
+is, to our knowledge, untouched: nothing is known about the transcendence of $z_k(q)$ at algebraic
+$q$, the $q$-analogue of Siegel's theorem that the zeros of the Bessel function $J_\nu$ are
+transcendental.
+
+This paper establishes the function-theoretic groundwork for that arithmetic and states the resulting
+transcendence problem precisely. Our results are of three kinds.
+
+\emph{Galois theory (\S\ref{sec:galois}).} We compute enough of the difference Galois structure of the
+defining equation to conclude differential transcendence.
+\begin{theorem}\label{thm:main-transc}
+For every $0<q<1$, the Hahn--Exton $q$-cosine $G(q,\cdot)$ satisfies no algebraic differential
+equation over $\C(z)$.
+\end{theorem}
+The engine is an unconditional proof that the difference Galois group contains $\mathrm{SL}_2$
+(Theorem~\ref{thm:sl2}), obtained by ruling out rank-$1$ submodules of every symmetric power through a
+growth estimate on asymptotic-expansion coefficients, together with the absence of a
+$\sigma\delta$-integrability relation (Proposition~\ref{prop:nonintegrable}).
+
+\emph{A modular zero product (\S\ref{sec:zeroproduct}).} Writing $Q=q^2$,
+\begin{theorem}\label{thm:zeroproduct-intro}
+$\displaystyle\prod_{k\ge1}z_k(q)\,Q^{\,k-1}=(q;q^2)_\infty$, and $G(q,z)/\theta_Q(-z)\to1/(q;q)_\infty$
+along the negative axis, where $\theta_Q(-z)=\sum_n(-1)^nq^{n(n-1)}z^n$.
+\end{theorem}
+The regularized product of the zeros is thus an explicit modular value --- transcendental at algebraic
+$q$ by Nesterenko's theorem \cite{Nesterenko}.
+
+\emph{Arithmetic of the zeros (\S\ref{sec:arith}).} These results frame a clean conjecture.
+\begin{conjecture}[Z]\label{conj:Z}
+For algebraic $q\in(0,1)$, every positive zero $z_k(q)$ of $G(q,\cdot)$ is transcendental.
+\end{conjecture}
+We explain why Conjecture~\ref{conj:Z} lies just past the reach of the $q$-analogue of the
+Siegel--Shidlovskii method (the double-Pochhammer denominator $(q;q)_{2k}$ places it below the Siegel
+margin of \cite{AMV}), and we record an unconditional partial result for the specific zero of
+number-theoretic interest.
+
+The motivating instance is the growth constant $\beta_2=1.4916177871\ldots$ of the geodesic growth
+series of a planar right-triangle reflection group (OEIS A396406), which equals $1/\sqrt{q^\ast}$ where
+$q^\ast$ is the least positive root of $S(q):=G(q,2q(1-q))$; equivalently $z^\ast:=2q^\ast(1-q^\ast)=
+z_1(q^\ast)$ is the smallest positive zero of $G(q^\ast,\cdot)$. Conjecture~\ref{conj:Z} implies
+$\beta_2$ transcendental. We prove unconditionally (Proposition~\ref{prop:effective}) that $q^\ast$ has
+no rational representation of denominator $\le10^{191}$.
+
+All numerical claims are reproducible from the repository above; each is annotated with the script that
+verifies it and the precision attained.
+
+\section{The $q$-difference module}\label{sec:prelim}
+
+Throughout $Q=q^2$, $\sigma f(z)=f(Qz)$, and $a(z)=q+1-qz$. From the ${}_1\phi_1$ recurrence, $G$
+satisfies
+\begin{equation}\label{eq:Leq}
+   q\,G(z)-a(z)\,G(Qz)+G(Q^2z)=0,\qquad L:=q-a\sigma+\sigma^2,
+\end{equation}
+a second-order $q$-difference equation with companion matrix $A(z)=\bigl(\begin{smallmatrix}0&1\\-q&
+a\end{smallmatrix}\bigr)$, $\det A=q$, regular (Poincar\'e-type) at $z=0$ and irregular at $z=\infty$
+(Newton slopes $\{0,1\}$). A second solution is $\widetilde G(z)=z^{1/2}H(z)$ with
+$H(z)=\sum_{k\ge0}(-1)^kq^{k^2}(1-q)z^k/(q;q)_{2k+1}$; the pair $(G,H)$ realizes the Hahn--Exton
+$q$-cosine/$q$-sine $J^{(3)}_{\mp1/2}$. The Casoratian $\Cas(G,\widetilde G)(z):=G(z)\widetilde
+G(Qz)-G(Qz)\widetilde G(z)=c\,z^{1/2}$ is nonzero, and the exact $q$-Wronskian identity
+\begin{equation}\label{eq:qwron}
+   q\,G(z)\,H(Qz)-G(Qz)\,H(z)=q-1
+\end{equation}
+holds (verified to $40$ digits). We write $M$ for the associated rank-$2$ $\sigma$-module over $\C(z)$.
+
+At $z=\infty$ the equation has a formal solution basis reflecting the two Newton slopes. With
+$\theta_Q(x)=\sum_{n\in\Z}Q^{n(n-1)/2}x^n$, these are
+\[
+   f_1(z)=\theta_Q(-z)\,\hat g(z),\quad \hat g(z)=\sum_{k\ge0}b_kz^{-k},\ \ b_k=\frac{q^{\,k-k(k-1)/2}}{(q;q)_k};
+   \qquad
+   f_2(z)=\frac{h(z)}{\theta_Q(-z/q)},\quad h(z)=\sum_{k\ge0}c_kz^{-k},
+\]
+where $\hat g$ is $q$-Gevrey divergent (its $q$-Borel transform is $1/(q^2/\xi;q)_\infty$, so
+$f_1$ is Borel--Laplace summable off one Stokes direction) and $h$ is convergent ($c_k=O(Q^{k^2/2})$).
+The coefficients $b_k$, which drive the Galois argument below, satisfy
+$b_k\asymp q^{-k^2/4}$; both $\hat g$ and $h$ are determined by \eqref{eq:Leq} and $b_0=c_0=1$. Full
+details of the resummation are in \cite{Bonfioli2}; here only the asymptotic expansions are used.
+
+\section{The difference Galois group}\label{sec:galois}
+
+\begin{lemma}[irreducibility of the $\sigma$-module]
+\label{lem:irreducible}
+For $0<q<1$ the rank-$2$ $\sigma$-module of $G$ is irreducible over $\C(z)$: the Riccati equation
+\[
+   u(z)\,u(Qz)-a(z)\,u(z)+q=0,\qquad a=q+1-qz,
+\]
+has no solution $u\in\C(z)$.
+\end{lemma}
+
+\begin{proof}
+Suppose $u=P/R$ with $P,R\in\C[z]$ coprime, of degrees $p,r$, leading coefficients $\alpha,\beta$.
+Clearing denominators,
+\[
+   F(z)\;:=\;P(Qz)P(z)-a(z)P(z)R(Qz)+q\,R(z)R(Qz)\;\equiv\;0 .
+\]
+\emph{At $z=0$:} $F(0)=P(0)^2-(q+1)P(0)R(0)+qR(0)^2=0$; if $R(0)=0$ then $P(0)=0$, contradicting
+coprimality, and symmetrically; so $P(0)R(0)\ne0$ and $u(0)\in\{1,q\}$.
+\emph{Top degree:} the three terms have degrees $2p$, $p+r+1$, $2r$. If $p=r$, the top degree
+$2p+1$ is attained by the middle term alone, with coefficient $q\alpha\beta Q^{r}\ne0$;
+if $|p-r|\ge2$, the top degree is attained by the first or third term alone, with coefficient
+$\alpha^2Q^{p}$ or $q\beta^2Q^{r}$. Both are impossible, so $|p-r|=1$.
+\emph{Root pairing:} let $\zeta\ne0$ be a root of $R$ of multiplicity $m$, so $P(\zeta)\ne0$. At
+$z=\zeta/Q$ the three terms of $F$ have orders $k$, $k+m+[\,a(\zeta/Q)=0\,]$, $m_0+m$, where
+$k=\operatorname{ord}_{\zeta/Q}P$ and $m_0=\operatorname{ord}_{\zeta/Q}R$; since $F\equiv0$ the
+minimum order cannot be attained by a single term, forcing $k\ge m_0+m\ge m$. Symmetrically, a root
+$\xi\ne0$ of $P$ of multiplicity $k$ forces $\operatorname{ord}_{Q\xi}R\ge k$ (coprimality gives
+$\operatorname{ord}_{Q\xi}P=0$, so the first term has order $k$ at $\xi$, the third
+$\operatorname{ord}_{Q\xi}R$, and the middle at least $k+\operatorname{ord}_{Q\xi}R$; again no
+single minimum). The two maps $\zeta\mapsto\zeta/Q$, $\xi\mapsto Q\xi$ are mutually inverse on the
+nonzero root sets, and chains close at length two by coprimality. Summing multiplicities,
+$p\le r\le p$, so $p=r$ --- contradicting $|p-r|=1$.
+\end{proof}
+
+\begin{theorem}[the difference Galois group contains $\mathrm{SL}_2$]
+\label{thm:sl2}
+For every $0<q<1$, the difference Galois group over $\C(z)$ of the module of $G$ contains
+$\mathrm{SL}_2$.
+\end{theorem}
+
+\begin{proof}
+For $N\ge1$ suppose $\operatorname{Sym}^N\!M$ has a rank-$1$ submodule, i.e.\ there is a nonzero
+solution $w$ of the $N$-th symmetric-power equation with $r:=w(Q\,\cdot)/w\in\C(z)$. The products
+$f_1^{N-k}f_2^{\,k}$ ($0\le k\le N$) form a solution basis (their Casoratian is a power
+of $\operatorname{Cas}(f_1,f_2)\ne0$; checked numerically for $N=2$), so
+$w=\sum_kc_kf_1^{N-k}f_2^k$ with constants $c_k$; set $k_0:=\min\{k:c_k\ne0\}$.
+
+\emph{Case $k_0<N$.} Along a ray in a regular class, $f_2/f_1$ decays super-polynomially, so the
+rational function $r$ has the Poincar\'e asymptotic expansion of the quotient of the dominant
+component:
+\[
+   r\;\sim\;(-1/z)^{N-k_0}(-z/q)^{k_0}\,
+   \Bigl(\tfrac{\hat g(Qz)}{\hat g(z)}\Bigr)^{N-k_0}
+   \Bigl(\tfrac{h(Qz)}{h(z)}\Bigr)^{k_0}.
+\]
+The $j$-th coefficient of the formal series on the right is
+$(N-k_0)\,b_jQ^{-j}\bigl(1+O(q^{cj})\bigr)$ with $b_j=q^{\,j-j(j-1)/2}/(q;q)_j$: the dominant term
+comes from $b_jQ^{-j}$ in $\hat g(Qz)/\hat g(z)$, all competing products being smaller by a factor
+$q^{cj}$ (verified: the ratio of the $j$-th coefficient to $(N-k_0)b_j(Q^{-j}-1)$ is
+$1-10^{-6}$ at $j=12$, $q=\tfrac13$). These coefficients grow like $q^{-j^2/2}$, whereas a rational
+function's expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
+expansions are unique, no rational $r$ exists.
+
+\emph{Case $k_0=N$.} Then $r=(-z/q)^N\rho^N$ with $\rho:=h(Q\,\cdot)/h$ meromorphic on $\C^*$;
+$\rho^N\in\C(z)$ and single-valuedness force $\rho\in\C(z)$ (an $N$-th root of a rational function
+is single-valued on $\C^*$ only if every divisor multiplicity, including at $0$ and $\infty$, is
+divisible by $N$). Then $f_2(Qz)/f_2(z)=-(z/q)\rho(z)$ is rational, giving a rational solution of
+the rank-$2$ Riccati equation --- contradicting Lemma~\ref{lem:irreducible}.
+
+Hence no $\operatorname{Sym}^N\!M$ has a rank-$1$ submodule. $N=1$ is irreducibility; $N=2$
+excludes the imprimitive (dihedral) case; and a projectively finite irreducible subgroup
+($A_4,S_4,A_5$) fixes a line in some $\operatorname{Sym}^N$ with $N\le12$ (the classical binary
+polyhedral invariants), which is likewise excluded. By the classification of algebraic subgroups of
+$\mathrm{GL}_2$, the group contains $\mathrm{SL}_2$.
+\end{proof}
+
+\begin{proposition}[no $\sigma\delta$-integrability]
+\label{prop:nonintegrable}
+For every $0<q<1$ there is no $B\in\mathrm{gl}_2(\C(z))$ and no $c\in\C(z)$ with
+$\theta(A)=\sigma(B)A-AB+cA$, where $A=\bigl(\begin{smallmatrix}0&1\\-q&a\end{smallmatrix}\bigr)$ and
+$\theta=z\partial_z$.
+\end{proposition}
+
+\begin{proof}
+Writing $B=\bigl(\begin{smallmatrix}\alpha&\beta\\\gamma&\delta\end{smallmatrix}\bigr)$, the entries give
+$\gamma=-q\beta_1$, $\delta=\alpha_1+a\beta_1-c$, and eliminating $\alpha$ (the central terms $c$
+cancel identically; verified symbolically) leaves the necessary condition
+\[
+   qa\,\beta_3\;=\;a_1(aa_1-q)\,\beta_2\;-\;a(aa_1-q)\,\beta_1\;+\;qa_1\,\beta\;+\;q\,z\bigl(a_1+q^2a\bigr),
+\]
+$\beta_k=\beta(Q^kz)$, $a=a(z)$, $a_1=a(Qz)$. A polynomial part of degree $m\ge0$ contributes top
+coefficient $\propto\beta_m(1-q^{2+2m})\ne0$ at degree $m+3$, above the inhomogeneity: so $\beta$
+has no polynomial part. If $\beta$ has a pole off the orbit $z_aQ^{\Z}$, the maximal-modulus pole
+appears in exactly one term (the slot $z=\zeta Q^{-3}$, coefficient $qa\ne0$ there), and the
+minimal-modulus pole likewise (slot $z=\zeta'$, coefficient $qa_1$): both impossible; so the poles
+lie in the window $\{z_aQ^{-1},\dots,z_aQ^{3}\}$ ($a(z_aQ^k)=(q+1)(1-Q^k)$ vanishes only at $k=0$).
+Sweeping the slots $z=z_aQ^{-4},\dots,z_aQ^{-1}$ kills the orders at $z_aQ^{-1},\dots,z_aQ^{2}$ one
+by one (each pole appears in a single term with nonvanishing coefficient), and the order at
+$z_aQ^{3}$ is killed at the slot $z=z_aQ$ --- coefficient $a_1(aa_1-q)$ with
+$(aa_1-q)(z_aQ)=(q+1)^2(1-q^2)(1-q^4)-q$ --- or, where that vanishes (one root
+$q\approx0.78027$), at the slot $z=z_aQ^{2}$ --- coefficient $a(aa_1-q)$ with
+$(aa_1-q)(z_aQ^2)=(q+1)^2(1-q^4)(1-q^6)-q$ (one root $q\approx0.86753$); the two polynomials are
+coprime, so for every $q\in(0,1)$ at least one slot applies. Hence $\beta\equiv0$, contradicting
+$z(a_1+q^2a)=z\bigl[(q+1)(1+q^2)-2q^3z\bigr]\not\equiv0$. (Cross-check: at $q=\tfrac13$ the exact
+linear system for poles of order $\le3$ in the window has $\operatorname{rank}(A)=15$,
+$\operatorname{rank}[A|b]=16$.)
+\end{proof}
+
+\begin{corollary}[differential transcendence of $G$]
+\label{cor:hypertranscendence}
+For every $0<q<1$ the function $G(q,\cdot)$ satisfies no algebraic differential equation over
+$\C(z)$: the Hahn--Exton $q$-cosine is differentially transcendental.
+\end{corollary}
+
+\begin{proof}[Proof, via parametrized difference-Galois theory]
+We apply the parametrized ($\sigma,\theta$)-difference Galois theory with derivation
+$\theta=z\partial_z$. The determinant equation $\sigma(y)=\det(A)\,y=q\,y$ has the solution
+$y=z^{1/2}$ (indeed $\sigma(z^{1/2})=(Qz)^{1/2}=q\,z^{1/2}$, as $Q=q^2$), which is algebraic over $\C(z)$; hence the parametrized difference Galois group of $\sigma(y)=\det(A)y$
+lies in $\C^\times$. This is exactly the hypothesis of Dreyfus--Hardouin--Roques
+\cite[Prop.~2.9]{DHR2018}, which for a rank-$2$ system whose difference Galois group contains
+$\mathrm{SL}_2$ (here Theorem~\ref{thm:sl2}) gives the dichotomy: the parametrized group
+$\mathrm{Gal}^\theta$ either is conjugate into $\mathrm{GL}_2(\C)$ (all solutions differentially
+algebraic) or contains $\mathrm{SL}_2(\widetilde{\mathcal C})$ (all nonzero solutions
+differentially transcendental), and the \emph{first} alternative holds if and only if there exists
+$B\in\mathrm{gl}_2(\C(z))$ with $\theta(A)=\sigma(B)A-AB$ (their integrability condition~(7);
+$\theta(\det A)=0$ since $\det A=q$ is constant in $z$, so no trace term appears). By
+Proposition~\ref{prop:nonintegrable} no such $B$ exists --- indeed none exists even allowing a
+scalar twist $cA$. Therefore the second alternative holds:
+$\mathrm{Gal}^\theta\supseteq\mathrm{SL}_2(\widetilde{\mathcal C})$, and every nonzero solution,
+in particular $G(q,\cdot)$, is differentially transcendental over $\C(z)$.
+\end{proof}
+
+
+\section{The connection constant and the zero product}\label{sec:zeroproduct}
+
+The behaviour of $G$ at $z=\infty$ is governed by a theta-comparison. Let
+$\theta_Q(x)=\sum_{n\in\Z}Q^{n(n-1)/2}x^n$, so $\theta_Q(Qx)=x^{-1}\theta_Q(x)$ and, by the Jacobi
+triple product, $\theta_Q(-z)=(Q;Q)_\infty(z;Q)_\infty(Q/z;Q)_\infty$, an entire function of order $0$
+with simple zeros exactly at $z\in Q^{\Z}$. The following theorem evaluates the leading asymptotic
+constant of $G$ and, as a consequence, the regularized product of its zeros; the constant
+$C_1:=\lim_{R\to\infty}G(-R)/\theta_Q(R)$ coincides with the Stokes-invariant connection coefficient of
+$G$ against the theta solution.
+
+\begin{theorem}[the connection constant, and the zero product of the Hahn--Exton $q$-cosine]
+\label{thm:zeroproduct}
+For $0<q<1$,
+\[
+   C_1=\frac1{(q;q)_\infty},
+   \qquad\text{and consequently}\qquad
+   \prod_{k\ge1} z_k(q)\,Q^{\,k-1}\;=\;(q;q^2)_\infty ,
+\]
+where $z_1<z_2<\cdots$ are the positive zeros of $G(q,\cdot)$. Likewise, for the second solution's
+underlying entire function $H$ with zeros $w_1<w_2<\cdots$,
+$\prod_{k\ge1}w_k(q)\,q\,Q^{\,k-1}=(q^3;q^2)_\infty$. \textup{(Verified at three bases including
+$q^\ast$, to $41$, $23$, $26$ digits for $C_1$ and $58$ digits for the product.)}
+\end{theorem}
+
+\begin{proof}
+\emph{(1) An exact identity.} From $(q;q)_{2k}=(q;q)_\infty/(q^{2k+1};q)_\infty$ and Euler's
+expansion $(x;q)_\infty=\sum_{j\ge0}(-1)^jq^{j(j-1)/2}x^j/(q;q)_j$ at $x=q^{2k+1}$, together with
+$k(k-1)+2kj=(k+j)(k+j-1)-j(j-1)$ and the substitution $m=k+j$, absolute convergence of the double
+sum permits the rearrangement
+\[
+   (q;q)_\infty\,G(z)\;=\;\sum_{m\ge0}(-1)^mq^{m(m-1)}z^m\,P_m(1/z),
+   \qquad
+   P_m(w):=\sum_{j=0}^m c_jw^j,\quad c_j=\frac{q^{\,j-j(j-1)/2}}{(q;q)_j}
+\]
+(the $c_j$ coincide with the $b_j$ of \S\ref{sec:prelim}; identity checked symbolically
+through $z^8$ and numerically to $41$ digits).
+
+\emph{(2) The constant.} Fix $u<0$ and put $z=uQ^{-N}$. The moduli $q^{m(m-1)}|z|^m$ peak at
+$m_0=N+O(1)$ and decay like $q^{(m-m_0)^2+O(1)}$ away from it. For $1\le j\le m\le 2N$,
+$2Nj-j(j-1)/2\ge Nj$, so $|c_jz^{-j}|\le Cq^{Nj}|u|^{-j}$ and
+$|P_m(1/z)-1|\le C'q^{N}$ uniformly; the terms with $m>2N$ contribute a relative
+$O(q^{N^2})$. The negative-$m$ part of $\theta_Q(-z)$ is $O(|z|^{-1})$, negligible against the peak.
+Hence $(q;q)_\infty G(z)/\theta_Q(-z)\to1$ along $z=uQ^{-N}$, for each fixed $u<0$.
+
+\emph{(3) Geometric zero dressing.} On the circle $|z-Q^{1-k}|=\varepsilon q^kQ^{1-k}$ the identity
+of step (1) and the bounds of step (2) give
+$|(q;q)_\infty G-\theta_Q(-z)|\le Cq^k|\theta_Q(-z)|_{\text{peak}}$, while $\theta_Q(-z)$ has a
+simple zero at $Q^{1-k}$ with derivative bounded below there; Rouch\'e gives
+$z_k=Q^{1-k}(1+O(q^k))$, i.e.\ $\log(z_kQ^{k-1})=O(q^k)$, absolutely summable.
+
+\emph{(4) The product.} $G(z)=\prod_k(1-z/z_k)$ (order $0$, genus $0$, $G(0)=1$) and
+$\theta_Q(-z)=(Q;Q)_\infty(z;Q)_\infty(Q/z;Q)_\infty$ (Jacobi). Along $z=-R$, $R\to\infty$,
+\[
+   \frac{G(-R)}{\theta_Q(R)}
+   =\frac1{(Q;Q)_\infty(-Q/R;Q)_\infty}\prod_{k\ge1}\frac{1+R/z_k}{1+RQ^{k-1}} ,
+\]
+and for $x,y>0$ the function $R\mapsto\log\frac{1+Rx}{1+Ry}$ is monotone from $0$ to $\log(x/y)$, so
+each factor is dominated by $|\log(z_kQ^{k-1})|$, summable by step (3). Dominated convergence gives
+$G(-R)/\theta_Q(R)\to1/\bigl[(Q;Q)_\infty\prod_kz_kQ^{k-1}\bigr]$ as $R\to\infty$; evaluating along
+the subsequence $R=|u|Q^{-N}$ by step (2), the limit equals $1/(q;q)_\infty$, whence
+$C_1=1/(q;q)_\infty$ and $\prod_kz_kQ^{k-1}=(q;q)_\infty/(Q;Q)_\infty=(q;q^2)_\infty$ by Euler's
+$(q;q)_\infty=(q;q^2)_\infty(q^2;q^2)_\infty$. The $H$-statement is identical with comparison
+function $\theta_Q(-qz)$ and ratio $(1-q)/(q;q)_\infty$.
+\end{proof}
+
+\begin{remark}[the modular split at $z^\ast$]
+\label{rem:zeroproduct-dioph}
+At $q=q^\ast$ the product splits off the candidate rational zero:
+\[
+   \prod_{k\ge2}z_k(q^\ast)\,Q^{\,k-1}=\frac{(q;q^2)_\infty}{z^\ast}=0.988299884628746\ldots
+   \quad(\text{verified to }30\text{ digits}).
+\]
+Were $z^\ast$ (equivalently $\beta_2$) algebraic, the modular value $(q;q^2)_\infty$ ---
+transcendental at algebraic $q$ by Nesterenko's theorem \cite{Nesterenko} applied to the Euler
+products --- would equal an algebraic number times the tail product $\prod_{k\ge2}z_kQ^{k-1}$. This is
+consistent only if the tail product is itself transcendental; the arithmetic of the zero condition is
+thereby confined to that tail, which is the content of the multiplicity problem of \cite{Bonfioli2}.
+\end{remark}
+
+
+\section{The arithmetic of the zeros}\label{sec:arith}
+
+\subsection{Conjecture Z and its confluent evidence}
+Conjecture~\ref{conj:Z} is the $q$-analogue of the classical theorem (Siegel; see also Lindemann for
+the endpoint) that the positive zeros $j_{\nu,k}$ of the Bessel function $J_\nu$ are transcendental for
+rational $\nu$. Two structural facts support it. First, Theorem~\ref{thm:main-transc}: $G$ is
+differentially transcendental, so its zeros are not the zeros of any algebraic-differential shadow
+whose arithmetic could be controlled classically. Second, in the confluent limit $q\to1$ the equation
+\eqref{eq:Leq} degenerates to Bessel's equation and $z_k(q)\to(qj_{-1/2,k})^2$, so
+Conjecture~\ref{conj:Z} deforms Siegel's theorem.
+
+\subsection{The self-referential specialization: $\beta_2$}
+The reflection-group growth constant $\beta_2$ is the reciprocal square root of the least positive root
+$q^\ast$ of $S(q)=G(q,2q(1-q))$, which is exactly the condition that the catalytic point
+$z^\ast=2q^\ast(1-q^\ast)$ be a zero of $G(q^\ast,\cdot)$. Thus $\beta_2$ is governed by a
+\emph{self-referential} specialization of Conjecture~\ref{conj:Z}: the zero and the base move together
+along the diagonal $z=2q(1-q)$.
+
+At this point the $q$-Wronskian \eqref{eq:qwron} yields a clean exact relation between two Hahn--Exton
+values: since $G(q^\ast,z^\ast)=0$,
+\begin{equation}\label{eq:wron-zero}
+   G(q^\ast,\,q^{\ast2}z^\ast)\cdot H(q^\ast,\,z^\ast)=1-q^\ast
+\end{equation}
+(verified to $25$ digits) --- a product of two $q$-Bessel values at the algebraic point $z^\ast$ equal
+to the algebraic number $1-q^\ast$. Together with $G(q^\ast,z^\ast)=0$ and the modular zero product of
+Theorem~\ref{thm:zeroproduct-intro}, this places three exact constraints on the values at $z^\ast$; a
+transcendence proof requires one more independent constraint than the reductio supplies, which is the
+precise sense in which Conjecture~\ref{conj:Z} is a multiplicity (rather than a single-relation)
+problem.
+
+\subsection{The $q$-Siegel--Shidlovskii margin}
+The natural route to Conjecture~\ref{conj:Z} is the $q$-analogue of the Siegel--Shidlovskii method
+developed by Amou--Matala-aho--V\"a\"an\"anen \cite{AMV}. That method applies to Poincar\'e-type
+$q$-difference systems --- a hypothesis \eqref{eq:Leq} satisfies at $z=0$ --- under a \emph{Siegel
+margin} $\gamma<\Gamma$, where $\gamma$ is the ratio of the logarithmic height of the cleared
+denominators to that of the analytic decay. For the Hahn--Exton class this ratio is
+\[
+   \gamma=\frac{\log(t/s)}{2\log t}\le\frac12\qquad(q=s/t\text{ in lowest terms}),
+\]
+the factor $2$ being the double Pochhammer $(q;q)_{2k}$; this is below the threshold, so the method does
+not apply as stated. Extending it past the margin for this irregular-at-$\infty$ class is the
+outstanding problem; the connection data needed for the irregular direction is available in closed form
+\cite{Bonfioli2}.
+
+\subsection{An unconditional effective bound}
+Although Conjecture~\ref{conj:Z} is open, the specific root $q^\ast$ admits an effective
+non-rationality statement, proved by certified interval arithmetic.
+
+\begin{proposition}[effective non-rationality of $q^\ast$]
+\label{prop:effective}
+The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
+$t\le10^{191}$. Consequently, if $\beta_2=u/v$ in lowest terms then $u>10^{95}$.
+\end{proposition}
+
+\begin{proof}
+All steps are certified interval arithmetic (outward rounding; \texttt{mpmath.iv}; script
+\texttt{beta2\_effective\_irrationality.py}), with the series tail bounded by
+$(q;q)_{2k}\ge(1-2q)/(1-q)>0$ for $q<\tfrac12$ and term ratios $<\tfrac12$ beyond the truncation.
+\textup{(i)} $S>0$ on $[0,0.40]$ ($400$ certified chunks). \textup{(ii)} $S'\le-1$ on $[0.40,0.46]$
+($600$ certified chunks; $S'$ evaluated term-by-term with the logarithmic-derivative weights), so
+$S$ has at most one zero in $[0.40,0.46]$. \textup{(iii)} with $a=0.d_1\cdots d_{385}$ the
+$385$-digit truncation of $q^\ast$ and $b=a+2\cdot10^{-385}$, certified evaluation gives $S(a)>0>S(b)$;
+by \textup{(i)}--\textup{(ii)}, $q^\ast\in[a,b]$. \textup{(iv)} the interval $[a,b]$ contains the
+rational $s_0/t_0$ (Stern--Brocot minimal fraction) with $t_0\ge10^{192}$, verified by exact rational
+comparison, and certified $S(s_0/t_0)\ne0$. If $m/n\in[a,b]$ with $n\le10^{191}$ and $m/n\ne s_0/t_0$,
+then $|m/n-s_0/t_0|\ge1/(nt_0)\ge10^{-384}>b-a$, impossible; so $m/n=s_0/t_0$, whence
+$n=t_0>10^{191}$, a contradiction. Thus no rational with denominator $\le10^{191}$ lies in $[a,b]$
+at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
+$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{191}$.
+\end{proof}
+
+
+\begin{thebibliography}{9}
+\bibitem{AMV} M.~Amou, T.~Matala-aho, K.~V\"a\"an\"anen, \emph{On Siegel--Shidlovskii's theory for
+$q$-difference equations}, Acta Arith.\ \textbf{127} (2007), 309--335.
+\bibitem{ADR} C.~E.~Arreche, T.~Dreyfus, J.~Roques, \emph{Differential transcendence criteria for
+second-order linear difference equations and elliptic hypergeometric functions}, J.~\'Ec.\ polytech.\
+Math.\ \textbf{8} (2021), 147--168.
+\bibitem{Bonfioli2} V.~Bonfioli, \emph{Transcendence of a planar reflection--group growth series and
+its relaxed companion}, companion manuscript (2026); code and data at the repository above.
+\bibitem{DHR2018} T.~Dreyfus, C.~Hardouin, J.~Roques, \emph{Hypertranscendence of solutions of Mahler
+equations}, J.~Eur.\ Math.\ Soc.\ \textbf{20} (2018), 2209--2238.
+\bibitem{HS} C.~Hardouin, M.~F.~Singer, \emph{Differential Galois theory of linear difference
+equations}, Math.\ Ann.\ \textbf{342} (2008), 333--377.
+\bibitem{KS} H.~T.~Koelink, R.~F.~Swarttouw, \emph{On the zeros of the Hahn--Exton $q$-Bessel function
+and associated $q$-Lommel polynomials}, J.\ Math.\ Anal.\ Appl.\ \textbf{186} (1994), 690--710.
+\bibitem{Nesterenko} Yu.~V.~Nesterenko, \emph{Modular functions and transcendence questions},
+Sb.\ Math.\ \textbf{187} (1996), 1319--1348.
+\end{thebibliography}
+
+\end{document}
