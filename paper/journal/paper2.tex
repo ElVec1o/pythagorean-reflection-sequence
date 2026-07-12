@@ -1166,6 +1166,25 @@ exploit: the entire rationality hypothesis is equivalent to the arithmetic of th
 sequence.
 \end{remark}
 
+\begin{remark}[truncation roots, and the exact deficit]
+\label{rem:truncroot}
+A scheme not covered by the lattice ledger prices the wall in its simplest form. Clearing the
+truncation of $S$ gives integer polynomials
+$P_N=(q;q)_{2N}\sum_{k\le N}(-2)^k q^{k^2}(1-q)^k/(q;q)_{2k}\in\Z[q]$ of degree $2N^2+N$, whose
+heights are only $e^{O(N)}$ (the pentagonal sparsity of $q$-Pochhammer coefficients; measured
+$\log_2H=2.6,4.6,\dots,12.1$ for $N=2,\dots,7$), and whose root nearest $q^\ast$ satisfies
+$|q_N-q^\ast|\asymp q^{\ast\,(N+1)^2}$ (verified $N\le7$). If $q^\ast=s/t$ then
+$|P_N(q^\ast)|\ge t^{-(2N^2+N)}$, while analytically $|P_N(q^\ast)|=e^{O(N)}q^{\ast\,(N+1)^2}$;
+contradiction would require $q^\ast<t^{-2}$, impossible for $q^\ast=s/t\ge1/t$. The deficit is
+exactly the factor $2$ in the clearing degree --- the double Pochhammer once more, now in
+$s$-independent form. The same computation shows that an equivalent representation of the root
+condition with \emph{single}-Pochhammer denominators (clearing degree $\sim N^2/2$) would yield
+$q^\ast\ne s/t$ for all $s<\sqrt t$. No such representation exists within the
+Rogers--Ramanujan/Bailey framework: those transformations require the argument to be a $q$-power,
+and the argument here is the catalytic point $z=2q(1-q)$. In this precise sense the obstruction to
+$\beta_2$'s irrationality is the non-$q$-power (catalytic) argument itself.
+\end{remark}
+
 \begin{proposition}[effective non-rationality of $q^\ast$]
 \label{prop:effective}
 The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
