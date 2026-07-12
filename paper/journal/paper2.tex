@@ -939,6 +939,74 @@ $20$ digits at $q=0.3$). The number $q^\ast$ is the crossing of this curve with 
 $z_1(q^\ast)=2q^\ast(1-q^\ast)$ (residual $<10^{-27}$).
 \end{corollary}
 
+\begin{lemma}[irreducibility of the $\sigma$-module]
+\label{lem:irreducible}
+For $0<q<1$ the rank-$2$ $\sigma$-module of $G$ is irreducible over $\C(z)$: the Riccati equation
+\[
+   u(z)\,u(Qz)-a(z)\,u(z)+q=0,\qquad a=q+1-qz,
+\]
+has no solution $u\in\C(z)$.
+\end{lemma}
+
+\begin{proof}
+Suppose $u=P/R$ with $P,R\in\C[z]$ coprime, of degrees $p,r$, leading coefficients $\alpha,\beta$.
+Clearing denominators,
+\[
+   F(z)\;:=\;P(Qz)P(z)-a(z)P(z)R(Qz)+q\,R(z)R(Qz)\;\equiv\;0 .
+\]
+\emph{At $z=0$:} $F(0)=P(0)^2-(q+1)P(0)R(0)+qR(0)^2=0$; if $R(0)=0$ then $P(0)=0$, contradicting
+coprimality, and symmetrically; so $P(0)R(0)\ne0$ and $u(0)\in\{1,q\}$.
+\emph{Top degree:} the three terms have degrees $2p$, $p+r+1$, $2r$. If $p=r$, the top degree
+$2p+1$ is attained by the middle term alone, with coefficient $q\alpha\beta Q^{r}\ne0$;
+if $|p-r|\ge2$, the top degree is attained by the first or third term alone, with coefficient
+$\alpha^2Q^{p}$ or $q\beta^2Q^{r}$. Both are impossible, so $|p-r|=1$.
+\emph{Root pairing:} let $\zeta\ne0$ be a root of $R$ of multiplicity $m$, so $P(\zeta)\ne0$. At
+$z=\zeta/Q$ the three terms of $F$ have orders $k$, $k+m+[\,a(\zeta/Q)=0\,]$, $m_0+m$, where
+$k=\operatorname{ord}_{\zeta/Q}P$ and $m_0=\operatorname{ord}_{\zeta/Q}R$; since $F\equiv0$ the
+minimum order cannot be attained by a single term, forcing $k\ge m_0+m\ge m$. Symmetrically, a root
+$\xi\ne0$ of $P$ of multiplicity $k$ forces $\operatorname{ord}_{Q\xi}R\ge k$ (coprimality gives
+$\operatorname{ord}_{Q\xi}P=0$, so the first term has order $k$ at $\xi$, the third
+$\operatorname{ord}_{Q\xi}R$, and the middle at least $k+\operatorname{ord}_{Q\xi}R$; again no
+single minimum). The two maps $\zeta\mapsto\zeta/Q$, $\xi\mapsto Q\xi$ are mutually inverse on the
+nonzero root sets, and chains close at length two by coprimality. Summing multiplicities,
+$p\le r\le p$, so $p=r$ --- contradicting $|p-r|=1$.
+\end{proof}
+
+\begin{remark}[status of the parametrized ($\delta$-)Galois computation]
+Lemma~\ref{lem:irreducible} is the first input to the classification of difference Galois groups of
+rank-$2$ $q$-difference modules: the group is an irreducible subgroup of $\mathrm{GL}_2$. By the
+parametrized theory \textup{(Hardouin--Singer; Di Vizio--Hardouin; Dreyfus--Hardouin--Roques)},
+an irreducible, non-imprimitive rank-$2$ module whose equation admits no $\sigma\delta$-integrability
+relation has differentially large Galois group, and its solutions are differentially transcendental
+over $\C(z)$. The imprimitivity exclusion (no rank-$1$ submodule of the symmetric square) and the
+integrability certificate for this module are the two remaining verifications; both are
+finite Riccati-type computations of the same kind as Lemma~\ref{lem:irreducible} and are left to a
+sequel.
+\end{remark}
+
+\begin{proposition}[effective non-rationality of $q^\ast$]
+\label{prop:effective}
+The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
+$t\le10^{191}$. Consequently, if $\beta_2=u/v$ in lowest terms then $u>10^{95}$.
+\end{proposition}
+
+\begin{proof}
+All steps are certified interval arithmetic (outward rounding; \texttt{mpmath.iv}; script
+\texttt{beta2\_effective\_irrationality.py}), with the series tail bounded by
+$(q;q)_{2k}\ge(1-2q)/(1-q)>0$ for $q<\tfrac12$ and term ratios $<\tfrac12$ beyond the truncation.
+\textup{(i)} $S>0$ on $[0,0.40]$ ($400$ certified chunks). \textup{(ii)} $S'\le-1$ on $[0.40,0.46]$
+($600$ certified chunks; $S'$ evaluated term-by-term with the logarithmic-derivative weights), so
+$S$ has at most one zero in $[0.40,0.46]$. \textup{(iii)} with $a=0.d_1\cdots d_{385}$ the
+$385$-digit truncation of $q^\ast$ and $b=a+2\cdot10^{-385}$, certified evaluation gives $S(a)>0>S(b)$;
+by \textup{(i)}--\textup{(ii)}, $q^\ast\in[a,b]$. \textup{(iv)} the interval $[a,b]$ contains the
+rational $s_0/t_0$ (Stern--Brocot minimal fraction) with $t_0\ge10^{192}$, verified by exact rational
+comparison, and certified $S(s_0/t_0)\ne0$. If $m/n\in[a,b]$ with $n\le10^{191}$ and $m/n\ne s_0/t_0$,
+then $|m/n-s_0/t_0|\ge1/(nt_0)\ge10^{-384}>b-a$, impossible; so $m/n=s_0/t_0$, whence
+$n=t_0>10^{191}$, a contradiction. Thus no rational with denominator $\le10^{191}$ lies in $[a,b]$
+at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
+$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{191}$.
+\end{proof}
+
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
 $U$ inherits the travel poles of Proposition~\ref{prop:travelinv}; it is transcendental once its
