@@ -362,6 +362,22 @@ whose arithmetic could be controlled classically. Second, in the confluent limit
 \eqref{eq:Leq} degenerates to Bessel's equation and $z_k(q)\to(qj_{-1/2,k})^2$, so
 Conjecture~\ref{conj:Z} deforms Siegel's theorem.
 
+That confluence also explains, in one line, why the classical case is provable and the $q$-case is
+not. Write $D_N$ for the denominator of the $N$-th partial sum. The classical engine (Lambert,
+Lindemann, and every factorial-denominator proof) runs on a \emph{divergent step ratio}:
+$D_{N+1}/D_N=N+1\to\infty$, so one further term is gained at asymptotically no arithmetic cost and
+$\text{tail}\cdot D_N\asymp2/(N+1)\to0$ (measured: $0.310,\,0.163,\,0.099$ at $N=3,6,10$ for
+$e=\sum1/k!$). The $q$-deformation replaces the factorial by $(q;q)_k$, whose step ratio is
+\emph{constant} in the relevant scale: each further term gains $\asymp q^{2N}$ but costs
+$\asymp t^{2N}$, and at $s=1$ the two cancel identically, so $\text{tail}\cdot D_N$ diverges
+(measured at $q=\tfrac13$: $7.1,\,7.5\cdot10^5,\,5.1\cdot10^{14}$ at $N=2,4,6$). The bridge is
+explicit: $(q;q)_k/\bigl((1-q)^kk!\bigr)\to1$ as $q\to1$ (measured $0.472,\,0.928,\,0.993$ at
+$q=0.9,\,0.99,\,0.999$). The factorial --- and with it the divergent step ratio that powers
+Lindemann --- exists only in the confluent limit; at any $q<1$ the ratio is constant, and a constant
+ratio can never win. This is the same exactness of Remark~\ref{rem:thetabarrier} seen dynamically,
+and it identifies precisely what a proof of Conjecture~\ref{conj:Z} must supply: an arithmetic
+mechanism with no classical shadow.
+
 \subsection{The self-referential specialization: $\beta_2$}
 The reflection-group growth constant $\beta_2$ is the reciprocal square root of the least positive root
 $q^\ast$ of $S(q)=G(q,2q(1-q))$, which is exactly the condition that the catalytic point
