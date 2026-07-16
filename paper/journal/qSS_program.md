@@ -120,7 +120,7 @@ is the second-kind approximant along the diagonal z = 2q(1-q). Verified (N ≤ 8
   q-Pochhammer coefficients keeps the height small;
 - **clearing** P_N(s/t)·t^{2N²+N} ∈ ℤ.
 
-## M1b — the general-point / uniform construction (TODO, tractable, ~months)
+## M1b — the general-point / uniform construction (DONE 2026-07-12)
 The Padé denominators of G(q,·) are the modified q-Lommel polynomials (Koelink–Swarttouw); the naive
 [n/n] Padé has only a geometric remainder z*^{2n}, so the q-adapted (theta-fast) construction of M1a is
 the correct object. What remains: (i) the construction at a general algebraic point z (not only the
@@ -128,7 +128,7 @@ diagonal), (ii) uniformity in q over a neighbourhood of q*, (iii) the explicit q
 of the denominators. All are adaptations that the solved connection theory (paper2 §connection:
 C₁ = 1/(q;q)∞, C₂ explicit, f₁/f₂ pinned) makes routine; none needs new ideas.
 
-## M1c — the reduction lemma (essentially done; formal statement pending)
+## M1c — the reduction lemma (DONE 2026-07-12; companion paper prop:reduction)
 From M1a: **q* (hence β₂) is irrational if there is an infinite set of N with P_N(q*) ≠ 0 and
 |P_N(q*)| < t^{−(2N²+N)}.** With |P_N(q*)| = q*^{N²(1+o(1))} this is q*^{N²} < t^{−2N²}, i.e.
 log(t/s) > 2 log t, i.e. st < 1 — false. The deficit is the factor 2 in the degree 2N² = the double
@@ -141,3 +141,28 @@ Hahn–Exton diagonal.* We have |form| = q*^{N²} at D_N = 2N²; the requirement
 same remainder, i.e. **halve the effective degree, or double the remainder decay to q*^{2N²}.** Thirty
 distinct lattice constructions conserve the factor 2 (paper2 prop:nogo); breaking it is M2, equal in
 strength to β₂ itself.
+
+
+## M1b/M1c CLOSED (2026-07-12)
+The general-point construction needed no q-Lommel Pade at all (that was a wrong turn): the
+truncate-and-clear form P_N(q,z) = (q;q)_{2N} G_N(q,z) in Z[q,z] works at ANY point, with deg_q =
+2N^2+N and deg_z = N exact (verified N<=4), remainder q^{N^2(1+o(1))} uniformly (verified at the
+diagonal AND at a generic z0=0.37). Both are now formal propositions in the companion paper
+(prop:secondkind, prop:reduction, cor:suffices). M1 is COMPLETE.
+
+## M2 — sharpened, and made WORSE (honest): the theta-decay barrier
+The criterion needs beta := deg_q/N^2 < 1 strictly. Measured (exact, cleared truncations):
+  theta  sum q^{k^2} z^k      : deg = N^2 EXACTLY -> beta = 1  (the boundary)
+  RR     sum q^{k^2}/(q;q)_k  : deg = N^2 EXACTLY -> beta = 1  (the boundary)
+  OURS   q^{k(k-1)}/(q;q)_{2k}: deg = 2N^2+N      -> beta -> 2
+STRUCTURAL THEOREM (companion rem:thetabarrier): for ANY truncate-and-clear form of a q^{alpha k^2}-decay
+series, deg_q >= alpha N^2 while the remainder is q^{alpha N^2}: the criterion collapses to s < 1,
+FALSE for every q = s/t in (0,1). The decay and the degree are the SAME factor q^{alpha k^2} and cancel
+exactly. So the Siegel/Liouville route is structurally CLOSED for the entire theta-decay class -- not
+just for us. This EXPLAINS the landscape: theta and RR transcendence (both at beta=1) are known ONLY
+via Nesterenko's modular method, never via a Siegel margin. Our double Pochhammer is a factor 2 ON TOP
+of a barrier that is already impassable.
+CONSEQUENCE for M2: "halve the degree" was too optimistic -- even beta=1 (theta/RR) is not enough. The
+only mechanisms are (i) modularity -- which G provably lacks (off the modular class), or (ii) a
+multiplicity theory for the (sigma,delta)-module. M2 is NOT a construction problem; no construction of
+truncation shape can work. This is a negative result that sharpens, and does not advance, beta_2.

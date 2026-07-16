@@ -395,6 +395,92 @@ not apply as stated. Extending it past the margin for this irregular-at-$\infty$
 outstanding problem; the connection data needed for the irregular direction is available in closed form
 \cite{Bonfioli2}.
 
+\subsection{The second-kind forms and the exact reduction}
+The $q$-Siegel construction for this class is explicit. For $N\ge1$ put
+\[
+   P_N(q,z):=(q;q)_{2N}\sum_{k=0}^{N}\frac{(-1)^kq^{k(k-1)}z^k}{(q;q)_{2k}}
+   =\sum_{k=0}^{N}(-1)^kq^{k(k-1)}z^k\!\!\prod_{i=2k+1}^{2N}\!\!(1-q^i)\ \in\ \Z[q,z].
+\]
+\begin{proposition}[the second-kind forms]\label{prop:secondkind}
+$\deg_qP_N=2N^2+N$ and $\deg_zP_N=N$ \textup{(exact; verified $N\le4$)}, and the remainder
+$R_N(q,z):=(q;q)_{2N}G(q,z)-P_N(q,z)$ satisfies, uniformly for $q$ in compacts of $(0,1)$ and $z$
+bounded,
+\[
+   |R_N(q,z)|=q^{\,N^2(1+o(1))} .
+\]
+\end{proposition}
+\begin{proof}
+Membership in $\Z[q,z]$ and $\deg_zP_N=N$ are clear from the displayed product form, since
+$(q;q)_{2N}/(q;q)_{2k}=\prod_{i=2k+1}^{2N}(1-q^i)\in\Z[q]$. For the $q$-degree, the $k$-th summand has
+degree $k(k-1)+\sum_{i=2k+1}^{2N}i=2N^2+N-k^2-2k$, maximal at $k=0$ with value
+$\deg(q;q)_{2N}=2N^2+N$; the maximum is attained once, so no cancellation occurs. For the remainder,
+$R_N=(q;q)_{2N}\sum_{k>N}(-1)^kq^{k(k-1)}z^k/(q;q)_{2k}$, whose leading term ($k=N+1$) is
+$\pm q^{N(N+1)}z^{N+1}(q;q)_{2N}/(q;q)_{2N+2}$; the tail is dominated by a geometric series in
+$q^{2N}$, so $|R_N|=q^{N^2+O(N)}$ uniformly. \textup{(Measured $\log|R_N|/N^2\to\log q$ at both
+$z=2q(1-q)$ and a generic $z_0$.)}
+\end{proof}
+
+\begin{proposition}[reduction to the Siegel margin]\label{prop:reduction}
+Let $q=s/t\in(0,1)$ and let $z_0=a/b\in\Q^\times$ with $G(q,z_0)=0$. Then $P_N(q,z_0)=-R_N(q,z_0)$ and
+$t^{2N^2+N}b^N\,P_N(q,z_0)\in\Z$. Consequently, if for infinitely many $N$ one has $P_N(q,z_0)\ne0$ and
+\[
+   |R_N(q,z_0)|<t^{-(2N^2+N)}b^{-N},
+\]
+then $G(q,z_0)\ne0$ --- a contradiction. By Proposition~\ref{prop:secondkind} the displayed criterion
+reads $q^{N^2}<t^{-2N^2}$ up to $O(N)$ in the exponent, i.e.
+\[
+   \log(t/s)>2\log t\iff st<1,
+\]
+which is false. The deficit is exactly the factor $2$ in $\deg_qP_N=\deg(q;q)_{2N}$: the \emph{double}
+Pochhammer.
+\end{proposition}
+\begin{proof}
+$P_N(q,z_0)=(q;q)_{2N}G(q,z_0)-R_N(q,z_0)=-R_N(q,z_0)$ by hypothesis; clearing denominators of
+$P_N\in\Z[q,z]$ at $q=s/t$, $z=a/b$ gives $t^{\deg_qP_N}b^{\deg_zP_N}P_N(q,z_0)\in\Z$, and a nonzero
+integer has modulus $\ge1$. The stated evaluation of the criterion is
+Proposition~\ref{prop:secondkind}.
+\end{proof}
+
+\begin{corollary}[what would suffice]\label{cor:suffices}
+Conjecture~\ref{conj:Z} at $z_0$ --- hence, on the diagonal, the irrationality of $\beta_2$ --- follows
+from any family of forms $\Lambda_N\in\Z[q,z]$ with $\Lambda_N(q,z_0)\ne0$, remainder
+$q^{N^2(1+o(1))}$ against $G$, and
+\[
+   \deg_q\Lambda_N\;\le\;N^2\,\frac{\log(t/s)}{\log t}\,(1-\varepsilon),
+   \qquad\text{in particular }\deg_q\Lambda_N\le N^2(1-\varepsilon)\text{ when }s=1 .
+\]
+The forms of Proposition~\ref{prop:secondkind} have $\deg_q=2N^2$: it suffices to \emph{halve} the
+$q$-degree at the same remainder, or equivalently to double the remainder decay to $q^{2N^2}$. A
+single-Pochhammer clearing $(q;q)_N$ would have degree $\tfrac12N^2(1+o(1))$ and would suffice at once;
+no such representation of $G$ along a non-$q$-power argument exists in the
+Rogers--Ramanujan/Bailey framework.
+\end{corollary}
+
+\begin{remark}[the theta-decay barrier: why Corollary~\ref{cor:suffices} is unreachable by truncation]
+\label{rem:thetabarrier}
+The hypothesis of Corollary~\ref{cor:suffices} cannot be met by \emph{any} truncate-and-clear form.
+Let $\sum_kc_k(q)q^{\alpha k^2}z^k$ ($\alpha>0$, $c_k\in\Q(q)$) be truncated at $N$ and cleared. The
+$k=N$ summand already contributes $q^{\alpha N^2}$, so $\deg_q\ge\alpha N^2$; the remainder is the
+first omitted term, of size $q^{\alpha N^2(1+o(1))}$. The criterion $|R_N|<t^{-\deg_q}$ therefore reads
+\[
+   \alpha N^2\log(t/s)\;>\;\alpha N^2\log t\iff s<1,
+\]
+false for every $q=s/t\in(0,1)$: \emph{the decay and the degree are driven by the same factor
+$q^{\alpha k^2}$ and cancel exactly}. Denominators only make matters worse. Numerically, the cleared
+truncations have $\deg_q=N^2$ exactly for the theta series $\sum q^{k^2}z^k$ and for the
+Rogers--Ramanujan series $\sum q^{k^2}/(q;q)_k$ (both $\beta:=\deg_q/N^2=1$, the boundary), while the
+Hahn--Exton series sits at $\beta\to2$ ($2.25,2.17,2.12$ at $N=4,6,8$) --- a further factor $2$ past a
+boundary that is itself already unreachable.
+
+This explains the shape of the known landscape rather than merely our position in it: the
+transcendence of theta values and of Rogers--Ramanujan values --- both at $\beta=1$ --- is known
+\emph{only} through Nesterenko's modular method \cite{Nesterenko}, never through a Siegel/Liouville
+margin, precisely because no theta-decay series can cross $\beta<1$. Consequently the only mechanisms
+available for Conjecture~\ref{conj:Z} are modularity, which $G$ provably lacks (it is off the modular
+class; see \cite{Bonfioli2}), or a multiplicity theory for the associated $(\sigma,\delta)$-module. The
+double Pochhammer is not the whole obstruction --- it is a factor $2$ on top of a structural one.
+\end{remark}
+
 \subsection{An unconditional effective bound}
 Although Conjecture~\ref{conj:Z} is open, the specific root $q^\ast$ admits an effective
 non-rationality statement, proved by certified interval arithmetic.
