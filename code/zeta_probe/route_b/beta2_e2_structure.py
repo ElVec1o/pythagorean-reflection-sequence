@@ -62,6 +62,7 @@ if __name__ == "__main__":
 # ============================================================================
 def verify_lambert_orbit(qs='0.37', zs='0.51'):
     import mpmath as mp
+    mp.mp.dps = 45
     q = mp.mpf(qs); z = mp.mpf(zs)
     def gk(k):
         poch = mp.mpf(1)
