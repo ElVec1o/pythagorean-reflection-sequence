@@ -1223,7 +1223,12 @@ exponent growth at $q^\ast$). The comparison $2\log(t/s)>8\log t$ fails for ever
 positivity route conserves the ledger at a factor $4$. The instructive point is that
 \emph{nonvanishing was never the bottleneck} of any construction in this ledger --- positivity
 supplies it gratis here --- the entire difficulty of the problem resides in the size-versus-height
-comparison.
+comparison. Nor is there an Ap\'ery-type denominator miracle hiding in that comparison: the
+\emph{measured} reduced denominators of the partial sums $S_N(s/t)$ equal $96$--$100\%$ of the naive
+clearing $\prod_{i\le2N}(t^i-s^i)$ in logarithmic size, with the ratio tending to $1$ as $N$ grows
+(exact rational arithmetic, $N\le12$, at $q=\tfrac12$ and $\tfrac25$); the cancellation is an
+$O(N)$ boundary effect in an $O(N^2)$ exponent. The arithmetic of the ledger is exactly its
+worst-case costing.
 \end{remark}
 
 \begin{remark}[backward-orbit normal form of the zero condition]
