@@ -21,7 +21,7 @@ Coefficient sequence (OEIS-candidate): 1,-1,0,-1,1,-1,2,-2,4,-6,8,-14,21,-34,56,
 """
 from fractions import Fraction as Fr
 
-M = 56
+M = 56   # (holonomy test used M = 120; see holonomy_test below)
 
 def mul(a, b):
     c = [Fr(0)]*(M+1)
@@ -114,3 +114,82 @@ def find_branch_point():
         if abs(dq)+abs(dz) < mp.mpf(10)**-28: break
     print("q_c =", mp.nstr(q, 20), " z_c =", mp.nstr(z, 20))
     print("residuals:", mp.nstr(abs(G(q, z)), 3), mp.nstr(abs(Gz(q, z)), 3))
+
+
+# ============================================================================
+# HOLONOMY TEST (v2.12.3): z_1 is NOT holonomic. No linear ODE sum_i P_i(q) z_1^{(i)} = 0
+# with deg P_i <= d for (r,d) up to (8,10), (6,14), (5,12) -- exact linear algebra on
+# 110-116 integer coefficients (z_1 computed to order 120 by integer Newton), every
+# matrix full column rank. CONSEQUENCE: z_1 is an integer power series that is
+# non-algebraic, non-holonomic, radius < 1 -- the class where NO arithmetic technology
+# exists. Chudnovsky-Andre-Bost and Calegari-Dimitrov-Tang arithmetic holonomy bounds
+# (the newest "integrality + structure => arithmetic" machinery) all require holonomy;
+# Polya-Carlson requires radius exactly 1. Integrality alone is not actionable.
+# NOTE: the Newton iteration needs inv_unit (leading coeff G_z(0,1) = -1, NOT +1) --
+# a naive inv() assuming a[0]=1 silently returns garbage (c_1 = 511 instead of -1).
+# ============================================================================
+def holonomy_test():
+    """recompute z_1 to order 120 (integer Newton) and test for a linear ODE"""
+    MM = 120
+    def mul(a, b):
+        c = [0]*(MM+1)
+        for i, ai in enumerate(a):
+            if ai == 0: continue
+            for j in range(MM+1-i):
+                if b[j]: c[i+j] += ai*b[j]
+        return c
+    sub2 = lambda a, b: [x-y for x, y in zip(a, b)]
+    add2 = lambda a, b: [x+y for x, y in zip(a, b)]
+    def inv_unit(a):
+        u = a[0]; assert u in (1, -1)
+        c = [0]*(MM+1); c[0] = u
+        for n in range(1, MM+1):
+            c[n] = -u*sum(a[i]*c[n-i] for i in range(1, n+1))
+        return c
+    def qp(n):
+        c = [0]*(MM+1)
+        if n <= MM: c[n] = 1
+        return c
+    def inv_poch(m):
+        c = [0]*(MM+1); c[0] = 1
+        for part in range(1, m+1):
+            for n in range(part, MM+1): c[n] += c[n-part]
+        return c
+    ONE = qp(0)
+    Gs = []
+    for k in range(12):
+        Gs.append([0]*(MM+1) if k*(k-1) > MM else
+                  [(-1)**k*x for x in mul(qp(k*(k-1)), inv_poch(2*k))])
+    def eG(z):
+        t = [0]*(MM+1); zp = ONE[:]
+        for k in range(12):
+            t = add2(t, mul(Gs[k], zp)); zp = mul(zp, z)
+        return t
+    def eGz(z):
+        t = [0]*(MM+1); zp = ONE[:]
+        for k in range(1, 12):
+            t = add2(t, [k*x for x in mul(Gs[k], zp)]); zp = mul(zp, z)
+        return t
+    z = ONE[:]
+    for _ in range(9): z = sub2(z, mul(eG(z), inv_unit(eGz(z))))
+    assert all(x == 0 for x in eG(z)), "Newton residual nonzero"
+    p = (1 << 61) - 1
+    ders = [[x % p for x in z]]
+    for _ in range(9):
+        a = ders[-1]; ders.append([(a[n+1]*(n+1)) % p for n in range(len(a)-1)]+[0])
+    for (r, d) in [(4, 10), (6, 14), (8, 10)]:
+        cols = [[0]*j + ders[i][:MM+1-j] for i in range(r+1) for j in range(d+1)]
+        rows = MM-r-2
+        A = [[cols[k][n] for k in range(len(cols))] for n in range(rows)]
+        C = len(A[0]); rr = 0
+        for cc in range(C):
+            piv = next((x for x in range(rr, rows) if A[x][cc] % p), None)
+            if piv is None: continue
+            A[rr], A[piv] = A[piv], A[rr]
+            iv = pow(A[rr][cc], p-2, p); A[rr] = [x*iv % p for x in A[rr]]
+            for x in range(rows):
+                if x != rr and A[x][cc] % p:
+                    f = A[x][cc]; A[x] = [(u-f*v) % p for u, v in zip(A[x], A[rr])]
+            rr += 1
+            if rr == rows: break
+        print(f"order {r}, deg {d}: {C} unknowns, rank {rr} -> {'ODE' if rr < C else 'NO ODE'}")
