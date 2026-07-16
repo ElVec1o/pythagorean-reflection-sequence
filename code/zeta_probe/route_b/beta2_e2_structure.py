@@ -46,3 +46,35 @@ if __name__ == "__main__":
     t2t = sum(gk(k)*k*(k-1)*z0**k for k in range(80))
     T = sum(gk(k)*(PHI-partial(k))*z0**k for k in range(80))
     print("(ii) deltaG - [(th^2-th)G + phi G - T] =", mp.nstr(abs(dG-(t2t+PHI*G(z0)-T)), 4))
+
+
+# ============================================================================
+# LAMBERT-ORBIT IDENTITY (v2.11.2, paper2 prop:nofinitering(ii), verified 41 digits):
+#   T(q,z) = sum_{d>=1} [2q^d/(1-q^d)] (theta G)(q, q^{2d} z)
+#          + sum_{d>=1} [q^d/(1-q^d)^2]  G(q, q^{2d} z)
+# Proof: expand tail_k = sum_{i>2k} i q^i/(1-q^i) = sum_d sum_{i>2k} i q^{id}, swap sums
+# (absolutely convergent), and evaluate sum_{i>2k} i x^i = x^{2k+1}[(2k+1)-2kx]/(1-x)^2 at
+# x = q^d; the k-sums reassemble into G and theta-G at the orbit points q^{2d} z.
+# MEANING: the entire non-modular content of delta G is an E_2-weighted trace of the module
+# over the forward sigma-orbit. On the diagonal the orbit collapses to 4 generators but the
+# collapse coefficients become transfer-product series (not rational): the identity RELOCATES
+# the obstruction, does not remove it. beta_2 unaffected; the structure is banked.
+# ============================================================================
+def verify_lambert_orbit(qs='0.37', zs='0.51'):
+    import mpmath as mp
+    q = mp.mpf(qs); z = mp.mpf(zs)
+    def gk(k):
+        poch = mp.mpf(1)
+        for i in range(1, 2*k+1): poch *= (1-q**i)
+        return mp.mpf((-1)**k)*q**(k*(k-1))/poch
+    G = lambda w, K=120: sum(gk(k)*mp.mpc(w)**k for k in range(K))
+    tG = lambda w, K=120: sum(k*gk(k)*mp.mpc(w)**k for k in range(K))
+    PHI = sum(i*q**i/(1-q**i) for i in range(1, 400))
+    partial = lambda k: sum(i*q**i/(1-q**i) for i in range(1, 2*k+1))
+    lhs = sum(gk(k)*(PHI-partial(k))*z**k for k in range(80))
+    rhs = mp.mpf(0)
+    for d in range(1, 240):
+        w = q**(2*d)*z
+        rhs += 2*q**d/(1-q**d)*tG(w) + q**d/(1-q**d)**2*G(w)
+        if q**d < mp.mpf(10)**-42: break
+    print("Lambert-orbit identity rel diff:", mp.nstr(abs(lhs-rhs)/abs(lhs), 4))

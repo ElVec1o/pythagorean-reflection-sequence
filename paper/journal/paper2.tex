@@ -1140,7 +1140,19 @@ exact identity
 \]
 \textup{(verified to $41$ digits)}, where $\varphi$ is the quasimodular Eisenstein weight
 ($24\varphi=1-E_2$ up to normalization) and the correction $T$ has coefficients smaller than $G$'s by
-the factor $\sum_{i>2k}iq^i/(1-q^i)=O(kq^{2k})$. Since $\delta$ and $\theta$ commute, each
+the factor $\sum_{i>2k}iq^i/(1-q^i)=O(kq^{2k})$. Expanding these weights as Lambert series and
+interchanging the (absolutely convergent) sums exhibits $T$ as an Eisenstein-weighted trace of the
+module over the forward $\sigma$-orbit:
+\[
+   T(q,z)\;=\;\sum_{d\ge1}\frac{2q^d}{1-q^d}\,(\theta G)(q,q^{2d}z)
+   \;+\;\sum_{d\ge1}\frac{q^d}{(1-q^d)^2}\,G(q,q^{2d}z)
+\]
+\textup{(verified to $41$ digits)}: the entire non-modular content of $\delta G$ is an orbit
+convolution of $(G,\theta G)$ against $E_2$-type weights. On the diagonal the orbit values collapse
+by \textup{(i)} into four generators $u_0,u_1,\theta$-analogues $v_0,v_1$ (the $v$'s obey the
+inhomogeneous transported recurrence $v_{j+2}=a_jv_{j+1}-qv_j-qQ^jz^\ast u_{j+1}$), but the collapse
+coefficients accumulate into transfer-product series that are no longer rational in $q$; the identity
+relocates, and does not remove, the obstruction. Since $\delta$ and $\theta$ commute, each
 application of $\delta$ raises the $z$-jet order by two: $\delta^nS$ involves
 $\theta^{2n}G|_{z=z^\ast}$ with unit leading coefficient.
 \item[\textup{(iii)}] \textup{(the actual obstruction)} The $z$-jets do not close: $\theta^2G$ and
