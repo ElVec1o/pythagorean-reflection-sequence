@@ -1121,23 +1121,43 @@ The transcendence of the \emph{number} $q^\ast$ is a value-level statement, and 
 Nesterenko's multiplicity method fed by Corollary~\ref{cor:hypertranscendence} --- meets a precise
 structural obstruction, which we isolate.
 
-\begin{proposition}[the descent variable carries no finite differential ring]
+\begin{proposition}[where the differential closure fails in the descent variable]
 \label{prop:nofinitering}
-The deformation relation of Proposition~\ref{prop:deformation},
-$\delta G=-qG+q(1+3z)\,\sigma G+4q\,\theta G-2a\,\sigma\theta G$, expresses the $q$-derivative
-$\delta=q\partial_q$ of $G$ through the shifted value $\sigma G=G(q,q^2z)$. No irreducible curve of
-$\mathbb{A}^2_{(q,z)}$ other than a component of $\{z=0\}$ is invariant under $\sigma\colon(q,z)\mapsto
-(q,q^2z)$: for generic $q_0$ the intersection with the fibre $\{q=q_0\}$ is a finite set of complex
-numbers closed under multiplication by $q_0^2$ with $|q_0^2|<1$, hence $\{0\}$. In particular the
-diagonal $z=2q(1-q)$ and the zero curve $z=z_1(q)$ are not $\sigma$-invariant. Consequently the
-restriction to any such curve of the $(\sigma,\delta)$-module is not $\delta$-stable: iterating
-$\delta$ on $S(q)=G(q,2q(1-q))$ generates the values of $G$ along the entire $q^{2\Z}$-orbit of the
-diagonal (which contracts to $0$ with pairwise distinct, generically non-zero values --- e.g.\ at
-$q=q^\ast$, $G(q^\ast,z^\ast)=0$ while $G(q^\ast,q^2z^\ast)=0.7777\ldots\neq0$), and no
-finite-dimensional $\delta$-stable $\C(q)$-space contains $S$. \textup{(Consistent with the absence
-of an algebraic differential equation for $S$ of order $\le4$ and degree $\le5$: the coefficient
-matrices have full rank over $800$ series terms modulo a $31$-bit prime;
-\texttt{beta2\_diffalg\_search.py}.)}
+Write $\delta=q\partial_q$, $\theta=z\partial_z$, and let $u_j(q):=G(q,Q^jz^\ast(q))$ denote the
+orbit values along the diagonal $z^\ast(q)=2q(1-q)$.
+\begin{itemize}
+\item[\textup{(i)}] \textup{(orbit collapse)} The $\sigma$-orbit is \emph{not} an obstruction to
+finiteness: the $z$-recurrence evaluated on the diagonal has coefficients
+$a(Q^jz^\ast)=q+1-qQ^jz^\ast\in\Q(q)$, so $u_{j+2}=a(Q^jz^\ast)\,u_{j+1}-q\,u_j$ and every orbit
+value lies in $\operatorname{span}_{\Q(q)}\{u_0,u_1\}$ \textup{(verified for $j\le3$ to $32$
+digits)}.
+\item[\textup{(ii)}] \textup{(the $E_2$-coupled jet structure)} The $q$-derivative of $G$ obeys the
+exact identity
+\[
+   \delta G=(\theta^2-\theta)G+\varphi(q)\,G-T,\qquad
+   \varphi(q)=\sum_{i\ge1}\frac{iq^i}{1-q^i},\qquad
+   T=\sum_{k\ge0}(-1)^k\Bigl(\sum_{i>2k}\tfrac{iq^i}{1-q^i}\Bigr)\frac{q^{k(k-1)}z^k}{(q;q)_{2k}}
+\]
+\textup{(verified to $41$ digits)}, where $\varphi$ is the quasimodular Eisenstein weight
+($24\varphi=1-E_2$ up to normalization) and the correction $T$ has coefficients smaller than $G$'s by
+the factor $\sum_{i>2k}iq^i/(1-q^i)=O(kq^{2k})$. Since $\delta$ and $\theta$ commute, each
+application of $\delta$ raises the $z$-jet order by two: $\delta^nS$ involves
+$\theta^{2n}G|_{z=z^\ast}$ with unit leading coefficient.
+\item[\textup{(iii)}] \textup{(the actual obstruction)} The $z$-jets do not close: $\theta^2G$ and
+$\delta^2G$ escape the rank-$6$ module of Proposition~\ref{prop:deformation}, and by
+Corollary~\ref{cor:hypertranscendence} the tower $\{\theta^mG\}_m$ satisfies no algebraic relation
+over $\C(z)$. A finitely generated $\delta$-closed $\C(q)$-algebra containing $S$ would force an
+algebraic relation over $\C(q)$ among the diagonal restrictions
+$\{\theta^mG(q,z^\ast(q))\}_{m\le M}$ for some finite $M$ --- a statement equivalent to $S$ being
+differentially algebraic in $q$, for which there is no supporting structure and strong negative
+evidence: $S$ satisfies no algebraic differential equation of order $\le4$ and degree $\le5$ (full
+rank over $800$ series terms modulo a $31$-bit prime; \texttt{beta2\_diffalg\_search.py}).
+\end{itemize}
+Thus the Nesterenko route closes \emph{if and only if} $S$ is differentially algebraic in $q$; the
+obstruction is carried by the $z$-jet tower --- whose function-level independence is exactly
+Corollary~\ref{cor:hypertranscendence} --- and not by the $\sigma$-orbit, which collapses to rank
+two. \textup{(An earlier version of this proposition attributed the failure to the orbit spread;
+part (i) corrects this.)}
 \end{proposition}
 
 \begin{remark}[the value-level descent as a joint multiplicity estimate]
