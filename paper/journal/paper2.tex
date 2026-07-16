@@ -1151,8 +1151,11 @@ module over the forward $\sigma$-orbit:
 convolution of $(G,\theta G)$ against $E_2$-type weights. On the diagonal the orbit values collapse
 by \textup{(i)} into four generators $u_0,u_1,\theta$-analogues $v_0,v_1$ (the $v$'s obey the
 inhomogeneous transported recurrence $v_{j+2}=a_jv_{j+1}-qv_j-qQ^jz^\ast u_{j+1}$), but the collapse
-coefficients accumulate into transfer-product series that are no longer rational in $q$; the identity
-relocates, and does not remove, the obstruction. Since $\delta$ and $\theta$ commute, each
+coefficients accumulate into transfer-product series $A,B,C,D\in\Z[[q]]$ (integrality is immediate:
+transfer data and Lambert weights lie in $\Z[[q]]$) which are \emph{not} of any classical type: they
+satisfy no relation over $\operatorname{span}\{1,\varphi,\sum\sigma_3(n)q^n\}$ with rational-function
+coefficients of degree $\le8$, and no linear $q$-ODE of order $\le3$ and degree $\le6$ (exact linear
+algebra on $45$ coefficients). The identity relocates, and does not remove, the obstruction. Since $\delta$ and $\theta$ commute, each
 application of $\delta$ raises the $z$-jet order by two: $\delta^nS$ involves
 $\theta^{2n}G|_{z=z^\ast}$ with unit leading coefficient.
 \item[\textup{(iii)}] \textup{(the actual obstruction)} The $z$-jets do not close: $\theta^2G$ and
@@ -1227,7 +1230,15 @@ cancel $J$ correction terms gain decay $Q^{mJ}$ but pay the quadratic heights of
 arithmetic ratio stays $\le\tfrac12$ --- the balance of Proposition~\ref{prop:nogo} once more. The
 normal form is recorded as the sharpest single-sequence statement of what any future method must
 exploit: the entire rationality hypothesis is equivalent to the arithmetic of this one explicit
-sequence.
+sequence. The $\theta$-jet admits the same normal form one level up: along the backward orbit,
+\[
+   \frac{(\theta G)(q,Q^{-m}z_1)}{G(q,Q^{-m}z_1)}-m
+   \;\longrightarrow\;
+   -\,\frac{z_1\,\theta_Q'(-z_1)}{\theta_Q(-z_1)}
+   \qquad(\text{rate }Q^m;\ \text{verified to }10\text{ digits at }q=0.3),
+\]
+an exact theta log-derivative: each backward step increments $\theta\log\theta_Q(-z)$ by exactly one
+(quasi-periodicity), and the $\hat g$-correction vanishes in the limit.
 \end{remark}
 
 \begin{remark}[truncation roots, and the exact deficit]
