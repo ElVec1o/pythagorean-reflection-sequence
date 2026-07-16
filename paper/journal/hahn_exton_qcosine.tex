@@ -411,34 +411,46 @@ not apply as stated. Extending it past the margin for this irregular-at-$\infty$
 outstanding problem; the connection data needed for the irregular direction is available in closed form
 \cite{Bonfioli2}.
 
-\subsection{Integrality of the zero curve}
-The smallest zero, viewed as a function of the base, is an integer power series.
+\subsection{Integrality of the zero lattice}
+The zeros, viewed as functions of the base, are integer power series after the Newton-polygon
+rescale --- all of them, not only the first.
 
-\begin{theorem}[integrality of the zero curve]\label{thm:integrality}
-The branch $z_1(q)$ of the smallest positive zero of $G(q,\cdot)$ with $z_1(0)=1$ satisfies
+\begin{theorem}[integrality of the zero lattice]\label{thm:integrality}
+For every $k\ge1$ the rescaled $k$-th zero $u_k(q):=q^{2(k-1)}z_k(q)$ lies in $1+q\,\Z[[q]]$.
+In particular
 \[
    z_1(q)=1-q-q^3+q^4-q^5+2q^6-2q^7+4q^8-6q^9+8q^{10}-14q^{11}+21q^{12}-\cdots\ \in\ \Z[[q]] .
 \]
 \end{theorem}
 
 \begin{proof}
-Each coefficient $g_k=(-1)^kq^{k(k-1)}/(q;q)_{2k}$ lies in $\Z[[q]]$ (the reciprocal Pochhammer is
-the generating function of partitions into parts $\le2k$), and $g_k\equiv0\pmod{q^{k(k-1)}}$, so
-$G(q,z)=\sum_kg_kz^k$ converges $(q)$-adically for $z\in1+q\,\Z[[q]]$ and reduces at $q=0$ to
-$G(0,z)=1-z$. Since $G(0,1)=0$ and $G_z(0,1)=-1$ is a unit, Hensel's lemma in the complete local
-ring $\Z[[q]]$ yields a unique root $z_1\in1+q\,\Z[[q]]$. (Verified to order $q^{56}$; the
-coefficient signs alternate from $n=3$ on.)
+From $g_{k'}=(-1)^{k'}q^{k'(k'-1)}/(q;q)_{2k'}$ and the exponent identity
+$k'(k'-1)-2(k-1)k'+k(k-1)=(k'-k)(k'-k+1)$,
+\[
+   F_k(q,u):=q^{k(k-1)}\,G\bigl(q,\,u\,q^{-2(k-1)}\bigr)
+   =\sum_{k'\ge0}(-1)^{k'}q^{(k'-k)(k'-k+1)}\frac{u^{k'}}{(q;q)_{2k'}} .
+\]
+The exponent $(k'-k)(k'-k+1)$ is a product of consecutive integers, hence nonnegative, and vanishes
+exactly at $k'\in\{k-1,k\}$: each zero scale is carried by its own edge of the strictly convex
+Newton polygon of $G$. Since $1/(q;q)_{2k'}\in\Z[[q]]$ (partitions into parts $\le2k'$),
+$F_k\in\Z[[q]][[u]]$ with $F_k(0,u)=(-1)^{k-1}u^{k-1}(1-u)$; at $u=1$ the value vanishes and
+$\partial_uF_k(0,1)=(-1)^k$ is a unit, so Hensel's lemma in the complete local ring $\Z[[q]]$
+yields a unique root $u_k\in1+q\,\Z[[q]]$, which by the scale localization
+$z_k=q^{2(1-k)}(1+O(q^k))$ of \S\ref{sec:zeroproduct} is the $k$-th zero. (Verified to order
+$q^{300}$ for $k\le4$; the deviation $u_k-1$ first appears at order $k(2k-1)$, the $k$-th hexagonal
+number, for these $k$: $u_2=1-q^6-2q^8+q^9-\cdots$, $u_3=1-q^{15}-\cdots$,
+$u_4=1-q^{28}-\cdots$.)
 \end{proof}
 
 \begin{remark}[arithmetic and analytic features of the zero curve]\label{rem:zerocurve-arith}
 (a) The series is not rational and satisfies no algebraic relation $P(q,z_1)=0$ of bidegree
 $\le(6,5)$ (exact linear algebra on $57$ coefficients). (b) Its radius of convergence is
-$\approx0.5696$ ($|c_{56}/c_{55}|=1.7557$), limited by a complex branch point of the zero
-configuration; in particular $q^\ast=0.4494\ldots$ lies inside the disc of convergence. (c) The
+$|q_c|=0.5545\ldots$, set by the real fold point of item (e); in particular
+$q^\ast=0.4494\ldots$ lies inside the disc of convergence. (c) The
 integrality opens a \emph{linear-height} approximation ledger: at $q=s/t$ the $N$-th partial sum is
-rational with denominator $t^N$ and error $\asymp(q/R)^N$, $R\approx0.5696$, so the Liouville
+rational with denominator $t^N$ and error $\asymp(q/R)^N$, $R=0.5545\ldots$, so the Liouville
 criterion for the crossing $z_1(q)=2q(1-q)$ reads $s<R$ --- failing, but now only by the factor
-$s/R\approx1.76$ at $s=1$, the narrowest margin among all ledgers recorded for this problem; the
+$s/R\approx1.80$ at $s=1$, the narrowest margin among all ledgers recorded for this problem; the
 obstruction has become the sub-unit radius, i.e.\ the complex collision of zeros. (d) The integer
 coefficient sequence $1,-1,0,-1,1,-1,2,-2,4,-6,8,-14,21,-34,56,-88,148,-242,398,-669,1109,\dots$
 appears to be new.
@@ -474,6 +486,24 @@ precisely the class for which no arithmetic technology exists: the Chudnovsky--A
 and the recent arithmetic holonomy bounds of Calegari--Dimitrov--Tang, which are built for
 ``integrality plus structure'', all require holonomy, while P\'olya--Carlson requires radius exactly
 $1$. Integrality alone, without holonomy, is not currently actionable.
+
+(i) One exact relation ties the lattice across the bases $q$, $-q$, $q^2$: applying the zero
+product of Theorem~\ref{thm:zeroproduct-intro} at the three bases and using
+$(q;q^2)_\infty(-q;q^2)_\infty=(q^2;q^4)_\infty$,
+\[
+   \prod_{k\ge1}\varphi_k=1,\qquad
+   \varphi_k:=\frac{u_k(q)\,u_k(-q)}{u_k(q^2)} .
+\]
+The relation is not termwise: $\varphi_1=1+2q^6+4q^8+8q^{10}+18q^{12}+\cdots$,
+$\varphi_2=1-2q^6-\cdots$, $\varphi_3=1+2q^{20}+\cdots$, $\varphi_4=1-2q^{28}-\cdots$ (order
+$300$; adjacent leading defects cancel in pairs). No Mahler structure underlies it: $u_1$ satisfies
+no polynomial relation $P\bigl(q,u_1(q),u_1(q^d)\bigr)=0$ for $d=2,3$ with degrees up to
+$(24,2,2)$, $(16,3,3)$, $(10,4,4)$; the system $\{u_1,u_2,u_3\}$ admits no relation of the
+analogous bilinear profile (exact linear algebra on the $300$ integer coefficients, all matrices of
+full column rank); and no zero of the base-$q^2$ cosine or sine is a rational multiple of
+$q^{e}z_i(q)^{a}w_j(q)^{b}$ (or the sine-side analogue) for $|e|\le10$, $a+b\le2$ (numerical
+search at $60$ digits, cross-checked at two bases). Mahler's method --- intrinsically $q$-analytic,
+with no classical shadow --- thus finds no foothold on the zero curve at these degrees.
 
 Together, (c), (f), (g) and Remark~\ref{rem:thetabarrier} express one law from four sides:
 for every representation of this problem yet constructed, the arithmetic cost equals the analytic
