@@ -1239,6 +1239,21 @@ sequence. The $\theta$-jet admits the same normal form one level up: along the b
 \]
 an exact theta log-derivative: each backward step increments $\theta\log\theta_Q(-z)$ by exactly one
 (quasi-periodicity), and the $\hat g$-correction vanishes in the limit.
+
+The \emph{forward} orbit admits the complementary normal form, in the language of rational dynamics.
+The Riccati relation gives the explicit continued fraction
+$q/(a(z)-q/(a(Qz)-\cdots))$, which by Pincherle's theorem converges to the minimal-solution ratio
+$q\,H(Qz)/H(z)$; the zero condition $G(q,z_1)=0$ forces the \emph{dominant} ratios
+$w_n:=G(q,Q^{n+1}z_1)/G(q,Q^nz_1)$ to obey $w_1=a(z_1)$ exactly and thereafter the rational map
+\[
+   w_{n+1}=a(Q^nz_1)-\frac{q}{w_n},
+\]
+so that under the hypothesis $q,z_1\in\Q$ the entire forward orbit is an explicit $\Q$-orbit
+converging to the attracting fixed point $1$ with $w_n-1=\Theta(Q^n)$ (verified to $25$ digits at
+$q^\ast$). Its heights compound quadratically ($t^{O(n^2)}$), so the Liouville comparison
+$Q^n$ vs.\ $t^{-n^2}$ is again consistent: both normal forms --- backward theta-growth and forward
+rational dynamics --- conserve the balance of Proposition~\ref{prop:nogo}, and together they exhaust
+the one-orbit reformulations of the zero condition.
 \end{remark}
 
 \begin{remark}[truncation roots, and the exact deficit]
