@@ -1210,6 +1210,20 @@ theory of this paper supplies the irregular-$\infty$ data explicitly; the margin
 value-theoretic face of the multiplicity estimate of Remark~\ref{rem:valuedescent}, and is equal in
 strength to $\beta_2$-transcendence, not weaker. A detailed program is recorded in the repository
 (\texttt{paper/journal/qSS\_program.md}).
+
+One further mechanism deserves record, because it isolates which half of the Siegel scheme is
+actually blocked. Under the rationality hypothesis all tail power sums
+$\tau_p=\sum_{k\ge2}z_k^{-p}=\sigma_p-z^{\ast-p}$ are rational, and they are the moments of a
+positive measure with infinite support (unit atoms at $1/z_k$); hence every Hankel determinant
+$\det[\tau_{i+j+2}]_{i,j\le n}$ is \emph{strictly positive for free} --- no auxiliary nonvanishing
+argument is needed --- and, being a positive rational, is bounded below by the reciprocal of its
+denominator ($\le t^{8n^3/3+O(n^2)}$). Analytically these determinants decay like
+$Q^{n^3/3(1+o(1))}$ (atoms at $\approx Q^{k-1}$; verified: strictly positive with super-quadratic
+exponent growth at $q^\ast$). The comparison $2\log(t/s)>8\log t$ fails for every rational $q$: the
+positivity route conserves the ledger at a factor $4$. The instructive point is that
+\emph{nonvanishing was never the bottleneck} of any construction in this ledger --- positivity
+supplies it gratis here --- the entire difficulty of the problem resides in the size-versus-height
+comparison.
 \end{remark}
 
 \begin{remark}[backward-orbit normal form of the zero condition]
