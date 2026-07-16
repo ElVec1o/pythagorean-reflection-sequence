@@ -395,6 +395,39 @@ not apply as stated. Extending it past the margin for this irregular-at-$\infty$
 outstanding problem; the connection data needed for the irregular direction is available in closed form
 \cite{Bonfioli2}.
 
+\subsection{Integrality of the zero curve}
+The smallest zero, viewed as a function of the base, is an integer power series.
+
+\begin{theorem}[integrality of the zero curve]\label{thm:integrality}
+The branch $z_1(q)$ of the smallest positive zero of $G(q,\cdot)$ with $z_1(0)=1$ satisfies
+\[
+   z_1(q)=1-q-q^3+q^4-q^5+2q^6-2q^7+4q^8-6q^9+8q^{10}-14q^{11}+21q^{12}-\cdots\ \in\ \Z[[q]] .
+\]
+\end{theorem}
+
+\begin{proof}
+Each coefficient $g_k=(-1)^kq^{k(k-1)}/(q;q)_{2k}$ lies in $\Z[[q]]$ (the reciprocal Pochhammer is
+the generating function of partitions into parts $\le2k$), and $g_k\equiv0\pmod{q^{k(k-1)}}$, so
+$G(q,z)=\sum_kg_kz^k$ converges $(q)$-adically for $z\in1+q\,\Z[[q]]$ and reduces at $q=0$ to
+$G(0,z)=1-z$. Since $G(0,1)=0$ and $G_z(0,1)=-1$ is a unit, Hensel's lemma in the complete local
+ring $\Z[[q]]$ yields a unique root $z_1\in1+q\,\Z[[q]]$. (Verified to order $q^{56}$; the
+coefficient signs alternate from $n=3$ on.)
+\end{proof}
+
+\begin{remark}[arithmetic and analytic features of the zero curve]\label{rem:zerocurve-arith}
+(a) The series is not rational and satisfies no algebraic relation $P(q,z_1)=0$ of bidegree
+$\le(6,5)$ (exact linear algebra on $57$ coefficients). (b) Its radius of convergence is
+$\approx0.5696$ ($|c_{56}/c_{55}|=1.7557$), limited by a complex branch point of the zero
+configuration; in particular $q^\ast=0.4494\ldots$ lies inside the disc of convergence. (c) The
+integrality opens a \emph{linear-height} approximation ledger: at $q=s/t$ the $N$-th partial sum is
+rational with denominator $t^N$ and error $\asymp(q/R)^N$, $R\approx0.5696$, so the Liouville
+criterion for the crossing $z_1(q)=2q(1-q)$ reads $s<R$ --- failing, but now only by the factor
+$s/R\approx1.76$ at $s=1$, the narrowest margin among all ledgers recorded for this problem; the
+obstruction has become the sub-unit radius, i.e.\ the complex collision of zeros. (d) The integer
+coefficient sequence $1,-1,0,-1,1,-1,2,-2,4,-6,8,-14,21,-34,56,-88,148,-242,398,-669,1109,\dots$
+appears to be new.
+\end{remark}
+
 \subsection{The second-kind forms and the exact reduction}
 The $q$-Siegel construction for this class is explicit. For $N\ge1$ put
 \[
