@@ -586,8 +586,29 @@ rational second order, identical for both families:
    \mu_j=\Bigl(\tfrac{(2j-1)\pi}{2}\Bigr)^2\ \text{resp.}\ (j\pi)^2,
 \]
 with $A=-8/9$ matched to $12$ digits (fit residual $3\cdot10^{-18}$ out of sample) and
-$B=0.3232098733\ldots$; equivalently, the zero branches carry the universal first confluent
-correction $z_j(q)=(1-q)^2\mu_j\bigl(1-\tfrac59(1-q)+O((1-q)^2)\bigr)$. Third, the family sum
+$B=0.3232098733\ldots$ The constant is derived, and the derivation separates two regimes that
+must not be conflated. Writing $\varepsilon=1-q$, the logarithm of the ratio of the $k$-th term
+of $G(1-\varepsilon,\varepsilon^2y)$ to $(-1)^ky^k/(2k)!$ equals
+$\tfrac k2\varepsilon+c_2(k)\varepsilon^2+O(\varepsilon^3)$ with
+\[
+   c_2(k)=-\frac{k^3}{9}-\frac{k^2}{12}+\frac{23k}{72};
+\]
+to first order $G$ is $\cos\!\sqrt{y\,e^{\varepsilon/2}}$, so at \emph{fixed} $j$ the zero
+branch obeys $z_j=\varepsilon^2\mu_j(1-\tfrac12\varepsilon+O(\varepsilon^2))$: the fixed-$j$
+confluent correction is $-\tfrac12$ (measured $-0.5004$ at $\varepsilon=0.002$, converging
+linearly). The crossing, however, sits in the \emph{uniform} regime $\mu\varepsilon\approx2$,
+where the $k^3$-term acts as the operator $-\tfrac{\varepsilon^2}9D^3$, $D=(u/2)\,d/du$ on
+$\cos u$, $u=\sqrt{X}$; at the zeros $D^3\cos u=\tfrac{u^3}8\sin u+O(u^2)$, while even powers
+of $D$ are $\cos$-weighted and drop out (parity protects the order). With $m=\varepsilon\mu$
+the crossing equation $2(1-\varepsilon)e^{\varepsilon/2}=\varepsilon\mu(1-\varepsilon^2\mu/36)$
+becomes $m=2-\varepsilon+\varepsilon m^2/36+O(\varepsilon^2)$, whence $m=2-\tfrac89\varepsilon$:
+\[
+   A=-1+\tfrac19=-\tfrac89 ,
+\]
+identically for the sine family (its $\varepsilon^2$-coefficient carries the same leading
+$-k^3/9$). The two regimes carry different constants ($-\tfrac12$ versus the crossing's
+$-\tfrac89$), and $B$ is within reach of the same method (one more order of the operator
+calculus). Third, the family sum
 converges to
 \[
    T:=\sum_{j\ge1}\bigl(1-q^\ast_j\bigr)=0.7357490877157094\ldots\ (\pm3\cdot10^{-17},
