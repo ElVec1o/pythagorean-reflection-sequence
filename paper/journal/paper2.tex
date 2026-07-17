@@ -689,9 +689,14 @@ $q\to1$ --- which has no citable form in the literature and is plausibly the pro
 degenerate-saddle obstruction in Borel-summability costume. \emph{Arithmetically}, the Borel
 transform $b(t)=\sum(A_n/n!)t^n$ carries a sharp, exceptionless prime law: for every odd prime
 $p\le43$, $p\mid\operatorname{den}(b_n)$ exactly when $2n+1\ge p$, with $p$-adic valuation exactly
-$2$ at the onset $n=(p-1)/2$, and thereafter growing \emph{linearly} in $n$ (measured slopes
-$2.38,1.17,0.73,\dots$ for $p=3,5,7$). The linear (Legendre/factorial) growth --- not the
-logarithmic growth an $\mathrm{lcm}(1,\dots,2n)$ or $\zeta$-type denominator would give --- makes
+$2$ at the onset $n=(p-1)/2$, and thereafter non-vanishing with valuation growing linearly
+\emph{on average} (least-squares slopes $2.38,1.17,0.73,\dots$ for $p=3,5,7$; the valuation is
+non-monotone locally, e.g.\ $v_5$ dips $6\!\to\!5$ and $v_{17}$ dips $2\!\to\!1$). The clean-before-onset half admits a von Staudt--Clausen proof at the upstream Faulhaber layer
+(the polynomials $c_n(k)$ built from the calculus are $p$-integral for $n\le p-2$, so $p$ cannot
+enter before its onset), the descent to the $A_n$ and the exact onset value $2$ being verified to
+$p\le43$. The average-linear
+(Legendre/factorial) growth --- not the logarithmic growth an $\mathrm{lcm}(1,\dots,2n)$ or
+$\zeta$-type denominator would give --- makes
 $\operatorname{den}(A_n)$ super-geometric ($\log\operatorname{den}(A_n)/n$ rises $5.4\to10.2$ over
 $n\le20$, unbounded). Consequently $b(t)$ is \emph{not} a $G$-function (super-geometric denominators
 alone suffice, independent of holonomy), so $\sum A_nx^n$ is not of Andr\'e arithmetic-Gevrey type
@@ -1217,12 +1222,12 @@ component:
    \Bigl(\tfrac{\hat g(Qz)}{\hat g(z)}\Bigr)^{N-k_0}
    \Bigl(\tfrac{h(Qz)}{h(z)}\Bigr)^{k_0}.
 \]
-The $j$-th coefficient of the formal series on the right is
-$(N-k_0)\,b_jQ^{-j}\bigl(1+O(q^{cj})\bigr)$ with $b_j=q^{\,j-j(j-1)/2}/(q;q)_j$: the dominant term
-comes from $b_jQ^{-j}$ in $\hat g(Qz)/\hat g(z)$, all competing products being smaller by a factor
-$q^{cj}$ (verified: the ratio of the $j$-th coefficient to $(N-k_0)b_j(Q^{-j}-1)$ is
-$1-10^{-6}$ at $j=12$, $q=\tfrac13$). These coefficients grow like $q^{-j^2/2}$, whereas a rational
-function's expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
+The order-$j$ coefficient $d_j$ of $\hat g(Qz)/\hat g(z)$ satisfies
+$d_j\sim-b_j$ with $b_j=q^{\,(3j-j^2)/2}/(q;q)_j$ (verified: $d_j/(-b_j)=0.99986,\,0.99998,\,
+0.999998$ at $j=10,12,14$, $q=\tfrac13$, converging to $1$). Since this factor enters $r$ to the
+power $N-k_0\ge1$ against rational, hence geometrically bounded, prefactors, the coefficients of $r$
+inherit the growth $b_j\sim q^{-j^2/2}$, which is super-geometric, whereas a rational function's
+expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
 expansions are unique, no rational $r$ exists.
 
 \emph{Case $k_0=N$.} Then $r=(-z/q)^N\rho^N$ with $\rho:=h(Q\,\cdot)/h$ meromorphic on $\C^*$;
