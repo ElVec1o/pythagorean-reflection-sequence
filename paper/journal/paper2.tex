@@ -700,9 +700,18 @@ $E_2$ is non-holonomic yet $\delta$-algebraic). One computes
 $\delta S=\sum_k a_k\bigl(k^2-\tfrac{kq}{1-q}+L_k\bigr)$ with
 $L_k=\sum_{i=1}^{2k} iq^i/(1-q^i)\to(1-E_2)/24$: $S$ carries \emph{every} finite Eisenstein truncation
 $L_k$, not merely the limit, which is precisely why it escapes the modular differential ring. Whether
-$S$ is differentially algebraic is itself open (no algebraic ODE of order $\le3$, degree $\le5$ over
-$260$ series terms); the Nesterenko route is blocked \emph{modulo the differential transcendence of $S$}, which is itself
-open.
+$S$ is differentially algebraic is itself open, but the exclusion is now proof-grade over a wide
+window: $S$ satisfies no algebraic differential equation in the $\delta$-jets at any of the
+profiles (order, degree, $\deg_q$) $=(2,12,3)$, $(3,8,3)$, $(4,5,6)$, $(5,4,8)$, $(6,3,15)$,
+$(8,2,35)$, $(12,1,120)$ --- exact linear algebra on $2000$ coefficients modulo a prime, every
+matrix of full column rank; since a primitive integer relation survives reduction, full rank modulo
+one prime excludes a relation over $\Q$ at that profile outright. (The pipeline is validated on
+$E_2$, for which it recovers the $q$-Chazy equation
+$\delta^3E_2=E_2\delta^2E_2-\tfrac32(\delta E_2)^2$ at its exact profile.) The same exclusion
+holds verbatim for the zero branch $z_1(q)$. The Nesterenko route is blocked \emph{modulo the
+differential transcendence of $S$}, which is itself open --- and, with no functional equation in
+$q$ available for $S$ (no shift, $q$-difference, or Mahler equation exists), no current method can
+even attack it.
 
 \begin{remark}[reduction to a theta non-resonance]
 \label{rem:sharpest}
@@ -1164,9 +1173,12 @@ Corollary~\ref{cor:hypertranscendence} the tower $\{\theta^mG\}_m$ satisfies no 
 over $\C(z)$. A finitely generated $\delta$-closed $\C(q)$-algebra containing $S$ would force an
 algebraic relation over $\C(q)$ among the diagonal restrictions
 $\{\theta^mG(q,z^\ast(q))\}_{m\le M}$ for some finite $M$ --- a statement equivalent to $S$ being
-differentially algebraic in $q$, for which there is no supporting structure and strong negative
-evidence: $S$ satisfies no algebraic differential equation of order $\le4$ and degree $\le5$ (full
-rank over $800$ series terms modulo a $31$-bit prime; \texttt{beta2\_diffalg\_search.py}).
+differentially algebraic in $q$, for which there is no supporting structure and proof-grade
+negative evidence across a wide window: no algebraic differential equation at profiles up to
+$(2,12,3)$, $(3,8,3)$, $(4,5,6)$, $(5,4,8)$, $(6,3,15)$, $(8,2,35)$, $(12,1,120)$ in
+(order, degree, $\deg_q$), by full column rank on $2000$ coefficients modulo a prime
+(\texttt{beta2\_diffalg\_search.py}, \texttt{beta2\_ade\_sweep.py}; $E_2$/$q$-Chazy control
+recovered).
 \end{itemize}
 Thus the Nesterenko route closes \emph{if and only if} $S$ is differentially algebraic in $q$; the
 obstruction is carried by the $z$-jet tower --- whose function-level independence is exactly
