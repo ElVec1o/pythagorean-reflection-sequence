@@ -101,7 +101,7 @@ series of a planar right-triangle reflection group (OEIS A396406), which equals 
 $q^\ast$ is the least positive root of $S(q):=G(q,2q(1-q))$; equivalently $z^\ast:=2q^\ast(1-q^\ast)=
 z_1(q^\ast)$ is the smallest positive zero of $G(q^\ast,\cdot)$. Conjecture~\ref{conj:Z} implies
 $\beta_2$ transcendental. We prove unconditionally (Proposition~\ref{prop:effective}) that $q^\ast$ has
-no rational representation of denominator $\le10^{191}$.
+no rational representation of denominator $\le10^{1044}$.
 
 All numerical claims are reproducible from the repository above; each is annotated with the script that
 verifies it and the precision attained.
@@ -512,6 +512,37 @@ the same heights as the original (the swap preserves the exactness of
 Remark~\ref{rem:thetabarrier}).
 \end{remark}
 
+\begin{proposition}[sine side: integrality, lattice values, onsets]\label{prop:sinelattice}
+All of the above has a sine-side counterpart. (a) The zeros $w_k(q)$ of $H$ satisfy
+$v_k:=q^{2k-1}w_k(q)\in1+q\,\Z[[q]]$: with $(q^2;q)_{2k'}=(q;q)_{2k'+1}/(1-q)$,
+\[
+   q^{k(k-1)}\,H\bigl(q,\,v\,q^{1-2k}\bigr)/(1-q)
+   =\sum_{k'\ge0}(-1)^{k'}q^{(k'-k)(k'-k+1)}\frac{v^{k'}}{(q^2;q)_{2k'}},
+\]
+the same strictly convex exponent as in Theorem~\ref{thm:integrality}, so Hensel applies on every
+edge. (b) Writing $H(q,z)={}_1\phi_1(0;q^3;Q,qz)$, the dressing evaluates $H$ on its own lattice:
+for $m\ge0$,
+\[
+   H\bigl(q,q^{1-2m}\bigr)=(-1)^m\,\frac{(Q;Q)_\infty}{q\,(q^3;Q)_\infty}
+   \sum_{r\ge0}\frac{(-1)^r\,q^{(m+r+1)^2}}{(Q;Q)_r\,(Q;Q)_{m+r}},
+\]
+so $\operatorname{ord}_qH(q,q^{1-2m})=(m+1)^2-1$. (c) Consequently
+$v_k=1-q^{\,k(2k+1)}(1+O(q))$ for every $k\ge1$. (Verified: integrality and onsets to order
+$200$ for $k\le4$; the closed form to $44$ digits at $q=0.3$.)
+\end{proposition}
+
+\begin{remark}[the triangular law]\label{rem:triangular}
+$k(2k-1)=T_{2k-1}$ and $k(2k+1)=T_{2k}$ are consecutive triangular numbers, so the deviation
+onsets of the two interleaved zero lattices are
+\[
+   \operatorname{onset}(u_k-1)=T_{2k-1},\qquad
+   \operatorname{onset}(v_k-1)=T_{2k},
+\]
+with leading coefficient $-1$ in both families: between them, the cosine and sine lattices switch
+on at every triangular number exactly once, alternating between the families. (Verified through
+$u_8$, i.e.\ $T_{15}=120$.)
+\end{remark}
+
 \begin{remark}[arithmetic and analytic features of the zero curve]\label{rem:zerocurve-arith}
 (a) The series is not rational and satisfies no algebraic relation $P(q,z_1)=0$ of bidegree
 $\le(6,5)$ (exact linear algebra on $57$ coefficients). (b) Its radius of convergence is
@@ -715,7 +746,7 @@ non-rationality statement, proved by certified interval arithmetic.
 \begin{proposition}[effective non-rationality of $q^\ast$]
 \label{prop:effective}
 The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
-$t\le10^{191}$. Consequently, if $\beta_2=u/v$ in lowest terms then $u>10^{95}$.
+$t\le10^{1044}$. Consequently, if $\beta_2=u/v$ in lowest terms then $u>10^{522}$.
 \end{proposition}
 
 \begin{proof}
@@ -724,15 +755,17 @@ All steps are certified interval arithmetic (outward rounding; \texttt{mpmath.iv
 $(q;q)_{2k}\ge(1-2q)/(1-q)>0$ for $q<\tfrac12$ and term ratios $<\tfrac12$ beyond the truncation.
 \textup{(i)} $S>0$ on $[0,0.40]$ ($400$ certified chunks). \textup{(ii)} $S'\le-1$ on $[0.40,0.46]$
 ($600$ certified chunks; $S'$ evaluated term-by-term with the logarithmic-derivative weights), so
-$S$ has at most one zero in $[0.40,0.46]$. \textup{(iii)} with $a=0.d_1\cdots d_{385}$ the
-$385$-digit truncation of $q^\ast$ and $b=a+2\cdot10^{-385}$, certified evaluation gives $S(a)>0>S(b)$;
-by \textup{(i)}--\textup{(ii)}, $q^\ast\in[a,b]$. \textup{(iv)} the interval $[a,b]$ contains the
-rational $s_0/t_0$ (Stern--Brocot minimal fraction) with $t_0\ge10^{192}$, verified by exact rational
-comparison, and certified $S(s_0/t_0)\ne0$. If $m/n\in[a,b]$ with $n\le10^{191}$ and $m/n\ne s_0/t_0$,
-then $|m/n-s_0/t_0|\ge1/(nt_0)\ge10^{-384}>b-a$, impossible; so $m/n=s_0/t_0$, whence
-$n=t_0>10^{191}$, a contradiction. Thus no rational with denominator $\le10^{191}$ lies in $[a,b]$
-at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
-$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{191}$.
+$S$ has at most one zero in $[0.40,0.46]$. \textup{(iii)} with $c$ the
+$2090$-digit truncation of $q^\ast$, $a=c-2\cdot10^{-2090}$ and $b=c+2\cdot10^{-2090}$, certified
+evaluation gives $S(a)>0>S(b)$ (working precision $2130$ digits, series tail enclosed in
+$\pm10^{-2125}$); by \textup{(i)}--\textup{(ii)}, $q^\ast\in[a,b]$. \textup{(iv)} the interval
+$[a,b]$ contains the rational $s_0/t_0$ (Stern--Brocot construction) with
+$9.5\cdot10^{1044}<t_0<10^{1045}$, verified by exact rational comparison, and certified
+$S(s_0/t_0)\ne0$. If $m/n\in[a,b]$ with $n\le10^{1044}$ and $m/n\ne s_0/t_0$, then
+$|m/n-s_0/t_0|\ge1/(nt_0)>10^{-2089}>b-a=4\cdot10^{-2090}$, impossible; so $m/n=s_0/t_0$, whence
+$n=t_0>10^{1044}$, a contradiction. Thus no rational with denominator $\le10^{1044}$ lies in
+$[a,b]$ at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
+$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{1044}$.
 \end{proof}
 
 

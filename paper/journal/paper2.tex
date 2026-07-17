@@ -1351,7 +1351,7 @@ $\rho=\tfrac12$ wall.
 \begin{proposition}[effective non-rationality of $q^\ast$]
 \label{prop:effective}
 The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
-$t\le10^{191}$. Consequently, if $\beta_2=u/v$ in lowest terms then $u>10^{95}$.
+$t\le10^{1044}$. Consequently, if $\beta_2=u/v$ in lowest terms then $u>10^{522}$.
 \end{proposition}
 
 \begin{proof}
@@ -1360,15 +1360,17 @@ All steps are certified interval arithmetic (outward rounding; \texttt{mpmath.iv
 $(q;q)_{2k}\ge(1-2q)/(1-q)>0$ for $q<\tfrac12$ and term ratios $<\tfrac12$ beyond the truncation.
 \textup{(i)} $S>0$ on $[0,0.40]$ ($400$ certified chunks). \textup{(ii)} $S'\le-1$ on $[0.40,0.46]$
 ($600$ certified chunks; $S'$ evaluated term-by-term with the logarithmic-derivative weights), so
-$S$ has at most one zero in $[0.40,0.46]$. \textup{(iii)} with $a=0.d_1\cdots d_{385}$ the
-$385$-digit truncation of $q^\ast$ and $b=a+2\cdot10^{-385}$, certified evaluation gives $S(a)>0>S(b)$;
-by \textup{(i)}--\textup{(ii)}, $q^\ast\in[a,b]$. \textup{(iv)} the interval $[a,b]$ contains the
-rational $s_0/t_0$ (Stern--Brocot minimal fraction) with $t_0\ge10^{192}$, verified by exact rational
-comparison, and certified $S(s_0/t_0)\ne0$. If $m/n\in[a,b]$ with $n\le10^{191}$ and $m/n\ne s_0/t_0$,
-then $|m/n-s_0/t_0|\ge1/(nt_0)\ge10^{-384}>b-a$, impossible; so $m/n=s_0/t_0$, whence
-$n=t_0>10^{191}$, a contradiction. Thus no rational with denominator $\le10^{191}$ lies in $[a,b]$
-at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
-$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{191}$.
+$S$ has at most one zero in $[0.40,0.46]$. \textup{(iii)} with $c$ the
+$2090$-digit truncation of $q^\ast$, $a=c-2\cdot10^{-2090}$ and $b=c+2\cdot10^{-2090}$, certified
+evaluation gives $S(a)>0>S(b)$ (working precision $2130$ digits, series tail enclosed in
+$\pm10^{-2125}$); by \textup{(i)}--\textup{(ii)}, $q^\ast\in[a,b]$. \textup{(iv)} the interval
+$[a,b]$ contains the rational $s_0/t_0$ (Stern--Brocot construction) with
+$9.5\cdot10^{1044}<t_0<10^{1045}$, verified by exact rational comparison, and certified
+$S(s_0/t_0)\ne0$. If $m/n\in[a,b]$ with $n\le10^{1044}$ and $m/n\ne s_0/t_0$, then
+$|m/n-s_0/t_0|\ge1/(nt_0)>10^{-2089}>b-a=4\cdot10^{-2090}$, impossible; so $m/n=s_0/t_0$, whence
+$n=t_0>10^{1044}$, a contradiction. Thus no rational with denominator $\le10^{1044}$ lies in
+$[a,b]$ at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
+$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{1044}$.
 \end{proof}
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
