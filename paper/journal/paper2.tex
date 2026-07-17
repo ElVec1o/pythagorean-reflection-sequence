@@ -586,7 +586,7 @@ rational second order, identical for both families:
    \mu_j=\Bigl(\tfrac{(2j-1)\pi}{2}\Bigr)^2\ \text{resp.}\ (j\pi)^2,
 \]
 with $A=-8/9$ matched to $12$ digits (fit residual $3\cdot10^{-18}$ out of sample) and
-$B=0.3232098733\ldots$ The constant is derived, and the derivation separates two regimes that
+$B$ derived below. The constant $A$ is derived, and the derivation separates two regimes that
 must not be conflated. Writing $\varepsilon=1-q$, the logarithm of the ratio of the $k$-th term
 of $G(1-\varepsilon,\varepsilon^2y)$ to $(-1)^ky^k/(2k)!$ equals
 $\tfrac k2\varepsilon+c_2(k)\varepsilon^2+O(\varepsilon^3)$ with
@@ -607,8 +607,29 @@ becomes $m=2-\varepsilon+\varepsilon m^2/36+O(\varepsilon^2)$, whence $m=2-\tfra
 \]
 identically for the sine family (its $\varepsilon^2$-coefficient carries the same leading
 $-k^3/9$). The two regimes carry different constants ($-\tfrac12$ versus the crossing's
-$-\tfrac89$), and $B$ is within reach of the same method (one more order of the operator
-calculus). Third, the family sum
+$-\tfrac89$). One more order of the same calculus derives $B$ exactly. The ingredients:
+the exact prefactor $2(1-\varepsilon)e^{\varepsilon/2}=2-\varepsilon-\tfrac34\varepsilon^2-\cdots$;
+the cubic coefficient $c_3(k)=-\tfrac{k^3}9-\tfrac{k^2}{12}+\tfrac{17k}{72}$ (the $m^3$-terms
+cancel in its defining sum, so $c_3$ shares the leading $-k^3/9$); the quartic
+$c_4(k)=\tfrac{k^5}{450}+O(k^4)$ together with $\tfrac12c_2(D)^2=\tfrac{D^6}{162}+\tfrac{D^5}{108}+\cdots$;
+and one subtlety: at order $\varepsilon^6u^9$ the cube $\tfrac16(c_2(D)\varepsilon^2)^3$
+contributes $+\tfrac{u^9}{2239488}\sin u$ through the leading term of $D^9$, cancelling the
+$\delta^3/6$ of the cosine expansion \emph{identically} --- truncating the exponential before the
+cube gives a spurious $m^5$-term. With that cancellation the crossing equation closes as
+$m=2-\tfrac89\varepsilon-\tfrac{1891}{8100}\varepsilon^2+O(\varepsilon^3)$, and inversion gives
+\[
+   B=2m_2+\tfrac{64}{81}=\frac{1309}{4050}=0.3232098765432\ldots,
+\]
+confirmed by a five-order free fit to the computed roots: $B=0.3232098765429\ldots$ agrees to
+$13$ digits (with $A=-8/9$ simultaneously reproduced to $17$), and the $(A,B)$-constrained fit has
+out-of-sample residuals below $4\cdot10^{-16}$. The accumulation law of the $\beta_2$ family
+therefore begins
+\[
+   1-q^\ast_j=\frac{2}{\mu_j}\Bigl(1-\frac{8}{9\mu_j}+\frac{1309}{4050\,\mu_j^2}
+   +O(\mu_j^{-3})\Bigr),
+\]
+with both corrections rational and derived; the next constant, $C=-0.474535704766\ldots$
+(measured), awaits the same treatment. Third, the family sum
 converges to
 \[
    T:=\sum_{j\ge1}\bigl(1-q^\ast_j\bigr)=0.7357490877157094\ldots\ (\pm3\cdot10^{-17},
