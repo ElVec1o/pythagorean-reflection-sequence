@@ -516,7 +516,7 @@ Remark~\ref{rem:thetabarrier}).
 All of the above has a sine-side counterpart. (a) The zeros $w_k(q)$ of $H$ satisfy
 $v_k:=q^{2k-1}w_k(q)\in1+q\,\Z[[q]]$: with $(q^2;q)_{2k'}=(q;q)_{2k'+1}/(1-q)$,
 \[
-   q^{k(k-1)}\,H\bigl(q,\,v\,q^{1-2k}\bigr)/(1-q)
+   q^{k(k-1)}\,H\bigl(q,\,v\,q^{1-2k}\bigr)
    =\sum_{k'\ge0}(-1)^{k'}q^{(k'-k)(k'-k+1)}\frac{v^{k'}}{(q^2;q)_{2k'}},
 \]
 the same strictly convex exponent as in Theorem~\ref{thm:integrality}, so Hensel applies on every
@@ -542,6 +542,33 @@ with leading coefficient $-1$ in both families: between them, the cosine and sin
 on at every triangular number exactly once, alternating between the families. (Verified through
 $u_8$, i.e.\ $T_{15}=120$.)
 \end{remark}
+
+\begin{proposition}[stable deviation law]\label{prop:stablelaw}
+The two deviation series stabilize, $q$-adically as $k\to\infty$, to one and the same
+eta-quotient:
+\[
+   \bigl(1-u_k(q)\bigr)q^{-T_{2k-1}}\ \longrightarrow\ \frac1{(q^2;q^2)_\infty^{2}}\
+   \longleftarrow\ \bigl(1-v_k(q)\bigr)q^{-T_{2k}} ,
+\]
+whose coefficients $1,2,5,10,20,36,\dots$ count two-colored partitions. Measured agreement depth:
+order $2k-2$ on the cosine side ($k\le6$) and $2k-1$ on the sine side ($k\le5$).
+\end{proposition}
+
+\begin{proof}[Sketch]
+Newton's first correction gives $1-u_k=F_k(q,1)/\partial_uF_k(q,1)\,(1+O(q^{T_{2k-1}}))$. The
+numerator limit is Proposition~\ref{prop:latticevalues}: $(-1)^kF_k(q,1)q^{-T_{2k-1}}\to
+1/(q;Q)_\infty$ (cosine), resp.\ $1/(q^3;Q)_\infty$ (sine). In the denominator the terms
+$k'=k+j$ and $k'=k-j-1$ carry the same exponent $q^{j(j+1)}$ with opposite signs and weights
+$k+j$, $k-j-1$, so
+\[
+   (-1)^k\partial_uF_k(q,1)\ \longrightarrow\
+   \frac{\sum_{j\ge0}(-1)^j(2j+1)\,q^{j(j+1)}}{(q;q)_\infty}
+   =\frac{(q^2;q^2)_\infty^{3}}{(q;q)_\infty}
+\]
+by Jacobi's identity (sine side: $(q^2;q)_\infty$ in place of $(q;q)_\infty$). The quotients
+collapse to $1/(Q;Q)_\infty^2$ in both cases: the $(1-q)$'s cancel between
+$1/(q^3;Q)_\infty=(1-q)(Q;Q)_\infty/(q;q)_\infty$ and $(q^2;q)_\infty=(q;q)_\infty/(1-q)$.
+\end{proof}
 
 \begin{remark}[arithmetic and analytic features of the zero curve]\label{rem:zerocurve-arith}
 (a) The series is not rational and satisfies no algebraic relation $P(q,z_1)=0$ of bidegree
