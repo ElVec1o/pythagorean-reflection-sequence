@@ -658,26 +658,50 @@ truncation, where truncation floor and first transseries term coincide in scale
 so the head residual $-0.008(4)$ \emph{cannot} be attributed to a nonperturbative sector on
 present data. That cost has now been paid: the crossing calculus has been automated in exact rational
 arithmetic (weight-graded formal Newton for the zero shift; parity and residual controls exact),
-producing the law's coefficients through order twenty --- \emph{all rational}, e.g.\
+producing the law's coefficients through order twenty-two --- \emph{all rational}, e.g.\
 $A_3=-1695089/3572100$ (whose denominator $2^23^65^27^2$ explains the failed PSLQ) and
-$A_4=10199641/535815000$, with factorial growth $|A_n|\sim n!\,|t_0|^{-n}$, $|t_0|\approx2.6$
-(full table in the repository). With twenty-one exact coefficients the Borel geometry resolves:
-three complex-conjugate singularity pairs at $t\approx1.53\pm2.05i$, $0.95\pm2.45i$,
-$2.24\pm1.67i$ and nothing on the positive axis --- the Laplace path is unobstructed, so classical
-Borel summability is expected, and the data confirm it where testable: at the sine head the
-Pad\'e--Borel ladder converges $1.7\cdot10^{-6}\to3.7\cdot10^{-11}$ (any transseries prefactor
-$\lesssim10^{-6}$ unless phase-suppressed), while at the cosine head the plain ladder reaches its
-approximation wall at $\sim10^{-3}$ with residuals oscillating about zero. We therefore pose the
+$A_4=10199641/535815000$, with factorial growth $|A_n|\sim n!\,|t_0|^{-n}$, $|t_0|$ of order $2.6$
+but only oscillating, not convergent (full table in the repository). With these coefficients a
+Pad\'e--Borel estimate places the transform's nearest singularities as complex-conjugate pairs near
+$|t|\approx2.6$ (off the positive real axis), with the positive axis apparently clear; this is a
+$21$--$23$-coefficient estimate, not a proof, so Borel summability on $\R^+$ is indicated but not
+established. Where testable the resummation succeeds: at the sine head the Pad\'e--Borel ladder
+converges $1.7\cdot10^{-6}\to3.7\cdot10^{-11}$ (any transseries prefactor $\lesssim10^{-6}$ unless
+phase-suppressed), while at the cosine head the plain ladder reaches its approximation wall at
+$\sim10^{-3}$ with residuals oscillating about zero. We therefore pose the
 \emph{Borel representation conjecture}: $1-q^\ast_j=(2/\mu_j)\,\mathcal S(1/\mu_j)$ for both
 families and all $j$, where $\mathcal S$ is the Borel--Laplace sum of the explicit rational series
 $\sum A_nx^n$; in particular
 \[
    q^\ast\;=\;1-\frac{8}{\pi^2}\,\mathcal S\!\Bigl(\frac{4}{\pi^2}\Bigr),
 \]
-the first exact (conjectural) bridge between $q^\ast$ and $\pi^2$-arithmetic. Its proof --- Borel
-summability of the crossing expansion with remainder control down to $\mu_1$ --- is a concrete,
-finite analytic program; its Diophantine exploitation would require a value theory for Borel sums
-of rational series, which does not yet exist but now has, in this constant, a canonical target. Third, the family sum
+the first exact (conjectural) bridge between $q^\ast$ and $\pi^2$-arithmetic. Numerically the head
+representation is confirmed to $\sim10^{-4}$ by conformal-map Borel resummation (the residual
+crosses zero smoothly with no plateau above the estimator scatter), and the \emph{same} resummation
+machinery reproduces the three lower-$x$ heads to $10^{-13}$--$10^{-26}$; the coefficients are now
+computed through $A_{22}$, still rational (e.g.\ $A_{21}$, $A_{22}$ have denominators
+$\sim10^{93}$), consistent with the rationality of the expansion at every order.
+
+Two honest boundaries frame the bridge. \emph{Analytically}, its proof is \emph{not} a
+cite-the-theorems exercise: it reduces to a single hard lemma --- a $q$-uniform, turning-point
+(Olver/Airy-grade) factorial remainder bound $|A_n|\le C\sigma^nn!$ for the Hahn--Exton crossing as
+$q\to1$ --- which has no citable form in the literature and is plausibly the program's recurring
+degenerate-saddle obstruction in Borel-summability costume. \emph{Arithmetically}, the Borel
+transform $b(t)=\sum(A_n/n!)t^n$ carries a sharp, exceptionless prime law: for every odd prime
+$p\le43$, $p\mid\operatorname{den}(b_n)$ exactly when $2n+1\ge p$, with $p$-adic valuation exactly
+$2$ at the onset $n=(p-1)/2$, and thereafter growing \emph{linearly} in $n$ (measured slopes
+$2.38,1.17,0.73,\dots$ for $p=3,5,7$). The linear (Legendre/factorial) growth --- not the
+logarithmic growth an $\mathrm{lcm}(1,\dots,2n)$ or $\zeta$-type denominator would give --- makes
+$\operatorname{den}(A_n)$ super-geometric ($\log\operatorname{den}(A_n)/n$ rises $5.4\to10.2$ over
+$n\le20$, unbounded). Consequently $b(t)$ is \emph{not} a $G$-function (super-geometric denominators
+alone suffice, independent of holonomy), so $\sum A_nx^n$ is not of Andr\'e arithmetic-Gevrey type
+and lies outside the $G$-function, $E$-function, and $E$-operator (Fischler--Rivoal) classes
+entirely. The closest existing frame, the $E$-operator theory, has exactly one blocking gap --- the
+hypothesis that $b$ is a $G$-function --- which the prime law refutes rather than supplies.
+The missing tool is therefore genuinely new, not an incremental hypothesis-removal: a value theory
+for Borel--Laplace sums whose Borel transform is non-holonomic with factorial denominators,
+evaluated at a point ($4/\pi^2$) transcendental over $\Q$. This constant is a canonical first target
+for such a theory. Third, the family sum
 converges to
 \[
    T:=\sum_{j\ge1}\bigl(1-q^\ast_j\bigr)=0.7357490877157094\ldots\ (\pm3\cdot10^{-17},
