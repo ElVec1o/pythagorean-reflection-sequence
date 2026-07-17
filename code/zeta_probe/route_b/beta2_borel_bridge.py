@@ -29,3 +29,23 @@ route D3.5 on the q-side (32-digit reproduction, no closure), now LOCALIZED to a
 measured 1.2% of the constant. The sixth-technology spec sharpens: it must control an
 e^{-pi^2/2}-scale correction with provable arithmetic.
 """
+
+# ============================================================================
+# v2.12.19 CORRECTION (ERROR #21, self-caught by the extraction attempt):
+# the v2.12.18 header's "98.8% perturbative / 1.2% nonperturbative" decomposition
+# was OVERINTERPRETATION. The transseries-prefactor extraction refuted it:
+#  - gaps at mu = 2.47, 9.87, 22.2, 39.5 (both heads + both second members):
+#    7.9e-3, 1.7e-6, 4.6e-9, 7.4e-11  ([3/3]; Pade-order spread factor 4-100)
+#  - log-slopes between consecutive samples: 1.14, 0.48, 0.24
+#    vs TRUNCATION signature 7/mu = 1.17, 0.47, 0.24: THREE-POINT EXACT MATCH
+#    vs transseries e^{-beta mu}: would need beta halving each step -- REFUTED.
+#  => the residuals are the x^7-tail of the divergent series (perturbative
+#     truncation), NOT a measured nonperturbative signal.
+#  - At the head, 7 coefficients sit AT optimal truncation, where truncation floor
+#    and first transseries term coincide in scale BY DESIGN (e^{-t0 mu1} ~ 0.01):
+#    the head residual -0.008(4) cannot be attributed to either on present data.
+# COST OF THE BRIDGE, QUANTIFIED: exact perturbative coefficients through order
+# ~15-20 (third-and-higher-order crossing calculus) are needed before the
+# transseries becomes visible at the head. Until then: the rational pi^2-series
+# accounts for the head to 1-3%; the remainder is scale-degenerate.
+# ============================================================================
