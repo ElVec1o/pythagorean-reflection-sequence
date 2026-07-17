@@ -437,10 +437,80 @@ $F_k\in\Z[[q]][[u]]$ with $F_k(0,u)=(-1)^{k-1}u^{k-1}(1-u)$; at $u=1$ the value 
 $\partial_uF_k(0,1)=(-1)^k$ is a unit, so Hensel's lemma in the complete local ring $\Z[[q]]$
 yields a unique root $u_k\in1+q\,\Z[[q]]$, which by the scale localization
 $z_k=q^{2(1-k)}(1+O(q^k))$ of \S\ref{sec:zeroproduct} is the $k$-th zero. (Verified to order
-$q^{300}$ for $k\le4$; the deviation $u_k-1$ first appears at order $k(2k-1)$, the $k$-th hexagonal
-number, for these $k$: $u_2=1-q^6-2q^8+q^9-\cdots$, $u_3=1-q^{15}-\cdots$,
-$u_4=1-q^{28}-\cdots$.)
+$q^{300}$ for $k\le4$: $u_2=1-q^6-2q^8+q^9-\cdots$, $u_3=1-q^{15}-\cdots$,
+$u_4=1-q^{28}-\cdots$. The onset law visible here is proved next.)
 \end{proof}
+
+\subsection{Lattice values and the hexagonal law}
+The deviation $u_k-1$ begins exactly at the $k$-th hexagonal number $k(2k-1)$. This reduces to, and
+is proved by, an exact evaluation of $G$ at its own lattice points.
+
+\begin{lemma}[parameter--argument swap]\label{lem:swap}
+For $|Q|<1$,
+$(b;Q)_\infty\,{}_1\phi_1(0;b;Q,z)$ is symmetric in $(b,z)$; equivalently
+\begin{equation}\label{eq:dressing}
+   (q;Q)_\infty\,G(q,z)=\sum_{n\ge0}\frac{(-1)^nq^{n^2}}{(Q;Q)_n}\,(zQ^n;Q)_\infty .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+In $(b;Q)_\infty\,{}_1\phi_1(0;b;Q,z)=\sum_n(-1)^nQ^{\binom n2}z^n\,(bQ^n;Q)_\infty/(Q;Q)_n$
+expand $(bQ^n;Q)_\infty=\sum_i(-1)^iQ^{\binom i2}(bQ^n)^i/(Q;Q)_i$ (Euler); since
+$\binom n2+\binom i2+ni=\binom{n+i}2$, the double sum is
+$\sum_{n,i}(-1)^{n+i}Q^{\binom{n+i}2}z^nb^i/\bigl((Q;Q)_n(Q;Q)_i\bigr)$, manifestly symmetric.
+For \eqref{eq:dressing} take $b=q$ and use $(z;Q)_\infty/(z;Q)_n=(zQ^n;Q)_\infty$ on the swapped
+side, with $Q^{\binom n2}q^n=q^{n^2}$. (Verified to $40$ digits at generic $(b,z)$.)
+\end{proof}
+
+\begin{proposition}[square vanishing at the lattice]\label{prop:latticevalues}
+For every $m\ge0$,
+\[
+   G\bigl(q,Q^{-m}\bigr)
+   =(-1)^{m+1}\,\frac{(Q;Q)_\infty}{(q;Q)_\infty}
+    \sum_{r\ge0}\frac{(-1)^r\,q^{(m+1+r)^2}}{(Q;Q)_r\,(Q;Q)_{m+1+r}} ,
+\]
+so $\operatorname{ord}_qG(q,Q^{-m})=(m+1)^2$ exactly, with leading coefficient $(-1)^{m+1}$.
+\end{proposition}
+
+\begin{proof}
+Evaluate \eqref{eq:dressing} at $z=Q^{-m}$. The factor $(Q^{n-m};Q)_\infty$ vanishes for $n\le m$
+and equals $(Q;Q)_\infty/(Q;Q)_{n-m-1}$ for $n\ge m+1$; reindexing $n=m+1+r$ gives the display.
+The $q$-order of the $r$-th term is $(m+1+r)^2$, strictly increasing in $r$, and all other factors
+are units in $\Z[[q]]$, so no cancellation can occur and the $r=0$ term decides. (Verified as an
+identity in $\Z[[q]]$ to order $250$ for $m\le4$, and to $50$ digits at $q=0.3$.)
+\end{proof}
+
+\begin{corollary}[hexagonal law]\label{cor:hexagonal}
+For every $k\ge1$,
+\[
+   u_k(q)=1-q^{\,k(2k-1)}\bigl(1+O(q)\bigr):
+\]
+the deviation of the $k$-th rescaled zero from $1$ begins exactly at the $k$-th hexagonal number,
+with leading coefficient $-1$.
+\end{corollary}
+
+\begin{proof}
+$F_k(q,1)=q^{k(k-1)}G(q,Q^{1-k})=(-1)^kq^{k(2k-1)}(1+O(q))$ by
+Proposition~\ref{prop:latticevalues} at $m=k-1$ (note $k(k-1)+k^2=k(2k-1)$), while
+$\partial_uF_k(q,1)=(-1)^k(1+O(q))$. The first Newton correction from $u=1$ is therefore
+$-q^{k(2k-1)}(1+O(q))$, and all subsequent corrections are $O(q^{2k(2k-1)})$. This proves the
+onsets $1,6,15,28$ observed above and predicts $u_5=1-q^{45}-\cdots$, confirmed directly.
+\end{proof}
+
+\begin{remark}\label{rem:latticevalues}
+Three readings of Proposition~\ref{prop:latticevalues}. (a) The $r$-sum is again a Hahn--Exton
+series, now of \emph{integer} order $m+1$ in base $Q$: the $q$-cosine ($\nu=-\tfrac12$) sampled
+on its own zero lattice reproduces the integer-order family --- an order reflection
+$-\tfrac12\mapsto m+1$. (b) Along any backward orbit $z=Q^{-m}w$, \eqref{eq:dressing} gives
+$G(Q^{-m}w)\sim(Q^{-m}w;Q)_\infty/(q;Q)_\infty$ as $m\to\infty$, with constant
+$(w;Q)_\infty(Q/w;Q)_\infty/(q;Q)_\infty=\theta_Q(-w)/(q;q)_\infty$ by the triple product ---
+recovering the connection constant of the backward normal form independently. (c) At any zero
+$z_k(q)$ of $G$, \eqref{eq:dressing} transfers the vanishing into the \emph{parameter} slot:
+${}_1\phi_1\bigl(0;z_k(q);Q,q\bigr)=0$. At the crossing $z_1(q^\ast)=2q^\ast(1-q^\ast)$ of the
+reductio this is a ${}_1\phi_1$-vanishing with all-rational parameters; its truncation ledger has
+the same heights as the original (the swap preserves the exactness of
+Remark~\ref{rem:thetabarrier}).
+\end{remark}
 
 \begin{remark}[arithmetic and analytic features of the zero curve]\label{rem:zerocurve-arith}
 (a) The series is not rational and satisfies no algebraic relation $P(q,z_1)=0$ of bidegree
