@@ -554,20 +554,50 @@ whose coefficients $1,2,5,10,20,36,\dots$ count two-colored partitions. Measured
 order $2k-2$ on the cosine side ($k\le6$) and $2k-1$ on the sine side ($k\le5$).
 \end{proposition}
 
-\begin{proof}[Sketch]
-Newton's first correction gives $1-u_k=F_k(q,1)/\partial_uF_k(q,1)\,(1+O(q^{T_{2k-1}}))$. The
-numerator limit is Proposition~\ref{prop:latticevalues}: $(-1)^kF_k(q,1)q^{-T_{2k-1}}\to
-1/(q;Q)_\infty$ (cosine), resp.\ $1/(q^3;Q)_\infty$ (sine). In the denominator the terms
-$k'=k+j$ and $k'=k-j-1$ carry the same exponent $q^{j(j+1)}$ with opposite signs and weights
-$k+j$, $k-j-1$, so
+\begin{proof}
+The convergence asserted is $q$-adic (coefficient-by-coefficient in $\Z[[q]]$), so it suffices to
+show each of three exact power-series limits below holds with agreement depth $\to\infty$ in $k$;
+no analytic interchange is involved.
+
+\emph{Newton correction.} Since $u_k$ is the Hensel root of $F_k(q,\cdot)$ at $u=1$ with
+$F_k(q,1)=O(q^{T_{2k-1}})$ (Corollary~\ref{cor:hexagonal}) and $\partial_uF_k(q,1)$ a unit,
+one Newton step gives
+$1-u_k=F_k(q,1)/\partial_uF_k(q,1)\cdot(1+E_k)$ with $E_k=O(q^{T_{2k-1}})$ (the next correction is
+quadratic in $F_k(q,1)$). As $T_{2k-1}=k(2k-1)\to\infty$, $E_k\to0$ $q$-adically, so it suffices to
+evaluate the ratio $F_k(q,1)/\partial_uF_k(q,1)$ scaled by $q^{-T_{2k-1}}$.
+
+\emph{Numerator.} By Proposition~\ref{prop:latticevalues} at $m=k-1$,
 \[
-   (-1)^k\partial_uF_k(q,1)\ \longrightarrow\
-   \frac{\sum_{j\ge0}(-1)^j(2j+1)\,q^{j(j+1)}}{(q;q)_\infty}
-   =\frac{(q^2;q^2)_\infty^{3}}{(q;q)_\infty}
+   (-1)^kF_k(q,1)\,q^{-T_{2k-1}}
+   =\frac{(Q;Q)_\infty}{(q;Q)_\infty(Q;Q)_k}+O(q^{2k+1})
+   \ \xrightarrow{\ q\text{-adic}\ }\ \frac1{(q;Q)_\infty},
 \]
-by Jacobi's identity (sine side: $(q^2;q)_\infty$ in place of $(q;q)_\infty$). The quotients
-collapse to $1/(Q;Q)_\infty^2$ in both cases: the $(1-q)$'s cancel between
-$1/(q^3;Q)_\infty=(1-q)(Q;Q)_\infty/(q;q)_\infty$ and $(q^2;q)_\infty=(q;q)_\infty/(1-q)$.
+the $r$-th term of the lattice sum contributing at order $q^{(k+r)^2-k(2k-1)}$ so that $r\ge1$ is
+$O(q^{2k+1})$, and $(Q;Q)_k=(Q;Q)_\infty\bigl(1+O(q^{2k+2})\bigr)$. Agreement depth $2k+1$.
+
+\emph{Denominator.} In $\partial_uF_k(q,1)=\sum_{k'\ge0}(-1)^{k'}k'\,q^{(k'-k)(k'-k+1)}/(q;q)_{2k'}$
+the indices $k'=k+j$ and $k'=k-1-j$ share the exponent $(k'-k)(k'-k+1)=j(j+1)$ with opposite parity
+and weights $k+j$, $k-1-j$; their sum has weight $(k+j)-(k-1-j)=2j+1$, whence
+\[
+   (-1)^k\partial_uF_k(q,1)
+   =\frac{\sum_{j\ge0}(-1)^j(2j+1)q^{j(j+1)}}{(q;q)_\infty}+O(q^{2k-1})
+   \ \xrightarrow{\ q\text{-adic}\ }\ \frac{(q^2;q^2)_\infty^{3}}{(q;q)_\infty}
+\]
+by Jacobi's identity $\sum_{j\ge0}(-1)^j(2j+1)q^{j(j+1)}=(q^2;q^2)_\infty^3$. Agreement depth $2k-1$.
+
+\emph{Quotient.} Dividing and using the exact splitting $(q;q)_\infty=(q;Q)_\infty(Q;Q)_\infty$,
+\[
+   \frac{1/(q;Q)_\infty}{(q^2;q^2)_\infty^{3}/(q;q)_\infty}
+   =\frac{(q;q)_\infty}{(q;Q)_\infty(Q;Q)_\infty^{3}}
+   =\frac{(Q;Q)_\infty}{(Q;Q)_\infty^{3}}
+   =\frac1{(Q;Q)_\infty^{2}}=\frac1{(q^2;q^2)_\infty^{2}}.
+\]
+All three limits are exact with depth growing in $k$ and $E_k\to0$, so the product limit is exact;
+this proves the cosine case. The sine case is identical with the numerator limit
+$1/(q^3;Q)_\infty$ (Proposition~\ref{prop:sinelattice}) and $(q^2;q)_\infty=(q;q)_\infty/(1-q)$ in
+the denominator, the two $(1-q)$ factors cancelling to give the same $1/(q^2;q^2)_\infty^{2}$.
+(Numerically the cosine agreement depth is $2k-2$ through $k=6$ and the sine $2k-1$ through $k=5$,
+consistent with the depth-$(2k-1)$ bound above.)
 \end{proof}
 
 \begin{remark}[arithmetic and analytic features of the zero curve]\label{rem:zerocurve-arith}
