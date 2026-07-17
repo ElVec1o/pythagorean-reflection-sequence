@@ -575,14 +575,23 @@ $(q;q^2)_\infty(-q;q^2)_\infty=(q^2;q^4)_\infty$,
 \]
 The relation is not termwise: $\varphi_1=1+2q^6+4q^8+8q^{10}+18q^{12}+\cdots$,
 $\varphi_2=1-2q^6-\cdots$, $\varphi_3=1+2q^{20}+\cdots$, $\varphi_4=1-2q^{28}-\cdots$ (order
-$300$; adjacent leading defects cancel in pairs). No Mahler structure underlies it: $u_1$ satisfies
-no polynomial relation $P\bigl(q,u_1(q),u_1(q^d)\bigr)=0$ for $d=2,3$ with degrees up to
-$(24,2,2)$, $(16,3,3)$, $(10,4,4)$; the system $\{u_1,u_2,u_3\}$ admits no relation of the
-analogous bilinear profile (exact linear algebra on the $300$ integer coefficients, all matrices of
-full column rank); and no zero of the base-$q^2$ cosine or sine is a rational multiple of
-$q^{e}z_i(q)^{a}w_j(q)^{b}$ (or the sine-side analogue) for $|e|\le10$, $a+b\le2$ (numerical
-search at $60$ digits, cross-checked at two bases). Mahler's method --- intrinsically $q$-analytic,
-with no classical shadow --- thus finds no foothold on the zero curve at these degrees.
+$300$; adjacent leading defects cancel in pairs). No Mahler structure underlies it. With $2000$
+coefficients computed modulo a prime (a primitive integer relation survives reduction, so full rank
+modulo one prime excludes a rational relation outright), $u_1$ satisfies no polynomial relation
+$P\bigl(q,u_1(q),u_1(q^d)\bigr)=0$ for $d=2,3$ at bidegrees up to $(490,1,1)$, $(150,2,2)$,
+$(100,3,3)$, $(60,4,4)$, $(40,5,5)$, $(30,6,6)$, $(24,7,7)$, $(20,8,8)$; no order-two system
+relation $P\bigl(q,u_1(q),u_1(q^2),u_1(q^4)\bigr)=0$ at $(30,2,2,2)$, $(20,3,3,3)$; no
+difference--differential mix $P\bigl(q,u_1,\theta u_1,u_1(q^2)\bigr)=0$ at the same profiles; no
+quasi-modular coupling: $\{1,\;\theta\!\log u_1(q),\;\theta\!\log
+u_1(q^2),\;E_2(q),\;E_2(q^2),\;E_4(q)\}$ admits no $\Q(q)$-linear relation with polynomial
+coefficients of degree up to $399$ (so $u_1$ is not a hidden eta-quotient or $E_2$-ring object of
+level $2$); no linear relation among $\{1,\log u_1(q),\log u_1(q^2)\}$ to degree $665$; and no
+Mahler relation for the logarithmic derivative $\theta\!\log u_1$ itself up to $(150,2,2)$,
+$(100,3,3)$, $(60,4,4)$. Earlier and independently: the system $\{u_1,u_2,u_3\}$ admits no
+bilinear-profile relation ($300$ exact coefficients), and no zero of the base-$q^2$ cosine or sine
+is a rational multiple of $q^{e}z_i(q)^{a}w_j(q)^{b}$ for $|e|\le10$, $a+b\le2$ ($60$ digits, two
+bases). Mahler's method --- intrinsically $q$-analytic, with no classical shadow --- thus finds no
+foothold on the zero curve at any accessible complexity.
 
 (j) The fold is the natural point for a rationality reductio, because it is the unique point of
 the $(q,z)$-plane carrying \emph{two} vanishings ($G=\theta G=0$; a triple point $G=\theta
