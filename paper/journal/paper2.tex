@@ -573,6 +573,30 @@ in the limit'' while the first, the one of combinatorial interest, remains untou
 confluent boundary of the step-ratio mechanism made visible inside a single object. (Whether the
 higher roots are actual subdominant singularities of the original counting generating function is
 not verified here; the route-B dictionary is established only at the dominant one.)
+
+Three refinements (all computations at $115$ digits, $30$ cosine and $10$ sine members). First,
+the sine side has its own family, $H(q^{\mathrm s}_j,2q(1-q))=0$ with
+$1-q^{\mathrm s}_j\sim2/(j\pi)^2$ (law ratios $0.913,\dots,0.9991$ for $j\le10$), and the two
+families \emph{interlace}: $q^\ast_j<q^{\mathrm s}_j<q^\ast_{j+1}$ (verified $j\le9$); its
+head is $q^{\mathrm s}_1=0.815032640290\ldots$ Second, the accumulation law has an exact-looking
+rational second order, identical for both families:
+\[
+   1-q^\ast_j=\frac{2}{\mu_j}\Bigl(1-\frac{8}{9\mu_j}+\frac{B}{\mu_j^2}
+   +O(\mu_j^{-3})\Bigr),\qquad
+   \mu_j=\Bigl(\tfrac{(2j-1)\pi}{2}\Bigr)^2\ \text{resp.}\ (j\pi)^2,
+\]
+with $A=-8/9$ matched to $12$ digits (fit residual $3\cdot10^{-18}$ out of sample) and
+$B=0.3232098733\ldots$; equivalently, the zero branches carry the universal first confluent
+correction $z_j(q)=(1-q)^2\mu_j\bigl(1-\tfrac59(1-q)+O((1-q)^2)\bigr)$. Third, the family sum
+converges to
+\[
+   T:=\sum_{j\ge1}\bigl(1-q^\ast_j\bigr)=0.7357490877157094\ldots\ (\pm3\cdot10^{-17},
+   \text{ tail summed via the fitted law and Hurwitz zeta}),
+\]
+for which no relation with $\{1,\pi^{-2},\pi^{-4},\log2,\gamma,\pi^2/6\}$ exists at height
+$10^4$ within the stated uncertainty (and $T\ne2/e$): the classical tail is $\pi^2$-rational
+piece by piece, but the wild head shifts the sum off every tested constant --- a sum rule, if one
+exists, must come from global structure not yet visible.
 \end{remark}
 
 The failure pattern above is not an artifact of particular constructions; it is forced by exact
