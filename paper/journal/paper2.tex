@@ -691,17 +691,25 @@ transform $b(t)=\sum(A_n/n!)t^n$ carries a sharp, exceptionless prime law: for e
 $p\le43$, $p\mid\operatorname{den}(b_n)$ exactly when $2n+1\ge p$, with $p$-adic valuation exactly
 $2$ at the onset $n=(p-1)/2$, and thereafter non-vanishing with valuation growing linearly
 \emph{on average} (least-squares slopes $2.38,1.17,0.73,\dots$ for $p=3,5,7$; the valuation is
-non-monotone locally, e.g.\ $v_5$ dips $6\!\to\!5$ and $v_{17}$ dips $2\!\to\!1$). The clean-before-onset half is now essentially a theorem. Three facts combine: (i) the polynomials
-$c_n(k)$ built from the calculus are $p$-integral for $n\le p-2$ (von Staudt--Clausen at the
-Faulhaber layer); (ii) $A_n$ depends only on the calculus data through order $2n$ (confirmed for
-$n\le22$: capping the $c$-layer at $2n$ reproduces $A_n$ exactly, at $2n-1$ it does not); (iii) the
-assembly --- exponential, weight-graded Newton, and reversion --- introduces no prime $p$ at output
-order $n<p$, since the Bernoulli denominators of the Faulhaber sums acquire $p$ only when
-$(p-1)\mid2m$, i.e.\ $2m\ge p-1$, while all factorial and division indices stay below $p$. For
-$n<(p-1)/2$ one has $2n\le p-3$, so every ingredient is $p$-integral and hence $p\nmid
-\operatorname{den}(A_n)$ --- the clean-before-onset direction, for all $p$, modulo only the
-order-$2n$ dependence of (ii). The matching lower direction (onset \emph{exactly} at $(p-1)/2$, with
-$p$-adic valuation $2$) remains verified to $p\le43$. The average-linear
+non-monotone locally, e.g.\ $v_5$ dips $6\!\to\!5$ and $v_{17}$ dips $2\!\to\!1$). The clean-before-onset half is a theorem for all $p$. (i) The polynomials $c_n(k)$ built from the
+calculus are $p$-integral for $n\le p-2$ (von Staudt--Clausen at the Faulhaber layer). (ii) $A_n$
+depends only on the calculus data through order $2n$; this is now proved, in two steps. First, by
+series reversion $A_n$ is a function of $m_1,\dots,m_n$ alone (the order-$n$ inverse coefficient uses
+only the first $n$ forward coefficients; verified by perturbing $m_{>n}$). Second, $m_i$ depends only
+on $c_1,\dots,c_{2i}$: in the turning-point grading, where $k\sim\varepsilon^{-1/2}$ assigns
+$\varepsilon^au^b$ the weight $2a-b$ (physical order $=$ weight$/2$) and every operation is additive
+on weights, the polynomial $c_m$ enters at minimum weight $2m-\deg_k c_m$, attained by its
+top-degree term. Here $\deg_k c_m=m+[m\text{ even}]$: the degree-$m$ coefficient of the
+$\varepsilon^m$ log-ratio $\ell_m(i)$ equals $(-1)^m[x^m]\log\!\bigl((e^x-1)/x\bigr)$, which vanishes
+for every odd $m\ge3$ because $\log\!\bigl((e^x-1)/x\bigr)=\tfrac x2+\log\!\bigl(2\sinh(x/2)/x\bigr)$
+and the last term is \emph{even} in $x$; the Faulhaber sum then raises the $k$-degree by one. Hence
+$c_m$ has minimum weight $m-[m\text{ even}]$ and first reaches physical order $i$ only when $m\le2i$,
+so $m_i$ --- and therefore $A_n$ --- sees no $c_m$ with $m>2n$. (iii) The assembly introduces no
+prime $p$ at output order $n<p$: the Bernoulli denominators of the Faulhaber sums acquire $p$ only
+when $(p-1)\mid2m$, i.e.\ $2m\ge p-1$, and all factorial and division indices stay below $p$. For
+$n<(p-1)/2$ one has $2n\le p-3$, so every ingredient feeding $A_n$ is $p$-integral and
+$p\nmid\operatorname{den}(A_n)$. The matching lower direction (onset \emph{exactly} at $(p-1)/2$,
+with $p$-adic valuation $2$) remains verified to $p\le43$. The average-linear
 (Legendre/factorial) growth --- not the logarithmic growth an $\mathrm{lcm}(1,\dots,2n)$ or
 $\zeta$-type denominator would give --- makes
 $\operatorname{den}(A_n)$ super-geometric ($\log\operatorname{den}(A_n)/n$ rises $5.4\to10.2$ over
