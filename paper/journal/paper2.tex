@@ -302,8 +302,7 @@ $\int_{\R}e^{-u^2/(4\tau)}e^{iju}\,du=\sqrt{4\pi\tau}\,e^{-\tau j^2}$, is machin
 (\texttt{GaussHS.lean}, theorem \texttt{gaussian\_moment}; axioms \texttt{propext},
 \texttt{Classical.choice}, \texttt{Quot.sound}, no \texttt{sorry}).
 
-We caution that this representation, though exact and convenient, is \emph{not} an analytic shortcut ---
-a point where an earlier draft overreached. The amplitude $\Psi(\cdot,q)$ is entire in $\zeta$, but it is
+This representation, though exact and convenient, is \emph{not} an analytic shortcut. The amplitude $\Psi(\cdot,q)$ is entire in $\zeta$, but it is
 \emph{not} uniformly bounded as $q\to1^-$: on any fixed window it grows like $\cosh\!\bigl(w\sin(u/2)\bigr)$
 (numerically $|\Psi|$ already exceeds $300$ at $u=1,\ \tau=10^{-2}$), and its termwise limit
 $\cos(w\,e^{iu/2})$ \emph{differs} from $\Psi$ by an $O(1)$ factor at the dominant scale $j\sim\tau^{-1/2}$
@@ -658,23 +657,28 @@ truncation, where truncation floor and first transseries term coincide in scale
 so the head residual $-0.008(4)$ \emph{cannot} be attributed to a nonperturbative sector on
 present data. That cost has now been paid: the crossing calculus has been automated in exact rational
 arithmetic (weight-graded formal Newton for the zero shift; parity and residual controls exact),
-producing the law's coefficients through order twenty-two --- \emph{all rational}, e.g.\
+producing the law's coefficients through order thirty --- \emph{all rational}, e.g.\
 $A_3=-1695089/3572100$ (whose denominator $2^23^65^27^2$ explains the failed PSLQ) and
-$A_4=10199641/535815000$, with factorial growth $|A_n|\sim n!\,|t_0|^{-n}$, $|t_0|$ of order $2.6$
-but only oscillating, not convergent (full table in the repository). The Borel geometry, however, is \emph{not} determined by these coefficients, and an earlier reading
-of it must be withdrawn. Three tests agree that the sequence is still pre-asymptotic at $n=22$:
-$\log|A_n|/(n\log n)$ sits at $0.66$--$0.77$ without settling towards either $1$ (Gevrey-$1$) or $2$
-(Gevrey-$2$); the ratios $|b_n/b_{n-1}|$ of the Borel coefficients oscillate over two orders of
-magnitude; and the nearest Pad\'e--Borel singularity wanders across approximant orders
-($|t|=2.28,\,0.0067,\,0.034,\,0.083,\,0.129,\,0.283$ for $[5/5]$ through $[10/10]$, the higher
-orders producing spurious near-origin poles). The signs of $A_n$ are irregular, indicating complex
-singularities that this many terms cannot resolve. Consequently neither the Gevrey class of the
-crossing expansion nor the location of its Borel singularities is established: Borel summability on
-$\R^+$ is \emph{not} supported by the present data, and the Borel representation below should be
-read as a conjecture whose analytic premise is open. One structural constraint is available: by the
-weight lemma, only Bernoulli numbers of index $\lesssim n$ reach $A_n$ (a $B_j$ occurring in $c_m$
-sits at $k$-degree $\deg c_m-j$ and reaches $A_n$ only if $j\le2n-m+1$), which excludes the naive
-Gevrey-$2$ growth that $B_{2n}$ would otherwise force, but does not pin the class. Where testable the resummation succeeds: at the sine head the Pad\'e--Borel ladder
+$A_4=10199641/535815000$. The coefficients are computed by running the calculus over $\F_p$ and
+recovering each $A_n$ by rational reconstruction from twenty $62$-bit primes; the values are
+independently confirmed by extracting $A_n$ from the accumulation law applied to the roots
+themselves, computed to $105$ digits.
+
+The Borel geometry is not determined by these coefficients. At $n=30$ the sequence remains
+pre-asymptotic: $\log|A_n|/(n\log n)$ rises monotonically from $0.313$ at $n=14$ to $0.411$ at
+$n=30$, settling towards neither $1$ (Gevrey-$1$) nor $2$ (Gevrey-$2$). The nearest
+Pad\'e--Borel singularity increases steadily with approximant order,
+$|t|=2.61,\,2.56,\,2.96,\,3.09,\,3.33$ for $[6/6]$ through $[14/14]$, and a three-term recurrence
+fit, appropriate to a conjugate pair, gives $|t_0|=3.285,\,3.394,\,3.493,\,3.558$ with
+$\arg t_0=60.8^\circ,\,61.7^\circ,\,62.4^\circ,\,62.3^\circ$ at $n_0=22,25,28,30$; both drift
+upwards throughout. The signs of $A_n$ follow a three-positive, three-negative pattern from
+$n\approx12$, consistent with a conjugate pair near $60^\circ$, but the pattern is not exact over
+the full range. Consequently neither the Gevrey class of the crossing expansion nor the location of
+its Borel singularities is established, and the Borel representation below is a conjecture whose
+analytic premise is open. One structural constraint is available: by the weight lemma, only
+Bernoulli numbers of index $\lesssim n$ reach $A_n$ (a $B_j$ occurring in $c_m$ sits at $k$-degree
+$\deg c_m-j$ and reaches $A_n$ only if $j\le2n-m+1$), which excludes the Gevrey-$2$ growth that
+$B_{2n}$ would otherwise force, but does not pin the class. Where testable the resummation succeeds: at the sine head the Pad\'e--Borel ladder
 converges $1.7\cdot10^{-6}\to3.7\cdot10^{-11}$ (any transseries prefactor $\lesssim10^{-6}$ unless
 phase-suppressed), while at the cosine head the plain ladder reaches its approximation wall at
 $\sim10^{-3}$ with residuals oscillating about zero. We therefore pose the
