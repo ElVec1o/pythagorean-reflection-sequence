@@ -44,12 +44,13 @@ Six documents in `paper/journal/`, every claim tiered honestly:
 | tier | what rests on it |
 |---|---|
 | **Lean 4 kernel** (`lean/with_mathlib/`, no `sorry`) | the eight length-10 relations; universality of `u_d` through depth 22; six analytic atoms |
-| **Exact rational / modular arithmetic** | the depth-32 threshold; the deviation witnesses; `u_d` to depth 42 (Rust); the `(1,2)` deviation at depth 33 (`reproduce/deviation_1_2.py`) |
-| **High-precision numerics** (≥120 digits, no certified error bound) | the non-vanishing statements of `lem:beta2-pole` — `Σ₁′(q*) ≠ 0`, `Σ₀(q*) ≠ 0`, uniqueness of the dominant singularity on `\|q\| = q*` — and hence the exact value of `β₂` |
+| **Exact rational / modular arithmetic** | the depth-32 threshold; the deviation witnesses; `u_d` to depth 42 (Rust); the `(1,2)` deviation at depth 33 (`reproduce/deviation_1_2.py`); **the travel-pole lemma** — winding number 1 on `\|q\| = 1/2`, a sign-change bracket of width `< 1e-27`, and `Σ₀ ≥ 1.1558` there (`reproduce/certify_beta2_pole.py`), certifying `β₂ = 1.49161778711437422683671274…` to 26 digits with explicit tail bounds and no floating point |
+| **High-precision numerics** (no certified error bound) | the bulk non-interference constants — the bulk singularity `q_b = 0.6095…` and `Σ₁^bulk(q*) = 0.4804… < 1` — entering the assembly of the relaxed series `V` |
 
-The third tier is the weakest link in an otherwise unconditional Paper 1: the
-evaluations are overwhelming (120 digits) but carry no explicit truncation
-bound, so they are not yet certified in the sense the first two tiers are.
+The third tier is what remains between Paper 1 and a fully certified numeric
+trust base: two constants of the bulk assembly, evaluated at high precision
+but without explicit truncation bounds. The travel-pole lemma itself
+(`lem:beta2-pole`) is certified as of `certify_beta2_pole.py`.
 
 Reproduction: 5 self-contained entry points in `reproduce/`; the full research
 corpus (176 scripts) under `code/zeta_probe/`.

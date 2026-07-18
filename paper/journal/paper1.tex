@@ -2780,13 +2780,23 @@ $k$-sum, the travel resolvent
 \[
   G^{T}_0(q)=\frac{\Sigma_0(q)}{1-\Sigma_1(q)},
   \qquad
-  \Sigma_1(q)=\sum_{j\ge0}\frac{2q}{1-q^{\,2j+2}}\,
-    \prod_{i<j}\gamma_{1+2i},
+  \Sigma_k(q)=\sum_{j\ge0}\frac{2q}{1-q^{\,k+2j+1}}\,
+    \prod_{i<j}\gamma_{k+2i},
   \quad
-  \gamma_k=\frac{2q^{k+2}}{1-q^{k+2}}-\frac{2q^{k+1}}{1-q^{k+1}},
+  \gamma_m=\frac{2q^{\,m+3}}{1-q^{\,m+2}}-\frac{2q^{\,m+2}}{1-q^{\,m+1}},
 \]
-with $\Sigma_0$ the analogous displacement-weighted sum. Each $\Sigma_k$ is
-holomorphic on $|q|<1$, its $j$th term being $O(r^{2j^2})$ on $|q|\le r<1$; in
+with $\Sigma_1$ and $\Sigma_0$ the cases $k=1$ (return weight) and $k=0$
+(displacement weight). Since
+$\gamma_m=2q^{\,m+2}(q-1)/\bigl((1-q^{\,m+1})(1-q^{\,m+2})\bigr)$, the
+products telescope into closed theta forms:
+\[
+  1-\Sigma_1(q)=\sum_{k\ge0}\frac{(-1)^k 2^k(1-q)^k q^{k^2}}{(q;q)_{2k}},
+  \qquad
+  \Sigma_0(q)=\sum_{j\ge0}\frac{2^{\,j+1}(q-1)^j q^{\,j^2+j+1}}{(q;q)_{2j+1}},
+\]
+the first being $G\bigl(q,\,2q(1-q)\bigr)$ for the Hahn--Exton $q$-cosine
+$G(q,z)=\sum_k(-1)^k q^{k(k-1)}z^k/(q;q)_{2k}$. Each $\Sigma_k$ is
+holomorphic on $|q|<1$, its $j$th term being $O(r^{j^2})$ on $|q|\le r<1$; in
 particular each $\Sigma_k$ extends holomorphically across $|q|=q^\ast$ except at
 the isolated zeros of $1-\Sigma_1$ studied below.
 
@@ -2864,21 +2874,47 @@ Numerically
 \label{lem:beta2-pole}
 The root $q^\ast$ has the following properties.
 \begin{enumerate}
-\item[(i)] It is a \emph{simple} zero of $1-\Sigma_1$: numerically
-  $\Sigma_1'(q^\ast)=2.6303\ldots\ne0$.
-\item[(ii)] The displacement numerator does not vanish there,
-  $\Sigma_0(q^\ast)=1.156\ldots\ne0$, so $q^\ast$ is a genuine simple pole of
+\item[(i)] It is a \emph{simple} zero of $1-\Sigma_1$; numerically
+  $\Sigma_1'(q^\ast)=2.6303\ldots$.
+\item[(ii)] The displacement numerator does not vanish there:
+  $\Sigma_0(q^\ast)=1.1558\ldots>0$, so $q^\ast$ is a genuine simple pole of
   $G^{T}_0$.
-\item[(iii)] $q^\ast$ is the unique singularity of $G^{T}_0$ on the circle
-  $|q|=q^\ast$: scanning $|q|=q^\ast$ off the positive real axis gives
-  $\min_{|q|=q^\ast,\ q\ne q^\ast}|1-\Sigma_1(q)|=0.103\ldots>0$, so $1-\Sigma_1$
-  has no other zero on that circle, and the series $\Sigma_0,\Sigma_1$ are
-  holomorphic on $|q|\le q^\ast$ apart from $q^\ast$.
+\item[(iii)] $1-\Sigma_1$ has no zero other than $q^\ast$ in the closed disc
+  $|q|\le\tfrac12$. In particular $q^\ast$ is the unique singularity of
+  $G^{T}_0$ on $|q|\le\tfrac12$, and a fortiori the unique singularity on the
+  circle $|q|=q^\ast$.
 \end{enumerate}
 \end{lemma}
 
-The numerical statements in Lemma~\ref{lem:beta2-pole} are evaluated at
-$\ge120$ decimal digits. Setting
+\begin{proof}
+All three statements are certified in exact rational arithmetic with explicit
+tail bounds; no floating point enters any inequality
+(\texttt{reproduce/certify\_beta2\_pole.py}). On $|q|\le r<1$ the $k$th term
+of the theta form of $1-\Sigma_1$ satisfies
+\[
+  \Bigl|\frac{2^k(1-q)^k q^{k^2}}{(q;q)_{2k}}\Bigr|
+  \;\le\;\frac{\bigl(2(1+r)\bigr)^k\,r^{k^2}}{\prod_{m=1}^{2k}(1-r^m)},
+\]
+and for $r\le\tfrac12$ successive bounds decay by a factor $<\tfrac12$ from
+$k\ge2$ on, so every truncation carries an explicit rational tail bound.
+Three computations close the lemma. First, the winding number of $1-\Sigma_1$
+around the circle $|q|=\tfrac12$ equals $1$: an exact crossing count over
+$566$ adaptively refined arcs, each certified zero-free using the tail bound
+and an exact Lipschitz bound $|(1-\Sigma_1)'|\le66$ on the circle. By the
+argument principle, $1-\Sigma_1$ has exactly one zero, counted with
+multiplicity, in $|q|<\tfrac12$; the zero is therefore simple, which gives
+(i) and (iii). Second, a certified sign change brackets that zero in an
+interval of width below $10^{-27}$, so it is real and equals $q^\ast$, with
+\[
+  q^\ast=0.449453630558948046125545825\ldots,
+  \qquad
+  \beta_2=1.49161778711437422683671274\ldots
+\]
+certified to the displayed digits. Third, the partial sums of $\Sigma_0$
+with their tail bound give $\Sigma_0\ge1.1558$ on the bracket, which is (ii).
+\end{proof}
+
+Setting
 \[
   \beta_2^{\mathrm{rel}}=\frac{1}{\sqrt{q^\ast}}\,,
 \]

@@ -1,0 +1,11 @@
+{
+ "q_star_lo": "434684878961797606767932821/967140655691703339764940800",
+ "q_star_hi": "869369757923595213535865643/1934281311383406679529881600",
+ "q_star_dec": "449453630558948046125545825022e-30 .. 449453630558948046125545825540e-30",
+ "beta2_lo_scaled_1e30": 1491617787114374226836712746743626526712807057,
+ "beta2_hi_scaled_1e30": 1491617787114374226836712747603179060268221251,
+ "sigma0_lower_bound_on_bracket": 1.155864834069055,
+ "winding_on_half_circle": 1,
+ "circle_segments": 566,
+ "conclusion": "1 - Sigma_1 has exactly one zero in |q| < 1/2; it is real and simple, in the stated bracket; Sigma_0 > 0 there. lem:beta2-pole (i)-(iii) hold with the disc |q| <= 1/2; beta_2 digits certified as bracketed."
+}
