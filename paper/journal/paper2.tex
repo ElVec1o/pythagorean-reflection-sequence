@@ -708,8 +708,26 @@ so $m_i$ --- and therefore $A_n$ --- sees no $c_m$ with $m>2n$. (iii) The assemb
 prime $p$ at output order $n<p$: the Bernoulli denominators of the Faulhaber sums acquire $p$ only
 when $(p-1)\mid2m$, i.e.\ $2m\ge p-1$, and all factorial and division indices stay below $p$. For
 $n<(p-1)/2$ one has $2n\le p-3$, so every ingredient feeding $A_n$ is $p$-integral and
-$p\nmid\operatorname{den}(A_n)$. The matching lower direction (onset \emph{exactly} at $(p-1)/2$,
-with $p$-adic valuation $2$) remains verified to $p\le43$. The average-linear
+$p\nmid\operatorname{den}(A_n)$.
+
+The matching lower direction --- that $p$ \emph{does} appear at $n=(p-1)/2$, with valuation
+exactly $2$ --- reduces to a unit. At $n=(p-1)/2$ the sole prime-$p$ source is $c_{p-1}$ (all lower
+$c$ are $p$-integral), and it enters $A_n$ \emph{linearly}, since $c_{p-1}^2$ has weight
+$2(p-2)>2n$. Only the top three coefficients of $c_{p-1}$ (degrees $\ge p-2$) survive the weight
+cutoff; of the two that carry $p^2$ --- the $k^1$ and $k^p$ monomials (von Staudt--Clausen at the
+Faulhaber layer, $\deg_kc_{p-1}=p$) --- only $k^p$ reaches $A_n$, as $k^1$ sits at weight
+$2p-3>2n+1$. The coefficient of that top monomial in $A_{(p-1)/2}$ is a \emph{unit}
+$\partial A_{(p-1)/2}/\partial c_{p-1}[k^p]=\pm1$: it factors as
+$(\partial A_n/\partial m_n)\,(\partial m_n/\partial c_{p-1}[k^p])=2^{n-1}\cdot(\pm2^{1-n})$, both
+factors dyadic --- the reversion Jacobian $2^{n-1}$ (from $\varepsilon\sim2/\mu$, proved) and the
+crossing response $\pm2^{1-n}$ (the leading $D^p$-action $u^p/2^p$) --- cancelling to $\pm1$
+(verified $p\le19$). Since $c_{p-1}[k^p]$ has $p$-adic valuation $-2$ while the remaining reaching
+monomials ($k^{p-1},k^{p-2}$) have valuation $\ge-1$ against $p$-integral multipliers,
+$v_p(\operatorname{den}A_{(p-1)/2})=2$ exactly. Thus the onset law ---
+$p\mid\operatorname{den}(A_n)\iff 2n+1\ge p$, with valuation $2$ at the onset $n=(p-1)/2$ --- is
+proved for all odd $p$, modulo the dyadic unit identity $\partial A_{(p-1)/2}/\partial
+c_{p-1}[k^p]=\pm1$ (the leading symbol of the top-degree-to-top-order channel), verified through
+$p=19$; the exact valuation was independently verified through $p=43$. The average-linear
 (Legendre/factorial) growth --- not the logarithmic growth an $\mathrm{lcm}(1,\dots,2n)$ or
 $\zeta$-type denominator would give --- makes
 $\operatorname{den}(A_n)$ super-geometric ($\log\operatorname{den}(A_n)/n$ rises $5.4\to10.2$ over
