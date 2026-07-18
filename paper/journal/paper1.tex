@@ -2940,19 +2940,27 @@ Proposition~\ref{prop:beta2-euler} its true and relaxed lengths coincide, so
 each pure-travel element of length $d$ contributes to $u_d$; hence $t_d\le u_d$.
 
 \emph{Upper flank.} For every $g$ one has $\ell_R(g)\le\ell_T(g)$, since
-$\ell_T=\ell_R+2c$ with $c\ge0$. Thus every group element of true length $d$
-has relaxed length exactly $d$ (its relaxed length cannot exceed $d$, and an
-element of true length $d$ is counted at relaxed length $\le d$; the
-contribution at each relaxed value is disjoint), giving the \emph{termwise}
-bound $u_d\le v_d$. Concretely $v_8=91\ge u_8=89$.
+$\ell_T=\ell_R+2c$ with $c\ge0$. Hence
+$\{g:\ell_T(g)\le d\}\subseteq\{g:\ell_R(g)\le d\}$, so
+\[
+  \sum_{k\le d}u_k\ \le\ \sum_{k\le d}v_k
+   \ =\ O\bigl((\beta_2^{\mathrm{rel}})^{d}\bigr),
+\]
+the last equality because $v_k\sim C''(\beta_2^{\mathrm{rel}})^{k}$ with
+$\beta_2^{\mathrm{rel}}>1$. Since $u_d\le\sum_{k\le d}u_k$, this gives
+$\limsup_d u_d^{1/d}\le\beta_2^{\mathrm{rel}}$.
 
-Combining, $t_d\le u_d\le v_d$ for every $d$. Since
-$\lim_d t_d^{1/d}=\lim_d v_d^{1/d}=\beta_2^{\mathrm{rel}}$,
+The two gradings do not compare termwise by inclusion: an element of true
+length $d$ with cycle number $c\ge1$ has relaxed length $d-2c<d$. The
+inequality $u_d\le v_d$ holds for every computed $d\le32$ (for instance
+$v_8=91$ against $u_8=89$), but is not used.
+
+Combining the flanks with $\lim_d t_d^{1/d}=\beta_2^{\mathrm{rel}}$,
 \[
   \beta_2^{\mathrm{rel}}=\lim_d t_d^{1/d}
    \ \le\ \liminf_d u_d^{1/d}
    \ \le\ \limsup_d u_d^{1/d}
-   \ \le\ \lim_d v_d^{1/d}=\beta_2^{\mathrm{rel}},
+   \ \le\ \beta_2^{\mathrm{rel}},
 \]
 so $\lim_d u_d^{1/d}=\beta_2^{\mathrm{rel}}$, i.e.\
 $\beta_2=\beta_2^{\mathrm{rel}}$.
