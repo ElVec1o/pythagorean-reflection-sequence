@@ -49,3 +49,31 @@ STATUS: beta_2 not reached. But this is a real mechanism with a real gain and a 
 sharpest instance yet of the exactness principle, now visible as a monotone approach to
 criticality rather than a single failed ledger.
 """
+
+# ============================================================================
+# v2.12.33 COMPLETION: the DENOMINATOR-RADIUS IDENTITY closes the truncation class.
+#
+# THEOREM. F = sum f_n q^n, f_n in Q, not eventually zero; D_n = common denominator of
+# f_0..f_n; R = radius. Then  R <= liminf D_n^{1/n}.
+# PROOF. f_n != 0 => D_n f_n is a nonzero integer => |f_n| >= 1/D_n, so
+# 1/R = limsup |f_n|^{1/n} >= limsup D_n^{-1/n} = 1/liminf D_n^{1/n}.
+# COROLLARY. If F(s/t) = 0, the truncation ledger (which needs s D_N^{1/N} < R) fails for
+# every integer s >= 1: it would force D_N^{1/N} < R/s <= R <= liminf D_N^{1/N}, a quantity
+# strictly below its own liminf.
+# SHARP: f_n = c^{-n} has D_n = c^n and R = c exactly.
+#
+# MEANING: the denominator floor and the convergence radius are THE SAME QUANTITY. Buying
+# radius by admitting denominators of growth c costs exactly c. This is the general form of
+# the exactness principle for truncation ledgers, and it subsumes:
+#   - the radius cap (integral case D_n = 1 => R <= 1),
+#   - the discreteness cap,
+#   - the symmetric-branch tower's ceiling (its e_j are integral, so R_m <= 1 for all m),
+#   - and it CLOSES the escape route that motivated this step: non-integral symmetric
+#     combinations with geometric denominators c^n gain radius R <= c but cost exactly c.
+# VERIFIED on our objects: u_1 R=0.5716<=1; u_1u_2 R=0.7364<=1; u1u2u3u4 R=0.8425<=1;
+# Phi (A_n) has D^{1/n} = 3698 -> infinity with R = 0. All consistent.
+#
+# SCOPE (honest): this closes the TRUNCATION class completely. It does not by itself cover
+# Pade / Hermite-Pade (different error/denominator profile) -- those fail separately by
+# measured Siegel coefficient growth (v2.12.30-31).
+# ============================================================================

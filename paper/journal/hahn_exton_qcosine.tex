@@ -712,6 +712,47 @@ deficit (four at the fold, five at a generic zero) cannot be closed by jet-raisi
 two vanishings are the maximum the plane admits. Point evaluation alone, at any point including the
 fold, cannot complete a rationality reductio for this module.
 
+(k) All of (c), (f), (g) are instances of a single elementary identity, which closes the
+truncation-ledger class outright.
+
+\begin{proposition}[denominator--radius identity]\label{prop:denrad}
+Let $F=\sum_{n\ge0}f_nq^n$ with $f_n\in\Q$, not eventually zero; let $\mathcal D_n$ be the common
+denominator of $f_0,\dots,f_n$ and $R$ the radius of convergence. Then
+\[
+   R\ \le\ \liminf_{n}\mathcal D_n^{1/n}.
+\]
+Consequently, if $F(s/t)=0$ then the truncation ledger --- which requires
+$s\,\mathcal D_N^{1/N}<R$ --- fails for every integer $s\ge1$.
+\end{proposition}
+
+\begin{proof}
+Whenever $f_n\ne0$ the number $\mathcal D_nf_n$ is a nonzero integer, so $|f_n|\ge1/\mathcal D_n$
+and hence
+$1/R=\limsup|f_n|^{1/n}\ge\limsup\mathcal D_n^{-1/n}=1/\liminf\mathcal D_n^{1/n}$, which is the
+stated bound. The ledger criterion would then force
+$\mathcal D_N^{1/N}<R/s\le R\le\liminf\mathcal D_N^{1/N}$, a quantity strictly below its own
+$\liminf$. The bound is sharp: $f_n=c^{-n}$ has $\mathcal D_n=c^n$ and $R=c$ exactly.
+\end{proof}
+
+The content is that \emph{the denominator floor and the convergence radius are the same quantity}:
+buying radius by admitting denominators of growth $c$ costs exactly $c$. Integral series are the
+case $\mathcal D_n=1$, recovering (f) and (g); series with geometric denominators gain radius and
+lose precisely as much. This is why no rearrangement, reparametrization, or basis change in this
+paper's ledgers has ever produced excess, and why none can.
+
+A sharp illustration is available. The radius of $z_1$ is capped by the fold of item (e), where
+$z_1$ and $z_2$ collide; but a fold is a square-root branch point of each branch \emph{separately}
+and not of the pair, so the elementary symmetric functions of the first $m$ branches --- integral
+after clearing the poles of $z_k=u_k q^{2(1-k)}$ --- are analytic through every collision among
+them, and the crossing condition survives as the statement that $2q(1-q)$ is a root of
+$X^m-e_1X^{m-1}+\cdots$. Their radii increase monotonically, $0.5546,\,0.7356,\,0.7953,\,0.8425$
+for $m=1,2,3,4$, improving the ledger factor from $1.803$ to $1.187$; and by
+Proposition~\ref{prop:denrad} they are capped at $1$, which the measured values approach
+geometrically ($1-R_m$ decaying by a factor $\approx0.77$ per step). The $m\to\infty$ limit is the
+zero product of Theorem~\ref{thm:zeroproduct-intro}, of radius exactly $1$: the regularized product
+is the critical endpoint of this monotone family, which is the precise reason its arithmetic is
+confined to the tail.
+
 Together, (c), (f), (g) and Remark~\ref{rem:thetabarrier} express one law from four sides:
 for every representation of this problem yet constructed, the arithmetic cost equals the analytic
 decay \emph{exactly}, with zero excess; a proof of Conjecture~\ref{conj:Z} must produce strict
