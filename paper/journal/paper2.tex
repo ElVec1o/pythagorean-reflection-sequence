@@ -664,18 +664,32 @@ recovering each $A_n$ by rational reconstruction from twenty $62$-bit primes; th
 independently confirmed by extracting $A_n$ from the accumulation law applied to the roots
 themselves, computed to $105$ digits.
 
-The Borel geometry is not determined by these coefficients. At $n=30$ the sequence remains
-pre-asymptotic: $\log|A_n|/(n\log n)$ rises monotonically from $0.313$ at $n=14$ to $0.411$ at
-$n=30$, settling towards neither $1$ (Gevrey-$1$) nor $2$ (Gevrey-$2$). The nearest
-Pad\'e--Borel singularity increases steadily with approximant order,
-$|t|=2.61,\,2.56,\,2.96,\,3.09,\,3.33$ for $[6/6]$ through $[14/14]$, and a three-term recurrence
-fit, appropriate to a conjugate pair, gives $|t_0|=3.285,\,3.394,\,3.493,\,3.558$ with
-$\arg t_0=60.8^\circ,\,61.7^\circ,\,62.4^\circ,\,62.3^\circ$ at $n_0=22,25,28,30$; both drift
-upwards throughout. The signs of $A_n$ follow a three-positive, three-negative pattern from
-$n\approx12$, consistent with a conjugate pair near $60^\circ$, but the pattern is not exact over
-the full range. Consequently neither the Gevrey class of the crossing expansion nor the location of
-its Borel singularities is established, and the Borel representation below is a conjecture whose
-analytic premise is open. One structural constraint is available: by the weight lemma, only
+The Borel geometry is only partly determined by these coefficients. The signs of $A_n$ follow a
+three-positive, three-negative pattern from $n\approx12$, indicating a conjugate pair of
+singularities near $60^\circ$; the pattern is not exact over the full range. This period-$6$
+oscillation dominates the naive growth diagnostics, and must be removed before the Gevrey order can
+be read off. Setting
+\[
+   G_n:=\tfrac16\bigl(\log|A_n|-\log|A_{n-6}|\bigr),
+\]
+which is phase-matched and therefore free of the oscillation, the model $|A_n|\sim C^n(n!)^s$ gives
+$G_n\sim\log C+s\log n$, so $s$ is the slope of $G_n$ against $\log n$. Least squares yields
+$s=0.844$ on $16\le n\le30$, $0.897$ on $23\le n\le30$ and $1.033$ on $26\le n\le30$: the estimate
+rises towards $1$ as the fitting window advances, and the data are consistent with Gevrey-$1$.
+(The unnormalised ratio $\log|A_n|/(n\log n)$, which equals $s+(\log C-s)/\log n$, is $0.313$ at
+$n=14$ and $0.411$ at $n=30$; its corrections are of order $1/\log n$ and it is therefore useless
+for extrapolation at these lengths.)
+
+For the singularity modulus three independent estimates are available and agree only in order of
+magnitude: the phase-matched growth constant gives $|t_0|=1/C=3.59$--$3.98$ over $24\le n\le30$;
+a three-term recurrence fit, appropriate to a conjugate pair, gives
+$|t_0|=3.285,\,3.394,\,3.493,\,3.558$ at $n_0=22,25,28,30$, extrapolating in $1/n_0$ to $4.30$,
+with $\arg t_0=60.8^\circ,\,61.7^\circ,\,62.4^\circ,\,62.3^\circ$; and the Pad\'e--Borel
+approximants give $|t|=2.61,\,2.56,\,2.96,\,3.09,\,3.33$ for $[6/6]$ through $[14/14]$.
+Thus $|t_0|$ lies between $2.9$ and $4.3$ and is not pinned. Gevrey-$1$ growth, and with it the
+$n!$-Borel framework, is supported but not established; the location of the singularities is not
+established; and the Borel representation below remains a conjecture whose analytic premise is
+open. One structural constraint is available: by the weight lemma, only
 Bernoulli numbers of index $\lesssim n$ reach $A_n$ (a $B_j$ occurring in $c_m$ sits at $k$-degree
 $\deg c_m-j$ and reaches $A_n$ only if $j\le2n-m+1$), which excludes the Gevrey-$2$ growth that
 $B_{2n}$ would otherwise force, but does not pin the class. Where testable the resummation succeeds: at the sine head the Pad\'e--Borel ladder
