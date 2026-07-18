@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/1235839920.svg)](https://doi.org/10.5281/zenodo.20370090)
 [![OEIS A396406](https://img.shields.io/badge/OEIS-A396406-blue)](https://oeis.org/A396406)
 [![OEIS A396927](https://img.shields.io/badge/OEIS-A396927-blue)](https://oeis.org/A396927)
-[![Lean](https://img.shields.io/badge/Lean%204-checked-success)](./lean/)
+[![Lean](https://img.shields.io/badge/Lean%204-depth%2022%20%2B%20atoms-success)](./lean/)
 
 Take any right triangle in the plane and reflect it repeatedly across its three
 sides. Count the distinct images at each word-length: you get a sequence that
@@ -39,10 +39,20 @@ Six documents in `paper/journal/`, every claim tiered honestly:
 | **Hahn–Exton companion** (15 pp) | integrality of the zero lattice of the Hahn–Exton `q`-cosine; stable deviation law; denominator–radius identity; effective bounds | **unconditional** |
 | **Universality principle** (3 pp) | universality-then-deviation as a dimension-free statement | **unconditional** |
 
-Machine-checked: Lean 4/Mathlib certificates in `lean/with_mathlib/` (no `sorry`);
-Rust certificates to depth 42. Reproduction scripts: 5 self-contained entry
-points in `reproduce/`, and the full research corpus (176 scripts) under
-`code/zeta_probe/`.
+**Trust base**, stated by tier — different results rest on different foundations:
+
+| tier | what rests on it |
+|---|---|
+| **Lean 4 kernel** (`lean/with_mathlib/`, no `sorry`) | the eight length-10 relations; universality of `u_d` through depth 22; six analytic atoms |
+| **Exact rational / modular arithmetic** | the depth-32 threshold; the deviation witnesses; `u_d` to depth 42 (Rust); the `(1,2)` deviation at depth 33 (`reproduce/deviation_1_2.py`) |
+| **High-precision numerics** (≥120 digits, no certified error bound) | the non-vanishing statements of `lem:beta2-pole` — `Σ₁′(q*) ≠ 0`, `Σ₀(q*) ≠ 0`, uniqueness of the dominant singularity on `\|q\| = q*` — and hence the exact value of `β₂` |
+
+The third tier is the weakest link in an otherwise unconditional Paper 1: the
+evaluations are overwhelming (120 digits) but carry no explicit truncation
+bound, so they are not yet certified in the sense the first two tiers are.
+
+Reproduction: 5 self-contained entry points in `reproduce/`; the full research
+corpus (176 scripts) under `code/zeta_probe/`.
 
 ## Main results
 
