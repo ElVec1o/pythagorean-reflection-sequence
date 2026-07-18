@@ -206,8 +206,10 @@ def circle_point(t, chart):
         return (-(1 - t * t) / d, 2 * t / d)
 
 
-def winding_F(NF, tail, L, progress=True):
-    """Certified winding of F over |q| = 1/2, counterclockwise.
+def winding_curve(fn, tail, L, progress=True):
+    """Certified winding of fn(q) over |q| = 1/2, counterclockwise, for any
+    holomorphic fn given as exact complex-rational partial sums with
+    truncation error <= tail on |q| = 1/2 and |fn'| <= L there.
     Returns (winding, n_samples). Raises on any unresolvable condition."""
     # arclength <= (pi/2)*chord ; use (pi/2)^2 <= 2467/1000 exactly
     PI2SQ = Fr(2467, 1000)
@@ -226,7 +228,7 @@ def winding_F(NF, tail, L, progress=True):
     def Fval(chart, t):
         key = (chart, t)
         if key not in cache:
-            cache[key] = F_complex(circle_point(t, chart), NF)
+            cache[key] = fn(circle_point(t, chart))
         return cache[key]
 
     accepted = []  # list of (w_a, w_b) in order
@@ -386,7 +388,7 @@ def main():
     L = lipschitz_F_on_half_circle()
     print(f"  [C1] winding on |q| = 1/2: {N_c} terms, tail <= {float(tau_c):.2e}, "
           f"L <= {float(L):.2f}", flush=True)
-    w, nseg = winding_F(N_c, tau_c, L)
+    w, nseg = winding_curve(lambda q: F_complex(q, N_c), tau_c, L)
     assert abs(w) == 1, f"winding = {w}, expected +-1"
     cert["winding_on_half_circle"] = w
     cert["circle_segments"] = nseg

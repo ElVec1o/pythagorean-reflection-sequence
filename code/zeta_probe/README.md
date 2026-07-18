@@ -33,7 +33,7 @@ the rotation number `ζ_T = (a+bi)/(a−bi)`.
 | `lamp_geo.py`, `lamp_formula.py` | The relaxed (connectivity-free) metric and the first geodesic-length structure probes. |
 | `fire.py` | Python prototype of the theory-only sequence regeneration (superseded by `fire_rust/`). |
 | `wf2_relaxed_dp.py`, `wf2_relaxed_transfer.py`, `wf2_relaxed_README.md` | The relaxed-model counting DP and the catalytic-kernel scaffold (growth-rate analysis). |
-| `route_b/` | The Route-B investigations: the deposit-family refutation of "bounded component count", the corrected per-component **strand** bound + 8-shape census, and the **catalytic functional equation** (`catalytic_*.py`, `funceq_build.py`, `route_b_funceq.tex`, `KERNEL_NOTES.md`) — the q-difference structure showing the growth series is q-holonomic, not algebraic. (`shape_bound_lemma_SUPERSEDED.tex` records a flawed surgery proof; the correct excursion-parity proof is in the paper.) |
+| `route_b/` | The Route-B investigations: the deposit-family refutation of "bounded component count", the corrected per-component **strand** bound + 8-shape census, and the **catalytic functional equation** (`catalytic_*.py`, `funceq_build.py`, `route_b_funceq.tex`) — the q-difference structure showing the growth series is q-holonomic, not algebraic. (`shape_bound_lemma_SUPERSEDED.tex` records a flawed surgery proof; the correct excursion-parity proof is in the paper.) |
 | `route_c_height_family.py` | The height-graded family: μ for √2 and φ, the L₁/Mahler-measure sandwich, and the degree-2 deviation-depth law. |
 | `workflow_routes/` | Archived multi-agent workflow scripts and verdicts (`VERDICT.md`, `VERDICT2.md`): the rationality assault and the kernel/breakthrough round. |
 

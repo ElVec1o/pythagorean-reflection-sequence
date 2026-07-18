@@ -18,7 +18,7 @@ Let T be a right triangle in Q^2 with positive unequal legs and let W be the gro
 
 Since ell_R <= ell_T, this sequence dominates A396406 termwise: a(n) >= A396406(n), with equality for 0 <= n <= 7 and first strict inequality at n = 8 (a(8) = 91 while A396406(8) = 89). Both have the same growth rate: a(n+1)/a(n) -> beta_2 = 1.4916177871..., about 1.49 at the computed depths.
 
-Conjecturally independent of the triangle T for pairwise distinct rational legs, as for A396406. Computed from the catalytic generating function for the relaxed length (Bonfioli 2026), cross-checked against exact-rational breadth-first search on the (1,2) triangle.
+As with A396406, the counts depend on the shape of the triangle only beyond a depth that grows with the arithmetic complexity of the shape; all terms listed here lie in the verified shape-independent range. Computed from the catalytic generating function for the relaxed length (Bonfioli 2026), cross-checked against exact-rational breadth-first search on the (1,2) triangle.
 
 The building blocks of V are transcendental over Q(q) unconditionally (their power series has the unit circle as a natural boundary, by the Polya-Carlson theorem); V itself is transcendental over Q(x) (Bonfioli 2026).
 

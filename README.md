@@ -26,7 +26,7 @@ For `1 ≤ n ≤ 9`, `u_n = F(n+3)` (Fibonacci); the first deviation is at `n = 
 `u_10 = 225 = F(13) − 8`. The **isosceles** case (`a = b`) is genuinely
 different (`1, 3, 5, 8, 11, 13, 16, …`).
 
-## Corpus status (v3.0.0)
+## Corpus status (v4.0.0)
 
 Six documents in `paper/journal/`, every claim tiered honestly:
 
@@ -44,13 +44,11 @@ Six documents in `paper/journal/`, every claim tiered honestly:
 | tier | what rests on it |
 |---|---|
 | **Lean 4 kernel** (`lean/with_mathlib/`, no `sorry`) | the eight length-10 relations; universality of `u_d` through depth 22; six analytic atoms |
-| **Exact rational / modular arithmetic** | the depth-32 threshold; the deviation witnesses; `u_d` to depth 42 (Rust); the `(1,2)` deviation at depth 33 (`reproduce/deviation_1_2.py`); **the travel-pole lemma** — winding number 1 on `\|q\| = 1/2`, a sign-change bracket of width `< 1e-27`, and `Σ₀ ≥ 1.1558` there (`reproduce/certify_beta2_pole.py`), certifying `β₂ = 1.49161778711437422683671274…` to 26 digits with explicit tail bounds and no floating point |
-| **High-precision numerics** (no certified error bound) | the bulk non-interference constants — the bulk singularity `q_b = 0.6095…` and `Σ₁^bulk(q*) = 0.4804… < 1` — entering the assembly of the relaxed series `V` |
+| **Exact rational / modular arithmetic** | the depth-32 threshold; the deviation witnesses; `u_d` to depth 42 (Rust); the `(1,2)` deviation at depth 33 (`reproduce/deviation_1_2.py`); **the travel-pole lemma** — winding number 1 on `\|q\| = 1/2`, a sign-change bracket of width `< 1e-27`, and `Σ₀ ≥ 1.1558` there (`reproduce/certify_beta2_pole.py`), certifying `β₂ = 1.49161778711437422683671274…` to 26 digits; **the bulk non-interference constants** — winding number 0 of `1 − Σ₁^bulk` on `\|q\| = 1/2`, `Σ₁^bulk(q*) ∈ [0.4804499685, 0.4804499685] < 1`, and `q_b = 0.60956734426012956966…` certified to 19 digits (`reproduce/certify_bulk_dressing.py`). All with explicit tail bounds; no floating point enters any inequality |
 
-The third tier is what remains between Paper 1 and a fully certified numeric
-trust base: two constants of the bulk assembly, evaluated at high precision
-but without explicit truncation bounds. The travel-pole lemma itself
-(`lem:beta2-pole`) is certified as of `certify_beta2_pole.py`.
+As of v4.0.0 no numeric input to the `β₂` chain remains uncertified: every
+constant in Theorem `thm:beta2`'s proof is either Lean-checked, exact
+rational/modular, or carried by one of the two certificates above.
 
 Reproduction: 5 self-contained entry points in `reproduce/`; the full research
 corpus (176 scripts) under `code/zeta_probe/`.

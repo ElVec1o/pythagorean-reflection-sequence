@@ -1,0 +1,12 @@
+{
+ "sigma1_bulk_at_qstar": [
+  0.480449968499601,
+  0.480449968499601
+ ],
+ "bulk_winding_on_half_circle": 0,
+ "circle_segments": 226,
+ "q_b_lo": "70278329970358845023/115292150460684697600",
+ "q_b_hi": "2196197811573713907/3602879701896396800",
+ "q_b_dec": "60956734426012956966e-20 .. 60956734426012956968e-20",
+ "conclusion": "Sigma_1^bulk < 1 on the certified q* bracket; 1 - Sigma_1^bulk has no zero in |q| <= 1/2 (winding 0), so the bulk resolvent is holomorphic there; the bulk singularity q_b is real with certified digits and exceeds 1/2. The travel pole q* is the dominant singularity of the assembled relaxed series V."
+}

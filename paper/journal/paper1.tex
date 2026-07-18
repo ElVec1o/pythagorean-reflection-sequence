@@ -2928,9 +2928,14 @@ Transferring through $q=x^2$ gives $t_d\sim C'\,(\beta_2^{\mathrm{rel}})^{d}$;
 in particular $\lim_d t_d^{1/d}=\beta_2^{\mathrm{rel}}$, so the pure-travel
 subcounts grow at rate $\beta_2^{\mathrm{rel}}$.
 
-The bulk block does not interfere with the relaxed assembly: its nearest
-singularity lies at $q_b=0.609567\ldots>q^\ast$, and at $q^\ast$ the bulk
-dressing satisfies $\Sigma_1^{\mathrm{bulk}}(q^\ast)=0.4804\ldots<1$, so
+The bulk block does not interfere with the relaxed assembly. This is
+certified by the same machinery as Lemma~\ref{lem:beta2-pole}
+(\texttt{reproduce/certify\_bulk\_dressing.py}): $1-\Sigma_1^{\mathrm{bulk}}$
+has winding number $0$ around $|q|=\tfrac12$, so the bulk resolvent is
+holomorphic on $|q|\le\tfrac12$; its singularity is real, with certified
+value $q_b=0.60956734426012\ldots>\tfrac12>q^\ast$; and on the certified
+bracket of $q^\ast$ the dressing satisfies
+$\Sigma_1^{\mathrm{bulk}}(q^\ast)=0.48044\ldots<1$. Hence
 $q^\ast$ remains the dominant singularity of the assembled relaxed series $V$,
 and the same singularity-analysis transfer gives
 $v_d\sim C''\,(\beta_2^{\mathrm{rel}})^{d}$. Numerically
