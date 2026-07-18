@@ -12,7 +12,10 @@ each of its three edges.  Layer sizes:
    added    3   5   8  13  21
 
 Those are FIBONACCI numbers F₄, F₅, F₆, F₇, F₈.  The total orbit at
-depth d satisfies the closed form  F_{d+5} − 4  (verified).
+depth d satisfies the closed form  F_{d+5} − 4  for 0 <= d <= 9 only.
+It first fails at d = 10, where the cumulative orbit is 598 against
+F_15 − 4 = 606; the deficit of 8 is exactly the eight length-10
+affine relations.
 
 This appears to be a previously unrecorded property of the 3-4-5
 right-triangle reflection group.

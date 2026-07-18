@@ -1,8 +1,11 @@
 """Standalone OEIS PROG candidate for A_2D_universal.
 Computes a(0)..a(d_max) by BFS on the side-reflection group of a right
 triangle with positive unequal rational legs, using exact rational
-arithmetic. By the universality theorem the choice of (a,b) is immaterial
-for a != b; we use (a, b) = (1, 2)."""
+arithmetic. Any right triangle with unequal legs matches the universal
+sequence through depth 32, so for d_max <= 32 the choice of (a,b) with
+a != b is immaterial; we use (a, b) = (1, 2). Beyond that the choice does
+matter: (1,2) first deviates at depth 33, giving 3848354 against the
+universal 3848384 (see reproduce/deviation_1_2.py)."""
 from fractions import Fraction
 
 def universal_right_triangle_sequence(d_max=20):
