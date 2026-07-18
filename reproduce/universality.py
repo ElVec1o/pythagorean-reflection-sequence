@@ -251,9 +251,11 @@ scaled non-primitive triples 6-8-10 (= 2 * 3-4-5), 9-12-15
 triangles do NOT produce this sequence (see negative controls in the
 accompanying universality certificate).
 
-The asymptotic ratio a(n+1)/a(n) converges to ~1.504, strictly below
-the Fibonacci golden ratio phi = 1.618; the gap is the rate-cost of
-the Euclidean lattice collisions.
+The asymptotic ratio a(n+1)/a(n) converges to
+beta_2 = 1.4916177871143742268... = 1/sqrt(q*), where q* is the least
+positive root of Sigma_1(q) = 1.  This value is proved unconditionally;
+it lies strictly below the Fibonacci golden ratio phi = 1.618, and the
+gap is the rate-cost of the Euclidean lattice collisions.
 """
 
 

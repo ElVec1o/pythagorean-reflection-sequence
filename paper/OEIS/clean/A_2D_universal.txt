@@ -16,7 +16,7 @@
 
 %C Computed by exact-rational BFS on (3, 4, 5) to depth 38; independently reproduced on (5, 12, 13), (7, 24, 25), and (1, 2, sqrt 5) through depth 22, and on nine Pythagorean triples through depth 25.
 
-%C Empirically a(n+1)/a(n) approaches a limit near 1.4718; the exact algebraic nature of this growth rate is open. No linear recurrence of order <= 19 over Q is consistent with the data; algebraicity and holonomicity are ruled out within tested bidegree windows.
+%C The ratio a(n+1)/a(n) converges to 1.4916177871143742268... = 1/sqrt(q*), where q* = 0.44945363055894... is the least positive root of Sigma_1(q) = 1; see the Bonfioli link for the definition of Sigma_1 and the proof. Whether this constant is algebraic is open. No linear recurrence of order <= 19 over Q is consistent with the data; algebraicity and holonomicity are ruled out within tested bidegree windows.
 
 %F a(n) = A000045(n+3) for 1 <= n <= 9.
 
