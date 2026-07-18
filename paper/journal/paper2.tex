@@ -716,18 +716,29 @@ $c$ are $p$-integral), and it enters $A_n$ \emph{linearly}, since $c_{p-1}^2$ ha
 $2(p-2)>2n$. Only the top three coefficients of $c_{p-1}$ (degrees $\ge p-2$) survive the weight
 cutoff; of the two that carry $p^2$ --- the $k^1$ and $k^p$ monomials (von Staudt--Clausen at the
 Faulhaber layer, $\deg_kc_{p-1}=p$) --- only $k^p$ reaches $A_n$, as $k^1$ sits at weight
-$2p-3>2n+1$. The coefficient of that top monomial in $A_{(p-1)/2}$ is a \emph{unit}
-$\partial A_{(p-1)/2}/\partial c_{p-1}[k^p]=\pm1$: it factors as
-$(\partial A_n/\partial m_n)\,(\partial m_n/\partial c_{p-1}[k^p])=2^{n-1}\cdot(\pm2^{1-n})$, both
-factors dyadic --- the reversion Jacobian $2^{n-1}$ (from $\varepsilon\sim2/\mu$, proved) and the
-crossing response $\pm2^{1-n}$ (the leading $D^p$-action $u^p/2^p$) --- cancelling to $\pm1$
-(verified $p\le19$). Since $c_{p-1}[k^p]$ has $p$-adic valuation $-2$ while the remaining reaching
-monomials ($k^{p-1},k^{p-2}$) have valuation $\ge-1$ against $p$-integral multipliers,
-$v_p(\operatorname{den}A_{(p-1)/2})=2$ exactly. Thus the onset law ---
-$p\mid\operatorname{den}(A_n)\iff 2n+1\ge p$, with valuation $2$ at the onset $n=(p-1)/2$ --- is
-proved for all odd $p$, modulo the dyadic unit identity $\partial A_{(p-1)/2}/\partial
-c_{p-1}[k^p]=\pm1$ (the leading symbol of the top-degree-to-top-order channel), verified through
-$p=19$; the exact valuation was independently verified through $p=43$. The average-linear
+$2p-3>2n+1$. The coefficient of that top monomial in $A_{(p-1)/2}$ is a \emph{unit},
+$\partial A_{(p-1)/2}/\partial c_{p-1}[k^p]=\pm1$, and this now has a leading-symbol proof. The
+monomial perturbs the confluent expansion of $G$ by $\varepsilon^{p-1}k^p$; the turning-point map
+(the $D^p$-action, $D=(u/2)\,d/du$) sends $k^p$ to $a_pu^p\sin u+b_pu^{p-1}\cos u$ with
+$a_p=(-1)^{n-1}2^{-p}$ the leading sine coefficient and $b_p=(-1)^nn(2n+1)2^{-p}$ the leading cosine
+coefficient ($p=2n+1$; both closed forms follow from the recursion
+$(A,B)\mapsto\bigl(\tfrac u2(A'-B),\tfrac u2(B'+A)\bigr)$). At a simple zero $u_*$ of $\cos$ the
+cosine term vanishes and every sine power below $u^p$ contributes only at higher order in
+$\varepsilon$, so the zero shift is $\delta=\varepsilon^{p-1}a_pu_*^{\,p}$ (the factor
+$\sin u_*=\pm1$ cancels against $G'=-\sin$). With $m=\varepsilon u^2$ and the leading balance
+$u_*^2=2/\varepsilon$ (from $\varepsilon u^2=2(1-\varepsilon)e^{\varepsilon/2}\to2$),
+\[
+   \delta m=2\varepsilon u_*\,\delta=2a_p\,\varepsilon^{p}u_*^{\,p+1}
+   =a_p\,2^{\,n+2}\,\varepsilon^{n},\qquad\text{so}\quad
+   \frac{\partial m_n}{\partial c_{p-1}[k^p]}=a_p2^{\,n+2}=\pm2^{\,1-n},
+\]
+and with the reversion Jacobian $\partial A_n/\partial m_n=2^{n-1}$ (from $\varepsilon\sim2/\mu$)
+the product is $\pm1$. Only the top sine power $u^p$ reaches order $\varepsilon^n$, so the magnitude
+is exact; the sign is $(-1)^n$ (verified for all $n\le10$, independently of $p$). Since
+$c_{p-1}[k^p]$ has $p$-adic valuation $-2$ while the other reaching monomials ($k^{p-1},k^{p-2}$)
+have valuation $\ge-1$ against $p$-integral multipliers, $v_p(\operatorname{den}A_{(p-1)/2})=2$
+exactly. Thus the onset law --- $p\mid\operatorname{den}(A_n)\iff 2n+1\ge p$, with valuation $2$ at
+$n=(p-1)/2$ --- is \emph{proved for all odd $p$}. The average-linear
 (Legendre/factorial) growth --- not the logarithmic growth an $\mathrm{lcm}(1,\dots,2n)$ or
 $\zeta$-type denominator would give --- makes
 $\operatorname{den}(A_n)$ super-geometric ($\log\operatorname{den}(A_n)/n$ rises $5.4\to10.2$ over

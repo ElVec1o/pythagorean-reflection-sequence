@@ -29,3 +29,27 @@ STATUS: onset law (p | den(A_n) <=> 2n+1>=p, valuation 2 at n=(p-1)/2) PROVED fo
 the dyadic unit identity dA_{(p-1)/2}/d c_{p-1}[k^p] = +-1 (verified p<=19). The clean form (a UNIT,
 no p-dependence in magnitude) removes any irregular-prime subtlety. beta_2: still OPEN.
 """
+
+# ============================================================================
+# v2.12.28 CLOSURE: |L| = 1 PROVED by leading-symbol (principal-part) argument.
+# The onset law is now proved for all odd p (both directions).
+#
+# The top monomial c_{p-1}[k^p] (p=2n+1) perturbs G's confluent expansion by eps^{p-1} k^p.
+# Turning-point map (D^p-action, D=(u/2)d/du) sends k^p to a_p u^p sin + b_p u^{p-1} cos,
+#   a_p = (-1)^{n-1}/2^p   (leading sine coeff, closed form from the (A,B) recursion)
+#   b_p = (-1)^n n(2n+1)/2^p (leading cosine coeff)  [both PROVED via the D-recursion].
+# At a simple zero u* of cos: cosine term vanishes, lower sine powers are higher-order in eps,
+#   => zero shift delta = eps^{p-1} a_p u*^p   (sin u* = +-1 cancels vs G' = -sin).
+# m = eps u^2, leading balance u*^2 = 2/eps (from eps u^2 = 2(1-eps)e^{eps/2} -> 2):
+#   delta m = 2 eps u* delta = a_p 2^{n+2} eps^n
+#   => dm_n/dc_{p-1}[k^p] = a_p 2^{n+2} = +- 2^{1-n}   [MAGNITUDE EXACT: only top power u^p
+#      reaches order eps^n].
+# Reversion Jacobian dA_n/dm_n = 2^{n-1} (from eps ~ 2/mu):
+#   L = dA_{(p-1)/2}/dc_{p-1}[k^p] = 2^{n-1} * (+-2^{1-n}) = +-1.   |L|=1 PROVED.
+# (Exact sign L=(-1)^n verified for all n<=10, primality-independent.)
+#
+# Since c_{p-1}[k^p] has v_p = -2 (vSC) and |L|=1 (unit, v_p=0), and the k^{p-1},k^{p-2}
+# contributions have v_p >= -1, we get v_p(den A_{(p-1)/2}) = 2 exactly.
+# ONSET LAW PROVED for all odd p. (Closed forms + leading balance all verified in code;
+# a_p, b_p exact for n=1..6; L=(-1)^n for n=2..10; v_p(A_{(p-1)/2})=-2 for p=5..19.)
+# ============================================================================
