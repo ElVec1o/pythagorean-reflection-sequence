@@ -23,11 +23,14 @@ That is a large improvement over the exact engine and, crucially, it does not OO
 **rationally reconstructs** each A_n (half-gcd style), accepting only when the reconstruction is
 **stable** against dropping one prime.
 
-## Note on the float variant
-`engine_float.py` (mpmath) was also built and is *not* trustworthy: the graded-ring cleanup relies
-on exact zero detection (`if r[k]==0: del r[k]`), which never fires in floating point, so roundoff
-terms accumulate. It agrees with the exact A_1..A_9 to 1e-26 and then fails identically at A_10
-regardless of the order computed -- a systematic bug, not a weight-cutoff effect. Use mod-p + CRT.
+## Note on the float variant (CORRECTED in v2.12.37)
+`engine_float.py` (mpmath) is **CORRECT and usable**. An earlier note here called it buggy; that
+was wrong. It had been "validated" against `engine_result.pkl` **while that cache was corrupt**
+(see CORRECTION_v2_12_36.md): its apparent 0.00187 relative error at A_10 was exactly the
+corruption (1 part in 536.3 = 0.00186), not a bug in the engine.
+Re-validated against the root-verified coefficients, it reproduces **A_1..A_16 to 1e-25**.
+It is the tool of choice when only MAGNITUDES are needed (Gevrey class, Borel singularity),
+because a single run suffices -- no CRT over dozens of primes.
 
 ## Purpose
 The only remaining compute-bound front is the **Gevrey class / Borel singularity** of the crossing
