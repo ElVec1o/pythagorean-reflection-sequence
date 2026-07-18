@@ -26,18 +26,23 @@ For `1 ≤ n ≤ 9`, `u_n = F(n+3)` (Fibonacci); the first deviation is at `n = 
 `u_10 = 225 = F(13) − 8`. The **isosceles** case (`a = b`) is genuinely
 different (`1, 3, 5, 8, 11, 13, 16, …`).
 
-## Corpus status (v2.0.0 — consolidated)
+## Corpus status (v3.0.0)
 
-Three companion papers in `paper/journal/`, every claim tiered honestly:
+Six documents in `paper/journal/`, every claim tiered honestly:
 
 | paper | headline | status |
 |---|---|---|
 | **Paper 1** (44 pp) | metric theorem `ℓ_T = ℓ_R + 2c`; virtually-lamplighter structure; universality sharp at 32/33; deviation depth `n_T = K(T)/2` + closed-form law; `β₂ = 1.4916177871…` exact | **unconditional** (law's general exactness conjectural; certified at (1,2)) |
-| **Paper 2** (14 pp) | blocks transcendental over ℚ(q); relaxed series `V` transcendental over ℚ(x); true series `U` transcendental **conditional on one amplitude estimate (⋆)**; `β₂`-as-a-number: reduced to a Hahn–Exton value question, with a proven no-go ledger (`ρ = 1/2`, cyclotomic floor `12/π² > 1`) locating the precise open frontier | **V unconditional; U conditional on (⋆); β₂ number-status open** |
+| **Paper 1b** (9 pp) | `n`-dimensional orthoscheme companion: collision depth `cd_n` determined uniformly by the `(e, t)` class in every dimension; atlas of representative leg sequences for `n = 3…6` | **unconditional** |
+| **Paper 2** (30 pp) | blocks transcendental over ℚ(q); relaxed series `V` transcendental over ℚ(x); true series `U` transcendental **conditional on one amplitude estimate (⋆)**; `β₂`-as-a-number: reduced to a Hahn–Exton value question, with a proven no-go ledger (`ρ = 1/2`, cyclotomic floor `12/π² > 1`) locating the precise open frontier | **V unconditional; U conditional on (⋆); β₂ number-status open** |
 | **Paper 3** (4 pp) | universality–deviation dichotomy (dimension-free); generic rigidity (co-null shape set); rational RACG envelope with rate `r_n = 1+2cos(2π/(n+3))`; geometric group = proper amenable quotient (finite-horizon envelope) | **theorems unconditional; higher-dim arithmetic past the horizon open** |
+| **Hahn–Exton companion** (15 pp) | integrality of the zero lattice of the Hahn–Exton `q`-cosine; stable deviation law; denominator–radius identity; effective bounds | **unconditional** |
+| **Universality principle** (3 pp) | universality-then-deviation as a dimension-free statement | **unconditional** |
 
 Machine-checked: Lean 4/Mathlib certificates in `lean/with_mathlib/` (no `sorry`);
-Rust certificates to depth 42; ~40 reproduction scripts under `code/zeta_probe/`.
+Rust certificates to depth 42. Reproduction scripts: 5 self-contained entry
+points in `reproduce/`, and the full research corpus (176 scripts) under
+`code/zeta_probe/`.
 
 ## Main results
 
