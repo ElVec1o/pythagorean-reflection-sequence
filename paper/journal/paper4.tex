@@ -786,7 +786,8 @@ $t_{n,j}$ with $n\in\Z/m$ are therefore the images of one vector under the
 $m$th roots of unity, and those sum to zero. (ii) $(r_0r_1)^m$ is the rotation
 by $2\pi$, that is the identity, so the flow of its word has $V_\tau=0$; the
 identity between $\gamma_j-\gamma_{j-1}$ and the level sum holds because both
-are the boundary of the annulus of $X_m$ between the two wrapping curves.
+are checked to agree as flows, a finite computation recorded in the script
+cited below.
 (iii) Neither bound of Theorem~\ref{thm:metric} used the planarity of $X$ or
 the uniqueness of the flow. The lower bound gives
 $\ell(w)\ge\|\phi(w)\|_1+2\,\mathrm{st}(\phi(w))$ for every word $w$
@@ -841,19 +842,51 @@ are not images of generic translations, a word being able to have trivial
 linear part on the stratum without having one generically. Both effects are
 accounted for by the following census.
 
+\begin{proposition}[Antipodal lamps, $m$ even]\label{prop:antipodal}
+Let $m$ be even. Then $(r_0r_1)^{m/2}$ is the half-turn about the apex, and
+\[
+ t_{n+m/2,\,j}\;=\;-\,t_{n,j}\qquad\text{for all }(n,j).
+\]
+Part (i) of Theorem~\ref{thm:cyl} follows by pairing $n$ with $n+m/2$. The
+generic translations $t_{n,j}$ and $-t_{n+m/2,j}$, distinct for generic shapes,
+are identified on the stratum, and the shortest such identification has length
+$m+4$.
+\end{proposition}
+
+\begin{proof}
+$r_0r_1$ is the rotation by $2\pi/m$ about the apex, so its $(m/2)$th power is
+the rotation by $\pi$. If $h$ is a half-turn and $t$ the translation by $v$,
+then $hth^{-1}$ is the translation by $-v$. As $t_{n+m/2,j}$ is the conjugate
+of $t_{n,j}$ by $(r_0r_1)^{m/2}$, the relation follows; summing it over the
+$m/2$ pairs $\{n,n+m/2\}$ of a level gives Theorem~\ref{thm:cyl}(i). A single
+lamp has length $6+2k(n,j)$ by Corollary~\ref{cor:single}, so an identification
+of this form first appears at $6+2\min\max\{k(n,j),k(n+m/2,j)\}$, the minimum
+over pairs; that minimum equals $m/2-1$ for $m=4,6,8,10,12$, giving $m+4$.
+\end{proof}
+
+For even $m\ge4$ this precedes the length $2m+2$ at which new translations
+appear, so the identifications are what the census sees first, and it falls
+below the generic one; for odd $m$ there is no such pairing and the census
+rises instead.
+
 \begin{proposition}[Stratum translation census]\label{prop:cylcensus}
 For $\tau$ generic on the stratum $\alpha=\pi/m$, the numbers of translations
 of each length are
 \[
-\begin{array}{r|rrrrr}
- \text{length} & 6&8&10&12&14\\\hline
- \text{generic} & 6&6&42&96&350\\
- m=3 & 6&8&38&76&224\\
- m=5 & 6&6&42&104&448\\
- m=7,9,11 & 6&6&42&96&350
+\begin{array}{r|rrrrrrr}
+ \text{length} & 6&8&10&12&14&16&18\\\hline
+ \text{generic} & 6&6&42&96&350&1092&3684\\
+ m=3 & 6&8&38&76&224&630&1456\\
+ m=4 & 6&4&34&62&198&480&1394\\
+ m=5 & 6&6&42&104&448&1274&4612\\
+ m=6 & 6&6&40&78&278&750&2342\\
+ m=7 & 6&6&42&96&350&1110&4204\\
+ m=9 & 6&6&42&96&350&1092&3684
 \end{array}
 \]
-In general the two censuses agree up to length $2m+1$ and differ at $2m+2$.
+For odd $m\ge3$ the two censuses agree up to length $2m+1$ and the stratum
+acquires translations that are not images of generic ones at $2m+2$; for even
+$m\ge4$ they first differ at $m+4$, by Proposition~\ref{prop:antipodal}.
 \end{proposition}
 
 \begin{proof}
@@ -863,15 +896,21 @@ every shape, so the word represents a generic translation as well. Otherwise
 $|c_1|\ge m$, so by Theorem~\ref{thm:rot}(ii) the word has length at least
 $2m$, with equality only for $(r_0r_1)^{\pm m}$, which is the identity on the
 stratum. Hence the shortest translation of the stratum that is not the image
-of a generic one has length $2m+2$. Identifications among generic translations
-require the level relation, hence length at least $2m+4$ by the arc count
-above. Below $2m+2$ neither effect is available and the censuses agree; at
-$2m+2$ the first new translations appear. The displayed values are computed by exact rational
-breadth-first search in the stratum group at three leg samples for each $m$,
-at two leg samples for each $m$, which bounds the counts from below at any
-single sample and agrees at both; a configuration enumeration on $X_m$ using
-the metric of Theorem~\ref{thm:cyl} reproduces the same values in this range
-as a consistency check.
+of a generic one has length $2m+2$. For odd $m$, identifications among generic
+translations require the level relation, hence length at least
+$4\lceil m/2\rceil+2=2m+4$ by the arc count above, while for even $m$
+Proposition~\ref{prop:antipodal} places the first identification at $m+4$.
+Shortening is excluded below $2m+2$ as well: if $g\neq1$ has stratum length
+$L\le2m$, then a stratum-geodesic word for $g$ has $c_1=0$, since otherwise
+$|c_1|\ge m$ forces length at least $2m$ with equality only at the identity;
+that word is then a word for a generic translation, so its generic length is at
+most $L$, and the reverse inequality is trivial. For odd $m$ none of the three
+effects is available below $2m+2$ and the censuses agree length by length,
+while at $2m+2$ the first new translations appear. The displayed values are
+computed by exact rational breadth-first search in the stratum group, which at
+any single shape bounds the counts from below; they are confirmed at two leg
+samples through length $18$ for $m\le7$; the row $m=9$ rests on a single
+sample.
 \end{proof}
 
 For $m=5$ the stratum has \emph{more} translations than a generic shape at
