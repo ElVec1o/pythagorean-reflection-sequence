@@ -26,9 +26,9 @@ For `1 ≤ n ≤ 9`, `u_n = F(n+3)` (Fibonacci); the first deviation is at `n = 
 `u_10 = 225 = F(13) − 8`. The **isosceles** case (`a = b`) is genuinely
 different (`1, 3, 5, 8, 11, 13, 16, …`).
 
-## Corpus status (v4.0.0)
+## Corpus status (v5.0.0)
 
-Six documents in `paper/journal/`, every claim tiered honestly:
+Seven documents in `paper/journal/`, every claim tiered honestly:
 
 | paper | headline | status |
 |---|---|---|
@@ -36,6 +36,7 @@ Six documents in `paper/journal/`, every claim tiered honestly:
 | **Paper 1b** (9 pp) | `n`-dimensional orthoscheme companion: collision depth `cd_n` determined uniformly by the `(e, t)` class in every dimension; atlas of representative leg sequences for `n = 3…6` | **unconditional** |
 | **Paper 2** (30 pp) | blocks transcendental over ℚ(q); relaxed series `V` transcendental over ℚ(x); true series `U` transcendental **conditional on one amplitude estimate (⋆)**; `β₂`-as-a-number: reduced to a Hahn–Exton value question, with a proven no-go ledger (`ρ = 1/2`, cyclotomic floor `12/π² > 1`) locating the precise open frontier | **V unconditional; U conditional on (⋆); β₂ number-status open** |
 | **Paper 3** (4 pp) | universality–deviation dichotomy (dimension-free); generic rigidity (co-null shape set); rational RACG envelope with rate `r_n = 1+2cos(2π/(n+3))`; geometric group = proper amenable quotient (finite-horizon envelope) | **theorems unconditional; higher-dim arithmetic past the horizon open** |
+| **Paper 4** (18 pp) | shortest relations of planar triangle reflection groups: exactly 33 at length 11 (radius-12 census, all identities in `Z[p,q]`); translations = integer flows on the honeycomb Cayley graph with exact word metric `ℓ = ‖φ‖₁ + 2·st`; rotation relations `d²−1` at depth `m + m/d`; cylinder metric on the `π/m` strata | **unconditional; stratum census verified to length 14 (two leg samples); even-`m` census onset open** |
 | **Hahn–Exton companion** (15 pp) | integrality of the zero lattice of the Hahn–Exton `q`-cosine; stable deviation law; denominator–radius identity; effective bounds | **unconditional** |
 | **Universality principle** (3 pp) | universality-then-deviation as a dimension-free statement | **unconditional** |
 
@@ -46,7 +47,7 @@ Six documents in `paper/journal/`, every claim tiered honestly:
 | **Lean 4 kernel** (`lean/with_mathlib/`, no `sorry`) | the eight length-10 relations; universality of `u_d` through depth 22; six analytic atoms |
 | **Exact rational / modular arithmetic** | the depth-32 threshold; the deviation witnesses; `u_d` to depth 42 (Rust); the `(1,2)` deviation at depth 33 (`reproduce/deviation_1_2.py`); **the travel-pole lemma** — winding number 1 on `\|q\| = 1/2`, a sign-change bracket of width `< 1e-27`, and `Σ₀ ≥ 1.1558` there (`reproduce/certify_beta2_pole.py`), certifying `β₂ = 1.49161778711437422683671274…` to 26 digits; **the bulk non-interference constants** — winding number 0 of `1 − Σ₁^bulk` on `\|q\| = 1/2`, `Σ₁^bulk(q*) ∈ [0.4804499685, 0.4804499685] < 1`, and `q_b = 0.60956734426012956966…` certified to 19 digits (`reproduce/certify_bulk_dressing.py`). All with explicit tail bounds; no floating point enters any inequality |
 
-As of v4.0.0 no numeric input to the `β₂` chain remains uncertified: every
+As of v5.0.0 no numeric input to the `β₂` chain remains uncertified: every
 constant in Theorem `thm:beta2`'s proof is either Lean-checked, exact
 rational/modular, or carried by one of the two certificates above.
 
