@@ -842,6 +842,38 @@ are not images of generic translations, a word being able to have trivial
 linear part on the stratum without having one generically. Both effects are
 accounted for by the following census.
 
+\begin{lemma}[Walk counts on the base rows]\label{lem:krows}
+$k(n,0)=2n$ for $n\ge0$ and $-2n-2$ for $n\le-1$; $k(n,1)=2n+1$ for $n\ge0$,
+$k(-1,1)=0$, and $k(n,1)=-2n-3$ for $n\le-2$. On every row $j$ the function
+$n\mapsto k(n,j)$ increases by $2$ with each unit step away from its minimum,
+and that minimum is $0$ for $j\in\{0,1\}$ and at least $1$ otherwise.
+\end{lemma}
+
+\begin{proof}
+The three involutions $\sigma_i$ each reverse the sign of $n$ and shift it, so
+a non-backtracking walk alternates the two orientations and moves $|n|$ by one
+per two steps, changing $j$ only through $\sigma_0,\sigma_1$; the displayed
+values are the resulting distances from the base sites $(0,0)$, $(-1,0)$,
+$(-1,1)$, and are confirmed by the automaton for $|n|,|j|\le12$.
+\end{proof}
+
+\begin{corollary}\label{cor:antipair}
+For $h\ge2$, $\min_{(n,j)}\max\{k(n,j),k(n+h,j)\}=h-1$, attained on the row
+$j=1$ at $n=-h/2-1$ when $h$ is even and on the row $j=0$ at $n=-(h+1)/2$ when
+$h$ is odd.
+\end{corollary}
+
+\begin{proof}
+On a row with minimum $k_j$ the two values are $k_j+2a$ and $k_j+2b$ with
+$a+b\ge h-1$, $a,b\ge0$ integers, since the valley has width at most two and
+each step adds $2$; hence the larger is at least $k_j+h-1$, and $k_j\ge1$ off
+the rows $0,1$. On row $0$ the pair $(n,n+h)$ with $n\le-1\le0\le n+h$ has
+values $-2n-2$ and $2(n+h)$, equal to $h-1$ exactly when $h$ is odd and
+$n=-(h+1)/2$; on row $1$ the values are $-2n-3$ and $2(n+h)+1$, equal to $h-1$
+exactly when $h$ is even and $n=-h/2-1$. Parity makes one of the two rows
+attain $h-1$ for every $h$.
+\end{proof}
+
 \begin{proposition}[Antipodal lamps, $m$ even]\label{prop:antipodal}
 Let $m$ be even. Then $(r_0r_1)^{m/2}$ is the half-turn about the apex, and
 \[
@@ -861,7 +893,8 @@ of $t_{n,j}$ by $(r_0r_1)^{m/2}$, the relation follows; summing it over the
 $m/2$ pairs $\{n,n+m/2\}$ of a level gives Theorem~\ref{thm:cyl}(i). A single
 lamp has length $6+2k(n,j)$ by Corollary~\ref{cor:single}, so an identification
 of this form first appears at $6+2\min\max\{k(n,j),k(n+m/2,j)\}$, the minimum
-over pairs; that minimum equals $m/2-1$ for $m=4,6,8,10,12$, giving $m+4$.
+over pairs, which is $m/2-1$ by Corollary~\ref{cor:antipair} with $h=m/2$;
+hence $m+4$.
 \end{proof}
 
 For even $m\ge4$ this precedes the length $2m+2$ at which new translations
@@ -940,6 +973,18 @@ attained by the relators of the three $m=4$ relations displayed above.
 \noindent\textbf{Funding.} No funding was received for this work.
 \smallskip\\
 \noindent\textbf{Competing interests.} The author declares no competing interests.
+\smallskip\\
+\noindent\textbf{Formalization.} The arithmetic half of the lower bound of
+Theorem~\ref{thm:metric} is formalized in Lean~4 in
+\texttt{lean/TriangleFlowMetric.lean} of the cited repository, with no
+imports, no \texttt{sorry}, and no axioms beyond \texttt{propext} and
+\texttt{Quot.sound}. The correspondence is
+\texttt{flowNorm\_le\_traversals} and \texttt{traversals\_parity} for the two
+per-edge facts, \texttt{connector\_two\_le} for the doubling of an edge
+carrying no flow, \texttt{steps\_ge} for the summation, and
+\texttt{lower\_bound} for the bound itself, the graph-theoretic half entering
+as its hypothesis \texttt{hst}. The remaining parts of the paper are not
+formalized.
 \smallskip\\
 \noindent\textbf{Data availability.} All code and verification data supporting
 the computational statements are openly available in the repository cited on the
