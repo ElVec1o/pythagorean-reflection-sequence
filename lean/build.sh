@@ -37,7 +37,7 @@ fi
 export LEAN_PATH="$LP$PWD/$OUT"
 
 echo "== with Mathlib =="
-for f in CoxeterTorsion Bridge; do
+for f in CoxeterTorsion Bridge LinearPart; do
   [ -f "with_mathlib/$f.lean" ] || continue
   "$LEANBIN" -o "$OUT/$f.olean" "with_mathlib/$f.lean"
   echo "   ok  with_mathlib/$f.lean"
