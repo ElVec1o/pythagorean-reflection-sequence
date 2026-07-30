@@ -994,8 +994,26 @@ each directed edge once, is proved in
 imports and no \texttt{sorry}; Mathlib carries the necessary degree condition
 for Eulerian trails but not this sufficiency. The combinatorial content of
 both bounds of Theorem~\ref{thm:metric} is therefore machine-checked, while
-the identification of the translation subgroup with the flows, and everything
-in Sections~2 and~6, is not formalized.
+the identification of the translation subgroup with the flows is not
+formalized.
+
+Theorem~\ref{thm:rot}(ii) is formalized in
+\texttt{lean/RotationRelations.lean}, again with no imports and no
+\texttt{sorry}: \texttt{classify\_normal\_forms} is the classification of the
+reduced words of length $2c+2$ with $c_2=0$ and $c_1=c$,
+\texttt{markBoth\_valid} its converse, and \texttt{admissible\_count} the count
+$c^2$. The free-product step behind part~(iii) is formalized in
+\texttt{lean/with\_mathlib/CoxeterTorsion.lean}, which does import Mathlib:
+writing a word of that shape as $u_0x_2u_1x_2u_2$ with the $u_i$ in the
+dihedral factor, \texttt{finite\_order\_iff} states and proves that it has
+finite order in $W_m=D_m*C_2$ if and only if $u_2u_0=1$. Mathlib supplies the
+free product and its normal form but no torsion theorem for free products, so
+both directions are proved there, one by conjugating into the finite factor
+and the other by exhibiting every power as a nonempty reduced word. The step
+from that criterion to the identification of the unique word $w_{0,c+1}$, and
+everything in Sections~2 and~6, is not formalized; the identification is
+checked exhaustively for $3\le m\le60$ and $1\le c\le m-1$ by
+\texttt{torsion\_count.rs} in the repository.
 \smallskip\\
 \noindent\textbf{Data availability.} All code and verification data supporting
 the computational statements are openly available in the repository cited on the

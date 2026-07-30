@@ -20,6 +20,14 @@ triangle reflection groups* (`paper/journal/paper4.tex`). Python scripts need
 | Section 6, whole-stratum certificates for `m = 4, 6` and for `m = 8` | `stratum_certificate_m4_m6.py`, `stratum_certificate_m8.py` |
 | Section 6, the `m = 2` row | `stratum_m2.py` |
 | Proposition 6.z, stratum translation census | `emit_generators.py` then `rust_strat/`; cross-checked by `stratum_bfs_census.py` |
+| Theorem 5.x(iii), the unique word of finite order | `torsion_count.rs` |
+
+`torsion_count.rs` applies the criterion proved in
+`lean/with_mathlib/CoxeterTorsion.lean` -- the word `u0 x2 u1 x2 u2` has finite
+order in `W_m = D_m * C_2` exactly when `u1 = 1` or `u2 u0 = 1` -- to all `c^2`
+words `w_{a,b}`, and confirms that exactly one of them has finite order for
+every `3 <= m <= 60` and `1 <= c <= m-1`. Build with
+`rustc -O -o torsion_count torsion_count.rs`.
 
 `stratum_fields.py` holds the exact number fields `Q(2cos(pi/m))(sin(pi/m))`
 and the stratum generators used by several of the above.

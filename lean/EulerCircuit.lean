@@ -59,15 +59,15 @@ def Balanced (E : List (DEdge V)) : Prop := ∀ v, outDeg E v = inDeg E v
 theorem outDeg_cons (e : DEdge V) (es : List (DEdge V)) (v : V) :
     outDeg (e :: es) v = (if v = e.1 then 1 else 0) + outDeg es v := by
   by_cases h : v = e.1
-  · subst h; simp [outDeg, List.filter_cons] <;> omega
-  · simp [outDeg, List.filter_cons, Ne.symm h, h] <;> omega
+  · subst h; simp [outDeg] <;> omega
+  · simp [outDeg, Ne.symm h, h] <;> omega
 
 /-- In-degree of a cons. -/
 theorem inDeg_cons (e : DEdge V) (es : List (DEdge V)) (v : V) :
     inDeg (e :: es) v = (if v = e.2 then 1 else 0) + inDeg es v := by
   by_cases h : v = e.2
-  · subst h; simp [inDeg, List.filter_cons] <;> omega
-  · simp [inDeg, List.filter_cons, Ne.symm h, h] <;> omega
+  · subst h; simp [inDeg] <;> omega
+  · simp [inDeg, Ne.symm h, h] <;> omega
 
 /-- The degree identity along a trail, in subtraction-free form: at every
 vertex the trail leaves as often as it enters, counting its start as one extra
@@ -104,7 +104,7 @@ theorem exists_out (R : List (DEdge V)) (v : V) (h : 0 < outDeg R v) :
   | cons e es ih =>
     rw [outDeg_cons] at h
     by_cases hv : v = e.1
-    · exact ⟨e, List.mem_cons_self _ _, hv.symm⟩
+    · exact ⟨e, by simp, hv.symm⟩
     · simp only [if_neg hv, Nat.zero_add] at h
       obtain ⟨f, hf, hfv⟩ := ih h
       exact ⟨f, List.mem_cons_of_mem _ hf, hfv⟩
@@ -385,7 +385,7 @@ theorem reach_stays {E C' R' : List (DEdge V)} {base : V}
   | cons g gs ih =>
     intro a b h hsub ha
     obtain ⟨hg, htail⟩ := h
-    have hgE : g ∈ E := hsub g (List.mem_cons_self _ _)
+    have hgE : g ∈ E := hsub g (by simp)
     have hgC : g ∈ C' := by
       rcases hsplit g hgE with hgc | hgr
       · exact hgc
