@@ -13,8 +13,10 @@ number at even positions.  Theorem `thm:rot` rests on three facts about these:
   (3) the reduced words of length `2c+2` with `c_2 = 0` and `c_1 = c` are
       exactly the `c^2` normal forms of the theorem.
 
-(1) and (2) are proved here.  (3), and the free-product argument identifying
-the unique word of finite order in `W_m = D_m * C_2`, are stated and left open:
+(1) and (2) are proved here, and (3) is verified by kernel computation for
+`c = 1, 2, 3`, where the counts come out `1, 4, 9`.  The general form of (3)
+is stated as `count_normal_forms` and left open, as is the free-product
+argument identifying the unique word of finite order in `W_m = D_m * C_2`:
 the latter needs the torsion theorem for free products, which Mathlib does not
 carry either.
 
@@ -121,6 +123,49 @@ def normalForm (c a b : Nat) : List Letter :=
     if k = 2 * a then 2
     else if k = 2 * b - 1 then 2
     else if k % 2 = 0 then 1 else 0)
+
+/-- Boolean form of `Reduced`, for kernel computation. -/
+def reducedB : List Letter → Bool
+  | [] => true
+  | [_] => true
+  | x :: y :: xs => (x != y) && reducedB (y :: xs)
+
+theorem reducedB_iff (w : List Letter) : reducedB w = true ↔ Reduced w := by
+  induction w with
+  | nil => simp [reducedB, Reduced]
+  | cons x xs ih =>
+    cases xs with
+    | nil => simp [reducedB, Reduced]
+    | cons y ys =>
+      simp only [reducedB, Reduced, Bool.and_eq_true, bne_iff_ne, ne_eq] at *
+      constructor
+      · rintro ⟨h1, h2⟩; exact ⟨h1, ih.mp h2⟩
+      · rintro ⟨h1, h2⟩; exact ⟨h1, ih.mpr h2⟩
+
+/-- All words of a given length, for kernel computation. -/
+def extend (ws : List (List Letter)) : List (List Letter) :=
+  ws.foldr (fun w acc => (0 :: w) :: (1 :: w) :: (2 :: w) :: acc) []
+
+def allWords : Nat → List (List Letter)
+  | 0 => [[]]
+  | n + 1 => extend (allWords n)
+
+/-- The words the theorem counts: reduced, of length `2c+2`, with `c_2 = 0` and
+`c_1 = c`. -/
+def validCount (c : Nat) : Nat :=
+  ((allWords (2 * c + 2)).filter
+    (fun w => reducedB w && (cvec w 2 == 0) && (cvec w 1 == (c : Int)))).length
+
+/-- The count `c^2`, checked by the kernel for small `c`. -/
+theorem validCount_one : validCount 1 = 1 := by decide
+
+theorem validCount_two : validCount 2 = 4 := by decide
+
+set_option maxRecDepth 40000 in
+theorem validCount_three : validCount 3 = 9 := by decide
+
+-- `c = 4` and beyond exhaust the kernel's stack; the general statement is
+-- `count_normal_forms` below, still open.
 
 /-- **The count.**  For `1 ≤ c`, the reduced words of length `2c+2` with
 `c_2 = 0` and `c_1 = c` are exactly the `normalForm c a b` with `0 ≤ a ≤ c`,

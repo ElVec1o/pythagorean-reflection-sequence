@@ -120,6 +120,36 @@ theorem maximal_trail_closed (L R : List (DEdge V)) (a b : V)
     obtain ⟨e, heR, heb⟩ := exists_out R b hpos
     exact absurd heb (hmax e heR)
 
+/-- Trails compose. -/
+theorem isTrail_append {a b c : V} {L1 L2 : List (DEdge V)}
+    (h1 : IsTrail a b L1) (h2 : IsTrail b c L2) : IsTrail a c (L1 ++ L2) := by
+  induction L1 generalizing a with
+  | nil =>
+    simp only [IsTrail] at h1
+    subst h1
+    simpa using h2
+  | cons e es ih =>
+    obtain ⟨he, htail⟩ := h1
+    exact ⟨he, ih htail⟩
+
+/-- Trails split: a trail along a concatenation passes through a middle vertex. -/
+theorem isTrail_split {a c : V} (L1 L2 : List (DEdge V)) (h : IsTrail a c (L1 ++ L2)) :
+    ∃ b, IsTrail a b L1 ∧ IsTrail b c L2 := by
+  induction L1 generalizing a with
+  | nil => exact ⟨a, rfl, by simpa using h⟩
+  | cons e es ih =>
+    obtain ⟨he, htail⟩ := h
+    obtain ⟨b, hb1, hb2⟩ := ih htail
+    exact ⟨b, ⟨he, hb1⟩, hb2⟩
+
+/-- Splicing: a closed trail at a vertex of a circuit can be inserted there.
+This is the step the induction of `euler_circuit` performs once per component. -/
+theorem splice {a v : V} {C1 C2 D : List (DEdge V)}
+    (h1 : IsTrail a v C1) (h2 : IsTrail v a C2) (hd : IsTrail v v D) :
+    IsTrail a a (C1 ++ D ++ C2) := by
+  rw [List.append_assoc]
+  exact isTrail_append h1 (isTrail_append hd h2)
+
 /-- **Euler's theorem for finite directed multigraphs.**  A balanced multigraph
 whose edges all lie in one connected component carries a circuit using every
 edge exactly once.
