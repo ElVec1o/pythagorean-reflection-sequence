@@ -26,7 +26,9 @@ triangle reflection groups* (`paper/journal/paper4.tex`). Python scripts need
 `lean/with_mathlib/CoxeterTorsion.lean` -- the word `u0 x2 u1 x2 u2` has finite
 order in `W_m = D_m * C_2` exactly when `u1 = 1` or `u2 u0 = 1` -- to all `c^2`
 words `w_{a,b}`, and confirms that exactly one of them has finite order for
-every `3 <= m <= 60` and `1 <= c <= m-1`. Build with
+every `3 <= m <= 60` and `1 <= c <= m-1`. The same statement is proved in
+`lean/with_mathlib/Bridge.lean` as `unique_finite_order`, so this is an
+independent check rather than the only evidence. Build with
 `rustc -O -o torsion_count torsion_count.rs`.
 
 `stratum_fields.py` holds the exact number fields `Q(2cos(pi/m))(sin(pi/m))`

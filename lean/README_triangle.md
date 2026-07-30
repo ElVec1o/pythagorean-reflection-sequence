@@ -1,19 +1,21 @@
 # Lean files for the triangle reflection paper
 
 The first three files import nothing and are checked with `lean <file>` on Lean
-4.13 or 4.30; no Mathlib build is required. The fourth imports Mathlib.
+4.13 or 4.30; no Mathlib build is required. The two under `with_mathlib/`
+import Mathlib, and `Bridge.lean` also imports `RotationRelations`.
 
 | file | proved | left open |
 |---|---|---|
 | `TriangleFlowMetric.lean` | the combinatorial core of both bounds of the metric theorem: per-edge domination and parity, doubling of connectors, the summation (`lower_bound`), vertex balance, and the length and flow of the word read off a circuit (`upper_bound`) | nothing; the graph inputs enter as hypotheses `hst` and the circuit |
 | `EulerCircuit.lean` | **Euler's theorem for finite directed multigraphs** (`euler_circuit`): a balanced multigraph whose edges are reachable from a base vertex carries a circuit using every edge once. Complete, no `sorry`. Mathlib has only the necessary degree condition, not this sufficiency | nothing |
 | `RotationRelations.lean` | the letter invariants; block peeling and the two bounds; **the classification** (`classify_normal_forms`), **the converse** (`markBoth_valid`) and **the count** (`admissible_count`: `(n-1)^2` admissible index pairs, that is `c^2`) | nothing |
-| `with_mathlib/CoxeterTorsion.lean` | **the free-product torsion criterion** (`finite_order_iff`): in `W_m = D_m * C_2`, the word `u₀ x₂ u₁ x₂ u₂` with `u₁ ≠ 1` has finite order exactly when `u₂u₀ = 1` | the arithmetic step that exactly one admissible `(a,b)` meets the criterion (see below) |
+| `with_mathlib/CoxeterTorsion.lean` | **the free-product torsion criterion** (`finite_order_iff`): in `W_m = D_m * C_2`, the word `u₀ x₂ u₁ x₂ u₂` with `u₁ ≠ 1` has finite order exactly when `u₂u₀ = 1` | nothing |
+| `with_mathlib/Bridge.lean` | **part (iii) of the rotation-relations theorem** (`unique_finite_order`): evaluating the letter-list model in the free product, exactly one admissible pair gives an element of finite order, namely `a = 0`, `j = n-1` | nothing |
 
 No file contains a `sorry`. Declarations in `TriangleFlowMetric.lean` and
 `EulerCircuit.lean` have axioms `[propext, Quot.sound]`; the classification
 theorems in `RotationRelations.lean` and everything in `CoxeterTorsion.lean`
-additionally use `Classical.choice`, the third of Lean's standard axioms.
+and `Bridge.lean` additionally use `Classical.choice`, the third of Lean's standard axioms.
 
 `euler_circuit` avoids decomposing the multigraph into connected components,
 which is what makes the usual presentation heavy. The circuit is grown one
@@ -40,18 +42,32 @@ products**, so both directions are proved here:
   `neword_prod_ne_one` (from injectivity of `Word.prod`, the inverse half of
   `Word.equiv`) shows no power is `1`.
 
-This closes the step that `RotationRelations.lean` left open. What is **not**
-formalized is the bridge from the letter-list representation used there to this
-group-theoretic one, and with it the arithmetic that exactly one admissible
-pair `(a,b)` satisfies the criterion, namely `(0, c+1)`, that is
-`w_{0,c+1} = r_2 (r_0 r_1)^c r_2`. That step is proved in the paper and checked
-exhaustively for `3 <= m <= 60`, `1 <= c <= m-1` by
-`code/triangle_relations/torsion_count.rs`.
+This closes the step that `RotationRelations.lean` left open.
 
-To check the file, build `LEAN_PATH` from a Mathlib checkout, for example
+`with_mathlib/Bridge.lean` then joins the two models. `ev` evaluates a letter
+list in `W m`, sending the apex reflections `r₀ = sr 1`, `r₁ = sr 0` into the
+dihedral factor so that `r₁r₀` is the rotation by one step, and `r₂` into the
+other factor. `markBoth_lt` and `markBoth_gt` rewrite the marked pattern as an
+explicit concatenation of plain runs, `ev_markBoth_lt` and `ev_markBoth_gt`
+evaluate it as a `blockWord`, and `unique_finite_order` reads off part (iii):
+for `n ≤ m`, which is the range `c ≤ m-1` of the paper,
+
+```
+IsOfFinOrder (ev m (markBoth n a j))  ↔  a = 0 ∧ j = n - 1
+```
+
+so the count `exactly one` is proved, not merely checked. The two marks in
+decreasing order never give finite order, because both the middle block and
+the join stay strictly between `0` and `m`.
+
+`code/triangle_relations/torsion_count.rs` remains as an independent check of
+the same statement for `3 ≤ m ≤ 60`, `1 ≤ c ≤ m-1`.
+
+`build.sh` builds everything. Point it at the `.lake/packages` directory of any
+Lean 4.30 project with Mathlib built:
 
 ```sh
-MLROOT=<mathlib>/.lake/packages
-LP=$(for d in "$MLROOT"/*/.lake/build/lib/lean; do printf "%s:" "$d"; done)
-LEAN_PATH="$LP" lean with_mathlib/CoxeterTorsion.lean
+MATHLIB_PACKAGES=<project>/.lake/packages ./build.sh
 ```
+
+Without that variable it builds the three import-free files and stops.
