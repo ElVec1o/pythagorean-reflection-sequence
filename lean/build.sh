@@ -37,11 +37,11 @@ fi
 export LEAN_PATH="$LP$PWD/$OUT"
 
 echo "== with Mathlib =="
-for f in CoxeterTorsion Bridge LinearPart PlaneGroup CensusWitness; do
+for f in CoxeterTorsion Bridge LinearPart PlaneGroup CensusWitness CensusUniversal; do
   [ -f "with_mathlib/$f.lean" ] || continue
   "$LEANBIN" -o "$OUT/$f.olean" "with_mathlib/$f.lean"
   echo "   ok  with_mathlib/$f.lean"
 done
 
 echo "== all files built, no sorry =="
-echo "   (CensusWitness.lean uses native_decide and so trusts the compiler)"
+echo "   (CensusWitness.lean and CensusUniversal.lean use native_decide)"

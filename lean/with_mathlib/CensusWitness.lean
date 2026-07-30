@@ -116,6 +116,39 @@ def levels (n : Nat) (seen : Std.HashSet (List Int)) (frontier : List QAff) :
 def sphere (n : Nat) : List Nat :=
   1 :: levels n (Std.HashSet.emptyWithCapacity.insert QAff.id.key) [QAff.id]
 
+/-! ### The colliding pairs -/
+
+/-- Reduced words of length `n`, as letter lists. -/
+def rwords : Nat → List (List Nat)
+  | 0 => [[]]
+  | n + 1 => (rwords n).flatMap fun w =>
+      (List.range 3).filterMap fun l =>
+        match w with
+        | [] => some (l :: w)
+        | x :: _ => if x == l then none else some (l :: w)
+
+/-- The map represented by a word. -/
+def evalW (w : List Nat) : QAff :=
+  w.foldr (fun l acc => (gens.getD l QAff.id).comp acc) QAff.id
+
+/-- The words of length `n` grouped by image, keeping the classes of size > 1. -/
+def collisions (n : Nat) : List (List (List Nat)) :=
+  let tbl : Std.HashMap (List Int) (List (List Nat)) :=
+    (rwords n).foldl (fun m w =>
+      let k := (evalW w).key
+      m.insert k (w :: m.getD k [])) ∅
+  (tbl.toList.map (fun p => p.2)).filter (fun c => c.length > 1)
+
+/-- At radius 11 there are `3·2^10` reduced words. -/
+theorem rwords_eleven : (rwords 11).length = 3072 := by native_decide
+
+/-- They collide in exactly 33 classes, each a pair: the 33 of the census
+theorem. That the classes are pairs and not larger is what makes the deficit
+equal to the number of classes. -/
+theorem collisions_eleven :
+    (collisions 11).length = 33 ∧ (collisions 11).all (fun c => c.length == 2) := by
+  native_decide
+
 /-! ### The result -/
 
 /-- **The growth of the witness, to radius 12.** Compare the census theorem:
