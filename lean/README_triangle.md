@@ -12,9 +12,14 @@ import Mathlib, and `Bridge.lean` also imports `RotationRelations`.
 | `with_mathlib/CoxeterTorsion.lean` | **the free-product torsion criterion** (`finite_order_iff`): in `W_m = D_m * C_2`, the word `u₀ x₂ u₁ x₂ u₂` with `u₁ ≠ 1` has finite order exactly when `u₂u₀ = 1` | nothing |
 | `with_mathlib/LinearPart.lean` | **the linear part of a product of reflections** (`linOf_eq`): `exp (2i Σ_i c_i(w) θ_i)`, and `linOf_of_cvec_two_eq_zero`, the rotation by `2πc₁/m` when `c₂ = 0` | nothing |
 | `with_mathlib/PlaneGroup.lean` | **the plane group itself**: `Aff` (`z ↦ a z + b` or `a conj z + b`, `a` a unit) with its `Group` instance via `act_injective`, `refl` and `refl_sq`, and `linCoeff_prod` identifying the abstract invariant with the actual linear coefficient | nothing |
+| `with_mathlib/CensusWitness.lean` | **the growth of a rational witness triangle to radius 12** (`census_witness`): `1,3,6,…,1536,3039,6012`, so deficit `33` at radius 11 and `132` at radius 12. Proved by `native_decide` | the 33 universal identities, which are the matching lower bound |
 | `with_mathlib/Bridge.lean` | **part (iii) of the rotation-relations theorem** (`unique_finite_order`): evaluating the letter-list model in the free product, exactly one admissible pair gives an element of finite order, namely `a = 0`, `j = n-1` | nothing |
 
-No file contains a `sorry`. Declarations in `TriangleFlowMetric.lean` and
+No file contains a `sorry`. Every file but `CensusWitness.lean` uses only
+Lean's standard axioms; that one is proved by `native_decide` and so trusts the
+compiler as well.
+
+ Declarations in `TriangleFlowMetric.lean` and
 `EulerCircuit.lean` have axioms `[propext, Quot.sound]`; the classification
 theorems in `RotationRelations.lean` and everything in `CoxeterTorsion.lean`
 and `Bridge.lean` additionally use `Classical.choice`, the third of Lean's standard axioms.
