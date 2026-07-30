@@ -561,6 +561,315 @@ theorem classify_main : ∀ (n : Nat) (w : List Letter),
           have hq0 : q = 0 := letter_cases q hq1 hq2
           exact hpq (hp0.trans hq0.symm)
 
+/-! ## The converse
+
+Each admissible shape really is a reduced word with the stated invariants.  The
+adjacency constraints of `Admissible` are exactly what reducedness needs at the
+block junctions. -/
+
+theorem ne01 : (0 : Letter) ≠ 1 := by decide
+theorem ne02 : (0 : Letter) ≠ 2 := by decide
+theorem ne12 : (1 : Letter) ≠ 2 := by decide
+theorem ne10 : (1 : Letter) ≠ 0 := by decide
+theorem ne21 : (2 : Letter) ≠ 1 := by decide
+theorem ne20 : (2 : Letter) ≠ 0 := by decide
+
+theorem plain_length : ∀ n, (plain n).length = 2 * n := by
+  intro n; induction n with
+  | zero => rfl
+  | succ n ih => simp only [plain, List.length_cons, ih]; omega
+
+theorem plain_cvec1 : ∀ n, cvec (plain n) 1 = n := by
+  intro n; induction n with
+  | zero => simp [plain, cvec]
+  | succ n ih =>
+    rw [plain, cvec_cons2, ih, if_pos rfl, if_neg ne01]
+    push_cast; omega
+
+theorem plain_cvec2 : ∀ n, cvec (plain n) 2 = 0 := by
+  intro n; induction n with
+  | zero => simp [plain, cvec]
+  | succ n ih =>
+    rw [plain, cvec_cons2, ih, if_neg ne12, if_neg ne02]
+    omega
+
+theorem plain_reduced_cons : ∀ n (y : Letter), y ≠ 1 → Reduced (y :: plain n) := by
+  intro n; induction n with
+  | zero => intro y _; trivial
+  | succ n ih => intro y hy; exact ⟨hy, ne10, ih 0 ne01⟩
+
+theorem plain_reduced : ∀ n, Reduced (plain n) := by
+  intro n; cases n with
+  | zero => trivial
+  | succ n => exact ⟨ne10, plain_reduced_cons n 0 ne01⟩
+
+theorem markY_length : ∀ n j, (markY n j).length = 2 * n := by
+  intro n; induction n with
+  | zero => intro j; rfl
+  | succ n ih =>
+    intro j; cases j with
+    | zero => simp only [markY, List.length_cons, plain_length]; omega
+    | succ j => simp only [markY, List.length_cons, ih]; omega
+
+theorem markY_cvec1 : ∀ n j, cvec (markY n j) 1 = n := by
+  intro n; induction n with
+  | zero => intro j; simp [markY, cvec]
+  | succ n ih =>
+    intro j; cases j with
+    | zero => rw [markY, cvec_cons2, plain_cvec1, if_pos rfl, if_neg ne21]; push_cast; omega
+    | succ j => rw [markY, cvec_cons2, ih j, if_pos rfl, if_neg ne01]; push_cast; omega
+
+theorem markY_cvec2 : ∀ n j, j < n → cvec (markY n j) 2 = -1 := by
+  intro n; induction n with
+  | zero => intro j hj; omega
+  | succ n ih =>
+    intro j hj; cases j with
+    | zero => rw [markY, cvec_cons2, plain_cvec2, if_neg ne12, if_pos rfl]; omega
+    | succ j =>
+      rw [markY, cvec_cons2, ih j (by omega), if_neg ne12, if_neg ne02]; omega
+
+theorem markY_reduced_cons : ∀ n j (y : Letter), y ≠ 1 → Reduced (y :: markY n j) := by
+  intro n; induction n with
+  | zero => intro j y _; trivial
+  | succ n ih =>
+    intro j y hy; cases j with
+    | zero => exact ⟨hy, ne12, plain_reduced_cons n 2 ne21⟩
+    | succ j => exact ⟨hy, ne10, ih j 0 ne01⟩
+
+theorem markX_length : ∀ n a, (markX n a).length = 2 * n := by
+  intro n; induction n with
+  | zero => intro a; rfl
+  | succ n ih =>
+    intro a; cases a with
+    | zero => simp only [markX, List.length_cons, plain_length]; omega
+    | succ a => simp only [markX, List.length_cons, ih]; omega
+
+theorem markX_cvec1 : ∀ n a, a < n → cvec (markX n a) 1 = (n : Int) - 1 := by
+  intro n; induction n with
+  | zero => intro a ha; omega
+  | succ n ih =>
+    intro a ha; cases a with
+    | zero => rw [markX, cvec_cons2, plain_cvec1, if_neg ne21, if_neg ne01]; push_cast; omega
+    | succ a =>
+      rw [markX, cvec_cons2, ih a (by omega), if_pos rfl, if_neg ne01]; push_cast; omega
+
+theorem markX_cvec2 : ∀ n a, a < n → cvec (markX n a) 2 = 1 := by
+  intro n; induction n with
+  | zero => intro a ha; omega
+  | succ n ih =>
+    intro a ha; cases a with
+    | zero => rw [markX, cvec_cons2, plain_cvec2, if_pos rfl, if_neg ne02]; omega
+    | succ a =>
+      rw [markX, cvec_cons2, ih a (by omega), if_neg ne12, if_neg ne02]; omega
+
+theorem markX_reduced_cons : ∀ n a (y : Letter), y ≠ 1 → (a = 0 → y ≠ 2) →
+    Reduced (y :: markX n a) := by
+  intro n; induction n with
+  | zero => intro a y _ _; trivial
+  | succ n ih =>
+    intro a y hy hy2; cases a with
+    | zero => exact ⟨hy2 rfl, ne20, plain_reduced_cons n 0 ne01⟩
+    | succ a => exact ⟨hy, ne10, ih a 0 ne01 (fun _ => ne02)⟩
+
+theorem markBoth_length : ∀ n a j, Admissible n a j → (markBoth n a j).length = 2 * n := by
+  intro n; induction n with
+  | zero => intro a j h; obtain ⟨ha, _⟩ := h; omega
+  | succ n ih =>
+    intro a j h
+    obtain ⟨ha, hj, hne, hne2⟩ := h
+    cases a with
+    | zero =>
+      cases j with
+      | zero => exact absurd rfl hne
+      | succ j => simp only [markBoth, List.length_cons, markY_length]; omega
+    | succ a =>
+      cases j with
+      | zero => simp only [markBoth, List.length_cons, markX_length]; omega
+      | succ j =>
+        have : Admissible n a j := ⟨by omega, by omega, by omega, by omega⟩
+        simp only [markBoth, List.length_cons, ih a j this]; omega
+
+theorem markBoth_cvec1 : ∀ n a j, Admissible n a j →
+    cvec (markBoth n a j) 1 = (n : Int) - 1 := by
+  intro n; induction n with
+  | zero => intro a j h; obtain ⟨ha, _⟩ := h; omega
+  | succ n ih =>
+    intro a j h
+    obtain ⟨ha, hj, hne, hne2⟩ := h
+    cases a with
+    | zero =>
+      cases j with
+      | zero => exact absurd rfl hne
+      | succ j =>
+        rw [markBoth, cvec_cons2, markY_cvec1, if_neg ne21, if_neg ne01]; push_cast; omega
+    | succ a =>
+      cases j with
+      | zero =>
+        rw [markBoth, cvec_cons2, markX_cvec1 n a (by omega), if_pos rfl, if_neg ne21]
+        push_cast; omega
+      | succ j =>
+        have hadm : Admissible n a j := ⟨by omega, by omega, by omega, by omega⟩
+        rw [markBoth, cvec_cons2, ih a j hadm, if_pos rfl, if_neg ne01]; push_cast; omega
+
+theorem markBoth_cvec2 : ∀ n a j, Admissible n a j → cvec (markBoth n a j) 2 = 0 := by
+  intro n; induction n with
+  | zero => intro a j h; obtain ⟨ha, _⟩ := h; omega
+  | succ n ih =>
+    intro a j h
+    obtain ⟨ha, hj, hne, hne2⟩ := h
+    cases a with
+    | zero =>
+      cases j with
+      | zero => exact absurd rfl hne
+      | succ j =>
+        rw [markBoth, cvec_cons2, markY_cvec2 n j (by omega), if_pos rfl, if_neg ne02]; omega
+    | succ a =>
+      cases j with
+      | zero =>
+        rw [markBoth, cvec_cons2, markX_cvec2 n a (by omega), if_neg ne12, if_pos rfl]; omega
+      | succ j =>
+        have hadm : Admissible n a j := ⟨by omega, by omega, by omega, by omega⟩
+        rw [markBoth, cvec_cons2, ih a j hadm, if_neg ne12, if_neg ne02]; omega
+
+theorem markBoth_reduced_cons : ∀ n a j, Admissible n a j → ∀ y : Letter,
+    y ≠ 1 → (a = 0 → y ≠ 2) → Reduced (y :: markBoth n a j) := by
+  intro n; induction n with
+  | zero => intro a j h; obtain ⟨ha, _⟩ := h; omega
+  | succ n ih =>
+    intro a j h y hy hy2
+    obtain ⟨ha, hj, hne, hne2⟩ := h
+    cases a with
+    | zero =>
+      cases j with
+      | zero => exact absurd rfl hne
+      | succ j => exact ⟨hy2 rfl, ne20, markY_reduced_cons n j 0 ne01⟩
+    | succ a =>
+      cases j with
+      | zero =>
+        have ha0 : a ≠ 0 := by omega
+        exact ⟨hy, ne12, markX_reduced_cons n a 2 ne21 (fun h0 => absurd h0 ha0)⟩
+      | succ j =>
+        have hadm : Admissible n a j := ⟨by omega, by omega, by omega, by omega⟩
+        exact ⟨hy, ne10, ih a j hadm 0 ne01 (fun _ => ne02)⟩
+
+/-- **The converse.**  Every admissible shape is a reduced word of the right
+length with the prescribed invariants. -/
+theorem markBoth_valid : ∀ n a j, Admissible n a j →
+    (markBoth n a j).length = 2 * n ∧ Reduced (markBoth n a j) ∧
+    cvec (markBoth n a j) 1 = (n : Int) - 1 ∧ cvec (markBoth n a j) 2 = 0 := by
+  intro n a j h
+  refine ⟨markBoth_length n a j h, ?_, markBoth_cvec1 n a j h, markBoth_cvec2 n a j h⟩
+  obtain ⟨ha, hj, hne, hne2⟩ := h
+  cases n with
+  | zero => omega
+  | succ n =>
+    cases a with
+    | zero =>
+      cases j with
+      | zero => exact absurd rfl hne
+      | succ j =>
+        exact ⟨ne20, markY_reduced_cons n j 0 ne01⟩
+    | succ a =>
+      cases j with
+      | zero =>
+        have ha0 : a ≠ 0 := by omega
+        exact ⟨ne12, markX_reduced_cons n a 2 ne21 (fun h0 => absurd h0 ha0)⟩
+      | succ j =>
+        have hadm : Admissible n a j := ⟨by omega, by omega, by omega, by omega⟩
+        exact ⟨ne10, markBoth_reduced_cons n a j hadm 0 ne01 (fun _ => ne02)⟩
+
+/-! ## The count
+
+The admissible pairs are counted directly, without `Finset`: `rowCount a m` is
+the number of admissible `j < m` for a fixed `a`, and `pairCount n k` sums it
+over `a < k`. -/
+
+def rowCount (a : Nat) : Nat → Nat
+  | 0 => 0
+  | m + 1 => (if m ≠ a ∧ a ≠ m + 1 then 1 else 0) + rowCount a m
+
+def pairCount (n : Nat) : Nat → Nat
+  | 0 => 0
+  | k + 1 => rowCount k n + pairCount n k
+
+theorem rowCount_zero : ∀ m, rowCount 0 m = m - 1 := by
+  intro m; induction m with
+  | zero => rfl
+  | succ m ih =>
+    rw [rowCount, ih]
+    by_cases h : m = 0
+    · subst h; simp [rowCount]
+    · rw [if_pos ⟨h, by omega⟩]; omega
+
+/-- Below the diagonal every `j` is admissible. -/
+theorem rowCount_below : ∀ a m, m < a → rowCount a m = m := by
+  intro a m; induction m with
+  | zero => intro _; rfl
+  | succ m ih =>
+    intro hm
+    rw [rowCount, ih (by omega), if_pos ⟨by omega, by omega⟩]
+    omega
+
+theorem rowCount_diag : ∀ a, 1 ≤ a → rowCount a a = a - 1 := by
+  intro a ha
+  cases a with
+  | zero => omega
+  | succ a =>
+    rw [rowCount, rowCount_below (a + 1) a (by omega)]
+    rw [if_neg (by omega)]
+    omega
+
+theorem rowCount_pos : ∀ m a, 1 ≤ a → a < m → rowCount a m = m - 2 := by
+  intro m; induction m with
+  | zero => intro a _ h; omega
+  | succ m ih =>
+    intro a ha hm
+    by_cases heq : a = m
+    · subst heq
+      rw [rowCount, rowCount_diag a ha, if_neg (by omega)]
+      omega
+    · have hlt : a < m := by omega
+      rw [rowCount, ih a ha hlt, if_pos ⟨by omega, by omega⟩]
+      omega
+
+theorem pairCount_eq : ∀ n k, k ≤ n → 1 ≤ n →
+    pairCount n k = if k = 0 then 0 else (n - 1) + (k - 1) * (n - 2) := by
+  intro n k; induction k with
+  | zero => intro _ _; rfl
+  | succ k ih =>
+    intro hk hn
+    rw [pairCount, ih (by omega) hn]
+    by_cases hk0 : k = 0
+    · subst hk0
+      rw [rowCount_zero]
+      simp
+    · rw [rowCount_pos n k (by omega) (by omega), if_neg hk0, if_neg (by omega)]
+      have hmul : (k - 1) * (n - 2) + (n - 2) = k * (n - 2) := by
+        cases k with
+        | zero => omega
+        | succ k' => simp only [Nat.succ_sub_one, Nat.succ_mul]
+      simp only [Nat.succ_sub_one]
+      omega
+
+/-- **The count.**  With `n` blocks there are exactly `(n-1)^2` admissible
+index pairs, that is `c^2` for words of length `2c+2`. -/
+theorem admissible_count : ∀ n, pairCount n n = (n - 1) * (n - 1) := by
+  intro n
+  cases n with
+  | zero => rfl
+  | succ n =>
+    rw [pairCount_eq (n + 1) (n + 1) (Nat.le_refl _) (by omega)]
+    rw [if_neg (by omega)]
+    simp only [Nat.succ_sub_one]
+    cases n with
+    | zero => rfl
+    | succ m =>
+      have hmul : (m + 1) * (m + 1) = (m + 1) * m + (m + 1) := by
+        rw [Nat.mul_succ]
+      have harg : m + 1 + 1 - 2 = m := by omega
+      rw [harg]
+      omega
+
 /-- **The classification of the normal forms.**  With `n = c+1` blocks, that is
 words of length `2c+2`, every reduced word with vanishing second invariant and
 first invariant `c` carries one `2` in a first slot and one in a second, in
