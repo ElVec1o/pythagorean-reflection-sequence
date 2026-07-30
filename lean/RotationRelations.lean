@@ -167,6 +167,159 @@ theorem validCount_three : validCount 3 = 9 := by decide
 -- `c = 4` and beyond exhaust the kernel's stack; the general statement is
 -- `count_normal_forms` below, still open.
 
+/-! ## Peeling two letters at a time
+
+A word of even length is a list of two-letter blocks, and every invariant is a
+sum over blocks.  `cvec_cons2` peels one block, and `cvec_le_half` bounds an
+invariant by the number of blocks; together they exclude all but a few block
+types at each step of the classification. -/
+
+/-- Peeling one block from the front. -/
+theorem cvec_cons2 (x y : Letter) (w : List Letter) (i : Letter) :
+    cvec (x :: y :: w) i
+      = (if x = i then 1 else 0) - (if y = i then 1 else 0) + cvec w i := by
+  simp only [cvec]
+  omega
+
+/-- An invariant is bounded by the number of blocks. -/
+theorem cvec_le_half : ∀ (n : Nat) (w : List Letter) (i : Letter),
+    w.length = 2 * n → cvec w i ≤ n ∧ -(n : Int) ≤ cvec w i := by
+  intro n
+  induction n with
+  | zero =>
+    intro w i hw
+    have : w = [] := by
+      cases w with
+      | nil => rfl
+      | cons a as => simp at hw
+    subst this
+    simp [cvec]
+  | succ n ih =>
+    intro w i hw
+    match w with
+    | [] => simp only [List.length_nil] at hw; omega
+    | [a] => simp only [List.length_cons, List.length_nil] at hw; omega
+    | a :: b :: rest =>
+      have hrest : rest.length = 2 * n := by
+        simp only [List.length_cons] at hw
+        omega
+      obtain ⟨h1, h2⟩ := ih rest i hrest
+      have hb1 : (if a = i then (1:Int) else 0) ≤ 1 ∧ 0 ≤ (if a = i then (1:Int) else 0) := by
+        by_cases h : a = i <;> simp [h]
+      have hb2 : (if b = i then (1:Int) else 0) ≤ 1 ∧ 0 ≤ (if b = i then (1:Int) else 0) := by
+        by_cases h : b = i <;> simp [h]
+      rw [cvec_cons2]
+      omega
+
+/-- The all-plain pattern `(1,0)` repeated. -/
+def plain : Nat → List Letter
+  | 0 => []
+  | n + 1 => 1 :: 0 :: plain n
+
+/-- If the first invariant is maximal then no block carries a `2` in its first
+slot, so the second invariant cannot be positive. -/
+theorem cvec2_nonpos_of_max : ∀ (n : Nat) (w : List Letter),
+    w.length = 2 * n → cvec w 1 = n → cvec w 2 ≤ 0 := by
+  intro n
+  induction n with
+  | zero =>
+    intro w hw _
+    match w with
+    | [] => simp [cvec]
+    | a :: as => simp only [List.length_cons] at hw; omega
+  | succ n ih =>
+    intro w hw h1
+    match w with
+    | [] => simp only [List.length_nil] at hw; omega
+    | [a] => simp only [List.length_cons, List.length_nil] at hw; omega
+    | a :: b :: rest =>
+      have hrest : rest.length = 2 * n := by
+        simp only [List.length_cons] at hw; omega
+      obtain ⟨hb1, hb2⟩ := cvec_le_half n rest 1 hrest
+      rw [cvec_cons2] at h1
+      -- maximality forces a = 1 and b ≠ 1, and the rest to be maximal too
+      have ha1 : a = 1 := by
+        by_cases h : a = 1
+        · exact h
+        · exfalso
+          simp only [if_neg h] at h1
+          have : (if b = 1 then (1:Int) else 0) ≥ 0 := by
+            by_cases hb : b = 1 <;> simp [hb]
+          omega
+      have hrestmax : cvec rest 1 = n := by
+        have hbb : (if b = 1 then (1:Int) else 0) ≥ 0 := by
+          by_cases hb : b = 1 <;> simp [hb]
+        simp only [ha1, if_pos rfl] at h1
+        omega
+      have hres := ih rest hrest hrestmax
+      have ha2 : a ≠ 2 := by rw [ha1]; decide
+      rw [cvec_cons2]
+      have hbb2 : (if b = 2 then (1:Int) else 0) ≥ 0 := by
+        by_cases hb : b = 2 <;> simp [hb]
+      simp only [if_neg ha2]
+      omega
+
+theorem Reduced_tail {x : Letter} {xs : List Letter} (h : Reduced (x :: xs)) :
+    Reduced xs := by
+  cases xs with
+  | nil => trivial
+  | cons y ys => exact h.2
+
+/-- Letters are exhausted by `0, 1, 2`. -/
+theorem letter_cases (x : Letter) (h1 : x ≠ 1) (h2 : x ≠ 2) : x = 0 := by
+  revert h1 h2
+  revert x
+  decide
+
+/-- State F of the classification: a maximal first invariant with vanishing
+second invariant forces the all-plain word. -/
+theorem classify_plain : ∀ (n : Nat) (w : List Letter),
+    w.length = 2 * n → Reduced w → cvec w 1 = n → cvec w 2 = 0 → w = plain n := by
+  intro n
+  induction n with
+  | zero =>
+    intro w hw _ _ _
+    match w with
+    | [] => rfl
+    | a :: as => simp only [List.length_cons] at hw; omega
+  | succ n ih =>
+    intro w hw hred h1 h2
+    match w with
+    | [] => simp only [List.length_nil] at hw; omega
+    | [a] => simp only [List.length_cons, List.length_nil] at hw; omega
+    | a :: b :: rest =>
+      have hrest : rest.length = 2 * n := by
+        simp only [List.length_cons] at hw; omega
+      obtain ⟨hub, hlb⟩ := cvec_le_half n rest 1 hrest
+      rw [cvec_cons2] at h1
+      have hbnn : (if b = 1 then (1:Int) else 0) ≥ 0 := by
+        by_cases hb : b = 1 <;> simp [hb]
+      have ha1 : a = 1 := by
+        by_cases h : a = 1
+        · exact h
+        · exfalso; rw [if_neg h] at h1; omega
+      have hb1 : b ≠ 1 := by
+        intro hb
+        rw [if_pos ha1, if_pos hb] at h1
+        omega
+      have hmax : cvec rest 1 = n := by
+        rw [if_pos ha1, if_neg hb1] at h1
+        omega
+      have hnp := cvec2_nonpos_of_max n rest hrest hmax
+      have ha2 : a ≠ 2 := by rw [ha1]; decide
+      rw [cvec_cons2] at h2
+      have hb2 : b ≠ 2 := by
+        intro hb
+        rw [if_neg ha2, if_pos hb] at h2
+        omega
+      have hb0 : b = 0 := letter_cases b hb1 hb2
+      have h2rest : cvec rest 2 = 0 := by
+        rw [if_neg ha2, if_neg hb2] at h2
+        omega
+      have := ih rest hrest (Reduced_tail (Reduced_tail hred)) hmax h2rest
+      rw [ha1, hb0, this]
+      rfl
+
 /-- **The count.**  For `1 ≤ c`, the reduced words of length `2c+2` with
 `c_2 = 0` and `c_1 = c` are exactly the `normalForm c a b` with `0 ≤ a ≤ c`,
 `1 ≤ b ≤ c+1` and `b ∉ {a, a+1}`, so there are `c^2` of them.  Not proved. -/
