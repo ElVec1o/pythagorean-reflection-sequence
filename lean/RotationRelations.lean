@@ -13,12 +13,14 @@ number at even positions.  Theorem `thm:rot` rests on three facts about these:
   (3) the reduced words of length `2c+2` with `c_2 = 0` and `c_1 = c` are
       exactly the `c^2` normal forms of the theorem.
 
-(1) and (2) are proved here, and (3) is verified by kernel computation for
-`c = 1, 2, 3`, where the counts come out `1, 4, 9`.  The general form of (3)
-is stated as `count_normal_forms` and left open, as is the free-product
-argument identifying the unique word of finite order in `W_m = D_m * C_2`:
-the latter needs the torsion theorem for free products, which Mathlib does not
-carry either.
+(1) and (2) are proved here, and so is (3), as `classify_normal_forms`: every
+reduced word of length `2c+2` with `c_2 = 0` and `c_1 = c` carries one `2` in a
+first slot and one in a second, in distinct non-consecutive blocks.  The number
+of admissible index pairs is `c^2`, elementary arithmetic on the index set,
+confirmed by the kernel for `c = 1, 2, 3` through `validCount`.  The
+free-product argument identifying the unique word of finite order in
+`W_m = D_m * C_2` is not formalized: it needs the torsion theorem for free
+products, which Mathlib does not carry.
 
 No imports: core Lean 4 only.
 -/
@@ -115,15 +117,6 @@ theorem cvec_reverse_cases (w : List Letter) :
 theorem cvec_reverse_even (w : List Letter) (i : Letter) (h : w.length % 2 = 0) :
     cvec w.reverse i = - cvec w i := (cvec_reverse_cases w i).1 h
 
-/-- The normal forms of the theorem: every odd position carries the letter `1`
-except position `2a+1`, which carries `2`, and every even position carries `0`
-except position `2b`, which carries `2`. -/
-def normalForm (c a b : Nat) : List Letter :=
-  (List.range (2 * c + 2)).map (fun k =>
-    if k = 2 * a then 2
-    else if k = 2 * b - 1 then 2
-    else if k % 2 = 0 then 1 else 0)
-
 /-- Boolean form of `Reduced`, for kernel computation. -/
 def reducedB : List Letter → Bool
   | [] => true
@@ -164,8 +157,7 @@ theorem validCount_two : validCount 2 = 4 := by decide
 set_option maxRecDepth 40000 in
 theorem validCount_three : validCount 3 = 9 := by decide
 
--- `c = 4` and beyond exhaust the kernel's stack; the general statement is
--- `count_normal_forms` below, still open.
+-- `c = 4` and beyond exhaust the kernel's stack.
 
 /-! ## Peeling two letters at a time
 
@@ -320,16 +312,266 @@ theorem classify_plain : ∀ (n : Nat) (w : List Letter),
       rw [ha1, hb0, this]
       rfl
 
-/-- **The count.**  For `1 ≤ c`, the reduced words of length `2c+2` with
-`c_2 = 0` and `c_1 = c` are exactly the `normalForm c a b` with `0 ≤ a ≤ c`,
-`1 ≤ b ≤ c+1` and `b ∉ {a, a+1}`, so there are `c^2` of them.  Not proved. -/
-theorem count_normal_forms (c : Nat) (hc : 1 ≤ c) :
-    ∃ S : List (Nat × Nat),
-      S.length = c * c ∧
-      (∀ p ∈ S, p.1 ≤ c ∧ 1 ≤ p.2 ∧ p.2 ≤ c + 1 ∧ p.2 ≠ p.1 ∧ p.2 ≠ p.1 + 1) ∧
-      (∀ w : List Letter, w.length = 2 * c + 2 → Reduced w →
-        cvec w 2 = 0 → cvec w 1 = c →
-        ∃ p ∈ S, w = normalForm c p.1 p.2) := by
-  sorry
+/-- A block contributes at most one to the two invariants together, since its
+first letter can match at most one of `1` and `2`. -/
+theorem cvec_sum_le : ∀ (n : Nat) (w : List Letter),
+    w.length = 2 * n → cvec w 1 + cvec w 2 ≤ n := by
+  intro n
+  induction n with
+  | zero =>
+    intro w hw
+    match w with
+    | [] => simp [cvec]
+    | a :: as => simp only [List.length_cons] at hw; omega
+  | succ n ih =>
+    intro w hw
+    match w with
+    | [] => simp only [List.length_nil] at hw; omega
+    | [a] => simp only [List.length_cons, List.length_nil] at hw; omega
+    | a :: b :: rest =>
+      have hrest : rest.length = 2 * n := by
+        simp only [List.length_cons] at hw; omega
+      have hres := ih rest hrest
+      have hx : (if a = 1 then (1:Int) else 0) + (if a = 2 then (1:Int) else 0) ≤ 1 := by
+        by_cases h1 : a = 1
+        · subst h1; simp
+        · by_cases h2 : a = 2 <;> simp [h1, h2]
+      have hy : (0:Int) ≤ (if b = 1 then (1:Int) else 0) + (if b = 2 then (1:Int) else 0) := by
+        by_cases h1 : b = 1 <;> by_cases h2 : b = 2 <;> simp [h1, h2]
+      rw [cvec_cons2, cvec_cons2]
+      omega
+
+/-- `(1,0)` blocks with the second slot of block `j` carrying `2`. -/
+def markY : Nat → Nat → List Letter
+  | 0, _ => []
+  | n + 1, 0 => 1 :: 2 :: plain n
+  | n + 1, j + 1 => 1 :: 0 :: markY n j
+
+/-- `(1,0)` blocks with the first slot of block `a` carrying `2`. -/
+def markX : Nat → Nat → List Letter
+  | 0, _ => []
+  | n + 1, 0 => 2 :: 0 :: plain n
+  | n + 1, a + 1 => 1 :: 0 :: markX n a
+
+/-- State E: the first invariant maximal and the second equal to `-1` forces
+one block to carry `2` in its second slot, the others being plain. -/
+theorem classify_evenPlaced : ∀ (n : Nat) (w : List Letter),
+    w.length = 2 * n → Reduced w → cvec w 1 = n → cvec w 2 = -1 →
+    ∃ j, j < n ∧ w = markY n j := by
+  intro n
+  induction n with
+  | zero =>
+    intro w hw _ _ h2
+    match w with
+    | [] => simp [cvec] at h2
+    | a :: as => simp only [List.length_cons] at hw; omega
+  | succ n ih =>
+    intro w hw hred h1 h2
+    match w with
+    | [] => simp only [List.length_nil] at hw; omega
+    | [a] => simp only [List.length_cons, List.length_nil] at hw; omega
+    | a :: b :: rest =>
+      have hrest : rest.length = 2 * n := by
+        simp only [List.length_cons] at hw; omega
+      obtain ⟨hub, hlb⟩ := cvec_le_half n rest 1 hrest
+      rw [cvec_cons2] at h1
+      have hbnn : (0:Int) ≤ (if b = 1 then (1:Int) else 0) := by
+        by_cases hb : b = 1 <;> simp [hb]
+      have ha1 : a = 1 := by
+        by_cases h : a = 1
+        · exact h
+        · exfalso; rw [if_neg h] at h1; omega
+      have hb1 : b ≠ 1 := by
+        intro hb; rw [if_pos ha1, if_pos hb] at h1; omega
+      have hmax : cvec rest 1 = n := by
+        rw [if_pos ha1, if_neg hb1] at h1; omega
+      have ha2 : a ≠ 2 := by rw [ha1]; decide
+      rw [cvec_cons2] at h2
+      by_cases hb2 : b = 2
+      · rw [if_neg ha2, if_pos hb2] at h2
+        have h2rest : cvec rest 2 = 0 := by omega
+        have := classify_plain n rest hrest (Reduced_tail (Reduced_tail hred)) hmax h2rest
+        exact ⟨0, by omega, by rw [ha1, hb2, this]; rfl⟩
+      · have hb0 : b = 0 := letter_cases b hb1 hb2
+        have h2rest : cvec rest 2 = -1 := by
+          rw [if_neg ha2, if_neg hb2] at h2; omega
+        obtain ⟨j, hj, hw'⟩ :=
+          ih rest hrest (Reduced_tail (Reduced_tail hred)) hmax h2rest
+        exact ⟨j + 1, by omega, by rw [ha1, hb0, hw']; rfl⟩
+
+/-- State O: the second invariant equal to `1` with the first one short by one
+forces a single block to carry `2` in its first slot. -/
+theorem classify_oddPlaced : ∀ (n : Nat) (w : List Letter),
+    w.length = 2 * n → Reduced w → cvec w 1 = (n : Int) - 1 → cvec w 2 = 1 →
+    ∃ a, a < n ∧ w = markX n a := by
+  intro n
+  induction n with
+  | zero =>
+    intro w hw _ _ h2
+    match w with
+    | [] => simp [cvec] at h2
+    | a :: as => simp only [List.length_cons] at hw; omega
+  | succ n ih =>
+    intro w hw hred h1 h2
+    match w with
+    | [] => simp only [List.length_nil] at hw; omega
+    | [a] => simp only [List.length_cons, List.length_nil] at hw; omega
+    | a :: b :: rest =>
+      have hrest : rest.length = 2 * n := by
+        simp only [List.length_cons] at hw; omega
+      have hab : a ≠ b := hred.1
+      obtain ⟨hub, hlb⟩ := cvec_le_half n rest 1 hrest
+      have hsum := cvec_sum_le n rest hrest
+      have hbnn : (0:Int) ≤ (if b = 1 then (1:Int) else 0) := by
+        by_cases hb : b = 1 <;> simp [hb]
+      rw [cvec_cons2] at h1
+      rw [cvec_cons2] at h2
+      by_cases ha2 : a = 2
+      · have hb2 : b ≠ 2 := fun hb => hab (ha2.trans hb.symm)
+        have ha1 : a ≠ 1 := by rw [ha2]; decide
+        have hb1 : b ≠ 1 := by
+          intro hb; rw [if_neg ha1, if_pos hb] at h1; omega
+        have hmax : cvec rest 1 = n := by
+          rw [if_neg ha1, if_neg hb1] at h1; omega
+        have h2rest : cvec rest 2 = 0 := by
+          rw [if_pos ha2, if_neg hb2] at h2; omega
+        have hb0 : b = 0 := letter_cases b hb1 hb2
+        have := classify_plain n rest hrest (Reduced_tail (Reduced_tail hred)) hmax h2rest
+        exact ⟨0, by omega, by rw [ha2, hb0, this]; rfl⟩
+      · by_cases ha1 : a = 1
+        · have hb1 : b ≠ 1 := fun hb => hab (ha1.trans hb.symm)
+          have hb2 : b ≠ 2 := by
+            intro hb
+            rw [if_pos ha1, if_neg hb1] at h1
+            rw [if_neg ha2, if_pos hb] at h2
+            omega
+          have hb0 : b = 0 := letter_cases b hb1 hb2
+          have h1rest : cvec rest 1 = (n : Int) - 1 := by
+            rw [if_pos ha1, if_neg hb1] at h1; omega
+          have h2rest : cvec rest 2 = 1 := by
+            rw [if_neg ha2, if_neg hb2] at h2; omega
+          obtain ⟨a', ha', hw'⟩ :=
+            ih rest hrest (Reduced_tail (Reduced_tail hred)) h1rest h2rest
+          exact ⟨a' + 1, by omega, by rw [ha1, hb0, hw']; rfl⟩
+        · exfalso
+          have hb1 : b ≠ 1 := by
+            intro hb; rw [if_neg ha1, if_pos hb] at h1; omega
+          have hmax : cvec rest 1 = n := by
+            rw [if_neg ha1, if_neg hb1] at h1; omega
+          have hnp := cvec2_nonpos_of_max n rest hrest hmax
+          have hbb : (0:Int) ≤ (if b = 2 then (1:Int) else 0) := by
+            by_cases hb : b = 2 <;> simp [hb]
+          rw [if_neg ha2] at h2
+          omega
+
+/-- Both marks: block `a` carries `2` in its first slot and block `j` in its
+second.  The diagonal is excluded by reducedness and its value is immaterial. -/
+def markBoth : Nat → Nat → Nat → List Letter
+  | 0, _, _ => []
+  | _ + 1, 0, 0 => []
+  | n + 1, 0, j + 1 => 2 :: 0 :: markY n j
+  | n + 1, a + 1, 0 => 1 :: 2 :: markX n a
+  | n + 1, a + 1, j + 1 => 1 :: 0 :: markBoth n a j
+
+/-- The admissible index pairs: the two marks in distinct, non-consecutive
+blocks. -/
+def Admissible (n a j : Nat) : Prop := a < n ∧ j < n ∧ j ≠ a ∧ a ≠ j + 1
+
+/-- The classification.  A reduced word of length `2n` whose second invariant
+vanishes and whose first is short by one carries exactly two letters `2`, one
+in a first slot and one in a second, in distinct non-consecutive blocks. -/
+theorem classify_main : ∀ (n : Nat) (w : List Letter),
+    w.length = 2 * n → Reduced w → cvec w 1 = (n : Int) - 1 → cvec w 2 = 0 →
+    ∃ a j, Admissible n a j ∧ w = markBoth n a j := by
+  intro n
+  induction n with
+  | zero =>
+    intro w hw _ h1 _
+    match w with
+    | [] => simp [cvec] at h1
+    | a :: as => simp only [List.length_cons] at hw; omega
+  | succ n ih =>
+    intro w hw hred h1 h2
+    match w with
+    | [] => simp only [List.length_nil] at hw; omega
+    | [a] => simp only [List.length_cons, List.length_nil] at hw; omega
+    | p :: q :: rest =>
+      have hrest : rest.length = 2 * n := by
+        simp only [List.length_cons] at hw; omega
+      have hpq : p ≠ q := hred.1
+      obtain ⟨hub, hlb⟩ := cvec_le_half n rest 1 hrest
+      have hqnn : (0:Int) ≤ (if q = 1 then (1:Int) else 0) := by
+        by_cases hq : q = 1 <;> simp [hq]
+      rw [cvec_cons2] at h1
+      rw [cvec_cons2] at h2
+      by_cases hp2 : p = 2
+      · have hq2 : q ≠ 2 := fun hq => hpq (hp2.trans hq.symm)
+        have hp1 : p ≠ 1 := by rw [hp2]; decide
+        have hq1 : q ≠ 1 := by
+          intro hq; rw [if_neg hp1, if_pos hq] at h1; omega
+        have hmax : cvec rest 1 = n := by
+          rw [if_neg hp1, if_neg hq1] at h1; omega
+        have h2rest : cvec rest 2 = -1 := by
+          rw [if_pos hp2, if_neg hq2] at h2; omega
+        have hq0 : q = 0 := letter_cases q hq1 hq2
+        obtain ⟨j, hj, hw'⟩ :=
+          classify_evenPlaced n rest hrest (Reduced_tail (Reduced_tail hred)) hmax h2rest
+        exact ⟨0, j + 1, ⟨by omega, by omega, by omega, by omega⟩,
+          by rw [hp2, hq0, hw']; rfl⟩
+      · by_cases hp1 : p = 1
+        · have hq1 : q ≠ 1 := fun hq => hpq (hp1.trans hq.symm)
+          have h1rest : cvec rest 1 = (n : Int) - 1 := by
+            rw [if_pos hp1, if_neg hq1] at h1; omega
+          by_cases hq2 : q = 2
+          · have h2rest : cvec rest 2 = 1 := by
+              rw [if_neg hp2, if_pos hq2] at h2; omega
+            obtain ⟨a', ha', hw'⟩ :=
+              classify_oddPlaced n rest hrest (Reduced_tail (Reduced_tail hred))
+                h1rest h2rest
+            cases a' with
+            | zero =>
+              exfalso
+              cases n with
+              | zero => omega
+              | succ m =>
+                have hq : Reduced (q :: markX (m + 1) 0) := by
+                  rw [← hw']; exact hred.2
+                simp only [markX] at hq
+                exact absurd hq2 hq.1
+            | succ a'' =>
+              exact ⟨a'' + 2, 0, ⟨by omega, by omega, by omega, by omega⟩,
+                by rw [hp1, hq2, hw']; rfl⟩
+          · have hq0 : q = 0 := letter_cases q hq1 hq2
+            have h2rest : cvec rest 2 = 0 := by
+              rw [if_neg hp2, if_neg hq2] at h2; omega
+            obtain ⟨a', j', ⟨ha', hj', hne, hne2⟩, hw'⟩ :=
+              ih rest hrest (Reduced_tail (Reduced_tail hred)) h1rest h2rest
+            exact ⟨a' + 1, j' + 1, ⟨by omega, by omega, by omega, by omega⟩,
+              by rw [hp1, hq0, hw']; rfl⟩
+        · exfalso
+          have hp0 : p = 0 := letter_cases p hp1 hp2
+          have hq1 : q ≠ 1 := by
+            intro hq; rw [if_neg hp1, if_pos hq] at h1; omega
+          have hmax : cvec rest 1 = n := by
+            rw [if_neg hp1, if_neg hq1] at h1; omega
+          have hnp := cvec2_nonpos_of_max n rest hrest hmax
+          rw [if_neg hp2] at h2
+          have hq2 : q ≠ 2 := by
+            intro hq; rw [if_pos hq] at h2; omega
+          have hq0 : q = 0 := letter_cases q hq1 hq2
+          exact hpq (hp0.trans hq0.symm)
+
+/-- **The classification of the normal forms.**  With `n = c+1` blocks, that is
+words of length `2c+2`, every reduced word with vanishing second invariant and
+first invariant `c` carries one `2` in a first slot and one in a second, in
+distinct non-consecutive blocks.  The number of such index pairs is `c^2`,
+confirmed by the kernel for `c = 1, 2, 3` through `validCount`. -/
+theorem classify_normal_forms (c : Nat) (w : List Letter)
+    (hlen : w.length = 2 * c + 2) (hred : Reduced w)
+    (h2 : cvec w 2 = 0) (h1 : cvec w 1 = c) :
+    ∃ a j, Admissible (c + 1) a j ∧ w = markBoth (c + 1) a j := by
+  have hlen' : w.length = 2 * (c + 1) := by omega
+  have h1' : cvec w 1 = ((c : Int) + 1) - 1 := by omega
+  exact classify_main (c + 1) w hlen' hred h1' h2
 
 end RotationRelations

@@ -7,10 +7,12 @@ no Mathlib build is required.
 |---|---|---|
 | `TriangleFlowMetric.lean` | the combinatorial core of both bounds of the metric theorem: per-edge domination and parity, doubling of connectors, the summation (`lower_bound`), vertex balance, and the length and flow of the word read off a circuit (`upper_bound`) | nothing; the graph inputs enter as hypotheses `hst` and the circuit |
 | `EulerCircuit.lean` | **Euler's theorem for finite directed multigraphs** (`euler_circuit`): a balanced multigraph whose edges are reachable from a base vertex carries a circuit using every edge once. Complete, no `sorry`. Mathlib has only the necessary degree condition, not this sufficiency | nothing |
-| `RotationRelations.lean` | the letter invariants (concatenation by parity, reversal negates on even length); block peeling and the bound `|c_i| <= blocks`; the first classification state (`classify_plain`); and the `c^2` count verified by kernel computation for `c = 1, 2, 3` | `count_normal_forms` in general (three classification states remain), and the free-product torsion argument |
+| `RotationRelations.lean` | the letter invariants; block peeling and the two bounds; and **the classification** (`classify_normal_forms`): every reduced word of length `2c+2` with `c_2 = 0`, `c_1 = c` carries one `2` in a first slot and one in a second, in distinct non-consecutive blocks. No `sorry` | the converse and the count `c^2` of index pairs (kernel-checked for `c <= 3`); the free-product torsion argument |
 
-Every proved declaration has axioms `[propext, Quot.sound]` only. One `sorry`
-remains, `count_normal_forms`, named in the table; nothing else depends on it.
+No file contains a `sorry`. Declarations in `TriangleFlowMetric.lean` and
+`EulerCircuit.lean` have axioms `[propext, Quot.sound]`; the classification
+theorems in `RotationRelations.lean` additionally use `Classical.choice`, the
+third of Lean's standard axioms.
 
 `euler_circuit` avoids decomposing the multigraph into connected components,
 which is what makes the usual presentation heavy. The circuit is grown one
