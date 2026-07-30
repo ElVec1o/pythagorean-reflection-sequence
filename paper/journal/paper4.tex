@@ -941,10 +941,9 @@ most $L$, and the reverse inequality is trivial. For odd $m$ none of the three
 effects is available below $2m+2$ and the censuses agree length by length,
 while at $2m+2$ the first new translations appear. The displayed values are
 computed by exact rational breadth-first search in the stratum group, which at
-any single shape bounds the counts from below; they are confirmed at two leg
-samples through length $18$ for $m\le9$, and at one sample for $m=11$. The
-row $m=9,11$ reproduces the generic census exactly, as the onset statement
-requires, $2m+2$ exceeding $18$ for both.
+any single shape bounds the counts from below; every row is confirmed at two leg
+samples through length $18$. The row $m=9,11$ reproduces the generic census
+exactly, as the onset statement requires, $2m+2$ exceeding $18$ for both.
 \end{proof}
 
 For $m=5$ the stratum has \emph{more} translations than a generic shape at
@@ -984,8 +983,13 @@ imports, no \texttt{sorry}, and no axioms beyond \texttt{propext} and
 per-edge facts, \texttt{connector\_two\_le} for the doubling of an edge
 carrying no flow, \texttt{steps\_ge} for the summation, and
 \texttt{lower\_bound} for the bound itself, the graph-theoretic half entering
-as its hypothesis \texttt{hst}. The remaining parts of the paper are not
-formalized.
+as its hypothesis \texttt{hst}. For the upper bound, \texttt{balanced} is the
+balance of the multigraph at each vertex, which is the cycle condition and is
+what makes the multigraph Eulerian, while \texttt{realize\_flow},
+\texttt{realize\_traversals} and \texttt{upper\_bound} give the flow and the
+length of the word read off a circuit. Euler's theorem itself, that a
+connected balanced multigraph admits a circuit using each directed edge once,
+is not formalized, nor is any other part of the paper.
 \smallskip\\
 \noindent\textbf{Data availability.} All code and verification data supporting
 the computational statements are openly available in the repository cited on the

@@ -14,8 +14,12 @@ into two halves:
       is traversed at least twice, and summing over edges gives the bound.
 
 Half (b) is formalized here in full; half (a) enters `lower_bound` as the
-explicit hypothesis `hst`.  No imports: core Lean 4 only, so the file is
-checked by `lean TriangleFlowMetric.lean` with no toolchain beyond Lean itself.
+explicit hypothesis `hst`.  The second half of the file does the same for the
+upper bound: the balance condition that makes the multigraph Eulerian, and the
+length and flow of the word read off a circuit, are proved, while Euler's
+theorem itself is the unformalized input.  No imports: core Lean 4 only, so
+the file is checked by `lean TriangleFlowMetric.lean` with no toolchain beyond
+Lean itself.
 -/
 
 namespace TriangleFlow
@@ -109,5 +113,94 @@ theorem steps_parity (es : List Edge) : steps es % 2 = l1 es % 2 := by
     have hp := traversals_parity e
     simp only [l1, steps, List.map_cons, lsum] at *
     omega
+
+/-! ## The upper bound
+
+The upper bound builds, from a flow `phi` and a connector set `M`, the directed
+multigraph carrying `|phi_E|` copies of each support edge, directed by the sign
+of the flow, and one copy of each direction of each connector.  Reading the
+letters of an Eulerian circuit of that multigraph backwards yields a word whose
+flow is `phi` and whose length is `||phi||_1 + 2|M|`.
+
+Two of the three ingredients are formalized below: that every vertex of the
+multigraph is balanced, which is what makes it Eulerian, and that the circuit
+read off it has the stated length and flow.  The third, Euler's theorem itself
+(a connected balanced multigraph admits a circuit using every directed edge
+exactly once), is not formalized; Mathlib supplies `IsEulerian` and the
+necessary degree condition but not this sufficiency. -/
+
+/-- Positive part of a flow: the copies directed away from the vertex. -/
+def posPart (z : Int) : Nat := z.toNat
+
+/-- Negative part of a flow: the copies directed into the vertex. -/
+def negPart (z : Int) : Nat := (-z).toNat
+
+/-- Sum of a list of integers. -/
+def lsumI : List Int → Int
+  | [] => 0
+  | x :: xs => x + lsumI xs
+
+theorem posPart_sub_negPart (l : List Int) :
+    (lsum (l.map posPart) : Int) - (lsum (l.map negPart) : Int) = lsumI l := by
+  induction l with
+  | nil => simp [lsum, lsumI]
+  | cons x xs ih =>
+    simp only [List.map_cons, lsum, lsumI, posPart, negPart] at *
+    omega
+
+/-- Out-degree of a vertex of the multigraph: one copy per unit of outgoing
+flow, plus one per connector. -/
+def outDeg (flows : List Int) (conn : Nat) : Nat := lsum (flows.map posPart) + conn
+
+/-- In-degree, symmetrically. -/
+def inDeg (flows : List Int) (conn : Nat) : Nat := lsum (flows.map negPart) + conn
+
+/-- Every vertex of the multigraph is balanced.  This is exactly the cycle
+condition: the signed flows at a vertex sum to zero. -/
+theorem balanced (flows : List Int) (conn : Nat) (h : lsumI flows = 0) :
+    outDeg flows conn = inDeg flows conn := by
+  have := posPart_sub_negPart flows
+  simp only [outDeg, inDeg]
+  omega
+
+/-- The traversal record an Eulerian circuit produces on one edge: the support
+edges are traversed `|phi|` times in the direction of the flow, the connectors
+once in each direction. -/
+def realize (phi : Int) (conn : Bool) : Edge :=
+  (posPart phi + (if conn then 1 else 0), negPart phi + (if conn then 1 else 0))
+
+/-- The circuit realizes the prescribed flow. -/
+theorem realize_flow (phi : Int) (conn : Bool) : netFlow (realize phi conn) = phi := by
+  cases conn <;> simp only [realize, netFlow, posPart, negPart] <;> omega
+
+/-- On one edge the circuit costs `|phi|` steps, plus two for a connector. -/
+theorem realize_traversals (phi : Int) (conn : Bool) :
+    traversals (realize phi conn) = phi.natAbs + 2 * (if conn then 1 else 0) := by
+  cases conn <;> simp only [realize, traversals, posPart, negPart] <;> omega
+
+/-- Number of connectors in a list. -/
+def countConn : List Bool → Nat
+  | [] => 0
+  | b :: bs => (if b then 1 else 0) + countConn bs
+
+/-- The word read off an Eulerian circuit has length `||phi||_1 + 2|M|`: the
+upper bound of the metric theorem, given the circuit. -/
+theorem upper_bound (phis : List Int) (conns : List Bool) :
+    steps (List.zipWith realize phis conns)
+      = lsum ((List.zipWith realize phis conns).map flowNorm)
+        + 2 * countConn (conns.take phis.length) := by
+  induction phis generalizing conns with
+  | nil => cases conns <;> simp [steps, lsum, countConn, List.zipWith]
+  | cons p ps ih =>
+    cases conns with
+    | nil => simp [steps, lsum, countConn, List.zipWith]
+    | cons c cs =>
+      have hr := realize_traversals p c
+      have hf : flowNorm (realize p c) = p.natAbs := by
+        simp only [flowNorm, realize_flow]
+      have h := ih cs
+      simp only [List.zipWith, steps, l1, List.map_cons, lsum, countConn,
+        List.take, List.length_cons] at *
+      omega
 
 end TriangleFlow
