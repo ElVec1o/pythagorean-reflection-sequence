@@ -54,8 +54,8 @@ keywords:
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
-date-released: 2026-07-18
-version: 5.3.0
+date-released: 2026-07-30
+version: 5.0.0
 doi: 10.5281/zenodo.20370090
 identifiers:
   - type: doi
