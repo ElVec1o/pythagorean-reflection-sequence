@@ -13,12 +13,14 @@ import Mathlib, and `Bridge.lean` also imports `RotationRelations`.
 | `with_mathlib/LinearPart.lean` | **the linear part of a product of reflections** (`linOf_eq`): `exp (2i Σ_i c_i(w) θ_i)`, and `linOf_of_cvec_two_eq_zero`, the rotation by `2πc₁/m` when `c₂ = 0` | nothing |
 | `with_mathlib/PlaneGroup.lean` | **the plane group itself**: `Aff` (`z ↦ a z + b` or `a conj z + b`, `a` a unit) with its `Group` instance via `act_injective`, `refl` and `refl_sq`, and `linCoeff_prod` identifying the abstract invariant with the actual linear coefficient | nothing |
 | `with_mathlib/CensusWitness.lean` | **the growth of a rational witness triangle to radius 12** (`census_witness`): `1,3,6,…,1536,3039,6012`, so deficit `33` at radius 11 and `132` at radius 12. Proved by `native_decide` | the 33 universal identities, which are the matching lower bound |
+| `with_mathlib/CylCensus.lean` | **the stratum translation census** (`census_m3`…`census_m9`): the number of translations of each even length up to 18 on the strata `α = π/m`, for `m = 3,4,5,6,7,9`, matching the paper's table row for row. Generic on the stratum, not a witness. Proved by `native_decide`; **checking it takes about an hour** | nothing |
 | `with_mathlib/CensusUniversal.lean` | **part (i) of the census theorem** (`universal_identities`): each of the 33 pairs is an identity in `ℤ[X,Y]`, so it holds at every triangle, not only at the witness. Proved by `native_decide` | nothing |
 | `with_mathlib/Bridge.lean` | **part (iii) of the rotation-relations theorem** (`unique_finite_order`): evaluating the letter-list model in the free product, exactly one admissible pair gives an element of finite order, namely `a = 0`, `j = n-1` | nothing |
 
-No file contains a `sorry`. Every file but `CensusWitness.lean` and
-`CensusUniversal.lean` uses only Lean's standard axioms; those two are proved by
-`native_decide` and so trust the compiler as well.
+No file contains a `sorry`. Every file but `CensusWitness.lean`,
+`CensusUniversal.lean` and `CylCensus.lean` uses only Lean's standard axioms;
+those three are proved by `native_decide` and so trust the compiler as well.
+`CylCensus.lean` alone takes about an hour to check.
 
  Declarations in `TriangleFlowMetric.lean` and
 `EulerCircuit.lean` have axioms `[propext, Quot.sound]`; the classification

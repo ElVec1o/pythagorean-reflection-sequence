@@ -44,4 +44,5 @@ for f in CoxeterTorsion Bridge LinearPart PlaneGroup CensusWitness CensusUnivers
 done
 
 echo "== all files built, no sorry =="
-echo "   (CensusWitness.lean and CensusUniversal.lean use native_decide)"
+echo "   (native_decide: CensusWitness, CensusUniversal, CylCensus)"
+echo "   (CylCensus.lean runs six depth-18 searches -- about an hour)"
