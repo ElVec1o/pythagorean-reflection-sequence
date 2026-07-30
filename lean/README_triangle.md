@@ -6,9 +6,16 @@ no Mathlib build is required.
 | file | proved | left open |
 |---|---|---|
 | `TriangleFlowMetric.lean` | the combinatorial core of both bounds of the metric theorem: per-edge domination and parity, doubling of connectors, the summation (`lower_bound`), vertex balance, and the length and flow of the word read off a circuit (`upper_bound`) | nothing; the graph inputs enter as hypotheses `hst` and the circuit |
-| `EulerCircuit.lean` | the degree-counting core of Hierholzer (`trail_degree`, `maximal_trail_closed`) and the trail algebra the splicing needs (`isTrail_append`, `isTrail_split`, `splice`) | `euler_circuit`, the splicing induction itself |
+| `EulerCircuit.lean` | **Euler's theorem for finite directed multigraphs** (`euler_circuit`): a balanced multigraph whose edges are reachable from a base vertex carries a circuit using every edge once. Complete, no `sorry`. Mathlib has only the necessary degree condition, not this sufficiency | nothing |
 | `RotationRelations.lean` | the letter invariants (concatenation by parity, reversal negates on even length), and the `c^2` count verified by kernel computation for `c = 1, 2, 3` | `count_normal_forms` in general, and the free-product torsion argument |
 
-Every proved declaration has axioms `[propext, Quot.sound]` only. The two
-`sorry`s are exactly the two statements named in the table; they are stated so
-that their semantics are pinned, and nothing else depends on them.
+Every proved declaration has axioms `[propext, Quot.sound]` only. One `sorry`
+remains, `count_normal_forms`, named in the table; nothing else depends on it.
+
+`euler_circuit` avoids decomposing the multigraph into connected components,
+which is what makes the usual presentation heavy. The circuit is grown one
+closed trail at a time: while some unused edge leaves a vertex of the current
+circuit, a greedy walk from that vertex is closed (balance), is cut into the
+circuit (`trail_split_at`, `splice`), and the induction proceeds on the number
+of unused edges. When no unused edge leaves the circuit, connectivity forces
+the remainder to be empty.
