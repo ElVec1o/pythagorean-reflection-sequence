@@ -987,9 +987,15 @@ as its hypothesis \texttt{hst}. For the upper bound, \texttt{balanced} is the
 balance of the multigraph at each vertex, which is the cycle condition and is
 what makes the multigraph Eulerian, while \texttt{realize\_flow},
 \texttt{realize\_traversals} and \texttt{upper\_bound} give the flow and the
-length of the word read off a circuit. Euler's theorem itself, that a
-connected balanced multigraph admits a circuit using each directed edge once,
-is not formalized, nor is any other part of the paper.
+length of the word read off a circuit. Euler's theorem itself, that a balanced
+multigraph whose edges are reachable from a base vertex admits a circuit using
+each directed edge once, is proved in
+\texttt{lean/EulerCircuit.lean} as \texttt{euler\_circuit}, again with no
+imports and no \texttt{sorry}; Mathlib carries the necessary degree condition
+for Eulerian trails but not this sufficiency. The combinatorial content of
+both bounds of Theorem~\ref{thm:metric} is therefore machine-checked, while
+the identification of the translation subgroup with the flows, and everything
+in Sections~2 and~6, is not formalized.
 \smallskip\\
 \noindent\textbf{Data availability.} All code and verification data supporting
 the computational statements are openly available in the repository cited on the
