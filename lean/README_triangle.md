@@ -10,6 +10,8 @@ import Mathlib, and `Bridge.lean` also imports `RotationRelations`.
 | `EulerCircuit.lean` | **Euler's theorem for finite directed multigraphs** (`euler_circuit`): a balanced multigraph whose edges are reachable from a base vertex carries a circuit using every edge once. Complete, no `sorry`. Mathlib has only the necessary degree condition, not this sufficiency | nothing |
 | `RotationRelations.lean` | the letter invariants; block peeling and the two bounds; **the classification** (`classify_normal_forms`), **the converse** (`markBoth_valid`) and **the count** (`admissible_count`: `(n-1)^2` admissible index pairs, that is `c^2`) | nothing |
 | `with_mathlib/CoxeterTorsion.lean` | **the free-product torsion criterion** (`finite_order_iff`): in `W_m = D_m * C_2`, the word `u₀ x₂ u₁ x₂ u₂` with `u₁ ≠ 1` has finite order exactly when `u₂u₀ = 1` | nothing |
+| `with_mathlib/LinearPart.lean` | **the linear part of a product of reflections** (`linOf_eq`): `exp (2i Σ_i c_i(w) θ_i)`, and `linOf_of_cvec_two_eq_zero`, the rotation by `2πc₁/m` when `c₂ = 0` | nothing |
+| `with_mathlib/PlaneGroup.lean` | **the plane group itself**: `Aff` (`z ↦ a z + b` or `a conj z + b`, `a` a unit) with its `Group` instance via `act_injective`, `refl` and `refl_sq`, and `linCoeff_prod` identifying the abstract invariant with the actual linear coefficient | nothing |
 | `with_mathlib/Bridge.lean` | **part (iii) of the rotation-relations theorem** (`unique_finite_order`): evaluating the letter-list model in the free product, exactly one admissible pair gives an element of finite order, namely `a = 0`, `j = n-1` | nothing |
 
 No file contains a `sorry`. Declarations in `TriangleFlowMetric.lean` and
