@@ -59,3 +59,10 @@ paper/submission/
 
 paper/OEIS/submit/
 paper/OEIS/clean/
+
+# generated artefacts and session drivers
+ckpt_*.txt
+*_out.txt
+VERDICT*.md
+night2.sh
+overnight.sh
