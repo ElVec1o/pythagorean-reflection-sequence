@@ -43,3 +43,6 @@ private/
 
 # timestamped run logs -- research narration, not release artefacts
 *RESULT.txt
+
+# outreach correspondence -- the author sends this personally, not a release artefact
+paper/outreach/
