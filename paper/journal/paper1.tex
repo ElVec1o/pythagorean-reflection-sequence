@@ -3348,8 +3348,12 @@ $(3,4,5)$ triangle.
 The deeper finite verifications are evaluations of computable functions
 on fixed inputs, discharged by \texttt{native\_decide}. Every result proved this way
 carries, in addition to \texttt{propext}, \texttt{Classical.choice} and
-\texttt{Quot.sound}, the generated axiom \texttt{Lean.ofReduceBool}: such results
+\texttt{Quot.sound}, a generated axiom recording the compiler evaluation: such results
 trust the Lean compiler and its evaluation of the compiled term, not only the kernel.
+The exact name is toolchain-dependent and both forms occur in this development: the
+Mathlib-free project (pinned to \texttt{v4.13.0}) reports the global
+\texttt{Lean.ofReduceBool}, while the Mathlib project (pinned to \texttt{v4.30.0})
+reports a per-declaration axiom \texttt{\textit{name}.\_native.native\_decide.ax\_1\_1}.
 We flag this explicitly because it is a strictly larger trusted base than tier~(i),
 and every statement below inherits it. We record the
 enlarged trust base before stating the results.
