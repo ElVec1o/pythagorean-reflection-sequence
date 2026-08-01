@@ -242,7 +242,7 @@ lift to algebraicity over $\mathbb{Q}(t)$.
 \label{sec:universality-class}
 
 The mechanism that proves universality in the main paper
-(Theorem~\ref{thm:universality}) --- a cyclic-ideal identification
+(the universality theorem of \cite{Bonfioli2}) --- a cyclic-ideal identification
 $I_A \cap I_B = \mathbb{Z}[Q]\cdot h$ with explicit central generator
 $h$ inside the linear quotient $Q$ of a free product $W = A * B$ ---
 admits a natural class of free-product reflection systems.
@@ -250,7 +250,7 @@ admits a natural class of free-product reflection systems.
 \begin{conjecture}[Open question: scope of the cyclic-ideal mechanism]
 \label{conj:universality-class}
 Characterise the pairs $(W, \rho)$ for which the cyclic-ideal mechanism
-of Theorem~\ref{thm:universality} applies and yields universality of
+of the universality theorem of \cite{Bonfioli2} applies and yields universality of
 the orbit-growth sequence across the family of geometric realisations.
 \end{conjecture}
 
@@ -258,7 +258,7 @@ Two examples are currently known.
 
 \paragraph{Example A: right triangles.}  $A = V_4$, $B = \mathbb{Z}/2$,
 $Q = D_\infty \times \mathbb{Z}/2$, $h = (c-1)(Y-1)$.  This is the main
-paper's Theorem~\ref{thm:universality}.
+paper's the universality theorem of \cite{Bonfioli2}.
 
 \paragraph{Example B: hyperbolic two-right-angle quadrilaterals.}
 $A = B = V_4$, $W = V_4 * V_4$, $Q = D_\infty \times \mathbb{Z}/2$,
@@ -296,7 +296,7 @@ the depth-$\le 22$ filtration for every tested $T$.
 
 A five-channel parallel BFS verifies this with cumulative state count
 $118\,938$ at depth $22$ in every channel.  Reading: the eight
-length-$10$ affine relations of Theorem~\ref{thm:symbolic} are not
+length-$10$ affine relations of the symbolic-verification theorem of \cite{Bonfioli2} are not
 sporadic length-$10$ coincidences but the first eight consequences of
 the single quadratic relation $Y v_2 + v_2 = 0$, made visible by the
 canonical-word filtration.
@@ -306,7 +306,7 @@ canonical-word filtration.
 
 \paragraph{Knuth--Bendix experiment.}
 GAP \texttt{KBMAG} ran Knuth--Bendix completion on $W$ together with
-the eight length-$10$ affine relations of Theorem~\ref{thm:symbolic};
+the eight length-$10$ affine relations of the symbolic-verification theorem of \cite{Bonfioli2};
 the procedure produced $32\,730$ derived rules in approximately $8$
 seconds of \texttt{kbprog} computation before hitting the equation-count
 cap, never reaching confluence.  This is empirical evidence (not a
@@ -326,7 +326,7 @@ acylindrically hyperbolic.
 
 The 3D right-corner orthoscheme reflection groups fall into three
 faithfulness regimes by leg-symmetry, the unconditional Class~C case
-being treated in the main paper (Theorem~\ref{thm:master-C-uncond}).
+being treated in the main paper (Theorem~the Class~C faithfulness theorem of the $n$-dimensional companion paper).
 
 \paragraph{Class A ($a = b = c$, $S_3$-symmetric, polynomial growth).}
 The $(1, 1, 1)$ cube-corner orthoscheme is the fundamental chamber of
@@ -398,5 +398,33 @@ Cambridge University Press, 2009.  Thm.~VII.7.
 \item Y.~Antol\'in, L.~Ciobanu, \emph{Formal conjugacy growth series
 and language complexity}, Math.\ Z.\ 285 (2017), no.~3, 1015--1041.
 \end{itemize}
+
+
+\begin{thebibliography}{9}
+
+\bibitem{Christol1979} G.~Christol, \emph{Ensembles presque p\'eriodiques $k$-reconnaissables},
+Theoret.\ Comput.\ Sci.\ \textbf{9} (1979), 141--145.
+
+\bibitem{CKMR} G.~Christol, T.~Kamae, M.~Mend\`es France, G.~Rauzy,
+\emph{Suites alg\'ebriques, automates et substitutions},
+Bull.\ Soc.\ Math.\ France \textbf{108} (1980), 401--419.
+
+\bibitem{AlloucheShallit} J.-P.~Allouche, J.~Shallit, \emph{Automatic Sequences: Theory,
+Applications, Generalizations}, Cambridge Univ.\ Press, 2003.
+
+\bibitem{Mahler1929} K.~Mahler, \emph{Arithmetische Eigenschaften der L\"osungen einer Klasse
+von Funktionalgleichungen}, Math.\ Ann.\ \textbf{101} (1929), 342--366.
+
+\bibitem{Nishioka} K.~Nishioka, \emph{Mahler Functions and Transcendence},
+Lecture Notes in Math.\ \textbf{1631}, Springer, 1996.
+
+\bibitem{Nesterenko1996} Yu.~V.~Nesterenko, \emph{Modular functions and transcendence
+questions}, Sb.\ Math.\ \textbf{187} (1996), 1319--1348.
+
+\bibitem{Bonfioli2} V.~Bonfioli, \emph{Transcendence of the right-triangle reflection growth
+series}, companion paper; code and formalization at
+\texttt{github.com/ElVec1o/pythagorean-reflection-sequence}.
+
+\end{thebibliography}
 
 \end{document}
