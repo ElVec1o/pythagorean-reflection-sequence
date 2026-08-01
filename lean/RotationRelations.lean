@@ -884,3 +884,56 @@ theorem classify_normal_forms (c : Nat) (w : List Letter)
   exact classify_main (c + 1) w hlen' hred h1' h2
 
 end RotationRelations
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms RotationRelations.cvec_append_cases
+#print axioms RotationRelations.cvec_append_even
+#print axioms RotationRelations.cvec_append_odd
+#print axioms RotationRelations.cvec_singleton
+#print axioms RotationRelations.cvec_reverse_cases
+#print axioms RotationRelations.cvec_reverse_even
+#print axioms RotationRelations.reducedB_iff
+#print axioms RotationRelations.validCount_one
+#print axioms RotationRelations.validCount_two
+#print axioms RotationRelations.validCount_three
+#print axioms RotationRelations.cvec_cons2
+#print axioms RotationRelations.cvec_le_half
+#print axioms RotationRelations.cvec2_nonpos_of_max
+#print axioms RotationRelations.Reduced_tail
+#print axioms RotationRelations.letter_cases
+#print axioms RotationRelations.classify_plain
+#print axioms RotationRelations.cvec_sum_le
+#print axioms RotationRelations.classify_evenPlaced
+#print axioms RotationRelations.classify_oddPlaced
+#print axioms RotationRelations.classify_main
+#print axioms RotationRelations.ne01
+#print axioms RotationRelations.ne02
+#print axioms RotationRelations.ne12
+#print axioms RotationRelations.ne10
+#print axioms RotationRelations.ne21
+#print axioms RotationRelations.ne20
+#print axioms RotationRelations.plain_length
+#print axioms RotationRelations.plain_cvec1
+#print axioms RotationRelations.plain_cvec2
+#print axioms RotationRelations.plain_reduced_cons
+#print axioms RotationRelations.plain_reduced
+#print axioms RotationRelations.markY_length
+#print axioms RotationRelations.markY_cvec1
+#print axioms RotationRelations.markY_cvec2
+#print axioms RotationRelations.markY_reduced_cons
+#print axioms RotationRelations.markX_length
+#print axioms RotationRelations.markX_cvec1
+#print axioms RotationRelations.markX_cvec2
+#print axioms RotationRelations.markX_reduced_cons
+#print axioms RotationRelations.markBoth_length
+#print axioms RotationRelations.markBoth_cvec1
+#print axioms RotationRelations.markBoth_cvec2
+#print axioms RotationRelations.markBoth_reduced_cons
+#print axioms RotationRelations.markBoth_valid
+#print axioms RotationRelations.rowCount_zero
+#print axioms RotationRelations.rowCount_below
+#print axioms RotationRelations.rowCount_diag
+#print axioms RotationRelations.rowCount_pos
+#print axioms RotationRelations.pairCount_eq
+#print axioms RotationRelations.admissible_count
+#print axioms RotationRelations.classify_normal_forms

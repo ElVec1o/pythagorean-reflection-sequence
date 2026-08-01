@@ -37,3 +37,9 @@ lakefile.olean
 
 # Sage preparse artifacts
 *.sage.py
+
+# Rule 10: research scratch, logs, strategy -- NEVER ships
+private/
+
+# timestamped run logs -- research narration, not release artefacts
+*RESULT.txt

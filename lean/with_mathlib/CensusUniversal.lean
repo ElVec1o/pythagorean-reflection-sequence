@@ -149,3 +149,9 @@ theorem universal_identities :
   native_decide
 
 end CensusUniversal
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms CensusUniversal.sym_involutive
+#print axioms CensusUniversal.sym_distinct
+#print axioms CensusUniversal.sym_control
+#print axioms CensusUniversal.universal_identities

@@ -47,13 +47,14 @@ theorem gaussian_moment (τ : ℝ) (hτ : 0 < τ) (j : ℝ) :
     rw [hb]
     have hI : Complex.I ^ 2 = -1 := Complex.I_sq
     field_simp
+    push_cast
     linear_combination (4 * (τ : ℂ) ^ 2 * (j : ℂ) ^ 2) * hI
   simp_rw [key]
   rw [MeasureTheory.integral_const_mul,
     GaussianFourier.integral_cexp_neg_mul_sq_add_real_mul_I hbre (-2 * τ * j)]
   -- (π/b)^{1/2} = √(4πτ)
   have hpb : (Real.pi : ℂ) / b = ((4 * Real.pi * τ : ℝ) : ℂ) := by
-    rw [hb]; push_cast; field_simp; ring
+    rw [hb]; push_cast; field_simp
   rw [hpb]
   have hnn : (0 : ℝ) ≤ 4 * Real.pi * τ := by positivity
   rw [show (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) by push_cast; ring,

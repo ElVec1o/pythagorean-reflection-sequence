@@ -495,3 +495,45 @@ end DistinctImages
   All proofs are `by native_decide`, i.e., compiled to native code,
   running in seconds without Mathlib.
 -/
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms LengthTenRelations.rel1
+#print axioms LengthTenRelations.rel1_matrix
+#print axioms LengthTenRelations.rel2
+#print axioms LengthTenRelations.rel3
+#print axioms LengthTenRelations.rel4
+#print axioms LengthTenRelations.rel5
+#print axioms LengthTenRelations.rel6
+#print axioms LengthTenRelations.rel7
+#print axioms LengthTenRelations.rel8
+#print axioms LengthTenRelations.rel2_matrix
+#print axioms LengthTenRelations.rel3_matrix
+#print axioms LengthTenRelations.rel4_matrix
+#print axioms LengthTenRelations.rel5_matrix
+#print axioms LengthTenRelations.rel6_matrix
+#print axioms LengthTenRelations.rel7_matrix
+#print axioms LengthTenRelations.rel8_matrix
+#print axioms RightTriangle5_12_13.rel1_on_5_12_13
+#print axioms Fibonacci.a_eq_fib_1
+#print axioms Fibonacci.a_eq_fib_2
+#print axioms Fibonacci.a_eq_fib_3
+#print axioms Fibonacci.a_eq_fib_4
+#print axioms Fibonacci.a_eq_fib_5
+#print axioms Fibonacci.a_eq_fib_6
+#print axioms Fibonacci.a_eq_fib_7
+#print axioms Fibonacci.a_eq_fib_8
+#print axioms Fibonacci.a_eq_fib_9
+#print axioms Fibonacci.deficit_at_10
+#print axioms Fibonacci.gap_at_10
+#print axioms Fibonacci.gap_at_11
+#print axioms Fibonacci.gap_at_12
+#print axioms Schur.schur_n2
+#print axioms Schur.schur_n3
+#print axioms Schur.schur_n4
+#print axioms Schur.schur_n5
+#print axioms Schur.schur_n6
+#print axioms Schur.schur_n7
+#print axioms Schur.schur_n8
+#print axioms Schur.schur_n9
+#print axioms Schur.schur_n10
+#print axioms DistinctImages.images_nodup

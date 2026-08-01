@@ -209,3 +209,13 @@ theorem census_m9 : transRow c9 18 = [0, 0, 6, 6, 42, 96, 350, 1092, 3684] := by
   native_decide
 
 end CylCensus
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms CylCensus.gens_involutive
+#print axioms CylCensus.omega_order
+#print axioms CylCensus.census_m3
+#print axioms CylCensus.census_m4
+#print axioms CylCensus.census_m5
+#print axioms CylCensus.census_m6
+#print axioms CylCensus.census_m7
+#print axioms CylCensus.census_m9

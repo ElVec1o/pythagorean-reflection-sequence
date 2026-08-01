@@ -284,9 +284,12 @@ P_{k-2}\, a_{k-1}^2\, a_k^2\, (1 - S_{k-1} - a_k^2 - a_{k+1}^2)
 (a_{k-1} a_{k+1})^2\, P_{k-2}\, (1 - S_{k-1})
 \end{multline*}
 in the five independent symbols $(a_{k-1}, a_k, a_{k+1}, S_{k-1},
-P_{k-2})$.  This identity is independent of $k$ and of $n$; SymPy
-verifies $\mathrm{expand}(\text{LHS} - \text{RHS}) = 0$ in
-$\mathbb{Z}[a_{k-1}, a_k, a_{k+1}, S_{k-1}, P_{k-2}]$.
+P_{k-2})$.  This identity is independent of $k$ and of $n$.  It, the two
+base cases, the induction that assembles them into~($\star$), and the
+boundary step yielding $\det Q_n$, are machine-checked in Lean~4 over an
+arbitrary commutative ring: see \texttt{OrthoschemeDet.lean}, theorem
+\texttt{det\_Q\_of\_recurrence} (Section~\ref{sec:lean}).  No positivity,
+ordering, or characteristic hypothesis is used.
 
 \emph{Final step (uniform).}  At $k = n$ the recurrence uses
 $Q_n[n,n] = 1$ and $Q_n[n-1,n]^2 = a_{n-1}^2$, giving
@@ -631,6 +634,47 @@ Computational assistance from large language model assistants was used
 at multiple stages of this work; all mathematical claims have been
 verified by the author, who is solely responsible for the content of
 this paper and for any errors.
+
+
+\section{Machine verification}\label{sec:lean}
+
+The algebraic content of Lemma~\ref{lem:uniform-detQ} and of
+Theorem~\ref{thm:ndim-rate} is formalised in Lean~4 with Mathlib.  Each file
+ends with \verb|#print axioms|; every theorem below reports only the standard
+axioms \verb|propext|, \verb|Classical.choice|, \verb|Quot.sound| (two report
+strictly fewer), and no file contains \verb|sorry|.
+
+\begin{center}\small
+\begin{tabular}{lll}
+\hline
+Paper result & Lean declaration & File \\
+\hline
+Lemma~\ref{lem:uniform-detQ}, closed form ($\star$)
+  & \texttt{minor\_closed\_form} & \texttt{OrthoschemeDet.lean}\\
+Lemma~\ref{lem:uniform-detQ}, boundary step
+  & \texttt{det\_Q} & \texttt{OrthoschemeDet.lean}\\
+Lemma~\ref{lem:uniform-detQ}, full statement
+  & \texttt{det\_Q\_of\_recurrence} & \texttt{OrthoschemeDet.lean}\\
+Thm.~\ref{thm:ndim-rate}, root of $x^2=x+y$
+  & \texttt{sq\_eq} & \texttt{NdimRate.lean}\\
+Thm.~\ref{thm:ndim-rate}, Binet formula
+  & \texttt{pell\_binet} & \texttt{NdimRate.lean}\\
+Thm.~\ref{thm:ndim-rate}, root translation
+  & \texttt{root\_translation} & \texttt{NdimRate.lean}\\
+Corollary (asymptotic regime)
+  & \texttt{three\_sub\_r} & \texttt{NdimRate.lean}\\
+\hline
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent\textbf{What is not formalised.}  The step identifying the abstract
+orbit-growth rate with the largest root $t_1$ of $W_n$ is a dominant-pole
+argument on the rational generating function; it is proved on paper only.
+Likewise the combinatorial identification $f_n(y)=P_{n+3}(y)$ via Pascal's
+identity is a paper proof.  Everything downstream of those two inputs ---
+the Binet formula, the location of the roots, and the translation to
+$1+2\cos(2\pi j/(n+3))$ --- is machine-checked.
 
 \begin{thebibliography}{99}
 

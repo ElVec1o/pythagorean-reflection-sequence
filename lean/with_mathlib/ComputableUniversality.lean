@@ -246,7 +246,7 @@ theorem universality_at_depth_10 : distinctCountAtDepth10 = 225 := by
 
 /-- All symbolic Affs at depths 0..n in one flat list. -/
 def cumulativeImages (n : Nat) : List CAff :=
-  (List.range (n + 1)).bind (fun d => (canonicalWords d).map applyWord)
+  (List.range (n + 1)).flatMap (fun d => (canonicalWords d).map applyWord)
 
 /-- Distinct symbolic Affs at depths 0..n (cumulative). -/
 def cumDistinct (n : Nat) : Nat :=
@@ -364,3 +364,10 @@ theorem universal_layers_through_22 :
   native_decide
 
 end ComputableUniversality
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms ComputableUniversality.universality_at_depth_10
+#print axioms ComputableUniversality.slow_fast_agree_at_10
+#print axioms ComputableUniversality.layer_10_eq_225
+#print axioms ComputableUniversality.layer_11_eq_351
+#print axioms ComputableUniversality.universal_layers_through_22

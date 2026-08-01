@@ -198,3 +198,30 @@ theorem prodRefl_flip (θ : Letter → ℝ) (p : Letter → ℂ) (w : List Lette
       · simp [Nat.odd_add_one, h, Nat.not_even_iff_odd.mpr h]
 
 end PlaneGroup
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms PlaneGroup.cj_false
+#print axioms PlaneGroup.cj_true
+#print axioms PlaneGroup.cj_cj
+#print axioms PlaneGroup.cj_ofReal
+#print axioms PlaneGroup.cjU_val
+#print axioms PlaneGroup.Aff.ext
+#print axioms PlaneGroup.Aff.one_a
+#print axioms PlaneGroup.Aff.one_b
+#print axioms PlaneGroup.Aff.one_flip
+#print axioms PlaneGroup.Aff.mul_a
+#print axioms PlaneGroup.Aff.mul_b
+#print axioms PlaneGroup.Aff.mul_flip
+#print axioms PlaneGroup.Aff.inv_a
+#print axioms PlaneGroup.Aff.inv_b
+#print axioms PlaneGroup.Aff.inv_flip
+#print axioms PlaneGroup.Aff.act_mul
+#print axioms PlaneGroup.Aff.act_injective
+#print axioms PlaneGroup.refl_a
+#print axioms PlaneGroup.refl_flip
+#print axioms PlaneGroup.refl_fixes
+#print axioms PlaneGroup.exp_mul_conj
+#print axioms PlaneGroup.refl_sq
+#print axioms PlaneGroup.linCoeff_prod
+#print axioms PlaneGroup.linCoeff_of_cvec_two_eq_zero
+#print axioms PlaneGroup.prodRefl_flip

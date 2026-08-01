@@ -422,3 +422,31 @@ theorem euler_circuit (E : List (DEdge V)) (base : V)
   exact ⟨C', by simpa using hpE, hc⟩
 
 end EulerMulti
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms EulerMulti.outDeg_cons
+#print axioms EulerMulti.inDeg_cons
+#print axioms EulerMulti.trail_degree
+#print axioms EulerMulti.outDeg_append
+#print axioms EulerMulti.inDeg_append
+#print axioms EulerMulti.exists_out
+#print axioms EulerMulti.maximal_trail_closed
+#print axioms EulerMulti.isTrail_append
+#print axioms EulerMulti.isTrail_split
+#print axioms EulerMulti.splice
+#print axioms EulerMulti.length_removeOne
+#print axioms EulerMulti.perm_removeOne
+#print axioms EulerMulti.outDeg_perm
+#print axioms EulerMulti.inDeg_perm
+#print axioms EulerMulti.balanced_perm
+#print axioms EulerMulti.walk_exists_aux
+#print axioms EulerMulti.walk_exists
+#print axioms EulerMulti.closed_trail_exists
+#print axioms EulerMulti.trail_split_at
+#print axioms EulerMulti.balanced_of_closed
+#print axioms EulerMulti.balanced_of_append
+#print axioms EulerMulti.mem_trailVerts_head
+#print axioms EulerMulti.mem_trailVerts_of_mem
+#print axioms EulerMulti.absorb
+#print axioms EulerMulti.reach_stays
+#print axioms EulerMulti.euler_circuit

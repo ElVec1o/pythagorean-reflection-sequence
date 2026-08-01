@@ -108,3 +108,10 @@ theorem linOf_depends_on_theta_two (θ θ' : Letter → ℝ) (w : List Letter)
   linarith
 
 end LinearPart
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms LinearPart.turn_nil
+#print axioms LinearPart.turn_cons
+#print axioms LinearPart.linOf_eq
+#print axioms LinearPart.linOf_of_cvec_two_eq_zero
+#print axioms LinearPart.linOf_depends_on_theta_two

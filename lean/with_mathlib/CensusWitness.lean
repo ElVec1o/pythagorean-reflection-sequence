@@ -175,3 +175,13 @@ theorem deficit_twelve : 3 * 2 ^ 11 - (sphere 12).getD 12 0 = 132 := by
   decide
 
 end CensusWitness
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms CensusWitness.gens_involutive
+#print axioms CensusWitness.gens_ne_id
+#print axioms CensusWitness.rwords_eleven
+#print axioms CensusWitness.collisions_eleven
+#print axioms CensusWitness.census_witness
+#print axioms CensusWitness.free_below_eleven
+#print axioms CensusWitness.deficit_eleven
+#print axioms CensusWitness.deficit_twelve

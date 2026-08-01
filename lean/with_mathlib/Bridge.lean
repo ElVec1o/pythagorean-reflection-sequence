@@ -266,3 +266,31 @@ theorem unique_finite_order (m n a j : ℕ) (hnm : n ≤ m) (h : Admissible n a 
       omega
 
 end CoxeterTorsion
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms CoxeterTorsion.ev_nil
+#print axioms CoxeterTorsion.ev_cons
+#print axioms CoxeterTorsion.ev_append
+#print axioms CoxeterTorsion.S_mul_S
+#print axioms CoxeterTorsion.S_mul_R
+#print axioms CoxeterTorsion.R_mul_S
+#print axioms CoxeterTorsion.R_mul_R
+#print axioms CoxeterTorsion.gen_zero
+#print axioms CoxeterTorsion.gen_one
+#print axioms CoxeterTorsion.gen_two
+#print axioms CoxeterTorsion.ev_plain
+#print axioms CoxeterTorsion.markY_eq
+#print axioms CoxeterTorsion.markX_eq
+#print axioms CoxeterTorsion.markBoth_lt
+#print axioms CoxeterTorsion.markBoth_gt
+#print axioms CoxeterTorsion.blockWord_eq
+#print axioms CoxeterTorsion.ev_two_zero
+#print axioms CoxeterTorsion.ev_one_two
+#print axioms CoxeterTorsion.emb_fuse
+#print axioms CoxeterTorsion.ev_markBoth_lt
+#print axioms CoxeterTorsion.ev_markBoth_gt
+#print axioms CoxeterTorsion.mid_lt
+#print axioms CoxeterTorsion.outer_gt
+#print axioms CoxeterTorsion.cast_eq_zero_iff_of_lt
+#print axioms CoxeterTorsion.r_eq_one_iff
+#print axioms CoxeterTorsion.unique_finite_order

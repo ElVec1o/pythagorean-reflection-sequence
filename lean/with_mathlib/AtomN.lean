@@ -64,7 +64,6 @@ theorem h_eq (X : ℝ) (hX : X ≠ 0) : h X = (X ^ 2 + 3 / 2) / (X ^ 2 + 1) := b
   have hX2 : X ^ 2 ≠ 0 := pow_ne_zero 2 hX
   unfold h
   field_simp
-  ring
 
 /-- **Atom N closure.** 1 ≤ h(X) ≤ 3/2 for every X > 0. -/
 theorem h_bounds (X : ℝ) (hX : 0 < X) : 1 ≤ h X ∧ h X ≤ 3 / 2 := by

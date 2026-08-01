@@ -2393,6 +2393,32 @@ lower bound $\ell_T\ge\ell_R+2c$ is supplied by Part~B
 Definition~\textup{\ref{def:transducer}}.
 \end{theorem}
 
+\begin{remark}[Relation to the free-solvable literature]
+\label{rem:priorart}
+The \emph{shape} of Theorem~\ref{thm:metric} --- an $\ell^1$-type crossing count
+plus twice a connectivity correction --- is the known one for the groups
+$F/N'$, with $F$ free and $N\vartriangleleft F$ arbitrary: there the word length
+of an element is the $\ell^1$-norm of its induced flow on the Cayley graph of
+$F/N$ plus twice the number of edges in a minimal connecting forest
+\cite[Thm.~2]{DLS}, reproved as \cite[Thm.~2.10]{MRUV} and restated as
+\cite[Lem.~3.2]{Sale}; the ambient group is the image of the Magnus embedding
+\cite{Magnus}, whose metric behaviour is studied in \cite{Sale,Vassileva}, and
+presenting such a group as an extension of $F/N$ by the first integer homology
+of its Cayley graph, with a distinguished cocycle, goes back to \cite{VD}. By
+Corollary~\ref{cor:generic-kernel} the group $W_{\mathrm{gen}}$ is the
+$Q$-relative metabelianization of $V_4*\Z/2$, so it belongs to that family up to
+the bookkeeping required because our generators are involutions, and the shape
+of the formula should be expected rather than claimed.
+
+What is new here is not the shape but the \emph{evaluation}. In general the
+connectivity term is a minimal-forest optimization, and computing geodesic
+length in a free metabelian group is NP-complete \cite[Thm.~4.1]{MRUV}. Here it
+is instead given in closed form by Proposition~\ref{prop:Tform} and realized by
+the finite-state transducer of Definition~\ref{def:transducer}, which is what
+makes the growth series computable and the enumeration of $u_0,\dots,u_{22}$
+possible without breadth-first search.
+\end{remark}
+
 The theorem is two inequalities. Part~A establishes the upper bound by a splice
 construction and reduces the lower bound to a structural property of $c$;
 Part~B supplies that property by exhibiting $c$ as the explicit finite-state
@@ -3302,10 +3328,14 @@ four are discharged by \texttt{ring} and checked by the Lean kernel.
 These two propositions are the only results whose Lean verification is
 entirely kernel-checked. They cover the algebraic core of the universal
 length-$10$ relations (\S\ref{sec:setting}) and of the Schur-complement
-identity (\S\ref{sec:setting}). They do \emph{not} include the
-recursion's closing step $\det Q_n=-\prod a_i^2$ as a single statement
-over general $n$: that closed form is verified only on concrete leg
-sequences in tier~(ii) (Proposition~\ref{prop:lean-native}). The
+identity (\S\ref{sec:setting}). Since 2026-08 they also include the recursion's closing step
+$\det Q_n=-\prod a_i^2$ \emph{as a single statement over general $n$}:
+\texttt{lean/with\_mathlib/OrthoschemeDet.lean} assembles the two base cases, the
+interior recurrence and the boundary row into
+\texttt{det\_Q\_of\_recurrence}, over an arbitrary commutative ring and with no
+positivity, ordering or characteristic hypothesis (axioms \texttt{propext},
+\texttt{Classical.choice}, \texttt{Quot.sound}; no \texttt{sorry}). The earlier
+restriction to concrete leg sequences in tier~(ii) is therefore superseded. The
 Mathlib-free file \texttt{lean/RightTriangleReflection.lean} additionally
 re-checks the basic Coxeter relations $R_i^2=1$ and $(R_0R_1)^2=1$ and
 the explicit affine-matrix value of each length-$10$ relation on the
@@ -3316,7 +3346,12 @@ $(3,4,5)$ triangle.
 \label{ssec:reproduce-native}
 
 The deeper finite verifications are evaluations of computable functions
-on fixed inputs, discharged by \texttt{native\_decide}. We record the
+on fixed inputs, discharged by \texttt{native\_decide}. Every result proved this way
+carries, in addition to \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}, the generated axiom \texttt{Lean.ofReduceBool}: such results
+trust the Lean compiler and its evaluation of the compiled term, not only the kernel.
+We flag this explicitly because it is a strictly larger trusted base than tier~(i),
+and every statement below inherits it. We record the
 enlarged trust base before stating the results.
 
 \begin{remark}[Trust base of \texttt{native\_decide}]
@@ -3542,8 +3577,29 @@ series and its relaxed companion}, preprint (2026), \texttt{doi:10.5281/zenodo.2
 \bibitem{Bonfioli2026c} V.~Bonfioli, \emph{Universality and a dimensional transcendence dichotomy
 for orthoscheme reflection groups}, preprint (2026), \texttt{doi:10.5281/zenodo.20370090}.
 
+\bibitem{DLS} C.~Droms, J.~Lewin and H.~Servatius, \emph{The length of elements
+in free solvable groups}, Proc.\ Amer.\ Math.\ Soc.\ \textbf{119} (1993),
+no.~1, 27--33.
+
 \bibitem{FlajoletSedgewick} P.~Flajolet and R.~Sedgewick, \emph{Analytic Combinatorics},
 Cambridge Univ.\ Press, 2009.
+
+\bibitem{Magnus} W.~Magnus, \emph{On a theorem of Marshall Hall}, Ann.\ of
+Math.\ (2) \textbf{40} (1939), 764--768.
+
+\bibitem{MRUV} A.~Myasnikov, V.~Roman'kov, A.~Ushakov and A.~Vershik, \emph{The
+word and geodesic problems in free solvable groups}, Trans.\ Amer.\ Math.\ Soc.\
+\textbf{362} (2010), no.~9, 4655--4682; arXiv:0807.1032 [math.GR].
+
+\bibitem{Sale} A.~W.~Sale, \emph{Metric behaviour of the Magnus embedding},
+Geom.\ Dedicata \textbf{176} (2015), 305--313; arXiv:1202.5343 [math.GR].
+
+\bibitem{Vassileva} S.~Vassileva, \emph{The Magnus embedding is a
+quasi-isometry}, arXiv:1207.1830 [math.GR], 2012.
+
+\bibitem{VD} A.~M.~Vershik and S.~Dobrynin, \emph{Geometrical approach to the
+free solvable groups}, Internat.\ J.\ Algebra Comput.\ \textbf{15} (2005),
+1243--1260.
 
 \bibitem{Humphreys1990} J.~E.~Humphreys, \emph{Reflection Groups and Coxeter Groups}, Cambridge
 Studies in Advanced Mathematics~29, Cambridge Univ.\ Press, 1990.

@@ -184,3 +184,13 @@ theorem rel8_symbolic :
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;>
   · simp only [applyWord, Aff.comp, Aff.one, R0, R1, R2, D, a, b]
     ring
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms rel1_symbolic
+#print axioms rel2_symbolic
+#print axioms rel3_symbolic
+#print axioms rel4_symbolic
+#print axioms rel5_symbolic
+#print axioms rel6_symbolic
+#print axioms rel7_symbolic
+#print axioms rel8_symbolic

@@ -133,3 +133,9 @@ end SchurGeneral
   The four theorems machine-check the ALGEBRA of the proof.  The remaining
   matrix-theoretic plumbing is mechanical bookkeeping that does not
   introduce any additional content. -/
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms SchurGeneral.schur_inductive_step
+#print axioms SchurGeneral.schur_boundary_step
+#print axioms SchurGeneral.schur_base_step
+#print axioms SchurGeneral.schur_k2_step

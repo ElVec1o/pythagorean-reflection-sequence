@@ -182,3 +182,16 @@ theorem finite_order_iff (m : ℕ) (hm : 0 < m)
   · exact finite_order_of_cancel m hm u₀ u₁ u₂
 
 end CoxeterTorsion
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms CoxeterTorsion.t_sq
+#print axioms CoxeterTorsion.s_pow
+#print axioms CoxeterTorsion.finite_order_of_cancel
+#print axioms CoxeterTorsion.isOfFinOrder_conj
+#print axioms CoxeterTorsion.neword_prod_ne_one
+#print axioms CoxeterTorsion.tt_ne_one
+#print axioms CoxeterTorsion.blk_prod
+#print axioms CoxeterTorsion.blkPow_prod
+#print axioms CoxeterTorsion.blk_prod_infinite_order
+#print axioms CoxeterTorsion.infinite_order_of_noncancel
+#print axioms CoxeterTorsion.finite_order_iff

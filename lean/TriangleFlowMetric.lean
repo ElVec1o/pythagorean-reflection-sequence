@@ -204,3 +204,17 @@ theorem upper_bound (phis : List Int) (conns : List Bool) :
       omega
 
 end TriangleFlow
+
+-- Rule 5 axiom audit (added 2026-08-01): declare every axiom these results rest on.
+#print axioms TriangleFlow.flowNorm_le_traversals
+#print axioms TriangleFlow.traversals_parity
+#print axioms TriangleFlow.connector_flowNorm
+#print axioms TriangleFlow.connector_two_le
+#print axioms TriangleFlow.steps_ge
+#print axioms TriangleFlow.lower_bound
+#print axioms TriangleFlow.steps_parity
+#print axioms TriangleFlow.posPart_sub_negPart
+#print axioms TriangleFlow.balanced
+#print axioms TriangleFlow.realize_flow
+#print axioms TriangleFlow.realize_traversals
+#print axioms TriangleFlow.upper_bound
