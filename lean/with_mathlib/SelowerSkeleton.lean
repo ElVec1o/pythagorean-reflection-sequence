@@ -82,6 +82,48 @@ theorem prod_one_sub_ge (n : ℕ) (d : ℕ → ℝ)
     have hdk : d k ≤ 1 := h1 k
     nlinarith [ih, hp, hS, hd, hdk, mul_nonneg hS hd]
 
+/-! ### The gate block as a second difference at a zero
+
+Paper 2's Proposition "P12second" states that at a travel pole
+`P12 = -(1/2)[c(z0) + c(z0/q)]`, i.e. the gate block is the symmetric second difference
+of the q-cosine at its own zero.  Two steps, both pure algebra, both recorded here.
+Everything is doubled so no division occurs and the statements hold over any commutative
+ring, with no characteristic hypothesis. -/
+
+/-- **The shift rule, instantiated at the pole.**  Writing `Q` for a square root of `q`
+    and `v` for `z0/q`, so that `z0 = Q^2 v` and `Z = Q v`, the general half-step rule
+    `c(q u) = c(u) + q^{3/2} u s(sqrt q u)` at `u = v` reads `c(z0) - c(z0/q) = q Z s(Z)`.
+    The content is the index bookkeeping, which is where such derivations go wrong. -/
+theorem shift_at_pole {R : Type*} [CommRing R] (Q v : R) (c s : R → R)
+    (hrule : ∀ u, c (Q ^ 2 * u) = c u + Q ^ 3 * u * s (Q * u)) :
+    c (Q ^ 2 * v) - c v = Q ^ 2 * (Q * v) * s (Q * v) := by
+  rw [hrule v]; ring
+
+/-- **The second-difference identity.**  Given the instantiated shift rule and the closed
+    form `2 P12 = q Z s(Z) - 2 c(z0)`, the gate block is minus the mean of `c` at the two
+    full-step neighbours of the zero. -/
+theorem P12_second_difference {R : Type*} [CommRing R] (q Z cz0 czq sZ P12 : R)
+    (hshift : cz0 - czq = q * Z * sZ)
+    (hP12 : 2 * P12 = q * Z * sZ - 2 * cz0) :
+    2 * P12 = -(cz0 + czq) := by
+  linear_combination hP12 - hshift
+
+/-! ### The scaling backbone
+
+Every `tau^{3/2}` in the paper comes from `w = sqrt(2/tau)`, i.e. from `w^2 tau = 2`.
+Both identities below are stated in squared form so that no fractional power appears and
+they hold over the reals without any `rpow` reasoning. -/
+
+/-- `tau^2 w = sqrt 2 * tau^{3/2}`, in squared form. -/
+theorem tau_sq_mul_w_sq (w tau : ℝ) (h : w ^ 2 * tau = 2) :
+    (tau ^ 2 * w) ^ 2 = 2 * tau ^ 3 := by
+  linear_combination tau ^ 3 * h
+
+/-- The gate threshold: `2/w^3 = tau^{3/2}/sqrt 2`, in cleared form. -/
+theorem gate_threshold (w tau : ℝ) (h : w ^ 2 * tau = 2) :
+    tau ^ 3 * w ^ 6 = 8 := by
+  linear_combination ((tau * w ^ 2) ^ 2 + 2 * (tau * w ^ 2) + 4) * h
+
 end Selower
 
 -- Rule 5 axiom audit.
@@ -89,3 +131,7 @@ end Selower
 #print axioms Selower.F_at_pole
 #print axioms Selower.form_lower_bound
 #print axioms Selower.prod_one_sub_ge
+#print axioms Selower.shift_at_pole
+#print axioms Selower.P12_second_difference
+#print axioms Selower.tau_sq_mul_w_sq
+#print axioms Selower.gate_threshold

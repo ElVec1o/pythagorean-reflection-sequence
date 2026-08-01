@@ -1898,7 +1898,12 @@ Proposition~\ref{prop:selower}'s pole reduction gives $q^{3/2}s(z_0)s(Z)=1$. Eli
 between these and the closed form $P_{12}=(qZ/2)s(Z)-c(z_0)$ yields the boxed identity.
 \end{proof}
 
-\noindent\emph{Verified} at all $58$ tabulated poles to a worst relative deviation of
+\noindent The two algebraic steps of the proof are machine-checked
+(\texttt{SelowerSkeleton.lean}): \texttt{shift\_at\_pole} is the instantiation of the half-step rule
+at $u=z_0/q$, written so that the index bookkeeping is explicit, and
+\texttt{P12\_second\_difference} is the elimination; both are stated in doubled form over an
+arbitrary commutative ring and depend only on \texttt{propext}. The identity is
+\emph{verified} at all $58$ tabulated poles to a worst relative deviation of
 $2\cdot10^{-44}$ (\texttt{halfstep\_verify.py}). The consequence used elsewhere is that
 $|P_{12}|\le\tfrac{h^2}{2}\max_{|t|\le h}|(u\partial_u)^2\cos(\,\cdot\,;q^2)|$ with $h=\tau/2$, so
 the gate is a bound on a second derivative on a window of width $\tau$, not an asymptotic
@@ -2101,6 +2106,10 @@ $P_{12}$ $k$-sum split, low branch & \texttt{P12\_split\_lo} & \texttt{propext}\
 $P_{12}$ $k$-sum split, high branch & \texttt{P12\_split\_hi} & \texttt{propext}\\
 Casoratian constancy & \texttt{casoratian\_re\_const} & standard\\
 constancy $\Rightarrow$ every rung & \texttt{casoratian\_re\_eq\_zero} & standard\\
+shift rule at the pole & \texttt{shift\_at\_pole} & \texttt{propext}\\
+$P_{12}$ as a second difference & \texttt{P12\_second\_difference} & \texttt{propext}\\
+scaling $\tau^2w=\sqrt2\,\tau^{3/2}$ & \texttt{tau\_sq\_mul\_w\_sq} & standard\\
+gate threshold $2/w^3=\tau^{3/2}/\sqrt2$ & \texttt{gate\_threshold} & standard\\
 \hline
 \end{tabular}
 \end{center}
