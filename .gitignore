@@ -71,3 +71,6 @@ qSS_program.md
 
 # superseded / duplicate papers, kept for provenance, not part of the release
 paper/old/
+
+# certificate for section 6, which lives in private/; not a paper artefact
+code/zeta_probe/budget.py
