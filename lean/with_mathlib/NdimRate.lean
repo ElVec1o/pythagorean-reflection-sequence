@@ -25,6 +25,7 @@
 -/
 
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.LinearCombination
 
@@ -84,11 +85,31 @@ theorem three_sub_r (n : ℕ) : 3 - r n = 4 * Real.sin (Real.pi / (n + 3)) ^ 2 :
   have h : 2 * Real.pi / (n + 3) = 2 * (Real.pi / (n + 3)) := by ring
   rw [h]; exact rate_residual _
 
+/-! ### The Pascal step
+
+The paper's identification `f_n(y) = P_{n+3}(y)` rests on Pascal's rule in the form
+`binom(N+1, k+1) = binom(N, k) + binom(N, k+1)`, applied to the coefficient
+`binom(n-k+2, k)`.  That step is `Nat.choose_succ_succ`; recorded here so the paper
+cites a checked statement rather than "Pascal's identity gives". -/
+
+theorem pascal_step (N k : ℕ) :
+    (N + 1).choose (k + 1) = N.choose k + N.choose (k + 1) :=
+  Nat.choose_succ_succ N k
+
+/-- The coefficient family of `f_n` obeys Pascal in the shape the paper uses:
+    with `c m k = (m - k).choose k`, the top index advances by one. -/
+theorem coeff_pascal (m k : ℕ) (h : k + 1 ≤ m) :
+    (m + 1 - (k + 1)).choose (k + 1) = (m - (k + 1)).choose k + (m - (k + 1)).choose (k + 1) := by
+  have : m + 1 - (k + 1) = (m - (k + 1)) + 1 := by omega
+  rw [this, pascal_step]
+
 end NdimRate
 
--- Rule 5 axiom check.
+-- Rule 5 axiom audit.
 #print axioms NdimRate.sq_eq
 #print axioms NdimRate.pell_binet
 #print axioms NdimRate.root_translation
 #print axioms NdimRate.rate_residual
 #print axioms NdimRate.three_sub_r
+#print axioms NdimRate.pascal_step
+#print axioms NdimRate.coeff_pascal

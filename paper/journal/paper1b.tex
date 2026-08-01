@@ -126,6 +126,18 @@ $u_d^n = [t^d]\, W_n(t)$ unconditionally for distinct positive rational
 legs, and (c) to read off the depth at which the inequality first
 becomes an equality (the collision-depth).
 
+\begin{remark}[Scope, and relation to the planar case]\label{rem:scope}
+This is a companion note. The planar case $n=2$ --- where the group is
+$V_4 * \mathbb{Z}/2$, the metric is the lamplighter-type formula, and the growth series is
+transcendental --- is treated in the main paper and is not reproved here; what follows is the
+part of the picture that is uniform in the dimension. Three things are established: the closed
+form for $r_n$ (\S\ref{sec:rate}), the uniform Schur-complement determinant identity
+(\S\ref{sec:setting}) which is what makes Class~C faithfulness unconditional in every dimension
+(\S\ref{sec:setting}), and the dimension-independent collision-depth invariant (\S\ref{sec:cd}).
+Two things are deliberately \emph{not} attempted: the transcendence questions, which are special to
+$n=2$; and any statement about non-right-corner orthoschemes.
+\end{remark}
+
 \section{The closed-form growth rate $r_n$}\label{sec:rate}
 
 \begin{theorem}[Closed-form $n$-dim Coxeter rate]
@@ -148,7 +160,10 @@ The polynomial $f_n(y)$ is the standard Fibonacci--Pell polynomial:
 writing $P_0(y) = 0$, $P_1(y) = 1$, and
 $P_m(y) = P_{m-1}(y) + y\, P_{m-2}(y)$ for $m \ge 2$, Pascal's
 identity $\binom{n-k+2}{k} = \binom{n-k+1}{k} + \binom{n-k+1}{k-1}$
-gives $f_n(y) = P_{n+3}(y)$.  The characteristic equation
+gives $f_n(y) = P_{n+3}(y)$: the two sides satisfy the same three-term recursion in $n$, and agree
+at $n=-2,-1$. The Pascal step is machine-checked (\texttt{NdimRate.lean}, \texttt{pascal\_step} and
+\texttt{coeff\_pascal}; \texttt{pascal\_step} depends on \emph{no} axioms), so the only unformalised
+part of this paragraph is the induction that assembles it.  The characteristic equation
 $x^2 = x + y$ has roots $\alpha, \beta = (1 \pm \sqrt{1+4y})/2$, and
 the Binet formula yields $P_m(y) = (\alpha^m - \beta^m)/(\alpha - \beta)$;
 hence $P_m(y) = 0$ iff $(\alpha/\beta)^m = 1$.  Setting
@@ -166,6 +181,19 @@ t_j  \;=\;  4 \cos^2\!\left(\frac{\pi j}{n+3}\right) - 1
 \]
 The asymptotic growth rate is the largest root, attained at $j = 1$.\qed
 \end{proof}
+
+\begin{remark}[Prior art]\label{rem:priorart-1b}
+Both ingredients of Theorem~\ref{thm:ndim-rate} are classical and are used as such.
+Steinberg's formula for the Poincar\'e series of a Coxeter group is standard, and the
+Fibonacci--Pell polynomials $P_m(y)$, their Binet formula, and the location of their roots at
+$y_j=-1/\bigl(4\cos^2(\pi j/m)\bigr)$ are classical facts about that family; the values
+$1+2\cos(2\pi j/m)$ are likewise the familiar Chebyshev-type quantities. What is asserted here is
+the \emph{identification}: that the abstract orbit-growth rate of the $n$-dimensional right-corner
+orthoscheme group is the largest of those roots at $m=n+3$, together with the collision-depth
+invariant of \S\ref{sec:cd}. We have not located that identification in the literature, but we make
+no claim of novelty for the ingredients, and a reader who knows the Coxeter growth-series literature
+should treat the closed form as an assembly of known pieces rather than a new evaluation.
+\end{remark}
 
 \begin{remark}[The Class C orthoscheme sequences in the OEIS]
 \label{rem:oeis}
@@ -663,6 +691,10 @@ Thm.~\ref{thm:ndim-rate}, root translation
   & \texttt{root\_translation} & \texttt{NdimRate.lean}\\
 Corollary (asymptotic regime)
   & \texttt{three\_sub\_r} & \texttt{NdimRate.lean}\\
+Thm.~\ref{thm:ndim-rate}, Pascal step
+  & \texttt{pascal\_step} (no axioms) & \texttt{NdimRate.lean}\\
+Thm.~\ref{thm:ndim-rate}, coefficient form
+  & \texttt{coeff\_pascal} & \texttt{NdimRate.lean}\\
 \hline
 \end{tabular}
 \end{center}

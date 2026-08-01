@@ -35,4 +35,4 @@ Thank you for your time and consideration.
 
 Sincerely,
 Vico Bonfioli
-vico@anvilstack.com
+vicobonfioli@gmail.com

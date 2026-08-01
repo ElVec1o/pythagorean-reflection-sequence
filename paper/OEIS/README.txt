@@ -65,5 +65,5 @@ the OEIS editor will help finalise the cross-references.
 CONTACT
 -------
    Author: Vico Bonfioli
-   Email:  vico@anvilstack.com
+   Email:  vicobonfioli@gmail.com
    Paper:  github.com/elvec1o/pythagorean-reflection-sequence

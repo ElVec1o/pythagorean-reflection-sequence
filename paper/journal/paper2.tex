@@ -1872,6 +1872,38 @@ non-automaticity criterion can be found.
 
 
 
+
+\subsection*{The gate block is a second difference at a zero}
+
+The following exact identity is not needed for Theorem~\ref{thm:V}, but it is the sharpest
+available description of the object the $U$-gate must bound, and it makes the size
+$\tau^{3/2}$ structural rather than numerical.
+
+\begin{proposition}\label{prop:P12second}
+At every travel pole, with $Z=z_0/\sqrt q$ the corresponding zero of $\cos(\,\cdot\,;q^2)$,
+\[
+ \boxed{\;P_{12}\;=\;-\tfrac12\bigl[\cos(z_0;q^2)+\cos(z_0/q;q^2)\bigr].\;}
+\]
+Since $z_0=Ze^{-\tau/2}$ and $z_0/q=Ze^{+\tau/2}$, and since $\cos(Z;q^2)=0$, the right-hand side is
+exactly the symmetric second difference of $\cos(\,\cdot\,;q^2)$ at its own zero, taken in the
+variable $\log u$ with step $\tau/2$.
+\end{proposition}
+
+\begin{proof}
+Write $c(u)=\cos(u;q^2)$ and $s(u)=q^{-1/2}\sin(q^{1/2}u;q^2)$. The Hahn--Exton $q$-Wronskian
+(Swarttouw, thesis eq.~(4.3.8); \cite[eq.~(4.21)]{Daalhuis1994}) reads $s(u)c(qu)-c(u)s(qu)=u$, and
+the shift rules give $c(qu)=c(u)+q^{3/2}u\,s(\sqrt q\,u)$ and $s(qu)=s(u)-u\,c(\sqrt q\,u)$. Taking
+$u=Z/\sqrt q$ in the first shift rule gives $c(z_0)-c(z_0/q)=qZ\,s(Z)$, while
+Proposition~\ref{prop:selower}'s pole reduction gives $q^{3/2}s(z_0)s(Z)=1$. Eliminating $s(Z)$
+between these and the closed form $P_{12}=(qZ/2)s(Z)-c(z_0)$ yields the boxed identity.
+\end{proof}
+
+\noindent\emph{Verified} at all $58$ tabulated poles to a worst relative deviation of
+$2\cdot10^{-44}$ (\texttt{halfstep\_verify.py}). The consequence used elsewhere is that
+$|P_{12}|\le\tfrac{h^2}{2}\max_{|t|\le h}|(u\partial_u)^2\cos(\,\cdot\,;q^2)|$ with $h=\tau/2$, so
+the gate is a bound on a second derivative on a window of width $\tau$, not an asymptotic
+evaluation.
+
 \begin{lemma}[The travel poles are locally finite]\label{lem:polefinite}
 For every $\tau_\star>0$ there are only finitely many travel poles with $\tau_m>\tau_\star$.
 \end{lemma}
