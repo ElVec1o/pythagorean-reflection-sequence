@@ -46,3 +46,16 @@ private/
 
 # outreach correspondence -- the author sends this personally, not a release artefact
 paper/outreach/
+
+# Rule 10: internal planning, correspondence drafts, checklists, agent handoffs and
+# superseded copies live in private/ and never ship.
+PAPER_PLAN.md
+*_DRAFT.md
+*checklist*.md
+README_AGENT.md
+PACKAGE_*.md
+archived/
+paper/submission/
+
+paper/OEIS/submit/
+paper/OEIS/clean/
