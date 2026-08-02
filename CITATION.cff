@@ -30,13 +30,14 @@ abstract: >
   boundary), the relaxed companion V transcendental over Q(x)
   unconditionally (self-contained simple-saddle asymptotics, every
   constant explicit), and the true series U = A396406 transcendental
-  over Q(x) conditional on a single explicit amplitude estimate at the
-  pole -- derived to leading order via exact sinh-product collapses and
-  a pole-zero phase offset (sqrt2/8) tau^{3/2} giving |P12|/tau^{3/2} ->
-  1/(4 sqrt2) (a fourfold gate margin), and verified numerically at the
-  first 70 poles, with its O(tau) residual the sole remaining gap. Modulo
-  that residual the geodesic growth series of the side-reflection system
-  is not algebraic over Q(x); no low-complexity closed form exists.
+  over Q(x) as well. The amplitude estimate that was the sole
+  conditionality is now proved: the gate block is the symmetric second
+  difference of the q-cosine at its own zero, a uniform certificate bounds
+  it by 0.619 tau^{3/2} below the threshold tau^{3/2}/sqrt2, and an exact
+  identity turns the same certificate into the denominator bound and the
+  sign input that close the whole gate. The geodesic growth series of the
+  side-reflection system is not algebraic over Q(x); no low-complexity
+  closed form exists.
 keywords:
   - right-triangle reflection group
   - Coxeter groups
@@ -54,8 +55,8 @@ keywords:
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
-date-released: 2026-07-30
-version: 5.4.0
+date-released: 2026-08-02
+version: 7.0.0
 doi: 10.5281/zenodo.20370090
 identifiers:
   - type: doi
