@@ -151,8 +151,8 @@ Remark~\ref{rem:elemY3}: the pole--zero offset $\delta w=\tfrac{\sqrt2}8\tau^{3/
 $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below the gate threshold. (The
 turning-point atom feeding that analysis, the rational envelope
 $h(X)=(1+\tfrac3{2X^2})/(1+\tfrac1{X^2})\in[1,\tfrac32]$ of Lemma~\ref{lem:atomN}, is formally
-verified in Lean~4.) The special-function obstacle that previously separated $U$ from $V$ is gone:
-the two series stand together, on the same self-contained analysis.
+verified in Lean~4.) $U$ and $V$ therefore rest on the same self-contained analysis; no
+special-function input separates them.
 
 Section~\ref{sec:modp} records an independent arithmetic route: by Christol's theorem, if
 $(u_n\bmod p)$ is not $p$-automatic for one prime $p$ then $U$ is transcendental over $\Q(x)$; the
@@ -1730,8 +1730,7 @@ recovered).
 Thus the Nesterenko route closes \emph{if and only if} $S$ is differentially algebraic in $q$; the
 obstruction is carried by the $z$-jet tower; whose function-level independence is exactly
 Corollary~\ref{cor:hypertranscendence}; and not by the $\sigma$-orbit, which collapses to rank
-two. \textup{(An earlier version of this proposition attributed the failure to the orbit spread;
-part (i) corrects this.)}
+two.
 \end{proposition}
 
 \begin{remark}[the value-level descent as a joint multiplicity estimate]
@@ -2038,10 +2037,10 @@ Proposition~\ref{prop:selower} it is \emph{false}, which is precisely why Lemma~
 $0.63$ is required.
 \end{remark}
 
-\begin{remark}[the former gap, and how it closed]\label{rem:Ugap}
-Lemma~\ref{lem:atomN} discharges the amplitude \emph{through the turning point} $X=\tfrac32$; the
-obstruction to any Liouville--Green treatment, and the one piece formerly thought to settle the
-$U$-side. It does \emph{not}, however, supply the amplitude at the \emph{pole} $X=w$ to the
+\begin{remark}[what the turning-point atom does and does not give]\label{rem:Ugap}
+Lemma~\ref{lem:atomN} discharges the amplitude \emph{through the turning point} $X=\tfrac32$, which
+is the obstruction to any Liouville--Green treatment. It does \emph{not} supply the amplitude at
+the \emph{pole} $X=w$ to the
 $O(\tau^2)$-relative accuracy the numerator gate requires. There the two-Bessel form carries a
 relative defect whose $O(1)$ part is exactly $\tfrac1{36}$; i.e.\ the classical
 turning-point-to-pole connection factor $\tfrac{36}{35}$, which is itself derivable and, once
@@ -2530,8 +2529,7 @@ total $\le2.10\,w$. Both are endpoint evaluations of quantities proved monotone;
 $[10^{-8},5\cdot10^{-3}]$ the same conclusion is obtained without any monotonicity assumption by
 the interval-arithmetic certification \texttt{budget\_iv.py} described above, and the monotonicity
 argument is what carries the remaining range $(0,10^{-8}]$. The assembly is the committed script
-\texttt{budget.py}; the chain passed a three-round adversarial review recorded with the
-development.
+\texttt{budget.py}.
 \end{proof}
 
 \begin{lemma}[the denominator at the pole]\label{app:Se}

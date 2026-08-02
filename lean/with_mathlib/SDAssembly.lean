@@ -5,8 +5,7 @@
   travel poles -- machine-checked from its analytic input.
 
   `lem:infpoles` is the last link of BOTH transcendence theorems: `thm:V` and `thm:U` each
-  need infinitely many travel poles, and until this chapter the infinitude was asserted, not
-  proved.  The proof runs:
+  need infinitely many travel poles.  The proof runs:
 
       1 - Sigma_1(tau) = cos w - T_2(w),      w = sqrt(2/tau)      [radius transport, exact]
       at the extreme phases w = m pi:  = (-1)^m - T_2(m pi)
@@ -23,9 +22,8 @@
   and the hypothesis list is the audit.
 
   The one quantitative input is isolated in `sign_at_extreme_phase`: the *only* thing the
-  infinitude argument needs from the whole steepest-descent chapter is `|T_2(m pi)| < 1` --
-  far weaker than the uniform `O(sqrt tau)` bound `lem:cos` states.  That is worth knowing:
-  if `lem:cos`'s uniform remainder is ever in doubt, the pole infinitude is not.
+  infinitude argument needs is `|T_2(m pi)| < 1`, far weaker than a uniform `O(sqrt tau)` bound.
+  It is supplied by `lem:T2abs`.
 -/
 
 import Mathlib.Analysis.SpecialFunctions.Pow.Real

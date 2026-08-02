@@ -11,8 +11,8 @@
   no steepest descent, no rigorous numerics.  Nothing here should be read as a claim that
   U's transcendence is formally verified.
 
-  WHY IT IS WORTH HAVING.  Every serious defect found in the eleven adversarial review
-  rounds of this chapter was of one kind: a step *consumed but not supplied*.
+  WHY IT IS WORTH HAVING.  The failure mode this guards against is a step *consumed but
+  not supplied*.
     * the gate arithmetic delivered |s| <= 1.77, not |s| < 1
       (a numerator bound 0.619 against the only proved denominator constant 0.35);
     * `b0 > 0`, the other half of the gate, was discharged nowhere;
@@ -20,9 +20,9 @@
       never proved;
     * the truncation remainder `lem:cos` needs was asserted nowhere.
   In this file each of those is a hypothesis that must be supplied, or an unfilled goal.
-  In particular `hKc : K < c` below is precisely the inequality that failed: with the
-  numerator constant 0.619 and the annulus denominator constant 0.35 it is FALSE, and
-  `gate_ratio_lt_one` is then unusable -- see `round9_defect` at the end.
+  In particular `hKc : K < c` is the inequality the gate needs: with the numerator constant
+  0.619 and the annulus denominator constant 0.35 it is FALSE, so `gate_ratio_lt_one` does not
+  apply -- see `gate_needs_Kc` at the end.
 
   Correspondence with the paper:
     hstar  <-> Theorem `thm:star`        (|P12| <= 0.619 tau^{3/2} at every travel pole)
@@ -159,10 +159,9 @@ theorem U_not_algebraic
 /-- The paper's constants close the gate. -/
 theorem paper_constants : (0.619 : ℝ) < 0.63 := by norm_num
 
-/-- **The round-9 defect, as a Lean statement.**  Before `app:Se`, the only proved
-    denominator constant was `prop:selower`'s `0.35`.  With `K = 0.619` and `c = 0.35` the
-    hypothesis `hKc` of `gate_ratio_lt_one` is false, so the gate could not be closed --
-    which is exactly what the review found, and what the new denominator bound repaired. -/
-theorem round9_defect : ¬ ((0.619 : ℝ) < 0.35) := by norm_num
+/-- **Why the denominator bound of `app:Se` is needed.**  With `prop:selower`'s constant
+    `0.35` in place of `app:Se`'s `0.63`, the hypothesis `hKc` of `gate_ratio_lt_one` is false
+    at `K = 0.619`, so the gate does not close. -/
+theorem gate_needs_Kc : ¬ ((0.619 : ℝ) < 0.35) := by norm_num
 
 end UAssembly

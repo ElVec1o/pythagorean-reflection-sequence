@@ -110,7 +110,7 @@ theorem w_def_iff (tau w : ℝ) (hτ : tau ≠ 0) :
 
 /-- **`(tau^2 w^3)^2 = 8 tau`,** the division-free form of `tau^2 w^3 = 2 sqrt 2 sqrt tau`.
     This identity is exact for the argument `w`; for `W = w e^{-tau/2}` it holds only up to
-    `e^{-3 tau / 2}`, the slip corrected in this revision. -/
+    `e^{-3 tau / 2}`, exact for `w` only. -/
 theorem tau_sq_w_cube_sq (tau w : ℝ) (h : tau * w ^ 2 = 2) :
     (tau ^ 2 * w ^ 3) ^ 2 = 8 * tau := by
   have hfac : (tau ^ 2 * w ^ 3) ^ 2 = tau * (tau * w ^ 2) ^ 3 := by ring
