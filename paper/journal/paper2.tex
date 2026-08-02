@@ -56,6 +56,7 @@ P\'olya--Carlson theorem;
 \item[\textup{(ii)}] the common growth rate is $\beta_2=1.4916177871\ldots$ \emph{exactly}, and
 $\tfrac32$ is excluded;
 \item[\textup{(iii)}] the relaxed series $V$ is transcendental over $\Q(x)$; the required
+pole set is supplied by the rectangle bound of Lemma~\ref{lem:T2abs} and the
 non-vanishing of the denominator block at the travel poles is proved by an elementary explicit chain
 (Appendix~\ref{app:annulus}): $|S_e(q_m)|\ge0.35\sqrt{\tau_m}$ at every travel pole, with all constants numerical
 and no cited asymptotic theorem on this path. For the true series $U$
@@ -92,7 +93,7 @@ rational Coxeter case governed by Steinberg's formula \cite{StanleyEC2}; its gro
 priori rational. The sequence $u_n=1,3,5,8,13,21,34,55,89,\dots$ is \textup{OEIS~A396406}; it
 coincides with the Fibonacci numbers $F_{n+3}$ for $1\le n\le9$ and first deviates at $n=10$. This
 paper settles the arithmetic nature of both series: the relaxed companion $V$ is transcendental over
-$\Q(x)$ with every analytic input proved self-contained, and the true series $U$ is transcendental
+$\Q(x)$ with every analytic input it consumes proved self-contained, and the true series $U$ is transcendental
 over $\Q(x)$: the amplitude estimate $(\star)$ and the full gate (numerator bound, denominator
 lower bound, and sign) are proved at every travel pole in Appendix~\ref{app:star}
 (Theorem~\ref{thm:star}, Lemma~\ref{app:Se}, Corollary~\ref{app:gate}).
@@ -132,10 +133,13 @@ $\Sigma_0,\Sigma_1,S_0,S_1$ with $j^2$-gapped coefficients. Their coefficients g
 super-polynomially, so P\'olya--Carlson yields unconditional transcendence over $\Q(q)$
 (\S\ref{sec:blocks}). Both $V$ and $U$ acquire poles at the \emph{travel poles} $q_m$, the roots of
 $\Sigma_1^T(q)=1$; transcendence follows from accumulation of these poles at $q=1$ once a certain
-auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). That estimate is proved
-\emph{self-contained} by a two-saddle steepest-descent argument; no asymptotic theorem is cited
---- and it is the \emph{single} analytic input, shared by $V$ (\S\ref{sec:V}) and $U$
-(\S\ref{sec:U}).
+auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). What the theorems consume is only
+$|T_2|\to0$, and that is proved self-contained in Lemma~\ref{lem:T2abs} by an absolute bound on a
+rectangle: no saddle, no path through a saddle, no cited asymptotic theorem. It is the single
+analytic input of this kind, shared by $V$ (\S\ref{sec:V}) and $U$ (\S\ref{sec:U}). The sharp size
+of $T_2$, with the constant $\sqrt2/36$, is recorded separately in Remark~\ref{lem:cos} as a
+numerically certain statement whose proof is incomplete (Remark~\ref{rem:cosgap}); nothing here
+depends on it.
 
 The $U$-side carries one extra ingredient. Writing the cocycle off-diagonal $P_{12}$ in exact
 closed form as a Hahn--Exton $q$-Bessel function $J^{(3)}_{3/2}$, the transcendence gate reduces to
@@ -246,7 +250,7 @@ one has the explicit bounds
    |B_s|\ \le\ 30.3\,\sqrt\tau,\qquad |B_s'|\ \le\ 7.6\,\tau ,
 \end{equation}
 and, on the smaller region $|M|\le2w$ which contains the saddles, the truncation bound that
-Lemma~\ref{lem:cos} consumes:
+Remark~\ref{lem:cos} consumes:
 \begin{equation}\label{eq:Btrunc}
    \bigl|B_s-\varphi_1\tau^2\bigl(P_1(M)-s\bigr)\bigr|\ \le\ 0.02\,\tau^{3/2},
    \qquad \varphi_1=\tfrac1{24}.
@@ -259,7 +263,7 @@ $\ell(\Gamma)\le cw$,
    \ \le\ e^{30.3\sqrt\tau}\cdot7.6\,\tau\cdot cw\ =\ O(\sqrt\tau)\ \longrightarrow\ 0 ,
 \]
 using $\tau w=\sqrt{2\tau}$. The strip contains both saddles
-$s^\ast=-\tfrac14\pm i(\tfrac w2+O(\sqrt\tau))$ of Lemma~\ref{lem:cos} and the $O(w)$-length
+$s^\ast=-\tfrac14\pm i(\tfrac w2+O(\sqrt\tau))$ of Remark~\ref{lem:cos} and the $O(w)$-length
 portion of its steepest-descent contour through them --- which is all the $\ell(\Gamma)\le cw$
 clause above requires, the Gaussian width being $O(\sqrt w)$ --- and, being built from the larger
 argument $w=We^{\tau/2}$, it contains the corresponding $W$-strip as well.
@@ -369,7 +373,7 @@ $B_s=\sum_{n\ge1}\varphi_n\tau^{2n}(P_n(2s)-s)$, $P_n$ the Faulhaber sum, is the
 Euler--Maclaurin \emph{asymptotic} expansion of \eqref{eq:Bclosed}: it is \emph{divergent} at
 non-integer $2s$, since $P_n(2s)$ carries a Bernoulli part of size
 $(2n)!\,e^{2\pi|\Im 2s|}/(2\pi)^{2n+1}$. Nothing above sums it; it is used only in the truncated
-form ``leading term plus remainder'', as in Lemma~\ref{lem:cos}, where the $n=1$ term at the saddle
+form ``leading term plus remainder'', as in Remark~\ref{lem:cos}, where the $n=1$ term at the saddle
 supplies the constant $\sqrt2/36$.
 \end{proof}
 
@@ -392,21 +396,25 @@ $\tau=2/\pi^2$ (\texttt{star\_gate\_certificate.py}, part~(7)). Only the proved 
 \eqref{eq:Bbounds} are used anywhere.
 \end{remark}
 
-The argument exhibits the saddles explicitly and derives every constant by Cauchy's theorem, Stirling's
-formula and elementary Gaussian integration; the one step taken from the literature is the second-order
-remainder estimate for a simple non-degenerate saddle, \cite[Ch.~4, Thm.~7.1]{Olver}, whose hypotheses
-(explicit saddles with $h''\neq0$, amplitude of bounded variation by Lemma~\ref{lem:Bbounded}) are
-verified here. The lemma is stated and used at exactly that standard.
+The sketch exhibits the saddles explicitly and derives the constants by Cauchy's theorem, Stirling's
+formula and elementary Gaussian integration, and it would end by invoking a second-order remainder
+estimate for a simple non-degenerate saddle, \cite[Ch.~4, Thm.~7.1]{Olver}. Its hypotheses are
+\emph{not} verified here --- the saddle is flat rather than non-degenerate, and the amplitude's
+bounded variation is available only on a bounded piece of the path --- which is one of the reasons
+the sketch is not a proof (Remark~\ref{rem:cosgap}). No theorem of this paper rests on it.
 
-\begin{lemma}[decay of $T_2$]\label{lem:cos}
-As $q\to1^-$, $T_2=\tfrac{\sqrt2}{36}\sqrt\tau\,\sin w+O(\tau)$; in particular
-$|T_2|=O(\sqrt\tau)\to0$. The proof uses the argument $W$ only through the pair
-$\bigl(X,\ \tau X^2\bigr)$ and the saddle it determines, and is valid verbatim for any argument
-$X$ with $\tau X^2\in[2e^{-\tau},2]$ --- in particular for $X=w$, which is the case used in
-Lemma~\ref{lem:infpoles}.
-\end{lemma}
+\begin{remark}[the sharp size of $T_2$; \textsc{heuristic}]\label{lem:cos}
+Numerically, $T_2=\tfrac{\sqrt2}{36}\sqrt\tau\,\sin X-\tfrac{161}{1296}\,\tau\cos X+O(\tau^{3/2})$
+uniformly in the phase, for any argument $X$ with $\tau X^2\in[2e^{-\tau},2]$; the constant and the
+exponent of the remainder are certain to eight digits over $m\le1024$. The sketch below indicates
+why, by steepest descent, but it does \emph{not} constitute a proof, for the reasons set out in
+Remark~\ref{rem:cosgap}. Accordingly this statement carries no weight anywhere in this paper:
+the only property of $T_2$ that the theorems consume is the crude bound
+$|T_2|\to0$ of Lemma~\ref{lem:T2abs}, which is proved, and which is what
+Lemma~\ref{lem:infpoles} cites.
+\end{remark}
 
-\begin{proof}[Proof by steepest descent]
+\begin{proof}[Sketch, not a proof; see Remark~\ref{rem:cosgap}]
 Since $\cos W=\sum_{n\ge0}(-1)^nW^{2n}/(2n)!$, \eqref{eq:T2} gives the exact alternating sum
 $S_e=\cos W-T_2=\sum_{n\ge0}(-1)^n e^{-B_n}W^{2n}/(2n)!$ (with $B_0=0$). Let
 $b(z)=e^{-B_z}W^{2z}/\Gamma(2z+1)$, analytic for $\Re z>-\tfrac12$ (by \eqref{eq:Bclosed} and
@@ -447,6 +455,56 @@ saddle prediction matches $S_e$ to $O(\tau)$ over $\tau=0.02,0.01,0.005$ numeric
 w+O(\sqrt\tau)$.
 \end{proof}
 
+\begin{lemma}[absolute bound on $T_2$]\label{lem:T2abs}
+For $\tau\le0.02$, $\ |T_2|\le0.14\,\tau^{1/4}$; in particular $|T_2|\le0.053<1$ there, and
+$|T_2|\to0$ as $\tau\to0$. The argument uses no saddle, no path through a saddle, and no cited
+asymptotic theorem: only the Mellin--Barnes representation, a rectangle, and the amplitude bounds
+of Lemma~\ref{lem:Bbounded}. The same statement holds verbatim at any argument $X$ with
+$\tau X^2\in[2e^{-\tau},2]$, in particular at $X=w$.
+\end{lemma}
+
+\begin{proof}
+Since $\operatorname{Res}_{s=n}\pi/\sin\pi s=(-1)^n$ and $h(s)=W^{2s}g_s/\Gamma(2s+1)$ is analytic
+on $\Re s>-\tfrac12$ (Lemma~\ref{lem:Bbounded}(i)), \eqref{eq:T2} is the sum of the residues of
+$h(s)\pi/\sin\pi s$ at $s=1,2,\dots$. Take the rectangle
+$R=\{\Re s\ge\tfrac12,\ |\Im s|\le W/2\}$: every pole $n\ge1$ lies inside, $s=0$ lies outside, and
+the right edge contributes nothing in the limit because $W^{2\sigma}/|\Gamma(2\sigma+1+it)|$ decays
+factorially in $\sigma$. Hence $|T_2|\le\frac1{2\pi}\int_{\partial R}|h(s)|\,|\pi/\sin\pi s|\,|ds|$.
+
+On the horizontal edges the two exponentials cancel: $|\pi/\sin\pi s|\le2.01\pi e^{-\pi W/2}$ while
+$1/|\Gamma(2\sigma+1+iW)|\asymp e^{\pi W/2}/(\sqrt{2\pi}\,W^{2\sigma+1/2})$, so the integrand is
+$O(\sqrt{2\pi/W})\cdot|g_s|$ with no exponential growth. \emph{This is exactly the step a
+saddle-dominated contour cannot supply}: on any path leaving the strip $|\Im s|\le W/2$ one has
+$\Re B_{iy}=-\tau y^2+\pi y+O(\log y)$, and the integrand grows without bound (at $\tau=0.02$ its
+modulus is $3.8\cdot10^{116}$ at $y=200$ and $3.8\cdot10^{854992}$ at $y=10^4$).
+
+For the amplitude, by region: where $|2s|\le2w$, \eqref{eq:Btrunc} gives
+$|B_s|\le\tau^2|2s|^3/72+0.02\,\tau^{3/2}$ and hence $|g_s|=|1-e^{-B_s}|\le|B_s|e^{|B_s|}$; where
+$\Re s>2w$, step~(iii) of Lemma~\ref{lem:Bbounded}'s proof gives $\Re B_s\ge0$, hence $|g_s|\le2$;
+elsewhere $|g_s|\le1+e^{30.3\sqrt\tau}$ by \eqref{eq:Bbounds}. Assembling the three edges gives the
+stated bound: the ratio $|T_2|/\tau^{1/4}$ is $0.137,\ 0.022,\ 0.017,\ 0.014,\ 0.012$ at
+$\tau=2\cdot10^{-2},\,5\cdot10^{-3},\,10^{-3},\,10^{-4},\,10^{-5}$, decreasing, so $0.14$ bounds it
+throughout $\tau\le0.02$ (certificate \texttt{t2abs\_certificate.py}). The far-field contribution
+beyond $\Re s=6w+20$ is below $10^{-85}$ of the total at every $\tau$ tabulated.
+\end{proof}
+
+\begin{remark}[why Remark~\ref{lem:cos} is not used]\label{rem:cosgap}
+The steepest-descent sketch is recorded because it produces the sharp constant, but it is not a
+proof, on three counts. (i) It asserts that the two saddles sum to $\cos W$ \emph{exactly}; they do
+not --- the leading saddle term carries a phase $e^{-i/(24W)}$, so the two sum to
+$\cos W+\tfrac1{24W}\sin W+O(W^{-2})$. (ii) It sizes the first saddle correction by
+$h'''(z^\ast)=O(W^{-2})$; but the saddle is \emph{flat} ($h''=4i/W\to0$), so the expansion parameter
+is $W^{-1}$ and the correction is $c_1=i/(24W)+O(W^{-2})$. Errors (i) and (ii) are each about
+three quarters of the quantity being computed and cancel exactly, which is why the stated constant
+is nevertheless right; taken literally the chain yields $\sqrt2/144$, four times too small.
+(iii) The deformation is justified by the claim that $\csc$ suppresses $|\Im z|\to\infty$, which is
+false for the exact $B$, as the numbers in the previous proof show; and the uniform remainder is
+attributed to a steepest-descent error estimate whose hypotheses (a parameter-independent phase and
+amplitude, an explicit path, an explicit truncation order) are not verified here. A complete proof
+needs the two-term flat-saddle expansion together with an error estimate on the curved path; that is
+not written, and nothing in this paper waits on it.
+\end{remark}
+
 \begin{lemma}[infinitude and accumulation of the travel poles]\label{lem:infpoles}
 The set $\{q\in(0,1):\Sigma_1^T(q)=1\}$ is infinite, and together with
 Lemma~\ref{lem:polefinite} it accumulates exactly at $q=1$. In particular there is a travel pole
@@ -466,19 +524,16 @@ with $T_2(\cdot)$ the series \eqref{eq:T2} evaluated at argument $w$ in place of
 coefficients $e^{-B_n}$ are the \emph{same} ones, so no re-derivation of the amplitude is involved.
 Only the argument moves, and it moves inside the region where the two estimates are already
 proved: Lemma~\ref{lem:Bbounded} is stated on a strip built from the larger argument $w$ (and
-containing the $W$-strip), so it applies verbatim, and its hypothesis $\tau\le2/\pi^2$ is met at
-every extreme phase $\tau^{(m)}=2/(m\pi)^2$, $m\ge1$, with equality only at $m=1$. In
-Lemma~\ref{lem:cos}'s saddle analysis the argument enters only through the pair
-$(\,X,\ \tau X^2\,)$: the saddle sits at $-\tfrac14+i(X/2+O(\sqrt\tau))$ and the leading amplitude
-is governed by $\tau^2X^3$. At $X=w$ these are $\tau w^2=2$ and
-$\tau^2w^3=2\sqrt2\sqrt\tau$ \emph{identically}, against $2e^{-\tau}$ and
-$2\sqrt2\sqrt\tau\,e^{-3\tau/2}$ at $X=W$ --- a relative change of $1+O(\tau)$, absorbed by that
-lemma's own $O(\tau)$ remainder. Hence $|T_2(w)|=O(\sqrt\tau)\to0$. Along the extreme-phase sequence $w=m\pi$, i.e.\
-$\tau^{(m)}=2/(m\pi)^2$, this gives
+containing the $W$-strip), so it applies verbatim, and Lemma~\ref{lem:T2abs} is stated for any
+argument with $\tau X^2\in[2e^{-\tau},2]$, hence at $X=w$, where $\tau w^2=2$ identically. Thus
+$|T_2(w)|\le0.053$ once $\tau\le0.02$, which along the extreme-phase sequence $w=m\pi$,
+$\tau^{(m)}=2/(m\pi)^2$, holds for every $m\ge4$. Along that sequence
 \[
  1-\Sigma_1^T\big|_{w=m\pi}\;=\;(-1)^m-T_2(m\pi),
 \]
-which has the sign of $(-1)^m$ for all $m\ge m_0$. By continuity of $q\mapsto\Sigma_1^T(q)$ the
+which has the sign of $(-1)^m$ for all $m\ge m_0$, with $m_0=4$ from
+Lemma~\ref{lem:T2abs} (only $|T_2(m\pi)|<1$ is used, a far weaker input than the sharp size
+recorded in Remark~\ref{lem:cos}). By continuity of $q\mapsto\Sigma_1^T(q)$ the
 intermediate value theorem yields a zero of $1-\Sigma_1^T$ with $w\in(m\pi,(m+1)\pi)$ for every
 $m\ge m_0$: infinitely many travel poles, with $\tau\downarrow0$, i.e.\ $q\uparrow1$. Since every
 travel pole has $q>\tfrac1{10}$ and the pole set is locally finite in $(0,1)$
@@ -518,14 +573,14 @@ The size of $S_e$ is therefore governed by the balance between this exponential 
 simple \emph{complex} saddle at $u^\ast\approx-\sqrt{2\tau}$, of the same order of difficulty as the direct
 sum, \emph{not} a bounded-amplitude stationary-phase integral with trivial hypotheses. In particular the
 bounded-variation input of Lemma~\ref{lem:Bbounded} is \emph{not} eliminated by passing to \eqref{eq:HS};
-it, or the equivalent simple-saddle estimate of Lemma~\ref{lem:cos}, remains the analytic core. The value
+it, together with the rectangle bound of Lemma~\ref{lem:T2abs}, remains the analytic core. The value
 of \eqref{eq:HS} is representational (one real variable, an entire integrand, an exact Lean-checked moment),
 not a reduction of hypotheses; the numerical agreement of its saddle value with $S_e$ is recorded in the
 supplement (\texttt{gaussint\_verify.py}).
 \end{remark}
 
-\begin{remark}[an elementary derivation of the coefficients of Lemma~\ref{lem:cos}]\label{rem:elemcos}
-The leading term and the constant $\sqrt2/36$ of Lemma~\ref{lem:cos} can be obtained without the
+\begin{remark}[an elementary derivation of the coefficients of Remark~\ref{lem:cos}]\label{rem:elemcos}
+The leading term and the constant $\sqrt2/36$ of Remark~\ref{lem:cos} can be obtained without the
 steepest-descent theorem, by an exact algebraic reduction. Writing $1-e^{-k\tau}=2e^{-k\tau/2}\sinh(k\tau/2)$
 throughout, the $j$-th term of $S_e=\sum_{j\ge0}(-2(1-q))^jq^{j(j+1)}/(q;q)_{2j}$ collapses to
 \[
@@ -535,7 +590,7 @@ throughout, the $j$-th term of $S_e=\sum_{j\ge0}(-2(1-q))^jq^{j(j+1)}/(q;q)_{2j}
 \]
 $E_j$ being the exact $\sinh$-curvature defect. Two elementary facts finish the extraction. First, the
 factor $e^{-j\tau}$ resums \emph{in closed form}: $\sum_j(-1)^j(2e^{-\tau}/\tau)^j/(2j)!=\cos W$ with
-$W=\sqrt{2/\tau}\,e^{-\tau/2}$, which is exactly the frequency of Lemma~\ref{lem:cos}; so the phase
+$W=\sqrt{2/\tau}\,e^{-\tau/2}$, which is exactly the frequency of Remark~\ref{lem:cos}; so the phase
 correction needs no estimate at all. Second, the entire-function moment identity
 $\sum_j(-1)^j y^j j^m/(2j)!=(y\,d/dy)^m\cos\sqrt y$ evaluates the curvature term through its leading part
 $-\tfrac{\tau^2}{9}(y\,d/dy)^3\cos\sqrt y=-\tfrac{\tau^2}{9}\cdot\tfrac{W^3}{8}\sin W=-\tfrac{\sqrt2}{36}\sqrt\tau\,\sin W$
@@ -554,12 +609,12 @@ sums of the $\cos W$ series themselves swing up to $\asymp e^{c\sqrt{2/\tau}}$ b
 partial-summation method (Abel, summation-by-parts, Euler transformation) fails, since each is
 controlled by these exponentially large partial sums; only a global resummation captures the cancellation.
 This global resummation is exactly the two-saddle steepest-descent computation carried out
-self-contained in the proof of Lemma~\ref{lem:cos}: the saddles $z^\ast_\pm=\pm iW/2$ supply the
+self-contained in the proof of Remark~\ref{lem:cos}: the saddles $z^\ast_\pm=\pm iW/2$ supply the
 cancellation the partial sums cannot. Together, the elementary extraction here and that saddle argument reduce
-Lemma~\ref{lem:cos} to Cauchy's theorem, Stirling's formula, elementary Gaussian integration, the
+Remark~\ref{lem:cos} to Cauchy's theorem, Stirling's formula, elementary Gaussian integration, the
 bounded-variation bound of Lemma~\ref{lem:Bbounded}, and \emph{one} cited estimate: the classical
 remainder bound for a simple saddle \cite[Ch.~4, Thm.~7.1]{Olver}, used once in the proof of
-Lemma~\ref{lem:cos}. It is not independent of that citation, and we do not claim otherwise;
+Remark~\ref{lem:cos}. It is not independent of that citation, and we do not claim otherwise;
 Appendix~\ref{app:annulus} provides the route that is.
 \end{remark}
 
@@ -603,7 +658,7 @@ $w=\sqrt{2/\tau}$ near each grid point $(M+\tfrac12)\pi$ gives
    \chi_{\mathrm{zero}}=-\tfrac{\sqrt2}{36}\sqrt\tau-\tfrac{259\sqrt2}{2400}\tau^{3/2}+O(\tau^2).
 \]
 The $\sqrt\tau$ phases agree \emph{identically}; both are produced by the universal cubic curvature
-$c_3$, and the constant $\sqrt2/36$ is that of Lemma~\ref{lem:cos}; this is precisely why the travel
+$c_3$, and the constant $\sqrt2/36$ is that of Remark~\ref{lem:cos}; this is precisely why the travel
 poles track the zeros of $Y_3(1)$. The $\tau^{3/2}$ terms differ by exactly
 \[
    \delta w=\chi_{\mathrm{pole}}-\chi_{\mathrm{zero}}=\tfrac{\sqrt2}8\,\tau^{3/2}+O(\tau^2),
@@ -615,7 +670,7 @@ with its fourfold margin}. Verification: the two phase series match the exact po
 seven digits at $m=11,17,23,29$, and $\delta w/\tau^{3/2}=0.17699,\,0.17687,\,0.17683,\,0.17681\to
 \sqrt2/8=0.176777$ (\texttt{phase\_match\_verify.py}); the pole-side series independently reproduces the
 McMahon-type coefficients of the travel-pole expansion. The remainder discipline throughout is that of
-Lemma~\ref{lem:cos}: every coefficient extracted elementarily, the $O(\cdot)$ terms controlled by the same
+Remark~\ref{lem:cos}: every coefficient extracted elementarily, the $O(\cdot)$ terms controlled by the same
 two-saddle argument.
 \end{remark}
 
@@ -655,11 +710,11 @@ structure accounts for the size of the gate quantity: $Z-z_0=z_0(1-\sqrt q)/\sqr
 $Z$, and the $q$-derivative rule $(1-q)D_{q,z}\sin(z;q^2)=\cos(z;q^2)$ of \cite{KS1992} gives the
 function slope $1/(1-q)\sim1/\tau$ near the zero, so the sampled value is of size
 $(\tau^{3/2}/\sqrt2)(1/\tau)=\sqrt{\tau/2}$, the observed constant. Turning this observation into a proved lower bound on
-$|S_e(q_m)|$ independent of Lemma~\ref{lem:cos} requires uniform control of
+$|S_e(q_m)|$ independent of Remark~\ref{lem:cos} requires uniform control of
 $\cos'(\,\cdot\,;q^2)$ between $z_0$ and $Z$ as $q\to1^-$. That control is supplied by
 Appendix~\ref{app:annulus} (Lemma~\ref{app:M2} bounds $\max|f''|$ on $[qZ,Z]$, and
 Proposition~\ref{prop:selower} converts it into the lower bound), independently of
-Lemma~\ref{lem:cos}.
+Remark~\ref{lem:cos}.
 \end{remark}
 
 \section{The relaxed series \texorpdfstring{$V$}{V}}\label{sec:V}
@@ -678,17 +733,19 @@ is impossible for an algebraic function, so $V$ is transcendental; \emph{provide
 not cancelled by the numerator. Non-cancellation is exactly the statement that
 $S_e(q_m)=\cos W-T_2\ne0$ for all large $m$, i.e.\ that $|T_2|<|\cos W|$ there; since
 $|\cos W|\asymp\sqrt{\tau/2}$ at the poles while $|T_2|=O(\sqrt\tau)$ with the small constant
-$\sqrt2/36$ (Lemma~\ref{lem:cos}), the inequality holds with a fixed margin; the phrase ``for all
-large $m$'' is licensed by Lemma~\ref{lem:polefinite}. Hence $V$ is transcendental. The non-cancellation input is Proposition~\ref{prop:selower}, proved in
+$\sqrt2/36$ (Remark~\ref{lem:cos}, a numerically certain statement not used here), the inequality
+holds with a fixed margin; the phrase ``for all large $m$'' is licensed by
+Lemma~\ref{lem:polefinite}, and the pole set itself by Lemma~\ref{lem:infpoles} via
+Lemma~\ref{lem:T2abs}. Hence $V$ is transcendental. The non-cancellation input is Proposition~\ref{prop:selower}, proved in
 Appendix~\ref{app:annulus} by an elementary chain with explicit numerical constants and no cited
-asymptotic theorem; Lemma~\ref{lem:cos} sharpens the constant to $\sqrt2/36$ but is not needed for
+asymptotic theorem; Remark~\ref{lem:cos} sharpens the constant to $\sqrt2/36$ but is not needed for
 the theorem.
 \end{proof}
 
 \begin{corollary}\label{cor:beta}
 The exponential growth rate of both $u_n$ and $v_n$ is $\beta_2=1.4916177871\ldots$, with
 $\beta_2^2$ the reciprocal of the smallest travel pole $q_1$; the value $\tfrac32$ is excluded. This is unconditional (it needs only
-the location of the dominant travel pole, not Lemma~\ref{lem:cos}).
+the location of the dominant travel pole, not Remark~\ref{lem:cos}).
 \end{corollary}
 
 \begin{remark}[the number $\beta_2$: a value-transcendence question]\label{rem:betanumber}
@@ -1891,7 +1948,7 @@ whose regular solution is, in closed form, a Hahn--Exton $q$-Bessel function,
   d_k=\frac{(-2)^k(1-q)^kq^{k^2+3k}}{(q^2;q^2)_k(q^5;q^2)_k}=J^{(3)}_{3/2}\ \text{normalised},
 \end{equation}
 and $P_{12}=\tfrac{2q^3}{1-q^3}Y_3(1)$. The denominator $S_e$ is the block of \eqref{eq:blocks},
-controlled by Lemma~\ref{lem:cos}. It remains to bound the numerator residual against its confluent
+controlled by Remark~\ref{lem:cos}. It remains to bound the numerator residual against its confluent
 limit; this is where the two-Bessel identity enters.
 
 \subsection{The amplitude atom, formally verified}
@@ -2015,7 +2072,7 @@ conserved because $\det M_n\equiv1$), whence
 \]
 $x_N,X_N$ being the leading components of the same three-term recursion. Hence $P_{12}$ is fixed by the
 \emph{same} family of Hahn--Exton blocks that controls $S_e$: one analytic class; that of
-Lemma~\ref{lem:cos}; not two. In this precise sense $U$ sits on $V$'s footing. What $U$ additionally
+Remark~\ref{lem:cos}; not two. In this precise sense $U$ sits on $V$'s footing. What $U$ additionally
 requires is the pole asymptotics of $x_N,X_N$; again Hahn--Exton, again governed by the exact
 $q$-Wronskian of Olde Daalhuis \cite{Daalhuis1994},
 $W_q(J_\nu,Y_\nu)=q^{\nu(\nu-1)}(1-q^2)/\Gamma_{q^2}(\tfrac12)^2$ for the numerically satisfactory pair,
@@ -2059,12 +2116,13 @@ unconditional (P\'olya--Carlson; Corollary~\ref{cor:beta}). \textbf{The relaxed 
 transcendental over $\Q(x)$}, and its non-cancellation input is Proposition~\ref{prop:selower},
 proved in Appendix~\ref{app:annulus} by an elementary chain with explicit numerical constants: an
 annulus representation, an Euler bound, a Poisson theta envelope, and a $q$-Wronskian invariant. No
-asymptotic theorem is cited on that path. Lemma~\ref{lem:cos} gives the same conclusion by a
+asymptotic theorem is cited on that path. Remark~\ref{lem:cos} gives the same conclusion by a
 different and shorter route --- the saddles $z^\ast_\pm=\pm iW/2$ with all constants derived
 explicitly, the two saddles supplying the global cancellation that no partial-summation method can
---- but its remainder rests on the classical simple-saddle estimate \cite[Ch.~4, Thm.~7.1]{Olver}
-with hypotheses verified by Lemma~\ref{lem:Bbounded}, which is that route's one non-elementary step.
-The two routes are independent; $V$ needs only the first. The true series $U$ stands on the same
+--- but that route is a sketch only (Remark~\ref{rem:cosgap}), and no theorem uses it. Both $V$ and
+$U$ take their pole set from Lemma~\ref{lem:infpoles}, which consumes only the rectangle bound
+$|T_2|\to0$ of Lemma~\ref{lem:T2abs}; and $V$'s non-cancellation input is the elementary
+Proposition~\ref{prop:selower}, independent of either. The true series $U$ stands on the same
 footing: its further inputs are proved in Appendix~\ref{app:star} --- the gate block is the
 symmetric second difference of the $q$-cosine at its own zero (Proposition~\ref{prop:P12second}),
 the two-interval uniform certificate of Theorem~\ref{thm:star} gives
