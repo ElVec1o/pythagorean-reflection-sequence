@@ -2,93 +2,71 @@
 """
 t2abs_certificate.py -- certificate for Lemma lem:T2abs of paper 2.
 
-lem:T2abs replaces the steepest-descent Remark lem:cos as the input the theorems consume.
-It bounds |T_2| by ABSOLUTE VALUES on the boundary of the rectangle
+|T_2| <= 0.17 tau^{1/4} <= 0.064 < 1 for tau <= 0.02, by absolute values on the boundary of
 
-    R = { Re s >= 1/2,  |Im s| <= W/2 }   (inside the lem:Bbounded strip S),
+    R = { 1/2 <= Re s <= 2w,  |Im s| <= X/2 },
 
-with no saddle, no path through a saddle, and no cited asymptotic theorem.  The Mellin-Barnes
-kernel's two exponentials cancel on the horizontal edges, and the amplitude is bounded by region:
+which lies WHOLLY INSIDE the lem:Bbounded strip S -- so no bound on B_s outside S is needed.
+The residues n > 2w are not enclosed; they are added back as an elementary tail using
+0 <= g_n <= 1 at integers (B_n = sum_{i<=2n} phi(i tau) - n phi(tau) >= n phi(tau) >= 0).
 
-    |2s| <= 2w   :  |B_s| <= tau^2|2s|^3/72 + 0.02 tau^{3/2}   (eq:Btrunc)
-                    hence |g_s| = |1 - e^{-B_s}| <= |B_s| e^{|B_s|}
-    Re s > 2w    :  Re B_s >= 0  (lem:Bbounded, proof step (iii))  =>  |g_s| <= 2
-    otherwise    :  |g_s| <= 1 + e^{30.3 sqrt(tau)}            (eq:Bbounds)
+Amplitude, honestly:  |B_s| <= (tau^2/24)|M^3/3 + M^2/2 - M/3| + 0.02 tau^{3/2}  where |2s| <= 2w
+(this is eq:Btrunc with P_1(M) - s written out in full; dropping the M^2/2 and -M/3 terms gives an
+inequality that is FALSE on the contour, by about 6% at tau = 0.02), and |g_s| <= 1 + e^{30.3
+sqrt(tau)} elsewhere on the boundary from eq:Bbounds.
 
-Output: |T_2|/tau^{1/4} is decreasing and below 0.14 throughout tau <= 0.02, so |T_2| <= 0.053
-there.  That is all Lemma lem:infpoles needs (it consumes only |T_2(m pi)| < 1, from m = 4 on).
+Two things this script gets right that a naive version does not:
+  * it integrates by ADAPTIVE QUADRATURE PIECEWISE between the region breakpoints.  The amplitude
+    majorant jumps by a factor ~1500 at |2s| = 2w, and a uniform Riemann sum straddling that jump
+    converges to the answer FROM BELOW: a uniform N=700 sum reports 0.1366 where the converged
+    value is 0.1443.
+  * it evaluates at X = w, not X = W.  lem:infpoles uses X = w, and it is the worse of the two by
+    about 11%.
 
-NOTE on why the crude bound is not enough: replacing the eq:Btrunc amplitude by the blanket
-1 + e^{30.3 sqrt(tau)} everywhere gives a total of order 160, NOT o(1).  The sharp bound on the
-vertical edge is the whole point.
-
-Arithmetic model: mpmath mpf at dps=40, not interval arithmetic.
+Arithmetic model: mpmath mpf at dps=30 with adaptive quadrature, not interval arithmetic.
 """
-from mpmath import mp, mpf, mpc, exp, sqrt, pi, gamma, sin as msin
+from mpmath import mp, mpf, mpc, exp, sqrt, pi, gamma, sin as msin, quad, factorial
 import mpmath
-mp.dps = 40
+mp.dps = 30
+
+def Bb(s, tau):                       # honest eq:Btrunc bound on |B_s|
+    M = 2*s
+    P = M**3/3 + M**2/2 - M/3         # P1(M) - s, exactly
+    return (tau**2/24)*abs(P) + mpf('0.02')*tau**mpf(1.5)
 
 def gb(s, tau, w, crude):
-    M = 2*abs(s)
-    if M <= 2*w:
-        b = tau**2 * M**3/72 + mpf('0.02')*tau**mpf(1.5)
-        return min(crude, b*exp(b))
-    if mpmath.re(s) > 2*w:
-        return mpf(2)
+    if abs(2*s) <= 2*w:
+        b = Bb(s, tau); return min(crude, b*exp(b))
     return crude
 
-def kern(s, W):
-    try:
-        return abs(W**(2*s) / gamma(2*s+1) * pi / msin(pi*s))
-    except Exception:
-        return mpf(0)
+def kern(s, X):
+    try: return abs(X**(2*s)/gamma(2*s+1)*pi/msin(pi*s))
+    except Exception: return mpf(0)
 
-print("  tau        |T2| bound     /tau^{1/4}    far-tail share")
+print(" tau       horiz      vert(1/2)  vert(2w)   tail(n>2w)   TOTAL     /tau^{1/4}")
 worst = mpf(0)
-for ts in ['0.02','0.01','0.005','0.002','0.001','1e-4','1e-5']:   # the lemma's range: tau <= 0.02
-    tau = mpf(ts); w = sqrt(2/tau); W = w*exp(-tau/2)
+for ts in ['0.02','0.0126651','0.01','0.005','0.001','1e-4','1e-5']:
+    tau = mpf(ts); w = sqrt(2/tau); X = w        # <-- the case lem:infpoles uses
     crude = 1 + exp(mpf('30.3')*sqrt(tau))
-    SIG = 6*w + 20          # far cutoff; beyond it the factorial decay is checked below
-    N = 700
-    hor = mpf(0)
-    for i in range(N+1):
-        sg = mpf('0.5') + (SIG - mpf('0.5'))*i/N
-        s = mpc(sg, W/2)
-        hor += kern(s, W)*gb(s, tau, w, crude)
-    hor *= (SIG - mpf('0.5'))/N * 2
-    ver = mpf(0)
-    for j in range(N+1):
-        t = -W/2 + W*mpf(j)/N
-        s = mpc(mpf('0.5'), t)
-        ver += kern(s, W)*gb(s, tau, w, crude)
-    ver *= W/N
-    # far tail beyond SIG (bound |g|<=2, kernel decays factorially)
-    tail = mpf(0)
-    for i in range(60):
-        sg = SIG + i*mpf(1)
-        s = mpc(sg, W/2)
-        tail += kern(s, W)*2
-    tot = (hor + ver + 2*tail)/(2*pi)
-    r = tot/tau**mpf(0.25)
-    worst = max(worst, r)
-    print(f"  {ts:>10}   {mp.nstr(tot,5):>10}   {mp.nstr(r,5):>10}    {mp.nstr(2*tail/(2*pi)/max(tot,mpf('1e-99')),3)}")
-ok = worst <= mpf('0.14')
-print(f"\n  worst |T2|/tau^{{1/4}} on tau <= 0.02 : {mp.nstr(worst,5)}   (claim: <= 0.14)")
-print(f"  => |T2| <= 0.14 tau^{{1/4}} <= {mp.nstr(mpf('0.14')*mpf('0.02')**mpf(0.25),4)} < 1 throughout")
-print(f"  lem:infpoles needs |T2(m pi)| < 1 at tau_m = 2/(m pi)^2 <= 0.02, i.e. m >= 4.")
-print("\n  SUMMARY:", "PASS" if ok else "*** FAIL ***")
-# the crude-amplitude control: shows the sharp eq:Btrunc bound is what makes it work
-print("\n  control -- same contour with the blanket amplitude 1+e^{30.3 sqrt(tau)} everywhere:")
-for ts in ['0.02','0.005']:
-    tau = mpf(ts); w = sqrt(2/tau); W = w*exp(-tau/2)
-    crude = 1 + exp(mpf('30.3')*sqrt(tau))
-    N = 300; tot = mpf(0)
-    for i in range(N+1):
-        sg = mpf('0.5') + (2*w - mpf('0.5'))*i/N
-        tot += kern(mpc(sg, W/2), W)*crude
-    tot *= (2*w - mpf('0.5'))/N * 2
-    v = mpf(0)
-    for j in range(N+1):
-        v += kern(mpc(mpf('0.5'), -W/2 + W*mpf(j)/N), W)*crude
-    v *= W/N
-    print(f"    tau={ts}: {mp.nstr((tot+v)/(2*pi),4)}  (not o(1) -- the sharp bound is essential)")
+    brk = sqrt(max(mpf(0), w*w - (X/2)**2))      # where |2s| crosses 2w on the edge
+    def fh(sg): 
+        s = mpc(sg, X/2); return kern(s, X)*gb(s, tau, w, crude)
+    hor = 0
+    for a,b in [(mpf('0.5'), brk), (brk, 2*w)]:
+        if b > a: hor += quad(fh, [a, b], maxdegree=6)
+    hor *= 2
+    fv1 = lambda t: kern(mpc(mpf('0.5'), t), X)*gb(mpc(mpf('0.5'), t), tau, w, crude)
+    ver1 = quad(fv1, [-X/2, 0, X/2], maxdegree=6)
+    fv2 = lambda t: kern(mpc(2*w, t), X)*gb(mpc(2*w, t), tau, w, crude)
+    ver2 = quad(fv2, [-X/2, 0, X/2], maxdegree=6)
+    # residues n > 2w, using 0 <= g_n <= 1 (B_n = sum phi(i tau) - n phi(tau) >= 0)
+    tail = mpf(0); n0 = int(2*w)+1
+    for n in range(n0, n0+400):
+        t = X**(2*n)/factorial(2*n); tail += t
+        if t < mpf('1e-60')*max(tail, mpf('1e-60')): break
+    tot = (hor+ver1+ver2)/(2*pi) + tail
+    r = tot/tau**mpf(0.25); worst = max(worst, r)
+    print(f"  {ts:>9} {mp.nstr(hor/(2*pi),4):>10} {mp.nstr(ver1/(2*pi),4):>10} {mp.nstr(ver2/(2*pi),4):>10} {mp.nstr(tail,3):>11}  {mp.nstr(tot,5):>9}  {mp.nstr(r,5)}")
+print(f"\n  worst ratio on tau <= 0.02 (X=w, honest amplitude, converged): {mp.nstr(worst,5)}")
+for C in ['0.17','0.20','0.25']:
+    print(f"    |T2| <= {C} tau^{{1/4}}  =>  at tau=0.02: {mp.nstr(mpf(C)*mpf('0.02')**mpf(0.25),4)}   valid? {worst <= mpf(C)}")

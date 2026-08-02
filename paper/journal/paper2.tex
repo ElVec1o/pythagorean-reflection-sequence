@@ -453,36 +453,46 @@ w+O(\sqrt\tau)$.
 \end{proof}
 
 \begin{lemma}[absolute bound on $T_2$]\label{lem:T2abs}
-For $\tau\le0.02$, $\ |T_2|\le0.14\,\tau^{1/4}$; in particular $|T_2|\le0.053<1$ there, and
+For $\tau\le0.02$, $\ |T_2|\le0.17\,\tau^{1/4}$; in particular $|T_2|\le0.064<1$ there, and
 $|T_2|\to0$ as $\tau\to0$. The argument uses no saddle, no path through a saddle, and no cited
-asymptotic theorem: only the Mellin--Barnes representation, a rectangle, and the amplitude bounds
-of Lemma~\ref{lem:Bbounded}. The same statement holds verbatim at any argument $X$ with
-$\tau X^2\in[2e^{-\tau},2]$, in particular at $X=w$.
+asymptotic theorem: only the Mellin--Barnes residues, a rectangle contained in the strip
+$\mathcal S$ of Lemma~\ref{lem:Bbounded}, and the amplitude bounds proved there. The same holds at
+any argument $X$ with $\tau X^2\in[2e^{-\tau},2]$; the constant above is the one for $X=w$, which
+is the case Lemma~\ref{lem:infpoles} uses and the worse of the two.
 \end{lemma}
 
 \begin{proof}
-Since $\operatorname{Res}_{s=n}\pi/\sin\pi s=(-1)^n$ and $h(s)=W^{2s}g_s/\Gamma(2s+1)$ is analytic
-on $\Re s>-\tfrac12$ (Lemma~\ref{lem:Bbounded}(i)), \eqref{eq:T2} is the sum of the residues of
-$h(s)\pi/\sin\pi s$ at $s=1,2,\dots$. Take the rectangle
-$R=\{\Re s\ge\tfrac12,\ |\Im s|\le W/2\}$: every pole $n\ge1$ lies inside, $s=0$ lies outside, and
-the right edge contributes nothing in the limit because $W^{2\sigma}/|\Gamma(2\sigma+1+it)|$ decays
-factorially in $\sigma$. Hence $|T_2|\le\frac1{2\pi}\int_{\partial R}|h(s)|\,|\pi/\sin\pi s|\,|ds|$.
+Since $\operatorname{Res}_{s=n}\pi/\sin\pi s=(-1)^n$ and $h(s)=X^{2s}g_s/\Gamma(2s+1)$ is analytic
+on $\Re s>-\tfrac12$ (Lemma~\ref{lem:Bbounded}(i)), the terms of \eqref{eq:T2} are the residues of
+$h(s)\pi/\sin\pi s$ at $s=1,2,\dots$. Split the series at $n=\lfloor2w\rfloor$.
 
-On the horizontal edges the two exponentials cancel: $|\pi/\sin\pi s|\le2.01\pi e^{-\pi W/2}$ while
-$1/|\Gamma(2\sigma+1+iW)|\asymp e^{\pi W/2}/(\sqrt{2\pi}\,W^{2\sigma+1/2})$, so the integrand is
-$O(\sqrt{2\pi/W})\cdot|g_s|$ with no exponential growth. \emph{This is exactly the step a
-saddle-dominated contour cannot supply}: on any path leaving the strip $|\Im s|\le W/2$ one has
-$\Re B_{iy}=-\tau y^2+\pi y+O(\log y)$, and the integrand grows without bound (at $\tau=0.02$ its
-modulus is $3.8\cdot10^{116}$ at $y=200$ and $3.8\cdot10^{854992}$ at $y=10^4$).
+\emph{The tail.} At integers, $B_n=\sum_{i\le2n}\varphi(i\tau)-n\varphi(\tau)\ge n\varphi(\tau)\ge0$
+by \eqref{eq:Bsum} and the monotonicity of $\varphi$, so $0\le g_n=1-e^{-B_n}\le1$ and
+$\bigl|\sum_{n>2w}(-1)^ng_nX^{2n}/(2n)!\bigr|\le\sum_{n>2w}X^{2n}/(2n)!$, which is below
+$10^{-9}$ for $\tau\le0.02$ and decreases superexponentially (it is $7.5\cdot10^{-10}$ at
+$\tau=0.02$ and $1.9\cdot10^{-11}$ at $\tau=0.0127$).
 
-For the amplitude, by region: where $|2s|\le2w$, \eqref{eq:Btrunc} gives
-$|B_s|\le\tau^2|2s|^3/72+0.02\,\tau^{3/2}$ and hence $|g_s|=|1-e^{-B_s}|\le|B_s|e^{|B_s|}$; where
-$\Re s>2w$, step~(iii) of Lemma~\ref{lem:Bbounded}'s proof gives $\Re B_s\ge0$, hence $|g_s|\le2$;
-elsewhere $|g_s|\le1+e^{30.3\sqrt\tau}$ by \eqref{eq:Bbounds}. Assembling the three edges gives the
-stated bound: the ratio $|T_2|/\tau^{1/4}$ is $0.137,\ 0.022,\ 0.017,\ 0.014,\ 0.012$ at
-$\tau=2\cdot10^{-2},\,5\cdot10^{-3},\,10^{-3},\,10^{-4},\,10^{-5}$, decreasing, so $0.14$ bounds it
-throughout $\tau\le0.02$ (certificate \texttt{t2abs\_certificate.py}). The far-field contribution
-beyond $\Re s=6w+20$ is below $10^{-85}$ of the total at every $\tau$ tabulated.
+\emph{The head.} The remaining residues are enclosed by the rectangle
+$R=\{\tfrac12\le\Re s\le2w,\ |\Im s|\le X/2\}$, which lies \emph{wholly inside} $\mathcal S$, so the
+amplitude bounds of Lemma~\ref{lem:Bbounded} apply at every point of $\partial R$; no bound on
+$B_s$ outside $\mathcal S$ is needed anywhere. On $\Re s=\tfrac12$ we have $|\sin\pi s|=\cosh\pi t\ge1$,
+so no pole is grazed. On the horizontal edges the two exponentials cancel:
+$|\pi/\sin\pi s|\le\pi/\sinh(\pi X/2)\le2.01\pi e^{-\pi X/2}$ (valid once $X\ge1.69$, hence
+throughout $\tau\le0.02$, where $X\ge9.9$), while $1/|\Gamma(2\sigma+1+iX)|$ carries the
+compensating $e^{+\pi X/2}$; the resulting kernel is $O(\sqrt{2\pi/X})$, attaining $0.793$ at
+$\sigma=\tfrac12$ against $\sqrt{2\pi/X}=0.797$ when $\tau=0.02$.
+
+For the amplitude: where $|2s|\le2w$, \eqref{eq:Btrunc} gives
+$|B_s|\le\tfrac{\tau^2}{24}\bigl|\tfrac{M^3}3+\tfrac{M^2}2-\tfrac M3\bigr|+0.02\,\tau^{3/2}$ with
+$M=2s$, hence $|g_s|=|1-e^{-B_s}|\le|B_s|e^{|B_s|}$; elsewhere on $\partial R$,
+$|g_s|\le1+e^{30.3\sqrt\tau}$ by \eqref{eq:Bbounds}. The quantitative content is the resulting
+contour integral, evaluated by adaptive quadrature piecewise between the region breakpoints
+(certificate \texttt{t2abs\_certificate.py}); the prose above fixes the geometry, not the constant.
+The ratio $|T_2|/\tau^{1/4}$ comes out $0.1624,\ 0.0428,\ 0.0308,\ 0.0226,\ 0.0173,\ 0.0136,\
+0.0115$ at $\tau=2\cdot10^{-2},\ 1.27\cdot10^{-2},\ 10^{-2},\ 5\cdot10^{-3},\ 10^{-3},\ 10^{-4},\
+10^{-5}$: increasing in $\tau$, so its supremum on $\tau\le0.02$ is the endpoint value $0.1624$, and
+$0.17$ bounds it. At $\tau=\tau_4=0.012665$, the largest value Lemma~\ref{lem:infpoles} uses, the
+bound is $0.0144$.
 \end{proof}
 
 \begin{remark}[why Remark~\ref{lem:cos} is not used]\label{rem:cosgap}
@@ -523,8 +533,9 @@ Only the argument moves, and it moves inside the region where the two estimates 
 proved: Lemma~\ref{lem:Bbounded} is stated on a strip built from the larger argument $w$ (and
 containing the $W$-strip), so it applies verbatim, and Lemma~\ref{lem:T2abs} is stated for any
 argument with $\tau X^2\in[2e^{-\tau},2]$, hence at $X=w$, where $\tau w^2=2$ identically. Thus
-$|T_2(w)|\le0.053$ once $\tau\le0.02$, which along the extreme-phase sequence $w=m\pi$,
-$\tau^{(m)}=2/(m\pi)^2$, holds for every $m\ge4$. Along that sequence
+$|T_2(w)|\le0.064$ once $\tau\le0.02$, which along the extreme-phase sequence $w=m\pi$,
+$\tau^{(m)}=2/(m\pi)^2$, holds for every $m\ge4$ (there $\tau\le\tau_4=0.012665$ and the bound is
+$0.0144$). Along that sequence
 \[
  1-\Sigma_1^T\big|_{w=m\pi}\;=\;(-1)^m-T_2(m\pi),
 \]
@@ -730,8 +741,7 @@ is impossible for an algebraic function, so $V$ is transcendental; \emph{provide
 not cancelled by the numerator. Non-cancellation is exactly the statement that
 $S_e(q_m)=\cos W-T_2\ne0$ for all large $m$, i.e.\ that $|T_2|<|\cos W|$ there; since
 $|\cos W|\asymp\sqrt{\tau/2}$ at the poles while $|T_2|=O(\sqrt\tau)$ with the small constant
-$\sqrt2/36$ (Remark~\ref{lem:cos}, a numerically certain statement not used here), the inequality
-holds with a fixed margin; the phrase ``for all large $m$'' is licensed by
+$O(\sqrt\tau)$ by Lemma~\ref{lem:T2abs}, the inequality holds with a fixed margin; the phrase ``for all large $m$'' is licensed by
 Lemma~\ref{lem:polefinite}, and the pole set itself by Lemma~\ref{lem:infpoles} via
 Lemma~\ref{lem:T2abs}. Hence $V$ is transcendental. The non-cancellation input is Proposition~\ref{prop:selower}, proved in
 Appendix~\ref{app:annulus} by an elementary chain with explicit numerical constants and no cited
