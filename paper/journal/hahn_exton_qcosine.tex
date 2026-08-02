@@ -42,10 +42,13 @@ Let $G(q,z)={}_1\phi_1(0;q;q^2,z)=\sum_{k\ge0}(-1)^kq^{k(k-1)}z^k/(q;q)_{2k}$, t
 Jackson) $q$-cosine. We prove that for every $0<q<1$ the difference Galois group over $\C(z)$ of the
 second-order $q$-difference equation satisfied by $G$ contains $\mathrm{SL}_2$, and that the equation
 admits no $\sigma\delta$-integrability relation; via the parametrized difference Galois theory of
-Hardouin--Singer and Dreyfus--Hardouin--Roques it follows that $G(q,\cdot)$ is differentially
-transcendental over $\C(z)$. We complement this function-level result with an exact evaluation of the
-regularized product of the positive zeros, $\prod_{k\ge1}z_k(q)\,q^{2(k-1)}=(q;q^2)_\infty$, a modular
-value. We then pose, and give effective evidence for, the arithmetic question that these results
+Hardouin--Singer and Dreyfus--Hardouin--Roques these give a second route to the differential
+transcendence of $G(q,\cdot)$ over $\C(z)$. That transcendence is itself known, and in stronger form:
+it is a corollary of Adamczewski--Dreyfus--Hardouin \cite{ADH2021}, and the unsolvability of the
+associated Riccati equation is Nishioka's \cite{Nishioka2016}; what is offered here is the explicit
+Galois-theoretic computation, valid also at algebraic $q$. We complement this with the regularized
+product of the positive zeros, $\prod_{k\ge1}z_k(q)\,q^{2(k-1)}=(q;q^2)_\infty$, a corollary of
+Morita's connection formula \cite{Morita2011}. We then pose, and give effective evidence for, the arithmetic question that these results
 frame: the transcendence of the zeros $z_k(q)$ at algebraic $q$. This question specializes to the
 transcendence of a specific reflection-group growth constant $\beta_2$ (OEIS A396406), for which we
 prove an unconditional effective non-rationality bound.
@@ -79,10 +82,21 @@ transcendence problem precisely. Our results are of three kinds.
 
 \emph{Galois theory (\S\ref{sec:galois}).} We compute enough of the difference Galois structure of the
 defining equation to conclude differential transcendence.
-\begin{theorem}\label{thm:main-transc}
+\begin{theorem}[known; Adamczewski--Dreyfus--Hardouin]\label{thm:main-transc}
 For every $0<q<1$, the Hahn--Exton $q$-cosine $G(q,\cdot)$ satisfies no algebraic differential
 equation over $\C(z)$.
 \end{theorem}
+
+\noindent This is \emph{not} new, and the known result is stronger. Adamczewski, Dreyfus and
+Hardouin \cite[Thm.~1.2, case $Q$]{ADH2021} prove that a Puiseux-series solution of a linear
+$q$-difference equation over $K=\bigcup_j\C(x^{1/j})$, with $q$ not a root of unity, is either in
+$K$ or hypertranscendental over $K$; $G(q,\cdot)$ is entire and not in $K$, so the conclusion
+follows with no hypothesis to verify, over a larger base field, and for all $q$ that are not roots
+of unity. It is recorded here only because the route below is different and yields the explicit
+Galois-theoretic statements of \S3, which \cite{ADH2021} does not compute. The unsolvability of the
+associated Riccati equation for $J^{(3)}_\nu$, and the non-solvability of the Galois group, were
+obtained for all $\nu$ by Nishioka \cite{Nishioka2016} for $q$ transcendental over $\Q$; the only
+increment here is that algebraic $q$ are included.
 The engine is an unconditional proof that the difference Galois group contains $\mathrm{SL}_2$
 (Theorem~\ref{thm:sl2}), obtained by ruling out rank-$1$ submodules of every symmetric power through a
 growth estimate on asymptotic-expansion coefficients, together with the absence of a
@@ -304,6 +318,12 @@ $\prod_{k\ge1}w_k(q)\,q\,Q^{\,k-1}=(q^3;q^2)_\infty$. \textup{(Verified at three
 $q^\ast$, to $41$, $23$, $26$ digits for $C_1$ and $58$ digits for the product.)}
 \end{theorem}
 
+\noindent The constant $C_1=1/(q;q)_\infty$ is not new: it is the specialisation to the $q$-cosine
+($\nu=-\tfrac12$, $p=q^2$) of Morita's connection formula for $J^{(3)}_\nu$ \cite[Thm.~1]{Morita2011},
+which solved exactly this connection problem. What is added here is the regularised zero product,
+a corollary of it. Step~(3) of the proof below re-derives the zero localisation
+$z_k=Q^{1-k}(1+O(q^k))$ of Abreu--Bustoz--Cardoso \cite[Thm.~2.3]{ABC2003}.
+
 \begin{proof}
 \emph{(1) An exact identity.} From $(q;q)_{2k}=(q;q)_\infty/(q^{2k+1};q)_\infty$ and Euler's
 expansion $(x;q)_\infty=\sum_{j\ge0}(-1)^jq^{j(j-1)/2}x^j/(q;q)_j$ at $x=q^{2k+1}$, together with
@@ -431,6 +451,12 @@ In particular
 \]
 \end{theorem}
 
+\noindent The \emph{shape} of such an expansion is known: Ismail and Zhang \cite{IsmailZhang2007}
+show that $q^{2n-1}z_n$ is analytic in $q^n$, with coefficients polynomial in three generators over
+rational functions of $q$, and the relevant entire function lies in the class treated by Hayman.
+What is proved here, and what we have not found in that literature, is that the coefficients are
+\emph{integers}.
+
 \begin{proof}
 From $g_{k'}=(-1)^{k'}q^{k'(k'-1)}/(q;q)_{2k'}$ and the exponent identity
 $k'(k'-1)-2(k-1)k'+k(k-1)=(k'-k)(k'-k+1)$,
@@ -453,13 +479,17 @@ $u_4=1-q^{28}-\cdots$. The onset law visible here is proved next.)
 The deviation $u_k-1$ begins exactly at the $k$-th hexagonal number $k(2k-1)$. This reduces to, and
 is proved by, an exact evaluation of $G$ at its own lattice points.
 
-\begin{lemma}[parameter--argument swap]\label{lem:swap}
+\begin{lemma}[parameter--argument swap; Koornwinder--Swarttouw]\label{lem:swap}
 For $|Q|<1$,
 $(b;Q)_\infty\,{}_1\phi_1(0;b;Q,z)$ is symmetric in $(b,z)$; equivalently
 \begin{equation}\label{eq:dressing}
    (q;Q)_\infty\,G(q,z)=\sum_{n\ge0}\frac{(-1)^nq^{n^2}}{(Q;Q)_n}\,(zQ^n;Q)_\infty .
 \end{equation}
 \end{lemma}
+
+\noindent This is Koornwinder--Swarttouw \cite[Prop.~2.1, eq.~(2.3)]{KS1992}, with the same double-sum
+proof; they note in their Remark~2.2 that it is a limit case of Heine's transformation. It is restated
+here for use below, not claimed.
 
 \begin{proof}
 In $(b;Q)_\infty\,{}_1\phi_1(0;b;Q,z)=\sum_n(-1)^nQ^{\binom n2}z^n\,(bQ^n;Q)_\infty/(Q;Q)_n$
@@ -479,6 +509,11 @@ For every $m\ge0$,
 \]
 so $\operatorname{ord}_qG(q,Q^{-m})=(m+1)^2$ exactly, with leading coefficient $(-1)^{m+1}$.
 \end{proposition}
+
+\noindent This follows in two lines from Koornwinder--Swarttouw \cite[Prop.~2.1 and Rem.~2.3,
+eq.~(2.6)]{KS1992}: putting $n=m+1$, $z=q$ in their (2.6) gives the leading factor $q^{(m+1)^2}$ and
+the $r$-th term exponent $(m+1+r)^2$, which is the display above. It is stated separately only
+because \S5 uses it repeatedly.
 
 \begin{proof}
 Evaluate \eqref{eq:dressing} at $z=Q^{-m}$. The factor $(Q^{n-m};Q)_\infty$ vanishes for $n\le m$
@@ -888,6 +923,10 @@ is certified by the scripts in the cited repository, independently of any model 
 author takes full responsibility for the content.
 
 \begin{thebibliography}{9}
+\bibitem{ADH2021} B.~Adamczewski, T.~Dreyfus, C.~Hardouin, \emph{Hypertranscendence and linear
+difference equations}, J.~Amer.\ Math.\ Soc.\ \textbf{34} (2021), 475--503.
+\bibitem{ABC2003} L.~D.~Abreu, J.~Bustoz, J.~L.~Cardoso, \emph{The roots of the third Jackson
+$q$-Bessel function}, Int.\ J.\ Math.\ Math.\ Sci.\ \textbf{2003}, no.~67, 4241--4248.
 \bibitem{AMV} M.~Amou, T.~Matala-aho, K.~V\"a\"an\"anen, \emph{On Siegel--Shidlovskii's theory for
 $q$-difference equations}, Acta Arith.\ \textbf{127} (2007), 309--335.
 \bibitem{ADR} C.~E.~Arreche, T.~Dreyfus, J.~Roques, \emph{Differential transcendence criteria for
@@ -900,6 +939,14 @@ its relaxed companion}, preprint (2026), archived at \texttt{doi:10.5281/zenodo.
 equations}, J.~Eur.\ Math.\ Soc.\ \textbf{20} (2018), 2209--2238.
 \bibitem{HS} C.~Hardouin, M.~F.~Singer, \emph{Differential Galois theory of linear difference
 equations}, Math.\ Ann.\ \textbf{342} (2008), 333--377.
+\bibitem{IsmailZhang2007} M.~E.~H.~Ismail, C.~Zhang, \emph{Zeros of entire functions and a problem
+of Ramanujan}, Adv.\ Math.\ \textbf{209} (2007), 363--380.
+\bibitem{KS1992} T.~H.~Koornwinder, R.~F.~Swarttouw, \emph{On $q$-analogues of the Fourier and Hankel
+transforms}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{333} (1992), 445--461.
+\bibitem{Morita2011} T.~Morita, \emph{A connection formula of the Hahn--Exton $q$-Bessel function},
+SIGMA \textbf{7} (2011), 115, 11 pp.
+\bibitem{Nishioka2016} S.~Nishioka, \emph{Proof of unsolvability of $q$-Bessel equation using
+valuations}, J.~Math.\ Sci.\ Univ.\ Tokyo \textbf{23} (2016), 763--789.
 \bibitem{KS} H.~T.~Koelink, R.~F.~Swarttouw, \emph{On the zeros of the Hahn--Exton $q$-Bessel function
 and associated $q$-Lommel polynomials}, J.\ Math.\ Anal.\ Appl.\ \textbf{186} (1994), 690--710.
 \bibitem{Nesterenko} Yu.~V.~Nesterenko, \emph{Modular functions and transcendence questions},
