@@ -26,3 +26,6 @@ name = "DeviationLattice"
 
 [[lean_lib]]
 name = "BboundedSkeleton"
+
+[[lean_lib]]
+name = "UAssembly"

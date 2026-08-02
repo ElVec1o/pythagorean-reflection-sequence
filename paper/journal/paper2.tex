@@ -1975,6 +1975,23 @@ every travel pole''. For orientation: the computed values over $m=5,\dots,71$ ar
 $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)=0.1768$ and $s\to\tfrac14$, well inside every bound above.
 \end{proof}
 
+\begin{remark}[the assembly is machine-checked]\label{rem:uassembly}
+The composition just performed --- the gate arithmetic, the two halves of \eqref{eq:gate}, the
+passage to the pole set, and the step from infinitely many poles to non-algebraicity --- is
+verified in Lean~4 (\texttt{UAssembly.lean}, seven theorems, no \texttt{sorry}, axioms
+\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}), each analytic input entering as
+an explicit hypothesis: Theorem~\ref{thm:star}, Lemma~\ref{app:Se}, Corollary~\ref{app:gate},
+Lemma~\ref{lem:infpoles}, the supplement's reduction, and the finiteness of an algebraic function's
+pole set in the disc. The file formalises \emph{no} analysis --- no $q$-series, no steepest
+descent, no numerics; its content is exactly that those hypotheses \emph{compose}, so its
+hypothesis list is an audit of what Theorem~\ref{thm:U} rests on. The quantitative step is isolated
+as \texttt{gate\_ratio\_lt\_one}, whose hypothesis $K<c$ --- numerator constant strictly below
+denominator constant --- is what the gate needs and what a numerator bound alone cannot supply:
+with $K=0.619$ from Theorem~\ref{thm:star} and the constant $0.35$ of
+Proposition~\ref{prop:selower} it is \emph{false}, which is precisely why Lemma~\ref{app:Se}'s
+$0.63$ is required.
+\end{remark}
+
 \begin{remark}[the former gap, and how it closed]\label{rem:Ugap}
 Lemma~\ref{lem:atomN} discharges the amplitude \emph{through the turning point} $X=\tfrac32$; the
 obstruction to any Liouville--Green treatment, and the one piece formerly thought to settle the
