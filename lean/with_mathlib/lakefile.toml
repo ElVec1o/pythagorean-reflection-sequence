@@ -29,3 +29,6 @@ name = "BboundedSkeleton"
 
 [[lean_lib]]
 name = "UAssembly"
+
+[[lean_lib]]
+name = "SDAssembly"
