@@ -151,7 +151,7 @@ theorem U_not_algebraic
   exact hred τ hτS (hb0 τ hτS)
     (gate_ratio_lt_one (hSpos τ hτS) hc hKc (hstar τ hτS) (hSe τ hτS))
 
-/-! ### 5. The paper's constants, and the round-9 defect
+/-! ### 5. The paper's constants, and why the denominator bound is needed
 
     `thm:star` gives `K = 0.619`; `app:Se` gives `c = 0.63`.  These satisfy `K < c`, with
     the margin that makes `|s| <= 0.983 < 1`. -/
