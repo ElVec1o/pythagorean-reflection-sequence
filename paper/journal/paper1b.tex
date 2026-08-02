@@ -127,12 +127,12 @@ legs, and (c) to read off the depth at which the inequality first
 becomes an equality (the collision-depth).
 
 \begin{remark}[Scope, and relation to the planar case]\label{rem:scope}
-This is a companion note. The planar case $n=2$ --- where the group is
+This is a companion note. The planar case $n=2$ (where the group is
 $V_4 * \mathbb{Z}/2$, the metric is the lamplighter-type formula, and the growth series is
-transcendental --- is treated in the main paper and is not reproved here; what follows is the
+transcendental) is treated in the main paper and is not reproved here; what follows is the
 part of the picture that is uniform in the dimension. Three things are established: the closed
 form for $r_n$ (\S\ref{sec:rate}), the uniform Schur-complement determinant identity
-(\S\ref{sec:setting}) which is what makes Class~C faithfulness unconditional in every dimension
+(\S\ref{sec:setting}), which is what makes Class~C faithfulness unconditional in every dimension
 (\S\ref{sec:setting}), and the dimension-independent collision-depth invariant (\S\ref{sec:cd}).
 Two things are deliberately \emph{not} attempted: the transcendence questions, which are special to
 $n=2$; and any statement about non-right-corner orthoschemes.
@@ -260,9 +260,9 @@ the Class C case is unconditional in every dimension.
 \subsection{The uniform Schur-complement determinant identity}
 
 The Lorentzian Gram matrix of the orthoscheme in staircase
-coordinates --- with simple roots $n_0 = e_1$,
+coordinates (with simple roots $n_0 = e_1$,
 $n_i = a_i e_{i+1} - a_{i+1} e_i$ ($1 \le i \le n-1$), $n_n = e_n$,
-and the standard $(n, 1)$ endpoint correction --- is the tridiagonal
+and the standard $(n, 1)$ endpoint correction) is the tridiagonal
 matrix $Q_n$ of size $(n+1) \times (n+1)$ given by
 \begin{align*}
 Q_n[0,0] &= 1 - a_1^2, & Q_n[i,i] &= a_i^2 + a_{i+1}^2\ (1 \le i \le n-1),
@@ -387,7 +387,7 @@ admits a standard conic-to-Weierstrass substitution and reduces to
 E_{3/4} :\ y^2 = x(x - 300)(x - 1200),
 \]
 Cremona \texttt{72a2} (conductor $72$, same $j$-invariant $35\,152/9$
-as $E_{1/4}$ --- they are quadratic twists --- and also rank $0$ with
+as $E_{1/4}$ (they are quadratic twists) and also rank $0$ with
 torsion $\mathbb{Z}/2 \oplus \mathbb{Z}/2$); see~\cite{cremona-1997,
 lmfdb-72a2}.  Each torsion point again pulls back to a trivial
 quartic solution.\qed
@@ -464,8 +464,8 @@ t(a_1, \ldots, a_n) &= \#\bigl\{ i : 1 \le i \le n-2,\ a_i = a_{i+1} = a_{i+2}\b
 Thus $e$ counts equal pairs at the two \emph{endpoint} (boundary)
 positions of the staircase, and $t$ counts \emph{interior triples}
 of three consecutive equal legs.  An equal pair sitting strictly in
-the interior of the staircase --- such as $a_2 = a_3$ in
-$(1, 2, 2, 3)$ at $n = 4$ --- contributes to neither $e$ nor $t$.
+the interior of the staircase (such as $a_2 = a_3$ in
+$(1, 2, 2, 3)$ at $n = 4$) contributes to neither $e$ nor $t$.
 
 \begin{theorem}[Dimension-independent collision-depth, all $n \ge 3$]
 \label{thm:cd-general}
@@ -519,8 +519,8 @@ some interior pair $a_j = a_{j+1}$ exists with $1 \le j \le n-1$,
 neither boundary position nor part of a triple.  At each
 non-perpendicular pair $(i, i+1)$ the cosine depends on the
 flanking legs, which are by hypothesis not all equal.  At the
-two interior pairs flanking the equal pair --- $(j-1, j)$ and
-$(j+1, j+2)$ (whichever exist) --- the cosine takes the
+two interior pairs flanking the equal pair ($(j-1, j)$ and
+$(j+1, j+2)$ (whichever exist)) the cosine takes the
 $a_i a_{i+2} / \sqrt{(a_i^2 + a_{i+1}^2)(a_{i+1}^2 + a_{i+2}^2)}$
 form with $(a_i, a_{i+2})$ distinct positive rationals (otherwise
 the equal pair would extend to a triple, contradicting $t = 0$).
@@ -636,7 +636,7 @@ $\mathbb{P}^2$-blowup would be of independent interest.
 \paragraph{Open questions.}
 (1)~\emph{Non-orthoscheme reflection groups.}  Does an analogue of
 Theorem~\ref{thm:cd-general} hold for other families of simplicial
-reflection chambers in $\mathbb{R}^n$ --- for example, Coxeter
+reflection chambers in $\mathbb{R}^n$: for example, Coxeter
 orthoschemes with bent paths, or simplices arising from
 non-path-shaped Coxeter diagrams?  The proof relies on the
 right-angled-with-one-$\infty$ structure of the path Coxeter
@@ -647,8 +647,8 @@ of the diagram?
 $n \ge 3$, partial multiplicity patterns (neither distinct nor
 saturated by triples) produce intermediate growth rates strictly
 between two consecutive values of $r_n$.  An algebraic
-characterisation of these intermediate rates --- in particular,
-whether they are algebraic over $\mathbb{Q}$ at all --- is open.
+characterisation of these intermediate rates (in particular,
+whether they are algebraic over $\mathbb{Q}$ at all) is open.
 
 (3)~\emph{Beyond $(e, t)$.}  Theorem~\ref{thm:cd-general} shows that
 the collision-depth is determined by the maximum multiplicity of
@@ -704,9 +704,8 @@ Thm.~\ref{thm:ndim-rate}, coefficient form
 orbit-growth rate with the largest root $t_1$ of $W_n$ is a dominant-pole
 argument on the rational generating function; it is proved on paper only.
 Likewise the combinatorial identification $f_n(y)=P_{n+3}(y)$ via Pascal's
-identity is a paper proof.  Everything downstream of those two inputs ---
-the Binet formula, the location of the roots, and the translation to
-$1+2\cos(2\pi j/(n+3))$ --- is machine-checked.
+identity is a paper proof.  Everything downstream of those two inputs (the Binet formula, the location of the roots, and the translation to
+$1+2\cos(2\pi j/(n+3))$) is machine-checked.
 
 \begin{thebibliography}{99}
 
