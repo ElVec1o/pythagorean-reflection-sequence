@@ -42,7 +42,7 @@ Let $G(q,z)={}_1\phi_1(0;q;q^2,z)=\sum_{k\ge0}(-1)^kq^{k(k-1)}z^k/(q;q)_{2k}$, t
 Jackson) $q$-cosine. We prove that for every $0<q<1$ the difference Galois group over $\C(z)$ of the
 second-order $q$-difference equation satisfied by $G$ contains $\mathrm{SL}_2$, and that the equation
 admits no $\sigma\delta$-integrability relation; via the parametrized difference Galois theory of
-Hardouin--Singer and Dreyfus--Hardouin--Roques these give a second route to the differential
+Hardouin--Singer \cite{HS} and Dreyfus--Hardouin--Roques \cite{DHR2018} these give a second route to the differential
 transcendence of $G(q,\cdot)$ over $\C(z)$. That transcendence is itself known, and in stronger form:
 it is a corollary of Adamczewski--Dreyfus--Hardouin \cite{ADH2021}, and the unsolvability of the
 associated Riccati equation is Nishioka's \cite{Nishioka2016}; what is offered here is the explicit
@@ -119,9 +119,14 @@ For algebraic $q\in(0,1)$, every positive zero $z_k(q)$ of $G(q,\cdot)$ is trans
 hold: the full Jacobi theta $\theta(z;q)=(z;q)_\infty(q/z;q)_\infty$ has zeros exactly at $z=q^{-k}$,
 algebraic whenever $q$ is, so any hypothesis must exclude functions with a product formula, and it is
 the failure of the triple product for $G$ that carries the conjecture. This is the structural
-analogue of Siegel's exclusion of $2\lambda$ odd. Second, the classical model is Siegel
-\cite[\S4]{Siegel1929}: for rational $\lambda$, every nonzero zero of $J_\lambda$ is transcendental
-(see also Lorch--Muldoon \cite{LorchMuldoon}). We have found no result, and no conjecture, in the
+analogue of Siegel's exclusion of $2\lambda$ odd. Second, the classical model needs stating with
+care, because the present object sits in the excluded case. Siegel \cite[\S4]{Siegel1929} proves
+that for rational $\lambda$ with $2\lambda$ \emph{not} an odd integer, every nonzero zero of
+$J_\lambda$ is transcendental; here $2\lambda=-1$, which is exactly what that hypothesis removes.
+For $\lambda=-\tfrac12$ one has $J_{-1/2}(x)\propto x^{-1/2}\cos x$, whose zeros are the odd
+multiples of $\pi/2$, and their transcendence is Lindemann's theorem \cite{Lindemann1882}, not
+Siegel's. So the classical analogue of the conjecture below is Lindemann's, and the $q$-deformation
+is what makes it hard again (see also Lorch--Muldoon \cite{LorchMuldoon}). We have found no result, and no conjecture, in the
 literature on the arithmetic nature of zeros of $q$-series; the $q$-Bessel zero literature is
 uniformly classified as special functions, not number theory.
 We explain why Conjecture~\ref{conj:Z} lies just past the reach of the $q$-analogue of the
@@ -167,7 +172,7 @@ $\theta_Q(x)=\sum_{n\in\Z}Q^{n(n-1)/2}x^n$, these are
 where $\hat g$ is $q$-Gevrey divergent (its $q$-Borel transform is $1/(q^2/\xi;q)_\infty$, so
 $f_1$ is Borel--Laplace summable off one Stokes direction) and $h$ is convergent ($c_k=O(Q^{k^2/2})$).
 The coefficients $b_k$, which drive the Galois argument below, satisfy
-$b_k\asymp q^{-k^2/4}$; both $\hat g$ and $h$ are determined by \eqref{eq:Leq} and $b_0=c_0=1$. Full
+$b_k\asymp q^{-k^2/2}$; both $\hat g$ and $h$ are determined by \eqref{eq:Leq} and $b_0=c_0=1$. Full
 details of the resummation are in \cite{Bonfioli2}; here only the asymptotic expansions are used.
 
 \section{The difference Galois group}\label{sec:galois}
@@ -215,8 +220,11 @@ $\mathrm{SL}_2$.
 For $N\ge1$ suppose $\operatorname{Sym}^N\!M$ has a rank-$1$ submodule, i.e.\ there is a nonzero
 solution $w$ of the $N$-th symmetric-power equation with $r:=w(Q\,\cdot)/w\in\C(z)$. The products
 $f_1^{N-k}f_2^{\,k}$ ($0\le k\le N$) form a solution basis (their Casoratian is a power
-of $\operatorname{Cas}(f_1,f_2)\ne0$; checked numerically for $N=2$), so
-$w=\sum_kc_kf_1^{N-k}f_2^k$ with constants $c_k$; set $k_0:=\min\{k:c_k\ne0\}$.
+of $\operatorname{Cas}(f_1,f_2)\ne0$, by the standard symmetric-power formula), so
+$w=\sum_kc_kf_1^{N-k}f_2^k$ with $c_k$ in the field of $\sigma$-constants; set
+$k_0:=\min\{k:c_k\ne0\}$. In the analytic setting those $\sigma$-constants are the
+$Q$-elliptic functions rather than $\C$, which does not affect what follows: only
+$c_{k_0}\ne0$ is used.
 
 \emph{Case $k_0<N$.} Along a ray in a regular class, $f_2/f_1$ decays super-polynomially, so the
 rational function $r$ has the Poincar\'e asymptotic expansion of the quotient of the dominant
@@ -227,10 +235,19 @@ component:
    \Bigl(\tfrac{h(Qz)}{h(z)}\Bigr)^{k_0}.
 \]
 The $j$-th coefficient of the formal series on the right is
-$(N-k_0)\,b_jQ^{-j}\bigl(1+O(q^{cj})\bigr)$ with $b_j=q^{\,j-j(j-1)/2}/(q;q)_j$: the dominant term
-comes from $b_jQ^{-j}$ in $\hat g(Qz)/\hat g(z)$, all competing products being smaller by a factor
-$q^{cj}$ (verified: the ratio of the $j$-th coefficient to $(N-k_0)b_j(Q^{-j}-1)$ is
-$1-10^{-6}$ at $j=12$, $q=\tfrac13$). These coefficients grow like $q^{-j^2/2}$, whereas a rational
+$(N-k_0)\,b_jQ^{-j}\bigl(1+O(q^{\,j-1})\bigr)$ with $b_j=q^{\,j-j(j-1)/2}/(q;q)_j$: the dominant term
+comes from $b_jQ^{-j}$ in $\hat g(Qz)/\hat g(z)$, and every competing product is smaller by at least
+$q^{\,j-1}$. That gap is not a numerical observation but an identity. For $1\le i\le j-1$,
+\begin{equation}\label{eq:supermult}
+   \frac{b_i\,b_{j-i}}{b_j}\;=\;q^{\,i(j-i)}\begin{bmatrix}j\\i\end{bmatrix}_q ,
+\end{equation}
+since the powers of $q$ contribute
+$\tfrac12\bigl(j(j-1)-i(i-1)-(j-i)(j-i-1)\bigr)=i(j-i)$ and the Pochhammer factors assemble into the
+$q$-binomial coefficient, a polynomial in $q$ with constant term $1$. As $i(j-i)\ge j-1$ on that
+range, every split-off product carries at least one factor $q^{\,j-1}$ relative to $b_j$, uniformly
+in $q$ and in $N,k_0$. (Identity~\eqref{eq:supermult} was also checked numerically to $40$ digits at
+$q=\tfrac13$ and $q=0.7$ for $j\le12$; the earlier version of this proof rested on that check alone,
+at a single $j$ and a single $q$, and exhibited no~$c$.) These coefficients grow like $q^{-j^2/2}$, whereas a rational
 function's expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
 expansions are unique, no rational $r$ exists.
 
@@ -246,6 +263,9 @@ excludes the imprimitive (dihedral) case; and a projectively finite irreducible 
 polyhedral invariants), which is likewise excluded. By the classification of algebraic subgroups of
 $\mathrm{GL}_2$, the group contains $\mathrm{SL}_2$.
 \end{proof}
+
+The criterion used is the rank-two one of Arreche, Dreyfus and Roques \cite{ADR}, in the
+$q$-difference form recorded by Dreyfus, Hardouin and Roques \cite[Prop.~2.9]{DHR2018}.
 
 \begin{proposition}[no $\sigma\delta$-integrability]
 \label{prop:nonintegrable}
@@ -263,9 +283,18 @@ cancel identically; verified symbolically) leaves the necessary condition
 \]
 $\beta_k=\beta(Q^kz)$, $a=a(z)$, $a_1=a(Qz)$. A polynomial part of degree $m\ge0$ contributes top
 coefficient $\propto\beta_m(1-q^{2+2m})\ne0$ at degree $m+3$, above the inhomogeneity: so $\beta$
-has no polynomial part. If $\beta$ has a pole off the orbit $z_aQ^{\Z}$, the maximal-modulus pole
+has no polynomial part. If $\beta$ has a pole off the orbit $z_aQ^{\Z}$ and away from $z=0$, the maximal-modulus pole
 appears in exactly one term (the slot $z=\zeta Q^{-3}$, coefficient $qa\ne0$ there), and the
-minimal-modulus pole likewise (slot $z=\zeta'$, coefficient $qa_1$): both impossible; so the poles
+minimal-modulus pole likewise (slot $z=\zeta'$, coefficient $qa_1$): both impossible. The origin
+must be treated separately, since at $\zeta=0$ one has $\zeta Q^{-3}=0$ as well and all four
+$\beta$-terms are singular at once, so the isolation argument does not apply. Suppose then
+$\beta\sim Bz^{-n}$ at $0$ with $B\ne0$ and $n\ge1$. Collecting the coefficient of $z^{-n}$ in the
+displayed relation gives
+\[
+   (q+1)\,B\,q\,(x-1)(x-q)(x-1/q),\qquad x:=q^{-2n},
+\]
+which is nonzero for every $n\ge1$ because $x=q^{-2n}>1/q>1>q$; so $\beta$ is regular at the origin.
+With that case closed, so the poles
 lie in the window $\{z_aQ^{-1},\dots,z_aQ^{3}\}$ ($a(z_aQ^k)=(q+1)(1-Q^k)$ vanishes only at $k=0$).
 Sweeping the slots $z=z_aQ^{-4},\dots,z_aQ^{-1}$ kills the orders at $z_aQ^{-1},\dots,z_aQ^{2}$ one
 by one (each pole appears in a single term with nonvanishing coefficient), and the order at
@@ -328,10 +357,16 @@ $\prod_{k\ge1}w_k(q)\,q\,Q^{\,k-1}=(q^3;q^2)_\infty$. \textup{(Verified at three
 $q^\ast$, to $41$, $23$, $26$ digits for $C_1$ and $58$ digits for the product.)}
 \end{theorem}
 
-\noindent The constant $C_1=1/(q;q)_\infty$ is not new: it is the specialisation to the $q$-cosine
-($\nu=-\tfrac12$, $p=q^2$) of Morita's connection formula for $J^{(3)}_\nu$ \cite[Thm.~1]{Morita2011},
-which solved exactly this connection problem. What is added here is the regularised zero product,
-a corollary of it. Step~(3) of the proof below re-derives the zero localisation
+\noindent An earlier version of this note attributed the constant $C_1=1/(q;q)_\infty$ to
+Morita, as the specialisation to the $q$-cosine ($\nu=-\tfrac12$) of his connection formula for
+$J^{(3)}_\nu$ \cite[Thm.~1]{Morita2011}. That attribution is withdrawn, on three counts. The base
+dictionary was wrong: Morita works with base $p$ and $q=p^2$, so his $p$ is the present $q$, not
+$q^2$. His Theorem~1 carries the coefficients $1/(p^{\mp2\nu},p;p)_\infty$, and
+$(p^{-1};p)_\infty=0$, so the formula is \emph{singular} at exactly $2\nu=\pm1$, which is the
+$q$-cosine, the case wanted here. And he expands the solution at infinity in the basis at the
+origin, whereas $C_1$ is the coefficient against the divergent theta solution, which does not
+appear in his Theorem~1 at all. The constant is therefore proved here, not quoted, and the
+regularised zero product is a corollary of it rather than of \cite{Morita2011}. Step~(3) of the proof below re-derives the zero localisation
 $z_k=Q^{1-k}(1+O(q^k))$ of Abreu--Bustoz--Cardoso \cite[Thm.~2.3]{ABC2003}.
 
 \begin{proof}
@@ -397,8 +432,16 @@ the endpoint) that the positive zeros $j_{\nu,k}$ of the Bessel function $J_\nu$
 rational $\nu$. Two structural facts support it. First, Theorem~\ref{thm:main-transc}: $G$ is
 differentially transcendental, so its zeros are not the zeros of any algebraic-differential shadow
 whose arithmetic could be controlled classically. Second, in the confluent limit $q\to1$ the equation
-\eqref{eq:Leq} degenerates to Bessel's equation and $z_k(q)\to(qj_{-1/2,k})^2$, so
-Conjecture~\ref{conj:Z} deforms Siegel's theorem.
+\eqref{eq:Leq} degenerates to Bessel's equation, with the zeros rescaling as
+\[
+   \frac{z_k(q)}{(1-q)^2}\;\longrightarrow\;j_{-1/2,k}^{\,2}
+   \qquad(q\to1^-),
+\]
+so Conjecture~\ref{conj:Z} deforms the classical statement. The scaling factor matters and an
+earlier version omitted it, writing $z_k(q)\to(qj_{-1/2,k})^2$; that is false, the zeros collapsing
+to $0$ rather than to a finite limit. At $k=1$ the measured ratios $z_1/(1-q)^2$ are
+$2.3390$, $2.4045$, $2.4550$ at $q=0.9,0.95,0.99$ against $j_{-1/2,1}^2=(\pi/2)^2=2.4674$, whereas
+$z_1(0.99)=2.455\cdot10^{-4}$ against the discarded $(q\pi/2)^2=2.418$.
 
 That confluence also explains, in one line, why the classical case is provable and the $q$-case is
 not. Write $D_N$ for the denominator of the $N$-th partial sum. The classical engine (Lambert,
@@ -588,9 +631,32 @@ for $m\ge0$,
    \sum_{r\ge0}\frac{(-1)^r\,q^{(m+r+1)^2}}{(Q;Q)_r\,(Q;Q)_{m+r}},
 \]
 so $\operatorname{ord}_qH(q,q^{1-2m})=(m+1)^2-1$. (c) Consequently
-$v_k=1-q^{\,k(2k+1)}(1+O(q))$ for every $k\ge1$. (Verified: integrality and onsets to order
-$200$ for $k\le4$; the closed form to $44$ digits at $q=0.3$.)
+$v_k=1-q^{\,k(2k+1)}(1+O(q))$ for every $k\ge1$.
 \end{proposition}
+
+\begin{proof}
+(a) is the displayed identity together with the argument of
+Theorem~\ref{thm:integrality}: the exponent $(k'-k)(k'-k+1)$ is strictly convex in $k'$ with a
+unique minimiser, so the Newton polygon has a single edge of slope $0$ and Hensel applies.
+
+(b) Apply Lemma~\ref{lem:swap} with $b=q^3$ and $Q=q^2$ to $H(q,z)={}_1\phi_1(0;q^3;Q,qz)$:
+\[
+   (q^3;Q)_\infty\,H(q,z)\;=\;\sum_{n\ge0}(-1)^n q^{\,n^2+2n}\,
+      \frac{(qzQ^n;Q)_\infty}{(Q;Q)_n}.
+\]
+At $z=q^{1-2m}$ one has $qz=q^{2-2m}=Q^{1-m}$, so $qzQ^n=Q^{n+1-m}$ and the factor
+$(Q^{n+1-m};Q)_\infty$ vanishes for $n\le m-1$, the product then containing the factor $1-Q^0$.
+For $n\ge m$ it equals $(Q;Q)_\infty/(Q;Q)_{n-m}$. Writing $n=m+r$ and using
+$(m+r)^2+2(m+r)=(m+r+1)^2-1$ turns the sum into the displayed one, the $q^{-1}$ prefactor being
+the $-1$ in that exponent. The order statement follows since the $r=0$ term is the unique one of
+minimal $q$-order.
+
+(c) Combine (a) and (b): $v_k$ is the Hensel root attached to the edge, and by (b) the first
+correction to $v_k=1$ enters at order $\operatorname{ord}_qH(q,q^{1-2k})+1-\bigl((k+1)^2-1\bigr)$,
+which is $k(2k+1)$, exactly as on the cosine side with $T_{2k-1}$ replaced by $T_{2k}$.
+(Independently verified: integrality and onsets to order $200$ for $k\le4$, and the closed form
+of (b) to $44$ digits at $q=0.3$.)
+\end{proof}
 
 \begin{remark}[the triangular law]\label{rem:triangular}
 $k(2k-1)=T_{2k-1}$ and $k(2k+1)=T_{2k}$ are consecutive triangular numbers, so the deviation
@@ -770,8 +836,12 @@ truncation-ledger class outright.
 Let $F=\sum_{n\ge0}f_nq^n$ with $f_n\in\Q$, not eventually zero; let $\mathcal D_n$ be the common
 denominator of $f_0,\dots,f_n$ and $R$ the radius of convergence. Then
 \[
-   R\ \le\ \liminf_{n}\mathcal D_n^{1/n}.
+   R\ \le\ \liminf_{n\in S}\mathcal D_n^{1/n},\qquad S:=\{n:f_n\ne0\}.
 \]
+The restriction to $S$ is necessary. Taking $f_n=c^{-n}$ when $n$ is a power of $2$ and $f_n=0$
+otherwise gives $R=c$ while $\liminf_n\mathcal D_n^{1/n}=c^{1/2}$, so the inequality fails over all
+$n$ as soon as $c>1$: the long runs of zeros hold $\mathcal D_n$ fixed while $n$ grows. Only the
+integral case is used below, and it is unaffected.
 Consequently, if $F(s/t)=0$ then the truncation ledger (which requires
 $s\,\mathcal D_N^{1/N}<R$) fails for every integer $s\ge1$.
 \end{remark}
@@ -973,6 +1043,9 @@ derivatives of functions involving Bessel functions}, Int.\ J.\ Math.\ Math.\ Sc
 (1995), 551--560.
 \bibitem{Rivoal2019} T.~Rivoal, \emph{Les $E$-fonctions et $G$-fonctions de Siegel}, Journ\'ees
 math\'ematiques X-UPS 2019, 197--298.
+\bibitem{Lindemann1882} F.~Lindemann, \emph{\"Uber die Zahl $\pi$},
+Math.\ Ann.\ \textbf{20} (1882), 213--225.
+
 \bibitem{Siegel1929} C.~L.~Siegel, \emph{\"Uber einige Anwendungen diophantischer Approximationen},
 Abh.\ Preuss.\ Akad.\ Wiss.\ (1929), Nr.~1; Ges.\ Abh.\ I, 209--266.
 \bibitem{ADH2021} B.~Adamczewski, T.~Dreyfus, C.~Hardouin, \emph{Hypertranscendence and linear
