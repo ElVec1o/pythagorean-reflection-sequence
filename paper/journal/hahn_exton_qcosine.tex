@@ -247,7 +247,11 @@ $q$-binomial coefficient, a polynomial in $q$ with constant term $1$. As $i(j-i)
 range, every split-off product carries at least one factor $q^{\,j-1}$ relative to $b_j$, uniformly
 in $q$ and in $N,k_0$. (Identity~\eqref{eq:supermult} was also checked numerically to $40$ digits at
 $q=\tfrac13$ and $q=0.7$ for $j\le12$; the earlier version of this proof rested on that check alone,
-at a single $j$ and a single $q$, and exhibited no~$c$.) These coefficients grow like $q^{-j^2/2}$, whereas a rational
+at a single $j$ and a single $q$, and exhibited no~$c$. The exponent identity and the bound
+$i(j-i)\ge j-1$ are machine-checked in \texttt{lean/with\_mathlib/QCosineExponents.lean} as
+\texttt{supermult\_exponent} and \texttt{gap\_ge}, together with the Newton-polygon exponents and
+their strict convexity, the ledger sum, the triangular law, and the Diophantine separation
+underlying the effective rational-exclusion argument; thirteen theorems, no \texttt{sorry}.) These coefficients grow like $q^{-j^2/2}$, whereas a rational
 function's expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
 expansions are unique, no rational $r$ exists.
 

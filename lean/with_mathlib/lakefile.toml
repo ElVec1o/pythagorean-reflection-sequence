@@ -89,3 +89,6 @@ name = "SigmaKernel"
 
 [[lean_lib]]
 name = "UKernel"
+
+[[lean_lib]]
+name = "QCosineExponents"
