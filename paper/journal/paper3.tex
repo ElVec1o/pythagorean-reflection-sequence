@@ -27,60 +27,106 @@ general phenomenon. We prove an abstract dichotomy: for any family of quotients 
 spherical growth is shape-independent through a horizon equal to half the shortest added relator and
 first deviates exactly there. For orthoscheme (path-simplex) reflection groups the common group is the
 \emph{right-angled Coxeter group} (RACG) on the orthoscheme's orthogonality graph, whose growth we
-compute in closed form: it is rational, with rate the algebraic number $r_n=1+2\cos\frac{2\pi}{n+3}$ (the
-spectral radius attached to the path $P_{n+1}$) and numerator $(1+t)^{\lfloor n/2\rfloor+1}$. The actual
-geometric group $W_T\le\mathrm{Isom}(\R^n)$ is \emph{amenable}, hence a \emph{proper} quotient of the
-non-amenable RACG, so its growth matches this rational envelope only up to a finite, shape-dependent
-depth and then deviates strictly below. In the plane the deviation occurs at depth $10$, where the growth
-becomes the transcendental sequence \textup{A396406}; in every higher dimension it lies beyond direct
-computation. We are therefore \emph{not} entitled to conclude that higher dimensions are rational: the
-finite envelope agreement observed for $n\ge3$ is the same pattern that, at $n=2$, precedes the
-transcendental collapse. Whether the plane is exceptional, or every dimension is eventually
-transcendental, is left as an explicit open problem.
+compute in closed form: it is rational, with numerator $(1+t)^{\lfloor n/2\rfloor+1}$ and growth rate
+the algebraic number $r_n=1+2\cos\frac{2\pi}{n+3}$. The geometric group $W_T\le\mathrm{Isom}(\R^n)$ is
+a quotient of this RACG, and the dichotomy gives an exact alternative: either the surjection
+$\rho\colon W_n\twoheadrightarrow W_T$ is injective, in which case the geometric growth is the rational
+envelope in every degree, or it is not, in which case the growth agrees with the envelope up to a finite
+horizon and drops strictly below it there. In the plane the second alternative holds, with horizon
+$10$, where the growth becomes the sequence \textup{A396406}. For $n\ge3$ we show that the amenability
+argument that settles the plane does \emph{not} extend, because $O(n)$ contains a free subgroup of rank
+two as an abstract group, and we leave the alternative open in both directions.
 \end{abstract}
 
 \section{The abstract universality--deviation dichotomy}
 
 Let $G=\langle S\rangle$ be a group with finite symmetric generating set $S$ and word length $\ell_G$.
 For $N\trianglelefteq G$ write $Q=G/N$, $s_d(H)=\#\{h:\ell_H(h)=d\}$, and $K(N)=\min\{\ell_G(g):g\in
-N\setminus\{1\}\}$.
+N\setminus\{1\}\}$, with $K(\{1\})=\infty$.
 
 \begin{theorem}[Universality--deviation dichotomy]
 \label{thm:dichotomy}
-With $n:=\lceil K(N)/2\rceil$: $\ s_d(Q)=s_d(G)$ for $d<n$, and $s_n(Q)<s_n(G)$.
+Let $N\ne\{1\}$ and put $n:=\lceil K(N)/2\rceil$. Then $s_d(Q)=s_d(G)$ for $d<n$, and $s_n(Q)<s_n(G)$.
 \end{theorem}
 
 \begin{proof}
-$\pi:G\to Q$ is surjective and $1$-Lipschitz, so $s_d(Q)\le s_d(G)$. If $d<n$ and $\pi g=\pi h$
-($g,h\in B_d(G)$) then $gh^{-1}\in N$ has length $\le2d<K(N)$, forcing $g=h$; the same bound excludes a
-shorter representative, so $\pi$ is length-preserving on $B_d(G)$ and $s_d(Q)=s_d(G)$ for $d<n$. Splitting
-a geodesic word for $g_0\in N$ with $\ell_G(g_0)=K(N)$ as $g_0=w_1w_2$, $\ell_G(w_1)=n$, gives two
-distinct elements of $B_n(G)$ sharing a fiber, so $s_n(Q)<s_n(G)$.
+Write $\pi:G\to Q$ and $K=K(N)$.
+
+\emph{Agreement below $n$.} Let $d<n$. If $d\ge1$ then $2d\le 2n-2\le K-1<K$, since $2n\le K+1$. Suppose
+$g,h\in B_d(G)$ satisfy $\pi g=\pi h$. Then $gh^{-1}\in N$ and $\ell_G(gh^{-1})\le 2d<K$, so $gh^{-1}=1$
+and $g=h$. Thus $\pi$ is injective on $B_d(G)$. It is also length-preserving there: if
+$\ell_G(g)=d$ and $\ell_Q(\pi g)=e<d$, pick $h$ with $\ell_G(h)=e$ and $\pi h=\pi g$; then
+$\ell_G(gh^{-1})\le d+e<2d<K$ forces $g=h$, contradicting $e<d$. Finally $\pi$ maps the sphere of radius
+$d$ in $G$ onto the sphere of radius $d$ in $Q$, because $\ell_Q(q)=\min\{\ell_G(g):\pi g=q\}$ realises
+every $q$ with $\ell_Q(q)=d$ by some $g$ of length exactly $d$. Hence $s_d(Q)=s_d(G)$.
+
+\emph{Strict drop at $n$.} Choose $g_0\in N\setminus\{1\}$ with $\ell_G(g_0)=K$ and write a geodesic word
+for it as $g_0=w_1w_2$ with $\ell_G(w_1)=n$ and $\ell_G(w_2)=K-n=\lfloor K/2\rfloor$; both factors are
+geodesic as written. From $w_1w_2\in N$ we get $\pi(w_1)=\pi(w_2^{-1})$, and $w_1\ne w_2^{-1}$ since
+otherwise $g_0=1$. Surjectivity of $\pi$ from the radius-$n$ sphere of $G$ onto that of $Q$, established
+in the previous paragraph for $d<n$, holds verbatim for $d=n$.
+
+If $K$ is even then $n=K/2=\lfloor K/2\rfloor$, so $w_1$ and $w_2^{-1}$ are two distinct elements of the
+sphere of radius $n$ in $G$ with the same image, and $s_n(Q)\le s_n(G)-1$.
+
+If $K$ is odd then $n=(K+1)/2$ and $\ell_G(w_2^{-1})=n-1$, so $\ell_Q(\pi w_1)\le n-1<n$ and the image of
+$w_1$ does not lie on the sphere of radius $n$ in $Q$. That sphere is therefore covered by
+$\pi$ applied to the radius-$n$ sphere of $G$ with $w_1$ removed, and again $s_n(Q)\le s_n(G)-1$.
 \end{proof}
 
 Applied to a family $\{Q_T=G/N_T\}$, this is universality: all members share $G$'s growth through their
-horizon $n_T=\lceil K(N_T)/2\rceil$, then deviate. \textbf{The point of this paper is that for
-orthoscheme reflection groups the ambient $G$ is a rational-growth RACG, but the members $Q_T$ are proper
-quotients, so the shared rational growth is only a finite-depth envelope.}
+horizon $n_T=\lceil K(N_T)/2\rceil$, then deviate. For orthoscheme reflection groups the ambient $G$ is a
+rational-growth RACG, so the shared rational growth is an envelope whose validity is controlled entirely
+by whether $N_T$ is trivial.
 
 \section{The orthoscheme family and its RACG envelope}
 
-An $n$-orthoscheme has vertices $P_0,\dots,P_n$ with mutually orthogonal consecutive edges $P_{k-1}P_k=
-\ell_k e_k$; its $n+1$ facet reflections $R_0,\dots,R_n$ generate $W_T\le\mathrm{Isom}(\R^n)$ (the
-right-triangle group when $n=2$). Two facts hold for \emph{every} orthoscheme: $R_i^2=1$, and
-$R_iR_j=R_jR_i$ when $|i-j|\ge2$ (orthogonal facets). For generic legs consecutive facets meet at an
-irrational multiple of $\pi$, imposing no finite bond. The largest group compatible with these relations
-is the \emph{right-angled Coxeter group}
+An $n$-orthoscheme, or path simplex, has vertices $P_0,\dots,P_n$ with mutually orthogonal consecutive
+edges $P_{k-1}P_k=\ell_k e_k$; its $n+1$ facet reflections $R_0,\dots,R_n$ generate
+$W_T\le\mathrm{Isom}(\R^n)$ (the right-triangle group when $n=2$). Orthoschemes are the simplices for
+which the reflection group generated by the facets was first analysed systematically
+\cite{Coxeter1934}. We normalise $\ell_1=1$ and write $U=\{\ell=(\ell_1,\dots,\ell_n):
+\ell_i>0\}$ for the leg space.
+
+\begin{lemma}[Facet normals]
+\label{lem:normals}
+Take $P_0=0$, so $P_k=\sum_{i\le k}\ell_ie_i$. For every $\ell\in U$ the facet of the orthoscheme
+opposite $P_j$ has normal
+\[
+   m_0=e_1,\qquad m_j=\ell_{j+1}e_j-\ell_je_{j+1}\ \ (1\le j\le n-1),\qquad m_n=e_n .
+\]
+Consequently $\operatorname{supp}(m_0)=\{1\}$, $\operatorname{supp}(m_j)=\{j,j+1\}$ and
+$\operatorname{supp}(m_n)=\{n\}$, so that $m_i\cdot m_j=0$ whenever $|i-j|\ge2$, while
+$m_i\cdot m_{i+1}\ne0$ for every $i$.
+\end{lemma}
+
+\begin{proof}
+The facet opposite $P_j$ is the affine hull of $\{P_i:i\ne j\}$. For $j=0$ the difference vectors
+$P_{k+1}-P_k=\ell_{k+1}e_{k+1}$, $1\le k\le n-1$, span $\langle e_2,\dots,e_n\rangle$, whence $m_0=e_1$.
+For $j=n$ the vertices $P_0,\dots,P_{n-1}$ span $\langle e_1,\dots,e_{n-1}\rangle$, whence $m_n=e_n$.
+For $1\le j\le n-1$ the difference vectors are $\ell_ke_k$ for $k\le j-1$, then
+$P_{j+1}-P_{j-1}=\ell_je_j+\ell_{j+1}e_{j+1}$, then $\ell_ke_k$ for $k\ge j+2$. Orthogonality to the
+first and third families confines $m_j$ to coordinates $\{j,j+1\}$, and orthogonality to the middle
+vector then forces $m_j\propto\ell_{j+1}e_j-\ell_je_{j+1}$.
+The support statement is immediate, and two supports of the listed form are disjoint exactly when
+$|i-j|\ge2$. For adjacent indices, $m_0\cdot m_1=\ell_2$, $m_j\cdot m_{j+1}=-\ell_j\ell_{j+2}$ for
+$1\le j\le n-2$, and $m_{n-1}\cdot m_n=-\ell_{n-1}$, all nonzero because every $\ell_i>0$.
+\end{proof}
+
+Lemma~\ref{lem:normals} holds for \emph{all} legs, with no genericity hypothesis and no case check:
+$R_i^2=1$ always, and $R_iR_j=R_jR_i$ whenever $|i-j|\ge2$. For generic legs consecutive facets meet at
+an irrational multiple of $\pi$, imposing no finite bond. The largest group compatible with these
+relations is the right-angled Coxeter group \cite{Davis}
 \[
    W_n \;=\; \bigl\langle R_0,\dots,R_n \ \big|\ R_i^2=1,\ (R_iR_j)^2=1\ (|i-j|\ge2)\bigr\rangle,
 \]
-and there is a surjection $\rho\colon W_n\twoheadrightarrow W_T$.
+whose defining graph is the \emph{orthogonality graph} $\Gamma_n$ (vertices $0,\dots,n$, edges
+$|i-j|\ge2$), and there is a surjection $\rho\colon W_n\twoheadrightarrow W_T$.
 
 Before computing the envelope we record that the ``generic growth'' is a well-defined object: it does
 not depend on which generic shape one picks. Let $F=\ast_{i=0}^{n}\langle r_i\rangle$ be the free
-product of $n+1$ copies of $\Z/2$, let $U=\{\ell=(\ell_1,\dots,\ell_n):\ell_i>0\}$ be the leg space
-($\ell_1=1$), and let $\rho_\ell\colon F\to\mathrm{Isom}(\R^n)$, $r_i\mapsto R_i(\ell)$, be the
-reflection representation; put $N_{\mathrm{gen}}=\bigcap_{\ell\in U}\ker\rho_\ell$.
+product of $n+1$ copies of $\Z/2$ and let $\rho_\ell\colon F\to\mathrm{Isom}(\R^n)$, $r_i\mapsto
+R_i(\ell)$, be the reflection representation; put $N_{\mathrm{gen}}=\bigcap_{\ell\in U}\ker\rho_\ell$.
 
 \begin{theorem}[Generic rigidity]
 \label{thm:rigidity}
@@ -93,14 +139,14 @@ every $\ell$ whose coordinates are algebraically independent over $\Q$; in parti
 \end{theorem}
 
 \begin{proof}
-Each facet normal $m_j(\ell)$ is a fixed polynomial vector in $\ell$ (a cofactor of the vertex
-differences, which are linear in $\ell$), so the reflection $R_j(\ell)=I-2\,m_jm_j^{\!\top}/(m_j\!\cdot\!m_j)$
-(with its translation) has entries in $\Q(\ell)$ with denominator the nonvanishing polynomial
-$m_j\!\cdot\!m_j$. Hence every entry of $\rho_\ell(v)=\prod_k R_{i_k}(\ell)$ lies in $\Q(\ell)$, and for
-each $v\in F$ the locus $V_v=\{\ell\in U:\rho_\ell(v)=I\}$ (the simultaneous vanishing of finitely
-many rational functions, cleared of their nonvanishing denominators) is Zariski-closed in the
-irreducible variety $U$. If $v\notin N_{\mathrm{gen}}$ then $\rho_\ell(v)\ne I$ for some $\ell$, so $V_v$
-is a \emph{proper} closed subvariety, of measure zero. As $F$ is countable,
+Each facet normal $m_j(\ell)$ is a fixed polynomial vector in $\ell$ by Lemma~\ref{lem:normals}, so the
+reflection $R_j(\ell)=I-2\,m_jm_j^{\!\top}/(m_j\!\cdot\!m_j)$ (with its translation) has entries in
+$\Q(\ell)$ with denominator the nonvanishing polynomial $m_j\!\cdot\!m_j$. Hence every entry of
+$\rho_\ell(v)=\prod_k R_{i_k}(\ell)$ lies in $\Q(\ell)$, and for each $v\in F$ the locus
+$V_v=\{\ell\in U:\rho_\ell(v)=I\}$ (the simultaneous vanishing of finitely many rational functions,
+cleared of their nonvanishing denominators) is Zariski-closed in the irreducible variety $U$. If
+$v\notin N_{\mathrm{gen}}$ then $\rho_\ell(v)\ne I$ for some $\ell$, so $V_v$ is a \emph{proper} closed
+subvariety, of measure zero. As $F$ is countable,
 $B:=\bigcup_{v\in F\setminus N_{\mathrm{gen}}}V_v$ is a countable union of proper subvarieties;
 $U_{\mathrm{gen}}:=U\setminus B$ is co-null and dense. For $\ell\in U_{\mathrm{gen}}$ one has
 $N_{\mathrm{gen}}\subseteq\ker\rho_\ell$ (universal relations hold everywhere) and
@@ -114,21 +160,31 @@ $\Q$ then $\ell$ lies on no proper $\Q$-subvariety, so $\ell\notin B$, i.e.\ $\e
 Such $\ell$ exist since $\dim U=n-1\ge1$.
 \end{proof}
 
-The non-consecutive commuting relations $(R_iR_j)^2=1$ ($|i-j|\ge2$) hold identically in $\ell$ (the
-interior normals $m_j$ are supported on the two coordinates $\{j{-}1,j\}$, so non-adjacent normals are
-orthogonal for \emph{all} legs; verified symbolically for $n\le5$), so they lie in $N_{\mathrm{gen}}$ and
-$F/N_{\mathrm{gen}}$ is a quotient of the RACG $W_n$ below.
+By Lemma~\ref{lem:normals} the relations $(R_iR_j)^2=1$ for $|i-j|\ge2$ hold identically in $\ell$, so
+they lie in $N_{\mathrm{gen}}$ and $F/N_{\mathrm{gen}}$ is a quotient of $W_n$.
 
 \begin{theorem}[The RACG envelope is rational]
 \label{thm:envelope}
-The spherical growth series of $W_n$ is rational,
+Let $c_{\Gamma_n}(x)=\sum_{C\ \mathrm{clique}}x^{|C|}$ be the clique polynomial of $\Gamma_n$. The
+spherical growth series of $W_n$ is rational and satisfies
 \[
-   W_n(t)\;=\;\frac{(1+t)^{\lfloor n/2\rfloor+1}}{N_n(t)},
-   \qquad N_n(t)=(1+t)^{\,n+1}\,c_{\Gamma_n}\!\Bigl(\tfrac{-1}{1+t}\Bigr),
+   \frac{1}{W_n(t)}\;=\;c_{\Gamma_n}\!\Bigl(\frac{-t}{1+t}\Bigr).
 \]
-where $c_{\Gamma_n}$ is the clique polynomial of the orthogonality graph $\Gamma_n$ (vertices $0,\dots,n$;
-edges $|i-j|\ge2$). Its growth rate is $r_n=1+2\cos\frac{2\pi}{n+3}$, the largest root of the reciprocal
-of $N_n$, and equals $1$ plus the spectral radius $2\cos\frac{2\pi}{n+3}$ of the path $P_{n+1}$. Explicitly
+Equivalently $W_n(t)=(1+t)^{n+1}/J_{n+1}(t)$, where
+\[
+   J_m=(1+t)\bigl(J_{m-1}-t\,J_{m-2}\bigr),\qquad J_0=J_1=1 .
+\]
+One has $J_m=(1+t)^{\lfloor m/2\rfloor}K_m$ with $K_0=K_1=1$, $K_{2j}=K_{2j-1}-tK_{2j-2}$ and
+$K_{2j+1}=(1+t)K_{2j}-tK_{2j-1}$, so that
+\[
+   W_n(t)=\frac{(1+t)^{\lfloor n/2\rfloor+1}}{K_{n+1}(t)} .
+\]
+The reciprocals of the roots of $K_{n+1}$ in $(1/3,1)$ are the numbers $1+2\cos\frac{2k\pi}{n+3}$, and
+the growth rate is the largest of them,
+\[
+   r_n\;=\;1+2\cos\frac{2\pi}{n+3}.
+\]
+Explicitly
 \[
 \renewcommand{\arraystretch}{1.4}
 \begin{array}{c|c|c}
@@ -138,95 +194,191 @@ n & W_n(t) & r_n\\\hline
 4 & (1+t)^3/(1-2t-t^2+t^3) & 1+2\cos\tfrac{2\pi}7=2.24698\ldots\\
 5 & (1+t)^3/(1-3t+t^2+t^3) & 1+\sqrt2\\
 6 & (1+t)^4/(1-3t+3t^3) & 1+2\cos\tfrac{2\pi}9=2.53209\ldots\\
-7 & (1+t)^4/(1-2t-3t^2+4t^3-t^4) & \varphi^2=2.61803\ldots
+7 & (1+t)^4/(1-4t+3t^2+2t^3-t^4) & \varphi^2=2.61803\ldots
 \end{array}
 \]
 \end{theorem}
 
 \begin{proof}
-$W_n$ is a RACG, so its finite parabolics are exactly the cliques of $\Gamma_n$, each a group
-$(\Z/2)^{|C|}$ with polynomial growth $(1+t)^{|C|}$. Steinberg's formula gives $1/W_n(t^{-1})=\sum_{C\
-\mathrm{clique}}(-1)^{|C|}/(1+t)^{|C|}=c_{\Gamma_n}(-1/(1+t))$; inverting and substituting $t\mapsto t^{-1}$
-yields the displayed rational form. $\Gamma_n$ is the complement of the path $P_{n+1}$, and the reciprocal
-of $N_n$ is (a Chebyshev multiple of) the characteristic polynomial of $P_{n+1}$, whose largest eigenvalue
-is $2\cos\frac{\pi}{n+2}$; a short computation with the independence polynomial of the path pins the
-dominant growth root at $r_n=1+2\cos\frac{2\pi}{n+3}$. The tabulated entries are the cases $n=2,\dots,7$,
-verified symbolically.
+$W_n$ is a RACG, so its finite standard parabolics are exactly the cliques of $\Gamma_n$, each a group
+$(\Z/2)^{|C|}$ with growth polynomial $(1+t)^{|C|}$ \cite{Davis}. Steinberg's formula
+\cite{Steinberg,Bourbaki} gives
+\[
+   \frac{1}{W_n(t^{-1})}=\sum_{C\ \mathrm{clique}}\frac{(-1)^{|C|}}{(1+t)^{|C|}}
+   =c_{\Gamma_n}\!\Bigl(\frac{-1}{1+t}\Bigr).
+\]
+Substituting $t\mapsto t^{-1}$ and simplifying $-1/(1+t^{-1})=-t/(1+t)$ yields the displayed identity for
+$1/W_n(t)$. (The substitution must be carried \emph{inside} the clique polynomial; retaining the argument
+$-1/(1+t)$ gives a different rational function, already at $n=2$.)
+
+The cliques of $\Gamma_n$ are the independent sets of its complement, the path $P_{n+1}$, so
+$c_{\Gamma_n}=I_{n+1}$, the independence polynomial of the path on $n+1$ vertices, which obeys
+$I_m=I_{m-1}+xI_{m-2}$, $I_0=1$, $I_1=1+x$. Put $J_m(t)=(1+t)^mI_m(-t/(1+t))$. Multiplying the
+recurrence by $(1+t)^m$ gives $J_m=(1+t)J_{m-1}-t(1+t)J_{m-2}$, which is the stated recurrence, with
+$J_0=1$ and $J_1=(1+t)(1-t/(1+t))=1$. By construction $1/W_n(t)=I_{n+1}(-t/(1+t))=J_{n+1}(t)/(1+t)^{n+1}$.
+The factorisation $J_m=(1+t)^{\lfloor m/2\rfloor}K_m$ and the two-step recurrences for $K$ follow by
+induction on $m$, splitting on the parity of $m$; cancelling $(1+t)^{\lfloor (n+1)/2\rfloor}$ against
+$(1+t)^{n+1}$ leaves the exponent $\lceil (n+1)/2\rceil=\lfloor n/2\rfloor+1$.
+
+For the roots, fix $t>0$ and solve the linear recurrence. Its characteristic equation is
+$\lambda^2-(1+t)\lambda+t(1+t)=0$, of discriminant $(1+t)(1-3t)$.
+
+If $0<t<1/3$ both roots are real with $0<\lambda_-<\lambda_+<1$ (their sum is $1+t\le4/3$ and their
+product is $t(1+t)<4/9$). Writing $J_m=a\lambda_+^m+b\lambda_-^m$, the initial conditions give
+$a=(1-\lambda_-)/(\lambda_+-\lambda_-)>0$ and $b=(\lambda_+-1)/(\lambda_+-\lambda_-)<0$ with $a+b=1$.
+Then $J_m=\lambda_-^m\bigl(a(\lambda_+/\lambda_-)^m+b\bigr)$, and the bracket is increasing in $m$ with
+value $1$ at $m=0$, so $J_m>0$. At $t=1/3$ the root is double and $J_m=(1+m/2)(2/3)^m>0$. Hence $J_m$
+has no root in $(0,1/3]$.
+
+If $t>1/3$ the roots are $\lambda_\pm=\rho e^{\pm i\theta}$ with $\rho=\sqrt{t(1+t)}$ and
+$\cos\theta=\sqrt{(1+t)/(4t)}$, so $\theta$ ranges over $(0,\pi/3)$ and is strictly increasing in $t$,
+because $(1+t)/(4t)=\tfrac14+\tfrac1{4t}$ is strictly decreasing. Then
+$J_m=\rho^m(\cos m\theta-c\sin m\theta)$, where $J_0=1$ is automatic and $J_1=1$ forces
+$c\rho\sin\theta=(t-1)/2$, that is $c=(t-1)/\sqrt{(1+t)(3t-1)}$. Since
+$\sin^2\theta=(3t-1)/(4t)$, a direct computation gives
+$\cot2\theta=(1-t)/\sqrt{(1+t)(3t-1)}=-c$. Therefore
+\[
+   J_m=0\iff \cot m\theta=c=-\cot2\theta\iff\frac{\sin\bigl((m+2)\theta\bigr)}{\sin m\theta\,\sin2\theta}=0
+   \iff (m+2)\theta\in\pi\Z .
+\]
+With $m=n+1$ the roots are exactly $\theta=k\pi/(n+3)$, $1\le k<(n+3)/3$. Inverting
+$\cos^2\theta=(1+t)/(4t)$ gives $t=1/(4\cos^2\theta-1)=1/(1+2\cos2\theta)$, so the corresponding
+$t$-values are $1/(1+2\cos\frac{2k\pi}{n+3})$. As $\theta$ increases with $t$, the smallest positive root
+is $k=1$; it exceeds $1/3$ because $1+2\cos\frac{2\pi}{n+3}<3$, and $1+t>0$ there, so it is a root of
+$K_{n+1}$ and not of the stripped factor. Hence $r_n=1+2\cos\frac{2\pi}{n+3}$.
 \end{proof}
 
-\section{The geometric group is a proper amenable quotient}
+\begin{remark}[Not a path spectral radius]
+\label{rem:notpath}
+The number $2\cos\frac{2\pi}{n+3}$ is \emph{not} the spectral radius of the path $P_{n+1}$, which is
+$2\cos\frac{\pi}{n+2}$; the two disagree for every $n\ge2$ (at $n=2$ they are $0.618\ldots$ and
+$1.414\ldots$). The angles produced by the proof are $k\pi/(n+3)$, and the growth rate uses $\cos2\theta$
+at $\theta=\pi/(n+3)$, not $\cos\theta$.
+\end{remark}
 
-\begin{proposition}[Finite-horizon envelope]
-\label{prop:quotient}
-For every $n\ge2$, $W_T$ is a \emph{proper} quotient of $W_n$; consequently, by
-Theorem~\ref{thm:dichotomy}, the geometric growth $s_d(W_T)$ equals the rational envelope $[t^d]W_n(t)$ only
-for $d<n_T:=\lceil K(\ker\rho)/2\rceil$, and $s_{n_T}(W_T)<[t^{n_T}]W_n(t)$.
+\section{The geometric group as a quotient, and what the plane decides}
+
+Theorem~\ref{thm:dichotomy} applied to $\rho\colon W_n\twoheadrightarrow W_T$ gives an exact alternative,
+with no genericity or dimension hypothesis.
+
+\begin{proposition}[The envelope alternative]
+\label{prop:alternative}
+Exactly one of the following holds.
+\begin{enumerate}
+\item[(i)] $\rho$ is injective. Then $W_T\cong W_n$ and $s_d(W_T)=[t^d]W_n(t)$ for every $d$; in
+particular the geometric growth series is rational with rate $r_n$.
+\item[(ii)] $\rho$ is not injective. Then $n_T:=\lceil K(\ker\rho)/2\rceil<\infty$,
+$s_d(W_T)=[t^d]W_n(t)$ for $d<n_T$, and $s_{n_T}(W_T)<[t^{n_T}]W_n(t)$.
+\end{enumerate}
 \end{proposition}
 
 \begin{proof}
-$W_T\le\mathrm{Isom}(\R^n)=\R^n\rtimes O(n)$ is amenable (an extension of the amenable $\R^n$ by the compact
-$O(n)$). The RACG $W_n$ is non-amenable: its orthogonality graph $\Gamma_n$ is not complete multipartite
-(its complement, the path $P_{n+1}$, is connected and not a disjoint union of cliques for $n\ge2$), so
-$W_n$ contains a free subgroup of rank $2$. An amenable group cannot be isomorphic to a non-amenable one,
-so $\ker\rho\ne\{1\}$ and $W_T$ is a proper quotient. Theorem~\ref{thm:dichotomy} then gives the horizon.
+If $\ker\rho=\{1\}$ then $\rho$ is an isomorphism of marked groups and (i) is immediate. Otherwise
+$K(\ker\rho)$ is finite and Theorem~\ref{thm:dichotomy} with $G=W_n$, $N=\ker\rho$ gives (ii).
 \end{proof}
 
-\begin{corollary}[The plane]
+\begin{proposition}[The plane]
+\label{prop:quotient}
+For $n=2$ alternative (ii) holds: $\ker\rho\ne\{1\}$.
+\end{proposition}
+
+\begin{proof}
+$W_T\le\mathrm{Isom}(\R^2)=\R^2\rtimes O(2)$. The group $O(2)$ contains the abelian $SO(2)$ with index
+$2$, so $\mathrm{Isom}(\R^2)$ is virtually solvable \emph{as an abstract group}, hence amenable, and so
+is every subgroup of it; in particular $W_T$ is amenable. The RACG $W_2$ is not amenable: its defining
+graph $\Gamma_2$ is not complete multipartite, since its complement $P_3$ is connected and is not a
+disjoint union of cliques, and a RACG whose defining graph is not complete multipartite contains a free
+subgroup of rank $2$ \cite{Davis}. An amenable group is not isomorphic to a non-amenable one, so
+$\rho$ is not injective.
+\end{proof}
+
+\begin{remark}[Why this argument stops at $n=2$]
+\label{rem:amenability-fails}
+The proof of Proposition~\ref{prop:quotient} does \emph{not} extend to $n\ge3$, and the natural
+extension is false. One is tempted to argue that $\mathrm{Isom}(\R^n)=\R^n\rtimes O(n)$ is amenable
+because $O(n)$ is compact. Compactness gives amenability of $O(n)$ as a \emph{topological} group, with
+respect to Haar measure, and that property does not pass to abstract subgroups. As an abstract discrete
+group $O(n)$ is non-amenable for every $n\ge3$: already $SO(3)$ contains a free subgroup of rank $2$
+(Hausdorff; see \cite[Thm.~2.1]{Wagon}), which is the standard ingredient of the Banach--Tarski
+paradox. Hence $\mathrm{Isom}(\R^n)$ is non-amenable as an abstract group for $n\ge3$ and yields no
+obstruction at all. At $n=2$ the argument survives only because $O(2)$ is virtually abelian.
+\end{remark}
+
+\begin{corollary}[The planar horizon]
 \label{cor:plane}
-For $n=2$ the horizon is $n_{T}=10$: $s_d(W_T)=F_{d+3}=[t^d]W_2(t)$ for $d\le9$, and at $d=10$ the growth
-deviates, becoming the sequence \textup{A396406}, which is transcendental over $\Q$ (companion paper: the
-relaxed companion unconditionally; the true series conditionally on one amplitude estimate) with rate
-$\beta_2=1.4916\ldots<\varphi=r_2$. This is the only dimension in which the deviation has been computed
-past its onset.
+For $n=2$ the horizon is $n_T=10$: $s_d(W_T)=F_{d+3}=[t^d]W_2(t)$ for $1\le d\le9$ (while $s_0=1$ and
+$F_3=2$), and at $d=10$ the growth deviates, becoming the sequence \textup{A396406} with rate
+$\beta_2=1.4916\ldots<\varphi=r_2$. That sequence is transcendental over $\Q(x)$ by the companion paper
+\cite{Bonfioli1}. This is the only dimension in which the deviation has been computed past its onset.
 \end{corollary}
 
 \section{What is proved, and the open problem}
 
-Four things are proved unconditionally and dimension-freely: the universality--deviation dichotomy
-(Theorem~\ref{thm:dichotomy}); \emph{generic rigidity} (Theorem~\ref{thm:rigidity}), which makes ``the
-generic $n$-orthoscheme growth'' a well-defined object $s_d(F/N_{\mathrm{gen}})$ realized by a co-null set
-of shapes; the rationality of the RACG envelope with rate $r_n$ (Theorem~\ref{thm:envelope}); and,
-structurally, that the geometric group is always a proper amenable quotient, so its growth is the envelope
-only up to a finite horizon (Proposition~\ref{prop:quotient}).
-For $3\le n\le7$ the geometric growth was computed to depth $13$--$16$ and agrees with the envelope
-throughout that range; but Proposition~\ref{prop:quotient} guarantees it must eventually deviate below,
-and the deviation depth $n_T$ for $n\ge3$ exceeds what we can reach.
+Three statements are proved unconditionally and dimension-freely: the universality--deviation dichotomy
+(Theorem~\ref{thm:dichotomy}); generic rigidity (Theorem~\ref{thm:rigidity}), which makes ``the generic
+$n$-orthoscheme growth'' a well-defined object $s_d(F/N_{\mathrm{gen}})$ realized by a co-null set of
+shapes; and the rationality of the RACG envelope with rate $r_n$ (Theorem~\ref{thm:envelope}). To these
+Proposition~\ref{prop:alternative} adds the exact alternative governing the geometric growth.
 
-The tempting conclusion (that the geometric growth is rational for $n\ge3$, so the plane is the unique
-transcendental dimension) is \emph{not} justified. The evidence for it is precisely the finite envelope
-agreement, and at $n=2$ that same agreement (through depth $9$) precedes the transcendental collapse. We
-therefore state it as an open problem rather than a theorem.
+Which alternative holds is settled only in the plane, by Proposition~\ref{prop:quotient}, where it is
+(ii) with $n_T=10$. For $3\le n\le7$ the geometric growth was computed to depth $13$--$16$ and agrees
+with the envelope throughout that range. That agreement is consistent with both alternatives: under (i)
+it would continue forever, and under (ii) it would end at a horizon $n_T$ beyond the computed range.
+Nothing in the present paper decides between them, and Remark~\ref{rem:amenability-fails} shows that the
+one soft argument available in the plane is unavailable in higher dimensions.
 
-\begin{question}[Eventual transcendence]
+\begin{question}[The alternative in higher dimensions]
 \label{q:transc}
-For $n\ge3$, is the geometric growth series of the generic $n$-orthoscheme group rational, algebraic, or
-transcendental? Equivalently: what is the arithmetic of the amenable quotient $W_n/\ker\rho$ past its
-deviation horizon $n_T$? The plane is exceptional iff the answer is ``rational'' for all $n\ge3$; the
-alternative (eventual transcendence in every dimension, with the plane merely the earliest and only
-computable case) is equally consistent with all current evidence.
+For $n\ge3$, is $\rho\colon W_n\to W_T$ injective for the generic $n$-orthoscheme? Equivalently, by
+Proposition~\ref{prop:alternative}, is the geometric growth series equal to the rational envelope
+$W_n(t)$ in every degree? If $\rho$ is injective for all $n\ge3$ then the plane is the unique dimension
+with non-rational orbit growth. If instead $\rho$ has nontrivial kernel in some dimension $n\ge3$, then
+the growth deviates below the envelope at $n_T=\lceil K(\ker\rho)/2\rceil$, and the arithmetic of the
+deviated series past that horizon is open even in the cases where the horizon can be located.
 \end{question}
 
 The companion papers are recast accordingly: their object, the planar right-triangle group, is the one
-dimension in which the amenable quotient of the Coxeter envelope has been carried past its deviation and
-found transcendental. Whether that transcendence is a two-dimensional accident or the first instance of a
-universal phenomenon is open.
+dimension in which the quotient of the Coxeter envelope has been shown proper and then carried past its
+deviation \cite{Bonfioli1,Bonfioli1b}. Whether that behaviour is two-dimensional or the first instance of
+a general phenomenon is Question~\ref{q:transc}.
 
+\section*{Certification}
+
+Theorem~\ref{thm:envelope} is certified by \texttt{code/zeta\_probe/tools/racg\_envelope} (Rust, exact
+integer polynomial arithmetic), which for $2\le n\le30$ checks that the recurrence for $J_m$ and the
+Steinberg expansion agree coefficient by coefficient, performs the division by
+$(1+t)^{\lfloor(n+1)/2\rfloor}$ exactly, and matches the smallest positive root of $K_{n+1}$ against
+$1/(1+2\cos\frac{2\pi}{n+3})$. Independently, for $2\le n\le6$ it enumerates the group by breadth-first
+search in the canonical geometric representation, whose matrices are integral here because the bilinear
+form takes only the values $1,0,-1$, and which is faithful by Tits' theorem \cite{Bourbaki}; the sphere
+sizes agree with the series coefficients to depths $9$ to $14$. The same program exhibits the two
+corrections recorded above: the substitution $-1/(1+t)$ in place of $-t/(1+t)$ changes the rational
+function already at $n=2$, and the tabulated $n=7$ denominator of an earlier version,
+$1-2t-3t^2+4t^3-t^4$, is the negated reciprocal of the correct $1-4t+3t^2+2t^3-t^4$ and predicts $6$
+elements at depth $1$ in a group with $8$ generators.
+
+The arithmetic of Theorem~\ref{thm:dichotomy} and the root identity of Theorem~\ref{thm:envelope} are
+machine-checked in Lean~4 in \texttt{lean/with\_mathlib/EnvelopeDichotomy.lean}.
 
 \begin{thebibliography}{9}
 
 \bibitem{Bourbaki} N.~Bourbaki, \emph{Groupes et alg\`ebres de Lie, Chapitres IV--VI},
-Hermann, Paris, 1968.
+Hermann, Paris, 1968. (Geometric representation of a Coxeter group and its faithfulness;
+Steinberg's identity.)
 
 \bibitem{Coxeter1934} H.~S.~M.~Coxeter, \emph{Discrete groups generated by reflections},
 Ann.\ of Math.\ (2) \textbf{35} (1934), 588--621.
 
 \bibitem{Davis} M.~W.~Davis, \emph{The Geometry and Topology of Coxeter Groups},
 London Math.\ Soc.\ Monographs \textbf{32}, Princeton Univ.\ Press, 2008.
-(Standard reference for right-angled Coxeter groups.)
+(Right-angled Coxeter groups; finite parabolics as cliques; the complete multipartite criterion.)
 
 \bibitem{Steinberg} R.~Steinberg, \emph{Endomorphisms of linear algebraic groups},
 Mem.\ Amer.\ Math.\ Soc.\ \textbf{80} (1968).
 (The Poincar\'e-series identity for Coxeter groups.)
+
+\bibitem{Wagon} S.~Wagon, \emph{The Banach--Tarski Paradox},
+Cambridge Univ.\ Press, 1985. (Free subgroups of $SO(3)$.)
 
 \bibitem{Bonfioli1} V.~Bonfioli, \emph{The universal right-triangle reflection sequence},
 companion paper; code and formalization at

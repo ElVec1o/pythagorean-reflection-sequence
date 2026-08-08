@@ -32,3 +32,6 @@ name = "UAssembly"
 
 [[lean_lib]]
 name = "SDAssembly"
+
+[[lean_lib]]
+name = "EnvelopeDichotomy"
