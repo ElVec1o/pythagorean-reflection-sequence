@@ -971,8 +971,14 @@ shape is the primitive integer polynomial
 \[
 \mu_T(t) \;=\; c_T\, t^2 - e_T\, t + c_T \;\in\; \mathbb{Z}[t],
 \]
-with roots $\zeta_T^{\pm 1}$, where $e_T = 2(a^2-b^2)$ when $a+b$ is odd
-and $e_T = a^2 - b^2$ when $a, b$ are both odd.
+with roots $\zeta_T^{\pm 1}$, where $e_T = 2\,|a^2-b^2|$ when $a+b$ is odd
+and $e_T = |a^2 - b^2|$ when $a, b$ are both odd. The absolute value is not
+cosmetic: every statement below assumes $0 < e_T < 2c_T$, and the tables and
+the deviation law are written in this convention. Without it the pair $(1,2)$
+would give $e_T = -6$ and $\mu_{(1,2)} = 5t^2+6t+5$, whereas the convention
+used throughout gives $e_T = 6$ and $\mu_{(1,2)} = 5t^2-6t+5$; the two differ
+in every lamp profile computed from $\mu_T$. Equivalently one may order the
+legs so that $a > b$.
 \end{definition}
 
 For example, $(a,b) = (1,2)$ gives $\zeta_T = (-3+4i)/5$, $c_T = 5$, and
@@ -1094,8 +1100,12 @@ d & 2d & \text{admissible } c_T \le 2d \\\hline
 \end{array}
 \]
 Each admissible complexity is realized by finitely many rotation
-numbers $\zeta_T$ (sixteen for $d = 30$; twenty-four for $d = 36$),
-and these finitely many candidate shapes can be checked mechanically.
+numbers $\zeta_T$: sixteen for $d = 30$ and twenty-two for $d = 36$.
+The count is not two per complexity. Each of the first nine admissible
+complexities contributes exactly two shapes, but $65 = 5\cdot13$ has two
+essentially distinct representations as a sum of two squares and contributes
+four, namely $(1,8)$, $(4,7)$, $(3,11)$ and $(7,9)$; hence $18 + 4 = 22$.
+These finitely many candidate shapes can be checked mechanically.
 
 \subsection{The finite arithmetic certificate}
 
@@ -1750,7 +1760,11 @@ T & c_T & e_T & n_T\ \text{(law)} & \text{status}\\\hline
 \end{array}
 \]
 and four further abstract pairs $(c,e) = (61,11), (37,35), (53,45), (73,55)$
-the law's prediction agreed with the computed minimum in every case, the
+the law's prediction agreed with the computed minimum in every case. Those four
+are tests of the formula only, not of the geometry: $e_T$ is always even, since
+$a+b$ odd gives $e_T = 2|a^2-b^2|$ outright and $a,b$ both odd makes
+$|a^2-b^2|$ a difference of two odd squares, so no rational-leg triangle has
+any of those four $(c_T,e_T)$. In every case the
 minimizing multiplier always being $m \in \{1, t+1\}$ (up to shift and sign).
 The searches ranged over multipliers $m$ of degree $\le 5$ with coefficients
 $|m_i| \le 4$ (widened to degree $\le 7$ and coefficients $\le 6$ for $(1,2)$
@@ -2357,8 +2371,8 @@ open components crossing edge $0$. The correct bound is on component
 In any realization of an element as a single Eulerian trail on the crossing
 multigraph, every interface component at every edge $j$ carries at most one
 up-crossing and at most one down-crossing of edge $j$. Consequently each
-component is one of exactly eight shapes, and an interface profile is a
-multiset over this fixed eight-letter alphabet whose only unbounded datum is
+component is one of finitely many shapes, and an interface profile is a
+multiset over that fixed finite alphabet whose only unbounded datum is
 the multiplicity of the through-shape.
 \end{lemma}
 
@@ -2372,10 +2386,12 @@ at site $j+1>j$, has already left the half-line, and the sub-walk ends. Hence
 each component has exactly one up- and one down-crossing of edge $j$, a marker
 sub-walk beginning or ending inside the half-line contributing one. The bound
 is thus an invariant of single-trail admissibility, independent of
-length-minimization. The eight shapes are the crossing contents $(1,0)$,
-$(0,1)$, $(1,1)$ refined by the two lamp signs and by the start/end marker;
-exactly one of them, the through-shape $(1,1)$, may occur with unbounded
-multiplicity.
+length-minimization. The shapes are the crossing contents $(1,0)$, $(0,1)$, $(1,1)$ refined by the
+two lamp signs and by the presence of the start/end marker, so the alphabet has
+at most $3\cdot2\cdot2 = 12$ letters; an earlier version said eight, which does
+not match this refinement. Nothing downstream depends on the exact number: what
+is used is that the alphabet is finite and that exactly one letter, the
+through-shape $(1,1)$, may occur with unbounded multiplicity.
 \end{proof}
 
 \subsection{The metric theorem $\ell_T=\ell_R+2c$}
@@ -3387,6 +3403,30 @@ orbit-growth values are produced by an exact-rational breadth-first
 search through depth $25$ and by a Rust disk-streaming breadth-first
 search through depth $42$, the latter independently reproduced on a
 second machine.
+
+\subsection{Shape arithmetic}
+
+Four numerical statements of \S\ref{sec:bonfioli} and \S\ref{sec:metric} are certified by
+\texttt{code/zeta\_probe/tools/shape\_arith} (Rust, exact integer arithmetic) and proved in
+\texttt{lean/with\_mathlib/ShapeArith.lean} (twelve theorems, no \texttt{sorry}): that
+$e_T$ is even in both branches of its definition, hence that the four abstract pairs
+$(61,11),(37,35),(53,45),(73,55)$ are realized by no rational-leg triangle
+(\texttt{eT\_even}, \texttt{abstract\_pairs\_unreal}); the coefficient identity for the lamp
+profile of $-2(t+1)\mu_T$ and the two specialisations that separate the sign conventions,
+$(-10,2,2,-10)$ at $e_T=6$ against $(-10,-22,-22,-10)$ at $e_T=-6$
+(\texttt{profile\_coeffs}); the four representations behind the shape count
+$18+4=22$ at $c_T\le72$ (\texttt{sixtyfive\_four\_shapes}, \texttt{shape\_count\_72}); and the
+size $3\cdot2\cdot2=12$ of the strand alphabet (\texttt{strand\_alphabet}). The Rust program
+independently reproduces all nine $(c_T,e_T)$ rows of the deviation-law table and finds no
+odd $e_T$ among the $97{,}354$ coprime leg pairs with legs at most $400$.
+
+The finite-state principle withdrawn in Remark~\ref{rem:lowerbound-open} is settled in
+\texttt{lean/with\_mathlib/MooreCriterion.lean} (six theorems, no \texttt{sorry}).
+\texttt{agree\_of\_same\_machine} proves the version that is valid, namely that two readings of
+the \emph{same} machine agreeing at every reachable state agree on every input;
+\texttt{not\_agree\_of\_transition\_cover} refutes the version that was used, by exhibiting two
+finite-state functions that agree on a set driving the first machine through each of its
+transitions and differ at length two.
 
 \subsection{Tier (i): kernel-checked \texttt{ring} proofs}
 \label{ssec:reproduce-ring}

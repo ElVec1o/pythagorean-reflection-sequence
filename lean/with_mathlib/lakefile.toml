@@ -35,3 +35,9 @@ name = "SDAssembly"
 
 [[lean_lib]]
 name = "EnvelopeDichotomy"
+
+[[lean_lib]]
+name = "ShapeArith"
+
+[[lean_lib]]
+name = "MooreCriterion"
