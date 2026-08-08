@@ -53,3 +53,39 @@ name = "AntipairRows"
 
 [[lean_lib]]
 name = "OverDetermination"
+
+[[lean_lib]]
+name = "CoxeterTorsion"
+
+[[lean_lib]]
+name = "DiscreteConserved"
+
+[[lean_lib]]
+name = "GateInputs"
+
+[[lean_lib]]
+name = "GaussHS"
+
+[[lean_lib]]
+name = "GramCasoratian"
+
+[[lean_lib]]
+name = "NdimRate"
+
+[[lean_lib]]
+name = "OrthoschemeDet"
+
+[[lean_lib]]
+name = "PolyaCarlson"
+
+[[lean_lib]]
+name = "QTrigIdentities"
+
+[[lean_lib]]
+name = "SelowerSkeleton"
+
+[[lean_lib]]
+name = "SigmaKernel"
+
+[[lean_lib]]
+name = "UKernel"

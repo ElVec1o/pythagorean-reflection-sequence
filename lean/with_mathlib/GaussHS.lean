@@ -46,8 +46,8 @@ theorem gaussian_moment (τ : ℝ) (hτ : 0 < τ) (j : ℝ) :
     congr 1
     rw [hb]
     have hI : Complex.I ^ 2 = -1 := Complex.I_sq
-    field_simp
     push_cast
+    field_simp
     linear_combination (4 * (τ : ℂ) ^ 2 * (j : ℂ) ^ 2) * hI
   simp_rw [key]
   rw [MeasureTheory.integral_const_mul,
