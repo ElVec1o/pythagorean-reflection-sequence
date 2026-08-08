@@ -56,8 +56,8 @@ element by element. The shape space is stratified: on the lines where one
 angle equals $\pi/m$ the relation onset moves to depth $6,8,9,10,10$ for
 $m=4,6,3,2,8$ and is the universal one for the remaining $m\le12$, so that
 the crystallographic orders are not the distinguished ones. We prove that
-each divisor $d\ge2$ of $m$ contributes $d^2-1$ relations at depth $m+m/d$,
-which for even $m$ gives $(m/2)^2-1$ relations at depth $m+2$.
+each divisor $d$ of $m$ with $2\le d\le m/2$ contributes $d^2-1$ relations at
+depth $m+m/d$, which for even $m$ gives $(m/2)^2-1$ relations at depth $m+2$.
 \end{abstract}
 
 \medskip
@@ -122,7 +122,8 @@ integer flows on the Cayley graph $X$ of the point group $\Z^2\rtimes C_2$, a
 cubic graph whose hexagonal faces correspond to the sites, and determine the
 metric completely:
 
-\begin{theorem}[see Theorem~\ref{thm:metric}]\label{thm:introm}
+\begin{theorem}[{see Theorem~\ref{thm:metric}; the length formula is
+\cite[Thm.~2.10]{MRUV} in the present setting}]\label{thm:introm}
 For flow-generic $\tau$ (Definition~\ref{def:generic}) and every reduced
 configuration $c$,
 \[
@@ -160,6 +161,14 @@ ones admitting early relations, correcting the expectation that the
 crystallographic restriction governs the stratification: what governs it is
 the order of the rotations that the stratum creates, through the divisors of
 $m$.
+
+A companion paper \cite{Bonfioli1} studies the same family from a different
+side: it works at one fixed shape, the universal one, and analyses the growth
+sequence \textup{A396406} and the lamplighter structure of its translation
+subgroup. The overlap with the present paper is the ambient setting and the
+translation metric of \S\ref{sec:flow}, which both papers use; nothing proved
+here is quoted from there, and the census, the strata and the rotation
+relations below are independent of it.
 
 \section{The census theorem}\label{sec:census}
 
@@ -256,22 +265,17 @@ generic $\tau$.
 
 \section{Single lamps}\label{sec:shield}
 
-Let $k(n,m)$ be the least length of a non-backtracking walk in the $\sigma_i$
-from a base site to $(n,m)$ whose first step is by the middle letter of the
-cyclic word attached to that base site.
-
-\begin{proposition}\label{prop:shield}
-$\ell(t_{n,m})\le 6+2k(n,m)$, with equality for every site with $k\le5$.
-\end{proposition}
-
-\begin{proof}
-Conjugating a cyclic word $(abc)^2$ by its head or tail letter is a rotation and
-preserves length; conjugating by the middle letter lengthens it by $2$, after
-which the word begins and ends with that letter, so the only length preserving
-conjugation is the inverse step and every further conjugation by a different
-letter adds $2$. A minimal walk therefore realizes $t_{n,m}$ by a word of length
-$6+2k(n,m)$. Equality on the stated range is exact breadth-first search.
-\end{proof}
+The length of a single lamp is governed by one quantity, the distance in $X$
+from the base vertex to the face of the site. For a site $(n,j)$ write
+\[
+   k(n,j)\;:=\;d_X\bigl(e,f_{n,j}\bigr),
+\]
+the graph distance in $X$ from the base vertex $e$ to the vertex set of the face
+$f_{n,j}$ of $(n,j)$, in the notation of \S\ref{sec:sites}. The exact length
+formula $\ell(t_{n,j}^{\pm1})=6+2k(n,j)$ is proved for flow-generic shapes in
+Corollary~\ref{cor:single}, once the metric of \S\ref{sec:flow} is available;
+the present section records only the combinatorics of $k$ that later sections
+use.
 
 Corollary~\ref{cor:single} upgrades the inequality to an equality at every
 site, for flow-generic shapes.
@@ -553,9 +557,8 @@ $V_\tau(\phi(c))$ by~\eqref{eq:flow}, so it represents $c$, at every shape.
 \begin{corollary}[Single lamps]\label{cor:single}
 For flow-generic $\tau$,
 $\ell(t_{n,m}^{\pm1})=6+2\,d_X(e,f_{n,m})$, the graph distance in $X$ from
-the base vertex to the vertex set of the face of $(n,m)$. The values
-$d_X(e,f_{n,m})$ agree with the walk count $k(n,m)$ of \S\ref{sec:shield}
-throughout the computed range $|n|,|m|\le7$.
+the base vertex to the vertex set of the face of $(n,m)$, which is the
+quantity $k(n,m)$ of \S\ref{sec:shield}.
 \end{corollary}
 
 \begin{proof}
@@ -633,8 +636,9 @@ so its growth rate is the $m$-bonacci constant.
 \end{proposition}
 
 \begin{proof}
-The parabolic formula for a Coxeter system with one finite rank two parabolic of
-order $2m$ and two infinite bonds gives
+Steinberg's formula \cite{Steinberg,Bourbaki} for a Coxeter system, which sums
+over the standard parabolics with finite $W_J$, applied here with one finite
+rank two parabolic of order $2m$ and two infinite bonds, gives
 $1/W_m(t^{-1})=1-3/(1+t)+1/\bigl((1+t)(1+t+\cdots+t^{m-1})\bigr)$; solving for
 $W_m$ yields the displayed expression.
 \end{proof}
@@ -740,8 +744,8 @@ imposes no relation involving $x_2$ beyond $x_2^2$,
  W_m\;\cong\;D_m*C_2,\qquad D_m=\langle x_0,x_1\rangle,\quad C_2=\langle
  x_2\rangle,
 \]
-and by the torsion theorem for free products every element of finite order is
-conjugate into a factor; equivalently a cyclically reduced element with two or
+and by the torsion theorem for free products \cite[Thm.~4.5]{MKS} (see also
+\cite[\S I.1.3]{Serre}) every element of finite order is conjugate into a factor; equivalently a cyclically reduced element with two or
 more syllables from $D_m$ has infinite order. Write
 $w_{a,b}=u_0x_2u_1x_2u_2$ with $u_i\in D_m$ the images of its maximal
 $\{0,1\}$-blocks. Its cyclic reduction is $u_2u_0\,x_2u_1x_2$, so, $u_1$ being
@@ -868,15 +872,30 @@ $(-3,0)$ for $m=5$, and $(3,0)$ and $(-4,0)$ for $m=7$, which are identified
 by the cylinder and are the first such pair of equal generic length; for $m=3$
 it is instead the level relation of part (i), which equates the lamp $t_{0,0}$
 of length $6$ with the configuration $-t_{-2,0}-t_{-1,0}$ of length $10$.
-Within that window the numbers of identifications are $3255$ for $m=3$, $476$
-for $m=5$, $14$ for $m=7$, and none for $m=9$ and $m=11$; for $m=3$ moreover
-$76$ generic translations become trivial.
+Counting them requires two conventions to be fixed, because neither is implied
+by the word ``identification''. First, we count the \emph{excess}, the number
+$5276-\#\{\text{distinct stratum images}\}$, rather than the number of unordered
+colliding pairs; the two differ by more than a factor of four at $m=3$. Second,
+and less obviously, the count is \emph{not} constant along the stratum, so a leg
+sample must be named. At the leg ratio $2:3$ the excesses are $3255$ for $m=3$,
+$476$ for $m=5$, $14$ for $m=7$, and none for $m=9$ and $m=11$; for $m=3$
+moreover $76$ generic translations become trivial. At the ratio $1:3$ the same
+computation gives $3241$ and $302$ for $m=3,5$, and at the ratio $1:2$ it gives
+$64$ for $m=9$ in place of $0$; the ratio $1:2$ at $m=3$ is the
+$\pi/6,\pi/3,\pi/2$ triangle and degenerates completely, leaving $37$ classes.
+These counts are therefore properties of a shape, not of the stratum, and the
+hazard of Remark~\ref{rem:samples} applies to them as much as to the census.
 
 These identifications are of two kinds. Those between configurations with the
 same wrapped configuration hold already in $W_m$, where $(x_0x_1)^m=1$ forces
-$t_{n,j}=t_{n+m,j}$; they are $1438$, $66$ and $2$ for $m=3,5,7$ and are not
-new relations. The remaining $1742$, $410$ and $12$ come from the level
-relation of Theorem~\ref{thm:cyl}(i) and are new. The first of them is in each
+$t_{n,j}=t_{n+m,j}$, and are not new relations; the rest come from the level
+relation of Theorem~\ref{thm:cyl}(i) and are new. We do not report a numerical
+split between the two kinds. Deciding it requires the lamp configuration of each
+translation, not merely its value: $W_m$ is a quotient of the free product but
+not of the generic group, so a generic translation has no well-defined image in
+$W_m$ against which to test. An earlier version of this paper reported a split
+whose two parts did not sum to the total. The first identification of the second
+kind is in each
 case one level split into two arcs,
 \[
  t_{0,0}=-t_{1,0}-t_{2,0}\ (m=3),\quad
@@ -900,9 +919,8 @@ accounted for by the following census.
 
 \begin{lemma}[Walk counts on the base rows]\label{lem:krows}
 $k(n,0)=2n$ for $n\ge0$ and $-2n-2$ for $n\le-1$; $k(n,1)=2n+1$ for $n\ge0$,
-$k(-1,1)=0$, and $k(n,1)=-2n-3$ for $n\le-2$. On every row $j$ the function
-$n\mapsto k(n,j)$ increases by $2$ with each unit step away from its minimum,
-and that minimum is $0$ for $j\in\{0,1\}$ and at least $1$ otherwise.
+$k(-1,1)=0$, and $k(n,1)=-2n-3$ for $n\le-2$. The minimum of $n\mapsto k(n,j)$
+is $0$ for $j\in\{0,1\}$ and at least $1$ otherwise.
 \end{lemma}
 
 \begin{proof}
@@ -910,24 +928,35 @@ The three involutions $\sigma_i$ each reverse the sign of $n$ and shift it, so
 a non-backtracking walk alternates the two orientations and moves $|n|$ by one
 per two steps, changing $j$ only through $\sigma_0,\sigma_1$; the displayed
 values are the resulting distances from the base sites $(0,0)$, $(-1,0)$,
-$(-1,1)$, and are confirmed by the automaton for $|n|,|j|\le12$.
+$(-1,1)$. The rows $j=0,1$ contain a base site, so their minimum is $0$; no
+other row does, so its minimum is positive.
 \end{proof}
 
+\begin{remark}\label{rem:krows-shape}
+The rows off $j\in\{0,1\}$ are \emph{not} V-shaped with slope $2$. Their minima
+are attained on flat valleys whose width grows with $|j|$: on $j=3$ the values
+for $n=-4,\dots,4$ are $5,4,4,4,5,7,9,11,13$, so the minimum $4$ is attained
+three times and the first step out of the valley is $+1$, not $+2$. Only the
+two displayed rows have the exact form used below.
+\end{remark}
+
 \begin{corollary}\label{cor:antipair}
-For $h\ge2$, $\min_{(n,j)}\max\{k(n,j),k(n+h,j)\}=h-1$, attained on the row
+For $h\ge2$ the value $h-1$ is attained by $\max\{k(n,j),k(n+h,j)\}$, on the row
 $j=1$ at $n=-h/2-1$ when $h$ is even and on the row $j=0$ at $n=-(h+1)/2$ when
-$h$ is odd.
+$h$ is odd. No pair gives a smaller maximum in the range $|n|\le14$,
+$|j|\le12$, $2\le h\le10$, so $\min_{(n,j)}\max\{k(n,j),k(n+h,j)\}=h-1$ there.
 \end{corollary}
 
 \begin{proof}
-On a row with minimum $k_j$ the two values are $k_j+2a$ and $k_j+2b$ with
-$a+b\ge h-1$, $a,b\ge0$ integers, since the valley has width at most two and
-each step adds $2$; hence the larger is at least $k_j+h-1$, and $k_j\ge1$ off
-the rows $0,1$. On row $0$ the pair $(n,n+h)$ with $n\le-1\le0\le n+h$ has
+Attainment is the following computation. On row $0$ the pair $(n,n+h)$ with $n\le-1\le0\le n+h$ has
 values $-2n-2$ and $2(n+h)$, equal to $h-1$ exactly when $h$ is odd and
 $n=-(h+1)/2$; on row $1$ the values are $-2n-3$ and $2(n+h)+1$, equal to $h-1$
 exactly when $h$ is even and $n=-h/2-1$. Parity makes one of the two rows
-attain $h-1$ for every $h$.
+attain $h-1$ for every $h$. That no $(n,j)$ gives a smaller maximum is verified
+by breadth-first search in $X$ over the stated range. We do not prove it for all
+$(n,j)$: by Remark~\ref{rem:krows-shape} the rows off $j\in\{0,1\}$ are not
+V-shaped with slope $2$, so the valley argument that would give the bound
+uniformly is unavailable.
 \end{proof}
 
 \begin{proposition}[Antipodal lamps, $m$ even]\label{prop:antipodal}
@@ -937,8 +966,11 @@ Let $m$ be even. Then $(r_0r_1)^{m/2}$ is the half-turn about the apex, and
 \]
 Part (i) of Theorem~\ref{thm:cyl} follows by pairing $n$ with $n+m/2$. The
 generic translations $t_{n,j}$ and $-t_{n+m/2,j}$, distinct for generic shapes,
-are identified on the stratum, and the shortest such identification has length
-$m+4$.
+are identified on the stratum. The shortest such identification has length $m+4$
+for $m\le20$; for larger $m$ the length statement rests on
+Corollary~\ref{cor:antipair}, whose lower bound is verified rather than proved,
+and on the range in which $\ell(t_{n,j})=6+2k(n,j)$ has been evaluated, so we do
+not claim it there.
 \end{proposition}
 
 \begin{proof}
@@ -996,22 +1028,42 @@ that word is then a word for a generic translation, so its generic length is at
 most $L$, and the reverse inequality is trivial. For odd $m$ none of the three
 effects is available below $2m+2$ and the censuses agree length by length,
 while at $2m+2$ the first new translations appear. The displayed values are
-computed by exact rational breadth-first search in the stratum group, which at
-any single shape bounds the counts from below; every row is confirmed at two leg
-samples through length $18$. The row $m=9,11$ reproduces the generic census
-exactly, as the onset statement requires, $2m+2$ exceeding $18$ for both.
+computed by exact rational breadth-first search in the stratum group, and every
+row is confirmed at two leg samples through length $18$. The row $m=9,11$
+reproduces the generic census exactly, as the onset statement requires, $2m+2$
+exceeding $18$ for both.
 \end{proof}
+
+\begin{remark}[What the displayed table is, and is not]\label{rem:cylcensus-status}
+The onset statements above are proved; the displayed \emph{values} are not, and
+we label them as computed rather than derived. Two gaps separate them from a
+proof. A specialisation $\tau'$ of a stratum shape $\tau$ gives a surjection
+$G_\tau\twoheadrightarrow G_{\tau'}$, so \emph{ball} counts at a sample bound the
+generic ones from below; but the table is of \emph{sphere} counts, and those are
+not monotone, since an element of generic length $18$ may have length $16$ at
+$\tau'$ and so move between rows. Nor is the cumulative count bounded either
+way, because a word can acquire trivial linear part at $\tau'$ and enlarge
+$T_{\tau'}$ beyond the image of $T_\tau$. Agreement at two samples is therefore
+evidence and not proof, and the hazard is real: across six leg samples the $m=4$
+stratum shows three distinct profiles at lengths $14,16,18$, namely
+$(198,480,1394)$, $(188,442,1276)$ and $(178,438,1178)$, and $m=12$ likewise
+shows three. Closing this would need the argument used for
+Theorem~\ref{thm:census}, that the coincidences at a witness are exactly those
+found and every other coincidence condition is a proper closed subset of the
+one-parameter stratum; we have not carried it out here.
+\end{remark}
 
 For $m=5$ the stratum has \emph{more} translations than a generic shape at
 the length where they first differ, the new translations outnumbering the
 identifications; for $m=3$, where the levels are short, the identifications
 dominate and the census falls below the generic one already at length $10$.
-Beyond length $14$ we do not report values: the configuration enumeration on
-$X_m$ is not known to be exhaustive there, and for $m=9$ it undercounts, the
-correct value at length $18$ being the generic $3684$ by the argument of the
-proposition.
+Beyond length $14$ the tabulated values do not come from the configuration
+enumeration on $X_m$, which is not known to be exhaustive there and which for
+$m=9$ undercounts; they come from the breadth-first search in the stratum group,
+and for $m=9$ the correct value at length $18$ is the generic $3684$ by the
+argument of the proposition.
 
-\begin{remark}
+\begin{remark}\label{rem:samples}
 Rational leg samples that look generic need not be. For $m=3$ the legs $(1,2)$
 give the right triangle with angles $\pi/6,\pi/3,\pi/2$, and for $m=5$ the legs
 $(2,3)$ produce $22$ coincidences at length $14$ that three other samples do
@@ -1069,7 +1121,7 @@ and the other by exhibiting every power as a nonempty reduced word. The step
 from that criterion to the identification of the unique word $w_{0,c+1}$, and
 everything in Sections~2 and~6, is not formalized; the identification is
 checked exhaustively for $3\le m\le60$ and $1\le c\le m-1$ by
-\texttt{torsion\_count.rs} in the repository.
+\texttt{code/zeta\_probe/tools/rust\_torsion} in the repository.
 \smallskip\\
 \noindent\textbf{Data availability.} All code and verification data supporting
 the computational statements are openly available in the repository cited on the
@@ -1083,10 +1135,20 @@ independently of any model output. The author takes full responsibility for the
 content.
 
 \begin{thebibliography}{9}
+\bibitem{Steinberg} R.~Steinberg, \emph{Endomorphisms of linear algebraic
+groups}, Mem.\ Amer.\ Math.\ Soc.\ \textbf{80} (1968).
+
+\bibitem{Bourbaki} N.~Bourbaki, \emph{Groupes et alg\`ebres de Lie,
+Chapitres IV--VI}, Hermann, Paris, 1968.
+
+\bibitem{MKS} W.~Magnus, A.~Karrass and D.~Solitar, \emph{Combinatorial Group
+Theory}, 2nd ed., Dover, 1976.
+
+\bibitem{Serre} J.-P.~Serre, \emph{Trees}, Springer, 1980.
+
 \bibitem{Bonfioli1} V.~Bonfioli, \emph{The universal right-triangle reflection
 sequence: a word-length metric, effective universality, and the lamplighter
-structure of A396406}, preprint (2026),
-\texttt{doi:10.5281/zenodo.20370090}.
+structure of A396406}, preprint (2026).
 \bibitem{DLS} C.~Droms, J.~Lewin and H.~Servatius, \emph{The length of elements
 in free solvable groups}, Proc.\ Amer.\ Math.\ Soc.\ \textbf{119} (1993),
 no.~1, 27--33.
