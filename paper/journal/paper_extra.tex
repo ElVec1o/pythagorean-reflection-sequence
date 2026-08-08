@@ -125,45 +125,94 @@ The implementation uses the fixed-degree truncation justified by
 $(Y+1)h = (c+1)h = 0$, which bounds the support of any reachable
 $m \in M/pM$ by $O(d)$ monomials.
 
-\begin{proposition}[$\beta_2$ transcendence: Christol route, conditional]
+\begin{proposition}[$U$ transcendence: Christol route, conditional]
 \label{prop:beta2-christol}
 Conditional on the Myhill--Nerode separation hypothesis (the states
 associated to $\{((XY)^n, t_n)\}_{n \ge 1}$ in the $p$-DFAO for
 $u_d \bmod p$ are pairwise distinct future-equivalence classes), $U(t)$
-is transcendental over $\mathbb{Q}(t)$ and $\beta_2$ is transcendental
-over $\mathbb{Q}$.
+is transcendental over $\mathbb{Q}(t)$.
 \end{proposition}
 
 \emph{Sketch.}  Under the separation hypothesis the $p$-DFAO has
 infinitely many states, hence (Allouche--Shallit Thm.~6.6.2) the
-$p$-kernel of $U(t) \bmod p$ is infinite, so by Christol 1979 $U(t)
-\bmod p$ is not algebraic over $\mathbb{F}_p(t)$.  Adamczewski--Bell
-2017 lifts this to non-algebraicity of $U(t)$ over $\mathbb{Q}(t)$, and
-Flajolet--Sedgewick (\emph{Analytic Combinatorics} Thm.~VII.7) implies
-$\beta_2$ transcendental.
+$p$-kernel of $U(t) \bmod p$ is infinite \cite{AlloucheShallit}, so by
+Christol \cite{Christol1979,CKMR} $U(t) \bmod p$ is not algebraic over
+$\mathbb{F}_p(t)$.  Adamczewski--Bell 2017 lifts this to non-algebraicity of $U(t)$ over $\mathbb{Q}(t)$.
+The conclusion is transcendence of $U$, and it stops there;
+see Remark~\ref{rem:fs-direction}.
 
 \subsection{Route 2: D-finite exclusion}
 \label{ssec:dfinite-route}
 
 \begin{proposition}[No D-finite recurrence at low complexity]
 \label{prop:no-dfinite}
-On $u_0, \ldots, u_{42}$, no D-finite (P-recursive) recurrence of order
-$k \le 9$ with polynomial-in-$d$ coefficients of degree $m \le 7$
-exists ($47$ tested $(k, m)$-pairs, exact integer linear algebra
-modulo the Mersenne prime $2^{61} - 1$).
+Let $(k,m)$ satisfy $k \le 9$, $m \le 7$ and the over-determination
+condition
+\begin{equation}\label{eq:overdet}
+   (k+1)(m+1) \;<\; 43 - k ,
+\end{equation}
+the right side being the number of equations available from
+$u_0, \ldots, u_{42}$ at order $k$. There are $52$ such pairs, and on
+none of them does a D-finite (P-recursive) recurrence of order $k$ with
+polynomial-in-$d$ coefficients of degree $m$ exist (exact integer linear
+algebra modulo the Mersenne prime $2^{61}-1$).
 \end{proposition}
 
-\begin{proposition}[$\beta_2$ transcendence: D-finite route, conditional]
+\begin{remark}[Why the guard is not optional]
+\label{rem:overdet}
+Condition~\eqref{eq:overdet} is what makes a negative result mean
+anything. Of the $72$ pairs with $k \le 9$ and $m \le 7$, exactly $20$
+violate it, and on those the linear system is underdetermined, so a
+solution exists for \emph{any} input sequence whatever and no exclusion
+can be read off. The extreme case is $(k,m) = (9,7)$, with $80$ unknowns
+against $34$ equations. An earlier version of this proposition quantified
+over all $47$ tested pairs without the guard and was therefore false as
+stated; the companion~\cite{Bonfioli2} imposes the corresponding
+condition explicitly. The same remark applies to any extension of the
+search: raising $k$ or $m$ without also lengthening the sequence buys
+nothing.
+\end{remark}
+
+\begin{proposition}[$U$ transcendence: D-finite route, conditional]
 \label{prop:beta2-dfinite}
-Conditional on extending Proposition~\ref{prop:no-dfinite} from
-$(k \le 9, m \le 7)$ to all $(k, m) \in \mathbb{N}^2$, $\beta_2$ is
-transcendental over $\mathbb{Q}$.
+Conditional on extending Proposition~\ref{prop:no-dfinite} to all
+$(k, m) \in \mathbb{N}^2$, $U(t)$ is transcendental over $\mathbb{Q}(t)$.
 \end{proposition}
+
+\begin{remark}[The direction of the Flajolet--Sedgewick step, and what these routes do not give]
+\label{rem:fs-direction}
+Earlier versions of both routes ended with the sentence that
+Flajolet--Sedgewick, \emph{Analytic Combinatorics} Thm.~VII.7, ``implies
+$\beta_2$ transcendental''.  That inference is backwards. Theorem~VII.7
+says that an algebraic generating function has finitely many
+singularities, all algebraic branch points or poles, so that
+\emph{algebraic $U$ forces algebraic $\beta_2$}.  Contrapositively it
+lets one deduce transcendence of $U$ from transcendence of $\beta_2$,
+which is the opposite of what is wanted here.
+
+The converse is false, so no repair of the wording will do. Take
+\[
+   U_\ast(t) \;=\; \frac{1}{1-2t} \;+\; \sum_{d \ge 0} t^{2^d}
+   \;\in\; \mathbb{Z}[[t]] .
+\]
+Its coefficients are $2^n$ plus the indicator that $n$ is a power of
+two, so the growth rate is $2$, an algebraic number, while the lacunary
+part gives the unit circle as a natural boundary and $U_\ast$ is
+transcendental over $\mathbb{Q}(t)$. Transcendence of the series is thus
+compatible with an algebraic growth rate.
+
+Consequently neither route above reaches $\beta_2$, and neither does
+Route~3. What they reach, conditionally, is transcendence of $U$, and
+that is now known unconditionally by the companion
+paper~\cite{Bonfioli2}, which supersedes them. Transcendence of
+$\beta_2$ itself remains open, and this note contains no approach to it.
+\end{remark}
 
 \emph{Sketch.}  By Stanley \emph{Enumerative Combinatorics} Vol.~2
 Thm.~6.4.6, every power series algebraic over $\mathbb{Q}(t)$ is
-D-finite.  Excluding D-finite at all $(k, m)$ excludes algebraic, hence
-(Flajolet--Sedgewick VII.7) transcendence of $\beta_2$.  The natural
+D-finite.  Excluding D-finite at all $(k, m)$ therefore excludes
+algebraic, and gives transcendence of $U$; it says nothing about
+$\beta_2$, by Remark~\ref{rem:fs-direction}.  The natural
 structural target for the extension is a Gr\"obner-basis argument on
 the skew-polynomial ring $\mathbb{Q}\langle n, S\rangle$ acting against
 the cyclic-module relations $(Y+1)h = (c+1)h = 0$.
@@ -174,7 +223,9 @@ the cyclic-module relations $(Y+1)h = (c+1)h = 0$.
 \begin{conjecture}[$U(t)$ is not a class-(1) Mahler function]
 \label{conj:not-class1-mahler}
 $U(t)$ is not a Mahler function of class (1) in the sense of
-Adamczewski--Faverjon 2020.
+Adamczewski--Faverjon 2020; for the general theory of Mahler functions
+see \cite{Mahler1929,Nishioka}, and for the transcendence machinery that
+a positive answer would feed, \cite{Nesterenko1996}.
 \end{conjecture}
 
 Were Conjecture~\ref{conj:not-class1-mahler} established, the Adamczewski--Faverjon
@@ -183,9 +234,12 @@ $\beta_2$, parallel to Propositions~\ref{prop:beta2-christol} and~\ref{prop:beta
 
 \subsection{Joint picture}
 
-The three conditionals are logically independent.  For
-Conjecture~\ref{conj:beta2-transcendence} to fail, all three hypotheses
-would have to fail simultaneously.
+The three conditionals are logically independent, and all three bear on
+the transcendence of $U$ rather than of $\beta_2$. Since
+\cite{Bonfioli2} now settles transcendence of $U$ unconditionally, they
+are retained only as a record of routes that were explored. The second
+half of Conjecture~\ref{conj:beta2-transcendence}, transcendence of
+$\beta_2$, is untouched by any of them.
 
 \section{Structural exclusions for $U(t)$ at low complexity}
 \label{sec:structural-negatives}
@@ -207,30 +261,54 @@ On $u_0, \ldots, u_{42}$:
 \begin{enumerate}
 \item[\textnormal{(i)}] No D-finite recurrence with $k \le 9$ and
 $m \le 7$ (Proposition~\ref{prop:no-dfinite}).
-\item[\textnormal{(ii)}] No nonlinear polynomial relation $\sum_\alpha q_\alpha(n)\,u_n^{\alpha_0} \cdots u_{n-w}^{\alpha_w} = 0$
-with lookback $w \le 5$, total $u$-degree $|\alpha| \le 3$, and
-coefficient degree $\le 2$.
+\item[\textnormal{(ii)}] \emph{Withdrawn.} An earlier version asserted
+that no nonlinear polynomial relation
+$\sum_\alpha q_\alpha(n)\,u_n^{\alpha_0}\cdots u_{n-w}^{\alpha_w} = 0$
+holds with lookback $w \le 5$, total $u$-degree $|\alpha| \le 3$ and
+coefficient degree $\le 2$. That search is vacuous: the monomials of
+total degree at most $3$ in six variables number
+$\binom{9}{3} = 84$, so with three coefficient degrees there are $252$
+unknowns against the $38$ equations available from
+$u_0,\ldots,u_{42}$. An underdetermined system has solutions for every
+input, so nothing is excluded. No nonlinear relation of that shape is
+testable at all on $43$ terms.
 \item[\textnormal{(iii)}] No non-trivial modular linear recurrence at
-any modulus $m \in \{3, 4, \ldots, 101\}$ except $m = 2$, where the
-order-$2$ Fibonacci recurrence $u_d \equiv u_{d-1} + u_{d-2} \pmod 2$
-holds throughout the tested range.
+any modulus $m \in \{3, 4, \ldots, 101\}$ over the tested range, and at
+$m = 2$ the order-$2$ Fibonacci recurrence
+$u_d \equiv u_{d-1} + u_{d-2} \pmod 2$ holds for $d \ge 3$ but
+\emph{not} at $d = 2$, where $u_0 + u_1 = 4 \equiv 0$ while
+$u_2 = 5 \equiv 1$.
 \end{enumerate}
 \end{proposition}
 
 \begin{proposition}[Coefficient-height gap]
 \label{prop:height-gap}
-$\log u_d = c \cdot d + o(d)$ with $c \approx 0.404$ (linear regression
-on $d \in [25, 42]$, $R^2 \ge 0.999$).  Consequently $u_d$ is not the
-value sequence of any $k$-automatic integer sequence (Bell--Coons /
-Adamczewski--Bell height-gap theorem) and is not the coefficient
-sequence of any Mahler function of bounded complexity.
+$\log u_d = c \cdot d + o(d)$ with $c = \log \beta_2 = 0.39986129\ldots$,
+this being forced by the growth rate established in \cite{Bonfioli2};
+ordinary least squares on $d \in [25,42]$ returns $0.407927$, with
+$R^2 \ge 0.999$, the gap from $\log\beta_2$ being the usual finite-horizon
+bias. An earlier version quoted $c \approx 0.404$, which matches neither:
+$e^{0.404} = 1.49780\ldots$ against $\beta_2 = 1.49161\ldots$.
+
+The consequence to be drawn is only the weak one. Since $u_d$ grows
+exponentially it is unbounded, so it is not the value sequence of any
+$k$-automatic integer sequence, automatic sequences taking finitely many
+values; no height-gap theorem is needed for that. In particular the
+earlier appeal to a height gap to exclude Mahler functions was
+misplaced: by Adamczewski, Bell and Smertnig \cite{ABS} the coefficient sequences of
+Mahler functions realise five distinct growth behaviours, all of them
+attained, so exponential growth excludes nothing.
 \end{proposition}
 
 \begin{proposition}[Mod-$2$ algebraicity]
 \label{prop:mod2-automaton}
-$u_d \bmod 2$ is purely $3$-periodic: $u_d \equiv 1$ for $d \not\equiv 0 \pmod 3$
-or $d \le 2$, and $u_d \equiv 0$ otherwise.  Equivalently
-$u_d \equiv u_{d-1} + u_{d-2} \pmod 2$ for $d \ge 2$.  Hence
+$u_d \bmod 2$ is \emph{eventually} $3$-periodic, with pre-period $1$:
+$u_d \equiv 1$ for $d \not\equiv 0 \pmod 3$ or $d \le 2$, and
+$u_d \equiv 0$ otherwise. It is not purely periodic, since $d = 0$ is
+$\equiv 0 \pmod 3$ yet $u_0 \equiv 1$. The order-$2$ Fibonacci
+recurrence $u_d \equiv u_{d-1} + u_{d-2} \pmod 2$ holds for $d \ge 3$,
+and fails at $d = 2$: $u_0 + u_1 = 4 \equiv 0$ while $u_2 = 5 \equiv 1$.
+Hence
 $U(t) \in \mathbb{F}_2[[t]]$ is algebraic over $\mathbb{F}_2(t)$ via a
 $4$-state finite automaton.
 
@@ -262,7 +340,10 @@ paper's the universality theorem of \cite{Bonfioli2}.
 \paragraph{Example B: hyperbolic two-right-angle quadrilaterals.}
 $A = B = V_4$, $W = V_4 * V_4$, $Q = D_\infty \times \mathbb{Z}/2$,
 $h = c - 1$ (no $(Y-1)$ factor needed: centrality of $c$ alone suffices
-when both factors of the free product contain $c$).
+when both factors of the free product contain $c$). This example is
+recorded as a claim only: we have neither a proof that the mechanism
+applies nor a computational artifact for it, and it should not be relied
+on.
 
 \paragraph{Cases where the mechanism is structurally blocked.}  Acute
 and obtuse triangle reflection groups have no central involution
@@ -287,14 +368,18 @@ closure of $w_\star$ in $W$.
 \begin{observation}[Empirical algebraic form of universality]
 \label{obs:alg-structural}
 Through depth $22$, on the four test right triangles $(3, 4), (5, 12),
-(1, 2), (7, 24)$, the equivalence relation on canonical Coxeter words
+(1, 2), (7, 24)$, and within the horizon in which the companion's
+universality statement itself holds (it is proved to depth $32$ and
+fails at depth $33$ for $(1,2)$), the equivalence relation on canonical Coxeter words
 generated by $Y v_2 + v_2$ in $\mathbb{Z}[D_\infty]$ exactly recovers
 the affine equivalence relation.  Equivalently: $N(T) = N_{\rm alg}$ on
 the depth-$\le 22$ filtration for every tested $T$.
 \end{observation}
 
-A five-channel parallel BFS verifies this with cumulative state count
-$118\,938$ at depth $22$ in every channel.  Reading: the eight
+A parallel BFS verifies this with cumulative state count $118\,938$ at
+depth $22$ in every channel: four channels for the four test triangles
+above and a fifth for the algebraic model $N_{\rm alg}$ against which
+they are compared.  Reading: the eight
 length-$10$ affine relations of the symbolic-verification theorem of \cite{Bonfioli2} are not
 sporadic length-$10$ coincidences but the first eight consequences of
 the single quadratic relation $Y v_2 + v_2 = 0$, made visible by the
@@ -313,28 +398,44 @@ proof) that $W/N$ has no finite confluent rewriting system in shortlex
 on the standard generators.
 
 \paragraph{Antol\'in--Ciobanu route (structurally blocked).}
-The Antol\'in--Ciobanu rationality theorem for conjugacy-growth series
-of non-elementary acylindrically hyperbolic groups does not apply to
-$U(t)$: the quotient $W / \ker(\rho_{\mathrm{abs}})$ has image inside
-$Q \ltimes M \subseteq (\mathbb{Z} \wr \mathbb{Z}) \rtimes V_4$, a
-finitely-presented virtually metabelian group, which is not
-acylindrically hyperbolic.
+Antol\'in and Ciobanu prove that the conjugacy-growth series of a
+non-elementary acylindrically hyperbolic group is \emph{transcendental}
+\cite{AntolinCiobanu}; an earlier version of this paragraph called it a
+rationality theorem, which inverts the result, and attributed it to the
+wrong journal. Either way it does not apply here, and for a reason that
+is about the group and not about the series: the image of
+$W/\ker(\rho_{\mathrm{abs}})$ lies inside
+$Q \ltimes M \subseteq (\mathbb{Z}\wr\mathbb{Z})\rtimes V_4$, a virtually
+metabelian group, which is not acylindrically hyperbolic. Note also that
+$\mathbb{Z}\wr\mathbb{Z}$ is \emph{not} finitely presented, by Baumslag;
+the earlier description of the ambient group as finitely presented was
+wrong, and is not needed for the conclusion.
 
 \section{Class A and Class B in 3D}
 \label{sec:classes-AB}
 
 The 3D right-corner orthoscheme reflection groups fall into three
-faithfulness regimes by leg-symmetry, the unconditional Class~C case
-being treated in the main paper (Theorem~the Class~C faithfulness theorem of the $n$-dimensional companion paper).
+faithfulness regimes by leg-symmetry. The Class~C case, pairwise distinct
+legs, is treated in the $n$-dimensional companion~\cite{Bonfioli1b},
+where the exclusion of rank-two relations is proved and faithfulness
+itself is stated as a conjecture; it is not a theorem, and nothing below
+assumes it.
 
 \paragraph{Class A ($a = b = c$, $S_3$-symmetric, polynomial growth).}
 The $(1, 1, 1)$ cube-corner orthoscheme is the fundamental chamber of
 the affine Weyl group $\widetilde{C}_3$.  For $n \ge 1$,
 $u_n = (8 n^2 + c_{n \bmod 5})/5$ with $c = (10, 12, 13, 13, 12)$, with
-asymptotic $u_n \sim (8/5) n^2$.  Order-$7$ linear recurrence with
-characteristic polynomial $(x-1)^3 \Phi_5(x)$, obtained from the
-parabolic Poincar\'e series $W_A(t) = N(t) / ((1-t)^3 \Phi_5(t))$ with
-$N(t) = 2 + 3t^2 + 3t^3 + 3t^4 + t^5 + 4t^6$.  This is a clean
+asymptotic $u_n \sim (8/5) n^2$.  The closed form, its integrality and
+its agreement with the Bott series of $\widetilde{C}_3$ hold for
+$n \ge 1$; in particular $u_1 = 4$ and $u_2 = 9$. Order-$7$ linear
+recurrence with characteristic polynomial $(x-1)^3 \Phi_5(x)$, obtained
+from the series $W_A(t) = N(t) / ((1-t)^3 \Phi_5(t))$ with
+$N(t) = 2 + 3t^2 + 3t^3 + 3t^4 + t^5 + 4t^6$. Two cautions about that
+display. Its constant term is $N(0) = 2$, whereas an orbit-growth series
+has constant term $1$, so as written it is not the growth series but
+that series plus one; the closed form for $n \ge 1$ is unaffected, and
+the discrepancy sits entirely in degree $0$. And ``parabolic Poincar\'e
+series'' is a misnomer for it. This is a clean
 restatement of standard affine-Weyl-group material (Bourbaki Ch.~VI~§4;
 Humphreys \S4.7) and is recorded here for completeness.
 
@@ -369,7 +470,7 @@ These items are unchanged from earlier supplementary drafts and are
 recorded here as a placeholder; consult the project repository for the
 detailed records.
 
-\section*{References}
+% (the bibliography below supplies its own heading)
 
 References to literature are as in the main paper.  The additional
 references invoked by the conditional routes above are:
@@ -400,6 +501,16 @@ and language complexity}, Math.\ Z.\ 285 (2017), no.~3, 1015--1041.
 
 
 \begin{thebibliography}{9}
+
+\bibitem{AntolinCiobanu} Y.~Antol\'in and L.~Ciobanu, \emph{Formal conjugacy growth in
+acylindrically hyperbolic groups}, Int.\ Math.\ Res.\ Not.\ IMRN \textbf{2017}, no.~1,
+121--157.
+
+\bibitem{ABS} B.~Adamczewski, J.~P.~Bell and D.~Smertnig, \emph{A height gap theorem for
+coefficients of Mahler functions}, J.\ Eur.\ Math.\ Soc.\ \textbf{23} (2021), 2379--2398.
+
+\bibitem{Bonfioli1b} V.~Bonfioli, \emph{A dimension-independent collision-depth invariant for
+right-corner orthoscheme reflection groups}, companion paper.
 
 \bibitem{Christol1979} G.~Christol, \emph{Ensembles presque p\'eriodiques $k$-reconnaissables},
 Theoret.\ Comput.\ Sci.\ \textbf{9} (1979), 141--145.
