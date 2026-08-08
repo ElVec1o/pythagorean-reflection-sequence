@@ -198,8 +198,13 @@ Finally, no cancellation occurs in $w_i(w_i')^{-1}$. If $w_i$ and $w_i'$ shared 
 common suffix, say $w_i=us$ and $w_i'=u's$, then $\rho_\tau(u)=\rho_\tau(u')$
 with $u\neq u'$ of length at most $10$, contradicting injectivity on that ball;
 a common prefix is excluded in the same way. Hence each relator has length
-exactly $22$, and by (ii) no shorter element of $\ker\rho_\tau$ is common to
-all shapes.
+exactly $22$. No shorter element of $\ker\rho_\tau$ is common to all shapes: if
+$z$ lay in $\ker\rho_\tau$ for every $\tau$ and had length $L\le21$, write
+$z=AB^{-1}$ with $|A|\le11$ and $|B|\le10$, so that $\rho_\tau(A)=\rho_\tau(B)$
+with $A\neq B$ at every shape. If $|A|\le10$ this contradicts injectivity on the
+ball of radius $10$; if $|A|=11$ it is a coincidence between a word of length
+$11$ and one of length at most $10$, and by (ii) every coincidence has both words
+of length exactly $11$.
 
 For the radius $12$ statement, enumeration of all reduced words of length at
 most $12$ at the witness $\tau_0$, and independently at the witness with third
@@ -258,9 +263,14 @@ represents the identity.
 \end{proposition}
 
 \begin{proof}
-Immediate from the freeness of $T_\tau$ on the conjugacy class of $t_1$
-\cite[Thm.~4.1]{IP}, together with injectivity of $(n,m)\mapsto t_{n,m}$ for
-generic $\tau$.
+Let $\tau$ be flow-generic (Definition~\ref{def:generic}). Theorem~\ref{thm:structure}
+gives that $T_\tau$ is free abelian on the lamps $t_{n,m}$ and that
+$(n,m)\mapsto t_{n,m}$ is injective, which is exactly the assertion. We state the
+proposition here because it is what the notation of this section presumes, but
+its proof belongs to \S\ref{sec:flow} and does not depend on anything between;
+in particular we do not appeal to \cite[Thm.~4.1]{IP}, which gives freeness on
+the conjugacy class of $t_1$ but leaves the indexing of that class open, and
+which Theorem~\ref{thm:structure} recovers for flow-generic shapes.
 \end{proof}
 
 \section{Single lamps}\label{sec:shield}
@@ -379,7 +389,8 @@ which confines the difference of their sites to a finite set; exact
 computation over this set shows a common edge occurs precisely at the six hex
 differences, is then unique, and carries opposite orientations in the two
 faces. For (iii), spanning is Lemma~\ref{lem:kernel}. Independence: order
-sites lexicographically and let $s_0$ be maximal in the support of
+sites lexicographically and let $s_0$ be maximal among the sites $s$ with
+$c_s\neq0$ in
 $\sum_s c_s\partial f_s$; the edge shared by $f_{s_0}$ and $f_{s_0+a}$
 receives $\pm c_{s_0}\neq0$, since $c_{s_0+a}=0$.
 \end{proof}
@@ -410,13 +421,36 @@ congruent to $(0,0),(1,0),(0,1)$ modulo $2$ respectively. With the two global
 signs fixed, the letter of $E$ is determined by the parity of its doubled
 frequency and the exponents $(m_1,m_2)$ by its integer part, so distinct
 edges have distinct frequencies. If $V_\tau(\phi)$ vanished identically then, the map from
-shapes to $(\beta_1,\beta_2)$ being open near a suitable shape, a finite sum
+shapes to $(\beta_1,\beta_2)$ being open near a suitable shape (indeed
+$(p,q)\mapsto(\beta_1,\beta_2)$ is a diffeomorphism onto
+$\{\beta_1,\beta_2>0,\ \beta_1+\beta_2<\pi\}$, since two angles determine the
+triangle up to similarity), a finite sum
 $\sum_E \pm\phi_E\,|d_\tau(E)|\,e^{i(c_E+f_E\cdot\beta)}$ with distinct
 frequencies $f_E$ would vanish on a nonempty open set of $\beta$;
 substituting $z_k=e^{i\beta_k/2}$ makes it a Laurent polynomial vanishing on
 an open subset of the torus, so all coefficients vanish, and
 $|d_\tau(E)|\neq0$ forces $\phi=0$.
+
+Two facts are used here that the display does not show. First,
+$|d_\tau(E)|=2$ for every edge, because \S\ref{sec:sites} normalises the
+incircle to the unit circle and each $v_i$ is a unit vector; the coefficients of
+the Laurent polynomial are therefore independent of $\beta$, without which the
+last step fails. Second, the sign $\pm$ must be locally constant in the shape,
+which it is: the outward normal varies continuously on a connected component of
+shape space, and vanishing on a nonempty open subset of one component is all the
+argument needs. Working with directions modulo $\pi$, as we do above, discards
+exactly this information, so we record it here.
 \end{proof}
+
+The word \emph{generic} is used in this paper in three distinct senses, and we
+fix them now. A shape is \emph{generic} when its coordinates are algebraically
+independent over $\Q$, which is the sense of \S\ref{sec:census} and of
+\cite{IP}; it is \emph{flow-generic} in the sense of Definition~\ref{def:generic}
+just below, which is the hypothesis of the metric theorem; and it is
+\emph{stratum-generic} in the sense of Definition~\ref{def:stratgen}, which is
+the corresponding notion inside a fixed stratum. Algebraic independence implies
+the other two, by Proposition~\ref{prop:generic} and its stratum analogue, but
+the converses are not claimed.
 
 \begin{definition}\label{def:generic}
 The shape $\tau$ is \emph{flow-generic} if $M_\tau$ is injective and
@@ -432,9 +466,13 @@ $p,q$ are algebraically independent over $\Q$ is flow-generic.
 \begin{proof}
 Injectivity of $M_\tau$ reduces to injectivity on the rotation subgroup,
 reflections never being trivial, and there it is the condition
-$m_1\beta_1+m_2\beta_2\notin2\pi\Z$ for $(m_1,m_2)\neq(0,0)$; each failure
-is a nontrivial algebraic condition holding at some shapes and not at
-others, hence a proper Zariski-closed set, and there are countably many.
+$m_1\beta_1+m_2\beta_2\notin2\pi\Z$ for $(m_1,m_2)\neq(0,0)$. Each failure is a
+proper condition: the two base angles determine the triangle up to similarity,
+so $(p,q)\mapsto(\beta_1,\beta_2)$ is a diffeomorphism onto the open set
+$\{\beta_1,\beta_2>0,\ \beta_1+\beta_2<\pi\}$, and a nonzero linear functional
+$m_1\beta_1+m_2\beta_2$ is nonconstant there, so each level set
+$\{m_1\beta_1+m_2\beta_2=2\pi k\}$ is a proper closed subset. There are countably
+many such conditions.
 With Lemma~\ref{lem:sep} this exhausts the conditions, each defined over
 $\Q$; a point with algebraically independent coordinates lies on no proper
 $\Q$-defined Zariski-closed subset.
@@ -767,7 +805,12 @@ therefore cyclically reduced of length $n(2c+2)$.
 The counts $3,8,15,24$ at depths $6,8,10,12$ for $m=4,6,8,10$ agree with
 Corollary~\ref{cor:onset}; $m=2$ gives none, and $m=12$ is placed at depth
 $14$ with $35$ relations, beyond the computed window and consistent with the
-absence of extra relations at depth $12$. For odd $m$ the corollary gives $3$
+absence of extra relations at depth $12$. That placement should not be read as
+saying that depth $14$ is where the $m=12$ stratum first departs from the generic
+growth. Measured against the generic spheres $11925$ and $23570$, the $m=12$
+stratum has $11878$ elements at depth $13$ and $23358$ at depth $14$, deficits of
+$47$ and $212$; the deficit at depth $13$ is of the second kind discussed below
+and is not accounted for by Corollary~\ref{cor:onset}. For odd $m$ the corollary gives $3$
 relations at depth $9$ for $m=3$ and $8$ at depth $12$ for $m=9$, both
 attained, and for the primes $m=5,7,11$ it gives $3$ relations at depths
 $15,21,33$. The bound is attained for every computed onset except two. For
@@ -794,7 +837,8 @@ three rational samples. The three relations at depth $9$ for $m=3$ are
 \[
  210201210=102012102,\quad 020121020=121020121,\quad 201210201=012102012,
 \]
-of which the first and third have the form $R\,s\,R\,s^{-1}R\,s$ with $R=r_2$
+of which the first and third have the form $R\,s\,R\,s^{-1}R\,s$, the third with
+$s$ replaced throughout by $s^{-1}$, with $R=r_2$
 and $s=r_1r_0$ the apex rotation of order three, while the second has as
 relator the cube $(r_0r_2r_0r_1r_2r_1)^3$. The three at depth $6$ for $m=4$
 are
@@ -830,8 +874,11 @@ unique. The word $(r_0r_1)^m$ and its conjugates have closed suffix walks,
 whose flows wrap once around the cylinder and are killed by $V_\tau$. Write
 $\gamma_j$ for the flow of $(\!(r_0r_1)^m\!)(r_0r_2)^j$, the conjugate by the
 $j$th power of $r_0r_2$. Then $\gamma_j-\gamma_{j-1}$ is the sum of the $m$
-faces of level $j$. Here $Z_1(X_m)$ denotes the finitely supported cycles.
-\item[(iii)] For every translation $g$,
+faces of level $j$.
+\item[(iii)] For every translation $g$, writing $Z_1(X_m)$ for the finitely
+supported $1$-cycles of $X_m$ and extending $\mathrm{st}$ from configurations to
+cycles by $\mathrm{st}(\phi):=\mathrm{st}(c)$ for any configuration $c$ with
+flow $\phi$,
 \[
  \ell(g)\;=\;\min\bigl\{\,\|\phi\|_1+2\,\mathrm{st}(\phi)\;:\;\phi\in Z_1(X_m),\
  V_\tau(\phi)=g\,\bigr\}.
@@ -846,8 +893,10 @@ $t_{n,j}$ with $n\in\Z/m$ are therefore the images of one vector under the
 $m$th roots of unity, and those sum to zero. (ii) $(r_0r_1)^m$ is the rotation
 by $2\pi$, that is the identity, so the flow of its word has $V_\tau=0$; the
 identity between $\gamma_j-\gamma_{j-1}$ and the level sum holds because both
-are checked to agree as flows, a finite computation recorded in the script
-cited below.
+sides are explicit finitely supported flows, and conjugation by $r_0r_2$ carries
+level $j$ to level $j+1$ and $\gamma_j$ to $\gamma_{j+1}$, so it is enough to
+check a single $j$. That check is the finite computation recorded in the script
+cited below, carried out for $2\le m\le12$; we do not prove it uniformly in $m$.
 (iii) Neither bound of Theorem~\ref{thm:metric} used the planarity of $X$ or
 the uniqueness of the flow. The lower bound gives
 $\ell(w)\ge\|\phi(w)\|_1+2\,\mathrm{st}(\phi(w))$ for every word $w$
@@ -948,7 +997,8 @@ $|j|\le12$, $2\le h\le10$, so $\min_{(n,j)}\max\{k(n,j),k(n+h,j)\}=h-1$ there.
 \end{corollary}
 
 \begin{proof}
-Attainment is the following computation. On row $0$ the pair $(n,n+h)$ with $n\le-1\le0\le n+h$ has
+Attainment is the following computation with the row formulas of
+Lemma~\ref{lem:krows}. On row $0$ the pair $(n,n+h)$ with $n\le-1\le0\le n+h$ has
 values $-2n-2$ and $2(n+h)$, equal to $h-1$ exactly when $h$ is odd and
 $n=-(h+1)/2$; on row $1$ the values are $-2n-3$ and $2(n+h)+1$, equal to $h-1$
 exactly when $h$ is even and $n=-h/2-1$. Parity makes one of the two rows
