@@ -770,6 +770,13 @@ Lemma~\ref{lem:cremona-empty} for nontrivial solutions with legs up to $300$,
 finding none, while exhibiting rational points of the corresponding conics in
 $(X,Z)$ to show that the restriction to squares is not cosmetic.
 
+The boundary half of Proposition~\ref{prop:no-rank2}, and the two lower bounds that make the
+finite values of Theorem~\ref{thm:cd-general} equalities rather than upper bounds, are proved in
+\texttt{lean/with\_mathlib/RankTwoExclusion.lean} (ten theorems, no \texttt{sorry}): that $3$ is
+not a rational square (\texttt{sq\_ne\_three}), the exclusion of each admissible Niven value at a
+boundary pair (\texttt{boundary\_no\_relation}), and the absence of collisions at lengths $2$
+and $3$. The interior cases are not formalised, since they rest on the rank-$0$ Mordell descents.
+
 The algebraic content of Lemma~\ref{lem:uniform-detQ} and of
 Theorem~\ref{thm:ndim-rate} is formalised in Lean~4 with Mathlib.  Each file
 ends with \verb|#print axioms|; every theorem below reports only the standard

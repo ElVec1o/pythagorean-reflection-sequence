@@ -1002,8 +1002,11 @@ Lemma~\ref{lem:krows}. On row $0$ the pair $(n,n+h)$ with $n\le-1\le0\le n+h$ ha
 values $-2n-2$ and $2(n+h)$, equal to $h-1$ exactly when $h$ is odd and
 $n=-(h+1)/2$; on row $1$ the values are $-2n-3$ and $2(n+h)+1$, equal to $h-1$
 exactly when $h$ is even and $n=-h/2-1$. Parity makes one of the two rows
-attain $h-1$ for every $h$. That no $(n,j)$ gives a smaller maximum is verified
-by breadth-first search in $X$ over the stated range. We do not prove it for all
+attain $h-1$ for every $h$; this half is machine-checked in
+\texttt{lean/with\_mathlib/AntipairRows.lean} (\texttt{row0\_attains},
+\texttt{row1\_attains}, \texttt{attains}), which also refutes the withdrawn premise
+(\texttt{row3\_valley\_width\_three}, \texttt{row3\_counterexample}). That no $(n,j)$ gives a
+smaller maximum is verified by breadth-first search in $X$ over the stated range. We do not prove it for all
 $(n,j)$: by Remark~\ref{rem:krows-shape} the rows off $j\in\{0,1\}$ are not
 V-shaped with slope $2$, so the valley argument that would give the bound
 uniformly is unavailable.

@@ -358,7 +358,13 @@ $1-2t-3t^2+4t^3-t^4$, is the negated reciprocal of the correct $1-4t+3t^2+2t^3-t
 elements at depth $1$ in a group with $8$ generators.
 
 The arithmetic of Theorem~\ref{thm:dichotomy} and the root identity of Theorem~\ref{thm:envelope} are
-machine-checked in Lean~4 in \texttt{lean/with\_mathlib/EnvelopeDichotomy.lean}.
+machine-checked in Lean~4 in \texttt{lean/with\_mathlib/EnvelopeDichotomy.lean} (twelve theorems,
+no \texttt{sorry}), and Lemma~\ref{lem:normals} in
+\texttt{lean/with\_mathlib/OrthoschemeNormals.lean} (seven theorems, no \texttt{sorry}): the
+support pattern \texttt{supp\_disjoint}, the vanishing of the inner product on disjoint supports
+\texttt{sum\_eq\_zero\_of\_disjoint}, and the three adjacent inner products, which are nonzero for
+every positive leg tuple. That file is what replaces the earlier ``verified symbolically for
+$n\le5$''.
 
 \begin{thebibliography}{9}
 

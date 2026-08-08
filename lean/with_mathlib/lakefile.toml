@@ -41,3 +41,12 @@ name = "ShapeArith"
 
 [[lean_lib]]
 name = "MooreCriterion"
+
+[[lean_lib]]
+name = "OrthoschemeNormals"
+
+[[lean_lib]]
+name = "RankTwoExclusion"
+
+[[lean_lib]]
+name = "AntipairRows"
