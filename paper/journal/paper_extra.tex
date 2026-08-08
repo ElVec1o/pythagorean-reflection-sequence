@@ -171,6 +171,20 @@ stated; the companion~\cite{Bonfioli2} imposes the corresponding
 condition explicitly. The same remark applies to any extension of the
 search: raising $k$ or $m$ without also lengthening the sequence buys
 nothing.
+
+The underlying fact is elementary and is machine-checked in
+\texttt{lean/with\_mathlib/OverDetermination.lean}. A homogeneous system
+with strictly more unknowns than equations has a nontrivial solution for
+\emph{every} coefficient matrix (\texttt{exists\_nonzero\_solution}),
+so a search over such a shape reports the existence of a relation
+whatever the input data are. Contrapositively, an exclusion that is
+correct forces $\text{unknowns} \le \text{equations}$
+(\texttt{le\_of\_exclusion}); that is the guard, and its failure convicts
+the claim. The same file proves the two counts quoted here,
+$\texttt{vacuous\_card} = 20$ of the $72$ pairs and
+$252 > 38$ for the nonlinear shape, and records that the guard is
+necessary but not sufficient (\texttt{guard\_not\_sufficient}): passing
+it still leaves the rank of the coefficient matrix to be computed.
 \end{remark}
 
 \begin{proposition}[$U$ transcendence: D-finite route, conditional]

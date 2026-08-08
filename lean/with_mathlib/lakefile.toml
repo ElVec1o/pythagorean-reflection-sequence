@@ -50,3 +50,6 @@ name = "RankTwoExclusion"
 
 [[lean_lib]]
 name = "AntipairRows"
+
+[[lean_lib]]
+name = "OverDetermination"
