@@ -1025,17 +1025,19 @@ So $\widehat\delta=d_X(e,\cdot)$.
 Finally $k(n,j)$ is the minimum of $\widehat\delta$ over the six corners of the hexagon at
 $(n,j)$, namely $\mathrm{up}(n,j)$, $\mathrm{up}(n-1,j)$, $\mathrm{up}(n,j-1)$,
 $\mathrm{down}(n,j)$, $\mathrm{down}(n-1,j)$ and $\mathrm{down}(n-1,j+1)$. Evaluating that
-minimum region by region gives the displayed closed form; this last step is machine-checked in
-\texttt{lean/with\_mathlib/HexDistance.lean} as \texttt{kmin\_eq\_kClosed}.
+minimum region by region gives the displayed closed form.
 \end{proof}
 
 \begin{remark}[what the proof rests on]\label{rem:krows-status}
 The closed form is additionally verified directly, by breadth-first search in $X$ at every site
-with $|n|,|j|\le60$, that is $14\,641$ sites, with no exception. The proof above reduces it to
-the two local conditions, which are finitely many linear inequalities; those are discharged by
-exhaustive check rather than written out, and of the Lean file's contents it is the reduction
-to the vertex formula that is machine-checked, the four cross-site inequalities being stated
-there and left to the certificate. The certificate is
+with $|n|,|j|\le60$, that is $14\,641$ sites, with no exception. The proof above reduces it to the two local conditions, which are finitely many linear
+inequalities; those are discharged by exhaustive check rather than written out. In
+\texttt{lean/with\_mathlib/HexDistance.lean} the closed form, the base value and the same-site
+Lipschitz bound are machine-checked, with only the standard axioms. The cross-site conditions
+and the evaluation of the minimum over the six corners are stated there and left to the
+certificate: each mentions \texttt{dhat} at several sites at once, and the elaboration does not
+terminate within budget because \texttt{omega} cannot see through the definition at a shifted
+site. Under the labelling of this paper the lemma is therefore PROVED and not VERIFIED. The certificate is
 \texttt{code/zeta\_probe/tools/hexdist}, which builds $X$ from the site lattice directly, its
 vertices being the triangles of mutually hex-adjacent sites and the base vertex the triangle
 $\{(0,0),(-1,0),(-1,1)\}$ of base sites, and compares the closed form against the search at

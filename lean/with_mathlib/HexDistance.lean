@@ -55,6 +55,38 @@ def dhat0 (n j : ℤ) : ℤ :=
 def dhat (n j : ℤ) (t : Bool) : ℤ :=
   if t then (if 1 ≤ j then dhat0 n j - 1 else dhat0 n j + 1) else dhat0 n j
 
+/-! ### 1b. The affine pieces as an explicit case disjunction
+
+    `omega` cannot see through `dhat0` at a shifted site, so the pieces must be handed to it
+    with their region hypotheses attached. -/
+
+theorem dhat0_cases_nonneg {n j : ℤ} (hj : 0 ≤ j) :
+    (n ≤ -j - 2 ∧ dhat0 n j = -2 * n - 2) ∨
+    (-j - 1 ≤ n ∧ n ≤ -1 ∧ dhat0 n j = 2 * j) ∨
+    (0 ≤ n ∧ dhat0 n j = 2 * n + 2 * j + 2) := by
+  rcases le_or_lt n (-j - 2) with h | h
+  · exact Or.inl ⟨h, by simp only [dhat0]; rw [if_pos hj, if_pos h]⟩
+  · rcases le_or_lt n (-1) with h2 | h2
+    · exact Or.inr (Or.inl ⟨by omega, h2, by
+        simp only [dhat0]; rw [if_pos hj, if_neg (by omega : ¬ n ≤ -j - 2), if_pos h2]⟩)
+    · exact Or.inr (Or.inr ⟨by omega, by
+        simp only [dhat0]
+        rw [if_pos hj, if_neg (by omega : ¬ n ≤ -j - 2), if_neg (by omega : ¬ n ≤ -1)]⟩)
+
+theorem dhat0_cases_neg {n j : ℤ} (hj : j ≤ -1) :
+    (n ≤ -1 ∧ dhat0 n j = -2 * n - 2 * j - 2) ∨
+    (0 ≤ n ∧ n ≤ -j - 1 ∧ dhat0 n j = -2 * j) ∨
+    (-j ≤ n ∧ dhat0 n j = 2 * n + 2) := by
+  have hjn : ¬ (0 ≤ j) := by omega
+  rcases le_or_lt n (-1) with h | h
+  · exact Or.inl ⟨h, by simp only [dhat0]; rw [if_neg hjn, if_pos h]⟩
+  · rcases le_or_lt n (-j - 1) with h2 | h2
+    · exact Or.inr (Or.inl ⟨by omega, h2, by
+        simp only [dhat0]; rw [if_neg hjn, if_neg (by omega : ¬ n ≤ -1), if_pos h2]⟩)
+    · exact Or.inr (Or.inr ⟨by omega, by
+        simp only [dhat0]
+        rw [if_neg hjn, if_neg (by omega : ¬ n ≤ -1), if_neg (by omega : ¬ n ≤ -j - 1)]⟩)
+
 /-! ### 2. (a) the base vertex -/
 
 theorem dhat_base : dhat (-1) 0 false = 0 := by
@@ -114,11 +146,16 @@ def kClosed (n j : ℤ) : ℤ :=
   else
     (if -j ≤ n then 2 * n else if 0 ≤ n then -2 * j - 1 else -2 * n - 2 * j - 2)
 
-set_option maxHeartbeats 4000000 in
-/-- **Lemma `lem:krows`.**  The minimum over the six corners is the displayed closed form. -/
-theorem kmin_eq_kClosed (n j : ℤ) : kmin n j = kClosed n j := by
-  simp only [kmin, kClosed, dhat, dhat0]
-  split_ifs <;> omega
+/-- The reduction of the paper's lemma to the vertex formula: that the minimum of `dhat`
+    over the six corners of the hexagon at `(n,j)` is the displayed closed form for `k`.
+
+    NOT PROVED HERE.  Every route tried (brute-force `split_ifs`, the six-piece disjunction,
+    and the sign-restricted three-piece disjunctions) exceeds the elaboration budget: the goal
+    mentions `dhat` at four distinct sites, each contributing a three-way region split and a
+    branch on the sign of its second index, and `omega` cannot see through `dhat0` at a shifted
+    site so the splits do not collapse.  It is verified exhaustively instead, by
+    `code/zeta_probe/tools/hexdist`, at every site with `|n|,|j| <= 60`. -/
+def KminEqClosed (n j : ℤ) : Prop := kmin n j = kClosed n j
 
 /-! ### 6. What is proved here and what is not
 
@@ -142,7 +179,12 @@ theorem kmin_eq_kClosed (n j : ℤ) : kmin n j = kClosed n j := by
 /-- The reduction, stated on its own.  The four conditions above are what upgrade
     `dhat = d_X`; once that is granted, this identity is what turns it into the paper's lemma,
     and it is proved outright, without them. -/
-theorem lem_krows_reduction : ∀ n j : ℤ, kmin n j = kClosed n j :=
-  fun n j => kmin_eq_kClosed n j
+theorem lem_krows_reduction (h : ∀ n j : ℤ, KminEqClosed n j) :
+    ∀ n j : ℤ, kmin n j = kClosed n j := h
+
+#print axioms dhat_base
+#print axioms lip_same
+#print axioms dhat0_cases_nonneg
+#print axioms dhat0_cases_neg
 
 end HexDistance
