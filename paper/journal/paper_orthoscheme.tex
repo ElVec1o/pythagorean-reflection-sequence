@@ -62,36 +62,41 @@ the right-angled Coxeter envelope and the collision depth}}
 The $n+1$ facet reflections of an $n$-dimensional right-corner orthoscheme
 $O(a_1,\dots,a_n)$ generate a group $W(a)\le\Isom(\R^n)$, and $W(a)$ is a quotient of the
 right-angled Coxeter group $W_n$ on the orthogonality graph of the facets. This paper
-determines what the quotient can do to the growth.
+determines what the quotient can do to the growth, and states precisely where that
+determination stops.
 
-Three statements are proved unconditionally. First, a dimension-free dichotomy: if $Q=G/N$
+Four statements are proved unconditionally. First, a dimension-free dichotomy: if $Q=G/N$
 is a quotient of a marked group and $K(N)$ is the length of a shortest nontrivial element of
 $N$, then the sphere sizes of $Q$ and of $G$ agree in every degree below $\lceil K(N)/2\rceil$
 and $Q$ is strictly smaller in that degree (Theorem~\ref{thm:dichotomy}). Second, the growth
 series of $W_n$ is rational, equal to $(1+t)^{\lfloor n/2\rfloor+1}/K_{n+1}(t)$ for an explicit
 integer polynomial $K_{n+1}$, with growth rate $r_n=1+2\cos\bigl(2\pi/(n+3)\bigr)$
-(Theorem~\ref{thm:envelope}). Third, a complete classification of the rank-two relations:
-$\ker(W_n\to W(a))$ meets a rank-two standard parabolic nontrivially if and only if the leg
-sequence has two equal legs at an endpoint of the staircase or three consecutive equal legs
-(Theorem~\ref{thm:rank2}). The Diophantine input is that three quartics in the flanking legs
-have only trivial rational points, their Jacobians being the rank-zero curves \texttt{24a1},
-\texttt{72a2} and $y^2=x^3-x$.
+(Theorem~\ref{thm:envelope}). Third, for $n\ge3$ and every positive leg tuple, every element of
+$\ker\rho_a$ of word length $6$ is $(R_iR_{i+1})^{\pm3}$ for a pair of consecutive facets
+meeting at angle $\pi/3$ (Theorem~\ref{thm:len6}). Fourth, a complete classification of the
+rank-two relations: $\ker(W_n\to W(a))$ meets a rank-two standard parabolic nontrivially if and
+only if the leg sequence has two equal legs at an endpoint of the staircase or three
+consecutive equal legs (Theorem~\ref{thm:rank2}). The Diophantine input to the fourth is that
+three quartics in the flanking legs have only trivial rational points, their Jacobians being
+the rank-zero curves \texttt{24a1}, \texttt{72a2} and $y^2=x^3-x$.
 
-Combining the first two, the collision depth
-$\cd_n(a)=\inf\{d:u_d(a)<[t^d]\,W_n(t)\}$ is exactly $K(\ker\rho_a)/2$. We show
-$K(\ker\rho_a)\ge6$ for every positive leg tuple, so $\cd_n\ge3$ always, and we determine
-$\cd_n$ from the two positional statistics $(e,t)$ of the leg sequence: unconditionally when
-three consecutive legs are equal, and otherwise up to one explicitly stated hypothesis
-(Theorem~\ref{thm:cd-general}).
+Together these determine the collision depth
+$\cd_n(a)=\inf\{d:u_d(a)<[t^d]\,W_n(t)\}$, which equals $K(\ker\rho_a)/2$ and is at least $3$
+for every positive leg tuple, from the two positional statistics $(e,t)$ of the leg sequence:
+$\cd_n=3$ when three consecutive legs are equal, $\cd_n=4$ when only an endpoint pair is equal,
+and on the remaining stratum $e=t=0$, $\cd_n=\infty$ exactly when $\rho_a$ is injective and
+$\cd_n\ge4$ otherwise (Theorem~\ref{thm:cd-general}). The first two cases are unconditional.
 
-What remains open is whether $\rho_a$ is injective at all for $n\ge3$; it is open in both
-directions, and we state it as one problem in two forms (Problem~\ref{prob:alternative}). In
-the plane $\rho_a$ is not injective, by an amenability argument, and that argument does not
-extend: $O(n)$ contains a free subgroup of rank two for every $n\ge3$, so $\Isom(\R^n)$ is not
-amenable as an abstract group (Remark~\ref{rem:amenability-fails}). We also record that
-nonvanishing of the Schur-complement determinant $\det Q_n=-\prod_i a_i^2$
-(Lemma~\ref{lem:uniform-detQ}) does not imply faithfulness, contrary to an argument used in an
-earlier version of this material (Remark~\ref{rem:detQ-nonsequitur}).
+Whether $\rho_a$ is injective at all is decided here in dimension two only, where it is not.
+That boundary is declared, not incidental. The planar proof is an amenability argument, and
+Theorem~\ref{thm:barrier} shows that it cannot be run in any dimension $n\ge3$: $O(n)$ contains
+a free subgroup of rank two for $n\ge3$, so $\Isom(\R^n)$ is not amenable as an abstract group,
+and any argument of that shape would have to prove the strictly stronger statement that $W_n$
+admits no embedding at all into $\Isom(\R^n)$. Section~\ref{sec:open} states the three problems
+that remain, with what is known about each. We also record that nonvanishing of the
+Schur-complement determinant $\det Q_n=-\prod_i a_i^2$ (Lemma~\ref{lem:uniform-detQ}) does not
+imply faithfulness, contrary to an argument used in an earlier version of this material
+(Remark~\ref{rem:detQ-nonsequitur}).
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -123,7 +128,7 @@ that this paper is about.
 
 The sphere sizes $u_d(a)=\#\{w\in W(a):\ell(w)=d\}$ are bounded above by the coefficients of
 the growth series $W_n(t)$ of the envelope~\eqref{eq:Wn-presentation}, and the whole question is
-where and by how much the bound fails to be sharp. Three unconditional theorems answer the
+where and by how much the bound fails to be sharp. Four unconditional theorems answer the
 ``where''.
 
 \begin{itemize}[leftmargin=1.4em,itemsep=0.35em]
@@ -143,6 +148,11 @@ kernel of $\rho_a$ meets a rank-two standard parabolic $\langle R_i,R_{i+1}\rang
 nontrivially if and only if $e(a)+t(a)\ge1$, where $e(a)$ counts equal legs at the two
 endpoints of the staircase and $t(a)$ counts three consecutive equal legs. The shortest such
 element has length $6$ when $t(a)\ge1$ and length $8$ when $t(a)=0<e(a)$.
+
+\item \textbf{Length six is dihedral} (Theorem~\ref{thm:len6}). For $n\ge3$ and every
+$a\in U$, an element of $\ker\rho_a$ of word length $6$ is $(R_iR_{i+1})^{\pm3}$ for a
+consecutive pair of facets meeting at angle $\pi/3$. There is no length-six relation outside
+the rank-two standard parabolics, in any dimension $n\ge3$ and at any positive leg tuple.
 \end{itemize}
 
 The first two combine into the statement that gives the paper its shape. Define the
@@ -153,17 +163,37 @@ The first two combine into the statement that gives the paper its shape. Define 
 By the dichotomy, $\cd_n(a)=\lceil K(\ker\rho_a)/2\rceil$, and since a relator of a reflection
 group has even length this is $K(\ker\rho_a)/2$ (Corollary~\ref{cor:cd-is-K}). A short geometric
 argument then shows $K(\ker\rho_a)\ge6$ for every positive leg tuple
-(Lemma~\ref{lem:no-length-four}), so $\cd_n\ge3$ unconditionally, and the rank-two
-classification pins the value: $\cd_n=3$ exactly when three consecutive legs are equal, and
-$\cd_n\in\{3,4\}$ with the value $4$ in every computed case when only an endpoint pair is equal
-(Theorem~\ref{thm:cd-general}). The remaining case $e=t=0$ is $\cd_n=\infty$ precisely when
-$\rho_a$ is injective.
+(Lemma~\ref{lem:no-length-four}), so $\cd_n\ge3$ unconditionally. The last two theorems pin the
+value: $K(a)=6$ if and only if three consecutive legs are equal
+(Corollary~\ref{cor:K-eq-six}), so $\cd_n=3$ exactly on that stratum, $\cd_n=4$ when only an
+endpoint pair is equal, and $\cd_n\ge4$ everywhere else (Theorem~\ref{thm:cd-general}). The
+remaining case $e=t=0$ is $\cd_n=\infty$ precisely when $\rho_a$ is injective.
 
-Whether $\rho_a$ is ever injective for $n\ge3$ is open in both directions. Section~\ref{sec:open}
-states it as a single problem in two forms, generic and arithmetic, together with the two
-partial results that bound it: the rank-two half is proved
-(Theorem~\ref{thm:rank2}), and the one soft argument that settles the plane provably does not
-extend (Remark~\ref{rem:amenability-fails}).
+\subsection{Scope}\label{subsec:scope}
+
+The four theorems above are unconditional; they hold at every positive leg tuple apart from
+the arithmetic hypotheses of Theorem~\ref{thm:rank2}, and they are dimension-free except that
+Theorem~\ref{thm:len6} requires $n\ge3$. The question they do not answer is whether $\rho_a$ is
+injective at all when $e=t=0$, and this paper answers that question in dimension two only,
+where the answer is no (Proposition~\ref{prop:plane}). That is the declared boundary of the
+paper, and it is a boundary of the available method rather than of the write-up.
+
+Theorem~\ref{thm:barrier} makes that last sentence precise. The planar proof is an amenability
+argument: $\Isom(\R^2)$ is virtually solvable, hence amenable, and so is every subgroup of it,
+whereas $W_2$ contains a free subgroup of rank two and is not. For $n\ge3$ that argument is not
+merely unproved but unavailable, since $SO(3)\le SO(n)$ contains a free subgroup of rank two
+and $\Isom(\R^n)$ is therefore not amenable as an abstract group.
+Theorem~\ref{thm:barrier} also identifies what any argument of that shape would have to
+establish, namely that $W_n$ admits no embedding whatsoever into $\Isom(\R^n)$, a statement
+strictly stronger than non-injectivity of the particular map $\rho_a$.
+
+Section~\ref{sec:open} states the three problems that remain: faithfulness on the $e=t=0$
+stratum (Conjecture~\ref{conj:master-C}, with the generic and arithmetic forms of
+Problem~\ref{prob:alternative}), the embedding question just described
+(Problem~\ref{prob:embed}), and finite presentation of the generic $n$-orthoscheme group
+(Problem~\ref{prob:fp}). Each is stated with what is known about it. Nothing outside those
+three is left implicit: Table~\ref{tab:status} assigns a status to every numbered statement in
+the paper.
 
 \subsection{What is and is not new}
 
@@ -250,6 +280,40 @@ $|i-j|\ge2$, so the assignment $R_i\mapsto\widehat R_i$ defines a surjection
 \]
 from the right-angled Coxeter group~\eqref{eq:Wn-presentation} on the orthogonality graph
 $\Gamma_n$ \cite{Davis}. The abstract group $W_n$ does not depend on $a$.
+
+We write $H_j$ for the facet hyperplane carrying $\widehat R_j$ and
+$\theta_{i,j}\in(0,\tfrac\pi2]$ for the angle between $H_i$ and $H_j$, so that
+\[
+\cos\theta_{i,j}=\frac{|m_i\cdot m_j|}{|m_i|\,|m_j|},
+\]
+and $\widehat R_i\widehat R_j$ is a rotation through $2\theta_{i,j}$ about $H_i\cap H_j$.
+
+The $n+1$ normals live in $\R^n$, so they carry one linear relation. It is unique and involves
+all of them, which is the source of every independence statement used below.
+
+\begin{lemma}[The unique relation among the normals]\label{lem:independence}
+Let $a\in U$. The vectors $m_0,\dots,m_n$ span $\R^n$, and the space of linear relations
+$\sum_jc_jm_j=0$ is one-dimensional, spanned by the relation determined by
+\[
+c_0=-a_2c_1,\qquad c_k=\frac{a_{k-1}}{a_{k+1}}\,c_{k-1}\ \ (2\le k\le n-1),\qquad
+c_n=a_{n-1}c_{n-1},
+\]
+in which every coefficient is nonzero. Consequently any at most $n$ of the vectors
+$m_0,\dots,m_n$ are linearly independent.
+\end{lemma}
+
+\begin{proof}
+The matrix with rows $m_1,\dots,m_n$ is upper triangular in the basis $e_1,\dots,e_n$: row $j$
+has entries $a_{j+1}$ in column $j$ and $-a_j$ in column $j+1$ for $1\le j\le n-1$, and row $n$
+is $e_n$. Its determinant is $a_2a_3\cdots a_n\ne0$, so $m_1,\dots,m_n$ is a basis and the
+relation space of the $n+1$ vectors is one-dimensional. Only $m_0$ and $m_1$ involve $e_1$, so
+the $e_1$-coefficient of $\sum_jc_jm_j$ is $c_0+a_2c_1$; for $2\le k\le n-1$ only $m_{k-1}$ and
+$m_k$ involve $e_k$, giving $a_{k+1}c_k-a_{k-1}c_{k-1}$; and the $e_n$-coefficient is
+$c_n-a_{n-1}c_{n-1}$. Setting these to zero gives the displayed recursion, and all $a_i$ are
+positive, so $c_1\ne0$ forces every $c_j\ne0$. A dependent subset of size at most $n$ would
+give a nonzero relation with at least one vanishing coefficient, contradicting uniqueness up to
+scale.
+\end{proof}
 
 \subsection{Counting conventions}
 
@@ -432,6 +496,139 @@ $|i-j|\ge2$ that relation already holds in $W_n$ and the word $R_iR_jR_iR_j$ is 
 for $|i-j|=1$ perpendicularity contradicts $m_i\cdot m_{i+1}\ne0$ in
 Lemma~\ref{lem:normals}. Both branches are impossible, so $K(a)\ne4$.
 \end{proof}
+
+\subsection{Length six is dihedral}\label{subsec:len6}
+
+The next value, $K(a)=6$, is the first that occurs. The point of this subsection is that when
+it occurs it occurs for the obvious reason: a length-six kernel element is always a dihedral
+relator inside a rank-two standard parabolic, in every dimension $n\ge3$ and at every positive
+leg tuple. Nothing arithmetic enters; the proof is the rank calculus of products of reflections
+together with the affine geometry of the one facet hyperplane that misses the origin.
+
+We use the following standard fact, in the form given by Carter \cite[Lemma 2]{carter}. Let
+$V$ be a Euclidean space and $g=s_{\alpha_1}\cdots s_{\alpha_k}$ a product of reflections in
+the hyperplanes $\alpha_i^{\perp}$. Then $\operatorname{im}(g-1)\subseteq
+\langle\alpha_1,\dots,\alpha_k\rangle$ always, and if $\alpha_1,\dots,\alpha_k$ are linearly
+independent then $\operatorname{rank}(g-1)=k$, so that $\operatorname{im}(g-1)$ is the whole of
+$\langle\alpha_1,\dots,\alpha_k\rangle$ and $\operatorname{Fix}(g)=\bigcap_i\alpha_i^{\perp}$.
+We also use twice that $\operatorname{im}(g-1)=\operatorname{Fix}(g)^{\perp}=
+\operatorname{Fix}(g^{-1})^{\perp}=\operatorname{im}(g^{-1}-1)$ for $g$ orthogonal.
+
+\begin{theorem}[Length-six kernel elements are dihedral]\label{thm:len6}
+Let $n\ge3$ and $a\in U$. Every $w\in\ker\rho_a$ with $\ell_{W_n}(w)=6$ lies in a rank-two
+standard parabolic. Explicitly, $w=(R_iR_{i+1})^{\pm3}$ for an index $i$ with
+$\theta_{i,i+1}=\pi/3$.
+\end{theorem}
+
+\begin{proof}
+Write $L\colon\Isom(\R^n)\to O(n)$ for the linear part and $s_j=L(\widehat R_j)$ for the
+reflection in $m_j^{\perp}$. The vertex $V_0=0$ lies on every facet except the one opposite it,
+so $H_1,\dots,H_n$ contain the origin while $H_0=\{x_1=a_1\}$ does not; accordingly
+$\widehat R_j(x)=s_jx$ for $1\le j\le n$ and $\widehat R_0(x)=s_0x+2a_1e_1$.
+
+Fix a reduced word $w=R_{i_1}\cdots R_{i_6}$ representing an element of $\ker\rho_a$.
+
+\emph{(0) Rotations, and the reduction to large support.} For a factorisation $w=xy$ the
+element $yx=x^{-1}wx$ lies in $\ker\rho_a$ and is nontrivial in $W_n$, since $yx=1$ would give
+$y=x^{-1}$ and $w=1$. Hence $\ell(yx)\ge K(a)\ge6$ by Lemma~\ref{lem:no-length-four}, while
+$\ell(yx)\le6$; so every cyclic rotation of the word is again a reduced word of length $6$
+representing an element of $\ker\rho_a$, with the same support. We may therefore rotate freely.
+If $|\operatorname{supp}(w)|\le2$ then $w$ lies in a standard parabolic of rank at most two,
+which is the assertion; so assume $|\operatorname{supp}(w)|\ge3$ and derive a contradiction.
+
+\emph{(1) A repeated letter at distance two forces the dihedral case.} Suppose
+$i_k=i_{k+2}$ for some $k$, indices read cyclically. Rotate so that $k=1$ and put
+$a'=i_1=i_3$, $b=i_2$. Reducedness forces $|a'-b|=1$, since $R_{a'}R_bR_{a'}=R_b$ when the two
+generators commute. Let $u=R_{a'}R_bR_{a'}$ and $v=R_{i_4}R_{i_5}R_{i_6}$. Then $L\rho_a(u)$ is
+the reflection in $s_{a'}(m_b)^{\perp}$, so $\operatorname{rank}(L\rho_a(u)-1)=1$; since
+$L\rho_a(v)=L\rho_a(u)^{-1}$ is orthogonal, $\operatorname{rank}(L\rho_a(v)-1)=1$ too. Were
+$i_4,i_5,i_6$ pairwise distinct, their normals would be independent by
+Lemma~\ref{lem:independence} (here $3\le n$ is used) and Carter's lemma would give rank $3$.
+Hence $i_4=i_6$; write $c=i_4$, $d=i_5$, so $|c-d|=1$ as before.
+
+Now $\rho_a(u)$ and $\rho_a(v)$ are the reflections in the affine hyperplanes
+$\widehat R_{a'}(H_b)$ and $\widehat R_c(H_d)$, and $\rho_a(u)\rho_a(v)=1$ with both factors
+involutions forces the two hyperplanes to coincide; call the common hyperplane $P$. As
+$\widehat R_{a'}$ fixes $H_{a'}$ pointwise, $P\supseteq H_{a'}\cap H_b$, and likewise
+$P\supseteq H_c\cap H_d$. Using $H_i\cap H_j=\operatorname{aff}\{V_m:m\ne i,j\}$ as in
+Lemma~\ref{lem:no-length-four}, $P$ contains every vertex $V_m$ with
+$m\notin\{a',b\}\cap\{c,d\}$. If that intersection is empty, $P$ contains all $n+1$ vertices,
+which affinely span $\R^n$ and lie in no hyperplane. If it is a single index $j$, then $P$
+contains the $n$ affinely independent vertices $V_m$, $m\ne j$, so $P=H_j$; the case $j=a'$
+gives $H_b=\widehat R_{a'}(H_{a'})=H_{a'}$, excluded, and the case $j=b$ gives
+$\widehat R_{a'}(H_b)=H_b$, which makes $m_b$ an eigenvector of $s_{a'}$ and hence, the normals
+being pairwise non-proportional by Lemma~\ref{lem:independence}, forces $m_{a'}\perp m_b$,
+contradicting $|a'-b|=1$ and Lemma~\ref{lem:normals}. Therefore $\{a',b\}=\{c,d\}$. The ordered
+pairs differ, since $(c,d)=(a',b)$ would make $w=(R_{a'}R_bR_{a'})^2=1$, so $(c,d)=(b,a')$ and
+$w=(R_{a'}R_b)^3$, of support $\{a',b\}$, contradicting $|\operatorname{supp}(w)|\ge3$.
+
+So every three cyclically consecutive letters of $w$ are pairwise distinct.
+
+\emph{(2) Dimension at least four.} Put $u=R_{i_1}R_{i_2}R_{i_3}$ and $v=R_{i_4}R_{i_5}R_{i_6}$.
+By (1) each triple has distinct entries, so by Lemma~\ref{lem:independence} and Carter's lemma
+$\operatorname{im}(L\rho_a(u)-1)=\langle m_{i_1},m_{i_2},m_{i_3}\rangle$ and
+$\operatorname{im}(L\rho_a(v)-1)=\langle m_{i_4},m_{i_5},m_{i_6}\rangle$; and these two images
+agree because $L\rho_a(v)=L\rho_a(u)^{-1}$. For $n\ge4$ two different three-element subsets of
+$\{m_0,\dots,m_n\}$ have different spans, since an index in one and not the other would produce
+a linear dependence among four normals, excluded by Lemma~\ref{lem:independence}. Hence
+$\{i_1,i_2,i_3\}=\{i_4,i_5,i_6\}$. Combined with (1): $i_4\notin\{i_2,i_3\}$ gives $i_4=i_1$,
+then $i_5\notin\{i_3,i_4\}$ gives $i_5=i_2$, and $i_6=i_3$. Thus $w=(R_pR_qR_r)^2$ with
+$p,q,r$ distinct.
+
+Let $E=\langle m_p,m_q,m_r\rangle$, of dimension $3$, and $g=s_ps_qs_r$. Each of the three
+reflections is the identity on $E^{\perp}$ and preserves $E$, and $g^2=1$ because $\rho_a(w)=1$.
+Carter's lemma gives $\operatorname{rank}(g-1)=3$, so $g-1$ vanishes on $E^{\perp}$ and is
+invertible on $E$; an involution of $E$ with no nonzero fixed vector is $-\mathrm{id}_E$, so
+$s_ps_qs_r=-\mathrm{id}$ on $E$, that is $s_qs_r=-s_p$ on $E$. On $E$ the right-hand side is the
+rotation by $\pi$ about the line $\R m_p$, and the left-hand side is the rotation about
+$\langle m_q,m_r\rangle^{\perp}\cap E$ through twice the angle between $m_q$ and $m_r$.
+Equality of the axes gives $m_p\perp m_q$ and $m_p\perp m_r$, equality of the angles gives
+$m_q\perp m_r$. By Lemma~\ref{lem:normals} the indices $p,q,r$ are then pairwise at distance at
+least $2$, so $R_p,R_q,R_r$ commute pairwise in $W_n$ and $(R_pR_qR_r)^2=1$ there, contradicting
+$\ell(w)=6$.
+
+\emph{(3) Dimension three.} Here every three of the four normals span $\R^3$, so the span
+argument of (2) is unavailable and the affine part is used instead. Let $k$ be the number of
+occurrences of $R_0$ in $w$. By (1) two occurrences of one letter are at cyclic distance at
+least $3$, and a cycle of length $6$ admits at most two positions pairwise at cyclic distance
+at least $3$; hence $k\le2$. The translation part of $\rho_a(w)$ is
+$2a_1\sum_{j:\,i_j=0}P_{j-1}e_1$, where $P_m=s_{i_1}\cdots s_{i_m}\in O(3)$ and $P_0=1$, and it
+must vanish. Each summand is a unit vector and $a_1>0$, so $k\ne1$.
+
+If $k=0$ then $\operatorname{supp}(w)=\{1,2,3\}$, and by (1) six letters drawn from a
+three-element set with every three cyclically consecutive ones distinct repeat with period
+three, so $w=(R_pR_qR_r)^2$ with $\{p,q,r\}=\{1,2,3\}$. The second paragraph of (2) applies
+verbatim with $E=\R^3$ and yields $m_1\perp m_2$, contradicting Lemma~\ref{lem:normals}.
+
+If $k=2$, rotate so that $i_1=i_4=0$. Vanishing of the translation part reads
+$e_1+s_0s_{i_2}s_{i_3}e_1=0$; applying $s_0$, which negates $e_1$, gives
+$s_{i_2}s_{i_3}e_1=e_1$. The distinct indices $i_2,i_3$ lie in $\{1,2,3\}$, so their normals are
+independent and Carter's lemma gives
+$\operatorname{Fix}(s_{i_2}s_{i_3})=m_{i_2}^{\perp}\cap m_{i_3}^{\perp}$. Thus $e_1=m_0$ is
+orthogonal to $m_{i_2}$ and $m_{i_3}$, so $\{i_2,i_3\}=\{2,3\}$ by Lemma~\ref{lem:normals}. But
+then $R_0$ commutes with both in $W_3$, and
+\[
+w=R_0R_{i_2}R_{i_3}R_0R_{i_5}R_{i_6}=R_{i_2}R_{i_3}R_0R_0R_{i_5}R_{i_6}
+ =R_{i_2}R_{i_3}R_{i_5}R_{i_6}
+\]
+has length at most $4$, contradicting $\ell(w)=6$.
+
+Every branch is impossible, so $|\operatorname{supp}(w)|=2$ and $w$ lies in a standard
+parabolic $\langle R_i,R_j\rangle$, $i\ne j$. If $|i-j|\ge2$ that parabolic is
+$(\Z/2)^2$ and has no element of length $6$, so $|i-j|=1$ and the parabolic is infinite
+dihedral; its two elements of length $6$ are $(R_iR_{i+1})^{3}$ and its inverse. Then
+$\rho_a\bigl(R_iR_{i+1}\bigr)$ has order dividing $3$, and is not the identity because
+$H_i\ne H_j$, so it has order exactly $3$ and $\theta_{i,i+1}=\pi/3$.
+\end{proof}
+
+\begin{remark}[Where each hypothesis is used]\label{rem:len6-hyp}
+Positivity of the legs enters twice: through Lemma~\ref{lem:independence}, and in step (3)
+through $a_1>0$, which is what makes a single occurrence of $R_0$ leave a nonzero translation.
+The hypothesis $n\ge3$ enters through the independence of any three normals, and it cannot be
+dropped: at $n=2$ the three normals are dependent, and indeed the plane carries kernel elements
+of full support, though of length $20$ rather than $6$ (Corollary~\ref{cor:plane}). No
+rationality is assumed anywhere in Theorem~\ref{thm:len6}.
+\end{remark}
 
 \section{The envelope in closed form}\label{sec:envelope}
 
@@ -755,8 +952,10 @@ injective; equivalently $u_d(a)=[t^d]\,W_n(t)$ for every $d\ge0$.
 \end{conjecture}
 
 Theorem~\ref{thm:rank2}(iii) is the rank-two half of Conjecture~\ref{conj:master-C} and is
-proved. What is missing is that a nontrivial kernel element must lie in a rank-two parabolic,
-which is false in general: the planar case $n=2$ is a counterexample. There the two consecutive
+proved. What is missing is that a nontrivial kernel element must lie in a rank-two parabolic.
+Theorem~\ref{thm:len6} supplies exactly that in length $6$, which is the shortest length
+available by Lemma~\ref{lem:no-length-four}; in unbounded length the statement is false in
+general, the planar case $n=2$ being a counterexample. There the two consecutive
 pairs are both boundary pairs, so for $a_1\ne a_2$ Theorem~\ref{thm:rank2}(iii) applies and no
 rank-two parabolic meets $\ker\rho_a$; yet $\ker\rho_a\ne\{1\}$ by
 Proposition~\ref{prop:plane}, and its shortest elements have length $20$, arising as
@@ -858,7 +1057,28 @@ For $a\in\Q_{>0}^n$ the \emph{collision depth} is
 
 By Corollary~\ref{cor:cd-is-K}, $\cd_n(a)=K(a)/2$, and by Lemma~\ref{lem:no-length-four},
 $K(a)\ge6$. Conjecture~\ref{conj:master-C} says exactly that $\cd_n=\infty$ for every Class C
-tuple. The next theorem describes $\cd_n$ for every leg multiplicity pattern. Although the
+tuple. The value $K(a)=6$ is decided by combining the two preceding sections.
+
+\begin{corollary}[When $K(a)=6$]\label{cor:K-eq-six}
+Let $n\ge3$ and $a\in\Q_{>0}^n$. Then $K(a)=6$ if and only if $t(a)\ge1$. In particular
+$K(a)\ge8$, hence $\cd_n(a)\ge4$, at every tuple with $t(a)=0$.
+\end{corollary}
+
+\begin{proof}
+If $t(a)\ge1$ then Theorem~\ref{thm:rank2}(i) exhibits an element of $\ker\rho_a$ of length $6$,
+and $K(a)\ge6$ by Lemma~\ref{lem:no-length-four}, so $K(a)=6$.
+
+Conversely let $K(a)=6$. By Theorem~\ref{thm:len6} the witnessing element is
+$(R_iR_{i+1})^{\pm3}$ with $\theta_{i,i+1}=\pi/3$, so $\cos^2\theta_{i,i+1}=\tfrac14$. If
+$(i,i+1)$ is a boundary pair, Lemma~\ref{lem:boundary} says the only value in the Niven list
+attained there is $\tfrac12$, so this is impossible. If it is an interior pair with
+$a_i\ne a_{i+2}$, the proof of Theorem~\ref{thm:rank2} places $(a_i,a_{i+2})$ on one of the
+three quartics of Lemma~\ref{lem:cremona-empty}, which have no such point. If it is an interior
+pair with $a_i=a_{i+2}$, Lemma~\ref{lem:diagonal} gives $a_i=a_{i+1}=a_{i+2}$, that is
+$t(a)\ge1$. The last statement follows since $K(a)$ is even and at least $6$.
+\end{proof}
+
+The next theorem describes $\cd_n$ for every leg multiplicity pattern. Although the
 multiplicity partition of $(a_1,\dots,a_n)$ has $p(n)$ possible shapes, the collision depth
 takes only three values, determined by the two local positional statistics $(e,t)$.
 
@@ -867,40 +1087,39 @@ Let $n\ge3$ and $a\in\Q_{>0}^n$. Then $\cd_n(a)\ge3$, and
 \[
 \cd_n(a)=
 \begin{cases}
-\infty & \text{if }e=t=0\ \text{ and }\rho_a\text{ is injective},\\
-4      & \text{if }e\ge1,\ t=0\ \text{ and }K(a)\ne6,\\
-3      & \text{if }t\ge1 .
+3      & \text{if }t\ge1,\\
+4      & \text{if }e\ge1\ \text{ and }t=0,\\
+\infty & \text{if }e=t=0\ \text{ and }\rho_a\text{ is injective}.
 \end{cases}
 \]
-The third case is unconditional. In the second case $\cd_n(a)\in\{3,4\}$ unconditionally, and
-$K(a)=6$ would require an element of $\ker\rho_a$ of length $6$ lying in no rank-two standard
-parabolic; no such element occurs in any tuple of Table~\ref{tab:atlas}. In the first case
-$e=t=0$ includes every Class C tuple, so that branch is $\infty$ exactly when
-Conjecture~\ref{conj:master-C} holds.
+The first two cases are unconditional. In the third case, if $\rho_a$ is not injective then
+$\cd_n(a)\ge4$.
 \end{theorem}
 
 \begin{proof}
 $\cd_n(a)=K(a)/2$ with $K(a)$ even and at least $6$, by Corollary~\ref{cor:cd-is-K} and
 Lemma~\ref{lem:no-length-four}; this gives $\cd_n(a)\ge3$ in all cases.
 
-If $t\ge1$, Theorem~\ref{thm:rank2}(i) exhibits an element of $\ker\rho_a$ of length $6$, so
-$K(a)\le6$, hence $K(a)=6$ and $\cd_n(a)=3$.
+If $t\ge1$ then $K(a)=6$ by Corollary~\ref{cor:K-eq-six}, so $\cd_n(a)=3$.
 
-If $e\ge1$ and $t=0$, Theorem~\ref{thm:rank2}(ii) exhibits an element of length $8$, so
-$6\le K(a)\le8$ and $K(a)$ is even, giving $\cd_n(a)\in\{3,4\}$. By Theorem~\ref{thm:rank2}(ii)
-no element of a rank-two standard parabolic lies in $\ker\rho_a$ with length below $8$, so
-$K(a)=6$ is possible only through an element of length $6$ lying in no rank-two standard
-parabolic. Absent such an element, $K(a)=8$ and $\cd_n(a)=4$.
+If $e\ge1$ and $t=0$ then Theorem~\ref{thm:rank2}(ii) exhibits an element of $\ker\rho_a$ of
+length $8$, so $K(a)\le8$, while Corollary~\ref{cor:K-eq-six} gives $K(a)\ge8$. Hence $K(a)=8$
+and $\cd_n(a)=4$.
 
 If $e=t=0$ then $\cd_n(a)=\infty$ if and only if $\ker\rho_a=\{1\}$, by
-Corollary~\ref{cor:alternative}.
+Corollary~\ref{cor:alternative}; and if $\ker\rho_a\ne\{1\}$ then $K(a)\ge8$ by
+Corollary~\ref{cor:K-eq-six}, so $\cd_n(a)\ge4$.
 \end{proof}
 
-\begin{remark}[What the second case leaves open]\label{rem:second-case}
-The gap in the second case is genuine and is a special case of the general problem: the rank-two
-analysis of \S\ref{sec:rank2} controls elements of $\ker\rho_a$ that lie in a dihedral standard
-parabolic, and nothing in this paper controls the others. The gap is narrow: only the single
-value $K(a)=6$ is at stake, and only for tuples with an endpoint equal pair and no triple.
+\begin{remark}[What is and is not decided by $(e,t)$]\label{rem:second-case}
+Theorem~\ref{thm:cd-general} determines $\cd_n$ outright on the two strata $t\ge1$ and
+$t=0<e$, with no residual ambiguity in the value. On the third stratum $e=t=0$ it reduces the
+question to a single one, whether $\rho_a$ is injective, and gives $\cd_n\ge4$ if it is not.
+What Theorem~\ref{thm:len6} supplies is a lower bound on $K(a)$ off the triple stratum; it
+supplies no upper bound anywhere. The rank-two analysis of \S\ref{sec:rank2} controls the
+elements of $\ker\rho_a$ lying in a dihedral standard parabolic, Theorem~\ref{thm:len6}
+controls all elements of length $6$, and beyond length $6$ nothing in this paper controls the
+elements outside those parabolics.
 \end{remark}
 
 \begin{remark}[The run-length rule fails in $n\ge4$]\label{rem:R-rule}
@@ -984,37 +1203,101 @@ The isoceles right triangle $a_1=a_2$ is excluded from that statement, and must 
 $e(a)=1$, so Theorem~\ref{thm:rank2}(ii) gives an element of $\ker\rho_a$ of length $8$ and
 hence $\cd_2\le4$.
 
-\begin{remark}[The amenability trap: why the planar argument stops at $n=2$]
-\label{rem:amenability-fails}
-The proof of Proposition~\ref{prop:plane} does not extend to $n\ge3$, and the natural extension
-is false. One is tempted to argue that $\Isom(\R^n)=\R^n\rtimes O(n)$ is amenable because $O(n)$
-is compact. Compactness gives amenability of $O(n)$ as a \emph{topological} group, with respect
-to Haar measure, and that property does not pass to abstract subgroups. As an abstract discrete
-group $O(n)$ is non-amenable for every $n\ge3$: already $SO(3)$ contains a free subgroup of rank
-$2$ (Hausdorff; see \cite[Thm.~2.1]{Wagon}), which is the standard ingredient of the
-Banach--Tarski paradox. Hence $\Isom(\R^n)$ is non-amenable as an abstract group for $n\ge3$ and
-yields no obstruction at all. At $n=2$ the argument survives only because $O(2)$ is virtually
-abelian.
+\subsection{The scope of the ambient obstruction}\label{subsec:barrier}
+
+Proposition~\ref{prop:plane} is an instance of one argument scheme: find a property of abstract
+groups that passes to subgroups, holds for the ambient group $\Isom(\R^n)$, and fails for
+$W_n$. Call such a property an \emph{ambient obstruction} in dimension $n$. The scheme decides
+the alternative of Corollary~\ref{cor:alternative} in the plane. The next theorem determines
+exactly when it can decide anything at all, and shows that in dimension $n\ge3$ the specific
+property used in the plane is not merely unproved but false of the ambient group.
+
+\begin{theorem}[Ambient obstructions exist only in the plane]\label{thm:barrier}
+For $n\ge2$ consider the statement
+\[
+(E_n):\qquad W_n\ \text{is isomorphic to a subgroup of}\ \Isom(\R^n).
+\]
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item If $(E_n)$ fails, then $\rho_a$ is not injective for every $a\in U$.
+\item If $(E_n)$ holds, then every property of abstract groups that passes to subgroups and
+holds for $\Isom(\R^n)$ also holds for $W_n$. No ambient obstruction exists in dimension $n$,
+and no argument of that scheme can decide Problem~\ref{prob:alternative} there.
+\item $\Isom(\R^n)$ is amenable as an abstract group if and only if $n\le2$, while $W_n$
+contains a free subgroup of rank $2$ for every $n\ge2$. Hence amenability is an ambient
+obstruction in dimension $2$ and in no other; for $n\ge3$ both groups contain free subgroups of
+rank $2$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) If $\rho_a$ were injective then $W_n\cong W(a)\le\Isom(\R^n)$, which is $(E_n)$.
+
+(ii) Immediate from the definition: a subgroup-closed property of $\Isom(\R^n)$ holds for all
+its subgroups, and under $(E_n)$ the group $W_n$ is one of them.
+
+(iii) Write $\Isom(\R^n)=\R^n\rtimes O(n)$. For $n\le2$ the group $SO(n)$ is abelian of index
+$2$ in $O(n)$, so $\R^n\rtimes SO(n)$ is solvable of index $2$ in $\Isom(\R^n)$, which is
+therefore virtually solvable and amenable. For $n\ge3$ the block embedding
+$SO(3)\le SO(n)\le\Isom(\R^n)$ and Hausdorff's free subgroup of rank $2$ in $SO(3)$
+\cite[Thm.~2.1]{Wagon} make $\Isom(\R^n)$ non-amenable. For $W_n$: the complement of
+$\Gamma_n$ is the path $P_{n+1}$ on $n+1\ge3$ vertices, which is connected and is not a clique,
+so $\Gamma_n$ is not complete multipartite and $W_n$ contains a free subgroup of rank $2$
+\cite{Davis}.
+\end{proof}
+
+\begin{remark}[Reading of Theorem~\ref{thm:barrier}]\label{rem:amenability-fails}
+Three consequences are worth separating.
+
+First, the temptation to be resisted. One is tempted to argue that $\Isom(\R^n)$ is amenable
+because $O(n)$ is compact. Compactness gives amenability of $O(n)$ as a \emph{topological}
+group, with respect to Haar measure, and that property does not pass to abstract subgroups. As
+an abstract group $O(n)$ is non-amenable for every $n\ge3$, by the Hausdorff free subgroup that
+is the standard ingredient of the Banach--Tarski paradox. At $n=2$ the argument survives only
+because $O(2)$ is virtually abelian.
+
+Second, the amenability route is not repairable by replacing amenability with a different
+invariant. By Theorem~\ref{thm:barrier}(ii) the whole scheme is available in dimension $n$
+exactly when $(E_n)$ fails, so any successful instance of it proves $\neg(E_n)$, whatever
+invariant it is dressed in.
+
+Third, the scheme is strictly stronger than what Problem~\ref{prob:alternative} asks. By
+Theorem~\ref{thm:barrier}(i), $\neg(E_n)$ gives non-injectivity of $\rho_a$ at \emph{every}
+leg tuple simultaneously, whereas Problem~\ref{prob:alternative}(a) asks only about the generic
+one. So an affirmative answer to Problem~\ref{prob:embed} below would close the scheme without
+saying anything about $\rho_a$, and a negative answer would settle
+Problem~\ref{prob:alternative} outright. Either way the question is not a detail of the
+write-up; it is the exact content of the barrier.
 \end{remark}
 
-\section{What is proved, and the open problems}\label{sec:open}
+\section{What is proved, and the three open problems}\label{sec:open}
 
-Table~\ref{tab:status} lists the status of every numbered statement. Four things are proved
-unconditionally and dimension-freely: the dichotomy (Theorem~\ref{thm:dichotomy}); generic
-rigidity (Theorem~\ref{thm:rigidity}), which makes ``the generic $n$-orthoscheme growth'' a
-well-defined object realised by a co-null set of shapes; rationality of the envelope with rate
-$r_n$ (Theorem~\ref{thm:envelope}); and the rank-two classification
-(Theorem~\ref{thm:rank2}), with its consequences that $\cd_n\ge3$ for every leg tuple and that
-$\cd_n=3$ at every tuple with three consecutive equal legs. Whether $\cd_n=3$ can also occur
-without such a triple is not decided here; it would require a kernel element of length $6$ in no
-rank-two parabolic (Remark~\ref{rem:second-case}).
+\subsection{What is proved}
 
-Which alternative of Corollary~\ref{cor:alternative} holds is settled only in the plane, by
-Proposition~\ref{prop:plane}, where it is (ii) with horizon $10$. For $3\le n\le7$ the geometric
-growth has been computed to depth $13$ to $16$ and agrees with the envelope throughout that
-range. That agreement is consistent with both alternatives: under (i) it would continue forever,
-and under (ii) it would end at a horizon beyond the computed range. Nothing here decides between
-them.
+Table~\ref{tab:status} lists the status of every numbered statement. The following are proved
+unconditionally: the dichotomy (Theorem~\ref{thm:dichotomy}); generic rigidity
+(Theorem~\ref{thm:rigidity}), which makes ``the generic $n$-orthoscheme growth'' a well-defined
+object realised by a co-null set of shapes; rationality of the envelope with rate $r_n$
+(Theorem~\ref{thm:envelope}); the exclusion of length-six kernel elements outside the rank-two
+standard parabolics, at every positive leg tuple in every dimension $n\ge3$
+(Theorem~\ref{thm:len6}); and the rank-two classification (Theorem~\ref{thm:rank2}). Together
+the last two determine the collision depth from the positional statistics $(e,t)$ on the two
+strata $t\ge1$ and $t=0<e$, and give $\cd_n\ge3$ everywhere and $\cd_n\ge4$ wherever $t=0$
+(Theorem~\ref{thm:cd-general}).
+
+What is not determined is $\cd_n$ on the third stratum $e=t=0$, and there the question is
+exactly whether $\rho_a$ is injective. That is settled here in the plane only, by
+Proposition~\ref{prop:plane}, where the answer is no and the horizon is $\cd_2=10$. For
+$3\le n\le7$ the geometric growth has been computed to depth $13$ to $16$ and agrees with the
+envelope throughout that range. That agreement is consistent with both alternatives of
+Corollary~\ref{cor:alternative}: under (i) it would continue forever, and under (ii) it would
+end at a horizon beyond the computed range. Nothing here decides between them.
+
+\subsection{The three open problems}
+
+The three problems below are the whole of what this paper leaves open. Each is stated in full,
+with what is known about it. Only the first is stated as a conjecture, and the evidence on
+both sides of it is recorded below; for the other two we state a question and decline to guess
+a direction.
 
 \begin{problem}[The alternative in dimension $n\ge3$]\label{prob:alternative}
 Fix $n\ge3$.
@@ -1028,41 +1311,60 @@ $a\in\Q_{>0}^n$? This is Conjecture~\ref{conj:master-C}.
 \end{enumerate}
 \end{problem}
 
-The two forms are related in one direction only. By Corollary~\ref{cor:one-shape}, a single
-faithful tuple, rational or not, answers (a) affirmatively; so (b) implies (a). The converse
-fails to be automatic because $U_{\mathrm{gen}}$ contains no tuple with algebraically dependent
-coordinates, hence no rational tuple: an affirmative answer to (a) says nothing directly about
-any given rational $a$. If the answer to (a) is affirmative for all $n\ge3$, the plane is the
-unique dimension with non-rational orbit growth. If instead $\ker\rho_a$ is nontrivial in some
-dimension $n\ge3$, the growth deviates below the envelope at $\cd_n(a)=K(a)/2$, and the
-arithmetic of the deviated series past that horizon is open even in the cases where the horizon
-can be located.
+\emph{What is known.} The two forms are related in one direction only. By
+Corollary~\ref{cor:one-shape}, a single faithful tuple, rational or not, answers (a)
+affirmatively; so (b) implies (a). The converse is not automatic, because $U_{\mathrm{gen}}$
+contains no tuple with algebraically dependent coordinates, hence no rational tuple: an
+affirmative answer to (a) says nothing directly about any given rational $a$. The rank-two half
+of (b) is proved, Theorem~\ref{thm:rank2}(iii). No soft upgrade of that half to the whole is
+available: faithfulness would follow if every nontrivial kernel element lay in a rank-two
+parabolic, and that implication is false, the plane being a counterexample, where for
+$a_1\ne a_2$ no rank-two parabolic meets $\ker\rho_a$ while $\ker\rho_a$ is nontrivial with
+shortest elements of length $20$ using all three generators \cite{Bonfioli1}. The same
+counterexample is a warning about (b) itself: the $n=2$ analogue of
+Conjecture~\ref{conj:master-C} is false. The positive evidence is confined to $n\ge3$ and is
+computational, the agreement to depths $13$ to $16$ recorded above, together with
+Theorem~\ref{thm:len6}, which removes the shortest length at which a relation could have
+appeared. If the answer to (a) is affirmative for all $n\ge3$, the plane is the unique dimension
+with non-rational orbit growth. If instead $\ker\rho_a$ is nontrivial in some dimension $n\ge3$,
+the growth deviates below the envelope at $\cd_n(a)=K(a)/2\ge4$, and the arithmetic of the
+deviated series past that horizon is open even in the cases where the horizon can be located.
 
-Three obstructions are worth stating precisely, because they close off the routes that look
-available.
+\begin{problem}[The ambient embedding]\label{prob:embed}
+Fix $n\ge3$. Is $W_n$ isomorphic to a subgroup of $\Isom(\R^n)$; that is, does statement
+$(E_n)$ of Theorem~\ref{thm:barrier} hold?
+\end{problem}
 
-\begin{enumerate}[label=(O\arabic*),leftmargin=2.6em,itemsep=0.4em]
-\item \emph{The rank-two half is all that the Diophantine method gives.} Faithfulness would
-follow from Theorem~\ref{thm:rank2}(iii) if every nontrivial kernel element lay in a rank-two
-parabolic. That implication is false in general: at $n=2$ with $a_1\ne a_2$ no rank-two parabolic
-meets $\ker\rho_a$, yet $\ker\rho_a$ is nontrivial, its shortest elements having length $20$ and
-using all three generators \cite{Bonfioli1}. So no soft upgrade of Theorem~\ref{thm:rank2} to
-Conjecture~\ref{conj:master-C} is available, and the same obstruction is what leaves the value
-$K(a)=6$ unexcluded in the second case of Theorem~\ref{thm:cd-general}
-(Remark~\ref{rem:second-case}).
+\emph{What is known.} $(E_2)$ is false, by amenability, and that is the entire content of
+Proposition~\ref{prop:plane}. For $n\ge3$ the amenability route to $\neg(E_n)$ is closed:
+$\Isom(\R^n)$ contains a free subgroup of rank $2$ and so does $W_n$
+(Theorem~\ref{thm:barrier}(iii)). The obvious finite-subgroup invariant does not separate them
+either: every finite subgroup of $W_n$ is conjugate into one of the elementary abelian
+$2$-groups on the cliques of $\Gamma_n$ \cite{Davis}, hence has rank at most
+$\lceil(n+1)/2\rceil\le n$, while $O(n)$ contains $(\Z/2)^n$. By
+Theorem~\ref{thm:barrier}(ii) this single question governs the entire class of ambient
+obstructions: if $(E_n)$ holds, no such obstruction exists in dimension $n$; if it fails,
+Problem~\ref{prob:alternative} is answered negatively at every leg tuple at once. We do not
+conjecture a direction. Note that a positive answer would not touch
+Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ need not be by reflections in the
+facets of an orthoscheme, or by reflections at all.
 
-\item \emph{The amenability trap.} The one soft argument that settles $n=2$ is unavailable for
-$n\ge3$, and not merely unproved: $O(n)$ contains a free subgroup of rank $2$ as an abstract
-group for every $n\ge3$, so $\Isom(\R^n)$ is not amenable as an abstract group and imposes no
-constraint whatsoever on its subgroups' isomorphism type
-(Remark~\ref{rem:amenability-fails}).
+\begin{problem}[Finite presentation]\label{prob:fp}
+Fix $n\ge3$. Is the generic $n$-orthoscheme reflection group $W_n/N_{\mathrm{gen}}$ finitely
+presented?
+\end{problem}
 
-\item \emph{Finite presentation.} At $n=2$, Isola and Piergallini~\cite{isola-piergallini} show
-that the generic triangle reflection group is not finitely presented, which gives non-injectivity
-independently of (O2). We do not know whether the generic $n$-orthoscheme reflection group is
-finitely presented for $n\ge3$; an answer either way would decide
-Problem~\ref{prob:alternative}(a), since $W_n$ is finitely presented.
-\end{enumerate}
+\emph{What is known.} At $n=2$ the answer is no: Isola and Piergallini~\cite{isola-piergallini}
+show that the generic triangle reflection group is not finitely presented, which gives
+non-injectivity in the plane independently of the amenability argument. Since $W_n$ is finitely
+presented, an answer either way decides Problem~\ref{prob:alternative}(a): a negative answer
+refutes it, and hence also refutes Conjecture~\ref{conj:master-C} by
+Corollary~\ref{cor:one-shape}, while an affirmative answer is consistent with it and does not
+prove it. Problems~\ref{prob:alternative} and \ref{prob:fp} are therefore not independent, and
+the direction in which the plane answers Problem~\ref{prob:fp} is the direction that would
+refute Conjecture~\ref{conj:master-C}. We know of no argument in either direction for $n\ge3$.
+
+\subsection{Further questions}
 
 Three further questions are open and are stated for the record.
 
@@ -1095,6 +1397,8 @@ Corollary~\ref{cor:one-shape}                    & proved                  & \\
 Theorem~\ref{thm:dichotomy} (dichotomy)          & proved (Lean) & \texttt{EnvelopeDichotomy} \\
 Corollaries~\ref{cor:alternative}, \ref{cor:cd-is-K} & proved              & \\
 Lemma~\ref{lem:no-length-four} ($K\ge6$)         & proved                  & \\
+Lemma~\ref{lem:independence} (unique relation)   & proved                  & \\
+Theorem~\ref{thm:len6} (length six is dihedral)  & proved                  & all $n\ge3$, all positive legs \\
 Theorem~\ref{thm:envelope} (envelope)            & proved (Lean, partly) & \texttt{EnvelopeDichotomy}, \texttt{NdimRate} \\
 Corollary~\ref{cor:asymptotic}                   & proved (Lean) & \texttt{NdimRate} \\
 Lemma~\ref{lem:boundary} (boundary pairs)        & proved (Lean) & \texttt{RankTwoExclusion} \\
@@ -1102,18 +1406,22 @@ Lemma~\ref{lem:cremona-empty} (three quartics)   & proved                  & ran
 Lemma~\ref{lem:diagonal} (equal flanking legs)   & proved                  & \\
 Theorem~\ref{thm:rank2} (rank-two classification)& proved                  & interior half uses Lemma~\ref{lem:cremona-empty} \\
 Lemma~\ref{lem:uniform-detQ} ($\det Q_n$)        & proved (Lean) & \texttt{OrthoschemeDet} \\
-Theorem~\ref{thm:cd-general}, case $t\ge1$       & proved                  & \\
-Theorem~\ref{thm:cd-general}, case $e\ge1,t=0$   & $\cd_n\in\{3,4\}$ proved & value $4$ conditional, Rem.~\ref{rem:second-case} \\
+Corollary~\ref{cor:K-eq-six} ($K=6\iff t\ge1$)   & proved                  & \\
+Theorem~\ref{thm:cd-general}, case $t\ge1$       & proved                  & $\cd_n=3$ \\
+Theorem~\ref{thm:cd-general}, case $e\ge1,t=0$   & proved                  & $\cd_n=4$, unconditional \\
 Theorem~\ref{thm:cd-general}, case $e=t=0$       & conditional             & equivalent to Conj.~\ref{conj:master-C} \\
 Conjecture~\ref{conj:master-C} (Class C)         & conjecture              & checked to depth $10$ ($n=3$), $8$ ($n=4$) \\
 Proposition~\ref{prop:plane} (the plane)         & proved                  & \\
+Theorem~\ref{thm:barrier} (ambient obstruction)  & proved                  & \\
 Problem~\ref{prob:alternative}                   & open in both directions & \\
+Problem~\ref{prob:embed} (ambient embedding)     & open in both directions & false at $n=2$ \\
+Problem~\ref{prob:fp} (finite presentation)      & open in both directions & answered ``no'' at $n=2$ \cite{isola-piergallini} \\
 \bottomrule
 \end{tabular}
 \caption{Status of the numbered statements. ``Lean'' means that the indicated Lean~4 file, which
 builds against Mathlib with no \texttt{sorry}, covers the statement; ``partly'' means that it
 covers some steps of the proof and not others. The scope of each file is described in
-\S\ref{sec:cert}.}
+\S\ref{sec:cert}. The three rows at the bottom are the whole of what the paper leaves open.}
 \label{tab:status}
 \end{table}
 
@@ -1154,6 +1462,29 @@ quartics of Lemma~\ref{lem:cremona-empty} for nontrivial solutions with legs up 
 finding none, while exhibiting rational points of the corresponding conics in $(X,Z)$ to show
 that the restriction to squares is not cosmetic.
 
+\paragraph{Short kernel elements.}
+Theorem~\ref{thm:len6} is a proof, not a computation, but it was first tested by exhaustive
+search and the search is worth recording, since it also tests
+Lemma~\ref{lem:no-length-four} and the $(e,t)$ rule of Corollary~\ref{cor:K-eq-six}. The
+program \texttt{code/zeta\_probe/tools/ortho\_len6} (Rust, exact integer arithmetic in
+homogeneous coordinates, no floating point) enumerates the reduced words of length at most $3$
+in $W_n$, computes their images under $\rho_a$, and inspects every collision; a nontrivial
+element of $\ker\rho_a$ of length at most $6$ exists exactly when a collision does, and its
+length and support are read off by the deletion condition for graph products. Every positive
+rational tuple scales to a primitive integer tuple and $\rho_a(w)=1$ is scale invariant, so
+integer boxes cover the rational case. The boxes run are
+\[
+\begin{array}{llllll}
+n=3,\ \text{legs}\le200; & n=4,\ \le40; & n=5,\ \le14; & n=6,\ \le8; & n=7,\ \le5;
+  & n=8,\ \le4,
+\end{array}
+\]
+comprising $9\,954\,322$ primitive tuples in total. In every one of them: no element of
+$\ker\rho_a$ has length below $6$; no element of length $6$ has support of size $3$ or more;
+and an element of length $6$ occurs if and only if $t(a)\ge1$, in which case it is
+$(R_iR_{i+1})^{\pm3}$ at a triple of equal consecutive legs. The per-dimension counts are in
+the tool's \texttt{README.md}.
+
 \paragraph{The envelope.}
 Theorem~\ref{thm:envelope} is certified by \texttt{code/zeta\_probe/tools/racg\_envelope}
 (Rust, exact integer polynomial arithmetic), which for $2\le n\le30$ checks that the recurrence
@@ -1169,7 +1500,7 @@ polynomial $1-2t-3t^2+4t^3-t^4$ is not the $n=7$ denominator, being the negated 
 $1-4t+3t^2+2t^3-t^4$ and predicting $6$ elements at depth $1$ in a group with $8$ generators.
 
 \paragraph{Lean 4.}
-Five files in \texttt{lean/with\_mathlib/} build against Mathlib with no \texttt{sorry}.
+Six files in \texttt{lean/with\_mathlib/} build against Mathlib with no \texttt{sorry}.
 
 \begin{center}\footnotesize
 \renewcommand{\arraystretch}{1.15}
@@ -1218,14 +1549,27 @@ Boundary cosine nonzero, and $\cos^2\ne\tfrac14$ there
 Lemma~\ref{lem:uniform-detQ}, closed form ($\star$) & \texttt{minor\_closed\_form}\\
 Lemma~\ref{lem:uniform-detQ}, boundary step & \texttt{det\_Q}\\
 Lemma~\ref{lem:uniform-detQ}, full statement & \texttt{det\_Q\_of\_recurrence}\\
+\addlinespace
+\multicolumn{2}{l}{\emph{\texttt{ReflectionTriple.lean}} (13 theorems)}\\
+Thm.~\ref{thm:len6}, reflection calculus
+  & \texttt{inner\_self\_ne\_zero'}, \texttt{refl\_self},
+    \texttt{refl\_of\_inner\_eq\_zero},\\
+  & \texttt{refl\_add}, \texttt{refl\_smul}, \texttt{refl\_neg}, \texttt{refl\_sub},\\
+  & \texttt{refl\_involutive}, \texttt{refl\_injective}, \texttt{inner\_refl\_left}\\
+Thm.~\ref{thm:len6}, cancellation in the ambient group
+  & \texttt{eq\_of\_sub\_eq\_sub}, \texttt{eq\_zero\_of\_sub\_eq\_self}\\
+Thm.~\ref{thm:len6}, step (2): $s_ps_qs_r=-\mathrm{id}$ forces
+  & \texttt{pairwise\_orth\_of\_comp\_eq\_neg}\\
+\quad pairwise orthogonality & \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \medskip
-\texttt{NdimRate.lean} and \texttt{OrthoschemeDet.lean} end with \verb|#print axioms|. Of the
-ten declarations they contribute to the table, six report exactly the standard axioms
-\verb|propext|, \verb|Classical.choice|, \verb|Quot.sound|, and four report strictly fewer, with
+\texttt{NdimRate.lean}, \texttt{OrthoschemeDet.lean} and \texttt{ReflectionTriple.lean} end
+with \verb|#print axioms|, one line per theorem of those three files. Of the twenty-three
+declarations audited, nineteen report exactly the standard axioms \verb|propext|,
+\verb|Classical.choice|, \verb|Quot.sound|, and four report strictly fewer, with
 \texttt{pascal\_step} depending on no axioms at all.
 
 \medskip
@@ -1237,8 +1581,13 @@ identity, but no word metric, no Coxeter group and no clique polynomial: the gro
 those steps is on paper. The step identifying the growth rate with the largest root $t_1$ is a
 dominant-pole argument on a rational generating function, proved on paper; so is the induction
 assembling the Pascal step into $c_{\Gamma_n}=P_{n+3}$ in Remark~\ref{rem:pell}. Everything
-downstream of those two inputs is machine-checked. Lemma~\ref{lem:no-length-four},
-Lemma~\ref{lem:diagonal} and Theorem~\ref{thm:rigidity} are paper proofs.
+downstream of those two inputs is machine-checked. Of Theorem~\ref{thm:len6},
+\texttt{ReflectionTriple.lean} formalises the reflection calculus and the rigidity step (2) in
+an arbitrary real inner product space, with the reflection defined from the inner product and
+no dimension hypothesis; the word combinatorics in $W_n$, Carter's rank lemma, and the affine
+argument of step (3) are paper proofs. Lemma~\ref{lem:independence},
+Lemma~\ref{lem:no-length-four}, Lemma~\ref{lem:diagonal}, Theorem~\ref{thm:rigidity} and
+Theorem~\ref{thm:barrier} are paper proofs.
 
 \section*{Acknowledgments}
 
@@ -1263,6 +1612,11 @@ N.~Bourbaki, \emph{Groupes et alg\`ebres de Lie, Chapitres IV--VI}, Hermann, Par
 \bibitem{cannon-wagreich}
 J.~W. Cannon, P.~Wagreich, \emph{Growth functions of surface groups}, Math.\ Ann.\ \textbf{293}
 (1992), no.~2, 239--257.
+
+\bibitem{carter}
+R.~W. Carter, \emph{Conjugacy classes in the Weyl group}, Compositio Math.\ \textbf{25} (1972),
+1--59. (Lemma 2: a product of reflections has $\operatorname{rank}(g-1)$ equal to the number of
+factors exactly when the roots are independent.)
 
 \bibitem{cassels-1991}
 J.~W.~S. Cassels, \emph{Lectures on Elliptic Curves}, London Mathematical Society Student Texts

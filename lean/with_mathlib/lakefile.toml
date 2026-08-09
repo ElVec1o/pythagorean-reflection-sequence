@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph"]
+defaultTargets = ["SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple"]
 
 [[require]]
 name = "mathlib"
@@ -163,3 +163,6 @@ name = "GraphLocalDistance"
 
 [[lean_lib]]
 name = "HexGraph"
+
+[[lean_lib]]
+name = "ReflectionTriple"

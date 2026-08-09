@@ -79,10 +79,17 @@ why, is in `private/project_docs/RESTRUCTURE_MOVES.md`. Nothing was deleted.
    reflection group in ℝⁿ with pairwise distinct legs has asymptotic ratio
    `r_n = 1 + 2·cos(2π/(n+3))`.
 
-4. **Class C unconditional faithfulness.** For pairwise distinct legs in every
-   dimension `n ≥ 3`, the affine representation is faithful, via the uniform
-   Schur-complement identity `det Q_n = −∏ a_i²` and rank-0 descent on the
-   Cremona elliptic curves 24a1, 32a2, 72a2.
+4. **The collision depth in every dimension.** For rational legs and `n ≥ 3`, the
+   depth at which the orbit growth first falls below the right-angled Coxeter
+   envelope is `cd_n = 3` when three consecutive legs are equal and `cd_n = 4`
+   when only an endpoint pair is equal, both unconditional; on the remaining
+   stratum `cd_n = ∞` exactly when the affine representation is faithful, which
+   is **open** for `n ≥ 3` (Conjecture "Class C faithfulness"). The inputs are a
+   classification of the rank-two relations by rank-0 descent on the Cremona
+   curves 24a1, 72a2 and `y² = x³ − x`, and the exclusion of every length-six
+   relation outside the rank-two parabolics. An earlier claim of unconditional
+   faithfulness from `det Q_n = −∏ a_i² ≠ 0` was a non sequitur and is
+   withdrawn; see the retraction remark in `paper_orthoscheme.tex`.
 
 5. **The growth series.** `A396406` admits no constant-coefficient linear
    recurrence of order ≤ 21, no holonomic recurrence within
