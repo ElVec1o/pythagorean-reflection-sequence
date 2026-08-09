@@ -1,5 +1,5 @@
 name = "RightTriangleReflection"
-defaultTargets = ["RightTriangleReflection", "EulerCircuit", "RotationRelations", "TriangleFlowMetric"]
+defaultTargets = ["RightTriangleReflection", "EulerCircuit", "RotationRelations", "TriangleFlowMetric", "PaperExtraMod2", "PaperExtraCounts"]
 
 [[lean_lib]]
 name = "RightTriangleReflection"
@@ -12,3 +12,9 @@ name = "RotationRelations"
 
 [[lean_lib]]
 name = "TriangleFlowMetric"
+
+[[lean_lib]]
+name = "PaperExtraMod2"
+
+[[lean_lib]]
+name = "PaperExtraCounts"

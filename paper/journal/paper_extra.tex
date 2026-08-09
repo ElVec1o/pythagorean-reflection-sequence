@@ -514,6 +514,45 @@ and language complexity}, Math.\ Z.\ 285 (2017), no.~3, 1015--1041.
 \end{itemize}
 
 
+\section{Machine verification}
+\label{sec:extra-lean}
+
+The finite and combinatorial content of the propositions above is machine-checked in Lean~4.
+Two files in the Mathlib-free project carry it, so they compile in core Lean with no
+dependency fetch; a clean \texttt{lake build} rechecks the whole project, including them, in
+about four minutes.
+
+\texttt{PaperExtraMod2.lean} discharges Proposition~\ref{prop:mod2-automaton} on the $39$
+published terms: the closed form $u_d \bmod 2$, eventual $3$-periodicity with pre-period~$1$,
+the failure of pure periodicity at $d=0$, the order-$2$ Fibonacci recurrence for $d \ge 3$,
+and its failure at $d=2$. It also records the agreement with Fibonacci for $1 \le n \le 9$ and
+the first deviation $u_{10}=225$. These same two recurrence facts are the mod-$2$ half of
+Proposition~\ref{prop:no-recurrence-strong}(iii).
+
+\texttt{PaperExtraCounts.lean} verifies the search grid of
+Proposition~\ref{prop:no-dfinite}: that the over-determination condition
+\eqref{eq:overdet} selects exactly $52$ pairs, and that every selected pair has strictly
+fewer unknowns than equations. It also verifies the arithmetic behind the withdrawal in
+Proposition~\ref{prop:no-recurrence-strong}(ii), namely $\binom{9}{3}=84$ monomials, $252$
+unknowns and $38$ equations, and it proves the general form of the argument used in
+Proposition~\ref{prop:height-gap}: for any notion of automaticity whose sequences are finitely
+valued, an unbounded sequence is not automatic. The finitely-valued property appears as an
+explicit hypothesis rather than being assumed silently.
+
+One convention is worth recording, since the statement of Proposition~\ref{prop:no-dfinite}
+leaves it implicit. The count $52$ is for $k \ge 1$, that is for recurrences of order at least
+one. Admitting $k=0$ gives $60$ pairs and requiring $m \ge 1$ gives $50$; only
+$1 \le k \le 9$, $0 \le m \le 7$ reproduces the published figure. The Lean file verifies both
+counts, so the convention is fixed by the formalization rather than by the prose.
+
+What is not formalized is stated plainly in each file. The exclusion computations themselves,
+being exact linear algebra over $43$ terms, are not re-run in Lean; neither is the passage
+from eventual periodicity to algebraicity over $\mathbb{F}_2(t)$, which needs formal power
+series; nor the unboundedness of $u_d$, which is a statement about all $d$ and rests on the
+growth rate of \cite{Bonfioli2}. Strict increase across the published range is verified, and
+is evidence for unboundedness rather than a proof of it. The regression numbers in
+Proposition~\ref{prop:height-gap} are numerics and are not formalized.
+
 \begin{thebibliography}{9}
 
 \bibitem{AntolinCiobanu} Y.~Antol\'in and L.~Ciobanu, \emph{Formal conjugacy growth in
