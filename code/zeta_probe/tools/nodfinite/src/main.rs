@@ -34,18 +34,18 @@ fn powm(mut a: i64, mut e: i64) -> i64 {
 }
 fn inv(a: i64) -> i64 { powm(a, P - 2) }
 
-fn main() {
-    let nterms = U.len() as i64; // 43
-    let mut out = String::new();
-    let mut count = 0;
-    let mut failures = 0;
-
-    for k in 1..=9usize {
-        for m in 0..=7usize {
+// Certify one (k, m) pair.  Returns the certificate line, or None if the coefficient matrix
+// fails to reach full column rank modulo P.
+fn certify(k: usize, m: usize) -> Option<String> {
+    let nterms = U.len(); // 43
+    {
+        {
             let cols = (k + 1) * (m + 1);
-            let eqs = (nterms as usize) - k; // n = k..42
-            if !(cols < eqs) { continue; }   // over-determination condition
-            count += 1;
+            let eqs = nterms - k; // n = k..42
+            if !(cols < eqs) {
+                println!("k={} m={} NOT OVER-DETERMINED (cols {} >= eqs {})", k, m, cols, eqs);
+                return None;
+            }
 
             // A[i][c], row i <-> n = k+i, col c <-> (j,t)
             let mut a = vec![vec![0i64; cols]; eqs];
@@ -88,8 +88,7 @@ fn main() {
 
             if r < cols {
                 println!("k={} m={} FULL RANK NOT REACHED (rank {} < cols {})", k, m, r, cols);
-                failures += 1;
-                continue;
+                return None;
             }
 
             // Redo elimination tracking original row indices properly.
@@ -155,11 +154,46 @@ fn main() {
             let inv_s: Vec<String> = invm.iter()
                 .map(|row| format!("[{}]", row.iter().map(|x| x.to_string()).collect::<Vec<_>>().join(",")))
                 .collect();
-            out.push_str(&format!("({}, {}, [{}], [{}]),\n", k, m, rows_s.join(","), inv_s.join(",")));
             eprintln!("k={} m={} cols={:2} eqs={:2} full column rank certified", k, m, cols, eqs);
+            Some(format!("({}, {}, [{}], [{}]),\n", k, m, rows_s.join(","), inv_s.join(",")))
+        }
+    }
+}
+
+// With no arguments: sweep the 52-pair grid of `prop:no-dfinite` (1 <= k <= 9, m <= 7,
+// over-determined).  With arguments "k,m" ...: certify exactly those pairs, which is how the
+// extra maximal cells of the narrowed holonomic box of `prop:finite-horizon`(ii) are produced.
+fn main() {
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let mut out = String::new();
+    let mut count = 0;
+    let mut failures = 0;
+
+    if args.is_empty() {
+        for k in 1..=9usize {
+            for m in 0..=7usize {
+                let cols = (k + 1) * (m + 1);
+                if !(cols < U.len() - k) { continue; }
+                count += 1;
+                match certify(k, m) {
+                    Some(s) => out.push_str(&s),
+                    None => failures += 1,
+                }
+            }
+        }
+    } else {
+        for a in &args {
+            let mut it = a.split(',');
+            let k: usize = it.next().expect("pair").parse().expect("k");
+            let m: usize = it.next().expect("pair").parse().expect("m");
+            count += 1;
+            match certify(k, m) {
+                Some(s) => out.push_str(&s),
+                None => failures += 1,
+            }
         }
     }
 
-    eprintln!("\ngrid pairs: {}   failures: {}", count, failures);
+    eprintln!("\npairs: {}   failures: {}", count, failures);
     print!("{}", out);
 }

@@ -1237,7 +1237,7 @@ The certified content of this section rests on two distinct,
 independently auditable trust bases, which we keep separate.
 
 \begin{enumerate}[label=\textup{(\alph*)},itemsep=0.3em]
-\item \textbf{Lean kernel (depths $\le 22$).} The $T$-independence of
+\item \textbf{Lean, \texttt{native\_decide} (depths $\le 22$).} The $T$-independence of
 the orbit-growth sequence is machine-verified for $0 \le d \le 22$ in
 Lean~4 (theorem \texttt{universal\_layers\_through\_22} in
 \texttt{lean/with\_mathlib/ComputableUniversality.lean}). The proof
@@ -1253,11 +1253,15 @@ layer counts
 \end{aligned}
 \]
 simultaneously for every right triangle with positive unequal legs.
-This is a kernel-checked statement over $\mathbb{Q}(a,b)$, with no
-reliance on any single specialization, and it establishes
+The statement is over $\mathbb{Q}(a,b)$, with no reliance on any single
+specialization, and it establishes
 Theorem~\ref{thm:effective-universality} through depth $22$ via the
 length-$10$ relations of Theorem~\ref{thm:symbolic}; it does
-\emph{not} establish the all-depths statement.
+\emph{not} establish the all-depths statement. It is discharged by
+\texttt{native\_decide} and therefore sits in tier~(ii) of
+Appendix~\ref{sec:reproduce}: its trust base is the Lean compiler and its
+evaluation of the compiled term, not the kernel alone. It is not a
+kernel-checked statement, and is not cited as one.
 
 \item \textbf{Modular filter with exact confirmation (depths
 $\le 36$).} Beyond the Lean kernel, the finite candidate list is settled
@@ -1279,10 +1283,9 @@ requires only the cutoff $c_T \le 2d = 64$, the depth-$36$ run
 ($c_T \le 72$) covers it with margin. This modular-plus-exact trust
 base extends the Lean bound of depth $22$ by fourteen further layers, reaching
 depth $36$; it is logically independent of the Lean proof and is not
-kernel-checked. Note that the depth-$22$ Lean bound is itself discharged by
-\texttt{native\_decide} and so rests on the compiler and the evaluator, not on
-the kernel alone; Appendix~\ref{sec:reproduce} states the tiers precisely, and the phrase
-``kernel-checked'' should be read there and not here.
+kernel-checked. Neither trust base in this subsection is the Lean kernel:
+item~(a) is tier~(ii) and item~(b) is tier~(iii) of
+Appendix~\ref{sec:reproduce}, which states the tiers precisely.
 \end{enumerate}
 
 \subsection{The isosceles boundary}
@@ -3294,10 +3297,20 @@ maximal order testable on $43$ terms with a positive over-determination
 margin. Consequently, if $F$ is rational, its denominator has degree
 $> 21$.
 \item \textup{(No low-complexity holonomic recurrence.)} The sequence
-satisfies no holonomic recurrence within the box
-$(\rho+1)(\delta+1) \le 32$; across the tested bidegrees the
-over-determination margin ranges from $4$ to $40$. Consequently, if $F$ is
-$D$-finite, its annihilating operator has complexity exceeding this box.
+satisfies no holonomic recurrence at any bidegree $(\rho,\delta)$ with
+\begin{equation}\label{eq:holbox}
+  (\rho+1)(\delta+1) \;\le\; 32
+  \qquad\text{and}\qquad
+  (\rho+1)(\delta+1) \;<\; 43 - \rho ,
+\end{equation}
+that is, at any \emph{over-determined} cell of the box
+$(\rho+1)(\delta+1)\le 32$. There are $106$ such cells, and over them the
+over-determination margin ranges from $2$ to $42$. The second condition
+in~\eqref{eq:holbox} is not a convenience: the $13$ cells of the box that
+violate it are underdetermined on $43$ terms and exclude nothing, so the box
+without it claims more than any search can deliver
+(Remark~\ref{rem:extra-vs-appA}). Consequently, if $F$ is $D$-finite, its
+annihilating operator has complexity outside this region.
 \item \textup{(No low-degree algebraic equation.)} The sequence satisfies
 no algebraic equation $P(x,F)=0$ with $\deg_x P \le 14$ and
 $\deg_F P \le 6$: each of the $29$ tested $(\deg_x,\deg_F)$ cells yields a
@@ -3319,6 +3332,20 @@ in every cell is equivalent to non-existence of a nonzero relation of the
 corresponding shape, which is the claim. The recovery of the Fibonacci and
 Catalan structures on the same machinery (Remark~\ref{rmk:detector-validation})
 certifies that the procedure detects relations when they are present.
+
+Part~(ii) additionally carries a Lean certificate. Substituting $n = d+\rho$
+and $j = \rho-i$ turns $\sum_{i\le\rho} p_i(d)\,u_{d+i}=0$ into the
+system~\eqref{eq:dfin-system} at $(k,m)=(\rho,\delta)$: the change of variable
+is affine and invertible, so it carries polynomials of degree $\le \delta$ in
+$d$ onto polynomials of degree $\le\delta$ in $n$, and the two coefficient
+spaces correspond. That reindexing is elementary and is not itself formalized.
+In the normalization of~\eqref{eq:dfin-system}, the whole region
+\eqref{eq:holbox} is machine-checked as
+\texttt{NoDFiniteCertificates.no\_recurrence\_in\_box}
+(Appendix~\ref{sec:extra-lean}), by kernel evaluation of modular rank
+certificates at the eleven maximal cells of the region, together with the
+downward propagation of non-existence along the componentwise order. Parts~(i)
+and~(iii) remain outside Lean.
 \end{proof}
 
 \subsection*{Scope of the exclusions}
@@ -3331,8 +3358,11 @@ faithfully into any use of them.
 \label{rmk:scope-finite-horizon}
 First, each statement is a non-existence of relations of \emph{bounded
 complexity}: a recurrence of order $> 21$, a holonomic operator outside the
-box $(\rho+1)(\delta+1)\le 32$, or an algebraic equation of bidegree
-exceeding $(14,6)$ is not excluded. Second, every conclusion is drawn from
+region~\eqref{eq:holbox}, or an algebraic equation of bidegree
+exceeding $(14,6)$ is not excluded. The underdetermined cells of the box
+$(\rho+1)(\delta+1)\le 32$ are outside the region for a reason that is not a
+gap in the search but a property of the data: on them no search of any kind
+can exclude anything. Second, every conclusion is drawn from
 exactly $43$ terms: a relation that first fails to hold only beyond index
 $42$ is invisible to the search. In particular
 Proposition~\ref{prop:finite-horizon} \textbf{does not} establish that $F$
@@ -3424,6 +3454,7 @@ search through depth $42$, the latter independently reproduced on a
 second machine.
 
 \subsection{Shape arithmetic}
+\label{ssec:reproduce-shape}
 
 Four numerical statements of \S\ref{sec:bonfioli} and \S\ref{sec:metric} are certified by
 \texttt{code/zeta\_probe/tools/shape\_arith} (Rust, exact integer arithmetic) and proved in
@@ -3723,8 +3754,14 @@ arithmetic by \texttt{code/zeta\_probe/witness.py}, not in Lean.
 \begin{remark}[What is and is not formally certified]
 \label{rem:reproduce-summary}
 The trust boundary is as follows. Kernel-checked (tier~i) are the eight
-universal length-$10$ relations over $\mathbb{Q}(a,b)$ and the four
-Schur induction steps. \texttt{native\_decide}-checked (tier~ii) are the
+universal length-$10$ relations over $\mathbb{Q}(a,b)$, the four
+Schur induction steps, and the structural exclusions of
+Appendices~\ref{sec:finite-horizon-exclusions}(ii),
+\ref{sec:transcendence-program} and~\ref{sec:structural-negatives} that carry
+Lean certificates: the Farkas witnesses of
+Proposition~\ref{prop:no-recurrence} and the modular rank certificates of
+Proposition~\ref{prop:no-dfinite}, both discharged by kernel evaluation with
+no compiler-evaluation axiom. \texttt{native\_decide}-checked (tier~ii) are the
 concrete determinant identities $\det Q_n=-\prod a_i^2$ for
 $n=2,\dots,10$, the direct orbit reconstruction through depth $17$, and
 the shape-uniform universality through depth $22$. Modular-plus-exact
@@ -3735,17 +3772,130 @@ generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{t
 
 % ======== Appendices folded in from the companion supplement ========
 
+\subsection{Index of machine-verified statements}
+\label{ssec:lean-index}
+
+Table~\ref{tab:lean-index} is the complete map from the statements of this
+paper to the Lean declarations that certify them. A statement absent from the
+table has no Lean certificate. Tier~(i) entries are checked by the kernel
+alone; tier~(ii) entries additionally trust the Lean compiler
+(Remark~\ref{rem:native-trust}). File paths are relative to \texttt{lean/};
+\texttt{wm/} abbreviates \texttt{with\_mathlib/}.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{@{}p{0.24\textwidth}p{0.40\textwidth}p{0.24\textwidth}c@{}}
+\toprule
+Statement & Lean declaration & File & Tier \\
+\midrule
+Thm~\ref{thm:symbolic}, Prop~\ref{prop:lean-ring-relations}
+  & \texttt{rel1\_symbolic}--\texttt{rel8\_symbolic}
+  & \texttt{wm/SymbolicVerification} & (i) \\
+Prop~\ref{prop:lean-ring-schur}
+  & \texttt{schur\_base\_step}, \texttt{schur\_k2\_step},
+    \texttt{schur\_inductive\_step}, \texttt{schur\_boundary\_step}
+  & \texttt{wm/SchurGeneral} & (i) \\
+Rem~\ref{rem:lean-ring-scope}
+  & \texttt{det\_Q\_of\_recurrence}
+  & \texttt{wm/OrthoschemeDet} & (i) \\
+Rem~\ref{rem:l1-insufficient}
+  & \texttt{mu\_root\_abs\_one}
+  & \texttt{wm/DeviationLattice} & (i) \\
+Prop~\ref{prop:deviation-law}, windows
+  & \texttt{window\_60}, \texttt{window\_5637}
+  & \texttt{wm/DeviationLattice} & (i) \\
+Rem~\ref{rem:overdet}
+  & \texttt{exists\_nonzero\_solution}, \texttt{le\_of\_exclusion},
+    \texttt{vacuous\_card}, \texttt{guard\_not\_sufficient}
+  & \texttt{wm/OverDetermination} & (i) \\
+Rem~\ref{rem:lowerbound-open}
+  & \texttt{agree\_of\_same\_machine},
+    \texttt{not\_agree\_of\_transition\_cover}
+  & \texttt{wm/MooreCriterion} & (i) \\
+Shape arithmetic, \S\ref{ssec:reproduce-shape}
+  & \texttt{eT\_even}, \texttt{abstract\_pairs\_unreal},
+    \texttt{profile\_coeffs}, \texttt{sixtyfive\_four\_shapes},
+    \texttt{shape\_count\_72}, \texttt{strand\_alphabet}
+  & \texttt{wm/ShapeArith} & (i) \\
+Prop~\ref{prop:no-recurrence}
+  & \texttt{no\_linear\_recurrence}
+  & \texttt{wm/NoRecurrence} & (i) \\
+Prop~\ref{prop:no-dfinite}
+  & \texttt{no\_dfinite}
+  & \texttt{wm/NoDFiniteCertificates} & (i) \\
+Prop~\ref{prop:finite-horizon}(ii)
+  & \texttt{no\_recurrence\_in\_box}
+  & \texttt{wm/NoDFiniteCertificates} & (i) \\
+Prop~\ref{prop:modp-state-infinite}
+  & \texttt{rotations\_pairwise\_distinct}
+  & \texttt{wm/ModPStateInfinite} & (i) \\
+Prop~\ref{prop:mod2-automaton}
+  & \texttt{mod2\_closed\_form}, \texttt{eventually\_three\_periodic},
+    \texttt{not\_purely\_periodic}, \texttt{fib\_recurrence\_from\_three},
+    \texttt{fib\_recurrence\_fails\_at\_two}
+  & \texttt{PaperExtraMod2} & (i) \\
+Prop~\ref{prop:no-recurrence-strong}(ii)
+  & \texttt{monomial\_count}, \texttt{unknown\_count},
+    \texttt{nonlinear\_search\_underdetermined}
+  & \texttt{PaperExtraCounts} & (i) \\
+Prop~\ref{prop:height-gap}, general form
+  & \texttt{not\_automatic\_of\_unbounded}
+  & \texttt{PaperExtraCounts} & (i) \\
+Grid counts of Prop~\ref{prop:no-dfinite}
+  & \texttt{searchGrid\_count}, \texttt{searchGrid\_overDetermined},
+    \texttt{count\_depends\_on\_k\_ge\_one}
+  & \texttt{PaperExtraCounts} & (i) \\
+Prop~\ref{prop:lean-native}(a)
+  & \texttt{schur\_n2}--\texttt{schur\_n10}
+  & \texttt{RightTriangleReflection} & (ii) \\
+Prop~\ref{prop:lean-native}(b)
+  & \texttt{a\_eq\_fib\_1}--\texttt{a\_eq\_fib\_9}, \texttt{deficit\_at\_10}
+  & \texttt{RightTriangleReflection} & (ii) \\
+Prop~\ref{prop:lean-native}(c)
+  & \texttt{universal\_layers\_through\_22}
+  & \texttt{wm/ComputableUniversality} & (ii) \\
+\bottomrule
+\end{tabular}
+\caption{Paper statement to Lean declaration. Absence from this table means
+no Lean certificate.}
+\label{tab:lean-index}
+\end{table}
+
+What is \emph{not} in the table is the bulk of the paper's mathematics, and
+that is a fact about scale, not about confidence. The Coxeter presentation
+and the Steinberg series of \S\ref{sec:setting}, the symbolic normal form of
+\S\ref{sec:symbolic-normal-form}, the effective universality bound
+(Theorem~\ref{thm:effective-universality}), the translation-lattice and
+Mayer--Vietoris results of \S\ref{sec:translation-module}, the lamplighter structure, the
+metric theorem of \S\ref{sec:metric}, and the singularity analysis giving
+$\beta_2$ are pen-and-paper proofs with computational corroboration only;
+formalizing them would require Coxeter theory, group homology, and analytic
+combinatorics well beyond what Mathlib currently supplies. Two further items
+are outside Lean by construction: Theorem~\ref{thm:universality-sharp} and
+Proposition~\ref{prop:modular-cert} are tier~(iii), and
+Conjecture~\ref{conj:lowerbound}, the lower half of the metric theorem, is
+open.
+
 \section{Scope of the remaining appendices}
 \label{sec:extra-scope}
 
 Appendices~\ref{sec:transcendence-program}--\ref{sec:extra-lean} collect
 partial results, conjectures, and computational evidence bearing on the
-program of this paper. \textbf{Nothing in them is claimed as a theorem.}
-Every statement there is explicitly conditional or empirical, and is labelled
-either as a \emph{conjecture} (a target statement believed but not proved), as
+program of this paper. With the exceptions named in the next paragraph,
+\textbf{nothing in them is claimed as a theorem}: every other statement there
+is explicitly conditional or empirical, and is labelled either as a
+\emph{conjecture} (a target statement believed but not proved), as
 a \emph{conditional proposition} (a deduction valid under a hypothesis that is
 itself only empirically verified at a finite horizon), or as a
 \emph{numerical observation} (a finite computational record).
+
+The exceptions are the finite and combinatorial statements that carry Lean
+certificates, listed in Table~\ref{tab:lean-index}. Propositions
+\ref{prop:no-dfinite}, \ref{prop:no-recurrence} and~\ref{prop:mod2-automaton}
+are unconditional at the finite horizons they name, and
+Proposition~\ref{prop:modp-state-infinite} is unconditional outright. These
+are theorems, and the surrounding conditional material is not.
 Appendices~\ref{sec:finite-horizon-exclusions} and~\ref{sec:reproduce} are not
 of this kind: their content is unconditional at the finite horizons they
 state.
@@ -3844,17 +3994,40 @@ see Remark~\ref{rem:fs-direction}.
 
 \begin{proposition}[No D-finite recurrence at low complexity]
 \label{prop:no-dfinite}
-Let $(k,m)$ satisfy $k \le 9$, $m \le 7$ and the over-determination
+Let $(k,m)$ satisfy $1 \le k \le 9$, $m \le 7$ and the over-determination
 condition
 \begin{equation}\label{eq:overdet}
    (k+1)(m+1) \;<\; 43 - k ,
 \end{equation}
 the right side being the number of equations available from
 $u_0, \ldots, u_{42}$ at order $k$. There are $52$ such pairs, and on
-none of them does a D-finite (P-recursive) recurrence of order $k$ with
-polynomial-in-$d$ coefficients of degree $m$ exist (exact integer linear
-algebra modulo the Mersenne prime $2^{61}-1$).
+none of them does a nonzero rational family $(c_{j,t})_{j \le k,\, t \le m}$
+with
+\begin{equation}\label{eq:dfin-system}
+   \sum_{j=0}^{k} \sum_{t=0}^{m} c_{j,t}\, n^{t}\, u_{n-j} \;=\; 0
+   \qquad (k \le n \le 42)
+\end{equation}
+exist; that is, the sequence admits no D-finite (P-recursive) recurrence of
+order $k$ with polynomial-in-$d$ coefficients of degree $m$ on the $43$ known
+terms.
 \end{proposition}
+
+\begin{proof}
+System~\eqref{eq:dfin-system} is homogeneous, with $(k+1)(m+1)$ unknowns and
+$43-k$ equations, so non-existence of a nonzero solution is exactly full
+column rank of its coefficient matrix. Both steps are machine-checked
+(Appendix~\ref{sec:extra-lean}). First, non-existence propagates downward
+along the componentwise order on $(k,m)$, so only the six maximal pairs
+$(3,7)$, $(4,6)$, $(5,5)$, $(6,4)$, $(7,3)$, $(9,2)$ of the grid need
+treatment (\texttt{DFiniteReduction.no\_dfinite\_of\_maximal}). Second, for
+each of those the Lean kernel evaluates a left inverse, modulo the Mersenne
+prime $2^{31}-1$, of a square submatrix cut out by an explicit choice of
+$(k+1)(m+1)$ rows; reduction modulo a prime can only lower rank, so a modular
+left inverse forces $\det \neq 0$ over $\mathbb{Z}$ and hence a trivial kernel
+over $\mathbb{Q}$ (\texttt{ModularRankCertificate.eq\_zero\_of\_modular\_left\_inverse}).
+The assembled statement is \texttt{NoDFiniteCertificates.no\_dfinite}. No step
+uses \texttt{native\_decide}.
+\end{proof}
 
 \begin{remark}[Why the guard is not optional]
 \label{rem:overdet}
@@ -4050,15 +4223,17 @@ on the $39$ published terms, and is the one carrying a Lean certificate
 promoted by the other.
 
 The guard of Remark~\ref{rem:overdet} applies verbatim to
-Proposition~\ref{prop:finite-horizon}(ii). The box
-$(\rho+1)(\delta+1)\le 32$ named there is not contained in the guarded region
+Proposition~\ref{prop:finite-horizon}(ii), and is the reason that part is
+stated on the over-determined cells of the box rather than on the whole box.
+Of the $119$ cells with $(\rho+1)(\delta+1)\le 32$, exactly $13$ fail
 $(\rho+1)(\delta+1) < 43-\rho$: the cells $(\rho,\delta) = (14,1)$ and
 $(15,1)$, with $30$ and $32$ unknowns against $29$ and $28$ equations, and
-the cells $(\rho,0)$ for $21 \le \rho \le 31$, are not over-determined on
-$43$ terms and exclude nothing. The method paragraph of
-Appendix~\ref{sec:finite-horizon-exclusions} requires over-determination, so
-those cells lie outside the tested set; the box as written in the
-proposition is wider than the set the search covers.
+the cells $(\rho,0)$ for $21 \le \rho \le 31$. On those the system is
+underdetermined, so a nonzero solution exists for every input sequence
+whatever and a search proves nothing; they are excluded from the statement.
+An earlier version of the proposition named the plain box
+$(\rho+1)(\delta+1)\le 32$ and therefore claimed more than the search
+covers.
 \end{remark}
 
 \section{Universality class: scope and known examples}
@@ -4284,7 +4459,7 @@ downward, and it suffices to treat the maximal pairs. The grid has exactly six,
 $(3,7)$, $(4,6)$, $(5,5)$, $(6,4)$, $(7,3)$, $(9,2)$, and the file verifies by kernel
 evaluation that every one of the $52$ is dominated by one of them.
 
-The six base cases are supplied as rank certificates by
+The base cases are supplied as rank certificates by
 \texttt{code/zeta\_probe/tools/nodfinite}. A D-finite recurrence is a nonzero solution of a
 \emph{homogeneous} system, so non-existence means full column rank; for each pair the tool
 exhibits square submatrix rows together with an inverse modulo $2^{31}-1$, and since reduction
@@ -4295,9 +4470,29 @@ inverse to $\det M \neq 0$ over $\mathbb{Z}$, and thence to triviality of the ra
 That implication is proved in full generality, for an arbitrary size and an arbitrary modulus
 greater than one, in \texttt{lean/with\_mathlib/ModularRankCertificate.lean}
 (\texttt{det\_ne\_zero\_of\_modular\_left\_inverse},
-\texttt{eq\_zero\_of\_modular\_left\_inverse}); the six concrete certificates are not
-instantiated against it. The proposition is
-accordingly reduced but not closed, and the reduction itself is unconditional.
+\texttt{eq\_zero\_of\_modular\_left\_inverse}).
+
+Two further files in the same directory instantiate the certificates against it and close the
+proposition. The first, \texttt{NoDFiniteData.lean}, carries the certificate data and the
+modular identities themselves. It has no Mathlib dependency, and its eleven checks
+$\texttt{cert\_}k\texttt{\_}m$ are discharged by \texttt{decide +kernel}, so the arithmetic
+runs in the Lean kernel once, with axiom list \texttt{[propext]} and no compiler-evaluation
+axiom: this is tier~(i) work, not tier~(ii). The check recomputes the coefficient matrix from
+$u_0,\ldots,u_{42}$ and the formula $n^t u_{n-j}$, so the search that produced the data is not
+trusted, only the data. The companion \texttt{NoDFiniteCertificates.lean} supplies the
+plumbing: the coefficient matrix as a square integer matrix, the column bijection
+$c \leftrightarrow (j,t) = (c \div (m{+}1),\, c \bmod (m{+}1))$ that turns a coefficient family
+into a vector, and the passage from the kernel's list arithmetic to \texttt{Finset.sum}. Its
+conclusion \texttt{no\_dfinite} is Proposition~\ref{prop:no-dfinite} as stated, and its axiom
+list is \texttt{[propext, Classical.choice, Quot.sound]}.
+
+The list layer exists for speed, not for mathematics. The eleven checks together are about
+$3.5 \times 10^5$ multiply-add-mod steps on \texttt{Nat} literals, which the kernel completes
+in well under a minute; the same identity phrased directly as an equality of matrices over
+$\mathbb{Z}/p$ does not reduce in usable time. Six of the eleven cells are the maximal pairs
+of the grid of Proposition~\ref{prop:no-dfinite}; the other five, $(0,31)$, $(1,15)$, $(2,9)$,
+$(13,1)$, $(20,0)$, are what the narrowed box of Proposition~\ref{prop:finite-horizon}(ii)
+adds, and \texttt{no\_recurrence\_in\_box} covers the union of the two regions.
 
 One convention is worth recording, since the statement of Proposition~\ref{prop:no-dfinite}
 leaves it implicit. The count $52$ is for $k \ge 1$, that is for recurrences of order at least
@@ -4305,9 +4500,7 @@ one. Admitting $k=0$ gives $60$ pairs and requiring $m \ge 1$ gives $50$; only
 $1 \le k \le 9$, $0 \le m \le 7$ reproduces the published figure. The Lean file verifies both
 counts, so the convention is fixed by the formalization rather than by the prose.
 
-What is not formalized is stated plainly in each file. The six remaining base cases of
-Proposition~\ref{prop:no-dfinite} are certified outside Lean, as described above; neither
-is the passage
+What is not formalized is stated plainly in each file. Not formalized is the passage
 from eventual periodicity to algebraicity over $\mathbb{F}_2(t)$, which needs formal power
 series; nor the unboundedness of $u_d$, which is a statement about all $d$ and rests on the
 growth rate of Theorem~\ref{thm:beta2}. Strict increase across the published range is

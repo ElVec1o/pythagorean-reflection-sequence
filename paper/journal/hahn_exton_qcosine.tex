@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
 \usepackage[margin=1in]{geometry}
 \usepackage{microtype}
 \PassOptionsToPackage{hyphens}{url}
@@ -248,10 +249,8 @@ range, every split-off product carries at least one factor $q^{\,j-1}$ relative 
 in $q$ and in $N,k_0$. (Identity~\eqref{eq:supermult} was also checked numerically to $40$ digits at
 $q=\tfrac13$ and $q=0.7$ for $j\le12$; the earlier version of this proof rested on that check alone,
 at a single $j$ and a single $q$, and exhibited no~$c$. The exponent identity and the bound
-$i(j-i)\ge j-1$ are machine-checked in \texttt{lean/with\_mathlib/QCosineExponents.lean} as
-\texttt{supermult\_exponent} and \texttt{gap\_ge}, together with the Newton-polygon exponents and
-their strict convexity, the ledger sum, the triangular law, and the Diophantine separation
-underlying the effective rational-exclusion argument; thirteen theorems, no \texttt{sorry}.) These coefficients grow like $q^{-j^2/2}$, whereas a rational
+$i(j-i)\ge j-1$ are machine-checked as \texttt{supermult\_exponent} and \texttt{gap\_ge};
+see \S\ref{sec:lean}.) These coefficients grow like $q^{-j^2/2}$, whereas a rational
 function's expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
 expansions are unique, no rational $r$ exists.
 
@@ -538,7 +537,9 @@ $\partial_uF_k(0,1)=(-1)^k$ is a unit, so Hensel's lemma in the complete local r
 yields a unique root $u_k\in1+q\,\Z[[q]]$, which by the scale localization
 $z_k=q^{2(1-k)}(1+O(q^k))$ of \S\ref{sec:zeroproduct} is the $k$-th zero. (Verified to order
 $q^{300}$ for $k\le4$: $u_2=1-q^6-2q^8+q^9-\cdots$, $u_3=1-q^{15}-\cdots$,
-$u_4=1-q^{28}-\cdots$. The onset law visible here is proved next.)
+$u_4=1-q^{28}-\cdots$. The onset law visible here is proved next. The Newton recursion is carried
+out over $\Z$ and its residual verified to order $q^{80}$ for $k\le6$ in Lean; the Hensel step
+itself is not formalised, see \S\ref{sec:lean}.)
 \end{proof}
 
 \subsection{Lattice values and the hexagonal law}
@@ -655,9 +656,11 @@ $(m+r)^2+2(m+r)=(m+r+1)^2-1$ turns the sum into the displayed one, the $q^{-1}$ 
 the $-1$ in that exponent. The order statement follows since the $r=0$ term is the unique one of
 minimal $q$-order.
 
-(c) Combine (a) and (b): $v_k$ is the Hensel root attached to the edge, and by (b) the first
-correction to $v_k=1$ enters at order $\operatorname{ord}_qH(q,q^{1-2k})+1-\bigl((k+1)^2-1\bigr)$,
-which is $k(2k+1)$, exactly as on the cosine side with $T_{2k-1}$ replaced by $T_{2k}$.
+(c) Combine (a) and (b): $v_k$ is the Hensel root attached to the edge, and the first correction
+to $v_k=1$ enters at the $q$-order of the rescaled function at $v=1$, which by (b) at $m=k$ is
+$k(k-1)+\operatorname{ord}_qH(q,q^{1-2k})=k(k-1)+\bigl((k+1)^2-1\bigr)=k(2k+1)$, exactly as on the
+cosine side with $T_{2k-1}$ replaced by $T_{2k}$ (identity \texttt{sine\_onset} of
+\S\ref{sec:lean}).
 (Independently verified: integrality and onsets to order $200$ for $k\le4$, and the closed form
 of (b) to $44$ digits at $q=0.3$.)
 \end{proof}
@@ -703,8 +706,9 @@ evaluate the ratio $F_k(q,1)/\partial_uF_k(q,1)$ scaled by $q^{-T_{2k-1}}$.
    =\frac{(Q;Q)_\infty}{(q;Q)_\infty(Q;Q)_k}+O(q^{2k+1})
    \ \xrightarrow{\ q\text{-adic}\ }\ \frac1{(q;Q)_\infty},
 \]
-the $r$-th term of the lattice sum contributing at order $q^{(k+r)^2-k(2k-1)}$ so that $r\ge1$ is
-$O(q^{2k+1})$, and $(Q;Q)_k=(Q;Q)_\infty\bigl(1+O(q^{2k+2})\bigr)$. Agreement depth $2k+1$.
+the $r$-th term of the lattice sum contributing, after the prefactor $q^{k(k-1)}$ and the
+rescaling by $q^{-T_{2k-1}}$, at order $q^{(k+r)^2-k^2}$, so that $r\ge1$ is $O(q^{2k+1})$, and
+$(Q;Q)_k=(Q;Q)_\infty\bigl(1+O(q^{2k+2})\bigr)$. Agreement depth $2k+1$.
 
 \emph{Denominator.} In $\partial_uF_k(q,1)=\sum_{k'\ge0}(-1)^{k'}k'\,q^{(k'-k)(k'-k+1)}/(q;q)_{2k'}$
 the indices $k'=k+j$ and $k'=k-1-j$ share the exponent $(k'-k)(k'-k+1)=j(j+1)$ with opposite parity
@@ -938,7 +942,8 @@ Pochhammer.
 $P_N(q,z_0)=(q;q)_{2N}G(q,z_0)-R_N(q,z_0)=-R_N(q,z_0)$ by hypothesis; clearing denominators of
 $P_N\in\Z[q,z]$ at $q=s/t$, $z=a/b$ gives $t^{\deg_qP_N}b^{\deg_zP_N}P_N(q,z_0)\in\Z$, and a nonzero
 integer has modulus $\ge1$. The stated evaluation of the criterion is
-Proposition~\ref{prop:secondkind}.
+Proposition~\ref{prop:secondkind}. Every step of this proof, the clearing included, is
+machine-checked (\S\ref{sec:lean}).
 \end{proof}
 
 \begin{corollary}[what would suffice]\label{cor:suffices}
@@ -1012,18 +1017,152 @@ $S(s_0/t_0)\ne0$. If $m/n\in[a,b]$ with $n\le10^{1044}$ and $m/n\ne s_0/t_0$, th
 $|m/n-s_0/t_0|\ge1/(nt_0)>10^{-2089}>b-a=4\cdot10^{-2090}$, impossible; so $m/n=s_0/t_0$, whence
 $n=t_0>10^{1044}$, a contradiction. Thus no rational with denominator $\le10^{1044}$ lies in
 $[a,b]$ at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
-$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{1044}$.
+$q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{1044}$. The Diophantine half of this argument,
+steps \textup{(iv)} onward, is machine-checked, with steps \textup{(i)}--\textup{(iii)} as
+hypotheses (\S\ref{sec:lean}).
 \end{proof}
 
+
+\section{Machine verification}\label{sec:lean}
+
+The arithmetic content of this paper is formalised in Lean~4 (toolchain \texttt{v4.30.0}, Mathlib
+\texttt{v4.30.0}). Five files in \texttt{lean/with\_mathlib/} of the cited repository carry it:
+\begin{center}
+\texttt{QCosineExponents}, \texttt{QCosineLattice}, \texttt{QSiegelLedger},
+\texttt{QEffectiveExclusion}, \texttt{QZeroSeries}.
+\end{center}
+\noindent All five are registered in
+\texttt{lakefile.toml} and build with a bare \texttt{lake build}. Every declaration named below is
+\texttt{sorry}-free, and its axiom list was read off a cold build with \texttt{\#print axioms}. The
+only axioms occurring are Lean's standard \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}, with the single exception of \texttt{QZeroSeries.lean}, where each theorem is
+decided by compiled evaluation and therefore also carries the reflection axiom that
+\texttt{native\_decide} generates.
+
+\begin{center}
+\scriptsize
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{7.2cm}@{}}
+\hline
+Statement & Coverage & Lean declarations\\
+\hline
+Thm~\ref{thm:main-transc} & none & (see below)\\
+Thm~\ref{thm:zeroproduct-intro} & exponent steps & as Thm~\ref{thm:zeroproduct}\\
+Lem~\ref{lem:irreducible} & none & (see below)\\
+Thm~\ref{thm:sl2} & exponent gap & \texttt{supermult\_exponent}, \texttt{gap\_ge},
+  \texttt{gap\_eq\_at\_ends}\\
+Prop~\ref{prop:nonintegrable} & none & (see below)\\
+Cor~\ref{cor:hypertranscendence} & none & (see below)\\
+Thm~\ref{thm:zeroproduct} & exponent steps & \texttt{zeroproduct\_reindex},
+  \texttt{zeroproduct\_peak\_bound}, \texttt{zeroproduct\_peak\_slack}, \texttt{euler\_split}\\
+Thm~\ref{thm:integrality} & inputs, and order $q^{80}$ & \texttt{integrality\_exponent},
+  \texttt{newtonExp\_nonneg}, \texttt{newtonExp\_eq\_zero\_iff},
+  \texttt{newtonExp\_second\_difference}, \texttt{newton\_residual\_shape},
+  \texttt{residualPoly\_eval\_one}, \texttt{residualPoly\_derivative\_eval\_one},
+  \texttt{residualPoly\_derivative\_isUnit}, \texttt{qPochhammer\_isUnit},
+  \texttt{u1\_coefficients}, \texttt{u2\_prefix}, \texttt{cosine\_residual\_vanishes}\\
+Lem~\ref{lem:swap} & exponent identities & \texttt{swap\_symmetry\_exponent},
+  \texttt{swap\_base\_collapse}\\
+Prop~\ref{prop:latticevalues} & no-cancellation step & \texttt{lattice\_order\_gap},
+  \texttt{lattice\_order\_strictMono}, \texttt{lattice\_order\_leading}\\
+Cor~\ref{cor:hexagonal} & complete to $k=6$ & \texttt{hexagonal\_onset},
+  \texttt{hexagonal\_next\_correction}, \texttt{cosine\_onset}, \texttt{cosine\_onsets}\\
+Prop~\ref{prop:sinelattice} & complete to $k=5$ & \texttt{sine\_shift}, \texttt{sine\_onset},
+  \texttt{onsets\_differ}, \texttt{onsets\_consecutive}, \texttt{sine\_onsets},
+  \texttt{sine\_residual\_vanishes}\\
+Prop~\ref{prop:stablelaw} & depths, to $k=6$ & \texttt{stablelaw\_numerator\_depth},
+  \texttt{stablelaw\_numerator\_depth\_sharp}, \texttt{stablelaw\_pair\_exponent},
+  \texttt{stablelaw\_pair\_weight}, \texttt{stablelaw\_pair\_parity},
+  \texttt{stablelaw\_denominator\_depth}, \texttt{twoColoured\_prefix},
+  \texttt{cosine\_agreement\_depth}, \texttt{sine\_agreement\_depth}\\
+Rem~\ref{prop:denrad} & Liouville half & \texttt{one\_le\_abs\_of\_ne\_zero}\\
+Prop~\ref{prop:secondkind} & degrees & \texttt{tail\_sum}, \texttt{degree\_ledger},
+  \texttt{degree\_at\_zero}, \texttt{degree\_lt\_of\_pos}\\
+Prop~\ref{prop:reduction} & complete & \texttt{prod\_one\_sub\_div}, \texttt{clearedTerm\_eq},
+  \texttt{cleared\_eq}, \texttt{reduction}, \texttt{margin\_iff}, \texttt{margin\_fails},
+  \texttt{st\_ge\_one}\\
+Rem~\ref{rem:thetabarrier} & complete & \texttt{theta\_barrier}\\
+Prop~\ref{prop:effective} & complete & \texttt{farey\_gap},
+  \texttt{unique\_rational\_in\_interval}, \texttt{no\_rational\_of\_denominator\_le},
+  \texttt{denominator\_gt\_of\_mem}, \texttt{width\_lt\_gap},
+  \texttt{qstar\_no\_small\_denominator}\\
+\hline
+\end{tabular}
+\end{center}
+
+\medskip
+Two entries deserve comment because the formalisation changed the text. The displayed derivation
+of Proposition~\ref{prop:sinelattice}(c) previously omitted the prefactor $q^{k(k-1)}$ and so
+evaluated to $1$ rather than to $k(2k+1)$; and the numerator step of
+Proposition~\ref{prop:stablelaw} previously gave the relative order of the $r$-th term as
+$(k+r)^2-k(2k-1)$, which at $k=2$, $r=1$ is $3$ and contradicts the depth $2k+1=5$ asserted two
+lines later. Both are corrected above; neither conclusion changes.
+
+\medskip
+\noindent The following are \emph{not} formalised.
+
+\begin{itemize}
+\item \emph{All of \S\ref{sec:galois}.} Theorem~\ref{thm:sl2},
+Proposition~\ref{prop:nonintegrable}, Corollary~\ref{cor:hypertranscendence} and
+Theorem~\ref{thm:main-transc} are statements of difference Galois theory and of its parametrized
+refinement. Mathlib contains no difference Galois theory, no $q$-difference modules and no
+Picard--Vessiot theory for difference equations, so there is nothing to reduce them to;
+formalising them means formalising \cite{HS} and \cite{DHR2018} first. Only the exponent gap that
+replaced the numerical check in the proof of Theorem~\ref{thm:sl2} is machine-checked. A file
+whose content was ``assume \cite[Prop.~2.9]{DHR2018}, conclude'' would add nothing and is
+deliberately not supplied. The same applies to Lemma~\ref{lem:irreducible}, whose argument is a
+valuation-theoretic exhaustion over the $Q$-orbits of $\C^\ast$.
+\item \emph{The analytic steps of Theorem~\ref{thm:zeroproduct}}: the uniform peak estimate, the
+Rouch\'e localisation and the dominated-convergence passage. The exponent identities those steps
+consume are formalised; the estimates are not. Mathlib has the dominated convergence theorem but
+no Rouch\'e theorem, so step~(3) has no target to reduce to at present.
+\item \emph{The Hensel step of Theorem~\ref{thm:integrality}.} Mathlib does supply
+\texttt{IsAdicComplete (Ideal.span \{X\}) (PowerSeries R)} together with
+\texttt{IsAdicComplete.henselianRing}, so $\Z[[q]]$ is Henselian at $(q)$ in the library's sense.
+That instance does not apply here: \texttt{HenselianRing.is\_henselian} requires a \emph{monic
+polynomial}, whereas $F_k$ is a power series in $u$ whose top behaviour is not a unit. The missing
+ingredient is a Weierstrass-preparation form of the implicit function theorem for $A[[u]]$ over an
+adically complete $A$ that is not local, and Mathlib's Weierstrass preparation assumes $A$ local.
+What is verified instead is the finite-order content, which is the part the paper displays: the
+Newton recursion carried out entirely over $\Z$, with the residual $F_k(q,u_k)$ checked to vanish
+to order $q^{80}$ for $k\le6$ on the cosine side and $k\le5$ on the sine side.
+\item \emph{The Cauchy half of Remark~\ref{prop:denrad}}, namely
+$1/R=\limsup|f_n|^{1/n}$. The Liouville half, $|f_n|\ge1/\mathcal D_n$ on the support, is
+formalised; the radius identity is Cauchy--Hadamard and is used as such.
+\item \emph{The remainder estimate of Proposition~\ref{prop:secondkind}}, $|R_N|=q^{N^2(1+o(1))}$.
+It is an estimate on a $q$-series tail and enters \texttt{reduction} as a hypothesis, which is the
+honest place for it: what is proved is that the estimate, together with $P_N(q,z_0)\ne0$, forces a
+contradiction.
+\item \emph{The interval arithmetic of Proposition~\ref{prop:effective}}: the enclosure of
+$q^\ast$, the Stern--Brocot rational $s_0/t_0$ and the certified sign changes come from
+\texttt{beta2\_effective\_irrationality.py} and enter \texttt{qstar\_no\_small\_denominator} as
+hypotheses. The Diophantine argument that consumes them, including the width comparison
+$4\cdot10^{-2090}<1/(10^{1044}t_0)$ for every $t_0<10^{1045}$, is formalised in full.
+\item \emph{The exclusion searches of Remark~\ref{rem:zerocurve-arith}}, which are rank
+computations on large integer matrices and are reported as computations.
+\end{itemize}
+
+\medskip
+\noindent One point of method is worth recording, since it is what made
+Proposition~\ref{prop:reduction} cheap to verify. Denominator clearing is normally stated for a
+general two-variable integer polynomial, in terms of its two total degrees, and proving it in that
+form is substantial. It is not needed. Since $P_N$ is given by an explicit product formula, the
+cleared quantity can be written down as an integer,
+\[
+   t^{2N^2+N}b^N P_N(s/t,a/b)\;=\;\sum_{k=0}^{N}(-1)^ks^{k(k-1)}a^kb^{N-k}t^{k^2+2k}
+   \!\!\prod_{i=2k+1}^{2N}\!\!\bigl(t^i-s^i\bigr),
+\]
+and the whole content becomes the exponent ledger
+$k(k-1)+\sum_{i=2k+1}^{2N}i+(k^2+2k)=2N^2+N$, which is \texttt{degree\_ledger}.
 
 \section*{Declarations}
 \noindent\textbf{Funding.} No funding was received for this work.
 \smallskip\\
 \noindent\textbf{Competing interests.} The author declares no competing interests.
 \smallskip\\
-\noindent\textbf{Data availability.} All code and numerical certification data supporting the
-computational statements are openly available in the repository cited on the title page and
-archived on Zenodo (concept DOI \texttt{10.5281/zenodo.20370090}).
+\noindent\textbf{Data availability.} All code, numerical certification data and Lean sources
+supporting the computational and machine-checked statements are openly available in the repository
+cited on the title page and archived on Zenodo (concept DOI
+\texttt{10.5281/zenodo.20370090}). The Lean files are listed in \S\ref{sec:lean}.
 \smallskip\\
 \noindent\textbf{Use of AI tools.} Large language models (Anthropic Claude) were used in the
 preparation of this manuscript, both in drafting and in computation. Every computational claim

@@ -32,7 +32,9 @@
 
   The concrete certificates are not instantiated here; this file supplies the general
   implication that consumes them, and `DFiniteReduction.no_dfinite_of_maximal` supplies the
-  reduction from 52 parameter pairs to 6.
+  reduction from 52 parameter pairs to 6.  The instantiation lives in `NoDFiniteData.lean`
+  (the data and the kernel-checked modular identities) and `NoDFiniteCertificates.lean` (the
+  plumbing and the conclusion `no_dfinite`).
 -/
 
 import Mathlib

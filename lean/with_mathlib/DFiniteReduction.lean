@@ -32,8 +32,13 @@
   unconditionally.  The six base cases are NOT discharged here: their rank certificates are
   generated and self-checked by `code/zeta_probe/tools/nodfinite`, and importing them into
   Lean needs the step from a modular left inverse to `det M /= 0` over the integers, which is
-  not in this file.  Proposition `prop:no-dfinite` is therefore reduced, not yet closed, and
-  the paper says so.
+  not in this file.
+
+  The two files that finish the job are `NoDFiniteData.lean`, which carries the certificates
+  and checks the modular identities in the kernel, and `NoDFiniteCertificates.lean`, which
+  feeds them through `ModularRankCertificate.eq_zero_of_modular_left_inverse` and
+  `no_dfinite_of_maximal` below.  `NoDFiniteCertificates.no_dfinite` is `prop:no-dfinite`,
+  closed.  Nothing in the chain uses `native_decide`.
 -/
 
 import Mathlib

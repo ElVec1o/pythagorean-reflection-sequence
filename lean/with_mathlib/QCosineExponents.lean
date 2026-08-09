@@ -177,3 +177,23 @@ theorem farey_separation {a b c d : ℤ} (hb : 0 < b) (hd : 0 < d) (hne : a * d 
   exact ⟨cross_difference_ge_one hne, mul_pos hb hd⟩
 
 end QCosineExponents
+
+/-! ### Axiom audit (Rule 5)
+
+This block was missing when the file was first written, so the file was cited by the note without
+ever printing its axioms.  Absence of build errors is not a certificate: a constant that fails to
+elaborate reports "does not depend on any axioms". -/
+
+#print axioms QCosineExponents.supermult_exponent
+#print axioms QCosineExponents.gap_ge
+#print axioms QCosineExponents.gap_eq_at_ends
+#print axioms QCosineExponents.newtonExp_nonneg
+#print axioms QCosineExponents.newtonExp_eq_zero_iff
+#print axioms QCosineExponents.newtonExp_second_difference
+#print axioms QCosineExponents.sine_shift
+#print axioms QCosineExponents.tail_sum
+#print axioms QCosineExponents.cosine_onset
+#print axioms QCosineExponents.sine_onset
+#print axioms QCosineExponents.onsets_consecutive
+#print axioms QCosineExponents.cross_difference_ge_one
+#print axioms QCosineExponents.farey_separation
