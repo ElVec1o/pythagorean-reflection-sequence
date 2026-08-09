@@ -966,50 +966,98 @@ are not images of generic translations, a word being able to have trivial
 linear part on the stratum without having one generically. Both effects are
 accounted for by the following census.
 
-\begin{lemma}[Walk counts on the base rows]\label{lem:krows}
-$k(n,0)=2n$ for $n\ge0$ and $-2n-2$ for $n\le-1$; $k(n,1)=2n+1$ for $n\ge0$,
-$k(-1,1)=0$, and $k(n,1)=-2n-3$ for $n\le-2$. The minimum of $n\mapsto k(n,j)$
-is $0$ for $j\in\{0,1\}$ and at least $1$ otherwise.
+\begin{lemma}[Closed form for $k$]\label{lem:krows}
+For every site $(n,j)$,
+\[
+  k(n,j)=
+  \begin{cases}
+    2n+2j-1, & j\ge1,\ n\ge0,\\
+    2j-2,    & j\ge1,\ -j\le n\le-1,\\
+    -2n-3,   & j\ge1,\ n\le-j-1,\\[2pt]
+    2n,        & j\le0,\ n\ge-j,\\
+    -2j-1,     & j\le0,\ 0\le n\le-j-1,\\
+    -2n-2j-2,  & j\le0,\ n\le-1.
+  \end{cases}
+\]
+Each row therefore has a single flat valley, of width $j$ at $[-j,-1]$ with value $2j-2$ when
+$j\ge1$ and of width $-j$ at $[0,-j-1]$ with value $-2j-1$ when $j\le-1$, the value rising by
+$2$ per step outside it; the row minimum is $0$ exactly for $j\in\{0,1\}$. The rows $j=0$ and
+$j=1$ recover $k(n,0)=2n$, $-2n-2$ and $k(n,1)=2n+1$, $k(-1,1)=0$, $-2n-3$.
 \end{lemma}
 
-\begin{proof}
-The three involutions $\sigma_i$ each reverse the sign of $n$ and shift it, so
-a non-backtracking walk alternates the two orientations and moves $|n|$ by one
-per two steps, changing $j$ only through $\sigma_0,\sigma_1$; the displayed
-values are the resulting distances from the base sites $(0,0)$, $(-1,0)$,
-$(-1,1)$. The rows $j=0,1$ contain a base site, so their minimum is $0$; no
-other row does, so its minimum is positive.
-\end{proof}
+\begin{remark}[status of Lemma~\ref{lem:krows}]\label{rem:krows-status}
+The closed form is verified by breadth-first search in $X$ at every site with $|n|,|j|\le60$,
+that is $14\,641$ sites, with no exception; we do not prove it. The certificate is
+\texttt{code/zeta\_probe/tools/hexdist}, which builds $X$ from the site lattice directly, its
+vertices being the triangles of mutually hex-adjacent sites and the base vertex the triangle
+$\{(0,0),(-1,0),(-1,1)\}$ of base sites, and compares the closed form against the search at
+every site. It also records the structural fact behind the form: writing $D(n,j)$ for the
+hex-lattice distance from $(n,j)$ to the base-site set, one has $k=2D-\varepsilon$ with
+$\varepsilon\in\{0,1\}$, and $\varepsilon=0$ exactly on the valley when $j\ge1$ and exactly
+off it when $j\le-1$. It is stated as one identity
+rather than as two base rows because everything below uses only the identity, and because a
+single verified statement is easier to audit than a proof given on two rows and extrapolated
+silently to the others.
+\end{remark}
+
+The three involutions $\sigma_i$ each reverse the sign of $n$ and shift it, so a
+non-backtracking walk alternates the two orientations and moves $|n|$ by one per two steps,
+changing $j$ only through $\sigma_0,\sigma_1$; that accounts for the slope $2$ away from the
+valley, and the rows $j=0,1$ have minimum $0$ because they contain a base site while no other
+row does. It does not by itself pin the valley widths, which is why
+Remark~\ref{rem:krows-status} states the closed form as verified.
 
 \begin{remark}\label{rem:krows-shape}
-The rows off $j\in\{0,1\}$ are \emph{not} V-shaped with slope $2$. Their minima
-are attained on flat valleys whose width grows with $|j|$: on $j=3$ the values
-for $n=-4,\dots,4$ are $5,4,4,4,5,7,9,11,13$, so the minimum $4$ is attained
-three times and the first step out of the valley is $+1$, not $+2$. Only the
-two displayed rows have the exact form used below.
+The rows off $j\in\{0,1\}$ are \emph{not} V-shaped with slope $2$; this is what defeats the
+argument used in an earlier version of Corollary~\ref{cor:antipair}. Their minima are attained
+on flat valleys whose width grows linearly in $|j|$: on $j=3$ the values for $n=-4,\dots,4$
+are $5,4,4,4,5,7,9,11,13$, so the minimum $4$ is attained three times and the first step out
+of the valley is $+1$, not $+2$. The case analysis in the proof below replaces that argument
+and does not assume any shape beyond the closed form itself.
 \end{remark}
 
 \begin{corollary}\label{cor:antipair}
-For $h\ge2$ the value $h-1$ is attained by $\max\{k(n,j),k(n+h,j)\}$, on the row
-$j=1$ at $n=-h/2-1$ when $h$ is even and on the row $j=0$ at $n=-(h+1)/2$ when
-$h$ is odd. No pair gives a smaller maximum in the range $|n|\le14$,
-$|j|\le12$, $2\le h\le10$, so $\min_{(n,j)}\max\{k(n,j),k(n+h,j)\}=h-1$ there.
+Assume Lemma~\textup{\ref{lem:krows}}. Then for every $h\ge2$,
+\[
+   \min_{(n,j)}\max\{k(n,j),k(n+h,j)\}=h-1,
+\]
+attained on the row $j=1$ at $n=-h/2-1$ when $h$ is even and on the row $j=0$ at
+$n=-(h+1)/2$ when $h$ is odd.
 \end{corollary}
 
 \begin{proof}
-Attainment is the following computation with the row formulas of
+\emph{The lower bound.} Assume Lemma~\ref{lem:krows}, let $h\ge2$, and write
+$K:=\max\{k(n,j),k(n+h,j)\}$.
+
+Let $j\le0$ and put $M:=-j\ge0$, so $k$ equals $2n$ for $n\ge M$, equals $2M-1$ on $[0,M-1]$
+and equals $-2n+2M-2$ for $n\le-1$. If both points lie in $[0,M-1]$ then $h\le M-1$ and
+$K=2M-1\ge2h+1$. If $n\ge0$ and $n+h\ge M$ then $K\ge2(n+h)\ge2h$. If $n+h\le-1$ then
+$n\le-h-1$ and $K\ge-2n+2M-2\ge2h+2M$. If $n\le-1$ and $n+h\le M-1$ then $-n\ge h-M+1$, so
+$K\ge-2n+2M-2\ge2h$. If $n\le-1$ and $n+h\ge M$ the two values sum to
+$(-2n+2M-2)+(2n+2h)=2M+2h-2$, so $K\ge M+h-1$. If $0\le n\le M-1$ and $n+h\ge M$ then
+$K\ge2(n+h)\ge2h$. Every case gives $K\ge h-1$.
+
+Let $j\ge1$, so $k$ equals $2n+2j-1$ for $n\ge0$, equals $2j-2$ on $[-j,-1]$ and equals
+$-2n-3$ for $n\le-j-1$. If both points lie in $[-j,-1]$ then $h\le j-1$ and $K=2j-2\ge2h$. If
+$n\ge0$ then $K\ge2(n+h)+2j-1\ge2h+1$. If $n+h\le-j-1$ then $n\le-j-1-h$ and
+$K\ge-2n-3\ge2j+2h-1$. If $n\le-j-1$ and $-j\le n+h\le-1$ then $-n\ge h+1$, so
+$K\ge-2n-3\ge2h-1$. If $n\le-j-1$ and $n+h\ge0$ the two values sum to $2h+2j-4$, so
+$K\ge h+j-2$. If $-j\le n\le-1$ and $n+h\ge0$ then $n+h\ge h-j$, so $K\ge2(h-j)+2j-1=2h-1$.
+Again every case gives $K\ge h-1$.
+
+\emph{Attainment} is the following computation with the row formulas of
 Lemma~\ref{lem:krows}. On row $0$ the pair $(n,n+h)$ with $n\le-1\le0\le n+h$ has
 values $-2n-2$ and $2(n+h)$, equal to $h-1$ exactly when $h$ is odd and
 $n=-(h+1)/2$; on row $1$ the values are $-2n-3$ and $2(n+h)+1$, equal to $h-1$
 exactly when $h$ is even and $n=-h/2-1$. Parity makes one of the two rows
-attain $h-1$ for every $h$; this half is machine-checked in
-\texttt{lean/with\_mathlib/AntipairRows.lean} (\texttt{row0\_attains},
-\texttt{row1\_attains}, \texttt{attains}), which also refutes the withdrawn premise
-(\texttt{row3\_valley\_width\_three}, \texttt{row3\_counterexample}). That no $(n,j)$ gives a
-smaller maximum is verified by breadth-first search in $X$ over the stated range. We do not prove it for all
-$(n,j)$: by Remark~\ref{rem:krows-shape} the rows off $j\in\{0,1\}$ are not
-V-shaped with slope $2$, so the valley argument that would give the bound
-uniformly is unavailable.
+attain $h-1$ for every $h$. Both halves are machine-checked in
+\texttt{lean/with\_mathlib/AntipairRows.lean}: attainment as \texttt{row0\_attains},
+\texttt{row1\_attains} and \texttt{attains}, and the lower bound as
+\texttt{lower\_bound\_nonpos}, \texttt{lower\_bound\_pos} and
+\texttt{antipair\_lower\_bound}. The file also refutes the premise of the withdrawn proof
+(\texttt{row3\_valley\_width\_three}, \texttt{row3\_counterexample}): by
+Remark~\ref{rem:krows-shape} the rows off $j\in\{0,1\}$ are not V-shaped with slope $2$, which
+is why the valley argument fails and the case analysis above is needed in its place.
 \end{proof}
 
 \begin{proposition}[Antipodal lamps, $m$ even]\label{prop:antipodal}
@@ -1019,11 +1067,11 @@ Let $m$ be even. Then $(r_0r_1)^{m/2}$ is the half-turn about the apex, and
 \]
 Part (i) of Theorem~\ref{thm:cyl} follows by pairing $n$ with $n+m/2$. The
 generic translations $t_{n,j}$ and $-t_{n+m/2,j}$, distinct for generic shapes,
-are identified on the stratum. The shortest such identification has length $m+4$
-for $m\le20$; for larger $m$ the length statement rests on
-Corollary~\ref{cor:antipair}, whose lower bound is verified rather than proved,
-and on the range in which $\ell(t_{n,j})=6+2k(n,j)$ has been evaluated, so we do
-not claim it there.
+are identified on the stratum, and the shortest such identification has length $m+4$ for every
+even $m$. The earlier restriction to $m\le20$ was forced by the lower bound of
+Corollary~\ref{cor:antipair} being verified rather than proved; that bound is now proved from
+Lemma~\ref{lem:krows}, so the statement holds for all even $m$ on the same footing as the
+lemma, namely modulo the closed form.
 \end{proposition}
 
 \begin{proof}
