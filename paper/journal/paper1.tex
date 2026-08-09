@@ -3491,8 +3491,8 @@ $(3,4,5)$ triangle.
 
 The deeper finite verifications are evaluations of computable functions
 on fixed inputs, discharged by \texttt{native\_decide}. Every result proved this way
-carries, in addition to \texttt{propext}, \texttt{Classical.choice} and
-\texttt{Quot.sound}, a generated axiom recording the compiler evaluation: such results
+carries, alongside \texttt{propext}, a generated axiom recording the compiler
+evaluation: such results
 trust the Lean compiler and its evaluation of the compiled term, not only the kernel.
 The exact name is toolchain-dependent and both forms occur in this development: the
 Mathlib-free project (pinned to \texttt{v4.13.0}) reports the global
@@ -3685,7 +3685,7 @@ The Mathlib-free Lean development is pinned to
 \texttt{leanprover/lean4:v4.13.0}; a clean \texttt{lake build} re-checks
 all of its theorems in about $20$ seconds and needs no Mathlib cache. The
 Mathlib-dependent development is pinned to
-\texttt{leanprover/lean4:v4.20.0}; after the one-time Mathlib cache fetch
+\texttt{leanprover/lean4:v4.30.0}; after the one-time Mathlib cache fetch
 the \texttt{ring} theorems of
 Propositions~\ref{prop:lean-ring-relations}
 and~\ref{prop:lean-ring-schur} rebuild in seconds, while the depth-$22$

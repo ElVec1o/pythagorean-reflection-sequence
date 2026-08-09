@@ -121,8 +121,8 @@ Quot.sound]` only, with no `sorry`.
 - First-time install: ~15–45 minutes (mostly downloading and unpacking
   the prebuilt Mathlib cache)
 - Subsequent rebuilds: ~40 seconds for the 8 symbolic theorems
-- Lean toolchain: pinned to `leanprover/lean4:v4.20.0` via
-  `lean-toolchain` (matches Mathlib `v4.20.0`)
+- Lean toolchain: pinned to `leanprover/lean4:v4.30.0` via
+  `lean-toolchain` (matches Mathlib `v4.30.0`)
 
 ## One-time install
 
