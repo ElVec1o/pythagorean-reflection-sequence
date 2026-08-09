@@ -114,6 +114,47 @@ Quot.sound]` only, with no `sorry`.
 > `zₙz(n-1)(b(n-1)−bₙ)` (the envelope drift; zero for constant `b`). Both close by `ring` over
 > any `CommRing`; axioms `[propext, Quot.sound]`.
 
+## Hahn–Exton q-cosine atoms (Paper 5)
+
+Five files back `paper/journal/hahn_exton_qcosine.tex`; its §"Machine verification"
+carries the full statement-to-declaration table and the list of what is *not*
+formalised, with reasons. Summary:
+
+> **`QCosineExponents.lean`** — the §3 exponent gap that replaced the note's
+> one-point numerical check in `thm:sl2` (`supermult_exponent`, `gap_ge`), the
+> Newton-polygon exponents and their strict convexity, the ledger sum `tail_sum`,
+> the triangular law, and the Farey separation. 13 theorems.
+>
+> **`QCosineLattice.lean`** — the §4–§5 exponent and order bookkeeping: the
+> `thm:zeroproduct` reindexing and peak bound, the two Koornwinder–Swarttouw
+> exponent identities of `lem:swap`, the strict monotonicity that licenses
+> "no cancellation can occur" in `prop:latticevalues`, the residual shape and
+> unit derivative of `thm:integrality`, `qPochhammer_isUnit`
+> (`1/(q;q)_m ∈ ℤ[[q]]`, via `PowerSeries.isUnit_iff_constantCoeff`), the
+> hexagonal and sine onsets, and the `prop:stablelaw` depth arithmetic.
+> 26 theorems.
+>
+> **`QSiegelLedger.lean`** — `prop:secondkind`'s degree bookkeeping and
+> `prop:reduction` in full, denominator clearing included. No `MvPolynomial`
+> is used: since `P_N` has a closed product form, the cleared quantity is
+> exhibited as an integer and the content reduces to the exponent ledger
+> `degree_ledger`. Also the margin arithmetic of `cor:suffices` and
+> `rem:thetabarrier`. 12 theorems.
+>
+> **`QEffectiveExclusion.lean`** — the Diophantine half of `prop:effective`:
+> the Farey gap, interval uniqueness, and the width comparison
+> `4·10⁻²⁰⁹⁰ < 1/(10¹⁰⁴⁴ t₀)` for every `t₀ < 10¹⁰⁴⁵`. The certified interval
+> arithmetic that locates `q*` enters as hypotheses. 6 theorems.
+>
+> **`QZeroSeries.lean`** — a truncated ℤ-power-series engine (`Array Int`,
+> order 80) running the Newton recursion for the zero series entirely over ℤ.
+> Certifies the displayed expansion of `z₁`, the residual `F_k(q,u_k) = 0` to
+> order `q⁸⁰`, the hexagonal and triangular onsets, and the measured
+> `prop:stablelaw` agreement depths. 9 theorems, `native_decide`, so each
+> carries the reflection axiom this toolchain emits.
+
+The first four report only `[propext, Classical.choice, Quot.sound]`.
+
 ## Hardware requirements
 
 - Disk: **~10 GB** (Mathlib cache, persistent)

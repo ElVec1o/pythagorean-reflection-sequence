@@ -1,35 +1,39 @@
 # Lean files for the triangle reflection paper
 
-> **BUILD STATUS WARNING (2026-08-10). Read before relying on anything in this file.**
+> **BUILD STATUS (2026-08-10).** Every file listed below is now registered in
+> `lean/with_mathlib/lakefile.toml`, both as a `[[lean_lib]]` and in
+> `defaultTargets`, so a clean `lake build` builds and checks all of them and
+> all are covered by the axiom audit.
 >
-> None of the six files described below is in `defaultTargets` in
-> `lean/with_mathlib/lakefile.toml`, so a clean `lake build` DOES NOT BUILD OR CHECK ANY OF
-> THEM, and none of them is covered by the project's axiom audit.
+> The cross-package import that used to make `Bridge.lean`, `LinearPart.lean`
+> and `PlaneGroup.lean` unbuildable is repaired. They import
+> `RotationRelations`, which lives in the Mathlib-free `lean/` package; the
+> with_mathlib lakefile now carries
 >
-> Three of them do not compile at all as shipped. `Bridge.lean`, `LinearPart.lean` and
-> `PlaneGroup.lean` import `RotationRelations`, which lives in the Mathlib-free `lean/`
-> package and is not on the module path of `lean/with_mathlib/`; they also import Mathlib, so
-> they cannot be moved into `lean/` either. As shipped they are unbuildable in both packages
-> and the error is `unknown module prefix 'RotationRelations'`.
+> ```toml
+> [[lean_lib]]
+> name = "RotationRelations"
+> srcDir = ".."
+> ```
 >
-> The remaining three, `CensusUniversal.lean`, `CensusWitness.lean` and `CylCensus.lean`, are
-> unverified in the build for the same reason, and all three rest on `native_decide`, which is
-> a strictly larger trusted base than the kernel.
+> so that module is compiled in place from `lean/RotationRelations.lean` without
+> being duplicated and without a cross-package `require`. It is import-free and
+> compiles under Lean 4.30 as well as 4.13. Measured build times, single
+> threaded on a cold `lake build`: `RotationRelations` 5 s, `LinearPart` 10 s,
+> `PlaneGroup` 6 s, `Bridge` 4 s, `CensusWitness` 10 s, `CensusUniversal` 9 s,
+> `CylCensus` 1256 s.
 >
-> Therefore: **the results attributed to these files below are NOT verified**, whatever the
-> table says. Treat every entry as PROVED-at-best and unchecked-in-this-release until the
-> files are repaired and registered. In particular `unique_finite_order` must not be cited as
-> a proof of part (iii) of the rotation-relations theorem, and `universal_identities` must not
-> be cited as a proof of part (i) of the census theorem.
->
-> This warning was added when an audit found the files orphaned. Repairing and registering
-> them, or removing them from the release, is tracked as an open task.
-
-
+> `CensusWitness.lean`, `CensusUniversal.lean` and `CylCensus.lean` are proved
+> by `native_decide` and so trust the Lean compiler in addition to the kernel;
+> each declaration carries its own reflection axiom
+> `<thm>._native.native_decide.ax_1_1`. This is declared in the Declarations
+> section of the paper. `CylCensus.lean` is the slowest target in the whole
+> project at about twenty-one minutes.
 
 The first three files import nothing and are checked with `lean <file>` on Lean
-4.13 or 4.30; no Mathlib build is required. The two under `with_mathlib/`
-import Mathlib, and `Bridge.lean` also imports `RotationRelations`.
+4.13 or 4.30; no Mathlib build is required. The rest are under `with_mathlib/`
+and import Mathlib, and `Bridge.lean`, `LinearPart.lean` and `PlaneGroup.lean`
+also import `RotationRelations` through the `srcDir` entry described above.
 
 | file | proved | left open |
 |---|---|---|
@@ -39,15 +43,23 @@ import Mathlib, and `Bridge.lean` also imports `RotationRelations`.
 | `with_mathlib/CoxeterTorsion.lean` | **the free-product torsion criterion** (`finite_order_iff`): in `W_m = D_m * C_2`, the word `u₀ x₂ u₁ x₂ u₂` with `u₁ ≠ 1` has finite order exactly when `u₂u₀ = 1` | nothing |
 | `with_mathlib/LinearPart.lean` | **the linear part of a product of reflections** (`linOf_eq`): `exp (2i Σ_i c_i(w) θ_i)`, and `linOf_of_cvec_two_eq_zero`, the rotation by `2πc₁/m` when `c₂ = 0` | nothing |
 | `with_mathlib/PlaneGroup.lean` | **the plane group itself**: `Aff` (`z ↦ a z + b` or `a conj z + b`, `a` a unit) with its `Group` instance via `act_injective`, `refl` and `refl_sq`, and `linCoeff_prod` identifying the abstract invariant with the actual linear coefficient | nothing |
-| `with_mathlib/CensusWitness.lean` | **the growth of a rational witness triangle to radius 12** (`census_witness`): `1,3,6,…,1536,3039,6012`, so deficit `33` at radius 11 and `132` at radius 12. Proved by `native_decide` | the 33 universal identities, which are the matching lower bound |
-| `with_mathlib/CylCensus.lean` | **the stratum translation census** (`census_m3`…`census_m9`): the number of translations of each even length up to 18 on the strata `α = π/m`, for `m = 3,4,5,6,7,9`, matching the paper's table row for row. Generic on the stratum, not a witness. Proved by `native_decide`; **checking it takes about an hour** | nothing |
+| `with_mathlib/CensusWitness.lean` | **the growth of a rational witness triangle to radius 12** (`census_witness`): `1,3,6,…,1536,3039,6012`, so deficit `33` at radius 11 and `132` at radius 12. Proved by `native_decide` | nothing here; the matching universal identities are `CensusUniversal.lean` below |
+| `with_mathlib/CylCensus.lean` | **the stratum translation census** (`census_m3`…`census_m9`): the number of translations of each even length up to 18 on the strata `α = π/m`, for `m = 3,4,5,6,7,9`, matching the paper's table row for row. Generic on the stratum, not a witness: the third side's direction is an indeterminate `V` in `Z[ω][V, V⁻¹]`. Proved by `native_decide`; checking it takes about twenty-one minutes | the row `m = 11` |
 | `with_mathlib/CensusUniversal.lean` | **part (i) of the census theorem** (`universal_identities`): each of the 33 pairs is an identity in `ℤ[X,Y]`, so it holds at every triangle, not only at the witness. Proved by `native_decide` | nothing |
+| `with_mathlib/AntipairRows.lean` | **the antipair corollary** (`antipair_min_kClosed`): `min over (n,j) of max{k(n,j), k(n+h,j)} = h-1` for `h ≥ 2`, as an `IsLeast` over `HexDistance.kClosed`, plus the `h = 1` case (`antipair_min_kClosed_one`) and the refutation of the withdrawn valley argument on row 3 (`row3_eq_kClosed`, `row3_counterexample_kClosed`) | the closed form itself, which is `HexDistance.lean` |
+| `with_mathlib/StratumGeneric.lean` | **the finiteness principle behind the stratum census** (`badSet_finite`, `eval_eq_zero_iff_of_not_mem`, `count_eq_of_not_mem`, `exists_generic`): a readout of the vanishing pattern of finitely many polynomials is constant off a finite set of parameters | that any particular rational leg sample lies outside that set |
 | `with_mathlib/Bridge.lean` | **part (iii) of the rotation-relations theorem** (`unique_finite_order`): evaluating the letter-list model in the free product, exactly one admissible pair gives an element of finite order, namely `a = 0`, `j = n-1` | nothing |
+
+The files backing the closed form of the lamp distance itself
+(`with_mathlib/HexDistance.lean` and the graph files built on it) are not
+tabulated here; their declaration names are given at the statements in the
+paper.
 
 No file contains a `sorry`. Every file but `CensusWitness.lean`,
 `CensusUniversal.lean` and `CylCensus.lean` uses only Lean's standard axioms;
 those three are proved by `native_decide` and so trust the compiler as well.
-`CylCensus.lean` alone takes about an hour to check.
+`CylCensus.lean` alone takes about twenty-one minutes to check (measured 1256 s,
+peak RSS 1383 MB, single threaded).
 
  Declarations in `TriangleFlowMetric.lean` and
 `EulerCircuit.lean` have axioms `[propext, Quot.sound]`; the classification

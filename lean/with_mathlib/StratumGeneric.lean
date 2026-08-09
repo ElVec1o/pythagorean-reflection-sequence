@@ -94,6 +94,7 @@ theorem count_eq_of_not_mem {S : Finset ι} {P : ι → K[X]} {t u : K}
 
 #print axioms badSet_finite
 #print axioms eval_eq_zero_iff_of_not_mem
+#print axioms exists_generic
 #print axioms count_eq_of_not_mem
 
 end StratumGeneric

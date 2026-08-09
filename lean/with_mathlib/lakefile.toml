@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries"]
+defaultTargets = ["SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph"]
 
 [[require]]
 name = "mathlib"
@@ -128,3 +128,38 @@ name = "QEffectiveExclusion"
 
 [[lean_lib]]
 name = "QZeroSeries"
+
+# RotationRelations has NO source file in this directory, deliberately.  It lives in
+# ../RotationRelations.lean, in the Mathlib-free package, and is compiled in place from
+# there by the srcDir below.  Bridge, LinearPart and PlaneGroup import both it and
+# Mathlib, so they can live in neither package alone.  srcDir is not a cross-package
+# require: the file is import-free and is elaborated with THIS package's toolchain
+# (v4.30.0), so the v4.13.0 pin of ../lean-toolchain is irrelevant here.  Do not copy the
+# file into this directory; two divergent copies is exactly what this avoids.
+[[lean_lib]]
+name = "RotationRelations"
+srcDir = ".."
+
+[[lean_lib]]
+name = "LinearPart"
+
+[[lean_lib]]
+name = "PlaneGroup"
+
+[[lean_lib]]
+name = "Bridge"
+
+[[lean_lib]]
+name = "CensusWitness"
+
+[[lean_lib]]
+name = "CensusUniversal"
+
+[[lean_lib]]
+name = "CylCensus"
+
+[[lean_lib]]
+name = "GraphLocalDistance"
+
+[[lean_lib]]
+name = "HexGraph"

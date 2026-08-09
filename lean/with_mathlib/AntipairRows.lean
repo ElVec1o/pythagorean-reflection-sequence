@@ -202,6 +202,21 @@ theorem row3_valley_width_three :
     (row3.count 4 = 3) ∧ (row3.count 4 ≠ 2) := by
   refine ⟨by decide, by decide⟩
 
+/-- `row3` is not a hard-coded table: it is the closed form of `lem:krows` evaluated on
+    `j = 3`, `n = -4, ..., 4`.  With this the two refutations below are statements about the
+    verified `HexDistance.kClosed` and not about a list of literals. -/
+theorem row3_eq_kClosed :
+    (List.map (fun n => HexDistance.kClosed n 3) [-4, -3, -2, -1, 0, 1, 2, 3, 4]) = row3 := by
+  decide
+
+/-- The valley of row 3 of `kClosed` has width three. -/
+theorem row3_valley_width_three_kClosed :
+    ((List.map (fun n => HexDistance.kClosed n 3) [-4, -3, -2, -1, 0, 1, 2, 3, 4]).count 4 = 3)
+      ∧ ((List.map (fun n => HexDistance.kClosed n 3) [-4, -3, -2, -1, 0, 1, 2, 3, 4]).count 4
+          ≠ 2) := by
+  rw [row3_eq_kClosed]
+  exact row3_valley_width_three
+
 /-- The first step out of the valley adds 1, not 2, so the premise "each step adds 2" fails
     already inside the range in which the paper's own computation was carried out. -/
 theorem row3_step_is_one :
@@ -214,6 +229,16 @@ theorem row3_step_is_one :
 theorem row3_counterexample :
     max (4 : ℤ) 4 = 4 ∧ ¬ (4 + 2 - 1 ≤ max (4 : ℤ) 4) := by
   refine ⟨by decide, by decide⟩
+
+/-- The same refutation stated on `kClosed` itself, at the site `(-3, 3)` with `h = 2`:
+    both values are `4`, so the maximum is `4`, whereas the withdrawn argument claimed
+    `k(n,j) + h - 1 = 5`. -/
+theorem row3_counterexample_kClosed :
+    HexDistance.kClosed (-3) 3 = 4 ∧ HexDistance.kClosed (-3 + 2) 3 = 4 ∧
+    max (HexDistance.kClosed (-3) 3) (HexDistance.kClosed (-3 + 2) 3) = 4 ∧
+    ¬ (HexDistance.kClosed (-3) 3 + 2 - 1
+        ≤ max (HexDistance.kClosed (-3) 3) (HexDistance.kClosed (-3 + 2) 3)) := by
+  decide
 
 /-! ### 6. Linking to the verified closed form
 
@@ -239,6 +264,85 @@ theorem antipair_lower_bound_kClosed {n j h : ℤ} (hh : 2 ≤ h) :
   · rw [← kPos_eq (by omega), ← kPos_eq (by omega)]
     exact lower_bound_pos (by omega) hh
 
+/-! ### 7. Attainment, on the verified closed form
+
+    `row0_attains` and `row1_attains` are identities between the row expressions.  What follows
+    identifies those expressions with `HexDistance.kClosed` on the rows `j = 0` and `j = 1`, at
+    the witness index, so that attainment too becomes a statement about `kClosed`.  With the
+    lower bound this gives the corollary itself, as an `IsLeast`. -/
+
+/-- On row `0` at `n ≤ -1` the closed form is `-2n-2`. -/
+theorem kClosed_row0_neg {n : ℤ} (hn : n ≤ -1) : HexDistance.kClosed n 0 = -2 * n - 2 := by
+  unfold HexDistance.kClosed; split_ifs <;> omega
+
+/-- On row `0` at `n ≥ 0` the closed form is `2n`. -/
+theorem kClosed_row0_nonneg {n : ℤ} (hn : 0 ≤ n) : HexDistance.kClosed n 0 = 2 * n := by
+  unfold HexDistance.kClosed; split_ifs <;> omega
+
+/-- On row `1` at `n ≤ -2` the closed form is `-2n-3`. -/
+theorem kClosed_row1_neg {n : ℤ} (hn : n ≤ -2) : HexDistance.kClosed n 1 = -2 * n - 3 := by
+  unfold HexDistance.kClosed; split_ifs <;> omega
+
+/-- On row `1` at `n ≥ 0` the closed form is `2n+1`. -/
+theorem kClosed_row1_nonneg {n : ℤ} (hn : 0 ≤ n) : HexDistance.kClosed n 1 = 2 * n + 1 := by
+  unfold HexDistance.kClosed; split_ifs <;> omega
+
+/-- **Attainment, on the verified closed form.**  For every `h ≥ 2` there is a site at which
+    the larger of the two lamp distances is exactly `h-1`: the row `j = 0` at `n = -(h+1)/2`
+    for odd `h`, the row `j = 1` at `n = -h/2-1` for even `h`. -/
+theorem attains_kClosed {h : ℤ} (hh : 2 ≤ h) :
+    ∃ n j : ℤ, max (HexDistance.kClosed n j) (HexDistance.kClosed (n + h) j) = h - 1 := by
+  rcases parity_selects h with ⟨n, hn⟩ | ⟨n, hn⟩
+  · obtain ⟨hn1, hn2⟩ := row0_range hh hn
+    refine ⟨n, 0, ?_⟩
+    rw [kClosed_row0_neg hn1, kClosed_row0_nonneg hn2]
+    exact (row0_attains hn).2.2
+  · obtain ⟨hn1, hn2⟩ := row1_range hh hn
+    refine ⟨n, 1, ?_⟩
+    rw [kClosed_row1_neg hn1, kClosed_row1_nonneg hn2]
+    exact (row1_attains hn).2.2
+
+/-- **Corollary `cor:antipair`, in full.**  For every `h ≥ 2`,
+    `min over (n,j) of max{k(n,j), k(n+h,j)} = h-1`, with `k` the closed form of `lem:krows`
+    as verified in `HexDistance.lean`.  `IsLeast` packages the two halves: the value is
+    attained, and no site does better. -/
+theorem antipair_min_kClosed {h : ℤ} (hh : 2 ≤ h) :
+    IsLeast {v : ℤ | ∃ n j : ℤ,
+      v = max (HexDistance.kClosed n j) (HexDistance.kClosed (n + h) j)} (h - 1) := by
+  constructor
+  · obtain ⟨n, j, hnj⟩ := attains_kClosed hh
+    exact ⟨n, j, hnj.symm⟩
+  · rintro v ⟨n, j, rfl⟩
+    exact antipair_lower_bound_kClosed hh
+
+/-! ### 8. The separation `h = 1`
+
+    `cor:antipair` is stated for `h ≥ 2`, which is what `prop:antipodal` needs for every even
+    `m ≥ 4`.  At `m = 2` the separation is `h = m/2 = 1`, outside that range, so the value is
+    recorded separately here.  It is again `h-1 = 0`: the lamp distance is nonnegative, and the
+    pair `(-1,0), (0,0)` on row `0` attains `0`. -/
+
+/-- The lamp distance is nonnegative at every site. -/
+theorem kClosed_nonneg (n j : ℤ) : 0 ≤ HexDistance.kClosed n j := by
+  unfold HexDistance.kClosed; split_ifs <;> omega
+
+/-- **The separation `h = 1`.**  `min over (n,j) of max{k(n,j), k(n+1,j)} = 0`, so
+    `prop:antipodal` gives length `6 + 2*0 = 6 = m + 4` at `m = 2` as well. -/
+theorem antipair_min_kClosed_one :
+    IsLeast {v : ℤ | ∃ n j : ℤ,
+      v = max (HexDistance.kClosed n j) (HexDistance.kClosed (n + 1) j)} 0 := by
+  constructor
+  · exact ⟨-1, 0, by decide⟩
+  · rintro v ⟨n, j, rfl⟩
+    exact le_trans (kClosed_nonneg n j) (le_max_left _ _)
+
 #print axioms antipair_lower_bound_kClosed
+#print axioms attains_kClosed
+#print axioms antipair_min_kClosed
+#print axioms kClosed_nonneg
+#print axioms antipair_min_kClosed_one
+#print axioms row3_eq_kClosed
+#print axioms row3_valley_width_three_kClosed
+#print axioms row3_counterexample_kClosed
 
 end AntipairRows

@@ -1,0 +1,11 @@
+[package]
+name = "paper4_ball12"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "paper4_ball12"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3

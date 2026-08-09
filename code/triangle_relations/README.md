@@ -34,6 +34,31 @@ independent check rather than the only evidence. Build with
 `stratum_fields.py` holds the exact number fields `Q(2cos(pi/m))(sin(pi/m))`
 and the stratum generators used by several of the above.
 
+## Run order
+
+Three scripts read files that another step writes, by relative path, and print
+`skipped` if run first in a cold clone. The order is:
+
+1. `cd rust_cost && cargo build --release` and run it at each witness; it writes
+   `rust_cost/translations_d<d>.txt` and `rust_cost/translations_w2_7_3_5_d<d>.txt`.
+2. `python3 honeycomb_metric_and_census.py`; it writes `census_configs.json` in
+   the current directory and reads the `rust_cost/translations_d<d>.txt` of
+   step 1.
+3. `python3 witness_collisions.py` and `python3 witness_second.py`; both read
+   `census_configs.json` from step 2, and `witness_second.py` also reads the
+   `translations_w2_7_3_5_d<d>.txt` of step 1.
+
+Everything else is standalone.
+
+## Companion Rust tools
+
+Four tools cited by paper 4 live under `code/zeta_probe/tools/` rather than
+here, and are documented in that directory's `README.md`: `hexdist` (the local
+criterion and the closed form of `lem:krows`), `rust_torsion` (the unique word
+of finite order), `paper4_ball12` (the depth-12 census, the `66 + 66` split and
+the 6078) and `paper4_strata` (the `d*`/`delta` table, the stratum translation
+census to depth 18, and the leg scan that locates non-generic leg samples).
+
 ## Sampling
 
 Rational leg samples that look generic need not be: for `m = 3` the legs
