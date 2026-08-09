@@ -1,5 +1,32 @@
 # Lean files for the triangle reflection paper
 
+> **BUILD STATUS WARNING (2026-08-10). Read before relying on anything in this file.**
+>
+> None of the six files described below is in `defaultTargets` in
+> `lean/with_mathlib/lakefile.toml`, so a clean `lake build` DOES NOT BUILD OR CHECK ANY OF
+> THEM, and none of them is covered by the project's axiom audit.
+>
+> Three of them do not compile at all as shipped. `Bridge.lean`, `LinearPart.lean` and
+> `PlaneGroup.lean` import `RotationRelations`, which lives in the Mathlib-free `lean/`
+> package and is not on the module path of `lean/with_mathlib/`; they also import Mathlib, so
+> they cannot be moved into `lean/` either. As shipped they are unbuildable in both packages
+> and the error is `unknown module prefix 'RotationRelations'`.
+>
+> The remaining three, `CensusUniversal.lean`, `CensusWitness.lean` and `CylCensus.lean`, are
+> unverified in the build for the same reason, and all three rest on `native_decide`, which is
+> a strictly larger trusted base than the kernel.
+>
+> Therefore: **the results attributed to these files below are NOT verified**, whatever the
+> table says. Treat every entry as PROVED-at-best and unchecked-in-this-release until the
+> files are repaired and registered. In particular `unique_finite_order` must not be cited as
+> a proof of part (iii) of the rotation-relations theorem, and `universal_identities` must not
+> be cited as a proof of part (i) of the census theorem.
+>
+> This warning was added when an audit found the files orphaned. Repairing and registering
+> them, or removing them from the release, is tracked as an open task.
+
+
+
 The first three files import nothing and are checked with `lean <file>` on Lean
 4.13 or 4.30; no Mathlib build is required. The two under `with_mathlib/`
 import Mathlib, and `Bridge.lean` also imports `RotationRelations`.
