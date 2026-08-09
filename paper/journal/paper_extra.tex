@@ -539,14 +539,27 @@ Proposition~\ref{prop:height-gap}: for any notion of automaticity whose sequence
 valued, an unbounded sequence is not automatic. The finitely-valued property appears as an
 explicit hypothesis rather than being assumed silently.
 
+\texttt{NoRecurrence.lean} certifies Proposition~\ref{prop:no-recurrence} outright. For each
+order $k$ with $1 \le k \le 19$ the system of $39-k$ equations in $k$ unknowns is shown to
+have no rational solution by exhibiting a Farkas witness: an integer vector $w$ with
+$w^{\mathsf{T}}A = 0$ and $w^{\mathsf{T}}b \neq 0$, which forbids a solution since any
+rational $c$ would give $w^{\mathsf{T}}b = w^{\mathsf{T}}(Ac) = 0$. The witnesses were
+computed once in exact GMP arithmetic by the Rust tool \texttt{code/zeta\_probe/tools/norec};
+Lean re-runs none of that linear algebra and verifies only the two defining integer dot
+products, so a reader need not trust the search that produced them. All nineteen witnesses
+are small, at most $22$ digits per entry, so the check is kernel evaluation and carries no
+compiler-evaluation axiom. The Farkas step itself is proved for arbitrary integer data, so it
+is visibly independent of this sequence.
+
 One convention is worth recording, since the statement of Proposition~\ref{prop:no-dfinite}
 leaves it implicit. The count $52$ is for $k \ge 1$, that is for recurrences of order at least
 one. Admitting $k=0$ gives $60$ pairs and requiring $m \ge 1$ gives $50$; only
 $1 \le k \le 9$, $0 \le m \le 7$ reproduces the published figure. The Lean file verifies both
 counts, so the convention is fixed by the formalization rather than by the prose.
 
-What is not formalized is stated plainly in each file. The exclusion computations themselves,
-being exact linear algebra over $43$ terms, are not re-run in Lean; neither is the passage
+What is not formalized is stated plainly in each file. The D-finite exclusion computations of
+Proposition~\ref{prop:no-dfinite}, being exact linear algebra over $43$ terms at $52$ parameter
+pairs, are not re-run in Lean, and neither is the passage
 from eventual periodicity to algebraicity over $\mathbb{F}_2(t)$, which needs formal power
 series; nor the unboundedness of $u_d$, which is a statement about all $d$ and rests on the
 growth rate of \cite{Bonfioli2}. Strict increase across the published range is verified, and

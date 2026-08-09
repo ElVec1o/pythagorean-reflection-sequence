@@ -1,0 +1,11 @@
+[package]
+name = "norec"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rug = "1.24"
+
+[profile.release]
+lto = true
+opt-level = 3
