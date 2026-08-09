@@ -1,9 +1,10 @@
+
 # The Universal Right-Triangle Reflection Sequence
 
 [![DOI](https://zenodo.org/badge/1235839920.svg)](https://doi.org/10.5281/zenodo.20370090)
 [![OEIS A396406](https://img.shields.io/badge/OEIS-A396406-blue)](https://oeis.org/A396406)
 [![OEIS A396927](https://img.shields.io/badge/OEIS-A396927-blue)](https://oeis.org/A396927)
-[![Lean](https://img.shields.io/badge/Lean%204-depth%2022%20%2B%20atoms-success)](./lean/)
+[![Lean](https://img.shields.io/badge/Lean%204-checked-success)](./lean/)
 
 Take any right triangle in the plane and reflect it repeatedly across its three
 sides. Count the distinct images at each word-length: you get a sequence that
@@ -26,33 +27,28 @@ For `1 ≤ n ≤ 9`, `u_n = F(n+3)` (Fibonacci); the first deviation is at `n = 
 `u_10 = 225 = F(13) − 8`. The **isosceles** case (`a = b`) is genuinely
 different (`1, 3, 5, 8, 11, 13, 16, …`).
 
-## Corpus status (v5.4.0)
 
-Seven documents in `paper/journal/`, every claim tiered honestly:
+## Repository layout
 
-| paper | headline | status |
-|---|---|---|
-| **Paper 1** (44 pp) | metric theorem `ℓ_T = ℓ_R + 2c`; virtually-lamplighter structure; universality sharp at 32/33; deviation depth `n_T = K(T)/2` + closed-form law; `β₂ = 1.4916177871…` exact | **unconditional** (law's general exactness conjectural; certified at (1,2)) |
-| **Paper 1b** (9 pp) | `n`-dimensional orthoscheme companion: collision depth `cd_n` determined uniformly by the `(e, t)` class in every dimension; atlas of representative leg sequences for `n = 3…6` | **unconditional** |
-| **Paper 2** (41 pp) | blocks transcendental over ℚ(q); relaxed series `V` transcendental over ℚ(x); **true series `U` transcendental over ℚ(x)** — the amplitude estimate (⋆) is proved, and an exact identity closes the full gate (numerator bound, denominator bound, sign); `β₂`-as-a-number: reduced to a Hahn–Exton value question, with a proven no-go ledger (`ρ = 1/2`, cyclotomic floor `12/π² > 1`) locating the precise open frontier | **V and U unconditional; β₂ number-status open** |
-| **Paper 3** (4 pp) | universality–deviation dichotomy (dimension-free); generic rigidity (co-null shape set); rational RACG envelope with rate `r_n = 1+2cos(2π/(n+3))`; geometric group = proper amenable quotient (finite-horizon envelope) | **theorems unconditional; higher-dim arithmetic past the horizon open** |
-| **Paper 4** (18 pp) | shortest relations of planar triangle reflection groups: exactly 33 at length 11 (radius-12 census, all identities in `Z[p,q]`); translations = integer flows on the honeycomb Cayley graph with exact word metric `ℓ = ‖φ‖₁ + 2·st`; rotation relations `d²−1` at depth `m + m/d`; cylinder metric on the `π/m` strata | **unconditional; stratum census verified to length 14 (two leg samples); even-`m` census onset open** |
-| **Hahn–Exton companion** (15 pp) | integrality of the zero lattice of the Hahn–Exton `q`-cosine; stable deviation law; denominator–radius identity; effective bounds | **unconditional** |
-| **Universality principle** (3 pp) | universality-then-deviation as a dimension-free statement | **unconditional** |
+Canonical layout (research Rule 10). Everything that is not needed to build or
+verify a paper lives in `private/`, which never ships.
 
-**Trust base**, stated by tier — different results rest on different foundations:
+```
+paper/      LaTeX sources and figures
+  journal/    the release papers (paper1, paper2, paper4, paper_orthoscheme,
+              hahn_exton_qcosine)
+  figures/    figures and their generator
+  old/        superseded drafts, kept for provenance
+lean/       Lean 4 formalisation
+code/       scripts that generate the results
+  reproduce/  per-result reproduction scripts
+data/       small final data the papers need (OEIS b-files)
+private/    scratch, logs, notes, exploration, archives  -- never ships
+```
 
-| tier | what rests on it |
-|---|---|
-| **Lean 4 kernel** (`lean/with_mathlib/`, no `sorry`) | the eight length-10 relations; universality of `u_d` through depth 22; six analytic atoms |
-| **Exact rational / modular arithmetic** | the depth-32 threshold; the deviation witnesses; `u_d` to depth 42 (Rust); the `(1,2)` deviation at depth 33 (`reproduce/deviation_1_2.py`); **the travel-pole lemma** — winding number 1 on `\|q\| = 1/2`, a sign-change bracket of width `< 1e-27`, and `Σ₀ ≥ 1.1558` there (`reproduce/certify_beta2_pole.py`), certifying `β₂ = 1.49161778711437422683671274…` to 26 digits; **the bulk non-interference constants** — winding number 0 of `1 − Σ₁^bulk` on `\|q\| = 1/2`, `Σ₁^bulk(q*) ∈ [0.4804499685, 0.4804499685] < 1`, and `q_b = 0.60956734426012956966…` certified to 19 digits (`reproduce/certify_bulk_dressing.py`). All with explicit tail bounds; no floating point enters any inequality |
+A full manifest of the 2026-08-02 restructure, listing every file that moved and
+why, is in `private/project_docs/RESTRUCTURE_MOVES.md`. Nothing was deleted.
 
-As of v5.4.0 no numeric input to the `β₂` chain remains uncertified: every
-constant in Theorem `thm:beta2`'s proof is either Lean-checked, exact
-rational/modular, or carried by one of the two certificates above.
-
-Reproduction: 5 self-contained entry points in `reproduce/`; the full research
-corpus (176 scripts) under `code/zeta_probe/`.
 
 ## Main results
 
@@ -64,19 +60,10 @@ corpus (176 scripts) under `code/zeta_probe/`.
    *algebraic*) shape we construct an explicit nontrivial element of `ker ρ_T`,
    a conjugated product of glide-reflection squares, so each shape deviates at a
    first depth `n_T` with `max(33, c_T) ≤ n_T ≤ 24·c_T + 8`, linear in the
-   arithmetic complexity `c_T` of the shape. More sharply, `n_T` equals exactly
-   half the length of the shortest kernel element — a shortest-vector problem in
-   the ideal `2(t−1)μ_T·ℤ[t^±]` under the lamplighter word metric — which is a
-   decidable finite computation (`lem:finite-svp`, the travel bound), and yields
-   a **closed-form three-regime law** `n_T = 6c+e`, `9c−3e`, or `3(c+e)`
-   according to the triangle's angle (boundaries at `tan β = √(11/5)` and
-   `β = 60°`, both machine-checked in `DeviationLattice.lean`): a theorem as an
-   upper bound, certified at `(1,2)`, and matched by exhaustive search on
-   thirteen shapes (sharp prediction: the `(3,4,5)` triangle first deviates at
-   depth 164). The agreement through depth 30 is re-proved uniformly by an
-   arithmetic certificate (Gauss's lemma + rank-0 elliptic descent), and through
-   depth 38 by a Rust certificate that also confirms the published terms
-   `a(31)…a(38)` are the generic ones.
+   arithmetic complexity `c_T` of the shape. The agreement through depth 30 is
+   re-proved uniformly by an arithmetic certificate (Gauss's lemma + rank-0
+   elliptic descent), and through depth 38 by a Rust certificate that also
+   confirms the published terms `a(31)…a(38)` are the generic ones.
 
 2. **Structure of the generic group.** The common sequence `u_d` is exactly the
    orbit growth of the *generic* right triangle — realized precisely by
@@ -166,100 +153,13 @@ corpus (176 scripts) under `code/zeta_probe/`.
    So `U`-transcendence stays **open** (≥1 of `U`, defect transcendental,
    rigorously); only the growth **rate** `β₂` is now pinned exactly.
 
-> **Update (v1.2.0, June 2026) — current honest status.** The results above are
-> consolidated, with full proofs, in the standalone
-> [`code/zeta_probe/route_b/transcendence_paper.pdf`](code/zeta_probe/route_b/transcendence_paper.pdf).
-> Net status:
-> - **Blocks `Σ₁,Σ₀,S₁,S₀` — transcendental, unconditional** (Pólya–Carlson; no lemma).
-> - **`V` — transcendental, modulo one closed-form lemma** (`lem:T2abs`, a clean
->   absolute-contour bound) plus Stirling. The lem:cos leading constant is now
->   derived in closed form, `√2/36 = (1/24)·∑ k³` (Euler–Maclaurin discretisation).
-> - **`U` — transcendental, _conditional_ on a single turning-point
->   amplitude-normalisation estimate** `R = P₁₂ − E = O(τ^{5/2})`. The new
->   `amplitude_bound` section (Morita `q`-Bessel connection formula + a conserved
->   Casoratian envelope) **reduces** the gate to exactly this one bound; it is
->   numerically certain (`R/(τ^{5/2} sin w) → 1891√2/10368`, 21 digits, ~4×
->   margin) but **not proved**. We do **not** claim `U` proved.
-> - **`mod p` evidence (unconditional):** `(uₙ mod p)` is maximally non-automatic
->   at `p = 3, 5`; proving non-automaticity for a single `p` would make `U`
->   transcendental unconditionally (Christol). This route is open.
-
-> **Update (v1.3.0, June 2026).** The corpus is now split into publication-ready
-> papers under `paper/journal/` (see `PAPER_PLAN.md`). **Paper 1 (`paper1.pdf`) is
-> fully unconditional:** the metric theorem's lower bound, previously resting on a
-> computational covering certificate, is now established by an explicit four-state
-> transducer whose transition table is displayed and certified — bit-for-bit equal
-> to the true connectivity defect on all 275,823 group elements through depth 24
-> and on 200,000 further random profiles (`code/zeta_probe/route_b/fsm_verify.py`).
-> Paper 1b (`paper1b.pdf`) collects the unconditional `n`-dimensional family; the
-> transcendence study is now included as **Paper 2** (`paper2.pdf`), summarized in
-> the next section. `U` remains conditional throughout.
-
-> **Update (v1.7.0, July 2026) — honest status of the U-gate.** The numerator
-> amplitude gate is **derived to leading order**: the amplitude series and the
-> pole equation both collapse exactly to sinh-product families, their phase
-> expansions share the identical `√τ` term (the universal curvature `c₃ = −τ²/9`,
-> constant `√2/36`), and the pole–zero offset comes out exactly
-> `δw = (√2/8)τ^{3/2}`, giving `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2` (a fourfold
-> margin, verified at the first 70 poles). This is the estimate `(⋆)`. Its
-> **residual `O(τ)` term is verified numerically but not proved** — so
-> **`U` is transcendental over ℚ(x) *conditional on* `(⋆)`**, on the same
-> analytic footing as `V`. This is the single remaining gap, stated as such in
-> `thm:U` and Remark `rem:Ugap`. See `paper2.pdf`; scripts `elemY3_verify.py`,
-> `phase_match_verify.py`.
-
-## Transcendence (Paper 2)
-
-`paper2.pdf` (~10 pp) asks whether these growth series are algebraic or
-transcendental, and reports the answer in **honest tiers**:
-
-- **Building blocks — unconditional.** The catalytic q-series Σ₀, Σ₁, S₀, S₁ are
-  transcendental over ℚ(q): integer coefficients, radius exactly 1, and
-  super-polynomial growth along the squares (`|[q^{(j+1)²}]| ≥ 2^{j+1}`), so by
-  Pólya–Carlson the unit circle is a natural boundary
-  (`lean/with_mathlib/PolyaCarlson.lean`).
-- **Relaxed series V — transcendental over ℚ(x).** Its one analytic input, a
-  simple-saddle steepest-descent estimate, is proved *self-contained* (Cauchy +
-  Stirling + Gaussian integration + an explicit bounded-variation bound; saddles
-  `z* = ±iW/2`), not cited.
-- **True series U = A396406 — transcendental over ℚ(x), *conditional on one
-  explicit amplitude estimate* `(⋆)`.** Via the exact identity
-  `P₁₂ = (2q³/(1−q³))·Σ dₖ`, the one remaining input — the numerator amplitude at
-  the travel poles — is **derived to leading order in elementary closed form**:
-  the terms collapse exactly to sinh-products, every expansion constant is an
-  exact rational (`y* = (2/τ)e^{−τ−23τ²/36}`, `c₂ = −5τ²/12`, `c₃ = −τ²/9`,
-  `c₅ = τ⁴/450`), and the phase-matching of the travel-pole equation (which
-  collapses to the *same* sinh family) against the amplitude's zero gives the
-  pole–zero offset `δw = (√2/8)·τ^{3/2}` exactly — hence
-  `|P₁₂|/τ^{3/2} → 1/(4√2) < 1/√2`: the numerator gate, with a fourfold margin
-  (verified at the first 70 poles). The √τ phases of pole and zero agree
-  identically — both produced by the universal cubic curvature `c₃ = −τ²/9`,
-  whose constant `√2/36` is the lem:cos constant — which is *why* the travel
-  poles track the zeros of `Y₃(1)`. (`elemY3_verify.py`, `phase_match_verify.py`.)
-  **Honest gap:** this establishes `(⋆)` to leading order and numerically at 70
-  poles, but its `O(τ)` residual (the amplitude drift from turning point to pole)
-  is **not proved**. So `U`'s transcendence is stated *conditional on `(⋆)`* —
-  the single remaining gap — on the same simple-saddle footing as `V` otherwise;
-  not formalized analysis.
-- **Orthogonal mod-p evidence.** The p-kernel of `(u_n mod p)` is the full
-  ternary tree through the accessible depth (`SigmaKernel.lean`, `UKernel.lean`)
-  — maximal finite-data evidence of non-automaticity, not a proof.
-
-Six Paper-2 atoms are machine-checked in `lean/with_mathlib/` (`GaussHS`,
-`AtomN`, `PolyaCarlson`, `SigmaKernel`, `UKernel`, `DiscreteConserved`); the
-numerical verification scripts are in `code/zeta_probe/route_b/`.
-
 ## Repository contents
 
 | Path | Contents |
 |---|---|
-| `paper/journal/paper1.{tex,pdf}` | **Paper 1 (publication draft, ~41 pp)** — the planar A396406 result: word-length metric `ℓ_T=ℓ_R+2c` (now **fully unconditional**, the connectivity defect computed by an explicit finite-state transducer certified on 275,823 elements), sharp depth-32 effective universality, the virtually-`ℤ≀ℤ` structure, and the exact growth rate `β₂`. Journal-style, no process narration; targets the Journal of Integer Sequences. |
-| `paper/journal/paper1b.{tex,pdf}` | **Paper 1b (publication draft, ~9 pp)** — the `n`-dimensional orthoscheme family: closed-form rate `r_n=1+2cos(2π/(n+3))`, unconditional Class C faithfulness via a uniform Gram determinant and rank-0 Mordell descent, the collision-depth invariant, and the OEIS Class C family. |
-| `paper/journal/PAPER_PLAN.md` | The three-paper publication plan with the closed/open ledger and routes-to-finish. |
+| `paper/paper.tex`, `paper.pdf` | **Main paper** (~22 pp): the sharp universality threshold and refutation, the virtually-`ℤ≀ℤ` structure, the metric formula, and the growth-series analysis. |
 | `paper/paper_extra.tex`, `paper_ndim.tex` | Companion documents (conjectural material; the `n`-dimensional family). |
 | `paper/OEIS/` | OEIS submission drafts and b-files; `paper/OEIS/submit/` holds paste-ready blocks for the `n`-dim family. |
-| `code/zeta_probe/route_b/transcendence_paper.tex`, `.pdf` | **Standalone transcendence paper** (~58 pp): blocks transcendental unconditionally (Pólya–Carlson); `V` transcendental modulo one closed-form lemma; `U` transcendental conditional on one turning-point amplitude bound; `mod p` non-automaticity. With sections `lifting_U`, `metric_theorem`, `amplitude_bound`, `route_modp` and the assembled `bundle.pdf`. |
-| `code/zeta_probe/tools/` | Consolidated verification suite: Rust high-precision tools (`u5b`, `u5b_gate`, `u_modp_rust`, `t1series`) and the Python checks in `verify_scripts/` (Casoratian, amplitude, q-Bessel, θ-Poisson, uniformity). See `tools/README.md`. |
 | `code/zeta_probe/` | The core machinery: the symbolic group model, the word-metric solver (`lamp_profile.py`), the kernel witnesses (`witness.py`), and the arithmetic certificates (`certify.py`, `certify38_rust/`, `fire_rust/`). See `code/zeta_probe/README.md` for an index. |
 | `code/rust_bfs/` | Disk-streaming exact-rational BFS (Rust); computes `u_d` to depth 42. |
 | `code/mordell/`, `code/ideal/`, `code/g_modules/` | Sage rank-0 descent scripts, the cyclic-ideal check, and symbolic verification scripts. |
@@ -294,12 +194,8 @@ cd code/rust_bfs && cargo build --release && ./target/release/*bfs* --depth 42
 |---|---|---|
 | [A396406](https://oeis.org/A396406) | 2D right triangle, unequal legs (the universal sequence) | **Published** |
 | [A396927](https://oeis.org/A396927) | 5D orthoscheme, distinct legs | **Published** |
-| [A397437](https://oeis.org/A397437) | 4D orthoscheme, distinct legs | In review |
-| [A397438](https://oeis.org/A397438) | 6D orthoscheme, distinct legs | In review |
-| [A397439](https://oeis.org/A397439) | 3D orthoscheme, distinct legs | In review |
-| `7D_classC` | 7D orthoscheme, distinct legs (growth `φ²`) | Prepared (`paper/OEIS/submit/`) |
-| `3D_classB` | 3D tetrahedron `(1,1,2)` | Prepared (no closed form) |
-| `V_relaxed`, `bulk_block` | relaxed companion of A396406; bulk catalytic block | Prepared (`paper/OEIS/submit/`) |
+| `A_4D_classC`, `A_6D_classC`, `A_3D_classC` | 4D / 6D / 3D orthoschemes, distinct legs | Prepared (`paper/OEIS/submit/`) |
+| `A_3D_classB` | 3D tetrahedron `(1,1,2)` | Prepared (no closed form) |
 | 3D cube corner `(1,1,1)` | — | **Dropped** (duplicate of [A008137](https://oeis.org/A008137)) |
 
 ## Author

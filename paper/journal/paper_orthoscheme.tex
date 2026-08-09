@@ -1,0 +1,1337 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{lmodern}
+\usepackage[final,expansion=false]{microtype}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref}
+\usepackage{xurl}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!50!black,
+  citecolor=blue!50!black,
+  pdftitle={Universality for orthoscheme reflection groups: the right-angled Coxeter envelope and the collision depth},
+  pdfauthor={Vico Bonfioli},
+}
+\usepackage{parskip}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\titleformat{\section}{\normalfont\Large\bfseries\color{blue!40!black}}{\thesection.}{0.6em}{}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Isom}{\mathrm{Isom}}
+\newcommand{\cd}{\mathrm{cd}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{plain}
+
+\title{\textbf{Universality for orthoscheme reflection groups:\\
+the right-angled Coxeter envelope and the collision depth}}
+\author{Vico Bonfioli\thanks{Independent researcher, Italy.
+\texttt{vicobonfioli@gmail.com}.\,
+\url{https://elvec1o.github.io/home/posts/}.}}
+\date{\today}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{abstract}
+The $n+1$ facet reflections of an $n$-dimensional right-corner orthoscheme
+$O(a_1,\dots,a_n)$ generate a group $W(a)\le\Isom(\R^n)$, and $W(a)$ is a quotient of the
+right-angled Coxeter group $W_n$ on the orthogonality graph of the facets. This paper
+determines what the quotient can do to the growth.
+
+Three statements are proved unconditionally. First, a dimension-free dichotomy: if $Q=G/N$
+is a quotient of a marked group and $K(N)$ is the length of a shortest nontrivial element of
+$N$, then the sphere sizes of $Q$ and of $G$ agree in every degree below $\lceil K(N)/2\rceil$
+and $Q$ is strictly smaller in that degree (Theorem~\ref{thm:dichotomy}). Second, the growth
+series of $W_n$ is rational, equal to $(1+t)^{\lfloor n/2\rfloor+1}/K_{n+1}(t)$ for an explicit
+integer polynomial $K_{n+1}$, with growth rate $r_n=1+2\cos\bigl(2\pi/(n+3)\bigr)$
+(Theorem~\ref{thm:envelope}). Third, a complete classification of the rank-two relations:
+$\ker(W_n\to W(a))$ meets a rank-two standard parabolic nontrivially if and only if the leg
+sequence has two equal legs at an endpoint of the staircase or three consecutive equal legs
+(Theorem~\ref{thm:rank2}). The Diophantine input is that three quartics in the flanking legs
+have only trivial rational points, their Jacobians being the rank-zero curves \texttt{24a1},
+\texttt{72a2} and $y^2=x^3-x$.
+
+Combining the first two, the collision depth
+$\cd_n(a)=\inf\{d:u_d(a)<[t^d]\,W_n(t)\}$ is exactly $K(\ker\rho_a)/2$. We show
+$K(\ker\rho_a)\ge6$ for every positive leg tuple, so $\cd_n\ge3$ always, and we determine
+$\cd_n$ from the two positional statistics $(e,t)$ of the leg sequence: unconditionally when
+three consecutive legs are equal, and otherwise up to one explicitly stated hypothesis
+(Theorem~\ref{thm:cd-general}).
+
+What remains open is whether $\rho_a$ is injective at all for $n\ge3$; it is open in both
+directions, and we state it as one problem in two forms (Problem~\ref{prob:alternative}). In
+the plane $\rho_a$ is not injective, by an amenability argument, and that argument does not
+extend: $O(n)$ contains a free subgroup of rank two for every $n\ge3$, so $\Isom(\R^n)$ is not
+amenable as an abstract group (Remark~\ref{rem:amenability-fails}). We also record that
+nonvanishing of the Schur-complement determinant $\det Q_n=-\prod_i a_i^2$
+(Lemma~\ref{lem:uniform-detQ}) does not imply faithfulness, contrary to an argument used in an
+earlier version of this material (Remark~\ref{rem:detQ-nonsequitur}).
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+
+An \emph{$n$-dimensional right-corner orthoscheme}, or path simplex,
+$O=O(a_1,\dots,a_n)\subset\R^n$ is the simplex with vertices
+\[
+V_0=0,\qquad V_k=V_{k-1}+a_k e_k\quad(1\le k\le n),
+\]
+where $e_1,\dots,e_n$ is the standard basis and $a=(a_1,\dots,a_n)$ is a tuple of positive
+reals, the \emph{legs}. Its $n+1$ facets carry reflections
+$\widehat R_0,\dots,\widehat R_n\in\Isom(\R^n)$, and we write
+$W(a)=\langle\widehat R_0,\dots,\widehat R_n\rangle$ for the group they generate.
+
+Two facets $\widehat R_i,\widehat R_j$ with $|i-j|\ge2$ are perpendicular for every leg tuple
+(Lemma~\ref{lem:normals}), while consecutive facets meet at an angle that depends on the legs
+and is generically not a rational multiple of $\pi$. The largest group compatible with the
+leg-independent relations is therefore the right-angled Coxeter group
+\begin{equation}\label{eq:Wn-presentation}
+W_n=\bigl\langle R_0,\dots,R_n\ \bigm|\ R_i^2=1,\ (R_iR_j)^2=1\ (|i-j|\ge2)\bigr\rangle,
+\end{equation}
+on the \emph{orthogonality graph} $\Gamma_n$ (vertices $0,\dots,n$, an edge whenever
+$|i-j|\ge2$), and there is a surjection $\rho_a\colon W_n\twoheadrightarrow W(a)$ for every
+$a$. Distinguishing $W_n$ from $W(a)$ is essential: writing $W_n$ for the geometric group would
+make ``$\rho_a$ is faithful'' vacuous, and it is exactly the possible failure of injectivity
+that this paper is about.
+
+\subsection{Results}
+
+The sphere sizes $u_d(a)=\#\{w\in W(a):\ell(w)=d\}$ are bounded above by the coefficients of
+the growth series $W_n(t)$ of the envelope~\eqref{eq:Wn-presentation}, and the whole question is
+where and by how much the bound fails to be sharp. Three unconditional theorems answer the
+``where''.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=0.35em]
+\item \textbf{The dichotomy} (Theorem~\ref{thm:dichotomy}). For any group $G$ with a finite
+symmetric generating set and any $N\trianglelefteq G$ with $N\ne\{1\}$, put
+$K(N)=\min\{\ell_G(g):g\in N\setminus\{1\}\}$. Then the sphere sizes of $G/N$ agree with those
+of $G$ in every degree $d<\lceil K(N)/2\rceil$, and are strictly smaller in degree
+$\lceil K(N)/2\rceil$. So a family of quotients of a fixed $G$ has a universal initial
+segment, and the horizon of universality is half the shortest added relator.
+
+\item \textbf{The envelope} (Theorem~\ref{thm:envelope}). $W_n(t)$ is rational, and is
+$(1+t)^{\lfloor n/2\rfloor+1}/K_{n+1}(t)$ for the explicit integer polynomials $K_m$ of
+\eqref{eq:Kdef}. Its growth rate is $r_n=1+2\cos\bigl(2\pi/(n+3)\bigr)$.
+
+\item \textbf{The rank-two classification} (Theorem~\ref{thm:rank2}). For $a\in\Q_{>0}^n$, the
+kernel of $\rho_a$ meets a rank-two standard parabolic $\langle R_i,R_{i+1}\rangle$
+nontrivially if and only if $e(a)+t(a)\ge1$, where $e(a)$ counts equal legs at the two
+endpoints of the staircase and $t(a)$ counts three consecutive equal legs. The shortest such
+element has length $6$ when $t(a)\ge1$ and length $8$ when $t(a)=0<e(a)$.
+\end{itemize}
+
+The first two combine into the statement that gives the paper its shape. Define the
+\emph{collision depth}
+\[
+\cd_n(a)=\inf\bigl\{d\ge0:\ u_d(a)<[t^d]\,W_n(t)\bigr\}\in\{1,2,\dots,\infty\}.
+\]
+By the dichotomy, $\cd_n(a)=\lceil K(\ker\rho_a)/2\rceil$, and since a relator of a reflection
+group has even length this is $K(\ker\rho_a)/2$ (Corollary~\ref{cor:cd-is-K}). A short geometric
+argument then shows $K(\ker\rho_a)\ge6$ for every positive leg tuple
+(Lemma~\ref{lem:no-length-four}), so $\cd_n\ge3$ unconditionally, and the rank-two
+classification pins the value: $\cd_n=3$ exactly when three consecutive legs are equal, and
+$\cd_n\in\{3,4\}$ with the value $4$ in every computed case when only an endpoint pair is equal
+(Theorem~\ref{thm:cd-general}). The remaining case $e=t=0$ is $\cd_n=\infty$ precisely when
+$\rho_a$ is injective.
+
+Whether $\rho_a$ is ever injective for $n\ge3$ is open in both directions. Section~\ref{sec:open}
+states it as a single problem in two forms, generic and arithmetic, together with the two
+partial results that bound it: the rank-two half is proved
+(Theorem~\ref{thm:rank2}), and the one soft argument that settles the plane provably does not
+extend (Remark~\ref{rem:amenability-fails}).
+
+\subsection{What is and is not new}
+
+The dichotomy is elementary. It is recorded here with a proof because it is what turns the two
+halves of this paper into statements about each other, and because its deviation half needs a
+case distinction on the parity of $K(N)$ that is easy to omit; but it is not a difficult
+argument, and the phenomenon it describes, that a family of quotients of a common group shares
+an initial segment of its growth, is a general one of which the orthoscheme family is an
+instance. The present paper claims the instance, not the principle.
+
+Both ingredients of $r_n$ are classical and are used as such. Steinberg's formula for the
+Poincar\'e series of a Coxeter group is standard \cite{Steinberg,humphreys90,Bourbaki}, growth
+series of right-angled Coxeter groups are treated systematically by Kellerhals and
+Perren~\cite{kellerhals-perren}, and the independence polynomials of paths, their Binet formula,
+and the location of their roots are classical facts about the Fibonacci--Pell family. What is
+asserted is the identification: that the growth rate of the $n$-dimensional right-corner
+orthoscheme envelope is the largest of those roots at $m=n+3$. We have not located that
+identification in the literature and make no claim of novelty for the ingredients. A reader who
+knows the Coxeter growth-series literature should read Theorem~\ref{thm:envelope} as an assembly
+of known pieces.
+
+The Diophantine part of Theorem~\ref{thm:rank2} rests on three rank-zero Mordell--Weil
+computations that are in the standard tables \cite{cremona-1997,lmfdb-24a1,lmfdb-72a2}; what is
+done here is the reduction of the dihedral condition to those three curves.
+
+Two points of contact should be recorded. The all-equal tuple $a_1=\cdots=a_n$ is not a generic
+point of this family: there the orthoscheme group is the affine Weyl group $\widetilde C_n$,
+whose growth is classical and whose Poincar\'e series is given by Bott's formula, and which
+reproduces the $\cd_n=3$ rows of Table~\ref{tab:atlas}. In the planar case $n=2$, Isola and
+Piergallini~\cite{isola-piergallini} prove that the generic triangle reflection group is not
+finitely presented, which already implies that $\rho_a$ is not injective there; that is a second
+reason, besides the amenability argument of Proposition~\ref{prop:plane}, why the plane is not a
+guide to $n\ge3$.
+
+\subsection{Companion papers}
+
+The planar case $n=2$ is treated separately \cite{Bonfioli1}: there the metric has a
+lamplighter-type closed form, the deviation from the envelope has been computed past its onset,
+and the resulting growth series (\textup{A396406}, growth rate $\beta_2=1.4916\ldots$) is
+transcendental over $\Q(x)$. Nothing below is quoted from that work except the two numerical
+facts recorded in Corollary~\ref{cor:plane}, and the transcendence questions, which are special
+to $n=2$, are not attempted here. Non-right-corner orthoschemes are outside the scope of this
+paper.
+
+\section{Orthoschemes and their Coxeter envelope}\label{sec:setting}
+
+Throughout, $n\ge2$, and
+\[
+U=\{a=(a_1,\dots,a_n)\in\R^n:\ a_i>0\ \text{for all }i\}
+\]
+is the leg space. Everything below is invariant under simultaneous scaling of the legs, so one
+may normalise if convenient; we do not.
+
+\subsection{Facet normals}
+
+\begin{lemma}[Facet normals]\label{lem:normals}
+With $V_0=0$ and $V_k=\sum_{i\le k}a_ie_i$, the facet of $O(a)$ opposite $V_j$ has normal
+\[
+m_0=e_1,\qquad m_j=a_{j+1}e_j-a_je_{j+1}\ \ (1\le j\le n-1),\qquad m_n=e_n .
+\]
+Consequently $\operatorname{supp}(m_0)=\{1\}$, $\operatorname{supp}(m_j)=\{j,j+1\}$ and
+$\operatorname{supp}(m_n)=\{n\}$, so $m_i\cdot m_j=0$ whenever $|i-j|\ge2$, while
+$m_i\cdot m_{i+1}\ne0$ for every $i$ and every $a\in U$.
+\end{lemma}
+
+\begin{proof}
+The facet opposite $V_j$ is the affine hull of $\{V_i:i\ne j\}$. For $j=0$ the difference
+vectors $V_{k+1}-V_k=a_{k+1}e_{k+1}$, $1\le k\le n-1$, span $\langle e_2,\dots,e_n\rangle$,
+whence $m_0=e_1$. For $j=n$ the vertices $V_0,\dots,V_{n-1}$ span
+$\langle e_1,\dots,e_{n-1}\rangle$, whence $m_n=e_n$. For $1\le j\le n-1$ the difference
+vectors are $a_ke_k$ for $k\le j-1$, then $V_{j+1}-V_{j-1}=a_je_j+a_{j+1}e_{j+1}$, then
+$a_ke_k$ for $k\ge j+2$. Orthogonality to the first and third families confines $m_j$ to
+coordinates $\{j,j+1\}$, and orthogonality to the middle vector forces
+$m_j\propto a_{j+1}e_j-a_je_{j+1}$. Two supports of the listed form are disjoint exactly when
+$|i-j|\ge2$. For adjacent indices, $m_0\cdot m_1=a_2$, $m_j\cdot m_{j+1}=-a_ja_{j+2}$ for
+$1\le j\le n-2$, and $m_{n-1}\cdot m_n=-a_{n-1}$, all nonzero because every $a_i>0$.
+\end{proof}
+
+Lemma~\ref{lem:normals} holds for all legs, with no genericity hypothesis and no case check.
+Hence $\widehat R_i^2=1$ always and $\widehat R_i\widehat R_j=\widehat R_j\widehat R_i$ whenever
+$|i-j|\ge2$, so the assignment $R_i\mapsto\widehat R_i$ defines a surjection
+\[
+\rho_a\colon W_n\twoheadrightarrow W(a)\le\Isom(\R^n)
+\]
+from the right-angled Coxeter group~\eqref{eq:Wn-presentation} on the orthogonality graph
+$\Gamma_n$ \cite{Davis}. The abstract group $W_n$ does not depend on $a$.
+
+\subsection{Counting conventions}
+
+For a group $H$ with a marked finite generating set we write $\ell_H$ for the word length and
+$s_d(H)=\#\{h\in H:\ell_H(h)=d\}$ for the sphere sizes. We abbreviate
+\[
+u_d(a)=s_d\bigl(W(a)\bigr),\qquad W_n(t)=\sum_{d\ge0}s_d(W_n)\,t^d ,
+\]
+the generators being $\widehat R_0,\dots,\widehat R_n$ and $R_0,\dots,R_n$ respectively. Since
+$O(a)$ is a fundamental domain for the action of $W(a)$, $u_d(a)$ is also the number of distinct
+chambers $g\cdot O(a)$ at word distance $d$, which is what the breadth-first search of
+\S\ref{sec:cert} enumerates. Being the sphere sizes of a quotient of $W_n$, they satisfy
+$u_d(a)\le[t^d]\,W_n(t)$ for every $d$.
+
+Finally, set
+\[
+K(a)=\min\bigl\{\ell_{W_n}(w):w\in\ker\rho_a\setminus\{1\}\bigr\}\in\{1,2,\dots\}\cup\{\infty\},
+\]
+with $K(a)=\infty$ when $\rho_a$ is injective.
+
+\subsection{Generic rigidity}
+
+Before computing anything we record that ``the generic orthoscheme group'' is a well-defined
+object: it does not depend on which generic shape one picks. Write
+$N_{\mathrm{gen}}=\bigcap_{a\in U}\ker\rho_a\trianglelefteq W_n$.
+
+\begin{theorem}[Generic rigidity]\label{thm:rigidity}
+For every $n\ge2$ there is a co-null subset $U_{\mathrm{gen}}\subseteq U$, the complement of a
+countable union of proper real-algebraic subvarieties, such that
+$\ker\rho_a=N_{\mathrm{gen}}$, hence $W(a)\cong W_n/N_{\mathrm{gen}}$, for every
+$a\in U_{\mathrm{gen}}$. Consequently $u_d(a)$ is constant on $U_{\mathrm{gen}}$, equal to
+$s_d(W_n/N_{\mathrm{gen}})$, and this generic value is the maximum of $u_d$ over all of $U$.
+Moreover $U_{\mathrm{gen}}$ contains every $a$ whose coordinates are algebraically independent
+over $\Q$; in particular it is dense.
+\end{theorem}
+
+\begin{proof}
+Each facet normal $m_j(a)$ is a fixed polynomial vector in $a$ by Lemma~\ref{lem:normals}, so
+the reflection $\widehat R_j=I-2\,m_jm_j^{\!\top}/(m_j\!\cdot\!m_j)$, together with its
+translation part, has entries in $\Q(a)$ with denominator the nowhere-vanishing polynomial
+$m_j\!\cdot\!m_j$. Hence for each $w\in W_n$, choosing any word representative, every entry of
+$\rho_a(w)$ lies in $\Q(a)$, independently of the representative because $\rho_a$ is well
+defined. The locus $V_w=\{a\in U:\rho_a(w)=I\}$ is the simultaneous vanishing of finitely many
+rational functions cleared of their nonvanishing denominators, hence Zariski-closed in the
+irreducible variety $U$. If $w\notin N_{\mathrm{gen}}$ then $\rho_a(w)\ne I$ for some $a$, so
+$V_w$ is a proper closed subvariety, of measure zero. As $W_n$ is countable,
+$B:=\bigcup_{w\in W_n\setminus N_{\mathrm{gen}}}V_w$ is a countable union of proper
+subvarieties, and $U_{\mathrm{gen}}:=U\setminus B$ is co-null and dense.
+
+For $a\in U_{\mathrm{gen}}$ one has $N_{\mathrm{gen}}\subseteq\ker\rho_a$ by definition, and
+$\ker\rho_a\subseteq N_{\mathrm{gen}}$ because any
+$w\in\ker\rho_a\setminus N_{\mathrm{gen}}$ would place $a$ in $V_w\subseteq B$. Isomorphic
+groups with marked generators have identical sphere sizes, giving the constant value; for
+arbitrary $a$, $\ker\rho_a\supseteq N_{\mathrm{gen}}$ makes $W(a)$ a quotient of
+$W_n/N_{\mathrm{gen}}$, so $u_d(a)\le s_d(W_n/N_{\mathrm{gen}})$. Finally each $V_w$ is defined
+over $\Q$; if the coordinates of $a$ are algebraically independent over $\Q$ then $a$ lies on no
+proper $\Q$-subvariety, so $a\notin B$. Such $a$ exist since $\dim U=n\ge2$.
+\end{proof}
+
+\begin{corollary}[One faithful shape suffices]\label{cor:one-shape}
+If $\rho_a$ is injective for a single $a\in U$, then $N_{\mathrm{gen}}=\{1\}$ and $\rho_b$ is
+injective for every $b\in U_{\mathrm{gen}}$. Conversely, if $\rho_b$ fails to be injective for
+some $b\in U_{\mathrm{gen}}$, then $\rho_a$ fails to be injective for every $a\in U$.
+\end{corollary}
+
+\begin{proof}
+$N_{\mathrm{gen}}\subseteq\ker\rho_a=\{1\}$, and $\ker\rho_b=N_{\mathrm{gen}}$ for
+$b\in U_{\mathrm{gen}}$ by Theorem~\ref{thm:rigidity}. The converse is the contrapositive,
+using $N_{\mathrm{gen}}\subseteq\ker\rho_a$ for every $a$.
+\end{proof}
+
+Corollary~\ref{cor:one-shape} is what allows the generic question and the arithmetic question of
+\S\ref{sec:open} to be treated as two forms of one problem in one direction. It gives nothing in
+the other direction: a specific rational tuple need not lie in $U_{\mathrm{gen}}$, and
+$U_{\mathrm{gen}}$ contains no tuple with algebraically dependent coordinates, hence no rational
+tuple at all.
+
+\section{The universality--deviation dichotomy}\label{sec:dichotomy}
+
+\begin{theorem}[Universality--deviation dichotomy]\label{thm:dichotomy}
+Let $G=\langle S\rangle$ be a group with finite symmetric generating set $S$, let
+$N\trianglelefteq G$ with $N\ne\{1\}$, write $Q=G/N$ and
+$K=K(N)=\min\{\ell_G(g):g\in N\setminus\{1\}\}$, and put $h=\lceil K/2\rceil$. Then
+$s_d(Q)=s_d(G)$ for every $d<h$, and $s_h(Q)<s_h(G)$.
+\end{theorem}
+
+\begin{proof}
+Write $\pi:G\to Q$.
+
+\emph{Agreement below $h$.} Let $d<h$. If $d\ge1$ then $2d\le2h-2\le K-1<K$, since $2h\le K+1$.
+Suppose $g,g'\in B_d(G)$ satisfy $\pi g=\pi g'$. Then $g(g')^{-1}\in N$ and
+$\ell_G(g(g')^{-1})\le2d<K$, so $g=g'$; thus $\pi$ is injective on $B_d(G)$. It is also
+length-preserving there: if $\ell_G(g)=d$ and $\ell_Q(\pi g)=e<d$, pick $g'$ with
+$\ell_G(g')=e$ and $\pi g'=\pi g$; then $\ell_G(g(g')^{-1})\le d+e<2d<K$ forces $g=g'$,
+contradicting $e<d$. Finally $\pi$ maps the sphere of radius $d$ in $G$ onto the sphere of
+radius $d$ in $Q$, because $\ell_Q(q)=\min\{\ell_G(g):\pi g=q\}$ realises every $q$ with
+$\ell_Q(q)=d$ by some $g$ of length exactly $d$. Hence $s_d(Q)=s_d(G)$.
+
+\emph{Strict drop at $h$.} Choose $g_0\in N\setminus\{1\}$ with $\ell_G(g_0)=K$ and split a
+geodesic word for it as $g_0=w_1w_2$ with $\ell_G(w_1)=h$ and
+$\ell_G(w_2)=K-h=\lfloor K/2\rfloor$; both factors are geodesic as written. From $w_1w_2\in N$
+we get $\pi(w_1)=\pi(w_2^{-1})$, and $w_1\ne w_2^{-1}$ since otherwise $g_0=1$. Surjectivity of
+$\pi$ from the radius-$h$ sphere of $G$ onto that of $Q$, established in the previous paragraph
+for $d<h$, holds verbatim for $d=h$.
+
+If $K$ is even then $h=K/2=\lfloor K/2\rfloor$, so $w_1$ and $w_2^{-1}$ are two distinct
+elements of the sphere of radius $h$ in $G$ with the same image, and $s_h(Q)\le s_h(G)-1$.
+
+If $K$ is odd then $h=(K+1)/2$ and $\ell_G(w_2^{-1})=h-1$, so $\ell_Q(\pi w_1)\le h-1<h$ and the
+image of $w_1$ does not lie on the sphere of radius $h$ in $Q$. That sphere is therefore covered
+by $\pi$ applied to the radius-$h$ sphere of $G$ with $w_1$ removed, and again
+$s_h(Q)\le s_h(G)-1$.
+\end{proof}
+
+The parity split at the end is not cosmetic. When $K$ is odd the two halves of a shortest
+relator lie on spheres of different radii, so no two points of the upstairs sphere need collide,
+and the count drops for the other reason. Both cases are machine-checked
+(\S\ref{sec:cert}).
+
+Applied to $\rho_a$, Theorem~\ref{thm:dichotomy} gives an exact alternative with no genericity
+and no dimension hypothesis.
+
+\begin{corollary}[The envelope alternative]\label{cor:alternative}
+Exactly one of the following holds.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item $\rho_a$ is injective. Then $W(a)\cong W_n$ and $u_d(a)=[t^d]\,W_n(t)$ for every $d$; in
+particular the growth series of $W(a)$ is the rational function of
+Theorem~\ref{thm:envelope}, with growth rate $r_n$.
+\item $\rho_a$ is not injective. Then $K(a)<\infty$, $u_d(a)=[t^d]\,W_n(t)$ for every
+$d<\lceil K(a)/2\rceil$, and $u_d(a)<[t^d]\,W_n(t)$ at $d=\lceil K(a)/2\rceil$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+If $\ker\rho_a=\{1\}$ then $\rho_a$ is an isomorphism of marked groups and (i) is immediate.
+Otherwise $K(a)$ is finite and Theorem~\ref{thm:dichotomy} with $G=W_n$, $N=\ker\rho_a$ gives
+(ii).
+\end{proof}
+
+\begin{corollary}[The collision depth is half the shortest relator]\label{cor:cd-is-K}
+For every $a\in U$, $\ \cd_n(a)=\lceil K(a)/2\rceil$, and $K(a)$ is even, so
+$\cd_n(a)=K(a)/2$.
+\end{corollary}
+
+\begin{proof}
+The first equality is Corollary~\ref{cor:alternative}: below $\lceil K(a)/2\rceil$ the two
+sequences agree and at $\lceil K(a)/2\rceil$ they differ. For parity, let
+$\varepsilon:W_n\to\{\pm1\}$ be the sign character, $\varepsilon(R_i)=-1$, which is well defined
+because all defining relators of \eqref{eq:Wn-presentation} have even length; then
+$\varepsilon(w)=(-1)^{\ell(w)}$. On the other side, $\det\circ\rho_a$ is a homomorphism
+$W_n\to\{\pm1\}$ sending each $R_i$ to $-1$, so $\det\rho_a(w)=\varepsilon(w)$. If
+$w\in\ker\rho_a$ then $\det\rho_a(w)=1$, hence $\ell(w)$ is even.
+\end{proof}
+
+\begin{lemma}[No relator of length four]\label{lem:no-length-four}
+For every $n\ge2$ and every $a\in U$, $K(a)\ge6$. Consequently $\cd_n(a)\ge3$.
+\end{lemma}
+
+\begin{proof}
+By Corollary~\ref{cor:cd-is-K}, $K(a)$ is even, so it suffices to exclude $K(a)\in\{2,4\}$.
+
+Write $H_i$ for the facet hyperplane carrying $\widehat R_i$. The $H_i$ are the $n+1$ facet
+hyperplanes of a nondegenerate simplex, so they are pairwise distinct and pairwise
+non-parallel, and $H_i\cap H_j$ is the affine hull of $\{V_m:m\ne i,j\}$, of dimension $n-2$.
+Distinct index pairs give distinct intersections, because an $(n-2)$-flat contains exactly
+$n-1$ of the $n+1$ affinely independent vertices.
+
+$K(a)=2$ would give a geodesic word $R_iR_j$ with $i\ne j$ and
+$\widehat R_i=\widehat R_j$, impossible since $H_i\ne H_j$.
+
+Suppose $K(a)=4$, realised by a geodesic word $R_iR_jR_kR_l$ with $i\ne j$, $j\ne k$, $k\ne l$
+and $\widehat R_i\widehat R_j\widehat R_k\widehat R_l=1$, that is
+$\widehat R_i\widehat R_j=\widehat R_l\widehat R_k$. For $H_i\ne H_j$ non-parallel, the isometry
+$\widehat R_i\widehat R_j$ is a rotation about $H_i\cap H_j$ through twice the angle between the
+hyperplanes, an angle in $(0,2\pi)$; its fixed-point set is therefore exactly $H_i\cap H_j$. The
+same applies to $\widehat R_l\widehat R_k$, so $H_i\cap H_j=H_k\cap H_l$ and hence
+$\{i,j\}=\{k,l\}$ by the previous paragraph. Since $j\ne k$ this forces $i=k$ and $j=l$, so the
+relation reads $\widehat R_i\widehat R_j=\widehat R_j\widehat R_i$, that is $H_i\perp H_j$. For
+$|i-j|\ge2$ that relation already holds in $W_n$ and the word $R_iR_jR_iR_j$ is not geodesic;
+for $|i-j|=1$ perpendicularity contradicts $m_i\cdot m_{i+1}\ne0$ in
+Lemma~\ref{lem:normals}. Both branches are impossible, so $K(a)\ne4$.
+\end{proof}
+
+\section{The envelope in closed form}\label{sec:envelope}
+
+\begin{theorem}[The envelope is rational]\label{thm:envelope}
+Let $c_{\Gamma_n}(x)=\sum_{C\ \mathrm{clique}}x^{|C|}$ be the clique polynomial of $\Gamma_n$.
+The growth series of $W_n$ is rational and satisfies
+\[
+\frac{1}{W_n(t)}=c_{\Gamma_n}\!\Bigl(\frac{-t}{1+t}\Bigr).
+\]
+Equivalently $W_n(t)=(1+t)^{n+1}/J_{n+1}(t)$, where
+\[
+J_m=(1+t)\bigl(J_{m-1}-t\,J_{m-2}\bigr),\qquad J_0=J_1=1 .
+\]
+One has $J_m=(1+t)^{\lfloor m/2\rfloor}K_m$ with
+\begin{equation}\label{eq:Kdef}
+K_0=K_1=1,\qquad K_{2j}=K_{2j-1}-tK_{2j-2},\qquad K_{2j+1}=(1+t)K_{2j}-tK_{2j-1},
+\end{equation}
+so that
+\[
+W_n(t)=\frac{(1+t)^{\lfloor n/2\rfloor+1}}{K_{n+1}(t)} .
+\]
+The reciprocals of the roots of $K_{n+1}$ in $(1/3,1)$ are the numbers
+$1+2\cos\frac{2k\pi}{n+3}$, and the growth rate is the largest of them,
+\[
+r_n=1+2\cos\frac{2\pi}{n+3}.
+\]
+\end{theorem}
+
+\begin{proof}
+$W_n$ is a right-angled Coxeter group, so its finite standard parabolics are exactly the cliques
+of $\Gamma_n$, each a group $(\Z/2)^{|C|}$ with growth polynomial $(1+t)^{|C|}$ \cite{Davis}.
+Steinberg's formula \cite{Steinberg,Bourbaki,humphreys90} gives
+\[
+\frac{1}{W_n(t^{-1})}=\sum_{C\ \mathrm{clique}}\frac{(-1)^{|C|}}{(1+t)^{|C|}}
+=c_{\Gamma_n}\!\Bigl(\frac{-1}{1+t}\Bigr).
+\]
+Substituting $t\mapsto t^{-1}$ and simplifying $-1/(1+t^{-1})=-t/(1+t)$ yields the displayed
+identity for $1/W_n(t)$. The substitution must be carried inside the clique polynomial;
+retaining the argument $-1/(1+t)$ gives a different rational function, already at $n=2$.
+
+The cliques of $\Gamma_n$ are the independent sets of its complement, the path $P_{n+1}$, so
+$c_{\Gamma_n}=I_{n+1}$, the independence polynomial of the path on $n+1$ vertices, which obeys
+$I_m=I_{m-1}+xI_{m-2}$, $I_0=1$, $I_1=1+x$, and has the coefficient form
+$I_m(x)=\sum_k\binom{m+1-k}{k}x^k$. Put $J_m(t)=(1+t)^mI_m(-t/(1+t))$. Multiplying the
+recurrence by $(1+t)^m$ gives $J_m=(1+t)J_{m-1}-t(1+t)J_{m-2}$, which is the stated recurrence,
+with $J_0=1$ and $J_1=(1+t)(1-t/(1+t))=1$. By construction
+$1/W_n(t)=I_{n+1}(-t/(1+t))=J_{n+1}(t)/(1+t)^{n+1}$. The factorisation
+$J_m=(1+t)^{\lfloor m/2\rfloor}K_m$ and the two-step recurrences \eqref{eq:Kdef} follow by
+induction on $m$, splitting on the parity of $m$; cancelling $(1+t)^{\lfloor(n+1)/2\rfloor}$
+against $(1+t)^{n+1}$ leaves the exponent $\lceil(n+1)/2\rceil=\lfloor n/2\rfloor+1$.
+
+For the roots, fix $t>0$ and solve the linear recurrence. Its characteristic equation is
+$\lambda^2-(1+t)\lambda+t(1+t)=0$, of discriminant $(1+t)(1-3t)$.
+
+If $0<t<1/3$ both roots are real with $0<\lambda_-<\lambda_+<1$, their sum being $1+t\le4/3$ and
+their product $t(1+t)<4/9$. Writing $J_m=\alpha\lambda_+^m+\beta\lambda_-^m$, the initial
+conditions give $\alpha=(1-\lambda_-)/(\lambda_+-\lambda_-)>0$ and
+$\beta=(\lambda_+-1)/(\lambda_+-\lambda_-)<0$ with $\alpha+\beta=1$. Then
+$J_m=\lambda_-^m(\alpha(\lambda_+/\lambda_-)^m+\beta)$, and the bracket is increasing in $m$
+with value $1$ at $m=0$, so $J_m>0$. At $t=1/3$ the root is double and $J_m=(1+m/2)(2/3)^m>0$.
+Hence $J_m$ has no root in $(0,1/3]$.
+
+If $t>1/3$ the roots are $\lambda_\pm=\varrho e^{\pm i\theta}$ with $\varrho=\sqrt{t(1+t)}$ and
+$\cos\theta=\sqrt{(1+t)/(4t)}$, so $\theta$ ranges over $(0,\pi/3)$ and is strictly increasing
+in $t$, because $(1+t)/(4t)=\tfrac14+\tfrac1{4t}$ is strictly decreasing. Then
+$J_m=\varrho^m(\cos m\theta-c\sin m\theta)$, where $J_0=1$ is automatic and $J_1=1$ forces
+$c\varrho\sin\theta=(t-1)/2$, that is $c=(t-1)/\sqrt{(1+t)(3t-1)}$. Since
+$\sin^2\theta=(3t-1)/(4t)$, a direct computation gives
+$\cot2\theta=(1-t)/\sqrt{(1+t)(3t-1)}=-c$. Therefore
+\[
+J_m=0\iff\cot m\theta=c=-\cot2\theta
+\iff\frac{\sin\bigl((m+2)\theta\bigr)}{\sin m\theta\,\sin2\theta}=0
+\iff(m+2)\theta\in\pi\Z .
+\]
+With $m=n+1$ the roots are exactly $\theta=k\pi/(n+3)$, $1\le k<(n+3)/3$. Inverting
+$\cos^2\theta=(1+t)/(4t)$ gives $t=1/(4\cos^2\theta-1)=1/(1+2\cos2\theta)$, so the corresponding
+$t$-values are $1/\bigl(1+2\cos\frac{2k\pi}{n+3}\bigr)$. As $\theta$ increases with $t$, the
+smallest positive root is $k=1$; it exceeds $1/3$ because $1+2\cos\frac{2\pi}{n+3}<3$, and
+$1+t>0$ there, so it is a root of $K_{n+1}$ and not of the stripped factor. Hence
+$r_n=1+2\cos\frac{2\pi}{n+3}$.
+\end{proof}
+
+\begin{remark}[Not a path spectral radius]\label{rem:notpath}
+The number $2\cos\frac{2\pi}{n+3}$ is not the spectral radius of the path $P_{n+1}$, which is
+$2\cos\frac{\pi}{n+2}$; the two disagree for every $n\ge2$ (at $n=2$ they are $0.618\ldots$ and
+$1.414\ldots$). The angles produced by the proof are $k\pi/(n+3)$, and the growth rate uses
+$\cos2\theta$ at $\theta=\pi/(n+3)$, not $\cos\theta$.
+\end{remark}
+
+\begin{remark}[The clique polynomial is a Fibonacci--Pell polynomial]\label{rem:pell}
+The coefficient form $I_{n+1}(x)=\sum_k\binom{n+2-k}{k}x^k$ used above is the statement that the
+clique count of $\Gamma_n$ in size $k$ is $\binom{n+2-k}{k}$, and it identifies
+$c_{\Gamma_n}$ with the Fibonacci--Pell polynomial $P_{n+3}$, where $P_0=0$, $P_1=1$ and
+$P_m=P_{m-1}+yP_{m-2}$: the two families satisfy the same three-term recursion, by Pascal's
+identity $\binom{n-k+2}{k}=\binom{n-k+1}{k}+\binom{n-k+1}{k-1}$, and agree at the bottom. This
+gives a second reading of the roots. The characteristic equation $x^2=x+y$ has roots
+$\alpha,\beta=(1\pm\sqrt{1+4y})/2$, the Binet formula yields
+$P_m(y)=(\alpha^m-\beta^m)/(\alpha-\beta)$, so $P_m(y)=0$ iff $(\alpha/\beta)^m=1$; setting
+$\alpha/\beta=e^{2\pi ij/m}$ gives $y_j=-1/\bigl(4\cos^2(\pi j/m)\bigr)$, and translating back
+through $y=-1/(1+t)$ with $4\cos^2\vartheta-1=1+2\cos2\vartheta$ returns the same values
+$1+2\cos\frac{2\pi j}{n+3}$. The Pascal step, the Binet formula and the translation identity are
+machine-checked (\S\ref{sec:cert}); the induction that assembles the Pascal step into the
+identification $c_{\Gamma_n}=P_{n+3}$ is a paper proof.
+\end{remark}
+
+\begin{corollary}[Asymptotic regime]\label{cor:asymptotic}
+$r_n\to3$ as $n\to\infty$, with
+\[
+3-r_n=4\sin^2\!\Bigl(\frac{\pi}{n+3}\Bigr)\sim\frac{4\pi^2}{(n+3)^2}.
+\]
+\end{corollary}
+
+Since $2\cos(2\pi/m)$ has degree $\phi(m)/2$ over $\Q$, where $\phi$ denotes Euler's totient,
+the rate $r_n$ is rational or a quadratic surd exactly when $\phi(n+3)\le4$, that is
+$n+3\in\{5,6,8,10,12\}$; see Table~\ref{tab:n-dim-rates}, where $\varphi$ denotes the golden
+ratio.
+
+\begin{table}[ht!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c l r l}
+\toprule
+$n$ & $W_n(t)$ & $r_n$ & algebraic form \\
+\midrule
+2  & $(1+t)^2/(1-t-t^2)$                        & $1.6180\ldots$ & $\varphi=(1+\sqrt5)/2$ (golden) \\
+3  & $(1+t)^2/(1-2t)$                           & $2.0000$       & exactly $2$ \\
+4  & $(1+t)^3/(1-2t-t^2+t^3)$                   & $2.2470\ldots$ & $1+2\cos(2\pi/7)$, cubic \\
+5  & $(1+t)^3/(1-3t+t^2+t^3)$                   & $2.4142\ldots$ & $1+\sqrt2$ (silver) \\
+6  & $(1+t)^4/(1-3t+3t^3)$                      & $2.5321\ldots$ & $1+2\cos(2\pi/9)$, cubic \\
+7  & $(1+t)^4/(1-4t+3t^2+2t^3-t^4)$             & $2.6180\ldots$ & $\varphi^2=(3+\sqrt5)/2$ \\
+8  & $(1+t)^5/(1-4t+2t^2+5t^3-2t^4-t^5)$        & $2.6825\ldots$ & $1+2\cos(2\pi/11)$, degree $5$ \\
+9  & $(1+t)^5/(1-5t+6t^2+2t^3-4t^4)$            & $2.7321\ldots$ & $1+\sqrt3$ \\
+10 & $(1+t)^6/(1-5t+5t^2+6t^3-7t^4-2t^5+t^6)$   & $2.7709\ldots$ & $1+2\cos(2\pi/13)$, degree $6$ \\
+\bottomrule
+\end{tabular}
+\caption{The envelope $W_n(t)=(1+t)^{\lfloor n/2\rfloor+1}/K_{n+1}(t)$ and its growth rate
+$r_n=1+2\cos(2\pi/(n+3))$. The recurrence \eqref{eq:Kdef}, its agreement with the Steinberg
+expansion, the exactness of the division by $(1+t)^{\lfloor(n+1)/2\rfloor}$, and the
+identification of the smallest positive root of $K_{n+1}$ with $1/r_n$ are certified for
+$2\le n\le30$ by the program of \S\ref{sec:cert}.}
+\label{tab:n-dim-rates}
+\end{table}
+
+\begin{remark}[The orthoscheme sequences in the OEIS]\label{rem:oeis}
+For pairwise distinct legs the layer counts $u_d(a)$ agree with the envelope as far as they have
+been computed, and the resulting sequences are recorded in the On-Line Encyclopedia of Integer
+Sequences: A397439 ($n=3$), A397437 ($n=4$), A396927 ($n=5$) and A397438 ($n=6$), with the $n=7$
+entry in preparation. Each of these is the coefficient sequence of the rational function
+$W_n(t)$ of Table~\ref{tab:n-dim-rates}, with dominant pole $1/r_n$. The planar entry A396406 is
+of a different nature: it records the deviated planar sequence, which agrees with $W_2(t)$ only
+up to degree $9$ and whose generating function is transcendental over $\Q(x)$
+\cite{Bonfioli1}; see Corollary~\ref{cor:plane}.
+\end{remark}
+
+\section{Rank-two relations}\label{sec:rank2}
+
+This section determines exactly when $\ker\rho_a$ meets a rank-two standard parabolic
+$\langle R_i,R_{i+1}\rangle$. Throughout it, the legs are positive rationals. By
+Lemma~\ref{lem:normals} the only pairs that can carry a nontrivial dihedral relation are the
+consecutive ones, and their cosines are
+\begin{equation}\label{eq:cosines}
+\cos\theta_{0,1}=\frac{a_2}{\sqrt{a_1^2+a_2^2}},\qquad
+\cos\theta_{n-1,n}=\frac{a_{n-1}}{\sqrt{a_{n-1}^2+a_n^2}},\qquad
+\cos\theta_{i,i+1}=\frac{a_ia_{i+2}}{\sqrt{(a_i^2+a_{i+1}^2)(a_{i+1}^2+a_{i+2}^2)}}
+\end{equation}
+for $1\le i\le n-2$. In each case $\cos^2\theta\in\Q$. By the extended Niven theorem, a
+consequence of Conway--Jones \cite{conway-jones} (if $\theta\in\Q\pi$ and $\cos^2\theta\in\Q$
+then $\cos\theta\in\{0,\pm\tfrac12,\pm\tfrac{\sqrt2}2,\pm\tfrac{\sqrt3}2,\pm1\}$), a relation
+$(R_iR_{i+1})^m=1$ in $W(a)$ forces
+\[
+\cos^2\theta_{i,i+1}\in\{0,\tfrac14,\tfrac12,\tfrac34,1\}.
+\]
+
+\subsection{The two positional statistics}
+
+For $a\in\Q_{>0}^n$ set
+\begin{align*}
+e(a)&=\#\bigl\{i\in\{1,n-1\}:a_i=a_{i+1}\bigr\}\in\{0,1,2\},\\
+t(a)&=\#\bigl\{i:1\le i\le n-2,\ a_i=a_{i+1}=a_{i+2}\bigr\}.
+\end{align*}
+Thus $e$ counts equal pairs at the two endpoint positions of the staircase and $t$ counts
+interior triples of three consecutive equal legs. An equal pair sitting strictly inside the
+staircase, such as $a_2=a_3$ in $(1,2,2,3)$ at $n=4$, contributes to neither.
+
+\subsection{Boundary pairs}
+
+\begin{lemma}[Boundary pairs]\label{lem:boundary}
+A boundary pair carries an admissible value of $\cos^2\theta$ if and only if the two legs
+involved are equal, in which case $\cos^2\theta=\tfrac12$ and $\theta=\pi/4$.
+\end{lemma}
+
+\begin{proof}
+Take the pair $(0,1)$, so $\cos^2\theta=a_2^2/(a_1^2+a_2^2)$ by \eqref{eq:cosines}; the pair
+$(n-1,n)$ is symmetric. The value $0$ forces $a_2=0$ and the value $1$ forces $a_1=0$, both
+excluded by positivity. The value $\tfrac14$ gives $4a_2^2=a_1^2+a_2^2$, that is
+$(a_1/a_2)^2=3$, and the value $\tfrac34$ gives $(a_2/a_1)^2=3$; neither is possible over $\Q$.
+The value $\tfrac12$ gives $a_1^2=a_2^2$, that is $a_1=a_2$, and conversely $a_1=a_2$ gives
+$\cos\theta=1/\sqrt2$.
+\end{proof}
+
+All five cases of Lemma~\ref{lem:boundary} are formalised in Lean~4 (\S\ref{sec:cert}).
+
+\subsection{Interior pairs: three Diophantine quartics}
+
+At an interior pair write $x=a_i$, $y=a_{i+1}$, $z=a_{i+2}$, so that by \eqref{eq:cosines}
+\[
+\cos^2\theta_{i,i+1}=\frac{x^2z^2}{(x^2+y^2)(y^2+z^2)} .
+\]
+Requiring this to equal a constant $c$ and setting $u=y^2$ gives the quadratic
+\begin{equation}\label{eq:uquad}
+c\,u^2+c\,(x^2+z^2)\,u+(c-1)\,x^2z^2=0 ,
+\end{equation}
+which has a rational root only if its discriminant
+$\Delta=c^2(x^2+z^2)^2-4c(c-1)x^2z^2$ is the square of a rational. Substituting the three
+interior values of $c$ and clearing the constant factors gives, in the two flanking legs
+$x=a_i$ and $z=a_{i+2}$, the Diophantine \emph{quartics}
+\[
+\mathcal{V}_{1/4}:\ x^4+14x^2z^2+z^4=k^2,\qquad
+\mathcal{V}_{1/2}:\ x^4+6x^2z^2+z^4=k^2,\qquad
+\mathcal{V}_{3/4}:\ 9x^4+30x^2z^2+9z^4=k^2 .
+\]
+It matters that these are quartics in the legs and not conics in $X=x^2$, $Z=z^2$. Written in
+$X$ and $Z$ the three equations define conics with infinitely many rational points, among them
+$(X,Z)=(3,2)$ on $X^2+6XZ+Z^2=k^2$ with $k=7$, and $(X,Z)=(2,5)$ and $(5,9)$ on the other two.
+Those points are irrelevant here precisely because $X$ and $Z$ must themselves be squares of
+legs.
+
+\begin{lemma}\label{lem:cremona-empty}
+Each of $\mathcal{V}_{1/4}$, $\mathcal{V}_{1/2}$, $\mathcal{V}_{3/4}$ has only trivial solutions
+over $\Q_{>0}^2$ in the legs $(x,z)$: every rational point has $xz=0$ or $x=z$.
+\end{lemma}
+
+\begin{proof}
+\emph{$\mathcal{V}_{1/2}$.} The quartic $x^4+6x^2z^2+z^4=k^2$ is birationally equivalent to the
+elliptic curve $E_{1/2}:y^2=x^3-x$ (Mordell~\cite{mordell-1969}, \S17). $E_{1/2}$ has
+Mordell--Weil rank $0$ over $\Q$ by Fermat's classical descent (Cassels~\cite{cassels-1991},
+Ch.~II), and its full rational-point set is the $2$-torsion $\{\infty,(0,0),(\pm1,0)\}$, pulling
+back to $xz=0$ or $x=z$.
+
+\emph{$\mathcal{V}_{1/4}$.} The Jacobian elliptic curve is $E_{1/4}:y^2=x(x-12)(x-16)$, which is
+Cremona \texttt{24a1} (conductor $24$, $j=35\,152/9$, Mordell--Weil rank $0$ over $\Q$, torsion
+$\Z/4\oplus\Z/2$); see \cite{cremona-1997} and the LMFDB record \cite{lmfdb-24a1}. Each of its
+eight rational points pulls back to $xz=0$ or $x=z$.
+
+\emph{$\mathcal{V}_{3/4}$.} The quartic admits a standard conic-to-Weierstrass substitution and
+reduces to $E_{3/4}:y^2=x(x-300)(x-1200)$, Cremona \texttt{72a2} (conductor $72$, the same
+$j$-invariant $35\,152/9$ as $E_{1/4}$, of which it is a quadratic twist, also rank $0$, torsion
+$\Z/2\oplus\Z/2$); see \cite{cremona-1997,lmfdb-72a2}. Each torsion point again pulls back to a
+trivial quartic solution.
+\end{proof}
+
+Lemma~\ref{lem:cremona-empty} says nothing about the diagonal $x=z$, which is where the interior
+analysis has to be completed separately.
+
+\begin{lemma}[Interior pairs with equal flanking legs]\label{lem:diagonal}
+Suppose $a_i=a_{i+2}$. Then the interior pair $(i,i+1)$ carries an admissible value of
+$\cos^2\theta$ if and only if $a_i=a_{i+1}=a_{i+2}$, in which case $\cos^2\theta=\tfrac14$ and
+$\theta=\pi/3$.
+\end{lemma}
+
+\begin{proof}
+With $x=z$ the cosine is $\cos\theta=x^2/(x^2+y^2)$, a positive rational. The values $0$ and $1$
+of $\cos^2\theta$ are excluded by positivity. The value $\tfrac12$ requires
+$\cos\theta=1/\sqrt2$ and the value $\tfrac34$ requires $\cos\theta=\sqrt3/2$, neither rational.
+The value $\tfrac14$ requires $\cos\theta=\tfrac12$, that is $2x^2=x^2+y^2$, hence $y=x$; and
+conversely $x=y=z$ gives $\cos\theta=x^2/(2x^2)=\tfrac12$.
+\end{proof}
+
+\subsection{The classification}
+
+\begin{theorem}[Rank-two classification]\label{thm:rank2}
+Let $n\ge2$ and $a\in\Q_{>0}^n$. Then $\ker\rho_a$ meets some rank-two standard parabolic
+$\langle R_i,R_{i+1}\rangle$ nontrivially if and only if $e(a)+t(a)\ge1$. More precisely:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item if $t(a)\ge1$, the interior pair at a triple has $\theta=\pi/3$ and
+$(R_iR_{i+1})^3\in\ker\rho_a$ is an element of length $6$;
+\item if $t(a)=0$ and $e(a)\ge1$, the corresponding boundary pair has $\theta=\pi/4$ and
+$(R_iR_{i+1})^4\in\ker\rho_a$ is an element of length $8$, and no shorter element of any
+rank-two standard parabolic lies in $\ker\rho_a$;
+\item if $e(a)=t(a)=0$, no rank-two standard parabolic meets $\ker\rho_a$ nontrivially.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Since $\langle R_i,R_{i+1}\rangle$ is an infinite dihedral standard parabolic of $W_n$, a word
+$(R_iR_{i+1})^m$ is geodesic of length $2m$, and $\ker\rho_a$ meets that parabolic nontrivially
+exactly when $\theta_{i,i+1}\in\pi\Q$, in which case the shortest element is
+$(R_iR_{i+1})^{m}$ with $\theta_{i,i+1}=\pi\,r/m$ in lowest terms. Non-consecutive pairs
+generate finite parabolics of $W_n$ itself and contribute nothing.
+
+Suppose $\theta_{i,i+1}\in\pi\Q$ for some $i$. By the extended Niven theorem
+$\cos^2\theta_{i,i+1}\in\{0,\tfrac14,\tfrac12,\tfrac34,1\}$. If the pair is a boundary pair,
+Lemma~\ref{lem:boundary} gives $a_i=a_{i+1}$ with the pair at an endpoint, that is $e(a)\ge1$,
+and $\theta=\pi/4$. If the pair is interior with flanking legs $x=a_i\ne a_{i+2}=z$, then
+\eqref{eq:uquad} has the rational root $u=a_{i+1}^2$, so its discriminant is a rational square
+and $(x,z)$ is a nontrivial point of one of $\mathcal{V}_{1/4},\mathcal{V}_{1/2},
+\mathcal{V}_{3/4}$, contradicting Lemma~\ref{lem:cremona-empty}. If the pair is interior with
+$a_i=a_{i+2}$, Lemma~\ref{lem:diagonal} gives $a_i=a_{i+1}=a_{i+2}$, that is $t(a)\ge1$, and
+$\theta=\pi/3$. This proves (iii) and the ``only if'' direction.
+
+Conversely, if $t(a)\ge1$ then some interior pair has $\theta=\pi/3$ by
+Lemma~\ref{lem:diagonal}, the dihedral image has order $6$, and the shortest relator is
+$(R_iR_{i+1})^3$ of length $6$: (i). If $t(a)=0$ and $e(a)\ge1$ then some boundary pair has
+$\theta=\pi/4$ by Lemma~\ref{lem:boundary}, the dihedral image has order $8$, and the shortest
+relator in that parabolic is $(R_iR_{i+1})^4$ of length $8$; by the previous paragraph no other
+consecutive pair contributes an element of $\ker\rho_a$, since a boundary pair would force
+$e\ge1$ with $\theta=\pi/4$ again and an interior pair would force $t\ge1$: (ii).
+\end{proof}
+
+Following the terminology of the three-dimensional analysis, call a leg tuple \emph{Class C}
+when its coordinates are pairwise distinct. Class C tuples have $e=t=0$, so
+Theorem~\ref{thm:rank2}(iii) applies, but so do tuples with an interior equal pair such as
+$(1,2,2,3)$ and tuples with a non-adjacent repetition such as $(1,2,1,3)$; the latter is
+precisely the case that Lemma~\ref{lem:diagonal}, and not Lemma~\ref{lem:cremona-empty}, has to
+handle.
+
+\begin{conjecture}[Class C faithfulness]\label{conj:master-C}
+For every $n\ge3$ and every $a\in\Q_{>0}^n$ with pairwise distinct coordinates, $\rho_a$ is
+injective; equivalently $u_d(a)=[t^d]\,W_n(t)$ for every $d\ge0$.
+\end{conjecture}
+
+Theorem~\ref{thm:rank2}(iii) is the rank-two half of Conjecture~\ref{conj:master-C} and is
+proved. What is missing is that a nontrivial kernel element must lie in a rank-two parabolic,
+which is false in general: the planar case $n=2$ is a counterexample. There the two consecutive
+pairs are both boundary pairs, so for $a_1\ne a_2$ Theorem~\ref{thm:rank2}(iii) applies and no
+rank-two parabolic meets $\ker\rho_a$; yet $\ker\rho_a\ne\{1\}$ by
+Proposition~\ref{prop:plane}, and its shortest elements have length $20$, arising as
+$w_1w_2^{-1}$ from eight pairs of distinct geodesic words $w_1,w_2$ of length $10$ using all
+three generators \cite{Bonfioli1}. Conjecture~\ref{conj:master-C} is verified computationally at
+$n=3$ with legs $(1,2,3)$ through depth $10$ and at $n=4$ with legs $(1,2,3,5)$ through depth
+$8$ (\S\ref{sec:cert}).
+
+\subsection{A determinant identity, and what it does not give}
+
+The Lorentzian Gram matrix of the orthoscheme in staircase coordinates, with the standard
+$(n,1)$ endpoint correction, is the tridiagonal $(n+1)\times(n+1)$ matrix $Q_n$ with
+\begin{align*}
+Q_n[0,0]&=1-a_1^2, & Q_n[i,i]&=a_i^2+a_{i+1}^2\ (1\le i\le n-1), & Q_n[n,n]&=1,\\
+Q_n[0,1]&=a_2,     & Q_n[i,i+1]&=a_i\,a_{i+2}\ (1\le i\le n-2),   & Q_n[n-1,n]&=a_{n-1}.
+\end{align*}
+
+\begin{lemma}[Uniform Schur-complement determinant identity]\label{lem:uniform-detQ}
+For every $n\ge3$ and every positive tuple $(a_1,\dots,a_n)$,
+\[
+\det Q_n=-\prod_{i=1}^{n}a_i^2 .
+\]
+\end{lemma}
+
+\begin{proof}
+Let $D_k=\det Q_n[:k{+}1,:k{+}1]$ be the leading principal minor of order $k+1$. Tridiagonal
+expansion along the last row gives
+\begin{equation*}\tag{$\dagger$}
+D_k=Q_n[k,k]\,D_{k-1}-Q_n[k-1,k]^2\,D_{k-2}\qquad(1\le k\le n),
+\end{equation*}
+with $D_{-1}=1$. We claim
+\begin{equation*}\tag{$\star$}
+D_k=\Bigl(\prod_{i=1}^ka_i^2\Bigr)\Bigl(1-\sum_{i=1}^{k+1}a_i^2\Bigr)
+\qquad\text{for }1\le k\le n-1 .
+\end{equation*}
+
+\emph{Base.} $D_0=1-a_1^2$ and $D_1=(1-a_1^2)(a_1^2+a_2^2)-a_2^2=a_1^2(1-a_1^2-a_2^2)$.
+
+\emph{Interior step.} For $2\le k\le n-1$ the recurrence ($\dagger$) reads
+$D_k=(a_k^2+a_{k+1}^2)D_{k-1}-(a_{k-1}a_{k+1})^2D_{k-2}$. Introducing
+$S_{k-1}=\sum_{i=1}^{k-1}a_i^2$ and $P_{k-2}=\prod_{i=1}^{k-2}a_i^2$ and substituting ($\star$)
+reduces the step to the polynomial identity
+\begin{multline*}
+P_{k-2}\,a_{k-1}^2\,a_k^2\,(1-S_{k-1}-a_k^2-a_{k+1}^2)
+=(a_k^2+a_{k+1}^2)\,P_{k-2}\,a_{k-1}^2\,(1-S_{k-1}-a_k^2)\\
+-(a_{k-1}a_{k+1})^2\,P_{k-2}\,(1-S_{k-1})
+\end{multline*}
+in the five independent symbols $(a_{k-1},a_k,a_{k+1},S_{k-1},P_{k-2})$. It is independent of
+$k$ and of $n$.
+
+\emph{Final step.} At $k=n$ the recurrence uses $Q_n[n,n]=1$ and $Q_n[n-1,n]^2=a_{n-1}^2$,
+giving $D_n=D_{n-1}-a_{n-1}^2D_{n-2}$. With $S_{n-1}=\sum_{i=1}^{n-1}a_i^2$ and
+$P_{n-2}=\prod_{i=1}^{n-2}a_i^2$,
+\[
+D_{n-1}-a_{n-1}^2D_{n-2}
+=P_{n-2}\,a_{n-1}^2\bigl[(1-S_{n-1}-a_n^2)-(1-S_{n-1})\bigr]
+=-P_{n-2}\,a_{n-1}^2a_n^2=-\prod_{i=1}^na_i^2 .
+\]
+The three identities close the induction for every $n\ge3$, with no per-$n$ verification. All of
+them, the induction that assembles them, and the boundary step are machine-checked in Lean~4
+over an arbitrary commutative ring; no positivity, ordering or characteristic hypothesis is used
+(\S\ref{sec:cert}).
+\end{proof}
+
+\begin{remark}[Why nonvanishing of $\det Q_n$ does not give faithfulness]\label{rem:detQ-nonsequitur}
+An earlier version of this material argued from Lemma~\ref{lem:uniform-detQ} that
+$\det Q_n\ne0$, hence the form is nondegenerate, hence $\rho_a$ is faithful by Tits' theorem.
+That argument is a non sequitur, in three independent ways, and the deduction is withdrawn.
+
+First, it proves too much. The hypothesis of Lemma~\ref{lem:uniform-detQ} is that the legs are
+positive and nothing more, so the conclusion $\det Q_n\ne0$ holds at every positive tuple,
+including $(1,1,\dots,1)$. Were the inference valid, $\rho_a$ would be faithful there too. It is
+not: breadth-first search at $n=3$ with legs $(1,1,1)$ gives layer counts $1,4,9,17,28,42$
+against the envelope $1,4,9,18,36,72$, a deficit already at depth $3$, in agreement with
+Theorem~\ref{thm:cd-general}, which assigns $\cd_3=3$ to that tuple. The same computation at
+$n=4$ with legs $(1,1,1,1)$ gives $1,5,14,31,59,101$ against $1,5,14,33,75,169$.
+
+Second, Tits' theorem concerns the canonical geometric representation of an abstract Coxeter
+system, on the space spanned by the simple roots with the form
+$B(\alpha_i,\alpha_j)=-\cos(\pi/m_{ij})$ \cite{Bourbaki}. It is not a statement about $\rho_a$,
+which is a different representation, on $\R^n$ rather than $\R^{n+1}$ and affine rather than
+linear. Nor is $Q_n$ a Coxeter Gram matrix: its diagonal is not identically $1$, and
+$Q_n[0,0]=1-a_1^2$ is negative whenever $a_1>1$.
+
+Third, run at $n=2$ the argument returns a false answer. There $\det Q_2\ne0$ just as well, so it
+would give $u_d(a)=[t^d]W_2(t)=F_{d+3}$ for all $d$; in fact the two agree only up to $d=9$ and
+differ at $d=10$, where the orbit count is $225$ against the envelope's $233$, a deficit of $8$
+accounted for by eight coincidences between distinct words of length $10$ \cite{Bonfioli1}.
+\end{remark}
+
+\section{The collision depth}\label{sec:cd}
+
+\begin{definition}\label{def:cd}
+For $a\in\Q_{>0}^n$ the \emph{collision depth} is
+\[
+\cd_n(a)=\inf\bigl\{d\ge0:u_d(a)<[t^d]\,W_n(t)\bigr\}\in\{1,2,\dots\}\cup\{\infty\}.
+\]
+\end{definition}
+
+By Corollary~\ref{cor:cd-is-K}, $\cd_n(a)=K(a)/2$, and by Lemma~\ref{lem:no-length-four},
+$K(a)\ge6$. Conjecture~\ref{conj:master-C} says exactly that $\cd_n=\infty$ for every Class C
+tuple. The next theorem describes $\cd_n$ for every leg multiplicity pattern. Although the
+multiplicity partition of $(a_1,\dots,a_n)$ has $p(n)$ possible shapes, the collision depth
+takes only three values, determined by the two local positional statistics $(e,t)$.
+
+\begin{theorem}[Collision depth, all $n\ge3$]\label{thm:cd-general}
+Let $n\ge3$ and $a\in\Q_{>0}^n$. Then $\cd_n(a)\ge3$, and
+\[
+\cd_n(a)=
+\begin{cases}
+\infty & \text{if }e=t=0\ \text{ and }\rho_a\text{ is injective},\\
+4      & \text{if }e\ge1,\ t=0\ \text{ and }K(a)\ne6,\\
+3      & \text{if }t\ge1 .
+\end{cases}
+\]
+The third case is unconditional. In the second case $\cd_n(a)\in\{3,4\}$ unconditionally, and
+$K(a)=6$ would require an element of $\ker\rho_a$ of length $6$ lying in no rank-two standard
+parabolic; no such element occurs in any tuple of Table~\ref{tab:atlas}. In the first case
+$e=t=0$ includes every Class C tuple, so that branch is $\infty$ exactly when
+Conjecture~\ref{conj:master-C} holds.
+\end{theorem}
+
+\begin{proof}
+$\cd_n(a)=K(a)/2$ with $K(a)$ even and at least $6$, by Corollary~\ref{cor:cd-is-K} and
+Lemma~\ref{lem:no-length-four}; this gives $\cd_n(a)\ge3$ in all cases.
+
+If $t\ge1$, Theorem~\ref{thm:rank2}(i) exhibits an element of $\ker\rho_a$ of length $6$, so
+$K(a)\le6$, hence $K(a)=6$ and $\cd_n(a)=3$.
+
+If $e\ge1$ and $t=0$, Theorem~\ref{thm:rank2}(ii) exhibits an element of length $8$, so
+$6\le K(a)\le8$ and $K(a)$ is even, giving $\cd_n(a)\in\{3,4\}$. By Theorem~\ref{thm:rank2}(ii)
+no element of a rank-two standard parabolic lies in $\ker\rho_a$ with length below $8$, so
+$K(a)=6$ is possible only through an element of length $6$ lying in no rank-two standard
+parabolic. Absent such an element, $K(a)=8$ and $\cd_n(a)=4$.
+
+If $e=t=0$ then $\cd_n(a)=\infty$ if and only if $\ker\rho_a=\{1\}$, by
+Corollary~\ref{cor:alternative}.
+\end{proof}
+
+\begin{remark}[What the second case leaves open]\label{rem:second-case}
+The gap in the second case is genuine and is a special case of the general problem: the rank-two
+analysis of \S\ref{sec:rank2} controls elements of $\ker\rho_a$ that lie in a dihedral standard
+parabolic, and nothing in this paper controls the others. The gap is narrow: only the single
+value $K(a)=6$ is at stake, and only for tuples with an endpoint equal pair and no triple.
+\end{remark}
+
+\begin{remark}[The run-length rule fails in $n\ge4$]\label{rem:R-rule}
+A natural but incorrect heuristic is to declare $\cd_n$ finite as soon as some consecutive equal
+pair appears, that is as soon as the run length $R=\max_i\#\{j:a_j=a_i\}$ is at least $2$. At
+$n=3$ this rule coincides with the $(e,t)$ rule, because every consecutive equal pair in a
+three-term sequence is automatically at an endpoint. At $n\ge4$ the two diverge: the orthoscheme
+$(1,2,2,3)$ has an interior equal pair, so $R=2$ but $(e,t)=(0,0)$, and
+Theorem~\ref{thm:cd-general} places it in the first case; empirically its layer counts
+$1,5,14,33,75,169,\dots$ are identical to those of the Class C tuple $(1,2,3,5)$ through every
+computed depth, falsifying the run-length rule.
+\end{remark}
+
+\begin{table}[ht!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c l c c l}
+\toprule
+$n$ & leg sequence & $(e,t)$ & $\cd_n$ & first six layer counts \\
+\midrule
+3 & $(2,3,5)$          & $(0,0)$ & $\infty$ & $1,4,9,18,36,72$ \\
+3 & $(1,1,2)$          & $(1,0)$ & $4$      & $1,4,9,18,35,67$ \\
+3 & $(1,1,1)$          & $(2,1)$ & $3$      & $1,4,9,17,28,42$ \\
+\midrule
+4 & $(1,2,3,5)$        & $(0,0)$ & $\infty$ & $1,5,14,33,75,169$ \\
+4 & $(1,2,2,3)$        & $(0,0)$ & $\infty$ & $1,5,14,33,75,169$ \\
+4 & $(1,1,2,3)$        & $(1,0)$ & $4$      & $1,5,14,33,74,163$ \\
+4 & $(1,1,2,2)$        & $(2,0)$ & $4$      & $1,5,14,33,73,157$ \\
+4 & $(1,1,1,2)$        & $(1,1)$ & $3$      & $1,5,14,32,67,135$ \\
+\midrule
+5 & $(1,2,3,5,7)$      & $(0,0)$ & $\infty$ & $1,6,20,54,136,334$ \\
+5 & $(1,2,2,3,5)$      & $(0,0)$ & $\infty$ & $1,6,20,54,136,334$ \\
+5 & $(1,1,2,3,5)$      & $(1,0)$ & $4$      & $1,6,20,54,135,327$ \\
+5 & $(2,1,1,1,2)$      & $(0,1)$ & $3$      & $1,6,20,53,128,297$ \\
+\midrule
+6 & $(1,1,2,3,2,2)$    & $(2,0)$ & $4$      & $1,7,27,82,224,581$ \\
+\bottomrule
+\end{tabular}
+\caption{A small atlas of representative orthoschemes in $n=3,4,5,6$ illustrating each
+attainable $(e,t)$ class. The layer counts are exact-rational breadth-first search
+(\S\ref{sec:cert}); in every row the observed collision depth is the value predicted by
+Theorem~\ref{thm:cd-general}, and the entries $\infty$ are observed agreement with the envelope
+as far as computed, not a proof. The two $n=4$ rows with $(e,t)=(0,0)$ have identical counts
+through every computed depth despite differing in run structure.}
+\label{tab:atlas}
+\end{table}
+
+The rows with $\cd_n=\infty$ saturate the upper bound $[t^d]\,W_n(t)$ as far as they are
+computed, as Conjecture~\ref{conj:master-C} predicts; for $n=3$ this reproduces
+$u_d=9\cdot2^{d-2}$ for $d\ge2$.
+
+\section{The plane, and why its argument does not extend}\label{sec:plane}
+
+\begin{proposition}[The plane]\label{prop:plane}
+For $n=2$ and every $a\in U$, $\rho_a$ is not injective, so alternative (ii) of
+Corollary~\ref{cor:alternative} holds.
+\end{proposition}
+
+\begin{proof}
+$W(a)\le\Isom(\R^2)=\R^2\rtimes O(2)$. The group $O(2)$ contains the abelian $SO(2)$ with index
+$2$, so $\Isom(\R^2)$ is virtually solvable as an abstract group, hence amenable, and so is
+every subgroup of it; in particular $W(a)$ is amenable. The right-angled Coxeter group $W_2$ is
+not amenable: its defining graph $\Gamma_2$ is not complete multipartite, since its complement
+$P_3$ is connected and is not a disjoint union of cliques, and a right-angled Coxeter group
+whose defining graph is not complete multipartite contains a free subgroup of rank $2$
+\cite{Davis}. An amenable group is not isomorphic to a non-amenable one, so $\rho_a$ is not
+injective.
+\end{proof}
+
+\begin{corollary}[The planar horizon]\label{cor:plane}
+For $n=2$ and every shape admissible in the sense of \cite{Bonfioli1}, the collision depth is
+$\cd_2=10$, equivalently $K(a)=20$: $u_d(a)=F_{d+3}=[t^d]W_2(t)$ for $1\le d\le9$ (while $u_0=1$
+and $F_3=2$), and at $d=10$ the count is $225$ against the envelope's $233$. Past that horizon
+the sequence is \textup{A396406}, with growth rate $\beta_2=1.4916\ldots<\varphi=r_2$, and its
+generating function is transcendental over $\Q(x)$ \cite{Bonfioli1}. This is the only dimension
+in which the deviation has been computed past its onset.
+\end{corollary}
+
+The isoceles right triangle $a_1=a_2$ is excluded from that statement, and must be: there
+$e(a)=1$, so Theorem~\ref{thm:rank2}(ii) gives an element of $\ker\rho_a$ of length $8$ and
+hence $\cd_2\le4$.
+
+\begin{remark}[The amenability trap: why the planar argument stops at $n=2$]
+\label{rem:amenability-fails}
+The proof of Proposition~\ref{prop:plane} does not extend to $n\ge3$, and the natural extension
+is false. One is tempted to argue that $\Isom(\R^n)=\R^n\rtimes O(n)$ is amenable because $O(n)$
+is compact. Compactness gives amenability of $O(n)$ as a \emph{topological} group, with respect
+to Haar measure, and that property does not pass to abstract subgroups. As an abstract discrete
+group $O(n)$ is non-amenable for every $n\ge3$: already $SO(3)$ contains a free subgroup of rank
+$2$ (Hausdorff; see \cite[Thm.~2.1]{Wagon}), which is the standard ingredient of the
+Banach--Tarski paradox. Hence $\Isom(\R^n)$ is non-amenable as an abstract group for $n\ge3$ and
+yields no obstruction at all. At $n=2$ the argument survives only because $O(2)$ is virtually
+abelian.
+\end{remark}
+
+\section{What is proved, and the open problems}\label{sec:open}
+
+Table~\ref{tab:status} lists the status of every numbered statement. Four things are proved
+unconditionally and dimension-freely: the dichotomy (Theorem~\ref{thm:dichotomy}); generic
+rigidity (Theorem~\ref{thm:rigidity}), which makes ``the generic $n$-orthoscheme growth'' a
+well-defined object realised by a co-null set of shapes; rationality of the envelope with rate
+$r_n$ (Theorem~\ref{thm:envelope}); and the rank-two classification
+(Theorem~\ref{thm:rank2}), with its consequences that $\cd_n\ge3$ for every leg tuple and that
+$\cd_n=3$ at every tuple with three consecutive equal legs. Whether $\cd_n=3$ can also occur
+without such a triple is not decided here; it would require a kernel element of length $6$ in no
+rank-two parabolic (Remark~\ref{rem:second-case}).
+
+Which alternative of Corollary~\ref{cor:alternative} holds is settled only in the plane, by
+Proposition~\ref{prop:plane}, where it is (ii) with horizon $10$. For $3\le n\le7$ the geometric
+growth has been computed to depth $13$ to $16$ and agrees with the envelope throughout that
+range. That agreement is consistent with both alternatives: under (i) it would continue forever,
+and under (ii) it would end at a horizon beyond the computed range. Nothing here decides between
+them.
+
+\begin{problem}[The alternative in dimension $n\ge3$]\label{prob:alternative}
+Fix $n\ge3$.
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em]
+\item \emph{Generic form.} Is $N_{\mathrm{gen}}=\bigcap_{a\in U}\ker\rho_a$ trivial?
+Equivalently, by Theorem~\ref{thm:rigidity}, is $\rho_a$ injective for every $a$ in the co-null
+set $U_{\mathrm{gen}}$; equivalently, by Corollary~\ref{cor:alternative}, is the growth series
+of the generic $n$-orthoscheme group the rational envelope $W_n(t)$ in every degree?
+\item \emph{Arithmetic form.} Is $\rho_a$ injective for every Class C tuple
+$a\in\Q_{>0}^n$? This is Conjecture~\ref{conj:master-C}.
+\end{enumerate}
+\end{problem}
+
+The two forms are related in one direction only. By Corollary~\ref{cor:one-shape}, a single
+faithful tuple, rational or not, answers (a) affirmatively; so (b) implies (a). The converse
+fails to be automatic because $U_{\mathrm{gen}}$ contains no tuple with algebraically dependent
+coordinates, hence no rational tuple: an affirmative answer to (a) says nothing directly about
+any given rational $a$. If the answer to (a) is affirmative for all $n\ge3$, the plane is the
+unique dimension with non-rational orbit growth. If instead $\ker\rho_a$ is nontrivial in some
+dimension $n\ge3$, the growth deviates below the envelope at $\cd_n(a)=K(a)/2$, and the
+arithmetic of the deviated series past that horizon is open even in the cases where the horizon
+can be located.
+
+Three obstructions are worth stating precisely, because they close off the routes that look
+available.
+
+\begin{enumerate}[label=(O\arabic*),leftmargin=2.6em,itemsep=0.4em]
+\item \emph{The rank-two half is all that the Diophantine method gives.} Faithfulness would
+follow from Theorem~\ref{thm:rank2}(iii) if every nontrivial kernel element lay in a rank-two
+parabolic. That implication is false in general: at $n=2$ with $a_1\ne a_2$ no rank-two parabolic
+meets $\ker\rho_a$, yet $\ker\rho_a$ is nontrivial, its shortest elements having length $20$ and
+using all three generators \cite{Bonfioli1}. So no soft upgrade of Theorem~\ref{thm:rank2} to
+Conjecture~\ref{conj:master-C} is available, and the same obstruction is what leaves the value
+$K(a)=6$ unexcluded in the second case of Theorem~\ref{thm:cd-general}
+(Remark~\ref{rem:second-case}).
+
+\item \emph{The amenability trap.} The one soft argument that settles $n=2$ is unavailable for
+$n\ge3$, and not merely unproved: $O(n)$ contains a free subgroup of rank $2$ as an abstract
+group for every $n\ge3$, so $\Isom(\R^n)$ is not amenable as an abstract group and imposes no
+constraint whatsoever on its subgroups' isomorphism type
+(Remark~\ref{rem:amenability-fails}).
+
+\item \emph{Finite presentation.} At $n=2$, Isola and Piergallini~\cite{isola-piergallini} show
+that the generic triangle reflection group is not finitely presented, which gives non-injectivity
+independently of (O2). We do not know whether the generic $n$-orthoscheme reflection group is
+finitely presented for $n\ge3$; an answer either way would decide
+Problem~\ref{prob:alternative}(a), since $W_n$ is finitely presented.
+\end{enumerate}
+
+Three further questions are open and are stated for the record.
+
+\begin{enumerate}[label=(Q\arabic*),leftmargin=2.6em,itemsep=0.35em]
+\item \emph{Other diagrams.} Does an analogue of Theorem~\ref{thm:cd-general} hold for other
+families of simplicial reflection chambers in $\R^n$, for instance Coxeter orthoschemes with
+bent paths or simplices from non-path-shaped diagrams? The analysis here uses the
+right-angled-with-one-nontrivial-bond structure of the path diagram throughout.
+
+\item \emph{Intermediate rates.} In every dimension $n\ge3$, multiplicity patterns that are
+neither Class C nor saturated by triples produce growth rates strictly between two consecutive
+values of $r_n$. Whether these intermediate rates are algebraic over $\Q$ at all is open.
+
+\item \emph{Beyond $(e,t)$.} Theorem~\ref{thm:cd-general} shows that the collision depth is
+determined by the positional statistics $(e,t)$. Is there a finer positional invariant that
+determines the entire sequence $u_d(a)$, not only its first deviation?
+\end{enumerate}
+
+\begin{table}[ht!]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{l l l}
+\toprule
+Statement & Status & Note \\
+\midrule
+Lemma~\ref{lem:normals} (facet normals)          & proved (Lean) & \texttt{OrthoschemeNormals} \\
+Theorem~\ref{thm:rigidity} (generic rigidity)    & proved                  & \\
+Corollary~\ref{cor:one-shape}                    & proved                  & \\
+Theorem~\ref{thm:dichotomy} (dichotomy)          & proved (Lean) & \texttt{EnvelopeDichotomy} \\
+Corollaries~\ref{cor:alternative}, \ref{cor:cd-is-K} & proved              & \\
+Lemma~\ref{lem:no-length-four} ($K\ge6$)         & proved                  & \\
+Theorem~\ref{thm:envelope} (envelope)            & proved (Lean, partly) & \texttt{EnvelopeDichotomy}, \texttt{NdimRate} \\
+Corollary~\ref{cor:asymptotic}                   & proved (Lean) & \texttt{NdimRate} \\
+Lemma~\ref{lem:boundary} (boundary pairs)        & proved (Lean) & \texttt{RankTwoExclusion} \\
+Lemma~\ref{lem:cremona-empty} (three quartics)   & proved                  & rank-$0$ descents, not formalised \\
+Lemma~\ref{lem:diagonal} (equal flanking legs)   & proved                  & \\
+Theorem~\ref{thm:rank2} (rank-two classification)& proved                  & interior half uses Lemma~\ref{lem:cremona-empty} \\
+Lemma~\ref{lem:uniform-detQ} ($\det Q_n$)        & proved (Lean) & \texttt{OrthoschemeDet} \\
+Theorem~\ref{thm:cd-general}, case $t\ge1$       & proved                  & \\
+Theorem~\ref{thm:cd-general}, case $e\ge1,t=0$   & $\cd_n\in\{3,4\}$ proved & value $4$ conditional, Rem.~\ref{rem:second-case} \\
+Theorem~\ref{thm:cd-general}, case $e=t=0$       & conditional             & equivalent to Conj.~\ref{conj:master-C} \\
+Conjecture~\ref{conj:master-C} (Class C)         & conjecture              & checked to depth $10$ ($n=3$), $8$ ($n=4$) \\
+Proposition~\ref{prop:plane} (the plane)         & proved                  & \\
+Problem~\ref{prob:alternative}                   & open in both directions & \\
+\bottomrule
+\end{tabular}
+\caption{Status of the numbered statements. ``Lean'' means that the indicated Lean~4 file, which
+builds against Mathlib with no \texttt{sorry}, covers the statement; ``partly'' means that it
+covers some steps of the proof and not others. The scope of each file is described in
+\S\ref{sec:cert}.}
+\label{tab:status}
+\end{table}
+
+\section{Related work}\label{sec:related}
+
+\paragraph{Path Coxeter groups and growth-rate calculus.}
+The closed form $r_n=1+2\cos(2\pi/(n+3))$ is the signature of a linear, path-shaped Coxeter
+group whose Poincar\'e-series denominator reduces to a tridiagonal Chebyshev-type
+characteristic polynomial. Cannon and Wagreich~\cite{cannon-wagreich}, Floyd and
+Plotnick~\cite{floyd-plotnick} and Parry~\cite{parry-1989} developed the growth-rate calculus of
+such groups, and Kellerhals and Perren~\cite{kellerhals-perren} treat right-angled Coxeter growth
+systematically. Theorem~\ref{thm:envelope} fits into that framework with parameter $m=n+3$.
+
+\paragraph{A Salem-type family on the surface-dynamics side.}
+The family $\{1+2\cos(2\pi/m)\}_{m\ge3}$ to which $r_n$ belongs also arises in birational
+surface dynamics. Diller and Favre~\cite{diller-favre} introduced the dynamical-degree framework
+for bimeromorphic maps of surfaces; McMullen~\cite{mcmullen-2007} showed that this family arises
+as dynamical degrees of automorphisms of blowups of $\mathbb{P}^2$ associated with the $E_n$
+T-shaped Coxeter graph, which is not the path graph occurring here; and
+Bedford and Kim~\cite{bedford-kim} realised specific members through linear-fractional
+recurrences. The rate $r_n$ lies in this family, but the right-corner orthoscheme reflection
+group is not known to be realised as a McMullen involution product on a rational surface, and
+the coincidence is at the level of the algebraic-number family only. A birational-geometry
+construction realising $r_n$ as a dynamical degree on a $\mathbb{P}^2$-blowup would be of
+independent interest.
+
+\section{Certification}\label{sec:cert}
+
+\paragraph{Orbit counts.}
+The layer counts quoted above, the envelope coefficients and the Diophantine searches are
+produced by \texttt{code/zeta\_probe/tools/ortho\_cd} (Rust, exact arithmetic in $\mathbb{F}_p$
+at two primes). It builds the $n+1$ facet reflections directly from the legs, enumerates the
+group by breadth-first search, and compares layer by layer against $(1+t)^{n+1}/J_{n+1}(t)$. In
+particular it produces the counts of Remark~\ref{rem:detQ-nonsequitur} at $(1,1,1)$ and
+$(1,1,1,1)$ and at $n=2$, confirms the $(e,t)$ prediction on every tuple of
+Table~\ref{tab:atlas} including the non-adjacent repetition $(1,2,1,3)$, and searches the three
+quartics of Lemma~\ref{lem:cremona-empty} for nontrivial solutions with legs up to $300$,
+finding none, while exhibiting rational points of the corresponding conics in $(X,Z)$ to show
+that the restriction to squares is not cosmetic.
+
+\paragraph{The envelope.}
+Theorem~\ref{thm:envelope} is certified by \texttt{code/zeta\_probe/tools/racg\_envelope}
+(Rust, exact integer polynomial arithmetic), which for $2\le n\le30$ checks that the recurrence
+for $J_m$ and the Steinberg expansion agree coefficient by coefficient, performs the division by
+$(1+t)^{\lfloor(n+1)/2\rfloor}$ exactly, and matches the smallest positive root of $K_{n+1}$
+against $1/\bigl(1+2\cos\frac{2\pi}{n+3}\bigr)$. Independently, for $2\le n\le6$ it enumerates
+$W_n$ by breadth-first search in the canonical geometric representation, whose matrices are
+integral here because the bilinear form takes only the values $1,0,-1$ and which is faithful by
+Tits' theorem \cite{Bourbaki}; the sphere sizes agree with the series coefficients to depths $9$
+to $14$. The same program records two checks on the shape of the answer: the variant substitution
+$-1/(1+t)$ in place of $-t/(1+t)$ gives a different rational function already at $n=2$, and the
+polynomial $1-2t-3t^2+4t^3-t^4$ is not the $n=7$ denominator, being the negated reciprocal of
+$1-4t+3t^2+2t^3-t^4$ and predicting $6$ elements at depth $1$ in a group with $8$ generators.
+
+\paragraph{Lean 4.}
+Five files in \texttt{lean/with\_mathlib/} build against Mathlib with no \texttt{sorry}.
+
+\begin{center}\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{ll}
+\toprule
+Paper result & Lean declaration \\
+\midrule
+\multicolumn{2}{l}{\emph{\texttt{OrthoschemeNormals.lean}} (7 theorems)}\\
+Lemma~\ref{lem:normals}, support pattern & \texttt{supp\_disjoint}\\
+Lemma~\ref{lem:normals}, orthogonality on disjoint supports
+  & \texttt{mul\_eq\_zero\_of\_disjoint}, \texttt{sum\_eq\_zero\_of\_disjoint}\\
+Lemma~\ref{lem:normals}, the three adjacent products
+  & \texttt{dot\_zero\_one}, \texttt{dot\_interior}, \texttt{dot\_last}\\
+Lemma~\ref{lem:normals}, combined & \texttt{orthogonality\_pattern}\\
+\addlinespace
+\multicolumn{2}{l}{\emph{\texttt{EnvelopeDichotomy.lean}} (12 theorems)}\\
+Thm.~\ref{thm:dichotomy}, horizon arithmetic
+  & \texttt{two\_mul\_lt\_of\_lt\_horizon}, \texttt{split\_lengths}\\
+Thm.~\ref{thm:dichotomy}, even case & \texttt{card\_image\_lt\_of\_collision}\\
+Thm.~\ref{thm:dichotomy}, odd case & \texttt{card\_lt\_of\_escapes}\\
+Thm.~\ref{thm:envelope}, three-term recurrence
+  & \texttt{cos\_three\_term}, \texttt{sin\_three\_term}, \texttt{J\_recurrence}\\
+Thm.~\ref{thm:envelope}, root condition
+  & \texttt{cot\_add\_cot\_eq\_zero\_iff}, \texttt{J\_eq\_zero\_iff}\\
+Thm.~\ref{thm:envelope}, recovering $t$ from $\theta$
+  & \texttt{t\_of\_theta}, \texttt{rate\_of\_theta}\\
+Remark~\ref{rem:notpath} & \texttt{rate\_ne\_path\_spectral\_radius}\\
+\addlinespace
+\multicolumn{2}{l}{\emph{\texttt{NdimRate.lean}} (7 theorems)}\\
+Remark~\ref{rem:pell}, Pascal step & \texttt{pascal\_step} (no axioms), \texttt{coeff\_pascal}\\
+Remark~\ref{rem:pell}, Binet formula & \texttt{sq\_eq}, \texttt{pell\_binet}\\
+Remark~\ref{rem:pell}, root translation & \texttt{root\_translation}\\
+Corollary~\ref{cor:asymptotic} & \texttt{rate\_residual}, \texttt{three\_sub\_r}\\
+\addlinespace
+\multicolumn{2}{l}{\emph{\texttt{RankTwoExclusion.lean}} (10 theorems)}\\
+Lemma~\ref{lem:boundary}, the five Niven values
+  & \texttt{niven\_zero}, \texttt{niven\_one}, \texttt{niven\_quarter},\\
+  & \texttt{niven\_three\_quarter}, \texttt{niven\_half},
+    \texttt{boundary\_no\_relation}\\
+Lemma~\ref{lem:boundary}, $3$ is not a rational square
+  & \texttt{sq\_ne\_three}, \texttt{not\_isSquare\_three\_int}\\
+Boundary cosine nonzero, and $\cos^2\ne\tfrac14$ there
+  & \texttt{no\_length\_two}, \texttt{no\_length\_three\_boundary}\\
+\addlinespace
+\multicolumn{2}{l}{\emph{\texttt{OrthoschemeDet.lean}} (3 theorems)}\\
+Lemma~\ref{lem:uniform-detQ}, closed form ($\star$) & \texttt{minor\_closed\_form}\\
+Lemma~\ref{lem:uniform-detQ}, boundary step & \texttt{det\_Q}\\
+Lemma~\ref{lem:uniform-detQ}, full statement & \texttt{det\_Q\_of\_recurrence}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\texttt{NdimRate.lean} and \texttt{OrthoschemeDet.lean} end with \verb|#print axioms|. Of the
+ten declarations they contribute to the table, six report exactly the standard axioms
+\verb|propext|, \verb|Classical.choice|, \verb|Quot.sound|, and four report strictly fewer, with
+\texttt{pascal\_step} depending on no axioms at all.
+
+\medskip
+\noindent\textbf{What is not formalised.} \texttt{RankTwoExclusion.lean} covers the boundary
+half of Theorem~\ref{thm:rank2} only; the interior cases rest on the rank-$0$ Mordell descents
+of Lemma~\ref{lem:cremona-empty} and are not formalised. \texttt{EnvelopeDichotomy.lean}
+formalises the arithmetic of Theorem~\ref{thm:dichotomy} and the trigonometry of the root
+identity, but no word metric, no Coxeter group and no clique polynomial: the group theory around
+those steps is on paper. The step identifying the growth rate with the largest root $t_1$ is a
+dominant-pole argument on a rational generating function, proved on paper; so is the induction
+assembling the Pascal step into $c_{\Gamma_n}=P_{n+3}$ in Remark~\ref{rem:pell}. Everything
+downstream of those two inputs is machine-checked. Lemma~\ref{lem:no-length-four},
+Lemma~\ref{lem:diagonal} and Theorem~\ref{thm:rigidity} are paper proofs.
+
+\section*{Acknowledgments}
+
+Computational assistance from large language model assistants was used at multiple stages of
+this work; all mathematical claims have been verified by the author, who is solely responsible
+for the content of this paper and for any errors.
+
+\begin{thebibliography}{99}
+
+\bibitem{bedford-kim}
+E.~Bedford, K.~Kim, \emph{Dynamics of rational surface automorphisms: linear fractional
+recurrences}, J.\ Geom.\ Anal.\ \textbf{19} (2009), no.~3, 553--583.
+
+\bibitem{Bonfioli1}
+V.~Bonfioli, \emph{The universal right-triangle reflection sequence}, companion paper; code and
+formalization at \texttt{github.com/ElVec1o/pythagorean-reflection-sequence}.
+
+\bibitem{Bourbaki}
+N.~Bourbaki, \emph{Groupes et alg\`ebres de Lie, Chapitres IV--VI}, Hermann, Paris, 1968.
+(Geometric representation of a Coxeter group and its faithfulness; Steinberg's identity.)
+
+\bibitem{cannon-wagreich}
+J.~W. Cannon, P.~Wagreich, \emph{Growth functions of surface groups}, Math.\ Ann.\ \textbf{293}
+(1992), no.~2, 239--257.
+
+\bibitem{cassels-1991}
+J.~W.~S. Cassels, \emph{Lectures on Elliptic Curves}, London Mathematical Society Student Texts
+24, Cambridge University Press, 1991.
+
+\bibitem{conway-jones}
+J.~H. Conway, A.~J. Jones, \emph{Trigonometric Diophantine equations (On vanishing sums of roots
+of unity)}, Acta Arith.\ \textbf{30} (1976), 229--240.
+
+\bibitem{Coxeter1934}
+H.~S.~M. Coxeter, \emph{Discrete groups generated by reflections}, Ann.\ of Math.\ (2)
+\textbf{35} (1934), 588--621.
+
+\bibitem{cremona-1997}
+J.~E. Cremona, \emph{Algorithms for Modular Elliptic Curves}, 2nd edition, Cambridge University
+Press, 1997.
+
+\bibitem{Davis}
+M.~W. Davis, \emph{The Geometry and Topology of Coxeter Groups}, London Math.\ Soc.\ Monographs
+\textbf{32}, Princeton University Press, 2008. (Right-angled Coxeter groups; finite parabolics
+as cliques; the complete multipartite criterion.)
+
+\bibitem{diller-favre}
+J.~Diller, C.~Favre, \emph{Dynamics of bimeromorphic maps of surfaces}, Amer.\ J.\ Math.\
+\textbf{123} (2001), no.~6, 1135--1169.
+
+\bibitem{floyd-plotnick}
+W.~J. Floyd, S.~P. Plotnick, \emph{Growth functions on Fuchsian groups and the Euler
+characteristic}, Invent.\ Math.\ \textbf{88} (1987), no.~1, 1--29.
+
+\bibitem{humphreys90}
+J.~E. Humphreys, \emph{Reflection Groups and Coxeter Groups}, Cambridge Studies in Advanced
+Mathematics 29, Cambridge University Press, 1990.
+
+\bibitem{isola-piergallini}
+S.~Isola, R.~Piergallini, \emph{On the generic triangle group}, preprint, arXiv:1405.1881.
+
+\bibitem{kellerhals-perren}
+R.~Kellerhals, G.~Perren, \emph{On the growth of cocompact hyperbolic Coxeter groups},
+European J.\ Combin.\ \textbf{32} (2011), 1299--1316.
+
+\bibitem{lmfdb-24a1}
+LMFDB Collaboration, elliptic curve \texttt{24a1} over $\Q$,
+\url{https://www.lmfdb.org/EllipticCurve/Q/24/a/1}.
+
+\bibitem{lmfdb-72a2}
+LMFDB Collaboration, elliptic curve \texttt{72a2} over $\Q$,
+\url{https://www.lmfdb.org/EllipticCurve/Q/72/a/2}.
+
+\bibitem{mcmullen-2007}
+C.~T. McMullen, \emph{Dynamics on blowups of the projective plane}, Publ.\ Math.\ Inst.\ Hautes
+\'Etudes Sci.\ \textbf{105} (2007), 49--89.
+
+\bibitem{mordell-1969}
+L.~J. Mordell, \emph{Diophantine Equations}, Pure and Applied Mathematics 30, Academic Press,
+1969.
+
+\bibitem{parry-1989}
+W.~Parry, \emph{Growth series of some hyperbolic Coxeter groups}, Geom.\ Dedicata \textbf{32}
+(1989), 75--96.
+
+\bibitem{Steinberg}
+R.~Steinberg, \emph{Endomorphisms of Linear Algebraic Groups}, Mem.\ Amer.\ Math.\ Soc.\
+\textbf{80} (1968). (The Poincar\'e-series identity for Coxeter groups.)
+
+\bibitem{Wagon}
+S.~Wagon, \emph{The Banach--Tarski Paradox}, Cambridge University Press, 1985. (Free subgroups
+of $SO(3)$.)
+
+\end{thebibliography}
+
+\end{document}
