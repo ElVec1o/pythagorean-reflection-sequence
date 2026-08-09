@@ -95,3 +95,6 @@ name = "QCosineExponents"
 
 [[lean_lib]]
 name = "HexDistance"
+
+[[lean_lib]]
+name = "StratumGeneric"

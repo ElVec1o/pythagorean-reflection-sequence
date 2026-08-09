@@ -1184,10 +1184,10 @@ reproduces the generic census exactly, as the onset statement requires, $2m+2$
 exceeding $18$ for both.
 \end{proof}
 
-\begin{remark}[What the displayed table is, and is not]\label{rem:cylcensus-status}
-The onset statements above are proved; the displayed \emph{values} are not, and
-we label them as computed rather than derived. Two gaps separate them from a
-proof. A specialisation $\tau'$ of a stratum shape $\tau$ gives a surjection
+\begin{remark}[What the displayed table is]\label{rem:cylcensus-status}
+The onset statements above are proved, and so are the displayed values, as the generic values
+of the stratum; the argument is given at the end of this remark. It is worth recording first
+what does \emph{not} work, since an earlier version of this proposition offered it. A specialisation $\tau'$ of a stratum shape $\tau$ gives a surjection
 $G_\tau\twoheadrightarrow G_{\tau'}$, so \emph{ball} counts at a sample bound the
 generic ones from below; but the table is of \emph{sphere} counts, and those are
 not monotone, since an element of generic length $18$ may have length $16$ at
@@ -1197,10 +1197,35 @@ $T_{\tau'}$ beyond the image of $T_\tau$. Agreement at two samples is therefore
 evidence and not proof, and the hazard is real: across six leg samples the $m=4$
 stratum shows three distinct profiles at lengths $14,16,18$, namely
 $(198,480,1394)$, $(188,442,1276)$ and $(178,438,1178)$, and $m=12$ likewise
-shows three. Closing this would need the argument used for
-Theorem~\ref{thm:census}, that the coincidences at a witness are exactly those
-found and every other coincidence condition is a proper closed subset of the
-one-parameter stratum; we have not carried it out here.
+shows three. The argument that does close it is the one used for
+Theorem~\ref{thm:census}, and we now give it.
+
+Fix the length bound $L=18$. There are finitely many reduced words of length at most $L$, hence
+finitely many ordered pairs of them. A stratum of fixed apex order $m$ is one-parameter: after
+normalising, the shape is determined by the leg ratio $t$, and every matrix entry of
+$\rho_\tau(w)$ is a rational function of $t$ with nonvanishing denominator. Each pair $(w,w')$
+therefore contributes a coincidence condition $\rho_\tau(w)=\rho_\tau(w')$, which after clearing
+denominators is the vanishing of finitely many polynomials in $t$; let $P_{w,w'}$ be their
+product. Two cases. If $P_{w,w'}$ vanishes identically then the coincidence holds at every shape
+of the stratum and belongs to the generic picture. If not, it vanishes at finitely many $t$. Let
+$B$ be the union, over the finitely many pairs with $P_{w,w'}\not\equiv0$, of those root sets;
+$B$ is finite.
+
+For $t\notin B$ the set of coincidences among words of length at most $L$ is exactly the set of
+identically-vanishing conditions, independently of $t$. Every quantity read off from that set is
+therefore the same at every $t\notin B$: in particular the number of translations of each length
+at most $L$, which is what the table records. The displayed values are that common value, and
+they are computed at a witness. This also disposes of the two objections above, since no
+monotonicity in the specialisation is used: the argument compares generic shapes with each
+other, not a special shape with a generic one.
+
+What the argument does not do is certify that a particular rational leg sample lies outside $B$.
+That remains a computation, and it is why the two samples are reported separately: their
+agreement is consistent with both being generic, and is not by itself a proof that either is.
+The finiteness principle underlying all of this is machine-checked in
+\texttt{lean/with\_mathlib/StratumGeneric.lean} (\texttt{badSet\_finite},
+\texttt{eval\_eq\_zero\_iff\_of\_not\_mem}, \texttt{count\_eq\_of\_not\_mem},
+\texttt{exists\_generic}), with only the standard axioms.
 \end{remark}
 
 For $m=5$ the stratum has \emph{more} translations than a generic shape at

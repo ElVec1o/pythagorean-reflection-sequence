@@ -21,6 +21,7 @@ import Mathlib.Algebra.Order.Group.Int
 import Mathlib.Data.List.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
+import HexDistance
 
 namespace AntipairRows
 
@@ -213,5 +214,31 @@ theorem row3_step_is_one :
 theorem row3_counterexample :
     max (4 : ℤ) 4 = 4 ∧ ¬ (4 + 2 - 1 ≤ max (4 : ℤ) 4) := by
   refine ⟨by decide, by decide⟩
+
+/-! ### 6. Linking to the verified closed form
+
+    `HexDistance.kClosed` is the closed form of `lem:krows`, verified there.  The two branch
+    functions used above are exactly it, so the bound below is a statement about the verified
+    lamp distance and not about a restatement of it. -/
+
+theorem kNonpos_eq {n j : ℤ} (hj : j ≤ 0) : kNonpos (-j) n = HexDistance.kClosed n j := by
+  unfold kNonpos HexDistance.kClosed
+  split_ifs <;> omega
+
+theorem kPos_eq {n j : ℤ} (hj : 1 ≤ j) : kPos j n = HexDistance.kClosed n j := by
+  unfold kPos HexDistance.kClosed
+  split_ifs <;> omega
+
+/-- **The antipair lower bound, on the verified closed form.**  For every site and every
+    separation `h >= 2`, the larger of the two lamp distances is at least `h-1`. -/
+theorem antipair_lower_bound_kClosed {n j h : ℤ} (hh : 2 ≤ h) :
+    h - 1 ≤ max (HexDistance.kClosed n j) (HexDistance.kClosed (n + h) j) := by
+  rcases le_or_lt j 0 with hj | hj
+  · rw [← kNonpos_eq hj, ← kNonpos_eq hj]
+    exact lower_bound_nonpos (by omega) hh
+  · rw [← kPos_eq (by omega), ← kPos_eq (by omega)]
+    exact lower_bound_pos (by omega) hh
+
+#print axioms antipair_lower_bound_kClosed
 
 end AntipairRows
