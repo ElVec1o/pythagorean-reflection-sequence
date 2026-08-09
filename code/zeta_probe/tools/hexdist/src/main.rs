@@ -204,6 +204,82 @@ fn main() {
     println!("  closed-form antipair min over h=2..60, |j|<=80, |n|<=160: {}",
              if worst.is_empty() { "= h-1 in EVERY case".to_string() } else { format!("deviations {:?}", worst) });
 
+    // ---- the VERTEX distance delta(n,j,t), which is what a local criterion needs ----
+    println!("\n[5] vertex distance delta(n,j,t); e = up(-1,0,0)");
+    let de = |n: i64, j: i64, t: u8| -> Option<i64> { dist.get(&(n,j,t)).copied() };
+    for t in 0..2u8 {
+        println!("  t={} (up=0, down=1), rows j from 4 down to -4, n from -7 to 6", t);
+        print!("        n:");
+        for n in -7..=6i64 { print!("{:4}", n); }
+        println!();
+        for j in (-4..=4i64).rev() {
+            print!("    j={:3}:", j);
+            for n in -7..=6i64 {
+                match de(n,j,t) { Some(v) => print!("{:4}", v), None => print!("   .") }
+            }
+            println!();
+        }
+    }
+    // difference delta(down) - delta(up) at the same (n,j)
+    println!("\n  delta(n,j,1) - delta(n,j,0):");
+    print!("        n:");
+    for n in -7..=6i64 { print!("{:4}", n); }
+    println!();
+    for j in (-4..=4i64).rev() {
+        print!("    j={:3}:", j);
+        for n in -7..=6i64 {
+            match (de(n,j,0), de(n,j,1)) { (Some(a),Some(b)) => print!("{:4}", b-a), _ => print!("   .") }
+        }
+        println!();
+    }
+
+    // ---- [6] the LOCAL CRITERION: a complete proof scheme for the closed form ----
+    // dhat(n,j,t) is the claimed vertex distance.  If (a) dhat(e)=0, (b) every other vertex has
+    // a neighbour with dhat one smaller, and (c) dhat changes by at most 1 across every edge,
+    // then dhat = d_X exactly.  All three are finitely many piecewise-linear cases.
+    println!("\n[6] local criterion for the claimed vertex distance");
+    let dhat0 = |n: i64, j: i64| -> i64 {
+        if j >= 0 {
+            if n <= -j - 2 { -2*n - 2 } else if n <= -1 { 2*j } else { 2*n + 2*j + 2 }
+        } else {
+            if n <= -1 { -2*n - 2*j - 2 } else if n <= -j - 1 { -2*j } else { 2*n + 2 }
+        }
+    };
+    let dhat = |n: i64, j: i64, t: u8| -> i64 {
+        let base = dhat0(n, j);
+        if t == 0 { base } else if j >= 1 { base - 1 } else { base + 1 }
+    };
+    // agreement with BFS
+    let mut bad = 0; let mut tot = 0;
+    for j in -45..=45i64 { for n in -45..=45i64 { for t in 0..2u8 {
+        if let Some(v) = de(n,j,t) { tot += 1; if v != dhat(n,j,t) { bad += 1; } }
+    }}}
+    println!("  (0) dhat agrees with BFS on {} vertices, mismatches: {}", tot, bad);
+    println!("  (a) dhat(e) = dhat(-1,0,0) = {}", dhat(-1,0,0));
+    // (c) 1-Lipschitz across every edge, and (b) a strict descent from every non-root vertex
+    let mut worst_c = 0i64; let mut fail_b = 0; let mut checked = 0;
+    for j in -45..=45i64 { for n in -45..=45i64 { for t in 0..2u8 {
+        let dv = dhat(n,j,t);
+        let mut has_desc = false;
+        for &(m,k2,u) in nbrs(n,j,t).iter() {
+            if m.abs() > 44 || k2.abs() > 44 { continue; }
+            checked += 1;
+            let dw = dhat(m,k2,u);
+            if (dv - dw).abs() > worst_c { worst_c = (dv - dw).abs(); }
+            if dw == dv - 1 { has_desc = true; }
+        }
+        if (n,j,t) != (-1,0,0) && !has_desc && n.abs() <= 40 && j.abs() <= 40 { fail_b += 1; }
+    }}}
+    println!("  (c) max |dhat(v) - dhat(w)| over {} edges = {}  (must be 1)", checked, worst_c);
+    println!("  (b) vertices with no descending neighbour (excluding e): {}", fail_b);
+    // and k = min over the six corners
+    let mut badk = 0;
+    for j in -45..=45i64 { for n in -45..=45i64 {
+        let m = corners(n,j).iter().map(|&(a,b2,c2)| dhat(a,b2,c2)).min().unwrap();
+        if Some(m) != kk(n,j) { badk += 1; }
+    }}
+    println!("  (d) min over the six corners reproduces k: mismatches = {}", badk);
+
     // ---- the antipair quantity ----
     println!("\n[4] cor:antipair  min_(n,j) max(k(n,j), k(n+h,j))  against h-1");
     for h in 2..=20i64 {

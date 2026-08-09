@@ -92,3 +92,6 @@ name = "UKernel"
 
 [[lean_lib]]
 name = "QCosineExponents"
+
+[[lean_lib]]
+name = "HexDistance"

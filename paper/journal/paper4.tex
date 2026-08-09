@@ -985,9 +985,57 @@ $2$ per step outside it; the row minimum is $0$ exactly for $j\in\{0,1\}$. The r
 $j=1$ recover $k(n,0)=2n$, $-2n-2$ and $k(n,1)=2n+1$, $k(-1,1)=0$, $-2n-3$.
 \end{lemma}
 
-\begin{remark}[status of Lemma~\ref{lem:krows}]\label{rem:krows-status}
-The closed form is verified by breadth-first search in $X$ at every site with $|n|,|j|\le60$,
-that is $14\,641$ sites, with no exception; we do not prove it. The certificate is
+\begin{proof}[Proof of Lemma~\ref{lem:krows}]
+We first give the distance on the \emph{vertices} of $X$ and then minimise over the six corners
+of a hexagon. Recall that a vertex of $X$ is a triangle of mutually hex-adjacent sites, of one
+of the two families
+\[
+  \mathrm{up}(n,j)=\{(n,j),(n{+}1,j),(n,j{+}1)\},\qquad
+  \mathrm{down}(n,j)=\{(n,j),(n{+}1,j),(n{+}1,j{-}1)\},
+\]
+that $\mathrm{up}(n,j)$ is adjacent exactly to $\mathrm{down}(n,j)$, $\mathrm{down}(n-1,j+1)$
+and $\mathrm{down}(n,j+1)$, and that the base vertex is $e=\mathrm{up}(-1,0)$, the triangle of
+the three base sites. Put
+\[
+  \widehat\delta_0(n,j)=\max\bigl(-2n-2+2j^-,\ 2|j|,\ 2n+2+2j^+\bigr),\qquad
+  j^{\pm}=\max(0,\pm j),
+\]
+and $\widehat\delta(\mathrm{up}(n,j))=\widehat\delta_0(n,j)$,
+$\widehat\delta(\mathrm{down}(n,j))=\widehat\delta_0(n,j)-1$ if $j\ge1$ and
+$\widehat\delta_0(n,j)+1$ if $j\le0$.
+
+We use the local criterion for a distance function: if $\widehat\delta(e)=0$, if
+$|\widehat\delta(v)-\widehat\delta(w)|\le1$ across every edge, and if every vertex other than
+$e$ has a neighbour at which $\widehat\delta$ is smaller by one, then
+$\widehat\delta=d_X(e,\cdot)$. The second condition gives $d_X\ge\widehat\delta$ along any
+geodesic and the third gives $d_X\le\widehat\delta$ by induction on $\widehat\delta$.
+
+The first condition is immediate. The other two are \emph{finitely many} linear inequalities,
+and this is the point of writing $\widehat\delta_0$ as a maximum of three affine functions: it
+is piecewise affine with regions cut out by the lines $j=0$, $n=-1$ and $n=-j-1$, the branch on
+the family adds only the sign of $j$, and each neighbour shifts $(n,j)$ by at most one in each
+coordinate. Hence whether a given local inequality holds depends only on which pair of regions
+the two endpoints lie in, of which there are finitely many, and every such pair is already
+realised among the sites with $|n|,|j|\le44$. Checking the conditions there therefore checks
+every case. That check is carried out in
+\texttt{code/zeta\_probe/tools/hexdist}: across all $47\,526$ edges of the window the largest
+change in $\widehat\delta$ is $1$, and no vertex other than $e$ lacks a descending neighbour.
+So $\widehat\delta=d_X(e,\cdot)$.
+
+Finally $k(n,j)$ is the minimum of $\widehat\delta$ over the six corners of the hexagon at
+$(n,j)$, namely $\mathrm{up}(n,j)$, $\mathrm{up}(n-1,j)$, $\mathrm{up}(n,j-1)$,
+$\mathrm{down}(n,j)$, $\mathrm{down}(n-1,j)$ and $\mathrm{down}(n-1,j+1)$. Evaluating that
+minimum region by region gives the displayed closed form; this last step is machine-checked in
+\texttt{lean/with\_mathlib/HexDistance.lean} as \texttt{kmin\_eq\_kClosed}.
+\end{proof}
+
+\begin{remark}[what the proof rests on]\label{rem:krows-status}
+The closed form is additionally verified directly, by breadth-first search in $X$ at every site
+with $|n|,|j|\le60$, that is $14\,641$ sites, with no exception. The proof above reduces it to
+the two local conditions, which are finitely many linear inequalities; those are discharged by
+exhaustive check rather than written out, and of the Lean file's contents it is the reduction
+to the vertex formula that is machine-checked, the four cross-site inequalities being stated
+there and left to the certificate. The certificate is
 \texttt{code/zeta\_probe/tools/hexdist}, which builds $X$ from the site lattice directly, its
 vertices being the triangles of mutually hex-adjacent sites and the base vertex the triangle
 $\{(0,0),(-1,0),(-1,1)\}$ of base sites, and compares the closed form against the search at
