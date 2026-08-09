@@ -551,6 +551,21 @@ are small, at most $22$ digits per entry, so the check is kernel evaluation and 
 compiler-evaluation axiom. The Farkas step itself is proved for arbitrary integer data, so it
 is visibly independent of this sequence.
 
+\texttt{ModPStateInfinite.lean} certifies Proposition~\ref{prop:modp-state-infinite}. The
+pairs $((XY)^n, t_n)$ lie in $Q \times (M/pM)$ and are distinct as soon as their first
+components are, so it suffices that $XY$ has infinite order; neither the translation parts
+nor the prime $p$ enter, which is why the conclusion is uniform in $p$. For the $3$-$4$-$5$
+triangle $XY$ is multiplication by $(3+4i)/5$, and writing $(3+4i)^n = a_n + b_n i$ the
+rotation by $n$ steps is trivial exactly when $b_n = 0$.
+
+The standard argument factors $3+4i = (2+i)^2$ and $5 = (2+i)(2-i)$ in $\mathbb{Z}[i]$ and
+invokes unique factorization. That machinery is not needed. The recursion
+$(a_{n+1}, b_{n+1}) = (3a_n - 4b_n,\, 4a_n + 3b_n)$ fixes $(3,4)$ modulo $5$, since
+$3 \cdot 3 + 4 = 13 \equiv 3$ and $4 \cdot 3 + 3 \cdot 4 = 24 \equiv 4$; as $(a_1,b_1) = (3,4)$,
+every $b_n$ with $n \ge 1$ is $\equiv 4 \pmod 5$ and in particular nonzero. The formalization
+records this one-line induction, the multiplicativity of the norm, the group law, and the
+resulting pairwise distinctness of the rotations.
+
 One convention is worth recording, since the statement of Proposition~\ref{prop:no-dfinite}
 leaves it implicit. The count $52$ is for $k \ge 1$, that is for recurrences of order at least
 one. Admitting $k=0$ gives $60$ pairs and requiring $m \ge 1$ gives $50$; only
@@ -564,7 +579,16 @@ from eventual periodicity to algebraicity over $\mathbb{F}_2(t)$, which needs fo
 series; nor the unboundedness of $u_d$, which is a statement about all $d$ and rests on the
 growth rate of \cite{Bonfioli2}. Strict increase across the published range is verified, and
 is evidence for unboundedness rather than a proof of it. The regression numbers in
-Proposition~\ref{prop:height-gap} are numerics and are not formalized.
+Proposition~\ref{prop:height-gap} are numerics and are not formalized. For
+Proposition~\ref{prop:modp-state-infinite} the identification of $XY$ with the rotation by
+$(3+4i)/5$ is the setup of the $3$-$4$-$5$ reflection group and is not re-derived in Lean;
+what is proved there is that the rotation so described has infinite order.
+
+The two conditional routes, Propositions~\ref{prop:beta2-christol}
+and~\ref{prop:beta2-dfinite}, are not formalized and are not candidates for it here: each is
+an implication whose antecedent is an open hypothesis and whose engine is Christol's theorem,
+which is not available in Mathlib. Stating them in Lean with that theorem assumed would record
+no more than the prose already does.
 
 \begin{thebibliography}{9}
 
