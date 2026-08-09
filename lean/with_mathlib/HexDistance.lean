@@ -55,6 +55,14 @@ def dhat0 (n j : ℤ) : ℤ :=
 def dhat (n j : ℤ) (t : Bool) : ℤ :=
   if t then (if 1 ≤ j then dhat0 n j - 1 else dhat0 n j + 1) else dhat0 n j
 
+/-- `dhat` at an up-vertex and at a down-vertex, with the Bool already reduced.  Without these
+    `simp only [dhat]` leaves `if True` and `if false = true` in the goal, `split_ifs` then
+    manufactures impossible branches, and `omega` cannot close them.  That was the obstruction. -/
+@[simp] theorem dhat_false (n j : ℤ) : dhat n j false = dhat0 n j := rfl
+
+@[simp] theorem dhat_true (n j : ℤ) :
+    dhat n j true = if 1 ≤ j then dhat0 n j - 1 else dhat0 n j + 1 := rfl
+
 /-! ### 1b. The affine pieces as an explicit case disjunction
 
     `omega` cannot see through `dhat0` at a shifted site, so the pieces must be handed to it
@@ -101,33 +109,91 @@ theorem lip_same (n j : ℤ) :
     -1 ≤ dhat n j false - dhat n j true ∧ dhat n j false - dhat n j true ≤ 1 := by
   simp only [dhat, dhat0]; split_ifs <;> omega
 
-/-- Left-neighbour Lipschitz condition.  Discharged by the certificate, not here: see the note
-    at the end of the file. -/
-def LipLeft (n j : ℤ) : Prop :=
-  -1 ≤ dhat n j false - dhat (n - 1) (j + 1) true ∧
-  dhat n j false - dhat (n - 1) (j + 1) true ≤ 1
+/-- **Left-neighbour Lipschitz.** -/
+theorem lip_left (n j : ℤ) :
+    -1 ≤ dhat n j false - dhat (n - 1) (j + 1) true ∧
+    dhat n j false - dhat (n - 1) (j + 1) true ≤ 1 := by
+  simp only [dhat_false, dhat_true]
+  rcases le_or_lt 0 j with hj | hj
+  · rcases dhat0_cases_nonneg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩  <;>
+  rcases dhat0_cases_nonneg (n := n - 1) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩  <;>
+      rw [e1, e2] <;> split_ifs <;> omega
+  · rcases le_or_lt 0 (j + 1) with hj1 | hj1
+    · rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩  <;>
+      rcases dhat0_cases_nonneg (n := n - 1) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩  <;>
+        rw [e1, e2] <;> split_ifs <;> omega
+    · rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩  <;>
+      rcases dhat0_cases_neg (n := n - 1) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩  <;>
+        rw [e1, e2] <;> split_ifs <;> omega
 
-/-- Upper-neighbour Lipschitz condition.  Discharged by the certificate. -/
-def LipUp (n j : ℤ) : Prop :=
-  -1 ≤ dhat n j false - dhat n (j + 1) true ∧
-  dhat n j false - dhat n (j + 1) true ≤ 1
+/-- **Upper-neighbour Lipschitz.** -/
+theorem lip_up (n j : ℤ) :
+    -1 ≤ dhat n j false - dhat n (j + 1) true ∧
+    dhat n j false - dhat n (j + 1) true ≤ 1 := by
+  simp only [dhat_false, dhat_true]
+  rcases le_or_lt 0 j with hj | hj
+  · rcases dhat0_cases_nonneg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩  <;>
+  rcases dhat0_cases_nonneg (n := n) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩  <;>
+      rw [e1, e2] <;> split_ifs <;> omega
+  · rcases le_or_lt 0 (j + 1) with hj1 | hj1
+    · rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩  <;>
+      rcases dhat0_cases_nonneg (n := n) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩  <;>
+        rw [e1, e2] <;> split_ifs <;> omega
+    · rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩  <;>
+      rcases dhat0_cases_neg (n := n) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩  <;>
+        rw [e1, e2] <;> split_ifs <;> omega
 
 /-! ### 4. (b) every vertex other than the base has a descending neighbour
 
     For a down-vertex the three neighbours are the up-vertices `(n,j)`, `(n+1,j-1)`, `(n,j-1)`;
     for an up-vertex they are the down-vertices `(n,j)`, `(n-1,j+1)`, `(n,j+1)`. -/
 
-/-- Descent from a down-vertex.  Discharged by the certificate. -/
-def DescentDown (n j : ℤ) : Prop :=
-  dhat n j false = dhat n j true - 1 ∨
-  dhat (n + 1) (j - 1) false = dhat n j true - 1 ∨
-  dhat n (j - 1) false = dhat n j true - 1
+/-- **Descent from a down-vertex.**  For `j <= 0` the same-site up-vertex already descends;
+    only `j >= 1` needs the shifted sites, and there all three indices are nonnegative. -/
+theorem descent_down (n j : ℤ) :
+    dhat n j false = dhat n j true - 1 ∨
+    dhat (n + 1) (j - 1) false = dhat n j true - 1 ∨
+    dhat n (j - 1) false = dhat n j true - 1 := by
+  simp only [dhat_false, dhat_true]
+  rcases le_or_lt 1 j with hj | hj
+  · right
+    rcases dhat0_cases_nonneg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+    rcases dhat0_cases_nonneg (n := n + 1) (j := j - 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+    rcases dhat0_cases_nonneg (n := n) (j := j - 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+      rw [e1, e2, e3] <;> split_ifs <;> omega
+  · left
+    rw [if_neg (by omega : ¬ (1:ℤ) ≤ j)]
+    omega
 
-/-- Descent from an up-vertex other than the base.  Discharged by the certificate. -/
-def DescentUp (n j : ℤ) : Prop :=
-  dhat n j true = dhat n j false - 1 ∨
-  dhat (n - 1) (j + 1) true = dhat n j false - 1 ∨
-  dhat n (j + 1) true = dhat n j false - 1
+/-- **Descent from an up-vertex other than the base.**  For `j >= 1` the same-site down-vertex
+    already descends; only `j <= 0` needs the shifted sites, and the base `(-1,0)` is the single
+    exception there. -/
+theorem descent_up {n j : ℤ} (hne : ¬ (n = -1 ∧ j = 0)) :
+    dhat n j true = dhat n j false - 1 ∨
+    dhat (n - 1) (j + 1) true = dhat n j false - 1 ∨
+    dhat n (j + 1) true = dhat n j false - 1 := by
+  simp only [dhat_false, dhat_true]
+  rcases le_or_lt 1 j with hj | hj
+  · left; rw [if_pos hj]
+  · right
+    have hn1 : j = 0 → n ≠ -1 := fun h hn => hne ⟨hn, h⟩
+    rcases le_or_lt 0 j with hj0 | hj0
+    · -- j = 0
+      rcases dhat0_cases_nonneg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+      rcases dhat0_cases_nonneg (n := n - 1) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+      rcases dhat0_cases_nonneg (n := n) (j := j + 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+        rw [e1, e2, e3] <;> split_ifs <;> omega
+    · rcases le_or_lt 0 (j + 1) with hj1 | hj1
+      · -- j = -1
+        rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+        rcases dhat0_cases_nonneg (n := n - 1) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+        rcases dhat0_cases_nonneg (n := n) (j := j + 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+          rw [e1, e2, e3] <;> split_ifs <;> omega
+      · -- j <= -2
+        rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+        rcases dhat0_cases_neg (n := n - 1) (j := j + 1) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+        rcases dhat0_cases_neg (n := n) (j := j + 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+          rw [e1, e2, e3] <;> split_ifs <;> omega
 
 /-! ### 5. The lamp distance
 
@@ -146,45 +212,60 @@ def kClosed (n j : ℤ) : ℤ :=
   else
     (if -j ≤ n then 2 * n else if 0 ≤ n then -2 * j - 1 else -2 * n - 2 * j - 2)
 
-/-- The reduction of the paper's lemma to the vertex formula: that the minimum of `dhat`
-    over the six corners of the hexagon at `(n,j)` is the displayed closed form for `k`.
+set_option maxHeartbeats 1000000 in
+/-- **Lemma `lem:krows`.**  The minimum over the six corners is the displayed closed form. -/
+theorem kmin_eq_kClosed (n j : ℤ) : kmin n j = kClosed n j := by
+  simp only [kmin, kClosed, dhat_false, dhat_true]
+  rcases le_or_lt 1 j with hj | hj
+  · -- j >= 1
+    rcases dhat0_cases_nonneg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+    rcases dhat0_cases_nonneg (n := n - 1) (j := j) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+    rcases dhat0_cases_nonneg (n := n) (j := j - 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+    rcases dhat0_cases_nonneg (n := n - 1) (j := j + 1) (by omega) with ⟨q4a,e4⟩|⟨q4a,q4b,e4⟩|⟨q4a,e4⟩ <;>
+      rw [e1, e2, e3, e4] <;> split_ifs <;> omega
+  · rcases le_or_lt 0 j with hj0 | hj0
+    · -- j = 0
+      rcases dhat0_cases_nonneg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+      rcases dhat0_cases_nonneg (n := n - 1) (j := j) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+      rcases dhat0_cases_neg (n := n) (j := j - 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+      rcases dhat0_cases_nonneg (n := n - 1) (j := j + 1) (by omega) with ⟨q4a,e4⟩|⟨q4a,q4b,e4⟩|⟨q4a,e4⟩ <;>
+        rw [e1, e2, e3, e4] <;> split_ifs <;> omega
+    · rcases le_or_lt 0 (j + 1) with hj1 | hj1
+      · -- j = -1
+        rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+        rcases dhat0_cases_neg (n := n - 1) (j := j) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+        rcases dhat0_cases_neg (n := n) (j := j - 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+        rcases dhat0_cases_nonneg (n := n - 1) (j := j + 1) (by omega) with ⟨q4a,e4⟩|⟨q4a,q4b,e4⟩|⟨q4a,e4⟩ <;>
+          rw [e1, e2, e3, e4] <;> split_ifs <;> omega
+      · -- j <= -2
+        rcases dhat0_cases_neg (n := n) (j := j) (by omega) with ⟨q1a,e1⟩|⟨q1a,q1b,e1⟩|⟨q1a,e1⟩ <;>
+        rcases dhat0_cases_neg (n := n - 1) (j := j) (by omega) with ⟨q2a,e2⟩|⟨q2a,q2b,e2⟩|⟨q2a,e2⟩ <;>
+        rcases dhat0_cases_neg (n := n) (j := j - 1) (by omega) with ⟨q3a,e3⟩|⟨q3a,q3b,e3⟩|⟨q3a,e3⟩ <;>
+        rcases dhat0_cases_neg (n := n - 1) (j := j + 1) (by omega) with ⟨q4a,e4⟩|⟨q4a,q4b,e4⟩|⟨q4a,e4⟩ <;>
+          rw [e1, e2, e3, e4] <;> split_ifs <;> omega
 
-    NOT PROVED HERE.  Every route tried (brute-force `split_ifs`, the six-piece disjunction,
-    and the sign-restricted three-piece disjunctions) exceeds the elaboration budget: the goal
-    mentions `dhat` at four distinct sites, each contributing a three-way region split and a
-    branch on the sign of its second index, and `omega` cannot see through `dhat0` at a shifted
-    site so the splits do not collapse.  It is verified exhaustively instead, by
-    `code/zeta_probe/tools/hexdist`, at every site with `|n|,|j| <= 60`. -/
-def KminEqClosed (n j : ℤ) : Prop := kmin n j = kClosed n j
+/-! ### 6. Status
 
-/-! ### 6. What is proved here and what is not
+    All of the local criterion is proved here: the base value, the three Lipschitz bounds, and
+    the two descent statements.  Together they give `dhat = d_X(e, .)`, and `kmin_eq_kClosed`
+    evaluates the minimum over the six corners of a hexagon, which is the paper's lemma.
 
-    Proved in Lean: `dhat_base`, the same-site Lipschitz bound `lip_same`, and
-    `kmin_eq_kClosed`, which is the reduction of the paper's lemma to the vertex formula, that
-    is, that the minimum of `dhat` over the six corners of a hexagon is the displayed closed
-    form for `k`.  That reduction is the part with the combinatorics in it.
+    The obstruction that blocked this for several attempts was not the case analysis but the
+    Bool: `simp only [dhat]` leaves `if True` and `if false = true` in the goal, `split_ifs`
+    then manufactures branches with hypotheses `omega` cannot refute, and on the larger goals
+    the branch count exploded.  Reducing the Bool first, via `dhat_false` and `dhat_true`, and
+    handing `omega` the affine pieces with their region hypotheses via `dhat0_cases_*`, makes
+    every one of them close in seconds. -/
 
-    NOT proved in Lean: `LipLeft`, `LipUp`, `DescentDown`, `DescentUp`, the four conditions
-    that compare `dhat` at two different sites.  Each is a finite disjunction of linear
-    inequalities over the piecewise regions, and each is verified exhaustively by
-    `code/zeta_probe/tools/hexdist`, which checks the Lipschitz bound across all 47526 edges of
-    the window and finds no vertex without a descending neighbour.  They are stated here rather
-    than proved because `omega` does not see through the definition of `dhat0` at a shifted
-    site, so the case split does not reduce to arithmetic; discharging them needs the affine
-    pieces supplied as explicit hypotheses, one lemma per region pair.  That is mechanical and
-    is the obvious next increment.
-
-    Granting the four, the local criterion gives `dhat = d_X` and hence the paper's lemma. -/
-
-/-- The reduction, stated on its own.  The four conditions above are what upgrade
-    `dhat = d_X`; once that is granted, this identity is what turns it into the paper's lemma,
-    and it is proved outright, without them. -/
-theorem lem_krows_reduction (h : ∀ n j : ℤ, KminEqClosed n j) :
-    ∀ n j : ℤ, kmin n j = kClosed n j := h
+/-- **Lemma `lem:krows`.** -/
+theorem lem_krows : ∀ n j : ℤ, kmin n j = kClosed n j := kmin_eq_kClosed
 
 #print axioms dhat_base
 #print axioms lip_same
-#print axioms dhat0_cases_nonneg
-#print axioms dhat0_cases_neg
+#print axioms lip_left
+#print axioms lip_up
+#print axioms descent_down
+#print axioms descent_up
+#print axioms lem_krows
 
 end HexDistance

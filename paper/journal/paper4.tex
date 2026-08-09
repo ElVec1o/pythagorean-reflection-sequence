@@ -1030,14 +1030,13 @@ minimum region by region gives the displayed closed form.
 
 \begin{remark}[what the proof rests on]\label{rem:krows-status}
 The closed form is additionally verified directly, by breadth-first search in $X$ at every site
-with $|n|,|j|\le60$, that is $14\,641$ sites, with no exception. The proof above reduces it to the two local conditions, which are finitely many linear
-inequalities; those are discharged by exhaustive check rather than written out. In
-\texttt{lean/with\_mathlib/HexDistance.lean} the closed form, the base value and the same-site
-Lipschitz bound are machine-checked, with only the standard axioms. The cross-site conditions
-and the evaluation of the minimum over the six corners are stated there and left to the
-certificate: each mentions \texttt{dhat} at several sites at once, and the elaboration does not
-terminate within budget because \texttt{omega} cannot see through the definition at a shifted
-site. Under the labelling of this paper the lemma is therefore PROVED and not VERIFIED. The certificate is
+with $|n|,|j|\le60$, that is $14\,641$ sites, with no exception. The whole of the argument above is machine-checked in
+\texttt{lean/with\_mathlib/HexDistance.lean}: the base value \texttt{dhat\_base}, the three
+Lipschitz bounds \texttt{lip\_same}, \texttt{lip\_left}, \texttt{lip\_up}, the two descent
+statements \texttt{descent\_down}, \texttt{descent\_up}, and the evaluation of the corner
+minimum \texttt{lem\_krows}. Each reports only the standard axioms and none uses
+\texttt{sorry}, so the lemma is verified and not merely proved. The exhaustive search of
+\texttt{hexdist} remains as an independent check of the same statement. The certificate is
 \texttt{code/zeta\_probe/tools/hexdist}, which builds $X$ from the site lattice directly, its
 vertices being the triangles of mutually hex-adjacent sites and the base vertex the triangle
 $\{(0,0),(-1,0),(-1,1)\}$ of base sites, and compares the closed form against the search at
