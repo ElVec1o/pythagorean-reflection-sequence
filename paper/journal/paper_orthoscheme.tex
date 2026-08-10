@@ -156,12 +156,12 @@ the rank-two standard parabolics, in any dimension $n\ge3$ and at any positive l
 \end{itemize}
 
 The first two combine into the statement that gives the paper its shape. Define the
-\emph{collision depth}
+\emph{collision depth} (Definition~\ref{def:cd})
 \[
-\cd_n(a)=\inf\bigl\{d\ge0:\ u_d(a)<[t^d]\,W_n(t)\bigr\}\in\{1,2,\dots,\infty\}.
+\cd_n(a)=\inf\bigl\{d\ge0:\ u_d(a)<[t^d]\,W_n(t)\bigr\}\in\{1,2,\dots\}\cup\{\infty\}.
 \]
-By the dichotomy, $\cd_n(a)=\lceil K(\ker\rho_a)/2\rceil$, and since a relator of a reflection
-group has even length this is $K(\ker\rho_a)/2$ (Corollary~\ref{cor:cd-is-K}). A short geometric
+By the dichotomy, $\cd_n(a)=\lceil K(\ker\rho_a)/2\rceil$, and since every element of the
+kernel has even length this is $K(\ker\rho_a)/2$ (Corollary~\ref{cor:cd-is-K}). A short geometric
 argument then shows $K(\ker\rho_a)\ge6$ for every positive leg tuple
 (Lemma~\ref{lem:no-length-four}), so $\cd_n\ge3$ unconditionally. The last two theorems pin the
 value: $K(a)=6$ if and only if three consecutive legs are equal
@@ -173,7 +173,9 @@ remaining case $e=t=0$ is $\cd_n=\infty$ precisely when $\rho_a$ is injective.
 
 The four theorems above are unconditional; they hold at every positive leg tuple apart from
 the arithmetic hypotheses of Theorem~\ref{thm:rank2}, and they are dimension-free except that
-Theorem~\ref{thm:len6} requires $n\ge3$. The question they do not answer is whether $\rho_a$ is
+Theorem~\ref{thm:len6} requires $n\ge3$. That restriction is a restriction on the proof; at
+$n=2$ the conclusion is left undecided here, in either direction
+(Remark~\ref{rem:len6-n2}). The question the four do not answer is whether $\rho_a$ is
 injective at all when $e=t=0$, and this paper answers that question in dimension two only,
 where the answer is no (Proposition~\ref{prop:plane}). That is the declared boundary of the
 paper, and it is a boundary of the available method rather than of the write-up.
@@ -216,8 +218,9 @@ knows the Coxeter growth-series literature should read Theorem~\ref{thm:envelope
 of known pieces.
 
 The Diophantine part of Theorem~\ref{thm:rank2} rests on three rank-zero Mordell--Weil
-computations that are in the standard tables \cite{cremona-1997,lmfdb-24a1,lmfdb-72a2}; what is
-done here is the reduction of the dihedral condition to those three curves.
+computations that are in the standard tables \cite{cremona-1997,lmfdb-24a1,lmfdb-72a2} and have
+been recomputed here (Remark~\ref{rem:cremona-provenance}); what is done here is the reduction
+of the dihedral condition to those three curves.
 
 Two points of contact should be recorded. The all-equal tuple $a_1=\cdots=a_n$ is not a generic
 point of this family: there the orthoscheme group is the affine Weyl group $\widetilde C_n$,
@@ -284,9 +287,44 @@ $\Gamma_n$ \cite{Davis}. The abstract group $W_n$ does not depend on $a$.
 We write $H_j$ for the facet hyperplane carrying $\widehat R_j$ and
 $\theta_{i,j}\in(0,\tfrac\pi2]$ for the angle between $H_i$ and $H_j$, so that
 \[
-\cos\theta_{i,j}=\frac{|m_i\cdot m_j|}{|m_i|\,|m_j|},
+\cos\theta_{i,j}=\frac{|m_i\cdot m_j|}{|m_i|\,|m_j|}.
 \]
-and $\widehat R_i\widehat R_j$ is a rotation through $2\theta_{i,j}$ about $H_i\cap H_j$.
+For $i\ne j$ the isometry $\widehat R_i\widehat R_j$ fixes $H_i\cap H_j$ and acts on the
+orthogonal $2$-plane as a rotation through $2\theta_{i,j}$ \emph{or} through
+$2\pi-2\theta_{i,j}$. The absolute value in the display, equivalently the normalisation
+$\theta_{i,j}\le\pi/2$, records the unordered pair of supplementary dihedral angles and
+discards the sense of the rotation, so the alternative cannot be resolved without further
+conventions. It is never resolved below. Only three consequences of the description are used,
+and each is invariant under $\varphi\mapsto2\pi-\varphi$: the rotation angle is nonzero
+modulo $2\pi$, so $\operatorname{Fix}(\widehat R_i\widehat R_j)=H_i\cap H_j$ exactly; the order
+of $\widehat R_i\widehat R_j$ is the order of $2\theta_{i,j}$ in $\R/2\pi\Z$; and
+$\widehat R_i\widehat R_j$ is the rotation by $\pi$ if and only if $\theta_{i,j}=\pi/2$.
+
+The intersections of the facet hyperplanes are recorded separately, as several later proofs
+use them.
+
+\begin{lemma}[Facet intersections]\label{lem:facet-int}
+Let $n\ge2$ and $a\in U$. The vertices $V_0,\dots,V_n$ are affinely independent,
+$H_j=\operatorname{aff}\{V_m:m\ne j\}$, and for $i\ne j$ the hyperplanes $H_i$ and $H_j$ are
+distinct, non-parallel and satisfy
+\[
+H_i\cap H_j=\operatorname{aff}\{V_m:m\ne i,j\},
+\]
+a flat of dimension $n-2$. Distinct index pairs give distinct intersections.
+\end{lemma}
+
+\begin{proof}
+The difference vectors $V_k-V_0=\sum_{i\le k}a_ie_i$, $1\le k\le n$, form a triangular matrix
+with diagonal $a_1,\dots,a_n$, all nonzero, so they are linearly independent and the $n+1$
+vertices are affinely independent. The facet opposite $V_j$ is by definition
+$\operatorname{aff}\{V_m:m\ne j\}$, a flat of dimension $n-1$, that is $H_j$; and $V_j\notin
+H_j$, again by affine independence. Hence $H_i\ne H_j$ for $i\ne j$, since $V_j\in H_i$ while
+$V_j\notin H_j$. The flat $F=\operatorname{aff}\{V_m:m\ne i,j\}$ has dimension $n-2$ and lies
+in $H_i\cap H_j$; two distinct hyperplanes meet in a flat of dimension $n-2$ or not at all, so
+$H_i\cap H_j=F$ and the two are not parallel. If $\operatorname{aff}\{V_m:m\ne i,j\}=
+\operatorname{aff}\{V_m:m\ne k,l\}$ with $\{i,j\}\ne\{k,l\}$, the common flat would contain at
+least $n$ of the vertices and so have dimension at least $n-1$, a contradiction.
+\end{proof}
 
 The $n+1$ normals live in $\R^n$, so they carry one linear relation. It is unique and involves
 all of them, which is the source of every independence statement used below.
@@ -333,6 +371,16 @@ Finally, set
 K(a)=\min\bigl\{\ell_{W_n}(w):w\in\ker\rho_a\setminus\{1\}\bigr\}\in\{1,2,\dots\}\cup\{\infty\},
 \]
 with $K(a)=\infty$ when $\rho_a$ is injective.
+
+\begin{definition}[Collision depth]\label{def:cd}
+For $a\in U$ the \emph{collision depth} is
+\[
+\cd_n(a)=\inf\bigl\{d\ge0:u_d(a)<[t^d]\,W_n(t)\bigr\}\in\{1,2,\dots\}\cup\{\infty\},
+\]
+with $\cd_n(a)=\infty$ when the set is empty. The definition is made at every positive leg
+tuple; rationality of the legs is a hypothesis of some statements about $\cd_n$ in
+\S\ref{sec:cd}, never of the definition.
+\end{definition}
 
 \subsection{Generic rigidity}
 
@@ -454,18 +502,24 @@ Otherwise $K(a)$ is finite and Theorem~\ref{thm:dichotomy} with $G=W_n$, $N=\ker
 \end{proof}
 
 \begin{corollary}[The collision depth is half the shortest relator]\label{cor:cd-is-K}
-For every $a\in U$, $\ \cd_n(a)=\lceil K(a)/2\rceil$, and $K(a)$ is even, so
-$\cd_n(a)=K(a)/2$.
+For every $a\in U$, every element of $\ker\rho_a$ has even word length in $W_n$. Consequently
+$\cd_n(a)=\lceil K(a)/2\rceil=K(a)/2$, where $K(a)/2$ is read as $\infty$ when $K(a)=\infty$.
 \end{corollary}
 
 \begin{proof}
-The first equality is Corollary~\ref{cor:alternative}: below $\lceil K(a)/2\rceil$ the two
-sequences agree and at $\lceil K(a)/2\rceil$ they differ. For parity, let
-$\varepsilon:W_n\to\{\pm1\}$ be the sign character, $\varepsilon(R_i)=-1$, which is well defined
-because all defining relators of \eqref{eq:Wn-presentation} have even length; then
-$\varepsilon(w)=(-1)^{\ell(w)}$. On the other side, $\det\circ\rho_a$ is a homomorphism
-$W_n\to\{\pm1\}$ sending each $R_i$ to $-1$, so $\det\rho_a(w)=\varepsilon(w)$. If
-$w\in\ker\rho_a$ then $\det\rho_a(w)=1$, hence $\ell(w)$ is even.
+\emph{Parity.} Let $\varepsilon:W_n\to\{\pm1\}$ be the sign character,
+$\varepsilon(R_i)=-1$, which is well defined because all defining relators of
+\eqref{eq:Wn-presentation} have even length; then $\varepsilon(w)=(-1)^{\ell(w)}$. On the other
+side, $\det\circ\,\rho_a$ is a homomorphism $W_n\to\{\pm1\}$ sending each $R_i$ to $-1$, so
+$\det\rho_a(w)=\varepsilon(w)$. If $w\in\ker\rho_a$ then $\det\rho_a(w)=1$, hence $\ell(w)$ is
+even. In particular $K(a)$ is even whenever it is finite. The statement that $K(a)$ itself is
+even is available only in that case: $K(a)=\infty$ is not an even number.
+
+\emph{The equality.} If $\ker\rho_a=\{1\}$ then $K(a)=\infty$ and, by
+Corollary~\ref{cor:alternative}(i), the set in Definition~\ref{def:cd} is empty, so both sides
+are $\infty$. Otherwise $K(a)$ is finite and Corollary~\ref{cor:alternative}(ii) gives
+agreement below $\lceil K(a)/2\rceil$ and strict inequality at $\lceil K(a)/2\rceil$, so
+$\cd_n(a)=\lceil K(a)/2\rceil$, which equals $K(a)/2$ by parity.
 \end{proof}
 
 \begin{lemma}[No relator of length four]\label{lem:no-length-four}
@@ -473,13 +527,12 @@ For every $n\ge2$ and every $a\in U$, $K(a)\ge6$. Consequently $\cd_n(a)\ge3$.
 \end{lemma}
 
 \begin{proof}
-By Corollary~\ref{cor:cd-is-K}, $K(a)$ is even, so it suffices to exclude $K(a)\in\{2,4\}$.
+By Corollary~\ref{cor:cd-is-K} every element of $\ker\rho_a$ has even length, so it suffices to
+exclude $K(a)\in\{2,4\}$.
 
-Write $H_i$ for the facet hyperplane carrying $\widehat R_i$. The $H_i$ are the $n+1$ facet
-hyperplanes of a nondegenerate simplex, so they are pairwise distinct and pairwise
-non-parallel, and $H_i\cap H_j$ is the affine hull of $\{V_m:m\ne i,j\}$, of dimension $n-2$.
-Distinct index pairs give distinct intersections, because an $(n-2)$-flat contains exactly
-$n-1$ of the $n+1$ affinely independent vertices.
+By Lemma~\ref{lem:facet-int} the facet hyperplanes $H_i$ are pairwise distinct and pairwise
+non-parallel, $H_i\cap H_j=\operatorname{aff}\{V_m:m\ne i,j\}$ has dimension $n-2$, and
+distinct index pairs give distinct intersections.
 
 $K(a)=2$ would give a geodesic word $R_iR_j$ with $i\ne j$ and
 $\widehat R_i=\widehat R_j$, impossible since $H_i\ne H_j$.
@@ -487,8 +540,9 @@ $\widehat R_i=\widehat R_j$, impossible since $H_i\ne H_j$.
 Suppose $K(a)=4$, realised by a geodesic word $R_iR_jR_kR_l$ with $i\ne j$, $j\ne k$, $k\ne l$
 and $\widehat R_i\widehat R_j\widehat R_k\widehat R_l=1$, that is
 $\widehat R_i\widehat R_j=\widehat R_l\widehat R_k$. For $H_i\ne H_j$ non-parallel, the isometry
-$\widehat R_i\widehat R_j$ is a rotation about $H_i\cap H_j$ through twice the angle between the
-hyperplanes, an angle in $(0,2\pi)$; its fixed-point set is therefore exactly $H_i\cap H_j$. The
+$\widehat R_i\widehat R_j$ is a rotation about $H_i\cap H_j$ through a nonzero angle, whichever
+of the two supplementary readings of \S\ref{sec:setting} is taken; its fixed-point set is
+therefore exactly $H_i\cap H_j$. The
 same applies to $\widehat R_l\widehat R_k$, so $H_i\cap H_j=H_k\cap H_l$ and hence
 $\{i,j\}=\{k,l\}$ by the previous paragraph. Since $j\ne k$ this forces $i=k$ and $j=l$, so the
 relation reads $\widehat R_i\widehat R_j=\widehat R_j\widehat R_i$, that is $H_i\perp H_j$. For
@@ -550,8 +604,8 @@ Now $\rho_a(u)$ and $\rho_a(v)$ are the reflections in the affine hyperplanes
 $\widehat R_{a'}(H_b)$ and $\widehat R_c(H_d)$, and $\rho_a(u)\rho_a(v)=1$ with both factors
 involutions forces the two hyperplanes to coincide; call the common hyperplane $P$. As
 $\widehat R_{a'}$ fixes $H_{a'}$ pointwise, $P\supseteq H_{a'}\cap H_b$, and likewise
-$P\supseteq H_c\cap H_d$. Using $H_i\cap H_j=\operatorname{aff}\{V_m:m\ne i,j\}$ as in
-Lemma~\ref{lem:no-length-four}, $P$ contains every vertex $V_m$ with
+$P\supseteq H_c\cap H_d$. Using $H_i\cap H_j=\operatorname{aff}\{V_m:m\ne i,j\}$ from
+Lemma~\ref{lem:facet-int}, $P$ contains every vertex $V_m$ with
 $m\notin\{a',b\}\cap\{c,d\}$. If that intersection is empty, $P$ contains all $n+1$ vertices,
 which affinely span $\R^n$ and lie in no hyperplane. If it is a single index $j$, then $P$
 contains the $n$ affinely independent vertices $V_m$, $m\ne j$, so $P=H_j$; the case $j=a'$
@@ -581,9 +635,10 @@ Carter's lemma gives $\operatorname{rank}(g-1)=3$, so $g-1$ vanishes on $E^{\per
 invertible on $E$; an involution of $E$ with no nonzero fixed vector is $-\mathrm{id}_E$, so
 $s_ps_qs_r=-\mathrm{id}$ on $E$, that is $s_qs_r=-s_p$ on $E$. On $E$ the right-hand side is the
 rotation by $\pi$ about the line $\R m_p$, and the left-hand side is the rotation about
-$\langle m_q,m_r\rangle^{\perp}\cap E$ through twice the angle between $m_q$ and $m_r$.
-Equality of the axes gives $m_p\perp m_q$ and $m_p\perp m_r$, equality of the angles gives
-$m_q\perp m_r$. By Lemma~\ref{lem:normals} the indices $p,q,r$ are then pairwise at distance at
+$\langle m_q,m_r\rangle^{\perp}\cap E$ through twice the angle between $m_q$ and $m_r$, in one
+of the two senses. Equality of the axes gives $m_p\perp m_q$ and $m_p\perp m_r$; equality of
+the angles gives $m_q\perp m_r$, the rotation by $\pi$ being its own inverse, so that the sense
+does not enter. By Lemma~\ref{lem:normals} the indices $p,q,r$ are then pairwise at distance at
 least $2$, so $R_p,R_q,R_r$ commute pairwise in $W_n$ and $(R_pR_qR_r)^2=1$ there, contradicting
 $\ell(w)=6$.
 
@@ -593,7 +648,7 @@ occurrences of $R_0$ in $w$. By (1) two occurrences of one letter are at cyclic 
 least $3$, and a cycle of length $6$ admits at most two positions pairwise at cyclic distance
 at least $3$; hence $k\le2$. The translation part of $\rho_a(w)$ is
 $2a_1\sum_{j:\,i_j=0}P_{j-1}e_1$, where $P_m=s_{i_1}\cdots s_{i_m}\in O(3)$ and $P_0=1$, and it
-must vanish. Each summand is a unit vector and $a_1>0$, so $k\ne1$.
+must vanish. Each summand is a unit vector and $a_1\ne0$, so $k\ne1$.
 
 If $k=0$ then $\operatorname{supp}(w)=\{1,2,3\}$, and by (1) six letters drawn from a
 three-element set with every three cyclically consecutive ones distinct repeat with period
@@ -618,16 +673,59 @@ parabolic $\langle R_i,R_j\rangle$, $i\ne j$. If $|i-j|\ge2$ that parabolic is
 $(\Z/2)^2$ and has no element of length $6$, so $|i-j|=1$ and the parabolic is infinite
 dihedral; its two elements of length $6$ are $(R_iR_{i+1})^{3}$ and its inverse. Then
 $\rho_a\bigl(R_iR_{i+1}\bigr)$ has order dividing $3$, and is not the identity because
-$H_i\ne H_j$, so it has order exactly $3$ and $\theta_{i,i+1}=\pi/3$.
+$H_i\ne H_j$ by Lemma~\ref{lem:facet-int}, so it has order exactly $3$. By the order statement
+of \S\ref{sec:setting} the class of $2\theta_{i,i+1}$ then has order $3$ in $\R/2\pi\Z$, and
+$2\theta_{i,i+1}\in(0,\pi]$ leaves $2\theta_{i,i+1}=2\pi/3$, that is $\theta_{i,i+1}=\pi/3$.
 \end{proof}
 
 \begin{remark}[Where each hypothesis is used]\label{rem:len6-hyp}
-Positivity of the legs enters twice: through Lemma~\ref{lem:independence}, and in step (3)
-through $a_1>0$, which is what makes a single occurrence of $R_0$ leave a nonzero translation.
-The hypothesis $n\ge3$ enters through the independence of any three normals, and it cannot be
-dropped: at $n=2$ the three normals are dependent, and indeed the plane carries kernel elements
-of full support, though of length $20$ rather than $6$ (Corollary~\ref{cor:plane}). No
-rationality is assumed anywhere in Theorem~\ref{thm:len6}.
+Positivity of the legs enters at four places, not two.
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em,itemsep=0.2em]
+\item Nondegeneracy of $O(a)$, that is affine independence of $V_0,\dots,V_n$, through
+Lemma~\ref{lem:facet-int}. This is used inside Lemma~\ref{lem:no-length-four}, hence in
+step~(0), and again directly in step~(1) and in the final paragraph.
+\item The nonvanishing $m_i\cdot m_{i+1}\ne0$ of Lemma~\ref{lem:normals}. This closes a branch
+in each of steps~(1), (2) and~(3), and one inside Lemma~\ref{lem:no-length-four}.
+\item The independence statement of Lemma~\ref{lem:independence}, used in steps~(1), (2)
+and~(3), and in step~(1) also in the form that the normals are pairwise non-proportional.
+\item The inequality $a_1\ne0$ in step~(3), which is what makes a single occurrence of $R_0$
+leave a nonzero translation.
+\end{enumerate}
+Each of the four uses only that the legs are nonzero, never their sign or their order, so
+Theorem~\ref{thm:len6} holds verbatim for every $a\in(\R\setminus\{0\})^n$. That extension is
+not new information: the diagonal orthogonal map
+$T=\operatorname{diag}(\operatorname{sgn}a_1,\dots,\operatorname{sgn}a_n)$ carries
+$O(|a_1|,\dots,|a_n|)$ to $O(a)$, facet by facet and in the same indexing, so
+$\rho_a=\iota_T\circ\rho_{|a|}$ with $\iota_T$ conjugation by $T$, and the two kernels
+coincide. No rationality is assumed anywhere in Theorem~\ref{thm:len6}.
+
+The hypothesis $n\ge3$ is used in step~(1), where Lemma~\ref{lem:independence} is applied to
+three normals at once, and again in the split between steps~(2) and~(3), which is the split
+between $n\ge4$ and $n=3$.
+\end{remark}
+
+\begin{remark}[The case $n=2$]\label{rem:len6-n2}
+At $n=2$ the proof above breaks down and the statement is left undecided; the two should not be
+confused. Three vectors in $\R^2$ are always dependent, so Lemma~\ref{lem:independence} says
+nothing about triples of normals, Carter's lemma is unavailable at $k=3$, and step~(1) has no
+starting point, which makes steps~(2) and~(3) unreachable as well. Whether the conclusion of
+Theorem~\ref{thm:len6} holds in the plane is a separate question, and this paper decides it in
+neither direction.
+
+Corollary~\ref{cor:plane} is not a counterexample to it: the shortest kernel elements recorded
+there have length $20$, and a statement about elements of length $6$ says nothing about
+elements of length $20$. The planar tuples at which the statement has content are those
+carrying a kernel element of length $6$ at all, and one such tuple, written out, is consistent
+with it. Take $a=(\sqrt3,1)$, so that $\cos\theta_{0,1}=\tfrac12$,
+$\cos\theta_{1,2}=\tfrac{\sqrt3}2$ and $\theta_{0,2}=\pi/2$: the triangle $O(a)$ has angles
+$\pi/2,\pi/3,\pi/6$ and $W(a)$ is the $(2,3,6)$ triangle group. Since $\theta_{0,1}=\pi/3$, the
+rotation $\rho_a(R_0R_1)$ has order $3$, so $(R_0R_1)^3\in\ker\rho_a$; this element has length
+$6$ because $\langle R_0,R_1\rangle$ is infinite dihedral in $W_2$, and with
+Lemma~\ref{lem:no-length-four}, which is proved for all $n\ge2$, that gives $K(a)=6$. The
+witnessing element lies in the rank-two standard parabolic $\langle R_0,R_1\rangle$ and its
+pair of facets meets at angle $\pi/3$, which is what the conclusion of
+Theorem~\ref{thm:len6} asserts. One consistent tuple is evidence and not a proof, and no proof
+is offered.
 \end{remark}
 
 \section{The envelope in closed form}\label{sec:envelope}
@@ -881,6 +979,22 @@ $\Z/2\oplus\Z/2$); see \cite{cremona-1997,lmfdb-72a2}. Each torsion point again 
 trivial quartic solution.
 \end{proof}
 
+\begin{remark}[Provenance of the three rank-zero inputs]\label{rem:cremona-provenance}
+The three Mordell--Weil ranks were recomputed for this paper and are not taken on the authority
+of the tables. PARI/GP 2.17.4 returns matching lower and upper bounds $0$ from a two-descent
+(\texttt{ellrank}) on each of $y^2=x(x-12)(x-16)$, $y^2=x^3-x$ and $y^2=x(x-300)(x-1200)$.
+Independently, \texttt{ellanalyticrank} returns analytic rank $0$ on all three, with
+$L(E,1)=0.53912\ldots$, $0.65551\ldots$ and $0.97326\ldots$; nonvanishing of $L(E,1)$ gives
+Mordell--Weil rank $0$ again, by modularity together with the theorem of Kolyvagin. The same
+computation returns conductors $24$, $32$, $72$, $j$-invariants $35\,152/9$, $1728$,
+$35\,152/9$, and torsion subgroups $\Z/4\oplus\Z/2$, $\Z/2\oplus\Z/2$, $\Z/2\oplus\Z/2$, and
+confirms that the third curve is the quadratic twist of the first by $-3$; all of these agree
+with the cited records. Two things are not re-derived here: the Cremona labels
+\texttt{24a1} and \texttt{72a2}, which are a naming convention and are used only as names, and
+the birational reductions of the three quartics to these curves, which are the standard ones
+cited in the proof.
+\end{remark}
+
 Lemma~\ref{lem:cremona-empty} says nothing about the diagonal $x=z$, which is where the interior
 analysis has to be completed separately.
 
@@ -1048,16 +1162,12 @@ accounted for by eight coincidences between distinct words of length $10$ \cite{
 
 \section{The collision depth}\label{sec:cd}
 
-\begin{definition}\label{def:cd}
-For $a\in\Q_{>0}^n$ the \emph{collision depth} is
-\[
-\cd_n(a)=\inf\bigl\{d\ge0:u_d(a)<[t^d]\,W_n(t)\bigr\}\in\{1,2,\dots\}\cup\{\infty\}.
-\]
-\end{definition}
-
-By Corollary~\ref{cor:cd-is-K}, $\cd_n(a)=K(a)/2$, and by Lemma~\ref{lem:no-length-four},
-$K(a)\ge6$. Conjecture~\ref{conj:master-C} says exactly that $\cd_n=\infty$ for every Class C
-tuple. The value $K(a)=6$ is decided by combining the two preceding sections.
+The collision depth $\cd_n(a)$ of Definition~\ref{def:cd} is defined at every positive leg
+tuple $a\in U$. By Corollary~\ref{cor:cd-is-K}, $\cd_n(a)=K(a)/2$, and by
+Lemma~\ref{lem:no-length-four}, $K(a)\ge6$. Conjecture~\ref{conj:master-C} says exactly that
+$\cd_n=\infty$ for every Class C tuple. The value $K(a)=6$ is decided by combining the two
+preceding sections; from here to the end of the section the legs are positive rationals,
+because the input from \S\ref{sec:rank2} is.
 
 \begin{corollary}[When $K(a)=6$]\label{cor:K-eq-six}
 Let $n\ge3$ and $a\in\Q_{>0}^n$. Then $K(a)=6$ if and only if $t(a)\ge1$. In particular
@@ -1072,43 +1182,55 @@ Conversely let $K(a)=6$. By Theorem~\ref{thm:len6} the witnessing element is
 $(R_iR_{i+1})^{\pm3}$ with $\theta_{i,i+1}=\pi/3$, so $\cos^2\theta_{i,i+1}=\tfrac14$. If
 $(i,i+1)$ is a boundary pair, Lemma~\ref{lem:boundary} says the only value in the Niven list
 attained there is $\tfrac12$, so this is impossible. If it is an interior pair with
-$a_i\ne a_{i+2}$, the proof of Theorem~\ref{thm:rank2} places $(a_i,a_{i+2})$ on one of the
-three quartics of Lemma~\ref{lem:cremona-empty}, which have no such point. If it is an interior
-pair with $a_i=a_{i+2}$, Lemma~\ref{lem:diagonal} gives $a_i=a_{i+1}=a_{i+2}$, that is
-$t(a)\ge1$. The last statement follows since $K(a)$ is even and at least $6$.
+$a_i\ne a_{i+2}$, then \eqref{eq:uquad} holds with $c=\tfrac14$ and with the rational root
+$u=a_{i+1}^2$, so its discriminant is a rational square and $(a_i,a_{i+2})$ is a point of
+$\mathcal{V}_{1/4}$ with $a_ia_{i+2}\ne0$ and $a_i\ne a_{i+2}$, which
+Lemma~\ref{lem:cremona-empty} excludes. Only $\mathcal{V}_{1/4}$ can arise at this step: the
+other two quartics record $c=\tfrac12$ and $c=\tfrac34$, and $\theta_{i,i+1}=\pi/3$ gives
+$c=\tfrac14$. If it is an interior pair with $a_i=a_{i+2}$, Lemma~\ref{lem:diagonal} gives
+$a_i=a_{i+1}=a_{i+2}$, that is $t(a)\ge1$.
+
+For the last statement, let $t(a)=0$. Then $K(a)\ne6$ by what precedes, $K(a)\ge6$ by
+Lemma~\ref{lem:no-length-four}, and $K(a)$ is even or infinite by
+Corollary~\ref{cor:cd-is-K}; hence $K(a)\ge8$ and $\cd_n(a)\ge4$.
 \end{proof}
 
 The next theorem describes $\cd_n$ for every leg multiplicity pattern. Although the
-multiplicity partition of $(a_1,\dots,a_n)$ has $p(n)$ possible shapes, the collision depth
-takes only three values, determined by the two local positional statistics $(e,t)$.
+multiplicity partition of $(a_1,\dots,a_n)$ has $p(n)$ possible shapes, the two local
+positional statistics $(e,t)$ already fix the collision depth wherever $e+t\ge1$, at the two
+values $3$ and $4$; the pattern enters no further.
 
 \begin{theorem}[Collision depth, all $n\ge3$]\label{thm:cd-general}
-Let $n\ge3$ and $a\in\Q_{>0}^n$. Then $\cd_n(a)\ge3$, and
+Let $n\ge3$ and $a\in\Q_{>0}^n$, and write $e=e(a)$, $t=t(a)$. Then $\cd_n(a)\ge3$, and the
+four mutually exclusive and exhaustive cases are
 \[
-\cd_n(a)=
+\cd_n(a)
 \begin{cases}
-3      & \text{if }t\ge1,\\
-4      & \text{if }e\ge1\ \text{ and }t=0,\\
-\infty & \text{if }e=t=0\ \text{ and }\rho_a\text{ is injective}.
+=3      & \text{if }t\ge1,\\
+=4      & \text{if }t=0\ \text{ and }e\ge1,\\
+=\infty & \text{if }e=t=0\ \text{ and }\rho_a\text{ is injective},\\
+\in\{4,5,6,\dots\} & \text{if }e=t=0\ \text{ and }\rho_a\text{ is not injective}.
 \end{cases}
 \]
-The first two cases are unconditional. In the third case, if $\rho_a$ is not injective then
-$\cd_n(a)\ge4$.
+The first two cases are unconditional and determine $\cd_n(a)$ outright. The last two are a
+case split on a property that this paper does not decide for $n\ge3$; what is asserted there is
+the stated value in the one case and the stated bound in the other.
 \end{theorem}
 
 \begin{proof}
-$\cd_n(a)=K(a)/2$ with $K(a)$ even and at least $6$, by Corollary~\ref{cor:cd-is-K} and
-Lemma~\ref{lem:no-length-four}; this gives $\cd_n(a)\ge3$ in all cases.
+By Corollary~\ref{cor:cd-is-K} and Lemma~\ref{lem:no-length-four}, $\cd_n(a)=K(a)/2$ and
+$K(a)\ge6$; this gives $\cd_n(a)\ge3$ in all four cases.
 
 If $t\ge1$ then $K(a)=6$ by Corollary~\ref{cor:K-eq-six}, so $\cd_n(a)=3$.
 
-If $e\ge1$ and $t=0$ then Theorem~\ref{thm:rank2}(ii) exhibits an element of $\ker\rho_a$ of
+If $t=0$ and $e\ge1$ then Theorem~\ref{thm:rank2}(ii) exhibits an element of $\ker\rho_a$ of
 length $8$, so $K(a)\le8$, while Corollary~\ref{cor:K-eq-six} gives $K(a)\ge8$. Hence $K(a)=8$
 and $\cd_n(a)=4$.
 
-If $e=t=0$ then $\cd_n(a)=\infty$ if and only if $\ker\rho_a=\{1\}$, by
-Corollary~\ref{cor:alternative}; and if $\ker\rho_a\ne\{1\}$ then $K(a)\ge8$ by
-Corollary~\ref{cor:K-eq-six}, so $\cd_n(a)\ge4$.
+Let $e=t=0$. If $\rho_a$ is injective then $\cd_n(a)=\infty$ by
+Corollary~\ref{cor:alternative}(i). If $\rho_a$ is not injective then $K(a)<\infty$, so
+$\cd_n(a)=K(a)/2$ is finite, and $K(a)\ge8$ by Corollary~\ref{cor:K-eq-six}, so
+$4\le\cd_n(a)<\infty$.
 \end{proof}
 
 \begin{remark}[What is and is not decided by $(e,t)$]\label{rem:second-case}
@@ -1392,17 +1514,18 @@ determines the entire sequence $u_d(a)$, not only its first deviation?
 Statement & Status & Note \\
 \midrule
 Lemma~\ref{lem:normals} (facet normals)          & proved (Lean) & \texttt{OrthoschemeNormals} \\
+Lemma~\ref{lem:facet-int} (facet intersections)  & proved                  & \\
 Theorem~\ref{thm:rigidity} (generic rigidity)    & proved                  & \\
 Corollary~\ref{cor:one-shape}                    & proved                  & \\
 Theorem~\ref{thm:dichotomy} (dichotomy)          & proved (Lean) & \texttt{EnvelopeDichotomy} \\
 Corollaries~\ref{cor:alternative}, \ref{cor:cd-is-K} & proved              & \\
 Lemma~\ref{lem:no-length-four} ($K\ge6$)         & proved                  & \\
 Lemma~\ref{lem:independence} (unique relation)   & proved                  & \\
-Theorem~\ref{thm:len6} (length six is dihedral)  & proved                  & all $n\ge3$, all positive legs \\
+Theorem~\ref{thm:len6} (length six is dihedral)  & proved, reviewed        & all $n\ge3$; nonzero legs suffice, Rem.~\ref{rem:len6-hyp} \\
 Theorem~\ref{thm:envelope} (envelope)            & proved (Lean, partly) & \texttt{EnvelopeDichotomy}, \texttt{NdimRate} \\
 Corollary~\ref{cor:asymptotic}                   & proved (Lean) & \texttt{NdimRate} \\
 Lemma~\ref{lem:boundary} (boundary pairs)        & proved (Lean) & \texttt{RankTwoExclusion} \\
-Lemma~\ref{lem:cremona-empty} (three quartics)   & proved                  & rank-$0$ descents, not formalised \\
+Lemma~\ref{lem:cremona-empty} (three quartics)   & proved                  & rank-$0$ descents recomputed, not formalised \\
 Lemma~\ref{lem:diagonal} (equal flanking legs)   & proved                  & \\
 Theorem~\ref{thm:rank2} (rank-two classification)& proved                  & interior half uses Lemma~\ref{lem:cremona-empty} \\
 Lemma~\ref{lem:uniform-detQ} ($\det Q_n$)        & proved (Lean) & \texttt{OrthoschemeDet} \\
@@ -1420,7 +1543,10 @@ Problem~\ref{prob:fp} (finite presentation)      & open in both directions & ans
 \end{tabular}
 \caption{Status of the numbered statements. ``Lean'' means that the indicated Lean~4 file, which
 builds against Mathlib with no \texttt{sorry}, covers the statement; ``partly'' means that it
-covers some steps of the proof and not others. The scope of each file is described in
+covers some steps of the proof and not others. ``Reviewed'' means that the written proof has
+been re-examined in full against a hostile reading, independently of its drafting; the
+hypothesis audit that review produced is Remark~\ref{rem:len6-hyp}, and the status of the
+excluded dimension is Remark~\ref{rem:len6-n2}. The scope of each Lean file is described in
 \S\ref{sec:cert}. The three rows at the bottom are the whole of what the paper leaves open.}
 \label{tab:status}
 \end{table}
@@ -1484,6 +1610,12 @@ $\ker\rho_a$ has length below $6$; no element of length $6$ has support of size 
 and an element of length $6$ occurs if and only if $t(a)\ge1$, in which case it is
 $(R_iR_{i+1})^{\pm3}$ at a triple of equal consecutive legs. The per-dimension counts are in
 the tool's \texttt{README.md}.
+
+\paragraph{The three elliptic curves.}
+The rank, torsion, conductor and $j$-invariant of each of the three Jacobians of
+Lemma~\ref{lem:cremona-empty} were recomputed with PARI/GP 2.17.4, by
+\texttt{ellrank} and, independently, \texttt{ellanalyticrank}; the outputs and what they do and
+do not establish are in Remark~\ref{rem:cremona-provenance}.
 
 \paragraph{The envelope.}
 Theorem~\ref{thm:envelope} is certified by \texttt{code/zeta\_probe/tools/racg\_envelope}
@@ -1585,9 +1717,9 @@ downstream of those two inputs is machine-checked. Of Theorem~\ref{thm:len6},
 \texttt{ReflectionTriple.lean} formalises the reflection calculus and the rigidity step (2) in
 an arbitrary real inner product space, with the reflection defined from the inner product and
 no dimension hypothesis; the word combinatorics in $W_n$, Carter's rank lemma, and the affine
-argument of step (3) are paper proofs. Lemma~\ref{lem:independence},
-Lemma~\ref{lem:no-length-four}, Lemma~\ref{lem:diagonal}, Theorem~\ref{thm:rigidity} and
-Theorem~\ref{thm:barrier} are paper proofs.
+argument of step (3) are paper proofs. Lemma~\ref{lem:facet-int},
+Lemma~\ref{lem:independence}, Lemma~\ref{lem:no-length-four}, Lemma~\ref{lem:diagonal},
+Theorem~\ref{thm:rigidity} and Theorem~\ref{thm:barrier} are paper proofs.
 
 \section*{Acknowledgments}
 
