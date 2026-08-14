@@ -49,32 +49,40 @@ sides of a right triangle in $\Q^2$ with positive unequal legs, and let $U(x)=\s
 be its geodesic word-length growth series (the integer sequence \textup{OEIS~A396406}) with
 relaxed companion $V$. We prove:
 \begin{enumerate}[leftmargin=1.9em,itemsep=0.12em,topsep=0.25em]
-\item[\textup{(i)}] the catalytic building-block $q$-series $\Sigma_0,\Sigma_1,S_0,S_1$ are
-transcendental over $\Q(q)$, \emph{unconditionally}: their integer coefficients grow
-super-polynomially along the squares, so $|q|=1$ is a natural boundary by the
-P\'olya--Carlson theorem;
-\item[\textup{(ii)}] the common growth rate is $\beta_2=1.4916177871\ldots$ \emph{exactly}, and
+\item[\textup{(i)}] each catalytic building-block $q$-series $\Sigma_0,\Sigma_1,S_0,S_1$ is, by the
+P\'olya--Carlson theorem, either a rational function whose poles are roots of unity or has
+$|q|=1$ as a natural boundary and is transcendental over $\Q(q)$; the first alternative is
+excluded, and hence transcendence holds, under a coefficient-growth statement along the squares
+that is verified exactly for the first $34$ square indices and is not proved
+(Theorem~\ref{thm:blocks}, Remark~\ref{rem:growthstatus});
+\item[\textup{(ii)}] the common growth rate is $\beta_2=1.4916177871\ldots$, and
 $\tfrac32$ is excluded;
 \item[\textup{(iii)}] the relaxed series $V$ is transcendental over $\Q(x)$; the required
 pole set is supplied by the rectangle bound of Lemma~\ref{lem:T2abs} and the
 non-vanishing of the denominator block at the travel poles is proved by an elementary explicit chain
 (Appendix~\ref{app:annulus}): $|S_e(q_m)|\ge0.35\sqrt{\tau_m}$ at every travel pole, with all constants numerical
 and no cited asymptotic theorem on this path. For the true series $U$
-we prove: $U$ is transcendental over $\Q(x)$. The required amplitude estimate $(\star)$ ($|P_{12}(q_m)|w_m^3<2$ at every travel pole) is proved: the gate block is the symmetric second
+we prove the analytic half in full and $U$'s transcendence conditionally
+(Theorem~\ref{thm:U}), on two structural inputs stated there and proved nowhere: the invariance of
+the travel block and the lifting reduction from the gate to numerator non-vanishing. The amplitude
+estimate $(\star)$ ($|P_{12}(q_m)|w_m^3<2$ at every travel pole) is proved: the gate block is the symmetric second
 difference of the $q$-cosine at its own zero, a two-interval uniform certificate bounds it by
 $0.619\,\tau^{3/2}<\tau^{3/2}/\sqrt2$ for every pole with $\tau\le5\cdot10^{-3}$, and the six
 poles above that threshold are checked directly at $120$-digit precision. An exact identity,
 $S_e=\tfrac{qZ}2\mathfrak s(Z)-P_{12}$, turns the same certificate into the denominator bound
-$|S_e|\ge0.63\sqrt\tau$ and the sign input $b_0>0$ that close the whole transcendence gate. The
+$|S_e|\ge0.63\sqrt\tau$, so the gate closes at every travel pole. The
 turning-point
 amplitude atom on the $U$-side, long the special-function obstacle, is an explicit rational inequality
 \emph{formally verified in Lean~4 / Mathlib} (Lemma~\ref{lem:atomN});
 \item[\textup{(iv)}] an orthogonal, analysis-free route via Christol's theorem would settle $U$
-without any of the above: the $p$-kernel of $(u_n\bmod p)$ is machine-verified to be maximally
-non-automatic at $p=3,5$, though a proof for dense-support series is open.
+without any of the above: the $p$-kernel of $(u_n\bmod p)$ is computed to be maximally
+non-automatic at $p=3,5$ and machine-checked at $p=3$, though a proof for dense-support series is
+open.
 \end{enumerate}
-Thus both $V$ and $U$ rest on self-contained analysis: every coefficient is derived elementarily
-and machine-verified, the remainders are at the standard simple-saddle level, and the gate ($(\star)$, the denominator bound, and $b_0>0$) is proved; the precise rigor standing, including
+$V$'s transcendence is unconditional. On $U$ the analysis is complete and the remaining gap is
+combinatorial: every coefficient is derived elementarily
+and machine-checked, the remainders are at the standard simple-saddle level, and the gate ($(\star)$ and the denominator bound) is proved, but the passage from the gate to a pole of $U$
+is not. The precise rigor standing, including
 the arithmetic model of the committed certificates, is stated in the text. In sharp contrast with the rational growth of
 hyperbolic groups and the algebraic growth series of Parry's wreath products, the geometric word
 metric places this virtually-lamplighter group outside every algebraic class.
@@ -90,11 +98,13 @@ generic triangle group \cite{IsolaPiergallini} rather than a Coxeter group, and;
 rational Coxeter case governed by Steinberg's formula \cite{StanleyEC2}; its growth is not a
 priori rational. The sequence $u_n=1,3,5,8,13,21,34,55,89,\dots$ is \textup{OEIS~A396406}; it
 coincides with the Fibonacci numbers $F_{n+3}$ for $1\le n\le9$ and first deviates at $n=10$. This
-paper settles the arithmetic nature of both series: the relaxed companion $V$ is transcendental over
-$\Q(x)$ with every analytic input it consumes proved self-contained, and the true series $U$ is transcendental
-over $\Q(x)$: the amplitude estimate $(\star)$ and the full gate (numerator bound, denominator
-lower bound, and sign) are proved at every travel pole in Appendix~\ref{app:star}
-(Theorem~\ref{thm:star}, Lemma~\ref{app:Se}, Corollary~\ref{app:gate}).
+paper settles the arithmetic nature of the relaxed companion $V$, which is transcendental over
+$\Q(x)$ with every analytic input it consumes proved self-contained, and reduces the true series
+$U$ to two combinatorial statements: the amplitude estimate $(\star)$ and the gate (numerator
+bound and denominator lower bound) are proved at every travel pole in Appendix~\ref{app:star}
+(Theorem~\ref{thm:star}, Lemma~\ref{app:Se}, Corollary~\ref{app:gate}), and $U$ is transcendental
+over $\Q(x)$ conditional on the travel-block invariance and the lifting reduction stated as
+\textup{(T)} and \textup{(L)} in Theorem~\ref{thm:U}.
 
 \paragraph{Context.} For word-growth series of groups, rationality is the norm in the classical
 families: hyperbolic groups have rational growth series with respect to every finite generating set
@@ -121,15 +131,19 @@ an open problem.
 \paragraph{The relaxed/true dichotomy.} The word length $\ell_T(g)$ is realised by strand walks in
 a finite transition system; permitting free isolated cycles yields a smaller, analytically tamer
 \emph{relaxed} length $\ell_R(g)$, with $\ell_T=\ell_R+2c(g)$, $c(g)\in\Z_{\ge0}$ a cycle count.
+The inequality $\ell_T\le\ell_R+2c$ is proved in \cite{Bonfioli2026a}; the reverse inequality is
+conjectural there, and is verified on the $275\,823$ elements of the radius-$24$ ball.
 The relaxed counting function is the companion $V$; one has $v_n\ge u_n$, equality for $n\le7$,
 first strict at $n=8$. Both are governed by a linear $q$-difference (dilation $t\mapsto q^2t$)
 \emph{catalytic functional equation} (\S\ref{sec:setup}) that is $q$-holonomic and not of
 polynomial-kernel type.
 
 \paragraph{Method.} The catalytic transfer is assembled from four integer $q$-series
-$\Sigma_0,\Sigma_1,S_0,S_1$ with $j^2$-gapped coefficients. Their coefficients grow
-super-polynomially, so P\'olya--Carlson yields unconditional transcendence over $\Q(q)$
-(\S\ref{sec:blocks}). Both $V$ and $U$ acquire poles at the \emph{travel poles} $q_m$, the roots of
+$\Sigma_0,\Sigma_1,S_0,S_1$ with $j^2$-gapped coefficients. P\'olya--Carlson gives a dichotomy for
+them (rational with roots-of-unity poles, or a natural boundary and transcendence over $\Q(q)$);
+the rational alternative is excluded by super-polynomial coefficient growth along the squares, a
+statement verified for the first $34$ square indices and not proved (\S\ref{sec:blocks}).
+Both $V$ and $U$ acquire poles at the \emph{travel poles} $q_m$, the roots of
 $\Sigma_1^T(q)=1$; transcendence follows from accumulation of these poles at $q=1$ once a certain
 auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). What the theorems consume is only
 $|T_2|\to0$, and that is proved self-contained in Lemma~\ref{lem:T2abs} by an absolute bound on a
@@ -145,14 +159,18 @@ one amplitude bound on that series at the travel poles. This bound is \emph{prov
 (Appendix~\ref{app:star}): $P_{12}$ is the symmetric second difference of the $q$-cosine at its own
 zero (Proposition~\ref{prop:P12second}), so the gate is a second-derivative estimate on a window of
 width $\tau$, delivered by a two-interval uniform certificate; an exact identity then converts the
-same certificate into the denominator lower bound and the sign input $b_0>0$, closing the gate in
-full (Corollary~\ref{app:gate}). The sharp constants behind the picture are \emph{derived} in
+same certificate into the denominator lower bound, closing the gate
+(Corollary~\ref{app:gate}). What the gate does \emph{not} supply is the passage from the gate to a
+pole of $U$; that passage, and the invariance of the travel block under the cycle marker, are the
+two unproved inputs \textup{(T)} and \textup{(L)} of Theorem~\ref{thm:U}
+(Remark~\ref{rem:Ustatus}). The sharp constants behind the picture are \emph{derived} in
 Remark~\ref{rem:elemY3}: the pole--zero offset $\delta w=\tfrac{\sqrt2}8\tau^{3/2}$ and
 $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below the gate threshold. (The
 turning-point atom feeding that analysis, the rational envelope
 $h(X)=(1+\tfrac3{2X^2})/(1+\tfrac1{X^2})\in[1,\tfrac32]$ of Lemma~\ref{lem:atomN}, is formally
-verified in Lean~4.) $U$ and $V$ therefore rest on the same self-contained analysis; no
-special-function input separates them.
+verified in Lean~4.) $U$ and $V$ therefore rest on the same self-contained \emph{analysis}; no
+special-function input separates them. They are separated instead by the combinatorial inputs
+\textup{(T)} and \textup{(L)}, which $V$ does not use.
 
 Section~\ref{sec:modp} records an independent arithmetic route: by Christol's theorem, if
 $(u_n\bmod p)$ is not $p$-automatic for one prime $p$ then $U$ is transcendental over $\Q(x)$; the
@@ -184,31 +202,76 @@ once the collapse machinery is in place).
 The denominator $1-\Sigma_1$ is the identical, cycle-marker-free object in the generating functions
 of $U$ and of $V$; hence $U$ and $V$ share the travel poles $q_m$.
 \end{proposition}
-\noindent The proof is a strand-walk argument (every pure-travel element has cycle count $0$,
-so the two length gradings agree on it); see the supplement \cite{supplement}.
+\noindent This proposition is not proved in this paper. The argument is a strand-walk argument
+(every pure-travel element has cycle count $0$, so the two length gradings agree on it) and is
+written in the supplement \cite{supplement}; there it rests in turn on two statements that the
+supplement does not prove, namely the localisation of cycles (a pure-travel element has $c=0$),
+checked exhaustively on the $3869$ pure-travel elements of true length $\le16$, and the metric
+identity $\ell_T=\ell_R+2c$, whose upper bound is proved in \cite{Bonfioli2026a} and whose lower
+bound is open. Its standing is therefore that of a verified conjecture, and every statement below
+that invokes it inherits that standing; this is recorded explicitly in Theorem~\ref{thm:U} and in
+Remark~\ref{rem:Ustatus}.
 
-\section{Unconditional transcendence of the blocks}\label{sec:blocks}
+\section{Transcendence of the blocks}\label{sec:blocks}
 
 \begin{theorem}\label{thm:blocks}
-Each of $\Sigma_0,\Sigma_1,S_0,S_1$ is transcendental over $\Q(q)$.
+Let $\Sigma$ be any of $\Sigma_0,\Sigma_1,S_0,S_1$. Then $\Sigma$ has integer coefficients and
+converges in $|q|<1$, and exactly one of the following holds:
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item $\Sigma$ is a rational function whose poles are roots of unity; or
+\item $|q|=1$ is a natural boundary of $\Sigma$, and $\Sigma$ is transcendental over $\Q(q)$.
+\end{enumerate}
+Alternative \textup{(a)} is excluded, and hence \textup{(b)} holds, for any block whose
+coefficients grow super-polynomially along a subsequence. For $\Sigma_1$ that growth is the
+hypothesis
+\begin{equation}\label{eq:growth}
+   \bigl|[q^{(j+1)^2}]\Sigma_1\bigr|\ \ge\ 2^{\,j+1}\qquad\text{for infinitely many }j,
+\end{equation}
+which is \emph{not proved here}: see Remark~\textup{\ref{rem:growthstatus}}.
 \end{theorem}
 
 \begin{proof}
-Each block is an integer power series with radius of convergence exactly $1$. Along the squares its
-coefficients grow super-polynomially: for $\Sigma_1$ one has $|[q^{(j+1)^2}]\Sigma_1|\ge2^{\,j+1}$,
-from the $j^2$-gapped catalytic telescoping (the block's coefficients
-$2,-4,14,-52,178,-856,4626,\dots$ at $q^{(j+1)^2}$, and the bound, are reproduced from the block's
-$A/C$ recursion and machine-checked for $j\le9$ in Lean~4, \texttt{PolyaCarlson.lean}, theorem
-\texttt{coeff\_bound}). A power series with integer coefficients and radius $1$
-is, by the P\'olya--Carlson theorem \cite{Carlson1921}, either a rational function whose poles are
-roots of unity or has the unit circle as a natural boundary. Super-polynomial coefficient growth
-rules out the rational alternative, so $|q|=1$ is a natural boundary; a function with a natural
-boundary is transcendental over $\Q(q)$.
+The coefficients are integers because the $A/C$ recursion has integer coefficients. Convergence in
+$|q|<1$ is read off the closed forms: each block is a series whose $j$-th term carries the
+Gaussian factor $q^{j^2+O(j)}$ against a denominator $(q;q)_{2j}$ or $(q;q)_{2j+1}$ bounded below
+in modulus by $|(q;q)_\infty|>0$ on compact subsets of the punctured disc (for $\Sigma_1$ use
+$1-\Sigma_1=\cos(Z;q^2)=\sum_{j\ge0}(-1)^jq^{j^2}(2(1-q))^j/(q;q)_{2j}$ of
+Proposition~\ref{prop:qtrig}, in which the pole of $Z^2=2(1-q)/q$ at the origin is cancelled), so
+each series converges absolutely and locally uniformly there. Hence
+P\'olya--Carlson \cite{Carlson1921} applies and gives the dichotomy \textup{(a)}/\textup{(b)}: a
+power series with integer coefficients convergent in the unit disc is either a rational function
+whose poles are roots of unity, or has the unit circle as a natural boundary; a function with a
+natural boundary is transcendental over $\Q(q)$. In case \textup{(a)} the coefficient sequence
+satisfies a linear recurrence all of whose characteristic roots are roots of unity, hence
+$|[q^n]\Sigma|\le Cn^d$ for some $C,d$; a subsequence growing faster than every polynomial in $n$
+is therefore incompatible with \textup{(a)}. Under \eqref{eq:growth},
+$|[q^n]\Sigma_1|\ge2^{\sqrt n}$ along $n=(j+1)^2$, which is such a subsequence.
 \end{proof}
 
-This is the unconditional core: it uses no analytic gate. It does not, however, transfer directly
+\begin{remark}[status of the growth hypothesis \eqref{eq:growth}]\label{rem:growthstatus}
+\eqref{eq:growth} is verified, not proved. The $j$-th term of the catalytic telescoping
+$\Sigma_1=\sum_{j\ge0}\bigl(\prod_{i<j}C_{1+2i}\bigr)A_{1+2j}$ has lowest degree exactly
+$(j+1)^2$ with coefficient exactly $(-1)^j2^{\,j+1}$, and terms of index $>j$ do not reach that
+degree; \eqref{eq:growth} is thus the statement that the tails of the terms of index $<j$ do not
+cancel that leading contribution. Exact integer evaluation of the $A/C$ recursion gives
+\[
+   [q^{(j+1)^2}]\Sigma_1=2,\,-4,\,14,\,-52,\,178,\,-856,\,4626,\,-27524,\,150214,\,-816268,\dots
+\]
+and confirms \eqref{eq:growth} for every $j\le33$ (degree $1156$; at $j=33$ the value is
+$-4649405079364022238518260$ against the bound $2^{34}$, and the term ratio has settled near
+$6.2$, so the margin grows). For $j\le9$ the bound is also machine-checked in Lean~4
+(\texttt{PolyaCarlson.lean}, theorem \texttt{coeff\_bound}); that proof uses
+\texttt{native\_decide} and therefore depends, besides \texttt{propext}, on the compiler-trust
+axiom \texttt{PolyaCarlson.coeff\_bound.\_native.native\_decide.ax\_1\_1}, which is outside the
+three standard axioms. No finite verification can establish a statement quantified over
+infinitely many $j$; \eqref{eq:growth} is numerically certain and unproved, and the
+transcendence conclusion \textup{(b)} of Theorem~\ref{thm:blocks} inherits that standing.
+\end{remark}
+
+The dichotomy of Theorem~\ref{thm:blocks} uses no analytic gate; the exclusion of alternative
+\textup{(a)} rests on \eqref{eq:growth}. Neither transfers directly
 to $V$ or $U$, which are \emph{ratios} of blocks in which the boundary singularities can cancel;
-those require the pole-accumulation argument below.
+those require the pole-accumulation argument below, which is independent of \eqref{eq:growth}.
 
 \section{The steepest-descent estimate}\label{sec:sd}
 
@@ -755,9 +818,13 @@ the theorem.
 \end{proof}
 
 \begin{corollary}\label{cor:beta}
-The exponential growth rate of both $u_n$ and $v_n$ is $\beta_2=1.4916177871\ldots$, with
-$\beta_2^2$ the reciprocal of the smallest travel pole $q_1$; the value $\tfrac32$ is excluded. This is unconditional (it needs only
-the location of the dominant travel pole, not Remark~\ref{lem:cos}).
+The exponential growth rate of $v_n$ is $\beta_2=1.4916177871\ldots$, with
+$\beta_2^2$ the reciprocal of the smallest travel pole $q_1$; the value $\tfrac32$ is excluded.
+This is unconditional: it needs only
+the location of the dominant travel pole, not Remark~\ref{lem:cos}. The same rate for $u_n$
+follows from Proposition~\ref{prop:travelinv} (hypothesis \textup{(T)} of Theorem~\ref{thm:U}),
+which supplies $q_1$ as a singularity of $U$ as well; $u_n\le v_n$ gives the upper bound
+unconditionally.
 \end{corollary}
 
 \begin{remark}[the number $\beta_2$: a value-transcendence question]\label{rem:betanumber}
@@ -892,8 +959,8 @@ $\beta_2$) and the classical tail (the $\pi^2$-law): the roots become ``provably
 in the limit'' while the first, the one of combinatorial interest, remains untouched; the
 confluent boundary of the step-ratio mechanism made visible inside a single object. (That the
 higher roots are genuine singularities of $U$ itself is exactly the non-vanishing
-$\mathcal N_U(q_m)\ne0$ proved for every travel pole in Theorem~\ref{thm:U} via
-Corollary~\ref{app:gate}.)
+$\mathcal N_U(q_m)\ne0$, which Corollary~\ref{app:gate} delivers at every travel pole under
+hypothesis \textup{(L)} of Theorem~\ref{thm:U}.)
 
 Three refinements (all computations at $115$ digits, $30$ cosine and $10$ sine members). First,
 the sine side has its own family, $H(q^{\mathrm s}_j,2q(1-q))=0$ with
@@ -1926,7 +1993,8 @@ $q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{1044}$.
 
 \section{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
-$U$ inherits the travel poles of Proposition~\ref{prop:travelinv}; it is transcendental once its
+$U$ inherits the travel poles of Proposition~\ref{prop:travelinv}, which this paper does not prove;
+granting that, it is transcendental once its
 numerator is non-zero at infinitely many $q_m$. The Bousquet-M\'elou--type transfer expresses the
 relevant residue through a M\"obius function of a cocycle variable, and non-vanishing reduces to a
 \emph{gate}
@@ -1937,9 +2005,10 @@ on the off-diagonal cocycle entry $P_{12}$ (the supplement \cite{supplement}, \S
 $\mathcal N_U(q_m)$ denotes the assembled numerator of $U$'s residue at $q_m$ (the M\"obius
 numerator of the transfer), and $b_0$ is the $y$-free bulk-resolvent sum, with closed form
 $b_0=\tfrac{2q}{1-q}\,S_o/S_e$ (the supplement's telescoped first-order system;
-Lemma~\ref{lem:P12closed} identifies $S_o$). The reduction is proved in the supplement by exact
-Riccati and telescope identities, and additionally verified numerically at all tabulated poles.
-Both columns of the
+Lemma~\ref{lem:P12closed} identifies $S_o$). This reduction, hypothesis \textup{(L)} of
+Theorem~\ref{thm:U}, is \emph{not proved} in this paper or in the supplement: the supplement
+derives it from a resolvent factorisation whose exactness is supported by numerical agreement
+only (Remark~\ref{rem:Ustatus}). Both columns of the
 cocycle satisfy the scalar three-term recursion $y_{n+1}=(1+q^3-2(1-q)q^{2n+2})y_n-q^3y_{n-1}$;
 setting $x=q^n$ turns it into the linear $q$-difference equation
 \begin{equation}\label{eq:qdiff}
@@ -2000,16 +2069,26 @@ by \texttt{nlinarith}.
 \end{remark}
 
 \begin{theorem}\label{thm:U}
-The true growth series $U$ is transcendental over $\Q(x)$.
-The numerator amplitude estimate $(\star)$ (at every travel pole $q_m$,
-$|P_{12}(q_m)|\,w_m^3<2$) is Theorem~\ref{thm:star} (Appendix~\ref{app:star}):
+Assume the two structural inputs \textup{(T)} and \textup{(L)}, which this paper does not prove:
+\begin{enumerate}[leftmargin=2.4em,itemsep=0.1em,topsep=0.2em]
+\item[\textup{(T)}] Proposition~\ref{prop:travelinv}: $1-\Sigma_1$ is the identical,
+cycle-marker-free denominator in $U$ and in $V$, so $U$ inherits the travel poles $q_m$;
+\item[\textup{(L)}] the lifting reduction of \cite{supplement},~\S\,lifting: the closed form
+$b_0=\tfrac{2q}{1-q}\,S_o/S_e$ holds, and at every travel pole $q_m$ the gate \eqref{eq:gate}
+($b_0(q_m)>0$ \emph{and} $|s(q_m)|<1$) implies $\mathcal N_U(q_m)\ne0$.
+\end{enumerate}
+Then the true growth series $U$ is transcendental over $\Q(x)$.
+
+Unconditionally, and independently of \textup{(T)} and \textup{(L)}, the half $|s|<1$ of the gate
+\eqref{eq:gate} holds at every travel pole. The numerator amplitude estimate $(\star)$ (at every
+travel pole
+$q_m$, $|P_{12}(q_m)|\,w_m^3<2$) is Theorem~\ref{thm:star} (Appendix~\ref{app:star}):
 $|P_{12}|\le0.619\,\tau^{3/2}$ for $\tau\le5\cdot10^{-3}$ and $|P_{12}|w^3\le0.75$ at the six
-poles above that threshold. The full gate \eqref{eq:gate} ($b_0>0$ \emph{and} $s<1$) is
+poles above that threshold. The passage to $|s|<1$ is
 Corollary~\ref{app:gate}: $|s|\le0.983$ on the uniform range and $|s|\le0.296$ at the six
 exceptional poles, with the denominator lower bound $|S_e|\ge0.63\sqrt\tau$ supplied by
-Lemma~\ref{app:Se}. The reduction of non-vanishing to the gate is the supplement's M\"obius
-factorisation (\cite{supplement}, \S\,lifting), proved there by exact Riccati and telescope
-identities and additionally verified numerically at all tabulated poles. The
+Lemma~\ref{app:Se}. The remaining half $b_0>0$ is proved in the same corollary from a sign chain,
+but consumes the closed form for $b_0$ named in \textup{(L)}, so it is not unconditional. The
 leading-order picture of Remark~\ref{rem:elemY3} (the phase-matched zero giving
 $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below the threshold $1/\sqrt2$) is
 consistent with, and explained by, the second-difference identity of
@@ -2017,13 +2096,14 @@ Proposition~\ref{prop:P12second}.
 \end{theorem}
 
 \begin{proof}
-$U$ inherits the travel poles (Proposition~\ref{prop:travelinv}), and $\mathcal N_U(q_m)\ne0$ once
+By \textup{(T)}, $U$ inherits the travel poles; by \textup{(L)}, $\mathcal N_U(q_m)\ne0$ once
 the gate \eqref{eq:gate} holds there. Corollary~\ref{app:gate} closes the gate at \emph{every}
 travel pole: on the uniform range $\tau\le5\cdot10^{-3}$,
 $|P_{12}|\le0.619\,\tau^{3/2}$ (Theorem~\ref{thm:star}) and $|S_e|\ge0.63\sqrt\tau$
 (Lemma~\ref{app:Se}) give
 $|s|=\tfrac{q}{1-q}\,|P_{12}|/|S_e|\le\tfrac{\tau}{e^\tau-1}\cdot\tfrac{0.619}{0.63}\le0.983<1$,
-and $b_0>0$ follows from the sign chain of the same lemmas; the six exceptional poles are checked
+and $b_0>0$ follows from the sign chain of the same lemmas through the closed form of
+\textup{(L)}; the six exceptional poles are checked
 directly. Hence $U$ has an uncancelled pole at every $q_m$; these are infinitely many and
 accumulate at $q=1$ (Lemma~\ref{lem:infpoles}), so $U$ has infinitely many poles in the unit disc
 and is transcendental over $\Q(x)$ (as in Theorem~\ref{thm:V}: an algebraic function over $\Q(x)$
@@ -2041,15 +2121,46 @@ passage to the pole set, and the step from infinitely many poles to non-algebrai
 verified in Lean~4 (\texttt{UAssembly.lean}, seven theorems, no \texttt{sorry}, axioms
 \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}), each analytic input entering as
 an explicit hypothesis: Theorem~\ref{thm:star}, Lemma~\ref{app:Se}, Corollary~\ref{app:gate},
-Lemma~\ref{lem:infpoles}, the supplement's reduction, and the finiteness of an algebraic function's
+Lemma~\ref{lem:infpoles}, the reduction \textup{(L)} (the Lean hypothesis \texttt{hred}), and the
+finiteness of an algebraic function's
 pole set in the disc. The file formalises \emph{no} analysis: no $q$-series, no steepest
 descent, no numerics; its content is exactly that those hypotheses \emph{compose}, so its
-hypothesis list is an audit of what Theorem~\ref{thm:U} rests on. The quantitative step is isolated
+hypothesis list is an audit of what Theorem~\ref{thm:U} rests on, not a verification of any of
+them. In particular \texttt{hred} is assumed, not derived, so the machine check says nothing
+about the standing of \textup{(L)}. The quantitative step is isolated
 as \texttt{gate\_ratio\_lt\_one}, whose hypothesis $K<c$ (numerator constant strictly below
 denominator constant) is what the gate needs and what a numerator bound alone cannot supply:
 with $K=0.619$ from Theorem~\ref{thm:star} and the constant $0.35$ of
 Proposition~\ref{prop:selower} it is \emph{false}, which is precisely why Lemma~\ref{app:Se}'s
 $0.63$ is required.
+\end{remark}
+
+\begin{remark}[what is proved, and what \textup{(T)} and \textup{(L)} still owe]\label{rem:Ustatus}
+The unconditional content of this section is the numerator half of the gate: at every travel pole,
+$|P_{12}|\le0.619\,\tau^{3/2}$ (Theorem~\ref{thm:star}), $|S_e|\ge0.63\sqrt\tau$
+(Lemma~\ref{app:Se}) and hence $|s|\le0.983<1$ (Corollary~\ref{app:gate}), together with the
+infinitude and accumulation of the travel poles (Lemma~\ref{lem:infpoles}) and the fact that these
+facts compose to non-algebraicity (Remark~\ref{rem:uassembly}). What is \emph{not} proved,
+here or in \cite{supplement}, is either of the structural inputs.
+
+\textup{(T)} is Proposition~\ref{prop:travelinv}; its dependencies are listed there. \textup{(L)}
+is derived in \cite{supplement} from a M\"obius factorisation of the semiseparable bulk resolvent,
+$B(q,y)=(b_0+g\,c)/(1-g\,t_1)$ with $g=q/(1-qy)$ and $c=t_0b_1-b_0t_1$, from which the
+identity $B_U(q_m)=0\iff(1-s)B_V(q_m)+q_mb_0=0$ follows by clearing denominators. Given the
+factorisation, that last step is algebra; the factorisation itself, and the dictionary
+$b_0=S_0/(1-S_1)$, $S_e=1-S_1$, $S_o=\tfrac{1-q}{2q}S_0$ that identifies its entries with the
+blocks of \eqref{eq:blocks}, are stated there as exact identities supported by numerical agreement
+with the resolvent to $10^{-22}$ and $10^{-23}$. Numerical agreement at that accuracy is strong
+evidence and is not a proof. Two further ingredients of the same derivation are likewise
+verified rather than proved: the localisation of isolated cycles outside the travel interval, and
+the gapless-run identification of the bulk block. Accordingly the standing of \textup{(L)} is
+that of a verified conjecture, the standing of Theorem~\ref{thm:U} is the weaker of
+\textup{(T)} and \textup{(L)}, and the word ``unconditionally'' is not applied to $U$ anywhere in
+this paper. Making Theorem~\ref{thm:U} unconditional requires exactly two things: a written proof
+of the resolvent factorisation and its dictionary, and a written proof of
+Proposition~\ref{prop:travelinv} (which in turn needs the lower bound in $\ell_T=\ell_R+2c$).
+Neither is an analytic obstacle of the kind Appendix~\ref{app:star} addresses; both are
+combinatorial or algebraic, and both are absent.
 \end{remark}
 
 \begin{remark}[what the turning-point atom does and does not give]\label{rem:Ugap}
@@ -2098,13 +2209,15 @@ to be \emph{maximally} non-automatic: through the accessible depth its size trac
 tree with \emph{no} deficit. (An apparent deficit of $1$ at level $3$; $1,4,13,39$ vs.\ the full
 $1,4,13,40$ at $p=3$; is a \emph{comparison-length artifact}: a level-$k$ decimation subsequence
 retains only $\sim N/p^{k}$ terms, so at a short prefix two distinct decimations can coincide; the
-deficit disappears once the comparison length reaches $9$.) Two instances are machine-verified in
-Lean~4. For the true series itself, the $3$-kernel of $(u_n\bmod3)$ through level $3$ is the full
+deficit disappears once the comparison length reaches $9$.) Two instances are machine-checked in
+Lean~4; both proofs use \texttt{native\_decide}, so besides the three standard axioms they depend
+on the compiler-trust axiom \texttt{\_native.native\_decide.ax\_1\_1} of the declaration concerned.
+For the true series itself, the $3$-kernel of $(u_n\bmod3)$ through level $3$ is the full
 ternary tree, deficit $0$: all $1+3+9+27=40$ decimation words of length $\le3$ are pairwise distinct: at comparison lengths $9$ and $10$ alike; on the $271$-term prefix $n\le270$
 (\texttt{UKernel.lean}, from the validated \texttt{tools/u\_modp\_rust} output, whose $u_n$ are
 self-checked against the $43$ known terms and byte-identical to the earlier validated $n\le180$ run
-on the overlap). For the sibling block $\Sigma_1$, already transcendental over $\Q(q)$ by
-Theorem~\ref{thm:blocks}, the same level-$3$ full tree is certified in \texttt{SigmaKernel.lean}
+on the overlap). For the sibling block $\Sigma_1$, transcendental over $\Q(q)$ by
+Theorem~\ref{thm:blocks} under \eqref{eq:growth}, the same level-$3$ full tree is certified in \texttt{SigmaKernel.lean}
 (built from the $A/C$ recursion over $\F_3$), with the short-prefix deficit-$1$ confirmed spurious. The Berlekamp--Massey linear complexity of $(u_n\bmod 3)$ is $\approx N/2$. This is the
 strongest finite-data evidence for non-automaticity, and hence for transcendence over $\Q(x)$,
 independent of all of \S\S\ref{sec:sd}--\ref{sec:U}. A proof for $U$ would require a non-automaticity
@@ -2113,8 +2226,10 @@ the standard gap/Mahler methods do not provide.
 
 \section{Conclusion}\label{sec:conclusion}
 
-The arithmetic of A396406 separates cleanly. The catalytic building blocks and the growth rate are
-unconditional (P\'olya--Carlson; Corollary~\ref{cor:beta}). \textbf{The relaxed series $V$ is
+The arithmetic of A396406 separates cleanly. The P\'olya--Carlson dichotomy for the catalytic
+building blocks and the growth rate are unconditional (Theorem~\ref{thm:blocks};
+Corollary~\ref{cor:beta}); the exclusion of the rational alternative for the blocks rests on the
+coefficient growth \eqref{eq:growth}, verified for $j\le33$ and unproved. \textbf{The relaxed series $V$ is
 transcendental over $\Q(x)$}, and its non-cancellation input is Proposition~\ref{prop:selower},
 proved in Appendix~\ref{app:annulus} by an elementary chain with explicit numerical constants: an
 annulus representation, an Euler bound, a Poisson theta envelope, and a $q$-Wronskian invariant. No
@@ -2124,16 +2239,20 @@ explicitly, the two saddles supplying the global cancellation that no partial-su
 $U$ take their pole set from Lemma~\ref{lem:infpoles}, which consumes only the rectangle bound
 $|T_2|\to0$ of Lemma~\ref{lem:T2abs}; and $V$'s non-cancellation input is the elementary
 Proposition~\ref{prop:selower}, independent of either. The true series $U$ stands on the same
-footing: its further inputs are proved in Appendix~\ref{app:star}: the gate block is the
+\emph{analytic} footing: its further analytic inputs are proved in Appendix~\ref{app:star}: the gate block is the
 symmetric second difference of the $q$-cosine at its own zero (Proposition~\ref{prop:P12second}),
 the two-interval uniform certificate of Theorem~\ref{thm:star} gives
 $|P_{12}|\le0.619\,\tau^{3/2}<\tau^{3/2}/\sqrt2$ for $\tau\le5\cdot10^{-3}$ with the six poles
 above that threshold checked directly, and the exact identity $S_e=\tfrac{qZ}2\mathfrak s(Z)-P_{12}$ turns the
-same certificate into the denominator bound and the sign input that close the gate
-($|s|\le0.983$, $b_0>0$; Corollary~\ref{app:gate}), consistent with the phase-matched leading
+same certificate into the denominator bound that closes the gate
+($|s|\le0.983$; Corollary~\ref{app:gate}), consistent with the phase-matched leading
 values $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$ and $s\to\tfrac14$.
-\textbf{$U$ is transcendental over $\Q(x)$}, unconditionally, with the same analytic standing as
-$V$. The turning-point amplitude atom on the $U$-side is the elementary rational bound
+\textbf{$U$ is transcendental over $\Q(x)$ conditional on \textup{(T)} and \textup{(L)}} of
+Theorem~\ref{thm:U}: the invariance of the travel block under the cycle marker, and the reduction
+of numerator non-vanishing to the gate. Both are combinatorial or algebraic and neither is proved,
+here or in \cite{supplement}; their standing is set out in Remark~\ref{rem:Ustatus}. That is the
+whole distance between $U$ and $V$: no analytic input separates them.
+The turning-point amplitude atom on the $U$-side is the elementary rational bound
 of Lemma~\ref{lem:atomN}, formally verified in Lean~4. The independent mod-$p$ route of
 \S\ref{sec:modp} would settle $U$ by a completely different mechanism, if a dense-support
 non-automaticity criterion can be found.
@@ -2298,8 +2417,10 @@ $|P_{12}(q_m)|\,w_m^3<2$, $w_m=\sqrt{2/\tau_m}$; quantitatively
 $|P_{12}|\le\tfrac{3.5\sqrt2}8\,\tau^{3/2}<0.619\,\tau^{3/2}$ for $\tau\le5\cdot10^{-3}$, and
 $|P_{12}|w^3\le0.75$ at the six poles above that threshold) and then closes the full gate
 \eqref{eq:gate}: the same certificate yields the denominator bound $|S_e|\ge0.63\sqrt\tau$
-(Lemma~\ref{app:Se}) and the sign input $b_0>0$, hence $s<1$ and $\mathcal N_U(q_m)\ne0$ at every
-travel pole (Corollary~\ref{app:gate}).
+(Lemma~\ref{app:Se}), hence $s<1$ at every travel pole, and, granting hypothesis \textup{(L)} of
+Theorem~\ref{thm:U} for the closed form of $b_0$, also $b_0>0$ and $\mathcal N_U(q_m)\ne0$ there
+(Corollary~\ref{app:gate}). Nothing in this appendix depends on \textup{(L)} except the two
+statements just named as depending on it.
 Throughout, $h=\tau/2$, $\sigma^2=\tau/2$, $\psi(t)=\cos(Ze^{t};q^2)$; by
 Proposition~\ref{prop:P12second}, $P_{12}=-\tfrac12[\psi(h)+\psi(-h)]$ and $\psi(0)=0$, so
 \begin{equation}\label{eq:taylorgate}
@@ -2570,14 +2691,17 @@ statement holds because $0.90\cdot\tfrac{qZ}2>|P_{12}|$ with the same margin.
 \end{proof}
 
 \begin{corollary}[the gate closes]\label{app:gate}
-At every travel pole the gate \eqref{eq:gate} holds, so $\mathcal N_U(q_m)\ne0$ (the enumeration
-standing of the six-pole list is that of Theorem~\ref{thm:star}). Quantitatively,
+At every travel pole the gate \eqref{eq:gate} holds; under hypothesis \textup{(L)} of
+Theorem~\ref{thm:U} this gives $\mathcal N_U(q_m)\ne0$ (the enumeration
+standing of the six-pole list is that of Theorem~\ref{thm:star}). The half $|s|<1$ is proved here
+outright; the half $b_0>0$ consumes the closed form $b_0=\tfrac{2q}{1-q}S_o/S_e$, which is part of
+\textup{(L)} and is not proved. Quantitatively,
 for $\tau\le5\cdot10^{-3}$:
 \[
  |s|\;=\;\frac{q}{1-q}\,\frac{|P_{12}|}{|S_e|}\;\le\;\frac{\tau}{e^\tau-1}\cdot\frac{0.619}{0.63}
  \;\le\;0.983\;<\;1,
 \]
-and $b_0>0$: by the supplement's closed form $b_0=\tfrac{2q}{1-q}\,S_o/S_e$ \cite{supplement} with
+and $b_0>0$: granting the closed form $b_0=\tfrac{2q}{1-q}\,S_o/S_e$ of \textup{(L)} \cite{supplement} with
 $S_o=\tfrac{z_0}2\,\mathfrak s(z_0)$ (Lemma~\ref{lem:P12closed}), the pole invariant
 $q^{3/2}\mathfrak s(z_0)\mathfrak s(Z)=1$ (Proposition~\ref{prop:P12second}'s proof) gives
 $\operatorname{sign}S_o=\operatorname{sign}\mathfrak s(Z)=\operatorname{sign}S_e$
