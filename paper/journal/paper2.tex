@@ -71,12 +71,20 @@ travel poles, $|S_e(q_m)|\ge0.35\sqrt{\tau_m}$, by an elementary explicit chain 
 numerical and no cited asymptotic theorem (Appendix~\ref{app:annulus}); and the non-vanishing of
 both numerators, from the exact identity $\Sigma_0(q_m)S_0(q_m)=2q_m/(1-q_m)$
 (Proposition~\ref{prop:numnonvanish}), a consequence of the $q$-Pythagorean identity at a zero of
-the $q$-cosine. The relaxed growth series $V$ itself is transcendental over $\Q(x)$ conditional on
-one structural input, the relaxed block assembly \textup{(R)} of Theorem~\ref{thm:V}, proved
-neither here nor in the cited sources. For the true series $U$
-we prove the analytic half in full and $U$'s transcendence conditionally
-(Theorem~\ref{thm:U}), on two structural inputs stated there and proved nowhere: the invariance of
-the travel block and the lifting reduction from the gate to numerator non-vanishing. The amplitude
+the $q$-cosine. The block assembly itself is developed in \S\ref{sec:assembly}: the travel and the
+bulk block are one resolvent of the semiseparable kernel $q^{\max(a,b)}$ seen twice, one
+three-term recursion covers both, and this proves the travel telescoping
+$G^T_0=\Sigma_0/(1-\Sigma_1)$, the bulk dressing $b_0=S_0/(1-S_1)$, the reciprocity $t_0=b_1$
+(equivalently $\det P=1$), the identity $t_1=P_{12}/S_e$, the M\"obius factorisation of the
+gap-marked bulk resolvent, and the \emph{shape} of the local form of $V$ at a travel pole. What is
+refuted is the product form of its numerator: the marker junction is a max-coupling of rank at
+least $3$. The relaxed growth series $V$ is therefore transcendental over $\Q(x)$ conditional on
+one statement, \textup{(R-J)}, that a junction pairing does not vanish at infinitely many travel
+poles (Theorem~\ref{thm:V}); \textup{(R-J)} holds at the dominant pole and is open in general. For
+the true series $U$ we prove the analytic half in full and $U$'s transcendence conditionally
+(Theorem~\ref{thm:U}), on the invariance of the travel block \textup{(T)} and on the same
+\textup{(R-J)}; the former hypothesis \textup{(L)} is now a theorem. All of this rests on the
+strand-walk transfer model \textup{(M)}, exhaustively verified and not proved. The amplitude
 estimate $(\star)$ ($|P_{12}(q_m)|w_m^3<2$ at every travel pole) is proved: the gate block is the symmetric second
 difference of the $q$-cosine at its own zero, a two-interval uniform certificate bounds it by
 $0.619\,\tau^{3/2}<\tau^{3/2}/\sqrt2$ for every pole with $\tau\le5\cdot10^{-3}$, and the six
@@ -91,11 +99,12 @@ without any of the above: the $p$-kernel of $(u_n\bmod p)$ is computed to be max
 non-automatic at $p=3,5$ and machine-checked at $p=3$, though a proof for dense-support series is
 open.
 \end{enumerate}
-Every analytic input consumed by $V$ and by $U$ is proved here; what stands between either series
-and an unconditional statement is combinatorial, and is stated as a hypothesis in the theorem that
-uses it. On $U$ every coefficient is derived elementarily
-and machine-checked, the remainders are at the standard simple-saddle level, and the gate ($(\star)$ and the denominator bound) is proved, but the passage from the gate to a pole of $U$
-is not. The precise rigor standing, including
+Every analytic input consumed by $V$ and by $U$ is proved here, and so now is the algebra of the
+block assembly; what stands between either series and an unconditional statement is combinatorial,
+and is stated as a hypothesis in the theorem that uses it. On $U$ every coefficient is derived
+elementarily
+and machine-checked, the remainders are at the standard simple-saddle level, and the gate ($(\star)$ and the denominator bound) is proved, as is the passage from the gate to $B_U(q_m)\ne0$;
+the passage from there to a pole of $U$ is not. The precise rigor standing, including
 the arithmetic model of the committed certificates, is stated in the text. In sharp contrast with the rational growth of
 hyperbolic groups and the algebraic growth series of Parry's wreath products, the geometric word
 metric places this virtually-lamplighter group outside every algebraic class.
@@ -115,9 +124,12 @@ paper settles the arithmetic nature of the travel resolvent $\Sigma_0/(1-\Sigma_
 transcendental over $\Q(x)$ with every input proved self-contained
 (Theorem~\ref{thm:travelres}), and reduces both growth series to combinatorial statements about the
 strand-walk model: the relaxed companion $V$ is transcendental over $\Q(x)$ conditional on the
-block assembly \textup{(R)} of Theorem~\ref{thm:V}, and the true series $U$ conditional on the
-travel-block invariance and the lifting reduction stated as \textup{(T)} and \textup{(L)} in
-Theorem~\ref{thm:U}. The analytic side is closed on both: the amplitude estimate $(\star)$ and the
+junction non-vanishing \textup{(R-J)} of Theorem~\ref{thm:V}, and the true series $U$ conditional
+on the travel-block invariance \textup{(T)} and the same \textup{(R-J)}
+(Theorem~\ref{thm:U}); both additionally on the transfer model \textup{(M)} of
+Hypothesis~\ref{hyp:model}. The algebraic layer between the blocks and those two series, which
+earlier versions of this paper carried as the hypotheses \textup{(R)} and \textup{(L)}, is proved
+in \S\ref{sec:assembly}. The analytic side is closed on both: the amplitude estimate $(\star)$ and the
 gate (numerator bound and denominator lower bound) are proved at every travel pole in
 Appendix~\ref{app:star} (Theorem~\ref{thm:star}, Lemma~\ref{app:Se},
 Corollary~\ref{app:gate}), and the two numerator non-vanishing statements the resolvents need are
@@ -181,17 +193,20 @@ one amplitude bound on that series at the travel poles. This bound is \emph{prov
 zero (Proposition~\ref{prop:P12second}), so the gate is a second-derivative estimate on a window of
 width $\tau$, delivered by a two-interval uniform certificate; an exact identity then converts the
 same certificate into the denominator lower bound, closing the gate
-(Corollary~\ref{app:gate}). What the gate does \emph{not} supply is the passage from the gate to a
-pole of $U$; that passage, and the invariance of the travel block under the cycle marker, are the
-two unproved inputs \textup{(T)} and \textup{(L)} of Theorem~\ref{thm:U}
-(Remark~\ref{rem:Ustatus}). The sharp constants behind the picture are \emph{derived} in
+(Corollary~\ref{app:gate}). The gate now also delivers $B_U(q_m)\ne0$ at every travel pole
+(Theorem~\ref{thm:L}). What it does \emph{not} supply is the passage from there to a pole of $U$,
+because the assembled residue is a junction pairing and not a multiple of $B_U$
+(Proposition~\ref{prop:junction}); that passage, and the invariance of the travel block under the
+cycle marker, are the two unproved inputs \textup{(R-J)} and \textup{(T)} of
+Theorem~\ref{thm:U} (Remark~\ref{rem:Ustatus}). The sharp constants behind the picture are \emph{derived} in
 Remark~\ref{rem:elemY3}: the pole--zero offset $\delta w=\tfrac{\sqrt2}8\tau^{3/2}$ and
 $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below the gate threshold. (The
 turning-point atom feeding that analysis, the rational envelope
 $h(X)=(1+\tfrac3{2X^2})/(1+\tfrac1{X^2})\in[1,\tfrac32]$ of Lemma~\ref{lem:atomN}, is formally
 verified in Lean~4.) $U$ and $V$ therefore rest on the same self-contained \emph{analysis}; no
-special-function input separates them. They are separated instead by the combinatorial inputs
-\textup{(T)} and \textup{(L)}, which $V$ does not use.
+special-function input separates them, and after \S\ref{sec:assembly} they share the junction
+hypothesis \textup{(R-J)} as well. What separates them is the single combinatorial input
+\textup{(T)}, which $V$ does not use.
 
 Section~\ref{sec:modp} records an independent arithmetic route: by Christol's theorem
 \cite{Christol1979,CKMR1980}, if
@@ -217,9 +232,10 @@ and their companions $\Sigma_0,S_0$, where $\eta_j=e^{-B_j}$ is the Gaussian-dec
 of \S\ref{sec:sd} (equivalently $\eta_j=q^{j^2+j}[2(1-q)]^j(2j)!/[(q;q)_{2j}W^{2j}]$; the
 identification of this display with $1-\Sigma_1=\cos(Z;q^2)$ of Proposition~\ref{prop:qtrig} is the
 collapse used in Lemma~\ref{lem:infpoles}). We write $\Sigma_1^{\mathrm T}=\Sigma_1$ when the travel
-r\^ole is to be emphasised. Both $V$ and $U$ are rational functions of these blocks over
-$\Q(x)$; concretely the relaxed travel resolvent is $G^T_0=\Sigma_0/(1-\Sigma_1)$, and $U$ inherits
-its denominator $1-\Sigma_1$ (Proposition~\ref{prop:travelinv}). The \emph{travel poles}
+r\^ole is to be emphasised. The relaxed travel resolvent is $G^T_0=\Sigma_0/(1-\Sigma_1)$
+(Proposition~\ref{prop:travelsum}), and $U$ inherits its denominator $1-\Sigma_1$
+(Proposition~\ref{prop:travelinv}); how the two blocks assemble into $V$ and $U$, and how far that
+assembly is proved, is \S\ref{sec:assembly}. The \emph{travel poles}
 \[
    q_1<q_2<\cdots\uparrow1,\qquad \Sigma_1^T(q_m)=1,
 \]
@@ -998,7 +1014,7 @@ sampled at two arguments a half $q$-step apart: $(\Sigma_0,\,1-\Sigma_1)$ is
 $\bigl(\tfrac{2q}u\mathfrak s(u),\,\cos(u;q^2)\bigr)$ at $u=Z$, and $(S_0,\,S_e)$ is the same pair
 at $u=z_0=\sqrt q\,Z$. In particular $S_0=\tfrac{2q}{1-q}S_o$ with $S_o$ the odd bulk block of
 Lemma~\ref{lem:P12closed}, which is the second identity of the dictionary \eqref{eq:dict} read as a
-statement about the explicit series, and is therefore not part of what \textup{(L)} leaves unproved.
+statement about the explicit series, and is therefore independent of the transfer model.
 \end{lemma}
 
 \begin{proof}
@@ -1091,6 +1107,719 @@ amplitude companion of $1-\Sigma_1\sim1-\cos w$; but \eqref{eq:numprod} is an id
 asymptotic is not used anywhere.
 \end{remark}
 
+\section{The transfer model and the block assembly}\label{sec:assembly}
+
+The travel block and the bulk block are one object seen twice. Both are the resolvent of the
+semiseparable kernel $q^{\max(a,b)}$ against a geometric diagonal weight, and a single three-term
+recursion in the section index $k$ covers both: its coefficients are $\alpha_k,\gamma_k$ in the
+bulk case and $A_k,C_k$ in the travel case, which is why the four series of \eqref{eq:krec} are
+four ladders on one recursion and not four separate constructions. This section develops that into
+the block assembly the rest of the paper consumes.
+
+Sections~\ref{sec:sect}--\ref{sec:mob} are unconditional statements about explicitly given
+operators. Section~\ref{sec:modelassembly} states the strand-walk input \textup{(M)} that
+identifies those operators with the objects of Route~B; everything from there on is conditional on
+it. Section~\ref{sec:RJ} isolates the one statement that remains open.
+
+Throughout, $|q|<1$ and $x=q^{1/2}$. Besides the four blocks of \eqref{eq:krec} we use the third
+ladder on the same recursion,
+\begin{equation}\label{eq:Tladder}
+   T_k=\sum_{j\ge0}\alpha_{k+2j+1}\prod_{i<j}\gamma_{k+2i}\qquad(k\ge0).
+\end{equation}
+Since $\gamma_k=-2q^{k+1}(1-q)/[(1-q^{k+1})(1-q^{k+2})]$ and $C_k=q\gamma_k$, on every compact
+subset of $|q|<1$ there is a $\Xi$ with $|\gamma_k|,|C_k|\le\Xi|q|^{k+1}$, so
+$\bigl|\prod_{i<j}\gamma_{k+2i}\bigr|\le\Xi^{j}|q|^{j^2+jk}$ and likewise for $C$; as
+$\alpha_k$ and $A_k$ are bounded there, $S_k,\Sigma_k,T_k$ converge absolutely and locally
+uniformly and are holomorphic on $|q|<1$ for every $k\ge0$.
+
+\subsection{The section identity}\label{sec:sect}
+
+\begin{definition}[section identity]\label{def:model}
+Fix $s_0\in\{0,1\}$ and $\vartheta\in\{0,1\}$ with $s_0+\vartheta=1$, and put
+$e_s=2q^{\vartheta+s}$ for $s\ge s_0$. Given a bounded \emph{source} $\mathbf c=(c_s)_{s\ge s_0}$,
+a family $\Phi=(\Phi_s)_{s\ge s_0}$ satisfies the \emph{section identity} with data
+$(s_0,\vartheta,\mathbf c)$ if
+\begin{equation}\label{eq:sectionid}
+   \Phi_s=e_s\Bigl(c_s+\sum_{s'\ge s_0}q^{\max(s,s')}\Phi_{s'}\Bigr),\qquad s\ge s_0 .
+\end{equation}
+Its \emph{sections} are $G_k=\sum_{s\ge s_0}q^{ks}\Phi_s$, $k\ge0$. In operator form
+$(I-M)\Phi=E$ with
+\begin{equation}\label{eq:transfer}
+   M[s,s']=e_s\,q^{\max(s,s')},\qquad E_s=e_sc_s .
+\end{equation}
+The \emph{bulk} instance is $(s_0,\vartheta)=(1,0)$ and the \emph{travel} instance is
+$(s_0,\vartheta)=(0,1)$; we write $M_0$ for the bulk operator and $\mathcal T$ for the travel one.
+\end{definition}
+
+\begin{lemma}[existence, uniqueness, analyticity]\label{lem:modelexist}
+For $|q|<\tfrac13$ and any bounded $\mathbf c$, equation \eqref{eq:sectionid} has a unique solution
+in $\ell^1$, namely $\Phi=\sum_{n\ge0}M^nE$, the series converging in $\ell^1$ and coefficientwise
+in $q$, one extra power of $q$ per term. One has $|\Phi_s|\le C|q|^{\vartheta+s}$ with $C$
+independent of $s$, and each section $G_k$ is holomorphic at $q=0$.
+\end{lemma}
+
+\begin{proof}
+$\|M\|_{\ell^1\to\ell^1}=\sup_{s'}\sum_s|M[s,s']|\le\sup_{s'}\sum_{s\ge s_0}2|q|^{\vartheta+s}
+=2|q|/(1-|q|)<1$ for $|q|<\tfrac13$, using $\vartheta+s_0=1$ and $|q|^{\max(s,s')}\le1$. Hence
+$I-M$ is invertible on $\ell^1$ and the Neumann series converges. Every entry of $M$ is divisible
+by $q^{\vartheta+s}q^{\max(s,s')}$, hence by $q$, so $M^nE$ is divisible by $q^{n+1}$ and the
+series converges coefficientwise. Reading the $s$-th row of $\Phi=E+M\Phi$ gives
+$|\Phi_s|\le2|q|^{\vartheta+s}(\|\mathbf c\|_\infty+\|\Phi\|_{\ell^1})$. Since
+$|\Phi_s|=O(|q|^{s})$, each $G_k$ is a locally uniformly convergent sum of holomorphic functions.
+\end{proof}
+
+\subsection{One telescoping lemma for both blocks}\label{sec:tel}
+
+\begin{lemma}[catalytic telescoping]\label{lem:tel}
+Let $0<|q|<1$ and let $\Phi\in\ell^1$ satisfy \eqref{eq:sectionid} with data
+$(s_0,\vartheta,\mathbf c)$. Put
+\[
+  a_k=\frac{2q^{\vartheta+(k+1)s_0}}{1-q^{k+1}},\qquad
+  b_k=\frac{2q^{\vartheta+k+2}}{1-q^{k+2}}-\frac{2q^{\vartheta+k+1}}{1-q^{k+1}},\qquad
+  \mathcal C_k=\sum_{s\ge s_0}e_sc_sq^{ks},
+\]
+and $\mathfrak a_k=\sum_{j\ge0}a_{k+2j}\prod_{i<j}b_{k+2i}$,
+$\mathfrak c_k=\sum_{j\ge0}\mathcal C_{k+2j}\prod_{i<j}b_{k+2i}$. Then for every $k\ge0$
+\begin{equation}\label{eq:threeterm}
+   G_k=\mathcal C_k+a_k\,G_1+b_k\,G_{k+2},
+\end{equation}
+the series $\mathfrak a_k,\mathfrak c_k$ converge, $G_k=\mathfrak c_k+\mathfrak a_kG_1$, and if
+$\mathfrak a_1\ne1$ then
+\begin{equation}\label{eq:solved}
+   G_1=\frac{\mathfrak c_1}{1-\mathfrak a_1},\qquad
+   G_k=\mathfrak c_k+\mathfrak a_k\,\frac{\mathfrak c_1}{1-\mathfrak a_1}\quad(k\ge0).
+\end{equation}
+In the bulk instance $a_k=\alpha_k$, $b_k=\gamma_k$ and $\mathfrak a_k=S_k$; in the travel
+instance $a_k=A_k$, $b_k=C_k$ and $\mathfrak a_k=\Sigma_k$.
+\end{lemma}
+
+\begin{proof}
+Split the inner sum of \eqref{eq:sectionid} at $s'=s$, where $\max(s,s')$ switches:
+\[
+  \Phi_s=e_sc_s+e_s\!\!\sum_{s'\ge s}\!q^{s'}\Phi_{s'}+e_sq^{s}\!\!\sum_{s_0\le s'<s}\!\Phi_{s'} .
+\]
+Multiply by $q^{ks}$ and sum over $s\ge s_0$. All three double sums converge absolutely, since
+$\Phi\in\ell^1$ and $|q|<1$, so the orders of summation may be exchanged. The first gives
+$\mathcal C_k$. In the second, with $e_s=2q^{\vartheta+s}$,
+\[
+  \sum_{s\ge s_0}2q^{\vartheta+(k+1)s}\sum_{s'\ge s}q^{s'}\Phi_{s'}
+  =2q^{\vartheta}\sum_{s'\ge s_0}q^{s'}\Phi_{s'}\sum_{s=s_0}^{s'}q^{(k+1)s}
+  =\frac{2q^{\vartheta}}{1-q^{k+1}}\sum_{s'\ge s_0}q^{s'}\Phi_{s'}
+      \bigl(q^{(k+1)s_0}-q^{(k+1)(s'+1)}\bigr),
+\]
+which is $a_kG_1-\frac{2q^{\vartheta+k+1}}{1-q^{k+1}}G_{k+2}$, because
+$\sum_{s'}q^{s'}\Phi_{s'}=G_1$ and $\sum_{s'}q^{(k+2)s'}\Phi_{s'}=G_{k+2}$. In the third,
+\[
+  \sum_{s\ge s_0}2q^{\vartheta+(k+2)s}\sum_{s_0\le s'<s}\Phi_{s'}
+  =2q^{\vartheta}\sum_{s'\ge s_0}\Phi_{s'}\sum_{s>s'}q^{(k+2)s}
+  =\frac{2q^{\vartheta+k+2}}{1-q^{k+2}}\,G_{k+2}.
+\]
+Adding the three gives \eqref{eq:threeterm}. Iterating it $J$ times,
+\[
+  G_k=\sum_{j<J}\bigl(\mathcal C_{k+2j}+a_{k+2j}G_1\bigr)\prod_{i<j}b_{k+2i}
+      +G_{k+2J}\prod_{i<J}b_{k+2i}.
+\]
+For fixed $q$ one has $|b_m|\le\Xi|q|^{m+1}$ with $\Xi=4/(1-|q|)$, so
+$\bigl|\prod_{i<J}b_{k+2i}\bigr|\le\Xi^{J}|q|^{J^2+Jk}\to0$; and $|G_m|\le\|\Phi\|_{\ell^1}$
+uniformly in $m$, so the remainder vanishes as $J\to\infty$. The same bound, against
+$\sup_k|a_k|<\infty$ and $\sup_k|\mathcal C_k|\le2\|\mathbf c\|_\infty/(1-|q|)$, makes
+$\mathfrak a_k$ and $\mathfrak c_k$ converge. This gives $G_k=\mathfrak c_k+\mathfrak a_kG_1$;
+taking $k=1$ gives $G_1(1-\mathfrak a_1)=\mathfrak c_1$, whence \eqref{eq:solved}. The
+identifications of $a_k,b_k$ are read off the displays: $(s_0,\vartheta)=(1,0)$ gives
+$a_k=2q^{k+1}/(1-q^{k+1})=\alpha_k$ and $b_k=\alpha_{k+1}-\alpha_k=\gamma_k$, while
+$(s_0,\vartheta)=(0,1)$ gives $a_k=2q/(1-q^{k+1})=A_k$ and
+$b_k=2q^{k+3}/(1-q^{k+2})-2q^{k+2}/(1-q^{k+1})=C_k$.
+\end{proof}
+
+\begin{remark}[where each feature of the model is used]\label{rem:telhyp}
+Three features enter \eqref{eq:threeterm}, each exactly once. That the coupling is
+$q^{\max(s,s')}$ is what makes the split at $s'=s$ produce two \emph{geometric} sums; a symmetric
+kernel not of the form $\mu^{\max}$ destroys the three-term relation. That $e_s$ is geometric in
+$s$ is what makes those sums summable in closed form; a non-geometric edge weight leaves $G_k$
+coupled to a continuum of sections. That the source is geometric is used only to evaluate
+$\mathcal C_k$; both \eqref{eq:threeterm} and \eqref{eq:solved} hold for any bounded source. The
+step $k\mapsto k+2$, and with it the two-ladder structure of $S_k$ and $\Sigma_k$, comes from the
+two occurrences of $q^{(k+2)s'}$ above.
+\end{remark}
+
+\begin{proposition}[the travel $k$-sum telescopes]\label{prop:travelsum}
+Let $\Phi$ solve the travel section identity, $(s_0,\vartheta,\mathbf c)=(0,1,\mathbf 1)$. Then, as
+meromorphic functions on $|q|<1$,
+\[
+  G^{T}_k=\frac{\Sigma_k}{1-\Sigma_1}\quad(k\ge0),\qquad\text{in particular}\quad
+  G^{T}_0=\sum_{s\ge0}\Phi_s=\frac{\Sigma_0}{1-\Sigma_1} .
+\]
+\end{proposition}
+
+\begin{proof}
+Lemma~\ref{lem:tel} with $(s_0,\vartheta)=(0,1)$ and $c_s\equiv1$ gives
+$\mathcal C_k=\sum_{s\ge0}2q^{1+s}q^{ks}=2q/(1-q^{k+1})=A_k=a_k$, so
+$\mathfrak c_k=\mathfrak a_k=\Sigma_k$ and \eqref{eq:solved} reads
+$G^T_k=\Sigma_k+\Sigma_k\Sigma_1/(1-\Sigma_1)=\Sigma_k/(1-\Sigma_1)$. Both sides are holomorphic
+near $q=0$ and the right-hand side is meromorphic on $|q|<1$, so the identity extends by analytic
+continuation. Combinatorially this is the Neumann series of Lemma~\ref{lem:modelexist}:
+$\sum_s\Phi_s=\sum_{n\ge0}\mathbf 1^{\!\top}\mathcal T^nE$, whose $n$-th term is the generating
+function of the travel runs with exactly $n+1$ edges.
+\end{proof}
+
+\begin{proposition}[the bulk dressing]\label{prop:bulkdress}
+Let $\Phi$ solve the bulk section identity with $\mathbf c=\mathbf 1$ and let $\Psi$ solve it with
+$c_s=q^s$. Set
+\[
+  b_0=\sum_{s\ge1}\Phi_s,\qquad t_0=\sum_{s\ge1}q^s\Phi_s,\qquad
+  b_1=\sum_{s\ge1}\Psi_s,\qquad t_1=\sum_{s\ge1}q^s\Psi_s .
+\]
+Then, as meromorphic functions on $|q|<1$,
+\[
+  b_0=\frac{S_0}{1-S_1},\qquad t_0=\frac{S_1}{1-S_1},\qquad
+  t_1=\frac{T_1}{1-S_1},\qquad b_1=T_0+\frac{S_0T_1}{1-S_1}.
+\]
+\end{proposition}
+
+\begin{proof}
+Lemma~\ref{lem:tel} with $(s_0,\vartheta)=(1,0)$. For $\mathbf c=\mathbf 1$,
+$\mathcal C_k=\sum_{s\ge1}2q^{s(k+1)}=\alpha_k=a_k$, so $\mathfrak c_k=\mathfrak a_k=S_k$ and
+$G_k=S_k/(1-S_1)$; take $k=0,1$. For $c_s=q^s$,
+$\mathcal C_k=\sum_{s\ge1}2q^{s(k+2)}=\alpha_{k+1}$, so
+$\mathfrak c_k=\sum_j\alpha_{k+2j+1}\prod_{i<j}\gamma_{k+2i}=T_k$ by \eqref{eq:Tladder}, and
+\eqref{eq:solved} gives $t_1=G_1=T_1/(1-S_1)$ and $b_1=G_0=T_0+S_0T_1/(1-S_1)$. Analytic
+continuation as before.
+\end{proof}
+
+\noindent With $1-S_1=S_e$ (Proposition~\ref{prop:qtrig}) the first of these is $b_0=S_0/S_e$, the
+third line of the dictionary \eqref{eq:dict}; and $b_0$ is holomorphic and non-zero at every travel
+pole, by Propositions~\ref{prop:selower} and \ref{prop:numnonvanish} respectively.
+
+\subsection{The cocycle, the reciprocity, and the dictionary}\label{sec:cocycleid}
+
+The bulk section identity has a second, equivalent, description as a two-point problem for a
+first-order system. That system is the cocycle of \S\ref{sec:gateblock}, and comparing the two
+descriptions identifies $t_1$ with $P_{12}/S_e$.
+
+\begin{corollary}[the cocycle is the same object]\label{cor:cocycle}
+Let $\Phi$ solve the bulk section identity with source $\mathbf c$, and put
+$L_b=\sum_{a\le b}\Phi_a$ and $\mathcal E_b=-\sum_{a\ge b}q^a\Phi_a$. Then
+$\Phi_b=2q^bc_b+2q^{2b}L_{b-1}-2q^b\mathcal E_b$ and
+\begin{equation}\label{eq:cocyclerec}
+  \begin{pmatrix}L_b\\ \mathcal E_{b+1}\end{pmatrix}
+  =\mathcal M_b\begin{pmatrix}L_{b-1}\\ \mathcal E_{b}\end{pmatrix}
+   +\begin{pmatrix}2q^{b}c_b\\ 2q^{2b}c_b\end{pmatrix},\qquad
+  \mathcal M_b=\begin{pmatrix}1+2q^{2b}&-2q^{b}\\ 2q^{3b}&1-2q^{2b}\end{pmatrix},
+\end{equation}
+with $L_0=0$, $\mathcal E_1=-t_0$ or $-t_1$ according to the source, and $\mathcal E_b\to0$. Let
+$(\ell,r)$ and $(\ell',r')$ be the solutions of the homogeneous recursion
+\textup{(}$\mathbf c=0$\textup{)} with data $(\ell_0,r_1)=(1,0)$ and $(\ell'_0,r'_1)=(0,1)$, and
+put $(P_{11},P_{12})=\lim_b(\ell_b,r_{b+1})$ and $(P_{21},P_{22})=\lim_b(\ell'_b,r'_{b+1})$, the
+limits existing because $\sum_b\|\mathcal M_b-I\|<\infty$. Eliminating $L$ between the two lines
+of \eqref{eq:cocyclerec} at $\mathbf c=0$ gives
+\[
+   \mathcal E_{b+2}=\bigl(1+q^3-2(1-q)q^{2b+2}\bigr)\mathcal E_{b+1}-q^3\mathcal E_b ,
+\]
+which is the scalar three-term recursion of \S\ref{sec:gateblock}; so $r$ and $r'$ are its two
+standard solutions and $P_{12},P_{22}$ their limits, $P_{12}$ being the entry whose closed form is
+\eqref{eq:p12closed}. Then, identically in $0<q<1$,
+\[
+   P_{11}=1+T_0,\qquad P_{12}=T_1,\qquad P_{21}=-S_0,\qquad P_{22}=S_e=1-S_1 .
+\]
+In particular $t_1=P_{12}/S_e$ is an identity between independently defined objects, not a
+definition.
+\end{corollary}
+
+\begin{proof}
+Substituting $L_b=L_{b-1}+\Phi_b$ and $\mathcal E_{b+1}=\mathcal E_b+q^b\Phi_b$ into
+$\Phi_b=2q^b(c_b+q^bL_b-\mathcal E_{b+1})$, which is \eqref{eq:sectionid} after the split at
+$s'=b$, the two terms $\pm2q^{2b}\Phi_b$ cancel and leave
+$\Phi_b=2q^bc_b+2q^{2b}L_{b-1}-2q^b\mathcal E_b$; feeding this back gives \eqref{eq:cocyclerec}.
+The homogeneous solutions form a two-dimensional space, since \eqref{eq:cocyclerec} determines
+$(L_b,\mathcal E_{b+1})$ from $(L_{b-1},\mathcal E_b)$.
+
+Take $\mathbf c=\mathbf 1$, so $L_0=0$, $L_b\to b_0$, $\mathcal E_1=-t_0$ and
+$\mathcal E_{b+1}\to0$. Then $(L,\mathcal E-1)$ solves the homogeneous recursion: in the first line
+the source $2q^bc_b=2q^b$ is cancelled by $-2q^b\cdot(-1)$, and in the second the source
+$2q^{2b}c_b=2q^{2b}$ is cancelled by $(1-2q^{2b})(-1)-(-1)$. Its data are $(0,-1-t_0)$, so
+$(L,\mathcal E-1)=-(1+t_0)(\ell',r')$, and letting $b\to\infty$,
+\[
+   b_0=-(1+t_0)P_{21},\qquad -1=-(1+t_0)P_{22} .
+\]
+By Proposition~\ref{prop:bulkdress} and $S_e=1-S_1$ one has $1+t_0=1+S_1/S_e=1/S_e$, whence
+$P_{22}=S_e$ and $P_{21}=-b_0S_e=-S_0$.
+
+Take now $c_s=q^s$, with data $L'_0=0$, $L'_b\to b_1$, $\mathcal E'_1=-t_1$,
+$\mathcal E'_{b+1}\to0$. Here $(L'+1,\mathcal E')$ solves the homogeneous recursion: in the first
+line $(1+2q^{2b})\cdot1$ exceeds $1$ by $2q^{2b}$, which is the source $2q^bc_b=2q^{2b}$, and in
+the second $2q^{3b}\cdot1$ is the source $2q^{2b}c_b=2q^{3b}$. Its data are $(1,-t_1)$, so
+$(L'+1,\mathcal E')=(\ell,r)-t_1(\ell',r')$, and letting $b\to\infty$,
+\[
+   b_1+1=P_{11}-t_1P_{21}=P_{11}+t_1S_0,\qquad 0=P_{12}-t_1P_{22}=P_{12}-t_1S_e .
+\]
+The second gives $P_{12}=t_1S_e=T_1$ by Proposition~\ref{prop:bulkdress}, and the first then gives
+$P_{11}=b_1+1-t_1S_0=T_0+S_0T_1/S_e+1-(T_1/S_e)S_0=1+T_0$. All four limits are taken for
+$|q|<\tfrac13$, where Lemma~\ref{lem:modelexist} applies, and extend to $0<q<1$ by analytic
+continuation, both sides being meromorphic there.
+\end{proof}
+
+\begin{proposition}[reciprocity]\label{prop:recip}
+$t_0=b_1$ identically in $q$. Equivalently $T_0S_e+T_1S_0=S_1$, equivalently
+$P_{11}P_{22}-P_{12}P_{21}=1$.
+\end{proposition}
+
+\begin{proof}
+Two independent proofs.
+
+\emph{Kernel symmetry.} Write $D=\operatorname{diag}(2q^b)_{b\ge1}$ and $K[b,a]=q^{\max(a,b)}$, so
+that $M_0=DK$, $E=D\mathbf 1$, and $u:=(2q^{2b})_b=Dv$ with $v=(q^a)_a$. The two sources of
+Proposition~\ref{prop:bulkdress} are $E$ and $u$, so $\Phi=(I-M_0)^{-1}E$, $\Psi=(I-M_0)^{-1}u$,
+and
+\[
+   t_0=v^{\!\top}(I-M_0)^{-1}E,\qquad b_1=\mathbf 1^{\!\top}(I-M_0)^{-1}u .
+\]
+For $|q|<\tfrac13$, $X:=(I-M_0)^{-1}D=\sum_{n\ge0}(DK)^nD$, and the $n$-th summand is
+$DKD\cdots KD$, a palindromic product of the symmetric matrices $D$ and $K$, hence symmetric; the
+series converges entrywise. Therefore
+$t_0=v^{\!\top}X\mathbf 1=\sum_{a,b}v_aX[a,b]=\sum_{a,b}X[b,a]v_a=\mathbf 1^{\!\top}Xv=b_1$, every
+sum being absolutely convergent. Both sides are meromorphic on $|q|<1$ by
+Proposition~\ref{prop:bulkdress}, so the identity extends.
+
+\emph{Casoratian.} $\det\mathcal M_b=(1+2q^{2b})(1-2q^{2b})+4q^{3b}q^b=1$, so
+$\ell_br'_{b+1}-\ell'_br_{b+1}$ does not depend on $b$; at $b=0$ it is $1$, whence
+$P_{11}P_{22}-P_{21}P_{12}=1$. Substituting the four entries of Corollary~\ref{cor:cocycle} gives
+$(1+T_0)S_e+T_1S_0=1$, that is $T_0S_e+T_1S_0=1-S_e=S_1$; dividing by $S_e$ and using
+Proposition~\ref{prop:bulkdress} turns this into $b_1=T_0+S_0T_1/S_e=S_1/S_e=t_0$.
+\end{proof}
+
+\noindent The symmetry of $K$ is used and is necessary: replacing $q^{\max(a,b)}$ by the
+asymmetric $q^{\max(a,b)}+q^{a+2b}$ makes $t_0-b_1=4q^{8}+O(q^{9})$
+(\texttt{assembly\_certificate.py}, Part~2). The determinant identity
+$P_{11}P_{22}-P_{12}P_{21}=1$ is the Casoratian of the cocycle and is automatic; what carries
+content is the identification of its four entries in Corollary~\ref{cor:cocycle}, which turns it
+into the reciprocity.
+
+\begin{corollary}[the dictionary]\label{cor:dict}
+Identically in $0<q<1$,
+\[
+  S_e=1-S_1,\qquad S_o=\tfrac{1-q}{2q}S_0,\qquad b_0=\frac{S_0}{S_e},\qquad
+  t_0=b_1=\frac{S_1}{S_e},\qquad t_1=\frac{T_1}{S_e}=\frac{P_{12}}{S_e},
+\]
+and consequently $\kappa:=t_0b_1-b_0t_1=(S_1^2-S_0P_{12})/S_e^2$. This is \eqref{eq:dict} together
+with its two remaining entries.
+\end{corollary}
+
+\begin{proof}
+The first line is Proposition~\ref{prop:qtrig} and Lemma~\ref{lem:qsinenum}; the rest is
+Proposition~\ref{prop:bulkdress} with Proposition~\ref{prop:recip} and
+Corollary~\ref{cor:cocycle}, and $\kappa$ is substitution.
+\end{proof}
+
+\subsection{Compactness, the null space, and the singularities}\label{sec:fred}
+
+\begin{lemma}[compactness and meromorphy]\label{lem:fred}
+For $|q|<1$ the operator $M$ of \eqref{eq:transfer}, and its gap-marked version with kernel
+\eqref{eq:gapkernel} below, are compact on $\ell^1$. Hence $q\mapsto(I-M)^{-1}$ is meromorphic on
+$|q|<1$, with poles of finite order, and at each pole $\ker(I-M)\ne0$.
+\end{lemma}
+
+\begin{proof}
+Let $M_N$ agree with $M$ on rows $s\le N$ and vanish above. Then
+$\|M-M_N\|_{\ell^1\to\ell^1}\le\sup_{s'}\sum_{s>N}|e_s||q|^{\max(s,s')}
+\le\sum_{s>N}2|q|^{\vartheta+s}\to0$, so $M$ is a norm limit of finite-rank operators and is
+compact; the rank-one gap term is compact a fortiori. The family is holomorphic in $q$ on the
+connected domain $|q|<1$ and $I-M$ is invertible near $q=0$ (Lemma~\ref{lem:modelexist}), so the
+analytic Fredholm theorem applies.
+\end{proof}
+
+\begin{lemma}[the null space is at most one-dimensional]\label{lem:nullspace}
+Let $0<|q|<1$ and let $R\in\ell^1$ satisfy $R_s=e_s\sum_{s'}q^{\max(s,s')}R_{s'}$ for all
+$s\ge s_0$. Then its sections satisfy $G^R_k=G^R_1\mathfrak a_k$ for all $k\ge0$, and $G^R_1=0$
+forces $R=0$. In particular $\dim\ker(I-M)\le1$, and a non-zero kernel element exists only where
+$\mathfrak a_1=1$.
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:tel} with $\mathbf c=0$ gives $\mathcal C_k=0$, hence $\mathfrak c_k=0$ and
+$G^R_k=\mathfrak a_kG^R_1$; its derivation used only $R\in\ell^1$ and $|q|<1$. Taking $k=1$ gives
+$G^R_1=\mathfrak a_1G^R_1$, so $\mathfrak a_1=1$ unless $G^R_1=0$. If $G^R_1=0$ then $G^R_k=0$ for
+every $k$. The function $F(t)=\sum_{s\ge s_0}R_st^s$ is holomorphic on $|t|<1$ because
+$R\in\ell^1$, and $F(q^k)=G^R_k=0$ for all $k\ge0$; the points $q^k$ accumulate at the interior
+point $t=0$, so $F\equiv0$ and $R=0$. Hence the kernel is spanned by the class normalised by
+$G^R_1=1$.
+\end{proof}
+
+\begin{corollary}[singularities of the two gapless resolvents]\label{cor:sing}
+On $|q|<1$, the poles of $(I-M_0)^{-1}$ lie in the zero set of $S_e$ and the poles of
+$(I-\mathcal T)^{-1}$ lie in the zero set of $1-\Sigma_1$; conversely every travel pole is a pole
+of $(I-\mathcal T)^{-1}$.
+In particular $b_0,b_1,t_0,t_1$ are holomorphic at every travel pole $q_m$, where $S_e(q_m)\ne0$
+by Proposition~\ref{prop:selower}, and $b_0(q_m)=S_0(q_m)/S_e(q_m)\ne0$ by
+Proposition~\ref{prop:numnonvanish}.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:fred} a pole forces a non-zero kernel element, and by Lemma~\ref{lem:nullspace}
+that forces $\mathfrak a_1=1$, which is $S_1=1$, i.e.\ $S_e=0$, in the bulk instance and
+$\Sigma_1=1$ in the travel one. Conversely, at a travel pole $\Sigma_0/(1-\Sigma_1)$ is unbounded
+because $\Sigma_0(q_m)\ne0$ (Proposition~\ref{prop:numnonvanish}), so by
+Proposition~\ref{prop:travelsum} the travel resolvent is singular there.
+\end{proof}
+
+\subsection{The gap term is rank one: the M\"obius factorisation}\label{sec:mob}
+
+Marking the gap bridges changes the bulk kernel by one term. With
+$\mathfrak g=\mathfrak g(q,y)=\sum_{L\ge1}q^Ly^{L-1}=q/(1-qy)$, the gap-marked bulk kernel and
+system are
+\begin{equation}\label{eq:gapkernel}
+   K_{\mathfrak g}(a,b)=q^{\max(a,b)}+q^{a+b}\,\mathfrak g,\qquad
+   P_b=2q^b\Bigl(1+\sum_{a\ge1}K_{\mathfrak g}(a,b)P_a\Bigr),\qquad B(q,y)=\sum_{b\ge1}P_b .
+\end{equation}
+In operator form $(I-M_0-\mathfrak g\,uv^{\!\top})P=E$ with
+\begin{equation}\label{eq:rankone}
+   M_0[b,a]=2q^bq^{\max(a,b)},\qquad E_b=2q^b,\qquad u_b=2q^{2b},\qquad v_a=q^a ,
+\end{equation}
+since $2q^b\cdot q^{a+b}=(2q^{2b})(q^a)$: \emph{the gap term is exactly rank one.} With the four
+scalars of Proposition~\ref{prop:bulkdress},
+\[
+  b_0=\mathbf 1^{\!\top}(I-M_0)^{-1}E,\quad b_1=\mathbf 1^{\!\top}(I-M_0)^{-1}u,\quad
+  t_0=v^{\!\top}(I-M_0)^{-1}E,\quad t_1=v^{\!\top}(I-M_0)^{-1}u .
+\]
+
+\begin{proposition}[M\"obius factorisation]\label{prop:mobius}
+Let $q$ be such that $I-M_0$ is invertible on $\ell^1$ and $1-\mathfrak g\,t_1\ne0$. Then
+\eqref{eq:gapkernel} has a unique $\ell^1$ solution,
+\begin{equation}\label{eq:smresolvent}
+   (I-M_0-\mathfrak guv^{\!\top})^{-1}
+   =R_0+\frac{\mathfrak g}{1-\mathfrak gt_1}\,R_0uv^{\!\top}R_0,\qquad R_0=(I-M_0)^{-1},
+\end{equation}
+and $B(q,y)=(b_0+\mathfrak g\kappa)/(1-\mathfrak g t_1)$ with $\kappa=t_0b_1-b_0t_1$, which is
+\eqref{eq:mobius}. In particular $B$ is a M\"obius function of $\mathfrak g$, with a single zero,
+at $\mathfrak g_0=-b_0/\kappa$, and a single pole, at $\mathfrak g=1/t_1$.
+\end{proposition}
+
+\begin{proof}
+Sherman--Morrison. Put $\delta=1-\mathfrak g\,v^{\!\top}R_0u=1-\mathfrak g t_1\ne0$. Then the
+right-hand side of \eqref{eq:smresolvent} is a two-sided inverse of
+$I-M_0-\mathfrak g uv^{\!\top}$:
+\[
+  (I-M_0-\mathfrak g uv^{\!\top})\bigl(R_0+\mathfrak g\delta^{-1}R_0uv^{\!\top}R_0\bigr)
+  =I+\mathfrak g\bigl(\delta^{-1}-1-\mathfrak g\delta^{-1}t_1\bigr)uv^{\!\top}R_0
+  =I ,
+\]
+since $\delta^{-1}(1-\delta-\mathfrak gt_1)=0$; the other side is identical. All pairings converge
+absolutely: $u,E\in\ell^1$, $v,\mathbf 1\in\ell^\infty$, and $R_0$ is bounded on $\ell^1$.
+Applying $\mathbf 1^{\!\top}(\,\cdot\,)E$,
+\[
+  B=\mathbf 1^{\!\top}R_0E+\mathfrak g\delta^{-1}(\mathbf 1^{\!\top}R_0u)(v^{\!\top}R_0E)
+   =b_0+\frac{\mathfrak g\,b_1t_0}{1-\mathfrak g t_1}
+   =\frac{b_0+\mathfrak g(t_0b_1-b_0t_1)}{1-\mathfrak g t_1}. \qedhere
+\]
+\end{proof}
+
+\begin{remark}[the two hypotheses are the two the paper already carries]\label{rem:mobhyp}
+Invertibility of $I-M_0$ is $S_e\ne0$ (Corollary~\ref{cor:sing}), which at the travel poles is
+Proposition~\ref{prop:selower}. And $1-\mathfrak g_V t_1\ne0$ is $s\ne1$, the gate half $|s|<1$ of
+\eqref{eq:gate}, which is Theorem~\ref{thm:star} with Lemma~\ref{app:Se};
+$1-\mathfrak g_Ut_1\ne0$ follows, since $\mathfrak g_U=\mathfrak g_V/(1+q)<\mathfrak g_V$ and
+$t_1>0$ at the poles. So Proposition~\ref{prop:mobius} consumes no hypothesis that
+\S\ref{sec:inputL} was not already carrying. It does not consume $B_V\ne0$: that is derived from
+it, not assumed.
+\end{remark}
+
+\begin{lemma}[a positivity segment]\label{lem:posseg}
+For $0<q\le0.45$ one has $S_e(q)\ge0.32$ and $|s(q)|=\tfrac{q}{1-q}|P_{12}|/S_e\le0.78$. Since
+$q_1=0.4494536\ldots<0.45$, both hold on $(0,q_1]$.
+\end{lemma}
+
+\begin{proof}
+By Proposition~\ref{prop:qtrig}, $S_e=\sum_{j\ge0}(-1)^j[2(1-q)]^jq^{j^2+j}/(q;q)_{2j}$, and by
+\eqref{eq:p12banked},
+$P_{12}=\sum_{k\ge1}(-1)^{k-1}[2(1-q)]^kq^{k^2+k+1}(1-q^{2k})/(q;q)_{2k+1}$. For every $n$,
+$(q;q)_n\ge(q;q)_\infty\ge1-q-q^2$, the last step by truncating Euler's pentagonal series
+$1-q-q^2+q^5+q^7-\cdots$, whose tail is positive for $q\le\tfrac12$; on $q\le0.45$ this is
+$\ge0.3475$. Each term $[2(1-q)]^jq^{j^2+j}$ with $j\ge1$ increases on $(0,0.45]$, since
+$(j^2+j)/q-j/(1-q)>0$ there, so it is at most its value at $q=0.45$: successively
+$0.222750$, $0.010048$, $0.000092$, the remaining terms summing to less than $10^{-5}$. Hence
+$S_e\ge1-0.23290/0.3475\ge0.32$. The same estimate applied to $[2(1-q)]^kq^{k^2+k+1}$, likewise
+increasing, and to $(1-q^{2k})\le1$, gives $0.100238$, $0.004521$, $0.000042$ and a tail below
+$10^{-6}$, so $|P_{12}|\le0.104801/0.3475\le0.3016$ and
+$|s|\le\tfrac{0.45}{0.55}\cdot\tfrac{0.3016}{0.32}\le0.78$.
+\end{proof}
+
+\subsection{The model \textup{(M)}, and the assembly}\label{sec:modelassembly}
+
+Everything above is a statement about the explicit operators of Definition~\ref{def:model} and
+\eqref{eq:gapkernel}. What connects those operators to the growth series is the strand-walk input
+of Route~B, which we state once and name.
+
+\begin{hypothesis}[the transfer model \textup{(M)}]\label{hyp:model}
+\textup{(M1)} \emph{Local cost law.} The site cost between adjacent active edges carrying deposits
+$a,a'$ is $x^{\max(|a|,|a'|)}$, independent of the crossing counts and of the travel indicator.
+Bulk deposits are even, $|a|=2s$, and travel deposits odd, $|a|=2s+1$, so this cost is
+$q^{\max(s,s')}$ in the bulk and $x^{2\max(s,s')+1}$ on the travel side, and the edge weights are
+$2q^s$ and $2x^{2s+1}$ respectively: Definition~\ref{def:model} in its two instances.
+At the marker site, with $a_L$ the last bulk deposit \textup{(}even\textup{)} and $a_R$
+the first travel deposit \textup{(}odd\textup{)}, the cost is $x^{\mathrm{Site}_0(a_L,a_R)}$ with
+\[
+   \mathrm{Site}_0(a_L,a_R)=\max\bigl(|a_L|-1,\;|a_R|\bigr)
+\]
+for all four marker data $(\varepsilon^\ast,\delta^\ast)$.
+\textup{(M2)} \emph{Shield law.} A maximal interior run of $L$ forced gap edges costs $q^L$ and
+carries $L-1$ isolated cycles, one of them shielded by the inner block's turn-around; hence the
+gap-bridge kernel is $\mathfrak g(q,y)=q/(1-qy)$ and the gap-marked bulk kernel is the
+$K_{\mathfrak g}$ of \eqref{eq:gapkernel}.
+\textup{(M3)} \emph{Decomposition.} The bivariate series of \S\ref{sec:bridge} is
+\begin{equation}\label{eq:assembly}
+   \mathcal W(x,y)=\sum_{\varepsilon^\ast,\delta^\ast}
+     \bigl\langle\lambda^{(y)},\ (I-\mathcal T)^{-1}\mu^{(y)}\bigr\rangle+\mathcal W_0 ,
+\end{equation}
+with $\mathcal T$ the travel operator of Definition~\ref{def:model}, $\mathcal W_0$ the $k=0$
+sector, and $\lambda^{(y)},\mu^{(y)}$ the junction-dressed bulk boundary vectors:
+$\mu^{(y)}_s=\sum_{\sigma}B_\sigma(q,y)\,x^{\mathrm{Site}_0(\sigma,2s+1)}$, where
+$B_\sigma(q,y)$ is the generating function of the bulk runs, taken with the gap-marked kernel
+\eqref{eq:gapkernel}, whose last deposit has magnitude $\sigma$, so that
+$\sum_\sigma B_\sigma=B(q,y)$; and $\lambda^{(y)}$ is its mirror. The travel assignment
+$e_s=2q^{1+s}$ of Definition~\ref{def:model} charges each travel edge one half-site, so a run of
+$|k|$ edges, which carries $|k|-1$ interior sites, is weighted $x$ times its relaxed weight; that
+single factor of $x$ is a normalisation of the travel block, absorbed into $\lambda^{(y)}$, and
+affects no pole, no order and no non-vanishing statement below.
+\end{hypothesis}
+
+\noindent \textup{(M)} is the Route~B strand-walk input \cite{Bonfioli2026a,supplement}. It is
+verified exhaustively there and it is \emph{not} proved. \emph{Every statement from here to the
+end of this section, and every statement elsewhere in this paper that cites one of them, is
+conditional on \textup{(M)}; this is not repeated in the individual statements.} Nothing in
+\S\S\ref{sec:setup}--\ref{sec:numerators}, \S\ref{sec:sd},
+\S\S\ref{sec:sect}--\ref{sec:mob} above, or Appendices~\ref{app:annulus}--\ref{app:star} uses it:
+those speak only about the explicit series of \eqref{eq:krec}, about $P_{12}$, and about the
+operators just defined.
+
+Under \textup{(M)}, $V=\mathcal W(x,1)$ and $U=\mathcal W(x,q)$ (\S\ref{sec:bridge}), the two
+evaluations differing only through $\mathfrak g_V=\mathfrak g(q,1)=\tfrac q{1-q}$ and
+$\mathfrak g_U=\mathfrak g(q,q)=\tfrac q{1-q^2}$; and $\lambda^{(y)},\mu^{(y)},\mathcal W_0$ are
+holomorphic at a travel pole $q_m$, by \eqref{eq:smresolvent}, as soon as $S_e(q_m)\ne0$ and
+$1-\mathfrak gt_1\ne0$ there, which is Proposition~\ref{prop:selower} and
+Remark~\ref{rem:mobhyp}.
+
+\begin{proposition}[the shape of the local form]\label{prop:shape}
+Let $q_m$ be a travel pole, let $p\ge1$ be the order of the zero of $1-\Sigma_1$ there
+\textup{(}finite, Lemma~\ref{lem:polefinite}\textup{)}, and let $\pi$ be the order of the pole of
+$(I-\mathcal T)^{-1}$ there \textup{(}finite, Lemma~\ref{lem:fred}\textup{)}. Then $\pi\ge p\ge1$
+and, for each $y$,
+\[
+   \mathcal W(x,y)=\frac{\mathcal N_y}{(q-q_m)^{\pi}}+\bigl(\text{poles of order}<\pi\bigr)+H_m ,
+   \qquad H_m\ \text{holomorphic at }q_m,
+\]
+with the leading numerator the rank-one pairing
+\begin{equation}\label{eq:junctionpairing}
+   \mathcal N_y=c_\star\,\Pi_y(q_m),\qquad
+   \Pi_y(q_m):=\!\!\sum_{\varepsilon^\ast,\delta^\ast}\!\!
+   \langle\lambda^{(y)},R\rangle\,\langle L,\mu^{(y)}\rangle ,\qquad c_\star\ne0,
+\end{equation}
+where $R$ spans $\ker(I-\mathcal T(q_m))$, normalised by its sections,
+\[
+   \sum_{s\ge0}q^{ks}R_s=\Sigma_k(q_m)\quad(k\ge0),\qquad\text{in particular }
+   \sum_sR_s=\Sigma_0(q_m),\quad\sum_sq^sR_s=\Sigma_1(q_m)=1 ,
+\]
+and $L$ spans $\ker(I-\mathcal T(q_m)^{\!\top})$, explicitly $L_s=R_s/e_s$. In particular
+$\Pi_y(q_m)\ne0$ implies that $q_m$ is a pole of $\mathcal W(\,\cdot\,,y)$, of order exactly
+$\pi$.
+\end{proposition}
+
+\begin{proof}
+Write $\mathcal R(q)=(I-\mathcal T(q))^{-1}=\sum_{j=1}^{\pi}A_j(q-q_m)^{-j}+\text{hol}$, with
+$A_\pi\ne0$. Multiplying $(I-\mathcal T(q))\mathcal R(q)=I$ by $(q-q_m)^{\pi}$ and letting
+$q\to q_m$ gives $(I-\mathcal T(q_m))A_{\pi}=0$, so
+$\operatorname{ran}A_{\pi}\subseteq\ker(I-\mathcal T(q_m))$, which is one-dimensional by
+Lemma~\ref{lem:nullspace}; the same step on $\mathcal R(q)(I-\mathcal T(q))=I$ gives
+$A_{\pi}(I-\mathcal T(q_m))=0$. Hence $A_\pi x=c_\star\langle L,x\rangle R$ with $c_\star\ne0$,
+$R$ spanning the kernel and $L$ the cokernel. The normalisation of $R$ is
+Lemma~\ref{lem:nullspace}: $G^R_k=G^R_1\Sigma_k$ and $\Sigma_1(q_m)=1$, so $G^R_1=1$ gives
+$G^R_k=\Sigma_k(q_m)$. That $L_s=R_s/e_s$ spans the cokernel follows from
+$\mathcal T=D_eK$ with $D_e=\operatorname{diag}(e_s)$ and $K$ symmetric: from $D_eKR=R$ one gets
+$KD_e(D_e^{-1}R)=KR=D_e^{-1}R$, that is $\mathcal T^{\!\top}L=L$, and $L\in\ell^\infty$ because
+$|R_s|\le|e_s|\,\|R\|_{\ell^1}$; the cokernel is one-dimensional by Fredholm. Substituting the
+Laurent expansion into \eqref{eq:assembly}, and using that $\lambda^{(y)},\mu^{(y)},\mathcal W_0$
+are holomorphic at $q_m$, gives the displayed local form with $\mathcal N_y$ as in
+\eqref{eq:junctionpairing}; the coefficient of $(q-q_m)^{-\pi}$ is non-zero exactly when
+$\Pi_y(q_m)\ne0$, and then $q_m$ is a pole of order $\pi$. Finally
+$\langle\mathbf 1,\mathcal RE\rangle=\Sigma_0/(1-\Sigma_1)$ (Proposition~\ref{prop:travelsum}) has
+a pole of order exactly $p$ at $q_m$, since $\Sigma_0(q_m)\ne0$
+(Proposition~\ref{prop:numnonvanish}), while a matrix element of $\mathcal R$ has pole order at
+most $\pi$; hence $\pi\ge p$.
+\end{proof}
+
+\begin{proposition}[the marker junction is not rank one]\label{prop:junction}
+The junction matrix $\bigl[x^{\mathrm{Site}_0(a_L,a_R)}\bigr]$ of \textup{(M1)} has rank at least
+$3$: already on $a_L\in\{0,4,8\}$, $a_R\in\{1,5,9\}$ it is
+\[
+   \begin{pmatrix}x&x^5&x^9\\ x^3&x^5&x^9\\ x^7&x^7&x^9\end{pmatrix},\qquad
+   \det=x^{9}\,(x-x^{3})(x^{5}-x^{7})\ \ne\ 0\quad(0<x<1),
+\]
+and its rank on $a_L\in\{0,2,4,6,8\}$, $a_R\in\{1,3,5,7,9\}$ is $4$. By contrast the gap-bridge
+term $q^{a+b}$ of \eqref{eq:gapkernel} is rank one, which is why \eqref{eq:mobius} factorises.
+Consequently $\mu^{(y)}$, and with it the pairing $\Pi_y(q_m)$, is not a function of the total
+bulk sum $B(q,y)=\sum_\sigma B_\sigma(q,y)$ alone: the product form
+$\mathcal N_y=\Sigma_0(q_m)\cdot B(q_m,y)\cdot J$, with $J$ a junction factor independent of the
+bulk data, does not hold, and $\Pi_y(q_m)\ne0$ does not follow from $\Sigma_0(q_m)\ne0$ together
+with $B(q_m,y)\ne0$.
+\end{proposition}
+
+\begin{proof}
+The displayed block is the case $|a_L|-1\in\{-1,3,7\}$, $|a_R|\in\{1,5,9\}$, which interleaves as
+$-1<1<3<5<7<9$; subtracting the second row from the first gives $(x-x^3,0,0)$, and expanding along
+it leaves $(x-x^3)(x^5x^9-x^9x^7)=x^9(x-x^3)(x^5-x^7)$. The rank $4$ statement is exact Gaussian
+elimination over $\Q$ at $q=\tfrac13$ (\texttt{assembly\_certificate.py}, Part~4). For the last
+sentence: by \textup{(M3)}, $\mu^{(y)}$ is the image of the vector $(B_\sigma)_\sigma$ under the
+junction matrix. That matrix has rank at least $3$, so its rows
+$\sigma\mapsto(x^{\mathrm{Site}_0(\sigma,2s+1)})_s$ span a space of dimension at least $3$, and
+two vectors $(B_\sigma)$ with equal sums $\sum_\sigma B_\sigma$ have different images. A product
+form would in particular make $\mu^{(y)}$ a function of that sum.
+\end{proof}
+
+\begin{theorem}[the lifting reduction \textup{(L)}]\label{thm:L}
+At every travel pole $q_m$ the factorisation \eqref{eq:mobius} holds with
+$\kappa=t_0b_1-b_0t_1$ and $t_0=b_1$, and the dictionary \eqref{eq:dict} holds identically in
+$0<q<1$, in the completed form of Corollary~\ref{cor:dict}. Consequently the clearing
+\eqref{eq:liftident},
+\[
+   B_U(q_m)=0\iff(1-s)B_V(q_m)+q_mb_0=0,\qquad s=\tfrac{q}{1-q}t_1,
+\]
+holds, and both $B_V(q_m)>0$ and $B_U(q_m)>0$ at every travel pole.
+\end{theorem}
+
+\begin{proof}
+Proposition~\ref{prop:mobius}, whose two hypotheses are supplied by Corollary~\ref{cor:sing} with
+Proposition~\ref{prop:selower} and by Remark~\ref{rem:mobhyp}; Proposition~\ref{prop:recip};
+Corollary~\ref{cor:dict}. The clearing is the algebra of \S\ref{sec:inputL}, which uses nothing
+beyond \eqref{eq:mobius} and $t_0=b_1$. For the signs: substituting $\kappa=b_1^2-b_0t_1$ and
+$qt_1=s(1-q)$ into \eqref{eq:mobius} at $\mathfrak g=\mathfrak g_V$ gives
+\[
+   B_V=\frac{b_0(1-q)(1-s)+q\,b_1^2}{(1-q)(1-s)} ,
+\]
+whose numerator and denominator are both positive at a travel pole, since $b_0>0$ and $s<1$
+(Corollary~\ref{app:gate}) and $b_1$ is real. Then $(1-s)B_V+q_mb_0>0$, so $B_U(q_m)\ne0$ by the
+clearing, and $B_U>0$ by the same substitution at $\mathfrak g=\mathfrak g_U$.
+\end{proof}
+
+\begin{remark}[what \textup{(L)} still owes]\label{rem:Lgap}
+Exactly one thing: that the bulk transfer is the operator of \eqref{eq:rankone}, that is,
+\textup{(M1)} and \textup{(M2)}. Everything the paper previously listed as unproved
+\emph{downstream} of that, namely the factorisation \eqref{eq:mobius}, the reciprocity $t_0=b_1$,
+the entry $t_1=P_{12}/S_e$, and the resolvent lines of \eqref{eq:dict}, is proved above. What
+Theorem~\ref{thm:L} does \emph{not} give is the passage from $B_U(q_m)\ne0$ to
+$\mathcal N_{q}\ne0$: that passage is the product form, and it fails by
+Proposition~\ref{prop:junction}.
+\end{remark}
+
+\subsection{The one statement that remains open}\label{sec:RJ}
+
+\begin{hypothesis}[the junction pairing \textup{(R-J)}]\label{hyp:RJ}
+With $R,L$ as in Proposition~\ref{prop:shape} and $\lambda^{(y)},\mu^{(y)}$ as in \textup{(M3)},
+\[
+   \Pi_y(q_m)=\sum_{\varepsilon^\ast,\delta^\ast}\langle\lambda^{(y)},R\rangle\,
+   \langle L,\mu^{(y)}\rangle\ \ne\ 0
+   \qquad\text{at infinitely many travel poles }q_m ,
+\]
+for $y=1$ and for $y=q$.
+\end{hypothesis}
+
+\noindent This replaces the block assembly \textup{(R)} as it stood in the previous version of
+Theorem~\ref{thm:V}. It is strictly weaker: \textup{(R)} asserted in addition a product form for
+the pairing, and that product form is unavailable by Proposition~\ref{prop:junction}. Three
+remarks on its shape.
+
+\emph{(i) The shape of the pairing.} A marker junction with a left bulk deposit of magnitude
+$\sigma$ contributes, in the travel variable $s$ \textup{(}$|a_R|=2s+1$\textup{)}, the vector
+$\lambda_s=x^{\max(\sigma-1,2s+1)}$, which equals $x\,q^{s}$ for $2s+1\ge\sigma-1$ and the
+constant $x^{\sigma-1}$ below that. Hence, using $\sum_sq^sR_s=\Sigma_1(q_m)=1$,
+\[
+   \langle\lambda,R\rangle=x\sum_sq^sR_s+\sum_{2s+1<\sigma-1}\bigl(x^{\sigma-1}-xq^s\bigr)R_s
+   =x+\Delta_\sigma ,
+\]
+a bounded explicit term plus a correction involving only the components $R_s$ with
+$2s+1<\sigma-1$. Summing over $\sigma$ against the bulk-run weights makes every component enter,
+but the structure ``constant plus correction'' is the natural target.
+
+\emph{(ii) It is not a statement about $\Sigma_0$ and $S_0$.} Both of those are non-zero at every
+travel pole (Proposition~\ref{prop:numnonvanish}), and that proposition is used, here and in
+Theorem~\ref{thm:travelres}, for what it does prove. What it does not give is $\Pi_y(q_m)\ne0$,
+by Proposition~\ref{prop:junction}.
+
+\emph{(iii) No counterexample is known}, and the pairing is positive at the dominant pole.
+
+\begin{proposition}[\textup{(R-J)} at the dominant pole]\label{prop:RJdominant}
+$\Pi_1(q_1)>0$ and $\Pi_q(q_1)>0$. In particular $q_1$ is a pole of $V=\mathcal W(\,\cdot\,,1)$
+and of $\mathcal W(\,\cdot\,,q)$, the latter being $U$ under the bridge of \S\ref{sec:bridge}.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:posseg}, $S_e>0$ and $1-\mathfrak g_Vt_1>0$ on $(0,q_1]$, hence also
+$1-\mathfrak g_Ut_1>0$ there. By Corollary~\ref{cor:sing} and \eqref{eq:smresolvent} every entry
+of the gap-marked bulk resolvent at $y\in\{1,q\}$ is therefore holomorphic on a neighbourhood of
+$[0,q_1]$. Each such entry is a power series in $q$ with non-negative coefficients, so by
+Pringsheim's theorem its radius of convergence is a singularity on the positive axis and hence
+exceeds $q_1$; its value at $q_1$ is a convergent sum of non-negative terms, positive because the
+term $2q^b$ is. So $B_\sigma(q_1,y)\ge0$ with at least one $\sigma$ strictly positive, and
+$\lambda^{(y)},\mu^{(y)}$ have strictly positive entries at $q_1$, for $y=1$ and $y=q$.
+
+For the null vectors, the same argument applied to $\mathcal T$ gives
+$\Phi(q)=(I-\mathcal T(q))^{-1}E\ge0$ entrywise for $0<q<q_1$, $q_1$ being the smallest zero of
+$1-\Sigma_1$. Put $N(q)=\sum_s\Phi_s(q)=\Sigma_0/(1-\Sigma_1)$, which tends to $+\infty$ as
+$q\uparrow q_1$ because $\Sigma_0(q_1)\ne0$ (Proposition~\ref{prop:numnonvanish}), and set
+$\hat\Phi=\Phi/N$, so $\hat\Phi\ge0$ and $\|\hat\Phi\|_{\ell^1}=1$. From
+$\hat\Phi=\mathcal T(q)\hat\Phi+E/N$ and the norm convergence $\mathcal T(q)\to\mathcal T(q_1)$ of
+compact operators, the family $\{\mathcal T(q)\hat\Phi(q)\}$ is relatively compact in $\ell^1$, so
+some sequence $q\uparrow q_1$ has $\hat\Phi\to R$ in $\ell^1$ with $R\ge0$,
+$\|R\|_{\ell^1}=1$ and $R=\mathcal T(q_1)R$. By Lemma~\ref{lem:nullspace} this $R$ spans the
+kernel, and $L_s=R_s/e_s\ge0$ with $L\ne0$. Each of the four summands of $\Pi_y(q_1)$ is
+therefore a product of two convergent sums of non-negative terms, each containing a strictly
+positive one, so $\Pi_y(q_1)>0$. The last sentence is Proposition~\ref{prop:shape}.
+\end{proof}
+
+\noindent The difficulty in \textup{(R-J)} is therefore uniformity in $m$, not any single $m$.
+The positivity argument above fails as soon as $q_m$ lies above a zero of $S_e$, which happens for
+all large $m$: by Proposition~\ref{prop:qtrig} the zeros of $S_e$ and of $1-\Sigma_1$ are the
+zeros of one $q$-cosine sampled a half $q$-step apart, so they interlace.
+
+\subsection{Certificate}\label{sec:assemblycert}
+
+\begin{remark}[the computational certificate]\label{rem:assemblycert}
+\texttt{code/zeta\_probe/assembly\_certificate.py} re-derives the statements of this section in
+two independent arithmetic models and exits $0$ with every check passing. Numerical agreement is
+evidence and is not a proof; the proofs above are what carry the statements. What the certificate
+adds is an independent arithmetic model and the hypothesis deletions.
+
+\emph{Part 1, exact arithmetic in $\Z[[q]]/(q^{N+1})$ at the two truncation orders $N=28$ and
+$N=40$, no floating point}: Propositions~\ref{prop:travelsum}, \ref{prop:bulkdress} and
+\ref{prop:recip} and Corollaries~\ref{cor:cocycle} and \ref{cor:dict}, coefficient by
+coefficient; the bulk block reproduces the bulk-run counts
+$2,2,6,2,18,6,42,18,118,50,282,190,706,594$ and the travel block the travel-run counts
+$2,6,10,26,54,114,274,582,1298$; $P_{11}=1+T_0$, $P_{12}=T_1$, $P_{21}=-S_0$, $P_{22}=S_e=1-S_1$,
+$P_{11}S_e+P_{12}S_0=1$, the Hahn--Exton form \eqref{eq:p12closed}, and $S_o=\frac{1-q}{2q}S_0$.
+
+\emph{Part 2, exact arithmetic in $\Q[\mathfrak g][[q]]/(q^{19})$}: the factorisation of
+Proposition~\ref{prop:mobius} holds identically in the free parameter $\mathfrak g$, and three
+hypothesis deletions each break it, with the first surviving order recorded. A rank-two gap term
+fails at $q^{6}$; a gap term $q^{a+2b}$ in place of $q^{a+b}$ fails at $q^{4}$; and the asymmetric
+gapless kernel $q^{\max(a,b)}+q^{a+2b}$ breaks $t_0=b_1$ at $q^{8}$.
+
+\emph{Part 3, two precisions, $40$ and $70$ significant decimal digits}: at the first ten travel
+poles, $q_1=0.4494536306$ through $q_{10}=0.997756895$, the dictionary $b_0=S_0/S_e$,
+$t_0=b_1=S_1/S_e$, $t_1=P_{12}/S_e$ holds to relative error $2.5\cdot10^{-26}$ at $40$ digits and
+$8.8\cdot10^{-57}$ at $70$, the loss of about $14$ digits being the cancellation in the
+alternating ladders at the highest pole; the two precisions agree on the pole locations to
+$1.6\cdot10^{-31}$. The resolvent is evaluated there by the $O(N)$ two-point solve of
+Corollary~\ref{cor:cocycle}, that is by the analytic continuation, the defining Neumann series not
+converging at those $q$. The M\"obius value is cross-checked against an independent dense solve of
+the truncated system at $q=0.5,0.7,q_1$ and $y=1,q$, agreeing to $6.2\cdot10^{-28}$. The gate
+signs $b_0>0$ and $s<1$ and the lifting increment $(1-s)B_V+qb_0>0$ hold at all ten, with
+$b_0\tau\to2$ and $s\to\tfrac14$.
+
+\emph{Part 4, exact rational arithmetic}: the junction matrix of Proposition~\ref{prop:junction}
+has rank $4$ over $\Q$ at $q=\tfrac13$ on the $5\times5$ block, and the interleaved $3\times3$
+minor equals $9/524288$ at $x=\tfrac12$, while the gap-bridge matrix $[q^{a+b}]$ has rank $1$. The
+closed form $\mathrm{Site}_0=\max(|a_L|-1,|a_R|)$ of \textup{(M1)} is checked against the Route~B
+matching engine on $280$ cells ($|a_L|\le12$ even, $|a_R|\le9$ odd, all four marker data) when
+that engine is present; it is part of \textup{(M)} and is not proved.
+\end{remark}
+
 \section{The relaxed series \texorpdfstring{$V$}{V}}\label{sec:V}
 
 The relaxed series is the travel resolvent dressed by the bulk. The resolvent itself is settled
@@ -1119,33 +1848,31 @@ argument shows it is not $D$-finite.)
 \end{proof}
 
 \begin{theorem}\label{thm:V}
-Assume the structural input
+Assume the transfer model \textup{(M)} of Hypothesis~\ref{hyp:model} and the structural input
 \begin{itemize}[leftmargin=2.6em,itemsep=0.15em,topsep=0.25em]
-\item[\textup{(R)}] \emph{the relaxed block assembly}: at every travel pole $q_m$ the relaxed
-generating function has the local form
-\[
-   V=\frac{\mathcal N_V}{1-\Sigma_1}+H_m,\qquad
-   \mathcal N_V=\Sigma_0\cdot\frac{S_0}{1-S_1}\cdot J,
-\]
-with $H_m$ holomorphic at $q_m$ and $J$ a finite product of geometric junction factors, each a
-rational function of $q$ with no zero in $(0,1)$.
+\item[\textup{(R-J)}] \emph{the junction pairing does not vanish}: $\Pi_1(q_m)\ne0$ at infinitely
+many travel poles $q_m$, which is Hypothesis~\ref{hyp:RJ} at $y=1$.
 \end{itemize}
 Then the relaxed growth series $V$ is transcendental over $\Q(x)$.
 \end{theorem}
 
 \begin{proof}
-Three non-vanishing statements are needed at $q_m$, and they are separate.
-\emph{First}, $S_e(q_m)=(1-S_1)(q_m)\ne0$, so the relaxed bulk dressing $S_0/(1-S_1)$ is
-\emph{holomorphic} at $q_m$: this is Proposition~\ref{prop:selower}, in the quantitative form
-$|S_e(q_m)|\ge0.35\sqrt{\tau_m}>0$ at every travel pole. It is the holomorphy half only, and it
-says nothing about vanishing.
-\emph{Second}, $S_0(q_m)\ne0$, so that bulk dressing is also \emph{non-zero} at $q_m$.
-\emph{Third}, $\Sigma_0(q_m)\ne0$, so the travel numerator does not cancel the pole either. The
-second and third are Proposition~\ref{prop:numnonvanish}, both at once, from the identity
-$\Sigma_0(q_m)S_0(q_m)=2q_m/(1-q_m)$. The junction product is non-zero at $q_m\in(0,1)$ by
-\textup{(R)}. Hence $\mathcal N_V(q_m)\ne0$ and $q_m$ is a genuine pole of $V$. The pole set is
-infinite and accumulates at the boundary of the disc of convergence (Lemma~\ref{lem:infpoles}) and
-is locally finite in $(0,1)$ (Lemma~\ref{lem:polefinite}). An algebraic function over $\Q(x)$ has
+By Proposition~\ref{prop:shape}, at a travel pole $q_m$ the relaxed series has the local form
+$V=\mathcal N_1(q-q_m)^{-\pi}+(\text{poles of order}<\pi)+H_m$ with $H_m$ holomorphic, $\pi\ge1$,
+and $\mathcal N_1=c_\star\Pi_1(q_m)$ with $c_\star\ne0$. That proposition consumes two
+non-vanishing statements, and they are separate: $S_e(q_m)\ne0$, in the quantitative form
+$|S_e(q_m)|\ge0.35\sqrt{\tau_m}$ of Proposition~\ref{prop:selower}, which makes the bulk boundary
+vectors $\lambda^{(1)},\mu^{(1)}$ holomorphic at $q_m$ and says nothing about vanishing; and
+$\Sigma_0(q_m)\ne0$, from Proposition~\ref{prop:numnonvanish}, which pins the pole order
+$\pi\ge p\ge1$. What neither supplies is $\Pi_1(q_m)\ne0$, by Proposition~\ref{prop:junction}, and
+that is exactly \textup{(R-J)}.
+
+Under \textup{(R-J)} the leading Laurent coefficient is non-zero at infinitely many travel poles,
+so $V$ has a pole at each of those. The travel poles are infinite in number and accumulate at the
+boundary of the disc of convergence (Lemma~\ref{lem:infpoles}) and are locally finite in $(0,1)$
+(Lemma~\ref{lem:polefinite}), so an infinite subset of them accumulates at $q=1$ and nowhere else.
+Hence $V$ has infinitely many poles in $|q|<1$ accumulating at $|q|=1$; under $q=x^2$ these are
+infinitely many poles in $|x|<1$ accumulating at $|x|=1$. An algebraic function over $\Q(x)$ has
 only finitely many poles in $|x|<1$, so an infinite pole set accumulating at the boundary is
 impossible for one; hence $V$ is transcendental. No comparison of $T_2$ against $\cos W$ is made or
 needed, and none is available at this strength, the proved bound on $|T_2|$ being
@@ -1153,36 +1880,42 @@ $0.17\,\tau^{1/4}$ (Lemma~\ref{lem:T2abs}), which exceeds $\sqrt{\tau/2}$ as $\t
 Remark~\ref{lem:cos} sharpens the size of $T_2$ and is not used.
 \end{proof}
 
-\begin{remark}[the standing of \textup{(R)}]\label{rem:Rstatus}
-\emph{What it is.} Route~B decomposes a relaxed element into two bulk runs, one travel interval of
-length $|k|$ and four marker junctions; the $k$-sum over the travel interval telescopes to the
-travel resolvent and leaves the bulk runs as a dressing factor. \textup{(R)} is that decomposition,
-read as a statement about the local form of $V$ at a travel pole. It is the relaxed counterpart of
-the factorisation \eqref{eq:mobius}, which is the $U$-side half of hypothesis \textup{(L)}
-(\S\ref{sec:inputL}); at $y=1$ the M\"obius form \eqref{eq:mobius} is exactly the dressing factor
-of \textup{(R)}.
+\begin{remark}[the standing of \textup{(R-J)}, and what became of \textup{(R)}]\label{rem:Rstatus}
+\emph{What \textup{(R)} was.} Route~B decomposes a relaxed element into two bulk runs, one travel
+interval of length $|k|$ and four marker junctions; \textup{(R)} was that decomposition read as a
+local form for $V$ at a travel pole, \emph{together with} a product form for its numerator,
+$\mathcal N_V=\Sigma_0\cdot S_0/(1-S_1)\cdot J$ with $J$ a junction factor.
 
-\emph{What is not proved.} The telescoping of the travel $k$-sum and the identification of the
-bulk dressing are stated in \cite{supplement} and in \cite{Bonfioli2026a} and derived in neither;
-\cite{Bonfioli2026a}, Remark on unconditionality, says so explicitly of $G^T_0$, and
-\cite{supplement} states its relaxed transcendence corollary conditional on precisely this
-assembly. What \emph{is} proved is everything downstream of \textup{(R)}: the pole set, the
-denominator bound, and the two numerator non-vanishing statements.
+\emph{What is now proved.} The $k$-sum telescoping (Proposition~\ref{prop:travelsum}), the bulk
+dressing (Proposition~\ref{prop:bulkdress}), and the shape of the local form, with a rank-one
+numerator paired against the null vector of the travel transfer
+(Proposition~\ref{prop:shape}). These are the whole of \textup{(R)} except the product form.
 
-\emph{Where it is used.} Only in Theorem~\ref{thm:V} and in Corollary~\ref{cor:beta}'s
-identification of $q_1$ as a singularity of $V$. Theorem~\ref{thm:travelres},
-Proposition~\ref{prop:numnonvanish}, Proposition~\ref{prop:selower}, \S\ref{sec:sd},
-Appendix~\ref{app:annulus} and Appendix~\ref{app:star} do not touch it.
+\emph{What is refuted.} The product form. The marker junction cost is
+$\max(|a_L|-1,|a_R|)$, a max-coupling of rank at least $3$ with an explicit non-zero $3\times3$
+minor (Proposition~\ref{prop:junction}), so the numerator is not a multiple of the total bulk sum
+and the step ``$\mathcal N_V(q_m)\ne0$ because $\Sigma_0(q_m)\ne0$ and $S_0(q_m)\ne0$'' is not
+available. Proposition~\ref{prop:numnonvanish} is unaffected and is used, in
+Theorem~\ref{thm:travelres} and inside Proposition~\ref{prop:shape}; what fails is the deduction
+that leant on it here.
 
-\emph{What would close it.} A written derivation of the relaxed catalytic transfer: the $k$-sum
-telescoping to $(1-\Sigma_1)^{-1}$ with numerator $\Sigma_0$, and the bulk runs assembling to
-$S_0/(1-S_1)$. Both are finite algebra on an explicit transfer operator; neither is analytic. The
-same derivation supplies the $U$-side half of \textup{(L)}.
+\emph{What is open.} Exactly one statement, \textup{(R-J)}: that the junction pairing
+$\Pi_1$ is non-zero at infinitely many travel poles. It holds at the dominant pole
+(Proposition~\ref{prop:RJdominant}) and no counterexample is known; the difficulty is uniformity
+in $m$. It is strictly weaker than \textup{(R)}.
 
-\emph{Evidence.} The blocks reproduce their own combinatorial series exactly: $S_0/(1-S_1)$ against
-the bulk-run counts $2,2,6,2,18,6,42,18,118,50,282,190,706,594$ and $\Sigma_0/(1-\Sigma_1)$ against
-the travel-run counts $2,6,10,26,54,114,274,582,1298$ (\texttt{blocks\_growth.py}). $V$ itself is
-computed to $131$ exact terms by an independent catalytic transfer, not from the blocks.
+\emph{Where it is used.} Only in Theorem~\ref{thm:V} and, at $y=q$, in Theorem~\ref{thm:U}.
+Theorem~\ref{thm:travelres}, Propositions~\ref{prop:numnonvanish} and \ref{prop:selower},
+Corollary~\ref{cor:beta}, \S\ref{sec:sd} and Appendices~\ref{app:annulus}--\ref{app:star} do not
+touch it. All of \S\ref{sec:assembly} additionally rests on the transfer model \textup{(M)}
+(Hypothesis~\ref{hyp:model}), which is verified and not proved.
+
+\emph{Evidence.} The blocks reproduce their own combinatorial series exactly: $S_0/(1-S_1)$
+against the bulk-run counts $2,2,6,2,18,6,42,18,118,50,282,190,706,594$ and
+$\Sigma_0/(1-\Sigma_1)$ against the travel-run counts $2,6,10,26,54,114,274,582,1298$
+(\texttt{blocks\_growth.py}, and \texttt{assembly\_certificate.py} Part~1 in exact integer
+arithmetic at two truncation orders). $V$ itself is computed to $131$ exact terms by an
+independent catalytic transfer, not from the blocks.
 \end{remark}
 
 \begin{corollary}\label{cor:beta}
@@ -1190,11 +1923,13 @@ The exponential growth rate of $v_n$ is $\beta_2=1.4916177871\ldots$, with
 $\beta_2^2$ the reciprocal of the smallest travel pole $q_1$; the value $\tfrac32$ is excluded.
 It needs only the location of the dominant travel pole: not Remark~\ref{lem:cos}, not
 Appendix~\ref{app:annulus}, and not Appendix~\ref{app:star}. It does share with
-Theorem~\ref{thm:V} the assembly \textup{(R)}, which is what places $q_1$ on $V$ rather than on
-$G^T_0$ alone; the lower bound $\beta_2$ for $u_n$ and $v_n$ is free of it, coming from the
+Theorem~\ref{thm:V} the transfer model \textup{(M)}, which is what places $q_1$ on $V$ rather than
+on $G^T_0$ alone, but it does \emph{not} need \textup{(R-J)}: at the dominant pole the junction
+pairing is a sum of non-negative terms and is positive (Proposition~\ref{prop:RJdominant}). The
+lower bound $\beta_2$ for $u_n$ and $v_n$ is free even of \textup{(M)}, coming from the
 pure-travel subcount \cite{Bonfioli2026a}. The same rate for $u_n$
-follows from Proposition~\ref{prop:travelinv} (hypothesis \textup{(T)} of Theorem~\ref{thm:U}),
-which supplies $q_1$ as a singularity of $U$ as well; $u_n\le v_n$ gives the upper bound
+follows from Proposition~\ref{prop:travelinv} (hypothesis \textup{(T)} of Theorem~\ref{thm:U})
+together with the same positivity at $q_1$; $u_n\le v_n$ gives the upper bound
 unconditionally.
 \end{corollary}
 
@@ -1206,12 +1941,14 @@ Appendix~\ref{app:beta2}, which is independent of everything else in this paper.
 
 Transcendence of $U$ needs two things that the analysis of \S\ref{sec:sd} and
 Appendix~\ref{app:star} does not supply: that $U$ has the travel poles at all, and that the residue
-of $U$ at each of them is non-zero. Both are combinatorial statements about the strand-walk model,
-and neither is proved here or in \cite{supplement}; they are the hypotheses \textup{(T)} and
-\textup{(L)} of Theorem~\ref{thm:U}. This section states them in full, with their dependencies,
-with every place they are used, and with what would close each, before turning to the analytic
-content they reduce to. A reader should not have to open \cite{supplement} to see what
-Theorem~\ref{thm:U} rests on.
+of $U$ at each of them is non-zero. The first is the combinatorial hypothesis \textup{(T)}, which
+is not proved here or in \cite{supplement}. The second was previously the hypothesis \textup{(L)};
+its algebraic content is now a theorem (\S\ref{sec:mob}, Theorem~\ref{thm:L}), and what survives
+of it is the junction non-vanishing \textup{(R-J)} at $y=q$, the same statement that
+Theorem~\ref{thm:V} consumes at $y=1$. This section states \textup{(T)} in full, with its
+dependencies, with every place it is used, and with what would close it, and records what the
+lifting reduction now does and does not give, before turning to the analytic content. A reader
+should not have to open \cite{supplement} to see what Theorem~\ref{thm:U} rests on.
 
 \subsection{The bivariate bridge}\label{sec:bridge}
 
@@ -1259,15 +1996,12 @@ identical coefficient by coefficient,
 $1,3,5,8,12,17,24,35,52,78,116,173,256,383,572,858,1276,1907,2832$, with ratio tending to
 $\beta_2$.
 
-\subsection{The second input \textup{(L)}: from the gate to a non-zero residue}\label{sec:inputL}
+\subsection{The lifting reduction \textup{(L)}, and what it now gives}\label{sec:inputL}
 
 The marker enters the block assembly through exactly one factor, the gap-bridge kernel
-\[
-   \mathfrak g(q,y)=\sum_{L\ge1}q^Ly^{L-1}=\frac{q}{1-qy},
-\]
-summing a maximal run of $L$ forced gap edges, each of weight $q$ and each an isolated cycle except
-the one shielded by the inner block's turn-around. Its two evaluations,
-$\mathfrak g_V=\mathfrak g(q,1)=\tfrac{q}{1-q}$ and
+$\mathfrak g(q,y)=q/(1-qy)$ of \textup{(M2)}, summing a maximal run of $L$ forced gap edges, each
+of weight $q$ and each an isolated cycle except the one shielded by the inner block's turn-around.
+Its two evaluations, $\mathfrak g_V=\mathfrak g(q,1)=\tfrac{q}{1-q}$ and
 $\mathfrak g_U=\mathfrak g(q,q)=\tfrac{q}{1-q^2}=\tfrac{\mathfrak g_V}{1+q}$, are holomorphic and
 non-zero on $(0,1)$, hence at every travel pole.
 
@@ -1276,8 +2010,11 @@ weight $\mathfrak g$, and its Riccati solution is a M\"obius function of $\mathf
 \begin{equation}\label{eq:mobius}
    B(q,y)=\frac{b_0+\mathfrak g\,\kappa}{1-\mathfrak g\,t_1},\qquad \kappa=t_0b_1-b_0t_1,
 \end{equation}
-with $b_0,b_1,t_0,t_1$ the $y$-free gapless-resolvent sums, which satisfy the reciprocity
-$t_0=b_1$ (verified numerically, not proved). Write $s=\mathfrak g_Vt_1$, so that $qt_1=s(1-q)$.
+with $b_0,b_1,t_0,t_1$ the $y$-free gapless-resolvent sums of
+Proposition~\ref{prop:bulkdress}, which satisfy the reciprocity $t_0=b_1$
+(Proposition~\ref{prop:recip}). The factorisation \eqref{eq:mobius} is proved as
+Proposition~\ref{prop:mobius}; its two hypotheses are $S_e\ne0$ and $s\ne1$, which the paper was
+carrying already (Remark~\ref{rem:mobhyp}). Write $s=\mathfrak g_Vt_1$, so that $qt_1=s(1-q)$.
 Clearing denominators in \eqref{eq:mobius} at $\mathfrak g=\mathfrak g_V$ and at
 $\mathfrak g=\mathfrak g_U$ gives the two genuineness polynomials
 \[
@@ -1289,11 +2026,11 @@ which differ by exactly $q(1-q)b_0$. The first equals $(1-q)(1-s)B_V$, so on div
    B_U(q_m)=0\iff(1-s)\,B_V(q_m)+q_m\,b_0=0 .
 \end{equation}
 Hence if at a travel pole $s<1$, $b_0>0$ and $B_V(q_m)>0$, the left-hand side of
-\eqref{eq:liftident} is strictly positive and the assembled numerator $\mathcal N_U(q_m)$ of $U$'s
-residue is non-zero: $U$'s residue is $V$'s residue plus the strictly positive increment $q_mb_0$.
-The factor $B_V(q_m)\ne0$ is the genuineness of $V$'s own pole at $q_m$; it is
-\emph{not} imported from Theorem~\ref{thm:V}, which would be circular, but proved directly, since
-$B_V=S_0/(1-S_1)$ at $\mathfrak g=\mathfrak g_V$ and both $S_0(q_m)\ne0$
+\eqref{eq:liftident} is strictly positive and the gap-marked bulk sum $B_U(q_m)$ is non-zero:
+$B_U$ is $B_V$ plus the strictly positive increment $q_mb_0/(1-s)$. The factor $B_V(q_m)\ne0$ is
+the genuineness of $V$'s own bulk sum at $q_m$; it is \emph{not} imported from
+Theorem~\ref{thm:V}, which would be circular, but proved directly in Theorem~\ref{thm:L} from
+\eqref{eq:mobius}, $b_0(q_m)>0$ and $s(q_m)<1$, using at bottom that $S_0(q_m)\ne0$
 (Proposition~\ref{prop:numnonvanish}) and $S_e(q_m)\ne0$ (Proposition~\ref{prop:selower}) hold at
 every travel pole. What remains is the \emph{gate}
 \begin{equation}\label{eq:gate}
@@ -1305,40 +2042,42 @@ on the off-diagonal cocycle entry $P_{12}$, together with the dictionary identif
    S_e=1-S_1,\qquad S_o=\tfrac{1-q}{2q}\,S_0,\qquad
    b_0=\frac{S_0}{1-S_1}=\frac{2q}{1-q}\cdot\frac{S_o}{S_e},
 \end{equation}
-$S_o$ being identified in Lemma~\ref{lem:P12closed}. The remaining entry $t_1=P_{12}/S_e$ is a
-definition, not a dictionary claim, which is why the half $|s|<1$ of the gate does not depend on
-\textup{(L)}.
+$S_o$ being identified in Lemma~\ref{lem:P12closed} and the two resolvent lines in
+Corollary~\ref{cor:dict}. The remaining entry $t_1=P_{12}/S_e$ is an identity between
+independently defined objects (Corollary~\ref{cor:cocycle}), not a definition, so all four lines
+of \eqref{eq:dict} now stand on the same footing.
 
-\emph{What \textup{(L)} asserts} is exactly this pair: the factorisation \eqref{eq:mobius} and the
-dictionary \eqref{eq:dict}. Everything from \eqref{eq:mobius} to \eqref{eq:gate} is then algebra.
+\emph{What is proved.} The pair on which \textup{(L)} rested, namely the factorisation
+\eqref{eq:mobius} and the dictionary \eqref{eq:dict}, is Theorem~\ref{thm:L}. Everything from
+\eqref{eq:mobius} to \eqref{eq:gate} is then algebra, and Theorem~\ref{thm:L} carries it through
+to $B_V(q_m)>0$ and $B_U(q_m)>0$ at every travel pole. Three ingredients previously listed as
+verified rather than proved are now proved: the reciprocity $t_0=b_1$
+(Proposition~\ref{prop:recip}), the entry $t_1=P_{12}/S_e$ (Corollary~\ref{cor:cocycle}), and the
+identification of the resolvent quantities $b_0,b_1,t_0$ with the blocks
+(Proposition~\ref{prop:bulkdress}). What remains unproved beneath them is the transfer model
+\textup{(M)} itself: that the bulk transfer is $M_0[b,a]=2q^bq^{\max(a,b)}$ with the rank-one gap
+term, which is \textup{(M1)} and \textup{(M2)}. On the numerical side, the kernel
+$K(a,b)=q^{\max(a,b)}$ on active half-sizes reproduces
+$S_0/(1-S_1)=2q+2q^2+6q^3+2q^4+18q^5+6q^6+42q^7+\cdots$ (\texttt{blocks\_growth.py}), and the
+whole dictionary is re-derived in exact integer arithmetic and at two precisions in
+\texttt{assembly\_certificate.py}.
 
-\emph{Where it is used.} In the proof of Theorem~\ref{thm:U}, to pass from the gate to
-$\mathcal N_U(q_m)\ne0$; and inside Corollary~\ref{app:gate}, where the half $b_0>0$ is proved from
-a sign chain running through the closed form in \eqref{eq:dict}. The other half of the gate,
-$|s|<1$, uses neither: it is Theorem~\ref{thm:star} with Lemma~\ref{app:Se}, and it is
-unconditional.
+\emph{Where it is used.} In the proof of Theorem~\ref{thm:U}, to reach $B_U(q_m)\ne0$; and inside
+Corollary~\ref{app:gate}, where the half $b_0>0$ is proved from a sign chain running through the
+closed form in \eqref{eq:dict}. The other half of the gate, $|s|<1$, uses neither: it is
+Theorem~\ref{thm:star} with Lemma~\ref{app:Se}, and it is unconditional.
 
-\emph{What is not proved.} The factorisation \eqref{eq:mobius} and the dictionary \eqref{eq:dict}
-are stated in \cite{supplement} as exact identities and supported there by numerical agreement with
-the resolvent to $10^{-22}$ and $10^{-23}$. Agreement at that accuracy is strong evidence and is
-not a proof. One line of \eqref{eq:dict} is now proved outright, namely
-$S_o=\tfrac{1-q}{2q}S_0$ read as an identity between the two explicit series
-(Lemma~\ref{lem:qsinenum}); what remains unproved in \eqref{eq:dict} is that the resolvent
-quantities $b_0,b_1,t_0$ are the objects named there. Three ingredients of the same derivation are likewise verified rather than proved: the
-reciprocity $t_0=b_1$ used above; the localisation of isolated cycles outside the travel interval;
-and the identification of the bulk block as the generating function of gapless bulk runs, the
-kernel $K(a,b)=q^{\max(a,b)}$ on active half-sizes reproducing
-$S_0/(1-S_1)=2q+2q^2+6q^3+2q^4+18q^5+6q^6+42q^7+\cdots$ (\texttt{blocks\_growth.py}).
-
-\emph{What would close it.} A written derivation of the Riccati solution \eqref{eq:mobius} for the
-semiseparable-plus-rank-one bulk transfer, and a proof of \eqref{eq:dict}. Both are finite algebra
-on an explicit transfer operator; neither is an analytic obstacle of the kind
-Appendix~\ref{app:star} addresses.
+\emph{What it does not give.} The passage from $B_U(q_m)\ne0$ to a non-zero residue of $U$ at
+$q_m$. That passage is the product form for the assembled numerator, and it fails: the marker
+junction is a coupling of rank at least $3$ (Proposition~\ref{prop:junction}), so the residue is
+the junction pairing $\Pi_q(q_m)$ of \eqref{eq:junctionpairing} and not a multiple of $B_U(q_m)$.
+Its non-vanishing is \textup{(R-J)} at $y=q$, Hypothesis~\ref{hyp:RJ}, the same statement
+Theorem~\ref{thm:V} consumes at $y=1$.
 
 \emph{An equivalent earlier form}, recorded because it is how the reduction was first isolated:
 $B_U(q_m)=0$ iff $\mathfrak g_U$ meets the M\"obius zero $\mathfrak g_0=-b_0/\kappa$ of
-\eqref{eq:mobius}. Since $\mathfrak g_U=q/(1-q^2)\to\infty$ along the poles, the residue is non-zero
-as soon as $\mathfrak g_0$ stays bounded, which the travel-pole limits $b_0\tau\to2$,
+\eqref{eq:mobius}. Since $\mathfrak g_U=q/(1-q^2)\to\infty$ along the poles, $B_U$ is non-zero as
+soon as $\mathfrak g_0$ stays bounded, which the travel-pole limits $b_0\tau\to2$,
 $t_1\sim\tau/4$, $b_1^2\sim2/\tau$ deliver as $\mathfrak g_0\to-1$. The sign form
 \eqref{eq:liftident} is sharper and is what is used.
 
@@ -1406,29 +2145,35 @@ by \texttt{nlinarith}.
 \end{remark}
 
 \begin{theorem}\label{thm:U}
-Assume the two structural inputs \textup{(T)} and \textup{(L)}, which this paper does not prove:
+Assume the transfer model \textup{(M)} of Hypothesis~\ref{hyp:model} and the two structural
+inputs, neither of which this paper proves:
 \begin{enumerate}[leftmargin=2.4em,itemsep=0.1em,topsep=0.2em]
 \item[\textup{(T)}] Proposition~\ref{prop:travelinv}: $1-\Sigma_1$ is the identical,
 cycle-marker-free denominator in $U$ and in $V$, so $U$ inherits the travel poles $q_m$
 (\S\ref{sec:inputT});
-\item[\textup{(L)}] the lifting reduction of \cite{supplement},~\S\,lifting: the closed form
-$b_0=\tfrac{2q}{1-q}\,S_o/S_e$ holds, and at every travel pole $q_m$ the gate \eqref{eq:gate}
-($b_0(q_m)>0$ \emph{and} $|s(q_m)|<1$) implies $\mathcal N_U(q_m)\ne0$; the factorisation
-\eqref{eq:mobius} and the dictionary \eqref{eq:dict} from which it is derived, and the algebra
-that derives it, are set out in \S\ref{sec:inputL}.
+\item[\textup{(R-J)}] Hypothesis~\ref{hyp:RJ} at $y=q$: the junction pairing $\Pi_q(q_m)$ of
+\eqref{eq:junctionpairing} is non-zero at infinitely many travel poles.
 \end{enumerate}
 Then the true growth series $U$ is transcendental over $\Q(x)$.
 
-Unconditionally, and independently of \textup{(T)} and \textup{(L)}, the half $|s|<1$ of the gate
-\eqref{eq:gate} holds at every travel pole. The numerator amplitude estimate $(\star)$ (at every
-travel pole
+The hypothesis \textup{(L)} that earlier versions of this theorem carried is gone: its content,
+the factorisation \eqref{eq:mobius} with the dictionary \eqref{eq:dict} and the reciprocity
+$t_0=b_1$, is Theorem~\ref{thm:L}, and it yields $B_U(q_m)\ne0$ at every travel pole. What it does
+not yield is the residue, because the marker junction is not rank one
+(Proposition~\ref{prop:junction}); that is why \textup{(R-J)} appears here as it does in
+Theorem~\ref{thm:V}.
+
+Unconditionally, and independently of \textup{(M)}, \textup{(T)} and \textup{(R-J)}, the half
+$|s|<1$ of the gate \eqref{eq:gate} holds at every travel pole. The numerator amplitude estimate
+$(\star)$ (at every travel pole
 $q_m$, $|P_{12}(q_m)|\,w_m^3<2$) is Theorem~\ref{thm:star} (Appendix~\ref{app:star}):
 $|P_{12}|\le0.619\,\tau^{3/2}$ for $\tau\le5\cdot10^{-3}$ and $|P_{12}|w^3\le0.75$ at the six
 poles above that threshold. The passage to $|s|<1$ is
 Corollary~\ref{app:gate}: $|s|\le0.983$ on the uniform range and $|s|\le0.296$ at the six
 exceptional poles, with the denominator lower bound $|S_e|\ge0.63\sqrt\tau$ supplied by
-Lemma~\ref{app:Se}. The remaining half $b_0>0$ is proved in the same corollary from a sign chain,
-but consumes the closed form for $b_0$ named in \textup{(L)}, so it is not unconditional. The
+Lemma~\ref{app:Se}. The remaining half $b_0>0$ is proved in the same corollary from a sign chain
+through the closed form for $b_0$, which is now Corollary~\ref{cor:dict} and therefore rests on
+\textup{(M)} alone. The
 leading-order picture of Remark~\ref{rem:elemY3} (the phase-matched zero giving
 $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below the threshold $1/\sqrt2$) is
 consistent with, and explained by, the second-difference identity of
@@ -1436,23 +2181,25 @@ Proposition~\ref{prop:P12second}.
 \end{theorem}
 
 \begin{proof}
-By \textup{(T)}, $U$ inherits the travel poles; by \textup{(L)}, $\mathcal N_U(q_m)\ne0$ once
-the gate \eqref{eq:gate} holds there. Corollary~\ref{app:gate} closes the gate at \emph{every}
-travel pole: on the uniform range $\tau\le5\cdot10^{-3}$,
-$|P_{12}|\le0.619\,\tau^{3/2}$ (Theorem~\ref{thm:star}) and $|S_e|\ge0.63\sqrt\tau$
-(Lemma~\ref{app:Se}) give
+By \textup{(T)}, $U$ inherits the travel poles. By Proposition~\ref{prop:shape} at $y=q$, at each
+travel pole $U$ has the local form $\mathcal N_q(q-q_m)^{-\pi}+(\text{lower order})+H_m$ with
+$\mathcal N_q=c_\star\Pi_q(q_m)$ and $c_\star\ne0$; the boundary vectors are holomorphic there
+because the gate \eqref{eq:gate} holds at \emph{every} travel pole. Indeed, on the uniform range
+$\tau\le5\cdot10^{-3}$, $|P_{12}|\le0.619\,\tau^{3/2}$ (Theorem~\ref{thm:star}) and
+$|S_e|\ge0.63\sqrt\tau$ (Lemma~\ref{app:Se}) give
 $|s|=\tfrac{q}{1-q}\,|P_{12}|/|S_e|\le\tfrac{\tau}{e^\tau-1}\cdot\tfrac{0.619}{0.63}\le0.983<1$,
 and $b_0>0$ follows from the sign chain of the same lemmas through the closed form of
-\textup{(L)}; the six exceptional poles are checked
-directly. Hence $U$ has an uncancelled pole at every $q_m$; these are infinitely many and
-accumulate at $q=1$ (Lemma~\ref{lem:infpoles}), so $U$ has infinitely many poles in the unit disc
-and is transcendental over $\Q(x)$ (as in Theorem~\ref{thm:V}: an algebraic function over $\Q(x)$
-has only finitely many poles in the unit disc). Transcendence does not consume the
-exceptional-pole enumeration of Theorem~\ref{thm:star}: the uniform range $\tau\le5\cdot10^{-3}$
-alone supplies infinitely many uncancelled poles (Lemma~\ref{lem:infpoles} produces them at
-$\tau\downarrow0$); the enumeration only upgrades ``at infinitely many travel poles'' to ``at
-every travel pole''. For orientation: the computed values over $m=5,\dots,71$ are
-$|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)=0.1768$ and $s\to\tfrac14$, well inside every bound above.
+Corollary~\ref{cor:dict}; the six exceptional poles are checked directly
+(Corollary~\ref{app:gate}). By \textup{(R-J)} the leading coefficient $\mathcal N_q$ is non-zero
+at infinitely many $q_m$, so $U$ has an uncancelled pole at each of those; these accumulate at
+$q=1$ (Lemmas~\ref{lem:infpoles} and \ref{lem:polefinite}), so $U$ has infinitely many poles in
+the unit disc accumulating at its boundary and is transcendental over $\Q(x)$, as in
+Theorem~\ref{thm:V}. Transcendence does not consume the exceptional-pole enumeration of
+Theorem~\ref{thm:star}: the uniform range $\tau\le5\cdot10^{-3}$ alone carries infinitely many
+poles (Lemma~\ref{lem:infpoles} produces them at $\tau\downarrow0$); the enumeration only upgrades
+``at infinitely many travel poles'' to ``at every travel pole'' in the gate. For orientation: the
+computed values over $m=5,\dots,71$ are $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)=0.1768$ and
+$s\to\tfrac14$, well inside every bound above.
 \end{proof}
 
 \begin{remark}[the assembly is machine-checked]\label{rem:uassembly}
@@ -1466,8 +2213,12 @@ finiteness of an algebraic function's
 pole set in the disc. The file formalises \emph{no} analysis: no $q$-series, no steepest
 descent, no numerics; its content is exactly that those hypotheses \emph{compose}, so its
 hypothesis list is an audit of what Theorem~\ref{thm:U} rests on, not a verification of any of
-them. In particular \texttt{hred} is assumed, not derived, so the machine check says nothing
-about the standing of \textup{(L)}. The quantitative step is isolated
+them. In particular \texttt{hred}, the hypothesis ``the gate implies a non-zero residue'', is
+assumed there and not derived; Theorem~\ref{thm:L} proves its first half, that the gate implies
+$B_U(q_m)\ne0$, and Proposition~\ref{prop:junction} shows that its second half is not the
+identity the Lean file's phrasing suggests but the junction non-vanishing
+\textup{(R-J)}. The machine check therefore still says nothing about the standing of that
+passage. The quantitative step is isolated
 as \texttt{gate\_ratio\_lt\_one}, whose hypothesis $K<c$ (numerator constant strictly below
 denominator constant) is what the gate needs and what a numerator bound alone cannot supply:
 with $K=0.619$ from Theorem~\ref{thm:star} and the constant $0.35$ of
@@ -1475,26 +2226,29 @@ Proposition~\ref{prop:selower} it is \emph{false}, which is precisely why Lemma~
 $0.63$ is required.
 \end{remark}
 
-\begin{remark}[what is proved, and what \textup{(T)} and \textup{(L)} still owe]\label{rem:Ustatus}
-The unconditional content of this section is the numerator half of the gate: at every travel pole,
+\begin{remark}[what is proved, and what \textup{(T)} and \textup{(R-J)} still owe]\label{rem:Ustatus}
+The unconditional content of this section is the gate: at every travel pole,
 $|P_{12}|\le0.619\,\tau^{3/2}$ (Theorem~\ref{thm:star}), $|S_e|\ge0.63\sqrt\tau$
 (Lemma~\ref{app:Se}) and hence $|s|\le0.983<1$ (Corollary~\ref{app:gate}), together with the
 infinitude and accumulation of the travel poles (Lemma~\ref{lem:infpoles}) and the fact that these
-facts compose to non-algebraicity (Remark~\ref{rem:uassembly}). What is \emph{not} proved,
-here or in \cite{supplement}, is either of the structural inputs.
+facts compose to non-algebraicity (Remark~\ref{rem:uassembly}). Conditional on the transfer model
+\textup{(M)} alone, the lifting reduction is now proved: the factorisation \eqref{eq:mobius}, the
+reciprocity $t_0=b_1$, the full dictionary \eqref{eq:dict}, the half $b_0>0$ of the gate, and
+$B_U(q_m)\ne0$ at every travel pole (Theorem~\ref{thm:L}).
 
-The two inputs are stated in full in \S\S\ref{sec:inputT}--\ref{sec:inputL}, each with its
-dependencies and with what would close it. Their standing is that of verified conjectures:
-\textup{(T)} rests on the localisation of cycles and on the open lower bound in
-$\ell_T=\ell_R+2c$, \textup{(L)} on the factorisation \eqref{eq:mobius} and the dictionary
-\eqref{eq:dict}, which \cite{supplement} supports by numerical agreement with the resolvent to
-$10^{-22}$ and $10^{-23}$; agreement at that accuracy is strong evidence and is not a proof.
-Accordingly the standing of Theorem~\ref{thm:U} is the weaker of \textup{(T)} and \textup{(L)}, and
-the word ``unconditionally'' is not applied to $U$ anywhere in this paper. Making
-Theorem~\ref{thm:U} unconditional requires exactly two things: a written proof of the resolvent
-factorisation with its dictionary, and a written proof of Proposition~\ref{prop:travelinv}. Neither
-is an analytic obstacle of the kind Appendix~\ref{app:star} addresses; both are combinatorial or
-algebraic, and both are absent.
+What is \emph{not} proved is \textup{(T)}, and \textup{(R-J)}, and \textup{(M)} beneath both.
+\textup{(T)} is stated in full in \S\ref{sec:inputT} with its dependencies and with what would
+close it; it rests on the localisation of cycles and on the open lower bound in
+$\ell_T=\ell_R+2c$, and its standing is that of a verified conjecture. \textup{(R-J)} is
+Hypothesis~\ref{hyp:RJ}: it holds at the dominant pole (Proposition~\ref{prop:RJdominant}) and no
+counterexample is known, and it is what the refutation of the product form
+(Proposition~\ref{prop:junction}) leaves behind. \textup{(M)} is Hypothesis~\ref{hyp:model},
+exhaustively verified and unproved. Accordingly the standing of Theorem~\ref{thm:U} is the weakest
+of these three, and the word ``unconditionally'' is not applied to $U$ anywhere in this paper.
+Making Theorem~\ref{thm:U} unconditional now requires exactly three things: a proof of
+Proposition~\ref{prop:travelinv}, a proof of \textup{(R-J)} at $y=q$, and a proof of \textup{(M)}.
+None is an analytic obstacle of the kind Appendix~\ref{app:star} addresses; all three are
+combinatorial, and all three are absent.
 \end{remark}
 
 \begin{remark}[what the turning-point atom does and does not give]\label{rem:Ugap}
@@ -1561,8 +2315,10 @@ the standard gap/Mahler methods do not provide.
 \section{Conclusion}\label{sec:conclusion}
 
 The arithmetic of A396406 separates cleanly. The P\'olya--Carlson dichotomy for the catalytic
-building blocks and the growth rate are unconditional (Theorem~\ref{thm:blocks};
-Corollary~\ref{cor:beta}). For the two denominators $\Sigma_1,S_1$ the exclusion of the rational
+building blocks is unconditional (Theorem~\ref{thm:blocks}), and so is the lower bound $\beta_2$
+for the growth rate; the matching upper bound, and with it the identification of $\beta_2$ as the
+rate, consumes the transfer model \textup{(M)} and nothing else
+(Corollary~\ref{cor:beta}). For the two denominators $\Sigma_1,S_1$ the exclusion of the rational
 alternative needs no growth hypothesis: it follows from the infinitude of their level sets in
 $(0,1)$, hence from the same Lemma~\ref{lem:T2abs} that the rest of the paper consumes
 (Corollary~\ref{cor:polepath}). For the two numerators it rests on Hypothesis~\ref{hyp:growth},
@@ -1582,10 +2338,15 @@ denominator conclusion by a
 different and shorter route (the saddles $z^\ast_\pm=\pm iW/2$ with all constants derived
 explicitly, the two saddles supplying the global cancellation that no partial-summation method can), but that route is a sketch only (Remark~\ref{rem:cosgap}), and no theorem uses it. Both $V$ and
 $U$ take their pole set from Lemma~\ref{lem:infpoles}, which consumes only the rectangle bound
-$|T_2|\to0$ of Lemma~\ref{lem:T2abs}. \textbf{$V$ is transcendental over $\Q(x)$ conditional on the
-block assembly \textup{(R)}} of Theorem~\ref{thm:V}: the telescoping of the travel $k$-sum and the
-identification of the bulk dressing, asserted in \cite{supplement} and \cite{Bonfioli2026a} and
-derived in neither (Remark~\ref{rem:Rstatus}). The true series $U$ stands on the same
+$|T_2|\to0$ of Lemma~\ref{lem:T2abs}. The block assembly is developed in \S\ref{sec:assembly}, on
+the observation that the travel and the bulk block are the same object, the resolvent of
+$q^{\max(a,b)}$ against a geometric weight: this proves the travel telescoping, the bulk dressing,
+the reciprocity $t_0=b_1$ with its cocycle form $\det P=1$, the identity $t_1=P_{12}/S_e$, the
+M\"obius factorisation \eqref{eq:mobius}, and the shape of $V$'s local form at a travel pole. It
+also refutes the product form of the numerator: the marker junction has rank at least $3$
+(Proposition~\ref{prop:junction}). \textbf{$V$ is transcendental over $\Q(x)$ conditional on the
+junction non-vanishing \textup{(R-J)}} of Theorem~\ref{thm:V}, which holds at the dominant pole
+and is open in general (Remark~\ref{rem:Rstatus}). The true series $U$ stands on the same
 \emph{analytic} footing: its further analytic inputs are proved in Appendix~\ref{app:star}: the gate block is the
 symmetric second difference of the $q$-cosine at its own zero (Proposition~\ref{prop:P12second}),
 the two-interval uniform certificate of Theorem~\ref{thm:star} gives
@@ -1594,13 +2355,16 @@ above that threshold checked directly, and the exact identity $S_e=\tfrac{qZ}2\m
 same certificate into the denominator bound that closes the gate
 ($|s|\le0.983$; Corollary~\ref{app:gate}), consistent with the phase-matched leading
 values $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$ and $s\to\tfrac14$.
-\textbf{$U$ is transcendental over $\Q(x)$ conditional on \textup{(T)} and \textup{(L)}} of
-Theorem~\ref{thm:U}: the invariance of the travel block under the cycle marker, and the reduction
-of numerator non-vanishing to the gate. Both are stated in full in
-\S\S\ref{sec:inputT}--\ref{sec:inputL}; both are combinatorial or algebraic; and neither is proved,
-here or in \cite{supplement}. No analytic input separates $U$ from $V$; the distance between them
-is that $V$ needs \textup{(R)} alone while $U$ needs \textup{(R)} in the sharper form
-\textup{(L)}, together with \textup{(T)}.
+\textbf{$U$ is transcendental over $\Q(x)$ conditional on \textup{(T)} and \textup{(R-J)}} of
+Theorem~\ref{thm:U}: the invariance of the travel block under the cycle marker, and the junction
+non-vanishing at $y=q$. Both are stated in full, \textup{(T)} in \S\ref{sec:inputT} and
+\textup{(R-J)} in \S\ref{sec:RJ}; both are combinatorial; and neither is proved. The hypothesis
+\textup{(L)} that earlier versions carried has become Theorem~\ref{thm:L}, and it yields
+$B_U(q_m)\ne0$ at every travel pole. Every statement in \S\ref{sec:assembly} beyond the operator
+algebra, and with it Theorems~\ref{thm:V} and \ref{thm:U} and Corollary~\ref{cor:beta}, rests in
+addition on the transfer model \textup{(M)} (Hypothesis~\ref{hyp:model}), which is exhaustively
+verified and not proved. No analytic input separates $U$ from $V$; what separates them is
+\textup{(T)}, which $V$ does not use.
 The turning-point amplitude atom on the $U$-side is the elementary rational bound
 of Lemma~\ref{lem:atomN}, formally verified in Lean~4. The independent mod-$p$ route of
 \S\ref{sec:modp} would settle $U$ by a completely different mechanism, if a dense-support
@@ -1822,10 +2586,10 @@ $|P_{12}(q_m)|\,w_m^3<2$, $w_m=\sqrt{2/\tau_m}$; quantitatively
 $|P_{12}|\le\tfrac{3.5\sqrt2}8\,\tau^{3/2}<0.619\,\tau^{3/2}$ for $\tau\le5\cdot10^{-3}$, and
 $|P_{12}|w^3\le0.75$ at the six poles above that threshold) and then closes the full gate
 \eqref{eq:gate}: the same certificate yields the denominator bound $|S_e|\ge0.63\sqrt\tau$
-(Lemma~\ref{app:Se}), hence $s<1$ at every travel pole, and, granting hypothesis \textup{(L)} of
-Theorem~\ref{thm:U} for the closed form of $b_0$, also $b_0>0$ and $\mathcal N_U(q_m)\ne0$ there
-(Corollary~\ref{app:gate}). Nothing in this appendix depends on \textup{(L)} except the two
-statements just named as depending on it.
+(Lemma~\ref{app:Se}), hence $s<1$ at every travel pole, and, granting the transfer model
+\textup{(M)} for the closed form of $b_0$ (Corollary~\ref{cor:dict}), also $b_0>0$ and
+$B_U(q_m)\ne0$ there (Corollary~\ref{app:gate} with Theorem~\ref{thm:L}). Nothing in this appendix
+depends on \textup{(M)} except the two statements just named as depending on it.
 Throughout, $h=\tau/2$, $\sigma^2=\tau/2$, $\psi(t)=\cos(Ze^{t};q^2)$; by
 Proposition~\ref{prop:P12second}, $P_{12}=-\tfrac12[\psi(h)+\psi(-h)]$ and $\psi(0)=0$, so
 \begin{equation}\label{eq:taylorgate}
@@ -1844,8 +2608,8 @@ Identically in $0<q<1$, with $c(u)=\cos(u;q^2)$ and $\mathfrak s(u)=q^{-1/2}\sin
  P_{12}=\tfrac{qZ}2\,\mathfrak s(Z)-c(z_0),\qquad
  S_o:=\sum_{j\ge0}\frac{(-1)^j[2(1-q)]^j\,q^{j^2+2j}\,(1-q)}{(q;q)_{2j+1}}=\tfrac{z_0}2\,\mathfrak s(z_0),
 \]
-$S_o$ being the odd bulk block of the supplement's closed form $b_0=\tfrac{2q}{1-q}\,S_o/S_e$
-(\cite{supplement}, \S\,lifting, the telescoped first-order system).
+$S_o$ being the odd bulk block of the closed form $b_0=\tfrac{2q}{1-q}\,S_o/S_e$ of
+Corollary~\ref{cor:dict}.
 \end{lemma}
 
 \begin{proof}
@@ -2097,17 +2861,17 @@ statement holds because $0.90\cdot\tfrac{qZ}2>|P_{12}|$ with the same margin.
 \end{proof}
 
 \begin{corollary}[the gate closes]\label{app:gate}
-At every travel pole the gate \eqref{eq:gate} holds; under hypothesis \textup{(L)} of
-Theorem~\ref{thm:U} this gives $\mathcal N_U(q_m)\ne0$ (the enumeration
+At every travel pole the gate \eqref{eq:gate} holds; with Theorem~\ref{thm:L} this gives
+$B_U(q_m)\ne0$ (the enumeration
 standing of the six-pole list is that of Theorem~\ref{thm:star}). The half $|s|<1$ is proved here
-outright; the half $b_0>0$ consumes the closed form $b_0=\tfrac{2q}{1-q}S_o/S_e$, which is part of
-\textup{(L)} and is not proved. Quantitatively,
+outright; the half $b_0>0$ consumes the closed form $b_0=\tfrac{2q}{1-q}S_o/S_e$, which is
+Corollary~\ref{cor:dict} and therefore rests on the transfer model \textup{(M)}. Quantitatively,
 for $\tau\le5\cdot10^{-3}$:
 \[
  |s|\;=\;\frac{q}{1-q}\,\frac{|P_{12}|}{|S_e|}\;\le\;\frac{\tau}{e^\tau-1}\cdot\frac{0.619}{0.63}
  \;\le\;0.983\;<\;1,
 \]
-and $b_0>0$: granting the closed form $b_0=\tfrac{2q}{1-q}\,S_o/S_e$ of \textup{(L)} \cite{supplement} with
+and $b_0>0$: with the closed form $b_0=\tfrac{2q}{1-q}\,S_o/S_e$ of Corollary~\ref{cor:dict} and
 $S_o=\tfrac{z_0}2\,\mathfrak s(z_0)$ (Lemma~\ref{lem:P12closed}), the pole invariant
 $q^{3/2}\mathfrak s(z_0)\mathfrak s(Z)=1$ (Proposition~\ref{prop:P12second}'s proof) gives
 $\operatorname{sign}S_o=\operatorname{sign}\mathfrak s(Z)=\operatorname{sign}S_e$
@@ -2314,9 +3078,9 @@ $q^\ast_2$ (PSLQ, $100$ digits). The family interpolates between the open head (
 $\beta_2$) and the classical tail (the $\pi^2$-law): the roots become ``provably transcendental
 in the limit'' while the first, the one of combinatorial interest, remains untouched; the
 confluent boundary of the step-ratio mechanism made visible inside a single object. (That the
-higher roots are genuine singularities of $U$ itself is exactly the non-vanishing
-$\mathcal N_U(q_m)\ne0$, which Corollary~\ref{app:gate} delivers at every travel pole under
-hypothesis \textup{(L)} of Theorem~\ref{thm:U}.)
+higher roots are genuine singularities of $U$ itself is the non-vanishing $\Pi_q(q_m)\ne0$, which
+is Hypothesis~\ref{hyp:RJ} and is open; what Corollary~\ref{app:gate} with Theorem~\ref{thm:L}
+delivers at every travel pole is the weaker $B_U(q_m)\ne0$.)
 
 Three refinements (all computations at $115$ digits, $30$ cosine and $10$ sine members). First,
 the sine side has its own family, $H(q^{\mathrm s}_j,2q(1-q))=0$ with
@@ -3374,9 +4138,10 @@ for orthoscheme reflection groups}, preprint (2026), \texttt{doi:10.5281/zenodo.
 \bibitem{supplement} V.~Bonfioli, \emph{Route-B lifting and transcendence supplement}, unpublished
 working notes (2026), deposited with the project source release on Zenodo,
 \texttt{doi:10.5281/zenodo.20370090} (concept DOI, resolving to the current version). The notes
-record the block assembly and the lifting reduction and prove neither; every statement this paper
-takes from them is reproduced in full in \S\ref{sec:inputT}, \S\ref{sec:inputL} and
-Remark~\ref{rem:Rstatus}.
+record the block assembly and the lifting reduction and prove neither; the mathematics this paper
+takes from them is reproduced and proved in full in \S\ref{sec:assembly}, and what is left
+unproved is isolated as Hypotheses~\ref{hyp:model} and \ref{hyp:RJ} and in \S\ref{sec:inputT}. No
+theorem of this paper depends on the notes.
 
 \bibitem{Cannon1984} J.~W.~Cannon, \emph{The combinatorial structure of cocompact discrete
 hyperbolic groups}, Geom.\ Dedicata \textbf{16} (1984), 123--148.
