@@ -165,3 +165,12 @@ theorem paper_constants : (0.619 : ℝ) < 0.63 := by norm_num
 theorem gate_needs_Kc : ¬ ((0.619 : ℝ) < 0.35) := by norm_num
 
 end UAssembly
+
+-- Rule 5 axiom audit.
+#print axioms UAssembly.q_ratio
+#print axioms UAssembly.gate_ratio_lt_one
+#print axioms UAssembly.Se_lower
+#print axioms UAssembly.not_alg_of_infinite_poles
+#print axioms UAssembly.U_not_algebraic
+#print axioms UAssembly.paper_constants
+#print axioms UAssembly.gate_needs_Kc

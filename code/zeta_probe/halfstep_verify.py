@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verifier for the half-step ladder identities of paper2 (Rule 9).
+"""Verifier for section 5 of private/U_cumulant_chain.tex (Rule 9).
 
   lem:funct    F(x) - F(qx) = q^{1/4} x F(sqrt(q) x)                      [generic]
   eq:half      c(qu)=c(u)+q^{3/2}u s(sqrt q u);  s(qu)=s(u)-u c(sqrt q u) [generic]

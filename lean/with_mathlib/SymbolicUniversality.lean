@@ -127,3 +127,6 @@ noncomputable def imagesAtDepth10 : List Aff :=
 example : (canonicalWords 10).length = 233 := by native_decide
 
 end SymbolicUniversality
+
+-- Rule 5 axiom audit.
+#print axioms SymbolicUniversality.canonicalWords_10_count

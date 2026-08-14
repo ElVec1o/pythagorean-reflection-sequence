@@ -150,3 +150,15 @@ theorem guard_not_sufficient :
     simp [Matrix.mulVec]
 
 end OverDetermination
+
+-- Rule 5 axiom audit.
+#print axioms OverDetermination.exists_ne_zero_of_finrank_lt
+#print axioms OverDetermination.exists_nonzero_solution
+#print axioms OverDetermination.le_of_exclusion
+#print axioms OverDetermination.searched_card
+#print axioms OverDetermination.vacuous_card
+#print axioms OverDetermination.worst_case
+#print axioms OverDetermination.nonlinear_vacuous
+#print axioms OverDetermination.linear_order_19_ok
+#print axioms OverDetermination.linear_order_20_vacuous
+#print axioms OverDetermination.guard_not_sufficient

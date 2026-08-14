@@ -139,3 +139,10 @@ theorem weak_input_suffices (T : ℕ → ℝ) (C : ℝ) (τ : ℕ → ℝ)
     ∀ m, m₀ ≤ m → |T m| < 1 := fun m hm => lt_of_le_of_lt (hbound m) (hsmall m hm)
 
 end SDAssembly
+
+-- Rule 5 axiom audit.
+#print axioms SDAssembly.sign_at_extreme_phase
+#print axioms SDAssembly.alternates
+#print axioms SDAssembly.root_in_window
+#print axioms SDAssembly.infinitely_many_roots
+#print axioms SDAssembly.weak_input_suffices

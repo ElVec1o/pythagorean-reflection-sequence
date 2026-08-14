@@ -265,29 +265,37 @@ PASS.append(("lem:tail Touchard D_p=2^-p Re[e^iW T_p(iW)] (corrects false unifor
 PASS.append(("lem:tail Poisson-moment T_p(w)=E[N^p], N~Poisson(w)", ok_pois))
 PASS.append(("lem:tail R-control 0<=log(sinh(y/2)/(y/2))<=y^2/24", ok_phi))
 
-# (12) lem:tail CORRECTED assembly (finite truncation): the FULL abs-majorant Rbar diverges for
-#      j>pi/tau (Poisson tail), so truncate at N=2: Rbar^[2]=|f1|tau^2 Q1+|f2|tau^4 Q2 (fixed poly);
-#      remainder S_j=O(tau^{5/2}) on j<=2w; 2 E[Psi(Rbar^[2](N/2))]=O(tau) dominates true tail.
+# (12) lem:tail: the FULL abs-majorant Rbar diverges for j>pi/tau; AND (FLAW found 2026-06-15)
+#      the Touchard tail bound 2 E[Psi(Rbar^[2](N/2))] is ALSO INFINITE: Rbar^[2] is a degree-5
+#      polynomial in N, so E[exp(Rbar^[2])] = E[exp(Theta(tau^4 N^5))] DIVERGES for Poisson N
+#      (bulk ~ small, then explodes). So lem:tail's step (iv) does NOT establish O(tau); lem:cos
+#      is numerically certain but NOT proved by this argument.
 try:
     import sympy as _sp2
     _y=_sp2.symbols('y'); _jj=_sp2.symbols('j'); _ii=_sp2.symbols('i')
     _phi=_sp2.series(_sp2.log(_sp2.sinh(_y/2)/(_y/2)),_y,0,40).removeO()
     _f=[_phi.coeff(_y,2*n) for n in range(1,12)]
     _Q=[_sp2.lambdify(_jj,_sp2.summation((2*_ii+2)**(2*n)+(2*_ii+1)**(2*n)-1,(_ii,0,_jj)),'mpmath') for n in range(1,12)]
-    ok_div=True; ok_tail=True
+    ok_div=True; ok_Epsi_div=True
     for tau in [mp.mpf('0.02'),mp.mpf('0.005')]:
         mp.mp.dps=45; w=mp.sqrt(2/tau)
-        # full Rbar diverges past j=pi/tau: grows with #terms there, stable below
         below=[sum(abs(mp.mpf(str(_f[n-1])))*tau**(2*n)*_Q[n-1](w) for n in range(1,nt+1)) for nt in [4,9]]
         above=[sum(abs(mp.mpf(str(_f[n-1])))*tau**(2*n)*_Q[n-1](mp.mpf('1.5')*mp.pi/tau) for n in range(1,nt+1)) for nt in [4,9]]
-        if not (abs(below[0]-below[1])<mp.mpf('1e-6') and above[1]>3*above[0]): ok_div=False  # converges below, diverges above
-        Rb2=lambda x: abs(mp.mpf(str(_f[0])))*tau**2*_Q[0](x)+abs(mp.mpf(str(_f[1])))*tau**4*_Q[1](x)
-        E=sum(mp.e**(-w)*w**N/mp.factorial(N)*(mp.e**Rb2(mp.mpf(N)/2)-1-Rb2(mp.mpf(N)/2)) for N in range(0,int(10*w)+50))
-        if not (2*E < mp.mpf('0.02')*tau): ok_tail=False  # 2E[Psi(Rbar^[2])] = O(tau), <0.02 tau
-    PASS.append(("lem:tail full majorant DIVERGES past j=pi/tau (=> truncation needed)", ok_div))
-    PASS.append(("lem:tail truncated 2E[Psi(Rbar^[2](N/2))] = O(tau) <= 0.02 tau (finite)", ok_tail))
+        if not (abs(below[0]-below[1])<mp.mpf('1e-6') and above[1]>3*above[0]): ok_div=False
+    # FLAW: the bound shape is E[Psi(deg-5 poly in N)] ~ E[exp(c N^5)], which DIVERGES for Poisson N
+    # (Psi grows like exp, beating 1/N! factorial decay). Verify the principle with c reaching the
+    # explosion within range: bulk hugs ~0, then partial sums blow up by many orders of magnitude.
+    ok_Epsi_div=True
+    for w_,c_ in [(mp.mpf(10),mp.mpf('1e-8')),(mp.mpf(8),mp.mpf('1e-8'))]:
+        mp.mp.dps=60
+        term=lambda N: mp.e**(-w_)*w_**N/mp.factorial(N)*mp.e**(c_*mp.mpf(N)**5)
+        E_bulk=sum(term(N) for N in range(0,35))      # Poisson bulk (N<~3.5w): calm, ~1
+        E_far =sum(term(N) for N in range(0,300))      # extend N: EXPLODES if divergent
+        if not (E_bulk < mp.mpf(2) and E_far > E_bulk*mp.mpf('1e20')): ok_Epsi_div=False
+    PASS.append(("lem:tail full abs-majorant DIVERGES past j=pi/tau", ok_div))
+    PASS.append(("lem:tail FLAW: E[exp(c N^5)] (=bound shape) DIVERGES for Poisson => Touchard tail bound INVALID", ok_Epsi_div))
 except Exception as _e:
-    PASS.append(("lem:tail truncated assembly (sympy)", False))
+    PASS.append(("lem:tail flaw check (sympy)", False))
 
 # (13) rem:mahler: Mahler's method EXCLUDED. Positive-controlled exact-rational search finds a genuine
 #      Mahler relation for the Fredholm series sum z^{2^k} (control) but NONE for u_n/v_n (d=2,3,4;m<=3;deg<=5).
@@ -329,6 +337,108 @@ for k in range(6):
 _uu=[1,3,5,8,13,21,34,55,89,144,225,351,554,875,1345,2066,3203,4971,7574,11543,17683,27108,41067,62263,94622,143881,217101,327832,495443,749195,1127236,1697179,2554961,3848384,5777651,8679441,13031206,19574659,29338781,43997388,65932461,98849591,147969934]
 _vv=[1,3,5,8,13,21,34,55,91,148,235,371,590,931,1451,2254,3513,5455,8418,12959,19949,30640,46905,71699,109490,166969,254047,386192,586349,889599,1347444,2039911,3084135,4661368,7035665,10617513,16002526,24117471,36303371,54649900,82171011]
 PASS.append(("rem:mahler control (Fredholm) Mahler-found AND u_n,v_n NONE", _mahler(_fred,ds=(2,),ms=(1,),dg=2) and (not _mahler(_uu)) and (not _mahler(_vv))))
+
+# (14) NUMERATOR ASYMPTOTIC  Sigma_0 ~ w sin w  (engine companion of lem:cos).
+#   => |Sigma_0(q_m)| ~ w_m -> inf, strictly alternating => Sigma_0(q_m)!=0 for large m
+#   => V-numerator non-vanishing is a THEOREM (not 58 spot checks).
+def _sig0_check():
+    mp.mp.dps=60
+    # find travel poles Sigma_1(tau)=1 by scanning w; tau=2/w^2
+    def S1(tau): return Sigk(1,tau,60)
+    def S0(tau): return Sigk(0,tau,60)
+    poles=[]; prev=None; w=mp.mpf('2.0')
+    while len(poles)<10 and w<60:
+        tau=2/w**2; val=S1(tau)-1
+        if prev is not None and mp.sign(val)!=mp.sign(prev):
+            a,b=wprev,w
+            for _ in range(80):
+                mwd=(a+b)/2; fm=S1(2/mwd**2)-1
+                if mp.sign(fm)==mp.sign(prevv): a,prevv=mwd,fm
+                else: b=mwd
+            wm=(a+b)/2; poles.append(wm)
+        prev=val; prevv=val; wprev=w; w+=mp.mpf('0.05')
+    s0=[S0(2/wm**2) for wm in poles]
+    alt=all(s0[i]*s0[i+1]<0 for i in range(len(s0)-1))
+    ratios=[abs(v)/wm for v,wm in zip(s0,poles)]
+    # |Sigma_0|/w_m monotone increasing toward 1, last few within 1%
+    grows=all(ratios[i]<=ratios[i+1]+mp.mpf('1e-6') for i in range(len(ratios)-1))
+    near1=ratios[-1]>mp.mpf('0.97') and ratios[-1]<mp.mpf('1.03')
+    return alt and grows and near1 and len(poles)>=8
+PASS.append(("Sigma_0~w sin w: |Sigma_0(q_m)|/w_m ->1 monotone & strict alternation (V-numer nonzero)", _sig0_check()))
+
+# (14b) eq:wsinw  sum_j (-1)^j (w^2)^{j+1}/(2j+1)! = w sin w  (even-ladder leading model)
+#  and eq:numc1  closed-form companion  S_0 = w sin w - (17/18) cos w + o(1).
+def _numc1_check():
+    mp.mp.dps=60
+    ok_id=True
+    for w in [mp.mpf(3),mp.mpf(12),mp.mpf(25)]:
+        S=mp.nsum(lambda j:(-1)**int(j)*(w**2)**(j+1)/mp.factorial(2*j+1),[0,mp.inf])
+        if abs(S-w*mp.sin(w))>mp.mpf(10)**(-25): ok_id=False
+    def Sb0(q,J=6000):
+        tot=mp.mpf(0); prod=mp.mpf(1)
+        for j in range(J):
+            tot+=(2*q**(2*j+1)/(1-q**(2*j+1)))*prod
+            prod*=(2*q**(2*j+2)/(1-q**(2*j+2))-2*q**(2*j+1)/(1-q**(2*j+1)))
+            if abs(prod)<mp.mpf(10)**(-110) and j>50: break
+        return tot
+    ok_c1=True
+    for tau in [mp.mpf('0.008'),mp.mpf('0.003'),mp.mpf('0.0004')]:
+        q=mp.e**(-tau); w=mp.sqrt(2/tau)
+        resid=(Sb0(q)-w*mp.sin(w))-(-mp.mpf(17)/18*mp.cos(w))
+        if abs(resid)>mp.mpf('0.02'): ok_c1=False
+    return ok_id and ok_c1
+PASS.append(("eq:wsinw sum(-1)^j w^{2j+2}/(2j+1)!=w sin w; eq:numc1 S_0=w sinw-(17/18)cos w+o(1)", _numc1_check()))
+
+# (15) lem:cos UNIFORMITY IN PHASE: sup_w |S_1-(1-cos w)|/sqrt(tau) is pinned at |c_1|=17sqrt2/36
+#   over a dense phase scan (NOT creeping up), and the residual after the c_1 term is O(tau)
+#   uniformly. This stress-tests the one step flagged "not made uniform".
+def _uniform_phase():
+    mp.mp.dps=50
+    def Sb1(q,J=8000):
+        tot=mp.mpf(0); prod=mp.mpf(1)
+        for j in range(J):
+            tot+=(2*q**(2*j+2)/(1-q**(2*j+2)))*prod
+            prod*=(2*q**(2*j+3)/(1-q**(2*j+3))-2*q**(2*j+2)/(1-q**(2*j+2)))
+            if abs(prod)<mp.mpf(10)**(-100) and j>50: break
+        return tot
+    c1=-17*mp.sqrt(2)/36
+    runmax=mp.mpf(0); runmax_res=mp.mpf(0); w=mp.mpf('4.5')
+    while w<=mp.mpf('70'):
+        tau=2/w**2; q=mp.e**(-tau); st=mp.sqrt(tau)
+        err=Sb1(q)-(1-mp.cos(w))
+        runmax=max(runmax,abs(err)/st)
+        runmax_res=max(runmax_res,abs(err-c1*st*mp.sin(w))/tau)   # residual/tau bounded => O(tau)
+        w+=mp.mpf('0.17')
+    # uniform bound pinned at |c1| (within 1%) and residual O(tau) bounded
+    pinned = abs(runmax-abs(c1))<mp.mpf('0.01') and runmax<=abs(c1)+mp.mpf('0.01')
+    resid_Otau = runmax_res<mp.mpf('0.2')
+    return pinned and resid_Otau
+PASS.append(("lem:cos UNIFORM in phase: sup|S1-(1-cos w)|/sqrtT pinned at |c1|, residual O(tau)", _uniform_phase()))
+
+# (16) ss:saddle: steepest-descent leading term reproduces T_2 EXACTLY.
+#   T_2=G(iW); saddle at s*=iW/2; B_{s*}=(tau^2/9)(iW/2)^3; T_2 = Re[B_{s*} e^{iW}]+O(tau).
+#   Verify ratio T_2(true)/Re[B_{s*}e^{iW}] -> 1 as tau->0 (the correct route, vs dead Touchard).
+def _saddle_check():
+    mp.mp.dps=60
+    def Sb1(q,J=6000):
+        tot=mp.mpf(0); prod=mp.mpf(1)
+        for j in range(J):
+            tot+=(2*q**(2*j+2)/(1-q**(2*j+2)))*prod
+            prod*=(2*q**(2*j+3)/(1-q**(2*j+3))-2*q**(2*j+2)/(1-q**(2*j+2)))
+            if abs(prod)<mp.mpf(10)**(-110) and j>50: break
+        return tot
+    ratios=[]
+    for tau in [mp.mpf('0.001'),mp.mpf('0.0004'),mp.mpf('0.00015')]:
+        q=mp.e**(-tau); w=mp.sqrt(2/tau); W=w*mp.e**(-tau/2)
+        T2=Sb1(q)-(1-mp.cos(w))-(mp.cos(w)-mp.cos(W))
+        sstar=mp.mpc(0,1)*W/2
+        saddle=mp.re((tau**2/9)*sstar**3*mp.e**(mp.mpc(0,1)*W))
+        ratios.append(T2/saddle)
+    # ratio -> 1 (monotone toward 1, last within 5%) AND also tau*(W/2)^2=1/2 (series converges at s*)
+    tau=mp.mpf('0.001'); W=mp.sqrt(2/tau)*mp.e**(-tau/2)
+    converges = abs(tau*(W/2)**2 - mp.mpf('0.5')) < mp.mpf('1e-3')
+    return abs(ratios[-1]-1)<mp.mpf('0.05') and abs(ratios[-1]-1)<abs(ratios[0]-1) and converges
+PASS.append(("ss:saddle steepest-descent: T_2/Re[B_{s*}e^{iW}]->1 (correct route; saddle s*=iW/2)", _saddle_check()))
 
 print("="*64); print("TRANSCENDENCE VERIFICATION — A396406 relaxed series"); print("="*64)
 for name,ok in PASS:

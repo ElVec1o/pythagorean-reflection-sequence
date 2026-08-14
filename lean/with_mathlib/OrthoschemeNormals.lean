@@ -110,3 +110,12 @@ theorem orthogonality_pattern {n i j : ℕ} (hn : 2 ≤ n) (hij : i + 2 ≤ j) (
   sum_eq_zero_of_disjoint hv hw (supp_disjoint hn hij hjn) U
 
 end OrthoschemeNormals
+
+-- Rule 5 axiom audit.
+#print axioms OrthoschemeNormals.supp_disjoint
+#print axioms OrthoschemeNormals.mul_eq_zero_of_disjoint
+#print axioms OrthoschemeNormals.sum_eq_zero_of_disjoint
+#print axioms OrthoschemeNormals.dot_zero_one
+#print axioms OrthoschemeNormals.dot_interior
+#print axioms OrthoschemeNormals.dot_last
+#print axioms OrthoschemeNormals.orthogonality_pattern

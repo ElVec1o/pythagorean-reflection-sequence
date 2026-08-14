@@ -100,3 +100,11 @@ theorem not_agree_of_transition_cover :
 theorem moore_bound_consistent : ([true, true].length) < 1 + 3 := by decide
 
 end MooreCriterion
+
+-- Rule 5 axiom audit.
+#print axioms MooreCriterion.reachable_start
+#print axioms MooreCriterion.agree_of_same_machine
+#print axioms MooreCriterion.A_transitions_covered
+#print axioms MooreCriterion.agree_on_cover
+#print axioms MooreCriterion.not_agree_of_transition_cover
+#print axioms MooreCriterion.moore_bound_consistent

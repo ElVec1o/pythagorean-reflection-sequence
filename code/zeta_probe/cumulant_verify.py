@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verifier for the q-trigonometric identities of paper2 (Rule 9).
+"""Verifier for private/U_cumulant_chain.tex  (Rule 9).
 
 Checks, at the tabulated travel poles:
   1. lem:rep     Phi(rho) = sum_M q^{M^2/4} (i rho)^M / (q;q)_M   [vs direct Gaussian quadrature]

@@ -143,3 +143,15 @@ theorem bv_bound (E D c tau w V rt2tau : ℝ)
   exact hV
 
 end Bbounded
+
+-- Rule 5 axiom audit.
+#print axioms Bbounded.factor_rewrite
+#print axioms Bbounded.gauss_sum
+#print axioms Bbounded.sum_rewrite
+#print axioms Bbounded.collapse_log
+#print axioms Bbounded.telescope
+#print axioms Bbounded.block_cancellation
+#print axioms Bbounded.w_def_iff
+#print axioms Bbounded.tau_sq_w_cube_sq
+#print axioms Bbounded.strip_ratio_lt_one
+#print axioms Bbounded.bv_bound

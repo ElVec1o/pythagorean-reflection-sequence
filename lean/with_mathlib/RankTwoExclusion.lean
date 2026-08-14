@@ -111,3 +111,15 @@ theorem boundary_no_relation (ha : 0 < a) (hb : 0 < b) (hab : a ≠ b) :
           fun h => hab (niven_half ha hb h)⟩
 
 end RankTwoExclusion
+
+-- Rule 5 axiom audit.
+#print axioms RankTwoExclusion.not_isSquare_three_int
+#print axioms RankTwoExclusion.sq_ne_three
+#print axioms RankTwoExclusion.niven_zero
+#print axioms RankTwoExclusion.niven_one
+#print axioms RankTwoExclusion.niven_quarter
+#print axioms RankTwoExclusion.niven_three_quarter
+#print axioms RankTwoExclusion.niven_half
+#print axioms RankTwoExclusion.no_length_two
+#print axioms RankTwoExclusion.no_length_three_boundary
+#print axioms RankTwoExclusion.boundary_no_relation

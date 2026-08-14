@@ -114,3 +114,17 @@ theorem strand_alphabet : 3 * 2 * 2 = 12 ∧ (3 * 2 * 2 : ℕ) ≠ 8 := by
   refine ⟨by norm_num, by decide⟩
 
 end ShapeArith
+
+-- Rule 5 axiom audit.
+#print axioms ShapeArith.eT_even_of_sum_odd
+#print axioms ShapeArith.eT_even_of_both_odd
+#print axioms ShapeArith.eT_even
+#print axioms ShapeArith.abstract_pairs_unreal
+#print axioms ShapeArith.profile_coeffs
+#print axioms ShapeArith.profile_at_e_pos
+#print axioms ShapeArith.profile_at_e_neg
+#print axioms ShapeArith.profiles_differ
+#print axioms ShapeArith.sixtyfive_four_shapes
+#print axioms ShapeArith.sixtyfive_distinct
+#print axioms ShapeArith.shape_count_72
+#print axioms ShapeArith.strand_alphabet

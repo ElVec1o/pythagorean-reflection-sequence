@@ -227,3 +227,17 @@ theorem rate_ne_path_spectral_radius :
   linarith [hlt, h]
 
 end EnvelopeDichotomy
+
+-- Rule 5 axiom audit.
+#print axioms EnvelopeDichotomy.two_mul_lt_of_lt_horizon
+#print axioms EnvelopeDichotomy.split_lengths
+#print axioms EnvelopeDichotomy.card_image_lt_of_collision
+#print axioms EnvelopeDichotomy.card_lt_of_escapes
+#print axioms EnvelopeDichotomy.cos_three_term
+#print axioms EnvelopeDichotomy.sin_three_term
+#print axioms EnvelopeDichotomy.J_recurrence
+#print axioms EnvelopeDichotomy.cot_add_cot_eq_zero_iff
+#print axioms EnvelopeDichotomy.J_eq_zero_iff
+#print axioms EnvelopeDichotomy.t_of_theta
+#print axioms EnvelopeDichotomy.rate_of_theta
+#print axioms EnvelopeDichotomy.rate_ne_path_spectral_radius
