@@ -60,11 +60,16 @@ degree $1156$. It is not proved (Theorem~\ref{thm:blocks},
 Remark~\ref{rem:growthstatus});
 \item[\textup{(ii)}] the common growth rate is $\beta_2=1.4916177871\ldots$, and
 $\tfrac32$ is excluded;
-\item[\textup{(iii)}] the relaxed series $V$ is transcendental over $\Q(x)$; the required
-pole set is supplied by the rectangle bound of Lemma~\ref{lem:T2abs} and the
-non-vanishing of the denominator block at the travel poles is proved by an elementary explicit chain
-(Appendix~\ref{app:annulus}): $|S_e(q_m)|\ge0.35\sqrt{\tau_m}$ at every travel pole, with all constants numerical
-and no cited asymptotic theorem on this path. For the true series $U$
+\item[\textup{(iii)}] the travel resolvent $\Sigma_0/(1-\Sigma_1)$ is transcendental over $\Q(x)$,
+unconditionally (Theorem~\ref{thm:travelres}), on three inputs all proved here: the pole set, from
+the rectangle bound of Lemma~\ref{lem:T2abs}; the non-vanishing of the denominator block at the
+travel poles, $|S_e(q_m)|\ge0.35\sqrt{\tau_m}$, by an elementary explicit chain with all constants
+numerical and no cited asymptotic theorem (Appendix~\ref{app:annulus}); and the non-vanishing of
+both numerators, from the exact identity $\Sigma_0(q_m)S_0(q_m)=2q_m/(1-q_m)$
+(Proposition~\ref{prop:numnonvanish}), a consequence of the $q$-Pythagorean identity at a zero of
+the $q$-cosine. The relaxed growth series $V$ itself is transcendental over $\Q(x)$ conditional on
+one structural input, the relaxed block assembly \textup{(R)} of Theorem~\ref{thm:V}, proved
+neither here nor in the cited sources. For the true series $U$
 we prove the analytic half in full and $U$'s transcendence conditionally
 (Theorem~\ref{thm:U}), on two structural inputs stated there and proved nowhere: the invariance of
 the travel block and the lifting reduction from the gate to numerator non-vanishing. The amplitude
@@ -82,8 +87,9 @@ without any of the above: the $p$-kernel of $(u_n\bmod p)$ is computed to be max
 non-automatic at $p=3,5$ and machine-checked at $p=3$, though a proof for dense-support series is
 open.
 \end{enumerate}
-$V$'s transcendence is unconditional. On $U$ the analysis is complete and the remaining gap is
-combinatorial: every coefficient is derived elementarily
+Every analytic input consumed by $V$ and by $U$ is proved here; what stands between either series
+and an unconditional statement is combinatorial, and is stated as a hypothesis in the theorem that
+uses it. On $U$ every coefficient is derived elementarily
 and machine-checked, the remainders are at the standard simple-saddle level, and the gate ($(\star)$ and the denominator bound) is proved, but the passage from the gate to a pole of $U$
 is not. The precise rigor standing, including
 the arithmetic model of the committed certificates, is stated in the text. In sharp contrast with the rational growth of
@@ -101,13 +107,17 @@ generic triangle group \cite{IsolaPiergallini} rather than a Coxeter group, and;
 rational Coxeter case governed by Steinberg's formula \cite{StanleyEC2}; its growth is not a
 priori rational. The sequence $u_n=1,3,5,8,13,21,34,55,89,\dots$ is \textup{OEIS~A396406}; it
 coincides with the Fibonacci numbers $F_{n+3}$ for $1\le n\le9$ and first deviates at $n=10$. This
-paper settles the arithmetic nature of the relaxed companion $V$, which is transcendental over
-$\Q(x)$ with every analytic input it consumes proved self-contained, and reduces the true series
-$U$ to two combinatorial statements: the amplitude estimate $(\star)$ and the gate (numerator
-bound and denominator lower bound) are proved at every travel pole in Appendix~\ref{app:star}
-(Theorem~\ref{thm:star}, Lemma~\ref{app:Se}, Corollary~\ref{app:gate}), and $U$ is transcendental
-over $\Q(x)$ conditional on the travel-block invariance and the lifting reduction stated as
-\textup{(T)} and \textup{(L)} in Theorem~\ref{thm:U}.
+paper settles the arithmetic nature of the travel resolvent $\Sigma_0/(1-\Sigma_1)$, which is
+transcendental over $\Q(x)$ with every input proved self-contained
+(Theorem~\ref{thm:travelres}), and reduces both growth series to combinatorial statements about the
+strand-walk model: the relaxed companion $V$ is transcendental over $\Q(x)$ conditional on the
+block assembly \textup{(R)} of Theorem~\ref{thm:V}, and the true series $U$ conditional on the
+travel-block invariance and the lifting reduction stated as \textup{(T)} and \textup{(L)} in
+Theorem~\ref{thm:U}. The analytic side is closed on both: the amplitude estimate $(\star)$ and the
+gate (numerator bound and denominator lower bound) are proved at every travel pole in
+Appendix~\ref{app:star} (Theorem~\ref{thm:star}, Lemma~\ref{app:Se},
+Corollary~\ref{app:gate}), and the two numerator non-vanishing statements the resolvents need are
+proved in \S\ref{sec:numerators}.
 
 \paragraph{Context.} For word-growth series of groups, rationality is the norm in the classical
 families: hyperbolic groups have rational growth series with respect to every finite generating set
@@ -868,35 +878,218 @@ Proposition~\ref{prop:selower} converts it into the lower bound), independently 
 Remark~\ref{lem:cos}.
 \end{remark}
 
+\subsection{The numerators, and why they do not vanish at the poles}\label{sec:numerators}
+
+Proposition~\ref{prop:qtrig} identifies the two \emph{denominators}. The two numerators are the
+companion $q$-sine at the same two arguments, and that is what settles their non-vanishing at the
+travel poles. Throughout, $\mathfrak s(u)=q^{-1/2}\sin(q^{1/2}u;q^2)$ is the half-step $q$-sine of
+Lemma~\ref{lem:P12closed}, $\sin(z;q^2)=\sum_{j\ge0}(-1)^jq^{j^2+j}z^{2j+1}/(q;q)_{2j+1}$.
+
+\begin{lemma}[the numerators in closed form]\label{lem:qsinenum}
+Identically in $0<q<1$,
+\[
+   \Sigma_0=\frac{2q}{Z}\,\mathfrak s(Z),\qquad S_0=\frac{2q}{z_0}\,\mathfrak s(z_0).
+\]
+With Proposition~\ref{prop:qtrig} this identifies all four blocks as one $q$-trigonometric pair
+sampled at two arguments a half $q$-step apart: $(\Sigma_0,\,1-\Sigma_1)$ is
+$\bigl(\tfrac{2q}u\mathfrak s(u),\,\cos(u;q^2)\bigr)$ at $u=Z$, and $(S_0,\,S_e)$ is the same pair
+at $u=z_0=\sqrt q\,Z$. In particular $S_0=\tfrac{2q}{1-q}S_o$ with $S_o$ the odd bulk block of
+Lemma~\ref{lem:P12closed}, which is the second identity of the dictionary \eqref{eq:dict} read as a
+statement about the explicit series, and is therefore not part of what \textup{(L)} leaves unproved.
+\end{lemma}
+
+\begin{proof}
+Collapse the $k$-recursion \eqref{eq:krec} on the even ladders, exactly as
+Proposition~\ref{prop:qtrig} does on the odd ones. From $\alpha_k=2q^{k+1}/(1-q^{k+1})$,
+\[
+  |\gamma_k|=\alpha_k-\alpha_{k+1}=\frac{2(1-q)q^{k+1}}{(1-q^{k+1})(1-q^{k+2})},\qquad
+  |C_k|=\frac{2(1-q)q^{k+2}}{(1-q^{k+1})(1-q^{k+2})} ,
+\]
+$\gamma_k$ and $C_k$ themselves being negative on $(0,1)$, so both even ladders alternate. For the bulk one,
+$\sum_{i<j}(2i+1)=j^2$ and the denominators telescope to $(q;q)_{2j}$, giving
+$\prod_{i<j}|\gamma_{2i}|=[2(1-q)]^jq^{j^2}/(q;q)_{2j}$ and hence
+\[
+  S_0=\sum_{j\ge0}(-1)^j\alpha_{2j}\prod_{i<j}|\gamma_{2i}|
+     =2\sum_{j\ge0}(-1)^j\frac{[2(1-q)]^j\,q^{(j+1)^2}}{(q;q)_{2j+1}} .
+\]
+Write $q^{(j+1)^2}=q\,q^{j^2+j}q^{j}$ and $[2(1-q)]^jq^{j}=\bigl(q^{1/2}z_0\bigr)^{2j}$: the sum is
+$(2q/(q^{1/2}z_0))\sin(q^{1/2}z_0;q^2)=(2q/z_0)\mathfrak s(z_0)$. For the travel ladder,
+$\sum_{i<j}(2i+2)=j^2+j$ and the denominators telescope to $(q;q)_{2j}$ again, so
+$\prod_{i<j}|C_{2i}|=[2(1-q)]^jq^{j^2+j}/(q;q)_{2j}$ and, with $A_{2j}=2q/(1-q^{2j+1})$,
+\[
+  \Sigma_0=2q\sum_{j\ge0}(-1)^j\frac{[2(1-q)]^j\,q^{j^2+j}}{(q;q)_{2j+1}}
+          =\frac{2q}{z_0}\sin(z_0;q^2)=\frac{2q^{3/2}}{z_0}\,\mathfrak s(Z)=\frac{2q}{Z}\,\mathfrak s(Z),
+\]
+using $[2(1-q)]^j=z_0^{2j}$ and $z_0=q^{1/2}Z$. The $S_o$ statement is Lemma~\ref{lem:P12closed}'s
+$S_o=\tfrac{z_0}2\mathfrak s(z_0)$ combined with $z_0^2=2(1-q)$. Both collapses are the exponent
+bookkeeping machine-checked in \texttt{QTrigIdentities.lean} and are verified numerically off the
+poles, hence as identities, in \texttt{qnumerator\_certificate.py}.
+\end{proof}
+
+\begin{lemma}[half-step rules and the pole invariant]\label{lem:halfstep}
+Identically in $0<q<1$, with $c(u)=\cos(u;q^2)$:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item $c(qu)=c(u)+q^{3/2}u\,\mathfrak s(q^{1/2}u)$;
+\item $\mathfrak s(qu)=\mathfrak s(u)-u\,c(q^{1/2}u)$;
+\item $c(u)\,c(q^{1/2}u)+q^{3/2}\,\mathfrak s(u)\,\mathfrak s(q^{1/2}u)=1$.
+\end{enumerate}
+Consequently, at every travel pole, where $c(Z)=0$:
+\[
+   q^{3/2}\,\mathfrak s(z_0)\,\mathfrak s(Z)=1 ,
+\]
+so neither $\mathfrak s(Z)$ nor $\mathfrak s(z_0)$ vanishes there.
+\end{lemma}
+
+\begin{proof}
+(i) and (ii) are termwise. From $(q;q)_{2j}=(q;q)_{2j-1}(1-q^{2j})$,
+$c(u)-c(qu)=\sum_{j\ge1}(-1)^jq^{j^2+j}u^{2j}/(q;q)_{2j-1}$; shifting $j\mapsto j+1$ and factoring
+out $-qu$ leaves $-qu\sin(qu;q^2)=-q^{3/2}u\,\mathfrak s(q^{1/2}u)$, which is (i). From
+$(q;q)_{2j+1}=(q;q)_{2j}(1-q^{2j+1})$,
+$\mathfrak s(u)-\mathfrak s(qu)=q^{-1/2}\sum_{j\ge0}(-1)^jq^{j^2+j}(q^{1/2}u)^{2j+1}/(q;q)_{2j}$;
+factoring out $q^{1/2}u$ leaves $u\,c(q^{1/2}u)$, which is (ii). This is the exponent
+matching machine-checked as \texttt{cshift\_exponent} and \texttt{sshift\_exponent}. For (iii),
+substitute (i) and (ii) into the Hahn--Exton $q$-Wronskian
+$\mathfrak s(u)c(qu)-c(u)\mathfrak s(qu)=u$ (Swarttouw, PhD thesis, TU Delft, 1992, eq.~(4.3.8);
+\cite[eq.~(4.21)]{Daalhuis1994}): the $\mathfrak s(u)c(u)$ terms cancel and what is left is
+$u\bigl[c(u)c(q^{1/2}u)+q^{3/2}\mathfrak s(u)\mathfrak s(q^{1/2}u)\bigr]$, so the $q$-Wronskian and
+(iii) are equivalent for $u\ne0$. Identity (iii) is the $q$-Pythagorean identity of
+\cite{KS1992}. Taking $u=Z$ and $c(Z)=0$ gives the pole invariant, which is the step already used
+inside the proof of Proposition~\ref{prop:P12second}.
+\end{proof}
+
+\begin{proposition}[the numerators do not vanish at the travel poles]\label{prop:numnonvanish}
+At every travel pole $q_m$,
+\begin{equation}\label{eq:numprod}
+   \Sigma_0(q_m)\,S_0(q_m)\;=\;\frac{2q_m}{1-q_m}\;\ne\;0 .
+\end{equation}
+In particular $\Sigma_0(q_m)\ne0$ and $S_0(q_m)\ne0$, at \emph{every} travel pole, with no
+asymptotic input and no exceptional set. Moreover $|\Sigma_0(q_m)|\,|S_0(q_m)|\ge q_mw_m^2$, so at
+least one of the two numerators exceeds $\sqrt{q_m}\,w_m$ in modulus.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:qsinenum}, $\Sigma_0S_0=\bigl(4q^2/(z_0Z)\bigr)\mathfrak s(Z)\mathfrak s(z_0)$,
+and by Lemma~\ref{lem:halfstep} the product $\mathfrak s(Z)\mathfrak s(z_0)$ equals $q^{-3/2}$ at a
+travel pole. Since $z_0Z=z_0^2/\sqrt q=2(1-q)/\sqrt q$, the two powers of $q$ combine to
+$4q^2\cdot q^{-3/2}\cdot\sqrt q/(2(1-q))=2q/(1-q)$. The size statement follows from
+$1-q\le\tau=2/w^2$.
+\end{proof}
+
+\begin{remark}\label{rem:numsize}
+The two numerators are individually of size $w_m$: $|\Sigma_0(q_m)|/w_m$ and $|S_0(q_m)|/w_m$ rise
+monotonically to $1$ over the first $32$ travel poles, from $0.731$ and $0.893$ at the dominant
+pole $q_1=0.449453\ldots$ to $0.99992$ and $0.99997$ at the last, with $\Sigma_0$ strictly
+alternating in sign
+(\texttt{qnumerator\_certificate.py}, mpmath at two precisions, worst deviation in
+\eqref{eq:numprod} $4.5\cdot10^{-28}$; the dominant pole is included, it lying below the
+extreme-phase ladder and being bracketed separately). This matches the asymptotic
+$\Sigma_0\sim w\sin w$, the
+amplitude companion of $1-\Sigma_1\sim1-\cos w$; but \eqref{eq:numprod} is an identity and the
+asymptotic is not used anywhere.
+\end{remark}
+
 \section{The relaxed series \texorpdfstring{$V$}{V}}\label{sec:V}
 
-\begin{theorem}\label{thm:V}
-The relaxed growth series $V$ is transcendental over $\Q(x)$.
+The relaxed series is the travel resolvent dressed by the bulk. The resolvent itself is settled
+unconditionally; passing from it to $V$ costs one structural hypothesis, which is stated here and
+not elsewhere.
+
+\begin{theorem}[the travel resolvent]\label{thm:travelres}
+The travel resolvent $G^T_0=\Sigma_0/(1-\Sigma_1)$ is transcendental over $\Q(x)$. This is
+unconditional: it uses no growth hypothesis, no asymptotic theorem, and no statement about the
+strand-walk model. Its one numerical input is the contour bound of Lemma~\ref{lem:T2abs}, of which
+it consumes only $|T_2(m\pi)|<1$, against a computed worst value $0.027$; the arithmetic model of
+that certificate is stated with the lemma.
 \end{theorem}
 
 \begin{proof}
-$V$ contains the travel resolvent $(1-\Sigma_1)^{-1}$ times a bulk-dressing factor holomorphic and
-non-vanishing at the $q_m$; thus $V$ has a genuine pole at each travel pole $q_m$, \emph{provided}
-the pole is not cancelled by the numerator. Non-cancellation is exactly the statement
-$S_e(q_m)\ne0$, and Proposition~\ref{prop:selower} supplies it in the quantitative form
-$|S_e(q_m)|\ge0.35\sqrt{\tau_m}>0$ at \emph{every} travel pole; no comparison of $T_2$ against
-$\cos W$ is made or needed, and none is available at this strength, the proved bound on $|T_2|$
-being $0.17\,\tau^{1/4}$ (Lemma~\ref{lem:T2abs}), which exceeds $\sqrt{\tau/2}$ as $\tau\to0$. The
-pole set is infinite and accumulates at the boundary of the disc of convergence
-(Lemma~\ref{lem:infpoles}, which consumes from Lemma~\ref{lem:T2abs} only $|T_2|<1$), and it is
-locally finite in $(0,1)$ (Lemma~\ref{lem:polefinite}). An algebraic function over $\Q(x)$ has only
-finitely many poles in $|x|<1$, so an infinite pole set accumulating at the boundary is impossible
-for one; hence $V$ is transcendental. The non-cancellation input, Proposition~\ref{prop:selower},
-is proved in Appendix~\ref{app:annulus} by an elementary chain with explicit numerical constants
-and no cited asymptotic theorem; Remark~\ref{lem:cos} sharpens the size of $T_2$ but is not needed
-for the theorem.
+$\Sigma_0$ and $1-\Sigma_1$ are holomorphic on $|q|<1$ (Theorem~\ref{thm:blocks}, first clause) and
+$1-\Sigma_1\not\equiv0$. The zero set of $1-\Sigma_1$ in $(0,1)$ is infinite and accumulates
+exactly at $q=1$ (Lemma~\ref{lem:infpoles}, which consumes from Lemma~\ref{lem:T2abs} only
+$|T_2|<1$, together with Lemma~\ref{lem:polefinite}). At each such $q_m$ the numerator does not
+vanish, by Proposition~\ref{prop:numnonvanish}. Hence every $q_m$ is a pole of $G^T_0$, of order
+the vanishing order of $1-\Sigma_1$ there, which is finite. So $G^T_0$ has infinitely many poles in
+$|q|<1$ accumulating at $|q|=1$; under $q=x^2$ these are infinitely many poles in $|x|<1$
+accumulating at $|x|=1$. An algebraic function over $\Q(x)$ has only finitely many poles in
+$|x|<1$, so no algebraic function has such a pole set; hence $G^T_0$ is transcendental. (The same
+argument shows it is not $D$-finite.)
 \end{proof}
+
+\begin{theorem}\label{thm:V}
+Assume the structural input
+\begin{itemize}[leftmargin=2.6em,itemsep=0.15em,topsep=0.25em]
+\item[\textup{(R)}] \emph{the relaxed block assembly}: at every travel pole $q_m$ the relaxed
+generating function has the local form
+\[
+   V=\frac{\mathcal N_V}{1-\Sigma_1}+H_m,\qquad
+   \mathcal N_V=\Sigma_0\cdot\frac{S_0}{1-S_1}\cdot J,
+\]
+with $H_m$ holomorphic at $q_m$ and $J$ a finite product of geometric junction factors, each a
+rational function of $q$ with no zero in $(0,1)$.
+\end{itemize}
+Then the relaxed growth series $V$ is transcendental over $\Q(x)$.
+\end{theorem}
+
+\begin{proof}
+Three non-vanishing statements are needed at $q_m$, and they are separate.
+\emph{First}, $S_e(q_m)=(1-S_1)(q_m)\ne0$, so the relaxed bulk dressing $S_0/(1-S_1)$ is
+\emph{holomorphic} at $q_m$: this is Proposition~\ref{prop:selower}, in the quantitative form
+$|S_e(q_m)|\ge0.35\sqrt{\tau_m}>0$ at every travel pole. It is the holomorphy half only, and it
+says nothing about vanishing.
+\emph{Second}, $S_0(q_m)\ne0$, so that bulk dressing is also \emph{non-zero} at $q_m$.
+\emph{Third}, $\Sigma_0(q_m)\ne0$, so the travel numerator does not cancel the pole either. The
+second and third are Proposition~\ref{prop:numnonvanish}, both at once, from the identity
+$\Sigma_0(q_m)S_0(q_m)=2q_m/(1-q_m)$. The junction product is non-zero at $q_m\in(0,1)$ by
+\textup{(R)}. Hence $\mathcal N_V(q_m)\ne0$ and $q_m$ is a genuine pole of $V$. The pole set is
+infinite and accumulates at the boundary of the disc of convergence (Lemma~\ref{lem:infpoles}) and
+is locally finite in $(0,1)$ (Lemma~\ref{lem:polefinite}). An algebraic function over $\Q(x)$ has
+only finitely many poles in $|x|<1$, so an infinite pole set accumulating at the boundary is
+impossible for one; hence $V$ is transcendental. No comparison of $T_2$ against $\cos W$ is made or
+needed, and none is available at this strength, the proved bound on $|T_2|$ being
+$0.17\,\tau^{1/4}$ (Lemma~\ref{lem:T2abs}), which exceeds $\sqrt{\tau/2}$ as $\tau\to0$;
+Remark~\ref{lem:cos} sharpens the size of $T_2$ and is not used.
+\end{proof}
+
+\begin{remark}[the standing of \textup{(R)}]\label{rem:Rstatus}
+\emph{What it is.} Route~B decomposes a relaxed element into two bulk runs, one travel interval of
+length $|k|$ and four marker junctions; the $k$-sum over the travel interval telescopes to the
+travel resolvent and leaves the bulk runs as a dressing factor. \textup{(R)} is that decomposition,
+read as a statement about the local form of $V$ at a travel pole. It is the relaxed counterpart of
+the factorisation \eqref{eq:mobius}, which is the $U$-side half of hypothesis \textup{(L)}
+(\S\ref{sec:inputL}); at $y=1$ the M\"obius form \eqref{eq:mobius} is exactly the dressing factor
+of \textup{(R)}.
+
+\emph{What is not proved.} The telescoping of the travel $k$-sum and the identification of the
+bulk dressing are stated in \cite{supplement} and in \cite{Bonfioli2026a} and derived in neither;
+\cite{Bonfioli2026a}, Remark on unconditionality, says so explicitly of $G^T_0$, and
+\cite{supplement} states its relaxed transcendence corollary conditional on precisely this
+assembly. What \emph{is} proved is everything downstream of \textup{(R)}: the pole set, the
+denominator bound, and the two numerator non-vanishing statements.
+
+\emph{Where it is used.} Only in Theorem~\ref{thm:V} and in Corollary~\ref{cor:beta}'s
+identification of $q_1$ as a singularity of $V$. Theorem~\ref{thm:travelres},
+Proposition~\ref{prop:numnonvanish}, Proposition~\ref{prop:selower}, \S\ref{sec:sd},
+Appendix~\ref{app:annulus} and Appendix~\ref{app:star} do not touch it.
+
+\emph{What would close it.} A written derivation of the relaxed catalytic transfer: the $k$-sum
+telescoping to $(1-\Sigma_1)^{-1}$ with numerator $\Sigma_0$, and the bulk runs assembling to
+$S_0/(1-S_1)$. Both are finite algebra on an explicit transfer operator; neither is analytic. The
+same derivation supplies the $U$-side half of \textup{(L)}.
+
+\emph{Evidence.} The blocks reproduce their own combinatorial series exactly: $S_0/(1-S_1)$ against
+the bulk-run counts $2,2,6,2,18,6,42,18,118,50,282,190,706,594$ and $\Sigma_0/(1-\Sigma_1)$ against
+the travel-run counts $2,6,10,26,54,114,274,582,1298$ (\texttt{blocks\_growth.py}). $V$ itself is
+computed to $131$ exact terms by an independent catalytic transfer, not from the blocks.
+\end{remark}
 
 \begin{corollary}\label{cor:beta}
 The exponential growth rate of $v_n$ is $\beta_2=1.4916177871\ldots$, with
 $\beta_2^2$ the reciprocal of the smallest travel pole $q_1$; the value $\tfrac32$ is excluded.
-This is unconditional: it needs only
-the location of the dominant travel pole, not Remark~\ref{lem:cos}. The same rate for $u_n$
+It needs only the location of the dominant travel pole: not Remark~\ref{lem:cos}, not
+Appendix~\ref{app:annulus}, and not Appendix~\ref{app:star}. It does share with
+Theorem~\ref{thm:V} the assembly \textup{(R)}, which is what places $q_1$ on $V$ rather than on
+$G^T_0$ alone; the lower bound $\beta_2$ for $u_n$ and $v_n$ is free of it, coming from the
+pure-travel subcount \cite{Bonfioli2026a}. The same rate for $u_n$
 follows from Proposition~\ref{prop:travelinv} (hypothesis \textup{(T)} of Theorem~\ref{thm:U}),
 which supplies $q_1$ as a singularity of $U$ as well; $u_n\le v_n$ gives the upper bound
 unconditionally.
@@ -995,8 +1188,11 @@ which differ by exactly $q(1-q)b_0$. The first equals $(1-q)(1-s)B_V$, so on div
 Hence if at a travel pole $s<1$, $b_0>0$ and $B_V(q_m)>0$, the left-hand side of
 \eqref{eq:liftident} is strictly positive and the assembled numerator $\mathcal N_U(q_m)$ of $U$'s
 residue is non-zero: $U$'s residue is $V$'s residue plus the strictly positive increment $q_mb_0$.
-The factor $B_V(q_m)\ne0$ is the genuineness of $V$'s own pole at $q_m$, which is the content of
-Theorem~\ref{thm:V}. What remains is the \emph{gate}
+The factor $B_V(q_m)\ne0$ is the genuineness of $V$'s own pole at $q_m$; it is
+\emph{not} imported from Theorem~\ref{thm:V}, which would be circular, but proved directly, since
+$B_V=S_0/(1-S_1)$ at $\mathfrak g=\mathfrak g_V$ and both $S_0(q_m)\ne0$
+(Proposition~\ref{prop:numnonvanish}) and $S_e(q_m)\ne0$ (Proposition~\ref{prop:selower}) hold at
+every travel pole. What remains is the \emph{gate}
 \begin{equation}\label{eq:gate}
    b_0>0\qquad\text{and}\qquad s:=\tfrac{q}{1-q}\,t_1<1,\qquad t_1=\frac{P_{12}}{S_e},
 \end{equation}
@@ -1022,7 +1218,10 @@ unconditional.
 \emph{What is not proved.} The factorisation \eqref{eq:mobius} and the dictionary \eqref{eq:dict}
 are stated in \cite{supplement} as exact identities and supported there by numerical agreement with
 the resolvent to $10^{-22}$ and $10^{-23}$. Agreement at that accuracy is strong evidence and is
-not a proof. Three ingredients of the same derivation are likewise verified rather than proved: the
+not a proof. One line of \eqref{eq:dict} is now proved outright, namely
+$S_o=\tfrac{1-q}{2q}S_0$ read as an identity between the two explicit series
+(Lemma~\ref{lem:qsinenum}); what remains unproved in \eqref{eq:dict} is that the resolvent
+quantities $b_0,b_1,t_0$ are the objects named there. Three ingredients of the same derivation are likewise verified rather than proved: the
 reciprocity $t_0=b_1$ used above; the localisation of isolated cycles outside the travel interval;
 and the identification of the bulk block as the generating function of gapless bulk runs, the
 kernel $K(a,b)=q^{\max(a,b)}$ on active half-sizes reproducing
@@ -1261,16 +1460,25 @@ The arithmetic of A396406 separates cleanly. The P\'olya--Carlson dichotomy for 
 building blocks and the growth rate are unconditional (Theorem~\ref{thm:blocks};
 Corollary~\ref{cor:beta}); the exclusion of the rational alternative for the blocks rests on the
 coefficient growth \eqref{eq:growth} for $\Sigma_1$, and on Hypothesis~\ref{hyp:growth} for the
-other three, verified out to degree $1156$ and unproved. \textbf{The relaxed series $V$ is
-transcendental over $\Q(x)$}, and its non-cancellation input is Proposition~\ref{prop:selower},
+other three, verified out to degree $1156$ and unproved. \textbf{The travel resolvent
+$\Sigma_0/(1-\Sigma_1)$ is transcendental over $\Q(x)$, unconditionally}
+(Theorem~\ref{thm:travelres}), and it needs no growth hypothesis. Its non-cancellation inputs are
+two and are separate. The denominator input is Proposition~\ref{prop:selower},
 proved in Appendix~\ref{app:annulus} by an elementary chain with explicit numerical constants: an
 annulus representation, an Euler bound, a Poisson theta envelope, and a $q$-Wronskian invariant. No
-asymptotic theorem is cited on that path. Remark~\ref{lem:cos} gives the same conclusion by a
+asymptotic theorem is cited on that path. The numerator input is
+Proposition~\ref{prop:numnonvanish}, the identity $\Sigma_0(q_m)S_0(q_m)=2q_m/(1-q_m)$, which
+follows from the closed forms $\Sigma_0=\tfrac{2q}Z\mathfrak s(Z)$, $S_0=\tfrac{2q}{z_0}\mathfrak
+s(z_0)$ and the $q$-Pythagorean identity at a zero of the $q$-cosine; it is exact, it holds at
+every pole with no exceptional set, and it consumes no asymptotics. Remark~\ref{lem:cos} gives the
+denominator conclusion by a
 different and shorter route (the saddles $z^\ast_\pm=\pm iW/2$ with all constants derived
 explicitly, the two saddles supplying the global cancellation that no partial-summation method can), but that route is a sketch only (Remark~\ref{rem:cosgap}), and no theorem uses it. Both $V$ and
 $U$ take their pole set from Lemma~\ref{lem:infpoles}, which consumes only the rectangle bound
-$|T_2|\to0$ of Lemma~\ref{lem:T2abs}; and $V$'s non-cancellation input is the elementary
-Proposition~\ref{prop:selower}, independent of either. The true series $U$ stands on the same
+$|T_2|\to0$ of Lemma~\ref{lem:T2abs}. \textbf{$V$ is transcendental over $\Q(x)$ conditional on the
+block assembly \textup{(R)}} of Theorem~\ref{thm:V}: the telescoping of the travel $k$-sum and the
+identification of the bulk dressing, asserted in \cite{supplement} and \cite{Bonfioli2026a} and
+derived in neither (Remark~\ref{rem:Rstatus}). The true series $U$ stands on the same
 \emph{analytic} footing: its further analytic inputs are proved in Appendix~\ref{app:star}: the gate block is the
 symmetric second difference of the $q$-cosine at its own zero (Proposition~\ref{prop:P12second}),
 the two-interval uniform certificate of Theorem~\ref{thm:star} gives
@@ -1283,8 +1491,9 @@ values $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$ and $s\to\tfrac14$.
 Theorem~\ref{thm:U}: the invariance of the travel block under the cycle marker, and the reduction
 of numerator non-vanishing to the gate. Both are stated in full in
 \S\S\ref{sec:inputT}--\ref{sec:inputL}; both are combinatorial or algebraic; and neither is proved,
-here or in \cite{supplement}. That is the
-whole distance between $U$ and $V$: no analytic input separates them.
+here or in \cite{supplement}. No analytic input separates $U$ from $V$; the distance between them
+is that $V$ needs \textup{(R)} alone while $U$ needs \textup{(R)} in the sharper form
+\textup{(L)}, together with \textup{(T)}.
 The turning-point amplitude atom on the $U$-side is the elementary rational bound
 of Lemma~\ref{lem:atomN}, formally verified in Lean~4. The independent mod-$p$ route of
 \S\ref{sec:modp} would settle $U$ by a completely different mechanism, if a dense-support
@@ -1372,7 +1581,7 @@ At the radius $\rho=e^\tau$ of Lemma~\ref{app:M2} one has $a_k=i(\tilde\varphi-2
 $|a_k|=|\tilde\varphi-2\pi k|$. To pull the weight out of the $k$-sum, note that for $k\ne0$ the
 excess $|a_k|-|a_0|$ is paid for by the Gaussian factor, which is smaller by
 $e^{-((\tilde\varphi-2\pi k)^2-\tilde\varphi^2)/(4\tau)}$; the aggregate excess is maximised at the
-nearest image and is at most $\max_{\delta>0}2\delta e^{-\pi\delta/\tau}=2\tau/(\pi e)\le0.234\,\tau$,
+nearest image and is at most $\max_{\delta>0}2\delta e^{-\pi\delta/\tau}=2\tau/(\pi e)\le0.2342\,\tau$,
 which is below $\tau^{-1/2}$ for $\tau\le0.0198$. Hence
 $\sum_kW_n(a_k)e^{\operatorname{Re}(a_k^2)/(4\tau)}\le\bigl(|a|/(2\tau)+\tau^{-1/2}\bigr)^n
 \sum_ke^{\operatorname{Re}(a_k^2)/(4\tau)}$, which is the stated bound.
@@ -1399,17 +1608,50 @@ $\int v^2e^{-(v-s)^2/(4\tau)}dv=\sqrt{4\pi\tau}(2\tau+s^2)$ with $s=\tau w_r\le\
 and $\sqrt{\pi/\tau}\cdot\sqrt{4\pi\tau}=2\pi$ cancels the prefactors; the odd weight does
 \emph{not}, giving instead
 $\int|v|e^{-(v-s)^2/(4\tau)}dv=\sqrt{4\pi\tau}\,s\,\mathrm{erf}\bigl(s/(2\sqrt\tau)\bigr)
-+4\tau e^{-s^2/(4\tau)}$, which we bound by $\sqrt{4\pi\tau}\,s+4\tau$. With the weights of
-Lemma~\ref{app:theta} this assembles, for $\tau\le0.0198$ (so $r\le\tfrac12$, $K_r\le0.631$,
++4\tau e^{-s^2/(4\tau)}$, and the error function and the exponential are kept, not discarded.
+Writing $s=\tau w_r$, the two assembled factors are
+\[
+ Q_1=\tau^{-1/2}+\frac{s\,\mathrm{erf}\bigl(s/(2\sqrt\tau)\bigr)+2\sqrt{\tau/\pi}\,e^{-s^2/(4\tau)}}{2\tau},
+ \quad
+ Q_2=\frac{2\tau+s^2}{4\tau^2}+\tau^{-3/2}\Bigl[\text{same bracket}\Bigr]+\frac1\tau ,
+\]
+the prefactor $\sqrt{\pi/\tau}$ of Lemma~\ref{app:theta} cancelling against $\sqrt{4\pi\tau}$ in
+every term. On the whole range, $\sup\sqrt\tau\,Q_1=1.8273$ and $\sup\tau\,Q_2=3.6596$, both
+attained at $\tau=0.0198$, $\xi=Z$. With the weights of
+Lemma~\ref{app:theta} this assembles, for $\tau\le0.0198$ (so $r\le0.1981<\tfrac12$, $K_r\le0.631$,
 $e^{\tau w_r^2/4}\le e^{0.506}$), to
 \[
- |C'(y)|\le e^{K_r-\tau+\tau w_r^2/4}\,\bigl(1.825\,\tau^{-1/2}\bigr)r^{-2},\qquad
+ |C'(y)|\le e^{K_r-\tau+\tau w_r^2/4}\,\bigl(1.83\,\tau^{-1/2}\bigr)r^{-2},\qquad
  |C''(y)|\le e^{K_r-2\tau+\tau w_r^2/4}\,\bigl(3.670/\tau\bigr)r^{-4}.
 \]
-With $4\xi^2/r^4\le(2/\tau)e^{3\tau}(1+2\tau)$ the total $M_2\tau^2$ is at most $25.0$ at
+With $4\xi^2/r^4\le(2/\tau)e^{3\tau}(1+2\tau)$ the total $M_2\tau^2$ is at most $25.04$ at
 $\tau=0.0198$, decreasing to $20.2$ at $\tau=1.29\cdot10^{-4}$, in both cases below the target
-$7w^4\tau^2=28$.
+$7w^4\tau^2=28$. Those two numbers come from pairing the largest $K_r$ and the largest
+$\tau w_r^2/4$, both attained at $\xi=Z$, with the largest $r^{-2}$, attained at $\xi=qZ$; taking
+instead the supremum over $\xi\in[qZ,Z]$ of the assembled bound at a single $\xi$ gives $23.33$ at
+$\tau=0.0198$, $20.06$ at $\tau=1.29\cdot10^{-4}$ and $19.84$ as $\tau\to0$, so the true margin
+against $28$ is $16.7\%$ rather than the $10.6\%$ the factored form reports. Every constant in this
+proof, and the two $\xi$-suprema, are regenerated by \texttt{annulus\_certificate.py} at two
+precisions; see Remark~\ref{rem:M2cert}.
 \end{proof}
+
+\begin{remark}[what the certificate checks, and what it found]\label{rem:M2cert}
+\texttt{annulus\_certificate.py} recomputes, at $30$ and again at $60$ digits with zero
+disagreement: the window geometry ($\sup r=0.19802$, $\sup K_r=0.62963$, $\sup\tau w_r^2/4=0.50497$
+against the quoted $\tfrac12$, $0.631$, $0.506$); the excess constant $2/(\pi e)=0.234199$ of
+Lemma~\ref{app:theta}; Lemma~\ref{app:euler} against the true $|(x;q)_\infty^{-1}|$ on a
+$(\tau,\xi,\theta)$ grid; the unfolding identity of this proof against numerical quadrature; the
+two moment suprema above; the assembled $M_2\tau^2$ on a $400$-point $\tau$ grid with the
+$\xi$-supremum taken by search rather than at an endpoint; and the chain of
+Proposition~\ref{prop:selower} below. It also checks that the bound dominates the true
+$\max|f''|$ where both are computable, the ratio $\max|f''|/(\text{bound})$ coming out between
+$0.023$ and $0.045$ at $\tau=0.0198,\,0.0127,\,5\cdot10^{-3},\,10^{-3}$, consistent with
+Remark~\ref{rem:M2sharp}. Two constants of an earlier version of this proof did not survive it and
+are corrected above: $\sup\sqrt\tau\,Q_1=1.82733$ is not bounded by $1.825$, and
+$2/(\pi e)=0.234199$ is not bounded by $0.234$. Both corrections move $M_2\tau^2$ by less than
+$0.01$ and neither affects any conclusion. The arithmetic model is mpmath \texttt{mpf} at the two
+stated precisions, not interval arithmetic.
+\end{remark}
 
 \begin{remark}[how lossy Lemma~\ref{app:M2} is, and why one sample cannot say]\label{rem:M2sharp}
 The ratio $M_2/w^4$ does not converge: $f$ is the $q$-cosine, so
@@ -1441,9 +1683,14 @@ and $F_n=c_n^2-Zq^{n+1}c_ns_n+q\,s_n^2$, the rules give the exact telescoping
 $F_n-F_{n+1}=-Zq^{n+1}(1-q)c_{n+1}s_{n+1}$ with $F_n\to1$; the form has smallest eigenvalue
 $\lambda_n\ge q-Z/2$ (by $\sqrt{a^2+b^2}\le a+b$), $\sum_{n\ge0}Zq^{n+1}(1-q)=qZ$, and the discrete
 Gronwall gives $F_0\ge e^{-0.61Z}\ge1-0.61Z$ for $Z\le\min(0.2,q/3)$; at the pole $F_0=q\,s(Z)^2$,
-so $|s(Z)|\ge\sqrt{1-0.61Z}$. Inserting Lemma~\ref{app:M2}, the error fraction is
+so $|s(Z)|\ge\sqrt{1-0.61Z}$. (The Gronwall sum is $qZ/(2q-Z)$, whose supremum over the range is
+$0.5568\,Z$, so $0.61$ has room; $Z\le\min(0.2,q/3)$ holds throughout, $Z=0.19999$ at
+$\tau=0.0198$ and $Z=0.016063$ at $\tau=1.29\cdot10^{-4}$.) Inserting Lemma~\ref{app:M2}, the error fraction is
 $28\sqrt2\,(1.02)\sqrt\tau\le0.46$ for $\tau\le1.29\cdot10^{-4}$, a range containing every pole with
-$m\ge41$, whence $|S_e(q_m)|\ge(1-0.02-0.46)\sqrt{\tau_m/2}\ge0.35\sqrt{\tau_m}$ there. The tabulated poles are verified numerically at $60+$ digits
+$m\ge41$, whence $|S_e(q_m)|\ge(1-0.02-0.46)\sqrt{\tau_m/2}\ge0.35\sqrt{\tau_m}$ there. Evaluated
+rather than rounded, the same chain gives $0.3856\sqrt{\tau_m}$ at the threshold and more below it,
+the exact error fraction being $0.4520$ against the quoted $0.46$
+(\texttt{annulus\_certificate.py}). The tabulated poles are verified numerically at $60+$ digits
 (\texttt{qtrig\_verify.py}, mpmath, no interval arithmetic:
 $|S_e|/\sqrt\tau\in[0.698,0.708]$ as asserted by the script; the tabulated set is poles
 $2,\dots,60$ in the indexing of \S2 (the dominant pole is not among them, its value $0.581$
@@ -1527,14 +1774,15 @@ variable $\log u$ with step $\tau/2$.
 \end{proposition}
 
 \begin{proof}
-Write $c(u)=\cos(u;q^2)$ and $\mathfrak s(u)=q^{-1/2}\sin(q^{1/2}u;q^2)$. The Hahn--Exton
-$q$-Wronskian (Swarttouw, thesis eq.~(4.3.8); \cite[eq.~(4.21)]{Daalhuis1994}) reads
-$\mathfrak s(u)c(qu)-c(u)\mathfrak s(qu)=u$, and the shift rules give
-$c(qu)=c(u)+q^{3/2}u\,\mathfrak s(\sqrt q\,u)$ and $\mathfrak s(qu)=\mathfrak s(u)-u\,c(\sqrt q\,u)$.
+Write $c(u)=\cos(u;q^2)$ and $\mathfrak s(u)=q^{-1/2}\sin(q^{1/2}u;q^2)$. The shift rules and the
+pole invariant are Lemma~\ref{lem:halfstep}:
+$c(qu)=c(u)+q^{3/2}u\,\mathfrak s(\sqrt q\,u)$, $\mathfrak s(qu)=\mathfrak s(u)-u\,c(\sqrt q\,u)$,
+and $q^{3/2}\mathfrak s(z_0)\mathfrak s(Z)=1$ at every travel pole.
 Taking $u=Z/\sqrt q$ in the first shift rule gives $c(z_0)-c(z_0/q)=qZ\,\mathfrak s(Z)$. Taking
-$u=Z$ in the $q$-Wronskian and in the first shift rule, and using $c(Z)=0$ twice, gives
-$\mathfrak s(Z)\,c(qZ)=Z$ and $c(qZ)=q^{3/2}Z\,\mathfrak s(z_0)$, whence the pole invariant
-$q^{3/2}\mathfrak s(z_0)\mathfrak s(Z)=1$ and $c(qZ)=Z/\mathfrak s(Z)$. Substituting the closed
+$u=Z$ in the Hahn--Exton $q$-Wronskian $\mathfrak s(u)c(qu)-c(u)\mathfrak s(qu)=u$ and in the first
+shift rule, and using $c(Z)=0$ twice, gives
+$\mathfrak s(Z)\,c(qZ)=Z$ and $c(qZ)=q^{3/2}Z\,\mathfrak s(z_0)$, whence again the pole invariant
+and $c(qZ)=Z/\mathfrak s(Z)$. Substituting the closed
 form $P_{12}=\tfrac{qZ}2\mathfrak s(Z)-c(z_0)$ of Lemma~\ref{lem:P12closed} into
 $c(z_0)+c(z_0/q)=2c(z_0)-qZ\,\mathfrak s(Z)$ yields the boxed identity.
 \end{proof}
