@@ -6,12 +6,13 @@ authors:
   - given-names: Vico
     family-names: Bonfioli
     affiliation: "Independent researcher"
+    email: vicobonfioli@gmail.com
 abstract: >
   For every right triangle in the plane with positive unequal rational
   legs, the BFS orbit-growth sequence of its three side-reflections
   agrees with one common sequence u_d (OEIS A396406) through depth 32,
   and this is sharp: the (1,2) triangle deviates at depth 33. The
-  natural all-depths universality conjecture is refuted -- for every
+  natural all-depths universality conjecture is refuted: for every
   rational, indeed every algebraic, shape an explicit nontrivial kernel
   element (a conjugated product of glide-reflection squares) forces a
   first deviation at depth n_T between max(33, c_T) and 24 c_T + 8. The
@@ -19,25 +20,28 @@ abstract: >
   triangle (transcendental leg ratio), whose group is virtually the
   lamplighter Z wr Z; its translation lattice 2(t-1)Z[t] and the kernel
   of every algebraic specialization are computed exactly, and the word
-  metric is solved by an explicit lamplighter optimization. The
-  closed-form n-dimensional asymptotic ratio is
-  r_n = 1 + 2 cos(2 pi / (n+3)), and the affine representation is
-  unconditionally faithful in every dimension n >= 3 for pairwise
-  distinct legs (uniform Schur-complement identity det Q_n = -prod a_i^2
-  plus rank-0 descent on Cremona elliptic curves 24a1, 32a2, 72a2). The
-  companion study (Paper 2) proves the catalytic building blocks
-  transcendental over Q(q) unconditionally (Polya-Carlson natural
-  boundary), the relaxed companion V transcendental over Q(x)
-  unconditionally (self-contained simple-saddle asymptotics, every
-  constant explicit), and the true series U = A396406 transcendental
-  over Q(x) as well. The amplitude estimate that was the sole
-  conditionality is now proved: the gate block is the symmetric second
-  difference of the q-cosine at its own zero, a uniform certificate bounds
-  it by 0.619 tau^{3/2} below the threshold tau^{3/2}/sqrt2, and an exact
-  identity turns the same certificate into the denominator bound and the
-  sign input that close the whole gate. The geodesic growth series of the
-  side-reflection system is not algebraic over Q(x); no low-complexity
-  closed form exists.
+  metric is given by a closed form whose upper bound is proved and whose
+  lower bound is stated as a conjecture, verified with 0 exceptions on
+  all 275823 elements to depth 24. In n dimensions the right-angled
+  Coxeter envelope of the orthoscheme has rational growth with rate
+  r_n = 1 + 2 cos(2 pi / (n+3)); for n >= 3 every kernel element of word
+  length 6 lies in a rank-two standard parabolic, and the rank-two
+  relations are classified by rank-0 descent on the elliptic curves
+  24a1, 72a2 and y^2 = x^3 - x. These give the collision depth
+  unconditionally on two of the three strata. On the third, the depth is
+  infinite exactly when the affine representation is injective, which is
+  open for n >= 3; an earlier claim of unconditional faithfulness from
+  det Q_n = -prod a_i^2 was a non sequitur and is withdrawn. On the
+  arithmetic of the growth series, the Polya-Carlson dichotomy for the
+  four catalytic blocks is unconditional, and the rational branch is
+  excluded unconditionally for the two denominators, leaving the two
+  numerators under an unproved coefficient-growth hypothesis. The travel
+  resolvent is transcendental over Q(x) unconditionally. The relaxed
+  companion V and the true series U = A396406 are transcendental over
+  Q(x) conditionally: V on a junction non-vanishing hypothesis, U on
+  that and on the invariance of the travel block, both on a transfer
+  model. The growth rate is beta_2 = 1.4916177871..., which excludes
+  3/2.
 keywords:
   - right-triangle reflection group
   - Coxeter groups
@@ -55,8 +59,8 @@ keywords:
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
-date-released: 2026-08-02
-version: 7.0.0
+date-released: 2026-08-15
+version: 8.24.0
 doi: 10.5281/zenodo.20370090
 identifiers:
   - type: doi

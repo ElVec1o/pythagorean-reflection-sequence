@@ -1,92 +1,76 @@
-# Lean 4 machine-checked verification
+# Lean 4 formalisation
 
-This folder contains a Lean 4 file (`RightTriangleReflection.lean`) that
-machine-verifies the eight length-10 affine relations driving OEIS
-[A396406](https://oeis.org/A396406) on the canonical (3, 4, 5) right
-triangle. All proofs are by `native_decide` over exact rational
-arithmetic and run in seconds.
+Two Lean 4 projects sit here.
 
-## What is verified
+| Directory | Toolchain | Targets | Mathlib |
+|---|---|---|---|
+| `lean/` (this one) | `leanprover/lean4:v4.13.0` | 6 | no |
+| `lean/with_mathlib/` | `leanprover/lean4:v4.30.0` | 60 | yes |
 
-| | Statement | # theorems |
-|---|---|---|
-| 1 | Basic Coxeter relations $R_i^2 = 1$ for $i \in \{0, 1, 2\}$ and $(R_0 R_1)^2 = 1$ | 4 |
-| 2 | All eight length-10 word-pair equalities (Table 1 of the manuscript) | 8 |
-| 3 | The explicit affine matrix value of each of the eight relations (six half-turns and two pure translations) | 8 |
-| 4 | Pairwise distinctness of the eight collision-pair affine matrices | 1 |
-| 5 | Relation #1 also holds on the (5, 12, 13) right triangle (a concrete instance of universality) | 1 |
-| 6 | Direct BFS computation of $a(0), a(1), \ldots, a(17)$, matching OEIS A396406 exactly through depth 17 | 18 |
-| 7 | Fibonacci coincidence: $a(n) = F(n+3)$ for $1 \le n \le 9$, with deficit-of-8 break at $n = 10$ formalized as $a(10) + 8 = F(13)$ | 13 |
-| 8 | Schur-complement determinant identity $\det Q_n = -\prod_{i=1}^n a_i^2$ for $n = 2, 3, 4, 5, 6, 7, 8, 10$ on concrete leg sequences (the last one being $(1,2,3,5,7,11,13,17,19,23)$, an $11 \times 11$ determinant) | 8 |
-| | **Total** | **65 machine-checked theorems** |
+Neither contains a `sorry`. Every target is registered both as a `[[lean_lib]]`
+and in `defaultTargets`, so a clean `lake build` builds and checks all of them
+and all are covered by the axiom audit.
 
-All proofs are by `native_decide`. The BFS computation in (6) performs an actual layer-by-layer breadth-first search of the Cayley orbit in exact rational arithmetic — this is a direct first-principles verification of the OEIS data through depth 17 (where $a(17) = 4971$).
+Certification discipline: a file counts as checked only when a cold elaboration
+exits 0, and the axiom list is read afterwards. An empty `#print axioms` line is
+not evidence of success, since it also appears for a failed constant, and it is
+the legitimate output for a `decide`-proved theorem. Grepping the log for
+`error` is not a substitute for the exit status.
 
-## Requirements
+For the statement-to-declaration tables, and for the list of what is deliberately
+not formalised and why, see the Lean sections of the papers themselves:
+`paper1.tex` (`tab:lean-index`), `paper2.tex` (the site-cost index and the table
+of blocked analytic atoms), `paper4.tex`, `paper_orthoscheme.tex` and
+`hahn_exton_qcosine.tex`. Absence of a statement from those tables means there is
+no certificate for it. `README_triangle.md` in this directory tabulates the files
+backing paper 4 and the rotation-relation chain.
 
-- Disk: ~500 MB (Lean toolchain only — no Mathlib needed)
-- RAM: ~1 GB peak
-- Build time: ~20 seconds full clean build on a 2024 Mac mini (M2, 24 GB RAM)
-  - Depths 0–12 build in under a second
-  - Depths 13–15 add a few seconds each
-  - Depth 17 takes the bulk of the time (~15 s)
-- Lean: pinned to `leanprover/lean4:v4.13.0` via `lean-toolchain`
 
-(Building deeper than depth 17 is possible but build time grows roughly geometrically — depth 18 would take a few minutes, depth 19+ rapidly becomes impractical.  The Rust BFS in `code/rust_bfs/` is the right tool for high-depth computation; Lean is the right tool for kernel-verified low-depth machine checking.)
+## This project (no Mathlib)
 
-## Install Lean (one-time, ~5 minutes)
+Six files, core Lean 4 only, `import Lean.Data.Rat` at most. Counted with
+`grep -cE '^\s*(theorem|lemma)\s'`, they carry 152 declarations.
+
+| File | Contents |
+|---|---|
+| `RightTriangleReflection.lean` | The eight length-10 affine relations driving A396406 on the canonical `(3,4,5)` triangle, the Coxeter relations `R_i^2 = 1` and `(R_0R_1)^2 = 1`, the explicit affine matrix of each relation and their pairwise distinctness, relation 1 on the `(5,12,13)` triangle, a first-principles layer-by-layer BFS of the Cayley orbit in exact rational arithmetic reproducing `a(0)..a(17)`, and the Fibonacci coincidence with its deficit-of-8 break at `n = 10`. `decide` and `native_decide`. |
+| `EulerCircuit.lean` | Euler's theorem for finite directed multigraphs (`euler_circuit`): a balanced multigraph whose edges are reachable from a base vertex carries a circuit using every edge once. Mathlib has the necessary degree condition but not this sufficiency. This is the one input paper 4's metric upper bound otherwise takes on faith. |
+| `TriangleFlowMetric.lean` | The arithmetic core of both bounds of paper 4's metric theorem: per-edge domination and parity, doubling of connectors, the summation (`lower_bound`), vertex balance, and the length and flow of the word read off a circuit (`upper_bound`). The graph-theoretic half of the lower bound enters as the hypothesis `hst`. |
+| `RotationRelations.lean` | The letter invariants `c_i(w)`, block peeling and the two bounds, the classification `classify_normal_forms`, its converse `markBoth_valid`, and the count `admissible_count` (`(n-1)^2` admissible index pairs). The free-product torsion step is not here; it is `with_mathlib/CoxeterTorsion.lean`. This file is also compiled in place by the `with_mathlib` package through a `srcDir` entry, so there is exactly one copy of it. |
+| `PaperExtraMod2.lean` | `prop:mod2-automaton` of paper 1's appendices: the mod-2 reduction of `u_d` is eventually 3-periodic with pre-period 1, is not purely periodic, and satisfies the order-2 Fibonacci recurrence from `d = 3` but not at `d = 2`. Kernel evaluation only, no `native_decide`. The closing step from eventual periodicity to algebraicity over `F_2(t)` is not formalised. |
+| `PaperExtraCounts.lean` | The combinatorial and logical content of three of paper 1's appendix propositions, including the 52-pair search grid of `prop:no-dfinite` with the over-determination condition made explicit, and the arithmetic of the withdrawn nonlinear search in `prop:no-recurrence-strong` (ii). |
+
+`RightTriangleReflection.lean` uses `native_decide` and so trusts the Lean
+compiler in addition to the kernel; the other five do not.
+
+### Requirements and build
+
+- Disk: about 500 MB, the Lean toolchain only.
+- RAM: about 1 GB peak.
+- Build: about 20 seconds clean on a 2024 Mac mini (M2, 24 GB). Depths 0 to 12
+  of the BFS build in under a second; depth 17 takes the bulk of the time.
 
 ```bash
 curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y
 source "$HOME/.elan/env"
-lean --version    # should print "Lean (version 4.13.0, ...)"
+cd lean && lake build
 ```
 
-## Build and check
+A successful build means the proofs check; Lean is its own checker. Building the
+BFS deeper than depth 17 is possible but the cost grows roughly geometrically.
+`code/rust_bfs/` is the tool for high-depth computation.
 
-From this directory:
+### Why no Mathlib here
 
-```bash
-lake build
-```
+These six files are finite rational and integer arithmetic plus self-contained
+combinatorics. Keeping them Mathlib-free holds disk use to about 500 MB instead
+of about 10 GB and build time to seconds. Anything needing real analysis, group
+rings, `MvPolynomial`, free products or q-series lives in `with_mathlib/`.
 
-A successful build means **all proofs check**. There is no separate
-"run tests" step — Lean is its own checker.
-
-If the build succeeds, you will see output like:
-
-```
-[1/1] Building RightTriangleReflection
-```
-
-with no `error:` lines. Any false claim in the file would have failed
-the build with a concrete kernel-rejection message.
-
-## File contents
-
-- `RightTriangleReflection.lean` — the actual verification
-- `lakefile.toml` — Lake build configuration
-- `lean-toolchain` — pinned Lean version
-
-## Why no Mathlib?
-
-The verification is purely a finite rational-arithmetic check on the
-canonical (3, 4, 5) right triangle. We import `Rat` from
-`Lean.Data.Rat` (a module that ships with the Lean toolchain itself),
-so no Mathlib dependency is needed. This keeps disk usage to ~500 MB
-instead of ~12 GB and build time to seconds instead of an hour.
-
-The structural Universality Theorem (the cyclic-ideal identification of
-$\ker \rho_T$ over $\mathbb{Z}[Q]$) requires significantly more
-infrastructure and is *not* formalized here — it would need Mathlib's
-group-ring machinery and a substantial development. The present file
-verifies the concrete computation at depths 0–17 on the (3, 4, 5)
-triangle and at depth 10 on the (5, 12, 13) triangle.
 
 ## Reference
 
-Bonfioli, V., *The Universal Right-Triangle Reflection Sequence
-(Unequal Legs)*, 2026.
+Bonfioli, V., the five papers in `paper/journal/`, 2026.
 GitHub: <https://github.com/ElVec1o/pythagorean-reflection-sequence>
-Zenodo DOI: [10.5281/zenodo.20370090](https://doi.org/10.5281/zenodo.20370090)
+Zenodo: [10.5281/zenodo.20370090](https://doi.org/10.5281/zenodo.20370090)
 OEIS: [A396406](https://oeis.org/A396406)

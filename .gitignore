@@ -75,3 +75,6 @@ paper/old/
 
 # exploration and narration for route B: scratch, never ships (Rule 10)
 code/zeta_probe/route_b/
+
+# superseded: folded into paper/journal/paper1.tex as appendices (2026-08-10)
+paper/paper_extra.*

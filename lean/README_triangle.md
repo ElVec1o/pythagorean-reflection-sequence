@@ -1,39 +1,43 @@
-# Lean files for the triangle reflection paper
+# Lean files for paper 4 and the rotation-relation chain
 
-> **BUILD STATUS (2026-08-10).** Every file listed below is now registered in
-> `lean/with_mathlib/lakefile.toml`, both as a `[[lean_lib]]` and in
-> `defaultTargets`, so a clean `lake build` builds and checks all of them and
-> all are covered by the axiom audit.
->
-> The cross-package import that used to make `Bridge.lean`, `LinearPart.lean`
-> and `PlaneGroup.lean` unbuildable is repaired. They import
-> `RotationRelations`, which lives in the Mathlib-free `lean/` package; the
-> with_mathlib lakefile now carries
->
-> ```toml
-> [[lean_lib]]
-> name = "RotationRelations"
-> srcDir = ".."
-> ```
->
-> so that module is compiled in place from `lean/RotationRelations.lean` without
-> being duplicated and without a cross-package `require`. It is import-free and
-> compiles under Lean 4.30 as well as 4.13. Measured build times, single
-> threaded on a cold `lake build`: `RotationRelations` 5 s, `LinearPart` 10 s,
-> `PlaneGroup` 6 s, `Bridge` 4 s, `CensusWitness` 10 s, `CensusUniversal` 9 s,
-> `CylCensus` 1256 s.
->
-> `CensusWitness.lean`, `CensusUniversal.lean` and `CylCensus.lean` are proved
-> by `native_decide` and so trust the Lean compiler in addition to the kernel;
-> each declaration carries its own reflection axiom
-> `<thm>._native.native_decide.ax_1_1`. This is declared in the Declarations
-> section of the paper. `CylCensus.lean` is the slowest target in the whole
-> project at about twenty-one minutes.
+This file tabulates the subset of the formalisation that backs
+`paper/journal/paper4.tex` and the rotation-relation and metric statements it
+shares with `paper1.tex`. For the whole formalisation, the two projects and
+their target counts, see `README.md` in this directory.
 
-The first three files import nothing and are checked with `lean <file>` on Lean
-4.13 or 4.30; no Mathlib build is required. The rest are under `with_mathlib/`
-and import Mathlib, and `Bridge.lean`, `LinearPart.lean` and `PlaneGroup.lean`
-also import `RotationRelations` through the `srcDir` entry described above.
+Every file listed below is registered in `lean/with_mathlib/lakefile.toml` or
+`lean/lakefile.toml`, both as a `[[lean_lib]]` and in `defaultTargets`, so a
+clean `lake build` builds and checks all of them and all are covered by the
+axiom audit.
+
+`Bridge.lean`, `LinearPart.lean` and `PlaneGroup.lean` import
+`RotationRelations`, which lives in the Mathlib-free `lean/` package. The
+`with_mathlib` lakefile therefore carries
+
+```toml
+[[lean_lib]]
+name = "RotationRelations"
+srcDir = ".."
+```
+
+so that module is compiled in place from `lean/RotationRelations.lean` without
+being duplicated and without a cross-package `require`. It is import-free and
+compiles under Lean 4.30 as well as 4.13. Measured build times, single threaded
+on a cold `lake build`: `RotationRelations` 5 s, `LinearPart` 10 s,
+`PlaneGroup` 6 s, `Bridge` 4 s, `CensusWitness` 10 s, `CensusUniversal` 9 s,
+`CylCensus` 1256 s.
+
+`CensusWitness.lean`, `CensusUniversal.lean` and `CylCensus.lean` are proved by
+`native_decide` and so trust the Lean compiler in addition to the kernel; each
+declaration carries its own reflection axiom
+`<thm>._native.native_decide.ax_1_1`. This is declared in the Declarations
+section of the paper. `CylCensus.lean` is the slowest target in the project by
+wall time, about twenty-one minutes.
+
+`TriangleFlowMetric.lean`, `EulerCircuit.lean` and `RotationRelations.lean`
+import nothing and are checked with `lean <file>` on Lean 4.13 or 4.30; no
+Mathlib build is required. The rest are under `with_mathlib/` and import
+Mathlib.
 
 | file | proved | left open |
 |---|---|---|
@@ -55,9 +59,10 @@ The files backing the closed form of the lamp distance itself
 tabulated here; their declaration names are given at the statements in the
 paper.
 
-No file contains a `sorry`. Every file but `CensusWitness.lean`,
-`CensusUniversal.lean` and `CylCensus.lean` uses only Lean's standard axioms;
-those three are proved by `native_decide` and so trust the compiler as well.
+No file contains a `sorry`. Of the files in this table, every one but
+`CensusWitness.lean`, `CensusUniversal.lean` and `CylCensus.lean` uses only
+Lean's standard axioms; those three are proved by `native_decide` and so trust
+the compiler as well.
 `CylCensus.lean` alone takes about twenty-one minutes to check (measured 1256 s,
 peak RSS 1383 MB, single threaded).
 
@@ -74,7 +79,7 @@ circuit (`trail_split_at`, `splice`), and the induction proceeds on the number
 of unused edges. When no unused edge leaves the circuit, connectivity forces
 the remainder to be empty.
 
-## The Mathlib file
+## The free-product torsion file
 
 `with_mathlib/CoxeterTorsion.lean` models `W_m = D_m * C_2` as
 `Monoid.CoprodI` of a two-element family of dihedral groups (`DihedralGroup 1`
@@ -83,9 +88,9 @@ the free product, its normal form `Monoid.CoprodI.Word.equiv`, reduced words
 `Monoid.CoprodI.NeWord`, and `DihedralGroup`, but **no torsion theorem for free
 products**, so both directions are proved here:
 
-* `finite_order_of_cancel` — if `u₂u₀ = 1` the word is a conjugate of `u₁`,
+* `finite_order_of_cancel`: if `u₂u₀ = 1` the word is a conjugate of `u₁`,
   which lies in the finite factor `D_m`, so it has finite order.
-* `infinite_order_of_noncancel` — conjugating by `u₀⁻¹` turns the word into the
+* `infinite_order_of_noncancel`: conjugating by `u₀⁻¹` turns the word into the
   cyclically reduced `x₂ u₁ x₂ (u₂u₀)`, whose letters alternate between the two
   factors; `blkPow` exhibits every power as a `NeWord`, and
   `neword_prod_ne_one` (from injectivity of `Word.prod`, the inverse half of
@@ -112,11 +117,14 @@ the join stay strictly between `0` and `m`.
 `code/triangle_relations/torsion_count.rs` remains as an independent check of
 the same statement for `3 ≤ m ≤ 60`, `1 ≤ c ≤ m-1`.
 
-`build.sh` builds everything. Point it at the `.lake/packages` directory of any
-Lean 4.30 project with Mathlib built:
+`build.sh` is a lightweight checker for the files in this table only, not for
+the whole project. Without `MATHLIB_PACKAGES` it builds the three import-free
+files and stops; with it, it additionally checks `CoxeterTorsion`, `Bridge`,
+`LinearPart`, `PlaneGroup`, `CensusWitness` and `CensusUniversal`:
 
 ```sh
 MATHLIB_PACKAGES=<project>/.lake/packages ./build.sh
 ```
 
-Without that variable it builds the three import-free files and stops.
+To build and check all 60 targets, use `lake build` in `with_mathlib/` and
+`lake build` here.
