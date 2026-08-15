@@ -37,7 +37,7 @@
 
 \title{Transcendence of a planar reflection--group growth series\\ and its relaxed companion}
 \author{Vico Bonfioli\thanks{Independent researcher. \texttt{vicobonfioli@gmail.com}.
-Code, data, and the Lean~4 formalisation of Lemma~\ref{lem:atomN}:
+Code, data, and the Lean~4 formalisation of Lemmas~\ref{lem:transport} and~\ref{lem:atomN}:
 \url{https://github.com/ElVec1o/pythagorean-reflection-sequence}.}}
 \date{2026}
 
@@ -101,7 +101,9 @@ $S_e=\tfrac{qZ}2\mathfrak s(Z)-P_{12}$, turns the same certificate into the deno
 $|S_e|\ge0.63\sqrt\tau$, so the gate closes at every travel pole. The
 turning-point
 amplitude atom on the $U$-side, long the special-function obstacle, is an explicit rational inequality
-\emph{formally verified in Lean~4 / Mathlib \cite{MathlibCommunity}} (Lemma~\ref{lem:atomN});
+\emph{formally verified in Lean~4 / Mathlib \cite{MathlibCommunity}} (Lemma~\ref{lem:atomN}), as is
+the site cost law of the model, Lemma~\ref{lem:transport} with Corollary~\ref{cor:localcost}
+(\texttt{SiteCost.lean});
 \item[\textup{(iv)}] an orthogonal, analysis-free route via Christol's theorem would settle $U$
 without any of the above: the $p$-kernel of $(u_n\bmod p)$ is computed to be maximally
 non-automatic at $p=3,5$ and machine-checked at $p=3$, though a proof for dense-support series is
@@ -1824,6 +1826,45 @@ Corollary~\ref{cor:localcost} the marker site is cut exactly when $d_{-1}=0$, $\
 $\varepsilon^\ast=1$, which is exactly where that indicator vanishes.
 \end{remark}
 
+\subsection*{Machine verification of the site cost}
+
+Lemma~\ref{lem:transport}, the step of Corollary~\ref{cor:localcost} that consumes it, the reading
+off of $\alpha_s,\beta_s,\Phi_s$ from Definition~\ref{def:pairing}, the first sentence of
+Proposition~\ref{prop:cut} and the counterexample of Remark~\ref{rem:markerfalse} are formally
+verified in Lean~4 against Mathlib \cite{MathlibCommunity} (\texttt{SiteCost.lean}). A pairing at a
+site is the structure \texttt{Plan}: sixteen non-negative integers with the eight matching
+equations of Definition~\ref{def:pairing}; \texttt{Plan.cost} is its cost and \texttt{Plan.cross}
+the number of pairs on opposite sides. The minimum of Lemma~\ref{lem:transport} is formalised as
+\texttt{IsLeast}, so both halves are proved separately: \texttt{cost\_lower\_bound} holds for every
+pairing and \texttt{exists\_plan\_cost\_eq} exhibits one of exactly that cost.
+
+\begin{center}\small
+\begin{tabular}{lll}
+\hline
+Paper step & Lean declaration & axioms \\
+\hline
+$\mathrm{cost}\ge\max(|\alpha|,|\beta|,|\Phi|)$, six duals & \texttt{cost\_lower\_bound} & standard\\
+a pairing attaining it & \texttt{exists\_plan\_cost\_eq} & standard\\
+Lemma~\ref{lem:transport}, the minimum & \texttt{transport\_min} & standard\\
+collapse to $\max(|\alpha|,|\beta|)$ & \texttt{siteCost\_eq} & standard\\
+$\alpha_s=d_{s-1}$ & \texttt{SiteData.alpha\_eq\_dL} & standard\\
+$\beta_s=d_s$ & \texttt{SiteData.beta\_eq\_dR} & standard\\
+$\Phi_s=f_{s-1}$ & \texttt{SiteData.Phi\_eq\_fL} & standard\\
+interior site cost $\max(|d_{s-1}|,|d_s|)$ & \texttt{SiteData.interior\_site\_cost} & standard\\
+cut site: no strand crosses & \texttt{cut\_forces\_no\_cross} & standard\\
+the two marker forms agree on $d_L\ge0$ & \texttt{marker\_forms\_agree} & standard\\
+and differ at $(d_L,d_R)=(-2,1)$ & \texttt{marker\_forms\_differ} & \emph{none}\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent ``standard'' means \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; the
+last row is closed by \texttt{decide} and depends on no axiom at all. Three things in this
+subsection are \emph{not} formalised, and are exactly the three that quantify over more than one
+site: that the optimisation of Definition~\ref{def:pairing} computes the relaxed word length
+(Remark~\ref{rem:pairingstatus}), Corollary~\ref{cor:lRclosed}, and the counting half of
+Proposition~\ref{prop:cut}.
+
 \subsection{The model \textup{(M)}, and the assembly}\label{sec:modelassembly}
 
 Everything above is a statement about the explicit operators of Definition~\ref{def:model} and
@@ -3239,7 +3280,7 @@ the mean value theorem) are hypotheses there, not formalised.
 
 \noindent ``standard'' means \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. Every
 file named in this paper lives in the Mathlib-based package of the accompanying development; none of
-its $50$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
+its $51$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
 declaration cited anywhere in this paper appears in one of those audits. (The audits are selective
 in the other direction: a file may prove auxiliary lemmas that its audit block does not list.) Some
 declarations report ``does not depend on any axioms'', which is the legitimate output
