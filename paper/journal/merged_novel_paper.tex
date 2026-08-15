@@ -1,0 +1,355 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,enumitem}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Isom}{\operatorname{Isom}}
+\newcommand{\cd}{\operatorname{cd}}
+
+\title{Growth, collisions and lamplighter structure of\\ generic triangle and orthoscheme reflection groups}
+\author{Vico Bonfioli}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper consolidates a group of preprints on the reflection groups of generic Euclidean
+orthoschemes and their growth. The unconditional core is: the right-angled Coxeter envelope
+$W_n$ has rational growth $(1+t)^{\lfloor n/2\rfloor+1}/K_{n+1}(t)$ with rate
+$r_n=1+2\cos(2\pi/(n+3))$; a dichotomy identifies the collision depth of a leg tuple with half
+the shortest kernel length; for $n\ge3$ every length-six kernel element lies in a rank-two
+standard parabolic and occurs only at dihedral angle $\pi/3$; over $\Q_{>0}^n$ the rank-two
+kernel condition is decided by the positional statistics of the leg tuple, the Diophantine input
+being three rank-zero elliptic curves, and the corresponding statement over $\R$ is false. In the
+plane the kernel of the triangle representation is nontrivial and the growth series of the
+generic triangle group departs from the envelope at depth $11$. The growth rate of the planar
+right-triangle group is $\beta_2=1/\sqrt{q^\ast}=1.4916177871\ldots$, where $q^\ast$ is the
+smallest positive zero of a Hahn--Exton $q$-cosine; $\beta_2<3/2$ is unconditional. The travel
+resolvent is transcendental over $\Q(x)$ unconditionally.
+
+Section~\ref{sec:reduce} contains the one statement here that is not in the source preprints:
+for every $n\ge2$, any embedding of $W_n$ into $\Isom(\R^n)$ has injective linear part, so the
+ambient embedding problem is equivalent to the question of whether $W_n$ embeds in the
+\emph{compact} group $O(n)$. At $n=2$ this recovers the planar obstruction from solvability of
+$O(2)$ alone, without amenability of $\Isom(\R^2)$, and it isolates non-commutativity of $O(n)$
+as the exact point at which the planar argument fails for $n\ge3$.
+
+Section~\ref{sec:status} states, for each result, what it is conditional on. Three hypotheses are
+open and are named wherever they are used: the strand-walk transfer model $(M)$, the junction
+pairing $(R\!-\!J)$, and the invariance of the travel block $(T)$. Transcendence of the full
+growth series $U$ and of its relaxed companion $V$ is conditional on these and is not claimed
+here. Irrationality of $\beta_2$ is open.
+\end{abstract}
+
+\section{What is new, what is known, and what is conditional}\label{sec:status}
+
+\subsection{Prior art}
+The following are not ours and are used as such. Isola and Piergallini proved that the generic
+triangle reflection group has free metabelian rotation subgroup of rank two and is not finitely
+presented. Droms, Lewin and Servatius, and Myasnikov, Roman'kov, Ushakov and Vershik, gave the
+length formula $\|\phi\|_1+2\,\mathrm{st}(\phi)$ for free solvable quotients $F/N'$; Sale gave
+the metric behaviour of the Magnus embedding. Steinberg's formula for Poincar\'e series of
+Coxeter groups is standard, as are the independence polynomials of paths and the location of
+their roots. Adamczewski, Dreyfus and Hardouin proved hypertranscendence of the solutions of the
+relevant $q$-difference equation for all $q$ not a root of unity, which is stronger than the
+$SL_2$ statement recorded in \S\ref{sec:qcos}; our increment there is only the removal of a
+transcendence hypothesis on $q$ in that one special case.
+
+\subsection{Claim labels}
+Every numbered statement below carries exactly one of PROVED (complete human proof),
+VERIFIED (formalized in Lean 4, axioms audited), HEURISTIC (computational support only), or
+CONJECTURE. The effective strength of a result is the weakest label in its dependency chain.
+
+\subsection{The three open hypotheses}
+\begin{hypothesis}[transfer model, $(M)$]\label{hyp:M}
+The strand-walk model computes the relaxed word length, that is, the crossing optimisation of the
+site-cost chain is the relaxed length.
+\end{hypothesis}
+\begin{hypothesis}[junction pairing, $(R\!-\!J)$]\label{hyp:RJ}
+The junction pairing $\Pi_y(q_m)$ is nonzero at infinitely many travel poles $q_m$.
+\end{hypothesis}
+\begin{hypothesis}[travel-block invariance, $(T)$]\label{hyp:T}
+The denominator $1-\Sigma_1$ is the identical, cycle-marker-free object in the generating
+functions of $U$ and of $V$, so $U$ and $V$ share the travel poles.
+\end{hypothesis}
+
+Hypothesis~\ref{hyp:T} is HEURISTIC. Its strand-walk argument rests on the localisation of
+cycles, checked exhaustively on the $3869$ pure-travel elements of true length at most $16$, and
+on the metric identity $\ell_T=\ell_R+2c$, whose upper bound is PROVED and whose lower bound is
+open. Hypothesis~\ref{hyp:RJ} is CONJECTURE. Hypothesis~\ref{hyp:M} is HEURISTIC and everything
+in the block-assembly sections is conditional on it.
+
+\begin{remark}[what is not claimed]\label{rem:notclaimed}
+Three claims that appeared in a draft consolidation are withdrawn here because they are not
+supported by the sources.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item Irrationality of $\beta_2$ is \emph{open}. It is not proved, and no effective irrationality
+measure for $\beta_2$ is available. What is proved is $\beta_2\ne3/2$, by the squeeze of
+\S\ref{sec:beta}. The reformulation known is that $\beta_2$ is irrational if and only if a
+Hahn--Exton function omits the value $0$ at the relevant rational points; that is a restatement,
+not a proof, and it supplies no exponent.
+\item Hypothesis~\ref{hyp:T} is \emph{not} a theorem.
+\item The lower bound of the metric identity $\ell_T=\ell_R+2c$ is \emph{open}; only the upper
+bound is PROVED. Statements that consume the identity inherit that standing.
+\end{enumerate}
+\end{remark}
+
+\section{The envelope and the dichotomy}\label{sec:env}
+
+Let $O(a_1,\dots,a_n)\subset\R^n$ be the right-corner orthoscheme with vertices $V_0=0$ and
+$V_k=V_{k-1}+a_ke_k$, and let $\widehat R_0,\dots,\widehat R_n$ be the reflections in its facets,
+generating $W(a)\le\Isom(\R^n)$. Facets $i,j$ with $|i-j|\ge2$ are perpendicular for every leg
+tuple, so with $\Gamma_n$ the graph on $\{0,\dots,n\}$ having an edge whenever $|i-j|\ge2$,
+\begin{equation}\label{eq:Wn}
+W_n=\bigl\langle R_0,\dots,R_n\ \bigm|\ R_i^2=1,\ (R_iR_j)^2=1\ (|i-j|\ge2)\bigr\rangle
+\end{equation}
+is the right-angled Coxeter group on $\Gamma_n$, and $\rho_a\colon W_n\twoheadrightarrow W(a)$.
+
+\begin{theorem}[Envelope; PROVED]\label{thm:envelope}
+$W_n(t)=(1+t)^{\lfloor n/2\rfloor+1}/K_{n+1}(t)$, with $K_0=K_1=1$,
+$K_{2j}=K_{2j-1}-tK_{2j-2}$ and $K_{2j+1}=(1+t)K_{2j}-tK_{2j-1}$. The growth rate is
+$r_n=1+2\cos(2\pi/(n+3))$.
+\end{theorem}
+
+\begin{theorem}[Dichotomy; PROVED]\label{thm:dichotomy}
+For a marked quotient $Q=G/N$ with $K(N)=\min_{1\ne g\in N}\ell_G(g)$ and $h=\lceil K/2\rceil$,
+the sphere sizes satisfy $s_d(Q)=s_d(G)$ for $d<h$ and $s_h(Q)<s_h(G)$. Hence
+$\cd_n(a)=K(\ker\rho_a)/2$.
+\end{theorem}
+
+\begin{theorem}[Length six; PROVED]\label{thm:len6}
+For $n\ge3$ and $a\in\R_{>0}^n$, if $w\in\ker\rho_a$ has $\ell_{W_n}(w)=6$ then
+$w=(R_iR_{i+1})^{\pm3}$ for some $i$ with $\theta_{i,i+1}=\pi/3$.
+\end{theorem}
+
+\begin{theorem}[Rank-two classification; PROVED]\label{thm:rank2}
+For $a\in\Q_{>0}^n$, $\ker\rho_a$ meets a rank-two standard parabolic nontrivially if and only if
+$e(a)+t(a)\ge1$, where $e$ counts endpoint equal pairs and $t$ counts three consecutive equal
+legs. The Diophantine input is the triviality of the rational points on three quartics with
+Jacobians $24a1$, $72a2$ and $y^2=x^3-x$, all of rank zero. Over $\R$ the statement is false:
+$a=(\sqrt3,1,5)$ has a rank-two kernel element with no equal legs.
+\end{theorem}
+
+\section{The ambient embedding reduces to a compact group}\label{sec:reduce}
+
+This section is the one place where the present paper goes beyond the sources. Write
+$L\colon\Isom(\R^n)\to O(n)$ for the linear part, with kernel the translation group $\R^n$.
+
+\begin{lemma}[PROVED]\label{lem:noab}
+For every $n\ge2$, $W_n$ has no nontrivial normal abelian subgroup.
+\end{lemma}
+
+\begin{proof}
+The Coxeter diagram of the system \eqref{eq:Wn} has an edge exactly where $m_{ij}\ge3$, that is,
+exactly where $\{i,j\}$ is a non-edge of $\Gamma_n$, that is, exactly where $|i-j|=1$. So the
+diagram is the path on $n+1$ nodes with every edge labelled $\infty$. The path is connected,
+so $(W_n,S)$ is irreducible. Every label is $\infty$, so $W_n$ is infinite and is not of affine
+type, affine Coxeter systems having all labels finite.
+
+Let $A\trianglelefteq W_n$ be abelian; $A$ is amenable, so it lies in the amenable radical of
+$W_n$. We show that radical is trivial, in two steps.
+
+First it is finite. An irreducible, infinite, non-affine Coxeter group contains a rank-one
+isometry for its action on the Davis complex (Caprace--Fujiwara), and a group acting properly
+cocompactly on a CAT(0) space with a rank-one isometry, and which is not virtually cyclic, is
+acylindrically hyperbolic. $W_n$ is not virtually cyclic: for $n\ge3$ it contains
+$\langle R_0,R_2\rangle\times\langle R_1\rangle$, and for $n=2$ it is
+$(\Z/2\times\Z/2)\ast\Z/2$, which contains a free group of rank two. For an acylindrically
+hyperbolic group the amenable radical coincides with the finite radical, the unique maximal
+finite normal subgroup (Osin). Note that acylindrical hyperbolicity gives finiteness here, not
+triviality; the second step is needed.
+
+Second it is trivial. The finite radical of a Coxeter group is the direct product of its finite
+irreducible components, and $W_n$ is irreducible and infinite, so it has no finite component and
+its finite radical is trivial. Hence $A=1$.
+\end{proof}
+
+\begin{proposition}[Reduction to $O(n)$; PROVED]\label{prop:reduce}
+Let $n\ge2$ and let $\varphi\colon W_n\to\Isom(\R^n)$ be an injective homomorphism. Then
+$L\circ\varphi$ is injective. Consequently
+\[
+  W_n\ \text{embeds in}\ \Isom(\R^n)\quad\Longleftrightarrow\quad W_n\ \text{embeds in}\ O(n).
+\]
+\end{proposition}
+
+\begin{proof}
+$\ker(L\circ\varphi)=\varphi^{-1}\bigl(\varphi(W_n)\cap\R^n\bigr)$ is normal in $W_n$ and is
+isomorphic to a subgroup of the abelian group $\R^n$, hence abelian. By Lemma~\ref{lem:noab} it is
+trivial. The equivalence follows, one direction being $O(n)\le\Isom(\R^n)$.
+\end{proof}
+
+\begin{corollary}[The plane, without amenability; PROVED]\label{cor:plane}
+$W_2$ does not embed in $\Isom(\R^2)$.
+\end{corollary}
+
+\begin{proof}
+$O(2)=SO(2)\rtimes\Z/2$ is metabelian, hence solvable, hence contains no free subgroup of rank
+two. $W_2=(\Z/2\times\Z/2)\ast\Z/2$ is a free product of finite groups of orders $4$ and $2$ and
+is not infinite dihedral, so it contains a free subgroup of rank two. So $W_2$ does not embed in
+$O(2)$, and Proposition~\ref{prop:reduce} transfers this to $\Isom(\R^2)$.
+\end{proof}
+
+\begin{remark}[where the planar argument really fails]\label{rem:wherefails}
+The published planar obstruction runs through amenability of $\Isom(\R^2)$. That route is
+unavailable for $n\ge3$ because $SO(3)$ contains a free subgroup of rank two, so $\Isom(\R^n)$
+is not amenable as an abstract group. Proposition~\ref{prop:reduce} relocates the obstruction:
+the translation part is never the issue in any dimension, and the planar proof uses exactly one
+property of the ambient group, namely that $O(2)$ is solvable. For $n\ge3$ the target $O(n)$ is a
+compact, non-solvable Lie group, and that single change is the whole of the difficulty.
+\end{remark}
+
+\begin{remark}[what the reduction buys]\label{rem:buys}
+Replacing $\Isom(\R^n)$ by $O(n)$ replaces a non-compact target by a compact one, and compactness
+is usable. If $W_n\le O(n)$, its closure $H$ is a compact Lie subgroup of $O(n)$, $W_n$ is dense
+in $H$, and $H$ is infinite since $W_n$ is. Hence $H^\circ$ is a connected compact Lie group of
+dimension at most $n(n-1)/2$, the subgroup $W_n\cap H^\circ$ has finite index in $W_n$ and is
+dense in $H^\circ$. In particular an embedding would give $W_n$ a faithful orthogonal
+representation of degree $n$. This is a much more rigid demand than a faithful action by
+isometries of $\R^n$, and it is the form in which we propose Problem~\ref{prob:embed} be attacked.
+\end{remark}
+
+\begin{remark}[what the reduction does not buy]\label{rem:notbuys}
+It does not decide Problem~\ref{prob:embed} for any $n\ge3$, and it does not touch
+Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ into $O(n)$ need not be by
+reflections, and the faithfulness of the particular map $\rho_a$ is a separate question. The two
+standard invariants remain undecisive. Finite subgroups do not separate: every finite subgroup of
+$W_n$ is conjugate into an elementary abelian $2$-group on a clique of $\Gamma_n$, of rank at
+most $\lceil(n+1)/2\rceil\le n$, while $O(n)$ contains $(\Z/2)^n$. Free subgroups do not
+separate either, both groups containing free subgroups of rank two for $n\ge3$.
+\end{remark}
+
+\section{The planar case}\label{sec:plane}
+
+Let $F=C_2\ast C_2\ast C_2$ and $\rho_\tau\colon F\to G_\tau$ the generic triangle group.
+
+\begin{theorem}[Census; PROVED, computational input VERIFIED]\label{thm:census}
+There are $33$ pairs of reduced words of length $11$, distinct in $F$, with
+$\rho_\tau(w)=\rho_\tau(w')$ for every $\tau$. Outside a proper Zariski-closed subset of shape
+space these are the only coincidences in the ball of radius $11$, and there are $132$ further
+pairs at radius $12$. The generic sphere sizes are
+\[
+ 1,3,6,12,24,48,96,192,384,768,1536,3039,6012,11925,23570 .
+\]
+\end{theorem}
+
+The $33$ identities are polynomial identities in $\Z[p,q]$; the lower bounds come from counts in
+a finite field chosen to contain the needed roots of unity and $\sqrt{-1}$, and match the upper
+bounds from the identities, so the counts are exact.
+
+\begin{theorem}[Right-triangle structure; PROVED]\label{thm:right}
+For $W=\langle R_0,R_1,R_2\mid R_i^2=(R_0R_1)^2=1\rangle$ the rotation subgroup is of index $4$
+and isomorphic to $\Z\wr\Z$, with translation lattice $\mathcal T=2(t-1)\Z[t^{\pm1}]$ obtained
+from Crowell's exact sequence and the Bass--Serre tree of the free product. The universal
+sequence is shape-independent through depth $32$, and the shape $(1,2)$ deviates at depth $33$.
+If $c_T=N(a-ib)>2d$ then no deviation occurs at depth $d$.
+\end{theorem}
+
+\begin{remark}[status of the metric]\label{rem:metric}
+Word length equals relaxed length plus twice the connectivity defect, $\ell_T=\ell_R+2c$. The
+upper bound is PROVED. The lower bound is open and is stated as a conjecture; the closed form
+$c_{\mathrm{pred}}$ computed by the explicit transducer agrees with the true defect with $0$
+exceptions on the $275{,}823$ elements of the ball of radius $24$, held out at depths
+$19,21,23,24$, which is HEURISTIC support and not a proof. The junction site cost is
+$\max(|d_L-1|,|d_R|)$, which depends on the sign of $d_L$ and not on its magnitude alone; the
+form $\max(|d_L|-1,|d_R|)$ is false on every cell with $d_L\le-2$ and $|d_R|\le|d_L|$. This is a
+term inside the site-cost chain of the strand model, not an additive correction to the length
+formula.
+\end{remark}
+
+\section{The growth rate $\beta_2$}\label{sec:beta}
+
+With $q=x^2$ and $\Sigma_1$ the odd $k$-recursion sum, $1-\Sigma_1(q)$ is a Hahn--Exton
+$q$-cosine, and $q^\ast=0.449453630558948046\ldots$ is its smallest positive zero.
+
+\begin{theorem}[PROVED]\label{thm:beta}
+The growth rate of the planar right-triangle group is
+$\beta_2=1/\sqrt{q^\ast}=1.4916177871\ldots$, and $\beta_2<3/2$.
+\end{theorem}
+
+The proof squeezes the true count between the pure-travel and relaxed counts, which share the
+exponential rate, and locates $q^\ast$ by a contour argument with exact rational winding number.
+Irrationality of $\beta_2$ is open (Remark~\ref{rem:notclaimed}).
+
+\section{Transcendence: the unconditional part}\label{sec:trans}
+
+\begin{theorem}[PROVED]\label{thm:pc}
+$\Sigma_1$ and $S_1$ are transcendental over $\Q(q)$ and have $|q|=1$ as a natural boundary.
+\end{theorem}
+
+\begin{theorem}[Travel resolvent; PROVED]\label{thm:travel}
+$\Sigma_0/(1-\Sigma_1)$ is transcendental over $\Q(x)$, unconditionally.
+\end{theorem}
+
+Transcendence of $V$ is conditional on $(M)$ and $(R\!-\!J)$; transcendence of $U$ is conditional
+on $(M)$, $(R\!-\!J)$ and $(T)$. Neither is claimed here.
+
+\section{The \texorpdfstring{$q$}{q}-cosine increment}\label{sec:qcos}
+
+\begin{theorem}[PROVED]\label{thm:qcos}
+For every algebraic $q\in(0,1)$ the difference Galois group of
+$G(q,z)={}_1\phi_1(0;q;q^2,z)$ over $\C(z)$ contains $SL_2$, so $G$ is hypertranscendental. The
+connection constant is $C_1=1/(q;q)_\infty$, whence
+$\prod_{k\ge1}z_k(q)q^{2(k-1)}=(q;q^2)_\infty$.
+\end{theorem}
+
+The general hypertranscendence statement, for all $q$ not a root of unity and over
+$\bigcup_j\C(z^{1/j})$, is due to Adamczewski, Dreyfus and Hardouin and is stronger. The increment
+is the removal of a transcendence hypothesis on $q$ in the $SL_2$ statement.
+
+\section{The five directions}\label{sec:open}
+
+\begin{problem}[Prove $(R\!-\!J)$]\label{prob:rj}
+Show $\Pi_y(q_m)\ne0$ for infinitely many travel poles. This would make $V$, and with $(T)$ also
+$U$, transcendental over $\Q(x)$ unconditionally, modulo $(M)$. What exists is an upper bound
+$|P_{12}|w^3<2$; what is needed is a lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$.
+\end{problem}
+
+\begin{problem}[The alternative in dimension $n\ge3$]\label{prob:alternative}
+Is $N_{\mathrm{gen}}=\bigcap_a\ker\rho_a$ trivial, equivalently is $\rho_a$ injective for
+generic $a$? A single faithful tuple answers this affirmatively. The arithmetic form, injectivity
+at every Class C rational tuple, is Conjecture~\ref{conj:masterC}.
+\end{problem}
+
+\begin{conjecture}[Class C faithfulness]\label{conj:masterC}
+$\rho_a$ is injective for every $a\in\Q_{>0}^n$ with $e(a)=t(a)=0$ and $n\ge3$.
+\end{conjecture}
+
+\begin{problem}[Ambient embedding]\label{prob:embed}
+For $n\ge3$, does $W_n$ embed in $O(n)$? By Proposition~\ref{prop:reduce} this is equivalent to
+the ambient embedding question for $\Isom(\R^n)$, and by Remark~\ref{rem:buys} it asks whether
+$W_n$ has a faithful orthogonal representation of degree $n$.
+\end{problem}
+
+\begin{problem}[Finite presentation]\label{prob:fp}
+For $n\ge3$, is $W_n/N_{\mathrm{gen}}$ finitely presented? A negative answer refutes
+Problem~\ref{prob:alternative}(a). At $n=2$ the answer is no.
+\end{problem}
+
+\begin{problem}[Transcendence of the zeros]\label{prob:zeros}
+Are the zeros $z_k(q)$ of the Hahn--Exton $q$-cosine transcendental at algebraic $q\in(0,1)$, and
+is $\beta_2$ transcendental? This is the $q$-analogue of Siegel's theorem on the zeros of Bessel
+functions. Even irrationality of $\beta_2$ is open.
+\end{problem}
+
+\end{document}
