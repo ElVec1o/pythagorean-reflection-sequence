@@ -1,6 +1,6 @@
 # Structure + metric on the cylindrical honeycomb X_m (m=5 stratum).
 #  (a) sum over a level of the m wrapped lamps vanishes (rotation-orbit sum);
-#  (b) that level-sum cycle is gamma_j - gamma_{j+1};
+#  (b) that level-sum cycle is gamma_j - gamma_{j-1};
 #  (c) METRIC: ell(t) = min over the kernel coset of ( ||phi||_1 + 2 st ),
 #      kernel = <gamma_j>, checked against exact BFS on the stratum.
 exec(open("cylinder_structure.py").read().split("# the three translation-type")[0])
@@ -19,15 +19,17 @@ def face_sum(j):
     for n in range(M):
         for e,c in FACE[(n,j)].items(): d[e]+=c
     return Counter({e:c for e,c in d.items() if c})
-g0=Counter(gfl); g1=shift(gfl,1) if False else None
 def gamma(j):
     return Counter({((u[0],u[1]+j,u[2]),(v[0],v[1]+j,v[2]),i):c for (u,v,i),c in gfl.items()})
+# The identity is gamma_j - gamma_{j-1}, with that index and on the nose: an
+# earlier revision of this file compared against gamma_j - gamma_{j+1} and so
+# reported False at every level while the theorem was in fact correct.
 for j in (-1,0,1):
     L=face_sum(j); diff=Counter(gamma(j))
-    for e,c in gamma(j+1).items(): diff[e]-=c
+    for e,c in gamma(j-1).items(): diff[e]-=c
     diff=Counter({e:c for e,c in diff.items() if c})
-    same = (L==diff) or (L==Counter({e:-c for e,c in diff.items()}))
-    print(f"(b) level-sum cycle at j={j:+d}: {len(L)} edges; equals +-(gamma_j - gamma_(j+1))? {same}")
+    assert L==diff, f"level identity fails at j={j}"
+    print(f"(b) level-sum cycle at j={j:+d}: {len(L)} edges; equals gamma_j - gamma_(j-1)  OK")
 # --- metric machinery on the cylinder ---
 def comps(fl):
     vs={E0}

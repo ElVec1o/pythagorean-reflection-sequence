@@ -1,12 +1,13 @@
-# Whole-stratum certificates for the m=4 and m=6 rows of the crystallographic
-# table (analogue of the symbolic m=3 certificate).
+# Whole-stratum certificates for the m=3, m=4 and m=6 rows of the crystallographic
+# table.  (The m=8 row is certified separately, by stratum_certificate_m8.py,
+# because 2cos(pi/8) generates a quartic field rather than a quadratic one.)
 # Setup: apex angle pi/m at the origin, legs a (along x-axis, mirror '0') and
 # b (along the pi/m line, mirror '1'); mirror '2' = the far side. Coxeter
 # reference W_m = <x_i | x_i^2, (x0 x1)^m>, faithful geometric representation.
 # Phase 1 (exact, Q(sqrt d)): word-level enumeration at two rational leg
 #   samples; classes equal in G but distinct in W_m = the early coincidences;
-#   confirm (d*, delta) = (6,3) for m=4 and (8,8) for m=6, same word pairs at
-#   both samples.
+#   confirm (d*, delta) = (9,3) for m=3, (6,3) for m=4 and (8,8) for m=6, same
+#   word pairs at both samples.
 # Phase 2 (symbolic, Q(sqrt d)(a,b)): each extracted pair holds identically in
 #   the legs => the onset holds on the WHOLE stratum; the samples witness that
 #   no earlier coincidence occurs off a proper closed subset.
@@ -39,7 +40,11 @@ def make_field(D):
     return F
 
 def stratum_data(m):
-    if m == 4:
+    if m == 3:
+        F = make_field(3)
+        cos = F(Fr(1, 2)); sin = F(0, Fr(1, 2))          # 1/2, sqrt3/2
+        d_star, delta = 9, 3
+    elif m == 4:
         F = make_field(2)
         cos = F(0, Fr(1, 2)); sin = F(0, Fr(1, 2))       # sqrt2/2
         d_star, delta = 6, 3
@@ -135,11 +140,18 @@ def extract(m, a, b, verbose=True):
             pairs = sorted(tuple(e) for e in extra)
     return pairs
 
+# Two rational leg samples per stratum.  m=3 may not use the ratio 1:2: that is
+# the (pi/6, pi/3, pi/2) triangle, where mirrors '0' and '2' are perpendicular,
+# so r_0 and r_2 already commute at depth 2 and the sample degenerates.  It is
+# the sample that has to move, not the claim; the two used below are generic.
+SAMPLES = {3: ((2, 3), (3, 4)), 4: ((1, 2), (2, 3)), 6: ((1, 2), (2, 3))}
+
 print("PHASE 1: exact extraction at two rational leg samples per stratum")
 allpairs = {}
-for m in (4, 6):
-    p1 = extract(m, 1, 2)
-    p2 = extract(m, 2, 3)
+for m in (3, 4, 6):
+    s1, s2 = SAMPLES[m]
+    p1 = extract(m, *s1)
+    p2 = extract(m, *s2)
     assert p1 == p2, f"m={m}: pair sets differ between samples"
     allpairs[m] = p1
     print(f"   m={m}: identical {len(p1)} word pairs at both samples:")
@@ -147,9 +159,10 @@ for m in (4, 6):
 
 print("\nPHASE 2: symbolic verification over Q(sqrt d)(a,b)  (whole stratum)")
 import sympy as sp
-for m in (4, 6):
+for m in (3, 4, 6):
     a, b = sp.symbols('a b', positive=True)
-    if m == 4: cu = su = sp.sqrt(2)/2
+    if m == 3: cu, su = sp.Rational(1, 2), sp.sqrt(3)/2
+    elif m == 4: cu = su = sp.sqrt(2)/2
     else: cu, su = sp.sqrt(3)/2, sp.Rational(1, 2)
     V0 = (a, sp.Integer(0)); V1 = (b*cu, b*su)
     def refl(p0, d):
@@ -182,6 +195,7 @@ for m in (4, 6):
     print(f"   m={m}: {ok}/{len(allpairs[m])} pairs hold identically in (a,b) "
           f"[{time.time()-t0:.0f}s, rss {rss_gb():.2f}GB]")
     assert ok == len(allpairs[m])
-print("\n=> the (d*,delta) rows (6,3) for m=4 and (8,8) for m=6 hold on the "
+print("\n=> the (d*,delta) rows (9,3) for m=3, (6,3) for m=4 and (8,8) for m=6 "
+      "hold on the "
       "whole stratum: onset by the identities, exactness off a proper closed "
       "subset by the samples")

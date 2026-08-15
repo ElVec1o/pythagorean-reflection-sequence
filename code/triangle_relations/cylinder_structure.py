@@ -3,10 +3,12 @@
 # Verifies: V(flow) = translation part; faces = wrapped sites; the wrapping
 # cycle gamma (flow of (x_0x_1)^m) has V(gamma) = 0; and the m=5 depth-12
 # translation relations are exactly pairs whose flows differ by a wrapping cycle.
-exec(open("cylinder_structure.py").read().split("D=12")[0])
+# Pulls in the exact-arithmetic layer of stratum_fields.py (the number field, the
+# stratum generators) while cutting off that file's own command-line driver.
+exec(open("stratum_fields.py").read().split("D=int(sys.argv")[0])
 from collections import Counter
 M=5
-GS,IDEL=gens_strat(1,2)          # exact in Q(2cos pi/5)(sin pi/5)
+GS,IDEL,K=gens_strat(M,1,2)      # exact in Q(2cos pi/5)(sin pi/5)
 S=[ (g[0],g[1],g[2],g[3]) for g in GS ]
 TV=[ (g[4],g[5]) for g in GS ]
 def matvec(A,v): return (A[0]*v[0]+A[1]*v[1], A[2]*v[0]+A[3]*v[1])
@@ -87,3 +89,51 @@ for w1,w2 in pairs:
                 match=(dj,k)
     print(f"  {w1} = {w2}: flow difference has {len(d)} edges; "
           f"equals {'gamma shifted by j=%d, sign %+d' % match if match else 'NOT a single wrapping cycle'}")
+
+# ---------------------------------------------------------------------------
+# Theorem "Stratum metric" (ii), the clause carrying the range 2 <= m <= 12:
+#     gamma_j - gamma_{j-1}  =  sum of the m faces of level j.
+# Both sides are finitely supported 1-flows on X_m = Cay((Z/m x Z) x| C2), so
+# the identity is combinatorial: it never touches the number field, and the
+# exact-arithmetic layer above (which carries minimal polynomials for
+# m in {3,4,5,6,7,9,11} only) is not needed and would not cover the range.
+# gamma_j is computed as the flow of the CONJUGATED word, not by translating
+# gamma_0, so the check does not presuppose that conjugation acts as a shift.
+def flow_comb(word,m):
+    """Suffix-walk flow of a word on X_m, as a signed edge counter."""
+    fl=Counter(); nf=(0,0,0)
+    for ch in word:
+        i=int(ch); w=stepv(nf,i,m)
+        e=(nf,w,i) if nf[2]==0 else (w,nf,i)
+        fl[e]+= 1 if nf[2]==0 else -1
+        nf=w
+    return Counter({e:c for e,c in fl.items() if c}), nf
+def conj_word(pre,core):
+    return pre+core+pre[::-1]
+def rot(j):   return ("02"*j) if j>=0 else ("20"*(-j))
+def apex(n):  return ("01"*n) if n>=0 else ("10"*(-n))
+print("level identity gamma_j - gamma_(j-1) = sum of the m faces of level j:")
+for m in range(2,13):
+    gam={}
+    for j in range(-3,4):
+        g,end=flow_comb(conj_word(rot(j),"01"*m),m)
+        assert end==(0,0,0), f"m={m}: wrapping cycle not closed"
+        gam[j]=g
+    okj=[]
+    for j in (-1,0,1):
+        L=Counter()
+        for n in range(m):
+            f,endf=flow_comb(conj_word(rot(j)+apex(n),"012012"),m)
+            assert endf==(0,0,0), f"m={m}: face ({n},{j}) not closed"
+            assert len(f)==6 and all(abs(c)==1 for c in f.values()), \
+                f"m={m}: face ({n},{j}) is not a hexagon"
+            for e,c in f.items(): L[e]+=c
+        L=Counter({e:c for e,c in L.items() if c})
+        D=Counter(gam[j])
+        for e,c in gam[j-1].items(): D[e]-=c
+        D=Counter({e:c for e,c in D.items() if c})
+        okj.append(L==D)
+    print(f"  m={m:2d}: |gamma| = {len(gam[0]):3d}, level sum = {len(L):3d} edges, "
+          f"identity at j=-1,0,+1: {'OK' if all(okj) else 'FAILS ' + str(okj)}")
+    assert all(okj), f"m={m}: level identity fails"
+print("  identity holds for every m in 2..12 (this is the range the theorem states)")

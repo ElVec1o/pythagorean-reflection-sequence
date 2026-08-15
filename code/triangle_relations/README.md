@@ -17,7 +17,7 @@ triangle reflection groups* (`paper/journal/paper4.tex`). Python scripts need
 | Theorem 6.y(ii), the `c^2` normal forms, against brute force | `halfturn_normal_form_count.py` |
 | Theorem 6.y(iii), exactly one word of finite order in `W_m = D_m * C_2` | `free_product_involutions.py` |
 | Section 6 table, onset and deficit on the strata `m = 8,9,10,11,12` | `stratum_probe.py` |
-| Section 6, whole-stratum certificates for `m = 4, 6` and for `m = 8` | `stratum_certificate_m4_m6.py`, `stratum_certificate_m8.py` |
+| Section 6, whole-stratum certificates for `m = 3, 4, 6` and for `m = 8` | `stratum_certificate_m3_m4_m6.py`, `stratum_certificate_m8.py` |
 | Section 6, the `m = 2` row | `stratum_m2.py` |
 | Proposition 6.z, stratum translation census | `emit_generators.py` then `rust_strat/`; cross-checked by `stratum_bfs_census.py` |
 | Theorem 5.x(iii), the unique word of finite order | `torsion_count.rs` |
@@ -43,7 +43,13 @@ Three scripts read files that another step writes, by relative path, and print
    `rust_cost/translations_d<d>.txt` and `rust_cost/translations_w2_7_3_5_d<d>.txt`.
 2. `python3 honeycomb_metric_and_census.py`; it writes `census_configs.json` in
    the current directory and reads the `rust_cost/translations_d<d>.txt` of
-   step 1.
+   step 1. This is the one long step: measured at 927 s, single-threaded, peak
+   resident set 1985 MB. It has no checkpoint, so an interrupted run restarts
+   from the beginning; the phase markers `[1]` to `[5]` it prints are progress
+   only, not resume points. If step 1 is run from this directory instead of
+   from `rust_cost/`, the dumps land here rather than in `rust_cost/`, the
+   element-level census is skipped and the final verdict reads `NOT CLOSED`;
+   the per-depth line says so and names the file it wanted.
 3. `python3 witness_collisions.py` and `python3 witness_second.py`; both read
    `census_configs.json` from step 2, and `witness_second.py` also reads the
    `translations_w2_7_3_5_d<d>.txt` of step 1.
@@ -52,12 +58,14 @@ Everything else is standalone.
 
 ## Companion Rust tools
 
-Four tools cited by paper 4 live under `code/zeta_probe/tools/` rather than
+Five tools cited by paper 4 live under `code/zeta_probe/tools/` rather than
 here, and are documented in that directory's `README.md`: `hexdist` (the local
 criterion and the closed form of `lem:krows`), `rust_torsion` (the unique word
 of finite order), `paper4_ball12` (the depth-12 census, the `66 + 66` split and
-the 6078) and `paper4_strata` (the `d*`/`delta` table, the stratum translation
-census to depth 18, and the leg scan that locates non-generic leg samples).
+the 6078), `paper4_strata` (the `d*`/`delta` table, the stratum translation
+census to depth 18, and the leg scan that locates non-generic leg samples) and
+`strat_ident` (the 5276 generic translations of length at most 18 and the
+identification excesses at each leg sample).
 
 ## Sampling
 

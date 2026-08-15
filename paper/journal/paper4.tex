@@ -732,7 +732,9 @@ $1\le c\le m-1$ and put $n=m/\gcd(c,m)$.
 stratum, the rotation by $2\pi c_1(w)/m$ if and only if $c_2(w)=0$; such a $w$ represents a
 rotation of order $m/\gcd(c_1(w),m)$ if $m\nmid c_1(w)$, and a translation
 otherwise.
-\item[(ii)] The reduced words of length $2c+2$ with $c_2=0$ and $c_1=c$ are
+\item[(ii)] This part is a statement about words alone and holds for every
+$c\ge1$, the restriction $c\le m-1$ being needed only in (iii). The reduced
+words of length $2c+2$ with $c_2=0$ and $c_1=c$ are
 exactly the $c^2$ words $w_{a,b}$ with $0\le a\le c$, $1\le b\le c+1$ and
 $b\notin\{a,a+1\}$, in which every odd position carries $1$ except position
 $2a+1$, carrying $2$, and every even position carries $0$ except position
@@ -746,7 +748,13 @@ relations, and $w^n$ is cyclically reduced of length $n(2c+2)$, so splitting it 
 exhibits a coincidence between two reduced words of length $n(c+1)$; they are
 distinct, since equality in $F$ would give $w^n=1$ there. Whether the
 coincidence lowers the sphere at that depth requires the two halves to be
-geodesic in $W_m$; this holds in the range $c\le m/2$, where every
+geodesic in $W_m$. By the normal form theorem for free products
+\cite[Thm.~4.1]{MKS}, the syllable decomposition of an element of
+$D_m*C_2$ is unique, so its length in the union of the two generating sets is
+the sum of the lengths of its syllables in $D_m$ and in $C_2$; a word is
+therefore geodesic exactly when each of its maximal $\{0,1\}$-blocks is
+geodesic in $D_m$, which for an alternating block means having length at most
+$m$. This holds in the range $c\le m/2$, where every
 $\{0,1\}$-block of $w_{a,b}$, including the join $u_2u_0$, has length at most
 $m$, and can fail for larger $c$. Every case of Corollary~\ref{cor:onset} lies
 in that range except the prime branch at $m=3$, where $c=2>m/2$; see
@@ -760,7 +768,7 @@ relations at depth $m+m/d$. Taking $d$ largest, $d^{*}(m)\le m+p$ with $p$ the
 least prime factor of $m$, the family having $(m/p)^2-1$ members. For $m$
 prime no such $d$ exists, and minimising the depth $(c+1)m/\gcd(c,m)$ of
 Theorem~\ref{thm:rot} over $2\le c\le m-1$ instead gives $c=2$, so
-$d^{*}(m)\le3m$ with $3$ members. For even $m$ this is
+$d^{*}(m)\le3m$ with $3$ members. For even $m\ge4$ this is
 $d^{*}(m)\le m+2$ with $(m/2)^2-1$ members, and the relations are half-turns,
 $n=2$ making each relation $w=\overline{w}$.
 \end{corollary}
@@ -776,7 +784,9 @@ rotation by $2\pi c_1/m$. A plane isometry whose linear part is a nontrivial
 rotation fixes a point and is the rotation by that angle about it, whence the
 stated order; if the linear part is trivial the isometry is a translation.
 
-(ii) Put $L=2c+2$ and let $p,q$ count the letters $1$ at odd and at even
+(ii) Nothing in this argument refers to $m$, which is why the part is stated
+for every $c\ge1$ and may be applied at $c=m$, as it is in the proof of
+Proposition~\ref{prop:cylcensus}. Put $L=2c+2$ and let $p,q$ count the letters $1$ at odd and at even
 positions, so $p-q=c_1=c$. Each parity class has $c+1$ positions, so $p\le c+1$
 and hence $q\le1$. If $q=1$ then $p=c+1$, so every odd position carries $1$;
 the even position carrying $1$ has a neighbour, necessarily odd and carrying
@@ -886,8 +896,15 @@ For $m=3,4,6,8$ the relations tabulated above hold on the whole stratum: each
 is verified identically in the legs $(a,b)$ over the relevant field, so the
 onset is a property of the stratum and not of the samples, while the deficit
 being exactly $\delta$ is witnessed at the rational samples and therefore
-holds off a proper closed subset of the stratum. The row $m=2$ is verified at
-three rational samples. The three relations at depth $9$ for $m=3$ are
+holds off a proper closed subset of the stratum. This is carried out in
+\texttt{code/triangle\_relations/stratum\_certificate\_m3\_m4\_m6.py} for
+$m=3,4,6$, where $2\cos(\pi/m)$ generates a quadratic field, and in
+\texttt{stratum\_certificate\_m8.py} for $m=8$, where it generates a quartic
+one. Each script extracts the pairs at two rational leg samples and then
+verifies them identically in $(a,b)$. For $m=3$ the samples must avoid the
+ratio $1:2$, which is the $(\pi/6,\pi/3,\pi/2)$ triangle: there the mirrors
+$r_0$ and $r_2$ are perpendicular and already commute at depth $2$. The row
+$m=2$ is verified at three rational samples. The three relations at depth $9$ for $m=3$ are
 \[
  210201210=102012102,\quad 020121020=121020121,\quad 201210201=012102012,
 \]
@@ -949,9 +966,14 @@ by $2\pi$, that is the identity, so the flow of its word has $V_\tau=0$. For the
 identity between $\gamma_j-\gamma_{j-1}$ and the level sum, both sides are
 explicit finitely supported flows, and conjugation by $r_0r_2$ carries level $j$
 to level $j+1$ and $\gamma_j$ to $\gamma_{j+1}$, so at a fixed $m$ it is enough
-to compare them at a single $j$, which is a finite computation. It is carried
-out for $2\le m\le12$ in \texttt{code/triangle\_relations/cylinder\_structure.py}
-and is why the statement carries that range; uniformly in $m$ it is a
+to compare them at a single $j$, which is a finite computation. Both sides are
+finitely supported $1$-flows on $X_m$, so that comparison is combinatorial and
+does not involve the number field of the stratum. It is carried
+out for $2\le m\le12$ in \texttt{code/triangle\_relations/cylinder\_structure.py},
+with each $\gamma_j$ computed as the flow of the conjugated word rather than as
+a translate of $\gamma_0$, so that the check does not presuppose that
+conjugation acts on flows as a shift. That range is the range of the
+computation; uniformly in $m$ it is a
 conjecture, and nothing below uses it, part~(iii) being independent of it.
 (iii) Neither bound of Theorem~\ref{thm:metric} used the planarity of $X$ or
 the uniqueness of the flow. The lower bound gives
@@ -1419,10 +1441,12 @@ multigraph whose edges are reachable from a base vertex admits a circuit using
 each directed edge once, is proved in
 \texttt{lean/EulerCircuit.lean} as \texttt{euler\_circuit}, again with no
 imports and no \texttt{sorry}; Mathlib carries the necessary degree condition
-for Eulerian trails but not this sufficiency. The combinatorial content of
-both bounds of Theorem~\ref{thm:metric} is therefore machine-checked, while
-the identification of the translation subgroup with the flows is not
-formalized.
+for Eulerian trails but not this sufficiency. The upper bound of
+Theorem~\ref{thm:metric} is therefore machine-checked outright. The lower
+bound is machine-checked modulo its connectivity input, which
+\texttt{lower\_bound} takes as the hypothesis \texttt{hst} rather than
+proving; and the identification of the translation subgroup with the flows is
+not formalized at all.
 
 Theorem~\ref{thm:rot}(ii) is formalized in
 \texttt{lean/RotationRelations.lean}, again with no imports and no

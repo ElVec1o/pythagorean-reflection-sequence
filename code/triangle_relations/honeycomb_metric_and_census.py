@@ -444,7 +444,12 @@ for d in range(6, 19, 2):
         for i in range(0, len(lines), 4):
             tr.add((Fr(int(lines[i]), int(lines[i+1])), Fr(int(lines[i+2]), int(lines[i+3]))))
     except FileNotFoundError:
-        print(f"    depth {d:2d}: rust dump missing, skipped"); elem_all = False; continue
+        hint = ("also not in this directory" if not pathlib.Path(f"translations_d{d}.txt").exists()
+                else "but IS in this directory: rust_cost was run from here rather "
+                     "than from rust_cost/, so move the dumps into rust_cost/")
+        print(f"    depth {d:2d}: rust dump rust_cost/translations_d{d}.txt missing "
+              f"({hint}); skipped, so the verdict below will read NOT CLOSED")
+        elem_all = False; continue
     ps = set(vecs)
     expected_coll = 4 if d == 18 else 0   # witness (1/3,1/2) is not flow-generic:
     # four length-18 collisions (two Z-relations + inverses), see witness_collisions.py;
