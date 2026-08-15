@@ -1604,7 +1604,7 @@ $t_1>0$ at the poles. So Proposition~\ref{prop:mobius} consumes no hypothesis th
 it, not assumed.
 \end{remark}
 
-\subsection*{Machine verification of the factorisation and of the reciprocity}
+\subsection*{Machine verification of the telescoping, the factorisation and the reciprocity}
 
 Proposition~\ref{prop:mobius} is formally verified in Lean~4 against Mathlib
 \cite{MathlibCommunity} in \texttt{Mobius.lean} and \texttt{MobiusL1.lean}. Its hypotheses are its
@@ -1635,17 +1635,56 @@ The first sentence of Proposition~\ref{prop:recip}, $t_0=b_1$, is verified in
 $D\colon F\to E$ and $K\colon E\to F$ symmetric for the pairing, $M_0=DK$, and the two sources
 $D\mathbf 1$ and $Dv$. \texttt{pushThrough} is $(I-DK)^{-1}D=D(I-KD)^{-1}$, which replaces the
 palindromic Neumann series of the paper's proof by an algebraic identity;
-\texttt{X\_symm} is the symmetry of $X$ and \texttt{t0\_eq\_b1} the conclusion. The two clauses of
-Proposition~\ref{prop:recip} that begin ``equivalently'' are not formalised: they are read off
-Proposition~\ref{prop:bulkdress} and Corollary~\ref{cor:cocycle}, neither of which is. The
+\texttt{X\_symm} is the symmetry of $X$ and \texttt{t0\_eq\_b1} the conclusion. The
 necessity of the symmetry of $K$ is recorded as \texttt{K\_symm\_needed}.
 
-Not formalised in this section: Lemma~\ref{lem:tel} and Corollary~\ref{cor:cocycle}, and with them
-Proposition~\ref{prop:bulkdress} and Proposition~\ref{prop:travelsum}. Both need what
-Proposition~\ref{prop:mobius} and the reciprocity do not: an $\ell^1$ solution built as a
-convergent Neumann series, an interchange of two summations, the vanishing of
-$\prod_{i<J}b_{k+2i}$ as $J\to\infty$, and analytic continuation from $|q|<\tfrac13$. Nothing
-there is missing from Mathlib; the obstruction is size.
+Lemma~\ref{lem:tel} is verified in \texttt{Telescope.lean}. The site $s=n+s_0$ is indexed by
+$n\in\Z_{\ge0}$, so $e_s$ is \texttt{eCo} and $s_0+\vartheta=1$ is the hypothesis \texttt{hs}; the source
+is bounded and $\Phi\in\ell^1$ is carried as summability of $\|\Phi_n\|$, which is what
+\texttt{MobiusL1.summable\_norm} supplies for a $\Phi$ given as an element of the $\ell^1$ space of
+\texttt{MobiusL1.lean} (\texttt{l1\_three\_term}, \texttt{l1\_G\_eq}). \texttt{row\_sum} is the
+split of the inner sum at $s'=s$ together with the finite and the infinite geometric sum it
+produces; \texttt{three\_term} is \eqref{eq:threeterm}, the interchange of the two summations being
+Fubini against the majorant $2|q|^{n+1}\|\Phi_m\|$, which is summable on $\Z_{\ge0}^2$ as a product;
+\texttt{norm\_bTel\_le} is the bound $|b_k|\le\Xi|q|^{k+1}$ with $\Xi=4/(1-|q|)$ and
+\texttt{summable\_bProd\_norm} is the paper's $\Xi^J|q|^{J^2+Jk}\to0$, obtained by the ratio test;
+\texttt{summable\_aFrak} and \texttt{summable\_cFrak} are the convergence of $\mathfrak a_k$ and
+$\mathfrak c_k$; \texttt{G\_eq} is $G_k=\mathfrak c_k+\mathfrak a_kG_1$, proved by telescoping
+$R_j=G_{k+2j}\prod_{i<j}b_{k+2i}$ and letting $R_J\to0$; \texttt{G\_one\_solved} and
+\texttt{G\_solved} are \eqref{eq:solved}. The last sentence of the lemma, the identification of the
+two instances, is \texttt{aTel\_bulk}, \texttt{bTel\_bulk}, \texttt{aTel\_travel} and
+\texttt{bTel\_travel}.
+
+Proposition~\ref{prop:travelsum} and Proposition~\ref{prop:bulkdress} are verified in
+\texttt{SectionLadders.lean}, which evaluates $\mathcal C_k$ at the three geometric sources:
+\texttt{CC\_travel} is $\mathcal C_k=2q/(1-q^{k+1})=A_k$, \texttt{CC\_bulk} is
+$\mathcal C_k=\alpha_k$ and \texttt{CC\_bulk\_geo} is $\mathcal C_k=\alpha_{k+1}$, whence
+\texttt{cFrak\_travel}, \texttt{cFrak\_bulk} and \texttt{cFrak\_bulk\_geo} identify $\mathfrak c_k$
+with $\Sigma_k$, with $S_k$ and with $T_k$. \texttt{travelsum} is
+Proposition~\ref{prop:travelsum} and \texttt{bulkdress\_b0\_t0}, \texttt{bulkdress\_t1\_b1} are the
+four scalars of Proposition~\ref{prop:bulkdress}. \texttt{Sladder\_eq}, \texttt{SigmaLadder\_eq}
+and \texttt{Tladder\_eq} are the three ladders written out as in \eqref{eq:krec} and
+\eqref{eq:Tladder}. What is verified is the implication, not the existence of the solution: the
+$\ell^1$ solution is a hypothesis, which is where the paper's $|q|<\tfrac13$ lives, and no analytic
+continuation step is needed, \texttt{G\_eq} holding on the whole of $|q|<1$ for any $\ell^1$
+solution. Lemma~\ref{lem:modelexist} is not formalised.
+
+The first of the two clauses of Proposition~\ref{prop:recip} that begin ``equivalently'' is
+verified as \texttt{SectionLadders.recip\_ladder}: given the two bulk solutions, $t_0=b_1$ and
+$T_0S_e+T_1S_0=S_1$ are the same statement, the equivalence being
+\texttt{recip\_ladder\_iff}. The reciprocity itself enters there as a hypothesis; it is proved
+separately in \texttt{Reciprocity.lean}, in the operator form recorded above, and the two are not
+joined, that joining being the instantiation of \texttt{Reciprocity.lean} at the concrete
+$\ell^1$ resolvent.
+
+Not formalised in this section: Corollary~\ref{cor:cocycle}, and with it the second
+``equivalently'' clause of Proposition~\ref{prop:recip}, the one in terms of $P_{ij}$. The
+obstruction is the existence of the four limits $\lim_b(\ell_b,r_{b+1})$ and
+$\lim_b(\ell'_b,r'_{b+1})$: Mathlib carries no convergence theorem for an infinite product of
+matrices $\prod_b\mathcal M_b$ with $\sum_b\|\mathcal M_b-I\|<\infty$, and supplying one is a
+statement about products, not about this cocycle. The rest of the corollary, the passage from
+\eqref{eq:sectionid} to \eqref{eq:cocyclerec} and the identification of the four entries once the
+limits exist, needs only the split already carried out in \texttt{Telescope.row\_sum}.
 
 \begin{lemma}[a positivity segment]\label{lem:posseg}
 For $0<q\le0.45$ one has $S_e(q)\ge0.32$ and $|s(q)|=\tfrac{q}{1-q}|P_{12}|/S_e\le0.78$. Since
@@ -3474,7 +3513,7 @@ the mean value theorem) are hypotheses there, not formalised.
 
 \noindent ``standard'' means \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. Every
 file named in this paper lives in the Mathlib-based package of the accompanying development; none of
-its $60$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
+its $62$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
 declaration cited anywhere in this paper appears in one of those audits. (The audits are selective
 in the other direction: a file may prove auxiliary lemmas that its audit block does not list.) Some
 declarations report ``does not depend on any axioms'', which is the legitimate output
