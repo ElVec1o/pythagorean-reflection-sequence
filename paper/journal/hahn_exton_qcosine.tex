@@ -47,12 +47,15 @@ Hardouin--Singer \cite{HS} and Dreyfus--Hardouin--Roques \cite{DHR2018} these gi
 transcendence of $G(q,\cdot)$ over $\C(z)$. That transcendence is itself known, and in stronger form:
 it is a corollary of Adamczewski--Dreyfus--Hardouin \cite{ADH2021}, and the unsolvability of the
 associated Riccati equation is Nishioka's \cite{Nishioka2016}; what is offered here is the explicit
-Galois-theoretic computation, valid also at algebraic $q$. We complement this with the regularized
-product of the positive zeros, $\prod_{k\ge1}z_k(q)\,q^{2(k-1)}=(q;q^2)_\infty$, a corollary of
-Morita's connection formula \cite{Morita2011}. We then pose, and give effective evidence for, the arithmetic question that these results
-frame: the transcendence of the zeros $z_k(q)$ at algebraic $q$. This question specializes to the
-transcendence of a specific reflection-group growth constant $\beta_2$ (OEIS A396406), for which we
-prove an unconditional effective non-rationality bound.
+Galois-theoretic computation, valid also at algebraic $q$. We then prove the connection constant
+$C_1=\lim_{R\to\infty}G(q,-R)/\theta_{q^2}(R)=1/(q;q)_\infty$ against the divergent theta solution,
+and deduce from it the regularized product of the positive zeros,
+$\prod_{k\ge1}z_k(q)\,q^{2(k-1)}=(q;q^2)_\infty$. The product is a corollary of that constant;
+an earlier attribution of the constant to Morita's connection formula \cite{Morita2011} is
+withdrawn in \S\ref{sec:zeroproduct}, where the reasons are given. We then pose the arithmetic
+question that these results frame: the transcendence of the zeros $z_k(q)$ at algebraic $q$. That
+question specializes to the transcendence of a specific reflection-group growth constant $\beta_2$
+(OEIS A396406), for which we prove an unconditional effective non-rationality bound.
 \end{abstract}
 
 \medskip
@@ -67,7 +70,10 @@ $q$-special functions; regularized product; partition integrality; effective irr
 \section{Introduction}
 
 The three Jackson $q$-analogues of the Bessel function are among the most-studied special functions of
-$q$-series. The third, due to Hahn and Exton, has the $q$-cosine and $q$-sine specializations
+$q$-series. The third goes back to Hahn \cite{Hahn1949} and, in the form now standard, to
+Exton \cite{Exton1978}; the attribution and the modern normalization are those of
+Koelink--Swarttouw \cite{KS} and Koornwinder--Swarttouw \cite{KS1992}. It has the $q$-cosine and
+$q$-sine specializations
 \[
    G(q,z):={}_1\phi_1(0;q;q^2,z)=\sum_{k\ge0}\frac{(-1)^kq^{k(k-1)}}{(q;q)_{2k}}z^k,
 \]
@@ -121,7 +127,7 @@ hold: the full Jacobi theta $\theta(z;q)=(z;q)_\infty(q/z;q)_\infty$ has zeros e
 algebraic whenever $q$ is, so any hypothesis must exclude functions with a product formula, and it is
 the failure of the triple product for $G$ that carries the conjecture. This is the structural
 analogue of Siegel's exclusion of $2\lambda$ odd. Second, the classical model needs stating with
-care, because the present object sits in the excluded case. Siegel \cite[\S4]{Siegel1929} proves
+care, because the present object sits in the excluded case. Siegel \cite{Siegel1929} proves
 that for rational $\lambda$ with $2\lambda$ \emph{not} an odd integer, every nonzero zero of
 $J_\lambda$ is transcendental; here $2\lambda=-1$, which is exactly what that hypothesis removes.
 For $\lambda=-\tfrac12$ one has $J_{-1/2}(x)\propto x^{-1/2}\cos x$, whose zeros are the odd
@@ -130,20 +136,32 @@ Siegel's. So the classical analogue of the conjecture below is Lindemann's, and 
 is what makes it hard again (see also Lorch--Muldoon \cite{LorchMuldoon}). We have found no result, and no conjecture, in the
 literature on the arithmetic nature of zeros of $q$-series; the $q$-Bessel zero literature is
 uniformly classified as special functions, not number theory.
-We explain why Conjecture~\ref{conj:Z} lies just past the reach of the $q$-analogue of the
-Siegel--Shidlovskii method (the double-Pochhammer denominator $(q;q)_{2k}$ places it below the Siegel
-margin of \cite{AMV}), and we record an unconditional partial result for the specific zero of
-number-theoretic interest.
+We record where Conjecture~\ref{conj:Z} stands relative to the $q$-analogue of the
+Siegel--Shidlovskii method. The position is weaker than a margin: as \S\ref{sec:arith} sets out,
+the theorem of \cite{AMV} yields linear independence over a fixed field containing $q$ and not
+transcendence over $\overline\Q$, so no choice of parameters would make it apply to
+Conjecture~\ref{conj:Z}; what the double-Pochhammer denominator $(q;q)_{2k}$ controls is the
+bookkeeping ratio of \S\ref{sec:arith}, which is a factor $2$ past a boundary that is itself
+already out of reach (Remark~\ref{rem:thetabarrier}). We also record an unconditional partial
+result for the specific zero of number-theoretic interest.
 
 The motivating instance is the growth constant $\beta_2=1.4916177871\ldots$ of the geodesic growth
-series of a planar right-triangle reflection group (OEIS A396406), which equals $1/\sqrt{q^\ast}$ where
+series of a planar right-triangle reflection group (OEIS A396406), which by \cite{Bonfioli2}
+equals $1/\sqrt{q^\ast}$ where
 $q^\ast$ is the least positive root of $S(q):=G(q,2q(1-q))$; equivalently $z^\ast:=2q^\ast(1-q^\ast)=
 z_1(q^\ast)$ is the smallest positive zero of $G(q^\ast,\cdot)$. Conjecture~\ref{conj:Z} implies
 $\beta_2$ transcendental. We prove unconditionally (Proposition~\ref{prop:effective}) that $q^\ast$ has
 no rational representation of denominator $\le10^{1044}$.
 
-All numerical claims are reproducible from the repository above; each is annotated with the script that
-verifies it and the precision attained.
+Every numerical claim below is regenerated by a script committed in the repository above, named at
+the point of use, and each is reported with the agreement actually attained rather than with the
+working precision. The scripts are \texttt{qcos\_identities.py} (symbolic identities),
+\texttt{qcos\_lattice.py} (the integer zero lattice, exact in $\Z[[q]]$),
+\texttt{qcos\_analytic.py} (the high-precision certificates, each run at two working precisions),
+\texttt{qcos\_ledger.py} (the Diophantine-ledger figures), \texttt{qcos\_nonintegrable.py} (the
+exact linear algebra behind \S\ref{sec:galois}), together with the Rust tool
+\texttt{tools/qcos\_rank} for the rank exclusions of Remark~\ref{rem:zerocurve-arith} and
+\texttt{beta2\_effective\_irrationality.py} for Proposition~\ref{prop:effective}.
 
 \section{The $q$-difference module}\label{sec:prelim}
 
@@ -161,7 +179,8 @@ G(Qz)-G(Qz)\widetilde G(z)=c\,z^{1/2}$ is nonzero, and the exact $q$-Wronskian i
 \begin{equation}\label{eq:qwron}
    q\,G(z)\,H(Qz)-G(Qz)\,H(z)=q-1
 \end{equation}
-holds (verified to $40$ digits). We write $M$ for the associated rank-$2$ $\sigma$-module over $\C(z)$.
+holds; it is reproduced to the full working precision, at least $120$ digits, at three
+$(q,z)$ points and at two precisions by \texttt{qcos\_analytic.py}. We write $M$ for the associated rank-$2$ $\sigma$-module over $\C(z)$.
 
 At $z=\infty$ the equation has a formal solution basis reflecting the two Newton slopes. With
 $\theta_Q(x)=\sum_{n\in\Z}Q^{n(n-1)/2}x^n$, these are
@@ -172,6 +191,8 @@ $\theta_Q(x)=\sum_{n\in\Z}Q^{n(n-1)/2}x^n$, these are
 \]
 where $\hat g$ is $q$-Gevrey divergent (its $q$-Borel transform is $1/(q^2/\xi;q)_\infty$, so
 $f_1$ is Borel--Laplace summable off one Stokes direction) and $h$ is convergent ($c_k=O(Q^{k^2/2})$).
+The Newton polygon, the $q$-Gevrey classification and the $q$-Borel--Laplace summation used here are
+those of Ramis, Sauloy and Zhang \cite{RSZ}.
 The coefficients $b_k$, which drive the Galois argument below, satisfy
 $b_k\asymp q^{-k^2/2}$; both $\hat g$ and $h$ are determined by \eqref{eq:Leq} and $b_0=c_0=1$. Full
 details of the resummation are in \cite{Bonfioli2}; here only the asymptotic expansions are used.
@@ -246,11 +267,11 @@ since the powers of $q$ contribute
 $\tfrac12\bigl(j(j-1)-i(i-1)-(j-i)(j-i-1)\bigr)=i(j-i)$ and the Pochhammer factors assemble into the
 $q$-binomial coefficient, a polynomial in $q$ with constant term $1$. As $i(j-i)\ge j-1$ on that
 range, every split-off product carries at least one factor $q^{\,j-1}$ relative to $b_j$, uniformly
-in $q$ and in $N,k_0$. (Identity~\eqref{eq:supermult} was also checked numerically to $40$ digits at
-$q=\tfrac13$ and $q=0.7$ for $j\le12$; the earlier version of this proof rested on that check alone,
-at a single $j$ and a single $q$, and exhibited no~$c$. The exponent identity and the bound
-$i(j-i)\ge j-1$ are machine-checked as \texttt{supermult\_exponent} and \texttt{gap\_ge};
-see \S\ref{sec:lean}.) These coefficients grow like $q^{-j^2/2}$, whereas a rational
+in $q$ and in $N,k_0$. (An earlier version of this proof rested on a numerical check at a single $j$
+and a single $q$, and exhibited no~$c$. The exponent identity, the polynomiality of
+$\bigl[\begin{smallmatrix}j\\i\end{smallmatrix}\bigr]_q$ and the bound $i(j-i)\ge j-1$ are now
+verified exactly over $\Z$ for $j\le399$ by \texttt{qcos\_identities.py}, and machine-checked as
+\texttt{supermult\_exponent} and \texttt{gap\_ge}; see \S\ref{sec:lean}.) These coefficients grow like $q^{-j^2/2}$, whereas a rational
 function's expansion at $\infty$ has geometrically bounded coefficients. Since matching asymptotic
 expansions are unique, no rational $r$ exists.
 
@@ -264,11 +285,14 @@ Hence no $\operatorname{Sym}^N\!M$ has a rank-$1$ submodule. $N=1$ is irreducibi
 excludes the imprimitive (dihedral) case; and a projectively finite irreducible subgroup
 ($A_4,S_4,A_5$) fixes a line in some $\operatorname{Sym}^N$ with $N\le12$ (the classical binary
 polyhedral invariants), which is likewise excluded. By the classification of algebraic subgroups of
-$\mathrm{GL}_2$, the group contains $\mathrm{SL}_2$.
+$\mathrm{GL}_2$, as used in difference Galois theory in van der Put--Singer
+\cite[Ch.~1]{vdPS}, the group contains $\mathrm{SL}_2$.
 \end{proof}
 
-The criterion used is the rank-two one of Arreche, Dreyfus and Roques \cite{ADR}, in the
-$q$-difference form recorded by Dreyfus, Hardouin and Roques \cite[Prop.~2.9]{DHR2018}.
+The rank-two criterion used is that of Dreyfus, Hardouin and Roques
+\cite[Prop.~2.9]{DHR2018}; the corresponding dichotomy for general second-order linear difference
+equations, including the elliptic case, is Arreche, Dreyfus and Roques \cite{ADR}, which is later
+and does not record \cite{DHR2018}.
 
 \begin{proposition}[no $\sigma\delta$-integrability]
 \label{prop:nonintegrable}
@@ -280,7 +304,8 @@ $\theta=z\partial_z$.
 \begin{proof}
 Writing $B=\bigl(\begin{smallmatrix}\alpha&\beta\\\gamma&\delta\end{smallmatrix}\bigr)$, the entries give
 $\gamma=-q\beta_1$, $\delta=\alpha_1+a\beta_1-c$, and eliminating $\alpha$ (the central terms $c$
-cancel identically; verified symbolically) leaves the necessary condition
+cancel identically; verified symbolically in \texttt{qcos\_nonintegrable.py}) leaves the
+necessary condition
 \[
    qa\,\beta_3\;=\;a_1(aa_1-q)\,\beta_2\;-\;a(aa_1-q)\,\beta_1\;+\;qa_1\,\beta\;+\;q\,z\bigl(a_1+q^2a\bigr),
 \]
@@ -306,9 +331,11 @@ $(aa_1-q)(z_aQ)=(q+1)^2(1-q^2)(1-q^4)-q$) or, where that vanishes (one root
 $q\approx0.78027$), at the slot $z=z_aQ^{2}$: coefficient $a(aa_1-q)$ with
 $(aa_1-q)(z_aQ^2)=(q+1)^2(1-q^4)(1-q^6)-q$ (one root $q\approx0.86753$); the two polynomials are
 coprime, so for every $q\in(0,1)$ at least one slot applies. Hence $\beta\equiv0$, contradicting
-$z(a_1+q^2a)=z\bigl[(q+1)(1+q^2)-2q^3z\bigr]\not\equiv0$. (Cross-check: at $q=\tfrac13$ the exact
-linear system for poles of order $\le3$ in the window has $\operatorname{rank}(A)=15$,
-$\operatorname{rank}[A|b]=16$.)
+$z(a_1+q^2a)=z\bigl[(q+1)(1+q^2)-2q^3z\bigr]\not\equiv0$. (Cross-check, \texttt{qcos\_nonintegrable.py}: the exact linear
+system for a $\beta$ with poles of order $\le3$ at the five window points has $15$ unknowns and
+$\operatorname{rank}(A)=15$, $\operatorname{rank}[A|b]=16$, hence no solution; the same holds at
+$q=\tfrac15$. The two slot polynomials are located there as well, with roots
+$0.7802652115\ldots$ and $0.8675323943\ldots$ in $(0,1)$, and shown to be coprime over $\Q[q]$.)
 \end{proof}
 
 \begin{corollary}[differential transcendence of $G$]
@@ -340,7 +367,8 @@ in particular $G(q,\cdot)$, is differentially transcendental over $\C(z)$.
 
 The behaviour of $G$ at $z=\infty$ is governed by a theta-comparison. Let
 $\theta_Q(x)=\sum_{n\in\Z}Q^{n(n-1)/2}x^n$, so $\theta_Q(Qx)=x^{-1}\theta_Q(x)$ and, by the Jacobi
-triple product, $\theta_Q(-z)=(Q;Q)_\infty(z;Q)_\infty(Q/z;Q)_\infty$, an entire function of order $0$
+triple product \cite{Jacobi1829} (see \cite[(1.6.1)]{GR}),
+$\theta_Q(-z)=(Q;Q)_\infty(z;Q)_\infty(Q/z;Q)_\infty$, an entire function of order $0$
 with simple zeros exactly at $z\in Q^{\Z}$. The following theorem evaluates the leading asymptotic
 constant of $G$ and, as a consequence, the regularized product of its zeros; the constant
 $C_1:=\lim_{R\to\infty}G(-R)/\theta_Q(R)$ coincides with the Stokes-invariant connection coefficient of
@@ -356,8 +384,11 @@ For $0<q<1$,
 \]
 where $z_1<z_2<\cdots$ are the positive zeros of $G(q,\cdot)$. Likewise, for the second solution's
 underlying entire function $H$ with zeros $w_1<w_2<\cdots$,
-$\prod_{k\ge1}w_k(q)\,q\,Q^{\,k-1}=(q^3;q^2)_\infty$. \textup{(Verified at three bases including
-$q^\ast$, to $41$, $23$, $26$ digits for $C_1$ and $58$ digits for the product.)}
+$\prod_{k\ge1}w_k(q)\,q\,Q^{\,k-1}=(q^3;q^2)_\infty$. \textup{(\texttt{qcos\_analytic.py}:
+both products agree with the right-hand sides to the full working precision, $120$ and $240$
+digits, at the three bases $q=0.3$, $q=0.42$ and $q=q^\ast$; the constant $C_1$ is approached
+along $z=uQ^{-N}$ at the rate $O(q^N)$, with $|(q;q)_\infty G/\theta_Q(-z)-1|=3.7\cdot10^{-48}$
+at $q=0.3$, $N=45$.)}
 \end{theorem}
 
 \noindent An earlier version of this note attributed the constant $C_1=1/(q;q)_\infty$ to
@@ -374,7 +405,8 @@ $z_k=Q^{1-k}(1+O(q^k))$ of Abreu--Bustoz--Cardoso \cite[Thm.~2.3]{ABC2003}.
 
 \begin{proof}
 \emph{(1) An exact identity.} From $(q;q)_{2k}=(q;q)_\infty/(q^{2k+1};q)_\infty$ and Euler's
-expansion $(x;q)_\infty=\sum_{j\ge0}(-1)^jq^{j(j-1)/2}x^j/(q;q)_j$ at $x=q^{2k+1}$, together with
+expansion $(x;q)_\infty=\sum_{j\ge0}(-1)^jq^{j(j-1)/2}x^j/(q;q)_j$ \cite[(1.3.16)]{GR} at
+$x=q^{2k+1}$, together with
 $k(k-1)+2kj=(k+j)(k+j-1)-j(j-1)$ and the substitution $m=k+j$, absolute convergence of the double
 sum permits the rearrangement
 \[
@@ -382,8 +414,10 @@ sum permits the rearrangement
    \qquad
    P_m(w):=\sum_{j=0}^m c_jw^j,\quad c_j=\frac{q^{\,j-j(j-1)/2}}{(q;q)_j}
 \]
-(the $c_j$ coincide with the $b_j$ of \S\ref{sec:prelim}; identity checked symbolically
-through $z^8$ and numerically to $41$ digits).
+(the $c_j$ coincide with the $b_j$ of \S\ref{sec:prelim}; the identity is checked in
+$\Q[[q]]$, coefficient of $z^k$ by coefficient of $z^k$, to order $q^{90}$ or better for $k\le6$,
+and numerically to the full working precision at two precisions:
+\texttt{qcos\_identities.py}).
 
 \emph{(2) The constant.} Fix $u<0$ and put $z=uQ^{-N}$. The moduli $q^{m(m-1)}|z|^m$ peak at
 $m_0=N+O(1)$ and decay like $q^{(m-m_0)^2+O(1)}$ away from it. For $1\le j\le m\le 2N$,
@@ -417,8 +451,8 @@ function $\theta_Q(-qz)$ and ratio $(1-q)/(q;q)_\infty$.
 \label{rem:zeroproduct-dioph}
 At $q=q^\ast$ the product splits off the candidate rational zero:
 \[
-   \prod_{k\ge2}z_k(q^\ast)\,Q^{\,k-1}=\frac{(q;q^2)_\infty}{z^\ast}=0.988299884628746\ldots
-   \quad(\text{verified to }30\text{ digits}).
+   \prod_{k\ge2}z_k(q^\ast)\,Q^{\,k-1}=\frac{(q;q^2)_\infty}{z^\ast}
+   =0.9882998846287462938546394\ldots
 \]
 Were $z^\ast$ (equivalently $\beta_2$) algebraic, the modular value $(q;q^2)_\infty$ (transcendental at algebraic $q$ by Nesterenko's theorem \cite{Nesterenko} applied to the Euler
 products) would equal an algebraic number times the tail product $\prod_{k\ge2}z_kQ^{k-1}$. This is
@@ -443,20 +477,25 @@ whose arithmetic could be controlled classically. Second, in the confluent limit
 so Conjecture~\ref{conj:Z} deforms the classical statement. The scaling factor matters and an
 earlier version omitted it, writing $z_k(q)\to(qj_{-1/2,k})^2$; that is false, the zeros collapsing
 to $0$ rather than to a finite limit. At $k=1$ the measured ratios $z_1/(1-q)^2$ are
-$2.3390$, $2.4045$, $2.4550$ at $q=0.9,0.95,0.99$ against $j_{-1/2,1}^2=(\pi/2)^2=2.4674$, whereas
-$z_1(0.99)=2.455\cdot10^{-4}$ against the discarded $(q\pi/2)^2=2.418$.
+$2.33902$, $2.40449$, $2.45502$ at $q=0.9,0.95,0.99$ against $j_{-1/2,1}^2=(\pi/2)^2=2.46740$,
+whereas $z_1(0.99)=2.45502\cdot10^{-4}$ against the discarded $(q\pi/2)^2=2.4183$. Here $z_1$ is
+located directly as the least positive zero of $G(q,\cdot)$ and not through the series of
+Theorem~\ref{thm:integrality}, which at these bases is outside its disc of convergence
+(\texttt{qcos\_analytic.py}).
 
 That confluence also explains, in one line, why the classical case is provable and the $q$-case is
 not. Write $D_N$ for the denominator of the $N$-th partial sum. The classical engine (Lambert,
 Lindemann, and every factorial-denominator proof) runs on a \emph{divergent step ratio}:
 $D_{N+1}/D_N=N+1\to\infty$, so one further term is gained at asymptotically no arithmetic cost and
-$\text{tail}\cdot D_N\asymp2/(N+1)\to0$ (measured: $0.310,\,0.163,\,0.099$ at $N=3,6,10$ for
+$\text{tail}\cdot D_N\asymp2/(N+1)\to0$ (measured: $0.3097,\,0.1629,\,0.0991$ at $N=3,6,10$ for
 $e=\sum1/k!$). The $q$-deformation replaces the factorial by $(q;q)_k$, whose step ratio is
 \emph{constant} in the relevant scale: each further term gains $\asymp q^{2N}$ but costs
 $\asymp t^{2N}$, and at $s=1$ the two cancel identically, so $\text{tail}\cdot D_N$ diverges
-(measured at $q=\tfrac13$: $7.1,\,7.5\cdot10^5,\,5.1\cdot10^{14}$ at $N=2,4,6$). The bridge is
-explicit: $(q;q)_k/\bigl((1-q)^kk!\bigr)\to1$ as $q\to1$ (measured $0.472,\,0.928,\,0.993$ at
-$q=0.9,\,0.99,\,0.999$). The factorial (and with it the divergent step ratio that powers
+(measured at $q=\tfrac13$, $z_0=2q(1-q)$, with $D_N=t^{\deg_qP_N}=3^{2N^2+N}$:
+$7.15,\,7.47\cdot10^5,\,5.14\cdot10^{14}$ at $N=2,4,6$; including the argument denominator $9^N$
+only makes it worse). The bridge is explicit:
+$(q;q)_k/\bigl((1-q)^kk!\bigr)\to1$ as $q\to1$ (measured at $k=6$: $0.4719,\,0.9277,\,0.9925$ at
+$q=0.9,\,0.99,\,0.999$). All three tables are in \texttt{qcos\_ledger.py}. The factorial (and with it the divergent step ratio that powers
 Lindemann) exists only in the confluent limit; at any $q<1$ the ratio is constant, and a constant
 ratio can never win. This is the same exactness of Remark~\ref{rem:thetabarrier} seen dynamically,
 and it identifies precisely what a proof of Conjecture~\ref{conj:Z} must supply: an arithmetic
@@ -474,7 +513,8 @@ values: since $G(q^\ast,z^\ast)=0$,
 \begin{equation}\label{eq:wron-zero}
    G(q^\ast,\,q^{\ast2}z^\ast)\cdot H(q^\ast,\,z^\ast)=1-q^\ast
 \end{equation}
-(verified to $25$ digits): a product of two $q$-Bessel values at the algebraic point $z^\ast$ equal
+(reproduced to the full working precision at two precisions, at least $120$ digits,
+by \texttt{qcos\_analytic.py}): a product of two $q$-Bessel values at the algebraic point $z^\ast$ equal
 to the algebraic number $1-q^\ast$. Together with $G(q^\ast,z^\ast)=0$ and the modular zero product of
 Theorem~\ref{thm:zeroproduct-intro}, this places three exact constraints on the values at $z^\ast$; a
 transcendence proof requires one more independent constraint than the reductio supplies, which is the
@@ -518,7 +558,8 @@ In particular
 
 \noindent The \emph{shape} of such an expansion is known: Ismail and Zhang \cite{IsmailZhang2007}
 show that $q^{2n-1}z_n$ is analytic in $q^n$, with coefficients polynomial in three generators over
-rational functions of $q$, and the relevant entire function lies in the class treated by Hayman.
+rational functions of $q$, and the relevant entire function lies in the admissible class of
+Hayman \cite{Hayman1956}.
 What is proved here, and what we have not found in that literature, is that the coefficients are
 \emph{integers}.
 
@@ -534,9 +575,13 @@ exactly at $k'\in\{k-1,k\}$: each zero scale is carried by its own edge of the s
 Newton polygon of $G$. Since $1/(q;q)_{2k'}\in\Z[[q]]$ (partitions into parts $\le2k'$),
 $F_k\in\Z[[q]][[u]]$ with $F_k(0,u)=(-1)^{k-1}u^{k-1}(1-u)$; at $u=1$ the value vanishes and
 $\partial_uF_k(0,1)=(-1)^k$ is a unit, so Hensel's lemma in the complete local ring $\Z[[q]]$
-yields a unique root $u_k\in1+q\,\Z[[q]]$, which by the scale localization
-$z_k=q^{2(1-k)}(1+O(q^k))$ of \S\ref{sec:zeroproduct} is the $k$-th zero. (Verified to order
-$q^{300}$ for $k\le4$: $u_2=1-q^6-2q^8+q^9-\cdots$, $u_3=1-q^{15}-\cdots$,
+yields a unique root $u_k\in1+q\,\Z[[q]]$. The identification of this formal root with the
+analytic $k$-th zero is not formal: it holds where the series converges, and $u_1$ has radius
+$|q_c|=0.5546\ldots$ by Remark~\ref{rem:zerocurve-arith}(e). For $0<q<|q_c|$ the scale
+localization $z_k=q^{2(1-k)}(1+O(q^k))$ of \S\ref{sec:zeroproduct} pins the root to the $k$-th
+zero; outside that disc the statement of the theorem is about the power series and not about the
+zero. (The lattice is regenerated exactly in $\Z[[q]]$ to order $q^{300}$ for $k\le8$ by
+\texttt{qcos\_lattice.py}: $u_2=1-q^6-2q^8+q^9-\cdots$, $u_3=1-q^{15}-\cdots$,
 $u_4=1-q^{28}-\cdots$. The onset law visible here is proved next. The Newton recursion is carried
 out over $\Z$ and its residual verified to order $q^{80}$ for $k\le6$ in Lean; the Hensel step
 itself is not formalised, see \S\ref{sec:lean}.)
@@ -555,16 +600,20 @@ $(b;Q)_\infty\,{}_1\phi_1(0;b;Q,z)$ is symmetric in $(b,z)$; equivalently
 \end{lemma}
 
 \noindent This is Koornwinder--Swarttouw \cite[Prop.~2.1, eq.~(2.3)]{KS1992}, with the same double-sum
-proof; they note in their Remark~2.2 that it is a limit case of Heine's transformation. It is restated
+proof; they note in their Remark~2.2 that it is a limit case of Heine's transformation
+\cite[\S1.4]{GR}. It is restated
 here for use below, not claimed.
 
 \begin{proof}
 In $(b;Q)_\infty\,{}_1\phi_1(0;b;Q,z)=\sum_n(-1)^nQ^{\binom n2}z^n\,(bQ^n;Q)_\infty/(Q;Q)_n$
-expand $(bQ^n;Q)_\infty=\sum_i(-1)^iQ^{\binom i2}(bQ^n)^i/(Q;Q)_i$ (Euler); since
+expand $(bQ^n;Q)_\infty=\sum_i(-1)^iQ^{\binom i2}(bQ^n)^i/(Q;Q)_i$ (Euler, \cite[(1.3.16)]{GR});
+since
 $\binom n2+\binom i2+ni=\binom{n+i}2$, the double sum is
 $\sum_{n,i}(-1)^{n+i}Q^{\binom{n+i}2}z^nb^i/\bigl((Q;Q)_n(Q;Q)_i\bigr)$, manifestly symmetric.
 For \eqref{eq:dressing} take $b=q$ and use $(z;Q)_\infty/(z;Q)_n=(zQ^n;Q)_\infty$ on the swapped
-side, with $Q^{\binom n2}q^n=q^{n^2}$. (Verified to $40$ digits at generic $(b,z)$.)
+side, with $Q^{\binom n2}q^n=q^{n^2}$. (\texttt{qcos\_identities.py}: the symmetry holds to
+the full working precision at a generic $(Q,b,z)$ at two precisions, and \eqref{eq:dressing}
+itself is verified exactly in $\Q[[q]]$ to order $q^{250}$ at three rational $z$.)
 \end{proof}
 
 \begin{proposition}[square vanishing at the lattice]\label{prop:latticevalues}
@@ -586,8 +635,10 @@ because \S5 uses it repeatedly.
 Evaluate \eqref{eq:dressing} at $z=Q^{-m}$. The factor $(Q^{n-m};Q)_\infty$ vanishes for $n\le m$
 and equals $(Q;Q)_\infty/(Q;Q)_{n-m-1}$ for $n\ge m+1$; reindexing $n=m+1+r$ gives the display.
 The $q$-order of the $r$-th term is $(m+1+r)^2$, strictly increasing in $r$, and all other factors
-are units in $\Z[[q]]$, so no cancellation can occur and the $r=0$ term decides. (Verified as an
-identity in $\Z[[q]]$ to order $250$ for $m\le4$, and to $50$ digits at $q=0.3$.)
+are units in $\Z[[q]]$, so no cancellation can occur and the $r=0$ term decides.
+(\texttt{qcos\_identities.py} verifies the identity in $\Q[[q]]$ to order $q^{230}$ or better
+for $m\le4$, confirms $\ord_qG(q,Q^{-m})=(m+1)^2$ there, and reproduces it numerically at $q=0.3$,
+$m=3$ to $46$ and $107$ digits at working precisions $60$ and $120$.)
 \end{proof}
 
 \begin{corollary}[hexagonal law]\label{cor:hexagonal}
@@ -604,7 +655,9 @@ $F_k(q,1)=q^{k(k-1)}G(q,Q^{1-k})=(-1)^kq^{k(2k-1)}(1+O(q))$ by
 Proposition~\ref{prop:latticevalues} at $m=k-1$ (note $k(k-1)+k^2=k(2k-1)$), while
 $\partial_uF_k(q,1)=(-1)^k(1+O(q))$. The first Newton correction from $u=1$ is therefore
 $-q^{k(2k-1)}(1+O(q))$, and all subsequent corrections are $O(q^{2k(2k-1)})$. This proves the
-onsets $1,6,15,28$ observed above and predicts $u_5=1-q^{45}-\cdots$, confirmed directly.
+onsets $1,6,15,28$ observed above and predicts $u_5=1-q^{45}-\cdots$; the onsets
+$k(2k-1)$ with leading coefficient $-1$ are confirmed for $k\le8$ in
+\texttt{qcos\_lattice.py}.
 \end{proof}
 
 \begin{remark}\label{rem:latticevalues}
@@ -661,8 +714,8 @@ to $v_k=1$ enters at the $q$-order of the rescaled function at $v=1$, which by (
 $k(k-1)+\operatorname{ord}_qH(q,q^{1-2k})=k(k-1)+\bigl((k+1)^2-1\bigr)=k(2k+1)$, exactly as on the
 cosine side with $T_{2k-1}$ replaced by $T_{2k}$ (identity \texttt{sine\_onset} of
 \S\ref{sec:lean}).
-(Independently verified: integrality and onsets to order $200$ for $k\le4$, and the closed form
-of (b) to $44$ digits at $q=0.3$.)
+(\texttt{qcos\_lattice.py} verifies integrality of $v_k$ and the onsets $k(2k+1)$, with
+leading coefficient $-1$, exactly in $\Z[[q]]$ to order $q^{300}$ for $k\le6$.)
 \end{proof}
 
 \begin{remark}[the triangular law]\label{rem:triangular}
@@ -673,8 +726,9 @@ onsets of the two interleaved zero lattices are
    \operatorname{onset}(v_k-1)=T_{2k},
 \]
 with leading coefficient $-1$ in both families: between them, the cosine and sine lattices switch
-on at every triangular number exactly once, alternating between the families. (Verified through
-$u_8$, i.e.\ $T_{15}=120$.)
+on at every triangular number exactly once, alternating between the families. (Verified exactly in
+$\Z[[q]]$ through $u_8$, i.e.\ $T_{15}=120$, and $v_6$, i.e.\ $T_{12}=78$;
+\texttt{qcos\_lattice.py}.)
 \end{remark}
 
 \begin{proposition}[stable deviation law]\label{prop:stablelaw}
@@ -684,8 +738,9 @@ eta-quotient:
    \bigl(1-u_k(q)\bigr)q^{-T_{2k-1}}\ \longrightarrow\ \frac1{(q^2;q^2)_\infty^{2}}\
    \longleftarrow\ \bigl(1-v_k(q)\bigr)q^{-T_{2k}} ,
 \]
-whose coefficients $1,2,5,10,20,36,\dots$ count two-colored partitions. Measured agreement depth:
-order $2k-2$ on the cosine side ($k\le6$) and $2k-1$ on the sine side ($k\le5$).
+whose coefficients $1,2,5,10,20,36,65,\dots$ count two-colored partitions. The agreement depth
+measured exactly in $\Z[[q]]$ is $2k-2$ on the cosine side for $2\le k\le8$ and $2k-1$ on the
+sine side for $2\le k\le6$ (\texttt{qcos\_lattice.py}).
 \end{proposition}
 
 \begin{proof}
@@ -718,7 +773,8 @@ and weights $k+j$, $k-1-j$; their sum has weight $(k+j)-(k-1-j)=2j+1$, whence
    =\frac{\sum_{j\ge0}(-1)^j(2j+1)q^{j(j+1)}}{(q;q)_\infty}+O(q^{2k-1})
    \ \xrightarrow{\ q\text{-adic}\ }\ \frac{(q^2;q^2)_\infty^{3}}{(q;q)_\infty}
 \]
-by Jacobi's identity $\sum_{j\ge0}(-1)^j(2j+1)q^{j(j+1)}=(q^2;q^2)_\infty^3$. Agreement depth $2k-1$.
+by Jacobi's identity $\sum_{j\ge0}(-1)^j(2j+1)q^{j(j+1)}=(q^2;q^2)_\infty^3$
+\cite{Jacobi1829}. Agreement depth $2k-1$.
 
 \emph{Quotient.} Dividing and using the exact splitting $(q;q)_\infty=(q;Q)_\infty(Q;Q)_\infty$,
 \[
@@ -731,13 +787,17 @@ All three limits are exact with depth growing in $k$ and $E_k\to0$, so the produ
 this proves the cosine case. The sine case is identical with the numerator limit
 $1/(q^3;Q)_\infty$ (Proposition~\ref{prop:sinelattice}) and $(q^2;q)_\infty=(q;q)_\infty/(1-q)$ in
 the denominator, the two $(1-q)$ factors cancelling to give the same $1/(q^2;q^2)_\infty^{2}$.
-(Numerically the cosine agreement depth is $2k-2$ through $k=6$ and the sine $2k-1$ through $k=5$,
-consistent with the depth-$(2k-1)$ bound above.)
+(The measured cosine agreement depth is exactly $2k-2$ through $k=8$ and the sine exactly
+$2k-1$ through $k=6$, consistent with the depth-$(2k-1)$ bound above.)
 \end{proof}
 
 \begin{remark}[arithmetic and analytic features of the zero curve]\label{rem:zerocurve-arith}
-(a) The series is not rational and satisfies no algebraic relation $P(q,z_1)=0$ of bidegree
-$\le(6,5)$ (exact linear algebra on $57$ coefficients). (b) Its radius of convergence is
+(a) The series satisfies no algebraic relation $P(q,z_1)=0$ of bidegree $\le(6,5)$; in particular
+it is not a rational function of numerator and denominator degrees within that bidegree. Nothing
+here excludes an algebraic relation of larger bidegree, and the statement is exactly the
+bounded-profile one. \textup{(Rank certificate: the $42$ columns have full rank over the first
+$106$ coefficients, at each of two primes; \texttt{tools/qcos\_rank}.)} (b) Its radius of
+convergence is
 $|q_c|=0.5545\ldots$, set by the real fold point of item (e); in particular
 $q^\ast=0.4494\ldots$ lies inside the disc of convergence. (c) The
 integrality opens a \emph{linear-height} approximation ledger: at $q=s/t$ the $N$-th partial sum is
@@ -749,8 +809,8 @@ coefficient sequence $1,-1,0,-1,1,-1,2,-2,4,-6,8,-14,21,-34,56,-88,148,-242,398,
 appears to be new.
 
 (e) The radius-limiting singularity is located and characterized: it is the simple fold
-$q_c=-0.5545786101465797\ldots$, $z_c=2.5239525204417103\ldots$ (both to $230$ digits in the
-repository), where the analytically continued branch collides with a second zero branch on the
+$q_c=-0.5545786101465797\ldots$, $z_c=2.5239525204417103\ldots$ (both regenerated to $230$
+digits at two working precisions by \texttt{qcos\_analytic.py}), where the analytically continued branch collides with a second zero branch on the
 negative $q$-axis ($G=G_z=0$ with $G_{zz}=0.2143\ldots\ne0$, $G_q=-1.5012\ldots\ne0$, so
 $z_1(q)=z_c\pm\tilde C\sqrt{q-q_c}+\cdots$ with $\tilde C^2=2G_q/(-G_{zz})$ at the fold). The
 fold law now has a closed-form constant:
@@ -758,11 +818,17 @@ fold law now has a closed-form constant:
    |c_n|\,n^{3/2}|q_c|^n\ \longrightarrow\ \frac{|\tilde C|\sqrt{|q_c|}}{2\sqrt\pi}
    =0.7863083135\ldots,
 \]
-confirming $R=|q_c|$ exactly (the sequence reaches $0.78295$ at $n=299$, with a clean $1/n$ tail
-extrapolating to $0.78621$; values computed from $n\le120$ are preasymptotic). Neither
+The constant is computed from the fold data at two working precisions, which agree to $230$
+digits (\texttt{qcos\_analytic.py}). The sequence $|c_n|n^{3/2}|q_c|^n$ itself is strongly preasymptotic:
+at $n=299$ it has reached only $0.78295$, agreeing with the limit to three digits, so the
+coefficient asymptotics \emph{corroborate} $R=|q_c|$ rather than establish it. What does establish
+$R=|q_c|$ is the fold itself, an actual singularity of the analytic continuation at that modulus.
+Neither
 $q_c$ nor $z_c$ satisfies an integer polynomial relation of degree $\le8$ with coefficients up to
-$10^{14}$, nor does the pair satisfy a bilinear one (PSLQ at $230$ digits, tolerance $10^{-200}$;
-degree-$8$ candidates returned at $120$ digits were exposed as spurious by re-evaluation at $230$).
+$10^{14}$, nor does the pair satisfy a bilinear one (PSLQ at $230$ digits, tolerance $10^{-200}$).
+Larger pair profiles are not reported: $230$ digits do not support more than about $16$ unknowns
+against a $10^{14}$ coefficient bound, and beyond that PSLQ returns vectors that re-evaluation at
+higher precision exposes as spurious.
 
 (f) No change of variable rescues the ledger of (c): if $q=\psi(u)$ with $\psi\in u\,\Z[[u]]$ (as
 required to keep $z_1\circ\psi\in\Z[[u]]$) and $u^\ast=\varphi(q^\ast)=s'/t'\in\Q$, the criterion
@@ -776,17 +842,24 @@ boundary on which the theta and Rogers--Ramanujan series sit in the truncation l
 $X\in\Z[[q]]$, any $q_0=s/t$ inside its disc of convergence (away from the boundary), and any $N$,
 the truncation tail satisfies $|X(q_0)-X_N(q_0)|=|c_M|(s/t)^M(1+o(1))\ge s^M\,t^{-M}(1-o(1))$, where
 $M>N$ is the first index with $c_M\ne0$: at least the Liouville floor $t^{-M}$ of the truncation's
-denominator whenever $s\ge1$, because a nonzero integer coefficient has $|c_M|\ge1$. (Measured on
-$z_1$ at $q=\tfrac17$: tail/floor $=1.53,\,11.6,\,70.9,\,541$ at $N=6,10,14,18$.) Integrality thus
+denominator whenever $s\ge1$, because a nonzero integer coefficient has $|c_M|\ge1$. (Measured exactly on
+$z_1$ at $q=\tfrac17$: tail/floor $=1.533,\,11.56,\,70.86,\,541.3$ at $N=6,10,14,18$;
+\texttt{qcos\_ledger.py}.) Integrality thus
 caps its own ledger: the property that grants linear heights also forbids the tail from undercutting
-the floor. (h) The arithmetic class of $z_1$ is now pinned from above as well: it is \emph{not holonomic}. No
-linear differential equation $\sum_{i\le r}P_i(q)z_1^{(i)}=0$ with $\deg P_i\le d$ exists for
-$(r,d)$ up to $(8,10)$, $(6,14)$, $(5,12)$ (exact linear algebra on $110$--$116$ of the integer
-coefficients, computed to order $120$; every coefficient matrix has full column rank). Thus $z_1$ is
-an integer power series that is simultaneously non-algebraic, non-holonomic, and of radius $<1$: precisely the class for which no arithmetic technology exists: the Chudnovsky--Andr\'e--Bost theory
-and the recent arithmetic holonomy bounds of Calegari--Dimitrov--Tang, which are built for
-``integrality plus structure'', all require holonomy, while P\'olya--Carlson requires radius exactly
-$1$. Integrality alone, without holonomy, is not currently actionable.
+the floor. (h) The arithmetic class of $z_1$ is bounded from above as well. No linear differential
+equation $\sum_{i\le r}P_i(q)z_1^{(i)}=0$ with $\deg P_i\le d$ exists for $(r,d)\in\{(4,10),
+(5,12),(6,14),(8,10)\}$: the coefficient matrix, built from $z_1$ computed to order $4000$, has
+full column rank ($55$, $78$, $105$ and $99$ columns respectively) modulo each of two primes.
+A relation over $\Q(q)$ may be scaled to a primitive integer one, which survives reduction, so a
+full modular column rank does exclude a relation over $\Q$; what it cannot do is reach beyond the
+four profiles tested. The honest statement is therefore \emph{not holonomic of order at most $8$
+within these degree windows}, and holonomy at higher order or degree remains open. Subject to
+that, $z_1$ is an integer power series that is non-algebraic and non-holonomic within the profiles
+tested and of radius $<1$, a class for which no arithmetic technology applies: the
+Chudnovsky--Andr\'e--Bost theory and the arithmetic holonomy bounds of Calegari--Dimitrov--Tang
+\cite{CDT}, which are built for ``integrality plus structure'', all require holonomy, while
+P\'olya--Carlson \cite{Carlson1921,Polya1916} requires radius exactly $1$. Integrality alone,
+without holonomy, is not currently actionable.
 
 (i) One exact relation ties the lattice across the bases $q$, $-q$, $q^2$: applying the zero
 product of Theorem~\ref{thm:zeroproduct-intro} at the three bases and using
@@ -797,23 +870,25 @@ $(q;q^2)_\infty(-q;q^2)_\infty=(q^2;q^4)_\infty$,
 \]
 The relation is not termwise: $\varphi_1=1+2q^6+4q^8+8q^{10}+18q^{12}+\cdots$,
 $\varphi_2=1-2q^6-\cdots$, $\varphi_3=1+2q^{20}+\cdots$, $\varphi_4=1-2q^{28}-\cdots$ (order
-$300$; adjacent leading defects cancel in pairs). No Mahler structure underlies it. With $2000$
-coefficients computed modulo a prime (a primitive integer relation survives reduction, so full rank
-modulo one prime excludes a rational relation outright), $u_1$ satisfies no polynomial relation
-$P\bigl(q,u_1(q),u_1(q^d)\bigr)=0$ for $d=2,3$ at bidegrees up to $(490,1,1)$, $(150,2,2)$,
+$300$; adjacent leading defects cancel in pairs, and the truncated product over $k\le4$ is
+$1+O(q^{54})$). No Mahler structure is found. With $u_1$ computed to order $4000$ and every rank
+taken modulo each of two primes (a primitive integer relation survives reduction, so full column
+rank modulo one prime excludes a rational relation outright), $u_1$ satisfies no polynomial
+relation $P\bigl(q,u_1(q),u_1(q^d)\bigr)=0$ for $d=2,3$ at bidegrees $(490,1,1)$, $(150,2,2)$,
 $(100,3,3)$, $(60,4,4)$, $(40,5,5)$, $(30,6,6)$, $(24,7,7)$, $(20,8,8)$; no order-two system
 relation $P\bigl(q,u_1(q),u_1(q^2),u_1(q^4)\bigr)=0$ at $(30,2,2,2)$, $(20,3,3,3)$; no
-difference--differential mix $P\bigl(q,u_1,\theta u_1,u_1(q^2)\bigr)=0$ at the same profiles; no
-quasi-modular coupling: $\{1,\;\theta\!\log u_1(q),\;\theta\!\log
-u_1(q^2),\;E_2(q),\;E_2(q^2),\;E_4(q)\}$ admits no $\Q(q)$-linear relation with polynomial
-coefficients of degree up to $399$ (so $u_1$ is not a hidden eta-quotient or $E_2$-ring object of
-level $2$); no linear relation among $\{1,\log u_1(q),\log u_1(q^2)\}$ to degree $665$; and no
-Mahler relation for the logarithmic derivative $\theta\!\log u_1$ itself up to $(150,2,2)$,
-$(100,3,3)$, $(60,4,4)$. Earlier and independently: the system $\{u_1,u_2,u_3\}$ admits no
-bilinear-profile relation ($300$ exact coefficients), and no zero of the base-$q^2$ cosine or sine
-is a rational multiple of $q^{e}z_i(q)^{a}w_j(q)^{b}$ for $|e|\le10$, $a+b\le2$ ($60$ digits, two
-bases). Mahler's method (intrinsically $q$-analytic, with no classical shadow) thus finds no
-foothold on the zero curve at any accessible complexity.
+difference--differential mix $P\bigl(q,u_1,\theta u_1,u_1(q^2)\bigr)=0$ at $(60,2,2,2)$,
+$(40,3,3,3)$, $(30,4,4,4)$; no quasi-modular coupling, in the sense that the six generators
+$\{1,\;\theta\!\log u_1(q),\;\theta\!\log
+u_1(q^2),\;E_2(q),\;E_2(q^2),\;E_4(q)\}$ admit no $\Q(q)$-linear relation with polynomial
+coefficients of degree up to $399$ ($2400$ columns, full rank; so $u_1$ is not a hidden
+eta-quotient or $E_2$-ring object of level $2$ within that window); no linear relation among
+$\{1,\log u_1(q),\log u_1(q^2)\}$ to degree $665$; and no Mahler relation for the logarithmic
+derivative $\theta\!\log u_1$ itself at $(150,2,2)$, $(100,3,3)$, $(60,4,4)$. All twenty-six
+profiles are regenerated by \texttt{tools/qcos\_rank}, which prints the row count, the column
+count and the rank at each prime. Mahler's method thus finds no foothold on the zero curve at
+any complexity reached here; as in (a) and (h), that is a statement about the profiles tested and
+not about all profiles.
 
 (j) The fold is the natural point for a rationality reductio, because it is the unique point of
 the $(q,z)$-plane carrying \emph{two} vanishings ($G=\theta G=0$; a triple point $G=\theta
@@ -822,15 +897,16 @@ consists of six values, $A=G(Qz_c)$, $B=\theta G(Qz_c)$, $h=H(z_c)$, $h_1=H(Qz_c
 H(z_c)$, $\eta_1=\theta H(Qz_c)$, where $H$ is the sine-side companion, which satisfies the mirror
 equation $H(z)-a(z)H(Qz)+qH(Q^2z)=0$ (the $z^{1/2}$ in the second solution $z^{1/2}H$ moves the
 outer $q$). Exactly two finite-height relations hold: the Casoratian at $z_c$, $Ah=1-q_c$, and its
-$\theta$-derivative, $Bh=-A\eta$ (both verified to $236$ digits). For any mixed jet-Casoratian
+$\theta$-derivative, $Bh=-A\eta$ (both reproduced to $230$ digits;
+\texttt{qcos\_analytic.py}). For any mixed jet-Casoratian
 $C_{u,v}(z)=qu(z)v(Qz)-u(Qz)v(z)$ with $L(u)=f$, $\widetilde L(v)=\tilde g$ the $a$-terms cancel
 in the increment:
 \[
    C_{u,v}(Qz)-C_{u,v}(z)=\tilde g(z)\,u(Qz)-f(z)\,v(Qz),
 \]
 so every telescoped sum of first-jet orbit bilinears closes back onto a Casoratian. In particular
-$B\eta=\sum_{m\ge0}qQ^mz_c\bigl[G\,\theta H-H\,\theta G\bigr](Q^{m+1}z_c)$ (verified to
-$121$ digits) is exact but carries an infinite rational series as coefficient: height-infinite.
+$B\eta=\sum_{m\ge0}qQ^mz_c\bigl[G\,\theta H-H\,\theta G\bigr](Q^{m+1}z_c)$ (reproduced to
+$230$ digits, $246$ terms) is exact but carries an infinite rational series as coefficient: height-infinite.
 The ledger of a point evaluation is therefore fixed: each further $\theta$- or
 $\delta$-jet level adds at least three new values and exactly one finite-height relation, so the
 deficit (four at the fold, five at a generic zero) cannot be closed by jet-raising, and the fold's
@@ -856,12 +932,14 @@ $s\,\mathcal D_N^{1/N}<R$) fails for every integer $s\ge1$.
 
 \noindent This is folklore, not a result of ours. For $\mathcal D_n\equiv1$ it is the standard lemma
 that an integer power series of radius $>1$ is a polynomial (Kedlaya \cite[Lem.~11.1.2]{Kedlaya};
-P\'olya--Szeg\H{o}, Part~VIII), and the general case is the same argument after rescaling. Calegari,
-Dimitrov and Tang \cite[Lem.~1.1.2]{CDT} name the two halves the \emph{Liouville lower bound} and
-the \emph{Cauchy upper bound} and trace the lineage Borel (1894), P\'olya--Carlson, Dwork,
-Bertrandias, Andr\'e, Bost; the hypothesis that the denominators grow at most geometrically is
-Christol's \emph{globally bounded} condition, and the $G$-function form of the corollary is in
-Rivoal \cite[\S3]{Rivoal2019}. Note also that the inequality is generally \emph{strict}
+the surrounding circle of results is P\'olya--Szeg\H{o} \cite[Part~Eight, Ch.~3]{PolyaSzego}), and
+the general case is the same argument after rescaling. Calegari, Dimitrov and Tang
+\cite[Lem.~1.1.2]{CDT} name the two halves the \emph{Liouville lower bound} and the \emph{Cauchy
+upper bound} and trace the lineage Borel (1894), P\'olya \cite{Polya1916} and Carlson
+\cite{Carlson1921}, Dwork \cite{Dwork1960}, Bertrandias, Andr\'e, Bost; the hypothesis that the
+denominators grow at most geometrically is Christol's \emph{globally bounded} condition
+\cite{Christol1990}, and the $G$-function form of the corollary is in Rivoal
+\cite[\S3]{Rivoal2019}. Note also that the inequality is generally \emph{strict}
 ($f=\sum2^nz^n$ has $\mathcal D_n\equiv1$ and $R=\tfrac12$), so it is not an identity.
 
 \begin{proof}
@@ -884,10 +962,14 @@ $z_1$ and $z_2$ collide; but a fold is a square-root branch point of each branch
 and not of the pair, so the elementary symmetric functions of the first $m$ branches (integral
 after clearing the poles of $z_k=u_k q^{2(1-k)}$) are analytic through every collision among
 them, and the crossing condition survives as the statement that $2q(1-q)$ is a root of
-$X^m-e_1X^{m-1}+\cdots$. Their radii increase monotonically, $0.5546,\,0.7356,\,0.7953,\,0.8425$
-for $m=1,2,3,4$, improving the ledger factor from $1.803$ to $1.187$; and by
-Proposition~\ref{prop:denrad} they are capped at $1$, which the measured values approach
-geometrically ($1-R_m$ decaying by a factor $\approx0.77$ per step). The $m\to\infty$ limit is the
+$X^m-e_1X^{m-1}+\cdots$. Their radii increase with $m$. Estimated from coefficient growth at order
+$300$, by one and the same estimator for every $m$ so that the rows are comparable, they are
+$0.558,\,0.710,\,0.778,\,0.794$ for $m=1,2,3,4$, improving the ledger factor $1/R$ from $1.79$
+to $1.26$ (\texttt{qcos\_ledger.py}). The $m=1$ estimate is to be read against the exact value
+$|q_c|=0.5546$ from item (e): the estimator reads about $0.5\%$ high there, and the remaining
+three rows carry a comparable error, so the improvement is real but the individual figures are
+estimates and not certified radii. By Proposition~\ref{prop:denrad} the whole family is capped at
+$1$. The $m\to\infty$ limit is the
 zero product of Theorem~\ref{thm:zeroproduct-intro}, of radius exactly $1$: the regularized product
 is the critical endpoint of this monotone family, which is the precise reason its arithmetic is
 confined to the tail.
@@ -906,7 +988,8 @@ The $q$-Siegel construction for this class is explicit. For $N\ge1$ put
    =\sum_{k=0}^{N}(-1)^kq^{k(k-1)}z^k\!\!\prod_{i=2k+1}^{2N}\!\!(1-q^i)\ \in\ \Z[q,z].
 \]
 \begin{proposition}[the second-kind forms]\label{prop:secondkind}
-$\deg_qP_N=2N^2+N$ and $\deg_zP_N=N$ \textup{(exact; verified $N\le4$)}, and the remainder
+$\deg_qP_N=2N^2+N$ and $\deg_zP_N=N$ \textup{(exact in $\Z[q,z]$; verified for $N\le8$ by
+\texttt{qcos\_ledger.py})}, and the remainder
 $R_N(q,z):=(q;q)_{2N}G(q,z)-P_N(q,z)$ satisfies, uniformly for $q$ in compacts of $(0,1)$ and $z$
 bounded,
 \[
@@ -920,8 +1003,9 @@ degree $k(k-1)+\sum_{i=2k+1}^{2N}i=2N^2+N-k^2-2k$, maximal at $k=0$ with value
 $\deg(q;q)_{2N}=2N^2+N$; the maximum is attained once, so no cancellation occurs. For the remainder,
 $R_N=(q;q)_{2N}\sum_{k>N}(-1)^kq^{k(k-1)}z^k/(q;q)_{2k}$, whose leading term ($k=N+1$) is
 $\pm q^{N(N+1)}z^{N+1}(q;q)_{2N}/(q;q)_{2N+2}$; the tail is dominated by a geometric series in
-$q^{2N}$, so $|R_N|=q^{N^2+O(N)}$ uniformly. \textup{(Measured $\log|R_N|/N^2\to\log q$ at both
-$z=2q(1-q)$ and a generic $z_0$.)}
+$q^{2N}$, so $|R_N|=q^{N^2+O(N)}$ uniformly. \textup{(Measured at $q=0.3$, the ratio
+$\log|R_N|/(N^2\log q)$ falls to $1.088$ at $N=20$ on the diagonal $z=2q(1-q)$ and to $1.036$ at a
+generic $z_0$; \texttt{qcos\_ledger.py}.)}
 \end{proof}
 
 \begin{proposition}[reduction to the Siegel margin]\label{prop:reduction}
@@ -971,19 +1055,21 @@ first omitted term, of size $q^{\alpha N^2(1+o(1))}$. The criterion $|R_N|<t^{-\
    \alpha N^2\log(t/s)\;>\;\alpha N^2\log t\iff s<1,
 \]
 false for every $q=s/t\in(0,1)$: \emph{the decay and the degree are driven by the same factor
-$q^{\alpha k^2}$ and cancel exactly}. Denominators only make matters worse. Numerically, the cleared
-truncations have $\deg_q=N^2$ exactly for the theta series $\sum q^{k^2}z^k$ and for the
-Rogers--Ramanujan series $\sum q^{k^2}/(q;q)_k$ (both $\beta:=\deg_q/N^2=1$, the boundary), while the
-Hahn--Exton series sits at $\beta\to2$ ($2.25,2.17,2.12$ at $N=4,6,8$) (a further factor $2$ past a
-boundary that is itself already unreachable.
+$q^{\alpha k^2}$ and cancel exactly}. Denominators only make matters worse. The cleared truncations
+have $\deg_q=N^2$ exactly for the theta series $\sum q^{k^2}z^k$ and for the Rogers--Ramanujan
+series $\sum q^{k^2}/(q;q)_k$, so both sit at $\beta:=\deg_q/N^2=1$, the boundary; the Hahn--Exton
+series sits at $\beta=2+1/N$, that is at $2.25$, $2.17$, $2.12$ for $N=4,6,8$, a further factor $2$
+past a boundary that is itself already unreachable (\texttt{qcos\_ledger.py}).
 
-This explains the shape of the known landscape rather than merely our position in it: the
-transcendence of theta values and of Rogers--Ramanujan values) both at $\beta=1$: is known
-\emph{only} through Nesterenko's modular method \cite{Nesterenko}, never through a Siegel/Liouville
-margin, precisely because no theta-decay series can cross $\beta<1$. Consequently the only mechanisms
-available for Conjecture~\ref{conj:Z} are modularity, which $G$ provably lacks (it is off the modular
-class; see \cite{Bonfioli2}), or a multiplicity theory for the associated $(\sigma,\delta)$-module. The
-double Pochhammer is not the whole obstruction: it is a factor $2$ on top of a structural one.
+This describes the shape of the known landscape and not merely our position in it. The
+transcendence of theta values and of Rogers--Ramanujan values, both at $\beta=1$, is known
+\emph{only} through Nesterenko's modular method \cite{Nesterenko} and never through a
+Siegel/Liouville margin, precisely because no theta-decay series can cross $\beta<1$. The two
+mechanisms left for Conjecture~\ref{conj:Z} are therefore modularity and a multiplicity theory for
+the associated $(\sigma,\delta)$-module. For the first, no analogue of \cite{Nesterenko} is known
+off the modular class, and we have not found $G$ inside it; that is the state of knowledge, not a
+proof that $G$ lies outside (see \cite{Bonfioli2}). The double Pochhammer is not the whole
+obstruction: it is a factor $2$ on top of a structural one.
 \end{remark}
 
 \subsection{An unconditional effective bound}
@@ -995,15 +1081,17 @@ non-rationality statement, proved by certified interval arithmetic.
 The least positive root $q^\ast$ of $S$ admits no rational representation $s/t$ with
 $t\le10^{1044}$. Consequently, if $\beta_2=u/v$ in lowest terms then $u>10^{522}$. The method is
 not new: it is Brent's \cite{Brent1977}, who proved by the same continued-fraction argument that a
-rational representation of Euler's constant needs denominator $>10^{10000}$, and it rests on
-Khinchin's Theorem~17 (every convergent is a best approximation of the second kind); Lagarias
-\cite[Thm.~3.15.1]{Lagarias2013} gives the survey-grade statement with proof. What is new here is
-only the bound for this particular constant.
+rational representation of Euler's constant needs a large denominator, and it rests on Khinchin's
+Theorem~17 (every convergent is a best approximation of the second kind)
+\cite[Thm.~17]{Khinchin}. Lagarias \cite[\S3.15]{Lagarias2013} surveys the Brent--McMillan
+denominator bounds for Euler's constant and quotes Khinchin's theorem in their proof. What is new
+here is only the bound for this particular constant.
 \end{proposition}
 
 \begin{proof}
 All steps are certified interval arithmetic (outward rounding; \texttt{mpmath.iv}; script
-\texttt{beta2\_effective\_irrationality.py}), with the series tail bounded by
+\texttt{beta2\_effective\_irrationality.py}, which bootstraps $q^\ast$ from a $25$-digit start by
+Newton at doubling precision and so needs no stored input), with the series tail bounded by
 $(q;q)_{2k}\ge(1-2q)/(1-q)>0$ for $q<\tfrac12$ and term ratios $<\tfrac12$ beyond the truncation.
 \textup{(i)} $S>0$ on $[0,0.40]$ ($400$ certified chunks). \textup{(ii)} $S'\le-1$ on $[0.40,0.46]$
 ($600$ certified chunks; $S'$ evaluated term-by-term with the logarithmic-derivative weights), so
@@ -1022,6 +1110,98 @@ steps \textup{(iv)} onward, is machine-checked, with steps \textup{(i)}--\textup
 hypotheses (\S\ref{sec:lean}).
 \end{proof}
 
+
+\section{Atom decomposition and status}\label{sec:atoms}
+
+The table below is the paper's status register. Every numbered statement, and every remark
+carrying mathematical content, appears exactly once, with a one-line paraphrase, its label, the
+statements it depends on, and its status. \textsc{proved} means a complete human-style proof is
+written out here or cited from the literature; \textsc{heuristic} means the support is
+computational; \textsc{conjecture} means believed and unproved. A statement is exactly as strong
+as the weakest label in its dependency chain, and the table is arranged so that this can be
+checked by reading upwards. A star marks a statement at \textsc{proved} whose formalization is
+incomplete; \S\ref{sec:lean} records, for each starred entry, the coverage attained and what
+blocks the rest. There are no unlabelled mathematical statements in the paper and no atom without
+a path to Conjecture~\ref{conj:Z} or to Proposition~\ref{prop:effective}.
+
+\begin{center}
+\scriptsize
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{1.7cm}>{\raggedright\arraybackslash}p{2.2cm}@{}}
+\hline
+ID & statement & label & depends on & status\\
+\hline
+A1 & Thm~\ref{thm:main-transc}: $G(q,\cdot)$ satisfies no algebraic differential equation over
+  $\C(z)$ & \textsc{proved} & \cite{ADH2021} & done$^\star$, known\\
+A2 & Lem~\ref{lem:irreducible}: the rank-$2$ $\sigma$-module is irreducible; the Riccati equation
+  has no rational solution & \textsc{proved} & none & done$^\star$\\
+A3 & Thm~\ref{thm:sl2}: the difference Galois group contains $\mathrm{SL}_2$ & \textsc{proved} &
+  A2, \cite{RSZ} & done$^\star$\\
+A4 & Prop~\ref{prop:nonintegrable}: no $\sigma\delta$-integrability relation, not even with a
+  scalar twist & \textsc{proved} & none & done$^\star$\\
+A5 & Cor~\ref{cor:hypertranscendence}: $G(q,\cdot)$ is differentially transcendental, by the
+  parametrized route & \textsc{proved} & A3, A4, \cite{DHR2018} & done$^\star$\\
+A6 & Thm~\ref{thm:zeroproduct} (= Thm~\ref{thm:zeroproduct-intro}): $C_1=1/(q;q)_\infty$ and
+  $\prod_kz_kQ^{k-1}=(q;q^2)_\infty$ & \textsc{proved} & none & done$^\star$\\
+A7 & Rem~\ref{rem:zeroproduct-dioph}: if $z^\ast$ is algebraic then the tail product is
+  transcendental & \textsc{proved} & A6, \cite{Nesterenko} & done$^\star$\\
+A8 & Thm~\ref{thm:integrality}: the Hensel root $u_k$ of $F_k$ lies in $1+q\Z[[q]]$ &
+  \textsc{proved} & A6 & done$^\star$; the identification of $u_k$ with $q^{2(k-1)}z_k$ needs
+  convergence, hence A22\\
+A9 & Lem~\ref{lem:swap}: the parameter--argument swap for ${}_1\phi_1(0;b;Q,z)$ &
+  \textsc{proved} & \cite{KS1992} & done$^\star$, known\\
+A10 & Prop~\ref{prop:latticevalues}: $\ord_qG(q,Q^{-m})=(m+1)^2$ with leading coefficient
+  $(-1)^{m+1}$ & \textsc{proved} & A9, \cite{KS1992} & done$^\star$, known\\
+A11 & Cor~\ref{cor:hexagonal}: $\operatorname{onset}(u_k-1)=k(2k-1)$, leading coefficient $-1$ &
+  \textsc{proved} & A8, A10 & done$^\star$\\
+A12 & Rem~\ref{rem:latticevalues}: order reflection $-\tfrac12\mapsto m+1$; backward-orbit
+  constant; vanishing transferred to the parameter slot & \textsc{proved} & A9, A10 &
+  done$^\star$\\
+A13 & Prop~\ref{prop:sinelattice}: the sine-side integrality, lattice values and onsets
+  $k(2k+1)$ & \textsc{proved} & A8, A9 & done$^\star$\\
+A14 & Rem~\ref{rem:triangular}: the two onset families exhaust the triangular numbers, each once
+  & \textsc{proved} & A11, A13 & done$^\star$\\
+A15 & Prop~\ref{prop:stablelaw}: both deviation families stabilize $q$-adically to
+  $1/(q^2;q^2)_\infty^2$ & \textsc{proved} & A10, A11, A13 & done$^\star$\\
+A16 & Rem~\ref{prop:denrad}: $R\le\liminf_{n\in S}\mathcal D_n^{1/n}$, and the truncation ledger
+  fails for every integer $s\ge1$ & \textsc{proved} & none & done$^\star$, folklore\\
+A17 & Prop~\ref{prop:secondkind}: $\deg_qP_N=2N^2+N$, $\deg_zP_N=N$,
+  $|R_N|=q^{N^2(1+o(1))}$ & \textsc{proved} & none & done$^\star$\\
+A18 & Prop~\ref{prop:reduction}: the reduction to the Siegel margin, and its failure by the
+  factor $2$ & \textsc{proved} & A17 & done$^\star$\\
+A19 & Cor~\ref{cor:suffices}: halving the $q$-degree at the same remainder would suffice &
+  \textsc{proved} & A18 & done$^\star$\\
+A20 & Rem~\ref{rem:thetabarrier}: no truncate-and-clear form meets A19's hypothesis &
+  \textsc{proved} & A19 & done$^\star$\\
+A21 & Rem~\ref{rem:zerocurve-arith}, items (c), (f), (g), (j), (k): the linear-height ledger, the
+  uniformization cap, the discreteness cap, the jet deficit at the fold, and their common source
+  & \textsc{proved} & A8, A16 & done$^\star$\\
+A22 & Rem~\ref{rem:zerocurve-arith}, items (b), (d), (e): the radius equals $|q_c|$; the fold
+  coordinates and the fold constant; the coefficient sequence is new &
+  \textsc{heuristic} & A8 & numerical, $230$ digits\\
+A23 & Rem~\ref{rem:zerocurve-arith}, items (a), (h), (i): the exclusions of algebraic, holonomic,
+  Mahler, system, quasi-modular and log-linear relations &
+  \textsc{proved} within the profiles listed, \textsc{heuristic} beyond them & A8 &
+  rank certificates\\
+A24 & Prop~\ref{prop:effective}: $q^\ast$ has no rational representation of denominator
+  $\le10^{1044}$ & \textsc{proved} & A25 & done$^\star$\\
+A25 & The certified enclosure of $q^\ast$ and the Stern--Brocot fraction $s_0/t_0$ &
+  \textsc{proved} & none & interval arithmetic; hypothesis of A24\\
+A26 & Conj~\ref{conj:Z}: every positive zero $z_k(q)$ is transcendental at algebraic $q$ &
+  \textsc{conjecture} & none & open; the goal\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent Reading of the table. A26 is the goal; A1--A5 place the function outside the reach of
+differential-algebraic methods, A6--A15 supply the exact structure of the zero lattice, and
+A16--A24 map the negative space: which mechanisms cannot reach A26 and what the best
+unconditional statement about the distinguished zero currently is. A22 and A23 are the only
+entries not at \textsc{proved}, and neither is used in the proof of any other entry. A8 is
+stated for the formal Hensel root and is unconditional as such; only its identification with the
+analytic $k$-th zero passes through A22, and that qualification is carried in the theorem itself
+rather than in a remark. A23 is terminal. A25 is separated from A24 because it is exactly the part of
+Proposition~\ref{prop:effective} that a machine check consumes as a hypothesis rather than proves;
+\S\ref{sec:lean} says so as well.
 
 \section{Machine verification}\label{sec:lean}
 
@@ -1064,12 +1244,12 @@ Lem~\ref{lem:swap} & exponent identities & \texttt{swap\_symmetry\_exponent},
   \texttt{swap\_base\_collapse}\\
 Prop~\ref{prop:latticevalues} & no-cancellation step & \texttt{lattice\_order\_gap},
   \texttt{lattice\_order\_strictMono}, \texttt{lattice\_order\_leading}\\
-Cor~\ref{cor:hexagonal} & complete to $k=6$ & \texttt{hexagonal\_onset},
+Cor~\ref{cor:hexagonal} & onsets, $k\le6$ & \texttt{hexagonal\_onset},
   \texttt{hexagonal\_next\_correction}, \texttt{cosine\_onset}, \texttt{cosine\_onsets}\\
-Prop~\ref{prop:sinelattice} & complete to $k=5$ & \texttt{sine\_shift}, \texttt{sine\_onset},
+Prop~\ref{prop:sinelattice} & onsets, $k\le5$ & \texttt{sine\_shift}, \texttt{sine\_onset},
   \texttt{onsets\_differ}, \texttt{onsets\_consecutive}, \texttt{sine\_onsets},
   \texttt{sine\_residual\_vanishes}\\
-Prop~\ref{prop:stablelaw} & depths, to $k=6$ & \texttt{stablelaw\_numerator\_depth},
+Prop~\ref{prop:stablelaw} & depths, $k\le6$ & \texttt{stablelaw\_numerator\_depth},
   \texttt{stablelaw\_numerator\_depth\_sharp}, \texttt{stablelaw\_pair\_exponent},
   \texttt{stablelaw\_pair\_weight}, \texttt{stablelaw\_pair\_parity},
   \texttt{stablelaw\_denominator\_depth}, \texttt{twoColoured\_prefix},
@@ -1080,6 +1260,8 @@ Prop~\ref{prop:secondkind} & degrees & \texttt{tail\_sum}, \texttt{degree\_ledge
 Prop~\ref{prop:reduction} & complete & \texttt{prod\_one\_sub\_div}, \texttt{clearedTerm\_eq},
   \texttt{cleared\_eq}, \texttt{reduction}, \texttt{margin\_iff}, \texttt{margin\_fails},
   \texttt{st\_ge\_one}\\
+Cor~\ref{cor:suffices} & degree threshold at the coefficient $2$ & \texttt{margin\_iff}
+  (see below)\\
 Rem~\ref{rem:thetabarrier} & complete & \texttt{theta\_barrier}\\
 Prop~\ref{prop:effective} & complete & \texttt{farey\_gap},
   \texttt{unique\_rational\_in\_interval}, \texttt{no\_rational\_of\_denominator\_le},
@@ -1137,8 +1319,20 @@ $q^\ast$, the Stern--Brocot rational $s_0/t_0$ and the certified sign changes co
 \texttt{beta2\_effective\_irrationality.py} and enter \texttt{qstar\_no\_small\_denominator} as
 hypotheses. The Diophantine argument that consumes them, including the width comparison
 $4\cdot10^{-2090}<1/(10^{1044}t_0)$ for every $t_0<10^{1045}$, is formalised in full.
+\item \emph{The general degree threshold of Corollary~\ref{cor:suffices}.} Its content is the
+comparison already formalised as \texttt{margin\_iff}, which decides
+$2\log t<\log(t/s)\iff st<1$: that is the threshold at the coefficient $2$ realised by
+Proposition~\ref{prop:secondkind}. What is not formalised is the same comparison with the
+coefficient $2$ replaced by the parameter $\deg_q\Lambda_N/N^2$, together with the $o(1)$
+bookkeeping in the remainder hypothesis. No Mathlib gap blocks this: the threshold is one
+inequality between logarithms and the asymptotic hypothesis is expressible with
+\texttt{Filter.Tendsto}. It is open formalization work, and it is recorded here as such rather
+than left without a status.
 \item \emph{The exclusion searches of Remark~\ref{rem:zerocurve-arith}}, which are rank
-computations on large integer matrices and are reported as computations.
+computations on large integer matrices over $\Z/p$. Each is a certified rank witness and nothing
+in Mathlib blocks formalising it; what would be needed is to import the coefficient data and the
+elimination transcript, which is a data-volume question and not a mathematical one. They are
+reported as computations, regenerated by \texttt{tools/qcos\_rank}.
 \end{itemize}
 
 \medskip
@@ -1169,28 +1363,33 @@ preparation of this manuscript, both in drafting and in computation. Every compu
 is certified by the scripts in the cited repository, independently of any model output. The
 author takes full responsibility for the content.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{AKV2002} M.~Amou, M.~Katsurada, K.~V\"a\"an\"anen, \emph{On the values of certain
-$q$-hypergeometric series II}, in: Analytic Number Theory, Dev.\ Math.\ \textbf{6}, Kluwer, 2002,
-17--25.
+$q$-hypergeometric series II}, in: Analytic Number Theory, eds.\ C.~Jia, K.~Matsumoto,
+Developments in Mathematics~\textbf{6}, Kluwer Acad.\ Publ., Boston, MA, 2002, 17--25.
 \bibitem{Brent1977} R.~P.~Brent, \emph{Computation of the regular continued fraction for Euler's
 constant}, Math.\ Comp.\ \textbf{31} (1977), 771--777.
 \bibitem{CDT} F.~Calegari, V.~Dimitrov, Y.~Tang, \emph{The unbounded denominators conjecture},
-preprint (2021), arXiv:2109.09040.
-\bibitem{Kedlaya} K.~S.~Kedlaya, \emph{$p$-adic Differential Equations} / \emph{Weil cohomology in
-practice}, lecture notes, Lemma~11.1.2.
+J.~Amer.\ Math.\ Soc.\ \textbf{38} (2025), no.~3, 627--702; arXiv:2109.09040.
+\bibitem{Kedlaya} K.~S.~Kedlaya, \emph{Weil cohomology in practice}, lecture notes,
+\url{https://kskedlaya.org/weil-cohom/}, Ch.~11 (Dwork's proof of rationality), Lemma~11.1.2.
+These are living notes with no version stamp; the statement used is that an integer power series
+with radius of convergence $>1$ is a polynomial, whose two-line proof is reproduced above.
 \bibitem{Lagarias2013} J.~C.~Lagarias, \emph{Euler's constant: Euler's work and modern developments},
 Bull.\ Amer.\ Math.\ Soc.\ \textbf{50} (2013), 527--628.
 \bibitem{LorchMuldoon} L.~Lorch, M.~E.~Muldoon, \emph{Transcendentality of zeros of higher
 derivatives of functions involving Bessel functions}, Int.\ J.\ Math.\ Math.\ Sci.\ \textbf{18}
 (1995), 551--560.
-\bibitem{Rivoal2019} T.~Rivoal, \emph{Les $E$-fonctions et $G$-fonctions de Siegel}, Journ\'ees
-math\'ematiques X-UPS 2019, 197--298.
-\bibitem{Lindemann1882} F.~Lindemann, \emph{\"Uber die Zahl $\pi$},
+\bibitem{Rivoal2019} T.~Rivoal, \emph{Les $E$-fonctions et $G$-fonctions de Siegel}, in:
+Journ\'ees math\'ematiques X-UPS, Ann\'ee 2019: P\'eriodes et transcendance, \'Ed.\ P.~Harinck,
+A.~Plagne, C.~Sabbah, Les \'Editions de l'\'Ecole polytechnique / Centre Mersenne, 2019, 197--298.
+\bibitem{Lindemann1882} F.~Lindemann, \emph{Ueber die Zahl $\pi$},
 Math.\ Ann.\ \textbf{20} (1882), 213--225.
 
 \bibitem{Siegel1929} C.~L.~Siegel, \emph{\"Uber einige Anwendungen diophantischer Approximationen},
-Abh.\ Preuss.\ Akad.\ Wiss.\ (1929), Nr.~1; Ges.\ Abh.\ I, 209--266.
+Abh.\ Preuss.\ Akad.\ Wiss., Phys.-math.\ Kl.\ (1929), Nr.~1, 70 pp.; Gesammelte Abhandlungen~I,
+Springer, 1966, 209--266. English translation by C.~Fuchs, ed.\ U.~Zannier, Quaderni della Scuola
+Normale Superiore di Pisa, Monographs~2, Edizioni della Normale, 2014, 81--138.
 \bibitem{ADH2021} B.~Adamczewski, T.~Dreyfus, C.~Hardouin, \emph{Hypertranscendence and linear
 difference equations}, J.~Amer.\ Math.\ Soc.\ \textbf{34} (2021), 475--503.
 \bibitem{ABC2003} L.~D.~Abreu, J.~Bustoz, J.~L.~Cardoso, \emph{The roots of the third Jackson
@@ -1219,6 +1418,34 @@ valuations}, J.~Math.\ Sci.\ Univ.\ Tokyo \textbf{23} (2016), 763--789.
 and associated $q$-Lommel polynomials}, J.\ Math.\ Anal.\ Appl.\ \textbf{186} (1994), 690--710.
 \bibitem{Nesterenko} Yu.~V.~Nesterenko, \emph{Modular functions and transcendence questions},
 Sb.\ Math.\ \textbf{187} (1996), 1319--1348.
+\bibitem{Carlson1921} F.~Carlson, \emph{\"Uber Potenzreihen mit ganzzahligen Koeffizienten},
+Math.\ Z.\ \textbf{9} (1921), 1--13.
+\bibitem{Christol1990} G.~Christol, \emph{Globally bounded solutions of differential equations}, in:
+Analytic Number Theory (Tokyo, 1988), Lecture Notes in Math.\ \textbf{1434}, Springer, Berlin, 1990,
+45--64.
+\bibitem{Dwork1960} B.~Dwork, \emph{On the rationality of the zeta function of an algebraic variety},
+Amer.\ J.\ Math.\ \textbf{82} (1960), 631--648.
+\bibitem{Exton1978} H.~Exton, \emph{A basic analogue of the Bessel--Clifford equation},
+J\~n\=an\=abha \textbf{8} (1978), 49--56.
+\bibitem{GR} G.~Gasper, M.~Rahman, \emph{Basic Hypergeometric Series}, 2nd ed., Encyclopedia of
+Mathematics and its Applications~\textbf{96}, Cambridge University Press, Cambridge, 2004.
+\bibitem{Hahn1949} W.~Hahn, \emph{Beitr\"age zur Theorie der Heineschen Reihen. Die 24 Integrale der
+hypergeometrischen $q$-Differenzengleichung. Das $q$-Analogon der Laplace-Transformation},
+Math.\ Nachr.\ \textbf{2} (1949), no.~6, 340--379.
+\bibitem{Hayman1956} W.~K.~Hayman, \emph{A generalisation of Stirling's formula},
+J.~Reine Angew.\ Math.\ \textbf{196} (1956), 67--95.
+\bibitem{Jacobi1829} C.~G.~J.~Jacobi, \emph{Fundamenta Nova Theoriae Functionum Ellipticarum},
+Sumtibus fratrum Borntr\"ager, Regiomonti, 1829; Gesammelte Werke~I, Reimer, Berlin, 1881.
+\bibitem{Khinchin} A.~Ya.~Khinchin, \emph{Continued Fractions}, transl.\ Scripta Technica,
+ed.\ H.~Eagle, University of Chicago Press, Chicago, 1964; reprinted Dover, Mineola NY, 1997.
+\bibitem{Polya1916} G.~P\'olya, \emph{\"Uber Potenzreihen mit ganzzahligen Koeffizienten},
+Math.\ Ann.\ \textbf{77} (1916), 497--513.
+\bibitem{PolyaSzego} G.~P\'olya, G.~Szeg\H{o}, \emph{Problems and Theorems in Analysis~II},
+transl.\ C.~E.~Billigheimer, Springer, Berlin, 1976; reprinted in Classics in Mathematics, 1998.
+\bibitem{RSZ} J.-P.~Ramis, J.~Sauloy, C.~Zhang, \emph{Local analytic classification of
+$q$-difference equations}, Ast\'erisque \textbf{355}, Soc.\ Math.\ France, 2013.
+\bibitem{vdPS} M.~van der Put, M.~F.~Singer, \emph{Galois Theory of Difference Equations},
+Lecture Notes in Mathematics~\textbf{1666}, Springer, Berlin, 1997.
 \end{thebibliography}
 
 \end{document}

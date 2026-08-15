@@ -151,7 +151,24 @@ def S(q,K=95):
         term*=-q**(2*(k-1))*w/((1-q**(2*k-1))*(1-q**(2*k)))
         tot+=term
     return tot
-q=mpf(open("qstar_430.txt").read().strip())
+# Self-seeding: bootstrap q* from a 25-digit start by Newton at doubling precision,
+# so the script needs no external input file.  (An earlier version read a stored
+# qstar_430.txt, which was never shipped and made the script unrunnable.)
+def _bootstrap(target_dps):
+    q = mpf('0.4494536305589480461255458')
+    prec = 40
+    while True:
+        mp.dps = prec + 20
+        h = mpf(10)**-(prec//2)
+        for _ in range(6):
+            q -= S(q)/((S(q+h)-S(q-h))/(2*h))
+        if prec >= target_dps:
+            mp.dps = target_dps
+            return +q
+        prec = min(2*prec, target_dps)
+
+q = _bootstrap(2110)
+mp.dps = 2110
 h=mpf(10)**-1000
 for it in range(4):
     q-=S(q)/((S(q+h)-S(q-h))/(2*h))

@@ -1,0 +1,12 @@
+[package]
+name = "qcos_rank"
+version = "1.0.0"
+edition = "2021"
+
+[[bin]]
+name = "qcos_rank"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1

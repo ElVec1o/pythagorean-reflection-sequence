@@ -1,10 +1,9 @@
-import os
 #!/usr/bin/env python3
 # Optimized relaxed counting DP: iterate over edge PROFILES directly (each
 # profile fixes a_j), avoiding empty a_j branches. Same semantics as wf2_dp2.
 import sys, importlib.util
 spec=importlib.util.spec_from_file_location(
-    "lf", os.path.join(os.path.dirname(os.path.abspath(__file__)), "lamp_formula.py"))
+    "lf","/Users/vico/Documents/elvec1o/XXXXX MATH PROOF/code/zeta_probe/lamp_formula.py")
 lf=importlib.util.module_from_spec(spec); sys.argv=["lf","0"]; spec.loader.exec_module(lf)
 site_cost=lf.site_cost
 from collections import defaultdict
