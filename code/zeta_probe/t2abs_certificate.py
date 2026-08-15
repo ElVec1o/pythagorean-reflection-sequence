@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """
-t2abs_certificate.py -- certificate for Lemma lem:T2abs of paper 2.
+t2abs_certificate.py -- ADAPTIVE-QUADRATURE CROSS-CHECK for Lemma lem:T2abs of paper 2.
+
+SUPERSEDED as the certificate (2026-08-15).  The lemma is now proved by a verified enclosure of
+the same majorant, quantified over parameter BOXES rather than sampled: tools/t2abs_iv (Rust,
+MPFR interval arithmetic, branch and bound) on tau in [2/101^2, 0.02], and t2abs_smalltau.py
+plus the explicit-constant estimate in the paper below that.  This script is retained because it
+shares no code with either -- mpmath adaptive quadrature and mpmath.gamma against MPFR intervals
+and closed-form/Stirling kernels -- so its seven tabulated values are an independent check that
+the enclosure brackets the right quantity from above.  What it delivers is still a grid, and the
+paragraph "A 120-point grid is a grid, not a supremum" below still describes it exactly.
 
 |T_2| <= 0.17 tau^{1/4} <= 0.064 < 1 for tau <= 0.02, by absolute values on the boundary of
 

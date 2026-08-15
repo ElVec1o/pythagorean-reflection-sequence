@@ -1,0 +1,15 @@
+[package]
+name = "t2abs_iv"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "t2abs_iv"
+path = "src/main.rs"
+
+[dependencies]
+rug = { version = "1.30", default-features = false, features = ["float", "integer"] }
+
+[profile.release]
+opt-level = 3
+lto = true

@@ -194,7 +194,10 @@ Both $V$ and $U$ acquire poles at the \emph{travel poles} $q_m$, the roots of
 $\Sigma_1^T(q)=1$; transcendence follows from accumulation of these poles at $q=1$ once a certain
 auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). What the theorems consume is only
 $|T_2|\to0$, and that is proved self-contained in Lemma~\ref{lem:T2abs} by an absolute bound on a
-rectangle: no saddle, no path through a saddle, no cited asymptotic theorem. It is the single
+rectangle: no saddle, no path through a saddle, no cited asymptotic theorem. Its quantitative part
+is a verified enclosure of the contour majorant, in interval arithmetic and quantified over
+parameter boxes, on $\tau\in[2/101^2,0.02]$, together with an explicit-constant estimate below
+that; nothing there is a scan over sample values of $\tau$. It is the single
 analytic input of this kind, shared by $V$ (\S\ref{sec:V}) and $U$ (\S\ref{sec:U}). The sharp size
 of $T_2$, with the constant $\sqrt2/36$, is recorded separately in Remark~\ref{lem:cos} as a
 numerically certain statement whose proof is incomplete (Remark~\ref{rem:cosgap}); nothing here
@@ -369,20 +372,20 @@ and the two collapses $1-\Sigma_1=\cos(Z;q^2)$, $1-S_1=S_e$ are recomputed in ex
 arithmetic at two truncation degrees in \texttt{f2\_pole\_route.py}.
 
 \begin{remark}[what the pole route costs]\label{rem:polepathcost}
-Corollary~\ref{cor:polepath} removes a hypothesis; it does not make Theorem~\ref{thm:blocks}
-unconditional for $\Sigma_1$ and $S_1$. It exchanges one unproved input for another, and the two are
-of different kinds. \eqref{eq:growth} is checked in exact integer arithmetic, with no precision to
-state, at $34$ indices. The pole route runs on Lemma~\ref{lem:infpoles}, hence on
-Lemma~\ref{lem:T2abs}, whose quantitative content is an adaptive-quadrature evaluation of an
-explicit contour integral at $127$ values of $\tau$, carried out at $30$ and again at $50$ digits
-and not in interval arithmetic, while its statement quantifies over $\tau\in(0,0.02]$ and the two
-infinitude lemmas consume it along the infinite sequences $\tau^{(m)}=2/(m\pi)^2$ and $\tau^{[m]}$,
-$m\ge4$. Both routes are finite verifications of statements with infinitely many instances. What
-the corollary buys is not a stronger label but a shorter dependency list: the exclusion of
-\textup{(a)} for the two denominators now consumes the same single analytic input as
+Corollary~\ref{cor:polepath} makes Theorem~\ref{thm:blocks} unconditional for $\Sigma_1$ and $S_1$,
+and the two routes to it are of different kinds. \eqref{eq:growth} is checked in exact integer
+arithmetic, with no precision to state, at $34$ indices, and remains a finite verification of a
+statement with infinitely many instances. The pole route runs on Lemma~\ref{lem:infpoles}, hence on
+Lemma~\ref{lem:T2abs}, and that lemma is proved on all of $\tau\in(0,0.02]$: a verified enclosure
+of the contour majorant, in interval arithmetic and quantified over parameter boxes rather than
+sampled, on $\tau\ge2/101^2$, and an explicit-constant estimate below that. The two infinitude
+lemmas consume it along the infinite sequences $\tau^{(m)}=2/(m\pi)^2$ and $\tau^{[m]}$, $m\ge4$,
+all of which lie in that range. So the pole route carries no unproved arithmetic input, while
+\eqref{eq:growth} does; and for $\Sigma_0$ and for $S_0$ individually, \eqref{eq:growthG} remains
+the only route. What the corollary buys besides the label is a shorter dependency list: the
+exclusion of \textup{(a)} for the two denominators consumes the same single analytic input as
 Theorems~\ref{thm:travelres}, \ref{thm:V}, \ref{thm:U} and Corollary~\ref{cor:beta}, instead of a
-second input of its own, and the two routes to it are independent. For $\Sigma_0$ and for $S_0$
-individually, \eqref{eq:growthG} remains the only route.
+second input of its own.
 \end{remark}
 
 \noindent The hypothesis \eqref{eq:growth} concerns $\Sigma_1$ alone. Its counterpart for the other
@@ -716,9 +719,10 @@ $h(s)\pi/\sin\pi s$ at $s=1,2,\dots$. Split the series at $n=\lfloor2w\rfloor$.
 
 \emph{The tail.} At integers, $B_n=\sum_{i\le2n}\varphi(i\tau)-n\varphi(\tau)\ge n\varphi(\tau)\ge0$
 by \eqref{eq:Bsum} and the monotonicity of $\varphi$, so $0\le g_n=1-e^{-B_n}\le1$ and
-$\bigl|\sum_{n>\sigma_\ast}(-1)^ng_nX^{2n}/(2n)!\bigr|\le\sum_{n>\sigma_\ast}X^{2n}/(2n)!$, which is below $6\cdot10^{-9}$ throughout $\tau\le0.02$ (it is a sawtooth in $\tau$, jumping
-each time $2w$ crosses an integer; the envelope decreases superexponentially, and the values are
-$7.5\cdot10^{-10}$ at $\tau=0.02$ and $1.9\cdot10^{-11}$ at $\tau=0.0127$).
+$\bigl|\sum_{n>\sigma_\ast}(-1)^ng_nX^{2n}/(2n)!\bigr|\le\sum_{n>\sigma_\ast}X^{2n}/(2n)!$. This
+is a sawtooth in $\tau$, jumping each time $2w$ crosses an integer, with a superexponentially
+decreasing envelope: $7.5\cdot10^{-10}$ at $\tau=0.02$ and $1.9\cdot10^{-11}$ at $\tau=0.0127$.
+It is bounded together with the contour integral below and is nowhere the binding term.
 
 \emph{The head.} The remaining residues are enclosed by the rectangle
 $R=\{\tfrac12\le\Re s\le\sigma_\ast,\ |\Im s|\le X/2\}$, where $\sigma_\ast$ is the largest
@@ -734,19 +738,82 @@ compensating $e^{+\pi X/2}$; the resulting kernel is $O(\sqrt{2\pi/X})$, attaini
 For the amplitude: where $|2s|\le2w$, \eqref{eq:Btrunc} gives
 $|B_s|\le\tfrac{\tau^2}{24}\bigl|\tfrac{M^3}3+\tfrac{M^2}2-\tfrac M3\bigr|+0.02\,\tau^{3/2}$ with
 $M=2s$, hence $|g_s|=|1-e^{-B_s}|\le|B_s|e^{|B_s|}$; elsewhere on $\partial R$,
-$|g_s|\le1+e^{30.3\sqrt\tau}$ by \eqref{eq:Bbounds}. The quantitative content is the resulting
-contour integral, evaluated by adaptive quadrature piecewise between the region breakpoints
-(certificate \texttt{t2abs\_certificate.py}); the prose above fixes the geometry, not the constant.
-The ratio $|T_2|/\tau^{1/4}$ comes out $0.1623,\ 0.0428,\ 0.0308,\ 0.0226,\ 0.0173,\ 0.0136,\
-0.0115$ at $\tau=2\cdot10^{-2},\ 1.27\cdot10^{-2},\ 10^{-2},\ 5\cdot10^{-3},\ 10^{-3},\ 10^{-4},\
-10^{-5}$, and on the grid $\tau_i=i\cdot0.02/120$, $i=1,\dots,120$, it rises at every one of the
-$119$ increments, from $0.01425$ at $\tau_1=1.67\cdot10^{-4}$ to the endpoint value $0.1623$ at
-$\tau_{120}=0.02$; $0.17$ bounds every value computed. What the certificate delivers is the ratio
-at those $127$ values of $\tau$ and the sign of those $119$ increments; it is adaptive quadrature
-run at $30$ and again at $50$ digits, agreeing at every point to the digits quoted, and it is not
-interval arithmetic, so this is a certified computation in that model only. At
-$\tau=\tau_4=0.012665$, the largest value Lemma~\ref{lem:infpoles} uses, the bound is $0.0144$, and
-what Lemma~\ref{lem:infpoles} consumes there is only $|T_2|<1$.
+$|g_s|\le1+e^{30.3\sqrt\tau}$ by \eqref{eq:Bbounds}. Write $\mathcal B(\tau,X)$ for the resulting
+majorant: the boundary integral of those bounds against
+$\bigl|X^{2s}/\Gamma(2s{+}1)\bigr|\,\bigl|\pi/\sin\pi s\bigr|$, divided by $2\pi$, plus the tail.
+The prose above fixes the geometry; what remains is to bound $\mathcal B$ on the whole region
+$\tau\in(0,0.02]$, $\tau X^2\in[2e^{-\tau},2]$, and that is done in two ranges.
+
+\emph{(1) $\tau\ge2/101^2$: verified enclosure.} On $w=\sqrt{2/\tau}\in[10,101]$,
+$X\in[we^{-\tau/2},w]$, the majorant is enclosed in MPFR interval arithmetic with outward directed
+rounding at every operation, by a branch and bound on the parameter box: a box is accepted when the
+enclosed supremum of $\mathcal B$ over the whole box does not exceed the infimum of
+$0.17\,\tau^{1/4}$ on it, and is bisected otherwise. The contour integrals are enclosed cellwise,
+each cell contributing its integrand enclosure times its width, so what is returned bounds the
+integral rather than estimating it; the cells tile each edge exactly, and the initial boxes are cut
+at the half-integer steps of $\sigma_\ast$, so no box straddles a jump of the contour. The scan
+terminates with $232$ accepted boxes covering the range and no failures, and returns
+$\mathcal B\le0.16978\,\tau^{1/4}$, a box-level figure comparing the largest bound on a box with
+the smallest $\tau^{1/4}$ on it. Run at $96$ and again at $160$ bits it produces the same box
+decomposition and the same figure. Pointwise at $\tau=0.02$, $X=w=10$, where the cross-check below locates the maximum of the ratio,
+the enclosure is $\mathcal B\le0.061685=0.164031\,\tau^{1/4}$, and the scan repeated against the constant $0.166$ in
+place of $0.17$ also terminates without failures. (\texttt{tools/t2abs\_iv}; the earlier
+adaptive-quadrature certificate \texttt{t2abs\_certificate.py} shares no code with it and is kept as
+a cross-check, its seven tabulated ratios $0.1623,\ 0.0428,\ 0.0308,\ 0.0226,\ 0.0173,\ 0.0136,\
+0.0115$ at $\tau=2\cdot10^{-2},\dots,10^{-5}$ being reproduced from above.)
+
+\emph{(2) $\tau<2/101^2$: explicit constants.} No finite scan reaches $\tau\to0$. Here
+$X\ge101e^{-1/101^2}>100$, $w\le Xe^{1/X^2}\le1.0001X$ and $\tau\le2/X^2$, so
+$0.17\,\tau^{1/4}=0.17\cdot2^{1/4}w^{-1/2}\ge0.2021\,X^{-1/2}$, and it suffices to bound
+$\mathcal B$ by that.
+
+On the left edge $2s+1=2+2it$, and $|\Gamma(1+iy)|^2=\pi y/\sinh\pi y$ makes the kernel exact:
+$\bigl|X^{2s}/\Gamma(2s{+}1)\bigr|\,\bigl|\pi/\sin\pi s\bigr|=X\pi\sqrt{g(\pi t)}/\sqrt{1+4t^2}$
+with $g(u)=\tanh u/u\le\min(1,1/u)$, hence at most $X\pi$ for $t\le1/\pi$ and at most
+$\tfrac12X\sqrt\pi\,t^{-3/2}$ beyond. There $|M|=\sqrt{1+4t^2}\le1+2t\le1+X<2w$, so
+\eqref{eq:Btrunc} applies along the whole edge; with
+$\tfrac{(1+2t)^3}3+\tfrac{(1+2t)^2}2+\tfrac{1+2t}3=\tfrac83t^3+6t^2+\tfrac{14}3t+\tfrac76$
+integrated against $t^{-3/2}$, and collecting the range $t\le1/\pi$ and the
+$0.02\,\tau^{3/2}$ remainder on the same power of $X$, the edge contributes
+$L\le0.03033\,X^{-1/2}$ for $X\ge100$.
+
+On a horizontal edge put $a=2\sigma+1$, $u=a/X$ and
+$\psi(u)=u-\arctan u-\tfrac u2\log(1+u^2)$, so $\psi'(u)=-\tfrac12\log(1+u^2)$ and $\psi$ is
+negative, decreasing and concave on $u>0$. Stirling with Binet's remainder,
+$\log\Gamma(z)=(z-\tfrac12)\operatorname{Log}z-z+\tfrac12\log2\pi+\mu(z)$ with
+$|\mu(z)|\le\mu(\Re z)\le1/(12\Re z)$ (the kernel of Binet's first integral is positive on
+$(0,\infty)$), cancels every term of size $a\log X$ and leaves
+\begin{equation}\label{eq:hker}
+   \frac{X^{2\sigma}}{|\Gamma(a+iX)|}\cdot\frac{\pi}{\sinh(\pi X/2)}
+   \;=\;\frac{\sqrt{2\pi}}{1-e^{-\pi X}}\;X^{-1/2}(1+u^2)^{1/4}e^{X\psi(u)}e^{-\Re\mu},
+   \qquad|\Re\mu|\le\tfrac1{12a}\le\tfrac1{24}.
+\end{equation}
+With $d\sigma=\tfrac X2du$ and $|M|\le X\sqrt{1+u^2}$, \eqref{eq:Btrunc} applies for $u\le\sqrt3$,
+where $|M|\le2X\le2w$, and gives $|g_s|\le1.00449\bigl[(1+u^2)^{3/2}/(18X)+0.33502\,X^{-2}\bigr]$;
+for $u>\sqrt3$ only $|g_s|\le1+e^{30.3\sqrt\tau}\le2.5352$ is used. Two elementary inequalities
+close the $u$-integral: $\psi(u)\le-u^3/12$ on $[0,1]$, since $\log(1+x)\ge x/2$ there; and
+$\psi(u)\le\psi(1)+\psi'(1)(u-1)$ for $u\ge1$, by concavity. With
+$\int_0^\infty e^{-Xu^3/12}du=\Gamma(\tfrac43)(12/X)^{1/3}$ and $(1+u^2)^{7/4}\le2^{7/4}$ on
+$[0,1]$, one edge contributes
+$H\le0.50142\,X^{-5/6}+1.06902\,X^{-11/6}+4.5\cdot10^{-9}e^{-0.131(X-100)}$.
+
+The right edge and the tail are exponentially small. On $\Re s=\sigma_\ast$ one has
+$|\pi/\sin\pi s|\le\pi$ and $a=2\sigma_\ast+1>4X-1$, while
+$\log|\Gamma(a+iY)|\ge(a-\tfrac12)\log a-Y^2/a-a+\tfrac12\log2\pi-\tfrac1{12a}$ for $|Y|\le X$;
+since $c\mapsto c(1-\log c)$ decreases and $a/X\in[3.99,4.011]$, the kernel there is at most
+$\pi e^{-1.2805X}$. And $n_0=\lfloor\sigma_\ast\rfloor+1>2X-1$ with $(2n)!\ge(2n/e)^{2n}$ makes the
+tail at most $1.07\,e^{-1.51X}$. Both are below $10^{-50}$ throughout. Collecting, for $X\ge100$,
+\[
+   \mathcal B\;\le\;0.00966\,X^{-1/2}+0.15961\,X^{-5/6}+0.34028\,X^{-11/6},
+\]
+which is at most $0.2021\,X^{-1/2}$ as soon as
+$0.15961\,X^{-1/3}+0.34028\,X^{-4/3}\le0.2021-0.00966=0.19244$; the left side decreases and
+equals $0.03512$ at $X=100$. The constants of this range are regenerated, and the two $\psi$ inequalities and the
+rearrangement \eqref{eq:hker} independently checked against \texttt{mpmath}'s complex $\Gamma$, in
+\texttt{t2abs\_smalltau.py} at $40$ and again at $60$ digits.
+
+At $\tau=\tau_4=0.012665$, the largest value Lemma~\ref{lem:infpoles} uses, the bound is $0.0144$,
+and what Lemma~\ref{lem:infpoles} consumes there is only $|T_2|<1$.
 \end{proof}
 
 \begin{remark}[why Remark~\ref{lem:cos} is not used]\label{rem:cosgap}
@@ -2312,8 +2379,9 @@ not elsewhere.
 The travel resolvent $G^T_0=\Sigma_0/(1-\Sigma_1)$ is transcendental over $\Q(x)$. This is
 unconditional: it uses no growth hypothesis, no asymptotic theorem, and no statement about the
 strand-walk model. Its one numerical input is the contour bound of Lemma~\ref{lem:T2abs}, of which
-it consumes only $|T_2(m\pi)|<1$, against a computed worst value $0.027$; the arithmetic model of
-that certificate is stated with the lemma.
+it consumes only $|T_2(m\pi)|<1$, against a computed worst value $0.027$; that bound is a verified
+enclosure over the parameter region, not a sampled one, and its arithmetic model is stated with the
+lemma.
 \end{theorem}
 
 \begin{proof}
@@ -3455,7 +3523,7 @@ Theorem~\ref{thm:star} & a quantitative Taylor bound on a $q$-phase \\
 Lemma~\ref{app:rep2} & the $q$-Airy function; a Gaussian expectation \\
 Lemma~\ref{app:cum} & cumulant bounds; Gaussian integration by parts \\
 Lemma~\ref{lem:Bbounded} & $\log\Gamma$ with an explicit error term; $\log(q;q)_\infty$ \\
-Lemma~\ref{lem:T2abs} & Mellin--Barnes contour shifting with residue accounting \\
+Lemma~\ref{lem:T2abs} & Mellin--Barnes contour shifting; a verified contour-integral enclosure \\
 Lemma~\ref{lem:atomN}, confluence & Bessel $J_\nu$ at half-integer order \\
 \hline
 \end{tabular}
