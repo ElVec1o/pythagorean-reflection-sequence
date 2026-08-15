@@ -229,6 +229,32 @@ representation of degree $n$. This is a much more rigid demand than a faithful a
 isometries of $\R^n$, and it is the form in which we propose Problem~\ref{prob:embed} be attacked.
 \end{remark}
 
+\begin{remark}[the point group, measured]\label{rem:pointgroup}
+Proposition~\ref{prop:reduce} says the linear part carries everything, so the object to measure
+is the point group $\pi\circ\rho_a\colon W_n\to O(n)$, not $\rho_a$. If the point group is
+injective then so is $\rho_a$, so a faithful point group would settle
+Problems~\ref{prob:alternative}, \ref{prob:embed} and \ref{prob:fp} together; the converse
+fails, and a deviation of the point group is not a deviation of $\rho_a$. The point group has not
+previously been measured on its own. Running it against the envelope at two independent primes
+$2^{61}-1$ and $2^{62}-57$, at Class C leg tuples, gives agreement to the following depths:
+\[
+\begin{array}{r|cccccc}
+ n & 2 & 3 & 4 & 5 & 6\\\hline
+ \text{legs} & (1,2) & (1,2,3) & (1,2,3,5) & (3,1,4,2,5) & (1,2,3,5,7,4)\\
+ \text{agrees to depth} & \textbf{2} & 22 & 17 & 15 & 13
+\end{array}
+\]
+and a second tuple at $n=3$, namely $(2,5,3)$, and at $n=4$, namely $(3,1,4,2)$, give the same
+depths as the first. The $n=2$ column is a negative control and it fires: there the point group
+lies in $O(2)$, which is solvable, while $W_2$ contains a free group of rank two, so a deviation
+is forced, and it occurs at depth $3$, the earliest depth not already fixed by the
+$(R_0R_2)^2=1$ relation. For $n\ge3$ no deviation is found. This is HEURISTIC and decides
+nothing: it is consistent both with faithfulness and with a horizon beyond the computed range.
+What it does establish, at each tuple listed, is that the point group is injective on the ball of
+the stated radius, hence so is $\rho_a$; at $n=3$ that improves the previously recorded depth for
+$\rho_a$ from $19$ to $22$, and does so for the stronger object.
+\end{remark}
+
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
 It does not decide Problem~\ref{prob:embed} for any $n\ge3$, and it does not touch
 Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ into $O(n)$ need not be by
