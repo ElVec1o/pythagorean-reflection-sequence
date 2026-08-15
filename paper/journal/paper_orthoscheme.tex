@@ -7,6 +7,7 @@
 \usepackage{lmodern}
 \usepackage[final,expansion=false]{microtype}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{array}
 \usepackage{enumitem}
 \usepackage{xcolor}
@@ -74,15 +75,19 @@ integer polynomial $K_{n+1}$, with growth rate $r_n=1+2\cos\bigl(2\pi/(n+3)\bigr
 (Theorem~\ref{thm:envelope}). Third, for $n\ge3$ and every positive leg tuple, every element of
 $\ker\rho_a$ of word length $6$ is $(R_iR_{i+1})^{\pm3}$ for a pair of consecutive facets
 meeting at angle $\pi/3$ (Theorem~\ref{thm:len6}). Fourth, a complete classification of the
-rank-two relations: $\ker(W_n\to W(a))$ meets a rank-two standard parabolic nontrivially if and
-only if the leg sequence has two equal legs at an endpoint of the staircase or three
-consecutive equal legs (Theorem~\ref{thm:rank2}). The Diophantine input to the fourth is that
+rank-two relations for rational leg tuples: for $a\in\Q_{>0}^n$, $\ker(W_n\to W(a))$ meets a
+rank-two standard parabolic nontrivially if and only if the leg sequence has two equal legs at
+an endpoint of the staircase or three consecutive equal legs (Theorem~\ref{thm:rank2}). The
+rationality hypothesis is not removable: at the real tuple $a=(\sqrt3,1,5)$ the endpoint pair
+closes at angle $\pi/3$ with no two legs equal (Remark~\ref{rem:rank2-rational}). The
+Diophantine input to the fourth is that
 three quartics in the flanking legs have only trivial rational points, their Jacobians being
 the rank-zero curves \texttt{24a1}, \texttt{72a2} and $y^2=x^3-x$.
 
 Together these determine the collision depth
 $\cd_n(a)=\inf\{d:u_d(a)<[t^d]\,W_n(t)\}$, which equals $K(\ker\rho_a)/2$ and is at least $3$
-for every positive leg tuple, from the two positional statistics $(e,t)$ of the leg sequence:
+for every positive leg tuple, from the two positional statistics $(e,t)$ of the leg sequence,
+again for $a\in\Q_{>0}^n$:
 $\cd_n=3$ when three consecutive legs are equal, $\cd_n=4$ when only an endpoint pair is equal,
 and on the remaining stratum $e=t=0$, $\cd_n=\infty$ exactly when $\rho_a$ is injective and
 $\cd_n\ge4$ otherwise (Theorem~\ref{thm:cd-general}). The first two cases are unconditional.
@@ -748,12 +753,21 @@ so that
 \[
 W_n(t)=\frac{(1+t)^{\lfloor n/2\rfloor+1}}{K_{n+1}(t)} .
 \]
-The reciprocals of the roots of $K_{n+1}$ in $(1/3,1)$ are the numbers
-$1+2\cos\frac{2k\pi}{n+3}$, and the growth rate is the largest of them,
+The roots of $K_{n+1}$ in $(1/3,\infty)$ are exactly the numbers
+$\bigl(1+2\cos\frac{2k\pi}{n+3}\bigr)^{-1}$ for $1\le k<(n+3)/3$; these are all of the positive
+roots of $K_{n+1}$, and the smallest of them is the radius of convergence of $W_n(t)$. Hence
+the sphere sizes $u_d=[t^d]\,W_n(t)$ satisfy $\limsup_{d\to\infty}u_d^{1/d}=r_n$, and the ball
+sizes $b_d=\sum_{e\le d}u_e$ satisfy $\lim_{d\to\infty}b_d^{1/d}=r_n$, with
 \[
 r_n=1+2\cos\frac{2\pi}{n+3}.
 \]
 \end{theorem}
+
+The interval is $(1/3,\infty)$ and not $(1/3,1)$: roots above $1$ occur, the first at $n=4$
+where $K_5$ has the root $1.8019\ldots$ alongside $1/r_4=0.4450\ldots$, and again at $n=5$
+(the root $1$ exactly), $n=7$ ($2.6180\ldots$) and $n=10$ ($3.4389\ldots$). Only the smallest
+positive root enters $r_n$, so the conclusion is unaffected. The root set is certified exactly,
+as a polynomial identity over $\Z$, for $2\le n\le30$ (\S\ref{sec:cert}).
 
 \begin{proof}
 $W_n$ is a right-angled Coxeter group, so its finite standard parabolics are exactly the cliques
@@ -801,12 +815,47 @@ J_m=0\iff\cot m\theta=c=-\cot2\theta
 \iff\frac{\sin\bigl((m+2)\theta\bigr)}{\sin m\theta\,\sin2\theta}=0
 \iff(m+2)\theta\in\pi\Z .
 \]
-With $m=n+1$ the roots are exactly $\theta=k\pi/(n+3)$, $1\le k<(n+3)/3$. Inverting
-$\cos^2\theta=(1+t)/(4t)$ gives $t=1/(4\cos^2\theta-1)=1/(1+2\cos2\theta)$, so the corresponding
-$t$-values are $1/\bigl(1+2\cos\frac{2k\pi}{n+3}\bigr)$. As $\theta$ increases with $t$, the
-smallest positive root is $k=1$; it exceeds $1/3$ because $1+2\cos\frac{2\pi}{n+3}<3$, and
-$1+t>0$ there, so it is a root of $K_{n+1}$ and not of the stripped factor. Hence
-$r_n=1+2\cos\frac{2\pi}{n+3}$.
+Both divisions in that chain are legitimate. For $\theta\in(0,\pi/3)$ one has $\sin2\theta\ne0$;
+and if $\sin m\theta=0$ then $J_m=\varrho^m\cos m\theta=\pm\varrho^m\ne0$, so such a $\theta$ is
+not a root and may be set aside before dividing.
+
+With $m=n+1$ the roots are exactly $\theta=k\pi/(n+3)$ with $0<\theta<\pi/3$, that is
+$1\le k<(n+3)/3$. Inverting $\cos^2\theta=(1+t)/(4t)$ gives $t=1/(4\cos^2\theta-1)
+=1/(1+2\cos2\theta)$, so the corresponding $t$-values are
+$t_k=1/\bigl(1+2\cos\frac{2k\pi}{n+3}\bigr)$, and $1+2\cos\frac{2k\pi}{n+3}\in(0,3)$ on that
+index range, so $t_k>1/3$. Since $1+t_k>0$, each $t_k$ is a root of $K_{n+1}$ and not of the
+stripped factor $(1+t)^{\lfloor(n+1)/2\rfloor}$. Conversely $K_{n+1}$ has no root in $(0,1/3]$
+by the previous paragraph, so its roots in $(1/3,\infty)$, equivalently its positive roots, are
+exactly the $t_k$. As $\theta$ is strictly increasing in $t$, the smallest of them is $t_1$.
+
+It remains to connect that root to the coefficients, which no step so far does: a root of the
+denominator is not by itself a singularity of the quotient, and a singularity of the quotient
+is not by itself the radius of convergence. Write $R$ for the radius of convergence of
+$W_n(t)=\sum_{d\ge0}u_dt^d$.
+
+First, $0<R<\infty$. The $u_d$ are sphere sizes for the generating set $\{R_0,\dots,R_n\}$, so
+$0\le u_d\le(n+1)^d$ and $R\ge1/(n+1)$. For $n\ge2$ the vertices $0$ and $1$ of $\Gamma_n$ are
+non-adjacent, so $\langle R_0,R_1\rangle$ is infinite dihedral and $W_n$ is infinite; hence no
+sphere is empty, since $u_d=0$ would give $B_d=B_{d-1}$ and therefore $W_n=B_{d-1}$ finite.
+So $u_d\ge1$ for all $d$, the series diverges at $t=1$, and $R\le1$.
+
+Second, $R\ge t_1$. The coefficients $u_d$ are non-negative, so by Pringsheim's theorem the
+point $t=R$ is a singularity of $W_n(t)$. A rational function is analytic off the zero set of
+any denominator representing it, so $K_{n+1}(R)=0$. Since $R>0$, the previous paragraph gives
+$R\in\{t_k\}$ and therefore $R\ge t_1$.
+
+Third, $R\le t_1$. Here $K_{n+1}(t_1)=0$ while the numerator satisfies
+$(1+t_1)^{\lfloor n/2\rfloor+1}\ne0$, because $t_1>1/3>-1$. Cancelling the greatest common
+divisor of numerator and denominator cannot remove the factor $(t-t_1)$ from the denominator,
+since a common factor would have to vanish at $t_1$ and the numerator does not. So in lowest
+terms the denominator still vanishes at $t_1$, that is, $W_n$ has a pole at $t_1$, and a power
+series cannot converge on a disc containing a pole of its sum. Hence $R\le t_1$.
+
+Therefore $R=t_1=1/r_n$ with $r_n=1+2\cos\frac{2\pi}{n+3}$, and by Cauchy--Hadamard
+$\limsup_du_d^{1/d}=1/R=r_n$. Since $r_n\ge r_2=\varphi>1$, the ball generating function
+$W_n(t)/(1-t)$ has the same radius $R$, and the ball sizes are submultiplicative,
+$b_{d+e}\le b_db_e$, so Fekete's lemma upgrades the upper limit to a limit there:
+$\lim_db_d^{1/d}=r_n$.
 \end{proof}
 
 \begin{remark}[Not a path spectral radius]\label{rem:notpath}
@@ -825,9 +874,15 @@ identity $\binom{n-k+2}{k}=\binom{n-k+1}{k}+\binom{n-k+1}{k-1}$, and agree at th
 gives a second reading of the roots. The characteristic equation $x^2=x+y$ has roots
 $\alpha,\beta=(1\pm\sqrt{1+4y})/2$, the Binet formula yields
 $P_m(y)=(\alpha^m-\beta^m)/(\alpha-\beta)$, so $P_m(y)=0$ iff $(\alpha/\beta)^m=1$; setting
-$\alpha/\beta=e^{2\pi ij/m}$ gives $y_j=-1/\bigl(4\cos^2(\pi j/m)\bigr)$, and translating back
-through $y=-1/(1+t)$ with $4\cos^2\vartheta-1=1+2\cos2\vartheta$ returns the same values
-$1+2\cos\frac{2\pi j}{n+3}$. The Pascal step, the Binet formula and the translation identity are
+$\alpha/\beta=e^{2\pi ij/m}$ gives $y_j=-1/\bigl(4\cos^2(\pi j/m)\bigr)$. Translating back
+through the substitution of the theorem, $y=-t/(1+t)$, that is $t=-y/(1+y)$, and using
+$4\cos^2\vartheta-1=1+2\cos2\vartheta$, returns
+$t_j=1/\bigl(4\cos^2(\pi j/m)-1\bigr)=1/\bigl(1+2\cos\frac{2\pi j}{n+3}\bigr)$ at $m=n+3$,
+which are the roots located in the proof. The variant $y=-1/(1+t)$ would return
+$1+2\cos\frac{2\pi j}{n+3}$ in place of its reciprocal, that is the rate in place of the root;
+it is the substitution error the proof of Theorem~\ref{thm:envelope} warns against, and it is
+harmless here only because the two lists are reciprocal.
+The Pascal step, the Binet formula and the translation identity are
 machine-checked (\S\ref{sec:cert}); the induction that assembles the Pascal step into the
 identification $c_{\Gamma_n}=P_{n+3}$ is a paper proof.
 \end{remark}
@@ -1053,6 +1108,20 @@ consecutive pair contributes an element of $\ker\rho_a$, since a boundary pair w
 $e\ge1$ with $\theta=\pi/4$ again and an interior pair would force $t\ge1$: (ii).
 \end{proof}
 
+\begin{remark}[The rationality hypothesis is necessary]\label{rem:rank2-rational}
+Theorem~\ref{thm:rank2} is false over $\R$, and fails already at the endpoint pair. Take
+$n=3$ and $a=(\sqrt3,1,5)$. By \eqref{eq:cosines},
+$\cos^2\theta_{0,1}=a_2^2/(a_1^2+a_2^2)=1/4$, so $\theta_{0,1}=\pi/3$ and
+$(R_0R_1)^3\in\ker\rho_a$ is an element of length $6$, while $e(a)=t(a)=0$. The step that
+breaks is the one marked in Lemma~\ref{lem:boundary}: over $\Q$ the value $\cos^2\theta=1/4$
+forces $(a_1/a_2)^2=3$ and is excluded, and over $\R$ it is not. The same substitution
+$a_1=\sqrt3\,a_2$ produces such a tuple in every dimension $n\ge2$, so no reformulation of
+$(e,t)$ repairs the statement over $\R$; what would be needed is a classification of the real
+tuples on which a consecutive cosine is a Niven value, which is a different problem and is not
+treated here. The hypothesis is used only through Lemma~\ref{lem:boundary},
+Lemma~\ref{lem:cremona-empty} and Lemma~\ref{lem:diagonal}.
+\end{remark}
+
 Following the terminology of the three-dimensional analysis, call a leg tuple \emph{Class C}
 when its coordinates are pairwise distinct. Class C tuples have $e=t=0$, so
 Theorem~\ref{thm:rank2}(iii) applies, but so do tuples with an interior equal pair such as
@@ -1250,7 +1319,8 @@ pair appears, that is as soon as the run length $R=\max_i\#\{j:a_j=a_i\}$ is at 
 $n=3$ this rule coincides with the $(e,t)$ rule, because every consecutive equal pair in a
 three-term sequence is automatically at an endpoint. At $n\ge4$ the two diverge: the orthoscheme
 $(1,2,2,3)$ has an interior equal pair, so $R=2$ but $(e,t)=(0,0)$, and
-Theorem~\ref{thm:cd-general} places it in the first case; empirically its layer counts
+Theorem~\ref{thm:cd-general} places it on the stratum $e=t=0$, its third and fourth cases,
+where the theorem asserts no finite collision depth; empirically its layer counts
 $1,5,14,33,75,169,\dots$ are identical to those of the Class C tuple $(1,2,3,5)$ through every
 computed depth, falsifying the run-length rule.
 \end{remark}
@@ -1505,51 +1575,57 @@ determined by the positional statistics $(e,t)$. Is there a finer positional inv
 determines the entire sequence $u_d(a)$, not only its first deviation?
 \end{enumerate}
 
-\begin{table}[ht!]
-\centering
 \footnotesize
 \renewcommand{\arraystretch}{1.15}
-\begin{tabular}{l l l}
+\begin{longtable}{@{}p{0.26\textwidth} p{0.10\textwidth} p{0.45\textwidth}@{}}
 \toprule
-Statement & Status & Note \\
+Statement & Status & Lean coverage, and what remains on paper \\
 \midrule
-Lemma~\ref{lem:normals} (facet normals)          & proved (Lean) & \texttt{OrthoschemeNormals} \\
-Lemma~\ref{lem:facet-int} (facet intersections)  & proved                  & \\
-Theorem~\ref{thm:rigidity} (generic rigidity)    & proved                  & \\
-Corollary~\ref{cor:one-shape}                    & proved                  & \\
-Theorem~\ref{thm:dichotomy} (dichotomy)          & proved (Lean) & \texttt{EnvelopeDichotomy} \\
-Corollaries~\ref{cor:alternative}, \ref{cor:cd-is-K} & proved              & \\
-Lemma~\ref{lem:no-length-four} ($K\ge6$)         & proved                  & \\
-Lemma~\ref{lem:independence} (unique relation)   & proved                  & \\
-Theorem~\ref{thm:len6} (length six is dihedral)  & proved, reviewed        & all $n\ge3$; nonzero legs suffice, Rem.~\ref{rem:len6-hyp} \\
-Theorem~\ref{thm:envelope} (envelope)            & proved (Lean, partly) & \texttt{EnvelopeDichotomy}, \texttt{NdimRate} \\
-Corollary~\ref{cor:asymptotic}                   & proved (Lean) & \texttt{NdimRate} \\
-Lemma~\ref{lem:boundary} (boundary pairs)        & proved (Lean) & \texttt{RankTwoExclusion} \\
-Lemma~\ref{lem:cremona-empty} (three quartics)   & proved                  & rank-$0$ descents recomputed, not formalised \\
-Lemma~\ref{lem:diagonal} (equal flanking legs)   & proved                  & \\
-Theorem~\ref{thm:rank2} (rank-two classification)& proved                  & interior half uses Lemma~\ref{lem:cremona-empty} \\
-Lemma~\ref{lem:uniform-detQ} ($\det Q_n$)        & proved (Lean) & \texttt{OrthoschemeDet} \\
-Corollary~\ref{cor:K-eq-six} ($K=6\iff t\ge1$)   & proved                  & \\
-Theorem~\ref{thm:cd-general}, case $t\ge1$       & proved                  & $\cd_n=3$ \\
-Theorem~\ref{thm:cd-general}, case $e\ge1,t=0$   & proved                  & $\cd_n=4$, unconditional \\
-Theorem~\ref{thm:cd-general}, case $e=t=0$       & conditional             & equivalent to Conj.~\ref{conj:master-C} \\
-Conjecture~\ref{conj:master-C} (Class C)         & conjecture              & checked to depth $10$ ($n=3$), $8$ ($n=4$) \\
-Proposition~\ref{prop:plane} (the plane)         & proved                  & \\
-Theorem~\ref{thm:barrier} (ambient obstruction)  & proved                  & \\
+\endfirsthead
+\toprule
+Statement & Status & Lean coverage, and what remains on paper \\
+\midrule
+\endhead
+Lemma~\ref{lem:normals} (facet normals)          & proved$^\star$ & \texttt{OrthoschemeNormals}: the support bookkeeping, with the support pattern taken as a definition; the derivation of the normals from the geometry is on paper \\
+Lemma~\ref{lem:facet-int} (facet intersections)  & proved$^\star$ & none \\
+Lemma~\ref{lem:independence} (unique relation)   & proved$^\star$ & none \\
+Theorem~\ref{thm:rigidity} (generic rigidity)    & proved$^\star$ & none \\
+Corollary~\ref{cor:one-shape}                    & proved$^\star$ & none \\
+Theorem~\ref{thm:dichotomy} (dichotomy)          & proved$^\star$ & \texttt{EnvelopeDichotomy}: the horizon arithmetic and two abstract finset-counting lemmas; no word metric and no group \\
+Corollaries~\ref{cor:alternative}, \ref{cor:cd-is-K} & proved$^\star$ & none \\
+Lemma~\ref{lem:no-length-four} ($K\ge6$)         & proved$^\star$ & none \\
+Theorem~\ref{thm:len6} (length six is dihedral)  & proved$^\star$, reviewed & \texttt{ReflectionTriple}: step~(2) in full; steps (1) and (3) on paper. All $n\ge3$; nonzero legs suffice, Rem.~\ref{rem:len6-hyp} \\
+Theorem~\ref{thm:envelope} (envelope)            & proved$^\star$ & \texttt{EnvelopeDichotomy}, \texttt{NdimRate}: the recurrence ansatz, the root condition, the inversion $t=1/(1+2\cos2\theta)$. Steinberg, the clique count and the Pringsheim step are on paper \\
+Corollary~\ref{cor:asymptotic}                   & proved$^\star$ & \texttt{NdimRate}: the identity $3-r_n=4\sin^2(\pi/(n+3))$ in full; the asymptotic $\sim4\pi^2/(n+3)^2$ on paper \\
+Lemma~\ref{lem:boundary} (boundary pairs)        & proved$^\star$ & \texttt{RankTwoExclusion}: the five Niven cases over $\Q$ in full; the cosine formula \eqref{eq:cosines} and the extended Niven theorem on paper \\
+Lemma~\ref{lem:cremona-empty} (three quartics)   & proved$^\star$ & none; rank-$0$ descents recomputed, not formalisable in current Mathlib \\
+Lemma~\ref{lem:diagonal} (equal flanking legs)   & proved$^\star$ & none \\
+Theorem~\ref{thm:rank2} (rank-two classification)& proved$^\star$ & none; interior half uses Lemma~\ref{lem:cremona-empty}. Rational legs are necessary, Rem.~\ref{rem:rank2-rational} \\
+Lemma~\ref{lem:uniform-detQ} ($\det Q_n$)        & proved$^\star$ & \texttt{OrthoschemeDet}: the recurrence-to-closed-form algebra, with the tridiagonal expansion as a hypothesis; the file contains no \texttt{Matrix.det} \\
+Corollary~\ref{cor:K-eq-six} ($K=6\iff t\ge1$)   & proved$^\star$ & none \\
+Theorem~\ref{thm:cd-general}, case $t\ge1$       & proved$^\star$ & none; $\cd_n=3$ \\
+Theorem~\ref{thm:cd-general}, case $e\ge1,t=0$   & proved$^\star$ & none; $\cd_n=4$, unconditional \\
+Theorem~\ref{thm:cd-general}, case $e=t=0$       & conditional    & equivalent to Conj.~\ref{conj:master-C} \\
+Conjecture~\ref{conj:master-C} (Class C)         & conjecture     & checked to depth $10$ ($n=3$), $8$ ($n=4$) \\
+Proposition~\ref{prop:plane} (the plane)         & proved$^\star$ & none \\
+Theorem~\ref{thm:barrier} (ambient obstruction)  & proved$^\star$ & none \\
 Problem~\ref{prob:alternative}                   & open in both directions & \\
 Problem~\ref{prob:embed} (ambient embedding)     & open in both directions & false at $n=2$ \\
 Problem~\ref{prob:fp} (finite presentation)      & open in both directions & answered ``no'' at $n=2$ \cite{isola-piergallini} \\
 \bottomrule
-\end{tabular}
-\caption{Status of the numbered statements. ``Lean'' means that the indicated Lean~4 file, which
-builds against Mathlib with no \texttt{sorry}, covers the statement; ``partly'' means that it
-covers some steps of the proof and not others. ``Reviewed'' means that the written proof has
-been re-examined in full against a hostile reading, independently of its drafting; the
-hypothesis audit that review produced is Remark~\ref{rem:len6-hyp}, and the status of the
-excluded dimension is Remark~\ref{rem:len6-n2}. The scope of each Lean file is described in
-\S\ref{sec:cert}. The three rows at the bottom are the whole of what the paper leaves open.}
+\caption{Status of the numbered statements. ``Proved'' means a complete written proof, and
+nothing more. The star marks formalisation debt: the statement is not verified in Lean~4, and
+in this paper \emph{every} proved statement carries it, because no numbered statement is
+formalised end to end. The third column states exactly which steps the Lean files do cover;
+Table~\ref{tab:lean} gives the declarations and their hypotheses, and \S\ref{sec:cert} lists
+what blocks the rest. ``Reviewed'' means that the written proof has been re-examined in full
+against a hostile reading, independently of its drafting; the hypothesis audit that review
+produced is Remark~\ref{rem:len6-hyp}, and the status of the excluded dimension is
+Remark~\ref{rem:len6-n2}. The three rows at the bottom are the whole of what the paper leaves
+open.}
 \label{tab:status}
-\end{table}
+\end{longtable}
+\normalsize
 
 \section{Related work}\label{sec:related}
 
@@ -1631,95 +1707,259 @@ $-1/(1+t)$ in place of $-t/(1+t)$ gives a different rational function already at
 polynomial $1-2t-3t^2+4t^3-t^4$ is not the $n=7$ denominator, being the negated reciprocal of
 $1-4t+3t^2+2t^3-t^4$ and predicting $6$ elements at depth $1$ in a group with $8$ generators.
 
-\paragraph{Lean 4.}
-Six files in \texttt{lean/with\_mathlib/} build against Mathlib with no \texttt{sorry}.
+The root statement of Theorem~\ref{thm:envelope} is certified separately and exactly, with no
+floating point in the decisive step, by
+\texttt{code/zeta\_probe/tools/verify\_scripts/ortho\_envelope\_roots.py}. For $2\le n\le30$ it
+checks, over $\Z$: the identity $J_m=(1+t)^{\lfloor m/2\rfloor}K_m$; the agreement of the
+Steinberg expansion with the $J$ recurrence; the exactness of the division; the printed
+denominators of Table~\ref{tab:n-dim-rates}; and the root identification, in the form that the
+reciprocal polynomial of $K_{n+1}$ equals the monic integer polynomial whose roots are the
+numbers $1+2\cos(2k\pi/m)$ for $1\le k\le\lfloor(m-1)/2\rfloor$, $k\ne m/3$, that polynomial
+being built from $2T_m(x/2)-2$ rather than from any numerical evaluation of a cosine. The count
+of real roots in $(1/3,\infty)$ is then obtained by Sturm sequences over $\Q$ and matched
+against $\#\{k:1\le k<m/3\}$, and the same method places the smallest root at $k=1$. The four
+roots at or above $1$ quoted after the theorem are confirmed to be roots of $K_{n+1}$ by exact
+rational bracketing. The script also verifies the substitution of Remark~\ref{rem:pell}
+symbolically, in both its correct and its erroneous form. As a cross-check only, the roots are
+recomputed numerically at $30$ and at $60$ decimal digits and agree with the closed forms to
+better than $10^{-20}$ at both precisions. The dominant-pole step itself is not a computation
+and is not certified by any script; it is the paper argument in the proof of
+Theorem~\ref{thm:envelope}.
 
-\begin{center}\footnotesize
-\renewcommand{\arraystretch}{1.15}
-\begin{tabular}{ll}
+\paragraph{Lean 4.}
+Six files in \texttt{lean/with\_mathlib/} elaborate against Mathlib with no \texttt{sorry} and
+no \texttt{native\_decide}, and the $52$ declarations named below exist under exactly those
+names. That is the whole of what the Lean files certify, and it is less than it may appear:
+\emph{no numbered statement of this paper is formalised end to end}, so no statement of this
+paper carries the label \textsc{verified}. Table~\ref{tab:lean} says, per file, what the
+declarations establish and what they take as hypotheses. The gap in every row is the same
+one, and it is not incidental: Mathlib has Coxeter systems and their length function
+(\texttt{Mathlib.GroupTheory.Coxeter.Length}) but no growth series, no Steinberg identity, no
+standard parabolics, and no graph products, so the objects these statements are about cannot
+yet be written down.
+
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.24\textwidth}p{0.70\textwidth}@{}}
 \toprule
-Paper result & Lean declaration \\
+File (declarations) & Declarations; what they establish; what they assume \\
 \midrule
-\multicolumn{2}{l}{\emph{\texttt{OrthoschemeNormals.lean}} (7 theorems)}\\
-Lemma~\ref{lem:normals}, support pattern & \texttt{supp\_disjoint}\\
-Lemma~\ref{lem:normals}, orthogonality on disjoint supports
-  & \texttt{mul\_eq\_zero\_of\_disjoint}, \texttt{sum\_eq\_zero\_of\_disjoint}\\
-Lemma~\ref{lem:normals}, the three adjacent products
-  & \texttt{dot\_zero\_one}, \texttt{dot\_interior}, \texttt{dot\_last}\\
-Lemma~\ref{lem:normals}, combined & \texttt{orthogonality\_pattern}\\
+\endfirsthead
+\toprule
+File (declarations) & Declarations; what they establish; what they assume \\
+\midrule
+\endhead
+\texttt{OrthoschemeNormals} (7)\newline Lemma~\ref{lem:normals}
+& \texttt{supp\_disjoint}, \texttt{mul\_eq\_zero\_of\_disjoint},
+  \texttt{sum\_eq\_zero\_of\_disjoint}, \texttt{dot\_zero\_one}, \texttt{dot\_interior},
+  \texttt{dot\_last}, \texttt{orthogonality\_pattern}.\newline
+  \emph{Establishes:} for the finite sets $\mathrm{supp}(n,j)$ equal to $\{1\}$, $\{j,j+1\}$,
+  $\{n\}$, indices differing by at least $2$ give disjoint sets; vectors supported on disjoint
+  sets have vanishing coordinatewise product and vanishing sum; the three scalar expressions
+  $l_2$, $-l_jl_{j+2}$, $-l_{n-1}$ are nonzero for positive legs.\newline
+  \emph{Assumes:} the support pattern is a \emph{definition} in the file, not a consequence of
+  the orthoscheme geometry. The step ``the facet opposite $V_j$ has normal
+  $l_{j+1}e_j-l_je_{j+1}$'', which is the content of Lemma~\ref{lem:normals}, is on paper.
+  No Euclidean space and no facet occur in the file. \\
 \addlinespace
-\multicolumn{2}{l}{\emph{\texttt{EnvelopeDichotomy.lean}} (12 theorems)}\\
-Thm.~\ref{thm:dichotomy}, horizon arithmetic
-  & \texttt{two\_mul\_lt\_of\_lt\_horizon}, \texttt{split\_lengths}\\
-Thm.~\ref{thm:dichotomy}, even case & \texttt{card\_image\_lt\_of\_collision}\\
-Thm.~\ref{thm:dichotomy}, odd case & \texttt{card\_lt\_of\_escapes}\\
-Thm.~\ref{thm:envelope}, three-term recurrence
-  & \texttt{cos\_three\_term}, \texttt{sin\_three\_term}, \texttt{J\_recurrence}\\
-Thm.~\ref{thm:envelope}, root condition
-  & \texttt{cot\_add\_cot\_eq\_zero\_iff}, \texttt{J\_eq\_zero\_iff}\\
-Thm.~\ref{thm:envelope}, recovering $t$ from $\theta$
-  & \texttt{t\_of\_theta}, \texttt{rate\_of\_theta}\\
-Remark~\ref{rem:notpath} & \texttt{rate\_ne\_path\_spectral\_radius}\\
+\texttt{EnvelopeDichotomy} (12)\newline Theorem~\ref{thm:dichotomy},\newline
+Theorem~\ref{thm:envelope},\newline Remark~\ref{rem:notpath}
+& \texttt{two\_mul\_lt\_of\_lt\_horizon}, \texttt{split\_lengths},
+  \texttt{card\_image\_lt\_of\_collision}, \texttt{card\_lt\_of\_escapes},
+  \texttt{cos\_three\_term}, \texttt{sin\_three\_term}, \texttt{J\_recurrence},
+  \texttt{cot\_add\_cot\_eq\_zero\_iff}, \texttt{J\_eq\_zero\_iff}, \texttt{t\_of\_theta},
+  \texttt{rate\_of\_theta}, \texttt{rate\_ne\_path\_spectral\_radius}.\newline
+  \emph{Establishes:} the horizon arithmetic $d<\lceil K/2\rceil\Rightarrow2d<K$ and the
+  parity split of $K$; two finite-set counting lemmas, one for a collision inside a finset and
+  one for a point of a finset whose image escapes a covered target, each giving a strict drop
+  in cardinality; that the ansatz $\varrho^m(\cos m\theta-c\sin m\theta)$ satisfies the
+  recurrence of \eqref{eq:Kdef}; the equivalence $\cot A+\cot B=0\iff\sin(A+B)=0$ and its
+  consequence for the ansatz; the inversion $t(1+2\cos2\theta)=1$; and that
+  $2\cos(2\pi/5)\ne2\cos(\pi/4)$.\newline
+  \emph{Assumes:} there is no word metric, no group and no clique polynomial in the file. The
+  two counting lemmas are about an arbitrary finset and an arbitrary map; that the spheres of
+  $G$ and $G/N$ are such finsets and such a map is the paper proof of
+  Theorem~\ref{thm:dichotomy}. The Steinberg identity, the clique count, and the Pringsheim
+  step of Theorem~\ref{thm:envelope} do not appear. \\
 \addlinespace
-\multicolumn{2}{l}{\emph{\texttt{NdimRate.lean}} (7 theorems)}\\
-Remark~\ref{rem:pell}, Pascal step & \texttt{pascal\_step} (no axioms), \texttt{coeff\_pascal}\\
-Remark~\ref{rem:pell}, Binet formula & \texttt{sq\_eq}, \texttt{pell\_binet}\\
-Remark~\ref{rem:pell}, root translation & \texttt{root\_translation}\\
-Corollary~\ref{cor:asymptotic} & \texttt{rate\_residual}, \texttt{three\_sub\_r}\\
+\texttt{NdimRate} (7)\newline Remark~\ref{rem:pell},\newline Corollary~\ref{cor:asymptotic}
+& \texttt{sq\_eq}, \texttt{pell\_binet}, \texttt{root\_translation}, \texttt{rate\_residual},
+  \texttt{three\_sub\_r}, \texttt{pascal\_step}, \texttt{coeff\_pascal}.\newline
+  \emph{Establishes:} the Binet formula in division-free form $(\alpha-\beta)P_m
+  =\alpha^m-\beta^m$ for any sequence satisfying the Pell recurrence; the identity
+  $4\cos^2\vartheta-1=1+2\cos2\vartheta$; and, in full and with the paper's definition of
+  $r_n$, the identity $3-r_n=4\sin^2(\pi/(n+3))$ of Corollary~\ref{cor:asymptotic}; Pascal's
+  rule in the index shape the paper uses.\newline
+  \emph{Assumes:} the induction assembling \texttt{coeff\_pascal} into
+  $c_{\Gamma_n}=P_{n+3}$ is on paper, as is the identification of $P_m$'s roots with the
+  $y_j$; the asymptotic $3-r_n\sim4\pi^2/(n+3)^2$ is not in the file. \\
 \addlinespace
-\multicolumn{2}{l}{\emph{\texttt{RankTwoExclusion.lean}} (10 theorems)}\\
-Lemma~\ref{lem:boundary}, the five Niven values
-  & \texttt{niven\_zero}, \texttt{niven\_one}, \texttt{niven\_quarter},\\
-  & \texttt{niven\_three\_quarter}, \texttt{niven\_half},
-    \texttt{boundary\_no\_relation}\\
-Lemma~\ref{lem:boundary}, $3$ is not a rational square
-  & \texttt{sq\_ne\_three}, \texttt{not\_isSquare\_three\_int}\\
-Boundary cosine nonzero, and $\cos^2\ne\tfrac14$ there
-  & \texttt{no\_length\_two}, \texttt{no\_length\_three\_boundary}\\
+\texttt{RankTwoExclusion} (10)\newline Lemma~\ref{lem:boundary}
+& \texttt{not\_isSquare\_three\_int}, \texttt{sq\_ne\_three}, \texttt{niven\_zero},
+  \texttt{niven\_one}, \texttt{niven\_quarter}, \texttt{niven\_three\_quarter},
+  \texttt{niven\_half}, \texttt{no\_length\_two}, \texttt{no\_length\_three\_boundary},
+  \texttt{boundary\_no\_relation}.\newline
+  \emph{Establishes:} $3$ is not a square in $\Z$ nor in $\Q$; and, for positive rationals
+  $a,b$, each of the five equations $b^2=c(a^2+b^2)$ with
+  $c\in\{0,\tfrac14,\tfrac12,\tfrac34,1\}$ is impossible except $c=\tfrac12$, which forces
+  $a=b$. This is the arithmetic of Lemma~\ref{lem:boundary} in full.\newline
+  \emph{Assumes:} that $\cos^2\theta_{0,1}=a_2^2/(a_1^2+a_2^2)$, that is \eqref{eq:cosines},
+  is on paper; so is the extended Niven theorem, which restricts $c$ to those five values.
+  Mathlib's \texttt{NumberTheory.Niven} covers $\cos\theta\in\Q$ only, not the
+  $\cos^2\theta\in\Q$ form used here. The interior cases are absent. \\
 \addlinespace
-\multicolumn{2}{l}{\emph{\texttt{OrthoschemeDet.lean}} (3 theorems)}\\
-Lemma~\ref{lem:uniform-detQ}, closed form ($\star$) & \texttt{minor\_closed\_form}\\
-Lemma~\ref{lem:uniform-detQ}, boundary step & \texttt{det\_Q}\\
-Lemma~\ref{lem:uniform-detQ}, full statement & \texttt{det\_Q\_of\_recurrence}\\
+\texttt{OrthoschemeDet} (3)\newline Lemma~\ref{lem:uniform-detQ}
+& \texttt{minor\_closed\_form}, \texttt{det\_Q}, \texttt{det\_Q\_of\_recurrence}.\newline
+  \emph{Establishes:} over any commutative ring, a sequence $D$ with the two stated initial
+  values and the stated three-term recurrence satisfies
+  $D_k=\bigl(\prod_{i\le k}a_i^2\bigr)\bigl(1-\sum_{i\le k+1}a_i^2\bigr)$, and a quantity
+  $D_{\mathrm{top}}$ with the stated boundary relation equals $-\prod_ia_i^2$.\newline
+  \emph{Assumes:} the file contains no \texttt{Matrix} and no \texttt{Matrix.det}. That the
+  leading principal minors of $Q_n$ obey that recurrence, and that $\det Q_n$ is given by that
+  boundary relation, are hypotheses of the Lean statements and are proved on paper. So the
+  file certifies the algebra of the tridiagonal expansion, not the determinant identity. \\
 \addlinespace
-\multicolumn{2}{l}{\emph{\texttt{ReflectionTriple.lean}} (13 theorems)}\\
-Thm.~\ref{thm:len6}, reflection calculus
-  & \texttt{inner\_self\_ne\_zero'}, \texttt{refl\_self},
-    \texttt{refl\_of\_inner\_eq\_zero},\\
-  & \texttt{refl\_add}, \texttt{refl\_smul}, \texttt{refl\_neg}, \texttt{refl\_sub},\\
-  & \texttt{refl\_involutive}, \texttt{refl\_injective}, \texttt{inner\_refl\_left}\\
-Thm.~\ref{thm:len6}, cancellation in the ambient group
-  & \texttt{eq\_of\_sub\_eq\_sub}, \texttt{eq\_zero\_of\_sub\_eq\_self}\\
-Thm.~\ref{thm:len6}, step (2): $s_ps_qs_r=-\mathrm{id}$ forces
-  & \texttt{pairwise\_orth\_of\_comp\_eq\_neg}\\
-\quad pairwise orthogonality & \\
+\texttt{ReflectionTriple} (13)\newline Theorem~\ref{thm:len6}, step (2)
+& \texttt{inner\_self\_ne\_zero'}, \texttt{eq\_of\_sub\_eq\_sub},
+  \texttt{eq\_zero\_of\_sub\_eq\_self}, \texttt{refl\_self},
+  \texttt{refl\_of\_inner\_eq\_zero}, \texttt{refl\_add}, \texttt{refl\_smul},
+  \texttt{refl\_neg}, \texttt{refl\_sub}, \texttt{refl\_involutive},
+  \texttt{refl\_injective}, \texttt{inner\_refl\_left},
+  \texttt{pairwise\_orth\_of\_comp\_eq\_neg}.\newline
+  \emph{Establishes:} in an arbitrary real inner product space, with the reflection defined
+  from the inner product and with no dimension hypothesis, the reflection calculus, and then
+  the rigidity statement: if $u,v,w$ are nonzero, $v,w$ are independent, and
+  $s_us_vs_w=-\mathrm{id}$, then $u,v,w$ are pairwise orthogonal. This is step~(2) of the
+  proof of Theorem~\ref{thm:len6} in full, and it is the only full step of a paper proof among
+  the six files.\newline
+  \emph{Assumes:} nothing beyond the hypotheses stated. The reduction of
+  Theorem~\ref{thm:len6} to that configuration, namely the word combinatorics in $W_n$,
+  Carter's rank lemma and the affine argument of step~(3), is on paper. \\
 \bottomrule
-\end{tabular}
-\end{center}
+\caption{The six Lean~4 files, by scope. Each row names every declaration cited from that file,
+what those declarations prove, and what they take as given. No row covers a numbered statement
+of this paper end to end; consequently no statement of the paper is labelled
+\textsc{verified} in Table~\ref{tab:status}, and the star there marks the resulting
+formalisation debt.}
+\label{tab:lean}
+\end{longtable}
+\normalsize
 
 \medskip
 \texttt{NdimRate.lean}, \texttt{OrthoschemeDet.lean} and \texttt{ReflectionTriple.lean} end
 with \verb|#print axioms|, one line per theorem of those three files. Of the twenty-three
 declarations audited, nineteen report exactly the standard axioms \verb|propext|,
 \verb|Classical.choice|, \verb|Quot.sound|, and four report strictly fewer, with
-\texttt{pascal\_step} depending on no axioms at all.
+\texttt{pascal\_step} depending on no axioms at all. The remaining three files carry the same
+\verb|#print axioms| lines but their output has not been tabulated here.
 
 \medskip
-\noindent\textbf{What is not formalised.} \texttt{RankTwoExclusion.lean} covers the boundary
-half of Theorem~\ref{thm:rank2} only; the interior cases rest on the rank-$0$ Mordell descents
-of Lemma~\ref{lem:cremona-empty} and are not formalised. \texttt{EnvelopeDichotomy.lean}
-formalises the arithmetic of Theorem~\ref{thm:dichotomy} and the trigonometry of the root
-identity, but no word metric, no Coxeter group and no clique polynomial: the group theory around
-those steps is on paper. The step identifying the growth rate with the largest root $t_1$ is a
-dominant-pole argument on a rational generating function, proved on paper; so is the induction
-assembling the Pascal step into $c_{\Gamma_n}=P_{n+3}$ in Remark~\ref{rem:pell}. Everything
-downstream of those two inputs is machine-checked. Of Theorem~\ref{thm:len6},
-\texttt{ReflectionTriple.lean} formalises the reflection calculus and the rigidity step (2) in
-an arbitrary real inner product space, with the reflection defined from the inner product and
-no dimension hypothesis; the word combinatorics in $W_n$, Carter's rank lemma, and the affine
-argument of step (3) are paper proofs. Lemma~\ref{lem:facet-int},
-Lemma~\ref{lem:independence}, Lemma~\ref{lem:no-length-four}, Lemma~\ref{lem:diagonal},
-Theorem~\ref{thm:rigidity} and Theorem~\ref{thm:barrier} are paper proofs.
+\noindent\textbf{What is not formalised, and what blocks it.} The following are paper proofs
+with no Lean counterpart at all: Lemma~\ref{lem:facet-int}, Lemma~\ref{lem:independence},
+Lemma~\ref{lem:no-length-four}, Lemma~\ref{lem:cremona-empty}, Lemma~\ref{lem:diagonal},
+Theorem~\ref{thm:rigidity}, Theorem~\ref{thm:rank2}, Corollary~\ref{cor:K-eq-six},
+Theorem~\ref{thm:cd-general}, Proposition~\ref{prop:plane} and Theorem~\ref{thm:barrier},
+together with Corollaries~\ref{cor:one-shape}, \ref{cor:alternative}, \ref{cor:cd-is-K} and
+\ref{cor:plane}. Four obstructions account for all of them.
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em,itemsep=0.25em]
+\item \emph{No growth series.} Mathlib has Coxeter systems and their length function, but no
+sphere or ball counting function, no Poincar\'e series, no Steinberg identity, no standard
+parabolics and no graph products. Everything about $W_n(t)$, $u_d$, $\cd_n$ and $K(N)$ waits
+on that. This blocks Theorem~\ref{thm:dichotomy}, Theorem~\ref{thm:envelope},
+Corollaries~\ref{cor:alternative}, \ref{cor:cd-is-K}, \ref{cor:K-eq-six},
+Lemma~\ref{lem:no-length-four} and Theorem~\ref{thm:cd-general}.
+\item \emph{No Pringsheim theorem.} The dominant-pole step added to the proof of
+Theorem~\ref{thm:envelope} needs the statement that a power series with non-negative
+coefficients has a singularity at its radius of convergence. Mathlib has no such result.
+\item \emph{No Mordell--Weil ranks.} Mathlib has Weierstrass curves but no descent and no rank
+computation, so Lemma~\ref{lem:cremona-empty}, and with it the interior half of
+Theorem~\ref{thm:rank2}, cannot be stated as anything but an axiom. The three ranks were
+recomputed with PARI/GP instead (Remark~\ref{rem:cremona-provenance}).
+\item \emph{No amenability, and no extended Niven.} Mathlib has no amenable-group API, which
+blocks Proposition~\ref{prop:plane} and Theorem~\ref{thm:barrier}; and its Niven theorem is
+the $\cos\theta\in\Q$ form, not the $\cos^2\theta\in\Q$ form of Conway--Jones used in
+\S\ref{sec:rank2}.
+\end{enumerate}
+Of these, (b) is the only one that a self-contained formalisation could plausibly discharge
+without new Mathlib theory, and it is the one whose absence the previous version of this
+section concealed by calling the step ``proved on paper'' while the paper did not contain it.
+That step is now written out.
+
+\appendix
+
+\section{Decomposition into atoms}\label{sec:atoms}
+
+Table~\ref{tab:status} records a status per statement; this appendix records the dependency
+structure behind it. Every numbered statement of the paper appears exactly once. The
+\emph{label} column carries one of: \textsc{proved} (a complete written proof and nothing
+more), \textsc{conditional} (proved modulo a stated open input), \textsc{conjecture},
+\textsc{definition}, \textsc{open}, \textsc{record} (a computation or a bibliographic
+provenance note, not a mathematical claim of this paper). A star on \textsc{proved} marks
+formalisation debt, that is, a statement not verified in Lean~4; here the star is on every
+proved row, since no statement of the paper is formalised end to end (Table~\ref{tab:lean}).
+No row carries \textsc{verified}. The \emph{depends on} column lists the atoms used in the
+proof, not every atom mentioned; ``lit.'' marks an external input. The dependency relation is
+acyclic, and Theorem~\ref{thm:cd-general} (A29) is the target atom.
+
+\footnotesize
+\begin{longtable}{@{}l p{0.34\textwidth} p{0.10\textwidth} p{0.15\textwidth} p{0.16\textwidth}@{}}
+\toprule
+ID & Statement & Label & Depends on & Status \\
+\midrule
+\endfirsthead
+\toprule
+ID & Statement & Label & Depends on & Status \\
+\midrule
+\endhead
+A1  & Lem.~\ref{lem:normals}: the facet normals, and orthogonality exactly off the diagonal band & proved$^\star$ & --- & done \\
+A2  & Lem.~\ref{lem:facet-int}: the facet hyperplanes are distinct and meet as stated & proved$^\star$ & A1 & done \\
+A3  & Lem.~\ref{lem:independence}: the only linear relation among the normals & proved$^\star$ & A1 & done \\
+A4  & Def.~\ref{def:cd}: the collision depth $\cd_n(a)$ & definition & --- & done \\
+A5  & Thm.~\ref{thm:rigidity}: generic rigidity of $\ker\rho_a$ on a co-null set & proved$^\star$ & A1, A3 & done \\
+A6  & Cor.~\ref{cor:one-shape}: one faithful shape answers the generic question & proved$^\star$ & A5 & done \\
+A7  & Thm.~\ref{thm:dichotomy}: spheres agree below $\lceil K(N)/2\rceil$ and drop there & proved$^\star$ & --- & done \\
+A8  & Cor.~\ref{cor:alternative}: the envelope alternative & proved$^\star$ & A7 & done \\
+A9  & Cor.~\ref{cor:cd-is-K}: $\cd_n(a)=K(\ker\rho_a)/2$ & proved$^\star$ & A4, A7 & done \\
+A10 & Lem.~\ref{lem:no-length-four}: no kernel element of length $4$, so $K\ge6$ & proved$^\star$ & A1, A2 & done \\
+A11 & Thm.~\ref{thm:len6}: every length-six kernel element is dihedral, $n\ge3$ & proved$^\star$ & A1, A2, A3, lit.\ (Carter) & done, reviewed \\
+A12 & Rem.~\ref{rem:len6-hyp}: where each hypothesis of A11 is used & proved$^\star$ & A11 & done \\
+A13 & Rem.~\ref{rem:len6-n2}: A11 is undecided at $n=2$, in either direction & open & A11 & open \\
+A14 & Thm.~\ref{thm:envelope}: $W_n(t)$ rational, its positive roots, and $r_n$ & proved$^\star$ & A1, lit.\ (Steinberg) & done \\
+A15 & Rem.~\ref{rem:notpath}: $r_n-1$ is not the spectral radius of $P_{n+1}$ & proved$^\star$ & A14 & done \\
+A16 & Rem.~\ref{rem:pell}: $c_{\Gamma_n}=P_{n+3}$, and the roots a second way & proved$^\star$ & A14 & done \\
+A17 & Cor.~\ref{cor:asymptotic}: $3-r_n=4\sin^2(\pi/(n+3))$ & proved$^\star$ & A14 & done \\
+A18 & Rem.~\ref{rem:oeis}: the four OEIS entries match $W_n(t)$ as far as computed & heuristic & A14 & done \\
+A19 & Lem.~\ref{lem:boundary}: a boundary pair closes iff its two legs are equal & proved$^\star$ & A1, lit.\ (Conway--Jones) & done \\
+A20 & Lem.~\ref{lem:cremona-empty}: the three quartics have only trivial points & proved$^\star$ & lit.\ (rank $0$: \texttt{24a1}, \texttt{72a2}, $y^2=x^3-x$) & done \\
+A21 & Rem.~\ref{rem:cremona-provenance}: the three ranks recomputed in PARI/GP & record & A20 & done \\
+A22 & Lem.~\ref{lem:diagonal}: an interior pair with $a_i=a_{i+2}$ closes iff the triple is equal & proved$^\star$ & A1, lit.\ (Conway--Jones) & done \\
+A23 & Thm.~\ref{thm:rank2}: rank-two relations exist iff $e+t\ge1$, for $a\in\Q_{>0}^n$ & proved$^\star$ & A19, A20, A22 & done \\
+A24 & Rem.~\ref{rem:rank2-rational}: A23 fails over $\R$ at $(\sqrt3,1,5)$ & proved$^\star$ & A19, A23 & done \\
+A25 & Conj.~\ref{conj:master-C}: $\rho_a$ is injective on Class C tuples, $n\ge3$ & conjecture & A23 & open \\
+A26 & Lem.~\ref{lem:uniform-detQ}: $\det Q_n=-\prod_ia_i^2$ & proved$^\star$ & A1 & done, side \\
+A27 & Rem.~\ref{rem:detQ-nonsequitur}: A26 does not imply faithfulness & proved$^\star$ & A26 & done, side \\
+A28 & Cor.~\ref{cor:K-eq-six}: $K(a)=6$ iff $t(a)\ge1$ & proved$^\star$ & A10, A11, A19, A20, A22 & done \\
+A29 & Thm.~\ref{thm:cd-general}: $\cd_n$ from $(e,t)$; target atom & proved$^\star$ / conditional & A9, A10, A23, A28 & done on $t\ge1$ and $t=0<e$; open on $e=t=0$ \\
+A30 & Rem.~\ref{rem:second-case}: what A29 does and does not decide & proved$^\star$ & A29 & done \\
+A31 & Rem.~\ref{rem:R-rule}: the run-length rule fails at $n\ge4$ & heuristic & A29 & done \\
+A32 & Prop.~\ref{prop:plane}: $\rho_a$ is not injective at $n=2$ & proved$^\star$ & A8, lit.\ (amenability) & done \\
+A33 & Cor.~\ref{cor:plane}: the planar horizon is $\cd_2=10$ & proved$^\star$ & A32, lit.\ (companion paper) & done \\
+A34 & Thm.~\ref{thm:barrier}: ambient obstructions exist only at $n=2$ & proved$^\star$ & lit.\ (free subgroups of $SO(3)$) & done \\
+A35 & Rem.~\ref{rem:amenability-fails}: reading of A34 & proved$^\star$ & A34 & done \\
+A36 & Prob.~\ref{prob:alternative}: is $\rho_a$ injective for $n\ge3$? & open & A6, A25, A29 & open \\
+A37 & Prob.~\ref{prob:embed}: does $W_n$ embed in $\Isom(\R^n)$? & open & A34 & open \\
+A38 & Prob.~\ref{prob:fp}: is the generic $n$-orthoscheme group finitely presented? & open & A36, lit.\ \cite{isola-piergallini} & open \\
+\bottomrule
+\caption{The $38$ numbered statements as atoms, with labels, dependencies and status.
+Twenty-two are theorem-like: twenty-one carry \textsc{proved} in full and A29 carries it on two
+of its four cases. All twenty-two carry the formalisation star, so the debt count is $22$ and
+the count of statements at \textsc{verified} is $0$. Two atoms, A26 and A27, are marked
+\emph{side}: they correct an argument used in an earlier version of this material and are not
+on any path to A29. Every other atom lies on a path to A29 or is one of the three open problems
+that A29 leaves.}
+\label{tab:atoms}
+\end{longtable}
+\normalsize
 
 \section*{Acknowledgments}
 
