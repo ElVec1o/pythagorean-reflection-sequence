@@ -37,7 +37,7 @@
 
 \title{Transcendence of a planar reflection--group growth series\\ and its relaxed companion}
 \author{Vico Bonfioli\thanks{Independent researcher. \texttt{vicobonfioli@gmail.com}.
-Code, data, and the Lean~4 formalisation of Lemmas~\ref{lem:transport} and~\ref{lem:atomN}:
+Code, data, and the Lean~4 formalisation of \S\ref{sec:sitecost} and of Lemma~\ref{lem:atomN}:
 \url{https://github.com/ElVec1o/pythagorean-reflection-sequence}.}}
 \date{2026}
 
@@ -102,8 +102,10 @@ $|S_e|\ge0.63\sqrt\tau$, so the gate closes at every travel pole. The
 turning-point
 amplitude atom on the $U$-side, long the special-function obstacle, is an explicit rational inequality
 \emph{formally verified in Lean~4 / Mathlib \cite{MathlibCommunity}} (Lemma~\ref{lem:atomN}), as is
-the site cost law of the model, Lemma~\ref{lem:transport} with Corollary~\ref{cor:localcost}
-(\texttt{SiteCost.lean});
+the whole site cost chain of the model, Lemma~\ref{lem:transport} with
+Corollaries~\ref{cor:localcost}, \ref{cor:lRclosed} and~\ref{cor:marker}
+(\texttt{SiteCost.lean}, \texttt{MarkedSite.lean}, \texttt{PairingMatrix.lean},
+\texttt{Realisation.lean});
 \item[\textup{(iv)}] an orthogonal, analysis-free route via Christol's theorem would settle $U$
 without any of the above: the $p$-kernel of $(u_n\bmod p)$ is computed to be maximally
 non-automatic at $p=3,5$ and machine-checked at $p=3$, though a proof for dense-support series is
@@ -1828,15 +1830,30 @@ $\varepsilon^\ast=1$, which is exactly where that indicator vanishes.
 
 \subsection*{Machine verification of the site cost}
 
-Lemma~\ref{lem:transport}, the step of Corollary~\ref{cor:localcost} that consumes it, the reading
-off of $\alpha_s,\beta_s,\Phi_s$ from Definition~\ref{def:pairing}, the first sentence of
-Proposition~\ref{prop:cut} and the counterexample of Remark~\ref{rem:markerfalse} are formally
-verified in Lean~4 against Mathlib \cite{MathlibCommunity} (\texttt{SiteCost.lean}). A pairing at a
-site is the structure \texttt{Plan}: sixteen non-negative integers with the eight matching
-equations of Definition~\ref{def:pairing}; \texttt{Plan.cost} is its cost and \texttt{Plan.cross}
-the number of pairs on opposite sides. The minimum of Lemma~\ref{lem:transport} is formalised as
-\texttt{IsLeast}, so both halves are proved separately: \texttt{cost\_lower\_bound} holds for every
-pairing and \texttt{exists\_plan\_cost\_eq} exhibits one of exactly that cost.
+Lemma~\ref{lem:transport}, Corollary~\ref{cor:localcost}, Corollary~\ref{cor:lRclosed},
+Corollary~\ref{cor:marker}, the counterexample of Remark~\ref{rem:markerfalse} and the first and
+last sentences of Proposition~\ref{prop:cut} are formally verified in Lean~4 against Mathlib
+\cite{MathlibCommunity}, in four files: \texttt{SiteCost.lean} (the transportation problem at one
+site), \texttt{MarkedSite.lean} (the virtual events and the local cost law),
+\texttt{PairingMatrix.lean} (bijections against multiplicity matrices) and
+\texttt{Realisation.lean} (the whole edge path).
+
+A pairing at a site is the structure \texttt{Plan}: sixteen non-negative integers with the eight
+matching equations of Definition~\ref{def:pairing}; \texttt{Plan.cost} is its cost and
+\texttt{Plan.cross} the number of pairs on opposite sides. The minimum of
+Lemma~\ref{lem:transport} is formalised as \texttt{IsLeast}, so both halves are proved separately:
+\texttt{cost\_lower\_bound} holds for every pairing and \texttt{exists\_plan\_cost\_eq} exhibits
+one of exactly that cost. Definition~\ref{def:pairing} asks for a \emph{bijection} between the
+arrivals and the departures rather than for a matrix, and the two are reconciled:
+\texttt{planOfBij} sends a bijection to its multiplicity matrix without changing the cost, and
+\texttt{bijOfMatrix} realises every matrix with the right row and column sums by a bijection, so
+\texttt{bij\_min} is Lemma~\ref{lem:transport} stated over bijections and
+\texttt{MarkedSite.site\_cost\_bij} is Corollary~\ref{cor:localcost} stated over bijections.
+A site is the structure \texttt{MarkedSite}: the displacement $k^\ast$, the site $s$, the marker
+data, and the crossing data of the two adjacent edges, constrained to realise the travel
+indicator \texttt{travel}. A realisation of a whole path is the structure \texttt{Realisation}
+over a \texttt{PathData}, which carries $k^\ast$, the marker data, the deposits and the span
+$[A,B]$; \texttt{PathData.emptyPath} is a witness that the hypotheses are consistent.
 
 \begin{center}\small
 \begin{tabular}{lll}
@@ -1846,24 +1863,53 @@ Paper step & Lean declaration & axioms \\
 $\mathrm{cost}\ge\max(|\alpha|,|\beta|,|\Phi|)$, six duals & \texttt{cost\_lower\_bound} & standard\\
 a pairing attaining it & \texttt{exists\_plan\_cost\_eq} & standard\\
 Lemma~\ref{lem:transport}, the minimum & \texttt{transport\_min} & standard\\
+a bijection gives a matrix of equal cost & \texttt{planOfBij\_cost} & standard\\
+a matrix gives a bijection of equal cost & \texttt{bijOfMatrix\_cost} & standard\\
+Lemma~\ref{lem:transport} over bijections & \texttt{bij\_min} & standard\\
 collapse to $\max(|\alpha|,|\beta|)$ & \texttt{siteCost\_eq} & standard\\
-$\alpha_s=d_{s-1}$ & \texttt{SiteData.alpha\_eq\_dL} & standard\\
-$\beta_s=d_s$ & \texttt{SiteData.beta\_eq\_dR} & standard\\
-$\Phi_s=f_{s-1}$ & \texttt{SiteData.Phi\_eq\_fL} & standard\\
-interior site cost $\max(|d_{s-1}|,|d_s|)$ & \texttt{SiteData.interior\_site\_cost} & standard\\
-cut site: no strand crosses & \texttt{cut\_forces\_no\_cross} & standard\\
+$\alpha_s=d_{s-1}-[s{=}0]+\varepsilon^\ast[s{=}k^\ast][\delta^\ast{=}0]$ & \texttt{MarkedSite.alpha\_eq} & standard\\
+$\beta_s=d_s-\varepsilon^\ast[s{=}k^\ast][\delta^\ast{=}1]$ & \texttt{MarkedSite.beta\_eq} & standard\\
+$\Phi_s=f_{s-1}+[s{=}0]-[s{=}k^\ast][\delta^\ast{=}0]$ & \texttt{MarkedSite.Phi\_eq} & standard\\
+$|\Phi_s|\le\min(|\alpha_s|,|\beta_s|)$, all site types & \texttt{MarkedSite.Phi\_le\_min} & standard\\
+Corollary~\ref{cor:localcost}, the minimum at any site & \texttt{MarkedSite.site\_cost} & standard\\
+Corollary~\ref{cor:localcost} over bijections & \texttt{MarkedSite.site\_cost\_bij} & standard\\
+independence of $m_j$ and of $p^u_j,p^d_j$ & \texttt{MarkedSite.cost\_indep} & \texttt{propext}\\
+interior site cost $\max(|d_{s-1}|,|d_s|)$ & \texttt{MarkedSite.cost\_interior} & \texttt{propext}\\
+Corollary~\ref{cor:marker}, near junction & \texttt{PathData.marker\_near} & \texttt{propext}\\
+Corollary~\ref{cor:marker}, far junction, $\delta^\ast{=}0$ & \texttt{PathData.marker\_far\_left} & \texttt{propext}\\
+Corollary~\ref{cor:marker}, far junction, $\delta^\ast{=}1$ & \texttt{PathData.marker\_far\_right} & \texttt{propext}\\
+\quad and it is neither $(\varepsilon^\ast,\delta^\ast)$-free & \texttt{PathData.marker\_far\_depends} & \emph{none}\\
+\quad nor the mirror of $\mathrm{Site}_0$ & \quad(the same declaration) & \\
+off the span every site is empty & \texttt{Realisation.pair\_cost\_zero\_outside} & standard\\
+Corollary~\ref{cor:lRclosed}, the minimum & \texttt{lR\_closed} & standard\\
+Corollary~\ref{cor:lRclosed}, rigidity of $m_j$ & \texttt{Realisation.rigidity} & standard\\
+Proposition~\ref{prop:cut}, cut site: no crossing & \texttt{cut\_forces\_no\_cross} & standard\\
+\quad the same over a realisation & \texttt{Realisation.cut\_no\_cross} & standard\\
+Proposition~\ref{prop:cut}, a gap run's cut sites & \texttt{PathData.gap\_run\_cut} & standard\\
 the two marker forms agree on $d_L\ge0$ & \texttt{marker\_forms\_agree} & standard\\
 and differ at $(d_L,d_R)=(-2,1)$ & \texttt{marker\_forms\_differ} & \emph{none}\\
 \hline
 \end{tabular}
 \end{center}
 
-\noindent ``standard'' means \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; the
-last row is closed by \texttt{decide} and depends on no axiom at all. Three things in this
-subsection are \emph{not} formalised, and are exactly the three that quantify over more than one
-site: that the optimisation of Definition~\ref{def:pairing} computes the relaxed word length
-(Remark~\ref{rem:pairingstatus}), Corollary~\ref{cor:lRclosed}, and the counting half of
-Proposition~\ref{prop:cut}.
+\noindent ``standard'' means \texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound}, or a subset of them; several of the rows above in fact report only
+\texttt{propext} and \texttt{Quot.sound}. The last row is closed by \texttt{decide} and depends
+on no axiom at all, as do \texttt{PathData.marker\_far\_depends} and
+\texttt{Realisation.site\_cost\_eq}. The cost of a realisation is summed over the sites of its
+support interval, which is legitimate because both virtual events lie there
+(\texttt{Realisation.virtual\_in\_window}) and every site outside it is empty.
+
+Three things in this subsection are \emph{not} formalised. First, that the optimisation of
+Definition~\ref{def:pairing} computes the relaxed word length (Remark~\ref{rem:pairingstatus}, an
+input of \cite{Bonfioli2026a}, verified there and not proved). Second, the middle sentence of
+Proposition~\ref{prop:cut}, that at an interior site which is not cut some minimum-cost pairing
+lets a strand cross: \texttt{exists\_plan\_cost\_eq} settles every case except
+$\min(|\alpha_s|,|\beta_s|)=0$ with $\Phi_s=0$, where the argument needs the two caps
+$m_{s-1},m_s\ge2$ and so is not local to the site. Third, the component count $c\ge|Z|$; that is a
+statement about the strand graph the site pairings assemble into, and a \texttt{Realisation}
+carries the pairings but not that graph, so the count is not expressible against the present
+structure and would need a further definition.
 
 \subsection{The model \textup{(M)}, and the assembly}\label{sec:modelassembly}
 
@@ -3280,7 +3326,7 @@ the mean value theorem) are hypotheses there, not formalised.
 
 \noindent ``standard'' means \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. Every
 file named in this paper lives in the Mathlib-based package of the accompanying development; none of
-its $51$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
+its $55$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
 declaration cited anywhere in this paper appears in one of those audits. (The audits are selective
 in the other direction: a file may prove auxiliary lemmas that its audit block does not list.) Some
 declarations report ``does not depend on any axioms'', which is the legitimate output
@@ -3294,6 +3340,53 @@ standard axioms, the compiler-trust axiom named at their point of use
 (Remark~\ref{rem:growthstatus}; \S\ref{sec:modp}). The realness of the ladder coefficient is what
 makes the added term in \texttt{casoratian\_re\_const} purely imaginary, and is carried as an
 explicit hypothesis.
+
+\subsection*{The boundary of the formalisation: the analytic layer}\label{sec:leanboundary}
+
+The combinatorial layer of this paper is formalised (\S\ref{sec:sitecost}), the analytic layer is
+not, and the obstruction is one and the same for every statement in it: Mathlib carries no
+$q$-Pochhammer symbol $(a;q)_n$ or $(a;q)_\infty$, no product form of a theta function, no Bessel
+or $q$-Bessel function, no $q$-difference equations, and no steepest-descent, stationary-phase or
+van der Corput machinery. It does carry the two-variable Jacobi theta series with its summability,
+analyticity and modular functional equation, and the Mellin transform; it does not carry the
+Jacobi triple product, which is the identity that connects the two. The list below records, for
+each analytic statement of this paper, the object whose absence blocks a formalisation. The
+statements are at PROVED, not at VERIFIED, and this table is the reason.
+
+\begin{center}\small
+\begin{tabular}{ll}
+\hline
+Statement & missing prerequisite \\
+\hline
+Lemma~\ref{app:euler} & $(x;q)_\infty$ and its logarithm \\
+Lemma~\ref{lem:P12closed} & $(q;q)_n$; the $q$-cosine and $q$-sine \\
+Proposition~\ref{prop:P12second} & $(q;q)_n$; the $q$-cosine \\
+Lemma~\ref{app:Se} & $(q;q)_\infty$; the $q$-sine \\
+Lemma~\ref{app:rep} & the Jacobi triple product; $(q^2;q^2)_\infty$ \\
+Lemma~\ref{lem:polefinite} & analyticity of a $q$-series and its zero set \\
+Lemma~\ref{lem:infpoles} & the same, plus a limit at $q\to1$ \\
+Lemma~\ref{lem:infzeros} & the same \\
+Proposition~\ref{prop:selower} & $(q;q)_\infty$; quantitative $q$-trigonometric bounds \\
+Lemma~\ref{app:theta} & a Gaussian majorant for a theta series \\
+Lemma~\ref{app:M2} & second derivatives of a $q$-series \\
+Lemma~\ref{app:psi1} & derivative bounds for the $q$-sine \\
+Lemma~\ref{app:sZ} & the $q$-sine and $q$-cosine at a zero \\
+Theorem~\ref{thm:star} & a quantitative Taylor bound on a $q$-phase \\
+Lemma~\ref{app:rep2} & the $q$-Airy function; a Gaussian expectation \\
+Lemma~\ref{app:cum} & cumulant bounds; Gaussian integration by parts \\
+Lemma~\ref{lem:Bbounded} & $\log\Gamma$ with an explicit error term; $\log(q;q)_\infty$ \\
+Lemma~\ref{lem:T2abs} & Mellin--Barnes contour shifting with residue accounting \\
+Lemma~\ref{lem:atomN}, confluence & Bessel $J_\nu$ at half-integer order \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent The first five rows would be reached by a $q$-Pochhammer layer alone, together with the
+Jacobi triple product; the next four would be reached by that layer together with Mathlib's
+existing complex analysis; the remainder need asymptotic machinery that is a larger absence than
+the $q$-series one. The half of Lemma~\ref{lem:atomN} that is an explicit rational inequality
+\emph{is} verified (\texttt{AtomN.lean}); the confluence half is the row above
+(Remark~\ref{rem:lean}).
 
 \section{The number \texorpdfstring{$\beta_2$}{beta2}: value transcendence}\label{app:beta2}
 
