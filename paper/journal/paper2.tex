@@ -1540,15 +1540,28 @@ it, not assumed.
 \subsection*{Machine verification of the factorisation and of the reciprocity}
 
 Proposition~\ref{prop:mobius} is formally verified in Lean~4 against Mathlib
-\cite{MathlibCommunity} in \texttt{Mobius.lean}. Its hypotheses are its Lean hypotheses: `$I-M_0$
-is invertible' is an operator $R_0$ with $R_0(I-M_0)=(I-M_0)R_0=I$, and $1-\mathfrak gt_1\ne0$ is
-carried as stated. With those in hand nothing analytic remains, and the Lean statement is proved
-for an arbitrary module over an arbitrary field, the $\ell^1$ structure entering only through the
-existence of $R_0$: \texttt{opN\_opS} and \texttt{opS\_opN} are the two halves of
-\eqref{eq:smresolvent}, \texttt{solution\_unique} is the unique solvability of
-\eqref{eq:gapkernel}, \texttt{B\_mobius} is \eqref{eq:mobius}, and \texttt{B\_eq\_zero\_iff} and
-\texttt{B\_pole} are the single zero at $\mathfrak g_0=-b_0/\kappa$ and the single pole at
-$\mathfrak g=1/t_1$.
+\cite{MathlibCommunity} in \texttt{Mobius.lean} and \texttt{MobiusL1.lean}. Its hypotheses are its
+Lean hypotheses: `$I-M_0$ is invertible' is an operator $R_0$ with $R_0(I-M_0)=(I-M_0)R_0=I$, and
+$1-\mathfrak gt_1\ne0$ is carried as stated. With those in hand nothing analytic remains.
+\texttt{Mobius.lean} proves the factorisation for an arbitrary module over an arbitrary field:
+\texttt{opN\_opS} and \texttt{opS\_opN} are the two halves of \eqref{eq:smresolvent},
+\texttt{solution\_unique} is the unique solvability of \eqref{eq:gapkernel},
+\texttt{B\_mobius} is \eqref{eq:mobius}, and \texttt{B\_eq\_zero\_iff} and \texttt{B\_pole} are the
+single zero at $\mathfrak g_0=-b_0/\kappa$ and the single pole at $\mathfrak g=1/t_1$.
+
+\texttt{MobiusL1.lean} instantiates that statement at the case the proposition is about, $K=\C$
+and $E=\ell^1$ with the concrete data of \eqref{eq:rankone}. For $|q|<1$ a kernel with rows
+dominated by a summable sequence defines a $\C$-linear operator on $\ell^1$ (\texttt{opOfKer}) and
+a bounded sequence defines a functional (\texttt{funcOfSeq}); \texttt{M0}, \texttt{uElt},
+\texttt{EElt}, \texttt{vFun} and \texttt{oneFun} are $M_0$, $u$, $E$, $v^{\!\top}$ and
+$\mathbf 1^{\!\top}$ of \eqref{eq:rankone}, with the index $n$ standing for site $n+1$.
+\texttt{rank\_one} is the identity $2q^b\,q^{a+b}=(2q^{2b})(q^a)$, \texttt{gapSystem\_iff}
+identifies the operator equation $(I-M_0-\mathfrak guv^{\!\top})P=E$ with the display
+\eqref{eq:gapkernel} coordinatewise, \texttt{l1\_solution\_unique} is the unique $\ell^1$
+solvability of \eqref{eq:gapkernel}, \texttt{l1\_smresolvent\_left} and
+\texttt{l1\_smresolvent\_right} are \eqref{eq:smresolvent} for those operators, and
+\texttt{l1\_B\_of\_solution} is the conclusion: an $\ell^1$ solution of \eqref{eq:gapkernel} has
+$B=\sum_bP_b=(b_0+\mathfrak g\kappa)/(1-\mathfrak gt_1)$.
 
 The first sentence of Proposition~\ref{prop:recip}, $t_0=b_1$, is verified in
 \texttt{Reciprocity.lean} in the operator form its first proof uses, with $E$ and $F$ kept apart:
@@ -1864,11 +1877,12 @@ $\varepsilon^\ast=1$, which is exactly where that indicator vanishes.
 Lemma~\ref{lem:transport}, Corollary~\ref{cor:localcost}, Corollary~\ref{cor:lRclosed},
 Corollary~\ref{cor:marker}, the counterexample of Remark~\ref{rem:markerfalse} and all of
 Proposition~\ref{prop:cut} except its component count are formally verified in Lean~4 against
-Mathlib \cite{MathlibCommunity}, in five files: \texttt{SiteCost.lean} (the transportation problem
+Mathlib \cite{MathlibCommunity}, in six files: \texttt{SiteCost.lean} (the transportation problem
 at one site), \texttt{MarkedSite.lean} (the virtual events and the local cost law),
 \texttt{PairingMatrix.lean} (bijections against multiplicity matrices),
-\texttt{Realisation.lean} (the whole edge path) and \texttt{CutCross.lean} (the middle sentence of
-Proposition~\ref{prop:cut}).
+\texttt{Realisation.lean} (the whole edge path), \texttt{CutCross.lean} (the middle sentence of
+Proposition~\ref{prop:cut}) and \texttt{CutComponents.lean} (the counting step of the component
+bound, over an abstract graph).
 
 A pairing at a site is the structure \texttt{Plan}: sixteen non-negative integers with the eight
 matching equations of Definition~\ref{def:pairing}; \texttt{Plan.cost} is its cost and
@@ -1922,6 +1936,12 @@ the two caps $m_{s-1},m_s\ge2$ where $\Phi_s=0$ & \texttt{Realisation.capL\_two}
 & \texttt{Realisation.capR\_two} & standard\\
 Proposition~\ref{prop:cut}, a non-cut site: a crossing & \texttt{Realisation.exists\_cross\_of\_not\_cut} & standard\\
 Proposition~\ref{prop:cut}, a gap run's cut sites & \texttt{PathData.gap\_run\_cut} & standard\\
+$Z$ interior to the span & \texttt{PathData.cutSet\_lt}, \texttt{cutSet\_le} & standard\\
+every edge of the span carries a crossing & \texttt{Realisation.m\_pos\_of\_min} & standard\\
+$\mathrm{blk}$ constant on components & \texttt{CutComponents.blk\_reachable} & \texttt{propext}\\
+$\mathrm{blk}$ attains $0,\dots,|Z|$ on the span & \texttt{CutComponents.exists\_pos\_with\_gz} & standard\\
+at least $|Z|+1$ components, given the graph & \texttt{CutComponents.exists\_injective\_components} & standard\\
+\quad and $c\ge|Z|$ from it & \texttt{\dots\_avoiding} & standard\\
 the two marker forms agree on $d_L\ge0$ & \texttt{marker\_forms\_agree} & standard\\
 and differ at $(d_L,d_R)=(-2,1)$ & \texttt{marker\_forms\_differ} & \emph{none}\\
 \hline
@@ -1946,12 +1966,30 @@ $\Phi_s=0$ forces both caps to be at least $2$, and that is a path-level fact, p
 $m_j\ge\max(|d_j|,|f_j|)$ on the span together with
 $\Phi_s=f_{s-1}+[s{=}0]-[s{=}k^\ast][\delta^\ast{=}0]=f_s+[s{=}k^\ast][\delta^\ast{=}1]$.
 
+The counting step of the component bound is verified in \texttt{CutComponents.lean}, over an
+abstract graph. Write $\mathrm{blk}(v)$ for the number of cut sites at or below the edge carrying
+the crossing $v$. \texttt{blk\_adj} and \texttt{blk\_reachable} are that $\mathrm{blk}$ is constant
+on connected components, given the locality hypothesis \texttt{Local}: an edge of the graph joins
+crossings on the two edges adjacent to one site, and joins crossings on \emph{different} edges only
+at a site that is not cut. \texttt{exists\_pos\_with\_gz} is the discrete intermediate value
+argument, that $\mathrm{blk}$ takes every value in $0,\dots,|Z|$ on the span, and
+\texttt{exists\_injective\_components} concludes with an injection of $\{0,\dots,|Z|\}$ into the
+connected components, which is ``at least $|Z|+1$ components'' with no finiteness hypothesis.
+\texttt{exists\_injective\_components\_avoiding} is the passage to $c\ge|Z|$ once the two virtual
+events are known to share a component. Two of the three inputs are supplied against the structures
+of \texttt{Realisation.lean}: \texttt{PathData.cutSet} is $Z$ with its two bounds
+(\texttt{cutSet\_lt}, \texttt{cutSet\_le}), and \texttt{Realisation.m\_pos\_of\_min} is the
+occupancy, every edge of the span of a minimum-cost realisation carrying a crossing.
+
 Two things in this subsection are \emph{not} formalised. First, that the optimisation of
 Definition~\ref{def:pairing} computes the relaxed word length (Remark~\ref{rem:pairingstatus}, an
-input of \cite{Bonfioli2026a}, verified there and not proved). Second, the component count
-$c\ge|Z|$; that is a statement about the strand graph the site pairings assemble into, and a
-\texttt{Realisation} carries the pairings but not that graph, so the count is not expressible
-against the present structure and would need a further definition.
+input of \cite{Bonfioli2026a}, verified there and not proved). Second, the strand graph itself, and
+with it the component count $c\ge|Z|$. \texttt{Realisation.pair} stores the multiplicity matrix of
+the site pairing rather than the bijection, so the vertex set and the incidence relation that
+\texttt{CutComponents.lean} quantifies over are not definable against the present structure and
+would need a further definition. \texttt{Realisation.cut\_no\_cross} already carries the
+mathematical content of the locality hypothesis at the level of the matrix; what is missing is the
+passage from a matrix with vanishing cross mass to an incidence relation on individual crossings.
 
 \subsection{The model \textup{(M)}, and the assembly}\label{sec:modelassembly}
 
@@ -3368,7 +3406,7 @@ the mean value theorem) are hypotheses there, not formalised.
 
 \noindent ``standard'' means \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. Every
 file named in this paper lives in the Mathlib-based package of the accompanying development; none of
-its $55$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
+its $60$ files contains \texttt{sorry}, each ends with a \verb|#print axioms| audit, and every
 declaration cited anywhere in this paper appears in one of those audits. (The audits are selective
 in the other direction: a file may prove auxiliary lemmas that its audit block does not list.) Some
 declarations report ``does not depend on any axioms'', which is the legitimate output
