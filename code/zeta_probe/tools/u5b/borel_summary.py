@@ -12,19 +12,25 @@ def load(fn):
 import sys
 
 def _u5b_data(name, argv_index=1):
-    """Locate a u5b data file. The u5b run outputs are NOT part of this repository:
-    they are large intermediates produced by tools/u5b. Pass the path as an argument
-    or set U5B_DIR."""
+    """Locate a u5b data file.
+
+    Search order: an explicit command-line path, then $U5B_DIR, then the directory
+    holding this script.  `u5b_out.txt`, `u5b_out_m200.bak` and the `cks*.json`
+    coefficient files all ship next to the scripts, so the third case is the normal
+    one and no argument is needed.  Larger runs of `tools/u5b` (larger --max m) are
+    not shipped; point at them with an argument or with U5B_DIR."""
     import os, sys
     if len(sys.argv) > argv_index:
         return sys.argv[argv_index]
     d = os.environ.get("U5B_DIR")
     if d:
         return os.path.join(d, name)
+    here = os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
+    if os.path.exists(here):
+        return here
     raise SystemExit(
-        "error: %s not found. The u5b run outputs are not shipped with this repository.\n"
-        "Pass the path as the first argument, or set U5B_DIR to the directory holding it.\n"
-        "Regenerate with tools/u5b (see tools/u5b/README.md if present)." % name)
+        "error: %s not found next to this script, and neither a path argument nor\n"
+        "U5B_DIR was given. Regenerate it with tools/u5b; see tools/u5b/README.md." % name)
 
 cks=load(_u5b_data('cks.json'))
 K=len(cks)

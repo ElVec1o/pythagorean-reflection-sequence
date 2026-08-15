@@ -78,3 +78,7 @@ code/zeta_probe/route_b/
 
 # superseded: folded into paper/journal/paper1.tex as appendices (2026-08-10)
 paper/paper_extra.*
+
+# u5b_out.txt is a 66 kB certificate input read by tools/u5b; the *_out.txt glob
+# above excluded it by accident, not by size.
+!code/zeta_probe/tools/u5b/u5b_out.txt

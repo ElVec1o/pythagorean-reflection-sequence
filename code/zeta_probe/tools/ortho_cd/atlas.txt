@@ -1,0 +1,37 @@
+# atlas.txt -- the leg tuples quoted in paper/journal/paper_orthoscheme.tex, with the layer
+# counts and collision depths the paper states, as expectations the tool checks.
+#
+# Format, fields separated by "|":
+#     label | legs | depth | expected layer counts u_0..u_k | expected collision depth
+# Legs are positive rationals p or p/q.  The expected collision depth is the depth of the first
+# deviation from the envelope (1+t)^{n+1}/J_{n+1}(t), or "inf" for no deviation up to the depth
+# run.  The last two fields are optional; when present a mismatch is a FAIL and the tool exits
+# nonzero.  Every row is run at two 61-bit primes and the two runs must agree.
+#
+# Run:  ../runcap.sh 14000 900 target/release/ortho_cd
+# The Class C depth ladder is in atlas_deep.txt and is not run from here.
+
+# ---- Table "atlas" (tab:atlas), all thirteen rows, first six layer counts ----
+tab:atlas 3 (2,3,5)      | 2,3,5         | 6 | 1,4,9,18,36,72   | inf
+tab:atlas 3 (1,1,2)      | 1,1,2         | 6 | 1,4,9,18,35,67   | 4
+tab:atlas 3 (1,1,1)      | 1,1,1         | 6 | 1,4,9,17,28,42   | 3
+tab:atlas 4 (1,2,3,5)    | 1,2,3,5       | 6 | 1,5,14,33,75,169 | inf
+tab:atlas 4 (1,2,2,3)    | 1,2,2,3       | 6 | 1,5,14,33,75,169 | inf
+tab:atlas 4 (1,1,2,3)    | 1,1,2,3       | 6 | 1,5,14,33,74,163 | 4
+tab:atlas 4 (1,1,2,2)    | 1,1,2,2       | 6 | 1,5,14,33,73,157 | 4
+tab:atlas 4 (1,1,1,2)    | 1,1,1,2       | 6 | 1,5,14,32,67,135 | 3
+tab:atlas 5 (1,2,3,5,7)  | 1,2,3,5,7     | 6 | 1,6,20,54,136,334| inf
+tab:atlas 5 (1,2,2,3,5)  | 1,2,2,3,5     | 6 | 1,6,20,54,136,334| inf
+tab:atlas 5 (1,1,2,3,5)  | 1,1,2,3,5     | 6 | 1,6,20,54,135,327| 4
+tab:atlas 5 (2,1,1,1,2)  | 2,1,1,1,2     | 6 | 1,6,20,53,128,297| 3
+tab:atlas 6 (1,1,2,3,2,2)| 1,1,2,3,2,2   | 6 | 1,7,27,82,224,581| 4
+
+# ---- Remark "detQ-nonsequitur": the counts quoted there ----
+rem:detQ 3 (1,1,1)       | 1,1,1         | 5 | 1,4,9,17,28,42   | 3
+rem:detQ 4 (1,1,1,1)     | 1,1,1,1       | 5 | 1,5,14,31,59,101 | 3
+# n=2: u_d = F_{d+3} for 1 <= d <= 9, and 225 against the envelope's 233 at d = 10.
+rem:detQ 2 (1,2)         | 1,2           | 12| 1,3,5,8,13,21,34,55,89,144,225 | 10
+
+# ---- Remark "R-rule": the non-adjacent repetition, and an interior triple ----
+rem:R-rule 4 (1,2,1,3)   | 1,2,1,3       | 6 |                  | inf
+rem:R-rule 5 (1,2,2,2,3) | 1,2,2,2,3     | 6 |                  | 3

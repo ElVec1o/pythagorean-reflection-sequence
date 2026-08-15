@@ -81,7 +81,7 @@ All five are in `paper/journal/`, source and PDF.
 | `paper1` | 58 | The Universal Right-Triangle Reflection Sequence: a word-length metric, effective universality, and the lamplighter structure of A396406 |
 | `paper2` | 74 | Transcendence of a planar reflection-group growth series and its relaxed companion |
 | `paper4` | 32 | The shortest relations of planar triangle reflection groups |
-| `paper_orthoscheme` | 26 | Universality for orthoscheme reflection groups: the right-angled Coxeter envelope and the collision depth |
+| `paper_orthoscheme` | 31 | Universality for orthoscheme reflection groups: the right-angled Coxeter envelope and the collision depth |
 | `hahn_exton_qcosine` | 20 | Differential transcendence of the Hahn-Exton q-cosine and the arithmetic of its zeros |
 
 The set was consolidated from seven documents on 2026-08-10. The former

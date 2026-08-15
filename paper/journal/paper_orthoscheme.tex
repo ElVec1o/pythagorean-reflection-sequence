@@ -1144,8 +1144,8 @@ rank-two parabolic meets $\ker\rho_a$; yet $\ker\rho_a\ne\{1\}$ by
 Proposition~\ref{prop:plane}, and its shortest elements have length $20$, arising as
 $w_1w_2^{-1}$ from eight pairs of distinct geodesic words $w_1,w_2$ of length $10$ using all
 three generators \cite{Bonfioli1}. Conjecture~\ref{conj:master-C} is verified computationally at
-$n=3$ with legs $(1,2,3)$ through depth $10$ and at $n=4$ with legs $(1,2,3,5)$ through depth
-$8$ (\S\ref{sec:cert}).
+one Class C tuple in each dimension $3\le n\le10$, to the depths recorded in
+\eqref{eq:classC-depths} of \S\ref{sec:cert}.
 
 \subsection{A determinant identity, and what it does not give}
 
@@ -1321,8 +1321,8 @@ three-term sequence is automatically at an endpoint. At $n\ge4$ the two diverge:
 $(1,2,2,3)$ has an interior equal pair, so $R=2$ but $(e,t)=(0,0)$, and
 Theorem~\ref{thm:cd-general} places it on the stratum $e=t=0$, its third and fourth cases,
 where the theorem asserts no finite collision depth; empirically its layer counts
-$1,5,14,33,75,169,\dots$ are identical to those of the Class C tuple $(1,2,3,5)$ through every
-computed depth, falsifying the run-length rule.
+$1,5,14,33,75,169,\dots$ are identical to those of the Class C tuple $(1,2,3,5)$ through depth
+$16$, both saturating the envelope there (\S\ref{sec:cert}), falsifying the run-length rule.
 \end{remark}
 
 \begin{table}[ht!]
@@ -1352,11 +1352,12 @@ $n$ & leg sequence & $(e,t)$ & $\cd_n$ & first six layer counts \\
 \bottomrule
 \end{tabular}
 \caption{A small atlas of representative orthoschemes in $n=3,4,5,6$ illustrating each
-attainable $(e,t)$ class. The layer counts are exact-rational breadth-first search
-(\S\ref{sec:cert}); in every row the observed collision depth is the value predicted by
+attainable $(e,t)$ class. The layer counts are breadth-first search in $\mathbb{F}_p$ at two
+$61$-bit primes, agreeing at both, and are therefore lower bounds for the characteristic-zero
+counts (\S\ref{sec:cert}); in every row the observed collision depth is the value predicted by
 Theorem~\ref{thm:cd-general}, and the entries $\infty$ are observed agreement with the envelope
 as far as computed, not a proof. The two $n=4$ rows with $(e,t)=(0,0)$ have identical counts
-through every computed depth despite differing in run structure.}
+through depth $16$ despite differing in run structure.}
 \label{tab:atlas}
 \end{table}
 
@@ -1479,8 +1480,9 @@ strata $t\ge1$ and $t=0<e$, and give $\cd_n\ge3$ everywhere and $\cd_n\ge4$ wher
 What is not determined is $\cd_n$ on the third stratum $e=t=0$, and there the question is
 exactly whether $\rho_a$ is injective. That is settled here in the plane only, by
 Proposition~\ref{prop:plane}, where the answer is no and the horizon is $\cd_2=10$. For
-$3\le n\le7$ the geometric growth has been computed to depth $13$ to $16$ and agrees with the
-envelope throughout that range. That agreement is consistent with both alternatives of
+$3\le n\le10$ the geometric growth at one Class C tuple per dimension has been computed to the
+depths of \eqref{eq:classC-depths}, from $19$ at $n=3$ down to $10$ at $n=10$, and agrees with
+the envelope throughout. That agreement is consistent with both alternatives of
 Corollary~\ref{cor:alternative}: under (i) it would continue forever, and under (ii) it would
 end at a horizon beyond the computed range. Nothing here decides between them.
 
@@ -1515,7 +1517,7 @@ $a_1\ne a_2$ no rank-two parabolic meets $\ker\rho_a$ while $\ker\rho_a$ is nont
 shortest elements of length $20$ using all three generators \cite{Bonfioli1}. The same
 counterexample is a warning about (b) itself: the $n=2$ analogue of
 Conjecture~\ref{conj:master-C} is false. The positive evidence is confined to $n\ge3$ and is
-computational, the agreement to depths $13$ to $16$ recorded above, together with
+computational, the agreement to the depths of \eqref{eq:classC-depths} recorded above, together with
 Theorem~\ref{thm:len6}, which removes the shortest length at which a relation could have
 appeared. If the answer to (a) is affirmative for all $n\ge3$, the plane is the unique dimension
 with non-rational orbit growth. If instead $\ker\rho_a$ is nontrivial in some dimension $n\ge3$,
@@ -1606,7 +1608,7 @@ Corollary~\ref{cor:K-eq-six} ($K=6\iff t\ge1$)   & proved$^\star$ & none \\
 Theorem~\ref{thm:cd-general}, case $t\ge1$       & proved$^\star$ & none; $\cd_n=3$ \\
 Theorem~\ref{thm:cd-general}, case $e\ge1,t=0$   & proved$^\star$ & none; $\cd_n=4$, unconditional \\
 Theorem~\ref{thm:cd-general}, case $e=t=0$       & conditional    & equivalent to Conj.~\ref{conj:master-C} \\
-Conjecture~\ref{conj:master-C} (Class C)         & conjecture     & checked to depth $10$ ($n=3$), $8$ ($n=4$) \\
+Conjecture~\ref{conj:master-C} (Class C)         & conjecture     & one Class C tuple per dimension $3\le n\le10$, checked to the depths of \eqref{eq:classC-depths} \\
 Proposition~\ref{prop:plane} (the plane)         & proved$^\star$ & none \\
 Theorem~\ref{thm:barrier} (ambient obstruction)  & proved$^\star$ & none \\
 Problem~\ref{prob:alternative}                   & open in both directions & \\
@@ -1654,15 +1656,43 @@ independent interest.
 
 \paragraph{Orbit counts.}
 The layer counts quoted above, the envelope coefficients and the Diophantine searches are
-produced by \texttt{code/zeta\_probe/tools/ortho\_cd} (Rust, exact arithmetic in $\mathbb{F}_p$
-at two primes). It builds the $n+1$ facet reflections directly from the legs, enumerates the
-group by breadth-first search, and compares layer by layer against $(1+t)^{n+1}/J_{n+1}(t)$. In
-particular it produces the counts of Remark~\ref{rem:detQ-nonsequitur} at $(1,1,1)$ and
-$(1,1,1,1)$ and at $n=2$, confirms the $(e,t)$ prediction on every tuple of
-Table~\ref{tab:atlas} including the non-adjacent repetition $(1,2,1,3)$, and searches the three
-quartics of Lemma~\ref{lem:cremona-empty} for nontrivial solutions with legs up to $300$,
-finding none, while exhibiting rational points of the corresponding conics in $(X,Z)$ to show
-that the restriction to squares is not cosmetic.
+produced by \texttt{code/zeta\_probe/tools/ortho\_cd} (Rust, arithmetic in $\mathbb{F}_p$ at two
+$61$-bit primes). It builds the $n+1$ facet reflections directly from the legs, enumerates the
+group by breadth-first search, and compares layer by layer against $(1+t)^{n+1}/J_{n+1}(t)$.
+Reduction mod $p$ can only identify group elements already equal in characteristic zero or
+colliding mod $p$, so each printed $u_d$ is a lower bound for the characteristic-zero count;
+agreement at the two primes is the check, and it holds on every run reported here.
+
+The tuples are read from a committed input file, one row per tuple, carrying the layer counts
+and the collision depth the paper states; a mismatch is reported and the program exits nonzero.
+The file \texttt{atlas.txt} covers all thirteen rows of Table~\ref{tab:atlas} with their first
+six layer counts and their collision depths, the counts of Remark~\ref{rem:detQ-nonsequitur} at
+$(1,1,1)$, at $(1,1,1,1)$ and at $n=2$, and the two tuples of Remark~\ref{rem:R-rule}, among
+them the non-adjacent repetition $(1,2,1,3)$. All eighteen rows match at both primes.
+
+The file \texttt{atlas\_deep.txt} carries the Class C evidence: one tuple with pairwise distinct
+legs in each dimension $3\le n\le10$, namely $(2,3,5)$ and $(1,2,3)$ at $n=3$ and the initial
+segments of $(1,2,3,5,7,11,13,17,19,23)$ above, each run until the breadth-first search reaches
+the ball cap of $3\cdot10^6$ elements. At that cap the depths attained are
+\begin{equation}\label{eq:classC-depths}
+\begin{array}{c|cccccccc}
+n     & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
+\text{depth} & 19 & 16 & 14 & 13 & 12 & 11 & 11 & 10
+\end{array}
+\end{equation}
+and in every one of them $u_d(a)=[t^d]\,W_n(t)$ for every $d$ up to the depth shown, at both
+primes. The depths are a function of the cap and of the machine, not of the mathematics: the
+whole file ran in $214$ seconds with a peak resident set of $10964$ MB on the machine used, and
+a larger cap would
+extend every row. What the table records is the ground actually covered. The same file carries
+$(1,2,2,3)$, which is not Class C, for Remark~\ref{rem:R-rule}: it too saturates the envelope
+through depth $16$, which is where the comparison with $(1,2,3,5)$ made there is checked.
+
+The same program searches the three quartics of Lemma~\ref{lem:cremona-empty} for nontrivial
+solutions with legs up to $300$, finding none, and confirms on the same box that the
+corresponding conics in $(X,Z)$ do have rational points, among them the three named before
+Lemma~\ref{lem:cremona-empty}. The contrast between the two lines is the point of the check: it
+is what shows that the restriction to squares is not cosmetic.
 
 \paragraph{Short kernel elements.}
 Theorem~\ref{thm:len6} is a proof, not a computation, but it was first tested by exhaustive

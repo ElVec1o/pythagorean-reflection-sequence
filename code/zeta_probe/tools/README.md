@@ -27,6 +27,7 @@ missing ceiling from outside. Use it for anything with a memory risk.
 | dir | what it computes |
 |---|---|
 | `norec/` | Farkas certificates that `u_0..u_38` satisfies no linear recurrence of order at most 19 (`prop:no-recurrence`). |
+| `ortho_cd/` | Orbit growth of the right-corner orthoscheme reflection group against the right-angled Coxeter envelope, and the three-quartic Diophantine search: the certificate for every layer count, collision depth and Diophantine statement of `paper/journal/paper_orthoscheme.tex`. Tuples come from a committed input file carrying the paper's own numbers as expectations, checked at two 61-bit primes. Run: `./target/release/ortho_cd` (the atlas table and the remark counts), and `./target/release/ortho_cd --atlas atlas_deep.txt --no-quartics` (the Class C depth ladder, `3 <= n <= 10`). See `ortho_cd/README.md`. |
 | `nodfinite/` | Rank certificates for `prop:no-dfinite`. `gen_lean_data.sh` and `emit_lean.sh` generate `lean/with_mathlib/NoDFiniteData.lean`, which regenerates byte-identically. |
 | `shape_arith/` | The four numerical claims of paper 1 that an audit found wrong, checked exactly. The corrected statements are also proved in `lean/with_mathlib/ShapeArith.lean`, so they do not rest on this search. |
 

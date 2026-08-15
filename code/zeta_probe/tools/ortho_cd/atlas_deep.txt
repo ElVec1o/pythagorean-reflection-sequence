@@ -1,0 +1,29 @@
+# atlas_deep.txt -- the Class C depth ladder: the positive evidence for the Class C
+# faithfulness conjecture of paper/journal/paper_orthoscheme.tex.
+#
+# One Class C tuple (pairwise distinct legs) per dimension 3 <= n <= 10.  The depth field is
+# set past what the machine can reach; the run stops at the ball cap and the tool reports the
+# depth actually attained.  The expectation on every row is "inf", meaning no deviation from
+# the envelope up to the depth attained.  Format is documented in atlas.txt.
+#
+# Run:  ../runcap.sh 14000 3600 target/release/ortho_cd --atlas atlas_deep.txt \
+#           --no-quartics --max-ball 3000000
+#
+# The ball cap 3000000 is what fixes the attained depths; at a different cap they change.
+# Attained depths at that cap, both primes, measured 2026-08-16:
+#     n =  3  4  5  6  7  8  9 10
+#     d = 19 16 14 13 12 11 11 10
+# Measured cost of the whole file: 214 s wall clock, peak RSS 10964 MB (at n = 10).
+
+classC 3 (2,3,5)   | 2,3,5                      | 25 | 1,4,9,18,36,72    | inf
+classC 3 (1,2,3)   | 1,2,3                      | 25 | 1,4,9,18,36,72    | inf
+classC 4 (1,2,3,5) | 1,2,3,5                    | 25 | 1,5,14,33,75,169  | inf
+# Not Class C, but Remark "R-rule" claims its counts agree with (1,2,3,5) through every computed
+# depth.  Both rows saturate the envelope to depth 16, which is that claim.
+rrule 4 (1,2,2,3)  | 1,2,2,3                    | 25 | 1,5,14,33,75,169  | inf
+classC 5           | 1,2,3,5,7                  | 25 | 1,6,20,54,136,334 | inf
+classC 6           | 1,2,3,5,7,11               | 25 | 1,7,27,82,226,597 | inf
+classC 7           | 1,2,3,5,7,11,13            | 25 |                   | inf
+classC 8           | 1,2,3,5,7,11,13,17         | 25 |                   | inf
+classC 9           | 1,2,3,5,7,11,13,17,19      | 25 |                   | inf
+classC 10          | 1,2,3,5,7,11,13,17,19,23   | 25 |                   | inf

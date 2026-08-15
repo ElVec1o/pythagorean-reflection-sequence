@@ -1,20 +1,20 @@
 import sympy as sp
 import sys
 
-def _u5b_data(name, argv_index=1):
-    """Locate a u5b data file. The u5b run outputs are NOT part of this repository:
-    they are large intermediates produced by tools/u5b. Pass the path as an argument
-    or set U5B_DIR."""
-    import os, sys
-    if len(sys.argv) > argv_index:
-        return sys.argv[argv_index]
-    d = os.environ.get("U5B_DIR")
-    if d:
-        return os.path.join(d, name)
-    raise SystemExit(
-        "error: %s not found. The u5b run outputs are not shipped with this repository.\n"
-        "Pass the path as the first argument, or set U5B_DIR to the directory holding it.\n"
-        "Regenerate with tools/u5b (see tools/u5b/README.md if present)." % name)
+# Output path.  The first positional argument of this script is NPAIR, not a data path, so the
+# output is not routed through the shared data-locating helper.  The default output is
+# cks_ck<NPAIR>.json next to this script; it deliberately does NOT clobber the tracked
+# cks.json, whose c_4 and c_5 this derivation does not reproduce (see README.md).
+# Override with:  --out PATH
+import os as _os, sys as _sys
+_OUT = None
+if '--out' in _sys.argv:
+    _i = _sys.argv.index('--out')
+    _OUT = _sys.argv[_i + 1]
+    del _sys.argv[_i:_i + 2]
+def _cks_out(npair):
+    return _OUT if _OUT else _os.path.join(
+        _os.path.dirname(_os.path.abspath(__file__)), 'cks_ck%d.json' % npair)
 
 
 # Derive the dev_m asymptotic coefficients c_k to high order.
@@ -124,6 +124,6 @@ for k in range(1, NPAIR + 1):
 # dump rationals for downstream numeric analysis
 import json
 out = [str(c) for c in cks]
-with open(_u5b_data('cks.json'), 'w') as f:
+with open(_cks_out(NPAIR), 'w') as f:
     json.dump(out, f)
-print("\nwrote cks.json with %d coeffs" % len(cks), flush=True)
+print("\nwrote %s with %d coeffs" % (_cks_out(NPAIR), len(cks)), flush=True)
