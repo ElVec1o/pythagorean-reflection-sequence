@@ -84,7 +84,15 @@ poles (Theorem~\ref{thm:V}); \textup{(R-J)} holds at the dominant pole and is op
 the true series $U$ we prove the analytic half in full and $U$'s transcendence conditionally
 (Theorem~\ref{thm:U}), on the invariance of the travel block \textup{(T)} and on the same
 \textup{(R-J)}; the former hypothesis \textup{(L)} is now a theorem. All of this rests on the
-strand-walk transfer model \textup{(M)}, exhaustively verified and not proved. The amplitude
+strand-walk transfer model \textup{(M)}. Its local cost law is now a theorem inside the crossing
+optimisation \textup{(}Lemma~\ref{lem:transport}, Corollary~\ref{cor:localcost}\textup{)}, and its
+marker clause is corrected: with $d_L$ the last bulk deposit and $d_R$ the first travel deposit, the
+junction cost is $\max(|d_L-1|,|d_R|)$, which depends on the sign of $d_L$ and not on its magnitude
+alone; the form $\max(|d_L|-1,|d_R|)$ carried by earlier versions is false on every cell with
+$d_L\le-2$ and $|d_R|\le|d_L|$ \textup{(}Remark~\ref{rem:markerfalse}\textup{)}. The shield law is half
+proved, the inequality $c\ge L-1$ per gap run \textup{(}Proposition~\ref{prop:cut}\textup{)}; the
+reverse inequality, the decomposition \textup{(M3)}, and the crossing optimisation itself remain
+verified and not proved. The amplitude
 estimate $(\star)$ ($|P_{12}(q_m)|w_m^3<2$ at every travel pole) is proved: the gate block is the symmetric second
 difference of the $q$-cosine at its own zero, a two-interval uniform certificate bounds it by
 $0.619\,\tau^{3/2}<\tau^{3/2}/\sqrt2$ for every pole with $\tau\le5\cdot10^{-3}$, and the six
@@ -129,7 +137,8 @@ on the travel-block invariance \textup{(T)} and the same \textup{(R-J)}
 (Theorem~\ref{thm:U}); both additionally on the transfer model \textup{(M)} of
 Hypothesis~\ref{hyp:model}. The algebraic layer between the blocks and those two series, which
 earlier versions of this paper carried as the hypotheses \textup{(R)} and \textup{(L)}, is proved
-in \S\ref{sec:assembly}. The analytic side is closed on both: the amplitude estimate $(\star)$ and the
+in \S\ref{sec:assembly}, and so is the local cost law of \textup{(M)}, together with the correction
+of its marker clause (\S\ref{sec:sitecost}). The analytic side is closed on both: the amplitude estimate $(\star)$ and the
 gate (numerator bound and denominator lower bound) are proved at every travel pole in
 Appendix~\ref{app:star} (Theorem~\ref{thm:star}, Lemma~\ref{app:Se},
 Corollary~\ref{app:gate}), and the two numerator non-vanishing statements the resolvents need are
@@ -1117,9 +1126,10 @@ four ladders on one recursion and not four separate constructions. This section 
 the block assembly the rest of the paper consumes.
 
 Sections~\ref{sec:sect}--\ref{sec:mob} are unconditional statements about explicitly given
-operators. Section~\ref{sec:modelassembly} states the strand-walk input \textup{(M)} that
-identifies those operators with the objects of Route~B; everything from there on is conditional on
-it. Section~\ref{sec:RJ} isolates the one statement that remains open.
+operators, and \S\ref{sec:sitecost} is an unconditional statement about the crossing optimisation
+that those operators encode. Section~\ref{sec:modelassembly} states the strand-walk input
+\textup{(M)} that identifies the one with the other; everything from there on is conditional on it.
+Section~\ref{sec:RJ} isolates the one statement that remains open.
 
 Throughout, $|q|<1$ and $x=q^{1/2}$. Besides the four blocks of \eqref{eq:krec} we use the third
 ladder on the same recursion,
@@ -1542,53 +1552,331 @@ $10^{-6}$, so $|P_{12}|\le0.104801/0.3475\le0.3016$ and
 $|s|\le\tfrac{0.45}{0.55}\cdot\tfrac{0.3016}{0.32}\le0.78$.
 \end{proof}
 
+\subsection{The site cost}\label{sec:sitecost}
+
+The subsections above concern the operators of Definition~\ref{def:model}. This one concerns the
+combinatorial quantity those operators are meant to encode: the per-site cost of the crossing
+optimisation of \cite{Bonfioli2026a}. Its value is computed here in closed form, which settles the
+first half of the model input \textup{(M)} below and corrects the marker clause of the form in
+which that input was previously stated.
+
+\begin{definition}[the pairing optimisation]\label{def:pairing}
+Fix marker data $(\varepsilon^\ast,\delta^\ast)\in\{\pm1\}\times\{0,1\}$, a displacement
+$k^\ast\in\Z$, and deposits $d_j\in\Z$ on the integer edges $j$, edge $j$ joining site $j$ to site
+$j+1$. The travel indicator is $f_j=1$ for $0\le j<k^\ast$, $f_j=-1$ for $k^\ast\le j<0$ and
+$f_j=0$ otherwise, and $d_j\equiv f_j\pmod2$. A \emph{realisation} consists of
+\begin{itemize}[leftmargin=1.6em,itemsep=0.1em,topsep=0.2em]
+\item crossing counts $m_j\ge\max(|d_j|,|f_j|)$ with $m_j\equiv d_j\pmod2$, whose support is an
+      interval containing $0$; edge $j$ is crossed $u_j=(m_j+f_j)/2$ times upward and
+      $\mathrm{dn}_j=(m_j-f_j)/2$ times downward;
+\item a sign in $\{\pm\}$ on each crossing, with $p^u_j$ of the up-crossings and $p^d_j$ of the
+      down-crossings carrying $+$, subject to
+      $d_j=2p^d_j-\mathrm{dn}_j+u_j-2p^u_j$;
+\item at every site $s$, a bijection between the arrivals and the departures at $s$.
+\end{itemize}
+The arrivals at $s$ are the up-crossings of edge $s-1$, of class $(\mathrm L,\pm)$ by their sign,
+and the down-crossings of edge $s$, of class $(\mathrm R,\pm)$; the departures are the
+down-crossings of edge $s-1$, of class $(\mathrm L,\pm)$, and the up-crossings of edge $s$, of
+class $(\mathrm R,\pm)$. In addition there is a virtual arrival of class $(\mathrm L,+)$ at $s=0$,
+and a virtual departure at $s=k^\ast$, of class $(\mathrm R,\varepsilon^\ast)$ if $\delta^\ast=1$
+and $(\mathrm L,\varepsilon^\ast)$ if $\delta^\ast=0$. A matched pair costs $0$ on the same side
+with equal signs, $2$ on the same side with opposite signs, and $1$ on opposite sides. The cost of
+a realisation is $\sum_jm_j$ plus the sum of the pairing costs; $\ell_R$ is the minimum cost, and
+$c$ is the least number of components other than the one carrying the two virtual events, over the
+realisations of minimum cost.
+\end{definition}
+
+\begin{remark}[standing of Definition~\ref{def:pairing}]\label{rem:pairingstatus}
+This is the optimisation of \cite[Metric formula, as verified]{Bonfioli2026a}, restated. That it computes the relaxed
+word length is verified there and is not proved. Everything in this subsection is a statement about
+the optimisation itself and is proved outright; every statement about the growth series that
+consumes it inherits the standing of the optimisation.
+\end{remark}
+
+\begin{lemma}[the transportation value]\label{lem:transport}
+Let $A^\pm,B^\pm,C^\pm,D^\pm$ be non-negative integers with
+$A^++A^-+B^++B^-=C^++C^-+D^++D^-$, and consider the transportation problem with supplies
+$A^+,A^-,B^+,B^-$ and demands $C^+,C^-,D^+,D^-$ in the four classes
+$(\mathrm L,+),(\mathrm L,-),(\mathrm R,+),(\mathrm R,-)$ under the cost of
+Definition~\textup{\ref{def:pairing}}. Put
+\[
+   \alpha=(C^+-C^-)-(A^+-A^-),\qquad
+   \beta =(B^+-B^-)-(D^+-D^-),\qquad
+   \Phi  =(A^++A^-)-(C^++C^-).
+\]
+Then the minimum cost equals $\max\bigl(|\alpha|,|\beta|,|\Phi|\bigr)$.
+\end{lemma}
+
+\begin{proof}
+Write $N^a_{\mathrm L}=A^++A^-$, $N^d_{\mathrm L}=C^++C^-$, $N^a_{\mathrm R}=B^++B^-$,
+$N^d_{\mathrm R}=D^++D^-$, so $\Phi=N^a_{\mathrm L}-N^d_{\mathrm L}=N^d_{\mathrm R}-N^a_{\mathrm R}$,
+and $\sigma^a_{\mathrm L}=A^+-A^-$, $\sigma^d_{\mathrm L}=C^+-C^-$, and similarly on the right, so
+that $\alpha=\sigma^d_{\mathrm L}-\sigma^a_{\mathrm L}$ and
+$\beta=\sigma^a_{\mathrm R}-\sigma^d_{\mathrm R}$.
+
+Let $\pi$ be the mass sent from left supplies to right demands and $\pi'$ that from right supplies
+to left demands. The mass staying on the left is $g=N^a_{\mathrm L}-\pi=N^d_{\mathrm L}-\pi'$, so
+$\pi'=\pi-\Phi$; put $P=\pi+\pi'=2\pi-\Phi$. Cross transports cost $1$ each and their cost does not
+depend on the signs, so for fixed $\pi,\pi'$ the cost is $P+2\,\mathrm{mis}_{\mathrm L}
++2\,\mathrm{mis}_{\mathrm R}$, where $\mathrm{mis}_{\mathrm L}$ is the least number of opposite-sign
+pairs among the $g$ same-side pairs on the left, minimised over which supplies stay. If $a^+$ of the
+staying supplies and $c^+$ of the served demands carry $+$, that number is $|a^+-c^+|$, since
+$\min(a^+,c^+)+\min(g-a^+,g-c^+)=g-|a^+-c^+|$ pairs can be matched with equal signs and no more.
+Here $a^+$ ranges over the integer interval $[\max(0,g-A^-),\min(A^+,g)]$, which is non-empty
+because $0\le g\le A^++A^-$, and $c^+$ over $[\max(0,g-C^-),\min(C^+,g)]$, likewise non-empty. The
+least $|a^+-c^+|$ over two non-empty integer intervals $[l_1,r_1],[l_2,r_2]$ is
+$\max(0,l_1-r_2,l_2-r_1)$. Here $l_1-r_2=\max(0,g-A^-)-\min(C^+,g)$, which is $g-A^--C^+$ when
+$g\ge A^-$ and $C^+\le g$, and is at most $0$ otherwise, so
+$\max(0,l_1-r_2)=\max(0,g-A^--C^+)$; symmetrically $\max(0,l_2-r_1)=\max(0,g-C^--A^+)$, and
+\[
+   \mathrm{mis}_{\mathrm L}=\max\bigl(0,\ g-A^--C^+,\ g-C^--A^+\bigr).
+\]
+Substituting $A^\pm=(N^a_{\mathrm L}\pm\sigma^a_{\mathrm L})/2$ and
+$C^\pm=(N^d_{\mathrm L}\pm\sigma^d_{\mathrm L})/2$ gives
+$g-A^--C^+=\tfrac{\Phi-\alpha}2-\pi$ and $g-C^--A^+=\tfrac{\Phi+\alpha}2-\pi$, hence
+$2\,\mathrm{mis}_{\mathrm L}=\max(0,|\alpha|+\Phi-2\pi)=\max(0,|\alpha|-P)$. The same computation on
+the right gives $2\,\mathrm{mis}_{\mathrm R}=\max(0,|\beta|-\Phi-2\pi')=\max(0,|\beta|-P)$.
+Therefore the cost is
+\[
+   \phi(P)=P+(|\alpha|-P)^++(|\beta|-P)^+ ,
+\]
+which for $P\ge0$ is at least $\max(|\alpha|,|\beta|)$, with equality exactly on
+$\min(|\alpha|,|\beta|)\le P\le\max(|\alpha|,|\beta|)$, and which equals $P$ above that range.
+
+It remains to identify the admissible $P$. From $\pi\ge0$ and $\pi'\ge0$ one gets $P\ge|\Phi|$;
+from $\pi\le\min(N^a_{\mathrm L},N^d_{\mathrm R})$ and $\pi'\le\min(N^a_{\mathrm R},N^d_{\mathrm L})$
+one gets, using $\Phi=N^a_{\mathrm L}-N^d_{\mathrm L}=N^d_{\mathrm R}-N^a_{\mathrm R}$, the single
+constraint $P\le\min(N^a_{\mathrm L}+N^d_{\mathrm L},\,N^a_{\mathrm R}+N^d_{\mathrm R})$. Finally
+$P\equiv\Phi\pmod2$, and $\alpha\equiv\beta\equiv\Phi\pmod2$ because $\sigma\equiv N\pmod2$ on each
+side. Now $|\alpha|\le|\sigma^d_{\mathrm L}|+|\sigma^a_{\mathrm L}|\le
+N^d_{\mathrm L}+N^a_{\mathrm L}$ and $|\Phi|\le N^a_{\mathrm L}+N^d_{\mathrm L}$, and symmetrically
+$|\beta|,|\Phi|\le N^a_{\mathrm R}+N^d_{\mathrm R}$. Hence
+$P^\ast:=\max\bigl(|\Phi|,\min(|\alpha|,|\beta|)\bigr)$ is admissible: it has the right parity, it
+is at least $|\Phi|$, and it is at most $\max(|\Phi|,|\alpha|)\le N^a_{\mathrm L}+N^d_{\mathrm L}$
+and at most $\max(|\Phi|,|\beta|)\le N^a_{\mathrm R}+N^d_{\mathrm R}$. If
+$|\Phi|\le\max(|\alpha|,|\beta|)$ then $P^\ast$ lies in the equality range and
+$\phi(P^\ast)=\max(|\alpha|,|\beta|)$, which is optimal since $\phi\ge\max(|\alpha|,|\beta|)$
+throughout. If $|\Phi|>\max(|\alpha|,|\beta|)$ then every admissible $P$ satisfies $P\ge|\Phi|$ and
+$\phi(P)=P$, so the minimum is $|\Phi|$, attained at $P^\ast=|\Phi|$. In both cases the minimum is
+$\max(|\alpha|,|\beta|,|\Phi|)$.
+\end{proof}
+
+\begin{corollary}[the local cost law]\label{cor:localcost}
+In Definition~\textup{\ref{def:pairing}}, let $\alpha_s,\beta_s,\Phi_s$ be the three quantities of
+Lemma~\textup{\ref{lem:transport}} formed from the arrivals and departures at site $s$. Then
+\[
+  \alpha_s=d_{s-1}-[s=0]+\varepsilon^\ast[s=k^\ast][\delta^\ast=0],\qquad
+  \beta_s=d_{s}-\varepsilon^\ast[s=k^\ast][\delta^\ast=1],
+\]
+\[
+  \Phi_s=f_{s-1}+[s=0]-[s=k^\ast][\delta^\ast=0],
+\]
+one has $|\Phi_s|\le\min(|\alpha_s|,|\beta_s|)$ in every case, and the minimal pairing cost at $s$
+is
+\[
+   \mathrm{Site}(s)=\max\bigl(|\alpha_s|,|\beta_s|\bigr),
+\]
+independently of the crossing counts $m_j$, of the sign splits $p^u_j,p^d_j$, and of the travel
+indicators. In particular at a site carrying no virtual event
+$\mathrm{Site}(s)=\max(|d_{s-1}|,|d_s|)$.
+\end{corollary}
+
+\begin{proof}
+The displays are read off Definition~\ref{def:pairing}: the up-crossings of edge $s-1$ contribute
+$\sigma^a_{\mathrm L}$, the down-crossings contribute $\sigma^d_{\mathrm L}$, and
+$d_{s-1}=2p^d_{s-1}-\mathrm{dn}_{s-1}+u_{s-1}-2p^u_{s-1}=\sigma^d_{\mathrm L}-\sigma^a_{\mathrm L}$,
+which is $\alpha_s$ before the virtual events; the virtual arrival adds one to $A^+$ and the virtual
+departure adds one to $C^{\varepsilon^\ast}$ or to $D^{\varepsilon^\ast}$. Likewise
+$d_s=\sigma^a_{\mathrm R}-\sigma^d_{\mathrm R}$ and
+$\Phi_s=u_{s-1}-\mathrm{dn}_{s-1}=f_{s-1}$ before the virtual events. Since the sign splits enter
+only through $\sigma^a,\sigma^d$, and those enter $\alpha_s,\beta_s,\Phi_s$ only through the fixed
+combinations $d_{s-1},d_s,f_{s-1}$, none of the three depends on $m_j$ or on $p^u_j,p^d_j$.
+
+For $|\Phi_s|\le\min(|\alpha_s|,|\beta_s|)$: at a site with no virtual event $\Phi_s=f_{s-1}=f_s$,
+since arrivals and departures balance, and $|d_j|\ge|f_j|$, since a bulk deposit is even with $f=0$
+and a travel deposit is odd with $|f|=1$. The virtual events sit at $s=0$ and $s=k^\ast$, which for
+$k^\ast\ne0$ are exactly the two sites where $f$ jumps, and there are eight remaining cases. For $s=0<k^\ast$: $\Phi_0=f_{-1}+1=1$, while $\alpha_0=d_{-1}-1$ is odd
+and $\beta_0=d_0$ is odd. For $s=0$ and $k^\ast<0$: $\Phi_0=-1+1=0$. For $s=k^\ast>0$: $\Phi=1-1=0$
+if $\delta^\ast=0$, and $\Phi=1$ with $\alpha=d_{k^\ast-1}$ odd, $\beta=d_{k^\ast}-\varepsilon^\ast$
+odd, if $\delta^\ast=1$. For $s=k^\ast<0$: $\Phi=-1$ with $\alpha=d_{k^\ast-1}+\varepsilon^\ast$ odd
+and $\beta=d_{k^\ast}$ odd if $\delta^\ast=0$, and $\Phi=0$ if $\delta^\ast=1$. For $k^\ast=0$,
+where the two virtual events share the site: $\Phi_0=0$ if $\delta^\ast=0$, and $\Phi_0=1$ with
+$\alpha_0=d_{-1}-1$ and $\beta_0=d_0-\varepsilon^\ast$ both odd if $\delta^\ast=1$. In each case
+$|\Phi_s|\le\min(|\alpha_s|,|\beta_s|)$, so Lemma~\ref{lem:transport} gives
+$\mathrm{Site}(s)=\max(|\alpha_s|,|\beta_s|)$.
+\end{proof}
+
+\begin{corollary}[the closed form for $\ell_R$, and rigidity of the crossing counts]\label{cor:lRclosed}
+Let the \emph{span} be the least interval of edges containing $0$, all $j$ with $d_j\ne0$ and all
+$j$ with $f_j\ne0$. Every realisation of minimum cost has support exactly the span and crossing
+counts
+\[
+   m_j=\max(|d_j|,|f_j|), \quad\text{forced to } 2 \text{ when that value is }0,
+\]
+and
+\[
+   \ell_R=\sum_{j\in\mathrm{span}}m_j+\sum_{s}\max\bigl(|\alpha_s|,|\beta_s|\bigr),
+\]
+the second sum over the sites of the span.
+\end{corollary}
+
+\begin{proof}
+By Corollary~\ref{cor:localcost} the pairing cost at every site is independent of the $m_j$, so the
+total cost is $\sum_jm_j$ plus a quantity that does not depend on the $m_j$; hence a minimum-cost
+realisation minimises $\sum_jm_j$ alone, subject to $m_j\ge\max(|d_j|,|f_j|)$, $m_j\equiv d_j$, and
+the support being an interval containing $0$. Since $d_j\equiv f_j$, the value
+$\max(|d_j|,|f_j|)$ has the parity of $d_j$ and is the least admissible value on the span except
+where it vanishes, where the support condition forces $m_j\ge2$. Enlarging the support beyond the
+span adds an edge with $m\ge2$ and creates one further site, of cost $\max(0,0)=0$, without
+changing any other site cost, so it adds $2$ and never helps.
+\end{proof}
+
+\noindent Corollary~\ref{cor:localcost} is the first clause of \textup{(M1)} below, proved. The
+marker clause needs the sign, and the form previously used does not carry it.
+
+\begin{corollary}[the marker junctions]\label{cor:marker}
+Let $k^\ast>0$, let $d_L=d_{-1}$ be the last bulk deposit \textup{(}even\textup{)} and $d_R=d_0$ the
+first travel deposit \textup{(}odd\textup{)}. Then the cost of the junction at site $0$ is
+\[
+   \mathrm{Site}_0(d_L,d_R)=\max\bigl(|d_L-1|,\ |d_R|\bigr),
+\]
+for all four marker data. At the far junction, site $k^\ast$, with $d_L=d_{k^\ast-1}$ odd and
+$d_R=d_{k^\ast}$ even, the cost is $\max(|d_L+\varepsilon^\ast|,|d_R|)$ if $\delta^\ast=0$ and
+$\max(|d_L|,|d_R-\varepsilon^\ast|)$ if $\delta^\ast=1$; it is not independent of
+$(\varepsilon^\ast,\delta^\ast)$ and it is not the mirror image of $\mathrm{Site}_0$.
+\end{corollary}
+
+\begin{proof}
+Corollary~\ref{cor:localcost}. At site $0$ neither $\varepsilon^\ast$ nor $\delta^\ast$ occurs.
+\end{proof}
+
+\begin{remark}[the earlier marker form is false]\label{rem:markerfalse}
+Earlier versions of this paper, and \cite{supplement}, carried
+$\mathrm{Site}_0(d_L,d_R)=\max(|d_L|-1,|d_R|)$. That agrees with
+Corollary~\ref{cor:marker} exactly on $d_L\ge0$ and fails on every cell with $d_L\le-2$ and
+$|d_R|\le|d_L|$: the smallest is $d_L=-2$, $d_R=1$, where the true cost is $3$ and the earlier form
+gives $1$. The verification on which the earlier form rested covered $0\le d_L\le12$ only. The
+junction cost therefore depends on the \emph{sign} of the last bulk deposit, not on its magnitude
+alone.
+
+The correction is local. Every bulk edge cost and every interior bulk site cost depends on the
+deposit only through its magnitude (Corollary~\ref{cor:localcost}), so reversing the sign of the
+junction-adjacent deposit of a bulk run is a weight-preserving involution on bulk runs; writing
+$B_\sigma$ for the generating function of the bulk runs whose junction-adjacent deposit has
+magnitude $\sigma$, the two signs carry $B_\sigma/2$ each, and the junction-dressed vector of
+\textup{(M3)} is
+\begin{equation}\label{eq:junctionsym}
+   \mu^{(y)}_s=B_0\,x^{2s+1}+\sum_{\sigma\ge2\ \mathrm{even}}\frac{B_\sigma}{2}
+   \Bigl(x^{\max(\sigma-1,\,2s+1)}+x^{\max(\sigma+1,\,2s+1)}\Bigr),
+\end{equation}
+in place of $\sum_\sigma B_\sigma x^{\max(\sigma-1,2s+1)}$. This changes no statement below:
+Proposition~\ref{prop:junction} concludes that the junction is not of rank one, and the symmetrised
+matrix \eqref{eq:junctionsym} has rank $6$ on the block $\sigma\in\{0,2,4,6,8,10\}$,
+$2s+1\in\{1,3,5,7,9,11\}$, by exact elimination over $\Q$ at $x=\tfrac12$, against rank $5$ for the
+earlier form on the same block.
+\end{remark}
+
+\begin{proposition}[the cut criterion and the shield lower bound]\label{prop:cut}
+Call a site $s$ of the span \emph{cut} if $\alpha_s=\beta_s=\Phi_s=0$, and let $Z$ be the set of
+cut sites interior to the span. At a cut site every minimum-cost pairing matches each arrival with a
+departure on its own side, so no strand crosses $s$; at any other interior site $s$ some
+minimum-cost pairing lets a strand cross. Consequently every minimum-cost realisation has at least
+$|Z|+1$ components and
+\[
+   c\ \ge\ |Z| .
+\]
+A maximal run of $L$ gap edges of the bulk \textup{(}$d_j=f_j=0$\textup{)} flanked by bulk deposits
+and containing no virtual event contributes exactly its $L-1$ interior sites to $Z$.
+\end{proposition}
+
+\begin{proof}
+At a cut site $\phi(P)=P$ in the notation of Lemma~\ref{lem:transport}, so the unique minimiser is
+$P=0$, which is the assertion. At any other interior site $\max(|\alpha_s|,|\beta_s|)>0$, since
+$|\Phi_s|\le\min(|\alpha_s|,|\beta_s|)$; the equality range of $\phi$ is
+$[\min(|\alpha_s|,|\beta_s|),\max(|\alpha_s|,|\beta_s|)]$ and contains a value $P>0$ admissible for
+the caps of Lemma~\ref{lem:transport}: namely $\min(|\alpha_s|,|\beta_s|)$ when that is positive,
+which is the choice $P^\ast$ of Lemma~\ref{lem:transport}; and $2$ otherwise, since
+$\min(|\alpha_s|,|\beta_s|)=0$ forces $\Phi_s=0$, hence $\alpha_s\equiv\beta_s\equiv0\pmod2$ and
+$\max(|\alpha_s|,|\beta_s|)\ge2$. The two caps of Lemma~\ref{lem:transport} are $m_{s-1}$ and $m_s$,
+each augmented by $1$ for a virtual event of $s$ on that side, and both are at least $2$ when
+$\Phi_s=0$: an edge with $f=0$ has $m\ge2$ on the span by Corollary~\ref{cor:lRclosed}, while
+$\Phi_s=f_{s-1}+[s=0]-[s=k^\ast][\delta^\ast=0]=f_s+[s=k^\ast][\delta^\ast=1]$ shows that an adjacent
+edge with $|f|=1$ forces a virtual event of $s$ on its side, which supplies the missing unit. Removing the $|Z|$ cut sites disconnects the crossings of the span
+into at least $|Z|+1$ classes, no two of which can lie in the same component; one component carries
+the virtual events, so at least $|Z|$ are isolated cycles. For the last sentence, an interior site
+of such a run has $d_{s-1}=d_s=0$ and $f_{s-1}=0$ and no virtual event, hence is cut, while the two
+sites at the ends of the run have $|\alpha|$ resp.\ $|\beta|$ equal to the flanking bulk deposit,
+which is even and non-zero.
+\end{proof}
+
+\begin{remark}[what the shield law still owes]\label{rem:shieldowes}
+Proposition~\ref{prop:cut} gives $c\ge|Z|$. The reverse inequality $c\le|Z|$ asks for one
+minimum-cost realisation whose components are exactly the $|Z|+1$ classes cut out by $Z$, that is,
+for pairings that connect all crossings within each class. It is not proved here. It is verified by
+exhaustive enumeration, over every sign split and every site bijection, on all bulk configurations
+with $k^\ast=0$, up to $8$ edges, even deposits of magnitude at most $4$ and both signs, and all
+four marker data: $1\,048\,544$ configurations, gap runs up to length $6$, $0$ exceptions to both
+$c=|Z|$ and the closed form of Corollary~\ref{cor:lRclosed}
+(\texttt{code/zeta\_probe/tools/sitecost}, mode \texttt{shield}). The closed form $|Z|$ also recovers, by inspection, the boundary shield
+$\mathrm{sh}_R=\mathbf 1[\varepsilon^\ast=-1\text{ or }\delta^\ast=1]$ that
+\cite[the explicit transducer]{Bonfioli2026a} records at $k^\ast=0$: by
+Corollary~\ref{cor:localcost} the marker site is cut exactly when $d_{-1}=0$, $\delta^\ast=0$ and
+$\varepsilon^\ast=1$, which is exactly where that indicator vanishes.
+\end{remark}
+
 \subsection{The model \textup{(M)}, and the assembly}\label{sec:modelassembly}
 
 Everything above is a statement about the explicit operators of Definition~\ref{def:model} and
-\eqref{eq:gapkernel}. What connects those operators to the growth series is the strand-walk input
-of Route~B, which we state once and name.
+\eqref{eq:gapkernel}, or about the optimisation of Definition~\ref{def:pairing}. What connects
+those to the growth series is the strand-walk input of Route~B, which we state once and name.
 
 \begin{hypothesis}[the transfer model \textup{(M)}]\label{hyp:model}
 \textup{(M1)} \emph{Local cost law.} The site cost between adjacent active edges carrying deposits
-$a,a'$ is $x^{\max(|a|,|a'|)}$, independent of the crossing counts and of the travel indicator.
-Bulk deposits are even, $|a|=2s$, and travel deposits odd, $|a|=2s+1$, so this cost is
+$d,d'$ is $x^{\max(|d|,|d'|)}$, independent of the crossing counts and of the travel indicator.
+Bulk deposits are even, $|d|=2s$, and travel deposits odd, $|d|=2s+1$, so this cost is
 $q^{\max(s,s')}$ in the bulk and $x^{2\max(s,s')+1}$ on the travel side, and the edge weights are
 $2q^s$ and $2x^{2s+1}$ respectively: Definition~\ref{def:model} in its two instances.
-At the marker site, with $a_L$ the last bulk deposit \textup{(}even\textup{)} and $a_R$
-the first travel deposit \textup{(}odd\textup{)}, the cost is $x^{\mathrm{Site}_0(a_L,a_R)}$ with
-\[
-   \mathrm{Site}_0(a_L,a_R)=\max\bigl(|a_L|-1,\;|a_R|\bigr)
-\]
-for all four marker data $(\varepsilon^\ast,\delta^\ast)$.
+At the near marker site the cost is $x^{\mathrm{Site}_0(d_L,d_R)}$ with
+$\mathrm{Site}_0(d_L,d_R)=\max(|d_L-1|,|d_R|)$, $d_L$ the last bulk deposit and $d_R$ the first
+travel deposit, for all four marker data $(\varepsilon^\ast,\delta^\ast)$; at the far marker site
+it is the $(\varepsilon^\ast,\delta^\ast)$-dependent cost of Corollary~\ref{cor:marker}.
 \textup{(M2)} \emph{Shield law.} A maximal interior run of $L$ forced gap edges costs $q^L$ and
-carries $L-1$ isolated cycles, one of them shielded by the inner block's turn-around; hence the
-gap-bridge kernel is $\mathfrak g(q,y)=q/(1-qy)$ and the gap-marked bulk kernel is the
-$K_{\mathfrak g}$ of \eqref{eq:gapkernel}.
+carries $L-1$ isolated cycles; hence the gap-bridge kernel is $\mathfrak g(q,y)=q/(1-qy)$ and the
+gap-marked bulk kernel is the $K_{\mathfrak g}$ of \eqref{eq:gapkernel}.
 \textup{(M3)} \emph{Decomposition.} The bivariate series of \S\ref{sec:bridge} is
 \begin{equation}\label{eq:assembly}
    \mathcal W(x,y)=\sum_{\varepsilon^\ast,\delta^\ast}
      \bigl\langle\lambda^{(y)},\ (I-\mathcal T)^{-1}\mu^{(y)}\bigr\rangle+\mathcal W_0 ,
 \end{equation}
 with $\mathcal T$ the travel operator of Definition~\ref{def:model}, $\mathcal W_0$ the $k=0$
-sector, and $\lambda^{(y)},\mu^{(y)}$ the junction-dressed bulk boundary vectors:
-$\mu^{(y)}_s=\sum_{\sigma}B_\sigma(q,y)\,x^{\mathrm{Site}_0(\sigma,2s+1)}$, where
-$B_\sigma(q,y)$ is the generating function of the bulk runs, taken with the gap-marked kernel
-\eqref{eq:gapkernel}, whose last deposit has magnitude $\sigma$, so that
-$\sum_\sigma B_\sigma=B(q,y)$; and $\lambda^{(y)}$ is its mirror. The travel assignment
+sector, and $\lambda^{(y)},\mu^{(y)}$ the junction-dressed bulk boundary vectors, $\mu^{(y)}$ given
+by \eqref{eq:junctionsym} and $\lambda^{(y)}$ by the far-junction cost of
+Corollary~\ref{cor:marker}, both formed from the generating functions $B_\sigma(q,y)$ of the bulk
+runs with the gap-marked kernel \eqref{eq:gapkernel} whose junction-adjacent deposit has magnitude
+$\sigma$, so that $\sum_\sigma B_\sigma=B(q,y)$. The travel assignment
 $e_s=2q^{1+s}$ of Definition~\ref{def:model} charges each travel edge one half-site, so a run of
 $|k|$ edges, which carries $|k|-1$ interior sites, is weighted $x$ times its relaxed weight; that
 single factor of $x$ is a normalisation of the travel block, absorbed into $\lambda^{(y)}$, and
 affects no pole, no order and no non-vanishing statement below.
 \end{hypothesis}
 
-\noindent \textup{(M)} is the Route~B strand-walk input \cite{Bonfioli2026a,supplement}. It is
-verified exhaustively there and it is \emph{not} proved. \emph{Every statement from here to the
-end of this section, and every statement elsewhere in this paper that cites one of them, is
-conditional on \textup{(M)}; this is not repeated in the individual statements.} Nothing in
-\S\S\ref{sec:setup}--\ref{sec:numerators}, \S\ref{sec:sd},
-\S\S\ref{sec:sect}--\ref{sec:mob} above, or Appendices~\ref{app:annulus}--\ref{app:star} uses it:
-those speak only about the explicit series of \eqref{eq:krec}, about $P_{12}$, and about the
-operators just defined.
+\noindent What \S\ref{sec:sitecost} settles, and what it does not, is this. Inside the optimisation
+of Definition~\ref{def:pairing}, \textup{(M1)} is Corollary~\ref{cor:localcost} together with
+Corollary~\ref{cor:marker}, and it is proved; the marker clause is proved in the corrected form,
+the earlier form being false (Remark~\ref{rem:markerfalse}). Of \textup{(M2)}, the cost $q^L$ and
+the inequality $c\ge L-1$ per interior run are proved (Corollaries~\ref{cor:localcost},
+\ref{cor:lRclosed} and Proposition~\ref{prop:cut}); the reverse inequality $c\le L-1$ is verified
+and not proved (Remark~\ref{rem:shieldowes}). \textup{(M3)} is not proved. And that the
+optimisation of Definition~\ref{def:pairing} computes the relaxed word length at all is the
+verified, unproved input of \cite{Bonfioli2026a} (Remark~\ref{rem:pairingstatus}). So
+\textup{(M)} as a statement about the growth series remains verified and not proved, and its
+weakest links are now named: the metric formula, the reverse shield inequality, and \textup{(M3)}.
+\emph{Every statement from here to the end of this section, and every statement elsewhere in this
+paper that cites one of them, is conditional on \textup{(M)}; this is not repeated in the individual
+statements.} Nothing in \S\S\ref{sec:setup}--\ref{sec:numerators}, \S\ref{sec:sd},
+\S\S\ref{sec:sect}--\ref{sec:sitecost} above, or Appendices~\ref{app:annulus}--\ref{app:star} uses
+it: those speak only about the explicit series of \eqref{eq:krec}, about $P_{12}$, about the
+operators just defined, and about the optimisation of Definition~\ref{def:pairing}.
 
 Under \textup{(M)}, $V=\mathcal W(x,1)$ and $U=\mathcal W(x,q)$ (\S\ref{sec:bridge}), the two
 evaluations differing only through $\mathfrak g_V=\mathfrak g(q,1)=\tfrac q{1-q}$ and
@@ -1646,31 +1934,33 @@ most $\pi$; hence $\pi\ge p$.
 \end{proof}
 
 \begin{proposition}[the marker junction is not rank one]\label{prop:junction}
-The junction matrix $\bigl[x^{\mathrm{Site}_0(a_L,a_R)}\bigr]$ of \textup{(M1)} has rank at least
-$3$: already on $a_L\in\{0,4,8\}$, $a_R\in\{1,5,9\}$ it is
+The junction matrix $J[\sigma,s]$ of \eqref{eq:junctionsym} has rank at least $3$. Already the
+one-sign matrix $\bigl[x^{\max(\sigma-1,2s+1)}\bigr]$ has rank at least $3$: on
+$\sigma\in\{0,4,8\}$, $2s+1\in\{1,5,9\}$ it is
 \[
    \begin{pmatrix}x&x^5&x^9\\ x^3&x^5&x^9\\ x^7&x^7&x^9\end{pmatrix},\qquad
    \det=x^{9}\,(x-x^{3})(x^{5}-x^{7})\ \ne\ 0\quad(0<x<1),
 \]
-and its rank on $a_L\in\{0,2,4,6,8\}$, $a_R\in\{1,3,5,7,9\}$ is $4$. By contrast the gap-bridge
-term $q^{a+b}$ of \eqref{eq:gapkernel} is rank one, which is why \eqref{eq:mobius} factorises.
-Consequently $\mu^{(y)}$, and with it the pairing $\Pi_y(q_m)$, is not a function of the total
-bulk sum $B(q,y)=\sum_\sigma B_\sigma(q,y)$ alone: the product form
+its rank on $\sigma\in\{0,2,4,6,8\}$, $2s+1\in\{1,3,5,7,9\}$ is $4$, and the symmetrised matrix
+\eqref{eq:junctionsym} has rank $6$ on $\sigma\in\{0,2,4,6,8,10\}$, $2s+1\in\{1,3,5,7,9,11\}$. By
+contrast the gap-bridge term $q^{a+b}$ of \eqref{eq:gapkernel} is rank one, which is why
+\eqref{eq:mobius} factorises. Consequently $\mu^{(y)}$, and with it the pairing $\Pi_y(q_m)$, is
+not a function of the total bulk sum $B(q,y)=\sum_\sigma B_\sigma(q,y)$ alone: the product form
 $\mathcal N_y=\Sigma_0(q_m)\cdot B(q_m,y)\cdot J$, with $J$ a junction factor independent of the
 bulk data, does not hold, and $\Pi_y(q_m)\ne0$ does not follow from $\Sigma_0(q_m)\ne0$ together
 with $B(q_m,y)\ne0$.
 \end{proposition}
 
 \begin{proof}
-The displayed block is the case $|a_L|-1\in\{-1,3,7\}$, $|a_R|\in\{1,5,9\}$, which interleaves as
+The displayed block is the case $\sigma-1\in\{-1,3,7\}$, $2s+1\in\{1,5,9\}$, which interleaves as
 $-1<1<3<5<7<9$; subtracting the second row from the first gives $(x-x^3,0,0)$, and expanding along
-it leaves $(x-x^3)(x^5x^9-x^9x^7)=x^9(x-x^3)(x^5-x^7)$. The rank $4$ statement is exact Gaussian
-elimination over $\Q$ at $q=\tfrac13$ (\texttt{assembly\_certificate.py}, Part~4). For the last
-sentence: by \textup{(M3)}, $\mu^{(y)}$ is the image of the vector $(B_\sigma)_\sigma$ under the
-junction matrix. That matrix has rank at least $3$, so its rows
-$\sigma\mapsto(x^{\mathrm{Site}_0(\sigma,2s+1)})_s$ span a space of dimension at least $3$, and
-two vectors $(B_\sigma)$ with equal sums $\sum_\sigma B_\sigma$ have different images. A product
-form would in particular make $\mu^{(y)}$ a function of that sum.
+it leaves $(x-x^3)(x^5x^9-x^9x^7)=x^9(x-x^3)(x^5-x^7)$. The two rank statements are exact Gaussian
+elimination over $\Q$, at $q=\tfrac13$ and at $x=\tfrac12$ respectively
+(\texttt{assembly\_certificate.py}, Part~4). For the last sentence: by \textup{(M3)}, $\mu^{(y)}$
+is the image of the vector $(B_\sigma)_\sigma$ under the junction matrix. That matrix has rank at
+least $3$, so its rows span a space of dimension at least $3$, and two vectors $(B_\sigma)$ with
+equal sums $\sum_\sigma B_\sigma$ have different images. A product form would in particular make
+$\mu^{(y)}$ a function of that sum.
 \end{proof}
 
 \begin{theorem}[the lifting reduction \textup{(L)}]\label{thm:L}
@@ -1699,11 +1989,16 @@ clearing, and $B_U>0$ by the same substitution at $\mathfrak g=\mathfrak g_U$.
 \end{proof}
 
 \begin{remark}[what \textup{(L)} still owes]\label{rem:Lgap}
-Exactly one thing: that the bulk transfer is the operator of \eqref{eq:rankone}, that is,
-\textup{(M1)} and \textup{(M2)}. Everything the paper previously listed as unproved
-\emph{downstream} of that, namely the factorisation \eqref{eq:mobius}, the reciprocity $t_0=b_1$,
-the entry $t_1=P_{12}/S_e$, and the resolvent lines of \eqref{eq:dict}, is proved above. What
-Theorem~\ref{thm:L} does \emph{not} give is the passage from $B_U(q_m)\ne0$ to
+That the bulk transfer is the operator of \eqref{eq:rankone}, that is, \textup{(M1)} and
+\textup{(M2)}. Of these, \textup{(M1)} is now Corollary~\ref{cor:localcost}, the exponent
+$q^{\max(s,s')}$ of the bulk kernel being $x^{\max(|d|,|d'|)}$ at even deposits; and of
+\textup{(M2)} the cost $q^L$ of a gap run and the inequality $c\ge L-1$ are
+Corollary~\ref{cor:lRclosed} and Proposition~\ref{prop:cut}, while $c\le L-1$ is verified and not
+proved. Both rest on the optimisation of Definition~\ref{def:pairing} being the relaxed word length,
+which is the standing input of \cite{Bonfioli2026a}. Everything the paper previously listed as
+unproved \emph{downstream} of that, namely the factorisation \eqref{eq:mobius}, the reciprocity
+$t_0=b_1$, the entry $t_1=P_{12}/S_e$, and the resolvent lines of \eqref{eq:dict}, is proved above.
+What Theorem~\ref{thm:L} does \emph{not} give is the passage from $B_U(q_m)\ne0$ to
 $\mathcal N_{q}\ne0$: that passage is the product form, and it fails by
 Proposition~\ref{prop:junction}.
 \end{remark}
@@ -1726,16 +2021,17 @@ the pairing, and that product form is unavailable by Proposition~\ref{prop:junct
 remarks on its shape.
 
 \emph{(i) The shape of the pairing.} A marker junction with a left bulk deposit of magnitude
-$\sigma$ contributes, in the travel variable $s$ \textup{(}$|a_R|=2s+1$\textup{)}, the vector
-$\lambda_s=x^{\max(\sigma-1,2s+1)}$, which equals $x\,q^{s}$ for $2s+1\ge\sigma-1$ and the
-constant $x^{\sigma-1}$ below that. Hence, using $\sum_sq^sR_s=\Sigma_1(q_m)=1$,
+$\sigma$ and sign $\pm$ contributes, in the travel variable $s$ \textup{(}$|d_R|=2s+1$\textup{)},
+the vector $\lambda_s=x^{\max(\sigma\mp1,\,2s+1)}$, which equals $x\,q^{s}$ for
+$2s+1\ge\sigma\mp1$ and the constant $x^{\sigma\mp1}$ below that. Hence, using
+$\sum_sq^sR_s=\Sigma_1(q_m)=1$,
 \[
-   \langle\lambda,R\rangle=x\sum_sq^sR_s+\sum_{2s+1<\sigma-1}\bigl(x^{\sigma-1}-xq^s\bigr)R_s
-   =x+\Delta_\sigma ,
+   \langle\lambda,R\rangle=x\sum_sq^sR_s+\sum_{2s+1<\sigma\mp1}\bigl(x^{\sigma\mp1}-xq^s\bigr)R_s
+   =x+\Delta_\sigma^{\pm} ,
 \]
 a bounded explicit term plus a correction involving only the components $R_s$ with
-$2s+1<\sigma-1$. Summing over $\sigma$ against the bulk-run weights makes every component enter,
-but the structure ``constant plus correction'' is the natural target.
+$2s+1<\sigma\mp1$. Summing over $\sigma$ and the two signs against the bulk-run weights makes every
+component enter, but the structure ``constant plus correction'' is the natural target.
 
 \emph{(ii) It is not a statement about $\Sigma_0$ and $S_0$.} Both of those are non-zero at every
 travel pole (Proposition~\ref{prop:numnonvanish}), and that proposition is used, here and in
@@ -1812,12 +2108,31 @@ the truncated system at $q=0.5,0.7,q_1$ and $y=1,q$, agreeing to $6.2\cdot10^{-2
 signs $b_0>0$ and $s<1$ and the lifting increment $(1-s)B_V+qb_0>0$ hold at all ten, with
 $b_0\tau\to2$ and $s\to\tfrac14$.
 
-\emph{Part 4, exact rational arithmetic}: the junction matrix of Proposition~\ref{prop:junction}
-has rank $4$ over $\Q$ at $q=\tfrac13$ on the $5\times5$ block, and the interleaved $3\times3$
-minor equals $9/524288$ at $x=\tfrac12$, while the gap-bridge matrix $[q^{a+b}]$ has rank $1$. The
-closed form $\mathrm{Site}_0=\max(|a_L|-1,|a_R|)$ of \textup{(M1)} is checked against the Route~B
-matching engine on $280$ cells ($|a_L|\le12$ even, $|a_R|\le9$ odd, all four marker data) when
-that engine is present; it is part of \textup{(M)} and is not proved.
+\emph{Part 4, exact rational arithmetic}: the one-sign junction matrix
+$[x^{\max(\sigma-1,2s+1)}]$ has rank $4$ over $\Q$ at $q=\tfrac13$ on the $5\times5$ block, its
+interleaved $3\times3$ minor equals $9/524288$ at $x=\tfrac12$, the symmetrised junction matrix
+\eqref{eq:junctionsym} has rank $6$ on the $6\times6$ block at $x=\tfrac12$, and the gap-bridge
+matrix $[q^{a+b}]$ has rank $1$.
+
+\emph{Part 5, exact integer arithmetic, \texttt{code/zeta\_probe/tools/sitecost}}: the site cost is
+computed by two independent exact solvers, a min-cost flow and a transportation dynamic program,
+which agree on all $1\,012\,664$ supply-demand pairs with entries at most $7$; on the same range the
+closed form $\max(|\alpha|,|\beta|,|\Phi|)$ of Lemma~\ref{lem:transport} is exact, with $0$ misses.
+Corollary~\ref{cor:localcost} is confirmed on $4\,532\,157$ site configurations, each evaluated by
+both solvers, namely every crossing count from the minimum to the minimum plus $10$, every sign
+split, both signs of both deposits with $|d|\le24$, every travel indicator, all four marker data and
+all eight site types
+(bulk interior, travel interior in both directions, the near and far junctions for $k^\ast>0$ and
+$k^\ast<0$, and the coincident junction at $k^\ast=0$): $0$ exceptions, with the cost independent of
+the crossing counts and of the sign splits in every case. Deleting any one of the three pairing
+costs is witnessed necessary: replacing the sign-flip bounce cost $2$ by $0,1,3,4$, the pass cost
+$1$ by $0,2,3$, or the bounce cost $0$ by $1,2$ each breaks
+Corollary~\ref{cor:localcost}, with $2544$ to $7392$ exceptions out of $7524$ configurations and the
+smallest counterexample recorded. The marker closed forms of Corollary~\ref{cor:marker} hold with
+$0$ exceptions on the full signed range, and the form $\max(|d_L|-1,|d_R|)$ fails on $42$ of $156$
+cells at the near junction and on $36$ of $156$ at its $k^\ast<0$ counterpart, all with $d_L<0$.
+Corollaries~\ref{cor:lRclosed} and the shield count are confirmed as recorded in
+Remark~\ref{rem:shieldowes}.
 \end{remark}
 
 \section{The relaxed series \texorpdfstring{$V$}{V}}\label{sec:V}

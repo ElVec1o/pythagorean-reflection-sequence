@@ -480,33 +480,29 @@ def part3(npoles, dps_list):
 # =========================================================================
 def part4():
     print("\n[PART 4]  marker-junction kernel: exact rank test")
-    # Site-0 cost (arrival), a_L the last bulk deposit (even, f=0), a_R the first
-    # travel deposit (odd, f=+1).  The closed form
-    #     Site_0(a_L, a_R) = max(|a_L| - 1, |a_R|)
-    # is verified below against the validated matching engine of
-    # code/zeta_probe/route_b/catalytic_funceq.py when that scratch tree is present
-    # (it is gitignored, so the check is skipped in a clean checkout).
-    def site0(aL, aR): return max(abs(aL)-1, abs(aR))
-    import os, importlib.util
-    rb = os.path.join(os.path.dirname(os.path.abspath(__file__)), "route_b",
-                      "catalytic_funceq.py")
-    if os.path.exists(rb):
-        argv = list(sys.argv)
-        spec = importlib.util.spec_from_file_location("cf_rb", rb)
-        mod = importlib.util.module_from_spec(spec); sys.argv = ["cf", "0"]
-        spec.loader.exec_module(mod); sys.argv = argv
-        bad = 0; cells = 0
-        for eps in (1, -1):
-            for dl in (0, 1):
-                for aL in range(0, 13, 2):
-                    for aR in [v for v in range(-9, 10) if v % 2]:
-                        v = mod.boundary_site_cost(aL, 0, aR, 1, True, False, eps, dl)
-                        cells += 1
-                        if v != site0(aL, aR): bad += 1
-        check(f"Site_0 = max(|a_L|-1,|a_R|) on {cells} cells "
-              f"(|a_L|<=12 even, |a_R|<=9 odd, all 4 marker data)", bad == 0)
-    else:
-        print("  (route_b scratch tree absent: closed form taken from the tabulation)")
+    # Site-0 cost (arrival), d_L the last bulk deposit (even, f=0), d_R the first
+    # travel deposit (odd, f=+1).  The closed form proved in paper2 Cor. (marker
+    # junctions) is
+    #     Site_0(d_L, d_R) = max(|d_L - 1|, |d_R|),
+    # NOT max(|d_L|-1, |d_R|): the two agree on d_L >= 0 and differ on d_L <= -2.
+    # The exhaustive verification against the exact matching value lives in
+    # code/zeta_probe/tools/sitecost (Rust, exact integer arithmetic).
+    def site0(dL, dR): return max(abs(dL-1), abs(dR))
+    def site0_old(dL, dR): return max(abs(dL)-1, abs(dR))
+    cells = 0; diff = 0; first = None
+    for dL in range(-12, 13, 2):
+        for dR in [v for v in range(-9, 10) if v % 2]:
+            cells += 1
+            if site0(dL, dR) != site0_old(dL, dR):
+                diff += 1
+                if first is None: first = (dL, dR, site0(dL, dR), site0_old(dL, dR))
+    print(f"  the earlier marker form max(|d_L|-1,|d_R|) differs from the proved form "
+          f"on {diff} of {cells} cells (|d_L|<=12 even, |d_R|<=9 odd); "
+          f"smallest: d_L={first[0]}, d_R={first[1]}, true {first[2]} vs {first[3]}")
+    check("the earlier marker form agrees exactly on d_L >= 0 and nowhere below -1",
+          all(site0(dL, dR) == site0_old(dL, dR)
+              for dL in range(0, 13, 2) for dR in range(-9, 10, 2) if dR % 2)
+          and diff > 0)
     # the interleaved 3x3 minor, exactly
     x = F(1, 2)
     rows3 = [[x**site0(aL, aR) for aR in (1, 5, 9)] for aL in (0, 4, 8)]
@@ -535,6 +531,27 @@ def part4():
     print(f"  exact rank over Q = {rank}")
     check("marker junction kernel is NOT rank one (rank >= 3)", rank >= 3,
           f"rank {rank}: the numerator of (R) does not factor as Sigma_0 * B_V * J")
+    # the sign-symmetrised junction of paper2 eq. (junctionsym): the bulk run's
+    # junction-adjacent deposit carries either sign with weight B_sigma/2
+    sig = [0, 2, 4, 6, 8, 10]; srs = [1, 3, 5, 7, 9, 11]
+    xh = F(1, 2)
+    def jsym(sg, r):
+        if sg == 0: return xh**site0(0, r)
+        return (xh**site0(sg, r) + xh**site0(-sg, r)) / 2
+    Msym = [[jsym(sg, r) for r in srs] for sg in sig]
+    A = [row[:] for row in Msym]; n = len(A); m2 = len(A[0]); rk = 0
+    for c in range(m2):
+        piv = next((r for r in range(rk, n) if A[r][c] != 0), None)
+        if piv is None: continue
+        A[rk], A[piv] = A[piv], A[rk]
+        pv = A[rk][c]
+        for r in range(n):
+            if r != rk and A[r][c] != 0:
+                f = A[r][c]/pv
+                A[r] = [A[r][j] - f*A[rk][j] for j in range(m2)]
+        rk += 1
+    check(f"sign-symmetrised junction matrix has rank 6 on the 6x6 block at x=1/2",
+          rk == 6, f"rank {rk}")
     # for contrast: the gap-bridge kernel q^{a+b} IS rank one
     Ag = [[q**(a+b) for b in range(1, 6)] for a in range(1, 6)]
     r2 = 0; A = [row[:] for row in Ag]
