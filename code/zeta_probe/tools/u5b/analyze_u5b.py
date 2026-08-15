@@ -2,10 +2,26 @@
 # Analyze u5b_out.txt: extrapolate rel/tau (the U5b reflection constant) as tau->0,
 # determine the convergence exponent p (rel/tau = C + a*tau^p), and identify C.
 import mpmath as mp
+
+def _u5b_data(name, argv_index=1):
+    """Locate a u5b data file. The u5b run outputs are NOT part of this repository:
+    they are large intermediates produced by tools/u5b. Pass the path as an argument
+    or set U5B_DIR."""
+    import os, sys
+    if len(sys.argv) > argv_index:
+        return sys.argv[argv_index]
+    d = os.environ.get("U5B_DIR")
+    if d:
+        return os.path.join(d, name)
+    raise SystemExit(
+        "error: %s not found. The u5b run outputs are not shipped with this repository.\n"
+        "Pass the path as the first argument, or set U5B_DIR to the directory holding it.\n"
+        "Regenerate with tools/u5b (see tools/u5b/README.md if present)." % name)
+
 mp.mp.dps = 50
 
 rows = []
-with open("/Users/vico/Documents/elvec1o/u5b/u5b_out.txt") as f:
+with open(_u5b_data('u5b_out.txt')) as f:
     for line in f:
         t = line.split()
         if len(t) < 8:

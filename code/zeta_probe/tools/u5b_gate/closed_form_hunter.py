@@ -7,7 +7,7 @@
 # precision and runs PSLQ (integer-relation) against a rich constant basis.
 #
 # RUN (Mac):
-#     cd /Users/vico/Documents/elvec1o/u5b_gate
+#     cd <repo>/code/zeta_probe/tools/u5b_gate
 #     python3 closed_form_hunter.py                 # default dps=200, poles m=14..40
 #     python3 closed_form_hunter.py 300 16 48       # dps=300, poles m=16..48 (slower, more precise)
 # Paste me the printed block (it also saves to hunter_out.txt).  Progress is printed per pole.

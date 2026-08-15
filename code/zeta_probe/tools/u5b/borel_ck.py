@@ -1,6 +1,22 @@
 import sympy as sp
 import sys
 
+def _u5b_data(name, argv_index=1):
+    """Locate a u5b data file. The u5b run outputs are NOT part of this repository:
+    they are large intermediates produced by tools/u5b. Pass the path as an argument
+    or set U5B_DIR."""
+    import os, sys
+    if len(sys.argv) > argv_index:
+        return sys.argv[argv_index]
+    d = os.environ.get("U5B_DIR")
+    if d:
+        return os.path.join(d, name)
+    raise SystemExit(
+        "error: %s not found. The u5b run outputs are not shipped with this repository.\n"
+        "Pass the path as the first argument, or set U5B_DIR to the directory holding it.\n"
+        "Regenerate with tools/u5b (see tools/u5b/README.md if present)." % name)
+
+
 # Derive the dev_m asymptotic coefficients c_k to high order.
 # dev_m ~ sum_{k>=1} c_k / w^{2k-1},  w=sqrt(2/tau).
 # Method (same as derive_c3.py, generalized):
@@ -108,6 +124,6 @@ for k in range(1, NPAIR + 1):
 # dump rationals for downstream numeric analysis
 import json
 out = [str(c) for c in cks]
-with open('/Users/vico/Documents/elvec1o/u5b/cks.json', 'w') as f:
+with open(_u5b_data('cks.json'), 'w') as f:
     json.dump(out, f)
 print("\nwrote cks.json with %d coeffs" % len(cks), flush=True)

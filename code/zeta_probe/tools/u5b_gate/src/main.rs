@@ -10,7 +10,7 @@
 // Output is appended to a CSV (resumable). Progress + ETA printed each pole.
 //
 // Build (from THIS space-free dir, NOT the "XXXXX MATH PROOF" path):
-//     cd /Users/vico/Documents/elvec1o/u5b_gate && cargo build --release
+//     cd <repo>/code/zeta_probe/tools/u5b_gate && cargo build --release
 // Run:
 //     ./target/release/u5b_gate --max 400 --out gate.csv
 //     ./target/release/u5b_gate --max 4000 --out bound.csv --bound-only   # fast, large m

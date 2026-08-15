@@ -1,5 +1,5 @@
-import sys, io, contextlib
-sys.path.insert(0, "/Users/vico/Documents/elvec1o/XXXXX MATH PROOF/code/zeta_probe")
+import os, sys, io, contextlib
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.argv = ['lamp_formula','0']
 with contextlib.redirect_stdout(io.StringIO()):
     from lamp_formula import formula_len

@@ -1,4 +1,20 @@
 import json, mpmath as mp
+
+def _u5b_data(name, argv_index=1):
+    """Locate a u5b data file. The u5b run outputs are NOT part of this repository:
+    they are large intermediates produced by tools/u5b. Pass the path as an argument
+    or set U5B_DIR."""
+    import os, sys
+    if len(sys.argv) > argv_index:
+        return sys.argv[argv_index]
+    d = os.environ.get("U5B_DIR")
+    if d:
+        return os.path.join(d, name)
+    raise SystemExit(
+        "error: %s not found. The u5b run outputs are not shipped with this repository.\n"
+        "Pass the path as the first argument, or set U5B_DIR to the directory holding it.\n"
+        "Regenerate with tools/u5b (see tools/u5b/README.md if present)." % name)
+
 mp.mp.dps = 40
 
 def load(fn):
@@ -10,7 +26,7 @@ def load(fn):
         else: out.append(mp.mpf(sv))
     return out
 
-cks = load('/Users/vico/Documents/elvec1o/u5b/cks.json')
+cks = load(_u5b_data('cks.json'))
 K=len(cks)
 # b_n = a_n/n!  with a_{k-1}=c_k/2^{k-1}  (g(tau) Borel transform coeff)
 b = [ (cks[n]/mp.mpf(2)**n)/mp.factorial(n) for n in range(K) ]   # b[n]=a_n/n!

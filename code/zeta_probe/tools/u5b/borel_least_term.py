@@ -1,4 +1,20 @@
 import mpmath as mp
+
+def _u5b_data(name, argv_index=1):
+    """Locate a u5b data file. The u5b run outputs are NOT part of this repository:
+    they are large intermediates produced by tools/u5b. Pass the path as an argument
+    or set U5B_DIR."""
+    import os, sys
+    if len(sys.argv) > argv_index:
+        return sys.argv[argv_index]
+    d = os.environ.get("U5B_DIR")
+    if d:
+        return os.path.join(d, name)
+    raise SystemExit(
+        "error: %s not found. The u5b run outputs are not shipped with this repository.\n"
+        "Pass the path as the first argument, or set U5B_DIR to the directory holding it.\n"
+        "Regenerate with tools/u5b (see tools/u5b/README.md if present)." % name)
+
 mp.mp.dps = 80
 
 # Sigma(tau) = sum_{k>=0} 2 q (-2(1-q))^k q^{k^2+2k} / [ (q^2;q^2)_{k+1} (q^3;q^2)_k ]
@@ -53,7 +69,7 @@ def pole_w(m):
 # known exact c_k (c1..c5) + we will append numeric c6.. from cks.json
 import json
 def load_cks():
-    with open('/Users/vico/Documents/elvec1o/u5b/cks.json') as f:
+    with open(_u5b_data('cks.json')) as f:
         raw = json.load(f)
     out = []
     for sv in raw:

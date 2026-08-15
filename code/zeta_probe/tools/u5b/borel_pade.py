@@ -11,7 +11,23 @@ def load(fn):
     return out
 
 import sys
-fn = sys.argv[1] if len(sys.argv)>1 else '/Users/vico/Documents/elvec1o/u5b/cks.json'
+
+def _u5b_data(name, argv_index=1):
+    """Locate a u5b data file. The u5b run outputs are NOT part of this repository:
+    they are large intermediates produced by tools/u5b. Pass the path as an argument
+    or set U5B_DIR."""
+    import os, sys
+    if len(sys.argv) > argv_index:
+        return sys.argv[argv_index]
+    d = os.environ.get("U5B_DIR")
+    if d:
+        return os.path.join(d, name)
+    raise SystemExit(
+        "error: %s not found. The u5b run outputs are not shipped with this repository.\n"
+        "Pass the path as the first argument, or set U5B_DIR to the directory holding it.\n"
+        "Regenerate with tools/u5b (see tools/u5b/README.md if present)." % name)
+
+fn = _u5b_data('cks.json')
 cks = load(fn)
 K=len(cks)
 # Borel transform of g(tau) in tau: B(t) = sum_{n>=0} b_n t^n, b_n = a_n/n! = c_{n+1}/(2^n n!).

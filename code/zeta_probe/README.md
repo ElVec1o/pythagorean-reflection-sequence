@@ -58,9 +58,6 @@ is treated as a bug.
 
 | File | What it certifies |
 |---|---|
-| `orthoscheme_dichotomy.py` | Orthoscheme growth against the right-angled Coxeter envelope. |
-| `orthoscheme_rigidity.py` | The two geometric facts under `thm:rigidity`, symbolically in the legs, so for all legs rather than at a sample. |
-| `orthoscheme_universality.py` | The universality prefix in every dimension, of which the planar case is paper 1. |
 
 ## `tools/`
 

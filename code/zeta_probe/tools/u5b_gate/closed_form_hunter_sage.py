@@ -7,7 +7,7 @@
 # minimal polynomial (rational = deg 1; quadratic surd = deg 2; ...). Heavy extraction stays in mpmath.
 #
 # RUN under Sage's python (NO preparser, so mpmath sees plain python ints):
-#     cd /Users/vico/Documents/elvec1o/u5b_gate
+#     cd <repo>/code/zeta_probe/tools/u5b_gate
 #     sage -python closed_form_hunter_sage.py 300 22 48
 #     sage -python closed_form_hunter_sage.py 500 24 58      # deeper
 # Paste back the per-coefficient "min poly" / "rational?" lines + any *** TRUSTWORTHY *** tag.
