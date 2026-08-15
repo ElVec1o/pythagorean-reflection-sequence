@@ -162,10 +162,10 @@ virtually the wreath product $\Z\wr\Z$ (Theorem, lamplighter
 structure): metabelian-by-finite, hence amenable, yet of exponential
 growth, and not finitely presentable. Independently, the translation
 module is computed by Mayer--Vietoris for the free product
-$W=V_4*\Z/2$ together with Crowell's exact sequence: it is the
+$W=V_4*\Z/2$ together with Crowell's exact sequence \cite{Crowell}: it is the
 $\Z[Q]$-module $I_A\cap I_B$, which equals the cyclic ideal generated
 by the central element $h=(c-1)(Y-1)$ by exactness of the Bass--Serre
-tree of $D_\infty$ (Lemma, Mayer--Vietoris reduction). The generic
+tree of $D_\infty$ \cite{Serre} (Lemma, Mayer--Vietoris reduction). The generic
 kernel is then identified as the relative commutator subgroup
 $\ker\rho_{\mathrm{gen}}=[T_\rho,T_\rho]$, exhibiting the generic group
 as the $Q$-relative metabelianization of $V_4*\Z/2$
@@ -303,12 +303,12 @@ mirrors of a Euclidean triangle, places the rational shapes inside the
 program of quantifying group approximations, with the deviation sandwich
 giving the explicit girth of convergence in the space of marked groups.
 The geodesic-language and growth analysis is in the spirit of the
-lamplighter computations of Cleary--Elder--Taback; the catalytic
+lamplighter computations of Cleary--Elder--Taback \cite{CET}; the catalytic
 $q$-difference structure of the growth series, and the consequent
 exclusion of every elementary closed form for $\beta_2$, is the point at
 which A396406 departs from the rational growth series of the standard
 lamplighter generating sets. The rotation number $\zeta_T$ governing the
-translation module coincides with the rotation number of Sadun's
+translation module coincides with the rotation number of Sadun's \cite{Sadun}
 generalized-pinwheel substitution tilings, though the invariant studied
 there (tiling-space cohomology) is distinct from the word-growth
 sequence treated here.
@@ -371,7 +371,7 @@ be the Coxeter group whose diagram is the path on three nodes with edge labels $
 \begin{proof}
 Each $R_i$ is a reflection, so $R_i^2 = 1$; the mirrors of $R_0,R_1$ meet at $\pi/2$, so $R_0R_1$ is a half-turn and $(R_0R_1)^2 = 1$. Hence all defining relators of $W$ hold in $W(T)$, giving the surjection $\rho_T\colon W \twoheadrightarrow W(T)$. The remaining interior angles $\arctan(b/a)$, $\arctan(a/b)$ are, by Niven's theorem (a rational multiple of $\pi$ has rational tangent only for tangent in $\{0,\pm1\}$, excluded by $a\ne b$), irrational multiples of $\pi$; so $R_0R_2$ and $R_1R_2$ have infinite order and no bond $(R_iR_2)^m=1$ is forced. Thus the pairwise orders are exactly as stated, and $W$ is the largest group compatible with them.
 
-The surjection is \emph{not} an isomorphism. Coxeter's structure theorem would identify $W(T)$ with $W$ only if the affine (Tits) representation $\rho_T$ were faithful; but $W(T)\le\mathrm{Isom}(\mathbb{R}^2)$ is amenable (indeed virtually lamplighter, \S\ref{sec:metric}), whereas $W\cong(\mathbb{Z}/2\times\mathbb{Z}/2)*\mathbb{Z}/2$ contains a free subgroup and is non-amenable. Hence $\ker\rho_T$ is nontrivial and $W(T)$ is a proper quotient. Explicitly, $\ker\rho_T$ is computed in Theorem~\ref{thm:non-universality-restate}: its shortest element has length $2n_T$, so $W(T)$ and $W$ have the same spherical growth only through depth $n_T-1$.
+The surjection is \emph{not} an isomorphism. Coxeter's structure theorem would identify $W(T)$ with $W$ only if the affine (Tits) representation $\rho_T$ were faithful; but $W(T)\le\mathrm{Isom}(\mathbb{R}^2)$ is amenable (indeed virtually lamplighter, \S\ref{sec:metric}), whereas $W\cong(\mathbb{Z}/2\times\mathbb{Z}/2)*\mathbb{Z}/2$ contains a free subgroup \cite{Tits1972} and is non-amenable. Hence $\ker\rho_T$ is nontrivial and $W(T)$ is a proper quotient. Explicitly, $\ker\rho_T$ is computed in Theorem~\ref{thm:non-universality-restate}: its shortest element has length $2n_T$, so $W(T)$ and $W$ have the same spherical growth only through depth $n_T-1$.
 \end{proof}
 
 \begin{remark}
@@ -987,9 +987,10 @@ in every lamp profile computed from $\mu_T$. Equivalently one may order the
 legs so that $a > b$.
 \end{definition}
 
-For example, $(a,b) = (1,2)$ gives $\zeta_T = (-3+4i)/5$, $c_T = 5$, and
-$\mu_T = 5t^2 + 6t + 5$, while $(a,b) = (3,4)$ gives
-$\zeta_T = (-7+24i)/25$, $c_T = 25$, and $\mu_T = 25t^2 + 14t + 25$.
+For example, $(a,b) = (1,2)$ gives $\zeta_T = (-3+4i)/5$, $c_T = 5$,
+$e_T = 6$ and $\mu_T = 5t^2 - 6t + 5$, while $(a,b) = (3,4)$ gives
+$\zeta_T = (-7+24i)/25$, $c_T = 25$, $e_T = 14$ and
+$\mu_T = 25t^2 - 14t + 25$.
 
 \begin{lemma}[Arithmetic of the complexity]
 \label{lem:complexity-arith}
@@ -1274,7 +1275,7 @@ candidate rotation numbers with $c_T \le 60$ over independent $31$-bit
 primes (under three minutes), and the surviving list is confirmed over
 $\mathbb{Q}(i)$. A Rust implementation (\texttt{certify38\_rust/})
 extends the certificate through depth $36$: the generic layer counts
-match the published values through depth $36$, all $24$ candidate
+match the published values through depth $36$, all $22$ candidate
 rotation numbers with $c_T \le 72$ are collision-free through depth
 $32$ under the modular filter and confirmed over $\mathbb{Q}(i)$, and
 the single collision beyond is the $(1,2)$ deviation of
@@ -1352,8 +1353,9 @@ the subgroup of pure translations $(1,0,0,P)$. Following
 Theorem~\ref{thm:effective-universality} we set $c_T := N(\lambda)$, the
 norm of the primitive denominator $\lambda$ of $\zeta_T$, and let
 $\mu_T(t) = c_T t^2 - e_T t + c_T$ be the primitive integer minimal
-polynomial of $\zeta_T^{\pm 1}$, with $e_T = 2(a^2-b^2)$ when $a+b$ is odd
-and $e_T = a^2-b^2$ when $a,b$ are both odd. The arithmetic facts that
+polynomial of $\zeta_T^{\pm 1}$, with $e_T = 2\,|a^2-b^2|$ when $a+b$ is odd
+and $e_T = |a^2-b^2|$ when $a,b$ are both odd, the absolute value being the
+convention fixed in Definition~\ref{def:complexity}. The arithmetic facts that
 $c_T$ is odd, all of its prime factors are $\equiv 1 \pmod 4$, and
 $c_T \ge 5$ in the unequal-leg case are
 Lemma~\ref{lem:complexity-arith}.
@@ -1496,9 +1498,9 @@ hence a strictly smaller layer count at some depth $\le \ell$.
 
 \begin{remark}[Witnesses for individual shapes]
 \label{rem:witness-instances}
-For $(a,b) = (1,2)$ one has $\mu_T = 5t^2 + 6t + 5$
-($c_T = 5$, $e_T = -6$), and $w_T$ has length $104$; for $(3,4)$,
-$\mu_T = 25t^2 + 14t + 25$ and length $392$; for $(1,3)$, $c_T = 5$ and
+For $(a,b) = (1,2)$ one has $\mu_T = 5t^2 - 6t + 5$
+($c_T = 5$, $e_T = 6$), and $w_T$ has length $104$; for $(3,4)$,
+$\mu_T = 25t^2 - 14t + 25$ and length $392$; for $(1,3)$, $c_T = 5$ and
 length $116$ (each a nonzero translation in $\ker(\rho_T)$,
 \texttt{code/zeta\_probe/witness.py}). The word $w_T$ provides only an
 \emph{upper} bound on the first deviation depth: a length-$\ell$ kernel
@@ -1594,9 +1596,43 @@ word. The first deviation depth is therefore linear in the arithmetic
 complexity $c_T$. For $(1,2)$ the bounds read
 $33 \le n_{(1,2)} \le 104$, with $n_{(1,2)} = 33$ attaining the lower
 floor. For every shape other than $(1,2)$ the depth-$36$ certificate sharpens the floor
-to $\max(37, c_T)$. (An earlier version quoted a depth-$38$ certificate; no run
-beyond depth $36$ was performed, and the floor is stated accordingly.)
+to $\max(37, c_T)$.
 \end{corollary}
+
+\begin{remark}[The depth-$38$ run, and why it is not used]
+\label{rem:depth38}
+An earlier version quoted a depth-$38$ certificate. A depth-$38$ run was in fact
+performed, and its log is retained in \texttt{certify38\_rust/}; the floor above
+is nonetheless stated from the depth-$36$ certificate, for a reason worth
+recording rather than burying. That run enumerates $24$ candidates rather than
+$22$, because its candidate bound is $c_T\le 2\cdot 38=76$ and so admits the two
+shapes of complexity $73$; both are clean. It reports the generic layer counts as
+matching $a(0),\dots,a(38)$, and it flags six of the $24$ as colliding under the
+modular filter: $(2,1)$ and $(3,1)$ at $c_T=5$, $(4,3)$ and $(7,1)$ at $c_T=25$,
+$(5,2)$ at $c_T=29$ and $(7,5)$ at $c_T=37$.
+
+Five of those six are not deviations of any shape we can currently assert. The
+modular filter is one-sided: a \emph{clean} verdict is exact, but a
+\emph{collision} verdict is only a candidate, and by
+Remark~\textup{\ref{rem:multiprime}} it becomes a deviation only after
+adjudication over $\Q(i)$. That adjudication was never carried out for this run,
+because no pairs files were exported from it. Independent re-runs at depths $34$
+and $36$ find all five clean, so if any of the five is real it lies at depth $37$
+or $38$; and four of them would contradict
+Proposition~\textup{\ref{prop:deviation-law}} by a wide margin, which predicts
+first deviations at depths $164$, $213$, $219$ and $246$ for $(4,3)$, $(5,2)$,
+$(7,1)$ and $(7,5)$. Unadjudicated modular collisions at that distance from the
+predicted depths are far more likely to be modular accidents than deviations.
+The fifth, $(3,1)$, is the one case where the discrepancy is a single step: the
+law gives $n_{(1,3)}=39$ and the run flags a collision at depth at most $38$, so
+here an accident and a genuine off-by-one in the law are equally consistent with
+the evidence, and only the exact adjudication would separate them. The sixth,
+$(2,1)$, is the known deviation of $(1,2)$ at depth $33$ and is expected.
+Nothing in this paper rests on the depth-$38$ run, and the sharpened floor
+$\max(37,c_T)$ uses only the depth-$36$ certificate, whose clean verdicts are
+exact. Settling the five would need the run repeated with pairs export and
+\texttt{exact\_check.py} applied to each; we have not done so.
+\end{remark}
 
 The sandwich can be replaced by an \emph{exact} characterization: the deviation
 depth is precisely half the length of the shortest nontrivial kernel element,
@@ -1947,7 +1983,7 @@ the short exact sequence
    \;\to\; \mathbb{Z}[Q]/I_A \;\oplus\; \mathbb{Z}[Q]/I_B
    \;\to\; \mathbb{Z}[Q]/I_W \;\to\; 0,
 \]
-and Crowell's exact sequence identifies
+and Crowell's exact sequence \cite{Crowell} identifies
 $T_\rho^{\mathrm{ab}} \cong H_1(W; \mathbb{Z}[Q]) \cong I_A \cap I_B$ as
 a left $\mathbb{Z}[Q]$-submodule.  The right-hand side depends only on
 the data $A * B \twoheadrightarrow Q$, with no reference to any
@@ -2224,7 +2260,7 @@ For the structural assertions: $\mathcal{T}$ is abelian and
 $\widetilde Q$ is virtually abelian, so $W_{\mathrm{gen}}$ is
 metabelian-by-finite, hence amenable.  Exponential growth is classical
 for $\mathbb{Z} \wr \mathbb{Z}$ and passes to commensurable groups; this
-is consistent with the Milnor--Wolf theorem, by which a solvable group
+is consistent with the Milnor--Wolf theorem \cite{Milnor1968,Wolf1968}, by which a solvable group
 of non-polynomial growth must have exponential growth.  Finite
 presentability fails by Baumslag's theorem together with its invariance
 under commensurability, as stated.
@@ -2692,9 +2728,18 @@ where, with $b$ the spine-incident travel deposit (Definition~\ref{def:vocab}),
 plus the boundary coupling $\eta(g)\in\{-1,0,1\}$, supported on the single cell
 $\{\,k=0,\ \delta=0,\ \text{even deposit on edge }-1,\ \text{right detour, no
 edge-}0\text{ deposit}\,\}$ and equal there to $-1$ if $\varepsilon=1$ and to
-$\mathbf 1[a_{-1}=2]$ if $\varepsilon=-1$. This expression is the closed form
-$c(g)$.
+$\mathbf 1[a_{-1}=2]$ if $\varepsilon=-1$. This expression \emph{defines} the
+closed form $c_{\mathrm{pred}}(g)$.
 \end{proposition}
+
+\begin{remark}[What this proposition does not say]
+It is a statement about $\mathcal{A}$ alone: the transducer emits the displayed
+expression. It does \emph{not} assert $c_{\mathrm{pred}}=c$, with $c$ the true
+connectivity defect. That identification is exactly the open problem recorded
+in Remark~\textup{\ref{rem:lowerbound-open}} and stated as
+Conjecture~\textup{\ref{conj:lowerbound}}; every use of
+$c_{\mathrm{pred}}$ below is a use of the closed form, not of $c$.
+\end{remark}
 
 \begin{definition}[The explicit transducer $\mathcal{A}$]
 \label{def:transducer}
@@ -2752,7 +2797,10 @@ adjacent to blocks of every parity class, spine-incident deposits of both signs
 and both magnitude classes $|b|\in\{1,\ge3\}$, both values of $\delta$ and of
 $\varepsilon$, and the degenerate $\eta$-cell. On this window the closed form
 matches the exact breadth-first true distance with $0$ exceptions over all
-$275{,}823$ elements, and is held out at depths $19,21,23,24$. The closed form
+$275{,}823$ elements, and is held out at depths $19,21,23,24$. This
+enumeration is the output of \texttt{code/zeta\_probe/c\_formula.py}, run as
+\texttt{python3 c\_formula.py 24}; it prints the element count and the
+mismatch count, and takes about eleven seconds. The closed form
 also matches the exact solver on elements outside the window (gap-runs of
 length up to $16$, displacements $|k|$ up to $5$, deposit magnitudes up to $6$) none of which alters the defect, in agreement with Lemma~\ref{lem:fsm}.
 The window exercises each of the eight transitions of
@@ -3170,8 +3218,11 @@ determination is therefore independent of those hypotheses.
 \begin{remark}[Finite-horizon ratio estimate]
 \label{rem:beta2-overshoot}
 The consecutive-ratio estimate $u_{d+1}/u_d$ converges to $\beta_2$ at rate
-$O(1/d)$ with a period-$4$ sign oscillation; at $d=43$ it equals
-$1.4995\ldots$, within $0.04\%$ of $3/2$. This finite-depth value overshoots
+$O(1/d)$ with a period-$4$ sign oscillation. On the $43$ available terms
+$u_0,\dots,u_{42}$ the last such ratio is $u_{42}/u_{41}=1.49692\ldots$, and
+the geometric mean of the last eight, which averages out one full period of
+the oscillation, is $1.49987\ldots$, within $0.01\%$ of $3/2$. This
+finite-depth value overshoots
 the limit and does not determine the growth rate, which is fixed exactly by
 Theorem~\ref{thm:beta2}.
 \end{remark}
@@ -3212,7 +3263,7 @@ $39$ are the published terms of A396406, and $u_{39},\ldots,u_{42}$ come
 from the depth-$42$ breadth-first search, recorded with their provenance
 in \texttt{code/data/u\_terms\_43.txt} and discussed in
 Appendix~\ref{sec:extra-lean}; they were recovered from the stored
-logarithms of that run, a recovery that reproduces all $38$ overlapping
+logarithms of that run, a recovery that reproduces all $39$ overlapping
 published terms exactly, and they have not been regenerated by the growth
 breadth-first search. All of $u_0,\ldots,u_{22}$
 are independently re-derived, with no breadth-first search anywhere in the
@@ -3376,7 +3427,8 @@ strictly beyond these boxes.
 \begin{remark}[Finite-depth ratio estimates are unreliable]
 \label{rmk:ratio-overshoot}
 The consecutive ratios $u_{d+1}/u_d$ converge only at rate $O(1/d)$ and
-carry a period-$4$ sign oscillation; the $43$-term estimate $1.4995$ is a
+carry a period-$4$ sign oscillation; the estimate $1.49987\ldots$ obtained
+from the $43$ available terms (Remark~\ref{rem:beta2-overshoot}) is a
 finite-depth overshoot of the true growth rate and must not be read as
 evidence for the value $3/2$. The growth rate is instead pinned exactly by
 the closed-form singularity analysis of the relaxed model,
@@ -3437,6 +3489,7 @@ All computations use exact arithmetic; no floating-point step enters any
 asserted result. The symbolic normal form of
 Theorem~\ref{thm:symbolic} is verified in $\mathbb{Q}(a,b)$ with SymPy,
 and the Schur-complement determinant identity of
+\texttt{lean/with\_mathlib/SchurGeneral.lean} is verified in the same way.
 The Gram determinant identity $\det Q_n=-\prod_{i} a_i^2$ (for the dimensions $n\le 10$ used here) is verified symbolically in the polynomial
 ring $\mathbb{Z}[a_{k-1},a_k,a_{k+1},S_{k-1},P_{k-2}]$. This material, and the
 rank-$0$ descents below, belong to the higher-dimensional companion
@@ -3850,7 +3903,8 @@ Prop~\ref{prop:lean-native}(a)
   & \texttt{schur\_n2}--\texttt{schur\_n10}
   & \texttt{RightTriangleReflection} & (ii) \\
 Prop~\ref{prop:lean-native}(b)
-  & \texttt{a\_eq\_fib\_1}--\texttt{a\_eq\_fib\_9}, \texttt{deficit\_at\_10}
+  & \texttt{a\_val\_0}--\texttt{a\_val\_17},
+    \texttt{a\_eq\_fib\_1}--\texttt{a\_eq\_fib\_9}, \texttt{deficit\_at\_10}
   & \texttt{RightTriangleReflection} & (ii) \\
 Prop~\ref{prop:lean-native}(c)
   & \texttt{universal\_layers\_through\_22}
@@ -4511,7 +4565,7 @@ is evidence for unboundedness rather than a proof of it. The regression numbers 
 Proposition~\ref{prop:height-gap} are numerics and are not formalized. The terms
 $u_{39}, \ldots, u_{42}$, used by the propositions stated over $u_0, \ldots, u_{42}$, are
 recorded with their provenance in \texttt{code/data/u\_terms\_43.txt}; they were recovered
-from the stored logarithms, a recovery that reproduces all $38$ overlapping published terms
+from the stored logarithms, a recovery that reproduces all $39$ overlapping published terms
 exactly, and they have not been regenerated by the growth BFS. For
 Proposition~\ref{prop:modp-state-infinite} the identification of $XY$ with the rotation by
 $(3+4i)/5$ is the setup of the $3$-$4$-$5$ reflection group and is not re-derived in Lean;
@@ -4564,6 +4618,13 @@ for orthoscheme reflection groups}, preprint (2026), \texttt{doi:10.5281/zenodo.
 \bibitem{Bourbaki456} N.~Bourbaki, \emph{Groupes et alg\`ebres de Lie, Chapitres 4--6},
 Hermann, Paris, 1968.
 
+\bibitem{CET} S.~Cleary, M.~Elder and J.~Taback, \emph{Cone types and
+geodesic languages for lamplighter groups and Thompson's group $F$},
+J.\ Algebra \textbf{303} (2006), no.~2, 476--500.
+
+\bibitem{Crowell} R.~H.~Crowell, \emph{The derived module of a homomorphism},
+Advances in Math.\ \textbf{6} (1971), 210--238.
+
 \bibitem{Christol1979} G.~Christol, \emph{Ensembles presque p\'eriodiques $k$-reconnaissables},
 Theoret.\ Comput.\ Sci.\ \textbf{9} (1979), 141--145.
 
@@ -4587,6 +4648,9 @@ arXiv:1405.1881 [math.MG], 2014--2015.
 \bibitem{Magnus} W.~Magnus, \emph{On a theorem of Marshall Hall}, Ann.\ of
 Math.\ (2) \textbf{40} (1939), 764--768.
 
+\bibitem{Milnor1968} J.~Milnor, \emph{Growth of finitely generated solvable
+groups}, J.\ Differential Geometry \textbf{2} (1968), 447--449.
+
 \bibitem{Mahler1929} K.~Mahler, \emph{Arithmetische Eigenschaften der L\"osungen einer Klasse
 von Funktionalgleichungen}, Math.\ Ann.\ \textbf{101} (1929), 342--366.
 
@@ -4609,11 +4673,19 @@ Math.\ Assoc.\ America, 1956.
 \bibitem{OEIS} N.~J.~A.~Sloane et al., \emph{The On-Line Encyclopedia of Integer Sequences},
 \texttt{https://oeis.org}, entry A396406.
 
+\bibitem{Sadun} L.~Sadun, \emph{Topology of Tiling Spaces}, University Lecture
+Series~46, Amer.\ Math.\ Soc., 2008.
+
 \bibitem{Sale} A.~W.~Sale, \emph{Metric behaviour of the Magnus embedding},
 Geom.\ Dedicata \textbf{176} (2015), 305--313; arXiv:1202.5343 [math.GR].
 
+\bibitem{Serre} J.-P.~Serre, \emph{Trees}, Springer, 1980.
+
 \bibitem{Stanley1999} R.~P.~Stanley, \emph{Enumerative Combinatorics}, Vol.~2,
 Cambridge Univ.\ Press, 1999.
+
+\bibitem{Tits1972} J.~Tits, \emph{Free subgroups in linear groups},
+J.\ Algebra \textbf{20} (1972), 250--270.
 
 \bibitem{Vassileva} S.~Vassileva, \emph{The Magnus embedding is a
 quasi-isometry}, arXiv:1207.1830 [math.GR], 2012.
@@ -4621,6 +4693,10 @@ quasi-isometry}, arXiv:1207.1830 [math.GR], 2012.
 \bibitem{VD} A.~M.~Vershik and S.~Dobrynin, \emph{Geometrical approach to the
 free solvable groups}, Internat.\ J.\ Algebra Comput.\ \textbf{15} (2005),
 1243--1260.
+
+\bibitem{Wolf1968} J.~A.~Wolf, \emph{Growth of finitely generated solvable
+groups and curvature of Riemannian manifolds}, J.\ Differential Geometry
+\textbf{2} (1968), 421--446.
 
 \end{thebibliography}
 

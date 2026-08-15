@@ -7,7 +7,9 @@
 #   - any pair where a prime ==1 mod 4 divides g  -> DANGEROUS
 import sys, math
 from collections import defaultdict
-exec(open('/tmp/zeta_probe/probe.py').read().split("maxd=int")[0])
+import os as _os
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+exec(open(_os.path.join(_HERE,'probe.py')).read().split("maxd=int")[0])
 
 def odd14(n):  # primes ==1 mod 4 dividing n
     out=[]; m=n

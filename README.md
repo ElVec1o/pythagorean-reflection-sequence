@@ -56,7 +56,7 @@ paper/
   journal/    the five release papers, .tex and .pdf
   OEIS/       b-files and the published-sequence index
 lean/         Lean 4, Mathlib-free project (6 targets)
-  with_mathlib/   Lean 4, Mathlib project (60 targets)
+  with_mathlib/   Lean 4, Mathlib project (62 targets)
 code/
   data/       u_terms_43.txt
   zeta_probe/     symbolic group model, word metric, certificates, Rust tools
@@ -251,8 +251,8 @@ appears for a failed constant.
 Ten files use `native_decide` and so trust the Lean compiler in addition to the
 kernel, each such declaration carrying its own reflection axiom. This is
 declared in the papers. `CylCensus.lean` is the slowest target at about 21
-minutes; `SymbolicVerification.lean` needs about 9.6 GB to elaborate and is not
-cited by any paper. The remaining files use only Lean's standard axioms.
+minutes; `SymbolicVerification.lean` needs about 9.6 GB to elaborate and is
+cited by paper 1 as a tier-(i) result. The remaining files use only Lean's standard axioms.
 
 **What is not formalised.** Paper 2 measures its own formalisation debt against
 a reproducible criterion and prints it: of its 67 statements, 5 are formalised,
@@ -279,8 +279,10 @@ Build:
 Python 3.10+ and Rust 1.70+.
 
 ```bash
-# Word-metric solver self-check against BFS (fast)
-python3 code/zeta_probe/lamp_profile.py 14
+# Word-metric solver self-check against BFS.  The cost roughly doubles per
+# radius: measured 45 s, 87 s and 160 s at radii 9, 10 and 11, so the full
+# radius-14 check quoted in the paper is on the order of tens of minutes.
+python3 code/zeta_probe/lamp_profile.py 11
 
 # Regenerate A396406 from the normal form and the metric formula, no BFS
 cd code/zeta_probe/fire_rust && cargo run --release -- fire 16

@@ -16,7 +16,7 @@ they once carried is reproduced in full in the papers.
 
 | File | What it is |
 |---|---|
-| `lamp_profile.py` | The word-metric solver. Connectivity-aware geodesic dynamic program; computes the word length of any group element. Self-checks against BFS with zero mismatches to radius 14. `python3 lamp_profile.py 14`. |
+| `lamp_profile.py` | The word-metric solver. Connectivity-aware geodesic dynamic program; computes the word length of any group element. Self-checks against BFS with zero mismatches to radius 14. `python3 lamp_profile.py 11` (160 s; the cost roughly doubles per radius, so radius 14 runs for tens of minutes). |
 | `witness.py` | The explicit kernel witnesses `w_T`, conjugated glide-reflection squares, that refute all-depths universality. Exact `Q(i)` arithmetic. |
 | `certify.py` | Uniform-in-`T` universality certificate: `u_d^T = u_d` for all unequal-leg triangles through depth 30. `python3 certify.py 30`. |
 | `certify38_rust/` | The Rust certificate at depth 38, crash-resumable, plus `ldist`, the meet-in-the-middle exact kernel shortest-vector length. |

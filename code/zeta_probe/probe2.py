@@ -10,7 +10,9 @@
 # m(D) = min(|lead D|,|const D|) over ALL same-class pairs in the ball.
 import sys
 from collections import defaultdict
-exec(open('/tmp/zeta_probe/probe.py').read().split("maxd=int")[0])
+import os as _os
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+exec(open(_os.path.join(_HERE,'probe.py')).read().split("maxd=int")[0])
 
 maxd=int(sys.argv[1]) if len(sys.argv)>1 else 12
 layers=bfs(maxd)

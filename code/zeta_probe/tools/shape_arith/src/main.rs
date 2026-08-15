@@ -77,9 +77,11 @@ fn main() {
         }
     }
     println!("  The paper's profile (-10, 2, 2, -10) requires e = +6, i.e. mu = 5t^2 - 6t + 5.");
-    println!("  The definition with (a,b) = (1,2) gives e = 2(1-4) = -6 and mu = 5t^2 + 6t + 5,");
-    println!("  whose profile is (-10, -22, -22, -10).  The tables use |e| throughout, so the");
-    println!("  profile is right and the DEFINITION's sign convention is what is inconsistent.");
+    println!("  A SIGNED e = 2(a^2-b^2) would give e = 2(1-4) = -6 and mu = 5t^2 + 6t + 5,");
+    println!("  whose profile is (-10, -22, -22, -10).  That convention is NOT the paper's:");
+    println!("  Definition 'complexity' fixes e_T = 2|a^2-b^2|, so e = +6 and the tables, the");
+    println!("  deviation law and this profile all agree.  The signed row above is retained");
+    println!("  only to show what the discarded convention would have produced.");
 
     // ---------------- CLAIM 3: parity of e_T ----------------
     println!("\n=== CLAIM 3: is e_T always even? ===");

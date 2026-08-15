@@ -258,24 +258,24 @@ def bfsState : Nat → List Aff × List Aff
 def a (n : Nat) : Nat := (bfsState n).snd.length
 
 -- Machine-checked values of a(n) for n = 0..10.
-example : a 0 = 1 := by native_decide
-example : a 1 = 3 := by native_decide
-example : a 2 = 5 := by native_decide
-example : a 3 = 8 := by native_decide
-example : a 4 = 13 := by native_decide
-example : a 5 = 21 := by native_decide
-example : a 6 = 34 := by native_decide
-example : a 7 = 55 := by native_decide
-example : a 8 = 89 := by native_decide
-example : a 9 = 144 := by native_decide
-example : a 10 = 225 := by native_decide
-example : a 11 = 351 := by native_decide
-example : a 12 = 554 := by native_decide
-example : a 13 = 875 := by native_decide
-example : a 14 = 1345 := by native_decide
-example : a 15 = 2066 := by native_decide
-example : a 16 = 3203 := by native_decide
-example : a 17 = 4971 := by native_decide
+theorem a_val_0 : a 0 = 1 := by native_decide
+theorem a_val_1 : a 1 = 3 := by native_decide
+theorem a_val_2 : a 2 = 5 := by native_decide
+theorem a_val_3 : a 3 = 8 := by native_decide
+theorem a_val_4 : a 4 = 13 := by native_decide
+theorem a_val_5 : a 5 = 21 := by native_decide
+theorem a_val_6 : a 6 = 34 := by native_decide
+theorem a_val_7 : a 7 = 55 := by native_decide
+theorem a_val_8 : a 8 = 89 := by native_decide
+theorem a_val_9 : a 9 = 144 := by native_decide
+theorem a_val_10 : a 10 = 225 := by native_decide
+theorem a_val_11 : a 11 = 351 := by native_decide
+theorem a_val_12 : a 12 = 554 := by native_decide
+theorem a_val_13 : a 13 = 875 := by native_decide
+theorem a_val_14 : a 14 = 1345 := by native_decide
+theorem a_val_15 : a 15 = 2066 := by native_decide
+theorem a_val_16 : a 16 = 3203 := by native_decide
+theorem a_val_17 : a 17 = 4971 := by native_decide
 
 end BFSCounts
 
@@ -514,6 +514,28 @@ end DistinctImages
 #print axioms LengthTenRelations.rel7_matrix
 #print axioms LengthTenRelations.rel8_matrix
 #print axioms RightTriangle5_12_13.rel1_on_5_12_13
+-- The sphere counts u_0 .. u_17 themselves.  These were anonymous `example`s,
+-- which elaborate but carry no name and so no axiom audit; the paper's own rule
+-- is that absence from the certificate table means absence of a certificate,
+-- and its claim is stated over u_0 .. u_17.
+#print axioms BFSCounts.a_val_0
+#print axioms BFSCounts.a_val_1
+#print axioms BFSCounts.a_val_2
+#print axioms BFSCounts.a_val_3
+#print axioms BFSCounts.a_val_4
+#print axioms BFSCounts.a_val_5
+#print axioms BFSCounts.a_val_6
+#print axioms BFSCounts.a_val_7
+#print axioms BFSCounts.a_val_8
+#print axioms BFSCounts.a_val_9
+#print axioms BFSCounts.a_val_10
+#print axioms BFSCounts.a_val_11
+#print axioms BFSCounts.a_val_12
+#print axioms BFSCounts.a_val_13
+#print axioms BFSCounts.a_val_14
+#print axioms BFSCounts.a_val_15
+#print axioms BFSCounts.a_val_16
+#print axioms BFSCounts.a_val_17
 #print axioms Fibonacci.a_eq_fib_1
 #print axioms Fibonacci.a_eq_fib_2
 #print axioms Fibonacci.a_eq_fib_3

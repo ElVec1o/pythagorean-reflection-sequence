@@ -61,12 +61,22 @@ for (a,b) in [(1,2),(3,4),(1,3)]:
     w=witness(a,b,c,abs(e),-1 if e>0 else 1)   # coefficient of t is -e
     fm=word_map(w,M)
     ident=( (F(1),F(0)), (F(0),F(0)), (F(0),F(0)) )
-    print(f"legs ({a},{b}): c={c}, e={e}, word length {len(w)}, rho_T(w)==identity: {fm==ident}")
+    # `e` here is SIGNED: it is what appears in the minimal polynomial of
+    # zeta_T = (a+bi)/(a-bi) for the legs in the order given, c t^2 - e t + c,
+    # and the witness construction below needs that sign.  The paper's e_T is
+    # the ABSOLUTE value (Definition "complexity"), which is the same triangle
+    # with the legs ordered a > b.  Both are printed so neither is mistaken for
+    # the other.
+    print(f"legs ({a},{b}): c={c}, e_signed={e} (min poly {c}t^2 {'-' if e>0 else '+'} "
+          f"{abs(e)}t + {c}), paper's e_T={abs(e)}, word length {len(w)}, "
+          f"rho_T(w)==identity: {fm==ident}")
 
 # symbolic check: same word is NOT identity in the symbolic group
 import sys
-sys.path.insert(0,'/tmp/zeta_probe')
-exec(open('/tmp/zeta_probe/probe.py').read().split("maxd=int")[0])
+import os as _os
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+sys.path.insert(0,_HERE)
+exec(open(_os.path.join(_HERE,'probe.py')).read().split("maxd=int")[0])
 SG={'x':(1,1,0,{}), 'y':(-1,1,0,{}), 'h':(1,1,-1,{0:1,-1:-1})}
 def sym_word(letters):
     cur=(1,0,0,{})
