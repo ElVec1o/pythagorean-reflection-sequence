@@ -89,7 +89,12 @@ transcendence hypothesis on $q$ in that one special case.
 \subsection{Claim labels}
 Every numbered statement below carries exactly one of PROVED (complete human proof),
 VERIFIED (formalized in Lean 4, axioms audited), HEURISTIC (computational support only), or
-CONJECTURE. The effective strength of a result is the weakest label in its dependency chain.
+CONJECTURE. The following are VERIFIED, in
+\texttt{lean/with\_mathlib/TranslationTrick.lean} and
+\texttt{lean/with\_mathlib/TransferChain.lean}, each cold-elaborated at exit $0$ with standard
+axioms only and no \texttt{sorry}: Proposition~\ref{prop:transtrick} and its contrapositive;
+$\det=1$ for the travel and bulk transfer matrices; nilpotence of their increments; and the
+half-shift identity. The effective strength of a result is the weakest label in its dependency chain.
 
 \subsection{The three open hypotheses}
 \begin{hypothesis}[transfer model, $(M)$]\label{hyp:M}
@@ -733,11 +738,18 @@ so the inhomogeneous bulk chain is the homogeneous one plus a particular solutio
 variation of parameters, with an exact discrete Green's function and no continuum approximation
 anywhere. That is the form in which \textup{(S2)} should be attacked.
 
-The two chains are moreover the same chain. With $D=\mathrm{diag}(q^{-1/4},q^{1/4})$, constant,
+The two chains are moreover the same chain. Writing $q=r^2$ and taking $a=q^s$ for the travel
+argument,
 \[
-   M^{\mathrm{bulk}}_b=D\,M^{\mathrm{travel}}_{b-1/2}\,D^{-1} ,
+   D\,M^{\mathrm{travel}}(r^2,a)=M^{\mathrm{bulk}}(ar)\,D,\qquad
+   D=\mathrm{diag}(1,r) ,
 \]
-an exact identity in $\Q(q^{1/4})$. This is the precise form of the statement that the zeros of
+an identity in the polynomial ring, with no hypotheses, no inverse and no fourth root. It is
+VERIFIED in \texttt{lean/with\_mathlib/TransferChain.lean} as \texttt{half\_shift}, together
+with $\det=1$ for both chains and the nilpotence of their increments. An earlier form of this
+statement carried the hypotheses $r^2=q$ and $r\,r^{-1}=1$ and a conjugator involving
+$q^{1/4}$; none of that is needed, and the simplification was found in the course of
+formalising. This is the precise form of the statement that the zeros of
 $S_e$ and of $1-\Sigma_1$ are those of one $q$-cosine sampled a half $q$-step apart: the two
 chains differ by a half-step in the index and a constant conjugation, nothing else. In particular
 the homogeneous solutions of the bulk chain are those of the travel chain at shifted index, so the
