@@ -614,7 +614,19 @@ are not infinitely many, and the identification of the far-junction vector $\lam
 agrees with $\mu$, which reproduces the proved positivity at the dominant pole but is not
 independently derived.
 
-Third, a Blaschke argument cannot be used, and this is worth recording so that it is not
+Third, the mechanism behind that positivity is a Sturm oscillation. At the $m$-th travel pole the
+null vector $R$ has exactly $m-1$ sign changes, for $m=1,\dots,5$ observed to be
+$0,1,2,3,4$ with the last change at $s=-,3,27,75,149$, so $R$ is the $m$-th eigenvector of the
+travel operator and carries $m-1$ nodes. The portion beyond the last node dominates: the partial
+sums split as $\text{head}\approx-\Sigma_0(q_m)$ and $\text{tail}\approx2\Sigma_0(q_m)$, so both
+weighted sums $\langle\lambda,R\rangle$ and $\langle R,\mu/e\rangle$ inherit the sign of the tail,
+which is the sign of $\Sigma_0(q_m)$. That is why the two factors share a sign and the product is
+positive. Making this a proof requires a quantitative tail-domination estimate uniform in $m$,
+which we do not have. A cheaper route is unavailable: the weight vectors are not positive, $\mu_s$
+taking negative values at $2,30,33$ and $130$ of its entries for $m=2,3,4,5$, so no bare
+positivity argument applies.
+
+Fourth, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
 the numerator vanishes identically. That needs the zeros to violate the Blaschke condition. They
 do not: writing $\tau_m=-\log q_m$, the products $m^2\tau_m$ are
