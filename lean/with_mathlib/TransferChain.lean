@@ -147,6 +147,34 @@ theorem casoratian_pow (q : R) (W : ℕ → R) (h : ∀ n, W (n+1) = q * W n) :
 #print axioms casoratian_step
 #print axioms casoratian_pow
 
+
+/-! ### The bulk scalar recursion
+
+    The same elimination on the bulk chain, which carries a source, gives the SAME three-term
+    recursion with the index shifted by a half step (as `half_shift` predicts) plus a single
+    geometric inhomogeneous term.  The source is one term, not a sum: that is what makes the
+    Green's function for the bulk explicit. -/
+
+/-- One step of the bulk chain on `(A,B)`, with `c = q^b` and source strength `f`. -/
+def bstepA (q c A B f : R) : R := (1 + 2*c^2) * A + 2*c * B + 2*c*f
+/-- The `B` component of one bulk step. -/
+def bstepB (q c A B f : R) : R := -2*c^3 * A + (1 - 2*c^2) * B - 2*c^2*f
+
+/-- **The bulk three-term recursion.**  With `c = q^b`, `f_b = 1 + g c beta` and
+    `f_{b+1} = 1 + g q c beta`,
+        `A_{b+2} = (1 + q - 2 q c^2 (1-q)) A_{b+1} - q A_b - 2 beta g q c^2 (1-q)`.
+    The middle coefficient is the travel one at the half-shifted index and the source is the
+    single geometric term shown. -/
+theorem bulk_three_term (q c g beta A B : R) :
+    bstepA q (q*c) (bstepA q c A B (1 + g*c*beta)) (bstepB q c A B (1 + g*c*beta))
+      (1 + g*(q*c)*beta)
+      = (1 + q - 2*q*c^2*(1-q)) * (bstepA q c A B (1 + g*c*beta)) - q * A
+        - 2*beta*g*q*c^2*(1-q) := by
+  simp only [bstepA, bstepB]
+  ring
+
+#print axioms bulk_three_term
+
 /-! ### Axiom audit (Rule 5) -/
 
 #print axioms det_travel
