@@ -671,13 +671,37 @@ $\varepsilon Y'=M(t)Y$ with
    M(t)=\begin{pmatrix} e^{-2t} & e^{-t}\\ -e^{-3t} & -e^{-2t}\end{pmatrix},
    \qquad \operatorname{tr}M=0,\quad \det M=0,\quad M^2=0 .
 \]
-So $M$ is nilpotent for every $t$: both eigenvalues vanish identically. There is no exponential
-Liouville--Green scale to extract, and the degeneracy is not confined to isolated turning points
-but holds at every $t$, so the leading-order asymptotics carry no information and everything is
-decided by subleading terms. This is the same degenerate amplitude problem that the analytic side
-of this circle has repeatedly failed to close, and (S1) and (S2) should not be mistaken for a
-fresh and easier target: they are that problem in another guise. We record the reduction, and
-leave the estimate open.
+So $M$ is nilpotent for every $t$, both eigenvalues vanishing identically. That is not an
+obstruction here; it is what makes the system solvable. Substituting $u=e^{-t}$ turns
+$\varepsilon Y'=MY$ into $\varepsilon Y'=-P(u)Y$ with
+$P=\bigl(\begin{smallmatrix}u&1\\-u^2&-u\end{smallmatrix}\bigr)$, so with $Y=(A,B)$ one has
+$\varepsilon A'=-(uA+B)$ and $\varepsilon B'=u(uA+B)=-u\,\varepsilon A'$. Eliminating $B$ leaves
+\begin{equation}\label{eq:oscillator}
+   \varepsilon A''+A=0,\qquad \varepsilon=\tau/2,\qquad w:=\varepsilon^{-1/2}=\sqrt{2/\tau} .
+\end{equation}
+The boundary conditions are $A(1)=A_0=0$ and, from $B(0)=B_\infty=0$, $A'(0)=0$. Hence
+$A(u)=C\cos(wu)$, and $A(1)=0$ forces the quantisation $\cos w=0$, that is
+$w_m=(m-\tfrac12)\pi$, which is the recorded law $w_m\sim m\pi$; the relative error against
+$\sqrt{2/\tau_m}$ at the computed poles is
+$6.8\cdot10^{-3},\ 2.3\cdot10^{-3},\ 8.8\cdot10^{-4},\dots,6.2\cdot10^{-5}$ for $m=1,\dots,10$.
+Since $A(0)=\Sigma_0(q_m)$ we get $C=\Sigma_0(q_m)$ and
+\[
+   A(u)=\Sigma_0(q_m)\cos(wu),\qquad R_s\ \propto\ u\sin(wu),\qquad u=q^s .
+\]
+This settles \textup{(S1)} at leading order. The nodes of $R$ sit at $u=k\pi/w$ with
+$1\le k\le m-1$, so $R$ has exactly $m-1$ of them, which is the observed Sturm count at every
+computed pole; the last node in $s$ is the smallest such $u$, namely $\pi/w$; and therefore
+$\text{head}=A(\pi/w)=\Sigma_0(q_m)\cos\pi=-\Sigma_0(q_m)$, which is exactly the observed law.
+Against the exact null vector, $A_s$ matches $\Sigma_0\cos(wq^s)$ with maximal relative error
+$0.020,\ 0.011,\ 0.0069,\dots,0.0024$ for $m=1,\dots,8$, decaying like $1/m$.
+
+The bulk linearises the same way: its recursion carries a source, and the elimination gives
+$\varepsilon A''+A=-\mathfrak g\beta$, the same oscillator with constant forcing. So $B$ and
+$C_\lambda$ are available in closed form too, and \textup{(S2)} becomes a computation rather than
+an estimate; the observed law is $|C_\lambda|/(xB)\approx(w+1)/2$, which tends to infinity. What
+is still missing is uniform control of the discrete-to-continuum error, and the completion of the
+\textup{(S2)} computation. We claim neither, and record that \textup{(S1)} holds at leading order
+with the closed form verified above.
 
 Fifth, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
