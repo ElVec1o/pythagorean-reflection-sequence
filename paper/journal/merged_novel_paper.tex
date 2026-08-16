@@ -878,18 +878,24 @@ quantisation is not an independent statement. Writing $S_e=\cos W-T_2$, the size
 $(\sqrt2/36)\sqrt\tau\,\sin X+O(\tau)$ uniformly in the phase, so the zeros of $S_e$ are those of
 $\cos W$ displaced by $O(\sqrt\tau)$, which is exactly $w_m=(m-\tfrac12)\pi+O(\sqrt\tau)$.
 
-So the chain reads: $(R\!-\!J)$ follows from $(S1)$ and $(S2)$; $(S2)$ is
-$|C_\lambda|/(xB)=w/2$; both sides are measured; and the scale $w$ itself is fixed by the sharp
-size of $T_2$. The last of these is a known HEURISTIC of the companion paper, with the obstruction
-already identified: the steepest-descent argument would conclude by invoking a standard remainder
-estimate for a simple non-degenerate saddle, but the saddle here is flat, and the bounded
-variation of the amplitude is available only on a bounded piece of the contour. The constant and
-the remainder exponent are certain to eight digits over $m\le1024$, and no theorem of that paper
-consumes them.
+So the chain reads: $(R\!-\!J)$ follows from $(S1)$ and $(S2)$, and $(S2)$ is the inequality
+$|C_\lambda|>xB$, whose measured margin is $w/2$.
 
-The chain therefore does not end in an unexamined gap. It ends at a named statement whose proof
-obstruction is diagnosed, and closing $(R\!-\!J)$ by this route requires the flat-saddle estimate
-rather than further measurement.
+It is worth being precise about what this does \emph{not} need. An earlier version of this remark
+asserted that the chain terminates at the sharp size of $T_2$, the statement that fixes
+$w_m=(m-\tfrac12)\pi$. That is incorrect. Proposition~\ref{prop:S1const} derives the constants of
+$(S1)$ using only the continuum form and the exact initial condition $A_0=0$; the quantisation
+enters nowhere, and the identity $\mathrm{tail}=2\Sigma_0$ is independent of $w$ altogether. And
+$(S2)$ is an inequality, so it needs a lower bound on the ratio together with $w\to\infty$ along
+the poles; the latter is the infinitude of the zeros of $1-\Sigma_1$ in $(0,1)$, which the
+companion paper proves from the crude bound $|T_2|\to0$, not from the sharp one. The sharp
+estimate fixes \emph{which} root the $m$th pole is, and the chain never uses that.
+
+What both $(S1)$ and $(S2)$ do need is an amplitude bound: for $(S1)$ a discrete-to-continuum
+error estimate, for $(S2)$ a lower bound on $|C_\lambda|/(xB)$ growing in $w$. By
+Remark~\ref{rem:jacobi} the underlying recursion is a Jacobi recursion with unit off-diagonals
+whose spectral parameter sits in a gap, which is the standard setting for Liouville--Green
+estimates for difference equations.
 \end{remark}
 
 \begin{remark}[two observations, and a route that does not work]\label{rem:rjstatus}
