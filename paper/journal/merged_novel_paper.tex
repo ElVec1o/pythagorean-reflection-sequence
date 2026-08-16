@@ -387,12 +387,17 @@ $\sin3\alpha=3\sin\alpha-4\sin^3\alpha=44/125$. So with $B$ the rotation about $
 which is not itself in the group, $\pi(\rho_a(C))=B^3$.
 
 The rotations by $\alpha$ about two perpendicular axes generate a free group of rank two. This is
-the classical free-rotation theorem, proved by the $5$-adic argument: for a reduced word $w$ of
+the classical free-rotation theorem in exactly the form stated for $\cos\alpha=3/5$
+\textup{(}Wagon, \emph{The Banach--Tarski Paradox}, Thm.~2.1\textup{)}, proved by the $5$-adic
+argument: for a reduced word $w$ of
 length $n$ whose first applied letter is $A^{\pm1}$, the vector $5^n\,w\,(1,0,0)^{T}$ is integral
 and its second coordinate is not divisible by $5$, so $w\ne I$; a word not of that form is
 conjugate to one that is, or is a power of $B$, which has infinite order because $3/5$ is not the
-cosine of a rational multiple of $\pi$ (Niven). A subgroup of a free group is free, and $A$ and
-$B^3$ form a basis of a free group of rank two. Hence $\langle\pi\rho_a(A),\pi\rho_a(C)\rangle$ is
+cosine of a rational multiple of $\pi$ (Niven). The invariant was checked independently over all
+$4{,}782{,}968$ reduced words of length at most $14$ of that form, in exact integer arithmetic. A
+subgroup of a free group is free, and $A$ and $B^3$ form a basis of a free group of rank two,
+since a reduced word in $A$ and $B^3$ substitutes to a word alternating $A$-blocks with
+$B$-blocks of nonzero exponent, which is already reduced and nonempty. Hence $\langle\pi\rho_a(A),\pi\rho_a(C)\rangle$ is
 free of rank two on those two elements, so by Lemma~\ref{lem:W3struct} the restriction of
 $\pi\circ\rho_a$ to $\langle A,C\rangle$ is injective.
 
@@ -420,11 +425,29 @@ presented.
 \end{corollary}
 
 \begin{proof}
-(i) A single faithful tuple gives $N_{\mathrm{gen}}=1$, and Theorem~\ref{thm:faithful} supplies
-one; generic rigidity then gives the co-null set and the growth series. (ii) The image
+(i) $N_{\mathrm{gen}}=\bigcap_a\ker\rho_a\subseteq\ker\rho_{(1,2,11)}=1$ by
+Theorem~\ref{thm:faithful}. For the co-null set, fix $w\ne1$ in $W_3$. The entries of
+$\rho_a(w)$ are rational functions of $a$ whose denominators do not vanish on the positive
+orthant, so $Z_w=\{a\in\R_{>0}^3:\rho_a(w)=1\}$ is closed and algebraic there, and proper
+because $(1,2,11)\notin Z_w$. A proper algebraic subset is null and $W_3$ is countable, so
+$\bigcup_{w\ne1}Z_w$ is null; off it every $\rho_a$ is injective and $u_d(a)=[t^d]W_3(t)$ for
+every $d$. (ii) The image
 $\pi(\rho_a(W_3))\le O(3)$ is isomorphic to $W_3$ by Theorem~\ref{thm:faithful}. (iii) $W_3$ is a
 right-angled Coxeter group, so it is finitely presented.
 \end{proof}
+
+\begin{remark}[a second route to Theorem~\textup{\ref{thm:masterCfalse}}]\label{rem:secondroute}
+Lemma~\ref{lem:W3struct} is tuple independent, so it yields a proof of non-faithfulness that does
+not use Proposition~\ref{prop:transtrick}. Since $W_3=\langle A,C\rangle\rtimes V$ with
+$\langle A,C\rangle$ free on $\{A,C\}$, and $V$ always injects, the point group is injective if
+and only if the images of $A$ and $C$ generate a free group on those two elements. At $(1,3,2)$
+and at $(3,1,5)$ a search over reduced words in $A^{\pm1},C^{\pm1}$ in exact rationals finds the
+first collision at word length $7$, and, writing $c$ for $C^{-1}$ and $a$ for $A^{-1}$,
+\[
+ AAcAccAAACACCA \quad\text{at }(1,3,2),\qquad AAcaaCAAACaacA \quad\text{at }(3,1,5)
+\]
+are reduced words of length $14$ whose images are the identity while they are nontrivial in $W_3$.
+\end{remark}
 
 \begin{remark}[the picture in dimension three]\label{rem:n3picture}
 Theorems~\ref{thm:masterCfalse} and \ref{thm:faithful} are complementary and together settle the
@@ -433,13 +456,19 @@ Class C tuples. So Class C is not the right condition: it neither implies faithf
 Theorem~\ref{thm:masterCfalse}, nor is needed for it. The exceptional set is where the point
 group collapses, and by Corollary~\ref{cor:necessary} that is exactly where $\rho_a$ can fail.
 
-Nothing here decides $n\ge4$. The argument used that $W_3$ is virtually free, which holds because
-$\Gamma_3$ has no triangle; already $\Gamma_4$ contains the triangle $\{0,2,4\}$, so $W_4$ is not
-virtually free and the decomposition of Lemma~\ref{lem:W3struct} has no analogue there.
+Nothing here decides $n\ge4$. The argument used that $W_3$ is virtually free, and that already
+fails at $n=4$, though not for the reason one might expect. A triangle in $\Gamma_n$ is no
+obstruction: it contributes a \emph{finite} parabolic $(\Z/2)^3$, compatible with virtual
+freeness. The obstruction is an induced four-cycle. In $\Gamma_4$ the set $\{0,3,1,4\}$ induces
+the cycle $0-3-1-4-0$, its non-edges being $\{0,1\}$ and $\{3,4\}$; a four-cycle is the join of
+two non-adjacent pairs, so the corresponding parabolic is $D_\infty\times D_\infty$, which
+contains $\Z^2$. Hence $W_4$ is not virtually free and Lemma~\ref{lem:W3struct} has no analogue
+there.
 \end{remark}
 
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
-It does not decide Problem~\ref{prob:embed} for any $n\ge3$, and it does not touch
+It does not decide Problem~\ref{prob:embed} for any $n\ge4$, the case $n=3$ being settled
+affirmatively by Corollary~\ref{cor:three}, and by itself it does not touch
 Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ into $O(n)$ need not be by
 reflections, and the faithfulness of the particular map $\rho_a$ is a separate question. The two
 standard invariants remain undecisive. Finite subgroups do not separate: every finite subgroup of
@@ -570,7 +599,7 @@ theory applies to it. We have not carried the argument out, and record only that
 preconditions hold.
 \end{remark}
 
-\begin{problem}[The alternative in dimension $n\ge3$]\label{prob:alternative}
+\begin{problem}[The alternative in dimension $n\ge4$]\label{prob:alternative}
 Is $N_{\mathrm{gen}}=\bigcap_a\ker\rho_a$ trivial, equivalently is $\rho_a$ injective for
 generic $a$? A single faithful tuple answers this affirmatively. The arithmetic form is FALSE
 (Theorem~\ref{thm:masterCfalse}), which does not decide the generic form.
