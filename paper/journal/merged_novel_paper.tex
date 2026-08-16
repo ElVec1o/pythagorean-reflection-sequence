@@ -709,6 +709,31 @@ layer near $u=1$ is not negligible; we have not resolved it.
 What is therefore established is \textup{(S1)} at leading order, with the closed form verified
 above, and not \textup{(S2)}. Uniform control of the discrete-to-continuum error is also missing.
 
+There is, however, a reason to expect the continuum route to be the wrong one, and it is
+structural. Both chains are exactly solvable as discrete transfer products, and passing to a
+continuum destroys that. Writing the travel recursion as
+$(A_{s+1},B_{s+1})^{\!\top}=M_s(A_s,B_s)^{\!\top}$ gives
+\[
+   M_s=\begin{pmatrix}1+2q^{1+2s} & 2q^{1+s}\\ -2q^{1+3s} & 1-2q^{1+2s}\end{pmatrix},
+   \qquad \det M_s=1 ,
+\]
+so the transfer lies in $SL_2$. Moreover $M_s=I+c_sN_s$ with $c_s=2q(q^2)^s$ and $N_s^2=0$, and
+$N_s=D_s^{-1}ND_s$ for the \emph{fixed} nilpotent $N=\bigl(\begin{smallmatrix}1&1\\-1&-1
+\end{smallmatrix}\bigr)$ and $D_s=\mathrm{diag}(q^{s/2},q^{-s/2})$, while
+$D_sD_{s+1}^{-1}=\mathrm{diag}(q^{-1/2},q^{1/2})$ is constant. The ordered product therefore
+telescopes into an alternating product of a fixed unipotent family and a fixed diagonal, with
+purely geometric coefficients. The bulk chain has the same shape,
+$M_b=I+c_bN_b$ with $c_b=2(q^2)^b$ and again $\det M_b=1$, differing from the travel chain only
+in the prefactor $2q$ against $2$ and in carrying a source.
+
+Two consequences. First, geometric coefficients in $SL_2$ is precisely the $q$-hypergeometric
+setting in which the Hahn--Exton $q$-cosine lives, so the appearance of that function is
+structural rather than incidental. Second, because $\det M=1$ the discrete Wronskian is conserved,
+so the inhomogeneous bulk chain is the homogeneous one plus a particular solution obtained by
+variation of parameters, with an exact discrete Green's function and no continuum approximation
+anywhere. That is the form in which \textup{(S2)} should be attacked. We record the structure,
+which is exact, and not any consequence for \textup{(S2)}, which we have not derived.
+
 Fifth, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
 the numerator vanishes identically. That needs the zeros to violate the Blaschke condition. They
