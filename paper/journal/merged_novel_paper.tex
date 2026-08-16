@@ -1126,6 +1126,76 @@ apply, and indeed $D_\infty$ embeds in $\mathrm{Isom}(\mathbb{R})$ only by using
 linear part having kernel $\mathbb{Z}$.
 \end{remark}
 
+\subsection{The general statement}\label{sec:general}
+
+Nothing in Lemma~\ref{lem:quotfaith} refers to $\Gamma_n$, and Lemma~\ref{lem:radline} uses the
+path only to force the nullity to be one, which can be assumed instead. Separating the two gives
+the following, of which Theorem~\ref{thm:alln} is one instance.
+
+\begin{theorem}[dimension drop]\label{thm:dimdrop}
+Let $(W,S)$ be an irreducible, infinite, non-affine Coxeter system with $|S|=N$, and let $A$ be a
+symmetric Cartan matrix for $(W,S)$ with $\operatorname{rank}A=N-1$. Then $W$ admits a faithful
+$(N-1)$-dimensional representation preserving a nondegenerate symmetric bilinear form; that is,
+$W$ embeds in $O(p,q)$ with $p+q=N-1$.
+\end{theorem}
+
+\begin{proof}
+Vinberg's theorem gives a faithful $\rho_A$ on $V=\mathbb{R}^N$. The radical $V_0$ of the form has
+dimension $N-\operatorname{rank}A=1$, and $W$ acts trivially on it, as in
+Lemma~\ref{lem:radline}. The proof of Lemma~\ref{lem:quotfaith} applies verbatim, since it uses
+only that $V_0$ is a line with trivial action and that $(W,S)$ is irreducible, infinite and
+non-affine.
+\end{proof}
+
+\begin{corollary}\label{cor:corank1}
+If $(W,S)$ is irreducible, infinite and non-affine and its Tits form has corank $1$, then $W$
+embeds in $O(p,q)$ with $p+q=N-1$.
+\end{corollary}
+
+For right-angled systems the passage to the compact form also becomes general, and the existence
+of the compact point costs nothing.
+
+\begin{lemma}[compact points are automatic]\label{lem:perron}
+Let $\Gamma$ be a graph on $N$ vertices whose complement is connected, and let $C$ be the
+complement's adjacency matrix with arbitrary positive weights, scaled so that its largest
+eigenvalue is $1$. Then $G=I-C$ is positive semidefinite of rank exactly $N-1$.
+\end{lemma}
+
+\begin{proof}
+$C$ has nonnegative entries and its underlying graph is connected, so by Perron--Frobenius its
+largest eigenvalue is simple. Scaling makes that eigenvalue $1$, so $G=I-C$ is positive
+semidefinite with a one-dimensional kernel.
+\end{proof}
+
+\begin{theorem}[right-angled version]\label{thm:racg}
+Let $\Gamma$ be a graph on $N\ge3$ vertices whose complement is connected, so that $W_\Gamma$ is
+irreducible, infinite and non-affine. Suppose there are weights $c_e\ge1$ on the complement edges
+with $\det(I-C(c))=0$, and that this point and the compact locus of Lemma~\ref{lem:perron} lie on a
+common irreducible component of $\{\det(I-C)=0\}$. Then $W_\Gamma$ embeds in $O(N-1)$.
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:dimdrop} applies at the point $c$, so no $w\ne1$ acts trivially on the quotient
+there, and the locus where it does is a proper closed subset of the component. The compact locus is
+open of full dimension in the real points of that component by Lemma~\ref{lem:perron}, hence
+Zariski dense, and the Baire argument of Theorem~\ref{thm:alln} applies unchanged.
+\end{proof}
+
+The hypothesis on $c$ is the only real one, and it holds widely. Over all right-angled systems with
+connected complement it was checked by exact evaluation of $\det(I-C)$: at $N=4$ it holds for $33$
+of $38$, at $N=5$ for $723$ of $728$, and at $N=6$ for $25348$ of $26704$. The failures are
+systematic rather than sporadic. When the complement is a star, $\det(I-C)=1-\sum_ec_e^2\le1-(N-1)$
+is negative throughout the region, so no such $c$ exists. At $N=3$ all four systems fail, which is
+forced: $O(2)$ is virtually solvable and each of the four groups contains a free group of rank two,
+so none of them embeds, and the criterion correctly detects this.
+
+Beyond $\Gamma_n$, the conclusion was verified by enumeration at $N=5$ for the complement of the
+five-cycle at $c=(1,1,1,1,2)$, for the tree with complement edges $01,12,13,34$ at $c=(2,3,6,2)$,
+and for the path with a chord at the Tits point; in each case the quotient representation
+reproduces the growth series of $W_\Gamma$ through depth $8$, namely
+$1,5,15,40,105,275,720,1885,4935$ in the first and third cases and
+$1,5,14,34,82,198,478,1154,2786$ in the second.
+
 \begin{remark}[what replaced the Lorentzian hypothesis]\label{rem:whatchanged}
 Theorem~\ref{thm:w4embed} obtained $n=4$ from a hyperbolic reflection group, which needs signature
 $(n-1,1)$, and Theorem~\ref{thm:nofive} shows no other $n$ supplies one. The signature was doing
