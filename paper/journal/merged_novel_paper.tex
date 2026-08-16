@@ -648,6 +648,24 @@ $(R\!-\!J)$ follows from the two statements
 Both are inequalities about explicitly given finite sums, and neither is proved here. This is
 where we leave the problem: not at ``show the pairing is non-zero'' but at (S1) and (S2).
 
+Both hold at every pole computed, and with sharp laws rather than marginally. For (S1) the ratio
+$\text{head}/(-\Sigma_0(q_m))$ takes the values
+$0.99634,\ 1.000475,\ 0.99999,\ 1.000044,\ 0.9999991,\ 1.000012,\ 1.000006,\ 1.000004,\
+0.999997,\ 1.000002,\ 1.000001$ at $m=2,\dots,12$, so not merely the sign but the value is
+pinned: $\text{head}=-\Sigma_0(q_m)$ asymptotically, to seven digits by $m=6$, equivalently the
+part of $R$ beyond its last node sums to $2\Sigma_0(q_m)$. For (S2) the ratio $|C_\lambda|/(xB)$
+takes the values $2.813,\ 3.352,\ 5.970,\ 6.533,\ 9.120,\ 9.687,\ 12.266,\ 12.835,\ 15.410,\
+15.980,\ 18.554$ over the same range, increasing by alternately about $2.58$ and $0.57$, hence by
+about $\pi$ every two steps, so $|C_\lambda|/(xB)\sim(\pi/2)m$ and the margin grows linearly in
+$m$.
+
+At $m=1$ both fail, $\text{head}$ being empty and $|C_\lambda|/(xB)=0.3995$, which is precisely
+the pole where positivity is available and $\Pi_y(q_1)>0$ is already proved. The two regimes are
+therefore complementary: the dominant pole by Pringsheim positivity, and every computed pole above
+it by (S1) and (S2). What remains is to prove the two asymptotic laws. Both live in the regime
+$\tau=-\log q\to0$, where $w_m=\sqrt{2/\tau_m}\sim m\pi$, which is the regime the source's
+Liouville--Green machinery is built for; we have not carried that analysis out.
+
 Fifth, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
 the numerator vanishes identically. That needs the zeros to violate the Blaschke condition. They
