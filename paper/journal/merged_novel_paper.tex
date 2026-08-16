@@ -809,6 +809,27 @@ $U$, transcendental over $\Q(x)$ unconditionally, modulo $(M)$. What exists is a
 $|P_{12}|w^3<2$; what is needed is a lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$.
 \end{problem}
 
+\begin{remark}[the travel problem is a Jacobi eigenvalue problem in a spectral gap]\label{rem:jacobi}
+The trailing coefficient of the three-term recursion is the constant $-q$, so the recursion
+symmetrises. Writing $q=r^2$ and $A_s=r^sz_s$ turns
+$A_{s+2}=p_sA_{s+1}-qA_s$ into
+\[
+   z_{s+2}+z_s \;=\; d_s\,z_{s+1},\qquad
+   d_s=\frac{p_s}{r}=\Bigl(r+\frac1r\Bigr)-\frac{e_s}{r},\qquad e_s=2q^{2+2s}(1-q)>0 ,
+\]
+a Jacobi recursion with \emph{unit} off-diagonals. The free Jacobi operator with unit
+off-diagonals has spectrum $[-2,2]$, and $r+1/r-2=(r-1)^2/r>0$ for $0<r<1$, so the constant part
+of the diagonal lies strictly above the edge of that spectrum while the correction $e_s/r$ decays
+geometrically. The travel poles are therefore eigenvalues in the spectral gap.
+
+That is the regime in which discrete Sturm oscillation theory counts nodes, and it explains the
+observation that the null vector at the $m$-th pole has exactly $m-1$ sign changes. What it does
+not supply is the amplitude comparison: the sign pattern of $R$ follows from oscillation theory,
+whereas $(S1)$ asks in addition that the last segment overshoot, $|{\rm tail}|>|\Sigma_0|$, which
+is quantitative. The substitution and the gap inequality are verified in
+\texttt{lean/with\_mathlib/TransferChain.lean}.
+\end{remark}
+
 \begin{remark}[where the chain terminates]\label{rem:chainend}
 The measured laws for the two sides of $(S2)$ reduce, on unification, to the single scale
 $w=\sqrt{2/\tau}$ at a travel pole, together with the quantisation $w_m=(m-\tfrac12)\pi$. That

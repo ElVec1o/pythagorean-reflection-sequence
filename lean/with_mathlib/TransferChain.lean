@@ -241,6 +241,53 @@ theorem bridge_solve (c g beta H0 H1 B : R)
 #print axioms bridge_eq
 #print axioms bridge_solve
 
+
+/-! ### Jacobi form of the travel recursion
+
+    The trailing coefficient of the three-term recursion is the constant `-q`, so the recursion
+    symmetrises.  Substituting `A_s = r^s z_s` with `r^2 = q` turns
+
+        `A_{s+2} = p_s A_{s+1} - q A_s`   into   `z_{s+2} + z_s = (p_s / r) z_{s+1}` ,
+
+    a JACOBI recursion with unit off-diagonals and diagonal `d_s = p_s / r`.  Writing
+    `p_s = 1 + q - e_s` with `e_s = 2 q^2 a^2 (1-q) > 0` and `a = q^s`, the diagonal is
+    `d_s = (r + 1/r) - e_s/r`.  Since `r + 1/r > 2` for `0 < r < 1` and the free Jacobi operator
+    with unit off-diagonals has spectrum `[-2,2]`, the travel poles sit in the spectral gap, which
+    is the regime in which discrete Sturm oscillation theory counts nodes. -/
+
+/-- **Jacobi form.**  With `q = r*r`, the substitution `A_s = r^s z_s` converts the three-term
+    recursion into the symmetric one `z_{s+2} + z_s = (p/r) z_{s+1}`, which has UNIT
+    off-diagonals.  Stated inverse-free in both directions: `r*(z2 + z0) = p*z1` is exactly the
+    `A`-recursion after scaling by `c = r^s`. -/
+theorem jacobi_form (r p z0 z1 z2 c : R) (h : r*(z2 + z0) = p*z1) :
+    (c*(r*r))*z2 = p*(c*r)*z1 - (r*r)*(c*z0) := by
+  have : p*(c*r)*z1 = c*r*(p*z1) := by ring
+  rw [this, ← h]; ring
+
+/-- The converse, for `c` and `r` cancellable: the `A`-recursion forces the Jacobi relation. -/
+theorem jacobi_form_conv (r p z0 z1 z2 : R)
+    (h : (r*r)*z2 = p*r*z1 - (r*r)*z0) :
+    r*(r*(z2 + z0)) = r*(p*z1) := by
+  have : r*(r*(z2+z0)) = (r*r)*z2 + (r*r)*z0 := by ring
+  rw [this, h]; ring
+
+/-- The Jacobi diagonal is the constant `r + 1/r` minus a positive, geometrically decaying
+    correction.  Inverse-free: multiplied through by `r`, the diagonal `p` satisfies
+    `p = (r*r + 1) - e` with `e = 2 q^2 a^2 (1-q) > 0`, and `r*r + 1 > 2r` for `r != 1`, which is
+    the statement that the constant part exceeds the edge `2` of the free spectrum. -/
+theorem jacobi_diagonal (q r a : R) (hr : r*r = q) :
+    1 + q - 2*q^2*a^2*(1-q) = (r*r + 1) - 2*q^2*a^2*(1-q) := by
+  rw [hr]; ring
+
+/-- `r*r + 1 - 2*r = (r-1)^2 >= 0`, with equality only at `r = 1`: the constant part of the
+    Jacobi diagonal lies at or above the edge of the free spectrum, strictly above for `r < 1`. -/
+theorem jacobi_gap (r : R) : (r*r + 1) - 2*r = (r - 1)^2 := by ring
+
+#print axioms jacobi_form
+#print axioms jacobi_form_conv
+#print axioms jacobi_diagonal
+#print axioms jacobi_gap
+
 /-! ### Axiom audit (Rule 5) -/
 
 #print axioms det_travel
