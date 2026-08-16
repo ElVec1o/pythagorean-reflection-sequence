@@ -60,6 +60,11 @@ open and are named wherever they are used: the strand-walk transfer model $(M)$,
 pairing $(R\!-\!J)$, and the invariance of the travel block $(T)$. Transcendence of the full
 growth series $U$ and of its relaxed companion $V$ is conditional on these and is not claimed
 here. Irrationality of $\beta_2$ is open.
+
+Section~\ref{sec:masterC} settles one of the open problems of this circle in the negative: the
+conjecture that the orthoscheme representation is faithful at every Class C rational leg tuple is
+false, with explicit counterexamples in dimension three, the shortest kernel element found having
+length $92$.
 \end{abstract}
 
 \section{What is new, what is known, and what is conditional}\label{sec:status}
@@ -255,6 +260,80 @@ the stated radius, hence so is $\rho_a$; at $n=3$ that improves the previously r
 $\rho_a$ from $19$ to $22$, and does so for the stronger object.
 \end{remark}
 
+\section{Class C faithfulness is false}\label{sec:masterC}
+
+Remark~\ref{rem:pointgroup} found Class C tuples at which the point group is \emph{not}
+injective. That is not by itself a statement about $\rho_a$, the point group being a quotient.
+The following elementary observation converts it into one, and needs neither
+Lemma~\ref{lem:noab} nor any CAT(0) input.
+
+\begin{proposition}[Translations commute; PROVED]\label{prop:transtrick}
+Let $a\in\R_{>0}^n$ and let $u\in W_n$ satisfy $\pi(\rho_a(u))=I$, that is, $\rho_a(u)$ has
+trivial linear part. Then for every $g\in W_n$,
+\[
+   [\,u,\ gug^{-1}\,]\ \in\ \ker\rho_a .
+\]
+\end{proposition}
+
+\begin{proof}
+An isometry of $\R^n$ with trivial linear part is a translation, so $\rho_a(u)$ is a translation.
+For any $g$, $\rho_a(gug^{-1})=\rho_a(g)\rho_a(u)\rho_a(g)^{-1}$ is a conjugate of a translation
+by an isometry, hence again a translation. Two translations of $\R^n$ commute, so the commutator
+of their preimages is killed.
+\end{proof}
+
+\begin{theorem}[Conjecture C is false; PROVED]\label{thm:masterCfalse}
+There are Class C tuples $a\in\Q_{>0}^3$, that is with $e(a)=t(a)=0$, at which $\rho_a$ is not
+injective. Explicitly this holds at
+\[
+ (1,3,2),\quad (2,3,9),\quad (2,6,9),\quad (3,1,5),\quad (3,2,6),\quad (4,9,7),\quad (6,11,7)
+\]
+and at their reversals. At $a=(3,1,5)$ an explicit nontrivial element of $\ker\rho_a$ has length
+$92$.
+\end{theorem}
+
+\begin{proof}
+Take $a=(3,1,5)$; the other tuples are identical in form. Breadth-first search in $W_3$, using
+the right-angled normal form and exact rational arithmetic for the linear reflections, produces
+two elements $w_1\ne w_2$ of $W_3$ of length $11$ with the same linear part; the sphere count of
+the point group at depth $11$ falls short of the envelope, at each of two independent primes.
+Put $u=w_1w_2^{-1}$, of length $22$. Then $\pi(\rho_a(u))=I$ by construction, and $u\ne1$ in
+$W_3$, verified in the Tits geometric representation of the Coxeter system, which is faithful for
+every Coxeter system and has integer matrices here, so the verification is exact. By
+Proposition~\ref{prop:transtrick}, $c=[u,\,R_0uR_0]$ lies in $\ker\rho_a$, and $c\ne1$ in $W_3$,
+again by the Tits representation. Finally $e(a)=t(a)=0$, so $a$ is Class C.
+\end{proof}
+
+\begin{remark}[why this was not seen]\label{rem:whynotseen}
+The counterexamples are invisible to a direct search. By the dichotomy the deviation of $\rho_a$
+sits at depth $\lceil K/2\rceil$, and here $K\le92$, so the first depth at which the orbit growth
+of $W(a)$ departs from the envelope is somewhere below $46$ but far above any reachable
+breadth-first search: the envelope sphere at depth $46$ already exceeds $10^{14}$. A direct
+computation on $\rho_a$ at these tuples sees agreement with the envelope for as long as it can
+run, and indeed does. What makes the counterexamples accessible is that the \emph{linear part}
+fails much earlier, at depth $11$ to $13$, where the search is trivial. That is the practical
+content of Proposition~\ref{prop:reduce}: the obstruction lives in $O(n)$, and it can be seen
+there.
+\end{remark}
+
+\begin{corollary}[a necessary condition; PROVED]\label{cor:necessary}
+If $\rho_a$ is injective then the point group $\pi\circ\rho_a$ is injective. Equivalently, a
+point-group collision at $a$ certifies that $\rho_a$ is not injective.
+\end{corollary}
+
+\begin{proof}
+$\ker(\pi\circ\rho_a)$ is normal in $W_n$, and if $\rho_a$ is injective it is isomorphic to its
+image, a subgroup of the translation group, hence abelian. By Lemma~\ref{lem:noab} it is trivial.
+\end{proof}
+
+\begin{remark}[what remains open]\label{rem:stillopen}
+Theorem~\ref{thm:masterCfalse} settles the arithmetic form of Problem~\ref{prob:alternative}
+negatively. It does \emph{not} settle the generic form: the tuples above are single points, and
+$N_{\mathrm{gen}}=\bigcap_a\ker\rho_a$ may still be trivial, since a kernel element at one tuple
+need not be a kernel element at another. It also leaves Problem~\ref{prob:embed} open, an
+abstract embedding not being required to come from an orthoscheme.
+\end{remark}
+
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
 It does not decide Problem~\ref{prob:embed} for any $n\ge3$, and it does not touch
 Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ into $O(n)$ need not be by
@@ -353,13 +432,14 @@ $|P_{12}|w^3<2$; what is needed is a lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$.
 
 \begin{problem}[The alternative in dimension $n\ge3$]\label{prob:alternative}
 Is $N_{\mathrm{gen}}=\bigcap_a\ker\rho_a$ trivial, equivalently is $\rho_a$ injective for
-generic $a$? A single faithful tuple answers this affirmatively. The arithmetic form, injectivity
-at every Class C rational tuple, is Conjecture~\ref{conj:masterC}.
+generic $a$? A single faithful tuple answers this affirmatively. The arithmetic form is FALSE
+(Theorem~\ref{thm:masterCfalse}), which does not decide the generic form.
 \end{problem}
 
-\begin{conjecture}[Class C faithfulness]\label{conj:masterC}
-$\rho_a$ is injective for every $a\in\Q_{>0}^n$ with $e(a)=t(a)=0$ and $n\ge3$.
-\end{conjecture}
+\begin{remark}[Class C faithfulness]\label{conj:masterC}
+The conjecture that $\rho_a$ is injective for every $a\in\Q_{>0}^n$ with $e(a)=t(a)=0$ and
+$n\ge3$ is FALSE, by Theorem~\ref{thm:masterCfalse}. Only the generic form (a) survives.
+\end{remark}
 
 \begin{problem}[Ambient embedding]\label{prob:embed}
 For $n\ge3$, does $W_n$ embed in $O(n)$? By Proposition~\ref{prop:reduce} this is equivalent to
