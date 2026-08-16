@@ -77,6 +77,42 @@ theorem famII_zero_iff {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRin
     · left; linarith
     · right; linarith
 
+
+/-- The quartic cutting out family III, the mirror of family II at the other end of the leg
+    tuple. -/
+def famIII (a1 a2 a3 a4 : R) : R :=
+  (a1*a3^2 - a1*a4^2 - 2*a2*a3*a4) * (a1*a3^2 - a1*a4^2 + 2*a2*a3*a4)
+
+/-- Family III in expanded form. -/
+theorem famIII_eq (a1 a2 a3 a4 : R) :
+    famIII a1 a2 a3 a4 = (a1*(a3^2 - a4^2))^2 - (2*a2*a3*a4)^2 := by
+  simp only [famIII]; ring
+
+/-- **Family III vanishes exactly where `a1 (a3^2 - a4^2) = ± 2 a2 a3 a4`.** -/
+theorem famIII_zero_iff {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+    (a1 a2 a3 a4 : K) :
+    famIII a1 a2 a3 a4 = 0 ↔
+      (a1*(a3^2 - a4^2) = 2*a2*a3*a4 ∨ a1*(a3^2 - a4^2) = -(2*a2*a3*a4)) := by
+  simp only [famIII, mul_eq_zero]
+  constructor
+  · rintro (h | h)
+    · left; linarith
+    · right; linarith
+  · rintro (h | h)
+    · left; linarith
+    · right; linarith
+
+/-- **The mirror relation.**  Family III at `(a1,a2,a3,a4)` is family II read at the reversed
+    tuple, up to sign: the path simplex is symmetric under reversing the legs, so the two ends
+    contribute the same condition with the roles of the ends exchanged. -/
+theorem famIII_is_famII_reversed (a1 a2 a3 a4 : R) :
+    famIII a1 a2 a3 a4 = famII a4 a3 a2 a1 := by
+  simp only [famIII, famII]; ring
+
+#print axioms famIII_eq
+#print axioms famIII_zero_iff
+#print axioms famIII_is_famII_reversed
+
 /-! ### Axiom audit (Rule 5) -/
 
 #print axioms famI_eq
