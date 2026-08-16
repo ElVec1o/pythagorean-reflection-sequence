@@ -721,6 +721,34 @@ contains $\Z^2$. Hence $W_4$ is not virtually free and Lemma~\ref{lem:W3struct} 
 there.
 \end{remark}
 
+\begin{remark}[a non-orthoscheme configuration for $W_4$ in $O(4)$]\label{rem:w4direct}
+Because Problem~\ref{prob:embed} asks only for \emph{some} embedding, the generators need not be
+reflections in the facets of an orthoscheme, and need not be reflections at all. The following
+configuration is not a point group of any orthoscheme and has a much simpler shape.
+
+Split $\R^4=P_1\oplus P_2$ with $P_1=\langle e_1,e_2\rangle$, $P_2=\langle e_3,e_4\rangle$, and set
+\[
+  R_0=\mathrm{diag}(-1,1,1,1),\qquad R_4=\mathrm{diag}(1,1,-1,1),
+\]
+let $R_1$ be a reflection with normal in $P_1$, let $R_3$ be a reflection with normal in $P_2$,
+and let $R_2$ be a reflection whose normal lies in the \emph{mixed} plane
+$\langle e_2,e_4\rangle$. Commuting with the two diagonal involutions forces any candidate for
+$R_2$ to preserve $\langle e_1\rangle$, $\langle e_3\rangle$ and $\langle e_2,e_4\rangle$; taking
+its normal inside the mixed plane is what breaks commutation with $R_1$ and with $R_3$, since
+those act inside $P_1$ and $P_2$ separately.
+
+With normals along the Pythagorean directions $(3,4)$, $(5,12)$ and $(8,15)$ the five involutions
+satisfy the defining relations of $W_4$ exactly, commuting precisely when $|i-j|\ge2$, and the
+orbit growth agrees with the envelope through depth $12$, computed in exact rational arithmetic
+with no modular reduction. The structure is transparent: $R_0$ and $R_4$ are diagonal, $R_1$ acts
+inside $P_1$, $R_3$ inside $P_2$, and $R_2$ is the only generator coupling the two planes.
+
+This is not a proof that $W_4$ embeds in $O(4)$; agreement to a finite depth never is. It is
+recorded because it supplies a candidate of a shape the orthoscheme configurations do not have,
+and because the coupling being carried by a single generator is the feature a ping-pong argument
+would exploit.
+\end{remark}
+
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
 It does not decide Problem~\ref{prob:embed} for any $n\ge4$, the case $n=3$ being settled
 affirmatively by Corollary~\ref{cor:three}, and by itself it does not touch
