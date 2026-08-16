@@ -743,10 +743,27 @@ orbit growth agrees with the envelope through depth $12$, computed in exact rati
 with no modular reduction. The structure is transparent: $R_0$ and $R_4$ are diagonal, $R_1$ acts
 inside $P_1$, $R_3$ inside $P_2$, and $R_2$ is the only generator coupling the two planes.
 
-This is not a proof that $W_4$ embeds in $O(4)$; agreement to a finite depth never is. It is
-recorded because it supplies a candidate of a shape the orthoscheme configurations do not have,
-and because the coupling being carried by a single generator is the feature a ping-pong argument
-would exploit.
+This is not a proof that $W_4$ embeds in $O(4)$; agreement to a finite depth never is. What makes
+the configuration worth recording is its arithmetic, which separates the amalgam
+$W_4=A\ast_CB$ with $A=\langle R_0,R_2,R_4\rangle\cong(\Z/2)^3$,
+$B=\langle R_0,R_1,R_3,R_4\rangle\cong D_\infty\times D_\infty$ and
+$C=\langle R_0,R_4\rangle\cong(\Z/2)^2$ across three distinct places.
+
+The three normals carry the primes $5$, $13$ and $17$ separately. Writing $v_p$ for the minimum
+$p$-adic valuation of the entries, $R_0$ and $R_4$ are integral at all three, while $R_1$, $R_3$
+and $R_2$ have $v_5=-2$, $v_{13}=-2$ and $v_{17}=-2$ respectively and are integral at the other
+two. Consequently $C$ is integral everywhere; all four elements of $A\setminus C$ have
+$v_{17}=-2$ with $v_5=v_{13}=0$; and the infinite part of $B$ moves only the places $5$ and $13$,
+with $v_5\bigl((R_0R_1)^k\bigr)=-2k$ and $v_{13}\bigl((R_3R_4)^k\bigr)=-2k$ growing linearly while
+their valuations at the other two places remain exactly $0$. The alternation
+$v_{17}\bigl((R_0R_2)^k\bigr)=-2,0,-2,0,\dots$ is the finiteness of $A$, since $R_0R_2$ has order
+two.
+
+So $A$ and $B$ move disjoint sets of places and $C$ moves none, which is the separation an
+amalgam ping-pong requires. This is qualitatively stronger than the single-prime alignment of
+Remark~\ref{rem:alignnogo}, which held at the orthoscheme tuple $(1,2,3,4)$ and did not prevent a
+collapse: there one prime had to separate both factors, whereas here each factor has its own.
+We have not carried out the ping-pong.
 \end{remark}
 
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
