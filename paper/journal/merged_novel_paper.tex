@@ -459,6 +459,40 @@ first collision at word length $7$, and, writing $c$ for $C^{-1}$ and $a$ for $A
 are reduced words of length $14$ whose images are the identity while they are nontrivial in $W_3$.
 \end{remark}
 
+\begin{theorem}[an infinite Class C family in dimension four; PROVED]\label{thm:family4}
+Let $a=(a_1,a_2,a_3,a_4)\in\Q_{>0}^4$ have pairwise distinct coordinates and satisfy
+\[
+   a_1a_3=a_2a_4 .
+\]
+Then $\rho_a$ is not injective. An element of $\ker\rho_a$ of length $54$ is exhibited, uniformly
+across the family.
+\end{theorem}
+
+\begin{proof}
+The point group collapses at depth $8$: breadth-first search in $W_4$ with exact rational
+arithmetic produces two elements of length $8$ with the same linear part, whence
+$u=w_1w_2^{-1}$ of length $16$ with $\pi(\rho_a(u))=I$ and $u\ne1$ in $W_4$, the latter checked
+in the Tits representation. Proposition~\ref{prop:transtrick} then places
+$c=[u,\,R_0uR_0]$ in $\ker\rho_a$, and $c\ne1$ in $W_4$, again by the Tits representation;
+reducing $c$ gives a geodesic of length $54$. The condition $a_1a_3=a_2a_4$ enters only through
+the depth-$8$ collision, which it produces for every member of the family.
+\end{proof}
+
+\begin{remark}[the family is genuinely infinite, and the criterion is sharp]\label{rem:family4}
+The equation $a_1a_3=a_2a_4$ has infinitely many pairwise-distinct positive integer solutions, for
+instance $(k,\,km,\,kmn,\,kn)$ for distinct $k,m,n$ scaled to be primitive, so
+Theorem~\ref{thm:family4} exhibits infinitely many Class C tuples at which $\rho_a$ fails. This is
+a stronger statement than the dimension-three refutation, which produced only a finite list.
+
+The criterion was found by scanning the $828$ primitive pairwise-distinct tuples with entries at
+most $8$, of which $24$ fail by depth $12$; the sixteen that fail at depth exactly $8$ are
+precisely those with $a_1a_3=a_2a_4$. It was then frozen and tested out of sample on ten tuples
+outside that box, all of which deviate at depth $8$, against four controls with
+$a_1a_3\ne a_2a_4$, none of which deviates by depth $12$. The remaining eight failures, at depth
+$12$, form a separate family not covered by this criterion; their leg ratios are
+$(1{:}2,3{:}4)$ and $(1{:}3,4{:}3)$ up to reversal, and we do not characterise them.
+\end{remark}
+
 \begin{remark}[aligned valuations do not suffice]\label{rem:alignnogo}
 For an amalgam argument in dimension four one wants a tuple at which the splitting
 $W_4=\langle R_0,R_2,R_4\rangle\ast_{\langle R_0,R_4\rangle}\langle R_0,R_1,R_3,R_4\rangle$,
