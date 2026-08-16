@@ -119,6 +119,34 @@ theorem three_term (q a A B : R) :
 
 #print axioms three_term
 
+
+/-! ### The Casoratian of the scalar recursion
+
+    For the three-term recursion `A_{s+2} = p_s A_{s+1} - q A_s`, the trailing coefficient is
+    the CONSTANT `-q`, so the Casoratian of two solutions satisfies `W_{s+1} = q W_s`, hence
+    `W_s = q^s W_0` exactly.  This is the discrete analogue of a Wronskian with constant
+    logarithmic derivative, and it is the ingredient that makes variation of parameters explicit
+    for the inhomogeneous (bulk) chain. -/
+
+/-- **Casoratian identity.**  If `A2 = p*A1 - q*A0` and `B2 = p*B1 - q*B0` are the next values
+    of two solutions of the same three-term recursion, then the Casoratian is multiplied by `q`
+    at each step.  Note the middle coefficient `p` cancels, so this holds for every `p` and in
+    particular for the `s`-dependent one of `three_term`. -/
+theorem casoratian_step (q p A0 A1 B0 B1 : R) :
+    (p*A1 - q*A0) * B1 - A1 * (p*B1 - q*B0) = q * (A1*B0 - A0*B1) := by
+  ring
+
+/-- Iterated form: after `n` steps the Casoratian has picked up `q^n`. -/
+theorem casoratian_pow (q : R) (W : ℕ → R) (h : ∀ n, W (n+1) = q * W n) :
+    ∀ n, W n = q^n * W 0 := by
+  intro n
+  induction n with
+  | zero => simp
+  | succ k ih => rw [h k, ih]; ring
+
+#print axioms casoratian_step
+#print axioms casoratian_pow
+
 /-! ### Axiom audit (Rule 5) -/
 
 #print axioms det_travel
