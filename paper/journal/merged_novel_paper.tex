@@ -580,6 +580,26 @@ $U$, transcendental over $\Q(x)$ unconditionally, modulo $(M)$. What exists is a
 $|P_{12}|w^3<2$; what is needed is a lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$.
 \end{problem}
 
+\begin{remark}[two observations, and a route that does not work]\label{rem:rjstatus}
+First, the obstruction is a rank count, not a sign. The junction matrix
+$q^{\max(|a_L|-1,|a_R|)}$ has rank $4$ on the tested block, and $6$ after sign symmetrisation, so
+$\Pi_y$ is a sum of several products rather than the single product that a rank-one kernel would
+give, and the terms can in principle cancel. At the same time the positivity does not degrade as
+quickly as one might expect from the interlacing of the zeros of $S_e$ with those of
+$1-\Sigma_1$: at the first six travel poles the dressed bulk values $B_V$ and $B_U$ are positive
+and increasing, $3.71,\ 493,\ 1979,\ 1.17\cdot10^4,\ 2.31\cdot10^4,\ 6.67\cdot10^4$ for $B_V$,
+and the gate signs $b_0>0$, $\mathfrak g_Vt_1<1$ hold at every one.
+
+Second, a Blaschke argument cannot be used, and this is worth recording so that it is not
+attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
+the numerator vanishes identically. That needs the zeros to violate the Blaschke condition. They
+do not: writing $\tau_m=-\log q_m$, the products $m^2\tau_m$ are
+$0.800,\ 0.362,\ 0.292,\ 0.265,\ 0.250,\ 0.241,\ 0.235,\ 0.231,\ 0.227,\ 0.225,\ 0.222,\
+0.221,\ 0.219,\ 0.218$ for $m=1,\dots,14$, so $1-q_m\asymp m^{-2}$ and
+$\sum_m(1-q_m)$ converges, to about $0.72$. A function of bounded characteristic on the disc may
+therefore vanish at every $q_m$ without vanishing identically, and no contradiction follows.
+\end{remark}
+
 \begin{remark}[the arithmetic structure at $(1,2,3)$]\label{rem:pingpong}
 For the generic form of Problem~\ref{prob:alternative} a single faithful tuple suffices, and
 by Corollary~\ref{cor:necessary} it is enough to find one at which the \emph{point group} is
