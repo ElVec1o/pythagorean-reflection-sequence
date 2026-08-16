@@ -288,13 +288,15 @@ of their preimages is killed.
 \end{proof}
 
 \begin{theorem}[Conjecture C is false; PROVED]\label{thm:masterCfalse}
-There are Class C tuples $a\in\Q_{>0}^3$, that is with pairwise distinct coordinates, at which
-$\rho_a$ is not injective. Explicitly this holds at
+There are Class C tuples, that is with pairwise distinct coordinates, at which $\rho_a$ is not
+injective, in dimensions three and four. In $\Q_{>0}^3$ this holds at
 \[
  (1,3,2),\quad (2,3,9),\quad (2,6,9),\quad (3,1,5),\quad (3,2,6),\quad (4,9,7),\quad (6,11,7)
 \]
-and at their reversals. At $a=(3,1,5)$ an explicit nontrivial element of $\ker\rho_a$ has
-length $76$, obtained by reducing an explicit word of length $92$.
+and at their reversals, where $a=(3,1,5)$ gives an element of $\ker\rho_a$ of length $76$; and in
+$\Q_{>0}^4$ it holds at $(1,2,3,4)$ and $(2,1,3,4)$ and their reversals, each giving an element of
+length $86$. These are all the primitive pairwise-distinct tuples with entries at most $12$
+respectively $5$ at which the point group collapses.
 \end{theorem}
 
 \begin{proof}
@@ -307,7 +309,10 @@ $W_3$, verified in the Tits geometric representation of the Coxeter system, whic
 every Coxeter system and has integer matrices here, so the verification is exact. By
 Proposition~\ref{prop:transtrick}, $c=[u,\,R_1uR_1]$ lies in $\ker\rho_a$, and $c\ne1$ in $W_3$,
 again by the Tits representation; reducing $c$ gives a geodesic of length $76$. Finally the
-coordinates of $a$ are pairwise distinct, so $a$ is Class C.
+coordinates of $a$ are pairwise distinct, so $a$ is Class C. The dimension-four tuples are
+identical in form, the only change being that $W_4$ replaces $W_3$ throughout; nothing in the
+argument is special to dimension three, since Proposition~\ref{prop:transtrick} holds for all
+$n$.
 \end{proof}
 
 \begin{remark}[why this was not seen]\label{rem:whynotseen}
@@ -447,6 +452,18 @@ first collision at word length $7$, and, writing $c$ for $C^{-1}$ and $a$ for $A
  AAcAccAAACACCA \quad\text{at }(1,3,2),\qquad AAcaaCAAACaacA \quad\text{at }(3,1,5)
 \]
 are reduced words of length $14$ whose images are the identity while they are nontrivial in $W_3$.
+\end{remark}
+
+\begin{remark}[aligned valuations do not suffice]\label{rem:alignnogo}
+For an amalgam argument in dimension four one wants a tuple at which the splitting
+$W_4=\langle R_0,R_2,R_4\rangle\ast_{\langle R_0,R_4\rangle}\langle R_0,R_1,R_3,R_4\rangle$,
+which exists because $\{0,4\}$ is a separating clique of $\Gamma_4$, is matched by a $p$-adic
+valuation, so that one factor is integral and only the extra generator has a pole. At $(1,2,3,4)$
+this holds exactly, with $|m_1|^2=5$, $|m_2|^2=13$, $|m_3|^2=25$: at $p=13$ every generator but
+$R_2$ is integral, and $v_{13}(R_2)=-1$. Nevertheless the point group at that tuple collapses at
+depth $12$, and $\rho_a$ is not injective there by Theorem~\ref{thm:masterCfalse}. So aligning a
+valuation with the splitting is not sufficient for faithfulness, and an amalgam argument in
+dimension four needs an input that this alignment does not provide.
 \end{remark}
 
 \begin{remark}[the picture in dimension three]\label{rem:n3picture}

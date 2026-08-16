@@ -70,7 +70,11 @@ def find_u(a,D=14):
         for w,Y in new.items(): bymat.setdefault(Y,w)
         front=list(new)
     return None,None
-tuples=[(1,3,2),(2,3,9),(2,6,9),(3,1,5),(3,2,6),(4,9,7),(6,11,7)]
+import sys
+if len(sys.argv)>1:
+    tuples=[tuple(int(x) for x in t.split(',')) for t in sys.argv[1:]]
+else:
+    tuples=[(1,3,2),(2,3,9),(2,6,9),(3,1,5),(3,2,6),(4,9,7),(6,11,7)]
 # Tits matrices are built per tuple from n+1, not hardcoded.
 print(f"{'legs':>10}  {'|u|':>4}  u!=1 (Tits)  lin(u)=I   {'|c|':>4}  geodesic  best g  rho_a(c)=1")
 for a in tuples:
