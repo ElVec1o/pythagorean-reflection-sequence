@@ -626,7 +626,29 @@ which we do not have. A cheaper route is unavailable: the weight vectors are not
 taking negative values at $2,30,33$ and $130$ of its entries for $m=2,3,4,5$, so no bare
 positivity argument applies.
 
-Fourth, a Blaschke argument cannot be used, and this is worth recording so that it is not
+Fourth, this reduces $(R\!-\!J)$ to two explicit inequalities. Using
+$\sum_sq^sR_s=\Sigma_1(q_m)=1$, the source's own decomposition gives
+\[
+   \langle\lambda,R\rangle=x\,B+C_\lambda,\qquad
+   C_\lambda=\sum_{\sigma}\frac{B_\sigma}{2}\bigl(\Delta^+_\sigma+\Delta^-_\sigma\bigr),\qquad
+   \Delta^\pm_\sigma=\!\!\sum_{2s+1<\sigma\mp1}\!\!\bigl(x^{\sigma\mp1}-xq^s\bigr)R_s ,
+\]
+and we verified this identity numerically against the directly computed pairing at the first four
+poles. Every weight in $C_\lambda$ is negative, since $2s+1<\sigma\mp1$ forces
+$x^{\sigma\mp1}<x^{2s+1}$, so $C_\lambda$ is a negatively weighted sum over the \emph{head} of
+$R$, the part before its last node. Writing $\varepsilon_m=\operatorname{sign}\Sigma_0(q_m)$, the
+observed picture is that the head of $R$ carries sign $-\varepsilon_m$, hence $C_\lambda$ carries
+sign $\varepsilon_m$, and $|C_\lambda|>xB$, so $\langle\lambda,R\rangle$ carries sign
+$\varepsilon_m$; the same for $\langle L,\mu\rangle$, and the product is positive. Consequently
+$(R\!-\!J)$ follows from the two statements
+\begin{enumerate}[label=\textup{(S\arabic*)},leftmargin=2.6em]
+\item the head of $R$ carries sign $-\varepsilon_m$, for infinitely many $m$;
+\item $|C_\lambda|>xB$ and the corresponding inequality for $\mu$, for infinitely many $m$.
+\end{enumerate}
+Both are inequalities about explicitly given finite sums, and neither is proved here. This is
+where we leave the problem: not at ``show the pairing is non-zero'' but at (S1) and (S2).
+
+Fifth, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
 the numerator vanishes identically. That needs the zeros to violate the Blaschke condition. They
 do not: writing $\tau_m=-\log q_m$, the products $m^2\tau_m$ are
