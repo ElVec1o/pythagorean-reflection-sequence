@@ -914,7 +914,7 @@ generating a faithful copy of $W_4$. The last statement follows since $O(4)\subs
 \begin{remark}[numerical corroboration]\label{rem:w4num}
 The proof gives no explicit faithful point, only that faithful points are generic. As a check on
 the bookkeeping, the compact configuration with normals along the Pythagorean directions of
-Section~\ref{sec:w4embed} was expanded over $\F_p$ with $p=2^{31}-1$. The six commuting relations
+Section~\ref{sec:w4embed} was expanded over $\mathbb{F}_p$ with $p=2^{31}-1$. The six commuting relations
 hold and the four remaining pairs fail to commute, as required, and the sphere sizes
 \[
   1,\;5,\;14,\;33,\;75,\;169,\;380,\;854,\;1919,\;4312,\;9689,\;21771,\;48919
@@ -924,15 +924,73 @@ $f_{\Gamma_4}(x)=1+5x+6x^2+x^3$ is the clique polynomial. The last three values 
 from the series before the corresponding depths were computed.
 \end{remark}
 
-\begin{remark}[why this stops at four]\label{rem:stopsatfour}
-The argument needs a faithful representation of the right dimension over some real form, and
-Lemma~\ref{lem:lorentz} says the Tits form supplies one only at $n=4$. For $n\equiv1\pmod3$ with
-$n\ge7$ the radical is again one-dimensional and the quotient has the right dimension, but the
-signature is $(n-2,2)$ or worse, so the group acts on a symmetric space of higher rank and
-Vinberg's criterion does not apply. For the remaining $n$ the radical is trivial and the quotient
-has dimension $n+1$, which is one too many. Problem~\ref{prob:embed} therefore remains open for
-every $n\ge5$, and closing it needs a source of faithful $n$-dimensional representations other
-than the Tits form.
+\subsection{The route stops at four}\label{sec:stopsatfour}
+
+Lemma~\ref{lem:lorentz} concerns only the Tits point, where all the walls are tangent. The proof
+of Theorem~\ref{thm:w4embed} did not use that point, but a deformation of it, so ruling out
+$n\ge5$ requires ruling out the whole admissible region rather than one point. That is what we do
+here. The result is negative and complete: the mechanism of Theorem~\ref{thm:w4embed} is available
+in dimension four and in no other dimension.
+
+Since the six relations $\langle v_i,v_j\rangle=0$ for $|i-j|\ge2$ say exactly that the Gram matrix
+is tridiagonal, every candidate is $G(c)=I-C(c)$, where $C(c)$ is the adjacency matrix of the path
+$P_{n+1}$ with weights $c_1,\dots,c_n$ on its edges $e_i=\{i-1,i\}$. Vinberg's criterion requires
+$c_i\ge1$ for every $i$, since the label is $m_{ij}=\infty$ on each path edge, and the argument
+requires signature $(n-1,1,1)$: one negative eigenvalue to make the form Lorentzian, and one zero
+to make the rank $n$ rather than $n+1$.
+
+\begin{lemma}[isolation]\label{lem:isolate}
+Suppose $G(c)$ has signature $(n-1,1,1)$ with all $c_i\ge1$. If $c_i>1$, then $P_{n+1}$ contains no
+three consecutive vertices disjoint from and non-adjacent to $e_i$. Consequently $n-3\le i\le4$.
+\end{lemma}
+
+\begin{proof}
+Suppose such a triple $\{a-1,a,a+1\}$ exists. The principal submatrix of $G(c)$ on the five
+vertices $\{i-1,i\}\cup\{a-1,a,a+1\}$ is block diagonal, because no edge joins the two groups. The
+first block has eigenvalues $1\pm c_i$, so $1-c_i<0$. The second block is $I-C(P_3)$ with weights
+$u,v\ge1$, whose eigenvalues are $1$ and $1\pm\sqrt{u^2+v^2}$, and $\sqrt{u^2+v^2}\ge\sqrt2>1$, so
+it contributes a second strictly negative eigenvalue. By Cauchy interlacing the second smallest
+eigenvalue of $G(c)$ is at most the second smallest of the submatrix, hence strictly negative. But
+signature $(n-1,1,1)$ forces the second smallest eigenvalue of $G(c)$ to be $0$, a contradiction.
+For the last statement, a triple to the left of $e_i$ exists as soon as $i\ge5$, and one to the
+right as soon as $i\le n-4$; failing both means $i\le4$ and $i\ge n-3$.
+\end{proof}
+
+\begin{theorem}[no admissible configuration beyond four]\label{thm:nofive}
+For every $n\ge5$ there is no $c\in[1,\infty)^n$ with $G(c)$ of signature $(n-1,1,1)$.
+\end{theorem}
+
+\begin{proof}
+Write $D_0=D_1=1$ and $D_{k+1}=D_k-c_k^2D_{k-1}$, so that $D_k$ is the $k$-th leading principal
+minor of $G(c)$ and $\det G(c)=D_{n+1}$. Signature $(n-1,1,1)$ requires $\det G(c)=0$.
+
+By Lemma~\ref{lem:isolate} every index $i$ with $c_i>1$ satisfies $n-3\le i\le4$. For $n\ge8$ this
+range is empty, so $c=(1,\dots,1)$ is the Tits point, whose eigenvalues are
+$1-2\cos\bigl(k\pi/(n+2)\bigr)$; the number of negative ones is
+$\#\{k:k<(n+2)/3\}=\lceil(n-1)/3\rceil\ge3$, so the signature is wrong.
+
+For $n=5,6,7$ the range leaves at most the indices $\{2,3,4\}$, $\{3,4\}$ and $\{4\}$, so the
+continuant may be evaluated in closed form:
+\[
+\begin{array}{llll}
+  n=5, & c=(1,t,u,v,1), & \det G=t^2v^2, & \text{never }0\text{ for }t,v\ge1,\\[2pt]
+  n=6, & c=(1,1,t,u,1,1), & \det G=1, & \text{never }0,\\[2pt]
+  n=7, & c=(1,1,1,t,1,1,1), & \det G=1-t^2, & \text{zero only at }t=1 .
+\end{array}
+\]
+In the first two cases the rank never drops and the required zero eigenvalue is absent. In the
+third the only admissible parameter is $t=1$, again the Tits point, whose signature is $(5,2,1)$ by
+Lemma~\ref{lem:lorentz}. No case survives.
+\end{proof}
+
+\begin{remark}[what remains open]\label{rem:stopsatfour}
+Theorem~\ref{thm:nofive} closes the route, not the question. Problem~\ref{prob:embed} is open for
+every $n\ge5$, and nothing here suggests the answer is negative: the obvious obstructions are
+absent, since $W_n$ contains $D_\infty^{\lceil n/3\rceil}$ and any free abelian group embeds in a
+single circle, so neither abelian nor free subgroups separate $W_n$ from $O(n)$. What is missing is
+a source of faithful $n$-dimensional representations. The Tits form supplies one only at $n=4$, by
+Lemma~\ref{lem:lorentz}, and Theorem~\ref{thm:nofive} shows that deforming it does not help. Any
+advance needs a construction of a different kind.
 \end{remark}
 
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
@@ -1249,6 +1307,75 @@ layer near $u=1$ is not negligible; we have not resolved it.
 
 What is therefore established is \textup{(S1)} at leading order, with the closed form verified
 above, and not \textup{(S2)}. Uniform control of the discrete-to-continuum error is also missing.
+
+That last gap can be removed entirely, by not passing to a continuum at all. The telescoping noted
+below is not merely a structural remark: carried out, it solves the travel recursion in closed
+form.
+
+\begin{proposition}[the travel null vector in closed form]\label{prop:travelexact}
+Let $A_s,B_s$ solve $A_{s+1}-A_s=2q(q^{2s}A_s+q^sB_s)$ and
+$B_{s+1}-B_s=-2q(q^{3s}A_s+q^{2s}B_s)$ with $A_0=0$, $B_0=1$, and let
+$A_\infty=\lim_s A_s$, $B_\infty=\lim_s B_s$. Then, with $(q;q)_r=\prod_{i=1}^r(1-q^i)$,
+\[
+  A_\infty=\sum_{k\ge1}(-1)^{k-1}\,\frac{2^k(1-q)^{k-1}q^{\,k+(k-1)^2}}{(q;q)_{2k-1}},
+  \qquad
+  B_\infty=\sum_{k\ge0}\frac{2^k(q-1)^kq^{\,k^2}}{(q;q)_{2k}} .
+\]
+\end{proposition}
+
+\begin{proof}
+Write the transfer as $M_s=I+c_sN_s$ with $c_s=2q^{2s+1}$ and $N_s=v_sw_s^{\!\top}$, where
+$v_s=(q^{-s/2},-q^{s/2})^{\!\top}$ and $w_s=(q^{s/2},q^{-s/2})^{\!\top}$; then
+$w_s^{\!\top}v_s=0$, so $N_s^2=0$. Since each factor is a rank-one update, the ordered product
+expands exactly over increasing chains,
+\[
+  \prod_{s}(I+c_sv_sw_s^{\!\top})
+  = I+\sum_{k\ge1}\ \sum_{s_1<\cdots<s_k}\Bigl(\prod_i c_{s_i}\Bigr)
+     \Bigl(\prod_{i=2}^{k}w_{s_i}^{\!\top}v_{s_{i-1}}\Bigr)\,v_{s_k}w_{s_1}^{\!\top},
+\]
+with link factors $w_a^{\!\top}v_b=q^{(a-b)/2}-q^{(b-a)/2}$. Applying this to $(0,1)^{\!\top}$ and
+writing $\delta_i=s_i-s_{i-1}\ge1$, the half-integer powers cancel: the $A$ component acquires
+weight $q^{2\sum s_i+k-s_k}$ and the $B$ component $q^{2\sum s_i+k}$, each carrying
+$\prod_{i\ge2}(1-q^{\delta_i})$ and a sign. Substituting
+$\sum s_i=ks_1+\sum_{i\ge2}(k-i+1)\delta_i$ makes $s_1$ and the $\delta_i$ independent, so every
+sum is geometric. For $B$ the $s_1$ sum gives $1/(1-q^{2k})$ and the $\delta_i$ sum gives, with
+$j=k-i+1$,
+\[
+  \sum_{\delta\ge1}q^{2j\delta}(1-q^{\delta})
+  =\frac{q^{2j}}{1-q^{2j}}-\frac{q^{2j+1}}{1-q^{2j+1}}
+  =\frac{q^{2j}(1-q)}{(1-q^{2j})(1-q^{2j+1})} .
+\]
+Multiplying over $j=1,\dots,k-1$ contributes $q^{k^2-k}(1-q)^{k-1}\cdot(1-q)/(q;q)_{2k-1}$, and
+combining with $q^{k}$ and $1/(1-q^{2k})$ gives the stated $B_\infty$. The computation for $A$ is
+identical with $2j$ replaced by $2j-1$, where the same cancellation gives
+$q^{2j-1}(1-q)/\bigl((1-q^{2j-1})(1-q^{2j})\bigr)$, and the products telescope to
+$q^{(k-1)^2}(1-q)^{k-1}/(q;q)_{2k-2}$; the $s_1$ sum contributes $1/(1-q^{2k-1})$, and
+$(q;q)_{2k-2}(1-q^{2k-1})=(q;q)_{2k-1}$.
+\end{proof}
+
+Both identities were checked against the recursion in exact rational arithmetic at
+$q=\tfrac12,\tfrac13,\tfrac25,\tfrac1{10},\tfrac37,\tfrac15$, agreeing to every digit computed.
+
+\begin{corollary}[exact quantisation]\label{cor:quant}
+The travel poles are exactly the zeros in $(0,1)$ of the entire-in-$q$ series
+$B_\infty(q)=\sum_{k\ge0}2^k(q-1)^kq^{k^2}/(q;q)_{2k}$.
+\end{corollary}
+
+Numerically the first ten zeros are $0.44945363$, $0.91348664$, $0.96804175$, $0.98357902$,
+$0.99003740$, $0.99332100$, $0.99521395$, $0.99640323$, $0.99719876$, $0.99775693$, and the
+resulting $w=\sqrt{2/\tau}$ reproduces the relative errors against $(m-\tfrac12)\pi$ recorded
+above, namely $6.8\cdot10^{-3}$, $2.3\cdot10^{-3}$, $8.8\cdot10^{-4}$ and so on.
+
+\begin{remark}[what this does and does not close]\label{rem:exactchain}
+Proposition~\ref{prop:travelexact} removes the discrete-to-continuum error from the quantisation
+step: the poles are not approximated by $\cos w=0$, they are the zeros of an explicit series, so no
+Liouville--Green estimate is needed to locate them and the uniformity gap noted above is gone at
+that step. It does not by itself prove the head and tail laws that \textup{(S1)} asserts, which are
+statements about the profile of $A_s$ at intermediate $s$ rather than about $A_\infty$, and it says
+nothing about \textup{(S2)}. What it changes is the kind of estimate required: the remaining
+questions are now about explicit $q$-series with $q$ at a zero of another explicit $q$-series,
+rather than about the fidelity of a continuum approximation.
+\end{remark}
 
 There is, however, a reason to expect the continuum route to be the wrong one, and it is
 structural. Both chains are exactly solvable as discrete transfer products, and passing to a
