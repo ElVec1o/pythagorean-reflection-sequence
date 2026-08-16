@@ -830,6 +830,47 @@ is quantitative. The substitution and the gap inequality are verified in
 \texttt{lean/with\_mathlib/TransferChain.lean}.
 \end{remark}
 
+\begin{proposition}[the constants of $(S1)$, in the continuum]\label{prop:S1const}
+Let $A(u)=\Sigma_0\cos(wu)$ be the continuum form of the travel block, $u=q^s$, and let the
+travel null vector be $R_s=A_{s+1}-A_s$. Split $R$ at its last sign change. Then
+\[
+   \mathrm{tail}=2\,\Sigma_0,\qquad \mathrm{head}=-\,\Sigma_0 .
+\]
+In particular $|\mathrm{tail}|=2|\Sigma_0|>|\Sigma_0|$, which is the overshoot $(S1)$ requires,
+with a factor of two to spare.
+\end{proposition}
+
+\begin{proof}
+To leading order $R_s=A_{s+1}-A_s=-\tau u A'(u)=\tau u w\,\Sigma_0\sin(wu)$, and a sum over $s$
+becomes $\int\!\cdot\,du/(\tau u)$, in which the factor $\tau u$ cancels. Hence for any
+subinterval $I\subseteq(0,1]$ the corresponding partial sum is $w\Sigma_0\int_I\sin(wu)\,du$.
+
+The zeros of $\sin(wu)$ in $(0,1]$ are at $u=k\pi/w$, and the last sign change of $R$, that is the
+one at largest $s$, is the one at smallest $u$, namely $u=\pi/w$. So
+\[
+   \mathrm{tail}=w\Sigma_0\int_0^{\pi/w}\!\!\sin(wu)\,du=w\Sigma_0\cdot\frac{1-\cos\pi}{w}=2\Sigma_0 ,
+\]
+independently of $w$. For the total, $w\Sigma_0\int_0^1\sin(wu)\,du=\Sigma_0(1-\cos w)$, and
+$\cos w=0$ because $A(1)=A_0=0$ is the initial condition of the recursion; so the total is
+$\Sigma_0$, consistent with $\sum_sR_s=\Sigma_0$, and $\mathrm{head}=\Sigma_0-2\Sigma_0=-\Sigma_0$.
+\end{proof}
+
+\begin{remark}[what this changes in the dependency chain]\label{rem:S1decoupled}
+The computation above uses the continuum form of the travel block and nothing else. In
+particular $\mathrm{tail}=2\Sigma_0$ is independent of $w$, so it does not use the quantisation at
+all; and the one place $\cos w=0$ enters is the exact initial condition $A_0=0$, not the sharp
+size of $T_2$, which fixes \emph{which} root $w_m$ is rather than that $\cos w$ vanishes.
+
+So $(S1)$ does not depend on the flat-saddle estimate. What it does depend on is a
+discrete-to-continuum error bound for the travel recursion, and by
+Remark~\ref{rem:jacobi} that recursion is a Jacobi recursion with unit off-diagonals whose
+spectral parameter sits in a gap, which is the standard setting for Liouville--Green estimates
+for difference equations. That is a different, and more standard, analytic problem than the one
+blocking the quantisation. The numbers agree: the derived $2$ and $-1$ against measured
+$1.9999991,\,2.0000123,\dots$ and $0.99999908,\,1.0000123,\dots$ at the poles where the
+measurement is clean.
+\end{remark}
+
 \begin{remark}[where the chain terminates]\label{rem:chainend}
 The measured laws for the two sides of $(S2)$ reduce, on unification, to the single scale
 $w=\sqrt{2/\tau}$ at a travel pole, together with the quantisation $w_m=(m-\tfrac12)\pi$. That
