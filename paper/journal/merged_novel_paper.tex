@@ -414,6 +414,25 @@ identify elements, so a computed sphere count is a lower bound for the character
 while the envelope is an upper bound; agreement therefore certifies the count exactly.
 \end{proof}
 
+\begin{remark}[a degeneration constraint on $U_n$, and why it is not enough]\label{rem:degen}
+Sending a single interior leg to infinity degenerates exactly one consecutive pair. With
+$a_i\to\infty$ the cosine $\cos(m_{i-1},m_i)\to0$ while every other consecutive cosine tends to a
+value strictly between $-1$ and $0$, and no two normals become parallel. The Gram matrix therefore
+becomes block diagonal and the limiting point group is a direct product of two smaller
+configurations of the same shape.
+
+Since the entries of $\pi(\rho_a(w))$ are continuous on the closure, an element of $U_n$ must die
+in every such limit, so $U_n$ is contained in the normal closure of $[R_{i-1},R_i]$ for each
+interior $i$, hence in the intersection of those normal closures.
+
+That intersection is not trivial, so the constraint cannot by itself give $U_n=1$. Equivalently
+the map $W_n\to\prod_iW_{\Gamma_n+\{i,i+1\}}$, adding one consecutive edge at a time, is not
+injective: already at $n=3$ the image sphere at depth $6$ has $141$ elements against $144$ in
+$W_3$. The obstruction to promoting the constraint by induction is visible in the same picture,
+since a split at an interior pair leaves a block of two vectors, whose own universal kernel is
+nontrivial for the reason that $O(2)$ is solvable, so the induction has no base.
+\end{remark}
+
 \begin{remark}[what the bound does and does not say]\label{rem:Uboundmeaning}
 At $n=3$ the bound is superseded: $U_3=1$ outright. For $n\ge4$ it is the only unconditional
 information we have about $U_n$, and it is not close to triviality, since $U_n$ could still be
