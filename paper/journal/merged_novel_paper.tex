@@ -775,6 +775,29 @@ The natural sharper guess is false and is recorded so that it is not attempted: 
 $B\setminus C$, while $17$-integral, can cancel part of the $17$-adic denominator built up by the
 $a_i$. So any proof must use the weaker monotonicity rather than exact additivity of valuations.
 We have not carried out the ping-pong.
+
+There is a structural reason for this, and it rules out the whole family of arguments that would
+recover exact additivity. Suppose the normal of $R_2$ is $v=(0,e,0,f)$ and $p$ is chosen so that
+$p^2\mid\lvert v\rvert^2$; this is what makes $R_2=M/p^2$ with $M\equiv-2vv^{T}\pmod p$ of rank
+one, and rank one is what makes the numerator of an alternating word telescope into
+$(-2)^k(b_0v)(v^{T}b_k)\prod_i(v^{T}b_iv)$. Exact additivity would follow from
+\begin{equation}\label{eq:gp}
+  v^{T}bv\not\equiv0\pmod p\qquad\text{for all }b\in B\setminus C.
+\end{equation}
+But $B$ preserves the splitting $\langle e_1,e_2\rangle\oplus\langle e_3,e_4\rangle$, so
+$v^{T}bv=e^2b_{22}+f^2b_{44}$, and \eqref{eq:gp} evaluated at $b_{22}=b_{44}=1$ reads
+$\lvert v\rvert^2\not\equiv0\pmod p$, which is the negation of the condition that produced the
+pole. The identity itself lies in $C$ and is excluded, but the image of each factor of
+$B\cong D_\infty\times D_\infty$ in $\mathrm{GL}_2(\mathbb{F}_p)$ is finite, the value $1$ is
+attained by many elements of each, and the product is direct, so every pair of values occurs and
+\eqref{eq:gp} fails for infinitely many $b\in B\setminus C$. At $v=(0,9,0,40)$ with $p=41$ the
+two factors have order $10$ and $40$, with $b_{22}\in\{1,3,17\}$ and
+$b_{44}\in\{0,1,3,9,17,19,22,24,32,38,40\}$; the first set is contained in the second. Sampling
+does not detect this: a failure needs a coincidence in both blocks at once, and $141$ sampled
+elements of $B\setminus C$ produced none. The obstruction is an identity in $e,f,p$, not a
+feature of the configuration, so no choice of normal avoids it. A proof must therefore either
+break the direct product structure of $B$, by placing $R_1$ and $R_3$ in planes that are not
+complementary, or use a seed whose degeneracy is not that of an isotropic normal.
 \end{remark}
 
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
