@@ -695,13 +695,19 @@ $\text{head}=A(\pi/w)=\Sigma_0(q_m)\cos\pi=-\Sigma_0(q_m)$, which is exactly the
 Against the exact null vector, $A_s$ matches $\Sigma_0\cos(wq^s)$ with maximal relative error
 $0.020,\ 0.011,\ 0.0069,\dots,0.0024$ for $m=1,\dots,8$, decaying like $1/m$.
 
-The bulk linearises the same way: its recursion carries a source, and the elimination gives
-$\varepsilon A''+A=-\mathfrak g\beta$, the same oscillator with constant forcing. So $B$ and
-$C_\lambda$ are available in closed form too, and \textup{(S2)} becomes a computation rather than
-an estimate; the observed law is $|C_\lambda|/(xB)\approx(w+1)/2$, which tends to infinity. What
-is still missing is uniform control of the discrete-to-continuum error, and the completion of the
-\textup{(S2)} computation. We claim neither, and record that \textup{(S1)} holds at leading order
-with the closed form verified above.
+The bulk does \emph{not} linearise the same way, and we record the failed attempt. Its recursion
+carries a source, and the same elimination formally gives $\varepsilon A''+A=-\mathfrak g\beta$,
+the oscillator with constant forcing. That reduction does not survive checking. Imposing
+$A(1)=0$, $A'(0)=-1/\varepsilon$ and the self-consistency $\beta=B(1)$ yields
+$\mathfrak g\beta=(-1)^mw$, which at the second pole predicts $+4.70$ against an actual
+$\mathfrak g\beta=-81.75$; and testing $\varepsilon A''+A$ directly on the discrete bulk gives
+$80.1,\,115.2,\,113.1$ at $u=0.3,0.5,0.7$ rather than a constant. So the bulk boundary analysis
+above is wrong somewhere, and \textup{(S2)} is not derived. The likely culprit is that
+$\mathfrak g_V=q/(1-q)$ grows like $w^2/2$, so the forcing is not uniformly small and a boundary
+layer near $u=1$ is not negligible; we have not resolved it.
+
+What is therefore established is \textup{(S1)} at leading order, with the closed form verified
+above, and not \textup{(S2)}. Uniform control of the discrete-to-continuum error is also missing.
 
 Fifth, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
