@@ -195,8 +195,9 @@ establish, namely that $W_n$ admits no embedding whatsoever into $\Isom(\R^n)$, 
 strictly stronger than non-injectivity of the particular map $\rho_a$.
 
 Section~\ref{sec:open} states the three problems that remain: faithfulness on the $e=t=0$
-stratum (Conjecture~\ref{conj:master-C}, with the generic and arithmetic forms of
-Problem~\ref{prob:alternative}), the embedding question just described
+stratum (Conjecture~\ref{conj:master-C}, now refuted in Remark~\ref{rem:masterC-false}, with
+the generic and arithmetic forms of Problem~\ref{prob:alternative}), the embedding question
+just described
 (Problem~\ref{prob:embed}), and finite presentation of the generic $n$-orthoscheme group
 (Problem~\ref{prob:fp}). Each is stated with what is known about it. Nothing outside those
 three is left implicit: Table~\ref{tab:status} assigns a status to every numbered statement in
@@ -1129,10 +1130,40 @@ $(1,2,2,3)$ and tuples with a non-adjacent repetition such as $(1,2,1,3)$; the l
 precisely the case that Lemma~\ref{lem:diagonal}, and not Lemma~\ref{lem:cremona-empty}, has to
 handle.
 
-\begin{conjecture}[Class C faithfulness]\label{conj:master-C}
+\begin{conjecture}[Class C faithfulness; \textbf{FALSE}]\label{conj:master-C}
 For every $n\ge3$ and every $a\in\Q_{>0}^n$ with pairwise distinct coordinates, $\rho_a$ is
 injective; equivalently $u_d(a)=[t^d]\,W_n(t)$ for every $d\ge0$.
 \end{conjecture}
+
+\begin{remark}[Retraction]\label{rem:masterC-false}
+Conjecture~\ref{conj:master-C} is \emph{false}. It fails at the leg tuples
+\[
+ (1,3,2),\ (2,3,9),\ (2,6,9),\ (3,1,5),\ (3,2,6),\ (4,9,7),\ (6,11,7)
+\]
+and their reversals, all of which have pairwise distinct coordinates. These are all the
+primitive such triples with entries at most $12$ found by the search described below. At
+$a=(3,1,5)$ an element of $\ker\rho_a$ of length $76$ is exhibited.
+
+The mechanism is that $\rho_a$ factors through the linear part
+$\pi\colon\Isom(\R^n)\to O(n)$, and the point group $\pi\circ\rho_a$ can fail to be injective
+while $\rho_a$ still agrees with the envelope for as far as any search can reach. If $u\ne1$ in
+$W_n$ and $\rho_a(u)$ has trivial linear part, then $\rho_a(u)$ is a translation; a conjugate of
+a translation by an isometry is a translation; translations commute; hence
+$[u,\,gug^{-1}]\in\ker\rho_a$ for every $g\in W_n$. Taking $u$ from a point-group collision and
+$g=R_1$ gives the elements above.
+
+This is consistent with everything computed in this paper, and in particular with the agreement
+recorded at \eqref{eq:classC-depths}: at these tuples $K(a)\le76$, so by
+Theorem~\ref{thm:dichotomy} the orbit growth departs from the envelope only near depth $38$,
+where the envelope sphere already exceeds $6\cdot10^{11}$. The linear part, by contrast,
+collapses at depth $11$ to $13$. The retraction therefore does not affect any computed row; it
+affects only the conjecture.
+
+Consequently Problem~\ref{prob:alternative}(b) is answered negatively. Part~(a), the generic
+form, is untouched: a kernel element at one leg tuple need not be one at another, so
+$N_{\mathrm{gen}}$ may still be trivial. Problems~\ref{prob:embed} and \ref{prob:fp} are
+likewise untouched. Details and the regenerating script are in the companion consolidation.
+\end{remark}
 
 Theorem~\ref{thm:rank2}(iii) is the rank-two half of Conjecture~\ref{conj:master-C} and is
 proved. What is missing is that a nontrivial kernel element must lie in a rank-two parabolic.
@@ -1143,9 +1174,10 @@ pairs are both boundary pairs, so for $a_1\ne a_2$ Theorem~\ref{thm:rank2}(iii) 
 rank-two parabolic meets $\ker\rho_a$; yet $\ker\rho_a\ne\{1\}$ by
 Proposition~\ref{prop:plane}, and its shortest elements have length $20$, arising as
 $w_1w_2^{-1}$ from eight pairs of distinct geodesic words $w_1,w_2$ of length $10$ using all
-three generators \cite{Bonfioli1}. Conjecture~\ref{conj:master-C} is verified computationally at
-one Class C tuple in each dimension $3\le n\le10$, to the depths recorded in
-\eqref{eq:classC-depths} of \S\ref{sec:cert}.
+three generators \cite{Bonfioli1}. Conjecture~\ref{conj:master-C} is false
+(Remark~\ref{rem:masterC-false}). The agreement computed at one Class C tuple in each dimension
+$3\le n\le10$, to the depths recorded in \eqref{eq:classC-depths} of \S\ref{sec:cert}, stands:
+the counterexamples deviate only near depth $38$, far beyond those depths.
 
 \subsection{A determinant identity, and what it does not give}
 
@@ -1362,8 +1394,9 @@ through depth $16$ despite differing in run structure.}
 \end{table}
 
 The rows with $\cd_n=\infty$ saturate the upper bound $[t^d]\,W_n(t)$ as far as they are
-computed, as Conjecture~\ref{conj:master-C} predicts; for $n=3$ this reproduces
-$u_d=9\cdot2^{d-2}$ for $d\ge2$.
+computed; for $n=3$ this reproduces $u_d=9\cdot2^{d-2}$ for $d\ge2$. This agreement is not
+evidence for Conjecture~\ref{conj:master-C}, which is false
+(Remark~\ref{rem:masterC-false}); the deviation it predicts lies beyond the computed range.
 
 \section{The plane, and why its argument does not extend}\label{sec:plane}
 
@@ -1501,7 +1534,8 @@ Equivalently, by Theorem~\ref{thm:rigidity}, is $\rho_a$ injective for every $a$
 set $U_{\mathrm{gen}}$; equivalently, by Corollary~\ref{cor:alternative}, is the growth series
 of the generic $n$-orthoscheme group the rational envelope $W_n(t)$ in every degree?
 \item \emph{Arithmetic form.} Is $\rho_a$ injective for every Class C tuple
-$a\in\Q_{>0}^n$? This is Conjecture~\ref{conj:master-C}.
+$a\in\Q_{>0}^n$? This is Conjecture~\ref{conj:master-C}, and the answer is \emph{no}
+(Remark~\ref{rem:masterC-false}).
 \end{enumerate}
 \end{problem}
 
