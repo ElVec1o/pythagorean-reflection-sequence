@@ -731,8 +731,35 @@ setting in which the Hahn--Exton $q$-cosine lives, so the appearance of that fun
 structural rather than incidental. Second, because $\det M=1$ the discrete Wronskian is conserved,
 so the inhomogeneous bulk chain is the homogeneous one plus a particular solution obtained by
 variation of parameters, with an exact discrete Green's function and no continuum approximation
-anywhere. That is the form in which \textup{(S2)} should be attacked. We record the structure,
-which is exact, and not any consequence for \textup{(S2)}, which we have not derived.
+anywhere. That is the form in which \textup{(S2)} should be attacked.
+
+The two chains are moreover the same chain. With $D=\mathrm{diag}(q^{-1/4},q^{1/4})$, constant,
+\[
+   M^{\mathrm{bulk}}_b=D\,M^{\mathrm{travel}}_{b-1/2}\,D^{-1} ,
+\]
+an exact identity in $\Q(q^{1/4})$. This is the precise form of the statement that the zeros of
+$S_e$ and of $1-\Sigma_1$ are those of one $q$-cosine sampled a half $q$-step apart: the two
+chains differ by a half-step in the index and a constant conjugation, nothing else. In particular
+the homogeneous solutions of the bulk chain are those of the travel chain at shifted index, so the
+inhomogeneous bulk problem is closed by the conserved Wronskian alone.
+
+Consistently with this, the bulk partial sums do fit the same oscillatory closed form. A least
+squares fit of $A_b$ to $C_1\cos(Wu)+C_2\sin(Wu)+K$ with $u=q^b$ has relative residual
+$1.3\cdot10^{-7},\ 8.2\cdot10^{-4},\ 1.9\cdot10^{-3},\ 2.0\cdot10^{-3},\ 5.0\cdot10^{-4}$ at
+the first five poles, with $W/\sqrt{2/\tau}=1.2,\ 1.05,\ 1.015,\ 1.01,\ 1.005$. The bulk is an
+oscillator with the same limiting frequency; the earlier failures came from imposing the travel
+frequency and the travel boundary data on it, not from any absence of the closed form.
+
+One gap in the above should be recorded rather than passed over. Deriving the travel equation from
+$\mathrm{d}A/\mathrm{d}s=2q^{1+s}(q^sA+B)$ and $\mathrm{d}u/\mathrm{d}s=-\tau u$ gives
+$\varepsilon=\tau/2q$ and hence $w=\sqrt{2q/\tau}$, whereas the quantisation is matched by
+$\sqrt{2/\tau}$, and by a margin: at the tenth pole the two candidates miss $(m-\tfrac12)\pi$ by
+$1.2\cdot10^{-3}$ and $6.2\cdot10^{-5}$ respectively. A factor of $q$ is unaccounted for, and
+until it is explained the closed form of \eqref{eq:oscillator} is supported by its verification
+and not by its derivation.
+
+We record the exact structure, and not any consequence for \textup{(S2)}, which we have not
+derived.
 
 Fifth, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
