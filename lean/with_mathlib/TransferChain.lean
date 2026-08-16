@@ -91,6 +91,34 @@ theorem half_shift (r a : R) :
   fin_cases i <;> fin_cases j <;>
     simp [travel, bulk, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
 
+
+/-! ### The scalar three-term recursion
+
+    Eliminating `B` between the two travel recursions leaves a three-term recursion for `A`
+    alone.  This is exact: no continuum limit, no asymptotics.  It is a `q`-difference equation
+    of Hahn--Exton type, which is why a `q`-cosine governs the chain.  Note the trailing
+    coefficient is the constant `-q`, and the middle coefficient tends to `1+q` as the index
+    grows, whose characteristic roots are `1` and `q`; that is why `A` converges, its limit
+    being `Sigma_0`. -/
+
+/-- One step of the travel chain on the pair `(A,B)`, with `a = q^s`. -/
+def stepA (q a A B : R) : R := (1 + 2*q*a^2) * A + 2*q*a * B
+/-- The `B` component of one step. -/
+def stepB (q a A B : R) : R := -2*q*a^3 * A + (1 - 2*q*a^2) * B
+
+/-- **The exact three-term recursion.**  Writing `A_s, A_{s+1}, A_{s+2}` for three consecutive
+    values of the `A` component, with `a = q^s` so that the next argument is `q*a`,
+        `A_{s+2} = (1 + q - 2 q^2 a^2 (1 - q)) A_{s+1} - q A_s`.
+    Here `A_{s+1} = stepA q a A B` and `A_{s+2} = stepA q (q*a) A_{s+1} B_{s+1}` with
+    `B_{s+1} = stepB q a A B`. -/
+theorem three_term (q a A B : R) :
+    stepA q (q*a) (stepA q a A B) (stepB q a A B)
+      = (1 + q - 2*q^2*a^2*(1-q)) * (stepA q a A B) - q * A := by
+  simp only [stepA, stepB]
+  ring
+
+#print axioms three_term
+
 /-! ### Axiom audit (Rule 5) -/
 
 #print axioms det_travel
