@@ -469,13 +469,26 @@ across the family.
 \end{theorem}
 
 \begin{proof}
-The point group collapses at depth $8$: breadth-first search in $W_4$ with exact rational
-arithmetic produces two elements of length $8$ with the same linear part, whence
-$u=w_1w_2^{-1}$ of length $16$ with $\pi(\rho_a(u))=I$ and $u\ne1$ in $W_4$, the latter checked
-in the Tits representation. Proposition~\ref{prop:transtrick} then places
-$c=[u,\,R_0uR_0]$ in $\ker\rho_a$, and $c\ne1$ in $W_4$, again by the Tits representation;
-reducing $c$ gives a geodesic of length $54$. The condition $a_1a_3=a_2a_4$ enters only through
-the depth-$8$ collision, which it produces for every member of the family.
+Take the two fixed words of length eight
+\[
+   w_1=R_1R_2R_1R_0R_3R_2R_1R_4,\qquad w_2=R_0R_3R_2R_1R_4R_3R_2R_3 ,
+\]
+and put $u=w_1w_2^{-1}$, of length $16$. These do not depend on $a$.
+
+Computing $\pi(\rho_a(w_1))-\pi(\rho_a(w_2))$ symbolically in $\Q(a_1,a_2,a_3,a_4)$, every one of
+its fourteen nonzero entries carries the factor
+\[
+   (a_1a_3-a_2a_4)(a_1a_3+a_2a_4) .
+\]
+The coordinates are positive, so the second factor never vanishes, and therefore
+$\pi(\rho_a(u))=I$ if and only if $a_1a_3=a_2a_4$. Both directions are confirmed directly:
+substituting $a_4=a_1a_3/a_2$ makes the difference identically zero, while at $(1,2,5,7)$, off the
+locus, it is nonzero.
+
+So on the locus $\rho_a(u)$ is a translation, and $u\ne1$ in $W_4$ by the Tits representation.
+Proposition~\ref{prop:transtrick} places $c=[u,\,R_0uR_0]$ in $\ker\rho_a$, and $c\ne1$ in $W_4$,
+again by the Tits representation; reducing $c$ gives a geodesic of length $54$. Since $w_1,w_2$
+and hence $c$ are independent of $a$, the same element works for every member of the family.
 \end{proof}
 
 \begin{remark}[the family is genuinely infinite, and the criterion is sharp]\label{rem:family4}
@@ -488,7 +501,9 @@ The criterion was found by scanning the $828$ primitive pairwise-distinct tuples
 most $8$, of which $24$ fail by depth $12$; the sixteen that fail at depth exactly $8$ are
 precisely those with $a_1a_3=a_2a_4$. It was then frozen and tested out of sample on ten tuples
 outside that box, all of which deviate at depth $8$, against four controls with
-$a_1a_3\ne a_2a_4$, none of which deviates by depth $12$. The remaining eight failures, at depth
+$a_1a_3\ne a_2a_4$, none of which deviates by depth $12$. The proof above supersedes that
+evidence: the colliding pair is a single pair of words, the same for every tuple, and the locus
+on which its linear parts agree is cut out exactly by $a_1a_3=a_2a_4$. The remaining eight failures, at depth
 $12$, form a separate family not covered by this criterion; their leg ratios are
 $(1{:}2,3{:}4)$ and $(1{:}3,4{:}3)$ up to reversal, and we do not characterise them.
 \end{remark}
