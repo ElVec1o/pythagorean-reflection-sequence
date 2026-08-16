@@ -432,6 +432,32 @@ $U$, transcendental over $\Q(x)$ unconditionally, modulo $(M)$. What exists is a
 $|P_{12}|w^3<2$; what is needed is a lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$.
 \end{problem}
 
+\begin{remark}[the arithmetic structure at $(1,2,3)$]\label{rem:pingpong}
+For the generic form of Problem~\ref{prob:alternative} a single faithful tuple suffices, and
+by Corollary~\ref{cor:necessary} it is enough to find one at which the \emph{point group} is
+faithful. The tuple $(1,2,3)$, where the point group agrees with the envelope through depth $22$,
+carries an arithmetic structure that the others do not, and we record it because it is what any
+attempt should use.
+
+The two denominators are $|m_1|^2=a_1^2+a_2^2=5$ and $|m_2|^2=a_2^2+a_3^2=13$, both prime. So
+$R_0,R_2,R_3$ lie in $GL_3(\Z_5)$ while $v_5(R_1)=-1$, and $R_0,R_1,R_3$ lie in $GL_3(\Z_{13})$
+while $v_{13}(R_2)=-1$. The generators are orthogonal for the standard form, and
+$x^2+y^2+z^2$ is isotropic over $\Q_5$ and over $\Q_{13}$, so $SO_3$ is split at both places and
+its Bruhat--Tits building there is a \emph{tree} rather than a rank-two building. Finally the
+graph splits: with $\Gamma_1=\{0,2,3\}$ and $\Gamma_2=\{0,1,3\}$ one has
+$\Gamma_1\cap\Gamma_2=\{0,3\}$, and $1$ and $2$ are non-adjacent in $\Gamma_3$, so
+\[
+ W_3\;=\;(\Z/2\times D_\infty)\ \ast_{\ \Z/2\times\Z/2}\ (D_\infty\times\Z/2),
+\]
+the first factor $\langle R_0,R_2,R_3\rangle$ being $5$-integral and the second
+$\langle R_0,R_1,R_3\rangle$ being $13$-integral, with the amalgamated
+$\langle R_0,R_3\rangle$ integral at both. Both factors are faithfully represented: each contains
+a $D_\infty$ acting as rotations by an angle with rational cosine $3/5$ respectively $-5/13$,
+which has infinite order by Niven's theorem, and in each the extra involution reverses an axis
+that the $D_\infty$ fixes. What is missing is the step from these data to injectivity of the
+amalgam, that is, a ping-pong on the two trees. We have not carried it out.
+\end{remark}
+
 \begin{problem}[The alternative in dimension $n\ge3$]\label{prob:alternative}
 Is $N_{\mathrm{gen}}=\bigcap_a\ker\rho_a$ trivial, equivalently is $\rho_a$ injective for
 generic $a$? A single faithful tuple answers this affirmatively. The arithmetic form is FALSE
