@@ -388,7 +388,38 @@ exhaustive scan is evidence for $U_4=1$: were $U_4$ nontrivial, some word would 
 \emph{every} tuple, and no tuple in the scan fails at all outside the two loci.
 
 What (i) needs is therefore not a faithful tuple in dimension four but the triviality of $U_4$,
-and the two are equivalent. We do not prove it.
+and the two are equivalent. We do not prove it, but the computations bound it from below.
+\end{remark}
+
+\begin{proposition}[a lower bound on the universal kernel; PROVED]\label{prop:Ubound}
+$U_n$ contains no nontrivial element of length at most $2d_n$, where
+\[
+\begin{array}{c|cccc}
+ n & 3 & 4 & 5 & 6\\\hline
+ d_n & 22 & 18 & 15 & 14\\
+ \text{no element of length} \le & 44 & 36 & 30 & 28
+\end{array}
+\]
+\end{proposition}
+
+\begin{proof}
+Fix $n$ and a leg tuple at which the point group has been computed. Since
+$U_n\subseteq\ker(\pi\circ\rho_a)$, any element of $U_n$ is an element of that kernel. By the
+dichotomy, Theorem~\ref{thm:dichotomy}, if the orbit growth of the image agrees with the envelope
+through depth $d$ then the shortest nontrivial kernel element has length at least $2d+1$. The
+tabulated $d_n$ are the depths to which agreement is verified, at two independent primes, at the
+tuples $(1,2,11)$, $(1,2,3,5)$, $(3,1,4,2,5)$ and $(1,2,3,5,7,4)$ respectively; the value at
+$n=4$ is confirmed at the second tuple $(3,1,4,2)$ as well. Reduction modulo a prime can only
+identify elements, so a computed sphere count is a lower bound for the characteristic-zero count,
+while the envelope is an upper bound; agreement therefore certifies the count exactly.
+\end{proof}
+
+\begin{remark}[what the bound does and does not say]\label{rem:Uboundmeaning}
+At $n=3$ the bound is superseded: $U_3=1$ outright. For $n\ge4$ it is the only unconditional
+information we have about $U_n$, and it is not close to triviality, since $U_n$ could still be
+generated in some length beyond the computed range. The bound degrades with $n$ because the
+envelope grows faster, so a fixed memory budget reaches a smaller depth; it is a limitation of the
+search and not evidence that $U_n$ is more likely to be nontrivial in higher dimensions.
 \end{remark}
 
 \begin{remark}[what remains open]\label{rem:stillopen}
