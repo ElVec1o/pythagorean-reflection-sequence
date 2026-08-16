@@ -983,15 +983,159 @@ third the only admissible parameter is $t=1$, again the Tits point, whose signat
 Lemma~\ref{lem:lorentz}. No case survives.
 \end{proof}
 
-\begin{remark}[what remains open]\label{rem:stopsatfour}
-Theorem~\ref{thm:nofive} closes the route, not the question. Problem~\ref{prob:embed} is open for
-every $n\ge5$, and nothing here suggests the answer is negative: the obvious obstructions are
-absent, since $W_n$ contains $D_\infty^{\lceil n/3\rceil}$ and any free abelian group embeds in a
-single circle, so neither abelian nor free subgroups separate $W_n$ from $O(n)$. What is missing is
-a source of faithful $n$-dimensional representations. The Tits form supplies one only at $n=4$, by
-Lemma~\ref{lem:lorentz}, and Theorem~\ref{thm:nofive} shows that deforming it does not help. Any
-advance needs a construction of a different kind.
+\begin{remark}[what Theorem~\ref{thm:nofive} does not say]\label{rem:stopsatfour}
+Theorem~\ref{thm:nofive} closes one route, not the question. It says that no admissible
+configuration is \emph{Lorentzian} beyond $n=4$, and the Lorentzian condition was used only to
+invoke Vinberg's criterion in the form that produces a discrete hyperbolic reflection group. That
+form is stronger than necessary. Vinberg's theorem on linear Coxeter groups requires no condition
+on the signature at all, and dropping the requirement settles Problem~\ref{prob:embed} completely.
 \end{remark}
+
+\subsection{The embedding in every dimension}\label{sec:allowsn}
+
+The input is Vinberg's theorem in its general form. Call a symmetric matrix $A=(a_{ij})_{i,j=0}^n$
+a \emph{Cartan matrix} for $(W_n,S)$ if $a_{ii}=2$, if $a_{ij}=0$ exactly when $|i-j|\ge2$, and if
+$a_{ij}a_{ji}\ge4$ whenever $|i-j|=1$. Vinberg's theorem \cite{vinberg1971} states that the
+associated representation $\rho_A\colon W_n\to GL(V)$, $V=\mathbb{R}^{n+1}$, with
+$\rho_A(r_i)x=x-a_i^{*}(x)e_i$ and $a_i^{*}(e_j)=a_{ij}$, is faithful and has discrete image. No
+hypothesis is placed on the signature of $A$. With $A=2G(c)$ the conditions read $c_i\ge1$, which
+is exactly the Vinberg-admissible region of Section~\ref{sec:stopsatfour}; what
+Theorem~\ref{thm:nofive} forbids is only that the signature be Lorentzian.
+
+\begin{lemma}[the radical is a trivial line]\label{lem:radline}
+Let $c\in[1,\infty)^n$ with $\det G(c)=0$, and let $B$ be the form of $G(c)$ on $V$. Then
+$V_0=\operatorname{rad}B$ has dimension exactly $1$, $W_n$ acts trivially on $V_0$, and the induced
+form on $V/V_0$ is nondegenerate, with $W_n$ acting by orthogonal reflections in the images
+$\bar e_0,\dots,\bar e_n$, whose Gram matrix is $G(c)$.
+\end{lemma}
+
+\begin{proof}
+$G(c)$ is a Jacobi matrix: tridiagonal with off-diagonal entries $-c_i\ne0$. Jacobi matrices have
+simple spectrum, so $\dim\ker G(c)\le1$, and $\det G(c)=0$ forces equality. For $x\in V_0$ we have
+$B(x,e_i)=0$, hence $\rho(r_i)x=x-2B(x,e_i)e_i=x$, so the action on $V_0$ is trivial and $V_0$ is
+$W_n$-invariant. The induced form is nondegenerate by definition of the radical, and
+$\rho(r_i)$ descends to $\bar x\mapsto\bar x-2\bar B(\bar e_i,\bar x)\bar e_i$ with
+$\bar B(\bar e_i,\bar e_i)=1$, an orthogonal reflection.
+\end{proof}
+
+\begin{lemma}[the quotient stays faithful]\label{lem:quotfaith}
+For $n\ge2$ and $c$ as in Lemma~\ref{lem:radline}, the representation of $W_n$ on $V/V_0$ is
+faithful.
+\end{lemma}
+
+\begin{proof}
+Let $N$ be its kernel and fix a generator $z$ of $V_0$. For $w\in N$ we have
+$\rho(w)=I+z\varphi_w^{\!\top}$ for some $\varphi_w\in V^{*}$, and $\rho(w)z=z$ by
+Lemma~\ref{lem:radline}, so $\varphi_w(z)=0$. Hence
+$\rho(w_1)\rho(w_2)=I+z(\varphi_{w_1}+\varphi_{w_2})^{\!\top}$, so $w\mapsto\varphi_w$ is a
+homomorphism and $N$ is abelian; and $(I+z\varphi^{\!\top})^k=I+kz\varphi^{\!\top}$, so every
+non-identity element of $N$ has infinite order and $N$ is torsion free. Since $\rho$ is faithful on
+$V$ by Vinberg's theorem, $N$ is isomorphic to its image, so $N$ is a torsion-free abelian normal
+subgroup of $W_n$.
+
+The Coxeter diagram of $W_n$ is the path on $n+1\ge3$ vertices with every edge labelled $\infty$.
+It is connected, so $(W_n,S)$ is irreducible; it is infinite; and it is not affine, since no
+irreducible affine diagram on three or more vertices carries the label $\infty$. By
+Caprace--Fujiwara \cite{CapraceFujiwara} such a Coxeter group acts on its Davis complex with a
+rank-one isometry and is therefore acylindrically hyperbolic, and by Osin \cite{Osin} an
+acylindrically hyperbolic group has no infinite amenable normal subgroup. As $N$ is torsion free,
+$N\ne1$ would make it infinite and abelian, hence infinite amenable. So $N=1$.
+\end{proof}
+
+\begin{lemma}[admissible points exist]\label{lem:vinbergpoint}
+For every $n\ge3$ there is $c\in[1,\infty)^n$ with $\det G(c)=0$. For $n=2$ there is none.
+\end{lemma}
+
+\begin{proof}
+Write $x_i=c_i^2\ge1$ and $D_0=D_1=1$, $D_{k+1}=D_k-x_kD_{k-1}$, so $\det G(c)=D_{n+1}$. For $n=2$,
+$D_3=1-x_1-x_2\le-1<0$. In general, if $D_{n-1}\ne0$ then $x_n=D_n/D_{n-1}$ solves $D_{n+1}=0$, and
+this is admissible precisely when $D_n/D_{n-1}\ge1$. Taking $x_{n-1}=1$ gives
+$D_n=D_{n-1}-D_{n-2}$, so the requirement is $-D_{n-2}/D_{n-1}\ge0$, that is, $D_{n-2}$ and
+$D_{n-1}$ of opposite signs, or $D_{n-2}=0$.
+
+Prescribe the first entries and let the rest be $1$; the recursion $D_{k+1}=D_k-D_{k-1}$ then has
+period $6$. For $x=(1,1,\dots)$ the values of $D_k$ are $1,1,0,-1,-1,0$ repeating, so $D_{n-2}=0$
+exactly when $n\equiv1\pmod 3$. For $x=(2,1,1,\dots)$ they are $1,-1,-2,-1,1,2$ repeating from
+$k=1$, and consecutive values differ in sign exactly at $k\equiv1,4\pmod 6$, giving
+$n\equiv0\pmod3$. For $x=(2,1,3,1,1,\dots)$ they are $1,3,2,-1,-3,-2$ repeating from $k=4$, with
+sign changes at $k\equiv0,3\pmod6$, giving $n\equiv2\pmod3$. The three cases cover all $n\ge3$.
+\end{proof}
+
+The resulting points were checked in exact rational arithmetic for every $n$ from $3$ to $200$:
+$\det G=0$ in every case, with $x_n$ equal to $1$, $2$ and $3$ in the three families respectively.
+
+Lemma~\ref{lem:quotfaith} was also tested directly. Rescaling the Cartan matrix to
+$a_{i,i+1}=-2x_i$ and $a_{i+1,i}=-2$ is conjugation by a diagonal matrix, so it presents the same
+representation over $\mathbb{Q}$, and the quotient may be enumerated exactly. Its sphere sizes are
+compared with the right-angled Coxeter growth series $1/f_\Gamma(-t/(1+t))$, where $f_\Gamma$ is
+the clique polynomial of $\Gamma_n$:
+\[
+\begin{array}{rll}
+  n=4, & f=1+5x+6x^2+x^3, & 1,5,14,33,75,169,380,854,1919,4312,9689,21771,\\
+  n=5, & f=1+6x+10x^2+4x^3, & 1,6,20,54,136,334,812,1966,4752,11478,27716,\\
+  n=6, & f=1+7x+15x^2+10x^3+x^4,\ \ & 1,7,27,82,226,597,1545,3957,10080,25605 .
+\end{array}
+\]
+In each case the enumerated quotient reproduces the series exactly to the depth shown, the $n=5$
+and $n=6$ rows being the informative ones since their signatures $(3,2,1)$ and $(4,2,1)$ admit no
+hyperbolic geometry. A single collapsed word would have shortened some sphere.
+
+\begin{theorem}[the embedding, in every dimension]\label{thm:alln}
+For every $n\ge3$ the group $W_n$ embeds in $O(n)$, and hence in $\mathrm{Isom}(\mathbb{R}^n)$. For
+$n=2$ it does not.
+\end{theorem}
+
+\begin{proof}
+Work in the coordinates $x_i=c_i^2$ and let $Y=\{x:D_{n+1}(x)=0\}$. The continuant is linear in
+$x_n$, with coefficients $D_n$ and $-D_{n-1}$, and consecutive continuants are coprime, since a
+common factor of $D_n$ and $D_{n-1}$ divides $x_{n-1}D_{n-2}$ and one descends. Hence $D_{n+1}$ is
+irreducible and $Y$ is an irreducible variety of dimension $n-1$. Replacing $c_i$ by $-c_i$ is
+conjugation by a diagonal sign change, so whether $\rho_x(w)$ acts trivially on $V/V_0$ depends
+only on $x$, and by Lemma~\ref{lem:radline} it is the condition
+$(\rho_x(w)-I)V\subseteq V_0(x)$, which is Zariski closed. Write $Z_w\subseteq Y$ for that locus.
+
+By Lemma~\ref{lem:vinbergpoint} the region $x_i\ge1$ meets $Y$, and by Lemmas~\ref{lem:radline}
+and~\ref{lem:quotfaith} no such point lies in $Z_w$ for any $w\ne1$. So each $Z_w$ is a proper
+Zariski-closed subset of the irreducible $Y$.
+
+Now take $c_i=1/(2\cos(\pi/(n+2)))$ for all $i$, which lies in $(\tfrac12,1)$. Then $C(c)$ has
+largest eigenvalue $2c\cos(\pi/(n+2))=1$ and second largest $2c\cos(2\pi/(n+2))<1$, so $G(c)$ is
+positive semidefinite of rank exactly $n$. Positive semidefiniteness with nullity one is an open
+condition, so the compact locus $K=\{x\in Y(\mathbb{R}):G \text{ is PSD of rank }n\}$ is a nonempty
+open subset of $Y(\mathbb{R})$ of dimension $n-1$, hence Zariski dense in $Y$. Therefore each
+$Z_w\cap K$ is closed with empty interior in $K$. As $W_n$ is countable and $K$ is a Baire space,
+some $x\in K$ avoids every $Z_w$ with $w\ne1$. At that point $G$ is the Gram matrix of $n+1$ unit
+vectors in $\mathbb{R}^n$ with $\langle v_i,v_j\rangle=0$ for $|i-j|\ge2$, the reflections in them
+generate a copy of $W_n$ inside $O(n)$, and the representation is faithful. Composing with
+$O(n)\hookrightarrow\mathrm{Isom}(\mathbb{R}^n)$ gives the embedding.
+
+For $n=2$, suppose $W_2\hookrightarrow O(2)$. The subgroup of even-length words maps into $SO(2)$,
+which is abelian. But with $a=r_0r_1$ and $b=r_1r_2$ the even subgroup is generated by $a$ and $b$
+subject only to $(ab)^2=1$, since $r_0r_2=ab$ and the sole defining relation of $W_2$ is
+$(r_0r_2)^2=1$; setting $t=ab$ presents it as $\langle a,t\mid t^2=1\rangle\cong
+\mathbb{Z}*\mathbb{Z}/2$, which is not abelian. So no such embedding exists, and by
+Proposition~\ref{prop:reduce} none into $\mathrm{Isom}(\mathbb{R}^2)$ either.
+\end{proof}
+
+\begin{remark}[why $n=2$ is the exception]\label{rem:n2}
+The two halves of the proof fail together, which is the check that the argument is not lossy.
+Lemma~\ref{lem:vinbergpoint} produces no admissible point at $n=2$ because
+$D_3=1-x_1-x_2$ cannot vanish for $x_i\ge1$, and independently $W_2$ genuinely does not embed. The
+same dichotomy explains $n=1$: there $W_1=D_\infty$ is affine, Lemma~\ref{lem:quotfaith} does not
+apply, and indeed $D_\infty$ embeds in $\mathrm{Isom}(\mathbb{R})$ only by using translations, its
+linear part having kernel $\mathbb{Z}$.
+\end{remark}
+
+\begin{remark}[what replaced the Lorentzian hypothesis]\label{rem:whatchanged}
+Theorem~\ref{thm:w4embed} obtained $n=4$ from a hyperbolic reflection group, which needs signature
+$(n-1,1)$, and Theorem~\ref{thm:nofive} shows no other $n$ supplies one. The signature was doing
+one job: guaranteeing that the $n$-dimensional quotient of the $(n+1)$-dimensional Vinberg
+representation stays faithful. Lemma~\ref{lem:quotfaith} does that job directly, by observing that
+the kernel of the quotient is forced to be torsion-free abelian and that $W_n$ has no such normal
+subgroup. The signatures that actually occur are $(n-1-k,k,1)$ with $k=\lceil(n-1)/3\rceil$, so for
+$n\ge5$ the intermediate group is $O(p,q)$ with $q\ge2$ and no hyperbolic geometry is available;
+the argument does not need any.
+\end{remark>
 
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
 It does not decide Problem~\ref{prob:embed} for any $n\ge4$, the case $n=3$ being settled
@@ -1516,6 +1660,16 @@ E.~B. Vinberg,
 \emph{Discrete linear groups generated by reflections},
 Izv. Akad. Nauk SSSR Ser. Mat. \textbf{35} (1971), 1072--1112;
 English translation, Math. USSR-Izv. \textbf{5} (1971), 1083--1119.
+
+\bibitem{CapraceFujiwara}
+P.-E. Caprace and K. Fujiwara,
+\emph{Rank-one isometries of buildings and quasi-morphisms of Kac--Moody groups},
+Geom. Funct. Anal. \textbf{19} (2010), 1296--1319.
+
+\bibitem{Osin}
+D. Osin,
+\emph{Acylindrically hyperbolic groups},
+Trans. Amer. Math. Soc. \textbf{368} (2016), 851--888.
 \end{thebibliography}
 
 \end{document}
