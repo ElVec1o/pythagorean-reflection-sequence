@@ -763,6 +763,17 @@ So $A$ and $B$ move disjoint sets of places and $C$ moves none, which is the sep
 amalgam ping-pong requires. This is qualitatively stronger than the single-prime alignment of
 Remark~\ref{rem:alignnogo}, which held at the orthoscheme tuple $(1,2,3,4)$ and did not prevent a
 collapse: there one prime had to separate both factors, whereas here each factor has its own.
+The ping-pong condition itself can be stated and tested. Writing an alternating word as
+$a_1b_1a_2\cdots a_k$ with $a_i\in A\setminus C$ and $b_i\in B\setminus C$, the identity has
+$v_{17}=0$, so it suffices that $v_{17}<0$ for every such word. Over $1800$ random alternating
+words with $1\le k\le9$ this holds in every case, and the value closest to zero drifts steadily
+away from it, the maxima over $200$ trials at each $k$ being
+$-2,-3,-4,-5,-7,-8,-10,-11,-14$.
+
+The natural sharper guess is false and is recorded so that it is not attempted: $v_{17}$ is
+\emph{not} equal to $-2k$. Of $420$ words tested, $176$ deviate, because the elements of
+$B\setminus C$, while $17$-integral, can cancel part of the $17$-adic denominator built up by the
+$a_i$. So any proof must use the weaker monotonicity rather than exact additivity of valuations.
 We have not carried out the ping-pong.
 \end{remark}
 
