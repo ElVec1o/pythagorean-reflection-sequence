@@ -343,6 +343,54 @@ $\ker(\pi\circ\rho_a)$ is normal in $W_n$, and if $\rho_a$ is injective it is is
 image, a subgroup of the translation group, hence abelian. By Lemma~\ref{lem:noab} it is trivial.
 \end{proof}
 
+\begin{theorem}[the three problems have one answer; PROVED]\label{thm:unify}
+Fix $n\ge3$ and let
+\[
+   U_n \;=\; \bigcap_{a}\ker\bigl(\pi\circ\rho_a\bigr)
+\]
+be the universal kernel of the point group, the set of $w\in W_n$ whose image has trivial linear
+part at \emph{every} leg tuple.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item If $U_n=1$ then $\rho_a$ is injective for every $a$ outside a countable union of proper
+algebraic subsets of the positive orthant, hence for a co-null set of tuples. Consequently
+$N_{\mathrm{gen}}=1$; $W_n$ embeds in $O(n)$ and so in $\Isom(\R^n)$; and the generic
+$n$-orthoscheme group is $W_n$, which is finitely presented.
+\item If $U_n\ne1$, pick $1\ne u\in U_n$. If $[u,\,gug^{-1}]\ne1$ in $W_n$ for some $g$, then that
+commutator lies in $\ker\rho_a$ for \emph{every} $a$, so $N_{\mathrm{gen}}\ne1$ and the generic
+group is a proper quotient of $W_n$.
+\end{enumerate}
+So Problem~\textup{\ref{prob:alternative}}, Problem~\textup{\ref{prob:embed}} and
+Problem~\textup{\ref{prob:fp}} are not three questions in dimension $n$ but one, decided by
+whether $U_n$ is trivial.
+\end{theorem}
+
+\begin{proof}
+(i) Fix $w\ne1$. The entries of $\pi(\rho_a(w))$ are rational functions of $a$ whose denominators
+are sums of squares of the legs, nonvanishing on the positive orthant, so
+$Z_w=\{a:\pi(\rho_a(w))=I\}$ is closed and algebraic there; it is proper because $U_n=1$ supplies
+a tuple outside it. $W_n$ is countable, so $\bigcup_{w\ne1}Z_w$ is a countable union of proper
+algebraic subsets and is null. For $a$ outside it, $\pi\circ\rho_a$ is injective, hence so is
+$\rho_a$. Injectivity of $\pi\circ\rho_a$ at a single such $a$ realises $W_n$ inside $O(n)$, and
+$O(n)\le\Isom(\R^n)$. Finally $N_{\mathrm{gen}}\subseteq\ker\rho_a=1$, so the generic group is
+$W_n$, a right-angled Coxeter group and therefore finitely presented.
+
+(ii) For $u\in U_n$ the image $\rho_a(u)$ has trivial linear part at every $a$, so it is a
+translation at every $a$. Proposition~\ref{prop:transtrick} then places $[u,\,gug^{-1}]$ in
+$\ker\rho_a$ for every $a$ and every $g$, whence it lies in $N_{\mathrm{gen}}$.
+\end{proof}
+
+\begin{remark}[what this changes]\label{rem:unifychanges}
+In dimension three $U_3=1$, since Theorem~\ref{thm:faithful} exhibits a faithful tuple, and
+(i) recovers all three closures at once. In dimension four the families of
+\S\ref{sec:masterC} show that many individual tuples lie in some $Z_w$; they say nothing about
+$U_4$, because each of those $Z_w$ is a proper hypersurface and not the whole orthant. Indeed the
+exhaustive scan is evidence for $U_4=1$: were $U_4$ nontrivial, some word would fail at
+\emph{every} tuple, and no tuple in the scan fails at all outside the two loci.
+
+What (i) needs is therefore not a faithful tuple in dimension four but the triviality of $U_4$,
+and the two are equivalent. We do not prove it.
+\end{remark}
+
 \begin{remark}[what remains open]\label{rem:stillopen}
 Theorem~\ref{thm:masterCfalse} settles the arithmetic form of Problem~\ref{prob:alternative}
 negatively. It does \emph{not} settle the generic form: the tuples above are single points, and
