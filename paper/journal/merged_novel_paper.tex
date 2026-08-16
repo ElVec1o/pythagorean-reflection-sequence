@@ -590,7 +590,31 @@ $1-\Sigma_1$: at the first six travel poles the dressed bulk values $B_V$ and $B
 and increasing, $3.71,\ 493,\ 1979,\ 1.17\cdot10^4,\ 2.31\cdot10^4,\ 6.67\cdot10^4$ for $B_V$,
 and the gate signs $b_0>0$, $\mathfrak g_Vt_1<1$ hold at every one.
 
-Second, a Blaschke argument cannot be used, and this is worth recording so that it is not
+Second, the sign of the travel null vector is a red herring, and this appears to be missed in the
+source. Since $L_s=R_s/e_s$, both factors of $\Pi_y=\langle\lambda,R\rangle\langle L,\mu\rangle$
+are linear in $R$, so $\Pi_y$ is a \emph{quadratic form} in $R$. The vectors $\lambda$ and $\mu$
+are built from the bulk and do not involve $R$, so the overall sign and normalisation of $R$
+cancel in the product. That sign is precisely what flips when $q_m$ crosses a zero of $S_e$: the
+values $\Sigma_0(q_m)=\sum_sR_s$ alternate, being
+$1.156,\ -4.545,\ 7.752,\ -10.923,\ 14.080,\ -17.232,\ 20.381,\ -23.528,\ 26.673$
+at the first nine poles, with $|\Sigma_0(q_m)|$ increasing by $3.389,\ 3.207,\ 3.171,\ 3.157,\
+3.152,\ 3.149,\ 3.147,\ 3.145$, so $\Sigma_0(q_m)\sim(-1)^{m+1}\pi m$. The alternation is real,
+and it does not reach $\Pi_y$. This observation is independent of how $\lambda$ and $\mu$ are
+normalised, since it uses only that neither depends on $R$.
+
+Numerically $\Pi_y(q_m)>0$ at each of the first nine travel poles, the two factors sharing the
+sign of $R$ throughout. The travel null vector is computed from the forward recursion
+$R_s=e_s(q^sA_s+B_s)$ with $A_0=0$, $B_0=1$, whose consistency condition $B_\infty=0$ is exactly
+$\Sigma_1(q)=1$; the bulk solve is the gap-marked bulk system, whose gap term
+$q^{a+b}\mathfrak g$ is rank one and so is handled by a Sherman--Morrison update.
+Both are validated against the published certificate: $\sum_sR_s$ reproduces $\Sigma_0(q_m)$ to
+ten digits, and $B_V,B_U$ reproduce $3.7105027,\ 3.3241016,\ 492.95283,\ 233.43575,\
+1978.5952,\ 897.12122,\ 11663.55,\ 5110.5716$ exactly. This is evidence, not proof: nine poles
+are not infinitely many, and the identification of the far-junction vector $\lambda$ used here
+agrees with $\mu$, which reproduces the proved positivity at the dominant pole but is not
+independently derived.
+
+Third, a Blaschke argument cannot be used, and this is worth recording so that it is not
 attempted. If $\Pi_y$ vanished at all but finitely many $q_m$, one would like to conclude that
 the numerator vanishes identically. That needs the zeros to violate the Blaschke condition. They
 do not: writing $\tau_m=-\log q_m$, the products $m^2\tau_m$ are
