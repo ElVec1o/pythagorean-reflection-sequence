@@ -175,6 +175,33 @@ theorem bulk_three_term (q c g beta A B : R) :
 
 #print axioms bulk_three_term
 
+
+/-! ### The bulk source is absorbed by a constant
+
+    The inhomogeneous term of the bulk recursion is `-2 beta g q c^2 (1-q)` with `c = q^b`, and
+    the middle coefficient carries `-2 q c^2 (1-q)` against `A_{b+1}`.  Those match, so the
+    CONSTANT `-beta g` is a particular solution.  No Green's function and no convolution are
+    needed: the bulk solution is a homogeneous solution of the travel recursion, at the
+    half-shifted index, minus the constant `beta g`. -/
+
+/-- **A constant particular solution.**  `A_b = -beta*g` satisfies the bulk three-term
+    recursion identically. -/
+theorem const_particular (q c g beta : R) :
+    (1 + q - 2*q*c^2*(1-q)) * (-(beta*g)) - q * (-(beta*g)) - 2*beta*g*q*c^2*(1-q)
+      = -(beta*g) := by
+  ring
+
+/-- Consequently, shifting any bulk solution by `beta*g` produces a solution of the homogeneous
+    recursion: if `A` satisfies the bulk recursion then `A + beta*g` satisfies the travel one at
+    the same index. -/
+theorem bulk_shift_homogeneous (q c g beta A0 A1 A2 : R)
+    (h : A2 = (1 + q - 2*q*c^2*(1-q)) * A1 - q * A0 - 2*beta*g*q*c^2*(1-q)) :
+    A2 + beta*g = (1 + q - 2*q*c^2*(1-q)) * (A1 + beta*g) - q * (A0 + beta*g) := by
+  rw [h]; ring
+
+#print axioms const_particular
+#print axioms bulk_shift_homogeneous
+
 /-! ### Axiom audit (Rule 5) -/
 
 #print axioms det_travel
