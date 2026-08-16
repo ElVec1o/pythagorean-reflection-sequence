@@ -202,6 +202,45 @@ theorem bulk_shift_homogeneous (q c g beta A0 A1 A2 : R)
 #print axioms const_particular
 #print axioms bulk_shift_homogeneous
 
+
+/-! ### The bridge from `B` to the shifted variable, and why it is parameter-free
+
+    Write `A_b = H_b - beta*g` for the shift of `bulk_shift_homogeneous`, and recall the bulk
+    deposit is `P_b = 2 c (1 + c A_b + B_b + g c beta)` with `c = q^b`.  Substituting the shift,
+    the `beta` and `g` terms cancel identically, leaving
+
+        `H_{b+1} - H_b = 2 c (1 + c H_b + B_b)` ,
+
+    which mentions neither `beta` nor `g`.  Consequently the condition `B_infinity = 0`, which
+    is what selects the physical solution, reads `lim (H_{b+1} - H_b) / q^b = 2` and so pins the
+    coefficient of the decaying mode to `-2/(1-q)` without any reference to the self-consistency
+    parameter.  That is what makes the two-point problem for `H` closed. -/
+
+/-- **The bridge is parameter-free.**  Substituting `A_b = H_b - beta*g` into the bulk deposit
+    cancels every occurrence of `beta` and `g`. -/
+theorem deposit_shift (c g beta H B : R) :
+    2*c*(1 + c*(H - beta*g) + B + g*c*beta) = 2*c*(1 + c*H + B) := by
+  ring
+
+/-- Consequently, if `H_{b+1} - H_b` is the bulk deposit then it satisfies the parameter-free
+    relation.  This is the identity that turns `B_infinity = 0` into a condition on `H` alone. -/
+theorem bridge_eq (c g beta H0 H1 B : R)
+    (hP : H1 - H0 = 2*c*(1 + c*(H0 - beta*g) + B + g*c*beta)) :
+    H1 - H0 = 2*c*(1 + c*H0 + B) := by
+  rw [hP, deposit_shift]
+
+/-- Solved for `B`: `2 c B = (H_{b+1} - H_b) - 2c - 2 c^2 H_b`.  As `c = q^b -> 0` with `H`
+    bounded, the last two terms vanish against `2c`, so `B_infinity = 0` is exactly
+    `(H_{b+1} - H_b)/c -> 2`. -/
+theorem bridge_solve (c g beta H0 H1 B : R)
+    (hP : H1 - H0 = 2*c*(1 + c*(H0 - beta*g) + B + g*c*beta)) :
+    2*c*B = (H1 - H0) - 2*c - 2*c^2*H0 := by
+  rw [bridge_eq c g beta H0 H1 B hP]; ring
+
+#print axioms deposit_shift
+#print axioms bridge_eq
+#print axioms bridge_solve
+
 /-! ### Axiom audit (Rule 5) -/
 
 #print axioms det_travel
