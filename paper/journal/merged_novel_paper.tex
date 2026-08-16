@@ -531,12 +531,35 @@ On that locus $\rho_a(u)$ is a translation, $u\ne1$ in $W_4$ by the Tits represe
 Proposition~\ref{prop:transtrick} supplies the kernel element as before.
 \end{proof}
 
+\begin{theorem}[the third dimension-four family; PROVED]\label{thm:family4c}
+Let $a\in\Q_{>0}^4$ have pairwise distinct coordinates and satisfy
+\[
+   a_1\,\bigl|a_3^2-a_4^2\bigr| \;=\; 2\,a_2a_3a_4 .
+\]
+Then $\rho_a$ is not injective, with a kernel element from a collision at depth $12$.
+\end{theorem}
+
+\begin{proof}
+As before, with the fixed pair $w_1=R_1R_2R_1R_0R_3R_4R_3R_2R_1R_4R_3R_4$ and
+$w_2=R_0R_3R_4R_3R_2R_1R_4R_3R_4R_3R_2R_3$ of length twelve. Each of the fifteen nonzero entries
+of the difference of the linear parts carries the factor
+\[
+   \bigl(a_1a_3^2-a_1a_4^2-2a_2a_3a_4\bigr)\bigl(a_1a_3^2-a_1a_4^2+2a_2a_3a_4\bigr),
+\]
+the remaining factors being monomials, nonzero on the positive orthant. The two branches give the
+displayed condition. This family is the mirror of Theorem~\ref{thm:family4b} at the opposite end
+of the leg tuple, as the reversal symmetry of the path simplex requires.
+\end{proof}
+
 \begin{remark}[the failure locus is a union of hypersurfaces]\label{rem:hypersurfaces}
-Theorems~\ref{thm:family4} and \ref{thm:family4b} account for all $24$ failures among the $828$
-primitive pairwise-distinct tuples with entries at most $8$, the first for the sixteen at depth
-$8$ and the second for the eight at depth $12$. Each was frozen and then tested out of sample on
-ten tuples outside that box, with ten of ten deviating at the predicted depth, and the first
-against four controls off its locus, none of which deviates.
+Theorems~\ref{thm:family4}, \ref{thm:family4b} and \ref{thm:family4c} account for
+\emph{every} failure in an exhaustive scan of the $2460$ primitive pairwise-distinct tuples with
+entries at most $10$. There are $50$ failures: $36$ at depth $8$ on the locus of
+Theorem~\ref{thm:family4}, $9$ at depth $12$ on that of Theorem~\ref{thm:family4b}, and $5$ at
+depth $12$ on its mirror, Theorem~\ref{thm:family4c}. None is left over. The first two criteria
+were additionally frozen and tested out of sample on ten tuples outside the scanned box, with ten
+of ten deviating at the predicted depth, and the first against four controls off its locus, none
+of which deviates.
 
 So in dimension four the tuples at which $\rho_a$ is known to fail are not sporadic: they lie on
 explicit hypersurfaces in the leg space, cut out by $a_1a_3=a_2a_4$ and by
