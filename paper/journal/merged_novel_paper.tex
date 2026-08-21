@@ -1181,7 +1181,24 @@ open of full dimension in the real points of that component by Lemma~\ref{lem:pe
 Zariski dense, and the Baire argument of Theorem~\ref{thm:alln} applies unchanged.
 \end{proof}
 
-The hypothesis on $c$ is the only real one, and it holds widely. Over all right-angled systems with
+\begin{remark}[the irreducibility hypothesis]\label{rem:irred}
+For $\Gamma_n$ the hypothesis holds, since the continuant is linear in $x_n$ with coprime
+coefficients. In general it was checked by symbolic factorisation of $\det(I-C(c))$ over
+$\mathbb{Q}$, with the $c_e$ independent indeterminates, for every isomorphism class of connected
+complement on at most six vertices: all $2$, $6$, $21$ and $112$ classes at $N=3,4,5,6$ give an
+irreducible polynomial. At $N=2$ it fails, $\det=1-c^2=(1-c)(1+c)$, but there $W$ is infinite
+dihedral and affine, so it is excluded already. We expect irreducibility for every connected
+complement on at least three vertices and do not prove it.
+
+The hypothesis cannot simply be dropped by relocating the Vinberg point. At any $c$ with
+$c_e\ge1$ one has $C(c)\ge C(1)$ entrywise, so $\lambda_{\max}(C(c))\ge\lambda_{\max}(C(1))>1$,
+the last inequality because the Tits form of an irreducible infinite non-affine system is
+indefinite. A Vinberg point therefore never lies on the Perron sheet $\lambda_{\max}=1$, which is
+exactly the compact locus: the two live on different sheets of the real hypersurface, and only
+irreducibility over $\mathbb{C}$ connects them.
+\end{remark}
+
+The hypothesis on $c$ is the only other one, and it holds widely. Over all right-angled systems with
 connected complement it was checked by exact evaluation of $\det(I-C)$: at $N=4$ it holds for $33$
 of $38$, at $N=5$ for $723$ of $728$, and at $N=6$ for $25348$ of $26704$. The failures are
 systematic rather than sporadic. When the complement is a star, $\det(I-C)=1-\sum_ec_e^2\le1-(N-1)$
@@ -1195,6 +1212,20 @@ and for the path with a chord at the Tits point; in each case the quotient repre
 reproduces the growth series of $W_\Gamma$ through depth $8$, namely
 $1,5,15,40,105,275,720,1885,4935$ in the first and third cases and
 $1,5,14,34,82,198,478,1154,2786$ in the second.
+
+\begin{remark}[relation to known results]\label{rem:known}
+Faithful representations of right-angled Coxeter groups into indefinite orthogonal groups are
+known and are not what is claimed here. Danciger, Gu\'eritaud and Kassel \cite{DGK} construct, for
+every right-angled Coxeter group on $k$ generators, faithful and discrete representations into
+$O(p,q+1)$ with $p+q+1=k$, and use them to build proper affine actions. Those representations have
+dimension $k=|S|$, the dimension of the Tits representation. What
+Theorem~\ref{thm:dimdrop} adds is the drop to $|S|-1$, at the cost of assuming a Cartan matrix of
+rank $|S|-1$, and Theorem~\ref{thm:racg} adds the passage from an indefinite form to a definite
+one, where the image is dense rather than discrete. The configuration space used there, unit
+vectors in $\mathbb{R}^{N}$ with a prescribed orthogonality pattern, is the object studied under
+the names orthogonal representation of a graph and minimum semidefinite rank, and
+Lemma~\ref{lem:perron} is a statement in that language.
+\end{remark}
 
 \begin{remark}[what replaced the Lorentzian hypothesis]\label{rem:whatchanged}
 Theorem~\ref{thm:w4embed} obtained $n=4$ from a hyperbolic reflection group, which needs signature
@@ -1735,6 +1766,11 @@ English translation, Math. USSR-Izv. \textbf{5} (1971), 1083--1119.
 P.-E. Caprace and K. Fujiwara,
 \emph{Rank-one isometries of buildings and quasi-morphisms of Kac--Moody groups},
 Geom. Funct. Anal. \textbf{19} (2010), 1296--1319.
+
+\bibitem{DGK}
+J. Danciger, F. Gu\'eritaud and F. Kassel,
+\emph{Proper affine actions for right-angled Coxeter groups},
+Duke Math. J. \textbf{169} (2020), 2231--2280.
 
 \bibitem{Osin}
 D. Osin,
