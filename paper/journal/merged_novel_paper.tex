@@ -913,8 +913,9 @@ semidefinite with a one-dimensional kernel.
 \begin{theorem}[right-angled version]\label{thm:racg}
 Let $\Gamma$ be a graph on $N\ge3$ vertices whose complement is connected, so that $W_\Gamma$ is
 irreducible, infinite and non-affine. Suppose there are weights $c_e\ge1$ on the complement edges
-with $\det(I-C(c))=0$, and that this point and the compact locus of Lemma~\ref{lem:perron} lie on a
-common irreducible component of $\{\det(I-C)=0\}$. Then $W_\Gamma$ embeds in $O(N-1)$.
+with $\det(I-C(c))=0$, and that $\det(I-C(c))$ is irreducible, which by
+Theorem~\ref{thm:irredbridge} holds whenever the complement has a bridge and at least two edges.
+Then $W_\Gamma$ embeds in $O(N-1)$.
 \end{theorem}
 
 \begin{proof}
@@ -936,6 +937,67 @@ avoids every $Z_w$ with $w\ne1$. At that point $I-C(c)$ is the Gram matrix of $N
 $\mathbb{R}^{N-1}$ with the prescribed orthogonality pattern; the reflections in them generate
 $W_\Gamma$ inside $O(N-1)$, faithfully.
 \end{proof}
+
+Part of the irreducibility hypothesis can be discharged outright. Write
+$f_H(c)=\det(I-C(c))$ for a graph $H$ with independent edge variables, so that $f_H$ has constant
+term $1$, has degree at most $2$ in each $c_e$, and has $-f_{H-u-v}$ as the coefficient of $c_e^2$
+for $e=uv$, by expansion of the determinant along the transposition $(uv)$.
+
+\begin{lemma}[$f_H$ is never a square]\label{lem:nosquare}
+If $H$ has at least one edge then $f_H$ is not the square of a polynomial.
+\end{lemma}
+
+\begin{proof}
+Let $e=uv$ be an edge. The coefficient of $c_e^2$ in $f_H$ is $-f_{H-u-v}$, whose constant term is
+$-1$; in particular $\deg_{c_e}f_H=2$. If $f_H=s^2$ then $\deg_{c_e}s=1$, say $s=\alpha c_e+\beta$
+with $\alpha,\beta$ free of $c_e$, and comparing coefficients of $c_e^2$ gives
+$\alpha^2=-f_{H-u-v}$. Setting every variable to zero yields $\alpha(0)^2=-1$, impossible over
+$\mathbb{R}$.
+\end{proof}
+
+\begin{lemma}[coprimality]\label{lem:coprime}
+If $u$ is a non-isolated vertex of $K$, then $\gcd(f_K,f_{K-u})=1$.
+\end{lemma}
+
+\begin{proof}
+Induction on $|V(K)|$, the case of a single vertex being trivial since $f=1$. Let
+$d=\gcd(f_K,f_{K-u})$. As $d$ divides $f_{K-u}$, it lies in the polynomial ring on the edges of
+$K-u$ and so is free of the variables $c_{uw}$. Viewing $f_K$ as a polynomial in those variables
+over that ring, $d$ divides each coefficient. The coefficient free of them is $f_{K-u}$, and the
+coefficient of $c_{uw}^2$ is $-f_{K-u-w}$. Hence $d$ divides $\gcd(f_{K-u},f_{(K-u)-w})$ for any
+neighbour $w$ of $u$, which is $1$ by induction if $w$ is non-isolated in $K-u$, and is $1$ anyway
+if $f_{K-u}=1$.
+\end{proof}
+
+\begin{theorem}[irreducibility for graphs with a bridge]\label{thm:irredbridge}
+Let $H$ be a graph with at least two edges having a bridge $e=uv$. Then $f_H$ is irreducible
+over $\mathbb{Q}$.
+\end{theorem}
+
+\begin{proof}
+Since $e$ lies on no cycle, no linear subgraph uses $e$ other than as the transposition $(uv)$, so
+$f_H=A-c_e^2B$ with $A=f_{H-e}$ and $B=f_{H-u-v}$, both free of $c_e$. A factorisation of $f_H$
+splits its $c_e$-degree as $(2,0)$ or $(1,1)$. In the first case the factor free of $c_e$ divides
+both $A$ and $B$, and $\gcd(A,B)=1$ as shown below, so that factor is constant. In the second,
+writing $f_H=(\alpha c_e+\beta)(\alpha'c_e+\beta')$ gives $\alpha\alpha'=-B$, $\beta\beta'=A$ and
+$\alpha\beta'+\alpha'\beta=0$; multiplying the last by $\alpha'\beta$ yields $AB=(\alpha'\beta)^2$.
+Since $\gcd(A,B)=1$ and $A(0)=B(0)=1$, both $A$ and $B$ are then squares. But $H-e$ has an edge,
+because $H$ has at least two, so $A=f_{H-e}$ is not a square by Lemma~\ref{lem:nosquare}.
+
+It remains to see $\gcd(A,B)=1$. As $e$ is a bridge, $H-e$ is the disjoint union of the component
+$H_u$ of $u$ and the component $H_v$ of $v$, so $A=f_{H_u}f_{H_v}$ and
+$B=f_{H_u-u}f_{H_v-v}$, the two pairs involving disjoint sets of variables. An irreducible common
+divisor would divide one of $f_{H_u},f_{H_v}$, say $f_{H_u}$, hence involve only variables of
+$H_u$, hence divide $f_{H_u-u}$; that contradicts Lemma~\ref{lem:coprime}.
+\end{proof}
+
+This covers every graph whose complement has a bridge, in particular every tree, and so in
+particular the path $P_{n+1}$ of Section~\ref{sec:allowsn}. The graphs it does not cover are the
+$2$-edge-connected ones, where every edge lies on a cycle and $f_H$ acquires a term linear in
+$c_e$; there the factorisation criterion becomes a statement about a discriminant rather than
+about $AB$ being a square, and we have not settled it. Among connected graphs on at most five
+vertices, $11$ of the $21$ isomorphism classes are $2$-edge-connected, and all of them are
+irreducible by direct factorisation.
 
 \begin{remark}[the irreducibility hypothesis]\label{rem:irred}
 For $\Gamma_n$ the hypothesis holds, since the continuant is linear in $x_n$ with coprime
