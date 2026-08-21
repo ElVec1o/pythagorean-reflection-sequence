@@ -1056,6 +1056,27 @@ unconditional whenever an admissible point exists. The discriminant identity of
 Lemma~\ref{lem:disc} was checked symbolically on all $4293$ edges of all connected graphs with at
 most five vertices, and both coprimality statements on the same range.
 
+Part of Lemma~\ref{lem:disc} is VERIFIED in
+\texttt{lean/with\_mathlib/DiscriminantIdentity.lean}. Mathlib has no Desnanot--Jacobi identity,
+so the file certifies the argument in pieces, and it is worth being exact about which. The
+coefficient-matching step, where the contributions from cycles through $e$ cancel, is proved in
+full generality over an integral domain as \texttt{disc\_of\_dj}: from $a^2=D_1^2$,
+$a\gamma=-2D_0D_1$ and $ab=P-D_0^2$ with $a\ne0$, it follows that $\gamma^2+4ab=4P$, with $D_0$
+and $D_1$ eliminated. This is the part of the argument that is new here. The complete statement,
+including the classical input, is then proved unconditionally at size three, as
+\texttt{det\_M3}, \texttt{minor\_u3}, \texttt{minor\_v3} and \texttt{disc\_three}, and
+\texttt{dj\_three} verifies Desnanot--Jacobi itself at that size rather than assuming it. At size
+four only the discriminant identity on the coefficients and the two $3\times3$ minors are
+verified, as \texttt{disc\_four\_coeffs}, \texttt{det\_M4u} and \texttt{det\_M4v}; the
+identification of $\det M_4$ with those coefficients defeated the available tactics and is
+checked only symbolically, outside Lean. Every declaration in the file has a non-empty
+\texttt{\#print axioms} line listing only \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}.
+
+Nothing in the file mentions graphs. The diagonal entries are arbitrary, so the identity holds for
+any symmetric matrix in which the distinguished variable occupies exactly the two positions
+$(u,v)$ and $(v,u)$; the graph structure plays no role in it.
+
 \begin{remark}[the irreducibility hypothesis]\label{rem:irred}
 For $\Gamma_n$ the hypothesis holds, since the continuant is linear in $x_n$ with coprime
 coefficients. In general it was checked by symbolic factorisation of $\det(I-C(c))$ over
