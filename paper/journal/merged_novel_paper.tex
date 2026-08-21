@@ -1214,17 +1214,38 @@ $1,5,15,40,105,275,720,1885,4935$ in the first and third cases and
 $1,5,14,34,82,198,478,1154,2786$ in the second.
 
 \begin{remark}[relation to known results]\label{rem:known}
-Faithful representations of right-angled Coxeter groups into indefinite orthogonal groups are
-known and are not what is claimed here. Danciger, Gu\'eritaud and Kassel \cite{DGK} construct, for
-every right-angled Coxeter group on $k$ generators, faithful and discrete representations into
-$O(p,q+1)$ with $p+q+1=k$, and use them to build proper affine actions. Those representations have
-dimension $k=|S|$, the dimension of the Tits representation. What
-Theorem~\ref{thm:dimdrop} adds is the drop to $|S|-1$, at the cost of assuming a Cartan matrix of
-rank $|S|-1$, and Theorem~\ref{thm:racg} adds the passage from an indefinite form to a definite
-one, where the image is dense rather than discrete. The configuration space used there, unit
-vectors in $\mathbb{R}^{N}$ with a prescribed orthogonality pattern, is the object studied under
-the names orthogonal representation of a graph and minimum semidefinite rank, and
-Lemma~\ref{lem:perron} is a statement in that language.
+Faithful representations of right-angled Coxeter groups into indefinite orthogonal groups are known
+and are not what is claimed here. The closest work is Danciger, Gu\'eritaud and Kassel \cite{DGK},
+whose Theorem 1.5 gives, for every irreducible right-angled Coxeter group on $k$ generators, a
+smooth path of faithful discrete representations into $O(p,q+1)$ with $p+q+1=k$. Their construction
+in \cite[\S7.1]{DGK} uses exactly the Cartan family of Section~\ref{sec:general}, specialised to
+the uniform line: they set $M_t(i,j)$ equal to $1$, $0$ or $-t$ according as $m_{ij}$ is $1$, $2$
+or $\infty$, with $t>1$. They then observe that $\det M_t$ is a nonzero polynomial in $t$ and
+restrict $t$ to an interval avoiding its finite zero set, so that the form is nondegenerate of
+signature $(p,q+1)$ and the representation has dimension $k$.
+
+Theorem~\ref{thm:dimdrop} concerns exactly the locus they remove. A degenerate form is of no use
+for their purpose, which is proper discontinuity on the pseudo-Riemannian space $H^{p,q}$; here
+degeneracy is the hypothesis, and it is what produces a representation of dimension $k-1$ rather
+than $k$. The families also differ in size: theirs is the one-parameter uniform line, ours the full
+weight space $(c_e)_{e}$ cut by $\det=0$. The difference is not vacuous. Among connected
+complements on six vertices, $104$ of the $112$ isomorphism classes admit an admissible point in
+the full weight space, while only $75$ have $\det M_t=0$ for some $t>1$ on the uniform line; so
+$29$ classes are reached here and not by any specialisation of their parameter.
+
+Theorem~\ref{thm:racg} is further from \cite{DGK}, and not by accident. Their program is proper
+discontinuity and discrete faithful images, and an infinite group has no infinite discrete image in
+a compact Lie group and no properly discontinuous action on one. Their signature is
+$(p,q+1)$ with $p\ge1$ and $q+1\ge1$ throughout, hence never definite; and their one dimension
+reduction, \cite[Prop.~5.1]{DGK}, assumes $\Gamma$ is already a cocompact reflection group of
+$H^p$, lands in the Lorentzian $O(p+c,1)$, and reduces by a chromatic number rather than to
+$k-1$. The definite case, where the image is dense rather than discrete, lies outside that
+framework.
+
+Finally, the configuration space used in Theorem~\ref{thm:racg}, unit vectors in $\mathbb{R}^{N}$
+with a prescribed orthogonality pattern, is the object studied under the names orthogonal
+representation of a graph and minimum semidefinite rank, and Lemma~\ref{lem:perron} is a statement
+in that language.
 \end{remark}
 
 \begin{remark}[what replaced the Lorentzian hypothesis]\label{rem:whatchanged}
