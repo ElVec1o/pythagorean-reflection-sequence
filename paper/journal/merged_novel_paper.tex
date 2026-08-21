@@ -51,7 +51,10 @@ resolvent is transcendental over $\Q(x)$ unconditionally.
 The material on embeddings is new and is stated first. Section~\ref{sec:embed} proves that an
 irreducible, infinite, non-affine Coxeter system with a symmetric Cartan matrix of rank $|S|-1$
 has a faithful $(|S|-1)$-dimensional orthogonal representation, and that for right-angled systems
-this can be transported to the compact group $O(|S|-1)$; in particular $W_n$ embeds in $O(n)$, and
+this can be transported to the compact group $O(|S|-1)$, unconditionally: the determinant
+$\det(I-C(c))$ of the Gram matrix with independent edge variables is irreducible for every
+connected graph with at least two edges, by an argument whose key step is that the discriminant of
+$f_H$ in a single edge variable equals $4f_{H-u}f_{H-v}$. In particular $W_n$ embeds in $O(n)$, and
 hence in $\Isom(\R^n)$, for every $n\ge3$, while $n=2$ is a genuine exception.
 Section~\ref{sec:reduce} contains the other statement not in the source preprints:
 for every $n\ge2$, any embedding of $W_n$ into $\Isom(\R^n)$ has injective linear part, so the
@@ -913,14 +916,12 @@ semidefinite with a one-dimensional kernel.
 \begin{theorem}[right-angled version]\label{thm:racg}
 Let $\Gamma$ be a graph on $N\ge3$ vertices whose complement is connected, so that $W_\Gamma$ is
 irreducible, infinite and non-affine. Suppose there are weights $c_e\ge1$ on the complement edges
-with $\det(I-C(c))=0$, and that $\det(I-C(c))$ is irreducible, which by
-Theorem~\ref{thm:irredbridge} holds whenever the complement has a bridge and at least two edges.
-Then $W_\Gamma$ embeds in $O(N-1)$.
+with $\det(I-C(c))=0$, Then $W_\Gamma$ embeds in $O(N-1)$.
 \end{theorem}
 
 \begin{proof}
 Let $E$ be the edge set of the complement and $Y=\{c:\det(I-C(c))=0\}$, irreducible of dimension
-$|E|-1$ by hypothesis. By Lemma~\ref{lem:radline} the condition that $\rho_c(w)$ act trivially on
+$|E|-1$ by Theorem~\ref{thm:irred}. By Lemma~\ref{lem:radline} the condition that $\rho_c(w)$ act trivially on
 $V/V_0$ is $(\rho_c(w)-I)V\subseteq V_0(c)$, which is Zariski closed; write $Z_w\subseteq Y$ for
 that locus. Replacing $c_e$ by $-c_e$ is conjugation by a diagonal sign change, so the condition
 depends only on $c_e^2$ and $Z_w$ is well defined. At the assumed point with all $c_e\ge1$,
@@ -991,13 +992,69 @@ divisor would divide one of $f_{H_u},f_{H_v}$, say $f_{H_u}$, hence involve only
 $H_u$, hence divide $f_{H_u-u}$; that contradicts Lemma~\ref{lem:coprime}.
 \end{proof}
 
-This covers every graph whose complement has a bridge, in particular every tree, and so in
-particular the path $P_{n+1}$ of Section~\ref{sec:allowsn}. The graphs it does not cover are the
-$2$-edge-connected ones, where every edge lies on a cycle and $f_H$ acquires a term linear in
-$c_e$; there the factorisation criterion becomes a statement about a discriminant rather than
-about $AB$ being a square, and we have not settled it. Among connected graphs on at most five
-vertices, $11$ of the $21$ isomorphism classes are $2$-edge-connected, and all of them are
-irreducible by direct factorisation.
+When $e$ lies on a cycle, $f_H$ acquires a term linear in $c_e$ and the criterion becomes a
+condition on a discriminant. That discriminant has a closed form, which removes the difficulty.
+
+\begin{lemma}[the discriminant]\label{lem:disc}
+Let $e=uv$ be an edge of $H$ and regard $f_H$ as a quadratic in $c_e$. Its discriminant is
+$4\,f_{H-u}\,f_{H-v}$.
+\end{lemma}
+
+\begin{proof}
+Write $M=I-C(c)$ and let $M^a_b$ denote $M$ with row $a$ and column $b$ deleted. The
+Desnanot--Jacobi identity gives
+\[
+  f_H\cdot f_{H-u-v}=f_{H-u}f_{H-v}-\det(M^u_v)\det(M^v_u),
+\]
+and $\det(M^u_v)=\det(M^v_u)=:D$ because $M$ is symmetric. The variable $c_e$ occupies only the
+entries $(u,v)$ and $(v,u)$; deleting row $u$ and column $v$ removes the first and keeps the
+second, so $D=D_0+D_1c_e$ with $D_0,D_1$ free of $c_e$. Writing $f_H=-ac_e^2+\gamma c_e+b$ with
+$a=f_{H-u-v}$, the identity reads
+$-a^2c_e^2+a\gamma c_e+ab=f_{H-u}f_{H-v}-(D_0+D_1c_e)^2$. Comparing coefficients of $c_e^2$ gives
+$D_1^2=a^2$; comparing coefficients of $c_e$ gives $a\gamma=-2D_0D_1$, hence $\gamma=\mp2D_0$
+since $a\ne0$; and the constant terms give $ab=f_{H-u}f_{H-v}-D_0^2$. Therefore
+$\gamma^2+4ab=4D_0^2+4f_{H-u}f_{H-v}-4D_0^2=4f_{H-u}f_{H-v}$.
+\end{proof}
+
+\begin{lemma}[coprimality across an edge]\label{lem:coprime2}
+Let $e=uv$ be an edge with $\deg u\ge2$ and $\deg v\ge2$. Then
+$\gcd(f_{H-u},f_{H-v})=1$ and $\gcd(f_{H-e},f_{H-u-v})=1$.
+\end{lemma}
+
+\begin{proof}
+Let $d$ divide $f_{H-u}$ and $f_{H-v}$. Dividing the first puts $d$ in the edge ring of $H-u$, so
+$d$ is free of the variables at $u$; dividing the second makes it free of those at $v$. Expanding
+$f_{H-v}$ in the variables at $u$, the divisor $d$ divides every coefficient, and the one free of
+them is $f_{H-u-v}$. So $d$ divides $\gcd(f_{H-u},f_{(H-u)-v})$, which is $1$ by
+Lemma~\ref{lem:coprime} since $\deg v\ge2$ leaves $v$ non-isolated in $H-u$. The second statement
+is the same argument: a common divisor of $f_{H-e}$ and $f_{H-u-v}$ is free of the variables at
+$u$ and $v$, hence divides the coefficient of $f_{H-e}$ free of the variables at $u$, namely
+$f_{H-u}$, and then divides $\gcd(f_{H-u},f_{(H-u)-v})=1$.
+\end{proof}
+
+\begin{theorem}[irreducibility]\label{thm:irred}
+For every connected graph $H$ with at least two edges, $f_H$ is irreducible over $\mathbb{Q}$.
+\end{theorem}
+
+\begin{proof}
+Since $f_H(0)=1$, any factorisation is into two factors with constant term $1$, hence into two
+non-constant factors, and their $c_e$-degrees split as $(2,0)$ or $(1,1)$ for each edge $e$.
+
+If $H$ has a vertex of degree one, the edge at it is a bridge and
+Theorem~\ref{thm:irredbridge} applies. Otherwise every vertex has degree at least two; fix any
+edge $e=uv$. A factor free of $c_e$ divides both $f_{H-e}$ and $f_{H-u-v}$, so is constant by
+Lemma~\ref{lem:coprime2}, ruling out the split $(2,0)$. For $(1,1)$, a quadratic in $c_e$ splits
+over the field of the remaining variables only if its discriminant is a square there, and by
+Lemma~\ref{lem:disc} that discriminant is $4f_{H-u}f_{H-v}$. These two are coprime by
+Lemma~\ref{lem:coprime2} and each has constant term $1$, so their product is a square only if each
+is; and $H-u$ has an edge, since otherwise every edge would meet $u$ and $H$ would be a star, whose
+leaves have degree one. So $f_{H-u}$ is not a square by Lemma~\ref{lem:nosquare}.
+\end{proof}
+
+The hypothesis of Theorem~\ref{thm:racg} is therefore automatic, and the compact embedding is
+unconditional whenever an admissible point exists. The discriminant identity of
+Lemma~\ref{lem:disc} was checked symbolically on all $4293$ edges of all connected graphs with at
+most five vertices, and both coprimality statements on the same range.
 
 \begin{remark}[the irreducibility hypothesis]\label{rem:irred}
 For $\Gamma_n$ the hypothesis holds, since the continuant is linear in $x_n$ with coprime
@@ -1116,10 +1173,8 @@ $n=2$ it does not.
 \begin{proof}
 Apply Theorem~\ref{thm:racg} to $\Gamma_n$, whose complement is the path $P_{n+1}$, connected for
 every $n\ge1$. Lemma~\ref{lem:vinbergpoint} supplies a point with all $c_i\ge1$ and
-$\det G(c)=0$. The irreducibility hypothesis holds here: writing $x_i=c_i^2$, the continuant
-$D_{n+1}$ is linear in $x_n$ with coefficients $D_n$ and $-D_{n-1}$, and consecutive continuants
-are coprime, since a common factor of $D_n$ and $D_{n-1}$ divides $x_{n-1}D_{n-2}$ and one
-descends; so $D_{n+1}$ is irreducible. Composing
+$\det G(c)=0$. Irreducibility is automatic by Theorem~\ref{thm:irred}, the path being
+connected with at least two edges for $n\ge2$. Composing
 $O(n)\hookrightarrow\mathrm{Isom}(\mathbb{R}^n)$ gives the embedding.
 
 For $n=2$, suppose $W_2\hookrightarrow O(2)$. The subgroup of even-length words maps into $SO(2)$,
