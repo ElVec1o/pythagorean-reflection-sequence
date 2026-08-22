@@ -295,6 +295,54 @@ theorem merges_to_one (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool) (
   · exact swapT_site siteOf E.t a (E.t a) a' (E.t a') hts hsd hsa' hsd'
   · exact swapT_arr isArr E.t a (E.t a) a' (E.t a') hta rfl rfl haa ha'a2
 
+/-! ### The canonical site
+
+The numerics single out one site: `s*`, the largest leftmost edge over all walks.  At
+it the maximising walk has *every* end on the bottom, and two bottom arrivals in
+different walks are conjectured to sit there
+(`code/zeta_probe/tools/nogap/maxwlo_probe.py`, 1114 of 1114).
+
+The half about the maximising walk is proved here. -/
+
+/-- **Every end of a walk at its own leftmost site is a bottom end.**  A top end at
+that site would lie on the edge one to the left, below the support. -/
+theorem bottom_of_end_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (G : SimpleGraph α) (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (z x : α) (hzx : G.Reachable z x) (hs : siteOf x = wLo edgeOf G z) :
+    atTop x = false := by
+  by_contra hc
+  have ht : atTop x = true := by simpa using hc
+  have h := hsite x
+  rw [ht] at h
+  simp only [if_true] at h
+  have := wLo_le edgeOf G hzx
+  omega
+
+/-- `s*`: the largest leftmost edge over all walks. -/
+noncomputable def maxWLo (edgeOf : α → ℤ) (G : SimpleGraph α) (z₀ : α) : ℤ :=
+  Finset.univ.sup' ⟨z₀, Finset.mem_univ z₀⟩ (fun z => wLo edgeOf G z)
+
+/-- `s*` is attained, and dominates every walk's leftmost edge. -/
+theorem maxWLo_spec (edgeOf : α → ℤ) (G : SimpleGraph α) (z₀ : α) :
+    (∃ z : α, wLo edgeOf G z = maxWLo edgeOf G z₀) ∧
+    ∀ w : α, wLo edgeOf G w ≤ maxWLo edgeOf G z₀ := by
+  constructor
+  · obtain ⟨z, _, hz⟩ := Finset.exists_mem_eq_sup' ⟨z₀, Finset.mem_univ z₀⟩
+      (fun z => wLo edgeOf G z)
+    exact ⟨z, hz.symm⟩
+  · intro w
+    exact Finset.le_sup' (f := fun z => wLo edgeOf G z) (Finset.mem_univ w)
+
+/-- **At `s*`, the maximising walk is all bottom ends.**  This is the half of the
+canonical-site conjecture that does not need cost-minimality. -/
+theorem maximising_walk_all_bottom (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (G : SimpleGraph α) (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (z₀ z : α) (hz : wLo edgeOf G z = maxWLo edgeOf G z₀) :
+    ∀ x : α, G.Reachable z x → siteOf x = maxWLo edgeOf G z₀ → atTop x = false := by
+  intro x hzx hs
+  exact bottom_of_end_at_wLo edgeOf siteOf atTop G hsite z x hzx (by rw [hs, hz])
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.p_site_ne
-#print axioms WalkSupport.merges_to_one
+#print axioms WalkSupport.bottom_of_end_at_wLo
+#print axioms WalkSupport.maxWLo_spec
+#print axioms WalkSupport.maximising_walk_all_bottom

@@ -197,6 +197,37 @@ optimal and its cross merge costs `+2`. -/
 theorem cross_dearer : ∀ sa sa' da da' : Bool, sa ≠ sa' → da ≠ da' → sa ≠ da →
     pairCost sa da + pairCost sa' da' < pairCost sa da' + pairCost sa' da := by decide
 
+/-! ### The canonical form of the remaining gap
+
+`WalkSupport.maximising_walk_all_bottom` proves that at `s*` the maximising walk is
+all bottom ends.  What is left is that a *second* walk contributes a bottom
+**arrival** there.  Stated as one Prop, it implies `HasFreePair` outright, because two
+bottom ends share a side. -/
+
+/-- The conjecture, in its canonical form: at `s*` two bottom arrivals lie in
+different walks.  Verified 1114 of 1114 on at most four edges
+(`code/zeta_probe/tools/nogap/maxwlo_probe.py`); not proved. -/
+def CanonicalPair (d : EndData.Data α) (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (z₀ : α) (D : Data α) : Prop :=
+  1 < walkCount D → ∃ a a' : α,
+    siteOf a = WalkSupport.maxWLo edgeOf (graph D) z₀ ∧
+    siteOf a' = WalkSupport.maxWLo edgeOf (graph D) z₀ ∧
+    atTop a = false ∧ atTop a' = false ∧
+    d.isArr a = true ∧ d.isArr a' = true ∧
+    d.isArr (D.t a) = false ∧ d.isArr (D.t a') = false ∧
+    ¬ (graph D).Reachable a a'
+
+/-- **The canonical form implies the free-pair hypothesis.**  Two bottom ends share a
+side, which is exactly what the merge needs. -/
+theorem hasFreePair_of_canonical (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (z₀ : α) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (h : CanonicalPair d edgeOf siteOf atTop z₀ D) :
+    HasFreePair d siteOf D := by
+  intro hmany
+  obtain ⟨a, a', hsa, hsa', hba, hba', harr, harr', hd, hd', hsplit⟩ := h hmany
+  exact ⟨a, a', by rw [hsa, hsa'], harr, harr', hd, hd', hsplit,
+    Or.inl (by rw [hside, hside, hba, hba'])⟩
+
 -- Certification (Rule 5).
-#print axioms CostMerge.cross_cheaper
-#print axioms CostMerge.cross_dearer
+#print axioms CostMerge.hasFreePair_of_canonical
