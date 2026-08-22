@@ -115,6 +115,32 @@ theorem reachable_delete_of_cycle (x : α) {u : α} (c : (graph D).Walk u u)
     ((graph D).deleteEdges {s(x, D.t x)}).Reachable x (D.t x) :=
   reachable_delete_of_not_bridge D x (not_bridge_of_cycle D x c hc hmem)
 
+/-! ### What the cycle construction needs, and the structure it rests on
+
+The remaining obligation is one cycle through a turn-edge.  An attempt to build it
+by iterating the alternating step ran into dependent-type plumbing rather than
+mathematics, so what the attempt established is recorded here instead of a broken
+construction.
+
+Write `sigma = t ∘ p`.  The alternating walk from `x` visits
+
+    x,  p x,  sigma x,  p (sigma x),  sigma² x,  …
+
+so its vertices are the `sigma`-orbit of `x` together with the `p`-images of that
+orbit.  Those are two `sigma`-cycles, which is exactly why the structured
+measurement found `cycles(sigma) = 2 * walks`.
+
+The turn-edge at `x` closes it: `t x = sigma (p x)`, so `t x` lies in the *other*
+`sigma`-cycle and is reached last, immediately before the walk returns to `x` along
+the very edge that gets deleted.  Deleting it therefore leaves a path from `x` to
+`t x`, which is the merge hypothesis.
+
+To finish, one needs: the walk of length `2m` where `m` is the `sigma`-order of
+`x`; that it is closed, from `sigma^[m] x = x`; and that it is a cycle, which is
+where `SimpleGraph.Walk.IsCycle` has to be discharged.  The first two are routine;
+the third is the work.
+-/
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
