@@ -1014,5 +1014,52 @@ theorem weighted_sum_eq_cost (x : Fin 4 → Fin 4 → ℕ) :
   simp [Fin.sum_univ_four, pcostW]
   ring
 
+/-- The class determines, and is determined by, the side and the sign. -/
+theorem clsOf_eq_iff (up : Fin n → ℕ) (ds : Bool → Bool) (a b : Endpt n m) :
+    clsOf up ds a = clsOf up ds b ↔
+      (atTop a = atTop b ∧
+        EndData.sgn (endDataOf (m := m) up ds) a
+          = EndData.sgn (endDataOf (m := m) up ds) b) := by
+  unfold clsOf
+  cases atTop a <;> cases atTop b <;>
+    cases EndData.sgn (endDataOf (m := m) up ds) a <;>
+    cases EndData.sgn (endDataOf (m := m) up ds) b <;> simp
+
+/-- **The pairing cost is the class-pair weight.**  `pcostF` splits on side then sign,
+and `clsOf` encodes exactly those two bits. -/
+theorem pcostF_eq_pcostW (up : Fin n → ℕ) (ds : Bool → Bool) (a b : Endpt n m) :
+    EndData.pcostF (endDataOf (m := m) up ds) a b
+      = pcostW (clsOf up ds a) (clsOf up ds b) := by
+  unfold EndData.pcostF pcostW
+  have hside : ((clsOf up ds a : ℕ) < 2 ↔ (clsOf up ds b : ℕ) < 2)
+      ↔ ((endDataOf (m := m) up ds).side a = (endDataOf (m := m) up ds).side b) := by
+    rw [clsOf_lt_two_iff, clsOf_lt_two_iff]
+    show _ ↔ (atTop a = atTop b)
+    cases atTop a <;> cases atTop b <;> simp
+  rw [if_congr hside rfl rfl]
+  by_cases hs : (endDataOf (m := m) up ds).side a = (endDataOf (m := m) up ds).side b
+  · rw [if_pos hs, if_pos hs]
+    congr 1
+    rw [eq_iff_iff, clsOf_eq_iff]
+    exact ⟨fun h => ⟨hs, h⟩, fun h => h.2⟩
+  · rw [if_neg hs, if_neg hs]
+
+/-- **The site's cost contribution is its plan's cost.**  This is what makes
+site-wise minimality of `costOf` the same thing as the site's plan being
+minimum-cost. -/
+theorem site_sum_eq_plan_cost (up : Fin n → ℕ) (ds : Bool → Bool) (s : ℤ)
+    (h : (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    ∑ a ∈ arrAt (m := m) up s,
+        EndData.pcostF (endDataOf (m := m) up ds) a (turnAt up s a)
+      = ((planAt up ds s h).cost : ℤ) := by
+  classical
+  rw [sum_by_class_pair (arrAt (m := m) up s) (turnAt up s) (clsOf up ds) _ pcostW
+    (fun a _ => pcostF_eq_pcostW up ds a _)]
+  rw [weighted_sum_eq_cost (fun i j => xEntry (arrAt (m := m) up s) (turnAt up s)
+    (clsOf up ds) i j)]
+  simp only [SiteCost.Plan.cost, planAt, planOfTurn]
+  push_cast
+  ring
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.weighted_sum_eq_cost
+#print axioms ConfigLoop.site_sum_eq_plan_cost

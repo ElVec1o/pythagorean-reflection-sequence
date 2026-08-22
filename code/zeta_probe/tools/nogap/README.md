@@ -1451,3 +1451,26 @@ Together these identify a site's contribution to costOf with its plan's Plan.cos
 which is what site_cost_le_of_global needs in order to say that a globally minimal
 datum has a MINIMUM-COST PLAN at each site -- the hypothesis
 turn_keeps_edge_of_cross_zero consumes.
+
+## M3q: the site's cost contribution IS its plan's cost (2026-08-23)
+
+clsOf_eq_iff: the class determines and is determined by the side and the sign.
+pcostF_eq_pcostW: pcostF splits on side then sign, and clsOf encodes exactly those two
+bits, so the pairing cost is the class-pair weight.
+site_sum_eq_plan_cost: with sum_by_class_pair and weighted_sum_eq_cost, the site's
+contribution to costOf equals its plan's Plan.cost.
+
+So M3q is done: site_cost_le_of_global says a globally minimal datum minimises each
+site's contribution, and this says that contribution IS the plan's cost -- hence the
+site's plan is minimum-cost, which is what turn_keeps_edge_of_cross_zero needs.
+
+M3's chain, end to end:
+  MergesMin (global cost-minimality)
+    -> site-wise minimality        (cost_split_by_site, site_cost_le_of_global)
+    -> the site's plan is minimal  (site_sum_eq_plan_cost)
+    -> at a cut site it costs 0    (isCut_iff_siteValue_zero)
+    -> no cross mass               (no_cross_at_cut)
+    -> the turn keeps its side     (no_side_change_of_cross_zero)
+    -> the turn keeps its edge     (turn_keeps_edge_of_cross_zero)
+    -> Local holds                 (walk_graph_local_edge)
+    -> c >= |Z|                    (prop_cut_correct)
