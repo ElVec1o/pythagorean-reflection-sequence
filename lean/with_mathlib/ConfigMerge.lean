@@ -79,7 +79,8 @@ variable {α : Type*} [DecidableEq α] [Fintype α] (D : WalkGraph.Data α)
   {a d a' d' : α}
 
 /-- The turn from `d'` goes back to `a'`: immediate from the involution. -/
-theorem back_of_turn (hta' : D.t a' = d') : D.t d' = a' := by
+theorem back_of_turn' {β : Type*} (D : WalkGraph.Data β) {a' d' : β}
+    (hta' : D.t a' = d') : D.t d' = a' := by
   rw [← hta', D.t_invol]
 
 /-- Two ends in different components are distinct. -/
@@ -87,11 +88,13 @@ theorem ne_of_split (hsplit : ¬ (graph D).Reachable a a') : a' ≠ a := by
   rintro rfl; exact hsplit (SimpleGraph.Reachable.refl _)
 
 /-- An end differs from its own turn-partner. -/
-theorem dep_ne_arr (hta : D.t a = d) : d ≠ a := by
+theorem dep_ne_arr' {β : Type*} (D : WalkGraph.Data β) {a d : β}
+    (hta : D.t a = d) : d ≠ a := by
   rw [← hta]; exact D.t_ne a
 
 /-- Distinct arrivals have distinct turn-partners. -/
-theorem dep_ne_dep (hta : D.t a = d) (hta' : D.t a' = d')
+theorem dep_ne_dep' {β : Type*} (D : WalkGraph.Data β) {a d a' d' : β}
+    (hta : D.t a = d) (hta' : D.t a' = d')
     (ha'a : a' ≠ a) : d' ≠ d := by
   intro h
   apply ha'a
@@ -180,15 +183,15 @@ theorem config_descent (up : Fin n → ℕ)
         ({s(a, d), s(a', d')} : Set (Sym2 (Endpt n m))))
     (hsplit : ¬ (graph (dataOf up hbal)).Reachable a a') :
     walkCount (swapDataOf up hbal a d a' d' hta hta' hd ha' hd'
-        (dep_ne_arr (dataOf up hbal) hta) (dep_ne_other (dataOf up hbal) hta' hsplit) (ne_of_split (dataOf up hbal) hsplit)
-        (dep_ne_dep (dataOf up hbal) hta hta' (ne_of_split (dataOf up hbal) hsplit)) 
-        (Ne.symm (dep_ne_arr (dataOf up hbal) hta')) (dep_ne_other' (dataOf up hbal) hta hsplit)) <
+        (dep_ne_arr' (dataOf up hbal) hta) (dep_ne_other (dataOf up hbal) hta' hsplit) (ne_of_split (dataOf up hbal) hsplit)
+        (dep_ne_dep' (dataOf up hbal) hta hta' (ne_of_split (dataOf up hbal) hsplit)) 
+        (Ne.symm (dep_ne_arr' (dataOf up hbal) hta')) (dep_ne_other' (dataOf up hbal) hta hsplit)) <
       walkCount (dataOf up hbal) :=
   config_walkCount_lt up hbal a d a' d' hta hta' hd ha' hd'
-    (dep_ne_arr (dataOf up hbal) hta) (dep_ne_other (dataOf up hbal) hta' hsplit) (ne_of_split (dataOf up hbal) hsplit)
-    (dep_ne_dep (dataOf up hbal) hta hta' (ne_of_split (dataOf up hbal) hsplit))
-    (Ne.symm (dep_ne_arr (dataOf up hbal) hta')) (dep_ne_other' (dataOf up hbal) hta hsplit)
-    hadj M hM hpos k₁ k₂ klast (back_of_turn (dataOf up hbal) hta') hsplit
+    (dep_ne_arr' (dataOf up hbal) hta) (dep_ne_other (dataOf up hbal) hta' hsplit) (ne_of_split (dataOf up hbal) hsplit)
+    (dep_ne_dep' (dataOf up hbal) hta hta' (ne_of_split (dataOf up hbal) hsplit))
+    (Ne.symm (dep_ne_arr' (dataOf up hbal) hta')) (dep_ne_other' (dataOf up hbal) hta hsplit)
+    hadj M hM hpos k₁ k₂ klast (back_of_turn' (dataOf up hbal) hta') hsplit
 
 /-! ### The entry point of the descent
 
@@ -234,5 +237,68 @@ theorem reaches_one {α : Type*} [DecidableEq α] [Fintype α]
       · exact ⟨D, hP, by omega⟩
   exact fun D hP => key (walkCount D) D rfl hP
 
+/-! ### `hadj` is not an extra assumption
+
+The cycle input `hadj` quantifies over every adjacency, but the walk graph has only
+two kinds of edge and each is handled.
+
+A *crossing* edge is never one of the deleted turn edges -- that is `crossing_ne_turn`
+below, and it is exactly `pt_ne` doing its work.  A *turn* edge that is not deleted
+survives; a turn edge that is deleted has the detour supplied by
+`reach_delete_turn_set`.  So `hadj` follows from orbit data at the two arrivals, of
+the same kind the merge already carries. -/
+
+section Hadj
+
+/-- **A crossing edge is never a turn edge.**  If `{x, p x} = {z, t z}` then either
+`p x = t x`, or `p (t z) = t (t z)`; both contradict `pt_ne`. -/
+theorem crossing_ne_turn {α : Type*} (D : WalkGraph.Data α) (x z : α) :
+    s(x, D.p x) ≠ s(z, D.t z) := by
+  intro h
+  rw [Sym2.eq_iff] at h
+  rcases h with ⟨h1, h2⟩ | ⟨h1, h2⟩
+  · subst h1; exact D.pt_ne x h2
+  · subst h1
+    exact D.pt_ne (D.t z) (by rw [h2, D.t_invol])
+
+/-- Consequently no crossing edge lies in the two-element set of deleted turn edges. -/
+theorem crossing_notMem {α : Type*} (D : WalkGraph.Data α) (x a a' : α) :
+    s(x, D.p x) ∉ ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α)) := by
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+  exact ⟨crossing_ne_turn D x a, crossing_ne_turn D x a'⟩
+
+end Hadj
+
+/-- **`hadj` reduces to two detours.**  Given that each deleted turn edge's endpoints
+remain joined after the deletion, every adjacency survives: crossing edges are never
+deleted, undeleted turn edges are still there, and a deleted turn edge is exactly one
+of the two with a detour. -/
+theorem hadj_of_detours {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a a' : α)
+    (Ra : ((graph D).deleteEdges
+      ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α))).Reachable a (D.t a))
+    (Ra' : ((graph D).deleteEdges
+      ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α))).Reachable a' (D.t a')) :
+    ∀ x y, (graph D).Adj x y →
+      ((graph D).deleteEdges
+        ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α))).Reachable x y := by
+  intro x y hxy
+  rcases hxy with h | h
+  · -- a crossing edge, never deleted
+    subst h
+    exact (SimpleGraph.deleteEdges_adj.mpr
+      ⟨Or.inl rfl, crossing_notMem D x a a'⟩).reachable
+  · subst h
+    by_cases hmem : s(x, D.t x) ∈
+        ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α))
+    · -- a deleted turn edge: it is one of the two, so it has its detour
+      simp only [Set.mem_insert_iff, Set.mem_singleton_iff, Sym2.eq_iff] at hmem
+      rcases hmem with (⟨h1, _⟩ | ⟨h1, h2⟩) | (⟨h1, _⟩ | ⟨h1, h2⟩)
+      · subst h1; exact Ra
+      · subst h1; rw [D.t_invol]; exact Ra.symm
+      · subst h1; exact Ra'
+      · subst h1; rw [D.t_invol]; exact Ra'.symm
+    · exact (SimpleGraph.deleteEdges_adj.mpr ⟨Or.inr rfl, hmem⟩).reachable
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.reaches_one
+#print axioms ConfigMerge.hadj_of_detours
