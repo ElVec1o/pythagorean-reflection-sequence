@@ -450,6 +450,53 @@ theorem exists_mergesMin (siteOf : α → ℤ) (p₀ : α → α) (d : EndData.D
       ⟨costOf d D, D, hD, rfl⟩
   exact ⟨E, hE, fun F hF => by rw [hEc]; exact hleast _ ⟨F, hF, rfl⟩⟩
 
+/-! ### The cost splits over sites
+
+`costOf` sums `pcostF a (t a)` over the arrivals, and every arrival lies at exactly
+one site, so the sum splits site by site.  That is what makes site-wise minimality
+follow from global minimality: a re-pairing at one site changes only that site's
+summand. -/
+
+omit [DecidableEq α] in
+/-- **The cost is the sum of its site contributions.** -/
+theorem cost_split_by_site (d : EndData.Data α) (D : Data α) (siteOf : α → ℤ)
+    (S : Finset ℤ) (hall : ∀ a, d.isArr a = true → siteOf a ∈ S) :
+    costOf d D
+      = ∑ s ∈ S, ∑ a ∈ (Finset.univ.filter (fun a => d.isArr a = true)).filter
+          (fun a => siteOf a = s), EndData.pcostF d a (D.t a) := by
+  classical
+  unfold costOf EndData.transCost
+  refine (Finset.sum_fiberwise_of_maps_to (fun a ha => ?_) _).symm
+  rw [Finset.mem_filter] at ha
+  exact hall a ha.2
+
+/-- **Site-wise minimality follows from global minimality.**  If two data agree away
+from one site, their costs differ only in that site's summand, so a globally minimal
+datum minimises each site. -/
+theorem site_cost_le_of_global (d : EndData.Data α) (D E : Data α) (siteOf : α → ℤ)
+    (s : ℤ) (hagree : ∀ a, d.isArr a = true → siteOf a ≠ s → D.t a = E.t a)
+    (hmin : costOf d D ≤ costOf d E)
+    (S : Finset ℤ) (hall : ∀ a, d.isArr a = true → siteOf a ∈ S) (hs : s ∈ S) :
+    ∑ a ∈ (Finset.univ.filter (fun a => d.isArr a = true)).filter (fun a => siteOf a = s),
+        EndData.pcostF d a (D.t a)
+      ≤ ∑ a ∈ (Finset.univ.filter (fun a => d.isArr a = true)).filter
+          (fun a => siteOf a = s), EndData.pcostF d a (E.t a) := by
+  classical
+  rw [cost_split_by_site d D siteOf S hall, cost_split_by_site d E siteOf S hall] at hmin
+  have hoff : ∀ t ∈ S, t ≠ s →
+      ∑ a ∈ (Finset.univ.filter (fun a => d.isArr a = true)).filter (fun a => siteOf a = t),
+          EndData.pcostF d a (D.t a)
+        = ∑ a ∈ (Finset.univ.filter (fun a => d.isArr a = true)).filter
+            (fun a => siteOf a = t), EndData.pcostF d a (E.t a) := by
+    intro t _ hts
+    refine Finset.sum_congr rfl (fun a ha => ?_)
+    rw [Finset.mem_filter, Finset.mem_filter] at ha
+    rw [hagree a ha.1.2 (by rw [ha.2]; exact hts)]
+  rw [← Finset.add_sum_erase _ _ hs, ← Finset.add_sum_erase _ _ hs] at hmin
+  have := Finset.sum_congr rfl (fun t ht =>
+    hoff t (Finset.mem_of_mem_erase ht) (Finset.ne_of_mem_erase ht))
+  omega
+
 -- Certification (Rule 5).
-#print axioms CostMerge.costOf_nonneg
-#print axioms CostMerge.exists_mergesMin
+#print axioms CostMerge.cost_split_by_site
+#print axioms CostMerge.site_cost_le_of_global

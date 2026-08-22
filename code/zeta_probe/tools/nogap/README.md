@@ -1420,3 +1420,18 @@ moves between the two adjacent edges. Chain:
 which is exactly the hturn input of prop_cut_correct. M3's bridge is complete apart
 from choosing the site's minimum-cost plan to BE the configuration's turn, which is
 the statement that the realisation is cost-minimal at each site.
+
+## The cost splits over sites (2026-08-23)
+
+costOf sums pcostF a (t a) over arrivals, and each arrival lies at exactly one site,
+so the sum splits site by site -- cost_split_by_site, via
+Finset.sum_fiberwise_of_maps_to.
+
+site_cost_le_of_global: if two data agree away from one site, their costs differ only
+in that site's summand, so a globally minimal datum minimises each site. That is M3q's
+content: MergesMin's global minimality gives site-wise minimality, which is what
+turn_keeps_edge_of_cross_zero needs to have a MINIMUM-cost plan at the site.
+
+The proof is the obvious one -- split both costs, note the off-site summands agree
+term by term, and cancel -- but it is the step that lets the local exchange argument
+of prop:cut talk to the global optimum the merge chain carries.
