@@ -1321,3 +1321,18 @@ here rather than assumed silently.
 
 walk_graph_local (the siteOf version) is superseded. It is true as stated but its gap
 hypothesis was unnatural precisely because the position function was wrong.
+
+## prop:cut, rebuilt correctly (2026-08-23)
+
+cutSitesZ d f A B = the sites s of [A,B] with d(s-1) = 0, d(s) = 0, f(s-1) = 0 --
+all three conditions. That is the paper's Z. The retracted gapSites omitted d(s) = 0
+and therefore counted one site too many per gap run.
+
+prop_cut_correct composes it with walk_graph_local_edge: at least |Z| walks carry
+neither virtual event. Its two inputs are exactly the ones the paper argues for:
+
+  hturn  no strand crosses a cut site -- prop:cut's first sentence
+  hocc   every edge of the span carries a crossing -- supplied by m >= 2 on f=0 edges
+
+Both are carried as hypotheses rather than assumed away. The chain from the walk model
+to the abstract counting is now built on the right Z and the right position function.

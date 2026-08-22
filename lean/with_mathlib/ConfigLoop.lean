@@ -676,5 +676,41 @@ theorem walk_graph_local_edge (up : Fin n → ℕ)
       · right; rw [hb] at h3; simp at h3; omega
       · left; rw [hb] at h3; simp at h3; omega
 
+/-! ### `Z`, correctly
+
+The cut sites of the span: `d_{s-1} = 0`, `d_s = 0`, `f_{s-1} = 0`.  All three
+conditions, unlike the retracted `gapSites`, which omitted `d_s = 0` and so counted
+one site too many per gap run. -/
+
+/-- The paper's `Z`: the cut sites interior to the span `[A, B]`. -/
+noncomputable def cutSitesZ (d f : ℤ → ℤ) (A B : ℤ) : Finset ℤ :=
+  (Finset.Icc A B).filter (fun s => d (s - 1) = 0 ∧ d s = 0 ∧ f (s - 1) = 0)
+
+theorem mem_cutSitesZ {d f : ℤ → ℤ} {A B s : ℤ} :
+    s ∈ cutSitesZ d f A B ↔
+      (A ≤ s ∧ s ≤ B) ∧ d (s - 1) = 0 ∧ d s = 0 ∧ f (s - 1) = 0 := by
+  simp [cutSitesZ, Finset.mem_filter, Finset.mem_Icc, and_assoc]
+
+/-- **`prop:cut` with the correct `Z` and position function.**  At least `|Z|` walks
+carry neither virtual event.
+
+The two inputs are the ones the paper argues for: no strand crosses a cut site
+(`hturn`, its first sentence), and every edge of the span carries a crossing (`hocc`,
+which `m ≥ 2` on `f = 0` edges supplies). -/
+theorem prop_cut_correct (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (d f : ℤ → ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ cutSitesZ d f A B, A < z) (hhigh : ∀ z ∈ cutSitesZ d f A B, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
+    (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x →
+      siteOf x ∉ cutSitesZ d f A B)
+    (c0 : (graph (dataOf up hbal)).ConnectedComponent) :
+    ∃ F : Fin (cutSitesZ d f A B).card → (graph (dataOf up hbal)).ConnectedComponent,
+      Function.Injective F ∧ ∀ i, F i ≠ c0 :=
+  CutComponents.exists_injective_components_avoiding
+    (walk_graph_local_edge up hbal (cutSitesZ d f A B) hturn)
+    A B hAB hlow hhigh hocc c0
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.walk_graph_local_edge
+#print axioms ConfigLoop.mem_cutSitesZ
+#print axioms ConfigLoop.prop_cut_correct
