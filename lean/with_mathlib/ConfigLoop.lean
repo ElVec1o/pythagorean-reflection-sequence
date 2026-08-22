@@ -361,5 +361,49 @@ theorem config_min_single_walk (up : Fin n → ℕ)
   have : Nonempty (Endpt n m) := end_of_mult e0 (hm e0)
   exact Fintype.card_pos_iff.mpr ⟨(graph D').connectedComponentMk (Classical.arbitrary _)⟩
 
+/-! ### `thm:nogap`, final form
+
+The paper: *if `g` has no gap edge then `c(g) = 0`* -- where `c` counts isolated
+cycles of a **relaxed-optimal** realisation.
+
+**Formalised.**  A configuration is `(m, up)`; "no gap edge" is `∀ e, 0 < m e`; `hbal`
+is the arrival/departure balance that makes the turn exist, proved at interior sites
+by `EndType.card_arr_eq_card_dep_of_edges` and at the two boundaries by
+`balance_left`/`balance_right`.  The conclusion is that a **cost-minimal** realisation
+has exactly one walk, hence no isolated cycle against any basepoint.  Cost-minimality
+is over the whole class of realisations of the configuration, so this is the paper's
+"relaxed-optimal", not merely "some realisation".
+
+**Not formalised.**  The passage from a group element `g` to its configuration.  That
+is the one remaining link, and it is bookkeeping about how `m` and `up` are read off
+`g` -- not part of the merge argument.
+
+The earlier `thm_nogap` above is the cost-free version, kept because it is what the
+combinatorial chain proves on its own. -/
+theorem thm_nogap_optimal (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hnogap : ∀ e : Fin n, 0 < m e) (e0 : Fin n) (ds : Bool → Bool) :
+    ∃ D' : Data (Endpt n m),
+      CostMerge.MergesMin siteOf (isArrOf up) partner (endDataOf (m := m) up ds) D' ∧
+      walkCount D' = 1 ∧
+      ∀ b : Endpt n m, otherComponents D' b = 0 := by
+  obtain ⟨D', hM, hone⟩ := config_min_single_walk up hbal hnogap e0 ds
+  refine ⟨D', hM, hone, fun b => ?_⟩
+  rw [otherComponents_eq_defect D' b]
+  unfold defect
+  omega
+
+/-- `thm:nogap` in final form on the one-edge configuration, so it is known to have
+content. -/
+theorem thm_nogap_optimal_witness (ds : Bool → Bool) :
+    ∃ D' : Data (Endpt 1 (fun _ => 2)),
+      CostMerge.MergesMin siteOf (isArrOf (fun _ : Fin 1 => 1)) partner
+        (endDataOf (m := fun _ : Fin 1 => 2) (fun _ => 1) ds) D' ∧
+      walkCount D' = 1 ∧
+      ∀ b : Endpt 1 (fun _ => 2), otherComponents D' b = 0 :=
+  thm_nogap_optimal (m := fun _ : Fin 1 => 2) (fun _ => 1) one_edge_hbal
+    (fun _ => by norm_num) 0 ds
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.config_min_single_walk
+#print axioms ConfigLoop.thm_nogap_optimal
+#print axioms ConfigLoop.thm_nogap_optimal_witness

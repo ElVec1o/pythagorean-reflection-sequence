@@ -1150,3 +1150,18 @@ New pieces:
 
 The deposit signs enter only through EndData.Data's depSign field and nothing in the
 argument depends on which they are, so the theorem is stated for an arbitrary ds.
+
+## thm:nogap, final form (2026-08-23)
+
+ConfigLoop.thm_nogap_optimal. A gap-free configuration has a COST-MINIMAL realisation
+with exactly one walk and no isolated cycle against any basepoint. That is the
+paper's statement: c(g) = 0 for a relaxed-optimal realisation, not merely for some
+realisation. thm_nogap_optimal_witness instantiates it on the one-edge configuration.
+
+What is NOT formalised, stated rather than left implicit: the passage from a group
+element g to its configuration (m, up). That is the one remaining link and it is
+bookkeeping about how m and up are read off g -- not part of the merge argument.
+
+M6's formalization debt is therefore discharged for the merge argument itself. The
+cost-free thm_nogap is kept alongside, since it is what the combinatorial chain
+proves without the cost layer.
