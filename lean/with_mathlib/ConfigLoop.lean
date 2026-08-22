@@ -1120,5 +1120,34 @@ theorem prop_cut_assembled (up : Fin n → ℕ) (ds : Bool → Bool)
   intro x hne hmem
   exact hne (turn_keeps_edge_all up ds hbal (siteOf x) (hcut _ hmem) x rfl)
 
+/-! ### `cutSitesZ` agrees with `PathData.cut`
+
+Away from the two virtual events the three quantities reduce to the deposits and the
+travel indicator, so the two definitions of *cut* coincide.  Proving it turns the
+correspondence into a theorem, which is what both `gapSites` attempts lacked. -/
+
+/-- **Away from the virtual events, `cut` is the plain condition.** -/
+theorem cut_iff_plain (P : SiteCost.PathData) (s : ℤ) (h0 : s ≠ 0) (hk : s ≠ P.kstar) :
+    P.cut s ↔ (P.d (s - 1) = 0 ∧ P.d s = 0 ∧ P.f (s - 1) = 0) := by
+  unfold SiteCost.PathData.cut SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.PathData.vR
+    SiteCost.PathData.vD SiteCost.vArr
+  rw [if_neg h0, if_neg hk]
+  cases P.delta <;> simp
+
+/-- **The set matches.**  A site of the span lies in `cutSitesZ` exactly when it is a
+cut site with no virtual event. -/
+theorem mem_cutSitesZ_iff_cut (P : SiteCost.PathData) (A B s : ℤ) :
+    s ∈ cutSitesZ P.d P.f P.kstar A B ↔
+      ((A ≤ s ∧ s ≤ B) ∧ s ≠ 0 ∧ s ≠ P.kstar ∧ P.cut s) := by
+  rw [mem_cutSitesZ]
+  constructor
+  · rintro ⟨hs, h0, hk, hd1, hd2, hf⟩
+    exact ⟨hs, h0, hk, (cut_iff_plain P s h0 hk).mpr ⟨hd1, hd2, hf⟩⟩
+  · rintro ⟨hs, h0, hk, hcut⟩
+    obtain ⟨hd1, hd2, hf⟩ := (cut_iff_plain P s h0 hk).mp hcut
+    exact ⟨hs, h0, hk, hd1, hd2, hf⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.prop_cut_assembled
+#print axioms ConfigLoop.cut_iff_plain
+#print axioms ConfigLoop.mem_cutSitesZ_iff_cut

@@ -1540,3 +1540,18 @@ Without it a site carrying a virtual event could be counted as cut when it is no
 the same overcounting failure as the retracted gapSites, one level subtler. The
 difference is that this one was caught by reading the definition rather than by
 building on a guess and retracting later.
+
+## cutSitesZ agrees with PathData.cut -- proved, not matched by eye (2026-08-23)
+
+cut_iff_plain: away from s = 0 and s = kstar, the virtual terms vanish (vArr s = [s=0],
+vL and vR are supported on s = kstar), so
+
+  cut s  <->  d(s-1) = 0 and d s = 0 and f(s-1) = 0
+
+mem_cutSitesZ_iff_cut: a site of the span lies in cutSitesZ exactly when it is a cut
+site with no virtual event.
+
+This is the step both gapSites attempts lacked. The first matched Z to gap edges by
+eye and overcounted one site per run; the second dropped the virtual-event condition
+and could have counted a marker site as cut. Now the correspondence is a theorem, so
+neither failure mode can recur silently.
