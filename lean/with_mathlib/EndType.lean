@@ -68,6 +68,49 @@ theorem witness_no_end : ¬ ∃ x : Endpt 1 (fun _ => 0), True := by
   rintro ⟨⟨⟨_, i⟩, _⟩, _⟩
   exact absurd i.isLt (Nat.not_lt_zero _)
 
+/-! ### The crossing-partner map
+
+The first of the two involutions a `WalkGraph.Data` needs, constructed on the
+concrete end type.  It exchanges the two ends of a crossing, so it fixes the edge
+and flips which end this is, which are exactly the two conditions the walk-graph
+data asks of it. -/
+
+/-- Exchange the two ends of a crossing. -/
+def partner {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : Endpt n m := (x.1, !x.2)
+
+@[simp] theorem partner_fst {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    (partner x).1 = x.1 := rfl
+
+@[simp] theorem partner_snd {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    (partner x).2 = !x.2 := rfl
+
+theorem partner_invol {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    partner (partner x) = x := by
+  unfold partner
+  simp
+
+theorem partner_ne {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : partner x ≠ x := by
+  intro h
+  have := congrArg Prod.snd h
+  simp only [partner_snd] at this
+  exact (Bool.not_ne_self x.2) this
+
+theorem partner_edgeOf {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    edgeOf (partner x) = edgeOf x := rfl
+
+theorem partner_atTop {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    atTop (partner x) = !atTop x := rfl
+
+/-- The two ends of a crossing sit at consecutive sites, one at the edge's index
+and one at the next: this is what makes the crossing map move between sites while
+the turn stays at one, which is the condition the walk graph needs to have two
+distinct neighbours at every end. -/
+theorem partner_site_ne {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    (edgeOf (partner x) + (if atTop (partner x) then 1 else 0))
+      ≠ (edgeOf x + (if atTop x then 1 else 0)) := by
+  rw [partner_edgeOf, partner_atTop]
+  cases h : atTop x <;> simp [h]
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -75,5 +118,9 @@ theorem witness_no_end : ¬ ∃ x : Endpt 1 (fun _ => 0), True := by
 #print axioms EndType.mult_natPos
 #print axioms EndType.witness_end_exists
 #print axioms EndType.witness_no_end
+#print axioms EndType.partner_invol
+#print axioms EndType.partner_ne
+#print axioms EndType.partner_edgeOf
+#print axioms EndType.partner_site_ne
 
 end EndType
