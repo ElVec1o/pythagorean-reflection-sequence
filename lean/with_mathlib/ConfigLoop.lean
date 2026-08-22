@@ -926,7 +926,52 @@ noncomputable def planAt (up : Fin n → ℕ) (ds : Bool → Bool) (s : ℤ)
   planOfTurn (arrAt (m := m) up s) (depAt (m := m) up s) (turnAt up s) (clsOf up ds)
     (turnAt_arr up s h) (turnAt_injOn up s _) (turnAt_surjOn up s h)
 
+/-! ### Side change is edge change
+
+At a site `s` an end is either a top end, on edge `s - 1`, or a bottom end, on edge
+`s`.  So two ends at the same site lie on the same edge exactly when they are on the
+same side -- which turns `no_side_change_of_cross_zero` into `hturn`. -/
+
+/-- The class's side bit is `atTop`. -/
+theorem clsOf_lt_two_iff (up : Fin n → ℕ) (ds : Bool → Bool) (x : Endpt n m) :
+    ((clsOf up ds x : ℕ) < 2 ↔ atTop x = true) := by
+  unfold clsOf
+  cases hx : atTop x <;>
+    cases EndData.sgn (endDataOf (m := m) up ds) x <;> simp [hx] <;> decide
+
+/-- At a site, the side determines the edge. -/
+theorem edge_of_site (x : Endpt n m) (s : ℤ) (hs : siteOf x = s) :
+    edgeOf x = if atTop x then s - 1 else s := by
+  have h : edgeOf x + (if atTop x then (1:ℤ) else 0) = s := hs
+  cases hx : atTop x <;> simp [hx] at h ⊢ <;> omega
+
+/-- **Same site and same side gives the same edge.** -/
+theorem same_edge_of_same_side (x y : Endpt n m) (s : ℤ)
+    (hsx : siteOf x = s) (hsy : siteOf y = s) (h : atTop x = atTop y) :
+    edgeOf x = edgeOf y := by
+  rw [edge_of_site x s hsx, edge_of_site y s hsy, h]
+
+/-- **`hturn` at a cut site.**  If the site's plan has no cross mass then no turn
+there moves between the two adjacent edges.
+
+This is the last link: `no_side_change_of_cross_zero` gives that the turn preserves
+the class's side bit, `clsOf_lt_two_iff` identifies that bit with `atTop`, and
+`same_edge_of_same_side` turns equal sides at one site into equal edges. -/
+theorem turn_keeps_edge_of_cross_zero (up : Fin n → ℕ) (ds : Bool → Bool) (s : ℤ)
+    (h : (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hcross : (planAt up ds s h).cross = 0) :
+    ∀ x ∈ arrAt (m := m) up s, edgeOf (turnAt up s x) = edgeOf x := by
+  intro x hx
+  have hside := no_side_change_of_cross_zero (arrAt (m := m) up s) (depAt (m := m) up s)
+    (turnAt up s) (clsOf up ds) (turnAt_arr up s h) (turnAt_injOn up s _)
+    (turnAt_surjOn up s h) hcross x hx
+  rw [clsOf_lt_two_iff, clsOf_lt_two_iff] at hside
+  -- the arrival and its departure sit at the same site
+  have hsx : siteOf x = s := ((EndType.mem_arrAt up s x).mp hx).1
+  have hst : siteOf (turnAt up s x) = s :=
+    ((EndType.mem_depAt up s _).mp (turnAt_arr up s h x hx)).1
+  refine same_edge_of_same_side _ _ s hst hsx ?_
+  cases hax : atTop x <;> cases hat : atTop (turnAt up s x) <;> simp_all
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.turnAt_injOn
-#print axioms ConfigLoop.turnAt_surjOn
-#print axioms ConfigLoop.planAt
+#print axioms ConfigLoop.turn_keeps_edge_of_cross_zero

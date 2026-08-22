@@ -1401,3 +1401,22 @@ turn:
 So a configuration now yields a genuine SiteCost.Plan at each balanced site, and with
 no_cross_at_cut and no_side_change_of_cross_zero that gives, at a cut site, that no
 turn moves between edge s-1 and edge s -- the hturn input of prop_cut_correct.
+
+## M3l closed: side change IS edge change (2026-08-23)
+
+At a site s an end is either a top end, on edge s-1, or a bottom end, on edge s
+(edge_of_site). So two ends at one site share an edge exactly when they share a side
+(same_edge_of_same_side), and clsOf's side bit is atTop (clsOf_lt_two_iff).
+
+turn_keeps_edge_of_cross_zero: if the site's plan has no cross mass then no turn there
+moves between the two adjacent edges. Chain:
+
+  cut site  ->  siteValue = 0            (isCut_iff_siteValue_zero)
+            ->  min-cost plan costs 0     (transport_min)
+            ->  cross = 0                 (no_cross_at_cut)
+            ->  turn preserves the side   (no_side_change_of_cross_zero)
+            ->  turn preserves the edge   (this)
+
+which is exactly the hturn input of prop_cut_correct. M3's bridge is complete apart
+from choosing the site's minimum-cost plan to BE the configuration's turn, which is
+the statement that the realisation is cost-minimal at each site.
