@@ -14,6 +14,7 @@ discharges `WalkMerge.conn_merge`'s hypothesis.
 import Mathlib.Tactic
 import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
+import WalkMerge
 
 namespace WalkGraph
 
@@ -298,6 +299,26 @@ theorem reach_delete_turn (x : α) (m : ℕ)
     rw [← p_t_eq_iterate D x m hm hpos, D.p_invol]
   exact hend ▸ hout.trans hland
 
+/-! ### Bridging the two formulations
+
+`WalkMerge` states connectivity as `Relation.ReflTransGen` of a step relation;
+`WalkGraph` uses `SimpleGraph.Reachable`.  They agree, which lets the merge lemma
+consume `reach_delete_turn`. -/
+
+/-- A step of `WalkMerge` is an edge of the walk graph. -/
+theorem step_adj {x y : α} (h : WalkMerge.Step D.p D.t x y) : (graph D).Adj x y := h
+
+/-- Connectivity in the step sense implies reachability in the graph. -/
+theorem reachable_of_conn {x y : α} (h : WalkMerge.Conn D.p D.t x y) :
+    (graph D).Reachable x y := by
+  induction h with
+  | refl => exact SimpleGraph.Reachable.refl x
+  | tail _ hstep ih => exact ih.trans (SimpleGraph.Adj.reachable (step_adj D hstep))
+
+/-- And conversely: an edge of the graph is a step. -/
+theorem conn_of_adj {x y : α} (h : (graph D).Adj x y) : WalkMerge.Conn D.p D.t x y :=
+  WalkMerge.conn_of_step h
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -316,5 +337,8 @@ theorem reach_delete_turn (x : α) (m : ℕ)
 #print axioms WalkGraph.cross_ne_turn
 #print axioms WalkGraph.p_t_eq_iterate
 #print axioms WalkGraph.reach_delete_turn
+#print axioms WalkGraph.step_adj
+#print axioms WalkGraph.reachable_of_conn
+#print axioms WalkGraph.conn_of_adj
 
 end WalkGraph
