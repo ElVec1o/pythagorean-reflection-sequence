@@ -229,7 +229,7 @@ transition system is forced to communicate across every interior site. It does N
 by itself give a single component, since one pass links one strand pair while other
 strands may still close into cycles. That remaining step is the open part of M6.
 
-## M6 closed: no gap edge => c = 0.  Adversarial review DONE, one gap found and repaired
+## M6 PROVED: no gap edge => c = 0.  Adversarial review done; one gap found, repaired, and closed
 
 The transfer pass overturned the obstruction recorded above. The claim there, that
 the sign splits `p^u_j` are free, is FALSE at minimum multiplicity. They are forced,
@@ -323,10 +323,13 @@ shared arrival side. So the blocker additionally requires `u_{r-1} = 0`, i.e.
 
     d_{r-1} = f_{r-1} = -1,  a single strand on edge r-1.
 
-**That one configuration is the whole remaining gap in the proof**, and it is
-checked only empirically (0 exceptions in 2 505 271 elements). Everything else is
-covered. Closing it, or exhibiting it and showing it cannot carry an isolated
-cycle, finishes M6.
+**That configuration is impossible.** `f_{r-1} = -1` forces `k* <= -1 < 0`, and
+`r = 0` because `r` carries the virtual arrival. So edge `-1` has `d = f = -1` and
+carries exactly one strand. The marker component `B` holds the virtual arrival at
+site `0` and must also hold the virtual departure at site `k* <= -1`, so `B` is a
+walk from site `0` to site `k*` and must traverse edge `-1`. Its single strand
+therefore belongs to `B`, contradicting the assumption that it belongs to
+`C != B`. Hence the blocker never arises and **M6 is proved**.
 
 End-to-end, the statement is verified on 2 505 271 elements to word length 31 with
 0 exceptions, which is independent of the proof above.
