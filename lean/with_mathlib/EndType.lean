@@ -111,6 +111,44 @@ theorem partner_site_ne {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
   rw [partner_edgeOf, partner_atTop]
   cases h : atTop x <;> simp [h]
 
+/-! ### Up-crossings, and the arrival predicate
+
+Counting arrivals and departures at a site needs to know which crossings of an edge
+go up.  That has been implicit; here it is a datum, an up-count per edge, with the
+first `up e` crossings taken to be the up ones.
+
+An up-crossing arrives at its top end and departs from its bottom one; a
+down-crossing does the reverse.  So the arrival predicate is the agreement of "is
+this crossing up" with "is this the top end", which is the same rule
+`StrandEnds.isArr` states abstractly. -/
+
+/-- Whether a crossing goes up: the first `up e` crossings of edge `e` do. -/
+def isUp {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (x : Endpt n m) : Bool :=
+  decide (x.1.2.val < up x.1.1)
+
+/-- An end opens a pair exactly when its crossing's direction agrees with which end
+it is. -/
+def isArrOf {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (x : Endpt n m) : Bool :=
+  isUp up x == atTop x
+
+@[simp] theorem isArrOf_up_top {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (x : Endpt n m) (hu : isUp up x = true) (ht : atTop x = true) :
+    isArrOf up x = true := by
+  unfold isArrOf; rw [hu, ht]; rfl
+
+@[simp] theorem isArrOf_up_bottom {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (x : Endpt n m) (hu : isUp up x = true) (ht : atTop x = false) :
+    isArrOf up x = false := by
+  unfold isArrOf; rw [hu, ht]; rfl
+
+/-- The crossing partner of an end has the same direction but the other end, so it
+has the opposite role: one of the two ends of a crossing arrives and the other
+departs.  This is what makes arrivals and departures at a site pair up at all. -/
+theorem isArrOf_partner {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (x : Endpt n m) :
+    isArrOf up (partner x) = !isArrOf up x := by
+  unfold isArrOf isUp partner atTop
+  cases h : x.2 <;> simp [h]
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -122,5 +160,6 @@ theorem partner_site_ne {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
 #print axioms EndType.partner_ne
 #print axioms EndType.partner_edgeOf
 #print axioms EndType.partner_site_ne
+#print axioms EndType.isArrOf_partner
 
 end EndType
