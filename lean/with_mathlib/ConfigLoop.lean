@@ -1178,6 +1178,36 @@ theorem walk_confined (up : Fin n → ℕ)
   | nil => rfl
   | cons hadj _ ih => exact (adj_confined up hbal s hcut _ _ hadj).trans ih
 
+/-- **A free pair, from run-local covering.**  `CostMerge.hasFreePair_of_minimal` with
+its covering hypothesis supplied by `covering_on_run`: the maximiser's leftmost edge
+need only sit inside a run whose edges carry crossings. -/
+theorem hasFreePair_run (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (l r : ℤ) (hl : 0 ≤ l)
+    (hpos : ∀ e : Fin n, l ≤ (e : ℤ) → (e : ℤ) ≤ r → 0 < m e)
+    (z : Endpt n m)
+    (hzmax : ∀ w : Endpt n m,
+      WalkSupport.wLo edgeOf (graph (dataOf up hbal)) w
+        ≤ WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)
+    (hlz : l < WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)
+    (hzr : WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z ≤ r)
+    (hmin : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
+      isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
+      ¬ CostMerge.costOf (endDataOf (m := m) up ds)
+          (swapData (dataOf up hbal) b ((dataOf up hbal).t b) b'
+            ((dataOf up hbal).t b') h1 h2 h3)
+        < CostMerge.costOf (endDataOf (m := m) up ds) (dataOf up hbal)) :
+    CostMerge.HasFreePair (endDataOf (m := m) up ds) siteOf (dataOf up hbal) := by
+  refine CostMerge.hasFreePair_of_minimal (endDataOf (m := m) up ds) edgeOf siteOf atTop
+    (dataOf up hbal) (fun _ => rfl) (fun _ => rfl)
+    (fun x => partner_edgeOf x) (fun x => partner_top x)
+    (fun e => turnAt_site up hbal e) (fun e => turn_arr_flip up hbal e)
+    (WalkSupport.p_site_ne edgeOf siteOf atTop partner (fun _ => rfl)
+      (fun x => partner_edgeOf x) (fun x => partner_top x))
+    z hzmax ?_ hmin
+  intro _ _
+  obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph (dataOf up hbal)) z
+  exact covering_on_run l r hl hpos _ hlz hzr ⟨u, hue⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.adj_confined
-#print axioms ConfigLoop.walk_confined
+#print axioms ConfigLoop.hasFreePair_run

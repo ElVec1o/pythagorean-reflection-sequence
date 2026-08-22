@@ -1662,3 +1662,19 @@ exactly the separation hypothesis of walkCount_le_card. So the shape is now:
   descend until stuck  (reaches_stuck)
     -> separation holds at the stuck datum
     -> walkCount <= number of runs = |Z| + 1   (walkCount_le_card, walk_confined)
+
+## A free pair from run-local covering (2026-08-23)
+
+hasFreePair_run: CostMerge.hasFreePair_of_minimal with its covering hypothesis
+supplied by covering_on_run instead of the global one. The maximiser's leftmost edge
+need only sit inside a run [l, r] whose edges carry crossings.
+
+The substitution goes through unchanged -- every other input of
+hasFreePair_of_minimal is already unconditional for a configuration (site law from
+turnAt_site, role law from turn_arr_flip, partner laws from partner_edgeOf and
+partner_top, and the crossing site law from p_site_ne).
+
+So the free-merge half of the run induction is in place. What remains is choosing the
+maximiser WITHIN a run rather than globally: the global maximiser's leftmost edge lies
+in the rightmost run, so the argument as it stands merges that run, and the induction
+has to walk leftwards run by run.
