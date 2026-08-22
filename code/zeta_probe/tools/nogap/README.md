@@ -590,3 +590,33 @@ proposition reasons about exactly this decomposition to get its lower bound.
 Recording the route rather than claiming the conclusion. What has changed is that
 the difficulty is now one named step inside a decomposition the paper already uses,
 instead of an obstruction that looked like it ruled the approach out.
+
+### Step 4 is `shared_site_exists`, applied within a class
+
+Step 4 asks that two components lying in one class actually meet. They do, and the
+argument is one already proved.
+
+A class is the run of edges between two consecutive cut sites. Components have
+interval supports, so two components in one class have interval supports inside it.
+If those intervals are adjacent the components share the site between them. If they
+are separated, every edge in between is still covered, so a third component lies
+there, and repeating the argument on an adjacent pair gives a shared site.
+
+That is exactly `SharedSite.shared_site_exists`, which takes a covering hypothesis
+and returns two components sharing a site, either at the left end or one step inside.
+Applied to a class rather than to the whole span it gives the same conclusion, and
+the site it returns is interior to the class, hence **not** a cut site, because the
+cut sites are precisely the class boundaries.
+
+So the route closes, subject to the instantiation being carried out: restricting
+the components and the covering hypothesis to a class, and checking the returned
+site is interior. The covering within a class is inherited from the covering on the
+span, since a class is a sub-interval of it.
+
+**What this means for the reverse inequality.** Every step of the route now points
+at something proved: the cut count and classes are definitions, pigeonhole is
+pigeonhole, the free merge at a non-cut site is the measurement plus the proved
+merge, and the meeting of two components in a class is the shared-site theorem. The
+work remaining is the instantiation, not new mathematics. That is a materially
+different position from the no-go this section opened with, and it should be checked
+carefully by someone who did not write it before the inequality is called proved.
