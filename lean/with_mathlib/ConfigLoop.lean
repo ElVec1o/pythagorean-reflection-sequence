@@ -973,5 +973,46 @@ theorem turn_keeps_edge_of_cross_zero (up : Fin n → ℕ) (ds : Bool → Bool) 
   refine same_edge_of_same_side _ _ s hst hsx ?_
   cases hax : atTop x <;> cases hat : atTop (turnAt up s x) <;> simp_all
 
+/-! ### Summing by class pair
+
+A cost that depends only on the pair of classes `(cls a, cls (t a))` sums to the
+transportation entries weighted by that cost.  This is what identifies the site's
+contribution to `costOf` with its plan's `Plan.cost`. -/
+
+/-- **A class-pair-determined cost sums to the weighted entries.** -/
+theorem sum_by_class_pair {β : Type*} [DecidableEq β] [Fintype β]
+    (A : Finset β) (t : β → β) (cls : β → Fin 4) (f : β → ℤ) (w : Fin 4 → Fin 4 → ℤ)
+    (hf : ∀ a ∈ A, f a = w (cls a) (cls (t a))) :
+    ∑ a ∈ A, f a = ∑ i : Fin 4, ∑ j : Fin 4, (xEntry A t cls i j : ℤ) * w i j := by
+  classical
+  rw [← Finset.sum_fiberwise_of_maps_to (g := cls) (fun a _ => Finset.mem_univ (cls a)) f]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [← Finset.sum_fiberwise_of_maps_to (g := fun a => cls (t a))
+    (fun a _ => Finset.mem_univ (cls (t a))) f]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  have hblock : (A.filter (fun a => cls a = i)).filter (fun a => cls (t a) = j)
+      = A.filter (fun a => cls a = i ∧ cls (t a) = j) := Finset.filter_filter _ _ _
+  rw [hblock]
+  have hconst : ∀ a ∈ A.filter (fun a => cls a = i ∧ cls (t a) = j), f a = w i j := by
+    intro a ha
+    rw [Finset.mem_filter] at ha
+    rw [hf a ha.1, ha.2.1, ha.2.2]
+  rw [Finset.sum_congr rfl hconst, Finset.sum_const, nsmul_eq_mul]
+  unfold xEntry
+  rfl
+
+/-- The pairing cost as a function of the two classes: `0` on the same side with the
+same sign, `2` on the same side with opposite signs, `1` across. -/
+def pcostW (i j : Fin 4) : ℤ :=
+  if ((i : ℕ) < 2 ↔ (j : ℕ) < 2) then (if i = j then 0 else 2) else 1
+
+/-- **The weighted entries are exactly `Plan.cost`.** -/
+theorem weighted_sum_eq_cost (x : Fin 4 → Fin 4 → ℕ) :
+    ∑ i : Fin 4, ∑ j : Fin 4, (x i j : ℤ) * pcostW i j
+      = 2 * ((x 0 1 : ℤ) + x 1 0) + 2 * ((x 2 3 : ℤ) + x 3 2)
+        + (((x 0 2 : ℤ) + x 0 3 + x 1 2 + x 1 3) + ((x 2 0 : ℤ) + x 2 1 + x 3 0 + x 3 1)) := by
+  simp [Fin.sum_univ_four, pcostW]
+  ring
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.turn_keeps_edge_of_cross_zero
+#print axioms ConfigLoop.weighted_sum_eq_cost

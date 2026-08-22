@@ -1435,3 +1435,19 @@ turn_keeps_edge_of_cross_zero needs to have a MINIMUM-cost plan at the site.
 The proof is the obvious one -- split both costs, note the off-site summands agree
 term by term, and cancel -- but it is the step that lets the local exchange argument
 of prop:cut talk to the global optimum the merge chain carries.
+
+## Summing by class pair (2026-08-23)
+
+sum_by_class_pair: a cost depending only on the pair (cls a, cls (t a)) sums to the
+transportation entries weighted by that cost -- two fiberwise splits and a constant
+sum on each block.
+
+pcostW is the pairing cost as a function of the two classes: 0 on the same side with
+the same sign, 2 on the same side with opposite signs, 1 across.
+weighted_sum_eq_cost: the weighted entries are exactly Plan.cost's expression
+2*(x01+x10) + 2*(x23+x32) + cross.
+
+Together these identify a site's contribution to costOf with its plan's Plan.cost,
+which is what site_cost_le_of_global needs in order to say that a globally minimal
+datum has a MINIMUM-COST PLAN at each site -- the hypothesis
+turn_keeps_edge_of_cross_zero consumes.
