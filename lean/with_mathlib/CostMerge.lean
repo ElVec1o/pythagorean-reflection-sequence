@@ -435,6 +435,7 @@ theorem pcostF_nonneg (d : EndData.Data α) (a b : α) : 0 ≤ EndData.pcostF d 
   unfold EndData.pcostF
   split <;> [split; skip] <;> norm_num
 
+omit [DecidableEq α] in
 theorem costOf_nonneg (d : EndData.Data α) (D : Data α) : 0 ≤ costOf d D :=
   Finset.sum_nonneg (fun a _ => pcostF_nonneg d a _)
 
