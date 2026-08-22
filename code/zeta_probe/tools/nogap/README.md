@@ -1698,3 +1698,21 @@ That is the last structural change the run induction needed. Its pieces are now:
 
 What remains is assembling them: run the descent inside each run with the run-local
 maximiser, and count.
+
+## c <= |Z|, given separation (2026-08-23)
+
+gz_le_card: the run index CutComponents.gz never exceeds |Z|, so runIndex lands in
+Fin (|Z| + 1) -- at most |Z| + 1 runs.
+
+runIndex_const: the run index is constant on walks. This is
+CutComponents.blk_reachable applied to walk_graph_local_edge -- the constancy half
+was already in the repository, waiting for a Local instance to feed it.
+
+walkCount_le_runs: if ends of the same run always lie in the same walk, there are at
+most |Z| + 1 walks, i.e. at most |Z| isolated cycles. That is c <= |Z| modulo the
+separation hypothesis, which is exactly the stuck condition of the run descent:
+where separation fails, hasFreePair_run supplies a free merge, so a datum on which
+the descent has halted satisfies it.
+
+So M4b is reduced to one composition: run reaches_stuck with hasFreePair_run as the
+step, and feed the resulting stuck datum to walkCount_le_runs.

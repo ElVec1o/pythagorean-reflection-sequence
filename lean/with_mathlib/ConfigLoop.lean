@@ -1209,5 +1209,45 @@ theorem hasFreePair_run (up : Fin n → ℕ) (ds : Bool → Bool)
   obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph (dataOf up hbal)) z
   exact covering_on_run l r hl hpos _ hlz hzr ⟨u, hue⟩
 
+/-! ### Counting the runs
+
+`CutComponents.gz Zf t` counts the cut sites at or below `t`, so it is the run index,
+and `CutComponents.blk` is it read off an end.  It never exceeds `|Z|`, so the run
+index lands in `Fin (|Z| + 1)` -- there are at most `|Z| + 1` runs. -/
+
+/-- **The run index is bounded by the number of cut sites.** -/
+theorem gz_le_card (Zf : Finset ℤ) (t : ℤ) : CutComponents.gz Zf t ≤ Zf.card :=
+  Finset.card_filter_le _ _
+
+/-- The run index of an end, as an element of `Fin (|Z| + 1)`. -/
+def runIndex (Zf : Finset ℤ) (x : Endpt n m) : Fin (Zf.card + 1) :=
+  ⟨CutComponents.gz Zf (edgeOf x), Nat.lt_succ_of_le (gz_le_card Zf _)⟩
+
+/-- **The run index is constant on walks**, since no walk crosses a cut site. -/
+theorem runIndex_const (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (x y : Endpt n m) (hr : (graph (dataOf up hbal)).Reachable x y) :
+    runIndex Zf x = runIndex Zf y := by
+  have h := CutComponents.blk_reachable (walk_graph_local_edge up hbal Zf hturn) hr
+  exact Fin.ext h
+
+/-- **`c ≤ |Z|`, given separation.**  If ends of the same run always lie in the same
+walk, there are at most `|Z| + 1` walks -- that is, at most `|Z|` isolated cycles.
+
+Separation is the stuck condition of the run descent: where it fails, `hasFreePair_run`
+supplies a free merge, so a datum on which the descent has halted satisfies it. -/
+theorem walkCount_le_runs (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (hsep : ∀ x y : Endpt n m, runIndex Zf x = runIndex Zf y →
+      (graph (dataOf up hbal)).Reachable x y) :
+    walkCount (dataOf up hbal) ≤ Zf.card + 1 := by
+  have h := ConfigMerge.walkCount_le_card (dataOf up hbal) (runIndex Zf)
+    (runIndex_const up hbal Zf hturn) hsep
+  simpa using h
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.hasFreePair_run
+#print axioms ConfigLoop.walkCount_le_runs
