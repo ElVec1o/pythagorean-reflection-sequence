@@ -168,3 +168,63 @@ is the signature of a tautology; they were removed rather than counted.
 Adversarial review (Rule 6) also found the `alpha` component unused in
 `cut_at_zero`: `beta` and `Phi` alone force the conclusion, so the lemma is
 sharper than the cut hypothesis and is now stated that way.
+
+## Rule 1 transfer pass on M6b (2026-08-22)
+
+### Prior art located
+
+* **Cohn-Lempel equality / circuit-nullity formula** (Cohn-Lempel 1972; extended to
+  undirected 4-regular graphs by Traldi, `arXiv:0903.4405`): the number of circuits
+  in a circuit partition relates to the GF(2) nullity of the interlacement matrix,
+  `|P| - c(F) = nu(G_P)`.
+* **Kotzig 1968**: `T`-compatible Euler systems exist for **every** transition set
+  `T` containing at most one transition per vertex.
+* **Fleischner-Sabidussi-Wenger**: all `T`-compatible Euler systems are reachable
+  from any one by kappa-transformations and transpositions.
+* **Bouchet**: isotropic systems / delta-matroids give the algebra of transition
+  systems and their component counts under 2-swaps.
+
+### Dictionary
+
+| here | classical |
+|---|---|
+| transition system at a site | transition system / Euler system |
+| zero-cost 2-swap merge | kappa-transformation |
+| `c(g)` isolated cycles | GF(2) nullity of the interlacement matrix |
+| M6b (`c = 0` reachable) | some admissible system has nonsingular interlacement matrix |
+| admissible (= min-cost) systems | delta-matroid feasible sets |
+
+### Verdict
+
+The dictionary **relocates** the difficulty without dissolving it. Kotzig's theorem
+needs `T` to forbid at most one transition per vertex; our constraint instead
+specifies a SET of allowed pairings (the min-cost ones), which is not of that form.
+Kotzig therefore does not apply off the shelf. Under Cohn-Lempel, M6b becomes a
+GF(2) rank condition, which is the more promising relocation, but the admissibility
+constraint on which subsets may be used is the part with no classical counterpart.
+
+Logged so the pass is not repeated. Not a closure of M6b.
+
+### New ingredient obtained from the pass: the forced-pass lemma (PROVED)
+
+> At an interior non-marker site, if neither adjacent edge is a gap edge, then
+> EVERY min-cost pairing has at least one pass.
+
+Proof. At a non-marker site the arrival/departure balance forces `f_L = f_R =: f`.
+If `f != 0` then `P_LR - P_RL = f`, so `P >= |f| >= 1`. If `f = 0`, a pass-free
+pairing bounces each side internally; the minimum number of sign-flip bounces on
+the left is `|p^u_L - p^d_L| = |d_L|/2`, costing `|d_L|`, and likewise `|d_R|` on
+the right, so pass-free costs `|d_L| + |d_R|`, against a minimum of
+`max(|d_L|,|d_R|)`. Pass-free is optimal exactly when `min(|d_L|,|d_R|) = 0`, i.e.
+`d_L = 0` or `d_R = 0`, which with `f = 0` says one of the two edges is a gap edge.
+QED
+
+Falsification: 1699 site configurations (`|f| <= 1`, `m <= 6`, every admissible
+deposit and every sign split, min cost by exhaustive integer transportation),
+**0 violations**; the same run independently reconfirms `lem:transport`
+(`Site = max(|d_L|,|d_R|,|f|)`), also 0 violations.
+
+This is the structural input the Kotzig-type results need: under no gap edges the
+transition system is forced to communicate across every interior site. It does NOT
+by itself give a single component, since one pass links one strand pair while other
+strands may still close into cycles. That remaining step is the open part of M6.
