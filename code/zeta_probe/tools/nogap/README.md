@@ -563,3 +563,30 @@ in gap edges as such, whose sign freedom rescues almost everything, but exactly 
 the sites `prop:cut` already identifies. Whether that local statement assembles into
 `c <= |Z|` is not settled here; it is a lead, and it is the first one that points at
 the cut sites themselves rather than away from them.
+
+### The route the refined no-go opens, and the step it turns on
+
+With the local obstruction identified as exactly a cut site, the reverse inequality
+has a route:
+
+1. Suppose a cost-minimal realisation has more than `|Z| + 1` components.
+2. Removing the `|Z|` cut sites splits the ends into `|Z| + 1` classes.
+3. By pigeonhole some class contains two distinct components.
+4. Within a class the ends are connected through non-cut sites only, so two
+   distinct components meet at some non-cut site.
+5. There the merge is free, by the refined local statement, so the component count
+   drops at no cost, contradicting minimality.
+
+Hence `c <= |Z|`, and with `prop:cut` the shield law.
+
+Steps 1, 2, 3 and 5 are in hand: the cut count is defined, the classes are its
+complement, pigeonhole is pigeonhole, and step 5 is the measurement above together
+with the merge already proved. **Step 4 is the one that is not.** It says two
+components lying in the same class must actually meet, rather than merely lying in
+a common class without sharing a site. That is a connectivity statement about the
+class, and it is where `prop:cut`'s own argument already works, since that
+proposition reasons about exactly this decomposition to get its lower bound.
+
+Recording the route rather than claiming the conclusion. What has changed is that
+the difficulty is now one named step inside a decomposition the paper already uses,
+instead of an obstruction that looked like it ruled the approach out.
