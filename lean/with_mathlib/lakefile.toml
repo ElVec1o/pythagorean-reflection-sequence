@@ -235,3 +235,9 @@ name = "OrbitCount"
 
 [[lean_lib]]
 name = "RealizationModel"
+
+[[lean_lib]]
+name = "EndData"
+
+[[lean_lib]]
+name = "NonVacuity"
