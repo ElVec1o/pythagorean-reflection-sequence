@@ -202,6 +202,45 @@ theorem all_right_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (π 
   rw [not_atTop_at_cLo edgeOf siteOf atTop hsite π z e hmem hs]
   rfl
 
+/-! ### Extracting shared ends
+
+The dichotomy gives an inequality on support endpoints.  The merge wants two ends
+at one site in different components.  Crossing between them needs one further
+structural property, stated here rather than assumed silently: the two ends of a
+crossing lie in the same component, because the walk traverses the crossing.
+
+Note what is NOT used: contiguity of a support.  `cycleEdges` is a finite set and
+its endpoints are the minimum and maximum, so the interval between them may contain
+edges the component never visits.  The extraction below therefore goes through the
+covering hypothesis, which names a component actually present on the edge, instead
+of through the interval. -/
+
+/-- Both ends of a crossing lie in the same component. -/
+def StrandClosed {β : Type*} (partner : β → β) (π : Perm β) : Prop :=
+  ∀ x : β, π.SameCycle x (partner x)
+
+/-- **The extraction.**  At the leftmost site of a component `i`, take any component
+present on the edge immediately to the left.  It is not `i`, since that edge lies
+below `i`'s support, and the top end of that edge sits at `i`'s leftmost site.  So
+the two components share a site, with concrete ends on both sides. -/
+theorem shared_ends_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (π : Perm α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (i y : α) (hy : edgeOf y = cLo edgeOf π i - 1) (hytop : atTop y = true) :
+    siteOf y = cLo edgeOf π i ∧ ¬ π.SameCycle i y := by
+  constructor
+  · have h := hsite y
+    rw [hytop] at h
+    simp only [if_true] at h
+    omega
+  · intro hcon
+    -- `y`'s edge would then lie in `i`'s support, below its minimum
+    have hin : edgeOf y ∈ cycleEdges edgeOf π i := by
+      simp only [cycleEdges, Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and]
+      exact ⟨y, hcon, rfl⟩
+    have := Finset.min'_le _ _ hin
+    unfold cLo at *
+    omega
+
 -- Certification (Rule 5).
 #print axioms ComponentSupport.cycleEdges_nonempty
 #print axioms ComponentSupport.self_mem_support
@@ -216,5 +255,6 @@ theorem all_right_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (π 
 #print axioms ComponentSupport.edge_eq_cLo_at_cLo
 #print axioms ComponentSupport.bounce_of_all_one_side
 #print axioms ComponentSupport.all_right_at_cLo
+#print axioms ComponentSupport.shared_ends_at_cLo
 
 end ComponentSupport
