@@ -380,6 +380,40 @@ theorem adj_merge (D : Data α) (a d a' d' : α) (h1 h2 h3) :
   refine Or.inr ?_
   simp [swapData, swapT]
 
+/-- **The surviving edges.**  Every edge of the original graph other than the two
+turn-edges being re-paired is an edge of the re-paired graph: crossing-edges are
+untouched, and a turn-edge at an end outside the four is unchanged because the new
+turn agrees with the old there. -/
+theorem le_swapData (D : Data α) (a d a' d' : α)
+    (hd : D.t a = d) (hd' : D.t a' = d') (h1 h2 h3) :
+    (graph D).deleteEdges {s(a, d), s(a', d')} ≤ graph (swapData D a d a' d' h1 h2 h3) := by
+  intro u v huv
+  rw [SimpleGraph.deleteEdges_adj] at huv
+  obtain ⟨hadj, hnot⟩ := huv
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or] at hnot
+  rcases hadj with hc | ht
+  · exact Or.inl hc
+  · -- a turn-edge; it is unchanged unless `u` is one of the four
+    refine Or.inr ?_
+    subst ht
+    show D.t u = swapT D.t a d a' d' u
+    unfold swapT
+    have hua : u ≠ a := by
+      rintro rfl; exact hnot.1 (by rw [hd])
+    have hua' : u ≠ a' := by
+      rintro rfl; exact hnot.2 (by rw [hd'])
+    have hud : u ≠ d := by
+      intro hc
+      apply hnot.1
+      have htu : D.t u = a := by rw [hc, ← hd, D.t_invol]
+      rw [htu, hc, Sym2.eq_swap]
+    have hud' : u ≠ d' := by
+      intro hc
+      apply hnot.2
+      have htu : D.t u = a' := by rw [hc, ← hd', D.t_invol]
+      rw [htu, hc, Sym2.eq_swap]
+    rw [if_neg hua, if_neg hud', if_neg hua', if_neg hud]
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -403,5 +437,6 @@ theorem adj_merge (D : Data α) (a d a' d' : α) (h1 h2 h3) :
 #print axioms WalkGraph.conn_of_adj
 #print axioms WalkGraph.swapT_invol
 #print axioms WalkGraph.adj_merge
+#print axioms WalkGraph.le_swapData
 
 end WalkGraph
