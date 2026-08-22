@@ -288,6 +288,47 @@ theorem gapfree_no_isolated_cycles (up : Fin n → ℕ)
   obtain ⟨D', hM, hz⟩ := gapfree_defect_zero up hbal hm e0
   exact ⟨D', hM, fun b => by rw [otherComponents_eq_defect D' b, hz]⟩
 
+/-! ### `thm:nogap`
+
+The paper states: *if `g` has no gap edge then `c(g) = 0`.*
+
+Below is that statement in one place, so the correspondence with the paper is
+checkable without reassembling it from eight files.
+
+**What is formalised.**  A lamp configuration is given by multiplicities `m` and
+up-counts `up`.  "No gap edge" is `∀ e, 0 < m e` -- every edge carries a crossing.
+`hbal` is the arrival/departure balance that makes the turn exist, which is a
+property of the configuration, proved at interior sites by
+`EndType.card_arr_eq_card_dep_of_edges` and at the two boundaries by `balance_left`
+and `balance_right`.  The conclusion is that some realisation of the configuration
+has no isolated cycle, against any basepoint -- `c(g) = 0`.
+
+**What is not.**  The passage from a group element `g` to its configuration, and the
+cost-minimality of the realisation produced, are not formalised here; the merge
+preserves `Merges`, not a cost.  So this is `thm:nogap` for configurations, which is
+where its content lies, and not a formal proof of the paper's sentence about `g`. -/
+theorem thm_nogap (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hnogap : ∀ e : Fin n, 0 < m e) (e0 : Fin n) :
+    ∃ D' : Data (Endpt n m),
+      Merges siteOf (isArrOf up) partner D' ∧
+      walkCount D' = 1 ∧
+      ∀ b : Endpt n m, otherComponents D' b = 0 := by
+  obtain ⟨D', hM, hone⟩ := gapfree_single_walk up hbal hnogap e0
+  refine ⟨D', hM, hone, fun b => ?_⟩
+  rw [otherComponents_eq_defect D' b]
+  unfold defect
+  omega
+
+/-- `thm:nogap` on the one-edge configuration, so the statement above is known to
+have content. -/
+theorem thm_nogap_witness :
+    ∃ D' : Data (Endpt 1 (fun _ => 2)),
+      Merges siteOf (isArrOf (fun _ : Fin 1 => 1)) partner D' ∧
+      walkCount D' = 1 ∧
+      ∀ b : Endpt 1 (fun _ => 2), otherComponents D' b = 0 :=
+  thm_nogap (m := fun _ : Fin 1 => 2) (fun _ => 1) one_edge_hbal (fun _ => by norm_num) 0
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.otherComponents_eq_defect
-#print axioms ConfigLoop.gapfree_no_isolated_cycles
+#print axioms ConfigLoop.thm_nogap
+#print axioms ConfigLoop.thm_nogap_witness

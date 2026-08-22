@@ -800,3 +800,22 @@ component for the choice of b to matter to.
 So M6's chain now reaches thm:nogap's actual statement. What the model still does
 not carry is which end is the word's start -- but the theorem holds for all of them,
 so nothing depends on choosing.
+
+## thm:nogap as one named theorem (2026-08-23)
+
+ConfigLoop.thm_nogap states the paper's thm:nogap in one place, so the
+correspondence is checkable without reassembling it from eight files.
+
+FORMALISED: a configuration is (m, up); "no gap edge" is forall e, 0 < m e; hbal is
+the arrival/departure balance (interior sites by card_arr_eq_card_dep_of_edges, the
+two boundaries by balance_left/balance_right). Conclusion: some realisation has
+exactly one walk and no isolated cycle against any basepoint -- c(g) = 0.
+
+NOT FORMALISED, and stated in the docstring rather than left implicit:
+ - the passage from a group element g to its configuration;
+ - cost-minimality of the realisation produced. The merge preserves Merges, which
+   carries the crossing map and the turn's site/role laws, NOT a cost.
+
+So this is thm:nogap for CONFIGURATIONS, which is where its content lies, and not a
+formal proof of the paper's sentence about g. thm_nogap_witness instantiates it on
+the one-edge configuration so the statement is known to have content.
