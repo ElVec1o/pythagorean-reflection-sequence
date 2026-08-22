@@ -72,5 +72,90 @@ theorem gapfree_merges_to_one (up : Fin n → ℕ)
       Merges siteOf (isArrOf up) partner D' ∧ walkCount D' ≤ 1 :=
   config_merges_to_one up hbal (covering_of_mult_pos hm)
 
+/-! ### Balance at the boundary
+
+`card_arr_eq_card_dep_of_edges` needs edges on *both* sides of a site.  At the two
+ends of the strip one side is missing, and there the balance is a condition on a
+single edge.  These lemmas supply it. -/
+
+/-- With no edge at `s - 1`, no end at site `s` is a top end. -/
+theorem no_top_at (up : Fin n → ℕ) (s : ℤ) (hno : ∀ e : Fin n, (e : ℤ) ≠ s - 1) :
+    ((arrAt (m := m) up s).filter (fun x => atTop x = true)).card = 0 ∧
+    ((depAt (m := m) up s).filter (fun x => atTop x = true)).card = 0 := by
+  constructor <;> rw [Finset.card_eq_zero] <;> ext x <;>
+    simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
+  · intro hx ht
+    exact hno x.edge (((arr_top_iff up s x).mp ⟨hx, ht⟩).1)
+  · intro hx ht
+    exact hno x.edge (((dep_top_iff up s x).mp ⟨hx, ht⟩).1)
+
+/-- With no edge at `s`, no end at site `s` is a bottom end. -/
+theorem no_bottom_at (up : Fin n → ℕ) (s : ℤ) (hno : ∀ e : Fin n, (e : ℤ) ≠ s) :
+    ((arrAt (m := m) up s).filter (fun x => atTop x = false)).card = 0 ∧
+    ((depAt (m := m) up s).filter (fun x => atTop x = false)).card = 0 := by
+  constructor <;> rw [Finset.card_eq_zero] <;> ext x <;>
+    simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
+  · intro hx ht
+    exact hno x.edge (((arr_bottom_iff up s x).mp ⟨hx, ht⟩).1)
+  · intro hx ht
+    exact hno x.edge (((dep_bottom_iff up s x).mp ⟨hx, ht⟩).1)
+
+/-- **Balance at the left boundary.**  Only the edge at `s` contributes, so the site
+balances exactly when that edge's crossings split evenly. -/
+theorem balance_left (up : Fin n → ℕ) (s : ℤ) (e : Fin n) (he : (e : ℤ) = s)
+    (hno : ∀ e' : Fin n, (e' : ℤ) ≠ s - 1)
+    (hsplit : m e - min (up e) (m e) = min (up e) (m e)) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card := by
+  obtain ⟨h1, h2⟩ := no_top_at (m := m) up s hno
+  rw [← card_split_atTop (arrAt (m := m) up s), ← card_split_atTop (depAt (m := m) up s),
+    h1, h2, card_arr_bottom up s e he, card_dep_bottom up s e he, hsplit]
+
+/-- **Balance at the right boundary.**  Symmetrically, only the edge at `s - 1`
+contributes. -/
+theorem balance_right (up : Fin n → ℕ) (s : ℤ) (e : Fin n) (he : (e : ℤ) = s - 1)
+    (hno : ∀ e' : Fin n, (e' : ℤ) ≠ s)
+    (hsplit : min (up e) (m e) = m e - min (up e) (m e)) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card := by
+  obtain ⟨h1, h2⟩ := no_bottom_at (m := m) up s hno
+  rw [← card_split_atTop (arrAt (m := m) up s), ← card_split_atTop (depAt (m := m) up s),
+    h1, h2, card_arr_top up s e he, card_dep_top up s e he]
+  omega
+
+/-- **A site with no adjacent edge is empty**, so it balances trivially. -/
+theorem balance_empty (up : Fin n → ℕ) (s : ℤ)
+    (hlo : ∀ e : Fin n, (e : ℤ) ≠ s - 1) (hhi : ∀ e : Fin n, (e : ℤ) ≠ s) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card := by
+  obtain ⟨h1, h2⟩ := no_top_at (m := m) up s hlo
+  obtain ⟨h3, h4⟩ := no_bottom_at (m := m) up s hhi
+  rw [← card_split_atTop (arrAt (m := m) up s), ← card_split_atTop (depAt (m := m) up s),
+    h1, h2, h3, h4]
+
+/-! ### Non-vacuity
+
+`gapfree_merges_to_one` carries two hypotheses.  The empty configuration satisfies
+both, which settles that they are consistent -- but it is a weak witness, and the
+substantive one is below. -/
+
+/-- The empty configuration: no edges, hence no ends, and every count is zero. -/
+theorem empty_hbal (up : Fin 0 → ℕ) :
+    ∀ s : ℤ, (arrAt (m := fun _ => 0) up s).card = (depAt (m := fun _ => 0) up s).card := by
+  intro s
+  have : ∀ (t : Finset (Endpt 0 (fun _ => 0))), t.card = 0 := by
+    intro t
+    rw [Finset.card_eq_zero]
+    ext x
+    exact absurd x.edge.isLt (Nat.not_lt_zero _)
+  rw [this, this]
+
+/-- So the hypotheses of `gapfree_merges_to_one` are consistent. -/
+theorem gapfree_not_vacuous (up : Fin 0 → ℕ) :
+    ∃ D' : Data (Endpt 0 (fun _ => 0)),
+      Merges siteOf (isArrOf up) partner D' ∧ walkCount D' ≤ 1 :=
+  gapfree_merges_to_one up (empty_hbal up) (fun e => absurd e.isLt (Nat.not_lt_zero _))
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.gapfree_merges_to_one
+#print axioms ConfigLoop.empty_hbal
+#print axioms ConfigLoop.gapfree_not_vacuous
+#print axioms ConfigLoop.balance_left
+#print axioms ConfigLoop.balance_right
+#print axioms ConfigLoop.balance_empty
