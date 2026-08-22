@@ -414,6 +414,22 @@ theorem le_swapData (D : Data α) (a d a' d' : α)
       rw [htu, hc, Sym2.eq_swap]
     rw [if_neg hua, if_neg hud', if_neg hua', if_neg hud]
 
+/-- **The merge.**  Re-pairing two arrivals joins their walks: the merging edge
+carries `a` to `d'`, and the surviving half of the second walk carries `d'` to `a'`,
+transported into the re-paired graph by `le_swapData`.
+
+The path hypothesis is over the graph with *both* re-paired turn-edges deleted.
+`reach_delete_turn` supplies it with one deleted; the second deletion is harmless
+because that edge lies in the other walk, which the path never enters.  That
+containment is the one step not carried out here, so it appears as the hypothesis
+rather than being assumed silently. -/
+theorem merge_connects (D : Data α) (a d a' d' : α)
+    (hd : D.t a = d) (hd' : D.t a' = d') (h1 h2 h3)
+    (path : ((graph D).deleteEdges {s(a, d), s(a', d')}).Reachable d' a') :
+    (graph (swapData D a d a' d' h1 h2 h3)).Reachable a a' :=
+  (SimpleGraph.Adj.reachable (adj_merge D a d a' d' h1 h2 h3)).trans
+    (path.mono (le_swapData D a d a' d' hd hd' h1 h2 h3))
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -438,5 +454,6 @@ theorem le_swapData (D : Data α) (a d a' d' : α)
 #print axioms WalkGraph.swapT_invol
 #print axioms WalkGraph.adj_merge
 #print axioms WalkGraph.le_swapData
+#print axioms WalkGraph.merge_connects
 
 end WalkGraph
