@@ -90,9 +90,26 @@ theorem sameCycle_of_not_sameCycle (π : Perm α) (x y : α) (h : ¬ π.SameCycl
     exact absurd ⟨hipos, hcon⟩ (Nat.find_min _ hik)
   exact ⟨(k : ℤ), by simpa [zpow_natCast] using sameCycle_swap_mul π x y k hkpos hkx hkmin hy⟩
 
+/-- Off the two cycles being merged, the premultiplied permutation is unchanged.
+With `sameCycle_of_not_sameCycle` this is the structure of the merge: the cycles of
+`x` and of `y` fuse into one and every other cycle is untouched, so the orbit count
+drops by exactly one. -/
+theorem apply_eq_of_not_sameCycle (π : Perm α) (x y z : α)
+    (hzx : ¬ π.SameCycle x z) (hzy : ¬ π.SameCycle y z) :
+    (swap x y * π) z = π z := by
+  have hz : π.SameCycle z (π z) := ⟨1, by simp⟩
+  have hx : π z ≠ x := by
+    intro hcon
+    exact hzx (hcon ▸ hz).symm
+  have hy : π z ≠ y := by
+    intro hcon
+    exact hzy (hcon ▸ hz).symm
+  simp [Perm.mul_apply, swap_apply_of_ne_of_ne hx hy]
+
 -- Certification (Rule 5).
 #print axioms CycleMerge.pow_apply_eq_of_lt
 #print axioms CycleMerge.sameCycle_swap_mul
 #print axioms CycleMerge.sameCycle_of_not_sameCycle
+#print axioms CycleMerge.apply_eq_of_not_sameCycle
 
 end CycleMerge
