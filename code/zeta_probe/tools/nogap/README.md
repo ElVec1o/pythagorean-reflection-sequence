@@ -1275,3 +1275,22 @@ What survives: walk_graph_local (stated for an arbitrary Zf) and prop_cut_config
 conditional statement, correct as written). What does not: the claim that gapSites is
 the paper's Z and that gap_condition discharges Local's hypothesis for prop:cut.
 Docstrings corrected in place. M3's bridge needs Z built from alpha, beta, Phi.
+
+## The cut condition, from its actual definition (2026-08-23)
+
+Read the definitions instead of guessing them this time.
+
+  SiteCost.alpha Ap Am Cp Cm = (Cp - Cm) - (Ap - Am)
+  SiteCost.beta  Bp Bm Dp Dm = (Bp - Bm) - (Dp - Dm)
+  SiteCost.Phi   Ap Am Cp Cm = (Ap + Am) - (Cp + Cm)
+  SiteCost.siteValue         = max (|alpha|, |beta|, |Phi|)
+
+prop:cut calls a site CUT when alpha = beta = Phi = 0. Since siteValue is exactly the
+max of their absolute values, being cut is siteValue = 0 --
+ConfigLoop.isCut_iff_siteValue_zero. So the paper's Z is the set of INTERIOR sites of
+zero site-value, and it is expressible with definitions already in the development.
+
+That replaces the retracted gapSites. It also explains why the shifted-gap-edge guess
+was wrong in a structural way: cut is a condition on the PAIRING data at a site
+(arrivals, departures and their signs), not on the edge multiplicities, so no function
+of the gap edges alone could have been it.

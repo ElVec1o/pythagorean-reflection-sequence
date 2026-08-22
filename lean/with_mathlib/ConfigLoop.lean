@@ -19,6 +19,7 @@ import EdgeData
 import GroupElt
 import NoGapCutFree
 import CutComponents
+import SiteCost
 
 namespace ConfigLoop
 
@@ -610,5 +611,32 @@ theorem prop_cut_config (up : Fin n → ℕ) (dep trav : Fin n → ℤ)
     (walk_graph_local up hbal (gapSites dep trav) (gap_condition dep trav hmdef))
     A B hAB hlow hhigh hocc c0
 
+/-! ### The cut condition, from its actual definition
+
+`prop:cut` calls a site of the span **cut** when `α_s = β_s = Φ_s = 0`, and takes `Z`
+to be the cut sites *interior* to the span.  Since `SiteCost.siteValue` is exactly
+`max (|α|, |β|, |Φ|)`, being cut is the same as that value vanishing -- so the paper's
+`Z` is the set of interior sites of zero site-value.
+
+This is the correct foundation, replacing the shifted gap edges retracted above. -/
+
+/-- **Cut is exactly zero site-value.** -/
+theorem isCut_iff_siteValue_zero (Ap Am Bp Bm Cp Cm Dp Dm : ℕ) :
+    SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm = 0 ↔
+      (SiteCost.alpha Ap Am Cp Cm = 0 ∧ SiteCost.beta Bp Bm Dp Dm = 0 ∧
+        SiteCost.Phi Ap Am Cp Cm = 0) := by
+  unfold SiteCost.siteValue
+  rw [Nat.max_eq_zero_iff, Nat.max_eq_zero_iff, Int.natAbs_eq_zero, Int.natAbs_eq_zero,
+    Int.natAbs_eq_zero]
+  tauto
+
+/-- A cut site costs nothing, since the site cost is its value. -/
+theorem cut_site_value (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (h : SiteCost.alpha Ap Am Cp Cm = 0) (h2 : SiteCost.beta Bp Bm Dp Dm = 0)
+    (h3 : SiteCost.Phi Ap Am Cp Cm = 0) :
+    SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm = 0 :=
+  (isCut_iff_siteValue_zero Ap Am Bp Bm Cp Cm Dp Dm).mpr ⟨h, h2, h3⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.prop_cut_config
+#print axioms ConfigLoop.isCut_iff_siteValue_zero
+#print axioms ConfigLoop.cut_site_value
