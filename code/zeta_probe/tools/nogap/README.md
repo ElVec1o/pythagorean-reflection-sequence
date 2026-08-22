@@ -228,3 +228,65 @@ This is the structural input the Kotzig-type results need: under no gap edges th
 transition system is forced to communicate across every interior site. It does NOT
 by itself give a single component, since one pass links one strand pair while other
 strands may still close into cycles. That remaining step is the open part of M6.
+
+## M6 closed: no gap edge => c = 0.  Proof written, adversarial review PENDING
+
+The transfer pass overturned the obstruction recorded above. The claim there, that
+the sign splits `p^u_j` are free, is FALSE at minimum multiplicity. They are forced,
+and forced to be homogeneous, which is exactly what the merge argument needed.
+
+**Step 1. A relaxed-optimal realization has `m_j = m*_j`.**
+The site cost `max(|alpha|,|beta|,|Phi|)` is independent of `m` and of the sign
+split (`sitecost` mode `universal`, 4 532 157 configurations, 0 exceptions), so
+raising any `m_j` by 2 adds 2 to `sum m` and lowers nothing.
+
+**Step 2. No gap edge => `d_j != 0` on every span edge.**
+`d_j = 0` with `f_j = 0` is a gap edge. `d_j = 0` with `f_j != 0` is impossible,
+since `d_j = f_j (mod 2)` would force `f_j` even.
+
+**Step 3. `m_j = |d_j|`, and the sign split is forced and homogeneous.**
+`|d_j| >= |f_j|` in both parities, so `m*_j = |d_j|`. Then
+`p^d_j = p^u_j + (d_j - f_j)/2` together with `0 <= p^d_j <= dn_j` forces
+`p^u_j = 0` when `d_j > 0` and `p^u_j = u_j` when `d_j < 0`. Hence every
+up-crossing of edge `j` carries sign `-sgn(d_j)` and every down-crossing carries
+`+sgn(d_j)`. Checked on all 24 admissible no-gap edge configurations: the split is
+unique, homogeneous, and follows the `sgn(d)` rule, 0 exceptions.
+
+**Step 4. For edge strands the pair cost depends only on the side pattern.**
+Arrivals on the left are up-crossings of the left edge, departures on the left are
+its down-crossings, and by Step 3 these carry opposite signs. So
+`pc(L,L) = pc(R,R) = 2` and `pc(L,R) = pc(R,L) = 1`.
+
+**Step 5. A 2-swap is free exactly when the two pairs share an arrival side or a
+departure side.** Over the 16 side patterns, `Delta = 0` in 12, `Delta = -2` in 2,
+`Delta = +2` in 2, and `Delta = 0` holds precisely under that condition. The two
+`Delta = -2` patterns (`a=L, a'=R, d=L, d'=R` and its mirror) cannot occur in a
+cost-minimal realization.
+
+**Step 6. Conclusion.** Take a relaxed-optimal realization minimising the number of
+components and suppose it has an isolated cycle `gamma`. The support of `gamma` is
+an interval (a walk cannot skip an edge), so at its leftmost site all of its ends
+lie on the R side and all of its pairs there are `(R -> R)`. Any other component
+present at that site either shares the arrival side R or the departure side R, and
+the merge is free by Step 5; or all of its pairs are `(L -> L)`, which is a
+`Delta = -2` pattern and contradicts cost-minimality. A 2-swap between pairs of
+different components merges them, so either way there is a relaxed-optimal
+realization with strictly fewer components, contradicting minimality. Hence there
+is no isolated cycle and `c = 0`. QED
+
+**Consequences.** `prop:local`(i) follows, since support inside `I_k` implies no gap
+edge; and `prop:travelinv` (=(T)) follows from it by the two-line argument already
+in `lifting_U.tex`. That removes (T) from the hypotheses of `U`, leaving (L).
+
+**Where this is soft (Rule 6).** Step 6 assumes another component is present at
+`gamma`'s extreme site. The cases `p > lo`, and `p = lo` with some strand of edge
+`lo` outside `gamma`, are immediate. The residual case is `gamma` owning every
+strand, which forces the open walk to be the two virtual ends paired at a single
+site, hence `k* = 0` with both markers at site 0. The virtual ends do NOT obey the
+homogeneity of Step 3, so their pair costs must be handled separately; the
+sub-cases were checked by hand and each yields either `Delta = 0` or a
+`Delta = -2` contradiction, but this is the part that a hostile fresh-session
+review should attack first.
+
+End-to-end, the statement is verified on 2 505 271 elements to word length 31 with
+0 exceptions, which is independent of the proof above.
