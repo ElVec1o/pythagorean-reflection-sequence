@@ -34,8 +34,26 @@ structure Realisation (α : Type*) [DecidableEq α] [Fintype α] where
 mismatch arises with the permutation type. -/
 noncomputable instance : DecidableEq (Realisation α) := Classical.decEq _
 
-/-- The component count of a realisation: the number of cycles of its transition
-system. -/
+/-- The component count of a realisation.
+
+**Correction (2026-08-23).**  An earlier version of this docstring called `trans`
+the transition system and `comp` the number of its cycles.  That identification is
+wrong and was caught by trying to satisfy the model specification: a component is a
+walk, and a walk alternates between crossing an edge and turning at a site, whereas
+the transition system only turns.  In the smallest instance, one edge with an up-
+and a down-crossing, the cycles of the transition system are the two pairs of top
+ends and bottom ends, so the two ends of a single crossing land in different
+cycles.
+
+`trans` is therefore to be read as the **walk** permutation, the turn composed with
+the strand pairing.  A 2-swap re-pairs at one site, sending the turn `t` to
+`swap ∘ t` and hence the walk to `swap ∘ walk`, which is the form `CycleMerge`
+proves things about.  So the machinery below targets the right object; only the
+name and the reading of `trans` were wrong.
+
+What is still owed is a construction of that walk permutation from a lamp
+configuration, together with a proof that its cycles are the components.  That is
+recorded here rather than implied to be done. -/
 noncomputable def comp (r : Realisation α) : ℕ := orbitCount r.trans
 
 /-- The realisation obtained by a 2-swap at two ends, at unchanged cost. -/
