@@ -448,3 +448,27 @@ walks throughout.
 `(#cycles - 1)/2`, and the merge as a double transposition. That is a redesign of
 the interpretation layer, not a further lemma, and it is why the formalisation debt
 on `thm:nogap` did not clear.
+
+### A measurement that did not apply, and why it is recorded
+
+Chasing the corrected merge, the double-transposition analogue was measured on
+random permutations. Across two cycles it gave `-2` about 71 per cent of the time
+and `0` otherwise; restricted to the shape thought to match the application, `a, d`
+in one cycle and `a', d'` in another, it gave `0` in all 853 samples.
+
+**That measurement does not apply, and the `0` must not be read as a result.** The
+permutation in question is `turn . partner` with both factors involutions, which is
+a structured class, not a uniform random permutation, and the four points are tied
+to `turn` and `partner` rather than chosen freely. The restriction used also
+assumed `a` and `d` share a cycle, which is not established: `d = pi(partner a)`
+does not place `a` and `d` in one cycle of `pi`.
+
+The single-transposition control in the same run is sound and reconfirms
+`CycleMerge`: across two cycles the count fell by exactly one in 9987 of 9987
+samples.
+
+The lesson is the same one the two modeling errors taught, in a different guise: a
+measurement on the wrong ensemble is as misleading as a proof of the wrong
+statement, and neither is caught by checking axioms. Any future measurement here
+must sample `turn` and `partner` as involutions with the site and edge structure,
+not permutations at large.
