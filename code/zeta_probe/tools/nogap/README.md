@@ -531,3 +531,35 @@ support, not a further piece of the reflection-group argument.
 
 Recorded so the next attempt starts from the reduction rather than rediscovering
 it.
+
+### The no-go refined: the local obstruction is exactly a cut site
+
+The earlier no-go treated the signs at a gap edge as given. They are not: a gap edge
+has `m = 2`, `d = 0`, `f = 0`, so `p^d = p^u` with `p^u` free, and the two crossings
+share a sign either way. In building a relaxed-optimal realisation that choice is
+ours.
+
+Measuring with the choice available: of 64 configurations where one pair sits on a
+gap edge, **60 admit a choice making the swap free or cheaper**, against 52 of 256
+blocking when all signs are fixed. Only **4** block under both choices, and they are
+all the same shape:
+
+    A = (L,s) -> (L,s)      B = (R,g) -> (R,g)      and its mirror
+
+that is, **both components have a cost-zero bounce, on opposite sides**.
+
+That shape is worth naming. Under the homogeneity that no gap edges forces, a bounce
+costs 2, since arrivals and departures on a side carry opposite signs; swapping two
+such bounces gives two passes at `1 + 1`, so the merge is free. At a gap edge a
+bounce can cost 0, and then the same swap costs `+2`.
+
+And cost-zero bounces on both sides is exactly `alpha = beta = Phi = 0`, the cut-site
+condition of `prop:cut`. So the local obstruction to merging is precisely a cut
+site.
+
+**This refines the no-go rather than overturning it.** What is now clear is where
+the difficulty sits: not in the merge, which the walk formulation handles, and not
+in gap edges as such, whose sign freedom rescues almost everything, but exactly at
+the sites `prop:cut` already identifies. Whether that local statement assembles into
+`c <= |Z|` is not settled here; it is a lead, and it is the first one that points at
+the cut sites themselves rather than away from them.
