@@ -83,11 +83,47 @@ def dataW : Data (Fin 4) where
 
 theorem witness_degree : (graph dataW).degree 0 = 2 := degree_eq_two dataW 0
 
+/-! ### From "not a bridge" to the path the merge needs -/
+
+/-- The turn-edge at `x` is an edge of the walk graph. -/
+theorem adj_turn (x : α) : (graph D).Adj x (D.t x) := Or.inr rfl
+
+/-- **The reduction.**  If the turn-edge at `x` is not a bridge, its endpoints stay
+connected after it is deleted.  That surviving path is `WalkMerge.conn_merge`'s
+hypothesis: it uses only crossing-edges and turn-edges other than the deleted one,
+all of which the re-paired graph still has. -/
+theorem reachable_delete_of_not_bridge (x : α)
+    (hnb : ¬ (graph D).IsBridge s(x, D.t x)) :
+    ((graph D).deleteEdges {s(x, D.t x)}).Reachable x (D.t x) := by
+  rw [SimpleGraph.isBridge_iff] at hnb
+  push Not at hnb
+  exact hnb (adj_turn D x)
+
+/-- Equivalently, exhibiting a cycle through the turn-edge suffices.  This is the
+form 2-regularity feeds: in a 2-regular graph every edge lies in a cycle, so no
+edge is a bridge. -/
+theorem not_bridge_of_cycle (x : α) {u : α} (c : (graph D).Walk u u)
+    (hc : c.IsCycle) (hmem : s(x, D.t x) ∈ c.edges) :
+    ¬ (graph D).IsBridge s(x, D.t x) := by
+  rw [SimpleGraph.isBridge_iff_adj_and_forall_cycle_notMem]
+  rintro ⟨-, hall⟩
+  exact hall c hc hmem
+
+/-- The two composed: a cycle through the turn-edge gives the path. -/
+theorem reachable_delete_of_cycle (x : α) {u : α} (c : (graph D).Walk u u)
+    (hc : c.IsCycle) (hmem : s(x, D.t x) ∈ c.edges) :
+    ((graph D).deleteEdges {s(x, D.t x)}).Reachable x (D.t x) :=
+  reachable_delete_of_not_bridge D x (not_bridge_of_cycle D x c hc hmem)
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
 #print axioms WalkGraph.neighbor_eq
 #print axioms WalkGraph.degree_eq_two
 #print axioms WalkGraph.witness_degree
+#print axioms WalkGraph.adj_turn
+#print axioms WalkGraph.reachable_delete_of_not_bridge
+#print axioms WalkGraph.not_bridge_of_cycle
+#print axioms WalkGraph.reachable_delete_of_cycle
 
 end WalkGraph
