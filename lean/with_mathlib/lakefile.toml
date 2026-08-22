@@ -262,3 +262,6 @@ name = "ComponentSupport"
 
 [[lean_lib]]
 name = "EndType"
+
+[[lean_lib]]
+name = "WalkMerge"
