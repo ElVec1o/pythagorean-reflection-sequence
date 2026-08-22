@@ -644,3 +644,27 @@ second conjunct.
 `SitePlacement` is kept -- its statements are true, and the cycle-level support is
 still what the `cLo`/`cHi` interval dichotomy in `GapFreeAssembly` is stated over.
 It simply does not feed the descent.
+
+## The last half of k2 is a parity fact, not a group identity (2026-08-23)
+
+ClosesAvoiding has five clauses. Four are free: hM and hpos from exists_closes
+(sig is injective on a finite set, so orbits are periodic), and k1 and klast
+because they are about *crossing* edges while the deleted set consists of *turn*
+edges (crossing_ne_turn). All content is in k2.
+
+k2 splits in two. The cross-walk half -- an orbit at `a` never meets `a'`'s turn
+edge -- is orbit_avoids_other, and follows from hsplit alone.
+
+The self half needs: the orbit at `a` does not meet `a`'s own turn edge before
+closing. k2_self_dichotomy reduces it to two cases: the orbit closes early
+(excluded by taking M minimal), or `p a` lies in `a`'s own sig-orbit.
+
+That last is TRUE but is a PARITY fact. Each walk is an even cycle alternating
+crossing and turn edges; the two sig-orbits are its two alternating classes, and
+`p a` is adjacent to `a` on the cycle, hence in the other class.
+
+It does NOT follow from the group relations. sig_p_eq_t (sig on p is t) and
+p_t_sig (p after t inverts sig) say the two involutions generate a dihedral
+action with p conjugating sig to sig^{-1}. Those relations are CONSISTENT with
+p a = sig^k a; what rules it out is the even length of the cycle. So the
+remaining work is the alternating-class argument, not more identity juggling.

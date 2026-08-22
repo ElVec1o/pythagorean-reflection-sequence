@@ -428,6 +428,47 @@ theorem orbit_avoids_other {α : Type*} [DecidableEq α] [Fintype α]
     exact hsplit ((h1 ▸ hreach).trans
       (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl)).symm)
 
+/-! ### The structure of `sig`, and the parity gap
+
+Two identities relate `sig` to its two involutions.  They are worth banking: they say
+the walk graph carries a dihedral action, `p` conjugating `sig` to its inverse.
+
+They do *not* close the remaining half of `k₂`.  That half needs `p a` never to lie
+in `a`'s own `sig`-orbit, which is true -- each walk is an even cycle alternating
+crossing and turn edges, and the two `sig`-orbits are its two alternating classes --
+but it is a *parity* fact about the cycle, not a consequence of the identities below.
+The dihedral relations alone are consistent with `p a = sig^k a`; what rules it out
+is that the cycle has even length and `p a` is adjacent to `a` on it. -/
+
+/-- **`sig` after `p` is `t`.**  Since `sig y = t (p y)` and `p` is an involution. -/
+theorem sig_p_eq_t {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (x : α) : sig D (D.p x) = D.t x := by
+  unfold sig
+  rw [D.p_invol]
+
+/-- **`p ∘ t` inverts `sig`.**  So the two involutions generate a dihedral action, with
+`p` conjugating `sig` to `sig⁻¹`. -/
+theorem p_t_sig {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (x : α) : D.p (D.t (sig D x)) = x := by
+  unfold sig
+  rw [D.t_invol, D.p_invol]
+
+/-- **The remaining half of `k₂`, stated.**  If the orbit at `a` meets `a`'s own turn
+edge at step `k`, then either the orbit closes early -- excluded by minimality -- or
+`p a` lies in the orbit, which is the parity fact still to be proved. -/
+theorem k2_self_dichotomy {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a : α) (k : ℕ)
+    (h : s(D.p ((sig D)^[k] a), D.t (D.p ((sig D)^[k] a))) = s(a, D.t a)) :
+    (sig D)^[k + 1] a = a ∨ (sig D)^[k] a = D.p a := by
+  rw [Sym2.eq_iff] at h
+  rcases h with ⟨h1, _⟩ | ⟨_, h2⟩
+  · right
+    have h := congrArg D.p h1
+    rwa [D.p_invol] at h
+  · left
+    rwa [orbit_turn_edge D a k] at h2
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.reach_sig_iter
-#print axioms ConfigMerge.orbit_avoids_other
+#print axioms ConfigMerge.sig_p_eq_t
+#print axioms ConfigMerge.p_t_sig
+#print axioms ConfigMerge.k2_self_dichotomy
