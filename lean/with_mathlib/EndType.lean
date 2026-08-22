@@ -223,6 +223,46 @@ theorem edge_of_site_bottom {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) (s : �
   rw [ht] at hs
   simpa using hs
 
+/-! ### Counting, piece two: what each part of the split is
+
+A top-end arrival is an up-crossing, since the role is the agreement of direction
+with which end this is; and it lies on the edge below its site.  A bottom-end
+arrival is a down-crossing on the edge above.  The departures are the two
+complementary descriptions. -/
+
+theorem arr_top_iff {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ) (x : Endpt n m) :
+    (x ∈ arrAt up s ∧ atTop x = true)
+      ↔ (edgeOf x = s - 1 ∧ atTop x = true ∧ isUp up x = true) := by
+  classical
+  rw [mem_arrAt]
+  constructor
+  · rintro ⟨⟨hs, ha⟩, ht⟩
+    refine ⟨edge_of_site_top x s hs ht, ht, ?_⟩
+    unfold isArrOf at ha
+    rw [ht] at ha
+    simpa using ha
+  · rintro ⟨he, ht, hu⟩
+    refine ⟨⟨?_, ?_⟩, ht⟩
+    · unfold siteOf; rw [ht, he]; simp
+    · unfold isArrOf; rw [ht, hu]; rfl
+
+theorem arr_bottom_iff {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (x : Endpt n m) :
+    (x ∈ arrAt up s ∧ atTop x = false)
+      ↔ (edgeOf x = s ∧ atTop x = false ∧ isUp up x = false) := by
+  classical
+  rw [mem_arrAt]
+  constructor
+  · rintro ⟨⟨hs, ha⟩, ht⟩
+    refine ⟨edge_of_site_bottom x s hs ht, ht, ?_⟩
+    unfold isArrOf at ha
+    rw [ht] at ha
+    simpa using ha
+  · rintro ⟨he, ht, hu⟩
+    refine ⟨⟨?_, ?_⟩, ht⟩
+    · unfold siteOf; rw [ht, he]; simp
+    · unfold isArrOf; rw [ht, hu]; rfl
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -240,5 +280,7 @@ theorem edge_of_site_bottom {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) (s : �
 #print axioms EndType.card_split_atTop
 #print axioms EndType.edge_of_site_top
 #print axioms EndType.edge_of_site_bottom
+#print axioms EndType.arr_top_iff
+#print axioms EndType.arr_bottom_iff
 
 end EndType
