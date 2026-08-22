@@ -590,6 +590,24 @@ theorem partner_ne_swapT {β : Type*} [DecidableEq β] (site : β → ℤ) (p t 
   TurnBuild.partner_ne_turn site p (swapT t a d a' d') hp
     (swapT_site site t a d a' d' ht hd ha' hd')
 
+/-- **The re-paired turn is fixed-point free.**  On the four ends it moves, each is
+sent to one of the others, and only two distinctness facts are needed for that;
+away from them it is the original turn, which fixes nothing. -/
+theorem swapT_ne {β : Type*} [DecidableEq β] (t : β → β) (a d a' d' : β)
+    (ht : ∀ x, t x ≠ x) (hd'a : d' ≠ a) (hda' : d ≠ a') :
+    ∀ x, swapT t a d a' d' x ≠ x := by
+  intro x
+  unfold swapT
+  by_cases h1 : x = a
+  · subst h1; rw [if_pos rfl]; exact hd'a
+  by_cases h2 : x = d'
+  · subst h2; rw [if_neg h1, if_pos rfl]; exact Ne.symm hd'a
+  by_cases h3 : x = a'
+  · subst h3; rw [if_neg h1, if_neg h2, if_pos rfl]; exact hda'
+  by_cases h4 : x = d
+  · subst h4; rw [if_neg h1, if_neg h2, if_neg h3, if_pos rfl]; exact Ne.symm hda'
+  rw [if_neg h1, if_neg h2, if_neg h3, if_neg h4]; exact ht x
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -620,6 +638,7 @@ theorem partner_ne_swapT {β : Type*} [DecidableEq β] (site : β → ℤ) (p t 
 #print axioms WalkGraph.merge_connects_full
 #print axioms WalkGraph.swapT_site
 #print axioms WalkGraph.partner_ne_swapT
+#print axioms WalkGraph.swapT_ne
 #print axioms WalkGraph.walkCount
 #print axioms WalkGraph.walkCount_lt
 
