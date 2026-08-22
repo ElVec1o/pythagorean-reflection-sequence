@@ -149,6 +149,50 @@ theorem isArrOf_partner {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (x : 
   unfold isArrOf isUp partner atTop
   cases h : x.2 <;> simp [h]
 
+/-! ### Arrivals and departures at a site
+
+The two sets the local turn pairs.  Disjointness is immediate from the role
+predicate; the card equality is the balance, and is the one obligation left in the
+construction. -/
+
+/-- The site of an end. -/
+def siteOf {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : ℤ :=
+  edgeOf x + (if atTop x then 1 else 0)
+
+/-- Arrivals at a site. -/
+noncomputable def arrAt {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ) :
+    Finset (Endpt n m) := by
+  classical
+  exact Finset.univ.filter (fun x => siteOf x = s ∧ isArrOf up x = true)
+
+/-- Departures at a site. -/
+noncomputable def depAt {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ) :
+    Finset (Endpt n m) := by
+  classical
+  exact Finset.univ.filter (fun x => siteOf x = s ∧ isArrOf up x = false)
+
+theorem mem_arrAt {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ) (x : Endpt n m) :
+    x ∈ arrAt up s ↔ (siteOf x = s ∧ isArrOf up x = true) := by
+  classical
+  unfold arrAt
+  simp
+
+theorem mem_depAt {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ) (x : Endpt n m) :
+    x ∈ depAt up s ↔ (siteOf x = s ∧ isArrOf up x = false) := by
+  classical
+  unfold depAt
+  simp
+
+/-- **Disjointness.**  An end either opens a pair or closes one, never both. -/
+theorem arrAt_disjoint_depAt {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ) :
+    Disjoint (arrAt (m := m) up s) (depAt (m := m) up s) := by
+  rw [Finset.disjoint_left]
+  intro x hx hx'
+  rw [mem_arrAt] at hx
+  rw [mem_depAt] at hx'
+  rw [hx.2] at hx'
+  exact Bool.noConfusion hx'.2
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -161,5 +205,7 @@ theorem isArrOf_partner {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (x : 
 #print axioms EndType.partner_edgeOf
 #print axioms EndType.partner_site_ne
 #print axioms EndType.isArrOf_partner
+#print axioms EndType.mem_arrAt
+#print axioms EndType.arrAt_disjoint_depAt
 
 end EndType
