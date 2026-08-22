@@ -107,6 +107,23 @@ theorem bounce_unshared_strictly_cheaper :
     NoGapMerge.swapDelta true true false false < 0 :=
   NoGapMerge.not_min_of_bounce_unshared true false false (by decide) (by decide)
 
+/-- `hpair_of_bounce` is not vacuous.  In the witness, `0` and `2` are arrivals,
+their partners `1` and `3` are departures lying in different cycles, and `0` opens
+a bounce since `0` and `1` share the left side.  The minimality hypothesis holds
+because the relevant `swapDelta` is exactly zero. -/
+theorem hpair_not_vacuous :
+    dW.isArr (piW 0) = false ∧ dW.isArr (piW 2) = false ∧
+    dW.isArr (piW.symm (piW 0)) = true ∧ dW.isArr (piW.symm (piW 2)) = true ∧
+    piW.symm (piW 0) ≠ piW.symm (piW 2) ∧
+    (dW.side (piW.symm (piW 0)) = dW.side (piW.symm (piW 2)) ∨
+      dW.side (piW 0) = dW.side (piW 2)) ∧
+    ¬ piW.SameCycle (piW 0) (piW 2) := by
+  refine NoGapCapstone.hpair_of_bounce dW piW 0 2 (by decide) (by decide)
+    (by decide) (by decide) (by decide) (by decide) (by decide) ?_
+  have h1 : piW 0 = 1 := by decide
+  have h2 : piW 2 = 3 := by decide
+  rw [h1, h2]; exact w_not_sameCycle
+
 -- Certification (Rule 5).
 #print axioms NonVacuity.bounce_cost
 #print axioms NonVacuity.pass_cost
@@ -118,5 +135,6 @@ theorem bounce_unshared_strictly_cheaper :
 #print axioms NonVacuity.capstone_not_vacuous
 #print axioms NonVacuity.bounce_shared_nontrivial
 #print axioms NonVacuity.bounce_unshared_strictly_cheaper
+#print axioms NonVacuity.hpair_not_vacuous
 
 end NonVacuity
