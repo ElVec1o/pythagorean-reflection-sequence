@@ -307,7 +307,8 @@ theorem hasFreePair_of_minimal (d : EndData.Data α) (edgeOf siteOf : α → ℤ
     (hzmax : ∀ w : α, WalkSupport.wLo edgeOf (graph D) w ≤ WalkSupport.wLo edgeOf (graph D) z)
     (hcov : ∀ v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
       ∃ y : α, edgeOf y = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop y = true)
-    (hmin : ∀ (b b' : α) (h1 h2 h3),
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
       ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D) :
     HasFreePair d siteOf D := by
   intro hmany
@@ -339,7 +340,42 @@ theorem hasFreePair_of_minimal (d : EndData.Data α) (edgeOf siteOf : α → ℤ
     hpsite hts (hts a) hss (by rw [hts a', hss])
   exact ⟨a, a', hss.symm, haarr, ha'arr, hda, hda', hsplit,
     free_pair_of_minimal d atTop D a a' hside hab hdb haarr ha'arr hda hda' hne
-      h1 h2 h3 (hmin a a' h1 h2 h3)⟩
+      h1 h2 h3 (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
+
+/-! ### Global minimality, which the descent preserves
+
+Local minimality is awkward to carry: the merge could in principle open up a cheaper
+re-pairing that was unavailable before.  Global minimality does not have that problem
+-- the merge stays inside the class and preserves the cost, so a minimum stays a
+minimum. -/
+
+/-- The merge invariant, together with being cost-minimal in the class. -/
+def MergesMin (siteOf : α → ℤ) (isArr : α → Bool) (p₀ : α → α)
+    (d : EndData.Data α) (E : Data α) : Prop :=
+  WalkSupport.Merges siteOf isArr p₀ E ∧
+    ∀ F : Data α, WalkSupport.Merges siteOf isArr p₀ F → costOf d E ≤ costOf d F
+
+/-- **A merge of two arrivals at one site stays in the class.** -/
+theorem merges_swapData (siteOf : α → ℤ) (p₀ : α → α) (d : EndData.Data α)
+    (E : Data α) (hE : WalkSupport.Merges siteOf d.isArr p₀ E)
+    (b b' : α) (hss : siteOf b = siteOf b')
+    (hb : d.isArr b = true) (hb' : d.isArr b' = true) (h1 h2 h3) :
+    WalkSupport.Merges siteOf d.isArr p₀ (swapData E b (E.t b) b' (E.t b') h1 h2 h3) := by
+  obtain ⟨hp, hts, hta⟩ := hE
+  refine ⟨hp, ?_, ?_⟩
+  · exact swapT_site siteOf E.t b (E.t b) b' (E.t b') hts (hts b) hss.symm
+      (by rw [hts b', hss])
+  · exact swapT_arr d.isArr E.t b (E.t b) b' (E.t b') hta rfl rfl hb hb'
+
+/-- **Global minimality supplies the hypothesis.** -/
+theorem hmin_of_mergesMin (siteOf : α → ℤ) (p₀ : α → α) (d : EndData.Data α)
+    (E : Data α) (hE : MergesMin siteOf d.isArr p₀ d E) :
+    ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData E b (E.t b) b' (E.t b') h1 h2 h3) < costOf d E := by
+  intro b b' hss hb hb' h1 h2 h3
+  exact not_lt.mpr (hE.2 _ (merges_swapData siteOf p₀ d E hE.1 b b' hss hb hb' h1 h2 h3))
 
 -- Certification (Rule 5).
-#print axioms CostMerge.hasFreePair_of_minimal
+#print axioms CostMerge.merges_swapData
+#print axioms CostMerge.hmin_of_mergesMin
