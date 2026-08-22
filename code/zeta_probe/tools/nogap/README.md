@@ -1645,3 +1645,20 @@ With the invariant "how many cut sites lie below this end" that is exactly c <= 
 
 So M4b now has both halves of its scaffolding in Lean, and the single remaining
 mathematical step is the separation half.
+
+## Descending until stuck (2026-08-23)
+
+reaches_one descends to a single walk, which is right when every split admits a merge.
+With cut sites present some splits do not, so the descent stops earlier.
+
+reaches_stuck is the general form: if from any P either a strictly descending step
+exists or the datum is Stuck, then from any P a stuck one is reached. reaches_one is
+the instance where Stuck means walkCount <= 1 (reaches_one_of_stuck), so nothing is
+lost by generalising.
+
+For c <= |Z| the stuck condition is 'no two ends in one run are unreachable', which is
+exactly the separation hypothesis of walkCount_le_card. So the shape is now:
+
+  descend until stuck  (reaches_stuck)
+    -> separation holds at the stuck datum
+    -> walkCount <= number of runs = |Z| + 1   (walkCount_le_card, walk_confined)

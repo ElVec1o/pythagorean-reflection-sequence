@@ -686,5 +686,39 @@ theorem walkCount_le_card {α β : Type*} [DecidableEq α] [Fintype α] [Fintype
       | _ y => exact SimpleGraph.ConnectedComponent.eq.mpr (hsep x y h)
   exact Fintype.card_le_of_injective F hinj
 
+/-! ### Descending until stuck
+
+`reaches_one` descends to a single walk, which is right when every split admits a
+merge.  With cut sites present some splits do not, so the descent stops earlier.  This
+is the general form: descend while a step exists, and end where none does. -/
+
+/-- **The descent principle, general form.**  If from any `P` either a strictly
+descending step exists or the datum is stuck, then from any `P` a stuck one is
+reached. -/
+theorem reaches_stuck {α : Type*} [DecidableEq α] [Fintype α]
+    {P Stuck : WalkGraph.Data α → Prop}
+    (step : ∀ D, P D → (∃ D', P D' ∧ walkCount D' < walkCount D) ∨ Stuck D) :
+    ∀ D, P D → ∃ D', P D' ∧ Stuck D' := by
+  have key : ∀ n D, walkCount D = n → P D → ∃ D', P D' ∧ Stuck D' := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | _ n ih =>
+      intro D hn hP
+      rcases step D hP with ⟨D', hP', hlt⟩ | hstuck
+      · exact ih (walkCount D') (hn ▸ hlt) D' rfl hP'
+      · exact ⟨D, hP, hstuck⟩
+  exact fun D hP => key (walkCount D) D rfl hP
+
+/-- `reaches_one` is the case where being stuck means having one walk. -/
+theorem reaches_one_of_stuck {α : Type*} [DecidableEq α] [Fintype α]
+    {P : WalkGraph.Data α → Prop}
+    (step : ∀ D, 1 < walkCount D → P D → ∃ D', P D' ∧ walkCount D' < walkCount D) :
+    ∀ D, P D → ∃ D', P D' ∧ walkCount D' ≤ 1 := by
+  refine reaches_stuck (Stuck := fun D => walkCount D ≤ 1) (fun D hP => ?_)
+  by_cases h : 1 < walkCount D
+  · exact Or.inl (step D h hP)
+  · exact Or.inr (by omega)
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.walkCount_le_card
+#print axioms ConfigMerge.reaches_stuck
+#print axioms ConfigMerge.reaches_one_of_stuck
