@@ -1113,5 +1113,28 @@ theorem covering_on_run (l r : ℤ) (hl : 0 ≤ l)
     hpos _ (by rw [hcast]; omega) (by rw [hcast]; omega)
   exact ⟨⟨⟨(j - 1).toNat, hlt⟩, ⟨0, hm⟩, true⟩, hcast, rfl⟩
 
+/-- **The second walk's end, produced within a run.**  `WalkSupport.other_end_at_wLo`
+with its global covering hypothesis replaced by `covering_on_run`: the maximiser's
+leftmost edge need only lie inside a run whose edges all carry crossings, not in a
+configuration free of gaps everywhere. -/
+theorem other_end_at_wLo_run (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (l r : ℤ) (hl : 0 ≤ l)
+    (hpos : ∀ e : Fin n, l ≤ (e : ℤ) → (e : ℤ) ≤ r → 0 < m e)
+    (z z' : Endpt n m)
+    (hsplit : ¬ (graph (dataOf up hbal)).Reachable z z')
+    (hle : WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z'
+      ≤ WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)
+    (hlz : l < WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)
+    (hzr : WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z ≤ r) :
+    ∃ y : Endpt n m,
+      siteOf y = WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z ∧
+      ¬ (graph (dataOf up hbal)).Reachable z y := by
+  refine WalkSupport.other_end_at_wLo edgeOf siteOf atTop (dataOf up hbal)
+    (fun _ => rfl) (fun x => partner_edgeOf x) (fun x => partner_top x) z z' ?_ hsplit hle
+  intro _ _
+  obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph (dataOf up hbal)) z
+  exact covering_on_run l r hl hpos _ hlz hzr ⟨u, hue⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.covering_on_run
+#print axioms ConfigLoop.other_end_at_wLo_run

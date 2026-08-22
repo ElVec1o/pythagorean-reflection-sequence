@@ -1606,3 +1606,15 @@ counterexample with l <= -1.
 
 Everything downstream of the covering hypothesis is already unconditional, so this is
 the one place the descent has to be weakened for M4b.
+
+## The second walk's end, produced within a run (2026-08-23)
+
+other_end_at_wLo_run: WalkSupport.other_end_at_wLo with its global covering hypothesis
+replaced by covering_on_run. The maximiser's leftmost edge need only lie inside a run
+[l, r] whose edges all carry crossings -- not in a configuration that is gap-free
+everywhere.
+
+That was the single place the descent consumed the global covering, so with it
+replaced the descent can in principle run between cut sites rather than requiring
+their absence. What remains for M4b is the induction over runs: each maximal run
+merges to one walk, and the runs are separated by cut sites, giving c <= |Z|.
