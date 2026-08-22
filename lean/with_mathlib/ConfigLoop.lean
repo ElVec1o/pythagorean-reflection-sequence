@@ -520,9 +520,9 @@ theorem walk_graph_local (up : Fin n → ℕ)
   · -- a crossing edge: the two ends of one crossing, at sites `e` and `e + 1`
     subst h
     refine ⟨edgeOf x + 1, ?_, ?_, fun _ => hgap x⟩
-    · unfold siteOf edgeOf atTop; cases hx : x.top <;> simp [hx]
+    · unfold siteOf edgeOf atTop; cases x.top <;> simp
     · show siteOf (partner x) = edgeOf x + 1 - 1 ∨ siteOf (partner x) = edgeOf x + 1
-      unfold siteOf edgeOf atTop partner; cases hx : x.top <;> simp [hx]
+      unfold siteOf edgeOf atTop partner; cases x.top <;> simp
   · -- a turn edge: both ends at the same site
     subst h
     exact ⟨siteOf x, Or.inr rfl, Or.inr (turnAt_site up hbal x), fun hne =>
