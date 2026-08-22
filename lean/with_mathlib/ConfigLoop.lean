@@ -14,6 +14,7 @@ depend on how ends are matched.
 import Mathlib.Tactic
 import DataBuild
 import WalkSupport
+import CostMerge
 
 namespace ConfigLoop
 
@@ -329,6 +330,36 @@ theorem thm_nogap_witness :
       ∀ b : Endpt 1 (fun _ => 2), otherComponents D' b = 0 :=
   thm_nogap (m := fun _ : Fin 1 => 2) (fun _ => 1) one_edge_hbal (fun _ => by norm_num) 0
 
+/-! ### The cost-minimal merge on a configuration
+
+`EndData.Data` for a lamp configuration takes `side = atTop` and `isArr = isArrOf up`;
+the deposit signs are whatever the configuration's deposits give, and nothing below
+depends on which. -/
+
+/-- The end data of a configuration. -/
+def endDataOf (up : Fin n → ℕ) (ds : Bool → Bool) : EndData.Data (Endpt n m) :=
+  ⟨atTop, isArrOf up, ds⟩
+
+/-- **A gap-free configuration has a cost-minimal realisation with exactly one walk.**
+
+This is `thm:nogap` with cost carried: not merely *some* realisation with no isolated
+cycle, but a **cost-minimal** one -- which is what the paper's statement is about. -/
+theorem config_min_single_walk (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hm : ∀ e : Fin n, 0 < m e) (e0 : Fin n) (ds : Bool → Bool) :
+    ∃ D' : Data (Endpt n m),
+      CostMerge.MergesMin siteOf (isArrOf up) partner (endDataOf (m := m) up ds) D' ∧
+      walkCount D' = 1 := by
+  classical
+  obtain ⟨E, hE⟩ := CostMerge.exists_mergesMin siteOf partner (endDataOf (m := m) up ds)
+    (dataOf up hbal) (merges_dataOf up hbal)
+  obtain ⟨D', hD', hle⟩ := CostMerge.min_merges_to_one edgeOf siteOf atTop partner
+    (endDataOf (m := m) up ds) (fun _ => rfl) (fun _ => rfl)
+    (fun x => partner_edgeOf x) (fun x => partner_top x)
+    (covering_of_mult_pos hm) ⟨e0, ⟨0, hm e0⟩, true⟩ E hE
+  refine ⟨D', hD', le_antisymm hle ?_⟩
+  have : Nonempty (Endpt n m) := end_of_mult e0 (hm e0)
+  exact Fintype.card_pos_iff.mpr ⟨(graph D').connectedComponentMk (Classical.arbitrary _)⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.thm_nogap
-#print axioms ConfigLoop.thm_nogap_witness
+#print axioms ConfigLoop.config_min_single_walk

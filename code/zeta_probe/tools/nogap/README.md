@@ -1131,3 +1131,22 @@ Chain, end to end, all kernel-certified, no sorry, no native_decide:
     -> a, a' share a side (else the exchange is strictly cheaper)
     -> the merge is FREE and lowers the walk count
     -> iterate: one walk, same cost
+
+## thm:nogap WITH COST, on a configuration (2026-08-23)
+
+ConfigLoop.config_min_single_walk. A gap-free configuration has a COST-MINIMAL
+realisation with exactly one walk.
+
+This closes the gap recorded when thm_nogap was first stated: that chain produced
+SOME realisation with no isolated cycle, while the paper's statement is about a
+relaxed-OPTIMAL one. Cost is now carried the whole way.
+
+New pieces:
+  endDataOf         the end data of a configuration: side = atTop, isArr = isArrOf up
+  costOf_nonneg     pcostF is 0, 1 or 2, so costs are non-negative
+  exists_mergesMin  the class is not obviously finite -- Data bundles proofs -- but
+                    the costs are non-negative integers, so Int.exists_least_of_bdd
+                    gives a minimum, and any datum attaining it is minimal
+
+The deposit signs enter only through EndData.Data's depSign field and nothing in the
+argument depends on which they are, so the theorem is stated for an arbitrary ds.

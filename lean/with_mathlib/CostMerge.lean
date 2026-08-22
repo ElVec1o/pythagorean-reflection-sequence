@@ -424,5 +424,32 @@ theorem min_merges_to_one (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p�
      fun F hF => by rw [hcost]; exact hmin F hF⟩,
     ConfigMerge.descent_of_split E a a' hsplit h1 h2 h3⟩
 
+/-! ### A minimum exists
+
+The class is not obviously finite -- `Data α` bundles proofs -- but the costs are
+non-negative integers, so the set of achievable costs has a least element and any
+datum attaining it is minimal. -/
+
+omit [Fintype α] in
+theorem pcostF_nonneg (d : EndData.Data α) (a b : α) : 0 ≤ EndData.pcostF d a b := by
+  unfold EndData.pcostF
+  split <;> [split; skip] <;> norm_num
+
+theorem costOf_nonneg (d : EndData.Data α) (D : Data α) : 0 ≤ costOf d D :=
+  Finset.sum_nonneg (fun a _ => pcostF_nonneg d a _)
+
+/-- **A cost-minimal datum exists in the class**, given any datum in it. -/
+theorem exists_mergesMin (siteOf : α → ℤ) (p₀ : α → α) (d : EndData.Data α)
+    (D : Data α) (hD : WalkSupport.Merges siteOf d.isArr p₀ D) :
+    ∃ E, MergesMin siteOf d.isArr p₀ d E := by
+  classical
+  obtain ⟨c, ⟨E, hE, hEc⟩, hleast⟩ :=
+    Int.exists_least_of_bdd (P := fun c => ∃ F, WalkSupport.Merges siteOf d.isArr p₀ F ∧
+        costOf d F = c)
+      ⟨0, fun z hz => by obtain ⟨F, _, hF⟩ := hz; rw [← hF]; exact costOf_nonneg d F⟩
+      ⟨costOf d D, D, hD, rfl⟩
+  exact ⟨E, hE, fun F hF => by rw [hEc]; exact hleast _ ⟨F, hF, rfl⟩⟩
+
 -- Certification (Rule 5).
-#print axioms CostMerge.min_merges_to_one
+#print axioms CostMerge.costOf_nonneg
+#print axioms CostMerge.exists_mergesMin
