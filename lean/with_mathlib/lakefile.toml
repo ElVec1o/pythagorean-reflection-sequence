@@ -214,3 +214,6 @@ name = "DiscriminantIdentity"
 
 [[lean_lib]]
 name = "NoGapCutFree"
+
+[[lean_lib]]
+name = "NoGapMerge"
