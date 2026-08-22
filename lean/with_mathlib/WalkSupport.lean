@@ -189,5 +189,49 @@ theorem pair_of_many_walks (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D
   obtain ⟨z, z', hsplit⟩ := ConfigMerge.exists_split_of_walkCount D hmany
   exact pair_of_two_walks edgeOf siteOf atTop D hsite hpe hpt hcov z z' hsplit
 
+/-! ### From ends to arrivals
+
+The descent re-pairs *arrivals*, but the placement produces ends of either role.  The
+turn converts one into the other at no cost: it maps an end to one of the opposite
+role at the same site, and it is an edge of the walk graph, so the arrival it
+produces lies in the same walk. -/
+
+/-- **Every end has an arrival beside it**: itself if it is one, otherwise its turn,
+which sits at the same site and in the same walk. -/
+theorem arrival_beside (siteOf : α → ℤ) (isArr : α → Bool) (D : Data α)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e)
+    (x : α) :
+    ∃ a : α, siteOf a = siteOf x ∧ isArr a = true ∧ (graph D).Reachable x a := by
+  by_cases h : isArr x = true
+  · exact ⟨x, rfl, h, SimpleGraph.Reachable.refl _⟩
+  · refine ⟨D.t x, hts x, ?_, SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl)⟩
+    rw [hta]
+    simp at h
+    simp [h]
+
+/-- **The merge step's input, as arrivals.**  More than one walk gives two
+*arrivals* at a common site lying in different walks. -/
+theorem arrivals_of_many_walks (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool)
+    (D : Data α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e)
+    (hcov : ∀ w : α, (∃ v : α, edgeOf v < wLo edgeOf (graph D) w) →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) w - 1 ∧ atTop y = true)
+    (hmany : 1 < walkCount D) :
+    ∃ a a' : α, siteOf a = siteOf a' ∧ isArr a = true ∧ isArr a' = true ∧
+      ¬ (graph D).Reachable a a' := by
+  obtain ⟨x, y, hxy, hn⟩ :=
+    pair_of_many_walks edgeOf siteOf atTop D hsite hpe hpt hcov hmany
+  obtain ⟨a, hasite, haarr, hax⟩ := arrival_beside siteOf isArr D hts hta x
+  obtain ⟨a', ha'site, ha'arr, ha'y⟩ := arrival_beside siteOf isArr D hts hta y
+  refine ⟨a, a', by rw [hasite, ha'site, hxy], haarr, ha'arr, ?_⟩
+  intro hc
+  exact hn ((hax.trans hc).trans ha'y.symm)
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.pair_of_many_walks
+#print axioms WalkSupport.arrival_beside
+#print axioms WalkSupport.arrivals_of_many_walks

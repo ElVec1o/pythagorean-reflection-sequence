@@ -140,7 +140,31 @@ noncomputable def dataOf (up : Fin n → ℕ)
   pt_ne := partner_ne_turn siteOf partner (turn up)
     (fun x => partner_site_ne x) (fun x => turnAt_site up hbal x)
 
+/-- **The turn flips the role.**  An arrival's turn is a departure and a departure's
+turn is an arrival.  Both directions were already available at a fixed site
+(`turnAt_arr`, `turnAt_dep`); this glues them into a statement about `turn`. -/
+theorem turn_arr_flip (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (x : Endpt n m) :
+    EndType.isArrOf up (turn up x) = !EndType.isArrOf up x := by
+  unfold turn glue
+  by_cases h : EndType.isArrOf up x = true
+  · have hx : x ∈ arrAt (m := m) up (EndType.siteOf x) :=
+      (EndType.mem_arrAt up _ x).mpr ⟨rfl, h⟩
+    have := (EndType.mem_depAt up (EndType.siteOf x) _).mp
+      (turnAt_arr up (EndType.siteOf x) (hbal _) x hx)
+    rw [this.2, h]
+    rfl
+  · simp only [Bool.not_eq_true] at h
+    have hx : x ∈ depAt (m := m) up (EndType.siteOf x) :=
+      (EndType.mem_depAt up _ x).mpr ⟨rfl, h⟩
+    have := (EndType.mem_arrAt up (EndType.siteOf x) _).mp
+      (turnAt_dep up (EndType.siteOf x) (hbal _) x hx)
+    rw [this.2, h]
+    rfl
+
 -- Certification (Rule 5).
+
 #print axioms DataBuild.turnAt_invol
 #print axioms DataBuild.turnAt_arr
 #print axioms DataBuild.turnAt_ne
@@ -152,3 +176,4 @@ noncomputable def dataOf (up : Fin n → ℕ)
 #print axioms DataBuild.dataOf
 
 end DataBuild
+#print axioms DataBuild.turn_arr_flip
