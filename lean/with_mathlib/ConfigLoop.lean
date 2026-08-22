@@ -1278,6 +1278,34 @@ theorem c_le_Z_of_step (Zf : Finset ℤ) (P : Data (Endpt n m) → Prop)
       hstep D hD
   exact ⟨E, hPE, walkCount_le_runs_gen E Zf (hlocal E hPE) hsep⟩
 
+/-! ### The cut condition survives a merge off the cut sites
+
+`Local` for `Zf` is carried by `hturn`: a turn that changes edge sits at a non-cut
+site.  The re-pairing moves only the four ends at one site, so if that site is not a
+cut site the condition still holds -- and away from those four the turn is unchanged. -/
+
+/-- **`hturn` survives the re-pairing**, provided the merge happens off the cut
+sites. -/
+theorem hturn_swapT (t : Endpt n m → Endpt n m) (Zf : Finset ℤ)
+    (a d a' d' : Endpt n m)
+    (hturn : ∀ x : Endpt n m, edgeOf (t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (hsa : siteOf a ∉ Zf)
+    (hd : siteOf d = siteOf a) (ha' : siteOf a' = siteOf a) (hd' : siteOf d' = siteOf a) :
+    ∀ x : Endpt n m, edgeOf (swapT t a d a' d' x) ≠ edgeOf x → siteOf x ∉ Zf := by
+  intro x hne
+  by_cases h1 : x = a
+  · subst h1; exact hsa
+  by_cases h2 : x = d'
+  · subst h2; rw [hd']; exact hsa
+  by_cases h3 : x = a'
+  · subst h3; rw [ha']; exact hsa
+  by_cases h4 : x = d
+  · subst h4; rw [hd]; exact hsa
+  · refine hturn x ?_
+    have hx : swapT t a d a' d' x = t x := by
+      unfold swapT
+      rw [if_neg h1, if_neg h2, if_neg h3, if_neg h4]
+    rwa [hx] at hne
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.walkCount_le_runs_gen
-#print axioms ConfigLoop.c_le_Z_of_step
+#print axioms ConfigLoop.hturn_swapT

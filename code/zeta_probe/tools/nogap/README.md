@@ -1734,3 +1734,17 @@ fixed once.
 
 That is the precise remaining obligation for M4b, and it is about the invariant, not
 about the mathematics of the merge.
+
+## The cut condition survives a merge off the cut sites (2026-08-23)
+
+Local for Zf is carried by hturn -- a turn that changes edge sits at a non-cut site.
+The re-pairing moves only the four ends at ONE site, so if that site is not a cut site
+the condition still holds, and away from those four the turn is unchanged.
+
+hturn_swapT proves it: five cases, four of them the moved ends (all at the merge
+site, which is assumed off Zf) and one the untouched remainder.
+
+So Local survives the descent, which is the half of M4b10 about the cut structure.
+What is still owed is that the RUN BOUNDS survive: hpos is untouched since the swap
+does not change multiplicities, but wLo of the maximiser can shift, so hlz and hzr
+have to be re-established at each step rather than carried unchanged.
