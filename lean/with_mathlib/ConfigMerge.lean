@@ -576,6 +576,76 @@ theorem closes_at {α : Type*} [DecidableEq α] [Fintype α]
   intro j hj hjM hcon
   exact Nat.find_min hex hjM ⟨hj, hcon⟩
 
+/-- **An orbit avoids its own turn edge until it closes.**  Stated for the edge
+`s(t x, x)` rather than `s(x, t x)`, which is the same edge but the form that also
+covers a *departure*: at `x = t a'` it reads `s(a', t a')`.
+
+Both cases fall out: the orbit either closes early, which minimality forbids, or
+passes through `p x`, which the parity fact forbids. -/
+theorem orbit_avoids_own {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (x : α) (M : ℕ)
+    (hmin : ∀ j, 0 < j → j < M → (sig D)^[j] x ≠ x)
+    (k : ℕ) (hk : k < M - 1) :
+    s(D.p ((sig D)^[k] x), D.t (D.p ((sig D)^[k] x))) ≠ s(D.t x, x) := by
+  intro h
+  rw [Sym2.eq_iff] at h
+  rcases h with ⟨_, h2⟩ | ⟨h1, _⟩
+  · -- the orbit closed at step k+1
+    rw [orbit_turn_edge D x k] at h2
+    exact hmin (k + 1) (by omega) (by omega) h2
+  · -- the orbit passed through `p x`
+    have hpx : (sig D)^[k] x = D.p x := by
+      have hc := congrArg D.p h1
+      rwa [D.p_invol] at hc
+    exact p_not_in_orbit D x k hpx.symm
+
+/-- **`ClosesAvoiding` at any point of either walk.**  The orbit at `x` avoids its own
+turn edge by `orbit_avoids_own`, and the other walk's turn edge by
+`orbit_avoids_other`.  Instantiated at `x = a` and at `x = D.t a'` this supplies all
+three of `config_descent_uniform`'s hypotheses. -/
+theorem closes_general {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (x y : α)
+    (hsplit : ¬ (graph D).Reachable x y) :
+    ∃ M, ClosesAvoiding D ({s(D.t x, x), s(y, D.t y)} : Set (Sym2 α)) x M := by
+  classical
+  have hex : ∃ M : ℕ, 0 < M ∧ (sig D)^[M] x = x := exists_closes D x
+  refine ⟨Nat.find hex, (Nat.find_spec hex).2, (Nat.find_spec hex).1,
+    fun _ _ => ?_, ?_, ?_⟩
+  · simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+    exact ⟨fun hc => crossing_ne_turn D _ x (by rw [hc, Sym2.eq_swap]),
+      crossing_ne_turn D _ y⟩
+  · intro k hk
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+    refine ⟨orbit_avoids_own D x (Nat.find hex) (fun j hj hjM hcon =>
+      Nat.find_min hex hjM ⟨hj, hcon⟩) k hk, orbit_avoids_other D x y hsplit k⟩
+  · simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+    exact ⟨fun hc => crossing_ne_turn D _ x (by rw [hc, Sym2.eq_swap]),
+      crossing_ne_turn D _ y⟩
+
+/-- **The descent, for any configuration with two arrivals in different walks.**
+
+All three `ClosesAvoiding` hypotheses come from `closes_general`, instantiated at the
+two arrivals and at the second departure.  The deleted-set forms differ only by
+`Sym2.eq_swap` and `Set.pair_comm`. -/
+theorem descent_of_split {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a a' : α)
+    (hsplit : ¬ (graph D).Reachable a a') (h1 h2 h3) :
+    walkCount (swapData D a (D.t a) a' (D.t a') h1 h2 h3) < walkCount D := by
+  classical
+  -- the departure of `a'` is in `a'`'s walk, so it too is split from `a`
+  have hd' : ¬ (graph D).Reachable (D.t a') a := by
+    intro hc
+    exact hsplit (((SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl)).trans hc).symm)
+  obtain ⟨Ma, ha⟩ := closes_general D a a' hsplit
+  obtain ⟨Ma', ha'⟩ := closes_general D a' a (fun hc => hsplit hc.symm)
+  obtain ⟨Md, hd⟩ := closes_general D (D.t a') a hd'
+  rw [show ({s(D.t a, a), s(a', D.t a')} : Set (Sym2 α))
+      = {s(a, D.t a), s(a', D.t a')} by rw [Sym2.eq_swap]] at ha
+  rw [show ({s(D.t a', a'), s(a, D.t a)} : Set (Sym2 α))
+      = {s(a, D.t a), s(a', D.t a')} by rw [Sym2.eq_swap, Set.pair_comm]] at ha'
+  rw [show ({s(D.t (D.t a'), D.t a'), s(a, D.t a)} : Set (Sym2 α))
+      = {s(a, D.t a), s(a', D.t a')} by rw [D.t_invol, Set.pair_comm]] at hd
+  exact config_descent_uniform D a a' Ma Ma' Md ha ha' hd hsplit h1 h2 h3
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.k2_holds
-#print axioms ConfigMerge.closes_at
+#print axioms ConfigMerge.descent_of_split
