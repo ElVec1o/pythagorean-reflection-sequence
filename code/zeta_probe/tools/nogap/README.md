@@ -761,3 +761,24 @@ Checked while there: paper2 does NOT claim a Lean formalisation of thm:nogap. It
 cites only the Rust verification, 2,505,271 elements of length <= 31 with no
 exceptions. So the model mismatch found in NoGapCapstone and RealizationModel never
 reached the paper, and there is nothing to retract there.
+
+## defect = c is a MODELLING CLAIM, not yet verified (2026-08-23)
+
+The paper's c(g) counts ISOLATED CYCLES: a realisation is one open walk plus c
+closed cycles, and thm:nogap says c = 0.
+
+In the Lean model the turn is a TOTAL involution on all ends, so the walk graph is
+2-regular everywhere and every component is a closed cycle -- the open strand is
+closed up. The component count is therefore 1 + c PROVIDED one component is
+designated as the open walk. Nothing in the formalisation designates one; all
+components are symmetric under the structure as written.
+
+So gapfree_defect_zero proves thm:nogap in the WALK MODEL, with
+defect D = walkCount D - 1. The identification defect = c needs a basepoint, or an
+argument that the open walk is distinguishable.
+
+This is recorded rather than asserted. Two claims of exactly this kind
+(transition-system cycles = components; the 2-swap is a single transposition) were
+made on inspection earlier in this development and both were false. The remaining
+formalization debt on M6 is precisely this identification, and it is now named
+instead of hidden.

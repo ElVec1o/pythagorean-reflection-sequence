@@ -222,5 +222,35 @@ theorem one_edge_single_walk :
   gapfree_single_walk (m := fun _ : Fin 1 => 2) (fun _ => 1)
     one_edge_hbal (fun _ => by norm_num) 0
 
+/-! ### The defect, and what its identification with the paper's `c` still needs
+
+The paper's `c(g)` counts **isolated cycles**: a realisation is one open walk together
+with `c` closed cycles, and `thm:nogap` says `c = 0`.
+
+In this model the turn is a *total* involution on all ends, so the walk graph is
+2-regular everywhere and every component is a closed cycle -- the open strand is
+closed up.  The component count is therefore `1 + c` **provided one component is
+designated as the open walk**.  Nothing here designates one, and all components are
+symmetric under the structure as formalised.
+
+So `defect` below is the walk-model defect, and `gapfree_defect_zero` is `thm:nogap`
+in that model.  The identification `defect = c` is a MODELLING CLAIM and is recorded
+as such rather than asserted: it needs a basepoint, or an argument that the open walk
+is distinguishable.  This is the same kind of claim that was wrong twice in this
+development, so it is not being made on inspection. -/
+
+/-- The walk-model defect: components beyond the first. -/
+noncomputable def defect {α : Type*} [Fintype α] [DecidableEq α] (D : Data α) : ℕ :=
+  walkCount D - 1
+
+/-- **`thm:nogap` in the walk model.**  A gap-free configuration has zero defect. -/
+theorem gapfree_defect_zero (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hm : ∀ e : Fin n, 0 < m e) (e0 : Fin n) :
+    ∃ D' : Data (Endpt n m),
+      Merges siteOf (isArrOf up) partner D' ∧ defect D' = 0 := by
+  obtain ⟨D', hM, h1⟩ := gapfree_single_walk up hbal hm e0
+  exact ⟨D', hM, by unfold defect; omega⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.one_edge_single_walk
+#print axioms ConfigLoop.gapfree_defect_zero
