@@ -81,7 +81,7 @@ theorem witness_end_exists :
   exists_end_of_mult_pos ⟨0, by norm_num⟩ (by norm_num)
 
 /-- An edge with no crossings carries no end, so the hypothesis is doing work. -/
-theorem witness_no_end : ¬ ∃ x : Endpt 1 (fun _ => 0), True := by
+theorem witness_no_end : ¬ ∃ _ : Endpt 1 (fun _ => 0), True := by
   rintro ⟨⟨_, i⟩, _⟩
   exact absurd i.isLt (Nat.not_lt_zero _)
 
@@ -126,7 +126,7 @@ theorem partner_site_ne {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
     (edgeOf (partner x) + (if atTop (partner x) then 1 else 0))
       ≠ (edgeOf x + (if atTop x then 1 else 0)) := by
   rw [partner_edgeOf, partner_atTop]
-  cases h : atTop x <;> simp [h]
+  cases h : atTop x <;> simp
 
 /-! ### Up-crossings, and the arrival predicate
 
@@ -222,9 +222,9 @@ theorem card_split_atTop {n : ℕ} {m : Fin n → ℕ} (S : Finset (Endpt n m)) 
       + (S.filter (fun x => atTop x = false)).card = S.card := by
   classical
   have h : ∀ x : Endpt n m, (atTop x = false) ↔ ¬ (atTop x = true) := by
-    intro x; cases h : atTop x <;> simp [h]
+    intro x; cases h : atTop x <;> simp
   rw [Finset.filter_congr (fun x _ => (h x))]
-  exact Finset.filter_card_add_filter_neg_card_eq_card _
+  exact Finset.card_filter_add_card_filter_not _
 
 /-- A top end at site `s` sits on edge `s - 1`, and a bottom end on edge `s`.  This
 is what identifies the two parts of the split with the two adjacent edges. -/
@@ -323,13 +323,14 @@ theorem card_endpt (n : ℕ) (m : Fin n → ℕ) :
   simp [Fintype.card_fin]
 
 /-- The crossings on an edge split into up and down, whose counts add to the
-crossing count once the up-count is bounded by it.  This is the per-edge form the
-sum needs. -/
-theorem up_add_down (N k : ℕ) (h : k ≤ N) :
+crossing count.  No bound on `k` is needed: the split is by a predicate and its
+negation, so it is unconditional.  (An earlier statement carried `k ≤ N` as a
+hypothesis and never used it.)  This is the per-edge form the sum needs. -/
+theorem up_add_down (N k : ℕ) :
     (Finset.univ.filter (fun i : Fin N => i.val < k)).card
       + (Finset.univ.filter (fun i : Fin N => ¬ (i.val < k))).card = N := by
   classical
-  rw [Finset.filter_card_add_filter_neg_card_eq_card]
+  rw [Finset.card_filter_add_card_filter_not]
   simp
 
 /-! ### The card equality
@@ -474,7 +475,7 @@ theorem card_ends_edge_dir_down {n : ℕ} {m : Fin n → ℕ} (up : Fin n → �
     · rintro ⟨j, hj, rfl⟩
       exact ⟨rfl, rfl, hj⟩
   rw [hset, Finset.card_image_of_injective _ ?_]
-  · have hsum := up_add_down (m e) (min (up e) (m e)) (min_le_right _ _)
+  · have hsum := up_add_down (m e) (min (up e) (m e))
     have hlt : (Finset.univ.filter (fun i : Fin (m e) => i.val < min (up e) (m e)))
         = (Finset.univ.filter (fun i : Fin (m e) => i.val < up e)) := by
       ext i
