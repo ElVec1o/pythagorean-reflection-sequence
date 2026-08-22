@@ -1,121 +1,102 @@
-# The no-gap lemma: sharpening prop:local(i) under (T)
+# no-gap / shield-law findings
 
-**Status: reduction + verified statement + identified mechanism. NOT a proof.**
-Date 2026-08-22.
+Session 2026-08-22. Labels per Rule 0.
 
-## What was actually open
+## Summary
 
-`prop:travelinv` (=(T), one of the two hypotheses under the conditional
-transcendence of `U`) *is* proved in `lifting_U.tex` -- but in two lines from
-`prop:local`(i), which carries **no proof at all**: only a numerical check to
-true length <= 16 (3869 pure-travel elements, 0 violations) and a mechanistic
-paragraph. So the open core of (T) is one combinatorial claim.
+| # | Statement | Label |
+|---|---|---|
+| M6a | no gap edge => `Z` empty | **PROVED** (below), verified 42361 elts |
+| M6  | no gap edge => `c = 0` | **HEURISTIC** (42361 elts, depth 21, 0 violations) |
+| M6b | `Z` empty => `c = 0` | **CONJECTURE** (48715 elts, 0 violations) |
+| SL  | shield law `c = \|Z\|` incl. boundary term, all `k*` | **HEURISTIC** (50763 elts, 0 violations) |
+| M10 | `lamp_lib.relaxed_solve` computes `l_R` | **FALSE** (counterexample below) |
 
-## The reformulation
+## M10: relaxed_solve is wrong on gap-bearing elements
 
-By `lem:closedlen` (route_b_funceq.tex) a **gap edge** is an edge of the active
-span with `a_j = 0` AND `f_j = 0`; such an edge is forced to `m_j = 2` by
-reachability. If `supp(a) \subseteq I_k` then the span *is* `I_k`, and every edge
-there has `f_j = \pm 1 \ne 0`. So the hypothesis of `prop:local`(i) is exactly
-"no gap edges", and the natural statement is strictly more general:
+`relaxed_solve` overestimates `l_R`. Smallest witness: `eps=1, delta=0, k*=0,
+lamps {1:-2}`. It returns 10; the true value is 8, realised by `m_0 = m_1 = 2`
+(`sum m = 4`) with site costs `0, 2, 2` -- the sign-flip bounce at site 2 forced
+because `d_1 = -2` splits as `p^u = 1, p^d = 0`. With `l_T = 10` this gives
+`c = 1`, and the Metric Theorem closes; at 10 it does not.
 
-> **Conjecture (no-gap).** If `g` has no gap edge, then `c(g) = 0`.
+Ground truth: `tools/sitecost` mode `shield`, direct enumeration of realizations
+under two independent exact solvers, reports
+`l_R = sum m + sum max(|alpha|,|beta|,|Phi|)`, 0 exceptions.
 
-This drops the requirement that the support lie inside `I_k`: it also covers
-elements whose lamps leave `I_k` but stay contiguous with it.
+Scope: **150 wrong values out of ~9000 at depth 17, every one on a gap-bearing
+element; 0 on no-gap elements.** So the published `prop:local`(i) validation
+(pure-travel, a subset of no-gap) is unaffected. Any `c`-distribution or `v_n`
+claim drawn from it over ALL elements is not, and should be recomputed.
 
-## Verification (`/tmp/gaptest.py`, BFS ground truth vs `relaxed_solve`)
+## SL: the shield law needs the boundary term, and then holds at every k*
 
-`c := (\ell_T - \ell_R)/2` with `\ell_T` from `lamp_lib.bfs` and `\ell_R` from
-`lamp_lib.relaxed_solve`.
+`prop:cut` counts cut sites **interior** to the span. That undercounts: when both
+markers sit at a span endpoint on the side opposite the edges, cutting there
+isolates the marker component and everything else is a cycle. The site must be
+counted when
 
-| depth | class | elements | c != 0 |
-|---|---|---|---|
-| 13 | pure-travel | 780 | 0 |
-| 13 | **no-gap** | **1407** | **0** |
-| 13 | has-gap | 96 | 4 |
-| 17 | pure-travel | 3869 | 0 |
-| 17 | **no-gap** | **7928** | **0** |
-| 17 | has-gap | 1064 | 84 |
+    k* = 0,  delta* = 0,  lo = 0 < hi.
 
-The depth-17 pure-travel count **3869 reproduces exactly** the figure quoted in
-`lifting_U.tex` for the `prop:local`(i) validation, so the harness is on the same
-footing as the paper's own check. The no-gap class is ~2x larger with zero
-violations. Note also that gaps *permit* but do not *force* cycles (92% of
-gap-bearing elements still have c=0) -- consistent with the shield law.
+This is exactly `rem:shieldowes`'s boundary shield -- it records the marker site
+as cut iff `d_{-1} = 0, delta* = 0, eps* = 1`, where `sh_R = 1[eps*=-1 or delta*=1]`
+vanishes. The new content is the `lo = 0 < hi` clause: without it the identity
+element is miscounted (`c = 0`, `|Z| = 1`).
 
-## The mechanism (this is the new part)
+Counting it, `c = |Z|` holds with **0 exceptions on 50763 elements at all `k*`**
+(depth 21), extending paper 2's verification beyond the `k*=0` bulk. Counting all
+marker sites instead produces 8555 `prop:cut` violations -- an impossible result
+against a PROVED theorem, which is how the condition was localised.
 
-`lem:swap` charges +2 to merge an isolated cycle into the open walk, and its
-proof pinpoints why: at a **gap** edge the cycle deposits net zero, so its pair
-is a cost-0 bounce, and the merge forces a sign-flip bounce (`pc = 2`).
+## M6a (PROVED): no gap edge => Z empty
 
-But a 2-swap between two **pass** pairs is free:
-`(a -> d), (a' -> d')  |->  (a -> d'), (a' -> d)`
-with `a` on L and `d,d'` on R stays two passes, cost `1+1` before and after,
-while merging the two components. **So merging is free whenever both components
-have a pass at a shared site.** Gap edges are precisely where no pass is
-available.
+Let `s` be a site counted by `Z`. With `alpha = d_{s-1}`, `beta = d_s`,
+`Phi = f_{s-1}` and the `sitecost` virtual-event fold-in:
 
-## Where it stops
+* `s` interior, `s \notin {0,k*}`: cut forces `d_{s-1} = 0` and `f_{s-1} = 0`;
+  `s` interior puts edge `s-1` in the span, so it is a gap edge.
+* `s = 0 \ne k*`: `Phi = f_{-1}+1 = 0` gives `f_{-1} = -1`, so `k* < 0` and
+  `f_0 = 0`; `beta = d_0 = 0`. Edge 0 is in the span, so it is a gap edge.
+* `s = k* \ne 0`, `delta* = 1`: `alpha = d_{s-1} = 0` and `Phi = f_{s-1} = 0`, so
+  edge `s-1` is a gap edge.
+* `s = k* \ne 0`, `delta* = 0`: `Phi = f_{s-1}-1 = 0` gives `f_{k*-1} = 1`, so
+  `k* > 0` and `f_{k*} = 0`; `beta = d_{k*} = 0`. Edge `k*` is a gap edge.
+* `s = 0 = k*` (interior or boundary-shield): `Phi = f_{-1} = 0`, `beta = d_0 = 0`,
+  and `f_0 = 0`; the boundary-shield clause gives `hi > 0`, so edge 0 is in the
+  span and is a gap edge.
 
-Reading the DP in `lamp_lib.solve` (not the prose) fixes the site model:
-`u = (m+f_j)/2`, `dn = (m-f_j)/2` -- the net direction of an edge is `f_j`, not
-the deposit -- and `pd - pu = (a_j - f_j)/2` fixes the signs. Sides L/R are the
-lower/upper edge at a site; a pass is an L-arrival matched to an R-departure.
+Every case contradicts the hypothesis. Hence `Z` is empty. QED
 
-Take an isolated cycle `gamma` with support interval `[p,q]`. At interior sites
-of `[p,q]`, `gamma` crosses and therefore has a pass, so if the open walk also
-passes at any interior site of `[p,q]` the merge is free and we are done. The
-residual case is a shared site at an *endpoint* of `[p,q]`, where `gamma`
-bounces. There the 2-swap pass/bounce is free **iff** the open walk's up-departure
-at `p` carries the same sign as `gamma`'s -- i.e. iff the strands of edge `p` are
-**sign-homogeneous**. Under `m_p = |a_p|` all crossings share the sign of `a_p`,
-which would close it; whether relaxed-optimal realizations can be forced into
-that shape under no-gap is exactly the remaining step.
+Verified: 42361 no-gap elements to depth 21, 0 counterexamples.
 
-**Next:** decide the sign-homogeneity question, either by extracting optimal
-states from the DP or by an exchange argument on `pu`/`pd`. If it holds, the
-no-gap lemma follows, `prop:local`(i) becomes a corollary, and (T) is proved
-outright -- leaving (L) as the sole hypothesis under `U`.
+## Consequence for (T)
 
-## Addendum: the connection to paper 2's reverse shield inequality
+`prop:travelinv` (=(T), one of `U`'s two hypotheses) is proved in `lifting_U.tex`
+from `prop:local`(i), which has no proof. `prop:local`(i)'s hypothesis implies no
+gap edges, so by M6a it implies `Z` empty. Therefore
 
-`prop:cut` (paper2, §5.5) calls a site **cut** when `alpha_s = beta_s = Phi_s = 0`,
-with `Z` the interior cut sites, and proves `c >= |Z|`. `rem:shieldowes` records
-that the reverse `c <= |Z|` is **not proved**, and is verified only on `k* = 0`
-bulk configurations (1 048 544 of them, mode `shield`).
+> **(T) reduces, via the PROVED M6a, to M6b: the `Z` empty case of the reverse
+> shield inequality `c <= |Z|`** (paper2 `rem:shieldowes`, unproved).
 
-The hypothesis of `prop:local`(i) -- lamp support inside `I_k` -- forces no gap
-edges and hence `Z = \emptyset`. Therefore:
+Note M6b is *stronger* than M6, not equivalent: no-gap is a strict subset of
+`Z` empty (42361 vs 48715 elements at depth 21). An earlier version of this note
+claimed equivalence; that was wrong.
 
-> **(T)'s open core is exactly the `Z = \emptyset` case of the reverse shield
-> inequality `c <= |Z|`.**
+The `Z` empty case still looks easier than the general one: `rem:shieldowes` needs
+pairings connecting all crossings within each of `|Z|+1` classes, whereas at
+`Z` empty there is a single class.
 
-Two weak links the papers track separately are one statement. Proving `c <= |Z|`
-closes both, removing (T) from `U`'s hypotheses and leaving (L) alone. The
-`Z = \emptyset` case looks strictly easier than the general one: `rem:shieldowes`
-asks for pairings connecting all crossings within each of `|Z|+1` classes,
-whereas at `Z = \emptyset` there is a single class and the requirement collapses
-to connected + even degrees => one Eulerian trail.
+## Rule 1 transfer note
 
-## Negative result: do NOT reimplement Z in Python
+The remaining obligation -- choose min-cost pairings at every site so the
+transition system is one open walk -- is the **compatible Eulerian circuit /
+transition system** problem (Kotzig, Fleischner; Bouchet's isotropic systems and
+delta-matroids give the algebra of component counts under 2-swaps). Not yet
+pursued; logged so it is not rediscovered.
 
-Three attempts to recompute `Z` from the paper's prose plus the Rust source all
-failed, each differently (2 violations, then 10, then 42 -- the last including
-**10 at `k* = 0`**, where paper 2's exhaustive run has 0 exceptions). A violation
-at `k* = 0` is proof of a bug in the reimplementation, not in the paper.
+## Reproduce
 
-Diagnosis on `(eps=1, delta=1, k=-1, {-1:1, 1:-2})`: the naive formula marks site 0
-cut (`alpha = d_{-1}-1 = 0`, `beta = 0`, `Phi = -1+1 = 0`), but the walk starts at 0,
-must reach edge `+1` to deposit `-2`, return, and end at `k=-1`, so strands cross
-site 0 repeatedly. **The reachability that forces a gap edge to `m = 2` is not
-captured by the local deposit data**, and that is what the naive `alpha/beta` miss.
-
-Use `code/zeta_probe/tools/sitecost` (exact, Rust, dual-solver) for anything
-involving `Z`. Extending the `c = |Z|` check to `k* != 0` is untested territory
-and worth doing -- through that tool, not a reimplementation.
-
-**What is unaffected:** the no-gap result above, which never touches `Z` --
-`c = (\ell_T - \ell_R)/2` is computed from BFS ground truth against
-`relaxed_solve` directly.
+`nogap_verify.py` needs `lamp_lib.py` from `code/zeta_probe/route_b/`, which is
+untracked (`.gitignore:77`); set `LAMPLIB` to point at it. Anything involving `Z`
+or `l_R` should go through `tools/sitecost` (exact, Rust) rather than a Python
+reimplementation -- three attempts at that failed here.
