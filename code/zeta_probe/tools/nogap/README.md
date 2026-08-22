@@ -302,13 +302,31 @@ come only from edge `r`, so `B` bounces there and the merge is free. Either way 
 component count drops at no cost, contradicting minimality. Hence one component,
 and `c = 0`. QED
 
-**Residual (honest).** When `B`'s leftmost site carries the virtual arrival, `B`
-may have a single `(L -> R)` pass and no bounce there. The neighbouring component
-then has `L` ends from edge `r-1`; if it bounces `(L -> L)` the merge is free by a
-shared arrival side, and only the configuration where it has an opposing
-`(R -> L)` pass would block. That sub-case is checked by hand, not exhaustively.
-The virtual ends do not obey the sign homogeneity of Step 3, which is why they need
-separate treatment.
+**Residual, narrowed to a single configuration.** The virtual ends do not obey the
+sign homogeneity of Step 3, so the site carrying the virtual arrival needs its own
+enumeration. Doing it exhaustively: with `B` holding the virtual arrival at its
+leftmost site `r`, `B` may have one `(L -> R)` pass and no bounce. Against a
+neighbour `C` the four pair types give
+
+| `C`'s pair at `r` | `Delta` | outcome |
+|---|---|---|
+| `(L -> L)` bounce | `-2` or `0` | contradiction or free |
+| `(L -> R)` pass | `0` | free |
+| `(R -> L)` pass | `0` or `+2` | free, or BLOCKED when `sgn(d_{r-1}) = -1` |
+| `(R -> R)` bounce | `0` | free |
+
+so the only blocker is `C` with an `(R -> L)` pass and `d_{r-1} < 0`. In that
+configuration `C` has no `L`-arrival at `r`, hence its strands on edge `r-1` are
+all down-crossings. Any up-crossing of edge `r-1` would belong to some other
+component, which then has an `L`-arrival at `r` and merges with `B` for free by the
+shared arrival side. So the blocker additionally requires `u_{r-1} = 0`, i.e.
+
+    d_{r-1} = f_{r-1} = -1,  a single strand on edge r-1.
+
+**That one configuration is the whole remaining gap in the proof**, and it is
+checked only empirically (0 exceptions in 2 505 271 elements). Everything else is
+covered. Closing it, or exhibiting it and showing it cannot carry an isolated
+cycle, finishes M6.
 
 End-to-end, the statement is verified on 2 505 271 elements to word length 31 with
 0 exceptions, which is independent of the proof above.
