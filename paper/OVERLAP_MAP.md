@@ -54,10 +54,28 @@ its label.
 
 ## Recommendation, given the decision to absorb only unconditional material
 
-1. **`paper_orthoscheme`: retire.** Four of its eight results are already in
-   `merged_novel_paper` under the same label; move the remaining four
-   (`thm:rigidity`, `thm:cd-general`, `prop:plane`, `thm:barrier`) across and drop
-   the file. Removes 23 results and 31 pages of duplication.
+1. **`paper_orthoscheme`: do NOT retire.** An earlier version of this file
+   recommended retirement on the strength of the label collision alone. Checking
+   the four unique results first shows that was wrong: they are substantive and
+   genuinely absent from `merged_novel_paper`.
+
+   | label | content | in `merged_novel_paper`? |
+   |---|---|---|
+   | `thm:rigidity` | generic rigidity, `ker rho_a = N_gen` on a co-null set | no |
+   | `thm:cd-general` | collision depth for all `n>=3`, four-case classification | no |
+   | `prop:plane` | `rho_a` non-injective at `n=2` | no |
+   | `thm:barrier` | ambient obstructions only in the plane, via amenability | no |
+
+   `merged_novel_paper`'s planar section is the triangle-group census and the
+   right-triangle structure, which is different material. Retirement would be an
+   18-result merge, not an archive, and it would enlarge a paper already carrying
+   49 numbered results.
+
+   The duplication that IS real is the four shared labels. Fix that by choosing one
+   source of record for each and citing rather than restating. Since
+   `merged_novel_paper` is the flagship for unconditional results and marks all four
+   as proved, it should hold them and `paper_orthoscheme` should cite it. That
+   removes the duplication at a fraction of the risk.
 2. **`hahn_exton_qcosine`: keep, cite, do not absorb.** It is nearly a subset of
    `paper2`, but its content is conditional and specialised; the clean split is for
    `paper2` to cite it rather than restate it. Delete the five restatements from
