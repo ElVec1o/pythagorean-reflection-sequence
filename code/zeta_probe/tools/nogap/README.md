@@ -986,3 +986,30 @@ The shape of a proof: at s* the walk achieving the maximum has ALL its ends bott
 already Lean, exists_bottom_at_wLo and not_atTop_at_cLo. What is owed is that a
 SECOND walk contributes a bottom ARRIVAL at s*, and by cross_dearer that step must
 use cost-minimality.
+
+## CanonicalPair splits cleanly, and half of it is now PROVED (2026-08-23)
+
+Probed the canonical-site conjecture claim by claim. It splits in two:
+
+ (i)  the MAXIMISING walk has a bottom ARRIVAL at s*
+ (ii) a SECOND walk also has a bottom arrival at s*
+
+Counts over n <= 4:
+   (i)  holds on ALL 76945 multi-walk systems -- minimal or not. 0 failures.
+   (ii) fails on 15993 of 76945 general systems, holds on all 1114 cost-minimal ones.
+
+So (ii) is exactly where cost-minimality bites, and (i) is unconditional.
+
+(i) is now PROVED: WalkSupport.maximiser_has_bottom_arrival. The walk has a bottom
+end at its leftmost site (exists_bottom_at_wLo); if that end is a departure, its
+turn-partner lies in the SAME walk -- a turn is a graph edge -- at the same site, with
+the opposite role (turn_arr_flip), and is a bottom end too
+(bottom_of_end_at_wLo). Either way an arrival is available.
+
+Also corrected a probe error on the way: a first attempt required the second walk to
+lie OUTSIDE the maximising set and reported 644 of 1114, seeming to contradict the
+earlier 1114 of 1114. It does not -- the maximising set can contain SEVERAL walks
+sharing the same leftmost edge (470 of the 1114 cases), and there the pair lives
+inside that set.
+
+Remaining: (ii) alone.

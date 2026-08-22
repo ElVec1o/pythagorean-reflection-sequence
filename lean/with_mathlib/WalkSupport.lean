@@ -342,7 +342,30 @@ theorem maximising_walk_all_bottom (edgeOf siteOf : α → ℤ) (atTop : α → 
   intro x hzx hs
   exact bottom_of_end_at_wLo edgeOf siteOf atTop G hsite z x hzx (by rw [hs, hz])
 
+/-- **The maximising walk has a bottom ARRIVAL at its leftmost site.**  This is
+claim (i) of the canonical-site conjecture, and it needs **no** cost-minimality --
+confirmed on all 76945 multi-walk systems, not only the 1114 minimal ones.
+
+The walk has a bottom end there; if it is a departure, its turn-partner is in the
+same walk (a turn is a graph edge), at the same site, with the opposite role, and is
+a bottom end too. -/
+theorem maximiser_has_bottom_arrival (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool)
+    (D : Data α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e)
+    (z : α) :
+    ∃ a : α, (graph D).Reachable z a ∧ siteOf a = wLo edgeOf (graph D) z ∧
+      atTop a = false ∧ isArr a = true := by
+  obtain ⟨x, hxr, hxe, hxb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  have hxs : siteOf x = wLo edgeOf (graph D) z := by
+    have h := hsite x; rw [hxb] at h; simp at h; omega
+  obtain ⟨a, hasite, haarr, hxa⟩ := arrival_beside siteOf isArr D hts hta x
+  refine ⟨a, hxr.trans hxa, by rw [hasite, hxs], ?_, haarr⟩
+  exact bottom_of_end_at_wLo edgeOf siteOf atTop (graph D) hsite z a
+    (hxr.trans hxa) (by rw [hasite, hxs])
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.bottom_of_end_at_wLo
-#print axioms WalkSupport.maxWLo_spec
-#print axioms WalkSupport.maximising_walk_all_bottom
+#print axioms WalkSupport.maximiser_has_bottom_arrival
