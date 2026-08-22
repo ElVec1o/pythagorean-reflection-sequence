@@ -887,5 +887,46 @@ theorem no_side_change_of_cross_zero {β : Type*} [DecidableEq β] [Fintype β]
   by_contra hcon
   exact xEntry_ne_zero S t cls ha (hz _ _ (by omega))
 
+/-! ### The plan at a site of a configuration
+
+`planOfTurn` instantiated with the site's arrivals and departures and the local turn.
+The class of an end is its side and its sign: top ends belong to the left edge, so
+they are classes `0, 1`, and bottom ends to the right edge, classes `2, 3`. -/
+
+/-- The four classes at a site: `(L,+) (L,-) (R,+) (R,-)`. -/
+def clsOf (up : Fin n → ℕ) (ds : Bool → Bool) (x : Endpt n m) : Fin 4 :=
+  (if atTop x then 0 else 2) + (if EndData.sgn (endDataOf (m := m) up ds) x then 0 else 1)
+
+/-- The local turn is injective. -/
+theorem turnAt_injOn (up : Fin n → ℕ) (s : ℤ) (S : Finset (Endpt n m)) :
+    Set.InjOn (turnAt up s) (S : Set (Endpt n m)) := by
+  intro a _ b _ hab
+  have h := congrArg (turnAt up s) hab
+  rwa [turnAt_invol up s a, turnAt_invol up s b] at h
+
+/-- Every departure at a site is the turn of an arrival there. -/
+theorem turnAt_surjOn (up : Fin n → ℕ) (s : ℤ)
+    (h : (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    ∀ b ∈ depAt (m := m) up s, ∃ a ∈ arrAt (m := m) up s, turnAt up s a = b := by
+  intro b hb
+  exact ⟨turnAt up s b, turnAt_dep up s h b hb, turnAt_invol up s b⟩
+
+/-- **The plan at a site.** -/
+noncomputable def planAt (up : Fin n → ℕ) (ds : Bool → Bool) (s : ℤ)
+    (h : (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    SiteCost.Plan
+      ((arrAt (m := m) up s).filter (fun a => clsOf up ds a = 0)).card
+      ((arrAt (m := m) up s).filter (fun a => clsOf up ds a = 1)).card
+      ((arrAt (m := m) up s).filter (fun a => clsOf up ds a = 2)).card
+      ((arrAt (m := m) up s).filter (fun a => clsOf up ds a = 3)).card
+      ((depAt (m := m) up s).filter (fun b => clsOf up ds b = 0)).card
+      ((depAt (m := m) up s).filter (fun b => clsOf up ds b = 1)).card
+      ((depAt (m := m) up s).filter (fun b => clsOf up ds b = 2)).card
+      ((depAt (m := m) up s).filter (fun b => clsOf up ds b = 3)).card :=
+  planOfTurn (arrAt (m := m) up s) (depAt (m := m) up s) (turnAt up s) (clsOf up ds)
+    (turnAt_arr up s h) (turnAt_injOn up s _) (turnAt_surjOn up s h)
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.no_side_change_of_cross_zero
+#print axioms ConfigLoop.turnAt_injOn
+#print axioms ConfigLoop.turnAt_surjOn
+#print axioms ConfigLoop.planAt

@@ -1385,3 +1385,19 @@ So M3l's mathematical content is done. What remains is instantiation: cls built 
 atTop and EndData.sgn, S and T the site's arrAt and depAt, and t the turn -- with
 turnAt_arr, turnAt_dep and turnAt_invol supplying maps-into, injectivity and
 surjectivity.
+
+## The plan at a site of a configuration (2026-08-23)
+
+planAt instantiates planOfTurn with the site's arrivals and departures and the local
+turn:
+
+  clsOf          the four classes -- top ends belong to the LEFT edge (classes 0,1)
+                 and bottom ends to the right (2,3); the sign comes from EndData.sgn
+  turnAt_arr     arrivals map into departures
+  turnAt_injOn   the turn is injective, being an involution
+  turnAt_surjOn  every departure is the turn of an arrival -- take its own turn, which
+                 turnAt_dep puts among the arrivals
+
+So a configuration now yields a genuine SiteCost.Plan at each balanced site, and with
+no_cross_at_cut and no_side_change_of_cross_zero that gives, at a cut site, that no
+turn moves between edge s-1 and edge s -- the hturn input of prop_cut_correct.
