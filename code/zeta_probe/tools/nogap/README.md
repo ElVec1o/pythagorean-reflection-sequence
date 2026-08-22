@@ -1631,3 +1631,17 @@ That is the first half of the run induction for c <= |Z|: each walk lives entire
 one side of every cut site, so each walk lies within a single maximal run. What
 remains is that the walks within a run merge to one, which is the descent with
 other_end_at_wLo_run in place of the global covering.
+
+## Counting walks by an invariant (2026-08-23)
+
+walkCount_le_card: if a function is constant on walks and separates them, the walk
+count is at most the size of its target. The induced map on connected components is
+injective, and Fintype.card_le_of_injective finishes.
+
+With the invariant "how many cut sites lie below this end" that is exactly c <= |Z|:
+ - constancy  is walk_confined, proved;
+ - separation is the statement that walks within a run merge, which is the descent
+   with other_end_at_wLo_run, and is what M4b still owes.
+
+So M4b now has both halves of its scaffolding in Lean, and the single remaining
+mathematical step is the separation half.

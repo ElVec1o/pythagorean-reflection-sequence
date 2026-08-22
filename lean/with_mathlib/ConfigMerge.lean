@@ -661,5 +661,30 @@ theorem exists_other_walk {α : Type*} [DecidableEq α] [Fintype α]
     walkCount_le_one_of_connected D (fun x y => (hc x).symm.trans (hc y))
   omega
 
+/-! ### Counting walks by an invariant
+
+If a function is constant on walks and separates them, the walk count is at most the
+size of its target.  With the invariant "how many cut sites lie below this end", that
+is `c ≤ |Z|`: constancy is `walk_confined`, and separation is the statement that
+walks within a run merge. -/
+
+/-- **An invariant that separates walks bounds their number.** -/
+theorem walkCount_le_card {α β : Type*} [DecidableEq α] [Fintype α] [Fintype β]
+    (D : WalkGraph.Data α) (f : α → β)
+    (hconst : ∀ x y : α, (graph D).Reachable x y → f x = f y)
+    (hsep : ∀ x y : α, f x = f y → (graph D).Reachable x y) :
+    walkCount D ≤ Fintype.card β := by
+  classical
+  have hwd : ∀ x y : α, (graph D).Reachable x y → f x = f y := hconst
+  let F : (graph D).ConnectedComponent → β :=
+    Quot.lift f (fun x y h => hwd x y h)
+  have hinj : Function.Injective F := by
+    intro c₁ c₂ h
+    induction c₁ using Quot.inductionOn with
+    | _ x =>
+      induction c₂ using Quot.inductionOn with
+      | _ y => exact SimpleGraph.ConnectedComponent.eq.mpr (hsep x y h)
+  exact Fintype.card_le_of_injective F hinj
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.exists_other_walk
+#print axioms ConfigMerge.walkCount_le_card
