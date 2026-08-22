@@ -277,3 +277,6 @@ name = "DataBuild"
 
 [[lean_lib]]
 name = "ConfigMerge"
+
+[[lean_lib]]
+name = "MergeWitness"
