@@ -937,7 +937,7 @@ theorem clsOf_lt_two_iff (up : Fin n → ℕ) (ds : Bool → Bool) (x : Endpt n 
     ((clsOf up ds x : ℕ) < 2 ↔ atTop x = true) := by
   unfold clsOf
   cases hx : atTop x <;>
-    cases EndData.sgn (endDataOf (m := m) up ds) x <;> simp [hx] <;> decide
+    cases EndData.sgn (endDataOf (m := m) up ds) x <;> simp
 
 /-- At a site, the side determines the edge. -/
 theorem edge_of_site (x : Endpt n m) (s : ℤ) (hs : siteOf x = s) :
