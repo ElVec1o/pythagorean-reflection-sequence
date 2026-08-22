@@ -637,6 +637,44 @@ theorem cut_site_value (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
     SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm = 0 :=
   (isCut_iff_siteValue_zero Ap Am Bp Bm Cp Cm Dp Dm).mpr ⟨h, h2, h3⟩
 
+/-! ### `Local` with the right position function
+
+**CORRECTION (2026-08-23).**  `walk_graph_local` above uses `pos = siteOf`.  That is
+the wrong choice, and it is why its gap hypothesis looked unnatural.
+
+A strand crosses site `s` when it goes from edge `s-1` to edge `s`, which in the walk
+graph is a **turn** at site `s`.  A **crossing** edge joins the two ends of one
+crossing and stays on a single edge.  So the position of an end is its **edge**, and:
+
+* a crossing edge does not move `pos` -- the condition is vacuous on it;
+* a turn edge at site `s` joins an end of edge `s-1` to an end of edge `s`, moving
+  `pos` from `s-1` to `s`, and `Local` then demands `s ∉ Z`.
+
+That demand is exactly `prop:cut`'s first sentence: *at a cut site every minimum-cost
+pairing matches each arrival with a departure on its own side, so no strand crosses
+`s`*.  It is a theorem about minimum-cost pairings, carried here as a hypothesis. -/
+theorem walk_graph_local_edge (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x → siteOf x ∉ Zf) :
+    CutComponents.Local (graph (dataOf up hbal)) edgeOf Zf := by
+  intro x y hxy
+  rcases hxy with h | h
+  · -- a crossing edge: both ends lie on the same edge, so `pos` does not move
+    subst h
+    exact ⟨edgeOf x, Or.inr rfl, Or.inr (partner_edgeOf x), fun hne =>
+      absurd (partner_edgeOf x).symm hne⟩
+  · -- a turn edge: the two ends lie on edges `s - 1` and `s` for `s` the site
+    subst h
+    refine ⟨siteOf x, ?_, ?_, fun hne => hturn x (Ne.symm hne)⟩
+    · unfold siteOf edgeOf atTop; cases x.top <;> simp
+    · have h2 : siteOf ((dataOf up hbal).t x) = siteOf x := turnAt_site up hbal x
+      have h3 : edgeOf ((dataOf up hbal).t x)
+          + (if atTop ((dataOf up hbal).t x) then (1:ℤ) else 0)
+          = siteOf ((dataOf up hbal).t x) := rfl
+      cases hb : atTop ((dataOf up hbal).t x)
+      · right; rw [hb] at h3; simp at h3; omega
+      · left; rw [hb] at h3; simp at h3; omega
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.isCut_iff_siteValue_zero
-#print axioms ConfigLoop.cut_site_value
+#print axioms ConfigLoop.walk_graph_local_edge

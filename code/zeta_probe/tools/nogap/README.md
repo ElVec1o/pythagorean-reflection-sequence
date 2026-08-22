@@ -1294,3 +1294,30 @@ That replaces the retracted gapSites. It also explains why the shifted-gap-edge 
 was wrong in a structural way: cut is a condition on the PAIRING data at a site
 (arrivals, departures and their signs), not on the edge multiplicities, so no function
 of the gap edges alone could have been it.
+
+## Local with the right position function (2026-08-23)
+
+SiteCost's header gives the read-off: alpha = d_{s-1}, beta = d_s, Phi = f_{s-1}
+(alpha_eq_dL, beta_eq_dR, Phi_eq_fL). So
+
+  site s is CUT  <=>  d_{s-1} = 0 and d_s = 0 and f_{s-1} = 0
+
+which is the paper's l.1966 verbatim. The retracted gapSites had the first two
+conditions but NOT d_s = 0 -- and that missing condition is exactly the one extra
+site per run, since the site at the far end of a gap run has a flanking deposit.
+
+The position function was also wrong. A strand crosses site s by going from edge s-1
+to edge s, which in the walk graph is a TURN at s; a CROSSING edge joins the two ends
+of one crossing and stays on a single edge. So pos is the EDGE, not the site:
+
+  walk_graph_local_edge : Local (walk graph) edgeOf Zf
+    - crossing edges do not move pos, so the condition is vacuous on them
+    - a turn at site s moves pos from s-1 to s, and Local then demands s not in Z
+
+and that demand is exactly prop:cut's first sentence -- at a cut site every
+minimum-cost pairing matches each arrival with a departure on its own side, so no
+strand crosses s. It is a theorem about minimum-cost pairings, carried as a hypothesis
+here rather than assumed silently.
+
+walk_graph_local (the siteOf version) is superseded. It is true as stated but its gap
+hypothesis was unnatural precisely because the position function was wrong.
