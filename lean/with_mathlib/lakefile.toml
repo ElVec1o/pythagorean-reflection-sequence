@@ -253,3 +253,6 @@ name = "GapFreeAssembly"
 
 [[lean_lib]]
 name = "GroupElt"
+
+[[lean_lib]]
+name = "StrandEnds"
