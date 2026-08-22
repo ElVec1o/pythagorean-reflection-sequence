@@ -13,6 +13,7 @@ agree because one moves between the two sites of an edge while the other stays.
 import Mathlib.Tactic
 import EndType
 import TurnBuild
+import WalkGraph
 
 namespace DataBuild
 
@@ -96,6 +97,49 @@ theorem turn_ne (up : Fin n → ℕ)
   · exact turnAt_ne up (siteOf x) (hbal _) x h
   · exact turnAt_ne_dep up (siteOf x) (hbal _) x h
 
+/-- The turn sends departures to arrivals as well. -/
+theorem turnAt_dep (up : Fin n → ℕ) (s : ℤ)
+    (h : (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    ∀ x ∈ depAt (m := m) up s, turnAt up s x ∈ arrAt (m := m) up s := by
+  intro x hx
+  unfold turnAt
+  rw [dif_pos h]
+  exact (exists_involution_of_card_eq (arrAt (m := m) up s) (depAt (m := m) up s)
+    (arrAt_disjoint_depAt up s) h).choose_spec.2.2.1 x hx
+
+/-- **The turn preserves sites.**  It pairs arrivals with departures at one site, so
+an end's image lies at that same site.  This is what the glue's involutivity
+needs. -/
+theorem turnAt_site (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (x : Endpt n m) : siteOf (turnAt up (siteOf x) x) = siteOf x := by
+  classical
+  rcases mem_own_site up x with h | h
+  · exact ((mem_depAt up (siteOf x) _).mp (turnAt_arr up (siteOf x) (hbal _) x h)).1
+  · exact ((mem_arrAt up (siteOf x) _).mp (turnAt_dep up (siteOf x) (hbal _) x h)).1
+
+/-- The glued turn is an involution. -/
+theorem turn_invol (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    ∀ x : Endpt n m, turn up (turn up x) = x :=
+  glue_invol siteOf (turnAt up) (fun s x => turnAt_invol up s x) (turnAt_site up hbal)
+
+/-- **The walk-graph data of a lamp configuration.**  Every field is one of the
+constructions above and every proof one of the lemmas; the single hypothesis is
+that arrivals and departures balance at every site, which the travel indicator
+being locally constant provides. -/
+noncomputable def dataOf (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    WalkGraph.Data (Endpt n m) where
+  p := partner
+  t := turn up
+  p_invol := partner_invol
+  t_invol := turn_invol up hbal
+  p_ne := partner_ne
+  t_ne := turn_ne up hbal
+  pt_ne := partner_ne_turn siteOf partner (turn up)
+    (fun x => partner_site_ne x) (fun x => turnAt_site up hbal x)
+
 -- Certification (Rule 5).
 #print axioms DataBuild.turnAt_invol
 #print axioms DataBuild.turnAt_arr
@@ -103,5 +147,8 @@ theorem turn_ne (up : Fin n → ℕ)
 #print axioms DataBuild.turnAt_ne_dep
 #print axioms DataBuild.mem_own_site
 #print axioms DataBuild.turn_ne
+#print axioms DataBuild.turnAt_site
+#print axioms DataBuild.turn_invol
+#print axioms DataBuild.dataOf
 
 end DataBuild
