@@ -1,0 +1,116 @@
+/-
+The merge on an actual lamp configuration.
+
+`dataOf` gives walk-graph data from a configuration, and both conditions the
+re-paired data takes are proved, so `swapData` applies to it.  Composing with
+`walkCount_lt` gives what the descent consumes: re-pairing two arrivals lying in
+different walks lowers the walk count.
+
+One hypothesis is carried rather than discharged, `hmono`, that connectivity is not
+destroyed by the re-pairing.  It is the cycle-minus-an-edge fact: each walk is a
+cycle and loses one turn-edge, so it stays connected, and the surviving path
+transports into the re-paired graph by `le_swapData`.  `reach_delete_turn` supplies
+it for one edge at a time; assembling both is what remains.
+-/
+import Mathlib.Tactic
+import DataBuild
+import WalkGraph
+
+namespace ConfigMerge
+
+open EndType DataBuild WalkGraph
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- The re-paired data of a configuration.  Both side conditions are supplied by the
+two lemmas proved for the purpose.  The inputs are that `d` and `d'` are the
+turn-partners of the two arrivals `a` and `a'`, that the four lie at one site, and
+that they are pairwise distinct in the six ways the involution argument uses. -/
+noncomputable def swapDataOf (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (a d a' d' : Endpt n m)
+    (hta : turn up a = d) (hta' : turn up a' = d')
+    (hd : siteOf d = siteOf a) (ha' : siteOf a' = siteOf a) (hd' : siteOf d' = siteOf a)
+    (hda : d ≠ a) (hd'a : d' ≠ a) (ha'a : a' ≠ a)
+    (hd'd : d' ≠ d) (ha'd' : a' ≠ d') (hda' : d ≠ a') :
+    WalkGraph.Data (Endpt n m) :=
+  swapData (dataOf up hbal) a d a' d'
+    (swapT_invol (turn_invol up hbal) hta hta' hda hd'a ha'a hd'd ha'd' hda')
+    (swapT_ne _ a d a' d' (turn_ne up hbal) hd'a hda')
+    (partner_ne_swapT siteOf partner (turn up) a d a' d'
+      (fun x => partner_site_ne x) (fun x => turnAt_site up hbal x) hd ha' hd')
+
+/-- Reachability survives deleting a set of edges as soon as every adjacency is
+itself recoverable in the smaller graph.  This is the general form of the
+cycle-minus-an-edge argument: walk along the original path and replace each step
+that used a deleted edge by a detour. -/
+theorem reach_of_adj_reach {V : Type*} (G : SimpleGraph V) (S : Set (Sym2 V))
+    (h : ∀ x y, G.Adj x y → (G.deleteEdges S).Reachable x y) :
+    ∀ x y, G.Reachable x y → (G.deleteEdges S).Reachable x y := by
+  intro x y hxy
+  obtain ⟨w⟩ := hxy
+  induction w with
+  | nil => exact SimpleGraph.Reachable.refl _
+  | cons hadj _ ih => exact (h _ _ hadj).trans ih
+
+/-- `hmono` for the re-paired data: if every adjacency of the original walk graph
+survives the deletion of the two re-paired turn-edges, then the re-pairing destroys
+no connectivity, since the deleted graph sits inside the re-paired one. -/
+theorem mono_swapData {α : Type*} [DecidableEq α] [Fintype α] (D : WalkGraph.Data α)
+    (a d a' d' : α)
+    (hd : D.t a = d) (hd' : D.t a' = d') (h1 h2 h3)
+    (h : ∀ x y, (graph D).Adj x y →
+      ((graph D).deleteEdges {s(a, d), s(a', d')}).Reachable x y) :
+    ∀ x y, (graph D).Reachable x y →
+      (graph (swapData D a d a' d' h1 h2 h3)).Reachable x y := by
+  intro x y hxy
+  exact ((reach_of_adj_reach (graph D) _ h) x y hxy).mono (le_swapData D a d a' d' hd hd' h1 h2 h3)
+
+/-- **The descent on an actual configuration.**  Re-pairing two arrivals that lie
+at a common site but in *different* walks lowers the walk count.
+
+Every hypothesis is about the configuration rather than about an abstract graph:
+`hta`/`hta'` say `d`, `d'` are the turn-partners; the `siteOf` equations say the
+four ends share a site; the distinctness facts are the six the involution argument
+uses; `hadj` is the cycle-minus-an-edge input; the `k`-conditions say the walk
+through `d'` does not re-use the two re-paired edges before closing; and `hsplit`
+is the hypothesis that gives the descent its content, that `a` and `a'` start in
+different walks. -/
+theorem config_walkCount_lt (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (a d a' d' : Endpt n m)
+    (hta : turn up a = d) (hta' : turn up a' = d')
+    (hd : siteOf d = siteOf a) (ha' : siteOf a' = siteOf a) (hd' : siteOf d' = siteOf a)
+    (hda : d ≠ a) (hd'a : d' ≠ a) (ha'a : a' ≠ a)
+    (hd'd : d' ≠ d) (ha'd' : a' ≠ d') (hda' : d ≠ a')
+    (hadj : ∀ x y, (graph (dataOf up hbal)).Adj x y →
+      ((graph (dataOf up hbal)).deleteEdges {s(a, d), s(a', d')}).Reachable x y)
+    (M : ℕ) (hM : (sig (dataOf up hbal))^[M] d' = d') (hpos : 0 < M)
+    (k₁ : ∀ k, k < M - 1 →
+      s((sig (dataOf up hbal))^[k] d',
+        (dataOf up hbal).p ((sig (dataOf up hbal))^[k] d')) ∉
+        ({s(a, d), s(a', d')} : Set (Sym2 (Endpt n m))))
+    (k₂ : ∀ k, k < M - 1 →
+      s((dataOf up hbal).p ((sig (dataOf up hbal))^[k] d'),
+        (dataOf up hbal).t ((dataOf up hbal).p ((sig (dataOf up hbal))^[k] d'))) ∉
+        ({s(a, d), s(a', d')} : Set (Sym2 (Endpt n m))))
+    (klast : s((sig (dataOf up hbal))^[M-1] d',
+        (dataOf up hbal).p ((sig (dataOf up hbal))^[M-1] d')) ∉
+        ({s(a, d), s(a', d')} : Set (Sym2 (Endpt n m))))
+    (hback : (dataOf up hbal).t d' = a')
+    (hsplit : ¬ (graph (dataOf up hbal)).Reachable a a') :
+    walkCount (swapDataOf up hbal a d a' d' hta hta' hd ha' hd'
+        hda hd'a ha'a hd'd ha'd' hda') <
+      walkCount (dataOf up hbal) := by
+  refine walkCount_lt _ _ ?_ a a' hsplit ?_
+  · exact mono_swapData (dataOf up hbal) a d a' d' hta hta' _ _ _ hadj
+  · exact merge_connects_full (dataOf up hbal) a d a' d' hta hta' _ _ _
+      M hM hpos k₁ k₂ klast hback
+
+-- Certification (Rule 5).
+#print axioms ConfigMerge.swapDataOf
+
+end ConfigMerge
+#print axioms ConfigMerge.reach_of_adj_reach
+#print axioms ConfigMerge.mono_swapData
+#print axioms ConfigMerge.config_walkCount_lt

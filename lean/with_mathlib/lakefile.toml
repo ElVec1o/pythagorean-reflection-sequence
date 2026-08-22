@@ -274,3 +274,6 @@ name = "TurnBuild"
 
 [[lean_lib]]
 name = "DataBuild"
+
+[[lean_lib]]
+name = "ConfigMerge"
