@@ -890,3 +890,19 @@ So the shared-side hypothesis of cost_swapData IS available at cost-minimal
 realisations, and M6dy is closable. What the walk-model chain needs is
 cost-minimality: hshared does not come from the placement alone, it comes from the
 realisation being optimal. That is the missing ingredient, now identified.
+
+## The cost-preserving merge loop (2026-08-23)
+
+CostMerge.cost_merges_to_one: given a free pair whenever more than one walk remains,
+the walks merge down to one AT UNCHANGED COST. The invariant is MergesCost = the
+merge invariant plus a fixed cost, and it survives the re-pairing on all four counts:
+swapData_p, swapT_site, swapT_arr, cost_swapData.
+
+The free-pair input is isolated as HasFreePair: a datum with more than one walk
+admits two arrivals at a common site, in different walks, sharing a side or with
+their departures sharing one. That is what side_probe2.py confirms at cost-minimal
+data -- 146 of 146 multi-walk cases on one to three edges -- and it is NOT PROVED.
+
+So the architecture is complete and the remaining mathematical content of M6dy is
+exactly one statement: cost-minimality implies a free pair. Everything downstream of
+it is now formal.

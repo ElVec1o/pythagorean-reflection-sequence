@@ -14,6 +14,8 @@ even though `swapT ≠ swap ∘ t` as functions.
 import Mathlib.Tactic
 import EndData
 import WalkGraph
+import ConfigMerge
+import WalkSupport
 
 namespace CostMerge
 
@@ -97,5 +99,79 @@ theorem cost_swapData (d : EndData.Data α) (D : Data α) (a a' : α)
     (by rw [hsa, hsa']; exact hne)
     (by rw [hsa, hsa']; exact hshared)
 
+/-! ### The cost-preserving descent
+
+`cost_swapData` says the merge is free; `ConfigMerge.descent_of_split` says it lowers
+the walk count.  Together they are the step the paper's argument runs inside the set
+of cost-minimal realisations. -/
+
+/-- **One step, free and strictly descending.** -/
+theorem cost_preserving_step (d : EndData.Data α) (D : Data α) (a a' : α)
+    (harr : d.isArr a = true) (harr' : d.isArr a' = true)
+    (hd : d.isArr (D.t a) = false) (hd' : d.isArr (D.t a') = false)
+    (hsplit : ¬ (graph D).Reachable a a')
+    (hshared : d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a'))
+    (h1 h2 h3) :
+    costOf d (swapData D a (D.t a) a' (D.t a') h1 h2 h3) = costOf d D ∧
+      walkCount (swapData D a (D.t a) a' (D.t a') h1 h2 h3) < walkCount D :=
+  ⟨cost_swapData d D a a' harr harr' hd hd'
+     (Ne.symm (ConfigMerge.ne_of_split D hsplit)) hshared h1 h2 h3,
+   ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3⟩
+
+/-- The property the numerics support and the descent needs: a cost-minimal datum
+with more than one walk admits a **free** merge -- two arrivals at a common site, in
+different walks, sharing a side or with their departures sharing one.
+
+Verified over all cost-minimal transition systems on one to three edges: 146 of 146
+multi-walk cases (`code/zeta_probe/tools/nogap/side_probe2.py`).  Not proved. -/
+def HasFreePair (d : EndData.Data α) (siteOf : α → ℤ) (D : Data α) : Prop :=
+  1 < walkCount D → ∃ a a' : α,
+    siteOf a = siteOf a' ∧ d.isArr a = true ∧ d.isArr a' = true ∧
+    d.isArr (D.t a) = false ∧ d.isArr (D.t a') = false ∧
+    ¬ (graph D).Reachable a a' ∧
+    (d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a'))
+
+/-- The invariant carried by the cost-preserving descent: the merge invariant, plus
+a fixed cost. -/
+def MergesCost (siteOf : α → ℤ) (isArr : α → Bool) (p₀ : α → α)
+    (d : EndData.Data α) (c₀ : ℤ) (D : Data α) : Prop :=
+  WalkSupport.Merges siteOf isArr p₀ D ∧ costOf d D = c₀
+
+/-- **The cost-preserving merge loop.**  Given a free pair whenever more than one walk
+remains, the walks merge to one **at unchanged cost**.
+
+The free-pair hypothesis is `HasFreePair`, which the numerics support at cost-minimal
+data and which is not proved here. -/
+theorem cost_merges_to_one (siteOf : α → ℤ) (p₀ : α → α) (d : EndData.Data α) (c₀ : ℤ)
+    (hp₀ : ∀ x, siteOf (p₀ x) ≠ siteOf x)
+    (hfp : ∀ E : Data α, MergesCost siteOf d.isArr p₀ d c₀ E →
+      HasFreePair d siteOf E)
+    (D : Data α) (hD : MergesCost siteOf d.isArr p₀ d c₀ D) :
+    ∃ D', MergesCost siteOf d.isArr p₀ d c₀ D' ∧ walkCount D' ≤ 1 := by
+  classical
+  refine ConfigMerge.reaches_one (P := MergesCost siteOf d.isArr p₀ d c₀) ?_ D hD
+  intro E hmany hE
+  obtain ⟨⟨hp, hts, hta⟩, hc⟩ := hE
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ := hfp E ⟨⟨hp, hts, hta⟩, hc⟩ hmany
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split E hsplit
+  have hsd : siteOf (E.t a) = siteOf a := hts a
+  have hsa' : siteOf a' = siteOf a := hss.symm
+  have hsd' : siteOf (E.t a') = siteOf a := by rw [hts a', hss]
+  refine ⟨swapData E a (E.t a) a' (E.t a')
+      (swapT_invol E.t_invol rfl rfl (ConfigMerge.dep_ne_arr' E rfl)
+        (ConfigMerge.dep_ne_other E rfl hsplit) haa'
+        (ConfigMerge.dep_ne_dep' E rfl rfl haa')
+        (Ne.symm (ConfigMerge.dep_ne_arr' E rfl))
+        (ConfigMerge.dep_ne_other' E rfl hsplit))
+      (swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne
+        (ConfigMerge.dep_ne_other E rfl hsplit) (ConfigMerge.dep_ne_other' E rfl hsplit))
+      (partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a')
+        (by rw [hp]; exact hp₀) hts hsd hsa' hsd'),
+    ⟨⟨hp, ?_, ?_⟩, ?_⟩, ?_⟩
+  · exact swapT_site siteOf E.t a (E.t a) a' (E.t a') hts hsd hsa' hsd'
+  · exact swapT_arr d.isArr E.t a (E.t a) a' (E.t a') hta rfl rfl harr harr'
+  · rw [cost_swapData d E a a' harr harr' hd hd' (Ne.symm haa') hshared]; exact hc
+  · exact ConfigMerge.descent_of_split E a a' hsplit _ _ _
+
 -- Certification (Rule 5).
-#print axioms CostMerge.cost_swapData
+#print axioms CostMerge.cost_merges_to_one
