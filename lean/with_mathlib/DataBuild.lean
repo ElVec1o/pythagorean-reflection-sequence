@@ -63,9 +63,45 @@ theorem turnAt_ne (up : Fin n → ℕ) (s : ℤ)
 noncomputable def turn (up : Fin n → ℕ) : Endpt n m → Endpt n m :=
   glue siteOf (turnAt up)
 
+/-- The turn fixes nothing among the departures either. -/
+theorem turnAt_ne_dep (up : Fin n → ℕ) (s : ℤ)
+    (h : (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    ∀ x ∈ depAt (m := m) up s, turnAt up s x ≠ x := by
+  intro x hx
+  unfold turnAt
+  rw [dif_pos h]
+  exact (exists_involution_of_card_eq (arrAt (m := m) up s) (depAt (m := m) up s)
+    (arrAt_disjoint_depAt up s) h).choose_spec.2.2.2.2.2 x hx
+
+/-- **Every end lies at its own site**, as an arrival or a departure.  This is what
+makes the site-local statements apply to it, since `siteOf` is a function and the
+role predicate is total. -/
+theorem mem_own_site (up : Fin n → ℕ) (x : Endpt n m) :
+    x ∈ arrAt (m := m) up (siteOf x) ∨ x ∈ depAt (m := m) up (siteOf x) := by
+  classical
+  by_cases h : isArrOf up x = true
+  · exact Or.inl ((mem_arrAt up (siteOf x) x).mpr ⟨rfl, h⟩)
+  · refine Or.inr ((mem_depAt up (siteOf x) x).mpr ⟨rfl, ?_⟩)
+    simpa using h
+
+/-- **The glued turn is fixed-point free.**  At each end the glue is the turn at
+that end's own site, and the end is an arrival or a departure there, so one of the
+two site-local statements applies. -/
+theorem turn_ne (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    ∀ x : Endpt n m, turn up x ≠ x := by
+  intro x
+  unfold turn glue
+  rcases mem_own_site up x with h | h
+  · exact turnAt_ne up (siteOf x) (hbal _) x h
+  · exact turnAt_ne_dep up (siteOf x) (hbal _) x h
+
 -- Certification (Rule 5).
 #print axioms DataBuild.turnAt_invol
 #print axioms DataBuild.turnAt_arr
 #print axioms DataBuild.turnAt_ne
+#print axioms DataBuild.turnAt_ne_dep
+#print axioms DataBuild.mem_own_site
+#print axioms DataBuild.turn_ne
 
 end DataBuild
