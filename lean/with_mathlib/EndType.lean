@@ -452,6 +452,46 @@ theorem card_arr_top {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ
          by unfold isUp; simpa using hu⟩
   rw [hset, card_ends_edge_dir]
 
+/-- **The per-edge count, down-crossings.**  The complementary filter, counted the
+same way; its size is the crossing count less the up-count. -/
+theorem card_ends_edge_dir_down {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (e : Fin n) (b : Bool) :
+    (Finset.univ.filter (fun x : Endpt n m =>
+        x.edge = e ∧ x.top = b ∧ ¬ (x.idx.val < up e))).card
+      = m e - min (up e) (m e) := by
+  classical
+  have hset : (Finset.univ.filter (fun x : Endpt n m =>
+      x.edge = e ∧ x.top = b ∧ ¬ (x.idx.val < up e)))
+      = (Finset.univ.filter (fun i : Fin (m e) => ¬ (i.val < up e))).image
+          (fun i => (⟨e, i, b⟩ : Endpt n m)) := by
+    ext x
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image]
+    constructor
+    · rintro ⟨h1, h2, h3⟩
+      obtain ⟨e', i, b'⟩ := x
+      cases h1; cases h2
+      exact ⟨i, h3, rfl⟩
+    · rintro ⟨j, hj, rfl⟩
+      exact ⟨rfl, rfl, hj⟩
+  rw [hset, Finset.card_image_of_injective _ ?_]
+  · have hsum := up_add_down (m e) (min (up e) (m e)) (min_le_right _ _)
+    have hlt : (Finset.univ.filter (fun i : Fin (m e) => i.val < min (up e) (m e)))
+        = (Finset.univ.filter (fun i : Fin (m e) => i.val < up e)) := by
+      ext i
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, lt_min_iff]
+      exact ⟨fun h => h.1, fun h => ⟨h, i.isLt⟩⟩
+    have hne : (Finset.univ.filter (fun i : Fin (m e) => ¬ (i.val < min (up e) (m e))))
+        = (Finset.univ.filter (fun i : Fin (m e) => ¬ (i.val < up e))) := by
+      ext i
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, lt_min_iff, not_and]
+      constructor
+      · intro h hc; exact absurd i.isLt (h hc)
+      · intro h hc; exact absurd hc h
+    rw [hlt, hne, card_fin_lt] at hsum
+    omega
+  · intro a c hac
+    simpa using hac
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -479,5 +519,6 @@ theorem card_arr_top {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ
 #print axioms EndType.card_ends_edge_dir
 #print axioms EndType.edgeOf_eq_iff
 #print axioms EndType.card_arr_top
+#print axioms EndType.card_ends_edge_dir_down
 
 end EndType
