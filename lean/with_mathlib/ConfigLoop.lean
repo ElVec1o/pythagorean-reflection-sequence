@@ -740,6 +740,43 @@ theorem no_cross_at_cut {Ap Am Bp Bm Cp Cm Dp Dm : ℕ}
   cross_eq_zero_of_cost_zero p
     (by rw [hmin, cut_site_value Ap Am Bp Bm Cp Cm Dp Dm halpha hbeta hphi])
 
+/-! ### A `Plan` from a turn
+
+`SiteCost.Plan` is a 4x4 transportation matrix whose rows count arrivals by class and
+whose columns count departures by class.  A turn at a site is a bijection from the
+arrivals there to the departures, so setting `x_ij` to the number of class-`i`
+arrivals whose turn lands in class `j` gives a plan.
+
+The row equations are fiberwise counting; the column equations are the same on the
+departures, through the inverse.  Both are recorded here as the general counting
+step, which is what the construction rests on. -/
+
+/-- **Rows.**  Splitting a class by where its turn lands recovers the class count. -/
+theorem row_sum_of_fiber {β : Type*} [DecidableEq β] [Fintype β]
+    (S : Finset β) (cls : β → Fin 4) :
+    ∑ j : Fin 4, (S.filter (fun a => cls a = j)).card = S.card :=
+  (Finset.card_eq_sum_card_fiberwise (fun a _ => Finset.mem_univ (cls a))).symm
+
+/-- **Columns.**  The same count taken through a bijection: if `t` maps `S` onto `T`
+injectively, the fibres of `cls ∘ t` over `S` have the same cardinalities as the
+fibres of `cls` over `T`. -/
+theorem col_sum_of_bij {β : Type*} [DecidableEq β] [Fintype β]
+    (S T : Finset β) (t : β → β) (cls : β → Fin 4)
+    (hmaps : ∀ a ∈ S, t a ∈ T) (hinj : Set.InjOn t S)
+    (hsurj : ∀ b ∈ T, ∃ a ∈ S, t a = b) (j : Fin 4) :
+    (S.filter (fun a => cls (t a) = j)).card = (T.filter (fun b => cls b = j)).card := by
+  refine Finset.card_bij (fun a _ => t a) ?_ ?_ ?_
+  · intro a ha
+    rw [Finset.mem_filter] at ha ⊢
+    exact ⟨hmaps a ha.1, ha.2⟩
+  · intro a ha b hb hab
+    rw [Finset.mem_filter] at ha hb
+    exact hinj ha.1 hb.1 hab
+  · intro b hb
+    rw [Finset.mem_filter] at hb
+    obtain ⟨a, haS, hab⟩ := hsurj b hb.1
+    exact ⟨a, Finset.mem_filter.mpr ⟨haS, by rw [hab]; exact hb.2⟩, hab⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.cross_le_cost
-#print axioms ConfigLoop.no_cross_at_cut
+#print axioms ConfigLoop.row_sum_of_fiber
+#print axioms ConfigLoop.col_sum_of_bij

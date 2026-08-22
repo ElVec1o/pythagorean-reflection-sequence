@@ -1351,3 +1351,20 @@ What remains to connect it to hturn as stated is the per-site bookkeeping -- tha
 turn of the walk model at site s realises a Plan at s, so that zero cross mass means
 no turn edge moves between edge s-1 and edge s. That is the same kind of link as the
 g-to-configuration one, and is bookkeeping rather than argument.
+
+## A Plan from a turn: the counting step (2026-08-23)
+
+SiteCost.Plan is a 4x4 transportation matrix whose rows count arrivals by class and
+columns departures by class. A turn at a site is a bijection arrivals -> departures,
+so x_ij = the number of class-i arrivals whose turn lands in class j gives a plan.
+
+row_sum_of_fiber: splitting a class by where its turn lands recovers the class count
+(Finset.card_eq_sum_card_fiberwise).
+
+col_sum_of_bij: the same count through the bijection -- the fibres of cls o t over the
+arrivals have the same cardinalities as the fibres of cls over the departures
+(Finset.card_bij).
+
+Those are the two equations Plan's row0..row3 and col0..col3 fields require, so what
+remains for M3l is assembling them with the concrete class function (side from atTop,
+sign from EndData.sgn) and the site's arrival and departure sets.
