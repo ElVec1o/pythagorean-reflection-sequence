@@ -347,6 +347,27 @@ theorem local_turn_exists {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s 
       (arrAt (m := m) up s).card = (depAt (m := m) up s).card :=
   ⟨arrAt_disjoint_depAt up s, hcard⟩
 
+/-! ### Counting, piece five: the obligation, and why it resists
+
+The four per-edge counts are the last link.  Each says that the ends on one edge
+with one direction and one choice of end number `min (up e) (m e)`.  The content is
+`card_fin_lt`, already proved; what is left is transporting it across the encoding.
+
+Two attempts are recorded rather than a broken proof.  The first tried to identify
+the set with the image of a filter on that edge's indices under an injection, and
+the second tried destructuring an end and substituting the edge equality.  Both
+foundered on the same point: `Endpt` is a definition rather than a structure, so an
+end does not destructure without unfolding, and once unfolded the crossing index
+carries the edge in its type, so an equality of edges has to move it.
+
+The favourable observation, which any next attempt should start from, is that the
+up-condition is on `x.1.2.val`, a natural number, so it needs no coercion at all.
+Only the identification of the two edges does.  Making `Endpt` a structure with
+named fields, or working throughout with `Finset.sigma` rather than a filter over
+the whole type, would remove the difficulty; both are changes to the encoding
+rather than to the mathematics.
+-/
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
