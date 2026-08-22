@@ -260,7 +260,7 @@ theorem merges_to_one (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool) (
     (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
     (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
     (hpt : ∀ x, atTop (p₀ x) = !atTop x)
-    (hcov0 : ∀ j : ℤ, (∃ v : α, edgeOf v < j) →
+    (hcov0 : ∀ j : ℤ, (∃ u : α, edgeOf u = j) → (∃ v : α, edgeOf v < j) →
       ∃ y : α, edgeOf y = j - 1 ∧ atTop y = true)
     (D : Data α) (hD : Merges siteOf isArr p₀ D) :
     ∃ D', Merges siteOf isArr p₀ D' ∧ walkCount D' ≤ 1 := by
@@ -271,7 +271,9 @@ theorem merges_to_one (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool) (
   obtain ⟨a, a', hss, haa, ha'a2, hsplit⟩ :=
     arrivals_of_many_walks edgeOf siteOf atTop isArr E hsite
       (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta
-      (fun _ hw => hcov0 _ hw) hmany
+      (fun w hw => hcov0 _
+        (by obtain ⟨x, _, hxe⟩ := exists_end_at_wLo edgeOf (graph E) w; exact ⟨x, hxe⟩) hw)
+      hmany
   -- the six distinctness facts, all from `hsplit`
   have hda : E.t a ≠ a := ConfigMerge.dep_ne_arr' E rfl
   have hd'a : E.t a' ≠ a := ConfigMerge.dep_ne_other E rfl hsplit

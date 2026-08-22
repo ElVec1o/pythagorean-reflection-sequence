@@ -687,3 +687,25 @@ Chain, end to end, all kernel-certified with no native_decide and no sorry:
                  -> arrival_beside            -> two ARRIVALS at a common site
                  -> descent_of_split          -> walkCount strictly drops
                  -> reaches_one               -> walkCount <= 1
+
+## The covering hypothesis was false as first stated (2026-08-23)
+
+merges_to_one's covering input was first written
+
+  forall j : Z, (exists v, edgeOf v < j) -> exists y, edgeOf y = j-1 and atTop y
+
+quantified over ALL integers j. That is FALSE for every non-empty configuration:
+take j beyond the last edge, the antecedent holds and the conclusion cannot. So
+config_merges_to_one, as committed in 5ea3a59, was VACUOUS.
+
+Caught by trying to discharge it rather than by any build signal -- it compiled,
+certified clean, and had no sorry. This is the fourth vacuity trap of the session
+and the pattern is identical each time: a hypothesis assumed rather than exhibited.
+
+The fix: j is only ever instantiated at wLo, which IS some end's edge, so the
+antecedent gains (exists u, edgeOf u = j). With that, 0 <= j < n, the second
+antecedent forces j >= 1, and j-1 is a genuine edge index.
+covering_of_mult_pos then discharges it from positivity of multiplicities.
+
+gapfree_merges_to_one: a gap-free configuration merges to a single walk, assuming
+only the balance that defines the turn and positivity of every multiplicity.
