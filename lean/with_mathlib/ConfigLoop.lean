@@ -1249,5 +1249,35 @@ theorem walkCount_le_runs (up : Fin n → ℕ)
     (runIndex_const up hbal Zf hturn) hsep
   simpa using h
 
+/-- The counting, for any datum whose walk graph is `Local` for `Zf`. -/
+theorem walkCount_le_runs_gen (D : Data (Endpt n m)) (Zf : Finset ℤ)
+    (hlocal : CutComponents.Local (graph D) edgeOf Zf)
+    (hsep : ∀ x y : Endpt n m, runIndex Zf x = runIndex Zf y → (graph D).Reachable x y) :
+    walkCount D ≤ Zf.card + 1 := by
+  have hconst : ∀ x y : Endpt n m, (graph D).Reachable x y →
+      runIndex Zf x = runIndex Zf y :=
+    fun x y hr => Fin.ext (CutComponents.blk_reachable hlocal hr)
+  simpa using ConfigMerge.walkCount_le_card D (runIndex Zf) hconst hsep
+
+/-- **`c ≤ |Z|`, composed.**  Descend while a merge exists; where none does, ends of
+one run share a walk, and the count is at most `|Z| + 1`.
+
+The step hypothesis is the run descent: a datum on which separation fails admits a
+free merge, which is `hasFreePair_run` followed by `descent_of_split`. -/
+theorem c_le_Z_of_step (Zf : Finset ℤ) (P : Data (Endpt n m) → Prop)
+    (hlocal : ∀ E, P E → CutComponents.Local (graph E) edgeOf Zf)
+    (hstep : ∀ E, P E →
+      (∃ E', P E' ∧ walkCount E' < walkCount E) ∨
+      (∀ x y : Endpt n m, runIndex Zf x = runIndex Zf y → (graph E).Reachable x y))
+    (D : Data (Endpt n m)) (hD : P D) :
+    ∃ E, P E ∧ walkCount E ≤ Zf.card + 1 := by
+  obtain ⟨E, hPE, hsep⟩ :=
+    ConfigMerge.reaches_stuck
+      (Stuck := fun E => ∀ x y : Endpt n m,
+        runIndex Zf x = runIndex Zf y → (graph E).Reachable x y)
+      hstep D hD
+  exact ⟨E, hPE, walkCount_le_runs_gen E Zf (hlocal E hPE) hsep⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.walkCount_le_runs
+#print axioms ConfigLoop.walkCount_le_runs_gen
+#print axioms ConfigLoop.c_le_Z_of_step

@@ -1716,3 +1716,21 @@ the descent has halted satisfies it.
 
 So M4b is reduced to one composition: run reaches_stuck with hasFreePair_run as the
 step, and feed the resulting stuck datum to walkCount_le_runs.
+
+## c <= |Z|, composed (2026-08-23)
+
+walkCount_le_runs_gen: the counting for any datum whose walk graph is Local for Zf.
+
+c_le_Z_of_step: descend while a merge exists; where none does, ends of one run share a
+walk and the count is at most |Z| + 1. This is reaches_stuck instantiated with
+separation as the stuck condition, then walkCount_le_runs_gen.
+
+The one hypothesis left is hstep: a datum on which separation FAILS admits a free
+merge. That is hasFreePair_run followed by descent_of_split, and what it still needs
+is that the run bounds survive the merge -- the swap changes the turn but not the
+multiplicities, so hpos is untouched, but wLo of the maximiser can shift, so the
+bounds hlz and hzr have to be carried as part of the descent invariant P rather than
+fixed once.
+
+That is the precise remaining obligation for M4b, and it is about the invariant, not
+about the mathematics of the merge.
