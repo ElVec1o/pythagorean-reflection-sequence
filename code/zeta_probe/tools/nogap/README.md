@@ -1555,3 +1555,18 @@ This is the step both gapSites attempts lacked. The first matched Z to gap edges
 eye and overcounted one site per run; the second dropped the virtual-event condition
 and could have counted a marker site as cut. Now the correspondence is a theorem, so
 neither failure mode can recur silently.
+
+## The retracted definitions are deleted (2026-08-23)
+
+gapSites, gap_condition, the siteOf-based walk_graph_local and prop_cut_config are
+removed. Dependencies were checked first -- all uses were internal to the superseded
+block and prop_cut_config had no external users -- because a Rule 10 sweep in this
+project once broke a whole dependency chain by not checking.
+
+What replaces them: cutSitesZ with the virtual-event condition,
+mem_cutSitesZ_iff_cut proving it agrees with PathData.cut, walk_graph_local_edge with
+pos = edgeOf, and prop_cut_assembled.
+
+The two docstring mentions of gapSites that remain are deliberate -- they record what
+was wrong and why, next to the definitions that replaced them. The refuted objects
+themselves are gone; the account of them stays.

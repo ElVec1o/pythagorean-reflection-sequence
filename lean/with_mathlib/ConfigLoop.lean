@@ -500,75 +500,6 @@ theorem travel_minima_agree (up : Fin n → ℕ) (dep trav : Fin n → ℤ)
   obtain ⟨D', ⟨hM, hmin⟩, hone, _⟩ := cor_localzero up dep trav hbal hf hpar hmdef hng e0 ds
   exact ⟨D', hM, hone, hmin, fun F hF _ => hmin F hF⟩
 
-/-! ### The walk graph is `Local`
-
-`prop:cut` (`c ≥ |Z|`) is proved abstractly in `CutComponents` for a graph that is
-`Local`: every edge either stays at one position, or steps from `s-1` to `s` with `s`
-not a gap site.  The walk graph satisfies the positional half outright -- a turn stays
-at its site and a crossing steps by exactly one -- so the whole content of `Local` for
-it is the gap condition, isolated below.
-
-Note this is the case the merge chain does **not** cover: everything from
-`thm_nogap_optimal` down assumes `∀ e, 0 < m e`, i.e. `Z = ∅`, whereas `prop:cut` is
-about `Z ≠ ∅`.  The two halves of the development meet only at `Z = ∅`. -/
-theorem walk_graph_local (up : Fin n → ℕ)
-    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
-    (Zf : Finset ℤ)
-    (hgap : ∀ x : Endpt n m, edgeOf x + 1 ∉ Zf) :
-    CutComponents.Local (graph (dataOf up hbal)) siteOf Zf := by
-  intro x y hxy
-  rcases hxy with h | h
-  · -- a crossing edge: the two ends of one crossing, at sites `e` and `e + 1`
-    subst h
-    refine ⟨edgeOf x + 1, ?_, ?_, fun _ => hgap x⟩
-    · unfold siteOf edgeOf atTop; cases x.top <;> simp
-    · show siteOf (partner x) = edgeOf x + 1 - 1 ∨ siteOf (partner x) = edgeOf x + 1
-      unfold siteOf edgeOf atTop partner; cases x.top <;> simp
-  · -- a turn edge: both ends at the same site
-    subst h
-    exact ⟨siteOf x, Or.inr rfl, Or.inr (turnAt_site up hbal x), fun hne =>
-      absurd (turnAt_site up hbal x).symm hne⟩
-
-/-- Sites obtained by shifting the gap edges by one.
-
-**CORRECTION (2026-08-23).**  This is NOT the paper's `Z`.  `prop:cut` takes `Z` to be
-the set of **cut sites** interior to the span -- sites with `α_s = β_s = Φ_s = 0` --
-and a maximal run of `L` gap edges contributes its `L - 1` *interior* sites, not `L`.
-The definition below gives `L` sites per run and so overcounts by one per run.
-
-It is kept because `walk_graph_local` is stated for an arbitrary `Zf` and this is a
-legitimate instance of it; it simply is not the set `prop:cut` counts. -/
-def gapSites (dep trav : Fin n → ℤ) : Finset ℤ :=
-  (Finset.univ.filter (fun e : Fin n => dep e = 0 ∧ trav e = 0)).image
-    (fun e : Fin n => ((e.val : ℤ) + 1))
-
-/-- The gap condition, for the multiplicity law `m = max |d| |f|`.
-
-**SCOPE (2026-08-23).**  This holds when multiplicities are the *minimum admissible*
-ones, where a gap edge has `m = 0` and hence carries no end.  That law does NOT hold
-on the span: by `cor:lRclosed` an edge with `f = 0` has `m ≥ 2` there, so on the span
-gap edges do carry crossings and this hypothesis is unavailable.
-
-So this is a true theorem about minimum-multiplicity configurations, not a discharge
-of `Local`'s hypothesis in the setting `prop:cut` lives in. -/
-theorem gap_condition (dep trav : Fin n → ℤ)
-    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat) :
-    ∀ x : Endpt n m, edgeOf x + 1 ∉ gapSites dep trav := by
-  intro x hx
-  simp only [gapSites, Finset.mem_image, Finset.mem_filter, Finset.mem_univ,
-    true_and] at hx
-  obtain ⟨e, ⟨hd, hf⟩, he⟩ := hx
-  have hxe : x.edge = e := by
-    have h1 : (e : ℤ) = (x.edge : ℤ) := by unfold edgeOf at he; omega
-    exact (Fin.ext (by exact_mod_cast h1)).symm
-  subst hxe
-  have hme : m x.edge = 0 := by
-    have h := hmdef x.edge
-    rw [hd, hf] at h
-    simpa using h
-  have hlt := x.idx.isLt
-  omega
-
 /-! ### Occupancy
 
 `prop:cut`'s counting step needs every site of the span to carry an end.  A site `s`
@@ -590,26 +521,6 @@ theorem site_occupied_top (e : Fin n) (he : 0 < m e) :
   refine ⟨⟨e, ⟨0, he⟩, true⟩, ?_⟩
   unfold siteOf edgeOf atTop
   simp
-
-/-- **`prop:cut` on a configuration.**  At least `|Z|` walks carry neither virtual
-event -- that is `c ≥ |Z|`.
-
-The abstract counting is `CutComponents.exists_injective_components_avoiding`; what a
-configuration supplies is its `Local` hypothesis, from `walk_graph_local` together
-with `gap_condition`.  Occupancy is carried, since it fails exactly where two adjacent
-gap edges meet. -/
-theorem prop_cut_config (up : Fin n → ℕ) (dep trav : Fin n → ℤ)
-    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
-    (A B : ℤ) (hAB : A ≤ B)
-    (hlow : ∀ z ∈ gapSites dep trav, A < z) (hhigh : ∀ z ∈ gapSites dep trav, z ≤ B)
-    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat)
-    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, siteOf x = t)
-    (c0 : (graph (dataOf up hbal)).ConnectedComponent) :
-    ∃ F : Fin (gapSites dep trav).card → (graph (dataOf up hbal)).ConnectedComponent,
-      Function.Injective F ∧ ∀ i, F i ≠ c0 :=
-  CutComponents.exists_injective_components_avoiding
-    (walk_graph_local up hbal (gapSites dep trav) (gap_condition dep trav hmdef))
-    A B hAB hlow hhigh hocc c0
 
 /-! ### The cut condition, from its actual definition
 
