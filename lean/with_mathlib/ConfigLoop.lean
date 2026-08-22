@@ -1087,6 +1087,31 @@ theorem no_ends_of_beta_zero (B D : ℕ)
   unfold SiteCost.beta at h
   omega
 
+/-! ### Covering on a run
+
+`c ≤ |Z|` says the cut sites are the only obstruction.  The descent's covering
+hypothesis currently asks for a crossing on *every* edge, which forces `Z = ∅`.
+Restricting it to a run between cut sites is the first step: on such a run the
+multiplicities are positive, so the covering holds there. -/
+
+/-- **Covering within a run.**  If every edge of `[l, r]` carries a crossing then the
+edge immediately left of any `j` in `(l, r]` carries a top end. -/
+theorem covering_on_run (l r : ℤ) (hl : 0 ≤ l)
+    (hpos : ∀ e : Fin n, l ≤ (e : ℤ) → (e : ℤ) ≤ r → 0 < m e) :
+    ∀ j : ℤ, l < j → j ≤ r → (∃ u : Endpt n m, edgeOf u = j) →
+      ∃ y : Endpt n m, edgeOf y = j - 1 ∧ atTop y = true := by
+  rintro j hlj hjr ⟨u, hu⟩
+  -- `j` is an edge index, so `j - 1` is one too
+  have hjn : j < (n : ℤ) := by
+    rw [← hu]; unfold edgeOf; exact_mod_cast u.edge.isLt
+  have hl0 : (0 : ℤ) ≤ j - 1 := by omega
+  have hlt : (j - 1).toNat < n := by omega
+  have hcast : (((⟨(j - 1).toNat, hlt⟩ : Fin n) : ℕ) : ℤ) = j - 1 := by
+    show ((j - 1).toNat : ℤ) = j - 1
+    omega
+  have hm : 0 < m ⟨(j - 1).toNat, hlt⟩ :=
+    hpos _ (by rw [hcast]; omega) (by rw [hcast]; omega)
+  exact ⟨⟨⟨(j - 1).toNat, hlt⟩, ⟨0, hm⟩, true⟩, hcast, rfl⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.no_ends_of_alpha_zero
-#print axioms ConfigLoop.no_ends_of_beta_zero
+#print axioms ConfigLoop.covering_on_run

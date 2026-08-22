@@ -1591,3 +1591,18 @@ It also says what M4b needs: c <= |Z| is the statement that cut sites are the ON
 obstruction, so the route is to relax the covering hypothesis from "every edge carries
 a crossing" to "every edge outside the cut sites does", and let the descent run on
 each maximal run between cut sites.
+
+## Covering on a run -- M4b's first step (2026-08-23)
+
+c <= |Z| says cut sites are the only obstruction. The descent's covering hypothesis
+asks for a crossing on EVERY edge, which forces Z = empty; restricting it to a run
+between cut sites is the first step.
+
+covering_on_run: if every edge of [l, r] carries a crossing, then for j in (l, r] the
+edge immediately left of j carries a top end. The run must start at a valid edge
+index -- the hypothesis 0 <= l is needed and was missing at first, since without it
+j - 1 can be -1 and there is no edge there. omega found that, reporting a
+counterexample with l <= -1.
+
+Everything downstream of the covering hypothesis is already unconditional, so this is
+the one place the descent has to be weakened for M4b.
