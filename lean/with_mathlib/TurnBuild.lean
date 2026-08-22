@@ -79,7 +79,7 @@ theorem glue_invol {β : Type*} (site : β → ℤ) (loc : ℤ → β → β)
   unfold glue
   rw [hsite x, hinv]
 
-/-- Fixed-point freedom and the other side conditions need no lemma: `glue` is
+/- Fixed-point freedom and the other side conditions need no lemma: `glue` is
 definitionally `loc (site x) x`, so any pointwise property of the local maps is
 already a property of the glue.  Two such lemmas were written and removed rather
 than counted, being `fun x => h x`. -/
