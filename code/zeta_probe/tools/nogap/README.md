@@ -1570,3 +1570,24 @@ pos = edgeOf, and prop_cut_assembled.
 The two docstring mentions of gapSites that remain are deliberate -- they record what
 was wrong and why, next to the definitions that replaced them. The refuted objects
 themselves are gone; the account of them stays.
+
+## Why min_merges_to_one and prop:cut do not conflict (2026-08-23)
+
+min_merges_to_one merges a cost-minimal datum to ONE walk at unchanged cost;
+prop:cut says every minimum-cost realisation has at least |Z|+1 components. With
+Z nonempty those would contradict each other. They do not, and the reason is sharp.
+
+EndData.sgn DERIVES the sign from side and role, so on one side every arrival carries
+one sign and every departure the opposite. With A left arrivals and C left departures
+that gives alpha = -(A + C), so alpha = 0 forces A = C = 0 -- no_ends_of_alpha_zero,
+and no_ends_of_beta_zero on the right. A CUT SITE CARRIES NO ENDS AT ALL.
+
+The merge chain assumes 0 < m e at every edge, which puts ends at every site, so it
+never meets a cut site. That is the hidden hypothesis behind the scope note recorded
+much earlier (M3b): the chain assumes Z = empty, and now the mechanism is identified
+rather than just the fact.
+
+It also says what M4b needs: c <= |Z| is the statement that cut sites are the ONLY
+obstruction, so the route is to relax the covering hypothesis from "every edge carries
+a crossing" to "every edge outside the cut sites does", and let the descent run on
+each maximal run between cut sites.

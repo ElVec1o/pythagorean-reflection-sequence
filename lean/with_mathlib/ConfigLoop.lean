@@ -1059,6 +1059,34 @@ theorem mem_cutSitesZ_iff_cut (P : SiteCost.PathData) (A B s : ℤ) :
     obtain ⟨hd1, hd2, hf⟩ := (cut_iff_plain P s h0 hk).mp hcut
     exact ⟨hs, h0, hk, hd1, hd2, hf⟩
 
+/-! ### Why the merge chain and `prop:cut` do not conflict
+
+`min_merges_to_one` merges a cost-minimal datum to **one** walk at unchanged cost,
+while `prop:cut` says every minimum-cost realisation has at least `|Z| + 1`
+components.  With `Z ≠ ∅` those would conflict.  They do not, and the reason is
+sharp: **a cut site carries no ends at all**, so the merge chain's covering
+hypothesis already excludes cut sites.
+
+`EndData.sgn` *derives* the sign from the side and the role, so on one side every
+arrival carries one sign and every departure the opposite.  Writing `A` for the left
+arrivals and `C` for the left departures, that makes `α = -(A + C)`, and `α = 0`
+forces `A = C = 0` -- there is nothing at the site.  The chain assumes `0 < m e` at
+every edge, which puts ends at every site, so it never meets one. -/
+
+/-- **A cut site carries no ends**, in the derived sign model: with all left arrivals
+of one sign and all left departures of the other, `α = 0` forces both counts to
+vanish. -/
+theorem no_ends_of_alpha_zero (A C : ℕ)
+    (h : SiteCost.alpha A 0 0 C = 0) : A = 0 ∧ C = 0 := by
+  unfold SiteCost.alpha at h
+  omega
+
+/-- The same on the right, from `β`. -/
+theorem no_ends_of_beta_zero (B D : ℕ)
+    (h : SiteCost.beta B 0 0 D = 0) : B = 0 ∧ D = 0 := by
+  unfold SiteCost.beta at h
+  omega
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.cut_iff_plain
-#print axioms ConfigLoop.mem_cutSitesZ_iff_cut
+#print axioms ConfigLoop.no_ends_of_alpha_zero
+#print axioms ConfigLoop.no_ends_of_beta_zero
