@@ -280,7 +280,7 @@ theorem free_pair_of_minimal (d : EndData.Data α) (atTop : α → Bool) (D : Da
     (hmin : ¬ costOf d (swapData D a (D.t a) a' (D.t a') h1 h2 h3) < costOf d D) :
     d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a') := by
   by_contra hc
-  push_neg at hc
+  push Not at hc
   obtain ⟨hs1, hs2⟩ := hc
   exact hmin (cost_swapData_lt d D a a' harr harr' hd hd' hne hs1 hs2
     (by rw [hside, hside, hab, hdb]) h1 h2 h3)
