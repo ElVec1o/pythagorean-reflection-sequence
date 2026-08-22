@@ -171,6 +171,37 @@ theorem edge_eq_cLo_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
   simp at h
   omega
 
+/-! ### Transition systems, and the bounce at a leftmost site -/
+
+/-- A transition system pairs each arrival with a departure at the same site.  This
+is the one structural property of a realisation that the merge argument uses and
+that nothing above has needed until now. -/
+def IsTransitionSystem {β : Type*} (siteOf : β → ℤ) (isArr : β → Bool) (π : Perm β) : Prop :=
+  ∀ a : β, isArr a = true → isArr (π a) = false ∧ siteOf (π a) = siteOf a
+
+/-- **A component whose ends at a site all lie on one side bounces there.**  The
+partner of an arrival is a departure at the same site, so it lies on that side too,
+and the pair has equal sides. -/
+theorem bounce_of_all_one_side {β : Type*} (siteOf : β → ℤ) (isArr side : β → Bool)
+    (π : Perm β)
+    (hts : IsTransitionSystem siteOf isArr π)
+    (z a : β) (hmem : π.SameCycle z a) (harr : isArr a = true)
+    (hall : ∀ e : β, π.SameCycle z e → siteOf e = siteOf a → side e = true) :
+    side a = side (π a) := by
+  have hpartner : π.SameCycle z (π a) := hmem.trans ⟨1, by simp⟩
+  obtain ⟨_, hsite⟩ := hts a harr
+  rw [hall a hmem rfl, hall (π a) hpartner hsite]
+
+/-- At its leftmost site, every end of a component lies on the right side.  This
+supplies the hypothesis of `bounce_of_all_one_side` there. -/
+theorem all_right_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (π : Perm α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (z : α) :
+    ∀ e : α, π.SameCycle z e → siteOf e = cLo edgeOf π z → (!atTop e) = true := by
+  intro e hmem hs
+  rw [not_atTop_at_cLo edgeOf siteOf atTop hsite π z e hmem hs]
+  rfl
+
 -- Certification (Rule 5).
 #print axioms ComponentSupport.cycleEdges_nonempty
 #print axioms ComponentSupport.self_mem_support
@@ -183,5 +214,7 @@ theorem edge_eq_cLo_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
 #print axioms ComponentSupport.le_cLo_of_le_edges
 #print axioms ComponentSupport.not_atTop_at_cLo
 #print axioms ComponentSupport.edge_eq_cLo_at_cLo
+#print axioms ComponentSupport.bounce_of_all_one_side
+#print axioms ComponentSupport.all_right_at_cLo
 
 end ComponentSupport
