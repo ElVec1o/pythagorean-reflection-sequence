@@ -193,6 +193,36 @@ theorem arrAt_disjoint_depAt {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) 
   rw [hx.2] at hx'
   exact Bool.noConfusion hx'.2
 
+/-! ### Counting, piece one: split by which end
+
+Every end is a top end or a bottom end, so any set of ends splits in two, and the
+two parts are the ones that come from the two adjacent edges. This is the first
+step of the count and is pure bookkeeping. -/
+
+theorem card_split_atTop {n : ℕ} {m : Fin n → ℕ} (S : Finset (Endpt n m)) :
+    (S.filter (fun x => atTop x = true)).card
+      + (S.filter (fun x => atTop x = false)).card = S.card := by
+  classical
+  have h : ∀ x : Endpt n m, (atTop x = false) ↔ ¬ (atTop x = true) := by
+    intro x; cases h : atTop x <;> simp [h]
+  rw [Finset.filter_congr (fun x _ => (h x))]
+  exact Finset.filter_card_add_filter_neg_card_eq_card _
+
+/-- A top end at site `s` sits on edge `s - 1`, and a bottom end on edge `s`.  This
+is what identifies the two parts of the split with the two adjacent edges. -/
+theorem edge_of_site_top {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) (s : ℤ)
+    (hs : siteOf x = s) (ht : atTop x = true) : edgeOf x = s - 1 := by
+  unfold siteOf at hs
+  rw [ht] at hs
+  simp only [if_true] at hs
+  omega
+
+theorem edge_of_site_bottom {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) (s : ℤ)
+    (hs : siteOf x = s) (ht : atTop x = false) : edgeOf x = s := by
+  unfold siteOf at hs
+  rw [ht] at hs
+  simpa using hs
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -207,5 +237,8 @@ theorem arrAt_disjoint_depAt {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) 
 #print axioms EndType.isArrOf_partner
 #print axioms EndType.mem_arrAt
 #print axioms EndType.arrAt_disjoint_depAt
+#print axioms EndType.card_split_atTop
+#print axioms EndType.edge_of_site_top
+#print axioms EndType.edge_of_site_bottom
 
 end EndType
