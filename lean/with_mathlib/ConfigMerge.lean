@@ -468,7 +468,114 @@ theorem k2_self_dichotomy {α : Type*} [DecidableEq α] [Fintype α]
   · left
     rwa [orbit_turn_edge D a k] at h2
 
+/-! ### The parity fact, closed
+
+`p a` never lies in `a`'s own `sig`-orbit.  The argument needs neither the period nor
+modular arithmetic: conjugating by `sig^[k]` turns `p_ne` and `t_ne` at `sig^[k] a`
+into `p a ≠ sig^[2k] a` and `t a ≠ sig^[2k] a`.  Since `p a = sig^[m] a` gives
+`t a = sig^[m+1] a`, and one of `m`, `m+1` is even, taking `k` to be half of it
+contradicts one or the other.
+
+(Checked first on all 6426 fixed-point-free involution pairs with `p x ≠ t x` on 4, 6
+and 8 points: no violations.) -/
+
+/-- `sig` conjugates `p` across one step. -/
+theorem sig_p_sig {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (y : α) : sig D (D.p (sig D y)) = D.p y := by
+  unfold sig
+  rw [D.p_invol, D.t_invol]
+
+/-- Conjugating by `sig^[k]` returns `p`. -/
+theorem conj_iter {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a : α) (k : ℕ) :
+    (sig D)^[k] (D.p ((sig D)^[k] a)) = D.p a := by
+  induction k with
+  | zero => rfl
+  | succ n ih =>
+    rw [Function.iterate_succ_apply, Function.iterate_succ_apply']
+    rw [sig_p_sig]
+    exact ih
+
+/-- `p_ne`, conjugated: `p a` is never an even iterate. -/
+theorem p_ne_even {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a : α) (k : ℕ) : D.p a ≠ (sig D)^[2 * k] a := by
+  intro h
+  have hinj : Function.Injective ((sig D)^[k]) :=
+    Function.Injective.iterate (sig_injective D) k
+  apply D.p_ne ((sig D)^[k] a)
+  apply hinj
+  rw [conj_iter D a k, h, two_mul, Function.iterate_add_apply]
+
+/-- `t_ne`, conjugated: `t a` is never an even iterate either. -/
+theorem t_ne_even {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a : α) (k : ℕ) : D.t a ≠ (sig D)^[2 * k] a := by
+  intro h
+  have hinj : Function.Injective ((sig D)^[k]) :=
+    Function.Injective.iterate (sig_injective D) k
+  apply D.t_ne ((sig D)^[k] a)
+  apply hinj
+  have hcomm : (sig D)^[k] (D.t ((sig D)^[k] a)) = D.t a := by
+    rw [← sig_p_eq_t D ((sig D)^[k] a), ← Function.iterate_succ_apply,
+      Function.iterate_succ_apply', conj_iter D a k]
+    exact sig_p_eq_t D a
+  rw [hcomm, h, two_mul, Function.iterate_add_apply]
+
+/-- **The parity fact.**  `p a` never lies in `a`'s own `sig`-orbit.
+
+If `p a = sig^[m] a` then `t a = sig^[m+1] a`, and one of `m`, `m+1` is even.  An even
+iterate is excluded for `p a` by `p_ne_even` and for `t a` by `t_ne_even`, so either
+way there is a contradiction.  No period and no modular arithmetic are needed. -/
+theorem p_not_in_orbit {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a : α) (m : ℕ) : D.p a ≠ (sig D)^[m] a := by
+  intro h
+  have hta : D.t a = (sig D)^[m + 1] a := by
+    rw [← sig_p_eq_t D a, h, Function.iterate_succ_apply']
+  rcases Nat.even_or_odd m with ⟨k, hk⟩ | ⟨k, hk⟩
+  · exact p_ne_even D a k (by rw [h, hk]; ring_nf)
+  · exact t_ne_even D a (k + 1) (by rw [hta, hk]; ring_nf)
+
+/-- **The self half of `k₂`.**  With `M` minimal, the orbit at `a` never meets `a`'s
+own turn edge before its last step: `k2_self_dichotomy`'s first case is excluded by
+minimality and its second by the parity fact. -/
+theorem orbit_avoids_self {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a : α) (M : ℕ)
+    (hmin : ∀ j, 0 < j → j < M → (sig D)^[j] a ≠ a)
+    (k : ℕ) (hk : k < M - 1) (hM : 0 < M) :
+    s(D.p ((sig D)^[k] a), D.t (D.p ((sig D)^[k] a))) ≠ s(a, D.t a) := by
+  intro h
+  rcases k2_self_dichotomy D a k h with hclose | hp
+  · exact hmin (k + 1) (by omega) (by omega) hclose
+  · exact p_not_in_orbit D a k hp.symm
+
+/-- **`k₂` holds.**  Both halves: the orbit at `a` avoids `a`'s own turn edge by
+minimality and parity, and `a'`'s turn edge because `a'` is in another walk. -/
+theorem k2_holds {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a a' : α)
+    (hsplit : ¬ (graph D).Reachable a a') (M : ℕ) (hM : 0 < M)
+    (hmin : ∀ j, 0 < j → j < M → (sig D)^[j] a ≠ a) :
+    ∀ k, k < M - 1 →
+      s(D.p ((sig D)^[k] a), D.t (D.p ((sig D)^[k] a))) ∉
+        ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α)) := by
+  intro k hk
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+  exact ⟨orbit_avoids_self D a M hmin k hk hM, orbit_avoids_other D a a' hsplit k⟩
+
+/-- **`ClosesAvoiding` holds at either arrival.**  Taking the minimal period, every
+clause is discharged: `hM`/`hpos` from `exists_closes`, `k₁`/`klast` because they are
+crossing edges, and `k₂` from `k2_holds`. -/
+theorem closes_at {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a a' : α)
+    (hsplit : ¬ (graph D).Reachable a a') :
+    ∃ M, ClosesAvoiding D ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α)) a M := by
+  classical
+  have hex : ∃ M : ℕ, 0 < M ∧ (sig D)^[M] a = a := exists_closes D a
+  let M := Nat.find hex
+  have hspec : 0 < M ∧ (sig D)^[M] a = a := Nat.find_spec hex
+  refine ⟨M, closes_of_turn_clause D a a' a M hspec.2 hspec.1 ?_⟩
+  refine k2_holds D a a' hsplit M hspec.1 ?_
+  intro j hj hjM hcon
+  exact Nat.find_min hex hjM ⟨hj, hcon⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.sig_p_eq_t
-#print axioms ConfigMerge.p_t_sig
-#print axioms ConfigMerge.k2_self_dichotomy
+#print axioms ConfigMerge.k2_holds
+#print axioms ConfigMerge.closes_at
