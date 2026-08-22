@@ -8,6 +8,7 @@ satisfiable and the theorem has content.  It also computes both branches of the
 conclusion, a bounce and a pass.
 -/
 import EndData
+import NoGapCapstone
 
 namespace NonVacuity
 
@@ -69,6 +70,28 @@ theorem swap_free_not_vacuous :
 `0 = 0`. -/
 theorem swap_free_value : transCost dW piW = 3 := by decide
 
+/-- `1` and `3` lie in different cycles of the witness pairing: its cycles are
+`{0,1}` and `{2,3}`.  The pairing is an involution, so `pow_apply_mod` with period
+`2` reduces every power to one of two, neither of which sends `1` to `3`. -/
+theorem w_not_sameCycle : ¬ piW.SameCycle 1 3 := by
+  intro h
+  obtain ⟨n, hn⟩ := h.exists_nat_pow_eq
+  have h2 : (piW ^ 2) 1 = 1 := by decide
+  have hmod := OrbitCount.pow_apply_mod piW 1 2 (by norm_num) h2 n
+  rw [hmod] at hn
+  have : n % 2 = 0 ∨ n % 2 = 1 := by omega
+  rcases this with h0 | h1
+  · rw [h0] at hn; revert hn; decide
+  · rw [h1] at hn; revert hn; decide
+
+/-- Every hypothesis of `merge_free_and_lowers` is met by the witness, so it is not
+vacuous: the swap is free and the component count really falls. -/
+theorem capstone_not_vacuous :
+    transCost dW (Equiv.swap 1 3 * piW) = transCost dW piW ∧
+      OrbitCount.orbitCount (Equiv.swap 1 3 * piW) < OrbitCount.orbitCount piW :=
+  NoGapCapstone.merge_free_and_lowers dW piW 1 3 w_dep1 w_dep3 w_arr0 w_arr2
+    w_ne w_shared w_not_sameCycle
+
 -- Certification (Rule 5).
 #print axioms NonVacuity.bounce_cost
 #print axioms NonVacuity.pass_cost
@@ -76,5 +99,7 @@ theorem swap_free_value : transCost dW piW = 3 := by decide
 #print axioms NonVacuity.sign_differs
 #print axioms NonVacuity.swap_free_not_vacuous
 #print axioms NonVacuity.swap_free_value
+#print axioms NonVacuity.w_not_sameCycle
+#print axioms NonVacuity.capstone_not_vacuous
 
 end NonVacuity

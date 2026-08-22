@@ -241,3 +241,6 @@ name = "EndData"
 
 [[lean_lib]]
 name = "NonVacuity"
+
+[[lean_lib]]
+name = "NoGapCapstone"
