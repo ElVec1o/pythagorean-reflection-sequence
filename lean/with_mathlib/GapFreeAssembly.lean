@@ -18,6 +18,7 @@ import Mathlib.Tactic
 import EdgeData
 import SharedSite
 import ComponentSupport
+import EndType
 
 namespace GapFreeAssembly
 
@@ -80,6 +81,49 @@ theorem shared_site_constructed {α : Type*} [DecidableEq α] [Fintype α]
     a b hab
     (ComponentSupport.cLo_lt_cHi edgeOf π)
 
+/-- **The chain, composed.**  A gap-free configuration yields a shared site, with
+nothing assumed.
+
+The edge data is `dep` and `trav` on `Fin n`, subject to the travel range and the
+parity, and gap-free.  The multiplicities are the minimum admissible ones.  From
+gap-freeness, `EdgeData.mult_pos` makes every multiplicity positive, so
+`EndType.exists_end_of_mult_pos` puts an end on every edge, which is the covering
+input; the span bounds come from the edge index range.  `shared_site_constructed`
+then supplies the dichotomy the merge consumes.
+
+Every hypothesis here is about the configuration itself.  None is about
+realisations, components, or costs. -/
+theorem shared_site_of_gapfree_config
+    (n : ℕ) (dep trav : Fin n → ℤ) (m : Fin n → ℕ)
+    (hf : ∀ e, EdgeData.IsTravel (trav e))
+    (hpar : ∀ e, (dep e - trav e) % 2 = 0)
+    (hgapfree : ∀ e, ¬ EdgeData.IsGap (dep e) (trav e))
+    (hm : ∀ e, m e = (max |dep e| |trav e|).toNat)
+    (π : Equiv.Perm (EndType.Endpt n m))
+    (a b : EndType.Endpt n m) (hab : a ≠ b) :
+    (∃ i j : EndType.Endpt n m, i ≠ j ∧
+        ComponentSupport.cLo EndType.edgeOf π i = 0 ∧
+        ComponentSupport.cLo EndType.edgeOf π j = 0) ∨
+    (∃ i j : EndType.Endpt n m, i ≠ j ∧
+        0 < ComponentSupport.cLo EndType.edgeOf π i ∧
+        ComponentSupport.cLo EndType.edgeOf π j ≤
+          ComponentSupport.cLo EndType.edgeOf π i - 1 ∧
+        ComponentSupport.cLo EndType.edgeOf π i - 1 <
+          ComponentSupport.cHi EndType.edgeOf π j) := by
+  refine shared_site_constructed EndType.edgeOf π 0 (n : ℤ) ?_
+    (fun x => EndType.edgeOf_nonneg x) (fun x => EndType.edgeOf_lt x) a b hab
+  intro j h1 h2
+  -- the edge index of `j`
+  have hlt : j.toNat < n := by omega
+  refine ⟨?_, ?_⟩
+  · exact (EndType.exists_end_of_mult_pos (m := m) ⟨j.toNat, hlt⟩
+      (by rw [hm]; exact EndType.mult_natPos (hf _) (hpar _) (hgapfree _))).choose
+  · have hspec := (EndType.exists_end_of_mult_pos (m := m) ⟨j.toNat, hlt⟩
+      (by rw [hm]; exact EndType.mult_natPos (hf _) (hpar _) (hgapfree _))).choose_spec
+    rw [hspec]
+    simp only []
+    omega
+
 /-! ### Non-vacuity
 
 Two components on the span `[0,2)`, the first covering edge `0` and the second
@@ -106,6 +150,7 @@ theorem assembly_not_vacuous :
 #print axioms GapFreeAssembly.shared_site_of_gapfree
 #print axioms GapFreeAssembly.edge_carries_crossing
 #print axioms GapFreeAssembly.shared_site_constructed
+#print axioms GapFreeAssembly.shared_site_of_gapfree_config
 #print axioms GapFreeAssembly.assembly_not_vacuous
 
 end GapFreeAssembly
