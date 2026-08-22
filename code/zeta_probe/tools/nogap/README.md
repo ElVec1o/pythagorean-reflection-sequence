@@ -1678,3 +1678,23 @@ So the free-merge half of the run induction is in place. What remains is choosin
 maximiser WITHIN a run rather than globally: the global maximiser's leftmost edge lies
 in the rightmost run, so the argument as it stands merges that run, and the induction
 has to walk leftwards run by run.
+
+## The run-local maximiser (2026-08-23)
+
+maxWLo takes the sup over all ends, so its maximiser lies in the rightmost run and the
+descent as built merges only that run. maxWLoOn takes the sup over a Finset of ends
+instead, and maxWLoOn_spec gives attainment inside the set and dominance over it --
+the argument is unchanged, since a non-empty finite set still attains its sup.
+
+That is the last structural change the run induction needed. Its pieces are now:
+
+  covering_on_run          covering restricted to a run
+  other_end_at_wLo_run     the second walk's end, within a run
+  hasFreePair_run          a free pair, from run-local covering
+  maxWLoOn / _spec         the maximiser, within a run
+  walk_confined            walks do not cross a cut site
+  reaches_stuck            descend until no step remains
+  walkCount_le_card        count walks by a separating invariant
+
+What remains is assembling them: run the descent inside each run with the run-local
+maximiser, and count.

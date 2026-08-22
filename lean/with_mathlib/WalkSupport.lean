@@ -443,5 +443,28 @@ theorem maximiser_departure_bottom (edgeOf siteOf : α → ℤ) (atTop : α → 
   · exact hza.trans (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl))
   · rw [hts a]; exact hs
 
+/-! ### The maximiser, restricted to a set
+
+`maxWLo` takes the sup over all ends, so its maximiser lies in the rightmost run.  The
+run induction needs the sup over the ends of one run instead.  A non-empty finite set
+still attains its sup, so the argument carries over unchanged. -/
+
+/-- `s*` restricted to a set of ends. -/
+noncomputable def maxWLoOn (edgeOf : α → ℤ) (G : SimpleGraph α)
+    (S : Finset α) (hS : S.Nonempty) : ℤ :=
+  S.sup' hS (fun z => wLo edgeOf G z)
+
+omit [DecidableEq α] in
+/-- It is attained inside the set, and dominates the set. -/
+theorem maxWLoOn_spec (edgeOf : α → ℤ) (G : SimpleGraph α)
+    (S : Finset α) (hS : S.Nonempty) :
+    (∃ z ∈ S, wLo edgeOf G z = maxWLoOn edgeOf G S hS) ∧
+    ∀ w ∈ S, wLo edgeOf G w ≤ maxWLoOn edgeOf G S hS := by
+  constructor
+  · obtain ⟨z, hz, hval⟩ := Finset.exists_mem_eq_sup' hS (fun z => wLo edgeOf G z)
+    exact ⟨z, hz, hval.symm⟩
+  · intro w hw
+    exact Finset.le_sup' (f := fun z => wLo edgeOf G z) hw
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.maximiser_departure_bottom
+#print axioms WalkSupport.maxWLoOn_spec
