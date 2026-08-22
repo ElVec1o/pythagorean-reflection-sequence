@@ -190,6 +190,37 @@ theorem one_edge_merges :
   gapfree_merges_to_one (m := fun _ : Fin 1 => 2) (fun _ => 1)
     one_edge_hbal (fun _ => by norm_num)
 
+/-! ### Exactly one walk
+
+`gapfree_merges_to_one` gives `walkCount ≤ 1`.  What `thm:nogap` asserts is that the
+defect vanishes, which is *exactly one* walk, so the lower bound is wanted too.  It
+holds as soon as there is an end at all. -/
+
+/-- A positive multiplicity puts an end on the edge. -/
+theorem end_of_mult (e : Fin n) (h : 0 < m e) : Nonempty (Endpt n m) :=
+  ⟨⟨e, ⟨0, h⟩, true⟩⟩
+
+/-- **A gap-free configuration has exactly one walk.**  This is `thm:nogap`'s
+conclusion in the walk model: the defect is zero. -/
+theorem gapfree_single_walk (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hm : ∀ e : Fin n, 0 < m e) (e0 : Fin n) :
+    ∃ D' : Data (Endpt n m),
+      Merges siteOf (isArrOf up) partner D' ∧ walkCount D' = 1 := by
+  classical
+  obtain ⟨D', hM, hle⟩ := gapfree_merges_to_one up hbal hm
+  refine ⟨D', hM, le_antisymm hle ?_⟩
+  have : Nonempty (Endpt n m) := end_of_mult e0 (hm e0)
+  have hne : Nonempty (graph D').ConnectedComponent :=
+    ⟨(graph D').connectedComponentMk (Classical.arbitrary _)⟩
+  exact Fintype.card_pos_iff.mpr hne
+
+/-- The one-edge configuration has exactly one walk. -/
+theorem one_edge_single_walk :
+    ∃ D' : Data (Endpt 1 (fun _ => 2)),
+      Merges siteOf (isArrOf (fun _ : Fin 1 => 1)) partner D' ∧ walkCount D' = 1 :=
+  gapfree_single_walk (m := fun _ : Fin 1 => 2) (fun _ => 1)
+    one_edge_hbal (fun _ => by norm_num) 0
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.one_edge_hbal
-#print axioms ConfigLoop.one_edge_merges
+#print axioms ConfigLoop.one_edge_single_walk

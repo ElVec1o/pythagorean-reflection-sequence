@@ -749,3 +749,15 @@ involutive re-pairing swapT, ending at ConfigLoop.gapfree_merges_to_one.
 
 M6's formalization debt is therefore NOT discharged by wiring nogap up. nogap is in
 a model that does not match; the content is carried by gapfree_merges_to_one.
+
+## thm:nogap's conclusion in the walk model (2026-08-23)
+
+gapfree_merges_to_one gives walkCount <= 1. thm:nogap asserts the defect VANISHES,
+which is exactly ONE walk, so the lower bound is wanted too. gapfree_single_walk
+supplies it: a positive multiplicity puts an end on the edge, so the component set
+is non-empty and walkCount >= 1. one_edge_single_walk instantiates it concretely.
+
+Checked while there: paper2 does NOT claim a Lean formalisation of thm:nogap. It
+cites only the Rust verification, 2,505,271 elements of length <= 31 with no
+exceptions. So the model mismatch found in NoGapCapstone and RealizationModel never
+reached the paper, and there is nothing to retract there.
