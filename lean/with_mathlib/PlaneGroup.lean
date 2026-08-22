@@ -194,8 +194,8 @@ theorem prodRefl_flip (θ : Letter → ℝ) (p : Letter → ℂ) (w : List Lette
   | cons l w ih =>
       simp only [prodRefl, Aff.mul_flip, refl_flip, ih, List.length_cons]
       rcases Nat.even_or_odd w.length with h | h
-      · simp [Nat.odd_add_one, h, Nat.not_odd_iff_even.mpr h]
-      · simp [Nat.odd_add_one, h, Nat.not_even_iff_odd.mpr h]
+      · simp [h, Nat.not_odd_iff_even.mpr h]
+      · simp [Nat.odd_add_one, h]
 
 end PlaneGroup
 

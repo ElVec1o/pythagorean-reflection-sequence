@@ -656,7 +656,7 @@ theorem exists_other_walk {α : Type*} [DecidableEq α] [Fintype α]
     (D : WalkGraph.Data α) (h : 1 < walkCount D) (z : α) :
     ∃ z' : α, ¬ (graph D).Reachable z z' := by
   by_contra hc
-  push_neg at hc
+  push Not at hc
   have : walkCount D ≤ 1 :=
     walkCount_le_one_of_connected D (fun x y => (hc x).symm.trans (hc y))
   omega

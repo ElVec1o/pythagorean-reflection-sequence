@@ -26,16 +26,16 @@ def f (k j : ℤ) : ℤ := if 0 ≤ j ∧ j < k then 1 else if k ≤ j ∧ j < 0
 
 /-- `f` is supported on the half-open interval between `0` and `k`. -/
 theorem f_eq_zero_of_nonneg_of_le (k j : ℤ) (h0 : 0 ≤ j) (hk : k ≤ j) : f k j = 0 := by
-  unfold f; split_ifs with h1 h2 <;> omega
+  unfold f; split_ifs with h1 _ <;> omega
 
 theorem f_neg_imp_k_neg {k j : ℤ} (h : f k j = -1) : k < 0 := by
-  unfold f at h; split_ifs at h with h1 h2 <;> omega
+  unfold f at h; split_ifs at h with h1 h2; omega
 
 theorem f_pos_imp_k_pos {k j : ℤ} (h : f k j = 1) : 0 < k := by
   unfold f at h; split_ifs at h with h1 h2 <;> omega
 
 theorem f_neg_imp_lt_zero {k j : ℤ} (h : f k j = -1) : j < 0 := by
-  unfold f at h; split_ifs at h with h1 h2 <;> omega
+  unfold f at h; split_ifs at h with h1 h2; omega
 
 theorem f_pos_imp_lt_k {k j : ℤ} (h : f k j = 1) : j < k := by
   unfold f at h; split_ifs at h with h1 h2 <;> omega
@@ -68,11 +68,11 @@ theorem cut_at_k_left {d : ℤ → ℤ} {k : ℤ}
 theorem cut_at_zero_eq_k {d : ℤ → ℤ} (hb : d 0 = 0) :
     d 0 = 0 ∧ f 0 0 = 0 := by
   refine ⟨hb, ?_⟩
-  unfold f; split_ifs with h1 h2 <;> omega
+  unfold f; split_ifs with h1 <;> omega
 
 /-- `f` vanishes identically when `k = 0`: the degenerate case used above. -/
 theorem f_zero_of_k_zero (j : ℤ) : f 0 j = 0 := by
-  unfold f; split_ifs with h1 h2 <;> omega
+  unfold f; split_ifs with h1 <;> omega
 
 -- Certification (Rule 5): every declaration above, axioms listed in the build log.
 #print axioms NoGapCutFree.f_eq_zero_of_nonneg_of_le

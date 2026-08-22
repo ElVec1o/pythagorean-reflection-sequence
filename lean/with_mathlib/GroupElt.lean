@@ -57,7 +57,7 @@ theorem at every edge of its span. -/
 theorem gapFree_of_pure_travel {k : ℤ} {lamps : ℤ → ℤ}
     (hpure : ∀ i : ℤ, lamps i ≠ 0 → InTravel k i) :
     ∀ j : ℤ, (lamps j ≠ 0 ∨ InTravel k j) → ¬ EdgeData.IsGap (lamps j) (f k j) :=
-  fun j hj => no_gap_of_pure_travel hpure hj
+  fun _ hj => no_gap_of_pure_travel hpure hj
 
 /-! ### Non-vacuity
 

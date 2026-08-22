@@ -41,7 +41,7 @@ theorem abs_dep_ge_abs_trav {d f : ℤ} (hf : IsTravel f) (hpar : (d - f) % 2 = 
   have h1 : 1 ≤ |d| := one_le_abs hd
   rcases hf with h | h | h <;> subst h
   · simpa using h1
-  · simpa using abs_nonneg d
+  · simp
   · simpa using h1
 
 theorem mult_eq_abs_dep {d f : ℤ} (hf : IsTravel f) (hpar : (d - f) % 2 = 0)

@@ -54,7 +54,7 @@ theorem det_bulk (b : R) : (bulk b).det = 1 := by
 theorem travel_sub_one (q a : R) :
     travel q a - 1 = !![2*q*a^2, 2*q*a; -2*q*a^3, -(2*q*a^2)] := by
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [travel, Matrix.one_apply] <;> ring
+  fin_cases i <;> fin_cases j <;> simp [travel]
 
 /-- **The increment squares to zero.**  With `N = !![a, 1; -a^2, -a]` scaled by `2 q a`, the
     travel matrix is `1 + (2 q a) • N`, and `N * N = 0`. -/
@@ -67,13 +67,13 @@ theorem nilpotent_travel (a : R) :
 theorem travel_eq (q a : R) :
     travel q a = 1 + (2*q*a) • (!![a, 1; -a^2, -a] : Matrix (Fin 2) (Fin 2) R) := by
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [travel, Matrix.one_apply] <;> ring
+  fin_cases i <;> fin_cases j <;> simp [travel] <;> ring
 
 /-- The bulk matrix is `1` plus `2 b` times the same nilpotent shape. -/
 theorem bulk_eq (b : R) :
     bulk b = 1 + (2*b) • (!![b, 1; -b^2, -b] : Matrix (Fin 2) (Fin 2) R) := by
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [bulk, Matrix.one_apply] <;> ring
+  fin_cases i <;> fin_cases j <;> simp [bulk] <;> ring
 
 /-- **The half-shift identity.**  Write `r` for `q^{1/2}`, so `q = r*r`, and let `a = q^s` be
     the travel argument.  Then the bulk chain evaluated at `b = a*r`, that is at the argument
@@ -156,9 +156,9 @@ theorem casoratian_pow (q : R) (W : ℕ → R) (h : ∀ n, W (n+1) = q * W n) :
     Green's function for the bulk explicit. -/
 
 /-- One step of the bulk chain on `(A,B)`, with `c = q^b` and source strength `f`. -/
-def bstepA (q c A B f : R) : R := (1 + 2*c^2) * A + 2*c * B + 2*c*f
+def bstepA (_q c A B f : R) : R := (1 + 2*c^2) * A + 2*c * B + 2*c*f
 /-- The `B` component of one bulk step. -/
-def bstepB (q c A B f : R) : R := -2*c^3 * A + (1 - 2*c^2) * B - 2*c^2*f
+def bstepB (_q c A B f : R) : R := -2*c^3 * A + (1 - 2*c^2) * B - 2*c^2*f
 
 /-- **The bulk three-term recursion.**  With `c = q^b`, `f_b = 1 + g c beta` and
     `f_{b+1} = 1 + g q c beta`,

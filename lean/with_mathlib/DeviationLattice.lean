@@ -69,7 +69,7 @@ theorem mu_root_abs_one (c e : ℝ) (hc : 0 < c) (he0 : 0 < e) (he : e < 2 * c)
   have h2 := congrArg Complex.im hρ
   simp only [pow_two, Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im,
     Complex.sub_re, Complex.sub_im, Complex.ofReal_re, Complex.ofReal_im, Complex.zero_re,
-    Complex.zero_im, mul_zero, zero_mul, sub_zero, add_zero] at h1 h2
+    Complex.zero_im, zero_mul, sub_zero, add_zero] at h1 h2
   have hre : c * (ρ.re ^ 2 - ρ.im ^ 2) - e * ρ.re + c = 0 := by ring_nf; ring_nf at h1; linarith [h1]
   have him : c * (2 * ρ.re * ρ.im) - e * ρ.im = 0 := by ring_nf; ring_nf at h2; linarith [h2]
   have hns : ρ.re ^ 2 + ρ.im ^ 2 = 1 := mu_root_normSq_one c e ρ.re ρ.im hc he0 he hre him

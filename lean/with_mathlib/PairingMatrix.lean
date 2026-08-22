@@ -229,7 +229,7 @@ theorem bijOfMatrix_cost (x : Cls → Cls → ℕ) (ca : A → Cls) (cd : D → 
   refine Finset.sum_congr rfl fun I _ => ?_
   rw [Fintype.sum_sigma]
   refine Finset.sum_congr rfl fun J _ => ?_
-  simp [mul_comm]
+  simp
 
 /-! ## The minimum over bijections -/
 

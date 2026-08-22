@@ -241,7 +241,7 @@ theorem cvec2_nonpos_of_max : ∀ (n : Nat) (w : List Letter),
       have hrestmax : cvec rest 1 = n := by
         have hbb : (if b = 1 then (1:Int) else 0) ≥ 0 := by
           by_cases hb : b = 1 <;> simp [hb]
-        simp only [ha1, if_pos rfl] at h1
+        simp only [ha1] at h1
         omega
       have hres := ih rest hrest hrestmax
       have ha2 : a ≠ 2 := by rw [ha1]; decide
@@ -798,7 +798,7 @@ theorem rowCount_zero : ∀ m, rowCount 0 m = m - 1 := by
   | succ m ih =>
     rw [rowCount, ih]
     by_cases h : m = 0
-    · subst h; simp [rowCount]
+    · subst h; simp
     · rw [if_pos ⟨h, by omega⟩]; omega
 
 /-- Below the diagonal every `j` is admissible. -/
