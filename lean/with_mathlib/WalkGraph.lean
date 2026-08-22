@@ -15,6 +15,7 @@ import Mathlib.Tactic
 import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import WalkMerge
+import TurnBuild
 import OrbitCount
 
 namespace WalkGraph
@@ -552,6 +553,43 @@ theorem walkCount_lt (D D' : Data α)
     exact SimpleGraph.ConnectedComponent.eq.mp (hinj this)
   exact OrbitCount.card_lt_of_surjective_not_injective f hsurj hnotinj
 
+/-! ### The re-paired turn stays inside its site
+
+The two conditions `swapData` takes, that the new turn is fixed-point free and
+never agrees with the crossing map, both follow from the swap staying inside one
+site.  That is the fact recorded here, and it is what makes those conditions
+available for an actual configuration rather than assumed. -/
+
+/-- **The re-paired turn preserves sites**, given that the original does and the
+four ends being re-paired lie at one site. -/
+theorem swapT_site {β : Type*} [DecidableEq β] (site : β → ℤ) (t : β → β)
+    (a d a' d' : β)
+    (ht : ∀ x, site (t x) = site x)
+    (hd : site d = site a) (ha' : site a' = site a) (hd' : site d' = site a) :
+    ∀ x, site (swapT t a d a' d' x) = site x := by
+  intro x
+  unfold swapT
+  by_cases h1 : x = a
+  · subst h1; simp [hd']
+  by_cases h2 : x = d'
+  · subst h2; simp [h1, hd'.symm]
+  by_cases h3 : x = a'
+  · subst h3; simp [h1, h2, ha', hd]
+  by_cases h4 : x = d
+  · subst h4; simp [h1, h2, h3, hd, ha']
+  simp [h1, h2, h3, h4, ht]
+
+/-- Consequently the crossing map and the re-paired turn never agree, by the same
+structural argument as before: one moves between sites and the other does not. -/
+theorem partner_ne_swapT {β : Type*} [DecidableEq β] (site : β → ℤ) (p t : β → β)
+    (a d a' d' : β)
+    (hp : ∀ x, site (p x) ≠ site x)
+    (ht : ∀ x, site (t x) = site x)
+    (hd : site d = site a) (ha' : site a' = site a) (hd' : site d' = site a) :
+    ∀ x, p x ≠ swapT t a d a' d' x :=
+  TurnBuild.partner_ne_turn site p (swapT t a d a' d') hp
+    (swapT_site site t a d a' d' ht hd ha' hd')
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -580,6 +618,8 @@ theorem walkCount_lt (D D' : Data α)
 #print axioms WalkGraph.reach_sig_iterate_set
 #print axioms WalkGraph.reach_delete_turn_set
 #print axioms WalkGraph.merge_connects_full
+#print axioms WalkGraph.swapT_site
+#print axioms WalkGraph.partner_ne_swapT
 #print axioms WalkGraph.walkCount
 #print axioms WalkGraph.walkCount_lt
 
