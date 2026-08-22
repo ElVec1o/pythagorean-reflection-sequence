@@ -1618,3 +1618,16 @@ That was the single place the descent consumed the global covering, so with it
 replaced the descent can in principle run between cut sites rather than requiring
 their absence. What remains for M4b is the induction over runs: each maximal run
 merges to one walk, and the runs are separated by cut sites, giving c <= |Z|.
+
+## Walks do not cross a cut site (2026-08-23)
+
+adj_confined: a crossing edge stays on one edge, and a turn at site t moves only
+between edges t-1 and t, which straddle s exactly when t = s. So if the turn keeps its
+edge at s -- which turn_keeps_edge_all gives at a cut site -- no adjacency crosses s.
+
+walk_confined: hence no walk crosses s either, by induction along the walk.
+
+That is the first half of the run induction for c <= |Z|: each walk lives entirely on
+one side of every cut site, so each walk lies within a single maximal run. What
+remains is that the walks within a run merge to one, which is the descent with
+other_end_at_wLo_run in place of the global covering.

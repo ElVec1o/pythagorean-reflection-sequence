@@ -1136,5 +1136,48 @@ theorem other_end_at_wLo_run (up : Fin n → ℕ)
   obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph (dataOf up hbal)) z
   exact covering_on_run l r hl hpos _ hlz hzr ⟨u, hue⟩
 
+/-! ### Walks do not cross a cut site
+
+A crossing edge stays on one edge, and a turn at site `t` moves only between edges
+`t - 1` and `t` -- which straddle `s` exactly when `t = s`.  So if the turn keeps its
+edge at `s`, no adjacency crosses `s`, and neither does any walk. -/
+
+/-- **No adjacency crosses a cut site.** -/
+theorem adj_confined (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (s : ℤ)
+    (hcut : ∀ x : Endpt n m, siteOf x = s → edgeOf (turnAt up s x) = edgeOf x)
+    (a b : Endpt n m) (hab : (graph (dataOf up hbal)).Adj a b) :
+    (edgeOf a < s ↔ edgeOf b < s) := by
+  rcases hab with h | h
+  · subst h
+    show (edgeOf a < s ↔ edgeOf (partner a) < s)
+    rw [partner_edgeOf]
+  · subst h
+    by_cases hs : siteOf a = s
+    · have : edgeOf ((dataOf up hbal).t a) = edgeOf a := by
+        show edgeOf (turnAt up (siteOf a) a) = edgeOf a
+        rw [hs]; exact hcut a hs
+      rw [this]
+    · -- the turn stays at one site, and that site is not `s`
+      have hb : siteOf ((dataOf up hbal).t a) = siteOf a := turnAt_site up hbal a
+      have h1 := edge_of_site a (siteOf a) rfl
+      have h2 := edge_of_site ((dataOf up hbal).t a) (siteOf a) hb
+      cases atTop a <;> cases atTop ((dataOf up hbal).t a) <;>
+        simp at h1 h2 <;> omega
+
+/-- **No walk crosses a cut site.** -/
+theorem walk_confined (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (s : ℤ)
+    (hcut : ∀ x : Endpt n m, siteOf x = s → edgeOf (turnAt up s x) = edgeOf x)
+    (x y : Endpt n m) (hr : (graph (dataOf up hbal)).Reachable x y) :
+    (edgeOf x < s ↔ edgeOf y < s) := by
+  obtain ⟨w⟩ := hr
+  induction w with
+  | nil => rfl
+  | cons hadj _ ih => exact (adj_confined up hbal s hcut _ _ hadj).trans ih
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.other_end_at_wLo_run
+#print axioms ConfigLoop.adj_confined
+#print axioms ConfigLoop.walk_confined
