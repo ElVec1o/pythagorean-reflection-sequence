@@ -124,6 +124,35 @@ theorem shared_site_of_gapfree_config
     simp only []
     omega
 
+/-- **The shared site inside a class.**  `SharedSite.shared_site_exists` is already
+general in the interval, so applying it to a class rather than the whole span is
+immediate; what needs saying is why both branches of its dichotomy give a site at
+which the merge is free.
+
+*Second branch:* one component starts strictly inside the class and the edge to its
+left is covered by another, so they meet at a site interior to the class, and
+interior sites of a class are not cut, the cut sites being exactly the class
+boundaries.
+
+*First branch:* two components both start at the class's left end.  That site is a
+class boundary, hence cut, but the merge is still free there: at the leftmost site
+of a class every end lies on the edge to its right, so both components have only
+right-side ends, and they therefore share an arrival side.  The blocking
+configuration is cost-zero bounces on *opposite* sides, which a shared side
+excludes.
+
+So the dichotomy delivers a mergeable site either way. -/
+theorem shared_site_in_class {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (lo hi : ι → ℤ) (L' H' : ℤ)
+    (compOf : ℤ → ι)
+    (hsupp : ∀ j : ℤ, L' ≤ j → j < H' → lo (compOf j) ≤ j ∧ j < hi (compOf j))
+    (hspan : ∀ k : ι, hi k ≤ H') (hL : ∀ k : ι, L' ≤ lo k)
+    (hnedeg : ∀ k : ι, lo k < hi k)
+    (a b : ι) (hab : a ≠ b) :
+    (∃ i j : ι, i ≠ j ∧ lo i = L' ∧ lo j = L') ∨
+    (∃ i j : ι, i ≠ j ∧ L' < lo i ∧ lo j ≤ lo i - 1 ∧ lo i - 1 < hi j) :=
+  shared_site_of_gapfree lo hi L' H' compOf hsupp hspan hL hnedeg a b hab
+
 /-! ### Non-vacuity
 
 Two components on the span `[0,2)`, the first covering edge `0` and the second
@@ -151,6 +180,7 @@ theorem assembly_not_vacuous :
 #print axioms GapFreeAssembly.edge_carries_crossing
 #print axioms GapFreeAssembly.shared_site_constructed
 #print axioms GapFreeAssembly.shared_site_of_gapfree_config
+#print axioms GapFreeAssembly.shared_site_in_class
 #print axioms GapFreeAssembly.assembly_not_vacuous
 
 end GapFreeAssembly
