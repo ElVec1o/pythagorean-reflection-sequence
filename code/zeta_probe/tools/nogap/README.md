@@ -865,3 +865,28 @@ carried into the walk model; until then the shared-side hypothesis of cost_swapD
 stays an explicit hypothesis.
 
 Kept because the enumeration scaffolding is reusable once deposits are added.
+
+## The shared-side pair DOES always exist -- the probe had the cost inverted (2026-08-23)
+
+Supersedes the entry above. The defect was not the missing deposit layer. It was the
+COST DIRECTION, and reading EndData.sgn settled it:
+
+  sgn a = if side a then (isArr a ? D1 : !D1) else (isArr a ? !D0 : D0)
+
+so for an arrival a and its departure t[a] sharing a side, sgn a and sgn t[a] are
+ALWAYS opposite. A same-side arrival/departure pair is therefore always a
+sign-flipped bounce costing 2, and a different-side pair is a pass costing 1.
+Minimising transCost MAXIMISES passes.
+
+side_probe.py scored bounces 0 and passes 1 -- exactly backwards -- so its
+"cost-minimal" set was close to the cost-MAXIMAL one, and its 9 failures were
+artifacts.
+
+side_probe2.py, with the correct cost, over n = 1,2,3 edges: 263 cost-minimal turns,
+146 of them with more than one walk, and ALL 146 admit two arrivals at a common site
+in different walks sharing a side (or whose departures share one). Zero failures.
+
+So the shared-side hypothesis of cost_swapData IS available at cost-minimal
+realisations, and M6dy is closable. What the walk-model chain needs is
+cost-minimality: hshared does not come from the placement alone, it comes from the
+realisation being optimal. That is the missing ingredient, now identified.
