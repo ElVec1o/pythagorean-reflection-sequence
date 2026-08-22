@@ -17,6 +17,7 @@ recorded here rather than left implicit (Rule 5).
 import Mathlib.Tactic
 import EdgeData
 import SharedSite
+import ComponentSupport
 
 namespace GapFreeAssembly
 
@@ -46,6 +47,39 @@ theorem edge_carries_crossing {d f : ℤ} (hf : EdgeData.IsTravel f)
     1 ≤ max |d| |f| :=
   EdgeData.mult_pos hf hpar hgap
 
+/-- **The shared site, with every hypothesis constructed.**
+
+`SharedSite.shared_site_exists` needs four things: that every span edge is covered
+by some component's support, that supports lie inside the span on both sides, and
+that no support is degenerate.  All four now come from `ComponentSupport`, built
+from the crossings themselves, so nothing is assumed about how components sit on
+the line.
+
+Components are indexed by ends here; `ComponentSupport.cLo_congr` and `cHi_congr`
+say the endpoints are constant along a cycle, so this is the same indexing as by
+components.
+
+`hcross` is the only remaining input, and it is `EdgeData.mult_pos` transported to
+the end type: a gap-free span edge has positive multiplicity, so an end sits on
+it. -/
+theorem shared_site_constructed {α : Type*} [DecidableEq α] [Fintype α]
+    (edgeOf : α → ℤ) (π : Equiv.Perm α) (L H : ℤ)
+    (hcross : ∀ j : ℤ, L ≤ j → j < H → ∃ z : α, edgeOf z = j)
+    (hlo : ∀ a : α, L ≤ edgeOf a) (hhi : ∀ a : α, edgeOf a < H)
+    (a b : α) (hab : a ≠ b) :
+    (∃ i j : α, i ≠ j ∧
+        ComponentSupport.cLo edgeOf π i = L ∧ ComponentSupport.cLo edgeOf π j = L) ∨
+    (∃ i j : α, i ≠ j ∧ L < ComponentSupport.cLo edgeOf π i ∧
+        ComponentSupport.cLo edgeOf π j ≤ ComponentSupport.cLo edgeOf π i - 1 ∧
+        ComponentSupport.cLo edgeOf π i - 1 < ComponentSupport.cHi edgeOf π j) :=
+  SharedSite.shared_site_exists
+    (ComponentSupport.cLo edgeOf π) (ComponentSupport.cHi edgeOf π) L H
+    (ComponentSupport.covering_of_crossings edgeOf π L H hcross)
+    (ComponentSupport.cHi_le_of_edges_le edgeOf π H hhi)
+    (ComponentSupport.le_cLo_of_le_edges edgeOf π L hlo)
+    a b hab
+    (ComponentSupport.cLo_lt_cHi edgeOf π)
+
 /-! ### Non-vacuity
 
 Two components on the span `[0,2)`, the first covering edge `0` and the second
@@ -71,6 +105,7 @@ theorem assembly_not_vacuous :
 -- Certification (Rule 5).
 #print axioms GapFreeAssembly.shared_site_of_gapfree
 #print axioms GapFreeAssembly.edge_carries_crossing
+#print axioms GapFreeAssembly.shared_site_constructed
 #print axioms GapFreeAssembly.assembly_not_vacuous
 
 end GapFreeAssembly
