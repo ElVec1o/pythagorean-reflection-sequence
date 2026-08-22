@@ -403,3 +403,48 @@ and both criteria that carry M6 are false in general:
 So `c <= |Z+|` is not reachable by this route. It remains HEURISTIC on 3 336 511
 elements to word length 31. Do not retry the naive generalisation; a different
 mechanism is needed for the sites where the split is free.
+
+## Formalisation: two modeling errors found by testing, and what they cost
+
+The Lean development of `thm:nogap` (2026-08-22/23, `lean/with_mathlib/`) proved
+every mathematical input of the argument. Trying to write the model as a whole,
+rather than accreting it, then found two errors in the interpretation. Both were
+caught by attempting to satisfy a specification, not by reading proofs.
+
+**One: cycles of the transition system are not the components.** A component is a
+walk, and a walk alternates crossing an edge with turning at a site; the transition
+system only turns. In the smallest instance, one edge with an up- and a
+down-crossing, its cycles are the pair of top ends and the pair of bottom ends, so
+the two ends of one crossing lie in different cycles.
+
+**Two: cycles of `turn . partner` are not the walks either.** Measured on small
+configurations:
+
+| configuration | walks | cycles of `turn . partner` |
+|---|---|---|
+| closed walk, no `turn` fixed points | 1 | 2 |
+| open walk, `turn` fixed at both ends | 1 | 1 |
+
+A closed walk splits into two cycles of the product, an open one does not. In our
+setting the marker component is open and the isolated cycles are closed, so
+
+    #cycles(pi) = 1 + 2c,   i.e.   c = (#cycles(pi) - 1) / 2.
+
+**The consequence for the merge.** A 2-swap re-pairs at a site, and `turn` must
+remain an involution, so the change is composition with a **double** transposition.
+That lowers the cycle count by two and the walk count by one. `CycleMerge`, which
+treats a single transposition, therefore does not model a transition-system 2-swap,
+and `RealizationModel.comp` cannot be read as a cycle count of either `turn` or the
+product without the correction above.
+
+**What survives.** Every purely mathematical statement: the forced sign split, the
+forced-pass lemma, the swap criterion over side patterns, the shared-site argument,
+the two cycle lemmas Mathlib lacks, the counting step, and the descent. Those are
+theorems about deposits, side patterns, permutations and finite sets, and none
+depends on the interpretation. The paper proof is unaffected, its components being
+walks throughout.
+
+**What is owed.** A model built on the correct correspondence: `c` as
+`(#cycles - 1)/2`, and the merge as a double transposition. That is a redesign of
+the interpretation layer, not a further lemma, and it is why the formalisation debt
+on `thm:nogap` did not clear.
