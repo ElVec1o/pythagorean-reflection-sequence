@@ -504,3 +504,30 @@ markers and `cycles/2` in the closed case; a transition-system 2-swap across two
 walks lowers the walk count by one; and the free-swap criterion, which is about
 side patterns and already verified, decides when that merge costs nothing. What a
 Lean model still owes is this correspondence, not the merge criterion.
+
+### The remaining obligation, reduced to a named classical statement
+
+`WalkMerge.conn_merge` carries one hypothesis, `hpath`: after the re-pairing, the
+other walk stays connected having lost its turn-edge.  That is the statement that a
+cycle minus one edge is still a path, and it is the only thing between the measured
+merge and a proved one.
+
+It is not an open modelling question.  Mathlib has
+
+* `SimpleGraph.isBridge_iff_mem_and_forall_cycle_notMem` -- an edge is a bridge
+  exactly when it lies in no cycle;
+* `SimpleGraph.isBridge_iff` -- an edge is a bridge exactly when it is adjacent and
+  its endpoints are not reachable after deleting it.
+
+So `hpath` follows once the turn-edge is exhibited inside a cycle, and in the graph
+at hand every edge is: the graph has an edge of each kind at every end, so it is
+2-regular and its components are cycles.
+
+The route is therefore: build the `SimpleGraph` on ends whose adjacency is
+`y = p x` or `y = t x`; prove it 2-regular from the two involutions; conclude every
+edge lies in a cycle; apply the two lemmas above to get `hpath`; and discharge
+`conn_merge`.  That is a bounded piece of standard graph theory with library
+support, not a further piece of the reflection-group argument.
+
+Recorded so the next attempt starts from the reduction rather than rediscovering
+it.
