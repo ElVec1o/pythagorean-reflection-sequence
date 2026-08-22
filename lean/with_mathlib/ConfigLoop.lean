@@ -252,5 +252,42 @@ theorem gapfree_defect_zero (up : Fin n → ℕ)
   obtain ⟨D', hM, h1⟩ := gapfree_single_walk up hbal hm e0
   exact ⟨D', hM, by unfold defect; omega⟩
 
+/-! ### The basepoint closes the identification
+
+The missing ingredient was a designated open walk.  A realisation has one: the word
+has a start.  Marking any end `b`, the isolated cycles are exactly the components
+*other than* `b`'s, and that count is `walkCount - 1` unconditionally.  So with a
+basepoint, `defect` is the isolated-cycle count by definition rather than by a
+modelling claim. -/
+
+/-- The components other than the marked one -- the isolated cycles. -/
+noncomputable def otherComponents {α : Type*} [Fintype α] [DecidableEq α]
+    (D : Data α) (b : α) : ℕ := by
+  classical
+  exact (Finset.univ.filter
+    (fun k : (graph D).ConnectedComponent => k ≠ (graph D).connectedComponentMk b)).card
+
+/-- **The isolated-cycle count is the defect.**  Unconditional, for any basepoint. -/
+theorem otherComponents_eq_defect {α : Type*} [Fintype α] [DecidableEq α]
+    (D : Data α) (b : α) : otherComponents D b = defect D := by
+  classical
+  unfold otherComponents defect walkCount
+  have h : (Finset.univ.filter
+      (fun k : (graph D).ConnectedComponent => k ≠ (graph D).connectedComponentMk b))
+      = Finset.univ.erase ((graph D).connectedComponentMk b) := by
+    ext k; simp [Finset.mem_erase]
+  rw [h, Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ]
+
+/-- **`thm:nogap`, with the isolated cycles counted against a basepoint.**  A gap-free
+configuration has no isolated cycles. -/
+theorem gapfree_no_isolated_cycles (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hm : ∀ e : Fin n, 0 < m e) (e0 : Fin n) :
+    ∃ D' : Data (Endpt n m), Merges siteOf (isArrOf up) partner D' ∧
+      ∀ b : Endpt n m, otherComponents D' b = 0 := by
+  obtain ⟨D', hM, hz⟩ := gapfree_defect_zero up hbal hm e0
+  exact ⟨D', hM, fun b => by rw [otherComponents_eq_defect D' b, hz]⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.gapfree_defect_zero
+#print axioms ConfigLoop.otherComponents_eq_defect
+#print axioms ConfigLoop.gapfree_no_isolated_cycles

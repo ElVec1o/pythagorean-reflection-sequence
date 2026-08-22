@@ -782,3 +782,21 @@ This is recorded rather than asserted. Two claims of exactly this kind
 made on inspection earlier in this development and both were false. The remaining
 formalization debt on M6 is precisely this identification, and it is now named
 instead of hidden.
+
+## The basepoint closes defect = c (2026-08-23, same day, supersedes the entry above)
+
+The entry above recorded that defect = c needed a basepoint or an argument that the
+open walk is distinguishable. The basepoint is available: a realisation has a
+designated open walk because the word has a start.
+
+otherComponents D b counts the components other than b's -- the isolated cycles --
+and otherComponents_eq_defect proves it equals walkCount D - 1 UNCONDITIONALLY, for
+any b. So with a basepoint the identification is definitional, not a modelling claim.
+
+gapfree_no_isolated_cycles: a gap-free configuration has no isolated cycles, for
+EVERY basepoint. The quantifier is free here: walkCount = 1 leaves no other
+component for the choice of b to matter to.
+
+So M6's chain now reaches thm:nogap's actual statement. What the model still does
+not carry is which end is the word's start -- but the theorem holds for all of them,
+so nothing depends on choosing.
