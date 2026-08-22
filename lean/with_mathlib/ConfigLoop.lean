@@ -711,6 +711,35 @@ theorem prop_cut_correct (up : Fin n → ℕ)
     (walk_graph_local_edge up hbal (cutSitesZ d f A B) hturn)
     A B hAB hlow hhigh hocc c0
 
+/-! ### No strand crosses a cut site
+
+`Plan.cost` is `2·(same-side sign flips) + cross`, so the cross mass never exceeds the
+cost.  At a cut site the site value is `0`, so a minimum-cost plan costs `0` and
+therefore crosses `0` times -- which is `prop:cut`'s first sentence, and the `hturn`
+input of `prop_cut_correct`. -/
+
+theorem cross_le_cost {Ap Am Bp Bm Cp Cm Dp Dm : ℕ}
+    (p : SiteCost.Plan Ap Am Bp Bm Cp Cm Dp Dm) : p.cross ≤ p.cost := by
+  unfold SiteCost.Plan.cost SiteCost.Plan.cross
+  omega
+
+/-- **At a cut site no strand crosses.**  A zero-cost plan has zero cross mass. -/
+theorem cross_eq_zero_of_cost_zero {Ap Am Bp Bm Cp Cm Dp Dm : ℕ}
+    (p : SiteCost.Plan Ap Am Bp Bm Cp Cm Dp Dm) (h : p.cost = 0) : p.cross = 0 := by
+  have := cross_le_cost p
+  omega
+
+/-- The same, read off the cut condition: `α = β = Φ = 0` makes the site value zero,
+so any plan attaining it costs nothing and crosses nothing. -/
+theorem no_cross_at_cut {Ap Am Bp Bm Cp Cm Dp Dm : ℕ}
+    (p : SiteCost.Plan Ap Am Bp Bm Cp Cm Dp Dm)
+    (halpha : SiteCost.alpha Ap Am Cp Cm = 0) (hbeta : SiteCost.beta Bp Bm Dp Dm = 0)
+    (hphi : SiteCost.Phi Ap Am Cp Cm = 0)
+    (hmin : p.cost = SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm) :
+    p.cross = 0 :=
+  cross_eq_zero_of_cost_zero p
+    (by rw [hmin, cut_site_value Ap Am Bp Bm Cp Cm Dp Dm halpha hbeta hphi])
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.mem_cutSitesZ
-#print axioms ConfigLoop.prop_cut_correct
+#print axioms ConfigLoop.cross_le_cost
+#print axioms ConfigLoop.no_cross_at_cut

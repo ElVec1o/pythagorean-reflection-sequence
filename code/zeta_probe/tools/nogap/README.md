@@ -1336,3 +1336,18 @@ neither virtual event. Its two inputs are exactly the ones the paper argues for:
 
 Both are carried as hypotheses rather than assumed away. The chain from the walk model
 to the abstract counting is now built on the right Z and the right position function.
+
+## No strand crosses a cut site (2026-08-23)
+
+Plan.cost = 2*(same-side sign flips) + cross, so cross <= cost (cross_le_cost). At a
+cut site alpha = beta = Phi = 0, so siteValue = 0, so a minimum-cost plan costs 0 and
+therefore crosses 0 times -- no_cross_at_cut.
+
+That is prop:cut's first sentence, and it is the hturn input of prop_cut_correct: at
+a cut site every minimum-cost pairing matches each arrival with a departure on its
+own side.
+
+What remains to connect it to hturn as stated is the per-site bookkeeping -- that the
+turn of the walk model at site s realises a Plan at s, so that zero cross mass means
+no turn edge moves between edge s-1 and edge s. That is the same kind of link as the
+g-to-configuration one, and is bookkeeping rather than argument.
