@@ -121,6 +121,30 @@ theorem travel_const_away {f : ℤ → ℤ} {s k : ℤ}
   rw [hs (s - 1), hs s]
   split_ifs <;> omega
 
+/-! ### The balance in up-count form
+
+Counting at a site splits by which of the two adjacent edges an end comes from.  An
+arrival at site `s` is either a top end of edge `s-1`, which makes it an
+up-crossing, or a bottom end of edge `s`, which makes it a down-crossing.  So
+
+    arrivals   = up (s-1) + (m s - up s)
+    departures = (m (s-1) - up (s-1)) + up s
+
+and the balance between them is the arithmetic below.  With `2 up = m + f` on each
+edge it is again just `f (s-1) = f s`, so the count form and the earlier form say
+the same thing. -/
+
+theorem card_balance_of_travel_eq {mLo mHi upLo upHi fLo fHi : ℤ}
+    (hLo : 2 * upLo = mLo + fLo) (hHi : 2 * upHi = mHi + fHi) (hf : fLo = fHi) :
+    upLo + (mHi - upHi) = (mLo - upLo) + upHi := by omega
+
+/-- And conversely, so the count balance is equivalent to the indicator not
+jumping, exactly as the crossing-count form was. -/
+theorem travel_eq_of_card_balance {mLo mHi upLo upHi fLo fHi : ℤ}
+    (hLo : 2 * upLo = mLo + fLo) (hHi : 2 * upHi = mHi + fHi)
+    (hbal : upLo + (mHi - upHi) = (mLo - upLo) + upHi) :
+    fLo = fHi := by omega
+
 -- Certification (Rule 5).
 #print axioms EdgeData.dep_ne_zero_of_not_gap
 #print axioms EdgeData.one_le_abs
@@ -135,5 +159,7 @@ theorem travel_const_away {f : ℤ → ℤ} {s k : ℤ}
 #print axioms EdgeData.balance_of_travel_eq
 #print axioms EdgeData.travel_eq_of_balance
 #print axioms EdgeData.travel_const_away
+#print axioms EdgeData.card_balance_of_travel_eq
+#print axioms EdgeData.travel_eq_of_card_balance
 
 end EdgeData
