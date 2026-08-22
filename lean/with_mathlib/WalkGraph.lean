@@ -15,6 +15,7 @@ import Mathlib.Tactic
 import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import WalkMerge
+import OrbitCount
 
 namespace WalkGraph
 
@@ -509,6 +510,48 @@ theorem merge_connects_full (D : Data α) (a d a' d' : α)
     rwa [hda'] at this
   exact merge_connects D a d a' d' hd hd' h1 h2 h3 path
 
+/-! ### The walk count
+
+A walk is a connected component of the walk graph, so the walk count is the number
+of those.  The merge lowers it by one: the induced map on components is onto, and
+it identifies the two walks being joined. -/
+
+/-- The components form a finite type. -/
+noncomputable instance compFintype (D : Data α) :
+    Fintype (graph D).ConnectedComponent :=
+  Fintype.ofFinite _
+
+/-- The number of walks. -/
+noncomputable def walkCount (D : Data α) : ℕ :=
+  Fintype.card (graph D).ConnectedComponent
+
+/-- **The merge lowers the walk count.**  `hmono` says connectivity is not
+destroyed, which the merge does not do since each walk is a cycle and loses only
+one edge; `hsplit` and `hjoin` say the two arrivals were in different walks and are
+now in one. -/
+theorem walkCount_lt (D D' : Data α)
+    (hmono : ∀ x y : α, (graph D).Reachable x y → (graph D').Reachable x y)
+    (a a' : α)
+    (hsplit : ¬ (graph D).Reachable a a')
+    (hjoin : (graph D').Reachable a a') :
+    walkCount D' < walkCount D := by
+  classical
+  -- the map on components induced by the identity on ends
+  let f : (graph D).ConnectedComponent → (graph D').ConnectedComponent :=
+    Quot.lift (fun v => (graph D').connectedComponentMk v)
+      (fun v w h => SimpleGraph.ConnectedComponent.eq.mpr (hmono v w h))
+  have hsurj : Function.Surjective f := by
+    intro b
+    induction b using Quot.inductionOn with
+    | _ z => exact ⟨(graph D).connectedComponentMk z, rfl⟩
+  have hnotinj : ¬ Function.Injective f := by
+    intro hinj
+    apply hsplit
+    have : f ((graph D).connectedComponentMk a) = f ((graph D).connectedComponentMk a') :=
+      SimpleGraph.ConnectedComponent.eq.mpr hjoin
+    exact SimpleGraph.ConnectedComponent.eq.mp (hinj this)
+  exact OrbitCount.card_lt_of_surjective_not_injective f hsurj hnotinj
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -537,5 +580,7 @@ theorem merge_connects_full (D : Data α) (a d a' d' : α)
 #print axioms WalkGraph.reach_sig_iterate_set
 #print axioms WalkGraph.reach_delete_turn_set
 #print axioms WalkGraph.merge_connects_full
+#print axioms WalkGraph.walkCount
+#print axioms WalkGraph.walkCount_lt
 
 end WalkGraph
