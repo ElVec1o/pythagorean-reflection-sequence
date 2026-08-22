@@ -319,6 +319,67 @@ theorem reachable_of_conn {x y : α} (h : WalkMerge.Conn D.p D.t x y) :
 theorem conn_of_adj {x y : α} (h : (graph D).Adj x y) : WalkMerge.Conn D.p D.t x y :=
   WalkMerge.conn_of_step h
 
+/-! ### The re-paired data
+
+Re-pairing two arrivals at one site.  The new turn is again an involution, and the
+conditions it needs are exactly the ones the site structure supplies: the four ends
+are distinct, and no swapped pair coincides with a crossing partner, which holds
+because the swap stays inside a site while the crossing map moves between the two
+sites of an edge. -/
+
+/-- The re-paired turn: `a` now points at `d'` and `a'` at `d`. -/
+def swapT (t : α → α) (a d a' d' : α) : α → α := fun x =>
+  if x = a then d' else if x = d' then a else
+  if x = a' then d else if x = d then a' else t x
+
+theorem swapT_invol {β : Type*} [DecidableEq β] {t : β → β} {a d a' d' : β}
+    (ht : ∀ x, t (t x) = x) (hta : t a = d) (hta' : t a' = d')
+    (hda : d ≠ a) (hd'a : d' ≠ a) (ha'a : a' ≠ a) (hd'd : d' ≠ d)
+    (ha'd' : a' ≠ d') (hda' : d ≠ a') :
+    ∀ x, swapT t a d a' d' (swapT t a d a' d' x) = x := by
+  intro x
+  by_cases h1 : x = a
+  · subst h1; unfold swapT; split_ifs <;> simp_all
+  by_cases h2 : x = d'
+  · subst h2; unfold swapT; split_ifs <;> simp_all
+  by_cases h3 : x = a'
+  · subst h3; unfold swapT; split_ifs <;> simp_all
+  by_cases h4 : x = d
+  · subst h4; unfold swapT; split_ifs <;> simp_all
+  -- `x` is none of the four; then neither is `t x`, so the turn acts as before
+  have hx : t x ≠ a := fun hc => h4 (by rw [← hta, ← hc, ht])
+  have hx2 : t x ≠ d := fun hc => h1 (by rw [← hta] at hc; rw [← ht x, hc, ht])
+  have hx3 : t x ≠ a' := fun hc => h2 (by rw [← hta', ← hc, ht])
+  have hx4 : t x ≠ d' := fun hc => h3 (by rw [← hta'] at hc; rw [← ht x, hc, ht])
+  simp [swapT, h1, h2, h3, h4, hx, hx2, hx3, hx4, ht]
+
+/-- The re-paired data, given that the new turn is fixed-point free and still never
+agrees with the crossing map. -/
+def swapData (D : Data α) (a d a' d' : α)
+    (hinv : ∀ x, swapT D.t a d a' d' (swapT D.t a d a' d' x) = x)
+    (hne : ∀ x, swapT D.t a d a' d' x ≠ x)
+    (hpt : ∀ x, D.p x ≠ swapT D.t a d a' d' x) : Data α where
+  p := D.p
+  t := swapT D.t a d a' d'
+  p_invol := D.p_invol
+  t_invol := hinv
+  p_ne := D.p_ne
+  t_ne := hne
+  pt_ne := hpt
+
+@[simp] theorem swapData_t (D : Data α) (a d a' d' : α) (h1 h2 h3) :
+    (swapData D a d a' d' h1 h2 h3).t = swapT D.t a d a' d' := rfl
+
+@[simp] theorem swapData_p (D : Data α) (a d a' d' : α) (h1 h2 h3) :
+    (swapData D a d a' d' h1 h2 h3).p = D.p := rfl
+
+/-- **The merging edge.**  In the re-paired data, `a` is adjacent to `d'`, which lay
+in the other walk.  This is the edge that joins them. -/
+theorem adj_merge (D : Data α) (a d a' d' : α) (h1 h2 h3) :
+    (graph (swapData D a d a' d' h1 h2 h3)).Adj a d' := by
+  refine Or.inr ?_
+  simp [swapData, swapT]
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -340,5 +401,7 @@ theorem conn_of_adj {x y : α} (h : (graph D).Adj x y) : WalkMerge.Conn D.p D.t 
 #print axioms WalkGraph.step_adj
 #print axioms WalkGraph.reachable_of_conn
 #print axioms WalkGraph.conn_of_adj
+#print axioms WalkGraph.swapT_invol
+#print axioms WalkGraph.adj_merge
 
 end WalkGraph
