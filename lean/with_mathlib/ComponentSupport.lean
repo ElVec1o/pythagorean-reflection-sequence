@@ -125,6 +125,52 @@ theorem le_cLo_of_le_edges (edgeOf : α → ℤ) (π : Perm α) (L : ℤ)
   rw [← ha]
   exact hle a
 
+/-! ### From supports to ends
+
+The shared-site dichotomy is about component supports, intervals of edges.  The
+merge needs it about ends: two ends at one site, in different components, one of
+them opening a bounce.  These lemmas cross between the two descriptions.
+
+An end sits at the site of its edge, offset by one when it is the edge's top end.
+So at a component's leftmost site, no end of it can be a top end, since that would
+put its edge one step further left than the support allows. -/
+
+/-- **At its leftmost site a component has only bottom ends.**  A top end there
+would lie on the edge below the support's left endpoint. -/
+theorem not_atTop_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (π : Perm α) (z e : α) (hmem : π.SameCycle z e)
+    (hs : siteOf e = cLo edgeOf π z) :
+    atTop e = false := by
+  classical
+  by_contra hcon
+  have htop : atTop e = true := by simpa using hcon
+  -- the end's edge sits one to the left of the support's left endpoint
+  have hedge : edgeOf e = cLo edgeOf π z - 1 := by
+    have h := hsite e
+    rw [htop] at h
+    simp only [if_true] at h
+    omega
+  -- but the edge lies in the support, so it is at least the left endpoint
+  have hin : edgeOf e ∈ cycleEdges edgeOf π z := by
+    simp only [cycleEdges, Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and]
+    exact ⟨e, hmem, rfl⟩
+  have hge : cLo edgeOf π z ≤ edgeOf e := Finset.min'_le _ _ hin
+  omega
+
+/-- Consequently every end of a component at its leftmost site lies on the edge
+that starts the support. -/
+theorem edge_eq_cLo_at_cLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (π : Perm α) (z e : α) (hmem : π.SameCycle z e)
+    (hs : siteOf e = cLo edgeOf π z) :
+    edgeOf e = cLo edgeOf π z := by
+  have hbot := not_atTop_at_cLo edgeOf siteOf atTop hsite π z e hmem hs
+  have h := hsite e
+  rw [hbot] at h
+  simp at h
+  omega
+
 -- Certification (Rule 5).
 #print axioms ComponentSupport.cycleEdges_nonempty
 #print axioms ComponentSupport.self_mem_support
@@ -135,5 +181,7 @@ theorem le_cLo_of_le_edges (edgeOf : α → ℤ) (π : Perm α) (L : ℤ)
 #print axioms ComponentSupport.covering_of_crossings
 #print axioms ComponentSupport.cHi_le_of_edges_le
 #print axioms ComponentSupport.le_cLo_of_le_edges
+#print axioms ComponentSupport.not_atTop_at_cLo
+#print axioms ComponentSupport.edge_eq_cLo_at_cLo
 
 end ComponentSupport
