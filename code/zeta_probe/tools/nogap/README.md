@@ -1491,3 +1491,31 @@ site_cost_le_of_global and site_sum_eq_plan_cost to no_cross_at_cut.
 M3 is now assembled at configuration level, on the same footing as M5, M6 and M7. The
 shared remaining link for all four is the passage from a group element to its
 configuration.
+
+## M2's star was misattributed, and I duplicated work (2026-08-23)
+
+Read Realisation.lean, which had not been examined this session. Three findings:
+
+1. lR_closed IS M2, fully proved and kernel-clean: the minimum cost of a realisation
+   is sum over the span of max(|d_j|,|f_j|), forced to 2 where that vanishes, plus the
+   sum over sites of max(|alpha_s|,|beta_s|). It is universally quantified over
+   PathData, hence over all k*, and PathData carries only the natural conditions --
+   parity, span minimality, outer vanishing -- with no unproved assumption. M2's
+   formalization debt was misattributed.
+
+2. cut_no_cross was ALREADY THERE -- prop:cut's first sentence at the level of a
+   realisation. I rebuilt the same reasoning this session as
+   no_cross_at_cut / turn_keeps_edge_of_cross_zero. Mine lands in the WALK GRAPH,
+   which Realisation.lean explicitly cannot express, so the bridge still had to be
+   built; but I should have read this file before rebuilding the site-cost half.
+
+3. gap_run_cut was ALREADY THERE: a maximal gap run of L edges contributes exactly its
+   L-1 interior sites and neither end site. That is the fact I derived from the paper
+   two stretches ago to justify retracting gapSites. It was proved in Lean the whole
+   time.
+
+Realisation.lean's header also says exactly what was missing -- "a Realisation carries
+the pairing at each site but not the strand graph those pairings assemble into, so
+'number of components' is not expressible against this structure". That is precisely
+the gap the walk model fills, so the session's direction was right even where its
+bookkeeping duplicated existing work.
