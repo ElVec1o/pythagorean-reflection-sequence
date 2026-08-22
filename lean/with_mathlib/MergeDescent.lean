@@ -91,7 +91,27 @@ theorem two_in_one_class {C K : Type*} [Fintype C] [Fintype K] [DecidableEq K]
     ∃ a b : C, a ≠ b ∧ cls a = cls b :=
   Fintype.exists_ne_map_eq_of_card_lt cls h
 
+/-- **The route, composed.**  Given that excess components always yield a free
+merge, the count descends to the bound.
+
+The hypothesis `hmerge` is what the other three pieces produce: the pigeonhole puts
+two components in one class, the shared-site theorem applied to that class makes
+them meet at a mergeable site, and the merge lowers the count without raising the
+cost.  Composing them into `hmerge` for an actual realisation is model work, the
+same work the formalisation debt on `thm:nogap` names, so it is a hypothesis here
+rather than a conclusion.
+
+What this theorem does add is that nothing further is needed: with `hmerge` in hand
+the inequality follows immediately, so the whole difficulty sits in that one
+hypothesis. -/
+theorem count_le_bound_of_merge {R : Type*} [DecidableEq R]
+    (T : Finset R) (hT : T.Nonempty) (cnt : R → ℕ) (bound : ℕ)
+    (hmerge : ∀ r ∈ T, bound < cnt r → ∃ r' ∈ T, cnt r' < cnt r) :
+    ∃ r ∈ T, cnt r ≤ bound :=
+  count_le_of_step T hT cnt bound hmerge
+
 #print axioms MergeDescent.count_le_of_step
 #print axioms MergeDescent.two_in_one_class
+#print axioms MergeDescent.count_le_bound_of_merge
 
 end MergeDescent
