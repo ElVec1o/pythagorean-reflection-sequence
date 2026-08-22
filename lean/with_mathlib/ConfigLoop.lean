@@ -528,5 +528,32 @@ theorem walk_graph_local (up : Fin n → ℕ)
     exact ⟨siteOf x, Or.inr rfl, Or.inr (turnAt_site up hbal x), fun hne =>
       absurd (turnAt_site up hbal x).symm hne⟩
 
+/-- The gap **sites**: a gap edge `e` blocks the site `e + 1`, since a crossing on
+edge `e` is what would step across it. -/
+def gapSites (dep trav : Fin n → ℤ) : Finset ℤ :=
+  (Finset.univ.filter (fun e : Fin n => dep e = 0 ∧ trav e = 0)).image
+    (fun e : Fin n => ((e.val : ℤ) + 1))
+
+/-- **The gap condition holds.**  A gap edge has zero multiplicity, so it carries no
+end at all; hence no end's edge is a gap edge, which is exactly what `Local` needs
+once the shift is taken into account. -/
+theorem gap_condition (dep trav : Fin n → ℤ)
+    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat) :
+    ∀ x : Endpt n m, edgeOf x + 1 ∉ gapSites dep trav := by
+  intro x hx
+  simp only [gapSites, Finset.mem_image, Finset.mem_filter, Finset.mem_univ,
+    true_and] at hx
+  obtain ⟨e, ⟨hd, hf⟩, he⟩ := hx
+  have hxe : x.edge = e := by
+    have h1 : (e : ℤ) = (x.edge : ℤ) := by unfold edgeOf at he; omega
+    exact (Fin.ext (by exact_mod_cast h1)).symm
+  subst hxe
+  have hme : m x.edge = 0 := by
+    have h := hmdef x.edge
+    rw [hd, hf] at h
+    simpa using h
+  have hlt := x.idx.isLt
+  omega
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.walk_graph_local
+#print axioms ConfigLoop.gap_condition

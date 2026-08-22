@@ -1215,3 +1215,20 @@ from thm_nogap_optimal down assumes forall e, 0 < m e, that is Z = empty, while
 prop:cut is about Z nonempty. The two halves of the development meet only at
 Z = empty. So M3's star is NOT reachable from this session's merge work; it needs the
 gap condition discharged against a real configuration, which is a separate task.
+
+## M3's gap condition is discharged (2026-08-23)
+
+The offset resolves it. A crossing on edge e spans sites e and e+1, so Local's
+"s not a gap site" is about e+1. Hence gapSites = the gap EDGES shifted by one, and
+the condition "no end sits at edgeOf x + 1 in gapSites" says no end's edge is a gap
+edge -- true, because a gap edge has d = f = 0 hence m = 0 hence no ends at all.
+
+ConfigLoop.gapSites and ConfigLoop.gap_condition. With walk_graph_local this gives
+CutComponents.Local for a real configuration, which is the hypothesis the abstract
+prop:cut (exists_injective_components_avoiding) consumes.
+
+Five failed proof attempts, all the same shape: rewriting under a dependent
+projection. x : Endpt n m carries x.idx : Fin (m x.edge), so rewriting m x.edge in
+the GOAL is never type-correct. Fixes that worked: subst rather than rw for the edge
+equality, rewriting inside a hypothesis rather than the goal, and finally letting
+omega combine x.idx.isLt with m x.edge = 0 instead of rewriting at all.
