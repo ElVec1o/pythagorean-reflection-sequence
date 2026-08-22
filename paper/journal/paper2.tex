@@ -2002,6 +2002,112 @@ The reverse inequality $c\le|Z^{+}|$ remains unproved; the addition of the bound
 bear on it.
 \end{remark}
 
+\subsection{The gap-free case: the reverse inequality holds when $Z$ is empty}\label{ss:nogap}
+
+Call an edge $j$ of the span a \emph{gap edge} when $d_j=0$ and $f_j=0$; by
+Corollary~\ref{cor:lRclosed} such an edge is forced to $m_j=2$ by reachability. The reverse
+inequality is out of reach in general (Remark~\ref{rem:shieldowes}), but it holds, with a short
+proof, on the elements that carry no gap edge at all.
+
+\begin{lemma}[the sign split is forced at minimum multiplicity]\label{lem:splitforced}
+Let $j$ be a span edge with no gap, so $d_j\ne0$. Then $m_j^\ast=|d_j|$, and the split
+$p^d_j=p^u_j+(d_j-f_j)/2$ subject to $0\le p^u_j\le u_j$ and $0\le p^d_j\le dn_j$ has exactly one
+solution: $p^u_j=0$ when $d_j>0$ and $p^u_j=u_j$ when $d_j<0$. Consequently every up-crossing of
+edge $j$ carries the sign $-\operatorname{sgn}(d_j)$ and every down-crossing the sign
+$+\operatorname{sgn}(d_j)$.
+\end{lemma}
+
+\begin{proof}
+$d_j\equiv f_j\pmod 2$ and $d_j\ne0$ give $|d_j|\ge|f_j|$ in both parities, so $m_j^\ast=|d_j|$ and
+$2\,dn_j=d_j-f_j$ when $d_j>0$. Then $p^d_j=p^u_j+dn_j\le dn_j$ forces $p^u_j\le0$, hence
+$p^u_j=0$. The case $d_j<0$ is the mirror image.
+\end{proof}
+
+\begin{lemma}[the pair cost sees only the side pattern]\label{lem:sidesonly}
+At a site both of whose edges are gap-free, the left arrivals all carry one sign and the left
+departures the opposite sign, and likewise on the right. Hence
+$\operatorname{pc}=2$ for a bounce and $1$ for a pass, independently of which strands are matched.
+\end{lemma}
+
+\begin{proof}
+Left arrivals are the up-crossings of the left edge and left departures its down-crossings, so
+Lemma~\ref{lem:splitforced} gives them opposite signs; same on the right.
+\end{proof}
+
+\begin{lemma}[free swaps]\label{lem:freeswap}
+Under Lemma~\ref{lem:sidesonly}, the $2$-swap exchanging the departures of two pairs changes the
+site cost by $0$ exactly when the two arrivals lie on the same side or the two departures do; the
+only cost-lowering patterns are two bounces on opposite sides. In particular a pair that is a bounce
+never blocks.
+\end{lemma}
+
+\begin{proof}
+Sixteen side patterns, checked exhaustively; formalised as
+\texttt{NoGapMerge.swap\_free\_iff}, \texttt{swap\_neg\_iff} and \texttt{bounce\_never\_blocks}.
+\end{proof}
+
+\begin{theorem}[no gap edge forces $c=0$]\label{thm:nogap}
+If $g$ has no gap edge then $c(g)=0$.
+\end{theorem}
+
+\begin{proof}
+Since the site cost of Lemma~\ref{lem:transport} depends on neither the crossing counts nor the
+sign splits, every relaxed-optimal realisation has $m_j=m_j^\ast$, so
+Lemmas~\ref{lem:splitforced}--\ref{lem:freeswap} apply at every site. Take a relaxed-optimal
+realisation with the fewest components and suppose there are at least two. If two components hold
+strands of the leftmost span edge, that site is shared and both have $(R\to R)$ bounces there, so by
+Lemma~\ref{lem:freeswap} they merge at no cost. Otherwise one component owns that edge; let $B$ be
+another component whose leftmost site $r$ is minimal, so $r$ exceeds the left end of the span. Edge
+$r-1$ then lies in the span with $m_{r-1}\ge1$, and its strands are not $B$'s, so site $r$ is
+shared; $B$'s ends at $r$ come only from edge $r$, so $B$ bounces there and again the merge is free.
+A $2$-swap across two components merges them, so the component count drops at no cost, contradicting
+minimality. Hence there is one component and no isolated cycle.
+
+One configuration escapes the last step: if $r$ carries the virtual arrival, $B$ may have a single
+$(L\to R)$ pass and no bounce, and a neighbour with an opposing $(R\to L)$ pass and $d_{r-1}<0$ would
+block. That neighbour then has no left arrival at $r$, so its strands on edge $r-1$ are all
+down-crossings, and any up-crossing there would belong to a third component which merges with $B$
+freely; so the blocker also needs $u_{r-1}=0$, that is $d_{r-1}=f_{r-1}=-1$ and a single strand. But
+$f_{r-1}=-1$ forces $k^\ast<0$, and $r=0$ since $r$ carries the virtual arrival, so the marker
+component runs from site $0$ to site $k^\ast<0$ and must traverse edge $r-1$; its one strand is
+therefore the marker component's, contradicting the assumption that it belongs to another. The
+configuration does not occur.
+\end{proof}
+
+\begin{corollary}\label{cor:localzero}
+If the lamp support of $g$ lies inside its travel interval then $c(g)=0$.
+\end{corollary}
+
+\begin{proof}
+Support inside $I_k$ makes the span equal to $I_k$, on which $f_j=\pm1$, so no edge is a gap edge;
+apply Theorem~\ref{thm:nogap}.
+\end{proof}
+
+Corollary~\ref{cor:localzero} is the statement used in the lifting argument for the true series, where it
+had been verified but not proved. Verification of Theorem~\ref{thm:nogap} independent of the proof:
+$2\,505\,271$ elements of word length at most $31$, no exceptions
+(\texttt{code/zeta\_probe/tools/nogap}).
+
+\begin{remark}[the argument does not extend past $Z=\emptyset$]\label{rem:nogapstops}
+Theorem~\ref{thm:nogap} rests on Lemma~\ref{lem:splitforced}, which needs $d_j\ne0$. A gap edge has
+$m=2$ and $d=0$, so $p^d=p^u$ with $u=dn=1$ admits two splits and the homogeneity of
+Lemma~\ref{lem:sidesonly} fails. Enumerating all $256$ sign-and-side configurations of a $2$-swap,
+$52$ block, of which $36$ share an arrival or a departure side, and a cost-$0$ bounce is blocked in
+$28$; both criteria of Lemma~\ref{lem:freeswap} are therefore false in general. The reverse shield
+inequality is not reachable by this route.
+\end{remark}
+
+\begin{remark}[the relaxed length decomposes at every $k^\ast$]\label{rem:decomp}
+Corollary~\ref{cor:lRclosed} is verified by direct enumeration only for $k^\ast=0$
+(Remark~\ref{rem:shieldowes}), but it holds at every $k^\ast$. The site cost depends on neither
+$m_j$ nor the sign splits, so $\sum_j m_j$ is minimised separately at $m_j=m_j^\ast$; edge $j$
+presents a departure at site $j$ and an arrival at site $j+1$, so the matchings at distinct sites act
+on disjoint sets of ends and are chosen independently; and in the relaxed model every family of
+per-site matchings is admissible, isolated cycles being free. No term falls below its local minimum
+and all local minima are attained together. The true metric behaves differently precisely because the
+single-walk requirement couples the sites, which is what Theorem~\ref{thm:nogap} has to handle.
+\end{remark}
+
 \subsection*{Machine verification of the site cost}
 
 Lemma~\ref{lem:transport}, Corollary~\ref{cor:localcost}, Corollary~\ref{cor:lRclosed},
@@ -2163,7 +2269,9 @@ Corollary~\ref{cor:marker}, and it is proved; the marker clause is proved in the
 the earlier form being false (Remark~\ref{rem:markerfalse}). Of \textup{(M2)}, the cost $q^L$ and
 the inequality $c\ge L-1$ per interior run are proved (Corollaries~\ref{cor:localcost},
 \ref{cor:lRclosed} and Proposition~\ref{prop:cut}); the reverse inequality $c\le L-1$ is verified
-and not proved (Remark~\ref{rem:shieldowes}). \textup{(M3)} is not proved. And that the
+and not proved in general (Remark~\ref{rem:shieldowes}), and is proved on the gap-free elements,
+where $Z$ is empty, by Theorem~\ref{thm:nogap}. Remark~\ref{rem:nogapstops} records why that proof
+does not extend to the general case. \textup{(M3)} is not proved. And that the
 optimisation of Definition~\ref{def:pairing} computes the relaxed word length at all is the
 verified, unproved input of \cite{Bonfioli2026a} (Remark~\ref{rem:pairingstatus}). So
 \textup{(M)} as a statement about the growth series remains verified and not proved, and its
@@ -2291,7 +2399,7 @@ That the bulk transfer is the operator of \eqref{eq:rankone}, that is, \textup{(
 $q^{\max(s,s')}$ of the bulk kernel being $x^{\max(|d|,|d'|)}$ at even deposits; and of
 \textup{(M2)} the cost $q^L$ of a gap run and the inequality $c\ge L-1$ are
 Corollary~\ref{cor:lRclosed} and Proposition~\ref{prop:cut}, while $c\le L-1$ is verified and not
-proved. Both rest on the optimisation of Definition~\ref{def:pairing} being the relaxed word length,
+proved in general, being proved for gap-free elements in Theorem~\ref{thm:nogap}. Both rest on the optimisation of Definition~\ref{def:pairing} being the relaxed word length,
 which is the standing input of \cite{Bonfioli2026a}. Everything the paper previously listed as
 unproved \emph{downstream} of that, namely the factorisation \eqref{eq:mobius}, the reciprocity
 $t_0=b_1$, the entry $t_1=P_{12}/S_e$, and the resolvent lines of \eqref{eq:dict}, is proved above.
