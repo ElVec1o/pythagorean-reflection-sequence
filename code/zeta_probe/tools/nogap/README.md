@@ -1519,3 +1519,24 @@ the pairing at each site but not the strand graph those pairings assemble into, 
 'number of components' is not expressible against this structure". That is precisely
 the gap the walk model fills, so the session's direction was right even where its
 bookkeeping duplicated existing work.
+
+## cutSitesZ needed the virtual-event condition too (2026-08-23)
+
+Reading Realisation.lean's definitions caught a second omission in cutSitesZ, this
+time BEFORE anything was built on it.
+
+  PathData.cut s  =  alphaAt s = 0 and betaAt s = 0 and PhiAt s = 0
+  alphaAt s = d(s-1) - vArr s + eps * vL s
+  betaAt  s = d s - eps * vR s
+  PhiAt   s = f(s-1) + vArr s - vL s
+  vArr s = [s = 0],  vL and vR vanish off s = kstar
+
+So the plain conditions d(s-1) = d s = f(s-1) = 0 characterise cut ONLY away from the
+two virtual events -- which is exactly the hnov hypothesis of gap_run_cut, and the
+paper's own "and no virtual event" in its l.1966 sentence. cutSitesZ now carries
+s != 0 and s != kstar.
+
+Without it a site carrying a virtual event could be counted as cut when it is not --
+the same overcounting failure as the retracted gapSites, one level subtler. The
+difference is that this one was caught by reading the definition rather than by
+building on a guess and retracting later.

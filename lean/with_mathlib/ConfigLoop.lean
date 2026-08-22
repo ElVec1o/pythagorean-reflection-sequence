@@ -682,13 +682,25 @@ The cut sites of the span: `d_{s-1} = 0`, `d_s = 0`, `f_{s-1} = 0`.  All three
 conditions, unlike the retracted `gapSites`, which omitted `d_s = 0` and so counted
 one site too many per gap run. -/
 
-/-- The paper's `Z`: the cut sites interior to the span `[A, B]`. -/
-noncomputable def cutSitesZ (d f : ℤ → ℤ) (A B : ℤ) : Finset ℤ :=
-  (Finset.Icc A B).filter (fun s => d (s - 1) = 0 ∧ d s = 0 ∧ f (s - 1) = 0)
+/-- The paper's `Z`: the cut sites interior to the span `[A, B]`.
 
-theorem mem_cutSitesZ {d f : ℤ → ℤ} {A B s : ℤ} :
-    s ∈ cutSitesZ d f A B ↔
-      (A ≤ s ∧ s ≤ B) ∧ d (s - 1) = 0 ∧ d s = 0 ∧ f (s - 1) = 0 := by
+**CORRECTION (2026-08-23).**  An earlier version omitted `s ≠ 0` and `s ≠ kstar`.
+`SiteCost.PathData.cut` is `α_s = β_s = Φ_s = 0`, and
+
+  α_s = d(s-1) - vArr s + ε·vL s,  β_s = d s - ε·vR s,  Φ_s = f(s-1) + vArr s - vL s
+
+where `vArr s = [s = 0]` and `vL, vR` vanish off `s = kstar`.  So the plain conditions
+`d(s-1) = d s = f(s-1) = 0` characterise cut **only away from the two virtual events**
+-- exactly the `hnov` hypothesis of `Realisation.gap_run_cut`.  Without it a site
+carrying a virtual event could be counted as cut when it is not. -/
+noncomputable def cutSitesZ (d f : ℤ → ℤ) (kstar : ℤ) (A B : ℤ) : Finset ℤ :=
+  (Finset.Icc A B).filter
+    (fun s => s ≠ 0 ∧ s ≠ kstar ∧ d (s - 1) = 0 ∧ d s = 0 ∧ f (s - 1) = 0)
+
+theorem mem_cutSitesZ {d f : ℤ → ℤ} {kstar A B s : ℤ} :
+    s ∈ cutSitesZ d f kstar A B ↔
+      (A ≤ s ∧ s ≤ B) ∧ s ≠ 0 ∧ s ≠ kstar ∧
+        d (s - 1) = 0 ∧ d s = 0 ∧ f (s - 1) = 0 := by
   simp [cutSitesZ, Finset.mem_filter, Finset.mem_Icc, and_assoc]
 
 /-- **`prop:cut` with the correct `Z` and position function.**  At least `|Z|` walks
@@ -699,16 +711,16 @@ The two inputs are the ones the paper argues for: no strand crosses a cut site
 which `m ≥ 2` on `f = 0` edges supplies). -/
 theorem prop_cut_correct (up : Fin n → ℕ)
     (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
-    (d f : ℤ → ℤ) (A B : ℤ) (hAB : A ≤ B)
-    (hlow : ∀ z ∈ cutSitesZ d f A B, A < z) (hhigh : ∀ z ∈ cutSitesZ d f A B, z ≤ B)
+    (d f : ℤ → ℤ) (kstar A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ cutSitesZ d f kstar A B, A < z) (hhigh : ∀ z ∈ cutSitesZ d f kstar A B, z ≤ B)
     (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
     (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x →
-      siteOf x ∉ cutSitesZ d f A B)
+      siteOf x ∉ cutSitesZ d f kstar A B)
     (c0 : (graph (dataOf up hbal)).ConnectedComponent) :
-    ∃ F : Fin (cutSitesZ d f A B).card → (graph (dataOf up hbal)).ConnectedComponent,
+    ∃ F : Fin (cutSitesZ d f kstar A B).card → (graph (dataOf up hbal)).ConnectedComponent,
       Function.Injective F ∧ ∀ i, F i ≠ c0 :=
   CutComponents.exists_injective_components_avoiding
-    (walk_graph_local_edge up hbal (cutSitesZ d f A B) hturn)
+    (walk_graph_local_edge up hbal (cutSitesZ d f kstar A B) hturn)
     A B hAB hlow hhigh hocc c0
 
 /-! ### No strand crosses a cut site
@@ -1097,14 +1109,14 @@ cross mass.  That is what global cost-minimality delivers, through
 `site_cost_le_of_global` and `site_sum_eq_plan_cost` to `no_cross_at_cut`. -/
 theorem prop_cut_assembled (up : Fin n → ℕ) (ds : Bool → Bool)
     (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
-    (d f : ℤ → ℤ) (A B : ℤ) (hAB : A ≤ B)
-    (hlow : ∀ z ∈ cutSitesZ d f A B, A < z) (hhigh : ∀ z ∈ cutSitesZ d f A B, z ≤ B)
+    (d f : ℤ → ℤ) (kstar A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ cutSitesZ d f kstar A B, A < z) (hhigh : ∀ z ∈ cutSitesZ d f kstar A B, z ≤ B)
     (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
-    (hcut : ∀ s ∈ cutSitesZ d f A B, (planAt up ds s (hbal s)).cross = 0)
+    (hcut : ∀ s ∈ cutSitesZ d f kstar A B, (planAt up ds s (hbal s)).cross = 0)
     (c0 : (graph (dataOf up hbal)).ConnectedComponent) :
-    ∃ F : Fin (cutSitesZ d f A B).card → (graph (dataOf up hbal)).ConnectedComponent,
+    ∃ F : Fin (cutSitesZ d f kstar A B).card → (graph (dataOf up hbal)).ConnectedComponent,
       Function.Injective F ∧ ∀ i, F i ≠ c0 := by
-  refine prop_cut_correct up hbal d f A B hAB hlow hhigh hocc ?_ c0
+  refine prop_cut_correct up hbal d f kstar A B hAB hlow hhigh hocc ?_ c0
   intro x hne hmem
   exact hne (turn_keeps_edge_all up ds hbal (siteOf x) (hcut _ hmem) x rfl)
 
