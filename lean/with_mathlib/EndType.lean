@@ -613,6 +613,39 @@ theorem card_dep_bottom {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : 
          by unfold isUp; simpa using hu⟩
   rw [hset, card_ends_edge_dir]
 
+/-! ### The card equality, discharged
+
+Feeding the four counts in.  The two adjacent edges are named, and the balance is
+stated in the up-count form the counts return: the up-count on the edge below plus
+the down-count on the edge above equals the down-count below plus the up-count
+above. -/
+
+theorem card_arr_eq_card_dep_of_edges {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (s : ℤ) (eLo eHi : Fin n)
+    (heLo : (eLo : ℤ) = s - 1) (heHi : (eHi : ℤ) = s)
+    (hbal : min (up eLo) (m eLo) + (m eHi - min (up eHi) (m eHi))
+          = (m eLo - min (up eLo) (m eLo)) + min (up eHi) (m eHi)) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card :=
+  card_arr_eq_card_dep up s
+    (min (up eLo) (m eLo)) (m eLo - min (up eLo) (m eLo))
+    (min (up eHi) (m eHi)) (m eHi - min (up eHi) (m eHi))
+    (card_arr_top up s eLo heLo)
+    (card_arr_bottom up s eHi heHi)
+    (card_dep_top up s eLo heLo)
+    (card_dep_bottom up s eHi heHi)
+    hbal
+
+/-- And with it the local turn exists at that site: the two sets are disjoint and
+equinumerous, which is what the involution construction takes. -/
+theorem local_turn_of_edges {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (s : ℤ) (eLo eHi : Fin n)
+    (heLo : (eLo : ℤ) = s - 1) (heHi : (eHi : ℤ) = s)
+    (hbal : min (up eLo) (m eLo) + (m eHi - min (up eHi) (m eHi))
+          = (m eLo - min (up eLo) (m eLo)) + min (up eHi) (m eHi)) :
+    Disjoint (arrAt (m := m) up s) (depAt (m := m) up s) ∧
+      (arrAt (m := m) up s).card = (depAt (m := m) up s).card :=
+  local_turn_exists up s (card_arr_eq_card_dep_of_edges up s eLo eHi heLo heHi hbal)
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -646,5 +679,7 @@ theorem card_dep_bottom {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : 
 #print axioms EndType.dep_bottom_iff
 #print axioms EndType.card_dep_top
 #print axioms EndType.card_dep_bottom
+#print axioms EndType.card_arr_eq_card_dep_of_edges
+#print axioms EndType.local_turn_of_edges
 
 end EndType
