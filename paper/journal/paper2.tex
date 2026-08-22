@@ -263,15 +263,23 @@ once the collapse machinery is in place).
 The denominator $1-\Sigma_1$ is the identical, cycle-marker-free object in the generating functions
 of $U$ and of $V$; hence $U$ and $V$ share the travel poles $q_m$.
 \end{proposition}
-\noindent This proposition is not proved in this paper. The argument is a strand-walk argument
-(every pure-travel element has cycle count $0$, so the two length gradings agree on it) and is
-written in the supplement \cite{supplement}; there it rests in turn on two statements that the
-supplement does not prove, namely the localisation of cycles (a pure-travel element has $c=0$),
-checked exhaustively on the $3869$ pure-travel elements of true length $\le16$, and the metric
-identity $\ell_T=\ell_R+2c$, whose upper bound is proved in \cite{Bonfioli2026a} and whose lower
-bound is open. Its standing is therefore that of a verified conjecture, and every statement below
-that invokes it inherits that standing; this is recorded explicitly in Theorem~\ref{thm:U} and in
-Remark~\ref{rem:Ustatus}.
+\begin{proof}
+A pure-travel element has no gap edge, since its span is $I_k$ and $f_j=\pm1$ there, so
+Theorem~\ref{thm:nogap} gives $c=0$: some relaxed-optimal realisation has no isolated cycle. That
+realisation is a single open walk, hence admissible for $\ell_T$, so $\ell_T\le\ell_R$; and
+$\ell_T\ge\ell_R$ because the relaxed minimum ranges over a superset of the realisations. Therefore
+$\ell_T=\ell_R$ on pure-travel elements and the two gradings of $T$ agree termwise. The travel
+recursion is assembled from pure-travel runs alone, appending one $f=\pm1$ edge at a time, so it is
+computed in the sector $c\equiv0$ and the travel block carries $y^0$ only.
+\end{proof}
+
+\noindent Earlier versions of this paper recorded the proposition as a verified conjecture resting
+on two unproved statements, the localisation of cycles and the metric identity
+$\ell_T=\ell_R+2c$. The first is now Corollary~\ref{cor:localzero}. The second is not needed: only
+the inequality $\ell_T\le\ell_R$ is used, and it follows from the realisation exhibited by
+Theorem~\ref{thm:nogap} together with the trivial reverse inequality, so the open lower bound of the
+metric identity does not enter. Statements below that invoke this proposition no longer inherit a
+conditional standing from it; see Theorem~\ref{thm:U} and Remark~\ref{rem:Ustatus}.
 
 \section{Transcendence of the blocks}\label{sec:blocks}
 
@@ -2686,7 +2694,7 @@ $\ell_T=\ell_R+2c$ is used, and it is that identity whose lower bound is open
 (\S\ref{sec:inputT}). Both evaluations are validated against enumeration to the radius of the
 enumeration, $u_0,\dots,u_{22}$ and $v_0,\dots,v_{14}$ exactly \cite{supplement}.
 
-\subsection{The first input \textup{(T)}: the travel block carries no marker}\label{sec:inputT}
+\subsection{The former input \textup{(T)}: the travel block carries no marker}\label{sec:inputT}
 
 \textup{(T)} is Proposition~\ref{prop:travelinv}: the denominator $1-\Sigma_1$ is $y$-free, hence
 literally the same series in $\mathcal W(x,1)$ and in $\mathcal W(x,q)$, so $U$ has the travel
@@ -2697,20 +2705,18 @@ Lemma~\ref{lem:infpoles} from $V$ to $U$, and in the same way in Corollary~\ref{
 growth rate of $u_n$. Nothing in \S\ref{sec:sd}, Appendix~\ref{app:annulus} or
 Appendix~\ref{app:star} touches it.
 
-\emph{What it rests on.} Two unproved statements. First, the localisation of cycles: a pure-travel
-element, one whose lamp support lies inside the travel interval, has $c=0$. This is checked
-exhaustively, $0$ violations on the $3869$ pure-travel elements of true length $\le16$, and is
-expected because the travel interval is the forced single backbone of the Eulerian trail while an
-isolated cycle is a closed bulk excursion separated from that backbone by a reachability gap.
-Second, the metric identity $\ell_T=\ell_R+2c$, whose inequality $\ell_T\le\ell_R+2c$ is proved in
-\cite{Bonfioli2026a} and whose reverse inequality is open there and verified on the $275\,823$
-elements of the radius-$24$ ball. Granting the first, pure-travel elements have $\ell_T=\ell_R$, the
-two gradings of the pure-travel generating function agree termwise, and the travel recursion
-\eqref{eq:krec}, assembled from pure-travel runs alone, is computed inside a $c\equiv0$ sector, so
-the marker cannot enter it.
+\emph{What it rests on.} Nothing further: it is proved. The localisation of cycles, that a
+pure-travel element has $c=0$, is Corollary~\ref{cor:localzero}, a case of
+Theorem~\ref{thm:nogap}. The metric identity is not needed. Theorem~\ref{thm:nogap} exhibits a
+relaxed-optimal realisation with no isolated cycle; that realisation is a single open walk, so it is
+admissible for $\ell_T$ and gives $\ell_T\le\ell_R$, while $\ell_T\ge\ell_R$ holds because the
+relaxed minimum ranges over a superset of the realisations. Hence $\ell_T=\ell_R$ on pure-travel
+elements, the two gradings agree termwise, and the travel recursion \eqref{eq:krec}, assembled from
+pure-travel runs alone, is computed inside a $c\equiv0$ sector, so the marker cannot enter it.
 
-\emph{What would close it.} A proof of $\ell_T\ge\ell_R+2c$ together with a proof of the
-localisation. Both are finite-state statements about strand walks; neither is analytic.
+In particular the open reverse inequality of $\ell_T=\ell_R+2c$, which earlier versions of this
+section listed as a dependency, plays no role. Only the direction that follows from an exhibited
+realisation is used.
 
 \emph{Evidence.} The pure-travel generating function computed in both gradings to radius $18$ is
 identical coefficient by coefficient,
@@ -2866,16 +2872,18 @@ by \texttt{nlinarith}.
 \end{remark}
 
 \begin{theorem}\label{thm:U}
-Assume the transfer model \textup{(M)} of Hypothesis~\ref{hyp:model} and the two structural
-inputs, neither of which this paper proves:
+Assume the transfer model \textup{(M)} of Hypothesis~\ref{hyp:model} and the one structural input
+this paper does not prove:
 \begin{enumerate}[leftmargin=2.4em,itemsep=0.1em,topsep=0.2em]
-\item[\textup{(T)}] Proposition~\ref{prop:travelinv}: $1-\Sigma_1$ is the identical,
-cycle-marker-free denominator in $U$ and in $V$, so $U$ inherits the travel poles $q_m$
-(\S\ref{sec:inputT});
 \item[\textup{(R-J)}] Hypothesis~\ref{hyp:RJ} at $y=q$: the junction pairing $\Pi_q(q_m)$ of
 \eqref{eq:junctionpairing} is non-zero at infinitely many travel poles.
 \end{enumerate}
 Then the true growth series $U$ is transcendental over $\Q(x)$.
+
+The input \textup{(T)} that earlier versions of this theorem carried is also gone:
+Proposition~\ref{prop:travelinv} is now proved, via Theorem~\ref{thm:nogap} and
+Corollary~\ref{cor:localzero}, and the proof does not use the open lower bound of the metric
+identity.
 
 The hypothesis \textup{(L)} that earlier versions of this theorem carried is gone: its content,
 the factorisation \eqref{eq:mobius} with the dictionary \eqref{eq:dict} and the reciprocity
@@ -2957,19 +2965,21 @@ facts compose to non-algebraicity (Remark~\ref{rem:uassembly}). Conditional on t
 reciprocity $t_0=b_1$, the full dictionary \eqref{eq:dict}, the half $b_0>0$ of the gate, and
 $B_U(q_m)\ne0$ at every travel pole (Theorem~\ref{thm:L}).
 
-What is \emph{not} proved is \textup{(T)}, and \textup{(R-J)}, and \textup{(M)} beneath both.
-\textup{(T)} is stated in full in \S\ref{sec:inputT} with its dependencies and with what would
-close it; it rests on the localisation of cycles and on the open lower bound in
-$\ell_T=\ell_R+2c$, and its standing is that of a verified conjecture. \textup{(R-J)} is
+\textup{(T)} is now proved. Proposition~\ref{prop:travelinv} follows from
+Corollary~\ref{cor:localzero}: a pure-travel element has no gap edge, so by
+Theorem~\ref{thm:nogap} some relaxed-optimal realisation is a single open walk, which bounds
+$\ell_T\le\ell_R$; the reverse inequality is immediate. The open lower bound in
+$\ell_T=\ell_R+2c$ is not used, so \textup{(T)} no longer depends on it.
+
+What is \emph{not} proved is \textup{(R-J)}, and \textup{(M)} beneath it. \textup{(R-J)} is
 Hypothesis~\ref{hyp:RJ}: it holds at the dominant pole (Proposition~\ref{prop:RJdominant}) and no
 counterexample is known, and it is what the refutation of the product form
 (Proposition~\ref{prop:junction}) leaves behind. \textup{(M)} is Hypothesis~\ref{hyp:model},
-exhaustively verified and unproved. Accordingly the standing of Theorem~\ref{thm:U} is the weakest
-of these three, and the word ``unconditionally'' is not applied to $U$ anywhere in this paper.
-Making Theorem~\ref{thm:U} unconditional now requires exactly three things: a proof of
-Proposition~\ref{prop:travelinv}, a proof of \textup{(R-J)} at $y=q$, and a proof of \textup{(M)}.
-None is an analytic obstacle of the kind Appendix~\ref{app:star} addresses; all three are
-combinatorial, and all three are absent.
+exhaustively verified and unproved. Accordingly the standing of Theorem~\ref{thm:U} is the weaker
+of these two, and the word ``unconditionally'' is not applied to $U$ anywhere in this paper.
+Making Theorem~\ref{thm:U} unconditional now requires exactly two things: a proof of
+\textup{(R-J)} at $y=q$, and a proof of \textup{(M)}. Neither is an analytic obstacle of the kind
+Appendix~\ref{app:star} addresses; both are combinatorial, and both are absent.
 \end{remark}
 
 \begin{remark}[what the turning-point atom does and does not give]\label{rem:Ugap}
@@ -4908,7 +4918,7 @@ working notes (2026), deposited with the project source release on Zenodo,
 \texttt{doi:10.5281/zenodo.20370090} (concept DOI, resolving to the current version). The notes
 record the block assembly and the lifting reduction and prove neither; the mathematics this paper
 takes from them is reproduced and proved in full in \S\ref{sec:assembly}, and what is left
-unproved is isolated as Hypotheses~\ref{hyp:model} and \ref{hyp:RJ} and in \S\ref{sec:inputT}. No
+unproved is isolated as Hypotheses~\ref{hyp:model} and \ref{hyp:RJ}. No
 theorem of this paper depends on the notes.
 
 \bibitem{Cannon1984} J.~W.~Cannon, \emph{The combinatorial structure of cocompact discrete
