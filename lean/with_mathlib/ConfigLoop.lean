@@ -465,5 +465,38 @@ theorem cor_localzero_pure (k : ℤ) (lamps : ℤ → ℤ) (up : Fin n → ℕ)
   rw [hdep e, htrav e]
   exact GroupElt.no_gap_of_pure_travel hpure (hspan e)
 
+/-! ### `prop:travelinv`
+
+The paper's argument: a pure-travel element has no gap edge, so `thm:nogap` gives a
+relaxed-optimal realisation with no isolated cycle; that realisation is a single open
+walk, hence admissible for `ℓ_T`, so `ℓ_T ≤ ℓ_R`; and `ℓ_T ≥ ℓ_R` because the relaxed
+minimum ranges over a superset.  Therefore `ℓ_T = ℓ_R` on pure-travel elements.
+
+Here `ℓ_R` is the minimum cost over all realisations and `ℓ_T` the minimum over those
+with a single walk.  The content is that **the relaxed minimum is attained by a
+one-walk realisation** -- everything else is the trivial inclusion.
+
+Note what is *not* used: the metric identity `ℓ_T = ℓ_R + 2c`, whose lower bound is
+open.  Only `ℓ_T ≤ ℓ_R` is needed, and it comes from the exhibited realisation. -/
+theorem travel_minima_agree (up : Fin n → ℕ) (dep trav : Fin n → ℤ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hf : ∀ e, EdgeData.IsTravel (trav e))
+    (hpar : ∀ e, (dep e - trav e) % 2 = 0)
+    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat)
+    (hng : ∀ e, ¬ EdgeData.IsGap (dep e) (trav e))
+    (e0 : Fin n) (ds : Bool → Bool) :
+    ∃ D' : Data (Endpt n m),
+      WalkSupport.Merges siteOf (isArrOf up) partner D' ∧
+      walkCount D' = 1 ∧
+      -- `D'` attains the relaxed minimum `ℓ_R`
+      (∀ F : Data (Endpt n m), WalkSupport.Merges siteOf (isArrOf up) partner F →
+        CostMerge.costOf (endDataOf (m := m) up ds) D' ≤ CostMerge.costOf (endDataOf (m := m) up ds) F) ∧
+      -- and a fortiori the true minimum `ℓ_T`, over single-walk realisations
+      (∀ F : Data (Endpt n m), WalkSupport.Merges siteOf (isArrOf up) partner F →
+        walkCount F = 1 →
+        CostMerge.costOf (endDataOf (m := m) up ds) D' ≤ CostMerge.costOf (endDataOf (m := m) up ds) F) := by
+  obtain ⟨D', ⟨hM, hmin⟩, hone, _⟩ := cor_localzero up dep trav hbal hf hpar hmdef hng e0 ds
+  exact ⟨D', hM, hone, hmin, fun F hF _ => hmin F hF⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.cor_localzero_pure
+#print axioms ConfigLoop.travel_minima_agree

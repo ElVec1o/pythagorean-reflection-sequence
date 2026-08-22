@@ -1181,3 +1181,19 @@ Both halves were already proved and only needed linking:
 M5's formalization debt is discharged for the configuration-level statement, on the
 same footing as M6: what is not formalised is the passage from a group element to its
 configuration, which is shared by both and is not part of either argument.
+
+## prop:travelinv, formalizable core (2026-08-23)
+
+ConfigLoop.travel_minima_agree. For a gap-free (pure-travel) configuration, the
+RELAXED minimum is attained by a ONE-WALK realisation. Hence l_T = l_R there: the
+inclusion gives l_R <= l_T, and the attained minimum gives l_T <= l_R.
+
+What is NOT used, and this is the point of the paper's remark: the metric identity
+l_T = l_R + 2c, whose lower bound is still open. Only l_T <= l_R is needed and it
+comes from the exhibited realisation, so prop:travelinv does not inherit the open
+bound. The formalisation reflects that -- nothing in the chain mentions the metric
+identity.
+
+M7's formalization debt is discharged at configuration level, on the same footing as
+M5 and M6. The three share one remaining link: the passage from a group element to
+its configuration.
