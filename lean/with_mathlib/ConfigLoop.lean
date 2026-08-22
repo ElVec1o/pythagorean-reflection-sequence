@@ -153,9 +153,43 @@ theorem gapfree_not_vacuous (up : Fin 0 → ℕ) :
       Merges siteOf (isArrOf up) partner D' ∧ walkCount D' ≤ 1 :=
   gapfree_merges_to_one up (empty_hbal up) (fun e => absurd e.isLt (Nat.not_lt_zero _))
 
+/-! ### The substantive witness
+
+One edge carrying two crossings, one of them up.  Both of its sites are boundaries:
+site `0` holds the two bottom ends and site `1` the two top ends, and each balances
+because `min 1 2 = 1 = 2 - 1`.  Unlike the empty configuration this has `m e > 0`, so
+`covering_of_mult_pos` is genuinely exercised. -/
+
+/-- Every edge index of `Fin 1` is `0`. -/
+theorem fin_one_edge (e : Fin 1) : ((e : ℕ) : ℤ) = 0 := by
+  have := e.isLt; omega
+
+/-- The one-edge configuration balances at every site. -/
+theorem one_edge_hbal :
+    ∀ s : ℤ, (arrAt (m := fun _ : Fin 1 => 2) (fun _ => 1) s).card
+           = (depAt (m := fun _ : Fin 1 => 2) (fun _ => 1) s).card := by
+  intro s
+  by_cases h0 : s = 0
+  · subst h0
+    exact balance_left (m := fun _ : Fin 1 => 2) (fun _ => 1) 0 0
+      (fin_one_edge 0) (fun e => by rw [fin_one_edge e]; norm_num) (by norm_num)
+  by_cases h1 : s = 1
+  · subst h1
+    exact balance_right (m := fun _ : Fin 1 => 2) (fun _ => 1) 1 0
+      (by rw [fin_one_edge 0]; norm_num)
+      (fun e => by rw [fin_one_edge e]; norm_num) (by norm_num)
+  · exact balance_empty (m := fun _ : Fin 1 => 2) (fun _ => 1) s
+      (fun e => by rw [fin_one_edge e]; omega)
+      (fun e => by rw [fin_one_edge e]; omega)
+
+/-- **The substantive witness.**  A configuration with a real edge, real crossings and
+a positive multiplicity merges to a single walk. -/
+theorem one_edge_merges :
+    ∃ D' : Data (Endpt 1 (fun _ => 2)),
+      Merges siteOf (isArrOf (fun _ => 1)) partner D' ∧ walkCount D' ≤ 1 :=
+  gapfree_merges_to_one (m := fun _ : Fin 1 => 2) (fun _ => 1)
+    one_edge_hbal (fun _ => by norm_num)
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.empty_hbal
-#print axioms ConfigLoop.gapfree_not_vacuous
-#print axioms ConfigLoop.balance_left
-#print axioms ConfigLoop.balance_right
-#print axioms ConfigLoop.balance_empty
+#print axioms ConfigLoop.one_edge_hbal
+#print axioms ConfigLoop.one_edge_merges

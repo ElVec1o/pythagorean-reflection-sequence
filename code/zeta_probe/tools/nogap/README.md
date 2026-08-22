@@ -709,3 +709,14 @@ covering_of_mult_pos then discharges it from positivity of multiplicities.
 
 gapfree_merges_to_one: a gap-free configuration merges to a single walk, assuming
 only the balance that defines the turn and positivity of every multiplicity.
+
+## The substantive witness (2026-08-23)
+
+one_edge_merges instantiates gapfree_merges_to_one at n=1, m=2, up=1: one edge
+carrying two crossings, one of them up. Both of its sites are boundaries -- site 0
+holds the two bottom ends, site 1 the two top ends -- and each balances because
+min 1 2 = 1 = 2 - 1, which is exactly balance_left and balance_right.
+
+This is the witness the empty configuration could not be. With m e = 2 > 0 the
+hypothesis hm is not vacuous and covering_of_mult_pos is genuinely exercised, so
+the whole chain from hbal through the merge loop is exhibited on real data.
