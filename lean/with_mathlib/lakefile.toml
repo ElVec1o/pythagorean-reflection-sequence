@@ -256,3 +256,6 @@ name = "GroupElt"
 
 [[lean_lib]]
 name = "StrandEnds"
+
+[[lean_lib]]
+name = "ComponentSupport"
