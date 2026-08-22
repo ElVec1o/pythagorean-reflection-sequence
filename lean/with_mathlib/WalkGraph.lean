@@ -194,6 +194,33 @@ theorem reach_sig_iterate (e : Sym2 α) (x : α)
     rw [Function.iterate_succ_apply]
     exact (reach_sig_step D e x (h₁ x) (h₂ x)).trans (ih (sig D x))
 
+/-- **The usable form.**  `reach_sig_iterate` above is true but inapplicable to the
+case the merge needs: its hypothesis `∀ y, s(p y, t (p y)) ≠ e` fails at `y = p x`
+when `e` is the turn-edge at `x`, since `p (p x) = x`.  So the conditions are
+restricted here to the orbit points the walk actually traverses. -/
+theorem reach_sig_iterate' (e : Sym2 α) (x : α) : ∀ n : ℕ,
+    (∀ k, k < n → s((sig D)^[k] x, D.p ((sig D)^[k] x)) ≠ e) →
+    (∀ k, k < n → s(D.p ((sig D)^[k] x), D.t (D.p ((sig D)^[k] x))) ≠ e) →
+    ((graph D).deleteEdges {e}).Reachable x ((sig D)^[n] x) := by
+  intro n
+  induction n generalizing x with
+  | zero =>
+      intro _ _
+      simp only [Function.iterate_zero_apply]
+      exact SimpleGraph.Reachable.refl x
+  | succ m ih =>
+      intro h₁ h₂
+      rw [Function.iterate_succ_apply]
+      refine (reach_sig_step D e x ?_ ?_).trans (ih (sig D x) ?_ ?_)
+      · simpa using h₁ 0 (Nat.succ_pos m)
+      · simpa using h₂ 0 (Nat.succ_pos m)
+      · intro k hk
+        have := h₁ (k + 1) (by omega)
+        rwa [Function.iterate_succ_apply] at this
+      · intro k hk
+        have := h₂ (k + 1) (by omega)
+        rwa [Function.iterate_succ_apply] at this
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -207,5 +234,6 @@ theorem reach_sig_iterate (e : Sym2 α) (x : α)
 #print axioms WalkGraph.sig_p_t
 #print axioms WalkGraph.reach_sig_step
 #print axioms WalkGraph.reach_sig_iterate
+#print axioms WalkGraph.reach_sig_iterate'
 
 end WalkGraph
