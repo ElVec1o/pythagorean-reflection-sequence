@@ -906,3 +906,31 @@ data -- 146 of 146 multi-walk cases on one to three edges -- and it is NOT PROVE
 So the architecture is complete and the remaining mathematical content of M6dy is
 exactly one statement: cost-minimality implies a free pair. Everything downstream of
 it is now formal.
+
+## Minimality does NOT force a free pair at a given site (2026-08-23)
+
+For an arrival and its departure, pcostF is 2 when they share a side (always a
+sign-flipped bounce, since EndData.sgn makes their signs opposite) and 1 when they do
+not. With sa, sa' the two arrivals' sides and da, da' their departures':
+
+  free merge  <=>  sa = sa'  or  da = da'        (NoGapMerge.swap_free_iff)
+
+When that fails, both differ, and there are two sub-cases which behave OPPOSITELY --
+both proved by kernel decide:
+
+  cross_cheaper : sa != sa', da != da', sa = da   =>  cross pairing is CHEAPER
+  cross_dearer  : sa != sa', da != da', sa != da  =>  cross pairing is DEARER
+
+The first case cannot occur at a cost-minimal datum, so it is excluded. The SECOND
+case is locally optimal: both arrivals are passes, and exchanging their departures
+turns both into bounces, costing +2.
+
+So the argument sketched last round -- derive a contradiction from minimality at the
+site where the placement puts the pair -- CANNOT WORK. A cost-minimal datum can have
+a site whose two cross-walk arrivals admit no free merge.
+
+This is consistent with the numerics: side_probe2.py checks whether a free pair
+exists SOMEWHERE, not at every site, and found one in all 146 multi-walk cases. So
+HasFreePair is a GLOBAL statement about cost-minimal data and needs an argument that
+ranges over sites. It is a research step, not a formalisation step, and the local
+engine for it is now proved.

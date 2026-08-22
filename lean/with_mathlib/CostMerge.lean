@@ -173,5 +173,30 @@ theorem cost_merges_to_one (siteOf : α → ℤ) (p₀ : α → α) (d : EndData
   · rw [cost_swapData d E a a' harr harr' hd hd' (Ne.symm haa') hshared]; exact hc
   · exact ConfigMerge.descent_of_split E a a' hsplit _ _ _
 
+/-! ### What minimality does and does not force
+
+For an arrival and its departure, `pcostF` is `2` when they share a side (always a
+sign-flipped bounce) and `1` when they do not.  Write `sa, sa'` for the two arrivals'
+sides and `da, da'` for their departures'.
+
+A free merge needs `sa = sa'` or `da = da'`.  When it fails, both differ, and there
+are exactly two sub-cases -- which behave **oppositely**. -/
+
+/-- The cost of pairing an arrival of side `s` with a departure of side `t`. -/
+def pairCost (s t : Bool) : ℤ := if s = t then 2 else 1
+
+/-- **When the free condition fails and the arrival aligns with its own departure,
+the cross-pairing is strictly cheaper.**  So such a configuration is not minimal. -/
+theorem cross_cheaper : ∀ sa sa' da da' : Bool, sa ≠ sa' → da ≠ da' → sa = da →
+    pairCost sa da' + pairCost sa' da < pairCost sa da + pairCost sa' da' := by decide
+
+/-- **But in the other sub-case the cross-pairing is strictly dearer.**  Both arrivals
+are passes, and exchanging their departures turns both into bounces.  So minimality
+alone does not force a free pair *at a given site*: this configuration is locally
+optimal and its cross merge costs `+2`. -/
+theorem cross_dearer : ∀ sa sa' da da' : Bool, sa ≠ sa' → da ≠ da' → sa ≠ da →
+    pairCost sa da + pairCost sa' da' < pairCost sa da' + pairCost sa' da := by decide
+
 -- Certification (Rule 5).
-#print axioms CostMerge.cost_merges_to_one
+#print axioms CostMerge.cross_cheaper
+#print axioms CostMerge.cross_dearer
