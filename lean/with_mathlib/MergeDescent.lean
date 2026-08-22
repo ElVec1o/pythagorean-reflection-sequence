@@ -65,4 +65,33 @@ theorem sum_min_is_min {ι : Type*} [Fintype ι] {C : ι → Type*}
 #print axioms MergeDescent.min_sum_eq_sum_min
 #print axioms MergeDescent.sum_min_is_min
 
+/-! ### Descent to a bound, and the pigeonhole that triggers it
+
+`min_count_eq_one` descends to a single component.  The reverse shield inequality
+needs the same descent stopped at `|Z| + 1` instead, and a pigeonhole to supply the
+step: more components than classes forces two components into one class. -/
+
+/-- **Descent to a bound.**  If every element above the bound admits a strictly
+smaller one, the minimum lies at or below it. -/
+theorem count_le_of_step {R : Type*} [DecidableEq R]
+    (T : Finset R) (hT : T.Nonempty) (cnt : R → ℕ) (bound : ℕ)
+    (hstep : ∀ r ∈ T, bound < cnt r → ∃ r' ∈ T, cnt r' < cnt r) :
+    ∃ r ∈ T, cnt r ≤ bound := by
+  obtain ⟨r, hrT, hmin⟩ := T.exists_min_image cnt hT
+  refine ⟨r, hrT, ?_⟩
+  by_contra h
+  push Not at h
+  obtain ⟨r', hr'T, hlt⟩ := hstep r hrT h
+  exact absurd (hmin r' hr'T) (not_le.mpr hlt)
+
+/-- **The pigeonhole.**  More components than classes puts two components in one
+class.  This is what makes the descent step available below the bound. -/
+theorem two_in_one_class {C K : Type*} [Fintype C] [Fintype K] [DecidableEq K]
+    (cls : C → K) (h : Fintype.card K < Fintype.card C) :
+    ∃ a b : C, a ≠ b ∧ cls a = cls b :=
+  Fintype.exists_ne_map_eq_of_card_lt cls h
+
+#print axioms MergeDescent.count_le_of_step
+#print axioms MergeDescent.two_in_one_class
+
 end MergeDescent
