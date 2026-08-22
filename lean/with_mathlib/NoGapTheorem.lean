@@ -14,13 +14,28 @@ Mathlib does not have it -- `Perm/Cycle/Basic`, `Perm/Cycle/Type` and `Perm/Sign
 carry only special cases (`IsCycle.swap_mul`, `cycleType_swap_mul_swap_of_nodup`) --
 so it is proved in `CycleMerge.lean` as `sameCycle_of_not_sameCycle`.
 
-What remains between this and a self-contained formalisation of `thm:nogap` is the
-model itself: a definition of realisations, of the component count as the number of
-cycles of the transition permutation, and the derivation of `merges` from
-`CycleMerge` together with the swap criterion and the shared-site argument. The
-mathematical inputs are all verified; the bookkeeping that ties them to a concrete
-`R` is not written. `nogap_of_merge` is therefore a conditional theorem and the
-condition is named.
+**CORRECTION (2026-08-23).**  This header previously said that what remained was to
+define the component count *as the number of cycles of the transition permutation*,
+and that the missing input was the effect of a **transposition** on a transition
+system.  Both readings are wrong, and neither is a small slip:
+
+* Cycles of the walk permutation `sig = t ∘ p` number **twice** the components,
+  because `p` carries each `sig`-orbit to a different one.  That is now proved,
+  `ConfigMerge.p_not_in_orbit`, so the identification is refuted, not merely
+  unverified.
+* The re-pairing is a **double** transposition: with `d = t a`, `d' = t a'`, the new
+  turn is `WalkGraph.swapT` and `swapT = (a a')(d d') ∘ t`.  A single transposition
+  cannot do it, since `swap ∘ t` is not an involution while the turn must stay one.
+  See the correction in `RealizationModel.lean`.
+
+`CycleMerge.sameCycle_of_not_sameCycle` and the theorems below remain TRUE; what was
+wrong is only the claim about what they model.
+
+`thm:nogap` is instead formalised over graph components, with the involutive
+re-pairing, in `ConfigMerge` -> `WalkSupport` -> `ConfigLoop`, ending at
+`ConfigLoop.gapfree_merges_to_one`, which is exhibited on a real configuration by
+`ConfigLoop.one_edge_merges`.  `nogap_of_merge` below stays as a conditional theorem
+about the cycle model.
 -/
 import MergeDescent
 import NoGapMerge
