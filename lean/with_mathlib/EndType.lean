@@ -284,6 +284,37 @@ theorem card_fin_lt (N k : ℕ) :
     rw [heq, Fin.card_Iio]
     simp [min_eq_left (le_of_lt h)]
 
+/-! ### Counting, piece four: the whole end type
+
+The remaining transport is across the dependent pair.  Writing the count as a sum
+over edges avoids the difficulty directly: `Fintype.card_sigma` turns a count over
+`(Σ e, Fin (m e))` into a sum of per-edge counts, and each of those is `card_fin_lt`
+on that edge.
+
+The obstruction to doing it pointwise is worth recording, since it is not a gap in
+the argument but a feature of the encoding: constraining `x.1.1 = e` leaves
+`x.1.2 : Fin (m x.1.1)`, which is not definitionally `Fin (m e)`, so a per-edge
+filter has to transport along that equality rather than simply match. The sum form
+sidesteps it. -/
+
+/-- The end type has twice as many elements as there are crossings. -/
+theorem card_endpt (n : ℕ) (m : Fin n → ℕ) :
+    Fintype.card (Endpt n m) = (∑ e : Fin n, m e) * 2 := by
+  classical
+  show Fintype.card ((Σ e : Fin n, Fin (m e)) × Bool) = _
+  rw [Fintype.card_prod, Fintype.card_sigma]
+  simp [Fintype.card_fin]
+
+/-- The crossings on an edge split into up and down, whose counts add to the
+crossing count once the up-count is bounded by it.  This is the per-edge form the
+sum needs. -/
+theorem up_add_down (N k : ℕ) (h : k ≤ N) :
+    (Finset.univ.filter (fun i : Fin N => i.val < k)).card
+      + (Finset.univ.filter (fun i : Fin N => ¬ (i.val < k))).card = N := by
+  classical
+  rw [Finset.filter_card_add_filter_neg_card_eq_card]
+  simp
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -304,5 +335,7 @@ theorem card_fin_lt (N k : ℕ) :
 #print axioms EndType.arr_top_iff
 #print axioms EndType.arr_bottom_iff
 #print axioms EndType.card_fin_lt
+#print axioms EndType.card_endpt
+#print axioms EndType.up_add_down
 
 end EndType
