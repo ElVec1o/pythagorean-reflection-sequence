@@ -141,6 +141,59 @@ where `SimpleGraph.Walk.IsCycle` has to be discharged.  The first two are routin
 the third is the work.
 -/
 
+/-- The crossing-edge at an end. -/
+theorem adj_cross (x : α) : (graph D).Adj x (D.p x) := Or.inl rfl
+
+/-! ### Reachability after deleting a turn-edge
+
+Working with `Reachable`, which is `Prop`-valued, avoids the dependent-type
+difficulty of carrying a walk whose endpoint moves with the recursion. -/
+
+/-- The alternating step. -/
+def sig (x : α) : α := D.t (D.p x)
+
+/-- `t x` is the crossing partner of `sig`-inverse of `x`: applying `sig` to
+`p (t x)` returns `x`, which is what places `t x` at the far end of the walk. -/
+theorem sig_p_t {β : Type*} (D : Data β) (x : β) : sig D (D.p (D.t x)) = x := by
+  unfold sig
+  rw [D.p_invol, D.t_invol]
+
+/-- In the graph with one turn-edge removed, a crossing-edge is still available. -/
+theorem reach_cross (e : Sym2 α) (x : α) (h : s(x, D.p x) ≠ e) :
+    ((graph D).deleteEdges {e}).Reachable x (D.p x) :=
+  SimpleGraph.Adj.reachable (by
+    rw [SimpleGraph.deleteEdges_adj]
+    exact ⟨adj_cross D x, by simpa using h⟩)
+
+/-- And a turn-edge, provided it is not the removed one. -/
+theorem reach_turn (e : Sym2 α) (x : α) (h : s(x, D.t x) ≠ e) :
+    ((graph D).deleteEdges {e}).Reachable x (D.t x) :=
+  SimpleGraph.Adj.reachable (by
+    rw [SimpleGraph.deleteEdges_adj]
+    exact ⟨adj_turn D x, by simpa using h⟩)
+
+/-- One alternating step is available whenever neither of its two edges is the
+removed one. -/
+theorem reach_sig_step (e : Sym2 α) (x : α)
+    (h₁ : s(x, D.p x) ≠ e) (h₂ : s(D.p x, D.t (D.p x)) ≠ e) :
+    ((graph D).deleteEdges {e}).Reachable x (sig D x) :=
+  (reach_cross D e x h₁).trans (reach_turn D e (D.p x) h₂)
+
+/-- **The alternating walk, as reachability.**  If no step uses the removed edge,
+then every iterate of `sig` is reachable from the start. -/
+theorem reach_sig_iterate (e : Sym2 α) (x : α)
+    (h₁ : ∀ y, s(y, D.p y) ≠ e)
+    (h₂ : ∀ y, s(D.p y, D.t (D.p y)) ≠ e) :
+    ∀ n : ℕ, ((graph D).deleteEdges {e}).Reachable x ((sig D)^[n] x) := by
+  intro n
+  induction n generalizing x with
+  | zero =>
+      simp only [Function.iterate_zero_apply]
+      exact SimpleGraph.Reachable.refl x
+  | succ m ih =>
+    rw [Function.iterate_succ_apply]
+    exact (reach_sig_step D e x (h₁ x) (h₂ x)).trans (ih (sig D x))
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -151,5 +204,8 @@ the third is the work.
 #print axioms WalkGraph.reachable_delete_of_not_bridge
 #print axioms WalkGraph.not_bridge_of_cycle
 #print axioms WalkGraph.reachable_delete_of_cycle
+#print axioms WalkGraph.sig_p_t
+#print axioms WalkGraph.reach_sig_step
+#print axioms WalkGraph.reach_sig_iterate
 
 end WalkGraph
