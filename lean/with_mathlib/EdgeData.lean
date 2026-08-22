@@ -145,6 +145,33 @@ theorem travel_eq_of_card_balance {mLo mHi upLo upHi fLo fHi : ℤ}
     (hbal : upLo + (mHi - upHi) = (mLo - upLo) + upHi) :
     fLo = fHi := by omega
 
+/-! ### The balance in natural-number form
+
+The counts return natural numbers with truncated subtraction, while the balance was
+proved over the integers.  With the up-count bounded by the crossing count on each
+edge the two minima collapse and the subtraction is exact, so the integer identity
+transfers. -/
+
+/-- The balance as the counts state it, from the up-count relation in natural
+numbers.  `2 upLo + mHi = 2 upHi + mLo` is what `2 up = m + f` and `fLo = fHi`
+give once the indicator is eliminated. -/
+theorem nat_balance {mLo mHi upLo upHi : ℕ}
+    (hLo : upLo ≤ mLo) (hHi : upHi ≤ mHi)
+    (h : 2 * upLo + mHi = 2 * upHi + mLo) :
+    min upLo mLo + (mHi - min upHi mHi) = (mLo - min upLo mLo) + min upHi mHi := by
+  rw [min_eq_left hLo, min_eq_left hHi]
+  omega
+
+/-- Eliminating the indicator: equal indicators on the two edges is exactly the
+relation the natural-number balance needs. -/
+theorem nat_balance_hyp_of_travel {mLo mHi upLo upHi : ℕ} {fLo fHi : ℤ}
+    (hLo : 2 * (upLo : ℤ) = (mLo : ℤ) + fLo)
+    (hHi : 2 * (upHi : ℤ) = (mHi : ℤ) + fHi)
+    (hf : fLo = fHi) :
+    2 * upLo + mHi = 2 * upHi + mLo := by
+  have : 2 * (upLo : ℤ) + (mHi : ℤ) = 2 * (upHi : ℤ) + (mLo : ℤ) := by omega
+  exact_mod_cast this
+
 -- Certification (Rule 5).
 #print axioms EdgeData.dep_ne_zero_of_not_gap
 #print axioms EdgeData.one_le_abs
@@ -161,5 +188,7 @@ theorem travel_eq_of_card_balance {mLo mHi upLo upHi fLo fHi : ℤ}
 #print axioms EdgeData.travel_const_away
 #print axioms EdgeData.card_balance_of_travel_eq
 #print axioms EdgeData.travel_eq_of_card_balance
+#print axioms EdgeData.nat_balance
+#print axioms EdgeData.nat_balance_hyp_of_travel
 
 end EdgeData
