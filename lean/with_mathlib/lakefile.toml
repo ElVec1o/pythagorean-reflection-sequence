@@ -244,3 +244,6 @@ name = "NonVacuity"
 
 [[lean_lib]]
 name = "NoGapCapstone"
+
+[[lean_lib]]
+name = "EdgeData"
