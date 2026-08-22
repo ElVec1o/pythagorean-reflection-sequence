@@ -65,7 +65,7 @@ code/
   triangle_relations/ shortest-relation and stratum scripts (paper 4)
   g_modules/, mordell/, ideal/   symbolic and rank-0 descent scripts
 data/         raw JSON output consumed by the scripts
-reproduce/    standalone reproduction scripts
+code/reproduce/  standalone reproduction scripts
 ```
 
 `private/` is in `.gitignore` and never ships, as is
@@ -315,7 +315,7 @@ python3 code/zeta_probe/blocks_growth.py
 cd code/zeta_probe/tools/ortho_len6 && cargo run --release -- 3 200
 ```
 
-`code/zeta_probe/README.md` indexes that directory. `reproduce/` holds
+`code/zeta_probe/README.md` indexes that directory. `code/reproduce/` holds
 standalone scripts that do not depend on it.
 
 

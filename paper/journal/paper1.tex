@@ -3086,7 +3086,7 @@ The root $q^\ast$ has the following properties.
 \begin{proof}
 All three statements are certified in exact rational arithmetic with explicit
 tail bounds; no floating point enters any inequality
-(\texttt{reproduce/certify\_beta2\_pole.py}). On $|q|\le r<1$ the $k$th term
+(\texttt{code/reproduce/certify\_beta2\_pole.py}). On $|q|\le r<1$ the $k$th term
 of the theta form of $1-\Sigma_1$ satisfies
 \[
   \Bigl|\frac{2^k(1-q)^k q^{k^2}}{(q;q)_{2k}}\Bigr|
@@ -3127,7 +3127,7 @@ subcounts grow at rate $\beta_2^{\mathrm{rel}}$.
 
 The bulk block does not interfere with the relaxed assembly. This is
 certified by the same machinery as Lemma~\ref{lem:beta2-pole}
-(\texttt{reproduce/certify\_bulk\_dressing.py}), where
+(\texttt{code/reproduce/certify\_bulk\_dressing.py}), where
 $\Sigma_1^{\mathrm{bulk}}$ denotes the series formed exactly as $\Sigma_1$ above
 but from the bulk block's transfer kernel in place of the travel one, as
 implemented in that script: $1-\Sigma_1^{\mathrm{bulk}}$
