@@ -82,6 +82,45 @@ theorem witness_gap_excluded : IsTravel 0 ∧ ((0:ℤ) - 0) % 2 = 0 ∧ IsGap 0 
 to `2`: the covering hypothesis fails there. -/
 theorem witness_gap_mult_zero : max |(0:ℤ)| |(0:ℤ)| = 0 := by decide
 
+/-! ### The arrival/departure balance
+
+The turn pairs arrivals with departures at a site, so it exists only where those
+counts agree.  Writing `u` and `dn` for the up- and down-crossings of an edge, with
+`2u = m + f` and `2dn = m - f`, the arrivals at a site are the up-crossings of the
+edge below and the down-crossings of the edge above, and the departures are the
+other two.  Balance is therefore
+
+    u (s-1) + dn s  =  dn (s-1) + u s
+
+which, since `u - dn = f` on every edge, is exactly `f (s-1) = f s`.  So the
+condition is not an extra assumption: it is the travel indicator being locally
+constant, which holds away from the two marker sites and is restored at them by the
+virtual ends. -/
+
+/-- **Balance from local constancy of the travel indicator.** -/
+theorem balance_of_travel_eq {mLo mHi fLo fHi uLo uHi dnLo dnHi : ℤ}
+    (huLo : 2 * uLo = mLo + fLo) (hdnLo : 2 * dnLo = mLo - fLo)
+    (huHi : 2 * uHi = mHi + fHi) (hdnHi : 2 * dnHi = mHi - fHi)
+    (hf : fLo = fHi) :
+    uLo + dnHi = dnLo + uHi := by omega
+
+/-- Conversely, balance forces the travel indicator to agree: the two are the same
+condition, so a site where the indicator jumps cannot balance without a virtual
+end. -/
+theorem travel_eq_of_balance {mLo mHi fLo fHi uLo uHi dnLo dnHi : ℤ}
+    (huLo : 2 * uLo = mLo + fLo) (hdnLo : 2 * dnLo = mLo - fLo)
+    (huHi : 2 * uHi = mHi + fHi) (hdnHi : 2 * dnHi = mHi - fHi)
+    (hbal : uLo + dnHi = dnLo + uHi) :
+    fLo = fHi := by omega
+
+/-- The travel indicator is locally constant away from `0` and `k`: it changes only
+where a virtual end sits.  Stated on the three-valued range. -/
+theorem travel_const_away {f : ℤ → ℤ} {s k : ℤ}
+    (hs : ∀ j, f j = (if 0 ≤ j ∧ j < k then 1 else if k ≤ j ∧ j < 0 then -1 else 0))
+    (h1 : s ≠ 0) (h2 : s ≠ k) : f (s - 1) = f s := by
+  rw [hs (s - 1), hs s]
+  split_ifs <;> omega
+
 -- Certification (Rule 5).
 #print axioms EdgeData.dep_ne_zero_of_not_gap
 #print axioms EdgeData.one_le_abs
@@ -93,5 +132,8 @@ theorem witness_gap_mult_zero : max |(0:ℤ)| |(0:ℤ)| = 0 := by decide
 #print axioms EdgeData.witness_travel
 #print axioms EdgeData.witness_gap_excluded
 #print axioms EdgeData.witness_gap_mult_zero
+#print axioms EdgeData.balance_of_travel_eq
+#print axioms EdgeData.travel_eq_of_balance
+#print axioms EdgeData.travel_const_away
 
 end EdgeData
