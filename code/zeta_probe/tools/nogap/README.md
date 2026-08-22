@@ -819,3 +819,23 @@ NOT FORMALISED, and stated in the docstring rather than left implicit:
 So this is thm:nogap for CONFIGURATIONS, which is where its content lies, and not a
 formal proof of the paper's sentence about g. thm_nogap_witness instantiates it on
 the one-edge configuration so the statement is known to have content.
+
+## The merge is cost-neutral (2026-08-23)
+
+CostMerge.cost_swapData: re-pairing two arrivals that share a side -- or whose
+departures do -- leaves EndData.transCost unchanged.
+
+The bridge is that transCost sums pcostF a (pi a) over ARRIVALS ONLY, and on
+arrivals the involutive re-pairing swapT agrees with the plain transposition
+swap (t a) (t a') composed with t: both send a to t a' and a' to t a, and away from
+the four ends neither moves anything, since t x in {t a, t a'} forces x in {a, a'}.
+They differ only AT t a and t a', which are departures and therefore invisible to
+the sum. So the existing transCost_swap_free applies to swapT even though
+swapT is not swap o t as a function -- which is exactly the mismatch that made
+RealizationModel.swapAt the wrong model for the merge.
+
+Still owed to make thm_nogap produce a RELAXED-OPTIMAL realisation: the shared-side
+hypothesis. The chain's placement gives two arrivals at a common SITE, not a common
+side. The side condition holds at the leftmost site (ComponentSupport
+all_right_at_cLo / bounce_of_all_one_side), which is where the placement puts them,
+but that argument is not yet transported into the walk model.
