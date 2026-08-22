@@ -315,6 +315,38 @@ theorem up_add_down (N k : ℕ) (h : k ≤ N) :
   rw [Finset.filter_card_add_filter_neg_card_eq_card]
   simp
 
+/-! ### The card equality
+
+Assembling the four counting pieces.  Each of the two sets splits by which end it
+is, the two parts are the up- and down-crossings of the two adjacent edges, and the
+balance says the totals agree.
+
+The four per-edge counts appear as hypotheses.  They are what the sum-over-edges
+transport supplies, and they are stated in terms of up- and down-counts rather than
+by subtracting, so no truncated subtraction enters. -/
+
+theorem card_arr_eq_card_dep {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (upLo dnLo upHi dnHi : ℕ)
+    (harrTop : ((arrAt (m := m) up s).filter (fun x => atTop x = true)).card = upLo)
+    (harrBot : ((arrAt (m := m) up s).filter (fun x => atTop x = false)).card = dnHi)
+    (hdepTop : ((depAt (m := m) up s).filter (fun x => atTop x = true)).card = dnLo)
+    (hdepBot : ((depAt (m := m) up s).filter (fun x => atTop x = false)).card = upHi)
+    (hbal : upLo + dnHi = dnLo + upHi) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card := by
+  classical
+  rw [← card_split_atTop (arrAt (m := m) up s), ← card_split_atTop (depAt (m := m) up s),
+      harrTop, harrBot, hdepTop, hdepBot]
+  exact hbal
+
+/-- With the card equality and the disjointness already proved, the local turn
+exists at that site: the two sets are disjoint and equinumerous, which is exactly
+what the involution construction takes. -/
+theorem local_turn_exists {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (hcard : (arrAt (m := m) up s).card = (depAt (m := m) up s).card) :
+    Disjoint (arrAt (m := m) up s) (depAt (m := m) up s) ∧
+      (arrAt (m := m) up s).card = (depAt (m := m) up s).card :=
+  ⟨arrAt_disjoint_depAt up s, hcard⟩
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -337,5 +369,7 @@ theorem up_add_down (N k : ℕ) (h : k ≤ N) :
 #print axioms EndType.card_fin_lt
 #print axioms EndType.card_endpt
 #print axioms EndType.up_add_down
+#print axioms EndType.card_arr_eq_card_dep
+#print axioms EndType.local_turn_exists
 
 end EndType
