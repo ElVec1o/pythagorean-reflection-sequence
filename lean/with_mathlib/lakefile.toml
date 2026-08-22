@@ -223,3 +223,9 @@ name = "MergeDescent"
 
 [[lean_lib]]
 name = "SharedSite"
+
+[[lean_lib]]
+name = "NoGapTheorem"
+
+[[lean_lib]]
+name = "CycleMerge"
