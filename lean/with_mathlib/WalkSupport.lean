@@ -378,5 +378,53 @@ theorem walk_has_arrival_at_site (siteOf : α → ℤ) (isArr : α → Bool) (D 
   obtain ⟨a, hasite, haarr, hxa⟩ := arrival_beside siteOf isArr D hts hta x
   exact ⟨a, hzx.trans hxa, by rw [hasite, hs], haarr⟩
 
+/-- **Another walk reaches the maximiser's leftmost site.**  The structural fact the
+free-pair argument needs, and it splits on whether anything lies to the left.
+
+If some end lies strictly left of `wLo z`, gap-freeness puts a top end on the edge
+immediately left, and that end sits at site `wLo z` while lying below the support, so
+it is in another walk.  Otherwise `z'`'s support starts at the same edge, and its own
+bottom end there is at that site. -/
+theorem other_end_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (z z' : α)
+    (hcov : ∀ v : α, edgeOf v < wLo edgeOf (graph D) z →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) z - 1 ∧ atTop y = true)
+    (hsplit : ¬ (graph D).Reachable z z')
+    (hle : wLo edgeOf (graph D) z' ≤ wLo edgeOf (graph D) z) :
+    ∃ y : α, siteOf y = wLo edgeOf (graph D) z ∧ ¬ (graph D).Reachable z y := by
+  obtain ⟨u, hur, hue, hub⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z'
+  rcases lt_or_eq_of_le hle with hlt | heq
+  · -- something lies strictly to the left: use the top end of the edge before
+    obtain ⟨y, hye, hyt⟩ := hcov u (by omega)
+    obtain ⟨hys, hyn⟩ :=
+      shared_ends_at_wLo edgeOf siteOf atTop (graph D) hsite z y hye hyt
+    exact ⟨y, hys, hyn⟩
+  · -- the two supports start together: `z'`'s own bottom end is at that site
+    refine ⟨u, ?_, fun hc => hsplit (hc.trans hur.symm)⟩
+    have h := hsite u
+    rw [hub] at h
+    simp at h
+    omega
+
+/-- **In the maximising walk, a departure at the leftmost site is a bottom end too.**
+
+This is what kills the one configuration `cross_dearer` would otherwise allow: the
+turn-partner of an end of `z` at `wLo z` lies in the *same* walk (a turn is a graph
+edge) and at the *same* site, and that walk has no end below edge `wLo z`.  So the
+arrival and its departure are both bottoms -- they align, which is exactly the
+hypothesis the strict exchange needs. -/
+theorem maximiser_departure_bottom (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (D : Data α) (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (z a : α) (hza : (graph D).Reachable z a)
+    (hs : siteOf a = wLo edgeOf (graph D) z) :
+    atTop (D.t a) = false := by
+  refine bottom_of_end_at_wLo edgeOf siteOf atTop (graph D) hsite z (D.t a) ?_ ?_
+  · exact hza.trans (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl))
+  · rw [hts a]; exact hs
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.walk_has_arrival_at_site
+#print axioms WalkSupport.maximiser_departure_bottom

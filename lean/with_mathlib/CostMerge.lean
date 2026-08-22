@@ -261,5 +261,29 @@ theorem cost_swapData_lt (d : EndData.Data α) (D : Data α) (a a' : α)
     (by rw [hsa, hsa']; exact hne)
     (by rw [hsa, hsa']; exact hs1) hs2 (by rw [hsa]; exact hs3)
 
+/-- **Minimality forces a free pair.**  Take the maximising walk's bottom arrival `a`
+at its leftmost site -- whose departure is a bottom too -- and any arrival `a'` of
+another walk at that same site.  Then the two share a side, or their departures do.
+
+If neither held, the sides would differ, the departures' sides would differ, and `a`
+would align with its own departure, so `cost_swapData_lt` would produce a strictly
+cheaper system.  The one configuration `cross_dearer` allows is excluded by the
+alignment, which `WalkSupport.maximiser_departure_bottom` supplies. -/
+theorem free_pair_of_minimal (d : EndData.Data α) (atTop : α → Bool) (D : Data α)
+    (a a' : α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hab : atTop a = false) (hdb : atTop (D.t a) = false)
+    (harr : d.isArr a = true) (harr' : d.isArr a' = true)
+    (hd : d.isArr (D.t a) = false) (hd' : d.isArr (D.t a') = false)
+    (hne : a ≠ a')
+    (h1 h2 h3)
+    (hmin : ¬ costOf d (swapData D a (D.t a) a' (D.t a') h1 h2 h3) < costOf d D) :
+    d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a') := by
+  by_contra hc
+  push_neg at hc
+  obtain ⟨hs1, hs2⟩ := hc
+  exact hmin (cost_swapData_lt d D a a' harr harr' hd hd' hne hs1 hs2
+    (by rw [hside, hside, hab, hdb]) h1 h2 h3)
+
 -- Certification (Rule 5).
-#print axioms CostMerge.cost_swapData_lt
+#print axioms CostMerge.free_pair_of_minimal

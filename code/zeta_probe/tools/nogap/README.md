@@ -1060,3 +1060,32 @@ So: no cost-minimal transition system contains two arrivals at a common site, in
 different walks, whose sides differ, whose departures' sides differ, and with an
 arrival aligned to its own departure. That is the exchange half of the argument
 sketched from the smallest failure, and it is now formal.
+
+## The free-pair argument closes (2026-08-23)
+
+The obstruction was the configuration cross_dearer allows: a bottom arrival whose
+departure is a TOP, against a top arrival whose departure is a BOTTOM -- two passes,
+where the cross exchange costs MORE. Probing said it never occurs at s* in a
+cost-minimal system, 0 of 1114, and the reason is structural, not metric:
+
+  if a lies in the MAXIMISING walk z at site s* = wLo z, then t a lies in the SAME
+  walk (a turn is a graph edge) at the SAME site (the turn preserves sites), and z
+  has no end below edge s*. So t a is a BOTTOM too.
+
+That is WalkSupport.maximiser_departure_bottom, and it is exactly the alignment
+hypothesis cost_swapData_lt needs. With it:
+
+  CostMerge.free_pair_of_minimal. Let a be the maximising walk's bottom arrival at
+  its leftmost site and a' any arrival of another walk there. Then a and a' share a
+  side, or their departures do -- otherwise the sides differ, the departures' sides
+  differ, a aligns with its own departure, and cost_swapData_lt gives a strictly
+  cheaper system.
+
+Also fixed on the way: other_end_at_wLo first had `z` used in a hypothesis before its
+binder, so Lean auto-bound a DIFFERENT z; the symptom was two whnf timeouts, not a
+type error. Reordering the binders fixed it.
+
+The remaining gap is now assembly only: instantiate free_pair_of_minimal with the
+pieces already proved -- maximiser_has_bottom_arrival for a, other_end_at_wLo plus
+walk_has_arrival_at_site for a' -- and carry a real minimality hypothesis instead of
+the targeted one.
