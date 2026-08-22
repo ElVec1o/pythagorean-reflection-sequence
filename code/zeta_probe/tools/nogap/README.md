@@ -1165,3 +1165,19 @@ bookkeeping about how m and up are read off g -- not part of the merge argument.
 M6's formalization debt is therefore discharged for the merge argument itself. The
 cost-free thm_nogap is kept alongside, since it is what the combinatorial chain
 proves without the cost layer.
+
+## cor:localzero (2026-08-23)
+
+ConfigLoop.cor_localzero_pure. Lamp support inside the travel interval gives a
+cost-minimal realisation with one walk and no isolated cycle -- the paper's
+cor:localzero, from the paper's own hypothesis.
+
+Both halves were already proved and only needed linking:
+  GroupElt.no_gap_of_pure_travel   support inside travel  =>  no edge is a gap edge
+  EdgeData.mult_pos                not a gap edge          =>  1 <= max |d| |f|
+  mult_pos_of_config               ... hence 0 < m e, the input thm:nogap wants
+  thm_nogap_optimal                and then c = 0 at a cost-minimal realisation
+
+M5's formalization debt is discharged for the configuration-level statement, on the
+same footing as M6: what is not formalised is the passage from a group element to its
+configuration, which is shared by both and is not part of either argument.

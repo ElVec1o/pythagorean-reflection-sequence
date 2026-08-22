@@ -15,6 +15,9 @@ import Mathlib.Tactic
 import DataBuild
 import WalkSupport
 import CostMerge
+import EdgeData
+import GroupElt
+import NoGapCutFree
 
 namespace ConfigLoop
 
@@ -404,6 +407,63 @@ theorem thm_nogap_optimal_witness (ds : Bool → Bool) :
   thm_nogap_optimal (m := fun _ : Fin 1 => 2) (fun _ => 1) one_edge_hbal
     (fun _ => by norm_num) 0 ds
 
+/-! ### `cor:localzero`
+
+The paper: *if the lamp support of `g` lies inside its travel interval then
+`c(g) = 0`*, proved by observing that no edge is then a gap edge and applying
+`thm:nogap`.  Both halves are available: `GroupElt.no_gap_of_pure_travel` for the
+first and `thm_nogap_optimal` for the second.  What links them is that a non-gap edge
+has positive multiplicity. -/
+
+/-- **No gap edge gives positive multiplicity at every edge.** -/
+theorem mult_pos_of_config (dep trav : Fin n → ℤ)
+    (hf : ∀ e, EdgeData.IsTravel (trav e))
+    (hpar : ∀ e, (dep e - trav e) % 2 = 0)
+    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat)
+    (hng : ∀ e, ¬ EdgeData.IsGap (dep e) (trav e)) :
+    ∀ e : Fin n, 0 < m e := by
+  intro e
+  have h := EdgeData.mult_pos (hf e) (hpar e) (hng e)
+  rw [hmdef e]
+  omega
+
+/-- **`cor:localzero`.**  If no edge is a gap edge -- which is what lamp support
+inside the travel interval gives, by `GroupElt.no_gap_of_pure_travel` -- then a
+cost-minimal realisation has one walk and no isolated cycle. -/
+theorem cor_localzero (up : Fin n → ℕ) (dep trav : Fin n → ℤ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hf : ∀ e, EdgeData.IsTravel (trav e))
+    (hpar : ∀ e, (dep e - trav e) % 2 = 0)
+    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat)
+    (hng : ∀ e, ¬ EdgeData.IsGap (dep e) (trav e))
+    (e0 : Fin n) (ds : Bool → Bool) :
+    ∃ D' : Data (Endpt n m),
+      CostMerge.MergesMin siteOf (isArrOf up) partner (endDataOf (m := m) up ds) D' ∧
+      walkCount D' = 1 ∧
+      ∀ b : Endpt n m, otherComponents D' b = 0 :=
+  thm_nogap_optimal up hbal (mult_pos_of_config dep trav hf hpar hmdef hng) e0 ds
+
+/-- **`cor:localzero` from the paper's hypothesis.**  Lamp support inside the travel
+interval, read off edge by edge, gives no gap edge, hence a cost-minimal realisation
+with one walk and no isolated cycle. -/
+theorem cor_localzero_pure (k : ℤ) (lamps : ℤ → ℤ) (up : Fin n → ℕ)
+    (dep trav : Fin n → ℤ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hf : ∀ e, EdgeData.IsTravel (trav e))
+    (hpar : ∀ e, (dep e - trav e) % 2 = 0)
+    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat)
+    (hdep : ∀ e : Fin n, dep e = lamps (e : ℤ))
+    (htrav : ∀ e : Fin n, trav e = NoGapCutFree.f k (e : ℤ))
+    (hpure : ∀ i : ℤ, lamps i ≠ 0 → GroupElt.InTravel k i)
+    (hspan : ∀ e : Fin n, lamps (e : ℤ) ≠ 0 ∨ GroupElt.InTravel k (e : ℤ))
+    (e0 : Fin n) (ds : Bool → Bool) :
+    ∃ D' : Data (Endpt n m),
+      CostMerge.MergesMin siteOf (isArrOf up) partner (endDataOf (m := m) up ds) D' ∧
+      walkCount D' = 1 ∧
+      ∀ b : Endpt n m, otherComponents D' b = 0 := by
+  refine cor_localzero up dep trav hbal hf hpar hmdef (fun e => ?_) e0 ds
+  rw [hdep e, htrav e]
+  exact GroupElt.no_gap_of_pure_travel hpure (hspan e)
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.thm_nogap_optimal
-#print axioms ConfigLoop.thm_nogap_optimal_witness
+#print axioms ConfigLoop.cor_localzero_pure
