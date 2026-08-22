@@ -1368,3 +1368,20 @@ arrivals have the same cardinalities as the fibres of cls over the departures
 Those are the two equations Plan's row0..row3 and col0..col3 fields require, so what
 remains for M3l is assembling them with the concrete class function (side from atTop,
 sign from EndData.sgn) and the site's arrival and departure sets.
+
+## A Plan from a turn, and what its cross mass means (2026-08-23)
+
+planOfTurn builds SiteCost.Plan from a bijection t : S -> T and a class function
+cls : beta -> Fin 4, with entry (i,j) counting the class-i arrivals whose turn lands
+in class j. Its eight constraints are xEntry_row and xEntry_col.
+
+no_side_change_of_cross_zero: classes 0,1 are the left side and 2,3 the right, and
+Plan.cross is exactly the eight entries moving between them -- so cross = 0 means
+every arrival's turn stays on its own side. With no_cross_at_cut (cross = 0 at a cut
+site) that is prop:cut's first sentence in the form Local wants: at a cut site no
+turn moves from edge s-1 to edge s.
+
+So M3l's mathematical content is done. What remains is instantiation: cls built from
+atTop and EndData.sgn, S and T the site's arrAt and depAt, and t the turn -- with
+turnAt_arr, turnAt_dep and turnAt_invol supplying maps-into, injectivity and
+surjectivity.

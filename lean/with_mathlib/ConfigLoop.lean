@@ -777,6 +777,115 @@ theorem col_sum_of_bij {β : Type*} [DecidableEq β] [Fintype β]
     obtain ⟨a, haS, hab⟩ := hsurj b hb.1
     exact ⟨a, Finset.mem_filter.mpr ⟨haS, by rw [hab]; exact hb.2⟩, hab⟩
 
+/-- The transportation entry: class-`i` arrivals whose turn lands in class `j`. -/
+noncomputable def xEntry {β : Type*} [DecidableEq β] [Fintype β]
+    (S : Finset β) (t : β → β) (cls : β → Fin 4) (i j : Fin 4) : ℕ := by
+  classical
+  exact (S.filter (fun a => cls a = i ∧ cls (t a) = j)).card
+
+/-- **Row equation.**  Summing an arrival class over the classes its turns land in
+recovers that class's count. -/
+theorem xEntry_row {β : Type*} [DecidableEq β] [Fintype β]
+    (S : Finset β) (t : β → β) (cls : β → Fin 4) (i : Fin 4) :
+    ∑ j : Fin 4, xEntry S t cls i j = (S.filter (fun a => cls a = i)).card := by
+  classical
+  rw [← row_sum_of_fiber (S.filter (fun a => cls a = i)) (fun a => cls (t a))]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  unfold xEntry
+  rw [Finset.filter_filter]
+
+/-- **Column equation.**  Summing a departure class over the arrival classes that feed
+it recovers that class's count, through the bijection. -/
+theorem xEntry_col {β : Type*} [DecidableEq β] [Fintype β]
+    (S T : Finset β) (t : β → β) (cls : β → Fin 4)
+    (hmaps : ∀ a ∈ S, t a ∈ T) (hinj : Set.InjOn t S)
+    (hsurj : ∀ b ∈ T, ∃ a ∈ S, t a = b) (j : Fin 4) :
+    ∑ i : Fin 4, xEntry S t cls i j = (T.filter (fun b => cls b = j)).card := by
+  classical
+  have h1 : ∑ i : Fin 4, xEntry S t cls i j
+      = (S.filter (fun a => cls (t a) = j)).card := by
+    rw [← row_sum_of_fiber (S.filter (fun a => cls (t a) = j)) cls]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    unfold xEntry
+    rw [Finset.filter_filter]
+    congr 1
+    ext a
+    simp [and_comm]
+  rw [h1]
+  exact col_sum_of_bij S T t cls hmaps hinj hsurj j
+
+/-- **A `Plan` from a turn.**  The transportation plan whose entry `(i, j)` counts the
+class-`i` arrivals whose turn lands in class `j`.  Its eight constraints are the row
+and column equations above. -/
+noncomputable def planOfTurn {β : Type*} [DecidableEq β] [Fintype β]
+    (S T : Finset β) (t : β → β) (cls : β → Fin 4)
+    (hmaps : ∀ a ∈ S, t a ∈ T) (hinj : Set.InjOn t S)
+    (hsurj : ∀ b ∈ T, ∃ a ∈ S, t a = b) :
+    SiteCost.Plan
+      (S.filter (fun a => cls a = 0)).card (S.filter (fun a => cls a = 1)).card
+      (S.filter (fun a => cls a = 2)).card (S.filter (fun a => cls a = 3)).card
+      (T.filter (fun b => cls b = 0)).card (T.filter (fun b => cls b = 1)).card
+      (T.filter (fun b => cls b = 2)).card (T.filter (fun b => cls b = 3)).card where
+  x00 := xEntry S t cls 0 0
+  x01 := xEntry S t cls 0 1
+  x02 := xEntry S t cls 0 2
+  x03 := xEntry S t cls 0 3
+  x10 := xEntry S t cls 1 0
+  x11 := xEntry S t cls 1 1
+  x12 := xEntry S t cls 1 2
+  x13 := xEntry S t cls 1 3
+  x20 := xEntry S t cls 2 0
+  x21 := xEntry S t cls 2 1
+  x22 := xEntry S t cls 2 2
+  x23 := xEntry S t cls 2 3
+  x30 := xEntry S t cls 3 0
+  x31 := xEntry S t cls 3 1
+  x32 := xEntry S t cls 3 2
+  x33 := xEntry S t cls 3 3
+  row0 := by have h := xEntry_row S t cls 0; rwa [Fin.sum_univ_four] at h
+  row1 := by have h := xEntry_row S t cls 1; rwa [Fin.sum_univ_four] at h
+  row2 := by have h := xEntry_row S t cls 2; rwa [Fin.sum_univ_four] at h
+  row3 := by have h := xEntry_row S t cls 3; rwa [Fin.sum_univ_four] at h
+  col0 := by have h := xEntry_col S T t cls hmaps hinj hsurj 0; rwa [Fin.sum_univ_four] at h
+  col1 := by have h := xEntry_col S T t cls hmaps hinj hsurj 1; rwa [Fin.sum_univ_four] at h
+  col2 := by have h := xEntry_col S T t cls hmaps hinj hsurj 2; rwa [Fin.sum_univ_four] at h
+  col3 := by have h := xEntry_col S T t cls hmaps hinj hsurj 3; rwa [Fin.sum_univ_four] at h
+
+/-- An arrival contributes to its own entry, so that entry is non-zero. -/
+theorem xEntry_ne_zero {β : Type*} [DecidableEq β] [Fintype β]
+    (S : Finset β) (t : β → β) (cls : β → Fin 4) {a : β} (ha : a ∈ S) :
+    xEntry S t cls (cls a) (cls (t a)) ≠ 0 := by
+  classical
+  unfold xEntry
+  intro hzero
+  rw [Finset.card_eq_zero] at hzero
+  have hmem : a ∈ S.filter (fun b => cls b = cls a ∧ cls (t b) = cls (t a)) :=
+    Finset.mem_filter.mpr ⟨ha, rfl, rfl⟩
+  rw [hzero] at hmem
+  exact absurd hmem (Finset.notMem_empty a)
+
+/-- **Zero cross mass means no turn changes side.**  Classes `0, 1` are the left side
+and `2, 3` the right, and `Plan.cross` is exactly the eight entries that move between
+them -- so if it vanishes, every arrival's turn stays on its own side. -/
+theorem no_side_change_of_cross_zero {β : Type*} [DecidableEq β] [Fintype β]
+    (S T : Finset β) (t : β → β) (cls : β → Fin 4)
+    (hmaps : ∀ a ∈ S, t a ∈ T) (hinj : Set.InjOn t S)
+    (hsurj : ∀ b ∈ T, ∃ a ∈ S, t a = b)
+    (h : (planOfTurn S T t cls hmaps hinj hsurj).cross = 0) :
+    ∀ a ∈ S, ((cls a : ℕ) < 2 ↔ ((cls (t a) : ℕ) < 2)) := by
+  intro a ha
+  -- all eight crossing entries vanish
+  have hz : ∀ i j : Fin 4, ((i : ℕ) < 2 ∧ 2 ≤ (j : ℕ)) ∨ (2 ≤ (i : ℕ) ∧ (j : ℕ) < 2) →
+      xEntry S t cls i j = 0 := by
+    have hc : (planOfTurn S T t cls hmaps hinj hsurj).cross
+        = (xEntry S t cls 0 2 + xEntry S t cls 0 3 + xEntry S t cls 1 2 + xEntry S t cls 1 3)
+          + (xEntry S t cls 2 0 + xEntry S t cls 2 1 + xEntry S t cls 3 0
+             + xEntry S t cls 3 1) := rfl
+    rw [hc] at h
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp_all <;> omega
+  by_contra hcon
+  exact xEntry_ne_zero S t cls ha (hz _ _ (by omega))
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.row_sum_of_fiber
-#print axioms ConfigLoop.col_sum_of_bij
+#print axioms ConfigLoop.no_side_change_of_cross_zero
