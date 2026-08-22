@@ -6,10 +6,10 @@ Session 2026-08-22. Labels per Rule 0.
 
 | # | Statement | Label |
 |---|---|---|
-| M6a | no gap edge => `Z` empty | **PROVED** (below), verified 42361 elts |
-| M6  | no gap edge => `c = 0` | **HEURISTIC** (42361 elts, depth 21, 0 violations) |
-| M6b | `Z` empty => `c = 0` | **CONJECTURE** (48715 elts, 0 violations) |
-| SL  | shield law `c = \|Z\|` incl. boundary term, all `k*` | **HEURISTIC** (50763 elts, 0 violations) |
+| M6a | no gap edge => `Z` empty | **VERIFIED** (`lean/with_mathlib/NoGapCutFree.lean`), 2 505 271 elts |
+| M6  | no gap edge => `c = 0` | **HEURISTIC** (2 505 271 elts, depth 31, 0 violations) |
+| M6b | `Z` empty => `c = 0` | **CONJECTURE** (3 101 847 elts, 0 violations) |
+| SL  | shield law `c = \|Z\|` incl. boundary term, all `k*` | **HEURISTIC** (3 336 511 elts, 0 violations) |
 | M10 | `lamp_lib.relaxed_solve` computes `l_R` | **FALSE** (counterexample below) |
 
 ## M10: relaxed_solve is wrong on gap-bearing elements
@@ -100,3 +100,71 @@ pursued; logged so it is not rediscovered.
 untracked (`.gitignore:77`); set `LAMPLIB` to point at it. Anything involving `Z`
 or `l_R` should go through `tools/sitecost` (exact, Rust) rather than a Python
 reimplementation -- three attempts at that failed here.
+
+
+## Rust tool (this directory)
+
+`cargo build --release; ./target/release/nogap <depth>`, run under `../runcap.sh`.
+Exact integer arithmetic; no floating point outside the ETA display. Depth 31 is
+5 033 690 elements enumerated, 3 336 511 used, peak RSS 1265 MB, 6 seconds.
+It reproduces the Python numbers at depth 21 exactly (50763 / 48715 / 42361).
+
+`prop:cut` (`c >= |Z|`) is asserted as an invariant: it is PROVED, so a violation
+means a bug in this tool, not in the mathematics. That control is what localised
+the boundary-term condition.
+
+## Published series are NOT corrupted by the relaxed_solve bug
+
+Recomputed from the closed form at depth 31 (exact for `m <= 18`):
+
+| series | computed | stored | verdict |
+|---|---|---|---|
+| pure travel, 19 terms | `... 1276 1907 2832` | `lifting_U.tex` | identical |
+| `u_n`, 19 terms | `... 3203 4971 7574` | `joint_W.json` | identical |
+| `v_m`, `m <= 18` | `... 3513 5455 8418` | `v110.json` | identical |
+
+The bug's blast radius is confined to per-element `c` obtained by calling
+`relaxed_solve` directly. The one place the papers do that (`uv_perelem.py`, for
+`prop:local`) is on pure-travel elements, where it is correct.
+
+## M6b: obstruction (Rule 2)
+
+Merging an isolated cycle at zero cost needs a 2-swap at a shared site whose two
+new pair costs sum to the two old ones. Since a relaxed-optimal `R` has `Delta >= 0`
+for every swap, a merge exists iff some swap achieves `Delta = 0`. At the cycle's
+leftmost site all of its ends are on the R side, so it bounces, and swapping
+against a pass gives `Delta = pc(alpha_C, d_gamma) - pc(alpha_gamma, d_gamma)`,
+which vanishes iff the R-side ends there share a sign. The sign splits `p^u_j` are
+free and provably do not affect site cost, but they are coupled globally by
+`p^d_j = p^u_j + (d_j - f_j)/2`, so they cannot be set site by site; forcing
+all-plus at edge `p` needs `d_p = -f_p`, false in general. That is the wall.
+
+## M6a formalisation (Rule 5)
+
+`lean/with_mathlib/NoGapCutFree.lean`, in `defaultTargets`. Nine declarations,
+zero `sorry`, axioms confined to the standard three and no `native_decide`:
+
+```
+f_eq_zero_of_nonneg_of_le  [propext, Quot.sound]
+f_neg_imp_k_neg            [propext, Quot.sound]
+f_pos_imp_k_pos            [propext, Quot.sound]
+f_neg_imp_lt_zero          [propext, Quot.sound]
+f_pos_imp_lt_k             [propext, Quot.sound]
+cut_at_zero                [propext, Classical.choice, Quot.sound]
+cut_at_k_left              [propext, Classical.choice, Quot.sound]
+cut_at_zero_eq_k           [propext, Quot.sound]
+f_zero_of_k_zero           [propext, Quot.sound]
+```
+
+Reproduce with a file containing `import NoGapCutFree` and `#print axioms` on
+each name, run through `lake env lean`.
+
+Two cases of the analysis are absent by design: at a bulk site, and at `s = k*`
+with `delta* = 1`, `alpha` and `Phi` are `d (s-1)` and `f (s-1)` definitionally,
+so the cut hypothesis IS the assertion that edge `s-1` is a gap edge. Stating
+those as Lean theorems produced declarations depending on no axioms at all, which
+is the signature of a tautology; they were removed rather than counted.
+
+Adversarial review (Rule 6) also found the `alpha` component unused in
+`cut_at_zero`: `beta` and `Phi` alone force the conclusion, so the lemma is
+sharper than the cut hypothesis and is now stated that way.

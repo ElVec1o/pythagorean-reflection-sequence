@@ -211,3 +211,6 @@ name = "TransferChain"
 
 [[lean_lib]]
 name = "DiscriminantIdentity"
+
+[[lean_lib]]
+name = "NoGapCutFree"

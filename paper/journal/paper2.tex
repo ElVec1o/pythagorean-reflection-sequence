@@ -1978,6 +1978,30 @@ Corollary~\ref{cor:localcost} the marker site is cut exactly when $d_{-1}=0$, $\
 $\varepsilon^\ast=1$, which is exactly where that indicator vanishes.
 \end{remark}
 
+\begin{remark}[the boundary term in the cut count, and the check at $k^\ast\ne0$]\label{rem:boundaryterm}
+The set $Z$ of Proposition~\ref{prop:cut} consists of cut sites \emph{interior} to the span. That
+count is short by one whenever both markers sit at an endpoint of the span on the side opposite the
+edges, since cutting there isolates the marker component and leaves every crossing in closed walks.
+The configuration is exactly
+\[
+   k^\ast=0,\qquad \delta^\ast=0,\qquad \mathrm{lo}=0<\mathrm{hi},
+\]
+and it is the boundary shield of Remark~\ref{rem:shieldowes}: the marker site is cut precisely where
+$\mathrm{sh}_R$ vanishes. The clause $\mathrm{lo}=0<\mathrm{hi}$ is needed as well, since without it
+the identity is miscounted, having $c=0$ and one cut site.
+
+Writing $Z^{+}$ for $Z$ together with that site when the displayed condition holds, the shield law
+$c=|Z^{+}|$ has no exceptions on the $3\,336\,511$ elements of word length at most $31$, over all
+$k^\ast$, with $c=(\ell_T-\ell_R)/2$ computed from breadth-first word length and the closed form of
+Corollary~\ref{cor:lRclosed} (\texttt{code/zeta\_probe/tools/nogap}). This extends the check of
+Remark~\ref{rem:shieldowes}, which covers the bulk $k^\ast=0$ only. Enlarging $Z$ by every marker
+site instead, rather than by the boundary configuration above, produces $8555$ violations of
+Proposition~\ref{prop:cut} at word length $19$, which is how the condition was located.
+
+The reverse inequality $c\le|Z^{+}|$ remains unproved; the addition of the boundary term does not
+bear on it.
+\end{remark}
+
 \subsection*{Machine verification of the site cost}
 
 Lemma~\ref{lem:transport}, Corollary~\ref{cor:localcost}, Corollary~\ref{cor:lRclosed},
