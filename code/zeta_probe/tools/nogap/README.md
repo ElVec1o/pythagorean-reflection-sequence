@@ -839,3 +839,29 @@ hypothesis. The chain's placement gives two arrivals at a common SITE, not a com
 side. The side condition holds at the leftmost site (ComponentSupport
 all_right_at_cLo / bounce_of_all_one_side), which is where the placement puts them,
 but that argument is not yet transported into the walk model.
+
+## The shared-side probe is INCONCLUSIVE -- do not read it as a counterexample (2026-08-23)
+
+side_probe.py enumerates (m, up) on 1-2 edges, builds every turn pairing arrivals to
+departures at each site, and asks whether two arrivals in different walks at a common
+site ever share a side (or their departures do) -- the hypothesis cost_swapData needs.
+
+It reports 9 of 91 multi-walk cases with NO such pair, and 9 of 27 when restricted to
+"cost-minimal" turns. THAT RESTRICTION IS NOT THE PAPER'S. Two defects:
+
+1. The cost proxy is wrong. It scores a pass as 1 and EVERY bounce as 0. The true
+   pcostF charges 2 for a same-side bounce whose two ends have OPPOSITE SIGN. The
+   sign is derived (EndData) from side, role, and the sign of the edge's DEPOSIT,
+   and the probe has no deposits, so it cannot compute the real cost and its
+   "cost-minimal" set is not T.
+
+2. The probe enumerates (m, up) freely. Real configurations come from a group
+   element, where m, up, deposits and travel are linked. Most enumerated tuples are
+   not realisable.
+
+So the 9 failures are failures of the PROBE'S model, not evidence against thm:nogap,
+and they are not evidence for it either. Closing M6dy needs the sign/deposit layer
+carried into the walk model; until then the shared-side hypothesis of cost_swapData
+stays an explicit hypothesis.
+
+Kept because the enumeration scaffolding is reusable once deposits are added.
