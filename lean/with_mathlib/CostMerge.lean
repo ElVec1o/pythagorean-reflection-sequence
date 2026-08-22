@@ -376,6 +376,53 @@ theorem hmin_of_mergesMin (siteOf : α → ℤ) (p₀ : α → α) (d : EndData.
   intro b b' hss hb hb' h1 h2 h3
   exact not_lt.mpr (hE.2 _ (merges_swapData siteOf p₀ d E hE.1 b b' hss hb hb' h1 h2 h3))
 
+/-- **The cost-minimal merge loop, unconditional.**  A cost-minimal datum merges down
+to a single walk, staying cost-minimal throughout.  No free-pair hypothesis: it is
+supplied at each step by `hasFreePair_of_minimal`. -/
+theorem min_merges_to_one (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p₀ : α → α)
+    (d : EndData.Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (hcov0 : ∀ j : ℤ, (∃ u : α, edgeOf u = j) → (∃ v : α, edgeOf v < j) →
+      ∃ y : α, edgeOf y = j - 1 ∧ atTop y = true)
+    (z₀ : α)
+    (D : Data α) (hD : MergesMin siteOf d.isArr p₀ d D) :
+    ∃ D', MergesMin siteOf d.isArr p₀ d D' ∧ walkCount D' ≤ 1 := by
+  classical
+  refine ConfigMerge.reaches_one (P := MergesMin siteOf d.isArr p₀ d) ?_ D hD
+  intro E hmany hE
+  obtain ⟨⟨hp, hts, hta⟩, hmin⟩ := hE
+  obtain ⟨⟨z, hz⟩, hzle⟩ := WalkSupport.maxWLo_spec edgeOf (graph E) z₀
+  have hzmax : ∀ w : α, WalkSupport.wLo edgeOf (graph E) w
+      ≤ WalkSupport.wLo edgeOf (graph E) z := fun w => by rw [hz]; exact hzle w
+  have hcov : ∀ v : α, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
+      ∃ y : α, edgeOf y = WalkSupport.wLo edgeOf (graph E) z - 1 ∧ atTop y = true := by
+    intro v hv
+    obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph E) z
+    exact hcov0 _ ⟨u, hue⟩ ⟨v, hv⟩
+  have hpsite : ∀ x, siteOf (E.p x) ≠ siteOf x := by
+    rw [hp]; exact WalkSupport.p_site_ne edgeOf siteOf atTop p₀ hsite hpe hpt
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
+    hasFreePair_of_minimal d edgeOf siteOf atTop E hside hsite
+      (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta hpsite z hzmax hcov
+      (hmin_of_mergesMin siteOf p₀ d E ⟨⟨hp, hts, hta⟩, hmin⟩) hmany
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split E hsplit
+  have h1 := swapT_invol E.t_invol (rfl : E.t a = E.t a) (rfl : E.t a' = E.t a')
+    (ConfigMerge.dep_ne_arr' E rfl) (ConfigMerge.dep_ne_other E rfl hsplit) haa'
+    (ConfigMerge.dep_ne_dep' E rfl rfl haa')
+    (Ne.symm (ConfigMerge.dep_ne_arr' E rfl)) (ConfigMerge.dep_ne_other' E rfl hsplit)
+  have h2 := swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne
+    (ConfigMerge.dep_ne_other E rfl hsplit) (ConfigMerge.dep_ne_other' E rfl hsplit)
+  have h3 := partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a')
+    hpsite hts (hts a) hss.symm (by rw [hts a', hss])
+  have hcost : costOf d (swapData E a (E.t a) a' (E.t a') h1 h2 h3) = costOf d E :=
+    cost_swapData d E a a' harr harr' hd hd' (Ne.symm haa') hshared h1 h2 h3
+  refine ⟨swapData E a (E.t a) a' (E.t a') h1 h2 h3,
+    ⟨merges_swapData siteOf p₀ d E ⟨hp, hts, hta⟩ a a' hss harr harr' h1 h2 h3,
+     fun F hF => by rw [hcost]; exact hmin F hF⟩,
+    ConfigMerge.descent_of_split E a a' hsplit h1 h2 h3⟩
+
 -- Certification (Rule 5).
-#print axioms CostMerge.merges_swapData
-#print axioms CostMerge.hmin_of_mergesMin
+#print axioms CostMerge.min_merges_to_one

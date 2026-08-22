@@ -1109,3 +1109,25 @@ exactly what the exchange argument needs and what the descent preserves.
 This closes the chain: cost_merges_to_one now has a proved hypothesis, so a locally
 minimal configuration with more than one walk merges down to one AT UNCHANGED COST.
 The numerical support (1114 of 1114) is superseded by proof.
+
+## The cost-minimal merge loop is UNCONDITIONAL (2026-08-23)
+
+CostMerge.min_merges_to_one. A cost-minimal datum merges down to a single walk,
+staying cost-minimal throughout. No free-pair hypothesis, no conjecture: the pair is
+supplied at each step by hasFreePair_of_minimal, whose minimality input comes from
+hmin_of_mergesMin.
+
+The invariant is MergesMin -- the merge invariant plus cost-minimality in the class --
+and it survives each step: merges_swapData keeps the datum in the class, cost_swapData
+keeps the cost, and a minimum of equal cost is still a minimum. The maximiser and the
+covering hypothesis are re-derived at each step from maxWLo_spec and the
+datum-independent covering input.
+
+Chain, end to end, all kernel-certified, no sorry, no native_decide:
+
+  cost-minimal, >1 walk
+    -> maximiser z, its bottom arrival a at wLo z, its departure a bottom too
+    -> another walk reaches site wLo z, and has an arrival a' there
+    -> a, a' share a side (else the exchange is strictly cheaper)
+    -> the merge is FREE and lowers the walk count
+    -> iterate: one walk, same cost
