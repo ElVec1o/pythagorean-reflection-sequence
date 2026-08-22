@@ -345,6 +345,89 @@ theorem config_descent_uniform {α : Type*} [DecidableEq α] [Fintype α]
     exact merge_connects_full D a (D.t a) a' (D.t a') rfl rfl h1 h2 h3
       Md hM hpos k₁ k₂ klast (back_of_turn' D rfl)
 
+/-! ### Orbits always close
+
+Two of `ClosesAvoiding`'s five parts are free.  `sig` is injective and the end set is
+finite, so every orbit is periodic: `hM` and `hpos` cost nothing.  The content of the
+condition is entirely in the three avoidance clauses. -/
+
+/-- **Every `sig`-orbit closes.**  The iterates of `x` cannot all be distinct, and
+`sig` is injective, so an early repeat can be cancelled back to `x` itself. -/
+theorem exists_closes {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (x : α) :
+    ∃ M : ℕ, 0 < M ∧ (sig D)^[M] x = x := by
+  classical
+  obtain ⟨i, j, hne, h⟩ := Fintype.exists_ne_map_eq_of_card_lt
+    (fun n : Fin (Fintype.card α + 1) => (sig D)^[n.val] x) (by simp)
+  have hinj : ∀ k : ℕ, Function.Injective ((sig D)^[k]) :=
+    fun k => Function.Injective.iterate (sig_injective D) k
+  rcases lt_or_gt_of_ne (fun hc : i.val = j.val => hne (Fin.ext hc)) with hlt | hlt
+  · refine ⟨j.val - i.val, by omega, ?_⟩
+    apply hinj i.val
+    rw [← Function.iterate_add_apply]
+    have : i.val + (j.val - i.val) = j.val := by omega
+    rw [this]
+    exact h.symm
+  · refine ⟨i.val - j.val, by omega, ?_⟩
+    apply hinj j.val
+    rw [← Function.iterate_add_apply]
+    have : j.val + (i.val - j.val) = i.val := by omega
+    rw [this]
+    exact h
+
+/-- **Four of the five clauses are free.**  The deleted set consists of *turn* edges.
+Clauses `k₁` and `klast` are about *crossing* edges, which `crossing_notMem` says are
+never turn edges; `hM` and `hpos` come from `exists_closes`.  All the content of
+`ClosesAvoiding` sits in `k₂`, the clause about the orbit's turn edges. -/
+theorem closes_of_turn_clause {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a a' x : α) (M : ℕ)
+    (hM : (sig D)^[M] x = x) (hpos : 0 < M)
+    (k₂ : ∀ k, k < M - 1 →
+      s(D.p ((sig D)^[k] x), D.t (D.p ((sig D)^[k] x))) ∉
+        ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α))) :
+    ClosesAvoiding D ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α)) x M :=
+  ⟨hM, hpos, fun _ _ => crossing_notMem D _ a a', k₂, crossing_notMem D _ a a'⟩
+
+/-- The turn edge the orbit uses at step `k` runs from `p (sig^k x)` to `sig^(k+1) x`,
+since `sig y = t (p y)`.  This is what makes `k₂` a statement about where the orbit
+goes next. -/
+theorem orbit_turn_edge {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (x : α) (k : ℕ) :
+    D.t (D.p ((sig D)^[k] x)) = (sig D)^[k + 1] x := by
+  rw [Function.iterate_succ_apply']
+  rfl
+
+/-- Every point of an orbit is in the same walk as its start: each `sig` step is two
+graph edges, through the crossing partner. -/
+theorem reach_sig_iter {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (x : α) (k : ℕ) :
+    (graph D).Reachable x ((sig D)^[k] x) := by
+  induction k with
+  | zero => exact SimpleGraph.Reachable.refl _
+  | succ n ih =>
+    refine ih.trans ?_
+    rw [Function.iterate_succ_apply']
+    exact (SimpleGraph.Adj.reachable (G := graph D) (Or.inl rfl)).trans
+      (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl))
+
+/-- **The cross-walk half of `k₂`.**  An orbit starting at `a` never meets the turn
+edge of `a'`, because every point it visits is in `a`'s walk and `a'` is not.  This
+uses `hsplit` and nothing else. -/
+theorem orbit_avoids_other {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a a' : α)
+    (hsplit : ¬ (graph D).Reachable a a') (k : ℕ) :
+    s(D.p ((sig D)^[k] a), D.t (D.p ((sig D)^[k] a))) ≠ s(a', D.t a') := by
+  intro h
+  -- every point of `a`'s orbit, and its crossing partner, lies in `a`'s walk
+  have hreach : (graph D).Reachable a (D.p ((sig D)^[k] a)) :=
+    (reach_sig_iter D a k).trans (SimpleGraph.Adj.reachable (G := graph D) (Or.inl rfl))
+  rw [Sym2.eq_iff] at h
+  rcases h with ⟨h1, _⟩ | ⟨h1, _⟩
+  · exact hsplit (h1 ▸ hreach)
+  · -- it landed on `t a'`, which is joined to `a'` by a turn edge
+    exact hsplit ((h1 ▸ hreach).trans
+      (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl)).symm)
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.detour_of_closes
-#print axioms ConfigMerge.config_descent_uniform
+#print axioms ConfigMerge.reach_sig_iter
+#print axioms ConfigMerge.orbit_avoids_other
