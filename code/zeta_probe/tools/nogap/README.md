@@ -958,3 +958,31 @@ Both being bottom ends they share a side, so the merge is free. This is much sha
 than HasFreePair -- it names the site and the side -- and it is exactly the shape the
 Lean placement already produces: exists_bottom_at_wLo gives one bottom end at wLo, and
 the content is that a SECOND walk has a bottom ARRIVAL there too.
+
+## The canonical site: the MAXIMUM leftmost edge (2026-08-23)
+
+The sharpened statement still had an existential over sites. It can be removed.
+
+Let s* be the MAXIMUM, over walks, of a walk's leftmost edge. Then:
+
+  CONJECTURE (maxwlo_probe.py). At a cost-minimal transition system with more than
+  one walk, site s* carries two BOTTOM arrivals lying in DIFFERENT walks.
+
+Both bottom means they share a side, so the merge is free. s* is determined by the
+datum, so the merge pair is now canonical -- no choice, no search.
+
+Verified 1114 of 1114 on n <= 4. Two routes that do NOT work, checked and discarded:
+
+ - site 0 (equivalently the MINIMUM leftmost edge): 662 of 1114 only. Site 0 is
+   attractive because every end there is a bottom, so any two arrivals share a side
+   automatically -- but its arrivals often lie in a single walk.
+ - the site-local minimality argument: refuted outright by cross_dearer.
+
+n = 5 with m = 2 on every edge produces NO multi-walk cost-minimal systems at all, so
+it adds no evidence either way.
+
+The shape of a proof: at s* the walk achieving the maximum has ALL its ends bottom
+(its support starts at edge s*, so it has no end on edge s*-1) -- that half is
+already Lean, exists_bottom_at_wLo and not_atTop_at_cLo. What is owed is that a
+SECOND walk contributes a bottom ARRIVAL at s*, and by cross_dearer that step must
+use cost-minimality.
