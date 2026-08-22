@@ -1013,3 +1013,30 @@ sharing the same leftmost edge (470 of the 1114 cases), and there the pair lives
 inside that set.
 
 Remaining: (ii) alone.
+
+## The mechanism behind claim (ii), from the smallest failure (2026-08-23)
+
+Smallest system where (ii) fails: n=2, m=(2,2), up=(1,1), two walks, s*=1. Its ends
+at s* are
+
+   (0,0,1) arrival, walk1, TOP      (0,1,1) departure, walk1, TOP
+   (1,1,0) arrival, walk2, BOTTOM   (1,0,0) departure, walk2, BOTTOM
+
+so walk1 BOUNCES at s* (top arrival to top departure, cost 2) and so does walk2
+(bottom to bottom, cost 2). Cost 8; the minimum over all turns is 6. The cheaper
+system is exactly the CROSS pairing -- top arrival to bottom departure and bottom
+arrival to top departure, two passes at cost 1 each -- which is cross_cheaper, and it
+also MERGES the two walks. So minimality forbids this configuration.
+
+Sketch for (ii). Let z be a maximiser. By (i) it has a bottom arrival a at s*. Some
+other walk has an end at s*, hence an arrival a' there (walk_has_arrival_at_site,
+proved). If (ii) fails, a' is a TOP. Then with d = t a and d' = t a':
+ - if d' is a TOP, cross_cheaper applies to (a', a) and the system is not minimal;
+ - if d' is a BOTTOM, then d and d' may share a side, and the pair is free by the
+   DEPARTURES branch of swap_free_iff.
+Either way a free merge exists -- note the second branch gives HasFreePair without
+giving (ii), so HasFreePair is the right target and (ii) is only one route to it.
+
+Still owed: that some walk other than the chosen maximiser has an end at s* -- 1114
+of 1114, unproved -- and the exchange construction turning cross_cheaper into an
+actual cheaper transition system.

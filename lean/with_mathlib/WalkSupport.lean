@@ -367,5 +367,16 @@ theorem maximiser_has_bottom_arrival (edgeOf siteOf : α → ℤ) (atTop isArr :
   exact bottom_of_end_at_wLo edgeOf siteOf atTop (graph D) hsite z a
     (hxr.trans hxa) (by rw [hasite, hxs])
 
+/-- **A walk meeting a site has an arrival there.**  If an end of the walk sits at
+site `s`, so does an arrival of the same walk: either that end, or its turn-partner,
+which shares the site, lies in the same walk, and has the opposite role. -/
+theorem walk_has_arrival_at_site (siteOf : α → ℤ) (isArr : α → Bool) (D : Data α)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e)
+    (z x : α) (hzx : (graph D).Reachable z x) (s : ℤ) (hs : siteOf x = s) :
+    ∃ a : α, (graph D).Reachable z a ∧ siteOf a = s ∧ isArr a = true := by
+  obtain ⟨a, hasite, haarr, hxa⟩ := arrival_beside siteOf isArr D hts hta x
+  exact ⟨a, hzx.trans hxa, by rw [hasite, hs], haarr⟩
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.maximiser_has_bottom_arrival
+#print axioms WalkSupport.walk_has_arrival_at_site
