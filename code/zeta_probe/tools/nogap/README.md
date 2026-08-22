@@ -1089,3 +1089,23 @@ The remaining gap is now assembly only: instantiate free_pair_of_minimal with th
 pieces already proved -- maximiser_has_bottom_arrival for a, other_end_at_wLo plus
 walk_has_arrival_at_site for a' -- and carry a real minimality hypothesis instead of
 the targeted one.
+
+## HasFreePair is PROVED (2026-08-23)
+
+CostMerge.hasFreePair_of_minimal. A locally cost-minimal datum with more than one
+walk admits a free merge. No longer a conjecture.
+
+Assembly, all pieces proved earlier in the session:
+  maximiser_has_bottom_arrival   a bottom arrival a of the maximising walk at wLo z
+  maximiser_departure_bottom     its departure t a is a bottom too -- the alignment
+  exists_other_walk              some end is unreachable from z
+  other_end_at_wLo               another walk reaches site wLo z
+  walk_has_arrival_at_site       upgrade that end to an arrival a'
+  free_pair_of_minimal           a and a' share a side, or their departures do
+
+"Locally cost-minimal" means no re-pairing of two arrivals is cheaper, which is
+exactly what the exchange argument needs and what the descent preserves.
+
+This closes the chain: cost_merges_to_one now has a proved hypothesis, so a locally
+minimal configuration with more than one walk merges down to one AT UNCHANGED COST.
+The numerical support (1114 of 1114) is superseded by proof.

@@ -647,5 +647,16 @@ theorem descent_of_split {α : Type*} [DecidableEq α] [Fintype α]
       = {s(a, D.t a), s(a', D.t a')} by rw [D.t_invol, Set.pair_comm]] at hd
   exact config_descent_uniform D a a' Ma Ma' Md ha ha' hd hsplit h1 h2 h3
 
+/-- **More than one walk means every end misses one.**  If everything were reachable
+from `z`, there would be a single component. -/
+theorem exists_other_walk {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (h : 1 < walkCount D) (z : α) :
+    ∃ z' : α, ¬ (graph D).Reachable z z' := by
+  by_contra hc
+  push_neg at hc
+  have : walkCount D ≤ 1 :=
+    walkCount_le_one_of_connected D (fun x y => (hc x).symm.trans (hc y))
+  omega
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.descent_of_split
+#print axioms ConfigMerge.exists_other_walk
