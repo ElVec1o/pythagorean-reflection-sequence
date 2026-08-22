@@ -430,6 +430,85 @@ theorem merge_connects (D : Data α) (a d a' d' : α)
   (SimpleGraph.Adj.reachable (adj_merge D a d a' d' h1 h2 h3)).trans
     (path.mono (le_swapData D a d a' d' hd hd' h1 h2 h3))
 
+/-! ### Deleting a set of edges
+
+The merge needs both re-paired turn-edges gone at once, so the chain is restated
+for a set. -/
+
+theorem reach_cross_set (S : Set (Sym2 α)) (x : α) (h : s(x, D.p x) ∉ S) :
+    ((graph D).deleteEdges S).Reachable x (D.p x) :=
+  SimpleGraph.Adj.reachable (by
+    rw [SimpleGraph.deleteEdges_adj]; exact ⟨adj_cross D x, h⟩)
+
+theorem reach_turn_set (S : Set (Sym2 α)) (x : α) (h : s(x, D.t x) ∉ S) :
+    ((graph D).deleteEdges S).Reachable x (D.t x) :=
+  SimpleGraph.Adj.reachable (by
+    rw [SimpleGraph.deleteEdges_adj]; exact ⟨adj_turn D x, h⟩)
+
+theorem reach_sig_step_set (S : Set (Sym2 α)) (x : α)
+    (h₁ : s(x, D.p x) ∉ S) (h₂ : s(D.p x, D.t (D.p x)) ∉ S) :
+    ((graph D).deleteEdges S).Reachable x (sig D x) :=
+  (reach_cross_set D S x h₁).trans (reach_turn_set D S (D.p x) h₂)
+
+/-- The alternating walk with a whole set of edges removed. -/
+theorem reach_sig_iterate_set (S : Set (Sym2 α)) (x : α) : ∀ n : ℕ,
+    (∀ k, k < n → s((sig D)^[k] x, D.p ((sig D)^[k] x)) ∉ S) →
+    (∀ k, k < n → s(D.p ((sig D)^[k] x), D.t (D.p ((sig D)^[k] x))) ∉ S) →
+    ((graph D).deleteEdges S).Reachable x ((sig D)^[n] x) := by
+  intro n
+  induction n generalizing x with
+  | zero =>
+      intro _ _
+      simp only [Function.iterate_zero_apply]
+      exact SimpleGraph.Reachable.refl x
+  | succ m ih =>
+      intro h₁ h₂
+      rw [Function.iterate_succ_apply]
+      refine (reach_sig_step_set D S x ?_ ?_).trans (ih (sig D x) ?_ ?_)
+      · simpa using h₁ 0 (Nat.succ_pos m)
+      · simpa using h₂ 0 (Nat.succ_pos m)
+      · intro k hk
+        have := h₁ (k + 1) (by omega)
+        rwa [Function.iterate_succ_apply] at this
+      · intro k hk
+        have := h₂ (k + 1) (by omega)
+        rwa [Function.iterate_succ_apply] at this
+
+/-- **The path, with a set of edges removed.**  The conditions are now explicit
+non-membership statements along the orbit, so the set may contain the other walk's
+re-paired turn-edge as well: that edge simply never occurs along this orbit. -/
+theorem reach_delete_turn_set (S : Set (Sym2 α)) (x : α) (m : ℕ)
+    (hm : (sig D)^[m] x = x) (hpos : 0 < m)
+    (h₁ : ∀ k, k < m - 1 → s((sig D)^[k] x, D.p ((sig D)^[k] x)) ∉ S)
+    (h₂ : ∀ k, k < m - 1 → s(D.p ((sig D)^[k] x), D.t (D.p ((sig D)^[k] x))) ∉ S)
+    (hlast : s((sig D)^[m-1] x, D.p ((sig D)^[m-1] x)) ∉ S) :
+    ((graph D).deleteEdges S).Reachable x (D.t x) := by
+  have hout := reach_sig_iterate_set D S x (m - 1) h₁ h₂
+  have hland := reach_cross_set D S ((sig D)^[m-1] x) hlast
+  have hend : D.p ((sig D)^[m-1] x) = D.t x := by
+    rw [← p_t_eq_iterate D x m hm hpos, D.p_invol]
+  exact hend ▸ hout.trans hland
+
+/-- **The merge, with no path hypothesis.**  Re-pairing two arrivals joins their
+walks, given only that the second walk's orbit avoids both re-paired turn-edges,
+which is what the two arrivals lying in different walks provides. -/
+theorem merge_connects_full (D : Data α) (a d a' d' : α)
+    (hd : D.t a = d) (hd' : D.t a' = d') (h1 h2 h3)
+    (m : ℕ) (hm : (sig D)^[m] d' = d') (hpos : 0 < m)
+    (k₁ : ∀ k, k < m - 1 →
+      s((sig D)^[k] d', D.p ((sig D)^[k] d')) ∉ ({s(a, d), s(a', d')} : Set (Sym2 α)))
+    (k₂ : ∀ k, k < m - 1 →
+      s(D.p ((sig D)^[k] d'), D.t (D.p ((sig D)^[k] d'))) ∉
+        ({s(a, d), s(a', d')} : Set (Sym2 α)))
+    (klast : s((sig D)^[m-1] d', D.p ((sig D)^[m-1] d')) ∉
+      ({s(a, d), s(a', d')} : Set (Sym2 α)))
+    (hda' : D.t d' = a') :
+    (graph (swapData D a d a' d' h1 h2 h3)).Reachable a a' := by
+  have path : ((graph D).deleteEdges {s(a, d), s(a', d')}).Reachable d' a' := by
+    have := reach_delete_turn_set D {s(a, d), s(a', d')} d' m hm hpos k₁ k₂ klast
+    rwa [hda'] at this
+  exact merge_connects D a d a' d' hd hd' h1 h2 h3 path
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -455,5 +534,8 @@ theorem merge_connects (D : Data α) (a d a' d' : α)
 #print axioms WalkGraph.adj_merge
 #print axioms WalkGraph.le_swapData
 #print axioms WalkGraph.merge_connects
+#print axioms WalkGraph.reach_sig_iterate_set
+#print axioms WalkGraph.reach_delete_turn_set
+#print axioms WalkGraph.merge_connects_full
 
 end WalkGraph
