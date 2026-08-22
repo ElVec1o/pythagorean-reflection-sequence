@@ -333,3 +333,43 @@ therefore belongs to `B`, contradicting the assumption that it belongs to
 
 End-to-end, the statement is verified on 2 505 271 elements to word length 31 with
 0 exceptions, which is independent of the proof above.
+
+## M2 proved: the relaxed length decomposes, at every k*
+
+`sitecost` verifies `l_R = sum m + sum max(|alpha|,|beta|,|Phi|)` by direct
+enumeration only for `k* = 0` (mode `shield`). The site-cost law itself is verified
+much more widely: mode `universal` covers all eight site types and all four marker
+data over 4 532 157 configurations, every crossing count and every sign split, with
+0 exceptions. What was missing at `k* != 0` is only that the global minimum
+**decomposes** into the sum of the local minima. It does:
+
+1. The site cost `max(|alpha_s|,|beta_s|,|Phi_s|)` depends only on the deposits and
+   the travel indicator. It is independent of the crossing counts `m_j` and of the
+   sign splits `p^u_j` (this is exactly what mode `universal` establishes).
+2. Therefore `sum_j m_j` is minimised separately, at `m_j = m*_j`, the minimum
+   admissible multiplicity, with a gap edge of the span forced to 2 by reachability.
+3. Edge `j` has one end at site `j` and one at site `j+1`, but as a departure at the
+   first and an arrival at the second. So the matchings at distinct sites act on
+   disjoint sets of ends and may be chosen independently.
+4. In the relaxed model any choice of per-site perfect matchings is admissible,
+   since isolated cycles are permitted and carry no extra cost.
+
+By 1 and 2 no term can be lowered below its local minimum, and by 3 and 4 all local
+minima are attainable simultaneously. Hence
+
+    l_R = sum_j m*_j + sum_s max(|alpha_s|,|beta_s|,|Phi_s|)
+
+for every `k*`, not only in the bulk. The coupling one might fear, that the sign
+splits are shared between adjacent sites, is harmless precisely because the site
+cost does not see them.
+
+Note the contrast with the true metric: there the single-open-walk requirement does
+couple the sites, which is why `l_T` does not decompose and needs the whole M6
+argument.
+
+## M10 fixed
+
+`route_b/lamp_lib.py` (untracked) now routes `relaxed_solve` through
+`relaxed_closed`, the closed form, and prints a loud stderr warning whenever the old
+DP disagrees. The DP is kept as `_relaxed_solve_dp` for diagnosis. Callers get
+correct values instead of silently wrong ones.
