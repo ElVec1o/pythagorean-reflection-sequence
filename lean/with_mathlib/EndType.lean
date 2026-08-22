@@ -263,6 +263,27 @@ theorem arr_bottom_iff {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : �
     · unfold siteOf; rw [ht, he]; simp
     · unfold isArrOf; rw [ht, hu]; rfl
 
+/-! ### Counting, piece three: crossing indices below the up-count
+
+On a single edge the up-crossings are the indices below the up-count, so counting
+them is counting `{i : Fin N // i < k}`.  That is `min k N`, and with the up-count
+bounded by the crossing count it is just the up-count. -/
+
+theorem card_fin_lt (N k : ℕ) :
+    (Finset.univ.filter (fun i : Fin N => i.val < k)).card = min k N := by
+  classical
+  by_cases h : N ≤ k
+  · have hall : ∀ i : Fin N, i.val < k := fun i => lt_of_lt_of_le i.isLt h
+    rw [Finset.filter_true_of_mem (fun i _ => hall i)]
+    simp [min_eq_right h]
+  · push Not at h
+    have heq : (Finset.univ.filter (fun i : Fin N => i.val < k))
+        = Finset.Iio (⟨k, h⟩ : Fin N) := by
+      ext i
+      simp [Fin.lt_def]
+    rw [heq, Fin.card_Iio]
+    simp [min_eq_left (le_of_lt h)]
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -282,5 +303,6 @@ theorem arr_bottom_iff {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : �
 #print axioms EndType.edge_of_site_bottom
 #print axioms EndType.arr_top_iff
 #print axioms EndType.arr_bottom_iff
+#print axioms EndType.card_fin_lt
 
 end EndType
