@@ -472,3 +472,35 @@ measurement on the wrong ensemble is as misleading as a proof of the wrong
 statement, and neither is caught by checking axioms. Any future measurement here
 must sample `turn` and `partner` as involutions with the site and edge structure,
 not permutations at large.
+
+### The correct ensemble, and the merge measured on it
+
+Generating `turn` and `partner` as involutions with the site and edge structure
+imposed, rather than sampling permutations at large:
+
+* ends are `(edge, crossing, atTop)`; `partner` exchanges the two ends of a
+  crossing; `turn` is a random perfect matching of arrivals to departures at each
+  site, an up-crossing arriving at its top end and a down-crossing at its bottom
+  one;
+* `pi = turn . partner`, walks are the orbits of the two involutions together.
+
+**First, the relation.** On 810 closed configurations, `cycles(pi) = 2 * walks`
+with no exceptions, confirming the earlier hand-worked cases.
+
+**Then the merge.** Re-pairing two arrivals at one site, which is the 2-swap:
+
+| `a, a'` in different walks | delta cycles | delta walks | count |
+|---|---|---|---|
+| yes | -2 | -1 | 479 |
+| no | +2 | +1 | 486 |
+
+No exceptions either way. A 2-swap between arrivals in different walks merges them,
+lowering the walk count by exactly one; within one walk it splits, raising it by
+one. That is the merge the argument needs, and it is what the earlier
+random-permutation run failed to see.
+
+So the corrected chain is: the defect is `(cycles - 1)/2` in the presence of the
+markers and `cycles/2` in the closed case; a transition-system 2-swap across two
+walks lowers the walk count by one; and the free-swap criterion, which is about
+side patterns and already verified, decides when that merge costs nothing. What a
+Lean model still owes is this correspondence, not the merge criterion.
