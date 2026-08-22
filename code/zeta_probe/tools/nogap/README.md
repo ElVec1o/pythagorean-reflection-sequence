@@ -1249,3 +1249,29 @@ Stating it as a hypothesis rather than assuming it away.
 
 So M3's bridge is built except for that one condition, which is a genuine constraint
 of the setting rather than a formalisation artefact.
+
+## RETRACTION: gapSites is not the paper's Z (2026-08-23)
+
+Checking whether two adjacent gap edges can occur sent me to the paper, and two of
+the last stretch's claims are wrong.
+
+1. Z IS NOT THE GAP EDGES. prop:cut (paper2 l.1941) defines a site s of the span as
+   CUT when alpha_s = beta_s = Phi_s = 0, and Z as the cut sites INTERIOR to the span.
+   A maximal run of L gap edges contributes its L-1 interior sites, which is why the
+   paper says "c >= L-1 per gap run" (l.94), not L. ConfigLoop.gapSites shifts each
+   gap edge by one and so yields L sites per run -- it OVERCOUNTS by one per run.
+
+2. ON THE SPAN, GAP EDGES CARRY CROSSINGS. Paper2 l.1964: "an edge with f=0 has
+   m >= 2 on the span by cor:lRclosed". So m = max(|d|,|f|) is the MINIMUM ADMISSIBLE
+   multiplicity, not the multiplicity on the span. gap_condition's proof -- gap edge
+   => m = 0 => no ends -- is therefore about minimum-multiplicity configurations, and
+   the hypothesis it discharges is unavailable in prop:cut's setting.
+
+This also dissolves the occupancy worry recorded one commit ago: with m >= 2 on f=0
+edges, every edge of the span carries crossings and occupancy holds. The worry was an
+artefact of the same wrong multiplicity law.
+
+What survives: walk_graph_local (stated for an arbitrary Zf) and prop_cut_config (a
+conditional statement, correct as written). What does not: the claim that gapSites is
+the paper's Z and that gap_condition discharges Local's hypothesis for prop:cut.
+Docstrings corrected in place. M3's bridge needs Z built from alpha, beta, Phi.

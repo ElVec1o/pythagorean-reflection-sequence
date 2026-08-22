@@ -528,15 +528,28 @@ theorem walk_graph_local (up : Fin n → ℕ)
     exact ⟨siteOf x, Or.inr rfl, Or.inr (turnAt_site up hbal x), fun hne =>
       absurd (turnAt_site up hbal x).symm hne⟩
 
-/-- The gap **sites**: a gap edge `e` blocks the site `e + 1`, since a crossing on
-edge `e` is what would step across it. -/
+/-- Sites obtained by shifting the gap edges by one.
+
+**CORRECTION (2026-08-23).**  This is NOT the paper's `Z`.  `prop:cut` takes `Z` to be
+the set of **cut sites** interior to the span -- sites with `α_s = β_s = Φ_s = 0` --
+and a maximal run of `L` gap edges contributes its `L - 1` *interior* sites, not `L`.
+The definition below gives `L` sites per run and so overcounts by one per run.
+
+It is kept because `walk_graph_local` is stated for an arbitrary `Zf` and this is a
+legitimate instance of it; it simply is not the set `prop:cut` counts. -/
 def gapSites (dep trav : Fin n → ℤ) : Finset ℤ :=
   (Finset.univ.filter (fun e : Fin n => dep e = 0 ∧ trav e = 0)).image
     (fun e : Fin n => ((e.val : ℤ) + 1))
 
-/-- **The gap condition holds.**  A gap edge has zero multiplicity, so it carries no
-end at all; hence no end's edge is a gap edge, which is exactly what `Local` needs
-once the shift is taken into account. -/
+/-- The gap condition, for the multiplicity law `m = max |d| |f|`.
+
+**SCOPE (2026-08-23).**  This holds when multiplicities are the *minimum admissible*
+ones, where a gap edge has `m = 0` and hence carries no end.  That law does NOT hold
+on the span: by `cor:lRclosed` an edge with `f = 0` has `m ≥ 2` there, so on the span
+gap edges do carry crossings and this hypothesis is unavailable.
+
+So this is a true theorem about minimum-multiplicity configurations, not a discharge
+of `Local`'s hypothesis in the setting `prop:cut` lives in. -/
 theorem gap_condition (dep trav : Fin n → ℤ)
     (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat) :
     ∀ x : Endpt n m, edgeOf x + 1 ∉ gapSites dep trav := by
