@@ -1232,3 +1232,20 @@ projection. x : Endpt n m carries x.idx : Fin (m x.edge), so rewriting m x.edge 
 the GOAL is never type-correct. Fixes that worked: subst rather than rw for the edge
 equality, rewriting inside a hypothesis rather than the goal, and finally letting
 omega combine x.idx.isLt with m x.edge = 0 instead of rewriting at all.
+
+## prop:cut on a configuration (2026-08-23)
+
+ConfigLoop.prop_cut_config: at least |Z| walks carry neither virtual event, i.e.
+c >= |Z|, for a real configuration. The abstract counting was already
+CutComponents.exists_injective_components_avoiding; what a configuration supplies is
+the Local hypothesis, from walk_graph_local plus gap_condition.
+
+Occupancy is CARRIED, not discharged. prop:cut's counting step needs every site of
+the span to carry an end. A site s carries one exactly when edge s has a crossing
+(bottom end at s) or edge s-1 does (top end at s) -- site_occupied_bottom and
+site_occupied_top. So occupancy fails exactly where TWO ADJACENT gap edges meet, and
+that is a condition on the configuration, not a consequence of anything proved here.
+Stating it as a hypothesis rather than assuming it away.
+
+So M3's bridge is built except for that one condition, which is a genuine constraint
+of the setting rather than a formalisation artefact.

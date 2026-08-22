@@ -555,5 +555,47 @@ theorem gap_condition (dep trav : Fin n → ℤ)
   have hlt := x.idx.isLt
   omega
 
+/-! ### Occupancy
+
+`prop:cut`'s counting step needs every site of the span to carry an end.  A site `s`
+carries one exactly when edge `s` has a crossing (its bottom end sits at `s`) or edge
+`s - 1` does (its top end sits at `s`).  So occupancy fails only where **two adjacent
+gap edges** meet -- a condition on the configuration, not a consequence of anything
+proved here, and it is carried as a hypothesis rather than assumed away. -/
+
+/-- A crossing on edge `e` puts an end at site `e` (its bottom). -/
+theorem site_occupied_bottom (e : Fin n) (he : 0 < m e) :
+    ∃ x : Endpt n m, siteOf x = (e : ℤ) := by
+  refine ⟨⟨e, ⟨0, he⟩, false⟩, ?_⟩
+  unfold siteOf edgeOf atTop
+  simp
+
+/-- A crossing on edge `e` also puts an end at site `e + 1` (its top). -/
+theorem site_occupied_top (e : Fin n) (he : 0 < m e) :
+    ∃ x : Endpt n m, siteOf x = (e : ℤ) + 1 := by
+  refine ⟨⟨e, ⟨0, he⟩, true⟩, ?_⟩
+  unfold siteOf edgeOf atTop
+  simp
+
+/-- **`prop:cut` on a configuration.**  At least `|Z|` walks carry neither virtual
+event -- that is `c ≥ |Z|`.
+
+The abstract counting is `CutComponents.exists_injective_components_avoiding`; what a
+configuration supplies is its `Local` hypothesis, from `walk_graph_local` together
+with `gap_condition`.  Occupancy is carried, since it fails exactly where two adjacent
+gap edges meet. -/
+theorem prop_cut_config (up : Fin n → ℕ) (dep trav : Fin n → ℤ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ gapSites dep trav, A < z) (hhigh : ∀ z ∈ gapSites dep trav, z ≤ B)
+    (hmdef : ∀ e, m e = (max |dep e| |trav e|).toNat)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, siteOf x = t)
+    (c0 : (graph (dataOf up hbal)).ConnectedComponent) :
+    ∃ F : Fin (gapSites dep trav).card → (graph (dataOf up hbal)).ConnectedComponent,
+      Function.Injective F ∧ ∀ i, F i ≠ c0 :=
+  CutComponents.exists_injective_components_avoiding
+    (walk_graph_local up hbal (gapSites dep trav) (gap_condition dep trav hmdef))
+    A B hAB hlow hhigh hocc c0
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.gap_condition
+#print axioms ConfigLoop.prop_cut_config
