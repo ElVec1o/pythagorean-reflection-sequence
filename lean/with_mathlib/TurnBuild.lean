@@ -84,8 +84,23 @@ definitionally `loc (site x) x`, so any pointwise property of the local maps is
 already a property of the glue.  Two such lemmas were written and removed rather
 than counted, being `fun x => h x`. -/
 
+/-- **The two maps never agree.**  The crossing map sends an end to the other end of
+its crossing, which is at the neighbouring site; the turn keeps an end at its own
+site.  So they differ everywhere, which is the last condition the walk-graph data
+asks for, and it holds for a structural reason rather than by assumption. -/
+theorem partner_ne_turn {β : Type*} (site : β → ℤ) (p t : β → β)
+    (hp : ∀ x, site (p x) ≠ site x) (ht : ∀ x, site (t x) = site x) :
+    ∀ x, p x ≠ t x := by
+  intro x hcon
+  exact hp x (by rw [hcon, ht])
+
+/- The glued turn preserves sites for free: `glue` is definitionally the local map
+at the end's own site, so the site-preservation hypothesis of `glue_invol` *is* that
+statement.  A lemma saying so was removed rather than counted. -/
+
 -- Certification (Rule 5).
 #print axioms TurnBuild.exists_involution_of_card_eq
 #print axioms TurnBuild.glue_invol
+#print axioms TurnBuild.partner_ne_turn
 
 end TurnBuild
