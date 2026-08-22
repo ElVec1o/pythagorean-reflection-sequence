@@ -221,6 +221,83 @@ theorem reach_sig_iterate' (e : Sym2 α) (x : α) : ∀ n : ℕ,
         have := h₂ (k + 1) (by omega)
         rwa [Function.iterate_succ_apply] at this
 
+/-! ### Landing the endpoint -/
+
+/-- The alternating map is injective, being a composite of two involutions. -/
+theorem sig_injective : Function.Injective (sig D) := by
+  intro a b h
+  unfold sig at h
+  have h1 := congrArg D.t h
+  rw [D.t_invol, D.t_invol] at h1
+  have h2 := congrArg D.p h1
+  rwa [D.p_invol, D.p_invol] at h2
+
+/-- A crossing-edge is never the turn-edge at `x`, since the two partners of an end
+are distinct. -/
+theorem cross_ne_turn (x y : α) : s(y, D.p y) ≠ s(x, D.t x) := by
+  intro h
+  rw [Sym2.eq_iff] at h
+  rcases h with ⟨h1, h2⟩ | ⟨h1, h2⟩
+  · exact D.pt_ne x (h1 ▸ h2)
+  · have : D.t x = D.p x := by
+      have := congrArg D.p h2
+      rw [D.p_invol] at this
+      rw [← this, h1]
+    exact D.pt_ne x this.symm
+
+/-- `p (t x)` is the `sig`-predecessor of `x`. -/
+theorem p_t_eq_iterate (x : α) (m : ℕ) (hm : (sig D)^[m] x = x) (hpos : 0 < m) :
+    D.p (D.t x) = (sig D)^[m-1] x := by
+  apply sig_injective D
+  rw [sig_p_t D x]
+  have : (sig D) ((sig D)^[m-1] x) = (sig D)^[m] x := by
+    rw [← Function.iterate_succ_apply' (sig D) (m-1) x]
+    congr 1
+    omega
+  rw [this, hm]
+
+/-- **The path after deleting a turn-edge.**  With `m` the minimal period of `x`
+under the alternating map, and `p x` outside the orbit of `x` (which is the
+distinctness of the two `sig`-cycles making up a walk), deleting the turn-edge at
+`x` leaves `x` reachable from `t x`.
+
+This is `WalkMerge.conn_merge`'s hypothesis, obtained without constructing a cycle
+or invoking `IsCycle`: the walk goes out along the orbit and lands on `t x` by one
+final crossing-step, since `t x = p (sig^[m-1] x)`. -/
+theorem reach_delete_turn (x : α) (m : ℕ)
+    (hm : (sig D)^[m] x = x) (hpos : 0 < m)
+    (hmin : ∀ j, 0 < j → j < m → (sig D)^[j] x ≠ x)
+    (hnotorbit : ∀ k, k < m → (sig D)^[k] x ≠ D.p x) :
+    ((graph D).deleteEdges {s(x, D.t x)}).Reachable x (D.t x) := by
+  have hstep : ∀ k, k < m - 1 →
+      s(D.p ((sig D)^[k] x), D.t (D.p ((sig D)^[k] x))) ≠ s(x, D.t x) := by
+    intro k hk hcon
+    rw [Sym2.eq_iff] at hcon
+    rcases hcon with ⟨ha, _⟩ | ⟨ha, _⟩
+    · have h' := congrArg D.p ha
+      rw [D.p_invol] at h'
+      exact hnotorbit k (by omega) h'
+    · have hpt := congrArg D.p ha
+      rw [D.p_invol] at hpt
+      rw [p_t_eq_iterate D x m hm hpos] at hpt
+      -- `sig^[k] x = sig^[m-1] x` with `k < m-1` contradicts minimality
+      have hinj : Function.Injective ((sig D)^[k]) :=
+        Function.Injective.iterate (sig_injective D) k
+      have hsum : k + (m - 1 - k) = m - 1 := by omega
+      have hkey : (sig D)^[m - 1 - k] x = x := by
+        apply hinj
+        rw [← Function.iterate_add_apply, hsum]
+        exact hpt.symm
+      exact hmin (m - 1 - k) (by omega) (by omega) hkey
+  have hout := reach_sig_iterate' D s(x, D.t x) x (m - 1)
+    (fun k _ => cross_ne_turn D x _) hstep
+  have hland : ((graph D).deleteEdges {s(x, D.t x)}).Reachable
+      ((sig D)^[m-1] x) (D.p ((sig D)^[m-1] x)) :=
+    reach_cross D _ _ (cross_ne_turn D x _)
+  have hend : D.p ((sig D)^[m-1] x) = D.t x := by
+    rw [← p_t_eq_iterate D x m hm hpos, D.p_invol]
+  exact hend ▸ hout.trans hland
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.adj_symm
 #print axioms WalkGraph.adj_irrefl
@@ -235,5 +312,9 @@ theorem reach_sig_iterate' (e : Sym2 α) (x : α) : ∀ n : ℕ,
 #print axioms WalkGraph.reach_sig_step
 #print axioms WalkGraph.reach_sig_iterate
 #print axioms WalkGraph.reach_sig_iterate'
+#print axioms WalkGraph.sig_injective
+#print axioms WalkGraph.cross_ne_turn
+#print axioms WalkGraph.p_t_eq_iterate
+#print axioms WalkGraph.reach_delete_turn
 
 end WalkGraph
