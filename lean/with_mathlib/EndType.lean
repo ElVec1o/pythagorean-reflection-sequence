@@ -492,6 +492,34 @@ theorem card_ends_edge_dir_down {n : ℕ} {m : Fin n → ℕ} (up : Fin n → �
   · intro a c hac
     simpa using hac
 
+/-- The bottom part of the arrivals at a site is counted on the edge above, as
+down-crossings. -/
+theorem card_arr_bottom {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (e : Fin n) (he : (e : ℤ) = s) :
+    ((arrAt (m := m) up s).filter (fun x => atTop x = false)).card
+      = m e - min (up e) (m e) := by
+  classical
+  have hset : ((arrAt (m := m) up s).filter (fun x => atTop x = false))
+      = Finset.univ.filter (fun x : Endpt n m =>
+          x.edge = e ∧ x.top = false ∧ ¬ (x.idx.val < up e)) := by
+    ext x
+    obtain ⟨e', i, b⟩ := x
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨hmem, ht⟩
+      obtain ⟨hedge, ht', hu⟩ := (arr_bottom_iff up s _).mp ⟨hmem, ht⟩
+      have hE : e' = e := (edgeOf_eq_iff _ e).mp (by rw [hedge, he])
+      subst hE
+      refine ⟨rfl, ht', ?_⟩
+      unfold isUp at hu
+      simpa using hu
+    · rintro ⟨hE, ht, hu⟩
+      subst hE
+      exact (arr_bottom_iff up s _).mpr
+        ⟨by rw [show edgeOf (⟨e', i, b⟩ : Endpt n m) = (e' : ℤ) from rfl, he], ht,
+         by unfold isUp; simpa using hu⟩
+  rw [hset, card_ends_edge_dir_down]
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -520,5 +548,6 @@ theorem card_ends_edge_dir_down {n : ℕ} {m : Fin n → ℕ} (up : Fin n → �
 #print axioms EndType.edgeOf_eq_iff
 #print axioms EndType.card_arr_top
 #print axioms EndType.card_ends_edge_dir_down
+#print axioms EndType.card_arr_bottom
 
 end EndType
