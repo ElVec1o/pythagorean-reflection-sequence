@@ -1748,3 +1748,18 @@ So Local survives the descent, which is the half of M4b10 about the cut structur
 What is still owed is that the RUN BOUNDS survive: hpos is untouched since the swap
 does not change multiplicities, but wLo of the maximiser can shift, so hlz and hzr
 have to be re-established at each step rather than carried unchanged.
+
+## The run bounds, re-derived rather than carried (2026-08-23)
+
+hlz and hzr refer to the maximiser of the CURRENT datum, so a merge can shift them.
+They need not be carried: wLo_same_side shows a walk's leftmost edge lies on the same
+side of every cut site as the walk itself, because it IS the edge of some end of the
+walk and walk_confined forbids crossing.
+
+So the run bounds are a consequence of where the walk sits, not extra data, and the
+descent invariant does not have to preserve them -- it re-derives them at each step.
+That closes the concern recorded in M4b10.
+
+M4b's remaining obligation is now just the assembly of hstep itself: from separation
+failure, produce the pair (hasFreePair_run), merge (descent_of_split), and carry
+Local (hturn_swapT) with the run bounds re-derived (wLo_same_side).

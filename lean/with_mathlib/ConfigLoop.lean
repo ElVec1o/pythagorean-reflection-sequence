@@ -1307,5 +1307,24 @@ theorem hturn_swapT (t : Endpt n m → Endpt n m) (Zf : Finset ℤ)
       rw [if_neg h1, if_neg h2, if_neg h3, if_neg h4]
     rwa [hx] at hne
 
+/-! ### The run bounds, re-derived
+
+`hlz` and `hzr` refer to the maximiser of the *current* datum, so they cannot simply
+be carried across a merge.  They do not need to be: a walk's leftmost edge lies on the
+same side of every cut site as the walk itself, so the run bounds follow from where
+the walk is, and `walk_confined` supplies that. -/
+
+/-- **A walk's leftmost edge lies in the walk's own run.**  It is the edge of some end
+of the walk, and no walk crosses a cut site. -/
+theorem wLo_same_side (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (s : ℤ)
+    (hcut : ∀ x : Endpt n m, siteOf x = s → edgeOf (turnAt up s x) = edgeOf x)
+    (z : Endpt n m) :
+    (WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z < s ↔ edgeOf z < s) := by
+  obtain ⟨x, hzx, hxe⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph (dataOf up hbal)) z
+  rw [← hxe]
+  exact (walk_confined up hbal s hcut z x hzx).symm
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.hturn_swapT
+#print axioms ConfigLoop.wLo_same_side
