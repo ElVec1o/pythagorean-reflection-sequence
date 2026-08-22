@@ -720,3 +720,32 @@ min 1 2 = 1 = 2 - 1, which is exactly balance_left and balance_right.
 This is the witness the empty configuration could not be. With m e = 2 > 0 the
 hypothesis hm is not vacuous and covering_of_mult_pos is genuinely exercised, so
 the whole chain from hbal through the merge loop is exhibited on real data.
+
+## RealizationModel's swapAt does NOT model the 2-swap (2026-08-23)
+
+RealizationModel.swapAt r x y = swap x y * r.trans, and its docstring claimed a
+2-swap sends the turn t to swap o t, hence the walk to swap o walk. That is FALSE.
+
+With a, a' the two arrivals and d = t a, d' = t a', the re-paired turn is
+WalkGraph.swapT, and
+
+  swapT o t : a -> d -> a',  a' -> d' -> a,  d -> a -> d',  d' -> a' -> d
+
+so swapT = (a a')(d d') o t, a DOUBLE transposition, and sig' = (a a')(d d') o sig.
+By contrast swap d d' o t sends d' -> a' where the re-pairing sends d' -> a. No
+single left or right transposition gives swapT, and it cannot: swap o t is not an
+involution, while the turn must stay one.
+
+comp_swapAt_lt and NoGapCapstone.nogap remain TRUE theorems about single
+transpositions. What was wrong is only the claim that they model the merge. Note
+too that orbitCount of the walk permutation counts TWICE the number of walks, since
+p maps each sig-orbit to a different one -- which is now proved
+(ConfigMerge.p_not_in_orbit) rather than assumed.
+
+This is the third appearance of cycles-vs-walks in this session and the second time
+it was hiding inside a docstring rather than a proof. The correct formalisation is
+the chain ConfigMerge -> WalkSupport -> ConfigLoop, over graph components with the
+involutive re-pairing swapT, ending at ConfigLoop.gapfree_merges_to_one.
+
+M6's formalization debt is therefore NOT discharged by wiring nogap up. nogap is in
+a model that does not match; the content is carried by gapfree_merges_to_one.

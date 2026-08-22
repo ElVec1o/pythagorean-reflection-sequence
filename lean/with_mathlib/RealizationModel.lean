@@ -45,15 +45,29 @@ and a down-crossing, the cycles of the transition system are the two pairs of to
 ends and bottom ends, so the two ends of a single crossing land in different
 cycles.
 
-`trans` is therefore to be read as the **walk** permutation, the turn composed with
-the strand pairing.  A 2-swap re-pairs at one site, sending the turn `t` to
-`swap ∘ t` and hence the walk to `swap ∘ walk`, which is the form `CycleMerge`
-proves things about.  So the machinery below targets the right object; only the
-name and the reading of `trans` were wrong.
+`trans` is to be read as the **walk** permutation, the turn composed with the strand
+pairing.
 
-What is still owed is a construction of that walk permutation from a lamp
-configuration, together with a proof that its cycles are the components.  That is
-recorded here rather than implied to be done. -/
+**CORRECTION (2026-08-23).**  This docstring previously claimed that a 2-swap sends
+the turn `t` to `swap ∘ t`, and hence the walk to `swap ∘ walk`, so that `swapAt`
+below models it.  That is FALSE.  Writing `a, a'` for the two arrivals and
+`d = t a`, `d' = t a'`, the re-paired turn is `WalkGraph.swapT`, and
+
+  swapT ∘ t  :  a ↦ d ↦ a',  a' ↦ d' ↦ a,  d ↦ a ↦ d',  d' ↦ a' ↦ d
+
+so `swapT = (a a')(d d') ∘ t`, a **double** transposition.  By contrast
+`swap d d' ∘ t` sends `d' ↦ a'` where the re-pairing sends `d' ↦ a`.  Consequently
+`sig' = (a a')(d d') ∘ sig`, and `swapAt`, which composes a single transposition,
+does not model the 2-swap.
+
+`comp_swapAt_lt` below remains a true theorem about single transpositions; what is
+wrong is only the claim that it models the merge.  Note also that `orbitCount` of the
+walk permutation counts twice the number of walks, since `p` maps each `sig`-orbit to
+a different one (`ConfigMerge.p_not_in_orbit`).
+
+The merge is instead formalised correctly in `ConfigMerge`, `WalkSupport` and
+`ConfigLoop`, over graph components (`WalkGraph.walkCount`) with the involutive
+re-pairing `swapT`, ending at `ConfigLoop.gapfree_merges_to_one`. -/
 noncomputable def comp (r : Realisation α) : ℕ := orbitCount r.trans
 
 /-- The realisation obtained by a 2-swap at two ends, at unchanged cost. -/
