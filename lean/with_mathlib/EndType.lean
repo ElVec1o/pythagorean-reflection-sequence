@@ -410,6 +410,48 @@ theorem card_ends_edge_dir {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
   intro a c hac
   simpa using hac
 
+/-! ### Discharging the per-edge counts
+
+Matching each part of the split against `card_ends_edge_dir`.  The edge condition
+comes over as an equality of `Fin n` elements, since the integer cast is injective,
+and the direction condition is the up-condition on that edge once the edge is
+fixed. -/
+
+theorem edgeOf_eq_iff {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) (e : Fin n) :
+    edgeOf x = (e : ℤ) ↔ x.edge = e := by
+  unfold edgeOf
+  constructor
+  · intro h
+    have : (x.edge : ℕ) = (e : ℕ) := by exact_mod_cast h
+    exact Fin.ext this
+  · intro h; rw [h]
+
+/-- The top part of the arrivals at a site is counted on the edge below. -/
+theorem card_arr_top {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (e : Fin n) (he : (e : ℤ) = s - 1) :
+    ((arrAt (m := m) up s).filter (fun x => atTop x = true)).card = min (up e) (m e) := by
+  classical
+  have hset : ((arrAt (m := m) up s).filter (fun x => atTop x = true))
+      = Finset.univ.filter (fun x : Endpt n m =>
+          x.edge = e ∧ x.top = true ∧ x.idx.val < up e) := by
+    ext x
+    obtain ⟨e', i, b⟩ := x
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨hmem, ht⟩
+      obtain ⟨hedge, ht', hu⟩ := (arr_top_iff up s _).mp ⟨hmem, ht⟩
+      have hE : e' = e := (edgeOf_eq_iff _ e).mp (by rw [hedge, he])
+      subst hE
+      refine ⟨rfl, ht', ?_⟩
+      unfold isUp at hu
+      simpa using hu
+    · rintro ⟨hE, ht, hu⟩
+      subst hE
+      exact (arr_top_iff up s _).mpr
+        ⟨by rw [show edgeOf (⟨e', i, b⟩ : Endpt n m) = (e' : ℤ) from rfl, he], ht,
+         by unfold isUp; simpa using hu⟩
+  rw [hset, card_ends_edge_dir]
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -435,5 +477,7 @@ theorem card_ends_edge_dir {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
 #print axioms EndType.card_arr_eq_card_dep
 #print axioms EndType.local_turn_exists
 #print axioms EndType.card_ends_edge_dir
+#print axioms EndType.edgeOf_eq_iff
+#print axioms EndType.card_arr_top
 
 end EndType
