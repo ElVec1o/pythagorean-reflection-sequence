@@ -934,3 +934,27 @@ exists SOMEWHERE, not at every site, and found one in all 146 multi-walk cases. 
 HasFreePair is a GLOBAL statement about cost-minimal data and needs an argument that
 ranges over sites. It is a research step, not a formalisation step, and the local
 engine for it is now proved.
+
+## Where the free pair lives -- HasFreePair sharpened (2026-08-23)
+
+Instrumented the probe to report WHICH pair is free and WHERE. (First attempt had a
+bug: it kept pairs at DIFFERENT sites, which are not merge pairs at all. Fixed.)
+
+Corrected counts over n = 1,2,3: 146 multi-walk cost-minimal cases, 2 to 6 free pairs
+each, none with zero. Kinds: 532 arrivals-share-side, 128 departures-share-side.
+
+Every one of the 146 has a free pair at a walk's leftmost site, one of the
+arrivals-share kind, and one that is both. Refining further:
+
+  two walks share a leftmost edge : 98 of 146   (this is pair_of_equal_wLo, Case A)
+  the other 48 STILL have a "both bottom @ leftmost site" free pair
+
+So one uniform statement covers every case, and it holds 1114 of 1114 on n <= 4:
+
+  CONJECTURE (wlo_probe.py). At a cost-minimal transition system with more than one
+  walk, there are two BOTTOM arrivals, in different walks, at a walk's LEFTMOST site.
+
+Both being bottom ends they share a side, so the merge is free. This is much sharper
+than HasFreePair -- it names the site and the side -- and it is exactly the shape the
+Lean placement already produces: exists_bottom_at_wLo gives one bottom end at wLo, and
+the content is that a SECOND walk has a bottom ARRIVAL there too.
