@@ -1197,3 +1197,21 @@ identity.
 M7's formalization debt is discharged at configuration level, on the same footing as
 M5 and M6. The three share one remaining link: the passage from a group element to
 its configuration.
+
+## The walk graph is Local, and where M3 actually sits (2026-08-23)
+
+prop:cut (c >= |Z|) is already proved ABSTRACTLY in CutComponents:
+exists_injective_components_avoiding gives |Z| components avoiding a marked one, for
+any graph satisfying Local -- every edge either stays at one position or steps from
+s-1 to s with s not a gap site.
+
+ConfigLoop.walk_graph_local: the walk graph satisfies Local. The positional half is
+outright -- a turn stays at its site, a crossing steps by exactly one -- so the whole
+content of Local for it is the gap condition, now isolated as the hypothesis
+  forall x, edgeOf x + 1 notin Zf.
+
+IMPORTANT SCOPE NOTE. This is the case the merge chain does NOT cover. Everything
+from thm_nogap_optimal down assumes forall e, 0 < m e, that is Z = empty, while
+prop:cut is about Z nonempty. The two halves of the development meet only at
+Z = empty. So M3's star is NOT reachable from this session's merge work; it needs the
+gap condition discharged against a real configuration, which is a separate task.

@@ -18,6 +18,7 @@ import CostMerge
 import EdgeData
 import GroupElt
 import NoGapCutFree
+import CutComponents
 
 namespace ConfigLoop
 
@@ -498,5 +499,34 @@ theorem travel_minima_agree (up : Fin n → ℕ) (dep trav : Fin n → ℤ)
   obtain ⟨D', ⟨hM, hmin⟩, hone, _⟩ := cor_localzero up dep trav hbal hf hpar hmdef hng e0 ds
   exact ⟨D', hM, hone, hmin, fun F hF _ => hmin F hF⟩
 
+/-! ### The walk graph is `Local`
+
+`prop:cut` (`c ≥ |Z|`) is proved abstractly in `CutComponents` for a graph that is
+`Local`: every edge either stays at one position, or steps from `s-1` to `s` with `s`
+not a gap site.  The walk graph satisfies the positional half outright -- a turn stays
+at its site and a crossing steps by exactly one -- so the whole content of `Local` for
+it is the gap condition, isolated below.
+
+Note this is the case the merge chain does **not** cover: everything from
+`thm_nogap_optimal` down assumes `∀ e, 0 < m e`, i.e. `Z = ∅`, whereas `prop:cut` is
+about `Z ≠ ∅`.  The two halves of the development meet only at `Z = ∅`. -/
+theorem walk_graph_local (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hgap : ∀ x : Endpt n m, edgeOf x + 1 ∉ Zf) :
+    CutComponents.Local (graph (dataOf up hbal)) siteOf Zf := by
+  intro x y hxy
+  rcases hxy with h | h
+  · -- a crossing edge: the two ends of one crossing, at sites `e` and `e + 1`
+    subst h
+    refine ⟨edgeOf x + 1, ?_, ?_, fun _ => hgap x⟩
+    · unfold siteOf edgeOf atTop; cases hx : x.top <;> simp [hx]
+    · show siteOf (partner x) = edgeOf x + 1 - 1 ∨ siteOf (partner x) = edgeOf x + 1
+      unfold siteOf edgeOf atTop partner; cases hx : x.top <;> simp [hx]
+  · -- a turn edge: both ends at the same site
+    subst h
+    exact ⟨siteOf x, Or.inr rfl, Or.inr (turnAt_site up hbal x), fun hne =>
+      absurd (turnAt_site up hbal x).symm hne⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.travel_minima_agree
+#print axioms ConfigLoop.walk_graph_local
