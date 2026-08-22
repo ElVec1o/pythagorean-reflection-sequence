@@ -220,3 +220,6 @@ name = "NoGapMerge"
 
 [[lean_lib]]
 name = "MergeDescent"
+
+[[lean_lib]]
+name = "SharedSite"
