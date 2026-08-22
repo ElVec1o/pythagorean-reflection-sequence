@@ -520,6 +520,99 @@ theorem card_arr_bottom {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : 
          by unfold isUp; simpa using hu⟩
   rw [hset, card_ends_edge_dir_down]
 
+/-! ### The departure side
+
+A departure is an end whose direction disagrees with which end it is.  So a top-end
+departure is a down-crossing on the edge below, and a bottom-end departure an
+up-crossing on the edge above: the complements of the two arrival descriptions. -/
+
+theorem dep_top_iff {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ) (x : Endpt n m) :
+    (x ∈ depAt up s ∧ atTop x = true)
+      ↔ (edgeOf x = s - 1 ∧ atTop x = true ∧ isUp up x = false) := by
+  classical
+  rw [mem_depAt]
+  constructor
+  · rintro ⟨⟨hs, ha⟩, ht⟩
+    refine ⟨edge_of_site_top x s hs ht, ht, ?_⟩
+    unfold isArrOf at ha
+    rw [ht] at ha
+    simpa using ha
+  · rintro ⟨he, ht, hu⟩
+    refine ⟨⟨?_, ?_⟩, ht⟩
+    · unfold siteOf; rw [ht, he]; simp
+    · unfold isArrOf; rw [ht, hu]; rfl
+
+theorem dep_bottom_iff {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (x : Endpt n m) :
+    (x ∈ depAt up s ∧ atTop x = false)
+      ↔ (edgeOf x = s ∧ atTop x = false ∧ isUp up x = true) := by
+  classical
+  rw [mem_depAt]
+  constructor
+  · rintro ⟨⟨hs, ha⟩, ht⟩
+    refine ⟨edge_of_site_bottom x s hs ht, ht, ?_⟩
+    unfold isArrOf at ha
+    rw [ht] at ha
+    simpa using ha
+  · rintro ⟨he, ht, hu⟩
+    refine ⟨⟨?_, ?_⟩, ht⟩
+    · unfold siteOf; rw [ht, he]; simp
+    · unfold isArrOf; rw [ht, hu]; rfl
+
+/-- The top part of the departures is counted on the edge below, as
+down-crossings. -/
+theorem card_dep_top {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (e : Fin n) (he : (e : ℤ) = s - 1) :
+    ((depAt (m := m) up s).filter (fun x => atTop x = true)).card
+      = m e - min (up e) (m e) := by
+  classical
+  have hset : ((depAt (m := m) up s).filter (fun x => atTop x = true))
+      = Finset.univ.filter (fun x : Endpt n m =>
+          x.edge = e ∧ x.top = true ∧ ¬ (x.idx.val < up e)) := by
+    ext x
+    obtain ⟨e', i, b⟩ := x
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨hmem, ht⟩
+      obtain ⟨hedge, ht', hu⟩ := (dep_top_iff up s _).mp ⟨hmem, ht⟩
+      have hE : e' = e := (edgeOf_eq_iff _ e).mp (by rw [hedge, he])
+      subst hE
+      refine ⟨rfl, ht', ?_⟩
+      unfold isUp at hu; simpa using hu
+    · rintro ⟨hE, ht, hu⟩
+      subst hE
+      exact (dep_top_iff up s _).mpr
+        ⟨by rw [show edgeOf (⟨e', i, b⟩ : Endpt n m) = (e' : ℤ) from rfl, he], ht,
+         by unfold isUp; simpa using hu⟩
+  rw [hset, card_ends_edge_dir_down]
+
+/-- The bottom part of the departures is counted on the edge above, as
+up-crossings. -/
+theorem card_dep_bottom {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (e : Fin n) (he : (e : ℤ) = s) :
+    ((depAt (m := m) up s).filter (fun x => atTop x = false)).card
+      = min (up e) (m e) := by
+  classical
+  have hset : ((depAt (m := m) up s).filter (fun x => atTop x = false))
+      = Finset.univ.filter (fun x : Endpt n m =>
+          x.edge = e ∧ x.top = false ∧ x.idx.val < up e) := by
+    ext x
+    obtain ⟨e', i, b⟩ := x
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · rintro ⟨hmem, ht⟩
+      obtain ⟨hedge, ht', hu⟩ := (dep_bottom_iff up s _).mp ⟨hmem, ht⟩
+      have hE : e' = e := (edgeOf_eq_iff _ e).mp (by rw [hedge, he])
+      subst hE
+      refine ⟨rfl, ht', ?_⟩
+      unfold isUp at hu; simpa using hu
+    · rintro ⟨hE, ht, hu⟩
+      subst hE
+      exact (dep_bottom_iff up s _).mpr
+        ⟨by rw [show edgeOf (⟨e', i, b⟩ : Endpt n m) = (e' : ℤ) from rfl, he], ht,
+         by unfold isUp; simpa using hu⟩
+  rw [hset, card_ends_edge_dir]
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -549,5 +642,9 @@ theorem card_arr_bottom {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : 
 #print axioms EndType.card_arr_top
 #print axioms EndType.card_ends_edge_dir_down
 #print axioms EndType.card_arr_bottom
+#print axioms EndType.dep_top_iff
+#print axioms EndType.dep_bottom_iff
+#print axioms EndType.card_dep_top
+#print axioms EndType.card_dep_bottom
 
 end EndType
