@@ -66,6 +66,52 @@ theorem mono_swapData {α : Type*} [DecidableEq α] [Fintype α] (D : WalkGraph.
   intro x y hxy
   exact ((reach_of_adj_reach (graph D) _ h) x y hxy).mono (le_swapData D a d a' d' hd hd' h1 h2 h3)
 
+/-! ### The side conditions are not independent
+
+The descent was stated with the turn-partner equations, six distinctness facts and a
+"turn back" equation all as separate hypotheses.  All seven follow from the turn
+structure together with `hsplit`, the one hypothesis that carries content.  Proving
+that both shrinks the statement and is evidence against vacuity: a contradictory
+hypothesis set would not admit these derivations with `hsplit` still standing. -/
+
+section Derive
+variable {α : Type*} [DecidableEq α] [Fintype α] (D : WalkGraph.Data α)
+  {a d a' d' : α}
+
+/-- The turn from `d'` goes back to `a'`: immediate from the involution. -/
+theorem back_of_turn (hta' : D.t a' = d') : D.t d' = a' := by
+  rw [← hta', D.t_invol]
+
+/-- Two ends in different components are distinct. -/
+theorem ne_of_split (hsplit : ¬ (graph D).Reachable a a') : a' ≠ a := by
+  rintro rfl; exact hsplit (SimpleGraph.Reachable.refl _)
+
+/-- An end differs from its own turn-partner. -/
+theorem dep_ne_arr (hta : D.t a = d) : d ≠ a := by
+  rw [← hta]; exact D.t_ne a
+
+/-- Distinct arrivals have distinct turn-partners. -/
+theorem dep_ne_dep (hta : D.t a = d) (hta' : D.t a' = d')
+    (ha'a : a' ≠ a) : d' ≠ d := by
+  intro h
+  apply ha'a
+  have : D.t (D.t a') = D.t (D.t a) := by rw [hta, hta', h]
+  rwa [D.t_invol, D.t_invol] at this
+
+/-- If one arrival were the other's turn-partner they would share a walk, which
+`hsplit` forbids. -/
+theorem dep_ne_other (hta' : D.t a' = d')
+    (hsplit : ¬ (graph D).Reachable a a') : d' ≠ a := by
+  rintro rfl
+  exact hsplit (SimpleGraph.Adj.reachable (Or.inr hta'.symm)).symm
+
+theorem dep_ne_other' (hta : D.t a = d)
+    (hsplit : ¬ (graph D).Reachable a a') : d ≠ a' := by
+  rintro rfl
+  exact hsplit (SimpleGraph.Adj.reachable (Or.inr hta.symm))
+
+end Derive
+
 /-- **The descent on an actual configuration.**  Re-pairing two arrivals that lie
 at a common site but in *different* walks lowers the walk count.
 
@@ -107,6 +153,43 @@ theorem config_walkCount_lt (up : Fin n → ℕ)
   · exact merge_connects_full (dataOf up hbal) a d a' d' hta hta' _ _ _
       M hM hpos k₁ k₂ klast hback
 
+/-- **The descent, with the redundant side conditions discharged.**
+
+Same conclusion as `config_walkCount_lt`, but the six distinctness facts and the
+turn-back equation are now *derived* rather than assumed.  What remains are the two
+turn-partner equations, the shared site, the cycle input `hadj`, the walk-closure
+data, and `hsplit`. -/
+theorem config_descent (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (a d a' d' : Endpt n m)
+    (hta : turn up a = d) (hta' : turn up a' = d')
+    (hd : siteOf d = siteOf a) (ha' : siteOf a' = siteOf a) (hd' : siteOf d' = siteOf a)
+    (hadj : ∀ x y, (graph (dataOf up hbal)).Adj x y →
+      ((graph (dataOf up hbal)).deleteEdges {s(a, d), s(a', d')}).Reachable x y)
+    (M : ℕ) (hM : (sig (dataOf up hbal))^[M] d' = d') (hpos : 0 < M)
+    (k₁ : ∀ k, k < M - 1 →
+      s((sig (dataOf up hbal))^[k] d',
+        (dataOf up hbal).p ((sig (dataOf up hbal))^[k] d')) ∉
+        ({s(a, d), s(a', d')} : Set (Sym2 (Endpt n m))))
+    (k₂ : ∀ k, k < M - 1 →
+      s((dataOf up hbal).p ((sig (dataOf up hbal))^[k] d'),
+        (dataOf up hbal).t ((dataOf up hbal).p ((sig (dataOf up hbal))^[k] d'))) ∉
+        ({s(a, d), s(a', d')} : Set (Sym2 (Endpt n m))))
+    (klast : s((sig (dataOf up hbal))^[M-1] d',
+        (dataOf up hbal).p ((sig (dataOf up hbal))^[M-1] d')) ∉
+        ({s(a, d), s(a', d')} : Set (Sym2 (Endpt n m))))
+    (hsplit : ¬ (graph (dataOf up hbal)).Reachable a a') :
+    walkCount (swapDataOf up hbal a d a' d' hta hta' hd ha' hd'
+        (dep_ne_arr (dataOf up hbal) hta) (dep_ne_other (dataOf up hbal) hta' hsplit) (ne_of_split (dataOf up hbal) hsplit)
+        (dep_ne_dep (dataOf up hbal) hta hta' (ne_of_split (dataOf up hbal) hsplit)) 
+        (Ne.symm (dep_ne_arr (dataOf up hbal) hta')) (dep_ne_other' (dataOf up hbal) hta hsplit)) <
+      walkCount (dataOf up hbal) :=
+  config_walkCount_lt up hbal a d a' d' hta hta' hd ha' hd'
+    (dep_ne_arr (dataOf up hbal) hta) (dep_ne_other (dataOf up hbal) hta' hsplit) (ne_of_split (dataOf up hbal) hsplit)
+    (dep_ne_dep (dataOf up hbal) hta hta' (ne_of_split (dataOf up hbal) hsplit))
+    (Ne.symm (dep_ne_arr (dataOf up hbal) hta')) (dep_ne_other' (dataOf up hbal) hta hsplit)
+    hadj M hM hpos k₁ k₂ klast (back_of_turn (dataOf up hbal) hta') hsplit
+
 -- Certification (Rule 5).
 #print axioms ConfigMerge.swapDataOf
 
@@ -114,3 +197,10 @@ end ConfigMerge
 #print axioms ConfigMerge.reach_of_adj_reach
 #print axioms ConfigMerge.mono_swapData
 #print axioms ConfigMerge.config_walkCount_lt
+#print axioms ConfigMerge.back_of_turn
+#print axioms ConfigMerge.ne_of_split
+#print axioms ConfigMerge.dep_ne_arr
+#print axioms ConfigMerge.dep_ne_dep
+#print axioms ConfigMerge.dep_ne_other
+#print axioms ConfigMerge.dep_ne_other'
+#print axioms ConfigMerge.config_descent
