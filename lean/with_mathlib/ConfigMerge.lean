@@ -83,6 +83,7 @@ theorem back_of_turn' {β : Type*} (D : WalkGraph.Data β) {a' d' : β}
     (hta' : D.t a' = d') : D.t d' = a' := by
   rw [← hta', D.t_invol]
 
+omit [DecidableEq α] [Fintype α] in
 /-- Two ends in different components are distinct. -/
 theorem ne_of_split (hsplit : ¬ (graph D).Reachable a a') : a' ≠ a := by
   rintro rfl; exact hsplit (SimpleGraph.Reachable.refl _)
@@ -101,6 +102,7 @@ theorem dep_ne_dep' {β : Type*} (D : WalkGraph.Data β) {a d a' d' : β}
   have : D.t (D.t a') = D.t (D.t a) := by rw [hta, hta', h]
   rwa [D.t_invol, D.t_invol] at this
 
+omit [DecidableEq α] [Fintype α] in
 /-- If one arrival were the other's turn-partner they would share a walk, which
 `hsplit` forbids. -/
 theorem dep_ne_other (hta' : D.t a' = d')
@@ -108,6 +110,7 @@ theorem dep_ne_other (hta' : D.t a' = d')
   rintro rfl
   exact hsplit (SimpleGraph.Adj.reachable (Or.inr hta'.symm)).symm
 
+omit [DecidableEq α] [Fintype α] in
 theorem dep_ne_other' (hta : D.t a = d)
     (hsplit : ¬ (graph D).Reachable a a') : d ≠ a' := by
   rintro rfl

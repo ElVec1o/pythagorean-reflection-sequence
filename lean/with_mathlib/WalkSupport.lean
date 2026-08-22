@@ -27,6 +27,7 @@ noncomputable def walkEdges (edgeOf : α → ℤ) (G : SimpleGraph α) (z : α) 
   classical
   exact ((Finset.univ.filter (fun a => G.Reachable z a)).image edgeOf)
 
+omit [DecidableEq α] in
 theorem walkEdges_nonempty (edgeOf : α → ℤ) (G : SimpleGraph α) (z : α) :
     (walkEdges edgeOf G z).Nonempty := by
   classical
@@ -38,6 +39,7 @@ theorem walkEdges_nonempty (edgeOf : α → ℤ) (G : SimpleGraph α) (z : α) :
 noncomputable def wLo (edgeOf : α → ℤ) (G : SimpleGraph α) (z : α) : ℤ :=
   (walkEdges edgeOf G z).min' (walkEdges_nonempty edgeOf G z)
 
+omit [DecidableEq α] in
 theorem wLo_le (edgeOf : α → ℤ) (G : SimpleGraph α) {z x : α} (h : G.Reachable z x) :
     wLo edgeOf G z ≤ edgeOf x := by
   classical
@@ -45,6 +47,7 @@ theorem wLo_le (edgeOf : α → ℤ) (G : SimpleGraph α) {z x : α} (h : G.Reac
   simp only [walkEdges, Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and]
   exact ⟨x, h, rfl⟩
 
+omit [DecidableEq α] in
 /-- The minimum is attained: the walk has an end on its leftmost edge. -/
 theorem exists_end_at_wLo (edgeOf : α → ℤ) (G : SimpleGraph α) (z : α) :
     ∃ x : α, G.Reachable z x ∧ edgeOf x = wLo edgeOf G z := by
@@ -56,11 +59,13 @@ theorem exists_end_at_wLo (edgeOf : α → ℤ) (G : SimpleGraph α) (z : α) :
   obtain ⟨x, hx, hxe⟩ := hmem
   exact ⟨x, hx, hxe⟩
 
+omit [Fintype α] [DecidableEq α] in
 /-- **Strand-closure is free here.**  An end is adjacent to its crossing partner, so
 the partner is always in the same walk -- no hypothesis needed. -/
 theorem reachable_partner (D : Data α) (x : α) : (graph D).Reachable x (D.p x) :=
   (SimpleGraph.Adj.reachable (G := graph D) (Or.inl rfl))
 
+omit [DecidableEq α] in
 /-- A bottom end on the leftmost edge always exists: if the end there is a top end,
 its partner shares the edge, is a bottom end, and lies in the same walk. -/
 theorem exists_bottom_at_wLo (edgeOf : α → ℤ) (atTop : α → Bool) (D : Data α)
@@ -76,6 +81,7 @@ theorem exists_bottom_at_wLo (edgeOf : α → ℤ) (atTop : α → Bool) (D : Da
     · rw [hpe]; exact hxe
     · rw [hpt]; simp at hb; simp [hb]
 
+omit [DecidableEq α] in
 /-- **The extraction, over walks.**  The top end of the edge immediately left of a
 walk's support sits at the walk's leftmost site and lies in a *different walk* --
 because its edge is below the support, which every edge of the walk is not. -/
@@ -92,6 +98,7 @@ theorem shared_ends_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
     have := wLo_le edgeOf G hc
     omega
 
+omit [DecidableEq α] in
 /-- **The placement, over walks.**  Two ends at a common site in *different walks*:
 exactly `config_descent`'s pair, with `hsplit` the second conjunct. -/
 theorem walk_shared_site_pair (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
@@ -122,6 +129,7 @@ is below it, so the top end there lies in a different walk.  That case is
 `walk_shared_site_pair` above.
 -/
 
+omit [DecidableEq α] in
 /-- **Case A.**  Two different walks whose supports start on the same edge each have
 a bottom end there, and the two sit at the same site. -/
 theorem pair_of_equal_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
@@ -143,6 +151,7 @@ theorem pair_of_equal_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D 
   · intro hc
     exact hsplit ((hxr.trans hc).trans hyr.symm)
 
+omit [DecidableEq α] in
 /-- **The dichotomy.**  Two ends in different walks yield a pair at a common site in
 different walks.
 
@@ -196,6 +205,7 @@ turn converts one into the other at no cost: it maps an end to one of the opposi
 role at the same site, and it is an edge of the walk graph, so the arrival it
 produces lies in the same walk. -/
 
+omit [Fintype α] [DecidableEq α] in
 /-- **Every end has an arrival beside it**: itself if it is one, otherwise its turn,
 which sits at the same site and in the same walk. -/
 theorem arrival_beside (siteOf : α → ℤ) (isArr : α → Bool) (D : Data α)
@@ -304,6 +314,7 @@ different walks are conjectured to sit there
 
 The half about the maximising walk is proved here. -/
 
+omit [DecidableEq α] in
 /-- **Every end of a walk at its own leftmost site is a bottom end.**  A top end at
 that site would lie on the edge one to the left, below the support. -/
 theorem bottom_of_end_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
@@ -322,6 +333,7 @@ theorem bottom_of_end_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
 noncomputable def maxWLo (edgeOf : α → ℤ) (G : SimpleGraph α) (z₀ : α) : ℤ :=
   Finset.univ.sup' ⟨z₀, Finset.mem_univ z₀⟩ (fun z => wLo edgeOf G z)
 
+omit [DecidableEq α] in
 /-- `s*` is attained, and dominates every walk's leftmost edge. -/
 theorem maxWLo_spec (edgeOf : α → ℤ) (G : SimpleGraph α) (z₀ : α) :
     (∃ z : α, wLo edgeOf G z = maxWLo edgeOf G z₀) ∧
@@ -333,6 +345,7 @@ theorem maxWLo_spec (edgeOf : α → ℤ) (G : SimpleGraph α) (z₀ : α) :
   · intro w
     exact Finset.le_sup' (f := fun z => wLo edgeOf G z) (Finset.mem_univ w)
 
+omit [DecidableEq α] in
 /-- **At `s*`, the maximising walk is all bottom ends.**  This is the half of the
 canonical-site conjecture that does not need cost-minimality. -/
 theorem maximising_walk_all_bottom (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
@@ -342,6 +355,7 @@ theorem maximising_walk_all_bottom (edgeOf siteOf : α → ℤ) (atTop : α → 
   intro x hzx hs
   exact bottom_of_end_at_wLo edgeOf siteOf atTop G hsite z x hzx (by rw [hs, hz])
 
+omit [DecidableEq α] in
 /-- **The maximising walk has a bottom ARRIVAL at its leftmost site.**  This is
 claim (i) of the canonical-site conjecture, and it needs **no** cost-minimality --
 confirmed on all 76945 multi-walk systems, not only the 1114 minimal ones.
@@ -367,6 +381,7 @@ theorem maximiser_has_bottom_arrival (edgeOf siteOf : α → ℤ) (atTop isArr :
   exact bottom_of_end_at_wLo edgeOf siteOf atTop (graph D) hsite z a
     (hxr.trans hxa) (by rw [hasite, hxs])
 
+omit [Fintype α] [DecidableEq α] in
 /-- **A walk meeting a site has an arrival there.**  If an end of the walk sits at
 site `s`, so does an arrival of the same walk: either that end, or its turn-partner,
 which shares the site, lies in the same walk, and has the opposite role. -/
@@ -378,6 +393,7 @@ theorem walk_has_arrival_at_site (siteOf : α → ℤ) (isArr : α → Bool) (D 
   obtain ⟨a, hasite, haarr, hxa⟩ := arrival_beside siteOf isArr D hts hta x
   exact ⟨a, hzx.trans hxa, by rw [hasite, hs], haarr⟩
 
+omit [DecidableEq α] in
 /-- **Another walk reaches the maximiser's leftmost site.**  The structural fact the
 free-pair argument needs, and it splits on whether anything lies to the left.
 
@@ -409,6 +425,7 @@ theorem other_end_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D :
     simp at h
     omega
 
+omit [DecidableEq α] in
 /-- **In the maximising walk, a departure at the leftmost site is a bottom end too.**
 
 This is what kills the one configuration `cross_dearer` would otherwise allow: the

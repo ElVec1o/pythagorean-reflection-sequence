@@ -217,6 +217,7 @@ def CanonicalPair (d : EndData.Data α) (edgeOf siteOf : α → ℤ) (atTop : α
     d.isArr (D.t a) = false ∧ d.isArr (D.t a') = false ∧
     ¬ (graph D).Reachable a a'
 
+omit [DecidableEq α] in
 /-- **The canonical form implies the free-pair hypothesis.**  Two bottom ends share a
 side, which is exactly what the merge needs. -/
 theorem hasFreePair_of_canonical (d : EndData.Data α) (edgeOf siteOf : α → ℤ)

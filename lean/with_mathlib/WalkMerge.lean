@@ -29,11 +29,14 @@ def Step (p t : α → α) (x y : α) : Prop := y = p x ∨ y = t x
 /-- Connectivity under both involutions: the walk relation. -/
 def Conn (p t : α → α) : α → α → Prop := Relation.ReflTransGen (Step p t)
 
+omit [DecidableEq α] in
 theorem conn_refl (p t : α → α) (x : α) : Conn p t x x := Relation.ReflTransGen.refl
 
+omit [DecidableEq α] in
 theorem conn_of_step {p t : α → α} {x y : α} (h : Step p t x y) : Conn p t x y :=
   Relation.ReflTransGen.single h
 
+omit [DecidableEq α] in
 theorem conn_trans {p t : α → α} {x y z : α}
     (h₁ : Conn p t x y) (h₂ : Conn p t y z) : Conn p t x z :=
   Relation.ReflTransGen.trans h₁ h₂

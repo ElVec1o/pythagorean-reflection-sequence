@@ -37,11 +37,13 @@ variable (D : Data α)
 /-- Adjacency: the crossing partner or the site partner. -/
 def Adj (x y : α) : Prop := y = D.p x ∨ y = D.t x
 
+omit [DecidableEq α] [Fintype α] in
 theorem adj_symm {x y : α} (h : Adj D x y) : Adj D y x := by
   rcases h with rfl | rfl
   · exact Or.inl (D.p_invol x).symm
   · exact Or.inr (D.t_invol x).symm
 
+omit [DecidableEq α] [Fintype α] in
 theorem adj_irrefl (x : α) : ¬ Adj D x x := by
   rintro (h | h)
   · exact D.p_ne x h.symm
@@ -88,9 +90,11 @@ theorem witness_degree : (graph dataW).degree 0 = 2 := degree_eq_two dataW 0
 
 /-! ### From "not a bridge" to the path the merge needs -/
 
+omit [DecidableEq α] [Fintype α] in
 /-- The turn-edge at `x` is an edge of the walk graph. -/
 theorem adj_turn (x : α) : (graph D).Adj x (D.t x) := Or.inr rfl
 
+omit [DecidableEq α] [Fintype α] in
 /-- **The reduction.**  If the turn-edge at `x` is not a bridge, its endpoints stay
 connected after it is deleted.  That surviving path is `WalkMerge.conn_merge`'s
 hypothesis: it uses only crossing-edges and turn-edges other than the deleted one,
@@ -102,6 +106,7 @@ theorem reachable_delete_of_not_bridge (x : α)
   push Not at hnb
   exact hnb (adj_turn D x)
 
+omit [DecidableEq α] [Fintype α] in
 /-- Equivalently, exhibiting a cycle through the turn-edge suffices.  This is the
 form 2-regularity feeds: in a 2-regular graph every edge lies in a cycle, so no
 edge is a bridge. -/
@@ -112,6 +117,7 @@ theorem not_bridge_of_cycle (x : α) {u : α} (c : (graph D).Walk u u)
   rintro ⟨-, hall⟩
   exact hall c hc hmem
 
+omit [DecidableEq α] [Fintype α] in
 /-- The two composed: a cycle through the turn-edge gives the path. -/
 theorem reachable_delete_of_cycle (x : α) {u : α} (c : (graph D).Walk u u)
     (hc : c.IsCycle) (hmem : s(x, D.t x) ∈ c.edges) :
@@ -144,6 +150,7 @@ where `SimpleGraph.Walk.IsCycle` has to be discharged.  The first two are routin
 the third is the work.
 -/
 
+omit [DecidableEq α] [Fintype α] in
 /-- The crossing-edge at an end. -/
 theorem adj_cross (x : α) : (graph D).Adj x (D.p x) := Or.inl rfl
 
@@ -161,6 +168,7 @@ theorem sig_p_t {β : Type*} (D : Data β) (x : β) : sig D (D.p (D.t x)) = x :=
   unfold sig
   rw [D.p_invol, D.t_invol]
 
+omit [DecidableEq α] [Fintype α] in
 /-- In the graph with one turn-edge removed, a crossing-edge is still available. -/
 theorem reach_cross (e : Sym2 α) (x : α) (h : s(x, D.p x) ≠ e) :
     ((graph D).deleteEdges {e}).Reachable x (D.p x) :=
@@ -168,6 +176,7 @@ theorem reach_cross (e : Sym2 α) (x : α) (h : s(x, D.p x) ≠ e) :
     rw [SimpleGraph.deleteEdges_adj]
     exact ⟨adj_cross D x, by simpa using h⟩)
 
+omit [DecidableEq α] [Fintype α] in
 /-- And a turn-edge, provided it is not the removed one. -/
 theorem reach_turn (e : Sym2 α) (x : α) (h : s(x, D.t x) ≠ e) :
     ((graph D).deleteEdges {e}).Reachable x (D.t x) :=
@@ -175,6 +184,7 @@ theorem reach_turn (e : Sym2 α) (x : α) (h : s(x, D.t x) ≠ e) :
     rw [SimpleGraph.deleteEdges_adj]
     exact ⟨adj_turn D x, by simpa using h⟩)
 
+omit [DecidableEq α] [Fintype α] in
 /-- One alternating step is available whenever neither of its two edges is the
 removed one. -/
 theorem reach_sig_step (e : Sym2 α) (x : α)
@@ -182,6 +192,7 @@ theorem reach_sig_step (e : Sym2 α) (x : α)
     ((graph D).deleteEdges {e}).Reachable x (sig D x) :=
   (reach_cross D e x h₁).trans (reach_turn D e (D.p x) h₂)
 
+omit [DecidableEq α] [Fintype α] in
 /-- **The alternating walk, as reachability.**  If no step uses the removed edge,
 then every iterate of `sig` is reachable from the start. -/
 theorem reach_sig_iterate (e : Sym2 α) (x : α)
@@ -197,6 +208,7 @@ theorem reach_sig_iterate (e : Sym2 α) (x : α)
     rw [Function.iterate_succ_apply]
     exact (reach_sig_step D e x (h₁ x) (h₂ x)).trans (ih (sig D x))
 
+omit [DecidableEq α] [Fintype α] in
 /-- **The usable form.**  `reach_sig_iterate` above is true but inapplicable to the
 case the merge needs: its hypothesis `∀ y, s(p y, t (p y)) ≠ e` fails at `y = p x`
 when `e` is the turn-edge at `x`, since `p (p x) = x`.  So the conditions are
@@ -226,6 +238,7 @@ theorem reach_sig_iterate' (e : Sym2 α) (x : α) : ∀ n : ℕ,
 
 /-! ### Landing the endpoint -/
 
+omit [DecidableEq α] [Fintype α] in
 /-- The alternating map is injective, being a composite of two involutions. -/
 theorem sig_injective : Function.Injective (sig D) := by
   intro a b h
@@ -235,6 +248,7 @@ theorem sig_injective : Function.Injective (sig D) := by
   have h2 := congrArg D.p h1
   rwa [D.p_invol, D.p_invol] at h2
 
+omit [DecidableEq α] [Fintype α] in
 /-- A crossing-edge is never the turn-edge at `x`, since the two partners of an end
 are distinct. -/
 theorem cross_ne_turn (x y : α) : s(y, D.p y) ≠ s(x, D.t x) := by
@@ -248,6 +262,7 @@ theorem cross_ne_turn (x y : α) : s(y, D.p y) ≠ s(x, D.t x) := by
       rw [← this, h1]
     exact D.pt_ne x this.symm
 
+omit [DecidableEq α] [Fintype α] in
 /-- `p (t x)` is the `sig`-predecessor of `x`. -/
 theorem p_t_eq_iterate (x : α) (m : ℕ) (hm : (sig D)^[m] x = x) (hpos : 0 < m) :
     D.p (D.t x) = (sig D)^[m-1] x := by
@@ -259,6 +274,7 @@ theorem p_t_eq_iterate (x : α) (m : ℕ) (hm : (sig D)^[m] x = x) (hpos : 0 < m
     omega
   rw [this, hm]
 
+omit [DecidableEq α] [Fintype α] in
 /-- **The path after deleting a turn-edge.**  With `m` the minimal period of `x`
 under the alternating map, and `p x` outside the orbit of `x` (which is the
 distinctness of the two `sig`-cycles making up a walk), deleting the turn-edge at
@@ -307,9 +323,11 @@ theorem reach_delete_turn (x : α) (m : ℕ)
 `WalkGraph` uses `SimpleGraph.Reachable`.  They agree, which lets the merge lemma
 consume `reach_delete_turn`. -/
 
+omit [DecidableEq α] [Fintype α] in
 /-- A step of `WalkMerge` is an edge of the walk graph. -/
 theorem step_adj {x y : α} (h : WalkMerge.Step D.p D.t x y) : (graph D).Adj x y := h
 
+omit [DecidableEq α] [Fintype α] in
 /-- Connectivity in the step sense implies reachability in the graph. -/
 theorem reachable_of_conn {x y : α} (h : WalkMerge.Conn D.p D.t x y) :
     (graph D).Reachable x y := by
@@ -317,6 +335,7 @@ theorem reachable_of_conn {x y : α} (h : WalkMerge.Conn D.p D.t x y) :
   | refl => exact SimpleGraph.Reachable.refl x
   | tail _ hstep ih => exact ih.trans (SimpleGraph.Adj.reachable (step_adj D hstep))
 
+omit [DecidableEq α] [Fintype α] in
 /-- And conversely: an edge of the graph is a step. -/
 theorem conn_of_adj {x y : α} (h : (graph D).Adj x y) : WalkMerge.Conn D.p D.t x y :=
   WalkMerge.conn_of_step h
@@ -369,12 +388,15 @@ def swapData (D : Data α) (a d a' d' : α)
   t_ne := hne
   pt_ne := hpt
 
+omit [Fintype α] in
 @[simp] theorem swapData_t (D : Data α) (a d a' d' : α) (h1 h2 h3) :
     (swapData D a d a' d' h1 h2 h3).t = swapT D.t a d a' d' := rfl
 
+omit [Fintype α] in
 @[simp] theorem swapData_p (D : Data α) (a d a' d' : α) (h1 h2 h3) :
     (swapData D a d a' d' h1 h2 h3).p = D.p := rfl
 
+omit [Fintype α] in
 /-- **The merging edge.**  In the re-paired data, `a` is adjacent to `d'`, which lay
 in the other walk.  This is the edge that joins them. -/
 theorem adj_merge (D : Data α) (a d a' d' : α) (h1 h2 h3) :
@@ -382,6 +404,7 @@ theorem adj_merge (D : Data α) (a d a' d' : α) (h1 h2 h3) :
   refine Or.inr ?_
   simp [swapData, swapT]
 
+omit [Fintype α] in
 /-- **The surviving edges.**  Every edge of the original graph other than the two
 turn-edges being re-paired is an edge of the re-paired graph: crossing-edges are
 untouched, and a turn-edge at an end outside the four is unchanged because the new
@@ -416,6 +439,7 @@ theorem le_swapData (D : Data α) (a d a' d' : α)
       rw [htu, hc, Sym2.eq_swap]
     rw [if_neg hua, if_neg hud', if_neg hua', if_neg hud]
 
+omit [Fintype α] in
 /-- **The merge.**  Re-pairing two arrivals joins their walks: the merging edge
 carries `a` to `d'`, and the surviving half of the second walk carries `d'` to `a'`,
 transported into the re-paired graph by `le_swapData`.
@@ -437,21 +461,25 @@ theorem merge_connects (D : Data α) (a d a' d' : α)
 The merge needs both re-paired turn-edges gone at once, so the chain is restated
 for a set. -/
 
+omit [DecidableEq α] [Fintype α] in
 theorem reach_cross_set (S : Set (Sym2 α)) (x : α) (h : s(x, D.p x) ∉ S) :
     ((graph D).deleteEdges S).Reachable x (D.p x) :=
   SimpleGraph.Adj.reachable (by
     rw [SimpleGraph.deleteEdges_adj]; exact ⟨adj_cross D x, h⟩)
 
+omit [DecidableEq α] [Fintype α] in
 theorem reach_turn_set (S : Set (Sym2 α)) (x : α) (h : s(x, D.t x) ∉ S) :
     ((graph D).deleteEdges S).Reachable x (D.t x) :=
   SimpleGraph.Adj.reachable (by
     rw [SimpleGraph.deleteEdges_adj]; exact ⟨adj_turn D x, h⟩)
 
+omit [DecidableEq α] [Fintype α] in
 theorem reach_sig_step_set (S : Set (Sym2 α)) (x : α)
     (h₁ : s(x, D.p x) ∉ S) (h₂ : s(D.p x, D.t (D.p x)) ∉ S) :
     ((graph D).deleteEdges S).Reachable x (sig D x) :=
   (reach_cross_set D S x h₁).trans (reach_turn_set D S (D.p x) h₂)
 
+omit [DecidableEq α] [Fintype α] in
 /-- The alternating walk with a whole set of edges removed. -/
 theorem reach_sig_iterate_set (S : Set (Sym2 α)) (x : α) : ∀ n : ℕ,
     (∀ k, k < n → s((sig D)^[k] x, D.p ((sig D)^[k] x)) ∉ S) →
@@ -476,6 +504,7 @@ theorem reach_sig_iterate_set (S : Set (Sym2 α)) (x : α) : ∀ n : ℕ,
         have := h₂ (k + 1) (by omega)
         rwa [Function.iterate_succ_apply] at this
 
+omit [DecidableEq α] [Fintype α] in
 /-- **The path, with a set of edges removed.**  The conditions are now explicit
 non-membership statements along the orbit, so the set may contain the other walk's
 re-paired turn-edge as well: that edge simply never occurs along this orbit. -/
@@ -491,6 +520,7 @@ theorem reach_delete_turn_set (S : Set (Sym2 α)) (x : α) (m : ℕ)
     rw [← p_t_eq_iterate D x m hm hpos, D.p_invol]
   exact hend ▸ hout.trans hland
 
+omit [Fintype α] in
 /-- **The merge, with no path hypothesis.**  Re-pairing two arrivals joins their
 walks, given only that the second walk's orbit avoids both re-paired turn-edges,
 which is what the two arrivals lying in different walks provides. -/
@@ -526,6 +556,7 @@ noncomputable instance compFintype (D : Data α) :
 noncomputable def walkCount (D : Data α) : ℕ :=
   Fintype.card (graph D).ConnectedComponent
 
+omit [DecidableEq α] in
 /-- **The merge lowers the walk count.**  `hmono` says connectivity is not
 destroyed, which the merge does not do since each walk is a cycle and loses only
 one edge; `hsplit` and `hjoin` say the two arrivals were in different walks and are

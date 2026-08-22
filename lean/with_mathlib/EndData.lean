@@ -47,6 +47,7 @@ def sgn (d : Data α) (a : α) : Bool :=
 def pcostF (d : Data α) (a b : α) : ℤ :=
   if d.side a = d.side b then (if sgn d a = sgn d b then 0 else 2) else 1
 
+omit [DecidableEq α] [Fintype α] in
 /-- **On an arrival/departure pair the cost sees only the side pattern.**  This is
 not vacuous: it is the consequence of the sign being forced. -/
 theorem pcost_eq_of_arr_dep (d : Data α) (a b : α)
@@ -55,16 +56,18 @@ theorem pcost_eq_of_arr_dep (d : Data α) (a b : α)
   unfold pcostF sgn
   by_cases hs : d.side a = d.side b
   · rw [hs]
-    simp only [hs, ha, hb, if_true]
-    cases hsb : d.side b <;> simp [hsb, ha, hb] <;> cases d.depSign _ <;> simp
+    simp only [ha, hb, if_true]
+    cases d.side b <;> simp
   · simp [hs]
 
+omit [DecidableEq α] [Fintype α] in
 /-- Two arrivals on the same side carry the same sign. -/
 theorem sgn_eq_of_both_arr (d : Data α) (a b : α)
     (hs : d.side a = d.side b) (ha : d.isArr a = true) (hb : d.isArr b = true) :
     sgn d a = sgn d b := by
   unfold sgn; rw [hs]; simp [ha, hb]
 
+omit [DecidableEq α] [Fintype α] in
 /-- Two departures on the same side carry the same sign. -/
 theorem sgn_eq_of_both_dep (d : Data α) (a b : α)
     (hs : d.side a = d.side b) (ha : d.isArr a = false) (hb : d.isArr b = false) :
@@ -75,6 +78,7 @@ theorem sgn_eq_of_both_dep (d : Data α) (a b : α)
 def transCost (d : Data α) (π : Perm α) : ℤ :=
   ∑ a ∈ Finset.univ.filter (fun a => d.isArr a = true), pcostF d a (π a)
 
+omit [Fintype α] in
 /-- Away from the two ends being exchanged, the summand is unchanged. -/
 theorem summand_eq_of_ne (d : Data α) (π : Perm α) (x y a : α)
     (hx : a ≠ π.symm x) (hy : a ≠ π.symm y) :
@@ -83,10 +87,12 @@ theorem summand_eq_of_ne (d : Data α) (π : Perm α) (x y a : α)
   have hπy : π a ≠ y := fun h => hy (by rw [← h, Equiv.symm_apply_apply])
   simp [Perm.mul_apply, swap_apply_of_ne_of_ne hπx hπy]
 
+omit [Fintype α] in
 @[simp] theorem apply_symm_left (π : Perm α) (x y : α) :
     (swap x y * π) (π.symm x) = y := by
   simp [Perm.mul_apply, Equiv.apply_symm_apply]
 
+omit [Fintype α] in
 @[simp] theorem apply_symm_right (π : Perm α) (x y : α) :
     (swap x y * π) (π.symm y) = x := by
   simp [Perm.mul_apply, Equiv.apply_symm_apply]

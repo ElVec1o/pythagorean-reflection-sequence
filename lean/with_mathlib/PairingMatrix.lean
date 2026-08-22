@@ -66,6 +66,7 @@ class-`J` departure. -/
 def mult (ca : A → Cls) (cd : D → Cls) (σ : A ≃ D) (I J : Cls) : ℕ :=
   (Finset.univ.filter fun a => ca a = I ∧ cd (σ a) = J).card
 
+omit [Fintype D] in
 theorem sum_mult_row (ca : A → Cls) (cd : D → Cls) (σ : A ≃ D) (I : Cls) :
     ∑ J, mult ca cd σ I J = cnt ca I := by
   simp only [mult, cnt, Finset.card_filter]
@@ -80,6 +81,7 @@ theorem sum_mult_col (ca : A → Cls) (cd : D → Cls) (σ : A ≃ D) (J : Cls) 
   refine Finset.sum_congr rfl fun a _ => ?_
   by_cases h : cd (σ a) = J <;> simp [h]
 
+omit [Fintype D] in
 theorem bijCost_eq_prod (ca : A → Cls) (cd : D → Cls) (σ : A ≃ D) :
     bijCost ca cd σ = ∑ p : Cls × Cls, mult ca cd σ p.1 p.2 * pairCost p.1 p.2 := by
   simp only [bijCost, mult, Finset.card_filter, Finset.sum_mul, ite_mul, one_mul, zero_mul]
@@ -93,6 +95,7 @@ theorem bijCost_eq_prod (ca : A → Cls) (cd : D → Cls) (σ : A ≃ D) :
     simp [hno]
   · intro h; exact absurd (Finset.mem_univ _) h
 
+omit [Fintype D] in
 theorem bijCost_eq_mult (ca : A → Cls) (cd : D → Cls) (σ : A ≃ D) :
     bijCost ca cd σ = ∑ I, ∑ J, mult ca cd σ I J * pairCost I J := by
   rw [bijCost_eq_prod]
