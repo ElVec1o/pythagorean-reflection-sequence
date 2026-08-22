@@ -161,9 +161,39 @@ theorem orbitCount_swap_mul_lt [Fintype α] (π : Perm α) (x y : α)
     exact hxy (Quotient.exact this)
   exact card_lt_of_surjective_not_injective f hsurj hnotinj
 
+/-- The usable form of the drop: the only hypothesis is that the two points lie in
+different cycles.  The cycle lengths and the off-orbit conditions are derived. -/
+theorem orbitCount_swap_mul_lt' [Fintype α] (π : Perm α) (x y : α)
+    (hxy : ¬ π.SameCycle x y) :
+    orbitCount (swap x y * π) < orbitCount π := by
+  classical
+  -- off-orbit conditions are exactly the failure of `SameCycle`
+  have hyoff : ∀ i : ℕ, (π ^ i) x ≠ y := fun i hi =>
+    hxy ⟨(i : ℤ), by simpa [zpow_natCast] using hi⟩
+  have hxoff : ∀ i : ℕ, (π ^ i) y ≠ x := fun i hi =>
+    hxy (SameCycle.symm ⟨(i : ℤ), by simpa [zpow_natCast] using hi⟩)
+  -- least positive return times
+  have hexx : ∃ n : ℕ, 0 < n ∧ (π ^ n) x = x :=
+    ⟨orderOf π, orderOf_pos π, by rw [pow_orderOf_eq_one]; rfl⟩
+  have hexy : ∃ n : ℕ, 0 < n ∧ (π ^ n) y = y :=
+    ⟨orderOf π, orderOf_pos π, by rw [pow_orderOf_eq_one]; rfl⟩
+  set kx := Nat.find hexx with hkxdef
+  set ky := Nat.find hexy with hkydef
+  have hkxpos : 0 < kx := (Nat.find_spec hexx).1
+  have hkxx : (π ^ kx) x = x := (Nat.find_spec hexx).2
+  have hkypos : 0 < ky := (Nat.find_spec hexy).1
+  have hkyy : (π ^ ky) y = y := (Nat.find_spec hexy).2
+  have hkxmin : ∀ i, 0 < i → i < kx → (π ^ i) x ≠ x := fun i hip hik hc =>
+    absurd ⟨hip, hc⟩ (Nat.find_min hexx hik)
+  have hkymin : ∀ i, 0 < i → i < ky → (π ^ i) y ≠ y := fun i hip hik hc =>
+    absurd ⟨hip, hc⟩ (Nat.find_min hexy hik)
+  exact orbitCount_swap_mul_lt π x y kx ky hkxpos hkxx hkxmin hyoff
+    hkypos hkyy hkymin hxoff hxy
+
 -- Certification (Rule 5).
 #print axioms OrbitCount.classMap
 #print axioms OrbitCount.orbitCount_swap_mul_lt
+#print axioms OrbitCount.orbitCount_swap_mul_lt'
 
 -- Certification (Rule 5).
 #print axioms OrbitCount.card_lt_of_surjective_not_injective

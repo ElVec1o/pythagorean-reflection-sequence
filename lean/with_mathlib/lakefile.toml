@@ -232,3 +232,6 @@ name = "CycleMerge"
 
 [[lean_lib]]
 name = "OrbitCount"
+
+[[lean_lib]]
+name = "RealizationModel"
