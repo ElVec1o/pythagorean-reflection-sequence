@@ -229,5 +229,37 @@ theorem hasFreePair_of_canonical (d : EndData.Data α) (edgeOf siteOf : α → �
   exact ⟨a, a', by rw [hsa, hsa'], harr, harr', hd, hd', hsplit,
     Or.inl (by rw [hside, hside, hba, hba'])⟩
 
+/-- **The exchange construction.**  If the two arrivals' sides differ, their
+departures' sides differ, and an arrival aligns with its own departure, then the
+re-pairing yields a transition system of *strictly smaller* cost.  So no cost-minimal
+datum contains such a pattern.
+
+This is `cost_swapData` with the strict inequality, transported along the same
+observation: the cost cannot tell `swapT` from `swap (t a) (t a')` composed with `t`. -/
+theorem cost_swapData_lt (d : EndData.Data α) (D : Data α) (a a' : α)
+    (harr : d.isArr a = true) (harr' : d.isArr a' = true)
+    (hd : d.isArr (D.t a) = false) (hd' : d.isArr (D.t a') = false)
+    (hne : a ≠ a')
+    (hs1 : d.side a ≠ d.side a')
+    (hs2 : d.side (D.t a) ≠ d.side (D.t a'))
+    (hs3 : d.side a = d.side (D.t a))
+    (h1 h2 h3) :
+    costOf d (swapData D a (D.t a) a' (D.t a') h1 h2 h3) < costOf d D := by
+  have hsa : (turnPerm D).symm (D.t a) = a := by rw [turnPerm_symm, D.t_invol]
+  have hsa' : (turnPerm D).symm (D.t a') = a' := by rw [turnPerm_symm, D.t_invol]
+  have key : costOf d (swapData D a (D.t a) a' (D.t a') h1 h2 h3)
+      = EndData.transCost d (Equiv.swap (D.t a) (D.t a') * turnPerm D) := by
+    unfold costOf EndData.transCost
+    refine Finset.sum_congr rfl (fun x hx => ?_)
+    rw [Finset.mem_filter] at hx
+    show EndData.pcostF d x (swapT D.t a (D.t a) a' (D.t a') x) = _
+    rw [swapT_eq_on_arr d D.t a a' D.t_invol hd hd' x hx.2]
+    rfl
+  rw [key]
+  exact EndData.transCost_swap_lt d (turnPerm D) (D.t a) (D.t a') hd hd'
+    (by rw [hsa]; exact harr) (by rw [hsa']; exact harr')
+    (by rw [hsa, hsa']; exact hne)
+    (by rw [hsa, hsa']; exact hs1) hs2 (by rw [hsa]; exact hs3)
+
 -- Certification (Rule 5).
-#print axioms CostMerge.hasFreePair_of_canonical
+#print axioms CostMerge.cost_swapData_lt

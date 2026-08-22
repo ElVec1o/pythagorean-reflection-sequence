@@ -131,14 +131,48 @@ theorem transCost_swap_free (d : Data α) (π : Perm α) (x y : α)
   unfold NoGapMerge.swapDelta NoGapMerge.pcost at this
   omega
 
--- Certification (Rule 5).
-#print axioms EndData.sgn
-#print axioms EndData.pcostF
-#print axioms EndData.pcost_eq_of_arr_dep
-#print axioms EndData.sgn_eq_of_both_arr
-#print axioms EndData.sgn_eq_of_both_dep
-#print axioms EndData.transCost
-#print axioms EndData.summand_eq_of_ne
-#print axioms EndData.transCost_swap_free
+/-- **The strict counterpart of `transCost_swap_free`.**  When the two arrivals'
+sides differ, their departures' sides differ, and an arrival aligns with its own
+departure, the swap strictly *lowers* the cost -- so such a transition system is not
+minimal.
 
-end EndData
+Same proof as the free case, with `NoGapMerge.swap_neg_iff` in place of
+`swap_free_iff`. -/
+theorem transCost_swap_lt (d : Data α) (π : Perm α) (x y : α)
+    (hxdep : d.isArr x = false) (hydep : d.isArr y = false)
+    (hxarr : d.isArr (π.symm x) = true) (hyarr : d.isArr (π.symm y) = true)
+    (hne : π.symm x ≠ π.symm y)
+    (hs1 : d.side (π.symm x) ≠ d.side (π.symm y))
+    (hs2 : d.side x ≠ d.side y)
+    (hs3 : d.side (π.symm x) = d.side x) :
+    transCost d (swap x y * π) < transCost d π := by
+  classical
+  set S : Finset α := Finset.univ.filter (fun a => d.isArr a = true) with hS
+  have hmemx : π.symm x ∈ S := by simp [hS, hxarr]
+  have hmemy : π.symm y ∈ S := by simp [hS, hyarr]
+  have hpair : ({π.symm x, π.symm y} : Finset α) ⊆ S := by
+    intro a ha
+    simp only [Finset.mem_insert, Finset.mem_singleton] at ha
+    rcases ha with rfl | rfl <;> assumption
+  have hsplit : ∀ f : α → ℤ,
+      ∑ a ∈ S, f a = (f (π.symm x) + f (π.symm y)) + ∑ a ∈ S \ {π.symm x, π.symm y}, f a := by
+    intro f
+    rw [← Finset.sum_sdiff hpair, Finset.sum_pair hne]
+    ring
+  rw [transCost, transCost, ← hS, hsplit, hsplit]
+  have htail : ∑ a ∈ S \ {π.symm x, π.symm y}, pcostF d a ((swap x y * π) a)
+      = ∑ a ∈ S \ {π.symm x, π.symm y}, pcostF d a (π a) := by
+    refine Finset.sum_congr rfl fun a ha => ?_
+    simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, not_or] at ha
+    exact summand_eq_of_ne d π x y a ha.2.1 ha.2.2
+  rw [htail]
+  have hlt := (NoGapMerge.swap_neg_iff (d.side (π.symm x)) (d.side x)
+            (d.side (π.symm y)) (d.side y)).mpr ⟨hs1, hs2, hs3⟩
+  unfold NoGapMerge.swapDelta NoGapMerge.pcost at hlt
+  simp only [apply_symm_left, apply_symm_right, Equiv.apply_symm_apply]
+  rw [pcost_eq_of_arr_dep d _ _ hxarr hydep, pcost_eq_of_arr_dep d _ _ hyarr hxdep,
+      pcost_eq_of_arr_dep d _ _ hxarr hxdep, pcost_eq_of_arr_dep d _ _ hyarr hydep]
+  omega
+
+-- Certification (Rule 5).
+#print axioms EndData.transCost_swap_lt

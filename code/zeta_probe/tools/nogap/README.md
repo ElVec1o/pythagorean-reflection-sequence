@@ -1040,3 +1040,23 @@ giving (ii), so HasFreePair is the right target and (ii) is only one route to it
 Still owed: that some walk other than the chosen maximiser has an end at s* -- 1114
 of 1114, unproved -- and the exchange construction turning cross_cheaper into an
 actual cheaper transition system.
+
+## The exchange construction is proved (2026-08-23)
+
+cross_cheaper computed that the cross pairing is cheaper; it did not BUILD it. Now
+built, and it needed no new mathematics -- NoGapMerge.swap_neg_iff already had the
+Bool-level statement (swapDelta < 0 iff the two arrival sides differ, the two
+departure sides differ, and an arrival aligns with its own departure), proved by
+decide.
+
+EndData.transCost_swap_lt mirrors transCost_swap_free's proof with swap_neg_iff in
+place of swap_free_iff, giving a STRICT decrease.
+
+CostMerge.cost_swapData_lt transports it to the involutive re-pairing swapT, along
+the same observation as cost_swapData: the cost sums over arrivals only, where swapT
+agrees with swap (t a) (t a') composed with t.
+
+So: no cost-minimal transition system contains two arrivals at a common site, in
+different walks, whose sides differ, whose departures' sides differ, and with an
+arrival aligned to its own departure. That is the exchange half of the argument
+sketched from the smallest failure, and it is now formal.
