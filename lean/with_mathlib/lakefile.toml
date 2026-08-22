@@ -247,3 +247,6 @@ name = "NoGapCapstone"
 
 [[lean_lib]]
 name = "EdgeData"
+
+[[lean_lib]]
+name = "GapFreeAssembly"
