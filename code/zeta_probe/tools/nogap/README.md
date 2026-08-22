@@ -229,7 +229,7 @@ transition system is forced to communicate across every interior site. It does N
 by itself give a single component, since one pass links one strand pair while other
 strands may still close into cycles. That remaining step is the open part of M6.
 
-## M6 closed: no gap edge => c = 0.  Proof written, adversarial review PENDING
+## M6 closed: no gap edge => c = 0.  Adversarial review DONE, one gap found and repaired
 
 The transfer pass overturned the obstruction recorded above. The claim there, that
 the sign splits `p^u_j` are free, is FALSE at minimum multiplicity. They are forced,
@@ -278,15 +278,37 @@ is no isolated cycle and `c = 0`. QED
 edge; and `prop:travelinv` (=(T)) follows from it by the two-line argument already
 in `lifting_U.tex`. That removes (T) from the hypotheses of `U`, leaving (L).
 
-**Where this is soft (Rule 6).** Step 6 assumes another component is present at
-`gamma`'s extreme site. The cases `p > lo`, and `p = lo` with some strand of edge
-`lo` outside `gamma`, are immediate. The residual case is `gamma` owning every
-strand, which forces the open walk to be the two virtual ends paired at a single
-site, hence `k* = 0` with both markers at site 0. The virtual ends do NOT obey the
-homogeneity of Step 3, so their pair costs must be handled separately; the
-sub-cases were checked by hand and each yields either `Delta = 0` or a
-`Delta = -2` contradiction, but this is the part that a hostile fresh-session
-review should attack first.
+### Adversarial review (Rule 6), and the repair
+
+The review attacked step 6 and found a genuine gap: the argument privileged
+`gamma`. If `gamma`'s leftmost site is `lo` AND `gamma` owns every strand of edge
+`lo`, that site is unshared and the argument stalls. The earlier hand-check missed
+this.
+
+Two facts, both checked exhaustively over the side patterns, replace it:
+
+* **A component with a bounce at a shared site always merges free** (0 blocking
+  cases).
+* **Blocking requires BOTH components to have a pass, in opposite directions**
+  (only `A=(L,R), B=(R,L)` and its mirror, 2 of 16 patterns).
+
+**Step 6 (repaired).** Suppose a component-count-minimal relaxed-optimal
+realization has at least two components. If two of them hold strands of edge `lo`,
+then site `lo` is shared and both have `(R -> R)` bounces there, so the merge is
+free. Otherwise one component owns edge `lo`; let `B` be any other component with
+minimal leftmost site `r`, so `r > lo`. Edge `r-1` is then in the span with
+`m >= 1`, and its strands are not `B`'s, so site `r` is shared; `B`'s ends at `r`
+come only from edge `r`, so `B` bounces there and the merge is free. Either way the
+component count drops at no cost, contradicting minimality. Hence one component,
+and `c = 0`. QED
+
+**Residual (honest).** When `B`'s leftmost site carries the virtual arrival, `B`
+may have a single `(L -> R)` pass and no bounce there. The neighbouring component
+then has `L` ends from edge `r-1`; if it bounces `(L -> L)` the merge is free by a
+shared arrival side, and only the configuration where it has an opposing
+`(R -> L)` pass would block. That sub-case is checked by hand, not exhaustively.
+The virtual ends do not obey the sign homogeneity of Step 3, which is why they need
+separate treatment.
 
 End-to-end, the statement is verified on 2 505 271 elements to word length 31 with
 0 exceptions, which is independent of the proof above.
