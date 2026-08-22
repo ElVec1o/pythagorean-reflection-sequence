@@ -14,6 +14,7 @@ it is a theorem.
 -/
 import Mathlib.Tactic
 import WalkGraph
+import ConfigMerge
 
 namespace WalkSupport
 
@@ -109,9 +110,84 @@ theorem walk_shared_site_pair (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
   · intro hc
     exact hns (hx.trans hc)
 
+/-! ### The two cases
+
+For two walks there are two possibilities, and each yields a pair at a common site.
+
+*Case A*, the supports start on the same edge: each walk has a bottom end there, and
+both bottom ends sit at that edge's lower site.
+
+*Case B*, one support starts strictly to the right: the edge immediately to its left
+is below it, so the top end there lies in a different walk.  That case is
+`walk_shared_site_pair` above.
+-/
+
+/-- **Case A.**  Two different walks whose supports start on the same edge each have
+a bottom end there, and the two sit at the same site. -/
+theorem pair_of_equal_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (z z' : α) (hsplit : ¬ (graph D).Reachable z z')
+    (heq : wLo edgeOf (graph D) z = wLo edgeOf (graph D) z') :
+    ∃ x y : α, siteOf x = siteOf y ∧ ¬ (graph D).Reachable x y := by
+  obtain ⟨x, hxr, hxe, hxb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  obtain ⟨y, hyr, hye, hyb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z'
+  refine ⟨x, y, ?_, ?_⟩
+  · have h1 := hsite x
+    have h2 := hsite y
+    rw [hxb] at h1
+    rw [hyb] at h2
+    simp at h1 h2
+    omega
+  · intro hc
+    exact hsplit ((hxr.trans hc).trans hyr.symm)
+
+/-- **The dichotomy.**  Two ends in different walks yield a pair at a common site in
+different walks.
+
+The covering proviso `hcov` fires only where it can: it asks for a top end on the
+edge immediately left of a walk's support *given that some end already lies strictly
+to that support's left*.  That is exactly the situation Case B needs, and it is what
+gap-freeness supplies -- every edge in range carries an end. -/
+theorem pair_of_two_walks (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hcov : ∀ w : α, (∃ v : α, edgeOf v < wLo edgeOf (graph D) w) →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) w - 1 ∧ atTop y = true)
+    (z z' : α) (hsplit : ¬ (graph D).Reachable z z') :
+    ∃ x y : α, siteOf x = siteOf y ∧ ¬ (graph D).Reachable x y := by
+  -- an end of each walk on its own leftmost edge, used to witness "something lies left"
+  obtain ⟨u, _, hue, _⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  obtain ⟨u', _, hu'e, _⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z'
+  rcases lt_trichotomy (wLo edgeOf (graph D) z) (wLo edgeOf (graph D) z') with h | h | h
+  · -- `z`'s support starts to the left, so use `z'`
+    obtain ⟨y, hye, hyt⟩ := hcov z' ⟨u, by omega⟩
+    obtain ⟨x, hxs, hxn⟩ :=
+      walk_shared_site_pair edgeOf siteOf atTop D hsite hpe hpt z' y hye hyt
+    exact ⟨x, y, hxs, hxn⟩
+  · exact pair_of_equal_wLo edgeOf siteOf atTop D hsite hpe hpt z z' hsplit h
+  · -- `z'`'s support starts to the left, so use `z`
+    obtain ⟨y, hye, hyt⟩ := hcov z ⟨u', by omega⟩
+    obtain ⟨x, hxs, hxn⟩ :=
+      walk_shared_site_pair edgeOf siteOf atTop D hsite hpe hpt z y hye hyt
+    exact ⟨x, y, hxs, hxn⟩
+
+/-- **More than one walk gives a mergeable pair.**  Composing the walk-count entry
+point with the dichotomy: whenever the configuration has more than one walk, two ends
+at a common site lie in different walks, which is precisely what the merge step
+consumes. -/
+theorem pair_of_many_walks (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hcov : ∀ w : α, (∃ v : α, edgeOf v < wLo edgeOf (graph D) w) →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) w - 1 ∧ atTop y = true)
+    (hmany : 1 < walkCount D) :
+    ∃ x y : α, siteOf x = siteOf y ∧ ¬ (graph D).Reachable x y := by
+  obtain ⟨z, z', hsplit⟩ := ConfigMerge.exists_split_of_walkCount D hmany
+  exact pair_of_two_walks edgeOf siteOf atTop D hsite hpe hpt hcov z z' hsplit
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.exists_end_at_wLo
-#print axioms WalkSupport.reachable_partner
-#print axioms WalkSupport.exists_bottom_at_wLo
-#print axioms WalkSupport.shared_ends_at_wLo
-#print axioms WalkSupport.walk_shared_site_pair
+#print axioms WalkSupport.pair_of_many_walks
