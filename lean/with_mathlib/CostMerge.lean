@@ -430,7 +430,7 @@ The class is not obviously finite -- `Data α` bundles proofs -- but the costs a
 non-negative integers, so the set of achievable costs has a least element and any
 datum attaining it is minimal. -/
 
-omit [Fintype α] in
+omit [Fintype α] [DecidableEq α] in
 theorem pcostF_nonneg (d : EndData.Data α) (a b : α) : 0 ≤ EndData.pcostF d a b := by
   unfold EndData.pcostF
   split <;> [split; skip] <;> norm_num
@@ -470,6 +470,7 @@ theorem cost_split_by_site (d : EndData.Data α) (D : Data α) (siteOf : α → 
   rw [Finset.mem_filter] at ha
   exact hall a ha.2
 
+omit [DecidableEq α] in
 /-- **Site-wise minimality follows from global minimality.**  If two data agree away
 from one site, their costs differ only in that site's summand, so a globally minimal
 datum minimises each site. -/
