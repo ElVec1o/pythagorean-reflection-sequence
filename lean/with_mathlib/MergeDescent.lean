@@ -60,4 +60,9 @@ theorem sum_min_is_min {ι : Type*} [Fintype ι] {C : ι → Type*}
   obtain ⟨hlow, y, hy⟩ := min_sum_eq_sum_min f m hlb hatt
   exact le_antisymm (hy ▸ hx y) (hlow x)
 
+-- Certification (Rule 5): every declaration above, axioms listed in the build log.
+#print axioms MergeDescent.min_count_eq_one
+#print axioms MergeDescent.min_sum_eq_sum_min
+#print axioms MergeDescent.sum_min_is_min
+
 end MergeDescent

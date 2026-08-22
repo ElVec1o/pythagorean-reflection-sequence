@@ -74,4 +74,15 @@ theorem cut_at_zero_eq_k {d : ℤ → ℤ} (hb : d 0 = 0) :
 theorem f_zero_of_k_zero (j : ℤ) : f 0 j = 0 := by
   unfold f; split_ifs with h1 h2 <;> omega
 
+-- Certification (Rule 5): every declaration above, axioms listed in the build log.
+#print axioms NoGapCutFree.f_eq_zero_of_nonneg_of_le
+#print axioms NoGapCutFree.f_neg_imp_k_neg
+#print axioms NoGapCutFree.f_pos_imp_k_pos
+#print axioms NoGapCutFree.f_neg_imp_lt_zero
+#print axioms NoGapCutFree.f_pos_imp_lt_k
+#print axioms NoGapCutFree.cut_at_zero
+#print axioms NoGapCutFree.cut_at_k_left
+#print axioms NoGapCutFree.cut_at_zero_eq_k
+#print axioms NoGapCutFree.f_zero_of_k_zero
+
 end NoGapCutFree

@@ -71,4 +71,13 @@ theorem passfree_optimal_imp_zero {A B : ℤ} (hA : 0 ≤ A) (hB : 0 ≤ B)
   exact absurd h (not_le.mpr (passfree_worse (lt_of_le_of_ne hA (Ne.symm hc.1))
     (lt_of_le_of_ne hB (Ne.symm hc.2))))
 
+-- Certification (Rule 5): every declaration above, axioms listed in the build log.
+#print axioms NoGapMerge.swap_free_iff
+#print axioms NoGapMerge.swap_neg_iff
+#print axioms NoGapMerge.bounce_never_blocks
+#print axioms NoGapMerge.split_forced_pos
+#print axioms NoGapMerge.split_forced_neg
+#print axioms NoGapMerge.passfree_worse
+#print axioms NoGapMerge.passfree_optimal_imp_zero
+
 end NoGapMerge

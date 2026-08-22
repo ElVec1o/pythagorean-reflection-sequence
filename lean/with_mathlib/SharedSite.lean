@@ -78,4 +78,9 @@ theorem shared_site_exists [Fintype ι] [DecidableEq ι]
     obtain ⟨ha, hb⟩ := shared_of_all_start_left lo L h' hL a b
     exact Or.inl ⟨a, b, hab, ha, hb⟩
 
+-- Certification (Rule 5): every declaration above, axioms listed in the build log.
+#print axioms SharedSite.shared_of_interior_start
+#print axioms SharedSite.shared_of_all_start_left
+#print axioms SharedSite.shared_site_exists
+
 end SharedSite
