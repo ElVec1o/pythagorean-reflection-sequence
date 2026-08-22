@@ -373,3 +373,33 @@ argument.
 `relaxed_closed`, the closed form, and prints a loud stderr warning whenever the old
 DP disagrees. The DP is kept as `_relaxed_solve_dp` for diagnosis. Callers get
 correct values instead of silently wrong ones.
+
+## NO-GO: the M6 argument does NOT generalise to the reverse shield inequality
+
+The natural next move is to run the merge argument at every non-cut site and
+conclude `c = |Z+|`, closing `rem:shieldowes`. It fails, and the reason is exactly
+the ingredient M6 depends on.
+
+M6 works because no gap edge forces `m_j = |d_j|`, which forces the sign split, so
+the pair cost sees only the side pattern. With gap edges present that collapses:
+a gap edge has `m = 2` and `d = 0`, so `p^d = p^u` with `u = dn = 1` leaves two
+admissible splits, and homogeneity is gone.
+
+Enumerating all 256 sign-and-side configurations of a 2-swap:
+
+| | count |
+|---|---|
+| `Delta = 0` | 152 |
+| `Delta < 0` (impossible at a cost minimum) | 52 |
+| `Delta > 0` (blocking) | 52 |
+
+and both criteria that carry M6 are false in general:
+
+* **"sharing an arrival or departure side implies free" is FALSE**: 36 of the 52
+  blockers share a side.
+* **"a cost-0 bounce always merges free" is FALSE**: 28 counterexamples, e.g.
+  `A = ((L,+) -> (L,+))` against `B = ((L,-) -> (L,-))`, which gives `Delta = +4`.
+
+So `c <= |Z+|` is not reachable by this route. It remains HEURISTIC on 3 336 511
+elements to word length 31. Do not retry the naive generalisation; a different
+mechanism is needed for the sites where the split is free.
