@@ -883,7 +883,7 @@ theorem no_side_change_of_cross_zero {β : Type*} [DecidableEq β] [Fintype β]
              + xEntry S t cls 3 1) := rfl
     rw [hc] at h
     intro i j hij
-    fin_cases i <;> fin_cases j <;> simp_all <;> omega
+    fin_cases i <;> fin_cases j <;> simp_all
   by_contra hcon
   exact xEntry_ne_zero S t cls ha (hz _ _ (by omega))
 
