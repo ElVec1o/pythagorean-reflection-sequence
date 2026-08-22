@@ -300,5 +300,51 @@ theorem hadj_of_detours {α : Type*} [DecidableEq α] [Fintype α]
       · subst h1; rw [D.t_invol]; exact Ra'.symm
     · exact (SimpleGraph.deleteEdges_adj.mpr ⟨Or.inr rfl, hmem⟩).reachable
 
+/-! ### One condition, three instances
+
+The descent's remaining hypotheses were three different-looking things: the cycle
+input, the walk-closure data, and the join.  They are all the same condition -- an
+orbit closes without using the deleted edges before its last step -- applied at the
+two arrivals and at one departure. -/
+
+/-- The `sig`-orbit through `x` closes after `M` steps without touching `S` before
+the last step. -/
+def ClosesAvoiding {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (S : Set (Sym2 α)) (x : α) (M : ℕ) : Prop :=
+  (sig D)^[M] x = x ∧ 0 < M ∧
+  (∀ k, k < M - 1 → s((sig D)^[k] x, D.p ((sig D)^[k] x)) ∉ S) ∧
+  (∀ k, k < M - 1 → s(D.p ((sig D)^[k] x), D.t (D.p ((sig D)^[k] x))) ∉ S) ∧
+  s((sig D)^[M - 1] x, D.p ((sig D)^[M - 1] x)) ∉ S
+
+/-- A closing orbit gives the detour across `x`'s turn edge. -/
+theorem detour_of_closes {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (S : Set (Sym2 α)) (x : α) (M : ℕ)
+    (h : ClosesAvoiding D S x M) :
+    ((graph D).deleteEdges S).Reachable x (D.t x) := by
+  obtain ⟨hM, hpos, k₁, k₂, klast⟩ := h
+  exact reach_delete_turn_set D S x M hM hpos k₁ k₂ klast
+
+/-- **The descent, with uniform hypotheses.**  Three instances of `ClosesAvoiding` --
+at the two arrivals and at the second departure -- replace the cycle input, the
+walk-closure data and the join.  Everything else is the placement: the two arrivals
+share a site and lie in different walks. -/
+theorem config_descent_uniform {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (a a' : α)
+    (Ma Ma' Md : ℕ)
+    (ha : ClosesAvoiding D ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α)) a Ma)
+    (ha' : ClosesAvoiding D ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α)) a' Ma')
+    (hd : ClosesAvoiding D ({s(a, D.t a), s(a', D.t a')} : Set (Sym2 α)) (D.t a') Md)
+    (hsplit : ¬ (graph D).Reachable a a')
+    (h1 h2 h3) :
+    walkCount (swapData D a (D.t a) a' (D.t a') h1 h2 h3) < walkCount D := by
+  refine walkCount_lt D _ ?_ a a' hsplit ?_
+  · exact mono_swapData D a (D.t a) a' (D.t a') rfl rfl h1 h2 h3
+      (hadj_of_detours D a a' (detour_of_closes D _ a Ma ha)
+        (detour_of_closes D _ a' Ma' ha'))
+  · obtain ⟨hM, hpos, k₁, k₂, klast⟩ := hd
+    exact merge_connects_full D a (D.t a) a' (D.t a') rfl rfl h1 h2 h3
+      Md hM hpos k₁ k₂ klast (back_of_turn' D rfl)
+
 -- Certification (Rule 5).
-#print axioms ConfigMerge.hadj_of_detours
+#print axioms ConfigMerge.detour_of_closes
+#print axioms ConfigMerge.config_descent_uniform

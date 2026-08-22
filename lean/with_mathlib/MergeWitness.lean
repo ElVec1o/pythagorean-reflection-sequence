@@ -108,15 +108,15 @@ theorem mkAdj {x y : Fin 8} (h : y = pw x ∨ y = tw x)
 
 /-- Around the first walk: `0 - 1 - 2 - 3`, avoiding the removed turn-edge `0-3`. -/
 theorem detour_03 : Del.Reachable 0 3 :=
-  ((mkAdj (x := 0) (y := 1) (Or.inl rfl) (by simp [Sym2.eq_iff])).reachable.trans
-    ((mkAdj (x := 1) (y := 2) (Or.inr rfl) (by simp [Sym2.eq_iff])).reachable)).trans
-    ((mkAdj (x := 2) (y := 3) (Or.inl rfl) (by simp [Sym2.eq_iff])).reachable)
+  ((mkAdj (x := 0) (y := 1) (Or.inl rfl) (by simp)).reachable.trans
+    ((mkAdj (x := 1) (y := 2) (Or.inr rfl) (by simp)).reachable)).trans
+    ((mkAdj (x := 2) (y := 3) (Or.inl rfl) (by simp)).reachable)
 
 /-- Around the second walk: `4 - 5 - 6 - 7`, avoiding the removed turn-edge `4-7`. -/
 theorem detour_47 : Del.Reachable 4 7 :=
-  ((mkAdj (x := 4) (y := 5) (Or.inl rfl) (by simp [Sym2.eq_iff])).reachable.trans
-    ((mkAdj (x := 5) (y := 6) (Or.inr rfl) (by simp [Sym2.eq_iff])).reachable)).trans
-    ((mkAdj (x := 6) (y := 7) (Or.inl rfl) (by simp [Sym2.eq_iff])).reachable)
+  ((mkAdj (x := 4) (y := 5) (Or.inl rfl) (by simp)).reachable.trans
+    ((mkAdj (x := 5) (y := 6) (Or.inr rfl) (by simp)).reachable)).trans
+    ((mkAdj (x := 6) (y := 7) (Or.inl rfl) (by simp)).reachable)
 
 /-- **The cycle input holds on the witness.**  Every adjacency of the walk graph
 survives deleting the two re-paired turn-edges: an edge that is not deleted is
@@ -167,6 +167,28 @@ theorem descent_witness : walkCount W' < walkCount W :=
     (ConfigMerge.mono_swapData W 0 3 4 7 turn_zero turn_four h1W h2W h3W hadj_W)
     0 4 split_witness join_witness
 
+/-! ### The uniform hypothesis is satisfiable
+
+`ClosesAvoiding` repackages the descent's three conditions into one.  A repackaging
+nothing satisfies would be worthless, so it is checked here on the witness. -/
+
+/-- The `sig`-orbit through `0` closes in two steps, avoiding both deleted edges. -/
+theorem closes_zero : ConfigMerge.ClosesAvoiding W
+    ({s((0 : Fin 8), W.t 0), s((4 : Fin 8), W.t 4)} : Set (Sym2 (Fin 8))) 0 2 := by
+  refine ⟨by decide, by norm_num, ?_, ?_, ?_⟩
+  · intro k hk
+    have : k = 0 := by omega
+    subst this
+    show s((0 : Fin 8), (1 : Fin 8)) ∉ _
+    simp
+    all_goals decide
+  · intro k hk
+    have : k = 0 := by omega
+    subst this
+    show s((1 : Fin 8), (2 : Fin 8)) ∉ _
+    simp
+  · show s((2 : Fin 8), (3 : Fin 8)) ∉ _
+    simp
+
 -- Certification (Rule 5).
-#print axioms MergeWitness.descent_witness
-#print axioms MergeWitness.join_witness
+#print axioms MergeWitness.closes_zero
