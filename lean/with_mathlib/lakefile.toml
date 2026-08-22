@@ -259,3 +259,6 @@ name = "StrandEnds"
 
 [[lean_lib]]
 name = "ComponentSupport"
+
+[[lean_lib]]
+name = "EndType"
