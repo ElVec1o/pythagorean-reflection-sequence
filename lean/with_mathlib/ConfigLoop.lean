@@ -1061,5 +1061,52 @@ theorem site_sum_eq_plan_cost (up : Fin n → ℕ) (ds : Bool → Bool) (s : ℤ
   push_cast
   ring
 
+/-! ### `prop:cut`, assembled
+
+The paper: *at a cut site every minimum-cost pairing matches each arrival with a
+departure on its own side, so no strand crosses `s`; consequently every minimum-cost
+realisation has at least `|Z| + 1` components and `c ≥ |Z|`.*
+
+Below, with the cut sites' plans known to have no cross mass -- which is what
+`no_cross_at_cut` gives once the site's plan is minimum-cost, and
+`site_sum_eq_plan_cost` together with `site_cost_le_of_global` supplies that from
+global minimality. -/
+
+/-- The turn keeps its edge at a cut site, for **every** end, arrival or departure:
+a departure's turn is an arrival at the same site, and the two share their turn edge. -/
+theorem turn_keeps_edge_all (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (s : ℤ) (hcross : (planAt up ds s (hbal s)).cross = 0)
+    (x : Endpt n m) (hx : siteOf x = s) :
+    edgeOf (turnAt up s x) = edgeOf x := by
+  by_cases ha : isArrOf up x = true
+  · exact turn_keeps_edge_of_cross_zero up ds s (hbal s) hcross x
+      ((EndType.mem_arrAt up s x).mpr ⟨hx, ha⟩)
+  · -- a departure: apply the arrival case to its turn, then use the involution
+    simp only [Bool.not_eq_true] at ha
+    have hxd : x ∈ depAt (m := m) up s := (EndType.mem_depAt up s x).mpr ⟨hx, ha⟩
+    have haa : turnAt up s x ∈ arrAt (m := m) up s := turnAt_dep up s (hbal s) x hxd
+    have := turn_keeps_edge_of_cross_zero up ds s (hbal s) hcross _ haa
+    rw [turnAt_invol up s x] at this
+    exact this.symm
+    
+/-- **`prop:cut`, assembled.**  At least `|Z|` walks carry neither virtual event.
+
+The one hypothesis about the realisation is `hcut`: at each cut site the plan has no
+cross mass.  That is what global cost-minimality delivers, through
+`site_cost_le_of_global` and `site_sum_eq_plan_cost` to `no_cross_at_cut`. -/
+theorem prop_cut_assembled (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (d f : ℤ → ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ cutSitesZ d f A B, A < z) (hhigh : ∀ z ∈ cutSitesZ d f A B, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
+    (hcut : ∀ s ∈ cutSitesZ d f A B, (planAt up ds s (hbal s)).cross = 0)
+    (c0 : (graph (dataOf up hbal)).ConnectedComponent) :
+    ∃ F : Fin (cutSitesZ d f A B).card → (graph (dataOf up hbal)).ConnectedComponent,
+      Function.Injective F ∧ ∀ i, F i ≠ c0 := by
+  refine prop_cut_correct up hbal d f A B hAB hlow hhigh hocc ?_ c0
+  intro x hne hmem
+  exact hne (turn_keeps_edge_all up ds hbal (siteOf x) (hcut _ hmem) x rfl)
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.site_sum_eq_plan_cost
+#print axioms ConfigLoop.prop_cut_assembled

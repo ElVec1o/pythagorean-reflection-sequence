@@ -1474,3 +1474,20 @@ M3's chain, end to end:
     -> the turn keeps its edge     (turn_keeps_edge_of_cross_zero)
     -> Local holds                 (walk_graph_local_edge)
     -> c >= |Z|                    (prop_cut_correct)
+
+## prop:cut, assembled (2026-08-23)
+
+ConfigLoop.prop_cut_assembled: at least |Z| walks carry neither virtual event, for a
+configuration whose cut-site plans have no cross mass.
+
+turn_keeps_edge_all extends turn_keeps_edge_of_cross_zero from arrivals to EVERY end:
+a departure's turn is an arrival at the same site, and the two share their turn edge,
+so the arrival case gives the departure case by the involution.
+
+The single hypothesis about the realisation is hcut -- at each cut site the plan has
+no cross mass -- and that is exactly what global cost-minimality delivers through
+site_cost_le_of_global and site_sum_eq_plan_cost to no_cross_at_cut.
+
+M3 is now assembled at configuration level, on the same footing as M5, M6 and M7. The
+shared remaining link for all four is the passage from a group element to its
+configuration.
