@@ -250,3 +250,6 @@ name = "EdgeData"
 
 [[lean_lib]]
 name = "GapFreeAssembly"
+
+[[lean_lib]]
+name = "GroupElt"
