@@ -37,9 +37,14 @@ def sameCycleSetoid (π : Perm α) : Setoid α where
   r := π.SameCycle
   iseqv := ⟨fun z => SameCycle.refl π z, fun h => h.symm, fun h₁ h₂ => h₁.trans h₂⟩
 
-/-- The number of cycles of `π`. -/
+/-- The cycle classes form a finite type. -/
+noncomputable instance quotFintype [Fintype α] (π : Perm α) :
+    Fintype (Quotient (sameCycleSetoid π)) :=
+  Fintype.ofFinite _
+
+/-- The number of cycles of `π`.  This is the `comp` of `MergeDescent`. -/
 noncomputable def orbitCount [Fintype α] (π : Perm α) : ℕ :=
-  Nat.card (Quotient (sameCycleSetoid π))
+  Fintype.card (Quotient (sameCycleSetoid π))
 
 /-- Every point of `x`'s cycle joins `x` in the merged permutation.  This is the
 half of well-definedness that the merged orbit needs; the untouched orbits are
@@ -86,6 +91,80 @@ theorem sameCycle_swap_mul_left [Fintype α] (π : Perm α) (x y z : α) (k : �
   have hstep := CycleMerge.pow_apply_eq_of_lt π x y k hk hy (n % k) hlt
   rw [zpow_natCast, hstep, ← hmod, hn]
 
+/-- Well-definedness of the induced map on cycle classes: `SameCycle` for `π`
+implies `SameCycle` for the merged permutation.  Three cases, each already proved:
+the class meets `x`'s orbit, or `y`'s, or neither. -/
+theorem sameCycle_mono [Fintype α] (π : Perm α) (x y : α)
+    (kx ky : ℕ)
+    (hkxpos : 0 < kx) (hkxx : (π ^ kx) x = x)
+    (hkxmin : ∀ i, 0 < i → i < kx → (π ^ i) x ≠ x)
+    (hyoff : ∀ i : ℕ, (π ^ i) x ≠ y)
+    (hkypos : 0 < ky) (hkyy : (π ^ ky) y = y)
+    (hkymin : ∀ i, 0 < i → i < ky → (π ^ i) y ≠ y)
+    (hxoff : ∀ i : ℕ, (π ^ i) y ≠ x)
+    {z w : α} (h : π.SameCycle z w) :
+    (swap x y * π).SameCycle z w := by
+  classical
+  by_cases hzx : π.SameCycle x z
+  · -- `z` and `w` both lie on `x`'s cycle
+    have hwx : π.SameCycle x w := hzx.trans h
+    exact (sameCycle_swap_mul_left π x y z kx hkxpos hkxx hkxmin hyoff hzx).symm.trans
+      (sameCycle_swap_mul_left π x y w kx hkxpos hkxx hkxmin hyoff hwx)
+  · by_cases hzy : π.SameCycle y z
+    · -- `z` and `w` both lie on `y`'s cycle; the construction is symmetric in `x`, `y`
+      have hwy : π.SameCycle y w := hzy.trans h
+      have hswap : swap x y = swap y x := Equiv.swap_comm x y
+      rw [hswap]
+      exact (sameCycle_swap_mul_left π y x z ky hkypos hkyy hkymin hxoff hzy).symm.trans
+        (sameCycle_swap_mul_left π y x w ky hkypos hkyy hkymin hxoff hwy)
+    · -- `z` lies off both orbits, so the two permutations agree along its cycle
+      obtain ⟨n, hn⟩ := h.exists_nat_pow_eq
+      exact CycleMerge.sameCycle_swap_mul_of_off_orbits π x y z w hzx hzy n hn
+
+/-- The map on cycle classes induced by the identity on points. -/
+noncomputable def classMap [Fintype α] (π : Perm α) (x y : α)
+    (kx ky : ℕ)
+    (hkxpos : 0 < kx) (hkxx : (π ^ kx) x = x)
+    (hkxmin : ∀ i, 0 < i → i < kx → (π ^ i) x ≠ x)
+    (hyoff : ∀ i : ℕ, (π ^ i) x ≠ y)
+    (hkypos : 0 < ky) (hkyy : (π ^ ky) y = y)
+    (hkymin : ∀ i, 0 < i → i < ky → (π ^ i) y ≠ y)
+    (hxoff : ∀ i : ℕ, (π ^ i) y ≠ x) :
+    Quotient (sameCycleSetoid π) → Quotient (sameCycleSetoid (swap x y * π)) :=
+  Quotient.map id (fun _ _ h =>
+    sameCycle_mono π x y kx ky hkxpos hkxx hkxmin hyoff hkypos hkyy hkymin hxoff h)
+
+/-- **The merge strictly lowers the cycle count.**  This is the hypothesis
+`MergeDescent.min_count_eq_one` consumes, and the last piece of `thm:nogap`. -/
+theorem orbitCount_swap_mul_lt [Fintype α] (π : Perm α) (x y : α)
+    (kx ky : ℕ)
+    (hkxpos : 0 < kx) (hkxx : (π ^ kx) x = x)
+    (hkxmin : ∀ i, 0 < i → i < kx → (π ^ i) x ≠ x)
+    (hyoff : ∀ i : ℕ, (π ^ i) x ≠ y)
+    (hkypos : 0 < ky) (hkyy : (π ^ ky) y = y)
+    (hkymin : ∀ i, 0 < i → i < ky → (π ^ i) y ≠ y)
+    (hxoff : ∀ i : ℕ, (π ^ i) y ≠ x)
+    (hxy : ¬ π.SameCycle x y) :
+    orbitCount (swap x y * π) < orbitCount π := by
+  classical
+  set f := classMap π x y kx ky hkxpos hkxx hkxmin hyoff hkypos hkyy hkymin hxoff with hf
+  have hsurj : Function.Surjective f := by
+    intro b
+    induction b using Quotient.inductionOn with
+    | _ z => exact ⟨Quotient.mk _ z, rfl⟩
+  have hnotinj : ¬ Function.Injective f := by
+    intro hinj
+    have hmerged : (swap x y * π).SameCycle x y :=
+      CycleMerge.sameCycle_of_not_sameCycle π x y hxy
+    have : (Quotient.mk (sameCycleSetoid π) x) = (Quotient.mk (sameCycleSetoid π) y) :=
+      hinj (Quotient.sound hmerged)
+    exact hxy (Quotient.exact this)
+  exact card_lt_of_surjective_not_injective f hsurj hnotinj
+
+-- Certification (Rule 5).
+#print axioms OrbitCount.classMap
+#print axioms OrbitCount.orbitCount_swap_mul_lt
+
 -- Certification (Rule 5).
 #print axioms OrbitCount.card_lt_of_surjective_not_injective
 #print axioms OrbitCount.sameCycleSetoid
@@ -93,5 +172,6 @@ theorem sameCycle_swap_mul_left [Fintype α] (π : Perm α) (x y z : α) (k : �
 #print axioms OrbitCount.sameCycle_of_mem_orbit
 #print axioms OrbitCount.pow_apply_mod
 #print axioms OrbitCount.sameCycle_swap_mul_left
+#print axioms OrbitCount.sameCycle_mono
 
 end OrbitCount
