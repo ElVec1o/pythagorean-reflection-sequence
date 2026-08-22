@@ -20,7 +20,7 @@ namespace CycleMerge
 
 open Equiv Equiv.Perm
 
-variable {α : Type*} [DecidableEq α] [Fintype α]
+variable {α : Type*} [DecidableEq α]
 
 /-- Along the orbit of `x`, before returning to `x`, the swap acts trivially. -/
 theorem pow_apply_eq_of_lt (π : Perm α) (x y : α) (k : ℕ)
@@ -65,7 +65,7 @@ theorem sameCycle_swap_mul (π : Perm α) (x y : α) (k : ℕ) (hkpos : 0 < k)
 /-- Points in different cycles of `π` are in the same cycle of `swap x y * π`.
 This is the usable form: the hypothesis is `¬ π.SameCycle x y` and the cycle length
 is produced internally. -/
-theorem sameCycle_of_not_sameCycle (π : Perm α) (x y : α) (h : ¬ π.SameCycle x y) :
+theorem sameCycle_of_not_sameCycle [Fintype α] (π : Perm α) (x y : α) (h : ¬ π.SameCycle x y) :
     (swap x y * π).SameCycle x y := by
   classical
   -- `y` is off the forward orbit of `x`
@@ -106,10 +106,40 @@ theorem apply_eq_of_not_sameCycle (π : Perm α) (x y z : α)
     exact hzy (hcon ▸ hz).symm
   simp [Perm.mul_apply, swap_apply_of_ne_of_ne hx hy]
 
+/-- Off both merged orbits the two permutations agree at every power, so cycles
+away from `x` and `y` survive the swap intact. -/
+theorem pow_apply_eq_of_off_orbits (π : Perm α) (x y z : α)
+    (hzx : ¬ π.SameCycle x z) (hzy : ¬ π.SameCycle y z) :
+    ∀ n : ℕ, ((swap x y * π) ^ n) z = (π ^ n) z := by
+  intro n
+  induction n with
+  | zero => simp
+  | succ m ih =>
+    have hmem : π.SameCycle z ((π ^ m) z) := ⟨(m : ℤ), by simp [zpow_natCast]⟩
+    have hx' : ¬ π.SameCycle x ((π ^ m) z) := fun hc => hzx (hc.trans hmem.symm)
+    have hy' : ¬ π.SameCycle y ((π ^ m) z) := fun hc => hzy (hc.trans hmem.symm)
+    have hstep := apply_eq_of_not_sameCycle π x y ((π ^ m) z) hx' hy'
+    calc ((swap x y * π) ^ (m + 1)) z
+        = (swap x y * π) (((swap x y * π) ^ m) z) := by rw [pow_succ']; simp [Perm.mul_apply]
+      _ = (swap x y * π) ((π ^ m) z) := by rw [ih]
+      _ = π ((π ^ m) z) := hstep
+      _ = (π ^ (m + 1)) z := by rw [pow_succ']; simp [Perm.mul_apply]
+
+/-- Consequently a cycle disjoint from those of `x` and `y` is a cycle of the
+premultiplied permutation as well: the relation only ever coarsens.  The
+`SameCycle z w` hypothesis is not needed; the explicit witness `n` carries it. -/
+theorem sameCycle_swap_mul_of_off_orbits (π : Perm α) (x y z w : α)
+    (hzx : ¬ π.SameCycle x z) (hzy : ¬ π.SameCycle y z)
+    (n : ℕ) (hn : (π ^ n) z = w) :
+    (swap x y * π).SameCycle z w :=
+  ⟨(n : ℤ), by simpa [zpow_natCast, pow_apply_eq_of_off_orbits π x y z hzx hzy n] using hn⟩
+
 -- Certification (Rule 5).
 #print axioms CycleMerge.pow_apply_eq_of_lt
 #print axioms CycleMerge.sameCycle_swap_mul
 #print axioms CycleMerge.sameCycle_of_not_sameCycle
 #print axioms CycleMerge.apply_eq_of_not_sameCycle
+#print axioms CycleMerge.pow_apply_eq_of_off_orbits
+#print axioms CycleMerge.sameCycle_swap_mul_of_off_orbits
 
 end CycleMerge
