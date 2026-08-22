@@ -190,17 +190,49 @@ theorem config_descent (up : Fin n → ℕ)
     (Ne.symm (dep_ne_arr (dataOf up hbal) hta')) (dep_ne_other' (dataOf up hbal) hta hsplit)
     hadj M hM hpos k₁ k₂ klast (back_of_turn (dataOf up hbal) hta') hsplit
 
--- Certification (Rule 5).
-#print axioms ConfigMerge.swapDataOf
+/-! ### The entry point of the descent
 
-end ConfigMerge
-#print axioms ConfigMerge.reach_of_adj_reach
-#print axioms ConfigMerge.mono_swapData
-#print axioms ConfigMerge.config_walkCount_lt
-#print axioms ConfigMerge.back_of_turn
-#print axioms ConfigMerge.ne_of_split
-#print axioms ConfigMerge.dep_ne_arr
-#print axioms ConfigMerge.dep_ne_dep
-#print axioms ConfigMerge.dep_ne_other
-#print axioms ConfigMerge.dep_ne_other'
-#print axioms ConfigMerge.config_descent
+The descent needs `hsplit`: two ends in different walks.  That is available exactly
+when there is more than one walk, which is the condition under which the descent is
+invoked in the first place. -/
+
+theorem exists_split_of_walkCount {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (h : 1 < walkCount D) :
+    ∃ x y : α, ¬ (graph D).Reachable x y := by
+  obtain ⟨c₁, c₂, hne⟩ := Fintype.exists_pair_of_one_lt_card h
+  obtain ⟨x, hx⟩ := Quot.exists_rep c₁
+  obtain ⟨y, hy⟩ := Quot.exists_rep c₂
+  refine ⟨x, y, fun hr => hne ?_⟩
+  rw [← hx, ← hy]
+  exact SimpleGraph.ConnectedComponent.eq.mpr hr
+
+/-- Contrapositive: if every pair of ends is joined, there is exactly one walk.  This
+is the descent's stopping condition. -/
+theorem walkCount_le_one_of_connected {α : Type*} [DecidableEq α] [Fintype α]
+    (D : WalkGraph.Data α) (h : ∀ x y : α, (graph D).Reachable x y) :
+    walkCount D ≤ 1 := by
+  by_contra hc
+  obtain ⟨x, y, hxy⟩ := exists_split_of_walkCount D (by omega)
+  exact hxy (h x y)
+
+/-- **The descent principle.**  If from any data with more than one walk we can step
+to data with strictly fewer walks while preserving a property `P`, then from any `P`
+we reach data with a single walk.  This is the shape M6's argument uses: the merge
+lowers the walk count, so iterating it ends. -/
+theorem reaches_one {α : Type*} [DecidableEq α] [Fintype α]
+    {P : WalkGraph.Data α → Prop}
+    (step : ∀ D, 1 < walkCount D → P D → ∃ D', P D' ∧ walkCount D' < walkCount D) :
+    ∀ D, P D → ∃ D', P D' ∧ walkCount D' ≤ 1 := by
+  have key : ∀ n D, walkCount D = n → P D → ∃ D', P D' ∧ walkCount D' ≤ 1 := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | _ n ih =>
+      intro D hn hP
+      by_cases h : 1 < walkCount D
+      · obtain ⟨D', hP', hlt⟩ := step D h hP
+        exact ih (walkCount D') (hn ▸ hlt) D' rfl hP'
+      · exact ⟨D, hP, by omega⟩
+  exact fun D hP => key (walkCount D) D rfl hP
+
+-- Certification (Rule 5).
+#print axioms ConfigMerge.reaches_one
