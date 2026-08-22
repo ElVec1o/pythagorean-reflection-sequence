@@ -71,6 +71,26 @@ theorem passfree_optimal_imp_zero {A B : ℤ} (hA : 0 ≤ A) (hB : 0 ≤ B)
   exact absurd h (not_le.mpr (passfree_worse (lt_of_le_of_ne hA (Ne.symm hc.1))
     (lt_of_le_of_ne hB (Ne.symm hc.2))))
 
+/-- **At a cost minimum, a bounce forces a shared side.**  This is the step that
+turns the shared-site argument into the pair the merge needs: if one component has
+a bounce at a shared site, then against *any* pair of another component the two
+either share an arrival side or share a departure side, so the swap is free.
+
+`bounce_never_blocks` gives `Delta ≤ 0`; cost-minimality gives `Delta ≥ 0`, since a
+strictly negative `Delta` would exhibit a cheaper realisation; so `Delta = 0` and
+`swap_free_iff` reads off the shared side. -/
+theorem shared_side_of_bounce (a a' d' : Bool)
+    (hmin : 0 ≤ swapDelta a a a' d') :
+    a = a' ∨ a = d' := by
+  have hle : swapDelta a a a' d' ≤ 0 := bounce_never_blocks a a' d'
+  have hzero : swapDelta a a a' d' = 0 := le_antisymm hle hmin
+  exact (swap_free_iff a a a' d').mp hzero
+
+/-- The contrapositive: if neither side is shared, the bounce swap is strictly
+cheaper, so the realisation was not cost-minimal. -/
+theorem not_min_of_bounce_unshared : ∀ a a' d' : Bool,
+    a ≠ a' → a ≠ d' → swapDelta a a a' d' < 0 := by decide
+
 -- Certification (Rule 5): every declaration above, axioms listed in the build log.
 #print axioms NoGapMerge.swap_free_iff
 #print axioms NoGapMerge.swap_neg_iff
@@ -79,5 +99,7 @@ theorem passfree_optimal_imp_zero {A B : ℤ} (hA : 0 ≤ A) (hB : 0 ≤ B)
 #print axioms NoGapMerge.split_forced_neg
 #print axioms NoGapMerge.passfree_worse
 #print axioms NoGapMerge.passfree_optimal_imp_zero
+#print axioms NoGapMerge.shared_side_of_bounce
+#print axioms NoGapMerge.not_min_of_bounce_unshared
 
 end NoGapMerge

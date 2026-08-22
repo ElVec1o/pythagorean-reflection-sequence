@@ -92,6 +92,21 @@ theorem capstone_not_vacuous :
   NoGapCapstone.merge_free_and_lowers dW piW 1 3 w_dep1 w_dep3 w_arr0 w_arr2
     w_ne w_shared w_not_sameCycle
 
+/-- `shared_side_of_bounce` is not vacuous, and not trivially satisfied by
+`a = a'`: here the arrival sides differ, the hypothesis still holds, and the
+conclusion is carried by the departure side instead. -/
+theorem bounce_shared_nontrivial :
+    (0 : ℤ) ≤ NoGapMerge.swapDelta true true false true ∧
+    (true ≠ false) ∧
+    (true = false ∨ true = true) :=
+  ⟨by decide, by decide, NoGapMerge.shared_side_of_bounce true false true (by decide)⟩
+
+/-- And the blocking case really is strictly negative, so the minimality appeal in
+`shared_side_of_bounce` is doing work rather than being decorative. -/
+theorem bounce_unshared_strictly_cheaper :
+    NoGapMerge.swapDelta true true false false < 0 :=
+  NoGapMerge.not_min_of_bounce_unshared true false false (by decide) (by decide)
+
 -- Certification (Rule 5).
 #print axioms NonVacuity.bounce_cost
 #print axioms NonVacuity.pass_cost
@@ -101,5 +116,7 @@ theorem capstone_not_vacuous :
 #print axioms NonVacuity.swap_free_value
 #print axioms NonVacuity.w_not_sameCycle
 #print axioms NonVacuity.capstone_not_vacuous
+#print axioms NonVacuity.bounce_shared_nontrivial
+#print axioms NonVacuity.bounce_unshared_strictly_cheaper
 
 end NonVacuity
