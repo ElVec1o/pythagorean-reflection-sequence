@@ -620,3 +620,27 @@ merge, and the meeting of two components in a class is the shared-site theorem. 
 work remaining is the instantiation, not new mathematics. That is a materially
 different position from the no-go this section opened with, and it should be checked
 carefully by someone who did not write it before the inequality is called proved.
+
+## The placement had to be rebuilt over walks, not cycles (2026-08-23)
+
+`SitePlacement` builds the component support out of `π.SameCycle` and delivers two
+ends in different `sig`-cycles. `config_descent` needs two ends in different
+*walks*. These are not the same condition, and the difference is the one that
+invalidated `CycleMerge` earlier: `sig` has twice as many cycles as there are
+walks, so two ends in different `sig`-cycles may lie in a single walk. `¬ SameCycle`
+does not give `¬ Reachable`.
+
+This was first written down as "bookkeeping, not mathematics". That was wrong.
+
+`WalkSupport` rebuilds the support over reachability. The proofs are the same shape,
+and one hypothesis becomes *cheaper*: strand-closure had to be assumed for cycles,
+but an end is always adjacent to its crossing partner (`Adj x (p x)` by `Or.inl
+rfl`), so over walks it is a theorem (`reachable_partner`), not a hypothesis.
+
+`walk_shared_site_pair` is the corrected placement: two ends at a common site in
+different walks, which is exactly `config_descent`'s pair with `hsplit` as the
+second conjunct.
+
+`SitePlacement` is kept -- its statements are true, and the cycle-level support is
+still what the `cLo`/`cHi` interval dichotomy in `GapFreeAssembly` is stated over.
+It simply does not feed the descent.

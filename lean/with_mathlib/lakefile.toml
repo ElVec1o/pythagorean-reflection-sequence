@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
+defaultTargets = ["WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
   "TranslationTrick",
   "TransferChain",
   "DiscriminantIdentity"]
@@ -283,3 +283,6 @@ name = "MergeWitness"
 
 [[lean_lib]]
 name = "SitePlacement"
+
+[[lean_lib]]
+name = "WalkSupport"
