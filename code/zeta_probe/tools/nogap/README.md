@@ -668,3 +668,22 @@ p_t_sig (p after t inverts sig) say the two involutions generate a dihedral
 action with p conjugating sig to sig^{-1}. Those relations are CONSISTENT with
 p a = sig^k a; what rules it out is the even length of the cycle. So the
 remaining work is the alternating-class argument, not more identity juggling.
+
+## The merge loop is closed (2026-08-23)
+
+merges_to_one: every configuration merges down to a single walk. The invariant
+carried through the induction is Merges -- the crossing map is unchanged, and the
+turn still respects sites and alternates arrival/departure. All three survive the
+re-pairing: swapData_p, swapT_site, swapT_arr.
+
+The step is descent_of_split, whose only remaining input is hsplit, and hsplit is
+produced by arrivals_of_many_walks exactly when more than one walk remains.
+reaches_one iterates. The covering hypothesis is stated D-independently (hcov0),
+since whether an edge carries a top end does not depend on the pairing.
+
+Chain, end to end, all kernel-certified with no native_decide and no sorry:
+  1 < walkCount  -> exists_split_of_walkCount -> two ends in different walks
+                 -> pair_of_two_walks         -> two ends at a common site
+                 -> arrival_beside            -> two ARRIVALS at a common site
+                 -> descent_of_split          -> walkCount strictly drops
+                 -> reaches_one               -> walkCount <= 1

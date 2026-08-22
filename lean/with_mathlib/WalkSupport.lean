@@ -232,6 +232,67 @@ theorem arrivals_of_many_walks (edgeOf siteOf : α → ℤ) (atTop isArr : α �
   intro hc
   exact hn ((hax.trans hc).trans ha'y.symm)
 
+/-! ### Closing the loop
+
+Every configuration merges down to a single walk.  The property carried through the
+induction is that the crossing map is unchanged and the turn still respects sites and
+alternates roles -- all three survive the re-pairing. -/
+
+/-- The invariant the merge preserves. -/
+def Merges {α : Type*} [Fintype α] [DecidableEq α]
+    (siteOf : α → ℤ) (isArr : α → Bool) (p₀ : α → α) (D : Data α) : Prop :=
+  D.p = p₀ ∧ (∀ e, siteOf (D.t e) = siteOf e) ∧ (∀ e, isArr (D.t e) = !isArr e)
+
+omit [Fintype α] [DecidableEq α] in
+/-- The crossing partner always changes site: it keeps the edge and flips the end. -/
+theorem p_site_ne (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p₀ : α → α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (x : α) : siteOf (p₀ x) ≠ siteOf x := by
+  rw [hsite, hsite, hpe, hpt]
+  cases h : atTop x <;> simp
+
+/-- **Every configuration merges to one walk.**  While more than one walk remains,
+`arrivals_of_many_walks` produces two arrivals at a common site in different walks and
+`descent_of_split` merges them, strictly lowering the count; `reaches_one` iterates. -/
+theorem merges_to_one (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool) (p₀ : α → α)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (hcov0 : ∀ j : ℤ, (∃ v : α, edgeOf v < j) →
+      ∃ y : α, edgeOf y = j - 1 ∧ atTop y = true)
+    (D : Data α) (hD : Merges siteOf isArr p₀ D) :
+    ∃ D', Merges siteOf isArr p₀ D' ∧ walkCount D' ≤ 1 := by
+  classical
+  refine ConfigMerge.reaches_one (P := Merges siteOf isArr p₀) ?_ D hD
+  intro E hmany hE
+  obtain ⟨hp, hts, hta⟩ := hE
+  obtain ⟨a, a', hss, haa, ha'a2, hsplit⟩ :=
+    arrivals_of_many_walks edgeOf siteOf atTop isArr E hsite
+      (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta
+      (fun _ hw => hcov0 _ hw) hmany
+  -- the six distinctness facts, all from `hsplit`
+  have hda : E.t a ≠ a := ConfigMerge.dep_ne_arr' E rfl
+  have hd'a : E.t a' ≠ a := ConfigMerge.dep_ne_other E rfl hsplit
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split E hsplit
+  have hd'd : E.t a' ≠ E.t a := ConfigMerge.dep_ne_dep' E rfl rfl haa'
+  have ha'd' : a' ≠ E.t a' := (ConfigMerge.dep_ne_arr' E rfl).symm
+  have hda' : E.t a ≠ a' := ConfigMerge.dep_ne_other' E rfl hsplit
+  -- the site facts
+  have hsd : siteOf (E.t a) = siteOf a := hts a
+  have hsa' : siteOf a' = siteOf a := hss.symm
+  have hsd' : siteOf (E.t a') = siteOf a := by rw [hts a', hss]
+  refine ⟨swapData E a (E.t a) a' (E.t a')
+      (swapT_invol E.t_invol rfl rfl hda hd'a haa' hd'd ha'd' hda')
+      (swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne hd'a hda')
+      (partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a')
+        (by rw [hp]; exact p_site_ne edgeOf siteOf atTop p₀ hsite hpe hpt) hts
+        hsd hsa' hsd'),
+    ⟨hp, ?_, ?_⟩, ConfigMerge.descent_of_split E a a' hsplit _ _ _⟩
+  · exact swapT_site siteOf E.t a (E.t a) a' (E.t a') hts hsd hsa' hsd'
+  · exact swapT_arr isArr E.t a (E.t a) a' (E.t a') hta rfl rfl haa ha'a2
+
 -- Certification (Rule 5).
-#print axioms WalkSupport.arrival_beside
-#print axioms WalkSupport.arrivals_of_many_walks
+#print axioms WalkSupport.p_site_ne
+#print axioms WalkSupport.merges_to_one

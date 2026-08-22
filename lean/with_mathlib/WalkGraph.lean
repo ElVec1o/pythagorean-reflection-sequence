@@ -608,38 +608,26 @@ theorem swapT_ne {β : Type*} [DecidableEq β] (t : β → β) (a d a' d' : β)
   · subst h4; rw [if_neg h1, if_neg h2, if_neg h3, if_pos rfl]; exact Ne.symm hda'
   rw [if_neg h1, if_neg h2, if_neg h3, if_neg h4]; exact ht x
 
--- Certification (Rule 5).
-#print axioms WalkGraph.adj_symm
-#print axioms WalkGraph.adj_irrefl
-#print axioms WalkGraph.neighbor_eq
-#print axioms WalkGraph.degree_eq_two
-#print axioms WalkGraph.witness_degree
-#print axioms WalkGraph.adj_turn
-#print axioms WalkGraph.reachable_delete_of_not_bridge
-#print axioms WalkGraph.not_bridge_of_cycle
-#print axioms WalkGraph.reachable_delete_of_cycle
-#print axioms WalkGraph.sig_p_t
-#print axioms WalkGraph.reach_sig_step
-#print axioms WalkGraph.reach_sig_iterate
-#print axioms WalkGraph.reach_sig_iterate'
-#print axioms WalkGraph.sig_injective
-#print axioms WalkGraph.cross_ne_turn
-#print axioms WalkGraph.p_t_eq_iterate
-#print axioms WalkGraph.reach_delete_turn
-#print axioms WalkGraph.step_adj
-#print axioms WalkGraph.reachable_of_conn
-#print axioms WalkGraph.conn_of_adj
-#print axioms WalkGraph.swapT_invol
-#print axioms WalkGraph.adj_merge
-#print axioms WalkGraph.le_swapData
-#print axioms WalkGraph.merge_connects
-#print axioms WalkGraph.reach_sig_iterate_set
-#print axioms WalkGraph.reach_delete_turn_set
-#print axioms WalkGraph.merge_connects_full
-#print axioms WalkGraph.swapT_site
-#print axioms WalkGraph.partner_ne_swapT
-#print axioms WalkGraph.swapT_ne
-#print axioms WalkGraph.walkCount
-#print axioms WalkGraph.walkCount_lt
+/-- **The re-pairing preserves the arrival/departure alternation.**  The new turn
+sends each arrival to the *other* arrival's departure, so roles still alternate. -/
+theorem swapT_arr {β : Type*} [DecidableEq β] (isArr : β → Bool) (t : β → β)
+    (a d a' d' : β)
+    (hflip : ∀ x, isArr (t x) = !isArr x)
+    (hd : d = t a) (hd' : d' = t a')
+    (ha : isArr a = true) (ha2 : isArr a' = true) :
+    ∀ x, isArr (swapT t a d a' d' x) = !isArr x := by
+  intro x
+  unfold swapT
+  by_cases h1 : x = a
+  · subst h1; rw [if_pos rfl, hd', hflip, ha2, ha]
+  by_cases h2 : x = d'
+  · subst h2; rw [if_neg h1, if_pos rfl, ha, hd', hflip, ha2]; rfl
+  by_cases h3 : x = a'
+  · subst h3; rw [if_neg h1, if_neg h2, if_pos rfl, hd, hflip, ha, ha2]
+  by_cases h4 : x = d
+  · subst h4; rw [if_neg h1, if_neg h2, if_neg h3, if_pos rfl, ha2, hd, hflip, ha]; rfl
+  rw [if_neg h1, if_neg h2, if_neg h3, if_neg h4]
+  exact hflip x
 
-end WalkGraph
+-- Certification (Rule 5).
+#print axioms WalkGraph.swapT_arr
