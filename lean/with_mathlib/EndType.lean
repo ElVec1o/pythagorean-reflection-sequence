@@ -20,25 +20,42 @@ import EdgeData
 
 namespace EndType
 
-/-- Ends of a configuration: a crossing of some edge, and which of its two ends. -/
-def Endpt (n : ℕ) (m : Fin n → ℕ) : Type := (Σ e : Fin n, Fin (m e)) × Bool
+/-- Ends of a configuration: a crossing of some edge, and which of its two ends.
 
-instance (n : ℕ) (m : Fin n → ℕ) : Fintype (Endpt n m) := by
-  unfold Endpt; infer_instance
+A structure with named fields rather than a nested pair.  The earlier encoding, a
+sigma type paired with a boolean, made ends fail to destructure without unfolding
+and forced an edge equality to be transported through the crossing index's type.
+Named fields remove both. -/
+structure Endpt (n : ℕ) (m : Fin n → ℕ) where
+  /-- the edge this end's crossing lies on -/
+  edge : Fin n
+  /-- which crossing of that edge -/
+  idx : Fin (m edge)
+  /-- whether this is the crossing's top end -/
+  top : Bool
+  deriving DecidableEq
 
-instance (n : ℕ) (m : Fin n → ℕ) : DecidableEq (Endpt n m) := by
-  unfold Endpt; infer_instance
+/-- Ends correspond to a crossing together with a choice of end. -/
+def endptEquiv (n : ℕ) (m : Fin n → ℕ) :
+    Endpt n m ≃ (Σ e : Fin n, Fin (m e)) × Bool where
+  toFun x := (⟨x.edge, x.idx⟩, x.top)
+  invFun y := ⟨y.1.1, y.1.2, y.2⟩
+  left_inv := by rintro ⟨e, i, b⟩; rfl
+  right_inv := by rintro ⟨⟨e, i⟩, b⟩; rfl
+
+instance (n : ℕ) (m : Fin n → ℕ) : Fintype (Endpt n m) :=
+  Fintype.ofEquiv _ (endptEquiv n m).symm
 
 /-- The edge an end belongs to. -/
-def edgeOf {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : ℤ := (x.1.1 : ℤ)
+def edgeOf {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : ℤ := (x.edge : ℤ)
 
 /-- Which of the crossing's two ends. -/
-def atTop {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : Bool := x.2
+def atTop {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : Bool := x.top
 
 /-- **The transport.**  An edge with a crossing carries an end.  This is `hcross`. -/
 theorem exists_end_of_mult_pos {n : ℕ} {m : Fin n → ℕ} (e : Fin n) (h : 0 < m e) :
     ∃ x : Endpt n m, edgeOf x = (e : ℤ) :=
-  ⟨⟨⟨e, ⟨0, h⟩⟩, true⟩, rfl⟩
+  ⟨⟨e, ⟨0, h⟩, true⟩, rfl⟩
 
 /-- Every end lies on an edge of the index range, which gives the two span bounds
 `GapFreeAssembly.shared_site_constructed` also needs. -/
@@ -47,7 +64,7 @@ theorem edgeOf_nonneg {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : 0 ≤ edge
 
 theorem edgeOf_lt {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : edgeOf x < (n : ℤ) := by
   unfold edgeOf
-  exact_mod_cast x.1.1.isLt
+  exact_mod_cast x.edge.isLt
 
 /-- The multiplicity of a gap-free edge is positive as a natural number, which is
 the form the transport needs. -/
@@ -65,7 +82,7 @@ theorem witness_end_exists :
 
 /-- An edge with no crossings carries no end, so the hypothesis is doing work. -/
 theorem witness_no_end : ¬ ∃ x : Endpt 1 (fun _ => 0), True := by
-  rintro ⟨⟨⟨_, i⟩, _⟩, _⟩
+  rintro ⟨⟨_, i⟩, _⟩
   exact absurd i.isLt (Nat.not_lt_zero _)
 
 /-! ### The crossing-partner map
@@ -76,24 +93,24 @@ and flips which end this is, which are exactly the two conditions the walk-graph
 data asks of it. -/
 
 /-- Exchange the two ends of a crossing. -/
-def partner {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : Endpt n m := (x.1, !x.2)
+def partner {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : Endpt n m :=
+  ⟨x.edge, x.idx, !x.top⟩
 
-@[simp] theorem partner_fst {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
-    (partner x).1 = x.1 := rfl
+@[simp] theorem partner_edge {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    (partner x).edge = x.edge := rfl
 
-@[simp] theorem partner_snd {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
-    (partner x).2 = !x.2 := rfl
+@[simp] theorem partner_top {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
+    (partner x).top = !x.top := rfl
 
 theorem partner_invol {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
     partner (partner x) = x := by
-  unfold partner
-  simp
+  cases x; simp [partner]
 
 theorem partner_ne {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) : partner x ≠ x := by
   intro h
-  have := congrArg Prod.snd h
-  simp only [partner_snd] at this
-  exact (Bool.not_ne_self x.2) this
+  have := congrArg Endpt.top h
+  simp only [partner_top] at this
+  exact (Bool.not_ne_self x.top) this
 
 theorem partner_edgeOf {n : ℕ} {m : Fin n → ℕ} (x : Endpt n m) :
     edgeOf (partner x) = edgeOf x := rfl
@@ -124,7 +141,7 @@ this crossing up" with "is this the top end", which is the same rule
 
 /-- Whether a crossing goes up: the first `up e` crossings of edge `e` do. -/
 def isUp {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (x : Endpt n m) : Bool :=
-  decide (x.1.2.val < up x.1.1)
+  decide (x.idx.val < up x.edge)
 
 /-- An end opens a pair exactly when its crossing's direction agrees with which end
 it is. -/
@@ -147,7 +164,8 @@ departs.  This is what makes arrivals and departures at a site pair up at all. -
 theorem isArrOf_partner {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (x : Endpt n m) :
     isArrOf up (partner x) = !isArrOf up x := by
   unfold isArrOf isUp partner atTop
-  cases h : x.2 <;> simp [h]
+  cases x with
+  | mk e i b => cases b <;> simp
 
 /-! ### Arrivals and departures at a site
 
@@ -301,8 +319,7 @@ sidesteps it. -/
 theorem card_endpt (n : ℕ) (m : Fin n → ℕ) :
     Fintype.card (Endpt n m) = (∑ e : Fin n, m e) * 2 := by
   classical
-  show Fintype.card ((Σ e : Fin n, Fin (m e)) × Bool) = _
-  rw [Fintype.card_prod, Fintype.card_sigma]
+  rw [Fintype.card_congr (endptEquiv n m), Fintype.card_prod, Fintype.card_sigma]
   simp [Fintype.card_fin]
 
 /-- The crossings on an edge split into up and down, whose counts add to the
@@ -368,6 +385,31 @@ the whole type, would remove the difficulty; both are changes to the encoding
 rather than to the mathematics.
 -/
 
+/-- **The per-edge count.**  With named fields an end destructures directly and the
+edge equality substitutes, so the set is the image of a filter on that edge's
+crossing indices under an injection. -/
+theorem card_ends_edge_dir {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (e : Fin n) (b : Bool) :
+    (Finset.univ.filter (fun x : Endpt n m =>
+        x.edge = e ∧ x.top = b ∧ x.idx.val < up e)).card = min (up e) (m e) := by
+  classical
+  have hset : (Finset.univ.filter (fun x : Endpt n m =>
+      x.edge = e ∧ x.top = b ∧ x.idx.val < up e))
+      = (Finset.univ.filter (fun i : Fin (m e) => i.val < up e)).image
+          (fun i => (⟨e, i, b⟩ : Endpt n m)) := by
+    ext x
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image]
+    constructor
+    · rintro ⟨h1, h2, h3⟩
+      obtain ⟨e', i, b'⟩ := x
+      cases h1; cases h2
+      exact ⟨i, h3, rfl⟩
+    · rintro ⟨j, hj, rfl⟩
+      exact ⟨rfl, rfl, hj⟩
+  rw [hset, Finset.card_image_of_injective _ ?_, card_fin_lt]
+  intro a c hac
+  simpa using hac
+
 -- Certification (Rule 5).
 #print axioms EndType.exists_end_of_mult_pos
 #print axioms EndType.edgeOf_nonneg
@@ -392,5 +434,6 @@ rather than to the mathematics.
 #print axioms EndType.up_add_down
 #print axioms EndType.card_arr_eq_card_dep
 #print axioms EndType.local_turn_exists
+#print axioms EndType.card_ends_edge_dir
 
 end EndType
