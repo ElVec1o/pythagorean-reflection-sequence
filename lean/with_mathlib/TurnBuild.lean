@@ -58,7 +58,34 @@ theorem exists_involution_of_card_eq (A D : Finset α)
     simp only [dif_neg hnA, dif_pos hx] at hcon
     exact hnA (hcon ▸ hmem)
 
+/-! ### The global turn
+
+Each site carries its own involution, and each preserves its site, since it pairs
+arrivals with departures *there*.  Gluing them by `t x = loc (site x) x` therefore
+gives an involution of the whole end type: applying it twice stays at one site, so
+the local involutivity closes it. -/
+
+/-- The glued turn. -/
+def glue {β : Type*} (site : β → ℤ) (loc : ℤ → β → β) : β → β :=
+  fun x => loc (site x) x
+
+/-- **The glue is an involution.**  The only thing needed beyond local
+involutivity is that each local map keeps its ends at their site. -/
+theorem glue_invol {β : Type*} (site : β → ℤ) (loc : ℤ → β → β)
+    (hinv : ∀ s x, loc s (loc s x) = x)
+    (hsite : ∀ x, site (loc (site x) x) = site x) :
+    ∀ x, glue site loc (glue site loc x) = x := by
+  intro x
+  unfold glue
+  rw [hsite x, hinv]
+
+/-- Fixed-point freedom and the other side conditions need no lemma: `glue` is
+definitionally `loc (site x) x`, so any pointwise property of the local maps is
+already a property of the glue.  Two such lemmas were written and removed rather
+than counted, being `fun x => h x`. -/
+
 -- Certification (Rule 5).
 #print axioms TurnBuild.exists_involution_of_card_eq
+#print axioms TurnBuild.glue_invol
 
 end TurnBuild
