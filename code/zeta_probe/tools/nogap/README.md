@@ -1876,3 +1876,23 @@ minimality bounds its cost.
 
 step_of_split' also now returns D'.p = D.p and that both ends are arrivals, which are
 what RunInv's remaining components need.
+
+## run_step returns the full invariant (2026-08-23)
+
+run_step's descending branch now returns RunInv for the merged datum, not just the cut
+condition. Each component has its lemma:
+
+  hp     from swapData_p, via the returned D'.p = D.p
+  hts    swapT_site
+  hta    swapT_arr
+  hturn  hturn_step
+  hcov   unchanged, since it no longer mentions the datum
+  hmin   cost-neutrality (cost_swapData through cost_congr) plus E's minimality
+
+step_of_split' had to return more along the way: both ends being arrivals, the split
+itself, and the shared-side fact -- reconstructing them at the call site produced
+wrong distinctness proofs, and returning them is both shorter and correct.
+
+One defeq trap: step_of_split' states the role facts as d.isArr with d = endDataOf,
+while RunInv states them as isArrOf up. These are definitionally equal but not
+syntactically, so rw fails on them until they are converted by a typed have.

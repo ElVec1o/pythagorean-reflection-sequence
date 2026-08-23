@@ -1376,8 +1376,7 @@ stuck. -/
 theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
     (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
     (E : Data (Endpt n m)) (hE : RunInv up ds Zf E) :
-    (∃ E' : Data (Endpt n m), walkCount E' < walkCount E ∧
-        ∀ x : Endpt n m, edgeOf (E'.t x) ≠ edgeOf x → siteOf x ∉ Zf) ∨
+    (∃ E' : Data (Endpt n m), RunInv up ds Zf E' ∧ walkCount E' < walkCount E) ∨
       (∀ x y : Endpt n m, runIndex Zf x = runIndex Zf y → (graph E).Reachable x y) := by
   classical
   by_cases hsep : ∀ x y : Endpt n m,
@@ -1411,10 +1410,48 @@ theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
       · exact swapT_site siteOf E.t b (E.t b) b' (E.t b') hE.hts (hE.hts b) hbs.symm
           (by rw [hE.hts b', hbs])
       · exact swapT_arr (isArrOf up) E.t b (E.t b) b' (E.t b') hE.hta rfl rfl hb hb'
-    obtain ⟨E', hlt, hp', a, a', harr, harr', hss, heq⟩ :=
+    obtain ⟨E', hlt, hp', a, a', harr, harr', hss, hsplit, hshared, heq⟩ :=
       CostMerge.step_of_split' (endDataOf (m := m) up ds) edgeOf siteOf atTop E
         (fun _ => rfl) (fun _ => rfl) hpe' hpt' hE.hts hE.hta hps hcovE hminE x y hnr
-    exact ⟨E', hlt, hturn_step Zf (isArrOf up) hZ E E' a a' hE.hts hE.hturn harr hss heq⟩
+    -- the merged datum satisfies every component of the invariant
+    have hts' : ∀ e, siteOf (E'.t e) = siteOf e := by
+      rw [heq]
+      exact swapT_site siteOf E.t a (E.t a) a' (E.t a') hE.hts (hE.hts a) hss
+        (by rw [hE.hts a', hss])
+    have hta' : ∀ e, isArrOf up (E'.t e) = !isArrOf up e := by
+      rw [heq]
+      exact swapT_arr (isArrOf up) E.t a (E.t a) a' (E.t a') hE.hta rfl rfl harr harr'
+    have hne : a ≠ a' := fun h => hsplit (h ▸ SimpleGraph.Reachable.refl _)
+    have harrA : isArrOf up a = true := harr
+    have harrA' : isArrOf up a' = true := harr'
+    have hda : isArrOf up (E.t a) = false := by
+      have h := hE.hta a
+      rw [harrA] at h
+      simpa using h
+    have hda' : isArrOf up (E.t a') = false := by
+      have h := hE.hta a'
+      rw [harrA'] at h
+      simpa using h
+    have hcost : CostMerge.costOf (endDataOf (m := m) up ds) E'
+        = CostMerge.costOf (endDataOf (m := m) up ds) E := by
+      have haa2 : a' ≠ a := ConfigMerge.ne_of_split E hsplit
+      have h1 := CostMerge.cost_swapData (endDataOf (m := m) up ds) E a a' harr harr'
+        hda hda' hne hshared
+        (swapT_invol E.t_invol rfl rfl (ConfigMerge.dep_ne_arr' E rfl)
+          (ConfigMerge.dep_ne_other E rfl hsplit) haa2
+          (ConfigMerge.dep_ne_dep' E rfl rfl haa2)
+          (Ne.symm (ConfigMerge.dep_ne_arr' E rfl))
+          (ConfigMerge.dep_ne_other' E rfl hsplit))
+        (swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne
+          (ConfigMerge.dep_ne_other E rfl hsplit)
+          (ConfigMerge.dep_ne_other' E rfl hsplit))
+        (partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a')
+          hps hE.hts (hE.hts a) hss (by rw [hE.hts a', hss]))
+      exact (CostMerge.cost_congr (endDataOf (m := m) up ds) E' _
+        (fun w _ => by rw [heq]; rfl)).trans h1
+    exact ⟨E', ⟨by rw [hp', hE.hp], hts', hta',
+      hturn_step Zf (isArrOf up) hZ E E' a a' hE.hts hE.hturn harr hss heq,
+      hE.hcov, fun F hF1 hF2 hF3 => by rw [hcost]; exact hE.hmin F hF1 hF2 hF3⟩, hlt⟩
 
 -- Certification (Rule 5).
 #print axioms ConfigLoop.run_step

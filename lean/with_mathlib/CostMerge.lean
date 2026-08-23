@@ -594,7 +594,7 @@ theorem step_of_split (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
     (x y : α) (hnr : ¬ (graph D).Reachable x y) :
     ∃ D' : Data α, walkCount D' < walkCount D := by
   obtain ⟨z, z', hzz', hle⟩ := order_split D edgeOf x y hnr
-  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, _⟩ :=
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
     freePair_of_split d edgeOf siteOf atTop D hside hsite hpe hpt hts hta hpsite
       z z' hzz' hle (hcov z) hmin
   have haa' : a' ≠ a := ConfigMerge.ne_of_split D hsplit
@@ -630,9 +630,11 @@ theorem step_of_split' (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
     (x y : α) (hnr : ¬ (graph D).Reachable x y) :
     ∃ D' : Data α, walkCount D' < walkCount D ∧ D'.p = D.p ∧
       ∃ a a' : α, d.isArr a = true ∧ d.isArr a' = true ∧ siteOf a' = siteOf a ∧
+        ¬ (graph D).Reachable a a' ∧
+        (d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a')) ∧
         D'.t = swapT D.t a (D.t a) a' (D.t a') := by
   obtain ⟨z, z', hzz', hle⟩ := order_split D edgeOf x y hnr
-  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, _⟩ :=
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
     freePair_of_split d edgeOf siteOf atTop D hside hsite hpe hpt hts hta hpsite
       z z' hzz' hle (hcov z) hmin
   have haa' : a' ≠ a := ConfigMerge.ne_of_split D hsplit
@@ -646,7 +648,7 @@ theorem step_of_split' (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
     hpsite hts (hts a) hss.symm (by rw [hts a', hss])
   exact ⟨swapData D a (D.t a) a' (D.t a') h1 h2 h3,
     ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3, rfl,
-    a, a', harr, harr', hss.symm, rfl⟩
+    a, a', harr, harr', hss.symm, hsplit, hshared, rfl⟩
 
 -- Certification (Rule 5).
 #print axioms CostMerge.step_of_split'
