@@ -560,5 +560,53 @@ theorem freePair_of_split (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
     free_pair_of_minimal d atTop D a a' hside hab hdb haarr ha'arr hda hda' hne
       h1 h2 h3 (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
 
+/-- **Order a split by leftmost edge.**  `freePair_of_split` wants the first end to be
+the one with the larger `wLo`; either order of a split will do, so pick that one. -/
+theorem order_split {α : Type*} [DecidableEq α] [Fintype α]
+    (D : Data α) (edgeOf : α → ℤ) (x y : α)
+    (hnr : ¬ (graph D).Reachable x y) :
+    ∃ z z' : α, ¬ (graph D).Reachable z z' ∧
+      WalkSupport.wLo edgeOf (graph D) z' ≤ WalkSupport.wLo edgeOf (graph D) z := by
+  rcases le_total (WalkSupport.wLo edgeOf (graph D) y)
+    (WalkSupport.wLo edgeOf (graph D) x) with h | h
+  · exact ⟨x, y, hnr, h⟩
+  · exact ⟨y, x, fun hc => hnr hc.symm, h⟩
+
+/-- **A split yields a strictly descending merge.**  Order the split, take the free
+pair, and merge: the walk count drops.
+
+The covering hypothesis is stated for every end, which the run descent supplies
+because every walk of the run has its leftmost edge inside the run. -/
+theorem step_of_split (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (hcov : ∀ z v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop w = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D)
+    (x y : α) (hnr : ¬ (graph D).Reachable x y) :
+    ∃ D' : Data α, walkCount D' < walkCount D := by
+  obtain ⟨z, z', hzz', hle⟩ := order_split D edgeOf x y hnr
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, _⟩ :=
+    freePair_of_split d edgeOf siteOf atTop D hside hsite hpe hpt hts hta hpsite
+      z z' hzz' hle (hcov z) hmin
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split D hsplit
+  have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
+    (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit) haa'
+    (ConfigMerge.dep_ne_dep' D rfl rfl haa')
+    (Ne.symm (ConfigMerge.dep_ne_arr' D rfl)) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h2 := swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+    (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+    hpsite hts (hts a) hss.symm (by rw [hts a', hss])
+  exact ⟨_, ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3⟩
+
 -- Certification (Rule 5).
-#print axioms CostMerge.freePair_of_split
+#print axioms CostMerge.step_of_split

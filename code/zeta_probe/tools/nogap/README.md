@@ -1781,3 +1781,21 @@ hstep needs is now available with matching shapes:
                     ->  descent_of_split for the strict decrease
                     ->  hturn_swapT to carry Local
                     ->  wLo_same_side to re-derive the run bounds
+
+## A split yields a descending merge (2026-08-23)
+
+order_split: freePair_of_split wants the end with the larger wLo first, and either
+order of a split will do, so pick that one.
+
+step_of_split: order the split, take the free pair, merge -- the walk count drops.
+The covering hypothesis is stated for every end, which the run descent supplies
+because every walk of a run has its leftmost edge inside that run (wLo_same_side).
+
+The conclusion is stated as "some datum has a smaller walk count", which is what
+reaches_stuck consumes. A first attempt tried to also return the merged pair and the
+three swapData side conditions inside the existential; anonymous binders in an
+existential need types, and those types are long, so the useful form is the short one.
+
+What M4b still owes is the invariant half: reaches_stuck needs P preserved by the
+step, and step_of_split as stated returns only the count decrease. Threading P through
+means returning the swapped datum together with hturn_swapT's conclusion.
