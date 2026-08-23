@@ -1828,3 +1828,18 @@ So both halves of the descent are in place:
 
 and c_le_Z_of_step consumes them once they are packaged as reaches_stuck's step. That
 packaging is the last piece of M4b.
+
+## The descent step, packaged (2026-08-23)
+
+RunInv bundles what the run descent carries: the crossing map, the turn's site and
+role laws, the cut condition, the covering, and cost-minimality.
+
+run_step: where separation fails the invariant yields a strictly smaller datum still
+satisfying the cut condition; where it holds the datum is stuck. That is exactly
+reaches_stuck's step, with Stuck = separation.
+
+Two syntax lessons. `push Not at h` did not produce the expected existential from a
+negated two-variable forall -- explicit not_forall twice, then a lambda for the
+implication, works. And a multi-line `by` block sitting inside an argument list breaks
+the parser when its continuation line starts with a bracket; hoisting those terms into
+`have`s before the application fixes it and reads better anyway.

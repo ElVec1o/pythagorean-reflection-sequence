@@ -1346,5 +1346,55 @@ theorem hturn_step (Zf : Finset ℤ) (isArr : Endpt n m → Bool)
   exact hturn_swapT D.t Zf a (D.t a) a' (D.t a') hturn (hZ a harr)
     (hts a) hss (by rw [hts a', hss])
 
+/-! ### The descent invariant, bundled
+
+Everything the run descent must carry: the crossing map, the turn's site and role
+laws, the cut condition, cost-minimality, and the covering. -/
+
+/-- The run descent's invariant. -/
+structure RunInv (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (E : Data (Endpt n m)) : Prop where
+  hp : E.p = partner
+  hts : ∀ e, siteOf (E.t e) = siteOf e
+  hta : ∀ e, isArrOf up (E.t e) = !isArrOf up e
+  hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf
+  hcov : ∀ z v : Endpt n m, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
+    ∃ w : Endpt n m, edgeOf w = WalkSupport.wLo edgeOf (graph E) z - 1 ∧ atTop w = true
+  hmin : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
+    isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
+    ¬ CostMerge.costOf (endDataOf (m := m) up ds)
+        (swapData E b (E.t b) b' (E.t b') h1 h2 h3)
+      < CostMerge.costOf (endDataOf (m := m) up ds) E
+
+/-- **The descent step, packaged.**  Where separation fails the invariant yields a
+strictly smaller datum still satisfying the cut condition; where it holds the datum is
+stuck. -/
+theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (E : Data (Endpt n m)) (hE : RunInv up ds Zf E) :
+    (∃ E' : Data (Endpt n m), walkCount E' < walkCount E ∧
+        ∀ x : Endpt n m, edgeOf (E'.t x) ≠ edgeOf x → siteOf x ∉ Zf) ∨
+      (∀ x y : Endpt n m, runIndex Zf x = runIndex Zf y → (graph E).Reachable x y) := by
+  classical
+  by_cases hsep : ∀ x y : Endpt n m,
+      runIndex Zf x = runIndex Zf y → (graph E).Reachable x y
+  · exact Or.inr hsep
+  · left
+    obtain ⟨x, hx⟩ := not_forall.mp hsep
+    obtain ⟨y, hy⟩ := not_forall.mp hx
+    have hnr : ¬ (graph E).Reachable x y := fun hc => hy (fun _ => hc)
+    have hpe' : ∀ w : Endpt n m, edgeOf (E.p w) = edgeOf w := by
+      rw [hE.hp]; exact fun w => partner_edgeOf w
+    have hpt' : ∀ w : Endpt n m, atTop (E.p w) = !atTop w := by
+      rw [hE.hp]; exact fun w => partner_top w
+    have hps : ∀ w : Endpt n m, siteOf (E.p w) ≠ siteOf w := by
+      rw [hE.hp]
+      exact WalkSupport.p_site_ne edgeOf siteOf atTop partner (fun _ => rfl)
+        (fun w => partner_edgeOf w) (fun w => partner_top w)
+    obtain ⟨E', hlt, a, a', harr, hss, heq⟩ :=
+      CostMerge.step_of_split' (endDataOf (m := m) up ds) edgeOf siteOf atTop E
+        (fun _ => rfl) (fun _ => rfl) hpe' hpt' hE.hts hE.hta hps hE.hcov hE.hmin x y hnr
+    exact ⟨E', hlt, hturn_step Zf (isArrOf up) hZ E E' a a' hE.hts hE.hturn harr hss heq⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.hturn_step
+#print axioms ConfigLoop.run_step
