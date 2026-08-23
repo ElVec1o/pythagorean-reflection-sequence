@@ -1621,5 +1621,30 @@ theorem other_end_runlocal (up : Fin n → ℕ)
     simp at h
     omega
 
+/-- **A walk's run index is read off its leftmost edge as well as anywhere else.** -/
+theorem gz_wLo (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (z : Endpt n m) :
+    CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)
+      = CutComponents.gz Zf (edgeOf z) := by
+  obtain ⟨x, hzx, hxe⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph (dataOf up hbal)) z
+  rw [← hxe]
+  exact congrArg Fin.val (runIndex_const up hbal Zf hturn x z hzx.symm)
+
+/-- **Two walks of one run have the same run index at their leftmost edges.** -/
+theorem gz_wLo_eq (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (z z' : Endpt n m)
+    (hsame : CutComponents.gz Zf (edgeOf z') = CutComponents.gz Zf (edgeOf z)) :
+    CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z')
+      = CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z) := by
+  rw [gz_wLo up hbal Zf hturn z', gz_wLo up hbal Zf hturn z]
+  exact hsame
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.other_end_runlocal
+#print axioms ConfigLoop.gz_wLo
+#print axioms ConfigLoop.gz_wLo_eq

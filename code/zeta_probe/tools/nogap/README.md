@@ -2006,3 +2006,16 @@ That is the first of the three lemmas the threading needs. What remains is carry
 the same-run fact through freePair_of_split and step_of_split' so run_step can
 discharge hcovAll from RunInv.hcov, at which point the shield law loses its extra
 hypothesis.
+
+## The same-run fact at leftmost edges (2026-08-23)
+
+gz_wLo: a walk's run index is read off its leftmost edge as well as anywhere else --
+the leftmost edge IS the edge of some end of the walk (exists_end_at_wLo), and
+runIndex_const makes the index constant along the walk.
+
+gz_wLo_eq: two walks of one run therefore agree at their leftmost edges, which is
+exactly other_end_runlocal's hsame.
+
+Second of the three threading lemmas. What remains is a version of freePair_of_split
+calling other_end_runlocal instead of other_end_at_wLo, carrying the same-run
+hypothesis; then step_of_split' and run_step inherit it and hcovAll is discharged.
