@@ -2048,3 +2048,18 @@ real state is:
 Nothing today moved H1, H2 or M9. The work was formalisation infrastructure for the
 combinatorial half of paper2, plus the merge argument built from scratch. That is
 real, but it is not progress on the open mathematics.
+
+## CORRECTION: M4b is not "one composition" away (2026-08-23)
+
+Checked before stopping. freePair_runlocal, other_end_runlocal, gz_wLo and gz_wLo_eq
+are all stated for `dataOf up hbal`, not for a general datum. The descent produces
+MERGED data, which are not dataOf. So finishing M4b needs those four generalised to an
+arbitrary E carrying the structural laws (p = partner, the turn's site and role laws),
+and only then the composition.
+
+That is four lemmas plus the wiring, not one composition. The earlier estimate in this
+log was wrong and is corrected here rather than left standing.
+
+Whether it is worth doing is a separate question. M4b is the reverse shield inequality
+for the combinatorial half of paper2; it does not bear on H1, H2 or M9, which are where
+U's conditionality actually lives.
