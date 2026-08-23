@@ -1358,8 +1358,10 @@ structure RunInv (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
   hts : ∀ e, siteOf (E.t e) = siteOf e
   hta : ∀ e, isArrOf up (E.t e) = !isArrOf up e
   hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf
-  hcov : ∀ z v : Endpt n m, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
-    ∃ w : Endpt n m, edgeOf w = WalkSupport.wLo edgeOf (graph E) z - 1 ∧ atTop w = true
+  -- stated without reference to `E`, so it survives a merge unchanged: whether an
+  -- edge carries a top end does not depend on the pairing
+  hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) → (∃ v : Endpt n m, edgeOf v < j) →
+    ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true
   hmin : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
     isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
     ¬ CostMerge.costOf (endDataOf (m := m) up ds)
@@ -1391,9 +1393,15 @@ theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
       rw [hE.hp]
       exact WalkSupport.p_site_ne edgeOf siteOf atTop partner (fun _ => rfl)
         (fun w => partner_edgeOf w) (fun w => partner_top w)
+    have hcovE : ∀ z v : Endpt n m, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
+        ∃ w : Endpt n m, edgeOf w = WalkSupport.wLo edgeOf (graph E) z - 1 ∧
+          atTop w = true := by
+      intro z v hv
+      obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph E) z
+      exact hE.hcov _ ⟨u, hue⟩ ⟨v, hv⟩
     obtain ⟨E', hlt, a, a', harr, hss, heq⟩ :=
       CostMerge.step_of_split' (endDataOf (m := m) up ds) edgeOf siteOf atTop E
-        (fun _ => rfl) (fun _ => rfl) hpe' hpt' hE.hts hE.hta hps hE.hcov hE.hmin x y hnr
+        (fun _ => rfl) (fun _ => rfl) hpe' hpt' hE.hts hE.hta hps hcovE hE.hmin x y hnr
     exact ⟨E', hlt, hturn_step Zf (isArrOf up) hZ E E' a a' hE.hts hE.hturn harr hss heq⟩
 
 -- Certification (Rule 5).

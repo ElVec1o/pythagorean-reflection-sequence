@@ -1843,3 +1843,19 @@ negated two-variable forall -- explicit not_forall twice, then a lambda for the
 implication, works. And a multi-line `by` block sitting inside an argument list breaks
 the parser when its continuation line starts with a bracket; hoisting those terms into
 `have`s before the application fixes it and reads better anyway.
+
+## hcov stated without the datum (2026-08-23)
+
+RunInv's covering component referred to wLo, which shifts when a merge changes the
+walks -- so the invariant could not be preserved as stated. The fix is that the
+covering is not really about the datum: whether an edge carries a top end depends on
+the multiplicities, not on the pairing.
+
+RunInv.hcov is now
+
+  forall j, (exists u, edgeOf u = j) -> (exists v, edgeOf v < j)
+              -> exists w, edgeOf w = j - 1 and atTop w
+
+with no mention of E, so it survives a merge unchanged, and run_step instantiates it
+at j = wLo z using exists_end_at_wLo. That removes the only component of RunInv whose
+preservation was in doubt.
