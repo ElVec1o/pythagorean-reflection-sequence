@@ -1358,8 +1358,17 @@ structure RunInv (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
   hts : ∀ e, siteOf (E.t e) = siteOf e
   hta : ∀ e, isArrOf up (E.t e) = !isArrOf up e
   hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf
-  -- stated without reference to `E`, so it survives a merge unchanged: whether an
-  -- edge carries a top end does not depend on the pairing
+  -- Stated without reference to `E`, so it survives a merge unchanged: whether an
+  -- edge carries a top end does not depend on the pairing.
+  --
+  -- **WARNING (2026-08-23).**  As stated this is the GLOBAL covering, and it forces
+  -- `Zf = ∅`.  A cut site carries no ends (`no_ends_of_alpha_zero`), which needs two
+  -- adjacent empty edges; then for `j` to the right of the gap the antecedents hold
+  -- while `j - 1` is empty, so the conclusion fails.  Hence `RunInv` is satisfiable
+  -- only when there is no cut site, and every theorem below it is vacuous for
+  -- `Zf ≠ ∅`.  The fix is to demand the covering only within a run -- the shape
+  -- `covering_on_run` already has -- which means carrying the run decomposition in
+  -- the invariant rather than a single global condition.
   hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) → (∃ v : Endpt n m, edgeOf v < j) →
     ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true
   -- global minimality in the class, which a cost-neutral merge preserves; the local

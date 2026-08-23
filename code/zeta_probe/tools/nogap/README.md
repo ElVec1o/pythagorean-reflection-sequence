@@ -1947,3 +1947,29 @@ shield_law is not vacuous. It does NOT exercise the interesting case: with Z emp
 law reads c = 0, which is thm:nogap again. A witness with Z nonempty needs a
 configuration carrying a cut site, and by no_ends_of_alpha_zero such a site has no
 ends -- so it needs two edges separated by an empty one.
+
+## RETRACTION: shield_law is vacuous for Z nonempty (2026-08-23)
+
+Building the Z-nonempty witness found the defect, which is the point of building it.
+
+A cut site carries no ends (no_ends_of_alpha_zero), and a site has ends iff edge s-1
+or edge s does -- so a cut site needs TWO ADJACENT EMPTY EDGES. Take m = (2,0,0,2),
+up = (1,0,0,1): sites 0,1,3,4 balance, site 2 is empty and hence cut.
+
+But RunInv.hcov demands a top end on edge j-1 whenever anything lies left of j. At
+j = 3 the antecedents hold -- edge 3 carries ends, edge 0 lies left -- and edge 2 is
+empty, so the conclusion fails.
+
+RunInv IS THEREFORE UNSATISFIABLE WHENEVER A CUT SITE EXISTS. c_le_Z, shield_law and
+runInv_of_gapfree are true as stated but say nothing for Zf nonempty, which is the
+only case with content -- at Zf empty the shield law is thm:nogap again.
+
+This is the fifth vacuity trap of the session and the first found by deliberately
+constructing the witness rather than by stumbling on it. The pattern is identical to
+the covering hypothesis retracted earlier: a condition phrased globally when the
+argument needs it locally.
+
+THE FIX: hcov must be run-local, the shape covering_on_run already has, which means
+carrying the run decomposition in the invariant rather than one global condition. The
+run induction machinery -- covering_on_run, other_end_at_wLo_run, hasFreePair_run,
+maxWLoOn -- was built for exactly that and is unused by RunInv as written.
