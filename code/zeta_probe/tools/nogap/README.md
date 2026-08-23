@@ -1896,3 +1896,21 @@ wrong distinctness proofs, and returning them is both shorter and correct.
 One defeq trap: step_of_split' states the role facts as d.isArr with d = endDataOf,
 while RunInv states them as isArrOf up. These are definitionally equal but not
 syntactically, so rw fails on them until they are converted by a typed have.
+
+## c <= |Z| IS PROVED (2026-08-23)
+
+ConfigLoop.c_le_Z: a cost-minimal configuration merges, run by run, to at most
+|Z| + 1 walks -- at most |Z| isolated cycles. Kernel-certified, no sorry, no
+native_decide.
+
+  reaches_stuck with run_step as the step
+    -> descend while two ends of one run lie in different walks
+    -> where none do, the run index separates the walks
+    -> local_of_hturn gives Local for the stuck datum
+    -> walkCount_le_runs_gen counts: at most |Z| + 1 walks
+
+Every hypothesis is the invariant RunInv, plus hZ -- cut sites carry no arrivals --
+which is no_ends_of_alpha_zero.
+
+With prop_cut_assembled (c >= |Z|) that is the shield law c = |Z| at configuration
+level, for a cost-minimal realisation. M4b's open half is closed.

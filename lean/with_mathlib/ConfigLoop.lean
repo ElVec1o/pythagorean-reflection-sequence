@@ -1453,5 +1453,47 @@ theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
       hturn_step Zf (isArrOf up) hZ E E' a a' hE.hts hE.hturn harr hss heq,
       hE.hcov, fun F hF1 hF2 hF3 => by rw [hcost]; exact hE.hmin F hF1 hF2 hF3⟩, hlt⟩
 
+/-- **`Local` from the invariant**, for any datum -- `walk_graph_local_edge` is stated
+for `dataOf`, and the descent produces merged data. -/
+theorem local_of_hturn (E : Data (Endpt n m)) (Zf : Finset ℤ)
+    (hp : E.p = partner)
+    (hts : ∀ e, siteOf (E.t e) = siteOf e)
+    (hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf) :
+    CutComponents.Local (graph E) edgeOf Zf := by
+  intro x y hxy
+  rcases hxy with h | h
+  · subst h
+    refine ⟨edgeOf x, Or.inr rfl, Or.inr ?_, fun hne => absurd ?_ hne⟩
+    · rw [hp]; exact partner_edgeOf x
+    · rw [hp]; exact (partner_edgeOf x).symm
+  · subst h
+    refine ⟨siteOf x, ?_, ?_, fun hne => hturn x (Ne.symm hne)⟩
+    · unfold siteOf edgeOf atTop; cases x.top <;> simp
+    · have h2 : siteOf (E.t x) = siteOf x := hts x
+      have h3 : edgeOf (E.t x) + (if atTop (E.t x) then (1:ℤ) else 0)
+          = siteOf (E.t x) := rfl
+      cases hb : atTop (E.t x)
+      · right; rw [hb] at h3; simp at h3; omega
+      · left; rw [hb] at h3; simp at h3; omega
+
+/-- **`c ≤ |Z|`.**  A cost-minimal configuration merges, run by run, to at most
+`|Z| + 1` walks -- that is, at most `|Z|` isolated cycles.
+
+The descent runs while two ends of one run lie in different walks; where none do, the
+run index separates the walks and the counting bounds them.  Every hypothesis is the
+invariant `RunInv`, and `hZ` says cut sites carry no arrivals, which is
+`no_ends_of_alpha_zero`. -/
+theorem c_le_Z (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
+    ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E ≤ Zf.card + 1 := by
+  obtain ⟨E, hE, hsep⟩ :=
+    ConfigMerge.reaches_stuck
+      (Stuck := fun E => ∀ x y : Endpt n m,
+        runIndex Zf x = runIndex Zf y → (graph E).Reachable x y)
+      (fun E hE => run_step up ds Zf hZ E hE) D hD
+  exact ⟨E, hE, walkCount_le_runs_gen E Zf
+    (local_of_hturn E Zf hE.hp hE.hts hE.hturn) hsep⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.run_step
+#print axioms ConfigLoop.c_le_Z
