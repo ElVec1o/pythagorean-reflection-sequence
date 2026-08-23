@@ -1645,6 +1645,78 @@ theorem gz_wLo_eq (up : Fin n → ℕ)
   rw [gz_wLo up hbal Zf hturn z', gz_wLo up hbal Zf hturn z]
   exact hsame
 
+/-- **The free pair, from run-local covering.**  `CostMerge.freePair_of_split` with
+`other_end_runlocal` in place of `other_end_at_wLo`, so only the run-local covering is
+needed.  The same-run hypothesis comes from the two ends sharing a run index. -/
+theorem freePair_runlocal (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hturn : ∀ x : Endpt n m, edgeOf (turn up x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) →
+      (∃ v : Endpt n m, edgeOf v < j ∧
+        CutComponents.gz Zf (edgeOf v) = CutComponents.gz Zf j) →
+      ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true)
+    (hmin : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
+      isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
+      ¬ CostMerge.costOf (endDataOf (m := m) up ds)
+          (swapData (dataOf up hbal) b ((dataOf up hbal).t b) b'
+            ((dataOf up hbal).t b') h1 h2 h3)
+        < CostMerge.costOf (endDataOf (m := m) up ds) (dataOf up hbal))
+    (z z' : Endpt n m)
+    (hzz' : ¬ (graph (dataOf up hbal)).Reachable z z')
+    (hle : WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z'
+      ≤ WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)
+    (hsame : CutComponents.gz Zf (edgeOf z') = CutComponents.gz Zf (edgeOf z)) :
+    ∃ a a' : Endpt n m,
+      siteOf a = siteOf a' ∧ isArrOf up a = true ∧ isArrOf up a' = true ∧
+      ¬ (graph (dataOf up hbal)).Reachable a a' ∧
+      (atTop a = atTop a' ∨
+        atTop ((dataOf up hbal).t a) = atTop ((dataOf up hbal).t a')) := by
+  obtain ⟨a, hza, hasite, hab, haarr⟩ :=
+    WalkSupport.maximiser_has_bottom_arrival edgeOf siteOf atTop (isArrOf up)
+      (dataOf up hbal) (fun _ => rfl) (fun x => partner_edgeOf x)
+      (fun x => partner_top x) (fun e => turnAt_site up hbal e)
+      (fun e => turn_arr_flip up hbal e) z
+  obtain ⟨y, hys, hyn⟩ :=
+    other_end_runlocal up hbal Zf hcov z z' hzz' hle
+      (gz_wLo_eq up hbal Zf hturn z z' hsame)
+  obtain ⟨a', hya', ha'site, ha'arr⟩ :=
+    WalkSupport.walk_has_arrival_at_site siteOf (isArrOf up) (dataOf up hbal)
+      (fun e => turnAt_site up hbal e) (fun e => turn_arr_flip up hbal e) y y
+      (SimpleGraph.Reachable.refl _) _ hys
+  have hna' : ¬ (graph (dataOf up hbal)).Reachable z a' :=
+    fun hc => hyn (hc.trans hya'.symm)
+  have hsplit : ¬ (graph (dataOf up hbal)).Reachable a a' :=
+    fun hc => hna' (hza.trans hc)
+  have hss : siteOf a' = siteOf a := by rw [hasite, ha'site]
+  have hne : a ≠ a' := fun h => hsplit (h ▸ SimpleGraph.Reachable.refl _)
+  have hdb : atTop ((dataOf up hbal).t a) = false :=
+    WalkSupport.maximiser_departure_bottom edgeOf siteOf atTop (dataOf up hbal)
+      (fun _ => rfl) (fun e => turnAt_site up hbal e) z a hza hasite
+  have hda : isArrOf up ((dataOf up hbal).t a) = false := by
+    have h := turn_arr_flip up hbal a; rw [haarr] at h; simpa using h
+  have hda' : isArrOf up ((dataOf up hbal).t a') = false := by
+    have h := turn_arr_flip up hbal a'; rw [ha'arr] at h; simpa using h
+  have haa2 : a' ≠ a := ConfigMerge.ne_of_split (dataOf up hbal) hsplit
+  have h1 := swapT_invol (dataOf up hbal).t_invol rfl rfl
+    (ConfigMerge.dep_ne_arr' (dataOf up hbal) rfl)
+    (ConfigMerge.dep_ne_other (dataOf up hbal) rfl hsplit) haa2
+    (ConfigMerge.dep_ne_dep' (dataOf up hbal) rfl rfl haa2)
+    (Ne.symm (ConfigMerge.dep_ne_arr' (dataOf up hbal) rfl))
+    (ConfigMerge.dep_ne_other' (dataOf up hbal) rfl hsplit)
+  have h2 := swapT_ne (dataOf up hbal).t a ((dataOf up hbal).t a) a'
+    ((dataOf up hbal).t a') (dataOf up hbal).t_ne
+    (ConfigMerge.dep_ne_other (dataOf up hbal) rfl hsplit)
+    (ConfigMerge.dep_ne_other' (dataOf up hbal) rfl hsplit)
+  have h3 := partner_ne_swapT siteOf (dataOf up hbal).p (dataOf up hbal).t a
+    ((dataOf up hbal).t a) a' ((dataOf up hbal).t a')
+    (WalkSupport.p_site_ne edgeOf siteOf atTop partner (fun _ => rfl)
+      (fun w => partner_edgeOf w) (fun w => partner_top w))
+    (fun e => turnAt_site up hbal e) (turnAt_site up hbal a) hss
+    (show siteOf ((dataOf up hbal).t a') = siteOf a from (turnAt_site up hbal a').trans hss)
+  exact ⟨a, a', hss.symm, haarr, ha'arr, hsplit,
+    CostMerge.free_pair_of_minimal (endDataOf (m := m) up ds) atTop (dataOf up hbal)
+      a a' (fun _ => rfl) hab hdb haarr ha'arr hda hda' hne h1 h2 h3
+      (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.gz_wLo
-#print axioms ConfigLoop.gz_wLo_eq
+#print axioms ConfigLoop.freePair_runlocal

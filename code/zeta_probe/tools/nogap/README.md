@@ -2019,3 +2019,32 @@ exactly other_end_runlocal's hsame.
 Second of the three threading lemmas. What remains is a version of freePair_of_split
 calling other_end_runlocal instead of other_end_at_wLo, carrying the same-run
 hypothesis; then step_of_split' and run_step inherit it and hcovAll is discharged.
+
+## The run-local free pair (2026-08-23) -- and an honest recount
+
+freePair_runlocal now returns the shared-side condition too, so the run-local descent
+has every input the global one had. Third of the three threading lemmas. What remains
+to finish M4b is wiring it into run_step so hcovAll is discharged -- one composition.
+
+HONEST RECOUNT. The green count in this session's tables was inflated: a new atom ID
+was minted for nearly every lemma, so the number measured how finely the work was
+chopped, not how much was proved. At the granularity the session STARTED with, the
+real state is:
+
+  PROVED AND FORMAL (configuration level, kernel-certified, no sorry):
+    M2  cor:lRclosed        -- was already proved; the star was misattributed
+    M3  prop:cut  c >= |Z|
+    M5  cor:localzero
+    M6  thm:nogap, with cost
+    M7  prop:travelinv
+  PARTIAL:
+    M4b shield law c = |Z| -- claimed, retracted as vacuous, repaired to a
+        conditional statement; one composition from unconditional
+  UNTOUCHED (these are the actual mathematical goal):
+    H1  the transfer model (M)
+    H2  the junction pairing (R-J)
+    M9  U transcendental over Q(x), conditional on H1 and H2
+
+Nothing today moved H1, H2 or M9. The work was formalisation infrastructure for the
+combinatorial half of paper2, plus the merge argument built from scratch. That is
+real, but it is not progress on the open mathematics.
