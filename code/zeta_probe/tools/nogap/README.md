@@ -1914,3 +1914,20 @@ which is no_ends_of_alpha_zero.
 
 With prop_cut_assembled (c >= |Z|) that is the shield law c = |Z| at configuration
 level, for a cost-minimal realisation. M4b's open half is closed.
+
+## THE SHIELD LAW (2026-08-23)
+
+ConfigLoop.shield_law: a cost-minimal configuration has EXACTLY |Z| + 1 walks, so
+c = |Z|. Both inequalities in one statement, kernel-certified, no sorry.
+
+  c >= |Z|   CutComponents.exists_injective_components_avoiding fed by local_of_hturn,
+             converted by walkCount_ge_of_avoiding (add the marked component back)
+  c <= |Z|   c_le_Z, the run induction
+
+Hypotheses: the invariant RunInv, cut sites carrying no arrivals (hZ), the span
+bounds, and occupancy -- every edge of the span carries a crossing, which is
+datum-independent and supplied by m >= 2 on f = 0 edges.
+
+Both halves of M4b are now formal at configuration level, on the same footing as M3,
+M5, M6 and M7. The shared remaining link for all of them is the passage from a group
+element to its configuration.

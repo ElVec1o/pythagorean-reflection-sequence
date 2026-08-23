@@ -1495,5 +1495,49 @@ theorem c_le_Z (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
   exact ⟨E, hE, walkCount_le_runs_gen E Zf
     (local_of_hturn E Zf hE.hp hE.hts hE.hturn) hsep⟩
 
+/-- **`|Z| + 1 ≤ walkCount`.**  `prop_cut_assembled` gives `|Z|` components avoiding a
+marked one; adding the marked one back gives `|Z| + 1` distinct components. -/
+theorem walkCount_ge_of_avoiding (D : Data (Endpt n m)) (k : ℕ)
+    (c0 : (graph D).ConnectedComponent)
+    (F : Fin k → (graph D).ConnectedComponent)
+    (hinj : Function.Injective F) (havoid : ∀ i, F i ≠ c0) :
+    k + 1 ≤ walkCount D := by
+  classical
+  have hG : Function.Injective (Fin.cons c0 F : Fin (k + 1) → _) := by
+    intro i j hij
+    induction i using Fin.cases with
+    | zero =>
+      induction j using Fin.cases with
+      | zero => rfl
+      | succ j => exact absurd hij.symm (by simpa using havoid j)
+    | succ i =>
+      induction j using Fin.cases with
+      | zero => exact absurd hij (by simpa using havoid i)
+      | succ j => simpa using congrArg Fin.succ (hinj (by simpa using hij))
+  simpa using Fintype.card_le_of_injective _ hG
+
+/-! ### The shield law
+
+Both inequalities together: a cost-minimal configuration has exactly `|Z| + 1` walks,
+so `c = |Z|`.
+
+`c ≥ |Z|` is `CutComponents.exists_injective_components_avoiding` fed by
+`local_of_hturn`, converted by `walkCount_ge_of_avoiding`; `c ≤ |Z|` is `c_le_Z`. -/
+theorem shield_law (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
+    (e0 : Endpt n m)
+    (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
+    ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E = Zf.card + 1 := by
+  obtain ⟨E, hE, hle⟩ := c_le_Z up ds Zf hZ D hD
+  refine ⟨E, hE, le_antisymm hle ?_⟩
+  obtain ⟨F, hinj, havoid⟩ :=
+    CutComponents.exists_injective_components_avoiding
+      (local_of_hturn E Zf hE.hp hE.hts hE.hturn) A B hAB hlow hhigh hocc
+      ((graph E).connectedComponentMk e0)
+  exact walkCount_ge_of_avoiding E Zf.card _ F hinj havoid
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.c_le_Z
+#print axioms ConfigLoop.shield_law
