@@ -1991,3 +1991,18 @@ the thing the run redesign has to supply. What remains is threading the same-run
 condition through other_end_at_wLo -> freePair_of_split -> step_of_split', at which
 point hcovAll can be discharged from RunInv.hcov and the shield law becomes
 unconditional for Z nonempty.
+
+## The second end, from run-local covering (2026-08-23)
+
+other_end_at_wLo applies its covering at exactly ONE point -- the bottom end of z''s
+walk, whose edge is wLo z'. So when z and z' lie in the same run the run-local covering
+suffices and the global form is unnecessary.
+
+other_end_runlocal proves that: the same two cases as before, but the first supplies
+the covering's same-run antecedent from hsame (equal gz at the two leftmost edges),
+which is available because z and z' are in one run.
+
+That is the first of the three lemmas the threading needs. What remains is carrying
+the same-run fact through freePair_of_split and step_of_split' so run_step can
+discharge hcovAll from RunInv.hcov, at which point the shield law loses its extra
+hypothesis.

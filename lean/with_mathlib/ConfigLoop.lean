@@ -1577,6 +1577,49 @@ theorem shield_law_witness (ds : Bool → Bool) :
   exact runInv_of_gapfree (m := fun _ : Fin 1 => 2) (fun _ => 1) ds one_edge_hbal
     (fun _ => by norm_num)
 
+/-! ### The second end, from run-local covering
+
+`other_end_at_wLo` applies its covering at exactly one point -- the bottom end of
+`z'`'s walk, whose edge is `wLo z'`.  So when `z` and `z'` lie in the same run the
+run-local covering suffices, and the global form is not needed. -/
+
+/-- **The second walk's end, using only run-local covering.** -/
+theorem other_end_runlocal (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) →
+      (∃ v : Endpt n m, edgeOf v < j ∧
+        CutComponents.gz Zf (edgeOf v) = CutComponents.gz Zf j) →
+      ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true)
+    (z z' : Endpt n m)
+    (hsplit : ¬ (graph (dataOf up hbal)).Reachable z z')
+    (hle : WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z'
+      ≤ WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)
+    (hsame : CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z')
+      = CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z)) :
+    ∃ y : Endpt n m,
+      siteOf y = WalkSupport.wLo edgeOf (graph (dataOf up hbal)) z ∧
+      ¬ (graph (dataOf up hbal)).Reachable z y := by
+  obtain ⟨u, hur, hue, hub⟩ :=
+    WalkSupport.exists_bottom_at_wLo edgeOf atTop (dataOf up hbal)
+      (fun x => partner_edgeOf x) (fun x => partner_top x) z'
+  rcases lt_or_eq_of_le hle with hlt | heq
+  · -- something lies strictly left, in the same run
+    obtain ⟨w, hwe, hwt⟩ := hcov _
+      (by obtain ⟨x, _, hxe⟩ :=
+            WalkSupport.exists_end_at_wLo edgeOf (graph (dataOf up hbal)) z
+          exact ⟨x, hxe⟩)
+      ⟨u, by omega, by rw [hue]; exact hsame⟩
+    obtain ⟨hys, hyn⟩ :=
+      WalkSupport.shared_ends_at_wLo edgeOf siteOf atTop (graph (dataOf up hbal))
+        (fun _ => rfl) z w hwe hwt
+    exact ⟨w, hys, hyn⟩
+  · -- the supports start together: `z'`'s own bottom end is at that site
+    refine ⟨u, ?_, fun hc => hsplit (hc.trans hur.symm)⟩
+    have h := edge_of_site u (siteOf u) rfl
+    rw [hub] at h
+    simp at h
+    omega
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.runInv_of_gapfree
-#print axioms ConfigLoop.shield_law_witness
+#print axioms ConfigLoop.other_end_runlocal
