@@ -1361,18 +1361,16 @@ structure RunInv (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
   -- Stated without reference to `E`, so it survives a merge unchanged: whether an
   -- edge carries a top end does not depend on the pairing.
   --
-  -- **WARNING (2026-08-23).**  As stated this is the GLOBAL covering, and it forces
-  -- `Zf = ∅`.  A cut site carries no ends (`no_ends_of_alpha_zero`), which needs two
-  -- adjacent empty edges; then for `j` to the right of the gap the antecedents hold
-  -- while `j - 1` is empty, so the conclusion fails.  Hence `RunInv` is satisfiable
-  -- only when there is no cut site, and every theorem below it is vacuous for
-  -- `Zf ≠ ∅`.  The fix is to demand the covering only within a run -- the shape
-  -- `covering_on_run` already has -- which means carrying the run decomposition in
-  -- the invariant rather than a single global condition.
-  hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) → (∃ v : Endpt n m, edgeOf v < j) →
+  -- **RUN-LOCAL (2026-08-23).**  The antecedent asks for an end to the left of `j`
+  -- *in the same run* -- equal `gz`, so no cut site in between.  The earlier global
+  -- form, without that clause, was unsatisfiable whenever a cut site existed: a cut
+  -- site needs two adjacent empty edges, and then for `j` right of the gap the
+  -- antecedents held while `j - 1` was empty.  With the clause, that instance is
+  -- excluded because the two sides have different `gz`.
+  hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) →
+    (∃ v : Endpt n m, edgeOf v < j ∧
+      CutComponents.gz Zf (edgeOf v) = CutComponents.gz Zf j) →
     ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true
-  -- global minimality in the class, which a cost-neutral merge preserves; the local
-  -- form "no swap is cheaper" is not preserved, since a merge can open new swaps
   hmin : ∀ F : Data (Endpt n m), F.p = partner →
     (∀ e, siteOf (F.t e) = siteOf e) →
     (∀ e, isArrOf up (F.t e) = !isArrOf up e) →
@@ -1384,7 +1382,10 @@ strictly smaller datum still satisfying the cut condition; where it holds the da
 stuck. -/
 theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
     (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
-    (E : Data (Endpt n m)) (hE : RunInv up ds Zf E) :
+    (E : Data (Endpt n m)) (hE : RunInv up ds Zf E)
+    (hcovE : ∀ z v : Endpt n m, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
+      ∃ w : Endpt n m, edgeOf w = WalkSupport.wLo edgeOf (graph E) z - 1 ∧
+        atTop w = true) :
     (∃ E' : Data (Endpt n m), RunInv up ds Zf E' ∧ walkCount E' < walkCount E) ∨
       (∀ x y : Endpt n m, runIndex Zf x = runIndex Zf y → (graph E).Reachable x y) := by
   classical
@@ -1403,12 +1404,6 @@ theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
       rw [hE.hp]
       exact WalkSupport.p_site_ne edgeOf siteOf atTop partner (fun _ => rfl)
         (fun w => partner_edgeOf w) (fun w => partner_top w)
-    have hcovE : ∀ z v : Endpt n m, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
-        ∃ w : Endpt n m, edgeOf w = WalkSupport.wLo edgeOf (graph E) z - 1 ∧
-          atTop w = true := by
-      intro z v hv
-      obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph E) z
-      exact hE.hcov _ ⟨u, hue⟩ ⟨v, hv⟩
     have hminE : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
         isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
         ¬ CostMerge.costOf (endDataOf (m := m) up ds)
@@ -1494,13 +1489,17 @@ invariant `RunInv`, and `hZ` says cut sites carry no arrivals, which is
 `no_ends_of_alpha_zero`. -/
 theorem c_le_Z (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
     (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (hcovAll : ∀ E : Data (Endpt n m), RunInv up ds Zf E →
+      ∀ z v : Endpt n m, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
+        ∃ w : Endpt n m, edgeOf w = WalkSupport.wLo edgeOf (graph E) z - 1 ∧
+          atTop w = true)
     (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
     ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E ≤ Zf.card + 1 := by
   obtain ⟨E, hE, hsep⟩ :=
     ConfigMerge.reaches_stuck
       (Stuck := fun E => ∀ x y : Endpt n m,
         runIndex Zf x = runIndex Zf y → (graph E).Reachable x y)
-      (fun E hE => run_step up ds Zf hZ E hE) D hD
+      (fun E hE => run_step up ds Zf hZ E hE (hcovAll E hE)) D hD
   exact ⟨E, hE, walkCount_le_runs_gen E Zf
     (local_of_hturn E Zf hE.hp hE.hts hE.hturn) hsep⟩
 
@@ -1538,9 +1537,13 @@ theorem shield_law (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
     (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
     (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
     (e0 : Endpt n m)
+    (hcovAll : ∀ E : Data (Endpt n m), RunInv up ds Zf E →
+      ∀ z v : Endpt n m, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
+        ∃ w : Endpt n m, edgeOf w = WalkSupport.wLo edgeOf (graph E) z - 1 ∧
+          atTop w = true)
     (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
     ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E = Zf.card + 1 := by
-  obtain ⟨E, hE, hle⟩ := c_le_Z up ds Zf hZ D hD
+  obtain ⟨E, hE, hle⟩ := c_le_Z up ds Zf hZ hcovAll D hD
   refine ⟨E, hE, le_antisymm hle ?_⟩
   obtain ⟨F, hinj, havoid⟩ :=
     CutComponents.exists_injective_components_avoiding
@@ -1564,7 +1567,7 @@ theorem runInv_of_gapfree (up : Fin n → ℕ) (ds : Bool → Bool)
     CostMerge.exists_mergesMin siteOf partner (endDataOf (m := m) up ds)
       (dataOf up hbal) (merges_dataOf up hbal)
   exact ⟨E, hp, hts, hta, (fun x _ => Finset.notMem_empty _),
-    covering_of_mult_pos hm,
+    (fun j hu hv => covering_of_mult_pos hm j hu ⟨hv.choose, hv.choose_spec.1⟩),
     fun F h1 h2 h3 => hmin F ⟨h1, h2, h3⟩⟩
 
 /-- The shield law, on the one-edge configuration: its hypotheses are satisfiable. -/

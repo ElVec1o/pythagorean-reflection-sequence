@@ -1973,3 +1973,21 @@ THE FIX: hcov must be run-local, the shape covering_on_run already has, which me
 carrying the run decomposition in the invariant rather than one global condition. The
 run induction machinery -- covering_on_run, other_end_at_wLo_run, hasFreePair_run,
 maxWLoOn -- was built for exactly that and is unused by RunInv as written.
+
+## The covering gap, made explicit (2026-08-23)
+
+RunInv.hcov is now run-local: it asks for an end left of j IN THE SAME RUN (equal gz,
+so no cut site between). On m = (2,0,0,2) at j = 3 the antecedent fails, since
+gz{2}(0) = 0 and gz{2}(3) = 1, so the condition holds -- the invariant is satisfiable
+with cut sites, which the global form was not.
+
+But run_step cannot derive the UNRESTRICTED covering it passes to freePair_of_split
+from the run-local one: there v is arbitrary, and the same-run clause is unavailable
+without threading it through other_end_at_wLo. Rather than hide that, hcovAll is now
+an explicit hypothesis of run_step, c_le_Z and shield_law.
+
+So the statements are honest: they say what they assume, and the assumption is exactly
+the thing the run redesign has to supply. What remains is threading the same-run
+condition through other_end_at_wLo -> freePair_of_split -> step_of_split', at which
+point hcovAll can be discharged from RunInv.hcov and the shield law becomes
+unconditional for Z nonempty.
