@@ -1813,3 +1813,18 @@ same information with none of that.
 
 So the step now yields both halves reaches_stuck wants -- the strict decrease and the
 data to re-establish the invariant.
+
+## The invariant survives a step (2026-08-23)
+
+hturn_step: the cut condition survives a descent step. step_of_split' returns the
+merged datum with an equation on its turn, hturn_swapT carries the condition across,
+and the merge site is not a cut site because cut sites carry no ends -- which enters
+as the hypothesis hZ, exactly no_ends_of_alpha_zero instantiated.
+
+So both halves of the descent are in place:
+
+  step_of_split'   the strict decrease, plus the data to re-establish the invariant
+  hturn_step       the invariant re-established from that data
+
+and c_le_Z_of_step consumes them once they are packaged as reaches_stuck's step. That
+packaging is the last piece of M4b.

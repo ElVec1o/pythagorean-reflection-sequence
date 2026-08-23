@@ -1326,5 +1326,25 @@ theorem wLo_same_side (up : Fin n → ℕ)
   rw [← hxe]
   exact (walk_confined up hbal s hcut z x hzx).symm
 
+/-! ### The invariant survives a step
+
+The descent's invariant is the cut condition `hturn`.  `step_of_split'` returns the
+merged datum with an equation on its turn, and `hturn_swapT` carries the condition
+across -- provided the merge site is not a cut site, which holds because cut sites
+carry no ends. -/
+
+/-- **The cut condition survives a descent step.** -/
+theorem hturn_step (Zf : Finset ℤ) (isArr : Endpt n m → Bool)
+    (hZ : ∀ x : Endpt n m, isArr x = true → siteOf x ∉ Zf)
+    (D D' : Data (Endpt n m)) (a a' : Endpt n m)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hturn : ∀ x : Endpt n m, edgeOf (D.t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (harr : isArr a = true) (hss : siteOf a' = siteOf a)
+    (heq : D'.t = swapT D.t a (D.t a) a' (D.t a')) :
+    ∀ x : Endpt n m, edgeOf (D'.t x) ≠ edgeOf x → siteOf x ∉ Zf := by
+  rw [heq]
+  exact hturn_swapT D.t Zf a (D.t a) a' (D.t a') hturn (hZ a harr)
+    (hts a) hss (by rw [hts a', hss])
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.wLo_same_side
+#print axioms ConfigLoop.hturn_step
