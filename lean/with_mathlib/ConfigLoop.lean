@@ -1539,5 +1539,32 @@ theorem shield_law (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
       ((graph E).connectedComponentMk e0)
   exact walkCount_ge_of_avoiding E Zf.card _ F hinj havoid
 
+/-! ### The shield law is not vacuous
+
+`RunInv` bundles six conditions, and a bundle nothing satisfies proves nothing.  It is
+exhibited here on a gap-free configuration, where `Z = ∅`: minimality comes from
+`exists_mergesMin`, the structural laws from `Merges`, the covering from
+`covering_of_mult_pos`, and the cut condition is vacuous on the empty set. -/
+
+/-- **`RunInv` holds at a cost-minimal datum of a gap-free configuration.** -/
+theorem runInv_of_gapfree (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hm : ∀ e : Fin n, 0 < m e) :
+    ∃ E : Data (Endpt n m), RunInv up ds (∅ : Finset ℤ) E := by
+  obtain ⟨E, ⟨hp, hts, hta⟩, hmin⟩ :=
+    CostMerge.exists_mergesMin siteOf partner (endDataOf (m := m) up ds)
+      (dataOf up hbal) (merges_dataOf up hbal)
+  exact ⟨E, hp, hts, hta, (fun x _ => Finset.notMem_empty _),
+    covering_of_mult_pos hm,
+    fun F h1 h2 h3 => hmin F ⟨h1, h2, h3⟩⟩
+
+/-- The shield law, on the one-edge configuration: its hypotheses are satisfiable. -/
+theorem shield_law_witness (ds : Bool → Bool) :
+    ∃ E : Data (Endpt 1 (fun _ => 2)),
+      RunInv (m := fun _ : Fin 1 => 2) (fun _ => 1) ds (∅ : Finset ℤ) E := by
+  exact runInv_of_gapfree (m := fun _ : Fin 1 => 2) (fun _ => 1) ds one_edge_hbal
+    (fun _ => by norm_num)
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.shield_law
+#print axioms ConfigLoop.runInv_of_gapfree
+#print axioms ConfigLoop.shield_law_witness

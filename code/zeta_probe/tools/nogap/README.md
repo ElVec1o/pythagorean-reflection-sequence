@@ -1931,3 +1931,19 @@ datum-independent and supplied by m >= 2 on f = 0 edges.
 Both halves of M4b are now formal at configuration level, on the same footing as M3,
 M5, M6 and M7. The shared remaining link for all of them is the passage from a group
 element to its configuration.
+
+## The shield law is not vacuous (2026-08-23)
+
+RunInv bundles six conditions, and a bundle nothing satisfies proves nothing -- this
+session has been bitten by that four times.
+
+runInv_of_gapfree exhibits it at a cost-minimal datum of any gap-free configuration:
+minimality from exists_mergesMin, the structural laws from Merges, the covering from
+covering_of_mult_pos, and the cut condition vacuous on the empty set.
+shield_law_witness instantiates that on the one-edge configuration.
+
+Note what this witness does and does not show. It confirms RunInv is satisfiable, so
+shield_law is not vacuous. It does NOT exercise the interesting case: with Z empty the
+law reads c = 0, which is thm:nogap again. A witness with Z nonempty needs a
+configuration carrying a cut site, and by no_ends_of_alpha_zero such a site has no
+ends -- so it needs two edges separated by an empty one.
