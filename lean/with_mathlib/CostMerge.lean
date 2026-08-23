@@ -608,5 +608,45 @@ theorem step_of_split (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
     hpsite hts (hts a) hss.symm (by rw [hts a', hss])
   exact ⟨_, ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3⟩
 
+/-- **The descending merge, with what the invariant needs.**  Same as
+`step_of_split`, but returning the merged datum together with the two arrivals and the
+equation `D'.t = swapT …`.  That is enough for `ConfigLoop.hturn_swapT` to carry the
+cut condition across the step, and it avoids the dependent binders that made the
+side conditions unusable inside an existential. -/
+theorem step_of_split' (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (hcov : ∀ z v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop w = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D)
+    (x y : α) (hnr : ¬ (graph D).Reachable x y) :
+    ∃ D' : Data α, walkCount D' < walkCount D ∧
+      ∃ a a' : α, d.isArr a = true ∧ siteOf a' = siteOf a ∧
+        D'.t = swapT D.t a (D.t a) a' (D.t a') := by
+  obtain ⟨z, z', hzz', hle⟩ := order_split D edgeOf x y hnr
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, _⟩ :=
+    freePair_of_split d edgeOf siteOf atTop D hside hsite hpe hpt hts hta hpsite
+      z z' hzz' hle (hcov z) hmin
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split D hsplit
+  have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
+    (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit) haa'
+    (ConfigMerge.dep_ne_dep' D rfl rfl haa')
+    (Ne.symm (ConfigMerge.dep_ne_arr' D rfl)) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h2 := swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+    (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+    hpsite hts (hts a) hss.symm (by rw [hts a', hss])
+  exact ⟨swapData D a (D.t a) a' (D.t a') h1 h2 h3,
+    ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3,
+    a, a', harr, hss.symm, rfl⟩
+
 -- Certification (Rule 5).
-#print axioms CostMerge.step_of_split
+#print axioms CostMerge.step_of_split'

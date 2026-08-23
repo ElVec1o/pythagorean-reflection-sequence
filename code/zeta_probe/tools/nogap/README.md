@@ -1799,3 +1799,17 @@ existential need types, and those types are long, so the useful form is the shor
 What M4b still owes is the invariant half: reaches_stuck needs P preserved by the
 step, and step_of_split as stated returns only the count decrease. Threading P through
 means returning the swapped datum together with hturn_swapT's conclusion.
+
+## The descending merge, with what the invariant needs (2026-08-23)
+
+step_of_split' returns the merged datum together with the two arrivals and the
+equation D'.t = swapT D.t a (D.t a) a' (D.t a'). That is exactly what
+ConfigLoop.hturn_swapT consumes to carry the cut condition across the step.
+
+The equation on .t is the trick: returning the three swapData side conditions inside
+the existential needs dependent binders, which do not typecheck anonymously and whose
+types are unwieldy written out. An equation between the two turn FUNCTIONS carries the
+same information with none of that.
+
+So the step now yields both halves reaches_stuck wants -- the strict decrease and the
+data to re-establish the invariant.
