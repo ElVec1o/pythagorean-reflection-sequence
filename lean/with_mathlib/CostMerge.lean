@@ -500,6 +500,65 @@ theorem site_cost_le_of_global (d : EndData.Data α) (D E : Data α) (siteOf : �
     hoff t (Finset.mem_of_mem_erase ht) (Finset.ne_of_mem_erase ht))
   omega
 
+/-! ### The free pair, from a given split
+
+`hasFreePair_of_minimal` finds the second walk with `exists_other_walk`, which picks an
+arbitrary one.  For the run induction the second walk is *given* -- separation failure
+names two ends of the same run that are unreachable -- so the core is extracted here
+with that end as input. -/
+
+/-- **A free pair from a given split.**  Same as `hasFreePair_of_minimal` but with the
+second walk supplied rather than found, so it can be chosen inside a run. -/
+theorem freePair_of_split (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsite : ∀ x, siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (z z' : α)
+    (hzz' : ¬ (graph D).Reachable z z')
+    (hle : WalkSupport.wLo edgeOf (graph D) z' ≤ WalkSupport.wLo edgeOf (graph D) z)
+    (hcov : ∀ v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
+      ∃ y : α, edgeOf y = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop y = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D) :
+    ∃ a a' : α,
+      siteOf a = siteOf a' ∧ d.isArr a = true ∧ d.isArr a' = true ∧
+      d.isArr (D.t a) = false ∧ d.isArr (D.t a') = false ∧
+      ¬ (graph D).Reachable a a' ∧
+      (d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a')) := by
+  obtain ⟨a, hza, hasite, hab, haarr⟩ :=
+    WalkSupport.maximiser_has_bottom_arrival edgeOf siteOf atTop d.isArr D
+      hsite hpe hpt hts hta z
+  obtain ⟨y, hys, hyn⟩ :=
+    WalkSupport.other_end_at_wLo edgeOf siteOf atTop D hsite hpe hpt z z' hcov hzz' hle
+  obtain ⟨a', hya', ha'site, ha'arr⟩ :=
+    WalkSupport.walk_has_arrival_at_site siteOf d.isArr D hts hta y y
+      (SimpleGraph.Reachable.refl _) _ hys
+  have hna' : ¬ (graph D).Reachable z a' := fun hc => hyn (hc.trans hya'.symm)
+  have hne : a ≠ a' := fun h => hna' (h ▸ hza)
+  have hdb : atTop (D.t a) = false :=
+    WalkSupport.maximiser_departure_bottom edgeOf siteOf atTop D hsite hts z a hza hasite
+  have hda : d.isArr (D.t a) = false := by rw [hta, haarr]; rfl
+  have hda' : d.isArr (D.t a') = false := by rw [hta, ha'arr]; rfl
+  have hsplit : ¬ (graph D).Reachable a a' := fun hc => hna' (hza.trans hc)
+  have hss : siteOf a' = siteOf a := by rw [hasite, ha'site]
+  have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
+    (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit)
+    (ConfigMerge.ne_of_split D hsplit)
+    (ConfigMerge.dep_ne_dep' D rfl rfl (ConfigMerge.ne_of_split D hsplit))
+    (Ne.symm (ConfigMerge.dep_ne_arr' D rfl)) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h2 := swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+    (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+    hpsite hts (hts a) hss (by rw [hts a', hss])
+  exact ⟨a, a', hss.symm, haarr, ha'arr, hda, hda', hsplit,
+    free_pair_of_minimal d atTop D a a' hside hab hdb haarr ha'arr hda hda' hne
+      h1 h2 h3 (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
+
 -- Certification (Rule 5).
-#print axioms CostMerge.cost_split_by_site
-#print axioms CostMerge.site_cost_le_of_global
+#print axioms CostMerge.freePair_of_split

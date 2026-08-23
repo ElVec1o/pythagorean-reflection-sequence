@@ -1763,3 +1763,21 @@ That closes the concern recorded in M4b10.
 M4b's remaining obligation is now just the assembly of hstep itself: from separation
 failure, produce the pair (hasFreePair_run), merge (descent_of_split), and carry
 Local (hturn_swapT) with the run bounds re-derived (wLo_same_side).
+
+## The free pair, from a GIVEN split (2026-08-23)
+
+hasFreePair_of_minimal finds the second walk with exists_other_walk, which picks an
+arbitrary one -- possibly in another run, where the run-local covering says nothing.
+
+freePair_of_split extracts the core with the second end supplied instead. For the run
+induction that end is given: separation failure names two ends of the SAME run that
+are unreachable, so the pair stays inside the run and the run-local covering applies.
+
+That was the last mismatch between the global descent and the run descent. Everything
+hstep needs is now available with matching shapes:
+
+  separation fails  ->  two ends of one run, unreachable
+                    ->  freePair_of_split with the run-local covering
+                    ->  descent_of_split for the strict decrease
+                    ->  hturn_swapT to carry Local
+                    ->  wLo_same_side to re-derive the run bounds
