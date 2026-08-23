@@ -628,8 +628,8 @@ theorem step_of_split' (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
       d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
       ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D)
     (x y : α) (hnr : ¬ (graph D).Reachable x y) :
-    ∃ D' : Data α, walkCount D' < walkCount D ∧
-      ∃ a a' : α, d.isArr a = true ∧ siteOf a' = siteOf a ∧
+    ∃ D' : Data α, walkCount D' < walkCount D ∧ D'.p = D.p ∧
+      ∃ a a' : α, d.isArr a = true ∧ d.isArr a' = true ∧ siteOf a' = siteOf a ∧
         D'.t = swapT D.t a (D.t a) a' (D.t a') := by
   obtain ⟨z, z', hzz', hle⟩ := order_split D edgeOf x y hnr
   obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, _⟩ :=
@@ -645,8 +645,8 @@ theorem step_of_split' (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
   have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
     hpsite hts (hts a) hss.symm (by rw [hts a', hss])
   exact ⟨swapData D a (D.t a) a' (D.t a') h1 h2 h3,
-    ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3,
-    a, a', harr, hss.symm, rfl⟩
+    ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3, rfl,
+    a, a', harr, harr', hss.symm, rfl⟩
 
 -- Certification (Rule 5).
 #print axioms CostMerge.step_of_split'

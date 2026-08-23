@@ -1859,3 +1859,20 @@ RunInv.hcov is now
 with no mention of E, so it survives a merge unchanged, and run_step instantiates it
 at j = wLo z using exists_end_at_wLo. That removes the only component of RunInv whose
 preservation was in doubt.
+
+## The invariant's minimality made preservable (2026-08-23)
+
+RunInv.hmin was "no swap from E is cheaper than E". That is NOT preserved: a merge can
+open swaps that were unavailable before. It is now global minimality in the class,
+
+  forall F, F.p = partner -> F respects sites -> F alternates roles -> cost E <= cost F
+
+which a cost-neutral merge does preserve, since the merged datum has the same cost and
+the same class membership.
+
+run_step derives the local form it needs from the global one: for two arrivals at a
+common site the swapped datum is in the class (swapT_site, swapT_arr), so global
+minimality bounds its cost.
+
+step_of_split' also now returns D'.p = D.p and that both ends are arrivals, which are
+what RunInv's remaining components need.

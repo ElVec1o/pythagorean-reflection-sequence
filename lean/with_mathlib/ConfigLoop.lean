@@ -1362,11 +1362,13 @@ structure RunInv (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
   -- edge carries a top end does not depend on the pairing
   hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) → (∃ v : Endpt n m, edgeOf v < j) →
     ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true
-  hmin : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
-    isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
-    ¬ CostMerge.costOf (endDataOf (m := m) up ds)
-        (swapData E b (E.t b) b' (E.t b') h1 h2 h3)
-      < CostMerge.costOf (endDataOf (m := m) up ds) E
+  -- global minimality in the class, which a cost-neutral merge preserves; the local
+  -- form "no swap is cheaper" is not preserved, since a merge can open new swaps
+  hmin : ∀ F : Data (Endpt n m), F.p = partner →
+    (∀ e, siteOf (F.t e) = siteOf e) →
+    (∀ e, isArrOf up (F.t e) = !isArrOf up e) →
+    CostMerge.costOf (endDataOf (m := m) up ds) E
+      ≤ CostMerge.costOf (endDataOf (m := m) up ds) F
 
 /-- **The descent step, packaged.**  Where separation fails the invariant yields a
 strictly smaller datum still satisfying the cut condition; where it holds the datum is
@@ -1399,9 +1401,19 @@ theorem run_step (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
       intro z v hv
       obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph E) z
       exact hE.hcov _ ⟨u, hue⟩ ⟨v, hv⟩
-    obtain ⟨E', hlt, a, a', harr, hss, heq⟩ :=
+    have hminE : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
+        isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
+        ¬ CostMerge.costOf (endDataOf (m := m) up ds)
+            (swapData E b (E.t b) b' (E.t b') h1 h2 h3)
+          < CostMerge.costOf (endDataOf (m := m) up ds) E := by
+      intro b b' hbs hb hb' h1 h2 h3
+      refine not_lt.mpr (hE.hmin _ hE.hp ?_ ?_)
+      · exact swapT_site siteOf E.t b (E.t b) b' (E.t b') hE.hts (hE.hts b) hbs.symm
+          (by rw [hE.hts b', hbs])
+      · exact swapT_arr (isArrOf up) E.t b (E.t b) b' (E.t b') hE.hta rfl rfl hb hb'
+    obtain ⟨E', hlt, hp', a, a', harr, harr', hss, heq⟩ :=
       CostMerge.step_of_split' (endDataOf (m := m) up ds) edgeOf siteOf atTop E
-        (fun _ => rfl) (fun _ => rfl) hpe' hpt' hE.hts hE.hta hps hcovE hE.hmin x y hnr
+        (fun _ => rfl) (fun _ => rfl) hpe' hpt' hE.hts hE.hta hps hcovE hminE x y hnr
     exact ⟨E', hlt, hturn_step Zf (isArrOf up) hZ E E' a a' hE.hts hE.hturn harr hss heq⟩
 
 -- Certification (Rule 5).
