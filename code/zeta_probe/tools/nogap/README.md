@@ -5005,3 +5005,28 @@ So every structural fact (M3a)'s remaining step requires is now proved:
   the fibre counts     BLOCK 111  two signs per non-zero magnitude
   the transfer form    BLOCK 105  pathGF_succ
 What is left is writing the sum, in Mathlib's PowerSeries.
+
+## 2026-09-03 — BLOCK 120: the generating function as a formal power series
+
+  gfOf                -- the generating function of a fibre-counting function
+  coeff_gfOf          -- its coefficients ARE the fibre counts
+  gf_mul              -- an ADDITIVE split of the cost becomes a CONVOLUTION of
+                         coefficients, i.e. a product of series
+  gf_transfer_order   -- and a factor whose fibres start at 2 has order 2, so the
+                         transfer product converges formally (travelT_ge_two, BLOCK 117)
+
+gf_mul is the series-level form of pow_couplingSum (BLOCK 114): pointwise, x^(a+b) =
+x^a * x^b; at the series level, an additive split convolves. That is what turns the
+per-element identity (lR_exp_is_transfer, BLOCK 115) into a statement about W(x,y).
+
+So (M3)'s remaining step now has all four of its parts in Lean:
+  summability     BLOCK 118   lR bounds span and deposits, so fibres are finite
+  fibration       BLOCK 119   lR determined by magnitudes + marker signs
+  fibre counts    BLOCK 111   two signs per non-zero magnitude
+  series algebra  BLOCK 120   additive split -> product of series, with order >= 2
+What is not written is the single composite statement naming the paper's W, lambda, mu
+and T -- which is transcription against eq:assembly, not a further theorem.
+
+(Mathlib note: PowerSeries.coeff takes only n; R is implicit from the section variable.
+`PowerSeries.coeff ℤ n` fails with an application type mismatch that does not name the
+arity.)

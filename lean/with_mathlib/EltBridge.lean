@@ -15,6 +15,7 @@ are the content: `A` and `B` must be *minimal*, not merely valid bounds.
 -/
 import Realisation
 import Mathlib.Data.Finset.Max
+import Mathlib.RingTheory.PowerSeries.Basic
 import ConfigLoop
 import TurnBuild
 
@@ -6102,6 +6103,40 @@ theorem edge_sum_congr (P Q : SiteCost.PathData) (hk : P.kstar = Q.kstar)
   rw [hA, hB]
   exact Finset.sum_congr rfl (fun j _ => mu_congr P Q hk j (hm j))
 
+/-! ### The generating function as a formal power series
+
+With summability (BLOCK 118) the sum over elements is a formal power series whose
+`n`-th coefficient counts the elements of cost `n`.  The additive split of the cost
+becomes a **convolution** of coefficients, i.e. a product of series -- the series-level
+form of `pow_couplingSum` (BLOCK 114). -/
+
+/-- The generating function of a fibre-counting function. -/
+noncomputable def gfOf (f : ℕ → ℕ) : PowerSeries ℤ :=
+  PowerSeries.mk (fun n => (f n : ℤ))
+
+@[simp] theorem coeff_gfOf (f : ℕ → ℕ) (n : ℕ) :
+    PowerSeries.coeff n (gfOf f) = (f n : ℤ) := by
+  unfold gfOf
+  rw [PowerSeries.coeff_mk]
+
+/-- **An additive split of the cost becomes a product of series.**  This is the
+series-level statement of `x^(a+b) = x^a * x^b`, and it is what turns the per-element
+identity of BLOCK 115 into a statement about the generating function. -/
+theorem gf_mul (f g : ℕ → ℕ) (n : ℕ) :
+    PowerSeries.coeff n (gfOf f * gfOf g)
+      = ∑ p ∈ Finset.antidiagonal n, (f p.1 : ℤ) * (g p.2 : ℤ) := by
+  rw [PowerSeries.coeff_mul]
+  exact Finset.sum_congr rfl (fun p _ => by rw [coeff_gfOf, coeff_gfOf])
+
+/-- **And the transfer product is a product of series**, one factor per step of the
+magnitude path.  With `travelT_ge_two` (BLOCK 117) each factor has order at least two,
+so the product converges formally. -/
+theorem gf_transfer_order (f : ℕ → ℕ) (h : ∀ n, n < 2 → f n = 0) :
+    PowerSeries.coeff 0 (gfOf f) = 0 ∧ PowerSeries.coeff 1 (gfOf f) = 0 := by
+  constructor
+  · rw [coeff_gfOf, h 0 (by omega)]; rfl
+  · rw [coeff_gfOf, h 1 (by omega)]; rfl
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6338,3 +6373,5 @@ end EltBridge
 #print axioms EltBridge.bounded_of_lR_le
 #print axioms EltBridge.mu_congr
 #print axioms EltBridge.edge_sum_congr
+#print axioms EltBridge.gf_mul
+#print axioms EltBridge.gf_transfer_order
