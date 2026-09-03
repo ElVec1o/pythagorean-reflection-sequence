@@ -7595,3 +7595,31 @@ What HAS been established is everything on either side of it.  Given
 `RunStrandsConnected`, the shield law follows at any widths; and at UNIFORM widths the
 existence is proved outright (`shield_law`, BLOCK 197), by tracking a level cycle -- which
 is that Eulerian circuit written out by hand for the case where all the edges match.
+
+## 2026-09-03 — BLOCK 203: the splice, and what the induction still needs
+
+    allJoined_absorb    a joined set absorbs another as soon as ONE turn step crosses
+                        between them
+    allJoined_biUnion   so given a joined set per edge and a pass linking each
+                        consecutive pair, the union over the run is joined
+
+Both 0 sorry.
+
+The gain over the circuit: `AllJoined` does not care about the ORDER in which the strands
+are covered, so the round trips the Eulerian induction would splice in never have to be
+written down.  The induction becomes a union.
+
+**What it still needs, precisely.**  `allJoined_biUnion` takes a joined set `S j` FOR EACH
+EDGE.  That is not free: an edge with `w j` strands needs its own strands joined to each
+other, and the only links available are the pairings at its two sites.  So the per-edge
+statement is the same problem one size down -- the 2-regular strand graph restricted to
+one edge -- and it is where the evenness of `w j` is used.
+
+At UNIFORM widths that per-edge statement is what `run_one_component_gen` proves, by the
+level cycle.  At varying widths it is open, and it is the honest remaining content of
+(M2).  The blueprint above says what it should be: the circuit visits site `j`, breaks a
+pair there, and reroutes through edge `j`'s strands in `(w j)/2` round trips.
+
+So the accounting is: the splice is proved, the per-edge base is proved at uniform widths
+and open in general, and everything from a per-edge base to the shield law is proved at
+any widths.

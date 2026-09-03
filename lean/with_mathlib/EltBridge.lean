@@ -12951,3 +12951,74 @@ end EltBridge
 
 #print axioms EltBridge.link_of_turn
 #print axioms EltBridge.shield_law_of_connected
+
+namespace EltBridge
+
+/-! ## The Eulerian existence: the splice step
+
+The strand graph of a run is 2-REGULAR -- each strand has two ends, each matched exactly
+once by the turn -- so it is a disjoint union of cycles and "connected" and "one cycle"
+coincide.  There is no weakening to mere connectivity.
+
+The induction on edges then runs: the circuit on edges `0..j-1` visits site `j`, so it
+pairs two ends there; break that pair and reroute through edge `j`'s strands, using them
+in round trips and reconnecting the broken pair.  That needs `w j` even, which it is.
+
+What the splice needs from the reroute is only that it JOINS the broken pair while
+covering the new strands -- and in the `AllJoined` formulation that is again a union. -/
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The splice, in the `AllJoined` formulation.**  A joined set absorbs a new joined set
+as soon as one turn step crosses between them.  Iterating this edge by edge along a run is
+the induction; each step needs one pass at the shared site. -/
+theorem allJoined_absorb (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (S T : Finset (EndType.Endpt n m))
+    (hS : AllJoined (WalkGraph.graph E) S) (hT : AllJoined (WalkGraph.graph E) T)
+    (x : EndType.Endpt n m) (hx : botOf x ∈ S) (hTx : botOf (E.t x) ∈ T) :
+    AllJoined (WalkGraph.graph E) (S ∪ T) :=
+  allJoined_of_pass E hEp S T hS hT x hx hTx
+
+/-- **Absorbing a whole family.**  Given a joined set for each edge of a run and a pass
+linking each consecutive pair, the union over the run is joined.  This is the induction
+with the reroute replaced by the union -- the round trips never have to be written down,
+because `AllJoined` does not care about the ORDER in which the strands are covered. -/
+theorem allJoined_biUnion (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (S : ℕ → Finset (EndType.Endpt n m)) (N : ℕ)
+    (hS : ∀ j, AllJoined (WalkGraph.graph E) (S j))
+    (link : ℕ → EndType.Endpt n m)
+    (hlink : ∀ j, j < N → botOf (link j) ∈ S j ∧ botOf (E.t (link j)) ∈ S (j + 1)) :
+    ∀ j : ℕ, j ≤ N →
+      AllJoined (WalkGraph.graph E) ((Finset.range (j + 1)).biUnion S) := by
+  intro j
+  induction j with
+  | zero => intro _; simpa using hS 0
+  | succ k ih =>
+    intro hk
+    have hprev := ih (by omega)
+    have hsplit : (Finset.range (k + 1 + 1)).biUnion S
+        = (Finset.range (k + 1)).biUnion S ∪ S (k + 1) := by
+      ext z
+      simp only [Finset.mem_biUnion, Finset.mem_range, Finset.mem_union]
+      constructor
+      · rintro ⟨i, hi, hz⟩
+        rcases Nat.lt_or_ge i (k + 1) with h | h
+        · exact Or.inl ⟨i, h, hz⟩
+        · exact Or.inr (by
+            have : i = k + 1 := by omega
+            exact this ▸ hz)
+      · rintro (⟨i, hi, hz⟩ | hz)
+        · exact ⟨i, by omega, hz⟩
+        · exact ⟨k + 1, by omega, hz⟩
+    rw [hsplit]
+    obtain ⟨h1, h2⟩ := hlink k (by omega)
+    exact allJoined_absorb E hEp ((Finset.range (k + 1)).biUnion S) (S (k + 1))
+      hprev (hS (k + 1)) (link k)
+      (Finset.mem_biUnion.mpr ⟨k, Finset.mem_range.mpr (by omega), h1⟩) h2
+
+end EltBridge
+
+#print axioms EltBridge.allJoined_absorb
+#print axioms EltBridge.allJoined_biUnion
