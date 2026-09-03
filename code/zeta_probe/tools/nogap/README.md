@@ -2525,3 +2525,34 @@ REMAINING FOR B1, precisely:
   (b) the remaining ~14 WalkSupport declarations and CostMerge's 15 hsite mentions,
       converted to the localized forms proved in BLOCKS 13-15.
 Neither is now blocked on a mathematical question.
+
+## 2026-09-03 — BLOCK 19: the turn on VEndpt; remaining item (a) is DONE
+
+`DataBuild.dataOf` builds a lamp configuration's walk-graph data but is written
+against Endpt n m. Its ingredients (TurnBuild.glue, exists_involution_of_card_eq) are
+generic, so the construction is too. Written generically:
+
+  GenericData.arrOf, depOf, arr_disj_dep, mem_own
+  GenericData.turnAtG, turnG          -- the local and global turns
+  GenericData.turnG_site, turnG_ne, turnG_invol
+  GenericData.dataG                   -- THE GENERIC WALK-GRAPH DATA: any type with a
+                                         site map, an arrival predicate, a fixed-point-
+                                         free site-changing partner involution, and
+                                         balance
+and instantiated:
+  VEndpt.dataOf      -- the extended type's walk-graph data (needs kstar != 0)
+  VEndpt.dataOf_p    -- its pairing is the extended partner
+  VEndpt.dataOf_ts   -- its turn preserves sites
+
+So remaining item (a) from BLOCK 18 is done. This also means `DataBuild.dataOf` is now
+a special case of a generic construction; the specialisation was never necessary.
+
+HONEST SCOPE: `VEndpt.dataOf` takes balance as a hypothesis. `VEndpt.balanced` supplies
+it at every site whose two edges exist; the sites outside the span need the empty-edge
+argument (balance_empty_edges, BLOCK 4). That is bookkeeping and is NOT yet written --
+factoring it out of the construction keeps the dependency visible rather than hiding it
+inside a `noncomputable def`.
+
+REMAINING FOR B1: the ∀-s balance for VEndpt (bookkeeping, pattern already proved in
+BLOCK 4), and item (b) -- the ~14 WalkSupport declarations plus CostMerge's 15 hsite
+mentions converted to the localized forms of BLOCKS 13-15.

@@ -16,6 +16,7 @@ are the content: `A` and `B` must be *minimal*, not merely valid bounds.
 import Realisation
 import Mathlib.Data.Finset.Max
 import ConfigLoop
+import TurnBuild
 
 namespace EltBridge
 
@@ -787,6 +788,129 @@ theorem VEndpt.hsX_neg {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ) (w : ℤ)
       have : kstar = -1 := by omega
       simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN, this]
 
+/-! ### A generic `Data` builder
+
+`DataBuild.dataOf` builds the walk-graph data of a lamp configuration, but it is
+written against `Endpt n m`.  Its ingredients -- `TurnBuild.glue`,
+`exists_involution_of_card_eq` -- are generic, so the construction is too.  This is
+the version `VEndpt` needs, and it would have served `Endpt` equally. -/
+
+namespace GenericData
+
+variable {α : Type*} [Fintype α] [DecidableEq α]
+
+/-- Arrivals at a site. -/
+noncomputable def arrOf (siteOf : α → ℤ) (isArr : α → Bool) (s : ℤ) : Finset α := by
+  classical
+  exact Finset.univ.filter (fun x => siteOf x = s ∧ isArr x = true)
+
+/-- Departures at a site. -/
+noncomputable def depOf (siteOf : α → ℤ) (isArr : α → Bool) (s : ℤ) : Finset α := by
+  classical
+  exact Finset.univ.filter (fun x => siteOf x = s ∧ isArr x = false)
+
+theorem arr_disj_dep (siteOf : α → ℤ) (isArr : α → Bool) (s : ℤ) :
+    Disjoint (arrOf siteOf isArr s) (depOf siteOf isArr s) := by
+  classical
+  rw [Finset.disjoint_left]
+  intro x hx hx'
+  simp only [arrOf, depOf, Finset.mem_filter] at hx hx'
+  rw [hx.2.2] at hx'
+  exact Bool.noConfusion hx'.2.2
+
+/-- Every end lies in one of the two sets at its own site. -/
+theorem mem_own (siteOf : α → ℤ) (isArr : α → Bool) (x : α) :
+    x ∈ arrOf siteOf isArr (siteOf x) ∨ x ∈ depOf siteOf isArr (siteOf x) := by
+  classical
+  cases h : isArr x
+  · exact Or.inr (by simp [depOf, h])
+  · exact Or.inl (by simp [arrOf, h])
+
+variable (siteOf : α → ℤ) (isArr : α → Bool)
+  (hbal : ∀ s : ℤ, (arrOf siteOf isArr s).card = (depOf siteOf isArr s).card)
+
+/-- The local turn at a site. -/
+noncomputable def turnAtG (s : ℤ) : α → α :=
+  (TurnBuild.exists_involution_of_card_eq (arrOf siteOf isArr s) (depOf siteOf isArr s)
+    (arr_disj_dep siteOf isArr s) (hbal s)).choose
+
+/-- The global turn. -/
+noncomputable def turnG : α → α := TurnBuild.glue siteOf (turnAtG siteOf isArr hbal)
+
+theorem turnG_site (x : α) : siteOf (turnG siteOf isArr hbal x) = siteOf x := by
+  have hspec := (TurnBuild.exists_involution_of_card_eq
+    (arrOf siteOf isArr (siteOf x)) (depOf siteOf isArr (siteOf x))
+    (arr_disj_dep siteOf isArr (siteOf x)) (hbal (siteOf x))).choose_spec
+  show siteOf (turnAtG siteOf isArr hbal (siteOf x) x) = siteOf x
+  rcases mem_own siteOf isArr x with h | h
+  · have := hspec.2.1 x h
+    simp only [depOf, Finset.mem_filter] at this
+    exact this.2.1
+  · have := hspec.2.2.1 x h
+    simp only [arrOf, Finset.mem_filter] at this
+    exact this.2.1
+
+theorem turnG_ne (x : α) : turnG siteOf isArr hbal x ≠ x := by
+  have hspec := (TurnBuild.exists_involution_of_card_eq
+    (arrOf siteOf isArr (siteOf x)) (depOf siteOf isArr (siteOf x))
+    (arr_disj_dep siteOf isArr (siteOf x)) (hbal (siteOf x))).choose_spec
+  show turnAtG siteOf isArr hbal (siteOf x) x ≠ x
+  rcases mem_own siteOf isArr x with h | h
+  · exact hspec.2.2.2.2.1 x h
+  · exact hspec.2.2.2.2.2 x h
+
+theorem turnG_invol (x : α) :
+    turnG siteOf isArr hbal (turnG siteOf isArr hbal x) = x :=
+  TurnBuild.glue_invol siteOf (turnAtG siteOf isArr hbal)
+    (fun s y => (TurnBuild.exists_involution_of_card_eq (arrOf siteOf isArr s)
+      (depOf siteOf isArr s) (arr_disj_dep siteOf isArr s) (hbal s)).choose_spec.1 y)
+    (fun y => turnG_site siteOf isArr hbal y) x
+
+/-- **The generic walk-graph data.** -/
+noncomputable def dataG (p : α → α) (hp_invol : ∀ x, p (p x) = x)
+    (hp_ne : ∀ x, p x ≠ x) (hp_site : ∀ x, siteOf (p x) ≠ siteOf x) :
+    WalkGraph.Data α where
+  p := p
+  t := turnG siteOf isArr hbal
+  p_invol := hp_invol
+  t_invol := turnG_invol siteOf isArr hbal
+  p_ne := hp_ne
+  t_ne := turnG_ne siteOf isArr hbal
+  pt_ne := fun x h => hp_site x (by rw [h]; exact turnG_site siteOf isArr hbal x)
+
+end GenericData
+
+/-- **The walk-graph data of the extended type.**
+
+Everything the generic builder needs is now available: the partner is an involution
+without fixed points (`partner_invol`, `partner_ne`) and always changes site
+(`partner_site_ne`, needing `kstar != 0`), and balance is `VEndpt.balanced`.
+
+The balance hypothesis is taken as given rather than derived here: `VEndpt.balanced`
+supplies it at every site whose two edges exist, and the sites outside the span need
+the empty-edge argument of `balance_empty_edges`.  That is bookkeeping, and factoring
+it out keeps this construction honest about what it consumes. -/
+noncomputable def VEndpt.dataOf {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (hk : kstar ≠ 0)
+    (hbal : ∀ s : ℤ,
+      (GenericData.arrOf (VEndpt.site (mm := mm) kstar) (VEndpt.isArr up) s).card
+        = (GenericData.depOf (VEndpt.site (mm := mm) kstar) (VEndpt.isArr up) s).card) :
+    WalkGraph.Data (VEndpt n mm) :=
+  GenericData.dataG (VEndpt.site kstar) (VEndpt.isArr up) hbal VEndpt.partner
+    VEndpt.partner_invol VEndpt.partner_ne (VEndpt.partner_site_ne kstar hk)
+
+/-- Its pairing is the extended partner. -/
+@[simp] theorem VEndpt.dataOf_p {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (hk : kstar ≠ 0) (hbal) :
+    (VEndpt.dataOf (mm := mm) up kstar hk hbal).p = VEndpt.partner := rfl
+
+/-- Its turn preserves sites. -/
+theorem VEndpt.dataOf_ts {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (hk : kstar ≠ 0) (hbal) (x : VEndpt n mm) :
+    VEndpt.site kstar ((VEndpt.dataOf (mm := mm) up kstar hk hbal).t x)
+      = VEndpt.site kstar x :=
+  GenericData.turnG_site _ _ hbal x
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -825,3 +949,7 @@ end EltBridge
 #print axioms EltBridge.VEndpt.hptN
 #print axioms EltBridge.VEndpt.hsW_neg
 #print axioms EltBridge.VEndpt.hsX_neg
+#print axioms EltBridge.GenericData.turnG_invol
+#print axioms EltBridge.GenericData.dataG
+#print axioms EltBridge.VEndpt.dataOf
+#print axioms EltBridge.VEndpt.dataOf_ts
