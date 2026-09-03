@@ -6902,3 +6902,28 @@ which cost two attempts to notice.
 
 What is left of the instantiation: `hfour` -- a site's ends are exactly those four --
 and the run indexing `hrange`, `hbdry`, `hint`, `hocc`.
+
+## 2026-09-03 — BLOCK 179: hfour, and the geometry is finished
+
+An end at site `s` has `top = false`, and then its edge is `s`, or `top = true`, and
+then its edge is `s-1`; its index is `0` or `1`.  Those four combinations are exactly
+`up s`, `dn s`, `partner (up (s-1))`, `partner (dn (s-1))` -- `hfour_of_mu_two`, with
+`botOf_eq_self` and `eq_partner_botOf` for the two `top` cases.
+
+**Every geometry hypothesis of `shield_upper_bound_passTurn` is now discharged**, and
+all of them from two inputs: `mu = 2`, and `sec` being a section where the span is
+occupied.
+
+    h12..h34   distinctness      unconditional (BLOCK 178)
+    hs1..hs4   site facts        section property
+    hud        edge sharing      rfl
+    hupn,hdnn  naming            section property
+    hfour      the site's ends   mu = 2 plus the section property
+
+What is left of the instantiation is the RUN INDEXING alone -- `hrange`, `hbdry`,
+`hint`, `hocc` -- which is combinatorics about where the cut sites fall, not about the
+end type.
+
+The error this block was `simp only [EndType.atTop, ...]` failing to unfold a `def`
+inside a hypothesis; `have hat : EndType.atTop x = false := ht` and rewriting with that
+is what works, since `atTop` is definitionally `top`.

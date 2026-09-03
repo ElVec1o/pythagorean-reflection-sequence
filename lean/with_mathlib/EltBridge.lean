@@ -9981,3 +9981,62 @@ end EltBridge
 #print axioms EltBridge.upOf_siteOf
 #print axioms EltBridge.partner_upOf_siteOf
 #print axioms EltBridge.upOf_eq_botOf
+
+namespace EltBridge
+
+/-! ### `hfour`
+
+An end at site `s` has `top = false`, and then its edge is `s`, or `top = true`, and
+then its edge is `s-1`.  Its index is `0` or `1`.  Those four combinations are exactly
+`up s`, `dn s`, `partner (up (s-1))`, `partner (dn (s-1))`. -/
+
+/-- A bottom end is its own representative. -/
+theorem botOf_eq_self {n : ℕ} {m : Fin n → ℕ} (x : EndType.Endpt n m)
+    (h : x.top = false) : botOf x = x := by
+  obtain ⟨e, i, t⟩ := x
+  simp_all [botOf]
+
+/-- A top end is the partner of its representative. -/
+theorem eq_partner_botOf {n : ℕ} {m : Fin n → ℕ} (x : EndType.Endpt n m)
+    (h : x.top = true) : x = EndType.partner (botOf x) := by
+  obtain ⟨e, i, t⟩ := x
+  simp_all [botOf, EndType.partner]
+
+/-- **`hfour` at `mu = 2`.** -/
+theorem hfour_of_mu_two {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (s : ℤ) (x : EndType.Endpt n m) (hx : EndType.siteOf x = s)
+    (hsec : sec (EndType.edgeOf x) = x.edge) :
+    x = EndType.partner (upOf (m := m) hm sec (s - 1)) ∨
+    x = EndType.partner (dnOf (m := m) hm sec (s - 1)) ∨
+    x = upOf (m := m) hm sec s ∨ x = dnOf (m := m) hm sec s := by
+  have hsite : EndType.siteOf x
+      = EndType.edgeOf x + (if EndType.atTop x then (1 : ℤ) else 0) := rfl
+  cases ht : x.top
+  · -- a bottom: its edge is `s`
+    have hed : EndType.edgeOf x = s := by
+      have hat : EndType.atTop x = false := ht
+      rw [hsite, hat] at hx
+      simpa using hx
+    rcases botOf_idx_cases hm x with hi | hi
+    · right; right; left
+      rw [← hed, upOf_eq_botOf hm sec x hi hsec, botOf_eq_self x ht]
+    · right; right; right
+      rw [← hed, dnOf_eq_botOf hm sec x hi hsec, botOf_eq_self x ht]
+  · -- a top: its edge is `s - 1`
+    have hed : EndType.edgeOf x = s - 1 := by
+      have hat : EndType.atTop x = true := ht
+      rw [hsite, hat] at hx
+      simp only [if_true] at hx
+      omega
+    rcases botOf_idx_cases hm x with hi | hi
+    · left
+      rw [← hed, upOf_eq_botOf hm sec x hi hsec]
+      exact eq_partner_botOf x ht
+    · right; left
+      rw [← hed, dnOf_eq_botOf hm sec x hi hsec]
+      exact eq_partner_botOf x ht
+
+end EltBridge
+
+#print axioms EltBridge.botOf_eq_self
+#print axioms EltBridge.hfour_of_mu_two
