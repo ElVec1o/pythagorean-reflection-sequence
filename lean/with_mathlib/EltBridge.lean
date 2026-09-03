@@ -8152,6 +8152,37 @@ theorem compatB_preState (σ : LocalState) (h : σ.dprev = 0) :
     compatB (preState σ) σ = true := by
   simp [compatB, preState, h]
 
+/-! ### The extension's guard, far from the span
+
+Six cases make up the extension's guard: inside the span, the two ends, the two steps just
+beyond, and everything further out.  The last is self-contained -- both states are
+`preState (g A)`, and the flag is constant there because `j` never crosses the origin so
+far from a span that contains it. -/
+
+/-- Off the span and away from `B + 1`, the extension is the inert state. -/
+theorem extendFlag_far (g : ℤ → FlagState) (A B : ℤ) (j : ℤ)
+    (h1 : j < A ∨ B < j) (h2 : j ≠ B + 1) :
+    extendFlag g A B j = ⟨preState (g A).st, decide (0 ≤ j)⟩ := by
+  show (⟨extendFn (fun i => (g i).st) A B j, decide (0 ≤ j)⟩ : FlagState) = _
+  congr 1
+  unfold extendFn
+  rw [if_neg (by omega), if_neg h2]
+
+/-- **The guard holds far from the span**, on both sides. -/
+theorem flagStepB_extendFlag_far (g : ℤ → FlagState) (A B : ℤ) (hA : A ≤ 0) (hB : 0 ≤ B)
+    (heps : (g A).st.eps = 1 ∨ (g A).st.eps = -1)
+    (j : ℤ) (hj : B + 1 < j ∨ j < A - 1) :
+    flagStepB (extendFlag g A B j) (extendFlag g A B (j + 1)) = true := by
+  rw [extendFlag_far g A B j (by omega) (by omega),
+    extendFlag_far g A B (j + 1) (by omega) (by omega)]
+  have hsame : decide ((0 : ℤ) ≤ j) = decide ((0 : ℤ) ≤ j + 1) := by
+    rcases hj with h | h
+    · rw [decide_eq_true (by omega : (0:ℤ) ≤ j), decide_eq_true (by omega : (0:ℤ) ≤ j + 1)]
+    · rw [decide_eq_false (by omega : ¬((0:ℤ) ≤ j)),
+        decide_eq_false (by omega : ¬((0:ℤ) ≤ j + 1))]
+  simp [flagStepB, fullStepB, stepB, compatB, flowB, validB, epsValidB, preState, ← hsame,
+    heps]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15832,3 +15863,5 @@ end EltBridge
 #print axioms EltBridge.compatB_extState_preState
 #print axioms EltBridge.compatB_extState
 #print axioms EltBridge.compatB_preState
+#print axioms EltBridge.extendFlag_far
+#print axioms EltBridge.flagStepB_extendFlag_far

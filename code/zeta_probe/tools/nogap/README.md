@@ -8843,3 +8843,18 @@ explicit `⟨⟨_, _⟩, _⟩` over-supplies; single `simp` calls with the hypot
 four steps, `compatB` and `flowB` for each -- but my claim that two of them were free was
 wrong on one of the two.  That is the fourth time in this stretch that a boundary looked
 free and was not.
+
+## 2026-09-04 — BLOCK 255: the extension's guard, far from the span
+
+Six cases make up the extension's guard: inside the span, the two ends, the two steps just
+beyond, and everything further out.  The last:
+
+    extendFlag_far              off the span and away from B+1, the extension is inert
+    flagStepB_extendFlag_far    and the guard holds there, on both sides
+
+0 sorry.  One failure, and it is the same species as the last four: even the INERT state
+must satisfy `epsValidB`, so the sign data has to be admissible -- which comes from the
+path's own head guard, not from the extension.  Added as a hypothesis.
+
+The flag is constant that far out because `j` never crosses the origin at a distance from a
+span that contains it: past `B + 1` both flags are set, before `A - 1` both are clear.
