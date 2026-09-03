@@ -1,3 +1,4 @@
+mod alphacmp;
 mod freepair;
 mod mu4;
 // cutturn -- does a minimal-cost merging pairing avoid turning across cut sites?
@@ -163,6 +164,7 @@ fn mode_dep(nmax: usize) {
 fn main() {
     let mode = std::env::args().nth(1).unwrap_or_else(|| "gap".into());
     let nmax: usize = std::env::args().nth(2).and_then(|s| s.parse().ok()).unwrap_or(7);
+    if mode == "alphacmp" { alphacmp::run(nmax); return; }
     if mode == "freepair" { freepair::run(); return; }
     if mode == "freepair-g" { freepair::run_free(); return; }
     if mode == "dep" { mode_dep(nmax); return; }

@@ -6049,3 +6049,45 @@ The models differ in WHICH data are cost-minimal, and the free model's minimal d
 include ones with no free pair.  Neither model can carry the shield law, and that is
 now a result rather than an impasse.  A third route must avoid the swap/merge argument
 entirely, not merely change the sign model.
+
+## 2026-09-03 — BLOCK 150: the derived sign does not compute the paper's alpha
+
+BLOCK 139's conclusion -- cut sites are forced empty in the derived-sign model -- was
+strange enough to be worth tracing to its source.  The source is a mismatch between two
+sign conventions, and it is machine-checked (`cutturn alphacmp`).
+
+`sitecost`'s site vectors are
+
+    arr = [pu, u-pu, pd, dn-pd]      dep = [pd, dn-pd, pu, u-pu]
+
+so a class is (side, sign OF THE STRAND) and both ends of a strand share the sign.
+Then, with `u = dn`,
+
+    alpha = (Cp - Cm) - (Ap - Am) = 2 (pd - pu) = d
+
+which is the paper's `alpha`.  Verified in every row of the sweep.
+
+`EndData.sgn` instead derives the sign from `(side, isArr, depSign side)`.  On a fixed
+side every ARRIVAL then carries one sign and every DEPARTURE the other, so the class
+counts are degenerate and the same formula yields
+
+    alpha = -m
+
+constant in the deposit.  11 of 13 rows disagree; the two agree only where `d = -m`.
+
+**So `EndData`'s classes do not compute the paper's `alpha`**, and `EndData.pcostF`
+assigns `2` to same-side arrival/departure pairs that the certified `cost_of` assigns
+`0`.  That is a different cost function, hence a different notion of "cost-minimal".
+
+This explains BLOCK 139 without rescuing it: cut sites are impossible in the derived
+model because `alpha = -m` is never `0` on an occupied edge.  That is an artifact of the
+convention, not a fact about the group.  `configGData`, whose sign is per strand
+(`sgnOf x = sg x.edge x.idx`), is the paper's convention -- and BLOCK 149 refuted
+`HasFreePair` there, in the right model.
+
+**Flagged, not concluded.**  M5, M6, M7 and B1 are green via the `EndData` machinery,
+and `MergesMin` in those statements is minimality for `pcostF`, not for the certified
+site cost.  Whether each survives the change of cost has to be checked statement by
+statement -- some may not use the cost at all, some may.  I am not asserting they fail;
+I am recording that their cost hypothesis is not the paper's and that the audit of the
+green atoms is therefore not complete.  That check is the next thing to do.
