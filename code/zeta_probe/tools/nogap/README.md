@@ -7718,3 +7718,34 @@ the resolvent sum, is `neumann_partial` (BLOCK 116) plus the order bound.
 
 So (M3) is not out of reach after all.  The operator in the paper's (M3) was never an
 assumption; it is what the shape of `lR` forces.
+
+## 2026-09-03 — BLOCK 207: the two boundary sites, matched — (M3a) discharged for lR
+
+`Elt.lR_eq` reads `lR = sum_{Icc A B} mu + sum_{Icc A (B+1)} siteCost`, so the span is a
+path: site A, edge A, site A+1, ..., edge B, site B+1.  Walk it left to right and charge
+each step for *the edge it crosses and the site it lands on*.  Then exactly two terms
+fall outside the chain -- the two boundary sites -- and they are exactly `lambda` and
+`mu`:
+
+    h s   = siteCost s                head, at s = A
+    f i j = mu i + siteCost j         each step
+    g s   = mu s + siteCost (s+1)     tail, last edge + right boundary site
+
+    idxList, lastOf_idxList           the state path A, A+1, ..., A+n
+    chainCost_idxList                 its chain cost
+    sum_Icc_shift                     Icc A (A+n) reindexed by range (n+1)
+    alternating_is_chain              THE MATCHING: the two sums are equal
+    isTransferDecomposition_alternating
+    Elt.lR_is_chain                   lR IS a chain cost, boundary sites and all
+    Elt.lR_exp_pathWeight             so x ^ lR IS a transfer-matrix path weight
+
+0 sorry.  `sum_Icc_succ_top` is not in this Mathlib, so the reindex is proved here.
+
+**Scope, stated exactly.**  This is (M3a) for a single configuration: its weight is a
+path weight with kernel `x ^ (mu i + siteCost j)`, and `interior_kernel_eq_max`
+identifies the site factor as `x ^ max(a,b)` -- `eq:gapkernel`'s bulk kernel.  The state
+here is the index.  The *family* version -- one kernel serving every configuration --
+needs the costs to factor through a state map `(d j, f j)` rather than through `j`, and
+that is also where the finiteness `IsResolventSum` wants comes from.  That factoring is
+the one thing between here and (M3a) in full, and it is a definitional check on `mu`
+and `siteCost`, not an estimate.

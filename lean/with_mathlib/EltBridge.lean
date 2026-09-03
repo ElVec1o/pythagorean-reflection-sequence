@@ -5626,6 +5626,137 @@ theorem interior_kernel_eq_max (P : SiteCost.PathData) (s : ℤ)
     P.siteCost s = max (P.d (s - 1)).natAbs (P.d s).natAbs :=
   site_cost_couples P s h0 hk
 
+/-! ### The two boundary sites, matched: `lR` **is** a chain cost
+
+`Elt.lR_eq` reads
+
+    lR = sum_{j in Icc A B} mu j + sum_{s in Icc A (B+1)} siteCost s,
+
+so the span is a path: site `A`, edge `A`, site `A+1`, ..., edge `B`, site `B+1`.
+Walking it left to right and charging each step for *the edge it crosses and the site
+it lands on* turns that into a chain cost, with the two boundary sites -- and only
+those -- left over as the head and the tail:
+
+    h s = siteCost s                  the head, spent at s = A
+    f i j = mu i + siteCost j         each step: the edge, then the site to its right
+    g s = mu s + siteCost (s+1)       the tail, absorbing the last edge and last site
+
+That is the whole content of the matching.  It is an identity between two finite sums,
+proved here by induction, and with it `isTransferDecomposition_of_chain` applies to
+`lR` directly. -/
+
+/-- The states of the span after the first: `[A+1, ..., A+n]`. -/
+def idxList (A : ℤ) : ℕ → List ℤ
+  | 0 => []
+  | n + 1 => (A + 1) :: idxList (A + 1) n
+
+theorem lastOf_idxList (A : ℤ) : ∀ n : ℕ, lastOf A (idxList A n) = A + n := by
+  intro n
+  induction n generalizing A with
+  | zero => simp [idxList, lastOf]
+  | succ m ih =>
+      show lastOf (A + 1) (idxList (A + 1) m) = _
+      rw [ih (A + 1)]; push_cast; ring
+
+/-- **The chain cost of the span**, with the step charge `f i j = a i + b j`. -/
+theorem chainCost_idxList (a b : ℤ → ℕ) (A : ℤ) : ∀ n : ℕ,
+    chainCost (fun i j => a i + b j) A (idxList A n)
+      = (∑ k ∈ Finset.range n, a (A + k)) + ∑ k ∈ Finset.range n, b (A + 1 + k) := by
+  intro n
+  induction n generalizing A with
+  | zero => simp [idxList, chainCost]
+  | succ m ih =>
+      show a A + b (A + 1) + chainCost (fun i j => a i + b j) (A + 1) (idxList (A + 1) m) = _
+      rw [ih (A + 1), Finset.sum_range_succ' (fun k => a (A + k)),
+        Finset.sum_range_succ' (fun k => b (A + 1 + k))]
+      push_cast
+      have h1 : ∀ k : ℕ, a (A + 1 + (k : ℤ)) = a (A + ((k : ℤ) + 1)) := by
+        intro k; congr 1; ring
+      have h2 : ∀ k : ℕ, b (A + 1 + 1 + (k : ℤ)) = b (A + 1 + ((k : ℤ) + 1)) := by
+        intro k; congr 1; ring
+      simp only [h1, h2, add_zero]
+      omega
+
+/-- Reindexing an integer interval of length `n + 1` by `range (n + 1)`. -/
+theorem sum_Icc_shift (f : ℤ → ℕ) (A : ℤ) : ∀ n : ℕ,
+    ∑ s ∈ Finset.Icc A (A + n), f s = ∑ k ∈ Finset.range (n + 1), f (A + k) := by
+  intro n
+  induction n with
+  | zero => simp
+  | succ m ih =>
+      have hins : Finset.Icc A (A + ((m : ℤ) + 1))
+          = insert (A + ((m : ℤ) + 1)) (Finset.Icc A (A + m)) := by
+        ext y; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+      have hnot : A + ((m : ℤ) + 1) ∉ Finset.Icc A (A + m) := by
+        simp only [Finset.mem_Icc]; omega
+      have hcast : ((m + 1 : ℕ) : ℤ) = (m : ℤ) + 1 := by push_cast; ring
+      rw [hcast, hins, Finset.sum_insert hnot, ih,
+        Finset.sum_range_succ (fun k : ℕ => f (A + (k : ℤ))) (m + 1)]
+      push_cast
+      omega
+
+/-- **The matching.**  An alternating edge/site total over the span is the chain cost
+plus the two boundary sites -- the head `b A` and the tail `a (A+n) + b (A+n+1)`. -/
+theorem alternating_is_chain (a b : ℤ → ℕ) (A : ℤ) (n : ℕ) :
+    (∑ j ∈ Finset.Icc A (A + n), a j) + (∑ s ∈ Finset.Icc A (A + n + 1), b s)
+      = b A + chainCost (fun i j => a i + b j) A (idxList A n)
+          + (a (A + n) + b (A + n + 1)) := by
+  have hA : A + (n : ℤ) + 1 = A + ((n + 1 : ℕ) : ℤ) := by push_cast; ring
+  rw [sum_Icc_shift a A n, hA, sum_Icc_shift b A (n + 1), chainCost_idxList a b A n,
+    Finset.sum_range_succ (fun k => a (A + k)) n,
+    Finset.sum_range_succ (fun k => b (A + k)) (n + 1)]
+  have hb : ∀ k : ℕ, b (A + 1 + k) = b (A + (k + 1)) := by
+    intro k; congr 1; push_cast; ring
+  have hlast : b (A + ((n : ℤ) + 1)) = b (A + n + 1) := by congr 1; ring
+  rw [Finset.sum_range_succ' (fun k => b (A + k)) n]
+  simp only [hb, Nat.cast_zero, add_zero]
+  push_cast
+  omega
+
+/-- **(M3a), for `lR`.**  Any family of configurations whose relaxed length is the
+alternating edge/site total of `Elt.lR_eq` satisfies `IsTransferDecomposition`, with the
+step kernel `x ^ (mu i + siteCost j)` and the two boundary sites supplying `lambda` and
+`mu`.  Nothing analytic enters; the two sums are equal. -/
+theorem isTransferDecomposition_alternating {C : Type*}
+    (x : ℤ) (a b : ℤ → ℕ) (A : C → ℤ) (n : C → ℕ) (w : C → ℕ)
+    (hw : ∀ c : C, w c = (∑ j ∈ Finset.Icc (A c) (A c + n c), a j)
+        + ∑ s ∈ Finset.Icc (A c) (A c + n c + 1), b s) :
+    IsTransferDecomposition (fun c => A c :: idxList (A c) (n c)) (fun c => x ^ w c)
+      (fun i j => x ^ (a i + b j)) (fun s => x ^ b s) (fun s => x ^ (a s + b (s + 1))) := by
+  refine isTransferDecomposition_of_chain x (fun i j => a i + b j) b
+    (fun s => a s + b (s + 1)) A (fun c => idxList (A c) (n c)) w ?_
+  intro c
+  rw [hw c, alternating_is_chain a b (A c) (n c), lastOf_idxList]
+
+/-- `Elt.lR_eq` with the span written as `A .. A + n`. -/
+theorem Elt.lR_alternating (g : Elt) (n : ℕ) (hn : g.B = g.A + n) :
+    g.lR = (∑ j ∈ Finset.Icc g.A (g.A + n), g.toPathData.mu j)
+      + ∑ s ∈ Finset.Icc g.A (g.A + n + 1), g.toPathData.siteCost s := by
+  rw [Elt.lR_eq, hn]
+
+/-- **`lR` is a chain cost, boundary sites and all.**  The head is the site cost at the
+left boundary site `A`; each step charges the edge it crosses and the site it lands on;
+the tail carries the last edge and the right boundary site `A + n + 1`.  Those two
+boundary sites are the only terms outside the chain, and they are exactly `lambda` and
+`mu`.  This is the matching, discharged. -/
+theorem Elt.lR_is_chain (g : Elt) (n : ℕ) (hn : g.B = g.A + n) :
+    g.lR = g.toPathData.siteCost g.A
+      + chainCost (fun i j => g.toPathData.mu i + g.toPathData.siteCost j) g.A (idxList g.A n)
+      + (g.toPathData.mu (g.A + n) + g.toPathData.siteCost (g.A + n + 1)) := by
+  rw [Elt.lR_alternating g n hn]
+  exact alternating_is_chain _ _ _ _
+
+/-- **Hence the exponential weight of a single configuration is a transfer-matrix path
+weight**, with kernel `x ^ (mu i + siteCost j)`.  `interior_kernel_eq_max` identifies the
+site factor as `x ^ max(a,b)`, the bulk kernel of `eq:gapkernel`. -/
+theorem Elt.lR_exp_pathWeight (g : Elt) (n : ℕ) (hn : g.B = g.A + n) (x : ℤ) :
+    x ^ g.lR
+      = pathWeight (fun i j => x ^ (g.toPathData.mu i + g.toPathData.siteCost j))
+          (fun s => x ^ g.toPathData.siteCost s)
+          (fun s => x ^ (g.toPathData.mu s + g.toPathData.siteCost (s + 1)))
+          (g.A :: idxList g.A n) := by
+  rw [pathWeight_exp, lastOf_idxList, ← Elt.lR_is_chain g n hn]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13172,3 +13303,7 @@ end EltBridge
 #print axioms EltBridge.pathWeight_exp
 #print axioms EltBridge.isTransferDecomposition_of_chain
 #print axioms EltBridge.interior_kernel_eq_max
+#print axioms EltBridge.alternating_is_chain
+#print axioms EltBridge.isTransferDecomposition_alternating
+#print axioms EltBridge.Elt.lR_is_chain
+#print axioms EltBridge.Elt.lR_exp_pathWeight
