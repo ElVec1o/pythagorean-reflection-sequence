@@ -8752,3 +8752,58 @@ end EltBridge
 
 #print axioms EltBridge.reachable_partner
 #print axioms EltBridge.run_connected_of_turn_structure
+
+namespace EltBridge
+
+/-! ### From strand bottoms to all ends
+
+`run_connected_of_turn_structure` joins the BOTTOM ends of the strands in a run.
+`hsep` quantifies over all ends.  The gap is one step: an end is either a bottom itself
+or its partner's, and an end is always adjacent to its partner. -/
+
+/-- Every end reaches its own strand's chosen representative. -/
+theorem reachable_to_base {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (base : α → α)
+    (hbase : ∀ x, base x = x ∨ base x = D.p x) (x : α) :
+    (WalkGraph.graph D).Reachable x (base x) := by
+  rcases hbase x with h | h
+  · rw [h]
+  · rw [h]; exact reachable_partner D x
+
+/-- **`hsep` from run connectivity on representatives.**  If representatives in the same
+run are joined, then so are all ends in that run: go to the representative, across, and
+back. -/
+theorem hsep_of_base_connected {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (base : α → α) (idx : α → ℕ)
+    (hbase : ∀ x, base x = x ∨ base x = D.p x)
+    (hbase_idx : ∀ x, idx (base x) = idx x)
+    (hrun : ∀ x y : α, idx x = idx y →
+      (WalkGraph.graph D).Reachable (base x) (base y)) :
+    ∀ x y : α, idx x = idx y → (WalkGraph.graph D).Reachable x y := by
+  intro x y hxy
+  have h1 : (WalkGraph.graph D).Reachable x (base x) := reachable_to_base D base hbase x
+  have h2 : (WalkGraph.graph D).Reachable (base x) (base y) := hrun x y hxy
+  have h3 : (WalkGraph.graph D).Reachable (base y) y :=
+    (reachable_to_base D base hbase y).symm
+  exact (h1.trans h2).trans h3
+
+/-- **What M4b's upper bound now reduces to at `mu = 2`.**  Given the two remaining
+inputs -- `hedge`, the geometric condition of `walkCount_le_runs_blk`, and the matching
+of the run decomposition to `runIndexG` -- the count follows.  Everything else in the
+chain is proved. -/
+theorem walkCount_le_of_hsep {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (pos : α → ℤ) (Zf : Finset ℤ)
+    (hedge : ∀ x y : α, (WalkGraph.graph D).Adj x y →
+      CutComponents.blk pos Zf x = CutComponents.blk pos Zf y ∨ (∃ t : ℤ,
+        (pos x = t - 1 ∨ pos x = t) ∧ (pos y = t - 1 ∨ pos y = t) ∧
+        (pos x ≠ pos y → t ∉ Zf)))
+    (hsep : ∀ x y : α, runIndexG pos Zf x = runIndexG pos Zf y →
+      (WalkGraph.graph D).Reachable x y) :
+    WalkGraph.walkCount D ≤ Zf.card + 1 :=
+  walkCount_le_runs_blk D pos Zf hedge hsep
+
+end EltBridge
+
+#print axioms EltBridge.reachable_to_base
+#print axioms EltBridge.hsep_of_base_connected
+#print axioms EltBridge.walkCount_le_of_hsep

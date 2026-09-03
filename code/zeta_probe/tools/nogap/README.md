@@ -6465,3 +6465,28 @@ supplies once the run decomposition is matched to `runIndexG`.  That matching is
 remaining step, and it is the only one.
 
 Still `mu = 2` only.
+
+## 2026-09-03 — BLOCK 163: from strand bottoms to all ends
+
+`run_connected_of_turn_structure` joins the BOTTOM ends of a run's strands; `hsep`
+quantifies over all ends.  The gap is one step, since an end is either a representative
+itself or its partner's, and an end is always adjacent to its partner
+(`reachable_to_base`).  `hsep_of_base_connected` closes it: go to the representative,
+across, and back.
+
+`walkCount_le_of_hsep` then names what M4b's upper bound at `mu = 2` reduces to.  Two
+inputs remain:
+
+    hedge     the geometric condition of walkCount_le_runs_blk -- every graph edge
+              either stays inside a block or is a local step at a non-cut site
+    matching  the run decomposition used by run_connected_of_turn_structure has to be
+              identified with runIndexG
+
+Everything else on the path is proved: the local trichotomy that makes passes and the
+boundary bounce available (153-156), the glue that makes per-site choices one turn
+(157), the two-chain connectivity (160), its transfer into the walk graph (161), its
+instantiation on the concrete turn (162), and the lift to all ends (here).
+
+That is the honest state of M4b: at `mu = 2` it is two bookkeeping inputs from closing,
+and at `mu = 4` it is refuted along this route (BLOCK 158, 5072 of 8192), with the merge
+route closed in both sign models (BLOCKS 149, 152).
