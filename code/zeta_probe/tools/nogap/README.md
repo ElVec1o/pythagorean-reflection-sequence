@@ -8508,3 +8508,24 @@ Together: along a path whose head flag matches its arrival and whose tail flag i
 arrival fires exactly once -- which is `sum_vArr_eq_one` (BLOCK 235) recovered from the
 kernel rather than from the configuration.  That was the one condition the undoubled guard
 could not express, and it is now expressed.
+
+## 2026-09-04 — BLOCK 238: the arrival pins the translation
+
+A path is a list of states and does not know where the origin sits.  That is not a defect:
+the index is ours to choose, and the arrival chooses it.  A guarded flagged path has
+exactly one arrival, and declaring that index to be `0` is what turns the path into a
+configuration.
+
+    exists_arr_index      a set tail flag forces an arrival
+    past_of_arr           the arrival sets the flag
+    past_true_forward     and once set it stays set, forever forward
+    arr_unique_forward    so no second arrival can fire
+
+0 sorry, all four clean on the first build, on `propext` (plus `Quot.sound` for the one
+`by_contra`).
+
+**This resolves the objection of BLOCK 235 completely.**  There it looked as though `arrv`
+-- the arrival flag being `[j = 0]` -- could never be recovered from a kernel, since a list
+carries no indices.  The answer is that it does not need to be recovered: the arrival
+DEFINES the index, and the doubled guard guarantees there is exactly one such index to
+choose.

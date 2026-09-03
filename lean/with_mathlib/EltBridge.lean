@@ -7536,6 +7536,51 @@ theorem past_false_of_no_arr (st : ℤ → FlagState) (A : ℤ)
       rw [show A + ((m + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 by push_cast; ring]
       exact this
 
+/-! ### The arrival pins the translation
+
+A path is a list of states and does not know where the origin sits.  That is not a defect:
+the index is ours to choose, and the arrival chooses it.  A guarded flagged path has
+exactly one arrival, and declaring that index to be `0` is what turns the path into a
+configuration.  These lemmas locate it. -/
+
+/-- **The arrival exists.**  A set tail flag forces one. -/
+theorem exists_arr_index (st : ℤ → FlagState) (A : ℤ) (n : ℕ)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (hhead : (st A).past = false) (htail : (st (A + n)).past = true) :
+    ∃ k : ℕ, k ≤ n ∧ (st (A + k)).st.arr = 1 := by
+  by_contra hcon
+  push_neg at hcon
+  have h := past_false_of_no_arr st A hstep hhead n (fun k hk => hcon k hk)
+  rw [h] at htail
+  exact absurd htail (by simp)
+
+/-- **The arrival sets the flag.** -/
+theorem past_of_arr (st : ℤ → FlagState) (j : ℤ)
+    (hstep : flagStepB (st j) (st (j + 1)) = true)
+    (harr : (st (j + 1)).st.arr = 1) : (st (j + 1)).past = true := by
+  simp only [flagStepB, Bool.and_eq_true, beq_iff_eq] at hstep
+  rw [hstep.1.2]
+  simp [harr]
+
+/-- **And once set it stays set, forever forward.** -/
+theorem past_true_forward (st : ℤ → FlagState)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (a : ℤ) (hp : (st a).past = true) : ∀ n : ℕ, (st (a + n)).past = true := by
+  intro n
+  induction n with
+  | zero => simpa using hp
+  | succ m ih =>
+      have h := past_mono st (a + m) (hstep (a + m)) ih
+      rwa [show a + ((m + 1 : ℕ) : ℤ) = a + (m : ℤ) + 1 by push_cast; ring]
+
+/-- **So the arrival is unique.**  After it fires the flag is set, and a set flag bars any
+further arrival. -/
+theorem arr_unique_forward (st : ℤ → FlagState)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (a : ℤ) (hp : (st a).past = true) (m : ℕ) :
+    (st (a + m + 1)).st.arr ≠ 1 :=
+  no_arr_after st (a + m) (hstep (a + m)) (past_true_forward st hstep a hp m)
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15180,3 +15225,7 @@ end EltBridge
 #print axioms EltBridge.past_mono
 #print axioms EltBridge.no_arr_after
 #print axioms EltBridge.past_false_of_no_arr
+#print axioms EltBridge.exists_arr_index
+#print axioms EltBridge.past_of_arr
+#print axioms EltBridge.past_true_forward
+#print axioms EltBridge.arr_unique_forward
