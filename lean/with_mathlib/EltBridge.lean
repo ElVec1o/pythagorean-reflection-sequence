@@ -9285,3 +9285,110 @@ end EltBridge
 
 #print axioms EltBridge.botOf_idx_cases
 #print axioms EltBridge.shield_upper_bound_mu_two
+
+namespace EltBridge
+
+/-! ### `hturn` from zero crossing
+
+`hturn_of_cross_zero` (BLOCK 61) already turns "the plan at each cut site does not
+cross" into `hturn`, and `(DataBuild.dataOf up hbal).t` is `DataBuild.turn up`
+definitionally, so the two compose with nothing in between.
+
+`hcross` itself is what `local_trichotomy` is for: a cut site has `siteValue = 0`, the
+bounce attains it and every pass costs at least one, so a plan attaining the site value
+has `cross = 0`.  That is `ConfigLoop.no_cross_at_cut`, whose remaining input is that
+the plan IS minimal at that site. -/
+
+/-- **The shield bound with `hturn` reduced to zero crossing at the cut sites.** -/
+theorem shield_upper_bound_of_cross_zero {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (up' : Fin n → ℕ) (ds : Bool → Bool)
+    (hbal : ∀ s : ℤ,
+      (EndType.arrAt (m := m) up' s).card = (EndType.depAt (m := m) up' s).card)
+    (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hcross : ∀ s ∈ Zf, (ConfigLoop.planAt up' ds s (hbal s)).cross = 0)
+    (hup : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 0 → up (EndType.edgeOf x) = botOf x)
+    (hdn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 1 → dn (EndType.edgeOf x) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hpass_up : ∀ r k : ℕ, k < len r →
+      (DataBuild.dataOf up' hbal).t ((DataBuild.dataOf up' hbal).p (up (lo r + k)))
+        = up (lo r + (k + 1 : ℕ)))
+    (hpass_dn : ∀ r k : ℕ, k < len r →
+      (DataBuild.dataOf up' hbal).t
+          ((DataBuild.dataOf up' hbal).p (dn (lo r + (k + 1 : ℕ)))) = dn (lo r + k))
+    (hbounce : ∀ r : ℕ, (DataBuild.dataOf up' hbal).t (dn (lo r)) = up (lo r)) :
+    WalkGraph.walkCount (DataBuild.dataOf up' hbal) ≤ Zf.card + 1 :=
+  shield_upper_bound_mu_two hm up' hbal Zf up dn lo len
+    (hturn_of_cross_zero up' ds Zf hbal hcross)
+    hup hdn hrange hpass_up hpass_dn hbounce
+
+end EltBridge
+
+#print axioms EltBridge.shield_upper_bound_of_cross_zero
+
+namespace EltBridge
+
+/-! ### The turn must be chosen, not taken
+
+`DataBuild.dataOf`'s turn comes from an arbitrary involution at each site
+(`exists_involution_of_card_eq`), so one cannot simply assume it bounces at the cut
+sites and passes elsewhere.  Those are the properties `local_trichotomy` says a MINIMAL
+turn has, and the way to get them is to CHOOSE the per-site involutions and glue them --
+`exists_glued_data`, BLOCK 157.
+
+This is the form the argument should have taken from the start: build the datum, do not
+inherit it. -/
+
+/-- **The shield bound for a chosen turn.**  Given per-site involutions `T` with the
+pass/bounce behaviour `local_trichotomy` provides, the glued datum satisfies
+`walkCount <= |Z| + 1`. -/
+theorem shield_upper_bound_glued {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (T : ℤ → EndType.Endpt n m → EndType.Endpt n m) (Zf : Finset ℤ)
+    (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hinv : ∀ s x, T s (T s x) = x)
+    (hTsite : ∀ s x, EndType.siteOf x = s → EndType.siteOf (T s x) = s)
+    (hne : ∀ s x, EndType.siteOf x = s → T s x ≠ x)
+    (hturn : ∀ x, EndType.edgeOf (T (EndType.siteOf x) x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hup : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 0 → up (EndType.edgeOf x) = botOf x)
+    (hdn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 1 → dn (EndType.edgeOf x) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hpass_up : ∀ r k : ℕ, k < len r →
+      T (EndType.siteOf (EndType.partner (up (lo r + k))))
+        (EndType.partner (up (lo r + k))) = up (lo r + (k + 1 : ℕ)))
+    (hpass_dn : ∀ r k : ℕ, k < len r →
+      T (EndType.siteOf (EndType.partner (dn (lo r + (k + 1 : ℕ)))))
+        (EndType.partner (dn (lo r + (k + 1 : ℕ)))) = dn (lo r + k))
+    (hbounce : ∀ r : ℕ,
+      T (EndType.siteOf (dn (lo r))) (dn (lo r)) = up (lo r)) :
+    ∃ D : WalkGraph.Data (EndType.Endpt n m),
+      WalkGraph.walkCount D ≤ Zf.card + 1 := by
+  obtain ⟨E, hEp, hEt⟩ := exists_glued_data EndType.siteOf EndType.partner T
+    EndType.partner_invol EndType.partner_ne EndType.partner_site_ne hinv hTsite hne
+  refine ⟨E, ?_⟩
+  refine shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) ?_ ?_
+    (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) ?_
+  · intro x
+    rw [hEt x]
+    exact hTsite _ x rfl
+  · intro x hx
+    rw [hEt x] at hx
+    exact hturn x hx
+  · refine hrun_multi E Zf up dn lo len (hcover_of_mu_two hm up dn hup hdn) hrange ?_
+    intro r j j' hj hj' b b'
+    refine run_connected_of_turn_structure E up dn (lo r) (len r) ?_ ?_ ?_ j j' hj hj' b b'
+    · intro k hk
+      rw [hEp, hEt]
+      exact hpass_up r k hk
+    · intro k hk
+      rw [hEp, hEt]
+      exact hpass_dn r k hk
+    · rw [hEt]
+      exact hbounce r
+
+end EltBridge
+
+#print axioms EltBridge.shield_upper_bound_glued

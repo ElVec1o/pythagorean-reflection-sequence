@@ -6667,3 +6667,35 @@ The Lean error this block was the dependent-position rewrite again -- `m x.edge`
 in the TYPE of `x.idx`, so `rw [hm]` breaks the motive.  The fix is the one this file
 has needed several times: state both facts and let `omega` see them as atoms, never
 rewrite under a dependent type.
+
+## 2026-09-03 — BLOCK 171: the turn must be chosen, not taken
+
+A correction of method rather than of fact.  Every statement since BLOCK 167 was phrased
+for `DataBuild.dataOf up hbal`, whose turn comes from an ARBITRARY involution at each
+site (`exists_involution_of_card_eq`).  One cannot assume such a turn bounces at the cut
+sites and passes elsewhere -- those are the properties `local_trichotomy` says a MINIMAL
+turn has, and the way to get them is to choose the per-site involutions and glue them.
+
+`shield_upper_bound_glued` does that.  Its hypotheses are all about the chosen family
+`T`:
+
+    hinv, hTsite, hne     T is a per-site involution, fixing its site, fixed-point-free
+    hturn                 T changes the edge only off the cut sites
+    hup, hdn              up and dn name each edge's two strand bottoms
+    hrange                each edge lies in the run its gz names
+    hpass_up, hpass_dn    T's passes chain the up strands and the down strands
+    hbounce               T's boundary bounce joins them
+
+and the conclusion is `∃ D, walkCount D <= |Z| + 1`, the datum being the glue of `T`.
+
+`exists_glued_data` (BLOCK 157) supplies the datum, `hcover_of_mu_two` the strand cover,
+`run_connected_of_turn_structure` the connectivity, and `shield_upper_bound_endpt` the
+count.  Nothing is inherited.
+
+That closes the structural gap the previous four blocks had been carrying without
+naming: they proved a bound about a turn nobody had shown could have the required
+properties.  Now the turn is built to have them.
+
+Scope still `mu = 2`.  The remaining mathematical content is that a cost-minimal `T`
+really does satisfy `hpass_up`, `hpass_dn` and `hbounce` -- `local_trichotomy` gives the
+cost comparison, and turning that into these three equalities is the last step.
