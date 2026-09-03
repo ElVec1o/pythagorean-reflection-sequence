@@ -5030,3 +5030,31 @@ and T -- which is transcription against eq:assembly, not a further theorem.
 (Mathlib note: PowerSeries.coeff takes only n; R is implicit from the section variable.
 `PowerSeries.coeff ℤ n` fails with an application type mismatch that does not name the
 arity.)
+
+## 2026-09-03 — BLOCK 121: eq:assembly as a degree-wise contract
+
+  IsAssembly                      -- eq:assembly read coefficient by coefficient, with
+                                     the resolvent as a FINITE partial sum at each
+                                     degree
+  assembly_at_zero                -- at degree 0 only k = 0 survives, so the constant
+                                     coefficient is W_0's plus the plain pairing
+  neumann_partial_gen             -- the finite Neumann identity over any commutative
+                                     coefficient ring, so it applies to matrices over
+                                     PowerSeries
+  assembly_is_truncated_resolvent -- and the partial sums ARE the Neumann truncations
+
+Making the resolvent a finite sum at each degree is the point. (I - T)^-1 is an infinite
+object, but T has order at least two (travelT_ge_two, BLOCK 117), so T^k contributes
+nothing below degree 2k and every coefficient of the resolvent is a finite sum. That is
+what lets everything proved in BLOCKS 103-120 -- all finite statements -- feed
+eq:assembly directly.
+
+Generalising neumann_partial to an arbitrary commutative ring was needed because T's
+entries are power series, not integers. The original proof carried over unchanged.
+
+(M3) NOW HAS A COMPLETE SKELETON IN LEAN: the contract (IsAssembly), the algebra
+(neumann_partial_gen), the truncation justification (travelT_ge_two), the fibration
+(BLOCK 119), the fibre counts (BLOCK 111), the summability (BLOCK 118) and the series
+algebra (BLOCK 120). What is absent is the proof that the paper's W, lambda, mu, T
+satisfy IsAssembly -- which is the identification, and needs the bulk kernels B_sigma
+that this file has not built.

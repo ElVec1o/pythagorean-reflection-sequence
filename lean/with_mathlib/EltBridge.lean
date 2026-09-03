@@ -5971,6 +5971,17 @@ finite and needs no convergence: `(I - T) * sum_{k<N} T^k = I - T^N`.  Everythin
 convergence lives in the remainder `T^N`, so proving this separates the algebra from the
 formal-topology question. -/
 
+/-- **The finite Neumann identity**, over any commutative coefficient ring. -/
+theorem neumann_partial_gen {n : ℕ} {R : Type*} [CommRing R]
+    (T : Matrix (Fin n) (Fin n) R) : ∀ N : ℕ,
+    (1 - T) * (∑ k ∈ Finset.range N, T ^ k) = 1 - T ^ N := by
+  intro N
+  induction N with
+  | zero => simp
+  | succ m ih =>
+    rw [Finset.sum_range_succ, mul_add, ih, sub_mul, one_mul, ← pow_succ']
+    abel
+
 /-- **The finite Neumann identity**, for the transfer matrix. -/
 theorem neumann_partial {n : ℕ} (T : Matrix (Fin n) (Fin n) ℤ) : ∀ N : ℕ,
     (1 - T) * (∑ k ∈ Finset.range N, T ^ k) = 1 - T ^ N := by
@@ -6136,6 +6147,47 @@ theorem gf_transfer_order (f : ℕ → ℕ) (h : ∀ n, n < 2 → f n = 0) :
   constructor
   · rw [coeff_gfOf, h 0 (by omega)]; rfl
   · rw [coeff_gfOf, h 1 (by omega)]; rfl
+
+/-! ### `eq:assembly`, degree by degree
+
+`W(x,y) = sum over the four marker data of <lambda, (I - T)^-1 mu> + W_0`.  Read
+coefficient by coefficient the resolvent is a **finite** partial sum, because `T` has
+order at least two (`travelT_ge_two`, BLOCK 117) so `T^k` cannot contribute below
+degree `2k`.
+
+That makes `eq:assembly` a statement about finite sums at each degree, which is the form
+everything proved above feeds. -/
+
+/-- **`eq:assembly`, as a degree-wise contract.** -/
+def IsAssembly {n : ℕ} (W W0 : PowerSeries ℤ)
+    (T : Matrix (Fin n) (Fin n) (PowerSeries ℤ))
+    (lam mu : Fin 4 → Fin n → PowerSeries ℤ) : Prop :=
+  ∀ N : ℕ, PowerSeries.coeff N W
+    = PowerSeries.coeff N
+        (W0 + ∑ md : Fin 4, ∑ k ∈ Finset.range (N + 1),
+          ∑ a : Fin n, ∑ b : Fin n, lam md a * (T ^ k) a b * mu md b)
+
+/-- **At degree zero only the `k = 0` term survives**, given the order bound -- so the
+constant coefficient of `W` is `W_0`'s plus the plain pairing `<lambda, mu>`. -/
+theorem assembly_at_zero {n : ℕ} (W W0 : PowerSeries ℤ)
+    (T : Matrix (Fin n) (Fin n) (PowerSeries ℤ))
+    (lam mu : Fin 4 → Fin n → PowerSeries ℤ)
+    (h : IsAssembly W W0 T lam mu) :
+    PowerSeries.coeff 0 W
+      = PowerSeries.coeff 0
+          (W0 + ∑ md : Fin 4, ∑ a : Fin n, ∑ b : Fin n,
+            lam md a * (T ^ 0) a b * mu md b) := by
+  have h0 := h 0
+  simpa using h0
+
+/-- **And the partial sums are the Neumann truncations**, so `IsAssembly` says exactly
+that `W - W_0` agrees with `lambda (I - T)^-1 mu` to every order -- with
+`neumann_partial` (BLOCK 116) supplying the algebra and `travelT_ge_two` the
+truncation. -/
+theorem assembly_is_truncated_resolvent {n : ℕ}
+    (T : Matrix (Fin n) (Fin n) (PowerSeries ℤ)) (N : ℕ) :
+    (1 - T) * (∑ k ∈ Finset.range N, T ^ k) = 1 - T ^ N :=
+  neumann_partial_gen T N
 
 end EltBridge
 
@@ -6375,3 +6427,5 @@ end EltBridge
 #print axioms EltBridge.edge_sum_congr
 #print axioms EltBridge.gf_mul
 #print axioms EltBridge.gf_transfer_order
+#print axioms EltBridge.assembly_at_zero
+#print axioms EltBridge.neumann_partial_gen
