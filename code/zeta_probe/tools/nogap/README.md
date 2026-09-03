@@ -7277,3 +7277,24 @@ have found it.
 Also fixed: a `namespace EltBridge` opened without closing the previous one, which had
 been silently nesting declarations at `EltBridge.EltBridge.*`.  Caught by the doubled
 name in `#print axioms`, the same tell as BLOCK 143.
+
+## 2026-09-03 — BLOCK 192: the general-u datum
+
+`turnGen`'s remaining obligations, and both are immediate in the structural definition:
+
+    turnGen_site   a bounce keeps the edge and top; a pass moves to the edge whose
+                   corresponding end sits at the same site
+    turnGen_ne     the bounce flips the SIDE, so `udOf` changes and the end cannot be
+                   fixed; the pass flips the TOP
+    edge_of_site   an end at site `s` is on edge `s-1` if a top, `s` if a bottom
+    turnGen_invol  the three cases together, with the section conditional on occupancy
+
+    exists_turnGen_data   the datum, from `exists_glued_data`
+
+All 0 sorry.
+
+`turnGen_ne` is worth a note: the first attempt unfolded `levIdx` and left `omega` an
+unreduced conditional it treated as an atom.  Arguing through `udOf` instead -- the
+bounce flips the side, so `udOf` of the image is `!udOf x` -- is two lines and needs no
+arithmetic.  The structural definition pays off exactly here: at `mu = 2` the same fact
+needed six distinctness inequalities.

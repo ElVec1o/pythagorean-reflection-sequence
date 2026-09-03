@@ -11514,3 +11514,159 @@ end EltBridge
 
 #print axioms EltBridge.turnGen_pass_top
 #print axioms EltBridge.turnGen_pass_invol
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ### `turnGen`'s remaining obligations
+
+Both are immediate in the structural definition.  The bounce flips the SIDE, so the
+strand index moves by `u` and cannot be fixed; the pass flips the TOP.  Neither needs
+the site's ends to be distinct. -/
+
+/-- **`turnGen` keeps every end at its site.**  A bounce keeps the edge and the top; a
+pass moves to the edge whose corresponding end sits at the same site. -/
+theorem turnGen_site (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s)
+    (hsecS : ((sec s : ℕ) : ℤ) = s)
+    (hsecP : ((sec (s - 1) : ℕ) : ℤ) = s - 1) :
+    EndType.siteOf (turnGen (m := m) hm sec Bs sig s x) = s := by
+  by_cases hs : s ∈ Bs
+  · rw [turnGen_bounce_eq hm sec Bs sig s x hx hs, mkEnd_site]; exact hx
+  · cases ht : x.top
+    · rw [turnGen_pass_bot hm sec Bs sig s x hx hs ht, site_of_mkEnd, hsecP]
+      norm_num
+    · rw [turnGen_pass_top hm sec Bs sig s x hx hs ht, site_of_mkEnd, hsecS]
+      norm_num
+
+/-- The two sides have different strand indices. -/
+theorem levIdx_ne (u : ℕ) (hu : 0 < u) (l : Fin u) : levIdx u l true ≠ levIdx u l false := by
+  unfold levIdx
+  simp only [if_true, Bool.false_eq_true, if_false]
+  have := l.isLt
+  omega
+
+/-- **`turnGen` is fixed-point-free at its site.**  The bounce moves the strand index by
+`u`; the pass moves the top. -/
+theorem turnGen_ne (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) :
+    turnGen (m := m) hm sec Bs sig s x ≠ x := by
+  by_cases hs : s ∈ Bs
+  · rw [turnGen_bounce_eq hm sec Bs sig s x hx hs]
+    intro hc
+    have h := congrArg (udOf u) hc
+    rw [udOf_mkEnd] at h
+    exact absurd h (by simp)
+  · cases ht : x.top
+    · rw [turnGen_pass_bot hm sec Bs sig s x hx hs ht]
+      intro hc
+      have := congrArg EndType.Endpt.top hc
+      simp only [mkEnd_top] at this
+      rw [ht] at this
+      exact absurd this (by simp)
+    · rw [turnGen_pass_top hm sec Bs sig s x hx hs ht]
+      intro hc
+      have := congrArg EndType.Endpt.top hc
+      simp only [mkEnd_top] at this
+      rw [ht] at this
+      exact absurd this (by simp)
+
+end EltBridge
+
+#print axioms EltBridge.turnGen_site
+#print axioms EltBridge.turnGen_ne
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- An end at site `s` sits on edge `s-1` if it is a top, on edge `s` if a bottom. -/
+theorem edge_of_site (x : EndType.Endpt n m) (s : ℤ) (hx : EndType.siteOf x = s) :
+    (x.top = true → (x.edge : ℤ) = s - 1) ∧ (x.top = false → (x.edge : ℤ) = s) := by
+  have hsite : EndType.siteOf x
+      = EndType.edgeOf x + (if EndType.atTop x then (1 : ℤ) else 0) := rfl
+  constructor
+  · intro ht
+    have hat : EndType.atTop x = true := ht
+    rw [hsite, hat] at hx
+    simp only [if_true] at hx
+    have : EndType.edgeOf x = (x.edge : ℤ) := rfl
+    omega
+  · intro ht
+    have hat : EndType.atTop x = false := ht
+    rw [hsite, hat] at hx
+    simp only [Bool.false_eq_true, if_false, add_zero] at hx
+    have : EndType.edgeOf x = (x.edge : ℤ) := rfl
+    omega
+
+/-- **`turnGen` is an involution**, at every site: off-site it is the identity, on a
+bounce site it flips the side twice, and on a pass site it goes out along `sigma` and
+back along `sigma⁻¹`. -/
+theorem turnGen_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ)
+    (hsecS : (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → ((sec s : ℕ) : ℤ) = s)
+    (hsecP : (∃ y : EndType.Endpt n m, EndType.siteOf y = s) →
+      ((sec (s - 1) : ℕ) : ℤ) = s - 1)
+    (x : EndType.Endpt n m) :
+    turnGen (m := m) hm sec Bs sig s (turnGen (m := m) hm sec Bs sig s x) = x := by
+  by_cases hx : EndType.siteOf x = s
+  · have hocc : ∃ y : EndType.Endpt n m, EndType.siteOf y = s := ⟨x, hx⟩
+    by_cases hs : s ∈ Bs
+    · exact turnGen_bounce_invol hm sec Bs sig s x hx hs
+    · obtain ⟨h1, h2⟩ := edge_of_site x s hx
+      exact turnGen_pass_invol hm sec Bs sig s x hx hs (hsecS hocc) (hsecP hocc) h1 h2
+  · rw [turnGen_off_site hm sec Bs sig s x hx,
+      turnGen_off_site hm sec Bs sig s x hx]
+
+end EltBridge
+
+#print axioms EltBridge.edge_of_site
+#print axioms EltBridge.turnGen_invol
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The general-`u` datum.**  `exists_glued_data` applied to `turnGen`, its three
+obligations discharged by `turnGen_invol`, `turnGen_site` and `turnGen_ne`.  Each is
+used only at an OCCUPIED site, where the witness is the hypothesis `siteOf x = s`
+itself, so the section is needed only on `[A-1, B+1]`. -/
+theorem exists_turnGen_data (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
+    (Bs : Finset ℤ) (sig : ℤ → Equiv.Perm (Fin u)) (A B : ℤ)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      E.p = EndType.partner ∧
+      (∀ x, E.t x = turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x) ∧
+      (∀ x, EndType.siteOf (E.t x) = EndType.siteOf x) := by
+  classical
+  -- at an occupied site both section facts hold, the site being in range
+  have hfacts : ∀ (s : ℤ), (∃ y : EndType.Endpt n m, EndType.siteOf y = s) →
+      ((sec s : ℕ) : ℤ) = s ∧ ((sec (s - 1) : ℕ) : ℤ) = s - 1 := by
+    rintro s ⟨y, rfl⟩
+    obtain ⟨h1, h2⟩ := siteOf_mem_of_span y A B (hspan y)
+    exact ⟨hsecWide _ (by omega) h2, hsecWide _ (by omega) (by omega)⟩
+  obtain ⟨E, hEp, hEt⟩ := exists_glued_data EndType.siteOf EndType.partner
+    (turnGen (m := m) hm sec Bs sig)
+    EndType.partner_invol EndType.partner_ne EndType.partner_site_ne
+    (fun s x => turnGen_invol hm sec Bs sig s (fun h => (hfacts s h).1)
+      (fun h => (hfacts s h).2) x)
+    (fun s x hxs => by
+      subst hxs
+      exact turnGen_site hm sec Bs sig _ x rfl
+        ((hfacts _ ⟨x, rfl⟩).1) ((hfacts _ ⟨x, rfl⟩).2))
+    (fun s x hxs => by
+      subst hxs
+      exact turnGen_ne hm hu sec Bs sig _ x rfl)
+  refine ⟨E, hEp, hEt, ?_⟩
+  intro x
+  rw [hEt x]
+  exact turnGen_site hm sec Bs sig _ x rfl
+    ((hfacts _ ⟨x, rfl⟩).1) ((hfacts _ ⟨x, rfl⟩).2)
+
+end EltBridge
+
+#print axioms EltBridge.exists_turnGen_data
