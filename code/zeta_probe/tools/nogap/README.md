@@ -4059,3 +4059,26 @@ forcing, and its docstring says so: "This is not vacuous: it is the consequence 
 sign being forced."
 
 So the port is not free, and the lemma that will need rethinking is named.
+
+## 2026-09-03 — BLOCK 79: a chainable involution combinator
+
+  combine_involutions -- two involutions supported on DISJOINT sets combine, with the
+                         combined map agreeing with each on its own support and fixing
+                         everything outside both
+  involution_of_pair  -- a balanced pair gives an involution supported on its union
+
+exists_involution_two (BLOCK 72) took two balanced PAIRS and does not chain: its output
+is not in the form its input wants. These two do. involution_of_pair converts a balanced
+pair into a supported involution, and combine_involutions merges any two with disjoint
+supports -- so four classes are handled by three applications, in any association.
+
+That is the shape the (side, sign) split needs: four classes
+  (L,+) (L,-) (R,+) (R,-)
+each balanced at a cut site by alpha = beta = Phi = 0, pairwise disjoint because side
+and sign separate them.
+
+Design note: BLOCK 72's version was written for the two-way split and did its job, but
+generalising it to four by adding parameters would have produced a lemma with twelve
+hypotheses. Refactoring to a chainable pair of lemmas is shorter and the proofs are the
+same arguments -- the branch taken is the same for x and its image, which is exactly
+where disjointness is used, and the only place it is.

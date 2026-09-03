@@ -4670,6 +4670,58 @@ theorem GData.strictly_more_general {α : Type*} (d : EndData.Data α) (a b : α
   refine ⟨pcost_same_side_two d a b hside ha hb, ?_⟩
   exact GData.pcost_zero _ a b hside rfl
 
+/-! ### Combining involutions, chainably
+
+`exists_involution_two` takes two balanced pairs.  For the four-way split by
+`(side, sign)` a combinator over *involutions* is better: it chains. -/
+
+/-- **Two involutions supported on disjoint sets combine.** -/
+theorem combine_involutions {α : Type*} [DecidableEq α] (t1 t2 : α → α)
+    (S1 S2 : Finset α)
+    (h1inv : ∀ x, t1 (t1 x) = x) (h1S : ∀ x ∈ S1, t1 x ∈ S1)
+    (h1fix : ∀ x, x ∉ S1 → t1 x = x)
+    (h2inv : ∀ x, t2 (t2 x) = x) (h2S : ∀ x ∈ S2, t2 x ∈ S2)
+    (h2fix : ∀ x, x ∉ S2 → t2 x = x)
+    (hdisj : Disjoint S1 S2) :
+    ∃ t : α → α, (∀ x, t (t x) = x) ∧ (∀ x ∈ S1, t x = t1 x) ∧
+      (∀ x ∈ S2, t x = t2 x) ∧ (∀ x, x ∉ S1 → x ∉ S2 → t x = x) ∧
+      (∀ x ∈ S1, t x ∈ S1) ∧ (∀ x ∈ S2, t x ∈ S2) := by
+  classical
+  refine ⟨fun x => if x ∈ S1 then t1 x else t2 x, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x
+    by_cases hx : x ∈ S1
+    · simp only [if_pos hx, if_pos (h1S x hx), h1inv]
+    · have hnot : t2 x ∉ S1 := by
+        by_cases hx2 : x ∈ S2
+        · exact fun hc => (Finset.disjoint_left.mp hdisj hc) (h2S x hx2)
+        · rw [h2fix x hx2]; exact hx
+      simp only [if_neg hx, if_neg hnot, h2inv]
+  · intro x hx; simp only [if_pos hx]
+  · intro x hx
+    have hnot : x ∉ S1 := fun hc => (Finset.disjoint_left.mp hdisj hc) hx
+    simp only [if_neg hnot]
+  · intro x h1 h2; simp only [if_neg h1]; exact h2fix x h2
+  · intro x hx; simp only [if_pos hx]; exact h1S x hx
+  · intro x hx
+    have hnot : x ∉ S1 := fun hc => (Finset.disjoint_left.mp hdisj hc) hx
+    simp only [if_neg hnot]; exact h2S x hx
+
+/-- **A balanced pair gives an involution supported on its union.** -/
+theorem involution_of_pair {α : Type*} [Fintype α] [DecidableEq α] (A D : Finset α)
+    (hdisj : Disjoint A D) (hcard : A.card = D.card) :
+    ∃ t : α → α, (∀ x, t (t x) = x) ∧ (∀ x ∈ A, t x ∈ D) ∧ (∀ x ∈ D, t x ∈ A) ∧
+      (∀ x ∈ A ∪ D, t x ∈ A ∪ D) ∧ (∀ x, x ∉ A ∪ D → t x = x) := by
+  obtain ⟨t, hinv, hAD, hDA, hfix, -, -⟩ :=
+    TurnBuild.exists_involution_of_card_eq A D hdisj hcard
+  refine ⟨t, hinv, hAD, hDA, ?_, ?_⟩
+  · intro x hx
+    rcases Finset.mem_union.mp hx with h | h
+    · exact Finset.mem_union_right _ (hAD x h)
+    · exact Finset.mem_union_left _ (hDA x h)
+  · intro x hx
+    exact hfix x (fun h => hx (Finset.mem_union_left _ h))
+      (fun h => hx (Finset.mem_union_right _ h))
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4841,3 +4893,5 @@ end EltBridge
 #print axioms EltBridge.pcostF_ge_one
 #print axioms EltBridge.GData.pcost_zero
 #print axioms EltBridge.GData.strictly_more_general
+#print axioms EltBridge.combine_involutions
+#print axioms EltBridge.involution_of_pair
