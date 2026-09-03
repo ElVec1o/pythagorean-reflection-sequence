@@ -1718,5 +1718,295 @@ theorem freePair_runlocal (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset
       a a' (fun _ => rfl) hab hdb haarr ha'arr hda hda' hne h1 h2 h3
       (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
 
+/-! ### The run-local lemmas, for an arbitrary datum
+
+The descent produces merged data, not `dataOf`, so the run-local lemmas must hold for
+any datum carrying the structural laws.  `local_of_hturn` already supplies `Local` for
+one; the rest follow. -/
+
+/-- `runIndex` is constant on walks, for any datum. -/
+theorem runIndex_const_gen (E : Data (Endpt n m)) (Zf : Finset ℤ)
+    (hp : E.p = partner) (hts : ∀ e, siteOf (E.t e) = siteOf e)
+    (hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (x y : Endpt n m) (hr : (graph E).Reachable x y) :
+    runIndex Zf x = runIndex Zf y :=
+  Fin.ext (CutComponents.blk_reachable (local_of_hturn E Zf hp hts hturn) hr)
+
+/-- A walk's run index is read off its leftmost edge, for any datum. -/
+theorem gz_wLo_gen (E : Data (Endpt n m)) (Zf : Finset ℤ)
+    (hp : E.p = partner) (hts : ∀ e, siteOf (E.t e) = siteOf e)
+    (hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (z : Endpt n m) :
+    CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph E) z)
+      = CutComponents.gz Zf (edgeOf z) := by
+  obtain ⟨x, hzx, hxe⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph E) z
+  rw [← hxe]
+  exact congrArg Fin.val (runIndex_const_gen E Zf hp hts hturn x z hzx.symm)
+
+/-- Two walks of one run agree at their leftmost edges, for any datum. -/
+theorem gz_wLo_eq_gen (E : Data (Endpt n m)) (Zf : Finset ℤ)
+    (hp : E.p = partner) (hts : ∀ e, siteOf (E.t e) = siteOf e)
+    (hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (z z' : Endpt n m)
+    (hsame : CutComponents.gz Zf (edgeOf z') = CutComponents.gz Zf (edgeOf z)) :
+    CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph E) z')
+      = CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph E) z) := by
+  rw [gz_wLo_gen E Zf hp hts hturn z', gz_wLo_gen E Zf hp hts hturn z]
+  exact hsame
+
+/-- **The second walk's end, run-local, for any datum.** -/
+theorem other_end_runlocal_gen (E : Data (Endpt n m)) (Zf : Finset ℤ)
+    (hpe : ∀ x : Endpt n m, edgeOf (E.p x) = edgeOf x)
+    (hpt : ∀ x : Endpt n m, atTop (E.p x) = !atTop x)
+    (hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) →
+      (∃ v : Endpt n m, edgeOf v < j ∧
+        CutComponents.gz Zf (edgeOf v) = CutComponents.gz Zf j) →
+      ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true)
+    (z z' : Endpt n m)
+    (hsplit : ¬ (graph E).Reachable z z')
+    (hle : WalkSupport.wLo edgeOf (graph E) z' ≤ WalkSupport.wLo edgeOf (graph E) z)
+    (hsame : CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph E) z')
+      = CutComponents.gz Zf (WalkSupport.wLo edgeOf (graph E) z)) :
+    ∃ y : Endpt n m,
+      siteOf y = WalkSupport.wLo edgeOf (graph E) z ∧ ¬ (graph E).Reachable z y := by
+  obtain ⟨u, hur, hue, hub⟩ :=
+    WalkSupport.exists_bottom_at_wLo edgeOf atTop E hpe hpt z'
+  rcases lt_or_eq_of_le hle with hlt | heq
+  · obtain ⟨w, hwe, hwt⟩ := hcov _
+      (by obtain ⟨x, _, hxe⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph E) z
+          exact ⟨x, hxe⟩)
+      ⟨u, by omega, by rw [hue]; exact hsame⟩
+    obtain ⟨hys, hyn⟩ :=
+      WalkSupport.shared_ends_at_wLo edgeOf siteOf atTop (graph E) (fun _ => rfl) z w hwe hwt
+    exact ⟨w, hys, hyn⟩
+  · refine ⟨u, ?_, fun hc => hsplit (hc.trans hur.symm)⟩
+    have h := edge_of_site u (siteOf u) rfl
+    rw [hub] at h
+    simp at h
+    omega
+
+/-- **The free pair, run-local, for any datum.**  `CostMerge.freePair_of_split` with
+`other_end_runlocal_gen` in place of `other_end_at_wLo`: only the run-local covering is
+used, so this survives the presence of cut sites. -/
+theorem freePair_runlocal_gen (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (E : Data (Endpt n m))
+    (hp : E.p = partner) (hts : ∀ e, siteOf (E.t e) = siteOf e)
+    (hta : ∀ e, isArrOf up (E.t e) = !isArrOf up e)
+    (hturn : ∀ x : Endpt n m, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (hcov : ∀ j : ℤ, (∃ u : Endpt n m, edgeOf u = j) →
+      (∃ v : Endpt n m, edgeOf v < j ∧
+        CutComponents.gz Zf (edgeOf v) = CutComponents.gz Zf j) →
+      ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true)
+    (hmin : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
+      isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
+      ¬ CostMerge.costOf (endDataOf (m := m) up ds)
+          (swapData E b (E.t b) b' (E.t b') h1 h2 h3)
+        < CostMerge.costOf (endDataOf (m := m) up ds) E)
+    (z z' : Endpt n m)
+    (hzz' : ¬ (graph E).Reachable z z')
+    (hle : WalkSupport.wLo edgeOf (graph E) z' ≤ WalkSupport.wLo edgeOf (graph E) z)
+    (hsame : CutComponents.gz Zf (edgeOf z') = CutComponents.gz Zf (edgeOf z)) :
+    ∃ a a' : Endpt n m,
+      siteOf a' = siteOf a ∧ isArrOf up a = true ∧ isArrOf up a' = true ∧
+      ¬ (graph E).Reachable a a' ∧
+      (atTop a = atTop a' ∨ atTop (E.t a) = atTop (E.t a')) := by
+  have hpe : ∀ x : Endpt n m, edgeOf (E.p x) = edgeOf x := by
+    rw [hp]; exact fun x => partner_edgeOf x
+  have hpt : ∀ x : Endpt n m, atTop (E.p x) = !atTop x := by
+    rw [hp]; exact fun x => partner_top x
+  have hps : ∀ x : Endpt n m, siteOf (E.p x) ≠ siteOf x := by
+    rw [hp]
+    exact WalkSupport.p_site_ne edgeOf siteOf atTop partner (fun _ => rfl)
+      (fun x => partner_edgeOf x) (fun x => partner_top x)
+  obtain ⟨a, hza, hasite, hab, haarr⟩ :=
+    WalkSupport.maximiser_has_bottom_arrival edgeOf siteOf atTop (isArrOf up) E
+      (fun _ => rfl) hpe hpt hts hta z
+  obtain ⟨y, hys, hyn⟩ :=
+    other_end_runlocal_gen E Zf hpe hpt hcov z z' hzz' hle
+      (gz_wLo_eq_gen E Zf hp hts hturn z z' hsame)
+  obtain ⟨a', hya', ha'site, ha'arr⟩ :=
+    WalkSupport.walk_has_arrival_at_site siteOf (isArrOf up) E hts hta y y
+      (SimpleGraph.Reachable.refl _) _ hys
+  have hna' : ¬ (graph E).Reachable z a' := fun hc => hyn (hc.trans hya'.symm)
+  have hsplit : ¬ (graph E).Reachable a a' := fun hc => hna' (hza.trans hc)
+  have hss : siteOf a' = siteOf a := by rw [hasite, ha'site]
+  have hne : a ≠ a' := fun h => hsplit (h ▸ SimpleGraph.Reachable.refl _)
+  have hdb : atTop (E.t a) = false :=
+    WalkSupport.maximiser_departure_bottom edgeOf siteOf atTop E (fun _ => rfl) hts z a hza hasite
+  have hda : isArrOf up (E.t a) = false := by
+    have h := hta a; rw [haarr] at h; simpa using h
+  have hda' : isArrOf up (E.t a') = false := by
+    have h := hta a'; rw [ha'arr] at h; simpa using h
+  have haa2 : a' ≠ a := fun h => hne h.symm
+  have h1 := swapT_invol E.t_invol rfl rfl (ConfigMerge.dep_ne_arr' E rfl)
+    (ConfigMerge.dep_ne_other E rfl hsplit) haa2
+    (ConfigMerge.dep_ne_dep' E rfl rfl haa2)
+    (Ne.symm (ConfigMerge.dep_ne_arr' E rfl)) (ConfigMerge.dep_ne_other' E rfl hsplit)
+  have h2 := swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne
+    (ConfigMerge.dep_ne_other E rfl hsplit) (ConfigMerge.dep_ne_other' E rfl hsplit)
+  have h3 := partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a') hps hts (hts a) hss
+    (show siteOf (E.t a') = siteOf a from (hts a').trans hss)
+  exact ⟨a, a', hss, haarr, ha'arr, hsplit,
+    CostMerge.free_pair_of_minimal (endDataOf (m := m) up ds) atTop E a a'
+      (fun _ => rfl) hab hdb haarr ha'arr hda hda' hne h1 h2 h3
+      (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
+
+/-! ### The descent step, with no global covering
+
+`run_step` carried `hcovAll`, the unrestricted covering, because `step_of_split'` used
+`freePair_of_split`.  With `freePair_runlocal_gen` the run-local covering in `RunInv`
+suffices, and the extra hypothesis goes. -/
+
+/-- **The descent step, run-local.**  No global covering hypothesis. -/
+theorem run_step_local (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (E : Data (Endpt n m)) (hE : RunInv up ds Zf E) :
+    (∃ E' : Data (Endpt n m), RunInv up ds Zf E' ∧ walkCount E' < walkCount E) ∨
+      (∀ x y : Endpt n m, runIndex Zf x = runIndex Zf y → (graph E).Reachable x y) := by
+  classical
+  by_cases hsep : ∀ x y : Endpt n m,
+      runIndex Zf x = runIndex Zf y → (graph E).Reachable x y
+  · exact Or.inr hsep
+  · left
+    obtain ⟨x, hx⟩ := not_forall.mp hsep
+    obtain ⟨y, hy⟩ := not_forall.mp hx
+    have hnr : ¬ (graph E).Reachable x y := fun hc => hy (fun _ => hc)
+    have hrun : runIndex Zf x = runIndex Zf y := by
+      by_contra hc
+      exact hy (fun h => absurd h hc)
+    -- order the split so the first end has the larger leftmost edge
+    obtain ⟨z, z', hzz', hle, hsame⟩ :
+        ∃ z z' : Endpt n m, ¬ (graph E).Reachable z z' ∧
+          WalkSupport.wLo edgeOf (graph E) z' ≤ WalkSupport.wLo edgeOf (graph E) z ∧
+          CutComponents.gz Zf (edgeOf z') = CutComponents.gz Zf (edgeOf z) := by
+      rcases le_total (WalkSupport.wLo edgeOf (graph E) y)
+        (WalkSupport.wLo edgeOf (graph E) x) with h | h
+      · refine ⟨x, y, hnr, h, ?_⟩
+        show CutComponents.gz Zf (edgeOf y) = CutComponents.gz Zf (edgeOf x)
+        exact (congrArg Fin.val hrun).symm
+      · refine ⟨y, x, fun hc => hnr hc.symm, h, ?_⟩
+        show CutComponents.gz Zf (edgeOf x) = CutComponents.gz Zf (edgeOf y)
+        exact congrArg Fin.val hrun
+    have hminE : ∀ (b b' : Endpt n m), siteOf b = siteOf b' →
+        isArrOf up b = true → isArrOf up b' = true → ∀ h1 h2 h3,
+        ¬ CostMerge.costOf (endDataOf (m := m) up ds)
+            (swapData E b (E.t b) b' (E.t b') h1 h2 h3)
+          < CostMerge.costOf (endDataOf (m := m) up ds) E := by
+      intro b b' hbs hb hb' k1 k2 k3
+      refine not_lt.mpr (hE.hmin _ hE.hp ?_ ?_)
+      · exact swapT_site siteOf E.t b (E.t b) b' (E.t b') hE.hts (hE.hts b) hbs.symm
+          (by rw [hE.hts b', hbs])
+      · exact swapT_arr (isArrOf up) E.t b (E.t b) b' (E.t b') hE.hta rfl rfl hb hb'
+    obtain ⟨a, a', hss, harr, harr', hsplit, hshared⟩ :=
+      freePair_runlocal_gen up ds Zf E hE.hp hE.hts hE.hta hE.hturn hE.hcov hminE
+        z z' hzz' hle hsame
+    -- the merge
+    have haa2 : a' ≠ a := ConfigMerge.ne_of_split E hsplit
+    have hne : a ≠ a' := fun h => haa2 h.symm
+    have h1 := swapT_invol E.t_invol rfl rfl (ConfigMerge.dep_ne_arr' E rfl)
+      (ConfigMerge.dep_ne_other E rfl hsplit) haa2
+      (ConfigMerge.dep_ne_dep' E rfl rfl haa2)
+      (Ne.symm (ConfigMerge.dep_ne_arr' E rfl)) (ConfigMerge.dep_ne_other' E rfl hsplit)
+    have h2 := swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne
+      (ConfigMerge.dep_ne_other E rfl hsplit) (ConfigMerge.dep_ne_other' E rfl hsplit)
+    have hps : ∀ w : Endpt n m, siteOf (E.p w) ≠ siteOf w := by
+      rw [hE.hp]
+      exact WalkSupport.p_site_ne edgeOf siteOf atTop partner (fun _ => rfl)
+        (fun w => partner_edgeOf w) (fun w => partner_top w)
+    have h3 := partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a') hps hE.hts
+      (hE.hts a) hss (show siteOf (E.t a') = siteOf a from (hE.hts a').trans hss)
+    have hda : isArrOf up (E.t a) = false := by
+      have h := hE.hta a; rw [harr] at h; simpa using h
+    have hda' : isArrOf up (E.t a') = false := by
+      have h := hE.hta a'; rw [harr'] at h; simpa using h
+    refine ⟨swapData E a (E.t a) a' (E.t a') h1 h2 h3, ⟨hE.hp, ?_, ?_, ?_, hE.hcov, ?_⟩,
+      ConfigMerge.descent_of_split E a a' hsplit h1 h2 h3⟩
+    · exact swapT_site siteOf E.t a (E.t a) a' (E.t a') hE.hts (hE.hts a) hss
+        (show siteOf (E.t a') = siteOf a from (hE.hts a').trans hss)
+    · exact swapT_arr (isArrOf up) E.t a (E.t a) a' (E.t a') hE.hta rfl rfl harr harr'
+    · exact hturn_step Zf (isArrOf up) hZ E _ a a' hE.hts hE.hturn harr hss rfl
+    · intro F hF1 hF2 hF3
+      have hsh : (endDataOf (m := m) up ds).side a = (endDataOf (m := m) up ds).side a' ∨
+          (endDataOf (m := m) up ds).side (E.t a)
+            = (endDataOf (m := m) up ds).side (E.t a') := hshared
+      rw [CostMerge.cost_swapData (endDataOf (m := m) up ds) E a a' harr harr'
+        hda hda' hne hsh h1 h2 h3]
+      exact hE.hmin F hF1 hF2 hF3
+
+/-! ### `c ≤ |Z|` and the shield law, unconditional
+
+With `run_step_local` the global covering hypothesis is gone.  What remains are the
+invariant `RunInv` -- whose covering clause is run-local and satisfiable in the presence
+of cut sites -- and `hZ`, that cut sites carry no arrivals. -/
+
+/-- **`c ≤ |Z|`, no global covering.** -/
+theorem c_le_Z_final (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
+    ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E ≤ Zf.card + 1 := by
+  obtain ⟨E, hE, hsep⟩ :=
+    ConfigMerge.reaches_stuck
+      (Stuck := fun E => ∀ x y : Endpt n m,
+        runIndex Zf x = runIndex Zf y → (graph E).Reachable x y)
+      (fun E hE => run_step_local up ds Zf hZ E hE) D hD
+  exact ⟨E, hE, walkCount_le_runs_gen E Zf
+    (local_of_hturn E Zf hE.hp hE.hts hE.hturn) hsep⟩
+
+/-- **The shield law, no global covering.**  A cost-minimal configuration has exactly
+`|Z| + 1` walks: `c = |Z|`. -/
+theorem shield_law_final (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
+    (e0 : Endpt n m)
+    (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
+    ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E = Zf.card + 1 := by
+  obtain ⟨E, hE, hle⟩ := c_le_Z_final up ds Zf hZ D hD
+  refine ⟨E, hE, le_antisymm hle ?_⟩
+  obtain ⟨F, hinj, havoid⟩ :=
+    CutComponents.exists_injective_components_avoiding
+      (local_of_hturn E Zf hE.hp hE.hts hE.hturn) A B hAB hlow hhigh hocc
+      ((graph E).connectedComponentMk e0)
+  exact walkCount_ge_of_avoiding E Zf.card _ F hinj havoid
+
+/-! ### The run-local covering is satisfiable with cut sites
+
+The global covering was not: a cut site needs two adjacent empty edges, and then for
+`j` right of the gap the antecedents held while `j - 1` was empty.  The run-local form
+excludes exactly that instance, because the two sides of a cut site have different `gz`.
+Stated generally rather than on one configuration: if every cut site of `Zf` separates
+`j - 1` from everything to its left that carries an end, the antecedent cannot fire. -/
+
+/-- **The run-local covering holds whenever the gap is guarded by a cut site.**  If
+edge `j - 1` carries no end, and some cut site lies in `(e, j]` for every edge `e < j`
+carrying an end, then the antecedent of `hcov` is never satisfied at `j`. -/
+theorem hcov_vacuous_at (Zf : Finset ℤ) (j : ℤ)
+    (hguard : ∀ v : Endpt n m, edgeOf v < j →
+      CutComponents.gz Zf (edgeOf v) ≠ CutComponents.gz Zf j) :
+    (∃ u : Endpt n m, edgeOf u = j) →
+      (∃ v : Endpt n m, edgeOf v < j ∧
+        CutComponents.gz Zf (edgeOf v) = CutComponents.gz Zf j) →
+      ∃ w : Endpt n m, edgeOf w = j - 1 ∧ atTop w = true := by
+  rintro _ ⟨v, hlt, heq⟩
+  exact absurd heq (hguard v hlt)
+
+/-- A cut site strictly between two edges makes their run indices differ. -/
+theorem gz_ne_of_between (Zf : Finset ℤ) (a b s : ℤ)
+    (hs : s ∈ Zf) (hab : a < s) (hsb : s ≤ b) :
+    CutComponents.gz Zf a ≠ CutComponents.gz Zf b := by
+  classical
+  have hsub : Zf.filter (fun z => z ≤ a) ⊂ Zf.filter (fun z => z ≤ b) := by
+    constructor
+    · intro z hz
+      rw [Finset.mem_filter] at hz ⊢
+      exact ⟨hz.1, by omega⟩
+    · intro hcon
+      have := hcon (Finset.mem_filter.mpr ⟨hs, hsb⟩)
+      rw [Finset.mem_filter] at this
+      omega
+  exact Nat.ne_of_lt (Finset.card_lt_card hsub)
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.freePair_runlocal
+#print axioms ConfigLoop.hcov_vacuous_at
+#print axioms ConfigLoop.gz_ne_of_between
