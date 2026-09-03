@@ -8231,3 +8231,27 @@ the mathematics was wrong rather than the definition incomplete.
 
 **Left for (M3):** the converse inclusion -- a guarded state function comes from a
 configuration -- which is `mkPathData` fed by `eq_travel_of_flow`, plus the final chain.
+
+## 2026-09-04 — BLOCK 227: converse inclusion — a guarded path comes from a configuration
+
+    exists_config_of_guarded   every guarded state function is realised by a
+                               configuration with the same span, departure and deposits
+    eps_const_of_guarded       the sign data is constant along a guarded path
+
+0 sorry, both clean on the first build.  `eps_const_of_guarded` needs `propext` alone; it
+reuses `const_of_step` (BLOCK 224) on the `eps` field, since the compatibility guard
+carries the sign across every step -- the same argument that identified the travel
+indicator, applied to a different field.
+
+The construction runs: the flow guard plus `depv`/`arrv` give the hypotheses of
+`eq_travel_of_flow`, which identifies `fcur` with `travel kstar`; that turns `validB` into
+`hpar` and `endValidB` into `hAmin`/`hBmin`; and `mkPathData` (BLOCK 217) assembles the
+configuration.  The two fields added in BLOCK 226 are used exactly where predicted.
+
+**Both inclusions now hold**, so the set equality (M3) needs is proved at the level of
+state functions: `guarded_stateOf` one way, `exists_config_of_guarded` the other.
+
+**Left for (M3):** matching a guarded path's states to the constructed configuration's
+FIELD BY FIELD -- `dprev` from the compatibility guard, `delta` by the same constancy
+argument as `eps` -- and then the final sum chain through `sum_configs_eq_sum_paths` and
+`weightSum_eq_sum_pathWeight`.

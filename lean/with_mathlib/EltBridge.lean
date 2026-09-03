@@ -6884,6 +6884,79 @@ theorem guarded_stateOf (P : SiteCost.PathData) :
   kstLo := A_le_kstar P
   kstHi := kstar_le_B_succ P
 
+/-! ### Converse inclusion: a guarded state function comes from a configuration -/
+
+/-- **Converse inclusion.**  Every guarded state function is realised by a configuration
+with the same span, departure and deposits.  With `guarded_stateOf` (BLOCK 226) this is the
+set equality (M3) needs. -/
+theorem exists_config_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) :
+    ∃ P : SiteCost.PathData, P.A = A ∧ P.B = B ∧ P.kstar = kstar ∧
+      (∀ j : ℤ, A ≤ j → j ≤ B → P.d j = (st j).dcur) := by
+  have hdepZ : ∀ j : ℤ, (((st j).dep : ℕ) : ℤ) = if j = kstar then (1 : ℤ) else 0 := by
+    intro j
+    by_cases h : j = kstar
+    · rw [if_pos h, (hg.dep j).mpr h]; norm_num
+    · rw [if_neg h]
+      rcases hg.depv j with h0 | h1
+      · rw [h0]; norm_num
+      · exact absurd ((hg.dep j).mp h1) h
+  have hflow : ∀ j : ℤ, (st j).fcur + ((SiteCost.vArr (j + 1) : ℕ) : ℤ)
+      = (st (j + 1)).fcur + (if j + 1 = kstar then (1 : ℤ) else 0) := by
+    intro j
+    have hs := hg.step j
+    simp only [stepB, Bool.and_eq_true] at hs
+    have hf := hs.2
+    simp only [flowB, decide_eq_true_eq] at hf
+    rw [hg.arrv (j + 1), hdepZ (j + 1)] at hf
+    exact hf
+  have hftravel : ∀ j : ℤ, (st j).fcur = SiteCost.travel kstar j :=
+    eq_travel_of_flow kstar A B (fun j => (st j).fcur) hflow
+      (fun j hj => (hg.outer j hj).2) hg.loA hg.hiB hg.kstLo hg.kstHi
+  refine ⟨mkPathData kstar (st A).eps (st A).delta (fun j => (st j).dcur) A B ?_ hg.loA hg.hiB
+    hg.kstLo hg.kstHi ?_ ?_ ?_, rfl, rfl, rfl, fun j hj1 hj2 => mkPathData_d hj1 hj2⟩
+  · have := hg.epsv A
+    simpa [epsValidB] using this
+  · intro j _ _
+    have hv := hg.valid j
+    simp only [validB, decide_eq_true_eq] at hv
+    rw [← hftravel j]
+    exact hv
+  · have he := hg.endA
+    simp only [endValidB, Bool.or_eq_true, decide_eq_true_eq] at he
+    rw [hg.arrv A] at he
+    rw [← hftravel A]
+    rcases he with (h | h) | h
+    · left
+      by_contra hA0
+      unfold SiteCost.vArr at h
+      rw [if_neg hA0] at h
+      exact absurd h (by norm_num)
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr h)
+  · have he := hg.endB
+    simp only [endValidB, Bool.or_eq_true, decide_eq_true_eq] at he
+    rw [hg.arrv B] at he
+    rw [← hftravel B]
+    rcases he with (h | h) | h
+    · left
+      by_contra hB0
+      unfold SiteCost.vArr at h
+      rw [if_neg hB0] at h
+      exact absurd h (by norm_num)
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr h)
+
+/-- **The sign data is constant along a guarded path**, because the compatibility guard
+carries it across every step.  Needed to match a guarded path's states field by field. -/
+theorem eps_const_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) (j : ℤ) : (st j).eps = (st 0).eps := by
+  refine const_of_step (g := fun i => (st i).eps) ?_ j
+  intro i
+  have hs := hg.step i
+  simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
+  exact hs.1.1.2.symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14497,3 +14570,5 @@ end EltBridge
 #print axioms EltBridge.map_idxList_congr
 #print axioms EltBridge.exists_fun_of_length
 #print axioms EltBridge.guarded_stateOf
+#print axioms EltBridge.exists_config_of_guarded
+#print axioms EltBridge.eps_const_of_guarded
