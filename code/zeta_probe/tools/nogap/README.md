@@ -8064,3 +8064,26 @@ guards), so the sum over configurations only makes sense once cut by degree.
 `dcur_le_muOf`/`fcur_le_muOf` (BLOCK 208) bound the states by the cost, which is the
 right tool, but the cut is not built.  That is the honest remaining gap, and it is the
 same gap on both sides.
+
+## 2026-09-04 — BLOCK 220: the degree cut — everything is bounded by lR
+
+The finiteness (M3) needs.  `lR` is a sum of non-negative terms, one `mu j` per edge of
+the span, and `mu j` dominates both `|d j|` (`mu_ge_d`) and `1` (`mu_pos`):
+
+    card_le_lR      the span has at most lR edges
+    abs_d_le_lR     every deposit is bounded by lR
+    span_bounds     so the span is confined to [-lR, lR]
+    kstar_bounds    and the departure to [-lR, lR + 1]
+
+0 sorry, all four clean on the first build.  `Int.card_Icc` does exist in this Mathlib.
+
+**So every piece of data a configuration carries is bounded by its relaxed length.**  A
+configuration of relaxed length at most `N` has span inside `[-N, N]`, deposits in
+`[-N, N]`, and `k*` in `[-N, N+1]` -- finitely many.  That is the cut BLOCK 219 said was
+missing, and it is now available in the form the sum needs.
+
+**What is left of (M3), stated plainly.**  Turning these bounds into an actual `Finset`
+of configurations at each degree, and then the sum identity itself.  The bounds are the
+mathematical content and they are done; what remains is `Fintype` plumbing -- injecting
+the bounded data into a product of finite intervals.  That is real Lean work but no new
+mathematics, and until it is written (M3) stays yellow.

@@ -6566,6 +6566,49 @@ theorem statePath_inj {A B : ℤ} {S T : SpanData A B} {n : ℕ} (hn : B + 1 ≤
   rw [hBe] at hj2
   exact map_idxList_inj _ _ n A h j hj1 (by omega)
 
+/-! ### The degree cut: everything is bounded by the relaxed length
+
+The finiteness (M3) needs.  `lR` is a sum of non-negative terms, one `mu j` per edge of
+the span, and `mu j` dominates both `|d j|` and `1`.  So a configuration of relaxed length
+`N` has span at most `N` edges and deposits at most `N` -- finitely many, at each degree. -/
+
+/-- The span has at most `lR` edges, since every edge costs at least one. -/
+theorem card_le_lR (P : SiteCost.PathData) : (Finset.Icc P.A P.B).card ≤ P.lR := by
+  have h2 : ∑ _j ∈ Finset.Icc P.A P.B, 1 ≤ ∑ j ∈ Finset.Icc P.A P.B, P.mu j :=
+    Finset.sum_le_sum (fun j _ => P.mu_pos j)
+  have h3 : ∑ j ∈ Finset.Icc P.A P.B, P.mu j ≤ P.lR := by
+    unfold SiteCost.PathData.lR; exact Nat.le_add_right _ _
+  simp only [Finset.sum_const, smul_eq_mul, mul_one] at h2
+  omega
+
+/-- Every deposit is bounded by the relaxed length. -/
+theorem abs_d_le_lR (P : SiteCost.PathData) (j : ℤ) : (P.d j).natAbs ≤ P.lR := by
+  by_cases hj : P.A ≤ j ∧ j ≤ P.B
+  · have h1 : (P.d j).natAbs ≤ P.mu j := P.mu_ge_d j
+    have h2 : P.mu j ≤ ∑ i ∈ Finset.Icc P.A P.B, P.mu i :=
+      Finset.single_le_sum (fun i _ => Nat.zero_le _) (Finset.mem_Icc.mpr hj)
+    have h3 : ∑ i ∈ Finset.Icc P.A P.B, P.mu i ≤ P.lR := by
+      unfold SiteCost.PathData.lR; exact Nat.le_add_right _ _
+    omega
+  · rw [(P.houter j (by omega)).1]; simp
+
+/-- **The span is confined to `[-lR, lR]`.**  With `abs_d_le_lR` this makes the
+configurations of relaxed length at most `N` a finite collection. -/
+theorem span_bounds (P : SiteCost.PathData) : -(P.lR : ℤ) ≤ P.A ∧ P.B ≤ P.lR := by
+  have hcard := card_le_lR P
+  rw [Int.card_Icc] at hcard
+  have hA := P.hA
+  have hB := P.hB
+  have : (P.B + 1 - P.A).toNat = P.B + 1 - P.A := by omega
+  omega
+
+/-- **And the departure with it.**  So every piece of data a configuration carries is
+bounded by its relaxed length: the span, the deposits, and `k*`. -/
+theorem kstar_bounds (P : SiteCost.PathData) :
+    -(P.lR : ℤ) ≤ P.kstar ∧ P.kstar ≤ (P.lR : ℤ) + 1 := by
+  have h := span_bounds P
+  exact ⟨le_trans h.1 (A_le_kstar P), le_trans (kstar_le_B_succ P) (by omega)⟩
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14165,3 +14208,7 @@ end EltBridge
 #print axioms EltBridge.toPath_injective
 #print axioms EltBridge.map_idxList_inj
 #print axioms EltBridge.statePath_inj
+#print axioms EltBridge.card_le_lR
+#print axioms EltBridge.abs_d_le_lR
+#print axioms EltBridge.span_bounds
+#print axioms EltBridge.kstar_bounds
