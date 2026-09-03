@@ -5895,6 +5895,63 @@ theorem lR_exp_pathWeight_family {C : Type*} (x : ℤ) (n : ℕ)
           (((P c).A :: idxList (P c).A (n + 1)).map (stateOf (P c))) :=
   isTransferDecomposition_family x n P hn c
 
+/-! ### (M3b), and a retraction: `IsResolventSum` says nothing
+
+Setting out to prove `IsResolventSum` I found it is **vacuous**.  It asks, for each `N`,
+for *some* `tail` with `W = (partial sum) + tail`, and `tail := W - (partial sum)` always
+works.  It is satisfied by every `T`, `lam`, `mu`, `W` whatsoever.  That is recorded
+below as a theorem rather than deleted, so the retraction is checkable.
+
+`IsAssembly` (BLOCK 116) is the honest form: an exact identity of coefficients, degree
+by degree, with the sum truncated at `range (N+1)`.  What makes that truncation legitimate
+is the only real content of (M3b): **if every entry of the transfer matrix has vanishing
+constant term, then `T^k` contributes nothing below degree `k`**, so the Neumann series
+terminates at each fixed degree and the finite sum is exact.  That is proved here.
+
+The hypothesis is the paper's order bound on the travel block -- a transfer step always
+costs at least one unit of length, so its generating function has no constant term. -/
+
+/-- **The retraction, made checkable**: `IsResolventSum` holds of anything. -/
+theorem isResolventSum_vacuous {S : Type*} [Fintype S]
+    (T : S → S → ℤ) (lam mu : S → ℤ) (W : ℤ) : IsResolventSum T lam mu W := by
+  intro N
+  exact ⟨W - ∑ k ∈ Finset.range N, ∑ s : S, lam s * (T s s) ^ k * mu s, by ring⟩
+
+/-- **A transfer matrix whose entries all have positive order has `X^k | T^k`.** -/
+theorem X_pow_dvd_matrix_pow {n : ℕ} (T : Matrix (Fin n) (Fin n) (PowerSeries ℤ))
+    (h : ∀ a b, PowerSeries.constantCoeff (T a b) = 0) :
+    ∀ (k : ℕ) (a b : Fin n), (PowerSeries.X : PowerSeries ℤ) ^ k ∣ (T ^ k) a b := by
+  intro k
+  induction k with
+  | zero => intro a b; simpa using one_dvd _
+  | succ m ih =>
+      intro a b
+      rw [pow_succ T m, Matrix.mul_apply, pow_succ (PowerSeries.X : PowerSeries ℤ) m]
+      refine Finset.dvd_sum ?_
+      intro c _
+      exact mul_dvd_mul (ih a c) (PowerSeries.X_dvd_iff.mpr (h c b))
+
+/-- **(M3b), the real content.**  Below degree `k` the `k`-th Neumann term is zero, so
+at each fixed degree the resolvent is a *finite* sum -- which is exactly what licenses
+`IsAssembly`'s truncation at `range (N + 1)`.  No analysis: it is the order bound. -/
+theorem coeff_matrix_pow_eq_zero {n : ℕ} (T : Matrix (Fin n) (Fin n) (PowerSeries ℤ))
+    (h : ∀ a b, PowerSeries.constantCoeff (T a b) = 0)
+    (k : ℕ) (a b : Fin n) (m : ℕ) (hm : m < k) :
+    PowerSeries.coeff m ((T ^ k) a b) = 0 :=
+  PowerSeries.X_pow_dvd_iff.mp (X_pow_dvd_matrix_pow T h k a b) m hm
+
+/-- **Hence the truncated resolvent is exact at every degree.**  For `N < k` the term
+`lam a * (T^k) a b * mu b` cannot reach degree `N`, so extending the sum beyond
+`range (N + 1)` changes nothing -- `IsAssembly` loses no information by truncating. -/
+theorem coeff_neumann_tail_zero {n : ℕ} (T : Matrix (Fin n) (Fin n) (PowerSeries ℤ))
+    (h : ∀ a b, PowerSeries.constantCoeff (T a b) = 0)
+    (lam mu : Fin n → PowerSeries ℤ) (N k : ℕ) (hk : N < k) (a b : Fin n) :
+    PowerSeries.coeff N (lam a * (T ^ k) a b * mu b) = 0 := by
+  have hdvd : (PowerSeries.X : PowerSeries ℤ) ^ k ∣ lam a * (T ^ k) a b * mu b := by
+    have := X_pow_dvd_matrix_pow T h k a b
+    exact Dvd.dvd.mul_right (Dvd.dvd.mul_left this (lam a)) (mu b)
+  exact PowerSeries.X_pow_dvd_iff.mp hdvd N hk
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13452,3 +13509,7 @@ end EltBridge
 #print axioms EltBridge.alternating_is_chain_sites
 #print axioms EltBridge.isTransferDecomposition_family
 #print axioms EltBridge.lR_exp_pathWeight_family
+#print axioms EltBridge.isResolventSum_vacuous
+#print axioms EltBridge.X_pow_dvd_matrix_pow
+#print axioms EltBridge.coeff_matrix_pow_eq_zero
+#print axioms EltBridge.coeff_neumann_tail_zero

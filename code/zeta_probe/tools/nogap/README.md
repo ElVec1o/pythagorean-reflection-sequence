@@ -7785,3 +7785,30 @@ cost, so a configuration of relaxed length `N` visits only states with `|d|, |f|
 the state space is finite degree by degree, which is the hypothesis `IsResolventSum`
 wants.  What remains of (M3) is (M3b) -- assembling that truncation with
 `neumann_partial` (BLOCK 116) -- and it is algebra.
+
+## 2026-09-03 — BLOCK 209: (M3b), and a RETRACTION — IsResolventSum says nothing
+
+Setting out to prove `IsResolventSum` I found it is **vacuous**.  It asks, for each `N`,
+for *some* `tail` with `W = (partial sum) + tail`, and `tail := W - (partial sum)` always
+works.  It holds of every `T`, `lam`, `mu`, `W` whatsoever.  Recorded as a theorem rather
+than deleted, so the retraction is checkable:
+
+    isResolventSum_vacuous     IsResolventSum T lam mu W, for ANY arguments
+
+So (M3b) was never carried by that definition.  `IsAssembly` (BLOCK 116) is the honest
+form -- an exact coefficient identity, degree by degree, truncated at `range (N+1)`.  What
+licenses that truncation is the only real content, and it is now proved:
+
+    X_pow_dvd_matrix_pow       entries of positive order => X^k divides (T^k) a b
+    coeff_matrix_pow_eq_zero   so T^k contributes nothing below degree k
+    coeff_neumann_tail_zero    hence terms past range (N+1) cannot reach degree N
+
+The Neumann series therefore terminates at each fixed degree, and `IsAssembly` loses
+nothing by truncating.  The hypothesis is the paper's order bound on the travel block --
+a transfer step costs at least one unit of length, so its generating function has no
+constant term.  No analysis anywhere.  0 sorry.
+
+**Honest scope.**  This closes the *formal convergence* half of (M3b).  The other half --
+that `W` itself equals that sum, i.e. that summing `lR_exp_pathWeight_family` over all
+configurations of each span length reproduces the series -- is a counting statement and
+is not proved.  (M3a) is done; (M3b) is half done, and the remaining half is combinatorial.
