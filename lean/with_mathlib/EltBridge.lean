@@ -1898,6 +1898,94 @@ theorem witElt_merges (ds : Bool → Bool) :
   Elt.merges_to_one witElt ds 1 (by simp) (by rw [witElt_pd_A]; omega)
     witElt_edge_lt witElt_hcov0 (Sum.inr false)
 
+/-! ### M6 for group elements: exactly one walk
+
+`Elt.merges_to_one` gives `walkCount <= 1`.  The extended type is never empty -- it
+always carries the two virtual ends -- so the count is at least one, and the merge
+lands on exactly one walk. -/
+
+/-- The extended type is inhabited, whatever the configuration. -/
+instance {n : ℕ} {mm : Fin n → ℕ} : Nonempty (VEndpt n mm) := ⟨Sum.inr false⟩
+
+/-- **At least one walk**, for any datum on an inhabited end type. -/
+theorem one_le_walkCount {α : Type*} [Fintype α] [DecidableEq α] [Nonempty α]
+    (D : WalkGraph.Data α) : 1 ≤ WalkGraph.walkCount D :=
+  Fintype.card_pos_iff.mpr ⟨(WalkGraph.graph D).connectedComponentMk (Classical.arbitrary _)⟩
+
+/-- **M6 for a group element.**  A cost-minimal datum on the configuration of an
+element with `kstar > 0` has **exactly one** walk. -/
+theorem Elt.single_walk (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A))
+        (VEndpt.isArr (pdUp g.toPathData)) VEndpt.partner
+        (vEndDataP (pdUp g.toPathData) ds) D' ∧ WalkGraph.walkCount D' = 1 := by
+  obtain ⟨D', hD', hle⟩ := Elt.merges_to_one g ds bnd hk hb hbnd hcov0 z₀
+  exact ⟨D', hD', le_antisymm hle (one_le_walkCount D')⟩
+
+/-- **M6, instantiated on the witness.**  Exactly one walk, for an actual element. -/
+theorem witElt_single_walk (ds : Bool → Bool) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth witElt.toPathData) (pdMm witElt.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-witElt.toPathData.A)
+          (witElt.toPathData.kstar - witElt.toPathData.A))
+        (VEndpt.isArr (pdUp witElt.toPathData)) VEndpt.partner
+        (vEndDataP (pdUp witElt.toPathData) ds) D' ∧ WalkGraph.walkCount D' = 1 :=
+  Elt.single_walk witElt ds 1 (by simp) (by rw [witElt_pd_A]; omega)
+    witElt_edge_lt witElt_hcov0 (Sum.inr false)
+
+/-! ### M5 and M7 for group elements: zero defect
+
+`cor:localzero` and `prop:travelinv` say the connectivity defect `c` vanishes.  In the
+walk model `c` is `ConfigLoop.defect = walkCount - 1`, so `Elt.single_walk` gives it
+directly. -/
+
+/-- **M5/M7 for a group element.**  The connectivity defect of a cost-minimal datum on
+the configuration of an element with `kstar > 0` is zero: `c(g) = 0`. -/
+theorem Elt.defect_zero (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A))
+        (VEndpt.isArr (pdUp g.toPathData)) VEndpt.partner
+        (vEndDataP (pdUp g.toPathData) ds) D' ∧ ConfigLoop.defect D' = 0 := by
+  obtain ⟨D', hD', hc⟩ := Elt.single_walk g ds bnd hk hb hbnd hcov0 z₀
+  exact ⟨D', hD', by unfold ConfigLoop.defect; omega⟩
+
+/-- **M5/M7, instantiated.**  `c = 0` for an actual group element. -/
+theorem witElt_defect_zero (ds : Bool → Bool) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth witElt.toPathData) (pdMm witElt.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-witElt.toPathData.A)
+          (witElt.toPathData.kstar - witElt.toPathData.A))
+        (VEndpt.isArr (pdUp witElt.toPathData)) VEndpt.partner
+        (vEndDataP (pdUp witElt.toPathData) ds) D' ∧ ConfigLoop.defect D' = 0 :=
+  Elt.defect_zero witElt ds 1 (by simp) (by rw [witElt_pd_A]; omega)
+    witElt_edge_lt witElt_hcov0 (Sum.inr false)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1974,3 +2062,7 @@ end EltBridge
 #print axioms EltBridge.witElt_width
 #print axioms EltBridge.witElt_hcov0
 #print axioms EltBridge.witElt_merges
+#print axioms EltBridge.Elt.single_walk
+#print axioms EltBridge.witElt_single_walk
+#print axioms EltBridge.Elt.defect_zero
+#print axioms EltBridge.witElt_defect_zero

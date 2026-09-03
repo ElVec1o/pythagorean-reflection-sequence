@@ -3007,3 +3007,29 @@ and let omega combine them, never rw.
 
 B1: YELLOW -> GREEN. Built, covering the whole parameter range (BLOCKS 33-34), and
 instantiated on an actual element (BLOCK 35).
+
+## 2026-09-03 — BLOCK 36: M6, M5, M7 restated FOR GROUP ELEMENTS
+
+The four greens carried a "(configurations)" qualifier because nothing in the
+development was a group element. Three of them now have element-level forms:
+
+  one_le_walkCount     -- at least one walk, for any datum on an inhabited end type
+                          (VEndpt is always inhabited: it carries the two virtual ends)
+  Elt.single_walk      -- M6 for an element: EXACTLY one walk
+  witElt_single_walk   -- instantiated
+  Elt.defect_zero      -- M5/M7 for an element: c(g) = 0
+  witElt_defect_zero   -- instantiated
+
+So `thm:nogap` with cost, `cor:localzero` and `prop:travelinv` are now statements about
+`Elt`, not about hypothetical configurations, and each has been applied to a concrete
+element rather than left as a general form.
+
+SCOPE: kstar > 0. The kstar < 0 branch has its own assembly (merges_to_oneN,
+Elt.merges_to_one_neg, BLOCK 34) but the single_walk/defect_zero corollaries have not
+been mirrored onto it. That is three lines each and no new mathematics, but it is not
+written.
+
+REMAINING QUALIFIER: M3 (prop:cut, c >= |Z|) and M4b (the shield law) are about the cut
+set Z, which has no element-level form yet -- Z is defined on a PathData via alphaAt /
+betaAt / PhiAt, so the element form needs those transported through the re-indexing.
+That is the next genuine piece of work, not bookkeeping.
