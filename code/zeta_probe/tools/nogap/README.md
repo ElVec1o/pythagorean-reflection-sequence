@@ -8134,3 +8134,25 @@ kills unrealisable paths (BLOCKS 212, 216), the correspondence is bijective (BLO
 sides are finite at each degree (BLOCKS 220-222).  What is not written is the chain of
 equalities joining them.  That is assembly, and it is the last thing between (M3) and
 green.
+
+## 2026-09-04 — BLOCK 223: the chain — a sum over configurations IS a sum over state paths
+
+Joins the links.  The weight of a configuration is the path weight of its state path
+(BLOCK 208) and distinct configurations have distinct state paths (BLOCK 219), so:
+
+    sum_configs_eq_sum_paths    sum over configurations of a fixed span
+                                = sum over the state paths they occupy
+
+0 sorry.  `LocalState` now derives `DecidableEq`, which `Finset.image` needs for
+`List LocalState`; that was the only failure and it was one edit.
+
+**What the last link is, precisely.**  This says the sum over configurations equals the
+sum over the paths they OCCUPY.  BLOCKS 210-211 say the sum over ALL state paths is the
+matrix power.  Joining those two needs: every guarded path is occupied -- `mkPathData`
+(BLOCK 217) at the level of lists rather than of `SpanData`.  The guard theorems
+(BLOCKS 212, 216) show configurations satisfy the guard; the converse, that a guarded path
+comes from a configuration, is `mkPathData` and is proved -- but it is stated for guarded
+DATA, and the list-level restatement is not written.
+
+So (M3) is one restatement short.  Not one theorem short -- one restatement of a theorem
+already proved.  It stays yellow until that is written and the two sums are equated.

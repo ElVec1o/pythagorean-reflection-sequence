@@ -5816,6 +5816,7 @@ structure LocalState where
   dep : ℕ
   eps : ℤ
   delta : Bool
+  deriving DecidableEq
 
 namespace LocalState
 
@@ -6699,6 +6700,30 @@ theorem finite_degree_le (N : ℕ) : {P : SiteCost.PathData | P.lR ≤ N}.Finite
         omega
   · intro P hP Q hQ h
     exact encAll_inj N hP hQ h
+
+/-! ### The chain: a sum over configurations IS a sum over state paths
+
+Every link has been proved separately; this joins them.  The weight of a configuration is
+the path weight of its state path (BLOCK 208), and distinct configurations have distinct
+state paths (BLOCK 219), so summing over configurations and summing over the state paths
+they occupy give the same number. -/
+
+/-- **A sum over configurations of a fixed span is a sum over their state paths.**  This
+is the identity (M3) asks for, on a finite collection. -/
+theorem sum_configs_eq_sum_paths (x : ℤ) {A : ℤ} {m : ℕ}
+    [DecidableEq (SpanData A (A + m))]
+    (C : Finset (SpanData A (A + m))) :
+    ∑ S ∈ C, x ^ S.toPath.lR
+      = ∑ L ∈ C.image (fun S => (A :: idxList A (m + 1)).map (stateOf S.toPath)),
+          pathWeight (fun σ τ => x ^ (σ.muOf + τ.siteOf)) (fun σ => x ^ σ.siteOf)
+            (fun _ => x ^ (0 : ℕ)) L := by
+  rw [Finset.sum_image ?inj]
+  case inj =>
+    intro S _ T _ h
+    exact statePath_inj (by push_cast; omega) h
+  refine Finset.sum_congr rfl fun S _ => ?_
+  exact lR_exp_pathWeight_family x m (fun S : SpanData A (A + m) => S.toPath)
+    (fun _ => rfl) S
 
 /-! ### The deposit magnitude is a sufficient state
 
@@ -14307,3 +14332,4 @@ end EltBridge
 #print axioms EltBridge.pathData_box
 #print axioms EltBridge.encAll_inj
 #print axioms EltBridge.finite_degree_le
+#print axioms EltBridge.sum_configs_eq_sum_paths
