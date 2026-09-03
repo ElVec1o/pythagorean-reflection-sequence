@@ -6281,6 +6281,75 @@ theorem endValidB_at_B (P : SiteCost.PathData) : endValidB (stateOf P P.B) = tru
   · tauto
   · tauto
 
+/-! ### The travel flow is local too
+
+One more necessary condition, and the last one the state can be asked to carry.  `fcur`
+is not free data: it is `travel k* j`, so a path could in principle carry travel values no
+single `k*` produces.  But `travel_site_facts` says the constraint is **local** -- the
+travel indicator changes only at the arrival and the departure, and by one unit each:
+
+    f (j) + [j+1 = 0] = f (j+1) + [j+1 = k*]
+
+which is a condition on two consecutive states.  So it belongs in the guard, and with it
+the guard has no non-local content left. -/
+
+/-- The travel indicator flows correctly across a step. -/
+def flowB (σ τ : LocalState) : Bool :=
+  decide (σ.fcur + (τ.arr : ℤ) = τ.fcur + (τ.dep : ℤ))
+
+/-- **A configuration's states always flow correctly**, by `travel_site_facts`. -/
+theorem flowB_stateOf (P : SiteCost.PathData) (j : ℤ) :
+    flowB (stateOf P j) (stateOf P (j + 1)) = true := by
+  simp only [flowB, stateOf, decide_eq_true_eq]
+  refine (SiteCost.travel_site_facts P.kstar (j + 1)
+    ((SiteCost.vArr (j + 1) : ℕ) : ℤ) ((P.vD (j + 1) : ℕ) : ℤ)
+    (SiteCost.travel P.kstar j) (SiteCost.travel P.kstar (j + 1))
+    ?_ ?_ ?_ rfl).1
+  · unfold SiteCost.vArr; split_ifs <;> simp
+  · unfold SiteCost.PathData.vD; split_ifs <;> simp
+  · congr 1; ring
+
+/-- **The full local guard**: the right state continues the left one, and the travel
+indicator flows.  Everything a realisable path must satisfy between consecutive states. -/
+def stepB (σ τ : LocalState) : Bool := compatB σ τ && flowB σ τ
+
+theorem stepB_stateOf (P : SiteCost.PathData) (j : ℤ) :
+    stepB (stateOf P j) (stateOf P (j + 1)) = true := by
+  simp only [stepB, Bool.and_eq_true]
+  exact ⟨compatB_stateOf P j, flowB_stateOf P j⟩
+
+/-- **Guarding by ANY predicate the configuration satisfies leaves its weight alone.**
+This generalises `pathWeight_guarded_eq` (BLOCK 212) from `compatB` to the full local
+guard `stepB`, or to any other. -/
+theorem pathWeight_guard_eq (x : ℤ) (P : SiteCost.PathData) (mu : LocalState → ℤ)
+    (g : LocalState → LocalState → Bool)
+    (hg : ∀ j : ℤ, g (stateOf P j) (stateOf P (j + 1)) = true) :
+    ∀ (n : ℕ) (A : ℤ) (lam : LocalState → ℤ),
+      pathWeight (fun σ τ => if g σ τ then x ^ (σ.muOf + τ.siteOf) else 0) lam mu
+          ((A :: idxList A n).map (stateOf P))
+        = pathWeight (fun σ τ => x ^ (σ.muOf + τ.siteOf)) lam mu
+            ((A :: idxList A n).map (stateOf P)) := by
+  intro n
+  induction n with
+  | zero => intro A lam; rfl
+  | succ m ih =>
+      intro A lam
+      show lam (stateOf P A) * (if g (stateOf P A) (stateOf P (A + 1)) then
+              x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf) else 0)
+            * pathWeight _ (fun _ => (1 : ℤ)) mu _
+        = lam (stateOf P A) * x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf)
+            * pathWeight _ (fun _ => (1 : ℤ)) mu _
+      rw [hg A, if_pos rfl, ← List.map_cons, ih (A + 1) (fun _ => (1 : ℤ))]
+
+/-- In particular the full guard `stepB` may be used. -/
+theorem pathWeight_stepB_eq (x : ℤ) (P : SiteCost.PathData) (mu : LocalState → ℤ)
+    (n : ℕ) (A : ℤ) (lam : LocalState → ℤ) :
+    pathWeight (fun σ τ => if stepB σ τ then x ^ (σ.muOf + τ.siteOf) else 0) lam mu
+        ((A :: idxList A n).map (stateOf P))
+      = pathWeight (fun σ τ => x ^ (σ.muOf + τ.siteOf)) lam mu
+          ((A :: idxList A n).map (stateOf P)) :=
+  pathWeight_guard_eq x P mu stepB (stepB_stateOf P) n A lam
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13865,3 +13934,7 @@ end EltBridge
 #print axioms EltBridge.epsValidB_stateOf
 #print axioms EltBridge.endValidB_at_A
 #print axioms EltBridge.endValidB_at_B
+#print axioms EltBridge.flowB_stateOf
+#print axioms EltBridge.stepB_stateOf
+#print axioms EltBridge.pathWeight_guard_eq
+#print axioms EltBridge.pathWeight_stepB_eq

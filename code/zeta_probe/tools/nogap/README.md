@@ -7951,3 +7951,34 @@ i.e. whether a path satisfying all of them can be assembled into a `PathData`.  
 construction, not an obstruction: build `d` from the path and `0` off the span, take `eps`,
 `delta`, `kstar` from the states, and discharge the six proof fields from the guards
 above.  Nothing now suggests it fails.
+
+## 2026-09-04 — BLOCK 216: the travel flow is local; the guard is complete
+
+`fcur` is not free data -- it is `travel k* j` -- so a guarded path could in principle
+carry travel values no single `k*` produces.  But `travel_site_facts` says the constraint
+is LOCAL: the travel indicator changes only at the arrival and the departure, by one unit
+each,
+
+    f (j) + [j+1 = 0] = f (j+1) + [j+1 = k*]
+
+which is a condition on two consecutive states.  So it belongs in the guard, and with it
+the guard has no non-local content left:
+
+    flowB, flowB_stateOf       the travel indicator flows correctly
+    stepB, stepB_stateOf       compatB AND flowB: the full local step guard
+    pathWeight_guard_eq        guarding by ANY predicate the configuration satisfies
+                               leaves its weight alone (generalises BLOCK 212)
+    pathWeight_stepB_eq        in particular by stepB
+
+0 sorry.  `pathWeight_guard_eq` depends on `propext` alone.
+
+**The necessary conditions are now complete and all local.**  A realisable path satisfies:
+`stepB` between consecutive states, `validB` and `epsValidB` at every state, `endValidB`
+at the two end states, and carries exactly one arrival marker.  Every one is proved
+satisfied by every configuration, and every one is checkable from the states alone.
+
+**What is left of (M3) is exactly one thing: sufficiency.**  Given a path satisfying all
+of the above, assemble a `PathData` realising it.  The data is forced (`d` from the
+states and `0` off the span, `eps`/`delta` from any state, `k*` from the departure
+marker); what has to be discharged is the six proof fields, and each has a guard above
+aimed at it.  No obstruction is known.
