@@ -9054,6 +9054,43 @@ theorem coeff_weight_of_wrong_degree (N : ℕ) (P : SiteCost.PathData) (m : ℕ)
   rw [pathWeightR_flag_guarded (PowerSeries.X : PowerSeries ℤ) P m hn]
   exact coeff_pow_lR_ne N P.lR h
 
+/-! ### A non-zero coefficient forces the guard
+
+`guards_of_weight_ne_zero` (BLOCK 269) over an arbitrary ring, plus the bridge from a
+non-zero coefficient to a non-zero weight.  Together: a path contributing to the degree-`N`
+coefficient satisfies the guard, hence is realisable. -/
+
+theorem guardsR_of_weight_ne_zero {R : Type*} [CommRing R] (x : R) (g : ℤ → FlagState)
+    (n : ℕ) (A : ℤ) (lam mu : FlagState → R)
+    (hne : pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        lam mu ((A :: idxList A n).map g) ≠ 0) :
+    ∀ k : ℤ, A ≤ k → k < A + n → flagStepB (g k) (g (k + 1)) = true := by
+  intro k h1 h2
+  by_contra hc
+  have hfalse : flagStepB (g k) (g (k + 1)) = false := by
+    cases h : flagStepB (g k) (g (k + 1)) with
+    | false => rfl
+    | true => exact absurd h hc
+  exact hne (pathWeightR_zero_of_guard_fails x g n A lam mu k h1 h2 hfalse)
+
+/-- A non-zero coefficient means a non-zero series. -/
+theorem ne_zero_of_coeff_ne_zero (N : ℕ) (w : PowerSeries ℤ)
+    (h : PowerSeries.coeff N w ≠ 0) : w ≠ 0 := by
+  intro hw
+  rw [hw] at h
+  simp at h
+
+/-- **So a path contributing to the degree-`N` coefficient satisfies the guard.** -/
+theorem guards_of_coeff_ne_zero (N : ℕ) (g : ℤ → FlagState) (n : ℕ) (A : ℤ)
+    (lam mu : FlagState → PowerSeries ℤ)
+    (hne : PowerSeries.coeff N
+        (pathWeightR (fun σ τ => if flagStepB σ τ then
+            (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+          lam mu ((A :: idxList A n).map g)) ≠ 0) :
+    ∀ k : ℤ, A ≤ k → k < A + n → flagStepB (g k) (g (k + 1)) = true :=
+  guardsR_of_weight_ne_zero (PowerSeries.X : PowerSeries ℤ) g n A lam mu
+    (ne_zero_of_coeff_ne_zero N _ hne)
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16781,3 +16818,5 @@ end EltBridge
 #print axioms EltBridge.coeff_sum_all_paths
 #print axioms EltBridge.coeff_sum_subset
 #print axioms EltBridge.coeff_weight_of_wrong_degree
+#print axioms EltBridge.guardsR_of_weight_ne_zero
+#print axioms EltBridge.guards_of_coeff_ne_zero

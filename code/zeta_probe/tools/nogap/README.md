@@ -9341,3 +9341,22 @@ Its degree-`N` coefficient is zero, though, and that is all the comparison uses.
 was to weaken the statement to what is true rather than to try harder to prove what was
 written -- the same move as BLOCK 272, where the whole-sum comparison had to become
 coefficient-wise for the same underlying reason.
+
+## 2026-09-04 — BLOCK 282: a non-zero coefficient forces the guard
+
+    guardsR_of_weight_ne_zero   BLOCK 269 over an arbitrary ring
+    ne_zero_of_coeff_ne_zero    a non-zero coefficient means a non-zero series
+    guards_of_coeff_ne_zero     so a path contributing to the degree-N coefficient
+                                satisfies the guard, hence is realisable
+
+0 sorry, all three clean on the first build.
+
+This is the last bridge the instantiation needs: `coeff_sum_subset` (BLOCK 281) asks the
+complement's coefficients to vanish, and the contrapositive says a path with a non-zero
+coefficient is guarded -- whereupon `exists_config_of_path` (BLOCK 267) and
+`flagPath_eq_of_config` (BLOCK 268) put it in the image unless its configuration has the
+wrong degree, which `coeff_weight_of_wrong_degree` (BLOCK 281) handles.
+
+**[Rule 0] Every ingredient of (M3)'s coefficient identity is now VERIFIED.**  What remains
+is to write the instantiation itself: choose `C` as the degree cut, `T` as the paths of the
+right length, and run the case split on whether a complement path is guarded.
