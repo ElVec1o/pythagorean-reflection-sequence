@@ -6091,3 +6091,41 @@ site cost.  Whether each survives the change of cost has to be checked statement
 statement -- some may not use the cost at all, some may.  I am not asserting they fail;
 I am recording that their cost hypothesis is not the paper's and that the audit of the
 green atoms is therefore not complete.  That check is the next thing to do.
+
+## 2026-09-03 — BLOCK 151: the derived-sign model is exact at mu = 2 and lossy beyond
+
+Tracing BLOCK 150 one level further gives the precise scope of the `EndData` machinery,
+and with it the scope of the green atoms proved through it.
+
+`EndData.sgn` depends on `(side, isArr, depSign side)`.  Within one edge, then, all up
+strands must carry one sign and all down strands the other: `pu` is pinned to `0` or
+`u`, and likewise `pd`.  Since `d = 2 (pd - pu)`, the representable deposits are
+
+    m = 2 :  -2, 0, 2                 (all of them)
+    m = 4 :  -4, 0, 4                 (paper has -4, -2, 0, 2, 4)
+    m = 6 :  -6, 0, 6                 (paper has seven)
+    m = 8 :  -8, 0, 8                 (paper has nine)
+
+three values at every `m`, against the paper's `m + 1`.  The two conventions agree
+EXACTLY at `m = 2` and diverge from `m = 4` on; over the sweep, 50 of 54 rows disagree.
+
+So the `EndData` model is not wrong, it is **narrow**: it is the paper's model restricted
+to edges whose deposit is extremal or zero.  Since `mu j = 2` whenever `|d j| <= 2` and
+`|f j| <= 2`, that restriction is invisible on any configuration all of whose deposits
+lie in `{-2, 0, 2}` -- which is where `witElt` and the green instantiations live.
+
+**Scope of the greens, stated precisely.**  M5, M6, M7 and B1 are proved via `EndData`
+and instantiated on `witElt`.  Their `MergesMin` is minimality for `pcostF`, which
+coincides with the certified site cost exactly on edges with `mu = 2`.  So those atoms
+are sound for configurations with all deposits in `{-2, 0, 2}`, and say nothing beyond.
+That is a real theorem about a real subclass -- the gap-and-unit case -- and it is not
+the general statement the paper makes.
+
+I am not downgrading them here: the instantiation on `witElt` is valid and the
+mathematics is right within its range.  What the ledger should record, and now does, is
+the range.  The general case needs the per-strand sign, which is `configGData` -- and
+that is the model in which BLOCK 149 refuted `HasFreePair`.
+
+That is the shape of the whole difficulty, in one sentence: the model where the merge
+argument works is the one that cannot express the general configuration, and the model
+that can express it is the one where the merge argument fails.

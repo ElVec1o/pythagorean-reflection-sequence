@@ -38,6 +38,31 @@ pub fn run(mmax: usize) {
         }
         m += 2;
     }
+    // which deposits can the derived-sign model represent at all?
+    println!();
+    println!("[cutturn] deposits representable under each convention");
+    println!("  {:>3} {:>28} {:>26}", "m", "d values (sitecost)", "d values (EndData)");
+    let mut mm = 2usize;
+    while mm <= mmax {
+        let u = mm / 2;
+        let mut sc: Vec<i64> = vec![];
+        for pu in 0..=u { for pd in 0..=u {
+            let d = 2 * (pd as i64 - pu as i64);
+            if !sc.contains(&d) { sc.push(d); }
+        } }
+        sc.sort();
+        // EndData: sgn depends on (side, isArr), so all up strands of an edge share a
+        // sign and all down strands the other; pu is pinned to 0 or u, likewise pd.
+        let mut ed: Vec<i64> = vec![];
+        for &pu in [0usize, u].iter() { for &pd in [0usize, u].iter() {
+            let d = 2 * (pd as i64 - pu as i64);
+            if !ed.contains(&d) { ed.push(d); }
+        } }
+        ed.sort();
+        println!("  {:>3} {:>28} {:>26}", mm, format!("{:?}", sc), format!("{:?}", ed));
+        mm += 2;
+    }
+    println!();
     println!("  alpha_sc = d in every row (sitecost's convention is the paper's)");
     println!("  {} of {} rows disagree between the conventions", disagree, total);
     println!("  {}", if disagree > 0 {
