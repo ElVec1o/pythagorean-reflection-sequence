@@ -5152,3 +5152,43 @@ ker(I - T(q_m)) and are not built here.
 
 TACTIC NOTE: `decide` cannot evaluate Q-valued Fin sums, and simp reduces `![a,b,c,d] i`
 only for i = 0, 1 without the higher cons_val lemmas. Explicit functions avoid both.
+
+## 2026-09-03 — BLOCK 126: the two junction shapes
+
+BLOCK 125 concluded that (R-J) at a pole is "a sign question about four
+products".  That is right at one junction and wrong at the other.
+
+`sitecost marker` now reports, for each `(aL,aR)` cell, the multiset of the
+four `(eps*,delta*)` branch costs normalised by its minimum.  Over 420 cells
+per case, four cases (`site0`/`siteK` x `k*>0`/`k*<0`), 1680 cells, zero
+exceptions:
+
+  site0 k>0   shape [0,0,0,0] x 420      dependence 0/420
+  siteK k>0   shape [0,1,1,2] x 420      dependence 420/420
+  site0 k<0   shape [0,0,0,0] x 420      dependence 0/420
+  siteK k<0   shape [0,1,1,2] x 420      dependence 420/420
+
+So the four terms of `prop:shape`'s sum carry a **common** power of q at the
+near junction and the **spread** 0,1,1,2 at the far one.  Formalised in
+`EltBridge.lean` (`farShape`, `near_junction_common_factor`,
+`far_junction_quadratic`, `far_vanishing_iff`, `RJ_near_vs_far`; all
+propext/Classical.choice/Quot.sound, 0 sorry):
+
+* near junction: the pairing is `q^c * (sum of the four coefficients)`, so four
+  non-zero pairings can cancel — and can cancel **for every q at once**, since
+  the vanishing condition does not involve q.  That is the escape
+  `four_term_sum_can_vanish` exhibits.
+* far junction: the pairing is `q^c * (a0 + q(a1+a2) + q^2 a3)`.  Vanishing at
+  `q_m` forces `q_m` to be a root of a quadratic whose coefficients are the
+  pairings themselves.
+
+The consequence for (R-J): a sign coincidence cannot be arranged uniformly
+across the poles at the far junction.  Cancellation at one `q_m` constrains
+that `q_m` alone.  This is consistent with, and explains, the recorded
+"positivity survives to 6 poles".
+
+NOT DONE.  This does not prove (R-J).  It removes the uniform-sign escape at
+the far junction only; the near junction still admits it, and no bound on the
+pairings themselves is available without the shape vectors R, L of
+`prop:shape`, which need `ker(I - T(q_m))` and are still not built.  (R-J)
+stays a hypothesis.

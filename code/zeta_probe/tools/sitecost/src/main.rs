@@ -521,6 +521,10 @@ fn mode_marker(amax: i64, lam: i64) {
         let mut bad_paper = 0u64;   // vs  max(|aL|-1,|aR|)  (site0 orientation)
         let mut bad_shift = 0u64;   // vs  max(|aL-1|,|aR|)  / mirror
         let mut bad_dep_eps = 0u64; // dependence on (eps*,delta*)
+        // shape census: the multiset of the four (eps*,delta*) costs, normalised
+        // by subtracting the minimum.  Records how the four terms of prop:shape's
+        // sum are spread in q, independently of the overall power.
+        let mut shapes: HashMap<Vec<i64>, u64> = HashMap::new();
         let mut al = -amax;
         while al <= amax {
             if (al - fl).rem_euclid(2) != 0 {
@@ -552,6 +556,12 @@ fn mode_marker(amax: i64, lam: i64) {
                 }
                 n += 1;
                 let c0 = vals[0].2;
+                if vals.len() == 4 {
+                    let lo = vals.iter().map(|&(_, _, c)| c).min().unwrap();
+                    let mut sh: Vec<i64> = vals.iter().map(|&(_, _, c)| c - lo).collect();
+                    sh.sort();
+                    *shapes.entry(sh).or_insert(0) += 1;
+                }
                 if vals.iter().any(|&(_, _, c)| c != c0) {
                     bad_dep_eps += 1;
                     if rows.len() < 6 {
@@ -588,6 +598,11 @@ fn mode_marker(amax: i64, lam: i64) {
         );
         for r in &rows {
             println!("{}", r);
+        }
+        let mut sh: Vec<(Vec<i64>, u64)> = shapes.into_iter().collect();
+        sh.sort_by(|x, y| y.1.cmp(&x.1));
+        for (k, v) in &sh {
+            println!("  shape {:?} x {}", k, v);
         }
     }
     // the exact table on the range the paper certificate used, plus negatives

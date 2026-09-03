@@ -6581,3 +6581,68 @@ end EltBridge
 #print axioms EltBridge.no_factor_reduction
 #print axioms EltBridge.four_term_sum_can_vanish
 #print axioms EltBridge.RJ_is_a_sign_question
+
+/-!
+### The two junction shapes
+
+`sitecost marker 20 5` measures the four `(ε*, δ*)` branch costs at both
+junctions, over 420 `(aL,aR)` cells for each of the four cases (1680 cells,
+zero exceptions):
+
+* at **site 0** the four costs are **equal** — normalised shape `[0,0,0,0]`;
+* at **site k\*** they are **spread** — normalised shape `[0,1,1,2]`, always.
+
+That distinction decides how the four-term sum of `prop:shape` can vanish.
+-/
+
+/-- The measured far-junction cost offsets: `0, 1, 1, 2`. -/
+def farShape : Fin 4 → ℕ := fun i => if i.val = 0 then 0 else if i.val = 3 then 2 else 1
+
+/-- At the near junction all four branches carry the same power of `q`, so the
+pairing is that power times a bare sum of coefficients. -/
+theorem near_junction_common_factor (q : ℚ) (c : ℕ) (a : Fin 4 → ℚ) :
+    ∑ i : Fin 4, a i * q ^ c = q ^ c * ∑ i : Fin 4, a i := by
+  rw [Finset.mul_sum]
+  exact Finset.sum_congr rfl (fun i _ => mul_comm _ _)
+
+/-- At the far junction the measured shape `[0,1,1,2]` makes the pairing a
+**quadratic** in `q` times a power of `q`. -/
+theorem far_junction_quadratic (q : ℚ) (c : ℕ) (a : Fin 4 → ℚ) :
+    ∑ i : Fin 4, a i * q ^ (c + farShape i)
+      = q ^ c * (a 0 + q * (a 1 + a 2) + q ^ 2 * a 3) := by
+  simp only [Fin.sum_univ_four, farShape, pow_add]
+  norm_num
+  ring
+
+/-- So at the far junction vanishing is not a sign condition: it pins `q` to a
+root of a quadratic whose coefficients are the pairings themselves. -/
+theorem far_vanishing_iff (q : ℚ) (hq : q ≠ 0) (c : ℕ) (a : Fin 4 → ℚ) :
+    ∑ i : Fin 4, a i * q ^ (c + farShape i) = 0 ↔
+      a 0 + q * (a 1 + a 2) + q ^ 2 * a 3 = 0 := by
+  rw [far_junction_quadratic]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with h' | h'
+    · exact absurd h' (pow_ne_zero c hq)
+    · exact h'
+  · intro h; rw [h, mul_zero]
+
+/-- The contrast, in one statement.  At the near junction four non-zero
+coefficients can cancel **for every** `q` at once — a pure sign coincidence,
+which is the escape `four_term_sum_can_vanish` exhibits.  At the far junction
+no such uniform escape exists: cancellation at `q` forces `q` to satisfy a
+quadratic determined by the four pairings, so a cancellation arranged at one
+pole says nothing about the next. -/
+theorem RJ_near_vs_far (q : ℚ) (hq : q ≠ 0) (c : ℕ) :
+    (∃ a : Fin 4 → ℚ, (∀ i, a i ≠ 0) ∧ ∀ q' : ℚ, ∑ i : Fin 4, a i * q' ^ c = 0) ∧
+    (∀ a : Fin 4 → ℚ, ∑ i : Fin 4, a i * q ^ (c + farShape i) = 0 →
+       a 0 + q * (a 1 + a 2) + q ^ 2 * a 3 = 0) := by
+  refine ⟨⟨fun i => if i.val < 2 then 1 else -1, ?_, ?_⟩, ?_⟩
+  · intro i; by_cases h : i.val < 2 <;> simp [h]
+  · intro q'
+    rw [near_junction_common_factor]
+    norm_num [Fin.sum_univ_four]
+  · intro a h; exact (far_vanishing_iff q hq c a).mp h
+#print axioms far_junction_quadratic
+#print axioms far_vanishing_iff
+#print axioms RJ_near_vs_far
