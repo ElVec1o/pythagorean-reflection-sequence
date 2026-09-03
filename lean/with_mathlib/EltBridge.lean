@@ -6260,6 +6260,40 @@ theorem not_outer_product :
   rw [this] at hminor
   norm_num at hminor
 
+/-! ### Why rank one would settle `(R-J)`, and why it does not apply
+
+`(R-J)` asks that the junction pairing `Pi_y(q_m)` be non-zero at infinitely many
+travel poles.  If the junction were an **outer product** the pairing would factor into
+two independent pairings, and non-vanishing would follow from each factor separately.
+
+It is not an outer product (`not_outer_product`, BLOCK 123), so that reduction is
+unavailable and the four marker terms can cancel -- which is exactly why `(R-J)` is a
+hypothesis. -/
+
+/-- **A rank-one kernel makes the pairing factor.** -/
+theorem outer_pairing {n : ℕ} (u v a b : Fin n → ℚ) :
+    (∑ i : Fin n, ∑ j : Fin n, a i * (u i * v j) * b j)
+      = (∑ i : Fin n, a i * u i) * (∑ j : Fin n, v j * b j) := by
+  rw [Finset.sum_mul]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [Finset.mul_sum]
+  exact Finset.sum_congr rfl (fun j _ => by ring)
+
+/-- **So with a rank-one junction, non-vanishing would reduce to two factors.** -/
+theorem pairing_ne_zero_of_factors {n : ℕ} (u v a b : Fin n → ℚ)
+    (h1 : (∑ i : Fin n, a i * u i) ≠ 0) (h2 : (∑ j : Fin n, v j * b j) ≠ 0) :
+    (∑ i : Fin n, ∑ j : Fin n, a i * (u i * v j) * b j) ≠ 0 := by
+  rw [outer_pairing]
+  exact mul_ne_zero h1 h2
+
+/-- **And that reduction is unavailable here.**  `junction_not_rank_one` exhibits a
+non-zero `2 x 2` minor, so the junction admits no such factorisation and the pairing
+must be controlled term by term across the four marker data. -/
+theorem no_factor_reduction :
+    junc0 (1/2) 0 * junc2 (1/2) 1 - junc0 (1/2) 1 * junc2 (1/2) 0 ≠ 0 := by
+  rw [junction_not_rank_one]
+  norm_num
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6504,3 +6538,6 @@ end EltBridge
 #print axioms EltBridge.kernel_splits
 #print axioms EltBridge.junction_not_rank_one
 #print axioms EltBridge.not_outer_product
+#print axioms EltBridge.outer_pairing
+#print axioms EltBridge.pairing_ne_zero_of_factors
+#print axioms EltBridge.no_factor_reduction

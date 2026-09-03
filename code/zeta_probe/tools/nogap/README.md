@@ -5106,3 +5106,23 @@ THE TWO RANK FACTS, side by side and both now machine-checked:
                                                                  hence (R-J)
 Same assembly, opposite conclusions, and the contrast is exactly why one of (M)'s
 inputs is proved and the other is assumed.
+
+## 2026-09-03 — BLOCK 124: why rank one would settle (R-J), and why it does not apply
+
+  outer_pairing              -- a rank-one kernel makes the pairing FACTOR into two
+                                independent pairings
+  pairing_ne_zero_of_factors -- so with rank one, (R-J) would reduce to two separate
+                                non-vanishings
+  no_factor_reduction        -- and that reduction is unavailable, by BLOCK 123's minor
+
+This makes the cost of the rank obstruction explicit. (R-J) asks that Pi_y(q_m) != 0 at
+infinitely many travel poles. Were the junction rank one, that would follow from two
+independent factors being non-zero -- easy checks. It is not, so the four marker terms
+can cancel and must be controlled together.
+
+That is "the obstruction is a RANK count, not a sign" made operational: the rank is not
+just a number, it is the difference between a factoring pairing and one that does not
+factor.
+
+NOT DONE: any bound on the pairing itself, which needs the shape vectors R, L of
+prop:shape. This file has not built them, and I am not going to invent them.
