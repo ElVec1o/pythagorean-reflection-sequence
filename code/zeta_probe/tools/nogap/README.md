@@ -7444,3 +7444,35 @@ BLOCK 149 refuted the free pair in the model that does not; BLOCK 152 identified
 as the gap-free model, so M3 and M4b could not even be STATED there; BLOCK 158 refuted
 the local route at `mu = 4`; and BLOCK 187 found that what looked like an obstruction was
 a global parity that is free to satisfy.  Everything after that was construction.
+
+## 2026-09-03 — BLOCK 198: what BLOCK 197 does and does not close
+
+Two corrections to BLOCK 197's framing, one in each direction.
+
+**M4b is NOT on a side branch.**  The ledger said "the shield law is the combinatorial
+half of paper2 and does not lie on the path to H1/H2/M9".  That is stale.  `hyp:model`
+(M2) IS the shield law, and the paper's own accounting of what it owes reads
+
+    rem:shieldowes -- "Proposition prop:cut gives c >= |Z|.  The reverse inequality
+    c <= |Z| asks for one minimum-cost realisation whose components are exactly the
+    |Z|+1 classes cut out by Z, that is, for pairings that connect all crossings within
+    each class.  IT IS NOT PROVED HERE."
+
+which is exactly `shield_law`: one constructed datum, `walkCount = |Z|+1`, its runs
+connected.  So M4b is a clause of (M) = H1, not a side result.
+
+**But the scope is narrower than BLOCK 197 said.**  `shield_law` assumes
+`hm : ∀ e, m e = 2 * u` -- every edge carries the SAME `2u` strands.  The paper's
+configurations have deposits varying per edge, hence varying `mu`, and the restriction is
+load-bearing, not cosmetic: at a non-cut site the pass is a level bijection only when the
+two edges' level counts agree, and with unequal counts the site's pairing must mix passes
+and bounces.  `turnGen` has no such case.
+
+So the honest statement is: `c = |Z|` is proved for UNIFORM-`mu` configurations at every
+`u`, which includes every all-gap configuration and every uniform `mu = 4, 6, 8, ...`;
+the general varying-`mu` case is not covered.  M4b goes back to yellow with that scope
+recorded, and M3 stays green -- `prop:cut` is proved in the paper and instantiated here.
+
+Catching this before editing `rem:shieldowes` is the point.  The theorem is real and the
+gap it closes is real, but only on a subclass, and the paper's remark is about all bulk
+configurations.
