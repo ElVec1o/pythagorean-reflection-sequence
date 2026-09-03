@@ -8034,3 +8034,82 @@ end EltBridge
 
 #print axioms EltBridge.Elt.reachable_kstar_nonneg
 #print axioms EltBridge.Elt.reachable_kstar
+
+namespace EltBridge
+namespace Elt
+
+/-! ### What the walk leaves behind
+
+`reachable_kstar` places the cursor but does not say what it deposits on the way.  It
+does: walking left from `one` lays down `+1` at every edge it crosses, so after `n`
+steps the deposit profile is the indicator of `[-n, -1]`.  Computing it is what lets
+the round trips correct the walk to a target. -/
+
+theorem cstep_iter_one (n : ℕ) :
+    (cstep^[n] one).kstar = -(n : ℤ) ∧ (cstep^[n] one).delta = false ∧
+    (cstep^[n] one).eps = 1 ∧
+    ∀ j : ℤ, (cstep^[n] one).d j = if -(n : ℤ) ≤ j ∧ j ≤ -1 then 1 else 0 := by
+  induction n with
+  | zero =>
+    refine ⟨rfl, rfl, rfl, ?_⟩
+    intro j
+    show (0 : ℤ) = _
+    rw [if_neg (by push_cast; omega)]
+  | succ k ih =>
+    obtain ⟨hk, hδ, he, hd⟩ := ih
+    rw [Function.iterate_succ_apply']
+    obtain ⟨c1, c2, c3, c4⟩ := cstep_left _ hδ
+    refine ⟨?_, c3, ?_, ?_⟩
+    · rw [c1, hk]; push_cast; ring
+    · rw [c2, he]
+    · intro j
+      rw [c4, hk, he]
+      by_cases hj : j = -(k : ℤ) - 1
+      · subst hj
+        rw [Function.update_self, hd, if_neg (by omega), if_pos (by push_cast; omega)]
+        norm_num
+      · rw [Function.update_of_ne (by omega), hd]
+        by_cases hin : -(k : ℤ) ≤ j ∧ j ≤ -1
+        · rw [if_pos hin, if_pos (by push_cast; omega)]
+        · rw [if_neg hin, if_neg (by push_cast; omega)]
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.cstep_iter_one
+
+namespace EltBridge
+namespace Elt
+
+/-! ### Correction to BLOCK 140: `wordLength` is not a candidate for `IsRelaxedLength`
+
+BLOCK 140 said H1a had become the concrete sentence `IsRelaxedLength wordLength`.  It
+has not.  `IsRelaxedLength L` asks `L g = g.lR`, and `lR` is the RELAXED length; the
+recorded metric formula is `|g| = lR g + 2 * c g`, so `wordLength`, which is the true
+word length, agrees with `lR` only where the defect vanishes.  It does not vanish:
+`nogap` at depth 21 reports `max c observed = 3` over 50763 elements.
+
+So `IsRelaxedLength wordLength` is false, and the sentence H1a wants from `wordLength`
+is the defect formula instead.  `H1a_statement` remains true -- it only unfolds the
+definition -- but it is not H1a, and calling it that was the error. -/
+
+/-- **`IsRelaxedLength wordLength` would force the defect to vanish identically.**
+Given the recorded metric formula, which is what `c` means, the contract collapses to
+`c = 0` everywhere -- refuted by `nogap`, which sees `c = 3`. -/
+theorem isRelaxedLength_wordLength_forces_no_defect
+    (c : Elt → ℕ) (hmetric : ∀ g : Elt, wordLength g = g.lR + 2 * c g)
+    (h : IsRelaxedLength wordLength) : ∀ g : Elt, c g = 0 := by
+  intro g
+  have hg := h g
+  rw [hmetric g] at hg
+  omega
+
+/-- So the target for `wordLength` is the defect formula, not the relaxed one.  This
+names it; it is not proved, and its lower-bound half is the one recorded as open. -/
+def IsTrueLength (L : Elt → ℕ) (c : Elt → ℕ) : Prop :=
+  ∀ g : Elt, L g = g.lR + 2 * c g
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.isRelaxedLength_wordLength_forces_no_defect

@@ -5851,3 +5851,34 @@ NOT DONE: composing them.  `reachable_kstar` produces SOME element with the targ
 cursor, carrying whatever deposits the walk left behind; the deposit stage must then
 correct those to the target.  Neither the bookkeeping of what the walk deposits nor the
 iteration over edges is written.  H1a stays orange.
+
+## 2026-09-03 — BLOCK 145: the walk's deposits, and a retraction of BLOCK 140
+
+**The deposits.**  `reachable_kstar` places the cursor but says nothing about what the
+walk leaves behind.  It leaves the indicator of `[-n, -1]`: walking left from `one`
+deposits `+1` at every edge it crosses, and `eps` never changes, so
+
+    cstep_iter_one n :  kstar = -n,  delta = false,  eps = 1,
+                        d j = if -n <= j <= -1 then 1 else 0
+
+That is what the round trips would have to correct to reach a target.
+
+**The retraction.**  BLOCK 140 said H1a had become the concrete sentence
+`IsRelaxedLength wordLength`.  It has not, and the claim was wrong.
+`IsRelaxedLength L` asks `L g = g.lR`, and `lR` is the RELAXED length.  `wordLength`
+is the TRUE word length, and the recorded metric formula is `|g| = lR g + 2 c g`.  The
+defect is not zero -- `nogap` at depth 21 reports `max c observed = 3` over 50763
+elements -- so `IsRelaxedLength wordLength` is FALSE.
+
+Proved: `isRelaxedLength_wordLength_forces_no_defect`.  Given the metric formula, the
+contract collapses to `c = 0` everywhere, which the enumeration refutes.  So the
+sentence H1a wants from `wordLength` is the defect formula, named here as
+`IsTrueLength`, whose lower-bound half is exactly what the ledger already records as
+open (`geodesic-length-closed-form`: "lower bound STILL OPEN").
+
+`H1a_statement` itself is still true -- it only unfolds a definition -- but it is not
+H1a, and labelling it so was the error.  Ledger corrected.
+
+This is the second retraction in this run (BLOCK 137 was the first), and both were
+caught the same way: by continuing far enough into the construction that the claim had
+to be used.
