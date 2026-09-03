@@ -8,7 +8,12 @@ Minimising cost therefore MAXIMISES passes.
 An earlier version of this probe scored bounces 0 and passes 1 -- exactly
 backwards -- and reported spurious failures.
 """
-exec(open("side.py").read().split("tot = multi")[0])
+# `side.py` was this directory's `side_probe.py` under its former name; the
+# rename left this reference dangling, so this script could not run at all.
+# Resolve it relative to THIS file, not the working directory.
+import os as _os
+_here = _os.path.dirname(_os.path.abspath(__file__))
+exec(open(_os.path.join(_here, "side_probe.py")).read().split("tot = multi")[0])
 import itertools
 
 def cost(E,t,up):

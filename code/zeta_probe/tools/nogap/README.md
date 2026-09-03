@@ -5513,3 +5513,62 @@ each run, and that this is simultaneously realisable with minimality across all
 sites -- is measured here, not proved.  That global step is `hsep` in
 `walkCount_le_runs_blk`, and it remains the open half of M4b.  The chains also
 carry no travel edges and no markers.
+
+## 2026-09-03 — BLOCK 136: auditing this directory's scripts
+
+BLOCK 131 audited `nogap`'s Rust `cutset`.  This is the rest of the directory.
+
+**Three of the five cited scripts could never run.**  `side_probe2.py`,
+`wlo_probe.py` and `maxwlo_probe.py` all begin
+
+    exec(open("side.py").read().split("tot = multi")[0])
+
+and `side.py` does not exist -- not in this directory, not elsewhere in the
+repo, not in git history, and not gitignored.  It was `side_probe.py` under its
+former name: that file defines exactly the needed `ends`, `isArr`, `turns`,
+`walks`, and its driver begins with the very line the split looks for.  The
+rename left the reference dangling and nothing caught it, because nothing had
+re-run them.
+
+Repaired to reference `side_probe.py`, resolved relative to the script rather
+than the working directory.  All three then reproduce the recorded numbers
+**exactly**:
+
+    side_probe2.py    cost-minimal turns 263, multi-walk 146, shared-side 146, none 0
+    wlo_probe.py      multi-walk cost-minimal 1114, two bottom arrivals at a leftmost site 1114
+    maxwlo_probe.py   1114; at the MAX leftmost site 1114; at the MIN (= site 0) 662
+
+So this is the paper4 pattern once more: the mathematics was right and the
+plumbing was broken.  The numbers in this README were correct and had simply
+stopped being checkable.
+
+**The one script that ran is the one cited nowhere.**  `parity_check.py` --
+6426 valid `(p,t)` pairs, 0 violations -- appears in no README and no paper.
+
+**Independent re-derivation.**  `HasFreePair` rests on `side_probe2.py`'s
+146/146, and that script's own predecessor was once wrong in a way that
+reproduced consistently (`side_probe.py` scored the costs backwards).  A claim
+with that history deserves a second implementation, not a second reading, and
+this README's own guidance is to keep such things in Rust.  `cutturn freepair`
+re-implements the probe from the model up:
+
+    cost-minimal turns: 263  multi-walk: 146  shared-side pair exists: 146  none: 0
+    AGREES with the Python on all four counts
+
+**A model discrepancy worth stating.**  `side_probe2.py` scores a same-side pair
+`2` and a different-side pair `1` -- same-side is never `0` -- because
+`EndData.sgn` forces `sgn (t a) = !sgn a` there.  `sitecost` and `cutturn`'s
+other modes score a same-CLASS pair `0`, a same-side sign flip `2`, a pass `1`.
+These are the derived-sign and free-sign models, `EndData` and `GData`, and they
+give **opposite** advice: minimising maximises passes in the first and minimises
+them in the second.  Both numbers are right in their own model.  What must not
+be done is to read `HasFreePair`'s 146/146 as support for anything in the
+free-sign model; it is evidence in the derived-sign model only.
+
+**Disclosed, not hidden.**  `nogap_verify.py` needs `lamp_lib.py` from the
+untracked `route_b/`, so it is not reproducible from a clean clone.  The README
+already said so, and it is the Python reimplementation the same section warns
+against.
+
+Also recorded: `cutturn mu4 6 4` exceeds a 900 s cap and was killed; `mu4 4 4`
+completes in 4 s and `mu4 5 4` is the practical ceiling.
