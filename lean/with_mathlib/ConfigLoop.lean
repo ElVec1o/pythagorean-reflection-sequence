@@ -1952,23 +1952,6 @@ theorem c_le_Z_final (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
   exact ⟨E, hE, walkCount_le_runs_gen E Zf
     (local_of_hturn E Zf hE.hp hE.hts hE.hturn) hsep⟩
 
-/-- **The shield law, no global covering.**  A cost-minimal configuration has exactly
-`|Z| + 1` walks: `c = |Z|`. -/
-theorem shield_law_final (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
-    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
-    (A B : ℤ) (hAB : A ≤ B)
-    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
-    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t)
-    (e0 : Endpt n m)
-    (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
-    ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E = Zf.card + 1 := by
-  obtain ⟨E, hE, hle⟩ := c_le_Z_final up ds Zf hZ D hD
-  refine ⟨E, hE, le_antisymm hle ?_⟩
-  obtain ⟨F, hinj, havoid⟩ :=
-    CutComponents.exists_injective_components_avoiding
-      (local_of_hturn E Zf hE.hp hE.hts hE.hturn) A B hAB hlow hhigh hocc
-      ((graph E).connectedComponentMk e0)
-  exact walkCount_ge_of_avoiding E Zf.card _ F hinj havoid
 
 /-! ### The run-local covering is satisfiable with cut sites
 
@@ -2083,7 +2066,7 @@ theorem balance_bottom_only (up : Fin n → ℕ) (s : ℤ) (e : Fin n) (he : (e 
 
 /-! ### A non-vacuity witness for `RunInv` with `Zf` non-empty
 
-`shield_law_final` is only worth anything if `RunInv` is satisfiable when `Zf` is
+The shield law is only worth anything if `RunInv` is satisfiable when `Zf` is
 non-empty -- the previous, globally-quantified `hcov` was **not**, and that is how the
 earlier version of the shield law died.  This section exhibits a configuration:
 four edges with multiplicities `(2,0,0,2)`, ups `(1,0,0,1)`, and the single cut site
@@ -2170,10 +2153,10 @@ theorem wit_runInv (ds : Bool → Bool) :
   · intro F hp hts hta
     exact hE.2 F ⟨hp, hts, hta⟩
 
-/-! ### The obstruction: `shield_law_final` is vacuous for `Zf` non-empty
+/-! ### The obstruction: the `hocc` form is vacuous for `Zf` non-empty
 
 The witness above satisfies all six `RunInv` clauses, but it cannot be fed to
-`shield_law_final`, whose `hocc` asks that every edge of the span `[A, B]` carry an
+the `hocc` form, which asks that every edge of the span `[A, B]` carry an
 end -- and the witness has edges `1` and `2` empty.  That is not an accident of the
 witness.  `hZ` says no arrival sits at a cut site; **balance then forces the two
 edges adjacent to that site to be empty**, so `hocc` can never hold on a span
@@ -2212,7 +2195,7 @@ theorem empty_edges_at_arrivalfree (up : Fin n → ℕ) (z : ℤ)
   · exact no_end_at_arrivalfree (m := m) up z hbal hZ ⟨e, ⟨0, hpos⟩, true⟩
       (by simp [siteOf, edgeOf, atTop, he])
 
-/-- **`shield_law_final` has no non-vacuous instance with a non-empty cut set.**
+/-- ****The `hocc` form of the shield law had no non-vacuous instance** with a non-empty cut set.**
 Its `hocc` and `hZ` hypotheses are jointly unsatisfiable once the configuration is
 balanced, because the edge at a cut site must be both occupied and empty. -/
 theorem shield_final_hyps_incompatible (up : Fin n → ℕ) (Zf : Finset ℤ)
@@ -2229,7 +2212,7 @@ theorem shield_final_hyps_incompatible (up : Fin n → ℕ) (Zf : Finset ℤ)
 
 /-! ### The shield law, repaired
 
-`shield_law_final` asked for `hocc`, which `shield_final_hyps_incompatible` shows is
+The earlier form asked for `hocc`, which `shield_final_hyps_incompatible` shows is
 incompatible with `hZ`.  The run form asks instead that **every run carry an end** --
 which is what the lower-bound proof actually used, and which the witness satisfies. -/
 
