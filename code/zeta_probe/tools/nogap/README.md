@@ -4845,3 +4845,25 @@ pathGF_succ (BLOCK 105) is the coupled statement, and this block is the uncouple
 Having both makes the role of the coupling explicit: without it the generating function
 is a product of scalars; with it, a product of matrices. That is the whole distance
 between a trivial (M3) and the real one.
+
+## 2026-09-03 — BLOCK 113: the coupled two-edge sum
+
+  sum_signed_pair -- a weight F of two ADJACENT magnitudes, summed over signed deposits:
+                     the fibration applies once per edge, giving the 1 / 2 / 2 / 4
+                     multiplicities
+
+This is the smallest instance where coupling matters. sum_prod_signed (BLOCK 112) needs
+the weight uncoupled and does not apply to lR; this one does, and the proof is two
+applications of sum_signed_eq_magnitudes, the inner one under a sum_congr.
+
+JUDGEMENT CALL RECORDED. I also drafted a "multiplicities" restatement with the
+constants distributed, and it cost two strikes on Finset.mul_sum rewrites. It is a
+restatement of sum_signed_pair, not new content, so I dropped it and put the reading in
+the docstring. Spending strikes on a cosmetic variant is the wrong trade -- the same
+judgement I should have applied to the BLOCK 92 enumeration sooner.
+
+(M3a)'s generating-function step now has: the single-edge fibration (BLOCK 111), the
+uncoupled product (BLOCK 112), and the coupled pair (BLOCK 113). The n-edge coupled case
+is the transfer-matrix statement, which is pathGF_succ (BLOCK 105) -- so the pieces meet,
+and what is missing is the indexing that identifies lR's magnitude sequence with a path
+in pathSum.

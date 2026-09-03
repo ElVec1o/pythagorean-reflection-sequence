@@ -5873,6 +5873,29 @@ theorem uncoupled_factorises (n N : ℕ) (g : Fin n → ℕ → ℤ)
   rw [Finset.prod_congr rfl (fun i _ => h i)]
   simp
 
+/-! ### The coupled case: two edges
+
+`sum_prod_signed` needs the weight uncoupled.  `lR` is not.  Here is the smallest
+coupled instance -- a weight `F` of two adjacent magnitudes -- summed over signed
+deposits.  The fibration applies twice, once per edge, and the result is the transfer
+sum with the `1, 2, 2, 4` multiplicities the sign fibration dictates. -/
+
+/-- **A coupled two-edge weight, summed over signed deposits.**
+
+Reading the right-hand side: the `1` at `(0,0)`, a factor `2` for each edge carrying a
+non-zero magnitude, and `4` when both do -- exactly the fibration counts, and exactly
+`eq:junctionsym`'s `B_sigma / 2` bookkeeping run on two edges instead of one. -/
+theorem sum_signed_pair (N : ℕ) (F : ℕ → ℕ → ℤ) :
+    ∑ a ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), ∑ b ∈ Finset.Icc (-(N : ℤ)) (N : ℤ),
+        F a.natAbs b.natAbs
+      = (F 0 0 + 2 * ∑ m ∈ Finset.Icc 1 N, F 0 m)
+        + 2 * ∑ k ∈ Finset.Icc 1 N, (F k 0 + 2 * ∑ m ∈ Finset.Icc 1 N, F k m) := by
+  have hinner : ∀ a : ℤ, ∑ b ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), F a.natAbs b.natAbs
+      = F a.natAbs 0 + 2 * ∑ m ∈ Finset.Icc 1 N, F a.natAbs m :=
+    fun a => sum_signed_eq_magnitudes (F a.natAbs) N
+  rw [Finset.sum_congr rfl (fun a _ => hinner a)]
+  exact sum_signed_eq_magnitudes (fun k => F k 0 + 2 * ∑ m ∈ Finset.Icc 1 N, F k m) N
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6094,3 +6117,4 @@ end EltBridge
 #print axioms EltBridge.sum_signed_eq_magnitudes
 #print axioms EltBridge.sum_prod_signed
 #print axioms EltBridge.uncoupled_factorises
+#print axioms EltBridge.sum_signed_pair
