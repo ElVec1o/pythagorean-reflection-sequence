@@ -5952,6 +5952,104 @@ theorem coeff_neumann_tail_zero {n : ℕ} (T : Matrix (Fin n) (Fin n) (PowerSeri
     exact Dvd.dvd.mul_right (Dvd.dvd.mul_left this (lam a)) (mu b)
   exact PowerSeries.X_pow_dvd_iff.mp hdvd N hk
 
+/-! ### The counting half of (M3b): summing path weights gives the matrix power
+
+`IsAssembly`'s summand is `lam a * (T^k) a b * mu b`.  What has to be shown is that the
+*sum over configurations* produces it -- that adding up `pathWeight` over every state
+path of length `k` reproduces the `k`-th matrix power.  That splits in two:
+
+  (i)  the algebraic step, here: the total weight accumulated by stepping `k` times
+       through `T` and finishing with `mu` **is** `sum_b (T^k) a b * mu b`;
+  (ii) the enumeration step: that total is the sum of `pathWeight` over all state paths.
+
+(i) is proved below.  It is the whole reason a transfer matrix is the right object: the
+matrix power *is* the path sum, by definition of matrix multiplication. -/
+
+/-- Step `k` times through `T`, finishing with `mu`. -/
+def weightSum {S : Type*} [Fintype S] (T : Matrix S S ℤ) (mu : S → ℤ) : S → ℕ → ℤ
+  | a, 0 => mu a
+  | a, (k + 1) => ∑ c : S, T a c * weightSum T mu c k
+
+/-- **The path sum is the matrix power.** -/
+theorem weightSum_eq {S : Type*} [Fintype S] [DecidableEq S]
+    (T : Matrix S S ℤ) (mu : S → ℤ) :
+    ∀ (k : ℕ) (a : S), weightSum T mu a k = ∑ b : S, (T ^ k) a b * mu b := by
+  intro k
+  induction k with
+  | zero => intro a; simp [weightSum, Matrix.one_apply]
+  | succ m ih =>
+      intro a
+      show ∑ c : S, T a c * weightSum T mu c m = _
+      simp only [ih]
+      rw [pow_succ' T m]
+      simp only [Matrix.mul_apply, Finset.sum_mul, Finset.mul_sum]
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => by ring
+
+/-- **Hence `IsAssembly`'s summand is a path sum.**  With the head weight `lam a` in
+front, stepping `k` times and finishing with `mu` gives exactly the `k`-th Neumann term
+at `a`. -/
+theorem lam_weightSum_eq {S : Type*} [Fintype S] [DecidableEq S]
+    (T : Matrix S S ℤ) (lam mu : S → ℤ) (k : ℕ) (a : S) :
+    lam a * weightSum T mu a k = ∑ b : S, lam a * (T ^ k) a b * mu b := by
+  rw [weightSum_eq, Finset.mul_sum]
+  exact Finset.sum_congr rfl fun b _ => by ring
+
+/-- **And the whole `k`-th Neumann term is the path sum over all starting states.** -/
+theorem sum_lam_weightSum_eq {S : Type*} [Fintype S] [DecidableEq S]
+    (T : Matrix S S ℤ) (lam mu : S → ℤ) (k : ℕ) :
+    ∑ a : S, lam a * weightSum T mu a k = ∑ a : S, ∑ b : S, lam a * (T ^ k) a b * mu b :=
+  Finset.sum_congr rfl fun a _ => lam_weightSum_eq T lam mu k a
+
+/-! ### The enumeration step: `weightSum` really is a sum over all state paths -/
+
+/-- The `Fintype` enumeration satisfies the hypothesis below. -/
+theorem sum_univ_toList {S : Type*} [Fintype S] (f : S → ℤ) :
+    ((Finset.univ : Finset S).toList.map f).sum = ∑ c : S, f c := by
+  rw [← Finset.sum_map_toList]
+
+/-- Summing a function of the concatenation is summing the sums. -/
+theorem sum_map_flatMap {α β : Type*} (l : List α) (f : α → List β) (g : β → ℤ) :
+    (((l.flatMap f).map g)).sum = (l.map (fun a => ((f a).map g).sum)).sum := by
+  induction l with
+  | nil => simp
+  | cons a t ih => simp [List.flatMap_cons, List.map_append, List.sum_append, ih]
+
+/-- Every state path of length `k`, listed, given an enumeration `E` of the states. -/
+def paths {S : Type*} (E : List S) : ℕ → List (List S)
+  | 0 => [[]]
+  | k + 1 => E.flatMap (fun c => (paths E k).map (fun L => c :: L))
+
+/-- **`weightSum` is the sum of `pathWeight` over every state path.**  This is the
+enumeration half of (M3b): the transfer matrix's `k`-th power counts exactly the state
+paths of length `k`, each with its own weight.  `E` is any enumeration of the states --
+for a `Fintype`, `Finset.univ.toList`. -/
+theorem weightSum_eq_sum_pathWeight {S : Type*} [Fintype S] (T : Matrix S S ℤ) (mu : S → ℤ)
+    (E : List S) (hE : ∀ f : S → ℤ, (E.map f).sum = ∑ c : S, f c) :
+    ∀ (k : ℕ) (a : S),
+      ((paths E k).map (fun L => pathWeight (fun i j => T i j) (fun _ => (1 : ℤ)) mu (a :: L))).sum
+        = weightSum T mu a k := by
+  intro k
+  induction k with
+  | zero => intro a; show (1 : ℤ) * mu a + 0 = mu a; ring
+  | succ m ih =>
+      intro a
+      show ((E.flatMap (fun c => (paths E m).map (fun L => c :: L))).map _).sum = _
+      rw [sum_map_flatMap]
+      have hstep : ∀ c : S,
+          (((paths E m).map (fun L => c :: L)).map
+              (fun L => pathWeight (fun i j => T i j) (fun _ => (1 : ℤ)) mu (a :: L))).sum
+            = T a c * weightSum T mu c m := by
+        intro c
+        rw [List.map_map, ← ih c, ← List.sum_map_mul_left]
+        refine congrArg List.sum (List.map_congr_left ?_)
+        intro L _
+        show (1 : ℤ) * T a c * _ = T a c * _
+        ring
+      simp only [hstep]
+      rw [hE (fun c => T a c * weightSum T mu c m)]
+      rfl
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13513,3 +13611,9 @@ end EltBridge
 #print axioms EltBridge.X_pow_dvd_matrix_pow
 #print axioms EltBridge.coeff_matrix_pow_eq_zero
 #print axioms EltBridge.coeff_neumann_tail_zero
+#print axioms EltBridge.weightSum_eq
+#print axioms EltBridge.lam_weightSum_eq
+#print axioms EltBridge.sum_lam_weightSum_eq
+#print axioms EltBridge.sum_univ_toList
+#print axioms EltBridge.sum_map_flatMap
+#print axioms EltBridge.weightSum_eq_sum_pathWeight

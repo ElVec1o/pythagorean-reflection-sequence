@@ -7812,3 +7812,33 @@ constant term.  No analysis anywhere.  0 sorry.
 that `W` itself equals that sum, i.e. that summing `lR_exp_pathWeight_family` over all
 configurations of each span length reproduces the series -- is a counting statement and
 is not proved.  (M3a) is done; (M3b) is half done, and the remaining half is combinatorial.
+
+## 2026-09-03 — BLOCKS 210-211: the counting half of (M3b)
+
+`IsAssembly`'s summand is `lam a * (T^k) a b * mu b`.  What was owed is that summing
+over configurations produces it.  Both halves are now proved.
+
+The algebraic half (BLOCK 210) -- stepping `k` times through `T` and finishing with `mu`
+IS the matrix power, which is the whole reason a transfer matrix is the right object:
+
+    weightSum                 step k times through T, finish with mu
+    weightSum_eq              = sum_b (T^k) a b * mu b
+    lam_weightSum_eq          with the head weight: IsAssembly's summand exactly
+    sum_lam_weightSum_eq      summed over starting states: the k-th Neumann term
+
+The enumeration half (BLOCK 211) -- that this really is a sum over all state paths:
+
+    sum_map_flatMap           summing over a concatenation is summing the sums
+    paths                     every state path of length k, listed
+    weightSum_eq_sum_pathWeight   weightSum IS the sum of pathWeight over all of them
+    sum_univ_toList           and the Fintype enumeration qualifies
+
+0 sorry.  `List.mul_sum` does not exist; the lemma wanted is `List.sum_map_mul_left`.
+`Finset.sum_map_toList` does exist and discharges the enumeration hypothesis outright.
+
+**Where (M3) now stands.**  (M3a) is done (BLOCKS 206-208): one kernel, every
+configuration, the state factoring by `rfl`.  (M3b) has both its parts -- formal
+convergence (BLOCK 209) and the path-sum identity (BLOCKS 210-211).  What is NOT proved
+is the join: that the family's configurations, grouped by span length, are exactly the
+state paths enumerated by `paths`.  That is a bijection between configurations and their
+state paths, and it is the one thing left in (M3).  It is combinatorial.
