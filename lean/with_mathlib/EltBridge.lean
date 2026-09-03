@@ -9158,3 +9158,72 @@ theorem shield_upper_bound_from_turn {n : ℕ} {m : Fin n → ℕ} (up' : Fin n 
 end EltBridge
 
 #print axioms EltBridge.shield_upper_bound_from_turn
+
+namespace EltBridge
+
+/-! ### Several runs
+
+`hrange` assumed every edge lies in one run.  In general the edges split into runs, one
+per value of `gz`, and each has its own left boundary and length.  Indexing them by the
+run number lifts the argument: two ends with the same `gz` lie in the same run, and the
+two-chain connectivity for THAT run joins them.
+
+Each run does have a boundary bounce.  A run is bounded by cut sites, so unless `Zf` is
+empty -- in which case the bound is `walkCount <= 1`, which is `thm:nogap` and already
+green -- there is a cut site at one end, and the bounce there joins the two chains. -/
+
+/-- **`hrun` for a family of runs.**  `lo r` and `len r` describe run `r`; every end
+lies in the run its `gz` names, and each run is internally connected. -/
+theorem hrun_multi {n : ℕ} {m : Fin n → ℕ} (D : WalkGraph.Data (EndType.Endpt n m))
+    (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hcover : ∀ x, botOf x = up (EndType.edgeOf x) ∨ botOf x = dn (EndType.edgeOf x))
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hconn : ∀ r : ℕ, ∀ j j' : ℕ, j ≤ len r → j' ≤ len r → ∀ b b' : Bool,
+      (WalkGraph.graph D).Reachable
+        (if b then up (lo r + j) else dn (lo r + j))
+        (if b' then up (lo r + j') else dn (lo r + j'))) :
+    ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph D).Reachable (botOf x) (botOf y) := by
+  intro x y hxy
+  obtain ⟨j, hj, hxj⟩ := hrange x
+  obtain ⟨j', hj', hyj⟩ := hrange y
+  rw [← hxy] at hj' hyj
+  rcases hcover x with hx | hx <;> rcases hcover y with hy | hy <;> rw [hx, hy, hxj, hyj]
+  · simpa using hconn _ j j' hj hj' true true
+  · simpa using hconn _ j j' hj hj' true false
+  · simpa using hconn _ j j' hj hj' false true
+  · simpa using hconn _ j j' hj hj' false false
+
+/-- **The shield bound over several runs.**  `hrange` is now per-run, so the statement
+covers a configuration with any number of cut sites rather than one run. -/
+theorem shield_upper_bound_multi {n : ℕ} {m : Fin n → ℕ} (up' : Fin n → ℕ)
+    (hbal : ∀ s : ℤ,
+      (EndType.arrAt (m := m) up' s).card = (EndType.depAt (m := m) up' s).card)
+    (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hturn : ∀ x, EndType.edgeOf ((DataBuild.dataOf up' hbal).t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hcover : ∀ x, botOf x = up (EndType.edgeOf x) ∨ botOf x = dn (EndType.edgeOf x))
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hpass_up : ∀ r k : ℕ, k < len r →
+      (DataBuild.dataOf up' hbal).t ((DataBuild.dataOf up' hbal).p (up (lo r + k)))
+        = up (lo r + (k + 1 : ℕ)))
+    (hpass_dn : ∀ r k : ℕ, k < len r →
+      (DataBuild.dataOf up' hbal).t
+          ((DataBuild.dataOf up' hbal).p (dn (lo r + (k + 1 : ℕ)))) = dn (lo r + k))
+    (hbounce : ∀ r : ℕ, (DataBuild.dataOf up' hbal).t (dn (lo r)) = up (lo r)) :
+    WalkGraph.walkCount (DataBuild.dataOf up' hbal) ≤ Zf.card + 1 :=
+  shield_upper_bound_bot up' hbal Zf hturn
+    (hrun_multi (DataBuild.dataOf up' hbal) Zf up dn lo len hcover hrange
+      (fun r j j' hj hj' b b' =>
+        run_connected_of_turn_structure (DataBuild.dataOf up' hbal) up dn (lo r) (len r)
+          (hpass_up r) (hpass_dn r) (hbounce r) j j' hj hj' b b'))
+
+end EltBridge
+
+#print axioms EltBridge.hrun_multi
+#print axioms EltBridge.shield_upper_bound_multi

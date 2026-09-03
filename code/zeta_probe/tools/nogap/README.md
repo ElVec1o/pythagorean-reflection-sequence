@@ -6622,3 +6622,26 @@ Scope, unchanged and load-bearing: `mu = 2`, and a single run.  BLOCK 158 measur
 of 8192 failures at `mu = 4`, where the two-chain structure is absent; the multi-run case
 needs the per-run indexing that `hrange` here assumes away.  Both are real gaps and
 neither is closed.
+
+## 2026-09-03 — BLOCK 169: several runs
+
+`hrange` had assumed every edge lies in one run.  In general the edges split into runs,
+one per value of `gz`, each with its own left boundary and length; indexing them by the
+run number lifts the argument, since two ends with the same `gz` lie in the same run and
+that run's two-chain connectivity joins them.
+
+    hrun_multi                 hrun for a family of runs
+    shield_upper_bound_multi   the bound with hrange, hpass_up, hpass_dn and hbounce
+                               all taken per run
+
+Each run does have its boundary bounce: a run is bounded by cut sites, so unless `Zf` is
+empty -- where the bound is `walkCount <= 1`, which is `thm:nogap`, already green --
+there is a cut site at one end and the bounce there joins the two chains.
+
+So the single-run restriction is gone.  What remains of the scope is `mu = 2` alone,
+and that one is not a restriction of convenience: BLOCK 158 measured 5072 of 8192
+failures at `mu = 4`, where the two-chain structure genuinely does not exist.
+
+To finish M4b at `mu = 2` the remaining work is verification rather than construction:
+check that the minimal turn `local_trichotomy` selects satisfies `hturn`, `hcover`,
+`hrange`, `hpass_up`, `hpass_dn` and `hbounce` on an actual configuration.
