@@ -7799,3 +7799,105 @@ end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.reachable_of_trivial
+
+namespace EltBridge
+namespace Elt
+
+/-! ### The round trip
+
+A cursor excursion across one edge and back, with the sign flipped in between, returns
+the cursor and changes that edge's deposit by `±2`.  This is the engine for the deposit
+induction: `hpar` ties each deposit's parity to `travel`, so once `kstar` is fixed the
+deposits may only move in steps of two, and this word realises exactly that step.
+
+From `delta = false` the word is `s3, s2, s1, s3`:
+
+    s3   kstar k-1, delta true,  d (k-1) += e
+    s2   eps -e, delta false
+    s1   delta true
+    s3   kstar k,   delta false, d (k-1) -= (-e) = += e
+
+so `d (k-1)` moves by `2e`, `kstar` and `delta` return, and `eps` is flipped. -/
+theorem roundTrip_left (g : Elt) (hδ : g.delta = false) :
+    (s3 (s1 (s2 (s3 g)))).kstar = g.kstar ∧
+    (s3 (s1 (s2 (s3 g)))).eps = -g.eps ∧
+    (s3 (s1 (s2 (s3 g)))).delta = g.delta ∧
+    (s3 (s1 (s2 (s3 g)))).d
+      = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + 2 * g.eps) := by
+  have h1 : ¬ (g.delta = true) := by rw [hδ]; simp
+  -- the first step
+  have e1 : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+  have e2 : (s3 g).eps = g.eps := by rw [s3, dif_neg h1]
+  have e3 : (s3 g).delta = true := by rw [s3, dif_neg h1]
+  have e4 : (s3 g).d
+      = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1]
+  -- the two side moves: both are definitional on every field
+  have f1 : (s1 (s2 (s3 g))).kstar = g.kstar - 1 := e1
+  have f2 : (s1 (s2 (s3 g))).eps = -g.eps := by
+    show -(s3 g).eps = -g.eps
+    rw [e2]
+  have f3 : (s1 (s2 (s3 g))).delta = true := by
+    show (!(!(s3 g).delta)) = true
+    rw [e3]
+    simp
+  have f4 : (s1 (s2 (s3 g))).d
+      = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := e4
+  -- the return step
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rw [s3, dif_pos f3]; show (s1 (s2 (s3 g))).kstar + 1 = g.kstar; rw [f1]; ring
+  · rw [s3, dif_pos f3]; show (s1 (s2 (s3 g))).eps = -g.eps; exact f2
+  · rw [s3, dif_pos f3]; show false = g.delta; exact hδ.symm
+  · rw [s3, dif_pos f3]
+    show Function.update (s1 (s2 (s3 g))).d (s1 (s2 (s3 g))).kstar
+      ((s1 (s2 (s3 g))).d (s1 (s2 (s3 g))).kstar - (s1 (s2 (s3 g))).eps)
+      = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + 2 * g.eps)
+    rw [f1, f2, f4, Function.update_self, Function.update_idem]
+    congr 1
+    ring
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.roundTrip_left
+
+namespace EltBridge
+namespace Elt
+
+/-! ### Reachability is closed under the generators, hence under the round trip -/
+
+theorem reachable_s1 {g : Elt} (h : Reachable g) : Reachable (s1 g) := by
+  obtain ⟨n, hn⟩ := h
+  exact ⟨n + 1, Reaches.step hn (Or.inl (SameElt.refl _))⟩
+
+theorem reachable_s2 {g : Elt} (h : Reachable g) : Reachable (s2 g) := by
+  obtain ⟨n, hn⟩ := h
+  exact ⟨n + 1, Reaches.step hn (Or.inr (Or.inl (SameElt.refl _)))⟩
+
+theorem reachable_s3 {g : Elt} (h : Reachable g) : Reachable (s3 g) := by
+  obtain ⟨n, hn⟩ := h
+  exact ⟨n + 1, Reaches.step hn (Or.inr (Or.inr (SameElt.refl _)))⟩
+
+/-- **The round trip preserves reachability**, at a cost of four steps. -/
+theorem reachable_roundTrip {g : Elt} (h : Reachable g) :
+    Reachable (s3 (s1 (s2 (s3 g)))) :=
+  reachable_s3 (reachable_s1 (reachable_s2 (reachable_s3 h)))
+
+/-- **The engine, stated on the element.**  From a reachable `g` with `delta = false`,
+the element that agrees with `g` except that one deposit has moved by `2 * eps` and the
+sign is flipped is reachable.  `hpar` allows exactly these moves once `kstar` is fixed,
+so this is the whole freedom in the deposits. -/
+theorem reachable_deposit_step {g h : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (hk : h.kstar = g.kstar) (he : h.eps = -g.eps) (hd : h.delta = g.delta)
+    (hdd : h.d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + 2 * g.eps)) :
+    Reachable h := by
+  obtain ⟨n, hn⟩ := reachable_roundTrip hg
+  obtain ⟨r1, r2, r3, r4⟩ := roundTrip_left g hδ
+  exact ⟨n, Reaches.congr hn ⟨r1.trans hk.symm, r2.trans he.symm,
+    r3.trans hd.symm, r4.trans hdd.symm⟩⟩
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.reachable_roundTrip
+#print axioms EltBridge.Elt.reachable_deposit_step

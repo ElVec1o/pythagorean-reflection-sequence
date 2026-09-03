@@ -5794,3 +5794,36 @@ words: fix `kstar` first, which sets every deposit's parity through `hpar`, then
 the deposits by cursor round trips, each of which crosses an edge twice and so changes
 that deposit by `0` or `±2` -- exactly the freedom `hpar` leaves. That round-trip
 lemma is the engine, and it is the next step.
+
+## 2026-09-03 — BLOCK 143: the round trip, and the deposit engine
+
+BLOCK 142 showed the deposit induction cannot be a single-move descent.  The engine it
+needs is here.
+
+`roundTrip_left`: from `delta = false` the four-step word `s3, s2, s1, s3` gives
+
+    s3   kstar k-1, delta true,  d (k-1) += e
+    s2   eps -e, delta false
+    s1   delta true
+    s3   kstar k,   delta false, d (k-1) -= (-e) = += e
+
+so the cursor and the side return, the sign is flipped, and one deposit moves by
+exactly `2e`.  That is precisely the freedom `hpar` leaves: it ties each deposit's
+parity to `travel`, so once `kstar` is fixed the deposits may only move in twos, and
+this word realises that step.
+
+Wired to reachability: `reachable_s1`, `reachable_s2`, `reachable_s3`,
+`reachable_roundTrip` (four steps), and `reachable_deposit_step`, which states the
+engine on the element rather than the term -- from a reachable `g` with
+`delta = false`, any `h` agreeing with `g` up to one deposit moved by `2 * eps` and the
+sign flipped is reachable.
+
+Also fixed: my attempt-3 rewrite of `roundTrip_left` had deleted the `end Elt` /
+`end EltBridge` after it, leaving the file two namespaces deep, so every declaration
+appended afterwards was landing at `EltBridge.Elt.EltBridge.Elt....`.  Caught by the
+doubled name in `#print axioms`.  Net namespace depth is now 0.
+
+NOT DONE: the induction itself.  What remains is to place the cursor and iterate the
+engine -- reach the target `kstar` first, which fixes every deposit's parity, then
+apply `reachable_deposit_step` once per unit of `|d j| / 2` at each edge.  Both steps
+are now expressible; neither is written.  H1a stays orange.
