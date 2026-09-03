@@ -8907,3 +8907,29 @@ case at `j = -1`, where the flag turns on exactly as the arrival fires.
 
 With it, `flagStepB_extendFlag_out` (BLOCK 257) and the remaining step from `A - 1` into
 `A` both have their flag facts.
+
+## 2026-09-04 — BLOCK 259: the step into the left end — the sixth and last case
+
+    extendFlag_at_A            at A the extension is the path's own state
+    flagStepB_extendFlag_in    and the step from A-1 into A holds
+
+0 sorry.  One failure, diagnosed before rewriting per Rule 4.3: `simp` had reduced the goal
+to pure arithmetic in `A` -- `(1 <= A -> 0 <= A) and (A < 1 or A < 0)` -- both consequences
+of `A <= 0`, so `omega` closes it; no tactic guessing was needed.
+
+**All six extension cases are now proved:**
+
+    inside the span            the path's own guard
+    into A                     flagStepB_extendFlag_in       (BLOCK 259)
+    out of B                   flagStepB_extendFlag_out      (BLOCK 257)
+    just past B                flagStepB_extendFlag_beyond   (BLOCK 256)
+    far on both sides          flagStepB_extendFlag_far      (BLOCK 255)
+
+and the flag fact they all needed is `past_eq_decide` (BLOCK 258), a theorem rather than an
+assumption.
+
+**Status of (M3) [Rule 0 label: the parts are VERIFIED, the whole is not].**  Both
+directions of the correspondence are VERIFIED, the summation over flagged paths is
+VERIFIED, the vanishing off the guard is VERIFIED, and every boundary step of the extension
+is VERIFIED.  What is NOT yet written is the single theorem that runs the case split over
+`j` and concludes `flagStepB` everywhere for `extendFlag`.

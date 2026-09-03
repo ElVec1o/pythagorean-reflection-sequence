@@ -8273,6 +8273,38 @@ theorem past_eq_decide (g : ℤ → FlagState) (A : ℤ) (hA : A ≤ 0)
             decide_eq_false (by omega : ¬((0 : ℤ) ≤ A + (m : ℤ) + 1))]
           simp
 
+/-! ### The step into the left end — the sixth and last case
+
+At `A` the extension is the path's own state, the flag fact now coming from
+`past_eq_decide` (BLOCK 258) rather than being assumed. -/
+
+theorem extendFlag_at_A (g : ℤ → FlagState) (A B : ℤ) (hAB : A ≤ B)
+    (hflag : (g A).past = decide (0 ≤ A)) : extendFlag g A B A = g A := by
+  show (⟨extendFn (fun i => (g i).st) A B A, decide (0 ≤ A)⟩ : FlagState) = g A
+  rw [extendFn_eq_on _ A B le_rfl hAB, ← hflag]
+
+theorem flagStepB_extendFlag_in (g : ℤ → FlagState) (A B : ℤ) (hA : A ≤ 0) (hB : 0 ≤ B)
+    (hAB : A ≤ B) (hflag : (g A).past = decide (0 ≤ A))
+    (hdprev : (g A).st.dprev = 0)
+    (hheadflow : (((g A).st.arr : ℕ) : ℤ) = (g A).st.fcur + (((g A).st.dep : ℕ) : ℤ))
+    (harrv : (g A).st.arr = SiteCost.vArr A)
+    (hvalid : validB (g A).st = true) (hepsv : epsValidB (g A).st = true) :
+    flagStepB (extendFlag g A B (A - 1)) (extendFlag g A B (A - 1 + 1)) = true := by
+  have hAA : A - 1 + 1 = A := by ring
+  rw [hAA, extendFlag_far g A B (A - 1) (Or.inl (by omega)) (by omega),
+    extendFlag_at_A g A B hAB hflag]
+  have hc : compatB (preState (g A).st) (g A).st = true := compatB_preState _ hdprev
+  have hf : flowB (preState (g A).st) (g A).st = true := flowB_preState _ hheadflow
+  have h1 : decide ((0 : ℤ) ≤ A - 1) = false := decide_eq_false (by omega)
+  have h2 : decide ((g A).st.arr = 1) = decide ((0 : ℤ) ≤ A) := by
+    rw [harrv]
+    unfold SiteCost.vArr
+    by_cases h : A = 0
+    · rw [if_pos h]; simp [h]
+    · rw [if_neg h]; simp only [decide_eq_decide]; omega
+  simp [flagStepB, fullStepB, stepB, hc, hf, hvalid, hepsv, hflag, h2]
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15960,3 +15992,5 @@ end EltBridge
 #print axioms EltBridge.extendFlag_at_B
 #print axioms EltBridge.flagStepB_extendFlag_out
 #print axioms EltBridge.past_eq_decide
+#print axioms EltBridge.extendFlag_at_A
+#print axioms EltBridge.flagStepB_extendFlag_in
