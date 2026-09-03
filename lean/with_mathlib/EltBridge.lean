@@ -9091,6 +9091,34 @@ theorem guards_of_coeff_ne_zero (N : ℕ) (g : ℤ → FlagState) (n : ℕ) (A :
   guardsR_of_weight_ne_zero (PowerSeries.X : PowerSeries ℤ) g n A lam mu
     (ne_zero_of_coeff_ne_zero N _ hne)
 
+/-! ### The head vector's guard, over an arbitrary ring
+
+`headOk_of_weight_ne_zero` (BLOCK 269) ported.  A contributing path's head vector cannot
+vanish, which is where its `headOk2B` conditions come from. -/
+
+theorem headOkR_of_weight_ne_zero {R : Type*} [CommRing R] (x : R) (g : ℤ → FlagState)
+    (n : ℕ) (A : ℤ) (mu : FlagState → R)
+    (hne : pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVecR x) mu ((A :: idxList A n).map g) ≠ 0) :
+    flagHeadVecR x (g A) ≠ 0 := by
+  intro hz
+  apply hne
+  cases n with
+  | zero => show flagHeadVecR x (g A) * mu (g A) = 0; rw [hz]; ring
+  | succ m =>
+      show flagHeadVecR x (g A) * _ * _ = 0
+      rw [hz]; ring
+
+/-- **And the head guard itself.**  A non-vanishing head vector is a firing `headOkB`
+together with the flag matching the arrival. -/
+theorem headCond_of_headVec_ne_zero {R : Type*} [CommRing R] (x : R) (σ : FlagState)
+    (h : flagHeadVecR x σ ≠ 0) :
+    (headOkB σ.st && (σ.past == decide (σ.st.arr = 1))) = true := by
+  by_contra hc
+  apply h
+  rw [flagHeadVecR, if_neg]
+  simpa using hc
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16820,3 +16848,5 @@ end EltBridge
 #print axioms EltBridge.coeff_weight_of_wrong_degree
 #print axioms EltBridge.guardsR_of_weight_ne_zero
 #print axioms EltBridge.guards_of_coeff_ne_zero
+#print axioms EltBridge.headOkR_of_weight_ne_zero
+#print axioms EltBridge.headCond_of_headVec_ne_zero

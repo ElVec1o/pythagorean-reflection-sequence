@@ -9360,3 +9360,23 @@ wrong degree, which `coeff_weight_of_wrong_degree` (BLOCK 281) handles.
 **[Rule 0] Every ingredient of (M3)'s coefficient identity is now VERIFIED.**  What remains
 is to write the instantiation itself: choose `C` as the degree cut, `T` as the paths of the
 right length, and run the case split on whether a complement path is guarded.
+
+## 2026-09-04 — BLOCK 283: the head vector's guard, over an arbitrary ring
+
+    headOkR_of_weight_ne_zero      a contributing path's head vector cannot vanish
+    headCond_of_headVec_ne_zero    and a non-vanishing head vector IS the head guard firing,
+                                   with the flag matching the arrival
+
+0 sorry, both clean on the first build, on `propext` alone.
+
+**The remaining obstacle, stated precisely.**  The instantiation needs, for a path `L` in
+the complement, that `L` is not realisable.  From a non-zero coefficient we get the step
+guard (BLOCK 282) and now the head guard.  What is NOT obtainable that way is `arrv` -- the
+arrival flag being `[j = 0]` -- because a bare list carries no indices, and `A` is ours to
+choose.
+
+BLOCK 238 settled the mathematics: the guard forces exactly one arrival, and choosing `A`
+so that it lands at `0` is a translation.  But that choice depends on the path, so `T`
+cannot be an arbitrary `Finset` of lists -- it has to be indexed by paths whose arrival
+sits at the right place.  **That is a re-indexing of the statement, not a further theorem**,
+and it is what the instantiation still needs.
