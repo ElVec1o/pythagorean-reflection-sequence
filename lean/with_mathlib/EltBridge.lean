@@ -5152,6 +5152,69 @@ theorem free_pair_of_five {α : Type*} [Fintype α] [DecidableEq α] (d : GData 
   exact ⟨x, hx, y, hy, hne,
     gcostOf_swapImg d t x y hne (harr x hx) (harr y hy) hs hg⟩
 
+/-! ### The dual criterion: same-class *departures* also give a free swap
+
+`GData.pcost` is symmetric in its two arguments' roles -- it reads only the two
+classes -- so the swap is free when the two **departures** share a class, exactly as
+when the two arrivals do.  That is the free-sign form of `EndData`'s disjunctive
+`hshared`. -/
+
+/-- `pcost` sees only the classes, on the right as well. -/
+theorem GData.pcost_congr_right {α : Type*} (d : GData α) (x a b : α)
+    (hs : d.side a = d.side b) (hg : d.sgnOf a = d.sgnOf b) :
+    d.pcost x a = d.pcost x b := by
+  unfold GData.pcost
+  rw [hs, hg]
+
+/-- **Same-class departures swap for free.** -/
+theorem GData.swap_free_right {α : Type*} (d : GData α) (x y a b : α)
+    (hs : d.side a = d.side b) (hg : d.sgnOf a = d.sgnOf b) :
+    d.pcost x a + d.pcost y b = d.pcost x b + d.pcost y a := by
+  rw [GData.pcost_congr_right d x a b hs hg, GData.pcost_congr_right d y a b hs hg]
+
+/-- **The disjunctive criterion.**  A swap is free if the two arrivals share a class
+**or** the two departures do -- the free-sign counterpart of `hshared`. -/
+theorem GData.swap_free_or {α : Type*} (d : GData α) (x y a b : α)
+    (h : (d.side x = d.side y ∧ d.sgnOf x = d.sgnOf y) ∨
+      (d.side a = d.side b ∧ d.sgnOf a = d.sgnOf b)) :
+    d.pcost x a + d.pcost y b = d.pcost x b + d.pcost y a := by
+  rcases h with ⟨hs, hg⟩ | ⟨hs, hg⟩
+  · exact GData.swap_free d x y a b hs hg
+  · exact GData.swap_free_right d x y a b hs hg
+
+/-- **And globally.** -/
+theorem gcostOf_swapImg_or {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (t : α → α) (x y : α) (hxy : x ≠ y)
+    (hxa : d.isArr x = true) (hya : d.isArr y = true)
+    (h : (d.side x = d.side y ∧ d.sgnOf x = d.sgnOf y) ∨
+      (d.side (t x) = d.side (t y) ∧ d.sgnOf (t x) = d.sgnOf (t y))) :
+    gcostOf d (swapImg t x y) = gcostOf d t := by
+  classical
+  unfold gcostOf
+  set S := Finset.univ.filter (fun z => d.isArr z = true) with hS
+  have hxS : x ∈ S := by simp [hS, hxa]
+  have hyS : y ∈ S := by simp [hS, hya]
+  have hsub : ({x, y} : Finset α) ⊆ S := by
+    intro z hz
+    rcases Finset.mem_insert.mp hz with h' | h'
+    · rw [h']; exact hxS
+    · rw [Finset.mem_singleton.mp h']; exact hyS
+  rw [← Finset.sum_sdiff hsub, ← Finset.sum_sdiff hsub]
+  have htail : ∀ z ∈ S \ {x, y}, d.pcost z (swapImg t x y z) = d.pcost z (t z) := by
+    intro z hz
+    rw [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, not_or] at hz
+    unfold swapImg
+    rw [if_neg hz.2.1, if_neg hz.2.2]
+  rw [Finset.sum_congr rfl htail]
+  congr 1
+  rw [Finset.sum_pair hxy, Finset.sum_pair hxy]
+  unfold swapImg
+  rw [if_pos rfl, if_neg (Ne.symm hxy), if_pos rfl]
+  exact GData.swap_free_or d x y (t y) (t x)
+    (by rcases h with h | ⟨h1, h2⟩
+        · exact Or.inl h
+        · exact Or.inr ⟨h1.symm, h2.symm⟩)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5338,3 +5401,5 @@ end EltBridge
 #print axioms EltBridge.gcostOf_swapImg
 #print axioms EltBridge.two_same_class_of_five
 #print axioms EltBridge.free_pair_of_five
+#print axioms EltBridge.GData.swap_free_or
+#print axioms EltBridge.gcostOf_swapImg_or

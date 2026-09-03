@@ -4288,3 +4288,25 @@ hshared from cost-minimality rather than from counting. Recording (a) because it
 proved and gives the criterion a concrete sufficient condition; (b) is the remaining
 work and is the same shape of argument as the forced model's, run against class labels
 instead of side patterns.
+
+## 2026-09-03 — BLOCK 90: the DISJUNCTIVE free-swap criterion
+
+  GData.pcost_congr_right -- pcost sees only the classes on the right too
+  GData.swap_free_right   -- so same-class DEPARTURES swap for free
+  GData.swap_free_or      -- **a swap is free if the two arrivals share a class OR the
+                             two departures do**
+  gcostOf_swapImg_or      -- and globally
+
+This is the free-sign counterpart of EndData's `hshared`, which is also a disjunction:
+  d.side a = d.side a'  OR  d.side (D.t a) = d.side (D.t a')
+The two models agree on the SHAPE of the criterion. They differ in what the disjuncts
+say: sides in the forced model, full (side, sign) classes in the free one.
+
+That the shape matches is worth recording, because it means the merge development's
+free-pair machinery -- which threads hshared through a dozen lemmas -- should port
+structurally rather than needing a new argument. The disjunction is where hshared
+enters and where the free-sign version supplies the same thing.
+
+BLOCK 89's pigeonhole is now less central: five arrivals force a same-class ARRIVAL
+pair, but the disjunctive criterion also fires on the departures, so the counting bound
+is sufficient, not necessary, and by a wider margin than it looked.
