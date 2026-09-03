@@ -6754,3 +6754,29 @@ three equations.  Nothing abstract remains in the hypotheses.
 
 Scope still `mu = 2`.  What is left is to define `T` -- the pass at non-cut sites, the
 bounce at cut sites -- and check the equations against that definition.
+
+## 2026-09-03 — BLOCK 174: the turn, defined and verified
+
+At `mu = 2` a site carries exactly four ends: the two tops of edge `s-1`,
+`p (up (s-1))` and `p (dn (s-1))`, and the two bottoms of edge `s`, `up s` and `dn s`.
+There are exactly two site-respecting involutions on them, and `local_trichotomy` says
+which minimality picks: the BOUNCE at a cut site, the PASS elsewhere.
+
+`passTurn` is that choice, and it is verified:
+
+    passTurn_invol               an involution, given the four ends are distinct
+    passTurn_ne                  fixed-point-free on those four
+    passTurn_pass_up             at a non-cut site, edge s-1's up top -> edge s's up bottom
+    passTurn_pass_dn             at a non-cut site, edge s's down bottom -> edge s-1's
+                                 down top -- the opposite composition, as BLOCK 172 found
+    passTurn_bounce              at a cut site, the two bottoms of edge s are joined
+    passTurn_keeps_edge_at_cut   at a cut site every end stays on its own edge, which is
+                                 exactly `hturn`
+
+All 0 sorry.  The distinctness of the four ends is carried as hypotheses, which is what
+it is: a fact about a real configuration, six inequalities.
+
+So the turn is no longer hypothetical.  What remains to close the `mu = 2` bound is to
+supply the six distinctness inequalities and `hTsite` -- that `passTurn` keeps each end
+at its site -- for an actual configuration, and feed
+`shield_upper_bound_of_pass_bounce`.

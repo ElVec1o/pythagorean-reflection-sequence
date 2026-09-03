@@ -9556,3 +9556,118 @@ end EltBridge
 
 #print axioms EltBridge.chain_dn_of_pass
 #print axioms EltBridge.shield_upper_bound_of_pass_bounce
+
+namespace EltBridge
+
+/-! ### The turn, defined
+
+At `mu = 2` a site `s` carries exactly four ends: the two tops of edge `s-1`, which are
+`p (up (s-1))` and `p (dn (s-1))`, and the two bottoms of edge `s`, which are `up s` and
+`dn s`.  There are exactly two involutions on them that respect the site, and
+`local_trichotomy` says which one minimality picks:
+
+* at a cut site, the BOUNCE, pairing within each edge;
+* elsewhere, the PASS, pairing across.
+
+`passTurn` is that choice. -/
+
+noncomputable def passTurn {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+    (Zf : Finset ℤ) (s : ℤ) (x : α) : α :=
+  if s ∈ Zf then
+    if x = p (up (s - 1)) then p (dn (s - 1))
+    else if x = p (dn (s - 1)) then p (up (s - 1))
+    else if x = up s then dn s
+    else if x = dn s then up s
+    else x
+  else
+    if x = p (up (s - 1)) then up s
+    else if x = up s then p (up (s - 1))
+    else if x = dn s then p (dn (s - 1))
+    else if x = p (dn (s - 1)) then dn s
+    else x
+
+/-- **`passTurn` is an involution**, given that the site's four ends are distinct. -/
+theorem passTurn_invol {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+    (Zf : Finset ℤ) (s : ℤ)
+    (h12 : p (up (s - 1)) ≠ p (dn (s - 1)))
+    (h13 : p (up (s - 1)) ≠ up s) (h14 : p (up (s - 1)) ≠ dn s)
+    (h23 : p (dn (s - 1)) ≠ up s) (h24 : p (dn (s - 1)) ≠ dn s)
+    (h34 : up s ≠ dn s) (x : α) :
+    passTurn p up dn Zf s (passTurn p up dn Zf s x) = x := by
+  have h21 := h12.symm; have h31 := h13.symm; have h41 := h14.symm
+  have h32 := h23.symm; have h42 := h24.symm; have h43 := h34.symm
+  unfold passTurn
+  by_cases hs : s ∈ Zf <;> simp only [hs, if_true, if_false, ite_true, ite_false] <;>
+    split_ifs <;> simp_all
+
+/-- **And fixed-point-free on the site's four ends.** -/
+theorem passTurn_ne {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+    (Zf : Finset ℤ) (s : ℤ)
+    (h12 : p (up (s - 1)) ≠ p (dn (s - 1)))
+    (h13 : p (up (s - 1)) ≠ up s) (h14 : p (up (s - 1)) ≠ dn s)
+    (h23 : p (dn (s - 1)) ≠ up s) (h24 : p (dn (s - 1)) ≠ dn s)
+    (h34 : up s ≠ dn s) (x : α)
+    (hx : x = p (up (s - 1)) ∨ x = p (dn (s - 1)) ∨ x = up s ∨ x = dn s) :
+    passTurn p up dn Zf s x ≠ x := by
+  have h21 := h12.symm; have h31 := h13.symm; have h41 := h14.symm
+  have h32 := h23.symm; have h42 := h24.symm; have h43 := h34.symm
+  unfold passTurn
+  by_cases hs : s ∈ Zf <;> simp only [hs, if_true, if_false, ite_true, ite_false] <;>
+    rcases hx with rfl | rfl | rfl | rfl <;> split_ifs <;> simp_all
+
+end EltBridge
+
+#print axioms EltBridge.passTurn_invol
+#print axioms EltBridge.passTurn_ne
+
+namespace EltBridge
+
+/-! ### `passTurn` satisfies the three equations -/
+
+/-- At a non-cut site the pass carries edge `s-1`'s up top to edge `s`'s up bottom. -/
+theorem passTurn_pass_up {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+    (Zf : Finset ℤ) (s : ℤ) (hs : s ∉ Zf) :
+    passTurn p up dn Zf s (p (up (s - 1))) = up s := by
+  unfold passTurn
+  rw [if_neg hs, if_pos rfl]
+
+/-- At a non-cut site the same pass carries edge `s`'s down bottom to edge `s-1`'s down
+top -- the opposite composition, as BLOCK 172 found. -/
+theorem passTurn_pass_dn {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+    (Zf : Finset ℤ) (s : ℤ) (hs : s ∉ Zf)
+    (h14 : p (up (s - 1)) ≠ dn s) (h34 : up s ≠ dn s) :
+    passTurn p up dn Zf s (dn s) = p (dn (s - 1)) := by
+  unfold passTurn
+  rw [if_neg hs, if_neg (Ne.symm h14), if_neg (Ne.symm h34), if_pos rfl]
+
+/-- At a cut site the bounce joins the two bottoms of edge `s`. -/
+theorem passTurn_bounce {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+    (Zf : Finset ℤ) (s : ℤ) (hs : s ∈ Zf)
+    (h14 : p (up (s - 1)) ≠ dn s) (h24 : p (dn (s - 1)) ≠ dn s) (h34 : up s ≠ dn s) :
+    passTurn p up dn Zf s (dn s) = up s := by
+  unfold passTurn
+  rw [if_pos hs, if_neg (Ne.symm h14), if_neg (Ne.symm h24), if_neg (Ne.symm h34),
+    if_pos rfl]
+
+/-- **And it changes the edge only off `Zf`.**  At a cut site the bounce keeps each end
+on its own edge; that is `hturn`. -/
+theorem passTurn_keeps_edge_at_cut {α : Type*} [DecidableEq α] (edgeOf : α → ℤ)
+    (p : α → α) (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (hs : s ∈ Zf)
+    (hpe : ∀ x, edgeOf (p x) = edgeOf x)
+    (hud : edgeOf (up s) = edgeOf (dn s))
+    (hud' : edgeOf (up (s - 1)) = edgeOf (dn (s - 1)))
+    (x : α) : edgeOf (passTurn p up dn Zf s x) = edgeOf x := by
+  unfold passTurn
+  rw [if_pos hs]
+  split_ifs with h1 h2 h3 h4
+  · rw [h1, hpe, hpe, hud']
+  · rw [h2, hpe, hpe, hud']
+  · rw [h3, hud]
+  · rw [h4, hud]
+  · rfl
+
+end EltBridge
+
+#print axioms EltBridge.passTurn_pass_up
+#print axioms EltBridge.passTurn_bounce
+#print axioms EltBridge.passTurn_keeps_edge_at_cut
