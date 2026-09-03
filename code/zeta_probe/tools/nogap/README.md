@@ -8305,3 +8305,27 @@ So the remaining work for (M3) is a windowed restatement of `Guarded`: condition
 equivalence is the boundary bookkeeping BLOCK 226 deferred, and it is now unavoidable.
 This is not a new mathematical gap -- the set equality is proved -- but it is more than
 the "no new construction" BLOCK 228 predicted, and that prediction was wrong.
+
+## 2026-09-04 — BLOCK 230: the flow telescopes; BLOCK 229's diagnosis partly corrected
+
+BLOCK 229 blamed decidability of `Guarded` for blocking the sum chain.  That was the wrong
+diagnosis.  The real requirement is that the transfer kernel VANISH on paths no
+configuration realises, which needs the guard to be local plus boundary -- decidability is
+a symptom, not the cause.
+
+And of the conditions in `Guarded`, the one that looks global -- `dep`, that the departure
+marker fires exactly once -- is NOT an assumption:
+
+    telescope_flow    f(A) + total arrival = f(A+n) + total departure
+    sum_markers_eq    so when the flow vanishes at both ends the totals agree
+
+The arrival total is `1`, because the arrival marker fires only at `0` and `0` lies on the
+span.  So exactly one departure marker fires, forced by the flow rather than imposed.
+0 sorry, both clean on the first build.
+
+**Where this leaves (M3).**  The guard is closer to local-plus-boundary than BLOCK 229
+suggested: `stepB` is local, `validB`/`epsValidB` are per-state, `endValidB` is boundary,
+`dep` is now derivable, and `outer` is the boundary condition that the end states carry no
+deposit and no travel.  What is still not written is the kernel that encodes all of them
+and the proof that it vanishes elsewhere.  That is the remaining piece, and it is smaller
+than it looked one block ago.

@@ -7092,6 +7092,49 @@ theorem stateFns_eq_guarded (A B kstar : ℤ) :
   · intro hg
     exact exists_config_stateOf hg
 
+/-! ### The flow telescopes, so the departure marker is not an assumption
+
+BLOCK 229 blamed decidability.  Looking harder, the real requirement is that the transfer
+kernel VANISH on paths no configuration realises, which needs the guard to be local plus
+boundary.  Of the conditions in `Guarded`, the one that looks global is `dep` -- that the
+departure marker fires exactly once.
+
+It is not an assumption.  Telescoping the flow across the span gives
+
+    f(A) + (total arrival) = f(A + n) + (total departure),
+
+and `f` vanishes at both ends of the span, so the two totals agree; the arrival total is
+`1`, because the arrival marker fires only at `0` and `0` lies on the span.  So exactly one
+departure marker fires, and it is forced by the flow rather than imposed. -/
+
+/-- **The flow telescopes.** -/
+theorem telescope_flow (f a d : ℤ → ℤ)
+    (h : ∀ j : ℤ, f j + a (j + 1) = f (j + 1) + d (j + 1)) :
+    ∀ (n : ℕ) (A : ℤ), f A + ∑ k ∈ Finset.range n, a (A + 1 + k)
+      = f (A + n) + ∑ k ∈ Finset.range n, d (A + 1 + k) := by
+  intro n
+  induction n with
+  | zero => intro A; simp
+  | succ m ih =>
+      intro A
+      rw [Finset.sum_range_succ (fun k : ℕ => a (A + 1 + (k : ℤ))) m,
+        Finset.sum_range_succ (fun k : ℕ => d (A + 1 + (k : ℤ))) m]
+      have h1 := ih A
+      have h2 := h (A + m)
+      have e1 : A + 1 + (m : ℤ) = A + (m : ℤ) + 1 := by ring
+      have e2 : A + ((m : ℕ) + 1 : ℕ) = A + (m : ℤ) + 1 := by push_cast; ring
+      rw [e1, e2]
+      omega
+
+/-- **Hence the totals agree when the flow vanishes at both ends.**  Applied to the travel
+indicator this says: one arrival, so exactly one departure. -/
+theorem sum_markers_eq (f a d : ℤ → ℤ)
+    (h : ∀ j : ℤ, f j + a (j + 1) = f (j + 1) + d (j + 1))
+    (n : ℕ) (A : ℤ) (h0 : f A = 0) (hn : f (A + n) = 0) :
+    ∑ k ∈ Finset.range n, a (A + 1 + k) = ∑ k ∈ Finset.range n, d (A + 1 + k) := by
+  have ht := telescope_flow f a d h n A
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14715,3 +14758,5 @@ end EltBridge
 #print axioms EltBridge.stateOf_eq_of_guarded
 #print axioms EltBridge.exists_config_stateOf
 #print axioms EltBridge.stateFns_eq_guarded
+#print axioms EltBridge.telescope_flow
+#print axioms EltBridge.sum_markers_eq
