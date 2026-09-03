@@ -8874,3 +8874,20 @@ which is the constancy along the path.
 **Four of the six cases are now proved in extension form** (far on both sides, and this
 one); the two remaining are the step out of `B` into `B + 1` and the step from `A - 1` into
 `A`, whose ingredients are BLOCKS 252-253.
+
+## 2026-09-04 — BLOCK 257: the step out of the right end
+
+    extendFlag_at_B              at B the extension is the path's own state
+    flagStepB_extendFlag_out     and the step out of B holds
+
+0 sorry.
+
+**One hypothesis is taken rather than proved**, and it is worth naming: `extendFlag_at_B`
+needs the path's flag at `B` to be the canonical `decide (0 <= B)`.  That IS forced by the
+guard -- the flag advances only at the arrival, and the arrival is at the origin -- but the
+derivation is an induction along the path, and it is not written.  So `flagStepB_extendFlag_out`
+carries `hflag` as an assumption.
+
+**Five of the six extension cases are now proved**; the step from `A - 1` into `A` remains,
+and it will need the same flag fact at `A`.  Writing that induction once will discharge it
+for both.

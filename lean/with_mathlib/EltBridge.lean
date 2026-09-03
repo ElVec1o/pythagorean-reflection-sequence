@@ -8207,6 +8207,33 @@ theorem flagStepB_extendFlag_beyond (g : ℤ → FlagState) (A B : ℤ) (hA : A 
   simp [flagStepB, fullStepB, stepB, compatB, flowB, validB, epsValidB, extState, preState,
     h1, h2, heps, hdel, hepsv]
 
+/-! ### The step out of the right end
+
+At `B` the extension is the path's own state -- provided the path's flag is the canonical
+one, `0 <= j`.  That is forced by the guard (the flag advances only at the arrival, and the
+arrival is at the origin), but the derivation is an induction; it is taken as a hypothesis
+here and noted as owed. -/
+
+theorem extendFlag_at_B (g : ℤ → FlagState) (A B : ℤ) (hAB : A ≤ B)
+    (hflag : (g B).past = decide (0 ≤ B)) : extendFlag g A B B = g B := by
+  show (⟨extendFn (fun i => (g i).st) A B B, decide (0 ≤ B)⟩ : FlagState) = g B
+  rw [extendFn_eq_on _ A B hAB le_rfl, ← hflag]
+
+theorem flagStepB_extendFlag_out (g : ℤ → FlagState) (A B : ℤ) (hB : 0 ≤ B) (hAB : A ≤ B)
+    (hflag : (g B).past = decide (0 ≤ B)) (hfcur : 0 ≤ (g B).st.fcur)
+    (hepsv : epsValidB (g B).st = true) :
+    flagStepB (extendFlag g A B B) (extendFlag g A B (B + 1)) = true := by
+  rw [extendFlag_at_B g A B hAB hflag, extendFlag_at_succ_B]
+  have h1 : decide ((0 : ℤ) ≤ B) = true := decide_eq_true hB
+  have h2 : decide ((0 : ℤ) ≤ B + 1) = true := decide_eq_true (by omega)
+  have hc : compatB (g B).st (extState (g B).st) = true := compatB_extState _
+  have hf : flowB (g B).st (extState (g B).st) = true := flowB_extState _ hfcur
+  have hv : validB (extState (g B).st) = true := by simp [validB, extState]
+  have he : epsValidB (extState (g B).st) = true := by
+    simpa [epsValidB, extState] using hepsv
+  have ha : (extState (g B).st).arr = 0 := rfl
+  simp [flagStepB, fullStepB, stepB, hc, hf, hv, he, ha, hflag, h1, h2]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15891,3 +15918,5 @@ end EltBridge
 #print axioms EltBridge.flagStepB_extendFlag_far
 #print axioms EltBridge.extendFlag_at_succ_B
 #print axioms EltBridge.flagStepB_extendFlag_beyond
+#print axioms EltBridge.extendFlag_at_B
+#print axioms EltBridge.flagStepB_extendFlag_out
