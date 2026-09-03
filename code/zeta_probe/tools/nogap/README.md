@@ -8688,3 +8688,21 @@ span; `extendFn` supplies them, and `extendFn_stateOf` shows the supply is the c
 -- it reproduces `stateOf` exactly rather than merely being consistent with it.  The three
 branches are the span, the inherited right boundary, and everything else, and each is
 discharged from `houter`, `travel_zero_off`, and the two marker positions.
+
+## 2026-09-04 — BLOCK 247: `outer` holds for the extension of ANY path
+
+    extendFn_eq_on    the extension agrees with the path on the span
+    extendFn_outer    and off the span it carries no deposit and no travel -- for ANY
+                      path, with no hypothesis at all
+    extendFn_eps      the sign data carries through (NO AXIOMS)
+
+0 sorry, all three clean on the first build.
+
+`extendFn` was built so that both extension states satisfy `outer` by construction:
+`extState` sets `dcur` and `fcur` to zero explicitly, and `preState` is all-zero.  So the
+`outer` field of `guarded_of_flag` -- the one BLOCK 244 identified as the obstacle -- is
+now discharged unconditionally.
+
+**All of `guarded_of_flag`'s hypotheses are now available for an arbitrary guarded path**,
+`outer` included.  The remaining work is the summation over paths, which I will not
+characterise in advance.

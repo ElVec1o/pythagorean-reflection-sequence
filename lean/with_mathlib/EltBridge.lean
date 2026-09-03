@@ -7883,6 +7883,36 @@ theorem extendFn_stateOf (P : SiteCost.PathData) :
       · show (0 : ℕ) = P.vD j
         unfold SiteCost.PathData.vD; rw [if_neg (by omega)]
 
+/-! ### `outer` holds for the extension of ANY path
+
+`extendFn` was built so that both extension states carry no deposit and no travel:
+`extState` sets `dcur` and `fcur` to zero explicitly, and `preState` is all-zero.  So
+`outer` is unconditional -- it needs no hypothesis on the path at all. -/
+
+theorem extendFn_eq_on (st : ℤ → LocalState) (A B : ℤ) {j : ℤ} (h1 : A ≤ j) (h2 : j ≤ B) :
+    extendFn st A B j = st j := if_pos ⟨h1, h2⟩
+
+theorem extendFn_outer (st : ℤ → LocalState) (A B : ℤ) :
+    ∀ j : ℤ, j < A ∨ B < j →
+      (extendFn st A B j).dcur = 0 ∧ (extendFn st A B j).fcur = 0 := by
+  intro j hj
+  unfold extendFn
+  rw [if_neg (by omega)]
+  by_cases h2 : j = B + 1
+  · rw [if_pos h2]; exact ⟨rfl, rfl⟩
+  · rw [if_neg h2]; exact ⟨rfl, rfl⟩
+
+/-- The extension's sign data is the path's, everywhere. -/
+theorem extendFn_eps (st : ℤ → LocalState) (A B : ℤ) (j : ℤ)
+    (heps : ∀ i : ℤ, (st i).eps = (st A).eps) : (extendFn st A B j).eps = (st A).eps := by
+  unfold extendFn
+  by_cases h1 : A ≤ j ∧ j ≤ B
+  · rw [if_pos h1]; exact heps j
+  · rw [if_neg h1]
+    by_cases h2 : j = B + 1
+    · rw [if_pos h2]; exact heps B
+    · rw [if_neg h2]; rfl
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15545,3 +15575,5 @@ end EltBridge
 #print axioms EltBridge.extState_stateOf
 #print axioms EltBridge.preState_stateOf
 #print axioms EltBridge.extendFn_stateOf
+#print axioms EltBridge.extendFn_outer
+#print axioms EltBridge.extendFn_eps
