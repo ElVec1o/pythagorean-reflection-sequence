@@ -8550,6 +8550,47 @@ theorem hB1_of_balance (g : ℤ → LocalState) {A B kstar : ℤ} (S : ℤ)
       obtain ⟨j0, hj1, hj2, hfire⟩ := hone hS1
       exact absurd hcon (kstar_le_B_of_dep g hj1 hj2 hspan hfire)
 
+/-! ### A fully guarded path yields a configuration
+
+The composition: `flagStepB_extendFlag` (BLOCK 260) gives the guard everywhere, the marker
+lemmas (BLOCKS 261-262) give `arrv`, `dep` and `depv` everywhere, `extendFlag_outer`
+(BLOCK 251) gives `outer`, and `exists_config_of_flag` (BLOCK 243) assembles them. -/
+
+theorem exists_config_of_path {A B kstar : ℤ} (g : ℤ → FlagState)
+    (hpath : FlagPath A B g)
+    (hendA : endValidB (g A).st = true) (hendB : endValidB (g B).st = true)
+    (hvalidB : validB (g B).st = true)
+    (harrv : ∀ j : ℤ, A ≤ j → j ≤ B → (g j).st.arr = SiteCost.vArr j)
+    (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1)
+    (hdep : ∀ j : ℤ, A ≤ j → j ≤ B → ((g j).st.dep = 1 ↔ j = kstar))
+    (hdepv : ∀ j : ℤ, A ≤ j → j ≤ B → (g j).st.dep = 0 ∨ (g j).st.dep = 1)
+    (hfB : (g B).st.fcur = 0 ∨ (g B).st.fcur = 1 ∨ (g B).st.fcur = -1)
+    (hB1 : (g B).st.fcur.natAbs = 1 ↔ kstar = B + 1) :
+    ∃ P : SiteCost.PathData, P.A = A ∧ P.B = B ∧ P.kstar = kstar
+      ∧ stateOf P = fun j => (extendFlag g A B j).st := by
+  have hA := hpath.loA
+  have hB := hpath.hiB
+  have hAB : A ≤ B := by omega
+  have hgA : (extendFlag g A B A).st = (g A).st :=
+    congrArg FlagState.st (extendFlag_at_span g A B le_rfl hAB (hpath.flag A le_rfl hAB))
+  have hgB : (extendFlag g A B B).st = (g B).st :=
+    congrArg FlagState.st (extendFlag_at_span g A B hAB le_rfl (hpath.flag B hAB le_rfl))
+  refine exists_config_of_flag (flagStepB_extendFlag A B g hpath) ?_ ?_
+    (extendFlag_outer g A B) ?_ ?_ ?_ hA hB hk1 hk2
+  · rw [hgA]
+    simp only [headOkB, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨⟨⟨hpath.validA, hpath.epsvA⟩, hendA⟩, hpath.dprevA⟩
+  · rw [hgB]
+    simp only [Bool.and_eq_true]
+    exact ⟨⟨hvalidB, hpath.epsvB⟩, hendB⟩
+  · exact extendFn_arrv (fun i => (g i).st) A B hA hB harrv
+  · exact extendFn_dep (fun i => (g i).st) A B kstar hA hB hk1 hk2 hdep hB1
+  · exact extendFn_depv (fun i => (g i).st) A B hdepv (by
+      rcases hfB with h | h | h
+      · exact Or.inl h
+      · exact Or.inr (Or.inl h)
+      · exact Or.inr (Or.inr h))
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16251,3 +16292,4 @@ end EltBridge
 #print axioms EltBridge.kstar_eq_succ_B_of_no_dep
 #print axioms EltBridge.kstar_le_B_of_dep
 #print axioms EltBridge.hB1_of_balance
+#print axioms EltBridge.exists_config_of_path

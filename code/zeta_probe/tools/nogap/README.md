@@ -9066,3 +9066,20 @@ complete and guarded everywhere, and the guard is closed -- no clause of it is a
 What remains is the sum comparison itself: `Finset.sum_subset` between the configurations'
 image and all paths, with `pathWeight_zero_of_guard_fails` (BLOCK 250) supplying the
 vanishing.
+
+## 2026-09-04 — BLOCK 267: a fully guarded path yields a configuration
+
+    exists_config_of_path   the composition, end to end
+
+0 sorry.  One failure, a typo diagnosed at once: `(g B).fcur` projects `fcur` from
+`FlagState` rather than from its `LocalState` field.
+
+The pieces: `flagStepB_extendFlag` (BLOCK 260) gives the guard at every index,
+`extendFn_arrv` / `extendFn_dep` / `extendFn_depv` (BLOCKS 261-262) give the markers
+everywhere, `extendFlag_outer` (BLOCK 251) gives `outer`, `extendFlag_at_span` (BLOCK 260)
+identifies the boundary states with the path's own, and `exists_config_of_flag` (BLOCK 243)
+assembles them.
+
+**[Rule 0] VERIFIED: a guarded flagged path of any span is the state path of a
+configuration.**  This is the converse direction of (M3) in fully composed form -- from a
+finite path, with no hypotheses beyond what the kernel and the two boundary vectors check.
