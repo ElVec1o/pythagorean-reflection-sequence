@@ -463,6 +463,51 @@ theorem no_data_of_deficit {α : Type*} [Fintype α] [DecidableEq α]
   rintro ⟨D, hts, hta⟩
   exact hne (balance_of_data siteOf isArr D hts hta s)
 
+/-! ### Correction: the obstruction is `hsite`, not `hpe`/`hpt`
+
+Put the virtual pair on a common phantom edge `bnd` beyond the span, with the two
+ends distinguished by `atTop`.  Then the partner **is** edge-local and end-flipping
+everywhere: `hpe` and `hpt` hold globally.  What fails is `hsite`, which ties a site
+to its edge -- and must fail, since the virtual ends' sites are `0` and `kstar` while
+their edge is `bnd`.
+
+So BLOCK 12's measurement was of the wrong hypothesis.  `hpe`/`hpt` are not the
+obstruction; `hsite` is. -/
+
+/-- Edge of an extended end, virtual ends on a phantom edge `bnd`. -/
+def VEndpt.edgeOf {n : ℕ} {mm : Fin n → ℕ} (bnd : ℤ) : VEndpt n mm → ℤ
+  | .inl x => EndType.edgeOf x
+  | .inr _ => bnd
+
+/-- Which end of its crossing an extended end is. -/
+def VEndpt.atTop {n : ℕ} {mm : Fin n → ℕ} : VEndpt n mm → Bool
+  | .inl x => EndType.atTop x
+  | .inr b => b
+
+/-- **`hpe` holds globally** on the extended type. -/
+theorem VEndpt.hpe {n : ℕ} {mm : Fin n → ℕ} (bnd : ℤ) (x : VEndpt n mm) :
+    VEndpt.edgeOf bnd (VEndpt.partner x) = VEndpt.edgeOf bnd x := by
+  cases x with
+  | inl y => simpa [VEndpt.partner, VEndpt.edgeOf] using EndType.partner_edgeOf y
+  | inr b => rfl
+
+/-- **`hpt` holds globally** on the extended type. -/
+theorem VEndpt.hpt {n : ℕ} {mm : Fin n → ℕ} (x : VEndpt n mm) :
+    VEndpt.atTop (VEndpt.partner x) = !VEndpt.atTop x := by
+  cases x with
+  | inl y => rfl
+  | inr b => cases b <;> rfl
+
+/-- **`hsite` fails, and must.**  There is no `bnd` making the site-edge relation hold
+at the virtual arrival and the virtual departure at once, unless `|kstar| = 1` --
+which is `no_virtual_edge` again, now with the pairing made concrete. -/
+theorem VEndpt.hsite_fails {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
+    (h : ∀ x : VEndpt n mm, VEndpt.site kstar x
+      = VEndpt.edgeOf bnd x + (if VEndpt.atTop x then 1 else 0)) :
+    kstar = 1 ∨ kstar = -1 :=
+  VEndpt.no_virtual_edge kstar (VEndpt.edgeOf bnd) VEndpt.atTop h
+    (VEndpt.hpe bnd) VEndpt.hpt
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -485,3 +530,6 @@ end EltBridge
 #print axioms EltBridge.VEndpt.no_virtual_edge
 #print axioms EltBridge.balance_of_data
 #print axioms EltBridge.no_data_of_deficit
+#print axioms EltBridge.VEndpt.hpe
+#print axioms EltBridge.VEndpt.hpt
+#print axioms EltBridge.VEndpt.hsite_fails

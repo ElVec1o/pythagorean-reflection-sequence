@@ -2333,3 +2333,41 @@ the project has had.
 
 B1 stays yellow. What changed tonight: B1 went from "not started" to a single named,
 costed, mathematically-characterised obstruction with both alternatives eliminated.
+
+## 2026-09-03 — BLOCK 13: BLOCK 12's measurement was of the WRONG hypothesis
+
+Started branch 1 and immediately found the previous block's cost measurement was
+aimed at hpe/hpt. It should not have been.
+
+Put the virtual pair on a common phantom edge `bnd` beyond the span, with the two ends
+distinguished by atTop. Then:
+
+  VEndpt.edgeOf, VEndpt.atTop   -- the concrete choice
+  VEndpt.hpe                    -- holds GLOBALLY, axiom-free
+  VEndpt.hpt                    -- holds GLOBALLY, axiom-free
+  VEndpt.hsite_fails            -- hsite forces |kstar| = 1 (no_virtual_edge, with
+                                   the pairing now concrete)
+
+So hpe/hpt are NOT the obstruction. `hsite` -- the relation tying a site to its edge --
+is, and must be: the virtual ends' sites are 0 and kstar while their edge is bnd.
+
+CORRECTED MEASUREMENT:
+  WalkSupport   hsite in 16 of 27 declarations
+  CostMerge     15 mentions
+  ConfigMerge    0
+  ConfigLoop     0        (BLOCK 12 reported 10 for hpe/hpt; for hsite it is zero)
+
+And hsite localizes the same way hpe/hpt did -- it is used pointwise, not globally:
+
+  WalkSupport.exists_bottom_at_wLo_local   -- locality asked only at the end realising
+                                              the walk's leftmost edge
+  WalkSupport.exists_bottom_at_wLo_of_global -- the original as a special case
+  WalkSupport.shared_ends_at_wLo_local     -- hsite asked only at the end it is used on
+
+Both localizations went through with the ORIGINAL PROOF SCRIPTS UNCHANGED, which is
+the evidence that the global hypotheses were always stronger than the arguments needed.
+
+REVISED OUTLOOK for B1: the refactor is 16 declarations in one file, mechanical in the
+sense that each proof already uses the hypothesis pointwise. Not a re-proof. BLOCK 12
+called this "mathematical rather than clerical" -- that was wrong, and it was wrong
+because it measured hpe/hpt instead of hsite.

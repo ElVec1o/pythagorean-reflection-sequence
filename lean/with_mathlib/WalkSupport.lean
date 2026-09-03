@@ -81,6 +81,56 @@ theorem exists_bottom_at_wLo (edgeOf : α → ℤ) (atTop : α → Bool) (D : Da
     · rw [hpe]; exact hxe
     · rw [hpt]; simp at hb; simp [hb]
 
+/-- **The same, with locality asked only where it is used.**
+
+`exists_bottom_at_wLo` asks that the crossing partner keep the edge and flip the end
+*everywhere*.  The proof uses that at exactly one end: the one realising the walk's
+leftmost edge.  This version asks for it only there.
+
+The point is that the weaker hypothesis is satisfiable by an end type carrying ends
+whose partner is not edge-local -- a virtual pair spanning many edges -- provided
+those ends are never leftmost in their walk. -/
+theorem exists_bottom_at_wLo_local (edgeOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (z : α)
+    (hloc : ∀ x, (graph D).Reachable z x → edgeOf x = wLo edgeOf (graph D) z →
+      edgeOf (D.p x) = edgeOf x ∧ atTop (D.p x) = !atTop x) :
+    ∃ x : α, (graph D).Reachable z x ∧ edgeOf x = wLo edgeOf (graph D) z ∧
+      atTop x = false := by
+  obtain ⟨x, hx, hxe⟩ := exists_end_at_wLo edgeOf (graph D) z
+  by_cases hb : atTop x = false
+  · exact ⟨x, hx, hxe, hb⟩
+  · obtain ⟨he, ht⟩ := hloc x hx hxe
+    refine ⟨D.p x, hx.trans (reachable_partner D x), ?_, ?_⟩
+    · rw [he]; exact hxe
+    · rw [ht]; simp at hb; simp [hb]
+
+/-- The original is the special case where locality holds everywhere. -/
+theorem exists_bottom_at_wLo_of_global (edgeOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x) (z : α) :
+    ∃ x : α, (graph D).Reachable z x ∧ edgeOf x = wLo edgeOf (graph D) z ∧
+      atTop x = false :=
+  exists_bottom_at_wLo_local edgeOf atTop D z (fun x _ _ => ⟨hpe x, hpt x⟩)
+
+omit [DecidableEq α] in
+/-- **The extraction, with `hsite` asked only at the end it is used on.**
+
+Like `exists_bottom_at_wLo_local`: the global site-edge relation is asked of one end.
+This matters because the site-edge relation is exactly the hypothesis that a virtual
+pair -- ends whose site is not determined by their edge -- cannot satisfy. -/
+theorem shared_ends_at_wLo_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (G : SimpleGraph α) (z y : α)
+    (hsy : siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hy : edgeOf y = wLo edgeOf G z - 1) (hyt : atTop y = true) :
+    siteOf y = wLo edgeOf G z ∧ ¬ G.Reachable z y := by
+  constructor
+  · rw [hyt] at hsy
+    simp only [if_true] at hsy
+    omega
+  · intro hc
+    have := wLo_le edgeOf G hc
+    omega
+
 omit [DecidableEq α] in
 /-- **The extraction, over walks.**  The top end of the edge immediately left of a
 walk's support sits at the walk's leftmost site and lies in a *different walk* --
@@ -468,3 +518,6 @@ theorem maxWLoOn_spec (edgeOf : α → ℤ) (G : SimpleGraph α)
 
 -- Certification (Rule 5).
 #print axioms WalkSupport.maxWLoOn_spec
+#print axioms WalkSupport.exists_bottom_at_wLo_local
+#print axioms WalkSupport.exists_bottom_at_wLo_of_global
+#print axioms WalkSupport.shared_ends_at_wLo_local
