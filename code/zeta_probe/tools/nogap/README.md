@@ -3735,3 +3735,26 @@ The upper and lower bounds now come from the SAME hypothesis: blk_or_local_of_tu
 feeds both walkCount_le_runs_blk and exists_injective_components_avoiding_blk_or_local.
 Before tonight the two halves took different hypotheses (Local for one, hcovAll and hZ
 for the other), which is part of why the incompatibility took so long to see.
+
+## 2026-09-03 — BLOCK 65: under hgap, cut sites carry only REAL ends
+
+  VEndpt.cut_ends_real     -- every end at a cut site is real: a virtual end sits at s0
+                              or s1, and hgap excludes both from Zf
+  VEndpt.site_edge_at_cut  -- so the site-edge relation holds at every end of a cut
+                              site, which is exactly what BLOCK 62's free-pair argument
+                              needs
+Both propext + Quot.sound only.
+
+This is the bridge for porting TurnInv to the extended type. same_edge_of_site_top --
+the step that makes the free pair share an edge -- holds only where site = edge + [top],
+and that fails at virtual ends. hgap makes the failure irrelevant by keeping virtual
+sites out of the cut set entirely.
+
+Note how the pieces line up: BLOCK 55 showed a virtual site CAN be cut, BLOCK 56 said
+exactly when, BLOCK 58 found an element where it is not, and BLOCK 65 shows that when
+it is not, the whole free-pair argument transfers. The condition that looked like an
+obstruction in BLOCK 55 is the same condition that makes the port work.
+
+WHY shield_turnInv ALONE IS NOT ENOUGH: it is stated for Endpt, and a PathData
+configuration is unbalanced there (that is why VEndpt exists). So the Endpt-side repair
+of BLOCKS 60-64 has to be carried to VEndpt, and this block supplies the missing step.

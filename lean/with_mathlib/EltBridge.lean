@@ -3724,6 +3724,39 @@ theorem shield_turnInv {n : ℕ} {m : Fin n → ℕ}
         ((WalkGraph.graph D').connectedComponentMk z₀)
     exact walkCount_ge_of_avoiding_gen D' Zf.card _ F hinj havoid
 
+/-! ### Under `hgap`, cut sites carry only real ends
+
+`TurnInv` ports to the extended type provided the free-pair argument still works at a
+cut site, and that needs `same_edge_of_site_top` -- which holds only at real ends.
+`hgap` supplies exactly that: it excludes both virtual sites from the cut set. -/
+
+/-- **Every end at a cut site is real**, under `hgap`. -/
+theorem VEndpt.cut_ends_real {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hle : s1 ≤ s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (x : VEndpt n mm) (hmem : VEndpt.siteP s0 s1 x ∈ Zf) :
+    ∃ u : EndType.Endpt n mm, x = Sum.inl u := by
+  cases hcase : x with
+  | inl u => exact ⟨u, rfl⟩
+  | inr b =>
+    exfalso
+    rw [hcase] at hmem
+    cases b
+    · exact hgap _ hmem ⟨by simp only [VEndpt.siteP]; omega,
+        by simp only [VEndpt.siteP]; omega⟩
+    · exact hgap _ hmem ⟨by simp only [VEndpt.siteP]; omega,
+        by simp only [VEndpt.siteP]; omega⟩
+
+/-- **So the site-edge relation holds at every end of a cut site**, and the free-pair
+argument of BLOCK 62 transfers to the extended type. -/
+theorem VEndpt.site_edge_at_cut {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hle : s1 ≤ s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0)) (bnd : ℤ)
+    (x : VEndpt n mm) (hmem : VEndpt.siteP s0 s1 x ∈ Zf) :
+    VEndpt.siteP s0 s1 x
+      = VEndpt.edgeOf bnd x + (if VEndpt.atTop x then 1 else 0) := by
+  obtain ⟨u, hu⟩ := VEndpt.cut_ends_real s0 s1 hle Zf hgap x hmem
+  rw [hu]
+  rfl
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3869,3 +3902,5 @@ end EltBridge
 #print axioms EltBridge.exists_turnInv_connected
 #print axioms EltBridge.blk_or_local_of_turnInv
 #print axioms EltBridge.shield_turnInv
+#print axioms EltBridge.VEndpt.cut_ends_real
+#print axioms EltBridge.VEndpt.site_edge_at_cut
