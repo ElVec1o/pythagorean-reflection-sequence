@@ -6836,6 +6836,54 @@ theorem exists_fun_of_length {S : Type*} :
             :: ((A + 1) :: idxList (A + 1) m).map (fun j : ℤ => if j = A then a else g j)
           rw [if_pos rfl, hcong, ← hg]
 
+/-! ### What a guarded state function is, and that configurations give one
+
+To state the set equality (M3) needs, "guarded" has to be pinned down.  Every condition
+below has already been proved to hold of a configuration; collecting them into one
+structure names the target of the converse construction.
+
+The conditions are imposed on ALL of `ℤ`, not on a window.  That is not a strengthening --
+a configuration's state function is defined everywhere and satisfies them everywhere --
+and it avoids the boundary fiddliness of a windowed guard, where `eq_travel_of_flow`
+would need the flow to hold one step outside the span. -/
+
+/-- A state function is *guarded* when it satisfies every local condition a configuration's
+state function satisfies. -/
+structure Guarded (A B kstar : ℤ) (st : ℤ → LocalState) : Prop where
+  step : ∀ j : ℤ, stepB (st j) (st (j + 1)) = true
+  valid : ∀ j : ℤ, validB (st j) = true
+  epsv : ∀ j : ℤ, epsValidB (st j) = true
+  endA : endValidB (st A) = true
+  endB : endValidB (st B) = true
+  dep : ∀ j : ℤ, (st j).dep = 1 ↔ j = kstar
+  arrv : ∀ j : ℤ, (st j).arr = SiteCost.vArr j
+  depv : ∀ j : ℤ, (st j).dep = 0 ∨ (st j).dep = 1
+  outer : ∀ j : ℤ, j < A ∨ B < j → (st j).dcur = 0 ∧ (st j).fcur = 0
+  loA : A ≤ 0
+  hiB : 0 ≤ B
+  kstLo : A ≤ kstar
+  kstHi : kstar ≤ B + 1
+
+/-- **Forward inclusion: every configuration's state function is guarded.**  Each field is
+a theorem already proved; this collects them. -/
+theorem guarded_stateOf (P : SiteCost.PathData) :
+    Guarded P.A P.B P.kstar (stateOf P) where
+  step := stepB_stateOf P
+  valid := validB_stateOf P
+  epsv := epsValidB_stateOf P
+  endA := endValidB_at_A P
+  endB := endValidB_at_B P
+  dep := dep_eq_one_iff P
+  arrv := fun _ => rfl
+  depv := fun j => by
+    unfold stateOf SiteCost.PathData.vD
+    by_cases h : j = P.kstar <;> simp [h]
+  outer := fun j hj => ⟨(P.houter j hj).1, (P.houter j hj).2⟩
+  loA := P.hA
+  hiB := P.hB
+  kstLo := A_le_kstar P
+  kstHi := kstar_le_B_succ P
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14448,3 +14496,4 @@ end EltBridge
 #print axioms EltBridge.eq_travel_of_flow
 #print axioms EltBridge.map_idxList_congr
 #print axioms EltBridge.exists_fun_of_length
+#print axioms EltBridge.guarded_stateOf

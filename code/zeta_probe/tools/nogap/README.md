@@ -8205,3 +8205,29 @@ configurations under `statePath` IS the set of guarded paths -- one inclusion is
 theorems (BLOCKS 212, 216), the other is the construction just completed.  The chain: feed
 that into `sum_configs_eq_sum_paths` (BLOCK 223) and `weightSum_eq_sum_pathWeight`
 (BLOCK 211) to reach the matrix power.  Neither is written.
+
+## 2026-09-04 — BLOCK 226: what "guarded" means, and the forward inclusion
+
+To state the set equality (M3) needs, "guarded" has to be pinned down:
+
+    Guarded A B kstar st   every local condition a configuration's state function meets
+    guarded_stateOf        FORWARD INCLUSION: every configuration's state function is
+                           guarded -- each field a theorem already proved
+
+The conditions are imposed on all of `Z`, not on a window.  That is not a strengthening --
+a configuration's state function is defined everywhere and satisfies them everywhere --
+and it avoids the boundary fiddliness of a windowed guard, where `eq_travel_of_flow` would
+need the flow to hold one step outside the span.
+
+**The definition was incomplete on the first pass, and using it exposed that.**  Nothing
+pinned `arr` to the arrival marker, and nothing bounded `dep` to `{0,1}` -- both of which
+`flowB` needs, since it reads those fields as integers.  A "guarded" path with `dep = 5`
+somewhere would satisfy the original conditions vacuously and be unrealisable.  Two fields
+added, `arrv` and `depv`, both `rfl`-or-near for configurations.  0 sorry.
+
+That is worth recording as a near miss: had the converse been attempted against the first
+definition, it would have been unprovable, and the natural reading would have been that
+the mathematics was wrong rather than the definition incomplete.
+
+**Left for (M3):** the converse inclusion -- a guarded state function comes from a
+configuration -- which is `mkPathData` fed by `eq_travel_of_flow`, plus the final chain.
