@@ -7005,3 +7005,27 @@ shield bound taking only `hm`, a section `sec` on the span, and the cut set, and
 apply the pieces in order.  That is assembly with no remaining content, though on this
 file's record assembly is where the defects have surfaced: three of the last six blocks
 found one, each time by trying to produce a hypothesis rather than read it.
+
+## 2026-09-03 — BLOCK 183: the bounce sites, located
+
+Two facts about where the bounce set meets the runs, which is what the chain conditions
+will need.
+
+`no_bounce_inside_run`: strictly inside a run there is no bounce site.  For members of
+`Zf` that is BLOCK 181; the bounce set adds only the span's two ends, and those are
+ruled out by position -- `A` is the left end of the first run and never strictly inside
+one, `B+1` is past every edge.
+
+`runLo_mem_bounce`: a run's left end IS a bounce site.  For `r ≥ 1` it is an actual cut
+site, because `gz` equals `r` there and less just to the left, and `gz` rises only at a
+member of `Zf` (`mem_of_gz_lt`).  For `r = 0` it is the span's left end, which the
+bounce set contains.
+
+Both 0 sorry.  So the turn bounces exactly at the run boundaries and passes throughout
+their interiors -- which is the structure `run_connected_of_reachability` consumes.
+
+A note on the previous block's composition: it BUILT, and the linter then flagged `hsec`,
+`hspan` and `hm` as unused.  That is the tell -- the statement had `hrun` as a
+hypothesis, so the section property did no work and the theorem was true for a reason
+that had nothing to do with the construction.  Deriving `hrun` rather than assuming it
+is the remaining task, and these two lemmas are its first half.

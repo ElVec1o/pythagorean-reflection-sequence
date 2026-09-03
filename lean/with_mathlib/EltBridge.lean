@@ -10244,3 +10244,133 @@ end EltBridge
 
 #print axioms EltBridge.run_mem_levelSet
 #print axioms EltBridge.hocc_of_section
+
+namespace EltBridge
+
+/-! ### The composition
+
+Everything since BLOCK 153 in one statement.  The inputs are `mu = 2`, a section `sec`
+naming the edge at each position of the span, the cut set `Zf`, and a bounce set `Bs`
+containing it.  The turn is `passTurn` over `Bs`, the datum is its glue, and the
+conclusion is `walkCount ≤ |Zf| + 1`.
+
+The section must extend one position past the span: site `B+1` carries the tops of edge
+`B`, so it is occupied and the geometry lemmas are applied there. -/
+
+/-- **The `mu = 2` shield bound, composed.**  Given the section and the run structure,
+the glued `passTurn` datum has at most `|Zf| + 1` walks. -/
+theorem shield_mu_two_composed {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (sec : ℤ → Fin n) (Zf Bs : Finset ℤ) (A B : ℤ) (hsub : Zf ⊆ Bs)
+    (hsec : ∀ j : ℤ, A ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j)
+    -- the span carries the ends
+    (hspan : ∀ x : EndType.Endpt n m, A ≤ EndType.edgeOf x ∧ EndType.edgeOf x ≤ B)
+    -- the datum, glued from the turn
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = passTurn EndType.siteOf EndType.partner
+      (upOf (m := m) hm sec) (dnOf (m := m) hm sec) Bs (EndType.siteOf x) x)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    -- the runs are connected, which the chain lemmas supply
+    (hrun : ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph E).Reachable (botOf x) (botOf y)) :
+    WalkGraph.walkCount E ≤ Zf.card + 1 :=
+  shield_upper_bound_bounce_set Zf Bs hsub
+    (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+    (fun s => upOf_dnOf_edgeOf hm sec s)
+    E hEp hEt hTsite hrun
+
+end EltBridge
+
+#print axioms EltBridge.shield_mu_two_composed
+
+namespace EltBridge
+
+/-! ### No bounce site strictly inside a run
+
+`no_cut_inside_run` rules out members of `Zf`.  The bounce set adds the span's two ends,
+so they must be ruled out too -- and they are, for position reasons: `A` is the left end
+of the first run, never strictly inside one, and `B+1` is past every edge. -/
+
+theorem no_bounce_inside_run (Zf : Finset ℤ) (A B : ℤ) (r k : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty) (hk : k < runLen Zf A B r) :
+    runLo Zf A B r + ((k : ℤ) + 1) ∉ insert A (insert (B + 1) Zf) := by
+  classical
+  -- the run sits inside the span
+  have hlo : runLo Zf A B r = (levelSet Zf A B r).min' hne := by rw [runLo, dif_pos hne]
+  have hminmem := Finset.min'_mem (levelSet Zf A B r) hne
+  have hmaxmem := Finset.max'_mem (levelSet Zf A B r) hne
+  have hlen : runLen Zf A B r
+      = ((levelSet Zf A B r).max' hne - (levelSet Zf A B r).min' hne).toNat := by
+    rw [runLen, dif_pos hne]
+  have hminA : A ≤ (levelSet Zf A B r).min' hne := by
+    have := hminmem
+    simp only [levelSet, Finset.mem_filter, Finset.mem_Icc] at this
+    exact this.1.1
+  have hmaxB : (levelSet Zf A B r).max' hne ≤ B := by
+    have := hmaxmem
+    simp only [levelSet, Finset.mem_filter, Finset.mem_Icc] at this
+    exact this.1.2
+  have hle := Finset.min'_le_max' (levelSet Zf A B r) hne
+  intro hmem
+  rw [Finset.mem_insert, Finset.mem_insert] at hmem
+  rcases hmem with h | h | h
+  · -- it would have to be `A`, but it is strictly right of the run's left end
+    rw [hlo] at h; omega
+  · -- or `B+1`, but it is at most `B`
+    rw [hlo] at h; omega
+  · exact no_cut_inside_run Zf A B r k hne hk h
+
+end EltBridge
+
+#print axioms EltBridge.no_bounce_inside_run
+
+namespace EltBridge
+
+/-! ### The run's left end is a bounce site
+
+For `r ≥ 1` the run's left end is an actual CUT site: `gz` is `r` there and less just to
+the left, and `gz` can only rise at a member of `Zf`.  For `r = 0` it is the span's left
+end, which the bounce set contains. -/
+
+/-- **`gz` rises only at a cut site.** -/
+theorem mem_of_gz_lt (Zf : Finset ℤ) (j : ℤ)
+    (h : CutComponents.gz Zf (j - 1) < CutComponents.gz Zf j) : j ∈ Zf := by
+  classical
+  by_contra hj
+  exact absurd (CutComponents.gz_step_eq Zf hj) (by omega)
+
+/-- **`hbdry`.**  A run's left end is a bounce site: a cut site when the run is not the
+first, and the span's left end when it is. -/
+theorem runLo_mem_bounce (Zf : Finset ℤ) (A B : ℤ) (r : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty)
+    (hmin : ∀ j : ℤ, A ≤ j → j ≤ B → CutComponents.gz Zf j = r → runLo Zf A B r ≤ j) :
+    runLo Zf A B r ∈ insert A (insert (B + 1) Zf) := by
+  classical
+  have hlo : runLo Zf A B r = (levelSet Zf A B r).min' hne := by rw [runLo, dif_pos hne]
+  have hmem0 : runLo Zf A B r ∈ levelSet Zf A B r := by
+    rw [hlo]; exact Finset.min'_mem _ hne
+  have hmem1 : runLo Zf A B r ∈ Finset.Icc A B ∧
+      CutComponents.gz Zf (runLo Zf A B r) = r := by
+    have h := hmem0
+    simp only [levelSet, Finset.mem_filter] at h
+    exact h
+  have hA' : A ≤ runLo Zf A B r := (Finset.mem_Icc.mp hmem1.1).1
+  have hB' : runLo Zf A B r ≤ B := (Finset.mem_Icc.mp hmem1.1).2
+  have hgzr : CutComponents.gz Zf (runLo Zf A B r) = r := hmem1.2
+  by_cases hA : runLo Zf A B r = A
+  · rw [hA]; exact Finset.mem_insert_self _ _
+  · refine Finset.mem_insert_of_mem (Finset.mem_insert_of_mem ?_)
+    refine mem_of_gz_lt Zf _ ?_
+    have hmono := gz_mono Zf (show runLo Zf A B r - 1 ≤ runLo Zf A B r by omega)
+    rcases Nat.lt_or_ge (CutComponents.gz Zf (runLo Zf A B r - 1)) r with h | h
+    · omega
+    · exfalso
+      have heq : CutComponents.gz Zf (runLo Zf A B r - 1) = r := by omega
+      have := hmin (runLo Zf A B r - 1) (by omega) (by omega) heq
+      omega
+
+end EltBridge
+
+#print axioms EltBridge.mem_of_gz_lt
+#print axioms EltBridge.runLo_mem_bounce
