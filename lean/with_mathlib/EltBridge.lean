@@ -12362,3 +12362,73 @@ end EltBridge
 
 #print axioms EltBridge.globalName_eq_nameAt
 #print axioms EltBridge.shield_law_mu_general
+
+namespace EltBridge
+
+/-! ## The run structure, supplied
+
+`shield_law_mu_general` asks for `lo`, `len` and several facts about them.  Taking the
+level sets of `gz` as the runs -- `runLo` and `runLen` of BLOCK 181 -- almost all are
+already proved; the one missing is the mirror of `runLo_mem_bounce`, that a run's RIGHT
+end is a bounce site too. -/
+
+theorem gz_at_run (Zf : Finset ℤ) (A B : ℤ) (r k : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty) (hk : k ≤ runLen Zf A B r) :
+    CutComponents.gz Zf (runLo Zf A B r + (k : ℤ)) = r := by
+  have h := run_mem_levelSet Zf A B r k hne hk
+  simp only [levelSet, Finset.mem_filter] at h
+  exact h.2
+
+theorem run_pos_in_span (Zf : Finset ℤ) (A B : ℤ) (r k : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty) (hk : k ≤ runLen Zf A B r) :
+    A ≤ runLo Zf A B r + (k : ℤ) ∧ runLo Zf A B r + (k : ℤ) ≤ B := by
+  have h := run_mem_levelSet Zf A B r k hne hk
+  simp only [levelSet, Finset.mem_filter, Finset.mem_Icc] at h
+  exact h.1
+
+/-- **A run's right end is a bounce site.**  Either it is the span's right edge, or `gz`
+rises just past it, which happens only at a cut site. -/
+theorem runHi_succ_mem_bounce (Zf : Finset ℤ) (A B : ℤ) (r : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty)
+    (hmax : ∀ j : ℤ, A ≤ j → j ≤ B → CutComponents.gz Zf j = r →
+      j ≤ runLo Zf A B r + (runLen Zf A B r : ℤ)) :
+    runLo Zf A B r + (runLen Zf A B r : ℤ) + 1 ∈ insert A (insert (B + 1) Zf) := by
+  classical
+  obtain ⟨hA, hB⟩ := run_pos_in_span Zf A B r (runLen Zf A B r) hne (le_refl _)
+  have hgzhi : CutComponents.gz Zf (runLo Zf A B r + (runLen Zf A B r : ℤ)) = r :=
+    gz_at_run Zf A B r _ hne (le_refl _)
+  by_cases hBB : runLo Zf A B r + (runLen Zf A B r : ℤ) = B
+  · rw [hBB]
+    exact Finset.mem_insert_of_mem (Finset.mem_insert_self _ _)
+  · refine Finset.mem_insert_of_mem (Finset.mem_insert_of_mem ?_)
+    refine mem_of_gz_lt Zf _ ?_
+    have harith : runLo Zf A B r + (runLen Zf A B r : ℤ) + 1 - 1
+        = runLo Zf A B r + (runLen Zf A B r : ℤ) := by ring
+    rw [harith, hgzhi]
+    rcases Nat.lt_or_ge r
+      (CutComponents.gz Zf (runLo Zf A B r + (runLen Zf A B r : ℤ) + 1)) with h | h
+    · exact h
+    · exfalso
+      have hmono := gz_mono Zf
+        (show runLo Zf A B r + (runLen Zf A B r : ℤ)
+          ≤ runLo Zf A B r + (runLen Zf A B r : ℤ) + 1 by omega)
+      have heq : CutComponents.gz Zf (runLo Zf A B r + (runLen Zf A B r : ℤ) + 1) = r := by
+        omega
+      have := hmax _ (by omega) (by omega) heq
+      omega
+
+/-- An occupied run has a non-empty level set. -/
+theorem levelSet_ne_of_occ {n : ℕ} {m : Fin n → ℕ} (Zf : Finset ℤ) (A B : ℤ) (r : ℕ)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (h : ∃ y : EndType.Endpt n m, CutComponents.gz Zf (EndType.edgeOf y) = r) :
+    (levelSet Zf A B r).Nonempty := by
+  obtain ⟨y, hy⟩ := h
+  exact ⟨EndType.edgeOf y, by
+    simp only [levelSet, Finset.mem_filter]
+    exact ⟨hspan y, hy⟩⟩
+
+end EltBridge
+
+#print axioms EltBridge.gz_at_run
+#print axioms EltBridge.runHi_succ_mem_bounce
+#print axioms EltBridge.levelSet_ne_of_occ
