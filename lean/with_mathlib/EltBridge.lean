@@ -6236,6 +6236,51 @@ theorem validB_stateOf (P : SiteCost.PathData) (j : ℤ) : validB (stateOf P j) 
   simp only [validB, stateOf, decide_eq_true_eq]
   exact P.hpar j
 
+/-! ### Retraction: span-minimality IS visible to the state
+
+BLOCK 214 expected `hAmin`/`hBmin` to be invisible to the states, and so expected
+surjectivity to fail.  That was wrong.  `hAmin` reads `A = 0 or d A /= 0 or f A /= 0`,
+and the state at `A` carries exactly `arr`, `dcur`, `fcur` -- with `arr = 1` iff `A = 0`
+by `arr_eq_one_iff`.  So minimality is a condition on the path's END STATES, and it is
+checkable there.  Likewise `heps` is visible in every state.
+
+That removes the obstruction BLOCK 214 anticipated.  Every field-level constraint of
+`PathData` is now accounted for:
+
+    heps    -> epsValidB, at every state
+    hpar    -> validB, at every state          (BLOCK 214)
+    hAmin   -> endValidB, at the state at A
+    hBmin   -> endValidB, at the state at B
+    hA, hB  -> the arrival marker sits somewhere on the span
+    houter  -> not a constraint: it DETERMINES the deposits off the span -/
+
+/-- The sign data is admissible. -/
+def epsValidB (σ : LocalState) : Bool := decide (σ.eps = 1 ∨ σ.eps = -1)
+
+theorem epsValidB_stateOf (P : SiteCost.PathData) (j : ℤ) :
+    epsValidB (stateOf P j) = true := by
+  simp only [epsValidB, stateOf, decide_eq_true_eq]
+  exact P.heps
+
+/-- An end state is admissible when it is the origin, or carries a deposit, or carries
+travel -- exactly `hAmin`/`hBmin`, read off the state. -/
+def endValidB (σ : LocalState) : Bool :=
+  decide (σ.arr = 1) || decide (σ.dcur ≠ 0) || decide (σ.fcur ≠ 0)
+
+theorem endValidB_at_A (P : SiteCost.PathData) : endValidB (stateOf P P.A) = true := by
+  simp only [endValidB, stateOf, Bool.or_eq_true, decide_eq_true_eq, SiteCost.vArr]
+  rcases P.hAmin with h | h | h
+  · simp [h]
+  · tauto
+  · tauto
+
+theorem endValidB_at_B (P : SiteCost.PathData) : endValidB (stateOf P P.B) = true := by
+  simp only [endValidB, stateOf, Bool.or_eq_true, decide_eq_true_eq, SiteCost.vArr]
+  rcases P.hBmin with h | h | h
+  · simp [h]
+  · tauto
+  · tauto
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13817,3 +13862,6 @@ end EltBridge
 #print axioms EltBridge.A_le_kstar
 #print axioms EltBridge.stateOf_injective'
 #print axioms EltBridge.validB_stateOf
+#print axioms EltBridge.epsValidB_stateOf
+#print axioms EltBridge.endValidB_at_A
+#print axioms EltBridge.endValidB_at_B

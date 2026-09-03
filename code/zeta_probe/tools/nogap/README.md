@@ -7923,3 +7923,31 @@ AND admissible AND has its markers in the right places.  Whether those three con
 are jointly SUFFICIENT is the open question -- and the honest expectation is that they are
 not quite, since `hAmin`/`hBmin` (minimality of the span) is a further constraint the
 state does not see.  A path whose end deposits vanish would need a shorter span.
+
+## 2026-09-04 — BLOCK 215: RETRACTION — span-minimality IS visible to the state
+
+BLOCK 214 (one block ago) expected `hAmin`/`hBmin` to be invisible to the states, and so
+expected surjectivity to fail.  **That was wrong.**  `hAmin` reads `A = 0 or d A /= 0 or
+f A /= 0`, and the state at `A` carries exactly `arr`, `dcur`, `fcur` -- with `arr = 1`
+iff `A = 0`, by `arr_eq_one_iff` (BLOCK 212).  Minimality is a condition on the path's END
+STATES and is checkable there.
+
+    epsValidB, epsValidB_stateOf     heps, visible at every state
+    endValidB, endValidB_at_A/_at_B  hAmin/hBmin, visible at the end states
+
+So every field-level constraint of `PathData` is now accounted for:
+
+    heps    -> epsValidB, every state
+    hpar    -> validB, every state              (BLOCK 214)
+    hAmin   -> endValidB at A
+    hBmin   -> endValidB at B
+    hA, hB  -> the arrival marker sits on the span
+    houter  -> not a constraint: it DETERMINES the deposits off the span
+
+0 sorry.  The obstruction BLOCK 214 anticipated does not exist.
+
+**What is still open, precisely.**  Whether those conditions are jointly SUFFICIENT --
+i.e. whether a path satisfying all of them can be assembled into a `PathData`.  That is a
+construction, not an obstruction: build `d` from the path and `0` off the span, take `eps`,
+`delta`, `kstar` from the states, and discharge the six proof fields from the guards
+above.  Nothing now suggests it fails.
