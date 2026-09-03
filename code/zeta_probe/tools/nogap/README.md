@@ -7216,3 +7216,30 @@ That is the remaining work for `mu >= 4`, and it is construction rather than
 mathematics: BLOCK 187 established that the cycle is free to place (a pass costs the
 same whichever levels it pairs) and that the one case with no pass -- a run of length 1
 -- is forced to `mu = 2` because a cut site zeroes the deposits on both its edges.
+
+## 2026-09-03 — BLOCK 190: the naming is free, which is what lets the cycle sit in a pass
+
+A subtlety in BLOCK 189's own statement, found by trying to build the turn.  `hchain`
+there is level-PRESERVING, but BLOCK 187 places the level cycle in a PASS, and a pass
+permutes levels.  Stated naively the two are inconsistent.
+
+They are reconciled by relabelling.  The level index may be permuted independently at
+each position, and a naming that absorbs the passes' permutations makes them
+level-preserving by construction.  Nothing about the connectivity changes, because
+`run_connected_in_graph_gen` already takes an ARBITRARY `f`.  What had to be loosened is
+`hrun`, which had `strOf` baked in:
+
+    hrun_of_cover          hrun from any naming that COVERS the representatives
+    strOf_covers           strOf is one such naming
+    relabelled_covers      so is strOf composed with a permutation at each position
+    shield_law_gen_named   the shield law with the naming free
+
+All 0 sorry.
+
+That is the point of the block: with the naming free, the cycle can sit in a pass, where
+BLOCK 187 showed it is FREE -- a pass costs the same whichever levels it pairs.  Had the
+naming stayed fixed, the cycle would have had to sit in a bounce, which is free only
+when a sign class holds two strands, and that fails at `pu = pd = 1`.
+
+So the `mu >= 4` construction now has somewhere to put its cycle that costs nothing, and
+the remaining work is exhibiting the turn itself.

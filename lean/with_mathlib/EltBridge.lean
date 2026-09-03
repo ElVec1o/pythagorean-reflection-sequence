@@ -11152,3 +11152,124 @@ theorem shield_law_gen (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin
 end EltBridge
 
 #print axioms EltBridge.shield_law_gen
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ### The relabelled naming
+
+`hchain` above is level-preserving, but BLOCK 187 places the level cycle in a PASS, which
+permutes levels.  The two are reconciled by relabelling: the level index may be permuted
+independently at each position, and a naming that absorbs the passes' permutations makes
+them level-preserving by construction.
+
+`run_connected_in_graph_gen` already takes an ARBITRARY `f`, so nothing about the
+connectivity changes.  What has to be loosened is `hrun_multi_gen`, which named the
+strands by `strOf`; it needs only that `f` COVERS the representatives. -/
+
+/-- **`hrun` from any covering naming.**  `f` need not be `strOf`: any indexing of the
+strands by `(position, level, side)` that covers the representatives will do, which is
+what lets a relabelling absorb the passes' permutations. -/
+theorem hrun_of_cover (hu : 0 < u)
+    (D : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (f : ℤ × Fin u × Bool → EndType.Endpt n m)
+    (hcover : ∀ x : EndType.Endpt n m, ∃ (l : Fin u) (b : Bool),
+      f (EndType.edgeOf x, l, b) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hR : ∀ a b, R a b → (WalkGraph.graph D).Reachable (f a) (f b))
+    (hsymm : ∀ a b, R a b → R b a)
+    (hchain : ∀ (r : ℕ) (k : ℕ) (l : Fin u) (b : Bool), k < len r →
+      R (lo r + k, l, b) (lo r + (k + 1 : ℕ), l, b))
+    (hjoin : ∀ (r : ℕ) (l : Fin u), R (lo r, l, true) (lo r, l, false))
+    (hcyc : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      R (lo r, ⟨i, by omega⟩, true) (lo r, ⟨i + 1, hi⟩, true)) :
+    ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph D).Reachable (botOf x) (botOf y) := by
+  classical
+  intro x y hxy
+  obtain ⟨lx, bx, hx⟩ := hcover x
+  obtain ⟨ly, by', hy⟩ := hcover y
+  obtain ⟨j, hj, hxj⟩ := hrange x
+  obtain ⟨j', hj', hyj⟩ := hrange y
+  rw [← hx, ← hy, hxj, hyj, ← hxy] at *
+  exact run_connected_in_graph_gen u D f
+    (lo (CutComponents.gz Zf (EndType.edgeOf x))) (len _) hu R hR hsymm
+    (hchain _) (hjoin _) (hcyc _) j j' hj (by rw [hxy] at hj'; exact hj') lx ly bx by'
+
+/-- `strOf` is one such naming, so `hrun_multi_gen` is the special case. -/
+theorem strOf_covers (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge) :
+    ∀ x : EndType.Endpt n m, ∃ (l : Fin u) (b : Bool),
+      (fun a => strOf (m := m) hm sec a.1 a.2.1 a.2.2) (EndType.edgeOf x, l, b) = botOf x :=
+  fun x => botOf_eq_strOf hm sec x (hsecEdge x)
+
+end EltBridge
+
+#print axioms EltBridge.hrun_of_cover
+#print axioms EltBridge.strOf_covers
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The relabelled naming covers too.**  Permuting the level index independently at
+each position is a bijection there, so it changes nothing about the cover -- which is
+exactly why the passes' permutations can be absorbed into the naming. -/
+theorem relabelled_covers (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (pi : ℤ → Equiv.Perm (Fin u))
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge) :
+    ∀ x : EndType.Endpt n m, ∃ (l : Fin u) (b : Bool),
+      (fun a => strOf (m := m) hm sec a.1 ((pi a.1) a.2.1) a.2.2)
+        (EndType.edgeOf x, l, b) = botOf x := by
+  intro x
+  obtain ⟨l', b, hl⟩ := botOf_eq_strOf hm sec x (hsecEdge x)
+  exact ⟨(pi (EndType.edgeOf x)).symm l', b, by simpa using hl⟩
+
+/-- **The shield law at general `mu`, with the naming free.**
+
+This is `shield_law_gen` with `strOf` replaced by an arbitrary covering naming, so the
+level index may be relabelled at each position.  That is what lets the level cycle sit
+in a PASS -- where BLOCK 187 showed it is free, a pass costing the same whichever levels
+it pairs -- rather than in a bounce, where it would need a sign class with two strands. -/
+theorem shield_law_gen_named (hu : 0 < u) (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (f : ℤ × Fin u × Bool → EndType.Endpt n m)
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hcover : ∀ x : EndType.Endpt n m, ∃ (l : Fin u) (b : Bool),
+      f (EndType.edgeOf x, l, b) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hR : ∀ a b, R a b → (WalkGraph.graph E).Reachable (f a) (f b))
+    (hsymm : ∀ a b, R a b → R b a)
+    (hchain : ∀ (r : ℕ) (k : ℕ) (l : Fin u) (b : Bool), k < len r →
+      R (lo r + k, l, b) (lo r + (k + 1 : ℕ), l, b))
+    (hjoin : ∀ (r : ℕ) (l : Fin u), R (lo r, l, true) (lo r, l, false))
+    (hcyc : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      R (lo r, ⟨i, by omega⟩, true) (lo r, ⟨i + 1, hi⟩, true))
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hne : Nonempty (EndType.Endpt n m)) :
+    WalkGraph.walkCount E = Zf.card + 1 := by
+  have hrun := hrun_of_cover hu E Zf lo len f hcover hrange R hR hsymm hchain hjoin hcyc
+  refine le_antisymm ?_ ?_
+  · exact shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) hTsite hturn
+      (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) hrun
+  · obtain ⟨x0⟩ := hne
+    exact walkCount_ge_passTurn E Zf A B hAB hEp hTsite hturn hlow hhigh hocc
+      ((WalkGraph.graph E).connectedComponentMk x0)
+
+end EltBridge
+
+#print axioms EltBridge.relabelled_covers
+#print axioms EltBridge.shield_law_gen_named
