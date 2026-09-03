@@ -1637,6 +1637,142 @@ theorem Elt.merges_to_one (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
     (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A) bnd (by omega) hb hbnd
     hcov0 z₀ E hE
 
+/-! ### The mirror: `s1 < s0`
+
+For `kstar < 0` the two virtual sites are the other way round.  Take `bnd = s0 - 1`
+and the `atTopN` orientation -- virtual arrival a **top** at `s0 = bnd + 1`, virtual
+departure a **bottom** at `s1`.  Then `hsW` and `hsT` hold outright, and only `hsX`
+needs the walk to reach back to `s1`. -/
+
+/-- The turn of the virtual departure is a real end, parametrised. -/
+theorem VEndpt.turn_of_vDep_realP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hne : s0 ≠ s1)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (y : VEndpt n mm) (hy : y = D.t (Sum.inr true)) :
+    ∃ u : EndType.Endpt n mm, y = Sum.inl u := by
+  have hsy : VEndpt.siteP s0 s1 y = s1 := by rw [hy, hts]; rfl
+  cases hcase : y with
+  | inl u => exact ⟨u, rfl⟩
+  | inr b =>
+    exfalso
+    cases b
+    · rw [hcase] at hsy; exact hne (by simpa [VEndpt.siteP] using hsy)
+    · exact D.t_ne _ (hy.symm.trans hcase)
+
+/-- **The walk carrying the virtual pair has leftmost edge at most `s1`.** -/
+theorem VEndpt.wlo_le_s1 {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (hne : s0 ≠ s1)
+    (D : WalkGraph.Data (VEndpt n mm)) (z : VEndpt n mm)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hz : (WalkGraph.graph D).Reachable z (Sum.inr true)) :
+    WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph D) z ≤ s1 := by
+  set y := D.t (Sum.inr true : VEndpt n mm) with hy
+  have hzy : (WalkGraph.graph D).Reachable z y :=
+    hz.trans (reachable_turn D (Sum.inr true))
+  have hsy : VEndpt.siteP s0 s1 y = s1 := by rw [hy, hts]; rfl
+  obtain ⟨u, hu⟩ := VEndpt.turn_of_vDep_realP s0 s1 hne D hts y hy
+  have hle : VEndpt.edgeOf bnd y ≤ s1 := by
+    rw [hu] at hsy ⊢
+    simp only [VEndpt.siteP, VEndpt.edgeOf, EndType.siteOf] at hsy ⊢
+    split_ifs at hsy <;> omega
+  exact le_trans (WalkSupport.wLo_le (VEndpt.edgeOf bnd) (WalkGraph.graph D) hzy) hle
+
+/-- The end data in the mirrored orientation. -/
+def vEndDataN {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (ds : Bool → Bool) :
+    EndData.Data (VEndpt n mm) :=
+  ⟨VEndpt.atTopN, VEndpt.isArr up, ds⟩
+
+/-- **B1, assembled in the mirrored orientation `s1 < s0`.** -/
+theorem VEndpt.merges_to_oneN {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) (s0 s1 : ℤ) (hlt : s1 < s0)
+    (hcov0 : ∀ j : ℤ, (∃ u : VEndpt n mm, VEndpt.edgeOf (s0 - 1) u = j) →
+      (∃ v : VEndpt n mm, VEndpt.edgeOf (s0 - 1) v < j) →
+      ∃ y : VEndpt n mm, VEndpt.edgeOf (s0 - 1) y = j - 1 ∧ VEndpt.atTopN y = true)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : CostMerge.MergesMin (VEndpt.siteP s0 s1) (VEndpt.isArr up) VEndpt.partner
+      (vEndDataN up ds) D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.siteP s0 s1) (VEndpt.isArr up) VEndpt.partner
+        (vEndDataN up ds) D' ∧ WalkGraph.walkCount D' ≤ 1 := by
+  refine CostMerge.min_merges_to_one_local (VEndpt.edgeOf (s0 - 1)) (VEndpt.siteP s0 s1)
+    VEndpt.atTopN VEndpt.partner (vEndDataN up ds)
+    (fun _ => rfl) (VEndpt.partner_site_neP s0 s1 (by omega))
+    ?_ ?_ ?_ (VEndpt.hpe (s0 - 1)) VEndpt.hptN hcov0 z₀ D hD
+  · -- hsW: both virtual ends discharge outright
+    intro E _ w x _ _
+    cases x with
+    | inl y => exact Or.inr rfl
+    | inr b =>
+      cases b
+      · exact Or.inr (by simp [VEndpt.siteP, VEndpt.edgeOf, VEndpt.atTopN])
+      · exact Or.inl rfl
+  · -- hsX: only the virtual departure, and the walk reaches back to `s1`
+    intro E hE w x hwx hxe hxb
+    cases x with
+    | inl y => rfl
+    | inr b =>
+      cases b
+      · exact absurd hxb (by simp [VEndpt.atTopN])
+      · have hw : WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) w = s0 - 1 := by
+          simpa [VEndpt.edgeOf] using hxe.symm
+        have hle := VEndpt.wlo_le_s1 s0 s1 (s0 - 1) (by omega) E w hE.2.1 hwx
+        rw [hw] at hle
+        have hs : s1 = s0 - 1 := by omega
+        simp [VEndpt.siteP, VEndpt.edgeOf, VEndpt.atTopN, hs]
+  · -- hsT: the virtual arrival satisfies it outright
+    intro E _ w y _ hyt
+    cases y with
+    | inl u => rfl
+    | inr b =>
+      cases b
+      · simp [VEndpt.siteP, VEndpt.edgeOf, VEndpt.atTopN]
+      · exact absurd hyt (by simp [VEndpt.atTopN])
+
+/-- **A cost-minimal datum exists**, mirrored orientation. -/
+theorem VEndpt.exists_mergesMinN {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) (s0 s1 : ℤ) (hne : s0 ≠ s1)
+    (hbal : ∀ s : ℤ, (VEndpt.arrAtP (mm := mm) s0 s1 up s).card
+      = (VEndpt.depAtP (mm := mm) s0 s1 up s).card) :
+    ∃ E : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.siteP s0 s1) (VEndpt.isArr up) VEndpt.partner
+        (vEndDataN up ds) E := by
+  have hbal' : ∀ s : ℤ,
+      (GenericData.arrOf (VEndpt.siteP (mm := mm) s0 s1) (VEndpt.isArr up) s).card
+        = (GenericData.depOf (VEndpt.siteP (mm := mm) s0 s1) (VEndpt.isArr up) s).card :=
+    fun s => by rw [arrOfP_eq, depOfP_eq]; exact hbal s
+  exact CostMerge.exists_mergesMin (VEndpt.siteP s0 s1) VEndpt.partner
+    (vEndDataN up ds)
+    (GenericData.dataG (VEndpt.siteP s0 s1) (VEndpt.isArr up) hbal' VEndpt.partner
+      VEndpt.partner_invol VEndpt.partner_ne (VEndpt.partner_site_neP s0 s1 hne))
+    (GenericData.dataG_merges (VEndpt.siteP s0 s1) (VEndpt.isArr up) hbal'
+      VEndpt.partner VEndpt.partner_invol VEndpt.partner_ne
+      (VEndpt.partner_site_neP s0 s1 hne))
+
+/-- **B1, end to end for a group element with `kstar < 0`.**
+
+The mirror of `Elt.merges_to_one`.  Together they cover every `kstar != 0`, and
+`kstar = 0` is excluded because the two virtual events would coincide. -/
+theorem Elt.merges_to_one_neg (g : Elt) (ds : Bool → Bool)
+    (hk : g.toPathData.kstar < 0)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf (-g.toPathData.A - 1) u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf (-g.toPathData.A - 1) v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf (-g.toPathData.A - 1) y = j - 1 ∧ VEndpt.atTopN y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A))
+        (VEndpt.isArr (pdUp g.toPathData)) VEndpt.partner
+        (vEndDataN (pdUp g.toPathData) ds) D' ∧ WalkGraph.walkCount D' ≤ 1 := by
+  obtain ⟨E, hE⟩ := VEndpt.exists_mergesMinN (pdUp g.toPathData) ds
+    (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A) (by omega) (Elt.balanced g)
+  exact VEndpt.merges_to_oneN (pdUp g.toPathData) ds
+    (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A) (by omega)
+    hcov0 z₀ E hE
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1705,3 +1841,6 @@ end EltBridge
 #print axioms EltBridge.GenericData.dataG_merges
 #print axioms EltBridge.VEndpt.exists_mergesMinP
 #print axioms EltBridge.Elt.merges_to_one
+#print axioms EltBridge.VEndpt.wlo_le_s1
+#print axioms EltBridge.VEndpt.merges_to_oneN
+#print axioms EltBridge.Elt.merges_to_one_neg

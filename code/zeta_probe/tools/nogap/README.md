@@ -2948,3 +2948,32 @@ B1 stays YELLOW. After BLOCK 27-28 -- where I marked it green and a single
 instantiation attempt broke it one block later -- the colour changes only when the
 whole parameter range is covered and the theorem has been instantiated, not when the
 main branch compiles.
+
+## 2026-09-03 — BLOCK 34: the mirror; B1 covers every kstar != 0
+
+  VEndpt.turn_of_vDep_realP, VEndpt.wlo_le_s1
+  vEndDataN
+  VEndpt.merges_to_oneN     -- the assembly for s1 < s0
+  VEndpt.exists_mergesMinN
+  Elt.merges_to_one_neg     -- the Elt-level mirror
+
+With bnd = s0 - 1 and the atTopN orientation, hsW and hsT hold OUTRIGHT -- the virtual
+arrival is a top at s0 = bnd + 1, so the site-edge relation is true there, and the
+virtual departure is a bottom, so it takes hsW's first disjunct. Only hsX needs an
+argument, and it is the mirror of BLOCK 16: the walk reaches the turn of the virtual
+departure, a real end at site s1, so wLo <= s1; combined with wLo = s0 - 1 and
+s1 < s0 this forces s1 = s0 - 1, where the relation holds.
+
+So the two orientations together cover every kstar != 0:
+  Elt.merges_to_one       kstar > 0   (s0 < s1, bnd above every edge)
+  Elt.merges_to_one_neg   kstar < 0   (s1 < s0, bnd = s0 - 1)
+  kstar = 0  excluded: the two virtual events would coincide, and partner_site_neP
+             needs them distinct
+
+Both take hcov0 -- the covering condition -- as their only input.
+
+The asymmetry between the two branches is real and worth recording: for kstar > 0 the
+awkward end is the virtual DEPARTURE and bnd must sit above every edge; for kstar < 0
+it is the virtual ARRIVAL and bnd sits just below s0. BLOCK 15 predicted exactly this
+("the condition can be MOVED between the two ends but not removed"), and both branches
+came out as that note said they would.
