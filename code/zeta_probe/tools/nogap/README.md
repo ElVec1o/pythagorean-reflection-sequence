@@ -3780,3 +3780,27 @@ block was short.
 Repeated error, third time tonight: `rw [...] at h1 h2` where the pattern occurs in only
 one of them. Lean reports it as a failed rewrite naming the pattern, which reads like
 the pattern is wrong rather than like it is absent from one target.
+
+## 2026-09-03 — BLOCK 67: the descent, generically, with hturn maintenance as a parameter
+
+  hturn_swapT_gen         -- ConfigLoop.hturn_swapT generically (6 lines via split_ifs,
+                             against 15 with by_cases -- the BLOCK 62 lesson again)
+  VEndpt.hturn_step_nohZV -- the two cases on VEndpt: cut site => nohZV, otherwise the
+                             generic swapT lemma
+  TurnInvG                -- the descent invariant, generically
+  run_step_turnInvG       -- **the run step preserving it**, with the hturn maintenance
+                             taken as a PARAMETER
+
+run_step_turnInv (BLOCK 63) was Endpt-specific only through hturn_step_nohZ. Abstracting
+that one step makes the whole descent generic, and both end types now supply it:
+  Endpt   hturn_step_nohZ    (BLOCK 63)
+  VEndpt  hturn_step_nohZV   (BLOCK 67)
+
+So the descent machinery is written once. The Endpt-specific run_step_turnInv is now
+redundant; it stays as the concrete instance the Endpt side already uses.
+
+This is the fourth time tonight that generalising AFTER seeing two uses produced a
+shorter development than generalising in advance would have: swapT_pos_eq,
+walkCount_ge_of_avoiding_gen, hturn_swapT_gen, run_step_turnInvG. In each case the
+Endpt-specific proof was already written and the generic version is the same script with
+the type fixed later.

@@ -3814,6 +3814,138 @@ theorem VEndpt.hturn_swapT_nohZV {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (h
   exact hne (swapT_pos_eq D.t (VEndpt.edgeOf bnd) a (D.t a) a' (D.t a') x
     hka.symm hea (by omega) (keep x hmem))
 
+/-- **`hturn_swapT`, generically.**  `ConfigLoop.hturn_swapT` is stated for `Endpt`;
+nothing in its proof uses that. -/
+theorem hturn_swapT_gen {α : Type*} [DecidableEq α] (t : α → α) (pos site : α → ℤ)
+    (Zf : Finset ℤ) (a d a' d' : α)
+    (hturn : ∀ x, pos (t x) ≠ pos x → site x ∉ Zf)
+    (hsa : site a ∉ Zf)
+    (hd : site d = site a) (ha' : site a' = site a) (hd' : site d' = site a) :
+    ∀ x, pos (WalkGraph.swapT t a d a' d' x) ≠ pos x → site x ∉ Zf := by
+  intro x hne
+  unfold WalkGraph.swapT at hne
+  split_ifs at hne with c1 c2 c3 c4
+  · rw [c1]; exact hsa
+  · rw [c2, hd']; exact hsa
+  · rw [c3, ha']; exact hsa
+  · rw [c4, hd]; exact hsa
+  · exact hturn x hne
+
+/-- **`hturn_step` on the extended type, without `hZ`.** -/
+theorem VEndpt.hturn_step_nohZV {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hle : s1 ≤ s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0)) (bnd : ℤ)
+    (D D' : WalkGraph.Data (VEndpt n mm)) (a a' : VEndpt n mm)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (D.t x) ≠ VEndpt.edgeOf bnd x → VEndpt.siteP s0 s1 x ∉ Zf)
+    (hss : VEndpt.siteP s0 s1 a' = VEndpt.siteP s0 s1 a)
+    (hshared : VEndpt.atTop a = VEndpt.atTop a' ∨
+      VEndpt.atTop (D.t a) = VEndpt.atTop (D.t a'))
+    (heq : D'.t = WalkGraph.swapT D.t a (D.t a) a' (D.t a')) :
+    ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (D'.t x) ≠ VEndpt.edgeOf bnd x →
+      VEndpt.siteP s0 s1 x ∉ Zf := by
+  rw [heq]
+  by_cases hcut : VEndpt.siteP s0 s1 a ∈ Zf
+  · exact VEndpt.hturn_swapT_nohZV s0 s1 hle Zf hgap bnd D hts hturn a a' hss hcut hshared
+  · exact hturn_swapT_gen D.t (VEndpt.edgeOf bnd) (VEndpt.siteP s0 s1) Zf
+      a (D.t a) a' (D.t a') hturn hcut (hts a) hss (by rw [hts a']; exact hss)
+
+/-! ### The run step with `hturn`, generically
+
+`run_step_turnInv` is `Endpt`-specific only through `hturn_step_nohZ`.  Taking that
+step as a parameter makes the whole descent generic, and both end types supply it. -/
+
+/-- The descent invariant, generically. -/
+def TurnInvG {α : Type*} [Fintype α] [DecidableEq α] (siteOf edgeOf : α → ℤ)
+    (p₀ : α → α) (d : EndData.Data α) (Zf : Finset ℤ) (E : WalkGraph.Data α) : Prop :=
+  CostMerge.MergesMin siteOf d.isArr p₀ d E ∧
+    ∀ x : α, edgeOf (E.t x) ≠ edgeOf x → siteOf x ∉ Zf
+
+/-- **The run step preserving `TurnInvG`**, with the `hturn` maintenance supplied. -/
+theorem run_step_turnInvG {α : Type*} [Fintype α] [DecidableEq α]
+    (d : EndData.Data α) (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p₀ : α → α)
+    (Zf : Finset ℤ)
+    (hside : ∀ x, d.side x = atTop x)
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (hpsite : ∀ x, siteOf (p₀ x) ≠ siteOf x)
+    (hsW : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w x : α, (WalkGraph.graph E).Reachable w x →
+      siteOf x = WalkSupport.wLo edgeOf (WalkGraph.graph E) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w x : α, (WalkGraph.graph E).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (WalkGraph.graph E) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w y : α, edgeOf y = WalkSupport.wLo edgeOf (WalkGraph.graph E) w - 1 →
+      atTop y = true → siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov : ∀ E : WalkGraph.Data α, ∀ z v : α,
+      edgeOf v < WalkSupport.wLo edgeOf (WalkGraph.graph E) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (WalkGraph.graph E) z - 1 ∧
+        atTop w = true)
+    (hstep : ∀ (D D' : WalkGraph.Data α) (a a' : α),
+      (∀ e, siteOf (D.t e) = siteOf e) →
+      (∀ x, edgeOf (D.t x) ≠ edgeOf x → siteOf x ∉ Zf) →
+      siteOf a' = siteOf a →
+      (atTop a = atTop a' ∨ atTop (D.t a) = atTop (D.t a')) →
+      D'.t = WalkGraph.swapT D.t a (D.t a) a' (D.t a') →
+      ∀ x, edgeOf (D'.t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (D : WalkGraph.Data α) (hD : TurnInvG siteOf edgeOf p₀ d Zf D) :
+    (∃ D' : WalkGraph.Data α, TurnInvG siteOf edgeOf p₀ d Zf D' ∧
+      WalkGraph.walkCount D' < WalkGraph.walkCount D) ∨
+      (∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+        (WalkGraph.graph D).Reachable x y) := by
+  classical
+  obtain ⟨hDmin, hturn⟩ := hD
+  by_cases hsep : ∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+      (WalkGraph.graph D).Reachable x y
+  · exact Or.inr hsep
+  · left
+    obtain ⟨x, hx⟩ := not_forall.mp hsep
+    obtain ⟨y, hy⟩ := not_forall.mp hx
+    have hnr : ¬ (WalkGraph.graph D).Reachable x y := fun hc => hy (fun _ => hc)
+    obtain ⟨hM, hmin⟩ := hDmin
+    obtain ⟨hp, hts, hta⟩ := hM
+    obtain ⟨D', hlt, hpeq, a, a', harr, harr', hss, hsplit, hshared, hteq⟩ :=
+      CostMerge.step_of_split'_local d edgeOf siteOf atTop D hside
+        (hsW D ⟨hp, hts, hta⟩) (hsX D ⟨hp, hts, hta⟩) (hsT D ⟨hp, hts, hta⟩)
+        (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta
+        (by rw [hp]; exact hpsite) (hcov D)
+        (CostMerge.hmin_of_mergesMin siteOf p₀ d D ⟨⟨hp, hts, hta⟩, hmin⟩) x y hnr
+    have hda : d.isArr (D.t a) = false := by rw [hta, harr]; rfl
+    have hda' : d.isArr (D.t a') = false := by rw [hta, harr']; rfl
+    have hne : a ≠ a' := fun h => hsplit (h ▸ SimpleGraph.Reachable.refl a)
+    have hts' : ∀ e, siteOf (D'.t e) = siteOf e := by
+      intro e
+      rw [hteq]
+      exact WalkGraph.swapT_site siteOf D.t a (D.t a) a' (D.t a') hts (hts a) hss
+        (show siteOf (D.t a') = siteOf a from (hts a').trans hss) e
+    have hta' : ∀ e, d.isArr (D'.t e) = !d.isArr e := by
+      intro e
+      rw [hteq]
+      exact WalkGraph.swapT_arr d.isArr D.t a (D.t a) a' (D.t a') hta rfl rfl harr harr' e
+    have hcost : CostMerge.costOf d D' = CostMerge.costOf d D := by
+      have h1 := WalkGraph.swapT_invol D.t_invol rfl rfl
+        (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit)
+        (Ne.symm hne) (ConfigMerge.dep_ne_dep' D rfl rfl (Ne.symm hne))
+        (Ne.symm (ConfigMerge.dep_ne_arr' D rfl))
+        (ConfigMerge.dep_ne_other' D rfl hsplit)
+      have h2 := WalkGraph.swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+        (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+      have h3 := WalkGraph.partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+        (by rw [hp]; exact hpsite) hts (hts a) hss (by rw [hts a']; exact hss)
+      have hc := CostMerge.cost_swapData d D a a' harr harr' hda hda' hne hshared h1 h2 h3
+      rw [← hc]
+      exact CostMerge.cost_congr d D' _ (fun b _ => by rw [hteq]; rfl)
+    refine ⟨D', ⟨⟨⟨hpeq.trans hp, hts', hta'⟩,
+      fun F hF => by rw [hcost]; exact hmin F hF⟩, ?_⟩, hlt⟩
+    exact hstep D D' a a' hts hturn hss
+      (by rcases hshared with h | h
+          · exact Or.inl (by rw [← hside a, ← hside a']; exact h)
+          · exact Or.inr (by rw [← hside (D.t a), ← hside (D.t a')]; exact h)) hteq
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3963,3 +4095,6 @@ end EltBridge
 #print axioms EltBridge.VEndpt.site_edge_at_cut
 #print axioms EltBridge.VEndpt.freePair_same_edge_at_cutV
 #print axioms EltBridge.VEndpt.hturn_swapT_nohZV
+#print axioms EltBridge.hturn_swapT_gen
+#print axioms EltBridge.VEndpt.hturn_step_nohZV
+#print axioms EltBridge.run_step_turnInvG
