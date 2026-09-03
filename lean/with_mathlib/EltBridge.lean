@@ -6189,6 +6189,53 @@ theorem stateOf_injective {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B =
     (delta_eq_of_state (h P.A le_rfl (by omega)))
     (d_eq_of_states hA hB h) hA hB
 
+/-! ### The departure always lies on the span
+
+BLOCK 213 assumed `A <= k* <= B + 1`.  It is a theorem.  `travel` is `1` on `[0, k*)`
+and `-1` on `[k*, 0)`, and `houter` forces it to vanish off the span; since `0` is always
+on the span (`hA`, `hB`), a departure outside the span would leave a non-zero travel
+indicator at `B + 1` or at `A - 1`. -/
+
+theorem kstar_le_B_succ (P : SiteCost.PathData) : P.kstar ≤ P.B + 1 := by
+  by_contra h
+  push_neg at h
+  have hB := P.hB
+  have h0 := (P.houter (P.B + 1) (Or.inr (by omega))).2
+  unfold SiteCost.travel at h0
+  rw [if_pos (by omega : (0 : ℤ) ≤ P.B + 1 ∧ P.B + 1 < P.kstar)] at h0
+  omega
+
+theorem A_le_kstar (P : SiteCost.PathData) : P.A ≤ P.kstar := by
+  by_contra h
+  push_neg at h
+  have hA := P.hA
+  have h0 := (P.houter (P.A - 1) (Or.inl (by omega))).2
+  unfold SiteCost.travel at h0
+  rw [if_neg (by omega : ¬((0 : ℤ) ≤ P.A - 1 ∧ P.A - 1 < P.kstar)),
+    if_pos (by omega : P.kstar ≤ P.A - 1 ∧ P.A - 1 < 0)] at h0
+  omega
+
+/-- **Injectivity of `stateOf`, with no side hypotheses.**  Two configurations with the
+same span whose states agree across it are the same configuration. -/
+theorem stateOf_injective' {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B = Q.B)
+    (h : ∀ j : ℤ, P.A ≤ j → j ≤ P.B + 1 → stateOf P j = stateOf Q j) : P = Q :=
+  stateOf_injective hA hB (A_le_kstar P) (kstar_le_B_succ P) h
+
+/-! ### A second guard surjectivity will need: parity
+
+`compatB` is not by itself enough to characterise realisable paths.  A configuration also
+carries `hpar`: the deposit and the travel indicator agree mod 2 at every edge.  A
+compatible path violating that is realised by nothing, so the state predicate below is a
+further necessary condition -- recorded now, since surjectivity is where it bites. -/
+
+/-- A state is admissible when its deposit and travel indicator agree mod 2. -/
+def validB (σ : LocalState) : Bool := decide ((σ.dcur - σ.fcur) % 2 = 0)
+
+/-- **Every state of a configuration is admissible**, by `hpar`. -/
+theorem validB_stateOf (P : SiteCost.PathData) (j : ℤ) : validB (stateOf P j) = true := by
+  simp only [validB, stateOf, decide_eq_true_eq]
+  exact P.hpar j
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13766,3 +13813,7 @@ end EltBridge
 #print axioms EltBridge.d_eq_of_states
 #print axioms EltBridge.pathData_ext
 #print axioms EltBridge.stateOf_injective
+#print axioms EltBridge.kstar_le_B_succ
+#print axioms EltBridge.A_le_kstar
+#print axioms EltBridge.stateOf_injective'
+#print axioms EltBridge.validB_stateOf

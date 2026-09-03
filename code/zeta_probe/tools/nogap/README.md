@@ -7896,3 +7896,30 @@ span by `hA`/`hB`; that derivation is not written, so it stands as a hypothesis.
 **Still owed for (M3):** surjectivity onto the compatible paths -- that every
 `compatB`-compatible path is realised by some configuration.  That is the half where a
 configuration has to be BUILT from a path, proof fields and all.
+
+## 2026-09-04 — BLOCK 214: the departure is always on the span; a second guard
+
+BLOCK 213 assumed `A <= k* <= B + 1`.  It is a theorem.  `travel` is `1` on `[0, k*)` and
+`-1` on `[k*, 0)`, and `houter` forces it to vanish off the span; since `0` is always on
+the span (`hA`, `hB`), a departure outside would leave a non-zero travel indicator at
+`B + 1` or at `A - 1`:
+
+    kstar_le_B_succ      k* <= B + 1
+    A_le_kstar           A <= k*
+    stateOf_injective'   INJECTIVITY, with no side hypotheses
+
+And a second necessary condition, recorded now because surjectivity is where it bites:
+`compatB` alone does NOT characterise realisable paths.  A configuration also carries
+`hpar` -- deposit and travel indicator agree mod 2 at every edge -- and a compatible path
+violating that is realised by nothing:
+
+    validB               deposit and travel agree mod 2
+    validB_stateOf       every state of a configuration is admissible
+
+0 sorry.
+
+**So surjectivity is not "every compatible path".**  It is: every path that is compatible
+AND admissible AND has its markers in the right places.  Whether those three conditions
+are jointly SUFFICIENT is the open question -- and the honest expectation is that they are
+not quite, since `hAmin`/`hBmin` (minimality of the span) is a further constraint the
+state does not see.  A path whose end deposits vanish would need a shorter span.
