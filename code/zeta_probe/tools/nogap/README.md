@@ -6699,3 +6699,34 @@ properties.  Now the turn is built to have them.
 Scope still `mu = 2`.  The remaining mathematical content is that a cost-minimal `T`
 really does satisfy `hpass_up`, `hpass_dn` and `hbounce` -- `local_trichotomy` gives the
 cost comparison, and turning that into these three equalities is the last step.
+
+## 2026-09-03 — BLOCK 172: the chain hypotheses, restated as reachability
+
+Constructing `T` explicitly turned up a real subtlety in the hypothesis SHAPE, though
+not in anything proved.
+
+`run_connected_of_turn_structure` asks for `D.t (D.p x) = y`.  For the UP chain that is
+the right composition: cross the strand, then turn.  For the DOWN chain the concrete
+pass runs the other way -- at site `s` it sends `dn s` to the TOP of edge `s-1`'s down
+strand, so what actually holds is `D.p (D.t (dn (j+1))) = dn j`, turn first and cross
+second.  Both give the same reachability, which is why the earlier proof is sound, but
+the equation form is not what a concrete `T` can hand over.
+
+`run_connected_of_reachability` and `shield_upper_bound_reach` restate the chain
+conditions as reachability:
+
+    hchain_up     consecutive up strands are joined
+    hchain_dn     consecutive down strands are joined
+    hchain_join   the two are joined at the run's boundary
+
+whichever walk does it.  That is exactly what a `mu = 2` turn gives: a pass at a non-cut
+site joins the strands on either side of it, and a bounce at a cut site joins the two
+strands of its own edge.
+
+`shield_upper_bound_reach` also takes the datum `E` with `E.p = partner` and
+`E.t = T ∘ siteOf` explicitly, rather than existentially, so a concrete construction can
+be plugged in and the conclusion is about that datum.
+
+Scope still `mu = 2`.  The remaining content is unchanged: show a cost-minimal `T`
+satisfies the three chain conditions, which `local_trichotomy` supplies as a cost
+comparison and which must be turned into these reachability statements.

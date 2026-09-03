@@ -9392,3 +9392,92 @@ theorem shield_upper_bound_glued {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e 
 end EltBridge
 
 #print axioms EltBridge.shield_upper_bound_glued
+
+namespace EltBridge
+
+/-! ### Restating the chain hypotheses as reachability
+
+`run_connected_of_turn_structure` asks for `D.t (D.p x) = y`.  For the UP chain that is
+the right composition -- cross the strand, then turn.  For the DOWN chain the concrete
+pass runs the other way: at site `s` it sends `dn s` to the TOP of edge `s-1`'s down
+strand, so what holds is `D.p (D.t (dn (j+1))) = dn j`, turn first and then cross.
+
+Both give the same reachability, so nothing proved is wrong; but stating the hypotheses
+as REACHABILITY rather than as a fixed composition avoids having to match the order, and
+is what a concrete `T` can actually discharge. -/
+
+/-- **The run is connected, from reachability hypotheses.**  Weaker and easier to
+discharge than the equation form: any walk joining consecutive strands will do,
+whichever way it composes. -/
+theorem run_connected_of_reachability {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (up dn : ℤ → α) (lo : ℤ) (n : ℕ)
+    (hup : ∀ k : ℕ, k < n →
+      (WalkGraph.graph D).Reachable (up (lo + k)) (up (lo + (k + 1 : ℕ))))
+    (hdn : ∀ k : ℕ, k < n →
+      (WalkGraph.graph D).Reachable (dn (lo + k)) (dn (lo + (k + 1 : ℕ))))
+    (hjoin : (WalkGraph.graph D).Reachable (up lo) (dn lo))
+    (j j' : ℕ) (hj : j ≤ n) (hj' : j' ≤ n) (b b' : Bool) :
+    (WalkGraph.graph D).Reachable
+      (if b then up (lo + j) else dn (lo + j))
+      (if b' then up (lo + j') else dn (lo + j')) := by
+  classical
+  set f : ℤ × Bool → α := fun a => if a.2 then up a.1 else dn a.1 with hf
+  set R : ℤ × Bool → ℤ × Bool → Prop :=
+    fun a b => (WalkGraph.graph D).Reachable (f a) (f b) with hRdef
+  have hR : ∀ a b, R a b → (WalkGraph.graph D).Reachable (f a) (f b) := fun _ _ h => h
+  have hsymm : ∀ a b, R a b → R b a := fun _ _ h => h.symm
+  have hupR : ∀ k : ℕ, k < n → R (lo + k, true) (lo + (k + 1 : ℕ), true) := by
+    intro k hk; simpa [hRdef, hf] using hup k hk
+  have hdnR : ∀ k : ℕ, k < n → R (lo + k, false) (lo + (k + 1 : ℕ), false) := by
+    intro k hk; simpa [hRdef, hf] using hdn k hk
+  have hjoinR : R (lo, true) (lo, false) := by simpa [hRdef, hf] using hjoin
+  have hchain := run_pairwise lo n R hsymm hupR hdnR hjoinR j j' hj hj' b b'
+  have hmain := reachable_of_reflTransGen (WalkGraph.graph D) R f hR hchain
+  simpa [hf] using hmain
+
+end EltBridge
+
+#print axioms EltBridge.run_connected_of_reachability
+
+namespace EltBridge
+
+/-- **The shield bound for a chosen turn, on reachability hypotheses.**  The chain
+conditions are now "consecutive up strands are joined", "consecutive down strands are
+joined", and "the two are joined at the run's boundary" -- whichever walk does it.  That
+is what a concrete `T` at `mu = 2` discharges: the pass at a non-cut site joins the
+strands on either side of it, and the bounce at a cut site joins the two strands of its
+edge. -/
+theorem shield_upper_bound_reach {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (T : ℤ → EndType.Endpt n m → EndType.Endpt n m) (Zf : Finset ℤ)
+    (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hinv : ∀ s x, T s (T s x) = x)
+    (hTsite : ∀ s x, EndType.siteOf x = s → EndType.siteOf (T s x) = s)
+    (hne : ∀ s x, EndType.siteOf x = s → T s x ≠ x)
+    (hturn : ∀ x, EndType.edgeOf (T (EndType.siteOf x) x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hup : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 0 → up (EndType.edgeOf x) = botOf x)
+    (hdn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 1 → dn (EndType.edgeOf x) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner) (hEt : ∀ x, E.t x = T (EndType.siteOf x) x)
+    (hchain_up : ∀ r k : ℕ, k < len r →
+      (WalkGraph.graph E).Reachable (up (lo r + k)) (up (lo r + (k + 1 : ℕ))))
+    (hchain_dn : ∀ r k : ℕ, k < len r →
+      (WalkGraph.graph E).Reachable (dn (lo r + k)) (dn (lo r + (k + 1 : ℕ))))
+    (hchain_join : ∀ r : ℕ,
+      (WalkGraph.graph E).Reachable (up (lo r)) (dn (lo r))) :
+    WalkGraph.walkCount E ≤ Zf.card + 1 := by
+  refine shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) ?_ ?_
+    (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) ?_
+  · intro x; rw [hEt x]; exact hTsite _ x rfl
+  · intro x hx; rw [hEt x] at hx; exact hturn x hx
+  · refine hrun_multi E Zf up dn lo len (hcover_of_mu_two hm up dn hup hdn) hrange ?_
+    intro r j j' hj hj' b b'
+    exact run_connected_of_reachability E up dn (lo r) (len r)
+      (hchain_up r) (hchain_dn r) (hchain_join r) j j' hj hj' b b'
+
+end EltBridge
+
+#print axioms EltBridge.shield_upper_bound_reach
