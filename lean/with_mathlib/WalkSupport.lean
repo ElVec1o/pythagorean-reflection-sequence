@@ -295,6 +295,49 @@ theorem pair_of_many_walks (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D
   obtain ⟨z, z', hsplit⟩ := ConfigMerge.exists_split_of_walkCount D hmany
   exact pair_of_two_walks edgeOf siteOf atTop D hsite hpe hpt hcov z z' hsplit
 
+/-- **`pair_of_two_walks`, localized.**  `hsB` at bottom ends on their own walk's
+leftmost edge; `hsT` at top ends immediately left of any walk's leftmost edge. -/
+theorem pair_of_two_walks_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hsB : ∀ w x, (graph D).Reachable w x → edgeOf x = wLo edgeOf (graph D) w →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = wLo edgeOf (graph D) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov : ∀ w : α, (∃ v : α, edgeOf v < wLo edgeOf (graph D) w) →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) w - 1 ∧ atTop y = true)
+    (z z' : α) (hsplit : ¬ (graph D).Reachable z z') :
+    ∃ x y : α, siteOf x = siteOf y ∧ ¬ (graph D).Reachable x y := by
+  obtain ⟨u, _, hue, _⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  obtain ⟨u', _, hu'e, _⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z'
+  rcases lt_trichotomy (wLo edgeOf (graph D) z) (wLo edgeOf (graph D) z') with h | h | h
+  · obtain ⟨y, hye, hyt⟩ := hcov z' ⟨u, by omega⟩
+    obtain ⟨x, hxs, hxn⟩ :=
+      walk_shared_site_pair_local edgeOf siteOf atTop D hpe hpt z' y hye hyt
+        (hsT z' y hye hyt) (fun x hx he hb => hsB z' x hx he hb)
+    exact ⟨x, y, hxs, hxn⟩
+  · exact pair_of_equal_wLo_local edgeOf siteOf atTop D hpe hpt hsB z z' hsplit h
+  · obtain ⟨y, hye, hyt⟩ := hcov z ⟨u', by omega⟩
+    obtain ⟨x, hxs, hxn⟩ :=
+      walk_shared_site_pair_local edgeOf siteOf atTop D hpe hpt z y hye hyt
+        (hsT z y hye hyt) (fun x hx he hb => hsB z x hx he hb)
+    exact ⟨x, y, hxs, hxn⟩
+
+/-- **`pair_of_many_walks`, localized.** -/
+theorem pair_of_many_walks_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hsB : ∀ w x, (graph D).Reachable w x → edgeOf x = wLo edgeOf (graph D) w →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = wLo edgeOf (graph D) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov : ∀ w : α, (∃ v : α, edgeOf v < wLo edgeOf (graph D) w) →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) w - 1 ∧ atTop y = true)
+    (hmany : 1 < walkCount D) :
+    ∃ x y : α, siteOf x = siteOf y ∧ ¬ (graph D).Reachable x y := by
+  obtain ⟨z, z', hsplit⟩ := ConfigMerge.exists_split_of_walkCount D hmany
+  exact pair_of_two_walks_local edgeOf siteOf atTop D hpe hpt hsB hsT hcov z z' hsplit
+
 /-! ### From ends to arrivals
 
 The descent re-pairs *arrivals*, but the placement produces ends of either role.  The
@@ -333,6 +376,30 @@ theorem arrivals_of_many_walks (edgeOf siteOf : α → ℤ) (atTop isArr : α �
       ¬ (graph D).Reachable a a' := by
   obtain ⟨x, y, hxy, hn⟩ :=
     pair_of_many_walks edgeOf siteOf atTop D hsite hpe hpt hcov hmany
+  obtain ⟨a, hasite, haarr, hax⟩ := arrival_beside siteOf isArr D hts hta x
+  obtain ⟨a', ha'site, ha'arr, ha'y⟩ := arrival_beside siteOf isArr D hts hta y
+  refine ⟨a, a', by rw [hasite, ha'site, hxy], haarr, ha'arr, ?_⟩
+  intro hc
+  exact hn ((hax.trans hc).trans ha'y.symm)
+
+/-- **`arrivals_of_many_walks`, localized.** -/
+theorem arrivals_of_many_walks_local (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool)
+    (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e)
+    (hsB : ∀ w x, (graph D).Reachable w x → edgeOf x = wLo edgeOf (graph D) w →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = wLo edgeOf (graph D) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov : ∀ w : α, (∃ v : α, edgeOf v < wLo edgeOf (graph D) w) →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) w - 1 ∧ atTop y = true)
+    (hmany : 1 < walkCount D) :
+    ∃ a a' : α, siteOf a = siteOf a' ∧ isArr a = true ∧ isArr a' = true ∧
+      ¬ (graph D).Reachable a a' := by
+  obtain ⟨x, y, hxy, hn⟩ :=
+    pair_of_many_walks_local edgeOf siteOf atTop D hpe hpt hsB hsT hcov hmany
   obtain ⟨a, hasite, haarr, hax⟩ := arrival_beside siteOf isArr D hts hta x
   obtain ⟨a', ha'site, ha'arr, ha'y⟩ := arrival_beside siteOf isArr D hts hta y
   refine ⟨a, a', by rw [hasite, ha'site, hxy], haarr, ha'arr, ?_⟩
@@ -397,6 +464,51 @@ theorem merges_to_one (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool) (
       (swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne hd'a hda')
       (partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a')
         (by rw [hp]; exact p_site_ne edgeOf siteOf atTop p₀ hsite hpe hpt) hts
+        hsd hsa' hsd'),
+    ⟨hp, ?_, ?_⟩, ConfigMerge.descent_of_split E a a' hsplit _ _ _⟩
+  · exact swapT_site siteOf E.t a (E.t a) a' (E.t a') hts hsd hsa' hsd'
+  · exact swapT_arr isArr E.t a (E.t a) a' (E.t a') hta rfl rfl haa ha'a2
+
+theorem merges_to_one_local (edgeOf siteOf : α → ℤ) (atTop isArr : α → Bool) (p₀ : α → α)
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (hpsite : ∀ x, siteOf (p₀ x) ≠ siteOf x)
+    (hsB : ∀ E : Data α, E.p = p₀ → ∀ w x, (graph E).Reachable w x →
+      edgeOf x = wLo edgeOf (graph E) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ E : Data α, E.p = p₀ → ∀ w y, edgeOf y = wLo edgeOf (graph E) w - 1 →
+      atTop y = true → siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov0 : ∀ j : ℤ, (∃ u : α, edgeOf u = j) → (∃ v : α, edgeOf v < j) →
+      ∃ y : α, edgeOf y = j - 1 ∧ atTop y = true)
+    (D : Data α) (hD : Merges siteOf isArr p₀ D) :
+    ∃ D', Merges siteOf isArr p₀ D' ∧ walkCount D' ≤ 1 := by
+  classical
+  refine ConfigMerge.reaches_one (P := Merges siteOf isArr p₀) ?_ D hD
+  intro E hmany hE
+  obtain ⟨hp, hts, hta⟩ := hE
+  obtain ⟨a, a', hss, haa, ha'a2, hsplit⟩ :=
+    arrivals_of_many_walks_local edgeOf siteOf atTop isArr E
+      (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta
+      (hsB E hp) (hsT E hp)
+      (fun w hw => hcov0 _
+        (by obtain ⟨x, _, hxe⟩ := exists_end_at_wLo edgeOf (graph E) w; exact ⟨x, hxe⟩) hw)
+      hmany
+  -- the six distinctness facts, all from `hsplit`
+  have hda : E.t a ≠ a := ConfigMerge.dep_ne_arr' E rfl
+  have hd'a : E.t a' ≠ a := ConfigMerge.dep_ne_other E rfl hsplit
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split E hsplit
+  have hd'd : E.t a' ≠ E.t a := ConfigMerge.dep_ne_dep' E rfl rfl haa'
+  have ha'd' : a' ≠ E.t a' := (ConfigMerge.dep_ne_arr' E rfl).symm
+  have hda' : E.t a ≠ a' := ConfigMerge.dep_ne_other' E rfl hsplit
+  -- the site facts
+  have hsd : siteOf (E.t a) = siteOf a := hts a
+  have hsa' : siteOf a' = siteOf a := hss.symm
+  have hsd' : siteOf (E.t a') = siteOf a := by rw [hts a', hss]
+  refine ⟨swapData E a (E.t a) a' (E.t a')
+      (swapT_invol E.t_invol rfl rfl hda hd'a haa' hd'd ha'd' hda')
+      (swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne hd'a hda')
+      (partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a')
+        (by rw [hp]; exact hpsite) hts
         hsd hsa' hsd'),
     ⟨hp, ?_, ?_⟩, ConfigMerge.descent_of_split E a a' hsplit _ _ _⟩
   · exact swapT_site siteOf E.t a (E.t a) a' (E.t a') hts hsd hsa' hsd'
@@ -679,3 +791,7 @@ theorem maxWLoOn_spec (edgeOf : α → ℤ) (G : SimpleGraph α)
 #print axioms WalkSupport.walk_shared_site_pair_local
 #print axioms WalkSupport.pair_of_equal_wLo_local
 #print axioms WalkSupport.other_end_at_wLo_local
+#print axioms WalkSupport.pair_of_two_walks_local
+#print axioms WalkSupport.pair_of_many_walks_local
+#print axioms WalkSupport.arrivals_of_many_walks_local
+#print axioms WalkSupport.merges_to_one_local

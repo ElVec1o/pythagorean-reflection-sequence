@@ -2616,3 +2616,29 @@ maximiser_departure_bottom, plus Merges and p_site_ne (which take hsite only to 
 it on).
 
 Every one so far has gone through unchanged. No mathematical content has been touched.
+
+## 2026-09-03 — BLOCK 22: merges_to_one is localized — the top of the WalkSupport chain
+
+  pair_of_two_walks_local
+  pair_of_many_walks_local
+  arrivals_of_many_walks_local
+  merges_to_one_local        -- THE TOP OF THE CHAIN
+
+`merges_to_one_local` no longer takes the global site-edge relation. In its place:
+  hpsite : forall x, siteOf (p0 x) != siteOf x     (VEndpt.partner_site_ne supplies it)
+  hsB    : the relation at bottom ends on their own walk's leftmost edge, for every
+           datum in the class
+  hsT    : the relation at top ends immediately left of a walk's leftmost edge
+
+The hypotheses are datum-quantified because the merge iterates over data; that is not a
+complication for VEndpt, whose discharges (hsX_beyond, hsX_neg) do not mention the
+datum at all -- they constrain only the VALUE of wLo.
+
+One genuine find: `hsite` was ALSO feeding `p_site_ne` inside merges_to_one, purely to
+obtain `siteOf (p0 x) != siteOf x`. That is available directly for VEndpt
+(partner_site_ne), so it becomes a hypothesis rather than a derivation. Without
+noticing this the localization would have looked blocked at the last step.
+
+Running total: 11 of 16 localized. Remaining in WalkSupport: maxWLo_spec,
+maximising_walk_all_bottom, maximiser_departure_bottom, and the two that only pass
+hsite through (Merges, p_site_ne). Then CostMerge's 15 mentions.
