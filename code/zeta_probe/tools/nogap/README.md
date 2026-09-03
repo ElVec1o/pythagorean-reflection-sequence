@@ -9400,3 +9400,35 @@ finding where the arrival is -- it is that `T`'s elements are bare lists with no
 index at all.  These two lemmas are the tools for the re-indexed statement, once it is
 written: given that a list's `k`-th entry has `arr = 1`, everything after it is pinned.
 The statement itself -- `T` as pairs of a list and an index -- is still to be written.
+
+## 2026-09-04 — BLOCKS 285-286: why the box enumeration cannot be free in `arr`, and the fix
+
+Chasing BLOCK 283's obstacle to ground.  `dep` is free at enumeration time because
+`Guarded.dep` only asks that it fire at SOME `kstar`, and `exists_dep_index` (BLOCK 242)
+locates that `kstar` after the fact, from the guard alone.  **`arr` is different in kind**:
+`Guarded.arrv` demands it fire exactly at the ABSOLUTE integer `j = 0`, a fact about the
+real index, not recoverable from local guard-consistency the way `kstar` is.  A box
+enumeration leaving `arr` free would produce "paths" guarded in every pointwise sense whose
+marked arrival sits at the wrong integer -- realising no configuration, and not caught by
+BLOCKS 282-284, none of which asks whether the coordinate's POSITION matches `vArr`.
+
+The fix is not a new theorem but a corrected enumeration:
+
+    BoxState              a local state with `arr` OMITTED -- the free coordinates only
+    BoxState.toLocal      reattach arr, FORCED to the real index j, not stored
+    boxState_toLocal_stateOf   a configuration's own state reattaches to itself (NO AXIOMS)
+    BoxState.toFlag        the flagged state, with `past` forced too (0 <= j is determined
+                           once A is fixed)
+    boxState_toFlag_flagOf a configuration's own flagged state reattaches to itself
+                           (NO AXIOMS)
+    boxSet                the bounded BoxStates of magnitude at most N
+    boxSet_finite          and that set is finite
+
+0 sorry, all clean; two mechanical fixes along the way (`Set.finite_insert` is an iff, not a
+term -- `.insert` the method instead).
+
+**What this buys.**  `T` can now be built as the image of `boxSet N`-valued lists under
+`toFlag` at the real positions `idxList A n`, and every element of `T` automatically
+satisfies `harrv` by construction -- the obstruction BLOCK 283 found is closed by
+construction rather than by a further lemma.  Assembling `T` itself and running the
+`Finset.sum_subset` argument through it is the next and, on current evidence, final step.

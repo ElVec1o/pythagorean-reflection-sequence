@@ -9141,6 +9141,96 @@ theorem arr_unique_after (g : ℤ → FlagState) (a : ℤ)
     (hfire : (g a).st.arr = 1) (m : ℕ) : (g (a + m + 1)).st.arr ≠ 1 :=
   arr_unique_forward g hstep a (past_of_arr_at g a hstep hfire) m
 
+/-! ### Why the box enumeration cannot be free in `arr`
+
+Chasing BLOCK 283's obstacle to ground: `dep` is free at enumeration time because
+`Guarded.dep` only asks that it fire at SOME `kstar`, and `exists_dep_index` (BLOCK 242)
+locates that `kstar` after the fact, from the guard alone -- no advance knowledge of where
+needed.  `arr` is different in kind: `Guarded.arrv` demands it fire exactly at the ABSOLUTE
+integer `j = 0`, which is a fact about the real index, not recoverable from local
+guard-consistency the way `kstar` is.  A box enumeration that leaves `arr` as a free `0/1`
+coordinate produces "paths" whose marked arrival sits at the wrong integer -- guarded in
+every pointwise sense, realising no configuration, and not caught by any lemma proved so
+far, because every one of them (BLOCKS 282-284) reads consequences of a firing arrival,
+never asks whether the coordinate's position matches `vArr`.
+
+The fix is not a new theorem but a corrected enumeration: `arr` must be computed from the
+list POSITION against `A`, not stored as free data.  This makes `harrv` hold automatically
+for the states drawn from a box built this way. -/
+
+/-- A local state with `arr` omitted -- the free coordinates only. -/
+structure BoxState where
+  dprev : ℤ
+  dcur : ℤ
+  fcur : ℤ
+  dep : ℕ
+  eps : ℤ
+  delta : Bool
+
+/-- Reattach `arr`, forced to the real index `j` rather than left free. -/
+def BoxState.toLocal (b : BoxState) (j : ℤ) : LocalState :=
+  { dprev := b.dprev, dcur := b.dcur, fcur := b.fcur, arr := SiteCost.vArr j,
+    dep := b.dep, eps := b.eps, delta := b.delta }
+
+/-- **A configuration's state, boxed, reattaches to itself.**  So nothing is lost by
+dropping `arr` from the free data: the state at `j` is always its own box reattached at
+`j`. -/
+theorem boxState_toLocal_stateOf (P : SiteCost.PathData) (j : ℤ) :
+    ({ dprev := (stateOf P j).dprev, dcur := (stateOf P j).dcur, fcur := (stateOf P j).fcur,
+        dep := (stateOf P j).dep, eps := (stateOf P j).eps,
+        delta := (stateOf P j).delta } : BoxState).toLocal j = stateOf P j := by
+  refine localState_ext rfl rfl rfl ?_ rfl rfl rfl
+  show SiteCost.vArr j = (stateOf P j).arr
+  exact (arrv_of_stateOf j).symm
+where arrv_of_stateOf (j : ℤ) : (stateOf P j).arr = SiteCost.vArr j := rfl
+
+/-! ### The bounded box of flagged states, per position
+
+With `arr` no longer free, a bounded `FlagState` at position `A + i` is determined by a
+`BoxState` (bounded by `N`) together with the flag, itself determined by `0 ≤ A + i` once
+`A` is fixed -- so `past` is not free either.  Only the six `BoxState` fields vary, each
+over a finite range, which is what makes the enumeration a `Fintype`. -/
+
+/-- The flagged state a `BoxState` produces at real index `j`, with both `arr` and `past`
+forced. -/
+def BoxState.toFlag (b : BoxState) (j : ℤ) : FlagState :=
+  ⟨b.toLocal j, decide (0 ≤ j)⟩
+
+theorem boxState_toFlag_flagOf (P : SiteCost.PathData) (j : ℤ) :
+    ({ dprev := (stateOf P j).dprev, dcur := (stateOf P j).dcur, fcur := (stateOf P j).fcur,
+        dep := (stateOf P j).dep, eps := (stateOf P j).eps,
+        delta := (stateOf P j).delta } : BoxState).toFlag j = flagOf P j := by
+  show (⟨_, decide (0 ≤ j)⟩ : FlagState) = flagOf P j
+  rw [boxState_toLocal_stateOf P j]
+  rfl
+
+/-- The bounded set of `BoxState`s of magnitude at most `N`. -/
+def boxSet (N : ℕ) : Set BoxState :=
+  {b | b.dprev.natAbs ≤ N ∧ b.dcur.natAbs ≤ N ∧ b.fcur.natAbs ≤ N ∧ b.dep ≤ N
+    ∧ (b.eps = 1 ∨ b.eps = -1)}
+
+theorem boxSet_finite (N : ℕ) : (boxSet N).Finite := by
+  have hinj : Function.Injective
+      (fun b : BoxState => (b.dprev, b.dcur, b.fcur, b.dep, b.eps, b.delta)) := by
+    intro a b h
+    simp only [Prod.mk.injEq] at h
+    obtain ⟨h1, h2, h3, h4, h5, h6⟩ := h
+    cases a; cases b; simp_all
+  refine Set.Finite.of_finite_image (f := fun b : BoxState =>
+    (b.dprev, b.dcur, b.fcur, b.dep, b.eps, b.delta)) ?_
+    (hinj.injOn)
+  refine Set.Finite.subset
+    (Set.Finite.prod (Set.finite_Icc (-(N:ℤ)) N) (Set.Finite.prod
+      (Set.finite_Icc (-(N:ℤ)) N) (Set.Finite.prod (Set.finite_Icc (-(N:ℤ)) N)
+        (Set.Finite.prod (Set.finite_Icc (0:ℕ) N) (Set.Finite.prod
+          ((Set.finite_singleton (-1 : ℤ)).insert 1) Set.finite_univ))))) ?_
+  rintro _ ⟨b, hb, rfl⟩
+  obtain ⟨h1, h2, h3, h4, h5⟩ := hb
+  refine ⟨by simp; omega, by simp; omega, by simp; omega, by simpa using h4, ?_, Set.mem_univ _⟩
+  rcases h5 with h | h
+  · left; exact h
+  · right; simp [h]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16874,3 +16964,6 @@ end EltBridge
 #print axioms EltBridge.headCond_of_headVec_ne_zero
 #print axioms EltBridge.past_of_arr_at
 #print axioms EltBridge.arr_unique_after
+#print axioms EltBridge.boxState_toLocal_stateOf
+#print axioms EltBridge.boxState_toFlag_flagOf
+#print axioms EltBridge.boxSet_finite
