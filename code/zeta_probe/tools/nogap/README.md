@@ -6955,3 +6955,28 @@ discharge a hypothesis rather than by reading it, and every one in my own constr
 the missing site guard (176), the unrelativized quantification (177), and now the
 bounce set.  The pattern is consistent enough to state as a rule: a hypothesis is only
 tested when something has to produce it.
+
+## 2026-09-03 — BLOCK 181: the run indexing
+
+A run is a level set of `gz Zf` inside the span.  Defining `lo` and `len` as that set's
+minimum and extent makes two of the three remaining hypotheses immediate.
+
+    levelSet, runLo, runLen     the level set, its min, its extent
+    runLo_le_and_le_len         `hrange`: an edge lies in its own level set, hence
+                                between that set's min and max
+    gz_mono                     `gz` counts what lies below, so it is monotone
+    levelSet_interval           a run is therefore an INTERVAL: a point squeezed
+                                between two members is a member
+    no_cut_inside_run           `hint`: strictly inside a run there is no cut site --
+                                the run is an interval on which `gz` is constant, and a
+                                cut site there would raise it (BLOCK 165's
+                                `no_cut_between_of_gz_eq`)
+
+All 0 sorry.
+
+So `hrange` and `hint` are discharged, leaving `hocc` -- that a run's sites carry ends
+-- which is `mu_pos` on the span, and the datum `E` itself.
+
+Small Lean note: `rw [levelSet, ...]` fails on a `noncomputable def` where
+`simp only [levelSet, ...]` succeeds, and the same line worked earlier in a different
+goal shape, which is why it took a second look.

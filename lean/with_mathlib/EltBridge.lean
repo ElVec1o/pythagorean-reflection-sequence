@@ -10095,3 +10095,116 @@ end EltBridge
 
 #print axioms EltBridge.passTurn_hturn_of_subset
 #print axioms EltBridge.shield_upper_bound_bounce_set
+
+namespace EltBridge
+
+/-! ### The run indexing
+
+A run is a level set of `gz Zf` inside the span.  Defining `lo` and `len` as that set's
+minimum and extent makes `hrange` immediate: an edge lies in its own level set, hence
+between that set's min and max. -/
+
+/-- The edges of the span whose run index is `r`. -/
+noncomputable def levelSet (Zf : Finset ℤ) (A B : ℤ) (r : ℕ) : Finset ℤ :=
+  (Finset.Icc A B).filter (fun j => CutComponents.gz Zf j = r)
+
+/-- The run's left end. -/
+noncomputable def runLo (Zf : Finset ℤ) (A B : ℤ) (r : ℕ) : ℤ :=
+  if h : (levelSet Zf A B r).Nonempty then (levelSet Zf A B r).min' h else A
+
+/-- The run's extent. -/
+noncomputable def runLen (Zf : Finset ℤ) (A B : ℤ) (r : ℕ) : ℕ :=
+  if h : (levelSet Zf A B r).Nonempty then
+    ((levelSet Zf A B r).max' h - (levelSet Zf A B r).min' h).toNat else 0
+
+/-- **`hrange`.**  Every edge of the span lies in its own run, between that run's
+minimum and maximum. -/
+theorem runLo_le_and_le_len (Zf : Finset ℤ) (A B : ℤ) (j : ℤ) (hj : j ∈ Finset.Icc A B) :
+    ∃ k : ℕ, k ≤ runLen Zf A B (CutComponents.gz Zf j) ∧
+      j = runLo Zf A B (CutComponents.gz Zf j) + k := by
+  classical
+  set r := CutComponents.gz Zf j with hr
+  have hmem : j ∈ levelSet Zf A B r := by
+    rw [levelSet, Finset.mem_filter]
+    exact ⟨hj, rfl⟩
+  have hne : (levelSet Zf A B r).Nonempty := ⟨j, hmem⟩
+  have hlo : runLo Zf A B r = (levelSet Zf A B r).min' hne := by
+    rw [runLo, dif_pos hne]
+  have hlen : runLen Zf A B r
+      = ((levelSet Zf A B r).max' hne - (levelSet Zf A B r).min' hne).toNat := by
+    rw [runLen, dif_pos hne]
+  have hmin := Finset.min'_le _ _ hmem
+  have hmax := Finset.le_max' _ _ hmem
+  refine ⟨(j - (levelSet Zf A B r).min' hne).toNat, ?_, ?_⟩
+  · rw [hlen]
+    omega
+  · rw [hlo]
+    omega
+
+end EltBridge
+
+#print axioms EltBridge.runLo_le_and_le_len
+
+namespace EltBridge
+
+/-- `gz` is monotone: more of `Zf` lies below a larger argument. -/
+theorem gz_mono (Zf : Finset ℤ) {a b : ℤ} (h : a ≤ b) :
+    CutComponents.gz Zf a ≤ CutComponents.gz Zf b := by
+  classical
+  unfold CutComponents.gz
+  refine Finset.card_le_card ?_
+  intro z hz
+  rw [Finset.mem_filter] at hz ⊢
+  exact ⟨hz.1, le_trans hz.2 h⟩
+
+/-- **A run is an interval.**  `gz` is monotone, so a point squeezed between two members
+of a level set is itself a member. -/
+theorem levelSet_interval (Zf : Finset ℤ) (A B : ℤ) (r : ℕ) {a b j : ℤ}
+    (ha : a ∈ levelSet Zf A B r) (hb : b ∈ levelSet Zf A B r)
+    (h1 : a ≤ j) (h2 : j ≤ b) : j ∈ levelSet Zf A B r := by
+  rw [levelSet, Finset.mem_filter] at ha hb ⊢
+  rw [Finset.mem_Icc] at ha hb ⊢
+  refine ⟨⟨le_trans ha.1.1 h1, le_trans h2 hb.1.2⟩, ?_⟩
+  have m1 := gz_mono Zf h1
+  have m2 := gz_mono Zf h2
+  omega
+
+/-- **`hint`.**  Strictly inside a run there is no cut site: the run is an interval on
+which `gz` is constant, and a cut site there would raise it. -/
+theorem no_cut_inside_run (Zf : Finset ℤ) (A B : ℤ) (r : ℕ) (k : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty)
+    (hk : k < runLen Zf A B r) :
+    runLo Zf A B r + ((k : ℤ) + 1) ∉ Zf := by
+  classical
+  have hlo : runLo Zf A B r = (levelSet Zf A B r).min' hne := by rw [runLo, dif_pos hne]
+  have hlen : runLen Zf A B r
+      = ((levelSet Zf A B r).max' hne - (levelSet Zf A B r).min' hne).toNat := by
+    rw [runLen, dif_pos hne]
+  have hminmem := Finset.min'_mem (levelSet Zf A B r) hne
+  have hmaxmem := Finset.max'_mem (levelSet Zf A B r) hne
+  have hle := Finset.min'_le_max' (levelSet Zf A B r) hne
+  -- the point sits inside the run, so it is in the level set
+  have hin : runLo Zf A B r + ((k : ℤ) + 1) ∈ levelSet Zf A B r := by
+    refine levelSet_interval Zf A B r hminmem hmaxmem ?_ ?_
+    · rw [hlo]; omega
+    · rw [hlo]; omega
+  -- so `gz` agrees with its value at the run's left end
+  have hgz : CutComponents.gz Zf (runLo Zf A B r)
+      = CutComponents.gz Zf (runLo Zf A B r + ((k : ℤ) + 1)) := by
+    have h1 : CutComponents.gz Zf (runLo Zf A B r) = r := by
+      rw [hlo]
+      have h := hminmem
+      simp only [levelSet, Finset.mem_filter] at h
+      exact h.2
+    have h2 : CutComponents.gz Zf (runLo Zf A B r + ((k : ℤ) + 1)) = r := by
+      have h := hin
+      simp only [levelSet, Finset.mem_filter] at h
+      exact h.2
+    rw [h1, h2]
+  exact no_cut_between_of_gz_eq Zf _ _ (by omega) hgz _ (by omega) (le_refl _)
+
+end EltBridge
+
+#print axioms EltBridge.gz_mono
+#print axioms EltBridge.levelSet_interval
+#print axioms EltBridge.no_cut_inside_run
