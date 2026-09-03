@@ -6783,6 +6783,59 @@ theorem eq_travel_of_flow (kstar A B : ℤ) (f : ℤ → ℤ)
     hconst (A - 1)
   omega
 
+/-! ### Reading a state function off a list, without indexing
+
+BLOCK 224 left one obstacle: turning a guarded path (a list) back into a state function so
+`mkPathData` can consume it.  Done by induction on the list, never by indexing -- the
+lesson of the two aborts, and of `map_idxList_inj` (BLOCK 219) which went the other way. -/
+
+/-- Functions agreeing from `A` onward have the same image along `A :: idxList A n`. -/
+theorem map_idxList_congr {S : Type*} (f g : ℤ → S) :
+    ∀ (n : ℕ) (A : ℤ), (∀ j : ℤ, A ≤ j → f j = g j) →
+      (A :: idxList A n).map f = (A :: idxList A n).map g := by
+  intro n
+  induction n with
+  | zero => intro A h; simp [idxList, h A le_rfl]
+  | succ m ih =>
+      intro A h
+      have h1 : f A = g A := h A le_rfl
+      have h2 := ih (A + 1) (fun j hj => h j (by omega))
+      show f A :: ((A + 1) :: idxList (A + 1) m).map f
+        = g A :: ((A + 1) :: idxList (A + 1) m).map g
+      rw [h1, h2]
+
+/-- **Every list of the right length is a state path.**  So a guarded path, which is a
+list, yields the state function `mkPathData` needs -- and the obstacle of BLOCK 224 is
+removed. -/
+theorem exists_fun_of_length {S : Type*} :
+    ∀ (n : ℕ) (A : ℤ) (L : List S), L.length = n + 1 →
+      ∃ f : ℤ → S, L = (A :: idxList A n).map f := by
+  intro n
+  induction n with
+  | zero =>
+      intro A L hL
+      cases L with
+      | nil => simp at hL
+      | cons a t =>
+          have ht : t = [] := by cases t <;> simp_all
+          subst ht
+          exact ⟨fun _ => a, rfl⟩
+  | succ m ih =>
+      intro A L hL
+      cases L with
+      | nil => simp at hL
+      | cons a t =>
+          have ht : t.length = m + 1 := by simpa using hL
+          obtain ⟨g, hg⟩ := ih (A + 1) t ht
+          refine ⟨fun j => if j = A then a else g j, ?_⟩
+          have hcong : ((A + 1) :: idxList (A + 1) m).map
+                (fun j : ℤ => if j = A then a else g j)
+              = ((A + 1) :: idxList (A + 1) m).map g :=
+            map_idxList_congr _ _ m (A + 1) (fun j hj => by rw [if_neg (by omega)])
+          show a :: t = (if (A : ℤ) = A then a else g A)
+            :: ((A + 1) :: idxList (A + 1) m).map (fun j : ℤ => if j = A then a else g j)
+          rw [if_pos rfl, hcong, ← hg]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14393,3 +14446,5 @@ end EltBridge
 #print axioms EltBridge.sum_configs_eq_sum_paths
 #print axioms EltBridge.const_of_step
 #print axioms EltBridge.eq_travel_of_flow
+#print axioms EltBridge.map_idxList_congr
+#print axioms EltBridge.exists_fun_of_length

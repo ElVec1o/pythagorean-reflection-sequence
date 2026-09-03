@@ -8182,3 +8182,26 @@ state function -- reading `st j` off a list at index `j`.  That is indexing, whi
 exactly what the two aborts in this file were about, and it is the honest remaining
 obstacle.  BLOCK 219's `map_idxList_inj` avoided indexing by induction on the list; the
 same trick should work here, going the other way.
+
+## 2026-09-04 — BLOCK 225: reading a state function off a list, without indexing
+
+BLOCK 224's obstacle was turning a guarded path (a list) back into a state function so
+`mkPathData` can consume it.  Done by induction on the list, never by indexing:
+
+    map_idxList_congr     functions agreeing from A onward have the same image
+    exists_fun_of_length  EVERY list of the right length is a state path
+
+0 sorry, both clean on the first build.  This is the third time in this file that
+replacing an index argument with an induction on the list turned a hard step into an easy
+one; `map_idxList_inj` (BLOCK 219) was the same move in the other direction.
+
+**Where (M3) stands after this.**  A guarded path now yields a state function, the state
+function feeds `mkPathData` (with `eq_travel_of_flow` supplying `hpar`), and the resulting
+configuration's own state path is the list one started from.  So the correspondence holds
+at the level of lists.
+
+**What is left is one set equality and one chain.**  The set equality: the image of the
+configurations under `statePath` IS the set of guarded paths -- one inclusion is the guard
+theorems (BLOCKS 212, 216), the other is the construction just completed.  The chain: feed
+that into `sum_configs_eq_sum_paths` (BLOCK 223) and `weightSum_eq_sum_pathWeight`
+(BLOCK 211) to reach the matrix power.  Neither is written.
