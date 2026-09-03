@@ -5264,3 +5264,40 @@ So the deletion table now reads: the three pairing costs are rigid, and the
 fourth "hypothesis" was never a hypothesis.  The hole BLOCK 127 flagged in the
 cited certificate is closed, in the sense that the certificate is no weaker
 than it looked -- the missing test could not have failed.
+
+## 2026-09-03 — BLOCK 129: auditing the other cited modes for the H4 pattern
+
+H4 was vacuous because parity rejected its configurations before the hypothesis
+it meant to delete was ever consulted.  Same audit, remaining modes.
+
+**Non-vacuity.**  All three exercise what they claim, no empty buckets:
+`xcheck 6` 398567 (arr,dep) pairs; `interior 12 3` 45700 configurations;
+`universal 12 3` 269300 configurations across 8 non-empty site classes.
+
+**A real gap found in `universal`.**  Its verdict is
+`Site = max(|alpha|,|beta|)` -- **two** arguments -- while the law and `xcheck`
+use three, `max(|alpha|,|beta|,|Phi|)`.  `Phi` is not zero.  The left block of
+the arrival and departure vectors telescopes,
+
+    arr 0 + arr 1 = pu + (u - pu) = u,      dep 0 + dep 1 = pd + (dn - pd) = dn,
+    Phi = u - dn = f,
+
+so `Phi = +-1` on every travel edge.  The two-argument form is nonetheless
+correct, but only through parity: `a === f (mod 2)`, so `f` odd forces `a` odd,
+hence `|a| >= 1 >= |Phi|`.  Without that hypothesis the absorption is false --
+`alpha = beta = 0`, `Phi = 1` gives `1 != 0`.
+
+Proved: `phi_eq_f`, `phi_absorbed`, `phi_not_absorbed_without_parity` in
+`EltBridge.lean` (0 sorry; `phi_eq_f` omega-only).
+
+Measured: `universal` now computes `Phi` (including the virtual-event shifts at
+the markers, where the lemma does not apply directly, since a virtual arrival
+of class (left,+) and a departure of class 0 or 1 both move it) and reports
+`Phi-gaps`, the cells where the three-argument max exceeds the two-argument
+one.  **0 of 2693 cells**, every site class.  The mode's output now states the
+omission and the parity dependency rather than leaving the verdict looking
+unconditional.
+
+So: `universal` was sound but under-stated, and the reason it is sound is the
+same parity mechanism that made H4 silently empty.  That mechanism has now bitten
+twice in this tool.

@@ -6722,3 +6722,46 @@ theorem edge_bounds_attained (f m u dn : ℤ)
 
 #print axioms edge_bounds_redundant
 #print axioms edge_bounds_attained
+
+/-!
+### Why `Phi` may be dropped, and what that rests on
+
+`sitecost`'s `universal` mode certifies `Site = max(|alpha|,|beta|)`, a
+**two**-argument form, while the law and the `xcheck` mode use the three
+arguments `max(|alpha|,|beta|,|Phi|)`.  `Phi` is not identically zero: from
+`arr = [pu, u-pu, ...]`, `dep = [pd, dn-pd, ...]` the left block telescopes,
+
+    Phi = (arr 0 + arr 1) - (dep 0 + dep 1) = u - dn = f,
+
+so `Phi = +-1` on every travel edge.  Dropping it is legitimate only because
+parity forces `|a| >= 1` exactly when `f` is odd -- the same parity mechanism
+that silently emptied the H4 deletion.
+-/
+
+/-- `Phi` is the left edge's `f`: the left block of the arrival and departure
+vectors telescopes to `u` and `dn`. -/
+theorem phi_eq_f (u dn pu pd f m : ℤ) (hu : 2 * u = m + f) (hdn : 2 * dn = m - f) :
+    (pu + (u - pu)) - (pd + (dn - pd)) = f := by omega
+
+/-- With `|f| <= 1` and `a = f + 2t` (the parity the model imposes), the third
+argument is absorbed: `Phi` can only be non-zero when `a` is odd, and then
+`|a| >= 1 >= |Phi|`. -/
+theorem phi_absorbed (a b f t : ℤ) (hf1 : -1 ≤ f) (hf2 : f ≤ 1) (ht : a - f = 2 * t) :
+    max (max |a| |b|) |f| = max |a| |b| := by
+  refine max_eq_left (le_max_of_le_left ?_)
+  rcases (by omega : f = 0 ∨ a ≠ 0) with h | h
+  · simp [h]
+  · have h1 : (1 : ℤ) ≤ |a| := by
+      rcases abs_cases a with ⟨he, _⟩ | ⟨he, _⟩ <;> omega
+    exact (abs_le.mpr ⟨hf1, hf2⟩).trans h1
+
+/-- Without the parity hypothesis the absorption fails: `a = 0` with `f = 1`
+makes the three-argument form strictly larger.  So `universal`'s verdict is not
+a weakening one may take for granted. -/
+theorem phi_not_absorbed_without_parity :
+    ∃ a b f : ℤ, -1 ≤ f ∧ f ≤ 1 ∧ max (max |a| |b|) |f| ≠ max |a| |b| :=
+  ⟨0, 0, 1, by norm_num, by norm_num, by norm_num⟩
+
+#print axioms phi_eq_f
+#print axioms phi_absorbed
+#print axioms phi_not_absorbed_without_parity

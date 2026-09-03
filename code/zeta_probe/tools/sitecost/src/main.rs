@@ -661,11 +661,14 @@ fn mode_universal(amax: i64, lam: i64) {
     let mut grand_cells = 0u64;
     let mut grand_cfg = 0u64;
     let mut grand_bad = 0u64;
+    let mut grand_phi = 0u64;
     for (name, fl, fr, v_arr, v_dep) in sites {
         let mut cells = 0u64;
         let mut cfg = 0u64;
         let mut bad = 0u64;
         let mut shown = 0;
+        let mut phi_gap = 0u64;
+        let mut phi_shown = 0;
         for eps in [1i64, -1] {
             for delta in [0i64, 1] {
                 if !v_dep && (eps != 1 || delta != 0) {
@@ -690,7 +693,22 @@ fn mode_universal(amax: i64, lam: i64) {
                             let sgn = if c % 2 == 0 { 1 } else { -1 };
                             if c < 2 { alpha += sgn; } else { beta -= sgn; }
                         }
+                        // Phi = f of the left edge, shifted by the virtual events
+                        // that land in the left block (the arrival, class (left,+),
+                        // and a departure of class 0 or 1).
+                        let mut phi = fl;
+                        if v_arr { phi += 1; }
+                        if let Some(c) = vd { if c < 2 { phi -= 1; } }
                         let target = alpha.abs().max(beta.abs());
+                        let target3 = target.max(phi.abs());
+                        if target3 != target {
+                            phi_gap += 1;
+                            if phi_shown < 3 {
+                                phi_shown += 1;
+                                println!("  [universal] Phi NOT absorbed: {} aL={} aR={} alpha={} beta={} Phi={} 2arg={} 3arg={}",
+                                    name, al, ar, alpha, beta, phi, target, target3);
+                            }
+                        }
                         let mut seen_any = false;
                         let mut minv = INF;
                         for il in 0..=lam {
@@ -731,10 +749,16 @@ fn mode_universal(amax: i64, lam: i64) {
                 }
             }
         }
-        println!("[universal] {:26} cells={:6} configurations={:9} exceptions={}", name, cells, cfg, bad);
-        grand_cells += cells; grand_cfg += cfg; grand_bad += bad;
+        println!("[universal] {:26} cells={:6} configurations={:9} exceptions={} Phi-gaps={}", name, cells, cfg, bad, phi_gap);
+        grand_cells += cells; grand_cfg += cfg; grand_bad += bad; grand_phi += phi_gap;
     }
-    println!("[universal] TOTAL cells={} configurations={} exceptions={}", grand_cells, grand_cfg, grand_bad);
+    println!("[universal] TOTAL cells={} configurations={} exceptions={} Phi-gaps={}", grand_cells, grand_cfg, grand_bad, grand_phi);
+    println!("[universal] NOTE: the target here is the TWO-argument max(|alpha|,|beta|).");
+    println!("[universal] The law's third argument Phi equals the left edge's f (the left");
+    println!("[universal] block of arr/dep telescopes to u and dn, and u - dn = f), so Phi");
+    println!("[universal] is +-1 on every travel edge, not zero.  It is absorbed because");
+    println!("[universal] parity forces |a| >= 1 whenever f is odd.  Phi-gaps counts the");
+    println!("[universal] cells where max(|alpha|,|beta|,|Phi|) exceeds max(|alpha|,|beta|).");
     println!("[universal] VERDICT: {}",
         if grand_bad == 0 {
             "Site = max(|alpha|,|beta|) for EVERY crossing count and EVERY sign split -- 0 exceptions"
