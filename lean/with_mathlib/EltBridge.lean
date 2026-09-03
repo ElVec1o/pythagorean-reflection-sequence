@@ -378,6 +378,45 @@ theorem VEndpt.partner_unique {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ
       rw [hP] at h2
       cases b <;> cases c <;> simp_all [VEndpt.isArr, VEndpt.partner]
 
+/-! ### The virtual crossing does not sit on an edge
+
+The merge development is generic in the end type: `CostMerge.min_merges_to_one` takes
+`edgeOf`, `siteOf`, `atTop`, `p0` as arguments, with four compatibility hypotheses.
+Transport to `VEndpt` therefore needs only an `edgeOf` and an `atTop` for the two
+virtual ends.  **There is none**, except in a degenerate case.
+
+`hpe` forces the two virtual ends onto a common edge `j`, `hpt` forces them to be its
+two ends, and `hsite` then puts their sites at `j` and `j + 1` in some order.  But
+their sites are `0` and `kstar`.  So `kstar = 1` or `kstar = -1`. -/
+
+/-- **The forced virtual pairing is incompatible with the edge geometry unless
+`|kstar| = 1`.** -/
+theorem VEndpt.no_virtual_edge {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
+    (edgeOf : VEndpt n mm → ℤ) (atTop : VEndpt n mm → Bool)
+    (hsite : ∀ x, VEndpt.site kstar x = edgeOf x + (if atTop x then 1 else 0))
+    (hpe : ∀ x, edgeOf (VEndpt.partner x) = edgeOf x)
+    (hpt : ∀ x, atTop (VEndpt.partner x) = !atTop x) :
+    kstar = 1 ∨ kstar = -1 := by
+  have hA := hsite (Sum.inr false)
+  have hB := hsite (Sum.inr true)
+  have he : edgeOf (Sum.inr true : VEndpt n mm) = edgeOf (Sum.inr false : VEndpt n mm) := by
+    have := hpe (Sum.inr false); simpa [VEndpt.partner] using this
+  have ht : atTop (Sum.inr true : VEndpt n mm) = !atTop (Sum.inr false : VEndpt n mm) := by
+    have := hpt (Sum.inr false); simpa [VEndpt.partner] using this
+  simp only [VEndpt.site] at hA hB
+  rw [he] at hB
+  cases hb : atTop (Sum.inr false : VEndpt n mm)
+  · have e1 : (if atTop (Sum.inr false : VEndpt n mm) then (1:ℤ) else 0) = 0 := by
+      rw [hb]; rfl
+    have e2 : (if atTop (Sum.inr true : VEndpt n mm) then (1:ℤ) else 0) = 1 := by
+      rw [ht, hb]; rfl
+    rw [e1] at hA; rw [e2] at hB; omega
+  · have e1 : (if atTop (Sum.inr false : VEndpt n mm) then (1:ℤ) else 0) = 1 := by
+      rw [hb]; rfl
+    have e2 : (if atTop (Sum.inr true : VEndpt n mm) then (1:ℤ) else 0) = 0 := by
+      rw [ht, hb]; rfl
+    rw [e1] at hA; rw [e2] at hB; omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -397,3 +436,4 @@ end EltBridge
 #print axioms EltBridge.VEndpt.isArr_partner
 #print axioms EltBridge.VEndpt.partner_site_ne
 #print axioms EltBridge.VEndpt.partner_unique
+#print axioms EltBridge.VEndpt.no_virtual_edge

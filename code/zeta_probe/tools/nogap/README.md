@@ -2266,3 +2266,38 @@ converts one of its silent choices into a theorem.
 
 STILL NOT DONE: `turn`, `Data`, `walkCount` on VEndpt, and re-proving the merge
 development against the extended type. B1 stays yellow.
+
+## 2026-09-03 — BLOCK 11: the virtual crossing does NOT sit on an edge
+
+The merge development is fully generic in the end type: `CostMerge.min_merges_to_one`
+takes edgeOf, siteOf, atTop, p0 as ARGUMENTS with four compatibility hypotheses. So
+transport to VEndpt looked nearly free -- supply edgeOf and atTop for the two virtual
+ends and everything downstream applies.
+
+There is no such supply.
+
+  VEndpt.no_virtual_edge -- if edgeOf and atTop satisfy hsite, hpe, hpt on VEndpt,
+                            then kstar = 1 or kstar = -1
+
+Reason: `hpe` puts the two virtual ends on a COMMON edge j (they are partners),
+`hpt` makes them its two ends, and `hsite` then places their sites at j and j+1 in
+some order. But their sites are 0 and kstar. Hence |kstar| = 1.
+
+So the three facts now pull against each other:
+  BLOCK 8  -- exactly two virtual ends are needed, at sites 0 and kstar (forced)
+  BLOCK 10 -- they must pair each other (forced)
+  BLOCK 11 -- a pair on a common edge forces |kstar| = 1 (forced)
+
+For |kstar| != 1 the virtual pair is a crossing with no edge. That is not a defect in
+the extension -- it is a real feature of the object: the virtual strand runs from the
+basepoint to the cursor and spans the whole travel interval, so it is not a crossing
+of any single edge.
+
+CONSEQUENCE: `min_merges_to_one` CANNOT be applied to VEndpt as stated. Its hypotheses
+hpe/hpt/hsite are edge-local and the virtual pair is not. Either the merge development
+is re-proved with a weakened, non-edge-local locality hypothesis, or the virtual pair
+is handled outside the merge and reattached. This is now a precise fork, and BOTH
+branches are real work -- neither is bookkeeping.
+
+B1 stays yellow, and the reason is no longer "transport not written" but "transport
+provably does not apply as stated".
