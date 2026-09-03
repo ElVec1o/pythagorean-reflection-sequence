@@ -7243,3 +7243,37 @@ when a sign class holds two strands, and that fails at `pu = pd = 1`.
 
 So the `mu >= 4` construction now has somewhere to put its cycle that costs nothing, and
 the remaining work is exhibiting the turn itself.
+
+## 2026-09-03 — BLOCK 191: the general-u turn
+
+At `mu = 2u` a site carries `4u` ends, so the `mu = 2` definition's if-chain over four
+ends does not scale -- and neither would its six distinctness inequalities, which would
+become `O(u^2)`.  Defining the turn STRUCTURALLY avoids both:
+
+    bounce   stay on the edge, keep the top, flip the SIDE (up <-> down)
+    pass     cross to the other edge, keep the side, flip the top, permute the level by
+             `sigma` one way and `sigma^-1` the other
+
+Involutivity then holds by construction rather than by case analysis, and needs NO
+distinctness hypothesis at all:
+
+    levOf, udOf, mkEnd        the level and side of an end, and the reverse
+    levOf_mkEnd, udOf_mkEnd   they read back correctly
+    turnGen                   the turn
+    turnGen_off_site          the identity off its site
+    turnGen_bounce_invol      the bounce: flips the side twice
+    turnGen_pass_invol        the pass: out along sigma, back along sigma^-1
+
+All 0 sorry.
+
+The pass needed the section property, which is expected -- it names the other edge --
+and cost an ABORT under the three-strike rule.  The stuck subgoal was an `HEq` between
+the `idx` fields, and three tactics failed on it because the two sides live in genuinely
+DIFFERENT types, `Fin (m (sec (s-1)))` and `Fin (m e)`, until the edge equality is used.
+`congr` emits the `HEq` before that.  The fix was architectural: derive `he' : sec (s-1) = e`
+FIRST and supply `congrArg m he'` as the type equality.  Guessing more tactics would not
+have found it.
+
+Also fixed: a `namespace EltBridge` opened without closing the previous one, which had
+been silently nesting declarations at `EltBridge.EltBridge.*`.  Caught by the doubled
+name in `#print axioms`, the same tell as BLOCK 143.

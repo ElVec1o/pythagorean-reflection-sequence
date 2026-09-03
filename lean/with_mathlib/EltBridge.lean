@@ -11273,3 +11273,244 @@ end EltBridge
 
 #print axioms EltBridge.relabelled_covers
 #print axioms EltBridge.shield_law_gen_named
+
+namespace EltBridge
+
+/-! ## The general-`u` turn
+
+At `mu = 2u` a site carries `4u` ends -- the `2u` tops of edge `s-1` and the `2u`
+bottoms of edge `s` -- so the `mu = 2` definition's if-chain over four ends does not
+scale.  Defining the turn STRUCTURALLY avoids that entirely:
+
+    bounce   stay on the edge, keep the level, flip the SIDE (up <-> down)
+    pass     cross to the other edge, keep the side, permute the level by `sigma`
+
+and the reverse pass uses `sigma⁻¹`, so involutivity holds by construction rather than
+by case analysis.  Neither needs the ends to be pairwise distinct. -/
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- The level of an end, and which side it is on. -/
+def levOf (u : ℕ) (x : EndType.Endpt n m) : ℕ :=
+  if (x.idx : ℕ) < u then (x.idx : ℕ) else (x.idx : ℕ) - u
+
+def udOf (u : ℕ) (x : EndType.Endpt n m) : Bool := decide ((x.idx : ℕ) < u)
+
+theorem levOf_lt (hm : ∀ e, m e = 2 * u) (x : EndType.Endpt n m) : levOf u x < u := by
+  unfold levOf
+  have h := x.idx.isLt
+  have h2 := hm x.edge
+  by_cases hc : (x.idx : ℕ) < u
+  · rw [if_pos hc]; exact hc
+  · rw [if_neg hc]; omega
+
+/-- Rebuilding an end from its edge, level, side and top. -/
+noncomputable def mkEnd (hm : ∀ e, m e = 2 * u) (e : Fin n) (l : ℕ) (hl : l < u)
+    (b : Bool) (t : Bool) : EndType.Endpt n m :=
+  ⟨e, ⟨levIdx u ⟨l, hl⟩ b, by rw [hm]; exact levIdx_lt u ⟨l, hl⟩ b⟩, t⟩
+
+@[simp] theorem mkEnd_edge (hm : ∀ e, m e = 2 * u) (e : Fin n) (l : ℕ) (hl : l < u)
+    (b t : Bool) : (mkEnd (m := m) hm e l hl b t).edge = e := rfl
+
+@[simp] theorem mkEnd_top (hm : ∀ e, m e = 2 * u) (e : Fin n) (l : ℕ) (hl : l < u)
+    (b t : Bool) : (mkEnd (m := m) hm e l hl b t).top = t := rfl
+
+/-- Reading the level and side back off a rebuilt end. -/
+theorem levOf_mkEnd (hm : ∀ e, m e = 2 * u) (e : Fin n) (l : ℕ) (hl : l < u)
+    (b t : Bool) : levOf u (mkEnd (m := m) hm e l hl b t) = l := by
+  unfold levOf mkEnd levIdx
+  cases b
+  · simp only [Bool.false_eq_true, if_false, Fin.val_mk]
+    rw [if_neg (by omega)]
+    omega
+  · simp only [if_true, Fin.val_mk]
+    rw [if_pos hl]
+
+theorem udOf_mkEnd (hm : ∀ e, m e = 2 * u) (e : Fin n) (l : ℕ) (hl : l < u)
+    (b t : Bool) : udOf u (mkEnd (m := m) hm e l hl b t) = b := by
+  unfold udOf mkEnd levIdx
+  cases b
+  · simp only [Bool.false_eq_true, if_false, Fin.val_mk]
+    exact decide_eq_false (by omega)
+  · simp only [if_true, Fin.val_mk]
+    exact decide_eq_true hl
+
+end EltBridge
+
+#print axioms EltBridge.levOf_lt
+#print axioms EltBridge.levOf_mkEnd
+#print axioms EltBridge.udOf_mkEnd
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The general-`u` turn at a site.**  A bounce keeps the edge and the top and flips
+the side; a pass crosses the edge, keeps the side, flips the top and permutes the level
+by `sigma` one way and `sigma⁻¹` the other. -/
+noncomputable def turnGen (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m) :
+    EndType.Endpt n m :=
+  if EndType.siteOf x ≠ s then x
+  else if s ∈ Bs then
+    mkEnd (m := m) hm x.edge (levOf u x) (levOf_lt hm x) (!udOf u x) x.top
+  else if x.top then
+    mkEnd (m := m) hm (sec s) ((sig s ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+      (Fin.isLt _) (udOf u x) false
+  else
+    mkEnd (m := m) hm (sec (s - 1)) (((sig s).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+      (Fin.isLt _) (udOf u x) true
+
+theorem turnGen_off_site (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (h : EndType.siteOf x ≠ s) : turnGen (m := m) hm sec Bs sig s x = x := by
+  unfold turnGen; rw [if_pos h]
+
+/-- The bounce's image, computed. -/
+theorem turnGen_bounce_eq (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) (hs : s ∈ Bs) :
+    turnGen (m := m) hm sec Bs sig s x
+      = mkEnd (m := m) hm x.edge (levOf u x) (levOf_lt hm x) (!udOf u x) x.top := by
+  unfold turnGen
+  rw [if_neg (by simpa using hx), if_pos hs]
+
+/-- The bounce keeps the site: same edge, same top. -/
+theorem mkEnd_site (hm : ∀ e, m e = 2 * u) (x : EndType.Endpt n m) (l : ℕ) (hl : l < u)
+    (b : Bool) :
+    EndType.siteOf (mkEnd (m := m) hm x.edge l hl b x.top) = EndType.siteOf x := rfl
+
+/-- **The bounce is an involution.**  It flips the side twice, and neither the edge nor
+the top moves, so the second application takes the same branch. -/
+theorem turnGen_bounce_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) (hs : s ∈ Bs) :
+    turnGen (m := m) hm sec Bs sig s (turnGen (m := m) hm sec Bs sig s x) = x := by
+  rw [turnGen_bounce_eq hm sec Bs sig s x hx hs]
+  have hsite : EndType.siteOf
+      (mkEnd (m := m) hm x.edge (levOf u x) (levOf_lt hm x) (!udOf u x) x.top) = s := by
+    rw [mkEnd_site]; exact hx
+  rw [turnGen_bounce_eq hm sec Bs sig s _ hsite hs]
+  simp only [mkEnd_edge, mkEnd_top, levOf_mkEnd, udOf_mkEnd, Bool.not_not]
+  -- the rebuilt end is the original
+  obtain ⟨e, i, t⟩ := x
+  unfold mkEnd
+  congr 1
+  apply Fin.ext
+  simp only [Fin.val_mk]
+  unfold levOf udOf levIdx
+  simp only [Fin.val_mk]
+  have hlt := i.isLt
+  have h2 := hm e
+  by_cases hc : (i : ℕ) < u
+  · rw [if_pos hc]
+    simp [hc]
+  · rw [if_neg hc]
+    simp [hc]
+    omega
+
+end EltBridge
+
+#print axioms EltBridge.turnGen_off_site
+#print axioms EltBridge.turnGen_bounce_invol
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- The pass's image on a top of edge `s-1`. -/
+theorem turnGen_pass_top (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) (hs : s ∉ Bs) (ht : x.top = true) :
+    turnGen (m := m) hm sec Bs sig s x
+      = mkEnd (m := m) hm (sec s) ((sig s ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+          (Fin.isLt _) (udOf u x) false := by
+  unfold turnGen
+  rw [if_neg (by simpa using hx), if_neg hs, if_pos ht]
+
+/-- The pass's image on a bottom of edge `s`. -/
+theorem turnGen_pass_bot (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) (hs : s ∉ Bs) (ht : x.top = false) :
+    turnGen (m := m) hm sec Bs sig s x
+      = mkEnd (m := m) hm (sec (s - 1))
+          (((sig s).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+          (Fin.isLt _) (udOf u x) true := by
+  unfold turnGen
+  rw [if_neg (by simpa using hx), if_neg hs, if_neg (by simp [ht])]
+
+/-- A top of edge `s-1` sits at site `s`; a bottom of edge `s` sits at site `s`. -/
+theorem site_of_mkEnd (hm : ∀ e, m e = 2 * u) (e : Fin n) (l : ℕ) (hl : l < u)
+    (b t : Bool) :
+    EndType.siteOf (mkEnd (m := m) hm e l hl b t)
+      = (e : ℤ) + (if t then 1 else 0) := rfl
+
+/-- **The pass is an involution**, given the section: out along `sigma`, back along
+`sigma⁻¹`, and the edge and top return. -/
+theorem turnGen_pass_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) (hs : s ∉ Bs)
+    (hsecS : ((sec s : ℕ) : ℤ) = s)
+    (hsecP : ((sec (s - 1) : ℕ) : ℤ) = s - 1)
+    (hedgeTop : x.top = true → (x.edge : ℤ) = s - 1)
+    (hedgeBot : x.top = false → (x.edge : ℤ) = s) :
+    turnGen (m := m) hm sec Bs sig s (turnGen (m := m) hm sec Bs sig s x) = x := by
+  cases ht : x.top
+  · -- a bottom of edge `s`: cross to a top of edge `s-1`, then back
+    rw [turnGen_pass_bot hm sec Bs sig s x hx hs ht]
+    have hsite : EndType.siteOf
+        (mkEnd (m := m) hm (sec (s - 1))
+          (((sig s).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+          (Fin.isLt _) (udOf u x) true) = s := by
+      rw [site_of_mkEnd, hsecP]; norm_num
+    rw [turnGen_pass_top hm sec Bs sig s _ hsite hs (by rfl)]
+    simp only [levOf_mkEnd, udOf_mkEnd, Fin.eta, Equiv.apply_symm_apply]
+    obtain ⟨e, i, t⟩ := x
+    have he : (e : ℤ) = s := hedgeBot ht
+    have he' : sec s = e := by
+      apply Fin.ext
+      have : ((sec s : ℕ) : ℤ) = ((e : ℕ) : ℤ) := by rw [hsecS]; omega
+      exact_mod_cast this
+    unfold mkEnd
+    congr 1
+    · refine (Fin.heq_ext_iff (congrArg m he')).mpr ?_
+      simp only [Fin.val_mk]
+      unfold levOf udOf levIdx
+      simp only [Fin.val_mk]
+      have hlt := i.isLt
+      have h2 := hm e
+      by_cases hc : (i : ℕ) < u
+      · rw [if_pos hc]; simp [hc]
+      · rw [if_neg hc]; simp [hc]; omega
+    · exact ht.symm
+  · -- a top of edge `s-1`: cross to a bottom of edge `s`, then back
+    rw [turnGen_pass_top hm sec Bs sig s x hx hs ht]
+    have hsite : EndType.siteOf
+        (mkEnd (m := m) hm (sec s) ((sig s ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+          (Fin.isLt _) (udOf u x) false) = s := by
+      rw [site_of_mkEnd, hsecS]; norm_num
+    rw [turnGen_pass_bot hm sec Bs sig s _ hsite hs (by rfl)]
+    simp only [levOf_mkEnd, udOf_mkEnd, Fin.eta, Equiv.symm_apply_apply]
+    obtain ⟨e, i, t⟩ := x
+    have he : (e : ℤ) = s - 1 := hedgeTop ht
+    have he' : sec (s - 1) = e := by
+      apply Fin.ext
+      have : ((sec (s - 1) : ℕ) : ℤ) = ((e : ℕ) : ℤ) := by rw [hsecP]; omega
+      exact_mod_cast this
+    unfold mkEnd
+    congr 1
+    · refine (Fin.heq_ext_iff (congrArg m he')).mpr ?_
+      simp only [Fin.val_mk]
+      unfold levOf udOf levIdx
+      simp only [Fin.val_mk]
+      have hlt := i.isLt
+      have h2 := hm e
+      by_cases hc : (i : ℕ) < u
+      · rw [if_pos hc]; simp [hc]
+      · rw [if_neg hc]; simp [hc]; omega
+    · exact ht.symm
+
+end EltBridge
+
+#print axioms EltBridge.turnGen_pass_top
+#print axioms EltBridge.turnGen_pass_invol
