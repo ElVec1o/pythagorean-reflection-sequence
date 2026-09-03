@@ -8583,3 +8583,25 @@ first.  Fifth occurrence in this file.
 Since the arrival total is `1` (`sum_vArr_eq_one`, BLOCK 235), so is the departure total,
 and `exists_of_sum_one` / `unique_of_sum_one` locate the departure exactly.  **Both
 markers are now derived from the guard, neither assumed.**
+
+## 2026-09-04 — BLOCK 242: locating the departure
+
+Everything was in place; this joins it:
+
+    exists_dep_index    the departure index exists
+    dep_index_unique    and is unique
+
+0 sorry, both clean on the first build.  The chain is: the guard supplies the flow
+(BLOCK 241), the flow makes the departure total equal the arrival total (BLOCK 230+241),
+the arrival total is one (BLOCK 235), and a 0/1 sum equal to one has exactly one term
+(BLOCK 240).  No second flag was needed.
+
+**Status of the doubled converse.**  `Guarded`'s fields now come from the doubled guard as
+follows: `step`, `valid`, `epsv` from `fullStepB`; `endA` from `headOkB`; `endB` from the
+tail vector; `arrv` from the flag plus translation (BLOCKS 237-239); `dep` and `depv` from
+the flow (this block); `loA`, `hiB` from the arrival lying in the span (BLOCK 239);
+`kstLo`, `kstHi` from the departure index lying in the range.  `outer` is the boundary
+condition the head and tail vectors carry.
+
+Every field is accounted for.  What is not yet written is the single theorem that puts them
+together and hands `exists_config_stateOf` its hypothesis.

@@ -7682,6 +7682,33 @@ theorem flow_of_flagStepB (st : ℤ → FlagState)
   simp only [flowB, decide_eq_true_eq] at hf
   exact hf
 
+/-! ### Locating the departure
+
+Everything is in place: the guard supplies the flow, the flow makes the departure total
+equal the arrival total, the arrival total is one, and a 0/1 sum equal to one has exactly
+one term.  So the departure index exists and is unique -- derived from the guard, with no
+second flag. -/
+
+theorem exists_dep_index (st : ℤ → FlagState) (A : ℤ) (n : ℕ)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (h0 : (st A).st.fcur = 0) (hn : (st (A + n)).st.fcur = 0)
+    (hdep01 : ∀ j : ℤ, (st j).st.dep = 0 ∨ (st j).st.dep = 1)
+    (harr : ∑ k ∈ Finset.range n, (st (A + 1 + k)).st.arr = 1) :
+    ∃ k ∈ Finset.range n, (st (A + 1 + k)).st.dep = 1 := by
+  have hsum := dep_sum_eq_arr_sum st A n (flow_of_flagStepB st hstep) h0 hn
+  rw [harr] at hsum
+  exact exists_of_sum_one (fun k => (st (A + 1 + k)).st.dep) n (fun k => hdep01 _) hsum.symm
+
+theorem dep_index_unique (st : ℤ → FlagState) (A : ℤ) (n : ℕ)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (h0 : (st A).st.fcur = 0) (hn : (st (A + n)).st.fcur = 0)
+    (harr : ∑ k ∈ Finset.range n, (st (A + 1 + k)).st.arr = 1)
+    {i j : ℕ} (hi : i ∈ Finset.range n) (hj : j ∈ Finset.range n)
+    (hfi : (st (A + 1 + i)).st.dep = 1) (hfj : (st (A + 1 + j)).st.dep = 1) : i = j := by
+  have hsum := dep_sum_eq_arr_sum st A n (flow_of_flagStepB st hstep) h0 hn
+  rw [harr] at hsum
+  exact unique_of_sum_one (fun k => (st (A + 1 + k)).st.dep) n hsum.symm hi hj hfi hfj
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15337,3 +15364,5 @@ end EltBridge
 #print axioms EltBridge.unique_of_sum_one
 #print axioms EltBridge.dep_sum_eq_arr_sum
 #print axioms EltBridge.flow_of_flagStepB
+#print axioms EltBridge.exists_dep_index
+#print axioms EltBridge.dep_index_unique
