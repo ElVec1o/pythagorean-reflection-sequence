@@ -2133,3 +2133,28 @@ not an assumption. All kernel-clean (`decide`, not `native_decide`); full build
 H1b (reverse shield): OPEN -> PROVED, with a witness. `shield_law_final` is
 superseded by `shield_law_runs` and kept only as the record of the bad hypothesis,
 alongside `shield_final_hyps_incompatible` which proves it was bad.
+
+## 2026-09-03 — BLOCK 6: B1 scoped; the bridge is NOT a re-indexing
+
+Removed the superseded `hocc` form of the shield law (`shield_law_final`); kept
+`shield_final_hyps_incompatible` as the record of why it was wrong. M4b is green.
+
+Then attacked B1 (g -> configuration), the atom qualifying M3/M5/M6/M7.
+`PathData` already carries `mm` (multiplicities) and `cu`/`cdn` (up/down counts), so
+the bridge to `Endpt n m` looks like re-indexing Z -> Fin n. It is not:
+
+  balance_iff_tr      -- balance at a site <-> the two adjacent edges have EQUAL
+                         signed travel  tr e = 2*min(up e, m e) - m e
+  no_balance_of_tr_ne -- so unequal signed travel on adjacent edges kills balance
+
+And `PathData.cu_sub_cdn` says the signed travel of edge j IS `travel kstar j`, which
+is not constant (it is 0 outside [A,B] and generally nonzero inside). So a bare
+re-indexing of a PathData is UNBALANCED at every site where travel steps.
+
+CONSEQUENCE: the virtual events vArr/vL/vR -- the alphaAt/betaAt bookkeeping -- are
+not decoration. They are exactly what makes the configuration balanced, and B1 must
+add two virtual endpoints to `Endpt` rather than re-index. That is a type-level
+change, so B1 is a larger job than "not started" suggested, and its size is now
+known rather than guessed.
+
+B1: not started -> SCOPED (obstruction identified and proved).

@@ -2255,7 +2255,44 @@ theorem wit_shield (ds : Bool → Bool) :
     shield_law_runs (m := witM) witUp ds {2} wit_hZ wit_hruns ⟨0, ⟨0, by decide⟩, true⟩ D hD
   exact ⟨E, hE, by simpa using hc⟩
 
+/-! ### B1: what the `g -> configuration` bridge actually needs
+
+`PathData` already carries multiplicities `mm` and up/down counts `cu`, `cdn`, so the
+bridge to `Endpt n m` looks like a re-indexing `Z -> Fin n`.  It is not.  Balance in
+the `Endpt` model is **equivalent** to the two edges adjacent to the site having the
+same signed travel, and `PathData.cu_sub_cdn` says that signed travel *is* `travel`,
+which is not constant.  So a bare re-indexing cannot balance: the virtual events
+`vArr`, `vL`, `vR` -- the `alphaAt`/`betaAt` bookkeeping -- are not decoration, they
+are what makes the configuration balanced at all. -/
+
+/-- The signed travel of an edge: up-crossings minus down-crossings. -/
+def tr (up : Fin n → ℕ) (e : Fin n) : ℤ := 2 * min (up e) (m e) - m e
+
+/-- **Balance at a site is equivalent to equal signed travel on its two edges.** -/
+theorem balance_iff_tr (up : Fin n → ℕ) (s : ℤ) (e1 e2 : Fin n)
+    (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card ↔
+      tr (m := m) up e1 = tr (m := m) up e2 := by
+  have ha := card_arr_top (m := m) up s e1 h1
+  have hb := card_arr_bottom (m := m) up s e2 h2
+  have hc := card_dep_top (m := m) up s e1 h1
+  have hd := card_dep_bottom (m := m) up s e2 h2
+  have hs1 := card_split_atTop (arrAt (m := m) up s)
+  have hs2 := card_split_atTop (depAt (m := m) up s)
+  have k1 : min (up e1) (m e1) ≤ m e1 := min_le_right _ _
+  have k2 : min (up e2) (m e2) ≤ m e2 := min_le_right _ _
+  unfold tr
+  omega
+
+/-- **The bare re-indexing cannot balance.**  If two adjacent edges carry different
+signed travel, no site between them is balanced -- so `PathData` with non-constant
+`travel` has no balanced `Endpt` model without virtual events. -/
+theorem no_balance_of_tr_ne (up : Fin n → ℕ) (s : ℤ) (e1 e2 : Fin n)
+    (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s)
+    (hne : tr (m := m) up e1 ≠ tr (m := m) up e2) :
+    (arrAt (m := m) up s).card ≠ (depAt (m := m) up s).card :=
+  fun h => hne ((balance_iff_tr (m := m) up s e1 e2 h1 h2).mp h)
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.shield_law_runs
-#print axioms ConfigLoop.wit_hruns
-#print axioms ConfigLoop.wit_shield
+#print axioms ConfigLoop.balance_iff_tr
+#print axioms ConfigLoop.no_balance_of_tr_ne
