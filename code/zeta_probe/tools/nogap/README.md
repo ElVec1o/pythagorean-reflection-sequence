@@ -7982,3 +7982,30 @@ of the above, assemble a `PathData` realising it.  The data is forced (`d` from 
 states and `0` off the span, `eps`/`delta` from any state, `k*` from the departure
 marker); what has to be discharged is the six proof fields, and each has a guard above
 aimed at it.  No obstruction is known.
+
+## 2026-09-04 — BLOCK 217: sufficiency — guarded data assembles into a configuration
+
+The last piece of (M3)'s bijection.  Everything the guards check is exactly what the six
+proof fields of `PathData` need:
+
+    travel_zero_off      off the span the travel indicator vanishes, given the departure
+                         lies on it -- the converse of BLOCK 214, and houter's travel half
+    mkPathData           THE CONSTRUCTION: guarded data assembles into a configuration
+    mkPathData_d         and it realises the deposits it was built from
+    mkPathData_dcur/_dprev/_fcur/_eps/_delta    the round trip on the span
+
+Each proof field is discharged by the guard aimed at it:
+
+    heps   <- supplied directly            hA, hB  <- supplied directly
+    hpar   <- on the span from the guard, off it because both terms vanish
+    houter <- deposits by construction, travel by travel_zero_off
+    hAmin, hBmin <- the end-state guard, with A <= B from hA and hB
+
+0 sorry.  One elaboration snag: implicit arguments cannot be inferred through the state
+projection, so the round-trip lemmas need `simp only [stateOf]` before `exact`.
+
+**Both halves of (M3)'s bijection now exist**: `stateOf_injective'` (BLOCK 213-214) and
+`mkPathData` (here).  What is NOT yet written is their composition into a single
+`Equiv` -- and, with it, the sum over configurations rewritten as the sum over guarded
+paths, which is the statement (M3) actually needs.  That is assembly of pieces that are
+all present, not new mathematics.

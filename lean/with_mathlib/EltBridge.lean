@@ -6350,6 +6350,99 @@ theorem pathWeight_stepB_eq (x : ℤ) (P : SiteCost.PathData) (mu : LocalState �
           ((A :: idxList A n).map (stateOf P)) :=
   pathWeight_guard_eq x P mu stepB (stepB_stateOf P) n A lam
 
+/-! ### Sufficiency: assembling a configuration from guarded data
+
+The last piece of (M3).  Everything the guards check is exactly what the six proof fields
+of `PathData` need, so a path satisfying them can be assembled into a configuration.  The
+data is forced -- deposits from the states inside the span and `0` outside, `eps` and
+`delta` from any state, `k*` from the departure marker -- and each proof field is
+discharged by the guard aimed at it. -/
+
+/-- Off the span the travel indicator vanishes, given that the departure lies on the
+span.  This is `houter`'s travel half, and the converse of BLOCK 214. -/
+theorem travel_zero_off (kstar A B j : ℤ) (hA : A ≤ 0) (hB : 0 ≤ B)
+    (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1) (hj : j < A ∨ B < j) :
+    SiteCost.travel kstar j = 0 := by
+  unfold SiteCost.travel
+  rcases hj with h | h
+  · rw [if_neg (by omega), if_neg (by omega)]
+  · rw [if_neg (by omega), if_neg (by omega)]
+
+/-- **The construction.**  Guarded data assembles into a configuration.  This is the
+sufficiency half of (M3)'s bijection; `stateOf_injective'` is the other. -/
+def mkPathData (kstar eps : ℤ) (delta : Bool) (dspan : ℤ → ℤ) (A B : ℤ)
+    (heps : eps = 1 ∨ eps = -1) (hA : A ≤ 0) (hB : 0 ≤ B)
+    (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1)
+    (hpar : ∀ j : ℤ, A ≤ j → j ≤ B → (dspan j - SiteCost.travel kstar j) % 2 = 0)
+    (hAmin : A = 0 ∨ dspan A ≠ 0 ∨ SiteCost.travel kstar A ≠ 0)
+    (hBmin : B = 0 ∨ dspan B ≠ 0 ∨ SiteCost.travel kstar B ≠ 0) :
+    SiteCost.PathData where
+  kstar := kstar
+  eps := eps
+  delta := delta
+  heps := heps
+  d := fun j => if A ≤ j ∧ j ≤ B then dspan j else 0
+  hpar := by
+    intro j
+    by_cases hj : A ≤ j ∧ j ≤ B
+    · rw [if_pos hj]; exact hpar j hj.1 hj.2
+    · rw [if_neg hj, travel_zero_off kstar A B j hA hB hk1 hk2 (by omega)]
+      simp
+  A := A
+  B := B
+  hA := hA
+  hB := hB
+  houter := by
+    intro j hj
+    refine ⟨?_, travel_zero_off kstar A B j hA hB hk1 hk2 hj⟩
+    rw [if_neg (by omega)]
+  hAmin := by
+    have hAB : A ≤ B := by omega
+    rcases hAmin with h | h | h
+    · exact Or.inl h
+    · exact Or.inr (Or.inl (by rw [if_pos ⟨le_refl A, hAB⟩]; exact h))
+    · exact Or.inr (Or.inr h)
+  hBmin := by
+    have hAB : A ≤ B := by omega
+    rcases hBmin with h | h | h
+    · exact Or.inl h
+    · exact Or.inr (Or.inl (by rw [if_pos ⟨hAB, le_refl B⟩]; exact h))
+    · exact Or.inr (Or.inr h)
+
+/-- **And it realises the data it was built from**: on the span its deposits are the ones
+supplied, and its sign data and departure are as given. -/
+theorem mkPathData_d {kstar eps : ℤ} {delta : Bool} {dspan : ℤ → ℤ} {A B : ℤ}
+    {heps hA hB hk1 hk2 hpar hAmin hBmin} {j : ℤ} (hj1 : A ≤ j) (hj2 : j ≤ B) :
+    (mkPathData kstar eps delta dspan A B heps hA hB hk1 hk2 hpar hAmin hBmin).d j
+      = dspan j := if_pos ⟨hj1, hj2⟩
+
+/-- **The round trip on the span**: the constructed configuration's states carry exactly
+the data supplied. -/
+theorem mkPathData_dcur {kstar eps : ℤ} {delta : Bool} {dspan : ℤ → ℤ} {A B : ℤ}
+    {heps hA hB hk1 hk2 hpar hAmin hBmin} {j : ℤ} (hj1 : A ≤ j) (hj2 : j ≤ B) :
+    (stateOf (mkPathData kstar eps delta dspan A B heps hA hB hk1 hk2 hpar hAmin hBmin) j).dcur
+      = dspan j := by simp only [stateOf]; exact mkPathData_d hj1 hj2
+
+theorem mkPathData_dprev {kstar eps : ℤ} {delta : Bool} {dspan : ℤ → ℤ} {A B : ℤ}
+    {heps hA hB hk1 hk2 hpar hAmin hBmin} {j : ℤ} (hj1 : A ≤ j - 1) (hj2 : j - 1 ≤ B) :
+    (stateOf (mkPathData kstar eps delta dspan A B heps hA hB hk1 hk2 hpar hAmin hBmin) j).dprev
+      = dspan (j - 1) := by simp only [stateOf]; exact mkPathData_d hj1 hj2
+
+theorem mkPathData_fcur {kstar eps : ℤ} {delta : Bool} {dspan : ℤ → ℤ} {A B : ℤ}
+    {heps hA hB hk1 hk2 hpar hAmin hBmin} {j : ℤ} :
+    (stateOf (mkPathData kstar eps delta dspan A B heps hA hB hk1 hk2 hpar hAmin hBmin) j).fcur
+      = SiteCost.travel kstar j := rfl
+
+theorem mkPathData_eps {kstar eps : ℤ} {delta : Bool} {dspan : ℤ → ℤ} {A B : ℤ}
+    {heps hA hB hk1 hk2 hpar hAmin hBmin} {j : ℤ} :
+    (stateOf (mkPathData kstar eps delta dspan A B heps hA hB hk1 hk2 hpar hAmin hBmin) j).eps
+      = eps := rfl
+
+theorem mkPathData_delta {kstar eps : ℤ} {delta : Bool} {dspan : ℤ → ℤ} {A B : ℤ}
+    {heps hA hB hk1 hk2 hpar hAmin hBmin} {j : ℤ} :
+    (stateOf (mkPathData kstar eps delta dspan A B heps hA hB hk1 hk2 hpar hAmin hBmin) j).delta
+      = delta := rfl
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13938,3 +14031,9 @@ end EltBridge
 #print axioms EltBridge.stepB_stateOf
 #print axioms EltBridge.pathWeight_guard_eq
 #print axioms EltBridge.pathWeight_stepB_eq
+#print axioms EltBridge.travel_zero_off
+#print axioms EltBridge.mkPathData
+#print axioms EltBridge.mkPathData_d
+#print axioms EltBridge.mkPathData_dcur
+#print axioms EltBridge.mkPathData_dprev
+#print axioms EltBridge.mkPathData_fcur
