@@ -36,7 +36,25 @@ structure Data (α : Type*) where
 
 /-- The forced sign of an end.  On the left an arrival is an up-crossing and takes
 the opposite of the deposit sign, a departure a down-crossing and takes it; on the
-right the two roles exchange. -/
+right the two roles exchange.
+
+**The sign is derived, and that is a restriction.**  It depends only on
+`(side, isArr, depSign side)`, so on one side every arrival carries one sign and every
+departure the other.  Consequences, all proved:
+
+* a same-side arrival/departure pair costs `2` and a cross-side pair `1`, so **no
+  pairing costs `0`** (`EltBridge.pcostF_ge_one`);
+* hence `alpha = -(A + C)` at a site, and `alpha = 0` forces the site to be **empty**
+  (`ConfigLoop.no_ends_of_alpha_zero`, and the section
+  *"Why the merge chain and `prop:cut` do not conflict"* above it);
+* so a cut site of a configuration carries no ends, and any argument needing an
+  occupied cut site -- the shield law with `Z != 0` among them -- cannot be run in
+  this model.
+
+The paper's `SiteCost.Plan` does **not** derive the sign: its four classes are
+independent and a same-side same-sign pair costs `0`.  `EltBridge.GData` is the
+free-sign version, and `EltBridge.GData.strictly_more_general` proves the difference
+is real. -/
 def sgn (d : Data α) (a : α) : Bool :=
   if d.side a then
     (if d.isArr a then d.depSign true else !d.depSign true)

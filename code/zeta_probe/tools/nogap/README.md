@@ -4200,3 +4200,27 @@ produces it, and the proof that zero is the minimum. What it does not yet have i
 merge development ported onto it -- CostMerge is written against EndData.Data
 throughout, and BLOCK 78 already identified pcost_eq_of_arr_dep as the lemma that will
 not survive the port, since it is a consequence of the forcing.
+
+## 2026-09-03 — BLOCK 86: the restriction documented AT the definition
+
+`EndData.sgn`'s docstring now states the restriction and its three consequences, with
+pointers to the proofs:
+  pcostF_ge_one                -- no pairing costs 0
+  no_ends_of_alpha_zero        -- alpha = 0 forces the site empty
+  the ConfigLoop section       -- why the merge chain and prop:cut do not conflict
+and to GData / strictly_more_general as the free-sign alternative.
+
+WHY THIS MATTERS MORE THAN A COMMENT USUALLY WOULD. The fact was already documented --
+in ConfigLoop, three lines above no_ends_of_alpha_zero, under a section header that says
+exactly this. I did not read that header and spent BLOCKS 70-77 rediscovering it. The
+information was in the repository and in the wrong place: at a USE site, not at the
+DEFINITION that causes the restriction.
+
+Anyone reaching for EndData.Data now learns at the point of use that the sign is
+derived, that this empties cut sites, and where the free-sign version is.
+
+AUDIT RESULT (BLOCK 85), for the record. The forcing is used in exactly three places:
+  EndData.lean       two lemmas, via pcost_eq_of_arr_dep
+  ConfigLoop.lean    the clsOf/planAt block, 821-949
+  StrandEnds.lean:49 supplies depSign
+Three sites, not a rewrite of CostMerge -- smaller than BLOCK 78 estimated.
