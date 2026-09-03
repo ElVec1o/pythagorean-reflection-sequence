@@ -7913,6 +7913,43 @@ theorem extendFn_eps (st : ℤ → LocalState) (A B : ℤ) (j : ℤ)
     · rw [if_pos h2]; exact heps B
     · rw [if_neg h2]; rfl
 
+/-! ### Injectivity from the edge path alone
+
+The edge-indexed path covers `A .. B`, not `A .. B+1`, so `stateOf_injective'` (BLOCK 214)
+does not apply directly: it wants agreement one site further.  The deposits are fine --
+they vanish off the span -- but the DEPARTURE can sit at `B + 1`, outside the path.
+
+It is still seen, indirectly.  `travel k* B` is `1` exactly when `k* > B`, and `k*` is at
+most `B + 1`, so the last edge's travel indicator decides whether the departure is at
+`B + 1`.  That is the boundary case, and it is the third time in a row the boundary has
+carried the content. -/
+
+theorem stateOf_injective_span {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B = Q.B)
+    (h : ∀ j : ℤ, P.A ≤ j → j ≤ P.B → stateOf P j = stateOf Q j) : P = Q := by
+  have hAle : P.A ≤ P.B := by have := P.hA; have := P.hB; omega
+  have hd : P.d = Q.d := by
+    funext j
+    by_cases hj : P.A ≤ j ∧ j ≤ P.B
+    · exact d_eq_of_state (h j hj.1 hj.2)
+    · exact d_eq_off_span hA hB (by omega)
+  have hk : P.kstar = Q.kstar := by
+    by_cases hkB : P.kstar ≤ P.B
+    · exact kstar_eq_of_state (h P.kstar (A_le_kstar P) hkB) rfl
+    · -- the departure is at B + 1; the last edge's travel indicator sees it
+      have hPk : P.kstar = P.B + 1 := by
+        have := kstar_le_B_succ P; omega
+      have hQk : Q.kstar ≤ Q.B + 1 := kstar_le_B_succ Q
+      have htr := travel_eq_of_state (h P.B hAle le_rfl)
+      have hPB := P.hB
+      have hone : SiteCost.travel P.kstar P.B = 1 := by
+        unfold SiteCost.travel; rw [if_pos (by omega)]
+      rw [hone] at htr
+      have : SiteCost.travel Q.kstar P.B = 1 := htr.symm
+      unfold SiteCost.travel at this
+      split_ifs at this with c1 c2 <;> omega
+  exact pathData_ext hk (eps_eq_of_state (h P.A le_rfl hAle))
+    (delta_eq_of_state (h P.A le_rfl hAle)) hd hA hB
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15577,3 +15614,4 @@ end EltBridge
 #print axioms EltBridge.extendFn_stateOf
 #print axioms EltBridge.extendFn_outer
 #print axioms EltBridge.extendFn_eps
+#print axioms EltBridge.stateOf_injective_span

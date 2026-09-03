@@ -8706,3 +8706,20 @@ now discharged unconditionally.
 **All of `guarded_of_flag`'s hypotheses are now available for an arbitrary guarded path**,
 `outer` included.  The remaining work is the summation over paths, which I will not
 characterise in advance.
+
+## 2026-09-04 — BLOCK 248: injectivity from the edge path alone
+
+    stateOf_injective_span   agreement on A .. B alone determines the configuration
+
+0 sorry.  One failure: `split_ifs` produced two goals, not three, so the third `omega` had
+nothing to solve; `<;> omega` instead.
+
+The edge-indexed path covers `A .. B`, not `A .. B+1`, so `stateOf_injective'` (BLOCK 214)
+does not apply -- it wants agreement one site further.  The deposits are fine, since they
+vanish off the span.  **The departure is the problem: it can sit at `B + 1`, outside the
+path.**
+
+It is still seen, indirectly: `travel k* B` is `1` exactly when `k* > B`, and `k*` is at
+most `B + 1`, so the last edge's travel indicator decides whether the departure sits past
+the end.  That is the boundary case, and it is the third block in a row where the boundary
+carried the content -- the pattern noted in BLOCK 244 continues to hold.
