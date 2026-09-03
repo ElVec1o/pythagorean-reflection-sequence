@@ -5968,3 +5968,41 @@ obstruction is aimed elsewhere, that both halves of the dichotomy hold, and that
 assembly principle is valid.  Chaining `reachable_turn` along a run to get `hsep`, and
 feeding `hedge`, are not written.  M4b stays yellow -- but the reason has changed from
 "a proved two-model bind" to "an unbuilt chain in the free-sign model".
+
+## 2026-09-03 — BLOCK 148: retraction of BLOCK 147, with the dependency chain traced
+
+BLOCK 147 claimed the free-pair obstruction is aimed at `MergesMin` and that "no swap
+and no free pair occurs in" the shield law's route.  That is wrong.  Traced link by
+link:
+
+    M4b / shield law
+      -> walkCount_le_runs_blk        needs hsep
+      -> hsep supplied by exists_run_connected
+      -> which is ConfigMerge.reaches_stuck applied to run_step_min_gen
+      -> whose proof calls CostMerge.cost_swapData
+      -> which takes  hshared : d.side a = d.side a' \/ d.side (D.t a) = d.side (D.t a')
+
+`hshared` IS the shared-side hypothesis -- `HasFreePair`, the thing `side_probe2.py`
+checks and BLOCK 136 re-derived in Rust at 146 of 146.  So the free-pair input sits on
+the shield law's path after all, and BLOCK 147's "different route" does not exist.
+
+The chain above is the useful part of this block.  The README already recorded that
+`HasFreePair` is what `side_probe2` confirms and that it is NOT PROVED, but the path
+from it to the shield law had not been traced; it is now, and it is short.
+
+So the position is the ledger's, restored and sharper:
+
+  derived-sign model   cut sites are forced EMPTY (BLOCK 139, proved), so the shield
+                       law is vacuous exactly where it has content; and the route
+                       needs `hshared`, confirmed 146/146 but unproved
+  free-sign model      cut sites are fine and `exists_zero_cost_turn` applies, but
+                       `free_pair_of_minimal` does not port
+                       (`free_pair_of_minimal_fails_in_free_model`), and the run
+                       machinery needs exactly that swap
+
+Both models are blocked on the same input, reached from opposite sides.  That is the
+two-model bind, and it is genuine.
+
+Third retraction of this run, after BLOCKS 137 and 145.  All three came from the same
+habit -- asserting a route before tracing it to a leaf -- and all three were caught by
+continuing until the claim had to be used.  The correct order is to trace first.
