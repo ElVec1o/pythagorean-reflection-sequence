@@ -5450,6 +5450,31 @@ theorem shield_trivial_when_cuts_empty {n : ℕ} {m : Fin n → ℕ}
     (s : ℤ) (hs : s ∈ Zf) (x : EndType.Endpt n m) : EndType.siteOf x ≠ s :=
   fun hc => hempty x (hc ▸ hs)
 
+/-! ### Auditing the remaining "(configurations)" greens
+
+M5, M6, M7 pass: their hypotheses ask every edge to be **occupied**, which `mu_pos`
+supplies, and BLOCK 36 instantiated all three on `witElt`.
+
+M3 does not.  `prop:cut` is `c >= |Z|`, whose entire content is the case `Z != 0` --
+at `Z = 0` the conclusion is a function out of `Fin 0`.  So M3 carries exactly M4b's
+scope problem. -/
+
+/-- **`prop:cut` is vacuous at `Z = 0`.**  Its conclusion is a family indexed by
+`Fin 0`, which exists for any graph. -/
+theorem prop_cut_vacuous_at_empty {V : Type*} [Fintype V] [DecidableEq V]
+    {G : SimpleGraph V} [DecidableRel G.Adj] (c0 : G.ConnectedComponent) :
+    ∃ F : Fin (∅ : Finset ℤ).card → G.ConnectedComponent,
+      Function.Injective F ∧ ∀ i, F i ≠ c0 := by
+  refine ⟨fun i => absurd i.isLt (by simp), fun i => absurd i.isLt (by simp),
+    fun i => absurd i.isLt (by simp)⟩
+
+/-- **And M6's hypothesis is `PathData`-compatible**: it asks every edge to be
+occupied, which is exactly `mu_pos` on the span.  So M5, M6, M7 survive the audit that
+M3 and M4b fail. -/
+theorem M6_hypothesis_holds (P : SiteCost.PathData) (i : Fin (pdWidth P))
+    (hlo : P.A ≤ P.A + (i : ℤ)) (hhi : P.A + (i : ℤ) ≤ P.B) :
+    0 < pdMm P i := pdMm_pos P i hlo hhi
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5648,3 +5673,5 @@ end EltBridge
 #print axioms EltBridge.merge_shape_undecided
 #print axioms EltBridge.hturn_of_no_end_at_cut
 #print axioms EltBridge.turnInv_of_mergesMin_of_empty_cuts
+#print axioms EltBridge.prop_cut_vacuous_at_empty
+#print axioms EltBridge.M6_hypothesis_holds

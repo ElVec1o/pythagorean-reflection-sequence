@@ -4482,3 +4482,26 @@ pairs. Neither has both.
 
 M4b: GREEN -> YELLOW. The theorem is proved; its applicability to the GOAL is not what
 the green implied.
+
+## 2026-09-03 — BLOCK 98: audit of the remaining "(configurations)" greens
+
+Applied M4b's test -- is the theorem instantiable from a group element? -- to the other
+four.
+
+  M5, M6, M7  PASS. Their hypotheses ask every edge to be OCCUPIED, which is exactly
+              mu_pos (M6_hypothesis_holds), and BLOCK 36 instantiated all three on
+              witElt (Elt.single_walk, Elt.defect_zero). The "(configurations)"
+              qualifier comes off: they are statements about group elements.
+  M3          FAILS, the same way M4b did. prop:cut is c >= |Z|, and its entire content
+              is the Z != 0 case -- prop_cut_vacuous_at_empty shows the conclusion at
+              Z = 0 is a function out of Fin 0, which exists for any graph. So M3's
+              non-trivial content is unreachable for the same reason M4b's is.
+
+M3: GREEN -> YELLOW. M5, M6, M7: qualifier removed, genuinely green.
+
+Net: the table is unchanged in count (six green) but three of the greens are now
+stronger than they were -- statements about elements, not configurations -- and two
+atoms carry an honest scope note instead of an unqualified green.
+
+The test is cheap and I should have run it at BLOCK 36 when the instantiations were
+made, rather than at BLOCK 98 after M4b failed it.
