@@ -5192,3 +5192,41 @@ the far junction only; the near junction still admits it, and no bound on the
 pairings themselves is available without the shape vectors R, L of
 `prop:shape`, which need `ker(I - T(q_m))` and are still not built.  (R-J)
 stays a hypothesis.
+
+## 2026-09-03 — BLOCK 127: the escape is closed everywhere
+
+Two results, one of them a correction.
+
+**`sitecost delete 12 3`.**  Every perturbation of the three pairing costs
+breaks the law: flip 2->0/1/3/4 gives 44800/38400/17200/17200 exceptions of
+45700, pass 1->0/2/3 gives 45360/43200/43200, bounce 0->1/2 gives 43055 each.
+The model as stated, (bounce,flip,pass)=(0,2,1), has 0.  So the assignment is
+rigid, not a fitted choice.  Gap noted: the H4 deletion (|a| >= |f|) exercises
+**0 configs** and therefore certifies nothing.
+
+**Correction to BLOCK 126.**  That entry said the uniform-sign escape stays
+open at the near junction.  It does not, and `siteCost_at_zero` — already in
+the file — is the reason: the near cost is `Site0 (d (-1)) (d 0)`, carrying no
+`eps` and no `delta`, because `vD 0 = 0` collapses the delta branch and kills
+the eps factor.  The measured `[0,0,0,0]` shape is that theorem, seen
+numerically.
+
+The consequence is the opposite of what BLOCK 126 recorded.  The two junctions
+are not two sums.  They are one sum, in which the near junction contributes the
+*same* power of q to all four branches — so it factors out:
+
+    sum_i  a_i q^(s0 + c + farShape i)  =  q^s0 * q^c * (a0 + q(a1+a2) + q^2 a3)
+
+Formalised as `total_pairing_factors` and `RJ_uniform_escape_closed`
+(propext/Classical.choice/Quot.sound, 0 sorry).  For q != 0 the whole pairing
+vanishes exactly when the far quadratic does.  A `(eps*,delta*)`-blind junction
+cannot contribute to a condition on `(eps*,delta*)`.
+
+So the q-independent cancellation of `four_term_sum_can_vanish` is unavailable
+to the actual junction pairing: vanishing at `q_m` pins `q_m` to a root of a
+quadratic in the pairings, at every pole separately.
+
+NOT DONE.  This closes one escape route; it does not prove (R-J).  Nothing here
+bounds the pairings `<lambda,R>`, `<L,mu>` away from a conspiracy in which each
+`q_m` happens to be a root of its own quadratic.  That still needs R and L from
+`ker(I - T(q_m))`, not built.

@@ -6646,3 +6646,43 @@ theorem RJ_near_vs_far (q : ℚ) (hq : q ≠ 0) (c : ℕ) :
 #print axioms far_junction_quadratic
 #print axioms far_vanishing_iff
 #print axioms RJ_near_vs_far
+
+/-!
+### The near junction cannot supply the escape
+
+BLOCK 126 left the uniform-sign escape open at the near junction.  That was
+wrong, and `siteCost_at_zero` is why: the near-junction cost is
+`Site0 (d (-1)) (d 0)`, with **no** `eps` and **no** `delta` argument, because
+`vD 0 = 0` collapses the `delta` branch and kills the `eps` factor.  The four
+`(eps*,delta*)` branches are one sum, not two: the near junction contributes
+the *same* power of `q` to every branch of it, so it factors out and leaves the
+far junction's spread intact.
+-/
+
+/-- The near junction contributes a common factor to all four branches, so the
+total pairing is a power of `q` times the far junction's quadratic. -/
+theorem total_pairing_factors (q : ℚ) (s0 c : ℕ) (a : Fin 4 → ℚ) :
+    ∑ i : Fin 4, a i * q ^ (s0 + (c + farShape i))
+      = q ^ s0 * (q ^ c * (a 0 + q * (a 1 + a 2) + q ^ 2 * a 3)) := by
+  rw [← far_junction_quadratic q c a, Finset.mul_sum]
+  exact Finset.sum_congr rfl (fun i _ => by rw [pow_add]; ring)
+
+/-- **The uniform-sign escape is closed everywhere, not just at the far
+junction.**  For `q ≠ 0` the whole four-term pairing vanishes exactly when the
+far-junction quadratic does, so a cancellation at one pole constrains that pole
+alone.  The near junction, being `(eps*,delta*)`-blind, contributes nothing to
+the vanishing condition. -/
+theorem RJ_uniform_escape_closed (q : ℚ) (hq : q ≠ 0) (s0 c : ℕ) (a : Fin 4 → ℚ) :
+    ∑ i : Fin 4, a i * q ^ (s0 + (c + farShape i)) = 0 ↔
+      a 0 + q * (a 1 + a 2) + q ^ 2 * a 3 = 0 := by
+  rw [total_pairing_factors, ← far_junction_quadratic]
+  constructor
+  · intro h
+    rcases mul_eq_zero.mp h with h' | h'
+    · exact absurd h' (pow_ne_zero s0 hq)
+    · exact (far_vanishing_iff q hq c a).mp h'
+  · intro h
+    rw [far_junction_quadratic, h, mul_zero, mul_zero]
+
+#print axioms total_pairing_factors
+#print axioms RJ_uniform_escape_closed
