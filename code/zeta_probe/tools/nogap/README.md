@@ -2465,3 +2465,28 @@ route. kstar = 0 is already excluded by partner_site_ne.
 So the chain now reads, for kstar > 0 and modulo transporting the remaining WalkSupport
 lemmas: Elt -> PathData -> VEndpt -> balanced -> partner -> locality hypotheses
 satisfied. That is B1 for half the parameter range.
+
+## 2026-09-03 — BLOCK 17: the reflection, so kstar < 0 reduces to kstar > 0
+
+  travel_reflect     -- travel (-k) (-1-j) = - travel k j.  The interval [k,0) where
+                        travel = -1 is carried onto [0,-k) where it is +1.
+  travel_reflect'    -- the same read the other way
+  Elt.reflect        -- the reflected element: kstar |-> -kstar, eps |-> -eps,
+                        delta |-> !delta, d j |-> -d(-1-j), supp |-> image of supp.
+                        hpar and hsupp both transport (hsupp uses that j |-> -1-j is
+                        an involution, so j not in the image iff -1-j not in supp)
+  Elt.reflect_kstar_pos    -- kstar < 0 gives a reflected element with kstar > 0
+  Elt.reflect_reflect_d    -- reflection is an involution on the deposits
+
+So the PARAMETER RANGE reduces: every element with kstar < 0 is the reflection of one
+with kstar > 0, and BLOCK 16 discharges the residual condition there.
+
+WHAT IS HONESTLY NOT YET DONE: the reduction is at the level of `Elt`. To conclude
+that BLOCK 16's discharge covers kstar < 0, the reflection must also carry the
+CONFIGURATION and its WALKS -- i.e. an isomorphism VEndpt(g) ~ VEndpt(g.reflect)
+matching sites, arrivals, partners and turns. That transport is not built. Without it
+this block reduces the range for the ELEMENT, not yet for the walk argument.
+
+Also noted: `occ` is not exactly equivariant, because it inserts 0 while the
+reflection sends 0 to -1. The span endpoints A, B therefore swap only up to that
+off-by-one, which is why the transport needs writing rather than asserting.

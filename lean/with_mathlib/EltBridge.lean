@@ -665,6 +665,68 @@ theorem VEndpt.residual_discharged {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : �
       split_ifs at hsy <;> omega
   exact VEndpt.leftmost_ne_kstar kstar bnd D z hk y hzy hle
 
+/-! ### Reflection: `kstar < 0` reduces to `kstar > 0`
+
+The map `j |-> -1 - j` on edges, together with `kstar |-> -kstar`, negates `travel`:
+the interval `[kstar, 0)` where `travel = -1` is carried onto `[0, -kstar)` where it
+is `+1`.  Negating the deposits too gives an involution on `Elt` swapping the sign of
+`kstar`, so `BLOCK 16`'s discharge for `kstar > 0` covers `kstar < 0` as well. -/
+
+/-- **The reflection identity.**  `j |-> -1 - j` with `kstar |-> -kstar` negates
+`travel`. -/
+theorem travel_reflect (kstar j : ℤ) : travel (-kstar) (-1 - j) = - travel kstar j := by
+  unfold travel
+  split_ifs <;> omega
+
+/-- The same, read the other way. -/
+theorem travel_reflect' (kstar j : ℤ) : travel (-kstar) j = - travel kstar (-1 - j) := by
+  have := travel_reflect kstar (-1 - j)
+  simpa using this
+
+namespace Elt
+
+variable (g : Elt)
+
+/-- **The reflected element.**  Deposits and travel both negate; `kstar` flips sign. -/
+noncomputable def reflect : Elt where
+  kstar := -g.kstar
+  eps := -g.eps
+  delta := !g.delta
+  heps := by rcases g.heps with h | h <;> simp [h]
+  d := fun j => -g.d (-1 - j)
+  hpar := by
+    intro j
+    have h := g.hpar (-1 - j)
+    rw [travel_reflect' g.kstar j]
+    omega
+  supp := g.supp.image (fun j => -1 - j)
+  hsupp := by
+    intro j hj
+    have hne : (-1 - j) ∉ g.supp := by
+      intro hc
+      exact hj (Finset.mem_image.mpr ⟨-1 - j, hc, by omega⟩)
+    obtain ⟨h1, h2⟩ := g.hsupp (-1 - j) hne
+    exact ⟨by simp [h1], by rw [travel_reflect' g.kstar j, h2]; ring⟩
+
+@[simp] theorem reflect_kstar : g.reflect.kstar = -g.kstar := rfl
+
+/-- **Reflection turns a negative cursor into a positive one**, so `BLOCK 16`'s
+discharge covers the whole range. -/
+theorem reflect_kstar_pos (hk : g.kstar < 0) : 0 < g.reflect.kstar := by
+  rw [reflect_kstar]; omega
+
+/-- Reflection is an involution on the cursor. -/
+@[simp] theorem reflect_reflect_kstar : g.reflect.reflect.kstar = g.kstar := by
+  simp
+
+/-- **And on the deposits**, so it is an involution on the data that matters. -/
+theorem reflect_reflect_d : g.reflect.reflect.d = g.d := by
+  funext j
+  show - (- g.d (-1 - (-1 - j))) = g.d j
+  ring_nf
+
+end Elt
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -697,3 +759,6 @@ end EltBridge
 #print axioms EltBridge.VEndpt.leftmost_ne_kstar
 #print axioms EltBridge.VEndpt.turn_of_vArr_low
 #print axioms EltBridge.VEndpt.residual_discharged
+#print axioms EltBridge.travel_reflect
+#print axioms EltBridge.Elt.reflect
+#print axioms EltBridge.Elt.reflect_kstar_pos
