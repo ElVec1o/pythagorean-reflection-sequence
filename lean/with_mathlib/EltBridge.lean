@@ -5328,6 +5328,46 @@ theorem merge_needs_class_agreement {α : Type*} (d : GData α) (x y : α) (t : 
   cases hx : d.sgnOf x <;> cases hy : d.sgnOf y <;>
     cases hu : d.sgnOf (t x) <;> cases hv : d.sgnOf (t y) <;> simp
 
+/-! ### The free condition in the merge's actual configuration
+
+The merge does not hand over a same-sided pair.  `a` is a **bottom** arrival at the
+maximising walk's leftmost site; the other walk's end there is the **top** of the edge
+one to the left (`WalkSupport.shared_ends_at_wLo`).  So the two arrivals lie on
+opposite sides, and `a`'s departure is a bottom.
+
+In that configuration the free condition is explicit, and it is not vacuous: there are
+free cases and unfree ones, decided by two sign comparisons. -/
+
+/-- **The free condition at the merge, when the second departure is a bottom.** -/
+theorem merge_free_iff_bottom {α : Type*} (d : GData α) (x y u v : α)
+    (hx : d.side x = false) (hy : d.side y = true)
+    (hu : d.side u = false) (hv : d.side v = false) :
+    d.pcost x u + d.pcost y v = d.pcost x v + d.pcost y u ↔
+      ((d.sgnOf x = d.sgnOf u) ↔ (d.sgnOf x = d.sgnOf v)) := by
+  unfold GData.pcost
+  rw [hx, hy, hu, hv]
+  simp only [if_pos rfl]
+  cases h1 : d.sgnOf x <;> cases h2 : d.sgnOf u <;> cases h3 : d.sgnOf v <;> simp
+
+/-- **And when it is a top**: the swap is free exactly when the two same-side pairs'
+costs sum to two -- one matched, one mismatched. -/
+theorem merge_free_iff_top {α : Type*} (d : GData α) (x y u v : α)
+    (hx : d.side x = false) (hy : d.side y = true)
+    (hu : d.side u = false) (hv : d.side v = true) :
+    d.pcost x u + d.pcost y v = d.pcost x v + d.pcost y u ↔
+      d.pcost x u + d.pcost y v = 2 := by
+  constructor <;> intro h
+  · have h1 : d.pcost x v = 1 := by
+      unfold GData.pcost; rw [if_neg (by rw [hx, hv]; simp)]
+    have h2 : d.pcost y u = 1 := by
+      unfold GData.pcost; rw [if_neg (by rw [hy, hu]; simp)]
+    omega
+  · have h1 : d.pcost x v = 1 := by
+      unfold GData.pcost; rw [if_neg (by rw [hx, hv]; simp)]
+    have h2 : d.pcost y u = 1 := by
+      unfold GData.pcost; rw [if_neg (by rw [hy, hu]; simp)]
+    omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5521,3 +5561,5 @@ end EltBridge
 #print axioms EltBridge.GData.swap_free_three
 #print axioms EltBridge.cross_unavailable_at_merge
 #print axioms EltBridge.merge_needs_class_agreement
+#print axioms EltBridge.merge_free_iff_bottom
+#print axioms EltBridge.merge_free_iff_top

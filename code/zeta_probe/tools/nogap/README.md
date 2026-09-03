@@ -4383,3 +4383,28 @@ exist, BLOCKS 80-84) and it has a clean swap calculus (BLOCKS 87-92). It does no
 supply free pairs at merge sites, and BLOCK 91 shows minimality cannot be made to. The
 forced model has the opposite profile. Neither is a drop-in replacement for the other,
 and that is now proved on both sides rather than assumed on either.
+
+## 2026-09-03 — BLOCK 94: the free condition in the merge's ACTUAL configuration
+
+BLOCK 93 assumed the merge hands over a same-sided pair. It does not. `a` is a bottom
+arrival at the maximising walk's leftmost site; the other walk's end there is the TOP of
+the edge one to the left (WalkSupport.shared_ends_at_wLo). So the two arrivals are on
+OPPOSITE sides.
+
+  merge_free_iff_bottom -- second departure a bottom: free iff
+                             (sgn x = sgn u)  <->  (sgn x = sgn v)
+  merge_free_iff_top    -- second departure a top: free iff the two same-side pairs'
+                             costs sum to 2, i.e. one matched and one mismatched
+
+Both are genuine iffs with free and unfree instances, so the question "does minimality
+force a free pair" is a real combinatorial question in this model, not settled either
+way by the shape of the configuration.
+
+CORRECTION TO BLOCK 93. Its merge_needs_class_agreement assumed all four ends bottoms
+and concluded the criterion collapses to sign agreement. That analysis is correct for
+the case it states but is NOT the merge's configuration -- the second arrival is a top.
+The theorem stands; its relevance to the merge does not.
+
+I have now twice reasoned about "the merge's pair" without checking which pair the
+assembly produces: BLOCK 93 assumed same-sided, BLOCK 92 assumed cross-side was
+available. shared_ends_at_wLo settles it and has been in WalkSupport throughout.
