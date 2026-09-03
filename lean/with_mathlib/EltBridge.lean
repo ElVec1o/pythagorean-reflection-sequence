@@ -3060,6 +3060,76 @@ theorem cut_at_zero_parity_ok (kstar : ℤ) (hk : kstar < 0) :
   rw [if_neg (by omega), if_neg (by omega)]
   norm_num
 
+/-! ### Exactly when a virtual site is cut
+
+`hgap` holds iff neither virtual site is cut.  Both conditions are explicit read-offs,
+so `hgap` is checkable on an element rather than opaque. -/
+
+/-- **Site `0` is cut exactly when `d(-1) = 1` and `d(0) = 0`** (for `kstar < 0`).
+`Phi` vanishes there automatically, since `f(-1) = -1` cancels the virtual arrival. -/
+theorem cut_at_zero_iff (P : SiteCost.PathData) (hk : P.kstar < 0) :
+    P.cut 0 ↔ (P.d (-1) = 1 ∧ P.d 0 = 0) := by
+  have hvD : P.vD 0 = 0 := by
+    unfold SiteCost.PathData.vD; rw [if_neg (by omega)]
+  have hf : P.f (0 - 1) = -1 := by
+    unfold SiteCost.PathData.f travel
+    rw [if_neg (by omega), if_pos (by omega)]
+  constructor
+  · rintro ⟨ha, hb, -⟩
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.vArr at ha
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR at hb
+    rw [if_pos rfl, hvD] at ha
+    rw [hvD] at hb
+    simp only [ite_self, Nat.cast_zero, mul_zero, add_zero, sub_zero] at ha hb
+    have h1 : P.d (-1) = 1 := by
+      have : P.d (0 - 1) = 1 := by omega
+      simpa using this
+    exact ⟨h1, hb⟩
+  · rintro ⟨h1, h2⟩
+    exact cut_at_zero P hk h1 h2
+
+/-- **Site `kstar` is cut exactly when `delta` is set and the two read-offs hold.**
+`Phi` there is `-vL(kstar)`, so it vanishes only when the virtual departure is on the
+right -- that is, only when `delta` is `true`. -/
+theorem cut_at_kstar_iff (P : SiteCost.PathData) (hk : P.kstar < 0) :
+    P.cut P.kstar ↔
+      (P.delta = true ∧ P.d (P.kstar - 1) = 0 ∧ P.d P.kstar = P.eps) := by
+  have hvA : SiteCost.vArr P.kstar = 0 := by
+    unfold SiteCost.vArr; rw [if_neg (by omega)]
+  have hvD : P.vD P.kstar = 1 := by
+    unfold SiteCost.PathData.vD; rw [if_pos rfl]
+  have hf : P.f (P.kstar - 1) = 0 := by
+    unfold SiteCost.PathData.f travel
+    rw [if_neg (by omega), if_neg (by omega)]
+  constructor
+  · rintro ⟨ha, hb, hc⟩
+    unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL at hc
+    rw [hvA, hvD, hf] at hc
+    have hd : P.delta = true := by
+      by_contra hcon
+      simp only [Bool.not_eq_true] at hcon
+      rw [hcon] at hc; norm_num at hc
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL at ha
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR at hb
+    rw [hvA, hvD, hd] at ha
+    rw [hvD, hd] at hb
+    simp only [if_true, Nat.cast_one, Nat.cast_zero, mul_zero, mul_one,
+      add_zero, sub_zero] at ha hb
+    exact ⟨hd, by omega, by omega⟩
+  · rintro ⟨hd, h1, h2⟩
+    refine ⟨?_, ?_, ?_⟩
+    · unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL
+      rw [hvA, hvD, hd]
+      simp only [if_true, Nat.cast_zero, Nat.cast_one, mul_zero, add_zero, sub_zero]
+      rw [h1]
+    · unfold SiteCost.PathData.betaAt SiteCost.PathData.vR
+      rw [hvD, hd]
+      simp only [if_true, Nat.cast_one, mul_one]
+      rw [h2]; ring
+    · unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL
+      rw [hvA, hvD, hd, hf]
+      norm_num
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3180,3 +3250,5 @@ end EltBridge
 #print axioms EltBridge.pd_hgap
 #print axioms EltBridge.cut_at_zero
 #print axioms EltBridge.cut_at_zero_parity_ok
+#print axioms EltBridge.cut_at_zero_iff
+#print axioms EltBridge.cut_at_kstar_iff

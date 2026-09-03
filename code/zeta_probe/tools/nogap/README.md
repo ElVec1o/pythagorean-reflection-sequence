@@ -3509,3 +3509,25 @@ site is cut, and that is a real condition on the element, not a theorem.
 
 This is the fourth obstruction tonight found by trying to USE a result rather than
 inspecting it, and the second where the error was mine rather than the development's.
+
+## 2026-09-03 — BLOCK 56: exactly when a virtual site is cut
+
+  cut_at_zero_iff   -- for kstar < 0, site 0 is cut IFF d(-1) = 1 and d(0) = 0.
+                       Phi vanishes there automatically: f(-1) = -1 cancels the virtual
+                       arrival.
+  cut_at_kstar_iff  -- site kstar is cut IFF delta = true AND d(kstar-1) = 0 AND
+                       d(kstar) = eps. Phi there is -vL(kstar), so it vanishes only when
+                       the virtual departure is on the right -- i.e. only when delta is
+                       set.
+
+Both are iffs, both depend on propext (+Quot.sound) only.
+
+So hgap -- the condition BLOCK 55 showed is not automatic -- is now a CHECKABLE
+read-off on the element:
+  hgap holds  <=>  NOT (d(-1) = 1 and d(0) = 0)
+              and  NOT (delta and d(kstar-1) = 0 and d(kstar) = eps)
+
+The delta asymmetry in the second is worth noting: the site carrying the virtual
+DEPARTURE can only be cut when delta puts that departure on the right. So one of the
+two obstructions is controlled by a single boolean field of the element, and elements
+with delta = false have only the first condition to check.
