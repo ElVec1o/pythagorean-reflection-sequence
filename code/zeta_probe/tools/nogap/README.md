@@ -4980,3 +4980,28 @@ there it obstructs the shield law, here it gives summability.
 the sum itself -- organising the finite sum at each degree by magnitude path and
 recognising it as a matrix entry. That is transcription against Mathlib's PowerSeries,
 not a mathematical gap.
+
+## 2026-09-03 — BLOCK 119: lR fibres over magnitude paths
+
+  mu_congr        -- mu depends only on the deposit MAGNITUDE and the cursor. Its test
+                     `d j = 0` is a magnitude test (natAbs_eq_zero), and the else-branch
+                     is max of magnitudes.
+  edge_sum_congr  -- so the whole edge sum depends only on the magnitudes
+
+Together with site_cost_magnitude_only (BLOCK 104) for the interior sites and
+siteCost_at_zero / siteCost_at_kstar (BLOCK 109) for the two junctions, this says:
+
+  lR is determined by the deposit MAGNITUDES together with the two SIGNED marker
+  deposits.
+
+That is the precise fibration the generating-function step needs. The sum over elements
+fibres over magnitude paths, with the sign information confined to the two junctions --
+which is exactly why the assembly sums over the four marker data separately and indexes
+lambda, mu by sigma.
+
+So every structural fact (M3a)'s remaining step requires is now proved:
+  summability          BLOCK 118  lR bounds span and deposits
+  the fibration        BLOCK 119  lR determined by magnitudes + marker signs
+  the fibre counts     BLOCK 111  two signs per non-zero magnitude
+  the transfer form    BLOCK 105  pathGF_succ
+What is left is writing the sum, in Mathlib's PowerSeries.

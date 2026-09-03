@@ -6066,6 +6066,42 @@ theorem bounded_of_lR_le (P : SiteCost.PathData) (N : ℕ) (h : P.lR ≤ N) :
     ∀ j ∈ Finset.Icc P.A P.B, (P.d j).natAbs ≤ N :=
   ⟨le_trans (span_le_lR P) h, fun j hj => le_trans (deposit_le_lR P j hj) h⟩
 
+/-! ### The fibration of `lR` over magnitude paths
+
+`lR` is determined by the deposit **magnitudes** together with the two **signed**
+marker deposits.  `mu` tests `d j = 0`, which is a magnitude test, and the interior
+site costs are magnitude functions; only the two junctions read a sign.
+
+That is the precise sense in which the sum over elements fibres over magnitude paths,
+with the four marker data summed separately. -/
+
+/-- **`mu` depends only on the magnitude and the cursor.** -/
+theorem mu_congr (P Q : SiteCost.PathData) (hk : P.kstar = Q.kstar) (j : ℤ)
+    (hm : (P.d j).natAbs = (Q.d j).natAbs) : P.mu j = Q.mu j := by
+  unfold SiteCost.PathData.mu
+  have hz : P.d j = 0 ↔ Q.d j = 0 := by
+    constructor
+    · intro h
+      have h0 : (P.d j).natAbs = 0 := by rw [h]; rfl
+      rw [hm] at h0
+      exact Int.natAbs_eq_zero.mp h0
+    · intro h
+      have h0 : (Q.d j).natAbs = 0 := by rw [h]; rfl
+      rw [← hm] at h0
+      exact Int.natAbs_eq_zero.mp h0
+  rw [hk]
+  by_cases h : Q.d j = 0 ∧ travel Q.kstar j = 0
+  · rw [if_pos ⟨hz.mpr h.1, h.2⟩, if_pos h]
+  · rw [if_neg (fun hc => h ⟨hz.mp hc.1, hc.2⟩), if_neg h, hm]
+
+/-- **So the edge sum depends only on the magnitudes.** -/
+theorem edge_sum_congr (P Q : SiteCost.PathData) (hk : P.kstar = Q.kstar)
+    (hA : P.A = Q.A) (hB : P.B = Q.B)
+    (hm : ∀ j, (P.d j).natAbs = (Q.d j).natAbs) :
+    ∑ j ∈ Finset.Icc P.A P.B, P.mu j = ∑ j ∈ Finset.Icc Q.A Q.B, Q.mu j := by
+  rw [hA, hB]
+  exact Finset.sum_congr rfl (fun j _ => mu_congr P Q hk j (hm j))
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6300,3 +6336,5 @@ end EltBridge
 #print axioms EltBridge.span_le_lR
 #print axioms EltBridge.deposit_le_lR
 #print axioms EltBridge.bounded_of_lR_le
+#print axioms EltBridge.mu_congr
+#print axioms EltBridge.edge_sum_congr
