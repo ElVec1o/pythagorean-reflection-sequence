@@ -5230,3 +5230,37 @@ NOT DONE.  This closes one escape route; it does not prove (R-J).  Nothing here
 bounds the pairings `<lambda,R>`, `<L,mu>` away from a conspiracy in which each
 `q_m` happens to be a root of its own quadratic.  That still needs R and L from
 `ker(I - T(q_m))`, not built.
+
+## 2026-09-03 — BLOCK 128: H4 repaired, and the hypothesis it guarded is not one
+
+BLOCK 127 flagged H4 as exercising 0 configurations.  The cause, and the fix.
+
+**Why it was vacuous.**  `Edge::valid` rejects in two stages:
+
+    if (m - f) % 2 != 0 || (m - a) % 2 != 0 { return false; }   // parity
+    if m < |a| || m < |f| { return false; }                     // the bound
+
+H4 tried to delete the bound by admitting `a` even with `f = +-1`.  But then `a`
+and `f` have opposite parity, so the **parity** test rejects first and the bound
+is never reached.  The deletion broke the wrong hypothesis.
+
+**The bound is redundant.**  With `2u = m+f`, `2dn = m-f`, `a = f + 2(pd-pu)`,
+`0 <= pu <= u`, `0 <= pd <= dn`, non-negativity of `u`,`dn` already gives
+`|f| <= m`, and the `pd`,`pu` extremes give `a <= f + 2dn = m` and
+`a >= f - 2u = -m`.  Both extremes are attained, so `m` is exactly the deposit
+range.  Proved as `edge_bounds_redundant` and `edge_bounds_attained` in
+`EltBridge.lean` (propext/Quot.sound, 0 sorry, omega-only).
+
+**The repaired H4** deletes the test itself rather than trying to violate it,
+and counts the configurations that become admissible:
+
+    H4 delete: drop m >= |a|,|f| from valid(): 45700 -> 45700 configs (0 new),
+                                                exceptions 0 -> 0
+
+Zero new configurations, as the theorem predicts.  H1-H3 are unchanged by the
+patch (44800/38400/17200/17200, 45360/43200/43200, 43055/43055 of 45700).
+
+So the deletion table now reads: the three pairing costs are rigid, and the
+fourth "hypothesis" was never a hypothesis.  The hole BLOCK 127 flagged in the
+cited certificate is closed, in the sense that the certificate is no weaker
+than it looked -- the missing test could not have failed.

@@ -6686,3 +6686,39 @@ theorem RJ_uniform_escape_closed (q : ℚ) (hq : q ≠ 0) (s0 c : ℕ) (a : Fin 
 
 #print axioms total_pairing_factors
 #print axioms RJ_uniform_escape_closed
+
+/-!
+### The edge bound is redundant
+
+`sitecost`'s `Edge::valid` tests `m >= |a|` and `m >= |f|` as if they were
+hypotheses, and the `delete` mode's H4 tries to delete them.  H4 exercises 0
+configurations, because it breaks them by giving `a` and `f` opposite parity,
+and the parity test rejects first.
+
+The bound is in fact implied by the ranges already imposed.  Writing
+`2u = m+f`, `2dn = m-f` for the up/down counts and `a = f + 2(pd - pu)` for the
+deposit, with `0 <= pu <= u` and `0 <= pd <= dn`, non-negativity of `u` and `dn`
+gives `|f| <= m`, and the two `pd`/`pu` extremes give `a <= f + 2dn = m` and
+`a >= f - 2u = -m`.
+-/
+
+/-- `m >= |a|` and `m >= |f|` are consequences of the up/down ranges, not extra
+hypotheses.  So `sitecost`'s H4 deletion has nothing to delete. -/
+theorem edge_bounds_redundant (f m u dn pu pd a : ℤ)
+    (hu : 2 * u = m + f) (hdn : 2 * dn = m - f)
+    (hu0 : 0 ≤ u) (hdn0 : 0 ≤ dn)
+    (hpu0 : 0 ≤ pu) (hpu1 : pu ≤ u)
+    (hpd0 : 0 ≤ pd) (hpd1 : pd ≤ dn)
+    (ha : a = f + 2 * (pd - pu)) :
+    |f| ≤ m ∧ |a| ≤ m := by
+  refine ⟨abs_le.mpr ⟨?_, ?_⟩, abs_le.mpr ⟨?_, ?_⟩⟩ <;> omega
+
+/-- The sharper form: both extremes are attained, so `m` is exactly the range
+of the deposit and the bound cannot be improved. -/
+theorem edge_bounds_attained (f m u dn : ℤ)
+    (hu : 2 * u = m + f) (hdn : 2 * dn = m - f) (hu0 : 0 ≤ u) (hdn0 : 0 ≤ dn) :
+    (f + 2 * (dn - 0) = m) ∧ (f + 2 * (0 - u) = -m) := by
+  constructor <;> omega
+
+#print axioms edge_bounds_redundant
+#print axioms edge_bounds_attained

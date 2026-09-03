@@ -30,6 +30,11 @@ const INF: i64 = 1 << 40;
 
 /// (bounce, sign-flip bounce, pass).  The model value is (0,2,1); the other
 /// values are used only by the hypothesis-deletion mode.
+/// When set, `Edge::valid` skips the `m >= |a|`, `m >= |f|` test.  Used to
+/// show the test is redundant: the admissible set does not change.
+static NO_MBOUND: std::sync::atomic::AtomicBool =
+    std::sync::atomic::AtomicBool::new(false);
+
 static CW: [std::sync::atomic::AtomicI64; 3] = [
     std::sync::atomic::AtomicI64::new(0),
     std::sync::atomic::AtomicI64::new(2),
@@ -256,7 +261,9 @@ impl Edge {
         if (self.m - self.f) % 2 != 0 || (self.m - self.a) % 2 != 0 {
             return false;
         }
-        if self.m < self.a.abs() || self.m < self.f.abs() {
+        if !NO_MBOUND.load(std::sync::atomic::Ordering::Relaxed)
+            && (self.m < self.a.abs() || self.m < self.f.abs())
+        {
             return false;
         }
         let (u, dn, pd) = (self.u(), self.dn(), self.pd());
@@ -820,47 +827,20 @@ fn mode_delete(amax: i64, lam: i64) {
         let (n, bad, ex) = law_holds_interior(amax, lam, false);
         println!("  H3 delete: bounce cost 0 -> {}    : {} configs, {} exceptions   first: {}", b, n, bad, ex);
     }
-    // H4: the constraint |a| >= |f| (automatic in the model: bulk deposits are
-    // even with f=0, travel deposits odd with f=+-1).  Delete it by admitting
-    // an edge with f=+-1 and a=0, which the model never produces.
+    // H4: the `m >= |a|`, `m >= |f|` test in `Edge::valid`.  The earlier form of
+    // this deletion broke the test by giving `a` and `f` opposite parity, but the
+    // parity test rejects first, so it exercised 0 configurations.  Delete the
+    // test itself instead and count how many configurations become admissible.
     set_cw(0, 2, 1);
     {
-        let mut bad = 0u64;
-        let mut n = 0u64;
-        let mut first = String::new();
-        for f in [-1i64, 1] {
-            for al in [-2i64, 0, 2] {
-                for ar in [-2i64, 0, 2] {
-                    // a even while f is odd: parity is broken too, so use m >= |f|
-                    for ml in [f.abs().max(al.abs()), f.abs().max(al.abs()) + 2] {
-                        for mr in [f.abs().max(ar.abs()), f.abs().max(ar.abs()) + 2] {
-                            let el0 = Edge { a: al, f, m: ml, pu: 0 };
-                            let er0 = Edge { a: ar, f, m: mr, pu: 0 };
-                            for pul in 0..=el0.u().max(0) {
-                                for pur in 0..=er0.u().max(0) {
-                                    let el = Edge { a: al, f, m: ml, pu: pul };
-                                    let er = Edge { a: ar, f, m: mr, pu: pur };
-                                    if let Some((arr, dep)) = site_vectors(&el, &er, false, None) {
-                                        if let Some(c) = mincost(&arr, &dep) {
-                                            n += 1;
-                                            let t = al.abs().max(ar.abs());
-                                            if c != t {
-                                                bad += 1;
-                                                if first.is_empty() {
-                                                    first = format!("aL={} aR={} f={} mL={} mR={} cost={} target={}",
-                                                                    al, ar, f, ml, mr, c, t);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        println!("  H4 delete: |a| >= |f| (a even with f=+-1): {} configs, {} exceptions   first: {}", n, bad, first);
+        let (n0, bad0, _) = law_holds_interior(amax, lam, false);
+        NO_MBOUND.store(true, std::sync::atomic::Ordering::Relaxed);
+        let (n1, bad1, ex1) = law_holds_interior(amax, lam, false);
+        NO_MBOUND.store(false, std::sync::atomic::Ordering::Relaxed);
+        println!(
+            "  H4 delete: drop m >= |a|,|f| from valid(): {} -> {} configs ({} new), exceptions {} -> {}   first: {}",
+            n0, n1, n1 - n0, bad0, bad1, ex1
+        );
     }
     set_cw(0, 2, 1);
 }
