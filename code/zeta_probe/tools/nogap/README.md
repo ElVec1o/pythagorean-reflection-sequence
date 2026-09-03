@@ -6261,3 +6261,32 @@ Still open for M4b: the case where exactly one of `alpha`, `beta` vanishes -- th
 passing plan attains the minimum but is not forced, so it must be exhibited rather than
 deduced; gluing the per-site choices into one turn; and chaining the passes into run
 connectivity.
+
+## 2026-09-03 — BLOCK 156: the local trichotomy is complete
+
+The one-sided case, which BLOCK 155 left open, is a tie rather than a strict
+inequality, and that is enough.
+
+With `beta = 0` and `alpha != 0`, bounce-only already attains the minimum `|alpha|`, so
+passing cannot be forced and a passing plan has to be exhibited.  It is exhibited by a
+local trade: the left half carries at least one flip (since `alpha != 0`) and the right
+half at least one same-class bounce (since the edge is occupied), and trading those two
+for two passes preserves the row and column sums -- the left arrival goes right, the
+right arrival goes left -- at cost `2 + 0 = 1 + 1`.  So the traded plan is still
+minimal and it passes (`pass_ties_bounce_of_one_side`).
+
+`local_trichotomy` now states all three cases at once:
+
+    both sides agree (a cut site)   bounce STRICTLY wins   -> no minimal plan passes
+    exactly one side differs        the two are EQUAL      -> a minimal plan passes
+    both sides differ               pass strictly cheaper  -> every minimal plan passes
+
+Only the first denies a pass, and it is exactly the cut condition.  That is the local
+layer of M4b finished: at every non-cut bulk site a minimal plan with a pass exists, and
+at every cut site none does.
+
+What remains is the global layer, and it is mechanical in the sense that both its
+principles are already proved: gluing the per-site choices into one turn
+(`DataBuild.glue`, with `sum_min_is_min` giving global minimality because cost is a sum
+over sites), and chaining the passes into run connectivity (`reachable_turn` links the
+two edges a pass crosses).  Neither is written.

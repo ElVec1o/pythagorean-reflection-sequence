@@ -8411,3 +8411,79 @@ end EltBridge
 #print axioms EltBridge.flip_mass_ge
 #print axioms EltBridge.bounce_only_cost_ge
 #print axioms EltBridge.pass_forced_of_sums
+
+namespace EltBridge
+
+/-! ### The one-sided case: passing ties
+
+`pass_forced_of_sums` covers a site with BOTH imbalances non-zero, where passing is
+forced.  When exactly one vanishes -- say `beta = 0` -- bounce-only already attains the
+minimum `|alpha|`, so passing cannot be forced and a passing plan must be EXHIBITED.
+
+It is exhibited by a local trade.  With `alpha != 0` the left half carries at least one
+flip, and the right half, being occupied (`mu_pos` on the span), carries at least one
+same-class bounce.  Trade the two for two passes:
+
+    remove   a left flip        cost 2
+    remove   a right bounce     cost 0
+    add      two passes         cost 1 + 1
+
+Row and column sums are preserved -- the left arrival now goes right, the right arrival
+now goes left -- and the cost is unchanged, `2 + 0 = 1 + 1`.  So a minimal plan with a
+pass exists, which is what run connectivity needs. -/
+
+/-- **Passing ties when one side is balanced.**  A flip on the differing side and a
+bounce on the balanced side cost exactly what the two passes replacing them cost. -/
+theorem pass_ties_bounce_of_one_side (l l' r r' : Fin 4)
+    (hl : l.val < 2) (hl' : l'.val < 2) (hr : 2 ≤ r.val) (hr' : 2 ≤ r'.val)
+    (hne : l ≠ l') (heq : r = r') :
+    costOf l r' + costOf r l' = costOf l l' + costOf r r' := by
+  have h1 : costOf l r' = 1 := by
+    unfold costOf
+    rw [if_neg (by intro h; rw [h] at hl; omega), if_neg (by omega)]
+  have h2 : costOf r l' = 1 := by
+    unfold costOf
+    rw [if_neg (by intro h; rw [h] at hr; omega), if_neg (by omega)]
+  have h3 : costOf l l' = 2 := by
+    unfold costOf; rw [if_neg hne, if_pos (by omega)]
+  have h4 : costOf r r' = 0 := by
+    unfold costOf; rw [if_pos heq]
+  rw [h1, h2, h3, h4]
+
+/-- **The three local cases together.**  At a bulk site, comparing the bouncing pairing
+with the passing one:
+
+* both sides agree (a cut site): the bounce STRICTLY wins, so no minimal plan passes;
+* exactly one side differs: the two are EQUAL, so a minimal plan that passes exists;
+* both sides differ: the pass is strictly cheaper, so every minimal plan passes.
+
+Only the first denies a pass, and it is exactly the cut condition. -/
+theorem local_trichotomy (l l' r r' : Fin 4)
+    (hl : l.val < 2) (hl' : l'.val < 2) (hr : 2 ≤ r.val) (hr' : 2 ≤ r'.val) :
+    (l = l' → r = r' →
+      costOf l l' + costOf r r' < costOf l r' + costOf r l') ∧
+    (l ≠ l' → r = r' →
+      costOf l r' + costOf r l' = costOf l l' + costOf r r') ∧
+    (l ≠ l' → r ≠ r' →
+      costOf l r' + costOf r l' < costOf l l' + costOf r r') := by
+  refine ⟨?_, pass_ties_bounce_of_one_side l l' r r' hl hl' hr hr', ?_⟩
+  · rintro rfl rfl
+    exact bounce_beats_pass_at_cut l r hl hr
+  · intro hne hne'
+    have h1 : costOf l r' = 1 := by
+      unfold costOf
+      rw [if_neg (by intro h; rw [h] at hl; omega), if_neg (by omega)]
+    have h2 : costOf r l' = 1 := by
+      unfold costOf
+      rw [if_neg (by intro h; rw [h] at hr; omega), if_neg (by omega)]
+    have h3 : costOf l l' = 2 := by
+      unfold costOf; rw [if_neg hne, if_pos (by omega)]
+    have h4 : costOf r r' = 2 := by
+      unfold costOf; rw [if_neg hne', if_pos (by omega)]
+    rw [h1, h2, h3, h4]
+    omega
+
+end EltBridge
+
+#print axioms EltBridge.pass_ties_bounce_of_one_side
+#print axioms EltBridge.local_trichotomy
