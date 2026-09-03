@@ -3757,6 +3757,63 @@ theorem VEndpt.site_edge_at_cut {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hl
   rw [hu]
   rfl
 
+/-- **The free pair lies on one edge at a cut site**, extended type.
+
+`site_edge_at_cut` gives the site-edge relation at every end of a cut site, so the
+BLOCK 62 argument runs verbatim -- no case split on real versus virtual is needed. -/
+theorem VEndpt.freePair_same_edge_at_cutV {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ)
+    (hle : s1 ≤ s0) (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (bnd : ℤ) (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (D.t x) ≠ VEndpt.edgeOf bnd x → VEndpt.siteP s0 s1 x ∉ Zf)
+    (a a' : VEndpt n mm) (hss : VEndpt.siteP s0 s1 a' = VEndpt.siteP s0 s1 a)
+    (hcut : VEndpt.siteP s0 s1 a ∈ Zf)
+    (hshared : VEndpt.atTop a = VEndpt.atTop a' ∨
+      VEndpt.atTop (D.t a) = VEndpt.atTop (D.t a')) :
+    VEndpt.edgeOf bnd a = VEndpt.edgeOf bnd a' := by
+  have hcut' : VEndpt.siteP s0 s1 a' ∈ Zf := hss ▸ hcut
+  have hka : VEndpt.edgeOf bnd (D.t a) = VEndpt.edgeOf bnd a := by
+    by_contra hc; exact hturn a hc hcut
+  have hka' : VEndpt.edgeOf bnd (D.t a') = VEndpt.edgeOf bnd a' := by
+    by_contra hc; exact hturn a' hc hcut'
+  have ea := VEndpt.site_edge_at_cut s0 s1 hle Zf hgap bnd a hcut
+  have ea' := VEndpt.site_edge_at_cut s0 s1 hle Zf hgap bnd a' hcut'
+  rcases hshared with h | h
+  · rw [h] at ea; omega
+  · have eta := VEndpt.site_edge_at_cut s0 s1 hle Zf hgap bnd (D.t a) (by rw [hts]; exact hcut)
+    have eta' := VEndpt.site_edge_at_cut s0 s1 hle Zf hgap bnd (D.t a') (by rw [hts]; exact hcut')
+    rw [h] at eta
+    rw [hts a] at eta
+    rw [hts a', hss] at eta'
+    omega
+
+/-- **`hturn` survives the merge on the extended type**, under `hgap`. -/
+theorem VEndpt.hturn_swapT_nohZV {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hle : s1 ≤ s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (bnd : ℤ) (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (D.t x) ≠ VEndpt.edgeOf bnd x → VEndpt.siteP s0 s1 x ∉ Zf)
+    (a a' : VEndpt n mm) (hss : VEndpt.siteP s0 s1 a' = VEndpt.siteP s0 s1 a)
+    (hcut : VEndpt.siteP s0 s1 a ∈ Zf)
+    (hshared : VEndpt.atTop a = VEndpt.atTop a' ∨
+      VEndpt.atTop (D.t a) = VEndpt.atTop (D.t a')) :
+    ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (WalkGraph.swapT D.t a (D.t a) a' (D.t a') x)
+        ≠ VEndpt.edgeOf bnd x → VEndpt.siteP s0 s1 x ∉ Zf := by
+  have keep : ∀ y : VEndpt n mm, VEndpt.siteP s0 s1 y ∈ Zf →
+      VEndpt.edgeOf bnd (D.t y) = VEndpt.edgeOf bnd y := by
+    intro y hy
+    by_contra hc; exact hturn y hc hy
+  have hea := VEndpt.freePair_same_edge_at_cutV s0 s1 hle Zf hgap bnd D hts hturn
+    a a' hss hcut hshared
+  have hka := keep a hcut
+  have hka' := keep a' (hss ▸ hcut)
+  intro x hne hmem
+  exact hne (swapT_pos_eq D.t (VEndpt.edgeOf bnd) a (D.t a) a' (D.t a') x
+    hka.symm hea (by omega) (keep x hmem))
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3904,3 +3961,5 @@ end EltBridge
 #print axioms EltBridge.shield_turnInv
 #print axioms EltBridge.VEndpt.cut_ends_real
 #print axioms EltBridge.VEndpt.site_edge_at_cut
+#print axioms EltBridge.VEndpt.freePair_same_edge_at_cutV
+#print axioms EltBridge.VEndpt.hturn_swapT_nohZV

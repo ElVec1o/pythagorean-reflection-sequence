@@ -3758,3 +3758,25 @@ obstruction in BLOCK 55 is the same condition that makes the port work.
 WHY shield_turnInv ALONE IS NOT ENOUGH: it is stated for Endpt, and a PathData
 configuration is unbalanced there (that is why VEndpt exists). So the Endpt-side repair
 of BLOCKS 60-64 has to be carried to VEndpt, and this block supplies the missing step.
+
+## 2026-09-03 — BLOCK 66: hturn survives the merge on VEndpt
+
+  VEndpt.freePair_same_edge_at_cutV -- the free pair lies on one edge at a cut site,
+                                       extended type
+  VEndpt.hturn_swapT_nohZV          -- **hturn survives the merge on VEndpt**, under
+                                       hgap and with no hZ
+Both propext + Quot.sound only.
+
+The port needed NO case split on real versus virtual. site_edge_at_cut (BLOCK 65) gives
+the site-edge relation at every end of a cut site, so BLOCK 62's argument runs verbatim
+with siteP/edgeOf/atTop in place of the Endpt versions. swapT_pos_eq -- stated
+generically in BLOCK 62 precisely because the Endpt proof had been fighting Lean's
+normal form -- applies unchanged.
+
+That generic statement is now used twice, on two different end types. Writing it
+generically was forced by a tactic loop rather than foresight, but it is the reason this
+block was short.
+
+Repeated error, third time tonight: `rw [...] at h1 h2` where the pattern occurs in only
+one of them. Lean reports it as a failed rewrite naming the pattern, which reads like
+the pattern is wrong rather than like it is absent from one target.
