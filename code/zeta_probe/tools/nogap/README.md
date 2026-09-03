@@ -3457,3 +3457,26 @@ shield_neg, and the second copy has no `d` in scope. The error ("Unknown identif
 d.isArr") named the line but not the cause; the cause was a blind string replace over a
 range containing two theorems. Same failure mode as the linter-suggestion edit earlier
 in the project.
+
+## 2026-09-03 — BLOCK 54: hgap discharged
+
+  no_cut_in_neg_travel -- the mirror of no_cut_inside_travel: for kstar < 0 the travel
+                          indicator is -1 throughout [kstar, 0), so Phi = 0 fails at
+                          every site strictly between
+  pd_hgap              -- **the gap condition, discharged**: a cut site in [kstar, 0]
+                          is impossible -- strictly inside by the above, and at either
+                          endpoint because those are the two virtual sites
+
+The two endpoint exclusions are passed in rather than derived, because they are facts
+about the configuration's BALANCE (arrivalfree_ne_virtual, BLOCK 39) rather than about
+its travel. Keeping them as arguments makes the dependency visible instead of burying a
+balance assumption inside a travel lemma.
+
+So shield_gap's hgap is now a theorem for any PathData with kstar < 0 whose cut set
+avoids the two virtual sites. What is left in the shield law: hturn, hruns, hcov -- the
+paper's own three inputs.
+
+Both halves of the travel argument are now proved and they are genuinely separate
+lemmas, not one lemma with a sign case: no_cut_inside_travel needs f = +1 on [0,kstar),
+no_cut_in_neg_travel needs f = -1 on [kstar,0), and the `travel` definition splits on
+which interval is non-empty.

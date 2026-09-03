@@ -2978,6 +2978,46 @@ theorem VEndpt.shield_gap {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1
   VEndpt.shield_neg s0 s1 hlt Zf up ds hcov hturn
     (fun E hE => VEndpt.hvirt_of_gap s0 s1 hlt Zf hgap E hE.2.1) hruns z₀ D hD
 
+/-- **No cut site inside a NEGATIVE travel interval.**
+
+The mirror of `no_cut_inside_travel`.  For `kstar < 0` the travel indicator is `-1`
+throughout `kstar <= j < 0`, so `Phi = 0` fails at every site strictly between. -/
+theorem no_cut_in_neg_travel (P : SiteCost.PathData) (s : ℤ)
+    (hk : P.kstar < s) (h0 : s < 0) : ¬ P.cut s := by
+  rintro ⟨-, -, hPhi⟩
+  unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.PathData.vD
+    SiteCost.vArr at hPhi
+  rw [if_neg (by omega : ¬ s = (0:ℤ))] at hPhi
+  rw [if_neg (by omega : ¬ s = P.kstar)] at hPhi
+  simp only [ite_self, Nat.cast_zero, sub_zero, add_zero] at hPhi
+  have hf : P.f (s - 1) = -1 := by
+    unfold SiteCost.PathData.f travel
+    rw [if_neg (by omega), if_pos (by omega)]
+  omega
+
+/-- **The gap condition, discharged.**
+
+A cut site in the window `[kstar, 0]` is impossible: strictly inside by
+`no_cut_in_neg_travel`, and at either endpoint because those are the two virtual sites,
+which `arrivalfree_ne_virtual` excludes.  The two exclusions are passed in, since they
+are facts about the configuration's balance. -/
+theorem pd_hgap (P : SiteCost.PathData) (hk : P.kstar < 0) (Zf : Finset ℤ)
+    (hZcut : ∀ z ∈ Zf, P.cut (P.A + z))
+    (hne0 : (-P.A) ∉ Zf) (hne1 : (P.kstar - P.A) ∉ Zf) :
+    ∀ z ∈ Zf, ¬ ((P.kstar - P.A) - 1 < z ∧ z ≤ -P.A) := by
+  rintro z hz ⟨h1, h2⟩
+  have hcut := hZcut z hz
+  set u := P.A + z with hu
+  have hu1 : P.kstar - 1 < u := by omega
+  have hu2 : u ≤ 0 := by omega
+  rcases lt_trichotomy u 0 with h | h | h
+  · rcases lt_trichotomy P.kstar u with hh | hh | hh
+    · exact no_cut_in_neg_travel P u hh h hcut
+    · exact hne1 (by rw [show z = P.kstar - P.A by omega] at hz; exact hz)
+    · omega
+  · exact hne0 (by rw [show z = -P.A by omega] at hz; exact hz)
+  · omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3094,3 +3134,5 @@ end EltBridge
 #print axioms EltBridge.gz_const_on
 #print axioms EltBridge.VEndpt.hvirt_of_gap
 #print axioms EltBridge.VEndpt.shield_gap
+#print axioms EltBridge.no_cut_in_neg_travel
+#print axioms EltBridge.pd_hgap
