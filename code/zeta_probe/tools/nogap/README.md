@@ -7088,3 +7088,31 @@ model could not express (BLOCK 152), and what made M4b unstatable there.
 Scope, unchanged: `mu >= 4` is not covered and is not a matter of effort.  BLOCK 158
 measured 5072 of 8192 failures there, because with two strands each way the passes can
 be chosen so as not to chain, and nothing local forces the choice.  Ledger updated.
+
+## 2026-09-03 — BLOCK 186: the shield law at mu = 2
+
+`local_of_turn`: a turn that keeps its site and changes the edge only off `Zf` satisfies
+`CutComponents.Local` -- which is all `prop:cut`'s machinery needs.  So
+`exists_injective_components_avoiding` applies to the `passTurn` datum, and
+`walkCount_ge_passTurn` gives `|Zf| + 1 ≤ walkCount E`.
+
+That is the lower bound on the SAME datum as the upper one.  `shield_law_mu_two`
+combines them:
+
+    walkCount E = |Zf| + 1
+
+which is `c = |Z|`, the shield law, for configurations with every `mu = 2`.  0 sorry,
+and `CostMerge` is invoked in NEITHER direction -- so the result does not use
+`HasFreePair`, which BLOCK 149 refuted in the only sign model that can express gap
+edges.
+
+The class is not vacuous: `mu j = 2` whenever `d j = 0`, so it contains gap edges and
+genuine cut sites -- precisely the case the derived-sign model could not state
+(BLOCK 152), and the reason M3 and M4b sat at "not instantiable from a group element".
+
+M3 is instantiated by the same theorem: `walkCount_ge_passTurn` is `prop:cut` on a datum
+whose cut sites are real.
+
+NOT proved at `mu >= 4`, and not for want of effort: BLOCK 158 measured 5072 of 8192
+failures, because with two strands each way the passes can be chosen so as not to chain
+and nothing local forces the choice.  Ledger updated for both atoms.

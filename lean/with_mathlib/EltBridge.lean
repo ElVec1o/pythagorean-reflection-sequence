@@ -10733,3 +10733,110 @@ theorem shield_mu_two_final (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
 end EltBridge
 
 #print axioms EltBridge.shield_mu_two_final
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ### The lower bound for the same datum
+
+`prop:cut` is `c ≥ |Z|`, and its machinery -- `CutComponents.exists_injective_components_avoiding`
+-- needs only `Local`, which is the second disjunct of `hedge`.  So it applies to the
+`passTurn` datum as well, and the two bounds meet on ONE datum rather than on two. -/
+
+/-- **`Local` for a turn that keeps its site and changes the edge only off `Zf`.** -/
+theorem local_of_turn (E : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf) :
+    CutComponents.Local (WalkGraph.graph E) EndType.edgeOf Zf := by
+  intro x y hadj
+  rcases hadj with rfl | rfl
+  · -- the crossing partner keeps the edge
+    refine ⟨EndType.edgeOf x + 1, Or.inl (by ring), Or.inl ?_, ?_⟩
+    · rw [hEp, EndType.partner_edgeOf]; ring
+    · intro hne
+      exact absurd (by rw [hEp, EndType.partner_edgeOf]) hne
+  · -- the turn keeps the site
+    refine ⟨EndType.siteOf x, ?_, ?_, ?_⟩
+    · rcases siteOf_cases x with h | h
+      · exact Or.inr h.symm
+      · exact Or.inl (by omega)
+    · have hy : EndType.siteOf (E.t x) = EndType.siteOf x := hTsite x
+      rcases siteOf_cases (E.t x) with h | h
+      · exact Or.inr (by rw [← hy, h])
+      · exact Or.inl (by rw [← hy, h]; omega)
+    · intro hne
+      exact hturn x (fun hc => hne hc.symm)
+
+/-- **`prop:cut` for the `passTurn` datum**: at least `|Zf| + 1` walks. -/
+theorem walkCount_ge_passTurn (E : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (A B : ℤ) (hAB : A ≤ B)
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (c0 : (WalkGraph.graph E).ConnectedComponent) :
+    Zf.card + 1 ≤ WalkGraph.walkCount E := by
+  obtain ⟨F, hinj, havoid⟩ :=
+    CutComponents.exists_injective_components_avoiding
+      (local_of_turn E Zf hEp hTsite hturn) A B hAB hlow hhigh hocc c0
+  exact ConfigLoop.walkCount_ge_of_avoiding E Zf.card c0 F hinj havoid
+
+end EltBridge
+
+#print axioms EltBridge.local_of_turn
+#print axioms EltBridge.walkCount_ge_passTurn
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The shield law at `mu = 2`: `walkCount = |Z| + 1`.**
+
+Both bounds now hold of the SAME datum.  The lower one is `prop:cut`, which needs only
+`Local`; the upper one is the swap-free construction of BLOCKS 153-185.  Together they
+pin the walk count exactly, which is `c = |Z|`.
+
+`CostMerge` is invoked in neither direction. -/
+theorem shield_law_mu_two (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (hmin : ∀ (r : ℕ) (j : ℤ), A ≤ j → j ≤ B → CutComponents.gz Zf j = r →
+      runLo Zf A B r ≤ j)
+    (hloRange : ∀ r : ℕ, A - 1 ≤ runLo Zf A B r ∧ runLo Zf A B r ≤ B + 1)
+    (hrunRange : ∀ (r k : ℕ), k ≤ runLen Zf A B r →
+      A - 1 ≤ runLo Zf A B r + (k : ℤ) ∧ runLo Zf A B r + (k : ℤ) ≤ B + 1)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hne : Nonempty (EndType.Endpt n m)) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkGraph.walkCount E = Zf.card + 1 := by
+  classical
+  obtain ⟨E, hEp, hEt, hTsite⟩ :=
+    exists_passTurn_data hm sec (insert A (insert (B + 1) Zf)) A B hspan hsecWide hsecEdge
+  have hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf := by
+    intro x hx
+    rw [hEt x] at hx
+    exact passTurn_hturn_of_subset EndType.edgeOf EndType.siteOf EndType.partner
+      (upOf (m := m) hm sec) (dnOf (m := m) hm sec) Zf (insert A (insert (B + 1) Zf))
+      (fun z hz => Finset.mem_insert_of_mem (Finset.mem_insert_of_mem hz))
+      (fun y => EndType.partner_edgeOf y)
+      (fun s => upOf_dnOf_edgeOf hm sec s) x hx
+  refine ⟨E, le_antisymm ?_ ?_⟩
+  · exact shield_mu_two hm sec Zf A B
+      (fun r => hsecWide _ (hloRange r).1 (hloRange r).2)
+      (fun r k hk => hsecWide _ (hrunRange r k hk).1 (hrunRange r k hk).2)
+      hmin hspan hsecEdge E hEp hEt hTsite
+  · obtain ⟨x0⟩ := hne
+    exact walkCount_ge_passTurn E Zf A B hAB hEp hTsite hturn hlow hhigh hocc
+      ((WalkGraph.graph E).connectedComponentMk x0)
+
+end EltBridge
+
+#print axioms EltBridge.shield_law_mu_two
