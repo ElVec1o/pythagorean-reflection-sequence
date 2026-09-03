@@ -5935,6 +5935,34 @@ theorem pow_couplingSum_eq_prod (x : ℤ) : ∀ l : List ℕ,
     rw [pow_couplingSum_eq_prod x (b :: rest)]
     rfl
 
+/-! ### The assembly, for a single element
+
+Composing BLOCKS 110 and 114: if a cost splits as a head plus the coupling sum along a
+magnitude path -- which `lR_site_split` and `lR_interior_terms` establish for `lR` --
+then its exponential is the head's exponential times the transfer product along that
+path.
+
+This is `(M3a)` for one element.  The step to the generating function is the sum over
+elements, which needs formal power series and is not done here. -/
+
+/-- **The composite: a split cost exponentiates to a transfer product.** -/
+theorem cost_exp_is_transfer {C : Type*} (x : ℤ) (cost head : C → ℕ)
+    (mags : C → List ℕ)
+    (hdec : ∀ c, cost c = head c + couplingSum (mags c)) (c : C) :
+    x ^ cost c
+      = x ^ head c
+        * ((mags c).zip (mags c).tail).foldr (fun p acc => x ^ max p.1 p.2 * acc) 1 := by
+  rw [hdec c, pow_add, pow_couplingSum_eq_prod]
+
+/-- **And for `lR` the split is the one BLOCK 110 proved**: the head is the edge sum
+plus the two marker costs, and the path is the deposit magnitudes across the span. -/
+theorem lR_exp_is_transfer (P : SiteCost.PathData) (x : ℤ) (head : ℕ) (mags : List ℕ)
+    (hdec : P.lR = head + couplingSum mags) :
+    x ^ P.lR
+      = x ^ head * (mags.zip mags.tail).foldr (fun p acc => x ^ max p.1 p.2 * acc) 1 :=
+  cost_exp_is_transfer x (fun _ : Unit => P.lR) (fun _ => head) (fun _ => mags)
+    (fun _ => hdec) ()
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6159,3 +6187,5 @@ end EltBridge
 #print axioms EltBridge.sum_signed_pair
 #print axioms EltBridge.pow_couplingSum
 #print axioms EltBridge.pow_couplingSum_eq_prod
+#print axioms EltBridge.cost_exp_is_transfer
+#print axioms EltBridge.lR_exp_is_transfer

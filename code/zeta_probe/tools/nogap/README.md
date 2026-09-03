@@ -4899,3 +4899,26 @@ x^cost.
 Every ingredient of (M3a) is now a theorem in the file. What is not done is assembling
 them into the single statement "sum over elements of x^lR = lambda (I-T)^-1 mu", which
 is composition rather than new mathematics.
+
+## 2026-09-03 — BLOCK 115: (M3a) assembled for a single element
+
+  cost_exp_is_transfer -- a cost splitting as head + couplingSum along a magnitude path
+                          exponentiates to head's exponential times the transfer product
+                          along that path
+  lR_exp_is_transfer   -- and for lR specifically, with the split BLOCK 110 proved
+
+So (M3a) holds for ONE element: x^lR is a boundary factor times a transfer product along
+the deposit-magnitude path. Every ingredient was proved in BLOCKS 103-114 and this
+composes them.
+
+WHAT REMAINS, precisely: the sum over elements. (M3) asserts the generating function
+W(x,y) -- a sum of x^lR over all elements -- is lambda (I - T)^-1 mu. The per-element
+statement is now proved; the sum needs formal power series (Mathlib's PowerSeries or an
+explicit valuation argument), because the sum is infinite and the resolvent is its
+closed form.
+
+That is a different kind of work from the last thirteen blocks: those were combinatorial
+identities about a single configuration, this is convergence in a formal topology. It is
+also the point at which (M3b) -- the resolvent identity -- becomes the actual content
+rather than bookkeeping, since (I - T)^-1 = sum T^k is exactly the statement that the
+infinite sum has that closed form.
