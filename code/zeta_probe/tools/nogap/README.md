@@ -2891,3 +2891,28 @@ REMAINING FOR B1: connect `Elt.balanced` to a MergesMin datum -- i.e. the parame
 form of GenericData.dataG plus CostMerge.exists_mergesMin -- and supply hcov0. Both are
 assembly, not new mathematics: dataG is already generic in the site map, so it accepts
 siteP unchanged.
+
+## 2026-09-03 — BLOCK 32: the generic turn flips roles; dataG is in the merge class
+
+  GenericData.mem_arrOf, mem_depOf  -- membership characterisations, stated once and
+                                       proved by simp, so no later proof has to guess
+                                       what simp did
+  GenericData.turnG_arr             -- THE MISSING PIECE: the generic turn exchanges
+                                       arrivals and departures
+  GenericData.dataG_merges          -- so dataG satisfies WalkSupport.Merges
+
+BLOCK 19 built dataG and proved involutivity, site-preservation and fixed-point
+freedom -- but not the role flip, which is the third component of `Merges`. Without it
+dataG could not be fed to exists_mergesMin at all. Found only by trying to use it.
+
+PROCESS NOTE (Lean rule 4.1). Three strikes on turnG_arr, all the same mistake: I was
+building Finset memberships through `simp only` whose normal form I could not predict
+-- it collapses `siteOf x = siteOf x` away, so `<rfl, h>` supplied two fields where one
+was wanted, and each "fix" guessed a different post-simp shape. ABORT was called and
+the repair was architectural: state mem_arrOf/mem_depOf once as iff-lemmas and use
+`.mp`/`.mpr`. Went through immediately. The rule earned its keep: strikes 2 and 3 were
+both guesses at simp's output rather than diagnoses.
+
+Second, unrelated error worth recording: dataG_merges was inserted textually BEFORE
+dataG. The error read "Unknown identifier hbal", which looks like a variable-scope
+problem and is not one.

@@ -866,6 +866,36 @@ theorem turnG_invol (x : α) :
       (depOf siteOf isArr s) (arr_disj_dep siteOf isArr s) (hbal s)).choose_spec.1 y)
     (fun y => turnG_site siteOf isArr hbal y) x
 
+/-- Membership in `arrOf`, without simp. -/
+theorem mem_arrOf {siteOf : α → ℤ} {isArr : α → Bool} {s : ℤ} {x : α} :
+    x ∈ arrOf siteOf isArr s ↔ siteOf x = s ∧ isArr x = true := by
+  classical
+  simp only [arrOf, Finset.mem_filter, Finset.mem_univ, true_and]
+
+/-- Membership in `depOf`, without simp. -/
+theorem mem_depOf {siteOf : α → ℤ} {isArr : α → Bool} {s : ℤ} {x : α} :
+    x ∈ depOf siteOf isArr s ↔ siteOf x = s ∧ isArr x = false := by
+  classical
+  simp only [depOf, Finset.mem_filter, Finset.mem_univ, true_and]
+
+/-- **The generic turn exchanges arrivals and departures.**  Missing from the first
+pass: `dataG` proved involutivity, site-preservation and fixed-point freedom, but the
+role flip is what `Merges` needs. -/
+theorem turnG_arr (x : α) :
+    isArr (turnG siteOf isArr hbal x) = !isArr x := by
+  have hspec := (TurnBuild.exists_involution_of_card_eq
+    (arrOf siteOf isArr (siteOf x)) (depOf siteOf isArr (siteOf x))
+    (arr_disj_dep siteOf isArr (siteOf x)) (hbal (siteOf x))).choose_spec
+  show isArr (turnAtG siteOf isArr hbal (siteOf x) x) = !isArr x
+  unfold turnAtG
+  cases h : isArr x
+  · have hx : x ∈ depOf siteOf isArr (siteOf x) := mem_depOf.mpr ⟨rfl, h⟩
+    have h2 := mem_arrOf.mp (hspec.2.2.1 x hx)
+    rw [h2.2]; rfl
+  · have hx : x ∈ arrOf siteOf isArr (siteOf x) := mem_arrOf.mpr ⟨rfl, h⟩
+    have h2 := mem_depOf.mp (hspec.2.1 x hx)
+    rw [h2.2]; rfl
+
 /-- **The generic walk-graph data.** -/
 noncomputable def dataG (p : α → α) (hp_invol : ∀ x, p (p x) = x)
     (hp_ne : ∀ x, p x ≠ x) (hp_site : ∀ x, siteOf (p x) ≠ siteOf x) :
@@ -877,6 +907,12 @@ noncomputable def dataG (p : α → α) (hp_invol : ∀ x, p (p x) = x)
   p_ne := hp_ne
   t_ne := turnG_ne siteOf isArr hbal
   pt_ne := fun x h => hp_site x (by rw [h]; exact turnG_site siteOf isArr hbal x)
+
+/-- **`dataG` is in the merge class.** -/
+theorem dataG_merges (p : α → α) (hp_invol : ∀ x, p (p x) = x)
+    (hp_ne : ∀ x, p x ≠ x) (hp_site : ∀ x, siteOf (p x) ≠ siteOf x) :
+    WalkSupport.Merges siteOf isArr p (dataG siteOf isArr hbal p hp_invol hp_ne hp_site) :=
+  ⟨rfl, fun e => turnG_site siteOf isArr hbal e, fun e => turnG_arr siteOf isArr hbal e⟩
 
 end GenericData
 
@@ -1606,3 +1642,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.wlo_le_s0
 #print axioms EltBridge.VEndpt.residual_dischargedP
 #print axioms EltBridge.VEndpt.merges_to_oneP
+#print axioms EltBridge.GenericData.turnG_arr
+#print axioms EltBridge.GenericData.dataG_merges
