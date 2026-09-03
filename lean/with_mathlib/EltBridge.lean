@@ -5544,6 +5544,44 @@ theorem site_cost_couples (P : SiteCost.PathData) (s : ℤ)
   rw [if_neg h0, if_neg hk]
   simp only [ite_self, Nat.cast_zero, mul_zero, add_zero, sub_zero]
 
+/-! ### The deposit magnitude is a sufficient state
+
+`site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
+of the two **magnitudes** and nothing else.  So the transfer state can be the deposit
+magnitude, which is what the paper's `B_sigma` is indexed by.
+
+Away from the two marker sites, that is the whole state.  At the marker sites the cost
+carries `eps` and `delta` as well (`cor:marker`), which is why the assembly sums over
+the four marker data rather than folding them into `T`. -/
+
+/-- **The interior site cost depends on the deposits only through their magnitudes.** -/
+theorem site_cost_magnitude_only (P Q : SiteCost.PathData) (s : ℤ)
+    (hP0 : s ≠ 0) (hPk : s ≠ P.kstar) (hQ0 : s ≠ 0) (hQk : s ≠ Q.kstar)
+    (h1 : (P.d (s - 1)).natAbs = (Q.d (s - 1)).natAbs)
+    (h2 : (P.d s).natAbs = (Q.d s).natAbs) :
+    P.siteCost s = Q.siteCost s := by
+  rw [site_cost_couples P s hP0 hPk, site_cost_couples Q s hQ0 hQk, h1, h2]
+
+/-- The transfer matrix on deposit magnitudes, travel side: the edge weight `2 x^(2b+1)`
+times the site cost `x^(max(2a+1, 2b+1))`, so the exponent is
+`2b + 1 + max(2a+1, 2b+1) = 2b + 2 + 2 max a b`. -/
+def travelT (a b : ℕ) : ℕ := 2 * b + 2 + 2 * max a b
+
+/-- **It is well defined on magnitudes**, which is the content of the state-space
+choice: equal magnitudes give equal transfer entries. -/
+theorem travelT_congr (a b a' b' : ℕ) (ha : a = a') (hb : b = b') :
+    travelT a b = travelT a' b' := by rw [ha, hb]
+
+/-- **And it is symmetric in the coupling**: the site cost between two edges does not
+depend on which is read first, so `travelT a b` and `travelT b a` differ only by the
+edge weight of the second edge. -/
+theorem travelT_coupling_symm (a b : ℕ) :
+    travelT a b - 2 * b = travelT b a - 2 * a := by
+  unfold travelT
+  rcases le_total a b with h | h
+  · rw [max_eq_right h, max_eq_left h]; omega
+  · rw [max_eq_left h, max_eq_right h]; omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5747,3 +5785,5 @@ end EltBridge
 #print axioms EltBridge.Elt.lR_closed
 #print axioms EltBridge.witElt_lR_closed
 #print axioms EltBridge.site_cost_couples
+#print axioms EltBridge.site_cost_magnitude_only
+#print axioms EltBridge.travelT_coupling_symm

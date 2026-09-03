@@ -4621,3 +4621,27 @@ and BLOCK 92 (assume the criterion, then enumerate).
 The state space is the junction-adjacent deposit magnitude, which is what the paper's
 B_sigma is indexed by. So (M3a)'s content is: the walk decomposition tracks that
 magnitude across travel edges, and the cost is multiplicative in it.
+
+## 2026-09-03 — BLOCK 104: the deposit magnitude IS a sufficient state
+
+  site_cost_magnitude_only -- the interior site cost depends on the deposits only
+                              through their MAGNITUDES
+  travelT                  -- the transfer matrix on magnitudes, travel side:
+                              2b + 2 + 2 max a b  (edge weight 2x^(2b+1) times site cost
+                              x^max(2a+1,2b+1), read in exponents)
+  travelT_congr            -- well defined on magnitudes: the state-space choice is sound
+  travelT_coupling_symm    -- and the coupling is symmetric, the two directions differing
+                              only by the second edge's own weight
+
+So (M3a)'s state space is settled: the junction-adjacent deposit magnitude, exactly what
+the paper's B_sigma is indexed by. Away from the two marker sites that is the whole
+state; at the marker sites the cost carries eps and delta as well (cor:marker), which is
+why the assembly sums over the four marker data instead of folding them into T.
+
+What (M3a) still needs is the DECOMPOSITION itself -- that every configuration's weight
+is the path weight of its magnitude sequence. The state space being sufficient is a
+precondition for that, and it is now proved rather than assumed.
+
+This is the first block tonight where the object matched the abstraction on the first
+try. The difference is that I computed the site cost (BLOCK 103) before writing the
+contract, instead of after.
