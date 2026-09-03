@@ -4463,3 +4463,22 @@ stated gap and confirms the gap was never load-bearing.
 The two models' final profiles, both proved:
   forced   hturn free, cut sites empty, shield law only at Z = 0
   free     cut sites can be occupied, but free pairs are not forced (BLOCKS 91, 95)
+
+## 2026-09-03 — BLOCK 97: M4b ledger settled; green corrected to yellow
+
+Wrote the settled ledger into private/RESEARCH_LOG.md and corrected M4b's colour.
+
+The shield law is proved twice -- abstract configurations (BLOCK 5) and the extended
+type (BLOCK 69) -- and NEITHER applies to a group element with a non-empty cut set. The
+BLOCK 5 witness uses multiplicities (2,0,0,2); mu_pos forbids empty edges in a span, so
+that configuration is not a PathData. I marked M4b green on that witness in BLOCK 5 and
+it stood for ninety blocks.
+
+The two obstructions are complementary, both proved:
+  forced model  cut sites must be empty     -> Z = 0 -> shield law = thm:nogap
+  free model    free pairs are not forced   -> the merge does not run
+Closing M4b for group elements needs a model with occupied cut sites AND forced free
+pairs. Neither has both.
+
+M4b: GREEN -> YELLOW. The theorem is proved; its applicability to the GOAL is not what
+the green implied.
