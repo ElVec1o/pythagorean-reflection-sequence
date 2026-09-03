@@ -4922,3 +4922,24 @@ identities about a single configuration, this is convergence in a formal topolog
 also the point at which (M3b) -- the resolvent identity -- becomes the actual content
 rather than bookkeeping, since (I - T)^-1 = sum T^k is exactly the statement that the
 infinite sum has that closed form.
+
+## 2026-09-03 — BLOCK 116: (M3b)'s algebraic core — the finite Neumann identity
+
+  neumann_partial        -- (I - T) * sum_{k<N} T^k = I - T^N, for the transfer matrix
+  resolvent_remainder    -- so the resolvent is the partial sum up to the remainder -T^N
+  neumann_partial_scalar -- the one-state instance
+
+The point of proving the FINITE identity: it separates the algebra from the convergence.
+(I - T)^-1 = sum T^k is a statement about an infinite sum, but the only thing that
+depends on the formal topology is that T^N vanishes in the limit. Everything else is the
+telescoping above, and it holds outright.
+
+So (M3b) reduces to: the transfer matrix's powers vanish in the formal topology. That is
+a valuation statement -- each travel edge contributes a positive power of x (travelT's
+exponent 2b + 2 + 2 max a b is at least 2), so T^N has valuation at least 2N. It is not
+proved here but it is now a one-line question about travelT rather than an unexamined
+"algebra given (M3a)".
+
+TACTIC NOTE: `ring` does not apply to matrices. `abel` does the additive work and
+`pow_succ'` supplies T * T^m = T^m * T. Three strikes were avoided by noticing the
+non-commutativity in the error rather than retrying `ring`.

@@ -5963,6 +5963,39 @@ theorem lR_exp_is_transfer (P : SiteCost.PathData) (x : ℤ) (head : ℕ) (mags 
   cost_exp_is_transfer x (fun _ : Unit => P.lR) (fun _ => head) (fun _ => mags)
     (fun _ => hdec) ()
 
+/-! ### (M3b): the Neumann identity
+
+`(I - T)^-1 = sum T^k` is the closed form of an infinite sum, but its algebraic core is
+finite and needs no convergence: `(I - T) * sum_{k<N} T^k = I - T^N`.  Everything about
+convergence lives in the remainder `T^N`, so proving this separates the algebra from the
+formal-topology question. -/
+
+/-- **The finite Neumann identity**, for the transfer matrix. -/
+theorem neumann_partial {n : ℕ} (T : Matrix (Fin n) (Fin n) ℤ) : ∀ N : ℕ,
+    (1 - T) * (∑ k ∈ Finset.range N, T ^ k) = 1 - T ^ N := by
+  intro N
+  induction N with
+  | zero => simp
+  | succ m ih =>
+    rw [Finset.sum_range_succ, mul_add, ih, sub_mul, one_mul, ← pow_succ']
+    abel
+
+/-- **So the resolvent is the partial sum up to a remainder**, and the whole content of
+`(M3b)` is that the remainder vanishes in the formal topology. -/
+theorem resolvent_remainder {n : ℕ} (T : Matrix (Fin n) (Fin n) ℤ) (N : ℕ) :
+    (1 - T) * (∑ k ∈ Finset.range N, T ^ k) - 1 = - (T ^ N) := by
+  rw [neumann_partial T N]
+  abel
+
+/-- **And the scalar case**, which is the one-state instance. -/
+theorem neumann_partial_scalar (t : ℤ) (N : ℕ) :
+    (1 - t) * (∑ k ∈ Finset.range N, t ^ k) = 1 - t ^ N := by
+  induction N with
+  | zero => simp
+  | succ m ih =>
+    rw [Finset.sum_range_succ, mul_add, ih]
+    ring
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6189,3 +6222,5 @@ end EltBridge
 #print axioms EltBridge.pow_couplingSum_eq_prod
 #print axioms EltBridge.cost_exp_is_transfer
 #print axioms EltBridge.lR_exp_is_transfer
+#print axioms EltBridge.neumann_partial
+#print axioms EltBridge.resolvent_remainder
