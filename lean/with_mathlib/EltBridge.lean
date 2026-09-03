@@ -7129,7 +7129,9 @@ theorem exists_involution_four {α : Type*} [Fintype α] [DecidableEq α]
       (∀ x ∈ A0, t x ∈ D0) ∧ (∀ x ∈ D0, t x ∈ A0) ∧
       (∀ x ∈ A1, t x ∈ D1) ∧ (∀ x ∈ D1, t x ∈ A1) ∧
       (∀ x ∈ A2, t x ∈ D2) ∧ (∀ x ∈ D2, t x ∈ A2) ∧
-      (∀ x ∈ A3, t x ∈ D3) ∧ (∀ x ∈ D3, t x ∈ A3) := by
+      (∀ x ∈ A3, t x ∈ D3) ∧ (∀ x ∈ D3, t x ∈ A3) ∧
+      (∀ x, x ∉ A0 → x ∉ D0 → x ∉ A1 → x ∉ D1 →
+            x ∉ A2 → x ∉ D2 → x ∉ A3 → x ∉ D3 → t x = x) := by
   classical
   obtain ⟨t1, t1inv, t1a0, t1d0, t1a1, t1d1, t1fix⟩ :=
     EltBridge.exists_involution_two A0 D0 A1 D1 hd0 hc0 hd1 hc1 h01
@@ -7165,9 +7167,9 @@ theorem exists_involution_four {α : Type*} [Fintype α] [DecidableEq α]
     have h := fun hc => hx ((memS2 x).mpr hc)
     exact t2fix x (fun c => h (Or.inl c)) (fun c => h (Or.inr (Or.inl c)))
       (fun c => h (Or.inr (Or.inr (Or.inl c)))) (fun c => h (Or.inr (Or.inr (Or.inr c))))
-  obtain ⟨t, tinv, tS1, tS2, -, -, -⟩ :=
+  obtain ⟨t, tinv, tS1, tS2, tfix, -, -⟩ :=
     EltBridge.combine_involutions t1 t2 S1 S2 t1inv h1S h1fix t2inv h2S h2fix hLR
-  refine ⟨t, tinv, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨t, tinv, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro x hx; rw [tS1 x ((memS1 x).mpr (Or.inl hx))]; exact t1a0 x hx
   · intro x hx; rw [tS1 x ((memS1 x).mpr (Or.inr (Or.inl hx)))]; exact t1d0 x hx
   · intro x hx; rw [tS1 x ((memS1 x).mpr (Or.inr (Or.inr (Or.inl hx))))]; exact t1a1 x hx
@@ -7176,6 +7178,12 @@ theorem exists_involution_four {α : Type*} [Fintype α] [DecidableEq α]
   · intro x hx; rw [tS2 x ((memS2 x).mpr (Or.inr (Or.inl hx)))]; exact t2d2 x hx
   · intro x hx; rw [tS2 x ((memS2 x).mpr (Or.inr (Or.inr (Or.inl hx))))]; exact t2a3 x hx
   · intro x hx; rw [tS2 x ((memS2 x).mpr (Or.inr (Or.inr (Or.inr hx))))]; exact t2d3 x hx
+  · intro x n0 m0 n1 m1 n2 m2 n3 m3
+    refine tfix x (fun hc => ?_) (fun hc => ?_)
+    · rcases (memS1 x).mp hc with h | h | h | h
+      exacts [n0 h, m0 h, n1 h, m1 h]
+    · rcases (memS2 x).mp hc with h | h | h | h
+      exacts [n2 h, m2 h, n3 h, m3 h]
 
 #print axioms exists_involution_four
 
@@ -7195,7 +7203,8 @@ theorem exists_class_matching_at_cut {α : Type*} [Fintype α] [DecidableEq α]
       (∀ i : Fin 4, ∀ x ∈ Arr.filter (fun a => cls a = i),
         t x ∈ Dep.filter (fun b => cls b = i)) ∧
       (∀ i : Fin 4, ∀ x ∈ Dep.filter (fun b => cls b = i),
-        t x ∈ Arr.filter (fun a => cls a = i)) := by
+        t x ∈ Arr.filter (fun a => cls a = i)) ∧
+      (∀ x, x ∉ Arr → x ∉ Dep → t x = x) := by
   classical
   set A : Fin 4 → Finset α := fun i => Arr.filter (fun a => cls a = i) with hA
   set D : Fin 4 → Finset α := fun i => Dep.filter (fun b => cls b = i) with hD
@@ -7224,16 +7233,136 @@ theorem exists_class_matching_at_cut {α : Type*} [Fintype α] [DecidableEq α]
       · exact Or.inr (hcls 3 x h)
     rcases h1 with h1 | h1 <;> rcases h2 with h2 | h2 <;>
       · rw [h1] at h2; exact absurd h2 (by decide)
-  obtain ⟨t, tinv, a0, d0, a1, d1, a2, d2, a3, d3⟩ :=
+  obtain ⟨t, tinv, a0, d0, a1, d1, a2, d2, a3, d3, tfix⟩ :=
     exists_involution_four (A 0) (D 0) (A 1) (D 1) (A 2) (D 2) (A 3) (D 3)
       (hAD 0) (hcard 0) (hAD 1) (hcard 1) (hAD 2) (hcard 2) (hAD 3) (hcard 3)
       (hsep 0 1 (by decide)) (hsep 2 3 (by decide)) hLR
-  refine ⟨t, tinv, ?_, ?_⟩
+  have subA : ∀ i : Fin 4, ∀ x, x ∈ A i → x ∈ Arr := by
+    intro i x hx; simp only [hA, Finset.mem_filter] at hx; exact hx.1
+  have subD : ∀ i : Fin 4, ∀ x, x ∈ D i → x ∈ Dep := by
+    intro i x hx; simp only [hD, Finset.mem_filter] at hx; exact hx.1
+  refine ⟨t, tinv, ?_, ?_, ?_⟩
   · intro i x hx
     fin_cases i
     exacts [a0 x hx, a1 x hx, a2 x hx, a3 x hx]
   · intro i x hx
     fin_cases i
     exacts [d0 x hx, d1 x hx, d2 x hx, d3 x hx]
+  · intro x hA' hD'
+    exact tfix x (fun h => hA' (subA 0 x h)) (fun h => hD' (subD 0 x h))
+      (fun h => hA' (subA 1 x h)) (fun h => hD' (subD 1 x h))
+      (fun h => hA' (subA 2 x h)) (fun h => hD' (subD 2 x h))
+      (fun h => hA' (subA 3 x h)) (fun h => hD' (subD 3 x h))
 
 #print axioms exists_class_matching_at_cut
+
+/-- **Splicing a rival turn at one site.**  `site_cost_le_of_global` compares the given
+datum against a rival that agrees with it away from `s`.  This builds that rival: keep
+the turn everywhere else, use `tS` at `s`.
+
+The three `Data` obligations all come from the site bookkeeping.  Both branches
+preserve the site, so the composite is an involution and never meets `p`, which changes
+the site. -/
+theorem exists_rival_data {α : Type*} [Fintype α] [DecidableEq α]
+    (siteOf : α → ℤ) (p t₀ tS : α → α) (s : ℤ)
+    (hpinv : ∀ x, p (p x) = x) (hpne : ∀ x, p x ≠ x)
+    (hpsite : ∀ x, siteOf (p x) ≠ siteOf x)
+    (ht₀inv : ∀ x, t₀ (t₀ x) = x) (ht₀ne : ∀ x, t₀ x ≠ x)
+    (ht₀site : ∀ x, siteOf (t₀ x) = siteOf x)
+    (htSinv : ∀ x, tS (tS x) = x)
+    (htSsite : ∀ x, siteOf x = s → siteOf (tS x) = s)
+    (htSne : ∀ x, siteOf x = s → tS x ≠ x) :
+    ∃ E : WalkGraph.Data α, E.p = p ∧
+      (∀ x, siteOf x = s → E.t x = tS x) ∧
+      (∀ x, siteOf x ≠ s → E.t x = t₀ x) := by
+  classical
+  refine ⟨{ p := p, t := fun x => if siteOf x = s then tS x else t₀ x,
+            p_invol := hpinv, p_ne := hpne,
+            t_invol := ?_, t_ne := ?_, pt_ne := ?_ }, rfl, ?_, ?_⟩
+  · intro x
+    by_cases hx : siteOf x = s
+    · rw [if_pos hx, if_pos (htSsite x hx), htSinv]
+    · rw [if_neg hx, if_neg (by rw [ht₀site]; exact hx), ht₀inv]
+  · intro x
+    by_cases hx : siteOf x = s
+    · rw [if_pos hx]; exact htSne x hx
+    · rw [if_neg hx]; exact ht₀ne x
+  · intro x
+    -- the turn keeps the site, `p` changes it
+    have hsite : siteOf (if siteOf x = s then tS x else t₀ x) = siteOf x := by
+      by_cases hx : siteOf x = s
+      · rw [if_pos hx, htSsite x hx, hx]
+      · rw [if_neg hx, ht₀site]
+    intro hc
+    exact hpsite x (by rw [hc, hsite])
+  · intro x hx; exact if_pos hx
+  · intro x hx; exact if_neg hx
+
+#print axioms exists_rival_data
+
+/-! ### Correction to BLOCK 137: the emptiness is forced, not a bad hypothesis
+
+BLOCK 137 called the recorded blocker for M3 and M4b -- "the witness needs empty
+edges" -- stale, on the grounds that `hempty` was a badly chosen hypothesis and
+`cross = 0` was the right one.  The first half of that was right and the second half
+does not rescue it.  `cut_classes_match` makes the position **worse**, not better, and
+here is why.
+
+`clsOf x = (if atTop x then 0 else 2) + (if sgn x then 0 else 1)`, and
+`endDataOf = ⟨atTop, isArrOf up, ds⟩`, so `side = atTop` and a class fixes both the
+side and the sign.  But `EndData.sgn` is derived from `(side, isArr, depSign side)`,
+so on a fixed side every arrival carries one sign and every departure the other
+(`sgn_arr_ne_dep`).  A single class therefore admits arrivals or departures, never
+both.
+
+Combine that with `cut_classes_match`, which says the class counts agree at a cut
+site: each class has `|Arr_i| = |Dep_i|` and at most one of the two is non-empty, so
+both are empty.  **A cut site in the derived-sign model carries no ends at all** --
+which is exactly `hempty`, now as a theorem rather than a hypothesis.
+
+So `turnInv_of_mergesMin_of_cross_zero` is correct and genuinely weaker in its
+hypotheses, but it cannot be fed: in this model there is no cut site carrying ends to
+feed it with.  The obstruction is the derived sign, as the ledger said.
+-/
+
+/-- The class map `(atTop, sgn) -> Fin 4` is injective. -/
+theorem cls_pair_inj (t1 s1 t2 s2 : Bool) :
+    ((if t1 then (0 : Fin 4) else 2) + (if s1 then 0 else 1))
+      = ((if t2 then (0 : Fin 4) else 2) + (if s2 then 0 else 1)) → t1 = t2 ∧ s1 = s2 := by
+  revert t1 s1 t2 s2
+  decide
+
+/-- **No class holds both an arrival and a departure.**  A class fixes the side and the
+sign; the derived sign gives arrivals and departures opposite signs on a fixed side. -/
+theorem no_class_holds_both {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (ds : Bool → Bool)
+    (a b : EndType.Endpt n m)
+    (ha : EndType.isArrOf up a = true) (hb : EndType.isArrOf up b = false)
+    (hc : ConfigLoop.clsOf up ds a = ConfigLoop.clsOf up ds b) : False := by
+  unfold ConfigLoop.clsOf at hc
+  obtain ⟨htop, hsgn⟩ := cls_pair_inj _ _ _ _ hc
+  exact EltBridge.sgn_arr_ne_dep (ConfigLoop.endDataOf (m := m) up ds) a b htop ha hb hsgn
+
+/-- **So a cut site in the derived-sign model is empty.**  Each class has as many
+arrivals as departures there (`cut_classes_match`) and cannot hold both, so it holds
+neither. -/
+theorem cut_class_empty_of_card_eq {n : ℕ} {m : Fin n → ℕ}
+    (up : Fin n → ℕ) (ds : Bool → Bool) (Arr Dep : Finset (EndType.Endpt n m)) (i : Fin 4)
+    (hArr : ∀ x ∈ Arr, EndType.isArrOf up x = true)
+    (hDep : ∀ x ∈ Dep, EndType.isArrOf up x = false)
+    (hcard : (Arr.filter (fun a => ConfigLoop.clsOf up ds a = i)).card
+      = (Dep.filter (fun b => ConfigLoop.clsOf up ds b = i)).card) :
+    (Arr.filter (fun a => ConfigLoop.clsOf up ds a = i)) = ∅ := by
+  classical
+  by_contra hne
+  obtain ⟨a, haMem⟩ := Finset.nonempty_of_ne_empty hne
+  have hdne : (Dep.filter (fun b => ConfigLoop.clsOf up ds b = i)).Nonempty := by
+    rw [← Finset.card_pos, ← hcard, Finset.card_pos]
+    exact ⟨a, haMem⟩
+  obtain ⟨b, hbMem⟩ := hdne
+  rw [Finset.mem_filter] at haMem hbMem
+  exact no_class_holds_both up ds a b (hArr a haMem.1) (hDep b hbMem.1)
+    (haMem.2.trans hbMem.2.symm)
+
+#print axioms cls_pair_inj
+#print axioms no_class_holds_both
+#print axioms cut_class_empty_of_card_eq

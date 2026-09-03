@@ -5649,3 +5649,46 @@ that `site_cost_le_of_global` applies and forces the given turn's site cost to 0
 whence `cross_eq_zero_of_cost_zero` and `hcross`.  That is another
 `combine_involutions`, against the existing turn rather than between two halves.
 M4b is not green yet.
+
+## 2026-09-03 — BLOCK 139: retraction of BLOCK 137, and the blocker proved
+
+BLOCK 137 called M3/M4b's recorded blocker -- "the witness needs empty edges" --
+stale, on the grounds that `hempty` was a badly chosen hypothesis and `cross = 0`
+was the right one.  That was wrong, and BLOCK 138's own construction is what shows
+it.
+
+`cut_classes_match` says the arrival and departure class counts agree at a cut site.
+Now look at what a class is.  `clsOf x = (if atTop x then 0 else 2) + (if sgn x then
+0 else 1)` and `endDataOf = <atTop, isArrOf up, ds>`, so `side = atTop` and a class
+fixes BOTH the side and the sign.  But `EndData.sgn` is derived from
+`(side, isArr, depSign side)`, so on a fixed side every arrival carries one sign and
+every departure the other (`sgn_arr_ne_dep`, already in the file).  Hence a single
+class admits arrivals or departures, never both (`no_class_holds_both`).
+
+Put the two together: at a cut site each class has `|Arr_i| = |Dep_i|`, and at most
+one side of that equation can be non-empty, so both are
+(`cut_class_empty_of_card_eq`).  **A cut site in the derived-sign model carries no
+ends at all.**
+
+So `hempty` is a THEOREM of this model, not a hypothesis someone chose badly.  The
+ledger entry was right and BLOCK 137's "stale" was wrong; BLOCK 138's construction,
+which is correct on its own terms, builds a matching that no legal turn can realise,
+because a turn pairs arrivals with departures and those never share a class.
+
+What survives from the two blocks, and it is not nothing:
+
+  turnInv_of_mergesMin_of_cross_zero   TurnInv with strictly weaker hypotheses than
+                                       turnInv_of_mergesMin_of_empty_cuts -- correct,
+                                       and simply unfeedable in this model
+  exists_involution_four               four equinumerous class pairs matched at once
+  exists_rival_data                    splices a rival turn at one site into a global
+                                       one, all three Data obligations discharged
+  cut_classes_match                    the class counts agree at a cut site
+  no_class_holds_both                  no class holds an arrival and a departure
+  cut_class_empty_of_card_eq           so a cut site is empty here
+
+The last three turn a recorded heuristic into a proof of why M4b is stuck.  The
+obstruction is the derived sign, exactly as the ledger said.  The escape remains the
+free-sign `GData`, where classes are independent and a same-class pair costs 0 -- and
+which loses the free-pair guarantee, the other proved obstruction.  That bind is
+unchanged.  Ledger corrected for both M3 and M4b.
