@@ -7871,3 +7871,28 @@ share a path.  0 sorry.
 the converse -- that every compatible path is realised.  The second is where `houter`
 (deposits vanish off the span) and the minimality of `A`, `B` do the work.  Both are
 combinatorial; neither is written.
+
+## 2026-09-04 — BLOCK 213: injectivity of stateOf
+
+Half of the bijection (M3) needs.  Every field of the state is read straight back out by
+`congrArg`; only `kstar` needs an argument, and it comes from the departure marker:
+
+    eps_eq_of_state, delta_eq_of_state, d_eq_of_state, d_pred_eq_of_state,
+    travel_eq_of_state       each field recovered from the state
+    kstar_eq_of_state        the departure, from dep_eq_one_iff
+    stateOf_determines       what the whole path pins down
+    d_eq_off_span            off the span the deposits agree by houter
+    d_eq_of_states           so the deposit FUNCTIONS agree, everywhere
+    pathData_ext             equal data fields => equal configurations (no axioms)
+    stateOf_injective        INJECTIVITY
+
+0 sorry.  `pathData_ext` depends on no axioms at all.
+
+**One hypothesis is assumed, not proved.**  `stateOf_injective` takes `P.A <= P.kstar <=
+P.B + 1` -- the departure lies on the span.  It should follow from `houter` (travel
+vanishes off the span) together with `travel`'s definition, since `0` is always on the
+span by `hA`/`hB`; that derivation is not written, so it stands as a hypothesis.
+
+**Still owed for (M3):** surjectivity onto the compatible paths -- that every
+`compatB`-compatible path is realised by some configuration.  That is the half where a
+configuration has to be BUILT from a path, proof fields and all.

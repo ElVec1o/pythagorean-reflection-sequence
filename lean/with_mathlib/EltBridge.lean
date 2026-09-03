@@ -6106,6 +6106,89 @@ theorem dep_eq_one_iff (P : SiteCost.PathData) (j : ℤ) :
   unfold stateOf SiteCost.PathData.vD
   by_cases h : j = P.kstar <;> simp [h]
 
+/-! ### Injectivity: what a state path determines
+
+The join needs `stateOf` to be injective on configurations of a given span.  Each field
+of the state is read straight back out, so everything the state carries is recovered by
+`congrArg`; the only field needing an argument is `kstar`, which is recovered from the
+departure marker. -/
+
+theorem eps_eq_of_state {P Q : SiteCost.PathData} {j : ℤ} (h : stateOf P j = stateOf Q j) :
+    P.eps = Q.eps := congrArg LocalState.eps h
+
+theorem delta_eq_of_state {P Q : SiteCost.PathData} {j : ℤ} (h : stateOf P j = stateOf Q j) :
+    P.delta = Q.delta := congrArg LocalState.delta h
+
+theorem d_eq_of_state {P Q : SiteCost.PathData} {j : ℤ} (h : stateOf P j = stateOf Q j) :
+    P.d j = Q.d j := congrArg LocalState.dcur h
+
+theorem d_pred_eq_of_state {P Q : SiteCost.PathData} {j : ℤ} (h : stateOf P j = stateOf Q j) :
+    P.d (j - 1) = Q.d (j - 1) := congrArg LocalState.dprev h
+
+theorem travel_eq_of_state {P Q : SiteCost.PathData} {j : ℤ} (h : stateOf P j = stateOf Q j) :
+    SiteCost.travel P.kstar j = SiteCost.travel Q.kstar j := congrArg LocalState.fcur h
+
+/-- **The departure is recovered from the marker.**  If `j` is `P`'s departure and the two
+states agree at `j`, it is `Q`'s departure too. -/
+theorem kstar_eq_of_state {P Q : SiteCost.PathData} {j : ℤ} (h : stateOf P j = stateOf Q j)
+    (hj : j = P.kstar) : j = Q.kstar := by
+  have h1 : (stateOf P j).dep = 1 := (dep_eq_one_iff P j).mpr hj
+  rw [h] at h1
+  exact (dep_eq_one_iff Q j).mp h1
+
+/-- **What the whole path determines.**  Two configurations whose states agree across the
+span share their sign data, their deposits on the span, and their travel indicators.  With
+`houter` forcing the deposits to vanish off the span, that is the deposit function
+outright -- so all that separates this from injectivity is the departure, which is
+recovered by `kstar_eq_of_state` whenever it lies on the span. -/
+theorem stateOf_determines {P Q : SiteCost.PathData} {A : ℤ} {n : ℕ}
+    (h : ∀ j : ℤ, A ≤ j → j ≤ A + n + 1 → stateOf P j = stateOf Q j)
+    (hn : A ≤ A + n + 1) :
+    P.eps = Q.eps ∧ P.delta = Q.delta ∧
+      (∀ j : ℤ, A ≤ j → j ≤ A + n + 1 → P.d j = Q.d j) ∧
+      (∀ j : ℤ, A ≤ j → j ≤ A + n + 1 →
+        SiteCost.travel P.kstar j = SiteCost.travel Q.kstar j) := by
+  refine ⟨eps_eq_of_state (h A le_rfl hn), delta_eq_of_state (h A le_rfl hn),
+    fun j hj1 hj2 => d_eq_of_state (h j hj1 hj2),
+    fun j hj1 hj2 => travel_eq_of_state (h j hj1 hj2)⟩
+
+/-- **And off the span the deposits agree for free**, by `houter` -- provided the two
+configurations have the same span. -/
+theorem d_eq_off_span {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B = Q.B)
+    {j : ℤ} (hj : j < P.A ∨ P.B < j) : P.d j = Q.d j := by
+  have hP := (P.houter j hj).1
+  have hQ := (Q.houter j (by rw [← hA, ← hB]; exact hj)).1
+  rw [hP, hQ]
+
+/-- **The deposits agree everywhere**: on the span by the states, off it by `houter`. -/
+theorem d_eq_of_states {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B = Q.B)
+    (h : ∀ j : ℤ, P.A ≤ j → j ≤ P.B + 1 → stateOf P j = stateOf Q j) : P.d = Q.d := by
+  funext j
+  by_cases hj : P.A ≤ j ∧ j ≤ P.B
+  · exact d_eq_of_state (h j hj.1 (by omega))
+  · exact d_eq_off_span hA hB (by omega)
+
+/-- Two configurations agreeing in every data field are equal; the remaining fields are
+proofs. -/
+theorem pathData_ext {P Q : SiteCost.PathData}
+    (hk : P.kstar = Q.kstar) (he : P.eps = Q.eps) (hd : P.delta = Q.delta)
+    (hdd : P.d = Q.d) (hA : P.A = Q.A) (hB : P.B = Q.B) : P = Q := by
+  cases P; cases Q
+  simp only at hk he hd hdd hA hB
+  subst hk; subst he; subst hd; subst hdd; subst hA; subst hB
+  rfl
+
+/-- **Injectivity of `stateOf`.**  Two configurations with the same span whose states
+agree across it, and whose departure lies on it, are the same configuration.  This is the
+first half of the bijection (M3) needs. -/
+theorem stateOf_injective {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B = Q.B)
+    (hks : P.A ≤ P.kstar) (hks' : P.kstar ≤ P.B + 1)
+    (h : ∀ j : ℤ, P.A ≤ j → j ≤ P.B + 1 → stateOf P j = stateOf Q j) : P = Q :=
+  pathData_ext (kstar_eq_of_state (h P.kstar hks hks') rfl)
+    (eps_eq_of_state (h P.A le_rfl (by omega)))
+    (delta_eq_of_state (h P.A le_rfl (by omega)))
+    (d_eq_of_states hA hB h) hA hB
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13677,3 +13760,9 @@ end EltBridge
 #print axioms EltBridge.pathWeight_guarded_eq
 #print axioms EltBridge.arr_eq_one_iff
 #print axioms EltBridge.dep_eq_one_iff
+#print axioms EltBridge.kstar_eq_of_state
+#print axioms EltBridge.stateOf_determines
+#print axioms EltBridge.d_eq_off_span
+#print axioms EltBridge.d_eq_of_states
+#print axioms EltBridge.pathData_ext
+#print axioms EltBridge.stateOf_injective
