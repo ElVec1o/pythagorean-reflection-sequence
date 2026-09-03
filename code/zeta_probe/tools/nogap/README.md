@@ -3607,3 +3607,32 @@ easier to state, and the cost is that it cannot be instantiated.
 Fourth time tonight a construction has failed only on use: BLOCK 28 (negative edges),
 BLOCK 32 (missing role flip), BLOCK 41 (locality), BLOCK 55 (cut sites not arrival-free),
 and now this. In every case inspecting the statement would not have found it.
+
+## 2026-09-03 — BLOCK 60: hZ and mu_pos COLLIDE inside the span — the root of the whole tension
+
+  pd_edges_occupied          -- both edges adjacent to an interior site of [A,B] are
+                                occupied (mm = mu >= 1 there)
+  no_arrivalfree_inside_span -- so the "both adjacent edges empty" conclusion of
+                                BLOCK 12 is FALSE at any interior site
+
+Putting the pieces together:
+  BLOCK 12  hZ (no arrival at a cut site) + balance  ==>  both adjacent edges EMPTY
+  BLOCK 60  PathData.mu_pos                          ==>  no span edge is empty
+Therefore hZ CANNOT HOLD at any site strictly inside a PathData's span. The shield
+law's hZ forces the cut set to avoid the span interior entirely -- i.e. to be empty,
+since Z is by definition the set of INTERIOR cut sites (BLOCK 38).
+
+THIS EXPLAINS BLOCK 5's WITNESS. wit_shield used multiplicities (2,0,0,2): the cut site
+sits between two EMPTY edges. That configuration satisfies hZ precisely because it does
+NOT come from a PathData. I built it as an abstract (m, up) pair to prove
+non-vacuity, and it is non-vacuous -- for abstract configurations. It is not
+realisable as a group element.
+
+SO THE HONEST STATEMENT OF THE SHIELD LAW'S STATUS:
+  * proved for abstract configurations, with a witness (BLOCK 5, wit_shield)
+  * proved on the extended type (BLOCKS 46-53)
+  * NOT applicable to any configuration arising from a group element with a non-empty
+    cut set, because hZ collides with mu_pos
+The obstruction is not in the extension, the virtual pair, or the transport. It is in
+hZ itself, and it was there before tonight -- BLOCK 4 found it (hZ vs hocc) and I
+treated the run form as a repair. The run form removed hocc; it did not remove hZ.

@@ -3327,6 +3327,37 @@ theorem witNeg_end_at_cut :
   refine ⟨⟨⟨1, hlt⟩, ⟨0, hpos⟩, true⟩, ?_⟩
   simp [EndType.siteOf, EndType.edgeOf, EndType.atTop]
 
+/-! ### `hZ` and `mu_pos` collide inside the span
+
+BLOCK 12 proved that a balanced site carrying no arrival has **both adjacent edges
+empty**.  But `PathData.mu_pos` says every edge of the span `[A, B]` carries at least
+one crossing.  So no site strictly inside the span can be arrival-free, and `hZ` --
+"no arrival sits at a cut site" -- forces the cut set to avoid the span's interior
+entirely.
+
+That is why BLOCK 5's witness used multiplicities `(2,0,0,2)`: the cut site there sits
+between two **empty** edges.  Such a configuration does not arise from a `PathData`. -/
+
+/-- **Both edges adjacent to an interior site are occupied.** -/
+theorem pd_edges_occupied (P : SiteCost.PathData) (s : ℤ)
+    (hlo : P.A < s) (hhi : s ≤ P.B) :
+    0 < P.mm (s - 1) ∧ 0 < P.mm s := by
+  constructor
+  · rw [P.mm_eq_mu ⟨by omega, by omega⟩]; exact P.mu_pos _
+  · rw [P.mm_eq_mu ⟨by omega, by omega⟩]; exact P.mu_pos _
+
+/-- **So `hZ` cannot hold at an interior site of a `PathData` span.**
+
+If a site strictly inside the span were arrival-free, BLOCK 12's argument would make
+both its edges empty, contradicting `mu_pos`.  Stated as: the emptiness conclusion is
+false there. -/
+theorem no_arrivalfree_inside_span (P : SiteCost.PathData) (s : ℤ)
+    (hlo : P.A < s) (hhi : s ≤ P.B)
+    (hempty : ∀ j : ℤ, (j = s ∨ j = s - 1) → P.mm j = 0) : False := by
+  have := (pd_edges_occupied P s hlo hhi).2
+  have h0 := hempty s (Or.inl rfl)
+  omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3460,3 +3491,5 @@ end EltBridge
 #print axioms EltBridge.witNeg_sites_lt
 #print axioms EltBridge.pdMm_pos
 #print axioms EltBridge.witNeg_end_at_cut
+#print axioms EltBridge.pd_edges_occupied
+#print axioms EltBridge.no_arrivalfree_inside_span
