@@ -7842,3 +7842,32 @@ convergence (BLOCK 209) and the path-sum identity (BLOCKS 210-211).  What is NOT
 is the join: that the family's configurations, grouped by span length, are exactly the
 state paths enumerated by `paths`.  That is a bijection between configurations and their
 state paths, and it is the one thing left in (M3).  It is combinatorial.
+
+## 2026-09-03 — BLOCK 212: the kernel must be compatibility-guarded
+
+A structural correction found while trying to join (M3b)'s two halves.  `paths` enumerates
+EVERY list of states, but not every list comes from a configuration: state `j+1` must
+carry `dprev = d j`, which is state `j`'s `dcur`, and `eps`, `delta` are constant along a
+configuration.  So the map from configurations to state paths is NOT onto `paths`, and
+the unguarded kernel counts paths no configuration realises.
+
+That is not a defect -- it is how transfer matrices work.  Incompatible transitions get a
+zero entry:
+
+    compatB                  tau continues sigma
+    compatB_stateOf          a configuration's consecutive states are always compatible
+    pathWeight_guarded_eq    so guarding the kernel changes no configuration's weight,
+                             while off the realisable paths it contributes 0
+
+Two steps toward injectivity, which is what the join needs next:
+
+    arr_eq_one_iff           the arrival marker fires at index 0 and nowhere else
+    dep_eq_one_iff           the departure marker fires at k* and nowhere else
+
+The states carry no index, so without these two, translates of one configuration would
+share a path.  0 sorry.
+
+**Still owed for (M3).**  Injectivity of `stateOf` on configurations of a given span, and
+the converse -- that every compatible path is realised.  The second is where `houter`
+(deposits vanish off the span) and the minimality of `A`, `B` do the work.  Both are
+combinatorial; neither is written.

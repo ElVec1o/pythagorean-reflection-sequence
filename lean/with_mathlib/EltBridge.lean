@@ -6050,6 +6050,62 @@ theorem weightSum_eq_sum_pathWeight {S : Type*} [Fintype S] (T : Matrix S S ℤ)
       rw [hE (fun c => T a c * weightSum T mu c m)]
       rfl
 
+/-! ### The kernel must be compatibility-guarded
+
+Before joining the two halves of (M3b) there is a structural correction to make.  `paths`
+enumerates *every* list of states, but not every list comes from a configuration: state
+`j + 1` must carry `dprev = d j`, which is state `j`'s `dcur`, and `eps`, `delta` are
+constant along a configuration.  So the map from configurations to state paths is **not**
+onto `paths`, and the unguarded kernel would count paths no configuration realises.
+
+That is not a defect, it is how transfer matrices work: incompatible transitions get a
+**zero entry**.  Guarding the kernel with `compatB` makes the spurious paths contribute
+nothing, and -- proved below -- leaves every configuration's own weight untouched. -/
+
+/-- Two states are compatible when the right one continues the left one. -/
+def compatB (σ τ : LocalState) : Bool :=
+  decide (τ.dprev = σ.dcur) && decide (τ.eps = σ.eps) && (τ.delta == σ.delta)
+
+/-- **A configuration's consecutive states are always compatible.** -/
+theorem compatB_stateOf (P : SiteCost.PathData) (j : ℤ) :
+    compatB (stateOf P j) (stateOf P (j + 1)) = true := by
+  simp [compatB, stateOf]
+
+/-- **Guarding the kernel does not change any configuration's weight.**  The guard fires
+only on transitions no configuration makes, so on a real state path the guarded and
+unguarded path weights agree -- while off it the guarded kernel contributes `0`. -/
+theorem pathWeight_guarded_eq (x : ℤ) (P : SiteCost.PathData) (mu : LocalState → ℤ) :
+    ∀ (n : ℕ) (A : ℤ) (lam : LocalState → ℤ),
+      pathWeight (fun σ τ => if compatB σ τ then x ^ (σ.muOf + τ.siteOf) else 0) lam mu
+          ((A :: idxList A n).map (stateOf P))
+        = pathWeight (fun σ τ => x ^ (σ.muOf + τ.siteOf)) lam mu
+            ((A :: idxList A n).map (stateOf P)) := by
+  intro n
+  induction n with
+  | zero => intro A lam; rfl
+  | succ m ih =>
+      intro A lam
+      show lam (stateOf P A) * (if compatB (stateOf P A) (stateOf P (A + 1)) then
+              x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf) else 0)
+            * pathWeight _ (fun _ => (1 : ℤ)) mu _
+        = lam (stateOf P A) * x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf)
+            * pathWeight _ (fun _ => (1 : ℤ)) mu _
+      rw [compatB_stateOf P A, if_pos rfl, ← List.map_cons, ih (A + 1) (fun _ => (1 : ℤ))]
+
+/-- **The state path locates the origin**: the arrival marker fires at index `0` and
+nowhere else, so a path knows where it sits on the line even though the states carry no
+index.  This is the first step of injectivity -- without it two translates of one
+configuration would share a path. -/
+theorem arr_eq_one_iff (P : SiteCost.PathData) (j : ℤ) : (stateOf P j).arr = 1 ↔ j = 0 := by
+  unfold stateOf SiteCost.vArr
+  by_cases h : j = 0 <;> simp [h]
+
+/-- **And it locates the departure**, when the departure lies on the span. -/
+theorem dep_eq_one_iff (P : SiteCost.PathData) (j : ℤ) :
+    (stateOf P j).dep = 1 ↔ j = P.kstar := by
+  unfold stateOf SiteCost.PathData.vD
+  by_cases h : j = P.kstar <;> simp [h]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13617,3 +13673,7 @@ end EltBridge
 #print axioms EltBridge.sum_univ_toList
 #print axioms EltBridge.sum_map_flatMap
 #print axioms EltBridge.weightSum_eq_sum_pathWeight
+#print axioms EltBridge.compatB_stateOf
+#print axioms EltBridge.pathWeight_guarded_eq
+#print axioms EltBridge.arr_eq_one_iff
+#print axioms EltBridge.dep_eq_one_iff
