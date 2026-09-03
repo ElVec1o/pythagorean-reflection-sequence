@@ -8490,3 +8490,21 @@ exactly once.
 `flagHeadVec`'s condition and `flagTailVec`'s condition is a configuration's flagged path.
 The undoubled ingredients are all proved (BLOCKS 226-229); what the doubling adds is that
 the flag forces exactly one arrival, which is `sum_vArr_eq_one` read backwards.
+
+## 2026-09-04 — BLOCK 237: what the flag forces — exactly one arrival
+
+The doubled guard exists to impose a condition no local kernel can state.  These three
+facts are why it works:
+
+    past_mono              the flag never turns off
+    no_arr_after           no arrival fires once the flag is on -- AT MOST one
+    past_false_of_no_arr   without an arrival the flag never turns on, so given a set tail
+                           flag there is AT LEAST one
+
+0 sorry, all three clean on the first build, and on minimal axioms (`propext`, and
+`Quot.sound` for the induction).
+
+Together: along a path whose head flag matches its arrival and whose tail flag is set, the
+arrival fires exactly once -- which is `sum_vArr_eq_one` (BLOCK 235) recovered from the
+kernel rather than from the configuration.  That was the one condition the undoubled guard
+could not express, and it is now expressed.

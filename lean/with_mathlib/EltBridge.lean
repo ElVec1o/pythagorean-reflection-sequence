@@ -7487,6 +7487,55 @@ theorem pathWeight_flag_guarded (x : ℤ) (P : SiteCost.PathData) (n : ℕ) (hn 
       (fun τ => x ^ τ.siteOf)]
   exact (isTransferDecomposition_edge x n (fun _ : Unit => P) (fun _ => hn) ()).symm
 
+/-! ### What the flag forces: exactly one arrival
+
+The doubled guard exists to impose a condition no local kernel can state.  These three
+facts are why it works: the flag never turns off, no arrival may fire once it is on, and
+without an arrival it never turns on.  Together: along a path whose head flag matches its
+arrival and whose tail flag is set, the arrival fires exactly once. -/
+
+/-- The flag never turns off. -/
+theorem past_mono (st : ℤ → FlagState) (j : ℤ)
+    (hstep : flagStepB (st j) (st (j + 1)) = true) (hp : (st j).past = true) :
+    (st (j + 1)).past = true := by
+  simp only [flagStepB, Bool.and_eq_true, beq_iff_eq] at hstep
+  rw [hstep.1.2, hp, Bool.true_or]
+
+/-- No arrival fires once the flag is on -- so at most one arrival. -/
+theorem no_arr_after (st : ℤ → FlagState) (j : ℤ)
+    (hstep : flagStepB (st j) (st (j + 1)) = true) (hp : (st j).past = true) :
+    (st (j + 1)).st.arr ≠ 1 := by
+  simp only [flagStepB, Bool.and_eq_true] at hstep
+  intro harr
+  have h2 := hstep.2
+  simp [hp, harr] at h2
+
+/-- Without an arrival the flag never turns on -- so at least one arrival, given that the
+tail flag is set. -/
+theorem past_false_of_no_arr (st : ℤ → FlagState) (A : ℤ)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (hhead : (st A).past = false) :
+    ∀ (n : ℕ), (∀ k : ℕ, k ≤ n → (st (A + k)).st.arr ≠ 1) →
+      (st (A + n)).past = false := by
+  intro n
+  induction n with
+  | zero => intro _; simpa using hhead
+  | succ m ih =>
+      intro hno
+      have hprev : (st (A + m)).past = false :=
+        ih (fun k hk => hno k (by omega))
+      have hs := hstep (A + m)
+      simp only [flagStepB, Bool.and_eq_true, beq_iff_eq] at hs
+      have hcast : A + ((m : ℤ) + 1) = A + (m : ℤ) + 1 := by ring
+      have harr : (st (A + (m : ℤ) + 1)).st.arr ≠ 1 := by
+        have := hno (m + 1) (by omega)
+        rwa [show A + ((m + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 by push_cast; ring] at this
+      have : (st (A + (m : ℤ) + 1)).past = false := by
+        rw [hs.1.2, hprev]
+        simp [harr]
+      rw [show A + ((m + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 by push_cast; ring]
+      exact this
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15128,3 +15177,6 @@ end EltBridge
 #print axioms EltBridge.flagTailVec_flagOf
 #print axioms EltBridge.pathWeight_flag_of
 #print axioms EltBridge.pathWeight_flag_guarded
+#print axioms EltBridge.past_mono
+#print axioms EltBridge.no_arr_after
+#print axioms EltBridge.past_false_of_no_arr
