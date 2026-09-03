@@ -7809,6 +7809,40 @@ theorem extState_stateOf (P : SiteCost.PathData) :
   · show (SiteCost.travel P.kstar P.B).natAbs = P.vD (P.B + 1)
     exact (vD_succ_B_natAbs P).symm
 
+/-! ### The left boundary, and why it is not the right one
+
+BLOCK 244 found the state past the RIGHT end must carry `dprev = d B`.  Checking the left
+end rather than assuming it: there the extension IS all-zero.
+
+The asymmetry is real and has a cause.  `dprev` looks one step to the LEFT, so the state
+just past the right end inherits the span's last deposit, while the state just past the
+left end looks at `d (A - 2)`, which is outside the span and therefore zero.  The markers
+vanish there too: the arrival only fires at `0`, and `A <= 0` puts `A - 1` strictly below
+it; the departure only fires at `k*`, and `A <= k*` puts `A - 1` strictly below that. -/
+
+/-- The state just before the left end of the span. -/
+def preState (σ : LocalState) : LocalState :=
+  { dprev := 0, dcur := 0, fcur := 0, arr := 0, dep := 0, eps := σ.eps, delta := σ.delta }
+
+/-- **And it is the real one** -- all-zero, unlike the right end. -/
+theorem preState_stateOf (P : SiteCost.PathData) :
+    preState (stateOf P P.A) = stateOf P (P.A - 1) := by
+  have hA := P.hA
+  have hk := A_le_kstar P
+  have hB := P.hB
+  refine localState_ext ?_ ?_ ?_ ?_ ?_ rfl rfl
+  · show (0 : ℤ) = P.d (P.A - 1 - 1)
+    exact ((P.houter (P.A - 1 - 1) (Or.inl (by omega))).1).symm
+  · show (0 : ℤ) = P.d (P.A - 1)
+    exact ((P.houter (P.A - 1) (Or.inl (by omega))).1).symm
+  · show (0 : ℤ) = SiteCost.travel P.kstar (P.A - 1)
+    exact (travel_zero_off P.kstar P.A P.B (P.A - 1) hA hB hk (kstar_le_B_succ P)
+      (Or.inl (by omega))).symm
+  · show (0 : ℕ) = SiteCost.vArr (P.A - 1)
+    unfold SiteCost.vArr; rw [if_neg (by omega)]
+  · show (0 : ℕ) = P.vD (P.A - 1)
+    unfold SiteCost.PathData.vD; rw [if_neg (by omega)]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15469,3 +15503,4 @@ end EltBridge
 #print axioms EltBridge.guarded_of_flag
 #print axioms EltBridge.exists_config_of_flag
 #print axioms EltBridge.extState_stateOf
+#print axioms EltBridge.preState_stateOf

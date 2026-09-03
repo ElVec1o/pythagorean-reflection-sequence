@@ -8652,3 +8652,24 @@ reading (BLOCK 233):
 out to carry content.  The common cause is the same each time: a path is a finite object and
 a configuration is an infinite one, and the difference always shows up at the boundary.  I
 should stop predicting that the boundary is free.
+
+## 2026-09-04 — BLOCK 245: the left boundary is NOT the right one
+
+BLOCK 244 found the state past the right end must carry `dprev = d B`.  Checking the left
+end rather than assuming it -- which is the lesson of the last three blocks:
+
+    preState            the state just before the left end
+    preState_stateOf    and for a configuration it IS the state at A - 1: ALL-ZERO
+
+0 sorry, clean on the first build.
+
+**The asymmetry is real and has a cause.**  `dprev` looks one step to the LEFT, so the
+state just past the right end inherits the span's last deposit, while the state just past
+the left end looks at `d (A - 2)`, outside the span and therefore zero.  The markers vanish
+there too: the arrival fires only at `0` and `A <= 0` puts `A - 1` strictly below it; the
+departure fires only at `k*` and `A <= k*` puts `A - 1` strictly below that.
+
+So the two ends need different extensions, and a symmetric guess would have been wrong at
+one of them.  Both are now proved.
+
+**Both boundaries handled**, which was the obstacle BLOCK 244 exposed.
