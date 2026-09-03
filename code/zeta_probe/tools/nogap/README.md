@@ -9302,3 +9302,23 @@ argument lives -- the limit BLOCK 274 found is removed.
 **[Rule 0] What (M3) still needs.**  Instantiating at `x := X` and taking the degree-`N`
 coefficient, with the vanishing hypothesis discharged from BLOCK 269 at `C` = all
 configurations of the span.  That is the assembly, and the pieces are all VERIFIED.
+
+## 2026-09-04 — BLOCK 280: the degree-N identity
+
+    coeff_sum_all_paths   the number of configurations of relaxed length exactly N with a
+                          given span IS the degree-N coefficient of the transfer sum over
+                          paths
+
+0 sorry, clean on the first build.
+
+This is (M3)'s content in the form `IsAssembly` compares: instantiate the ported comparison
+at `x := X` and take the degree-`N` coefficient.  The left side counts by BLOCK 273; the
+right side is the transfer sum.
+
+**[Rule 0] Exactly what is and is not established.**  VERIFIED: the identity above, for any
+`C` and `T` satisfying the two hypotheses.  NOT established: that those hypotheses hold at
+`C` = all configurations of the span and `T` = all paths of that length.  The vanishing
+half follows from BLOCK 269; the containment half needs `C` to be the full degree-cut
+`Finset`, which `finite_spanData_degree_le` (BLOCK 271) provides but which is not yet wired
+in.  So (M3) is one instantiation short, and that instantiation is `Finset` bookkeeping
+against theorems that are all proved.

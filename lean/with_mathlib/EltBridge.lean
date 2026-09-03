@@ -9003,6 +9003,29 @@ theorem sum_configs_eq_sum_all_pathsR {R : Type*} [CommRing R] (x : R) {A : ℤ}
   rw [sum_configs_eq_sum_flag_pathsR x C]
   exact Finset.sum_subset hsub hvan
 
+/-! ### The degree-`N` identity
+
+Instantiating the ported comparison at `x := X` and taking the degree-`N` coefficient.
+The left side counts the configurations of relaxed length exactly `N` (BLOCK 273); the
+right side is the transfer sum over paths.  This is (M3)'s content in the form
+`IsAssembly` compares. -/
+
+theorem coeff_sum_all_paths (N : ℕ) {A : ℤ} {m : ℕ}
+    [DecidableEq (SpanData A (A + m))]
+    (C : Finset (SpanData A (A + m))) (T : Finset (List FlagState))
+    (hsub : C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)) ⊆ T)
+    (hvan : ∀ L ∈ T, L ∉ C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)) →
+      pathWeightR (fun σ τ => if flagStepB σ τ then
+          (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L = 0) :
+    ((C.filter (fun S => N = S.toPath.lR)).card : ℤ)
+      = PowerSeries.coeff N (∑ L ∈ T,
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L) := by
+  rw [← coeff_sum_configs N C,
+    sum_configs_eq_sum_all_pathsR (PowerSeries.X : PowerSeries ℤ) C T hsub hvan]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16727,3 +16750,4 @@ end EltBridge
 #print axioms EltBridge.pathWeightR_flag_guarded
 #print axioms EltBridge.sum_configs_eq_sum_flag_pathsR
 #print axioms EltBridge.sum_configs_eq_sum_all_pathsR
+#print axioms EltBridge.coeff_sum_all_paths
