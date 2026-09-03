@@ -12671,3 +12671,115 @@ theorem shield_law (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
 end EltBridge
 
 #print axioms EltBridge.shield_law
+
+namespace EltBridge
+
+/-! ## The Eulerian route
+
+BLOCK 199 found the argument the level bookkeeping was approximating.  Take the STRAND
+GRAPH of a run: vertices are sites, edges are strands, a strand of edge `j` joining site
+`j` to site `j+1`.  Every vertex has even degree, each run is connected, and a turn is
+exactly a pairing of arrivals to departures at each vertex.  So an Eulerian circuit
+exists, and the turn following it leaves the run in one component -- at any widths.
+
+The bridge from a circuit to a component is below, and it is the easy half: a list of
+strands covering the run, consecutive ones joined by the turn, puts them all together. -/
+
+/-- **A covering chain gives one component.**  If consecutive entries of a list are
+joined, everything in the list is joined to the first entry. -/
+theorem chain_covers {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (L : List α) (hL : L ≠ [])
+    (hadj : ∀ i : ℕ, ∀ h : i + 1 < L.length,
+      G.Reachable (L.get ⟨i, by omega⟩) (L.get ⟨i + 1, h⟩)) :
+    ∀ i : ℕ, ∀ h : i < L.length,
+      G.Reachable (L.get ⟨0, by cases L with | nil => exact absurd rfl hL | cons _ _ => omega⟩)
+        (L.get ⟨i, h⟩) := by
+  intro i
+  induction i with
+  | zero => intro _; exact SimpleGraph.Reachable.refl _
+  | succ k ih =>
+    intro h
+    exact (ih (by omega)).trans (hadj k h)
+
+/-- **And any two entries are joined.** -/
+theorem chain_pairwise {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (L : List α) (hL : L ≠ [])
+    (hadj : ∀ i : ℕ, ∀ h : i + 1 < L.length,
+      G.Reachable (L.get ⟨i, by omega⟩) (L.get ⟨i + 1, h⟩))
+    (i j : ℕ) (hi : i < L.length) (hj : j < L.length) :
+    G.Reachable (L.get ⟨i, hi⟩) (L.get ⟨j, hj⟩) :=
+  ((chain_covers G L hL hadj i hi).symm).trans (chain_covers G L hL hadj j hj)
+
+/-- **So a covering chain gives `hrun`.**  If every end's representative appears in a
+chain, any two representatives are joined -- which is what the shield bound consumes.
+This is the whole bridge from an Eulerian circuit to the component count; what it needs
+from the circuit is only that it COVERS. -/
+theorem hrun_of_chain {n : ℕ} {m : Fin n → ℕ}
+    (E : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (L : ℕ → List (EndType.Endpt n m)) (hL : ∀ r, L r ≠ [])
+    (hadj : ∀ (r : ℕ) (i : ℕ) (h : i + 1 < (L r).length),
+      (WalkGraph.graph E).Reachable ((L r).get ⟨i, by omega⟩) ((L r).get ⟨i + 1, h⟩))
+    (hmem : ∀ x : EndType.Endpt n m,
+      ∃ i : ℕ, ∃ h : i < (L (CutComponents.gz Zf (EndType.edgeOf x))).length,
+        (L (CutComponents.gz Zf (EndType.edgeOf x))).get ⟨i, h⟩ = botOf x) :
+    ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph E).Reachable (botOf x) (botOf y) := by
+  intro x y hxy
+  -- transport x's membership to y's run index BEFORE destructuring, so nothing
+  -- depends on the index yet
+  have hmx := hmem x
+  rw [hxy] at hmx
+  obtain ⟨i, hi, hxi⟩ := hmx
+  obtain ⟨j, hj, hyj⟩ := hmem y
+  rw [← hxi, ← hyj]
+  exact chain_pairwise (WalkGraph.graph E) _ (hL _) (hadj _) i j hi hj
+
+end EltBridge
+
+#print axioms EltBridge.chain_covers
+#print axioms EltBridge.hrun_of_chain
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The shield law from a covering chain -- at ANY widths.**
+
+`walkCount = |Zf| + 1`, that is `c = |Z|`.  Compare `shield_law`: there is no
+`hm : ∀ e, m e = 2 * u` here.  The edges may carry any number of strands, and may differ
+from one another, because the argument never mentions levels.
+
+What it needs instead is one list per run, covering that run's representatives, with
+consecutive entries joined by the turn -- an Eulerian circuit of the run's strand graph,
+which exists because every site has even degree and each run is connected. -/
+theorem shield_law_chain (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (L : ℕ → List (EndType.Endpt n m)) (hL : ∀ r, L r ≠ [])
+    (hadj : ∀ (r : ℕ) (i : ℕ) (h : i + 1 < (L r).length),
+      (WalkGraph.graph E).Reachable ((L r).get ⟨i, by omega⟩) ((L r).get ⟨i + 1, h⟩))
+    (hmem : ∀ x : EndType.Endpt n m,
+      ∃ i : ℕ, ∃ h : i < (L (CutComponents.gz Zf (EndType.edgeOf x))).length,
+        (L (CutComponents.gz Zf (EndType.edgeOf x))).get ⟨i, h⟩ = botOf x)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hnonempty : Nonempty (EndType.Endpt n m)) :
+    WalkGraph.walkCount E = Zf.card + 1 := by
+  have hrun := hrun_of_chain E Zf L hL hadj hmem
+  refine le_antisymm ?_ ?_
+  · exact shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) hTsite hturn
+      (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) hrun
+  · obtain ⟨x0⟩ := hnonempty
+    exact walkCount_ge_passTurn E Zf A B hAB hEp hTsite hturn hlow hhigh hoc
+      ((WalkGraph.graph E).connectedComponentMk x0)
+
+-- The level machinery of BLOCKS 187-197 is the uniform-width case of this: there a
+-- run's chain is read off the levels.  The chain formulation does not need the widths to
+-- agree, which is the whole gain.
+
+end EltBridge
+
+#print axioms EltBridge.shield_law_chain

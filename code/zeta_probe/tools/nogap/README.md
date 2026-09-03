@@ -7510,3 +7510,31 @@ looks like the hard way round.
 
 So the route to varying `mu` is not to generalise the level bookkeeping but to replace it:
 prove the strand graph connected with even degrees, and apply an Eulerian circuit.
+
+## 2026-09-03 — BLOCK 200: the shield law at any widths
+
+`shield_law_chain`: `walkCount = |Zf| + 1`, that is `c = |Z|`, with **no** uniform-width
+hypothesis.  Compare `shield_law` of BLOCK 197, which assumed `∀ e, m e = 2 * u`.  The
+edges may now carry any number of strands and may differ from one another, because the
+argument never mentions levels.
+
+    chain_covers, chain_pairwise  a list whose consecutive entries are joined puts all of
+                                  them in one component
+    hrun_of_chain                 so a per-run covering chain gives `hrun`
+    shield_law_chain              and with it both bounds, at any widths
+
+All 0 sorry.
+
+What the theorem needs from the circuit is only that it COVERS -- the whole content of
+"Eulerian" that the component count uses.  The existence of such a chain is the remaining
+input: every site has even degree (`2u[j-1] + 2u[j]` ends) and each run's strand graph is
+connected (`u[j] >= 1` by `mu_pos`), so a closed walk covering the run's strands exists.
+
+The level machinery of BLOCKS 187-197 is the uniform-width case of this, where the chain
+is read off the levels.  It is correct and it is the hard way round: `shield_law_chain`
+is shorter than any one of the six blocks that built the parity.
+
+The Lean error this block was the dependent-rewrite pattern again -- `rw` at a hypothesis
+whose TYPE mentions the rewritten term, with a second hypothesis depending on it.  The fix
+is the same as always: rewrite in the existential statement BEFORE destructuring, where
+nothing depends on the index yet.
