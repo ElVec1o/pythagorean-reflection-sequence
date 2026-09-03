@@ -8459,6 +8459,35 @@ theorem depB1_iff_stateOf (P : SiteCost.PathData) :
     · intro hcon; simp at hcon
     · intro hcon; omega
 
+/-! ### The flow balance across the span
+
+The identity BLOCK 263 used, in the general form a path can supply: with the travel
+vanishing just left of the span and exactly one arrival on it, the travel at the right end
+and the departures on the span sum to one.  Since both are non-negative, exactly one of
+them fires -- which is the `B + 1` condition, derived rather than assumed. -/
+
+theorem flow_balance (f a d : ℤ → ℤ)
+    (h : ∀ j : ℤ, f j + a (j + 1) = f (j + 1) + d (j + 1))
+    (A : ℤ) (n : ℕ) (h0 : f (A - 1) = 0)
+    (harr : ∑ k ∈ Finset.range n, a (A + k) = 1) :
+    (1 : ℤ) = f (A - 1 + n) + ∑ k ∈ Finset.range n, d (A + k) := by
+  have ht := telescope_flow f a d h n (A - 1)
+  simp only [] at ht
+  have e1 : ∀ k : ℕ, a (A - 1 + 1 + (k : ℤ)) = a (A + (k : ℤ)) := by
+    intro k; congr 1; ring
+  have e2 : ∀ k : ℕ, d (A - 1 + 1 + (k : ℤ)) = d (A + (k : ℤ)) := by
+    intro k; congr 1; ring
+  simp only [e1, e2] at ht
+  rw [h0, harr] at ht
+  omega
+
+/-- **Exactly one of the two fires.**  With both terms non-negative and summing to one,
+either the departure is on the span or the travel survives to the right end -- never both,
+never neither. -/
+theorem flow_balance_dichotomy (fB S : ℤ) (hf : 0 ≤ fB) (hS : 0 ≤ S)
+    (hsum : (1 : ℤ) = fB + S) : (fB = 1 ∧ S = 0) ∨ (fB = 0 ∧ S = 1) := by
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16154,3 +16183,5 @@ end EltBridge
 #print axioms EltBridge.extendFn_depv
 #print axioms EltBridge.extendFn_dep
 #print axioms EltBridge.depB1_iff_stateOf
+#print axioms EltBridge.flow_balance
+#print axioms EltBridge.flow_balance_dichotomy

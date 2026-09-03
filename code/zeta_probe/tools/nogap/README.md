@@ -9009,3 +9009,20 @@ sits past the end and `fcur B = 1`.  The condition follows from the guard alread
 **This is the first time in this stretch that a suspected new guard clause turned out to be
 a consequence.**  Four times (BLOCKS 226, 252, 253, 254) the guard genuinely had to grow;
 here checking first saved a fifth clause that would have been redundant.
+
+## 2026-09-04 — BLOCK 264: the flow balance across the span
+
+    flow_balance             1 = (travel at the right end) + (departures on the span)
+    flow_balance_dichotomy   and since both are non-negative, exactly one fires
+
+0 sorry, both clean on the first build.
+
+This is BLOCK 263's identity in the general form a PATH can supply, not just a
+configuration: with the travel vanishing just left of the span (`preState`) and exactly one
+arrival on it (`sum_vArr_eq_one`), the two quantities sum to one.  `fcur_B_nonneg`
+(BLOCK 252) supplies the non-negativity on one side and the marker being a count supplies
+it on the other.
+
+**[Rule 0] VERIFIED.**  The `B + 1` condition BLOCK 262 carried as a hypothesis is now
+derivable for an arbitrary guarded path, not only for a configuration.  No fifth guard
+clause is needed.
