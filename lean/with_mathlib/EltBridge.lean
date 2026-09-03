@@ -2889,6 +2889,61 @@ theorem VEndpt.shield_neg {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1
     (fun _ _ _ y _ hyt => VEndpt.hsT_negP s0 s1 y hyt)
     hcov hturn hvirt hruns z₀ D hD
 
+/-- **`gz` is constant on a cut-free window.** -/
+theorem gz_const_on (Zf : Finset ℤ) (lo hi : ℤ)
+    (h : ∀ z ∈ Zf, ¬ (lo < z ∧ z ≤ hi)) :
+    ∀ a b : ℤ, lo ≤ a → a ≤ hi → lo ≤ b → b ≤ hi →
+      CutComponents.gz Zf a = CutComponents.gz Zf b := by
+  intro a b hla hah hlb hbh
+  have ha : CutComponents.gz Zf lo = CutComponents.gz Zf a :=
+    gz_eq_of_no_between Zf lo a hla (fun z hz ⟨h1, h2⟩ => h z hz ⟨h1, by omega⟩)
+  have hb : CutComponents.gz Zf lo = CutComponents.gz Zf b :=
+    gz_eq_of_no_between Zf lo b hlb (fun z hz ⟨h1, h2⟩ => h z hz ⟨h1, by omega⟩)
+  rw [← ha, hb]
+
+/-- **`hvirt` supplied.**
+
+The turn of a virtual end is either the other virtual end -- same edge, so the same
+block -- or a real end at site `s0` or `s1`, hence on an edge inside the window
+`[s1 - 1, s0]`.  With no cut site in that window (BLOCK 42's `no_cut_inside_travel`
+for the interior, BLOCK 39's `arrivalfree_ne_virtual` for the two endpoints), `gz` is
+constant there. -/
+theorem VEndpt.hvirt_of_gap {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1 < s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (E : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (E.t e) = VEndpt.siteP s0 s1 e) :
+    ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf
+            (E.t (Sum.inr b : VEndpt n mm)) := by
+  -- one argument, run at each of the two virtual sites
+  have key : ∀ (b : Bool) (sb : ℤ), VEndpt.siteP s0 s1 (Sum.inr b : VEndpt n mm) = sb →
+      s1 - 1 ≤ sb - 1 → sb ≤ s0 →
+      CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf
+            (E.t (Sum.inr b : VEndpt n mm)) := by
+    intro b sb hsb hlo hhi
+    unfold CutComponents.blk
+    have hsite : VEndpt.siteP s0 s1 (E.t (Sum.inr b : VEndpt n mm)) = sb := by
+      rw [hts]; exact hsb
+    cases hcase : E.t (Sum.inr b : VEndpt n mm) with
+    | inr c => rfl
+    | inl u =>
+      rw [hcase] at hsite
+      have hu : EndType.edgeOf u = sb ∨ EndType.edgeOf u = sb - 1 := by
+        have hs : EndType.edgeOf u + (if EndType.atTop u then (1:ℤ) else 0) = sb := hsite
+        cases hb : EndType.atTop u
+        · have e : (if EndType.atTop u then (1:ℤ) else 0) = 0 := by rw [hb]; rfl
+          rw [e] at hs; omega
+        · have e : (if EndType.atTop u then (1:ℤ) else 0) = 1 := by rw [hb]; rfl
+          rw [e] at hs; omega
+      refine gz_const_on Zf (s1 - 1) s0 hgap _ _ ?_ ?_ ?_ ?_ <;>
+        simp only [VEndpt.edgeOf] <;> omega
+  intro b
+  cases b
+  · exact key false s0 rfl (by omega) (by omega)
+  · exact key true s1 rfl (by omega) (by omega)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3002,3 +3057,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.hsT_negP
 #print axioms EltBridge.VEndpt.hsX_negP
 #print axioms EltBridge.VEndpt.shield_neg
+#print axioms EltBridge.gz_const_on
+#print axioms EltBridge.VEndpt.hvirt_of_gap

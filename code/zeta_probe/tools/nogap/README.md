@@ -3410,3 +3410,25 @@ hypothesis discharged.
 hsW_negP and hsT_negP depend on `propext` alone. They are true by computation: in the
 mirrored orientation the virtual arrival's site IS its edge plus one, and the virtual
 departure IS a bottom.
+
+## 2026-09-03 — BLOCK 52: hvirt SUPPLIED — the last non-configuration hypothesis
+
+  gz_const_on            -- gz is constant on a cut-free window
+  VEndpt.hvirt_of_gap    -- **hvirt supplied**, from "no cut site in [s1-1, s0]"
+
+The turn of a virtual end is either the other virtual end (same edge, same block) or a
+real end at site s0 or s1, hence on an edge inside [s1-1, s0]. With no cut site in that
+window, gz is constant there, so the block index is preserved.
+
+The window is cut-free by two facts already proved:
+  BLOCK 42  no_cut_inside_travel      -- the interior of the travel interval
+  BLOCK 39  arrivalfree_ne_virtual    -- and neither endpoint is a cut site
+
+So hvirt is no longer a hypothesis of the shield law on VEndpt: given the gap condition
+(which those two theorems establish) it is a theorem. What remains in shield_neg is
+hturn, hruns, hcov and a basepoint -- four plain statements about the configuration.
+
+PROOF NOTE, and it is the reason the third attempt worked: the first two versions
+carried `if b then s1 else s0` through the whole argument and fought it at every step.
+Casing on `b` at the TOP and running one keyed sub-lemma at each of the two sites made
+the body uniform and it went through. The mathematics was identical in all three.
