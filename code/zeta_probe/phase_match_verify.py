@@ -69,6 +69,11 @@ print("dw       =", sp.nsimplify(dw,[sq2]), "   [= (sqrt2/8) tau^{3/2}]")
 
 # ---------------- numeric verification ----------------
 mp.mp.dps = 60
+# poles.txt: the travel poles q_m, one per line, full precision.  It is
+# TRACKED alongside this script.  Regenerate with
+#     python3 route_b/travel_poles_mp.py 40
+# run from this directory -- note that route_b/ is NOT tracked (.gitignore:77),
+# so on a clean clone the committed poles.txt is the only copy.
 POLES = [l.strip() for l in open("poles.txt") if l.strip()]
 
 def dsum_exact(t):

@@ -77,3 +77,48 @@ cd <tool> && cargo build --release && ./target/release/<tool> ...
 ```
 
 `target/` directories are regenerable and are not stored here.
+
+## 2026-09-03 — reproducibility audit of the paper-cited Python
+
+Prompted by the same failure found in `tools/nogap`, where three cited scripts
+referenced a `side.py` that no longer existed.  Scope here: every `.py` a
+current paper cites.
+
+**Existence.**  Every script cited by a shipping paper is present.  The one
+dangling citation, `code/zeta_probe/orthoscheme_universality.py`, appears only
+in `paper/old/universality_principle.tex`, an archived draft.
+
+**A missing input, and the chain behind it.**  `elemY3_verify.py` and
+`phase_match_verify.py` -- both cited -- read `poles.txt`, which was absent:
+never committed, never in git history, and not gitignored.  It is produced by
+`route_b/travel_poles_mp.py`, and `route_b/` is untracked (`.gitignore:77`).  So
+the chain ran
+
+    paper  ->  elemY3_verify.py  ->  poles.txt  ->  route_b/travel_poles_mp.py (untracked)
+
+and broke at the third link.  Both scripts died with `FileNotFoundError` on a
+clean checkout, and nothing caught it because nothing had re-run them.
+
+Repaired by regenerating `poles.txt` (40 poles, `travel_poles_mp.py 40`) and
+**tracking** it, since the generator is not tracked and the committed file is
+therefore the only copy on a fresh clone.  Both scripts now run and reproduce
+their constants:
+
+    elemY3_verify.py       |Sum d_k|/tau^2.5 over m = 6,10,14,20,26:
+                           0.267205, 0.266030, 0.265641, 0.265412, 0.265316
+                           -> 3/(8 sqrt2) = 0.2651650
+    phase_match_verify.py  dw/tau^1.5 -> 0.1768087 against sqrt2/8 = 0.1767767,
+                           chi agreeing with its closed form to ~9 digits
+
+The mathematics was right and the input file was missing -- the third instance
+of that pattern, after paper4's cylinder scripts and `tools/nogap`.
+
+**Clean otherwise.**  A static sweep for unresolved `open()` targets and local
+imports over the tracked, paper-cited directories found nothing else.  The 200-odd
+further hits are all inside `route_b/`, which is gitignored scratch and ships
+with nothing.  `code/reproduce/certify_beta2_pole.py` runs and passes (winding 1
+over 566 certified segments).
+
+**Not covered.**  Whether each script's *output* still matches the number the
+paper quotes was checked for the two repaired here and for
+`certify_beta2_pole.py`, not for the rest of the cited set.

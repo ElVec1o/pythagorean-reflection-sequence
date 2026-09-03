@@ -78,6 +78,11 @@ for t in ['0.08','0.04','0.02','0.01','0.005']:
 
 print("\n(3) at the travel poles: gate constant -> 3/(8 sqrt2) = "
       f"{mp.nstr(3/(8*mp.sqrt(2)),10)}")
+# poles.txt: the travel poles q_m, one per line, full precision.  It is
+# TRACKED alongside this script.  Regenerate with
+#     python3 route_b/travel_poles_mp.py 40
+# run from this directory -- note that route_b/ is NOT tracked (.gitignore:77),
+# so on a clean clone the committed poles.txt is the only copy.
 POLES = [l.strip() for l in open("poles.txt") if l.strip()]
 print(f"{'m':>4} {'tau_m':>12} {'|Sum d_k|/tau^2.5':>18} {'F_elem/tau^2.5':>16}")
 for m in [6, 10, 14, 20, 26]:
