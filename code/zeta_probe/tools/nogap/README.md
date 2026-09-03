@@ -6538,3 +6538,30 @@ bookkeeping against the concrete types.
 
 Still `mu = 2` only.  At `mu = 4` the two-chain structure is absent and BLOCK 158's
 5072 of 8192 failures stand.
+
+## 2026-09-03 — BLOCK 166: the assembly
+
+`shield_upper_bound_of_structure`: `walkCount <= |Z| + 1`, from the turn structure.
+
+    hedge   from the turn invariant                (hedge_of_turnInv, BLOCK 164)
+    hsep    from run connectivity on representatives, lifted to all ends
+            (hsep_of_base_connected, BLOCK 163)
+    both    into walkCount_le_runs_blk
+
+**No merge, no swap and no free pair appears anywhere in it.**  That matters because
+BLOCK 149 refuted `HasFreePair` in the per-strand model -- the only sign model that can
+express gap edges -- which closed the classical route to this bound.  This is a
+different route to the same conclusion, and the refuted hypothesis is not on it.
+
+Its hypotheses are: the geometry of the end type (`hpe`, `hts`, `hse`), the turn
+invariant `hturn`, which `local_trichotomy` secures by making the bounce strictly win at
+a cut site; a strand representative (`hbase`, `hbase_idx`); and run connectivity on those
+representatives, which `run_connected_of_turn_structure` supplies at `mu = 2` from the
+passes and the boundary bounce.
+
+So M4b's upper bound is now a theorem modulo instantiating those on a concrete
+configuration.  Fourteen blocks (153-166), five retractions along the way, and the route
+that survived is the one that gave up on merging.
+
+Scope, unchanged and worth repeating: `mu = 2` only.  BLOCK 158 measured 5072 of 8192
+failures at `mu = 4`, where the two-chain structure is absent, and nothing here lifts.

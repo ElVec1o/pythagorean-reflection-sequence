@@ -8912,3 +8912,43 @@ end EltBridge
 
 #print axioms EltBridge.no_cut_between_of_gz_eq
 #print axioms EltBridge.gz_eq_of_no_cut_between
+
+namespace EltBridge
+
+/-! ### The assembly
+
+Everything proved since BLOCK 153, in one statement.  The hypotheses are the geometry
+of the end type, the choice of a strand representative, and run connectivity on those
+representatives -- which `run_connected_of_turn_structure` supplies at `mu = 2` from the
+turn's passes and boundary bounces. -/
+
+/-- **The shield law's upper bound, from the turn structure.**  `walkCount <= |Z| + 1`.
+
+`hedge` comes from the turn invariant (`hedge_of_turnInv`), `hsep` from run connectivity
+on representatives lifted to all ends (`hsep_of_base_connected`), and the two feed
+`walkCount_le_runs_blk`.  No merge, no swap and no free pair appears. -/
+theorem shield_upper_bound_of_structure {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (edgeOf siteOf : α → ℤ) (Zf : Finset ℤ) (base : α → α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hts : ∀ x, siteOf (D.t x) = siteOf x)
+    (hse : ∀ x, siteOf x = edgeOf x ∨ siteOf x = edgeOf x + 1)
+    (hturn : ∀ x, edgeOf (D.t x) ≠ edgeOf x → siteOf x ∉ Zf)
+    (hbase : ∀ x, base x = x ∨ base x = D.p x)
+    (hbase_idx : ∀ x, CutComponents.gz Zf (edgeOf (base x))
+      = CutComponents.gz Zf (edgeOf x))
+    (hrun : ∀ x y : α, CutComponents.gz Zf (edgeOf x) = CutComponents.gz Zf (edgeOf y) →
+      (WalkGraph.graph D).Reachable (base x) (base y)) :
+    WalkGraph.walkCount D ≤ Zf.card + 1 := by
+  refine walkCount_le_runs_blk D edgeOf Zf
+    (hedge_of_turnInv D edgeOf siteOf Zf hpe hts hse hturn) ?_
+  -- `hsep`, through the representatives
+  have hlift := hsep_of_base_connected D base
+    (fun x => CutComponents.gz Zf (edgeOf x)) hbase hbase_idx hrun
+  intro x y hxy
+  refine hlift x y ?_
+  have : (runIndexG edgeOf Zf x).val = (runIndexG edgeOf Zf y).val := by rw [hxy]
+  simpa [runIndexG] using this
+
+end EltBridge
+
+#print axioms EltBridge.shield_upper_bound_of_structure
