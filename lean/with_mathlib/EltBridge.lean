@@ -12783,3 +12783,105 @@ theorem shield_law_chain (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
 end EltBridge
 
 #print axioms EltBridge.shield_law_chain
+
+namespace EltBridge
+
+/-! ### Splicing, without indices
+
+A first attempt spliced LISTS, and spent four tactics fighting `List.get` versus
+`getElem` and append-index arithmetic before hitting the three-strike rule.  The
+indices were the problem, not the mathematics: the chain condition only ever says "all
+these are mutually reachable", which is a statement about a SET.
+
+So: `AllJoined S` for a set of ends, built by union.  No indices appear. -/
+
+/-- Every member of `S` is reachable from every other. -/
+def AllJoined {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (S : Finset α) : Prop :=
+  ∀ x ∈ S, ∀ y ∈ S, G.Reachable x y
+
+/-- **Two joined sets sharing a link join.**  This is the splice, and with no indices it
+is three lines. -/
+theorem allJoined_union {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (S T : Finset α) (hS : AllJoined G S) (hT : AllJoined G T)
+    (a b : α) (ha : a ∈ S) (hb : b ∈ T) (hlink : G.Reachable a b) :
+    AllJoined G (S ∪ T) := by
+  intro x hx y hy
+  rw [Finset.mem_union] at hx hy
+  rcases hx with hx | hx <;> rcases hy with hy | hy
+  · exact hS x hx y hy
+  · exact ((hS x hx a ha).trans hlink).trans (hT b hb y hy)
+  · exact ((hT x hx b hb).trans hlink.symm).trans (hS a ha y hy)
+  · exact hT x hx y hy
+
+/-- **`hrun` from a joined set per run.** -/
+theorem hrun_of_allJoined {n : ℕ} {m : Fin n → ℕ}
+    (E : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (S : ℕ → Finset (EndType.Endpt n m))
+    (hS : ∀ r, AllJoined (WalkGraph.graph E) (S r))
+    (hmem : ∀ x : EndType.Endpt n m,
+      botOf x ∈ S (CutComponents.gz Zf (EndType.edgeOf x))) :
+    ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph E).Reachable (botOf x) (botOf y) := by
+  intro x y hxy
+  have hx := hmem x
+  have hy := hmem y
+  rw [hxy] at hx
+  exact hS _ _ hx _ hy
+
+end EltBridge
+
+#print axioms EltBridge.allJoined_union
+#print axioms EltBridge.hrun_of_allJoined
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The shield law from joined runs -- at ANY widths.**
+
+`walkCount = |Zf| + 1`, that is `c = |Z|`, with no hypothesis relating the edges' widths.
+What it asks is one set per run, containing that run's representatives, all mutually
+reachable -- which `allJoined_union` builds by splicing edge by edge, each splice needing
+only ONE link.
+
+That is the Eulerian argument with the circuit dissolved: the component count never
+needed an ordering of the strands, only that they are all joined. -/
+theorem shield_law_joined (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (S : ℕ → Finset (EndType.Endpt n m))
+    (hS : ∀ r, AllJoined (WalkGraph.graph E) (S r))
+    (hmem : ∀ x : EndType.Endpt n m,
+      botOf x ∈ S (CutComponents.gz Zf (EndType.edgeOf x)))
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hnonempty : Nonempty (EndType.Endpt n m)) :
+    WalkGraph.walkCount E = Zf.card + 1 := by
+  have hrun := hrun_of_allJoined E Zf S hS hmem
+  refine le_antisymm ?_ ?_
+  · exact shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) hTsite hturn
+      (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) hrun
+  · obtain ⟨x0⟩ := hnonempty
+    exact walkCount_ge_passTurn E Zf A B hAB hEp hTsite hturn hlow hhigh hoc
+      ((WalkGraph.graph E).connectedComponentMk x0)
+
+/-- **The single-edge set is joined**, by the near bounce: the two strand bottoms of an
+edge are one turn step apart.  This is the base of the splice. -/
+theorem allJoined_pair {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (a b : α) (hab : G.Reachable a b) : AllJoined G {a, b} := by
+  intro x hx y hy
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hx hy
+  rcases hx with rfl | rfl <;> rcases hy with rfl | rfl
+  · exact SimpleGraph.Reachable.refl _
+  · exact hab
+  · exact hab.symm
+  · exact SimpleGraph.Reachable.refl _
+
+end EltBridge
+
+#print axioms EltBridge.shield_law_joined
+#print axioms EltBridge.allJoined_pair

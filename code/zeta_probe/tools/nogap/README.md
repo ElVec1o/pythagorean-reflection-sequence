@@ -7538,3 +7538,33 @@ The Lean error this block was the dependent-rewrite pattern again -- `rw` at a h
 whose TYPE mentions the rewritten term, with a second hypothesis depending on it.  The fix
 is the same as always: rewrite in the existential statement BEFORE destructuring, where
 nothing depends on the index yet.
+
+## 2026-09-03 — BLOCK 201: splicing without indices
+
+The Eulerian construction, and an ABORT that improved it.
+
+A first attempt spliced LISTS -- a chain of strands with consecutive entries joined -- and
+spent four tactics on `List.get` versus `getElem` and append-index arithmetic before
+hitting the three-strike rule.  The diagnosis was that the indices were the problem, not
+the mathematics: the chain condition only ever says "all of these are mutually
+reachable", which is a statement about a SET, and an ordering was never needed.
+
+    AllJoined            every member of a set reaches every other
+    allJoined_union      two joined sets sharing ONE link join -- three lines
+    allJoined_pair       the base: an edge's two strand bottoms, one turn step apart
+    hrun_of_allJoined    a joined set per run gives `hrun`
+    shield_law_joined    and with it `walkCount = |Zf| + 1`, at ANY widths
+
+All 0 sorry.
+
+So the Eulerian argument is complete with the circuit dissolved.  The component count
+never needed an ordering of the strands -- only that they are all joined -- and the
+splice that builds it needs one link per edge.  Every trace of levels, chains, parities
+and permutations is gone.
+
+Also fixed: another `namespace EltBridge` opened without closing the previous one, caught
+again by the doubled name in `#print axioms`.  That is the third time; the tell is
+reliable.
+
+What remains for (M2) in full is the link itself: that consecutive edges' strand sets
+share a reachable pair at their common site, which is a pass there.
