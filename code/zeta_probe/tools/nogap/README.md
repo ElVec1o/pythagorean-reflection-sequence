@@ -6565,3 +6565,32 @@ that survived is the one that gave up on merging.
 
 Scope, unchanged and worth repeating: `mu = 2` only.  BLOCK 158 measured 5072 of 8192
 failures at `mu = 4`, where the two-chain structure is absent, and nothing here lifts.
+
+## 2026-09-03 — BLOCK 167: instantiated down to two hypotheses
+
+Carried the assembly onto the concrete types, discharging a hypothesis at each step.
+
+    siteOf_cases                `siteOf` is `edgeOf` or `edgeOf + 1`, by definition
+    shield_upper_bound_endpt    `hpe` and `hse` gone: `partner` keeps the edge and the
+                                site sits on one of the two edges it separates
+    shield_upper_bound_dataOf   `hp` and `hts` gone: `dataOf` has `p := partner`, and
+                                `turn = glue siteOf (turnAt up)` applies the local map of
+                                the end's OWN site, so `hp` is `rfl` and `hts` is
+                                `turnAt_site`
+    botOf, botOf_eq_or_partner  the representative: the bottom end of the end's own
+                                strand, which is the end itself or its partner
+    shield_upper_bound_bot      `hbase` and `hbase_idx` gone
+
+What is left is two hypotheses:
+
+    hturn   the turn passes only off the cut sites
+    hrun    the bottom ends of a run are joined
+
+and those are exactly what the `mu = 2` construction supplies -- `hturn` from
+`local_trichotomy`, which makes the bounce strictly win at a cut site, and `hrun` from
+`run_connected_of_turn_structure`.
+
+So M4b's upper bound is now: `walkCount (dataOf up hbal) <= |Z| + 1`, given a turn that
+bounces at the cut sites and whose passes chain the runs.  Nothing else.
+
+Scope unchanged: `mu = 2`.

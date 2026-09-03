@@ -8952,3 +8952,114 @@ theorem shield_upper_bound_of_structure {α : Type*} [Fintype α] [DecidableEq �
 end EltBridge
 
 #print axioms EltBridge.shield_upper_bound_of_structure
+
+namespace EltBridge
+
+/-! ### Instantiated on `EndType.Endpt`
+
+Two of the geometric hypotheses are facts about the end type itself: `partner` keeps the
+edge, and `siteOf` is `edgeOf` or `edgeOf + 1` by definition.  Discharging them leaves
+only the turn's own properties. -/
+
+/-- `siteOf` sits on one of the two edges it separates. -/
+theorem siteOf_cases {n : ℕ} {m : Fin n → ℕ} (x : EndType.Endpt n m) :
+    EndType.siteOf x = EndType.edgeOf x ∨ EndType.siteOf x = EndType.edgeOf x + 1 := by
+  unfold EndType.siteOf
+  by_cases h : EndType.atTop x
+  · exact Or.inr (by rw [h]; norm_num)
+  · exact Or.inl (by simp [h])
+
+/-- **The shield law's upper bound on the end type.**  `hpe` and `hse` are discharged
+from `EndType`; what remains is the turn keeping its site, the turn invariant, the
+representative, and run connectivity. -/
+theorem shield_upper_bound_endpt {n : ℕ} {m : Fin n → ℕ}
+    (D : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (base : EndType.Endpt n m → EndType.Endpt n m)
+    (hp : ∀ x, D.p x = EndType.partner x)
+    (hts : ∀ x, EndType.siteOf (D.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (D.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hbase : ∀ x, base x = x ∨ base x = D.p x)
+    (hbase_idx : ∀ x, CutComponents.gz Zf (EndType.edgeOf (base x))
+      = CutComponents.gz Zf (EndType.edgeOf x))
+    (hrun : ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph D).Reachable (base x) (base y)) :
+    WalkGraph.walkCount D ≤ Zf.card + 1 :=
+  shield_upper_bound_of_structure D EndType.edgeOf EndType.siteOf Zf base
+    (fun x => by rw [hp x]; exact EndType.partner_edgeOf x)
+    hts siteOf_cases hturn hbase hbase_idx hrun
+
+end EltBridge
+
+#print axioms EltBridge.siteOf_cases
+#print axioms EltBridge.shield_upper_bound_endpt
+
+namespace EltBridge
+
+/-- **On the canonical turn.**  `DataBuild.dataOf` has `p := partner` and
+`t := glue siteOf (turnAt up)`, and `glue` applies the local map of the end's own site,
+so `hp` is `rfl` and `hts` is `turnAt_site`.  Only the turn invariant, the
+representative and run connectivity remain. -/
+theorem shield_upper_bound_dataOf {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ,
+      (EndType.arrAt (m := m) up s).card = (EndType.depAt (m := m) up s).card)
+    (Zf : Finset ℤ) (base : EndType.Endpt n m → EndType.Endpt n m)
+    (hturn : ∀ x, EndType.edgeOf ((DataBuild.dataOf up hbal).t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hbase : ∀ x, base x = x ∨ base x = (DataBuild.dataOf up hbal).p x)
+    (hbase_idx : ∀ x, CutComponents.gz Zf (EndType.edgeOf (base x))
+      = CutComponents.gz Zf (EndType.edgeOf x))
+    (hrun : ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph (DataBuild.dataOf up hbal)).Reachable (base x) (base y)) :
+    WalkGraph.walkCount (DataBuild.dataOf up hbal) ≤ Zf.card + 1 :=
+  shield_upper_bound_endpt (DataBuild.dataOf up hbal) Zf base
+    (fun _ => rfl)
+    (fun x => DataBuild.turnAt_site up hbal x)
+    hturn hbase hbase_idx hrun
+
+end EltBridge
+
+#print axioms EltBridge.shield_upper_bound_dataOf
+
+namespace EltBridge
+
+/-- The bottom end of an end's own strand: the canonical representative. -/
+def botOf {n : ℕ} {m : Fin n → ℕ} (x : EndType.Endpt n m) : EndType.Endpt n m :=
+  ⟨x.edge, x.idx, false⟩
+
+@[simp] theorem botOf_edgeOf {n : ℕ} {m : Fin n → ℕ} (x : EndType.Endpt n m) :
+    EndType.edgeOf (botOf x) = EndType.edgeOf x := rfl
+
+/-- The representative is the end itself or its crossing partner. -/
+theorem botOf_eq_or_partner {n : ℕ} {m : Fin n → ℕ} (x : EndType.Endpt n m) :
+    botOf x = x ∨ botOf x = EndType.partner x := by
+  cases hx : x.top
+  · left
+    unfold botOf
+    cases x with
+    | mk e i t => simp_all
+  · right
+    unfold botOf EndType.partner
+    cases x with
+    | mk e i t => simp_all
+
+/-- **The shield law's upper bound with the representative discharged.**  Only the turn
+invariant and run connectivity remain -- the two the `mu = 2` construction supplies. -/
+theorem shield_upper_bound_bot {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (hbal : ∀ s : ℤ,
+      (EndType.arrAt (m := m) up s).card = (EndType.depAt (m := m) up s).card)
+    (Zf : Finset ℤ)
+    (hturn : ∀ x, EndType.edgeOf ((DataBuild.dataOf up hbal).t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hrun : ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph (DataBuild.dataOf up hbal)).Reachable (botOf x) (botOf y)) :
+    WalkGraph.walkCount (DataBuild.dataOf up hbal) ≤ Zf.card + 1 :=
+  shield_upper_bound_dataOf up hbal Zf botOf hturn
+    (fun x => botOf_eq_or_partner x) (fun _ => rfl) hrun
+
+end EltBridge
+
+#print axioms EltBridge.botOf_eq_or_partner
+#print axioms EltBridge.shield_upper_bound_bot
