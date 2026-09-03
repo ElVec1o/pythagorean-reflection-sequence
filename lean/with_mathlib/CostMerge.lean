@@ -487,13 +487,13 @@ theorem min_merges_to_one_local (edgeOf siteOf : α → ℤ) (atTop : α → Boo
     (d : EndData.Data α)
     (hside : ∀ x, d.side x = atTop x)
     (hpsite : ∀ x, siteOf (p₀ x) ≠ siteOf x)
-    (hsW : ∀ E : Data α, E.p = p₀ → ∀ w x, (graph E).Reachable w x →
+    (hsW : ∀ E : Data α, WalkSupport.Merges siteOf d.isArr p₀ E → ∀ w x, (graph E).Reachable w x →
       siteOf x = WalkSupport.wLo edgeOf (graph E) w →
       atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
-    (hsX : ∀ E : Data α, E.p = p₀ → ∀ w x, (graph E).Reachable w x →
+    (hsX : ∀ E : Data α, WalkSupport.Merges siteOf d.isArr p₀ E → ∀ w x, (graph E).Reachable w x →
       edgeOf x = WalkSupport.wLo edgeOf (graph E) w → atTop x = false →
       siteOf x = edgeOf x + (if atTop x then 1 else 0))
-    (hsT : ∀ E : Data α, E.p = p₀ → ∀ w y,
+    (hsT : ∀ E : Data α, WalkSupport.Merges siteOf d.isArr p₀ E → ∀ w y,
       edgeOf y = WalkSupport.wLo edgeOf (graph E) w - 1 → atTop y = true →
       siteOf y = edgeOf y + (if atTop y then 1 else 0))
     (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
@@ -519,7 +519,7 @@ theorem min_merges_to_one_local (edgeOf siteOf : α → ℤ) (atTop : α → Boo
     rw [hp]; exact hpsite
   obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
     hasFreePair_of_minimal_local d edgeOf siteOf atTop E hside
-      (hsW E hp) (hsX E hp) (hsT E hp)
+      (hsW E ⟨hp, hts, hta⟩) (hsX E ⟨hp, hts, hta⟩) (hsT E ⟨hp, hts, hta⟩)
       (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta hpsite z hzmax hcov
       (hmin_of_mergesMin siteOf p₀ d E ⟨⟨hp, hts, hta⟩, hmin⟩) hmany
   have haa' : a' ≠ a := ConfigMerge.ne_of_split E hsplit

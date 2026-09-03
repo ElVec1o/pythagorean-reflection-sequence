@@ -2726,3 +2726,27 @@ WHAT REMAINS FOR ASSEMBLY (honest): min_merges_to_one_local also needs
            one input that is NOT supplied by the construction
 The first two are mechanical. hcov0 is the same covering condition the Endpt-side
 argument has always needed, so it is not new debt introduced by the extension.
+
+## 2026-09-03 — BLOCK 26: B1 ASSEMBLED for kstar < 0
+
+  CostMerge.min_merges_to_one_local -- hypotheses widened from `E.p = p0` to the full
+                                       Merges predicate (hsX needs hts per datum; it is
+                                       available at the call site and was simply not
+                                       being passed)
+  vEndDataOf                        -- the end data of the extended type
+  VEndpt.merges_to_one_neg          -- **THE ASSEMBLED THEOREM**: a cost-minimal datum
+                                       on VEndpt merges down to a single walk
+
+Every locality hypothesis of the merge development is discharged by the construction.
+The sole remaining input is hcov0, the covering condition -- the same one the
+Endpt-side argument has always required.
+
+One correction made while assembling, worth recording because the first version was
+WRONG in an instructive way: I wrote the hsT branch at the virtual ARRIVAL as a
+contradiction, expecting it to be out of scope. It is IN scope (its atTopN is true),
+and it needs no contradiction -- the relation simply HOLDS there, since site 0 = -1 + 1
+under the choice bnd = -1. That is exactly the design recorded in BLOCK 18, and the
+proof got shorter, not longer, once the branch was read correctly.
+
+So: the chain Elt -> PathData -> VEndpt -> Data -> merge is complete for kstar < 0,
+with hcov0 as its only hypothesis.

@@ -1036,6 +1036,61 @@ theorem VEndpt.hsW_all_neg {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
     · exact Or.inr (by simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN])
     · exact Or.inl rfl
 
+/-! ### Assembly
+
+Everything `CostMerge.min_merges_to_one_local` consumes, supplied for `VEndpt` at
+`kstar < 0`.  The only hypothesis left is `hcov0`, the covering condition -- the same
+one the `Endpt`-side argument has always needed, not new debt from the extension. -/
+
+/-- The end data of the extended type, in the `kstar < 0` orientation. -/
+def vEndDataOf {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (ds : Bool → Bool) :
+    EndData.Data (VEndpt n mm) :=
+  ⟨VEndpt.atTopN, VEndpt.isArr up, ds⟩
+
+@[simp] theorem vEndDataOf_side {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) (x : VEndpt n mm) :
+    (vEndDataOf up ds).side x = VEndpt.atTopN x := rfl
+
+@[simp] theorem vEndDataOf_isArr {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) : (vEndDataOf (mm := mm) up ds).isArr = VEndpt.isArr up := rfl
+
+/-- **B1, assembled for `kstar < 0`.**
+
+A cost-minimal datum on the extended type merges down to a single walk.  Every
+locality hypothesis of the merge development is discharged by the construction; the
+covering condition `hcov0` is the sole input. -/
+theorem VEndpt.merges_to_one_neg {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) (kstar : ℤ) (hk : kstar < 0)
+    (hcov0 : ∀ j : ℤ, (∃ u : VEndpt n mm, VEndpt.edgeOf (-1) u = j) →
+      (∃ v : VEndpt n mm, VEndpt.edgeOf (-1) v < j) →
+      ∃ y : VEndpt n mm, VEndpt.edgeOf (-1) y = j - 1 ∧ VEndpt.atTopN y = true)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : CostMerge.MergesMin (VEndpt.site kstar) (VEndpt.isArr up) VEndpt.partner
+      (vEndDataOf up ds) D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.site kstar) (VEndpt.isArr up) VEndpt.partner
+        (vEndDataOf up ds) D' ∧ WalkGraph.walkCount D' ≤ 1 := by
+  refine CostMerge.min_merges_to_one_local (VEndpt.edgeOf (-1)) (VEndpt.site kstar)
+    VEndpt.atTopN VEndpt.partner (vEndDataOf up ds)
+    (fun _ => rfl) (VEndpt.partner_site_ne kstar (by omega))
+    ?_ ?_ ?_ (VEndpt.hpe (-1)) VEndpt.hptN hcov0 z₀ D hD
+  · -- hsW
+    exact fun E _ w x hwx hsx => VEndpt.hsW_all_neg kstar E w x hwx hsx
+  · -- hsX
+    exact fun E hE w x hwx hxe hxb =>
+      VEndpt.hsX_all_neg kstar E hE.2.1 (fun b h => E.t_ne _ h) hk w x hwx hxe hxb
+  · -- hsT: the top end left of a leftmost edge is real, since the virtual ends sit at
+    -- edge -1 and a leftmost edge minus one is below every end of the walk
+    intro E _ w y hye hyt
+    cases y with
+    | inl u => rfl
+    | inr b =>
+      cases b
+      · -- the virtual arrival: its site IS its edge plus one, by the choice `bnd = -1`
+        simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN]
+      · exact absurd hyt (by simp [VEndpt.atTopN])
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1084,3 +1139,4 @@ end EltBridge
 #print axioms EltBridge.VEndpt.wlo_le_kstar
 #print axioms EltBridge.VEndpt.hsX_all_neg
 #print axioms EltBridge.VEndpt.hsW_all_neg
+#print axioms EltBridge.VEndpt.merges_to_one_neg
