@@ -7623,3 +7623,36 @@ pair there, and reroutes through edge `j`'s strands in `(w j)/2` round trips.
 So the accounting is: the splice is proved, the per-edge base is proved at uniform widths
 and open in general, and everything from a per-edge base to the shield law is proved at
 any widths.
+
+## 2026-09-03 — BLOCK 204: BLOCK 203's decomposition was wrong
+
+`allJoined_biUnion` is true, but the decomposition BLOCK 203 proposed for it is not
+available.  It wanted a joined set PER EDGE.  An edge `j`'s bottoms sit at site `j`
+TOGETHER WITH edge `j-1`'s tops, so the pairing there may join an edge-`j` bottom to an
+edge-`(j-1)` top -- a pass -- rather than to another edge-`j` bottom.  An edge with
+`w = 2` has its two strands joined only if some site pairs them to each other, and at a
+non-cut site the pairing may pass instead.  So "each edge's strands are joined among
+themselves" is not generally true, and BLOCK 203's "same problem one size down" was not
+a reduction.
+
+The correct statement of what remains is undecomposed, and is what BLOCK 199 identified:
+
+    choose the turn so that the run's strand graph is CONNECTED.
+
+Nothing in BLOCKS 200-203 reduces that.  `AllJoined` repackages "one component per run"
+without weakening it -- the strand graph is 2-regular, so connected and single-cycle
+coincide -- and `allJoined_absorb` is a way to BUILD a joined set once the links are
+known, not a way to obtain them.
+
+What those blocks did establish, and it is not nothing:
+
+  * everything from "the run's strands are joined" to the shield law, at ANY widths
+    (`shield_law_of_connected`);
+  * `link_of_turn`, that any turn step joins the two representatives, so the links are
+    free once the turn is chosen;
+  * the absorption and union lemmas, which will assemble whatever links a construction
+    provides.
+
+And at UNIFORM widths the existence is proved outright (`shield_law`, BLOCK 197).  The
+open case is varying widths, and it needs a construction of the turn, not further
+repackaging of the consequence.
