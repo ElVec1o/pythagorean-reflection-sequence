@@ -5741,6 +5741,42 @@ theorem marker_asymmetry :
     (∀ dL dR : ℤ, Site0 dL dR = Site0 dL dR) :=
   ⟨⟨1, -1, FarSite_eps_dependent⟩, fun _ _ => rfl⟩
 
+/-! ### `cor:marker` verified against `siteCost`
+
+`Site0` and `FarSite` were transcribed from `cor:marker`.  They are not independent
+definitions: both follow from `siteCost = max |alphaAt| |betaAt|` once the virtual
+counters are evaluated at the two marker sites. -/
+
+/-- **The near marker: `siteCost 0 = Site0 d(-1) d(0)`.**  At site `0` the virtual
+arrival contributes `-1` to `alpha`, and `vD` vanishes because `kstar != 0`, so neither
+`eps` nor `delta` appears -- exactly `cor:marker`'s claim. -/
+theorem siteCost_at_zero (P : SiteCost.PathData) (hk : P.kstar ≠ 0) :
+    P.siteCost 0 = Site0 (P.d (-1)) (P.d 0) := by
+  have hvD : P.vD 0 = 0 := by
+    unfold SiteCost.PathData.vD; rw [if_neg (Ne.symm hk)]
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.vArr Site0
+  rw [if_pos rfl, hvD]
+  simp only [ite_self, Nat.cast_zero, mul_zero, add_zero, sub_zero, Nat.cast_one]
+  norm_num
+
+/-- **The far marker: `siteCost kstar = FarSite eps delta d(kstar-1) d(kstar)`.**
+There `vArr` vanishes and `vD = 1`, so `delta` selects which side carries `eps` --
+`cor:marker`'s two cases. -/
+theorem siteCost_at_kstar (P : SiteCost.PathData) (hk : P.kstar ≠ 0) :
+    P.siteCost P.kstar
+      = FarSite P.eps P.delta (P.d (P.kstar - 1)) (P.d P.kstar) := by
+  have hvA : SiteCost.vArr P.kstar = 0 := by
+    unfold SiteCost.vArr; rw [if_neg hk]
+  have hvD : P.vD P.kstar = 1 := by
+    unfold SiteCost.PathData.vD; rw [if_pos rfl]
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR FarSite
+  rw [hvA, hvD]
+  cases hd : P.delta
+  · simp
+  · simp
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5955,3 +5991,5 @@ end EltBridge
 #print axioms EltBridge.FarSite_eps_dependent
 #print axioms EltBridge.FarSite_not_mirror
 #print axioms EltBridge.marker_asymmetry
+#print axioms EltBridge.siteCost_at_zero
+#print axioms EltBridge.siteCost_at_kstar

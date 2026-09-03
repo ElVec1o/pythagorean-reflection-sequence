@@ -4750,3 +4750,31 @@ the assembly's four-fold sum sits on the lambda side, and it is the last structu
 
 Read the source first this time. It took one block instead of the two that BLOCKS
 106-107 took to reach the same kind of fact by derivation.
+
+## 2026-09-03 — BLOCK 109: cor:marker VERIFIED against siteCost
+
+  siteCost_at_zero   -- siteCost 0 = Site0 (d(-1)) (d 0), for kstar != 0
+  siteCost_at_kstar  -- siteCost kstar = FarSite eps delta (d(kstar-1)) (d kstar)
+
+Both propext only. Site0 and FarSite were transcribed from cor:marker in BLOCKS 106 and
+108; these show they are not independent definitions but consequences of
+siteCost = max |alphaAt| |betaAt| once the virtual counters are evaluated:
+
+  at site 0      vArr = 1 contributes -1 to alpha, and vD = 0 because kstar != 0, so
+                 neither eps nor delta appears -- cor:marker's "for all four marker data"
+  at site kstar  vArr = 0 and vD = 1, so delta selects which side carries eps --
+                 cor:marker's two cases
+
+So cor:marker is now machine-checked from the site-cost definition, not just
+transcribed. That is the first of the paper's marker results to be derived rather than
+cited in this file.
+
+(M3a) TRANSCRIPTION STATUS:
+  state sigma           BLOCK 104   proved sufficient away from markers
+  T = travelT           BLOCK 104   well defined on sigma
+  mu                    BLOCK 107   eq:junctionsym, with its B_sigma/2 justified
+  lambda                BLOCK 108   FarSite, its three claims machine-checked
+  markers derived       BLOCK 109   siteCost_at_zero, siteCost_at_kstar
+  the theorem           BLOCK 105   pathGF_succ
+What remains is the sum-splitting: writing lR's site sum as interior + the two markers,
+which is a Finset.sum decomposition over Icc A (B+1) minus two points.
