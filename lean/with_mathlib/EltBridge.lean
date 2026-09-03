@@ -187,6 +187,116 @@ theorem deficit_eq {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : 
   have := h.1
   omega
 
+/-! ### The two-element extension of `Endpt`
+
+`deficit_eq` says the model is short one arrival at site `0` and one departure at
+site `kstar`.  This adds exactly those two elements and nothing else. -/
+
+/-- **The extended end type**: the real ends, plus two virtual ones.  `inr false` is
+the virtual arrival at site `0`; `inr true` is the virtual departure at `kstar`. -/
+abbrev VEndpt (n : ℕ) (mm : Fin n → ℕ) := EndType.Endpt n mm ⊕ Bool
+
+namespace VEndpt
+
+variable {n : ℕ} {mm : Fin n → ℕ}
+
+/-- The site of an extended end. -/
+def site (kstar : ℤ) : VEndpt n mm → ℤ
+  | .inl x => EndType.siteOf x
+  | .inr false => 0
+  | .inr true => kstar
+
+/-- Whether an extended end is an arrival. -/
+def isArr (up : Fin n → ℕ) : VEndpt n mm → Bool
+  | .inl x => EndType.isArrOf up x
+  | .inr false => true
+  | .inr true => false
+
+/-- Arrivals at a site, extended. -/
+noncomputable def arrAt (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) : Finset (VEndpt n mm) := by
+  classical
+  exact Finset.univ.filter (fun x => site kstar x = s ∧ isArr up x = true)
+
+/-- Departures at a site, extended. -/
+noncomputable def depAt (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) : Finset (VEndpt n mm) := by
+  classical
+  exact Finset.univ.filter (fun x => site kstar x = s ∧ isArr up x = false)
+
+/-- **The extended arrivals are the real ones plus the virtual arrival at `0`.** -/
+theorem arrAt_eq (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    arrAt (mm := mm) kstar up s
+      = (EndType.arrAt (m := mm) up s).image Sum.inl
+        ∪ (if s = 0 then {Sum.inr false} else ∅) := by
+  classical
+  ext x
+  cases x with
+  | inl y =>
+    by_cases h : s = 0 <;>
+      simp [arrAt, site, isArr, EndType.mem_arrAt, h]
+  | inr b =>
+    cases b <;> by_cases h : s = 0 <;>
+      simp [arrAt, site, isArr, h] <;> omega
+
+/-- **The extended departures are the real ones plus the virtual departure at `kstar`.** -/
+theorem depAt_eq (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    depAt (mm := mm) kstar up s
+      = (EndType.depAt (m := mm) up s).image Sum.inl
+        ∪ (if s = kstar then {Sum.inr true} else ∅) := by
+  classical
+  ext x
+  cases x with
+  | inl y =>
+    by_cases h : s = kstar <;>
+      simp [depAt, site, isArr, EndType.mem_depAt, h]
+  | inr b =>
+    cases b <;> by_cases h : s = kstar <;>
+      simp [depAt, site, isArr, h] <;> omega
+
+/-- The virtual arrival is not a real end. -/
+theorem card_arrAt (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    (arrAt (mm := mm) kstar up s).card
+      = (EndType.arrAt (m := mm) up s).card + (if s = 0 then 1 else 0) := by
+  classical
+  rw [arrAt_eq]
+  have hdisj : Disjoint ((EndType.arrAt (m := mm) up s).image Sum.inl)
+      (if s = 0 then ({Sum.inr false} : Finset (VEndpt n mm)) else ∅) := by
+    split_ifs <;> simp [Finset.disjoint_left]
+  rw [Finset.card_union_of_disjoint hdisj,
+    Finset.card_image_of_injective _ Sum.inl_injective]
+  split_ifs <;> simp
+
+/-- The virtual departure is not a real end. -/
+theorem card_depAt (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    (depAt (mm := mm) kstar up s).card
+      = (EndType.depAt (m := mm) up s).card + (if s = kstar then 1 else 0) := by
+  classical
+  rw [depAt_eq]
+  have hdisj : Disjoint ((EndType.depAt (m := mm) up s).image Sum.inl)
+      (if s = kstar then ({Sum.inr true} : Finset (VEndpt n mm)) else ∅) := by
+    split_ifs <;> simp [Finset.disjoint_left]
+  rw [Finset.card_union_of_disjoint hdisj,
+    Finset.card_image_of_injective _ Sum.inl_injective]
+  split_ifs <;> simp
+
+end VEndpt
+
+/-- **B1, second half: the extended model is balanced.**
+
+A configuration whose signed travel is `travel kstar` is balanced at every site once
+the two virtual ends are added.  With `deficit_eq` this is the whole content: the real
+model is off by `[s = kstar] - [s = 0]`, and the two virtual ends contribute exactly
+`[s = 0]` arrivals and `[s = kstar]` departures. -/
+theorem VEndpt.balanced {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (htr : ∀ e : Fin n, ConfigLoop.tr (m := mm) up e = travel kstar (e : ℤ))
+    (s : ℤ) (e1 e2 : Fin n) (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s) :
+    (VEndpt.arrAt (mm := mm) kstar up s).card
+      = (VEndpt.depAt (mm := mm) kstar up s).card := by
+  have hd := deficit_eq (mm := mm) up kstar htr s e1 e2 h1 h2
+  have ha := VEndpt.card_arrAt (mm := mm) kstar up s
+  have hb := VEndpt.card_depAt (mm := mm) kstar up s
+  rw [ha, hb]
+  split_ifs at hd ⊢ <;> omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -197,3 +307,8 @@ end EltBridge
 #print axioms EltBridge.travel_const_off
 #print axioms EltBridge.balance_off_virtual
 #print axioms EltBridge.deficit_eq
+#print axioms EltBridge.VEndpt.arrAt_eq
+#print axioms EltBridge.VEndpt.depAt_eq
+#print axioms EltBridge.VEndpt.card_arrAt
+#print axioms EltBridge.VEndpt.card_depAt
+#print axioms EltBridge.VEndpt.balanced

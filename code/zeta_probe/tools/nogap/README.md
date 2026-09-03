@@ -2213,3 +2213,29 @@ modelling choice -- they are the UNIQUE repair, in the UNIQUE places, and the co
 
 This is why B1's second half is a bounded job: extend Endpt by two elements, not by a
 family. The extension itself is not yet written.
+
+## 2026-09-03 — BLOCK 9: the two-element extension is built and BALANCES
+
+  VEndpt        -- Endpt n mm (+) Bool: the real ends plus exactly two virtual ones
+                   (inr false = virtual arrival at site 0; inr true = virtual
+                   departure at kstar). An `abbrev`, so instances stay canonical --
+                   as a `def` with hand-rolled DecidableEq, `Finset.mem_image` would
+                   not fire and every proof stalled.
+  site, isArr, arrAt, depAt   -- the extended primitives
+  arrAt_eq, depAt_eq          -- extended set = image of the real set, plus the one
+                                 virtual end, at the one site where it sits
+  card_arrAt, card_depAt      -- so the counts differ by exactly [s=0], [s=kstar]
+  VEndpt.balanced             -- THE THEOREM: a configuration whose signed travel is
+                                 `travel kstar` is BALANCED AT EVERY SITE in the
+                                 extended model
+
+So B1's second half is done at the level of balance: the obstruction proved in BLOCK 6
+(`balance_iff_tr`) is removed by exactly the two ends that BLOCK 8 showed were forced.
+
+WHAT IS STILL NOT DONE: `VEndpt.balanced` supplies `hbal` for the EXTENDED type, but
+the whole merge development (ConfigMerge, WalkSupport, CostMerge, ConfigLoop) is
+written against `Endpt n m`, not `VEndpt`. Transporting it is a mechanical but real
+job -- `partner`, `turn`, `Data`, `walkCount` all need extending, and `partner` on the
+two virtual ends is a genuine choice, not boilerplate. B1 stays YELLOW until that is
+done; what changed is that the mathematical obstruction is gone and only transport
+remains.
