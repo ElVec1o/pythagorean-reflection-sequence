@@ -4538,6 +4538,47 @@ theorem exists_least_cost_hturn {n : ℕ} {m : Fin n → ℕ}
   rw [hEc]
   exact hleast _ ⟨F, ⟨hF1, hF2⟩, rfl⟩
 
+/-! ### Which swaps preserve `hturn`
+
+Subclass minimality is only as strong as the comparisons it admits, so it matters
+exactly which swaps stay inside the subclass.
+
+* A swap at a **non-cut** site always does: `hturn` constrains nothing there, and
+  `hturn_swapT_gen` needs only `site a ∉ Zf`.
+* A swap at a **cut** site does iff the two arrivals share an edge, which
+  `freePair_same_edge_at_cut` gives when they share a side.
+
+So the only comparisons the subclass loses are cross-side swaps at cut sites. -/
+
+/-- **Swaps at a non-cut site preserve `hturn`**, with no side condition. -/
+theorem swap_preserves_hturn_offcut {n : ℕ} {m : Fin n → ℕ} (Zf : Finset ℤ)
+    (D : WalkGraph.Data (EndType.Endpt n m)) (a a' : EndType.Endpt n m)
+    (hts : ∀ e, EndType.siteOf (D.t e) = EndType.siteOf e)
+    (hturn : ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (D.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hss : EndType.siteOf a' = EndType.siteOf a)
+    (hoff : EndType.siteOf a ∉ Zf) :
+    ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (WalkGraph.swapT D.t a (D.t a) a' (D.t a') x)
+        ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf :=
+  hturn_swapT_gen D.t EndType.edgeOf EndType.siteOf Zf a (D.t a) a' (D.t a')
+    hturn hoff (hts a) hss (by rw [hts a']; exact hss)
+
+/-- **And at a cut site, exactly when the pair shares a side.** -/
+theorem swap_preserves_hturn_atcut {n : ℕ} {m : Fin n → ℕ} (Zf : Finset ℤ)
+    (D : WalkGraph.Data (EndType.Endpt n m)) (a a' : EndType.Endpt n m)
+    (hts : ∀ e, EndType.siteOf (D.t e) = EndType.siteOf e)
+    (hturn : ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (D.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hss : EndType.siteOf a' = EndType.siteOf a)
+    (hcut : EndType.siteOf a ∈ Zf)
+    (hshared : EndType.atTop a = EndType.atTop a' ∨
+      EndType.atTop (D.t a) = EndType.atTop (D.t a')) :
+    ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (WalkGraph.swapT D.t a (D.t a) a' (D.t a') x)
+        ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf :=
+  hturn_swapT_nohZ Zf D hts hturn a a' hss hcut hshared
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4702,3 +4743,5 @@ end EltBridge
 #print axioms EltBridge.exists_sided_turn_at
 #print axioms EltBridge.exists_merges_hturn
 #print axioms EltBridge.exists_least_cost_hturn
+#print axioms EltBridge.swap_preserves_hturn_offcut
+#print axioms EltBridge.swap_preserves_hturn_atcut

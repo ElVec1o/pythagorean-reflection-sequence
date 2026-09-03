@@ -3979,3 +3979,29 @@ demands minimality against ALL class members, not just hturn ones. Either TurnIn
 restated with subclass minimality (and run_step_turnInvG's use of hmin_of_mergesMin
 adjusted to match), or the two notions are shown to agree. The former is the honest
 route and is a change to the definition, not a new theorem.
+
+## 2026-09-03 — BLOCK 76: exactly which swaps preserve hturn
+
+  swap_preserves_hturn_offcut -- a swap at a NON-CUT site always preserves hturn (no
+                                 side condition: hturn constrains nothing there)
+  swap_preserves_hturn_atcut  -- a swap at a CUT site preserves it when the pair shares
+                                 a side
+
+So the hturn subclass is closed under every swap EXCEPT cross-side swaps at cut sites.
+That is the precise gap between subclass minimality and global minimality, and it is
+small: at a cut site the two halves balance separately (BLOCK 71), so a cross-side swap
+is exactly the move that creates a crossing.
+
+WHAT THIS MEANS FOR THE LAST STEP. Restating TurnInvG with subclass minimality is sound
+only if the free-pair argument never needs to compare against a cross-side swap at a cut
+site. It might: hasFreePair_of_minimal compares against swaps of an arbitrary arrival
+pair sharing a site, and nothing stops that pair being cross-side at a cut site.
+
+Ruling it out needs the datum to have ZERO COST at cut sites, so that no swap there can
+lower the cost -- which is the same zero-cost-plan requirement BLOCK 70 identified, now
+reached from the other direction. The sided turn of BLOCK 73 gives zero CROSSING there;
+zero COST additionally needs the signs to match, i.e. a four-way split by (side, sign)
+rather than the two-way split by side.
+
+That four-way split is the remaining construction. alpha = 0 and beta = 0 at a cut site
+give the sign-wise balance it needs, exactly as Phi = 0 gave the side-wise balance.
