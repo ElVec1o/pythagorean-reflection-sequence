@@ -5368,6 +5368,52 @@ theorem merge_free_iff_top {α : Type*} (d : GData α) (x y u v : α)
       unfold GData.pcost; rw [if_neg (by rw [hy, hu]; simp)]
     omega
 
+/-! ### What the assembly actually pins
+
+`CostMerge.hasFreePair_of_minimal` obtains `a` as a bottom arrival and `D.t a` as a
+bottom departure.  The second arrival comes from `walk_has_arrival_at_site`, which
+returns `y` **or** `D.t y` -- so neither its side nor its departure's side is
+constrained.
+
+Of the six bits deciding freeness (two signs for `a` and `D.t a`, side and sign for
+each of the other two ends), the assembly pins **two**.  Both outcomes occur with the
+pinned bits fixed, so no argument from the shape of the merge can settle freeness. -/
+
+/-- A configuration with `x`, `u` bottoms in which the swap **is** free. -/
+def freeCase : GData (Fin 4) :=
+  ⟨![false, false, false, false], ![true, true, false, false],
+   ![false, false, false, false]⟩
+
+/-- A configuration with `x`, `u` bottoms in which the swap is **not** free. -/
+def unfreeCase : GData (Fin 4) :=
+  ⟨![false, false, false, false], ![true, true, false, false],
+   ![false, true, false, true]⟩
+
+theorem freeCase_bottoms : freeCase.side 0 = false ∧ freeCase.side 2 = false := by
+  constructor <;> rfl
+
+theorem freeCase_is_free :
+    freeCase.pcost 0 2 + freeCase.pcost 1 3 = freeCase.pcost 0 3 + freeCase.pcost 1 2 := by
+  decide
+
+theorem unfreeCase_bottoms : unfreeCase.side 0 = false ∧ unfreeCase.side 2 = false := by
+  constructor <;> rfl
+
+theorem unfreeCase_not_free :
+    unfreeCase.pcost 0 2 + unfreeCase.pcost 1 3
+      ≠ unfreeCase.pcost 0 3 + unfreeCase.pcost 1 2 := by
+  decide
+
+/-- **So the merge's shape does not decide freeness.**  Both outcomes occur with the
+two ends the assembly pins held fixed as bottoms. -/
+theorem merge_shape_undecided :
+    (∃ d : GData (Fin 4), d.side 0 = false ∧ d.side 2 = false ∧
+      d.pcost 0 2 + d.pcost 1 3 = d.pcost 0 3 + d.pcost 1 2) ∧
+    (∃ d : GData (Fin 4), d.side 0 = false ∧ d.side 2 = false ∧
+      d.pcost 0 2 + d.pcost 1 3 ≠ d.pcost 0 3 + d.pcost 1 2) :=
+  ⟨⟨freeCase, freeCase_bottoms.1, freeCase_bottoms.2, freeCase_is_free⟩,
+   ⟨unfreeCase, unfreeCase_bottoms.1, unfreeCase_bottoms.2, unfreeCase_not_free⟩⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5563,3 +5609,4 @@ end EltBridge
 #print axioms EltBridge.merge_needs_class_agreement
 #print axioms EltBridge.merge_free_iff_bottom
 #print axioms EltBridge.merge_free_iff_top
+#print axioms EltBridge.merge_shape_undecided

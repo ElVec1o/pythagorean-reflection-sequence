@@ -4408,3 +4408,30 @@ The theorem stands; its relevance to the merge does not.
 I have now twice reasoned about "the merge's pair" without checking which pair the
 assembly produces: BLOCK 93 assumed same-sided, BLOCK 92 assumed cross-side was
 available. shared_ends_at_wLo settles it and has been in WalkSupport throughout.
+
+## 2026-09-03 — BLOCK 95: the merge's SHAPE does not decide freeness
+
+  freeCase / unfreeCase  -- two GData on Fin 4, both with x and u bottoms
+  merge_shape_undecided  -- **both outcomes occur** with the two ends the assembly pins
+                            held fixed (propext only; the computations by kernel decide)
+
+Queried the assembly rather than reasoning about it. hasFreePair_of_minimal obtains `a`
+as a bottom arrival and `D.t a` as a bottom departure. The second arrival comes from
+walk_has_arrival_at_site, which returns `y` OR `D.t y` -- neither its side nor its
+departure's side is constrained.
+
+So of the six bits deciding freeness (two signs for a and D.t a, side and sign for each
+of the other two ends), the assembly pins TWO. Both outcomes occur with those two fixed.
+
+CONCLUSION FOR THE FREE-SIGN LINE. No argument from the merge's shape can settle
+freeness; it has to come from cost-minimality, and BLOCK 91 proved minimality alone does
+not force it. That is a genuine mathematical gap in the free-sign model, not a
+formalisation gap, and it is now delimited exactly:
+  - the shape pins 2 of 6 bits                        (BLOCK 95)
+  - minimality does not force the remaining condition (BLOCK 91)
+  - and the condition is a genuine iff, not vacuous   (BLOCK 94)
+
+BLOCKS 91-95 have each corrected the previous one's reading of this configuration. The
+pattern is consistent enough to name: I keep reasoning about what the merge produces
+instead of reading the assembly. Every correction came from opening CostMerge, not from
+thinking harder.
