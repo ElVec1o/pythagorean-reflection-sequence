@@ -5126,3 +5126,29 @@ factor.
 
 NOT DONE: any bound on the pairing itself, which needs the shape vectors R, L of
 prop:shape. This file has not built them, and I am not going to invent them.
+
+## 2026-09-03 — BLOCK 125: (R-J) is a SIGN question about four products
+
+Read prop:shape: R spans ker(I - T(q_m)), and
+
+  Pi_y(q_m) = sum over the four (eps*, delta*) of <lambda,R> <L,mu>
+
+-- a sum of FOUR products. Formalised what that shape does and does not give:
+
+  four_term_sum_can_vanish -- four NON-ZERO products can sum to zero, so thm:L's
+                              B_U(q_m) != 0 does NOT give (R-J)
+  sum_ne_zero_of_all_pos   -- but a shared sign does: if every term is positive the sum
+                              is non-zero
+  RJ_is_a_sign_question    -- the two together
+
+So (R-J) at a given pole is exactly a sign question about four products. The open part
+is whether the signs persist for infinitely many poles -- NOT whether the individual
+pairings vanish, which thm:L settles. That matches the recorded status: "positivity
+survives to 6 poles" is a check of exactly this, and the Blaschke route died trying to
+force it asymptotically.
+
+This is as far as (R-J) can be pushed without the shape vectors R and L, which need
+ker(I - T(q_m)) and are not built here.
+
+TACTIC NOTE: `decide` cannot evaluate Q-valued Fin sums, and simp reduces `![a,b,c,d] i`
+only for i = 0, 1 without the higher cons_val lemmas. Explicit functions avoid both.

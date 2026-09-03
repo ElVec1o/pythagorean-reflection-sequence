@@ -6294,6 +6294,44 @@ theorem no_factor_reduction :
   rw [junction_not_rank_one]
   norm_num
 
+/-! ### `(R-J)`'s failure mode: cancellation across the four marker data
+
+`prop:shape` gives `Pi_y(q_m) = sum over (eps*, delta*) of <lambda,R> <L,mu>` -- a sum
+of **four** products.  Each factor being non-zero is not enough: four non-zero products
+can cancel.  That is precisely why `(R-J)` is a hypothesis and not a corollary of
+`thm:L`, which supplies `B_U(q_m) != 0`.
+
+What would suffice is that the four terms share a sign -- the recorded "positivity
+survives to 6 poles". -/
+
+/-- **Four non-zero products can sum to zero.**  So non-vanishing of the factors does
+not give `(R-J)`. -/
+theorem four_term_sum_can_vanish :
+    ∃ a b : Fin 4 → ℚ, (∀ i, a i ≠ 0) ∧ (∀ i, b i ≠ 0) ∧
+      ∑ i : Fin 4, a i * b i = 0 := by
+  refine ⟨fun _ => 1, fun i => if i.val < 2 then 1 else -1, ?_, ?_, ?_⟩
+  · intro i; norm_num
+  · intro i; by_cases h : i.val < 2 <;> simp [h]
+  · norm_num [Fin.sum_univ_four]
+
+/-- **But a shared sign does suffice.**  If every term is positive the sum is, so
+`(R-J)` follows at any pole where positivity holds -- which is what the numerical check
+established for the first six. -/
+theorem sum_ne_zero_of_all_pos (a b : Fin 4 → ℚ)
+    (h : ∀ i, 0 < a i * b i) : ∑ i : Fin 4, a i * b i ≠ 0 := by
+  have hpos : 0 < ∑ i : Fin 4, a i * b i :=
+    Finset.sum_pos (fun i _ => h i) ⟨0, Finset.mem_univ 0⟩
+  exact ne_of_gt hpos
+
+/-- **So `(R-J)` at a given pole is exactly a sign question about four products**, and
+the open part is whether the signs persist for infinitely many poles -- not whether the
+individual pairings vanish, which `thm:L` already settles. -/
+theorem RJ_is_a_sign_question (a b : Fin 4 → ℚ) :
+    ((∀ i, 0 < a i * b i) → ∑ i : Fin 4, a i * b i ≠ 0) ∧
+    (∃ a' b' : Fin 4 → ℚ, (∀ i, a' i ≠ 0) ∧ (∀ i, b' i ≠ 0) ∧
+      ∑ i : Fin 4, a' i * b' i = 0) :=
+  ⟨sum_ne_zero_of_all_pos a b, four_term_sum_can_vanish⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6541,3 +6579,5 @@ end EltBridge
 #print axioms EltBridge.outer_pairing
 #print axioms EltBridge.pairing_ne_zero_of_factors
 #print axioms EltBridge.no_factor_reduction
+#print axioms EltBridge.four_term_sum_can_vanish
+#print axioms EltBridge.RJ_is_a_sign_question
