@@ -3636,3 +3636,28 @@ SO THE HONEST STATEMENT OF THE SHIELD LAW'S STATUS:
 The obstruction is not in the extension, the virtual pair, or the transport. It is in
 hZ itself, and it was there before tonight -- BLOCK 4 found it (hZ vs hocc) and I
 treated the run form as a repair. The run form removed hocc; it did not remove hZ.
+
+## 2026-09-03 — BLOCK 61: hturn WITHOUT hZ — the correct replacement
+
+  hturn_of_cross_zero -- hturn derived from "the optimal plan at each cut site has zero
+                         cross", with NO hZ anywhere
+
+The paper's condition at a cut site is that no strand CROSSES
+(SiteCost.cut_forces_no_cross), not that the site is empty. In the walk model that is
+exactly hturn: the turn keeps the edge. ConfigLoop already had both halves --
+no_cross_at_cut and turn_keeps_edge_of_cross_zero -- and chaining them gives hturn
+directly.
+
+Both roles are covered: for an arrival the bridge lemma applies as stated; for a
+departure, turnAt_invol reduces it to the arrival case (its turn IS an arrival at the
+same site, and turning back returns x).
+
+WHY THIS MATTERS. BLOCK 60 showed hZ is unsatisfiable inside a PathData span, so every
+shield law resting on hZ is inapplicable to group elements. hturn_of_cross_zero shows
+hZ was never needed: the hypothesis the argument actually wants is zero-crossing at cut
+sites, which is what cut_forces_no_cross supplies and what a cost-minimal realisation
+satisfies by construction.
+
+So the repair is not to weaken hZ but to DELETE it. The lemmas it was serving --
+hturn_step on the Endpt side, and the hturn hypothesis of the generic shield law --
+should take zero-crossing instead.

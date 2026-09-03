@@ -3358,6 +3358,50 @@ theorem no_arrivalfree_inside_span (P : SiteCost.PathData) (s : ℤ)
   have h0 := hempty s (Or.inl rfl)
   omega
 
+/-! ### The correct replacement for `hZ`
+
+The paper's condition at a cut site is that **no strand crosses**
+(`SiteCost.cut_forces_no_cross`), not that the site is empty.  In the walk model that
+is exactly `hturn`: the turn keeps the edge.  `ConfigLoop` already has both halves of
+the bridge -- `no_cross_at_cut` (a cut site's optimal plan has zero cross) and
+`turn_keeps_edge_of_cross_zero`.  Chaining them derives `hturn` **without `hZ`**. -/
+
+/-- **`hturn` from zero crossing at the cut sites.**
+
+Both roles are covered: for an arrival the bridge lemma applies directly, and for a
+departure the turn's involutivity reduces it to the arrival case. -/
+theorem hturn_of_cross_zero {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (ds : Bool → Bool)
+    (Zf : Finset ℤ)
+    (hbal : ∀ s : ℤ, (EndType.arrAt (m := m) up s).card
+      = (EndType.depAt (m := m) up s).card)
+    (hcross : ∀ s ∈ Zf, (ConfigLoop.planAt up ds s (hbal s)).cross = 0) :
+    ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (DataBuild.turn up x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf := by
+  intro x hne hmem
+  refine hne ?_
+  have hkeep := ConfigLoop.turn_keeps_edge_of_cross_zero (m := m) up ds
+    (EndType.siteOf x) (hbal _) (hcross _ hmem)
+  show EndType.edgeOf (DataBuild.turnAt up (EndType.siteOf x) x) = EndType.edgeOf x
+  cases hax : EndType.isArrOf up x with
+  | true =>
+    exact hkeep x ((EndType.mem_arrAt up _ x).mpr ⟨rfl, hax⟩)
+  | false =>
+    -- a departure: its turn is an arrival at the same site, and the turn is an
+    -- involution there, so the arrival case applies to the image
+    set y := DataBuild.turnAt up (EndType.siteOf x) x with hy
+    have hxdep : x ∈ EndType.depAt (m := m) up (EndType.siteOf x) :=
+      (EndType.mem_depAt up _ x).mpr ⟨rfl, hax⟩
+    have hyarr : y ∈ EndType.arrAt (m := m) up (EndType.siteOf x) :=
+      DataBuild.turnAt_dep up _ (hbal _) x hxdep
+    have hys : EndType.siteOf y = EndType.siteOf x :=
+      ((EndType.mem_arrAt up _ y).mp hyarr).1
+    have hinv : DataBuild.turnAt up (EndType.siteOf x) y = x :=
+      DataBuild.turnAt_invol up _ x
+    have := hkeep y hyarr
+    rw [hinv] at this
+    exact this.symm
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3493,3 +3537,4 @@ end EltBridge
 #print axioms EltBridge.witNeg_end_at_cut
 #print axioms EltBridge.pd_edges_occupied
 #print axioms EltBridge.no_arrivalfree_inside_span
+#print axioms EltBridge.hturn_of_cross_zero
