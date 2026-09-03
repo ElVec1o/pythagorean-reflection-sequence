@@ -727,6 +727,66 @@ theorem reflect_reflect_d : g.reflect.reflect.d = g.d := by
 
 end Elt
 
+/-! ### `kstar < 0` closes directly, with the other orientation
+
+No transport along the reflection is needed.  `bnd` and the `atTop` orientation are
+free, and BLOCK 15 recorded that the residual condition *moves* between the two
+virtual ends with that choice.  For `kstar < 0` take `bnd = -1` and the opposite
+orientation -- virtual arrival a **top**, virtual departure a **bottom**.  Then:
+
+* the arrival satisfies the site-edge relation outright: its site is `0 = -1 + 1`;
+* the departure is a bottom, so it takes the first disjunct of `hsW` for free;
+* and `hsX` reaches the departure only when the walk's leftmost edge is `-1`, which
+  with `wLo <= kstar <= -1` forces `kstar = -1` -- exactly the case where the relation
+  holds at the departure too.
+
+So both hypotheses hold with **no side condition**. -/
+
+/-- The opposite orientation: virtual arrival a top, virtual departure a bottom. -/
+def VEndpt.atTopN {n : ℕ} {mm : Fin n → ℕ} : VEndpt n mm → Bool
+  | .inl x => EndType.atTop x
+  | .inr b => !b
+
+/-- `hpt` still holds in the opposite orientation. -/
+theorem VEndpt.hptN {n : ℕ} {mm : Fin n → ℕ} (x : VEndpt n mm) :
+    VEndpt.atTopN (VEndpt.partner x) = !VEndpt.atTopN x := by
+  cases x with
+  | inl y => rfl
+  | inr b => cases b <;> rfl
+
+/-- **`hsW` holds with no side condition when `kstar < 0`.** -/
+theorem VEndpt.hsW_neg {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ) (w : ℤ) :
+    ∀ x : VEndpt n mm, VEndpt.site kstar x = w →
+      VEndpt.atTopN x = false ∨
+        VEndpt.site kstar x
+          = VEndpt.edgeOf (-1) x + (if VEndpt.atTopN x then 1 else 0) := by
+  intro x _
+  cases x with
+  | inl y => exact Or.inr rfl
+  | inr b =>
+    cases b
+    · exact Or.inr (by simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN])
+    · exact Or.inl rfl
+
+/-- **`hsX` holds with no side condition when `kstar < 0`**, given that the walk
+reaches back to the cursor -- which it does, the virtual departure sitting there. -/
+theorem VEndpt.hsX_neg {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ) (w : ℤ)
+    (hk : kstar < 0) (hwlo : w ≤ kstar) :
+    ∀ x : VEndpt n mm, VEndpt.edgeOf (-1) x = w → VEndpt.atTopN x = false →
+      VEndpt.site kstar x
+        = VEndpt.edgeOf (-1) x + (if VEndpt.atTopN x then 1 else 0) := by
+  intro x hx _
+  cases x with
+  | inl y => rfl
+  | inr b =>
+    cases b
+    · -- the arrival is a top here, so this branch is excluded by the third hypothesis
+      simp [VEndpt.atTopN] at *
+    · -- the departure: `edgeOf = -1 = w <= kstar <= -1` forces `kstar = -1`
+      have hw : w = -1 := by simpa [VEndpt.edgeOf] using hx.symm
+      have : kstar = -1 := by omega
+      simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN, this]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -762,3 +822,6 @@ end EltBridge
 #print axioms EltBridge.travel_reflect
 #print axioms EltBridge.Elt.reflect
 #print axioms EltBridge.Elt.reflect_kstar_pos
+#print axioms EltBridge.VEndpt.hptN
+#print axioms EltBridge.VEndpt.hsW_neg
+#print axioms EltBridge.VEndpt.hsX_neg

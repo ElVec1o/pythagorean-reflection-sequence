@@ -2490,3 +2490,38 @@ this block reduces the range for the ELEMENT, not yet for the walk argument.
 Also noted: `occ` is not exactly equivariant, because it inserts 0 while the
 reflection sends 0 to -1. The span endpoints A, B therefore swap only up to that
 off-by-one, which is why the transport needs writing rather than asserting.
+
+## 2026-09-03 — BLOCK 18: kstar < 0 closes DIRECTLY; no transport needed
+
+BLOCK 17 built the reflection and said the remaining piece was an isomorphism
+VEndpt(g) ~ VEndpt(g.reflect). It is not needed. BLOCK 15 had already recorded that
+the residual condition MOVES between the two virtual ends with the choice of bnd and
+the atTop orientation; for kstar < 0 the other choice puts it where it is automatic.
+
+Take bnd = -1 and the opposite orientation -- virtual arrival a TOP, virtual departure
+a BOTTOM:
+
+  VEndpt.atTopN   -- the opposite orientation
+  VEndpt.hptN     -- hpt still holds (axiom-free)
+  VEndpt.hsW_neg  -- hsW holds with NO side condition
+  VEndpt.hsX_neg  -- hsX holds with NO side condition, given w <= kstar
+
+Why: the arrival's site is 0 = -1 + 1, so it satisfies the site-edge relation
+outright; the departure is a bottom, so it takes hsW's first disjunct for free; and
+hsX reaches the departure only when the walk's leftmost edge is -1, which with
+w <= kstar <= -1 forces kstar = -1 -- exactly the case where the relation holds at the
+departure too.
+
+STATUS: the locality hypotheses of the merge development are now satisfiable for ALL
+kstar != 0 -- kstar > 0 by BLOCK 16 (original orientation), kstar < 0 by BLOCK 18
+(opposite orientation). kstar = 0 is excluded by partner_site_ne.
+
+The reflection of BLOCK 17 is therefore not on the critical path. It stays in the file
+as a proved involution on Elt; it is no longer needed for this argument.
+
+REMAINING FOR B1, precisely:
+  (a) a `Data` on VEndpt -- the TURN. `VEndpt.balanced` supplies hbal; what is missing
+      is the analogue of `dataOf`, building the turn permutation from it.
+  (b) the remaining ~14 WalkSupport declarations and CostMerge's 15 hsite mentions,
+      converted to the localized forms proved in BLOCKS 13-15.
+Neither is now blocked on a mathematical question.
