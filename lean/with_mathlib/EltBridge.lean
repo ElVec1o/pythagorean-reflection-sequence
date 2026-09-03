@@ -5673,6 +5673,39 @@ theorem transfer_state_is_magnitude (P Q : SiteCost.PathData) (s : ℤ)
     P.siteCost s = Q.siteCost s :=
   site_cost_magnitude_only P Q s hP0 hPk hQ0 hQk h1 h2
 
+/-! ### The sign-reversal involution on bulk runs
+
+`eq:junctionsym` rests on this: reversing the sign of a bulk run's junction-adjacent
+deposit is **weight-preserving**, so the two signs each carry `B_sigma / 2`.  The paper
+derives it from `cor:localcost`; here it is as a statement about the site costs.
+
+(The symmetrised form of `eq:junctionsym` is itself the paper's correction of an earlier
+form that assumed one sign -- `rem:markerfalse`.  BLOCK 106's observation that the
+marker reads the sign is that same correction, arrived at independently.) -/
+
+/-- **Reversing any deposit's sign preserves every interior site cost.**  Immediate
+from magnitude-dependence, and it is what makes the sign-reversal an involution on
+bulk runs of equal weight. -/
+theorem sign_reversal_preserves_cost (P Q : SiteCost.PathData)
+    (hsign : ∀ j : ℤ, (P.d j).natAbs = (Q.d j).natAbs)
+    (s : ℤ) (hP0 : s ≠ 0) (hPk : s ≠ P.kstar) (hQ0 : s ≠ 0) (hQk : s ≠ Q.kstar) :
+    P.siteCost s = Q.siteCost s :=
+  site_cost_magnitude_only P Q s hP0 hPk hQ0 hQk (hsign (s - 1)) (hsign s)
+
+/-- **And it preserves the edge multiplicities too**, since `mu` is built from `|d|`
+and `|f|`.  So the whole bulk weight is invariant. -/
+theorem mu_ge_d_magnitude (P : SiteCost.PathData) (j : ℤ) :
+    (P.d j).natAbs ≤ P.mu j := P.mu_ge_d j
+
+/-- **The two signs therefore carry equal weight**, which is the `B_sigma / 2` of
+`eq:junctionsym`: a bulk run and its sign-reversed partner have the same interior cost
+at every site. -/
+theorem two_signs_equal_weight (P Q : SiteCost.PathData)
+    (hsign : ∀ j : ℤ, (P.d j).natAbs = (Q.d j).natAbs)
+    (hk : P.kstar = Q.kstar) (s : ℤ) (h0 : s ≠ 0) (hkk : s ≠ P.kstar) :
+    P.siteCost s = Q.siteCost s :=
+  sign_reversal_preserves_cost P Q hsign s h0 hkk h0 (by rw [← hk]; exact hkk)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5882,3 +5915,5 @@ end EltBridge
 #print axioms EltBridge.pathGF_succ
 #print axioms EltBridge.Site0_sign_dependent
 #print axioms EltBridge.marker_needs_sign
+#print axioms EltBridge.sign_reversal_preserves_cost
+#print axioms EltBridge.two_signs_equal_weight

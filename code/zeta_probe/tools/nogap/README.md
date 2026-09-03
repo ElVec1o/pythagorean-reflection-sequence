@@ -4694,3 +4694,32 @@ the missing bit.
   (iii) the state is sigma, with the sign in the markers  BLOCK 106           DONE
 What is left of (M3a) is writing the paper's lambda and mu explicitly and checking they
 are the pathGF boundary vectors -- transcription against cor:marker and eq:junctionsym.
+
+## 2026-09-03 — BLOCK 107: the sign-reversal involution; and BLOCK 106 was a rediscovery
+
+Read eq:junctionsym. The paragraph introducing it says:
+
+  "Every bulk edge cost and every interior bulk site cost depends on the deposit only
+   through its magnitude (Corollary cor:localcost), so reversing the sign of the
+   junction-adjacent deposit of a bulk run is a weight-preserving involution ... the two
+   signs carry B_sigma/2 each"
+
+So the paper already states BLOCK 104's magnitude-sufficiency, citing cor:localcost. And
+the SYMMETRISED form of eq:junctionsym -- averaging x^max(sigma-1,..) and
+x^max(sigma+1,..) -- IS the correction for the sign, with the earlier one-sign form
+recorded as false (rem:markerfalse). BLOCK 106's finding that the marker reads the sign
+is that same correction, reached independently.
+
+Second rediscovery of the session, after BLOCK 85. Both times the fact was in the source
+I was working from and I derived it instead of reading it.
+
+WHAT IS ACTUALLY NEW HERE:
+  sign_reversal_preserves_cost -- the involution, as a Lean theorem rather than a cited
+                                  corollary
+  two_signs_equal_weight       -- so the two signs carry equal weight: the B_sigma/2 of
+                                  eq:junctionsym
+  (and BLOCK 105's pathGF_succ, which is not in the paper as a separate statement)
+
+So (M3a)'s three parts are all either proved or matched to the paper, and the remaining
+work is transcription of lambda and mu -- which eq:junctionsym now gives explicitly for
+mu, indexed by the travel state s and formed from the B_sigma exactly as pathGF wants.
