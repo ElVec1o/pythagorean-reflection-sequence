@@ -5414,6 +5414,42 @@ theorem merge_shape_undecided :
   ⟨⟨freeCase, freeCase_bottoms.1, freeCase_bottoms.2, freeCase_is_free⟩,
    ⟨unfreeCase, unfreeCase_bottoms.1, unfreeCase_bottoms.2, unfreeCase_not_free⟩⟩
 
+/-! ### In the forced model `hturn` is free
+
+`hturn` says a turn changing edge sits at a non-cut site.  If **no end at all** sits at
+a cut site, its conclusion holds for every end and the hypothesis is vacuous -- no
+zero-cost plan needed.
+
+And in the forced model no end does sit at a cut site: `alpha = 0` there forces the
+site empty (`ConfigLoop.no_ends_of_alpha_zero`).  So `HasInitialTurnInv` reduces to
+plain cost-minimality, and BLOCKS 70-77's search for a zero-cost plan was solving a
+problem the forced model does not have. -/
+
+/-- **`hturn` holds whenever no end sits at a cut site.** -/
+theorem hturn_of_no_end_at_cut {α : Type*} (siteOf edgeOf : α → ℤ) (Zf : Finset ℤ)
+    (t : α → α) (h : ∀ x : α, siteOf x ∉ Zf) :
+    ∀ x : α, edgeOf (t x) ≠ edgeOf x → siteOf x ∉ Zf :=
+  fun x _ => h x
+
+/-- **So in the forced model the invariant costs nothing extra**: a cost-minimal datum
+is already in `TurnInv`, provided cut sites carry no ends. -/
+theorem turnInv_of_mergesMin_of_empty_cuts {n : ℕ} {m : Fin n → ℕ}
+    (d : EndData.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (hempty : ∀ x : EndType.Endpt n m, EndType.siteOf x ∉ Zf)
+    (D : WalkGraph.Data (EndType.Endpt n m))
+    (hD : CostMerge.MergesMin EndType.siteOf d.isArr EndType.partner d D) :
+    TurnInv d Zf D :=
+  ⟨hD, hturn_of_no_end_at_cut EndType.siteOf EndType.edgeOf Zf D.t hempty⟩
+
+/-- **And the shield law then applies with no extra input.**  The catch, proved in
+BLOCK 60, is that a `PathData` span has no empty site, so `hempty` forces `Zf` to miss
+the interior entirely -- i.e. `Z = 0`, where the shield law says `walkCount = 1` and is
+`thm:nogap`. -/
+theorem shield_trivial_when_cuts_empty {n : ℕ} {m : Fin n → ℕ}
+    (Zf : Finset ℤ) (hempty : ∀ x : EndType.Endpt n m, EndType.siteOf x ∉ Zf)
+    (s : ℤ) (hs : s ∈ Zf) (x : EndType.Endpt n m) : EndType.siteOf x ≠ s :=
+  fun hc => hempty x (hc ▸ hs)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5610,3 +5646,5 @@ end EltBridge
 #print axioms EltBridge.merge_free_iff_bottom
 #print axioms EltBridge.merge_free_iff_top
 #print axioms EltBridge.merge_shape_undecided
+#print axioms EltBridge.hturn_of_no_end_at_cut
+#print axioms EltBridge.turnInv_of_mergesMin_of_empty_cuts

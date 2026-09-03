@@ -4435,3 +4435,31 @@ BLOCKS 91-95 have each corrected the previous one's reading of this configuratio
 pattern is consistent enough to name: I keep reasoning about what the merge produces
 instead of reading the assembly. Every correction came from opening CostMerge, not from
 thinking harder.
+
+## 2026-09-03 — BLOCK 96: in the forced model hturn is FREE
+
+  hturn_of_no_end_at_cut           -- hturn holds whenever NO end sits at a cut site:
+                                      its conclusion is then true for every end, so the
+                                      hypothesis is vacuous
+  turnInv_of_mergesMin_of_empty_cuts -- so a cost-minimal datum is already in TurnInv
+  shield_trivial_when_cuts_empty   -- and the catch: with cut sites empty, Zf misses the
+                                      span interior entirely
+
+BLOCKS 70-77 spent seven blocks looking for a zero-cost plan at cut sites to establish
+hturn. In the forced model hturn needs no such thing: no_ends_of_alpha_zero says cut
+sites are EMPTY, so no end has its site in Zf, so hturn's conclusion holds for every end
+by vacuity. HasInitialTurnInv reduces to plain cost-minimality, which exists_mergesMin
+already supplies.
+
+The route was never tried because I read hturn as a condition ON the turn and asked how
+to build a turn satisfying it, rather than reading it as a condition on the SITES and
+asking whether any end is at one.
+
+WHAT IT BUYS, honestly: nothing new for the shield law. hturn being free is only useful
+where cut sites are empty, and BLOCK 60 showed that forces Z = 0 inside a span -- where
+the shield law degenerates to thm:nogap, already proved. So this closes BLOCK 70's
+stated gap and confirms the gap was never load-bearing.
+
+The two models' final profiles, both proved:
+  forced   hturn free, cut sites empty, shield law only at Z = 0
+  free     cut sites can be occupied, but free pairs are not forced (BLOCKS 91, 95)
