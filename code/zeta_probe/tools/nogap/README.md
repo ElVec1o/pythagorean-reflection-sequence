@@ -4778,3 +4778,30 @@ cited in this file.
   the theorem           BLOCK 105   pathGF_succ
 What remains is the sum-splitting: writing lR's site sum as interior + the two markers,
 which is a Finset.sum decomposition over Icc A (B+1) minus two points.
+
+## 2026-09-03 — BLOCK 110: lR's site sum split at the two markers — (M3a)'s transcription complete
+
+  lR_site_split      -- the site sum over Icc A (B+1) splits into the interior sites and
+                        the two junctions, whose costs ARE Site0 and FarSite
+  lR_interior_terms  -- and every interior term is max |d(s-1)| |d(s)|, a
+                        nearest-neighbour coupling in the magnitudes
+
+So (M3a) is now transcribed end to end:
+
+  lR = sum of mu over edges                                    (lR_eq, BLOCK 7)
+     + sum over INTERIOR sites of max |d(s-1)| |d(s)|          (BLOCK 110)
+     + Site0 at the near junction                              (BLOCK 109)
+     + FarSite at the far junction, carrying (eps*, delta*)    (BLOCKS 108, 109)
+
+and that shape is exactly pathGF's: boundary vector, transfer entries, boundary vector,
+with the state the deposit magnitude (BLOCK 104) and the transfer recursion proved
+(pathGF_succ, BLOCK 105).
+
+WHAT (M3a) STILL LACKS: the generating-function step. Everything above is about a SINGLE
+element's lR. (M3a) asserts the same for the SUM over all elements -- that summing
+x^lR over deposit sequences gives the matrix product. pathGF_succ is that statement in
+the abstract; connecting it needs the sum over sequences to be organised by the
+magnitude path, which is the standard argument but is not written.
+
+So (M3) decomposes as: (M3a) single-element shape DONE, (M3a) generating-function step
+NOT DONE, (M3b) resolvent form -- algebra given the first two.

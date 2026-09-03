@@ -5777,6 +5777,40 @@ theorem siteCost_at_kstar (P : SiteCost.PathData) (hk : P.kstar ≠ 0) :
   · simp
   · simp
 
+/-! ### Splitting `lR`'s site sum at the two markers
+
+The last piece of the transcription: `lR`'s site sum over `Icc A (B+1)` splits into the
+interior sites and the two junctions, whose costs are `Site0` and `FarSite`. -/
+
+/-- **The site sum splits at the two markers.** -/
+theorem lR_site_split (P : SiteCost.PathData) (hk : 0 < P.kstar) (hkB : P.kstar ≤ P.B) :
+    ∑ s ∈ Finset.Icc P.A (P.B + 1), P.siteCost s
+      = (∑ s ∈ (Finset.Icc P.A (P.B + 1)) \ {0, P.kstar}, P.siteCost s)
+        + (Site0 (P.d (-1)) (P.d 0)
+          + FarSite P.eps P.delta (P.d (P.kstar - 1)) (P.d P.kstar)) := by
+  classical
+  have hA := P.hA
+  have hB := P.hB
+  have hne : (0 : ℤ) ≠ P.kstar := by omega
+  have hsub : ({0, P.kstar} : Finset ℤ) ⊆ Finset.Icc P.A (P.B + 1) := by
+    intro z hz
+    rcases Finset.mem_insert.mp hz with h | h
+    · rw [h]; exact Finset.mem_Icc.mpr ⟨hA, by omega⟩
+    · rw [Finset.mem_singleton.mp h]
+      exact Finset.mem_Icc.mpr ⟨by omega, by omega⟩
+  rw [← Finset.sum_sdiff hsub, Finset.sum_pair hne,
+    siteCost_at_zero P (by omega), siteCost_at_kstar P (by omega)]
+
+/-- **And the interior terms are the magnitude coupling.**  Every site outside the two
+markers costs `max |d(s-1)| |d(s)|`, so the interior sum is a nearest-neighbour sum in
+the magnitudes -- which is what `pathGF` consumes. -/
+theorem lR_interior_terms (P : SiteCost.PathData) (s : ℤ)
+    (hs : s ∈ (Finset.Icc P.A (P.B + 1)) \ {0, P.kstar}) :
+    P.siteCost s = max (P.d (s - 1)).natAbs (P.d s).natAbs := by
+  classical
+  rw [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, not_or] at hs
+  exact site_cost_couples P s hs.2.1 hs.2.2
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5993,3 +6027,5 @@ end EltBridge
 #print axioms EltBridge.marker_asymmetry
 #print axioms EltBridge.siteCost_at_zero
 #print axioms EltBridge.siteCost_at_kstar
+#print axioms EltBridge.lR_site_split
+#print axioms EltBridge.lR_interior_terms
