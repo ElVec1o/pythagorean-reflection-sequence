@@ -4941,6 +4941,71 @@ theorem per_edge_sign_collapses {n : ℕ} {m : Fin n → ℕ} (up : Fin n → �
     exact Fin.ext (by exact_mod_cast h1)
   rw [this]
 
+/-! ### The four class counts at a site -/
+
+/-- The number of ends of a set in a given `(side, sign)` class. -/
+noncomputable def clsCount {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (S : Finset α) (sd sg : Bool) : ℕ := by
+  classical
+  exact (S.filter (fun x => d.side x = sd ∧ d.sgnOf x = sg)).card
+
+/-- **The four classes partition a set.** -/
+theorem clsCount_sum {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (S : Finset α) :
+    clsCount d S true true + clsCount d S true false
+      + clsCount d S false true + clsCount d S false false = S.card := by
+  classical
+  have hside := Finset.filter_card_add_filter_neg_card_eq_card
+    (s := S) (p := fun x => d.side x = true)
+  have hT := Finset.filter_card_add_filter_neg_card_eq_card
+    (s := S.filter (fun x => d.side x = true)) (p := fun x => d.sgnOf x = true)
+  have hF := Finset.filter_card_add_filter_neg_card_eq_card
+    (s := S.filter (fun x => ¬ d.side x = true)) (p := fun x => d.sgnOf x = true)
+  have e1 : clsCount d S true true
+      = ((S.filter (fun x => d.side x = true)).filter (fun x => d.sgnOf x = true)).card := by
+    unfold clsCount; rw [Finset.filter_filter]
+  have e2 : clsCount d S true false
+      = ((S.filter (fun x => d.side x = true)).filter
+          (fun x => ¬ d.sgnOf x = true)).card := by
+    unfold clsCount; rw [Finset.filter_filter]
+    congr 1; ext x; simp only [Finset.mem_filter, Bool.not_eq_true]
+  have e3 : clsCount d S false true
+      = ((S.filter (fun x => ¬ d.side x = true)).filter
+          (fun x => d.sgnOf x = true)).card := by
+    unfold clsCount; rw [Finset.filter_filter]
+    congr 1; ext x; simp only [Finset.mem_filter, Bool.not_eq_true]
+  have e4 : clsCount d S false false
+      = ((S.filter (fun x => ¬ d.side x = true)).filter
+          (fun x => ¬ d.sgnOf x = true)).card := by
+    unfold clsCount; rw [Finset.filter_filter]
+    congr 1; ext x; simp only [Finset.mem_filter, Bool.not_eq_true]
+  rw [e1, e2, e3, e4]
+  omega
+
+/-- **Per-class balance at a cut site.**
+
+The three vanishing quantities plus the site's total balance force each of the four
+classes to match, which is what `exists_zero_cost_turn` consumes. -/
+theorem class_balance_of_cut {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (A D : Finset α)
+    (ha : SiteCost.alpha (clsCount d A true true) (clsCount d A true false)
+      (clsCount d D true true) (clsCount d D true false) = 0)
+    (hb : SiteCost.beta (clsCount d A false true) (clsCount d A false false)
+      (clsCount d D false true) (clsCount d D false false) = 0)
+    (hf : SiteCost.Phi (clsCount d A true true) (clsCount d A true false)
+      (clsCount d D true true) (clsCount d D true false) = 0)
+    (htot : A.card = D.card) :
+    ∀ sd sg : Bool, clsCount d A sd sg = clsCount d D sd sg := by
+  have hsA := clsCount_sum d A
+  have hsD := clsCount_sum d D
+  obtain ⟨h1, h2, h3, h4⟩ := four_classes_match
+    (clsCount d A true true) (clsCount d A true false)
+    (clsCount d A false true) (clsCount d A false false)
+    (clsCount d D true true) (clsCount d D true false)
+    (clsCount d D false true) (clsCount d D false false) ha hb hf (by omega)
+  intro sd sg
+  cases sd <;> cases sg <;> assumption
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5118,3 +5183,5 @@ end EltBridge
 #print axioms EltBridge.four_classes_match
 #print axioms EltBridge.configGData
 #print axioms EltBridge.per_edge_sign_collapses
+#print axioms EltBridge.clsCount_sum
+#print axioms EltBridge.class_balance_of_cut

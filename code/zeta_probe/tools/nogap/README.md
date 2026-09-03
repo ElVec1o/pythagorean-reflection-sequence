@@ -4155,3 +4155,27 @@ STATUS OF THE FREE-SIGN LINE. The construction chain is complete in the abstract
 What remains is to connect it to a configuration: define the four class counts at a site
 of a configGData, show they are the Ap/Am/Bp/Bm/Cp/Cm/Dp/Dm of the site model, and
 apply. That is bookkeeping between two indexings, not new mathematics.
+
+## 2026-09-03 — BLOCK 83: the four class counts, and per-class balance at a cut site
+
+  clsCount               -- the number of ends of a set in a given (side, sign) class
+  clsCount_sum           -- the four classes PARTITION a set (two nested applications of
+                            filter_card_add_filter_neg_card_eq_card)
+  class_balance_of_cut   -- **alpha = beta = Phi = 0 plus the site's total balance force
+                            each of the four classes to match**
+
+class_balance_of_cut is precisely the hypothesis exists_zero_cost_turn (BLOCK 80)
+consumes. So the free-sign chain is now closed from the cut condition to the turn:
+
+  alpha = beta = Phi = 0, total balance
+    -> clsCount A sd sg = clsCount D sd sg for all four classes   (BLOCK 83)
+    -> a zero-cost involution pairing within classes              (BLOCK 80)
+    -> it preserves side and sign, hence the edge                 (BLOCK 80)
+    -> hturn at that site
+
+with no hZ and no empty cut site anywhere. That is the object BLOCK 70 named as missing
+and BLOCK 77 proved cannot exist in the forced-sign model.
+
+The partition lemma needed Bool.not_eq_true rather than Bool.eq_false_iff to convert
+`sgnOf x = false` into `¬ sgnOf x = true`; the filter predicates are stated one way and
+Finset's negation lemma the other.
