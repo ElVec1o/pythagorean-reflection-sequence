@@ -8087,3 +8087,23 @@ of configurations at each degree, and then the sum identity itself.  The bounds 
 mathematical content and they are done; what remains is `Fintype` plumbing -- injecting
 the bounded data into a product of finite intervals.  That is real Lean work but no new
 mathematics, and until it is written (M3) stays yellow.
+
+## 2026-09-04 — BLOCK 221: finitely much data determines a bounded-degree configuration
+
+The bounds of BLOCK 220 turn into finiteness through this: a configuration of relaxed
+length at most `N` is pinned down by `kstar`, `eps`, `delta`, `A`, `B` and its deposits ON
+`[-N, N]` ONLY -- everything outside is forced to vanish, because the span cannot reach
+there.
+
+    pathData_eq_of_agree   a configuration of degree <= N is determined by that data
+    pathData_box           and every coordinate of it is bounded by N
+
+0 sorry, both clean on the first build.
+
+**The remaining step is named and scoped.**  Assembling `Set.Finite {P | P.lR <= N}` from
+the box needs `Set.Finite.of_finite_image` with `Set.InjOn` (from `pathData_eq_of_agree`),
+the image contained in a product of intervals via `Set.Finite.prod` and `Set.Finite.pi`
+over the Fintype `Icc (-N) N`.  All three lemmas were located in this Mathlib -- they are
+in `Data/Set/Finite/Basic.lean`, `Data/Finite/Prod.lean` and `Data/Fintype/Pi.lean`.  It
+is a five-factor product plus a pi; I stopped rather than grind it inside one block, which
+is the three-strike rule applied before the strikes rather than after.

@@ -6609,6 +6609,41 @@ theorem kstar_bounds (P : SiteCost.PathData) :
   have h := span_bounds P
   exact ⟨le_trans h.1 (A_le_kstar P), le_trans (kstar_le_B_succ P) (by omega)⟩
 
+/-! ### Finitely much data determines a configuration of bounded degree
+
+The bounds of BLOCK 220 turn into finiteness through this: a configuration of relaxed
+length at most `N` is pinned down by its `kstar`, `eps`, `delta`, `A`, `B` and its
+deposits **on `[-N, N]` only** -- everything outside is forced to vanish, because the span
+cannot reach there.  So the data is a point of a bounded box. -/
+
+/-- **A configuration of degree at most `N` is determined by finitely much data.** -/
+theorem pathData_eq_of_agree (N : ℕ) {P Q : SiteCost.PathData} (hP : P.lR ≤ N) (hQ : Q.lR ≤ N)
+    (hk : P.kstar = Q.kstar) (he : P.eps = Q.eps) (hd : P.delta = Q.delta)
+    (hA : P.A = Q.A) (hB : P.B = Q.B)
+    (hdd : ∀ j : ℤ, -(N : ℤ) ≤ j → j ≤ (N : ℤ) → P.d j = Q.d j) : P = Q := by
+  refine pathData_ext hk he hd ?_ hA hB
+  funext j
+  have hPb := span_bounds P
+  have hQb := span_bounds Q
+  have hPN : (P.lR : ℤ) ≤ (N : ℤ) := by exact_mod_cast hP
+  have hQN : (Q.lR : ℤ) ≤ (N : ℤ) := by exact_mod_cast hQ
+  by_cases hj : -(N : ℤ) ≤ j ∧ j ≤ (N : ℤ)
+  · exact hdd j hj.1 hj.2
+  · rw [(P.houter j (by omega)).1, (Q.houter j (by omega)).1]
+
+/-- **And that data lies in a box of size set by `N`.**  Every coordinate is bounded, so
+the configurations of degree at most `N` inject into a finite product. -/
+theorem pathData_box (N : ℕ) (P : SiteCost.PathData) (hP : P.lR ≤ N) :
+    -(N : ℤ) ≤ P.A ∧ P.A ≤ 0 ∧ 0 ≤ P.B ∧ P.B ≤ (N : ℤ)
+      ∧ -(N : ℤ) ≤ P.kstar ∧ P.kstar ≤ (N : ℤ) + 1
+      ∧ (P.eps = 1 ∨ P.eps = -1)
+      ∧ ∀ j : ℤ, (P.d j).natAbs ≤ N := by
+  have hb := span_bounds P
+  have hk := kstar_bounds P
+  have hPN : (P.lR : ℤ) ≤ (N : ℤ) := by exact_mod_cast hP
+  refine ⟨by omega, P.hA, P.hB, by omega, by omega, by omega, P.heps, fun j => ?_⟩
+  exact le_trans (abs_d_le_lR P j) hP
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14212,3 +14247,5 @@ end EltBridge
 #print axioms EltBridge.abs_d_le_lR
 #print axioms EltBridge.span_bounds
 #print axioms EltBridge.kstar_bounds
+#print axioms EltBridge.pathData_eq_of_agree
+#print axioms EltBridge.pathData_box
