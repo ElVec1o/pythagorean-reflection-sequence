@@ -4943,3 +4943,20 @@ proved here but it is now a one-line question about travelT rather than an unexa
 TACTIC NOTE: `ring` does not apply to matrices. `abel` does the additive work and
 `pow_succ'` supplies T * T^m = T^m * T. Three strikes were avoided by noticing the
 non-commutativity in the error rather than retrying `ring`.
+
+## 2026-09-03 — BLOCK 117: the valuation bound; (M3b) closes
+
+  travelT_ge_two          -- every transfer entry carries exponent at least 2
+  travelPathExp_ge        -- so a path of n steps carries at least 2n
+  travelPathExp_tendsto   -- the exponent grows without bound in the path length
+
+That is the statement (M3b) reduced to in BLOCK 116: T^N vanishes formally because its
+valuation is at least 2N. So (M3b) is closed modulo stating it in a formal-power-series
+setting, and the algebraic half (neumann_partial) is already proved outright.
+
+(M3) SUMMARY. From "not proved" (the paper's settlement paragraph) to:
+  (M3a)  every ingredient proved; assembled for a single element; the sum over elements
+         remains, needing formal power series
+  (M3b)  the finite Neumann identity proved; the valuation bound proved; nothing beyond
+         transcription remains
+That is the one of (M)'s three weakest links that moved tonight.

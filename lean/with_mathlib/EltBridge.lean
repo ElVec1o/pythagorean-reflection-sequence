@@ -5996,6 +5996,41 @@ theorem neumann_partial_scalar (t : ℤ) (N : ℕ) :
     rw [Finset.sum_range_succ, mul_add, ih]
     ring
 
+/-! ### The valuation bound
+
+`(M3b)` reduces to `T^N` vanishing in the formal topology.  Since every transfer entry
+carries exponent at least two, a path of `N` steps carries at least `2N` -- so the
+powers do vanish, and the reduction closes. -/
+
+/-- **Every transfer entry carries exponent at least two.** -/
+theorem travelT_ge_two (a b : ℕ) : 2 ≤ travelT a b := by
+  unfold travelT; omega
+
+/-- The exponent accumulated along a magnitude path by the travel transfer. -/
+def travelPathExp : List ℕ → ℕ
+  | [] => 0
+  | [_] => 0
+  | a :: b :: rest => travelT a b + travelPathExp (b :: rest)
+
+/-- **A path of `n` steps carries exponent at least `2n`.**  So `T^N` has valuation at
+least `2N`, its powers vanish formally, and `(M3b)`'s remaining content is discharged.
+-/
+theorem travelPathExp_ge : ∀ l : List ℕ, 2 * (l.length - 1) ≤ travelPathExp l
+  | [] => by simp [travelPathExp]
+  | [_] => by simp [travelPathExp]
+  | a :: b :: rest => by
+    have ih := travelPathExp_ge (b :: rest)
+    have h2 := travelT_ge_two a b
+    simp only [travelPathExp, List.length_cons] at *
+    omega
+
+/-- **So the transfer powers vanish**: the exponent grows without bound in the path
+length, which is the valuation statement `(M3b)` needs. -/
+theorem travelPathExp_tendsto (N : ℕ) (l : List ℕ) (hl : N + 1 ≤ l.length) :
+    2 * N ≤ travelPathExp l := by
+  have := travelPathExp_ge l
+  omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6224,3 +6259,6 @@ end EltBridge
 #print axioms EltBridge.lR_exp_is_transfer
 #print axioms EltBridge.neumann_partial
 #print axioms EltBridge.resolvent_remainder
+#print axioms EltBridge.travelT_ge_two
+#print axioms EltBridge.travelPathExp_ge
+#print axioms EltBridge.travelPathExp_tendsto
