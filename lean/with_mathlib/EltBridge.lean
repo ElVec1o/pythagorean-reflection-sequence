@@ -9630,18 +9630,26 @@ theorem passCore_invol {α : Type*} [DecidableEq α] (p : α → α) (up dn : �
 /-- **So `passTurn` is an involution**, with no hypothesis about other sites. -/
 theorem passTurn_invol {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
     (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ)
-    (h12 : p (up (s - 1)) ≠ p (dn (s - 1)))
-    (h13 : p (up (s - 1)) ≠ up s) (h14 : p (up (s - 1)) ≠ dn s)
-    (h23 : p (dn (s - 1)) ≠ up s) (h24 : p (dn (s - 1)) ≠ dn s)
-    (h34 : up s ≠ dn s)
-    (hs1 : siteOf (p (up (s - 1))) = s) (hs2 : siteOf (p (dn (s - 1))) = s)
-    (hs3 : siteOf (up s) = s) (hs4 : siteOf (dn s) = s) (x : α) :
+    (h12 : (∃ y, siteOf y = s) → p (up (s - 1)) ≠ p (dn (s - 1)))
+    (h13 : (∃ y, siteOf y = s) → p (up (s - 1)) ≠ up s)
+    (h14 : (∃ y, siteOf y = s) → p (up (s - 1)) ≠ dn s)
+    (h23 : (∃ y, siteOf y = s) → p (dn (s - 1)) ≠ up s)
+    (h24 : (∃ y, siteOf y = s) → p (dn (s - 1)) ≠ dn s)
+    (h34 : (∃ y, siteOf y = s) → up s ≠ dn s)
+    (hs1 : (∃ y, siteOf y = s) → siteOf (p (up (s - 1))) = s)
+    (hs2 : (∃ y, siteOf y = s) → siteOf (p (dn (s - 1))) = s)
+    (hs3 : (∃ y, siteOf y = s) → siteOf (up s) = s)
+    (hs4 : (∃ y, siteOf y = s) → siteOf (dn s) = s) (x : α) :
     passTurn siteOf p up dn Zf s (passTurn siteOf p up dn Zf s x) = x := by
   by_cases hxs : siteOf x = s
-  · rw [passTurn_on_site siteOf p up dn Zf s x hxs,
+  · -- an end sits at `s`, so the site is occupied and the hypotheses apply
+    have hocc : ∃ y, siteOf y = s := ⟨x, hxs⟩
+    rw [passTurn_on_site siteOf p up dn Zf s x hxs,
       passTurn_on_site siteOf p up dn Zf s _
-        (passCore_site siteOf p up dn Zf s hs1 hs2 hs3 hs4 x hxs),
-      passCore_invol p up dn Zf s h12 h13 h14 h23 h24 h34 x]
+        (passCore_site siteOf p up dn Zf s (hs1 hocc) (hs2 hocc) (hs3 hocc) (hs4 hocc)
+          x hxs),
+      passCore_invol p up dn Zf s (h12 hocc) (h13 hocc) (h14 hocc) (h23 hocc)
+        (h24 hocc) (h34 hocc) x]
   · rw [passTurn_off_site siteOf p up dn Zf s x hxs,
       passTurn_off_site siteOf p up dn Zf s x hxs]
 
@@ -9737,16 +9745,18 @@ are ALL of it (`hfour`); `up` and `dn` name the strand bottoms; the runs are ind
 cut sites at their boundaries and none inside. -/
 theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
     (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
-    (h12 : ∀ s : ℤ, EndType.partner (up (s - 1)) ≠ EndType.partner (dn (s - 1)))
-    (h13 : ∀ s : ℤ, EndType.partner (up (s - 1)) ≠ up s)
-    (h14 : ∀ s : ℤ, EndType.partner (up (s - 1)) ≠ dn s)
-    (h23 : ∀ s : ℤ, EndType.partner (dn (s - 1)) ≠ up s)
-    (h24 : ∀ s : ℤ, EndType.partner (dn (s - 1)) ≠ dn s)
-    (h34 : ∀ s : ℤ, up s ≠ dn s)
-    (hs1 : ∀ s : ℤ, EndType.siteOf (EndType.partner (up (s - 1))) = s)
-    (hs2 : ∀ s : ℤ, EndType.siteOf (EndType.partner (dn (s - 1))) = s)
-    (hs3 : ∀ s : ℤ, EndType.siteOf (up s) = s)
-    (hs4 : ∀ s : ℤ, EndType.siteOf (dn s) = s)
+    -- all hypotheses about a site are conditional on it being OCCUPIED: outside the
+    -- span there is no edge at that position and `up s`, `dn s` are junk
+    (h12 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.partner (up (s - 1)) ≠ EndType.partner (dn (s - 1)))
+    (h13 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.partner (up (s - 1)) ≠ up s)
+    (h14 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.partner (up (s - 1)) ≠ dn s)
+    (h23 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.partner (dn (s - 1)) ≠ up s)
+    (h24 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.partner (dn (s - 1)) ≠ dn s)
+    (h34 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → up s ≠ dn s)
+    (hs1 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.siteOf (EndType.partner (up (s - 1))) = s)
+    (hs2 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.siteOf (EndType.partner (dn (s - 1))) = s)
+    (hs3 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.siteOf (up s) = s)
+    (hs4 : ∀ s : ℤ, (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → EndType.siteOf (dn s) = s)
     (hfour : ∀ (s : ℤ) (x : EndType.Endpt n m), EndType.siteOf x = s →
       x = EndType.partner (up (s - 1)) ∨ x = EndType.partner (dn (s - 1)) ∨
       x = up s ∨ x = dn s)
@@ -9756,6 +9766,9 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
     (hrange : ∀ x : EndType.Endpt n m,
       ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
         EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    -- a run's sites lie in the span, so they carry ends
+    (hocc : ∀ (r : ℕ) (k : ℕ), k ≤ len r →
+      ∃ y : EndType.Endpt n m, EndType.siteOf y = lo r + (k : ℤ))
     (hbdry : ∀ r : ℕ, lo r ∈ Zf)
     (hint : ∀ r k : ℕ, k < len r → lo r + ((k : ℤ) + 1) ∉ Zf)
     (E : WalkGraph.Data (EndType.Endpt n m))
@@ -9773,12 +9786,13 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
       (h14 s) (h23 s) (h24 s) (h34 s) (hs1 s) (hs2 s) (hs3 s) (hs4 s) x)
     (fun s x hxs => by
       subst hxs
-      exact passTurn_site EndType.siteOf EndType.partner up dn Zf _ (hs1 _) (hs2 _)
-        (hs3 _) (hs4 _) x rfl)
+      exact passTurn_site EndType.siteOf EndType.partner up dn Zf _ (hs1 _ ⟨x, rfl⟩) (hs2 _ ⟨x, rfl⟩)
+        (hs3 _ ⟨x, rfl⟩) (hs4 _ ⟨x, rfl⟩) x rfl)
     (fun s x hxs => by
       subst hxs
-      exact passTurn_ne EndType.siteOf EndType.partner up dn Zf _ (h12 _) (h13 _)
-        (h14 _) (h23 _) (h24 _) (h34 _) x rfl (hfour _ x rfl))
+      exact passTurn_ne EndType.siteOf EndType.partner up dn Zf _ (h12 _ ⟨x, rfl⟩) (h13 _ ⟨x, rfl⟩)
+        (h14 _ ⟨x, rfl⟩) (h23 _ ⟨x, rfl⟩) (h24 _ ⟨x, rfl⟩) (h34 _ ⟨x, rfl⟩) x rfl
+        (hfour _ x rfl))
     (fun x hx hc => hx (hkeep _ hc x))
     hupn hdnn hrange E hEp hEt ?_ ?_ ?_
   · -- the up pass
@@ -9786,12 +9800,21 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
     have harith : lo r + ((k : ℤ) + 1) - 1 = lo r + (k : ℤ) := by ring
     have hsite : EndType.siteOf (E.p (up (lo r + k))) = lo r + ((k : ℤ) + 1) := by
       rw [hEp]
-      have h := hs1 (lo r + ((k : ℤ) + 1))
+      have hw : ∃ y : EndType.Endpt n m,
+          EndType.siteOf y = lo r + ((k : ℤ) + 1) := by
+        have := hocc r (k + 1) (by omega)
+        push_cast at this
+        exact this
+      have h := hs1 (lo r + ((k : ℤ) + 1)) hw
       rw [harith] at h
       exact h
     rw [hEt, hsite, hEp]
+    have hw : ∃ y : EndType.Endpt n m, EndType.siteOf y = lo r + ((k : ℤ) + 1) := by
+      have := hocc r (k + 1) (by omega)
+      push_cast at this
+      exact this
     have h := passTurn_pass_up EndType.siteOf EndType.partner up dn Zf
-      (lo r + ((k : ℤ) + 1)) (hint r k hk) (hs1 _)
+      (lo r + ((k : ℤ) + 1)) (hint r k hk) (hs1 _ hw)
     rw [harith] at h
     push_cast
     exact h
@@ -9800,20 +9823,32 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
     have harith : lo r + ((k : ℤ) + 1) - 1 = lo r + (k : ℤ) := by ring
     have hsite : EndType.siteOf (dn (lo r + ((k : ℕ) + 1 : ℕ)))
         = lo r + ((k : ℤ) + 1) := by
-      have h := hs4 (lo r + ((k : ℤ) + 1))
+      have hw : ∃ y : EndType.Endpt n m,
+          EndType.siteOf y = lo r + ((k : ℤ) + 1) := by
+        have := hocc r (k + 1) (by omega)
+        push_cast at this
+        exact this
+      have h := hs4 (lo r + ((k : ℤ) + 1)) hw
       push_cast
       exact h
     rw [hEt, hsite, hEp]
+    have hw2 : ∃ y : EndType.Endpt n m, EndType.siteOf y = lo r + ((k : ℤ) + 1) := by
+      have := hocc r (k + 1) (by omega)
+      push_cast at this
+      exact this
     have h := passTurn_pass_dn EndType.siteOf EndType.partner up dn Zf
-      (lo r + ((k : ℤ) + 1)) (hint r k hk) (hs4 _) (h14 _) (h34 _)
+      (lo r + ((k : ℤ) + 1)) (hint r k hk) (hs4 _ hw2) (h14 _ hw2) (h34 _ hw2)
     rw [harith] at h
     push_cast
     exact h
   · -- the boundary bounce
     intro r
-    rw [hEt, hs4]
+    have hw : ∃ y : EndType.Endpt n m, EndType.siteOf y = lo r := by
+      have := hocc r 0 (by omega)
+      simpa using this
+    rw [hEt, hs4 _ hw]
     exact passTurn_bounce EndType.siteOf EndType.partner up dn Zf (lo r) (hbdry r)
-      (hs4 _) (h14 _) (h24 _) (h34 _)
+      (hs4 _ hw) (h14 _ hw) (h24 _ hw) (h34 _ hw)
 
 end EltBridge
 #print axioms EltBridge.passTurn_site

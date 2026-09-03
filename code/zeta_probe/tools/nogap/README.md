@@ -6845,3 +6845,28 @@ body lets the guard be discharged by rewriting instead of unfolding.
 This is the seventh correction of the run, and the first that was a defect in something
 I had already proved rather than in something I had claimed.  The lemmas were true of
 the old definition; the old definition was the wrong object.
+
+## 2026-09-03 — BLOCK 177: the hypotheses relativized to occupied sites
+
+BLOCK 176 fixed the turn; this fixes the statement.  The geometry hypotheses were still
+quantified over all `s : ℤ` -- `∀ s, siteOf (up s) = s` and the six distinctness
+inequalities -- and outside the span those are FALSE, since there is no edge at that
+position and `up s`, `dn s` are junk.  The theorem was unfalsifiable only because nobody
+had tried to instantiate it.
+
+Every such hypothesis is now conditional on the site being OCCUPIED:
+
+    h12 : ∀ s, (∃ y, siteOf y = s) → partner (up (s-1)) ≠ partner (dn (s-1))
+    ...
+    hs4 : ∀ s, (∃ y, siteOf y = s) → siteOf (dn s) = s
+
+and that costs nothing where they are used: in `passTurn_invol`'s on-site branch the
+hypothesis `siteOf x = s` IS the witness, and elsewhere the witness comes from `hocc`,
+a new hypothesis saying a run's sites carry ends -- true because runs lie in the span.
+
+So the statement is now satisfiable, which it was not before.  Build clean, 0 sorry.
+
+That is the second defect in two blocks found by trying to discharge the hypotheses
+rather than by reading them, and both were in my own work: BLOCK 176 in the definition,
+this one in the quantification.  Instantiating is what tests a statement; until then it
+is only well-typed.
