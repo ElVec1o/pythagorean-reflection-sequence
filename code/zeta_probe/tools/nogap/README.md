@@ -4805,3 +4805,23 @@ magnitude path, which is the standard argument but is not written.
 
 So (M3) decomposes as: (M3a) single-element shape DONE, (M3a) generating-function step
 NOT DONE, (M3b) resolvent form -- algebra given the first two.
+
+## 2026-09-03 — BLOCK 111: the sign fibration, exactly
+
+  sum_signed_eq_magnitudes -- summing a magnitude-dependent weight over signed deposits
+                              in [-N, N] gives f 0 + 2 * (sum over magnitudes 1..N)
+
+This is eq:junctionsym's "the two signs carry B_sigma/2 each", stated as a theorem
+rather than as bookkeeping: every non-zero magnitude has exactly two signed preimages
+and zero has one, so the fibration of signed deposits over magnitudes has the stated
+multiplicities.
+
+It is the atom of (M3a)'s generating-function step. Summing x^lR over deposit sequences
+factors through the magnitude path exactly when the weight is magnitude-dependent, which
+BLOCKS 104 and 110 established for the interior; the marker terms carry the sign
+separately (BLOCKS 106-109), which is why they sit in lambda rather than in T.
+
+So the generating-function step has its combinatorial atom. What it still needs is the
+same statement for a SEQUENCE of deposits rather than one -- a product of fibrations,
+which is the standard Finset.prod over the index set, and the multiplicity is
+2^(number of non-zero magnitudes).

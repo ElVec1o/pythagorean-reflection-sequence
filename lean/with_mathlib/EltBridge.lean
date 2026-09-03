@@ -5811,6 +5811,40 @@ theorem lR_interior_terms (P : SiteCost.PathData) (s : ℤ)
   rw [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, not_or] at hs
   exact site_cost_couples P s hs.2.1 hs.2.2
 
+/-! ### The sign fibration
+
+Summing a magnitude-dependent weight over signed deposits is summing over magnitudes
+with multiplicity two, except at zero.  This is `eq:junctionsym`'s "the two signs carry
+`B_sigma / 2` each", stated exactly. -/
+
+/-- **Summing over signed deposits counts each non-zero magnitude twice.** -/
+theorem sum_signed_eq_magnitudes (f : ℕ → ℤ) : ∀ N : ℕ,
+    ∑ d ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), f d.natAbs
+      = f 0 + 2 * ∑ m ∈ Finset.Icc 1 N, f m := by
+  intro N
+  induction N with
+  | zero => norm_num
+  | succ n ih =>
+    have hsplit : Finset.Icc (-((n : ℤ) + 1)) ((n : ℤ) + 1)
+        = insert (-((n : ℤ) + 1)) (insert ((n : ℤ) + 1) (Finset.Icc (-(n : ℤ)) (n : ℤ))) := by
+      ext z
+      simp only [Finset.mem_Icc, Finset.mem_insert]
+      omega
+    have hnot1 : ((n : ℤ) + 1) ∉ Finset.Icc (-(n : ℤ)) (n : ℤ) := by
+      simp only [Finset.mem_Icc]; omega
+    have hnot2 : (-((n : ℤ) + 1)) ∉ insert ((n : ℤ) + 1) (Finset.Icc (-(n : ℤ)) (n : ℤ)) := by
+      simp only [Finset.mem_insert, Finset.mem_Icc]; omega
+    rw [show ((n : ℤ) + 1) = ((n + 1 : ℕ) : ℤ) by push_cast; ring] at hsplit hnot1 hnot2
+    rw [hsplit, Finset.sum_insert hnot2, Finset.sum_insert hnot1, ih]
+    have hIcc : Finset.Icc 1 (n + 1) = insert (n + 1) (Finset.Icc 1 n) := by
+      ext m
+      simp only [Finset.mem_Icc, Finset.mem_insert]
+      omega
+    have hn : (n + 1) ∉ Finset.Icc 1 n := by simp only [Finset.mem_Icc]; omega
+    rw [hIcc, Finset.sum_insert hn]
+    simp only [Int.natAbs_neg, Int.natAbs_natCast]
+    ring
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6029,3 +6063,4 @@ end EltBridge
 #print axioms EltBridge.siteCost_at_kstar
 #print axioms EltBridge.lR_site_split
 #print axioms EltBridge.lR_interior_terms
+#print axioms EltBridge.sum_signed_eq_magnitudes
