@@ -3230,6 +3230,68 @@ theorem witNeg_B : witNeg.B = 2 := by
   simp only [Finset.mem_insert, Finset.mem_singleton] at hm
   omega
 
+@[simp] theorem witNeg_pd_A : witNeg.toPathData.A = -1 := witNeg_A
+@[simp] theorem witNeg_pd_B : witNeg.toPathData.B = 2 := witNeg_B
+
+/-- Its span has four edges. -/
+theorem witNeg_width : pdWidth witNeg.toPathData = 4 := by
+  unfold pdWidth
+  rw [witNeg_pd_A, witNeg_pd_B]
+  rfl
+
+/-- **Site `2` of `witNeg` is NOT cut**: the deposit there is `2`. -/
+theorem witNeg_not_cut_at_two : ¬ witNeg.toPathData.cut 2 := by
+  rintro ⟨-, hb, -⟩
+  have hvD : witNeg.toPathData.vD 2 = 0 := by
+    unfold SiteCost.PathData.vD; rw [if_neg (by simp)]
+  unfold SiteCost.PathData.betaAt SiteCost.PathData.vR at hb
+  rw [hvD] at hb
+  simp [witNeg, Elt.toPathData] at hb
+
+/-- **The cut set of `witNeg` is a single site**, so `|Z| = 1`.
+
+Shifted site `z` is original site `z - 1`.  Of the three interior sites `1, 2, 3`
+(original `0, 1, 2`): the first is the virtual arrival's site and is not cut, the
+second is cut, the third carries a deposit and is not. -/
+theorem witNeg_cutSites : pdCutSites witNeg.toPathData = {2} := by
+  classical
+  ext z
+  rw [mem_pdCutSites, Finset.mem_singleton, witNeg_width]
+  constructor
+  · rintro ⟨⟨h1, h2⟩, hcut⟩
+    unfold pdCutAt at hcut
+    rw [witNeg_pd_A] at hcut
+    interval_cases z
+    · exact absurd (by simpa using hcut) witNeg_no_virtual_cut.1
+    · rfl
+    · exact absurd (by simpa using hcut) witNeg_not_cut_at_two
+  · rintro rfl
+    refine ⟨⟨by norm_num, by norm_num⟩, ?_⟩
+    unfold pdCutAt
+    rw [witNeg_pd_A]
+    simpa using witNeg_cut_at_one
+
+/-- **`hgap` holds for `witNeg`, with a non-empty cut set.**
+
+Its virtual sites are `s0 = -A = 1` and `s1 = kstar - A = 0`, so the window
+`(s1 - 1, s0]` is `{0, 1}`; the single cut site sits at `2`, outside it. -/
+theorem witNeg_hgap :
+    ∀ z ∈ pdCutSites witNeg.toPathData,
+      ¬ ((witNeg.toPathData.kstar - witNeg.toPathData.A) - 1 < z ∧
+        z ≤ -witNeg.toPathData.A) := by
+  intro z hz
+  rw [witNeg_cutSites, Finset.mem_singleton] at hz
+  subst hz
+  rw [witNeg_pd_A, witNeg_pd_kstar]
+  rintro ⟨-, h⟩
+  omega
+
+/-- And its two virtual sites are ordered `s1 < s0`, so the mirrored orientation
+applies. -/
+theorem witNeg_sites_lt :
+    witNeg.toPathData.kstar - witNeg.toPathData.A < -witNeg.toPathData.A := by
+  rw [witNeg_pd_A, witNeg_pd_kstar]; omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3357,3 +3419,7 @@ end EltBridge
 #print axioms EltBridge.witNeg_cut_at_one
 #print axioms EltBridge.witNeg_A
 #print axioms EltBridge.witNeg_B
+#print axioms EltBridge.witNeg_width
+#print axioms EltBridge.witNeg_cutSites
+#print axioms EltBridge.witNeg_hgap
+#print axioms EltBridge.witNeg_sites_lt

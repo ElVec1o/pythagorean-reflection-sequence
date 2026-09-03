@@ -3554,3 +3554,27 @@ Design note: the first draft used d(-1) = 1, which by cut_at_zero_iff makes site
 site and would have made the witness useless. Choosing -1 instead was a direct
 consequence of BLOCK 56 -- without the iff I would have built the bad witness and only
 discovered it downstream.
+
+## 2026-09-03 — BLOCK 58: witNeg's cut set computed; hgap holds with |Z| = 1
+
+  witNeg_width          -- span of four edges
+  witNeg_not_cut_at_two -- site 2 carries a deposit, so it is not cut
+  witNeg_cutSites       -- **Z = {2}, so |Z| = 1**
+  witNeg_hgap           -- **hgap HOLDS**, with Z non-empty
+  witNeg_sites_lt       -- s1 < s0, so the mirrored orientation applies
+
+The arithmetic that makes it work: witNeg's virtual sites are s0 = -A = 1 and
+s1 = kstar - A = 0, so hgap's window (s1 - 1, s0] is {0, 1}, and the single cut site
+sits at 2, outside it.
+
+This is the first element in the project for which:
+  - the cut set is non-empty (|Z| = 1), AND
+  - hgap holds, so the virtual pair provably stays in one run, AND
+  - the mirrored orientation applies (s1 < s0)
+all three at once. Every earlier witness satisfied at most two.
+
+The three interior sites are decided by three different mechanisms, which is a good
+sign the characterisation is not degenerate:
+  original 0 (= shifted 1): not cut because d(-1) = -1, not 1     [cut_at_zero_iff]
+  original 1 (= shifted 2): CUT, plain read-off                    [pdCutAt_iff]
+  original 2 (= shifted 3): not cut because d(2) = 2 != 0          [betaAt]
