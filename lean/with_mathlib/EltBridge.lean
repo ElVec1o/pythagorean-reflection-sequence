@@ -6644,6 +6644,62 @@ theorem pathData_box (N : ℕ) (P : SiteCost.PathData) (hP : P.lR ≤ N) :
   refine ⟨by omega, P.hA, P.hB, by omega, by omega, by omega, P.heps, fun j => ?_⟩
   exact le_trans (abs_d_le_lR P j) hP
 
+/-! ### Finiteness at each degree
+
+`pathData_box` says every coordinate of a bounded-degree configuration is bounded, and
+`pathData_eq_of_agree` says those coordinates determine it.  Encoding the whole lot as a
+SINGLE function on a finite index type -- five scalars and the deposits on `[-N, N]` --
+turns that into one application of `Set.Finite.pi`, rather than a tower of products. -/
+
+/-- All of a configuration's bounded-degree data, as one function on a finite index. -/
+def encAll (N : ℕ) (P : SiteCost.PathData) :
+    (Fin 5 ⊕ ↥(Finset.Icc (-(N : ℤ)) (N : ℤ))) → ℤ :=
+  fun x => match x with
+    | Sum.inl i =>
+        if i = 0 then P.kstar else if i = 1 then P.eps
+        else if i = 2 then (if P.delta then 1 else 0)
+        else if i = 3 then P.A else P.B
+    | Sum.inr j => P.d j.1
+
+theorem encAll_inj (N : ℕ) {P Q : SiteCost.PathData} (hP : P.lR ≤ N) (hQ : Q.lR ≤ N)
+    (h : encAll N P = encAll N Q) : P = Q := by
+  have hk : P.kstar = Q.kstar := by have := congrFun h (Sum.inl 0); simpa [encAll] using this
+  have he : P.eps = Q.eps := by have := congrFun h (Sum.inl 1); simpa [encAll] using this
+  have hA : P.A = Q.A := by have := congrFun h (Sum.inl 3); simpa [encAll] using this
+  have hB : P.B = Q.B := by have := congrFun h (Sum.inl 4); simpa [encAll] using this
+  have hd : P.delta = Q.delta := by
+    have h2 := congrFun h (Sum.inl 2)
+    simp only [encAll] at h2
+    norm_num at h2
+    cases hh : P.delta <;> cases hh2 : Q.delta <;> simp_all
+  refine pathData_eq_of_agree N hP hQ hk he hd hA hB ?_
+  intro j hj1 hj2
+  have := congrFun h (Sum.inr ⟨j, Finset.mem_Icc.mpr ⟨hj1, hj2⟩⟩)
+  simpa [encAll] using this
+
+/-- **The configurations of relaxed length at most `N` form a finite set.**  This is the
+degree cut (M3) needs on the configuration side; `dcur_le_muOf`/`fcur_le_muOf` give the
+matching cut on the state side. -/
+theorem finite_degree_le (N : ℕ) : {P : SiteCost.PathData | P.lR ≤ N}.Finite := by
+  refine Set.Finite.of_finite_image (f := encAll N) ?_ ?_
+  · refine Set.Finite.subset
+      (Set.Finite.pi (t := fun _ : Fin 5 ⊕ ↥(Finset.Icc (-(N : ℤ)) (N : ℤ)) =>
+        Set.Icc (-((N : ℤ) + 1)) ((N : ℤ) + 1)) (fun _ => Set.finite_Icc _ _)) ?_
+    rintro _ ⟨P, hP, rfl⟩
+    intro i _
+    have hbox := pathData_box N P hP
+    obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8⟩ := hbox
+    cases i with
+    | inl k =>
+        simp only [encAll, Set.mem_Icc]
+        rcases h7 with h7 | h7 <;> split_ifs <;> omega
+    | inr j =>
+        simp only [encAll, Set.mem_Icc]
+        have := h8 j.1
+        omega
+  · intro P hP Q hQ h
+    exact encAll_inj N hP hQ h
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14249,3 +14305,5 @@ end EltBridge
 #print axioms EltBridge.kstar_bounds
 #print axioms EltBridge.pathData_eq_of_agree
 #print axioms EltBridge.pathData_box
+#print axioms EltBridge.encAll_inj
+#print axioms EltBridge.finite_degree_le

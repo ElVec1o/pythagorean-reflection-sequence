@@ -8107,3 +8107,30 @@ over the Fintype `Icc (-N) N`.  All three lemmas were located in this Mathlib --
 in `Data/Set/Finite/Basic.lean`, `Data/Finite/Prod.lean` and `Data/Fintype/Pi.lean`.  It
 is a five-factor product plus a pi; I stopped rather than grind it inside one block, which
 is the three-strike rule applied before the strikes rather than after.
+
+## 2026-09-04 — BLOCK 222: finiteness at each degree
+
+`pathData_box` says every coordinate of a bounded-degree configuration is bounded and
+`pathData_eq_of_agree` says those coordinates determine it.  Encoding the whole lot as a
+SINGLE function on a finite index type -- five scalars and the deposits on `[-N, N]` --
+turns that into ONE application of `Set.Finite.pi`, instead of the five-factor tower
+BLOCK 221 stopped in front of:
+
+    encAll              all the data as one function on Fin 5 (+) Icc (-N) N
+    encAll_inj          it determines the configuration
+    finite_degree_le    {P | P.lR <= N} IS FINITE
+
+0 sorry.  The only failure was a malformed `split_ifs <;> [...]` bracket; replacing it
+with `rcases h7 <;> split_ifs <;> omega` fixed it in one attempt.  Choosing the encoding
+to avoid the product tower was the whole difficulty, and it was a choice, not a fight.
+
+**Both degree cuts now exist**: `finite_degree_le` on the configuration side,
+`dcur_le_muOf`/`fcur_le_muOf` (BLOCK 208) on the state side.
+
+**What (M3) still owes.**  The sum identity itself.  Every link is present -- the weight
+is a path weight (BLOCK 208), path sums are matrix powers (BLOCKS 210-211), the guard
+kills unrealisable paths (BLOCKS 212, 216), the correspondence is bijective (BLOCKS
+213-218), the state path determines the configuration as a list (BLOCK 219), and both
+sides are finite at each degree (BLOCKS 220-222).  What is not written is the chain of
+equalities joining them.  That is assembly, and it is the last thing between (M3) and
+green.
