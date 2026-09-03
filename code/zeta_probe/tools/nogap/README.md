@@ -2301,3 +2301,35 @@ branches are real work -- neither is bookkeeping.
 
 B1 stays yellow, and the reason is no longer "transport not written" but "transport
 provably does not apply as stated".
+
+## 2026-09-03 — BLOCK 12: the fork is decided; branch 1 is forced and costed
+
+Branch 2 (run the merge on real ends, reattach the virtual pair afterwards) is
+IMPOSSIBLE, and provably:
+
+  balance_of_data     -- a `Data` is a turn INVOLUTION exchanging arrivals with
+                         departures at each site, so its mere existence forces
+                         arrivals and departures to be equinumerous there
+  no_data_of_deficit  -- hence at a site with a deficit there is NO Data at all
+
+With deficit_eq the real-end model is off by [s=kstar]-[s=0], so at sites 0 and kstar
+there is no turn -- there is nothing to run the merge on and nothing to reattach to.
+
+Branch 1 (weaken the merge development's edge-local hypotheses) is therefore forced.
+Cost, measured rather than guessed:
+  WalkSupport   37 mentions of hpe/hpt across 12 of its 27 declarations
+  CostMerge     18 mentions
+  ConfigMerge    0   (already free of them)
+  ConfigLoop    10
+And the dependence is MATHEMATICAL, not clerical: the wLo arguments need the partner
+of an end at a walk's leftmost edge to lie on that same edge. The virtual pair
+violates this by construction -- its ends are at sites 0 and kstar, spanning the whole
+travel interval.
+
+SO: the merge argument and the virtual events are in genuine tension. That tension is
+exactly what `hyp:model` papers over, and it is now a proved statement with a measured
+cost rather than a suspicion. This is the sharpest description of (M)'s weakest link
+the project has had.
+
+B1 stays yellow. What changed tonight: B1 went from "not started" to a single named,
+costed, mathematically-characterised obstruction with both alternatives eliminated.

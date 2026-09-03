@@ -417,6 +417,52 @@ theorem VEndpt.no_virtual_edge {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
       rw [ht, hb]; rfl
     rw [e1] at hA; rw [e2] at hB; omega
 
+/-! ### The fork is decided: branch 2 is impossible
+
+Branch 2 was to run the merge on the real ends and reattach the virtual pair
+afterwards.  It cannot be done, and the reason is not incidental: a `Data` is a turn
+*involution* exchanging arrivals and departures at each site, so its mere existence
+forces balance.  With `deficit_eq` the real-end model is off by `[s=kstar] - [s=0]`,
+so at those two sites there is no turn at all -- nothing to run the merge on.
+
+Branch 1 is therefore forced.  Its cost is measured: 12 theorems in `WalkSupport`
+plus their users in `CostMerge` depend on `hpe`/`hpt`, and the dependence is
+mathematical rather than clerical -- `wLo` arguments need the partner of an end at a
+walk's leftmost edge to sit on that same edge, which the virtual pair violates by
+construction. -/
+
+/-- **A turn forces balance.**  If a `Data` preserves sites and exchanges arrivals
+with departures, then arrivals and departures are equinumerous at every site. -/
+theorem balance_of_data {α : Type*} [Fintype α] [DecidableEq α]
+    (siteOf : α → ℤ) (isArr : α → Bool) (D : WalkGraph.Data α)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e) (s : ℤ) :
+    (Finset.univ.filter (fun x => siteOf x = s ∧ isArr x = true)).card
+      = (Finset.univ.filter (fun x => siteOf x = s ∧ isArr x = false)).card := by
+  classical
+  refine Finset.card_bij' (fun a _ => D.t a) (fun b _ => D.t b) ?_ ?_ ?_ ?_
+  · intro a ha
+    rw [Finset.mem_filter] at ha ⊢
+    refine ⟨Finset.mem_univ _, by rw [hts, ha.2.1], ?_⟩
+    rw [hta, ha.2.2]; rfl
+  · intro b hb
+    rw [Finset.mem_filter] at hb ⊢
+    refine ⟨Finset.mem_univ _, by rw [hts, hb.2.1], ?_⟩
+    rw [hta, hb.2.2]; rfl
+  · intro a _; exact D.t_invol a
+  · intro b _; exact D.t_invol b
+
+/-- **Branch 2 is impossible.**  At a site where arrivals and departures differ in
+number, no `Data` exists.  By `deficit_eq` those are exactly `0` and `kstar`. -/
+theorem no_data_of_deficit {α : Type*} [Fintype α] [DecidableEq α]
+    (siteOf : α → ℤ) (isArr : α → Bool) (s : ℤ)
+    (hne : (Finset.univ.filter (fun x => siteOf x = s ∧ isArr x = true)).card
+      ≠ (Finset.univ.filter (fun x => siteOf x = s ∧ isArr x = false)).card) :
+    ¬ ∃ D : WalkGraph.Data α, (∀ e, siteOf (D.t e) = siteOf e) ∧
+        (∀ e, isArr (D.t e) = !isArr e) := by
+  rintro ⟨D, hts, hta⟩
+  exact hne (balance_of_data siteOf isArr D hts hta s)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -437,3 +483,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.partner_site_ne
 #print axioms EltBridge.VEndpt.partner_unique
 #print axioms EltBridge.VEndpt.no_virtual_edge
+#print axioms EltBridge.balance_of_data
+#print axioms EltBridge.no_data_of_deficit
