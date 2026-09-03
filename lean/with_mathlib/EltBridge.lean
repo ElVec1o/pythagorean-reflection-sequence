@@ -8741,6 +8741,54 @@ theorem coeff_sum_configs (N : ℕ) {A : ℤ} {m : ℕ}
   simp only [coeff_pow_lR]
   rw [Finset.sum_boole]
 
+/-! ### `pathWeight` over an arbitrary ring
+
+A structural limit found by trying the coefficient comparison: `pathWeight` (BLOCK 206) is
+fixed to `ℤ`, so the identity cannot even be STATED in `PowerSeries`, where the
+coefficient-wise comparison of BLOCK 272 has to live.  The whole ℤ development stays valid;
+what is added here is the same definition over an arbitrary commutative ring, with the
+chain-cost exponential that everything downstream rests on.  The proofs are the ℤ ones
+unchanged, which is itself the evidence that nothing about `ℤ` was being used. -/
+
+def pathWeightR {R : Type*} [CommRing R] {S : Type*} (T : S → S → R) (lam mu : S → R) :
+    List S → R
+  | [] => 0
+  | [s] => lam s * mu s
+  | s :: t :: rest => lam s * T s t * (pathWeightR T (fun _ => 1) mu (t :: rest))
+
+theorem pathWeightR_one_exp {R : Type*} [CommRing R] {S : Type*}
+    (x : R) (f : S → S → ℕ) (g : S → ℕ) :
+    ∀ (L : List S) (s : S),
+      pathWeightR (fun a b => x ^ f a b) (fun _ => (1 : R)) (fun a => x ^ g a) (s :: L)
+        = x ^ (chainCost f s L + g (lastOf s L)) := by
+  intro L
+  induction L with
+  | nil => intro s; simp [pathWeightR, chainCost, lastOf]
+  | cons t rest ih =>
+      intro s
+      show (1 : R) * x ^ f s t
+          * pathWeightR (fun a b => x ^ f a b) (fun _ => (1 : R)) (fun a => x ^ g a) (t :: rest)
+        = _
+      rw [ih t]
+      show _ = x ^ (f s t + chainCost f t rest + g (lastOf t rest))
+      rw [pow_add, pow_add, pow_add]
+      ring
+
+theorem pathWeightR_exp {R : Type*} [CommRing R] {S : Type*}
+    (x : R) (f : S → S → ℕ) (h g : S → ℕ) (s : S) (L : List S) :
+    pathWeightR (fun a b => x ^ f a b) (fun a => x ^ h a) (fun a => x ^ g a) (s :: L)
+      = x ^ (h s + chainCost f s L + g (lastOf s L)) := by
+  cases L with
+  | nil => show x ^ h s * x ^ g s = _; simp [chainCost, lastOf, pow_add]
+  | cons t rest =>
+      show x ^ h s * x ^ f s t
+          * pathWeightR (fun a b => x ^ f a b) (fun _ => (1 : R)) (fun a => x ^ g a) (t :: rest)
+        = _
+      rw [pathWeightR_one_exp x f g rest t]
+      show _ = x ^ (h s + (f s t + chainCost f t rest) + g (lastOf t rest))
+      rw [pow_add, pow_add, pow_add, pow_add]
+      ring
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16453,3 +16501,5 @@ end EltBridge
 #print axioms EltBridge.coeff_pow_lR_ne
 #print axioms EltBridge.coeff_pow_lR_self
 #print axioms EltBridge.coeff_sum_configs
+#print axioms EltBridge.pathWeightR_one_exp
+#print axioms EltBridge.pathWeightR_exp

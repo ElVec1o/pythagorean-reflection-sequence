@@ -9190,3 +9190,24 @@ by `coeff_pow_lR_ne` (BLOCK 272) and each side becomes a finite count.  This is 
 **[Rule 0] VERIFIED.**  The configuration side of (M3)'s coefficient identity is now a
 count over a `Finset`.  The path side needs the same treatment, and then the two counts are
 equal by the bijection (BLOCKS 249, 267-268).
+
+## 2026-09-04 — BLOCK 274: `pathWeight` over an arbitrary ring
+
+A structural limit found by trying the coefficient comparison: **`pathWeight` (BLOCK 206) is
+fixed to `ℤ`**, so the identity cannot even be STATED in `PowerSeries`, where BLOCK 272's
+coefficient-wise comparison has to live.
+
+    pathWeightR          the same definition over a commutative ring
+    pathWeightR_one_exp  the inner chain-cost exponential
+    pathWeightR_exp      and the full one
+
+0 sorry, both clean on the first build, on `propext` alone.  **The proofs are the ℤ ones
+unchanged**, which is itself the evidence that nothing about `ℤ` was being used -- the
+restriction was an accident of how BLOCK 206 was written, not a mathematical fact.
+
+The existing ℤ development stays valid and is not disturbed; what is added is the road to
+`PowerSeries`, which the coefficient comparison needs.
+
+**[Rule 0] Honest scope.**  Only the exponential lemmas are ported so far.  The guard
+theorems, the sum comparison and the bijection are all still stated over `ℤ`, and porting
+them is the remaining work on this line -- mechanical, but not yet done.
