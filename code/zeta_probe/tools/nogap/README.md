@@ -7476,3 +7476,37 @@ recorded, and M3 stays green -- `prop:cut` is proved in the paper and instantiat
 Catching this before editing `rem:shieldowes` is the point.  The theorem is real and the
 gap it closes is real, but only on a subclass, and the paper's remark is about all bulk
 configurations.
+
+## 2026-09-03 — BLOCK 199: the shield law is an Eulerian circuit
+
+Trying to lift `shield_law` to varying `mu` produced first a wrong measurement and then a
+much better proof.
+
+**The wrong measurement.**  A first model of a mixed-width site forced exactly
+`min(u[j],u[j+1])` passes with a fixed pairing for the excess, and reported runs -- `u =
+[1,2,1]`, `[1,3,1]`, `[2,3,1]`, `[1,3,2]` -- that could not reach one component.  That
+contradicted `cutturn mu4`'s zero exceptions, which is how it was caught.  The error: the
+number of passes may be ANY value up to the minimum, and both the passes and the leftover
+bounces may pair freely.  Enumerating every pairing at every site instead:
+
+    every mixed-width run reaches ONE component for some pairing
+
+**The better proof.**  The corrected model makes the right argument visible.  Take the
+STRAND GRAPH: vertices are sites, edges are strands, a strand of edge `j` joining site `j`
+to site `j+1`.  Then
+
+  * every vertex has EVEN degree -- site `j` carries `2u[j-1] + 2u[j]` ends;
+  * each run's strand graph is CONNECTED, since every `u[j] >= 1` by `mu_pos`;
+  * a turn is precisely a pairing of arrivals to departures at each vertex.
+
+So by Euler a single closed walk covers all the strands of a run, and the turn that
+follows it gives exactly ONE component.  At any widths, uniform or not.
+
+That is the whole shield law, and it never mentions levels, chains, parities or
+permutations.  BLOCKS 187-197 built the uniform-`mu` case by tracking a level cycle
+through the run; the parity they were chasing is just the statement that the Eulerian
+circuit closes up, which Euler gives for free.  The uniform proof is correct and now
+looks like the hard way round.
+
+So the route to varying `mu` is not to generalise the level bookkeeping but to replace it:
+prove the strand graph connected with even degrees, and apply an Eulerian circuit.

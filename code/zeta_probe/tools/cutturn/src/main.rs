@@ -1,3 +1,4 @@
+mod vary;
 mod chain;
 mod alphacmp;
 mod freepair;
@@ -165,6 +166,7 @@ fn mode_dep(nmax: usize) {
 fn main() {
     let mode = std::env::args().nth(1).unwrap_or_else(|| "gap".into());
     let nmax: usize = std::env::args().nth(2).and_then(|s| s.parse().ok()).unwrap_or(7);
+    if mode == "vary" { vary::run(nmax); return; }
     if mode == "chain" {
         let mu: usize = std::env::args().nth(3).and_then(|s| s.parse().ok()).unwrap_or(4);
         chain::run(nmax, mu); return;
