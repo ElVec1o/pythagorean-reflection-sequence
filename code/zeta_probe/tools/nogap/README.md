@@ -3874,3 +3874,25 @@ In the paper that datum is the realisation itself: Realisation.cut_no_cross hold
 realisation with R.cost = P.lR. So the initial datum should come from a Realisation
 rather than being built abstractly from dataG. That is the shape of the remaining work,
 and it is now a named Prop instead of an unstated assumption.
+
+## 2026-09-03 — BLOCK 71: at a cut site BOTH adjacent edges carry zero travel
+
+  pdCut_travel_zero          -- Phi = 0 gives f(s-1) = 0, and travel_const_off gives
+                                f(s) = 0 as well, away from the two virtual sites
+  sided_balance_of_tr_zero   -- so the site's two HALVES balance separately: the top
+                                half matches iff the left edge's signed travel
+                                vanishes, the bottom half iff the right edge's does
+
+This is what a zero-cost plan at a cut site needs. Such a plan pairs each arrival with a
+departure on its own side, which requires the counts to match side by side -- not merely
+in total. The cut condition supplies exactly that.
+
+The second lemma is the ConfigLoop card-decomposition run twice, once per side, and it
+makes the connection concrete: side-wise balance IS tr = 0 on the adjacent edges, and
+tr = travel by pd_tr_eq (BLOCK 30). So "no crossing at a cut site" and "no travel across
+a cut site" are the same statement read in two models.
+
+REMAINING for HasInitialTurnInv: build the side-respecting involution from these two
+equalities (two applications of TurnBuild.exists_involution_of_card_eq, on disjoint
+supports, combined), and show the resulting datum has hturn. The mathematical input is
+now proved; what is left is the construction.

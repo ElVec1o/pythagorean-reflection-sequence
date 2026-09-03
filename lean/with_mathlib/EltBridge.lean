@@ -4218,6 +4218,52 @@ theorem VEndpt.shield_of_initial {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (h
   obtain ⟨D, hD⟩ := hinit
   exact VEndpt.shield_turnInvN s0 s1 hlt Zf hgap up ds hcov hruns z₀ D hD
 
+/-! ### At a cut site both adjacent edges have zero travel
+
+A zero-cost plan at a cut site pairs each arrival with a departure **on its own side**,
+which needs the counts to match side by side.  In the `Endpt` model that is exactly
+`tr = 0` on both adjacent edges: the top half matches iff `tr` of the left edge
+vanishes, the bottom half iff `tr` of the right edge does.
+
+The cut condition supplies it.  `Phi = 0` gives `f(s-1) = 0`, and away from the two
+virtual sites `travel` is constant, so `f(s) = 0` too. -/
+
+/-- **Both edges at a cut site carry zero travel.** -/
+theorem pdCut_travel_zero (P : SiteCost.PathData) (s : ℤ)
+    (h0 : s ≠ 0) (hk : s ≠ P.kstar) (hcut : P.cut s) :
+    travel P.kstar (s - 1) = 0 ∧ travel P.kstar s = 0 := by
+  obtain ⟨-, -, hPhi⟩ := hcut
+  unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.PathData.vD
+    SiteCost.vArr at hPhi
+  rw [if_neg h0, if_neg hk] at hPhi
+  simp only [ite_self, Nat.cast_zero, sub_zero, add_zero] at hPhi
+  have hf : travel P.kstar (s - 1) = 0 := hPhi
+  refine ⟨hf, ?_⟩
+  have := travel_const_off P.kstar s h0 hk
+  omega
+
+/-- **So the site's two halves balance separately**, in the `Endpt` model: the top half
+matches iff the left edge's signed travel vanishes, the bottom half iff the right
+edge's does. -/
+theorem sided_balance_of_tr_zero {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (e1 e2 : Fin n) (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s)
+    (ht1 : ConfigLoop.tr (m := m) up e1 = 0)
+    (ht2 : ConfigLoop.tr (m := m) up e2 = 0) :
+    ((EndType.arrAt (m := m) up s).filter (fun x => EndType.atTop x = true)).card
+        = ((EndType.depAt (m := m) up s).filter (fun x => EndType.atTop x = true)).card ∧
+      ((EndType.arrAt (m := m) up s).filter (fun x => EndType.atTop x = false)).card
+        = ((EndType.depAt (m := m) up s).filter (fun x => EndType.atTop x = false)).card := by
+  have ha := EndType.card_arr_top (m := m) up s e1 h1
+  have hb := EndType.card_dep_top (m := m) up s e1 h1
+  have hc := EndType.card_arr_bottom (m := m) up s e2 h2
+  have hd := EndType.card_dep_bottom (m := m) up s e2 h2
+  have k1 : min (up e1) (m e1) ≤ m e1 := min_le_right _ _
+  have k2 : min (up e2) (m e2) ≤ m e2 := min_le_right _ _
+  unfold ConfigLoop.tr at ht1 ht2
+  constructor
+  · rw [ha, hb]; omega
+  · rw [hc, hd]; omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4376,3 +4422,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.shield_turnInvN
 #print axioms EltBridge.witNeg_hruns
 #print axioms EltBridge.VEndpt.shield_of_initial
+#print axioms EltBridge.pdCut_travel_zero
+#print axioms EltBridge.sided_balance_of_tr_zero
