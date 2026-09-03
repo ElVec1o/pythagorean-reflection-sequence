@@ -4131,3 +4131,27 @@ nothing rather than matching them.
 The arithmetic is three omega calls. It was invisible before only because the forced
 sign made two of the four classes empty by construction, so "the classes match" and
 "the site is empty" were the same statement.
+
+## 2026-09-03 — BLOCK 82: the site-level GData, with a PER-CROSSING sign
+
+  configGData             -- end data of a configuration with the sign carried per
+                             CROSSING: sgnOf x = sg x.edge x.idx
+  per_edge_sign_collapses -- and a per-EDGE sign would not do: all ends on one side of
+                             a site share an edge, so one of that side's two classes
+                             would be empty
+
+The second is the reason the sign has to be indexed by the crossing and not just the
+edge, and it is worth having as a theorem because the degeneracy it describes is
+exactly the one EndData.sgn produces (BLOCK 77). Two different modelling shortcuts --
+deriving the sign from (side, role), or attaching it to the edge -- collapse the four
+classes the same way.
+
+With the sign per crossing all four classes can be occupied, so four_classes_match
+(BLOCK 81) is a statement with content rather than a vacuous one.
+
+STATUS OF THE FREE-SIGN LINE. The construction chain is complete in the abstract:
+  four_classes_match -> exists_zero_cost_turn -> a turn keeping side and sign, hence the
+  edge, hence hturn
+What remains is to connect it to a configuration: define the four class counts at a site
+of a configGData, show they are the Ap/Am/Bp/Bm/Cp/Cm/Dp/Dm of the site model, and
+apply. That is bookkeeping between two indexings, not new mathematics.

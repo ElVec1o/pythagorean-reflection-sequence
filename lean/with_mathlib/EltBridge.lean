@@ -4890,6 +4890,57 @@ theorem four_classes_match (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
    (right_classes_match Ap Am Bp Bm Cp Cm Dp Dm ha hf hb htot).1,
    (right_classes_match Ap Am Bp Bm Cp Cm Dp Dm ha hf hb htot).2⟩
 
+/-! ### The site-level `GData` of a configuration
+
+The sign must be carried **per crossing**, not per edge.  All ends on one side of a
+site lie on a single edge, so a per-edge sign would make one of that side's two classes
+empty -- reproducing exactly the collapse the forced sign causes.
+
+Per crossing, all four classes can be occupied, and `four_classes_match` becomes a
+statement with content. -/
+
+/-- The end data of a configuration with a free per-crossing sign. -/
+def configGData {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (sg : (e : Fin n) → Fin (m e) → Bool) : GData (EndType.Endpt n m) :=
+  ⟨EndType.atTop, EndType.isArrOf up, fun x => sg x.edge x.idx⟩
+
+@[simp] theorem configGData_side {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (sg : (e : Fin n) → Fin (m e) → Bool) (x : EndType.Endpt n m) :
+    (configGData up sg).side x = EndType.atTop x := rfl
+
+@[simp] theorem configGData_isArr {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (sg : (e : Fin n) → Fin (m e) → Bool) (x : EndType.Endpt n m) :
+    (configGData up sg).isArr x = EndType.isArrOf up x := rfl
+
+@[simp] theorem configGData_sgn {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (sg : (e : Fin n) → Fin (m e) → Bool) (x : EndType.Endpt n m) :
+    (configGData up sg).sgnOf x = sg x.edge x.idx := rfl
+
+/-- **A per-edge sign collapses a class.**  If the sign depends only on the edge, then
+at any site every end on one side shares it, so one of that side's two classes is
+empty -- the same degeneracy the forced sign produces. -/
+theorem per_edge_sign_collapses {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ)
+    (f : Fin n → Bool) (s : ℤ) (e : Fin n) (he : (e : ℤ) = s - 1)
+    (x y : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) (hxt : EndType.atTop x = true)
+    (hy : EndType.siteOf y = s) (hyt : EndType.atTop y = true) :
+    f x.edge = f y.edge := by
+  have hex : EndType.edgeOf x = s - 1 := by
+    have h : EndType.siteOf x
+        = EndType.edgeOf x + (if EndType.atTop x then (1:ℤ) else 0) := rfl
+    have e : (if EndType.atTop x then (1:ℤ) else 0) = 1 := by rw [hxt]; rfl
+    rw [e] at h; omega
+  have hey : EndType.edgeOf y = s - 1 := by
+    have h : EndType.siteOf y
+        = EndType.edgeOf y + (if EndType.atTop y then (1:ℤ) else 0) := rfl
+    have e : (if EndType.atTop y then (1:ℤ) else 0) = 1 := by rw [hyt]; rfl
+    rw [e] at h; omega
+  have : x.edge = y.edge := by
+    have h1 : (x.edge : ℤ) = (y.edge : ℤ) := by
+      unfold EndType.edgeOf at hex hey; omega
+    exact Fin.ext (by exact_mod_cast h1)
+  rw [this]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5065,3 +5116,5 @@ end EltBridge
 #print axioms EltBridge.involution_of_pair
 #print axioms EltBridge.exists_zero_cost_turn
 #print axioms EltBridge.four_classes_match
+#print axioms EltBridge.configGData
+#print axioms EltBridge.per_edge_sign_collapses
