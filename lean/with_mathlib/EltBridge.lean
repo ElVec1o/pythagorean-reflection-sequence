@@ -3621,6 +3621,109 @@ theorem run_step_turnInv {n : ℕ} {m : Fin n → ℕ} (d : EndData.Data (EndTyp
           · exact Or.inl (by rw [← hside a, ← hside a']; exact h)
           · exact Or.inr (by rw [← hside (D.t a), ← hside (D.t a')]; exact h)) hteq
 
+/-- **Iterating the step**: a datum in `TurnInv` whose runs are connected. -/
+theorem exists_turnInv_connected {n : ℕ} {m : Fin n → ℕ}
+    (d : EndData.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (hside : ∀ x, d.side x = EndType.atTop x)
+    (hpsite : ∀ x : EndType.Endpt n m,
+      EndType.siteOf (EndType.partner x) ≠ EndType.siteOf x)
+    (hsW : ∀ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkSupport.Merges EndType.siteOf d.isArr EndType.partner E →
+      ∀ w x : EndType.Endpt n m, (WalkGraph.graph E).Reachable w x →
+      EndType.siteOf x = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) w →
+      EndType.atTop x = false ∨ EndType.siteOf x
+        = EndType.edgeOf x + (if EndType.atTop x then 1 else 0))
+    (hsX : ∀ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkSupport.Merges EndType.siteOf d.isArr EndType.partner E →
+      ∀ w x : EndType.Endpt n m, (WalkGraph.graph E).Reachable w x →
+      EndType.edgeOf x = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) w →
+      EndType.atTop x = false → EndType.siteOf x
+        = EndType.edgeOf x + (if EndType.atTop x then 1 else 0))
+    (hsT : ∀ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkSupport.Merges EndType.siteOf d.isArr EndType.partner E →
+      ∀ w y : EndType.Endpt n m,
+      EndType.edgeOf y = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) w - 1 →
+      EndType.atTop y = true → EndType.siteOf y
+        = EndType.edgeOf y + (if EndType.atTop y then 1 else 0))
+    (hcov : ∀ E : WalkGraph.Data (EndType.Endpt n m), ∀ z v : EndType.Endpt n m,
+      EndType.edgeOf v < WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) z →
+      ∃ w : EndType.Endpt n m,
+        EndType.edgeOf w = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) z - 1 ∧
+        EndType.atTop w = true)
+    (D : WalkGraph.Data (EndType.Endpt n m)) (hD : TurnInv d Zf D) :
+    ∃ D' : WalkGraph.Data (EndType.Endpt n m), TurnInv d Zf D' ∧
+      ∀ x y : EndType.Endpt n m,
+        runIndexG EndType.edgeOf Zf x = runIndexG EndType.edgeOf Zf y →
+        (WalkGraph.graph D').Reachable x y :=
+  ConfigMerge.reaches_stuck
+    (P := TurnInv d Zf)
+    (Stuck := fun E => ∀ x y : EndType.Endpt n m,
+      runIndexG EndType.edgeOf Zf x = runIndexG EndType.edgeOf Zf y →
+      (WalkGraph.graph E).Reachable x y)
+    (fun E hE => run_step_turnInv d Zf hside hpsite hsW hsX hsT hcov E hE) D hD
+
+/-- A `TurnInv` datum's graph edges preserve the block index or are local. -/
+theorem blk_or_local_of_turnInv {n : ℕ} {m : Fin n → ℕ}
+    (d : EndData.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (E : WalkGraph.Data (EndType.Endpt n m)) (hE : TurnInv d Zf E) :
+    ∀ x y : EndType.Endpt n m, (WalkGraph.graph E).Adj x y →
+      CutComponents.blk EndType.edgeOf Zf x = CutComponents.blk EndType.edgeOf Zf y ∨
+      (∃ t : ℤ, (EndType.edgeOf x = t - 1 ∨ EndType.edgeOf x = t) ∧
+        (EndType.edgeOf y = t - 1 ∨ EndType.edgeOf y = t) ∧
+        (EndType.edgeOf x ≠ EndType.edgeOf y → t ∉ Zf)) := by
+  intro x y hxy
+  exact Or.inr (ConfigLoop.local_of_hturn E Zf hE.1.1.1 hE.1.1.2.1 hE.2 x y hxy)
+
+/-- **The shield law on `Endpt`, with `hZ` gone.**
+
+`c = |Z|` for a datum in `TurnInv`.  Its inputs are the merge-side hypotheses, the
+covering condition, and `hruns` -- no `hZ`, so it is not blocked by the collision
+BLOCK 60 exhibited between `hZ` and `mu_pos`. -/
+theorem shield_turnInv {n : ℕ} {m : Fin n → ℕ}
+    (d : EndData.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (hside : ∀ x, d.side x = EndType.atTop x)
+    (hpsite : ∀ x : EndType.Endpt n m,
+      EndType.siteOf (EndType.partner x) ≠ EndType.siteOf x)
+    (hsW : ∀ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkSupport.Merges EndType.siteOf d.isArr EndType.partner E →
+      ∀ w x : EndType.Endpt n m, (WalkGraph.graph E).Reachable w x →
+      EndType.siteOf x = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) w →
+      EndType.atTop x = false ∨ EndType.siteOf x
+        = EndType.edgeOf x + (if EndType.atTop x then 1 else 0))
+    (hsX : ∀ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkSupport.Merges EndType.siteOf d.isArr EndType.partner E →
+      ∀ w x : EndType.Endpt n m, (WalkGraph.graph E).Reachable w x →
+      EndType.edgeOf x = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) w →
+      EndType.atTop x = false → EndType.siteOf x
+        = EndType.edgeOf x + (if EndType.atTop x then 1 else 0))
+    (hsT : ∀ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkSupport.Merges EndType.siteOf d.isArr EndType.partner E →
+      ∀ w y : EndType.Endpt n m,
+      EndType.edgeOf y = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) w - 1 →
+      EndType.atTop y = true → EndType.siteOf y
+        = EndType.edgeOf y + (if EndType.atTop y then 1 else 0))
+    (hcov : ∀ E : WalkGraph.Data (EndType.Endpt n m), ∀ z v : EndType.Endpt n m,
+      EndType.edgeOf v < WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) z →
+      ∃ w : EndType.Endpt n m,
+        EndType.edgeOf w = WalkSupport.wLo EndType.edgeOf (WalkGraph.graph E) z - 1 ∧
+        EndType.atTop w = true)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : EndType.Endpt n m, CutComponents.blk EndType.edgeOf Zf v = i)
+    (z₀ : EndType.Endpt n m)
+    (D : WalkGraph.Data (EndType.Endpt n m)) (hD : TurnInv d Zf D) :
+    ∃ D' : WalkGraph.Data (EndType.Endpt n m), TurnInv d Zf D' ∧
+      WalkGraph.walkCount D' = Zf.card + 1 := by
+  obtain ⟨D', hD', hsep⟩ :=
+    exists_turnInv_connected d Zf hside hpsite hsW hsX hsT hcov D hD
+  refine ⟨D', hD', le_antisymm ?_ ?_⟩
+  · exact walkCount_le_runs_blk D' EndType.edgeOf Zf
+      (blk_or_local_of_turnInv d Zf D' hD') hsep
+  · obtain ⟨F, hinj, havoid⟩ :=
+      CutComponents.exists_injective_components_avoiding_blk_or_local
+        (blk_or_local_of_turnInv d Zf D' hD') hruns
+        ((WalkGraph.graph D').connectedComponentMk z₀)
+    exact walkCount_ge_of_avoiding_gen D' Zf.card _ F hinj havoid
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3763,3 +3866,6 @@ end EltBridge
 #print axioms EltBridge.swapT_pos_eq
 #print axioms EltBridge.hturn_step_nohZ
 #print axioms EltBridge.run_step_turnInv
+#print axioms EltBridge.exists_turnInv_connected
+#print axioms EltBridge.blk_or_local_of_turnInv
+#print axioms EltBridge.shield_turnInv

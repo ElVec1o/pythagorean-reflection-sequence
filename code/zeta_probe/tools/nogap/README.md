@@ -3710,3 +3710,28 @@ not after.
 
 Also repeated BLOCK 48's exact error: hss is `siteOf a' = siteOf a`, and I passed
 hss.symm. Second time tonight for the same argument of the same lemma.
+
+## 2026-09-03 — BLOCK 64: shield_turnInv — the shield law with hZ GONE
+
+  exists_turnInv_connected  -- iterate run_step_turnInv to a datum in TurnInv whose runs
+                               are connected
+  blk_or_local_of_turnInv   -- a TurnInv datum's graph edges are local (via
+                               ConfigLoop.local_of_hturn), hence blk-or-local
+  shield_turnInv            -- **c = |Z| for a datum in TurnInv**
+
+Inputs: the merge-side hypotheses (hside, hpsite, hsW, hsX, hsT), the covering
+condition hcov, hruns, and a basepoint. NO hZ.
+
+This is the repair BLOCK 60 identified, carried through. The sequence over the last
+five blocks:
+  BLOCK 60  hZ collides with mu_pos -- every shield law resting on hZ is inapplicable
+  BLOCK 61  hturn is derivable from zero-crossing, so hZ was never the right hypothesis
+  BLOCK 62  hturn is self-maintaining across a merge (swapT_pos_eq)
+  BLOCK 63  so hturn can live in the descent invariant (TurnInv) instead
+  BLOCK 64  and the shield law follows from that invariant alone
+Each step is a theorem; none assumes what the previous one supplied.
+
+The upper and lower bounds now come from the SAME hypothesis: blk_or_local_of_turnInv
+feeds both walkCount_le_runs_blk and exists_injective_components_avoiding_blk_or_local.
+Before tonight the two halves took different hypotheses (Local for one, hcovAll and hZ
+for the other), which is part of why the incompatibility took so long to see.
