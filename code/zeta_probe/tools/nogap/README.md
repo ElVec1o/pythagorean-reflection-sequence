@@ -3320,3 +3320,29 @@ invariant -- step_of_split_local drops MergesMin. To iterate (via
 ConfigMerge.reaches_stuck) the descent must preserve the class, which is what
 step_of_split'_local returns instead. That swap is the remaining piece, and it is
 mechanical: step_of_split'_local was localized in BLOCK 24 for exactly this reason.
+
+## 2026-09-03 — BLOCK 48: hsep DISCHARGED — the run induction, generically
+
+  run_step_min_gen      -- the run step PRESERVING the merge class. step_of_split'_local
+                           returns D'.p = D.p and D'.t = swapT ..., which is enough:
+                           swapT_site and swapT_arr restore Merges, and cost_swapData
+                           (through cost_congr, since costOf depends only on .t)
+                           restores minimality.
+  exists_run_connected  -- iterating it via ConfigMerge.reaches_stuck reaches a
+                           cost-minimal datum whose RUNS ARE CONNECTED
+
+That is `hsep`, the last input of VEndpt.shield that was not either a construction
+theorem or a stated property of the configuration.
+
+So the shield law's inputs are now:
+  hp, hts   from the construction        (BLOCK 19)
+  hvirt     proved                        (BLOCK 42)
+  hsep      proved                        (BLOCK 48)
+  hturn     the paper's cut condition on real turns   -- INPUT
+  hruns     every run carries an end                   -- INPUT
+Two inputs remain, both statements about the configuration rather than about the
+model, and both are the same inputs the Endpt-side argument has always taken.
+
+One direction error: `hss` from step_of_split' is `siteOf a' = siteOf a`, and I applied
+`.symm` to it before passing it on. The error message named the expected and actual
+types, so this was a one-line diagnosis rather than a guess.

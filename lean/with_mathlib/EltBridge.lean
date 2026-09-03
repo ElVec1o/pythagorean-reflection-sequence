@@ -2577,6 +2577,121 @@ theorem run_step_gen {α : Type*} [Fintype α] [DecidableEq α]
     exact CostMerge.step_of_split_local d edgeOf siteOf atTop D hside hsW hsX hsT
       hpe hpt hts hta hpsite hcov hmin x y hnr
 
+/-- **The run step, preserving the merge class.**
+
+`run_step_gen` drops the invariant.  `step_of_split'_local` returns enough to rebuild
+it: the new datum has the same pairing and its turn is an explicit `swapT`, so
+`swapT_site` and `swapT_arr` restore `Merges` and `cost_swapData` restores
+minimality. -/
+theorem run_step_min_gen {α : Type*} [Fintype α] [DecidableEq α]
+    (d : EndData.Data α) (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p₀ : α → α)
+    (Zf : Finset ℤ)
+    (hside : ∀ x, d.side x = atTop x)
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (hpsite : ∀ x, siteOf (p₀ x) ≠ siteOf x)
+    (hsW : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w x, (WalkGraph.graph E).Reachable w x →
+      siteOf x = WalkSupport.wLo edgeOf (WalkGraph.graph E) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w x, (WalkGraph.graph E).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (WalkGraph.graph E) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w y, edgeOf y = WalkSupport.wLo edgeOf (WalkGraph.graph E) w - 1 →
+      atTop y = true → siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov : ∀ E : WalkGraph.Data α, ∀ z v : α,
+      edgeOf v < WalkSupport.wLo edgeOf (WalkGraph.graph E) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (WalkGraph.graph E) z - 1 ∧
+        atTop w = true)
+    (D : WalkGraph.Data α) (hD : CostMerge.MergesMin siteOf d.isArr p₀ d D) :
+    (∃ D' : WalkGraph.Data α, CostMerge.MergesMin siteOf d.isArr p₀ d D' ∧
+      WalkGraph.walkCount D' < WalkGraph.walkCount D) ∨
+      (∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+        (WalkGraph.graph D).Reachable x y) := by
+  classical
+  by_cases hsep : ∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+      (WalkGraph.graph D).Reachable x y
+  · exact Or.inr hsep
+  · left
+    obtain ⟨x, hx⟩ := not_forall.mp hsep
+    obtain ⟨y, hy⟩ := not_forall.mp hx
+    have hnr : ¬ (WalkGraph.graph D).Reachable x y := fun hc => hy (fun _ => hc)
+    obtain ⟨hM, hmin⟩ := hD
+    obtain ⟨hp, hts, hta⟩ := hM
+    obtain ⟨D', hlt, hpeq, a, a', harr, harr', hss, hsplit, hshared, hteq⟩ :=
+      CostMerge.step_of_split'_local d edgeOf siteOf atTop D hside
+        (hsW D ⟨hp, hts, hta⟩) (hsX D ⟨hp, hts, hta⟩) (hsT D ⟨hp, hts, hta⟩)
+        (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta
+        (by rw [hp]; exact hpsite) (hcov D)
+        (CostMerge.hmin_of_mergesMin siteOf p₀ d D ⟨⟨hp, hts, hta⟩, hmin⟩) x y hnr
+    have hda : d.isArr (D.t a) = false := by rw [hta, harr]; rfl
+    have hda' : d.isArr (D.t a') = false := by rw [hta, harr']; rfl
+    have hne : a ≠ a' := fun h => hsplit (h ▸ SimpleGraph.Reachable.refl a)
+    -- the new datum is in the class
+    have hts' : ∀ e, siteOf (D'.t e) = siteOf e := by
+      intro e
+      rw [hteq]
+      exact WalkGraph.swapT_site siteOf D.t a (D.t a) a' (D.t a') hts (hts a) hss
+        (show siteOf (D.t a') = siteOf a from (hts a').trans hss) e
+    have hta' : ∀ e, d.isArr (D'.t e) = !d.isArr e := by
+      intro e
+      rw [hteq]
+      exact WalkGraph.swapT_arr d.isArr D.t a (D.t a) a' (D.t a') hta rfl rfl harr harr' e
+    -- and cost-minimal, because the swap preserves cost
+    have hcost : CostMerge.costOf d D' = CostMerge.costOf d D := by
+      have h1 := WalkGraph.swapT_invol D.t_invol rfl rfl
+        (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit)
+        (Ne.symm hne) (ConfigMerge.dep_ne_dep' D rfl rfl (Ne.symm hne))
+        (Ne.symm (ConfigMerge.dep_ne_arr' D rfl))
+        (ConfigMerge.dep_ne_other' D rfl hsplit)
+      have h2 := WalkGraph.swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+        (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+      have h3 := WalkGraph.partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+        (by rw [hp]; exact hpsite) hts (hts a) hss (by rw [hts a']; exact hss)
+      have hc := CostMerge.cost_swapData d D a a' harr harr' hda hda' hne hshared h1 h2 h3
+      rw [← hc]
+      exact CostMerge.cost_congr d D' _ (fun b _ => by rw [hteq]; rfl)
+    exact ⟨D', ⟨⟨hpeq.trans hp, hts', hta'⟩, fun F hF => by rw [hcost]; exact hmin F hF⟩,
+      hlt⟩
+
+/-- **`hsep`, discharged.**  Iterating the invariant-preserving run step reaches a
+cost-minimal datum whose runs are connected -- which is the last input of the shield
+law. -/
+theorem exists_run_connected {α : Type*} [Fintype α] [DecidableEq α]
+    (d : EndData.Data α) (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p₀ : α → α)
+    (Zf : Finset ℤ)
+    (hside : ∀ x, d.side x = atTop x)
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (hpsite : ∀ x, siteOf (p₀ x) ≠ siteOf x)
+    (hsW : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w x, (WalkGraph.graph E).Reachable w x →
+      siteOf x = WalkSupport.wLo edgeOf (WalkGraph.graph E) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w x, (WalkGraph.graph E).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (WalkGraph.graph E) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ E : WalkGraph.Data α, WalkSupport.Merges siteOf d.isArr p₀ E →
+      ∀ w y, edgeOf y = WalkSupport.wLo edgeOf (WalkGraph.graph E) w - 1 →
+      atTop y = true → siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov : ∀ E : WalkGraph.Data α, ∀ z v : α,
+      edgeOf v < WalkSupport.wLo edgeOf (WalkGraph.graph E) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (WalkGraph.graph E) z - 1 ∧
+        atTop w = true)
+    (D : WalkGraph.Data α) (hD : CostMerge.MergesMin siteOf d.isArr p₀ d D) :
+    ∃ D' : WalkGraph.Data α, CostMerge.MergesMin siteOf d.isArr p₀ d D' ∧
+      ∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+        (WalkGraph.graph D').Reachable x y :=
+  ConfigMerge.reaches_stuck
+    (P := CostMerge.MergesMin siteOf d.isArr p₀ d)
+    (Stuck := fun E => ∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+      (WalkGraph.graph E).Reachable x y)
+    (fun E hE => run_step_min_gen d edgeOf siteOf atTop p₀ Zf hside hpe hpt hpsite
+      hsW hsX hsT hcov E hE) D hD
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2682,3 +2797,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.walkCount_le
 #print axioms EltBridge.VEndpt.shield
 #print axioms EltBridge.run_step_gen
+#print axioms EltBridge.run_step_min_gen
+#print axioms EltBridge.exists_run_connected
