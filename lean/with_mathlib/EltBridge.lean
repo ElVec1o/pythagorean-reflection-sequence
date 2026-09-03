@@ -7345,6 +7345,68 @@ theorem pathWeight_guarded_edge (x : ℤ) (P : SiteCost.PathData) (n : ℕ) (hn 
       (by rw [hlast]; exact tailVec_stateOf x P)]
   exact (isTransferDecomposition_edge x n (fun _ : Unit => P) (fun _ => hn) ()).symm
 
+/-! ### The arrival marker fires exactly once, and what that costs
+
+Chasing the last implication of (M3) turns up a structural fact rather than a bookkeeping
+one.  `Guarded` requires `arrv` -- that a state's arrival flag is `[j = 0]` -- but a PATH
+is a list of states with no indices, so nothing in a kernel can tie the flag to an index.
+What is true, and all that is needed, is that the flag fires EXACTLY ONCE along the span:
+`0` always lies in `[A, B]`.
+
+"Exactly once" is not a local condition, so a plain transfer matrix cannot impose it.  The
+standard remedy is to double the state space with a flag recording whether the origin has
+been passed, and to allow the arrival only on the transition that flips it.  That is a real
+construction, not bookkeeping, and it is the honest remaining content of (M3). -/
+
+/-- **The arrival marker fires exactly once along the span.** -/
+theorem sum_vArr_eq_one (P : SiteCost.PathData) :
+    ∑ j ∈ Finset.Icc P.A P.B, SiteCost.vArr j = 1 := by
+  have hA := P.hA
+  have hB := P.hB
+  have hmem : (0 : ℤ) ∈ Finset.Icc P.A P.B := Finset.mem_Icc.mpr ⟨hA, hB⟩
+  rw [Finset.sum_eq_single_of_mem 0 hmem]
+  · unfold SiteCost.vArr; rw [if_pos rfl]
+  · intro b _ hb
+    unfold SiteCost.vArr; rw [if_neg hb]
+
+/-- **The doubled state**: a state together with a flag recording whether the origin has
+been passed.  This is what lets a transfer matrix impose "the arrival fires exactly once",
+which no undoubled kernel can. -/
+structure FlagState where
+  st : LocalState
+  past : Bool
+  deriving DecidableEq
+
+/-- A configuration's flagged state at index `j`. -/
+def flagOf (P : SiteCost.PathData) (j : ℤ) : FlagState :=
+  { st := stateOf P j, past := decide (0 ≤ j) }
+
+/-- The doubled step guard: the underlying step, the flag advancing exactly when the
+arrival fires, and the arrival barred once the origin is behind. -/
+def flagStepB (σ τ : FlagState) : Bool :=
+  fullStepB σ.st τ.st
+    && (τ.past == (σ.past || decide (τ.st.arr = 1)))
+    && (!(σ.past && decide (τ.st.arr = 1)))
+
+/-- **A configuration's flagged path passes the doubled guard.**  The flag is `0 <= j`,
+the arrival fires only at `j = 0`, and those two agree step by step. -/
+theorem flagStepB_flagOf (P : SiteCost.PathData) (j : ℤ) :
+    flagStepB (flagOf P j) (flagOf P (j + 1)) = true := by
+  have harr : ((stateOf P (j + 1)).arr = 1) ↔ j + 1 = 0 := arr_eq_one_iff P (j + 1)
+  simp only [flagStepB, flagOf, Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true',
+    decide_eq_true_eq, decide_eq_false_iff_not, Bool.and_eq_false_imp]
+  refine ⟨⟨fullStepB_stateOf P j, ?_⟩, ?_⟩
+  · by_cases h : (0 : ℤ) ≤ j
+    · simp [h, harr, show ¬(j + 1 = 0) by omega, show (0:ℤ) ≤ j + 1 by omega]
+    · by_cases h1 : j + 1 = 0
+      · have hone : (stateOf P (j + 1)).arr = 1 := harr.mpr h1
+        rw [h1] at hone
+        simp [h, h1, hone, show (0:ℤ) ≤ j + 1 by omega]
+      · simp [h, harr, h1, show ¬((0:ℤ) ≤ j + 1) by omega]
+  · intro hp
+    have : (0 : ℤ) ≤ j := by simpa using hp
+    simp [harr, show ¬(j + 1 = 0) by omega]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14980,3 +15042,5 @@ end EltBridge
 #print axioms EltBridge.isTransferDecomposition_edge
 #print axioms EltBridge.pathWeight_congr
 #print axioms EltBridge.pathWeight_guarded_edge
+#print axioms EltBridge.sum_vArr_eq_one
+#print axioms EltBridge.flagStepB_flagOf

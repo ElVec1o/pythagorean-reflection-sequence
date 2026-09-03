@@ -8435,3 +8435,33 @@ BLOCK 231 could not reach.
 the state path of a configuration.  Everything needed is proved (`Guarded`,
 `exists_config_stateOf`, `stateFns_eq_guarded`); what is missing is the bookkeeping that
 matches the edge-frame guards against the fields of `Guarded`.
+
+## 2026-09-04 — BLOCK 235: the arrival fires once, so the state space must be doubled
+
+Chasing (M3)'s last implication turned up a structural fact, not bookkeeping.  `Guarded`
+requires `arrv` -- that a state's arrival flag is `[j = 0]` -- but a PATH is a list of
+states with no indices, so no kernel can tie the flag to an index.  What is true, and all
+that is needed, is that the flag fires EXACTLY ONCE along the span:
+
+    sum_vArr_eq_one    the arrival marker fires exactly once, since 0 lies in [A, B]
+
+"Exactly once" is not local, so a plain transfer matrix cannot impose it.  The remedy is
+the standard one -- double the state space with a flag recording whether the origin has
+been passed, and allow the arrival only on the transition that flips it:
+
+    FlagState          a state plus a "past the origin" flag
+    flagOf             a configuration's flagged state: the flag is `0 <= j`
+    flagStepB          the doubled guard
+    flagStepB_flagOf   A CONFIGURATION'S FLAGGED PATH PASSES IT
+
+0 sorry.  Three attempts on the last branch, all diagnosed rather than guessed: `simp`
+rewrote `j+1` to `0` in the goal but not in the hypothesis supplying it, so the hypothesis
+had to be rewritten first.  That is the Rule 4.3 pattern -- read the state, do not vary the
+tactic.
+
+**Hygiene.**  A first draft of this block included a theorem whose two sides were
+syntactically identical (`rfl`).  It proved nothing and was removed before commit.
+
+**What this changes for (M3).**  The undoubled kernel of BLOCKS 231-234 cannot be the final
+one; the doubled kernel can.  Everything proved about the undoubled guard carries over,
+since `flagStepB` contains `fullStepB`.
