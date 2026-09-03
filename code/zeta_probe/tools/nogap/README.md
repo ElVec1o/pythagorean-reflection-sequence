@@ -4505,3 +4505,26 @@ atoms carry an honest scope note instead of an unqualified green.
 
 The test is cheap and I should have run it at BLOCK 36 when the instantiations were
 made, rather than at BLOCK 98 after M4b failed it.
+
+## 2026-09-03 — BLOCK 99: M2 passes; the audit is complete
+
+  Elt.lR_closed      -- M2 for a group element: the relaxed length is the least
+                        realisation cost
+  witElt_lR_closed   -- instantiated
+
+SiteCost.lR_closed is stated for a PathData directly -- no configuration intermediary,
+no occupancy or cut hypothesis -- so Elt.toPathData carries it across with nothing to
+check. That is why M2 never carried the "(configurations)" qualifier: it was always
+about the right object.
+
+AUDIT COMPLETE. All six greens tested for instantiability from a group element:
+  M2   PASS  stated for PathData directly                    (BLOCK 99)
+  M5   PASS  instantiated, Elt.defect_zero                   (BLOCK 36)
+  M6   PASS  instantiated, Elt.single_walk; hypothesis = mu_pos (BLOCKS 36, 98)
+  M7   PASS  instantiated, Elt.defect_zero                   (BLOCK 36)
+  B1   PASS  instantiated, witElt_merges                     (BLOCK 35)
+  M3   FAIL  content is the Z != 0 case, unreachable         (BLOCK 98)
+  M4b  FAIL  witness needs empty edges, mu_pos forbids them  (BLOCK 97)
+
+Five green, two yellow. Every green is now backed by an instantiation on an actual
+element, and every yellow has a proved reason.

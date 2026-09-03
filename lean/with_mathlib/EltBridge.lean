@@ -5475,6 +5475,23 @@ theorem M6_hypothesis_holds (P : SiteCost.PathData) (i : Fin (pdWidth P))
     (hlo : P.A ≤ P.A + (i : ℤ)) (hhi : P.A + (i : ℤ) ≤ P.B) :
     0 < pdMm P i := pdMm_pos P i hlo hhi
 
+/-! ### M2 passes the audit
+
+`SiteCost.lR_closed` is stated for a `PathData` directly -- no configuration
+intermediary, no occupancy or cut hypothesis -- so `Elt.toPathData` carries it to group
+elements with nothing to check. -/
+
+/-- **M2 for a group element**: the relaxed length is the least realisation cost. -/
+theorem Elt.lR_closed (g : Elt) :
+    IsLeast {n : ℕ | ∃ R : SiteCost.Realisation g.toPathData, R.cost = n} g.lR :=
+  SiteCost.lR_closed g.toPathData
+
+/-- **Instantiated on the witness.** -/
+theorem witElt_lR_closed :
+    IsLeast {n : ℕ | ∃ R : SiteCost.Realisation witElt.toPathData, R.cost = n}
+      witElt.lR :=
+  Elt.lR_closed witElt
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5675,3 +5692,5 @@ end EltBridge
 #print axioms EltBridge.turnInv_of_mergesMin_of_empty_cuts
 #print axioms EltBridge.prop_cut_vacuous_at_empty
 #print axioms EltBridge.M6_hypothesis_holds
+#print axioms EltBridge.Elt.lR_closed
+#print axioms EltBridge.witElt_lR_closed
