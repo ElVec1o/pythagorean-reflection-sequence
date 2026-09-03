@@ -3369,3 +3369,20 @@ Failure mode worth noting: `forall w y` with no type annotation. In hsW and hsX 
 following `Reachable w x` pins the types; in hsT nothing does, and the error
 ("don't know how to synthesize implicit argument n") points at the USE site rather than
 at the binder. Annotating the binders fixed it.
+
+## 2026-09-03 — BLOCK 50: shield_finalT — the shield law parametrised over the orientation
+
+  VEndpt.shield_finalT -- c = |Z| with hsep discharged, parametrised by the `atTop` map
+
+Observation that made this cheap: the CUT side of the argument (prop_cut, blk_or_local,
+hreal_of_hturn, walkCount_le, walkCount_ge, shield) never mentions VEndpt.atTop at all.
+It works with siteP, edgeOf and partner. Only the MERGE side needs an atTop, and it
+needs only hpt. So the whole shield law parametrises over the orientation with one
+extra hypothesis.
+
+That means the mirrored orientation (atTopN, bnd = s0 - 1) -- the one BLOCK 18 showed
+discharges hsW and hsX with NO side condition, and BLOCK 40 showed is the one
+compatible with locality -- can be plugged in directly.
+
+Both orientations now reach the same theorem; they differ only in which end is the top
+and where the phantom edge sits.
