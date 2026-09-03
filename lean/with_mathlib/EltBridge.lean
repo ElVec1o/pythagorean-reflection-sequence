@@ -3018,6 +3018,48 @@ theorem pd_hgap (P : SiteCost.PathData) (hk : P.kstar < 0) (Zf : Finset ℤ)
   · exact hne0 (by rw [show z = -P.A by omega] at hz; exact hz)
   · omega
 
+/-! ### A virtual site CAN be a cut site
+
+`pd_hgap` takes the two endpoint exclusions as hypotheses.  They are not free: for
+`kstar < 0` the site `0` -- where the virtual arrival sits -- is cut exactly when
+`d(-1) = 1` and `d(0) = 0`, and both are consistent with the parity constraint.
+
+`cut_forces_no_cross` says strands do not *cross* at a cut site; it does **not** say
+the site is empty.  So the route "cut site => arrival-free => not virtual" of BLOCK 39
+does not close, and the exclusions must be assumed or established some other way. -/
+
+/-- **Site `0` is a cut site whenever `d(-1) = 1` and `d(0) = 0`** (for `kstar < 0`). -/
+theorem cut_at_zero (P : SiteCost.PathData) (hk : P.kstar < 0)
+    (h1 : P.d (-1) = 1) (h2 : P.d 0 = 0) : P.cut 0 := by
+  have hvD : P.vD 0 = 0 := by
+    unfold SiteCost.PathData.vD; rw [if_neg (by omega)]
+  refine ⟨?_, ?_, ?_⟩
+  · unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.vArr
+    rw [if_pos rfl, hvD]
+    simp only [ite_self, Nat.cast_zero, mul_zero, add_zero]
+    have h1' : P.d (0 - 1) = 1 := by simpa using h1
+    rw [h1']; norm_num
+  · unfold SiteCost.PathData.betaAt SiteCost.PathData.vR
+    rw [hvD]
+    simp only [ite_self, Nat.cast_zero, mul_zero, sub_zero]
+    exact h2
+  · unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.vArr
+    rw [if_pos rfl, hvD]
+    simp only [ite_self, Nat.cast_zero, sub_zero]
+    have hf : P.f (0 - 1) = -1 := by
+      unfold SiteCost.PathData.f travel
+      rw [if_neg (by omega), if_pos (by omega)]
+    rw [hf]; norm_num
+
+/-- The parity constraint does not forbid it: `d(-1) = 1` has the parity of
+`travel kstar (-1) = -1`, and `d(0) = 0` that of `travel kstar 0 = 0`. -/
+theorem cut_at_zero_parity_ok (kstar : ℤ) (hk : kstar < 0) :
+    ((1 : ℤ) - travel kstar (-1)) % 2 = 0 ∧ ((0 : ℤ) - travel kstar 0) % 2 = 0 := by
+  unfold travel
+  rw [if_neg (by omega), if_pos (by omega)]
+  rw [if_neg (by omega), if_neg (by omega)]
+  norm_num
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3136,3 +3178,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.shield_gap
 #print axioms EltBridge.no_cut_in_neg_travel
 #print axioms EltBridge.pd_hgap
+#print axioms EltBridge.cut_at_zero
+#print axioms EltBridge.cut_at_zero_parity_ok

@@ -3480,3 +3480,32 @@ Both halves of the travel argument are now proved and they are genuinely separat
 lemmas, not one lemma with a sign case: no_cut_inside_travel needs f = +1 on [0,kstar),
 no_cut_in_neg_travel needs f = -1 on [kstar,0), and the `travel` definition splits on
 which interval is non-empty.
+
+## 2026-09-03 — BLOCK 55: CORRECTION — a virtual site CAN be a cut site
+
+  cut_at_zero            -- for kstar < 0, site 0 (where the virtual arrival sits) IS a
+                            cut site whenever d(-1) = 1 and d(0) = 0
+  cut_at_zero_parity_ok  -- and both values are consistent with hpar
+
+So the exclusions hne0/hne1 that pd_hgap takes as hypotheses are NOT free, and cannot
+be discharged the way I said they would be at the end of BLOCK 54.
+
+WHERE THE ERROR WAS. BLOCK 39 proved `arrivalfree_ne_virtual`: an ARRIVAL-FREE site is
+neither virtual site. I then used it as though cut sites were arrival-free. They are
+not. `Realisation.cut_no_cross` / `SiteCost.cut_forces_no_cross` say that at a cut site
+no strand CROSSES -- each arrival pairs with a departure on its own side. The site is
+not empty. I conflated "no crossing" with "no ends" and carried that from BLOCK 39
+through BLOCK 54.
+
+CONSEQUENCE. The chain BLOCK 42 -> 52 -> 53 -> 54 shows the virtual pair stays in one
+run PROVIDED no cut site lies in [s1-1, s0]. no_cut_inside_travel and
+no_cut_in_neg_travel give the interior; the two ENDPOINTS are not excluded, and
+cut_at_zero shows one of them genuinely can be cut. When it is, the virtual pair joins
+two different runs and the lower bound argument fails.
+
+STATUS: shield_gap remains true as stated -- it takes hgap as a hypothesis. What is
+retracted is the claim that hgap is automatic. It holds exactly when neither virtual
+site is cut, and that is a real condition on the element, not a theorem.
+
+This is the fourth obstruction tonight found by trying to USE a result rather than
+inspecting it, and the second where the error was mine rather than the development's.
