@@ -6389,3 +6389,27 @@ NOT DONE: this is verified, not proved in Lean.  The Lean statement needs the tw
 argument -- passes chain the up strands and the down strands separately, bounces at cut
 sites close them -- which is a connectivity induction along the run, and it is specific
 to `mu = 2`.  M4b in general stays open, with three routes closed.
+
+## 2026-09-03 — BLOCK 160: the two-chain argument, proved
+
+BLOCK 159 found the mechanism; this proves it, abstractly.
+
+A strand is `(edge, up?)`.  At `mu = 2` a pass at the site between `j` and `j+1` gives
+`(j, true) — (j+1, true)` and `(j+1, false) — (j, false)`, and the bounce at the run's
+left boundary gives `(lo, true) — (lo, false)`.
+
+`run_one_component` shows every strand of the run is reachable from the leftmost up
+strand: the passes chain each level by induction, and the boundary bounce supplies the
+one step between levels.  `run_pairwise` upgrades that to any two strands of the run
+being joined, which is the shape `RunsConnected` asks for.  Both 0 sorry.
+
+So the connectivity content of M4b's upper bound at `mu = 2` is now a proved lemma, not
+a measured fact.  Note how little it needs: three families of edges and no minimality,
+because minimality has already done its work in `local_trichotomy` by making the passes
+and the boundary bounce available.
+
+NOT DONE: instantiation.  `R` has to become the walk-graph adjacency on strands, `hup`,
+`hdn` and `hjoin` have to be read off the pass/bounce structure at `mu = 2`,
+`ReflTransGen` has to be matched to `WalkGraph.Reachable`, and the components counted.
+That is mechanical but not written.  And the argument is specific to `mu = 2` -- BLOCK
+158's 5072 failures at `mu = 4` are exactly the absence of the two-chain structure.

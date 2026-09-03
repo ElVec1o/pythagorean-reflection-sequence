@@ -8572,3 +8572,72 @@ def RunsConnected {α : Type*} [Fintype α] [DecidableEq α]
 end EltBridge
 
 #print axioms EltBridge.exists_glued_data
+
+namespace EltBridge
+
+/-! ### The two-chain argument at `mu = 2`
+
+BLOCK 159 located the local route's validity exactly: it works when every edge carries
+two strands, and the mechanism is that passes chain the up strands and the down strands
+SEPARATELY, while the bounce at a cut site joins the two chains at one edge.
+
+Abstracted, a strand is `(edge, up?)`.  A pass at the site between `j` and `j+1` gives
+`(j, true) — (j+1, true)` and `(j+1, false) — (j, false)`; the bounce at the run's left
+boundary gives `(lo, true) — (lo, false)`.  Those three families put every strand of the
+run in one component, which is the `|Z| + 1` count. -/
+
+/-- **A run is one component.**  Passes chain each level and the boundary bounce joins
+the levels, so every strand of the run is reachable from the leftmost up strand. -/
+theorem run_one_component (lo : ℤ) (n : ℕ) (R : ℤ × Bool → ℤ × Bool → Prop)
+    (hup : ∀ k : ℕ, k < n → R (lo + k, true) (lo + (k + 1 : ℕ), true))
+    (hdn : ∀ k : ℕ, k < n → R (lo + k, false) (lo + (k + 1 : ℕ), false))
+    (hjoin : R (lo, true) (lo, false)) :
+    ∀ k : ℕ, k ≤ n →
+      Relation.ReflTransGen R (lo, true) (lo + k, true) ∧
+      Relation.ReflTransGen R (lo, true) (lo + k, false) := by
+  intro k
+  induction k with
+  | zero =>
+    intro _
+    refine ⟨?_, ?_⟩
+    · simpa using Relation.ReflTransGen.refl
+    · have : Relation.ReflTransGen R (lo, true) (lo, false) :=
+        Relation.ReflTransGen.single hjoin
+      simpa using this
+  | succ j ih =>
+    intro hjn
+    obtain ⟨h1, h2⟩ := ih (by omega)
+    refine ⟨?_, ?_⟩
+    · exact h1.tail (hup j (by omega))
+    · exact h2.tail (hdn j (by omega))
+
+/-- The same conclusion phrased as "any two strands of the run are joined", which is the
+shape `RunsConnected` wants. -/
+theorem run_pairwise (lo : ℤ) (n : ℕ) (R : ℤ × Bool → ℤ × Bool → Prop)
+    (hsymm : ∀ a b, R a b → R b a)
+    (hup : ∀ k : ℕ, k < n → R (lo + k, true) (lo + (k + 1 : ℕ), true))
+    (hdn : ∀ k : ℕ, k < n → R (lo + k, false) (lo + (k + 1 : ℕ), false))
+    (hjoin : R (lo, true) (lo, false))
+    (j j' : ℕ) (hj : j ≤ n) (hj' : j' ≤ n) (b b' : Bool) :
+    Relation.ReflTransGen R (lo + j, b) (lo + j', b') := by
+  have hsymmR : ∀ a c, Relation.ReflTransGen R a c → Relation.ReflTransGen R c a := by
+    intro a c h
+    induction h with
+    | refl => exact Relation.ReflTransGen.refl
+    | tail _ hstep ih => exact Relation.ReflTransGen.head (hsymm _ _ hstep) ih
+  obtain ⟨u1, d1⟩ := run_one_component lo n R hup hdn hjoin j hj
+  obtain ⟨u2, d2⟩ := run_one_component lo n R hup hdn hjoin j' hj'
+  have hb : Relation.ReflTransGen R (lo + j, b) (lo, true) := by
+    cases b
+    · exact hsymmR _ _ d1
+    · exact hsymmR _ _ u1
+  have hb' : Relation.ReflTransGen R (lo, true) (lo + j', b') := by
+    cases b'
+    · exact d2
+    · exact u2
+  exact hb.trans hb'
+
+end EltBridge
+
+#print axioms EltBridge.run_one_component
+#print axioms EltBridge.run_pairwise
