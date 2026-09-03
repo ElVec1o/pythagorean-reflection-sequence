@@ -7033,3 +7033,33 @@ theorem cut_dichotomy (l l' r r' : Fin 4)
 
 #print axioms pass_le_bounce_of_left_differs
 #print axioms cut_dichotomy
+
+/-! ### `TurnInv` at cut sites that carry ends
+
+`turnInv_of_mergesMin_of_empty_cuts` needs `hempty : ∀ x, siteOf x ∉ Zf`, and its own
+docstring records the consequence: a `PathData` span has no empty site, so `hempty`
+forces `Zf` to miss the span's interior, i.e. `Z = 0`.  That is precisely why M3 and
+M4b were held at "not instantiable from a group element".
+
+But `hempty` is the wrong hypothesis, for the same reason `hZ` was.  The paper's
+condition at a cut site is that no strand **crosses**, not that the site is empty, and
+`hturn_of_cross_zero` already converts `cross = 0` into `hturn`.  Since
+`DataBuild.dataOf up hbal` has `t := DataBuild.turn up` definitionally, the two compose
+with nothing in between.
+-/
+
+/-- **`TurnInv` from cost-minimality and zero crossing, with no emptiness hypothesis.**
+The cut sites may carry ends, which is exactly the case `hempty` excluded and exactly
+the content of `prop:cut` and the shield law. -/
+theorem turnInv_of_mergesMin_of_cross_zero {n : ℕ} {m : Fin n → ℕ}
+    (up : Fin n → ℕ) (ds : Bool → Bool) (d : EndData.Data (EndType.Endpt n m))
+    (Zf : Finset ℤ)
+    (hbal : ∀ s : ℤ, (EndType.arrAt (m := m) up s).card
+      = (EndType.depAt (m := m) up s).card)
+    (hcross : ∀ s ∈ Zf, (ConfigLoop.planAt up ds s (hbal s)).cross = 0)
+    (hD : CostMerge.MergesMin EndType.siteOf d.isArr EndType.partner d
+      (DataBuild.dataOf up hbal)) :
+    EltBridge.TurnInv d Zf (DataBuild.dataOf up hbal) :=
+  ⟨hD, EltBridge.hturn_of_cross_zero up ds Zf hbal hcross⟩
+
+#print axioms turnInv_of_mergesMin_of_cross_zero

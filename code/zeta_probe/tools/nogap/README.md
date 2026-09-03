@@ -5572,3 +5572,47 @@ against.
 
 Also recorded: `cutturn mu4 6 4` exceeds a 900 s cap and was killed; `mu4 4 4`
 completes in 4 s and `mu4 5 4` is the practical ceiling.
+
+## 2026-09-03 — BLOCK 137: M4b's recorded blocker is stale; the real one is named
+
+The ledger held M3 and M4b at "not instantiable from a group element (the witness
+needs empty edges, `mu_pos` forbids them in a span)".  That is no longer the
+obstruction, and this file already said why without the consequence being drawn.
+
+`turnInv_of_mergesMin_of_empty_cuts` takes `hempty : forall x, siteOf x not in Zf`,
+and its own docstring notes that a `PathData` span has no empty site, so `hempty`
+forces `Z = 0` -- which is exactly the yellow.  But emptiness is the wrong
+hypothesis, for the same reason `hZ` was: the paper's condition at a cut site is
+that no strand CROSSES, not that the site is empty.  `hturn_of_cross_zero`
+(BLOCK 61) already converts `cross = 0` into `hturn`, and `DataBuild.dataOf up hbal`
+has `t := DataBuild.turn up` definitionally, so the two compose directly:
+
+    turnInv_of_mergesMin_of_cross_zero
+      (up ds d Zf) (hbal) (hcross) (hD : MergesMin ... (dataOf up hbal))
+      : TurnInv d Zf (dataOf up hbal)
+
+No emptiness hypothesis.  Cut sites may carry ends, which is the case `hempty`
+excluded and the whole content of `prop:cut` and the shield law.
+
+**The real remaining gap, now named.**  What `turnInv_of_mergesMin_of_cross_zero`
+still asks for is `hcross`: at every cut site the site plan has `cross = 0`.  The
+route is laid out in `ConfigLoop` lines 994-996 and every piece of it exists --
+
+    cut_site_value           a cut site has siteValue 0
+    exists_plan_cost_eq      a plan attaining siteValue exists
+    site_cost_le_of_global   global minimality bounds the site-s sum
+    site_sum_eq_plan_cost    that sum IS the plan cost
+    cross_eq_zero_of_cost_zero   cost 0 forces cross 0
+
+-- except one.  `site_cost_le_of_global` compares against a rival datum `E` that
+agrees off site `s`, so using it requires REALISING the zero-cost plan as an actual
+turn.  ConfigLoop builds a plan from a turn (`planOfTurn`, and the row/column
+counting behind it).  It does not build a turn from a plan, and nothing else does.
+
+So M4b's blocker has moved from "not instantiable, a scope problem" to one missing
+construction: given a 4x4 transportation matrix whose row sums are the arrival class
+counts and whose column sums are the departure class counts, produce a bijection
+arrivals -> departures realising it.  That is a finite combinatorial statement, and
+`exists_involution_two` is the same shape in a special case.
+
+Ledger updated for both M3 and M4b.  Neither is green: the construction is not built.
