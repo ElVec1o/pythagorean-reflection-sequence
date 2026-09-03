@@ -5295,6 +5295,39 @@ theorem GData.swap_free_three {α : Type*} (d : GData α) (x y a b : α)
   · exact GData.swap_free_right d x y a b h1 h2
   · exact GData.swap_free_cross d x y a b h1 h2 h3
 
+/-! ### `swap_free_cross` does not fire at the merge site
+
+The merge assembly produces a **bottom** arrival `a` at the maximising walk's leftmost
+site (`maximiser_has_bottom_arrival`), and `maximiser_departure_bottom` makes its
+departure a bottom too.  So `a` and `D.t a` lie on the **same** side, and
+`swap_free_cross` -- which needs the arrivals and departures on opposite sides -- is
+inapplicable there.
+
+Recorded because the route looked open at the end of BLOCK 92: `swap_free_cross` fires
+when two walks meet a site from opposite sides, but the pair the merge actually hands
+over is not of that shape. -/
+
+/-- **The merge site's pair is same-sided**, so the cross condition fails. -/
+theorem cross_unavailable_at_merge {α : Type*} (d : GData α) (a : α) (t : α → α)
+    (hab : d.side a = false) (hdb : d.side (t a) = false) :
+    ¬ (d.side a ≠ d.side (t a)) := by
+  rw [hab, hdb]
+  exact fun h => h rfl
+
+/-- **So of the three sufficient conditions, only the two class ones are available at a
+merge site.**  Both ask the two walks' ends to share a full `(side, sign)` class, which
+cost-minimality does not supply (BLOCK 91). -/
+theorem merge_needs_class_agreement {α : Type*} (d : GData α) (x y : α) (t : α → α)
+    (hxb : d.side x = false) (hyb : d.side y = false)
+    (hdx : d.side (t x) = false) (hdy : d.side (t y) = false) :
+    (d.pcost x (t x) + d.pcost y (t y) = d.pcost x (t y) + d.pcost y (t x)) ↔
+      (d.sgnOf x = d.sgnOf y ∨ d.sgnOf (t x) = d.sgnOf (t y)) := by
+  unfold GData.pcost
+  rw [hxb, hyb, hdx, hdy]
+  simp only [if_pos rfl]
+  cases hx : d.sgnOf x <;> cases hy : d.sgnOf y <;>
+    cases hu : d.sgnOf (t x) <;> cases hv : d.sgnOf (t y) <;> simp
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5486,3 +5519,5 @@ end EltBridge
 #print axioms EltBridge.free_pair_of_minimal_fails_in_free_model
 #print axioms EltBridge.GData.swap_free_cross
 #print axioms EltBridge.GData.swap_free_three
+#print axioms EltBridge.cross_unavailable_at_merge
+#print axioms EltBridge.merge_needs_class_agreement

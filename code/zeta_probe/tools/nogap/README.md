@@ -4359,3 +4359,27 @@ pair, and the counterexample there (one side, alternating signs) is not covered 
 of the three conditions. But the free-pair search has more room than BLOCK 90 suggested,
 since swap_free_cross fires exactly when the two walks meet a site from opposite sides
 -- which is the generic situation for a merge.
+
+## 2026-09-03 — BLOCK 93: swap_free_cross does NOT fire at the merge site
+
+  cross_unavailable_at_merge  -- the merge's arrival and its departure are both BOTTOMS
+                                 (maximiser_has_bottom_arrival + maximiser_departure_
+                                 bottom), so they share a side and the cross condition
+                                 fails (axiom-free)
+  merge_needs_class_agreement -- and when all four ends are bottoms, the swap is free
+                                 IFF the arrivals agree in sign OR the departures do
+
+So at a merge site the three sufficient conditions collapse back to the two class ones,
+and both ask for a sign agreement that cost-minimality does not supply (BLOCK 91).
+
+The second theorem is the sharp statement of where the free-sign merge stands: with all
+four ends on one side, freeness is EXACTLY sign agreement on one of the two pairs. That
+is a two-valued condition on four bits, so it fails in exactly the configuration
+BLOCK 91 exhibited -- signs +,-,+,- -- and nothing about the merge's construction
+excludes it.
+
+STATUS OF THE FREE-SIGN LINE, honestly. It solves the cut-site problem (zero-cost turns
+exist, BLOCKS 80-84) and it has a clean swap calculus (BLOCKS 87-92). It does not
+supply free pairs at merge sites, and BLOCK 91 shows minimality cannot be made to. The
+forced model has the opposite profile. Neither is a drop-in replacement for the other,
+and that is now proved on both sides rather than assumed on either.
