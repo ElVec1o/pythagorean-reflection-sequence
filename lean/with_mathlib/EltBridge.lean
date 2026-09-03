@@ -8727,6 +8727,20 @@ theorem coeff_pow_lR_self (N : ℕ) :
     PowerSeries.coeff N ((PowerSeries.X : PowerSeries ℤ) ^ N) = 1 := by
   rw [coeff_pow_lR, if_pos rfl]
 
+/-! ### The degree-`N` coefficient is a count
+
+With `x := X` the weight of a configuration is `X ^ lR`, so the degree-`N` coefficient of
+the sum counts the configurations of relaxed length exactly `N` -- the wrong-degree ones
+drop out by `coeff_pow_lR_ne` (BLOCK 272).  This is the shape `IsAssembly` compares. -/
+
+theorem coeff_sum_configs (N : ℕ) {A : ℤ} {m : ℕ}
+    [DecidableEq (SpanData A (A + m))] (C : Finset (SpanData A (A + m))) :
+    PowerSeries.coeff N (∑ S ∈ C, (PowerSeries.X : PowerSeries ℤ) ^ S.toPath.lR)
+      = ((C.filter (fun S => N = S.toPath.lR)).card : ℤ) := by
+  rw [map_sum]
+  simp only [coeff_pow_lR]
+  rw [Finset.sum_boole]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16438,3 +16452,4 @@ end EltBridge
 #print axioms EltBridge.coeff_pow_lR
 #print axioms EltBridge.coeff_pow_lR_ne
 #print axioms EltBridge.coeff_pow_lR_self
+#print axioms EltBridge.coeff_sum_configs

@@ -9175,3 +9175,18 @@ relaxed length, and those are finite by `finite_spanData_degree_le` (BLOCK 271).
 
 **[Rule 0] VERIFIED.**  The selection mechanism is in place; the degree-wise instantiation
 is the remaining step.
+
+## 2026-09-04 — BLOCK 273: the degree-N coefficient is a count
+
+    coeff_sum_configs   the degree-N coefficient of the configuration sum counts the
+                        configurations of relaxed length exactly N
+
+0 sorry, clean on the first build; `Finset.sum_boole` does the last step.
+
+With `x := X` the weight of a configuration is `X ^ lR`, so the wrong-degree ones drop out
+by `coeff_pow_lR_ne` (BLOCK 272) and each side becomes a finite count.  This is the shape
+`IsAssembly` compares, and the reason both sides are finite without any further truncation.
+
+**[Rule 0] VERIFIED.**  The configuration side of (M3)'s coefficient identity is now a
+count over a `Finset`.  The path side needs the same treatment, and then the two counts are
+equal by the bijection (BLOCKS 249, 267-268).
