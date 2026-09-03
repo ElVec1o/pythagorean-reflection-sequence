@@ -3686,3 +3686,27 @@ then the architectural repair: state swapT_pos_eq generically and let `split_ifs
 produce the branch conditions in the form the definition uses. Five lines, first try.
 The earlier three attempts were all fighting Lean's normal form, not the mathematics --
 identical to the turnG_arr loop in BLOCK 32.
+
+## 2026-09-03 — BLOCK 63: the descent invariant WITHOUT hZ
+
+  hturn_step_nohZ    -- case on whether the merge site is cut: if not, the original
+                        hturn_swapT applies with hsa; if it is, hturn_swapT_nohZ does.
+                        Either way hZ never appears. (propext + Quot.sound only)
+  TurnInv            -- the descent invariant: cost-minimal in the class, AND turns keep
+                        their edges at cut sites
+  run_step_turnInv   -- **the run step preserving TurnInv**, with no hZ
+
+This is the replacement for RunInv that BLOCK 60 showed was needed. RunInv bundles
+hturn and maintains it with hZ; TurnInv bundles hturn and maintains it with
+hturn_step_nohZ, which needs nothing beyond hshared -- and hshared is what the free
+pair already provides.
+
+DISCIPLINE NOTE. My first draft of run_step_turnInv called run_step_min_gen and then
+tried to recover hturn, which is impossible: the packaged version does not expose the
+swap data (a, a', hshared, the .t equation). I wrote a `sorry` for that step, saw it,
+and rewrote the body to call step_of_split'_local directly. The file has never carried
+a sorry into a commit and did not here -- the check was `grep -c sorry` before building,
+not after.
+
+Also repeated BLOCK 48's exact error: hss is `siteOf a' = siteOf a`, and I passed
+hss.symm. Second time tonight for the same argument of the same lemma.
