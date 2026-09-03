@@ -8183,6 +8183,30 @@ theorem flagStepB_extendFlag_far (g : ℤ → FlagState) (A B : ℤ) (hA : A ≤
   simp [flagStepB, fullStepB, stepB, compatB, flowB, validB, epsValidB, preState, ← hsame,
     heps]
 
+/-! ### The step just past the right end
+
+At `B + 1` the extension is the inherited state; one further out it is inert.  This is the
+step BLOCK 254 found is not free: `compatB` compares the two extension states' sign data,
+so it needs the path's own `eps` and `delta` to agree between `A` and `B`. -/
+
+theorem extendFlag_at_succ_B (g : ℤ → FlagState) (A B : ℤ) :
+    extendFlag g A B (B + 1) = ⟨extState (g B).st, decide (0 ≤ B + 1)⟩ := by
+  show (⟨extendFn (fun i => (g i).st) A B (B + 1), decide (0 ≤ B + 1)⟩ : FlagState) = _
+  congr 1
+  unfold extendFn
+  rw [if_neg (by omega), if_pos rfl]
+
+theorem flagStepB_extendFlag_beyond (g : ℤ → FlagState) (A B : ℤ) (hA : A ≤ 0) (hB : 0 ≤ B)
+    (heps : (g A).st.eps = (g B).st.eps) (hdel : (g A).st.delta = (g B).st.delta)
+    (hepsv : (g A).st.eps = 1 ∨ (g A).st.eps = -1) :
+    flagStepB (extendFlag g A B (B + 1)) (extendFlag g A B (B + 1 + 1)) = true := by
+  rw [extendFlag_at_succ_B, extendFlag_far g A B (B + 1 + 1) (by omega) (by omega)]
+  have h1 : decide ((0 : ℤ) ≤ B + 1) = true := decide_eq_true (by omega)
+  have h2 : decide ((0 : ℤ) ≤ B + 1 + 1) = true := decide_eq_true (by omega)
+  rw [heps] at hepsv
+  simp [flagStepB, fullStepB, stepB, compatB, flowB, validB, epsValidB, extState, preState,
+    h1, h2, heps, hdel, hepsv]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15865,3 +15889,5 @@ end EltBridge
 #print axioms EltBridge.compatB_preState
 #print axioms EltBridge.extendFlag_far
 #print axioms EltBridge.flagStepB_extendFlag_far
+#print axioms EltBridge.extendFlag_at_succ_B
+#print axioms EltBridge.flagStepB_extendFlag_beyond

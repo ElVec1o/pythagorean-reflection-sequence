@@ -8858,3 +8858,19 @@ path's own head guard, not from the extension.  Added as a hypothesis.
 
 The flag is constant that far out because `j` never crosses the origin at a distance from a
 span that contains it: past `B + 1` both flags are set, before `A - 1` both are clear.
+
+## 2026-09-04 — BLOCK 256: the step just past the right end
+
+    extendFlag_at_succ_B          at B+1 the extension is the inherited state
+    flagStepB_extendFlag_beyond   and the step from there to the inert state holds
+
+0 sorry.  One failure: the inert state's admissibility is needed at `B`, not at `A`, so the
+sign hypothesis had to be transported along `heps` first.
+
+This is the step BLOCK 254 found is not free: `compatB` compares the two extension states'
+sign data, so it needs the path's own `eps` and `delta` to agree between `A` and `B` --
+which is the constancy along the path.
+
+**Four of the six cases are now proved in extension form** (far on both sides, and this
+one); the two remaining are the step out of `B` into `B + 1` and the step from `A - 1` into
+`A`, whose ingredients are BLOCKS 252-253.
