@@ -8673,3 +8673,18 @@ So the two ends need different extensions, and a symmetric guess would have been
 one of them.  Both are now proved.
 
 **Both boundaries handled**, which was the obstacle BLOCK 244 exposed.
+
+## 2026-09-04 — BLOCK 246: extending a finite path to all of Z
+
+With both boundary states known (BLOCKS 244-245), a path defined on the span extends:
+
+    extendFn            the span itself, then the inherited state at B+1, then all-zero
+    extendFn_stateOf    and for a configuration the extension changes NOTHING
+
+0 sorry, clean on the first build.
+
+The second is the point.  `guarded_of_flag` needs `outer`, a statement about states off the
+span; `extendFn` supplies them, and `extendFn_stateOf` shows the supply is the correct one
+-- it reproduces `stateOf` exactly rather than merely being consistent with it.  The three
+branches are the span, the inherited right boundary, and everything else, and each is
+discharged from `houter`, `travel_zero_off`, and the two marker positions.

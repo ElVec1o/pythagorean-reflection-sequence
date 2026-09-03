@@ -7843,6 +7843,46 @@ theorem preState_stateOf (P : SiteCost.PathData) :
   · show (0 : ℕ) = P.vD (P.A - 1)
     unfold SiteCost.PathData.vD; rw [if_neg (by omega)]
 
+/-! ### Extending a finite path to a state function on all of `ℤ`
+
+With both boundary states known (BLOCKS 244-245), a path defined on the span extends to
+`ℤ`: the span itself, then the inherited state at `B + 1`, then all-zero everywhere else. -/
+
+/-- Extend a state function beyond its span. -/
+def extendFn (st : ℤ → LocalState) (A B : ℤ) : ℤ → LocalState :=
+  fun j => if A ≤ j ∧ j ≤ B then st j
+           else if j = B + 1 then extState (st B)
+           else preState (st A)
+
+/-- **And for a configuration the extension changes nothing.**  So the extension is the
+right one: it reproduces `stateOf` exactly, which is what `guarded_of_flag`'s `outer`
+hypothesis needs. -/
+theorem extendFn_stateOf (P : SiteCost.PathData) :
+    extendFn (stateOf P) P.A P.B = stateOf P := by
+  have hA := P.hA
+  have hB := P.hB
+  have hk1 := A_le_kstar P
+  have hk2 := kstar_le_B_succ P
+  funext j
+  unfold extendFn
+  by_cases h1 : P.A ≤ j ∧ j ≤ P.B
+  · rw [if_pos h1]
+  · rw [if_neg h1]
+    by_cases h2 : j = P.B + 1
+    · rw [if_pos h2, extState_stateOf, h2]
+    · rw [if_neg h2]
+      refine localState_ext ?_ ?_ ?_ ?_ ?_ rfl rfl
+      · show (0 : ℤ) = P.d (j - 1)
+        exact ((P.houter (j - 1) (by omega)).1).symm
+      · show (0 : ℤ) = P.d j
+        exact ((P.houter j (by omega)).1).symm
+      · show (0 : ℤ) = SiteCost.travel P.kstar j
+        exact (travel_zero_off P.kstar P.A P.B j hA hB hk1 hk2 (by omega)).symm
+      · show (0 : ℕ) = SiteCost.vArr j
+        unfold SiteCost.vArr; rw [if_neg (by omega)]
+      · show (0 : ℕ) = P.vD j
+        unfold SiteCost.PathData.vD; rw [if_neg (by omega)]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15504,3 +15544,4 @@ end EltBridge
 #print axioms EltBridge.exists_config_of_flag
 #print axioms EltBridge.extState_stateOf
 #print axioms EltBridge.preState_stateOf
+#print axioms EltBridge.extendFn_stateOf
