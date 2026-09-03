@@ -8723,3 +8723,20 @@ It is still seen, indirectly: `travel k* B` is `1` exactly when `k* > B`, and `k
 most `B + 1`, so the last edge's travel indicator decides whether the departure sits past
 the end.  That is the boundary case, and it is the third block in a row where the boundary
 carried the content -- the pattern noted in BLOCK 244 continues to hold.
+
+## 2026-09-04 — BLOCK 249: the sum over flagged paths
+
+    flagPath_inj                    distinct guarded data give distinct flagged edge paths
+    sum_configs_eq_sum_flag_paths   a sum over configurations of a fixed span IS a sum over
+                                    their flagged edge paths, weighted by the doubled,
+                                    fully guarded kernel and boundary vectors
+
+0 sorry, both clean on the first build.  This is BLOCK 223's identity re-established in the
+frame (M3) actually uses -- edge-indexed, doubled, and with every guard carried.
+
+**What remains for (M3):** extending the sum from the IMAGE of the configurations to ALL
+paths.  That needs one fact -- a path on which some guard fails has weight zero, because
+the weight is a product and the guard contributes a zero factor -- together with
+`exists_config_of_flag` (BLOCK 243) for the paths on which no guard fails.  Then
+`weightSum_eq_sum_pathWeight` (BLOCK 211) turns the sum over all paths into the matrix
+power.

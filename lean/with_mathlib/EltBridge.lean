@@ -7950,6 +7950,37 @@ theorem stateOf_injective_span {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : 
   exact pathData_ext hk (eps_eq_of_state (h P.A le_rfl hAle))
     (delta_eq_of_state (h P.A le_rfl hAle)) hd hA hB
 
+/-! ### The sum over flagged paths
+
+Injectivity from the edge path (BLOCK 248) plus the doubled path weight (BLOCK 236) give
+the summation in the frame (M3) actually uses. -/
+
+/-- Distinct guarded data give distinct flagged edge paths. -/
+theorem flagPath_inj {A : ℤ} {m : ℕ} {S T : SpanData A (A + m)}
+    (h : (A :: idxList A m).map (flagOf S.toPath)
+        = (A :: idxList A m).map (flagOf T.toPath)) : S = T := by
+  refine toPath_injective (stateOf_injective_span rfl rfl ?_)
+  intro j hj1 hj2
+  have hAe : S.toPath.A = A := rfl
+  have hBe : S.toPath.B = A + (m : ℤ) := rfl
+  rw [hAe] at hj1
+  rw [hBe] at hj2
+  exact congrArg FlagState.st (map_idxList_inj _ _ m A h j hj1 hj2)
+
+/-- **A sum over configurations of a fixed span is a sum over their flagged edge paths**,
+weighted by the doubled, fully guarded kernel and boundary vectors. -/
+theorem sum_configs_eq_sum_flag_paths (x : ℤ) {A : ℤ} {m : ℕ}
+    [DecidableEq (SpanData A (A + m))]
+    (C : Finset (SpanData A (A + m))) :
+    ∑ S ∈ C, x ^ S.toPath.lR
+      = ∑ L ∈ C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)),
+          pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVec x) (flagTailVec x) L := by
+  rw [Finset.sum_image ?inj]
+  case inj => intro S _ T _ h; exact flagPath_inj h
+  refine Finset.sum_congr rfl fun S _ => ?_
+  exact (pathWeight_flag_guarded x S.toPath m rfl).symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15615,3 +15646,5 @@ end EltBridge
 #print axioms EltBridge.extendFn_outer
 #print axioms EltBridge.extendFn_eps
 #print axioms EltBridge.stateOf_injective_span
+#print axioms EltBridge.flagPath_inj
+#print axioms EltBridge.sum_configs_eq_sum_flag_paths
