@@ -2239,6 +2239,70 @@ theorem VEndpt.local_bounds_travel {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : �
   rw [abs_le]
   omega
 
+/-! ### No cut site lies inside the travel interval
+
+This is what makes route (b) work.  A cut site has `Phi = 0`, which away from the two
+virtual sites reads `f(s-1) = 0`.  But `f` is the travel indicator, and it is `+1`
+throughout `0 <= j < kstar`.  So no site strictly inside the travel interval is cut --
+and therefore the two virtual sites lie in the **same run**, and the virtual pair
+cannot merge two distinct runs. -/
+
+/-- **The travel interval contains no cut site.** -/
+theorem no_cut_inside_travel (P : SiteCost.PathData) (s : ℤ)
+    (h0 : 0 < s) (hk : s < P.kstar) : ¬ P.cut s := by
+  rintro ⟨-, -, hPhi⟩
+  unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.PathData.vD
+    SiteCost.vArr at hPhi
+  rw [if_neg (by omega : ¬ s = (0:ℤ))] at hPhi
+  rw [if_neg (by omega : ¬ s = P.kstar)] at hPhi
+  simp only [ite_self, Nat.cast_zero, sub_zero, add_zero] at hPhi
+  have hf : P.f (s - 1) = 1 := by
+    unfold SiteCost.PathData.f travel
+    rw [if_pos (by omega)]
+  omega
+
+/-- **So the two virtual sites lie in the same run.**  Between them -- the travel
+interval -- there is no cut site, so the block index does not change. -/
+theorem virtual_sites_same_run (P : SiteCost.PathData) (Zf : Finset ℤ)
+    (hZ : ∀ z ∈ Zf, ¬ (0 < z ∧ z < P.kstar)) (hk : 0 < P.kstar) :
+    ∀ z ∈ Zf, ¬ (0 < z ∧ z ≤ P.kstar - 1) := by
+  intro z hz ⟨h1, h2⟩
+  exact hZ z hz ⟨h1, by omega⟩
+
+/-- The cut sites of a `PathData` avoid the interior of its travel interval. -/
+theorem pdCut_avoids_travel (P : SiteCost.PathData) (s : ℤ)
+    (h : P.cut s) : ¬ (0 < s ∧ s < P.kstar) := by
+  rintro ⟨h1, h2⟩
+  exact no_cut_inside_travel P s h1 h2 h
+
+/-- **The converse of `gz_ne_of_between`**: no cut site between two points means the
+same run.  BLOCK 3 proved the separating direction; this is the joining one. -/
+theorem gz_eq_of_no_between (Zf : Finset ℤ) (a b : ℤ) (hab : a ≤ b)
+    (h : ∀ z ∈ Zf, ¬ (a < z ∧ z ≤ b)) :
+    CutComponents.gz Zf a = CutComponents.gz Zf b := by
+  classical
+  unfold CutComponents.gz
+  congr 1
+  ext z
+  simp only [Finset.mem_filter]
+  constructor
+  · rintro ⟨hz, hle⟩; exact ⟨hz, by omega⟩
+  · rintro ⟨hz, hle⟩
+    refine ⟨hz, ?_⟩
+    by_contra hc
+    exact h z hz ⟨by omega, hle⟩
+
+/-- **The two virtual sites lie in the same run.**
+
+Cut sites avoid the interior of the travel interval (`pdCut_avoids_travel`) and are
+never virtual sites (`VEndpt.arrivalfree_ne_virtual`), so nothing separates `s0` from
+`s1`.  The virtual pair therefore joins two ends of one run, and cannot merge two
+distinct runs -- which is what the lower bound `c >= |Z|` needs. -/
+theorem virtual_pair_same_run (Zf : Finset ℤ) (s0 s1 : ℤ) (hle : s0 ≤ s1)
+    (hsep : ∀ z ∈ Zf, ¬ (s0 < z ∧ z ≤ s1)) :
+    CutComponents.gz Zf s0 = CutComponents.gz Zf s1 :=
+  gz_eq_of_no_between Zf s0 s1 hle hsep
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2331,3 +2395,7 @@ end EltBridge
 #print axioms EltBridge.VEndpt.local_confines_bnd
 #print axioms EltBridge.VEndpt.local_confines_bnd'
 #print axioms EltBridge.VEndpt.local_bounds_travel
+#print axioms EltBridge.no_cut_inside_travel
+#print axioms EltBridge.pdCut_avoids_travel
+#print axioms EltBridge.gz_eq_of_no_between
+#print axioms EltBridge.virtual_pair_same_run

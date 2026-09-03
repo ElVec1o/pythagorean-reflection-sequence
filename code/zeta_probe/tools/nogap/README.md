@@ -3164,3 +3164,29 @@ This is the third genuine obstruction found tonight by trying to USE a construct
 rather than by inspecting it (after BLOCK 28's negative edges and BLOCK 32's missing
 role flip). The pattern is now consistent enough to state as a rule: a construction is
 not known to work until something downstream consumes it.
+
+## 2026-09-03 — BLOCK 42: no cut site inside the travel interval — route (b) is viable
+
+  no_cut_inside_travel   -- THE KEY LEMMA: a cut site has Phi = 0, which away from the
+                            two virtual sites reads f(s-1) = 0; but f is +1 throughout
+                            0 <= j < kstar. So no site strictly inside the travel
+                            interval is cut.
+  pdCut_avoids_travel    -- the same, contrapositive
+  gz_eq_of_no_between    -- the CONVERSE of BLOCK 3's gz_ne_of_between: no cut site
+                            between two points means the same run. BLOCK 3 proved the
+                            separating direction; this is the joining one.
+  virtual_pair_same_run  -- so s0 and s1 lie in the SAME RUN
+
+This is what makes route (b) work, and it answers BLOCK 41's obstruction directly.
+The virtual pair is non-local -- it joins s0 to s1 in one step, so `Local` fails for
+travel longer than three. But locality is only ever used to prove that the block index
+is constant along graph edges (blk_adj). And the virtual pair joins two ends of ONE
+run, so the block index IS constant along it. The hypothesis fails; the conclusion it
+was there to give still holds.
+
+Both new lemmas depend on propext (+Quot.sound) alone -- no choice.
+
+WHAT REMAINS for M3/M4b at element level: a variant of CutComponents.blk_adj taking
+"Local except on a listed set of edges, each joining ends of equal block index" instead
+of Local. That is a genuine generalisation of the CutComponents machinery, but it is
+now a precisely specified one, and the fact it needs (virtual_pair_same_run) is proved.
