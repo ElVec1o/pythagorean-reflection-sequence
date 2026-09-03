@@ -7135,6 +7135,57 @@ theorem sum_markers_eq (f a d : ℤ → ℤ)
   have ht := telescope_flow f a d h n A
   omega
 
+/-! ### The full guarded kernel
+
+Every per-state guard can be folded into the two-state guard by charging it to the state
+being entered.  So `pathWeight_guard_eq` (BLOCK 216), which was proved for an arbitrary
+two-state predicate, carries the whole local guard without change -- the generality there
+pays off here. -/
+
+/-- The complete local guard: the step, plus the conditions on the state entered. -/
+def fullStepB (σ τ : LocalState) : Bool := stepB σ τ && validB τ && epsValidB τ
+
+theorem fullStepB_stateOf (P : SiteCost.PathData) (j : ℤ) :
+    fullStepB (stateOf P j) (stateOf P (j + 1)) = true := by
+  simp only [fullStepB, Bool.and_eq_true]
+  exact ⟨⟨stepB_stateOf P j, validB_stateOf P (j + 1)⟩, epsValidB_stateOf P (j + 1)⟩
+
+/-- **The full guard leaves a configuration's weight alone.**  Immediate from
+`pathWeight_guard_eq`, because that was stated for an arbitrary guard. -/
+theorem pathWeight_fullStepB_eq (x : ℤ) (P : SiteCost.PathData) (mu : LocalState → ℤ)
+    (n : ℕ) (A : ℤ) (lam : LocalState → ℤ) :
+    pathWeight (fun σ τ => if fullStepB σ τ then x ^ (σ.muOf + τ.siteOf) else 0) lam mu
+        ((A :: idxList A n).map (stateOf P))
+      = pathWeight (fun σ τ => x ^ (σ.muOf + τ.siteOf)) lam mu
+          ((A :: idxList A n).map (stateOf P)) :=
+  pathWeight_guard_eq x P mu fullStepB (fullStepB_stateOf P) n A lam
+
+/-- The head vector's guard: the conditions the first state of a span must satisfy --
+per-state admissibility, minimality, and carrying no deposit or travel from the left. -/
+def headOkB (σ : LocalState) : Bool :=
+  validB σ && epsValidB σ && endValidB σ && decide (σ.dprev = 0)
+
+/-- **A configuration's first state passes the head guard.**  `dprev` vanishes there
+because the edge to the left of the span carries no deposit. -/
+theorem headOkB_stateOf (P : SiteCost.PathData) : headOkB (stateOf P P.A) = true := by
+  simp only [headOkB, Bool.and_eq_true, decide_eq_true_eq]
+  refine ⟨⟨⟨validB_stateOf P P.A, epsValidB_stateOf P P.A⟩, endValidB_at_A P⟩, ?_⟩
+  show P.d (P.A - 1) = 0
+  exact (P.houter (P.A - 1) (Or.inl (by omega))).1
+
+/-- The tail vector's guard: the last state of the site path carries no deposit and no
+travel, because it sits past the right end of the span. -/
+def tailOkB (σ : LocalState) : Bool :=
+  validB σ && epsValidB σ && decide (σ.dcur = 0) && decide (σ.fcur = 0)
+
+theorem tailOkB_stateOf (P : SiteCost.PathData) : tailOkB (stateOf P (P.B + 1)) = true := by
+  simp only [tailOkB, Bool.and_eq_true, decide_eq_true_eq]
+  refine ⟨⟨⟨validB_stateOf P _, epsValidB_stateOf P _⟩, ?_⟩, ?_⟩
+  · show P.d (P.B + 1) = 0
+    exact (P.houter (P.B + 1) (Or.inr (by omega))).1
+  · show SiteCost.travel P.kstar (P.B + 1) = 0
+    exact (P.houter (P.B + 1) (Or.inr (by omega))).2
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14760,3 +14811,7 @@ end EltBridge
 #print axioms EltBridge.stateFns_eq_guarded
 #print axioms EltBridge.telescope_flow
 #print axioms EltBridge.sum_markers_eq
+#print axioms EltBridge.fullStepB_stateOf
+#print axioms EltBridge.pathWeight_fullStepB_eq
+#print axioms EltBridge.headOkB_stateOf
+#print axioms EltBridge.tailOkB_stateOf

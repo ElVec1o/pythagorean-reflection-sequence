@@ -8329,3 +8329,30 @@ suggested: `stepB` is local, `validB`/`epsValidB` are per-state, `endValidB` is 
 deposit and no travel.  What is still not written is the kernel that encodes all of them
 and the proof that it vanishes elsewhere.  That is the remaining piece, and it is smaller
 than it looked one block ago.
+
+## 2026-09-04 — BLOCK 231: the full guarded kernel, and a condition that resists it
+
+Every per-state guard folds into the two-state guard by charging it to the state being
+entered, so `pathWeight_guard_eq` (BLOCK 216) carries the whole local guard unchanged --
+the generality there pays off:
+
+    fullStepB, fullStepB_stateOf     the step plus the conditions on the state entered
+    pathWeight_fullStepB_eq          the full guard leaves a configuration's weight alone
+    headOkB, headOkB_stateOf         the first state's guard, dprev = 0 included
+    tailOkB, tailOkB_stateOf         the last state's guard, dcur = fcur = 0
+
+0 sorry, all four clean on the first build.
+
+**A finding: `hBmin` does not fit a transfer kernel.**  Span-minimality at the right end is
+a condition on the state at index `B`, which is the SECOND-TO-LAST state of the site path
+`A .. B+1`, not the last.  A boundary vector sees only the last state, so it cannot express
+it.  The obvious repair -- have the kernel demand `endValidB sigma` whenever `tau` looks
+terminal (`dcur = 0` and `fcur = 0`) -- MISFIRES: an interior state with `d = 0` and
+`travel = 0` also looks terminal (that is exactly the gap case, `mu = 2`), and the
+preceding state need not satisfy `endValidB`.  So that encoding would reject legitimate
+configurations.
+
+This is a modelling question, not a bug: either sum over non-minimal spans and correct by
+inclusion-exclusion, or carry a two-state marker distinguishing the true end.  It is the
+honest remaining obstacle in (M3), and it is the first one in this sequence that is not
+merely bookkeeping.
