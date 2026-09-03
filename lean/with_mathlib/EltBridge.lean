@@ -2530,6 +2530,53 @@ theorem VEndpt.shield {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf : Fin
     (VEndpt.walkCount_le s0 s1 bnd Zf E hp hts hturn hvirt hsep)
     (VEndpt.walkCount_ge s0 s1 bnd Zf E hp hts hturn hvirt hruns z₀)
 
+/-! ### The run step, generically
+
+`hsep` -- ends of one run share a walk -- is the conclusion of a descent: while two
+ends of a run lie in different walks, a free pair exists and merging it lowers the walk
+count.  `CostMerge.step_of_split_local` supplies the step and is already generic, so
+the run step is too. -/
+
+/-- **The run step.**  Either a strict descent exists, or the runs are already
+connected. -/
+theorem run_step_gen {α : Type*} [Fintype α] [DecidableEq α]
+    (d : EndData.Data α) (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (D : WalkGraph.Data α) (Zf : Finset ℤ)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsW : ∀ w x, (WalkGraph.graph D).Reachable w x →
+      siteOf x = WalkSupport.wLo edgeOf (WalkGraph.graph D) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ w x, (WalkGraph.graph D).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (WalkGraph.graph D) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = WalkSupport.wLo edgeOf (WalkGraph.graph D) w - 1 →
+      atTop y = true → siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (hcov : ∀ z v : α, edgeOf v < WalkSupport.wLo edgeOf (WalkGraph.graph D) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (WalkGraph.graph D) z - 1 ∧
+        atTop w = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ CostMerge.costOf d (WalkGraph.swapData D b (D.t b) b' (D.t b') h1 h2 h3)
+        < CostMerge.costOf d D) :
+    (∃ D' : WalkGraph.Data α, WalkGraph.walkCount D' < WalkGraph.walkCount D) ∨
+      (∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+        (WalkGraph.graph D).Reachable x y) := by
+  classical
+  by_cases hsep : ∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+      (WalkGraph.graph D).Reachable x y
+  · exact Or.inr hsep
+  · left
+    obtain ⟨x, hx⟩ := not_forall.mp hsep
+    obtain ⟨y, hy⟩ := not_forall.mp hx
+    have hnr : ¬ (WalkGraph.graph D).Reachable x y := fun hc => hy (fun _ => hc)
+    exact CostMerge.step_of_split_local d edgeOf siteOf atTop D hside hsW hsX hsT
+      hpe hpt hts hta hpsite hcov hmin x y hnr
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2634,3 +2681,4 @@ end EltBridge
 #print axioms EltBridge.walkCount_le_runs_blk
 #print axioms EltBridge.VEndpt.walkCount_le
 #print axioms EltBridge.VEndpt.shield
+#print axioms EltBridge.run_step_gen

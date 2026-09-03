@@ -3299,3 +3299,24 @@ group element's configuration. Its six hypotheses are:
 The last is the run induction's conclusion and is the remaining input; hruns is a
 statement about the configuration. Neither is a locality hypothesis, which is the
 change from BLOCK 41.
+
+## 2026-09-03 — BLOCK 47: the run step, generically
+
+  run_step_gen -- either a strict descent exists, or the runs are already connected
+
+`hsep` is the conclusion of a descent: while two ends of one run lie in different
+walks, a free pair exists and merging it lowers the walk count.
+`CostMerge.step_of_split_local` supplies that step, and BLOCKS 21-24 had already made
+it generic in the end type, so the run step is generic too. The proof is four lines:
+case-split on hsep, extract the two ends, hand them to step_of_split_local.
+
+This is the first time tonight the localization work has PAID OFF rather than merely
+been correct. run_step_local for Endpt (BLOCK 3) took three strikes and ~40 lines of
+invariant threading; the generic version is four lines, because the hypotheses it needs
+are the three localized shapes and those are exactly what VEndpt discharges.
+
+WHAT IS STILL MISSING for hsep on VEndpt: run_step_gen returns a descent WITHOUT the
+invariant -- step_of_split_local drops MergesMin. To iterate (via
+ConfigMerge.reaches_stuck) the descent must preserve the class, which is what
+step_of_split'_local returns instead. That swap is the remaining piece, and it is
+mechanical: step_of_split'_local was localized in BLOCK 24 for exactly this reason.
