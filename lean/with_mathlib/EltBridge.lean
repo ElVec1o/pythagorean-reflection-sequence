@@ -15,6 +15,7 @@ are the content: `A` and `B` must be *minimal*, not merely valid bounds.
 -/
 import Realisation
 import Mathlib.Data.Finset.Max
+import ConfigLoop
 
 namespace EltBridge
 
@@ -137,6 +138,55 @@ theorem lR_eq : g.lR =
 
 end Elt
 
+/-! ### B1, second half: exactly two sites need repair
+
+`ConfigLoop.balance_iff_tr` says balance at a site is equivalent to the two adjacent
+edges carrying equal signed travel.  `travel_site_facts` says `travel` steps only at
+`s = 0` and `s = kstar`.  Together: a configuration whose signed travel is `travel`
+is **automatically balanced at every other site**, and the two virtual events are not
+a modelling choice -- they are exactly the two repairs the balance needs. -/
+
+/-- **`travel` is constant away from the two virtual sites.** -/
+theorem travel_const_off (kstar s : ℤ) (h0 : s ≠ 0) (hk : s ≠ kstar) :
+    travel kstar (s - 1) = travel kstar s := by
+  have h := travel_site_facts kstar s (if s = 0 then 1 else 0) (if s = kstar then 1 else 0)
+    (travel kstar (s - 1)) (travel kstar s) rfl rfl rfl rfl
+  have := h.1
+  rw [if_neg h0, if_neg hk] at this
+  omega
+
+/-- **Balance is automatic away from the two virtual sites.**
+
+A configuration realising a `travel` -- one whose signed travel `tr` on each edge is
+the travel indicator of that edge -- is balanced at every site other than `0` and
+`kstar`.  So the `Endpt` model needs repair at exactly two sites, which is what the
+two virtual endpoints supply. -/
+theorem balance_off_virtual {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (htr : ∀ e : Fin n, ConfigLoop.tr (m := mm) up e = travel kstar (e : ℤ))
+    (s : ℤ) (h0 : s ≠ 0) (hk : s ≠ kstar) (e1 e2 : Fin n)
+    (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s) :
+    (EndType.arrAt (m := mm) up s).card = (EndType.depAt (m := mm) up s).card := by
+  refine (ConfigLoop.balance_iff_tr (m := mm) up s e1 e2 h1 h2).mpr ?_
+  rw [htr e1, htr e2, h1, h2]
+  exact travel_const_off kstar s h0 hk
+
+/-- **The exact deficit.**  For a configuration realising a `travel`, the arrival
+minus departure count at any site is `[s = kstar] - [s = 0]`.
+
+So the model is short exactly one arrival at site `0` and one departure at site
+`kstar`, and balanced everywhere else.  The two virtual events `vArr` and `vD` are
+not a modelling choice: they are the unique repair, in the unique places. -/
+theorem deficit_eq {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (htr : ∀ e : Fin n, ConfigLoop.tr (m := mm) up e = travel kstar (e : ℤ))
+    (s : ℤ) (e1 e2 : Fin n) (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s) :
+    ((EndType.arrAt (m := mm) up s).card : ℤ) - (EndType.depAt (m := mm) up s).card
+      = (if s = kstar then 1 else 0) - (if s = 0 then 1 else 0) := by
+  rw [ConfigLoop.arr_sub_dep_eq (m := mm) up s e1 e2 h1 h2, htr e1, htr e2, h1, h2]
+  have h := travel_site_facts kstar s (if s = 0 then 1 else 0) (if s = kstar then 1 else 0)
+    (travel kstar (s - 1)) (travel kstar s) rfl rfl rfl rfl
+  have := h.1
+  omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -144,3 +194,6 @@ end EltBridge
 #print axioms EltBridge.Elt.B_min
 #print axioms EltBridge.Elt.toPathData
 #print axioms EltBridge.Elt.lR_eq
+#print axioms EltBridge.travel_const_off
+#print axioms EltBridge.balance_off_virtual
+#print axioms EltBridge.deficit_eq

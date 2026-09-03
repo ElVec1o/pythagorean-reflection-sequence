@@ -2293,6 +2293,23 @@ theorem no_balance_of_tr_ne (up : Fin n → ℕ) (s : ℤ) (e1 e2 : Fin n)
     (arrAt (m := m) up s).card ≠ (depAt (m := m) up s).card :=
   fun h => hne ((balance_iff_tr (m := m) up s e1 e2 h1 h2).mp h)
 
+/-- **The balance deficit at a site**, sharp form: arrivals minus departures is the
+difference of the signed travels of the two adjacent edges.  `balance_iff_tr` is the
+case where this vanishes. -/
+theorem arr_sub_dep_eq (up : Fin n → ℕ) (s : ℤ) (e1 e2 : Fin n)
+    (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s) :
+    ((arrAt (m := m) up s).card : ℤ) - (depAt (m := m) up s).card
+      = tr (m := m) up e1 - tr (m := m) up e2 := by
+  have ha := card_arr_top (m := m) up s e1 h1
+  have hb := card_arr_bottom (m := m) up s e2 h2
+  have hc := card_dep_top (m := m) up s e1 h1
+  have hd := card_dep_bottom (m := m) up s e2 h2
+  have hs1 := card_split_atTop (arrAt (m := m) up s)
+  have hs2 := card_split_atTop (depAt (m := m) up s)
+  have k1 : min (up e1) (m e1) ≤ m e1 := min_le_right _ _
+  have k2 : min (up e2) (m e2) ≤ m e2 := min_le_right _ _
+  unfold tr
+  omega
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.balance_iff_tr
-#print axioms ConfigLoop.no_balance_of_tr_ne
+#print axioms ConfigLoop.arr_sub_dep_eq

@@ -2192,3 +2192,24 @@ realised as a configuration -- toPathData is the first half of B1, not all of it
 
 Also fixed: `GroupElt` had a lean_lib entry but was missing from defaultTargets, so it
 was never built by `lake build`. Added, along with `EltBridge`.
+
+## 2026-09-03 — BLOCK 8: B1's remainder is exactly two sites, and the repair is forced
+
+BLOCK 6 said the Endpt model cannot balance a PathData by re-indexing. BLOCK 8 makes
+that sharp and turns it from an obstruction into a specification.
+
+  ConfigLoop.arr_sub_dep_eq   -- SHARP: (arrivals - departures) at a site = tr e1 - tr e2
+                                 (balance_iff_tr is the vanishing case)
+  EltBridge.travel_const_off  -- travel is constant away from s = 0 and s = kstar
+  EltBridge.balance_off_virtual -- so a travel-realising configuration is balanced at
+                                   EVERY site except those two, automatically
+  EltBridge.deficit_eq        -- and the deficit there is exactly
+                                 [s = kstar] - [s = 0]
+
+READ: the model is short exactly ONE arrival at site 0 and ONE departure at site
+kstar, and is balanced everywhere else. So the virtual events vArr and vD are not a
+modelling choice -- they are the UNIQUE repair, in the UNIQUE places, and the count
+"two virtual events" is forced by the arithmetic rather than assumed.
+
+This is why B1's second half is a bounded job: extend Endpt by two elements, not by a
+family. The extension itself is not yet written.
