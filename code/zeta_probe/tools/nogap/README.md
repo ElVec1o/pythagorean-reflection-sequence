@@ -7410,3 +7410,37 @@ gap edges, which closed the classical route to this bound at every `mu`.
 Ledger updated for both atoms.  What remains between this and an unconditional M4b is the
 same bookkeeping as at `mu = 2`: supplying the run structure for a concrete `PathData`,
 which BLOCKS 181-183 already provide as level-set facts.
+
+## 2026-09-03 — BLOCK 197: the shield law, all mu
+
+`EltBridge.shield_law`.  `walkCount = |Zf| + 1` -- that is `c = |Z|` -- for `mu = 2u` at
+every `u > 0`.  0 sorry.
+
+The run structure is no longer assumed.  `runLo` and `runLen` are the level sets of `gz`,
+and every fact about them is proved:
+
+    runLo_le, le_runHi           runLo and runLo+runLen ARE the run's least and greatest
+                                 positions -- definitional, not hypotheses
+    gz_at_run, run_pos_in_span   a run's positions carry its index and lie in the span
+    runLo_mem_bounce'            its left end is a bounce site
+    runHi_succ_mem_bounce        so is its right end, being the span's edge or a point
+                                 where gz rises
+    no_bounce_inside_run         and nothing between them is
+    shield_law_shift_occ         the hypotheses are needed only at OCCUPIED runs, whose
+                                 witness is derived where they are used
+
+So the hypotheses are the configuration and nothing else: `2u` strands per edge, ends in
+the span, a section on `[A-1, B+1]`, cut sites strictly inside, every position occupied,
+and the parity -- which `exists_sig_with_parity` shows always exists.
+
+**M3 and M4b are green.**  Both bounds hold of ONE datum, the datum is constructed rather
+than assumed, and `CostMerge` is invoked nowhere beneath the result -- no merge, no swap,
+no free pair.  That last point is what makes it possible at all: BLOCK 149 refuted
+`HasFreePair` in `configGData`, the only sign model that can express gap edges, which
+closed the classical route at every `mu`.
+
+The arc, for the record.  BLOCK 139 proved the derived-sign model forces cut sites empty;
+BLOCK 149 refuted the free pair in the model that does not; BLOCK 152 identified `EndData`
+as the gap-free model, so M3 and M4b could not even be STATED there; BLOCK 158 refuted
+the local route at `mu = 4`; and BLOCK 187 found that what looked like an obstruction was
+a global parity that is free to satisfy.  Everything after that was construction.

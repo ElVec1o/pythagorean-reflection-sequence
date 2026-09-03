@@ -12432,3 +12432,242 @@ end EltBridge
 #print axioms EltBridge.gz_at_run
 #print axioms EltBridge.runHi_succ_mem_bounce
 #print axioms EltBridge.levelSet_ne_of_occ
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ### Only occupied runs need the hypotheses
+
+`shield_law_shift` asks its three families at every `r`, but they are used only at
+`r = gz (edgeOf x)` for an actual end -- a run CONTAINING an edge, hence non-empty.
+Empty runs need nothing, and could not supply it: their `runLo` defaults to `A` and there
+is no far bounce to shift at.  So the hypotheses are conditional on occupancy, and the
+witness is derived where they are used. -/
+theorem shield_law_shift_occ (hu : 0 < u) (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (f : ℤ × Fin u × Bool → EndType.Endpt n m)
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hcover : ∀ x : EndType.Endpt n m, ∃ (l : Fin u) (b : Bool),
+      f (EndType.edgeOf x, l, b) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hchain : ∀ (r : ℕ), (∃ y : EndType.Endpt n m,
+        CutComponents.gz Zf (EndType.edgeOf y) = r) →
+      ∀ (k : ℕ) (l : Fin u) (b : Bool), k < len r →
+      (WalkGraph.graph E).Reachable (f (lo r + k, l, b)) (f (lo r + (k + 1 : ℕ), l, b)))
+    (hjoinL : ∀ (r : ℕ), (∃ y : EndType.Endpt n m,
+        CutComponents.gz Zf (EndType.edgeOf y) = r) →
+      ∀ l : Fin u,
+      (WalkGraph.graph E).Reachable (f (lo r, l, true)) (f (lo r, l, false)))
+    (hshift : ∀ (r : ℕ), (∃ y : EndType.Endpt n m,
+        CutComponents.gz Zf (EndType.edgeOf y) = r) →
+      ∀ (i : ℕ) (hi : i + 1 < u),
+      (WalkGraph.graph E).Reachable (f (lo r + (len r : ℕ), ⟨i, by omega⟩, true))
+        (f (lo r + (len r : ℕ), ⟨i + 1, hi⟩, false)))
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hne : Nonempty (EndType.Endpt n m)) :
+    WalkGraph.walkCount E = Zf.card + 1 := by
+  classical
+  have hrun : ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph E).Reachable (botOf x) (botOf y) := by
+    intro x y hxy
+    have hoccx : ∃ z : EndType.Endpt n m,
+        CutComponents.gz Zf (EndType.edgeOf z) = CutComponents.gz Zf (EndType.edgeOf x) :=
+      ⟨x, rfl⟩
+    obtain ⟨lx, bx, hx⟩ := hcover x
+    obtain ⟨ly, by', hy⟩ := hcover y
+    obtain ⟨j, hj, hxj⟩ := hrange x
+    obtain ⟨j', hj', hyj⟩ := hrange y
+    rw [← hx, ← hy, hxj, hyj, ← hxy] at *
+    exact run_one_component_shift u hu (WalkGraph.graph E) f _ _
+      (hchain _ hoccx) (hjoinL _ hoccx) (hshift _ hoccx)
+      j j' hj (by rw [hxy] at hj'; exact hj') lx ly bx by'
+  refine le_antisymm ?_ ?_
+  · exact shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) hTsite hturn
+      (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) hrun
+  · obtain ⟨x0⟩ := hne
+    exact walkCount_ge_passTurn E Zf A B hAB hEp hTsite hturn hlow hhigh hocc
+      ((WalkGraph.graph E).connectedComponentMk x0)
+
+end EltBridge
+
+#print axioms EltBridge.shield_law_shift_occ
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **M4b with the run structure supplied.**  The runs are the level sets of `gz`, and
+every fact about them is proved: `gz_at_run` and `run_pos_in_span` from
+`run_mem_levelSet`, `runLo_mem_bounce'` and `runHi_succ_mem_bounce` at the two ends,
+`no_bounce_inside_run` for the interior, `runLo_le_and_le_len` for the range.
+
+What the caller supplies is the configuration alone -- `mu = 2u`, the span, the section,
+the permutations with the parity -- plus the two order facts naming `runLo` and
+`runLo + runLen` as the run's least and greatest positions. -/
+theorem shield_law_runs (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (hmin : ∀ (r : ℕ) (j : ℤ), A ≤ j → j ≤ B → CutComponents.gz Zf j = r →
+      runLo Zf A B r ≤ j)
+    (hmax : ∀ (r : ℕ) (j : ℤ), A ≤ j → j ≤ B → CutComponents.gz Zf j = r →
+      j ≤ runLo Zf A B r + (runLen Zf A B r : ℤ))
+    (hpar : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      relAt sig (runLo Zf A B r) (runLen Zf A B r) false ⟨i + 1, hi⟩
+        = relAt sig (runLo Zf A B r) (runLen Zf A B r) true ⟨i, by omega⟩)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hnonempty : Nonempty (EndType.Endpt n m)) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkGraph.walkCount E = Zf.card + 1 := by
+  classical
+  obtain ⟨E, hEp, hEt, hTsite⟩ :=
+    exists_turnGen_data hm hu sec (insert A (insert (B + 1) Zf)) sig A B hspan hsecWide
+  refine ⟨E, shield_law_shift_occ hu Zf A B hAB (runLo Zf A B) (runLen Zf A B) E
+    (fun a => globalName (m := m) hm sec sig Zf (runLo Zf A B) a.1 a.2.1 a.2.2)
+    hEp hTsite ?_ ?_ ?_ ?_ ?_ ?_ hlow hhigh hoc hnonempty⟩
+  · intro x hx
+    rw [hEt x] at hx
+    exact turnGen_hturn hm sec Zf (insert A (insert (B + 1) Zf))
+      (fun z hz => Finset.mem_insert_of_mem (Finset.mem_insert_of_mem hz)) sig x hx
+  · intro x
+    obtain ⟨l, b, hlb⟩ := botOf_eq_strOf hm sec x (hsecEdge x)
+    exact ⟨(relAt sig (runLo Zf A B (CutComponents.gz Zf (EndType.edgeOf x)))
+      ((EndType.edgeOf x
+        - runLo Zf A B (CutComponents.gz Zf (EndType.edgeOf x))).toNat) b).symm l,
+      b, by unfold globalName; simpa using hlb⟩
+  · exact fun x => runLo_le_and_le_len Zf A B _ (hspan x)
+  · intro r hoccr k l b hk
+    have hne := levelSet_ne_of_occ Zf A B r hspan hoccr
+    obtain ⟨p1, p2⟩ := run_pos_in_span Zf A B r k hne (by omega)
+    simp only []
+    rw [globalName_eq_nameAt hm sec sig Zf (runLo Zf A B) r k l b
+        (gz_at_run Zf A B r k hne (by omega)),
+      globalName_eq_nameAt hm sec sig Zf (runLo Zf A B) r (k + 1) l b
+        (gz_at_run Zf A B r (k + 1) hne (by omega))]
+    exact hchain_nameAt hm sec _ sig E hEp hEt (runLo Zf A B r) k l b
+      (hsecWide _ (by omega) (by omega))
+      (by
+        have h := no_bounce_inside_run Zf A B r k hne hk
+        have harith : runLo Zf A B r + (k : ℤ) + 1 = runLo Zf A B r + ((k : ℤ) + 1) := by
+          ring
+        rw [harith]
+        exact h)
+  · intro r hoccr l
+    have hne := levelSet_ne_of_occ Zf A B r hspan hoccr
+    obtain ⟨p1, p2⟩ := run_pos_in_span Zf A B r 0 hne (by omega)
+    simp only [Nat.cast_zero, add_zero] at p1 p2
+    simp only []
+    rw [show runLo Zf A B r = runLo Zf A B r + ((0 : ℕ) : ℤ) by norm_num]
+    rw [globalName_eq_nameAt hm sec sig Zf (runLo Zf A B) r 0 l true
+        (gz_at_run Zf A B r 0 hne (by omega)),
+      globalName_eq_nameAt hm sec sig Zf (runLo Zf A B) r 0 l false
+        (gz_at_run Zf A B r 0 hne (by omega))]
+    exact hjoinL_nameAt hm sec _ sig E hEt (runLo Zf A B r) l
+      (hsecWide _ (by omega) (by omega)) (runLo_mem_bounce' Zf A B r (hmin r))
+  · intro r hoccr i hi
+    have hne := levelSet_ne_of_occ Zf A B r hspan hoccr
+    obtain ⟨p1, p2⟩ := run_pos_in_span Zf A B r (runLen Zf A B r) hne (le_refl _)
+    simp only []
+    rw [globalName_eq_nameAt hm sec sig Zf (runLo Zf A B) r (runLen Zf A B r) _ true
+        (gz_at_run Zf A B r (runLen Zf A B r) hne (le_refl _)),
+      globalName_eq_nameAt hm sec sig Zf (runLo Zf A B) r (runLen Zf A B r) _ false
+        (gz_at_run Zf A B r (runLen Zf A B r) hne (le_refl _))]
+    exact hshift_nameAt hm sec _ sig E hEp hEt (runLo Zf A B r) (runLen Zf A B r)
+      (hsecWide _ (by omega) (by omega))
+      (runHi_succ_mem_bounce Zf A B r hne (hmax r)) i hi (hpar r i hi)
+
+end EltBridge
+
+#print axioms EltBridge.shield_law_runs
+
+namespace EltBridge
+
+/-! ### `hmin` and `hmax` are definitional
+
+`runLo` is the level set's minimum and `runLo + runLen` its maximum, so the two order
+facts `shield_law_runs` asks for are theorems, not hypotheses. -/
+
+theorem runLo_le (Zf : Finset ℤ) (A B : ℤ) (r : ℕ) (j : ℤ)
+    (hA : A ≤ j) (hB : j ≤ B) (hgz : CutComponents.gz Zf j = r) :
+    runLo Zf A B r ≤ j := by
+  classical
+  have hmem : j ∈ levelSet Zf A B r := by
+    simp only [levelSet, Finset.mem_filter, Finset.mem_Icc]
+    exact ⟨⟨hA, hB⟩, hgz⟩
+  have hne : (levelSet Zf A B r).Nonempty := ⟨j, hmem⟩
+  rw [runLo, dif_pos hne]
+  exact Finset.min'_le _ _ hmem
+
+theorem le_runHi (Zf : Finset ℤ) (A B : ℤ) (r : ℕ) (j : ℤ)
+    (hA : A ≤ j) (hB : j ≤ B) (hgz : CutComponents.gz Zf j = r) :
+    j ≤ runLo Zf A B r + (runLen Zf A B r : ℤ) := by
+  classical
+  have hmem : j ∈ levelSet Zf A B r := by
+    simp only [levelSet, Finset.mem_filter, Finset.mem_Icc]
+    exact ⟨⟨hA, hB⟩, hgz⟩
+  have hne : (levelSet Zf A B r).Nonempty := ⟨j, hmem⟩
+  have hlo : runLo Zf A B r = (levelSet Zf A B r).min' hne := by rw [runLo, dif_pos hne]
+  have hlen : runLen Zf A B r
+      = ((levelSet Zf A B r).max' hne - (levelSet Zf A B r).min' hne).toNat := by
+    rw [runLen, dif_pos hne]
+  have hle := Finset.min'_le_max' (levelSet Zf A B r) hne
+  have hmax := Finset.le_max' _ _ hmem
+  rw [hlo, hlen]
+  omega
+
+end EltBridge
+
+#print axioms EltBridge.runLo_le
+#print axioms EltBridge.le_runHi
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **THE SHIELD LAW.**  `walkCount = |Z| + 1`, that is `c = |Z|`, at every `mu = 2u`.
+
+The hypotheses are the configuration and nothing else: every edge carries `2u` strands,
+the ends lie in the span, `sec` names the edge at each position of `[A-1, B+1]`, the cut
+sites lie strictly inside the span and every position of it carries an end, and the
+permutation family has the parity BLOCK 187 identified -- which `exists_sig_with_parity`
+shows always exists.
+
+The run structure is no longer assumed: `runLo` and `runLen` are the level sets of `gz`,
+and every fact about them is proved (`runLo_le`, `le_runHi`, `gz_at_run`,
+`run_pos_in_span`, `runLo_mem_bounce'`, `runHi_succ_mem_bounce`, `no_bounce_inside_run`,
+`runLo_le_and_le_len`).
+
+`CostMerge` is invoked nowhere beneath this: no merge, no swap, no free pair. -/
+theorem shield_law (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (hpar : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      relAt sig (runLo Zf A B r) (runLen Zf A B r) false ⟨i + 1, hi⟩
+        = relAt sig (runLo Zf A B r) (runLen Zf A B r) true ⟨i, by omega⟩)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hnonempty : Nonempty (EndType.Endpt n m)) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkGraph.walkCount E = Zf.card + 1 :=
+  shield_law_runs hm hu sec sig Zf A B hAB hspan hsecWide hsecEdge
+    (fun r j hA hB hgz => runLo_le Zf A B r j hA hB hgz)
+    (fun r j hA hB hgz => le_runHi Zf A B r j hA hB hgz)
+    hpar hlow hhigh hoc hnonempty
+
+end EltBridge
+
+#print axioms EltBridge.shield_law
