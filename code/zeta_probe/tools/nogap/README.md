@@ -2239,3 +2239,30 @@ job -- `partner`, `turn`, `Data`, `walkCount` all need extending, and `partner` 
 two virtual ends is a genuine choice, not boilerplate. B1 stays YELLOW until that is
 done; what changed is that the mathematical obstruction is gone and only transport
 remains.
+
+## 2026-09-03 — BLOCK 10: the virtual pairing is FORCED; a degree of freedom removed from (M)
+
+  VEndpt.partner          -- real ends keep their partner; the two virtual ends are
+                             the two ends of ONE virtual crossing, so they pair each
+                             other
+  VEndpt.partner_invol    -- involution
+  VEndpt.partner_ne       -- no fixed point
+  VEndpt.isArr_partner    -- exchanges arrivals and departures, virtual pair included
+  VEndpt.partner_site_ne  -- changes site, provided kstar != 0 (travel_site_facts
+                             already flags kstar = 0 as the degenerate case)
+  VEndpt.partner_unique   -- **any** extended partner that restricts to the real
+                             partner, is an involution, and exchanges arrivals with
+                             departures MUST pair the two virtual ends with each other
+
+The last one is the point. The virtual arrival CANNOT be partnered with a real
+departure: if it were, the involution would have to send that real end back to the
+virtual arrival, but on real ends the partner is already fixed and lands on a real
+end. So the pairing is forced by the three properties, not chosen.
+
+CONSEQUENCE FOR (M): `hyp:model` has one fewer degree of freedom than it appears to.
+This is the first result tonight that touches H1 rather than sitting below it. It does
+NOT discharge (M) -- the transfer model asserts much more than the pairing -- but it
+converts one of its silent choices into a theorem.
+
+STILL NOT DONE: `turn`, `Data`, `walkCount` on VEndpt, and re-proving the merge
+development against the extended type. B1 stays yellow.

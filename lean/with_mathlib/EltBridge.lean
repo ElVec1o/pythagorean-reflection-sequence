@@ -297,6 +297,87 @@ theorem VEndpt.balanced {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kst
   rw [ha, hb]
   split_ifs at hd ⊢ <;> omega
 
+/-! ### The crossing partner on the extended type
+
+This is the one genuine choice in the extension, and it is where the transport stops
+being bookkeeping.  The virtual arrival at site `0` and the virtual departure at
+`kstar` have no crossing of their own; reading them as the two ends of **one** virtual
+crossing pairs them with each other.  That reading is what `hyp:model` makes silently,
+so it belongs to (M).  Stated here, and checked against the three properties
+`partner` has to have. -/
+
+/-- **The extended crossing partner.**  Real ends keep their partner; the two virtual
+ends are the two ends of one virtual crossing, so they partner each other. -/
+def VEndpt.partner {n : ℕ} {mm : Fin n → ℕ} : VEndpt n mm → VEndpt n mm
+  | .inl x => .inl (EndType.partner x)
+  | .inr b => .inr (!b)
+
+/-- It is an involution. -/
+theorem VEndpt.partner_invol {n : ℕ} {mm : Fin n → ℕ} (x : VEndpt n mm) :
+    VEndpt.partner (VEndpt.partner x) = x := by
+  cases x with
+  | inl y => simp [VEndpt.partner, EndType.partner_invol]
+  | inr b => cases b <;> rfl
+
+/-- It has no fixed point. -/
+theorem VEndpt.partner_ne {n : ℕ} {mm : Fin n → ℕ} (x : VEndpt n mm) :
+    VEndpt.partner x ≠ x := by
+  cases x with
+  | inl y => simpa [VEndpt.partner] using EndType.partner_ne y
+  | inr b => cases b <;> simp [VEndpt.partner]
+
+/-- **It exchanges arrivals and departures**, on the virtual pair as well as the real
+ones -- which is exactly why the pairing above is the right one, and not a
+convention. -/
+theorem VEndpt.isArr_partner {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (x : VEndpt n mm) :
+    VEndpt.isArr up (VEndpt.partner x) = !VEndpt.isArr up x := by
+  cases x with
+  | inl y => simpa [VEndpt.partner, VEndpt.isArr] using EndType.isArrOf_partner up y
+  | inr b => cases b <;> rfl
+
+/-- **It always changes site**, provided the two virtual events do not coincide --
+that is, provided `kstar` is not `0`.  This is the hypothesis `p_site_ne` needs, and
+`travel_site_facts` already records that `kstar = 0` is the degenerate case. -/
+theorem VEndpt.partner_site_ne {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ) (hk : kstar ≠ 0)
+    (x : VEndpt n mm) :
+    VEndpt.site kstar (VEndpt.partner x) ≠ VEndpt.site kstar x := by
+  cases x with
+  | inl y =>
+    simpa [VEndpt.partner, VEndpt.site] using
+      WalkSupport.p_site_ne EndType.edgeOf EndType.siteOf EndType.atTop EndType.partner
+        (fun _ => rfl) (fun w => EndType.partner_edgeOf w) (fun w => EndType.partner_top w) y
+  | inr b => cases b <;> simp [VEndpt.partner, VEndpt.site] <;> omega
+
+/-- **The virtual pairing is forced, not a modelling choice.**
+
+Any extended partner that (a) restricts to the real partner on real ends, (b) is an
+involution, and (c) exchanges arrivals and departures, **must** pair the two virtual
+ends with each other.  So `hyp:model` has one fewer degree of freedom than it appears
+to: the virtual arrival cannot be partnered with a real departure, because its image
+would then have to be sent back by (a) to a real end rather than to it.
+
+This removes a free choice from (M) rather than making one. -/
+theorem VEndpt.partner_unique {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (P : VEndpt n mm → VEndpt n mm)
+    (hreal : ∀ x : EndType.Endpt n mm, P (.inl x) = .inl (EndType.partner x))
+    (hinv : ∀ y, P (P y) = y)
+    (harr : ∀ y, VEndpt.isArr up (P y) = !VEndpt.isArr up y) :
+    P = VEndpt.partner := by
+  funext y
+  cases y with
+  | inl x => rw [hreal x]; rfl
+  | inr b =>
+    -- the image cannot be a real end: (b) would send it back via (a)
+    rcases hP : P (.inr b) with x | c
+    · exfalso
+      have h1 : P (P (.inr b)) = Sum.inl (EndType.partner x) := by rw [hP, hreal]
+      rw [hinv] at h1
+      simp at h1
+    · have h2 := harr (.inr b)
+      rw [hP] at h2
+      cases b <;> cases c <;> simp_all [VEndpt.isArr, VEndpt.partner]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -312,3 +393,7 @@ end EltBridge
 #print axioms EltBridge.VEndpt.card_arrAt
 #print axioms EltBridge.VEndpt.card_depAt
 #print axioms EltBridge.VEndpt.balanced
+#print axioms EltBridge.VEndpt.partner_invol
+#print axioms EltBridge.VEndpt.isArr_partner
+#print axioms EltBridge.VEndpt.partner_site_ne
+#print axioms EltBridge.VEndpt.partner_unique
