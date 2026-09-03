@@ -8605,3 +8605,26 @@ condition the head and tail vectors carry.
 
 Every field is accounted for.  What is not yet written is the single theorem that puts them
 together and hands `exists_config_stateOf` its hypothesis.
+
+## 2026-09-04 — BLOCK 243: the doubled converse, proved
+
+    guarded_of_flag         a doubled guarded path IS a Guarded state function
+    exists_config_of_flag   and so it is the state path of a configuration
+
+0 sorry, both clean on the first build; `guarded_of_flag` depends on `propext` alone.
+
+**This is the converse (M3) has been owed since BLOCK 226.**  The hypotheses are exactly
+what the kernel and the two boundary vectors enforce, together with the three facts derived
+along the way: the arrival's position after translation (BLOCKS 237-239), the located
+departure (BLOCKS 240-242), and the span bracketing the origin (BLOCK 239).
+
+**Both directions of (M3)'s correspondence now hold in the doubled, edge-indexed frame:**
+
+    pathWeight_flag_guarded   a configuration's flagged path weight is x ^ lR
+    exists_config_of_flag     a guarded flagged path comes from a configuration
+
+**What (M3) still owes is the summation itself** -- forming the sum over paths and showing
+the non-realisable ones contribute nothing, which is now a matter of `Finset` manipulation
+against `weightSum_eq_sum_pathWeight` (BLOCK 211) rather than of mathematics.  I have
+predicted "just assembly" twice before and been wrong (BLOCKS 223, 228), so that claim
+stands only until the next block tests it.

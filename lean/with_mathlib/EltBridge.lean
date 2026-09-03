@@ -7709,6 +7709,70 @@ theorem dep_index_unique (st : ℤ → FlagState) (A : ℤ) (n : ℕ)
   rw [harr] at hsum
   exact unique_of_sum_one (fun k => (st (A + 1 + k)).st.dep) n hsum.symm hi hj hfi hfj
 
+/-! ### The assembly: a doubled guarded path is a `Guarded` state function
+
+Every field of `Guarded` is now available from the doubled guard.  The hypotheses below
+are exactly what the kernel and the two boundary vectors enforce, together with the three
+facts derived in BLOCKS 238-242 -- the arrival's position after translation, the located
+departure, and the span bracketing the origin. -/
+
+theorem guarded_of_flag {A B kstar : ℤ} {st : ℤ → FlagState}
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (hheadOk : headOkB (st A).st = true)
+    (htailOk : (validB (st B).st && epsValidB (st B).st && endValidB (st B).st) = true)
+    (houter : ∀ j : ℤ, j < A ∨ B < j → (st j).st.dcur = 0 ∧ (st j).st.fcur = 0)
+    (harrv : ∀ j : ℤ, (st j).st.arr = SiteCost.vArr j)
+    (hdep : ∀ j : ℤ, (st j).st.dep = 1 ↔ j = kstar)
+    (hdepv : ∀ j : ℤ, (st j).st.dep = 0 ∨ (st j).st.dep = 1)
+    (hloA : A ≤ 0) (hhiB : 0 ≤ B) (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1) :
+    Guarded A B kstar (fun j => (st j).st) where
+  step := fun j => by
+    have hs := hstep j
+    simp only [flagStepB, fullStepB, Bool.and_eq_true] at hs
+    exact hs.1.1.1.1
+  valid := fun j => by
+    have hs := hstep (j - 1)
+    simp only [flagStepB, fullStepB, Bool.and_eq_true] at hs
+    have h := hs.1.1.1.2
+    rwa [show j - 1 + 1 = j by ring] at h
+  epsv := fun j => by
+    have hs := hstep (j - 1)
+    simp only [flagStepB, fullStepB, Bool.and_eq_true] at hs
+    have h := hs.1.1.2
+    rwa [show j - 1 + 1 = j by ring] at h
+  endA := by
+    have h := hheadOk
+    simp only [headOkB, Bool.and_eq_true] at h
+    exact h.1.2
+  endB := by
+    simp only [Bool.and_eq_true] at htailOk
+    exact htailOk.2
+  dep := hdep
+  arrv := harrv
+  depv := hdepv
+  outer := houter
+  loA := hloA
+  hiB := hhiB
+  kstLo := hk1
+  kstHi := hk2
+
+/-- **And so it is a configuration.**  Composing with `exists_config_stateOf` (BLOCK 229):
+a doubled guarded path is the state path of a configuration, which is the converse (M3)
+has been owed since BLOCK 226. -/
+theorem exists_config_of_flag {A B kstar : ℤ} {st : ℤ → FlagState}
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true)
+    (hheadOk : headOkB (st A).st = true)
+    (htailOk : (validB (st B).st && epsValidB (st B).st && endValidB (st B).st) = true)
+    (houter : ∀ j : ℤ, j < A ∨ B < j → (st j).st.dcur = 0 ∧ (st j).st.fcur = 0)
+    (harrv : ∀ j : ℤ, (st j).st.arr = SiteCost.vArr j)
+    (hdep : ∀ j : ℤ, (st j).st.dep = 1 ↔ j = kstar)
+    (hdepv : ∀ j : ℤ, (st j).st.dep = 0 ∨ (st j).st.dep = 1)
+    (hloA : A ≤ 0) (hhiB : 0 ≤ B) (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1) :
+    ∃ P : SiteCost.PathData, P.A = A ∧ P.B = B ∧ P.kstar = kstar
+      ∧ stateOf P = fun j => (st j).st :=
+  exists_config_stateOf (guarded_of_flag hstep hheadOk htailOk houter harrv hdep hdepv
+    hloA hhiB hk1 hk2)
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15366,3 +15430,5 @@ end EltBridge
 #print axioms EltBridge.flow_of_flagStepB
 #print axioms EltBridge.exists_dep_index
 #print axioms EltBridge.dep_index_unique
+#print axioms EltBridge.guarded_of_flag
+#print axioms EltBridge.exists_config_of_flag
