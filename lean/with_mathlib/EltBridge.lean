@@ -8888,6 +8888,34 @@ theorem pathWeightR_flag_of {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathD
       congr 1
       exact ih (A + 1) (fun _ => (1 : R))
 
+/-! ### The edge-frame weight identity over an arbitrary ring
+
+`isTransferDecomposition_edge` (BLOCK 233) with `pathWeightR` in place of `pathWeight`,
+stated directly as the weight identity rather than through `IsTransferDecomposition`, which
+is `ℤ`-valued. -/
+
+theorem pathWeightR_edge {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData) (n : ℕ)
+    (hn : P.B = P.A + n) :
+    pathWeightR (fun σ τ : LocalState => x ^ (σ.muOf + τ.siteOf))
+        (fun σ => x ^ σ.siteOf) (fun σ => x ^ (σ.muOf + tailSiteOf σ))
+        ((P.A :: idxList P.A n).map (stateOf P))
+      = x ^ P.lR := by
+  have htail : tailSiteOf (stateOf P (P.A + n)) = P.siteCost (P.A + (n : ℤ) + 1) := by
+    rw [← hn]; exact tailSiteOf_stateOf P
+  have hL : P.lR
+      = (∑ j ∈ Finset.Icc P.A (P.A + n), P.mu j)
+        + ∑ s ∈ Finset.Icc P.A (P.A + n + 1), P.siteCost s := by
+    unfold SiteCost.PathData.lR
+    rw [hn]
+  rw [List.map_cons,
+    pathWeightR_exp x (fun σ τ : LocalState => σ.muOf + τ.siteOf) (fun σ => σ.siteOf)
+      (fun σ => σ.muOf + tailSiteOf σ) (stateOf P P.A) ((idxList P.A n).map (stateOf P)),
+    chainCost_map (stateOf P) (fun σ τ : LocalState => σ.muOf + τ.siteOf), lastOf_map,
+    lastOf_idxList]
+  congr 1
+  rw [htail, hL]
+  exact (alternating_is_chain P.mu P.siteCost P.A n).symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16606,3 +16634,4 @@ end EltBridge
 #print axioms EltBridge.pathWeightR_zero_of_guard_fails
 #print axioms EltBridge.pathWeightR_guard_eq
 #print axioms EltBridge.pathWeightR_flag_of
+#print axioms EltBridge.pathWeightR_edge

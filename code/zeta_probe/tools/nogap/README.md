@@ -9243,3 +9243,20 @@ from -- BLOCKS 216 and 236 -- and again the proofs carry over unchanged.
 `ℤ`-only: the boundary-vector theorems (`pathWeight_flag_guarded`, BLOCK 236), the sum over
 paths (BLOCK 249) and the comparison (BLOCK 270).  Those are the next three, and they are
 the last of the port.
+
+## 2026-09-04 — BLOCK 277: the edge-frame weight identity over an arbitrary ring
+
+    pathWeightR_edge   the edge-frame path weight of a configuration is x ^ lR, over any R
+
+0 sorry.  Two failures, both diagnosed rather than guessed: a `simp only []` that made no
+progress because `congr 1` had already reduced the goal, and then a direction mismatch --
+`alternating_is_chain` proves `sums = chain` while the goal after `congr 1` reads
+`chain = sums`, so `.symm`.
+
+This is BLOCK 233's identity stated directly as a weight equation rather than through
+`IsTransferDecomposition`, which is `ℤ`-valued and so cannot be used here.
+
+**[Rule 0] Port status.**  Over an arbitrary ring: exponential (274), congruence and
+vanishing (275), guard invariance (276), and the edge identity (277).  Still `ℤ`-only: the
+boundary VECTORS (`flagHeadVec`, `flagTailVec`) and everything above them -- the sum over
+paths and the comparison.
