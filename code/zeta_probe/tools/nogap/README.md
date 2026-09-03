@@ -3661,3 +3661,28 @@ satisfies by construction.
 So the repair is not to weaken hZ but to DELETE it. The lemmas it was serving --
 hturn_step on the Endpt side, and the hturn hypothesis of the generic shield law --
 should take zero-crossing instead.
+
+## 2026-09-03 — BLOCK 62: hturn is SELF-MAINTAINING; hZ can be deleted from the chain
+
+  same_edge_of_site_top       -- same site + same end-role => same edge
+  freePair_same_edge_at_cut   -- at a cut site the free pair lies on ONE edge: either
+                                 the arrivals share a side (hence an edge), or their
+                                 turns do and the turns keep their edges there
+  swapT_pos_eq                -- generic: swapT preserves a position function when the
+                                 four swapped points share it
+  hturn_swapT_nohZ            -- **hturn survives the merge with NO hZ**
+
+All four depend on propext (+Quot.sound) only.
+
+This closes the repair BLOCK 60 called for. hturn_swapT needed "the merge site is not a
+cut site", and hZ was supplying it. It is not needed: at a cut site all four swapped
+ends sit on one edge, so the swap cannot create a crossing and hturn is preserved
+outright.
+
+LEAN RULE 4.1 INVOKED, second time tonight. Three strikes trying to case-split by hand
+on the equalities that swapT's `if` chain tests: every attempt left goals with
+half-reduced `if True then ...`, and each "fix" guessed at a different reduction. ABORT,
+then the architectural repair: state swapT_pos_eq generically and let `split_ifs`
+produce the branch conditions in the form the definition uses. Five lines, first try.
+The earlier three attempts were all fighting Lean's normal form, not the mathematics --
+identical to the turnG_arr loop in BLOCK 32.

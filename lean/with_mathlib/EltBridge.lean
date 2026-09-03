@@ -3402,6 +3402,97 @@ theorem hturn_of_cross_zero {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (
     rw [hinv] at this
     exact this.symm
 
+/-! ### `hturn` is self-maintaining, so `hZ` can go
+
+`hturn_swapT` asks that the merge site not be a cut site, and `hZ` was one way to get
+that.  It is not needed.  At a cut site `hturn` says every turn keeps its edge, and the
+free pair's `hshared` -- same side, or turns on the same side -- then forces the two
+arrivals onto the **same edge**.  A swap between ends of one edge cannot create a
+crossing, so `hturn` survives. -/
+
+/-- Same site and same end-role means same edge. -/
+theorem same_edge_of_site_top {n : ℕ} {m : Fin n → ℕ} (x y : EndType.Endpt n m)
+    (hs : EndType.siteOf x = EndType.siteOf y)
+    (ht : EndType.atTop x = EndType.atTop y) :
+    EndType.edgeOf x = EndType.edgeOf y := by
+  have hx : EndType.siteOf x
+      = EndType.edgeOf x + (if EndType.atTop x then (1:ℤ) else 0) := rfl
+  have hy : EndType.siteOf y
+      = EndType.edgeOf y + (if EndType.atTop y then (1:ℤ) else 0) := rfl
+  rw [ht] at hx
+  omega
+
+/-- **At a cut site the free pair lies on one edge.**
+
+Either the two arrivals share a side -- hence an edge -- or their turns do, and at a
+cut site the turns keep their edges, so the arrivals share an edge again. -/
+theorem freePair_same_edge_at_cut {n : ℕ} {m : Fin n → ℕ} (Zf : Finset ℤ)
+    (D : WalkGraph.Data (EndType.Endpt n m))
+    (hts : ∀ e, EndType.siteOf (D.t e) = EndType.siteOf e)
+    (hturn : ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (D.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (a a' : EndType.Endpt n m) (hss : EndType.siteOf a' = EndType.siteOf a)
+    (hcut : EndType.siteOf a ∈ Zf)
+    (hshared : EndType.atTop a = EndType.atTop a' ∨
+      EndType.atTop (D.t a) = EndType.atTop (D.t a')) :
+    EndType.edgeOf a = EndType.edgeOf a' := by
+  have hka : EndType.edgeOf (D.t a) = EndType.edgeOf a := by
+    by_contra hc; exact hturn a hc hcut
+  have hka' : EndType.edgeOf (D.t a') = EndType.edgeOf a' := by
+    by_contra hc; exact hturn a' hc (hss ▸ hcut)
+  rcases hshared with h | h
+  · exact same_edge_of_site_top a a' hss.symm h
+  · have hd : EndType.edgeOf (D.t a) = EndType.edgeOf (D.t a') :=
+      same_edge_of_site_top (D.t a) (D.t a')
+        (by rw [hts a, hts a', hss]) h
+    rw [hka, hka'] at hd
+    exact hd
+
+/-- **`swapT` preserves a position function when the four swapped points share it.**
+
+Stated generically and proved by `split_ifs`, so the branch conditions come from Lean
+in exactly the form the `if` chain uses -- which is what makes the four cases uniform. -/
+theorem swapT_pos_eq {α : Type*} [DecidableEq α] (t : α → α) (pos : α → ℤ)
+    (a d a' d' y : α)
+    (h1 : pos a = pos d) (h2 : pos a = pos a') (h3 : pos a = pos d')
+    (hy : pos (t y) = pos y) :
+    pos (WalkGraph.swapT t a d a' d' y) = pos y := by
+  unfold WalkGraph.swapT
+  split_ifs with c1 c2 c3 c4
+  · rw [c1]; omega
+  · rw [c2]; omega
+  · rw [c3]; omega
+  · rw [c4]; omega
+  · exact hy
+
+/-- **`hturn` survives the merge, with no `hZ`.**
+
+At a cut site the two arrivals share an edge (`freePair_same_edge_at_cut`) and their
+turns keep theirs, so all four swapped ends sit on one edge and `swapT_pos_eq`
+applies. -/
+theorem hturn_swapT_nohZ {n : ℕ} {m : Fin n → ℕ} (Zf : Finset ℤ)
+    (D : WalkGraph.Data (EndType.Endpt n m))
+    (hts : ∀ e, EndType.siteOf (D.t e) = EndType.siteOf e)
+    (hturn : ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (D.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (a a' : EndType.Endpt n m) (hss : EndType.siteOf a' = EndType.siteOf a)
+    (hcut : EndType.siteOf a ∈ Zf)
+    (hshared : EndType.atTop a = EndType.atTop a' ∨
+      EndType.atTop (D.t a) = EndType.atTop (D.t a')) :
+    ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (WalkGraph.swapT D.t a (D.t a) a' (D.t a') x)
+        ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf := by
+  have keep : ∀ y : EndType.Endpt n m, EndType.siteOf y ∈ Zf →
+      EndType.edgeOf (D.t y) = EndType.edgeOf y := by
+    intro y hy
+    by_contra hc; exact hturn y hc hy
+  have hea := freePair_same_edge_at_cut Zf D hts hturn a a' hss hcut hshared
+  have hka := keep a hcut
+  have hka' := keep a' (hss ▸ hcut)
+  intro x hne hmem
+  exact hne (swapT_pos_eq D.t EndType.edgeOf a (D.t a) a' (D.t a') x
+    hka.symm hea (by omega) (keep x hmem))
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3538,3 +3629,7 @@ end EltBridge
 #print axioms EltBridge.pd_edges_occupied
 #print axioms EltBridge.no_arrivalfree_inside_span
 #print axioms EltBridge.hturn_of_cross_zero
+#print axioms EltBridge.same_edge_of_site_top
+#print axioms EltBridge.freePair_same_edge_at_cut
+#print axioms EltBridge.hturn_swapT_nohZ
+#print axioms EltBridge.swapT_pos_eq
