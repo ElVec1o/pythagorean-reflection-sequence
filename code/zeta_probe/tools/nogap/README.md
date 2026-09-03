@@ -2916,3 +2916,35 @@ both guesses at simp's output rather than diagnoses.
 Second, unrelated error worth recording: dataG_merges was inserted textually BEFORE
 dataG. The error read "Unknown identifier hbal", which looks like a variable-scope
 problem and is not one.
+
+## 2026-09-03 — BLOCK 33: Elt.merges_to_one — B1 RUNS END TO END for kstar > 0
+
+  arrOfP_eq, depOfP_eq          -- generic and parametrised sets coincide (rfl)
+  VEndpt.exists_mergesMinP      -- a cost-minimal datum exists for a balanced
+                                   parametrised configuration
+  Elt.merges_to_one             -- **THE END-TO-END THEOREM**
+
+A group element with kstar > 0 yields a configuration on the extended type carrying a
+cost-minimal datum that merges to a single walk. Every step is a theorem proved
+tonight:
+
+  Elt.toPathData      (BLOCK 7)
+  pdWidth/pdMm/pdUp   (BLOCK 30)   the re-indexing
+  pd_tr_eq            (BLOCK 30)   right signed travel
+  Elt.balanced        (BLOCK 30)   balance at every site
+  dataG + dataG_merges (BLOCKS 19, 32)
+  exists_mergesMinP   (BLOCK 33)
+  merges_to_oneP      (BLOCK 31)   the merge, locality all discharged
+
+The covering condition hcov0 is the sole input, and it is the one the Endpt-side
+argument always needed.
+
+SCOPE, stated rather than glossed: this is kstar > 0. The condition enters as
+s0 < s1, i.e. -A < kstar - A. For kstar < 0 the orientation must be mirrored
+(atTopN, as in BLOCK 18) and the parametrised assembly redone with s1 < s0. That is a
+parallel construction, not a gap in the argument, but it is NOT WRITTEN.
+
+B1 stays YELLOW. After BLOCK 27-28 -- where I marked it green and a single
+instantiation attempt broke it one block later -- the colour changes only when the
+whole parameter range is covered and the theorem has been instantiated, not when the
+main branch compiles.

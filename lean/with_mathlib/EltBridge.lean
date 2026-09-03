@@ -1578,6 +1578,65 @@ theorem VEndpt.merges_to_oneP {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ
         | inl u => have := hbnd u; simp only [VEndpt.edgeOf] at hlo; omega
         | inr c => simp only [VEndpt.edgeOf] at hlo; omega
 
+/-- The generic and parametrised arrival sets coincide. -/
+theorem arrOfP_eq {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    GenericData.arrOf (VEndpt.siteP (mm := mm) s0 s1) (VEndpt.isArr up) s
+      = VEndpt.arrAtP (mm := mm) s0 s1 up s := rfl
+
+theorem depOfP_eq {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    GenericData.depOf (VEndpt.siteP (mm := mm) s0 s1) (VEndpt.isArr up) s
+      = VEndpt.depAtP (mm := mm) s0 s1 up s := rfl
+
+/-- **A cost-minimal datum exists**, for a balanced parametrised configuration. -/
+theorem VEndpt.exists_mergesMinP {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) (s0 s1 : ℤ) (hne : s0 ≠ s1)
+    (hbal : ∀ s : ℤ, (VEndpt.arrAtP (mm := mm) s0 s1 up s).card
+      = (VEndpt.depAtP (mm := mm) s0 s1 up s).card) :
+    ∃ E : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.siteP s0 s1) (VEndpt.isArr up) VEndpt.partner
+        (vEndDataP up ds) E := by
+  have hbal' : ∀ s : ℤ,
+      (GenericData.arrOf (VEndpt.siteP (mm := mm) s0 s1) (VEndpt.isArr up) s).card
+        = (GenericData.depOf (VEndpt.siteP (mm := mm) s0 s1) (VEndpt.isArr up) s).card :=
+    fun s => by rw [arrOfP_eq, depOfP_eq]; exact hbal s
+  exact CostMerge.exists_mergesMin (VEndpt.siteP s0 s1) VEndpt.partner
+    (vEndDataP up ds)
+    (GenericData.dataG (VEndpt.siteP s0 s1) (VEndpt.isArr up) hbal' VEndpt.partner
+      VEndpt.partner_invol VEndpt.partner_ne (VEndpt.partner_site_neP s0 s1 hne))
+    (GenericData.dataG_merges (VEndpt.siteP s0 s1) (VEndpt.isArr up) hbal'
+      VEndpt.partner VEndpt.partner_invol VEndpt.partner_ne
+      (VEndpt.partner_site_neP s0 s1 hne))
+
+/-- **B1, end to end for a group element.**
+
+A group element with `kstar > 0` yields a configuration on the extended type carrying
+a cost-minimal datum that merges to a single walk.  Every step is a theorem:
+`Elt.toPathData`, the re-indexing, `Elt.balanced`, `exists_mergesMinP`, and
+`merges_to_oneP`.  The covering condition `hcov0` is the sole input. -/
+theorem Elt.merges_to_one (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A))
+        (VEndpt.isArr (pdUp g.toPathData)) VEndpt.partner
+        (vEndDataP (pdUp g.toPathData) ds) D' ∧ WalkGraph.walkCount D' ≤ 1 := by
+  obtain ⟨E, hE⟩ := VEndpt.exists_mergesMinP (pdUp g.toPathData) ds
+    (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A) (by omega) (Elt.balanced g)
+  exact VEndpt.merges_to_oneP (pdUp g.toPathData) ds
+    (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A) bnd (by omega) hb hbnd
+    hcov0 z₀ E hE
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1644,3 +1703,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.merges_to_oneP
 #print axioms EltBridge.GenericData.turnG_arr
 #print axioms EltBridge.GenericData.dataG_merges
+#print axioms EltBridge.VEndpt.exists_mergesMinP
+#print axioms EltBridge.Elt.merges_to_one
