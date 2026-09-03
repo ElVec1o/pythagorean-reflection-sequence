@@ -10040,3 +10040,58 @@ end EltBridge
 
 #print axioms EltBridge.botOf_eq_self
 #print axioms EltBridge.hfour_of_mu_two
+
+namespace EltBridge
+
+/-! ### The bounce set
+
+`hbdry : ∀ r, lo r ∈ Zf` is FALSE for run `0`: its left boundary is the span's start,
+not a cut site.  But the turn must bounce there anyway -- at the span's left site there
+is no edge to the left, so the two bottoms of the first edge are the only ends and have
+nothing to pair with but each other.
+
+So the turn should bounce on a SET `Bs` containing `Zf`, not on `Zf` itself: the cut
+sites plus the span's two ends.  That costs nothing elsewhere.  A bounce never changes
+the edge, so `hturn` -- the edge changes only off `Zf` -- still holds however much
+larger `Bs` is, since passes happen only off `Bs` and `Zf ⊆ Bs`. -/
+
+/-- **`hturn` for a bounce set larger than the cut set.**  Passes occur only off `Bs`,
+and `Zf ⊆ Bs`, so an edge change forces the site out of `Zf`. -/
+theorem passTurn_hturn_of_subset {α : Type*} [DecidableEq α] (edgeOf siteOf : α → ℤ)
+    (p : α → α) (up dn : ℤ → α) (Zf Bs : Finset ℤ) (hsub : Zf ⊆ Bs)
+    (hpe : ∀ x, edgeOf (p x) = edgeOf x)
+    (hud : ∀ s : ℤ, edgeOf (up s) = edgeOf (dn s))
+    (x : α)
+    (hx : edgeOf (passTurn siteOf p up dn Bs (siteOf x) x) ≠ edgeOf x) :
+    siteOf x ∉ Zf := by
+  intro hmem
+  exact hx (passTurn_keeps_edge_at_cut edgeOf siteOf p up dn Bs (siteOf x)
+    (hsub hmem) hpe (hud _) (hud _) x)
+
+/-- **And the bound is unaffected.**  `walkCount_le_runs_blk` is applied with `Zf`, the
+cut set; the larger bounce set appears only in the turn.  So a turn that bounces on
+`Bs ⊇ Zf` still gives `walkCount ≤ |Zf| + 1`, provided its runs are connected. -/
+theorem shield_upper_bound_bounce_set {n : ℕ} {m : Fin n → ℕ}
+    (Zf Bs : Finset ℤ) (hsub : Zf ⊆ Bs)
+    (up dn : ℤ → EndType.Endpt n m)
+    (hud : ∀ s : ℤ, EndType.edgeOf (up s) = EndType.edgeOf (dn s))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x
+      = passTurn EndType.siteOf EndType.partner up dn Bs (EndType.siteOf x) x)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hrun : ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph E).Reachable (botOf x) (botOf y)) :
+    WalkGraph.walkCount E ≤ Zf.card + 1 := by
+  refine shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) hTsite ?_
+    (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) hrun
+  intro x hx
+  rw [hEt x] at hx
+  exact passTurn_hturn_of_subset EndType.edgeOf EndType.siteOf EndType.partner up dn
+    Zf Bs hsub (fun y => EndType.partner_edgeOf y) hud x hx
+
+end EltBridge
+
+#print axioms EltBridge.passTurn_hturn_of_subset
+#print axioms EltBridge.shield_upper_bound_bounce_set

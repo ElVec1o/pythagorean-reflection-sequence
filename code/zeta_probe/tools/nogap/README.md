@@ -6927,3 +6927,31 @@ end type.
 The error this block was `simp only [EndType.atTop, ...]` failing to unfold a `def`
 inside a hypothesis; `have hat : EndType.atTop x = false := ht` and rewriting with that
 is what works, since `atTop` is definitionally `top`.
+
+## 2026-09-03 — BLOCK 180: the bounce set
+
+Starting the run indexing turned up the next defect, and it is the same kind as BLOCKS
+176 and 177: a hypothesis that cannot be satisfied.
+
+`hbdry : ∀ r, lo r ∈ Zf` is FALSE for run `0`.  Its left boundary is the span's start,
+not a cut site.  But the turn must bounce there anyway: at the span's leftmost site
+there is no edge to the left, so the two bottoms of the first edge are the only ends
+present and have nothing to pair with but each other.
+
+So the turn should bounce on a SET `Bs ⊇ Zf` -- the cut sites TOGETHER WITH the span's
+two ends -- rather than on `Zf` itself.  That costs nothing elsewhere, because a bounce
+never changes the edge:
+
+    passTurn_hturn_of_subset      passes occur only off `Bs`, and `Zf ⊆ Bs`, so an edge
+                                  change still forces the site out of `Zf`
+    shield_upper_bound_bounce_set the bound is still `|Zf| + 1`: `walkCount_le_runs_blk`
+                                  is applied with the CUT set, the larger bounce set
+                                  appearing only inside the turn
+
+0 sorry.
+
+That is three definitional defects in five blocks, every one found by attempting to
+discharge a hypothesis rather than by reading it, and every one in my own construction:
+the missing site guard (176), the unrelativized quantification (177), and now the
+bounce set.  The pattern is consistent enough to state as a rule: a hypothesis is only
+tested when something has to produce it.
