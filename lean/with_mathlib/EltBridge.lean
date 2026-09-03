@@ -8838,6 +8838,56 @@ theorem pathWeightR_zero_of_guard_fails {R : Type*} [CommRing R] (x : R) (g : �
           h3]
         ring
 
+/-! ### Guard invariance over an arbitrary ring
+
+`pathWeight_guard_eq` (BLOCK 216) and `pathWeight_flag_of` (BLOCK 236) are the hinges the
+rest of the chain hangs from.  Ported; again the proofs are unchanged. -/
+
+theorem pathWeightR_guard_eq {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData)
+    (mu : LocalState → R) (g : LocalState → LocalState → Bool)
+    (hg : ∀ j : ℤ, g (stateOf P j) (stateOf P (j + 1)) = true) :
+    ∀ (n : ℕ) (A : ℤ) (lam : LocalState → R),
+      pathWeightR (fun σ τ => if g σ τ then x ^ (σ.muOf + τ.siteOf) else 0) lam mu
+          ((A :: idxList A n).map (stateOf P))
+        = pathWeightR (fun σ τ => x ^ (σ.muOf + τ.siteOf)) lam mu
+            ((A :: idxList A n).map (stateOf P)) := by
+  intro n
+  induction n with
+  | zero => intro A lam; rfl
+  | succ m ih =>
+      intro A lam
+      show lam (stateOf P A) * (if g (stateOf P A) (stateOf P (A + 1)) then
+              x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf) else 0)
+            * pathWeightR _ (fun _ => (1 : R)) mu _
+        = lam (stateOf P A) * x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf)
+            * pathWeightR _ (fun _ => (1 : R)) mu _
+      rw [hg A, if_pos rfl, ← List.map_cons, ih (A + 1) (fun _ => (1 : R))]
+
+theorem pathWeightR_flag_of {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData)
+    (mu : LocalState → R) :
+    ∀ (n : ℕ) (A : ℤ) (lam : LocalState → R),
+      pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+          (fun σ => lam σ.st) (fun σ => mu σ.st) ((A :: idxList A n).map (flagOf P))
+        = pathWeightR (fun σ τ => x ^ (σ.muOf + τ.siteOf)) lam mu
+            ((A :: idxList A n).map (stateOf P)) := by
+  intro n
+  induction n with
+  | zero => intro A lam; rfl
+  | succ m ih =>
+      intro A lam
+      show lam (stateOf P A) * (if flagStepB (flagOf P A) (flagOf P (A + 1)) then
+              x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf) else 0)
+            * pathWeightR (fun σ τ : FlagState =>
+                if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+              (fun _ => (1 : R)) (fun σ : FlagState => mu σ.st)
+              ((idxList A (m + 1)).map (flagOf P))
+        = lam (stateOf P A) * x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf)
+            * pathWeightR (fun σ τ : LocalState => x ^ (σ.muOf + τ.siteOf))
+              (fun _ => (1 : R)) mu ((idxList A (m + 1)).map (stateOf P))
+      rw [flagStepB_flagOf P A, if_pos rfl]
+      congr 1
+      exact ih (A + 1) (fun _ => (1 : R))
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16554,3 +16604,5 @@ end EltBridge
 #print axioms EltBridge.pathWeightR_exp
 #print axioms EltBridge.pathWeightR_congr
 #print axioms EltBridge.pathWeightR_zero_of_guard_fails
+#print axioms EltBridge.pathWeightR_guard_eq
+#print axioms EltBridge.pathWeightR_flag_of

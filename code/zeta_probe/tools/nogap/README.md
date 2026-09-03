@@ -9228,3 +9228,18 @@ its foundations.  What still runs only over `ℤ` is the chain of guard theorems
 **[Rule 0] Honest scope, restated.**  Porting the exponential, the congruence and the
 vanishing does NOT port the comparison; it makes porting it possible.  I am not treating
 the coefficient route as available until the guard chain is over `R` too.
+
+## 2026-09-04 — BLOCK 276: guard invariance over an arbitrary ring
+
+    pathWeightR_guard_eq   guarding by any predicate the configuration satisfies is free
+                           (NO AXIOMS)
+    pathWeightR_flag_of    and the doubled guard costs nothing on a configuration
+
+0 sorry, both clean on the first build.  These are the hinges the rest of the chain hangs
+from -- BLOCKS 216 and 236 -- and again the proofs carry over unchanged.
+
+**[Rule 0] Where the port stands.**  Over an arbitrary ring: the chain-cost exponential
+(BLOCK 274), the congruence and the vanishing (BLOCK 275), and now guard invariance.  Still
+`ℤ`-only: the boundary-vector theorems (`pathWeight_flag_guarded`, BLOCK 236), the sum over
+paths (BLOCK 249) and the comparison (BLOCK 270).  Those are the next three, and they are
+the last of the port.
