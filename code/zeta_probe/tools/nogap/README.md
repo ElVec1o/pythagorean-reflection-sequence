@@ -6207,3 +6207,31 @@ run:
 What HAS changed is the character of the blocker.  M4b was blocked by a hypothesis
 refuted in the only model that can express gap edges.  It is now blocked by three
 pieces of formalisation, each of which has its principle already proved.
+
+## 2026-09-03 — BLOCK 154: the dichotomy over class counts
+
+`choose_pass_off_cut` was stated on `Fin 4` classes -- one strand per class per side,
+the `mu = 2` shape.  Recast over class COUNTS, which is what general `mu` needs.
+
+With `Phi = 0` in the bulk, `alpha = 2 (Cp - Ap)` (`alpha_eq_two_mul_of_phi_zero`): the
+flow balance turns the sign imbalance into a class imbalance.  A bounce-only plan keeps
+each half to itself, so on the left it matches `(Ap, Am)` against `(Cp, Cm)` with
+`Ap + Am = Cp + Cm`, leaving `|Ap - Cp|` pairs to flip at cost `2` each -- that is
+`|alpha|` -- and `|beta|` on the right.  Meanwhile the certified minimum is
+`max(|alpha|, |beta|)` (`siteValue_eq_max_of_phi_zero`).
+
+So `pass_forced_when_both_differ`: when both imbalances are non-zero the bounce-only
+plan is STRICTLY beaten, hence every minimal plan moves mass across the halves.  At
+`mu = 2` passing was merely available; at a site with both sides imbalanced it is
+forced.
+
+Honest about the hypothesis: `hbounce`, that a bounce-only plan costs
+`|alpha| + |beta|`, is carried as an explicit argument.  It is the transportation
+computation sketched above and is NOT proved here.  The rest -- the arithmetic that
+`max a b < a + b` for positive `a`, `b`, and that `siteValue` is that max under
+`Phi = 0` -- is proved.
+
+Still open for M4b, unchanged in kind from BLOCK 153: prove `hbounce`; handle the case
+where exactly one of `alpha`, `beta` vanishes, where a passing plan exists at the
+minimum but is not forced; glue the per-site choices; and chain the passes into run
+connectivity.

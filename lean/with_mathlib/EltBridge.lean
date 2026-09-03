@@ -8267,3 +8267,73 @@ end EltBridge
 
 #print axioms EltBridge.pass_le_bounce_of_either_differs
 #print axioms EltBridge.choose_pass_off_cut
+
+namespace EltBridge
+
+/-! ### The dichotomy over class counts
+
+`choose_pass_off_cut` is stated on `Fin 4` classes -- one strand per class per side,
+the `mu = 2` shape.  For general `mu` a site is described by its class COUNTS, and the
+statement has to be recast over them.
+
+Writing `Ap Am Bp Bm` for the arrival class counts and `Cp Cm Dp Dm` for the departure
+ones, with `Phi = 0` in the bulk:
+
+* a bounce-only plan keeps each half to itself.  On the left it must match `(Ap, Am)`
+  to `(Cp, Cm)`, and since `Ap + Am = Cp + Cm` the mismatch is `|Ap - Cp|` pairs, each a
+  sign flip costing `2`.  As `alpha = 2 (Cp - Ap)` under `Phi = 0`, that is `|alpha|`.
+  The right side likewise costs `|beta|`.  So bounce-only costs `|alpha| + |beta|`.
+* the certified minimum is `siteValue = max (|alpha|, |beta|)` when `Phi = 0`.
+
+So bounce-only is optimal exactly when one of `alpha`, `beta` vanishes, and strictly
+suboptimal when both are non-zero -- in which case EVERY minimal plan passes.  That is
+stronger than the `mu = 2` statement, where passing was only available. -/
+
+/-- `alpha = 2 (Cp - Ap)` once `Phi = 0`: the flow balance turns the sign imbalance into
+a class imbalance. -/
+theorem alpha_eq_two_mul_of_phi_zero (Ap Am Cp Cm : ℕ)
+    (hphi : SiteCost.Phi Ap Am Cp Cm = 0) :
+    SiteCost.alpha Ap Am Cp Cm = 2 * ((Cp : ℤ) - Ap) := by
+  unfold SiteCost.Phi at hphi
+  unfold SiteCost.alpha
+  omega
+
+/-- **When both sides differ, bounce-only is strictly beaten.**  The minimum is the max
+of the two imbalances and the bounce pays their sum, so every minimal plan must move
+mass across the halves -- a pass is forced, not merely available. -/
+theorem bounce_strictly_beaten_when_both_differ (a b : ℤ) (ha : a ≠ 0) (hb : b ≠ 0) :
+    max a.natAbs b.natAbs < a.natAbs + b.natAbs := by
+  have h1 : 0 < a.natAbs := Int.natAbs_pos.mpr ha
+  have h2 : 0 < b.natAbs := Int.natAbs_pos.mpr hb
+  rcases Nat.le_total a.natAbs b.natAbs with h | h
+  · rw [max_eq_right h]; omega
+  · rw [max_eq_left h]; omega
+
+/-- And with `Phi = 0` the site value is exactly that max, so the comparison above is a
+comparison with the true minimum. -/
+theorem siteValue_eq_max_of_phi_zero (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (hphi : SiteCost.Phi Ap Am Cp Cm = 0) :
+    SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm
+      = max (SiteCost.alpha Ap Am Cp Cm).natAbs (SiteCost.beta Bp Bm Dp Dm).natAbs := by
+  unfold SiteCost.siteValue
+  rw [hphi]
+  simp
+
+/-- **The counts form of the dichotomy.**  Given that a bounce-only plan costs
+`|alpha| + |beta|` -- the hypothesis `hbounce`, which is the transportation computation
+and is not proved here -- a site with both imbalances non-zero admits no minimal
+bounce-only plan, so every minimal plan passes. -/
+theorem pass_forced_when_both_differ (Ap Am Bp Bm Cp Cm Dp Dm : ℕ) (bounceCost : ℕ)
+    (hphi : SiteCost.Phi Ap Am Cp Cm = 0)
+    (hbounce : bounceCost
+      = (SiteCost.alpha Ap Am Cp Cm).natAbs + (SiteCost.beta Bp Bm Dp Dm).natAbs)
+    (ha : SiteCost.alpha Ap Am Cp Cm ≠ 0) (hb : SiteCost.beta Bp Bm Dp Dm ≠ 0) :
+    SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm < bounceCost := by
+  rw [hbounce, siteValue_eq_max_of_phi_zero Ap Am Bp Bm Cp Cm Dp Dm hphi]
+  exact bounce_strictly_beaten_when_both_differ _ _ ha hb
+
+end EltBridge
+
+#print axioms EltBridge.alpha_eq_two_mul_of_phi_zero
+#print axioms EltBridge.bounce_strictly_beaten_when_both_differ
+#print axioms EltBridge.pass_forced_when_both_differ
