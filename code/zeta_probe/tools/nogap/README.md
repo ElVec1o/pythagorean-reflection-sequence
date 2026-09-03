@@ -6290,3 +6290,28 @@ principles are already proved: gluing the per-site choices into one turn
 (`DataBuild.glue`, with `sum_min_is_min` giving global minimality because cost is a sum
 over sites), and chaining the passes into run connectivity (`reachable_turn` links the
 two edges a pass crosses).  Neither is written.
+
+## 2026-09-03 — BLOCK 157: the gluing
+
+`local_trichotomy` supplies a suitable minimal pairing at each site; this makes them one
+turn.
+
+The gluing needs no compatibility condition between sites.  Each per-site involution
+moves ends only within its own site, so applying `T (siteOf x)` to `x` lands at the same
+site and a second application is by the same `T` -- that is `glue_involution`, and it is
+the same observation that let `exists_rival_data` splice a single site in BLOCK 143.
+`glue_ne` and `glue_pt_ne` are equally direct, the latter because the crossing partner
+changes the site while the turn does not.  Both are axiom-free.
+
+`exists_glued_data` assembles them: every `WalkGraph.Data` obligation is discharged by
+one of the three, so per-site choices become a datum with nothing further to check.
+
+Global minimality of the glued datum follows from `sum_min_is_min`, since the cost is a
+sum over sites and each site's choice is minimal -- the principle is proved, the
+application to this datum is not written.
+
+`RunsConnected` names the one remaining obligation: that two ends with the same run
+index are joined.  A pass links the two edges it crosses (`reachable_turn`) and
+`local_trichotomy` gives a minimal choice passing at every non-cut site, so what is
+missing is only the chaining of those links along a run.  That is the last step of
+M4b's global layer.

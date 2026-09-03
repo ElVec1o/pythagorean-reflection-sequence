@@ -8487,3 +8487,88 @@ end EltBridge
 
 #print axioms EltBridge.pass_ties_bounce_of_one_side
 #print axioms EltBridge.local_trichotomy
+
+namespace EltBridge
+
+/-! ### Gluing the per-site choices
+
+`local_trichotomy` supplies, at each site, a minimal pairing with the pass/bounce
+behaviour that site needs.  Those choices have to become ONE turn.
+
+They do, and for the reason `exists_rival_data` spliced a single site: each per-site
+involution moves ends only within its own site, so applying `T (siteOf x)` to `x` lands
+at the same site, and a second application is by the same `T`.  The glue is therefore an
+involution with no compatibility condition between different sites at all. -/
+
+/-- **A family of per-site involutions glues to one involution.**  Each `T s` is an
+involution fixing everything off site `s` and preserving site `s`; the glue applies the
+one belonging to the end's own site. -/
+theorem glue_involution {α : Type*} (siteOf : α → ℤ) (T : ℤ → α → α)
+    (hinv : ∀ s x, T s (T s x) = x)
+    (hsite : ∀ s x, siteOf x = s → siteOf (T s x) = s) :
+    ∀ x : α, T (siteOf (T (siteOf x) x)) (T (siteOf x) x) = x := by
+  intro x
+  rw [hsite (siteOf x) x rfl, hinv]
+
+/-- The glue is fixed-point-free as soon as each piece is, on its own site. -/
+theorem glue_ne {α : Type*} (siteOf : α → ℤ) (T : ℤ → α → α)
+    (hne : ∀ s x, siteOf x = s → T s x ≠ x) :
+    ∀ x : α, T (siteOf x) x ≠ x :=
+  fun x => hne (siteOf x) x rfl
+
+/-- And it keeps every end at its own site, which is what makes the cost a sum over
+sites and hence `sum_min_is_min` applicable. -/
+theorem glue_site {α : Type*} (siteOf : α → ℤ) (T : ℤ → α → α)
+    (hsite : ∀ s x, siteOf x = s → siteOf (T s x) = s) :
+    ∀ x : α, siteOf (T (siteOf x) x) = siteOf x :=
+  fun x => hsite (siteOf x) x rfl
+
+/-- **The glue meets the crossing partner nowhere**, given that the partner changes the
+site.  With this the three `WalkGraph.Data` obligations are all discharged for the
+glued turn, exactly as they were for the single-site splice. -/
+theorem glue_pt_ne {α : Type*} (siteOf : α → ℤ) (p : α → α) (T : ℤ → α → α)
+    (hpsite : ∀ x, siteOf (p x) ≠ siteOf x)
+    (hsite : ∀ s x, siteOf x = s → siteOf (T s x) = s) :
+    ∀ x : α, p x ≠ T (siteOf x) x := by
+  intro x hc
+  exact hpsite x (by rw [hc, glue_site siteOf T hsite x])
+
+end EltBridge
+
+#print axioms EltBridge.glue_involution
+#print axioms EltBridge.glue_ne
+#print axioms EltBridge.glue_pt_ne
+
+namespace EltBridge
+
+/-- **The glued turn as a `WalkGraph.Data`.**  All three obligations come from the glue
+lemmas: involutivity from `glue_involution`, fixed-point-freeness from `glue_ne`, and
+disjointness from `p` from `glue_pt_ne`.  So per-site choices assemble into a datum with
+nothing further to check. -/
+theorem exists_glued_data {α : Type*} [Fintype α] [DecidableEq α]
+    (siteOf : α → ℤ) (p : α → α) (T : ℤ → α → α)
+    (hpinv : ∀ x, p (p x) = x) (hpne : ∀ x, p x ≠ x)
+    (hpsite : ∀ x, siteOf (p x) ≠ siteOf x)
+    (hinv : ∀ s x, T s (T s x) = x)
+    (hsite : ∀ s x, siteOf x = s → siteOf (T s x) = s)
+    (hne : ∀ s x, siteOf x = s → T s x ≠ x) :
+    ∃ E : WalkGraph.Data α, E.p = p ∧ ∀ x, E.t x = T (siteOf x) x := by
+  refine ⟨{ p := p, t := fun x => T (siteOf x) x,
+            p_invol := hpinv, p_ne := hpne,
+            t_invol := glue_involution siteOf T hinv hsite,
+            t_ne := glue_ne siteOf T hne,
+            pt_ne := glue_pt_ne siteOf p T hpsite hsite }, rfl, fun _ => rfl⟩
+
+/-- **M4b's global layer, stated.**  With the glued datum in hand, `hsep` is the
+statement that any two ends with the same run index are joined; a pass at a site links
+the two edges it crosses (`reachable_turn`), and `local_trichotomy` says a minimal
+choice passing at every non-cut site exists.  This names the remaining obligation: that
+those links chain along a run. -/
+def RunsConnected {α : Type*} [Fintype α] [DecidableEq α]
+    (edgeOf : α → ℤ) (Zf : Finset ℤ) (E : WalkGraph.Data α) : Prop :=
+  ∀ x y : α, runIndexG edgeOf Zf x = runIndexG edgeOf Zf y →
+    (WalkGraph.graph E).Reachable x y
+
+end EltBridge
+
+#print axioms EltBridge.exists_glued_data
