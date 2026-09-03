@@ -7901,3 +7901,136 @@ end EltBridge
 
 #print axioms EltBridge.Elt.reachable_roundTrip
 #print axioms EltBridge.Elt.reachable_deposit_step
+
+namespace EltBridge
+namespace Elt
+
+/-! ### Cursor placement
+
+`s3` alone cannot be iterated: it flips the side, so the next `s3` walks back.  But
+`s1 ∘ s3` **preserves** the side, and therefore iterates -- it steps the cursor left
+while `delta = false` and right while `delta = true`, depositing at each crossed edge.
+That is the cursor-placement word. -/
+
+/-- One cursor step in the direction the side names, keeping the side. -/
+noncomputable def cstep (g : Elt) : Elt := s1 (s3 g)
+
+theorem cstep_left (g : Elt) (hδ : g.delta = false) :
+    (cstep g).kstar = g.kstar - 1 ∧ (cstep g).eps = g.eps ∧
+    (cstep g).delta = false ∧
+    (cstep g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+  have h1 : ¬ (g.delta = true) := by rw [hδ]; simp
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · show (s3 g).kstar = g.kstar - 1
+    rw [s3, dif_neg h1]
+  · show (s3 g).eps = g.eps
+    rw [s3, dif_neg h1]
+  · show (!(s3 g).delta) = false
+    rw [s3, dif_neg h1]
+    simp
+  · show (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps)
+    rw [s3, dif_neg h1]
+
+theorem cstep_right (g : Elt) (hδ : g.delta = true) :
+    (cstep g).kstar = g.kstar + 1 ∧ (cstep g).eps = g.eps ∧
+    (cstep g).delta = true ∧
+    (cstep g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · show (s3 g).kstar = g.kstar + 1
+    rw [s3, dif_pos hδ]
+  · show (s3 g).eps = g.eps
+    rw [s3, dif_pos hδ]
+  · show (!(s3 g).delta) = true
+    rw [s3, dif_pos hδ]
+    simp
+  · show (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps)
+    rw [s3, dif_pos hδ]
+
+theorem reachable_cstep {g : Elt} (h : Reachable g) : Reachable (cstep g) :=
+  reachable_s1 (reachable_s3 h)
+
+theorem reachable_cstep_iter {g : Elt} (h : Reachable g) (n : ℕ) :
+    Reachable (cstep^[n] g) := by
+  induction n generalizing g with
+  | zero => simpa using h
+  | succ k ih =>
+    rw [Function.iterate_succ_apply]
+    exact ih (reachable_cstep h)
+
+/-- **Walking left from a side-`false` element**: after `n` steps the cursor has moved
+`n` to the left and the side is unchanged. -/
+theorem cstep_iter_left (g : Elt) (hδ : g.delta = false) (n : ℕ) :
+    (cstep^[n] g).kstar = g.kstar - n ∧ (cstep^[n] g).delta = false := by
+  induction n generalizing g with
+  | zero => simpa using hδ
+  | succ k ih =>
+    rw [Function.iterate_succ_apply]
+    obtain ⟨h1, -, h3, -⟩ := cstep_left g hδ
+    obtain ⟨p1, p2⟩ := ih (cstep g) h3
+    refine ⟨?_, p2⟩
+    rw [p1, h1]
+    push_cast
+    ring
+
+/-- **Every non-positive cursor position is reachable.** -/
+theorem reachable_kstar_nonpos (n : ℕ) :
+    ∃ g : Elt, Reachable g ∧ g.kstar = -(n : ℤ) ∧ g.delta = false := by
+  refine ⟨cstep^[n] one, reachable_cstep_iter reachable_one n, ?_, ?_⟩
+  · obtain ⟨h1, -⟩ := cstep_iter_left one rfl n
+    rw [h1]
+    show (0 : ℤ) - n = -(n : ℤ)
+    ring
+  · exact (cstep_iter_left one rfl n).2
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.cstep_left
+#print axioms EltBridge.Elt.cstep_iter_left
+#print axioms EltBridge.Elt.reachable_kstar_nonpos
+
+namespace EltBridge
+namespace Elt
+
+/-- **Walking right from a side-`true` element.** -/
+theorem cstep_iter_right (g : Elt) (hδ : g.delta = true) (n : ℕ) :
+    (cstep^[n] g).kstar = g.kstar + n ∧ (cstep^[n] g).delta = true := by
+  induction n generalizing g with
+  | zero => simpa using hδ
+  | succ k ih =>
+    rw [Function.iterate_succ_apply]
+    obtain ⟨h1, -, h3, -⟩ := cstep_right g hδ
+    obtain ⟨p1, p2⟩ := ih (cstep g) h3
+    refine ⟨?_, p2⟩
+    rw [p1, h1]
+    push_cast
+    ring
+
+/-- **Every non-negative cursor position is reachable.** -/
+theorem reachable_kstar_nonneg (n : ℕ) :
+    ∃ g : Elt, Reachable g ∧ g.kstar = (n : ℤ) ∧ g.delta = true := by
+  refine ⟨cstep^[n] (s1 one), reachable_cstep_iter (reachable_s1 reachable_one) n, ?_, ?_⟩
+  · obtain ⟨h1, -⟩ := cstep_iter_right (s1 one) rfl n
+    rw [h1]
+    show (0 : ℤ) + n = (n : ℤ)
+    ring
+  · exact (cstep_iter_right (s1 one) rfl n).2
+
+/-- **Cursor placement: every cursor position is reachable.**  This is the first half
+of the reachability induction -- and the half that matters for the second, since
+fixing `kstar` fixes every deposit's parity through `hpar`. -/
+theorem reachable_kstar (m : ℤ) : ∃ g : Elt, Reachable g ∧ g.kstar = m := by
+  by_cases hm : 0 ≤ m
+  · obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hm
+    obtain ⟨g, hg, hk, -⟩ := reachable_kstar_nonneg n
+    exact ⟨g, hg, hk⟩
+  · obtain ⟨n, hn⟩ : ∃ n : ℕ, m = -(n : ℤ) :=
+      ⟨(-m).toNat, by omega⟩
+    obtain ⟨g, hg, hk, -⟩ := reachable_kstar_nonpos n
+    exact ⟨g, hg, by rw [hk, hn]⟩
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.reachable_kstar_nonneg
+#print axioms EltBridge.Elt.reachable_kstar

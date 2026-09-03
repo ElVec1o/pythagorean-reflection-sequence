@@ -5827,3 +5827,27 @@ NOT DONE: the induction itself.  What remains is to place the cursor and iterate
 engine -- reach the target `kstar` first, which fixes every deposit's parity, then
 apply `reachable_deposit_step` once per unit of `|d j| / 2` at each edge.  Both steps
 are now expressible; neither is written.  H1a stays orange.
+
+## 2026-09-03 — BLOCK 144: cursor placement
+
+The first half of the reachability induction, and the half the second half depends on:
+fixing `kstar` fixes every deposit's parity through `hpar`.
+
+`s3` alone cannot be iterated -- it flips the side, so the next `s3` walks back.  But
+`cstep = s1 ∘ s3` PRESERVES the side and therefore iterates: it steps the cursor left
+while `delta = false` and right while `delta = true`, depositing at each crossed edge.
+
+    cstep_left, cstep_right        one step, each direction
+    cstep_iter_left, _right        n steps: kstar moves by n, the side is unchanged
+    reachable_cstep, _iter         reachability is closed under it
+    reachable_kstar_nonpos/nonneg  walking from `one` and from `s1 one`
+    reachable_kstar (m : ℤ)        EVERY cursor position is reachable
+
+All 0 sorry.  Together with BLOCK 143's `reachable_deposit_step` the two halves of the
+induction now exist as separate statements: place the cursor, then move the deposits
+in twos.
+
+NOT DONE: composing them.  `reachable_kstar` produces SOME element with the target
+cursor, carrying whatever deposits the walk left behind; the deposit stage must then
+correct those to the target.  Neither the bookkeeping of what the walk deposits nor the
+iteration over edges is written.  H1a stays orange.
