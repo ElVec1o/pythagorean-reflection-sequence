@@ -8807,3 +8807,53 @@ end EltBridge
 #print axioms EltBridge.reachable_to_base
 #print axioms EltBridge.hsep_of_base_connected
 #print axioms EltBridge.walkCount_le_of_hsep
+
+namespace EltBridge
+
+/-! ### `hedge`
+
+The geometric half of `walkCount_le_runs_blk`, and it is exactly the `TurnInvG`
+condition again.  With `pos = edgeOf`:
+
+* a PARTNER edge keeps the edge, so `pos` is unchanged and `blk`, being `gz Zf ∘ pos`,
+  is unchanged with it -- the first disjunct;
+* a TURN edge keeps the SITE.  Both ends of it therefore have `pos` in `{s-1, s}` for
+  `s` that site, since `siteOf` is `edgeOf` or `edgeOf + 1`.  And if the two `pos`
+  differ the turn changed the edge, which `hturn` says happens only off `Zf`.
+-/
+
+/-- **`hedge` from the turn invariant.**  No new hypothesis: `hturn` is `TurnInvG`'s
+second condition, the one `local_trichotomy` secures by making the bounce strictly win
+at a cut site. -/
+theorem hedge_of_turnInv {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (edgeOf siteOf : α → ℤ) (Zf : Finset ℤ)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hts : ∀ x, siteOf (D.t x) = siteOf x)
+    (hse : ∀ x, siteOf x = edgeOf x ∨ siteOf x = edgeOf x + 1)
+    (hturn : ∀ x, edgeOf (D.t x) ≠ edgeOf x → siteOf x ∉ Zf) :
+    ∀ x y : α, (WalkGraph.graph D).Adj x y →
+      CutComponents.blk edgeOf Zf x = CutComponents.blk edgeOf Zf y ∨ (∃ t : ℤ,
+        (edgeOf x = t - 1 ∨ edgeOf x = t) ∧ (edgeOf y = t - 1 ∨ edgeOf y = t) ∧
+        (edgeOf x ≠ edgeOf y → t ∉ Zf)) := by
+  intro x y hadj
+  rcases hadj with rfl | rfl
+  · -- the crossing partner keeps the edge
+    left
+    unfold CutComponents.blk
+    rw [hpe x]
+  · -- the turn keeps the site
+    right
+    refine ⟨siteOf x, ?_, ?_, ?_⟩
+    · rcases hse x with h | h
+      · exact Or.inr h.symm
+      · exact Or.inl (by omega)
+    · have hy : siteOf (D.t x) = siteOf x := hts x
+      rcases hse (D.t x) with h | h
+      · exact Or.inr (by rw [← hy, h])
+      · exact Or.inl (by rw [← hy, h]; omega)
+    · intro hne
+      exact hturn x (fun hc => hne hc.symm)
+
+end EltBridge
+
+#print axioms EltBridge.hedge_of_turnInv

@@ -6490,3 +6490,22 @@ instantiation on the concrete turn (162), and the lift to all ends (here).
 That is the honest state of M4b: at `mu = 2` it is two bookkeeping inputs from closing,
 and at `mu = 4` it is refuted along this route (BLOCK 158, 5072 of 8192), with the merge
 route closed in both sign models (BLOCKS 149, 152).
+
+## 2026-09-03 — BLOCK 164: hedge
+
+The geometric half of `walkCount_le_runs_blk`, and it needs no new hypothesis: it is
+the `TurnInvG` condition again.  With `pos = edgeOf`:
+
+* a PARTNER edge keeps the edge, so `pos` is unchanged, and `blk = gz Zf . pos` with it
+  -- the first disjunct;
+* a TURN edge keeps the SITE, so both its ends have `pos` in `{s-1, s}` for `s` that
+  site, `siteOf` being `edgeOf` or `edgeOf + 1`.  If the two `pos` differ then the turn
+  changed the edge, which `hturn` says happens only off `Zf`.
+
+`hedge_of_turnInv`, 0 sorry.  And `hturn` is exactly what `local_trichotomy` secures, by
+making the bounce strictly win at a cut site.
+
+So M4b's upper bound at `mu = 2` is down to ONE input: identifying the run decomposition
+that `run_connected_of_turn_structure` uses with `runIndexG`.  Every other link --
+local trichotomy, glue, two-chain connectivity, transfer, instantiation, the lift to all
+ends, and now hedge -- is proved.
