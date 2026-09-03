@@ -7656,3 +7656,36 @@ What those blocks did establish, and it is not nothing:
 And at UNIFORM widths the existence is proved outright (`shield_law`, BLOCK 197).  The
 open case is varying widths, and it needs a construction of the turn, not further
 repackaging of the consequence.
+
+## 2026-09-03 — BLOCK 205: a path of links is joined, and BLOCK 204 refined
+
+BLOCK 204 said an edge's strands need not be joined among themselves.  That is true of an
+ARBITRARY turn and was the right correction to BLOCK 203, but it went one step too far:
+the turn is ours to CONSTRUCT, and the recursive Eulerian walk makes it true.  Going right
+on an up strand and back on a down strand, edge `j`'s strands form the path
+
+    up 0 — dn 0 — up 1 — dn 1 — ...
+
+each consecutive pair one turn step apart -- the far bounce joining `up i` to `dn i`, the
+near bounce joining `dn i` to `up (i+1)` -- with the two loose ends carrying the
+continuation.  So the per-edge decomposition is available after all, by construction.
+
+    allJoined_of_path   a path of links joins its endpoints to the start
+    allJoined_image     so its image is an AllJoined set
+    allJoined_edge      and for a turn built from round trips, that is the edge's set
+
+All 0 sorry.
+
+**The state of (M2), precisely.**  Everything is now proved except the construction of the
+turn itself at varying widths:
+
+    per-edge set        allJoined_edge, given the round-trip pairing
+    link between edges  link_of_turn -- any turn step joins the representatives
+    union over the run  allJoined_biUnion
+    to the shield law   shield_law_of_connected, at ANY widths
+
+so the remaining task is to exhibit a `turnGen`-like turn whose pairing is the round-trip
+path within each edge and a pass between consecutive edges.  At uniform widths that turn
+is built and the law is proved (BLOCK 197).  At varying widths the same construction
+should go through -- the round trips are per-edge and do not care what the neighbours'
+widths are -- and it is not written.

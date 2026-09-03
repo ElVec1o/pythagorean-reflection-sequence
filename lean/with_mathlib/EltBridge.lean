@@ -13022,3 +13022,67 @@ end EltBridge
 
 #print axioms EltBridge.allJoined_absorb
 #print axioms EltBridge.allJoined_biUnion
+
+namespace EltBridge
+
+/-! ## A path of links is joined
+
+BLOCK 204 said an edge's strands need not be joined among themselves, which is true of an
+ARBITRARY turn.  But the turn is ours to construct, and the recursive Eulerian walk makes
+it true: going right on an up strand and back on a down strand, edge `j`'s strands form
+the path
+
+    up 0 — dn 0 — up 1 — dn 1 — ...
+
+each consecutive pair joined by one turn step -- the bounce at the far site pairs `up i`
+with `dn i`, the bounce at the near site pairs `dn i` with `up (i+1)` -- and the two loose
+ends carry the continuation to the neighbouring edges.  So the per-edge decomposition IS
+available, by construction.
+
+What that needs is the lemma below: a path of links is joined.  It is the `AllJoined`
+analogue of `levels_reachable`, and like it needs no indices beyond a counter. -/
+
+/-- **A path of links is joined.** -/
+theorem allJoined_of_path {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (f : ℕ → α) (N : ℕ)
+    (hlink : ∀ i : ℕ, i < N → G.Reachable (f i) (f (i + 1))) :
+    ∀ i : ℕ, i ≤ N → G.Reachable (f 0) (f i) := by
+  intro i
+  induction i with
+  | zero => intro _; exact SimpleGraph.Reachable.refl _
+  | succ k ih => intro hk; exact (ih (by omega)).trans (hlink k (by omega))
+
+/-- **And so its image is an `AllJoined` set.** -/
+theorem allJoined_image {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (f : ℕ → α) (N : ℕ)
+    (hlink : ∀ i : ℕ, i < N → G.Reachable (f i) (f (i + 1))) :
+    AllJoined G ((Finset.range (N + 1)).image f) := by
+  intro x hx y hy
+  rw [Finset.mem_image] at hx hy
+  obtain ⟨i, hi, rfl⟩ := hx
+  obtain ⟨j, hj, rfl⟩ := hy
+  rw [Finset.mem_range] at hi hj
+  exact ((allJoined_of_path G f N hlink i (by omega)).symm).trans
+    (allJoined_of_path G f N hlink j (by omega))
+
+/-- **The per-edge set, for a turn built from round trips.**  If the turn pairs
+`f i` with `f (i+1)` all along the edge -- the far bounce joining `up i` to `dn i`, the
+near bounce joining `dn i` to `up (i+1)` -- then the edge's strands are joined. -/
+theorem allJoined_edge {n : ℕ} {m : Fin n → ℕ}
+    (E : WalkGraph.Data (EndType.Endpt n m)) (hEp : E.p = EndType.partner)
+    (f : ℕ → EndType.Endpt n m) (N : ℕ)
+    (hstep : ∀ i : ℕ, i < N → E.t (f i) = f (i + 1) ∨ E.t (f (i + 1)) = f i) :
+    AllJoined (WalkGraph.graph E) ((Finset.range (N + 1)).image (fun i => botOf (f i))) := by
+  refine allJoined_image (WalkGraph.graph E) (fun i => botOf (f i)) N ?_
+  intro i hi
+  rcases hstep i hi with h | h
+  · have := link_of_turn E hEp (f i)
+    rwa [h] at this
+  · have := link_of_turn E hEp (f (i + 1))
+    rw [h] at this
+    exact this.symm
+
+end EltBridge
+
+#print axioms EltBridge.allJoined_of_path
+#print axioms EltBridge.allJoined_edge
