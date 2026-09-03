@@ -8970,6 +8970,39 @@ theorem pathWeightR_flag_guarded {R : Type*} [CommRing R] (x : R) (P : SiteCost.
       (fun τ => x ^ τ.siteOf)]
   exact pathWeightR_edge x P n hn
 
+/-! ### The two sum statements over an arbitrary ring
+
+BLOCKS 249 and 270 with `pathWeightR`.  This finishes the port: every step from a
+configuration's weight to the comparison with all paths now holds over any commutative
+ring, and in particular over `PowerSeries ℤ`, where BLOCK 272's coefficient argument
+lives. -/
+
+theorem sum_configs_eq_sum_flag_pathsR {R : Type*} [CommRing R] (x : R) {A : ℤ} {m : ℕ}
+    [DecidableEq (SpanData A (A + m))]
+    (C : Finset (SpanData A (A + m))) :
+    ∑ S ∈ C, x ^ S.toPath.lR
+      = ∑ L ∈ C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)),
+          pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR x) (flagTailVecR x) L := by
+  rw [Finset.sum_image ?inj]
+  case inj => intro S _ T _ h; exact flagPath_inj h
+  refine Finset.sum_congr rfl fun S _ => ?_
+  exact (pathWeightR_flag_guarded x S.toPath m rfl).symm
+
+theorem sum_configs_eq_sum_all_pathsR {R : Type*} [CommRing R] (x : R) {A : ℤ} {m : ℕ}
+    [DecidableEq (SpanData A (A + m))]
+    (C : Finset (SpanData A (A + m))) (T : Finset (List FlagState))
+    (hsub : C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)) ⊆ T)
+    (hvan : ∀ L ∈ T, L ∉ C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)) →
+      pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVecR x) (flagTailVecR x) L = 0) :
+    ∑ S ∈ C, x ^ S.toPath.lR
+      = ∑ L ∈ T,
+          pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR x) (flagTailVecR x) L := by
+  rw [sum_configs_eq_sum_flag_pathsR x C]
+  exact Finset.sum_subset hsub hvan
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16692,3 +16725,5 @@ end EltBridge
 #print axioms EltBridge.flagHeadVecR_flagOf
 #print axioms EltBridge.flagTailVecR_flagOf
 #print axioms EltBridge.pathWeightR_flag_guarded
+#print axioms EltBridge.sum_configs_eq_sum_flag_pathsR
+#print axioms EltBridge.sum_configs_eq_sum_all_pathsR

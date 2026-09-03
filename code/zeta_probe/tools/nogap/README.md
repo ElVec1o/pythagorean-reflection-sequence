@@ -9278,3 +9278,27 @@ boundary vectors with the fully guarded weight (278).
 (BLOCK 249) and `sum_configs_eq_sum_all_paths` (BLOCK 270) -- are still `ℤ`-only.  They are
 the last two, and unlike the lemmas above they carry `Finset.sum`, so the port is a
 restatement rather than a copy.
+
+## 2026-09-04 — BLOCK 279: the two sum statements over an arbitrary ring — PORT COMPLETE
+
+    sum_configs_eq_sum_flag_pathsR   the sum over configurations is the sum over their paths
+    sum_configs_eq_sum_all_pathsR    and extends to all paths when the complement vanishes
+
+0 sorry, both clean on the first build.
+
+**The port is finished.**  Every step from a configuration's weight to the comparison with
+all paths now holds over an arbitrary commutative ring:
+
+    274  the chain-cost exponential
+    275  the congruence and the vanishing
+    276  guard invariance
+    277  the edge-frame weight identity
+    278  the boundary vectors and the fully guarded weight
+    279  the two sum statements
+
+In particular they hold over `PowerSeries ℤ`, which is where BLOCK 272's coefficient
+argument lives -- the limit BLOCK 274 found is removed.
+
+**[Rule 0] What (M3) still needs.**  Instantiating at `x := X` and taking the degree-`N`
+coefficient, with the vanishing hypothesis discharged from BLOCK 269 at `C` = all
+configurations of the span.  That is the assembly, and the pieces are all VERIFIED.
