@@ -2779,3 +2779,37 @@ the only remaining input.
 WHAT THIS DOES NOT YET DO: M3/M5/M6/M7 are stated about Endpt configurations. Dropping
 their "(configurations)" qualifier means RESTATING each for Elt through this bridge.
 That is a separate step and it is not done. B1 itself -- the bridge -- is complete.
+
+## 2026-09-03 — BLOCK 28: B1 GREEN WAS PREMATURE — retracted to yellow
+
+Trying to restate M6 through the bridge exposed a gap in the bridge itself, one block
+after I marked it green.
+
+  EndType_edgeOf_nonneg -- every Endpt edge index is >= 0 (edge : Fin n)
+  no_endpt_at_neg       -- so there is NO end on a negative edge, whatever the
+                           multiplicities
+  no_vendpt_at_neg      -- and none on the extended type either, for bnd >= 0
+
+But a PathData spans [A, B] with A <= 0, and A may be STRICTLY negative. So an element
+whose span reaches left of the origin has no Endpt representation at the indices its
+PathData uses.
+
+WORSE, AND THE POINT: an Elt with kstar < 0 has travel = -1 on [kstar, 0), so its span
+satisfies A <= kstar < 0. THE ENTIRE kstar < 0 BRANCH CAN NEVER BE INSTANTIATED FROM
+AN Elt. BLOCK 26's merges_to_one_neg is a true theorem about configurations, but it is
+unreachable from the element side.
+
+That also explains why BLOCK 18 closed kstar < 0 "with no side condition" so smoothly:
+bnd = -1 puts the virtual pair at an index no real end can occupy, so every awkward
+case was vacuous. The smoothness was a symptom, not a result.
+
+WHAT IS ACTUALLY ESTABLISHED: the bridge works for A = 0 -- elements with no deposit
+and no travel left of the origin. BLOCK 27's merges_to_one_pos is the live branch.
+
+THE FIX: `VEndpt.site` hard-codes the two virtual sites as `0` and `kstar`. Parametrise
+them as `s0` and `s1`, and a configuration shifted right by `-A` becomes representable,
+with the virtual events at `-A` and `kstar - A`. Everything from BLOCK 8 onward was
+written against the literals and will need the parameters threaded through.
+
+B1: GREEN -> YELLOW. I marked it green one block early. The atom is the bridge from a
+group element, and the bridge does not yet reach elements with A < 0.

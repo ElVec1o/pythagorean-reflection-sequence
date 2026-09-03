@@ -1180,6 +1180,43 @@ theorem VEndpt.merges_to_one_pos {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → 
         | inl u => have := hbnd u; simp only [VEndpt.edgeOf] at hlo; omega
         | inr c => simp only [VEndpt.edgeOf] at hlo; omega
 
+/-! ### A gap in the bridge: `Endpt` edges are non-negative
+
+`EndType.edgeOf x = (x.edge : Fin n)` cast to `Z`, so every edge index is `>= 0`.  But
+a `PathData` spans `[A, B]` with `A <= 0`, and `A` may be strictly negative.  So an
+element whose span reaches left of the origin has **no** `Endpt` representation at the
+indices its `PathData` uses.
+
+This is not fatal -- the fix is to let the two virtual sites be parameters rather than
+the literals `0` and `kstar`, so a shifted configuration can be used -- but it means
+the assembled theorems of BLOCKS 26-27 cover the shifted picture only once that
+parametrisation is made.  Recorded here rather than assumed away. -/
+
+/-- Every `Endpt` edge index is non-negative. -/
+theorem EndType_edgeOf_nonneg {n : ℕ} {mm : Fin n → ℕ} (x : EndType.Endpt n mm) :
+    0 ≤ EndType.edgeOf x := by
+  unfold EndType.edgeOf
+  exact Int.natCast_nonneg _
+
+/-- **So a span reaching left of the origin is not representable at its own indices.**
+If `j < 0` there is no end on edge `j`, whatever the multiplicities. -/
+theorem no_endpt_at_neg {n : ℕ} {mm : Fin n → ℕ} (j : ℤ) (hj : j < 0) :
+    ¬ ∃ x : EndType.Endpt n mm, EndType.edgeOf x = j := by
+  rintro ⟨x, hx⟩
+  have := EndType_edgeOf_nonneg x
+  omega
+
+/-- And the same for the extended type at real ends. -/
+theorem no_vendpt_at_neg {n : ℕ} {mm : Fin n → ℕ} (bnd j : ℤ) (hj : j < 0) (hb : 0 ≤ bnd) :
+    ¬ ∃ x : VEndpt n mm, VEndpt.edgeOf bnd x = j := by
+  rintro ⟨x, hx⟩
+  cases x with
+  | inl u =>
+    have := EndType_edgeOf_nonneg u
+    simp only [VEndpt.edgeOf] at hx
+    omega
+  | inr b => simp only [VEndpt.edgeOf] at hx; omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1230,3 +1267,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.hsW_all_neg
 #print axioms EltBridge.VEndpt.merges_to_one_neg
 #print axioms EltBridge.VEndpt.merges_to_one_pos
+#print axioms EltBridge.no_endpt_at_neg
+#print axioms EltBridge.no_vendpt_at_neg
