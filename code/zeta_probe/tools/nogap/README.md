@@ -6235,3 +6235,29 @@ Still open for M4b, unchanged in kind from BLOCK 153: prove `hbounce`; handle th
 where exactly one of `alpha`, `beta` vanishes, where a passing plan exists at the
 minimum but is not forced; glue the per-site choices; and chain the passes into run
 connectivity.
+
+## 2026-09-03 — BLOCK 155: hbounce discharged
+
+BLOCK 154 carried `hbounce` -- that a bounce-only plan costs `|alpha| + |beta|` -- as an
+explicit hypothesis.  It is now proved, and only the lower bound was needed, since the
+argument is that bounce-only EXCEEDS the minimum.
+
+The bound is pinned by the plan's own sums, with no optimisation.  In the left block the
+row sum `x00 + x01 = Ap` and the column sum `x00 + x10 = Cp` give
+
+    x01 - x10 = Ap - Cp
+
+outright, so the flipped mass `x01 + x10` is at least `|Ap - Cp|` (`flip_mass_ge`).
+Each flip costs `2`, and with `Phi = 0` the imbalance is `|alpha| / 2`, so the left half
+costs at least `|alpha|` (`bounce_left_cost_ge`); the right half is the same statement
+under `alpha_natAbs_swap` (`bounce_only_cost_ge`).
+
+`pass_forced_of_sums` then concludes with no hypothesis beyond the sums: at a bulk site
+with both imbalances non-zero, every bounce-only plan costs at least `|alpha| + |beta|`,
+which strictly exceeds `max(|alpha|, |beta|) = siteValue`.  So no bounce-only plan is
+minimal there, and every minimal plan passes.
+
+Still open for M4b: the case where exactly one of `alpha`, `beta` vanishes -- there a
+passing plan attains the minimum but is not forced, so it must be exhibited rather than
+deduced; gluing the per-site choices into one turn; and chaining the passes into run
+connectivity.

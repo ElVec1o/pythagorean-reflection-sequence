@@ -8337,3 +8337,77 @@ end EltBridge
 #print axioms EltBridge.alpha_eq_two_mul_of_phi_zero
 #print axioms EltBridge.bounce_strictly_beaten_when_both_differ
 #print axioms EltBridge.pass_forced_when_both_differ
+
+namespace EltBridge
+
+/-! ### `hbounce`, the transportation computation
+
+BLOCK 154 carried `hbounce` -- that a bounce-only plan costs `|alpha| + |beta|` -- as a
+hypothesis.  Only the LOWER bound is needed, since the argument is that bounce-only
+EXCEEDS the minimum, and the lower bound is pinned by the row and column sums alone.
+
+In the left block, `x01` is the mass flipped from arrival class `0` to departure class
+`1` and `x10` the reverse.  The row sum `x00 + x01 = Ap` and the column sum
+`x00 + x10 = Cp` give `x01 - x10 = Ap - Cp` outright, so the flipped mass
+`x01 + x10` is at least `|Ap - Cp|`.  With `Phi = 0` that is `|alpha| / 2`, and each
+flip costs `2`. -/
+
+/-- **The flipped mass in a half is pinned by its sums.**  `x01 - x10 = Ap - Cp`, so
+`x01 + x10 ≥ |Ap - Cp|` whatever the plan does. -/
+theorem flip_mass_ge (Ap Cp x00 x01 x10 : ℕ)
+    (r0 : x00 + x01 = Ap) (c0 : x00 + x10 = Cp) :
+    ((Ap : ℤ) - Cp).natAbs ≤ x01 + x10 := by
+  omega
+
+/-- **So a bounce-only plan costs at least `|alpha|` on the left.**  Each flip costs
+`2`, and with `Phi = 0` the imbalance `|Ap - Cp|` is `|alpha| / 2`. -/
+theorem bounce_left_cost_ge (Ap Am Cp Cm x00 x01 x10 : ℕ)
+    (hphi : SiteCost.Phi Ap Am Cp Cm = 0)
+    (r0 : x00 + x01 = Ap) (c0 : x00 + x10 = Cp) :
+    (SiteCost.alpha Ap Am Cp Cm).natAbs ≤ 2 * (x01 + x10) := by
+  have hα := alpha_eq_two_mul_of_phi_zero Ap Am Cp Cm hphi
+  have hflip := flip_mass_ge Ap Cp x00 x01 x10 r0 c0
+  omega
+
+/-- **`hbounce`, in the form the argument needs.**  A bounce-only plan -- one whose
+cross-half entries all vanish -- costs at least `|alpha| + |beta|`.  Its cost is
+`2 (x01 + x10) + 2 (x23 + x32)` once the cross terms are gone, and each half is bounded
+below by its own imbalance. -/
+theorem bounce_only_cost_ge (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (x00 x01 x10 x22 x23 x32 : ℕ)
+    (hphiL : SiteCost.Phi Ap Am Cp Cm = 0)
+    (hphiR : SiteCost.Phi Bp Bm Dp Dm = 0)
+    (r0 : x00 + x01 = Ap) (c0 : x00 + x10 = Cp)
+    (r2 : x22 + x23 = Bp) (c2 : x22 + x32 = Dp) :
+    (SiteCost.alpha Ap Am Cp Cm).natAbs + (SiteCost.beta Bp Bm Dp Dm).natAbs
+      ≤ 2 * (x01 + x10) + 2 * (x23 + x32) := by
+  have hL := bounce_left_cost_ge Ap Am Cp Cm x00 x01 x10 hphiL r0 c0
+  have hR := bounce_left_cost_ge Bp Bm Dp Dm x22 x23 x32 hphiR r2 c2
+  have hswap : (SiteCost.beta Bp Bm Dp Dm).natAbs
+      = (SiteCost.alpha Bp Bm Dp Dm).natAbs :=
+    (SiteCost.alpha_natAbs_swap Bp Bm Dp Dm).symm
+  omega
+
+/-- **The forced pass, with `hbounce` discharged.**  At a bulk site with both imbalances
+non-zero, no bounce-only plan attains the minimum: its cost is at least
+`|alpha| + |beta|`, which strictly exceeds `max(|alpha|, |beta|)`. -/
+theorem pass_forced_of_sums (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (x00 x01 x10 x22 x23 x32 : ℕ)
+    (hphiL : SiteCost.Phi Ap Am Cp Cm = 0)
+    (hphiR : SiteCost.Phi Bp Bm Dp Dm = 0)
+    (r0 : x00 + x01 = Ap) (c0 : x00 + x10 = Cp)
+    (r2 : x22 + x23 = Bp) (c2 : x22 + x32 = Dp)
+    (ha : SiteCost.alpha Ap Am Cp Cm ≠ 0) (hb : SiteCost.beta Bp Bm Dp Dm ≠ 0) :
+    SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm < 2 * (x01 + x10) + 2 * (x23 + x32) := by
+  have hge := bounce_only_cost_ge Ap Am Bp Bm Cp Cm Dp Dm x00 x01 x10 x22 x23 x32
+    hphiL hphiR r0 c0 r2 c2
+  have hlt := bounce_strictly_beaten_when_both_differ
+    (SiteCost.alpha Ap Am Cp Cm) (SiteCost.beta Bp Bm Dp Dm) ha hb
+  rw [siteValue_eq_max_of_phi_zero Ap Am Bp Bm Cp Cm Dp Dm hphiL]
+  omega
+
+end EltBridge
+
+#print axioms EltBridge.flip_mass_ge
+#print axioms EltBridge.bounce_only_cost_ge
+#print axioms EltBridge.pass_forced_of_sums
