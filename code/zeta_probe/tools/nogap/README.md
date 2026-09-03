@@ -8740,3 +8740,18 @@ the weight is a product and the guard contributes a zero factor -- together with
 `exists_config_of_flag` (BLOCK 243) for the paths on which no guard fails.  Then
 `weightSum_eq_sum_pathWeight` (BLOCK 211) turns the sum over all paths into the matrix
 power.
+
+## 2026-09-04 — BLOCK 250: a path failing the guard has weight zero
+
+    pathWeight_zero_of_guard_fails   a failure anywhere along the path kills the weight
+
+0 sorry, clean on the first build, and on `propext` + `Quot.sound` only -- no choice.
+
+The weight is a product along the path, and the guarded kernel contributes a zero factor
+wherever the guard fails, so the factor propagates out through the whole product.  The
+induction splits on whether the failure is at the head of the remaining path or deeper.
+
+**So a sum over ALL paths sees only the guarded ones.**  With `sum_configs_eq_sum_flag_paths`
+(BLOCK 249) on one side and `exists_config_of_flag` (BLOCK 243) identifying the guarded
+paths with configurations, the two sums agree -- which is (M3)'s statement.  What is left
+is writing that comparison as a `Finset` argument.

@@ -7981,6 +7981,37 @@ theorem sum_configs_eq_sum_flag_paths (x : ℤ) {A : ℤ} {m : ℕ}
   refine Finset.sum_congr rfl fun S _ => ?_
   exact (pathWeight_flag_guarded x S.toPath m rfl).symm
 
+/-! ### A path that fails the guard anywhere has weight zero
+
+The weight is a product along the path, and the guarded kernel contributes a zero factor
+wherever the guard fails.  So the sum over ALL paths sees only the guarded ones. -/
+
+theorem pathWeight_zero_of_guard_fails (x : ℤ) (g : ℤ → FlagState) :
+    ∀ (n : ℕ) (A : ℤ) (lam mu : FlagState → ℤ) (k : ℤ), A ≤ k → k < A + n →
+      flagStepB (g k) (g (k + 1)) = false →
+      pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        lam mu ((A :: idxList A n).map g) = 0 := by
+  intro n
+  induction n with
+  | zero => intro A lam mu k h1 h2 _; push_cast at h2; omega
+  | succ m ih =>
+      intro A lam mu k h1 h2 hfail
+      show lam (g A) * (if flagStepB (g A) (g (A + 1)) then
+              x ^ ((g A).st.muOf + (g (A + 1)).st.siteOf) else 0)
+            * pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+              (fun _ => (1 : ℤ)) mu ((idxList A (m + 1)).map g) = 0
+      by_cases hk : k = A
+      · subst hk
+        rw [hfail]
+        simp
+      · have h3 : pathWeight (fun σ τ => if flagStepB σ τ then
+              x ^ (σ.st.muOf + τ.st.siteOf) else 0) (fun _ => (1 : ℤ)) mu
+            (((A + 1) :: idxList (A + 1) m).map g) = 0 :=
+          ih (A + 1) (fun _ => (1 : ℤ)) mu k (by omega) (by push_cast at h2 ⊢; omega) hfail
+        rw [show ((idxList A (m + 1)).map g) = (((A + 1) :: idxList (A + 1) m).map g) from rfl,
+          h3]
+        ring
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15648,3 +15679,4 @@ end EltBridge
 #print axioms EltBridge.stateOf_injective_span
 #print axioms EltBridge.flagPath_inj
 #print axioms EltBridge.sum_configs_eq_sum_flag_paths
+#print axioms EltBridge.pathWeight_zero_of_guard_fails
