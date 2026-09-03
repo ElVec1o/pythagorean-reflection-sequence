@@ -7532,12 +7532,31 @@ def one : Elt where
     intro j _
     exact ⟨rfl, SiteCost.travel_of_kstar_zero j⟩
 
-/-- **One generator step.**  The three moves of the `nogap` BFS. -/
-noncomputable def Gen (a b : Elt) : Prop := b = s1 a ∨ b = s2 a ∨ b = s3 a
+/-- Two `Elt` terms are the same group element when they agree off `supp`. -/
+def SameElt (g h : Elt) : Prop :=
+  g.kstar = h.kstar ∧ g.eps = h.eps ∧ g.delta = h.delta ∧ g.d = h.d
 
-/-- **Reachable from the identity in `n` steps.** -/
+theorem SameElt.refl (g : Elt) : SameElt g g := ⟨rfl, rfl, rfl, rfl⟩
+
+theorem SameElt.symm {g h : Elt} (H : SameElt g h) : SameElt h g :=
+  ⟨H.1.symm, H.2.1.symm, H.2.2.1.symm, H.2.2.2.symm⟩
+
+theorem SameElt.trans {g h k : Elt} (H1 : SameElt g h) (H2 : SameElt h k) : SameElt g k :=
+  ⟨H1.1.trans H2.1, H1.2.1.trans H2.2.1, H1.2.2.1.trans H2.2.2.1,
+    H1.2.2.2.trans H2.2.2.2⟩
+
+/-- **One generator step.**  The three moves of the `nogap` BFS, taken up to
+`SameElt`: `Elt` stores `supp` non-canonically (BLOCK 141), so a step lands on the
+right *element* and only incidentally on a particular term.  Defining `Gen` with
+strict equality would make it non-symmetric even though every generator is an
+involution, which is a defect of the encoding, not of the group. -/
+noncomputable def Gen (a b : Elt) : Prop :=
+  SameElt b (s1 a) ∨ SameElt b (s2 a) ∨ SameElt b (s3 a)
+
+/-- **Reachable from the identity in `n` steps.**  The base case is `SameElt _ one`
+for the same reason. -/
 inductive Reaches : ℕ → Elt → Prop
-  | refl : Reaches 0 one
+  | refl {g : Elt} : SameElt g one → Reaches 0 g
   | step {n : ℕ} {a b : Elt} : Reaches n a → Gen a b → Reaches (n + 1) b
 
 /-- **The word length**: the least number of generator steps reaching `g`.
@@ -7551,7 +7570,7 @@ noncomputable def wordLength (g : Elt) : ℕ := sInf {n | Reaches n g}
 def Reachable (g : Elt) : Prop := ∃ n, Reaches n g
 
 theorem wordLength_one : wordLength one = 0 := by
-  have h : (0 : ℕ) ∈ {n | Reaches n one} := Reaches.refl
+  have h : (0 : ℕ) ∈ {n | Reaches n one} := Reaches.refl (SameElt.refl one)
   exact Nat.eq_zero_of_le_zero (Nat.sInf_le h)
 
 theorem reaches_wordLength {g : Elt} (h : Reachable g) : Reaches (wordLength g) g :=
@@ -7596,19 +7615,6 @@ This matters for H1a: `wordLength` is defined on terms, so the statement
 `IsRelaxedLength wordLength` is about terms, while the metric it should equal is a
 function of the element.  `SameElt` is the relation that has to be quotiented by, or
 carried. -/
-
-/-- Two `Elt` terms are the same group element when they agree off `supp`. -/
-def SameElt (g h : Elt) : Prop :=
-  g.kstar = h.kstar ∧ g.eps = h.eps ∧ g.delta = h.delta ∧ g.d = h.d
-
-theorem SameElt.refl (g : Elt) : SameElt g g := ⟨rfl, rfl, rfl, rfl⟩
-
-theorem SameElt.symm {g h : Elt} (H : SameElt g h) : SameElt h g :=
-  ⟨H.1.symm, H.2.1.symm, H.2.2.1.symm, H.2.2.2.symm⟩
-
-theorem SameElt.trans {g h k : Elt} (H1 : SameElt g h) (H2 : SameElt h k) : SameElt g k :=
-  ⟨H1.1.trans H2.1, H1.2.1.trans H2.2.1, H1.2.2.1.trans H2.2.2.1,
-    H1.2.2.2.trans H2.2.2.2⟩
 
 /-- **`s1` is an involution.** -/
 theorem s1_involutive (g : Elt) : SameElt (s1 (s1 g)) g := by
@@ -7694,3 +7700,102 @@ end EltBridge
 
 #print axioms EltBridge.Elt.occ_congr
 #print axioms EltBridge.Elt.A_congr
+
+namespace EltBridge
+namespace Elt
+
+/-! ### `Gen` is symmetric
+
+With `Gen` taken up to `SameElt` (BLOCK 142) the involutions do what they should: a
+generator step can be undone by the same generator, so the Cayley graph is undirected
+and `wordLength` is a metric rather than a quasi-metric. -/
+
+theorem s1_congr {g h : Elt} (H : SameElt g h) : SameElt (s1 g) (s1 h) :=
+  ⟨H.1, H.2.1, by simp only [s1]; rw [H.2.2.1], H.2.2.2⟩
+
+theorem s2_congr {g h : Elt} (H : SameElt g h) : SameElt (s2 g) (s2 h) :=
+  ⟨H.1, by simp only [s2]; rw [H.2.1], by simp only [s2]; rw [H.2.2.1], H.2.2.2⟩
+
+theorem s3_congr {g h : Elt} (H : SameElt g h) : SameElt (s3 g) (s3 h) := by
+  obtain ⟨hk, he, hδ, hd⟩ := H
+  unfold s3
+  by_cases hg : g.delta = true
+  · have hh : h.delta = true := by rw [← hδ]; exact hg
+    rw [dif_pos hg, dif_pos hh]
+    exact ⟨by simp [hk], he, rfl, by simp [hd, hk, he]⟩
+  · have hh : h.delta ≠ true := by rw [← hδ]; exact hg
+    rw [dif_neg hg, dif_neg hh]
+    exact ⟨by simp [hk], he, rfl, by simp [hd, hk, he]⟩
+
+/-- **A generator step can be undone by the same generator.** -/
+theorem Gen.symm {a b : Elt} (H : Gen a b) : Gen b a := by
+  rcases H with h | h | h
+  · exact Or.inl (((s1_congr h).trans (s1_involutive a)).symm)
+  · exact Or.inr (Or.inl (((s2_congr h).trans (s2_involutive a)).symm))
+  · exact Or.inr (Or.inr (((s3_congr h).trans (s3_involutive a)).symm))
+
+/-- **`Reaches` respects `SameElt`**: reachability is a property of the element. -/
+theorem Reaches.congr {n : ℕ} {g h : Elt} (H : Reaches n g) (E : SameElt g h) :
+    Reaches n h := by
+  cases H with
+  | refl hone => exact Reaches.refl (E.symm.trans hone)
+  | step hprev hgen =>
+    refine Reaches.step hprev ?_
+    rcases hgen with c | c | c
+    · exact Or.inl (E.symm.trans c)
+    · exact Or.inr (Or.inl (E.symm.trans c))
+    · exact Or.inr (Or.inr (E.symm.trans c))
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.Gen.symm
+#print axioms EltBridge.Elt.Reaches.congr
+
+namespace EltBridge
+namespace Elt
+
+/-! ### Reachability: the base case
+
+An element with the cursor at `0` and no deposits is determined by `(eps, delta)`, and
+all four such elements are words of length at most two:
+
+    (1, false)  = one          (-1, true)  = s2 one
+    (1, true)   = s1 one       (-1, false) = s1 (s2 one)
+-/
+
+theorem reachable_one : Reachable one := ⟨0, Reaches.refl (SameElt.refl one)⟩
+
+theorem reaches_s1_one : Reaches 1 (s1 one) :=
+  Reaches.step (Reaches.refl (SameElt.refl one)) (Or.inl (SameElt.refl _))
+
+theorem reaches_s2_one : Reaches 1 (s2 one) :=
+  Reaches.step (Reaches.refl (SameElt.refl one)) (Or.inr (Or.inl (SameElt.refl _)))
+
+theorem reaches_s1_s2_one : Reaches 2 (s1 (s2 one)) :=
+  Reaches.step reaches_s2_one (Or.inl (SameElt.refl _))
+
+/-- **Every element with the cursor at `0` and no deposits is reachable**, in at most
+two steps. -/
+theorem reachable_of_trivial (g : Elt) (hk : g.kstar = 0) (hd : g.d = fun _ => 0) :
+    Reachable g := by
+  have hone : one.kstar = 0 ∧ one.eps = 1 ∧ one.delta = false ∧ one.d = fun _ => 0 :=
+    ⟨rfl, rfl, rfl, rfl⟩
+  rcases g.heps with he | he
+  · by_cases hδ : g.delta = true
+    · exact ⟨1, Reaches.congr reaches_s1_one
+        ⟨by simp [one, s1, hk], by simp [one, s1, he], by simp [one, s1, hδ], by simp [one, s1, hd]⟩⟩
+    · simp only [Bool.not_eq_true] at hδ
+      exact ⟨0, Reaches.refl ⟨by simp [one, hk], by simp [one, he], by simp [one, hδ], by simp [one, hd]⟩⟩
+  · by_cases hδ : g.delta = true
+    · exact ⟨1, Reaches.congr reaches_s2_one
+        ⟨by simp [one, s2, hk], by simp [one, s2, he], by simp [one, s2, hδ], by simp [one, s2, hd]⟩⟩
+    · simp only [Bool.not_eq_true] at hδ
+      exact ⟨2, Reaches.congr reaches_s1_s2_one
+        ⟨by simp [one, s1, s2, hk], by simp [one, s1, s2, he], by simp [one, s1, s2, hδ],
+          by simp [one, s1, s2, hd]⟩⟩
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.reachable_of_trivial

@@ -5766,3 +5766,31 @@ and `mu`, `siteCost` reading only `(d, kstar)`, but that last step is not writte
 is the original target of this block, that the generators generate: every `Elt` being
 `Reachable` needs the reduction algorithm, and that is the next step.  H1a stays
 orange.
+
+## 2026-09-03 — BLOCK 142: Gen fixed up to SameElt; reachability's base case
+
+BLOCK 141 found that `Elt` is not extensional.  BLOCK 140's `Gen` had been defined
+with strict equality, `b = s1 a`, which makes it NON-SYMMETRIC even though every
+generator is an involution -- the second application returns the element but not the
+term.  That was a defect in my own definition, and it is fixed here: `Gen` and the
+base case of `Reaches` are now taken up to `SameElt`.
+
+With that, the theory behaves:
+
+    s1_congr, s2_congr, s3_congr   the generators respect SameElt
+    Gen.symm                       a step can be undone by the same generator, so the
+                                   Cayley graph is undirected and wordLength is a
+                                   metric rather than a quasi-metric
+    Reaches.congr                  reachability is a property of the element
+
+And the base case of reachability, which is finite: an element with the cursor at `0`
+and no deposits is determined by `(eps, delta)`, and all four are words of length at
+most two -- `one`, `s1 one`, `s2 one`, `s1 (s2 one)`.  `reachable_of_trivial`.
+
+NOT DONE: the inductive step.  Note it is not a single-move descent -- from `kstar =
+0, d 0 = 2` every generator INCREASES `|kstar| + sum |d j|` (`s3` moves the cursor off
+zero and deposits), so no one-step measure argument works.  The reduction has to go by
+words: fix `kstar` first, which sets every deposit's parity through `hpar`, then adjust
+the deposits by cursor round trips, each of which crosses an edge twice and so changes
+that deposit by `0` or `±2` -- exactly the freedom `hpar` leaves. That round-trip
+lemma is the engine, and it is the next step.
