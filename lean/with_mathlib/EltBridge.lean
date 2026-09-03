@@ -5044,6 +5044,39 @@ theorem gcostOf_zero {α : Type*} [Fintype α] [DecidableEq α] (d : GData α) (
   obtain ⟨h1, h2⟩ := h x
   exact GData.pcost_zero d x (t x) h1.symm h2.symm
 
+/-! ### The swap criterion in the free-sign model
+
+`EndData.transCost_swap_free` reduces the four costs of a swap to the *side* pattern,
+using `pcost_eq_of_arr_dep` -- a consequence of the forcing.  In the free model the
+cost depends on side **and** sign, and the criterion becomes simpler rather than
+harder: `pcost` sees only the two ends' classes, so two arrivals in the same class are
+interchangeable. -/
+
+/-- **`pcost` sees only the classes.** -/
+theorem GData.pcost_congr_left {α : Type*} (d : GData α) (x y a : α)
+    (hs : d.side x = d.side y) (hg : d.sgnOf x = d.sgnOf y) :
+    d.pcost x a = d.pcost y a := by
+  unfold GData.pcost
+  rw [hs, hg]
+
+/-- **Same-class arrivals swap for free.**  No side hypothesis, no sign hypothesis on
+the departures: the two arrivals being interchangeable is enough. -/
+theorem GData.swap_free {α : Type*} (d : GData α) (x y a b : α)
+    (hs : d.side x = d.side y) (hg : d.sgnOf x = d.sgnOf y) :
+    d.pcost x a + d.pcost y b = d.pcost x b + d.pcost y a := by
+  rw [GData.pcost_congr_left d x y a hs hg, GData.pcost_congr_left d x y b hs hg]
+  ring
+
+/-- **And a cross-class swap changes the cost only through the classes**, so the
+criterion is decidable from the four class labels alone. -/
+theorem GData.swap_delta {α : Type*} (d : GData α) (x y a b : α) :
+    d.pcost x a + d.pcost y b - (d.pcost x b + d.pcost y a)
+      = (if d.side x = d.side a then (if d.sgnOf x = d.sgnOf a then 0 else 2) else 1)
+        + (if d.side y = d.side b then (if d.sgnOf y = d.sgnOf b then 0 else 2) else 1)
+        - ((if d.side x = d.side b then (if d.sgnOf x = d.sgnOf b then 0 else 2) else 1)
+          + (if d.side y = d.side a then (if d.sgnOf y = d.sgnOf a then 0 else 2)
+            else 1)) := rfl
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5225,3 +5258,5 @@ end EltBridge
 #print axioms EltBridge.class_balance_of_cut
 #print axioms EltBridge.gcostAt_zero
 #print axioms EltBridge.gcostOf_zero
+#print axioms EltBridge.GData.swap_free
+#print axioms EltBridge.GData.swap_delta

@@ -4224,3 +4224,26 @@ AUDIT RESULT (BLOCK 85), for the record. The forcing is used in exactly three pl
   ConfigLoop.lean    the clsOf/planAt block, 821-949
   StrandEnds.lean:49 supplies depSign
 Three sites, not a rewrite of CostMerge -- smaller than BLOCK 78 estimated.
+
+## 2026-09-03 — BLOCK 87: the swap criterion in the free-sign model
+
+  GData.pcost_congr_left -- pcost sees only the two ends' CLASSES
+  GData.swap_free        -- so two arrivals in the same class are interchangeable: the
+                            swap costs the same, with NO hypothesis on the departures
+  GData.swap_delta       -- and a cross-class swap's cost change is determined by the
+                            four class labels alone (axiom-free, by rfl)
+
+EndData.transCost_swap_free needs hshared -- a condition relating the two arrivals'
+sides to their departures' sides -- because with the sign forced it must reduce
+everything to the side pattern. In the free model the criterion is SIMPLER: same class
+is enough, and nothing about the departures is needed.
+
+That is worth noting because the free-sign model was reached by removing a restriction,
+and one might expect the lemmas to get weaker. This one gets stronger: EndData's version
+requires a relation between four ends, GData's requires a relation between two.
+
+The reason is that the forced model's pcost is NOT a function of the ends' classes --
+the sign is determined by the role, so an arrival and a departure on one side are forced
+into different classes and the class labels carry less information than the (side, role)
+pair does. Freeing the sign makes pcost genuinely class-determined, which is what
+pcost_congr_left says.
