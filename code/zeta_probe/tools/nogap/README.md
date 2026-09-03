@@ -6439,3 +6439,29 @@ whose `hsep` this chain is built to supply.
 
 And the whole chain is `mu = 2` only.  BLOCK 158's 5072 failures at `mu = 4` are the
 absence of the two-chain structure, so none of this lifts to the general case.
+
+## 2026-09-03 — BLOCK 162: the instantiation, done
+
+`f` is "the bottom end of the strand": `up j` and `dn j` for edge `j`'s two strands.
+With that, the three hypotheses of `run_pairwise` become statements about the concrete
+turn, and nothing else about the configuration enters:
+
+    hup     from `up j`, cross its own strand (the partner) to the top, where a pass
+            sends it to `up (j+1)`
+    hdn     the same one step left, a pass carrying `dn (j+1)`'s partner to `dn j`
+    hjoin   the boundary bounce sends `dn lo` straight to `up lo`
+
+`reachable_partner` is the companion of `reachable_turn` -- an end is adjacent to its
+crossing partner -- and the two compose into the strand step
+`x -> D.t (D.p x)` used throughout.
+
+`run_connected_of_turn_structure` is the result: the run is connected in the walk graph,
+from the turn structure alone, with no abstract relation remaining.  0 sorry.
+
+So the `mu = 2` chain is now complete except for its last link.  What is left is to
+count: `walkCount_le_runs_blk` turns "each run is one component" into
+`walkCount <= |Z| + 1`, and its `hsep` is what `run_connected_of_turn_structure`
+supplies once the run decomposition is matched to `runIndexG`.  That matching is the
+remaining step, and it is the only one.
+
+Still `mu = 2` only.

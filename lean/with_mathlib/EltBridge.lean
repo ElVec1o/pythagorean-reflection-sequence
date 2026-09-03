@@ -8687,3 +8687,68 @@ end EltBridge
 
 #print axioms EltBridge.reachable_of_reflTransGen
 #print axioms EltBridge.run_connected_in_graph
+
+namespace EltBridge
+
+/-! ### The instantiation
+
+Take `f` to be "the bottom end of the strand": `up j` for edge `j`'s up strand and
+`dn j` for its down strand.  Then the three hypotheses of `run_pairwise` are statements
+about the concrete turn.
+
+* `hup`: from `up j` cross its own strand (the partner) to the top, where a pass sends
+  it to `up (j+1)`.
+* `hdn`: the same one step to the left, since a pass at that site carries
+  `dn (j+1)`'s partner to `dn j`.
+* `hjoin`: the bounce at the run's left boundary sends `dn lo` straight to `up lo`.
+
+Nothing else about the configuration enters. -/
+
+/-- Reachability along the crossing partner, the companion of `reachable_turn`. -/
+theorem reachable_partner {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (x : α) : (WalkGraph.graph D).Reachable x (D.p x) :=
+  SimpleGraph.Adj.reachable (G := WalkGraph.graph D) (Or.inl rfl)
+
+/-- **The run is connected, from the turn structure alone.**  `up j` and `dn j` name the
+bottom ends of edge `j`'s two strands; the hypotheses say the passes chain them and the
+boundary bounce joins them. -/
+theorem run_connected_of_turn_structure {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (up dn : ℤ → α) (lo : ℤ) (n : ℕ)
+    (hpass_up : ∀ k : ℕ, k < n → D.t (D.p (up (lo + k))) = up (lo + (k + 1 : ℕ)))
+    (hpass_dn : ∀ k : ℕ, k < n → D.t (D.p (dn (lo + (k + 1 : ℕ)))) = dn (lo + k))
+    (hbounce : D.t (dn lo) = up lo)
+    (j j' : ℕ) (hj : j ≤ n) (hj' : j' ≤ n) (b b' : Bool) :
+    (WalkGraph.graph D).Reachable
+      (if b then up (lo + j) else dn (lo + j))
+      (if b' then up (lo + j') else dn (lo + j')) := by
+  classical
+  set f : ℤ × Bool → α := fun a => if a.2 then up a.1 else dn a.1 with hf
+  set R : ℤ × Bool → ℤ × Bool → Prop :=
+    fun a b => (WalkGraph.graph D).Reachable (f a) (f b) with hRdef
+  have hR : ∀ a b, R a b → (WalkGraph.graph D).Reachable (f a) (f b) := fun _ _ h => h
+  have hsymm : ∀ a b, R a b → R b a := fun _ _ h => h.symm
+  -- a strand step: cross the strand, then turn
+  have hstep : ∀ x : α, (WalkGraph.graph D).Reachable x (D.t (D.p x)) :=
+    fun x => (reachable_partner D x).trans (reachable_turn D (D.p x))
+  have hup : ∀ k : ℕ, k < n → R (lo + k, true) (lo + (k + 1 : ℕ), true) := by
+    intro k hk
+    have := hstep (up (lo + k))
+    rw [hpass_up k hk] at this
+    simpa [hRdef, hf] using this
+  have hdn : ∀ k : ℕ, k < n → R (lo + k, false) (lo + (k + 1 : ℕ), false) := by
+    intro k hk
+    have := hstep (dn (lo + (k + 1 : ℕ)))
+    rw [hpass_dn k hk] at this
+    simpa [hRdef, hf] using this.symm
+  have hjoin : R (lo, true) (lo, false) := by
+    have := reachable_turn D (dn lo)
+    rw [hbounce] at this
+    simpa [hRdef, hf] using this.symm
+  have := run_pairwise lo n R hsymm hup hdn hjoin j j' hj hj' b b'
+  have hmain := reachable_of_reflTransGen (WalkGraph.graph D) R f hR this
+  simpa [hf] using hmain
+
+end EltBridge
+
+#print axioms EltBridge.reachable_partner
+#print axioms EltBridge.run_connected_of_turn_structure
