@@ -2805,6 +2805,90 @@ theorem VEndpt.shield_finalT {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Z
   exact ⟨D', hD', VEndpt.shield s0 s1 bnd Zf D' hD'.1.1 hD'.1.2.1 (hturn D')
     (hvirt D') hruns hsep z₀⟩
 
+/-! ### The three discharges, in `siteP` form, mirrored orientation
+
+`bnd = s0 - 1`, virtual arrival a top at `s0 = bnd + 1`, virtual departure a bottom at
+`s1`.  `hsW` and `hsT` hold outright; `hsX` needs the walk to reach back to `s1`. -/
+
+theorem VEndpt.hsW_negP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (x : VEndpt n mm) :
+    VEndpt.atTopN x = false ∨ VEndpt.siteP s0 s1 x
+      = VEndpt.edgeOf (s0 - 1) x + (if VEndpt.atTopN x then 1 else 0) := by
+  cases x with
+  | inl y => exact Or.inr rfl
+  | inr b =>
+    cases b
+    · exact Or.inr (by simp [VEndpt.siteP, VEndpt.edgeOf, VEndpt.atTopN])
+    · exact Or.inl rfl
+
+theorem VEndpt.hsT_negP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (y : VEndpt n mm)
+    (hyt : VEndpt.atTopN y = true) :
+    VEndpt.siteP s0 s1 y
+      = VEndpt.edgeOf (s0 - 1) y + (if VEndpt.atTopN y then 1 else 0) := by
+  cases y with
+  | inl u => rfl
+  | inr b =>
+    cases b
+    · simp [VEndpt.siteP, VEndpt.edgeOf, VEndpt.atTopN]
+    · exact absurd hyt (by simp [VEndpt.atTopN])
+
+theorem VEndpt.hsX_negP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1 < s0)
+    (E : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (E.t e) = VEndpt.siteP s0 s1 e)
+    (w x : VEndpt n mm) (hwx : (WalkGraph.graph E).Reachable w x)
+    (hxe : VEndpt.edgeOf (s0 - 1) x
+      = WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) w)
+    (hxb : VEndpt.atTopN x = false) :
+    VEndpt.siteP s0 s1 x
+      = VEndpt.edgeOf (s0 - 1) x + (if VEndpt.atTopN x then 1 else 0) := by
+  cases x with
+  | inl y => rfl
+  | inr b =>
+    cases b
+    · exact absurd hxb (by simp [VEndpt.atTopN])
+    · have hw : WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) w = s0 - 1 := by
+        simpa [VEndpt.edgeOf] using hxe.symm
+      have hle := VEndpt.wlo_le_s1 s0 s1 (s0 - 1) (by omega) E w hts hwx
+      rw [hw] at hle
+      have hs : s1 = s0 - 1 := by omega
+      simp [VEndpt.siteP, VEndpt.edgeOf, VEndpt.atTopN, hs]
+
+/-- **The shield law, mirrored orientation, discharges plugged in.**
+
+`c = |Z|` on the extended type with `s1 < s0` and `bnd = s0 - 1`.  The three locality
+hypotheses are gone -- `hsW_negP`, `hsT_negP` and `hsX_negP` supply them -- leaving
+only `hturn`, `hvirt`, `hruns` and `hcov`, all statements about the configuration. -/
+theorem VEndpt.shield_neg {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1 < s0)
+    (Zf : Finset ℤ) (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hcov : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ z v : VEndpt n mm,
+      VEndpt.edgeOf (s0 - 1) v
+        < WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z →
+      ∃ w : VEndpt n mm, VEndpt.edgeOf (s0 - 1) w
+        = WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z - 1 ∧
+        VEndpt.atTopN w = true)
+    (hturn : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ u v : EndType.Endpt n mm,
+      E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hvirt : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf
+            (E.t (Sum.inr b : VEndpt n mm)))
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf v = i)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : CostMerge.MergesMin (VEndpt.siteP s0 s1) (vEndDataN up ds).isArr
+      VEndpt.partner (vEndDataN up ds) D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.siteP s0 s1) (vEndDataN up ds).isArr
+        VEndpt.partner (vEndDataN up ds) D' ∧
+      WalkGraph.walkCount D' = Zf.card + 1 :=
+  VEndpt.shield_finalT s0 s1 (s0 - 1) Zf (vEndDataN up ds) VEndpt.atTopN
+    (fun _ => rfl) VEndpt.hptN (VEndpt.partner_site_neP s0 s1 (by omega))
+    (fun _ _ _ x _ _ => VEndpt.hsW_negP s0 s1 x)
+    (fun E hE w x hwx hxe hxb => VEndpt.hsX_negP s0 s1 hlt E hE.2.1 w x hwx hxe hxb)
+    (fun _ _ _ y _ hyt => VEndpt.hsT_negP s0 s1 y hyt)
+    hcov hturn hvirt hruns z₀ D hD
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2914,3 +2998,7 @@ end EltBridge
 #print axioms EltBridge.exists_run_connected
 #print axioms EltBridge.VEndpt.shield_final
 #print axioms EltBridge.VEndpt.shield_finalT
+#print axioms EltBridge.VEndpt.hsW_negP
+#print axioms EltBridge.VEndpt.hsT_negP
+#print axioms EltBridge.VEndpt.hsX_negP
+#print axioms EltBridge.VEndpt.shield_neg

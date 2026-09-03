@@ -3386,3 +3386,27 @@ compatible with locality -- can be plugged in directly.
 
 Both orientations now reach the same theorem; they differ only in which end is the top
 and where the phantom edge sits.
+
+## 2026-09-03 — BLOCK 51: shield_neg — the shield law with all locality discharged
+
+  VEndpt.hsW_negP, hsT_negP  -- hold OUTRIGHT in the mirrored orientation (propext only)
+  VEndpt.hsX_negP            -- needs the walk to reach back to s1 (wlo_le_s1)
+  VEndpt.shield_neg          -- **c = |Z| with the three locality hypotheses GONE**
+
+What is left in shield_neg:
+  hturn  the paper's cut condition on real turns
+  hvirt  the virtual pair stays in one run          (BLOCK 42 proves this)
+  hruns  every run carries an end
+  hcov   the covering condition
+  z0     a basepoint
+All four are statements about the configuration -- the same inputs the Endpt-side
+argument takes -- and none is about the virtual pair or the extension.
+
+So the shield law, which was retracted twice tonight (BLOCK 3 on hcov, BLOCK 4 on hZ
+versus hocc) and then proved not to transport (BLOCK 41 on locality), now holds on the
+end type that carries a group element's configuration, with every model-specific
+hypothesis discharged.
+
+hsW_negP and hsT_negP depend on `propext` alone. They are true by computation: in the
+mirrored orientation the virtual arrival's site IS its edge plus one, and the virtual
+departure IS a bottom.
