@@ -4722,6 +4722,135 @@ theorem involution_of_pair {α : Type*} [Fintype α] [DecidableEq α] (A D : Fin
     exact hfix x (fun h => hx (Finset.mem_union_left _ h))
       (fun h => hx (Finset.mem_union_right _ h))
 
+/-! ### The zero-cost turn from four-class balance
+
+With a free sign, a site whose four `(side, sign)` classes balance admits an involution
+pairing each arrival with a departure **in its own class** -- so every pair costs `0`. -/
+
+/-- **A zero-cost involution from four-class balance.** -/
+theorem exists_zero_cost_turn {α : Type*} [Fintype α] [DecidableEq α]
+    (d : GData α) (A D : Finset α) (hdisj : Disjoint A D)
+    (hbal : ∀ sd sg : Bool,
+      (A.filter (fun x => d.side x = sd ∧ d.sgnOf x = sg)).card
+        = (D.filter (fun x => d.side x = sd ∧ d.sgnOf x = sg)).card) :
+    ∃ t : α → α, (∀ x, t (t x) = x) ∧
+      (∀ x ∈ A, d.side (t x) = d.side x ∧ d.sgnOf (t x) = d.sgnOf x) ∧
+      (∀ x, x ∉ A → x ∉ D → t x = x) := by
+  classical
+  -- the four class sets
+  set cA : Bool → Bool → Finset α := fun sd sg =>
+    A.filter (fun x => d.side x = sd ∧ d.sgnOf x = sg) with hcA
+  set cD : Bool → Bool → Finset α := fun sd sg =>
+    D.filter (fun x => d.side x = sd ∧ d.sgnOf x = sg) with hcD
+  -- an involution per class, supported on that class's union
+  have hcls : ∀ sd sg : Bool, ∃ t : α → α, (∀ x, t (t x) = x) ∧
+      (∀ x ∈ cA sd sg ∪ cD sd sg, t x ∈ cA sd sg ∪ cD sd sg) ∧
+      (∀ x, x ∉ cA sd sg ∪ cD sd sg → t x = x) := by
+    intro sd sg
+    obtain ⟨t, hinv, -, -, hS, hfix⟩ :=
+      involution_of_pair (cA sd sg) (cD sd sg)
+        (Finset.disjoint_filter_filter hdisj) (hbal sd sg)
+    exact ⟨t, hinv, hS, hfix⟩
+  choose t ht using hcls
+  -- supports are pairwise disjoint: side and sign separate the classes
+  have hsupp : ∀ (sd sg : Bool) x, x ∈ cA sd sg ∪ cD sd sg →
+      d.side x = sd ∧ d.sgnOf x = sg := by
+    intro sd sg x hx
+    rcases Finset.mem_union.mp hx with h | h <;> exact (Finset.mem_filter.mp h).2
+  have hdis : ∀ (a b c e : Bool), (a, b) ≠ (c, e) →
+      Disjoint (cA a b ∪ cD a b) (cA c e ∪ cD c e) := by
+    intro a b c e hne
+    rw [Finset.disjoint_left]
+    intro x hx hx'
+    obtain ⟨h1, h2⟩ := hsupp a b x hx
+    obtain ⟨h3, h4⟩ := hsupp c e x hx'
+    exact hne (by rw [← h1, ← h2, h3, h4])
+  -- chain them
+  set S1 : Finset α := (cA true true ∪ cD true true) ∪ (cA true false ∪ cD true false)
+  set S2 : Finset α := (cA false true ∪ cD false true) ∪ (cA false false ∪ cD false false)
+  obtain ⟨u1, hu1inv, hu1a, hu1b, hu1fix, hu1S, hu1S'⟩ :=
+    combine_involutions (t true true) (t true false)
+      (cA true true ∪ cD true true) (cA true false ∪ cD true false)
+      (ht true true).1 (ht true true).2.1 (ht true true).2.2
+      (ht true false).1 (ht true false).2.1 (ht true false).2.2
+      (hdis true true true false (by simp))
+  obtain ⟨u2, hu2inv, hu2a, hu2b, hu2fix, hu2S, hu2S'⟩ :=
+    combine_involutions (t false true) (t false false)
+      (cA false true ∪ cD false true) (cA false false ∪ cD false false)
+      (ht false true).1 (ht false true).2.1 (ht false true).2.2
+      (ht false false).1 (ht false false).2.1 (ht false false).2.2
+      (hdis false true false false (by simp))
+  have hu1cl : ∀ x ∈ S1, u1 x ∈ S1 := by
+    intro x hx
+    rcases Finset.mem_union.mp hx with h | h
+    · exact Finset.mem_union_left _ (hu1S x h)
+    · exact Finset.mem_union_right _ (hu1S' x h)
+  have hu1out : ∀ x, x ∉ S1 → u1 x = x := by
+    intro x hx
+    exact hu1fix x (fun h => hx (Finset.mem_union_left _ h))
+      (fun h => hx (Finset.mem_union_right _ h))
+  have hu2cl : ∀ x ∈ S2, u2 x ∈ S2 := by
+    intro x hx
+    rcases Finset.mem_union.mp hx with h | h
+    · exact Finset.mem_union_left _ (hu2S x h)
+    · exact Finset.mem_union_right _ (hu2S' x h)
+  have hu2out : ∀ x, x ∉ S2 → u2 x = x := by
+    intro x hx
+    exact hu2fix x (fun h => hx (Finset.mem_union_left _ h))
+      (fun h => hx (Finset.mem_union_right _ h))
+  have hS12 : Disjoint S1 S2 := by
+    rw [Finset.disjoint_left]
+    intro x hx hx'
+    have h1 : d.side x = true := by
+      rcases Finset.mem_union.mp hx with h | h
+      · exact (hsupp true true x h).1
+      · exact (hsupp true false x h).1
+    have h2 : d.side x = false := by
+      rcases Finset.mem_union.mp hx' with h | h
+      · exact (hsupp false true x h).1
+      · exact (hsupp false false x h).1
+    rw [h1] at h2; exact Bool.noConfusion h2
+  obtain ⟨v, hvinv, hva, hvb, hvfix, hvS1, hvS2⟩ :=
+    combine_involutions u1 u2 S1 S2 hu1inv hu1cl hu1out hu2inv hu2cl hu2out hS12
+  refine ⟨v, hvinv, ?_, ?_⟩
+  · -- `v` preserves the class of every arrival
+    intro x hx
+    have hxc : x ∈ cA (d.side x) (d.sgnOf x) :=
+      Finset.mem_filter.mpr ⟨hx, rfl, rfl⟩
+    have hxu : x ∈ cA (d.side x) (d.sgnOf x) ∪ cD (d.side x) (d.sgnOf x) :=
+      Finset.mem_union_left _ hxc
+    have himg : v x ∈ cA (d.side x) (d.sgnOf x) ∪ cD (d.side x) (d.sgnOf x) := by
+      cases hsd : d.side x
+      · have hx2 : x ∈ S2 := by
+          cases hsg : d.sgnOf x
+          · exact Finset.mem_union_right _ (by rw [hsd, hsg] at hxu; exact hxu)
+          · exact Finset.mem_union_left _ (by rw [hsd, hsg] at hxu; exact hxu)
+        rw [hvb x hx2]
+        cases hsg : d.sgnOf x
+        · rw [hu2b _ (by rw [hsd, hsg] at hxu; exact hxu)]
+          exact (ht false false).2.1 _ (by rw [hsd, hsg] at hxu; exact hxu)
+        · rw [hu2a _ (by rw [hsd, hsg] at hxu; exact hxu)]
+          exact (ht false true).2.1 _ (by rw [hsd, hsg] at hxu; exact hxu)
+      · have hx1 : x ∈ S1 := by
+          cases hsg : d.sgnOf x
+          · exact Finset.mem_union_right _ (by rw [hsd, hsg] at hxu; exact hxu)
+          · exact Finset.mem_union_left _ (by rw [hsd, hsg] at hxu; exact hxu)
+        rw [hva x hx1]
+        cases hsg : d.sgnOf x
+        · rw [hu1b _ (by rw [hsd, hsg] at hxu; exact hxu)]
+          exact (ht true false).2.1 _ (by rw [hsd, hsg] at hxu; exact hxu)
+        · rw [hu1a _ (by rw [hsd, hsg] at hxu; exact hxu)]
+          exact (ht true true).2.1 _ (by rw [hsd, hsg] at hxu; exact hxu)
+    exact hsupp _ _ _ himg
+  · -- outside `A ∪ D` it is the identity
+    intro x hxA hxD
+    refine hvfix x ?_ ?_ <;>
+      · intro hc
+        rcases Finset.mem_union.mp hc with h | h <;>
+          rcases Finset.mem_union.mp h with h' | h' <;>
+            [exact hxA (Finset.mem_filter.mp h').1; exact hxD (Finset.mem_filter.mp h').1;
+             exact hxA (Finset.mem_filter.mp h').1; exact hxD (Finset.mem_filter.mp h').1]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4895,3 +5024,4 @@ end EltBridge
 #print axioms EltBridge.GData.strictly_more_general
 #print axioms EltBridge.combine_involutions
 #print axioms EltBridge.involution_of_pair
+#print axioms EltBridge.exists_zero_cost_turn

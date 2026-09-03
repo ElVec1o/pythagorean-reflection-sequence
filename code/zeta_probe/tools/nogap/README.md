@@ -4082,3 +4082,27 @@ generalising it to four by adding parameters would have produced a lemma with tw
 hypotheses. Refactoring to a chainable pair of lemmas is shorter and the proofs are the
 same arguments -- the branch taken is the same for x and its image, which is exactly
 where disjointness is used, and the only place it is.
+
+## 2026-09-03 — BLOCK 80: the zero-cost turn exists in the free-sign model
+
+  exists_zero_cost_turn -- given four-class balance at a site, an involution pairing
+                           each arrival with a departure IN ITS OWN (side, sign) CLASS,
+                           and the identity outside the site
+
+Built by three chained applications of combine_involutions (BLOCK 79): the two signs
+within each side, then the two sides. Disjointness at every join is immediate -- the
+classes are separated by side or by sign.
+
+Combined with GData.pcost_zero (BLOCK 78), every pair this turn makes costs 0. So the
+object BLOCKS 70-77 were reaching for EXISTS, once the sign is free. In the forced
+model it provably does not (pcostF_ge_one, BLOCK 77).
+
+That closes the diagnosis loop that ran from BLOCK 59:
+  59-60  the shield law cannot apply to elements -- hZ collides with mu_pos
+  61-69  hZ removed and the shield law rebuilt on an invariant
+  70-76  the invariant needs a zero-cost plan at cut sites
+  77     no such plan exists, because EndData forces the sign
+  78-80  with the sign free, it exists
+
+Drafted with a `sorry` for the final combine and completed before building; the
+`grep -c sorry` check ran before `lake build`, as in BLOCK 63.
