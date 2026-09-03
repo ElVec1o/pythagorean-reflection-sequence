@@ -6031,6 +6031,41 @@ theorem travelPathExp_tendsto (N : ℕ) (l : List ℕ) (hl : N + 1 ≤ l.length)
   have := travelPathExp_ge l
   omega
 
+/-! ### Summability: `lR` bounds both the span and the deposits
+
+The sum over elements of `x^lR` is formally summable because only finitely many
+elements have `lR <= N`.  Two bounds give that: `lR` bounds the span length, and it
+bounds every deposit.  Both come from `mu >= 1` on the span. -/
+
+/-- **`lR` bounds the span length.**  Every span edge has `mu >= 1`, so the edge sum
+alone is at least the number of edges. -/
+theorem span_le_lR (P : SiteCost.PathData) :
+    (Finset.Icc P.A P.B).card ≤ P.lR := by
+  have hmu : ∀ j ∈ Finset.Icc P.A P.B, 1 ≤ P.mu j := fun j _ => P.mu_pos j
+  have hcard : (Finset.Icc P.A P.B).card ≤ ∑ j ∈ Finset.Icc P.A P.B, P.mu j := by
+    calc (Finset.Icc P.A P.B).card
+        = ∑ _j ∈ Finset.Icc P.A P.B, 1 := by rw [Finset.sum_const, smul_eq_mul, mul_one]
+      _ ≤ ∑ j ∈ Finset.Icc P.A P.B, P.mu j := Finset.sum_le_sum hmu
+  unfold SiteCost.PathData.lR
+  omega
+
+/-- **And `lR` bounds every deposit on the span.**  A single edge's multiplicity is at
+most the edge sum, and `mu >= |d|`. -/
+theorem deposit_le_lR (P : SiteCost.PathData) (j : ℤ) (hj : j ∈ Finset.Icc P.A P.B) :
+    (P.d j).natAbs ≤ P.lR := by
+  have h1 : (P.d j).natAbs ≤ P.mu j := P.mu_ge_d j
+  have h2 : P.mu j ≤ ∑ i ∈ Finset.Icc P.A P.B, P.mu i :=
+    Finset.single_le_sum (f := P.mu) (fun i _ => Nat.zero_le _) hj
+  unfold SiteCost.PathData.lR
+  omega
+
+/-- **So the elements of bounded `lR` are bounded in both span and deposits**, which is
+the finiteness the formal sum needs. -/
+theorem bounded_of_lR_le (P : SiteCost.PathData) (N : ℕ) (h : P.lR ≤ N) :
+    (Finset.Icc P.A P.B).card ≤ N ∧
+    ∀ j ∈ Finset.Icc P.A P.B, (P.d j).natAbs ≤ N :=
+  ⟨le_trans (span_le_lR P) h, fun j hj => le_trans (deposit_le_lR P j hj) h⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6262,3 +6297,6 @@ end EltBridge
 #print axioms EltBridge.travelT_ge_two
 #print axioms EltBridge.travelPathExp_ge
 #print axioms EltBridge.travelPathExp_tendsto
+#print axioms EltBridge.span_le_lR
+#print axioms EltBridge.deposit_le_lR
+#print axioms EltBridge.bounded_of_lR_le

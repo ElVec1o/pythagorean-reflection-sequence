@@ -4960,3 +4960,23 @@ setting, and the algebraic half (neumann_partial) is already proved outright.
   (M3b)  the finite Neumann identity proved; the valuation bound proved; nothing beyond
          transcription remains
 That is the one of (M)'s three weakest links that moved tonight.
+
+## 2026-09-03 — BLOCK 118: summability — lR bounds both the span and the deposits
+
+  span_le_lR       -- lR bounds the span length: every span edge has mu >= 1, so the
+                      edge sum alone is at least the number of edges
+  deposit_le_lR    -- and lR bounds every deposit: mu >= |d| and one term <= the sum
+  bounded_of_lR_le -- so elements with lR <= N are bounded in span AND deposits
+
+This is the finiteness the formal sum needs. The sum over elements of x^lR is formally
+summable because each degree N is hit by only finitely many elements -- and the two
+bounds above are why: bounded span, bounded deposits, hence finitely many (d, kstar).
+
+Both bounds come from the same fact, mu >= 1 on the span (mu_pos) -- the same fact that
+BLOCK 60 used to show cut sites cannot be empty in a span. It is doing double duty:
+there it obstructs the shield law, here it gives summability.
+
+(M3a)'s remaining step therefore has its analytic input. What is still not written is
+the sum itself -- organising the finite sum at each degree by magnitude path and
+recognising it as a matrix entry. That is transcription against Mathlib's PowerSeries,
+not a mathematical gap.
