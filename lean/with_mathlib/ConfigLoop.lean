@@ -2007,6 +2007,227 @@ theorem gz_ne_of_between (Zf : Finset ℤ) (a b s : ℤ)
       omega
   exact Nat.ne_of_lt (Finset.card_lt_card hsub)
 
+/-! ### Balance at an empty edge
+
+`balance_left`/`balance_right` ask that no edge *index* lie on one side of the site.
+An empty edge has an index but no ends, so the right hypothesis is that the edge carries
+no crossings. These variants take that form. -/
+
+/-- With the edge at `s` empty, no end at site `s` is a bottom end. -/
+theorem no_bottom_at_empty (up : Fin n → ℕ) (s : ℤ)
+    (hm : ∀ e : Fin n, (e : ℤ) = s → m e = 0) :
+    ((arrAt (m := m) up s).filter (fun x => atTop x = false)).card = 0 ∧
+    ((depAt (m := m) up s).filter (fun x => atTop x = false)).card = 0 := by
+  have key : ∀ x : Endpt n m, siteOf x = s → atTop x = false → False := by
+    intro x hs hb
+    have he : edgeOf x = s := by
+      have h := edge_of_site x s hs; rw [hb] at h; simpa using h
+    have hz : m x.edge = 0 := hm x.edge he
+    have hlt := x.idx.isLt
+    omega
+  constructor <;> rw [Finset.card_eq_zero] <;> ext x <;>
+    simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
+  · intro hx hb
+    exact absurd (key x ((EndType.mem_arrAt up s x).mp hx).1 hb) (fun h => h)
+  · intro hx hb
+    exact absurd (key x ((EndType.mem_depAt up s x).mp hx).1 hb) (fun h => h)
+
+/-- With the edge at `s - 1` empty, no end at site `s` is a top end. -/
+theorem no_top_at_empty (up : Fin n → ℕ) (s : ℤ)
+    (hm : ∀ e : Fin n, (e : ℤ) = s - 1 → m e = 0) :
+    ((arrAt (m := m) up s).filter (fun x => atTop x = true)).card = 0 ∧
+    ((depAt (m := m) up s).filter (fun x => atTop x = true)).card = 0 := by
+  have key : ∀ x : Endpt n m, siteOf x = s → atTop x = true → False := by
+    intro x hs ht
+    have he : edgeOf x = s - 1 := by
+      have h := edge_of_site x s hs; rw [ht] at h; simpa using h
+    have hz : m x.edge = 0 := hm x.edge he
+    have hlt := x.idx.isLt
+    omega
+  constructor <;> rw [Finset.card_eq_zero] <;> ext x <;>
+    simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
+  · intro hx ht
+    exact absurd (key x ((EndType.mem_arrAt up s x).mp hx).1 ht) (fun h => h)
+  · intro hx ht
+    exact absurd (key x ((EndType.mem_depAt up s x).mp hx).1 ht) (fun h => h)
+
+/-- **A site both of whose edges are empty carries no ends, so it balances.** -/
+theorem balance_empty_edges (up : Fin n → ℕ) (s : ℤ)
+    (hlo : ∀ e : Fin n, (e : ℤ) = s - 1 → m e = 0)
+    (hhi : ∀ e : Fin n, (e : ℤ) = s → m e = 0) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card := by
+  obtain ⟨h1, h2⟩ := no_top_at_empty (m := m) up s hlo
+  obtain ⟨h3, h4⟩ := no_bottom_at_empty (m := m) up s hhi
+  rw [← card_split_atTop (arrAt (m := m) up s), ← card_split_atTop (depAt (m := m) up s),
+    h1, h2, h3, h4]
+
+/-- **Balance when only the top half of the site is populated** (the edge at `s` is
+empty, the edge at `s - 1` is not). -/
+theorem balance_top_only (up : Fin n → ℕ) (s : ℤ) (e : Fin n) (he : (e : ℤ) = s - 1)
+    (hhi : ∀ e' : Fin n, (e' : ℤ) = s → m e' = 0)
+    (hsplit : min (up e) (m e) = m e - min (up e) (m e)) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card := by
+  obtain ⟨h3, h4⟩ := no_bottom_at_empty (m := m) up s hhi
+  rw [← card_split_atTop (arrAt (m := m) up s), ← card_split_atTop (depAt (m := m) up s),
+    h3, h4, card_arr_top up s e he, card_dep_top up s e he]
+  omega
+
+/-- **Balance when only the bottom half is populated** (the edge at `s - 1` is empty). -/
+theorem balance_bottom_only (up : Fin n → ℕ) (s : ℤ) (e : Fin n) (he : (e : ℤ) = s)
+    (hlo : ∀ e' : Fin n, (e' : ℤ) = s - 1 → m e' = 0)
+    (hsplit : m e - min (up e) (m e) = min (up e) (m e)) :
+    (arrAt (m := m) up s).card = (depAt (m := m) up s).card := by
+  obtain ⟨h1, h2⟩ := no_top_at_empty (m := m) up s hlo
+  rw [← card_split_atTop (arrAt (m := m) up s), ← card_split_atTop (depAt (m := m) up s),
+    h1, h2, card_arr_bottom up s e he, card_dep_bottom up s e he, hsplit]
+
+/-! ### A non-vacuity witness for `RunInv` with `Zf` non-empty
+
+`shield_law_final` is only worth anything if `RunInv` is satisfiable when `Zf` is
+non-empty -- the previous, globally-quantified `hcov` was **not**, and that is how the
+earlier version of the shield law died.  This section exhibits a configuration:
+four edges with multiplicities `(2,0,0,2)`, ups `(1,0,0,1)`, and the single cut site
+`Zf = {2}` sitting in the empty stretch between them. -/
+
+/-- The witness multiplicities. -/
+def witM : Fin 4 → ℕ := ![2, 0, 0, 2]
+
+/-- The witness ups. -/
+def witUp : Fin 4 → ℕ := ![1, 0, 0, 1]
+
+/-- Only edges `0` and `3` carry crossings. -/
+theorem witM_empty (s : ℤ) (h0 : s ≠ 0) (h3 : s ≠ 3) :
+    ∀ e : Fin 4, (e : ℤ) = s → witM e = 0 := by
+  intro e he
+  fin_cases e <;> simp_all [witM]
+
+/-- Every end of the witness lies on edge `0` or edge `3`. -/
+theorem wit_edge (x : Endpt 4 witM) : edgeOf x = 0 ∨ edgeOf x = 3 := by
+  obtain ⟨e, i, t⟩ := x
+  fin_cases e <;> simp_all [witM, edgeOf] <;> exact i.elim0
+
+/-- **The cut site `2` carries no end.**  Ends sit on edges `0` and `3`, giving sites
+`0, 1, 3, 4`. -/
+theorem wit_no_end_at_two (x : Endpt 4 witM) : siteOf x ≠ 2 := by
+  have h := wit_edge x
+  unfold siteOf
+  rcases h with h | h <;> rw [h] <;> cases hx : atTop x <;> simp
+
+/-- **The witness configuration is balanced at every site.** -/
+theorem wit_hbal : ∀ s : ℤ,
+    (arrAt (m := witM) witUp s).card = (depAt (m := witM) witUp s).card := by
+  intro s
+  by_cases h0 : s = 0
+  · subst h0
+    exact balance_bottom_only witUp 0 ⟨0, by omega⟩ rfl
+      (witM_empty (0 - 1) (by omega) (by omega)) (by decide)
+  by_cases h1 : s = 1
+  · subst h1
+    exact balance_top_only witUp 1 ⟨0, by omega⟩ (by norm_num)
+      (witM_empty 1 (by omega) (by omega)) (by decide)
+  by_cases h3 : s = 3
+  · subst h3
+    exact balance_bottom_only witUp 3 ⟨3, by omega⟩ rfl
+      (witM_empty (3 - 1) (by omega) (by omega)) (by decide)
+  by_cases h4 : s = 4
+  · subst h4
+    exact balance_top_only witUp 4 ⟨3, by omega⟩ (by norm_num)
+      (witM_empty 4 (by omega) (by omega)) (by decide)
+  · exact balance_empty_edges witUp s
+      (witM_empty (s - 1) (by omega) (by omega))
+      (witM_empty s (by omega) (by omega))
+
+/-- **`hcov` holds on the witness**, because the only end strictly left of edge `3`
+is on edge `0`, and the cut site `2` separates the two runs. -/
+theorem wit_hcov : ∀ j : ℤ, (∃ u : Endpt 4 witM, edgeOf u = j) →
+    (∃ v : Endpt 4 witM, edgeOf v < j ∧
+      CutComponents.gz {2} (edgeOf v) = CutComponents.gz {2} j) →
+    ∃ w : Endpt 4 witM, edgeOf w = j - 1 ∧ atTop w = true := by
+  rintro j ⟨u, hu⟩ ⟨v, hlt, heq⟩
+  have hj := wit_edge u
+  have hv := wit_edge v
+  rw [hu] at hj
+  refine absurd heq ?_
+  rcases hj with hj | hj <;> rcases hv with hv | hv <;> rw [hv, hj] <;>
+    first
+      | omega
+      | exact gz_ne_of_between {2} 0 3 2 (by decide) (by omega) (by omega)
+
+/-- **`RunInv` is satisfiable with a non-empty cut set.**
+
+This is the non-vacuity check the earlier, globally-quantified `hcov` failed.  Every
+one of the six clauses holds simultaneously on a four-edge configuration with the
+cut site `2` between the two populated edges. -/
+theorem wit_runInv (ds : Bool → Bool) :
+    ∃ E : Data (Endpt 4 witM), RunInv (m := witM) witUp ds {2} E := by
+  classical
+  obtain ⟨E, hE⟩ := CostMerge.exists_mergesMin siteOf partner
+    (endDataOf (m := witM) witUp ds) (dataOf witUp wit_hbal)
+    (merges_dataOf witUp wit_hbal)
+  refine ⟨E, hE.1.1, hE.1.2.1, hE.1.2.2, ?_, wit_hcov, ?_⟩
+  · intro x _ hmem
+    exact wit_no_end_at_two x (by simpa using hmem)
+  · intro F hp hts hta
+    exact hE.2 F ⟨hp, hts, hta⟩
+
+/-! ### The obstruction: `shield_law_final` is vacuous for `Zf` non-empty
+
+The witness above satisfies all six `RunInv` clauses, but it cannot be fed to
+`shield_law_final`, whose `hocc` asks that every edge of the span `[A, B]` carry an
+end -- and the witness has edges `1` and `2` empty.  That is not an accident of the
+witness.  `hZ` says no arrival sits at a cut site; **balance then forces the two
+edges adjacent to that site to be empty**, so `hocc` can never hold on a span
+containing a cut site.  The offending clause is `hZ` against `hocc`, not `hcov`. -/
+
+/-- **No end at all sits at a site carrying no arrival**, once the site is balanced. -/
+theorem no_end_at_arrivalfree (up : Fin n → ℕ) (z : ℤ)
+    (hbal : (arrAt (m := m) up z).card = (depAt (m := m) up z).card)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ≠ z) :
+    ∀ x : Endpt n m, siteOf x ≠ z := by
+  intro x hx
+  have harr : (arrAt (m := m) up z) = ∅ := by
+    rw [Finset.eq_empty_iff_forall_notMem]
+    intro y hy
+    obtain ⟨hs, ha⟩ := (EndType.mem_arrAt up z y).mp hy
+    exact hZ y ha hs
+  have hdep : (depAt (m := m) up z) = ∅ := by
+    rw [← Finset.card_eq_zero, ← hbal, harr, Finset.card_empty]
+  cases hax : isArrOf up x with
+  | true => exact hZ x hax hx
+  | false =>
+    have : x ∈ depAt (m := m) up z := (EndType.mem_depAt up z x).mpr ⟨hx, hax⟩
+    rw [hdep] at this; exact absurd this (Finset.notMem_empty x)
+
+/-- **The two edges adjacent to an arrival-free balanced site are empty.** -/
+theorem empty_edges_at_arrivalfree (up : Fin n → ℕ) (z : ℤ)
+    (hbal : (arrAt (m := m) up z).card = (depAt (m := m) up z).card)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ≠ z) :
+    ∀ e : Fin n, ((e : ℤ) = z ∨ (e : ℤ) = z - 1) → m e = 0 := by
+  intro e he
+  by_contra hne
+  have hpos : 0 < m e := Nat.pos_of_ne_zero hne
+  rcases he with he | he
+  · exact no_end_at_arrivalfree (m := m) up z hbal hZ ⟨e, ⟨0, hpos⟩, false⟩
+      (by simp [siteOf, edgeOf, atTop, he])
+  · exact no_end_at_arrivalfree (m := m) up z hbal hZ ⟨e, ⟨0, hpos⟩, true⟩
+      (by simp [siteOf, edgeOf, atTop, he])
+
+/-- **`shield_law_final` has no non-vacuous instance with a non-empty cut set.**
+Its `hocc` and `hZ` hypotheses are jointly unsatisfiable once the configuration is
+balanced, because the edge at a cut site must be both occupied and empty. -/
+theorem shield_final_hyps_incompatible (up : Fin n → ℕ) (Zf : Finset ℤ)
+    (hbal : ∀ s : ℤ, (arrAt (m := m) up s).card = (depAt (m := m) up s).card)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (z : ℤ) (hz : z ∈ Zf) (A B : ℤ) (hlow : ∀ w ∈ Zf, A < w) (hhigh : ∀ w ∈ Zf, w ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, edgeOf x = t) : False := by
+  obtain ⟨x, hx⟩ := hocc z (by have := hlow z hz; omega) (hhigh z hz)
+  have : m x.edge = 0 :=
+    empty_edges_at_arrivalfree (m := m) up z (hbal z)
+      (fun y hy hs => hZ y hy (hs ▸ hz)) x.edge (Or.inl hx)
+  have hlt := x.idx.isLt
+  omega
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.hcov_vacuous_at
-#print axioms ConfigLoop.gz_ne_of_between
+#print axioms ConfigLoop.no_end_at_arrivalfree
+#print axioms ConfigLoop.empty_edges_at_arrivalfree
+#print axioms ConfigLoop.shield_final_hyps_incompatible

@@ -2063,3 +2063,43 @@ log was wrong and is corrected here rather than left standing.
 Whether it is worth doing is a separate question. M4b is the reverse shield inequality
 for the combinatorial half of paper2; it does not bear on H1, H2 or M9, which are where
 U's conditionality actually lives.
+
+## 2026-09-03 — BLOCK 4: shield_law_final is VACUOUS for Z non-empty (RETRACTION)
+
+Built the `Z != 0` witness that was next step #1. Result is negative, and proved so.
+
+New in `ConfigLoop.lean` (all kernel-clean, `#print axioms` = propext/Classical.choice/Quot.sound):
+  no_bottom_at_empty, no_top_at_empty, balance_empty_edges,
+  balance_top_only, balance_bottom_only    -- balance keyed on EMPTY EDGES, not on
+                                              absent edge INDICES (the old
+                                              balance_left/right could not reach a
+                                              site whose neighbouring edge had m = 0)
+  witM = ![2,0,0,2], witUp = ![1,0,0,1], witM_empty, wit_edge,
+  wit_no_end_at_two, wit_hbal, wit_hcov,
+  wit_runInv        -- ALL SIX RunInv clauses hold simultaneously with Zf = {2}
+
+So `RunInv` itself is satisfiable with a non-empty cut set: `hcov` in its run-local
+form is fine, and the 2026-08-23 repair of `hcov` was correct.
+
+BUT the witness cannot be fed to `shield_law_final`, and no configuration can:
+
+  no_end_at_arrivalfree        -- a balanced site with no arrival carries no end at all
+  empty_edges_at_arrivalfree   -- hence both adjacent edges have m = 0
+  shield_final_hyps_incompatible -- hZ + hbal + hocc + (Zf nonempty) |- False
+
+Reason. `hZ` says no arrival sits at a site of `Zf`. Balance then kills the
+departures too, so the site carries no end; a top end of edge z-1 and a bottom end
+of edge z would both sit there, so `m(z-1) = m(z) = 0`. But `hlow`/`hhigh` put z
+inside `[A,B]`, and `hocc` demands edge z be occupied. Contradiction.
+
+CONSEQUENCE: `shield_law_final` states `walkCount E = Zf.card + 1` but only ever
+applies with `Zf = 0`, where it says `walkCount = 1` -- i.e. it is `thm_nogap` with
+extra hypotheses, not the shield law. **The shield law is NOT proved.** The atom goes
+back to OPEN. The previous version died on `hcov`; this one dies on `hZ` vs `hocc`,
+which is a different clause and was invisible until the witness was actually built.
+
+WHAT THIS SAYS ABOUT THE MATH, not just the Lean: `hZ` is too strong. The paper's
+cut sites carry no *crossing ends*, but the walk still passes through them by
+turning; the span condition `hocc` is about the relaxed-optimal *span*, which in the
+paper is measured on a different index than the edge index used here. One of the two
+has to be restated. Until then H1b (reverse shield) is OPEN, not PARTIAL.
