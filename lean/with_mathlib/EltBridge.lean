@@ -6765,3 +6765,32 @@ theorem phi_not_absorbed_without_parity :
 #print axioms phi_eq_f
 #print axioms phi_absorbed
 #print axioms phi_not_absorbed_without_parity
+
+/-!
+### The shield certificate away from minimal crossing counts
+
+`sitecost`'s `shield` mode fixed the crossing counts at their minimum,
+`m_j = |a_j|` (or `2` on a gap edge), and took no `lambda`, unlike every other
+mode.  So it certified the shield law only at minimal `m`.
+
+Both closed forms are in fact `m`-blind in the following precise sense: the
+predicted relaxed length is `sum m + sum siteCost`, where the site costs depend
+on the deposits `alpha`, `beta`, `Phi` and not on `m` at all, so adding a
+crossing pair to an edge moves the prediction by exactly `2`; and the predicted
+defect counts interior sites with `alpha = beta = Phi = 0`, which does not
+mention `m`.  That is what makes the extension a genuine test of the
+*enumeration* side rather than of the formula.
+-/
+
+/-- Adding one crossing pair to edge `j` moves the predicted relaxed length by
+exactly `2`, since the site costs do not see `m`. -/
+theorem pred_len_shift (msum sitesum : ℤ) :
+    (msum + 2) + sitesum = (msum + sitesum) + 2 := by ring
+
+-- The companion statement, that the predicted defect does not mention `m`, is
+-- not recorded as a theorem: with `m` absent from the count, any such statement
+-- is `X = X` with an unused hypothesis, which is exactly the vacuity this audit
+-- is looking for elsewhere.  It is a syntactic observation about the formula,
+-- and it is left as prose.
+
+#print axioms pred_len_shift

@@ -881,7 +881,7 @@ fn mode_delete(amax: i64, lam: i64) {
 // the second of which is the shield law: an interior gap run of length L has
 // exactly L-1 such sites, so it contributes L-1.
 // ---------------------------------------------------------------------------
-fn mode_shield(nmax: usize, amax: i64) {
+fn mode_shield(nmax: usize, amax: i64, lam: i64) {
     let mut tested = 0u64;
     let mut bad_len = 0u64;
     let mut bad_c = 0u64;
@@ -912,8 +912,14 @@ fn mode_shield(nmax: usize, amax: i64) {
                             let vd_class = (if delta == 1 { 2usize } else { 0usize })
                                 + (if eps == 1 { 0 } else { 1 });
                             let site0 = (0 - lo) as usize; // index of site 0 among lo..hi
-                            // crossing counts
-                            let m: Vec<i64> = a.iter().map(|&x| if x == 0 { 2 } else { x.abs() }).collect();
+                            // crossing counts.  The minimal choice is |a| (or 2 on a
+                            // gap edge); `lam` adds up to that many extra crossing
+                            // PAIRS, distributed over the edges in every way, so the
+                            // law is tested away from minimal m as well.
+                            let mbase: Vec<i64> = a.iter().map(|&x| if x == 0 { 2 } else { x.abs() }).collect();
+                            let mut extra = vec![0i64; n];
+                            'mloop: loop {
+                            let m: Vec<i64> = (0..n).map(|i| mbase[i] + 2 * extra[i]).collect();
                             // closed-form predictions
                             let mut pred_len: i64 = m.iter().sum();
                             let mut pred_c: i64 = 0;
@@ -989,6 +995,15 @@ fn mode_shield(nmax: usize, amax: i64) {
                                 if shown < 8 { shown += 1;
                                     println!("   CYC a={:?} lo={} eps={} delta={} true_c={} pred_c={}", a, lo, eps, delta, best_cyc, pred_c); }
                             }
+                            // advance the extra-crossing odometer, sum <= lam
+                            let mut i = 0;
+                            loop {
+                                if i == n { break 'mloop; }
+                                extra[i] += 1;
+                                if extra.iter().sum::<i64>() <= lam { break; }
+                                extra[i] = 0; i += 1;
+                            }
+                            }
                         }
                     }
                 }
@@ -1004,6 +1019,7 @@ fn mode_shield(nmax: usize, amax: i64) {
             }
         }
     }
+    println!("[shield] extra crossing pairs allowed above minimal: {}", lam);
     println!("[shield] bulk configurations with k=0, up to {} edges, even deposits |a| <= {}, all four marker data",
              nmax, amax);
     println!("[shield] {} configurations enumerated exhaustively (every sign split, every site bijection); longest gap run exercised = {}", tested, maxrun);
@@ -1056,7 +1072,7 @@ fn main() {
         "marker" => mode_marker(p1, p2),
         "universal" => mode_universal(p1, p2),
         "delete" => mode_delete(p1, p2),
-        "shield" => mode_shield(p1 as usize, p2),
+        "shield" => { let p3: i64 = args.get(4).and_then(|s| s.parse().ok()).unwrap_or(0); mode_shield(p1 as usize, p2, p3) }
         "dbg" => mode_dbg(),
         "probe" => { let p3: i64 = args.get(4).and_then(|s| s.parse().ok()).unwrap_or(1); probe(p1, 0, p2, p3, true, None, 3); }
         _ => {

@@ -5301,3 +5301,44 @@ unconditional.
 So: `universal` was sound but under-stated, and the reason it is sound is the
 same parity mechanism that made H4 silently empty.  That mechanism has now bitten
 twice in this tool.
+
+## 2026-09-03 — BLOCK 130: the shield certificate tested only minimal m
+
+`shield` is the mode carrying M2.  Same audit.
+
+**Non-vacuity: passes.**  1248 configurations at 4 edges, and the mode already
+reports the longest gap run it actually exercised (2 there, 3 at 5 edges),
+which is the honest form of the H4 disclosure the other modes lacked.
+
+**The restriction.**  Its crossing counts were fixed at the minimum,
+
+    let m = a.map(|x| if x == 0 { 2 } else { x.abs() });
+
+and the mode took no `lambda`, unlike `interior`, `marker` and `universal`,
+which all sweep `m` up to `minimal + 2*lambda`.  So the shield law was certified
+at minimal crossing counts only.
+
+This is a test of the enumeration, not of the formula, because both closed forms
+are `m`-blind: the site costs depend on `alpha`, `beta`, `Phi` and never on `m`,
+so a crossing pair moves the predicted length by exactly 2 (`pred_len_shift`),
+and the predicted defect counts interior sites with `alpha=beta=Phi=0`, which
+does not mention `m` at all.  What was untested is whether the *minimum over
+realizations* keeps up.
+
+**Repaired.**  `shield <edges> <|a|max> [lambda]` now distributes up to `lambda`
+extra crossing pairs over the edges in every way.  `lambda=0` reproduces the old
+run exactly (1248 configurations), so the extension is a strict superset.
+
+    shield 4 4 0     1248 configurations   0 / 0 exceptions   (regression)
+    shield 4 4 1     5984 configurations   0 / 0 exceptions
+    shield 4 2 2     2864 configurations   0 / 0 exceptions
+    shield 5 4 1    39104 configurations   0 / 0 exceptions   gap run 3
+
+So M2's certificate now covers non-minimal crossing counts, and the restriction
+turned out to be harmless.  Unlike the `universal` finding, nothing was
+overstated here -- the mode was simply narrower than its verdict line suggested.
+
+A note on method: the first draft of this entry carried a companion Lean theorem
+asserting the defect is `m`-blind.  With `m` absent from the count that statement
+is `X = X` with an unused hypothesis -- the exact vacuity this audit exists to
+find.  It was removed rather than shipped, and the point is left as prose.
