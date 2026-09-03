@@ -8662,6 +8662,28 @@ theorem headOk_of_weight_ne_zero (x : ℤ) (g : ℤ → FlagState) (n : ℕ) (A 
       show flagHeadVec x (g A) * _ * _ = 0
       rw [hz]; ring
 
+/-! ### The sum over configurations is the sum over all paths
+
+Composing `sum_configs_eq_sum_flag_paths` (BLOCK 249) with `Finset.sum_subset`.  The
+vanishing on the complement is a hypothesis rather than a theorem, and that is not a gap
+being hidden: for a general `C` the complement can contain guarded paths whose
+configuration simply is not in `C`.  When `C` is all configurations of the span, BLOCK 269
+supplies it. -/
+
+theorem sum_configs_eq_sum_all_paths (x : ℤ) {A : ℤ} {m : ℕ}
+    [DecidableEq (SpanData A (A + m))]
+    (C : Finset (SpanData A (A + m))) (T : Finset (List FlagState))
+    (hsub : C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)) ⊆ T)
+    (hvan : ∀ L ∈ T, L ∉ C.image (fun S => (A :: idxList A m).map (flagOf S.toPath)) →
+      pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVec x) (flagTailVec x) L = 0) :
+    ∑ S ∈ C, x ^ S.toPath.lR
+      = ∑ L ∈ T,
+          pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVec x) (flagTailVec x) L := by
+  rw [sum_configs_eq_sum_flag_paths x C]
+  exact Finset.sum_subset hsub hvan
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16368,3 +16390,4 @@ end EltBridge
 #print axioms EltBridge.flagPath_eq_of_config
 #print axioms EltBridge.guards_of_weight_ne_zero
 #print axioms EltBridge.headOk_of_weight_ne_zero
+#print axioms EltBridge.sum_configs_eq_sum_all_paths

@@ -9116,3 +9116,25 @@ path of a configuration and lies in the image.
 **[Rule 0] VERIFIED.**  Both halves of the sum comparison's hypothesis are now available:
 paths in the image contribute their configuration's weight, and paths outside it contribute
 zero.
+
+## 2026-09-04 — BLOCK 270: the sum over configurations is the sum over all paths
+
+    sum_configs_eq_sum_all_paths   the comparison, composed
+
+0 sorry, clean on the first build.
+
+`sum_configs_eq_sum_flag_paths` (BLOCK 249) turns the left side into a sum over the
+configurations' own paths; `Finset.sum_subset` extends it to any larger collection whose
+complement contributes nothing.
+
+**The vanishing is a hypothesis here, and that is not a gap being hidden.**  For a general
+`C` the complement can contain guarded paths whose configuration simply is not in `C`, and
+then the two sums genuinely differ.  When `C` is ALL configurations of the span, BLOCK 269
+supplies the hypothesis: a contributing path satisfies every guard, hence is realisable,
+hence lies in the image.
+
+**[Rule 0] Status of (M3).**  VERIFIED: the transfer decomposition (M3a), the formal
+convergence and path-sum identity of (M3b), the bijection between configurations and
+guarded paths in both directions, the extension and its guard, and this comparison.  What
+is NOT written is the instantiation at `C` = all configurations of the span, which needs
+the `Finset` of those -- available from `finite_degree_le` (BLOCK 222) but not yet wired.
