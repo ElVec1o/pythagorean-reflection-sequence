@@ -555,6 +555,47 @@ theorem VEndpt.hsW_fails_at_zero {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ
   simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTop] at h
   omega
 
+/-! ### The residual condition halves
+
+With the disjunctive form, the virtual **arrival** discharges its obligation for free:
+`atTop (inr false) = false`, so it is already a bottom and never needs the site-edge
+relation.  BLOCK 14's condition `w != 0` disappears.
+
+`hsX` is vacuous for virtual ends once `bnd` exceeds the walk's leftmost edge, which
+it does whenever the walk contains a real end -- and it does, since the virtual
+arrival turns to a real departure.
+
+What remains is the virtual **departure**: `atTop (inr true) = true`, so it needs the
+second disjunct, and it is in scope exactly when the walk's leftmost site is `kstar`.
+One condition, not two. -/
+
+/-- **`hsW` holds for the extended type whenever the leftmost site avoids `kstar`.**
+The site-`0` case of BLOCK 14 is gone: the virtual arrival is a bottom. -/
+theorem VEndpt.hsW_disj {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ) (w : ℤ)
+    (hk : w ≠ kstar) :
+    ∀ x : VEndpt n mm, VEndpt.site kstar x = w →
+      VEndpt.atTop x = false ∨
+        VEndpt.site kstar x
+          = VEndpt.edgeOf bnd x + (if VEndpt.atTop x then 1 else 0) := by
+  intro x hx
+  cases x with
+  | inl y => exact Or.inr (VEndpt.hsite_real kstar bnd y)
+  | inr b =>
+    cases b
+    · exact Or.inl rfl
+    · exact absurd (by simpa [VEndpt.site] using hx.symm) hk
+
+/-- **`hsX` is vacuous for the virtual ends** once `bnd` is beyond the leftmost edge. -/
+theorem VEndpt.hsX_beyond {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ) (w : ℤ)
+    (hb : w < bnd) :
+    ∀ x : VEndpt n mm, VEndpt.edgeOf bnd x = w → VEndpt.atTop x = false →
+      VEndpt.site kstar x
+        = VEndpt.edgeOf bnd x + (if VEndpt.atTop x then 1 else 0) := by
+  intro x hx _
+  cases x with
+  | inl y => exact VEndpt.hsite_real kstar bnd y
+  | inr b => exact absurd hx (by simp [VEndpt.edgeOf]; omega)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -582,3 +623,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.hsite_fails
 #print axioms EltBridge.VEndpt.hsW_of_avoids
 #print axioms EltBridge.VEndpt.hsW_fails_at_zero
+#print axioms EltBridge.VEndpt.hsW_disj
+#print axioms EltBridge.VEndpt.hsX_beyond

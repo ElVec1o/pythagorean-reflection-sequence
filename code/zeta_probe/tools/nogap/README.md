@@ -2404,3 +2404,39 @@ STATUS OF THE THREE READINGS OF THIS REFACTOR, in order:
 
 The third is the one with a proof on both sides (hsW_of_avoids and hsW_fails_at_zero),
 so it is the one to trust.
+
+## 2026-09-03 — BLOCK 15: the residual condition halves; one condition left
+
+BLOCK 14 left two side conditions on the walk's leftmost site: != 0 and != kstar.
+The first is now gone, for a reason that was sitting in plain sight.
+
+`bottom_of_end_at_wLo` exists ONLY to prove `atTop a = false`. If a is already a
+bottom, the site-edge relation is not needed at all. So the hypothesis at the arrival
+is a DISJUNCTION:
+
+  WalkSupport.maximiser_has_bottom_arrival_disj
+      hsW : ... -> atTop x = false OR (site x = edge x + [atTop x])
+
+And the virtual ARRIVAL is a bottom arrival (atTop = false, isArr = true), so it takes
+the first disjunct and never touches the second:
+
+  EltBridge.VEndpt.hsW_disj    -- holds whenever the leftmost site avoids kstar
+                                  (axiom-free)
+  EltBridge.VEndpt.hsX_beyond  -- hsX is vacuous for virtual ends once bnd exceeds the
+                                  walk's leftmost edge, which it does whenever the walk
+                                  contains a real end -- and it does, since the virtual
+                                  arrival turns to a real departure
+
+REMAINING: the virtual DEPARTURE. atTop (inr true) = true is forced by hpt (the two
+virtual ends must have opposite tops), so it needs the second disjunct, and it is in
+scope exactly when the walk's leftmost site is kstar.
+
+So the frontier is now ONE condition: the walk's leftmost site is not kstar. Down from
+two, and the surviving one is the departure end, not the arrival.
+
+NOTE ON DIRECTION: bnd is a free parameter and I tried several placements (bnd large,
+bnd = kstar-1, bnd = -1, with both assignments of atTop). Every placement leaves
+exactly one condition, because hpt forces one of the two virtual ends to be a top and
+that one always needs the site-edge relation. The condition can be MOVED between the
+two ends but not removed by choosing bnd. That is worth recording so it is not
+re-attempted.

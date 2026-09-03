@@ -423,6 +423,39 @@ theorem maximiser_has_bottom_arrival_local (edgeOf siteOf : α → ℤ)
   exact bottom_of_end_at_wLo_local edgeOf siteOf atTop (graph D) z a
     (hsW a (hxr.trans hxa) hasW) (hxr.trans hxa) hasW
 
+/-- **The sharpest form: `hsite` is only needed where the end is *not already* a
+bottom.**
+
+`bottom_of_end_at_wLo_local` exists to prove `atTop a = false`.  If `a` is already a
+bottom, nothing is needed.  So the hypothesis at the arrival is a *disjunction*, and
+an end type whose non-local ends happen to be bottoms satisfies it for free.
+
+This matters: the virtual arrival of a lamp configuration is a bottom arrival, so it
+discharges the first disjunct and never needs the site-edge relation. -/
+theorem maximiser_has_bottom_arrival_disj (edgeOf siteOf : α → ℤ)
+    (atTop isArr : α → Bool) (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e)
+    (z : α)
+    (hsX : ∀ x, (graph D).Reachable z x → edgeOf x = wLo edgeOf (graph D) z →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsW : ∀ x, (graph D).Reachable z x → siteOf x = wLo edgeOf (graph D) z →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0)) :
+    ∃ a : α, (graph D).Reachable z a ∧ siteOf a = wLo edgeOf (graph D) z ∧
+      atTop a = false ∧ isArr a = true := by
+  obtain ⟨x, hxr, hxe, hxb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  have hxs : siteOf x = wLo edgeOf (graph D) z := by
+    have h := hsX x hxr hxe hxb; rw [hxb] at h; simp at h; omega
+  obtain ⟨a, hasite, haarr, hxa⟩ := arrival_beside siteOf isArr D hts hta x
+  have hasW : siteOf a = wLo edgeOf (graph D) z := by rw [hasite, hxs]
+  refine ⟨a, hxr.trans hxa, hasW, ?_, haarr⟩
+  rcases hsW a (hxr.trans hxa) hasW with hb | hs
+  · exact hb
+  · exact bottom_of_end_at_wLo_local edgeOf siteOf atTop (graph D) z a hs
+      (hxr.trans hxa) hasW
+
 /-- `s*`: the largest leftmost edge over all walks. -/
 noncomputable def maxWLo (edgeOf : α → ℤ) (G : SimpleGraph α) (z₀ : α) : ℤ :=
   Finset.univ.sup' ⟨z₀, Finset.mem_univ z₀⟩ (fun z => wLo edgeOf G z)
@@ -567,3 +600,4 @@ theorem maxWLoOn_spec (edgeOf : α → ℤ) (G : SimpleGraph α)
 #print axioms WalkSupport.shared_ends_at_wLo_local
 #print axioms WalkSupport.bottom_of_end_at_wLo_local
 #print axioms WalkSupport.maximiser_has_bottom_arrival_local
+#print axioms WalkSupport.maximiser_has_bottom_arrival_disj
