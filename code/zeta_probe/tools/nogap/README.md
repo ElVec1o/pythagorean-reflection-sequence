@@ -6413,3 +6413,29 @@ NOT DONE: instantiation.  `R` has to become the walk-graph adjacency on strands,
 `ReflTransGen` has to be matched to `WalkGraph.Reachable`, and the components counted.
 That is mechanical but not written.  And the argument is specific to `mu = 2` -- BLOCK
 158's 5072 failures at `mu = 4` are exactly the absence of the two-chain structure.
+
+## 2026-09-03 — BLOCK 161: from the strand chain to the walk graph
+
+`run_pairwise` lives on strands and concludes in `Relation.ReflTransGen`;
+`RunsConnected` lives on ends and concludes in `SimpleGraph.Reachable`.  The bridge:
+
+    reachable_of_reflTransGen   a chain whose steps are each realisable in the graph is
+                                a walk in the graph  (axiom-free)
+    run_connected_in_graph      run_pairwise transferred: any two strands of a run are
+                                joined in the walk graph itself
+    turn_step_realisable        the step hypothesis is not an extra assumption -- an end
+                                and its turn are adjacent, which is reachable_turn
+
+So the chain from `local_trichotomy` to run connectivity is complete as abstract
+statements: minimality makes the passes and the boundary bounce available
+(BLOCKS 153-156), the glue makes them one turn (BLOCK 157), the two chains connect the
+run (BLOCK 160), and the transfer moves that into the walk graph (here).
+
+NOT DONE, and it is the same three items each time they are named: define `f` taking a
+strand to a representative end; derive `hup`, `hdn`, `hjoin` from the concrete pass and
+bounce turns at `mu = 2`; and count the runs to reach `walkCount <= |Z| + 1`.  The first
+two are bookkeeping against `EndType.Endpt`; the third needs `walkCount_le_runs_blk`,
+whose `hsep` this chain is built to supply.
+
+And the whole chain is `mu = 2` only.  BLOCK 158's 5072 failures at `mu = 4` are the
+absence of the two-chain structure, so none of this lifts to the general case.

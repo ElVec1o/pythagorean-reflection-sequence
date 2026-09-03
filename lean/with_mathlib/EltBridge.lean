@@ -8641,3 +8641,49 @@ end EltBridge
 
 #print axioms EltBridge.run_one_component
 #print axioms EltBridge.run_pairwise
+
+namespace EltBridge
+
+/-! ### From the strand chain to the walk graph
+
+`run_pairwise` lives on strands, `(edge, up?)`, and concludes in `Relation.ReflTransGen`.
+`RunsConnected` lives on ends and concludes in `SimpleGraph.Reachable`.  The bridge is
+that reachability is transitive and reflexive, so any relation whose steps are
+realisable as walks transfers along the chain. -/
+
+/-- **Transfer**: a chain of steps each realisable in the graph is a walk in the graph. -/
+theorem reachable_of_reflTransGen {α β : Type*} (G : SimpleGraph β)
+    (R : α → α → Prop) (f : α → β)
+    (hR : ∀ a b, R a b → G.Reachable (f a) (f b))
+    {x y : α} (h : Relation.ReflTransGen R x y) : G.Reachable (f x) (f y) := by
+  induction h with
+  | refl => exact SimpleGraph.Reachable.refl _
+  | tail _ hstep ih => exact ih.trans (hR _ _ hstep)
+
+/-- **The run is connected in the walk graph.**  Instantiating `run_pairwise` through
+the transfer: if each strand step is realisable as a walk -- which the passes and the
+boundary bounce supply, since an end and its turn are adjacent (`reachable_turn`) -- then
+any two strands of the run are joined in the walk graph itself. -/
+theorem run_connected_in_graph {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (f : ℤ × Bool → α) (lo : ℤ) (n : ℕ)
+    (R : ℤ × Bool → ℤ × Bool → Prop)
+    (hR : ∀ a b, R a b → (WalkGraph.graph D).Reachable (f a) (f b))
+    (hsymm : ∀ a b, R a b → R b a)
+    (hup : ∀ k : ℕ, k < n → R (lo + k, true) (lo + (k + 1 : ℕ), true))
+    (hdn : ∀ k : ℕ, k < n → R (lo + k, false) (lo + (k + 1 : ℕ), false))
+    (hjoin : R (lo, true) (lo, false))
+    (j j' : ℕ) (hj : j ≤ n) (hj' : j' ≤ n) (b b' : Bool) :
+    (WalkGraph.graph D).Reachable (f (lo + j, b)) (f (lo + j', b')) :=
+  reachable_of_reflTransGen (WalkGraph.graph D) R f hR
+    (run_pairwise lo n R hsymm hup hdn hjoin j j' hj hj' b b')
+
+/-- The step hypothesis `hR` is not an extra assumption in the intended instantiation:
+a turn step is always realisable, since an end and its turn are adjacent. -/
+theorem turn_step_realisable {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (x : α) : (WalkGraph.graph D).Reachable x (D.t x) :=
+  reachable_turn D x
+
+end EltBridge
+
+#print axioms EltBridge.reachable_of_reflTransGen
+#print axioms EltBridge.run_connected_in_graph
