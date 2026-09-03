@@ -8951,3 +8951,19 @@ The six cases of BLOCKS 255-259 dispatch by trichotomy on `j` against `A - 1`, t
 of `Z`** -- which is the hypothesis `guarded_of_flag` (BLOCK 243) needs, and hence
 `exists_config_of_flag`.  The chain from a finite guarded path to a configuration is now
 complete end to end.
+
+## 2026-09-04 — BLOCK 261: the extension's markers, everywhere
+
+    extendFn_arrv   the arrival marker is `vArr` at EVERY index, not just on the span
+    extendFn_depv   and the departure marker stays in {0,1}
+
+0 sorry, both clean on the first build.
+
+`exists_config_of_flag` (BLOCK 243) wants these at every index of `Z`, while a path supplies
+them only on its span.  Off the span both extension states have zero markers, and that is
+correct: the arrival fires only at `0`, which lies on the span, so every index off the span
+has `vArr = 0`; and the departure marker past the right end is the one `extState` carries,
+which is `|fcur B|` and so is `0` or `1` whenever the travel indicator is.
+
+**[Rule 0] VERIFIED.**  Two more of `exists_config_of_flag`'s hypotheses are now available
+for an arbitrary guarded path.

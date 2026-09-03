@@ -8360,6 +8360,44 @@ theorem flagStepB_extendFlag (A B : ℤ) (g : ℤ → FlagState) (h : FlagPath A
     exact flagStepB_extendFlag_beyond g A B hA hB h.epsAB h.delAB h.epsv1
   · exact flagStepB_extendFlag_far g A B hA hB h.epsv1 j (Or.inl (by omega))
 
+/-! ### The extension's markers, everywhere
+
+`exists_config_of_flag` (BLOCK 243) wants `arrv` and `depv` at every index of `Z`, while a
+path supplies them only on its span.  Off the span both extension states have zero markers,
+and that is correct: the arrival fires only at `0`, which lies on the span, and the
+departure marker past the right end is the one `extState` carries. -/
+
+theorem extendFn_arrv (g : ℤ → LocalState) (A B : ℤ) (hA : A ≤ 0) (hB : 0 ≤ B)
+    (hspan : ∀ j : ℤ, A ≤ j → j ≤ B → (g j).arr = SiteCost.vArr j) :
+    ∀ j : ℤ, (extendFn g A B j).arr = SiteCost.vArr j := by
+  intro j
+  unfold extendFn
+  by_cases h1 : A ≤ j ∧ j ≤ B
+  · rw [if_pos h1]; exact hspan j h1.1 h1.2
+  · rw [if_neg h1]
+    by_cases h2 : j = B + 1
+    · rw [if_pos h2]
+      show (0 : ℕ) = SiteCost.vArr j
+      unfold SiteCost.vArr; rw [if_neg (by omega)]
+    · rw [if_neg h2]
+      show (0 : ℕ) = SiteCost.vArr j
+      unfold SiteCost.vArr; rw [if_neg (by omega)]
+
+theorem extendFn_depv (g : ℤ → LocalState) (A B : ℤ)
+    (hspan : ∀ j : ℤ, A ≤ j → j ≤ B → (g j).dep = 0 ∨ (g j).dep = 1)
+    (hfcur : (g B).fcur = 0 ∨ (g B).fcur = 1 ∨ (g B).fcur = -1) :
+    ∀ j : ℤ, (extendFn g A B j).dep = 0 ∨ (extendFn g A B j).dep = 1 := by
+  intro j
+  unfold extendFn
+  by_cases h1 : A ≤ j ∧ j ≤ B
+  · rw [if_pos h1]; exact hspan j h1.1 h1.2
+  · rw [if_neg h1]
+    by_cases h2 : j = B + 1
+    · rw [if_pos h2]
+      show (g B).fcur.natAbs = 0 ∨ (g B).fcur.natAbs = 1
+      omega
+    · rw [if_neg h2]; exact Or.inl rfl
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16051,3 +16089,5 @@ end EltBridge
 #print axioms EltBridge.flagStepB_extendFlag_in
 #print axioms EltBridge.extendFlag_at_span
 #print axioms EltBridge.flagStepB_extendFlag
+#print axioms EltBridge.extendFn_arrv
+#print axioms EltBridge.extendFn_depv
