@@ -8857,3 +8857,58 @@ theorem hedge_of_turnInv {α : Type*} [Fintype α] [DecidableEq α]
 end EltBridge
 
 #print axioms EltBridge.hedge_of_turnInv
+
+namespace EltBridge
+
+/-! ### The run decomposition matches `runIndexG`
+
+`runIndexG pos Zf x` is `gz Zf (pos x)`, and `gz Zf t` counts the cut sites at or below
+`t`.  So two ends carry the same run index exactly when no cut site lies strictly
+between their edges -- which is precisely the interval `run_connected_of_turn_structure`
+runs along.  That is the last input. -/
+
+/-- **Equal run index means no cut site in between.**  If a cut site lay in `(a, b]` it
+would be counted by `gz` at `b` and not at `a`. -/
+theorem no_cut_between_of_gz_eq (Zf : Finset ℤ) (a b : ℤ) (hab : a ≤ b)
+    (h : CutComponents.gz Zf a = CutComponents.gz Zf b) :
+    ∀ s : ℤ, a < s → s ≤ b → s ∉ Zf := by
+  classical
+  intro s hsa hsb hs
+  have hsub : Zf.filter (fun z => z ≤ a) ⊆ Zf.filter (fun z => z ≤ b) := by
+    intro z hz
+    rw [Finset.mem_filter] at hz ⊢
+    exact ⟨hz.1, le_trans hz.2 hab⟩
+  have hss : Zf.filter (fun z => z ≤ a) ⊂ Zf.filter (fun z => z ≤ b) := by
+    rw [Finset.ssubset_iff_of_subset hsub]
+    refine ⟨s, ?_, ?_⟩
+    · rw [Finset.mem_filter]; exact ⟨hs, hsb⟩
+    · rw [Finset.mem_filter]
+      rintro ⟨-, hle⟩
+      omega
+  have hcard := Finset.card_lt_card hss
+  unfold CutComponents.gz at h
+  omega
+
+/-- **And no cut site in between means equal run index.**  Stepping across a non-cut
+site leaves `gz` unchanged (`gz_step_eq`), so it is constant along the interval. -/
+theorem gz_eq_of_no_cut_between (Zf : Finset ℤ) (a : ℤ) (n : ℕ)
+    (h : ∀ s : ℤ, a < s → s ≤ a + n → s ∉ Zf) :
+    CutComponents.gz Zf (a + n) = CutComponents.gz Zf a := by
+  induction n with
+  | zero => simp
+  | succ k ih =>
+    have hstep : CutComponents.gz Zf (a + (k + 1 : ℕ)) = CutComponents.gz Zf (a + k) := by
+      have hnot : a + ((k : ℤ) + 1) ∉ Zf := by
+        refine h _ (by omega) (by push_cast; omega)
+      have := CutComponents.gz_step_eq Zf hnot
+      push_cast
+      rw [show (a : ℤ) + ((k : ℤ) + 1) - 1 = a + k by ring] at this
+      push_cast at this ⊢
+      exact this
+    rw [hstep]
+    exact ih (fun s hs1 hs2 => h s hs1 (by push_cast at hs2 ⊢; omega))
+
+end EltBridge
+
+#print axioms EltBridge.no_cut_between_of_gz_eq
+#print axioms EltBridge.gz_eq_of_no_cut_between

@@ -6509,3 +6509,32 @@ So M4b's upper bound at `mu = 2` is down to ONE input: identifying the run decom
 that `run_connected_of_turn_structure` uses with `runIndexG`.  Every other link --
 local trichotomy, glue, two-chain connectivity, transfer, instantiation, the lift to all
 ends, and now hedge -- is proved.
+
+## 2026-09-03 — BLOCK 165: the run decomposition matches runIndexG
+
+`runIndexG pos Zf x` is `gz Zf (pos x)`, and `gz Zf t` counts the cut sites at or below
+`t`.  So two ends carry the same run index exactly when no cut site lies strictly
+between their edges -- which is precisely the interval the two-chain argument runs
+along.
+
+    no_cut_between_of_gz_eq   equal run index  ->  no cut site in (a, b]
+                              (a cut site there would be counted at b and not at a)
+    gz_eq_of_no_cut_between   no cut site in (a, a+n]  ->  equal run index
+                              (gz_step_eq, stepping across each non-cut site)
+
+Both 0 sorry.  That was the last input.
+
+**Every input to M4b's upper bound at `mu = 2` is now proved**: the local trichotomy
+making passes and the boundary bounce available (153-156), the glue (157), the
+two-chain connectivity (160), its transfer into the walk graph (161), its instantiation
+on the concrete turn (162), the lift from strand representatives to all ends (163),
+`hedge` (164), and the run-decomposition matching (here).
+
+What is left is assembly, not content: instantiate the chain on `EndType.Endpt` with
+`m = 2`, define `up` and `dn` as the two strands' bottom ends, and check that the
+minimal turn `local_trichotomy` selects really does pass at each non-cut site and bounce
+at each cut site in the sense `run_connected_of_turn_structure` asks.  That is
+bookkeeping against the concrete types.
+
+Still `mu = 2` only.  At `mu = 4` the two-chain structure is absent and BLOCK 158's
+5072 of 8192 failures stand.
