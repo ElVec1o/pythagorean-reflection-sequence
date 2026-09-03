@@ -3896,3 +3896,23 @@ REMAINING for HasInitialTurnInv: build the side-respecting involution from these
 equalities (two applications of TurnBuild.exists_involution_of_card_eq, on disjoint
 supports, combined), and show the resulting datum has hturn. The mathematical input is
 now proved; what is left is the construction.
+
+## 2026-09-03 — BLOCK 72: two involutions on disjoint supports combine
+
+  exists_involution_two -- given balanced pairs (A1,D1) and (A2,D2) with disjoint
+                           supports, an involution exchanging each pair and fixing
+                           everything else
+
+Written generically over a Fintype. The construction is `if x in A1 ∪ D1 then t1 x else
+t2 x`; involutivity needs that t1 maps A1 ∪ D1 into itself and t2 maps A2 ∪ D2 into
+itself, so the branch taken is the same for x and its image -- which is where the
+disjointness is used, and the only place it is.
+
+This is the missing constructor for the zero-cost plan at a cut site. BLOCK 71 proved
+the two halves balance separately (sided_balance_of_tr_zero); this supplies the
+involution that respects the split.
+
+First try, and it is the longest single proof written tonight without a strike -- six
+obligations, each discharged by pushing the membership through the same two mapping
+facts. Stating the six conclusions explicitly in the signature rather than bundling them
+is what made it mechanical: each one names exactly which mapping fact it needs.

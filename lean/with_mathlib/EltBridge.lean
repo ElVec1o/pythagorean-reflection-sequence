@@ -4264,6 +4264,70 @@ theorem sided_balance_of_tr_zero {n : ℕ} {m : Fin n → ℕ} (up : Fin n → �
   · rw [ha, hb]; omega
   · rw [hc, hd]; omega
 
+/-! ### Combining two involutions on disjoint supports
+
+At a cut site the top and bottom halves each balance, so each admits an involution
+exchanging its arrivals and departures.  Combining them gives a turn that never crosses
+sides -- a zero-cost plan. -/
+
+/-- **Two involutions on disjoint supports combine.** -/
+theorem exists_involution_two {α : Type*} [Fintype α] [DecidableEq α]
+    (A1 D1 A2 D2 : Finset α)
+    (hd1 : Disjoint A1 D1) (hc1 : A1.card = D1.card)
+    (hd2 : Disjoint A2 D2) (hc2 : A2.card = D2.card)
+    (hsep : Disjoint (A1 ∪ D1) (A2 ∪ D2)) :
+    ∃ t : α → α, (∀ x, t (t x) = x) ∧
+      (∀ x ∈ A1, t x ∈ D1) ∧ (∀ x ∈ D1, t x ∈ A1) ∧
+      (∀ x ∈ A2, t x ∈ D2) ∧ (∀ x ∈ D2, t x ∈ A2) ∧
+      (∀ x, x ∉ A1 → x ∉ D1 → x ∉ A2 → x ∉ D2 → t x = x) := by
+  classical
+  obtain ⟨t1, h1inv, h1AD, h1DA, h1fix, -, -⟩ :=
+    TurnBuild.exists_involution_of_card_eq A1 D1 hd1 hc1
+  obtain ⟨t2, h2inv, h2AD, h2DA, h2fix, -, -⟩ :=
+    TurnBuild.exists_involution_of_card_eq A2 D2 hd2 hc2
+  refine ⟨fun x => if x ∈ A1 ∪ D1 then t1 x else t2 x, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x
+    by_cases hx : x ∈ A1 ∪ D1
+    · have himg : t1 x ∈ A1 ∪ D1 := by
+        rcases Finset.mem_union.mp hx with h | h
+        · exact Finset.mem_union_right _ (h1AD x h)
+        · exact Finset.mem_union_left _ (h1DA x h)
+      simp only [if_pos hx, if_pos himg, h1inv]
+    · have hx2 : t2 x ∉ A1 ∪ D1 := by
+        by_cases hx2 : x ∈ A2 ∪ D2
+        · have : t2 x ∈ A2 ∪ D2 := by
+            rcases Finset.mem_union.mp hx2 with h | h
+            · exact Finset.mem_union_right _ (h2AD x h)
+            · exact Finset.mem_union_left _ (h2DA x h)
+          exact fun hc => (Finset.disjoint_left.mp hsep hc) this
+        · rw [h2fix x (fun h => hx2 (Finset.mem_union_left _ h))
+            (fun h => hx2 (Finset.mem_union_right _ h))]
+          exact hx
+      simp only [if_neg hx, if_neg hx2, h2inv]
+  · intro x hx
+    simp only [if_pos (Finset.mem_union_left _ hx)]
+    exact h1AD x hx
+  · intro x hx
+    simp only [if_pos (Finset.mem_union_right _ hx)]
+    exact h1DA x hx
+  · intro x hx
+    have hnot : x ∉ A1 ∪ D1 := fun hc =>
+      (Finset.disjoint_left.mp hsep hc) (Finset.mem_union_left _ hx)
+    simp only [if_neg hnot]
+    exact h2AD x hx
+  · intro x hx
+    have hnot : x ∉ A1 ∪ D1 := fun hc =>
+      (Finset.disjoint_left.mp hsep hc) (Finset.mem_union_right _ hx)
+    simp only [if_neg hnot]
+    exact h2DA x hx
+  · intro x n1 n2 n3 n4
+    have hnot : x ∉ A1 ∪ D1 := fun hc => by
+      rcases Finset.mem_union.mp hc with h | h
+      · exact n1 h
+      · exact n2 h
+    simp only [if_neg hnot]
+    exact h2fix x n3 n4
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4424,3 +4488,4 @@ end EltBridge
 #print axioms EltBridge.VEndpt.shield_of_initial
 #print axioms EltBridge.pdCut_travel_zero
 #print axioms EltBridge.sided_balance_of_tr_zero
+#print axioms EltBridge.exists_involution_two
