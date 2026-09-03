@@ -7383,3 +7383,30 @@ it pairs; `exists_sig_with_parity` is that sentence in Lean.
 `shiftDown` cost one restructure.  Its inverse laws are nested modular arithmetic with a
 VARIABLE modulus, which `omega` cannot do; splitting on `l = 0` makes every `%` resolve by
 `Nat.mod_eq_of_lt` or `Nat.add_mod_left` and the arithmetic becomes linear.
+
+## 2026-09-03 — BLOCK 196: the shield law at general mu
+
+`shield_law_mu_general`.  `∃ E, walkCount E = |Zf| + 1`, for `mu = 2u` at ANY `u > 0`.
+0 sorry, and `CostMerge` is invoked in neither direction.
+
+    globalName              one naming on all of ℤ: each position gets its own run's
+                            relabelling, the run being named by `gz`
+    globalName_eq_nameAt    inside a run it IS that run's naming
+    shield_law_mu_general   the composition: the datum from `exists_turnGen_data`, the
+                            three link families from the path lemmas of BLOCK 194, the
+                            parity from BLOCK 195
+
+**So `mu >= 4` is closed.**  BLOCK 158 measured 5072 of 8192 failures there and BLOCK 159
+attributed them to the absence of the two-chain structure.  Both were right about the
+symptom and wrong about the prognosis: BLOCK 187 identified the real obstruction as a
+global PARITY -- the round trip must be a `u`-cycle -- and showed it is FREE to satisfy,
+because a pass costs the same whichever levels it pairs.  BLOCKS 188-195 turned that into
+a proof, and this block composes it.
+
+The route is the same one that worked at `mu = 2`: no merge, no swap, no free pair.  That
+matters because BLOCK 149 refuted `HasFreePair` in the only sign model that can express
+gap edges, which closed the classical route to this bound at every `mu`.
+
+Ledger updated for both atoms.  What remains between this and an unconditional M4b is the
+same bookkeeping as at `mu = 2`: supplying the run structure for a concrete `PathData`,
+which BLOCKS 181-183 already provide as level-set facts.

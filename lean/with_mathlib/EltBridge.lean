@@ -12249,3 +12249,116 @@ end EltBridge
 #print axioms EltBridge.shiftDown_succ
 #print axioms EltBridge.hrel_of_shiftDown
 #print axioms EltBridge.exists_sig_with_parity
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ## The final composition
+
+`shield_law_shift` takes ONE naming `f` on all of `ℤ`, while the relabelling is per-run.
+So `f` looks up the run of its position -- `gz Zf j` names it, `lo` gives its left end --
+and applies that run's relabelling. -/
+
+/-- The global naming: at each position, the relabelling of its own run. -/
+noncomputable def globalName (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (Zf : Finset ℤ) (lo : ℕ → ℤ)
+    (j : ℤ) (l : Fin u) (b : Bool) : EndType.Endpt n m :=
+  strOf (m := m) hm sec j
+    (relAt sig (lo (CutComponents.gz Zf j)) ((j - lo (CutComponents.gz Zf j)).toNat) b l) b
+
+/-- Inside a run, the global naming IS that run's naming. -/
+theorem globalName_eq_nameAt (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (Zf : Finset ℤ) (lo : ℕ → ℤ)
+    (r k : ℕ) (l : Fin u) (b : Bool)
+    (hgz : CutComponents.gz Zf (lo r + (k : ℤ)) = r) :
+    globalName (m := m) hm sec sig Zf lo (lo r + (k : ℤ)) l b
+      = nameAt (m := m) hm sec sig (lo r) k l b := by
+  unfold globalName nameAt
+  rw [hgz]
+  have htn : (lo r + (k : ℤ) - lo r).toNat = k := by omega
+  rw [htn]
+
+/-- **The general-`mu` shield law, composed.**  The datum is built, the naming is built,
+and the three link families are discharged from the path lemmas.  What the caller
+supplies is the configuration and the run structure. -/
+theorem shield_law_mu_general (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    -- the run structure
+    (hgz : ∀ (r k : ℕ), k ≤ len r → CutComponents.gz Zf (lo r + (k : ℤ)) = r)
+    (hposRange : ∀ (r k : ℕ), k ≤ len r →
+      A - 1 ≤ lo r + (k : ℤ) ∧ lo r + (k : ℤ) ≤ B + 1)
+    (hbdryL : ∀ r : ℕ, lo r ∈ insert A (insert (B + 1) Zf))
+    (hbdryR : ∀ r : ℕ, lo r + (len r : ℤ) + 1 ∈ insert A (insert (B + 1) Zf))
+    (hint : ∀ (r k : ℕ), k < len r →
+      lo r + (k : ℤ) + 1 ∉ insert A (insert (B + 1) Zf))
+    -- the parity, per run
+    (hpar : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      relAt sig (lo r) (len r) false ⟨i + 1, hi⟩
+        = relAt sig (lo r) (len r) true ⟨i, by omega⟩)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hne : Nonempty (EndType.Endpt n m)) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkGraph.walkCount E = Zf.card + 1 := by
+  classical
+  set Bs := insert A (insert (B + 1) Zf) with hBs
+  obtain ⟨E, hEp, hEt, hTsite⟩ :=
+    exists_turnGen_data hm hu sec Bs sig A B hspan hsecWide
+  refine ⟨E, shield_law_shift hu Zf A B hAB lo len E
+    (fun a => globalName (m := m) hm sec sig Zf lo a.1 a.2.1 a.2.2)
+    hEp hTsite ?_ ?_ hrange ?_ ?_ ?_ hlow hhigh hocc hne⟩
+  · -- hturn
+    intro x hx
+    rw [hEt x] at hx
+    exact turnGen_hturn hm sec Zf Bs
+      (fun z hz => Finset.mem_insert_of_mem (Finset.mem_insert_of_mem hz)) sig x hx
+  · -- the cover
+    intro x
+    obtain ⟨l, b, hlb⟩ := botOf_eq_strOf hm sec x (hsecEdge x)
+    refine ⟨(relAt sig (lo (CutComponents.gz Zf (EndType.edgeOf x)))
+      ((EndType.edgeOf x - lo (CutComponents.gz Zf (EndType.edgeOf x))).toNat) b).symm l,
+      b, ?_⟩
+    unfold globalName
+    simpa using hlb
+  · -- hchain
+    intro r k l b hk
+    simp only []
+    rw [globalName_eq_nameAt hm sec sig Zf lo r k l b (hgz r k (by omega)),
+      globalName_eq_nameAt hm sec sig Zf lo r (k + 1) l b (hgz r (k + 1) (by omega))]
+    exact hchain_nameAt hm sec Bs sig E hEp hEt (lo r) k l b
+      (hsecWide _ (hposRange r k (by omega)).1 (hposRange r k (by omega)).2)
+      (hint r k hk)
+  · -- hjoinL
+    intro r l
+    simp only []
+    have h0 : ((0 : ℕ) : ℤ) = 0 := by norm_num
+    rw [show lo r = lo r + ((0 : ℕ) : ℤ) by rw [h0]; ring]
+    rw [globalName_eq_nameAt hm sec sig Zf lo r 0 l true (hgz r 0 (by omega)),
+      globalName_eq_nameAt hm sec sig Zf lo r 0 l false (hgz r 0 (by omega))]
+    exact hjoinL_nameAt hm sec Bs sig E hEt (lo r) l
+      (by
+        obtain ⟨p1, p2⟩ := hposRange r 0 (by omega)
+        simp only [Nat.cast_zero, add_zero] at p1 p2
+        exact hsecWide (lo r) p1 p2)
+      (hbdryL r)
+  · -- hshift
+    intro r i hi
+    simp only []
+    rw [globalName_eq_nameAt hm sec sig Zf lo r (len r) _ true (hgz r (len r) (le_refl _)),
+      globalName_eq_nameAt hm sec sig Zf lo r (len r) _ false (hgz r (len r) (le_refl _))]
+    exact hshift_nameAt hm sec Bs sig E hEp hEt (lo r) (len r)
+      (hsecWide _ (hposRange r (len r) (le_refl _)).1 (hposRange r (len r) (le_refl _)).2)
+      (hbdryR r) i hi (hpar r i hi)
+
+end EltBridge
+
+#print axioms EltBridge.globalName_eq_nameAt
+#print axioms EltBridge.shield_law_mu_general
