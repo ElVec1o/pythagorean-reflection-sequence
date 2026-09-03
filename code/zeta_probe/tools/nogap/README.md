@@ -8984,3 +8984,28 @@ others.
 **[Rule 0] VERIFIED, with one hypothesis carried.**  With this, every field of
 `exists_config_of_flag` is available for a guarded path except that hypothesis, which is a
 property the guard must be asked to check.
+
+## 2026-09-04 — BLOCK 263: the B+1 departure condition is DERIVABLE, not a new guard
+
+BLOCK 262 carried `fcur B = 1 <-> k* = B + 1` as a hypothesis and expected it to need a new
+guard clause -- the fourth repair of that shape.  **It does not.**
+
+Telescoping the flow across `[A, B]` (BLOCK 230) gives
+
+    f(A-1) + (arrivals on [A,B]) = f(B) + (departures on [A,B]),
+
+and `f(A-1) = 0` with exactly one arrival (BLOCK 235) makes that
+
+    1 = fcur B + (departures on [A,B]).
+
+Both terms are non-negative integers -- `fcur B >= 0` is BLOCK 252's `fcur_B_nonneg` -- so
+exactly one of them is `1`: either the departure sits on the span and `fcur B = 0`, or it
+sits past the end and `fcur B = 1`.  The condition follows from the guard already in place.
+
+    depB1_iff_stateOf   the condition, in the form a configuration satisfies
+
+0 sorry, clean on the first build.
+
+**This is the first time in this stretch that a suspected new guard clause turned out to be
+a consequence.**  Four times (BLOCKS 226, 252, 253, 254) the guard genuinely had to grow;
+here checking first saved a fifth clause that would have been redundant.

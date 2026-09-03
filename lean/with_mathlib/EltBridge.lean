@@ -8430,6 +8430,35 @@ theorem extendFn_dep (g : ℤ → LocalState) (A B kstar : ℤ) (hA : A ≤ 0) (
       · intro h; exact absurd h (by omega)
       · intro h; omega
 
+/-! ### The `B + 1` departure condition is derivable, not a new guard
+
+BLOCK 262 carried `fcur B = 1 <-> k* = B + 1` as a hypothesis, expecting it to need a new
+guard clause.  It does not.  Telescoping the flow across `[A, B]` (BLOCK 230) gives
+
+    f(A-1) + (arrivals on [A,B]) = f(B) + (departures on [A,B]),
+
+and `f(A-1) = 0` with one arrival makes that `1 = fcur B + (departures)`.  Both terms are
+non-negative integers, so exactly one of them is `1`: either the departure sits on the span
+and `fcur B = 0`, or it sits past the end and `fcur B = 1`.  The condition is a consequence
+of the guard already in place.
+
+Recorded here in the form a configuration satisfies, which is the base case. -/
+
+theorem depB1_iff_stateOf (P : SiteCost.PathData) :
+    (stateOf P P.B).fcur.natAbs = 1 ↔ P.kstar = P.B + 1 := by
+  have hB := P.hB
+  have hk2 := kstar_le_B_succ P
+  show (SiteCost.travel P.kstar P.B).natAbs = 1 ↔ P.kstar = P.B + 1
+  unfold SiteCost.travel
+  by_cases h : 0 ≤ P.B ∧ P.B < P.kstar
+  · rw [if_pos h]
+    constructor <;> intro _ <;> omega
+  · push_neg at h
+    rw [if_neg (by omega), if_neg (by omega)]
+    constructor
+    · intro hcon; simp at hcon
+    · intro hcon; omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16124,3 +16153,4 @@ end EltBridge
 #print axioms EltBridge.extendFn_arrv
 #print axioms EltBridge.extendFn_depv
 #print axioms EltBridge.extendFn_dep
+#print axioms EltBridge.depB1_iff_stateOf
