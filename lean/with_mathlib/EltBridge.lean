@@ -8629,6 +8629,39 @@ theorem flagPath_eq_of_config {A B : ℤ} (m : ℕ) (g : ℤ → FlagState)
   show (⟨stateOf P j, decide (0 ≤ j)⟩ : FlagState) = g j
   rw [hs, ← hflag j hj1 hjB]
 
+/-! ### A non-zero weight forces every guard
+
+The contrapositive of `pathWeight_zero_of_guard_fails` (BLOCK 250), which is the direction
+the sum comparison uses: a path contributing anything must satisfy the guard at every step,
+and is therefore realisable. -/
+
+theorem guards_of_weight_ne_zero (x : ℤ) (g : ℤ → FlagState) (n : ℕ) (A : ℤ)
+    (lam mu : FlagState → ℤ)
+    (hne : pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        lam mu ((A :: idxList A n).map g) ≠ 0) :
+    ∀ k : ℤ, A ≤ k → k < A + n → flagStepB (g k) (g (k + 1)) = true := by
+  intro k h1 h2
+  by_contra hc
+  have hfalse : flagStepB (g k) (g (k + 1)) = false := by
+    cases h : flagStepB (g k) (g (k + 1)) with
+    | false => rfl
+    | true => exact absurd h hc
+  exact hne (pathWeight_zero_of_guard_fails x g n A lam mu k h1 h2 hfalse)
+
+/-- **And the head vector's guard too**, since a failing head vector is a zero factor. -/
+theorem headOk_of_weight_ne_zero (x : ℤ) (g : ℤ → FlagState) (n : ℕ) (A : ℤ)
+    (mu : FlagState → ℤ)
+    (hne : pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVec x) mu ((A :: idxList A n).map g) ≠ 0) :
+    flagHeadVec x (g A) ≠ 0 := by
+  intro hz
+  apply hne
+  cases n with
+  | zero => show flagHeadVec x (g A) * mu (g A) = 0; rw [hz]; ring
+  | succ m =>
+      show flagHeadVec x (g A) * _ * _ = 0
+      rw [hz]; ring
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16333,3 +16366,5 @@ end EltBridge
 #print axioms EltBridge.exists_config_of_path
 #print axioms EltBridge.map_idxList_congr_le
 #print axioms EltBridge.flagPath_eq_of_config
+#print axioms EltBridge.guards_of_weight_ne_zero
+#print axioms EltBridge.headOk_of_weight_ne_zero

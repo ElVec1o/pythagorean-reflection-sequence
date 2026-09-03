@@ -9100,3 +9100,19 @@ configuration's flagged path is the one we started from.
 
 **[Rule 0] VERIFIED.**  With `flagPath_inj` (BLOCK 249) in the other direction, the map from
 configurations to guarded flagged paths is a bijection onto them.
+
+## 2026-09-04 — BLOCK 269: a non-zero weight forces every guard
+
+    guards_of_weight_ne_zero    a contributing path satisfies the step guard everywhere
+    headOk_of_weight_ne_zero    and its head vector does not vanish
+
+0 sorry, both clean on the first build; the second needs `propext` alone.
+
+These are the contrapositives of BLOCK 250, and they are the direction the sum comparison
+uses: a path contributing anything to the sum must satisfy the guard, hence -- by
+`exists_config_of_path` (BLOCK 267) and `flagPath_eq_of_config` (BLOCK 268) -- is the state
+path of a configuration and lies in the image.
+
+**[Rule 0] VERIFIED.**  Both halves of the sum comparison's hypothesis are now available:
+paths in the image contribute their configuration's weight, and paths outside it contribute
+zero.
