@@ -4266,3 +4266,25 @@ remains of the port is the free-pair EXISTENCE argument (free_pair_of_minimal), 
 in the forced model derives hshared from cost-minimality; in the free model the
 corresponding statement is that a cost-minimal datum has two same-class arrivals in
 different walks at a common site.
+
+## 2026-09-03 — BLOCK 89: when a same-class pair is available
+
+  two_same_class_of_five -- pigeonhole: five arrivals at a site force two into one
+                            (side, sign) class
+  free_pair_of_five      -- so five arrivals give a free pair, with NO condition on the
+                            departures
+
+The bound is sharp in the obvious direction: four arrivals, one per class, give no
+same-class pair. So "same class" is a sufficient criterion for a free pair, not a
+complete one, and the free-sign merge argument needs either
+
+  (a) five arrivals at the site -- available only for wide configurations, or
+  (b) the delta analysis: GData.swap_delta (BLOCK 87) computes the cost change from the
+      four class labels, and a cost-minimal datum has delta >= 0 for every swap, so the
+      question is whether some cross-walk swap has delta = 0.
+
+(b) is the honest analogue of the forced model's free_pair_of_minimal, which derives
+hshared from cost-minimality rather than from counting. Recording (a) because it is
+proved and gives the criterion a concrete sufficient condition; (b) is the remaining
+work and is the same shape of argument as the forced model's, run against class labels
+instead of side patterns.

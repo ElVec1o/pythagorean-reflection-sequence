@@ -5115,6 +5115,43 @@ theorem gcostOf_swapImg {α : Type*} [Fintype α] [DecidableEq α] (d : GData α
   rw [if_pos rfl, if_neg (Ne.symm hxy), if_pos rfl]
   exact GData.swap_free d x y (t y) (t x) hs hg
 
+/-! ### When a same-class pair is available
+
+`gcostOf_swapImg` makes a same-class swap free, so a same-class pair of arrivals in
+different walks is a free pair.  Such a pair is not automatic: a site with four
+arrivals, one per class, has none.  With five it must. -/
+
+/-- **Pigeonhole: five arrivals at a site force two into one class.** -/
+theorem two_same_class_of_five {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (S : Finset α) (hcard : 4 < S.card) :
+    ∃ x ∈ S, ∃ y ∈ S, x ≠ y ∧ d.side x = d.side y ∧ d.sgnOf x = d.sgnOf y := by
+  classical
+  by_contra hcon
+  push_neg at hcon
+  -- the class map is injective on `S`
+  have hinj : ∀ x ∈ S, ∀ y ∈ S, (d.side x, d.sgnOf x) = (d.side y, d.sgnOf y) → x = y := by
+    intro x hx y hy heq
+    by_contra hne
+    have h1 : d.side x = d.side y := congrArg Prod.fst heq
+    have h2 : d.sgnOf x = d.sgnOf y := congrArg Prod.snd heq
+    exact absurd h2 (hcon x hx y hy hne h1)
+  have hle : S.card ≤ Fintype.card (Bool × Bool) :=
+    Finset.card_le_card_of_injOn (fun x => (d.side x, d.sgnOf x))
+      (fun x _ => Finset.mem_univ _) hinj
+  simp only [Fintype.card_prod, Fintype.card_bool] at hle
+  omega
+
+/-- **So five arrivals at a site give a free pair**, once two of them lie in different
+walks.  The class condition is the whole requirement -- no condition on the departures,
+unlike the forced model. -/
+theorem free_pair_of_five {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (S : Finset α) (hcard : 4 < S.card) (t : α → α)
+    (harr : ∀ x ∈ S, d.isArr x = true) :
+    ∃ x ∈ S, ∃ y ∈ S, x ≠ y ∧ gcostOf d (swapImg t x y) = gcostOf d t := by
+  obtain ⟨x, hx, y, hy, hne, hs, hg⟩ := two_same_class_of_five d S hcard
+  exact ⟨x, hx, y, hy, hne,
+    gcostOf_swapImg d t x y hne (harr x hx) (harr y hy) hs hg⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5299,3 +5336,5 @@ end EltBridge
 #print axioms EltBridge.GData.swap_free
 #print axioms EltBridge.GData.swap_delta
 #print axioms EltBridge.gcostOf_swapImg
+#print axioms EltBridge.two_same_class_of_five
+#print axioms EltBridge.free_pair_of_five
