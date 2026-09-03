@@ -3273,3 +3273,29 @@ hypothesis was needed for that case.
 
 This is the LOWER bound (c >= |Z|). The upper bound (c <= |Z|) is the run induction,
 which is the remaining half of M4b at element level.
+
+## 2026-09-03 — BLOCK 46: the SHIELD LAW for the extended type — c = |Z| on VEndpt
+
+  runIndexG                 -- the run index, generically
+  walkCount_le_runs_blk     -- walkCount <= |Z| + 1 for ANY end type whose graph edges
+                               preserve the block index or are local, and whose runs
+                               are connected
+  VEndpt.walkCount_le       -- the upper bound on the extended type
+  VEndpt.shield             -- **c = |Z| ON VEndpt**, both bounds together
+
+`ConfigLoop.walkCount_le_runs_gen` was stated for Endpt and asked for `Local`. Both
+restrictions came off without touching the proof: ConfigMerge.walkCount_le_card was
+already generic, and locality is used only through blk_reachable, which BLOCK 43
+generalised. The body is `simpa using` the same call.
+
+So the shield law -- the thing that died twice tonight, first on hcov (BLOCK 3) and
+then on hZ-versus-hocc (BLOCK 4) -- now holds on the end type that actually carries a
+group element's configuration. Its six hypotheses are:
+  hp, hts     supplied by the construction (dataOf)
+  hturn       the paper's cut condition on real turns
+  hvirt       the virtual pair stays in one run  (BLOCK 42, proved)
+  hruns       every run carries an end
+  hsep        ends of one run share a walk
+The last is the run induction's conclusion and is the remaining input; hruns is a
+statement about the configuration. Neither is a locality hypothesis, which is the
+change from BLOCK 41.

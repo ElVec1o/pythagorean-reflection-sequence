@@ -2458,6 +2458,78 @@ theorem VEndpt.walkCount_ge {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf
     ((WalkGraph.graph E).connectedComponentMk z₀)
   exact walkCount_ge_of_avoiding_gen E Zf.card _ F hinj havoid
 
+/-! ### The upper bound `c <= |Z|`, generically
+
+`ConfigLoop.walkCount_le_runs_gen` is stated for `Endpt` and asks for `Local`.  Both
+restrictions come off: `ConfigMerge.walkCount_le_card` is already generic, and
+locality is used only through `blk_reachable`, which BLOCK 43 generalised. -/
+
+/-- The run index, generically. -/
+def runIndexG {α : Type*} (pos : α → ℤ) (Zf : Finset ℤ) (x : α) : Fin (Zf.card + 1) :=
+  ⟨CutComponents.gz Zf (pos x), Nat.lt_succ_of_le (ConfigLoop.gz_le_card Zf _)⟩
+
+/-- **`walkCount <= |Z| + 1`**, for any end type whose graph edges preserve the block
+index or are local, and whose runs are connected. -/
+theorem walkCount_le_runs_blk {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (pos : α → ℤ) (Zf : Finset ℤ)
+    (hedge : ∀ x y : α, (WalkGraph.graph D).Adj x y →
+      CutComponents.blk pos Zf x = CutComponents.blk pos Zf y ∨ (∃ t : ℤ,
+        (pos x = t - 1 ∨ pos x = t) ∧ (pos y = t - 1 ∨ pos y = t) ∧
+        (pos x ≠ pos y → t ∉ Zf)))
+    (hsep : ∀ x y : α, runIndexG pos Zf x = runIndexG pos Zf y →
+      (WalkGraph.graph D).Reachable x y) :
+    WalkGraph.walkCount D ≤ Zf.card + 1 := by
+  have hconst : ∀ x y : α, (WalkGraph.graph D).Reachable x y →
+      runIndexG pos Zf x = runIndexG pos Zf y := by
+    intro x y hr
+    refine Fin.ext ?_
+    exact CutComponents.blk_reachable_except
+      (Exc := fun a b => CutComponents.blk pos Zf a = CutComponents.blk pos Zf b)
+      hedge (fun _ _ h => h) hr
+  simpa using ConfigMerge.walkCount_le_card D (runIndexG pos Zf) hconst hsep
+
+/-- **`c <= |Z|` for the extended type**, given that the runs are connected. -/
+theorem VEndpt.walkCount_le {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf : Finset ℤ)
+    (E : WalkGraph.Data (VEndpt n mm)) (hp : E.p = VEndpt.partner)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (E.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ u v : EndType.Endpt n mm, E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hvirt : ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm)))
+    (hsep : ∀ x y : VEndpt n mm,
+      runIndexG (VEndpt.edgeOf bnd) Zf x = runIndexG (VEndpt.edgeOf bnd) Zf y →
+      (WalkGraph.graph E).Reachable x y) :
+    WalkGraph.walkCount E ≤ Zf.card + 1 :=
+  walkCount_le_runs_blk E (VEndpt.edgeOf bnd) Zf
+    (VEndpt.blk_or_local bnd Zf E hp
+      (VEndpt.hreal_of_hturn s0 s1 bnd Zf E hts hturn hvirt) hvirt) hsep
+
+/-- **The shield law for the extended type: `c = |Z|`.**
+
+Both bounds now hold on `VEndpt`, so the walk count is exactly `|Z| + 1`.  The
+hypotheses are: the pairing is the partner, turns preserve sites, real turns do not
+cross cut sites, the virtual pair stays in one run, every run carries an end, and ends
+of one run share a walk. -/
+theorem VEndpt.shield {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf : Finset ℤ)
+    (E : WalkGraph.Data (VEndpt n mm)) (hp : E.p = VEndpt.partner)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (E.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ u v : EndType.Endpt n mm, E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hvirt : ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm)))
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf bnd) Zf v = i)
+    (hsep : ∀ x y : VEndpt n mm,
+      runIndexG (VEndpt.edgeOf bnd) Zf x = runIndexG (VEndpt.edgeOf bnd) Zf y →
+      (WalkGraph.graph E).Reachable x y)
+    (z₀ : VEndpt n mm) :
+    WalkGraph.walkCount E = Zf.card + 1 :=
+  le_antisymm
+    (VEndpt.walkCount_le s0 s1 bnd Zf E hp hts hturn hvirt hsep)
+    (VEndpt.walkCount_ge s0 s1 bnd Zf E hp hts hturn hvirt hruns z₀)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2559,3 +2631,6 @@ end EltBridge
 #print axioms EltBridge.VEndpt.prop_cut
 #print axioms EltBridge.VEndpt.walkCount_ge
 #print axioms EltBridge.walkCount_ge_of_avoiding_gen
+#print axioms EltBridge.walkCount_le_runs_blk
+#print axioms EltBridge.VEndpt.walkCount_le
+#print axioms EltBridge.VEndpt.shield
