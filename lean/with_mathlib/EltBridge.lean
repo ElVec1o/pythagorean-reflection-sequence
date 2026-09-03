@@ -8113,3 +8113,47 @@ end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.isRelaxedLength_wordLength_forces_no_defect
+
+namespace EltBridge
+namespace Elt
+
+/-! ### Flipping the sign alone
+
+The round trip flips `eps`, and that breaks the cancellation a walk-out/walk-back would
+otherwise give: walking out deposits `+eps` at each crossed edge and walking back
+deposits `-eps`, which cancel only if `eps` is the same on both legs.  `s2` flips `eps`
+but also the side; composing with `s1` restores the side, so `feps = s1 ∘ s2` flips the
+sign alone, in two steps. -/
+
+noncomputable def feps (g : Elt) : Elt := s1 (s2 g)
+
+theorem feps_spec (g : Elt) :
+    (feps g).kstar = g.kstar ∧ (feps g).eps = -g.eps ∧
+    (feps g).delta = g.delta ∧ (feps g).d = g.d := by
+  refine ⟨rfl, rfl, ?_, rfl⟩
+  show (!(!g.delta)) = g.delta
+  simp
+
+theorem reachable_feps {g : Elt} (h : Reachable g) : Reachable (feps g) :=
+  reachable_s1 (reachable_s2 h)
+
+/-- **The excursion word, as a specification.**  To change the deposit at an arbitrary
+edge while returning the cursor, the word is
+
+    walk out   (cstep^k)    deposits +eps at each crossed edge
+    round trip (4 steps)    moves the target deposit by 2*eps, flips eps
+    feps       (2 steps)    restores eps, so the return leg cancels the outward one
+    walk back  (cstep^k)    deposits -eps at each crossed edge
+
+The two walks cancel exactly because `feps` sits between them; without it the return
+leg would double the outward deposits instead of undoing them.  This records the
+shape; the bookkeeping over an arbitrary distance is not carried out. -/
+def IsExcursion (w : Elt → Elt) (j : ℤ) : Prop :=
+  ∀ g : Elt, (w g).kstar = g.kstar ∧ (w g).delta = g.delta ∧
+    (w g).d = Function.update g.d j (g.d j + 2 * g.eps)
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.feps_spec
+#print axioms EltBridge.Elt.reachable_feps

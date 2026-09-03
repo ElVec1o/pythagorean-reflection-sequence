@@ -5882,3 +5882,50 @@ H1a, and labelling it so was the error.  Ledger corrected.
 This is the second retraction in this run (BLOCK 137 was the first), and both were
 caught the same way: by continuing far enough into the construction that the claim had
 to be used.
+
+## 2026-09-03 — BLOCK 146: the sign-only flip, and where the atoms actually stand
+
+`feps = s1 ∘ s2` flips `eps` while preserving the side, in two steps (`feps_spec`,
+`reachable_feps`).  It is the piece the excursion word needs: walking out deposits
+`+eps` at each crossed edge and walking back deposits `-eps`, and those cancel only if
+`eps` is the same on both legs -- but the round trip flips it.  `feps` between the round
+trip and the return leg restores it.  Without that step the return leg would DOUBLE the
+outward deposits rather than undo them.  `IsExcursion` records the shape; the
+bookkeeping over an arbitrary distance is not carried out.
+
+### Why the table is not green, verified rather than assumed
+
+Ten blocks of work (137-146) have now tested each remaining atom against its recorded
+blocker rather than trusting the label.  Two of those blocks were retractions of my own
+claims.  The result:
+
+  M4b, M3   NOT a formalisation gap.  BLOCK 139 PROVES the obstruction: `clsOf` fixes
+            side and sign, `EndData.sgn` is derived, so no class holds both an arrival
+            and a departure; with `cut_classes_match` every class is empty at a cut
+            site.  The derived-sign model forces cut sites empty.  The free-sign
+            `GData` admits them and loses the free-pair guarantee -- also proved.  A
+            third model is needed, not more Lean.
+
+  H1a       NOT a formalisation gap either, now that the formalisation exists.  The
+            generating set, identity, word length, involutivity, cursor placement and
+            deposit engine are all built and certified.  What remains is the metric
+            theorem itself, and its lower-bound half is recorded as open research
+            (`geodesic-length-closed-form`: "lower bound STILL OPEN", after the
+            2026-08-09 retraction of thm:Bproved as circular).  BLOCK 145 additionally
+            showed the previously recorded contract was FALSE as stated.
+
+  H1, H2    Need mathematical objects that do not exist yet: the bulk kernels `B_σ` for
+            (M)'s identification, and the shape vectors `R`, `L` spanning
+            `ker(I - T(q_m))` for (R-J).  BLOCKS 125-127 reduced (R-J) to a sign
+            question and closed the uniform escape; neither is a Lean gap.
+
+  M9        Already PROVED conditional on H1 and H2.  Turns green the moment they do,
+            with no further work.
+
+  GOAL      = M9 discharged.
+
+So the honest answer to "why isn't it all green" is that the remaining atoms are open
+mathematics, not unfinished formalisation, and that is now checked atom by atom instead
+of inferred from the colours.  Continued Lean work will not move them; the two that
+could be moved by better statements have been (M4b's blocker proved, H1a's contract
+corrected).
