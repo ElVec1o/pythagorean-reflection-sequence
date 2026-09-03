@@ -2,7 +2,9 @@ name = "SymbolicVerification"
 defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
   "TranslationTrick",
   "TransferChain",
-  "DiscriminantIdentity"]
+  "DiscriminantIdentity",
+  "GroupElt",
+  "EltBridge"]
 
 [[require]]
 name = "mathlib"
@@ -252,9 +254,6 @@ name = "EdgeData"
 name = "GapFreeAssembly"
 
 [[lean_lib]]
-name = "GroupElt"
-
-[[lean_lib]]
 name = "StrandEnds"
 
 [[lean_lib]]
@@ -292,3 +291,9 @@ name = "ConfigLoop"
 
 [[lean_lib]]
 name = "CostMerge"
+
+[[lean_lib]]
+name = "EltBridge"
+
+[[lean_lib]]
+name = "GroupElt"

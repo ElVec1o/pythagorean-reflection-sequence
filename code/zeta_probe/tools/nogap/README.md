@@ -2158,3 +2158,37 @@ change, so B1 is a larger job than "not started" suggested, and its size is now
 known rather than guessed.
 
 B1: not started -> SCOPED (obstruction identified and proved).
+
+## 2026-09-03 — BLOCK 7: the root cause of the "(configurations)" qualifier
+
+Chased H1a to `rem:pairingstatus` (paper2 l.1751): "That it computes the relaxed word
+length is verified there and is not proved."
+
+FALSE LEAD CLOSED FIRST: `lem:transport` gives the site value as max(|a|,|b|,|Phi|)
+but Lean's `PathData.siteCost` is max(|a|,|b|) with no Phi. Not a defect --
+`MarkedSite.Phi_le_min` is a THEOREM (|Phi| <= min(|a|,|b|)) at every site of a
+realisation, so the two agree. Checked, clean.
+
+ROOT CAUSE. `GroupElt.lean` contains no group: no group element, no word length, no
+lR. Across all 84 files there was no object a group element could be. So H1a and B1
+are not two proof gaps, they are ONE DEFINITIONAL gap, and it is exactly why M3/M5/M6/M7
+carry "(configurations)".
+
+NEW FILE `EltBridge.lean` (all kernel-clean):
+  Elt              -- a group element in lamp form: cursor, sign, side, finitely
+                      supported deposits carrying the travel parity
+  occ, A, B        -- the minimal span, computed from the support
+  outer, A_min, B_min  -- the three span obligations; MINIMALITY is the content
+  toPathData       -- THE BRIDGE: every Elt has a PathData
+  lR               -- the relaxed length of a group element, now a DEFINITION
+  lR_eq            -- unfolded: span mass + site costs
+  IsRelaxedLength  -- H1a as a named contract (Rule I7), not prose
+
+WHAT IS STILL NOT DONE: `IsRelaxedLength` is a contract, not a theorem. Discharging it
+needs a presentation and a generating set, and neither is formalised. That is now a
+stated obligation with a name instead of a remark in a paper. Also `balance_iff_tr`
+(BLOCK 6) still says the Endpt model needs virtual endpoints before a PathData can be
+realised as a configuration -- toPathData is the first half of B1, not all of it.
+
+Also fixed: `GroupElt` had a lean_lib entry but was missing from defaultTargets, so it
+was never built by `lake build`. Added, along with `EltBridge`.
