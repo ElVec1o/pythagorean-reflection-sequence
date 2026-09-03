@@ -9380,3 +9380,23 @@ so that it lands at `0` is a translation.  But that choice depends on the path, 
 cannot be an arbitrary `Finset` of lists -- it has to be indexed by paths whose arrival
 sits at the right place.  **That is a re-indexing of the statement, not a further theorem**,
 and it is what the instantiation still needs.
+
+## 2026-09-04 — BLOCK 284: the arrival sets the flag wherever it fires
+
+    past_of_arr_at     the arrival at ANY index a sets the flag there, no head case needed
+    arr_unique_after   and no second arrival fires after it, unconditionally
+
+0 sorry, both clean on the first build.  One failure: `rw [he]` rewrote a fresh copy of
+`hstep` where `a - 1 + 1` did not syntactically occur after the first rewrite, giving a term
+of the un-rewritten type; using `hstep (a - 1)` directly, without touching it, matches the
+goal as stated.
+
+`past_of_arr` (BLOCK 238) was proved for a step INTO `a`; applying it at `a - 1` removes the
+need for a separate argument at the head, and gives the flag-setting fact at an arbitrary
+index directly.
+
+**Why this matters for BLOCK 283's obstacle.**  The re-indexing problem is not about
+finding where the arrival is -- it is that `T`'s elements are bare lists with no marked
+index at all.  These two lemmas are the tools for the re-indexed statement, once it is
+written: given that a list's `k`-th entry has `arr = 1`, everything after it is pinned.
+The statement itself -- `T` as pairs of a list and an index -- is still to be written.

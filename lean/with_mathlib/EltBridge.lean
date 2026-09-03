@@ -9119,6 +9119,28 @@ theorem headCond_of_headVec_ne_zero {R : Type*} [CommRing R] (x : R) (σ : FlagS
   rw [flagHeadVecR, if_neg]
   simpa using hc
 
+/-! ### The arrival sets the flag wherever it fires
+
+`past_of_arr` (BLOCK 238) reads the step INTO an index; applying it at `a - 1` gives the
+statement at `a` itself, with no separate case for the head.  With `arr_unique_forward` that
+gives uniqueness after the arrival directly. -/
+
+theorem past_of_arr_at (g : ℤ → FlagState) (a : ℤ)
+    (hstep : ∀ j : ℤ, flagStepB (g j) (g (j + 1)) = true)
+    (hfire : (g a).st.arr = 1) : (g a).past = true := by
+  have he : a - 1 + 1 = a := by ring
+  have hs : flagStepB (g (a - 1)) (g (a - 1 + 1)) = true := hstep (a - 1)
+  have hf : (g (a - 1 + 1)).st.arr = 1 := by rw [he]; exact hfire
+  have h := past_of_arr g (a - 1) hs hf
+  rwa [he] at h
+
+/-- **No second arrival after the first.**  Uniqueness forward from wherever it fires, with
+no hypothesis about the flag -- the arrival supplies it. -/
+theorem arr_unique_after (g : ℤ → FlagState) (a : ℤ)
+    (hstep : ∀ j : ℤ, flagStepB (g j) (g (j + 1)) = true)
+    (hfire : (g a).st.arr = 1) (m : ℕ) : (g (a + m + 1)).st.arr ≠ 1 :=
+  arr_unique_forward g hstep a (past_of_arr_at g a hstep hfire) m
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16850,3 +16872,5 @@ end EltBridge
 #print axioms EltBridge.guards_of_coeff_ne_zero
 #print axioms EltBridge.headOkR_of_weight_ne_zero
 #print axioms EltBridge.headCond_of_headVec_ne_zero
+#print axioms EltBridge.past_of_arr_at
+#print axioms EltBridge.arr_unique_after
