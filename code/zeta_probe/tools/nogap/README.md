@@ -6812,3 +6812,36 @@ now says so.
 Two Lean errors, both index bookkeeping: `lo r + (k+1) - 1` against `lo r + k`, equal by
 `ring` but not syntactically, and a `by_contra` whose hypothesis was already in the
 wanted form.
+
+## 2026-09-03 — BLOCK 176: the turn needed a site guard
+
+Trying to discharge the geometry hypotheses from `EndType` exposed a defect in BLOCK
+174's definition, not in the configuration.
+
+`hs3 : ∀ s : ℤ, siteOf (up s) = s` CANNOT hold for all `s`: outside the span there is no
+edge at position `s`, so `up s` is junk.  And BLOCK 174's `passTurn` acted on `x`
+whether or not `x` was at site `s`, so those junk values could collide with a real end
+and break involutivity.  The hypotheses were unsatisfiable as stated.
+
+The fix is in the definition.  `passCore` is the pairing at a site -- bounce inside
+`Zf`, pass outside -- and
+
+    passTurn siteOf p up dn Zf s x = if siteOf x = s then passCore .. x else x
+
+so the turn is the identity off its own site.  Involutivity then needs nothing about
+other sites: off-site it is trivial, and on-site `passCore_site` says the image stays on
+the site so the second application resolves the same way.
+
+Reproved through the guard: `passTurn_off_site`, `passTurn_on_site`, `passCore_site`,
+`passCore_invol`, `passTurn_invol`, `passTurn_site`, `passTurn_ne`,
+`passTurn_pass_up`, `passTurn_pass_dn`, `passTurn_bounce`,
+`passTurn_keeps_edge_at_cut`, and `shield_upper_bound_passTurn` on top of them.  Build
+clean, 0 sorry, namespaces balanced.
+
+Splitting `passCore` out of `passTurn` was also what made the proofs go through: with
+the guard inlined, `split_ifs <;> simp_all` timed out at 200000 heartbeats.  Naming the
+body lets the guard be discharged by rewriting instead of unfolding.
+
+This is the seventh correction of the run, and the first that was a defect in something
+I had already proved rather than in something I had claimed.  The lemmas were true of
+the old definition; the old definition was the wrong object.

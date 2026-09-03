@@ -9571,7 +9571,8 @@ At `mu = 2` a site `s` carries exactly four ends: the two tops of edge `s-1`, wh
 
 `passTurn` is that choice. -/
 
-noncomputable def passTurn {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+/-- The pairing at a site, before the guard: the bounce inside `Zf`, the pass outside. -/
+noncomputable def passCore {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
     (Zf : Finset ℤ) (s : ℤ) (x : α) : α :=
   if s ∈ Zf then
     if x = p (up (s - 1)) then p (dn (s - 1))
@@ -9586,85 +9587,140 @@ noncomputable def passTurn {α : Type*} [DecidableEq α] (p : α → α) (up dn 
     else if x = p (dn (s - 1)) then dn s
     else x
 
-/-- **`passTurn` is an involution**, given that the site's four ends are distinct. -/
-theorem passTurn_invol {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
+/-- The turn: `passCore` on its own site, the identity elsewhere.  The guard is what
+makes it an involution without any assumption about ends at other sites. -/
+noncomputable def passTurn {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (x : α) : α :=
+  if siteOf x = s then passCore p up dn Zf s x else x
+
+theorem passTurn_off_site {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (x : α) (h : siteOf x ≠ s) :
+    passTurn siteOf p up dn Zf s x = x := by
+  unfold passTurn; rw [if_neg h]
+
+theorem passTurn_on_site {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (x : α) (h : siteOf x = s) :
+    passTurn siteOf p up dn Zf s x = passCore p up dn Zf s x := by
+  unfold passTurn; rw [if_pos h]
+
+/-- **`passCore` keeps every end at its site.** -/
+theorem passCore_site {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ)
+    (h1 : siteOf (p (up (s - 1))) = s) (h2 : siteOf (p (dn (s - 1))) = s)
+    (h3 : siteOf (up s) = s) (h4 : siteOf (dn s) = s)
+    (x : α) (hx : siteOf x = s) : siteOf (passCore p up dn Zf s x) = s := by
+  unfold passCore
+  by_cases hs : s ∈ Zf <;> simp only [hs, if_true, if_false, ite_true, ite_false] <;>
+    split_ifs <;> simp_all
+
+/-- **`passCore` is an involution**, given the four ends are distinct. -/
+theorem passCore_invol {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
     (Zf : Finset ℤ) (s : ℤ)
     (h12 : p (up (s - 1)) ≠ p (dn (s - 1)))
     (h13 : p (up (s - 1)) ≠ up s) (h14 : p (up (s - 1)) ≠ dn s)
     (h23 : p (dn (s - 1)) ≠ up s) (h24 : p (dn (s - 1)) ≠ dn s)
     (h34 : up s ≠ dn s) (x : α) :
-    passTurn p up dn Zf s (passTurn p up dn Zf s x) = x := by
+    passCore p up dn Zf s (passCore p up dn Zf s x) = x := by
   have h21 := h12.symm; have h31 := h13.symm; have h41 := h14.symm
   have h32 := h23.symm; have h42 := h24.symm; have h43 := h34.symm
-  unfold passTurn
+  unfold passCore
   by_cases hs : s ∈ Zf <;> simp only [hs, if_true, if_false, ite_true, ite_false] <;>
     split_ifs <;> simp_all
 
-/-- **And fixed-point-free on the site's four ends.** -/
-theorem passTurn_ne {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
-    (Zf : Finset ℤ) (s : ℤ)
+/-- **So `passTurn` is an involution**, with no hypothesis about other sites. -/
+theorem passTurn_invol {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ)
     (h12 : p (up (s - 1)) ≠ p (dn (s - 1)))
     (h13 : p (up (s - 1)) ≠ up s) (h14 : p (up (s - 1)) ≠ dn s)
     (h23 : p (dn (s - 1)) ≠ up s) (h24 : p (dn (s - 1)) ≠ dn s)
-    (h34 : up s ≠ dn s) (x : α)
-    (hx : x = p (up (s - 1)) ∨ x = p (dn (s - 1)) ∨ x = up s ∨ x = dn s) :
-    passTurn p up dn Zf s x ≠ x := by
+    (h34 : up s ≠ dn s)
+    (hs1 : siteOf (p (up (s - 1))) = s) (hs2 : siteOf (p (dn (s - 1))) = s)
+    (hs3 : siteOf (up s) = s) (hs4 : siteOf (dn s) = s) (x : α) :
+    passTurn siteOf p up dn Zf s (passTurn siteOf p up dn Zf s x) = x := by
+  by_cases hxs : siteOf x = s
+  · rw [passTurn_on_site siteOf p up dn Zf s x hxs,
+      passTurn_on_site siteOf p up dn Zf s _
+        (passCore_site siteOf p up dn Zf s hs1 hs2 hs3 hs4 x hxs),
+      passCore_invol p up dn Zf s h12 h13 h14 h23 h24 h34 x]
+  · rw [passTurn_off_site siteOf p up dn Zf s x hxs,
+      passTurn_off_site siteOf p up dn Zf s x hxs]
+
+theorem passTurn_site {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ)
+    (h1 : siteOf (p (up (s - 1))) = s) (h2 : siteOf (p (dn (s - 1))) = s)
+    (h3 : siteOf (up s) = s) (h4 : siteOf (dn s) = s)
+    (x : α) (hx : siteOf x = s) :
+    siteOf (passTurn siteOf p up dn Zf s x) = s := by
+  rw [passTurn_on_site siteOf p up dn Zf s x hx]
+  exact passCore_site siteOf p up dn Zf s h1 h2 h3 h4 x hx
+
+theorem passTurn_ne {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ)
+    (h12 : p (up (s - 1)) ≠ p (dn (s - 1)))
+    (h13 : p (up (s - 1)) ≠ up s) (h14 : p (up (s - 1)) ≠ dn s)
+    (h23 : p (dn (s - 1)) ≠ up s) (h24 : p (dn (s - 1)) ≠ dn s)
+    (h34 : up s ≠ dn s) (x : α) (hx : siteOf x = s)
+    (hfour : x = p (up (s - 1)) ∨ x = p (dn (s - 1)) ∨ x = up s ∨ x = dn s) :
+    passTurn siteOf p up dn Zf s x ≠ x := by
   have h21 := h12.symm; have h31 := h13.symm; have h41 := h14.symm
   have h32 := h23.symm; have h42 := h24.symm; have h43 := h34.symm
-  unfold passTurn
+  rw [passTurn_on_site siteOf p up dn Zf s x hx]
+  unfold passCore
   by_cases hs : s ∈ Zf <;> simp only [hs, if_true, if_false, ite_true, ite_false] <;>
-    rcases hx with rfl | rfl | rfl | rfl <;> split_ifs <;> simp_all
-
-end EltBridge
-
-#print axioms EltBridge.passTurn_invol
-#print axioms EltBridge.passTurn_ne
-
-namespace EltBridge
+    rcases hfour with rfl | rfl | rfl | rfl <;> split_ifs <;> simp_all
 
 /-! ### `passTurn` satisfies the three equations -/
 
 /-- At a non-cut site the pass carries edge `s-1`'s up top to edge `s`'s up bottom. -/
-theorem passTurn_pass_up {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
-    (Zf : Finset ℤ) (s : ℤ) (hs : s ∉ Zf) :
-    passTurn p up dn Zf s (p (up (s - 1))) = up s := by
-  unfold passTurn
+theorem passTurn_pass_up {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (hs : s ∉ Zf)
+    (hs1 : siteOf (p (up (s - 1))) = s) :
+    passTurn siteOf p up dn Zf s (p (up (s - 1))) = up s := by
+  rw [passTurn_on_site siteOf p up dn Zf s _ hs1]
+  unfold passCore
   rw [if_neg hs, if_pos rfl]
 
 /-- At a non-cut site the same pass carries edge `s`'s down bottom to edge `s-1`'s down
 top -- the opposite composition, as BLOCK 172 found. -/
-theorem passTurn_pass_dn {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
-    (Zf : Finset ℤ) (s : ℤ) (hs : s ∉ Zf)
+theorem passTurn_pass_dn {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (hs : s ∉ Zf)
+    (hs4 : siteOf (dn s) = s)
     (h14 : p (up (s - 1)) ≠ dn s) (h34 : up s ≠ dn s) :
-    passTurn p up dn Zf s (dn s) = p (dn (s - 1)) := by
-  unfold passTurn
+    passTurn siteOf p up dn Zf s (dn s) = p (dn (s - 1)) := by
+  rw [passTurn_on_site siteOf p up dn Zf s _ hs4]
+  unfold passCore
   rw [if_neg hs, if_neg (Ne.symm h14), if_neg (Ne.symm h34), if_pos rfl]
 
 /-- At a cut site the bounce joins the two bottoms of edge `s`. -/
-theorem passTurn_bounce {α : Type*} [DecidableEq α] (p : α → α) (up dn : ℤ → α)
-    (Zf : Finset ℤ) (s : ℤ) (hs : s ∈ Zf)
+theorem passTurn_bounce {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (hs : s ∈ Zf)
+    (hs4 : siteOf (dn s) = s)
     (h14 : p (up (s - 1)) ≠ dn s) (h24 : p (dn (s - 1)) ≠ dn s) (h34 : up s ≠ dn s) :
-    passTurn p up dn Zf s (dn s) = up s := by
-  unfold passTurn
+    passTurn siteOf p up dn Zf s (dn s) = up s := by
+  rw [passTurn_on_site siteOf p up dn Zf s _ hs4]
+  unfold passCore
   rw [if_pos hs, if_neg (Ne.symm h14), if_neg (Ne.symm h24), if_neg (Ne.symm h34),
     if_pos rfl]
 
 /-- **And it changes the edge only off `Zf`.**  At a cut site the bounce keeps each end
-on its own edge; that is `hturn`. -/
-theorem passTurn_keeps_edge_at_cut {α : Type*} [DecidableEq α] (edgeOf : α → ℤ)
+on its own edge; off its site the turn is the identity.  That is `hturn`. -/
+theorem passTurn_keeps_edge_at_cut {α : Type*} [DecidableEq α] (edgeOf siteOf : α → ℤ)
     (p : α → α) (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ) (hs : s ∈ Zf)
     (hpe : ∀ x, edgeOf (p x) = edgeOf x)
     (hud : edgeOf (up s) = edgeOf (dn s))
     (hud' : edgeOf (up (s - 1)) = edgeOf (dn (s - 1)))
-    (x : α) : edgeOf (passTurn p up dn Zf s x) = edgeOf x := by
-  unfold passTurn
-  rw [if_pos hs]
-  split_ifs with h1 h2 h3 h4
-  · rw [h1, hpe, hpe, hud']
-  · rw [h2, hpe, hpe, hud']
-  · rw [h3, hud]
-  · rw [h4, hud]
-  · rfl
+    (x : α) : edgeOf (passTurn siteOf p up dn Zf s x) = edgeOf x := by
+  by_cases hxs : siteOf x = s
+  · rw [passTurn_on_site siteOf p up dn Zf s x hxs]
+    unfold passCore
+    rw [if_pos hs]
+    split_ifs with h1 h2 h3 h4
+    · rw [h1, hpe, hpe, hud']
+    · rw [h2, hpe, hpe, hud']
+    · rw [h3, hud]
+    · rw [h4, hud]
+    · rfl
+  · rw [passTurn_off_site siteOf p up dn Zf s x hxs]
 
 end EltBridge
 
@@ -9673,18 +9729,6 @@ end EltBridge
 #print axioms EltBridge.passTurn_keeps_edge_at_cut
 
 namespace EltBridge
-
-/-- **`passTurn` keeps every end at its site.**  Each of the four images is one of the
-site's own four ends, and anything else is fixed. -/
-theorem passTurn_site {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
-    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ)
-    (h1 : siteOf (p (up (s - 1))) = s) (h2 : siteOf (p (dn (s - 1))) = s)
-    (h3 : siteOf (up s) = s) (h4 : siteOf (dn s) = s)
-    (x : α) (hx : siteOf x = s) :
-    siteOf (passTurn p up dn Zf s x) = s := by
-  unfold passTurn
-  by_cases hs : s ∈ Zf <;> simp only [hs, if_true, if_false, ite_true, ite_false] <;>
-    split_ifs <;> simp_all
 
 /-- **The `mu = 2` shield bound with `passTurn` supplied.**  Every property of the turn
 is discharged from `passTurn`'s own lemmas.  What the caller provides is the
@@ -9717,24 +9761,24 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
     (E : WalkGraph.Data (EndType.Endpt n m))
     (hEp : E.p = EndType.partner)
     (hEt : ∀ x, E.t x
-      = passTurn EndType.partner up dn Zf (EndType.siteOf x) x) :
+      = passTurn EndType.siteOf EndType.partner up dn Zf (EndType.siteOf x) x) :
     WalkGraph.walkCount E ≤ Zf.card + 1 := by
   have hkeep : ∀ (s : ℤ), s ∈ Zf → ∀ x : EndType.Endpt n m,
-      EndType.edgeOf (passTurn EndType.partner up dn Zf s x) = EndType.edgeOf x :=
-    fun s hs x => passTurn_keeps_edge_at_cut EndType.edgeOf EndType.partner up dn Zf s hs
+      EndType.edgeOf (passTurn EndType.siteOf EndType.partner up dn Zf s x) = EndType.edgeOf x :=
+    fun s hs x => passTurn_keeps_edge_at_cut EndType.edgeOf EndType.siteOf EndType.partner up dn Zf s hs
       (fun y => EndType.partner_edgeOf y) (hud s) (hud (s - 1)) x
   refine shield_upper_bound_of_pass_bounce hm
-    (passTurn EndType.partner up dn Zf) Zf up dn lo len
-    (fun s x => passTurn_invol _ up dn Zf s (h12 s) (h13 s) (h14 s) (h23 s) (h24 s)
-      (h34 s) x)
+    (passTurn EndType.siteOf EndType.partner up dn Zf) Zf up dn lo len
+    (fun s x => passTurn_invol EndType.siteOf EndType.partner up dn Zf s (h12 s) (h13 s)
+      (h14 s) (h23 s) (h24 s) (h34 s) (hs1 s) (hs2 s) (hs3 s) (hs4 s) x)
     (fun s x hxs => by
       subst hxs
-      exact passTurn_site EndType.siteOf _ up dn Zf _ (hs1 _) (hs2 _) (hs3 _) (hs4 _)
-        x rfl)
+      exact passTurn_site EndType.siteOf EndType.partner up dn Zf _ (hs1 _) (hs2 _)
+        (hs3 _) (hs4 _) x rfl)
     (fun s x hxs => by
       subst hxs
-      exact passTurn_ne _ up dn Zf _ (h12 _) (h13 _) (h14 _) (h23 _) (h24 _) (h34 _)
-        x (hfour _ x rfl))
+      exact passTurn_ne EndType.siteOf EndType.partner up dn Zf _ (h12 _) (h13 _)
+        (h14 _) (h23 _) (h24 _) (h34 _) x rfl (hfour _ x rfl))
     (fun x hx hc => hx (hkeep _ hc x))
     hupn hdnn hrange E hEp hEt ?_ ?_ ?_
   · -- the up pass
@@ -9746,8 +9790,8 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
       rw [harith] at h
       exact h
     rw [hEt, hsite, hEp]
-    have h := passTurn_pass_up EndType.partner up dn Zf (lo r + ((k : ℤ) + 1))
-      (hint r k hk)
+    have h := passTurn_pass_up EndType.siteOf EndType.partner up dn Zf
+      (lo r + ((k : ℤ) + 1)) (hint r k hk) (hs1 _)
     rw [harith] at h
     push_cast
     exact h
@@ -9760,16 +9804,16 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
       push_cast
       exact h
     rw [hEt, hsite, hEp]
-    have h := passTurn_pass_dn EndType.partner up dn Zf (lo r + ((k : ℤ) + 1))
-      (hint r k hk) (h14 _) (h34 _)
+    have h := passTurn_pass_dn EndType.siteOf EndType.partner up dn Zf
+      (lo r + ((k : ℤ) + 1)) (hint r k hk) (hs4 _) (h14 _) (h34 _)
     rw [harith] at h
     push_cast
     exact h
   · -- the boundary bounce
     intro r
     rw [hEt, hs4]
-    exact passTurn_bounce EndType.partner up dn Zf (lo r) (hbdry r)
-      (h14 _) (h24 _) (h34 _)
+    exact passTurn_bounce EndType.siteOf EndType.partner up dn Zf (lo r) (hbdry r)
+      (hs4 _) (h14 _) (h24 _) (h34 _)
 
 end EltBridge
 #print axioms EltBridge.passTurn_site
