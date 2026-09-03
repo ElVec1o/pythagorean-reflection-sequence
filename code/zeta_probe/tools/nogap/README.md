@@ -4528,3 +4528,24 @@ AUDIT COMPLETE. All six greens tested for instantiability from a group element:
 
 Five green, two yellow. Every green is now backed by an instantiation on an actual
 element, and every yellow has a proved reason.
+
+## 2026-09-03 — BLOCK 100: M9 dependency audit — the yellows are OFF the critical path
+
+Read thm:U rather than trusting the table's arrows.
+
+thm:U assumes (M) and (R-J), and nothing else. (T) is discharged "via Theorem thm:nogap
+and Corollary cor:localzero" -- M6 and M5 -- and explicitly NOT via the metric
+identity's open lower bound. (L) is discharged as thm:L.
+
+So thm:U reaches (T) through M5/M6, not through prop:cut. M3 and M4b -- the two atoms
+that failed BLOCK 97-98's instantiability audit -- are OFF the critical path. M4b was
+already marked SIDE; M3 feeds only M4b.
+
+EVERY ATOM thm:U DEPENDS ON IS GREEN AND INSTANTIATED ON A GROUP ELEMENT:
+  M2 Elt.lR_closed, M5/M7 Elt.defect_zero, M6 Elt.single_walk, B1 witElt_merges.
+
+M9's orange is entirely (M) and (R-J). Nothing beneath it is outstanding.
+
+That is the sharpest true statement about tonight's work: the combinatorial half is
+complete for the atoms the goal actually uses. The two yellows are a side branch, and I
+spent BLOCKS 59-98 on that side branch without checking whether the goal needed it.
