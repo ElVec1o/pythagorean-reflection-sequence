@@ -3935,3 +3935,25 @@ the arbitrary one elsewhere.
 The disjointness argument is the whole content and it is two lines: an end in
 A1 ∪ D1 has atTop = true, one in A2 ∪ D2 has atTop = false. Everything else is pushing
 Finset.mem_filter through six obligations.
+
+## 2026-09-03 — BLOCK 74: a datum in the merge class satisfying hturn
+
+  exists_merges_hturn -- glueing the sided turns at cut sites with the generic turnAtG
+                         elsewhere gives a Data that is in the merge class AND satisfies
+                         hturn
+
+Its hypothesis is exactly what exists_sided_turn_at (BLOCK 73) supplies at each cut
+site, so the two compose directly.
+
+All five Data obligations are discharged branch by branch on whether the site is cut:
+  t_invol   glue_invol from per-site involutivity and site preservation
+  t_ne      sided turns move arrivals to departures (disjoint), turnG_ne elsewhere
+  pt_ne     the partner changes site while the turn does not
+  hts       site preservation, both branches
+  hta       the role flip, both branches
+and hturn comes from the sided turn preserving atTop, hence the edge.
+
+This is the object HasInitialTurnInv needed. What remains to close it is the
+COST-MINIMAL version: exists_merges_hturn gives a datum in the class with hturn, and
+TurnInvG additionally requires cost-minimality. The descent preserves hturn (BLOCK 63),
+so minimising from this datum keeps it -- that is the last step.

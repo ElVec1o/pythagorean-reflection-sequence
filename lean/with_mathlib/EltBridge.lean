@@ -4396,6 +4396,111 @@ theorem exists_sided_turn_at {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) 
       (fun h => hx (Finset.mem_filter.mp h).1)
       (fun h => hx' (Finset.mem_filter.mp h).1)
 
+/-! ### The global turn: sided at cut sites, arbitrary elsewhere
+
+Glueing the sided turns of `exists_sided_turn_at` at the cut sites with the generic
+`turnAtG` everywhere else gives a datum satisfying `hturn`. -/
+
+/-- **A datum in the merge class satisfying `hturn`.**
+
+The hypothesis is exactly what `exists_sided_turn_at` supplies at each cut site. -/
+theorem exists_merges_hturn {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (Zf : Finset ℤ)
+    (hbal : ∀ s : ℤ, (GenericData.arrOf (EndType.siteOf (n := n) (m := m))
+      (EndType.isArrOf up) s).card
+      = (GenericData.depOf (EndType.siteOf (n := n) (m := m))
+        (EndType.isArrOf up) s).card)
+    (hsided : ∀ s ∈ Zf, ∃ t : EndType.Endpt n m → EndType.Endpt n m,
+      (∀ x, t (t x) = x) ∧
+      (∀ x ∈ EndType.arrAt (m := m) up s, t x ∈ EndType.depAt (m := m) up s) ∧
+      (∀ x ∈ EndType.depAt (m := m) up s, t x ∈ EndType.arrAt (m := m) up s) ∧
+      (∀ x, EndType.siteOf x = s → EndType.atTop (t x) = EndType.atTop x) ∧
+      (∀ x, x ∉ EndType.arrAt (m := m) up s → x ∉ EndType.depAt (m := m) up s →
+        t x = x)) :
+    ∃ D : WalkGraph.Data (EndType.Endpt n m),
+      WalkSupport.Merges EndType.siteOf (EndType.isArrOf up) EndType.partner D ∧
+      ∀ x : EndType.Endpt n m,
+        EndType.edgeOf (D.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf := by
+  classical
+  -- the local turn at each site
+  set loc : ℤ → EndType.Endpt n m → EndType.Endpt n m := fun s =>
+    if h : s ∈ Zf then (hsided s h).choose
+    else GenericData.turnAtG EndType.siteOf (EndType.isArrOf up) hbal s with hloc
+  have hlocinv : ∀ s x, loc s (loc s x) = x := by
+    intro s x
+    by_cases h : s ∈ Zf
+    · simp only [hloc, dif_pos h]
+      exact (hsided s h).choose_spec.1 x
+    · simp only [hloc, dif_neg h]
+      exact (TurnBuild.exists_involution_of_card_eq _ _
+        (GenericData.arr_disj_dep _ _ s) (hbal s)).choose_spec.1 x
+  have hlocsite : ∀ x, EndType.siteOf (loc (EndType.siteOf x) x) = EndType.siteOf x := by
+    intro x
+    by_cases h : EndType.siteOf x ∈ Zf
+    · simp only [hloc, dif_pos h]
+      obtain ⟨-, hAD, hDA, -, hfix⟩ := (hsided _ h).choose_spec
+      by_cases hx : x ∈ EndType.arrAt (m := m) up (EndType.siteOf x)
+      · exact ((EndType.mem_depAt up _ _).mp (hAD x hx)).1
+      · by_cases hx' : x ∈ EndType.depAt (m := m) up (EndType.siteOf x)
+        · exact ((EndType.mem_arrAt up _ _).mp (hDA x hx')).1
+        · rw [hfix x hx hx']
+    · simp only [hloc, dif_neg h]
+      exact GenericData.turnG_site EndType.siteOf (EndType.isArrOf up) hbal x
+  -- the glued turn preserves the edge at cut sites
+  have hkeep : ∀ x, EndType.siteOf x ∈ Zf →
+      EndType.edgeOf (loc (EndType.siteOf x) x) = EndType.edgeOf x := by
+    intro x h
+    have htop : EndType.atTop (loc (EndType.siteOf x) x) = EndType.atTop x := by
+      simp only [hloc, dif_pos h]
+      exact (hsided _ h).choose_spec.2.2.2.1 x rfl
+    exact same_edge_of_site_top _ _ (hlocsite x) htop
+  refine ⟨⟨EndType.partner, TurnBuild.glue EndType.siteOf loc, EndType.partner_invol,
+    TurnBuild.glue_invol EndType.siteOf loc hlocinv hlocsite, EndType.partner_ne, ?_, ?_⟩,
+    ⟨rfl, ?_, ?_⟩, ?_⟩
+  · -- t_ne
+    intro x
+    show loc (EndType.siteOf x) x ≠ x
+    by_cases h : EndType.siteOf x ∈ Zf
+    · simp only [hloc, dif_pos h]
+      obtain ⟨-, hAD, hDA, -, -⟩ := (hsided _ h).choose_spec
+      by_cases hx : x ∈ EndType.arrAt (m := m) up (EndType.siteOf x)
+      · intro hc
+        have := hAD x hx
+        rw [hc] at this
+        exact (Finset.disjoint_left.mp (EndType.arrAt_disjoint_depAt up _) hx) this
+      · by_cases hx' : x ∈ EndType.depAt (m := m) up (EndType.siteOf x)
+        · intro hc
+          have := hDA x hx'
+          rw [hc] at this
+          exact (Finset.disjoint_left.mp (EndType.arrAt_disjoint_depAt up _) this) hx'
+        · exact absurd (GenericData.mem_own EndType.siteOf (EndType.isArrOf up) x)
+            (by push_neg; exact ⟨hx, hx'⟩)
+    · simp only [hloc, dif_neg h]
+      exact GenericData.turnG_ne EndType.siteOf (EndType.isArrOf up) hbal x
+  · -- pt_ne
+    intro x hc
+    exact EndType.partner_site_ne x (by rw [hc]; exact hlocsite x)
+  · exact fun e => hlocsite e
+  · -- hta
+    intro e
+    show EndType.isArrOf up (loc (EndType.siteOf e) e) = !EndType.isArrOf up e
+    by_cases h : EndType.siteOf e ∈ Zf
+    · simp only [hloc, dif_pos h]
+      obtain ⟨-, hAD, hDA, -, -⟩ := (hsided _ h).choose_spec
+      cases hax : EndType.isArrOf up e with
+      | true =>
+        have := (EndType.mem_depAt up _ _).mp
+          (hAD e ((EndType.mem_arrAt up _ e).mpr ⟨rfl, hax⟩))
+        rw [this.2]; rfl
+      | false =>
+        have := (EndType.mem_arrAt up _ _).mp
+          (hDA e ((EndType.mem_depAt up _ e).mpr ⟨rfl, hax⟩))
+        rw [this.2]; rfl
+    · simp only [hloc, dif_neg h]
+      exact GenericData.turnG_arr EndType.siteOf (EndType.isArrOf up) hbal e
+  · -- hturn
+    intro x hne hmem
+    exact hne (hkeep x hmem)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4558,3 +4663,4 @@ end EltBridge
 #print axioms EltBridge.sided_balance_of_tr_zero
 #print axioms EltBridge.exists_involution_two
 #print axioms EltBridge.exists_sided_turn_at
+#print axioms EltBridge.exists_merges_hturn
