@@ -8283,3 +8283,25 @@ configurations.
 `sum_configs_eq_sum_paths` (BLOCK 223) and `weightSum_eq_sum_pathWeight` (BLOCK 211) to
 reach the matrix power, then `IsAssembly` via `coeff_neumann_tail_zero` (BLOCK 209).  No
 new construction is required.
+
+## 2026-09-04 — BLOCK 229: the set equality, proved; and what blocks the sum chain
+
+    exists_config_stateOf   a guarded path's configuration has exactly that path's states
+    stateFns_eq_guarded     THE SET EQUALITY: the state functions of configurations with a
+                            given span and departure ARE the guarded state functions
+
+0 sorry.  `exists_config_of_guarded` was strengthened to expose `eps` and `delta`, which
+required moving `const_of_step_gen`, `delta_const_of_guarded` and `eps_const_of_guarded`
+ahead of it -- they had been written after.
+
+**An honest obstacle, found by trying the chain.**  The sum-level statement wants a
+FINSET of guarded paths, and `Guarded` quantifies over all of `Z`, so it is not a decidable
+predicate and no `Finset` can be formed from it directly.  That is the price of BLOCK 226's
+choice to impose the conditions everywhere rather than on a window -- the choice that made
+both inclusions easy is exactly the one that blocks the Finset.
+
+So the remaining work for (M3) is a windowed restatement of `Guarded`: conditions on
+`[A-1, B+1]` only, plus the boundary values, shown equivalent to the present version.  The
+equivalence is the boundary bookkeeping BLOCK 226 deferred, and it is now unavoidable.
+This is not a new mathematical gap -- the set equality is proved -- but it is more than
+the "no new construction" BLOCK 228 predicted, and that prediction was wrong.

@@ -6886,13 +6886,46 @@ theorem guarded_stateOf (P : SiteCost.PathData) :
 
 /-! ### Converse inclusion: a guarded state function comes from a configuration -/
 
+/-- `const_of_step` for an arbitrary type; the proof never used the arithmetic. -/
+theorem const_of_step_gen {S : Type*} {g : ℤ → S} (h : ∀ j : ℤ, g j = g (j + 1)) :
+    ∀ j : ℤ, g j = g 0 := by
+  intro j
+  induction j using Int.induction_on with
+  | zero => rfl
+  | succ k ih => rw [← h k]; exact ih
+  | pred k ih =>
+      have hstep := h (-(k : ℤ) - 1)
+      have he : -(k : ℤ) - 1 + 1 = -(k : ℤ) := by ring
+      rw [he] at hstep
+      rw [hstep]; exact ih
+
+theorem delta_const_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) (j : ℤ) : (st j).delta = (st 0).delta := by
+  refine const_of_step_gen (g := fun i => (st i).delta) ?_ j
+  intro i
+  have hs := hg.step i
+  simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
+  exact hs.1.2.symm
+
+/-- **The sign data is constant along a guarded path**, because the compatibility guard
+carries it across every step.  Needed to match a guarded path's states field by field. -/
+theorem eps_const_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) (j : ℤ) : (st j).eps = (st 0).eps := by
+  refine const_of_step (g := fun i => (st i).eps) ?_ j
+  intro i
+  have hs := hg.step i
+  simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
+  exact hs.1.1.2.symm
+
+
 /-- **Converse inclusion.**  Every guarded state function is realised by a configuration
 with the same span, departure and deposits.  With `guarded_stateOf` (BLOCK 226) this is the
 set equality (M3) needs. -/
 theorem exists_config_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
     (hg : Guarded A B kstar st) :
     ∃ P : SiteCost.PathData, P.A = A ∧ P.B = B ∧ P.kstar = kstar ∧
-      (∀ j : ℤ, A ≤ j → j ≤ B → P.d j = (st j).dcur) := by
+      (∀ j : ℤ, A ≤ j → j ≤ B → P.d j = (st j).dcur) ∧
+      P.eps = (st 0).eps ∧ P.delta = (st 0).delta := by
   have hdepZ : ∀ j : ℤ, (((st j).dep : ℕ) : ℤ) = if j = kstar then (1 : ℤ) else 0 := by
     intro j
     by_cases h : j = kstar
@@ -6914,7 +6947,8 @@ theorem exists_config_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
     eq_travel_of_flow kstar A B (fun j => (st j).fcur) hflow
       (fun j hj => (hg.outer j hj).2) hg.loA hg.hiB hg.kstLo hg.kstHi
   refine ⟨mkPathData kstar (st A).eps (st A).delta (fun j => (st j).dcur) A B ?_ hg.loA hg.hiB
-    hg.kstLo hg.kstHi ?_ ?_ ?_, rfl, rfl, rfl, fun j hj1 hj2 => mkPathData_d hj1 hj2⟩
+    hg.kstLo hg.kstHi ?_ ?_ ?_, rfl, rfl, rfl, fun j hj1 hj2 => mkPathData_d hj1 hj2,
+    eps_const_of_guarded hg A, delta_const_of_guarded hg A⟩
   · have := hg.epsv A
     simpa [epsValidB] using this
   · intro j _ _
@@ -6947,38 +6981,9 @@ theorem exists_config_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
     · exact Or.inr (Or.inl h)
     · exact Or.inr (Or.inr h)
 
-/-- **The sign data is constant along a guarded path**, because the compatibility guard
-carries it across every step.  Needed to match a guarded path's states field by field. -/
-theorem eps_const_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
-    (hg : Guarded A B kstar st) (j : ℤ) : (st j).eps = (st 0).eps := by
-  refine const_of_step (g := fun i => (st i).eps) ?_ j
-  intro i
-  have hs := hg.step i
-  simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
-  exact hs.1.1.2.symm
 
 /-! ### Matching a guarded path's states field by field -/
 
-/-- `const_of_step` for an arbitrary type; the proof never used the arithmetic. -/
-theorem const_of_step_gen {S : Type*} {g : ℤ → S} (h : ∀ j : ℤ, g j = g (j + 1)) :
-    ∀ j : ℤ, g j = g 0 := by
-  intro j
-  induction j using Int.induction_on with
-  | zero => rfl
-  | succ k ih => rw [← h k]; exact ih
-  | pred k ih =>
-      have hstep := h (-(k : ℤ) - 1)
-      have he : -(k : ℤ) - 1 + 1 = -(k : ℤ) := by ring
-      rw [he] at hstep
-      rw [hstep]; exact ih
-
-theorem delta_const_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
-    (hg : Guarded A B kstar st) (j : ℤ) : (st j).delta = (st 0).delta := by
-  refine const_of_step_gen (g := fun i => (st i).delta) ?_ j
-  intro i
-  have hs := hg.step i
-  simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
-  exact hs.1.2.symm
 
 /-- The compatibility guard says each state's `dprev` is the previous state's `dcur`. -/
 theorem dprev_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
@@ -7058,6 +7063,34 @@ theorem stateOf_eq_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
   · show P.delta = (st j).delta
     rw [hdl]
     exact (delta_const_of_guarded hg j).symm
+
+/-- Strengthening of `exists_config_of_guarded`: the configuration's states ARE the path. -/
+theorem exists_config_stateOf {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) :
+    ∃ P : SiteCost.PathData, P.A = A ∧ P.B = B ∧ P.kstar = kstar ∧ stateOf P = st := by
+  obtain ⟨P, hA, hB, hk, hd, he, hdl⟩ := exists_config_of_guarded hg
+  refine ⟨P, hA, hB, hk, funext (stateOf_eq_of_guarded hg P hk ?_ he hdl)⟩
+  intro j
+  by_cases hj : A ≤ j ∧ j ≤ B
+  · exact hd j hj.1 hj.2
+  · rw [(P.houter j (by omega)).1, (hg.outer j (by omega)).1]
+
+/-- **The set equality (M3) needs.**  The state functions of configurations with a given
+span and departure are *exactly* the guarded state functions.  Forward is
+`guarded_stateOf`, backward is `exists_config_stateOf`. -/
+theorem stateFns_eq_guarded (A B kstar : ℤ) :
+    {st : ℤ → LocalState |
+        ∃ P : SiteCost.PathData, P.A = A ∧ P.B = B ∧ P.kstar = kstar ∧ stateOf P = st}
+      = {st | Guarded A B kstar st} := by
+  ext st
+  simp only [Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨P, hA, hB, hk, rfl⟩
+    have h := guarded_stateOf P
+    rw [hA, hB, hk] at h
+    exact h
+  · intro hg
+    exact exists_config_stateOf hg
 
 /-! ### The deposit magnitude is a sufficient state
 
@@ -14680,3 +14713,5 @@ end EltBridge
 #print axioms EltBridge.dep_of_guarded
 #print axioms EltBridge.localState_ext
 #print axioms EltBridge.stateOf_eq_of_guarded
+#print axioms EltBridge.exists_config_stateOf
+#print axioms EltBridge.stateFns_eq_guarded
