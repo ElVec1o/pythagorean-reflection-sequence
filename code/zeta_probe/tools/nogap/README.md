@@ -7056,3 +7056,35 @@ that can express gap edges.
 
 Scope unchanged and load-bearing: `mu = 2`.  BLOCK 158 measured 5072 of 8192 failures at
 `mu = 4`, where the two-chain structure does not exist, and nothing here lifts.
+
+## 2026-09-03 — BLOCK 185: the mu = 2 shield bound, self-contained
+
+`exists_passTurn_data` builds the datum -- `exists_glued_data` applied to `passTurn`,
+its three obligations discharged by `passTurn_invol`, `passTurn_site` and `passTurn_ne`,
+each used only at an OCCUPIED site where the witness is the hypothesis `siteOf x = s`
+itself.  `siteOf_mem_of_span` bounds the sites to `[A, B+1]`, so the section is needed
+only on `[A-1, B+1]`.
+
+`shield_mu_two_final` then assumes NO datum:
+
+    hm         every edge carries two strands
+    hspan      every end's edge lies in [A, B]
+    hsecWide   `sec` names the edge at each position of [A-1, B+1]
+    hsecEdge   and names an end's own edge at its own position
+    hmin       `runLo` is the least position of its run
+    ----------------------------------------------------------------
+    conclusion  ∃ E, walkCount E ≤ |Zf| + 1
+
+0 sorry, and `CostMerge` is invoked nowhere beneath it.
+
+**That is `prop:cut`'s converse on this class**: the defect is at most the number of cut
+sites.  With `prop:cut` itself, which is proved, it gives `c = |Z|` -- the shield law --
+for configurations with every `mu = 2`.
+
+The class is not vacuous, and that is the point: `mu j = 2` whenever `d j = 0`, so it
+CONTAINS gap edges and hence genuine cut sites.  That is exactly what the derived-sign
+model could not express (BLOCK 152), and what made M4b unstatable there.
+
+Scope, unchanged: `mu >= 4` is not covered and is not a matter of effort.  BLOCK 158
+measured 5072 of 8192 failures there, because with two strands each way the passes can
+be chosen so as not to chain, and nothing local forces the choice.  Ledger updated.

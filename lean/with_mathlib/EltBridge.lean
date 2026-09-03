@@ -10612,3 +10612,124 @@ theorem shield_mu_two (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
 end EltBridge
 
 #print axioms EltBridge.shield_mu_two
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- An end's site lies one either side of its edge, hence inside `[A-1, B+1]` when the
+edge lies in `[A, B]`. -/
+theorem siteOf_mem_of_span (x : EndType.Endpt n m) (A B : ℤ)
+    (h : EndType.edgeOf x ∈ Finset.Icc A B) :
+    A ≤ EndType.siteOf x ∧ EndType.siteOf x ≤ B + 1 := by
+  rw [Finset.mem_Icc] at h
+  rcases siteOf_cases x with hs | hs <;> omega
+
+/-- **The datum.**  `exists_glued_data` gives the walk-graph data of the glued
+`passTurn`, and its three obligations are `passTurn_invol`, `passTurn_site` and
+`passTurn_ne`.  Each is applied only at an OCCUPIED site, where the witness comes from
+the very hypothesis `siteOf x = s`, so the section is needed only on `[A-1, B+1]`. -/
+theorem exists_passTurn_data (hm : ∀ e, m e = 2) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (A B : ℤ)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      E.p = EndType.partner ∧
+      (∀ x, E.t x = passTurn EndType.siteOf EndType.partner
+        (upOf (m := m) hm sec) (dnOf (m := m) hm sec) Bs (EndType.siteOf x) x) ∧
+      (∀ x, EndType.siteOf (E.t x) = EndType.siteOf x) := by
+  classical
+  -- at an occupied site the four site facts hold, since the site is in range
+  have hfacts : ∀ (s : ℤ), (∃ y : EndType.Endpt n m, EndType.siteOf y = s) →
+      EndType.siteOf (EndType.partner (upOf (m := m) hm sec (s - 1))) = s ∧
+      EndType.siteOf (EndType.partner (dnOf (m := m) hm sec (s - 1))) = s ∧
+      EndType.siteOf (upOf (m := m) hm sec s) = s ∧
+      EndType.siteOf (dnOf (m := m) hm sec s) = s := by
+    rintro s ⟨y, rfl⟩
+    obtain ⟨h1, h2⟩ := siteOf_mem_of_span y A B (hspan y)
+    have hs : ((sec (EndType.siteOf y) : ℕ) : ℤ) = EndType.siteOf y :=
+      hsecWide _ (by omega) h2
+    have hs' : ((sec (EndType.siteOf y - 1) : ℕ) : ℤ) = EndType.siteOf y - 1 :=
+      hsecWide _ (by omega) (by omega)
+    refine ⟨?_, ?_, upOf_siteOf hm sec _ hs, dnOf_siteOf hm sec _ hs⟩
+    · rw [partner_upOf_siteOf hm sec _ hs']; ring
+    · rw [partner_dnOf_siteOf hm sec _ hs']; ring
+  obtain ⟨E, hEp, hEt⟩ := exists_glued_data EndType.siteOf EndType.partner
+    (passTurn EndType.siteOf EndType.partner (upOf (m := m) hm sec)
+      (dnOf (m := m) hm sec) Bs)
+    EndType.partner_invol EndType.partner_ne EndType.partner_site_ne
+    (fun s x => passTurn_invol EndType.siteOf EndType.partner _ _ Bs s
+      (fun h => partner_upOf_ne_partner_dnOf hm sec (s - 1))
+      (fun h => partner_ne_bot _ _ rfl rfl) (fun h => partner_ne_bot _ _ rfl rfl)
+      (fun h => partner_ne_bot _ _ rfl rfl) (fun h => partner_ne_bot _ _ rfl rfl)
+      (fun h => upOf_ne_dnOf hm sec s)
+      (fun h => (hfacts s h).1) (fun h => (hfacts s h).2.1)
+      (fun h => (hfacts s h).2.2.1) (fun h => (hfacts s h).2.2.2) x)
+    (fun s x hxs => by
+      subst hxs
+      exact passTurn_site EndType.siteOf EndType.partner _ _ Bs _
+        ((hfacts _ ⟨x, rfl⟩).1) ((hfacts _ ⟨x, rfl⟩).2.1)
+        ((hfacts _ ⟨x, rfl⟩).2.2.1) ((hfacts _ ⟨x, rfl⟩).2.2.2) x rfl)
+    (fun s x hxs => by
+      subst hxs
+      exact passTurn_ne EndType.siteOf EndType.partner _ _ Bs _
+        (partner_upOf_ne_partner_dnOf hm sec _)
+        (partner_ne_bot _ _ rfl rfl) (partner_ne_bot _ _ rfl rfl)
+        (partner_ne_bot _ _ rfl rfl) (partner_ne_bot _ _ rfl rfl)
+        (upOf_ne_dnOf hm sec _) x rfl
+        (hfour_of_mu_two hm sec _ x rfl (hsecEdge x)))
+  refine ⟨E, hEp, hEt, ?_⟩
+  intro x
+  rw [hEt x]
+  exact passTurn_site EndType.siteOf EndType.partner _ _ Bs _
+    ((hfacts _ ⟨x, rfl⟩).1) ((hfacts _ ⟨x, rfl⟩).2.1)
+    ((hfacts _ ⟨x, rfl⟩).2.2.1) ((hfacts _ ⟨x, rfl⟩).2.2.2) x rfl
+
+end EltBridge
+
+#print axioms EltBridge.siteOf_mem_of_span
+#print axioms EltBridge.exists_passTurn_data
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The `mu = 2` shield bound, self-contained.**
+
+No datum is assumed: `exists_passTurn_data` builds it, and `shield_mu_two` bounds it.
+The hypotheses are the configuration alone --
+
+    hm         every edge carries two strands
+    hspan      every end's edge lies in `[A, B]`
+    hsecWide   `sec` names the edge at each position of `[A-1, B+1]`
+    hsecEdge   and names an end's own edge at its own position
+    hmin       `runLo` is the least position of its run
+
+-- and the conclusion is that SOME walk-graph datum, namely the glue of `passTurn`, has
+at most `|Zf| + 1` walks.  That is `prop:cut`'s converse on this class: the defect is at
+most the number of cut sites.
+
+`CostMerge` is invoked nowhere beneath this. -/
+theorem shield_mu_two_final (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (hmin : ∀ (r : ℕ) (j : ℤ), A ≤ j → j ≤ B → CutComponents.gz Zf j = r →
+      runLo Zf A B r ≤ j)
+    (hloRange : ∀ r : ℕ, A - 1 ≤ runLo Zf A B r ∧ runLo Zf A B r ≤ B + 1)
+    (hrunRange : ∀ (r k : ℕ), k ≤ runLen Zf A B r →
+      A - 1 ≤ runLo Zf A B r + (k : ℤ) ∧ runLo Zf A B r + (k : ℤ) ≤ B + 1) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      WalkGraph.walkCount E ≤ Zf.card + 1 := by
+  obtain ⟨E, hEp, hEt, hTsite⟩ :=
+    exists_passTurn_data hm sec (insert A (insert (B + 1) Zf)) A B hspan hsecWide hsecEdge
+  exact ⟨E, shield_mu_two hm sec Zf A B
+    (fun r => hsecWide _ (hloRange r).1 (hloRange r).2)
+    (fun r k hk => hsecWide _ (hrunRange r k hk).1 (hrunRange r k hk).2)
+    hmin hspan hsecEdge E hEp hEt hTsite⟩
+
+end EltBridge
+
+#print axioms EltBridge.shield_mu_two_final
