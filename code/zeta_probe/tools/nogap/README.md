@@ -3957,3 +3957,25 @@ This is the object HasInitialTurnInv needed. What remains to close it is the
 COST-MINIMAL version: exists_merges_hturn gives a datum in the class with hturn, and
 TurnInvG additionally requires cost-minimality. The descent preserves hturn (BLOCK 63),
 so minimising from this datum keeps it -- that is the last step.
+
+## 2026-09-03 — BLOCK 75: minimising INSIDE the hturn subclass
+
+  exists_least_cost_hturn -- a least-cost datum among those satisfying hturn, given one
+                             such datum to start (BLOCK 74 supplies it)
+
+WHY THIS IS THE RIGHT MOVE. CostMerge.exists_mergesMin produces an arbitrary global
+minimiser, and nothing makes it satisfy hturn -- so the obvious route to
+HasInitialTurnInv does not work. But it does not need to: the free-pair argument
+compares E only with SWAPS of E, and swaps preserve hturn (hturn_step_nohZ, BLOCK 63).
+So minimality within the hturn subclass is exactly as strong as global minimality where
+it is used.
+
+The proof is Int.exists_least_of_bdd on the costs of hturn-data: bounded below by
+costOf_nonneg, non-empty by exists_merges_hturn. Same argument as
+CostMerge.exists_mergesMin with one extra conjunct carried through.
+
+STILL TO DO for HasInitialTurnInv: TurnInvG is defined with CostMerge.MergesMin, which
+demands minimality against ALL class members, not just hturn ones. Either TurnInvG is
+restated with subclass minimality (and run_step_turnInvG's use of hmin_of_mergesMin
+adjusted to match), or the two notions are shown to agree. The former is the honest
+route and is a change to the definition, not a new theorem.

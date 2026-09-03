@@ -4501,6 +4501,43 @@ theorem exists_merges_hturn {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (
     intro x hne hmem
     exact hne (hkeep x hmem)
 
+/-! ### Minimising inside the `hturn` subclass
+
+`CostMerge.exists_mergesMin` produces an arbitrary global minimiser, which need not
+satisfy `hturn`.  It does not have to: the free-pair argument compares `E` only with
+**swaps of `E`**, and swaps preserve `hturn` (BLOCK 63).  So minimising within the
+subclass of data that satisfy `hturn` is enough, and that subclass is non-empty by
+`exists_merges_hturn`. -/
+
+/-- **A least-cost datum among those satisfying `hturn`.** -/
+theorem exists_least_cost_hturn {n : ℕ} {m : Fin n → ℕ}
+    (d : EndData.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (D₀ : WalkGraph.Data (EndType.Endpt n m))
+    (hD₀ : WalkSupport.Merges EndType.siteOf d.isArr EndType.partner D₀ ∧
+      ∀ x : EndType.Endpt n m,
+        EndType.edgeOf (D₀.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf) :
+    ∃ E : WalkGraph.Data (EndType.Endpt n m),
+      (WalkSupport.Merges EndType.siteOf d.isArr EndType.partner E ∧
+        ∀ x : EndType.Endpt n m,
+          EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf) ∧
+      ∀ F : WalkGraph.Data (EndType.Endpt n m),
+        WalkSupport.Merges EndType.siteOf d.isArr EndType.partner F →
+        (∀ x : EndType.Endpt n m,
+          EndType.edgeOf (F.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf) →
+        CostMerge.costOf d E ≤ CostMerge.costOf d F := by
+  classical
+  obtain ⟨c, ⟨E, hE, hEc⟩, hleast⟩ :=
+    Int.exists_least_of_bdd
+      (P := fun c => ∃ F, (WalkSupport.Merges EndType.siteOf d.isArr EndType.partner F ∧
+        ∀ x : EndType.Endpt n m,
+          EndType.edgeOf (F.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf) ∧
+        CostMerge.costOf d F = c)
+      ⟨0, fun z hz => by obtain ⟨F, -, hF⟩ := hz; rw [← hF]; exact CostMerge.costOf_nonneg d F⟩
+      ⟨CostMerge.costOf d D₀, D₀, hD₀, rfl⟩
+  refine ⟨E, hE, fun F hF1 hF2 => ?_⟩
+  rw [hEc]
+  exact hleast _ ⟨F, ⟨hF1, hF2⟩, rfl⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4664,3 +4701,4 @@ end EltBridge
 #print axioms EltBridge.exists_involution_two
 #print axioms EltBridge.exists_sided_turn_at
 #print axioms EltBridge.exists_merges_hturn
+#print axioms EltBridge.exists_least_cost_hturn
