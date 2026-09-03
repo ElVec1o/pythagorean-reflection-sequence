@@ -8526,6 +8526,30 @@ theorem kstar_le_B_of_dep (g : ℤ → LocalState) {A B kstar j0 : ℤ}
   have : j0 = kstar := (hspan j0 hj1 hj2).mp hfire
   omega
 
+/-! ### The `B + 1` condition, composed
+
+`extendFn_dep` (BLOCK 262) carried `fcur B = 1 <-> k* = B + 1` as a hypothesis.  With the
+balance (BLOCK 264) and the two position bridges (BLOCK 265) it is a theorem: the
+dichotomy picks a side, and each side determines where the departure is. -/
+
+theorem hB1_of_balance (g : ℤ → LocalState) {A B kstar : ℤ} (S : ℤ)
+    (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1)
+    (hspan : ∀ j : ℤ, A ≤ j → j ≤ B → ((g j).dep = 1 ↔ j = kstar))
+    (hbal : (1 : ℤ) = (g B).fcur + S) (hfnn : 0 ≤ (g B).fcur) (hSnn : 0 ≤ S)
+    (hzero : S = 0 → ∀ j : ℤ, A ≤ j → j ≤ B → (g j).dep = 0)
+    (hone : S = 1 → ∃ j0 : ℤ, A ≤ j0 ∧ j0 ≤ B ∧ (g j0).dep = 1) :
+    ((g B).fcur.natAbs = 1 ↔ kstar = B + 1) := by
+  rcases flow_balance_dichotomy (g B).fcur S hfnn hSnn hbal with ⟨hf1, hS0⟩ | ⟨hf0, hS1⟩
+  · constructor
+    · intro _
+      exact kstar_eq_succ_B_of_no_dep g hk1 hk2 hspan (hzero hS0)
+    · intro _; omega
+  · constructor
+    · intro hcon; omega
+    · intro hcon
+      obtain ⟨j0, hj1, hj2, hfire⟩ := hone hS1
+      exact absurd hcon (kstar_le_B_of_dep g hj1 hj2 hspan hfire)
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16226,3 +16250,4 @@ end EltBridge
 #print axioms EltBridge.sum_zero_iff_no_one
 #print axioms EltBridge.kstar_eq_succ_B_of_no_dep
 #print axioms EltBridge.kstar_le_B_of_dep
+#print axioms EltBridge.hB1_of_balance

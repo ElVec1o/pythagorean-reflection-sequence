@@ -9045,3 +9045,24 @@ asks.  Both directions of that iff are now available:
 
 **[Rule 0] VERIFIED.**  The composition into `hB1` itself is the remaining step, and it is
 now a matter of chaining these three with `flow_balance_dichotomy`.
+
+## 2026-09-04 — BLOCK 266: the B+1 condition, composed
+
+    hB1_of_balance   fcur B = 1 <-> k* = B + 1, from the balance and the two bridges
+
+0 sorry, clean on the first build.
+
+`extendFn_dep` (BLOCK 262) carried this as a hypothesis and I expected it to need a fifth
+guard clause.  It needed none: `flow_balance_dichotomy` (BLOCK 264) picks a side, and each
+side determines where the departure is via `kstar_eq_succ_B_of_no_dep` or
+`kstar_le_B_of_dep` (BLOCK 265).
+
+**[Rule 0] VERIFIED.**  Every hypothesis of `extendFn_dep` is now a consequence of the guard
+rather than an assumption, so `exists_config_of_flag` applies to an arbitrary guarded path
+with nothing carried.
+
+**Where (M3) stands.**  The correspondence is complete in both directions, the extension is
+complete and guarded everywhere, and the guard is closed -- no clause of it is assumed.
+What remains is the sum comparison itself: `Finset.sum_subset` between the configurations'
+image and all paths, with `pathWeight_zero_of_guard_fails` (BLOCK 250) supplying the
+vanishing.
