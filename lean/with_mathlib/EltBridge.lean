@@ -9026,6 +9026,34 @@ theorem coeff_sum_all_paths (N : ℕ) {A : ℤ} {m : ℕ}
   rw [← coeff_sum_configs N C,
     sum_configs_eq_sum_all_pathsR (PowerSeries.X : PowerSeries ℤ) C T hsub hvan]
 
+/-! ### The comparison at the level of a single coefficient
+
+`sum_configs_eq_sum_all_pathsR` (BLOCK 279) asks the complement's WEIGHTS to vanish.  That
+is stronger than needed and, at `C` = the degree cut, false: a path outside the image can
+come from a configuration of larger relaxed length, whose weight `X ^ lR` is not zero.
+
+Its degree-`N` COEFFICIENT is zero, though, and that is all the comparison uses.  Stating
+it coefficient-wise weakens the hypothesis to exactly what holds. -/
+
+theorem coeff_sum_subset {α : Type*} [DecidableEq α] (N : ℕ) (S T : Finset α) (hST : S ⊆ T)
+    (w : α → PowerSeries ℤ)
+    (hvan : ∀ L ∈ T, L ∉ S → PowerSeries.coeff N (w L) = 0) :
+    PowerSeries.coeff N (∑ L ∈ S, w L) = PowerSeries.coeff N (∑ L ∈ T, w L) := by
+  rw [map_sum, map_sum]
+  exact Finset.sum_subset hST hvan
+
+/-- **And a configuration of the wrong degree contributes nothing to that coefficient**,
+which is the hypothesis's other half. -/
+theorem coeff_weight_of_wrong_degree (N : ℕ) (P : SiteCost.PathData) (m : ℕ)
+    (hn : P.B = P.A + m) (h : N ≠ P.lR) :
+    PowerSeries.coeff N
+        (pathWeightR (fun σ τ => if flagStepB σ τ then
+            (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+          (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X)
+          ((P.A :: idxList P.A m).map (flagOf P))) = 0 := by
+  rw [pathWeightR_flag_guarded (PowerSeries.X : PowerSeries ℤ) P m hn]
+  exact coeff_pow_lR_ne N P.lR h
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16751,3 +16779,5 @@ end EltBridge
 #print axioms EltBridge.sum_configs_eq_sum_flag_pathsR
 #print axioms EltBridge.sum_configs_eq_sum_all_pathsR
 #print axioms EltBridge.coeff_sum_all_paths
+#print axioms EltBridge.coeff_sum_subset
+#print axioms EltBridge.coeff_weight_of_wrong_degree

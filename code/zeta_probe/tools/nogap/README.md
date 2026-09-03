@@ -9322,3 +9322,22 @@ half follows from BLOCK 269; the containment half needs `C` to be the full degre
 `Finset`, which `finite_spanData_degree_le` (BLOCK 271) provides but which is not yet wired
 in.  So (M3) is one instantiation short, and that instantiation is `Finset` bookkeeping
 against theorems that are all proved.
+
+## 2026-09-04 — BLOCK 281: the comparison at the level of a single coefficient
+
+    coeff_sum_subset               the comparison, with only the COEFFICIENT required to
+                                   vanish on the complement
+    coeff_weight_of_wrong_degree   and a configuration of the wrong degree contributes
+                                   nothing to that coefficient
+
+0 sorry, both clean on the first build.
+
+`sum_configs_eq_sum_all_pathsR` (BLOCK 279) asks the complement's WEIGHTS to vanish.  That
+is stronger than needed and, at `C` = the degree cut, **false**: a path outside the image
+can come from a configuration of larger relaxed length, whose weight `X ^ lR` is not zero.
+Its degree-`N` coefficient is zero, though, and that is all the comparison uses.
+
+**This is why BLOCK 280's second hypothesis could not be discharged as stated.**  The fix
+was to weaken the statement to what is true rather than to try harder to prove what was
+written -- the same move as BLOCK 272, where the whole-sum comparison had to become
+coefficient-wise for the same underlying reason.
