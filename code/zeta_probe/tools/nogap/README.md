@@ -9471,3 +9471,44 @@ flagPathsFinset N A n` is finite by construction, contains every configuration's
 (this block), and by BLOCKS 282-284 + 267 every OTHER element is either unrealisable (guard
 fails, coefficient zero) or realisable and hence in `C`'s image already.  Closing (M3) is
 now assembling `coeff_sum_subset` with this `T` and a case split on membership.
+
+## 2026-09-04 — BLOCK 290: RETRACTION and repair — a real soundness gap in the head vector
+
+Drafting the final composition (`coeff_vanish_on_complement`) exposed a genuine bug, not a
+formatting issue: `flagHeadVec` and `flagHeadVecR` (BLOCKS 236, 278) used `headOkB`, but
+BLOCK 253 had already proved `headOkB` insufficient -- it lacks the flow condition
+`arr_A = fcur_A + dep_A` -- and built `headOk2B` to repair it.  **`headOk2B` was never wired
+into the actual kernel used by the sum comparison.**  Without the fix, a path could have a
+non-vanishing head vector while violating the flow into `A`, contributing to the coefficient
+sum while representing no configuration -- exactly the soundness gap BLOCK 253 identified in
+principle but did not close in practice.
+
+The repair: both `flagHeadVec` and `flagHeadVecR` now gate on `headOk2B` instead of
+`headOkB`.  This forced re-proving three downstream theorems, each straightforwardly, using
+`flowB_stateOf` and `P.houter` directly rather than the not-yet-relocatable
+`preState_stateOf`/`head_flow_stateOf` chain:
+
+    flagHeadVec_flagOf         (Z version) -- inlined the flow derivation
+    flagHeadVecR_flagOf        (R version) -- same
+    headCond_of_headVec_ne_zero -- conclusion strengthened to headOk2B
+
+0 sorry, all four re-certified; `headCond_of_headVec_ne_zero` needs `propext` alone.
+
+**Why this was found now and not earlier.**  Every prior use of `flagHeadVec`/`flagHeadVecR`
+was in the FORWARD direction -- showing a configuration's own path satisfies the kernel --
+where `headOkB` sufficed because a real configuration always satisfies the flow condition
+too, vacuously making the weaker gate adequate.  The gap was invisible until the CONVERSE
+direction (BLOCK 283's `headCond_of_headVec_ne_zero`, feeding the final composition) needed
+to recover enough from a bare non-zero coefficient to reconstruct a configuration -- and
+there, `headOkB` alone is not enough.  This is the same failure mode as BLOCKS 226 and
+252-253 (a guard invisible from the configuration side, caught only by the converse), but
+this time it had already escaped past three blocks of downstream use before being caught.
+
+**Corrected status of (M3).**  Every VERIFIED result up to BLOCK 289 that used
+`flagHeadVec`/`flagHeadVecR` remains true, since the fix only strengthens their hypothesis
+(any path satisfying the new, stronger gate also satisfied the old one, so
+`pathWeight_flag_guarded`/`pathWeightR_flag_guarded` and everything built on them go
+through unchanged with `headOk2B_stateOf` in place of `headOkB_stateOf`).  What changes is
+that BLOCK 283's `headCond_of_headVec_ne_zero` now gives the RIGHT fact for the final
+composition -- `headOk2B`, which supplies both `dprevA` AND `flowA` for `FlagPath` in one
+step, closing exactly the gap that composition was stuck on.

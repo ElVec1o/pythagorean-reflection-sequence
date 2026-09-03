@@ -7409,10 +7409,14 @@ theorem flagStepB_flagOf (P : SiteCost.PathData) (j : ℤ) :
 
 /-! ### The doubled boundary vectors, and the doubled path weight -/
 
+/-- The repaired head guard: BLOCK 231's, plus the flow condition. -/
+def headOk2B (σ : LocalState) : Bool :=
+  headOkB σ && decide ((σ.arr : ℤ) = σ.fcur + (σ.dep : ℤ))
+
 /-- The doubled head vector: the ordinary head guard, plus the flag agreeing with whether
 the arrival fires here. -/
 def flagHeadVec (x : ℤ) (σ : FlagState) : ℤ :=
-  if headOkB σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
+  if headOk2B σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
 
 /-- The doubled tail vector: the ordinary tail guard, plus the flag SET -- which is what
 forces the arrival to have happened somewhere along the path. -/
@@ -7424,10 +7428,21 @@ theorem flagHeadVec_flagOf (x : ℤ) (P : SiteCost.PathData) :
     flagHeadVec x (flagOf P P.A) = x ^ (stateOf P P.A).siteOf := by
   have hA := P.hA
   have harr : ((stateOf P P.A).arr = 1) ↔ P.A = 0 := arr_eq_one_iff P P.A
-  have hcond : (headOkB (flagOf P P.A).st
+  have hflowA : (((stateOf P P.A).arr : ℕ) : ℤ)
+      = (stateOf P P.A).fcur + (((stateOf P P.A).dep : ℕ) : ℤ) := by
+    have hf := flowB_stateOf P (P.A - 1)
+    simp only [flowB, decide_eq_true_eq] at hf
+    rw [show P.A - 1 + 1 = P.A by ring] at hf
+    have h0 : (stateOf P (P.A - 1)).fcur = 0 := (P.houter (P.A - 1) (by omega)).2
+    rw [h0] at hf
+    omega
+  have hheadOk2 : headOk2B (stateOf P P.A) = true := by
+    simp only [headOk2B, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨headOkB_stateOf P, hflowA⟩
+  have hcond : (headOk2B (flagOf P P.A).st
       && ((flagOf P P.A).past == decide ((flagOf P P.A).st.arr = 1))) = true := by
     simp only [flagOf, Bool.and_eq_true, beq_iff_eq, decide_eq_decide]
-    exact ⟨headOkB_stateOf P, by rw [harr]; omega⟩
+    exact ⟨hheadOk2, by rw [harr]; omega⟩
   rw [flagHeadVec, if_pos hcond]
   rfl
 
@@ -8104,10 +8119,6 @@ theorem head_flow_stateOf (P : SiteCost.PathData) :
     (congrArg LocalState.fcur (preState_stateOf P)).symm
   rw [h0] at hf
   omega
-
-/-- The repaired head guard: BLOCK 231's, plus the flow condition. -/
-def headOk2B (σ : LocalState) : Bool :=
-  headOkB σ && decide ((σ.arr : ℤ) = σ.fcur + (σ.dep : ℤ))
 
 theorem headOk2B_stateOf (P : SiteCost.PathData) : headOk2B (stateOf P P.A) = true := by
   simp only [headOk2B, Bool.and_eq_true, decide_eq_true_eq]
@@ -8922,7 +8933,7 @@ BLOCK 236 with `pathWeightR`.  This completes the port of everything the coeffic
 comparison needs from the weight side. -/
 
 def flagHeadVecR {R : Type*} [CommRing R] (x : R) (σ : FlagState) : R :=
-  if headOkB σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
+  if headOk2B σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
 
 def flagTailVecR {R : Type*} [CommRing R] (x : R) (σ : FlagState) : R :=
   if validB σ.st && epsValidB σ.st && endValidB σ.st && σ.past then
@@ -8932,10 +8943,21 @@ theorem flagHeadVecR_flagOf {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathD
     flagHeadVecR x (flagOf P P.A) = x ^ (stateOf P P.A).siteOf := by
   have hA := P.hA
   have harr : ((stateOf P P.A).arr = 1) ↔ P.A = 0 := arr_eq_one_iff P P.A
-  have hcond : (headOkB (flagOf P P.A).st
+  have hflowA : (((stateOf P P.A).arr : ℕ) : ℤ)
+      = (stateOf P P.A).fcur + (((stateOf P P.A).dep : ℕ) : ℤ) := by
+    have hf := flowB_stateOf P (P.A - 1)
+    simp only [flowB, decide_eq_true_eq] at hf
+    rw [show P.A - 1 + 1 = P.A by ring] at hf
+    have h0 : (stateOf P (P.A - 1)).fcur = 0 := (P.houter (P.A - 1) (by omega)).2
+    rw [h0] at hf
+    omega
+  have hheadOk2 : headOk2B (stateOf P P.A) = true := by
+    simp only [headOk2B, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨headOkB_stateOf P, hflowA⟩
+  have hcond : (headOk2B (flagOf P P.A).st
       && ((flagOf P P.A).past == decide ((flagOf P P.A).st.arr = 1))) = true := by
     simp only [flagOf, Bool.and_eq_true, beq_iff_eq, decide_eq_decide]
-    exact ⟨headOkB_stateOf P, by rw [harr]; omega⟩
+    exact ⟨hheadOk2, by rw [harr]; omega⟩
   rw [flagHeadVecR, if_pos hcond]
   rfl
 
@@ -9109,11 +9131,11 @@ theorem headOkR_of_weight_ne_zero {R : Type*} [CommRing R] (x : R) (g : ℤ → 
       show flagHeadVecR x (g A) * _ * _ = 0
       rw [hz]; ring
 
-/-- **And the head guard itself.**  A non-vanishing head vector is a firing `headOkB`
+/-- **And the head guard itself.**  A non-vanishing head vector is a firing `headOk2B`
 together with the flag matching the arrival. -/
 theorem headCond_of_headVec_ne_zero {R : Type*} [CommRing R] (x : R) (σ : FlagState)
     (h : flagHeadVecR x σ ≠ 0) :
-    (headOkB σ.st && (σ.past == decide (σ.st.arr = 1))) = true := by
+    (headOk2B σ.st && (σ.past == decide (σ.st.arr = 1))) = true := by
   by_contra hc
   apply h
   rw [flagHeadVecR, if_neg]
@@ -9334,6 +9356,32 @@ theorem mem_flagPathsFinset_of_config (N : ℕ) (P : SiteCost.PathData) (n : ℕ
     show (g ⟨i, by simpa using h1⟩).toFlag (idxFn P.A n ⟨i, by simpa using h1⟩)
       = flagOf P (idxFn P.A n ⟨i, by simpa using h2⟩)
     exact boxState_toFlag_flagOf P _
+
+/-! ### Every element of `T` is a state-function image -/
+
+/-- **Every list in `flagPathsFinset` is `(A :: idxList A n).map gg` for some state
+function `gg`.**  This is the bridge back from the `Fin`-indexed box to the integer-indexed
+form the rest of the development uses. -/
+theorem exists_stateFn_of_mem_flagPathsFinset (N : ℕ) (A : ℤ) (n : ℕ) (L : List FlagState)
+    (hL : L ∈ flagPathsFinset N A n) :
+    ∃ gg : ℤ → FlagState, L = (A :: idxList A n).map gg := by
+  obtain ⟨g, -, rfl⟩ := Finset.mem_image.mp hL
+  set gg : ℤ → FlagState := fun j =>
+    if h : (j - A).toNat < n + 1 then (g ⟨(j - A).toNat, h⟩).toFlag j
+    else (g ⟨0, Nat.succ_pos n⟩).toFlag j with hgg
+  refine ⟨gg, ?_⟩
+  rw [← ofFn_idxFn A n, List.map_ofFn]
+  refine congrArg List.ofFn (funext fun i => ?_)
+  show (g i).toFlag (idxFn A n i) = gg (idxFn A n i)
+  have hidx : (idxFn A n i - A).toNat = (i : ℕ) := by
+    show (A + (i : ℕ) - A).toNat = (i : ℕ)
+    simp
+  rw [hgg]
+  simp only
+  rw [dif_pos (by rw [hidx]; exact i.isLt)]
+  congr 2
+  exact Fin.ext hidx.symm
+
 
 /-! ### The deposit magnitude is a sufficient state
 
@@ -17073,3 +17121,4 @@ end EltBridge
 #print axioms EltBridge.boxSet_finite
 #print axioms EltBridge.boxSet_bounds
 #print axioms EltBridge.mem_flagPathsFinset_of_config
+#print axioms EltBridge.exists_stateFn_of_mem_flagPathsFinset
