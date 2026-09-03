@@ -596,6 +596,75 @@ theorem VEndpt.hsX_beyond {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ) (w : 
   | inl y => exact VEndpt.hsite_real kstar bnd y
   | inr b => exact absurd hx (by simp [VEndpt.edgeOf]; omega)
 
+/-! ### The residual condition is automatic for `kstar > 0`
+
+The walk carrying the virtual pair also carries the virtual arrival, whose *turn* is a
+real end at site `0` -- so on edge `-1` or `0`.  Hence that walk's leftmost edge is at
+most `0`.  When `kstar > 0` it is therefore not `kstar`, and BLOCK 15's condition
+holds automatically.
+
+For `kstar < 0` the same argument gives only `wLo <= kstar`, not `wLo < kstar`: the
+real ends at site `kstar` sit on edges `kstar - 1` and `kstar`, and `kstar - 1` lies
+outside the span, so it may be empty.  That half does not close by this route. -/
+
+/-- **BLOCK 15's condition, discharged for `kstar > 0`.**  A walk reaching any end at
+edge `<= 0` has leftmost edge `<= 0`, hence not `kstar`. -/
+theorem VEndpt.leftmost_ne_kstar {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm)) (z : VEndpt n mm) (hk : 0 < kstar)
+    (y : VEndpt n mm) (hzy : (WalkGraph.graph D).Reachable z y)
+    (hy : VEndpt.edgeOf bnd y ≤ 0) :
+    WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph D) z ≠ kstar := by
+  have := WalkSupport.wLo_le (VEndpt.edgeOf bnd) (WalkGraph.graph D) hzy
+  omega
+
+/-- **And the end at edge `<= 0` is there**: the turn of the virtual arrival sits at
+site `0`, so it is a real end on edge `-1` or `0`. -/
+theorem VEndpt.turn_of_vArr_low {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.site kstar (D.t e) = VEndpt.site kstar e)
+    (hvirt : ∀ b : Bool, D.t (Sum.inr b) ≠ Sum.inr b)
+    (hnk : kstar ≠ 0)
+    (y : VEndpt n mm) (hy : y = D.t (Sum.inr false)) :
+    VEndpt.edgeOf bnd y ≤ 0 ∨ ∃ u : EndType.Endpt n mm, y = Sum.inl u := by
+  right
+  have hsy : VEndpt.site kstar y = 0 := by
+    rw [hy, hts]; rfl
+  cases hcase : y with
+  | inl u => exact ⟨u, rfl⟩
+  | inr b =>
+    exfalso
+    cases b
+    · exact hvirt false (hy.symm.trans hcase)
+    · rw [hcase] at hsy; exact hnk (by simpa [VEndpt.site] using hsy)
+
+/-- Reachability along a turn. -/
+theorem reachable_turn {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (x : α) : (WalkGraph.graph D).Reachable x (D.t x) :=
+  SimpleGraph.Adj.reachable (G := WalkGraph.graph D) (Or.inr rfl)
+
+/-- **BLOCK 15's residual condition is DISCHARGED for `kstar > 0`.**
+
+The walk carrying the virtual arrival reaches its turn, which sits at site `0`; being
+a real end there, it lies on edge `-1` or `0`.  So the walk's leftmost edge is at most
+`0`, hence not `kstar`. -/
+theorem VEndpt.residual_discharged {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm)) (z : VEndpt n mm) (hk : 0 < kstar)
+    (hts : ∀ e, VEndpt.site kstar (D.t e) = VEndpt.site kstar e)
+    (hvirt : ∀ b : Bool, D.t (Sum.inr b) ≠ Sum.inr b)
+    (hz : (WalkGraph.graph D).Reachable z (Sum.inr false)) :
+    WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph D) z ≠ kstar := by
+  set y := D.t (Sum.inr false : VEndpt n mm) with hy
+  have hzy : (WalkGraph.graph D).Reachable z y :=
+    hz.trans (reachable_turn D (Sum.inr false))
+  have hsy : VEndpt.site kstar y = 0 := by rw [hy, hts]; rfl
+  have hle : VEndpt.edgeOf bnd y ≤ 0 := by
+    rcases VEndpt.turn_of_vArr_low kstar bnd D hts hvirt (by omega) y hy with h | ⟨u, hu⟩
+    · exact h
+    · rw [hu] at hsy ⊢
+      simp only [VEndpt.site, VEndpt.edgeOf, EndType.siteOf] at hsy ⊢
+      split_ifs at hsy <;> omega
+  exact VEndpt.leftmost_ne_kstar kstar bnd D z hk y hzy hle
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -625,3 +694,6 @@ end EltBridge
 #print axioms EltBridge.VEndpt.hsW_fails_at_zero
 #print axioms EltBridge.VEndpt.hsW_disj
 #print axioms EltBridge.VEndpt.hsX_beyond
+#print axioms EltBridge.VEndpt.leftmost_ne_kstar
+#print axioms EltBridge.VEndpt.turn_of_vArr_low
+#print axioms EltBridge.VEndpt.residual_discharged

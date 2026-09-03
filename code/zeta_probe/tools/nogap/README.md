@@ -2440,3 +2440,28 @@ exactly one condition, because hpt forces one of the two virtual ends to be a to
 that one always needs the site-edge relation. The condition can be MOVED between the
 two ends but not removed by choosing bnd. That is worth recording so it is not
 re-attempted.
+
+## 2026-09-03 — BLOCK 16: the residual condition is DISCHARGED for kstar > 0
+
+  reachable_turn                    -- reachability along a turn (was missing; only
+                                       reachable_partner existed)
+  VEndpt.leftmost_ne_kstar          -- a walk reaching any end at edge <= 0 has
+                                       leftmost edge <= 0, hence != kstar when kstar>0
+  VEndpt.turn_of_vArr_low           -- the turn of the virtual arrival is a REAL end
+                                       (axiom-free): it sits at site 0, and the only
+                                       virtual end at site 0 is the virtual arrival
+                                       itself, which a turn cannot fix
+  VEndpt.residual_discharged        -- BLOCK 15's condition, DISCHARGED for kstar > 0
+
+Argument: the walk carrying the virtual arrival reaches its turn; that turn sits at
+site 0 and is a real end, so it lies on edge -1 or 0; hence the walk's leftmost edge
+is <= 0 < kstar.
+
+WHAT REMAINS: kstar < 0. The mirror argument gives only wLo <= kstar, not wLo < kstar,
+because the real ends at site kstar sit on edges kstar-1 and kstar, and kstar-1 lies
+OUTSIDE the span (A <= kstar), so it may be empty. This half does not close by this
+route. kstar = 0 is already excluded by partner_site_ne.
+
+So the chain now reads, for kstar > 0 and modulo transporting the remaining WalkSupport
+lemmas: Elt -> PathData -> VEndpt -> balanced -> partner -> locality hypotheses
+satisfied. That is B1 for half the parameter range.
