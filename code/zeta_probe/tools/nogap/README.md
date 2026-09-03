@@ -2866,3 +2866,28 @@ BLOCKS 8-29 built.
 REMAINING FOR B1: the locality discharges (BLOCKS 16/18) are written against the
 literals 0 and kstar; they need the s0/s1 parameters threaded, exactly as siteP did for
 the site map. Then the assembled merge theorems apply to Elt.balanced directly.
+
+## 2026-09-03 — BLOCK 31: the locality discharges are parametrised; assembly is shift-proof
+
+  VEndpt.partner_site_neP     -- partner changes site whenever s0 != s1
+  VEndpt.turn_of_vArr_realP   -- the turn of the virtual arrival is a real end
+  VEndpt.wlo_le_s0            -- so the walk carrying the virtual pair has leftmost
+                                 edge <= s0
+  VEndpt.residual_dischargedP -- hence != s1, given s0 < s1
+  vEndDataP
+  VEndpt.merges_to_oneP       -- **THE ASSEMBLED THEOREM, SHIFT-PROOF**
+
+The condition that was "kstar > 0" is now "s0 < s1", and it is invariant under the
+shift exactly as it must be: -A < kstar - A iff 0 < kstar. So the parametrisation did
+not weaken anything; it made the same hypothesis expressible for a shifted
+configuration, which is what BLOCK 28 showed was missing.
+
+The three discharges read cleanly in the parametrised form:
+  hsW at the virtual DEPARTURE -- excluded, reachable from its partner, wLo <= s0 < s1
+  hsX at the virtual ARRIVAL   -- excluded, wLo <= s0 < bnd
+  hsT at the virtual departure -- excluded, bnd + 1 exceeds every edge
+
+REMAINING FOR B1: connect `Elt.balanced` to a MergesMin datum -- i.e. the parametrised
+form of GenericData.dataG plus CostMerge.exists_mergesMin -- and supply hcov0. Both are
+assembly, not new mathematics: dataG is already generic in the site map, so it accepts
+siteP unchanged.

@@ -1415,6 +1415,133 @@ theorem Elt.balanced (g : Elt) :
           (g.toPathData.kstar - g.toPathData.A) (pdUp g.toPathData) s).card :=
   pd_balanced g.toPathData
 
+/-! ### The locality discharges, parametrised
+
+BLOCKS 16 and 18 were written against the literals `0` and `kstar`.  With `siteP` the
+condition `kstar > 0` becomes `s0 < s1`, which is invariant under the shift -- as it
+must be, since `-A < kstar - A` iff `0 < kstar`. -/
+
+/-- The partner changes site whenever the two virtual sites differ. -/
+theorem VEndpt.partner_site_neP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (h : s0 ≠ s1)
+    (x : VEndpt n mm) :
+    VEndpt.siteP s0 s1 (VEndpt.partner x) ≠ VEndpt.siteP s0 s1 x := by
+  cases x with
+  | inl y =>
+    simpa [VEndpt.partner, VEndpt.siteP] using
+      WalkSupport.p_site_ne EndType.edgeOf EndType.siteOf EndType.atTop EndType.partner
+        (fun _ => rfl) (fun w => EndType.partner_edgeOf w) (fun w => EndType.partner_top w) y
+  | inr b => cases b <;> simp [VEndpt.partner, VEndpt.siteP] <;> omega
+
+/-- **The turn of the virtual arrival is a real end**, parametrised. -/
+theorem VEndpt.turn_of_vArr_realP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hne : s0 ≠ s1)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (y : VEndpt n mm) (hy : y = D.t (Sum.inr false)) :
+    ∃ u : EndType.Endpt n mm, y = Sum.inl u := by
+  have hsy : VEndpt.siteP s0 s1 y = s0 := by rw [hy, hts]; rfl
+  cases hcase : y with
+  | inl u => exact ⟨u, rfl⟩
+  | inr b =>
+    exfalso
+    cases b
+    · exact D.t_ne _ (hy.symm.trans hcase)
+    · rw [hcase] at hsy; exact hne (by simpa [VEndpt.siteP] using hsy.symm)
+
+/-- **The walk carrying the virtual pair has leftmost edge at most `s0`.**  Its arrival
+turns to a real end at site `s0`, which lies on edge `s0 - 1` or `s0`. -/
+theorem VEndpt.wlo_le_s0 {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (hne : s0 ≠ s1)
+    (D : WalkGraph.Data (VEndpt n mm)) (z : VEndpt n mm)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hz : (WalkGraph.graph D).Reachable z (Sum.inr false)) :
+    WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph D) z ≤ s0 := by
+  set y := D.t (Sum.inr false : VEndpt n mm) with hy
+  have hzy : (WalkGraph.graph D).Reachable z y :=
+    hz.trans (reachable_turn D (Sum.inr false))
+  have hsy : VEndpt.siteP s0 s1 y = s0 := by rw [hy, hts]; rfl
+  obtain ⟨u, hu⟩ := VEndpt.turn_of_vArr_realP s0 s1 hne D hts y hy
+  have hle : VEndpt.edgeOf bnd y ≤ s0 := by
+    rw [hu] at hsy ⊢
+    simp only [VEndpt.siteP, VEndpt.edgeOf, EndType.siteOf] at hsy ⊢
+    split_ifs at hsy <;> omega
+  exact le_trans (WalkSupport.wLo_le (VEndpt.edgeOf bnd) (WalkGraph.graph D) hzy) hle
+
+/-- **The residual condition, parametrised and discharged for `s0 < s1`.** -/
+theorem VEndpt.residual_dischargedP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ)
+    (hlt : s0 < s1)
+    (D : WalkGraph.Data (VEndpt n mm)) (z : VEndpt n mm)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hz : (WalkGraph.graph D).Reachable z (Sum.inr false)) :
+    WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph D) z ≠ s1 := by
+  have := VEndpt.wlo_le_s0 s0 s1 bnd (by omega) D z hts hz
+  omega
+
+/-- The end data with parametrised sites. -/
+def vEndDataP {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (ds : Bool → Bool) :
+    EndData.Data (VEndpt n mm) :=
+  ⟨VEndpt.atTop, VEndpt.isArr up, ds⟩
+
+/-- **B1, assembled with parametrised virtual sites.**
+
+Valid whenever `s0 < s1` and `bnd` lies above every real edge and above `s0` -- which
+for a shifted configuration means `-A < kstar - A`, i.e. `kstar > 0`, and a free
+choice of phantom edge. -/
+theorem VEndpt.merges_to_oneP {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) (s0 s1 bnd : ℤ) (hlt : s0 < s1) (hb : s0 < bnd)
+    (hbnd : ∀ u : EndType.Endpt n mm, EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ, (∃ u : VEndpt n mm, VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt n mm, VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt n mm, VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : CostMerge.MergesMin (VEndpt.siteP s0 s1) (VEndpt.isArr up) VEndpt.partner
+      (vEndDataP up ds) D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.siteP s0 s1) (VEndpt.isArr up) VEndpt.partner
+        (vEndDataP up ds) D' ∧ WalkGraph.walkCount D' ≤ 1 := by
+  refine CostMerge.min_merges_to_one_local (VEndpt.edgeOf bnd) (VEndpt.siteP s0 s1)
+    VEndpt.atTop VEndpt.partner (vEndDataP up ds)
+    (fun _ => rfl) (VEndpt.partner_site_neP s0 s1 (by omega))
+    ?_ ?_ ?_ (VEndpt.hpe bnd) VEndpt.hpt hcov0 z₀ D hD
+  · -- hsW
+    intro E hE w x hwx hsx
+    cases x with
+    | inl y => exact Or.inr rfl
+    | inr b =>
+      cases b
+      · exact Or.inl rfl
+      · exfalso
+        have hpz : (WalkGraph.graph E).Reachable w (Sum.inr false : VEndpt n mm) := by
+          refine hwx.trans ?_
+          have := WalkSupport.reachable_partner E (Sum.inr true : VEndpt n mm)
+          rwa [hE.1] at this
+        exact VEndpt.residual_dischargedP s0 s1 bnd hlt E w hE.2.1 hpz
+          (by simpa [VEndpt.siteP] using hsx.symm)
+  · -- hsX
+    intro E hE w x hwx hxe hxb
+    cases x with
+    | inl y => rfl
+    | inr b =>
+      cases b
+      · exfalso
+        have hle := VEndpt.wlo_le_s0 s0 s1 bnd (by omega) E w hE.2.1 hwx
+        simp only [VEndpt.edgeOf] at hxe
+        omega
+      · exact absurd hxb (by simp [VEndpt.atTop])
+  · -- hsT
+    intro E _ w y hye hyt
+    cases y with
+    | inl u => rfl
+    | inr b =>
+      cases b
+      · exact absurd hyt (by simp [VEndpt.atTop])
+      · exfalso
+        have hlo := WalkSupport.wLo_le (VEndpt.edgeOf bnd) (WalkGraph.graph E)
+          (SimpleGraph.Reachable.refl w)
+        simp only [VEndpt.edgeOf] at hye
+        cases w with
+        | inl u => have := hbnd u; simp only [VEndpt.edgeOf] at hlo; omega
+        | inr c => simp only [VEndpt.edgeOf] at hlo; omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1475,3 +1602,7 @@ end EltBridge
 #print axioms EltBridge.pd_travelS_zero_outside
 #print axioms EltBridge.pd_balanced
 #print axioms EltBridge.Elt.balanced
+#print axioms EltBridge.VEndpt.partner_site_neP
+#print axioms EltBridge.VEndpt.wlo_le_s0
+#print axioms EltBridge.VEndpt.residual_dischargedP
+#print axioms EltBridge.VEndpt.merges_to_oneP
