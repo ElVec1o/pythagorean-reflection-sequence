@@ -8755,3 +8755,18 @@ induction splits on whether the failure is at the head of the remaining path or 
 (BLOCK 249) on one side and `exists_config_of_flag` (BLOCK 243) identifying the guarded
 paths with configurations, the two sums agree -- which is (M3)'s statement.  What is left
 is writing that comparison as a `Finset` argument.
+
+## 2026-09-04 — BLOCK 251: the extension, on flagged states
+
+    extendFlag            extend a flagged state function beyond its span
+    extendFlag_flagOf     for a configuration it changes nothing
+    extendFlag_outer      and `outer` holds for it, for ANY path
+    extendFlag_eq_on      it agrees with the path on the span (NO AXIOMS)
+
+0 sorry, all three clean on the first build.
+
+`extendFn` extends the underlying states and the flag is `0 <= j` by definition, so the
+flagged extension is immediate.  This is the piece that carries a finite path -- a list --
+to the state function `exists_config_of_flag` (BLOCK 243) consumes: `exists_fun_of_length`
+(BLOCK 225) turns the list into a function on the span, and `extendFlag` extends it to `Z`
+with `outer` holding by construction.

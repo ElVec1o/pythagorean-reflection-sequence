@@ -8012,6 +8012,37 @@ theorem pathWeight_zero_of_guard_fails (x : ℤ) (g : ℤ → FlagState) :
           h3]
         ring
 
+/-! ### The extension, on flagged states
+
+`extendFn` (BLOCK 246) extends the underlying states; the flag is `0 <= j` by definition,
+so the flagged extension is immediate.  This is what carries a finite path -- a list -- to
+the state function `exists_config_of_flag` (BLOCK 243) consumes. -/
+
+/-- Extend a flagged state function beyond its span. -/
+def extendFlag (g : ℤ → FlagState) (A B : ℤ) : ℤ → FlagState :=
+  fun j => ⟨extendFn (fun i => (g i).st) A B j, decide (0 ≤ j)⟩
+
+/-- **For a configuration the flagged extension changes nothing.** -/
+theorem extendFlag_flagOf (P : SiteCost.PathData) :
+    extendFlag (flagOf P) P.A P.B = flagOf P := by
+  funext j
+  have h := congrFun (extendFn_stateOf P) j
+  show (⟨extendFn (stateOf P) P.A P.B j, decide (0 ≤ j)⟩ : FlagState) = flagOf P j
+  rw [h]
+  rfl
+
+/-- **And `outer` holds for it, for any path.** -/
+theorem extendFlag_outer (g : ℤ → FlagState) (A B : ℤ) :
+    ∀ j : ℤ, j < A ∨ B < j →
+      (extendFlag g A B j).st.dcur = 0 ∧ (extendFlag g A B j).st.fcur = 0 :=
+  fun j hj => extendFn_outer (fun i => (g i).st) A B j hj
+
+/-- The extension agrees with the path on the span. -/
+theorem extendFlag_eq_on (g : ℤ → FlagState) (A B : ℤ) {j : ℤ} (h1 : A ≤ j) (h2 : j ≤ B)
+    (hflag : (g j).past = decide (0 ≤ j)) : extendFlag g A B j = g j := by
+  show (⟨extendFn (fun i => (g i).st) A B j, decide (0 ≤ j)⟩ : FlagState) = g j
+  rw [extendFn_eq_on _ A B h1 h2, ← hflag]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15680,3 +15711,6 @@ end EltBridge
 #print axioms EltBridge.flagPath_inj
 #print axioms EltBridge.sum_configs_eq_sum_flag_paths
 #print axioms EltBridge.pathWeight_zero_of_guard_fails
+#print axioms EltBridge.extendFlag_flagOf
+#print axioms EltBridge.extendFlag_outer
+#print axioms EltBridge.extendFlag_eq_on
