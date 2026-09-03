@@ -12024,3 +12024,228 @@ theorem near_bounce_path (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : F
 end EltBridge
 
 #print axioms EltBridge.near_bounce_path
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ### The relabelling
+
+`hchain` asks that the naming make the passes level-preserving.  Defining the
+relabelling by the recursion
+
+    rel 0 b = 1,    rel (k+1) b = sig (lo + (k+1)) b * rel k b
+
+makes that hold BY CONSTRUCTION: the pass at position `k+1` permutes by
+`sig (lo+(k+1)) b`, which is exactly the step from `rel k b` to `rel (k+1) b`. -/
+
+/-- The relabelling at offset `k` on side `b`: the composite of the passes so far. -/
+noncomputable def relAt (sig : ℤ → Bool → Equiv.Perm (Fin u)) (lo : ℤ) :
+    ℕ → Bool → Equiv.Perm (Fin u)
+  | 0, _ => 1
+  | (k + 1), b => (sig (lo + ((k : ℤ) + 1)) b) * relAt sig lo k b
+
+@[simp] theorem relAt_zero (sig : ℤ → Bool → Equiv.Perm (Fin u)) (lo : ℤ) (b : Bool) :
+    relAt sig lo 0 b = 1 := rfl
+
+theorem relAt_succ (sig : ℤ → Bool → Equiv.Perm (Fin u)) (lo : ℤ) (k : ℕ) (b : Bool) :
+    relAt sig lo (k + 1) b = (sig (lo + ((k : ℤ) + 1)) b) * relAt sig lo k b := rfl
+
+/-- **The naming**: the strand bottom at that position, with the level relabelled. -/
+noncomputable def nameAt (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (lo : ℤ) (k : ℕ) (l : Fin u) (b : Bool) :
+    EndType.Endpt n m :=
+  strOf (m := m) hm sec (lo + (k : ℤ)) (relAt sig lo k b l) b
+
+/-- **`hchain` holds by construction.**  The pass from offset `k` to `k+1` permutes the
+level by exactly the step in the relabelling's recursion. -/
+theorem hchain_nameAt (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x)
+    (lo : ℤ) (k : ℕ) (l : Fin u) (b : Bool)
+    (hjs : ((sec (lo + (k : ℤ)) : ℕ) : ℤ) = lo + (k : ℤ))
+    (hnot : lo + (k : ℤ) + 1 ∉ Bs) :
+    (WalkGraph.graph E).Reachable
+      (nameAt (m := m) hm sec sig lo k l b)
+      (nameAt (m := m) hm sec sig lo (k + 1) l b) := by
+  have h := pass_path hm sec Bs sig E hEp hEt (lo + (k : ℤ))
+    (relAt sig lo k b l) b hjs hnot
+  unfold nameAt
+  have harith : lo + ((k : ℕ) + 1 : ℕ) = lo + (k : ℤ) + 1 := by push_cast; ring
+  rw [harith, relAt_succ]
+  have hlev : (sig (lo + ((k : ℤ) + 1)) b) (relAt sig lo k b l)
+      = ((sig (lo + ((k : ℤ) + 1)) b) * relAt sig lo k b) l := rfl
+  have harith2 : lo + (k : ℤ) + 1 = lo + ((k : ℤ) + 1) := by ring
+  rw [← hlev]
+  rw [harith2] at h ⊢
+  exact h
+
+end EltBridge
+
+#print axioms EltBridge.relAt_succ
+#print axioms EltBridge.hchain_nameAt
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **`hjoinL` is immediate**: at offset `0` the relabelling is the identity on both
+sides, so the naming is the raw one and the near bounce applies directly. -/
+theorem hjoinL_nameAt (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEt : ∀ x, E.t x = turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x)
+    (lo : ℤ) (l : Fin u)
+    (hjs : ((sec lo : ℕ) : ℤ) = lo) (hmem : lo ∈ Bs) :
+    (WalkGraph.graph E).Reachable
+      (nameAt (m := m) hm sec sig lo 0 l true)
+      (nameAt (m := m) hm sec sig lo 0 l false) := by
+  unfold nameAt
+  simp only [relAt_zero, Equiv.Perm.coe_one, id_eq, Nat.cast_zero, add_zero]
+  exact near_bounce_path hm sec Bs sig E hEt lo l hjs hmem
+
+/-- **`hshift` is BLOCK 187's parity**, stated on the permutations: the up and down
+relabellings at the run's far end must disagree by the successor.  The far bounce relates
+the two sides at the same RAW level, so in the relabelled naming it relates level `i` up
+to level `i+1` down exactly when that disagreement holds. -/
+theorem hshift_nameAt (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x)
+    (lo : ℤ) (len : ℕ)
+    (hjs : ((sec (lo + (len : ℤ)) : ℕ) : ℤ) = lo + (len : ℤ))
+    (hmem : lo + (len : ℤ) + 1 ∈ Bs)
+    (i : ℕ) (hi : i + 1 < u)
+    (hrel : relAt sig lo len false ⟨i + 1, hi⟩
+      = relAt sig lo len true ⟨i, by omega⟩) :
+    (WalkGraph.graph E).Reachable
+      (nameAt (m := m) hm sec sig lo len ⟨i, by omega⟩ true)
+      (nameAt (m := m) hm sec sig lo len ⟨i + 1, hi⟩ false) := by
+  unfold nameAt
+  rw [hrel]
+  exact bounce_top_path hm sec Bs sig E hEp hEt (lo + (len : ℤ)) _ hjs hmem
+
+end EltBridge
+
+#print axioms EltBridge.hjoinL_nameAt
+#print axioms EltBridge.hshift_nameAt
+
+namespace EltBridge
+
+/-! ### The parity is satisfiable
+
+`hrel` asks that the up and down relabellings at the run's far end disagree by the
+successor.  With every up pass trivial, `relAt len true = 1`, so the condition reads
+
+    relAt len false (i+1) = i
+
+for every `i` with `i+1 < u` -- that is, the down composite is the DOWNWARD cycle.  So
+the parity is satisfiable exactly when that cycle can be realised, and it can: put it in
+a single down pass and leave the rest trivial.  A pass costs the same whichever levels
+it pairs, so this costs nothing. -/
+
+/-- The downward cycle on `Fin u`: `l ↦ l - 1`, wrapping. -/
+def shiftDown (u : ℕ) (hu : 0 < u) : Equiv.Perm (Fin u) where
+  toFun := fun l => ⟨((l : ℕ) + (u - 1)) % u, Nat.mod_lt _ hu⟩
+  invFun := fun l => ⟨((l : ℕ) + 1) % u, Nat.mod_lt _ hu⟩
+  left_inv := by
+    intro l
+    apply Fin.ext
+    simp only [Fin.val_mk]
+    have hl := l.isLt
+    rcases Nat.eq_zero_or_pos (l : ℕ) with h | h
+    · -- level 0 wraps to the top and back
+      have h1 : ((l : ℕ) + (u - 1)) % u = u - 1 := by
+        rw [h, Nat.zero_add, Nat.mod_eq_of_lt (by omega)]
+      rw [h1, h]
+      have h2 : u - 1 + 1 = u := by omega
+      rw [h2, Nat.mod_self]
+    · -- otherwise it is plain subtraction
+      have h1 : ((l : ℕ) + (u - 1)) % u = (l : ℕ) - 1 := by
+        have h3 : (l : ℕ) + (u - 1) = u + ((l : ℕ) - 1) := by omega
+        rw [h3, Nat.add_mod_left, Nat.mod_eq_of_lt (by omega)]
+      rw [h1]
+      have h4 : (l : ℕ) - 1 + 1 = (l : ℕ) := by omega
+      rw [h4, Nat.mod_eq_of_lt hl]
+  right_inv := by
+    intro l
+    apply Fin.ext
+    simp only [Fin.val_mk]
+    have hl := l.isLt
+    rcases Nat.lt_or_ge ((l : ℕ) + 1) u with h | h
+    · -- no wrap on the way up
+      rw [Nat.mod_eq_of_lt h]
+      have h1 : (l : ℕ) + 1 + (u - 1) = u + (l : ℕ) := by omega
+      rw [h1, Nat.add_mod_left, Nat.mod_eq_of_lt hl]
+    · -- the top wraps to 0 and back
+      have h0 : (l : ℕ) + 1 = u := by omega
+      rw [h0, Nat.mod_self, Nat.zero_add, Nat.mod_eq_of_lt (by omega)]
+      omega
+
+end EltBridge
+
+namespace EltBridge
+
+/-- **`shiftDown` maps `i+1` to `i`** -- which is exactly what `hrel` asks of the down
+composite when the up composite is trivial. -/
+theorem shiftDown_succ (u : ℕ) (hu : 0 < u) (i : ℕ) (hi : i + 1 < u) :
+    shiftDown u hu ⟨i + 1, hi⟩ = ⟨i, by omega⟩ := by
+  apply Fin.ext
+  show ((i + 1) + (u - 1)) % u = i
+  have h1 : (i + 1) + (u - 1) = u + i := by omega
+  rw [h1, Nat.add_mod_left, Nat.mod_eq_of_lt (by omega)]
+
+/-- **The parity is satisfiable.**  Take every up pass trivial and every down pass
+trivial except one, which carries `shiftDown`.  Then the up composite is `1`, the down
+composite is `shiftDown`, and `hrel` holds. -/
+theorem hrel_of_shiftDown (u : ℕ) (hu : 0 < u)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (lo : ℤ) (len : ℕ)
+    (hup : relAt sig lo len true = 1)
+    (hdn : relAt sig lo len false = shiftDown u hu) :
+    ∀ (i : ℕ) (hi : i + 1 < u),
+      relAt sig lo len false ⟨i + 1, hi⟩ = relAt sig lo len true ⟨i, by omega⟩ := by
+  intro i hi
+  rw [hup, hdn, shiftDown_succ u hu i hi]
+  rfl
+
+/-- If every pass up to offset `k` is trivial on side `b`, so is the composite. -/
+theorem relAt_eq_one (u : ℕ) (sig : ℤ → Bool → Equiv.Perm (Fin u)) (lo : ℤ) (b : Bool) :
+    ∀ k : ℕ, (∀ j : ℕ, j < k → sig (lo + ((j : ℤ) + 1)) b = 1) → relAt sig lo k b = 1 := by
+  intro k
+  induction k with
+  | zero => intro _; rfl
+  | succ i ih =>
+    intro h
+    rw [relAt_succ, h i (by omega), ih (fun j hj => h j (by omega)), one_mul]
+
+/-- **And such a `sig` exists**: trivial everywhere except the last down pass, which
+carries the cycle.  A pass costs the same whichever levels it pairs, so this choice is
+free -- which is BLOCK 187's observation, now exhibited. -/
+theorem exists_sig_with_parity (u : ℕ) (hu : 0 < u) (lo : ℤ) (len : ℕ) (hlen : 0 < len) :
+    ∃ sig : ℤ → Bool → Equiv.Perm (Fin u),
+      relAt sig lo len true = 1 ∧ relAt sig lo len false = shiftDown u hu := by
+  classical
+  refine ⟨fun j b => if j = lo + (len : ℤ) ∧ b = false then shiftDown u hu else 1, ?_, ?_⟩
+  · -- the up side never matches the condition
+    exact relAt_eq_one u _ lo true len (fun j _ => by simp)
+  · -- the down side is trivial before the last pass, and the cycle at it
+    obtain ⟨k, rfl⟩ : ∃ k, len = k + 1 := ⟨len - 1, by omega⟩
+    rw [relAt_succ]
+    have hprev : relAt (fun j b => if j = lo + ((k : ℤ) + 1) ∧ b = false
+        then shiftDown u hu else 1) lo k false = 1 := by
+      refine relAt_eq_one u _ lo false k (fun j hj => ?_)
+      rw [if_neg]
+      rintro ⟨he, -⟩
+      have : (j : ℤ) + 1 = (k : ℤ) + 1 := by omega
+      omega
+    have hcast : ((k : ℕ) + 1 : ℕ) = ((k : ℤ) + 1) := by push_cast; ring
+    rw [show ((((k : ℕ) + 1 : ℕ) : ℤ)) = (k : ℤ) + 1 by push_cast; ring] at *
+    rw [hprev, mul_one, if_pos ⟨rfl, rfl⟩]
+
+end EltBridge
+#print axioms EltBridge.shiftDown_succ
+#print axioms EltBridge.hrel_of_shiftDown
+#print axioms EltBridge.exists_sig_with_parity

@@ -7352,3 +7352,34 @@ well -- but in the RAW naming.  With the naming relabelled so the passes are
 level-preserving, the two bounces are relabelled differently, and their disagreement is
 the round trip's permutation.  BLOCK 187's parity is exactly the freedom to choose that
 disagreement, and it is free because a pass costs the same whichever levels it pairs.
+
+## 2026-09-03 — BLOCK 195: the parity, exhibited
+
+The relabelling, and with it the last hypothesis of the general-`mu` law.
+
+    relAt, nameAt          the relabelling by the recursion
+                           `rel (k+1) b = sig (lo+(k+1)) b * rel k b`, and the naming
+                           built from it
+    hchain_nameAt          `hchain` holds BY CONSTRUCTION -- the pass's permutation is
+                           exactly the recursion's step
+    hjoinL_nameAt          `hjoinL` is immediate: `relAt 0 = 1`, so the naming is raw
+                           there and the near bounce applies directly
+    hshift_nameAt          `hshift` reduces to `hrel`: the up and down relabellings at
+                           the far end disagree by the successor
+
+    shiftDown              the downward cycle on `Fin u`
+    shiftDown_succ         it maps `i+1` to `i`
+    hrel_of_shiftDown      so `hrel` holds when the composites are `1` and `shiftDown`
+    relAt_eq_one           trivial passes compose to the identity
+    exists_sig_with_parity such a `sig` EXISTS: trivial everywhere except the last down
+                           pass, which carries the cycle
+
+All 0 sorry.
+
+So BLOCK 187's parity is now exhibited rather than measured.  It said the round trip must
+be a `u`-cycle and that the choice is free because a pass costs the same whichever levels
+it pairs; `exists_sig_with_parity` is that sentence in Lean.
+
+`shiftDown` cost one restructure.  Its inverse laws are nested modular arithmetic with a
+VARIABLE modulus, which `omega` cannot do; splitting on `l = 0` makes every `%` resolve by
+`Nat.mod_eq_of_lt` or `Nat.add_mod_left` and the arithmetic becomes linear.
