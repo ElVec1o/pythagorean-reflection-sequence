@@ -10840,3 +10840,130 @@ theorem shield_law_mu_two (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
 end EltBridge
 
 #print axioms EltBridge.shield_law_mu_two
+
+namespace EltBridge
+
+/-! ## General `mu`: the run connectivity with `u` levels
+
+At `mu = 2` an edge carried one up strand and one down strand, and `run_one_component`
+chained them into two lines closed by a boundary bounce.  At general `mu` an edge carries
+`u = mu/2` of each, so a strand is `(edge, level, up?)`, and the same argument needs a
+third family of links.
+
+BLOCK 187 identified it: with identity passes the levels never mix, giving `u`
+components, and one component requires a single `u`-CYCLE somewhere.  A pass costs the
+same whichever levels it pairs, so that cycle is free to insert.
+
+The three link families are therefore
+
+    hchain   (j, l, b) — (j+1, l, b)        the passes, along the run
+    hjoin    (lo, l, true) — (lo, l, false) the boundary bounce, up to down
+    hcyc     (lo, l, true) — (lo, l+1, true) the one cycle, across levels
+
+and they put every strand of the run in one component. -/
+
+/-- Every level is reachable from level `0` by the cycle's links.  Only the linear part
+`0 → 1 → ... → u-1` is used, so no wraparound appears and no `Fin` arithmetic is
+needed. -/
+theorem levels_reachable (lo : ℤ) (u : ℕ) (hu : 0 < u)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hcyc : ∀ (i : ℕ) (hi : i + 1 < u),
+      R (lo, ⟨i, by omega⟩, true) (lo, ⟨i + 1, hi⟩, true)) :
+    ∀ (j : ℕ) (hj : j < u),
+      Relation.ReflTransGen R (lo, ⟨0, hu⟩, true) (lo, ⟨j, hj⟩, true) := by
+  intro j
+  induction j with
+  | zero => intro _; exact Relation.ReflTransGen.refl
+  | succ k ih =>
+    intro hj
+    exact (ih (by omega)).tail (hcyc k hj)
+
+/-- **Every strand of the run is reachable from the first.**  The three link families are
+the passes along the run, the boundary bounce from up to down, and the cycle across
+levels. -/
+theorem run_one_component_gen (lo : ℤ) (n u : ℕ) (hu : 0 < u)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hchain : ∀ (k : ℕ) (l : Fin u) (b : Bool), k < n →
+      R (lo + k, l, b) (lo + (k + 1 : ℕ), l, b))
+    (hjoin : ∀ l : Fin u, R (lo, l, true) (lo, l, false))
+    (hcyc : ∀ (i : ℕ) (hi : i + 1 < u),
+      R (lo, ⟨i, by omega⟩, true) (lo, ⟨i + 1, hi⟩, true)) :
+    ∀ (k : ℕ) (l : Fin u) (b : Bool), k ≤ n →
+      Relation.ReflTransGen R (lo, ⟨0, hu⟩, true) (lo + k, l, b) := by
+  intro k l b hk
+  have hlvl : Relation.ReflTransGen R (lo, ⟨0, hu⟩, true) (lo, l, true) := by
+    have h := levels_reachable lo u hu R hcyc l.val l.isLt
+    simpa using h
+  have hstart : Relation.ReflTransGen R (lo, ⟨0, hu⟩, true) (lo, l, b) := by
+    cases b
+    · exact hlvl.tail (hjoin l)
+    · exact hlvl
+  have hout : ∀ j : ℕ, j ≤ n →
+      Relation.ReflTransGen R (lo, l, b) (lo + j, l, b) := by
+    intro j
+    induction j with
+    | zero => intro _; simpa using Relation.ReflTransGen.refl
+    | succ i ih =>
+      intro hi
+      exact (ih (by omega)).tail (hchain i l b (by omega))
+  exact hstart.trans (hout k hk)
+
+end EltBridge
+
+#print axioms EltBridge.levels_reachable
+#print axioms EltBridge.run_one_component_gen
+
+namespace EltBridge
+
+/-- **Any two strands of the run are joined**, at general `u`. -/
+theorem run_pairwise_gen (lo : ℤ) (n u : ℕ) (hu : 0 < u)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hsymm : ∀ a b, R a b → R b a)
+    (hchain : ∀ (k : ℕ) (l : Fin u) (b : Bool), k < n →
+      R (lo + k, l, b) (lo + (k + 1 : ℕ), l, b))
+    (hjoin : ∀ l : Fin u, R (lo, l, true) (lo, l, false))
+    (hcyc : ∀ (i : ℕ) (hi : i + 1 < u),
+      R (lo, ⟨i, by omega⟩, true) (lo, ⟨i + 1, hi⟩, true))
+    (j j' : ℕ) (hj : j ≤ n) (hj' : j' ≤ n) (l l' : Fin u) (b b' : Bool) :
+    Relation.ReflTransGen R (lo + j, l, b) (lo + j', l', b') := by
+  have hsymmR : ∀ a c, Relation.ReflTransGen R a c → Relation.ReflTransGen R c a := by
+    intro a c h
+    induction h with
+    | refl => exact Relation.ReflTransGen.refl
+    | tail _ hstep ih => exact Relation.ReflTransGen.head (hsymm _ _ hstep) ih
+  have h1 := run_one_component_gen lo n u hu R hchain hjoin hcyc j l b hj
+  have h2 := run_one_component_gen lo n u hu R hchain hjoin hcyc j' l' b' hj'
+  exact (hsymmR _ _ h1).trans h2
+
+/-- **And the run is connected in the walk graph**, at general `u`: any relation whose
+steps are realisable as walks transfers along the chain. -/
+theorem run_connected_in_graph_gen {α : Type*} [Fintype α] [DecidableEq α]
+    (u : ℕ) (D : WalkGraph.Data α) (f : ℤ × Fin u × Bool → α) (lo : ℤ) (n : ℕ)
+    (hu : 0 < u)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hR : ∀ a b, R a b → (WalkGraph.graph D).Reachable (f a) (f b))
+    (hsymm : ∀ a b, R a b → R b a)
+    (hchain : ∀ (k : ℕ) (l : Fin u) (b : Bool), k < n →
+      R (lo + k, l, b) (lo + (k + 1 : ℕ), l, b))
+    (hjoin : ∀ l : Fin u, R (lo, l, true) (lo, l, false))
+    (hcyc : ∀ (i : ℕ) (hi : i + 1 < u),
+      R (lo, ⟨i, by omega⟩, true) (lo, ⟨i + 1, hi⟩, true))
+    (j j' : ℕ) (hj : j ≤ n) (hj' : j' ≤ n) (l l' : Fin u) (b b' : Bool) :
+    (WalkGraph.graph D).Reachable (f (lo + j, l, b)) (f (lo + j', l', b')) :=
+  reachable_of_reflTransGen (WalkGraph.graph D) R f hR
+    (run_pairwise_gen lo n u hu R hsymm hchain hjoin hcyc j j' hj hj' l l' b b')
+
+/-- **The `mu = 2` case is the `u = 1` case.**  With one level the cycle family is empty
+-- there is no `i` with `i + 1 < 1` -- so the two chains and the boundary bounce are the
+whole content, which is `run_one_component`. -/
+theorem cycle_vacuous_at_u_one (lo : ℤ)
+    (R : ℤ × Fin 1 × Bool → ℤ × Fin 1 × Bool → Prop) :
+    ∀ (i : ℕ) (hi : i + 1 < 1), R (lo, ⟨i, by omega⟩, true) (lo, ⟨i + 1, hi⟩, true) := by
+  intro i hi
+  omega
+
+end EltBridge
+
+#print axioms EltBridge.run_pairwise_gen
+#print axioms EltBridge.run_connected_in_graph_gen
+#print axioms EltBridge.cycle_vacuous_at_u_one

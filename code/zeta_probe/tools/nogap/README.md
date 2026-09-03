@@ -7159,3 +7159,31 @@ the first because `lR` counts the crossings, so extra pairs only raise the cost.
 **So the construction extends to all `mu`:** runs of length `>= 2` take the cycle in a
 pass, runs of length `1` are `mu = 2` throughout.  `mu >= 4` is a formalisation task, not
 an obstruction.
+
+## 2026-09-03 — BLOCK 188: general-`u` run connectivity, formalised
+
+The `mu >= 4` analogue of BLOCK 160.  A strand is now `(edge, level, up?)` with
+`level : Fin u`, `u = mu/2`, and three link families instead of two:
+
+    hchain   (j, l, b) — (j+1, l, b)          the passes, along the run
+    hjoin    (lo, l, true) — (lo, l, false)   the boundary bounce, up to down
+    hcyc     (lo, i, true) — (lo, i+1, true)  the cycle, across levels
+
+    levels_reachable            every level is reachable from level 0
+    run_one_component_gen       every strand of the run is reachable from the first
+    run_pairwise_gen            hence any two are joined
+    run_connected_in_graph_gen  and that transfers into the walk graph
+    cycle_vacuous_at_u_one      at `u = 1` the cycle family is EMPTY -- no `i` has
+                                `i + 1 < 1` -- so the mu = 2 case is the special case
+
+All 0 sorry.
+
+Two things worth recording about the shape.  First, only the LINEAR part of the cycle is
+used, `0 → 1 → ... → u-1`; the wraparound `u-1 → 0` never appears, so no `Fin`
+arithmetic is needed and the links are stated with explicit indices.  That also avoids
+`Fin u`'s missing `NatCast` and `OfNat 1` instances without `NeZero`, which cost two
+attempts.
+
+Second, `cycle_vacuous_at_u_one` makes the relationship to BLOCK 160 exact rather than
+analogical: `mu = 2` is not a separate argument but the case where the third family is
+empty.
