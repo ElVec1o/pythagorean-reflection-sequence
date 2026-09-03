@@ -5732,3 +5732,37 @@ only on reachable elements, since `Nat.sInf` returns 0 on the empty set; `Reacha
 the side condition and any use must carry it.  What has changed is that the blocker is
 no longer "nothing is formalised": the generating set and the length function exist,
 and the statement can now be attacked directly.
+
+## 2026-09-03 — BLOCK 141: the generators are involutions, and `Elt` is not extensional
+
+Continuing H1a.  Before proving the generators generate, they have to be a symmetric
+set, or `wordLength` is not a word metric at all.  They are:
+
+    s1_involutive, s2_involutive, s3_involutive
+
+`s3` is the one with content.  The reverse cursor step deposits the opposite `±eps` at
+the same edge, so the two `Function.update`s collapse; `kstar` returns because the
+steps are opposite and `delta` because each flips it.
+
+But the statement is `SameElt`, not equality, and that is a finding rather than a
+convenience.  **`Elt` is not extensional.**  Each `s3` inserts the crossed edge into
+`supp`, so `s3 (s3 g)` carries `insert k g.supp`, which need not be `g.supp`.  `supp`
+is stored as a witness for finite support, not canonically, so two `Elt` terms
+agreeing on `kstar`, `eps`, `delta` and `d` are the same group element with different
+bookkeeping.  The generators are involutions on the element, never on the term.
+
+That matters for H1a, whose statement `IsRelaxedLength wordLength` is about terms.
+The right-hand side is safe: `hsupp` forces every edge with a deposit or travel into
+`supp`, so filtering `supp` by that condition picks out the same set whichever valid
+`supp` is stored -- `occ_congr`, and hence `A_congr`, `B_congr`.  The span is a
+function of the element.
+
+So the asymmetry is entirely on the left: `wordLength` is defined through `Reaches`,
+which is a relation on terms.  H1a has to be read modulo `SameElt`, and its RHS
+already is.
+
+NOT DONE.  `lR_congr` itself is not formalised -- it follows from `A_congr`, `B_congr`
+and `mu`, `siteCost` reading only `(d, kstar)`, but that last step is not written.  Nor
+is the original target of this block, that the generators generate: every `Elt` being
+`Reachable` needs the reduction algorithm, and that is the next step.  H1a stays
+orange.

@@ -7576,3 +7576,121 @@ end EltBridge
 #print axioms EltBridge.Elt.one
 #print axioms EltBridge.Elt.wordLength_one
 #print axioms EltBridge.Elt.H1a_statement
+
+namespace EltBridge
+namespace Elt
+
+/-! ### `Elt` is not extensional, and the generators are involutions only modulo that
+
+Applying `s3` twice returns `kstar`, `eps`, `delta` and `d` to their original values --
+the deposit `∓eps` is undone by the `±eps` of the reverse step, and
+`Function.update` collapses.  But `supp` does not return: each application inserts the
+crossed edge, so `s3 (s3 g)` carries `insert k g.supp`.
+
+That is not a defect in `s3`.  It is that `Elt` stores `supp` as a witness for finite
+support rather than canonically, so two `Elt` terms agreeing on `kstar`, `eps`,
+`delta` and `d` are the same group element with different bookkeeping.  The generators
+are involutions on the element, not on the term.
+
+This matters for H1a: `wordLength` is defined on terms, so the statement
+`IsRelaxedLength wordLength` is about terms, while the metric it should equal is a
+function of the element.  `SameElt` is the relation that has to be quotiented by, or
+carried. -/
+
+/-- Two `Elt` terms are the same group element when they agree off `supp`. -/
+def SameElt (g h : Elt) : Prop :=
+  g.kstar = h.kstar ∧ g.eps = h.eps ∧ g.delta = h.delta ∧ g.d = h.d
+
+theorem SameElt.refl (g : Elt) : SameElt g g := ⟨rfl, rfl, rfl, rfl⟩
+
+theorem SameElt.symm {g h : Elt} (H : SameElt g h) : SameElt h g :=
+  ⟨H.1.symm, H.2.1.symm, H.2.2.1.symm, H.2.2.2.symm⟩
+
+theorem SameElt.trans {g h k : Elt} (H1 : SameElt g h) (H2 : SameElt h k) : SameElt g k :=
+  ⟨H1.1.trans H2.1, H1.2.1.trans H2.2.1, H1.2.2.1.trans H2.2.2.1,
+    H1.2.2.2.trans H2.2.2.2⟩
+
+/-- **`s1` is an involution.** -/
+theorem s1_involutive (g : Elt) : SameElt (s1 (s1 g)) g := by
+  refine ⟨rfl, rfl, ?_, rfl⟩
+  simp [s1]
+
+/-- **`s2` is an involution.** -/
+theorem s2_involutive (g : Elt) : SameElt (s2 (s2 g)) g := by
+  refine ⟨rfl, ?_, ?_, rfl⟩
+  · simp [s2]
+  · simp [s2]
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.s1_involutive
+#print axioms EltBridge.Elt.s2_involutive
+
+namespace EltBridge
+namespace Elt
+
+/-- **`s3` is an involution on the element.**  The reverse cursor step deposits the
+opposite `±eps` at the same edge, so the two `Function.update`s collapse; `kstar`
+returns because the steps are opposite, and `delta` because each flips it.  Only
+`supp` fails to return, which is why the statement is `SameElt`. -/
+theorem s3_involutive (g : Elt) : SameElt (s3 (s3 g)) g := by
+  unfold SameElt
+  by_cases hd : g.delta = true
+  · refine ⟨?_, ?_, ?_, ?_⟩ <;>
+      simp [s3, hd, Function.update_idem, Function.update_eq_self]
+  · simp only [Bool.not_eq_true] at hd
+    refine ⟨?_, ?_, ?_, ?_⟩ <;>
+      simp [s3, hd, Function.update_idem, Function.update_eq_self]
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.s3_involutive
+
+namespace EltBridge
+namespace Elt
+
+/-- **`occ` does not depend on `supp`.**  `hsupp` forces every edge with a deposit or
+travel to lie in `supp`, so filtering `supp` by that condition picks out the same set
+whichever valid `supp` was stored. -/
+theorem occ_congr {g h : Elt} (H : SameElt g h) : g.occ = h.occ := by
+  obtain ⟨hk, -, -, hdd⟩ := H
+  ext j
+  simp only [occ, Finset.mem_insert, Finset.mem_filter]
+  constructor
+  · rintro (rfl | ⟨-, hcond⟩)
+    · exact Or.inl rfl
+    · refine Or.inr ⟨?_, ?_⟩
+      · by_contra hns
+        obtain ⟨h1, h2⟩ := h.hsupp j hns
+        rw [← hdd] at h1
+        rw [← hk] at h2
+        exact (hcond.elim (fun c => c h1) (fun c => c h2))
+      · rw [← hdd, ← hk]; exact hcond
+  · rintro (rfl | ⟨-, hcond⟩)
+    · exact Or.inl rfl
+    · refine Or.inr ⟨?_, ?_⟩
+      · by_contra hns
+        obtain ⟨h1, h2⟩ := g.hsupp j hns
+        rw [hdd] at h1
+        rw [hk] at h2
+        exact (hcond.elim (fun c => c h1) (fun c => c h2))
+      · rw [hdd, hk]; exact hcond
+
+/-- Hence the span, and hence the relaxed length, are functions of the element. -/
+theorem A_congr {g h : Elt} (H : SameElt g h) : g.A = h.A := by
+  unfold A
+  congr 1
+  exact occ_congr H
+
+theorem B_congr {g h : Elt} (H : SameElt g h) : g.B = h.B := by
+  unfold B
+  congr 1
+  exact occ_congr H
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.occ_congr
+#print axioms EltBridge.Elt.A_congr
