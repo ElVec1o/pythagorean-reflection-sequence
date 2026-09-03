@@ -8356,3 +8356,32 @@ This is a modelling question, not a bug: either sum over non-minimal spans and c
 inclusion-exclusion, or carry a two-state marker distinguishing the true end.  It is the
 honest remaining obstacle in (M3), and it is the first one in this sequence that is not
 merely bookkeeping.
+
+## 2026-09-04 — BLOCK 232: minimality is NOT redundant; and BLOCK 208's reason was wrong
+
+Two findings, one of them a correction.
+
+**Minimality cannot be dropped.**  A non-minimal end is an edge with `d = 0` and no travel,
+and `mu` is `2` there -- the gap case.  So enlarging a span past minimality strictly
+increases `lR`: the sum over non-minimal spans is a DIFFERENT generating function, not a
+re-count of the same one.  The inclusion-exclusion route floated in BLOCK 231 is therefore
+not a shortcut.
+
+**But BLOCK 208's reason for site-indexing was wrong, and that reopens the good route.**
+BLOCK 208 moved the chain from EDGES `A .. B` to SITES `A .. B+1` because the tail term
+`siteCost (s+1)` "is not a function of state `s`".  It is:
+
+    vD_succ_B_eq_travel   the departure marker at B+1 EQUALS the travel indicator at B
+
+forced by the flow relation at the right end (`vArr (B+1) = 0` since `B >= 0`, and the
+travel vanishes past `B`).  So the tail is a function of the last edge's state after all.
+With the chain indexed by edges, `endValidB` applies at the FIRST and LAST states, which is
+exactly where boundary vectors can see it -- and BLOCK 231's obstacle disappears.
+
+**Hygiene.**  My draft re-proved `mu_eq_two_of_gap`, which was already in the file -- twice
+over, at lines 7207 and 8542, a pre-existing duplication.  My copy is removed and the
+existing one used.  0 sorry.
+
+**So the route for (M3) is: re-index the chain by edges.**  BLOCKS 207-208's site-indexed
+machinery stays valid but is the wrong frame for minimality; the edge-indexed frame was
+abandoned for a reason that does not hold.

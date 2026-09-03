@@ -7186,6 +7186,40 @@ theorem tailOkB_stateOf (P : SiteCost.PathData) : tailOkB (stateOf P (P.B + 1)) 
   · show SiteCost.travel P.kstar (P.B + 1) = 0
     exact (P.houter (P.B + 1) (Or.inr (by omega))).2
 
+/-! ### Minimality is not redundant; and BLOCK 208's reason for site-indexing was wrong
+
+Two findings.
+
+First, span-minimality cannot simply be dropped.  A non-minimal left end is an edge with
+`d = 0` and no travel, and `mu` is `2` there by definition -- the gap case.  So enlarging
+the span past minimality strictly increases `lR`, and the sum over non-minimal spans is a
+different generating function, not a re-count of the same one.
+
+Second, and this repairs BLOCK 208: that block moved the chain from EDGES `A .. B` to
+SITES `A .. B+1` because the tail term `siteCost (s+1)` "is not a function of state `s`".
+It is.  The flow relation at the right end forces the departure marker at `B+1` to equal
+the travel indicator at `B`, so everything the tail needs is visible in the last edge's
+state.  With the chain indexed by edges, `endValidB` applies at the FIRST and LAST states
+-- exactly where the boundary vectors can see it -- and the obstacle of BLOCK 231
+disappears. -/
+
+-- (a non-minimal end is a gap edge, and `mu_eq_two_of_gap` above already says a gap
+-- edge costs 2 -- no need to restate it)
+
+/-- **The departure marker past the right end is the travel indicator at the right end.**
+So the tail term is a function of the last edge's state, which is what BLOCK 208 denied. -/
+theorem vD_succ_B_eq_travel (P : SiteCost.PathData) :
+    ((P.vD (P.B + 1) : ℕ) : ℤ) = SiteCost.travel P.kstar P.B := by
+  have hB := P.hB
+  have harr : SiteCost.vArr (P.B + 1) = 0 := by
+    unfold SiteCost.vArr; rw [if_neg (by omega)]
+  have hout : SiteCost.travel P.kstar (P.B + 1) = 0 :=
+    (P.houter (P.B + 1) (Or.inr (by omega))).2
+  have hf := flowB_stateOf P P.B
+  simp only [flowB, stateOf, decide_eq_true_eq] at hf
+  rw [harr, hout] at hf
+  simpa using hf.symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14815,3 +14849,4 @@ end EltBridge
 #print axioms EltBridge.pathWeight_fullStepB_eq
 #print axioms EltBridge.headOkB_stateOf
 #print axioms EltBridge.tailOkB_stateOf
+#print axioms EltBridge.vD_succ_B_eq_travel
