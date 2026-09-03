@@ -3190,3 +3190,31 @@ WHAT REMAINS for M3/M4b at element level: a variant of CutComponents.blk_adj tak
 "Local except on a listed set of edges, each joining ends of equal block index" instead
 of Local. That is a genuine generalisation of the CutComponents machinery, but it is
 now a precisely specified one, and the fact it needs (virtual_pair_same_run) is proved.
+
+## 2026-09-03 — BLOCK 43: LocalExcept — the CutComponents machinery generalised
+
+  CutComponents.LocalExcept          -- Local, except on edges listed by a predicate Exc
+  CutComponents.blk_adj_except       -- the block index is constant across an edge,
+                                        given locality except on edges that already
+                                        preserve it (propext + Quot.sound only)
+  CutComponents.blk_reachable_except
+  CutComponents.exists_injective_components_of_runs_except
+  CutComponents.exists_injective_components_avoiding_of_runs_except  -- prop:cut
+
+`Local` was always stronger than the argument needed: everything below it uses locality
+ONLY through blk_adj, and an edge that spans many sites but joins ends of equal block
+index does no harm. That is exactly the virtual pair (BLOCK 42: it stays in one run).
+
+So BLOCK 41's obstruction is now fully answered. The chain is:
+  BLOCK 41  Local FAILS on VEndpt for travel > 3          (proved)
+  BLOCK 42  but the virtual pair joins ends of one run     (proved)
+  BLOCK 43  and locality is only used through blk_adj      (proved, by generalising)
+
+Every proof script in the generalised versions is the original with one added case.
+
+Two scope errors on the way, both from Lean's `variable` mechanics rather than from
+mathematics: `Local` was defined while G/pos/Zf were EXPLICIT, my `LocalExcept` after
+they became implicit, so passing them explicitly failed; and the namespace is
+CutComponents, not CutComponents.Graph. Neither error had anything to do with the
+argument, and both produced messages ("application type mismatch", "unknown constant")
+that read like real problems.

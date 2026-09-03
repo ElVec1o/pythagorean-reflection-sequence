@@ -171,6 +171,82 @@ theorem blk_reachable (hedge : Local G pos Zf) {x y : V} (hr : G.Reachable x y) 
   | nil => rfl
   | cons hadj _ ih => exact (blk_adj hedge hadj).trans ih
 
+/-! ### Locality with exceptions
+
+`Local` is stronger than the argument needs.  Everything below it uses locality only
+through `blk_adj`: the block index is constant across a graph edge.  An edge that
+spans many sites but happens to join ends of equal block index does no harm.
+
+This matters for end types carrying a *virtual* pair -- a strand running the whole
+travel interval in one step.  Such an edge is never local, but it always joins ends of
+one run, so the conclusion survives. -/
+
+/-- `Local`, except on edges listed by `Exc`. -/
+def LocalExcept (G : SimpleGraph V) (pos : V → ℤ) (Zf : Finset ℤ)
+    (Exc : V → V → Prop) : Prop :=
+  ∀ x y : V, G.Adj x y → Exc x y ∨ (∃ s : ℤ,
+    (pos x = s - 1 ∨ pos x = s) ∧ (pos y = s - 1 ∨ pos y = s) ∧ (pos x ≠ pos y → s ∉ Zf))
+
+/-- **The block index is constant across an edge**, given locality except on edges
+that already preserve it. -/
+theorem blk_adj_except {Exc : V → V → Prop}
+    (hedge : LocalExcept G pos Zf Exc)
+    (hexc : ∀ x y : V, Exc x y → blk pos Zf x = blk pos Zf y)
+    {x y : V} (hxy : G.Adj x y) :
+    blk pos Zf x = blk pos Zf y := by
+  rcases hedge x y hxy with h | ⟨s, hx, hy, hs⟩
+  · exact hexc x y h
+  · by_cases hp : pos x = pos y
+    · unfold blk; rw [hp]
+    · have key : gz Zf s = gz Zf (s - 1) := gz_step_eq Zf (hs hp)
+      unfold blk
+      rcases hx with hx | hx <;> rcases hy with hy | hy <;> rw [hx, hy]
+      · exact key.symm
+      · exact key
+
+/-- **And on connected components.** -/
+theorem blk_reachable_except {Exc : V → V → Prop}
+    (hedge : LocalExcept G pos Zf Exc)
+    (hexc : ∀ x y : V, Exc x y → blk pos Zf x = blk pos Zf y)
+    {x y : V} (hr : G.Reachable x y) :
+    blk pos Zf x = blk pos Zf y := by
+  obtain ⟨p⟩ := hr
+  induction p with
+  | nil => rfl
+  | cons hadj _ ih => exact (blk_adj_except hedge hexc hadj).trans ih
+
+/-- **`c >= |Z|`, run form, with exceptions.** -/
+theorem exists_injective_components_of_runs_except {Exc : V → V → Prop}
+    (hedge : LocalExcept G pos Zf Exc)
+    (hexc : ∀ x y : V, Exc x y → blk pos Zf x = blk pos Zf y)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card → ∃ v : V, blk pos Zf v = i) :
+    ∃ F : Fin (Zf.card + 1) → G.ConnectedComponent, Function.Injective F := by
+  have hex : ∀ i : Fin (Zf.card + 1), ∃ v : V, blk pos Zf v = (i : ℕ) :=
+    fun i => hruns (i : ℕ) (Nat.lt_succ_iff.mp i.isLt)
+  choose v hv using hex
+  refine ⟨fun i => G.connectedComponentMk (v i), fun i j hij => ?_⟩
+  have hb := blk_reachable_except hedge hexc (SimpleGraph.ConnectedComponent.exact hij)
+  rw [hv i, hv j] at hb
+  exact Fin.val_injective hb
+
+/-- **`prop:cut`, run form, with exceptions.** -/
+theorem exists_injective_components_avoiding_of_runs_except {Exc : V → V → Prop}
+    (hedge : LocalExcept G pos Zf Exc)
+    (hexc : ∀ x y : V, Exc x y → blk pos Zf x = blk pos Zf y)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card → ∃ v : V, blk pos Zf v = i)
+    (c0 : G.ConnectedComponent) :
+    ∃ F : Fin Zf.card → G.ConnectedComponent, Function.Injective F ∧ ∀ i, F i ≠ c0 := by
+  obtain ⟨F, hF⟩ :=
+    exists_injective_components_of_runs_except hedge hexc hruns
+  by_cases hc : ∃ p : Fin (Zf.card + 1), F p = c0
+  · obtain ⟨p, hp⟩ := hc
+    refine ⟨fun j => F (p.succAbove j), fun i j hij => ?_, fun j hj => ?_⟩
+    · exact Fin.succAbove_right_injective (hF hij)
+    · exact Fin.succAbove_ne p j (hF (hj.trans hp.symm))
+  · simp only [not_exists] at hc
+    exact ⟨fun j => F j.castSucc, fun i j hij => Fin.castSucc_injective _ (hF hij),
+      fun j => hc _⟩
+
 /-- **Proposition `prop:cut`, the counting step.**  A graph on the crossings of the span whose
 edges are local for the cut set has at least `|Z|+1` connected components. -/
 theorem exists_injective_components (hedge : Local G pos Zf) (A B : ℤ) (hAB : A ≤ B)
@@ -307,3 +383,5 @@ end SiteCost
 #print axioms CutComponents.exists_injective_components_avoiding
 #print axioms CutComponents.exists_injective_components_of_runs
 #print axioms CutComponents.exists_injective_components_avoiding_of_runs
+#print axioms CutComponents.blk_adj_except
+#print axioms CutComponents.exists_injective_components_avoiding_of_runs_except
