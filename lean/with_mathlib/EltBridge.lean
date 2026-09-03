@@ -7366,3 +7366,213 @@ theorem cut_class_empty_of_card_eq {n : ℕ} {m : Fin n → ℕ}
 #print axioms cls_pair_inj
 #print axioms no_class_holds_both
 #print axioms cut_class_empty_of_card_eq
+
+/-! ## H1a: the generating set
+
+`IsRelaxedLength` cannot be discharged without a word-length function, and that needs
+the generators as actual `Elt`-valued maps.  They are the three moves the `nogap` BFS
+uses:
+
+    s1 : toggle the side
+    s2 : toggle the side and flip the sign
+    s3 : move the cursor one step, depositing at the edge it crosses
+
+`s1` and `s2` leave `kstar` and `d` alone, so all three `Elt` obligations are
+inherited.  `s3` is the one with content: it changes `travel` at exactly the edge it
+deposits on, and the deposit is what keeps `hpar` true.
+-/
+
+namespace EltBridge
+namespace Elt
+
+/-- **Toggle the side.** -/
+def s1 (g : Elt) : Elt := { g with delta := !g.delta }
+
+/-- **Toggle the side and flip the sign.**  Written with the explicit constructor:
+`heps` is a proof field whose type mentions `eps`, so structure update cannot carry
+it. -/
+def s2 (g : Elt) : Elt where
+  kstar := g.kstar
+  eps := -g.eps
+  delta := !g.delta
+  heps := by rcases g.heps with h | h <;> rw [h] <;> norm_num
+  d := g.d
+  hpar := g.hpar
+  supp := g.supp
+  hsupp := g.hsupp
+
+@[simp] theorem s1_kstar (g : Elt) : (s1 g).kstar = g.kstar := rfl
+@[simp] theorem s1_d (g : Elt) : (s1 g).d = g.d := rfl
+@[simp] theorem s2_kstar (g : Elt) : (s2 g).kstar = g.kstar := rfl
+@[simp] theorem s2_d (g : Elt) : (s2 g).d = g.d := rfl
+
+/-- Both side moves return the side after two applications. -/
+theorem s1_delta_involutive (g : Elt) : (s1 (s1 g)).delta = g.delta := by
+  simp [s1]
+
+theorem s2_eps_involutive (g : Elt) : (s2 (s2 g)).eps = g.eps := by
+  simp [s2]
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.s1
+#print axioms EltBridge.Elt.s2
+
+namespace EltBridge
+namespace Elt
+
+/-! ### How `travel` moves when the cursor does
+
+Stepping the cursor changes the travel indicator at exactly one edge -- the one the
+cursor crosses -- and by exactly one.  That is what lets the deposit keep `hpar`. -/
+
+theorem travel_pred_ne (k i : ℤ) (h : i ≠ k - 1) :
+    SiteCost.travel (k - 1) i = SiteCost.travel k i := by
+  unfold SiteCost.travel; split_ifs <;> omega
+
+theorem travel_pred_at (k : ℤ) :
+    SiteCost.travel (k - 1) (k - 1) = SiteCost.travel k (k - 1) - 1 := by
+  unfold SiteCost.travel; split_ifs <;> omega
+
+theorem travel_succ_ne (k i : ℤ) (h : i ≠ k) :
+    SiteCost.travel (k + 1) i = SiteCost.travel k i := by
+  unfold SiteCost.travel; split_ifs <;> omega
+
+theorem travel_succ_at (k : ℤ) :
+    SiteCost.travel (k + 1) k = SiteCost.travel k k + 1 := by
+  unfold SiteCost.travel; split_ifs <;> omega
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.travel_pred_ne
+#print axioms EltBridge.Elt.travel_pred_at
+#print axioms EltBridge.Elt.travel_succ_ne
+#print axioms EltBridge.Elt.travel_succ_at
+
+namespace EltBridge
+namespace Elt
+
+/-- **Move the cursor one step, depositing at the edge it crosses.**
+
+The side says which way.  `travel` changes by exactly one at that edge
+(`travel_succ_at`, `travel_pred_at`) and nowhere else (`travel_succ_ne`,
+`travel_pred_ne`), and the deposit moves `d` there by `∓eps`, so
+`d - travel` changes by an even amount and `hpar` survives. -/
+noncomputable def s3 (g : Elt) : Elt :=
+  if hd : g.delta then
+    { kstar := g.kstar + 1
+      eps := g.eps
+      delta := false
+      heps := g.heps
+      d := Function.update g.d g.kstar (g.d g.kstar - g.eps)
+      hpar := by
+        intro i
+        by_cases hi : i = g.kstar
+        · have hp := g.hpar i
+          subst hi
+          rw [Function.update_self, travel_succ_at]
+          rcases g.heps with h | h <;> rw [h] <;> omega
+        · rw [Function.update_of_ne hi, travel_succ_ne g.kstar i hi]
+          exact g.hpar i
+      supp := insert g.kstar g.supp
+      hsupp := by
+        intro j hj
+        rw [Finset.mem_insert, not_or] at hj
+        obtain ⟨hne, hns⟩ := hj
+        obtain ⟨hd0, ht0⟩ := g.hsupp j hns
+        exact ⟨by rw [Function.update_of_ne hne]; exact hd0,
+               by rw [travel_succ_ne g.kstar j hne]; exact ht0⟩ }
+  else
+    { kstar := g.kstar - 1
+      eps := g.eps
+      delta := true
+      heps := g.heps
+      d := Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps)
+      hpar := by
+        intro i
+        by_cases hi : i = g.kstar - 1
+        · have hp := g.hpar i
+          subst hi
+          rw [Function.update_self, travel_pred_at]
+          rcases g.heps with h | h <;> rw [h] <;> omega
+        · rw [Function.update_of_ne hi, travel_pred_ne g.kstar i hi]
+          exact g.hpar i
+      supp := insert (g.kstar - 1) g.supp
+      hsupp := by
+        intro j hj
+        rw [Finset.mem_insert, not_or] at hj
+        obtain ⟨hne, hns⟩ := hj
+        obtain ⟨hd0, ht0⟩ := g.hsupp j hns
+        exact ⟨by rw [Function.update_of_ne hne]; exact hd0,
+               by rw [travel_pred_ne g.kstar j hne]; exact ht0⟩ }
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.s3
+
+namespace EltBridge
+namespace Elt
+
+/-- The identity: cursor at `0`, no deposits. -/
+def one : Elt where
+  kstar := 0
+  eps := 1
+  delta := false
+  heps := Or.inl rfl
+  d := fun _ => 0
+  hpar := by
+    intro j
+    rw [SiteCost.travel_of_kstar_zero]
+    norm_num
+  supp := ∅
+  hsupp := by
+    intro j _
+    exact ⟨rfl, SiteCost.travel_of_kstar_zero j⟩
+
+/-- **One generator step.**  The three moves of the `nogap` BFS. -/
+noncomputable def Gen (a b : Elt) : Prop := b = s1 a ∨ b = s2 a ∨ b = s3 a
+
+/-- **Reachable from the identity in `n` steps.** -/
+inductive Reaches : ℕ → Elt → Prop
+  | refl : Reaches 0 one
+  | step {n : ℕ} {a b : Elt} : Reaches n a → Gen a b → Reaches (n + 1) b
+
+/-- **The word length**: the least number of generator steps reaching `g`.
+
+`Nat.sInf` returns `0` on an empty set, so this is the word length only on elements
+that are reachable at all; `Reachable` below is the side condition, and it is what any
+use of `wordLength` must carry. -/
+noncomputable def wordLength (g : Elt) : ℕ := sInf {n | Reaches n g}
+
+/-- `g` is a word in the generators. -/
+def Reachable (g : Elt) : Prop := ∃ n, Reaches n g
+
+theorem wordLength_one : wordLength one = 0 := by
+  have h : (0 : ℕ) ∈ {n | Reaches n one} := Reaches.refl
+  exact Nat.eq_zero_of_le_zero (Nat.sInf_le h)
+
+theorem reaches_wordLength {g : Elt} (h : Reachable g) : Reaches (wordLength g) g :=
+  Nat.sInf_mem h
+
+/-- The word length is a lower bound on any reaching count. -/
+theorem wordLength_le {g : Elt} {n : ℕ} (h : Reaches n g) : wordLength g ≤ n :=
+  Nat.sInf_le h
+
+/-- **H1a, stated against a concrete function.**  `IsRelaxedLength` was a contract with
+no candidate to test; `wordLength` is now that candidate, so H1a is the sentence
+
+    IsRelaxedLength wordLength
+
+with the generating set and identity formalised.  It is not proved here. -/
+theorem H1a_statement : IsRelaxedLength wordLength ↔ ∀ g : Elt, wordLength g = g.lR :=
+  Iff.rfl
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.one
+#print axioms EltBridge.Elt.wordLength_one
+#print axioms EltBridge.Elt.H1a_statement

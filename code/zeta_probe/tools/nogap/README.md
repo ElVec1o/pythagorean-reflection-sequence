@@ -5692,3 +5692,43 @@ obstruction is the derived sign, exactly as the ledger said.  The escape remains
 free-sign `GData`, where classes are independent and a same-class pair costs 0 -- and
 which loses the free-pair guarantee, the other proved obstruction.  That bind is
 unchanged.  Ledger corrected for both M3 and M4b.
+
+## 2026-09-03 — BLOCK 140: H1a's generating set, formalised
+
+M4b is blocked on a two-model bind with proofs on both sides (BLOCK 139), so this
+takes the next atom in the order rather than pushing there.
+
+H1a was recorded as "CONTRACT NAMED (`IsRelaxedLength`); needs a presentation + a
+generating set, neither formalised".  `IsRelaxedLength L` quantifies over candidate
+length functions and there was no candidate to supply.  There is now.
+
+The generators are the three moves the `nogap` BFS uses, as `Elt`-valued maps with
+every structure obligation discharged:
+
+    s1   toggle the side
+    s2   toggle the side and flip the sign     (explicit constructor: `heps` is a
+                                                proof field mentioning `eps`, so
+                                                structure update cannot carry it)
+    s3   move the cursor one step, depositing at the edge it crosses
+
+`s3` is the one with content.  Stepping the cursor changes `travel` at exactly the
+crossed edge and by exactly one -- `travel_succ_at`, `travel_pred_at`, with
+`travel_succ_ne`, `travel_pred_ne` for everywhere else -- and the deposit moves `d`
+there by `∓eps`.  Since `eps = ±1`, `d - travel` changes by an even amount, so `hpar`
+survives.  That is the whole reason the move is well defined.
+
+With `one`, `Gen`, `Reaches` and `wordLength = sInf {n | Reaches n g}`, H1a is now a
+concrete sentence rather than a contract:
+
+    IsRelaxedLength wordLength     i.e.  forall g, wordLength g = g.lR
+
+(`H1a_statement`, and `wordLength_one`, `reaches_wordLength`, `wordLength_le`.)
+
+NOT DONE, stated precisely because BLOCK 137 was careless about exactly this.  H1a is
+not proved.  Two further gaps remain even in the formalisation: there is no proof that
+the generators generate -- that every `Elt` is `Reachable` -- and none that `Elt` under
+these three moves presents the intended group.  `wordLength` is a genuine word length
+only on reachable elements, since `Nat.sInf` returns 0 on the empty set; `Reachable` is
+the side condition and any use must carry it.  What has changed is that the blocker is
+no longer "nothing is formalised": the generating set and the length function exist,
+and the statement can now be attacked directly.
