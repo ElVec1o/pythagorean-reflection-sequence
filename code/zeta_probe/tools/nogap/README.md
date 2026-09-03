@@ -4033,3 +4033,29 @@ So the chain of tonight's findings terminates here. BLOCK 4 found hZ vs hocc, BL
 found hZ vs mu_pos, and both are downstream of a modelling choice in EndData.sgn.
 Fixing it means letting depSign vary per end rather than per side -- a change to the
 Data structure, not to any proof.
+
+## 2026-09-03 — BLOCK 78: end data with a FREE sign
+
+  GData                        -- end data carrying the sign per end rather than
+                                  deriving it from (side, isArr)
+  GData.pcost                  -- 0 same-side same-sign, 2 same-side opposite-sign,
+                                  1 across sides -- the paper's Plan cost
+  GData.pcost_zero             -- a same-side same-sign pair costs NOTHING (axiom-free)
+  GData.ofEndData              -- the forced model embeds, taking the derived sign
+  GData.strictly_more_general  -- and the embedding is STRICT: the same pair costs 2 in
+                                  the forced model and 0 in the free one
+
+So the possibility BLOCK 77 showed was missing is now present. GData.pcost matches
+SiteCost.Plan.cost's stated intent ("0 for a same-side matched pair with equal signs, 2
+for a same-side pair with opposite signs, 1 for a pair on opposite sides") exactly,
+which EndData.pcostF does not once the sign is forced.
+
+WHAT THIS COSTS. The merge development is written against EndData.Data throughout --
+CostMerge.costOf, cost_swapData, cost_congr, the free-pair argument. Porting it to GData
+is mechanical where the proofs use only pcostF's value (cost_congr, costOf_nonneg) and
+substantive where they use the forced sign. `EndData.pcost_eq_of_arr_dep` -- "on an
+arrival/departure pair the cost sees only the side pattern" -- is exactly a use of the
+forcing, and its docstring says so: "This is not vacuous: it is the consequence of the
+sign being forced."
+
+So the port is not free, and the lemma that will need rethinking is named.

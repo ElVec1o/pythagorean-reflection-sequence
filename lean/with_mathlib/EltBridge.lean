@@ -4620,6 +4620,56 @@ theorem pcostF_ge_one {α : Type*} (d : EndData.Data α) (a b : α)
   · rw [if_pos hside, if_neg (sgn_arr_ne_dep d a b hside ha hb)]; norm_num
   · rw [if_neg hside]
 
+/-! ### End data with a free sign
+
+`EndData.Data` derives each end's sign from its side and role.  The paper's site model
+does not: the four classes `(L,+), (L,-), (R,+), (R,-)` are independent.  This is the
+free-sign version, in which a same-side same-sign pair costs `0` and zero-cost plans
+exist. -/
+
+/-- End data with the sign carried per end rather than derived. -/
+structure GData (α : Type*) where
+  /-- which side of the site the end is on -/
+  side : α → Bool
+  /-- whether the end is an arrival -/
+  isArr : α → Bool
+  /-- the end's sign, free -/
+  sgnOf : α → Bool
+
+/-- The pairing cost with a free sign: `0` same side and same sign, `2` same side and
+opposite sign, `1` across sides. -/
+def GData.pcost {α : Type*} (d : GData α) (a b : α) : ℤ :=
+  if d.side a = d.side b then (if d.sgnOf a = d.sgnOf b then 0 else 2) else 1
+
+/-- **A same-side same-sign pair costs nothing** -- the possibility the forced model
+lacks. -/
+theorem GData.pcost_zero {α : Type*} (d : GData α) (a b : α)
+    (hside : d.side a = d.side b) (hsgn : d.sgnOf a = d.sgnOf b) :
+    d.pcost a b = 0 := by
+  unfold GData.pcost
+  rw [if_pos hside, if_pos hsgn]
+
+theorem GData.pcost_nonneg {α : Type*} (d : GData α) (a b : α) : 0 ≤ d.pcost a b := by
+  unfold GData.pcost
+  split <;> [split; skip] <;> norm_num
+
+/-- The forced model embeds: take the derived sign as the free one. -/
+def GData.ofEndData {α : Type*} (d : EndData.Data α) : GData α :=
+  ⟨d.side, d.isArr, EndData.sgn d⟩
+
+@[simp] theorem GData.ofEndData_pcost {α : Type*} (d : EndData.Data α) (a b : α) :
+    (GData.ofEndData d).pcost a b = EndData.pcostF d a b := rfl
+
+/-- **And the embedding is strict**: in the forced model a same-side arrival/departure
+pair costs `2`, while the free model allows `0` for the same side.  So `GData` is
+genuinely more general, which is what the site model needs. -/
+theorem GData.strictly_more_general {α : Type*} (d : EndData.Data α) (a b : α)
+    (hside : d.side a = d.side b) (ha : d.isArr a = true) (hb : d.isArr b = false) :
+    (GData.ofEndData d).pcost a b = 2 ∧
+    (GData.mk d.side d.isArr (fun _ => true)).pcost a b = 0 := by
+  refine ⟨pcost_same_side_two d a b hside ha hb, ?_⟩
+  exact GData.pcost_zero _ a b hside rfl
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4789,3 +4839,5 @@ end EltBridge
 #print axioms EltBridge.sgn_arr_ne_dep
 #print axioms EltBridge.pcost_same_side_two
 #print axioms EltBridge.pcostF_ge_one
+#print axioms EltBridge.GData.pcost_zero
+#print axioms EltBridge.GData.strictly_more_general
