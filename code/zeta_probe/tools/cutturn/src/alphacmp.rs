@@ -51,13 +51,16 @@ pub fn run(mmax: usize) {
             if !sc.contains(&d) { sc.push(d); }
         } }
         sc.sort();
-        // EndData: sgn depends on (side, isArr), so all up strands of an edge share a
-        // sign and all down strands the other; pu is pinned to 0 or u, likewise pd.
+        // EndData: an up strand's TOP carries sgn = ds true and a down strand's TOP
+        // carries !ds true, so at a site every arrival from the left shares a sign and
+        // every departure the opposite one.  pu and pd are therefore ANTI-CORRELATED,
+        // not independent: ds true = true gives (pu, pd) = (u, 0), and ds true = false
+        // gives (0, dn).  Only the two extremes are representable.
         let mut ed: Vec<i64> = vec![];
-        for &pu in [0usize, u].iter() { for &pd in [0usize, u].iter() {
+        for &(pu, pd) in [(u, 0usize), (0usize, u)].iter() {
             let d = 2 * (pd as i64 - pu as i64);
             if !ed.contains(&d) { ed.push(d); }
-        } }
+        }
         ed.sort();
         println!("  {:>3} {:>28} {:>26}", mm, format!("{:?}", sc), format!("{:?}", ed));
         mm += 2;

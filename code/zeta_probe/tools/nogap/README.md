@@ -6129,3 +6129,44 @@ that is the model in which BLOCK 149 refuted `HasFreePair`.
 That is the shape of the whole difficulty, in one sentence: the model where the merge
 argument works is the one that cannot express the general configuration, and the model
 that can express it is the one where the merge argument fails.
+
+## 2026-09-03 — BLOCK 152: correction to BLOCK 151 -- EndData is the GAP-FREE model
+
+BLOCK 151 said `EndData` represents `d in {-m, 0, m}` and "agrees exactly at `mu = 2`".
+Both halves are wrong, and the corrected statement is much sharper.
+
+`pu` and `pd` are not independent there.  An up strand's TOP carries `sgn = ds true`
+and a down strand's TOP carries `!ds true`, so at a site every arrival from the left
+shares one sign and every departure the opposite one.  That anti-correlates them:
+
+    ds true = true   ->  (pu, pd) = (u, 0)   ->  d = -m
+    ds true = false  ->  (pu, pd) = (0, dn)  ->  d = +m
+
+so the representable deposits are
+
+    m = 2 :  -2, 2          m = 4 :  -4, 4          m = 6 :  -6, 6          m = 8 :  -8, 8
+
+**and never `d = 0`.**  `EndData` cannot express a gap edge at all.
+
+That is not a narrowness to be worked around; it identifies the model.  `EndData` **is
+the gap-free model**, and everything falls into place:
+
+  * BLOCK 139's "cut sites are forced empty" is exactly this.  A cut site needs `d = 0`
+    on both sides, `d = 0` is unrepresentable, so there are no cut sites.  A
+    representability fact, not a fact about the group -- as BLOCK 150 suspected but
+    mislocated.
+  * M6 is `thm:nogap`, whose hypothesis IS "no gap edge".  Its model and its hypothesis
+    coincide.  The same holds for M5, M7 and B1, which live on the same configurations.
+    Their green is well founded and the model is the natural one for them.
+  * M4b and M3 are about cut sites, which require gap edges.  They cannot even be
+    STATED in `EndData`.  That is why they are yellow, and it is not a gap in the proofs
+    but a gap in the model.
+
+So the ledger's "not instantiable from a group element" was right all along, and the
+reason is now exact: the shield law needs gap edges and the model that proves the
+merge cannot represent them.  The general model is `configGData`, per-strand signs,
+where gaps are expressible -- and where BLOCK 149 refuted `HasFreePair`.
+
+Fourth retraction of this run.  The previous three came from asserting a route before
+tracing it; this one came from computing a set with two parameters free that only one
+parameter controls.  The check that caught it was recomputing with them linked.
