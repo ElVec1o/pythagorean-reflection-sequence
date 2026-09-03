@@ -8567,3 +8567,19 @@ least `2`.
 **So both markers are now pinned by the guard alone** -- the arrival by the flag, the
 departure by the flow.  Between them, `Guarded`'s `dep`, `arrv` and `depv` fields are
 consequences rather than assumptions, which is what the converse needs.
+
+## 2026-09-04 — BLOCK 241: the departure total equals the arrival total
+
+The bridge from `telescope_flow` (BLOCK 230) to the marker lemmas (BLOCK 240):
+
+    flow_of_flagStepB   the doubled guard supplies the flow relation
+    dep_sum_eq_arr_sum  and with the travel vanishing at both ends of the span, the two
+                        marker totals agree
+
+0 sorry.  One failure, the beta-reduction one again -- `sum_markers_eq` returns its sums
+with the summand still a lambda, so `exact_mod_cast` saw a different term; `simp only []`
+first.  Fifth occurrence in this file.
+
+Since the arrival total is `1` (`sum_vArr_eq_one`, BLOCK 235), so is the departure total,
+and `exists_of_sum_one` / `unique_of_sum_one` locate the departure exactly.  **Both
+markers are now derived from the guard, neither assumed.**

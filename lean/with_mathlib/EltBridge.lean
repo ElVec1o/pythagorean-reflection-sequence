@@ -7651,6 +7651,37 @@ theorem unique_of_sum_one (f : ℕ → ℕ) (n : ℕ)
     Finset.sum_le_sum_of_subset hsub
   omega
 
+/-! ### The departure total equals the arrival total
+
+The bridge from `telescope_flow` (BLOCK 230) to the marker lemmas (BLOCK 240): the flow
+relation is exactly `flowB`, and with the travel vanishing at both ends of the span the two
+marker totals agree.  Since the arrival total is `1`, so is the departure total, and
+`exists_of_sum_one` / `unique_of_sum_one` then locate the departure exactly. -/
+
+theorem dep_sum_eq_arr_sum (st : ℤ → FlagState) (A : ℤ) (n : ℕ)
+    (hflow : ∀ j : ℤ, (st j).st.fcur + (((st (j + 1)).st.arr : ℕ) : ℤ)
+      = (st (j + 1)).st.fcur + (((st (j + 1)).st.dep : ℕ) : ℤ))
+    (h0 : (st A).st.fcur = 0) (hn : (st (A + n)).st.fcur = 0) :
+    ∑ k ∈ Finset.range n, (st (A + 1 + k)).st.arr
+      = ∑ k ∈ Finset.range n, (st (A + 1 + k)).st.dep := by
+  have h := sum_markers_eq (fun j => (st j).st.fcur)
+    (fun j => (((st j).st.arr : ℕ) : ℤ)) (fun j => (((st j).st.dep : ℕ) : ℤ))
+    hflow n A h0 hn
+  simp only [] at h
+  exact_mod_cast h
+
+/-- The flow hypothesis above is exactly `flowB`, so a doubled guard supplies it. -/
+theorem flow_of_flagStepB (st : ℤ → FlagState)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true) :
+    ∀ j : ℤ, (st j).st.fcur + (((st (j + 1)).st.arr : ℕ) : ℤ)
+      = (st (j + 1)).st.fcur + (((st (j + 1)).st.dep : ℕ) : ℤ) := by
+  intro j
+  have hs := hstep j
+  simp only [flagStepB, fullStepB, stepB, Bool.and_eq_true] at hs
+  have hf := hs.1.1.1.1.2
+  simp only [flowB, decide_eq_true_eq] at hf
+  exact hf
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15304,3 +15335,5 @@ end EltBridge
 #print axioms EltBridge.shift_span_brackets
 #print axioms EltBridge.exists_of_sum_one
 #print axioms EltBridge.unique_of_sum_one
+#print axioms EltBridge.dep_sum_eq_arr_sum
+#print axioms EltBridge.flow_of_flagStepB
