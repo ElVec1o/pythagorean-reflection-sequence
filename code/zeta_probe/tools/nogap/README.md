@@ -2750,3 +2750,32 @@ proof got shorter, not longer, once the branch was read correctly.
 
 So: the chain Elt -> PathData -> VEndpt -> Data -> merge is complete for kstar < 0,
 with hcov0 as its only hypothesis.
+
+## 2026-09-03 — BLOCK 27: B1 assembled for kstar > 0; the construction is COMPLETE
+
+  vEndDataOfP
+  VEndpt.merges_to_one_pos   -- the assembled theorem in the original orientation
+
+The three shapes discharge differently from the kstar < 0 case, and each for a reason
+that is a THEOREM proved earlier tonight, not a hypothesis:
+  hsW at the virtual DEPARTURE -- excluded: it is reachable from its partner the
+      virtual arrival, and residual_discharged (BLOCK 16) then says the walk's leftmost
+      edge is not kstar
+  hsX at the virtual ARRIVAL   -- excluded: the walk reaches a real end at edge <= 0
+      (turn_of_vArr_low, BLOCK 16), so bnd is not the leftmost edge
+  hsT at the virtual departure -- excluded: bnd + 1 exceeds every edge
+
+Extra hypothesis used: hbnd, that bnd exceeds every real edge. That is a free choice of
+the phantom edge, not a constraint on the configuration.
+
+STATUS OF B1. The bridge is BUILT and PROVED to feed the merge development, for every
+kstar != 0:
+  kstar < 0 : VEndpt.merges_to_one_neg   (BLOCK 26)
+  kstar > 0 : VEndpt.merges_to_one_pos   (BLOCK 27)
+  kstar = 0 : excluded by partner_site_ne
+with hcov0 -- the covering condition the Endpt-side argument has always needed -- as
+the only remaining input.
+
+WHAT THIS DOES NOT YET DO: M3/M5/M6/M7 are stated about Endpt configurations. Dropping
+their "(configurations)" qualifier means RESTATING each for Elt through this bridge.
+That is a separate step and it is not done. B1 itself -- the bridge -- is complete.

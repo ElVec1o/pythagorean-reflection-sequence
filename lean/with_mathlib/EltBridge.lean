@@ -1091,6 +1091,95 @@ theorem VEndpt.merges_to_one_neg {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → 
         simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN]
       · exact absurd hyt (by simp [VEndpt.atTopN])
 
+/-! ### Assembly for `kstar > 0`
+
+The original orientation, with `bnd` chosen above every real edge.  The three shapes
+discharge differently from the `kstar < 0` case:
+
+* `hsW` at the virtual **departure** is excluded, because that end is reachable from
+  its partner the virtual arrival, and `residual_discharged` then says the walk's
+  leftmost edge is not `kstar`;
+* `hsX` at the virtual **arrival** is excluded, because the walk reaches a real end at
+  edge `<= 0 < bnd`, so `bnd` is not the leftmost edge;
+* `hsT` at the virtual departure is excluded, because `bnd + 1` exceeds every edge. -/
+
+/-- The end data in the `kstar > 0` orientation. -/
+def vEndDataOfP {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (ds : Bool → Bool) :
+    EndData.Data (VEndpt n mm) :=
+  ⟨VEndpt.atTop, VEndpt.isArr up, ds⟩
+
+/-- **B1, assembled for `kstar > 0`.** -/
+theorem VEndpt.merges_to_one_pos {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (ds : Bool → Bool) (kstar bnd : ℤ) (hk : 0 < kstar) (hb : 0 < bnd)
+    (hbnd : ∀ u : EndType.Endpt n mm, EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ, (∃ u : VEndpt n mm, VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt n mm, VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt n mm, VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : CostMerge.MergesMin (VEndpt.site kstar) (VEndpt.isArr up) VEndpt.partner
+      (vEndDataOfP up ds) D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.site kstar) (VEndpt.isArr up) VEndpt.partner
+        (vEndDataOfP up ds) D' ∧ WalkGraph.walkCount D' ≤ 1 := by
+  refine CostMerge.min_merges_to_one_local (VEndpt.edgeOf bnd) (VEndpt.site kstar)
+    VEndpt.atTop VEndpt.partner (vEndDataOfP up ds)
+    (fun _ => rfl) (VEndpt.partner_site_ne kstar (by omega))
+    ?_ ?_ ?_ (VEndpt.hpe bnd) VEndpt.hpt hcov0 z₀ D hD
+  · -- hsW
+    intro E hE w x hwx hsx
+    cases x with
+    | inl y => exact Or.inr rfl
+    | inr b =>
+      cases b
+      · exact Or.inl rfl
+      · exfalso
+        -- the departure is reachable from its partner, the arrival
+        have hpz : (WalkGraph.graph E).Reachable w (Sum.inr false : VEndpt n mm) := by
+          refine hwx.trans ?_
+          have := WalkSupport.reachable_partner E (Sum.inr true : VEndpt n mm)
+          rwa [hE.1] at this
+        have hne := VEndpt.residual_discharged kstar bnd E w hk hE.2.1
+          (fun b h => E.t_ne _ h) hpz
+        exact hne (by simpa [VEndpt.site] using hsx.symm)
+  · -- hsX
+    intro E hE w x hwx hxe hxb
+    cases x with
+    | inl y => rfl
+    | inr b =>
+      cases b
+      · exfalso
+        -- the walk reaches a real end at edge <= 0, so `bnd` is not its leftmost edge
+        obtain ⟨u, hu⟩ := (VEndpt.turn_of_vArr_low kstar bnd E hE.2.1
+          (fun c h => E.t_ne _ h) (by omega) _ rfl).resolve_left (by
+            intro hle
+            have hlt := WalkSupport.wLo_le (VEndpt.edgeOf bnd) (WalkGraph.graph E)
+              (hwx.trans (reachable_turn E (Sum.inr false)))
+            simp only [VEndpt.edgeOf] at hxe
+            omega)
+        have hlt := WalkSupport.wLo_le (VEndpt.edgeOf bnd) (WalkGraph.graph E)
+          (hwx.trans (reachable_turn E (Sum.inr false)))
+        rw [hu] at hlt
+        simp only [VEndpt.edgeOf] at hxe hlt
+        have := hbnd u
+        omega
+      · exact absurd hxb (by simp [VEndpt.atTop])
+  · -- hsT
+    intro E _ w y hye hyt
+    cases y with
+    | inl u => rfl
+    | inr b =>
+      cases b
+      · exact absurd hyt (by simp [VEndpt.atTop])
+      · exfalso
+        -- `bnd + 1` exceeds every edge, so it is not a leftmost edge
+        have hlo := WalkSupport.wLo_le (VEndpt.edgeOf bnd) (WalkGraph.graph E)
+          (SimpleGraph.Reachable.refl w)
+        simp only [VEndpt.edgeOf] at hye
+        cases w with
+        | inl u => have := hbnd u; simp only [VEndpt.edgeOf] at hlo; omega
+        | inr c => simp only [VEndpt.edgeOf] at hlo; omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1140,3 +1229,4 @@ end EltBridge
 #print axioms EltBridge.VEndpt.hsX_all_neg
 #print axioms EltBridge.VEndpt.hsW_all_neg
 #print axioms EltBridge.VEndpt.merges_to_one_neg
+#print axioms EltBridge.VEndpt.merges_to_one_pos
