@@ -2342,6 +2342,122 @@ theorem VEndpt.blk_or_local {n : ℕ} {mm : Fin n → ℕ} (bnd : ℤ) (Zf : Fin
     | inl u => exact hreal u _ rfl
     | inr b => exact Or.inl (hvirt b)
 
+/-- **`hreal` discharged.**  A turn out of a real end either lands on a real end --
+where the site-edge relation makes it local -- or lands on a virtual end, in which case
+the involution turns it back into an instance of `hvirt`. -/
+theorem VEndpt.hreal_of_hturn {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf : Finset ℤ)
+    (E : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (E.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ u v : EndType.Endpt n mm, E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hvirt : ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm))) :
+    ∀ u : EndType.Endpt n mm, ∀ y : VEndpt n mm, E.t (Sum.inl u) = y →
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inl u)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf y ∨ (∃ t : ℤ,
+        (VEndpt.edgeOf bnd (Sum.inl u) = t - 1 ∨ VEndpt.edgeOf bnd (Sum.inl u) = t) ∧
+        (VEndpt.edgeOf bnd y = t - 1 ∨ VEndpt.edgeOf bnd y = t) ∧
+        (VEndpt.edgeOf bnd (Sum.inl u) ≠ VEndpt.edgeOf bnd y → t ∉ Zf)) := by
+  intro u y hy
+  cases hcase : y with
+  | inr b =>
+    -- the turn landed on a virtual end; involution turns this into `hvirt`
+    left
+    have hback : E.t (Sum.inr b : VEndpt n mm) = Sum.inl u := by
+      rw [← hcase, ← hy, E.t_invol]
+    have := hvirt b
+    rw [hback] at this
+    exact this.symm
+  | inl v =>
+    -- both real: the site-edge relation makes the edge local
+    right
+    refine ⟨EndType.siteOf u, ?_, ?_, ?_⟩
+    · have h : EndType.siteOf u
+          = EndType.edgeOf u + (if EndType.atTop u then (1:ℤ) else 0) := rfl
+      cases hb : EndType.atTop u
+      · have e : (if EndType.atTop u then (1:ℤ) else 0) = 0 := by rw [hb]; rfl
+        rw [e] at h; right; simp only [VEndpt.edgeOf]; omega
+      · have e : (if EndType.atTop u then (1:ℤ) else 0) = 1 := by rw [hb]; rfl
+        rw [e] at h; left; simp only [VEndpt.edgeOf]; omega
+    · have hsv : EndType.siteOf v = EndType.siteOf u := by
+        have := hts (Sum.inl u)
+        rw [hy, hcase] at this
+        exact this
+      have h : EndType.siteOf v
+          = EndType.edgeOf v + (if EndType.atTop v then (1:ℤ) else 0) := rfl
+      cases hb : EndType.atTop v
+      · have e : (if EndType.atTop v then (1:ℤ) else 0) = 0 := by rw [hb]; rfl
+        rw [e] at h; right; simp only [VEndpt.edgeOf]; omega
+      · have e : (if EndType.atTop v then (1:ℤ) else 0) = 1 := by rw [hb]; rfl
+        rw [e] at h; left; simp only [VEndpt.edgeOf]; omega
+    · intro hne
+      refine hturn u v (by rw [hy, hcase]) ?_
+      simpa [VEndpt.edgeOf] using hne
+
+/-- **`prop:cut` for the extended type.**
+
+`c >= |Z|`: at least `|Z|` connected components avoid any given one.  The hypotheses
+are the three the construction supplies -- the pairing is the partner, turns preserve
+sites, turns between real ends do not cross cut sites -- plus `hvirt` (the virtual pair
+stays in one run, BLOCK 42) and `hruns` (every run carries an end). -/
+theorem VEndpt.prop_cut {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf : Finset ℤ)
+    (E : WalkGraph.Data (VEndpt n mm)) (hp : E.p = VEndpt.partner)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (E.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ u v : EndType.Endpt n mm, E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hvirt : ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm)))
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf bnd) Zf v = i)
+    (c0 : (WalkGraph.graph E).ConnectedComponent) :
+    ∃ F : Fin Zf.card → (WalkGraph.graph E).ConnectedComponent,
+      Function.Injective F ∧ ∀ i, F i ≠ c0 :=
+  CutComponents.exists_injective_components_avoiding_blk_or_local
+    (VEndpt.blk_or_local bnd Zf E hp
+      (VEndpt.hreal_of_hturn s0 s1 bnd Zf E hts hturn hvirt) hvirt)
+    hruns c0
+
+/-- **`walkCount_ge_of_avoiding`, generic in the end type.**  The `ConfigLoop` version
+is stated for `Endpt`; nothing in its proof uses that. -/
+theorem walkCount_ge_of_avoiding_gen {α : Type*} [Fintype α] [DecidableEq α]
+    (D : WalkGraph.Data α) (k : ℕ)
+    (c0 : (WalkGraph.graph D).ConnectedComponent)
+    (F : Fin k → (WalkGraph.graph D).ConnectedComponent)
+    (hinj : Function.Injective F) (havoid : ∀ i, F i ≠ c0) :
+    k + 1 ≤ WalkGraph.walkCount D := by
+  classical
+  have hG : Function.Injective (Fin.cons c0 F : Fin (k + 1) → _) := by
+    intro i j hij
+    induction i using Fin.cases with
+    | zero =>
+      induction j using Fin.cases with
+      | zero => rfl
+      | succ j => exact absurd hij.symm (by simpa using havoid j)
+    | succ i =>
+      induction j using Fin.cases with
+      | zero => exact absurd hij (by simpa using havoid i)
+      | succ j => simpa using congrArg Fin.succ (hinj (by simpa using hij))
+  simpa using Fintype.card_le_of_injective _ hG
+
+/-- **`c >= |Z|` as a bound on the walk count**, for the extended type. -/
+theorem VEndpt.walkCount_ge {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf : Finset ℤ)
+    (E : WalkGraph.Data (VEndpt n mm)) (hp : E.p = VEndpt.partner)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (E.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ u v : EndType.Endpt n mm, E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hvirt : ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm)))
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf bnd) Zf v = i)
+    (z₀ : VEndpt n mm) :
+    Zf.card + 1 ≤ WalkGraph.walkCount E := by
+  obtain ⟨F, hinj, havoid⟩ := VEndpt.prop_cut s0 s1 bnd Zf E hp hts hturn hvirt hruns
+    ((WalkGraph.graph E).connectedComponentMk z₀)
+  exact walkCount_ge_of_avoiding_gen E Zf.card _ F hinj havoid
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2439,3 +2555,7 @@ end EltBridge
 #print axioms EltBridge.gz_eq_of_no_between
 #print axioms EltBridge.virtual_pair_same_run
 #print axioms EltBridge.VEndpt.blk_or_local
+#print axioms EltBridge.VEndpt.hreal_of_hturn
+#print axioms EltBridge.VEndpt.prop_cut
+#print axioms EltBridge.VEndpt.walkCount_ge
+#print axioms EltBridge.walkCount_ge_of_avoiding_gen

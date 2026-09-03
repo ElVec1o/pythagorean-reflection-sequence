@@ -3244,3 +3244,32 @@ Two elaboration errors, neither mathematical: `VEndpt.hpe` needed its implicits,
 REMAINING for M3 at element level: discharge `hreal` (the site-edge locality at real
 ends, which is just `local_of_hturn` restricted to real ends) and `hruns` (every run
 carries an end). Then prop:cut applies to the extended graph.
+
+## 2026-09-03 — BLOCK 45: prop:cut PROVED for the extended type — M3 at element level
+
+  VEndpt.hreal_of_hturn        -- hreal discharged: a turn out of a real end either
+                                  lands on a real end (local, by the site-edge
+                                  relation) or on a virtual end, where the INVOLUTION
+                                  turns it back into an instance of hvirt
+  walkCount_ge_of_avoiding_gen -- the ConfigLoop version was stated for Endpt; nothing
+                                  in its proof used that
+  VEndpt.prop_cut              -- **c >= |Z| for the extended type**
+  VEndpt.walkCount_ge          -- as a bound: |Z| + 1 <= walkCount
+
+So the lower bound half of the shield law now holds on VEndpt. Its hypotheses are
+exactly what the construction supplies:
+  hp     the pairing is the partner                 (dataOf, BLOCK 19)
+  hts    turns preserve sites                        (turnG_site, BLOCK 19)
+  hturn  real turns do not cross cut sites           (the paper's cut condition)
+  hvirt  the virtual pair stays in one run           (BLOCK 42)
+  hruns  every run carries an end
+plus a basepoint. Only hturn and hruns are inputs about the configuration; the rest are
+theorems from the construction.
+
+The hreal case split is the neat part and was not obvious: when a real end's turn lands
+on a VIRTUAL end, the edge looks like it needs locality, but E.t_invol rewrites it as
+the same edge traversed from the virtual side, where hvirt already applies. No new
+hypothesis was needed for that case.
+
+This is the LOWER bound (c >= |Z|). The upper bound (c <= |Z|) is the run induction,
+which is the remaining half of M4b at element level.
