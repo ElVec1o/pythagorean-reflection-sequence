@@ -6957,6 +6957,108 @@ theorem eps_const_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
   simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
   exact hs.1.1.2.symm
 
+/-! ### Matching a guarded path's states field by field -/
+
+/-- `const_of_step` for an arbitrary type; the proof never used the arithmetic. -/
+theorem const_of_step_gen {S : Type*} {g : ℤ → S} (h : ∀ j : ℤ, g j = g (j + 1)) :
+    ∀ j : ℤ, g j = g 0 := by
+  intro j
+  induction j using Int.induction_on with
+  | zero => rfl
+  | succ k ih => rw [← h k]; exact ih
+  | pred k ih =>
+      have hstep := h (-(k : ℤ) - 1)
+      have he : -(k : ℤ) - 1 + 1 = -(k : ℤ) := by ring
+      rw [he] at hstep
+      rw [hstep]; exact ih
+
+theorem delta_const_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) (j : ℤ) : (st j).delta = (st 0).delta := by
+  refine const_of_step_gen (g := fun i => (st i).delta) ?_ j
+  intro i
+  have hs := hg.step i
+  simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
+  exact hs.1.2.symm
+
+/-- The compatibility guard says each state's `dprev` is the previous state's `dcur`. -/
+theorem dprev_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) (j : ℤ) : (st (j + 1)).dprev = (st j).dcur := by
+  have hs := hg.step j
+  simp only [stepB, compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hs
+  exact hs.1.1.1
+
+/-- The travel identification, as a standalone fact about a guarded path. -/
+theorem fcur_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) : ∀ j : ℤ, (st j).fcur = SiteCost.travel kstar j := by
+  have hdepZ : ∀ j : ℤ, (((st j).dep : ℕ) : ℤ) = if j = kstar then (1 : ℤ) else 0 := by
+    intro j
+    by_cases h : j = kstar
+    · rw [if_pos h, (hg.dep j).mpr h]; norm_num
+    · rw [if_neg h]
+      rcases hg.depv j with h0 | h1
+      · rw [h0]; norm_num
+      · exact absurd ((hg.dep j).mp h1) h
+  refine eq_travel_of_flow kstar A B (fun j => (st j).fcur) ?_
+    (fun j hj => (hg.outer j hj).2) hg.loA hg.hiB hg.kstLo hg.kstHi
+  intro j
+  have hs := hg.step j
+  simp only [stepB, Bool.and_eq_true] at hs
+  have hf := hs.2
+  simp only [flowB, decide_eq_true_eq] at hf
+  rw [hg.arrv (j + 1), hdepZ (j + 1)] at hf
+  exact hf
+
+/-- The departure marker, as a natural number. -/
+theorem dep_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) (j : ℤ) :
+    (st j).dep = if j = kstar then 1 else 0 := by
+  by_cases h : j = kstar
+  · rw [if_pos h]; exact (hg.dep j).mpr h
+  · rw [if_neg h]
+    rcases hg.depv j with h0 | h1
+    · exact h0
+    · exact absurd ((hg.dep j).mp h1) h
+
+/-- Componentwise equality of states. -/
+theorem localState_ext {a b : LocalState} (h1 : a.dprev = b.dprev) (h2 : a.dcur = b.dcur)
+    (h3 : a.fcur = b.fcur) (h4 : a.arr = b.arr) (h5 : a.dep = b.dep) (h6 : a.eps = b.eps)
+    (h7 : a.delta = b.delta) : a = b := by
+  cases a; cases b
+  simp only at h1 h2 h3 h4 h5 h6 h7
+  subst h1; subst h2; subst h3; subst h4; subst h5; subst h6; subst h7
+  rfl
+
+/-- **The match.**  A configuration agreeing with a guarded path in deposits, departure
+and sign data has exactly that path's states -- every remaining field is forced by the
+guard.  With `exists_config_of_guarded` this identifies the guarded paths as precisely the
+state paths of configurations. -/
+theorem stateOf_eq_of_guarded {A B kstar : ℤ} {st : ℤ → LocalState}
+    (hg : Guarded A B kstar st) (P : SiteCost.PathData)
+    (hk : P.kstar = kstar) (hd : ∀ j : ℤ, P.d j = (st j).dcur)
+    (he : P.eps = (st 0).eps) (hdl : P.delta = (st 0).delta) :
+    ∀ j : ℤ, stateOf P j = st j := by
+  intro j
+  refine localState_ext ?_ (hd j) ?_ ?_ ?_ ?_ ?_
+  · show P.d (j - 1) = (st j).dprev
+    rw [hd (j - 1)]
+    have h := dprev_of_guarded hg (j - 1)
+    rw [show j - 1 + 1 = j from by ring] at h
+    exact h.symm
+  · show SiteCost.travel P.kstar j = (st j).fcur
+    rw [hk, ← fcur_of_guarded hg j]
+  · show SiteCost.vArr j = (st j).arr
+    exact (hg.arrv j).symm
+  · show P.vD j = (st j).dep
+    rw [dep_of_guarded hg j]
+    unfold SiteCost.PathData.vD
+    rw [hk]
+  · show P.eps = (st j).eps
+    rw [he]
+    exact (eps_const_of_guarded hg j).symm
+  · show P.delta = (st j).delta
+    rw [hdl]
+    exact (delta_const_of_guarded hg j).symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14572,3 +14674,9 @@ end EltBridge
 #print axioms EltBridge.guarded_stateOf
 #print axioms EltBridge.exists_config_of_guarded
 #print axioms EltBridge.eps_const_of_guarded
+#print axioms EltBridge.delta_const_of_guarded
+#print axioms EltBridge.dprev_of_guarded
+#print axioms EltBridge.fcur_of_guarded
+#print axioms EltBridge.dep_of_guarded
+#print axioms EltBridge.localState_ext
+#print axioms EltBridge.stateOf_eq_of_guarded

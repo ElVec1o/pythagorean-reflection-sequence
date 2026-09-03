@@ -8255,3 +8255,31 @@ state functions: `guarded_stateOf` one way, `exists_config_of_guarded` the other
 FIELD BY FIELD -- `dprev` from the compatibility guard, `delta` by the same constancy
 argument as `eps` -- and then the final sum chain through `sum_configs_eq_sum_paths` and
 `weightSum_eq_sum_pathWeight`.
+
+## 2026-09-04 — BLOCK 228: the field-by-field match
+
+    const_of_step_gen        const_of_step for an arbitrary type; the proof never used
+                             the arithmetic
+    delta_const_of_guarded   the delta flag is constant along a guarded path
+    dprev_of_guarded         each state's dprev is the previous state's dcur
+    fcur_of_guarded          the travel identification, standalone
+    dep_of_guarded           the departure marker, as a natural number (NO AXIOMS)
+    localState_ext           componentwise equality of states (NO AXIOMS)
+    stateOf_eq_of_guarded    THE MATCH: a configuration agreeing with a guarded path in
+                             deposits, departure and sign data has exactly that path's
+                             states -- every other field is forced by the guard
+
+0 sorry, all seven clean on the first build.  `const_of_step` generalised for free: the
+BLOCK 224 proof used `rfl`, `rw` and `exact` only, so it never needed `ℤ`-valued targets,
+and the `delta` flag reuses it directly.
+
+**The set equality is complete.**  `guarded_stateOf` (BLOCK 226) says every configuration's
+state function is guarded; `exists_config_of_guarded` (BLOCK 227) builds a configuration
+from a guarded path; `stateOf_eq_of_guarded` (here) says that configuration's states ARE
+the path.  So the guarded state functions are exactly the state functions of
+configurations.
+
+**Left for (M3): the final chain only.**  Feed the set equality into
+`sum_configs_eq_sum_paths` (BLOCK 223) and `weightSum_eq_sum_pathWeight` (BLOCK 211) to
+reach the matrix power, then `IsAssembly` via `coeff_neumann_tail_zero` (BLOCK 209).  No
+new construction is required.
