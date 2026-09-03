@@ -3578,3 +3578,32 @@ sign the characterisation is not degenerate:
   original 0 (= shifted 1): not cut because d(-1) = -1, not 1     [cut_at_zero_iff]
   original 1 (= shifted 2): CUT, plain read-off                    [pdCutAt_iff]
   original 2 (= shifted 3): not cut because d(2) = 2 != 0          [betaAt]
+
+## 2026-09-03 — BLOCK 59: `forall E, hturn` is TOO STRONG — diagnosis
+
+  pdMm_pos            -- every edge of a PathData span carries a crossing (mu_pos)
+  witNeg_end_at_cut   -- so witNeg's cut site (shifted 2) DOES carry a real end
+
+CONSEQUENCE. shield_finalT / shield_neg / shield_gap all take hturn as
+    forall E, forall u v real, E.t (inl u) = inl v -> edge changes -> site u not in Zf
+i.e. NO datum has a real turn crossing a cut site. That is a property of a PARTICULAR
+realisation, not of the configuration. As soon as a cut site carries real ends -- which
+witNeg's does, and which is the generic situation, since mu >= 1 on the whole span -- an
+arbitrary Data can pair those ends across the site and the hypothesis fails.
+
+So the shield law on VEndpt is not vacuous as a theorem, but its hturn hypothesis
+cannot be met for any configuration whose cut sites are occupied. It cannot be applied.
+
+THE FIX, and it is the same structural point as BLOCK 3. hturn must be an INVARIANT
+carried through the descent, not a universally quantified hypothesis:
+  - exists_run_connected must preserve it, so it belongs in the P of reaches_stuck
+    alongside MergesMin;
+  - run_step_min_gen must re-establish it after the swap -- which is exactly what
+    ConfigLoop.hturn_step does on the Endpt side.
+The Endpt development got this right (RunInv bundles hturn with hp, hts, hta, hmin);
+the generic version I built in BLOCKS 46-53 dropped it to a hypothesis because that was
+easier to state, and the cost is that it cannot be instantiated.
+
+Fourth time tonight a construction has failed only on use: BLOCK 28 (negative edges),
+BLOCK 32 (missing role flip), BLOCK 41 (locality), BLOCK 55 (cut sites not arrival-free),
+and now this. In every case inspecting the statement would not have found it.

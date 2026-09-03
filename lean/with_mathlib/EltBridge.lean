@@ -3292,6 +3292,41 @@ theorem witNeg_sites_lt :
     witNeg.toPathData.kstar - witNeg.toPathData.A < -witNeg.toPathData.A := by
   rw [witNeg_pd_A, witNeg_pd_kstar]; omega
 
+/-! ### `hturn` quantified over all data is too strong
+
+`shield_gap` takes `hturn` as `forall E, ...`: **no** datum has a real turn crossing a
+cut site.  That is a property of a *particular* realisation, not of the configuration,
+and it fails as soon as a cut site carries real ends -- an arbitrary `Data` may pair
+them across the site.
+
+`witNeg`'s cut site does carry real ends, so the `forall E` form cannot be discharged
+for it. -/
+
+/-- Every edge of a `PathData` span carries a crossing. -/
+theorem pdMm_pos (P : SiteCost.PathData) (i : Fin (pdWidth P))
+    (hlo : P.A ≤ P.A + (i : ℤ)) (hhi : P.A + (i : ℤ) ≤ P.B) :
+    0 < pdMm P i := by
+  simp only [pdMm]
+  rw [P.mm_eq_mu ⟨hlo, hhi⟩]
+  exact P.mu_pos _
+
+/-- **`witNeg`'s cut site carries a real end.**
+
+Shifted site `2` is the top of shifted edge `1` -- original edge `0` -- whose
+multiplicity is positive.  So `hturn` is a genuine constraint on the datum there, and
+cannot hold for every `Data`. -/
+theorem witNeg_end_at_cut :
+    ∃ u : EndType.Endpt (pdWidth witNeg.toPathData) (pdMm witNeg.toPathData),
+      EndType.siteOf u = 2 := by
+  have hw := witNeg_width
+  have hlt : (1 : ℕ) < pdWidth witNeg.toPathData := by omega
+  have hpos : 0 < pdMm witNeg.toPathData ⟨1, hlt⟩ := by
+    refine pdMm_pos witNeg.toPathData ⟨1, hlt⟩ ?_ ?_
+    · simp
+    · rw [witNeg_pd_A, witNeg_pd_B]; simp
+  refine ⟨⟨⟨1, hlt⟩, ⟨0, hpos⟩, true⟩, ?_⟩
+  simp [EndType.siteOf, EndType.edgeOf, EndType.atTop]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3423,3 +3458,5 @@ end EltBridge
 #print axioms EltBridge.witNeg_cutSites
 #print axioms EltBridge.witNeg_hgap
 #print axioms EltBridge.witNeg_sites_lt
+#print axioms EltBridge.pdMm_pos
+#print axioms EltBridge.witNeg_end_at_cut
