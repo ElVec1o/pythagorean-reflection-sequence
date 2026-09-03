@@ -8789,6 +8789,55 @@ theorem pathWeightR_exp {R : Type*} [CommRing R] {S : Type*}
       rw [pow_add, pow_add, pow_add, pow_add]
       ring
 
+/-! ### The congruence and the vanishing, over an arbitrary ring
+
+The two lemmas the sum comparison rests on, ported.  As in BLOCK 274 the proofs are the `ℤ`
+ones verbatim. -/
+
+theorem pathWeightR_congr {R : Type*} [CommRing R] {S : Type*} (T : S → S → R)
+    (mu mu' : S → R) :
+    ∀ (L : List S) (s : S) (lam lam' : S → R), lam s = lam' s →
+      mu (lastOf s L) = mu' (lastOf s L) →
+      pathWeightR T lam mu (s :: L) = pathWeightR T lam' mu' (s :: L) := by
+  intro L
+  induction L with
+  | nil =>
+      intro s lam lam' hl hm
+      have hm' : mu s = mu' s := hm
+      show lam s * mu s = lam' s * mu' s
+      rw [hl, hm']
+  | cons t rest ih =>
+      intro s lam lam' hl hm
+      show lam s * T s t * pathWeightR T (fun _ => (1 : R)) mu (t :: rest)
+        = lam' s * T s t * pathWeightR T (fun _ => (1 : R)) mu' (t :: rest)
+      rw [hl, ih t (fun _ => (1 : R)) (fun _ => (1 : R)) rfl hm]
+
+theorem pathWeightR_zero_of_guard_fails {R : Type*} [CommRing R] (x : R) (g : ℤ → FlagState) :
+    ∀ (n : ℕ) (A : ℤ) (lam mu : FlagState → R) (k : ℤ), A ≤ k → k < A + n →
+      flagStepB (g k) (g (k + 1)) = false →
+      pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        lam mu ((A :: idxList A n).map g) = 0 := by
+  intro n
+  induction n with
+  | zero => intro A lam mu k h1 h2 _; push_cast at h2; omega
+  | succ m ih =>
+      intro A lam mu k h1 h2 hfail
+      show lam (g A) * (if flagStepB (g A) (g (A + 1)) then
+              x ^ ((g A).st.muOf + (g (A + 1)).st.siteOf) else 0)
+            * pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+              (fun _ => (1 : R)) mu ((idxList A (m + 1)).map g) = 0
+      by_cases hk : k = A
+      · subst hk
+        rw [hfail]
+        simp
+      · have h3 : pathWeightR (fun σ τ => if flagStepB σ τ then
+              x ^ (σ.st.muOf + τ.st.siteOf) else 0) (fun _ => (1 : R)) mu
+            (((A + 1) :: idxList (A + 1) m).map g) = 0 :=
+          ih (A + 1) (fun _ => (1 : R)) mu k (by omega) (by push_cast at h2 ⊢; omega) hfail
+        rw [show ((idxList A (m + 1)).map g) = (((A + 1) :: idxList (A + 1) m).map g) from rfl,
+          h3]
+        ring
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16503,3 +16552,5 @@ end EltBridge
 #print axioms EltBridge.coeff_sum_configs
 #print axioms EltBridge.pathWeightR_one_exp
 #print axioms EltBridge.pathWeightR_exp
+#print axioms EltBridge.pathWeightR_congr
+#print axioms EltBridge.pathWeightR_zero_of_guard_fails

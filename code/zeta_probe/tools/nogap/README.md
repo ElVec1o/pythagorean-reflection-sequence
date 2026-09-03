@@ -9211,3 +9211,20 @@ The existing ℤ development stays valid and is not disturbed; what is added is 
 **[Rule 0] Honest scope.**  Only the exponential lemmas are ported so far.  The guard
 theorems, the sum comparison and the bijection are all still stated over `ℤ`, and porting
 them is the remaining work on this line -- mechanical, but not yet done.
+
+## 2026-09-04 — BLOCK 275: the congruence and the vanishing, over an arbitrary ring
+
+    pathWeightR_congr                  reads lam at the head and mu at the last state only
+                                       (NO AXIOMS)
+    pathWeightR_zero_of_guard_fails    a failure anywhere kills the weight
+
+0 sorry, both clean on the first build.  As in BLOCK 274 the proofs are the `ℤ` ones
+verbatim -- the ring was never used.
+
+These are the two lemmas the sum comparison rests on, so the `PowerSeries` route now has
+its foundations.  What still runs only over `ℤ` is the chain of guard theorems
+(BLOCKS 234-236, 249, 269-270), which use `pathWeight` rather than `pathWeightR`.
+
+**[Rule 0] Honest scope, restated.**  Porting the exponential, the congruence and the
+vanishing does NOT port the comparison; it makes porting it possible.  I am not treating
+the coefficient route as available until the guard chain is over `R` too.
