@@ -2227,7 +2227,52 @@ theorem shield_final_hyps_incompatible (up : Fin n → ℕ) (Zf : Finset ℤ)
   have hlt := x.idx.isLt
   omega
 
+/-! ### The shield law, repaired
+
+`shield_law_final` asked for `hocc`, which `shield_final_hyps_incompatible` shows is
+incompatible with `hZ`.  The run form asks instead that **every run carry an end** --
+which is what the lower-bound proof actually used, and which the witness satisfies. -/
+
+/-- **The shield law.**  A cost-minimal configuration whose cut sites carry no
+arrivals and whose every run carries an end has exactly `|Z| + 1` walks: `c = |Z|`. -/
+theorem shield_law_runs (up : Fin n → ℕ) (ds : Bool → Bool) (Zf : Finset ℤ)
+    (hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ x : Endpt n m, CutComponents.gz Zf (edgeOf x) = i)
+    (e0 : Endpt n m)
+    (D : Data (Endpt n m)) (hD : RunInv up ds Zf D) :
+    ∃ E : Data (Endpt n m), RunInv up ds Zf E ∧ walkCount E = Zf.card + 1 := by
+  obtain ⟨E, hE, hle⟩ := c_le_Z_final up ds Zf hZ D hD
+  refine ⟨E, hE, le_antisymm hle ?_⟩
+  obtain ⟨F, hinj, havoid⟩ :=
+    CutComponents.exists_injective_components_avoiding_of_runs
+      (local_of_hturn E Zf hE.hp hE.hts hE.hturn) hruns
+      ((graph E).connectedComponentMk e0)
+  exact walkCount_ge_of_avoiding E Zf.card _ F hinj havoid
+
+/-- The witness has an end in each of its two runs. -/
+theorem wit_hruns : ∀ i : ℕ, i ≤ ({2} : Finset ℤ).card →
+    ∃ x : Endpt 4 witM, CutComponents.gz {2} (edgeOf x) = i := by
+  intro i hi
+  simp only [Finset.card_singleton] at hi
+  interval_cases i
+  · exact ⟨⟨0, ⟨0, by decide⟩, true⟩, by decide⟩
+  · exact ⟨⟨3, ⟨0, by decide⟩, true⟩, by decide⟩
+
+/-- The witness has no arrival at its cut site: it has no end there at all. -/
+theorem wit_hZ : ∀ x : Endpt 4 witM, isArrOf witUp x = true → siteOf x ∉ ({2} : Finset ℤ) := by
+  intro x _ hmem
+  exact wit_no_end_at_two x (by simpa using hmem)
+
+/-- **The shield law is non-vacuous: `c = |Z| = 1` on the witness.** -/
+theorem wit_shield (ds : Bool → Bool) :
+    ∃ E : Data (Endpt 4 witM), RunInv (m := witM) witUp ds {2} E ∧ walkCount E = 2 := by
+  obtain ⟨D, hD⟩ := wit_runInv ds
+  obtain ⟨E, hE, hc⟩ :=
+    shield_law_runs (m := witM) witUp ds {2} wit_hZ wit_hruns ⟨0, ⟨0, by decide⟩, true⟩ D hD
+  exact ⟨E, hE, by simpa using hc⟩
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.no_end_at_arrivalfree
-#print axioms ConfigLoop.empty_edges_at_arrivalfree
-#print axioms ConfigLoop.shield_final_hyps_incompatible
+#print axioms ConfigLoop.shield_law_runs
+#print axioms ConfigLoop.wit_hruns
+#print axioms ConfigLoop.wit_shield

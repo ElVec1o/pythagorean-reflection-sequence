@@ -205,6 +205,41 @@ theorem exists_injective_components_avoiding (hedge : Local G pos Zf) (A B : ℤ
     exact ⟨fun j => F j.castSucc, fun i j hij => Fin.castSucc_injective _ (hF hij),
       fun j => hc _⟩
 
+/-! ### The run form of the lower bound
+
+`hocc` -- every position in `[A, B]` occupied -- is stronger than the proof needs, and
+in the intended application it is **unsatisfiable**: a cut site carries no ends, so the
+positions adjacent to it are empty.  All the proof uses `hocc` for is to produce, for
+each block index, *some* vertex in that block.  That is the run form below, and it is
+satisfiable in the presence of cut sites. -/
+
+/-- **`c >= |Z|`, run form.**  Only that every run carries a vertex. -/
+theorem exists_injective_components_of_runs (hedge : Local G pos Zf)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card → ∃ v : V, blk pos Zf v = i) :
+    ∃ F : Fin (Zf.card + 1) → G.ConnectedComponent, Function.Injective F := by
+  have hex : ∀ i : Fin (Zf.card + 1), ∃ v : V, blk pos Zf v = (i : ℕ) :=
+    fun i => hruns (i : ℕ) (Nat.lt_succ_iff.mp i.isLt)
+  choose v hv using hex
+  refine ⟨fun i => G.connectedComponentMk (v i), fun i j hij => ?_⟩
+  have hb := blk_reachable hedge (SimpleGraph.ConnectedComponent.exact hij)
+  rw [hv i, hv j] at hb
+  exact Fin.val_injective hb
+
+/-- **`prop:cut`, run form.** -/
+theorem exists_injective_components_avoiding_of_runs (hedge : Local G pos Zf)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card → ∃ v : V, blk pos Zf v = i)
+    (c0 : G.ConnectedComponent) :
+    ∃ F : Fin Zf.card → G.ConnectedComponent, Function.Injective F ∧ ∀ i, F i ≠ c0 := by
+  obtain ⟨F, hF⟩ := exists_injective_components_of_runs hedge hruns
+  by_cases hc : ∃ p : Fin (Zf.card + 1), F p = c0
+  · obtain ⟨p, hp⟩ := hc
+    refine ⟨fun j => F (p.succAbove j), fun i j hij => ?_, fun j hj => ?_⟩
+    · exact Fin.succAbove_right_injective (hF hij)
+    · exact Fin.succAbove_ne p j (hF (hj.trans hp.symm))
+  · simp only [not_exists] at hc
+    exact ⟨fun j => F j.castSucc, fun i j hij => Fin.castSucc_injective _ (hF hij),
+      fun j => hc _⟩
+
 end Graph
 
 
@@ -270,3 +305,5 @@ end SiteCost
 #print axioms CutComponents.blk_reachable
 #print axioms CutComponents.exists_injective_components
 #print axioms CutComponents.exists_injective_components_avoiding
+#print axioms CutComponents.exists_injective_components_of_runs
+#print axioms CutComponents.exists_injective_components_avoiding_of_runs

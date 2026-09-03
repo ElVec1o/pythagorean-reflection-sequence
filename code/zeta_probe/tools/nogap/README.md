@@ -2103,3 +2103,33 @@ cut sites carry no *crossing ends*, but the walk still passes through them by
 turning; the span condition `hocc` is about the relaxed-optimal *span*, which in the
 paper is measured on a different index than the edge index used here. One of the two
 has to be restated. Until then H1b (reverse shield) is OPEN, not PARTIAL.
+
+## 2026-09-03 — BLOCK 5: shield law REPAIRED and proved non-vacuous
+
+The BLOCK 4 retraction identified the wrong culprit as *fatal*. `hZ` is correct --
+`no_ends_of_alpha_zero` already showed the paper's cut sites carry no ends, so
+"no arrival at a cut site" is exactly right. The wrong hypothesis was `hocc`.
+
+`hocc` (every position in [A,B] occupied) is used in exactly one place, and for
+exactly one purpose: to produce, for each block index i, SOME vertex with blk = i.
+That is "every RUN is non-empty", which is strictly weaker and IS satisfiable with
+cut sites present -- the empty edges flanking a cut site do not need to be occupied,
+only some edge in each run.
+
+New in `CutComponents.lean`:
+  exists_injective_components_of_runs
+  exists_injective_components_avoiding_of_runs   -- prop:cut, run form
+
+New in `ConfigLoop.lean`:
+  shield_law_runs   -- THE SHIELD LAW: hZ + (every run carries an end) + RunInv
+                       |- exists E, RunInv E and walkCount E = |Z| + 1
+  wit_hruns, wit_hZ
+  wit_shield        -- walkCount E = 2 with |Z| = 1 on the BLOCK 4 witness
+
+So `c = |Z|` is proved AND instantiated at |Z| = 1. Non-vacuity is now a theorem,
+not an assumption. All kernel-clean (`decide`, not `native_decide`); full build
+8626 jobs, 0 sorry.
+
+H1b (reverse shield): OPEN -> PROVED, with a witness. `shield_law_final` is
+superseded by `shield_law_runs` and kept only as the record of the bad hypothesis,
+alongside `shield_final_hyps_incompatible` which proves it was bad.
