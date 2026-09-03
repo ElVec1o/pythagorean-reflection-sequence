@@ -1,3 +1,4 @@
+mod mu4;
 // cutturn -- does a minimal-cost merging pairing avoid turning across cut sites?
 //
 // This is the last obligation of the shield law as `VEndpt.shield_of_initial`
@@ -162,6 +163,10 @@ fn main() {
     let mode = std::env::args().nth(1).unwrap_or_else(|| "gap".into());
     let nmax: usize = std::env::args().nth(2).and_then(|s| s.parse().ok()).unwrap_or(7);
     if mode == "dep" { mode_dep(nmax); return; }
+    if mode == "mu4" {
+        let amax: i64 = std::env::args().nth(3).and_then(|s| s.parse().ok()).unwrap_or(4);
+        mu4::run(nmax, amax); return;
+    }
     println!("[cutturn] all-gap chains, n = 2..{nmax}; every interior site is a cut site");
     println!("[cutturn] cost: bounce 0, pass 1 (a lower bound on the full model)");
     let mut verdict = true;

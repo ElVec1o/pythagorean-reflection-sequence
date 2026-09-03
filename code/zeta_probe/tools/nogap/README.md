@@ -5478,3 +5478,38 @@ pairings per site.  The first genuinely richer case is `|a| = 4`, where `mu = 4`
 gives two strands each way, the pairings per site multiply, and flips can
 combine across a site.  Travel edges and the markers are absent as well.  So
 this is evidence on a thin slice, not a proof, and M4b stays yellow.
+
+## 2026-09-03 — BLOCK 135: passing is available exactly off the cut sites
+
+`cutturn mu4` lifts the `mu = 2` restriction BLOCK 134 flagged: deposits to
+`|a| = 4`, realisations sweeping `m_j` over the minimum and the minimum + 2, and
+sites carrying two strands each way.  It reports 5841 realisations reaching
+`mu = 4` and 15336 sites offering more than two pairings, so the restriction is
+genuinely lifted and not merely re-parametrised.
+
+    interior non-cut sites                       : 13592
+    ... where NO min-cost pairing passes         : 0
+    cut sites where SOME min-cost pairing passes : 0
+    elements with walks-at-min != |Z|+1          : 0
+
+A clean dichotomy with no exceptions either way: at a minimal-cost pairing,
+passing is available **exactly** at the non-cut sites.
+
+That is the mechanism of `c <= |Z|`, and it is now visible rather than assumed.
+Pass at every non-cut site -- always possible -- and each run connects into one
+component; no cut site admits a pass, so the runs stay separate; the count is
+exactly `|Z| + 1`.
+
+Both halves are proved at the level of the weight matrix.  At a cut site both
+deposits vanish, so the classes agree on each side and the bounce costs 0 against
+the pass's 1+1 (`bounce_beats_pass_at_cut`).  Off it, a non-zero deposit makes
+one side's classes differ, so a bounce must pay a flip at 2, which the two passes
+exactly match (`pass_le_bounce_of_left_differs`); they beat it when the far side
+flips too.  `cut_dichotomy` states the pair.
+
+NOT DONE.  What is proved is the local cost comparison at a single site.  The
+global step -- that choosing a passing pairing at every non-cut site connects
+each run, and that this is simultaneously realisable with minimality across all
+sites -- is measured here, not proved.  That global step is `hsep` in
+`walkCount_le_runs_blk`, and it remains the open half of M4b.  The chains also
+carry no travel edges and no markers.

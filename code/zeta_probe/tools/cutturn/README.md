@@ -86,3 +86,40 @@ where `mu = 4` gives two strands each way, the number of pairings per site
 grows, and flips can combine across a site -- none of that is tested.  Travel
 edges (`f = +-1`) and the marker sites are absent too.  M4b is not closed by
 this.
+
+## `mu = 4` and the dichotomy (`cutturn mu4 <nmax> <|a|max>`)
+
+The two families above hold `mu = 2` on every edge, so each site offers exactly
+two pairings and nothing is really chosen.  The `mu4` mode lifts that: deposits
+run to `|a| = 4`, realisations sweep `m_j` over the minimum and the minimum + 2,
+and a site can carry two strands each way.  The element is the deposit vector
+(sum zero); a realisation is `(m, pu, pd)`.  Cost decomposes over sites, so the
+minimal-cost pairings are the product of the per-site minimal-cost bijections,
+and the walk count is computed over that product.
+
+    cutturn mu4 4 4
+
+      109 elements (deposit vectors with sum 0)
+      realisations reaching mu=4 on some edge      : 5841
+      sites offering more than two pairings        : 15336
+      interior non-cut sites                       : 13592
+      ... where NO min-cost pairing passes         : 0
+      cut sites where SOME min-cost pairing passes : 0
+      min-cost pairings that pass at a cut site    : 0
+      elements with walks-at-min != |Z|+1          : 0
+
+The middle three lines are the finding.  **Passing is available at a minimal-cost
+pairing exactly at the non-cut sites** -- always there, never at a cut site, with
+no exceptions in either direction.
+
+That dichotomy is `c <= |Z|`.  Pass at every non-cut site, which is always
+possible; each run then connects into one component.  No cut site admits a pass,
+so the runs stay separate.  The count is exactly `|Z| + 1`, which is the last
+line.
+
+Both halves are proved in `EltBridge.lean` at the level of the weight matrix:
+`bounce_beats_pass_at_cut` (a cut site has both deposits zero, so the classes
+agree on each side and the bounce costs 0 against the pass's 1+1) and
+`pass_le_bounce_of_left_differs` (a non-zero deposit makes one side's classes
+differ, so a bounce must pay a flip at 2, which the two passes match), combined
+as `cut_dichotomy`.

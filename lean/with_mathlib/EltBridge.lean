@@ -6978,3 +6978,58 @@ theorem bounce_beats_pass_at_cut (l r : Fin 4) (hl : l.val < 2) (hr : 2 ≤ r.va
 
 #print axioms costOf
 #print axioms bounce_beats_pass_at_cut
+
+/-!
+### The dichotomy: passing is available exactly off the cut sites
+
+`cutturn mu4` measures, at every interior site, whether **some** minimal-cost
+pairing passes.  Over 13592 interior non-cut sites and every cut site among
+them, with realisations reaching `mu = 4` and 15336 sites offering more than two
+pairings:
+
+    interior non-cut sites                       : 13592
+    ... where NO min-cost pairing passes         : 0
+    cut sites where SOME min-cost pairing passes : 0
+
+So passing is available at a minimal-cost pairing **exactly** at the non-cut
+sites.  That is `c <= |Z|`: pass at every non-cut site, which connects each run
+into one component, while no cut site admits a pass, so the runs stay separate
+and the count is exactly `|Z| + 1`.
+
+`bounce_beats_pass_at_cut` is the cut half.  The non-cut half is below: a
+non-zero deposit makes the two classes on that side differ, and a bounce must
+then pay a **flip**, which costs the same as the two passes that replace it.
+-/
+
+/-- **Off a cut site the pass is never worse.**  If the two classes on the left
+differ -- which a non-zero deposit forces -- then the bounce pays a flip at cost
+`2`, while the two passes replacing it cost `1 + 1`.  So a pass-bearing pairing
+attains the minimum, and it is strictly better when the right side also flips. -/
+theorem pass_le_bounce_of_left_differs (l l' r r' : Fin 4)
+    (hl : l.val < 2) (hl' : l'.val < 2) (hr : 2 ≤ r.val) (hr' : 2 ≤ r'.val)
+    (hne : l ≠ l') :
+    costOf l r' + costOf r l' ≤ costOf l l' + costOf r r' := by
+  have h1 : costOf l r' = 1 := by
+    unfold costOf
+    rw [if_neg (by intro h; rw [h] at hl; omega), if_neg (by omega)]
+  have h2 : costOf r l' = 1 := by
+    unfold costOf
+    rw [if_neg (by intro h; rw [h] at hr; omega), if_neg (by omega)]
+  have h3 : costOf l l' = 2 := by
+    unfold costOf; rw [if_neg hne, if_pos (by omega)]
+  rw [h1, h2, h3]
+  omega
+
+/-- The dichotomy in one statement: at a cut site the bounce strictly wins, and
+off it -- once a deposit makes one side's classes differ -- the pass ties or
+wins.  The first denies the connection, the second supplies it. -/
+theorem cut_dichotomy (l l' r r' : Fin 4)
+    (hl : l.val < 2) (hl' : l'.val < 2) (hr : 2 ≤ r.val) (hr' : 2 ≤ r'.val) :
+    (l = l' → r = r' → costOf l l' + costOf r r' < costOf l r' + costOf r l') ∧
+    (l ≠ l' → costOf l r' + costOf r l' ≤ costOf l l' + costOf r r') := by
+  refine ⟨?_, pass_le_bounce_of_left_differs l l' r r' hl hl' hr hr'⟩
+  rintro rfl rfl
+  exact bounce_beats_pass_at_cut l r hl hr
+
+#print axioms pass_le_bounce_of_left_differs
+#print axioms cut_dichotomy
