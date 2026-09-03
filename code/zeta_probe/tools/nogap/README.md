@@ -8933,3 +8933,21 @@ directions of the correspondence are VERIFIED, the summation over flagged paths 
 VERIFIED, the vanishing off the guard is VERIFIED, and every boundary step of the extension
 is VERIFIED.  What is NOT yet written is the single theorem that runs the case split over
 `j` and concludes `flagStepB` everywhere for `extendFlag`.
+
+## 2026-09-04 — BLOCK 260: the extension satisfies the guard everywhere
+
+    extendFlag_at_span      on the span the extension is the path's own state (NO AXIOMS)
+    FlagPath                what a guarded path supplies, bundled
+    flagStepB_extendFlag    THE ASSEMBLY: the guard holds at EVERY index
+
+0 sorry.  One failure, diagnosed before rewriting per Rule 4.3: `subst c4` with `c4 : j = B`
+eliminates `B` itself, so the later `h.flag B` had no `B` to refer to; `rw [c4]` keeps both
+variables and works.  Same substitution applied to the other two equations for uniformity.
+
+The six cases of BLOCKS 255-259 dispatch by trichotomy on `j` against `A - 1`, then against
+`B`, `B + 1`: far left, into `A`, inside the span, out of `B`, just past `B`, far right.
+
+**[Rule 0] VERIFIED: a guarded path's extension satisfies the doubled guard at every index
+of `Z`** -- which is the hypothesis `guarded_of_flag` (BLOCK 243) needs, and hence
+`exists_config_of_flag`.  The chain from a finite guarded path to a configuration is now
+complete end to end.

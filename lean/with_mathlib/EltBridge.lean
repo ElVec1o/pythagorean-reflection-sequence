@@ -8305,6 +8305,61 @@ theorem flagStepB_extendFlag_in (g : ℤ → FlagState) (A B : ℤ) (hA : A ≤ 
   simp [flagStepB, fullStepB, stepB, hc, hf, hvalid, hepsv, hflag, h2]
   omega
 
+/-! ### The extension satisfies the guard everywhere
+
+The six cases of BLOCKS 255-259, assembled.  The hypotheses are bundled into `FlagPath`,
+which is exactly what the kernel and the two boundary vectors supply along a path. -/
+
+/-- On the span the extension is the path's own state. -/
+theorem extendFlag_at_span (g : ℤ → FlagState) (A B : ℤ) {j : ℤ} (h1 : A ≤ j) (h2 : j ≤ B)
+    (hflag : (g j).past = decide (0 ≤ j)) : extendFlag g A B j = g j := by
+  show (⟨extendFn (fun i => (g i).st) A B j, decide (0 ≤ j)⟩ : FlagState) = g j
+  rw [extendFn_eq_on _ A B h1 h2, ← hflag]
+
+/-- What a guarded path supplies. -/
+structure FlagPath (A B : ℤ) (g : ℤ → FlagState) : Prop where
+  loA : A ≤ 0
+  hiB : 0 ≤ B
+  step : ∀ j : ℤ, A ≤ j → j < B → flagStepB (g j) (g (j + 1)) = true
+  flag : ∀ j : ℤ, A ≤ j → j ≤ B → (g j).past = decide (0 ≤ j)
+  arrv : (g A).st.arr = SiteCost.vArr A
+  dprevA : (g A).st.dprev = 0
+  flowA : (((g A).st.arr : ℕ) : ℤ) = (g A).st.fcur + (((g A).st.dep : ℕ) : ℤ)
+  validA : validB (g A).st = true
+  epsvA : epsValidB (g A).st = true
+  fcurB : 0 ≤ (g B).st.fcur
+  epsvB : epsValidB (g B).st = true
+  epsAB : (g A).st.eps = (g B).st.eps
+  delAB : (g A).st.delta = (g B).st.delta
+  epsv1 : (g A).st.eps = 1 ∨ (g A).st.eps = -1
+
+/-- **The extension satisfies the guard at every index.** -/
+theorem flagStepB_extendFlag (A B : ℤ) (g : ℤ → FlagState) (h : FlagPath A B g) :
+    ∀ j : ℤ, flagStepB (extendFlag g A B j) (extendFlag g A B (j + 1)) = true := by
+  intro j
+  have hA := h.loA
+  have hB := h.hiB
+  have hAB : A ≤ B := by omega
+  by_cases c1 : j < A - 1
+  · exact flagStepB_extendFlag_far g A B hA hB h.epsv1 j (Or.inr c1)
+  by_cases c2 : j = A - 1
+  · rw [c2]
+    exact flagStepB_extendFlag_in g A B hA hB hAB (h.flag A le_rfl hAB) h.dprevA
+      h.flowA h.arrv h.validA h.epsvA
+  by_cases c3 : j < B
+  · have hj1 : A ≤ j := by omega
+    rw [extendFlag_at_span g A B hj1 (by omega) (h.flag j hj1 (by omega)),
+      extendFlag_at_span g A B (show A ≤ j + 1 by omega) (show j + 1 ≤ B by omega)
+        (h.flag (j + 1) (by omega) (by omega))]
+    exact h.step j hj1 c3
+  by_cases c4 : j = B
+  · rw [c4]
+    exact flagStepB_extendFlag_out g A B hB hAB (h.flag B hAB le_rfl) h.fcurB h.epsvB
+  by_cases c5 : j = B + 1
+  · rw [c5]
+    exact flagStepB_extendFlag_beyond g A B hA hB h.epsAB h.delAB h.epsv1
+  · exact flagStepB_extendFlag_far g A B hA hB h.epsv1 j (Or.inl (by omega))
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15994,3 +16049,5 @@ end EltBridge
 #print axioms EltBridge.past_eq_decide
 #print axioms EltBridge.extendFlag_at_A
 #print axioms EltBridge.flagStepB_extendFlag_in
+#print axioms EltBridge.extendFlag_at_span
+#print axioms EltBridge.flagStepB_extendFlag
