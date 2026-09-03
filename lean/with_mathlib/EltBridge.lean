@@ -6221,6 +6221,45 @@ theorem kernel_splits {R : Type*} [CommRing R] (q g : R) (a b : ℕ) :
   rw [mul_add, ← gap_term_rank_one q a b]
   ring
 
+/-! ### The junction is not rank one
+
+`prop:junction` says the marker junction is **not** of rank one -- which is why
+`thm:L` gives `B_U(q_m) != 0` but not the residue, and why `(R-J)` appears as a
+hypothesis.
+
+"Not rank one" is witnessed by a single non-zero `2 x 2` minor.  Taking the symmetrised
+junction entries of `eq:junctionsym` at `x = 1/2`, with `sigma in {0, 2}` and
+`2s+1 in {1, 3}`:
+
+  sigma = 0 : `x^(2s+1)`                                          -> `1/2`,  `1/8`
+  sigma = 2 : `(x^max(1,2s+1) + x^max(3,2s+1)) / 2`               -> `5/16`, `1/8`
+
+and the minor is `1/2 * 1/8 - 1/8 * 5/16 = 3/128 != 0`. -/
+
+/-- The symmetrised junction entry of `eq:junctionsym` at `sigma = 0`. -/
+def junc0 (x : ℚ) (s : ℕ) : ℚ := x ^ (2 * s + 1)
+
+/-- The symmetrised junction entry at `sigma = 2`. -/
+def junc2 (x : ℚ) (s : ℕ) : ℚ :=
+  (x ^ max 1 (2 * s + 1) + x ^ max 3 (2 * s + 1)) / 2
+
+/-- **The junction is not rank one**: this `2 x 2` minor is non-zero. -/
+theorem junction_not_rank_one :
+    junc0 (1/2) 0 * junc2 (1/2) 1 - junc0 (1/2) 1 * junc2 (1/2) 0 = 3 / 128 := by
+  unfold junc0 junc2
+  norm_num
+
+/-- **So no outer product reproduces it**, unlike the gap term (`gap_term_rank_one`,
+BLOCK 122): a rank-one matrix has every `2 x 2` minor zero. -/
+theorem not_outer_product :
+    ¬ ∃ f g : ℕ → ℚ, (∀ s, junc0 (1/2) s = f 0 * g s) ∧ (∀ s, junc2 (1/2) s = f 1 * g s) := by
+  rintro ⟨f, g, h0, h2⟩
+  have hminor := junction_not_rank_one
+  rw [h0 0, h0 1, h2 1, h2 0] at hminor
+  have : f 0 * g 0 * (f 1 * g 1) - f 0 * g 1 * (f 1 * g 0) = 0 := by ring
+  rw [this] at hminor
+  norm_num at hminor
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6463,3 +6502,5 @@ end EltBridge
 #print axioms EltBridge.neumann_partial_gen
 #print axioms EltBridge.gap_term_rank_one
 #print axioms EltBridge.kernel_splits
+#print axioms EltBridge.junction_not_rank_one
+#print axioms EltBridge.not_outer_product

@@ -5080,3 +5080,29 @@ count (junction matrix rank 4, 6 symmetrised), not a sign". The gap term is rank
 factorises; the junction is rank 6 and does not. Both are rank statements about the same
 assembly, pulling in opposite directions -- one enables the Mobius factorisation, the
 other blocks the residue computation that (R-J) needs.
+
+## 2026-09-03 — BLOCK 123: the junction is NOT rank one — verified in Lean
+
+First checked the paper's rank claims exactly in Python, over Q at x = 1/2, on the block
+sigma in {0,2,4,6,8,10}, 2s+1 in {1,...,11}:
+  symmetrised form   rank 6   (paper says 6)   CONFIRMED
+  earlier form       rank 5   (paper says 5)   CONFIRMED
+
+Then formalised the load-bearing consequence:
+
+  junc0, junc2          -- the symmetrised junction entries at sigma = 0 and 2
+  junction_not_rank_one -- the 2x2 minor is 3/128, NON-ZERO
+  not_outer_product     -- so no outer product f a * g s reproduces the junction, since
+                           a rank-one matrix has every 2x2 minor zero
+
+This is prop:junction's content, and it is the reason (R-J) is a hypothesis rather than
+a theorem: thm:L gives B_U(q_m) != 0 at every travel pole, but the RESIDUE needs the
+junction to be rank one, and it is not.
+
+THE TWO RANK FACTS, side by side and both now machine-checked:
+  gap term    rank ONE      gap_term_rank_one     (BLOCK 122) -> enables the Mobius
+                                                                 factorisation
+  junction    NOT rank one  junction_not_rank_one (BLOCK 123) -> blocks the residue,
+                                                                 hence (R-J)
+Same assembly, opposite conclusions, and the contrast is exactly why one of (M)'s
+inputs is proved and the other is assumed.
