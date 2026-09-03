@@ -8967,3 +8967,20 @@ which is `|fcur B|` and so is `0` or `1` whenever the travel indicator is.
 
 **[Rule 0] VERIFIED.**  Two more of `exists_config_of_flag`'s hypotheses are now available
 for an arbitrary guarded path.
+
+## 2026-09-04 — BLOCK 262: the extension's departure marker, everywhere
+
+    extendFn_dep   the departure marker fires exactly at k*, at every index of Z
+
+0 sorry, clean on the first build.
+
+Off the span and away from `B + 1` the marker is `0`, and that is right: the departure lies
+in `[A, B+1]`, so no index outside can be it.  At `B + 1` the marker is `|fcur B|`, and
+whether it fires is exactly whether the departure sits past the end -- the criterion
+BLOCK 248 identified.  **That is a hypothesis here, not a consequence**, since for an
+arbitrary path it is a condition on the path rather than something derivable from the
+others.
+
+**[Rule 0] VERIFIED, with one hypothesis carried.**  With this, every field of
+`exists_config_of_flag` is available for a guarded path except that hypothesis, which is a
+property the guard must be asked to check.

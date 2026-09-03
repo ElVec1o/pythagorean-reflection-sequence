@@ -8398,6 +8398,38 @@ theorem extendFn_depv (g : ℤ → LocalState) (A B : ℤ)
       omega
     · rw [if_neg h2]; exact Or.inl rfl
 
+/-! ### The extension's departure marker, everywhere
+
+Off the span and away from `B + 1` the marker is `0`, and that is right: the departure lies
+in `[A, B+1]`, so no index outside can be it.  At `B + 1` the marker is `|fcur B|`, and
+whether it fires is exactly whether the departure sits past the end -- the criterion
+BLOCK 248 identified.  That is taken as a hypothesis here, since for a path it is a
+condition rather than a consequence. -/
+
+theorem extendFn_dep (g : ℤ → LocalState) (A B kstar : ℤ) (hA : A ≤ 0) (hB : 0 ≤ B)
+    (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1)
+    (hspan : ∀ j : ℤ, A ≤ j → j ≤ B → ((g j).dep = 1 ↔ j = kstar))
+    (hB1 : (g B).fcur.natAbs = 1 ↔ kstar = B + 1) :
+    ∀ j : ℤ, ((extendFn g A B j).dep = 1 ↔ j = kstar) := by
+  intro j
+  unfold extendFn
+  by_cases h1 : A ≤ j ∧ j ≤ B
+  · rw [if_pos h1]; exact hspan j h1.1 h1.2
+  · push_neg at h1
+    rw [if_neg (by omega)]
+    by_cases h2 : j = B + 1
+    · rw [if_pos h2]
+      show (g B).fcur.natAbs = 1 ↔ j = kstar
+      rw [h2]
+      constructor
+      · intro h; exact (hB1.mp h).symm
+      · intro h; exact hB1.mpr h.symm
+    · rw [if_neg h2]
+      show (0 : ℕ) = 1 ↔ j = kstar
+      constructor
+      · intro h; exact absurd h (by omega)
+      · intro h; omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16091,3 +16123,4 @@ end EltBridge
 #print axioms EltBridge.flagStepB_extendFlag
 #print axioms EltBridge.extendFn_arrv
 #print axioms EltBridge.extendFn_depv
+#print axioms EltBridge.extendFn_dep
