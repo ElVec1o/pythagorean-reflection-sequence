@@ -8891,3 +8891,19 @@ carries `hflag` as an assumption.
 **Five of the six extension cases are now proved**; the step from `A - 1` into `A` remains,
 and it will need the same flag fact at `A`.  Writing that induction once will discharge it
 for both.
+
+## 2026-09-04 — BLOCK 258: the flag along a guarded path is the canonical one
+
+    past_eq_decide   the flag at A + n is `decide (0 <= A + n)`
+
+0 sorry.  One failure: after the `if` split the goal is a BOOL equation, not `... = true`,
+so `Bool.or_eq_true` had nothing to act on; handling each `decide` explicitly with
+`decide_eq_true` / `decide_eq_false` works.
+
+**This discharges the hypothesis BLOCK 257 assumed.**  The flag starts matching the arrival
+at `A`, advances only where the arrival fires, and the arrival fires only at the origin, so
+it is `0 <= j` throughout.  The proof is an induction from `A` upward with the interesting
+case at `j = -1`, where the flag turns on exactly as the arrival fires.
+
+With it, `flagStepB_extendFlag_out` (BLOCK 257) and the remaining step from `A - 1` into
+`A` both have their flag facts.

@@ -8234,6 +8234,45 @@ theorem flagStepB_extendFlag_out (g : ℤ → FlagState) (A B : ℤ) (hB : 0 ≤
   have ha : (extState (g B).st).arr = 0 := rfl
   simp [flagStepB, fullStepB, stepB, hc, hf, hv, he, ha, hflag, h1, h2]
 
+/-! ### The flag along a guarded path is the canonical one
+
+BLOCK 257 assumed it.  It is a theorem: the flag starts matching the arrival at `A`,
+advances only where the arrival fires, and the arrival fires only at the origin -- so the
+flag is `0 <= j` throughout. -/
+
+theorem past_eq_decide (g : ℤ → FlagState) (A : ℤ) (hA : A ≤ 0)
+    (hstep : ∀ j : ℤ, flagStepB (g j) (g (j + 1)) = true)
+    (harrv : ∀ j : ℤ, (g j).st.arr = SiteCost.vArr j)
+    (hhead : (g A).past = decide ((g A).st.arr = 1)) :
+    ∀ n : ℕ, (g (A + n)).past = decide (0 ≤ A + (n : ℤ)) := by
+  intro n
+  induction n with
+  | zero =>
+      have h2 : decide ((g A).st.arr = 1) = decide ((0 : ℤ) ≤ A) := by
+        rw [harrv A]
+        unfold SiteCost.vArr
+        by_cases h : A = 0
+        · rw [if_pos h]; simp [h]
+        · rw [if_neg h]; simp only [decide_eq_decide]; omega
+      simpa using hhead.trans h2
+  | succ m ih =>
+      have hs := hstep (A + m)
+      simp only [flagStepB, Bool.and_eq_true, beq_iff_eq] at hs
+      have hp := hs.1.2
+      have hcast : A + ((m + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 := by push_cast; ring
+      rw [hcast, hp, ih, harrv]
+      unfold SiteCost.vArr
+      by_cases h : A + (m : ℤ) + 1 = 0
+      · rw [if_pos h, decide_eq_true (by omega : (0 : ℤ) ≤ A + (m : ℤ) + 1)]
+        simp
+      · rw [if_neg h]
+        by_cases hs : (0 : ℤ) ≤ A + (m : ℤ)
+        · rw [decide_eq_true hs, decide_eq_true (by omega : (0 : ℤ) ≤ A + (m : ℤ) + 1)]
+          simp
+        · rw [decide_eq_false hs,
+            decide_eq_false (by omega : ¬((0 : ℤ) ≤ A + (m : ℤ) + 1))]
+          simp
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15920,3 +15959,4 @@ end EltBridge
 #print axioms EltBridge.flagStepB_extendFlag_beyond
 #print axioms EltBridge.extendFlag_at_B
 #print axioms EltBridge.flagStepB_extendFlag_out
+#print axioms EltBridge.past_eq_decide
