@@ -6315,3 +6315,38 @@ index are joined.  A pass links the two edges it crosses (`reachable_turn`) and
 `local_trichotomy` gives a minimal choice passing at every non-cut site, so what is
 missing is only the chaining of those links along a run.  That is the last step of
 M4b's global layer.
+
+## 2026-09-03 — BLOCK 158: the local route to hsep is refuted
+
+BLOCK 153 claimed the minimal datum with connected runs can be CHOSEN rather than merged
+into -- pass at every non-cut site, bounce at every cut site -- and BLOCK 157 said only
+the chaining remained.  Both are wrong, and the test that settles it was cheap:
+
+    minimal data passing at EVERY non-cut site   : 8192
+    ... of those, walks != |Z|+1                 : 5072
+
+62 per cent.  Passing at every non-cut site does NOT give the right walk count.
+
+The reason is visible once stated.  A pass links the two edges it crosses, but
+`RunsConnected` asks that ALL ends with a given run index lie in one component, and an
+edge with `mu = 4` carries four strands that must also be joined to each other.  One
+pass per site does not do that; which strands the passes pick matters.  That is exactly
+the content the merge argument supplies, and it is why the original proof used it.
+
+So the local trichotomy does not replace the merge.  Everything proved in BLOCKS 153-157
+stands as stated -- `local_trichotomy`, `pass_forced_of_sums`,
+`pass_ties_bounce_of_one_side`, the glue lemmas, `exists_glued_data` -- they are facts
+about site costs and about assembling per-site involutions.  What was wrong is the
+inference from them to `hsep`.
+
+Three routes to M4b are now closed rather than two:
+
+    merge in the derived model      HasFreePair proved, but gap edges inexpressible
+                                    (BLOCKS 139, 152)
+    merge in configGData            gap edges fine, HasFreePair REFUTED, 38628
+                                    counterexamples (BLOCK 149)
+    local choice, no merge          refuted here, 5072 of 8192
+
+Fifth retraction of this run.  This one was caught before anything was built on it,
+which is the improvement: BLOCK 157 named the chaining as the next step, and the next
+step was to test whether the chaining could work at all rather than to start writing it.
