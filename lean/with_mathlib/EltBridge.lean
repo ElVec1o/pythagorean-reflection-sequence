@@ -7613,6 +7613,44 @@ theorem shift_span_brackets (A : ℤ) (n k : ℕ) (hk : k ≤ n) :
   have hkn : (k : ℤ) ≤ (n : ℤ) := by exact_mod_cast hk
   constructor <;> omega
 
+/-! ### A sum of markers equal to one means exactly one marker
+
+The arrival was pinned by the flag (BLOCKS 237-238).  The DEPARTURE is pinned differently:
+`telescope_flow` (BLOCK 230) makes the departure total equal the arrival total, which is
+`1`, and a 0/1 sum equal to `1` has exactly one term equal to `1`.  So the departure needs
+no second flag -- the flow already carries it. -/
+
+/-- A 0/1 sum equal to `1` has a term equal to `1`. -/
+theorem exists_of_sum_one (f : ℕ → ℕ) (n : ℕ) (h01 : ∀ k, f k = 0 ∨ f k = 1)
+    (hsum : ∑ k ∈ Finset.range n, f k = 1) : ∃ k ∈ Finset.range n, f k = 1 := by
+  by_contra hcon
+  push_neg at hcon
+  have hz : ∀ k ∈ Finset.range n, f k = 0 := by
+    intro k hk
+    rcases h01 k with h | h
+    · exact h
+    · exact absurd h (hcon k hk)
+  rw [Finset.sum_congr rfl hz] at hsum
+  simp at hsum
+
+/-- And only one. -/
+theorem unique_of_sum_one (f : ℕ → ℕ) (n : ℕ)
+    (hsum : ∑ k ∈ Finset.range n, f k = 1)
+    {i j : ℕ} (hi : i ∈ Finset.range n) (hj : j ∈ Finset.range n)
+    (hfi : f i = 1) (hfj : f j = 1) : i = j := by
+  by_contra hne
+  have hsub : ({i, j} : Finset ℕ) ⊆ Finset.range n := by
+    intro y hy
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hy
+    rcases hy with rfl | rfl
+    · exact hi
+    · exact hj
+  have hpair : ∑ k ∈ ({i, j} : Finset ℕ), f k = 2 := by
+    rw [Finset.sum_pair hne, hfi, hfj]
+  have hle : ∑ k ∈ ({i, j} : Finset ℕ), f k ≤ ∑ k ∈ Finset.range n, f k :=
+    Finset.sum_le_sum_of_subset hsub
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15264,3 +15302,5 @@ end EltBridge
 #print axioms EltBridge.flagStepB_shift
 #print axioms EltBridge.shiftFn_arr_zero
 #print axioms EltBridge.shift_span_brackets
+#print axioms EltBridge.exists_of_sum_one
+#print axioms EltBridge.unique_of_sum_one

@@ -8550,3 +8550,20 @@ already guarantees (BLOCK 238).
 **Every hypothesis `mkPathData` needs is now accounted for from the doubled guard alone.**
 What remains is to write the composition: shift, read off the data, apply `mkPathData`, and
 check the resulting configuration's flagged path is the one started from.
+
+## 2026-09-04 — BLOCK 240: a marker sum of one means exactly one marker
+
+The arrival was pinned by the flag (BLOCKS 237-238).  The DEPARTURE is pinned differently
+and needs no second flag: `telescope_flow` (BLOCK 230) makes the departure total equal the
+arrival total, which is `1`, and a 0/1 sum equal to `1` has exactly one term equal to `1`:
+
+    exists_of_sum_one    such a sum has a term equal to 1
+    unique_of_sum_one    and only one
+
+0 sorry, both clean on the first build.  `unique_of_sum_one` goes through
+`Finset.sum_pair` and `Finset.sum_le_sum_of_subset`: two markers would make the total at
+least `2`.
+
+**So both markers are now pinned by the guard alone** -- the arrival by the flag, the
+departure by the flow.  Between them, `Guarded`'s `dep`, `arrv` and `depv` fields are
+consequences rather than assumptions, which is what the converse needs.
