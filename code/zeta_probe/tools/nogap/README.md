@@ -3432,3 +3432,28 @@ PROOF NOTE, and it is the reason the third attempt worked: the first two version
 carried `if b then s1 else s0` through the whole argument and fought it at every step.
 Casing on `b` at the TOP and running one keyed sub-lemma at each of the two sites made
 the body uniform and it went through. The mathematics was identical in all three.
+
+## 2026-09-03 — BLOCK 53: shield_gap — the shield law taking ONLY configuration inputs
+
+  VEndpt.shield_gap -- c = |Z| on the extended type, with hvirt supplied internally
+
+Its hypotheses in full:
+  hgap   no cut site in [s1-1, s0]   -- BLOCKS 39 and 42 establish this for a real
+                                        configuration (no cut inside the travel
+                                        interval; neither endpoint is a cut site)
+  hturn  the paper's cut condition on real turns
+  hruns  every run carries an end
+  hcov   the covering condition
+  z0     a basepoint
+Nothing about the virtual pair, the phantom edge, or the orientation appears anywhere
+in the statement. That was the goal of BLOCKS 39-53.
+
+Also weakened `hvirt` in shield_finalT and shield_neg from "for every datum" to "for
+every datum IN THE MERGE CLASS", which is all that is used and all that hvirt_of_gap
+can supply (it needs hts).
+
+EDITING NOTE: the text replacement for that weakening matched in BOTH shield_finalT and
+shield_neg, and the second copy has no `d` in scope. The error ("Unknown identifier
+d.isArr") named the line but not the cause; the cause was a blind string replace over a
+range containing two theorems. Same failure mode as the linter-suggestion edit earlier
+in the project.

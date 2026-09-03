@@ -2788,7 +2788,8 @@ theorem VEndpt.shield_finalT {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Z
     (hturn : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ u v : EndType.Endpt n mm,
       E.t (Sum.inl u) = Sum.inl v →
       EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
-    (hvirt : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ b : Bool,
+    (hvirt : ∀ E : WalkGraph.Data (VEndpt n mm),
+      WalkSupport.Merges (VEndpt.siteP s0 s1) d.isArr VEndpt.partner E → ∀ b : Bool,
       CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
         = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm)))
     (hruns : ∀ i : ℕ, i ≤ Zf.card →
@@ -2803,7 +2804,7 @@ theorem VEndpt.shield_finalT {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Z
     exists_run_connected d (VEndpt.edgeOf bnd) (VEndpt.siteP s0 s1) top
       VEndpt.partner Zf hside (VEndpt.hpe bnd) hptT hpsite hsW hsX hsT hcov D hD
   exact ⟨D', hD', VEndpt.shield s0 s1 bnd Zf D' hD'.1.1 hD'.1.2.1 (hturn D')
-    (hvirt D') hruns hsep z₀⟩
+    (hvirt D' hD'.1) hruns hsep z₀⟩
 
 /-! ### The three discharges, in `siteP` form, mirrored orientation
 
@@ -2868,7 +2869,9 @@ theorem VEndpt.shield_neg {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1
     (hturn : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ u v : EndType.Endpt n mm,
       E.t (Sum.inl u) = Sum.inl v →
       EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
-    (hvirt : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ b : Bool,
+    (hvirt : ∀ E : WalkGraph.Data (VEndpt n mm),
+      WalkSupport.Merges (VEndpt.siteP s0 s1) (vEndDataN up ds).isArr
+        VEndpt.partner E → ∀ b : Bool,
       CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf (Sum.inr b : VEndpt n mm)
         = CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf
             (E.t (Sum.inr b : VEndpt n mm)))
@@ -2943,6 +2946,37 @@ theorem VEndpt.hvirt_of_gap {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : 
   cases b
   · exact key false s0 rfl (by omega) (by omega)
   · exact key true s1 rfl (by omega) (by omega)
+
+/-- **The shield law on the extended type, taking only configuration inputs.**
+
+`hvirt` is now supplied by `hvirt_of_gap` from the cut-free window, so what the caller
+must provide is `hgap` (no cut site in `[s1-1, s0]`, which BLOCKS 39 and 42 establish
+for a real configuration), `hturn`, `hruns`, `hcov` and a basepoint.  Nothing about the
+virtual pair, the phantom edge or the orientation appears. -/
+theorem VEndpt.shield_gap {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1 < s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hcov : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ z v : VEndpt n mm,
+      VEndpt.edgeOf (s0 - 1) v
+        < WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z →
+      ∃ w : VEndpt n mm, VEndpt.edgeOf (s0 - 1) w
+        = WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z - 1 ∧
+        VEndpt.atTopN w = true)
+    (hturn : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ u v : EndType.Endpt n mm,
+      E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf v = i)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : CostMerge.MergesMin (VEndpt.siteP s0 s1) (vEndDataN up ds).isArr
+      VEndpt.partner (vEndDataN up ds) D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.siteP s0 s1) (vEndDataN up ds).isArr
+        VEndpt.partner (vEndDataN up ds) D' ∧
+      WalkGraph.walkCount D' = Zf.card + 1 :=
+  VEndpt.shield_neg s0 s1 hlt Zf up ds hcov hturn
+    (fun E hE => VEndpt.hvirt_of_gap s0 s1 hlt Zf hgap E hE.2.1) hruns z₀ D hD
 
 end EltBridge
 
@@ -3059,3 +3093,4 @@ end EltBridge
 #print axioms EltBridge.VEndpt.shield_neg
 #print axioms EltBridge.gz_const_on
 #print axioms EltBridge.VEndpt.hvirt_of_gap
+#print axioms EltBridge.VEndpt.shield_gap
