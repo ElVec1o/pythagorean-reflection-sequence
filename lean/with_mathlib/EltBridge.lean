@@ -8488,6 +8488,44 @@ theorem flow_balance_dichotomy (fB S : ℤ) (hf : 0 ≤ fB) (hS : 0 ≤ S)
     (hsum : (1 : ℤ) = fB + S) : (fB = 1 ∧ S = 0) ∨ (fB = 0 ∧ S = 1) := by
   omega
 
+/-! ### From the balance to the departure's position
+
+`flow_balance` (BLOCK 264) says the departures on the span total `0` or `1`.  Turning that
+into a statement about WHERE the departure is needs two small bridges: a zero sum of `0/1`
+terms has every term zero, and a departure that is not on the span must be at `B + 1`. -/
+
+/-- A `0/1` sum vanishes exactly when every term does. -/
+theorem sum_zero_iff_no_one (f : ℕ → ℕ) (n : ℕ) (h01 : ∀ k, f k = 0 ∨ f k = 1) :
+    (∑ k ∈ Finset.range n, f k = 0) ↔ ∀ k ∈ Finset.range n, f k = 0 := by
+  constructor
+  · intro h k hk
+    rcases h01 k with h0 | h1
+    · exact h0
+    · exfalso
+      have hle : f k ≤ ∑ i ∈ Finset.range n, f i :=
+        Finset.single_le_sum (fun i _ => Nat.zero_le _) hk
+      omega
+  · intro h; exact Finset.sum_eq_zero h
+
+/-- **No departure on the span means the departure is past the end.** -/
+theorem kstar_eq_succ_B_of_no_dep (g : ℤ → LocalState) {A B kstar : ℤ}
+    (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1)
+    (hspan : ∀ j : ℤ, A ≤ j → j ≤ B → ((g j).dep = 1 ↔ j = kstar))
+    (hno : ∀ j : ℤ, A ≤ j → j ≤ B → (g j).dep = 0) : kstar = B + 1 := by
+  by_contra hne
+  have hkB : kstar ≤ B := by omega
+  have h1 : (g kstar).dep = 1 := (hspan kstar hk1 hkB).mpr rfl
+  have h0 : (g kstar).dep = 0 := hno kstar hk1 hkB
+  omega
+
+/-- **And a departure on the span means it is not past the end.** -/
+theorem kstar_le_B_of_dep (g : ℤ → LocalState) {A B kstar j0 : ℤ}
+    (hj1 : A ≤ j0) (hj2 : j0 ≤ B)
+    (hspan : ∀ j : ℤ, A ≤ j → j ≤ B → ((g j).dep = 1 ↔ j = kstar))
+    (hfire : (g j0).dep = 1) : kstar ≠ B + 1 := by
+  have : j0 = kstar := (hspan j0 hj1 hj2).mp hfire
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16185,3 +16223,6 @@ end EltBridge
 #print axioms EltBridge.depB1_iff_stateOf
 #print axioms EltBridge.flow_balance
 #print axioms EltBridge.flow_balance_dichotomy
+#print axioms EltBridge.sum_zero_iff_no_one
+#print axioms EltBridge.kstar_eq_succ_B_of_no_dep
+#print axioms EltBridge.kstar_le_B_of_dep

@@ -9026,3 +9026,22 @@ it on the other.
 **[Rule 0] VERIFIED.**  The `B + 1` condition BLOCK 262 carried as a hypothesis is now
 derivable for an arbitrary guarded path, not only for a configuration.  No fifth guard
 clause is needed.
+
+## 2026-09-04 — BLOCK 265: from the balance to the departure's position
+
+    sum_zero_iff_no_one         a 0/1 sum vanishes exactly when every term does
+    kstar_eq_succ_B_of_no_dep   no departure on the span means it is past the end
+    kstar_le_B_of_dep           and a departure on the span means it is not
+
+0 sorry, all three clean on the first build; the last two need only `propext` and
+`Quot.sound`.
+
+`flow_balance` (BLOCK 264) says the departures on the span total `0` or `1`; these turn
+that into a statement about WHERE the departure is, which is what `extendFn_dep`'s `hB1`
+asks.  Both directions of that iff are now available:
+
+    fcur B = 1  =>  departures total 0  =>  none on the span  =>  k* = B + 1
+    fcur B = 0  =>  departures total 1  =>  one on the span    =>  k* /= B + 1
+
+**[Rule 0] VERIFIED.**  The composition into `hB1` itself is the remaining step, and it is
+now a matter of chaining these three with `flow_balance_dichotomy`.
