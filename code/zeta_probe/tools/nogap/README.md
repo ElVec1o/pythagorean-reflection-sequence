@@ -2813,3 +2813,26 @@ written against the literals and will need the parameters threaded through.
 
 B1: GREEN -> YELLOW. I marked it green one block early. The atom is the bridge from a
 group element, and the bridge does not yet reach elements with A < 0.
+
+## 2026-09-03 — BLOCK 29: parametrised virtual sites; the A < 0 gap is closable
+
+  VEndpt.siteP           -- the site map with both virtual sites as parameters s0, s1
+  VEndpt.siteP_zero      -- VEndpt.site kstar is the case s0 = 0, s1 = kstar
+  VEndpt.arrAtP/depAtP, arrAtP_eq/depAtP_eq, card_arrAtP/card_depAtP
+  travelS                -- the travel indicator on shifted edge indices:
+                            travelS A kstar j = travel kstar (A + j)
+  travelS_site_facts     -- travelS steps EXACTLY at -A and kstar - A
+  VEndpt.balanced_allP   -- balance at every site of the shifted configuration
+
+The shift works: a configuration spanning [A, B] with A < 0, moved right by -A, has
+edges 0..B-A (all representable by Fin n) and its two virtual events land at -A and
+kstar - A, which is exactly what siteP takes as parameters.
+
+So BLOCK 28's gap is closable, and the shape of the fix is confirmed rather than
+assumed: travelS_site_facts is the shifted form of travel_site_facts, and balanced_allP
+the shifted form of balanced_all, both proved.
+
+STILL TO DO for the A < 0 case: the partner site-distinctness (needs -A != kstar - A,
+i.e. kstar != 0, unchanged), the locality discharges (BLOCKS 16/18 rewritten against
+s0/s1 rather than 0/kstar), and the re-indexing PathData -> Fin n itself, which no
+block has yet written. That last one is the actual remaining content of B1.

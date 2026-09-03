@@ -1217,6 +1217,129 @@ theorem no_vendpt_at_neg {n : ℕ} {mm : Fin n → ℕ} (bnd j : ℤ) (hj : j < 
     omega
   | inr b => simp only [VEndpt.edgeOf] at hx; omega
 
+/-! ### Parametrised virtual sites
+
+`VEndpt.site` fixed the two virtual sites at `0` and `kstar`.  A configuration whose
+span starts at `A < 0` must be shifted right by `-A` to be representable by `Endpt`,
+and its virtual events then sit at `-A` and `kstar - A`.  This is the same development
+with those two values as parameters; `VEndpt.site kstar` is the case `s0 = 0`,
+`s1 = kstar`. -/
+
+/-- The site map with both virtual sites as parameters. -/
+def VEndpt.siteP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) : VEndpt n mm → ℤ
+  | .inl x => EndType.siteOf x
+  | .inr false => s0
+  | .inr true => s1
+
+@[simp] theorem VEndpt.siteP_zero {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
+    (x : VEndpt n mm) : VEndpt.siteP 0 kstar x = VEndpt.site kstar x := by
+  cases x with
+  | inl y => rfl
+  | inr b => cases b <;> rfl
+
+/-- Arrivals at a site, parametrised. -/
+noncomputable def VEndpt.arrAtP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ)
+    (s : ℤ) : Finset (VEndpt n mm) := by
+  classical
+  exact Finset.univ.filter (fun x => VEndpt.siteP s0 s1 x = s ∧ VEndpt.isArr up x = true)
+
+/-- Departures at a site, parametrised. -/
+noncomputable def VEndpt.depAtP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ)
+    (s : ℤ) : Finset (VEndpt n mm) := by
+  classical
+  exact Finset.univ.filter (fun x => VEndpt.siteP s0 s1 x = s ∧ VEndpt.isArr up x = false)
+
+theorem VEndpt.arrAtP_eq {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    VEndpt.arrAtP (mm := mm) s0 s1 up s
+      = (EndType.arrAt (m := mm) up s).image Sum.inl
+        ∪ (if s = s0 then {Sum.inr false} else ∅) := by
+  classical
+  ext x
+  cases x with
+  | inl y =>
+    by_cases h : s = s0 <;>
+      simp [VEndpt.arrAtP, VEndpt.siteP, VEndpt.isArr, EndType.mem_arrAt, h]
+  | inr b =>
+    cases b <;> by_cases h : s = s0 <;>
+      simp [VEndpt.arrAtP, VEndpt.siteP, VEndpt.isArr, h] <;> omega
+
+theorem VEndpt.depAtP_eq {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    VEndpt.depAtP (mm := mm) s0 s1 up s
+      = (EndType.depAt (m := mm) up s).image Sum.inl
+        ∪ (if s = s1 then {Sum.inr true} else ∅) := by
+  classical
+  ext x
+  cases x with
+  | inl y =>
+    by_cases h : s = s1 <;>
+      simp [VEndpt.depAtP, VEndpt.siteP, VEndpt.isArr, EndType.mem_depAt, h]
+  | inr b =>
+    cases b <;> by_cases h : s = s1 <;>
+      simp [VEndpt.depAtP, VEndpt.siteP, VEndpt.isArr, h] <;> omega
+
+theorem VEndpt.card_arrAtP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    (VEndpt.arrAtP (mm := mm) s0 s1 up s).card
+      = (EndType.arrAt (m := mm) up s).card + (if s = s0 then 1 else 0) := by
+  classical
+  rw [VEndpt.arrAtP_eq]
+  have hdisj : Disjoint ((EndType.arrAt (m := mm) up s).image Sum.inl)
+      (if s = s0 then ({Sum.inr false} : Finset (VEndpt n mm)) else ∅) := by
+    split_ifs <;> simp [Finset.disjoint_left]
+  rw [Finset.card_union_of_disjoint hdisj,
+    Finset.card_image_of_injective _ Sum.inl_injective]
+  split_ifs <;> simp
+
+theorem VEndpt.card_depAtP {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    (VEndpt.depAtP (mm := mm) s0 s1 up s).card
+      = (EndType.depAt (m := mm) up s).card + (if s = s1 then 1 else 0) := by
+  classical
+  rw [VEndpt.depAtP_eq]
+  have hdisj : Disjoint ((EndType.depAt (m := mm) up s).image Sum.inl)
+      (if s = s1 then ({Sum.inr true} : Finset (VEndpt n mm)) else ∅) := by
+    split_ifs <;> simp [Finset.disjoint_left]
+  rw [Finset.card_union_of_disjoint hdisj,
+    Finset.card_image_of_injective _ Sum.inl_injective]
+  split_ifs <;> simp
+
+/-- The travel indicator read on shifted edge indices: edge `j` of the shifted
+configuration is edge `A + j` of the original. -/
+def travelS (A kstar j : ℤ) : ℤ := travel kstar (A + j)
+
+/-- **The shifted site facts.**  `travelS` steps exactly at `-A` and `kstar - A`, which
+are where the two virtual events sit after the shift. -/
+theorem travelS_site_facts (A kstar s : ℤ) :
+    travelS A kstar (s - 1) + (if s = -A then 1 else 0)
+      = travelS A kstar s + (if s = kstar - A then 1 else 0) := by
+  have h := travel_site_facts kstar (A + s) (if A + s = 0 then 1 else 0)
+    (if A + s = kstar then 1 else 0) (travel kstar (A + s - 1)) (travel kstar (A + s))
+    rfl rfl rfl rfl
+  have h1 := h.1
+  unfold travelS
+  have e1 : A + (s - 1) = A + s - 1 := by ring
+  have e2 : (if A + s = 0 then (1:ℤ) else 0) = (if s = -A then 1 else 0) := by
+    by_cases hc : s = -A <;> simp [hc] <;> omega
+  have e3 : (if A + s = kstar then (1:ℤ) else 0) = (if s = kstar - A then 1 else 0) := by
+    by_cases hc : s = kstar - A <;> simp [hc] <;> omega
+  rw [e1, e2, e3] at *
+  omega
+
+/-- **Balance at every site, parametrised.**  The two virtual sites are `-A` and
+`kstar - A`; the edge signed travels are those of the shifted configuration. -/
+theorem VEndpt.balanced_allP {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (A kstar : ℤ)
+    (htr : ∀ (s : ℤ) (e : Fin n), (e : ℤ) = s →
+      ConfigLoop.tr (m := mm) up e = travelS A kstar s)
+    (hz : ∀ s : ℤ, (∀ e : Fin n, (e : ℤ) ≠ s) → travelS A kstar s = 0) :
+    ∀ s : ℤ, (VEndpt.arrAtP (mm := mm) (-A) (kstar - A) up s).card
+      = (VEndpt.depAtP (mm := mm) (-A) (kstar - A) up s).card := by
+  intro s
+  rw [VEndpt.card_arrAtP, VEndpt.card_depAtP]
+  have hreal := ConfigLoop.arr_sub_dep_all (m := mm) up s
+    (travelS A kstar (s - 1)) (travelS A kstar s)
+    (fun e he => htr (s - 1) e he) (fun h => hz (s - 1) h)
+    (fun e he => htr s e he) (fun h => hz s h)
+  have hfacts := travelS_site_facts A kstar s
+  split_ifs at hfacts ⊢ <;> omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1269,3 +1392,7 @@ end EltBridge
 #print axioms EltBridge.VEndpt.merges_to_one_pos
 #print axioms EltBridge.no_endpt_at_neg
 #print axioms EltBridge.no_vendpt_at_neg
+#print axioms EltBridge.VEndpt.card_arrAtP
+#print axioms EltBridge.VEndpt.card_depAtP
+#print axioms EltBridge.travelS_site_facts
+#print axioms EltBridge.VEndpt.balanced_allP
