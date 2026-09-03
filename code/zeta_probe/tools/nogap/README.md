@@ -6645,3 +6645,25 @@ failures at `mu = 4`, where the two-chain structure genuinely does not exist.
 To finish M4b at `mu = 2` the remaining work is verification rather than construction:
 check that the minimal turn `local_trichotomy` selects satisfies `hturn`, `hcover`,
 `hrange`, `hpass_up`, `hpass_dn` and `hbounce` on an actual configuration.
+
+## 2026-09-03 — BLOCK 170: hcover at mu = 2
+
+An edge carries `m e` strands, so at `mu = 2` the strand index lies in `Fin 2` and is
+`0` or `1` (`botOf_idx_cases`).  `botOf x` is therefore one of its edge's two strand
+bottoms, which is `hcover` as soon as `up` and `dn` are the maps naming them
+(`hcover_of_mu_two`).  No other property of the configuration enters.
+
+`shield_upper_bound_mu_two` has `hcover` discharged.  What is left to verify on a
+concrete configuration is the turn's own behaviour, and nothing else:
+
+    hturn      the turn changes the edge only off the cut sites
+    hup, hdn   `up` and `dn` name the two strand bottoms of each edge
+    hrange     each edge lies in the run its `gz` names
+    hpass_up   the turn's passes chain the up strands
+    hpass_dn   and the down strands
+    hbounce    the boundary bounce joins them
+
+The Lean error this block was the dependent-position rewrite again -- `m x.edge` occurs
+in the TYPE of `x.idx`, so `rw [hm]` breaks the motive.  The fix is the one this file
+has needed several times: state both facts and let `omega` see them as atoms, never
+rewrite under a dependent type.

@@ -9227,3 +9227,61 @@ end EltBridge
 
 #print axioms EltBridge.hrun_multi
 #print axioms EltBridge.shield_upper_bound_multi
+
+namespace EltBridge
+
+/-! ### `hcover` at `mu = 2`
+
+An edge carries `m e` strands, so at `mu = 2` its strand index lies in `Fin 2` and is
+`0` or `1`.  `botOf x` is therefore one of the edge's two strand bottoms, which is
+`hcover` once `up` and `dn` are the maps naming them. -/
+
+/-- At `mu = 2` a strand index is `0` or `1`. -/
+theorem botOf_idx_cases {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (x : EndType.Endpt n m) : (x.idx : ℕ) = 0 ∨ (x.idx : ℕ) = 1 := by
+  have h := x.idx.isLt
+  have h2 := hm x.edge
+  omega
+
+/-- **`hcover` reduces to `up` and `dn` naming the two strand bottoms.**  No other
+property of the configuration is used. -/
+theorem hcover_of_mu_two {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (up dn : ℤ → EndType.Endpt n m)
+    (hup : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 0 → up (EndType.edgeOf x) = botOf x)
+    (hdn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 1 → dn (EndType.edgeOf x) = botOf x) :
+    ∀ x, botOf x = up (EndType.edgeOf x) ∨ botOf x = dn (EndType.edgeOf x) := by
+  intro x
+  rcases botOf_idx_cases hm x with h | h
+  · exact Or.inl (hup x h).symm
+  · exact Or.inr (hdn x h).symm
+
+/-- **The shield bound at `mu = 2`, with `hcover` discharged.**  What is left to verify
+on a concrete configuration is the turn's own behaviour: `hturn`, `hrange`, the two pass
+laws, and the boundary bounce. -/
+theorem shield_upper_bound_mu_two {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (up' : Fin n → ℕ)
+    (hbal : ∀ s : ℤ,
+      (EndType.arrAt (m := m) up' s).card = (EndType.depAt (m := m) up' s).card)
+    (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hturn : ∀ x, EndType.edgeOf ((DataBuild.dataOf up' hbal).t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hup : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 0 → up (EndType.edgeOf x) = botOf x)
+    (hdn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 1 → dn (EndType.edgeOf x) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hpass_up : ∀ r k : ℕ, k < len r →
+      (DataBuild.dataOf up' hbal).t ((DataBuild.dataOf up' hbal).p (up (lo r + k)))
+        = up (lo r + (k + 1 : ℕ)))
+    (hpass_dn : ∀ r k : ℕ, k < len r →
+      (DataBuild.dataOf up' hbal).t
+          ((DataBuild.dataOf up' hbal).p (dn (lo r + (k + 1 : ℕ)))) = dn (lo r + k))
+    (hbounce : ∀ r : ℕ, (DataBuild.dataOf up' hbal).t (dn (lo r)) = up (lo r)) :
+    WalkGraph.walkCount (DataBuild.dataOf up' hbal) ≤ Zf.card + 1 :=
+  shield_upper_bound_multi up' hbal Zf up dn lo len hturn
+    (hcover_of_mu_two hm up dn hup hdn) hrange hpass_up hpass_dn hbounce
+
+end EltBridge
+
+#print axioms EltBridge.botOf_idx_cases
+#print axioms EltBridge.shield_upper_bound_mu_two
