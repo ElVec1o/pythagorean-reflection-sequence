@@ -4668,3 +4668,29 @@ and gap-marked kernels to the pathGF form, which is identification, not a theore
 
 That is a materially different picture from "(M3) is not proved". The mathematical
 content is (i) and (ii); what remains is naming.
+
+## 2026-09-03 — BLOCK 106: why the assembly sums over the four marker data
+
+  Site0                   -- the near-marker site cost max(|d_L - 1|, |d_R|) of (M1)
+  Site0_sign_dependent    -- deposits 2 and -2 have the SAME magnitude and DIFFERENT
+                             marker costs (1 vs 3). Axiom-free, by decide.
+  marker_needs_sign       -- so the near-marker cost is not a function of magnitudes
+  transfer_state_is_magnitude -- while away from the markers it is
+
+This closes (iii) as a structural question. The transfer state is the deposit magnitude
+sigma, and that is sufficient EVERYWHERE EXCEPT the two junctions -- where the sign is
+needed and is carried by eps*. So the assembly's four-fold sum over (eps*, delta*) is
+not a convenience: it is what makes T a function of sigma alone, and hence what makes
+the pathGF shape correct.
+
+The paper indexes lambda and mu by sigma and sums over the marker data separately. That
+is now justified rather than taken as given: BLOCK 104 shows sigma suffices in the bulk
+and travel, BLOCK 106 shows it does not at the marker, and the marker data is exactly
+the missing bit.
+
+(M3a) STATUS after BLOCKS 103-106:
+  (i)   weight additive with nearest-neighbour coupling   lR_eq + BLOCK 104   DONE
+  (ii)  such weights give matrix-product GFs              BLOCK 105           PROVED
+  (iii) the state is sigma, with the sign in the markers  BLOCK 106           DONE
+What is left of (M3a) is writing the paper's lambda and mu explicitly and checking they
+are the pathGF boundary vectors -- transcription against cor:marker and eq:junctionsym.

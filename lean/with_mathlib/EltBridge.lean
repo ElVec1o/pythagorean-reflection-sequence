@@ -5633,6 +5633,46 @@ theorem pathGF_succ {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl (fun b _ => by ring)
 
+/-! ### Why the assembly sums over the four marker data
+
+The bulk and travel transfer entries depend on the deposits only through their
+magnitudes (BLOCK 104), so `sigma` suffices as a state there.  The **near marker** site
+does not: its cost is `Site_0(d_L, d_R) = max(|d_L - 1|, |d_R|)`, which reads `d_L`
+signed.
+
+That is exactly why `(M3)`'s assembly sums over the four marker data
+`(eps*, delta*)` instead of folding them into `T`: the sign the magnitude drops is
+carried there. -/
+
+/-- The near-marker site cost of `(M1)`. -/
+def Site0 (dL dR : ℤ) : ℕ := max (dL - 1).natAbs dR.natAbs
+
+/-- **The near-marker cost is NOT a function of the magnitudes.**  Deposits `2` and
+`-2` have the same magnitude and different marker costs. -/
+theorem Site0_sign_dependent :
+    (2 : ℤ).natAbs = (-2 : ℤ).natAbs ∧ Site0 2 0 ≠ Site0 (-2) 0 := by
+  constructor
+  · rfl
+  · decide
+
+/-- **So the transfer state cannot be the magnitude alone at the marker.**  Away from
+it the magnitude suffices (`site_cost_magnitude_only`); at it the sign is needed, and
+the assembly carries the sign in `eps*` rather than in `sigma`. -/
+theorem marker_needs_sign :
+    ∃ dL dL' dR : ℤ, dL.natAbs = dL'.natAbs ∧ Site0 dL dR ≠ Site0 dL' dR :=
+  ⟨2, -2, 0, Site0_sign_dependent.1, Site0_sign_dependent.2⟩
+
+/-- And the far marker is the `(eps*, delta*)`-dependent cost of `cor:marker`, so both
+junctions carry data the bulk state drops.  With the four data summed separately, `T`
+is a genuine function of `sigma` alone -- which is what makes `pathGF` the right
+shape. -/
+theorem transfer_state_is_magnitude (P Q : SiteCost.PathData) (s : ℤ)
+    (hP0 : s ≠ 0) (hPk : s ≠ P.kstar) (hQ0 : s ≠ 0) (hQk : s ≠ Q.kstar)
+    (h1 : (P.d (s - 1)).natAbs = (Q.d (s - 1)).natAbs)
+    (h2 : (P.d s).natAbs = (Q.d s).natAbs) :
+    P.siteCost s = Q.siteCost s :=
+  site_cost_magnitude_only P Q s hP0 hPk hQ0 hQk h1 h2
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5840,3 +5880,5 @@ end EltBridge
 #print axioms EltBridge.travelT_coupling_symm
 #print axioms EltBridge.pathSum_succ
 #print axioms EltBridge.pathGF_succ
+#print axioms EltBridge.Site0_sign_dependent
+#print axioms EltBridge.marker_needs_sign
