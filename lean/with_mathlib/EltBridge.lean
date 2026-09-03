@@ -7286,6 +7286,65 @@ theorem isTransferDecomposition_edge {C : Type*} (x : ℤ) (n : ℕ)
   rw [htail, hL]
   exact alternating_is_chain (P c).mu (P c).siteCost (P c).A n
 
+/-! ### The guarded boundary vectors, in the edge frame -/
+
+/-- `pathWeight` reads `lam` only at the head and `mu` only at the last state, so it is
+insensitive to those functions anywhere else. -/
+theorem pathWeight_congr {S : Type*} (T : S → S → ℤ) (mu mu' : S → ℤ) :
+    ∀ (L : List S) (s : S) (lam lam' : S → ℤ), lam s = lam' s →
+      mu (lastOf s L) = mu' (lastOf s L) →
+      pathWeight T lam mu (s :: L) = pathWeight T lam' mu' (s :: L) := by
+  intro L
+  induction L with
+  | nil =>
+      intro s lam lam' hl hm
+      have hm' : mu s = mu' s := hm
+      show lam s * mu s = lam' s * mu' s
+      rw [hl, hm']
+  | cons t rest ih =>
+      intro s lam lam' hl hm
+      show lam s * T s t * pathWeight T (fun _ => (1 : ℤ)) mu (t :: rest)
+        = lam' s * T s t * pathWeight T (fun _ => (1 : ℤ)) mu' (t :: rest)
+      rw [hl, ih t (fun _ => (1 : ℤ)) (fun _ => (1 : ℤ)) rfl hm]
+
+/-- The guarded head vector. -/
+def headVec (x : ℤ) (σ : LocalState) : ℤ := if headOkB σ then x ^ σ.siteOf else 0
+
+/-- The guarded tail vector: per-state admissibility and span-minimality at the right end,
+which in the edge frame is the LAST state of the chain. -/
+def tailVec (x : ℤ) (σ : LocalState) : ℤ :=
+  if validB σ && epsValidB σ && endValidB σ then x ^ (σ.muOf + tailSiteOf σ) else 0
+
+theorem headVec_stateOf (x : ℤ) (P : SiteCost.PathData) :
+    headVec x (stateOf P P.A) = x ^ (stateOf P P.A).siteOf := by
+  rw [headVec, if_pos (headOkB_stateOf P)]
+
+theorem tailVec_stateOf (x : ℤ) (P : SiteCost.PathData) :
+    tailVec x (stateOf P P.B)
+      = x ^ ((stateOf P P.B).muOf + tailSiteOf (stateOf P P.B)) := by
+  rw [tailVec, if_pos]
+  simp only [Bool.and_eq_true]
+  exact ⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩
+
+/-- **The fully guarded edge-frame path weight of a configuration is its own weight.**
+Kernel, head vector and tail vector all carry their guards, and on a configuration every
+guard fires, so nothing is lost.  Off the realisable paths the guards make the weight
+vanish -- which is what a transfer sum needs. -/
+theorem pathWeight_guarded_edge (x : ℤ) (P : SiteCost.PathData) (n : ℕ) (hn : P.B = P.A + n) :
+    pathWeight (fun σ τ => if fullStepB σ τ then x ^ (σ.muOf + τ.siteOf) else 0)
+        (headVec x) (tailVec x) ((P.A :: idxList P.A n).map (stateOf P))
+      = x ^ P.lR := by
+  rw [pathWeight_fullStepB_eq x P (tailVec x) n P.A (headVec x), List.map_cons]
+  have hlast : lastOf (stateOf P P.A) ((idxList P.A n).map (stateOf P))
+      = stateOf P P.B := by
+    rw [lastOf_map, lastOf_idxList, hn]
+  rw [pathWeight_congr (fun σ τ => x ^ (σ.muOf + τ.siteOf))
+      (tailVec x) (fun σ => x ^ (σ.muOf + tailSiteOf σ))
+      ((idxList P.A n).map (stateOf P)) (stateOf P P.A)
+      (headVec x) (fun σ => x ^ σ.siteOf) (headVec_stateOf x P)
+      (by rw [hlast]; exact tailVec_stateOf x P)]
+  exact (isTransferDecomposition_edge x n (fun _ : Unit => P) (fun _ => hn) ()).symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14919,3 +14978,5 @@ end EltBridge
 #print axioms EltBridge.vD_succ_B_natAbs
 #print axioms EltBridge.tailSiteOf_stateOf
 #print axioms EltBridge.isTransferDecomposition_edge
+#print axioms EltBridge.pathWeight_congr
+#print axioms EltBridge.pathWeight_guarded_edge

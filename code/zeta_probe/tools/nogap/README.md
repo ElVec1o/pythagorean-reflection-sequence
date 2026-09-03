@@ -8410,3 +8410,28 @@ becomes a boundary condition, and `headOkB`/`endValidB_at_B` are the vectors tha
 
 **Left for (M3):** the guarded kernel and boundary vectors in the edge frame -- the same
 assembly as BLOCK 231 but now with nothing landing in the interior -- and then the sum.
+
+## 2026-09-04 — BLOCK 234: the guarded boundary vectors, in the edge frame
+
+    pathWeight_congr          pathWeight reads lam only at the head and mu only at the
+                              last state, so it ignores them elsewhere (NO AXIOMS)
+    headVec, tailVec          the guarded boundary vectors
+    headVec_stateOf,
+    tailVec_stateOf           both fire on a configuration
+    pathWeight_guarded_edge   THE FULLY GUARDED edge-frame path weight of a configuration
+                              is x ^ lR
+
+0 sorry.  Two mechanical failures: `lastOf s []` is `s` definitionally but not
+syntactically, so the hypothesis had to be restated before `rw`; and
+`List.map (f) (a :: l)` needed `List.map_cons` to meet `f a :: List.map f l`.
+
+**Kernel, head vector and tail vector now all carry their guards**, and on a configuration
+every guard fires so nothing is lost.  Span-minimality rides in `tailVec` via
+`endValidB`, which in this frame is the LAST state -- the arrangement BLOCK 233 set up and
+BLOCK 231 could not reach.
+
+**Left for (M3): one implication.**  That the guards, taken together, force realisability
+-- i.e. that a path on which `fullStepB`, `headOkB` and `tailVec`'s condition all hold is
+the state path of a configuration.  Everything needed is proved (`Guarded`,
+`exists_config_stateOf`, `stateFns_eq_guarded`); what is missing is the bookkeeping that
+matches the edge-frame guards against the fields of `Guarded`.
