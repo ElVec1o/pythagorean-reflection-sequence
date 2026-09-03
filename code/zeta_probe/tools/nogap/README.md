@@ -7749,3 +7749,39 @@ needs the costs to factor through a state map `(d j, f j)` rather than through `
 that is also where the finiteness `IsResolventSum` wants comes from.  That factoring is
 the one thing between here and (M3a) in full, and it is a definitional check on `mu`
 and `siteCost`, not an estimate.
+
+## 2026-09-03 — BLOCK 208: the factoring — one kernel for the whole family
+
+BLOCK 207 used the *index* as the state, which serves one configuration at a time.  The
+costs factor through local data, by inspection of the definitions in Realisation.lean:
+
+    mu j       = if d j = 0 and f j = 0 then 2 else max |d j| |f j|
+    siteCost s = max |d (s-1) - vArr s + eps * vL s| |d s - eps * vR s|
+
+so `mu j` needs only `(d j, f j)` and `siteCost s` only `(d (s-1), d s)` with the markers
+`[s = 0]`, `[s = k*]` and the configuration's `eps`, `delta`.  Packaging those into a
+`LocalState` makes both PURE FUNCTIONS OF ONE STATE -- and
+
+    mu_factors        P.mu j = (stateOf P j).muOf          by rfl, NO AXIOMS
+    siteCost_factors  P.siteCost j = (stateOf P j).siteOf   by rfl, NO AXIOMS
+
+Running the chain over all `n + 2` **sites** rather than `n + 1` is what makes it close:
+the right boundary site becomes an ordinary chain step instead of a tail, so the tail
+vector is trivial and the head is the left boundary site.
+
+    chainCost_map, lastOf_map        the chain commutes with the state map
+    alternating_is_chain_sites       the matching, one step longer
+    isTransferDecomposition_family   ONE kernel x ^ (muOf s + siteOf t), one head
+                                     vector x ^ siteOf, serving EVERY configuration
+    lR_exp_pathWeight_family         and every member's weight is its path weight
+    LocalState.dcur_le_muOf          |d| <= muOf
+    LocalState.fcur_le_muOf          |f| <= muOf
+
+0 sorry.  The two factoring theorems depend on no axioms at all.
+
+**(M3a) is done.**  The configuration now enters only through its state path, which is
+what a transfer-matrix decomposition asserts.  The last two bound the state by its own
+cost, so a configuration of relaxed length `N` visits only states with `|d|, |f| <= N`:
+the state space is finite degree by degree, which is the hypothesis `IsResolventSum`
+wants.  What remains of (M3) is (M3b) -- assembling that truncation with
+`neumann_partial` (BLOCK 116) -- and it is algebra.

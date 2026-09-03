@@ -5757,6 +5757,144 @@ theorem Elt.lR_exp_pathWeight (g : Elt) (n : ℕ) (hn : g.B = g.A + n) (x : ℤ)
           (g.A :: idxList g.A n) := by
   rw [pathWeight_exp, lastOf_idxList, ← Elt.lR_is_chain g n hn]
 
+/-! ### The factoring: one kernel for the whole family
+
+BLOCK 207 used the *index* as the state, which serves one configuration at a time.  To
+get a single kernel serving every configuration the costs must factor through local
+data, and they do, by inspection of the definitions:
+
+    mu j       = if d j = 0 and f j = 0 then 2 else max |d j| |f j|
+    siteCost s = max |d (s-1) - vArr s + eps * vL s| |d s - eps * vR s|
+
+so `mu j` needs only `(d j, f j)`, and `siteCost s` only `(d (s-1), d s)` together with
+the two markers `[s = 0]`, `[s = k*]` and the configuration's `eps`, `delta`.  Packaging
+exactly those into a `LocalState` makes both cost functions *pure functions of one
+state*, and the transfer kernel `x ^ (muOf sigma + siteOf tau)` no longer mentions the
+configuration at all.
+
+Running the chain over all `n + 2` **sites** (rather than `n + 1` of them) is what makes
+this work: the right boundary site then arrives as an ordinary chain step instead of a
+tail, and the left boundary site is the head.  So the tail vector is trivial. -/
+
+theorem chainCost_map {S T : Type*} (st : S → T) (f : T → T → ℕ) :
+    ∀ (L : List S) (s : S),
+      chainCost f (st s) (L.map st) = chainCost (fun i j => f (st i) (st j)) s L := by
+  intro L
+  induction L with
+  | nil => intro s; rfl
+  | cons t rest ih => intro s; show f (st s) (st t) + _ = f (st s) (st t) + _; rw [ih t]
+
+theorem lastOf_map {S T : Type*} (st : S → T) :
+    ∀ (L : List S) (s : S), lastOf (st s) (L.map st) = st (lastOf s L) := by
+  intro L
+  induction L with
+  | nil => intro s; rfl
+  | cons t rest ih => intro s; exact ih t
+
+/-- **The matching, with every site a chain state.**  Compare `alternating_is_chain`:
+the chain is one step longer, the right boundary site is an ordinary step, and the tail
+is trivial. -/
+theorem alternating_is_chain_sites (a b : ℤ → ℕ) (A : ℤ) (n : ℕ) :
+    (∑ j ∈ Finset.Icc A (A + n), a j) + (∑ s ∈ Finset.Icc A (A + n + 1), b s)
+      = b A + chainCost (fun i j => a i + b j) A (idxList A (n + 1)) + 0 := by
+  have hA : A + (n : ℤ) + 1 = A + ((n + 1 : ℕ) : ℤ) := by push_cast; ring
+  rw [sum_Icc_shift a A n, hA, sum_Icc_shift b A (n + 1), chainCost_idxList a b A (n + 1),
+    Finset.sum_range_succ' (fun k => b (A + k)) (n + 1)]
+  have hb : ∀ k : ℕ, b (A + 1 + (k : ℤ)) = b (A + ((k : ℤ) + 1)) := by
+    intro k; congr 1; ring
+  push_cast
+  simp only [hb, add_zero]
+  omega
+
+/-- The local data a site and its edge depend on: the two adjacent deposits, the travel
+indicator, the two markers, and the configuration's sign data. -/
+structure LocalState where
+  dprev : ℤ
+  dcur : ℤ
+  fcur : ℤ
+  arr : ℕ
+  dep : ℕ
+  eps : ℤ
+  delta : Bool
+
+namespace LocalState
+
+variable (s : LocalState)
+
+def vLOf : ℕ := if s.delta then 0 else s.dep
+def vROf : ℕ := if s.delta then s.dep else 0
+
+/-- `mu`, as a function of the state alone. -/
+def muOf : ℕ := if s.dcur = 0 ∧ s.fcur = 0 then 2 else max s.dcur.natAbs s.fcur.natAbs
+
+/-- `siteCost`, as a function of the state alone. -/
+def siteOf : ℕ :=
+  max (s.dprev - (vArr' s) + s.eps * (s.vLOf : ℤ)).natAbs (s.dcur - s.eps * (s.vROf : ℤ)).natAbs
+where vArr' (s : LocalState) : ℤ := (s.arr : ℤ)
+
+end LocalState
+
+/-- The state at index `j` of a configuration. -/
+def stateOf (P : SiteCost.PathData) (j : ℤ) : LocalState :=
+  { dprev := P.d (j - 1), dcur := P.d j, fcur := SiteCost.travel P.kstar j,
+    arr := SiteCost.vArr j, dep := P.vD j, eps := P.eps, delta := P.delta }
+
+/-- **The state is bounded by its own cost**, which is what makes the state space finite
+once the total weight is bounded: a configuration of relaxed length `N` can only visit
+states with `|d| <= N` and `|f| <= N`, and there are finitely many of those. -/
+theorem LocalState.dcur_le_muOf (σ : LocalState) : σ.dcur.natAbs ≤ σ.muOf := by
+  simp only [LocalState.muOf]
+  split_ifs with h
+  · obtain ⟨h1, -⟩ := h; simp [h1]
+  · exact le_max_left _ _
+
+theorem LocalState.fcur_le_muOf (σ : LocalState) : σ.fcur.natAbs ≤ σ.muOf := by
+  simp only [LocalState.muOf]
+  split_ifs with h
+  · obtain ⟨-, h2⟩ := h; simp [h2]
+  · exact le_max_right _ _
+
+theorem mu_factors (P : SiteCost.PathData) (j : ℤ) : P.mu j = (stateOf P j).muOf := rfl
+
+theorem siteCost_factors (P : SiteCost.PathData) (j : ℤ) :
+    P.siteCost j = (stateOf P j).siteOf := rfl
+
+/-- **(M3a) for a whole family.**  One transfer kernel `x ^ (muOf sigma + siteOf tau)`,
+one head vector `x ^ siteOf`, one trivial tail, serving *every* configuration of span
+length `n` at once.  The configuration appears only through its state path -- which is
+exactly what a transfer-matrix decomposition is supposed to say. -/
+theorem isTransferDecomposition_family {C : Type*} (x : ℤ) (n : ℕ)
+    (P : C → SiteCost.PathData) (hn : ∀ c, (P c).B = (P c).A + n) :
+    IsTransferDecomposition
+      (fun c => ((P c).A :: idxList (P c).A (n + 1)).map (stateOf (P c)))
+      (fun c => x ^ (P c).lR)
+      (fun σ τ => x ^ (σ.muOf + τ.siteOf))
+      (fun σ => x ^ σ.siteOf)
+      (fun _ => x ^ (0 : ℕ)) := by
+  refine isTransferDecomposition_of_chain x (fun σ τ => σ.muOf + τ.siteOf)
+    (fun σ => σ.siteOf) (fun _ => 0)
+    (fun c => stateOf (P c) (P c).A)
+    (fun c => (idxList (P c).A (n + 1)).map (stateOf (P c)))
+    (fun c => (P c).lR) ?_
+  intro c
+  show (P c).lR = _
+  have hL : (P c).lR
+      = (∑ j ∈ Finset.Icc (P c).A ((P c).A + n), (P c).mu j)
+        + ∑ s ∈ Finset.Icc (P c).A ((P c).A + n + 1), (P c).siteCost s := by
+    unfold SiteCost.PathData.lR
+    rw [hn c]
+  rw [chainCost_map (stateOf (P c)) (fun σ τ => σ.muOf + τ.siteOf), hL]
+  exact alternating_is_chain_sites (P c).mu (P c).siteCost (P c).A n
+
+/-- **And the weight of every member is the corresponding path weight.** -/
+theorem lR_exp_pathWeight_family {C : Type*} (x : ℤ) (n : ℕ)
+    (P : C → SiteCost.PathData) (hn : ∀ c, (P c).B = (P c).A + n) (c : C) :
+    x ^ (P c).lR
+      = pathWeight (fun σ τ => x ^ (σ.muOf + τ.siteOf)) (fun σ => x ^ σ.siteOf)
+          (fun _ => x ^ (0 : ℕ))
+          (((P c).A :: idxList (P c).A (n + 1)).map (stateOf (P c))) :=
+  isTransferDecomposition_family x n P hn c
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13307,3 +13445,10 @@ end EltBridge
 #print axioms EltBridge.isTransferDecomposition_alternating
 #print axioms EltBridge.Elt.lR_is_chain
 #print axioms EltBridge.Elt.lR_exp_pathWeight
+#print axioms EltBridge.LocalState.dcur_le_muOf
+#print axioms EltBridge.LocalState.fcur_le_muOf
+#print axioms EltBridge.mu_factors
+#print axioms EltBridge.siteCost_factors
+#print axioms EltBridge.alternating_is_chain_sites
+#print axioms EltBridge.isTransferDecomposition_family
+#print axioms EltBridge.lR_exp_pathWeight_family
