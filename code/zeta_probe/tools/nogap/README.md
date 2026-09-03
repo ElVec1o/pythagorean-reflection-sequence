@@ -9083,3 +9083,20 @@ assembles them.
 **[Rule 0] VERIFIED: a guarded flagged path of any span is the state path of a
 configuration.**  This is the converse direction of (M3) in fully composed form -- from a
 finite path, with no hypotheses beyond what the kernel and the two boundary vectors check.
+
+## 2026-09-04 — BLOCK 268: bounded map congruence, and the path equality
+
+    map_idxList_congr_le     agreement on [A, A+n] suffices for the mapped list
+    flagPath_eq_of_config    a configuration built from a path HAS that path as its
+                             flagged state path
+
+0 sorry, both clean on the first build.
+
+`map_idxList_congr` (BLOCK 225) asked for agreement at every `j >= A`, but a path supplies
+it only on its span; the list only visits `[A, A+n]`, so the bound suffices.  The second
+lemma is the round trip closing: `exists_config_of_path` (BLOCK 267) builds a configuration
+whose states are the EXTENSION's, and on the span the extension is the path itself, so the
+configuration's flagged path is the one we started from.
+
+**[Rule 0] VERIFIED.**  With `flagPath_inj` (BLOCK 249) in the other direction, the map from
+configurations to guarded flagged paths is a bijection onto them.

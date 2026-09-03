@@ -8591,6 +8591,44 @@ theorem exists_config_of_path {A B kstar : ℤ} (g : ℤ → FlagState)
       · exact Or.inr (Or.inl h)
       · exact Or.inr (Or.inr h))
 
+/-! ### Bounded map congruence
+
+`map_idxList_congr` (BLOCK 225) asks for agreement at every `j >= A`, but a path supplies
+it only on its span.  The list only visits `[A, A + n]`, so the bound suffices. -/
+
+theorem map_idxList_congr_le {S : Type*} (f g : ℤ → S) :
+    ∀ (n : ℕ) (A : ℤ), (∀ j : ℤ, A ≤ j → j ≤ A + (n : ℤ) → f j = g j) →
+      (A :: idxList A n).map f = (A :: idxList A n).map g := by
+  intro n
+  induction n with
+  | zero =>
+      intro A h
+      have h1 : f A = g A := h A le_rfl (by push_cast; omega)
+      simp [idxList, h1]
+  | succ m ih =>
+      intro A h
+      have h1 : f A = g A := h A le_rfl (by push_cast; omega)
+      have h2 := ih (A + 1) (fun j hj1 hj2 => h j (by omega) (by push_cast at hj2 ⊢; omega))
+      show f A :: ((A + 1) :: idxList (A + 1) m).map f
+        = g A :: ((A + 1) :: idxList (A + 1) m).map g
+      rw [h1, h2]
+
+/-- **A configuration built from a path has that path as its flagged state path.** -/
+theorem flagPath_eq_of_config {A B : ℤ} (m : ℕ) (g : ℤ → FlagState)
+    (P : SiteCost.PathData)
+    (hst : stateOf P = fun j => (extendFlag g A B j).st)
+    (hflag : ∀ j : ℤ, A ≤ j → j ≤ B → (g j).past = decide (0 ≤ j))
+    (hm : A + (m : ℤ) ≤ B) :
+    (A :: idxList A m).map (flagOf P) = (A :: idxList A m).map g := by
+  refine map_idxList_congr_le _ _ m A ?_
+  intro j hj1 hj2
+  have hjB : j ≤ B := by omega
+  have hs : stateOf P j = (g j).st := by
+    rw [hst]
+    exact congrArg FlagState.st (extendFlag_eq_on g A B hj1 hjB (hflag j hj1 hjB))
+  show (⟨stateOf P j, decide (0 ≤ j)⟩ : FlagState) = g j
+  rw [hs, ← hflag j hj1 hjB]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16293,3 +16331,5 @@ end EltBridge
 #print axioms EltBridge.kstar_le_B_of_dep
 #print axioms EltBridge.hB1_of_balance
 #print axioms EltBridge.exists_config_of_path
+#print axioms EltBridge.map_idxList_congr_le
+#print axioms EltBridge.flagPath_eq_of_config
