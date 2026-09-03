@@ -9481,3 +9481,78 @@ theorem shield_upper_bound_reach {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e 
 end EltBridge
 
 #print axioms EltBridge.shield_upper_bound_reach
+
+namespace EltBridge
+
+/-! ### The chain conditions from a pass and a bounce
+
+Three short steps, each a walk of length at most two.
+
+* UP chain.  A pass at site `j+1` carries the TOP of edge `j`'s up strand to the BOTTOM
+  of edge `j+1`'s.  So from `up j` cross the strand and turn.
+* DOWN chain.  The same pass carries `dn (j+1)` to the TOP of edge `j`'s down strand.
+  So from `dn j` cross the strand, and the turn from there is `dn (j+1)` read backwards.
+* JOIN.  The bounce at a cut site pairs the two bottoms of its own edge, so one turn
+  step joins `up lo` and `dn lo`.
+-/
+
+theorem chain_up_of_pass {α : Type*} [Fintype α] [DecidableEq α]
+    (E : WalkGraph.Data α) (up : ℤ → α) (a b : ℤ)
+    (h : E.t (E.p (up a)) = up b) :
+    (WalkGraph.graph E).Reachable (up a) (up b) := by
+  have h1 : (WalkGraph.graph E).Reachable (up a) (E.t (E.p (up a))) :=
+    (reachable_partner E (up a)).trans (reachable_turn E (E.p (up a)))
+  rwa [h] at h1
+
+theorem chain_dn_of_pass {α : Type*} [Fintype α] [DecidableEq α]
+    (E : WalkGraph.Data α) (dn : ℤ → α) (a b : ℤ)
+    (h : E.t (dn b) = E.p (dn a)) :
+    (WalkGraph.graph E).Reachable (dn a) (dn b) := by
+  have h1 : (WalkGraph.graph E).Reachable (dn a) (E.p (dn a)) := reachable_partner E (dn a)
+  have h2 : (WalkGraph.graph E).Reachable (E.t (dn b)) (dn b) :=
+    (reachable_turn E (dn b)).symm
+  rw [h] at h2
+  exact h1.trans h2
+
+theorem chain_join_of_bounce {α : Type*} [Fintype α] [DecidableEq α]
+    (E : WalkGraph.Data α) (up dn : ℤ → α) (lo : ℤ)
+    (h : E.t (dn lo) = up lo) :
+    (WalkGraph.graph E).Reachable (up lo) (dn lo) := by
+  have h1 : (WalkGraph.graph E).Reachable (dn lo) (E.t (dn lo)) := reachable_turn E (dn lo)
+  rw [h] at h1
+  exact h1.symm
+
+/-- **The shield bound from the pass and bounce equations.**  The three chain conditions
+of `shield_upper_bound_reach` are discharged from the turn's own behaviour, in the
+composition a `mu = 2` turn actually has. -/
+theorem shield_upper_bound_of_pass_bounce {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (T : ℤ → EndType.Endpt n m → EndType.Endpt n m) (Zf : Finset ℤ)
+    (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hinv : ∀ s x, T s (T s x) = x)
+    (hTsite : ∀ s x, EndType.siteOf x = s → EndType.siteOf (T s x) = s)
+    (hne : ∀ s x, EndType.siteOf x = s → T s x ≠ x)
+    (hturn : ∀ x, EndType.edgeOf (T (EndType.siteOf x) x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hup : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 0 → up (EndType.edgeOf x) = botOf x)
+    (hdn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 1 → dn (EndType.edgeOf x) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner) (hEt : ∀ x, E.t x = T (EndType.siteOf x) x)
+    (hpass_up : ∀ r k : ℕ, k < len r →
+      E.t (E.p (up (lo r + k))) = up (lo r + (k + 1 : ℕ)))
+    (hpass_dn : ∀ r k : ℕ, k < len r →
+      E.t (dn (lo r + (k + 1 : ℕ))) = E.p (dn (lo r + k)))
+    (hbounce : ∀ r : ℕ, E.t (dn (lo r)) = up (lo r)) :
+    WalkGraph.walkCount E ≤ Zf.card + 1 :=
+  shield_upper_bound_reach hm T Zf up dn lo len hinv hTsite hne hturn hup hdn hrange
+    E hEp hEt
+    (fun r k hk => chain_up_of_pass E up _ _ (hpass_up r k hk))
+    (fun r k hk => chain_dn_of_pass E dn _ _ (hpass_dn r k hk))
+    (fun r => chain_join_of_bounce E up dn (lo r) (hbounce r))
+
+end EltBridge
+
+#print axioms EltBridge.chain_dn_of_pass
+#print axioms EltBridge.shield_upper_bound_of_pass_bounce

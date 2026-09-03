@@ -6730,3 +6730,27 @@ be plugged in and the conclusion is about that datum.
 Scope still `mu = 2`.  The remaining content is unchanged: show a cost-minimal `T`
 satisfies the three chain conditions, which `local_trichotomy` supplies as a cost
 comparison and which must be turned into these reachability statements.
+
+## 2026-09-03 — BLOCK 173: the chain conditions from a pass and a bounce
+
+Three walks of length at most two, each discharging one chain condition:
+
+    chain_up_of_pass       from `up j`, cross the strand and turn: the pass at site j+1
+                           carries the top of edge j's up strand to the bottom of edge
+                           (j+1)'s
+    chain_dn_of_pass       from `dn j`, cross the strand; the same pass read backwards
+                           carries `dn (j+1)` to that top, so the two are joined
+    chain_join_of_bounce   the bounce at a cut site pairs the two bottoms of its own
+                           edge, so one turn step joins `up lo` and `dn lo`
+
+`shield_upper_bound_of_pass_bounce` takes them in the composition a `mu = 2` turn
+actually has -- `E.t (E.p (up j)) = up (j+1)` for the up chain but
+`E.t (dn (j+1)) = E.p (dn j)` for the down one, which is the asymmetry BLOCK 172 found
+-- and concludes `walkCount E <= |Z| + 1`.
+
+So the route is now stated entirely in terms a concrete turn can supply: an involution
+per site, fixing its site, fixed-point-free, changing the edge only off `Zf`, with those
+three equations.  Nothing abstract remains in the hypotheses.
+
+Scope still `mu = 2`.  What is left is to define `T` -- the pass at non-cut sites, the
+bounce at cut sites -- and check the equations against that definition.
