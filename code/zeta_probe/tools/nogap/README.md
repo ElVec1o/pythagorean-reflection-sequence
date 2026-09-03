@@ -2702,3 +2702,27 @@ are what the proofs turned out to use.
 
 REMAINING FOR B1: assembly only. Feed VEndpt.dataOfAll and the three discharges into
 min_merges_to_one_local, and instantiate at Elt.toPathData.
+
+## 2026-09-03 — BLOCK 25: the kstar < 0 discharges are complete and side-condition-free
+
+  VEndpt.turn_of_vDep_real  -- the turn of the virtual DEPARTURE is a real end
+                               (axiom-free), mirroring turn_of_vArr_low
+  VEndpt.wlo_le_kstar       -- so the walk carrying it has leftmost edge <= kstar
+  VEndpt.hsX_all_neg        -- hsX, FULLY DISCHARGED for kstar < 0, in the exact shape
+                               min_merges_to_one_local consumes
+  VEndpt.hsW_all_neg        -- hsW, likewise
+
+The hsX argument closes because the two facts meet: the virtual departure sits at edge
+-1, so if it is at the walk's leftmost edge then wLo = -1; but wlo_le_kstar gives
+wLo <= kstar <= -1, forcing kstar = -1 -- and at kstar = -1 the site-edge relation
+holds at the virtual departure outright. Every branch is discharged; nothing is left
+as a hypothesis on the configuration.
+
+WHAT REMAINS FOR ASSEMBLY (honest): min_merges_to_one_local also needs
+  hside  : d.side x = atTop x     -- an EndData.Data on VEndpt, not yet defined
+  hvirt  : the turn fixes neither virtual end  -- true for any Data (t_ne), but must be
+           threaded
+  hcov0  : the covering hypothesis -- a genuine property of the configuration, and the
+           one input that is NOT supplied by the construction
+The first two are mechanical. hcov0 is the same covering condition the Endpt-side
+argument has always needed, so it is not new debt introduced by the extension.

@@ -953,6 +953,89 @@ noncomputable def VEndpt.dataOfAll {n : ℕ} {mm : Fin n → ℕ} (up : Fin n �
     WalkGraph.Data (VEndpt n mm) :=
   VEndpt.dataOf up kstar hk (VEndpt.balanced_all up kstar htr hz)
 
+/-- **The turn of the virtual departure is a real end**, mirroring
+`turn_of_vArr_low`: it sits at site `kstar`, and the only virtual end there is the
+virtual departure itself, which a turn cannot fix. -/
+theorem VEndpt.turn_of_vDep_real {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.site kstar (D.t e) = VEndpt.site kstar e)
+    (hvirt : ∀ b : Bool, D.t (Sum.inr b) ≠ Sum.inr b)
+    (hk : kstar ≠ 0)
+    (y : VEndpt n mm) (hy : y = D.t (Sum.inr true)) :
+    ∃ u : EndType.Endpt n mm, y = Sum.inl u := by
+  have hsy : VEndpt.site kstar y = kstar := by rw [hy, hts]; rfl
+  cases hcase : y with
+  | inl u => exact ⟨u, rfl⟩
+  | inr b =>
+    exfalso
+    cases b
+    · rw [hcase] at hsy; exact hk (by simpa [VEndpt.site] using hsy.symm)
+    · exact hvirt true (hy.symm.trans hcase)
+
+/-- **`w <= kstar` for the walk carrying the virtual departure**, which is what
+`hsX_neg` consumes.  The turn of the virtual departure is a real end at site `kstar`,
+so it lies on edge `kstar - 1` or `kstar`. -/
+theorem VEndpt.wlo_le_kstar {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm)) (z : VEndpt n mm)
+    (hts : ∀ e, VEndpt.site kstar (D.t e) = VEndpt.site kstar e)
+    (hvirt : ∀ b : Bool, D.t (Sum.inr b) ≠ Sum.inr b)
+    (hk : kstar ≠ 0)
+    (hz : (WalkGraph.graph D).Reachable z (Sum.inr true)) :
+    WalkSupport.wLo (VEndpt.edgeOf (-1)) (WalkGraph.graph D) z ≤ kstar := by
+  set y := D.t (Sum.inr true : VEndpt n mm) with hy
+  have hzy : (WalkGraph.graph D).Reachable z y :=
+    hz.trans (reachable_turn D (Sum.inr true))
+  have hsy : VEndpt.site kstar y = kstar := by rw [hy, hts]; rfl
+  obtain ⟨u, hu⟩ := VEndpt.turn_of_vDep_real kstar D hts hvirt hk y hy
+  have hle : VEndpt.edgeOf (-1 : ℤ) y ≤ kstar := by
+    rw [hu] at hsy ⊢
+    simp only [VEndpt.site, VEndpt.edgeOf, EndType.siteOf] at hsy ⊢
+    split_ifs at hsy <;> omega
+  exact le_trans (WalkSupport.wLo_le (VEndpt.edgeOf (-1)) (WalkGraph.graph D) hzy) hle
+
+/-- **`hsX` for `kstar < 0`, fully discharged** -- no side condition, in the exact
+shape `min_merges_to_one_local` consumes. -/
+theorem VEndpt.hsX_all_neg {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.site kstar (D.t e) = VEndpt.site kstar e)
+    (hvirt : ∀ b : Bool, D.t (Sum.inr b) ≠ Sum.inr b)
+    (hk : kstar < 0) :
+    ∀ w x, (WalkGraph.graph D).Reachable w x →
+      VEndpt.edgeOf (-1) x = WalkSupport.wLo (VEndpt.edgeOf (-1)) (WalkGraph.graph D) w →
+      VEndpt.atTopN x = false →
+      VEndpt.site kstar x
+        = VEndpt.edgeOf (-1) x + (if VEndpt.atTopN x then 1 else 0) := by
+  intro w x hwx hxe hxb
+  cases x with
+  | inl y => rfl
+  | inr b =>
+    cases b
+    · exact absurd hxb (by simp [VEndpt.atTopN])
+    · -- `x` is the virtual departure, at edge `-1`; so the walk's leftmost edge is `-1`
+      have hw : WalkSupport.wLo (VEndpt.edgeOf (-1)) (WalkGraph.graph D) w = -1 := by
+        simpa [VEndpt.edgeOf] using hxe.symm
+      have hle := VEndpt.wlo_le_kstar kstar D w hts hvirt (by omega) hwx
+      rw [hw] at hle
+      have hks : kstar = -1 := by omega
+      simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN, hks]
+
+/-- **`hsW` for `kstar < 0`, fully discharged.** -/
+theorem VEndpt.hsW_all_neg {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm)) :
+    ∀ w x, (WalkGraph.graph D).Reachable w x →
+      VEndpt.site kstar x
+        = WalkSupport.wLo (VEndpt.edgeOf (-1)) (WalkGraph.graph D) w →
+      VEndpt.atTopN x = false ∨
+        VEndpt.site kstar x
+          = VEndpt.edgeOf (-1) x + (if VEndpt.atTopN x then 1 else 0) := by
+  intro w x _ _
+  cases x with
+  | inl y => exact Or.inr rfl
+  | inr b =>
+    cases b
+    · exact Or.inr (by simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTopN])
+    · exact Or.inl rfl
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -997,3 +1080,7 @@ end EltBridge
 #print axioms EltBridge.VEndpt.dataOf_ts
 #print axioms EltBridge.VEndpt.balanced_all
 #print axioms EltBridge.VEndpt.dataOfAll
+#print axioms EltBridge.VEndpt.turn_of_vDep_real
+#print axioms EltBridge.VEndpt.wlo_le_kstar
+#print axioms EltBridge.VEndpt.hsX_all_neg
+#print axioms EltBridge.VEndpt.hsW_all_neg
