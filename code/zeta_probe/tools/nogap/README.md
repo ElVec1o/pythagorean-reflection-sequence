@@ -6006,3 +6006,46 @@ two-model bind, and it is genuine.
 Third retraction of this run, after BLOCKS 137 and 145.  All three came from the same
 habit -- asserting a route before tracing it to a leaf -- and all three were caught by
 continuing until the claim had to be used.  The correct order is to trace first.
+
+## 2026-09-03 — BLOCK 149: HasFreePair is PROVED in one model and REFUTED in the other
+
+Two corrections, in opposite directions, and together they settle the two-model bind.
+
+**HasFreePair is proved.**  This README says, in the 2026-08-23 entries, that
+`HasFreePair` "is NOT PROVED" and that "the remaining mathematical content of M6dy is
+exactly one statement: cost-minimality implies a free pair".  That is STALE.
+`CostMerge.hasFreePair_of_minimal` proves it -- purely structural hypotheses,
+`propext`/`Classical.choice`/`Quot.sound`, and `CostMerge.lean` has 0 sorry.  So the
+BLOCK 148 chain
+
+    shield law -> hsep -> run_step_min_gen -> cost_swapData -> hshared
+
+is CLOSED in the derived-sign model.  What blocks the derived model is only BLOCK 139:
+cut sites are forced empty there, so the shield law is vacuous exactly where it has
+content.
+
+**HasFreePair is refuted in the free-sign model.**  `free_pair_of_minimal_fails_in_free_model`
+refutes the CRITERION, which does not by itself refute the conclusion.  `cutturn
+freepair-g` tests the conclusion, with signs per STRAND as `configGData` has them
+(`sgnOf x = sg x.edge x.idx`) rather than per end, since a per-end sign is more general
+than any configuration:
+
+    cost-minimal turns 975408, multi-walk 870496, shared-side pair exists 831868,
+    none 38628
+
+38628 of 870496, about 4.4%.  Not an edge case.  The smallest is ordinary:
+`n=2, m=[2,2], up=[1,1]`.  Verified by hand: site 1 is the only site with two arrivals,
+namely `(edge0, strand0, top)` and `(edge1, strand1, bottom)`; their sides are `true`
+and `false`, and their departures `(edge0, strand1, top)` and `(edge1, strand0, bottom)`
+are likewise opposite.  So no shared-side pair exists there for ANY turn, and whenever
+those two arrivals fall in different walks `HasFreePair` fails outright.
+
+**So the bind is proved on both sides:**
+
+    derived-sign     HasFreePair PROVED; cut sites forced EMPTY (BLOCK 139)
+    configGData      cut sites fine; HasFreePair REFUTED (38628 counterexamples)
+
+The models differ in WHICH data are cost-minimal, and the free model's minimal data
+include ones with no free pair.  Neither model can carry the shield law, and that is
+now a result rather than an impasse.  A third route must avoid the swap/merge argument
+entirely, not merely change the sign model.

@@ -164,6 +164,7 @@ fn main() {
     let mode = std::env::args().nth(1).unwrap_or_else(|| "gap".into());
     let nmax: usize = std::env::args().nth(2).and_then(|s| s.parse().ok()).unwrap_or(7);
     if mode == "freepair" { freepair::run(); return; }
+    if mode == "freepair-g" { freepair::run_free(); return; }
     if mode == "dep" { mode_dep(nmax); return; }
     if mode == "mu4" {
         let amax: i64 = std::env::args().nth(3).and_then(|s| s.parse().ok()).unwrap_or(4);

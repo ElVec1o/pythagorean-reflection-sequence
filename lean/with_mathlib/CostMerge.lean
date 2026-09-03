@@ -918,3 +918,4 @@ theorem step_of_split'_local (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
 #print axioms CostMerge.freePair_of_split_local
 #print axioms CostMerge.step_of_split_local
 #print axioms CostMerge.step_of_split'_local
+#print axioms CostMerge.hasFreePair_of_minimal

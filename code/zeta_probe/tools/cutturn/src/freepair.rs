@@ -97,6 +97,83 @@ fn cost(es: &[End], t: &HashMap<End, End>, up: &[usize]) -> usize {
         .map(|&a| if a.t == t[&a].t { 2 } else { 1 }).sum()
 }
 
+/// The same probe in the FREE-sign model.  `HasFreePair`'s statement mentions only
+/// the SIDE (= top?), not the sign, so it is model-independent; what the model changes
+/// is which turns are COST-MINIMAL.  Here each end carries its own free sign and the
+/// cost is GData.pcost: 0 same side and same sign, 2 same side opposite sign, 1 across.
+///
+/// `free_pair_of_minimal_fails_in_free_model` refutes the CRITERION in this model.  It
+/// does not refute the conclusion, and that is what this measures.
+pub fn run_free() {
+    println!("[cutturn] freepair-g -- HasFreePair at cost-minimal data, configGData signs");
+    println!("[cutturn] cost: same side+sign 0, same side opposite sign 2, across 1");
+    println!("[cutturn] signs are per STRAND, as configGData has them, not per end");
+    let (mut tot, mut multi, mut ok, mut bad) = (0u64, 0u64, 0u64, 0u64);
+    let mut shown = 0;
+    for n in 1..=3usize {
+        for mcode in 0..2usize.pow(n as u32) {
+            let mut c = mcode;
+            let m: Vec<usize> = (0..n).map(|_| { let v = [2usize,4][c % 2]; c /= 2; v }).collect();
+            for ucode in 0..5usize.pow(n as u32) {
+                let mut c = ucode;
+                let up: Vec<usize> = (0..n).map(|_| { let v = c % 5; c /= 5; v }).collect();
+                if (0..n).any(|j| up[j] > m[j]) { continue; }
+                let es = ends(n, &m);
+                let ts = turns(&es, &up);
+                if ts.is_empty() { continue; }
+                // signs as configGData has them: one bit per STRAND, shared by its
+                // two ends (sgnOf x = sg x.edge x.idx).  A per-END sign would be
+                // strictly more general than any configuration.
+                let mut strands: Vec<(usize, usize)> = vec![];
+                for e in 0..n { for i in 0..m[e] { strands.push((e, i)); } }
+                let nb = strands.len();
+                if nb > 20 { continue; }
+                for sgncode in 0u32..(1u32 << nb) {
+                    let sidx: HashMap<(usize, usize), bool> = strands.iter().enumerate()
+                        .map(|(k, &st)| (st, (sgncode >> k) & 1 == 1)).collect();
+                    let sgn: HashMap<End, bool> = es.iter()
+                        .map(|&e| (e, sidx[&(e.e, e.i)])).collect();
+                    let gcost = |t: &HashMap<End, End>| -> usize {
+                        es.iter().filter(|&&a| is_arr(a, &up)).map(|&a| {
+                            let b = t[&a];
+                            if a.t == b.t { if sgn[&a] == sgn[&b] { 0 } else { 2 } } else { 1 }
+                        }).sum()
+                    };
+                    let best = ts.iter().map(|t| gcost(t)).min().unwrap();
+                    for t in &ts {
+                        if gcost(t) != best { continue; }
+                        tot += 1;
+                        let (comp, nc) = walks(&es, t);
+                        if nc < 2 { continue; }
+                        multi += 1;
+                        let mut found = false;
+                        'outer: for &a in &es {
+                            if !is_arr(a, &up) { continue; }
+                            for &a2 in &es {
+                                if !is_arr(a2, &up) { continue; }
+                                if site(a) != site(a2) || comp[&a] == comp[&a2] { continue; }
+                                if a.t == a2.t || t[&a].t == t[&a2].t { found = true; break 'outer; }
+                            }
+                        }
+                        if found { ok += 1; } else {
+                            bad += 1;
+                            if shown < 3 {
+                                shown += 1;
+                                println!("  NO SHARED-SIDE PAIR: n={} m={:?} up={:?} walks={} cost={}",
+                                    n, m, up, nc, best);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    println!("  cost-minimal turns: {tot}  multi-walk: {multi}  shared-side pair exists: {ok}  none: {bad}");
+    println!("  {}", if bad == 0 {
+        "HasFreePair HOLDS at every cost-minimal multi-walk datum tested in the FREE-sign model"
+    } else { "HasFreePair FAILS in the free-sign model -- counterexample above" });
+}
+
 pub fn run() {
     println!("[cutturn] freepair -- independent re-derivation of nogap/side_probe2.py");
     println!("[cutturn] model: same side 2, different side 1 (EndData derived sign)");
