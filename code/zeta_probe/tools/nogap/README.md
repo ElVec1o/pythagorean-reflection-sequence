@@ -4549,3 +4549,26 @@ M9's orange is entirely (M) and (R-J). Nothing beneath it is outstanding.
 That is the sharpest true statement about tonight's work: the combinatorial half is
 complete for the atoms the goal actually uses. The two yellows are a side branch, and I
 spent BLOCKS 59-98 on that side branch without checking whether the goal needed it.
+
+## 2026-09-03 — BLOCK 101: BLOCK 100 RETRACTED — M3/M4b are ON the critical path
+
+thm:U assumes (M), and (M) = (M1) + (M2) + (M3) with (M2) THE SHIELD LAW. The
+settlement paragraph names (M)'s three weakest links: the metric formula, the reverse
+shield inequality, and (M3).
+
+BLOCK 100 reasoned "(T) is discharged via thm:nogap, therefore prop:cut is not needed".
+Non-sequitur: (T) was never the route to the shield law, which enters directly as part
+of (M). Third dependency conclusion tonight drawn from a partial reading.
+
+CONSEQUENCE, and it is favourable: BLOCKS 59-98 were NOT a side branch. They were work
+on (M2)'s reverse inequality c <= L-1, which the paper records as verified-not-proved
+and proved only on gap-free elements where Z is empty.
+
+And what those blocks established is precisely about that gap:
+  forced model  Z is FORCED empty in a span, so the Z != 0 case is UNREACHABLE, not
+                merely unproved -- and the shield law reduces to thm:nogap, the paper's
+                own escape hatch
+  free model    Z can be non-empty but free pairs are not forced, so the merge does not
+                run
+Two models, two proved obstructions. Closing the reverse inequality needs a model with
+occupied cut sites AND forced free pairs.
