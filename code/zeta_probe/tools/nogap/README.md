@@ -6594,3 +6594,31 @@ So M4b's upper bound is now: `walkCount (dataOf up hbal) <= |Z| + 1`, given a tu
 bounces at the cut sites and whose passes chain the runs.  Nothing else.
 
 Scope unchanged: `mu = 2`.
+
+## 2026-09-03 — BLOCK 168: the route is complete
+
+`shield_upper_bound_from_turn`.  Every hypothesis is now a concrete statement about the
+turn, and the conclusion is `walkCount <= |Z| + 1`:
+
+    hturn      it changes the edge only off the cut sites
+    hpass_up   at each interior site it carries `up j`'s partner to `up (j+1)`
+    hpass_dn   and `dn (j+1)`'s partner to `dn j`
+    hbounce    at the run's left boundary it carries `dn lo` to `up lo`
+    hcover     each representative is one of its edge's two strand bottoms
+    hrange     every edge lies in the run
+
+No merge, no swap, no free pair.  `CostMerge` is not invoked anywhere on this path.
+
+That is the whole point of blocks 153-168.  BLOCK 149 refuted `HasFreePair` in the
+per-strand model -- the only sign model that can express gap edges -- which closed the
+classical route to this bound.  The route built since reaches the same conclusion from
+the turn's passes and bounces alone, and `local_trichotomy` is what makes those
+available: the bounce strictly wins at a cut site, the pass ties or wins off one.
+
+Sixteen blocks, six retractions, and the surviving route is the one that stopped trying
+to merge walks.
+
+Scope, unchanged and load-bearing: `mu = 2`, and a single run.  BLOCK 158 measured 5072
+of 8192 failures at `mu = 4`, where the two-chain structure is absent; the multi-run case
+needs the per-run indexing that `hrange` here assumes away.  Both are real gaps and
+neither is closed.

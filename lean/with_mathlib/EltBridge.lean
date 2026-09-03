@@ -9063,3 +9063,98 @@ end EltBridge
 
 #print axioms EltBridge.botOf_eq_or_partner
 #print axioms EltBridge.shield_upper_bound_bot
+
+namespace EltBridge
+
+/-! ### `hrun` from the two-chain connectivity
+
+`run_connected_of_turn_structure` joins `up (lo+j)` and `dn (lo+j)` across a run.
+`hrun` asks for `botOf x` and `botOf y`.  The two match once `botOf` is known to be one
+of the two strand bottoms on its own edge, which at `mu = 2` it is: an edge has exactly
+the strands `0` and `1`. -/
+
+/-- **`hrun` on a single run.**  With every end's edge inside `[lo, lo+nn]` and every
+representative one of that edge's two strand bottoms, the two-chain connectivity gives
+`hrun` outright. -/
+theorem hrun_single_run {n : ℕ} {m : Fin n → ℕ} (D : WalkGraph.Data (EndType.Endpt n m))
+    (up dn : ℤ → EndType.Endpt n m) (lo : ℤ) (nn : ℕ)
+    (hcover : ∀ x, botOf x = up (EndType.edgeOf x) ∨ botOf x = dn (EndType.edgeOf x))
+    (hrange : ∀ x : EndType.Endpt n m, ∃ k : ℕ, k ≤ nn ∧ EndType.edgeOf x = lo + k)
+    (hconn : ∀ j j' : ℕ, j ≤ nn → j' ≤ nn → ∀ b b' : Bool,
+      (WalkGraph.graph D).Reachable
+        (if b then up (lo + j) else dn (lo + j))
+        (if b' then up (lo + j') else dn (lo + j'))) :
+    ∀ x y : EndType.Endpt n m, (WalkGraph.graph D).Reachable (botOf x) (botOf y) := by
+  intro x y
+  obtain ⟨j, hj, hxj⟩ := hrange x
+  obtain ⟨j', hj', hyj⟩ := hrange y
+  rcases hcover x with hx | hx <;> rcases hcover y with hy | hy <;> rw [hx, hy, hxj, hyj]
+  · simpa using hconn j j' hj hj' true true
+  · simpa using hconn j j' hj hj' true false
+  · simpa using hconn j j' hj hj' false true
+  · simpa using hconn j j' hj hj' false false
+
+/-- **The shield bound on a single run, with only `hturn` left.**  Composing
+`hrun_single_run` into `shield_upper_bound_bot`: everything else has been discharged, so
+the bound follows from the turn invariant and the two-chain connectivity alone. -/
+theorem shield_upper_bound_single_run {n : ℕ} {m : Fin n → ℕ} (up' : Fin n → ℕ)
+    (hbal : ∀ s : ℤ,
+      (EndType.arrAt (m := m) up' s).card = (EndType.depAt (m := m) up' s).card)
+    (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℤ) (nn : ℕ)
+    (hturn : ∀ x, EndType.edgeOf ((DataBuild.dataOf up' hbal).t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hcover : ∀ x, botOf x = up (EndType.edgeOf x) ∨ botOf x = dn (EndType.edgeOf x))
+    (hrange : ∀ x : EndType.Endpt n m, ∃ k : ℕ, k ≤ nn ∧ EndType.edgeOf x = lo + k)
+    (hconn : ∀ j j' : ℕ, j ≤ nn → j' ≤ nn → ∀ b b' : Bool,
+      (WalkGraph.graph (DataBuild.dataOf up' hbal)).Reachable
+        (if b then up (lo + j) else dn (lo + j))
+        (if b' then up (lo + j') else dn (lo + j'))) :
+    WalkGraph.walkCount (DataBuild.dataOf up' hbal) ≤ Zf.card + 1 :=
+  shield_upper_bound_bot up' hbal Zf hturn
+    (fun x y _ => hrun_single_run (DataBuild.dataOf up' hbal) up dn lo nn
+      hcover hrange hconn x y)
+
+end EltBridge
+
+#print axioms EltBridge.hrun_single_run
+#print axioms EltBridge.shield_upper_bound_single_run
+
+namespace EltBridge
+
+/-- **The shield law's upper bound from the turn's own passes and bounces.**
+
+Composing `run_connected_of_turn_structure` into `shield_upper_bound_single_run`, every
+hypothesis is now a concrete statement about the turn:
+
+    hturn      it changes the edge only off the cut sites
+    hpass_up   at each interior site it carries `up j`'s partner to `up (j+1)`
+    hpass_dn   and `dn (j+1)`'s partner to `dn j`
+    hbounce    at the run's left boundary it carries `dn lo` to `up lo`
+    hcover     each representative is one of its edge's two strand bottoms
+    hrange     every edge lies in the run
+
+and the conclusion is `walkCount <= |Z| + 1`.  No merge, no swap, no free pair. -/
+theorem shield_upper_bound_from_turn {n : ℕ} {m : Fin n → ℕ} (up' : Fin n → ℕ)
+    (hbal : ∀ s : ℤ,
+      (EndType.arrAt (m := m) up' s).card = (EndType.depAt (m := m) up' s).card)
+    (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℤ) (nn : ℕ)
+    (hturn : ∀ x, EndType.edgeOf ((DataBuild.dataOf up' hbal).t x) ≠ EndType.edgeOf x →
+      EndType.siteOf x ∉ Zf)
+    (hcover : ∀ x, botOf x = up (EndType.edgeOf x) ∨ botOf x = dn (EndType.edgeOf x))
+    (hrange : ∀ x : EndType.Endpt n m, ∃ k : ℕ, k ≤ nn ∧ EndType.edgeOf x = lo + k)
+    (hpass_up : ∀ k : ℕ, k < nn →
+      (DataBuild.dataOf up' hbal).t ((DataBuild.dataOf up' hbal).p (up (lo + k)))
+        = up (lo + (k + 1 : ℕ)))
+    (hpass_dn : ∀ k : ℕ, k < nn →
+      (DataBuild.dataOf up' hbal).t
+          ((DataBuild.dataOf up' hbal).p (dn (lo + (k + 1 : ℕ)))) = dn (lo + k))
+    (hbounce : (DataBuild.dataOf up' hbal).t (dn lo) = up lo) :
+    WalkGraph.walkCount (DataBuild.dataOf up' hbal) ≤ Zf.card + 1 :=
+  shield_upper_bound_single_run up' hbal Zf up dn lo nn hturn hcover hrange
+    (fun j j' hj hj' b b' =>
+      run_connected_of_turn_structure (DataBuild.dataOf up' hbal) up dn lo nn
+        hpass_up hpass_dn hbounce j j' hj hj' b b')
+
+end EltBridge
+
+#print axioms EltBridge.shield_upper_bound_from_turn
