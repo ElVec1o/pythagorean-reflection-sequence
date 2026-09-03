@@ -7689,3 +7689,32 @@ path within each edge and a pass between consecutive edges.  At uniform widths t
 is built and the law is proved (BLOCK 197).  At varying widths the same construction
 should go through -- the round trips are per-edge and do not care what the neighbours'
 widths are -- and it is not written.
+
+## 2026-09-03 — BLOCK 206: (M3a) is not analytic
+
+I had been calling (M3) "a separate analytic statement".  That was wrong, and
+`site_cost_couples` (already in the file) says why: the interior site cost is
+`max(|d(s-1)|, |d(s)|)` -- a function of **two consecutive states and nothing else**.
+A weight that is a head term plus a nearest-neighbour term at each step plus a tail
+term is a *chain cost*, and the exponential of a chain cost is a transfer-matrix path
+weight.  That is a theorem, not an estimate:
+
+    lastOf, chainCost                 the chain cost of a state path
+    pathWeight_one_exp                x ^ chainCost = the inner path weight
+    pathWeight_exp                    with the head weight too
+    isTransferDecomposition_of_chain  hence IsTransferDecomposition, for ANY family
+                                      of configurations whose weight is a chain cost
+    interior_kernel_eq_max            and the kernel is x ^ max(a,b) -- eq:gapkernel's
+                                      bulk kernel, forced by the cost, not posited
+
+All four depend on `propext` alone -- no choice, no quotients.  0 sorry.
+
+**What this does and does not do.**  (M3a) is now reduced to a bookkeeping statement:
+that `lR` is a chain cost in the state `(d j, f j)`, with the two boundary sites `s = 0`
+and `s = kstar` supplying the head and tail terms.  `cor:lRclosed` already gives
+`lR = sum mu + sum siteCost`, and `site_cost_couples` gives the interior terms, so what
+remains is to match the two boundary sites -- combinatorics, not analysis.  (M3b),
+the resolvent sum, is `neumann_partial` (BLOCK 116) plus the order bound.
+
+So (M3) is not out of reach after all.  The operator in the paper's (M3) was never an
+assumption; it is what the shape of `lR` forces.

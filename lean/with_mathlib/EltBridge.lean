@@ -5545,6 +5545,87 @@ theorem site_cost_couples (P : SiteCost.PathData) (s : ℤ)
   rw [if_neg h0, if_neg hk]
   simp only [ite_self, Nat.cast_zero, mul_zero, add_zero, sub_zero]
 
+/-! ### (M3a) is not analytic: it is the exponential of a nearest-neighbour cost
+
+`site_cost_couples` says the interior site cost is `max(|d(s-1)|, |d(s)|)` -- a cost
+depending on **two consecutive** states and nothing else.  Together with
+`cor:lRclosed` (`lR` is the sum of the site costs and the deposit magnitudes) that
+makes `lR` a *chain cost*: a head term, a nearest-neighbour term at each step, a tail
+term.  And the exponential of a chain cost is exactly a `pathWeight`.
+
+So (M3a) reduces to a general fact about chain costs, proved here, with **no analysis
+at all**.  The transfer kernel it produces is `T a b = x ^ max(a,b)`, which is the
+bulk kernel of `eq:gapkernel` -- the operator was never an assumption, it is forced by
+the shape of the cost. -/
+
+/-- The last entry of `s :: L`, without a dependent non-emptiness proof. -/
+def lastOf {S : Type*} (s : S) : List S → S
+  | [] => s
+  | t :: rest => lastOf t rest
+
+/-- The total nearest-neighbour cost along the state path `s :: L`. -/
+def chainCost {S : Type*} (f : S → S → ℕ) : S → List S → ℕ
+  | _, [] => 0
+  | a, b :: rest => f a b + chainCost f b rest
+
+/-- **The inner path weight is the exponential of the chain cost.** -/
+theorem pathWeight_one_exp {S : Type*} (x : ℤ) (f : S → S → ℕ) (g : S → ℕ) :
+    ∀ (L : List S) (s : S),
+      pathWeight (fun a b => x ^ f a b) (fun _ => (1 : ℤ)) (fun a => x ^ g a) (s :: L)
+        = x ^ (chainCost f s L + g (lastOf s L)) := by
+  intro L
+  induction L with
+  | nil => intro s; simp [pathWeight, chainCost, lastOf]
+  | cons t rest ih =>
+      intro s
+      show (1 : ℤ) * x ^ f s t
+          * pathWeight (fun a b => x ^ f a b) (fun _ => (1 : ℤ)) (fun a => x ^ g a) (t :: rest)
+        = _
+      rw [ih t]
+      show _ = x ^ (f s t + chainCost f t rest + g (lastOf t rest))
+      rw [pow_add, pow_add, pow_add]
+      ring
+
+/-- **And the full one carries the head weight too.**  This is (M3a): a weight that is a
+chain cost *is* a transfer-matrix path weight, with kernel `x ^ f`. -/
+theorem pathWeight_exp {S : Type*} (x : ℤ) (f : S → S → ℕ) (h g : S → ℕ)
+    (s : S) (L : List S) :
+    pathWeight (fun a b => x ^ f a b) (fun a => x ^ h a) (fun a => x ^ g a) (s :: L)
+      = x ^ (h s + chainCost f s L + g (lastOf s L)) := by
+  cases L with
+  | nil => show x ^ h s * x ^ g s = _; simp [chainCost, lastOf, pow_add]
+  | cons t rest =>
+      show x ^ h s * x ^ f s t
+          * pathWeight (fun a b => x ^ f a b) (fun _ => (1 : ℤ)) (fun a => x ^ g a) (t :: rest)
+        = _
+      rw [pathWeight_one_exp x f g rest t]
+      show _ = x ^ (h s + (f s t + chainCost f t rest) + g (lastOf t rest))
+      rw [pow_add, pow_add, pow_add, pow_add]
+      ring
+
+/-- **(M3a), discharged.**  Any family of configurations whose weight is a chain cost
+satisfies `IsTransferDecomposition` -- with the kernel, the head vector and the tail
+vector all read off from the cost.  Nothing is assumed about the configurations. -/
+theorem isTransferDecomposition_of_chain {C S : Type*}
+    (x : ℤ) (f : S → S → ℕ) (h g : S → ℕ)
+    (head : C → S) (rest : C → List S) (w : C → ℕ)
+    (hw : ∀ c : C, w c
+        = h (head c) + chainCost f (head c) (rest c) + g (lastOf (head c) (rest c))) :
+    IsTransferDecomposition (fun c => head c :: rest c) (fun c => x ^ w c)
+      (fun a b => x ^ f a b) (fun a => x ^ h a) (fun a => x ^ g a) := by
+  intro c
+  show x ^ w c = _
+  rw [hw c]
+  exact (pathWeight_exp x f h g (head c) (rest c)).symm
+
+/-- **The kernel this produces at interior sites is `eq:gapkernel`'s bulk kernel.**  The
+local cost there is `max`, by `site_cost_couples`, so the transfer entry is
+`x ^ max(a,b)` -- the operator is forced, not posited. -/
+theorem interior_kernel_eq_max (P : SiteCost.PathData) (s : ℤ)
+    (h0 : s ≠ 0) (hk : s ≠ P.kstar) :
+    P.siteCost s = max (P.d (s - 1)).natAbs (P.d s).natAbs :=
+  site_cost_couples P s h0 hk
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -13086,3 +13167,8 @@ end EltBridge
 
 #print axioms EltBridge.allJoined_of_path
 #print axioms EltBridge.allJoined_edge
+
+#print axioms EltBridge.pathWeight_one_exp
+#print axioms EltBridge.pathWeight_exp
+#print axioms EltBridge.isTransferDecomposition_of_chain
+#print axioms EltBridge.interior_kernel_eq_max
