@@ -7187,3 +7187,32 @@ attempts.
 Second, `cycle_vacuous_at_u_one` makes the relationship to BLOCK 160 exact rather than
 analogical: `mu = 2` is not a separate argument but the case where the third family is
 empty.
+
+## 2026-09-03 — BLOCK 189: the shield law at general mu
+
+The `mu = 2` pipeline turned out to be mostly `u`-agnostic already.
+`shield_upper_bound_endpt` asks only for a representative and for run connectivity, and
+`walkCount_ge_passTurn` asks only for `Local`; neither mentions the number of strands.
+What was `mu = 2`-specific was the COVER -- that a representative is one of its edge's
+strand bottoms -- and that generalises directly.
+
+    levIdx, strOf         a strand is (edge, level, side); the first u indices are up
+    idxLev_levIdx         reading an index back as a level and a side
+    exists_lev            every index is levIdx of some level and side
+    botOf_eq_strOf        so every representative is a strand bottom of its edge
+    levIdx_one            at u = 1 the two indices are 0 and 1, which are upOf and dnOf
+    hrun_multi_gen        hrun at general u, from BLOCK 188's connectivity
+    shield_law_gen        walkCount E = |Zf| + 1, both bounds, any u
+
+All 0 sorry, and `CostMerge` is invoked in neither direction.
+
+The hypotheses on the turn are the three link families of BLOCK 188 -- its passes chain
+each level along a run, its boundary bounce joins up to down, one pass carries the level
+cycle -- plus the turn's own geometry.  So the general-`mu` shield law now rests on
+exhibiting a turn with those properties, which is the `mu = 2` construction of BLOCKS
+174-186 with the cycle inserted.
+
+That is the remaining work for `mu >= 4`, and it is construction rather than
+mathematics: BLOCK 187 established that the cycle is free to place (a pass costs the
+same whichever levels it pairs) and that the one case with no pass -- a run of length 1
+-- is forced to `mu = 2` because a cut site zeroes the deposits on both its edges.

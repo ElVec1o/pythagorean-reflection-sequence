@@ -10967,3 +10967,188 @@ end EltBridge
 #print axioms EltBridge.run_pairwise_gen
 #print axioms EltBridge.run_connected_in_graph_gen
 #print axioms EltBridge.cycle_vacuous_at_u_one
+
+namespace EltBridge
+
+/-! ## General `mu`: the strand naming
+
+At `mu = 2u` an edge carries `2u` strands, the first `u` up and the last `u` down.  So a
+strand is named by `(edge, level, up?)` with `level : Fin u`, and `strOf` is the bottom
+end of that strand.
+
+`shield_upper_bound_endpt` is already `u`-agnostic -- it asks only for a representative
+and for run connectivity.  What was `mu = 2`-specific is the COVER, that every
+representative is one of its edge's strand bottoms, and that is what generalises here. -/
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- The strand index of level `l` on side `b`: the first `u` indices are the up strands. -/
+def levIdx (u : ℕ) (l : Fin u) (b : Bool) : ℕ := if b then (l : ℕ) else u + (l : ℕ)
+
+theorem levIdx_lt (u : ℕ) (l : Fin u) (b : Bool) : levIdx u l b < 2 * u := by
+  unfold levIdx
+  have := l.isLt
+  cases b <;> simp <;> omega
+
+/-- The bottom end of edge `j`'s strand at level `l` on side `b`. -/
+noncomputable def strOf (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (j : ℤ) (l : Fin u) (b : Bool) : EndType.Endpt n m :=
+  ⟨sec j, ⟨levIdx u l b, by rw [hm]; exact levIdx_lt u l b⟩, false⟩
+
+/-- Reading a strand index back as a level and a side. -/
+def idxLev (u : ℕ) (i : ℕ) : ℕ × Bool := if i < u then (i, true) else (i - u, false)
+
+theorem idxLev_levIdx (u : ℕ) (l : Fin u) (b : Bool) :
+    idxLev u (levIdx u l b) = ((l : ℕ), b) := by
+  unfold idxLev levIdx
+  have hl := l.isLt
+  cases b
+  · simp only [Bool.false_eq_true, if_false]
+    rw [if_neg (by omega)]
+    simp
+  · simp only [if_true]
+    rw [if_pos hl]
+
+/-- **The cover at general `u`.**  Every strand index is `levIdx` of its level and side,
+so every representative is one of its edge's strand bottoms. -/
+theorem exists_lev (u : ℕ) (i : ℕ) (hi : i < 2 * u) :
+    ∃ (l : Fin u) (b : Bool), levIdx u l b = i := by
+  by_cases h : i < u
+  · exact ⟨⟨i, h⟩, true, by unfold levIdx; simp⟩
+  · refine ⟨⟨i - u, by omega⟩, false, ?_⟩
+    unfold levIdx
+    simp only [Bool.false_eq_true, if_false]
+    omega
+
+end EltBridge
+
+#print axioms EltBridge.levIdx_lt
+#print axioms EltBridge.idxLev_levIdx
+#print axioms EltBridge.exists_lev
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **`botOf x` is one of its edge's strand bottoms**, at general `u`. -/
+theorem botOf_eq_strOf (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (x : EndType.Endpt n m) (hsec : sec (EndType.edgeOf x) = x.edge) :
+    ∃ (l : Fin u) (b : Bool),
+      strOf (m := m) hm sec (EndType.edgeOf x) l b = botOf x := by
+  classical
+  have hlt : (x.idx : ℕ) < 2 * u := by
+    have h := x.idx.isLt
+    have h2 := hm x.edge
+    omega
+  obtain ⟨l, b, hlb⟩ := exists_lev u (x.idx : ℕ) hlt
+  refine ⟨l, b, ?_⟩
+  obtain ⟨e, i, t⟩ := x
+  have he : sec ((e : ℕ) : ℤ) = e := hsec
+  unfold strOf botOf
+  simp only [EndType.edgeOf]
+  congr 1
+  · rw [Fin.heq_ext_iff (by rw [he])]
+    simpa using hlb
+
+/-- **The `mu = 2` naming is the `u = 1` case.**  With one level, `levIdx 1 0 true = 0`
+and `levIdx 1 0 false = 1`, which are `upOf` and `dnOf`. -/
+theorem levIdx_one : levIdx 1 ⟨0, by omega⟩ true = 0 ∧ levIdx 1 ⟨0, by omega⟩ false = 1 := by
+  constructor <;> unfold levIdx <;> simp
+
+end EltBridge
+
+#print axioms EltBridge.botOf_eq_strOf
+#print axioms EltBridge.levIdx_one
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **`hrun` at general `u`.**  The runs are the level sets of `gz`; each end's
+representative is a strand bottom of its edge, and that edge lies in its run, so the
+general-`u` connectivity joins any two. -/
+theorem hrun_multi_gen (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
+    (D : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ)
+    (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hR : ∀ a b, R a b → (WalkGraph.graph D).Reachable
+      (strOf (m := m) hm sec a.1 a.2.1 a.2.2) (strOf (m := m) hm sec b.1 b.2.1 b.2.2))
+    (hsymm : ∀ a b, R a b → R b a)
+    (hchain : ∀ (r : ℕ) (k : ℕ) (l : Fin u) (b : Bool), k < len r →
+      R (lo r + k, l, b) (lo r + (k + 1 : ℕ), l, b))
+    (hjoin : ∀ (r : ℕ) (l : Fin u), R (lo r, l, true) (lo r, l, false))
+    (hcyc : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      R (lo r, ⟨i, by omega⟩, true) (lo r, ⟨i + 1, hi⟩, true)) :
+    ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph D).Reachable (botOf x) (botOf y) := by
+  classical
+  intro x y hxy
+  obtain ⟨lx, bx, hx⟩ := botOf_eq_strOf hm sec x (hsecEdge x)
+  obtain ⟨ly, by', hy⟩ := botOf_eq_strOf hm sec y (hsecEdge y)
+  obtain ⟨j, hj, hxj⟩ := hrange x
+  obtain ⟨j', hj', hyj⟩ := hrange y
+  rw [← hx, ← hy, hxj, hyj, ← hxy] at *
+  exact run_connected_in_graph_gen u D
+    (fun a => strOf (m := m) hm sec a.1 a.2.1 a.2.2)
+    (lo (CutComponents.gz Zf (EndType.edgeOf x))) (len _) hu R hR hsymm
+    (hchain _) (hjoin _) (hcyc _) j j' hj (by rw [hxy] at hj'; exact hj') lx ly bx by'
+
+end EltBridge
+
+#print axioms EltBridge.hrun_multi_gen
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The shield law at general `mu`: `walkCount = |Z| + 1`.**
+
+Both bounds, on one datum, with no restriction on `u`.  The upper bound is the
+swap-free construction with the general-`u` run connectivity of BLOCK 188; the lower one
+is `prop:cut`, which needs only `Local`.
+
+The hypotheses on the turn are the three link families -- its passes chain each level
+along a run, its boundary bounce joins up to down, and one pass carries the level cycle
+-- together with the turn's own geometry.  `CostMerge` is invoked in neither
+direction. -/
+theorem shield_law_gen (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hR : ∀ a b, R a b → (WalkGraph.graph E).Reachable
+      (strOf (m := m) hm sec a.1 a.2.1 a.2.2) (strOf (m := m) hm sec b.1 b.2.1 b.2.2))
+    (hsymm : ∀ a b, R a b → R b a)
+    (hchain : ∀ (r : ℕ) (k : ℕ) (l : Fin u) (b : Bool), k < len r →
+      R (lo r + k, l, b) (lo r + (k + 1 : ℕ), l, b))
+    (hjoin : ∀ (r : ℕ) (l : Fin u), R (lo r, l, true) (lo r, l, false))
+    (hcyc : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      R (lo r, ⟨i, by omega⟩, true) (lo r, ⟨i + 1, hi⟩, true))
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hne : Nonempty (EndType.Endpt n m)) :
+    WalkGraph.walkCount E = Zf.card + 1 := by
+  have hrun := hrun_multi_gen hm hu sec E Zf lo len hsecEdge hrange R hR hsymm
+    hchain hjoin hcyc
+  refine le_antisymm ?_ ?_
+  · exact shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) hTsite hturn
+      (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) hrun
+  · obtain ⟨x0⟩ := hne
+    exact walkCount_ge_passTurn E Zf A B hAB hEp hTsite hturn hlow hhigh hocc
+      ((WalkGraph.graph E).connectedComponentMk x0)
+
+end EltBridge
+
+#print axioms EltBridge.shield_law_gen
