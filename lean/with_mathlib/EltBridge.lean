@@ -2062,6 +2062,88 @@ theorem witElt_shield (ds : Bool → Bool) :
   refine ⟨D', hD', ?_⟩
   rw [hc, witElt_cutSites, Finset.card_empty]
 
+/-! ### `hZ` on the extended type
+
+BLOCK 12 proved, for `Endpt`, that a balanced site carrying no arrival carries no end
+at all, and hence that both adjacent edges are empty.  The argument never used
+anything about `Endpt`; here it is generically, and then on `VEndpt`, where it says
+something new: a cut site cannot be either of the two virtual sites. -/
+
+/-- **A balanced site with no arrival carries no end**, for any end type. -/
+theorem no_end_at_arrivalfree_gen {α : Type*} [Fintype α] [DecidableEq α]
+    (siteOf : α → ℤ) (isArr : α → Bool) (z : ℤ)
+    (hbal : (GenericData.arrOf siteOf isArr z).card
+      = (GenericData.depOf siteOf isArr z).card)
+    (hZ : ∀ x : α, isArr x = true → siteOf x ≠ z) :
+    ∀ x : α, siteOf x ≠ z := by
+  classical
+  intro x hx
+  have harr : GenericData.arrOf siteOf isArr z = ∅ := by
+    rw [Finset.eq_empty_iff_forall_notMem]
+    intro y hy
+    obtain ⟨hs, ha⟩ := GenericData.mem_arrOf.mp hy
+    exact hZ y ha hs
+  have hdep : GenericData.depOf siteOf isArr z = ∅ := by
+    rw [← Finset.card_eq_zero, ← hbal, harr, Finset.card_empty]
+  cases hax : isArr x with
+  | true => exact hZ x hax hx
+  | false =>
+    have : x ∈ GenericData.depOf siteOf isArr z := GenericData.mem_depOf.mpr ⟨hx, hax⟩
+    rw [hdep] at this
+    exact absurd this (Finset.notMem_empty x)
+
+/-- **On the extended type, an arrival-free balanced site is neither virtual site.**
+
+New content relative to BLOCK 12: the two virtual ends sit at `s0` and `s1`, and they
+are ends, so an arrival-free site cannot be either.  In particular no cut site of a
+configuration is a virtual site -- which is the structural reason the shield law and
+the virtual events do not interfere. -/
+theorem VEndpt.arrivalfree_ne_virtual {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (s0 s1 z : ℤ)
+    (hbal : (VEndpt.arrAtP (mm := mm) s0 s1 up z).card
+      = (VEndpt.depAtP (mm := mm) s0 s1 up z).card)
+    (hZ : ∀ x : VEndpt n mm, VEndpt.isArr up x = true → VEndpt.siteP s0 s1 x ≠ z) :
+    z ≠ s0 ∧ z ≠ s1 := by
+  have hno := no_end_at_arrivalfree_gen (VEndpt.siteP (mm := mm) s0 s1)
+    (VEndpt.isArr up) z (by rw [arrOfP_eq, depOfP_eq]; exact hbal) hZ
+  constructor
+  · intro hc
+    exact hno (Sum.inr false) (by simp [VEndpt.siteP, hc])
+  · intro hc
+    exact hno (Sum.inr true) (by simp [VEndpt.siteP, hc])
+
+/-- **Both edges adjacent to an arrival-free site are empty**, on the extended type. -/
+theorem VEndpt.empty_edges_at_arrivalfree {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (s0 s1 z : ℤ)
+    (hbal : (VEndpt.arrAtP (mm := mm) s0 s1 up z).card
+      = (VEndpt.depAtP (mm := mm) s0 s1 up z).card)
+    (hZ : ∀ x : VEndpt n mm, VEndpt.isArr up x = true → VEndpt.siteP s0 s1 x ≠ z) :
+    ∀ e : Fin n, ((e : ℤ) = z ∨ (e : ℤ) = z - 1) → mm e = 0 := by
+  have hno := no_end_at_arrivalfree_gen (VEndpt.siteP (mm := mm) s0 s1)
+    (VEndpt.isArr up) z (by rw [arrOfP_eq, depOfP_eq]; exact hbal) hZ
+  intro e he
+  by_contra hne
+  have hpos : 0 < mm e := Nat.pos_of_ne_zero hne
+  rcases he with he | he
+  · exact hno (Sum.inl ⟨e, ⟨0, hpos⟩, false⟩)
+      (by simp [VEndpt.siteP, EndType.siteOf, EndType.edgeOf, EndType.atTop, he])
+  · exact hno (Sum.inl ⟨e, ⟨0, hpos⟩, true⟩)
+      (by simp [VEndpt.siteP, EndType.siteOf, EndType.edgeOf, EndType.atTop, he])
+
+/-- **So a cut site of an element's configuration sits in the empty stretch.**
+
+Combining: at a cut site there is no arrival, hence no end, hence both adjacent edges
+are empty -- and the site is neither virtual site.  This is the structural picture the
+shield law needs, now established on the extended type rather than assumed. -/
+theorem VEndpt.cut_site_picture {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
+    (s0 s1 z : ℤ)
+    (hbal : (VEndpt.arrAtP (mm := mm) s0 s1 up z).card
+      = (VEndpt.depAtP (mm := mm) s0 s1 up z).card)
+    (hZ : ∀ x : VEndpt n mm, VEndpt.isArr up x = true → VEndpt.siteP s0 s1 x ≠ z) :
+    (z ≠ s0 ∧ z ≠ s1) ∧ ∀ e : Fin n, ((e : ℤ) = z ∨ (e : ℤ) = z - 1) → mm e = 0 :=
+  ⟨VEndpt.arrivalfree_ne_virtual up s0 s1 z hbal hZ,
+   VEndpt.empty_edges_at_arrivalfree up s0 s1 z hbal hZ⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2147,3 +2229,7 @@ end EltBridge
 #print axioms EltBridge.mem_pdCutSites
 #print axioms EltBridge.witElt_cutSites
 #print axioms EltBridge.witElt_shield
+#print axioms EltBridge.no_end_at_arrivalfree_gen
+#print axioms EltBridge.VEndpt.arrivalfree_ne_virtual
+#print axioms EltBridge.VEndpt.empty_edges_at_arrivalfree
+#print axioms EltBridge.VEndpt.cut_site_picture

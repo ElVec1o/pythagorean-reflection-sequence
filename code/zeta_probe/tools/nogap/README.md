@@ -3081,3 +3081,29 @@ REMAINING for M3/M4b in general (not just on the witness): the shield-law chain
 showed the load-bearing hypothesis there is hZ -- no arrival at a cut site -- and that
 it forces both adjacent edges empty. For VEndpt that argument needs redoing, since the
 virtual ends change which sites can carry arrivals.
+
+## 2026-09-03 — BLOCK 39: hZ on the extended type; cut sites are never virtual sites
+
+  no_end_at_arrivalfree_gen      -- BLOCK 12's argument, made generic: a balanced site
+                                    carrying no arrival carries NO END, for any end
+                                    type. Nothing in it ever used Endpt.
+  VEndpt.arrivalfree_ne_virtual  -- NEW CONTENT on the extended type: the two virtual
+                                    ends ARE ends, so an arrival-free site is neither
+                                    s0 nor s1. Hence NO CUT SITE IS A VIRTUAL SITE.
+  VEndpt.empty_edges_at_arrivalfree -- and both adjacent edges are empty
+  VEndpt.cut_site_picture        -- the two together
+
+The middle one is the structural reason the shield law and the virtual events do not
+interfere, and it is now a theorem rather than an assumption. It also retroactively
+explains BLOCK 11's tension: the virtual pair cannot sit on an edge, but it also never
+sits at a cut site, so the two constructions occupy disjoint parts of the span.
+
+This is the fact BLOCK 12 was one step away from. There I proved hZ + balance forces
+both adjacent edges empty and concluded the hypotheses were incompatible with hocc.
+The run form (BLOCK 5) had already removed hocc; what was missing was that the virtual
+ends are excluded from cut sites, which makes the whole picture consistent.
+
+REMAINING for M3/M4b in general: the run induction itself (RunInv and local_of_hturn)
+on VEndpt. The generic lower-bound machinery in CutComponents is already end-type
+agnostic (exists_injective_components_avoiding_of_runs), so what is needed is the
+locality predicate `Local` for the extended graph.
