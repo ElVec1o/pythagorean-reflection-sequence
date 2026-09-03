@@ -3850,3 +3850,27 @@ This is the end of the repair that BLOCK 60 opened. The full arc:
 Eleven blocks, one hypothesis removed. The upper and lower bounds are now fed by the
 same fact on both end types, which is the structural change: before BLOCK 60 they took
 different hypotheses, and that is why the incompatibility survived sixty blocks.
+
+## 2026-09-03 — BLOCK 70: hruns for witNeg; the one remaining obligation NAMED
+
+  witNeg_hruns          -- its two runs are witnessed by the virtual arrival (edge 0,
+                           gz = 0) and a real end on shifted edge 3 (gz = 1). Kernel
+                           `decide`, not native_decide.
+  HasInitialTurnInv     -- the remaining obligation, named as a contract (Rule I7)
+  VEndpt.shield_of_initial -- **the shield law modulo that one obligation**
+
+WHAT IS AND IS NOT DONE. shield_turnInvN consumes a datum already in TurnInvG.
+Cost-minimality comes from exists_mergesMinN. The hturn component does NOT: turnG is
+built from an arbitrary involution at each site (TurnBuild.exists_involution_of_card_eq
+picks one by choice), and nothing makes that choice respect cut sites.
+
+hturn_of_cross_zero (BLOCK 61) derives hturn from zero crossing at cut sites, and
+CostMerge.site_cost_le_of_global turns global minimality into local minimality. The
+missing step is that the local minimum at a cut site is ZERO, which needs a comparison
+datum of zero cost there -- a plan pairing each arrival with a departure on its own
+side.
+
+In the paper that datum is the realisation itself: Realisation.cut_no_cross holds for a
+realisation with R.cost = P.lR. So the initial datum should come from a Realisation
+rather than being built abstractly from dataG. That is the shape of the remaining work,
+and it is now a named Prop instead of an unstated assumption.

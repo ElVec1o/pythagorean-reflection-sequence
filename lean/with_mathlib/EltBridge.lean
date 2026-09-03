@@ -4146,6 +4146,78 @@ theorem VEndpt.shield_turnInvN {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt
         ((WalkGraph.graph D').connectedComponentMk z₀)
     exact walkCount_ge_of_avoiding_gen D' Zf.card _ F hinj havoid
 
+/-- **`hruns` for `witNeg`.**  Its two runs are `gz = 0` and `gz = 1`, witnessed by the
+virtual arrival (edge `0`) and a real end on shifted edge `3`. -/
+theorem witNeg_hruns :
+    ∀ i : ℕ, i ≤ (pdCutSites witNeg.toPathData).card →
+      ∃ v : VEndpt (pdWidth witNeg.toPathData) (pdMm witNeg.toPathData),
+        CutComponents.blk (VEndpt.edgeOf (-witNeg.toPathData.A - 1))
+          (pdCutSites witNeg.toPathData) v = i := by
+  intro i hi
+  rw [witNeg_cutSites, Finset.card_singleton] at hi
+  have hw := witNeg_width
+  interval_cases i
+  · -- the virtual arrival sits on the phantom edge, left of the cut site
+    refine ⟨Sum.inr false, ?_⟩
+    rw [witNeg_cutSites]
+    simp only [CutComponents.blk, VEndpt.edgeOf, witNeg_pd_A]
+    decide
+  · -- a real end on shifted edge 3, right of the cut site
+    have hlt3 : (3 : ℕ) < pdWidth witNeg.toPathData := by omega
+    have hpos : 0 < pdMm witNeg.toPathData ⟨3, hlt3⟩ := by
+      refine pdMm_pos witNeg.toPathData ⟨3, hlt3⟩ ?_ ?_
+      · simp
+      · rw [witNeg_pd_A, witNeg_pd_B]; simp
+    refine ⟨Sum.inl ⟨⟨3, hlt3⟩, ⟨0, hpos⟩, true⟩, ?_⟩
+    rw [witNeg_cutSites]
+    simp only [CutComponents.blk, VEndpt.edgeOf, EndType.edgeOf]
+    decide
+
+/-! ### The one remaining obligation: an initial `TurnInvG` datum
+
+`shield_turnInvN` consumes a datum already in `TurnInvG` -- cost-minimal, with turns
+keeping their edges at cut sites.  Cost-minimality comes from `exists_mergesMinN`.  The
+`hturn` component does not: `turnG` is built from an arbitrary involution at each site,
+and nothing makes it respect cut sites.
+
+`hturn_of_cross_zero` (BLOCK 61) derives `hturn` from zero crossing at cut sites, and
+`CostMerge.site_cost_le_of_global` turns global minimality into local minimality.  What
+is missing is the last step: that the local minimum at a cut site is **zero**, which
+needs a comparison datum of zero cost there -- a plan pairing each arrival with a
+departure on its own side.
+
+In the paper that datum is the realisation itself: `Realisation.cut_no_cross` holds for
+a realisation with `R.cost = P.lR`.  So the initial datum should come from a
+`Realisation`, not be built abstractly from `dataG`. -/
+
+/-- **The remaining obligation, named** (Rule I7).  An initial datum in the invariant. -/
+def HasInitialTurnInv {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (Zf : Finset ℤ)
+    (up : Fin n → ℕ) (ds : Bool → Bool) : Prop :=
+  ∃ D : WalkGraph.Data (VEndpt n mm),
+    TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+      (vEndDataN up ds) Zf D
+
+/-- **The shield law, modulo that one obligation.**  Everything else is discharged. -/
+theorem VEndpt.shield_of_initial {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1 < s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hcov : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ z v : VEndpt n mm,
+      VEndpt.edgeOf (s0 - 1) v
+        < WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z →
+      ∃ w : VEndpt n mm, VEndpt.edgeOf (s0 - 1) w
+        = WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z - 1 ∧
+        VEndpt.atTopN w = true)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf v = i)
+    (z₀ : VEndpt n mm)
+    (hinit : HasInitialTurnInv (mm := mm) s0 s1 Zf up ds) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+        (vEndDataN up ds) Zf D' ∧
+      WalkGraph.walkCount D' = Zf.card + 1 := by
+  obtain ⟨D, hD⟩ := hinit
+  exact VEndpt.shield_turnInvN s0 s1 hlt Zf hgap up ds hcov hruns z₀ D hD
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4302,3 +4374,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.exists_turnInvN_connected
 #print axioms EltBridge.VEndpt.hturn_step_nohZT
 #print axioms EltBridge.VEndpt.shield_turnInvN
+#print axioms EltBridge.witNeg_hruns
+#print axioms EltBridge.VEndpt.shield_of_initial
