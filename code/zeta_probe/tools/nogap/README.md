@@ -7329,3 +7329,26 @@ its passes chain, its near bounce joins the sides, its far bounce joins them one
 across -- and the last is where the parity lives.  It is satisfiable for the reason
 BLOCK 187 measured: a pass costs the same whichever levels it pairs, so the permutations
 can be chosen to make the round trip a cycle.
+
+## 2026-09-03 — BLOCK 194: the three paths, exhibited
+
+The three link families of BLOCK 193, as actual paths through `turnGen`:
+
+    pass_path          a pass carries a strand bottom to the next edge's, permuting the
+                       level by the SIDE's permutation.  Two steps -- to the top, then
+                       across -- and uniform in the side, since the pass keeps it.
+    near_bounce_path   the near bounce joins the two sides in ONE step: both strand
+                       bottoms of edge `j` already sit at site `j`.
+    bounce_top_path    the far bounce needs THREE steps -- to the top, across, and back
+                       down -- because a bounce at the run's right boundary acts on the
+                       TOPS of the last edge while `strOf` names bottoms.
+
+All 0 sorry.  `levOf_partner` and `udOf_partner` are what make the partner steps free:
+crossing a strand keeps its index, so the level and side read the same at both ends.
+
+That asymmetry between the two bounces is the whole reason the shift exists.  The near
+bounce relates level `l` to level `l` and the far one relates level `l` to level `l` as
+well -- but in the RAW naming.  With the naming relabelled so the passes are
+level-preserving, the two bounces are relabelled differently, and their disagreement is
+the round trip's permutation.  BLOCK 187's parity is exactly the freedom to choose that
+disagreement, and it is free because a pass costs the same whichever levels it pairs.

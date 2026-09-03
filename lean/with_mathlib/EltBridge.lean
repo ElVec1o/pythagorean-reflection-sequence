@@ -11852,3 +11852,175 @@ theorem shield_law_shift (hu : 0 < u) (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤
 end EltBridge
 
 #print axioms EltBridge.shield_law_shift
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ### The far bounce, as a path
+
+A bounce at the run's RIGHT boundary acts on the TOPS of the last edge, while `strOf`
+names strand BOTTOMS.  So the link is three steps: cross the strand to its top, bounce,
+cross back.  `partner` keeps the strand index, so the level and side read the same at
+both ends of a strand. -/
+
+@[simp] theorem levOf_partner (x : EndType.Endpt n m) :
+    levOf u (EndType.partner x) = levOf u x := rfl
+
+@[simp] theorem udOf_partner (x : EndType.Endpt n m) :
+    udOf u (EndType.partner x) = udOf u x := rfl
+
+/-- **The far bounce joins a strand to its partner strand, at the same raw level.**
+Three steps: to the top, across, and back down. -/
+theorem bounce_top_path (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x)
+    (j : ℤ) (l : Fin u) (hjs : ((sec j : ℕ) : ℤ) = j) (hmem : j + 1 ∈ Bs) :
+    (WalkGraph.graph E).Reachable
+      (strOf (m := m) hm sec j l true) (strOf (m := m) hm sec j l false) := by
+  set x := strOf (m := m) hm sec j l true with hx
+  set y := EndType.partner x with hy
+  -- the top of that strand sits at site `j + 1`
+  have hsy : EndType.siteOf y = j + 1 := by
+    show ((sec j : ℕ) : ℤ) + 1 = j + 1
+    rw [hjs]
+  -- the bounce there flips the side, keeping the edge, the top and the level
+  have himg : E.t y = mkEnd (m := m) hm y.edge (levOf u y) (levOf_lt hm y)
+      (!udOf u y) y.top := by
+    rw [hEt y, hsy]
+    exact turnGen_bounce_eq hm sec Bs sig (j + 1) y hsy hmem
+  refine ((reachable_partner E x).trans ?_)
+  rw [hEp]
+  refine (reachable_turn E y).trans ?_
+  rw [himg]
+  -- and crossing back lands on the down strand's bottom
+  have hlev : levOf u y = (l : ℕ) := by
+    rw [hy, hx]
+    simp only [levOf_partner]
+    unfold strOf
+    exact levOf_mkEnd hm _ _ _ _ _
+  have hud : udOf u y = true := by
+    rw [hy, hx]
+    simp only [udOf_partner]
+    unfold strOf
+    exact udOf_mkEnd hm _ _ _ _ _
+  have hedge : y.edge = sec j := rfl
+  have htop : y.top = true := rfl
+  have hgoal : mkEnd (m := m) hm y.edge (levOf u y) (levOf_lt hm y) (!udOf u y) y.top
+      = EndType.partner (strOf (m := m) hm sec j l false) := by
+    rw [hedge, htop, hud]
+    unfold strOf EndType.partner mkEnd
+    simp only [Bool.not_true]
+    congr 1
+    apply Fin.ext
+    simp only [Fin.val_mk]
+    unfold levIdx
+    simp only [Bool.false_eq_true, if_false]
+    omega
+  rw [hgoal, ← hEp]
+  exact (reachable_partner E _).symm
+
+end EltBridge
+
+#print axioms EltBridge.bounce_top_path
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **A pass carries a strand bottom to the next edge's**, permuting the level by the
+side's permutation.  Two steps: to the top, then across.  Uniform in the side, since the
+pass keeps it. -/
+theorem pass_path (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x)
+    (j : ℤ) (l : Fin u) (b : Bool)
+    (hjs : ((sec j : ℕ) : ℤ) = j) (hnot : j + 1 ∉ Bs) :
+    (WalkGraph.graph E).Reachable
+      (strOf (m := m) hm sec j l b)
+      (strOf (m := m) hm sec (j + 1) (sig (j + 1) b l) b) := by
+  set x := strOf (m := m) hm sec j l b with hx
+  set y := EndType.partner x with hy
+  have hsy : EndType.siteOf y = j + 1 := by
+    show ((sec j : ℕ) : ℤ) + 1 = j + 1
+    rw [hjs]
+  have hlev : levOf u y = (l : ℕ) := by
+    rw [hy, hx]; simp only [levOf_partner]; unfold strOf; exact levOf_mkEnd hm _ _ _ _ _
+  have hud : udOf u y = b := by
+    rw [hy, hx]; simp only [udOf_partner]; unfold strOf; exact udOf_mkEnd hm _ _ _ _ _
+  have htop : y.top = true := rfl
+  have himg : E.t y = mkEnd (m := m) hm (sec (j + 1))
+      ((sig (j + 1) (udOf u y) ⟨levOf u y, levOf_lt hm y⟩ : Fin u) : ℕ)
+      (Fin.isLt _) (udOf u y) false := by
+    rw [hEt y, hsy]
+    exact turnGen_pass_top hm sec Bs sig (j + 1) y hsy hnot htop
+  refine (reachable_partner E x).trans ?_
+  rw [hEp]
+  refine (reachable_turn E y).trans ?_
+  rw [himg, hud]
+  -- the image is the next edge's strand bottom at the permuted level
+  have hgoal : mkEnd (m := m) hm (sec (j + 1))
+      ((sig (j + 1) b ⟨levOf u y, levOf_lt hm y⟩ : Fin u) : ℕ) (Fin.isLt _) b false
+      = strOf (m := m) hm sec (j + 1) (sig (j + 1) b l) b := by
+    have hfin : (⟨levOf u y, levOf_lt hm y⟩ : Fin u) = l :=
+      Fin.ext (by simpa using hlev)
+    rw [hfin]
+    rfl
+  rw [hgoal]
+
+end EltBridge
+
+#print axioms EltBridge.pass_path
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The near bounce joins the two sides in one step.**  Both strand bottoms of edge
+`j` already sit at site `j`, so the bounce there pairs them directly -- no partner step
+is needed, unlike the far bounce. -/
+theorem near_bounce_path (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEt : ∀ x, E.t x = turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x)
+    (j : ℤ) (l : Fin u) (hjs : ((sec j : ℕ) : ℤ) = j) (hmem : j ∈ Bs) :
+    (WalkGraph.graph E).Reachable
+      (strOf (m := m) hm sec j l true) (strOf (m := m) hm sec j l false) := by
+  set x := strOf (m := m) hm sec j l true with hx
+  have hsx : EndType.siteOf x = j := by
+    show ((sec j : ℕ) : ℤ) + 0 = j
+    rw [hjs]; ring
+  have himg : E.t x = mkEnd (m := m) hm x.edge (levOf u x) (levOf_lt hm x)
+      (!udOf u x) x.top := by
+    rw [hEt x, hsx]
+    exact turnGen_bounce_eq hm sec Bs sig j x hsx hmem
+  have hlev : levOf u x = (l : ℕ) := by
+    rw [hx]; unfold strOf; exact levOf_mkEnd hm _ _ _ _ _
+  have hud : udOf u x = true := by
+    rw [hx]; unfold strOf; exact udOf_mkEnd hm _ _ _ _ _
+  have hgoal : mkEnd (m := m) hm x.edge (levOf u x) (levOf_lt hm x) (!udOf u x) x.top
+      = strOf (m := m) hm sec j l false := by
+    have hedge : x.edge = sec j := rfl
+    have htop : x.top = false := rfl
+    rw [hedge, htop, hud]
+    have hfin : (⟨levOf u x, levOf_lt hm x⟩ : Fin u) = l :=
+      Fin.ext (by simpa using hlev)
+    unfold mkEnd strOf
+    simp only [Bool.not_true]
+    congr 1
+    apply Fin.ext
+    simp only [Fin.val_mk]
+    unfold levIdx
+    simp only [Bool.false_eq_true, if_false]
+    omega
+  have := reachable_turn E x
+  rw [himg, hgoal] at this
+  exact this
+
+end EltBridge
+
+#print axioms EltBridge.near_bounce_path
