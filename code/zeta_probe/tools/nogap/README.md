@@ -3218,3 +3218,29 @@ they became implicit, so passing them explicitly failed; and the namespace is
 CutComponents, not CutComponents.Graph. Neither error had anything to do with the
 argument, and both produced messages ("application type mismatch", "unknown constant")
 that read like real problems.
+
+## 2026-09-03 — BLOCK 44: prop:cut in its weakest usable form, instantiated for VEndpt
+
+  CutComponents.exists_injective_components_avoiding_blk_or_local
+      -- taking Exc = "this edge already preserves the block index" makes the side
+         condition VACUOUS, and the hypothesis collapses to one readable disjunction:
+         EVERY GRAPH EDGE EITHER PRESERVES THE BLOCK INDEX OR IS LOCAL.
+  EltBridge.VEndpt.blk_or_local
+      -- and the extended graph satisfies it:
+           partner edges keep the edge index (hpe), so both ends share a position
+           turn edges between real ends are local (hreal)
+           turn edges at a virtual end preserve the block index (hvirt, = BLOCK 42)
+
+VEndpt.blk_or_local depends on propext + Quot.sound only.
+
+The Exc = "blk-equal" choice is the point of the block. With it, hexc is `fun _ _ h => h`
+and the whole exception apparatus of BLOCK 43 disappears from the interface, leaving a
+hypothesis a reader can check by inspection. I built LocalExcept with a general Exc and
+then found the only instance worth having is the one that makes it trivial.
+
+Two elaboration errors, neither mathematical: `VEndpt.hpe` needed its implicits, and
+`Sum.inr b` inside a hypothesis had no inferable type until annotated `: VEndpt n mm`.
+
+REMAINING for M3 at element level: discharge `hreal` (the site-edge locality at real
+ends, which is just `local_of_hturn` restricted to real ends) and `hruns` (every run
+carries an end). Then prop:cut applies to the extended graph.

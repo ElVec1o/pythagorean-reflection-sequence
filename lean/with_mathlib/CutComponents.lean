@@ -247,6 +247,23 @@ theorem exists_injective_components_avoiding_of_runs_except {Exc : V → V → P
     exact ⟨fun j => F j.castSucc, fun i j hij => Fin.castSucc_injective _ (hF hij),
       fun j => hc _⟩
 
+/-- **`prop:cut` in its weakest usable form.**
+
+Taking `Exc` to be "this edge already preserves the block index" makes the side
+condition vacuous, and the hypothesis collapses to a single readable disjunction:
+**every graph edge either preserves the block index or is local.**
+
+This is the form an end type with a long virtual edge can satisfy. -/
+theorem exists_injective_components_avoiding_blk_or_local
+    (hedge : ∀ x y : V, G.Adj x y → blk pos Zf x = blk pos Zf y ∨ (∃ s : ℤ,
+      (pos x = s - 1 ∨ pos x = s) ∧ (pos y = s - 1 ∨ pos y = s) ∧
+      (pos x ≠ pos y → s ∉ Zf)))
+    (hruns : ∀ i : ℕ, i ≤ Zf.card → ∃ v : V, blk pos Zf v = i)
+    (c0 : G.ConnectedComponent) :
+    ∃ F : Fin Zf.card → G.ConnectedComponent, Function.Injective F ∧ ∀ i, F i ≠ c0 :=
+  exists_injective_components_avoiding_of_runs_except
+    (Exc := fun x y => blk pos Zf x = blk pos Zf y) hedge (fun _ _ h => h) hruns c0
+
 /-- **Proposition `prop:cut`, the counting step.**  A graph on the crossings of the span whose
 edges are local for the cut set has at least `|Z|+1` connected components. -/
 theorem exists_injective_components (hedge : Local G pos Zf) (A B : ℤ) (hAB : A ≤ B)
@@ -385,3 +402,4 @@ end SiteCost
 #print axioms CutComponents.exists_injective_components_avoiding_of_runs
 #print axioms CutComponents.blk_adj_except
 #print axioms CutComponents.exists_injective_components_avoiding_of_runs_except
+#print axioms CutComponents.exists_injective_components_avoiding_blk_or_local

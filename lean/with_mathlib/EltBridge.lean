@@ -2303,6 +2303,45 @@ theorem virtual_pair_same_run (Zf : Finset ℤ) (s0 s1 : ℤ) (hle : s0 ≤ s1)
     CutComponents.gz Zf s0 = CutComponents.gz Zf s1 :=
   gz_eq_of_no_between Zf s0 s1 hle hsep
 
+/-! ### `prop:cut` for the extended type
+
+Every graph edge either preserves the block index or is local:
+
+* **partner** edges keep the edge index (`hpe`), so both ends have the same position
+  and the block index is trivially equal;
+* **turn** edges between real ends are local, by the site-edge relation;
+* **turn** edges at a virtual end preserve the block index, by `virtual_pair_same_run`
+  -- supplied here as the hypothesis `hvirt`, which BLOCK 42 discharges. -/
+
+theorem VEndpt.blk_or_local {n : ℕ} {mm : Fin n → ℕ} (bnd : ℤ) (Zf : Finset ℤ)
+    (E : WalkGraph.Data (VEndpt n mm)) (hp : E.p = VEndpt.partner)
+    (hreal : ∀ u : EndType.Endpt n mm, ∀ y : VEndpt n mm, E.t (Sum.inl u) = y →
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inl u)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf y ∨ (∃ t : ℤ,
+        (VEndpt.edgeOf bnd (Sum.inl u) = t - 1 ∨ VEndpt.edgeOf bnd (Sum.inl u) = t) ∧
+        (VEndpt.edgeOf bnd y = t - 1 ∨ VEndpt.edgeOf bnd y = t) ∧
+        (VEndpt.edgeOf bnd (Sum.inl u) ≠ VEndpt.edgeOf bnd y → t ∉ Zf)))
+    (hvirt : ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm))) :
+    ∀ x y : VEndpt n mm, (WalkGraph.graph E).Adj x y →
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf x
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf y ∨ (∃ t : ℤ,
+        (VEndpt.edgeOf bnd x = t - 1 ∨ VEndpt.edgeOf bnd x = t) ∧
+        (VEndpt.edgeOf bnd y = t - 1 ∨ VEndpt.edgeOf bnd y = t) ∧
+        (VEndpt.edgeOf bnd x ≠ VEndpt.edgeOf bnd y → t ∉ Zf)) := by
+  intro x y hxy
+  rcases hxy with h | h
+  · -- the crossing partner keeps the edge index
+    left
+    subst h
+    unfold CutComponents.blk
+    rw [hp, VEndpt.hpe (mm := mm) bnd x]
+  · subst h
+    cases x with
+    | inl u => exact hreal u _ rfl
+    | inr b => exact Or.inl (hvirt b)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2399,3 +2438,4 @@ end EltBridge
 #print axioms EltBridge.pdCut_avoids_travel
 #print axioms EltBridge.gz_eq_of_no_between
 #print axioms EltBridge.virtual_pair_same_run
+#print axioms EltBridge.VEndpt.blk_or_local
