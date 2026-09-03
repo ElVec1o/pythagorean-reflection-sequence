@@ -9138,3 +9138,17 @@ convergence and path-sum identity of (M3b), the bijection between configurations
 guarded paths in both directions, the extension and its guard, and this comparison.  What
 is NOT written is the instantiation at `C` = all configurations of the span, which needs
 the `Finset` of those -- available from `finite_degree_le` (BLOCK 222) but not yet wired.
+
+## 2026-09-04 — BLOCK 271: finiteness on the guarded-data side
+
+    finite_spanData_degree_le   the guarded data of a span, cut by degree, is finite
+
+0 sorry, clean on the first build.
+
+`sum_configs_eq_sum_all_paths` (BLOCK 270) needs a `Finset` of guarded data.  **A whole span
+class is not finite** -- the deposits are unbounded -- so the collection must be cut by
+degree, which is exactly the form `IsAssembly` uses and not a workaround.  `toPath` is
+injective (BLOCK 218) and lands in a set finite by `finite_degree_le` (BLOCK 222).
+
+**[Rule 0] VERIFIED.**  The `Finset` the comparison wants exists, via
+`Set.Finite.toFinset`.

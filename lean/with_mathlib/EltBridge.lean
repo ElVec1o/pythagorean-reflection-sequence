@@ -8684,6 +8684,22 @@ theorem sum_configs_eq_sum_all_paths (x : ℤ) {A : ℤ} {m : ℕ}
   rw [sum_configs_eq_sum_flag_paths x C]
   exact Finset.sum_subset hsub hvan
 
+/-! ### Finiteness on the guarded-data side
+
+`sum_configs_eq_sum_all_paths` (BLOCK 270) needs a `Finset` of guarded data.  A whole span
+class is NOT finite -- the deposits are unbounded -- so the collection must be cut by
+degree, which is exactly the form `IsAssembly` uses.  `toPath` is injective (BLOCK 218) and
+lands in a set finite by `finite_degree_le` (BLOCK 222). -/
+
+theorem finite_spanData_degree_le (A : ℤ) (m : ℕ) (N : ℕ) :
+    {S : SpanData A (A + m) | S.toPath.lR ≤ N}.Finite := by
+  refine Set.Finite.of_finite_image (f := SpanData.toPath) ?_ ?_
+  · refine Set.Finite.subset (finite_degree_le N) ?_
+    rintro _ ⟨S, hS, rfl⟩
+    exact hS
+  · intro S _ T _ h
+    exact toPath_injective h
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16391,3 +16407,4 @@ end EltBridge
 #print axioms EltBridge.guards_of_weight_ne_zero
 #print axioms EltBridge.headOk_of_weight_ne_zero
 #print axioms EltBridge.sum_configs_eq_sum_all_paths
+#print axioms EltBridge.finite_spanData_degree_le
