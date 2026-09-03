@@ -379,6 +379,50 @@ theorem bottom_of_end_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
   have := wLo_le edgeOf G hzx
   omega
 
+/-- **`bottom_of_end_at_wLo`, with `hsite` asked only at the end concerned.** -/
+theorem bottom_of_end_at_wLo_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (G : SimpleGraph α) (z x : α)
+    (hsx : siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hzx : G.Reachable z x) (hs : siteOf x = wLo edgeOf G z) :
+    atTop x = false := by
+  by_contra hc
+  have ht : atTop x = true := by simpa using hc
+  rw [ht] at hsx
+  simp only [if_true] at hsx
+  have := wLo_le edgeOf G hzx
+  omega
+
+/-- **`maximiser_has_bottom_arrival`, with `hsite` asked only where it is used.**
+
+Two ends need it: the bottom end realising the walk's leftmost edge, and the arrival
+beside it.  Both sit at the walk's **leftmost site**, so this is the honest hypothesis.
+
+It is weaker than the global one, but -- unlike `exists_bottom_at_wLo_local` -- it is
+not automatically satisfiable by an end type with non-local ends: the arrival beside
+is a *turn*-partner, and a turn can land on an end whose site is not determined by its
+edge.  The residual obligation is recorded in `EltBridge`. -/
+theorem maximiser_has_bottom_arrival_local (edgeOf siteOf : α → ℤ)
+    (atTop isArr : α → Bool) (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, isArr (D.t e) = !isArr e)
+    (z : α)
+    (hsW : ∀ x, (graph D).Reachable z x → siteOf x = wLo edgeOf (graph D) z →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ x, (graph D).Reachable z x → edgeOf x = wLo edgeOf (graph D) z →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0)) :
+    ∃ a : α, (graph D).Reachable z a ∧ siteOf a = wLo edgeOf (graph D) z ∧
+      atTop a = false ∧ isArr a = true := by
+  obtain ⟨x, hxr, hxe, hxb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  have hxs : siteOf x = wLo edgeOf (graph D) z := by
+    have h := hsX x hxr hxe hxb; rw [hxb] at h; simp at h; omega
+  obtain ⟨a, hasite, haarr, hxa⟩ := arrival_beside siteOf isArr D hts hta x
+  have hasW : siteOf a = wLo edgeOf (graph D) z := by rw [hasite, hxs]
+  refine ⟨a, hxr.trans hxa, hasW, ?_, haarr⟩
+  exact bottom_of_end_at_wLo_local edgeOf siteOf atTop (graph D) z a
+    (hsW a (hxr.trans hxa) hasW) (hxr.trans hxa) hasW
+
 /-- `s*`: the largest leftmost edge over all walks. -/
 noncomputable def maxWLo (edgeOf : α → ℤ) (G : SimpleGraph α) (z₀ : α) : ℤ :=
   Finset.univ.sup' ⟨z₀, Finset.mem_univ z₀⟩ (fun z => wLo edgeOf G z)
@@ -521,3 +565,5 @@ theorem maxWLoOn_spec (edgeOf : α → ℤ) (G : SimpleGraph α)
 #print axioms WalkSupport.exists_bottom_at_wLo_local
 #print axioms WalkSupport.exists_bottom_at_wLo_of_global
 #print axioms WalkSupport.shared_ends_at_wLo_local
+#print axioms WalkSupport.bottom_of_end_at_wLo_local
+#print axioms WalkSupport.maximiser_has_bottom_arrival_local

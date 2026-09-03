@@ -508,6 +508,53 @@ theorem VEndpt.hsite_fails {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
   VEndpt.no_virtual_edge kstar (VEndpt.edgeOf bnd) VEndpt.atTop h
     (VEndpt.hpe bnd) VEndpt.hpt
 
+/-! ### The residual condition, and it is not automatic
+
+`maximiser_has_bottom_arrival_local` asks for the site-edge relation only at ends
+sitting at the walk's leftmost site (and at its leftmost edge).  For `VEndpt` the real
+ends satisfy it definitionally.  The virtual ends do not -- and they are in scope
+exactly when the walk's leftmost site is `0` or `kstar`.
+
+So the localization is **not free** here, unlike at `exists_bottom_at_wLo`.  What
+remains is a geometric side condition, stated below.  It is a genuine restriction: a
+walk may well have leftmost edge `0`, since the span begins at `A <= 0`. -/
+
+/-- **The site-edge relation holds at every real end**, definitionally. -/
+theorem VEndpt.hsite_real {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
+    (y : EndType.Endpt n mm) :
+    VEndpt.site kstar (Sum.inl y : VEndpt n mm)
+      = VEndpt.edgeOf bnd (Sum.inl y : VEndpt n mm)
+        + (if VEndpt.atTop (Sum.inl y : VEndpt n mm) then 1 else 0) := rfl
+
+/-- **The localized hypothesis holds exactly when the two virtual sites are not the
+walk's leftmost site.**  This is the residual obligation branch 1 leaves behind. -/
+theorem VEndpt.hsW_of_avoids {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
+    (D : WalkGraph.Data (VEndpt n mm)) (z : VEndpt n mm)
+    (w : ℤ) (h0 : w ≠ 0) (hk : w ≠ kstar) :
+    ∀ x : VEndpt n mm, VEndpt.site kstar x = w →
+      VEndpt.site kstar x
+        = VEndpt.edgeOf bnd x + (if VEndpt.atTop x then 1 else 0) := by
+  intro x hx
+  cases x with
+  | inl y => exact VEndpt.hsite_real kstar bnd y
+  | inr b =>
+    exfalso
+    cases b
+    · exact h0 (by simpa [VEndpt.site] using hx.symm)
+    · exact hk (by simpa [VEndpt.site] using hx.symm)
+
+/-- **And it fails when the walk's leftmost site is one of the two.**  So the side
+condition cannot be dropped: at `w = 0` the virtual arrival is in scope and its site
+is not determined by its edge. -/
+theorem VEndpt.hsW_fails_at_zero {n : ℕ} {mm : Fin n → ℕ} (kstar bnd : ℤ)
+    (hbnd : bnd ≠ 0) :
+    ¬ (VEndpt.site kstar (Sum.inr false : VEndpt n mm)
+        = VEndpt.edgeOf bnd (Sum.inr false : VEndpt n mm)
+          + (if VEndpt.atTop (Sum.inr false : VEndpt n mm) then 1 else 0)) := by
+  intro h
+  simp [VEndpt.site, VEndpt.edgeOf, VEndpt.atTop] at h
+  omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -533,3 +580,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.hpe
 #print axioms EltBridge.VEndpt.hpt
 #print axioms EltBridge.VEndpt.hsite_fails
+#print axioms EltBridge.VEndpt.hsW_of_avoids
+#print axioms EltBridge.VEndpt.hsW_fails_at_zero

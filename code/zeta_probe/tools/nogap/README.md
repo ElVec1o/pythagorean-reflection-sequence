@@ -2371,3 +2371,36 @@ REVISED OUTLOOK for B1: the refactor is 16 declarations in one file, mechanical 
 sense that each proof already uses the hypothesis pointwise. Not a re-proof. BLOCK 12
 called this "mathematical rather than clerical" -- that was wrong, and it was wrong
 because it measured hpe/hpt instead of hsite.
+
+## 2026-09-03 — BLOCK 14: the localization is NOT uniformly free; a residual condition
+
+BLOCK 13 said the hsite refactor is clerical, on the evidence of two lemmas whose
+proofs went through unchanged. Pushing to the lemma CostMerge actually calls shows
+that was too broad.
+
+  WalkSupport.bottom_of_end_at_wLo_local        -- hsite at the one end concerned
+  WalkSupport.maximiser_has_bottom_arrival_local -- hsite only at ends sitting at the
+                                                    walk's LEFTMOST SITE
+
+The second needs hsite at TWO ends: the bottom end realising the leftmost edge, and
+the arrival beside it. The first is fine -- virtual ends sit at edge bnd, beyond the
+span, so they are never leftmost. The second is an `arrival_beside`, i.e. a TURN
+partner, and a turn CAN land on a virtual end, because a virtual end shares its site
+with real ends.
+
+  EltBridge.VEndpt.hsite_real       -- real ends satisfy the relation definitionally
+  EltBridge.VEndpt.hsW_of_avoids    -- the localized hypothesis holds provided the
+                                       walk's leftmost site is neither 0 nor kstar
+  EltBridge.VEndpt.hsW_fails_at_zero -- and it genuinely FAILS at site 0
+
+So branch 1 leaves a residual geometric side condition: the walk's leftmost site must
+avoid the two virtual sites. That is NOT automatic -- the span begins at A <= 0, so a
+walk may well have leftmost edge 0.
+
+STATUS OF THE THREE READINGS OF THIS REFACTOR, in order:
+  BLOCK 12  "mathematical, not clerical"      -- wrong, measured hpe/hpt
+  BLOCK 13  "clerical"                        -- too broad, measured two easy lemmas
+  BLOCK 14  clerical for the wLo lemmas; a real side condition at the turn lemmas
+
+The third is the one with a proof on both sides (hsW_of_avoids and hsW_fails_at_zero),
+so it is the one to trust.
