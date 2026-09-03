@@ -6350,3 +6350,42 @@ Three routes to M4b are now closed rather than two:
 Fifth retraction of this run.  This one was caught before anything was built on it,
 which is the improvement: BLOCK 157 named the chaining as the next step, and the next
 step was to test whether the chaining could work at all rather than to start writing it.
+
+## 2026-09-03 — BLOCK 159: the local route works exactly at mu = 2, and why
+
+BLOCK 158 refuted the local route in general.  Splitting its failures by edge width
+locates it exactly:
+
+    all edges mu=2 :   96 give |Z|+1,    0 do not
+    some edge mu=4 : 3024 give |Z|+1, 5072 do not
+
+and at wider spans, restricted to `|a| <= 2` so every edge has `mu = 2`:
+
+    n <= 5 :  348 minimal data passing at every non-cut site, 0 failures
+
+So the route is valid precisely when every edge carries two strands, and the mechanism
+is visible.
+
+At `mu = 2` an edge has one up strand and one down strand.  A pass at a site sends the
+left arrival to the right departure -- that is `up(s-1) <-> up(s)` -- and the right
+arrival to the left departure, `down(s) <-> down(s-1)`.  So passes build TWO PARALLEL
+CHAINS along a run, an up chain and a down chain, and by themselves would give two
+components, not one.  What joins them is the BOUNCE at a cut site: it pairs the top of
+the up strand with the top of the down strand of the SAME edge.  The two chains are
+therefore closed into a single component at each run boundary, and the count is exactly
+`|Z| + 1`.
+
+That also says why `mu = 4` breaks it.  With two up strands per edge the passes may pair
+them in ways that do not chain, and nothing local forces the choice -- which is the
+content the merge argument supplies and the reason 5072 of 8192 fail there.
+
+**This is a non-vacuous sub-case of M4b.**  `mu j = 2` whenever `d j = 0`, so the class
+`|d| <= 2` CONTAINS gap edges and therefore genuine cut sites -- unlike the derived-sign
+model, where BLOCK 152 showed gaps are inexpressible and the shield law is vacuous.  So
+M4b's upper bound is established on a class where it has content, by a mechanism that is
+understood, and verified on 348 of 348 data at spans up to five edges.
+
+NOT DONE: this is verified, not proved in Lean.  The Lean statement needs the two-chain
+argument -- passes chain the up strands and the down strands separately, bounces at cut
+sites close them -- which is a connectivity induction along the run, and it is specific
+to `mu = 2`.  M4b in general stays open, with three routes closed.

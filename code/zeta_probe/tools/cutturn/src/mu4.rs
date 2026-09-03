@@ -55,6 +55,8 @@ pub fn run(nmax: usize, amax: i64) {
     let mut walks_ne = 0u64;
     let mut saw_mu4 = 0u64;
     let mut big_site = 0u64;          // sites with more than two pairings
+    let mut pe_good_by_width = [0u64; 2];   // [all mu=2, some mu=4]
+    let mut pe_bad_by_width = [0u64; 2];
     let mut pe_total = 0u64;          // minimal data passing at EVERY non-cut site
     let mut pe_wrong = 0u64;          // ... of those, how many miss |Z|+1 walks
     let mut noncut_sites = 0u64;      // interior non-cut sites seen
@@ -176,7 +178,20 @@ pub fn run(nmax: usize, amax: i64) {
                                 } 
                                 if total_cost == best_cost && passes_everywhere && !passed_cut {
                                     pe_seen += 1;
-                                    if walks != ncut + 1 { pe_bad += 1; }
+                                    // how many passes does this datum make in total?
+                                    let mut npass = 0usize;
+                                    for (si, &ci) in counts.iter().enumerate() {
+                                        for &(x, _) in &site_opts[si][ci] {
+                                            if x == usize::MAX { npass += 1; }
+                                        }
+                                    }
+                                    // widest edge in the configuration
+                                    let wide = m.iter().copied().max().unwrap_or(2);
+                                    let good = walks == ncut + 1;
+                                    if !good { pe_bad += 1; }
+                                    let slot = if wide >= 4 { 1 } else { 0 };
+                                    if good { pe_good_by_width[slot] += 1; } else { pe_bad_by_width[slot] += 1; }
+                                    let _ = npass;
                                 }
                                 if total_cost == best_cost {
                                     best_walks = best_walks.min(walks);
@@ -229,5 +244,8 @@ pub fn run(nmax: usize, amax: i64) {
     println!("  elements with walks-at-min != |Z|+1          : {walks_ne}");
     println!("  minimal data passing at EVERY non-cut site   : {pe_total}");
     println!("  ... of those, walks != |Z|+1                 : {pe_wrong}");
+    println!("  split by widest edge:");
+    println!("    all edges mu=2 : {} give |Z|+1, {} do not", pe_good_by_width[0], pe_bad_by_width[0]);
+    println!("    some edge mu=4 : {} give |Z|+1, {} do not", pe_good_by_width[1], pe_bad_by_width[1]);
     for r in &rows { println!("{}", r); }
 }
