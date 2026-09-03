@@ -4867,3 +4867,35 @@ uncoupled product (BLOCK 112), and the coupled pair (BLOCK 113). The n-edge coup
 is the transfer-matrix statement, which is pathGF_succ (BLOCK 105) -- so the pieces meet,
 and what is missing is the indexing that identifies lR's magnitude sequence with a path
 in pathSum.
+
+## 2026-09-03 — BLOCK 114: from additive cost to multiplicative transfer
+
+  couplingSum              -- the additive coupling sum along a magnitude path: max at
+                              each step
+  couplingSum_cons         -- its recursion, by rfl
+  pow_couplingSum          -- **the bridge**: x^(coupling sum) = x^(max a b) * x^(rest),
+                              i.e. exponentiation turns the additive cost into the
+                              multiplicative transfer product
+  pow_couplingSum_eq_prod  -- and the whole path: the exponentiated coupling sum is the
+                              fold of transfer factors along consecutive pairs
+
+Both propext only.
+
+This is the step from lR to pathSum. lR's interior contribution is a SUM of max
+couplings (lR_interior_terms, BLOCK 110); pathSum is a PRODUCT of transfer entries
+(BLOCK 105). x^(a+b) = x^a * x^b is the entire content of the passage, and stating it
+along a path makes the identification explicit rather than implicit in the notation
+x^cost.
+
+(M3a) INVENTORY after BLOCKS 103-114:
+  lR's shape                  single element, split at markers      BLOCK 110
+  markers derived             from siteCost                          BLOCK 109
+  state and transfer matrix   sigma, travelT                         BLOCK 104
+  sign fibration              1 / 2 multiplicities                    BLOCK 111
+  uncoupled product           factorises                              BLOCK 112
+  coupled pair                1 / 2 / 2 / 4                           BLOCK 113
+  additive -> multiplicative  pow_couplingSum                         BLOCK 114
+  the transfer theorem        pathGF_succ                             BLOCK 105
+Every ingredient of (M3a) is now a theorem in the file. What is not done is assembling
+them into the single statement "sum over elements of x^lR = lambda (I-T)^-1 mu", which
+is composition rather than new mathematics.

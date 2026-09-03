@@ -5896,6 +5896,45 @@ theorem sum_signed_pair (N : ℕ) (F : ℕ → ℕ → ℤ) :
   rw [Finset.sum_congr rfl (fun a _ => hinner a)]
   exact sum_signed_eq_magnitudes (fun k => F k 0 + 2 * ∑ m ∈ Finset.Icc 1 N, F k m) N
 
+/-! ### From additive cost to multiplicative transfer
+
+`lR` is **additive** in the site couplings; `pathSum` is **multiplicative** in the
+transfer entries.  The bridge is exponentiation: `x^(a + b) = x^a * x^b`, so the
+additive coupling sum along a magnitude path becomes the product along the same path.
+-/
+
+/-- The additive coupling sum along a magnitude path: `max` at each step. -/
+def couplingSum : List ℕ → ℕ
+  | [] => 0
+  | [_] => 0
+  | a :: b :: rest => max a b + couplingSum (b :: rest)
+
+@[simp] theorem couplingSum_nil : couplingSum [] = 0 := rfl
+@[simp] theorem couplingSum_single (a : ℕ) : couplingSum [a] = 0 := rfl
+
+/-- **The recursion**: one step of the path contributes `max a b`. -/
+theorem couplingSum_cons (a b : ℕ) (rest : List ℕ) :
+    couplingSum (a :: b :: rest) = max a b + couplingSum (b :: rest) := rfl
+
+/-- **The bridge**: exponentiating the additive coupling sum gives the multiplicative
+transfer product along the same path. -/
+theorem pow_couplingSum (x : ℤ) (a b : ℕ) (rest : List ℕ) :
+    x ^ couplingSum (a :: b :: rest) = x ^ max a b * x ^ couplingSum (b :: rest) := by
+  rw [couplingSum_cons, pow_add]
+
+/-- **So an additive nearest-neighbour cost exponentiates to a transfer product.**
+That is the step from `lR` -- a sum of `max` couplings (BLOCK 110) -- to the matrix
+product `pathSum` computes. -/
+theorem pow_couplingSum_eq_prod (x : ℤ) : ∀ l : List ℕ,
+    x ^ couplingSum l = (l.zip l.tail).foldr (fun p acc => x ^ max p.1 p.2 * acc) 1
+  | [] => by simp
+  | [_] => by simp
+  | a :: b :: rest => by
+    rw [pow_couplingSum]
+    simp only [List.tail, List.zip_cons_cons, List.foldr_cons]
+    rw [pow_couplingSum_eq_prod x (b :: rest)]
+    rfl
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6118,3 +6157,5 @@ end EltBridge
 #print axioms EltBridge.sum_prod_signed
 #print axioms EltBridge.uncoupled_factorises
 #print axioms EltBridge.sum_signed_pair
+#print axioms EltBridge.pow_couplingSum
+#print axioms EltBridge.pow_couplingSum_eq_prod
