@@ -10208,3 +10208,39 @@ end EltBridge
 #print axioms EltBridge.gz_mono
 #print axioms EltBridge.levelSet_interval
 #print axioms EltBridge.no_cut_inside_run
+
+namespace EltBridge
+
+/-- Every position of a run lies in the run, hence in the span. -/
+theorem run_mem_levelSet (Zf : Finset ℤ) (A B : ℤ) (r k : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty) (hk : k ≤ runLen Zf A B r) :
+    runLo Zf A B r + (k : ℤ) ∈ levelSet Zf A B r := by
+  classical
+  have hlo : runLo Zf A B r = (levelSet Zf A B r).min' hne := by rw [runLo, dif_pos hne]
+  have hlen : runLen Zf A B r
+      = ((levelSet Zf A B r).max' hne - (levelSet Zf A B r).min' hne).toNat := by
+    rw [runLen, dif_pos hne]
+  have hle := Finset.min'_le_max' (levelSet Zf A B r) hne
+  refine levelSet_interval Zf A B r (Finset.min'_mem _ hne) (Finset.max'_mem _ hne)
+    ?_ ?_
+  · rw [hlo]; omega
+  · rw [hlo]; omega
+
+/-- **`hocc`.**  A run's positions are edges of the span, and each carries an end -- the
+bottom of its up strand. -/
+theorem hocc_of_section {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ)
+    (hsec : ∀ j : ℤ, A ≤ j → j ≤ B → ((sec j : ℕ) : ℤ) = j)
+    (r k : ℕ) (hne : (levelSet Zf A B r).Nonempty) (hk : k ≤ runLen Zf A B r) :
+    ∃ y : EndType.Endpt n m,
+      EndType.siteOf y = runLo Zf A B r + (k : ℤ) := by
+  classical
+  have hin := run_mem_levelSet Zf A B r k hne hk
+  simp only [levelSet, Finset.mem_filter, Finset.mem_Icc] at hin
+  exact ⟨upOf (m := m) hm sec (runLo Zf A B r + (k : ℤ)),
+    upOf_siteOf hm sec _ (hsec _ hin.1.1 hin.1.2)⟩
+
+end EltBridge
+
+#print axioms EltBridge.run_mem_levelSet
+#print axioms EltBridge.hocc_of_section

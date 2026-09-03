@@ -6980,3 +6980,28 @@ So `hrange` and `hint` are discharged, leaving `hocc` -- that a run's sites carr
 Small Lean note: `rw [levelSet, ...]` fails on a `noncomputable def` where
 `simp only [levelSet, ...]` succeeds, and the same line worked earlier in a different
 goal shape, which is why it took a second look.
+
+## 2026-09-03 — BLOCK 182: hocc, and the hypothesis list is empty
+
+`run_mem_levelSet`: every position of a run lies in the run, by the intervality of
+BLOCK 181.  `hocc_of_section`: so each carries an end -- the bottom of its up strand,
+sitting at that position by `upOf_siteOf`.  Both 0 sorry.
+
+That was the last one.  Taking stock of `shield_upper_bound_passTurn`'s hypotheses:
+
+    h12..h34   distinctness      BLOCK 178, unconditional
+    hs1..hs4   site facts        BLOCK 178, from the section property
+    hud        edge sharing      BLOCK 178, rfl
+    hupn,hdnn  naming            BLOCK 178, from the section property
+    hfour      the site's ends   BLOCK 179, from mu = 2
+    hrange     run membership    BLOCK 181
+    hint       no cut inside     BLOCK 181
+    hocc       runs are occupied BLOCK 182
+    hbdry      boundary bounce   BLOCK 180, via the bounce set
+    E, hEp, hEt the datum        BLOCK 157, exists_glued_data
+
+Every one is proved.  What is left is to write the composition -- to state the `mu = 2`
+shield bound taking only `hm`, a section `sec` on the span, and the cut set, and to
+apply the pieces in order.  That is assembly with no remaining content, though on this
+file's record assembly is where the defects have surfaced: three of the last six blocks
+found one, each time by trying to produce a hypothesis rather than read it.
