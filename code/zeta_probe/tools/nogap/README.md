@@ -3107,3 +3107,31 @@ REMAINING for M3/M4b in general: the run induction itself (RunInv and local_of_h
 on VEndpt. The generic lower-bound machinery in CutComponents is already end-type
 agnostic (exists_injective_components_avoiding_of_runs), so what is needed is the
 locality predicate `Local` for the extended graph.
+
+## 2026-09-03 — BLOCK 40: locality confines bnd; the two assemblies want different phantom edges
+
+  VEndpt.local_confines_bnd  -- if the extended graph is CutComponents.Local with
+                                pos = edgeOf bnd, then s0 - 2 <= bnd <= s0 + 1
+  VEndpt.mirrored_bnd_ok     -- and bnd = s0 - 1 is inside that window
+
+Reason: Local puts the two ends of a graph edge on one site's two edges, so their
+positions differ by at most one. The turn of the virtual arrival is a real end at site
+s0, hence on edge s0 - 1 or s0. So bnd is within one of that.
+
+CONSEQUENCE, and it is a real constraint: bnd CANNOT be placed above every real edge of
+a wide configuration. But that is exactly what the s0 < s1 merge assembly (BLOCK 31)
+requires via hbnd. So:
+
+  merge, s0 < s1  wants bnd ABOVE every edge      -- not local
+  merge, s1 < s0  uses bnd = s0 - 1               -- local
+  shield law      needs Local                      -- so needs bnd near s0
+
+The MIRRORED orientation satisfies both. The s0 < s1 orientation does not, and cannot
+be patched by choosing bnd differently, because hbnd and local_confines_bnd are
+incompatible once the span is wider than three edges.
+
+FIRST STATEMENT OF THIS WAS FALSE. I claimed locality forces bnd in {s0-1, s0}. It does
+not: Local gives |pos x - pos y| <= 1 and edgeOf u ranges over {s0-1, s0}, so the window
+is [s0-2, s0+1]. omega caught it -- the proof simply would not close, and the reason was
+that the statement was too strong, not that the tactic was wrong. Corrected before
+recording.

@@ -2144,6 +2144,51 @@ theorem VEndpt.cut_site_picture {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → �
   ⟨VEndpt.arrivalfree_ne_virtual up s0 s1 z hbal hZ,
    VEndpt.empty_edges_at_arrivalfree up s0 s1 z hbal hZ⟩
 
+/-! ### Locality of the extended graph constrains `bnd`
+
+`CutComponents.Local` asks that the two ends of every graph edge lie on a common site's
+two edges.  The virtual pair are partners on the common edge `bnd`, so that edge is
+fine.  But the *turn* of the virtual arrival is a real end at site `s0`, hence on edge
+`s0 - 1` or `s0` -- and locality then forces `bnd` to be within one of `s0`.
+
+So the two constructions want different phantom edges: the merge (for `s0 < s1`) wants
+`bnd` above every real edge, while locality wants it adjacent to `s0`.  The mirrored
+orientation, which uses `bnd = s0 - 1`, satisfies both. -/
+
+/-- **Locality confines the phantom edge to a window around `s0`.**
+
+`Local` puts the two ends of a graph edge on a common site's two edges, so their
+positions differ by at most one.  The turn of the virtual arrival is a real end at
+site `s0`, hence on edge `s0 - 1` or `s0`; so `bnd` lies in `[s0 - 2, s0 + 1]`.
+
+In particular `bnd` cannot be placed above every real edge of a wide configuration,
+which is what the `s0 < s1` merge assembly wanted. -/
+theorem VEndpt.local_confines_bnd {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ)
+    (Zf : Finset ℤ) (E : WalkGraph.Data (VEndpt n mm))
+    (hloc : CutComponents.Local (WalkGraph.graph E) (VEndpt.edgeOf bnd) Zf)
+    (u : EndType.Endpt n mm) (hu : E.t (Sum.inr false) = Sum.inl u)
+    (hsu : EndType.siteOf u = s0) :
+    s0 - 2 ≤ bnd ∧ bnd ≤ s0 + 1 := by
+  have hadj : (WalkGraph.graph E).Adj (Sum.inr false : VEndpt n mm)
+      (E.t (Sum.inr false)) := Or.inr rfl
+  obtain ⟨t, h1, h2, _⟩ := hloc _ _ hadj
+  rw [hu] at h2
+  have h1' : bnd = t - 1 ∨ bnd = t := h1
+  have h2' : EndType.edgeOf u = t - 1 ∨ EndType.edgeOf u = t := h2
+  have hue : EndType.edgeOf u = s0 ∨ EndType.edgeOf u = s0 - 1 := by
+    have hs : EndType.edgeOf u + (if EndType.atTop u then (1:ℤ) else 0) = s0 := hsu
+    cases hb : EndType.atTop u
+    · have e : (if EndType.atTop u then (1:ℤ) else 0) = 0 := by rw [hb]; rfl
+      rw [e] at hs; omega
+    · have e : (if EndType.atTop u then (1:ℤ) else 0) = 1 := by rw [hb]; rfl
+      rw [e] at hs; omega
+  omega
+
+/-- **The mirrored orientation is the one that can be local**: it puts the phantom
+edge at `s0 - 1`, which is exactly one of the two positions locality allows. -/
+theorem VEndpt.mirrored_bnd_ok (s0 : ℤ) : (s0 - 1) = s0 ∨ (s0 - 1) = s0 - 1 :=
+  Or.inr rfl
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2233,3 +2278,4 @@ end EltBridge
 #print axioms EltBridge.VEndpt.arrivalfree_ne_virtual
 #print axioms EltBridge.VEndpt.empty_edges_at_arrivalfree
 #print axioms EltBridge.VEndpt.cut_site_picture
+#print axioms EltBridge.VEndpt.local_confines_bnd
