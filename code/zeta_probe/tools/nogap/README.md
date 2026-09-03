@@ -2673,3 +2673,32 @@ already used.
 STATUS OF ITEM (b): WalkSupport complete, CostMerge's two load-bearing declarations
 complete. Remaining are freePair_of_split, order_split, step_of_split, step_of_split'
 (the run-local layer used by ConfigLoop's shield-law chain, not by the B1 path).
+
+## 2026-09-03 — BLOCK 24: item (b) COMPLETE
+
+  freePair_of_split_local
+  step_of_split_local
+  step_of_split'_local
+
+SECOND COUNT CORRECTION: `order_split` does not use hsite either -- another
+scan-window false positive, like maxWLo_spec in BLOCK 23. Of the 16 declarations the
+original grep flagged across WalkSupport and CostMerge, TWO were miscounted and TWO
+(Merges, p_site_ne) only pass the hypothesis through. The genuine figure was 12.
+
+ITEM (b) IS DONE. Every declaration on the B1 path now exists in a form whose
+site-edge hypothesis is one of exactly three shapes:
+
+  hsW : at ends sitting at a walk's leftmost SITE      (DISJUNCTIVE with atTop = false)
+  hsX : at bottom ends sitting at a walk's leftmost EDGE
+  hsT : at top ends immediately LEFT of a walk's leftmost edge
+
+and VEndpt discharges all three, for every kstar != 0:
+  kstar > 0 : hsW_disj + hsX_beyond, residual condition discharged (BLOCK 16)
+  kstar < 0 : hsW_neg + hsX_neg, no residual condition at all (BLOCK 18)
+
+Not one proof script was rewritten in the whole of item (b). Every localization is the
+original proof with a narrower hypothesis. The three shapes were not designed -- they
+are what the proofs turned out to use.
+
+REMAINING FOR B1: assembly only. Feed VEndpt.dataOfAll and the three discharges into
+min_merges_to_one_local, and instantiate at Elt.toPathData.

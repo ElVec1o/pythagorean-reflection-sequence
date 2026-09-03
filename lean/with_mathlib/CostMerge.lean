@@ -673,6 +673,67 @@ theorem freePair_of_split (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
     free_pair_of_minimal d atTop D a a' hside hab hdb haarr ha'arr hda hda' hne
       h1 h2 h3 (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
 
+theorem freePair_of_split_local (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsW : ∀ w x, (graph D).Reachable w x → siteOf x = WalkSupport.wLo edgeOf (graph D) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ w x, (graph D).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (graph D) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = WalkSupport.wLo edgeOf (graph D) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (z z' : α)
+    (hzz' : ¬ (graph D).Reachable z z')
+    (hle : WalkSupport.wLo edgeOf (graph D) z' ≤ WalkSupport.wLo edgeOf (graph D) z)
+    (hcov : ∀ v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
+      ∃ y : α, edgeOf y = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop y = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D) :
+    ∃ a a' : α,
+      siteOf a = siteOf a' ∧ d.isArr a = true ∧ d.isArr a' = true ∧
+      d.isArr (D.t a) = false ∧ d.isArr (D.t a') = false ∧
+      ¬ (graph D).Reachable a a' ∧
+      (d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a')) := by
+  obtain ⟨a, hza, hasite, hab, haarr⟩ :=
+    WalkSupport.maximiser_has_bottom_arrival_disj edgeOf siteOf atTop d.isArr D
+      hpe hpt hts hta z (fun x hx he hb => hsX z x hx he hb)
+      (fun x hx hsx => hsW z x hx hsx)
+  obtain ⟨y, hys, hyn⟩ :=
+    WalkSupport.other_end_at_wLo_local edgeOf siteOf atTop D hpe hpt hsX z z'
+      (fun y hy hyt => hsT z y hy hyt) hcov hzz' hle
+  obtain ⟨a', hya', ha'site, ha'arr⟩ :=
+    WalkSupport.walk_has_arrival_at_site siteOf d.isArr D hts hta y y
+      (SimpleGraph.Reachable.refl _) _ hys
+  have hna' : ¬ (graph D).Reachable z a' := fun hc => hyn (hc.trans hya'.symm)
+  have hne : a ≠ a' := fun h => hna' (h ▸ hza)
+  have hdb : atTop (D.t a) = false :=
+    WalkSupport.maximiser_departure_bottom_disj edgeOf siteOf atTop D hts z a hza hasite
+      (hsW z (D.t a) (hza.trans (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl)))
+        (by rw [hts a]; exact hasite))
+  have hda : d.isArr (D.t a) = false := by rw [hta, haarr]; rfl
+  have hda' : d.isArr (D.t a') = false := by rw [hta, ha'arr]; rfl
+  have hsplit : ¬ (graph D).Reachable a a' := fun hc => hna' (hza.trans hc)
+  have hss : siteOf a' = siteOf a := by rw [hasite, ha'site]
+  have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
+    (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit)
+    (ConfigMerge.ne_of_split D hsplit)
+    (ConfigMerge.dep_ne_dep' D rfl rfl (ConfigMerge.ne_of_split D hsplit))
+    (Ne.symm (ConfigMerge.dep_ne_arr' D rfl)) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h2 := swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+    (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+    hpsite hts (hts a) hss (by rw [hts a', hss])
+  exact ⟨a, a', hss.symm, haarr, ha'arr, hda, hda', hsplit,
+    free_pair_of_minimal d atTop D a a' hside hab hdb haarr ha'arr hda hda' hne
+      h1 h2 h3 (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
+
 /-- **Order a split by leftmost edge.**  `freePair_of_split` wants the first end to be
 the one with the larger `wLo`; either order of a split will do, so pick that one. -/
 theorem order_split {α : Type*} [DecidableEq α] [Fintype α]
@@ -710,6 +771,43 @@ theorem step_of_split (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
   obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
     freePair_of_split d edgeOf siteOf atTop D hside hsite hpe hpt hts hta hpsite
       z z' hzz' hle (hcov z) hmin
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split D hsplit
+  have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
+    (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit) haa'
+    (ConfigMerge.dep_ne_dep' D rfl rfl haa')
+    (Ne.symm (ConfigMerge.dep_ne_arr' D rfl)) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h2 := swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+    (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+    hpsite hts (hts a) hss.symm (by rw [hts a', hss])
+  exact ⟨_, ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3⟩
+
+theorem step_of_split_local (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsW : ∀ w x, (graph D).Reachable w x → siteOf x = WalkSupport.wLo edgeOf (graph D) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ w x, (graph D).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (graph D) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = WalkSupport.wLo edgeOf (graph D) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (hcov : ∀ z v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop w = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D)
+    (x y : α) (hnr : ¬ (graph D).Reachable x y) :
+    ∃ D' : Data α, walkCount D' < walkCount D := by
+  obtain ⟨z, z', hzz', hle⟩ := order_split D edgeOf x y hnr
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
+    freePair_of_split_local d edgeOf siteOf atTop D hside hsW hsX hsT hpe hpt hts hta
+      hpsite z z' hzz' hle (hcov z) hmin
   have haa' : a' ≠ a := ConfigMerge.ne_of_split D hsplit
   have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
     (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit) haa'
@@ -767,3 +865,56 @@ theorem step_of_split' (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
 #print axioms CostMerge.step_of_split'
 #print axioms CostMerge.hasFreePair_of_minimal_local
 #print axioms CostMerge.min_merges_to_one_local
+#print axioms CostMerge.freePair_of_split_local
+
+
+theorem step_of_split'_local (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsW : ∀ w x, (graph D).Reachable w x → siteOf x = WalkSupport.wLo edgeOf (graph D) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ w x, (graph D).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (graph D) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = WalkSupport.wLo edgeOf (graph D) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (hcov : ∀ z v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
+      ∃ w : α, edgeOf w = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop w = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D)
+    (x y : α) (hnr : ¬ (graph D).Reachable x y) :
+    ∃ D' : Data α, walkCount D' < walkCount D ∧ D'.p = D.p ∧
+      ∃ a a' : α, d.isArr a = true ∧ d.isArr a' = true ∧ siteOf a' = siteOf a ∧
+        ¬ (graph D).Reachable a a' ∧
+        (d.side a = d.side a' ∨ d.side (D.t a) = d.side (D.t a')) ∧
+        D'.t = swapT D.t a (D.t a) a' (D.t a') := by
+  obtain ⟨z, z', hzz', hle⟩ := order_split D edgeOf x y hnr
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
+    freePair_of_split_local d edgeOf siteOf atTop D hside hsW hsX hsT hpe hpt hts hta
+      hpsite z z' hzz' hle (hcov z) hmin
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split D hsplit
+  have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
+    (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit) haa'
+    (ConfigMerge.dep_ne_dep' D rfl rfl haa')
+    (Ne.symm (ConfigMerge.dep_ne_arr' D rfl)) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h2 := swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+    (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+    hpsite hts (hts a) hss.symm (by rw [hts a', hss])
+  exact ⟨swapData D a (D.t a) a' (D.t a') h1 h2 h3,
+    ConfigMerge.descent_of_split D a a' hsplit h1 h2 h3, rfl,
+    a, a', harr, harr', hss.symm, hsplit, hshared, rfl⟩
+
+-- Certification (Rule 5).
+#print axioms CostMerge.step_of_split'
+#print axioms CostMerge.hasFreePair_of_minimal_local
+#print axioms CostMerge.min_merges_to_one_local
+#print axioms CostMerge.freePair_of_split_local
+#print axioms CostMerge.step_of_split_local
+#print axioms CostMerge.step_of_split'_local
