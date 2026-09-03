@@ -7220,6 +7220,72 @@ theorem vD_succ_B_eq_travel (P : SiteCost.PathData) :
   rw [harr, hout] at hf
   simpa using hf.symm
 
+/-! ### The tail site cost, as a function of the last edge's state
+
+BLOCK 232 showed the departure marker past the right end equals the travel indicator
+there.  So the site cost at `B + 1` -- the tail term of the edge-indexed chain -- is a
+function of the state at `B` alone, and the edge frame closes. -/
+
+/-- The departure marker past the right end, as a natural number. -/
+theorem vD_succ_B_natAbs (P : SiteCost.PathData) :
+    P.vD (P.B + 1) = (SiteCost.travel P.kstar P.B).natAbs := by
+  have h := vD_succ_B_eq_travel P
+  omega
+
+/-- The tail site cost, computed from the last edge's state. -/
+def tailSiteOf (σ : LocalState) : ℕ :=
+  max (σ.dcur + σ.eps * ((if σ.delta then 0 else σ.fcur.natAbs : ℕ) : ℤ)).natAbs
+      (0 - σ.eps * ((if σ.delta then σ.fcur.natAbs else 0 : ℕ) : ℤ)).natAbs
+
+/-- **And it is the real thing.**  So the edge-indexed chain's tail is local, which is what
+BLOCK 208 denied and BLOCK 232 corrected. -/
+theorem tailSiteOf_stateOf (P : SiteCost.PathData) :
+    tailSiteOf (stateOf P P.B) = P.siteCost (P.B + 1) := by
+  have hB := P.hB
+  have harr : SiteCost.vArr (P.B + 1) = 0 := by
+    unfold SiteCost.vArr; rw [if_neg (by omega)]
+  have hd : P.d (P.B + 1) = 0 := (P.houter (P.B + 1) (Or.inr (by omega))).1
+  have hv := vD_succ_B_natAbs P
+  unfold tailSiteOf SiteCost.PathData.siteCost SiteCost.PathData.alphaAt
+    SiteCost.PathData.betaAt SiteCost.PathData.vL SiteCost.PathData.vR
+  simp only [stateOf]
+  rw [harr, hd, hv]
+  norm_num
+
+/-- **(M3a) in the edge frame.**  One kernel, one head vector, one *genuine* tail vector,
+serving every configuration of span length `n`.  Unlike the site-indexed version
+(BLOCK 208) the tail is not trivial, and the states at the two ends of the chain are the
+two edges `A` and `B` -- which is exactly where `endValidB` lives, so span-minimality is a
+boundary condition here rather than an interior one. -/
+theorem isTransferDecomposition_edge {C : Type*} (x : ℤ) (n : ℕ)
+    (P : C → SiteCost.PathData) (hn : ∀ c, (P c).B = (P c).A + n) :
+    IsTransferDecomposition
+      (fun c => ((P c).A :: idxList (P c).A n).map (stateOf (P c)))
+      (fun c => x ^ (P c).lR)
+      (fun σ τ => x ^ (σ.muOf + τ.siteOf))
+      (fun σ => x ^ σ.siteOf)
+      (fun σ => x ^ (σ.muOf + tailSiteOf σ)) := by
+  refine isTransferDecomposition_of_chain x (fun σ τ => σ.muOf + τ.siteOf)
+    (fun σ => σ.siteOf) (fun σ => σ.muOf + tailSiteOf σ)
+    (fun c => stateOf (P c) (P c).A)
+    (fun c => (idxList (P c).A n).map (stateOf (P c)))
+    (fun c => (P c).lR) ?_
+  intro c
+  show (P c).lR = _
+  have hL : (P c).lR
+      = (∑ j ∈ Finset.Icc (P c).A ((P c).A + n), (P c).mu j)
+        + ∑ s ∈ Finset.Icc (P c).A ((P c).A + n + 1), (P c).siteCost s := by
+    unfold SiteCost.PathData.lR
+    rw [hn c]
+  have htail : tailSiteOf (stateOf (P c) ((P c).A + n)) = (P c).siteCost ((P c).A + n + 1) := by
+    rw [← hn c]
+    exact tailSiteOf_stateOf (P c)
+  rw [chainCost_map (stateOf (P c)) (fun σ τ => σ.muOf + τ.siteOf), lastOf_map,
+    lastOf_idxList]
+  simp only []
+  rw [htail, hL]
+  exact alternating_is_chain (P c).mu (P c).siteCost (P c).A n
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14850,3 +14916,6 @@ end EltBridge
 #print axioms EltBridge.headOkB_stateOf
 #print axioms EltBridge.tailOkB_stateOf
 #print axioms EltBridge.vD_succ_B_eq_travel
+#print axioms EltBridge.vD_succ_B_natAbs
+#print axioms EltBridge.tailSiteOf_stateOf
+#print axioms EltBridge.isTransferDecomposition_edge

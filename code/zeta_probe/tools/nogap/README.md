@@ -8385,3 +8385,28 @@ existing one used.  0 sorry.
 **So the route for (M3) is: re-index the chain by edges.**  BLOCKS 207-208's site-indexed
 machinery stays valid but is the wrong frame for minimality; the edge-indexed frame was
 abandoned for a reason that does not hold.
+
+## 2026-09-04 — BLOCK 233: the edge frame closes
+
+BLOCK 232 showed the departure marker past the right end equals the travel indicator
+there, so the tail term of the edge-indexed chain is local after all:
+
+    vD_succ_B_natAbs           that marker, as a natural number
+    tailSiteOf                 the tail site cost, computed from the last edge's state
+    tailSiteOf_stateOf         and it IS the site cost at B+1
+    isTransferDecomposition_edge   (M3a) IN THE EDGE FRAME: one kernel, one head vector,
+                                   one GENUINE tail vector, every configuration of span
+                                   length n
+
+0 sorry.  One failure, the familiar one: the tail term sits under an unreduced lambda, so
+`rw` cannot see it; `simp only []` first.  That is the fourth time in this file that a
+`rw` failed for beta-reduction rather than for a real mismatch.
+
+**Why this frame is the right one.**  In the site frame (BLOCK 208) the chain's end states
+are the sites `A` and `B+1`, and span-minimality at `B` lands on the second-to-last state,
+where no boundary vector can see it -- BLOCK 231's obstacle.  In the edge frame the end
+states are the edges `A` and `B`, which is exactly where `endValidB` lives.  So minimality
+becomes a boundary condition, and `headOkB`/`endValidB_at_B` are the vectors that carry it.
+
+**Left for (M3):** the guarded kernel and boundary vectors in the edge frame -- the same
+assembly as BLOCK 231 but now with nothing landing in the interior -- and then the sum.
