@@ -11349,26 +11349,26 @@ variable {n : ℕ} {m : Fin n → ℕ}
 the side; a pass crosses the edge, keeps the side, flips the top and permutes the level
 by `sigma` one way and `sigma⁻¹` the other. -/
 noncomputable def turnGen (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m) :
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m) :
     EndType.Endpt n m :=
   if EndType.siteOf x ≠ s then x
   else if s ∈ Bs then
     mkEnd (m := m) hm x.edge (levOf u x) (levOf_lt hm x) (!udOf u x) x.top
   else if x.top then
-    mkEnd (m := m) hm (sec s) ((sig s ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+    mkEnd (m := m) hm (sec s) ((sig s (udOf u x) ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
       (Fin.isLt _) (udOf u x) false
   else
-    mkEnd (m := m) hm (sec (s - 1)) (((sig s).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+    mkEnd (m := m) hm (sec (s - 1)) (((sig s (udOf u x)).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
       (Fin.isLt _) (udOf u x) true
 
 theorem turnGen_off_site (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (h : EndType.siteOf x ≠ s) : turnGen (m := m) hm sec Bs sig s x = x := by
   unfold turnGen; rw [if_pos h]
 
 /-- The bounce's image, computed. -/
 theorem turnGen_bounce_eq (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (hx : EndType.siteOf x = s) (hs : s ∈ Bs) :
     turnGen (m := m) hm sec Bs sig s x
       = mkEnd (m := m) hm x.edge (levOf u x) (levOf_lt hm x) (!udOf u x) x.top := by
@@ -11383,7 +11383,7 @@ theorem mkEnd_site (hm : ∀ e, m e = 2 * u) (x : EndType.Endpt n m) (l : ℕ) (
 /-- **The bounce is an involution.**  It flips the side twice, and neither the edge nor
 the top moves, so the second application takes the same branch. -/
 theorem turnGen_bounce_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (hx : EndType.siteOf x = s) (hs : s ∈ Bs) :
     turnGen (m := m) hm sec Bs sig s (turnGen (m := m) hm sec Bs sig s x) = x := by
   rw [turnGen_bounce_eq hm sec Bs sig s x hx hs]
@@ -11420,21 +11420,21 @@ variable {n : ℕ} {m : Fin n → ℕ}
 
 /-- The pass's image on a top of edge `s-1`. -/
 theorem turnGen_pass_top (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (hx : EndType.siteOf x = s) (hs : s ∉ Bs) (ht : x.top = true) :
     turnGen (m := m) hm sec Bs sig s x
-      = mkEnd (m := m) hm (sec s) ((sig s ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+      = mkEnd (m := m) hm (sec s) ((sig s (udOf u x) ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
           (Fin.isLt _) (udOf u x) false := by
   unfold turnGen
   rw [if_neg (by simpa using hx), if_neg hs, if_pos ht]
 
 /-- The pass's image on a bottom of edge `s`. -/
 theorem turnGen_pass_bot (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (hx : EndType.siteOf x = s) (hs : s ∉ Bs) (ht : x.top = false) :
     turnGen (m := m) hm sec Bs sig s x
       = mkEnd (m := m) hm (sec (s - 1))
-          (((sig s).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+          (((sig s (udOf u x)).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
           (Fin.isLt _) (udOf u x) true := by
   unfold turnGen
   rw [if_neg (by simpa using hx), if_neg hs, if_neg (by simp [ht])]
@@ -11448,7 +11448,7 @@ theorem site_of_mkEnd (hm : ∀ e, m e = 2 * u) (e : Fin n) (l : ℕ) (hl : l < 
 /-- **The pass is an involution**, given the section: out along `sigma`, back along
 `sigma⁻¹`, and the edge and top return. -/
 theorem turnGen_pass_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (hx : EndType.siteOf x = s) (hs : s ∉ Bs)
     (hsecS : ((sec s : ℕ) : ℤ) = s)
     (hsecP : ((sec (s - 1) : ℕ) : ℤ) = s - 1)
@@ -11460,7 +11460,7 @@ theorem turnGen_pass_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs :
     rw [turnGen_pass_bot hm sec Bs sig s x hx hs ht]
     have hsite : EndType.siteOf
         (mkEnd (m := m) hm (sec (s - 1))
-          (((sig s).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+          (((sig s (udOf u x)).symm ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
           (Fin.isLt _) (udOf u x) true) = s := by
       rw [site_of_mkEnd, hsecP]; norm_num
     rw [turnGen_pass_top hm sec Bs sig s _ hsite hs (by rfl)]
@@ -11486,7 +11486,7 @@ theorem turnGen_pass_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs :
   · -- a top of edge `s-1`: cross to a bottom of edge `s`, then back
     rw [turnGen_pass_top hm sec Bs sig s x hx hs ht]
     have hsite : EndType.siteOf
-        (mkEnd (m := m) hm (sec s) ((sig s ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
+        (mkEnd (m := m) hm (sec s) ((sig s (udOf u x) ⟨levOf u x, levOf_lt hm x⟩ : Fin u) : ℕ)
           (Fin.isLt _) (udOf u x) false) = s := by
       rw [site_of_mkEnd, hsecS]; norm_num
     rw [turnGen_pass_bot hm sec Bs sig s _ hsite hs (by rfl)]
@@ -11528,7 +11528,7 @@ the site's ends to be distinct. -/
 /-- **`turnGen` keeps every end at its site.**  A bounce keeps the edge and the top; a
 pass moves to the edge whose corresponding end sits at the same site. -/
 theorem turnGen_site (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (hx : EndType.siteOf x = s)
     (hsecS : ((sec s : ℕ) : ℤ) = s)
     (hsecP : ((sec (s - 1) : ℕ) : ℤ) = s - 1) :
@@ -11551,7 +11551,7 @@ theorem levIdx_ne (u : ℕ) (hu : 0 < u) (l : Fin u) : levIdx u l true ≠ levId
 /-- **`turnGen` is fixed-point-free at its site.**  The bounce moves the strand index by
 `u`; the pass moves the top. -/
 theorem turnGen_ne (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
     (hx : EndType.siteOf x = s) :
     turnGen (m := m) hm sec Bs sig s x ≠ x := by
   by_cases hs : s ∈ Bs
@@ -11606,7 +11606,7 @@ theorem edge_of_site (x : EndType.Endpt n m) (s : ℤ) (hx : EndType.siteOf x = 
 bounce site it flips the side twice, and on a pass site it goes out along `sigma` and
 back along `sigma⁻¹`. -/
 theorem turnGen_invol (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n) (Bs : Finset ℤ)
-    (sig : ℤ → Equiv.Perm (Fin u)) (s : ℤ)
+    (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ)
     (hsecS : (∃ y : EndType.Endpt n m, EndType.siteOf y = s) → ((sec s : ℕ) : ℤ) = s)
     (hsecP : (∃ y : EndType.Endpt n m, EndType.siteOf y = s) →
       ((sec (s - 1) : ℕ) : ℤ) = s - 1)
@@ -11635,7 +11635,7 @@ obligations discharged by `turnGen_invol`, `turnGen_site` and `turnGen_ne`.  Eac
 used only at an OCCUPIED site, where the witness is the hypothesis `siteOf x = s`
 itself, so the section is needed only on `[A-1, B+1]`. -/
 theorem exists_turnGen_data (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ → Fin n)
-    (Bs : Finset ℤ) (sig : ℤ → Equiv.Perm (Fin u)) (A B : ℤ)
+    (Bs : Finset ℤ) (sig : ℤ → Bool → Equiv.Perm (Fin u)) (A B : ℤ)
     (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
     (hsecWide : ∀ j : ℤ, A - 1 ≤ j → j ≤ B + 1 → ((sec j : ℕ) : ℤ) = j) :
     ∃ E : WalkGraph.Data (EndType.Endpt n m),
@@ -11670,3 +11670,185 @@ theorem exists_turnGen_data (hm : ∀ e, m e = 2 * u) (hu : 0 < u) (sec : ℤ �
 end EltBridge
 
 #print axioms EltBridge.exists_turnGen_data
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **A bounce keeps the edge.**  It stays on the edge by construction, so the edge is
+unchanged whatever the level and side do. -/
+theorem turnGen_keeps_edge_at_bounce (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (Bs : Finset ℤ) (sig : ℤ → Bool → Equiv.Perm (Fin u)) (s : ℤ) (x : EndType.Endpt n m)
+    (hx : EndType.siteOf x = s) (hs : s ∈ Bs) :
+    EndType.edgeOf (turnGen (m := m) hm sec Bs sig s x) = EndType.edgeOf x := by
+  rw [turnGen_bounce_eq hm sec Bs sig s x hx hs]
+  rfl
+
+/-- **`hturn` for `turnGen`.**  An edge change forces the site off `Bs`, hence off any
+`Zf` inside it. -/
+theorem turnGen_hturn (hm : ∀ e, m e = 2 * u) (sec : ℤ → Fin n)
+    (Zf Bs : Finset ℤ) (hsub : Zf ⊆ Bs) (sig : ℤ → Bool → Equiv.Perm (Fin u))
+    (x : EndType.Endpt n m)
+    (hx : EndType.edgeOf (turnGen (m := m) hm sec Bs sig (EndType.siteOf x) x)
+      ≠ EndType.edgeOf x) :
+    EndType.siteOf x ∉ Zf := by
+  intro hmem
+  exact hx (turnGen_keeps_edge_at_bounce hm sec Bs sig _ x rfl (hsub hmem))
+
+end EltBridge
+
+#print axioms EltBridge.turnGen_keeps_edge_at_bounce
+#print axioms EltBridge.turnGen_hturn
+
+namespace EltBridge
+
+/-! ### `hcyc` is not an assumption -- it is the round trip
+
+BLOCK 188 took the level cycle as a hypothesis at the run's left end.  In the real turn
+no single step crosses levels: what crosses them is the ROUND TRIP -- out along the up
+chain, across at the far bounce, back along the down chain, and closed at the near
+bounce.  BLOCK 187's parity is exactly the statement that this round trip is a
+`u`-cycle.
+
+So `hcyc` is derived, not assumed, and the input becomes the far bounce's shift. -/
+
+theorem hcyc_of_round_trip (lo : ℤ) (n u : ℕ)
+    (R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop)
+    (hsymm : ∀ a b, R a b → R b a)
+    (hchain : ∀ (k : ℕ) (l : Fin u) (b : Bool), k < n →
+      R (lo + k, l, b) (lo + (k + 1 : ℕ), l, b))
+    (hjoinL : ∀ l : Fin u, R (lo, l, true) (lo, l, false))
+    (hshift : ∀ (i : ℕ) (hi : i + 1 < u),
+      R (lo + (n : ℕ), ⟨i, by omega⟩, true) (lo + (n : ℕ), ⟨i + 1, hi⟩, false))
+    (i : ℕ) (hi : i + 1 < u) :
+    Relation.ReflTransGen R (lo, ⟨i, by omega⟩, true) (lo, ⟨i + 1, hi⟩, true) := by
+  have hsymmR : ∀ a c, Relation.ReflTransGen R a c → Relation.ReflTransGen R c a := by
+    intro a c h
+    induction h with
+    | refl => exact Relation.ReflTransGen.refl
+    | tail _ hstep ih => exact Relation.ReflTransGen.head (hsymm _ _ hstep) ih
+  -- out along the run, on either side
+  have hout : ∀ (l : Fin u) (b : Bool) (j : ℕ), j ≤ n →
+      Relation.ReflTransGen R (lo, l, b) (lo + j, l, b) := by
+    intro l b j
+    induction j with
+    | zero => intro _; simpa using Relation.ReflTransGen.refl
+    | succ k ih =>
+      intro hk
+      exact (ih (by omega)).tail (hchain k l b (by omega))
+  -- out on the up side, shift at the far end, back on the down side, close at the near
+  have h1 : Relation.ReflTransGen R (lo, ⟨i, by omega⟩, true)
+      (lo + (n : ℕ), ⟨i, by omega⟩, true) := hout _ true n (le_refl _)
+  have h2 : Relation.ReflTransGen R (lo + (n : ℕ), ⟨i, by omega⟩, true)
+      (lo + (n : ℕ), ⟨i + 1, hi⟩, false) := Relation.ReflTransGen.single (hshift i hi)
+  have h3 : Relation.ReflTransGen R (lo + (n : ℕ), ⟨i + 1, hi⟩, false)
+      (lo, ⟨i + 1, hi⟩, false) := hsymmR _ _ (hout _ false n (le_refl _))
+  have h4 : Relation.ReflTransGen R (lo, ⟨i + 1, hi⟩, false) (lo, ⟨i + 1, hi⟩, true) :=
+    hsymmR _ _ (Relation.ReflTransGen.single (hjoinL _))
+  exact ((h1.trans h2).trans h3).trans h4
+
+end EltBridge
+
+#print axioms EltBridge.hcyc_of_round_trip
+
+namespace EltBridge
+
+/-- When `R` is reachability itself, a chain of `R`-steps IS an `R`-step. -/
+theorem reflTransGen_collapse {α β : Type*} (G : SimpleGraph β) (f : α → β)
+    {a b : α}
+    (h : Relation.ReflTransGen (fun x y => G.Reachable (f x) (f y)) a b) :
+    G.Reachable (f a) (f b) := by
+  induction h with
+  | refl => exact SimpleGraph.Reachable.refl _
+  | tail _ hstep ih => exact ih.trans hstep
+
+/-- **The run is one component, from the far bounce's shift.**  `hcyc` is replaced by
+`hshift`, a single step of the turn, and the cycle is derived as the round trip. -/
+theorem run_one_component_shift {α : Type*} [Fintype α] [DecidableEq α]
+    (u : ℕ) (hu : 0 < u) (G : SimpleGraph α) (f : ℤ × Fin u × Bool → α)
+    (lo : ℤ) (n : ℕ)
+    (hchain : ∀ (k : ℕ) (l : Fin u) (b : Bool), k < n →
+      G.Reachable (f (lo + k, l, b)) (f (lo + (k + 1 : ℕ), l, b)))
+    (hjoinL : ∀ l : Fin u, G.Reachable (f (lo, l, true)) (f (lo, l, false)))
+    (hshift : ∀ (i : ℕ) (hi : i + 1 < u),
+      G.Reachable (f (lo + (n : ℕ), ⟨i, by omega⟩, true))
+        (f (lo + (n : ℕ), ⟨i + 1, hi⟩, false)))
+    (j j' : ℕ) (hj : j ≤ n) (hj' : j' ≤ n) (l l' : Fin u) (b b' : Bool) :
+    G.Reachable (f (lo + j, l, b)) (f (lo + j', l', b')) := by
+  set R : ℤ × Fin u × Bool → ℤ × Fin u × Bool → Prop :=
+    fun x y => G.Reachable (f x) (f y) with hR
+  have hsymm : ∀ a b, R a b → R b a := fun _ _ h => h.symm
+  have hcyc : ∀ (i : ℕ) (hi : i + 1 < u),
+      R (lo, ⟨i, by omega⟩, true) (lo, ⟨i + 1, hi⟩, true) := by
+    intro i hi
+    exact reflTransGen_collapse G f
+      (hcyc_of_round_trip lo n u R hsymm hchain hjoinL hshift i hi)
+  exact reachable_of_reflTransGen G R f (fun _ _ h => h)
+    (run_pairwise_gen lo n u hu R hsymm hchain hjoinL hcyc j j' hj hj' l l' b b')
+
+end EltBridge
+
+#print axioms EltBridge.reflTransGen_collapse
+#print axioms EltBridge.run_one_component_shift
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The shield law at general `mu`, on single-step hypotheses.**
+
+`hcyc` is gone: the level cycle is derived as the round trip.  What is left of the turn's
+behaviour is three families of ACTUAL TURN STEPS --
+
+    hchain    a pass carries a strand bottom to the next edge's, on either side
+    hjoinL    the near bounce joins the two sides at the run's left end
+    hshift    the far bounce joins them at the right end, one level across
+
+-- and the last is where BLOCK 187's parity lives.  It is satisfiable because a pass
+costs the same whichever levels it pairs, so the permutations may be chosen to make the
+round trip a `u`-cycle. -/
+theorem shield_law_shift (hu : 0 < u) (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (f : ℤ × Fin u × Bool → EndType.Endpt n m)
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hcover : ∀ x : EndType.Endpt n m, ∃ (l : Fin u) (b : Bool),
+      f (EndType.edgeOf x, l, b) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hchain : ∀ (r : ℕ) (k : ℕ) (l : Fin u) (b : Bool), k < len r →
+      (WalkGraph.graph E).Reachable (f (lo r + k, l, b)) (f (lo r + (k + 1 : ℕ), l, b)))
+    (hjoinL : ∀ (r : ℕ) (l : Fin u),
+      (WalkGraph.graph E).Reachable (f (lo r, l, true)) (f (lo r, l, false)))
+    (hshift : ∀ (r : ℕ) (i : ℕ) (hi : i + 1 < u),
+      (WalkGraph.graph E).Reachable (f (lo r + (len r : ℕ), ⟨i, by omega⟩, true))
+        (f (lo r + (len r : ℕ), ⟨i + 1, hi⟩, false)))
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hocc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hne : Nonempty (EndType.Endpt n m)) :
+    WalkGraph.walkCount E = Zf.card + 1 := by
+  classical
+  have hrun : ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph E).Reachable (botOf x) (botOf y) := by
+    intro x y hxy
+    obtain ⟨lx, bx, hx⟩ := hcover x
+    obtain ⟨ly, by', hy⟩ := hcover y
+    obtain ⟨j, hj, hxj⟩ := hrange x
+    obtain ⟨j', hj', hyj⟩ := hrange y
+    rw [← hx, ← hy, hxj, hyj, ← hxy] at *
+    exact run_one_component_shift u hu (WalkGraph.graph E) f _ _
+      (hchain _) (hjoinL _) (hshift _) j j' hj (by rw [hxy] at hj'; exact hj') lx ly bx by'
+  refine le_antisymm ?_ ?_
+  · exact shield_upper_bound_endpt E Zf botOf (fun x => by rw [hEp]) hTsite hturn
+      (fun x => by rw [hEp]; exact botOf_eq_or_partner x) (fun _ => rfl) hrun
+  · obtain ⟨x0⟩ := hne
+    exact walkCount_ge_passTurn E Zf A B hAB hEp hTsite hturn hlow hhigh hocc
+      ((WalkGraph.graph E).connectedComponentMk x0)
+
+end EltBridge
+
+#print axioms EltBridge.shield_law_shift

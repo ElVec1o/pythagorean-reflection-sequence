@@ -7298,3 +7298,34 @@ unreduced conditional it treated as an atom.  Arguing through `udOf` instead -- 
 bounce flips the side, so `udOf` of the image is `!udOf x` -- is two lines and needs no
 arithmetic.  The structural definition pays off exactly here: at `mu = 2` the same fact
 needed six distinctness inequalities.
+
+## 2026-09-03 — BLOCK 193: hcyc is the round trip, not an assumption
+
+Building the turn exposed a real defect in BLOCK 191's `turnGen`: it permuted the level
+by the SAME `sigma` on both sides, so the up chain's `sigma` and the down chain's
+`sigma^-1` cancel and the composite is trivial -- exactly BLOCK 187's all-identity case,
+which gives `u` components, never one.  The two sides must permute INDEPENDENTLY.
+
+Fixed by making the family side-dependent, `sig : ℤ → Bool → Perm (Fin u)`.  The change
+needed NO proof edits, because the pass preserves the side, so the round-trip
+cancellation still holds -- a good sign for the structural definition.
+
+Then a second correction, to BLOCK 188 this time.  `hcyc` was taken as a hypothesis at
+the run's left end, but in the real turn NO SINGLE STEP crosses levels.  What crosses
+them is the ROUND TRIP: out along the up chain, across at the far bounce, back along the
+down chain, closed at the near bounce.  BLOCK 187's parity is precisely the statement
+that this round trip is a `u`-cycle.
+
+    hcyc_of_round_trip        the cycle, derived from the far bounce's shift
+    reflTransGen_collapse     a chain of reachability steps is a reachability step
+    run_one_component_shift   the run is one component, from three families of ACTUAL
+                              turn steps
+    shield_law_shift          walkCount E = |Zf| + 1 on those hypotheses
+
+All 0 sorry.
+
+So the general-`mu` shield law now rests on three single-step facts about the turn --
+its passes chain, its near bounce joins the sides, its far bounce joins them one level
+across -- and the last is where the parity lives.  It is satisfiable for the reason
+BLOCK 187 measured: a pass costs the same whichever levels it pairs, so the permutations
+can be chosen to make the round trip a cycle.
