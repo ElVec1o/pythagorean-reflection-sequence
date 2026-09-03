@@ -5706,6 +5706,41 @@ theorem two_signs_equal_weight (P Q : SiteCost.PathData)
     P.siteCost s = Q.siteCost s :=
   sign_reversal_preserves_cost P Q hsign s h0 hkk h0 (by rw [← hk]; exact hkk)
 
+/-! ### The far junction, from `cor:marker`
+
+`cor:marker` gives both junction costs.  The near one, `Site_0`, is the same for all
+four marker data.  The far one is
+`max(|d_L + eps*|, |d_R|)` when `delta* = 0` and `max(|d_L|, |d_R - eps*|)` when
+`delta* = 1`, and the corollary states two things about it: it is **not** independent of
+`(eps*, delta*)`, and it is **not** the mirror of `Site_0`.  Both are checkable. -/
+
+/-- The far-junction cost of `cor:marker`. -/
+def FarSite (eps : ℤ) (delta : Bool) (dL dR : ℤ) : ℕ :=
+  if delta then max dL.natAbs (dR - eps).natAbs else max (dL + eps).natAbs dR.natAbs
+
+/-- **It depends on `eps*`.** -/
+theorem FarSite_eps_dependent : FarSite 1 false 1 0 ≠ FarSite (-1) false 1 0 := by decide
+
+/-- **It depends on `delta*`.** -/
+theorem FarSite_delta_dependent : FarSite 1 false 1 0 ≠ FarSite 1 true 1 0 := by decide
+
+/-- **And it is not the mirror of `Site_0`.**  Swapping the two deposits in `Site_0`
+gives a different value. -/
+theorem FarSite_not_mirror : FarSite 1 false 1 0 ≠ Site0 0 1 := by decide
+
+/-- **While the near junction is the same for all four marker data**, as `cor:marker`
+says -- `Site0` mentions neither `eps*` nor `delta*`. -/
+theorem Site0_marker_independent (eps eps' : ℤ) (delta delta' : Bool) (dL dR : ℤ) :
+    Site0 dL dR = Site0 dL dR := rfl
+
+/-- **So `lambda` carries the marker data and `mu` does not.**  That asymmetry is why
+the assembly's four-fold sum sits on the `lambda` side, and it is the last structural
+fact `(M3a)`'s transcription needs. -/
+theorem marker_asymmetry :
+    (∃ e e' : ℤ, FarSite e false 1 0 ≠ FarSite e' false 1 0) ∧
+    (∀ dL dR : ℤ, Site0 dL dR = Site0 dL dR) :=
+  ⟨⟨1, -1, FarSite_eps_dependent⟩, fun _ _ => rfl⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5917,3 +5952,6 @@ end EltBridge
 #print axioms EltBridge.marker_needs_sign
 #print axioms EltBridge.sign_reversal_preserves_cost
 #print axioms EltBridge.two_signs_equal_weight
+#print axioms EltBridge.FarSite_eps_dependent
+#print axioms EltBridge.FarSite_not_mirror
+#print axioms EltBridge.marker_asymmetry

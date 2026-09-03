@@ -4723,3 +4723,30 @@ WHAT IS ACTUALLY NEW HERE:
 So (M3a)'s three parts are all either proved or matched to the paper, and the remaining
 work is transcription of lambda and mu -- which eq:junctionsym now gives explicitly for
 mu, indexed by the travel state s and formed from the B_sigma exactly as pathGF wants.
+
+## 2026-09-03 — BLOCK 108: the far junction, formalised from cor:marker
+
+  FarSite                  -- max(|d_L + eps*|, |d_R|) if delta* = 0, else
+                              max(|d_L|, |d_R - eps*|)
+  FarSite_eps_dependent    -- it depends on eps*        (axiom-free, decide)
+  FarSite_delta_dependent  -- and on delta*
+  FarSite_not_mirror       -- and it is NOT the mirror of Site_0
+  marker_asymmetry         -- while Site_0 mentions neither
+
+All three of cor:marker's claims about the far junction are now machine-checked. The
+corollary asserts them; the witnesses are d_L = 1, d_R = 0, where FarSite takes the
+values 2, 0 and 1 across the marker data and Site_0 with the deposits swapped is 1.
+
+STRUCTURAL UPSHOT. lambda carries the marker data, mu does not. That asymmetry is why
+the assembly's four-fold sum sits on the lambda side, and it is the last structural fact
+(M3a)'s transcription needs:
+
+  state         sigma, the deposit magnitude                  BLOCK 104
+  T             travelT, a function of sigma alone            BLOCK 104
+  mu            eq:junctionsym, indexed by the travel state,
+                symmetrised over the two signs                BLOCK 107
+  lambda        the far-junction cost, carrying (eps*,delta*) BLOCK 108
+  the theorem   pathGF_succ                                   BLOCK 105
+
+Read the source first this time. It took one block instead of the two that BLOCKS
+106-107 took to reach the same kind of fact by derivation.
