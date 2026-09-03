@@ -6780,3 +6780,35 @@ So the turn is no longer hypothetical.  What remains to close the `mu = 2` bound
 supply the six distinctness inequalities and `hTsite` -- that `passTurn` keeps each end
 at its site -- for an actual configuration, and feed
 `shield_upper_bound_of_pass_bounce`.
+
+## 2026-09-03 — BLOCK 175: the turn assembled
+
+`passTurn_site` -- the turn keeps every end at its site, each image being one of that
+site's own four ends and everything else fixed.
+
+`shield_upper_bound_passTurn` then supplies the turn to the bound.  Every property of
+the turn is discharged from `passTurn`'s own lemmas: involutivity, fixed-point-freeness,
+site-preservation, `hturn` (from `passTurn_keeps_edge_at_cut`), and the three chain
+equations (from `passTurn_pass_up`, `passTurn_pass_dn`, `passTurn_bounce`).
+
+What the caller now provides is only the configuration's geometry:
+
+    h12..h34        the four ends of each site are distinct
+    hs1..hs4        and sit at that site
+    hfour           and are ALL of it
+    hud             the two strands of an edge share it
+    hupn, hdnn      `up` and `dn` name the strand bottoms
+    hrange          the runs are indexed
+    hbdry, hint     cut sites at the run boundaries, none inside
+
+and the conclusion is `walkCount E <= |Z| + 1`.  0 sorry throughout; the file has never
+carried one.
+
+`hfour` was not in the previous statement and had to be added: `passTurn_ne` is
+fixed-point-free only on the site's four ends, while the bound needs it for every end at
+that site.  At `mu = 2` those coincide, but that is a fact about the configuration and
+now says so.
+
+Two Lean errors, both index bookkeeping: `lo r + (k+1) - 1` against `lo r + k`, equal by
+`ring` but not syntactically, and a `by_contra` whose hypothesis was already in the
+wanted form.

@@ -9671,3 +9671,106 @@ end EltBridge
 #print axioms EltBridge.passTurn_pass_up
 #print axioms EltBridge.passTurn_bounce
 #print axioms EltBridge.passTurn_keeps_edge_at_cut
+
+namespace EltBridge
+
+/-- **`passTurn` keeps every end at its site.**  Each of the four images is one of the
+site's own four ends, and anything else is fixed. -/
+theorem passTurn_site {α : Type*} [DecidableEq α] (siteOf : α → ℤ) (p : α → α)
+    (up dn : ℤ → α) (Zf : Finset ℤ) (s : ℤ)
+    (h1 : siteOf (p (up (s - 1))) = s) (h2 : siteOf (p (dn (s - 1))) = s)
+    (h3 : siteOf (up s) = s) (h4 : siteOf (dn s) = s)
+    (x : α) (hx : siteOf x = s) :
+    siteOf (passTurn p up dn Zf s x) = s := by
+  unfold passTurn
+  by_cases hs : s ∈ Zf <;> simp only [hs, if_true, if_false, ite_true, ite_false] <;>
+    split_ifs <;> simp_all
+
+/-- **The `mu = 2` shield bound with `passTurn` supplied.**  Every property of the turn
+is discharged from `passTurn`'s own lemmas.  What the caller provides is the
+configuration's geometry: the four ends of each site are distinct, sit at that site, and
+are ALL of it (`hfour`); `up` and `dn` name the strand bottoms; the runs are indexed with
+cut sites at their boundaries and none inside. -/
+theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (Zf : Finset ℤ) (up dn : ℤ → EndType.Endpt n m) (lo : ℕ → ℤ) (len : ℕ → ℕ)
+    (h12 : ∀ s : ℤ, EndType.partner (up (s - 1)) ≠ EndType.partner (dn (s - 1)))
+    (h13 : ∀ s : ℤ, EndType.partner (up (s - 1)) ≠ up s)
+    (h14 : ∀ s : ℤ, EndType.partner (up (s - 1)) ≠ dn s)
+    (h23 : ∀ s : ℤ, EndType.partner (dn (s - 1)) ≠ up s)
+    (h24 : ∀ s : ℤ, EndType.partner (dn (s - 1)) ≠ dn s)
+    (h34 : ∀ s : ℤ, up s ≠ dn s)
+    (hs1 : ∀ s : ℤ, EndType.siteOf (EndType.partner (up (s - 1))) = s)
+    (hs2 : ∀ s : ℤ, EndType.siteOf (EndType.partner (dn (s - 1))) = s)
+    (hs3 : ∀ s : ℤ, EndType.siteOf (up s) = s)
+    (hs4 : ∀ s : ℤ, EndType.siteOf (dn s) = s)
+    (hfour : ∀ (s : ℤ) (x : EndType.Endpt n m), EndType.siteOf x = s →
+      x = EndType.partner (up (s - 1)) ∨ x = EndType.partner (dn (s - 1)) ∨
+      x = up s ∨ x = dn s)
+    (hud : ∀ s : ℤ, EndType.edgeOf (up s) = EndType.edgeOf (dn s))
+    (hupn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 0 → up (EndType.edgeOf x) = botOf x)
+    (hdnn : ∀ x : EndType.Endpt n m, (x.idx : ℕ) = 1 → dn (EndType.edgeOf x) = botOf x)
+    (hrange : ∀ x : EndType.Endpt n m,
+      ∃ k : ℕ, k ≤ len (CutComponents.gz Zf (EndType.edgeOf x)) ∧
+        EndType.edgeOf x = lo (CutComponents.gz Zf (EndType.edgeOf x)) + k)
+    (hbdry : ∀ r : ℕ, lo r ∈ Zf)
+    (hint : ∀ r k : ℕ, k < len r → lo r + ((k : ℤ) + 1) ∉ Zf)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x
+      = passTurn EndType.partner up dn Zf (EndType.siteOf x) x) :
+    WalkGraph.walkCount E ≤ Zf.card + 1 := by
+  have hkeep : ∀ (s : ℤ), s ∈ Zf → ∀ x : EndType.Endpt n m,
+      EndType.edgeOf (passTurn EndType.partner up dn Zf s x) = EndType.edgeOf x :=
+    fun s hs x => passTurn_keeps_edge_at_cut EndType.edgeOf EndType.partner up dn Zf s hs
+      (fun y => EndType.partner_edgeOf y) (hud s) (hud (s - 1)) x
+  refine shield_upper_bound_of_pass_bounce hm
+    (passTurn EndType.partner up dn Zf) Zf up dn lo len
+    (fun s x => passTurn_invol _ up dn Zf s (h12 s) (h13 s) (h14 s) (h23 s) (h24 s)
+      (h34 s) x)
+    (fun s x hxs => by
+      subst hxs
+      exact passTurn_site EndType.siteOf _ up dn Zf _ (hs1 _) (hs2 _) (hs3 _) (hs4 _)
+        x rfl)
+    (fun s x hxs => by
+      subst hxs
+      exact passTurn_ne _ up dn Zf _ (h12 _) (h13 _) (h14 _) (h23 _) (h24 _) (h34 _)
+        x (hfour _ x rfl))
+    (fun x hx hc => hx (hkeep _ hc x))
+    hupn hdnn hrange E hEp hEt ?_ ?_ ?_
+  · -- the up pass
+    intro r k hk
+    have harith : lo r + ((k : ℤ) + 1) - 1 = lo r + (k : ℤ) := by ring
+    have hsite : EndType.siteOf (E.p (up (lo r + k))) = lo r + ((k : ℤ) + 1) := by
+      rw [hEp]
+      have h := hs1 (lo r + ((k : ℤ) + 1))
+      rw [harith] at h
+      exact h
+    rw [hEt, hsite, hEp]
+    have h := passTurn_pass_up EndType.partner up dn Zf (lo r + ((k : ℤ) + 1))
+      (hint r k hk)
+    rw [harith] at h
+    push_cast
+    exact h
+  · -- the down pass
+    intro r k hk
+    have harith : lo r + ((k : ℤ) + 1) - 1 = lo r + (k : ℤ) := by ring
+    have hsite : EndType.siteOf (dn (lo r + ((k : ℕ) + 1 : ℕ)))
+        = lo r + ((k : ℤ) + 1) := by
+      have h := hs4 (lo r + ((k : ℤ) + 1))
+      push_cast
+      exact h
+    rw [hEt, hsite, hEp]
+    have h := passTurn_pass_dn EndType.partner up dn Zf (lo r + ((k : ℤ) + 1))
+      (hint r k hk) (h14 _) (h34 _)
+    rw [harith] at h
+    push_cast
+    exact h
+  · -- the boundary bounce
+    intro r
+    rw [hEt, hs4]
+    exact passTurn_bounce EndType.partner up dn Zf (lo r) (hbdry r)
+      (h14 _) (h24 _) (h34 _)
+
+end EltBridge
+#print axioms EltBridge.passTurn_site
+#print axioms EltBridge.shield_upper_bound_passTurn
