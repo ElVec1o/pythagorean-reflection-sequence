@@ -8628,3 +8628,27 @@ the non-realisable ones contribute nothing, which is now a matter of `Finset` ma
 against `weightSum_eq_sum_pathWeight` (BLOCK 211) rather than of mathematics.  I have
 predicted "just assembly" twice before and been wrong (BLOCKS 223, 228), so that claim
 stands only until the next block tests it.
+
+## 2026-09-04 — BLOCK 244: extending a path past the span; "just assembly" was wrong AGAIN
+
+BLOCK 243 predicted the summation would be "just assembly" and flagged that I had made that
+prediction twice before and been wrong.  **It was wrong a third time.**
+
+`guarded_of_flag` wants `outer` -- the states off the span carry no deposit and no travel --
+but a finite path has no states off the span, so they must be supplied.  The obvious
+supply, an all-zero state, BREAKS the guard: `compatB` demands `tau.dprev = sigma.dcur`, so
+the state just past the right end must carry `dprev = d B`, which is not zero.
+
+The correct extension is forced, and it is exactly the state `tailSiteOf` was already
+reading (BLOCK 233):
+
+    extState            deposit and travel zero, dprev carried over, departure marker
+                        equal to the travel indicator at B
+    extState_stateOf    and for a configuration it IS the state at B + 1, every field
+
+0 sorry, clean on the first build.
+
+**On the pattern.**  Three times now the last step has looked like bookkeeping and turned
+out to carry content.  The common cause is the same each time: a path is a finite object and
+a configuration is an infinite one, and the difference always shows up at the boundary.  I
+should stop predicting that the boundary is free.

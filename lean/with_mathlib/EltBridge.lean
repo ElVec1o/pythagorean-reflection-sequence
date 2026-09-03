@@ -7773,6 +7773,42 @@ theorem exists_config_of_flag {A B kstar : ℤ} {st : ℤ → FlagState}
   exists_config_stateOf (guarded_of_flag hstep hheadOk htailOk houter harrv hdep hdepv
     hloA hhiB hk1 hk2)
 
+/-! ### Extending a path past the span
+
+BLOCK 243 predicted the summation would be "just assembly".  It is not, and the reason is
+worth stating.  `guarded_of_flag` wants `outer` -- the states off the span carry no deposit
+and no travel -- but a finite path has no states off the span, so they must be supplied.
+The obvious supply, an all-zero state, BREAKS the guard: `compatB` demands
+`tau.dprev = sigma.dcur`, and the state just past the right end must therefore carry
+`dprev = d B`, which is not zero.
+
+The correct extension is forced, and it is exactly the state `tailSiteOf` was already
+reading (BLOCK 233): deposit and travel zero, `dprev` carried over, and the departure
+marker equal to the travel indicator at `B`. -/
+
+/-- The state just past the right end of the span, built from the last edge's state. -/
+def extState (σ : LocalState) : LocalState :=
+  { dprev := σ.dcur, dcur := 0, fcur := 0, arr := 0, dep := σ.fcur.natAbs,
+    eps := σ.eps, delta := σ.delta }
+
+/-- **And it is the real one.**  For a configuration, `extState` of the last edge's state
+is the state at `B + 1` -- every field, including the departure marker, which
+`vD_succ_B_natAbs` (BLOCK 233) supplies. -/
+theorem extState_stateOf (P : SiteCost.PathData) :
+    extState (stateOf P P.B) = stateOf P (P.B + 1) := by
+  have hB := P.hB
+  refine localState_ext ?_ ?_ ?_ ?_ ?_ rfl rfl
+  · show P.d P.B = P.d (P.B + 1 - 1)
+    congr 1; ring
+  · show (0 : ℤ) = P.d (P.B + 1)
+    exact ((P.houter (P.B + 1) (Or.inr (by omega))).1).symm
+  · show (0 : ℤ) = SiteCost.travel P.kstar (P.B + 1)
+    exact ((P.houter (P.B + 1) (Or.inr (by omega))).2).symm
+  · show (0 : ℕ) = SiteCost.vArr (P.B + 1)
+    unfold SiteCost.vArr; rw [if_neg (by omega)]
+  · show (SiteCost.travel P.kstar P.B).natAbs = P.vD (P.B + 1)
+    exact (vD_succ_B_natAbs P).symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15432,3 +15468,4 @@ end EltBridge
 #print axioms EltBridge.dep_index_unique
 #print axioms EltBridge.guarded_of_flag
 #print axioms EltBridge.exists_config_of_flag
+#print axioms EltBridge.extState_stateOf
