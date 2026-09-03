@@ -9166,6 +9166,7 @@ structure BoxState where
   dep : ℕ
   eps : ℤ
   delta : Bool
+  deriving DecidableEq
 
 /-- Reattach `arr`, forced to the real index `j` rather than left free. -/
 def BoxState.toLocal (b : BoxState) (j : ℤ) : LocalState :=
@@ -9277,6 +9278,62 @@ theorem boxSet_bounds (P : SiteCost.PathData) (N : ℕ) (hN : P.lR ≤ N) (j : �
     split_ifs with h
     · exact hN1
     · exact Nat.zero_le _
+
+/-! ### The Finset of degree-`N` flagged paths, assembled -/
+
+/-- The finite box of `BoxState`s of magnitude at most `N`, as a `Finset`. -/
+noncomputable def boxFinset (N : ℕ) : Finset BoxState := (boxSet_finite N).toFinset
+
+theorem mem_boxFinset (N : ℕ) (b : BoxState) : b ∈ boxFinset N ↔ b ∈ boxSet N := by
+  simp [boxFinset, Set.Finite.mem_toFinset]
+
+/-- The state path as a function of `Fin (n+1)`: position `i` is real index `A + i`. -/
+def idxFn (A : ℤ) (n : ℕ) : Fin (n + 1) → ℤ := fun i => A + (i : ℕ)
+
+/-- **`idxList`, reindexed by `Fin`.**  Proved by induction on the list, not by index
+arithmetic -- the lesson already learned in this file. -/
+theorem ofFn_idxFn (A : ℤ) : ∀ n : ℕ,
+    List.ofFn (idxFn A n) = A :: idxList A n := by
+  intro n
+  induction n generalizing A with
+  | zero => simp [idxFn, idxList]
+  | succ m ih =>
+      rw [List.ofFn_succ]
+      have h0 : idxFn A (m + 1) 0 = A := by simp [idxFn]
+      rw [h0]
+      congr 1
+      have hshift : (fun i : Fin (m + 1) => idxFn A (m + 1) i.succ) = idxFn (A + 1) m := by
+        funext i
+        show A + ((i.succ : ℕ) : ℤ) = A + 1 + (i : ℕ)
+        push_cast [Fin.val_succ]
+        ring
+      rw [hshift, ih (A + 1)]
+      rfl
+
+/-- **The `Finset` of degree-`N` flagged paths of span length `n`.** -/
+noncomputable def flagPathsFinset (N : ℕ) (A : ℤ) (n : ℕ) : Finset (List FlagState) :=
+  (Fintype.piFinset (fun _ : Fin (n + 1) => boxFinset N)).image
+    (fun f => List.ofFn (fun i => (f i).toFlag (idxFn A n i)))
+
+theorem mem_flagPathsFinset_of_config (N : ℕ) (P : SiteCost.PathData) (n : ℕ)
+    (hn : P.B = P.A + n) (hN : P.lR ≤ N) :
+    (P.A :: idxList P.A n).map (flagOf P) ∈ flagPathsFinset N P.A n := by
+  set g : Fin (n + 1) → BoxState := fun i =>
+    { dprev := (stateOf P (idxFn P.A n i)).dprev, dcur := (stateOf P (idxFn P.A n i)).dcur,
+      fcur := (stateOf P (idxFn P.A n i)).fcur, dep := (stateOf P (idxFn P.A n i)).dep,
+      eps := (stateOf P (idxFn P.A n i)).eps, delta := (stateOf P (idxFn P.A n i)).delta }
+    with hg
+  refine Finset.mem_image.mpr ⟨g, ?_, ?_⟩
+  · rw [Fintype.mem_piFinset]
+    intro i
+    rw [mem_boxFinset]
+    exact boxSet_bounds P N hN _
+  · rw [← ofFn_idxFn P.A n]
+    refine List.ext_getElem (by simp) (fun i h1 h2 => ?_)
+    simp only [List.getElem_ofFn, List.getElem_map]
+    show (g ⟨i, by simpa using h1⟩).toFlag (idxFn P.A n ⟨i, by simpa using h1⟩)
+      = flagOf P (idxFn P.A n ⟨i, by simpa using h2⟩)
+    exact boxState_toFlag_flagOf P _
 
 /-! ### The deposit magnitude is a sufficient state
 
@@ -17015,3 +17072,4 @@ end EltBridge
 #print axioms EltBridge.boxState_toFlag_flagOf
 #print axioms EltBridge.boxSet_finite
 #print axioms EltBridge.boxSet_bounds
+#print axioms EltBridge.mem_flagPathsFinset_of_config

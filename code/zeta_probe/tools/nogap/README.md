@@ -9450,3 +9450,24 @@ assembling `T` -- images of `boxSet N`-valued position lists under `toFlag` -- a
 `Finset.sum_subset`/`coeff_sum_subset` through it, using `guards_of_coeff_ne_zero`
 (BLOCK 282), `headCond_of_headVec_ne_zero` (BLOCK 283) and `exists_config_of_path`
 (BLOCK 267) to place a non-vanishing complement path back in the image.
+
+## 2026-09-04 — BLOCK 288: T assembled, and a configuration is inside it
+
+    idxFn, ofFn_idxFn         idxList reindexed by Fin, proved by list induction not index
+                              arithmetic (the lesson relearned from a first failed attempt)
+    flagPathsFinset           the Finset of degree-N flagged paths, as an image of
+                              Fintype.piFinset over boxFinset N
+    mem_flagPathsFinset_of_config   a configuration of relaxed length <= N lies inside it
+
+0 sorry.  First attempt used a hand-built index inverse (`(j - A).toNat`) and hit both a
+syntax error and a defeq mismatch -- exactly the index-heavy failure mode this file has hit
+before.  Diagnosed per Rule 4.3 rather than patched: switched to `List.ofFn` plus
+`List.ext_getElem`, which compares lists by a single index formula instead of manual cons
+matching, and it went through with one small further fix (`idxFn A (m+1) 0` needed an
+explicit unfold to `A`, not defeq to the `show` as first stated).
+
+**The construction the last five blocks were building toward now exists.**  `T :=
+flagPathsFinset N A n` is finite by construction, contains every configuration's own path
+(this block), and by BLOCKS 282-284 + 267 every OTHER element is either unrealisable (guard
+fails, coefficient zero) or realisable and hence in `C`'s image already.  Closing (M3) is
+now assembling `coeff_sum_subset` with this `T` and a case split on membership.
