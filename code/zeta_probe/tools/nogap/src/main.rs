@@ -64,12 +64,19 @@ fn closed_lr(e: &Elt) -> i64 {
 }
 
 // Z: cut sites interior to the span, plus the boundary-shield site.
-fn cutset(e: &Elt) -> usize {
+fn cutset(e: &Elt) -> usize { cutset_gen(e, true) }
+
+/// `cutset` with the boundary-shield term deleted: interior sites only.  Used
+/// to test whether that hand-added special case is needed or fitted.
+fn cutset_nb(e: &Elt) -> usize { cutset_gen(e, false) }
+
+fn cutset_gen(e: &Elt, with_boundary: bool) -> usize {
     let (lo, hi) = span(e.k, &e.lamps);
     let mut n = 0;
     for s in lo..=hi {
         let interior = s > lo && s < hi;
-        let boundary_shield = !interior && e.k == 0 && e.dl == 0 && s == 0 && lo == 0 && hi > 0;
+        let boundary_shield = with_boundary
+            && !interior && e.k == 0 && e.dl == 0 && s == 0 && lo == 0 && hi > 0;
         if !(interior || boundary_shield) { continue; }
         let (a, b, p) = abphi(e, s);
         if a == 0 && b == 0 && p == 0 { n += 1; }
@@ -130,6 +137,7 @@ fn main() {
     let (mut ng, mut ng_c, mut ng_z) = (0u64, 0u64, 0u64);
     let (mut ze, mut ze_v) = (0u64, 0u64);
     let (mut odd, mut neg) = (0u64, 0u64);
+    let (mut bs_fire, mut cut_v_nb, mut sl_v_nb) = (0u64, 0u64, 0u64);
     for (e, &lt) in &dist {
         if lt >= depth { continue; }          // frontier layer may be incomplete
         let lr = closed_lr(e);
@@ -138,7 +146,11 @@ fn main() {
         if diff % 2 != 0 { odd += 1; continue; }
         let c = (diff / 2) as usize;
         let z = cutset(e);
+        let znb = cutset_nb(e);
         used += 1;
+        if z != znb { bs_fire += 1; }
+        if c < znb { cut_v_nb += 1; }
+        if c != znb { sl_v_nb += 1; }
         if c < z { cut_v += 1; }
         if c != z { sl_v += 1; }
         if z == 0 { ze += 1; if c != 0 { ze_v += 1; } }
@@ -148,6 +160,8 @@ fn main() {
     println!("  parity/negativity failures        : odd={odd} neg={neg}");
     println!("  prop:cut   c >= |Z|   violations  : {cut_v}   (PROVED -- must be 0)");
     println!("  M4b shield c == |Z|   violations  : {sl_v}");
+    println!("  boundary-shield term: fires on {bs_fire} elements;  with it DELETED,");
+    println!("                        prop:cut violations {cut_v_nb}, M4b violations {sl_v_nb}");
     println!("  M6b  Z empty => c=0 : {ze:>8} elts, violations {ze_v}");
     println!("  M6   no gap  => c=0 : {ng:>8} elts, violations {ng_c}");
     println!("  M6a  no gap  => Z=0 : {ng:>8} elts, violations {ng_z}");

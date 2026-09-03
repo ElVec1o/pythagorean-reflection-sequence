@@ -5342,3 +5342,47 @@ A note on method: the first draft of this entry carried a companion Lean theorem
 asserting the defect is `m`-blind.  With `m` absent from the count that statement
 is `X = X` with an unused hypothesis -- the exact vacuity this audit exists to
 find.  It was removed rather than shipped, and the point is left as prose.
+
+## 2026-09-03 — BLOCK 131: nogap's boundary-shield term, tested at last
+
+Continuing the audit into the tool carrying (T).
+
+**Non-vacuity: passes, and nogap was already the honest one.**  It reports the
+population of each conditional statement (`M6b` 48715 elements, `M6`/`M6a`
+42361 at depth 21), and it counts rather than silently skips the elements it
+excludes -- `odd` and `neg` are reported and the verdict requires both to be 0.
+That is the disclosure `sitecost`'s H4 lacked.
+
+**The untested special case.**  `cutset` counts interior sites plus one
+hand-added term,
+
+    boundary_shield = !interior && k == 0 && dl == 0 && s == 0 && lo == 0 && hi > 0
+
+a five-condition conjunction admitting a NON-interior site.  `nogap` has no
+deletion mode, so nothing had ever tested whether it is needed or fitted.
+
+Added one.  `cutset_nb` is `cutset` with the term deleted, and both are run:
+
+    depth 17:  fires on 10 of  8992 elements;  deleted -> prop:cut 0, M4b 10
+    depth 21:  fires on 38 of 50763 elements;  deleted -> prop:cut 0, M4b 38
+
+Every element it fires on is one where M4b would otherwise fail, and it fires
+on no others.  So it is load-bearing and never spurious.  It also separates the
+two statements cleanly: the **proved** inequality `c >= |Z|` never needs it --
+deleting a cut site only lowers `|Z|` -- while the **heuristic** equality
+`c = |Z|` needs it on exactly those elements.
+
+**The matching Lean gap, closed.**  `cut_at_zero_iff` covers `kstar < 0`.  The
+boundary-shield case is `kstar = 0`, where site 0 carries *both* virtual events
+at once, and no lemma covered it.  `cut_at_zero_kzero_iff` now does:
+
+    P.cut 0  <->  delta = false  /\  d 0 = 0  /\  d (-1) = 1 - eps
+
+(0 sorry, propext/Quot.sound.)  `Phi_0 = f(-1) + vArr - vL = 1 - vL` forces
+`vL = 1`, i.e. `delta = false`; that empties `vR`, leaving `beta = d 0`.
+
+This also shows the tool's version is complete, not merely sound.  Its `lo == 0`
+forces `d(-1) = 0` and hence `eps = +1`, which looks narrower than the criterion
+-- but the other branch, `eps = -1` with `d(-1) = 2`, cannot occur when `lo = 0`,
+since edge `-1` is then outside the span; and when `lo < 0` site 0 is interior
+and is counted by the interior branch.  No cut site is missed.

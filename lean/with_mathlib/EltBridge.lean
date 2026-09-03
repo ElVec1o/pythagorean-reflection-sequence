@@ -6794,3 +6794,50 @@ theorem pred_len_shift (msum sitesum : ℤ) :
 -- and it is left as prose.
 
 #print axioms pred_len_shift
+
+/-!
+### The cut criterion at `k* = 0`, and `nogap`'s boundary-shield term
+
+`nogap`'s `cutset` counts interior sites, plus one hand-added special case:
+
+    boundary_shield = !interior && k == 0 && dl == 0 && s == 0 && lo == 0 && hi > 0
+
+The tool had no deletion mode, so this had never been tested.  Deleting it:
+it fires on 10 of 8992 elements at depth 17 and 38 of 50763 at depth 21, and
+in both runs removing it produces **exactly** that many M4b violations and
+**zero** new `prop:cut` violations.  So it is load-bearing and never spurious,
+and it separates the two statements cleanly: the proved inequality `c >= |Z|`
+never needs it; only the heuristic equality `c = |Z|` does.
+
+`cut_at_zero_iff` covers `kstar < 0`.  The boundary-shield case is `kstar = 0`,
+where site `0` carries **both** virtual events at once, and that was not
+covered.  It is below.
+-/
+
+/-- **The cut criterion at `k* = 0`.**  Site `0` is then simultaneously the
+virtual arrival and the virtual departure, so `Phi` forces `delta = false`,
+which in turn empties `vR` and leaves `beta = d 0`. -/
+theorem cut_at_zero_kzero_iff (P : SiteCost.PathData) (hk : P.kstar = 0) :
+    P.cut 0 ↔ (P.delta = false ∧ P.d 0 = 0 ∧ P.d (-1) = 1 - P.eps) := by
+  have hvD : P.vD 0 = 1 := by
+    unfold SiteCost.PathData.vD; rw [if_pos hk.symm]
+  have hf : P.f (0 - 1) = 0 := by
+    unfold SiteCost.PathData.f; rw [hk]; exact SiteCost.travel_of_kstar_zero _
+  have hnum : P.d (0 - 1) = P.d (-1) := by norm_num
+  unfold SiteCost.PathData.cut SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.vArr
+  rw [if_pos rfl, hvD, hf, hnum]
+  cases hd : P.delta
+  · simp only [Bool.false_eq_true, if_false, Nat.cast_one, Nat.cast_zero,
+      mul_zero, sub_zero, mul_one]
+    constructor
+    · rintro ⟨ha, hb, -⟩
+      exact ⟨by trivial, hb, by omega⟩
+    · rintro ⟨-, hb, ha⟩
+      exact ⟨by omega, hb, by norm_num⟩
+  · simp only [if_true, Nat.cast_one, Nat.cast_zero, mul_zero, add_zero, sub_zero]
+    constructor
+    · rintro ⟨-, -, hp⟩; exact absurd hp (by norm_num)
+    · rintro ⟨hδ, -, -⟩; exact absurd hδ (by simp)
+
+#print axioms cut_at_zero_kzero_iff
