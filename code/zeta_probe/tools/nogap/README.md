@@ -8821,3 +8821,25 @@ boundary imposes a condition on the boundary state, and the guard must carry it.
 are four such steps -- into `A`, out of `B`, and the two beyond -- and their `compatB` and
 `flowB` halves are eight conditions.  Six are now accounted for; the two beyond the ends
 are trivial, since both extension states are inert.
+
+## 2026-09-04 — BLOCK 254: the two steps beyond the ends; the eighth condition found
+
+BLOCK 253 called these two steps trivial.  The left one is.  **The right one is not**: past
+the right end the extension goes from `extState (st B)` to `preState (st A)`, and `compatB`
+compares their sign data -- so it needs `eps` and `delta` to agree between the two ENDS of
+the span.  That is the constancy along the path (BLOCKS 227-228), not nothing.
+
+    compatB_extState_preState   the step past the right end, given that agreement
+    flowB_extState_preState     its flow half
+    compatB_preState_self,
+    flowB_preState_self         the steps beyond the left end, genuinely trivial
+    compatB_extState            the compatB half of the step out of B
+    compatB_preState            the compatB half of the step into A
+
+0 sorry.  One failure: `simp` collapses the trivially-true conjuncts to `True`, so an
+explicit `⟨⟨_, _⟩, _⟩` over-supplies; single `simp` calls with the hypotheses instead.
+
+**All eight boundary conditions are now accounted for**, and the count was right --
+four steps, `compatB` and `flowB` for each -- but my claim that two of them were free was
+wrong on one of the two.  That is the fourth time in this stretch that a boundary looked
+free and was not.

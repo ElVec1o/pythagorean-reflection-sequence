@@ -8119,6 +8119,39 @@ theorem flowB_preState (σ : LocalState) (h : ((σ.arr : ℕ) : ℤ) = σ.fcur +
   simp only [flowB, preState, decide_eq_true_eq]
   omega
 
+/-! ### The two steps beyond the ends
+
+BLOCK 253 called these trivial.  The left one is; the right one is not quite.  Past the
+right end the extension goes from `extState (st B)` to `preState (st A)`, and `compatB`
+compares their sign data -- so it needs `eps` and `delta` to agree between the two ENDS of
+the span, which is the constancy along the path (BLOCKS 227-228), not nothing. -/
+
+theorem compatB_extState_preState (σ τ : LocalState)
+    (he : τ.eps = σ.eps) (hd : τ.delta = σ.delta) :
+    compatB (extState σ) (preState τ) = true := by
+  simp [compatB, extState, preState, he, hd]
+
+theorem flowB_extState_preState (σ τ : LocalState) :
+    flowB (extState σ) (preState τ) = true := by
+  simp [flowB, extState, preState]
+
+theorem compatB_preState_self (τ : LocalState) :
+    compatB (preState τ) (preState τ) = true := by
+  simp [compatB, preState]
+
+theorem flowB_preState_self (τ : LocalState) :
+    flowB (preState τ) (preState τ) = true := by
+  simp [flowB, preState]
+
+/-- **The step out of the right end**, from `compatB` and `flowB` together. -/
+theorem compatB_extState (σ : LocalState) : compatB σ (extState σ) = true := by
+  simp [compatB, extState]
+
+/-- **And the step into the left end.** -/
+theorem compatB_preState (σ : LocalState) (h : σ.dprev = 0) :
+    compatB (preState σ) σ = true := by
+  simp [compatB, preState, h]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15796,3 +15829,6 @@ end EltBridge
 #print axioms EltBridge.head_flow_stateOf
 #print axioms EltBridge.headOk2B_stateOf
 #print axioms EltBridge.flowB_preState
+#print axioms EltBridge.compatB_extState_preState
+#print axioms EltBridge.compatB_extState
+#print axioms EltBridge.compatB_preState
