@@ -4579,6 +4579,47 @@ theorem swap_preserves_hturn_atcut {n : ℕ} {m : Fin n → ℕ} (Zf : Finset �
         ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf :=
   hturn_swapT_nohZ Zf D hts hturn a a' hss hcut hshared
 
+/-! ### The forced sign, and what it does to cut sites
+
+`EndData.sgn` is a function of `(side, isArr, depSign side)` only.  So on a fixed side
+every arrival has one sign and every departure the other -- the sign is **forced**, not
+free.  Two consequences:
+
+* a same-side arrival/departure pair always costs `2`, and a cross-side pair `1`
+  (`pcost_eq_of_arr_dep`);
+* in the four transportation classes, one of each side's two is empty, so
+  `alpha = -(A + C)` and `alpha = 0` forces the site to carry **no ends** on that side
+  -- which is `ConfigLoop.no_ends_of_alpha_zero`.
+
+The paper's `Plan` does not force the sign: `Ap, Am, Cp, Cm` are independent, and a
+same-side same-sign pair costs `0`.  So the `EndData` model is strictly less general
+than the site model it is meant to realise, and that gap is where `hZ` came from. -/
+
+/-- **The sign is forced**: on one side, arrivals and departures always differ. -/
+theorem sgn_arr_ne_dep {α : Type*} (d : EndData.Data α) (a b : α)
+    (hside : d.side a = d.side b) (ha : d.isArr a = true) (hb : d.isArr b = false) :
+    EndData.sgn d a ≠ EndData.sgn d b := by
+  unfold EndData.sgn
+  rw [hside, ha, hb]
+  cases hs : d.side b <;> simp
+
+/-- **So a same-side arrival/departure pair costs two**, never zero. -/
+theorem pcost_same_side_two {α : Type*} (d : EndData.Data α) (a b : α)
+    (hside : d.side a = d.side b) (ha : d.isArr a = true) (hb : d.isArr b = false) :
+    EndData.pcostF d a b = 2 := by
+  unfold EndData.pcostF
+  rw [if_pos hside, if_neg (sgn_arr_ne_dep d a b hside ha hb)]
+
+/-- **Hence every pairing costs at least one per arrival**: there is no zero-cost plan
+at a site carrying ends. -/
+theorem pcostF_ge_one {α : Type*} (d : EndData.Data α) (a b : α)
+    (ha : d.isArr a = true) (hb : d.isArr b = false) :
+    1 ≤ EndData.pcostF d a b := by
+  unfold EndData.pcostF
+  by_cases hside : d.side a = d.side b
+  · rw [if_pos hside, if_neg (sgn_arr_ne_dep d a b hside ha hb)]; norm_num
+  · rw [if_neg hside]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4745,3 +4786,6 @@ end EltBridge
 #print axioms EltBridge.exists_least_cost_hturn
 #print axioms EltBridge.swap_preserves_hturn_offcut
 #print axioms EltBridge.swap_preserves_hturn_atcut
+#print axioms EltBridge.sgn_arr_ne_dep
+#print axioms EltBridge.pcost_same_side_two
+#print axioms EltBridge.pcostF_ge_one

@@ -4005,3 +4005,31 @@ rather than the two-way split by side.
 
 That four-way split is the remaining construction. alpha = 0 and beta = 0 at a cut site
 give the sign-wise balance it needs, exactly as Phi = 0 gave the side-wise balance.
+
+## 2026-09-03 — BLOCK 77: THE FORCED SIGN — the root of hZ, and it predates tonight
+
+  sgn_arr_ne_dep      -- EndData.sgn is a function of (side, isArr, depSign side) only,
+                         so on ONE SIDE arrivals and departures ALWAYS differ in sign
+  pcost_same_side_two -- hence a same-side arrival/departure pair costs 2, never 0
+  pcostF_ge_one       -- and every pair costs at least 1: THERE IS NO ZERO-COST PLAN at
+                         a site carrying ends
+(propext alone for the first two.)
+
+THIS IS THE ROOT. BLOCKS 70-76 were trying to build a zero-cost plan at a cut site. No
+such plan exists in this model, and the reason is structural: the sign is FORCED.
+
+Consequence for the four transportation classes: one of each side's two is empty, so
+alpha = -(A + C), and alpha = 0 forces the site to carry no ends on that side. That is
+exactly ConfigLoop.no_ends_of_alpha_zero, which has been in the development all along --
+its `alpha A 0 0 C` shape IS the forced-sign shape, and I read it as a special case
+rather than as the general situation.
+
+The paper's Plan does NOT force the sign: Ap, Am, Cp, Cm are independent and a
+same-side same-sign pair costs 0. So `EndData` is strictly less general than the site
+model it realises, and hZ is the symptom:
+  forced sign  =>  cut sites carry no ends  =>  hZ  =>  collides with mu_pos (BLOCK 60)
+
+So the chain of tonight's findings terminates here. BLOCK 4 found hZ vs hocc, BLOCK 60
+found hZ vs mu_pos, and both are downstream of a modelling choice in EndData.sgn.
+Fixing it means letting depSign vary per end rather than per side -- a change to the
+Data structure, not to any proof.
