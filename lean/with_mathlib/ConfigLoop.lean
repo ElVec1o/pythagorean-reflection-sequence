@@ -2311,5 +2311,44 @@ theorem arr_sub_dep_eq (up : Fin n → ℕ) (s : ℤ) (e1 e2 : Fin n)
   unfold tr
   omega
 
+/-- **The balance deficit at *every* site**, including those whose adjacent edge
+indices do not exist.  `t1` and `t2` stand for the signed travels of the edges at
+`s - 1` and `s`, taken to be `0` where there is no such edge. -/
+theorem arr_sub_dep_all (up : Fin n → ℕ) (s : ℤ) (t1 t2 : ℤ)
+    (h1 : ∀ e : Fin n, (e : ℤ) = s - 1 → tr (m := m) up e = t1)
+    (h1z : (∀ e : Fin n, (e : ℤ) ≠ s - 1) → t1 = 0)
+    (h2 : ∀ e : Fin n, (e : ℤ) = s → tr (m := m) up e = t2)
+    (h2z : (∀ e : Fin n, (e : ℤ) ≠ s) → t2 = 0) :
+    ((arrAt (m := m) up s).card : ℤ) - (depAt (m := m) up s).card = t1 - t2 := by
+  classical
+  have hs1 := card_split_atTop (arrAt (m := m) up s)
+  have hs2 := card_split_atTop (depAt (m := m) up s)
+  -- the top half contributes `t1`
+  have htop : (((arrAt (m := m) up s).filter (fun x => atTop x = true)).card : ℤ)
+      - (((depAt (m := m) up s).filter (fun x => atTop x = true)).card : ℤ) = t1 := by
+    by_cases hex : ∃ e : Fin n, (e : ℤ) = s - 1
+    · obtain ⟨e, he⟩ := hex
+      rw [card_arr_top (m := m) up s e he, card_dep_top (m := m) up s e he, ← h1 e he]
+      have : min (up e) (m e) ≤ m e := min_le_right _ _
+      unfold tr; omega
+    · push_neg at hex
+      obtain ⟨ha, hb⟩ := no_top_at_empty (m := m) up s
+        (fun e he => absurd he (hex e))
+      rw [ha, hb, h1z hex]; norm_num
+  -- the bottom half contributes `-t2`
+  have hbot : (((arrAt (m := m) up s).filter (fun x => atTop x = false)).card : ℤ)
+      - (((depAt (m := m) up s).filter (fun x => atTop x = false)).card : ℤ) = -t2 := by
+    by_cases hex : ∃ e : Fin n, (e : ℤ) = s
+    · obtain ⟨e, he⟩ := hex
+      rw [card_arr_bottom (m := m) up s e he, card_dep_bottom (m := m) up s e he,
+        ← h2 e he]
+      have : min (up e) (m e) ≤ m e := min_le_right _ _
+      unfold tr; omega
+    · push_neg at hex
+      obtain ⟨ha, hb⟩ := no_bottom_at_empty (m := m) up s
+        (fun e he => absurd he (hex e))
+      rw [ha, hb, h2z hex]; norm_num
+  omega
+
 -- Certification (Rule 5).
-#print axioms ConfigLoop.arr_sub_dep_eq
+#print axioms ConfigLoop.arr_sub_dep_all

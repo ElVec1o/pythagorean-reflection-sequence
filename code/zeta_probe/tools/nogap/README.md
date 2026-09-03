@@ -2556,3 +2556,34 @@ inside a `noncomputable def`.
 REMAINING FOR B1: the ∀-s balance for VEndpt (bookkeeping, pattern already proved in
 BLOCK 4), and item (b) -- the ~14 WalkSupport declarations plus CostMerge's 15 hsite
 mentions converted to the localized forms of BLOCKS 13-15.
+
+## 2026-09-03 — BLOCK 20: balance at EVERY site; VEndpt.dataOfAll is unconditional
+
+  ConfigLoop.arr_sub_dep_all -- the balance deficit at every site, INCLUDING those
+                                whose adjacent edge indices do not exist. The
+                                no_top_at_empty / no_bottom_at_empty lemmas of BLOCK 4
+                                already covered that case: their hypothesis
+                                "every edge at s is empty" is VACUOUSLY TRUE when no
+                                edge index equals s. Nothing new was needed.
+  EltBridge.arrOf_eq_arrAt, depOf_eq_depAt  -- the generic and extended sets coincide
+                                               (by rfl)
+  EltBridge.VEndpt.balanced_all -- balance at every site of the extended type
+  EltBridge.VEndpt.dataOfAll    -- the walk-graph data, no balance hypothesis left
+
+So the construction chain is complete and unconditional:
+
+  Elt  ->  PathData        (Elt.toPathData, BLOCK 7)
+       ->  VEndpt          (BLOCK 9)
+       ->  balance at every site   (BLOCK 20)
+       ->  partner, forced         (BLOCK 10)
+       ->  walk-graph Data         (BLOCK 19-20, via the generic builder)
+       ->  locality hypotheses satisfied for all kstar != 0  (BLOCKS 16, 18)
+
+Its inputs are two hypotheses on the configuration: that each edge's signed travel is
+`travel kstar` of that edge, and that `travel` vanishes where no edge index exists.
+Both are properties of the realisation, not assumptions about the model.
+
+REMAINING FOR B1: item (b) only -- the ~14 WalkSupport declarations and CostMerge's 15
+hsite mentions converted to the localized forms of BLOCKS 13-15. No mathematical
+question remains in it; the two hard ones (how many virtual ends, and how they pair)
+were settled in BLOCKS 8 and 10, and the locality question in BLOCKS 16 and 18.

@@ -911,6 +911,48 @@ theorem VEndpt.dataOf_ts {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (ks
       = VEndpt.site kstar x :=
   GenericData.turnG_site _ _ hbal x
 
+/-- The generic arrival set is the extended one. -/
+theorem arrOf_eq_arrAt {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    GenericData.arrOf (VEndpt.site (mm := mm) kstar) (VEndpt.isArr up) s
+      = VEndpt.arrAt (mm := mm) kstar up s := rfl
+
+/-- The generic departure set is the extended one. -/
+theorem depOf_eq_depAt {n : ℕ} {mm : Fin n → ℕ} (kstar : ℤ) (up : Fin n → ℕ) (s : ℤ) :
+    GenericData.depOf (VEndpt.site (mm := mm) kstar) (VEndpt.isArr up) s
+      = VEndpt.depAt (mm := mm) kstar up s := rfl
+
+/-- **Balance at EVERY site of the extended type.**
+
+This is `VEndpt.balanced` without the standing assumption that the two adjacent edges
+exist.  `arr_sub_dep_all` handles the sites where they do not, and the two virtual
+ends supply exactly the deficit `travel` leaves behind. -/
+theorem VEndpt.balanced_all {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (htr : ∀ (s : ℤ) (e : Fin n), (e : ℤ) = s →
+      ConfigLoop.tr (m := mm) up e = travel kstar s)
+    (hz : ∀ s : ℤ, (∀ e : Fin n, (e : ℤ) ≠ s) → travel kstar s = 0) :
+    ∀ s : ℤ,
+      (GenericData.arrOf (VEndpt.site (mm := mm) kstar) (VEndpt.isArr up) s).card
+        = (GenericData.depOf (VEndpt.site (mm := mm) kstar) (VEndpt.isArr up) s).card := by
+  intro s
+  rw [arrOf_eq_arrAt, depOf_eq_depAt, VEndpt.card_arrAt, VEndpt.card_depAt]
+  have hreal := ConfigLoop.arr_sub_dep_all (m := mm) up s
+    (travel kstar (s - 1)) (travel kstar s)
+    (fun e he => htr (s - 1) e he) (fun h => hz (s - 1) h)
+    (fun e he => htr s e he) (fun h => hz s h)
+  have hfacts := travel_site_facts kstar s (if s = 0 then 1 else 0)
+    (if s = kstar then 1 else 0) (travel kstar (s - 1)) (travel kstar s) rfl rfl rfl rfl
+  have h1 := hfacts.1
+  split_ifs at h1 ⊢ <;> omega
+
+/-- **The walk-graph data of the extended type, unconditional in the balance.** -/
+noncomputable def VEndpt.dataOfAll {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ) (kstar : ℤ)
+    (hk : kstar ≠ 0)
+    (htr : ∀ (s : ℤ) (e : Fin n), (e : ℤ) = s →
+      ConfigLoop.tr (m := mm) up e = travel kstar s)
+    (hz : ∀ s : ℤ, (∀ e : Fin n, (e : ℤ) ≠ s) → travel kstar s = 0) :
+    WalkGraph.Data (VEndpt n mm) :=
+  VEndpt.dataOf up kstar hk (VEndpt.balanced_all up kstar htr hz)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -953,3 +995,5 @@ end EltBridge
 #print axioms EltBridge.GenericData.dataG
 #print axioms EltBridge.VEndpt.dataOf
 #print axioms EltBridge.VEndpt.dataOf_ts
+#print axioms EltBridge.VEndpt.balanced_all
+#print axioms EltBridge.VEndpt.dataOfAll
