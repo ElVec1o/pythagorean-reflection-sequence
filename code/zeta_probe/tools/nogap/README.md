@@ -8156,3 +8156,29 @@ DATA, and the list-level restatement is not written.
 
 So (M3) is one restatement short.  Not one theorem short -- one restatement of a theorem
 already proved.  It stays yellow until that is written and the two sums are equated.
+
+## 2026-09-04 — BLOCK 224: CORRECTION to BLOCK 223, and the induction it missed
+
+BLOCK 223 called the remaining step of (M3) "one restatement".  **That was too
+optimistic.**  `mkPathData` wants `hpar` phrased with `travel kstar`, but a guarded path
+carries only its own `fcur` together with the FLOW relation.  Recovering
+`fcur = travel kstar` from the flow is an INDUCTION, not a restatement.
+
+The argument: `f` and `travel kstar` obey the same flow relation, so their difference has
+zero increment everywhere, hence is constant; and it vanishes off the span, hence is zero.
+
+    const_of_step        a function with zero increment everywhere is constant
+    eq_travel_of_flow    so the flow relation plus vanishing off the span
+                         DETERMINES the travel indicator
+
+0 sorry.  `const_of_step` needs `propext` alone.  Two failures, both mechanical: the
+`Int.induction_on` cases are named `zero`/`succ`/`pred` in this Mathlib, not
+`hz`/`hp`/`hn`; and stating the difference as a lambda blocked `omega`, so it is stated
+pointwise and `const_of_step` is applied with an explicit `(g := ...)`.
+
+**Revised statement of what (M3) still owes.**  With `eq_travel_of_flow` a guarded path
+now supplies everything `mkPathData` needs EXCEPT the packaging of a list back into a
+state function -- reading `st j` off a list at index `j`.  That is indexing, which is
+exactly what the two aborts in this file were about, and it is the honest remaining
+obstacle.  BLOCK 219's `map_idxList_inj` avoided indexing by induction on the list; the
+same trick should work here, going the other way.

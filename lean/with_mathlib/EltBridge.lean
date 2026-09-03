@@ -6725,6 +6725,64 @@ theorem sum_configs_eq_sum_paths (x : ℤ) {A : ℤ} {m : ℕ}
   exact lR_exp_pathWeight_family x m (fun S : SpanData A (A + m) => S.toPath)
     (fun _ => rfl) S
 
+/-! ### Correction to BLOCK 223, and the induction it missed
+
+BLOCK 223 called the remaining step "one restatement".  That was too optimistic.
+`mkPathData` wants `hpar` phrased with `travel kstar`, but a guarded path carries only its
+own `fcur` together with the FLOW relation.  Recovering `fcur = travel kstar` from the
+flow is an induction, not a restatement -- the flow pins down the increments, and the
+vanishing off the span pins down the constant.
+
+The argument: `f` and `travel kstar` satisfy the same flow relation, so their difference
+has zero increment everywhere, hence is constant; and it vanishes off the span, hence is
+zero. -/
+
+/-- A function with zero increment everywhere is constant. -/
+theorem const_of_step {g : ℤ → ℤ} (h : ∀ j : ℤ, g j = g (j + 1)) : ∀ j : ℤ, g j = g 0 := by
+  intro j
+  induction j using Int.induction_on with
+  | zero => rfl
+  | succ k ih => rw [← h k]; exact ih
+  | pred k ih =>
+      have hstep := h (-(k : ℤ) - 1)
+      have he : -(k : ℤ) - 1 + 1 = -(k : ℤ) := by ring
+      rw [he] at hstep
+      rw [hstep]; exact ih
+
+/-- **The flow relation determines the travel indicator.**  A function obeying the flow
+and vanishing off the span IS `travel kstar`.  This is what a guarded path needs before
+`mkPathData` will accept it. -/
+theorem eq_travel_of_flow (kstar A B : ℤ) (f : ℤ → ℤ)
+    (hflow : ∀ j : ℤ, f j + ((SiteCost.vArr (j + 1) : ℕ) : ℤ)
+      = f (j + 1) + (if j + 1 = kstar then (1 : ℤ) else 0))
+    (hzero : ∀ j : ℤ, j < A ∨ B < j → f j = 0)
+    (hA : A ≤ 0) (hB : 0 ≤ B) (hk1 : A ≤ kstar) (hk2 : kstar ≤ B + 1) :
+    ∀ j : ℤ, f j = SiteCost.travel kstar j := by
+  have htravel : ∀ j : ℤ, SiteCost.travel kstar j + ((SiteCost.vArr (j + 1) : ℕ) : ℤ)
+      = SiteCost.travel kstar (j + 1) + (if j + 1 = kstar then (1 : ℤ) else 0) := by
+    intro j
+    refine (SiteCost.travel_site_facts kstar (j + 1) ((SiteCost.vArr (j + 1) : ℕ) : ℤ)
+      (if j + 1 = kstar then (1 : ℤ) else 0)
+      (SiteCost.travel kstar j) (SiteCost.travel kstar (j + 1)) ?_ rfl ?_ rfl).1
+    · unfold SiteCost.vArr; split_ifs <;> simp
+    · congr 1; ring
+  have hstep : ∀ j : ℤ, f j - SiteCost.travel kstar j
+      = f (j + 1) - SiteCost.travel kstar (j + 1) := by
+    intro j
+    have h1 := hflow j
+    have h2 := htravel j
+    omega
+  have hconst := const_of_step (g := fun i => f i - SiteCost.travel kstar i) hstep
+  have hfar : f (A - 1) - SiteCost.travel kstar (A - 1) = 0 := by
+    rw [hzero (A - 1) (Or.inl (by omega)),
+      travel_zero_off kstar A B (A - 1) hA hB hk1 hk2 (Or.inl (by omega))]
+    ring
+  intro j
+  have hj : f j - SiteCost.travel kstar j = f 0 - SiteCost.travel kstar 0 := hconst j
+  have h0 : f (A - 1) - SiteCost.travel kstar (A - 1) = f 0 - SiteCost.travel kstar 0 :=
+    hconst (A - 1)
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14333,3 +14391,5 @@ end EltBridge
 #print axioms EltBridge.encAll_inj
 #print axioms EltBridge.finite_degree_le
 #print axioms EltBridge.sum_configs_eq_sum_paths
+#print axioms EltBridge.const_of_step
+#print axioms EltBridge.eq_travel_of_flow
