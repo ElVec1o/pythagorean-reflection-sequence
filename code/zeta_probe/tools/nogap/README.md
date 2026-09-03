@@ -3916,3 +3916,22 @@ First try, and it is the longest single proof written tonight without a strike -
 obligations, each discharged by pushing the membership through the same two mapping
 facts. Stating the six conclusions explicitly in the signature rather than bundling them
 is what made it mechanical: each one names exactly which mapping fact it needs.
+
+## 2026-09-03 — BLOCK 73: the side-respecting turn at a cut site
+
+  exists_sided_turn_at -- an involution at a cut site exchanging arrivals and departures
+                          WITHIN EACH SIDE: it preserves atTop, hence (the site being
+                          fixed) preserves the EDGE, which is hturn there
+
+Construction: split the site's arrivals and departures by atTop into two balanced pairs
+(BLOCK 71 gives the balance), note the two supports are disjoint because atTop separates
+them, and apply exists_involution_two (BLOCK 72).
+
+So the zero-cost plan at a cut site now EXISTS as a turn, not just as a transportation
+plan. That is the object HasInitialTurnInv needs, and the gap named in BLOCK 70 is one
+assembly step from closing: build the global datum by using this turn at cut sites and
+the arbitrary one elsewhere.
+
+The disjointness argument is the whole content and it is two lines: an end in
+A1 ∪ D1 has atTop = true, one in A2 ∪ D2 has atTop = false. Everything else is pushing
+Finset.mem_filter through six obligations.

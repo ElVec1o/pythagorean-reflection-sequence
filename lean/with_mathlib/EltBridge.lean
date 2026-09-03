@@ -4328,6 +4328,74 @@ theorem exists_involution_two {α : Type*} [Fintype α] [DecidableEq α]
     simp only [if_neg hnot]
     exact h2fix x n3 n4
 
+/-- **The side-respecting turn at a cut site.**
+
+Splitting the site's arrivals and departures by `atTop` gives two balanced pairs with
+disjoint supports, so `exists_involution_two` produces an involution exchanging
+arrivals and departures **within each side**.  It therefore preserves `atTop`, and
+since it also preserves the site, it preserves the edge -- which is `hturn` there. -/
+theorem exists_sided_turn_at {n : ℕ} {m : Fin n → ℕ} (up : Fin n → ℕ) (s : ℤ)
+    (e1 e2 : Fin n) (h1 : (e1 : ℤ) = s - 1) (h2 : (e2 : ℤ) = s)
+    (ht1 : ConfigLoop.tr (m := m) up e1 = 0)
+    (ht2 : ConfigLoop.tr (m := m) up e2 = 0) :
+    ∃ t : EndType.Endpt n m → EndType.Endpt n m, (∀ x, t (t x) = x) ∧
+      (∀ x ∈ EndType.arrAt (m := m) up s, t x ∈ EndType.depAt (m := m) up s) ∧
+      (∀ x ∈ EndType.depAt (m := m) up s, t x ∈ EndType.arrAt (m := m) up s) ∧
+      (∀ x, EndType.siteOf x = s → EndType.atTop (t x) = EndType.atTop x) ∧
+      (∀ x, x ∉ EndType.arrAt (m := m) up s → x ∉ EndType.depAt (m := m) up s →
+        t x = x) := by
+  classical
+  obtain ⟨hT, hB⟩ := sided_balance_of_tr_zero (m := m) up s e1 e2 h1 h2 ht1 ht2
+  set A1 := (EndType.arrAt (m := m) up s).filter (fun x => EndType.atTop x = true)
+  set D1 := (EndType.depAt (m := m) up s).filter (fun x => EndType.atTop x = true)
+  set A2 := (EndType.arrAt (m := m) up s).filter (fun x => EndType.atTop x = false)
+  set D2 := (EndType.depAt (m := m) up s).filter (fun x => EndType.atTop x = false)
+  have hAD : Disjoint (EndType.arrAt (m := m) up s) (EndType.depAt (m := m) up s) :=
+    EndType.arrAt_disjoint_depAt up s
+  have hd1 : Disjoint A1 D1 :=
+    Finset.disjoint_filter_filter hAD
+  have hd2 : Disjoint A2 D2 :=
+    Finset.disjoint_filter_filter hAD
+  have hsep : Disjoint (A1 ∪ D1) (A2 ∪ D2) := by
+    rw [Finset.disjoint_left]
+    intro x hx hx'
+    have h : EndType.atTop x = true := by
+      rcases Finset.mem_union.mp hx with h | h <;>
+        exact (Finset.mem_filter.mp h).2
+    have h' : EndType.atTop x = false := by
+      rcases Finset.mem_union.mp hx' with h | h <;>
+        exact (Finset.mem_filter.mp h).2
+    rw [h] at h'; exact Bool.noConfusion h'
+  obtain ⟨t, hinv, h1AD, h1DA, h2AD, h2DA, hfix⟩ :=
+    exists_involution_two A1 D1 A2 D2 hd1 hT hd2 hB hsep
+  refine ⟨t, hinv, ?_, ?_, ?_, ?_⟩
+  · intro x hx
+    cases hb : EndType.atTop x
+    · exact (Finset.mem_filter.mp (h2AD x (Finset.mem_filter.mpr ⟨hx, hb⟩))).1
+    · exact (Finset.mem_filter.mp (h1AD x (Finset.mem_filter.mpr ⟨hx, hb⟩))).1
+  · intro x hx
+    cases hb : EndType.atTop x
+    · exact (Finset.mem_filter.mp (h2DA x (Finset.mem_filter.mpr ⟨hx, hb⟩))).1
+    · exact (Finset.mem_filter.mp (h1DA x (Finset.mem_filter.mpr ⟨hx, hb⟩))).1
+  · intro x hxs
+    by_cases hx : x ∈ EndType.arrAt (m := m) up s
+    · cases hb : EndType.atTop x
+      · rw [(Finset.mem_filter.mp (h2AD x (Finset.mem_filter.mpr ⟨hx, hb⟩))).2]
+      · rw [(Finset.mem_filter.mp (h1AD x (Finset.mem_filter.mpr ⟨hx, hb⟩))).2]
+    · by_cases hx' : x ∈ EndType.depAt (m := m) up s
+      · cases hb : EndType.atTop x
+        · rw [(Finset.mem_filter.mp (h2DA x (Finset.mem_filter.mpr ⟨hx', hb⟩))).2]
+        · rw [(Finset.mem_filter.mp (h1DA x (Finset.mem_filter.mpr ⟨hx', hb⟩))).2]
+      · rw [hfix x (fun h => hx (Finset.mem_filter.mp h).1)
+          (fun h => hx' (Finset.mem_filter.mp h).1)
+          (fun h => hx (Finset.mem_filter.mp h).1)
+          (fun h => hx' (Finset.mem_filter.mp h).1)]
+  · intro x hx hx'
+    exact hfix x (fun h => hx (Finset.mem_filter.mp h).1)
+      (fun h => hx' (Finset.mem_filter.mp h).1)
+      (fun h => hx (Finset.mem_filter.mp h).1)
+      (fun h => hx' (Finset.mem_filter.mp h).1)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4489,3 +4557,4 @@ end EltBridge
 #print axioms EltBridge.pdCut_travel_zero
 #print axioms EltBridge.sided_balance_of_tr_zero
 #print axioms EltBridge.exists_involution_two
+#print axioms EltBridge.exists_sided_turn_at
