@@ -5386,3 +5386,39 @@ forces `d(-1) = 0` and hence `eps = +1`, which looks narrower than the criterion
 -- but the other branch, `eps = -1` with `d(-1) = 2`, cannot occur when `lo = 0`,
 since edge `-1` is then outside the span; and when `lo < 0` site 0 is interior
 and is counted by the interior branch.  No cut site is missed.
+
+## 2026-09-03 — BLOCK 132: what M4b's last obligation actually asks
+
+A correction first.  BLOCK 131's closing line said the 38 boundary-shield
+elements are "where M4b's remaining gap lives".  That is wrong.  Those 38 are
+where the boundary term changes the *value* of `|Z|`.  M4b is `c = |Z|`;
+`prop:cut` proves `c >= |Z|` everywhere, so the open direction is `c <= |Z|`,
+everywhere, not on 38 elements.
+
+`VEndpt.shield_of_initial` already reduces the shield law to a single
+obligation, `HasInitialTurnInv`, and `TurnInvG` unpacks it to
+
+    CostMerge.MergesMin ...  /\  (edgeOf (E.t x) != edgeOf x  ->  siteOf x not in Zf)
+
+-- a minimal-cost merging pairing in which no turn crosses a cut site.
+
+**What that second condition costs.**  At a cut site both adjacent edges are gap
+edges, so `mu = 2` on each (`mu_eq_two_of_gap`): a cut site has two endpoints on
+each side, not more.  A fixed-point-free involution confined to a two-element
+side is the swap and nothing else (`turn_forced_at_two`), so any two pairings
+satisfying the condition agree there (`cut_site_pairing_has_no_freedom`).  All
+three are **axiom-free**.
+
+So the obligation is not "choose a good pairing at the cut sites".  There is
+nothing to choose: the condition determines the pairing at every cut site
+completely.  `HasInitialTurnInv` is entirely a question about the pairing **off**
+the cut sites, and whether the forced cut-site pairing is compatible with
+minimality.
+
+That sharpens the recorded obstruction.  The two models tried -- derived sign
+(`EndData`) and free sign (`GData`) -- differ in what they allow off the cut
+sites; neither has occupied cut sites together with forced free pairs.  This
+block says the cut sites themselves contribute no degrees of freedom to that
+search, so the obstruction is entirely in the off-cut pairing.
+
+NOT DONE.  No pairing is constructed.  M4b stays where it was.

@@ -6841,3 +6841,56 @@ theorem cut_at_zero_kzero_iff (P : SiteCost.PathData) (hk : P.kstar = 0) :
     · rintro ⟨hδ, -, -⟩; exact absurd hδ (by simp)
 
 #print axioms cut_at_zero_kzero_iff
+
+/-!
+### What `TurnInvG` forces at a cut site
+
+`VEndpt.shield_of_initial` reduces the shield law to one obligation,
+`HasInitialTurnInv`: a `D` with `TurnInvG`, which unpacks to
+
+    CostMerge.MergesMin ...  /\  (forall x, edgeOf (E.t x) != edgeOf x -> siteOf x not in Zf)
+
+-- a minimal-cost merging pairing in which **no turn crosses a cut site**.
+
+That second condition is not a soft constraint.  At a cut site both adjacent
+edges are gap edges, so `mu = 2` on each, and a turn confined to one side of a
+2+2 site has no freedom at all: the pairing there is forced.  So the obligation
+is not "choose a good pairing at the cut sites" -- there is nothing to choose.
+It is entirely a question about the pairing **off** the cut sites, and whether
+the one forced at them is compatible with minimality.
+-/
+
+/-- A gap edge carries exactly two crossings. -/
+theorem mu_eq_two_of_gap (P : SiteCost.PathData) (j : ℤ)
+    (hd : P.d j = 0) (hf : SiteCost.travel P.kstar j = 0) : P.mu j = 2 := by
+  unfold SiteCost.PathData.mu; rw [if_pos ⟨hd, hf⟩]
+
+/-- **The turn is forced at a cut site.**  A fixed-point-free involution on a
+two-element side has no choice: it is the swap.  So the `TurnInvG` condition,
+which confines the turn to one side at a cut site, determines it there. -/
+theorem turn_forced_at_two {α : Type*} (t : α → α) (htf : ∀ x, t x ≠ x)
+    (x y : α) (hside : ∀ z, (z = x ∨ z = y) → (t z = x ∨ t z = y)) :
+    t x = y ∧ t y = x := by
+  refine ⟨?_, ?_⟩
+  · rcases hside x (Or.inl rfl) with h | h
+    · exact absurd h (htf x)
+    · exact h
+  · rcases hside y (Or.inr rfl) with h | h
+    · exact h
+    · exact absurd h (htf y)
+
+/-- The obligation restated: with the cut-site pairing forced, `HasInitialTurnInv`
+asks only whether a minimal merging pairing that agrees with it off the cut sites
+exists.  There is no freedom left at the cut sites themselves. -/
+theorem cut_site_pairing_has_no_freedom {α : Type*} (t t' : α → α)
+    (htf : ∀ x, t x ≠ x) (htf' : ∀ x, t' x ≠ x) (x y : α)
+    (hs : ∀ z, (z = x ∨ z = y) → (t z = x ∨ t z = y))
+    (hs' : ∀ z, (z = x ∨ z = y) → (t' z = x ∨ t' z = y)) :
+    t x = t' x ∧ t y = t' y := by
+  obtain ⟨h1, h2⟩ := turn_forced_at_two t htf x y hs
+  obtain ⟨h3, h4⟩ := turn_forced_at_two t' htf' x y hs'
+  exact ⟨by rw [h1, h3], by rw [h2, h4]⟩
+
+#print axioms mu_eq_two_of_gap
+#print axioms turn_forced_at_two
+#print axioms cut_site_pairing_has_no_freedom
