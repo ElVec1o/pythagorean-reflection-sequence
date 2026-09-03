@@ -5929,3 +5929,42 @@ mathematics, not unfinished formalisation, and that is now checked atom by atom 
 of inferred from the colours.  Continued Lean work will not move them; the two that
 could be moved by better statements have been (M4b's blocker proved, H1a's contract
 corrected).
+
+## 2026-09-03 — BLOCK 147: the free-pair obstruction is not on the shield law's path
+
+BLOCK 146 said M4b needs a third cost model.  It may not: the free-sign `GData` may
+already be it, and the recorded blocker may be aimed at a different theorem.
+
+`free_pair_of_minimal_fails_in_free_model` says a cost-minimal `GData` datum can have a
+cross-walk pair admitting no free SWAP.  That machinery serves `MergesMin` -- merging
+everything into ONE walk, which is `thm:nogap` (M6), already green.
+
+The shield law's upper bound is a different statement with a different route.
+`walkCount_le_runs_blk` concludes `walkCount <= |Z| + 1` from `hedge` and `hsep`, and
+`hsep` asks only that each RUN be connected.  No swap and no free pair occurs in it.
+
+What supplies `hsep` is BLOCK 135's dichotomy, and both halves are already proved:
+off a cut site a passing pairing ties or beats the bouncing one
+(`pass_le_bounce_of_left_differs`), so a minimal pairing that passes exists there; at a
+cut site the bounce strictly wins (`bounce_beats_pass_at_cut`), so none passes.  A pass
+links the two edges it crosses -- `reachable_turn`, already in the file -- so a run
+whose interior sites all pass is connected.
+
+The step that makes the local-to-global upgrade legitimate is `sum_min_is_min`: total
+cost is a sum over sites, so minimal local choices assemble into a global minimum.  That
+is why "some minimal pairing passes at each non-cut site" becomes "some minimal pairing
+passes at every non-cut site at once" -- exactly the upgrade `cutturn mu4` measured over
+29520 configurations with zero exceptions, and over 218112 interior non-cut sites at
+n = 5.
+
+And the cut-site half of GData is ALREADY BUILT and was not being used: `class_balance_of_cut`
+gives per-class balance at a cut site, and `exists_zero_cost_turn` produces the
+class-preserving involution from it.  BLOCK 138 rebuilt that construction for the
+derived-sign model, where BLOCK 139 then proved it unusable; in `GData` the classes are
+independent, so `no_class_holds_both` fails and the same construction is live.
+
+NOT DONE.  This is a route, not a proof.  What is proved is that the recorded
+obstruction is aimed elsewhere, that both halves of the dichotomy hold, and that the
+assembly principle is valid.  Chaining `reachable_turn` along a run to get `hsep`, and
+feeding `hedge`, are not written.  M4b stays yellow -- but the reason has changed from
+"a proved two-model bind" to "an unbuilt chain in the free-sign model".

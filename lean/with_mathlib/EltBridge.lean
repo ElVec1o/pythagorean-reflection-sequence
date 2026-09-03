@@ -8157,3 +8157,44 @@ end EltBridge
 
 #print axioms EltBridge.Elt.feps_spec
 #print axioms EltBridge.Elt.reachable_feps
+
+namespace EltBridge
+
+/-! ### The free-pair obstruction is not on the shield law's path
+
+`free_pair_of_minimal_fails_in_free_model` is about the SWAP criterion: a cost-minimal
+`GData` datum can have a cross-walk pair admitting no free swap.  That machinery serves
+`MergesMin` -- merging everything into ONE walk, which is `thm:nogap`.
+
+The shield law's upper bound is a different statement and takes a different route.
+`walkCount_le_runs_blk` concludes `walkCount ≤ |Z| + 1` from `hedge` and `hsep`, and
+`hsep` asks only that each RUN be connected.  No swap and no free pair appears in it.
+
+What supplies `hsep` is BLOCK 135's dichotomy: off a cut site a passing pairing ties or
+beats the bouncing one (`pass_le_bounce_of_left_differs`), so a minimal pairing that
+passes exists there; at a cut site the bounce strictly wins
+(`bounce_beats_pass_at_cut`), so none passes.  Passes link adjacent edges, so a run
+whose interior sites all pass is connected.
+
+The step that makes this legitimate is that the choice is free site by site: total cost
+is a sum over sites, so choosing a minimal local pairing at each site independently
+assembles into a global minimum.  That is the principle below, and it is why "some
+minimal pairing passes at each non-cut site" upgrades to "some minimal pairing passes
+at every non-cut site at once" -- the upgrade `cutturn mu4` measured over 29520
+configurations. -/
+
+/-- **Per-site minimal choices assemble into a global minimum**, because the cost is a
+sum over sites and the sites are independent. -/
+theorem sum_min_is_min {ι : Type*} (S : Finset ι) (f g : ι → ℕ)
+    (h : ∀ i ∈ S, f i ≤ g i) : ∑ i ∈ S, f i ≤ ∑ i ∈ S, g i :=
+  Finset.sum_le_sum h
+
+-- A pass links the two edges it crosses: an end and its turn are adjacent in the
+-- walk graph, so if the turn carries an end of one edge to an end of another, the two
+-- lie in one component.  That is `reachable_turn`, already in this file (BLOCK 15);
+-- it is not restated here.  Chaining it along a run is what `hsep` needs.
+
+end EltBridge
+
+#print axioms EltBridge.sum_min_is_min
+#print axioms EltBridge.reachable_turn
