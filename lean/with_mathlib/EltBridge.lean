@@ -1986,6 +1986,33 @@ theorem witElt_defect_zero (ds : Bool → Bool) :
   Elt.defect_zero witElt ds 1 (by simp) (by rw [witElt_pd_A]; omega)
     witElt_edge_lt witElt_hcov0 (Sum.inr false)
 
+/-! ### The cut set of a group element
+
+`SiteCost.PathData.cut` is `alphaAt = betaAt = PhiAt = 0`.  Away from the two virtual
+sites the three virtual counters vanish, and the condition reduces to the plain
+read-off `d(s-1) = 0`, `d(s) = 0`, `f(s-1) = 0`.  Transported through the shift, this
+is the cut set of a group element. -/
+
+/-- A cut site of the shifted configuration. -/
+def pdCutAt (P : SiteCost.PathData) (s : ℤ) : Prop := P.cut (P.A + s)
+
+/-- **The plain characterisation, away from the two virtual sites.** -/
+theorem pdCutAt_iff (P : SiteCost.PathData) (s : ℤ)
+    (h0 : P.A + s ≠ 0) (hk : P.A + s ≠ P.kstar) :
+    pdCutAt P s ↔
+      (P.d (P.A + s - 1) = 0 ∧ P.d (P.A + s) = 0 ∧ P.f (P.A + s - 1) = 0) := by
+  unfold pdCutAt SiteCost.PathData.cut SiteCost.PathData.alphaAt
+    SiteCost.PathData.betaAt SiteCost.PathData.PhiAt SiteCost.PathData.vL
+    SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  rw [if_neg h0]
+  simp only [if_neg hk, ite_self, Nat.cast_zero, mul_zero, sub_zero, add_zero]
+
+/-- **A cut site has no deposit on either adjacent edge.** -/
+theorem pdCutAt_d_zero (P : SiteCost.PathData) (s : ℤ)
+    (h0 : P.A + s ≠ 0) (hk : P.A + s ≠ P.kstar) (h : pdCutAt P s) :
+    P.d (P.A + s - 1) = 0 ∧ P.d (P.A + s) = 0 :=
+  ⟨((pdCutAt_iff P s h0 hk).mp h).1, ((pdCutAt_iff P s h0 hk).mp h).2.1⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2066,3 +2093,5 @@ end EltBridge
 #print axioms EltBridge.witElt_single_walk
 #print axioms EltBridge.Elt.defect_zero
 #print axioms EltBridge.witElt_defect_zero
+#print axioms EltBridge.pdCutAt_iff
+#print axioms EltBridge.pdCutAt_d_zero

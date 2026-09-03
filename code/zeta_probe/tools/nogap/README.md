@@ -3033,3 +3033,25 @@ REMAINING QUALIFIER: M3 (prop:cut, c >= |Z|) and M4b (the shield law) are about 
 set Z, which has no element-level form yet -- Z is defined on a PathData via alphaAt /
 betaAt / PhiAt, so the element form needs those transported through the re-indexing.
 That is the next genuine piece of work, not bookkeeping.
+
+## 2026-09-03 — BLOCK 37: the cut set of a group element
+
+  pdCutAt        -- a cut site of the SHIFTED configuration: P.cut (P.A + s)
+  pdCutAt_iff    -- away from the two virtual sites the three virtual counters vanish
+                    and the condition reduces to the plain read-off
+                        d(s-1) = 0,  d(s) = 0,  f(s-1) = 0
+  pdCutAt_d_zero -- so a cut site has no deposit on either adjacent edge
+
+Both depend on `propext` alone -- no choice, no classical reasoning. The whole content
+is that `vArr`, `vL`, `vR` are supported on `s = 0` and `s = kstar`, so off those two
+sites the definition of `cut` collapses to the read-off. That collapse is what makes
+the element-level cut set computable from `d` and `f`.
+
+Note for the record: this is the same fact that BLOCK 3's `cutSitesZ` got WRONG by
+omitting the virtual-event condition. Stated here with the exclusions explicit as
+hypotheses (h0, hk) rather than left implicit, which is why it is three lines.
+
+REMAINING FOR M3/M4b at element level: the cut set as a Finset over the shifted range,
+and the transport of the shield-law chain (RunInv, local_of_hturn, the runs) from
+Endpt to VEndpt. The chain is generic in the end type in ConfigLoop only up to the
+Endpt-specific `hZ`; that is the piece to redo.
