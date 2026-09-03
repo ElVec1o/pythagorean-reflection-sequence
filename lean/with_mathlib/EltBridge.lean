@@ -7063,3 +7063,177 @@ theorem turnInv_of_mergesMin_of_cross_zero {n : ℕ} {m : Fin n → ℕ}
   ⟨hD, EltBridge.hturn_of_cross_zero up ds Zf hbal hcross⟩
 
 #print axioms turnInv_of_mergesMin_of_cross_zero
+
+/-! ### The zero-cost plan at a cut site is the diagonal one
+
+BLOCK 137 reduced M4b to realising a zero-cost plan as a turn.  The general problem
+-- a bijection realising an arbitrary 4x4 transportation matrix -- is not the one that
+has to be solved.  At a **cut** site the plan is forced to be diagonal, and a diagonal
+plan is realised by four bijections between equinumerous class sets.
+
+Writing `Ap Am Bp Bm` for the arrival class counts and `Cp Cm Dp Dm` for the
+departure ones, `alpha = (Cp-Cm) - (Ap-Am)` and `Phi = (Ap+Am) - (Cp+Cm)` vanish
+together exactly when `Ap = Cp` and `Am = Cm`; `beta = (Bp-Bm) - (Dp-Dm)` vanishes,
+and the site's own arrival/departure balance supplies `Bp+Bm = Dp+Dm`, giving
+`Bp = Dp` and `Bm = Dm`.
+-/
+
+/-- **At a cut site the arrival and departure class counts agree, class by class.**
+So the only zero-cost plan is the diagonal, and realising it is four bijections
+between equinumerous sets rather than a transportation matrix. -/
+theorem cut_classes_match (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (halpha : SiteCost.alpha Ap Am Cp Cm = 0)
+    (hbeta : SiteCost.beta Bp Bm Dp Dm = 0)
+    (hphi : SiteCost.Phi Ap Am Cp Cm = 0)
+    (hbal : Ap + Am + Bp + Bm = Cp + Cm + Dp + Dm) :
+    Ap = Cp ∧ Am = Cm ∧ Bp = Dp ∧ Bm = Dm := by
+  unfold SiteCost.alpha at halpha
+  unfold SiteCost.beta at hbeta
+  unfold SiteCost.Phi at hphi
+  omega
+
+/-- The balance hypothesis is not extra: it is the site's arrival/departure balance,
+which `hbal` already supplies wherever a plan is formed. -/
+theorem cut_classes_match_of_cards (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (hcut : SiteCost.siteValue Ap Am Bp Bm Cp Cm Dp Dm = 0)
+    (hbal : Ap + Am + Bp + Bm = Cp + Cm + Dp + Dm) :
+    Ap = Cp ∧ Am = Cm ∧ Bp = Dp ∧ Bm = Dm := by
+  unfold SiteCost.siteValue at hcut
+  have h1 : SiteCost.alpha Ap Am Cp Cm = 0 := by
+    have : (SiteCost.alpha Ap Am Cp Cm).natAbs = 0 := by omega
+    omega
+  have h2 : SiteCost.beta Bp Bm Dp Dm = 0 := by
+    have : (SiteCost.beta Bp Bm Dp Dm).natAbs = 0 := by omega
+    omega
+  have h3 : SiteCost.Phi Ap Am Cp Cm = 0 := by
+    have : (SiteCost.Phi Ap Am Cp Cm).natAbs = 0 := by omega
+    omega
+  exact cut_classes_match Ap Am Bp Bm Cp Cm Dp Dm h1 h2 h3 hbal
+
+#print axioms cut_classes_match
+#print axioms cut_classes_match_of_cards
+
+/-- **The turn realising the diagonal plan.**  Four class pairs, each equinumerous by
+`cut_classes_match`, are matched simultaneously: `exists_involution_two` handles two at
+a time and `combine_involutions` glues the halves across their disjoint supports. -/
+theorem exists_involution_four {α : Type*} [Fintype α] [DecidableEq α]
+    (A0 D0 A1 D1 A2 D2 A3 D3 : Finset α)
+    (hd0 : Disjoint A0 D0) (hc0 : A0.card = D0.card)
+    (hd1 : Disjoint A1 D1) (hc1 : A1.card = D1.card)
+    (hd2 : Disjoint A2 D2) (hc2 : A2.card = D2.card)
+    (hd3 : Disjoint A3 D3) (hc3 : A3.card = D3.card)
+    (h01 : Disjoint (A0 ∪ D0) (A1 ∪ D1))
+    (h23 : Disjoint (A2 ∪ D2) (A3 ∪ D3))
+    (hLR : Disjoint ((A0 ∪ D0) ∪ (A1 ∪ D1)) ((A2 ∪ D2) ∪ (A3 ∪ D3))) :
+    ∃ t : α → α, (∀ x, t (t x) = x) ∧
+      (∀ x ∈ A0, t x ∈ D0) ∧ (∀ x ∈ D0, t x ∈ A0) ∧
+      (∀ x ∈ A1, t x ∈ D1) ∧ (∀ x ∈ D1, t x ∈ A1) ∧
+      (∀ x ∈ A2, t x ∈ D2) ∧ (∀ x ∈ D2, t x ∈ A2) ∧
+      (∀ x ∈ A3, t x ∈ D3) ∧ (∀ x ∈ D3, t x ∈ A3) := by
+  classical
+  obtain ⟨t1, t1inv, t1a0, t1d0, t1a1, t1d1, t1fix⟩ :=
+    EltBridge.exists_involution_two A0 D0 A1 D1 hd0 hc0 hd1 hc1 h01
+  obtain ⟨t2, t2inv, t2a2, t2d2, t2a3, t2d3, t2fix⟩ :=
+    EltBridge.exists_involution_two A2 D2 A3 D3 hd2 hc2 hd3 hc3 h23
+  set S1 : Finset α := (A0 ∪ D0) ∪ (A1 ∪ D1) with hS1
+  set S2 : Finset α := (A2 ∪ D2) ∪ (A3 ∪ D3) with hS2
+  have memS1 : ∀ x : α, x ∈ S1 ↔ (x ∈ A0 ∨ x ∈ D0 ∨ x ∈ A1 ∨ x ∈ D1) := by
+    intro x; simp [hS1, Finset.mem_union, or_assoc]
+  have memS2 : ∀ x : α, x ∈ S2 ↔ (x ∈ A2 ∨ x ∈ D2 ∨ x ∈ A3 ∨ x ∈ D3) := by
+    intro x; simp [hS2, Finset.mem_union, or_assoc]
+  have h1S : ∀ x ∈ S1, t1 x ∈ S1 := by
+    intro x hx
+    rcases (memS1 x).mp hx with h | h | h | h
+    · exact (memS1 _).mpr (Or.inr (Or.inl (t1a0 x h)))
+    · exact (memS1 _).mpr (Or.inl (t1d0 x h))
+    · exact (memS1 _).mpr (Or.inr (Or.inr (Or.inr (t1a1 x h))))
+    · exact (memS1 _).mpr (Or.inr (Or.inr (Or.inl (t1d1 x h))))
+  have h2S : ∀ x ∈ S2, t2 x ∈ S2 := by
+    intro x hx
+    rcases (memS2 x).mp hx with h | h | h | h
+    · exact (memS2 _).mpr (Or.inr (Or.inl (t2a2 x h)))
+    · exact (memS2 _).mpr (Or.inl (t2d2 x h))
+    · exact (memS2 _).mpr (Or.inr (Or.inr (Or.inr (t2a3 x h))))
+    · exact (memS2 _).mpr (Or.inr (Or.inr (Or.inl (t2d3 x h))))
+  have h1fix : ∀ x, x ∉ S1 → t1 x = x := by
+    intro x hx
+    have h := fun hc => hx ((memS1 x).mpr hc)
+    exact t1fix x (fun c => h (Or.inl c)) (fun c => h (Or.inr (Or.inl c)))
+      (fun c => h (Or.inr (Or.inr (Or.inl c)))) (fun c => h (Or.inr (Or.inr (Or.inr c))))
+  have h2fix : ∀ x, x ∉ S2 → t2 x = x := by
+    intro x hx
+    have h := fun hc => hx ((memS2 x).mpr hc)
+    exact t2fix x (fun c => h (Or.inl c)) (fun c => h (Or.inr (Or.inl c)))
+      (fun c => h (Or.inr (Or.inr (Or.inl c)))) (fun c => h (Or.inr (Or.inr (Or.inr c))))
+  obtain ⟨t, tinv, tS1, tS2, -, -, -⟩ :=
+    EltBridge.combine_involutions t1 t2 S1 S2 t1inv h1S h1fix t2inv h2S h2fix hLR
+  refine ⟨t, tinv, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x hx; rw [tS1 x ((memS1 x).mpr (Or.inl hx))]; exact t1a0 x hx
+  · intro x hx; rw [tS1 x ((memS1 x).mpr (Or.inr (Or.inl hx)))]; exact t1d0 x hx
+  · intro x hx; rw [tS1 x ((memS1 x).mpr (Or.inr (Or.inr (Or.inl hx))))]; exact t1a1 x hx
+  · intro x hx; rw [tS1 x ((memS1 x).mpr (Or.inr (Or.inr (Or.inr hx))))]; exact t1d1 x hx
+  · intro x hx; rw [tS2 x ((memS2 x).mpr (Or.inl hx))]; exact t2a2 x hx
+  · intro x hx; rw [tS2 x ((memS2 x).mpr (Or.inr (Or.inl hx)))]; exact t2d2 x hx
+  · intro x hx; rw [tS2 x ((memS2 x).mpr (Or.inr (Or.inr (Or.inl hx))))]; exact t2a3 x hx
+  · intro x hx; rw [tS2 x ((memS2 x).mpr (Or.inr (Or.inr (Or.inr hx))))]; exact t2d3 x hx
+
+#print axioms exists_involution_four
+
+/-- **The zero-cost turn at a cut site exists.**  This is the construction BLOCK 137
+found missing: a turn realising the zero-cost plan.  It needs no transportation
+matrix, because at a cut site the plan is diagonal -- the class counts agree
+(`cut_classes_match`) -- so the turn is four simultaneous class-to-class matchings
+(`exists_involution_four`).
+
+Every pair it makes is same-class, which is a bounce, so the turn costs nothing and
+crosses nothing. -/
+theorem exists_class_matching_at_cut {α : Type*} [Fintype α] [DecidableEq α]
+    (Arr Dep : Finset α) (cls : α → Fin 4) (hdisj : Disjoint Arr Dep)
+    (hcard : ∀ i : Fin 4,
+      (Arr.filter (fun a => cls a = i)).card = (Dep.filter (fun b => cls b = i)).card) :
+    ∃ t : α → α, (∀ x, t (t x) = x) ∧
+      (∀ i : Fin 4, ∀ x ∈ Arr.filter (fun a => cls a = i),
+        t x ∈ Dep.filter (fun b => cls b = i)) ∧
+      (∀ i : Fin 4, ∀ x ∈ Dep.filter (fun b => cls b = i),
+        t x ∈ Arr.filter (fun a => cls a = i)) := by
+  classical
+  set A : Fin 4 → Finset α := fun i => Arr.filter (fun a => cls a = i) with hA
+  set D : Fin 4 → Finset α := fun i => Dep.filter (fun b => cls b = i) with hD
+  have hAD : ∀ i, Disjoint (A i) (D i) := fun i => Finset.disjoint_filter_filter hdisj
+  -- everything in the `i`-block carries class `i`; that is all the disjointness needs
+  have hcls : ∀ (i : Fin 4) (x : α), x ∈ A i ∪ D i → cls x = i := by
+    intro i x hx
+    rcases Finset.mem_union.mp hx with h | h <;>
+      · simp only [hA, hD, Finset.mem_filter] at h
+        exact h.2
+  have hsep : ∀ i j : Fin 4, i ≠ j → Disjoint (A i ∪ D i) (A j ∪ D j) := by
+    intro i j hij
+    rw [Finset.disjoint_left]
+    intro x hx hy
+    exact hij ((hcls i x hx).symm.trans (hcls j x hy))
+  have hLR : Disjoint ((A 0 ∪ D 0) ∪ (A 1 ∪ D 1)) ((A 2 ∪ D 2) ∪ (A 3 ∪ D 3)) := by
+    rw [Finset.disjoint_left]
+    intro x hx hy
+    have h1 : cls x = 0 ∨ cls x = 1 := by
+      rcases Finset.mem_union.mp hx with h | h
+      · exact Or.inl (hcls 0 x h)
+      · exact Or.inr (hcls 1 x h)
+    have h2 : cls x = 2 ∨ cls x = 3 := by
+      rcases Finset.mem_union.mp hy with h | h
+      · exact Or.inl (hcls 2 x h)
+      · exact Or.inr (hcls 3 x h)
+    rcases h1 with h1 | h1 <;> rcases h2 with h2 | h2 <;>
+      · rw [h1] at h2; exact absurd h2 (by decide)
+  obtain ⟨t, tinv, a0, d0, a1, d1, a2, d2, a3, d3⟩ :=
+    exists_involution_four (A 0) (D 0) (A 1) (D 1) (A 2) (D 2) (A 3) (D 3)
+      (hAD 0) (hcard 0) (hAD 1) (hcard 1) (hAD 2) (hcard 2) (hAD 3) (hcard 3)
+      (hsep 0 1 (by decide)) (hsep 2 3 (by decide)) hLR
+  refine ⟨t, tinv, ?_, ?_⟩
+  · intro i x hx
+    fin_cases i
+    exacts [a0 x hx, a1 x hx, a2 x hx, a3 x hx]
+  · intro i x hx
+    fin_cases i
+    exacts [d0 x hx, d1 x hx, d2 x hx, d3 x hx]
+
+#print axioms exists_class_matching_at_cut

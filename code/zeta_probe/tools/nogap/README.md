@@ -5616,3 +5616,36 @@ arrivals -> departures realising it.  That is a finite combinatorial statement, 
 `exists_involution_two` is the same shape in a special case.
 
 Ledger updated for both M3 and M4b.  Neither is green: the construction is not built.
+
+## 2026-09-03 — BLOCK 138: the missing construction, built
+
+BLOCK 137 reduced M4b to one thing: realising a zero-cost plan as an actual turn,
+so that `site_cost_le_of_global` has a rival to compare against.  Built.
+
+The general problem -- a bijection realising an arbitrary 4x4 transportation matrix
+-- is not the one that had to be solved.  At a **cut** site the plan is forced to be
+diagonal:
+
+    alpha = (Cp-Cm) - (Ap-Am) = 0  and  Phi = (Ap+Am) - (Cp+Cm) = 0   =>  Ap = Cp, Am = Cm
+    beta  = (Bp-Bm) - (Dp-Dm) = 0  with the site's own balance          =>  Bp = Dp, Bm = Dm
+
+so the arrival and departure class counts agree class by class
+(`cut_classes_match`, and `cut_classes_match_of_cards` reading it off
+`siteValue = 0`).  A diagonal plan is realised by four simultaneous class-to-class
+matchings, and every pair it makes is same-class, i.e. a bounce, so the turn costs
+nothing and crosses nothing.
+
+Three new theorems, 0 sorry:
+
+    cut_classes_match              the four class counts agree at a cut site
+    exists_involution_four         four equinumerous class pairs matched at once
+                                   (exists_involution_two twice, glued by
+                                   combine_involutions across disjoint supports)
+    exists_class_matching_at_cut   the two composed: the zero-cost turn exists
+
+NOT DONE.  What remains is the wiring, not a new idea: the constructed turn has to be
+assembled into a full `WalkGraph.Data` agreeing with the given one off site `s`, so
+that `site_cost_le_of_global` applies and forces the given turn's site cost to 0,
+whence `cross_eq_zero_of_cost_zero` and `hcross`.  That is another
+`combine_involutions`, against the existing turn rather than between two halves.
+M4b is not green yet.
