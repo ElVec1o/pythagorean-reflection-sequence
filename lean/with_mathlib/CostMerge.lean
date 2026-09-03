@@ -343,6 +343,64 @@ theorem hasFreePair_of_minimal (d : EndData.Data α) (edgeOf siteOf : α → ℤ
     free_pair_of_minimal d atTop D a a' hside hab hdb haarr ha'arr hda hda' hne
       h1 h2 h3 (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
 
+theorem hasFreePair_of_minimal_local (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
+    (atTop : α → Bool) (D : Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hsW : ∀ w x, (graph D).Reachable w x → siteOf x = WalkSupport.wLo edgeOf (graph D) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ w x, (graph D).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (graph D) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ w y, edgeOf y = WalkSupport.wLo edgeOf (graph D) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (hta : ∀ e, d.isArr (D.t e) = !d.isArr e)
+    (hpsite : ∀ x, siteOf (D.p x) ≠ siteOf x)
+    (z : α)
+    (hzmax : ∀ w : α, WalkSupport.wLo edgeOf (graph D) w ≤ WalkSupport.wLo edgeOf (graph D) z)
+    (hcov : ∀ v : α, edgeOf v < WalkSupport.wLo edgeOf (graph D) z →
+      ∃ y : α, edgeOf y = WalkSupport.wLo edgeOf (graph D) z - 1 ∧ atTop y = true)
+    (hmin : ∀ (b b' : α), siteOf b = siteOf b' →
+      d.isArr b = true → d.isArr b' = true → ∀ h1 h2 h3,
+      ¬ costOf d (swapData D b (D.t b) b' (D.t b') h1 h2 h3) < costOf d D) :
+    HasFreePair d siteOf D := by
+  intro hmany
+  obtain ⟨a, hza, hasite, hab, haarr⟩ :=
+    WalkSupport.maximiser_has_bottom_arrival_disj edgeOf siteOf atTop d.isArr D
+      hpe hpt hts hta z (fun x hx he hb => hsX z x hx he hb)
+      (fun x hx hsx => hsW z x hx hsx)
+  obtain ⟨z', hzz'⟩ := ConfigMerge.exists_other_walk D hmany z
+  obtain ⟨y, hys, hyn⟩ :=
+    WalkSupport.other_end_at_wLo_local edgeOf siteOf atTop D hpe hpt hsX z z'
+      (fun y hy hyt => hsT z y hy hyt) hcov hzz' (hzmax z')
+  obtain ⟨a', hya', ha'site, ha'arr⟩ :=
+    WalkSupport.walk_has_arrival_at_site siteOf d.isArr D hts hta y y
+      (SimpleGraph.Reachable.refl _) _ hys
+  have hna' : ¬ (graph D).Reachable z a' := fun hc => hyn (hc.trans hya'.symm)
+  have hne : a ≠ a' := fun h => hna' (h ▸ hza)
+  have hdb : atTop (D.t a) = false :=
+    WalkSupport.maximiser_departure_bottom_disj edgeOf siteOf atTop D hts z a hza hasite
+      (hsW z (D.t a) (hza.trans (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl)))
+        (by rw [hts a]; exact hasite))
+  have hda : d.isArr (D.t a) = false := by rw [hta, haarr]; rfl
+  have hda' : d.isArr (D.t a') = false := by rw [hta, ha'arr]; rfl
+  have hsplit : ¬ (graph D).Reachable a a' := fun hc => hna' (hza.trans hc)
+  have hss : siteOf a' = siteOf a := by rw [hasite, ha'site]
+  have h1 := swapT_invol D.t_invol (rfl : D.t a = D.t a) (rfl : D.t a' = D.t a')
+    (ConfigMerge.dep_ne_arr' D rfl) (ConfigMerge.dep_ne_other D rfl hsplit)
+    (ConfigMerge.ne_of_split D hsplit)
+    (ConfigMerge.dep_ne_dep' D rfl rfl (ConfigMerge.ne_of_split D hsplit))
+    (Ne.symm (ConfigMerge.dep_ne_arr' D rfl)) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h2 := swapT_ne D.t a (D.t a) a' (D.t a') D.t_ne
+    (ConfigMerge.dep_ne_other D rfl hsplit) (ConfigMerge.dep_ne_other' D rfl hsplit)
+  have h3 := partner_ne_swapT siteOf D.p D.t a (D.t a) a' (D.t a')
+    hpsite hts (hts a) hss (by rw [hts a', hss])
+  exact ⟨a, a', hss.symm, haarr, ha'arr, hda, hda', hsplit,
+    free_pair_of_minimal d atTop D a a' hside hab hdb haarr ha'arr hda hda' hne
+      h1 h2 h3 (hmin a a' hss.symm haarr ha'arr h1 h2 h3)⟩
+
 /-! ### Global minimality, which the descent preserves
 
 Local minimality is awkward to carry: the merge could in principle open up a cheaper
@@ -407,6 +465,61 @@ theorem min_merges_to_one (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p�
     rw [hp]; exact WalkSupport.p_site_ne edgeOf siteOf atTop p₀ hsite hpe hpt
   obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
     hasFreePair_of_minimal d edgeOf siteOf atTop E hside hsite
+      (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta hpsite z hzmax hcov
+      (hmin_of_mergesMin siteOf p₀ d E ⟨⟨hp, hts, hta⟩, hmin⟩) hmany
+  have haa' : a' ≠ a := ConfigMerge.ne_of_split E hsplit
+  have h1 := swapT_invol E.t_invol (rfl : E.t a = E.t a) (rfl : E.t a' = E.t a')
+    (ConfigMerge.dep_ne_arr' E rfl) (ConfigMerge.dep_ne_other E rfl hsplit) haa'
+    (ConfigMerge.dep_ne_dep' E rfl rfl haa')
+    (Ne.symm (ConfigMerge.dep_ne_arr' E rfl)) (ConfigMerge.dep_ne_other' E rfl hsplit)
+  have h2 := swapT_ne E.t a (E.t a) a' (E.t a') E.t_ne
+    (ConfigMerge.dep_ne_other E rfl hsplit) (ConfigMerge.dep_ne_other' E rfl hsplit)
+  have h3 := partner_ne_swapT siteOf E.p E.t a (E.t a) a' (E.t a')
+    hpsite hts (hts a) hss.symm (by rw [hts a', hss])
+  have hcost : costOf d (swapData E a (E.t a) a' (E.t a') h1 h2 h3) = costOf d E :=
+    cost_swapData d E a a' harr harr' hd hd' (Ne.symm haa') hshared h1 h2 h3
+  refine ⟨swapData E a (E.t a) a' (E.t a') h1 h2 h3,
+    ⟨merges_swapData siteOf p₀ d E ⟨hp, hts, hta⟩ a a' hss harr harr' h1 h2 h3,
+     fun F hF => by rw [hcost]; exact hmin F hF⟩,
+    ConfigMerge.descent_of_split E a a' hsplit h1 h2 h3⟩
+
+theorem min_merges_to_one_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (p₀ : α → α)
+    (d : EndData.Data α)
+    (hside : ∀ x, d.side x = atTop x)
+    (hpsite : ∀ x, siteOf (p₀ x) ≠ siteOf x)
+    (hsW : ∀ E : Data α, E.p = p₀ → ∀ w x, (graph E).Reachable w x →
+      siteOf x = WalkSupport.wLo edgeOf (graph E) w →
+      atTop x = false ∨ siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsX : ∀ E : Data α, E.p = p₀ → ∀ w x, (graph E).Reachable w x →
+      edgeOf x = WalkSupport.wLo edgeOf (graph E) w → atTop x = false →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (hsT : ∀ E : Data α, E.p = p₀ → ∀ w y,
+      edgeOf y = WalkSupport.wLo edgeOf (graph E) w - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hpe : ∀ x, edgeOf (p₀ x) = edgeOf x)
+    (hpt : ∀ x, atTop (p₀ x) = !atTop x)
+    (hcov0 : ∀ j : ℤ, (∃ u : α, edgeOf u = j) → (∃ v : α, edgeOf v < j) →
+      ∃ y : α, edgeOf y = j - 1 ∧ atTop y = true)
+    (z₀ : α)
+    (D : Data α) (hD : MergesMin siteOf d.isArr p₀ d D) :
+    ∃ D', MergesMin siteOf d.isArr p₀ d D' ∧ walkCount D' ≤ 1 := by
+  classical
+  refine ConfigMerge.reaches_one (P := MergesMin siteOf d.isArr p₀ d) ?_ D hD
+  intro E hmany hE
+  obtain ⟨⟨hp, hts, hta⟩, hmin⟩ := hE
+  obtain ⟨⟨z, hz⟩, hzle⟩ := WalkSupport.maxWLo_spec edgeOf (graph E) z₀
+  have hzmax : ∀ w : α, WalkSupport.wLo edgeOf (graph E) w
+      ≤ WalkSupport.wLo edgeOf (graph E) z := fun w => by rw [hz]; exact hzle w
+  have hcov : ∀ v : α, edgeOf v < WalkSupport.wLo edgeOf (graph E) z →
+      ∃ y : α, edgeOf y = WalkSupport.wLo edgeOf (graph E) z - 1 ∧ atTop y = true := by
+    intro v hv
+    obtain ⟨u, _, hue⟩ := WalkSupport.exists_end_at_wLo edgeOf (graph E) z
+    exact hcov0 _ ⟨u, hue⟩ ⟨v, hv⟩
+  have hpsite : ∀ x, siteOf (E.p x) ≠ siteOf x := by
+    rw [hp]; exact hpsite
+  obtain ⟨a, a', hss, harr, harr', hd, hd', hsplit, hshared⟩ :=
+    hasFreePair_of_minimal_local d edgeOf siteOf atTop E hside
+      (hsW E hp) (hsX E hp) (hsT E hp)
       (by rw [hp]; exact hpe) (by rw [hp]; exact hpt) hts hta hpsite z hzmax hcov
       (hmin_of_mergesMin siteOf p₀ d E ⟨⟨hp, hts, hta⟩, hmin⟩) hmany
   have haa' : a' ≠ a := ConfigMerge.ne_of_split E hsplit
@@ -652,3 +765,5 @@ theorem step_of_split' (d : EndData.Data α) (edgeOf siteOf : α → ℤ)
 
 -- Certification (Rule 5).
 #print axioms CostMerge.step_of_split'
+#print axioms CostMerge.hasFreePair_of_minimal_local
+#print axioms CostMerge.min_merges_to_one_local

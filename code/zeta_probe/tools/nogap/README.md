@@ -2642,3 +2642,34 @@ noticing this the localization would have looked blocked at the last step.
 Running total: 11 of 16 localized. Remaining in WalkSupport: maxWLo_spec,
 maximising_walk_all_bottom, maximiser_departure_bottom, and the two that only pass
 hsite through (Merges, p_site_ne). Then CostMerge's 15 mentions.
+
+## 2026-09-03 — BLOCK 23: WalkSupport DONE; min_merges_to_one localized
+
+WalkSupport finished:
+  maximising_walk_all_bottom_local
+  maximiser_departure_bottom_local
+  maximiser_departure_bottom_disj  -- disjunctive: its conclusion IS atTop = false, so
+                                      an end already a bottom needs nothing
+
+CORRECTION to the count: `maxWLo_spec` does NOT use hsite. The earlier grep counted it
+because the NEXT theorem's signature fell inside the 14-line scan window. The real
+figure was 15, not 16. Two of the remaining (Merges, p_site_ne) only pass hsite on.
+
+CostMerge:
+  hasFreePair_of_minimal_local  -- three calls, all now to localized forms
+  min_merges_to_one_local       -- THE ENTRY POINT of the whole merge argument
+
+`min_merges_to_one_local` takes, in place of the global site-edge relation:
+  hpsite  : siteOf (p0 x) != siteOf x
+  hsW/hsX/hsT : the three localized shapes, datum-quantified over the merge class
+
+Same find as BLOCK 22 recurs here: hsite was feeding p_site_ne purely to obtain
+hpsite. Supplying hpsite directly removes it.
+
+Every declaration in both files kept its ORIGINAL PROOF SCRIPT. Not one line of
+mathematical content was rewritten -- only hypotheses were narrowed to what the proofs
+already used.
+
+STATUS OF ITEM (b): WalkSupport complete, CostMerge's two load-bearing declarations
+complete. Remaining are freePair_of_split, order_split, step_of_split, step_of_split'
+(the run-local layer used by ConfigLoop's shield-law chain, not by the B1 path).

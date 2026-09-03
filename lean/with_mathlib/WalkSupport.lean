@@ -757,6 +757,43 @@ theorem maximiser_departure_bottom (edgeOf siteOf : α → ℤ) (atTop : α → 
   · exact hza.trans (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl))
   · rw [hts a]; exact hs
 
+/-- **`maximising_walk_all_bottom`, localized.** -/
+theorem maximising_walk_all_bottom_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (G : SimpleGraph α) (z₀ z : α) (hz : wLo edgeOf G z = maxWLo edgeOf G z₀)
+    (hsB : ∀ x, G.Reachable z x → siteOf x = maxWLo edgeOf G z₀ →
+      siteOf x = edgeOf x + (if atTop x then 1 else 0)) :
+    ∀ x : α, G.Reachable z x → siteOf x = maxWLo edgeOf G z₀ → atTop x = false := by
+  intro x hzx hs
+  exact bottom_of_end_at_wLo_local edgeOf siteOf atTop G z x (hsB x hzx hs) hzx
+    (by rw [hs, hz])
+
+/-- **`maximiser_departure_bottom`, localized**: the relation is needed at the turn
+of `a`, and nowhere else. -/
+theorem maximiser_departure_bottom_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (D : Data α)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (z a : α) (hza : (graph D).Reachable z a)
+    (hs : siteOf a = wLo edgeOf (graph D) z)
+    (hsta : siteOf (D.t a) = edgeOf (D.t a) + (if atTop (D.t a) then 1 else 0)) :
+    atTop (D.t a) = false := by
+  refine bottom_of_end_at_wLo_local edgeOf siteOf atTop (graph D) z (D.t a) hsta ?_ ?_
+  · exact hza.trans (SimpleGraph.Adj.reachable (G := graph D) (Or.inr rfl))
+  · rw [hts a]; exact hs
+
+/-- **`maximiser_departure_bottom`, disjunctive form.**  Its conclusion is that the
+turn is a bottom, so an end that is already a bottom needs nothing. -/
+theorem maximiser_departure_bottom_disj (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (D : Data α)
+    (hts : ∀ e, siteOf (D.t e) = siteOf e)
+    (z a : α) (hza : (graph D).Reachable z a)
+    (hs : siteOf a = wLo edgeOf (graph D) z)
+    (hsta : atTop (D.t a) = false ∨
+      siteOf (D.t a) = edgeOf (D.t a) + (if atTop (D.t a) then 1 else 0)) :
+    atTop (D.t a) = false := by
+  rcases hsta with h | h
+  · exact h
+  · exact maximiser_departure_bottom_local edgeOf siteOf atTop D hts z a hza hs h
+
 /-! ### The maximiser, restricted to a set
 
 `maxWLo` takes the sup over all ends, so its maximiser lies in the rightmost run.  The
@@ -795,3 +832,6 @@ theorem maxWLoOn_spec (edgeOf : α → ℤ) (G : SimpleGraph α)
 #print axioms WalkSupport.pair_of_many_walks_local
 #print axioms WalkSupport.arrivals_of_many_walks_local
 #print axioms WalkSupport.merges_to_one_local
+#print axioms WalkSupport.maximising_walk_all_bottom_local
+#print axioms WalkSupport.maximiser_departure_bottom_local
+#print axioms WalkSupport.maximiser_departure_bottom_disj
