@@ -7581,6 +7581,38 @@ theorem arr_unique_forward (st : ℤ → FlagState)
     (st (a + m + 1)).st.arr ≠ 1 :=
   no_arr_after st (a + m) (hstep (a + m)) (past_true_forward st hstep a hp m)
 
+/-! ### Translating a guarded path so its arrival sits at the origin
+
+The guards are pointwise or nearest-neighbour, so they survive a shift.  Shifting by the
+arrival index puts the arrival at `0` -- and then `hA` and `hB`, which `mkPathData`
+demands, come for free, because the arrival lies inside the span. -/
+
+/-- Shift a state function. -/
+def shiftFn (st : ℤ → FlagState) (c : ℤ) : ℤ → FlagState := fun j => st (j + c)
+
+/-- **The doubled guard is translation-invariant.** -/
+theorem flagStepB_shift (st : ℤ → FlagState) (c : ℤ)
+    (hstep : ∀ j : ℤ, flagStepB (st j) (st (j + 1)) = true) :
+    ∀ j : ℤ, flagStepB (shiftFn st c j) (shiftFn st c (j + 1)) = true := by
+  intro j
+  show flagStepB (st (j + c)) (st (j + 1 + c)) = true
+  rw [show j + 1 + c = (j + c) + 1 by ring]
+  exact hstep (j + c)
+
+/-- **Shifting by the arrival index puts the arrival at the origin.** -/
+theorem shiftFn_arr_zero (st : ℤ → FlagState) (c : ℤ) (h : (st c).st.arr = 1) :
+    (shiftFn st c 0).st.arr = 1 := by
+  show (st (0 + c)).st.arr = 1
+  rwa [zero_add]
+
+/-- **And then the span brackets the origin, for free.**  With the arrival at `A + k` and
+`k <= n`, the shifted span is `[-k, n - k]`, which contains `0` -- so `hA` and `hB` are
+not extra hypotheses but consequences of the arrival lying in the span. -/
+theorem shift_span_brackets (A : ℤ) (n k : ℕ) (hk : k ≤ n) :
+    A - (A + (k : ℤ)) ≤ 0 ∧ (0 : ℤ) ≤ (A + (n : ℤ)) - (A + (k : ℤ)) := by
+  have hkn : (k : ℤ) ≤ (n : ℤ) := by exact_mod_cast hk
+  constructor <;> omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15229,3 +15261,6 @@ end EltBridge
 #print axioms EltBridge.past_of_arr
 #print axioms EltBridge.past_true_forward
 #print axioms EltBridge.arr_unique_forward
+#print axioms EltBridge.flagStepB_shift
+#print axioms EltBridge.shiftFn_arr_zero
+#print axioms EltBridge.shift_span_brackets

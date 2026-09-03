@@ -8529,3 +8529,24 @@ configuration.
 carries no indices.  The answer is that it does not need to be recovered: the arrival
 DEFINES the index, and the doubled guard guarantees there is exactly one such index to
 choose.
+
+## 2026-09-04 — BLOCK 239: translating a guarded path onto the origin
+
+The guards are pointwise or nearest-neighbour, so they survive a shift:
+
+    shiftFn                shift a state function
+    flagStepB_shift        the doubled guard is translation-invariant
+    shiftFn_arr_zero       shifting by the arrival index puts the arrival at the origin
+    shift_span_brackets    and then the span brackets the origin, FOR FREE
+
+0 sorry, all three clean on the first build.
+
+The last is the point.  `mkPathData` demands `hA : A <= 0` and `hB : 0 <= B`, and those
+looked like extra hypotheses a path would have to supply.  They are not: with the arrival
+at `A + k` and `k <= n`, the shifted span is `[-k, n - k]`, which contains `0`.  So the
+bracketing is a CONSEQUENCE of the arrival lying inside the span, which the doubled guard
+already guarantees (BLOCK 238).
+
+**Every hypothesis `mkPathData` needs is now accounted for from the doubled guard alone.**
+What remains is to write the composition: shift, read off the data, apply `mkPathData`, and
+check the resulting configuration's flagged path is the one started from.
