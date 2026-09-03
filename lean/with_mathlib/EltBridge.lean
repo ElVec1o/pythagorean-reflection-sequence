@@ -5252,6 +5252,49 @@ theorem free_pair_of_minimal_fails_in_free_model :
         (d.side a = d.side b ∧ d.sgnOf a = d.sgnOf b)) :=
   ⟨altGData, 0, 1, 2, 3, altGData_swap_raises, altGData_no_disjunct⟩
 
+/-! ### The exact criterion, and a third sufficient case
+
+A swap is free exactly when the two arrivals see the same *difference* between the two
+departures: `pcost x a - pcost x b = pcost y a - pcost y b`.  Enumerating the four
+classes, 152 of the 256 configurations are free; the two disjuncts of
+`GData.swap_free_or` cover 112 of them, so 40 are missed.
+
+One clean family among the missed: when both arrivals sit on the side **opposite** to
+both departures, every cross pair costs `1` and the swap is free. -/
+
+/-- **The exact criterion**: equal row differences. -/
+theorem GData.swap_free_iff {α : Type*} (d : GData α) (x y a b : α) :
+    d.pcost x a + d.pcost y b = d.pcost x b + d.pcost y a ↔
+      d.pcost x a - d.pcost x b = d.pcost y a - d.pcost y b := by
+  constructor <;> intro h <;> omega
+
+/-- **A third sufficient case**, missed by both disjuncts: the arrivals on one side,
+the departures on the other.  Every pair then crosses and costs `1`. -/
+theorem GData.swap_free_cross {α : Type*} (d : GData α) (x y a b : α)
+    (hxy : d.side x = d.side y) (hab : d.side a = d.side b)
+    (hne : d.side x ≠ d.side a) :
+    d.pcost x a + d.pcost y b = d.pcost x b + d.pcost y a := by
+  have h1 : d.pcost x a = 1 := by unfold GData.pcost; rw [if_neg hne]
+  have h2 : d.pcost y b = 1 := by
+    unfold GData.pcost; rw [if_neg (by rw [← hxy, ← hab]; exact hne)]
+  have h3 : d.pcost x b = 1 := by
+    unfold GData.pcost; rw [if_neg (by rw [← hab]; exact hne)]
+  have h4 : d.pcost y a = 1 := by
+    unfold GData.pcost; rw [if_neg (by rw [← hxy]; exact hne)]
+  omega
+
+/-- **So the criterion has at least three independent sufficient conditions**: same
+class arrivals, same class departures, or opposite sides throughout. -/
+theorem GData.swap_free_three {α : Type*} (d : GData α) (x y a b : α)
+    (h : (d.side x = d.side y ∧ d.sgnOf x = d.sgnOf y) ∨
+      (d.side a = d.side b ∧ d.sgnOf a = d.sgnOf b) ∨
+      (d.side x = d.side y ∧ d.side a = d.side b ∧ d.side x ≠ d.side a)) :
+    d.pcost x a + d.pcost y b = d.pcost x b + d.pcost y a := by
+  rcases h with ⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2, h3⟩
+  · exact GData.swap_free d x y a b h1 h2
+  · exact GData.swap_free_right d x y a b h1 h2
+  · exact GData.swap_free_cross d x y a b h1 h2 h3
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5441,3 +5484,5 @@ end EltBridge
 #print axioms EltBridge.GData.swap_free_or
 #print axioms EltBridge.gcostOf_swapImg_or
 #print axioms EltBridge.free_pair_of_minimal_fails_in_free_model
+#print axioms EltBridge.GData.swap_free_cross
+#print axioms EltBridge.GData.swap_free_three

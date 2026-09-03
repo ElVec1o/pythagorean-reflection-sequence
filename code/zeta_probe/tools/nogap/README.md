@@ -4337,3 +4337,25 @@ So the free-sign line is not a strict improvement. It trades one obstruction for
 another, and both are now proved rather than suspected:
   forced model  cut sites must be empty        (BLOCK 77, pcostF_ge_one)
   free model    free pairs need not exist      (BLOCK 91, this)
+
+## 2026-09-03 — BLOCK 92: the exact free-swap criterion; a third sufficient case
+
+Enumerated the 256 class configurations: 152 admit a free swap, and the two disjuncts
+of GData.swap_free_or cover only 112. So 40 free configurations were being missed.
+
+  GData.swap_free_iff   -- the exact criterion: EQUAL ROW DIFFERENCES,
+                           pcost x a - pcost x b = pcost y a - pcost y b
+  GData.swap_free_cross -- a third sufficient case: arrivals on one side, departures on
+                           the other. Every pair crosses and costs 1, so the swap is
+                           free -- and neither original disjunct detects it.
+  GData.swap_free_three -- the three conditions together
+
+The enumeration was worth running rather than reasoning about. I had assumed the two
+disjuncts were the whole criterion because they match EndData's hshared; they are not,
+and the gap is 40 of 152 -- a quarter of the free configurations.
+
+BEARING ON BLOCK 91'S NO-GO. That no-go stands: minimality still does not force a free
+pair, and the counterexample there (one side, alternating signs) is not covered by any
+of the three conditions. But the free-pair search has more room than BLOCK 90 suggested,
+since swap_free_cross fires exactly when the two walks meet a site from opposite sides
+-- which is the generic situation for a merge.
