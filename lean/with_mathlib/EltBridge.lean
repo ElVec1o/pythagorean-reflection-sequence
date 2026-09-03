@@ -6443,6 +6443,81 @@ theorem mkPathData_delta {kstar eps : ℤ} {delta : Bool} {dspan : ℤ → ℤ} 
     (stateOf (mkPathData kstar eps delta dspan A B heps hA hB hk1 hk2 hpar hAmin hBmin) j).delta
       = delta := rfl
 
+/-! ### The composition: configurations of a given span ARE guarded data
+
+`mkPathData` builds a configuration from guarded data and `stateOf_injective'` says no two
+configurations share their states.  Packaging the guarded data as a structure makes the
+two into a pair of mutually inverse maps, which is the bijection (M3) needs. -/
+
+/-- Guarded data for the span `[A, B]`.  `hzero` normalises the deposits off the span, so
+that the data is determined by the configuration it builds. -/
+structure SpanData (A B : ℤ) where
+  kstar : ℤ
+  eps : ℤ
+  delta : Bool
+  dspan : ℤ → ℤ
+  heps : eps = 1 ∨ eps = -1
+  hA : A ≤ 0
+  hB : 0 ≤ B
+  hk1 : A ≤ kstar
+  hk2 : kstar ≤ B + 1
+  hzero : ∀ j : ℤ, j < A ∨ B < j → dspan j = 0
+  hpar : ∀ j : ℤ, A ≤ j → j ≤ B → (dspan j - SiteCost.travel kstar j) % 2 = 0
+  hAmin : A = 0 ∨ dspan A ≠ 0 ∨ SiteCost.travel kstar A ≠ 0
+  hBmin : B = 0 ∨ dspan B ≠ 0 ∨ SiteCost.travel kstar B ≠ 0
+
+/-- Guarded data builds its configuration. -/
+def SpanData.toPath {A B : ℤ} (S : SpanData A B) : SiteCost.PathData :=
+  mkPathData S.kstar S.eps S.delta S.dspan A B S.heps S.hA S.hB S.hk1 S.hk2 S.hpar
+    S.hAmin S.hBmin
+
+theorem SpanData.toPath_d {A B : ℤ} (S : SpanData A B) (j : ℤ) : S.toPath.d j = S.dspan j := by
+  show (if A ≤ j ∧ j ≤ B then S.dspan j else 0) = S.dspan j
+  by_cases h : A ≤ j ∧ j ≤ B
+  · rw [if_pos h]
+  · rw [if_neg h, S.hzero j (by omega)]
+
+/-- A configuration is guarded data for its own span. -/
+def ofPath (P : SiteCost.PathData) : SpanData P.A P.B where
+  kstar := P.kstar
+  eps := P.eps
+  delta := P.delta
+  dspan := P.d
+  heps := P.heps
+  hA := P.hA
+  hB := P.hB
+  hk1 := A_le_kstar P
+  hk2 := kstar_le_B_succ P
+  hzero := fun j hj => (P.houter j hj).1
+  hpar := fun j _ _ => P.hpar j
+  hAmin := P.hAmin
+  hBmin := P.hBmin
+
+theorem spanData_ext {A B : ℤ} {S T : SpanData A B} (hk : S.kstar = T.kstar)
+    (he : S.eps = T.eps) (hd : S.delta = T.delta) (hs : S.dspan = T.dspan) : S = T := by
+  cases S; cases T
+  simp only at hk he hd hs
+  subst hk; subst he; subst hd; subst hs
+  rfl
+
+/-- **Round trip one**: build from a configuration's own data and you get it back. -/
+theorem ofPath_toPath (P : SiteCost.PathData) : (ofPath P).toPath = P :=
+  pathData_ext rfl rfl rfl (funext fun j => (ofPath P).toPath_d j) rfl rfl
+
+/-- **Round trip two**: read the data off the configuration you built and you get it back. -/
+theorem toPath_ofPath {A B : ℤ} (S : SpanData A B) : ofPath S.toPath = S :=
+  spanData_ext rfl rfl rfl (funext fun j => S.toPath_d j)
+
+/-- **The bijection.**  `toPath` is injective, so guarded data and configurations of a
+given span correspond one to one -- which is what (M3) needs to turn a sum over
+configurations into a sum over paths. -/
+theorem toPath_injective {A B : ℤ} : Function.Injective (SpanData.toPath (A := A) (B := B)) := by
+  intro S T h
+  refine spanData_ext (congrArg SiteCost.PathData.kstar h) (congrArg SiteCost.PathData.eps h)
+    (congrArg SiteCost.PathData.delta h) ?_
+  funext j
+  rw [← S.toPath_d j, ← T.toPath_d j, h]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14037,3 +14112,6 @@ end EltBridge
 #print axioms EltBridge.mkPathData_dcur
 #print axioms EltBridge.mkPathData_dprev
 #print axioms EltBridge.mkPathData_fcur
+#print axioms EltBridge.ofPath_toPath
+#print axioms EltBridge.toPath_ofPath
+#print axioms EltBridge.toPath_injective

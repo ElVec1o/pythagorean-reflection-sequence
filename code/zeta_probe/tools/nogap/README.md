@@ -8009,3 +8009,33 @@ projection, so the round-trip lemmas need `simp only [stateOf]` before `exact`.
 `Equiv` -- and, with it, the sum over configurations rewritten as the sum over guarded
 paths, which is the statement (M3) actually needs.  That is assembly of pieces that are
 all present, not new mathematics.
+
+## 2026-09-04 — BLOCK 218: the composition — configurations of a span ARE guarded data
+
+`mkPathData` builds a configuration from guarded data (BLOCK 217); `stateOf_injective'`
+says no two configurations share their states (BLOCKS 213-214).  Packaging the guarded
+data as a structure makes the two into mutually inverse maps:
+
+    SpanData             guarded data for the span [A, B]; `hzero` normalises the
+                         deposits off the span so the data is determined
+    SpanData.toPath      guarded data builds its configuration
+    ofPath               a configuration is guarded data for its own span
+    spanData_ext         equal data fields => equal guarded data
+    ofPath_toPath        ROUND TRIP ONE
+    toPath_ofPath        ROUND TRIP TWO
+    toPath_injective     hence the correspondence is one to one
+
+0 sorry.  `Function.LeftInverse.injective` does not apply here: `ofPath P` has type
+`SpanData P.A P.B`, so `ofPath . toPath` is not syntactically a map `SpanData A B ->
+SpanData A B` even though it is definitionally one.  Injectivity is proved directly
+instead -- fighting the dependent type would have bought nothing.
+
+**(M3)'s bijection is complete.**  Configurations of span `[A, B]` correspond one to one
+with guarded data for that span.  With (M3a) (BLOCKS 206-208), the formal convergence of
+(M3b) (BLOCK 209) and the path-sum identity (BLOCKS 210-211), the pieces of (M3) are all
+present.
+
+**What remains is packaging, and it is not nothing.**  The sum in `IsAssembly` runs over
+state paths as LISTS; the bijection above is stated for guarded data as a STRUCTURE.
+Turning one sum into the other is index bookkeeping of the kind that has twice cost a
+whole block in this file.  Until it is written, (M3) is not green.
