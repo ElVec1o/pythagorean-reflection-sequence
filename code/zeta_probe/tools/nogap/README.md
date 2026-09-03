@@ -8465,3 +8465,28 @@ syntactically identical (`rfl`).  It proved nothing and was removed before commi
 **What this changes for (M3).**  The undoubled kernel of BLOCKS 231-234 cannot be the final
 one; the doubled kernel can.  Everything proved about the undoubled guard carries over,
 since `flagStepB` contains `fullStepB`.
+
+## 2026-09-04 — BLOCK 236: the doubled boundary vectors and path weight
+
+    flagHeadVec, flagHeadVec_flagOf   head guard plus the flag agreeing with the arrival
+    flagTailVec, flagTailVec_flagOf   tail guard plus the flag SET -- which forces the
+                                      arrival to have happened somewhere on the path
+    pathWeight_flag_of                the doubled guard costs nothing on a configuration
+    pathWeight_flag_guarded           THE DOUBLED, FULLY GUARDED path weight of a
+                                      configuration is x ^ lR
+
+0 sorry.  Three attempts, and the third was the fix rather than a fourth guess:
+`(flagOf P j).st` is `stateOf P j` by `rfl` but not syntactically, so the vector lemmas
+needed a trailing `rfl`; and the induction step's list rewrite could not match
+syntactically, so `congr 1` then `exact` -- which accepts definitional equality where `rw`
+will not.  That distinction has now cost time twice in this file and is worth remembering:
+`rw` is syntactic, `exact` is up to defeq.
+
+**So the kernel (M3) needs exists and is proved correct on configurations.**  It is local,
+it carries every per-state and boundary guard, and the doubling makes the arrival count
+exactly once.
+
+**Left for (M3): the converse for the doubled guard** -- that a path passing `flagStepB`,
+`flagHeadVec`'s condition and `flagTailVec`'s condition is a configuration's flagged path.
+The undoubled ingredients are all proved (BLOCKS 226-229); what the doubling adds is that
+the flag forces exactly one arrival, which is `sum_vArr_eq_one` read backwards.

@@ -7407,6 +7407,86 @@ theorem flagStepB_flagOf (P : SiteCost.PathData) (j : ℤ) :
     have : (0 : ℤ) ≤ j := by simpa using hp
     simp [harr, show ¬(j + 1 = 0) by omega]
 
+/-! ### The doubled boundary vectors, and the doubled path weight -/
+
+/-- The doubled head vector: the ordinary head guard, plus the flag agreeing with whether
+the arrival fires here. -/
+def flagHeadVec (x : ℤ) (σ : FlagState) : ℤ :=
+  if headOkB σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
+
+/-- The doubled tail vector: the ordinary tail guard, plus the flag SET -- which is what
+forces the arrival to have happened somewhere along the path. -/
+def flagTailVec (x : ℤ) (σ : FlagState) : ℤ :=
+  if validB σ.st && epsValidB σ.st && endValidB σ.st && σ.past then
+    x ^ (σ.st.muOf + tailSiteOf σ.st) else 0
+
+theorem flagHeadVec_flagOf (x : ℤ) (P : SiteCost.PathData) :
+    flagHeadVec x (flagOf P P.A) = x ^ (stateOf P P.A).siteOf := by
+  have hA := P.hA
+  have harr : ((stateOf P P.A).arr = 1) ↔ P.A = 0 := arr_eq_one_iff P P.A
+  have hcond : (headOkB (flagOf P P.A).st
+      && ((flagOf P P.A).past == decide ((flagOf P P.A).st.arr = 1))) = true := by
+    simp only [flagOf, Bool.and_eq_true, beq_iff_eq, decide_eq_decide]
+    exact ⟨headOkB_stateOf P, by rw [harr]; omega⟩
+  rw [flagHeadVec, if_pos hcond]
+  rfl
+
+theorem flagTailVec_flagOf (x : ℤ) (P : SiteCost.PathData) :
+    flagTailVec x (flagOf P P.B)
+      = x ^ ((stateOf P P.B).muOf + tailSiteOf (stateOf P P.B)) := by
+  have hB := P.hB
+  have hcond : (validB (flagOf P P.B).st && epsValidB (flagOf P P.B).st
+      && endValidB (flagOf P P.B).st && (flagOf P P.B).past) = true := by
+    simp only [flagOf, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩, hB⟩
+  rw [flagTailVec, if_pos hcond]
+  rfl
+
+/-- **The doubled guard costs nothing on a configuration.**  Its flagged path weight is the
+undoubled one. -/
+theorem pathWeight_flag_of (x : ℤ) (P : SiteCost.PathData) (mu : LocalState → ℤ) :
+    ∀ (n : ℕ) (A : ℤ) (lam : LocalState → ℤ),
+      pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+          (fun σ => lam σ.st) (fun σ => mu σ.st) ((A :: idxList A n).map (flagOf P))
+        = pathWeight (fun σ τ => x ^ (σ.muOf + τ.siteOf)) lam mu
+            ((A :: idxList A n).map (stateOf P)) := by
+  intro n
+  induction n with
+  | zero => intro A lam; rfl
+  | succ m ih =>
+      intro A lam
+      show lam (stateOf P A) * (if flagStepB (flagOf P A) (flagOf P (A + 1)) then
+              x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf) else 0)
+            * pathWeight (fun σ τ : FlagState =>
+                if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+              (fun _ => (1 : ℤ)) (fun σ : FlagState => mu σ.st)
+              ((idxList A (m + 1)).map (flagOf P))
+        = lam (stateOf P A) * x ^ ((stateOf P A).muOf + (stateOf P (A + 1)).siteOf)
+            * pathWeight (fun σ τ : LocalState => x ^ (σ.muOf + τ.siteOf))
+              (fun _ => (1 : ℤ)) mu ((idxList A (m + 1)).map (stateOf P))
+      rw [flagStepB_flagOf P A, if_pos rfl]
+      congr 1
+      exact ih (A + 1) (fun _ => (1 : ℤ))
+
+/-- **The doubled, fully guarded path weight of a configuration is its own weight.**  This
+is the kernel (M3) needs: local, and with the arrival counted exactly once. -/
+theorem pathWeight_flag_guarded (x : ℤ) (P : SiteCost.PathData) (n : ℕ) (hn : P.B = P.A + n) :
+    pathWeight (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVec x) (flagTailVec x) ((P.A :: idxList P.A n).map (flagOf P))
+      = x ^ P.lR := by
+  have hlast : lastOf (flagOf P P.A) ((idxList P.A n).map (flagOf P)) = flagOf P P.B := by
+    rw [lastOf_map, lastOf_idxList, hn]
+  rw [List.map_cons,
+    pathWeight_congr (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+      (flagTailVec x) (fun σ => (fun τ : LocalState => x ^ (τ.muOf + tailSiteOf τ)) σ.st)
+      ((idxList P.A n).map (flagOf P)) (flagOf P P.A)
+      (flagHeadVec x) (fun σ => (fun τ : LocalState => x ^ τ.siteOf) σ.st)
+      (flagHeadVec_flagOf x P) (by rw [hlast]; exact flagTailVec_flagOf x P),
+    ← List.map_cons,
+    pathWeight_flag_of x P (fun τ => x ^ (τ.muOf + tailSiteOf τ)) n P.A
+      (fun τ => x ^ τ.siteOf)]
+  exact (isTransferDecomposition_edge x n (fun _ : Unit => P) (fun _ => hn) ()).symm
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15044,3 +15124,7 @@ end EltBridge
 #print axioms EltBridge.pathWeight_guarded_edge
 #print axioms EltBridge.sum_vArr_eq_one
 #print axioms EltBridge.flagStepB_flagOf
+#print axioms EltBridge.flagHeadVec_flagOf
+#print axioms EltBridge.flagTailVec_flagOf
+#print axioms EltBridge.pathWeight_flag_of
+#print axioms EltBridge.pathWeight_flag_guarded
