@@ -167,6 +167,31 @@ theorem walk_shared_site_pair (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
   · intro hc
     exact hns (hx.trans hc)
 
+/-- **`walk_shared_site_pair`, with `hsite` asked only where it is used.**
+
+Two ends need it: the bottom end at the walk's leftmost edge, and `y` itself.  `hpe`
+and `hpt` stay global -- they are satisfied by end types with non-local ends, since a
+virtual pair still shares an edge and flips the end. -/
+theorem walk_shared_site_pair_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool)
+    (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (z y : α) (hy : edgeOf y = wLo edgeOf (graph D) z - 1) (hyt : atTop y = true)
+    (hsy : siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hsX : ∀ x, (graph D).Reachable z x → edgeOf x = wLo edgeOf (graph D) z →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0)) :
+    ∃ x : α, siteOf x = siteOf y ∧ ¬ (graph D).Reachable x y := by
+  obtain ⟨x, hx, hxe, hxb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  obtain ⟨hys, hns⟩ :=
+    shared_ends_at_wLo_local edgeOf siteOf atTop (graph D) z y hsy hy hyt
+  refine ⟨x, ?_, ?_⟩
+  · have h := hsX x hx hxe hxb
+    rw [hxb] at h
+    simp at h
+    omega
+  · intro hc
+    exact hns (hx.trans hc)
+
 /-! ### The two cases
 
 For two walks there are two possibilities, and each yields a pair at a common site.
@@ -194,6 +219,28 @@ theorem pair_of_equal_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D 
   refine ⟨x, y, ?_, ?_⟩
   · have h1 := hsite x
     have h2 := hsite y
+    rw [hxb] at h1
+    rw [hyb] at h2
+    simp at h1 h2
+    omega
+  · intro hc
+    exact hsplit ((hxr.trans hc).trans hyr.symm)
+
+/-- **`pair_of_equal_wLo`, localized.**  `hsB` is the site-edge relation at bottom
+ends sitting at their own walk's leftmost edge -- the only place it is used. -/
+theorem pair_of_equal_wLo_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hsB : ∀ w x, (graph D).Reachable w x → edgeOf x = wLo edgeOf (graph D) w →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (z z' : α) (hsplit : ¬ (graph D).Reachable z z')
+    (heq : wLo edgeOf (graph D) z = wLo edgeOf (graph D) z') :
+    ∃ x y : α, siteOf x = siteOf y ∧ ¬ (graph D).Reachable x y := by
+  obtain ⟨x, hxr, hxe, hxb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z
+  obtain ⟨y, hyr, hye, hyb⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z'
+  refine ⟨x, y, ?_, ?_⟩
+  · have h1 := hsB z x hxr hxe hxb
+    have h2 := hsB z' y hyr hye hyb
     rw [hxb] at h1
     rw [hyb] at h2
     simp at h1 h2
@@ -553,6 +600,34 @@ theorem other_end_at_wLo (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D :
     omega
 
 omit [DecidableEq α] in
+
+/-- **`other_end_at_wLo`, localized.**  `hsB` at bottom ends on their walk's leftmost
+edge, and `hsT` at the top end immediately left of it. -/
+theorem other_end_at_wLo_local (edgeOf siteOf : α → ℤ) (atTop : α → Bool) (D : Data α)
+    (hpe : ∀ x, edgeOf (D.p x) = edgeOf x)
+    (hpt : ∀ x, atTop (D.p x) = !atTop x)
+    (hsB : ∀ w x, (graph D).Reachable w x → edgeOf x = wLo edgeOf (graph D) w →
+      atTop x = false → siteOf x = edgeOf x + (if atTop x then 1 else 0))
+    (z z' : α)
+    (hsT : ∀ y, edgeOf y = wLo edgeOf (graph D) z - 1 → atTop y = true →
+      siteOf y = edgeOf y + (if atTop y then 1 else 0))
+    (hcov : ∀ v : α, edgeOf v < wLo edgeOf (graph D) z →
+      ∃ y : α, edgeOf y = wLo edgeOf (graph D) z - 1 ∧ atTop y = true)
+    (hsplit : ¬ (graph D).Reachable z z')
+    (hle : wLo edgeOf (graph D) z' ≤ wLo edgeOf (graph D) z) :
+    ∃ y : α, siteOf y = wLo edgeOf (graph D) z ∧ ¬ (graph D).Reachable z y := by
+  obtain ⟨u, hur, hue, hub⟩ := exists_bottom_at_wLo edgeOf atTop D hpe hpt z'
+  rcases lt_or_eq_of_le hle with hlt | heq
+  · obtain ⟨y, hye, hyt⟩ := hcov u (by omega)
+    obtain ⟨hys, hyn⟩ :=
+      shared_ends_at_wLo_local edgeOf siteOf atTop (graph D) z y (hsT y hye hyt) hye hyt
+    exact ⟨y, hys, hyn⟩
+  · refine ⟨u, ?_, fun hc => hsplit (hc.trans hur.symm)⟩
+    have h := hsB z' u hur hue hub
+    rw [hub] at h
+    simp at h
+    omega
+
 /-- **In the maximising walk, a departure at the leftmost site is a bottom end too.**
 
 This is what kills the one configuration `cross_dearer` would otherwise allow: the
@@ -601,3 +676,6 @@ theorem maxWLoOn_spec (edgeOf : α → ℤ) (G : SimpleGraph α)
 #print axioms WalkSupport.bottom_of_end_at_wLo_local
 #print axioms WalkSupport.maximiser_has_bottom_arrival_local
 #print axioms WalkSupport.maximiser_has_bottom_arrival_disj
+#print axioms WalkSupport.walk_shared_site_pair_local
+#print axioms WalkSupport.pair_of_equal_wLo_local
+#print axioms WalkSupport.other_end_at_wLo_local

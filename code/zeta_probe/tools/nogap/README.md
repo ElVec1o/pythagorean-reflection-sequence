@@ -2587,3 +2587,32 @@ REMAINING FOR B1: item (b) only -- the ~14 WalkSupport declarations and CostMerg
 hsite mentions converted to the localized forms of BLOCKS 13-15. No mathematical
 question remains in it; the two hard ones (how many virtual ends, and how they pair)
 were settled in BLOCKS 8 and 10, and the locality question in BLOCKS 16 and 18.
+
+## 2026-09-03 — BLOCK 21: item (b), first pass through WalkSupport
+
+Localized versions, each proved with the ORIGINAL PROOF SCRIPT and a weaker hypothesis:
+
+  walk_shared_site_pair_local  -- hsite at the bottom end at wLo, and at y
+  pair_of_equal_wLo_local      -- hsite at bottom ends on their own walk's leftmost edge
+  other_end_at_wLo_local       -- the same, plus hsT at the top end immediately left
+
+A uniform hypothesis shape emerged and is worth naming, since every remaining lemma
+uses one of the two:
+
+  hsB : forall w x, Reachable w x -> edgeOf x = wLo w -> atTop x = false ->
+          siteOf x = edgeOf x + [atTop x]        (bottom ends at a walk's leftmost edge)
+  hsT : forall y, edgeOf y = wLo z - 1 -> atTop y = true ->
+          siteOf y = edgeOf y + [atTop y]        (the top end immediately left)
+
+hsB is the multi-basepoint form of BLOCK 15's hsX, and VEndpt satisfies it by
+hsX_beyond (kstar > 0, bnd large) or hsX_neg (kstar < 0, bnd = -1).
+
+Running total of localized declarations: 7 of the 16 that mention hsite
+(exists_bottom_at_wLo, shared_ends_at_wLo, bottom_of_end_at_wLo,
+maximiser_has_bottom_arrival x2 forms, walk_shared_site_pair, pair_of_equal_wLo,
+other_end_at_wLo). Remaining: pair_of_two_walks, pair_of_many_walks,
+arrivals_of_many_walks, merges_to_one, maxWLo_spec, maximising_walk_all_bottom,
+maximiser_departure_bottom, plus Merges and p_site_ne (which take hsite only to pass
+it on).
+
+Every one so far has gone through unchanged. No mathematical content has been touched.
