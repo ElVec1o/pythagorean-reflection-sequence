@@ -2013,6 +2013,55 @@ theorem pdCutAt_d_zero (P : SiteCost.PathData) (s : ℤ)
     P.d (P.A + s - 1) = 0 ∧ P.d (P.A + s) = 0 :=
   ⟨((pdCutAt_iff P s h0 hk).mp h).1, ((pdCutAt_iff P s h0 hk).mp h).2.1⟩
 
+/-- **The cut set of a group element**, as a `Finset`.
+
+`Z` is the set of cut sites **interior** to the span -- a point the 2026-08-23
+retraction turned on: a run of `L` gap edges gives `L - 1` interior sites, so counting
+the endpoints overcounts by one per run.  The shifted span has edges `0 .. width - 1`
+and sites `0 .. width`, so the interior sites are `Ioo 0 width`. -/
+noncomputable def pdCutSites (P : SiteCost.PathData) : Finset ℤ := by
+  classical
+  exact (Finset.Ioo (0 : ℤ) (pdWidth P : ℤ)).filter (fun s => P.cut (P.A + s))
+
+theorem mem_pdCutSites (P : SiteCost.PathData) (s : ℤ) :
+    s ∈ pdCutSites P ↔ (0 < s ∧ s < (pdWidth P : ℤ)) ∧ pdCutAt P s := by
+  classical
+  simp only [pdCutSites, Finset.mem_filter, Finset.mem_Ioo]
+  rfl
+
+/-- Cut sites are interior, so they are never `0` or `width`. -/
+theorem pdCutSites_interior (P : SiteCost.PathData) {s : ℤ} (h : s ∈ pdCutSites P) :
+    0 < s ∧ s < (pdWidth P : ℤ) :=
+  ((mem_pdCutSites P s).mp h).1
+
+/-- **The witness element has no cut site.**  Its span is a single edge, so there is no
+interior site at all -- `Ioo 0 1` is empty. -/
+theorem witElt_cutSites : pdCutSites witElt.toPathData = ∅ := by
+  classical
+  rw [Finset.eq_empty_iff_forall_notMem]
+  intro s hs
+  obtain ⟨h1, h2⟩ := pdCutSites_interior _ hs
+  rw [witElt_width] at h2
+  omega
+
+/-- **The shield law at element level, instantiated.**
+
+`c = |Z|`, i.e. `walkCount = |Z| + 1`, for an actual group element.  The witness has no
+cut site, so this says `walkCount = 1` -- and that is exactly what `witElt_single_walk`
+produced independently, through the merge rather than through the cut count.  The two
+routes agree. -/
+theorem witElt_shield (ds : Bool → Bool) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth witElt.toPathData) (pdMm witElt.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-witElt.toPathData.A)
+          (witElt.toPathData.kstar - witElt.toPathData.A))
+        (VEndpt.isArr (pdUp witElt.toPathData)) VEndpt.partner
+        (vEndDataP (pdUp witElt.toPathData) ds) D' ∧
+      WalkGraph.walkCount D' = (pdCutSites witElt.toPathData).card + 1 := by
+  obtain ⟨D', hD', hc⟩ := witElt_single_walk ds
+  refine ⟨D', hD', ?_⟩
+  rw [hc, witElt_cutSites, Finset.card_empty]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2095,3 +2144,6 @@ end EltBridge
 #print axioms EltBridge.witElt_defect_zero
 #print axioms EltBridge.pdCutAt_iff
 #print axioms EltBridge.pdCutAt_d_zero
+#print axioms EltBridge.mem_pdCutSites
+#print axioms EltBridge.witElt_cutSites
+#print axioms EltBridge.witElt_shield

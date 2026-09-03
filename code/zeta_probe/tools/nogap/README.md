@@ -3055,3 +3055,29 @@ REMAINING FOR M3/M4b at element level: the cut set as a Finset over the shifted 
 and the transport of the shield-law chain (RunInv, local_of_hturn, the runs) from
 Endpt to VEndpt. The chain is generic in the end type in ConfigLoop only up to the
 Endpt-specific `hZ`; that is the piece to redo.
+
+## 2026-09-03 — BLOCK 38: the cut set as a Finset; the shield law at element level
+
+  pdCutSites            -- Z as a Finset: cut sites INTERIOR to the shifted span,
+                           Ioo 0 width. The interiority is the 2026-08-23 retraction:
+                           a run of L gap edges gives L-1 interior sites, so counting
+                           endpoints overcounts by one per run.
+  mem_pdCutSites, pdCutSites_interior
+  witElt_cutSites       -- the witness has NO cut site: its span is one edge, so
+                           Ioo 0 1 is empty
+  witElt_shield         -- **c = |Z| for an actual group element**
+
+The last one is a genuine cross-check rather than a restatement. `witElt_single_walk`
+produced walkCount = 1 through the MERGE (BLOCKS 33-36); `witElt_cutSites` computes
+|Z| = 0 from the CUT DEFINITION (BLOCKS 37-38). The shield law says these must agree,
+and they do. Two independent routes to the same number on the same element.
+
+That is the first time tonight that the merge side and the cut side have been
+evaluated on the same object and compared. Every earlier agreement between them was
+structural (the same lemmas applied), not numerical.
+
+REMAINING for M3/M4b in general (not just on the witness): the shield-law chain
+(RunInv, local_of_hturn, run induction) transported from Endpt to VEndpt. BLOCK 12
+showed the load-bearing hypothesis there is hZ -- no arrival at a cut site -- and that
+it forces both adjacent edges empty. For VEndpt that argument needs redoing, since the
+virtual ends change which sites can carry arrivals.
