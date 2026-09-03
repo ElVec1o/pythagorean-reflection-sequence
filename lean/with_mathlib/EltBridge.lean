@@ -8916,6 +8916,60 @@ theorem pathWeightR_edge {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData
   rw [htail, hL]
   exact (alternating_is_chain P.mu P.siteCost P.A n).symm
 
+/-! ### The boundary vectors over an arbitrary ring
+
+BLOCK 236 with `pathWeightR`.  This completes the port of everything the coefficient
+comparison needs from the weight side. -/
+
+def flagHeadVecR {R : Type*} [CommRing R] (x : R) (σ : FlagState) : R :=
+  if headOkB σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
+
+def flagTailVecR {R : Type*} [CommRing R] (x : R) (σ : FlagState) : R :=
+  if validB σ.st && epsValidB σ.st && endValidB σ.st && σ.past then
+    x ^ (σ.st.muOf + tailSiteOf σ.st) else 0
+
+theorem flagHeadVecR_flagOf {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData) :
+    flagHeadVecR x (flagOf P P.A) = x ^ (stateOf P P.A).siteOf := by
+  have hA := P.hA
+  have harr : ((stateOf P P.A).arr = 1) ↔ P.A = 0 := arr_eq_one_iff P P.A
+  have hcond : (headOkB (flagOf P P.A).st
+      && ((flagOf P P.A).past == decide ((flagOf P P.A).st.arr = 1))) = true := by
+    simp only [flagOf, Bool.and_eq_true, beq_iff_eq, decide_eq_decide]
+    exact ⟨headOkB_stateOf P, by rw [harr]; omega⟩
+  rw [flagHeadVecR, if_pos hcond]
+  rfl
+
+theorem flagTailVecR_flagOf {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData) :
+    flagTailVecR x (flagOf P P.B)
+      = x ^ ((stateOf P P.B).muOf + tailSiteOf (stateOf P P.B)) := by
+  have hB := P.hB
+  have hcond : (validB (flagOf P P.B).st && epsValidB (flagOf P P.B).st
+      && endValidB (flagOf P P.B).st && (flagOf P P.B).past) = true := by
+    simp only [flagOf, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩, hB⟩
+  rw [flagTailVecR, if_pos hcond]
+  rfl
+
+/-- **The doubled, fully guarded path weight of a configuration is `x ^ lR`, over any
+ring.** -/
+theorem pathWeightR_flag_guarded {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData)
+    (n : ℕ) (hn : P.B = P.A + n) :
+    pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVecR x) (flagTailVecR x) ((P.A :: idxList P.A n).map (flagOf P))
+      = x ^ P.lR := by
+  have hlast : lastOf (flagOf P P.A) ((idxList P.A n).map (flagOf P)) = flagOf P P.B := by
+    rw [lastOf_map, lastOf_idxList, hn]
+  rw [List.map_cons,
+    pathWeightR_congr (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+      (flagTailVecR x) (fun σ => (fun τ : LocalState => x ^ (τ.muOf + tailSiteOf τ)) σ.st)
+      ((idxList P.A n).map (flagOf P)) (flagOf P P.A)
+      (flagHeadVecR x) (fun σ => (fun τ : LocalState => x ^ τ.siteOf) σ.st)
+      (flagHeadVecR_flagOf x P) (by rw [hlast]; exact flagTailVecR_flagOf x P),
+    ← List.map_cons,
+    pathWeightR_flag_of x P (fun τ => x ^ (τ.muOf + tailSiteOf τ)) n P.A
+      (fun τ => x ^ τ.siteOf)]
+  exact pathWeightR_edge x P n hn
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16635,3 +16689,6 @@ end EltBridge
 #print axioms EltBridge.pathWeightR_guard_eq
 #print axioms EltBridge.pathWeightR_flag_of
 #print axioms EltBridge.pathWeightR_edge
+#print axioms EltBridge.flagHeadVecR_flagOf
+#print axioms EltBridge.flagTailVecR_flagOf
+#print axioms EltBridge.pathWeightR_flag_guarded

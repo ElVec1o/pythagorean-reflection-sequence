@@ -9260,3 +9260,21 @@ This is BLOCK 233's identity stated directly as a weight equation rather than th
 vanishing (275), guard invariance (276), and the edge identity (277).  Still `ℤ`-only: the
 boundary VECTORS (`flagHeadVec`, `flagTailVec`) and everything above them -- the sum over
 paths and the comparison.
+
+## 2026-09-04 — BLOCK 278: the boundary vectors over an arbitrary ring
+
+    flagHeadVecR, flagTailVecR       the doubled boundary vectors over R
+    flagHeadVecR_flagOf, _tailVecR_  both fire on a configuration
+    pathWeightR_flag_guarded         THE DOUBLED, FULLY GUARDED WEIGHT IS x ^ lR, over any R
+
+0 sorry, all three clean on the first build.
+
+**The weight side of the port is complete.**  Everything the coefficient comparison needs
+from `pathWeight` now exists over an arbitrary commutative ring: the exponential (274), the
+congruence and vanishing (275), guard invariance (276), the edge identity (277), and the
+boundary vectors with the fully guarded weight (278).
+
+**[Rule 0] What is NOT ported.**  The `Finset` statements -- `sum_configs_eq_sum_flag_paths`
+(BLOCK 249) and `sum_configs_eq_sum_all_paths` (BLOCK 270) -- are still `ℤ`-only.  They are
+the last two, and unlike the lemmas above they carry `Finset.sum`, so the port is a
+restatement rather than a copy.
