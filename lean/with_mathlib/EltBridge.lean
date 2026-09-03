@@ -5492,6 +5492,48 @@ theorem witElt_lR_closed :
       witElt.lR :=
   Elt.lR_closed witElt
 
+/-! ### (M3) as a contract
+
+(M3) asserts the bivariate series factorises through a transfer operator:
+`W(x,y) = sum over the four marker data of <lambda, (I - T)^-1 mu> + W_0`.
+
+Two things are bundled there, and they are independent:
+
+* **(M3a) the decomposition** -- every configuration splits uniquely into a `k = 0`
+  sector and a sequence of `k` travel blocks separated by bulk runs, with the weight
+  multiplying across the split.  This is combinatorial.
+* **(M3b) the resolvent identity** -- summing the weights of all `k`-block
+  configurations gives `<lambda, T^k mu>`, and the sum over `k` is `(I - T)^-1`.  This
+  is formal-power-series algebra once (M3a) holds.
+
+Named here so the third weakest link is an obligation with a shape, as `IsRelaxedLength`
+does for the metric formula. -/
+
+/-- **(M3a)**: the block decomposition.  A weight function `w` on configurations splits
+along a block count `blocks` into a head and a product over blocks. -/
+def IsBlockDecomposition {C : Type*} (blocks : C → ℕ) (w : C → ℤ)
+    (head : ℤ) (blockWeight : ℕ → ℤ) : Prop :=
+  ∀ c : C, w c = head * blockWeight (blocks c)
+
+/-- **(M3b)**: the resolvent identity, in the form the assembly uses -- the `k`-fold
+composite of the transfer weight is the `k`-th power. -/
+def IsResolventForm (blockWeight : ℕ → ℤ) (T : ℤ) : Prop :=
+  ∀ k : ℕ, blockWeight k = T ^ k
+
+/-- **(M3) is the conjunction**, and it is the only one of `(M)`'s three weakest links
+untouched by this file: `IsRelaxedLength` names the metric formula, and the reverse
+shield inequality has a proved obstruction in each of the two models tried. -/
+def IsM3 {C : Type*} (blocks : C → ℕ) (w : C → ℤ) (head : ℤ) (blockWeight : ℕ → ℤ)
+    (T : ℤ) : Prop :=
+  IsBlockDecomposition blocks w head blockWeight ∧ IsResolventForm blockWeight T
+
+/-- **The algebraic half is immediate once the combinatorial half holds**: with both,
+the weight of a configuration is `head * T ^ blocks`. -/
+theorem weight_of_isM3 {C : Type*} (blocks : C → ℕ) (w : C → ℤ) (head : ℤ)
+    (blockWeight : ℕ → ℤ) (T : ℤ) (h : IsM3 blocks w head blockWeight T) (c : C) :
+    w c = head * T ^ blocks c := by
+  rw [h.1 c, h.2 (blocks c)]
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5694,3 +5736,4 @@ end EltBridge
 #print axioms EltBridge.M6_hypothesis_holds
 #print axioms EltBridge.Elt.lR_closed
 #print axioms EltBridge.witElt_lR_closed
+#print axioms EltBridge.weight_of_isM3

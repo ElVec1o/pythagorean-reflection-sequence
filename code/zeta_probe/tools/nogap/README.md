@@ -4572,3 +4572,26 @@ And what those blocks established is precisely about that gap:
                 run
 Two models, two proved obstructions. Closing the reverse inequality needs a model with
 occupied cut sites AND forced free pairs.
+
+## 2026-09-03 — BLOCK 102: (M3) named as a contract
+
+  IsBlockDecomposition -- (M3a): every configuration splits into a k = 0 sector and k
+                          travel blocks, with the weight multiplying across the split.
+                          COMBINATORIAL.
+  IsResolventForm      -- (M3b): the k-fold block weight is the k-th power, so the sum
+                          over k is the resolvent. ALGEBRAIC, given (M3a).
+  IsM3                 -- the conjunction
+  weight_of_isM3       -- and with both, a configuration's weight is head * T^blocks
+
+Splitting (M3) into (M3a) and (M3b) is the point. The paper states it as one hypothesis
+-- the resolvent factorisation -- but the difficulty is entirely in (M3a): once every
+configuration is known to decompose uniquely into blocks with multiplicative weight, the
+resolvent form is bookkeeping. The memory note "the resolvent factorisation ... is
+combinatorial/algebraic, not analytic" says the same thing less sharply.
+
+All three of (M)'s weakest links now have a shape:
+  metric formula          IsRelaxedLength    (BLOCK 7)
+  reverse shield c<=L-1   obstructed in both models, both obstructions proved
+  (M3)                    IsM3 = IsBlockDecomposition + IsResolventForm  (BLOCK 102)
+None is proved. What changed tonight is that each is now a named obligation with its
+difficulty localised, rather than prose in a settlement paragraph.
