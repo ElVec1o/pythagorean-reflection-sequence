@@ -5077,6 +5077,44 @@ theorem GData.swap_delta {α : Type*} (d : GData α) (x y a b : α) :
           + (if d.side y = d.side a then (if d.sgnOf y = d.sgnOf a then 0 else 2)
             else 1)) := rfl
 
+/-! ### A same-class swap is globally cost-neutral
+
+`GData.swap_free` is the two-term statement.  Summing over arrivals, only those two
+terms change, so the whole cost is unchanged. -/
+
+/-- The turn with the images of `x` and `y` exchanged. -/
+def swapImg {α : Type*} [DecidableEq α] (t : α → α) (x y : α) : α → α := fun z =>
+  if z = x then t y else if z = y then t x else t z
+
+/-- **Swapping two same-class arrivals does not change the cost.** -/
+theorem gcostOf_swapImg {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (t : α → α) (x y : α) (hxy : x ≠ y)
+    (hxa : d.isArr x = true) (hya : d.isArr y = true)
+    (hs : d.side x = d.side y) (hg : d.sgnOf x = d.sgnOf y) :
+    gcostOf d (swapImg t x y) = gcostOf d t := by
+  classical
+  unfold gcostOf
+  set S := Finset.univ.filter (fun z => d.isArr z = true) with hS
+  have hxS : x ∈ S := by simp [hS, hxa]
+  have hyS : y ∈ S := by simp [hS, hya]
+  have hsub : ({x, y} : Finset α) ⊆ S := by
+    intro z hz
+    rcases Finset.mem_insert.mp hz with h | h
+    · rw [h]; exact hxS
+    · rw [Finset.mem_singleton.mp h]; exact hyS
+  rw [← Finset.sum_sdiff hsub, ← Finset.sum_sdiff hsub]
+  have htail : ∀ z ∈ S \ {x, y}, d.pcost z (swapImg t x y z) = d.pcost z (t z) := by
+    intro z hz
+    rw [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, not_or] at hz
+    unfold swapImg
+    rw [if_neg hz.2.1, if_neg hz.2.2]
+  rw [Finset.sum_congr rfl htail]
+  congr 1
+  rw [Finset.sum_pair hxy, Finset.sum_pair hxy]
+  unfold swapImg
+  rw [if_pos rfl, if_neg (Ne.symm hxy), if_pos rfl]
+  exact GData.swap_free d x y (t y) (t x) hs hg
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5260,3 +5298,4 @@ end EltBridge
 #print axioms EltBridge.gcostOf_zero
 #print axioms EltBridge.GData.swap_free
 #print axioms EltBridge.GData.swap_delta
+#print axioms EltBridge.gcostOf_swapImg

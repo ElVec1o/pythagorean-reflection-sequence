@@ -4247,3 +4247,22 @@ the sign is determined by the role, so an arrival and a departure on one side ar
 into different classes and the class labels carry less information than the (side, role)
 pair does. Freeing the sign makes pcost genuinely class-determined, which is what
 pcost_congr_left says.
+
+## 2026-09-03 — BLOCK 88: a same-class swap is globally cost-neutral
+
+  swapImg           -- the turn with the images of x and y exchanged
+  gcostOf_swapImg   -- **swapping two same-class arrivals leaves the total cost
+                       unchanged**
+
+The two-term statement was GData.swap_free (BLOCK 87); this sums it. Only the terms at
+x and y change, so the tail is a sum_congr and the head is swap_free applied once.
+
+That is the free-sign counterpart of EndData.transCost_swap_free, and it needs strictly
+less: EndData's version takes `hshared`, a condition relating the two arrivals' sides to
+their departures' sides. This one takes only that the two arrivals share a class.
+
+So the merge development's central cost fact ports, and ports to a stronger form. What
+remains of the port is the free-pair EXISTENCE argument (free_pair_of_minimal), which
+in the forced model derives hshared from cost-minimality; in the free model the
+corresponding statement is that a cost-minimal datum has two same-class arrivals in
+different walks at a common site.
