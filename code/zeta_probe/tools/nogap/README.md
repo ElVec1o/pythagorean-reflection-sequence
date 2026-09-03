@@ -3531,3 +3531,26 @@ The delta asymmetry in the second is worth noting: the site carrying the virtual
 DEPARTURE can only be cut when delta puts that departure on the right. So one of the
 two obstructions is controlled by a single boolean field of the element, and elements
 with delta = false have only the first condition to check.
+
+## 2026-09-03 — BLOCK 57: witNeg — a witness with kstar < 0 AND a non-empty cut set
+
+  witNeg                  -- cursor -1, deposits -1 at edge -1 and 2 at edge 2
+  witNeg_occ, witNeg_A, witNeg_B  -- occupied set {-1, 0, 2}, so the span is [-1, 2]
+  witNeg_cut_at_one       -- site 1 IS a cut site
+  witNeg_no_virtual_cut   -- and NEITHER virtual site is
+
+So hgap holds for witNeg while Z is non-empty: the first configuration in the project
+that exercises shield_gap non-trivially. witElt (BLOCK 35) has kstar = 1 and an empty
+cut set, so it could only ever confirm walkCount = 1.
+
+The two exclusions are exactly the ones BLOCK 56 characterised, and they are avoided
+for different reasons, which is the useful part:
+  site 0     needs d(-1) = 1; witNeg has d(-1) = -1  -- avoided by the SIGN of a deposit
+  site kstar needs delta = true; witNeg has delta = false -- avoided by the ORIENTATION
+That the two obstructions are dodged by unrelated features of the element is evidence
+they are genuinely independent conditions, not two faces of one.
+
+Design note: the first draft used d(-1) = 1, which by cut_at_zero_iff makes site 0 a cut
+site and would have made the witness useless. Choosing -1 instead was a direct
+consequence of BLOCK 56 -- without the iff I would have built the bad witness and only
+discovered it downstream.

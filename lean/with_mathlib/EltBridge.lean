@@ -3130,6 +3130,106 @@ theorem cut_at_kstar_iff (P : SiteCost.PathData) (hk : P.kstar < 0) :
       rw [hvA, hvD, hd, hf]
       norm_num
 
+/-! ### A witness with `kstar < 0` and a non-empty cut set
+
+`witElt` has `kstar = 1` and no cut site, so it cannot exercise `shield_gap`.  This one
+can: cursor `-1`, deposits `-1` at edge `-1` and `2` at edge `2`.  Its span is
+`[-1, 2]`, and site `1` is cut while neither virtual site is. -/
+
+/-- The second witness. -/
+noncomputable def witNeg : Elt where
+  kstar := -1
+  eps := 1
+  delta := false
+  heps := Or.inl rfl
+  d := fun j => if j = -1 then -1 else if j = 2 then 2 else 0
+  hpar := by
+    intro j
+    unfold travel
+    by_cases h1 : j = -1
+    · subst h1; norm_num
+    · by_cases h2 : j = 2
+      · subst h2; simp [h1]
+      · simp [h1, h2]; split_ifs <;> omega
+  supp := {-1, 2}
+  hsupp := by
+    intro j hj
+    have h1 : j ≠ -1 := by intro hc; exact hj (by simp [hc])
+    have h2 : j ≠ 2 := by intro hc; exact hj (by simp [hc])
+    refine ⟨by simp [h1, h2], ?_⟩
+    unfold travel
+    split_ifs <;> omega
+
+@[simp] theorem witNeg_kstar : witNeg.kstar = -1 := rfl
+@[simp] theorem witNeg_pd_kstar : witNeg.toPathData.kstar = -1 := rfl
+
+/-- **Neither virtual site of `witNeg` is cut**, so `hgap` holds for it.
+
+Site `0` would need `d(-1) = 1`; it is `-1`.  Site `kstar` would need `delta`; it is
+`false`. -/
+theorem witNeg_no_virtual_cut :
+    ¬ witNeg.toPathData.cut 0 ∧ ¬ witNeg.toPathData.cut witNeg.toPathData.kstar := by
+  constructor
+  · rw [cut_at_zero_iff _ (by simp)]
+    rintro ⟨h1, -⟩
+    simp [witNeg, Elt.toPathData] at h1
+  · rw [cut_at_kstar_iff _ (by simp)]
+    rintro ⟨h1, -, -⟩
+    simp [witNeg, Elt.toPathData] at h1
+
+/-- **Site `1` of `witNeg` IS a cut site.**  Away from the virtual sites the condition
+is the plain read-off, and `d(0) = d(1) = 0` with `f(0) = 0`. -/
+theorem witNeg_cut_at_one : witNeg.toPathData.cut 1 := by
+  have hvA : SiteCost.vArr (1 : ℤ) = 0 := by unfold SiteCost.vArr; norm_num
+  have hvD : witNeg.toPathData.vD 1 = 0 := by
+    unfold SiteCost.PathData.vD; rw [if_neg (by simp)]
+  refine ⟨?_, ?_, ?_⟩
+  · unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL
+    rw [hvA, hvD]
+    simp [witNeg, Elt.toPathData]
+  · unfold SiteCost.PathData.betaAt SiteCost.PathData.vR
+    rw [hvD]
+    simp [witNeg, Elt.toPathData]
+  · unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.PathData.f
+    rw [hvA, hvD]
+    simp [witNeg, Elt.toPathData, travel]
+
+/-- Its occupied set is `{-1, 0, 2}`. -/
+theorem witNeg_occ : witNeg.occ = {-1, 0, 2} := by
+  classical
+  unfold Elt.occ
+  ext x
+  simp only [Finset.mem_insert, Finset.mem_filter, Finset.mem_singleton]
+  constructor
+  · rintro (h | ⟨h, -⟩)
+    · simp [h]
+    · have : x = -1 ∨ x = 2 := by simpa [witNeg] using h
+      rcases this with h | h <;> simp [h]
+  · rintro (h | h | h) <;> subst h
+    · right
+      refine ⟨by simp [witNeg], Or.inl ?_⟩
+      simp [witNeg, Elt.toPathData]
+    · exact Or.inl rfl
+    · right
+      refine ⟨by simp [witNeg], Or.inl ?_⟩
+      simp [witNeg, Elt.toPathData]
+
+theorem witNeg_A : witNeg.A = -1 := by
+  have hm : witNeg.A ∈ witNeg.occ := Finset.min'_mem _ _
+  have hle : witNeg.A ≤ -1 :=
+    Finset.min'_le _ _ (by rw [witNeg_occ]; simp)
+  rw [witNeg_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
+theorem witNeg_B : witNeg.B = 2 := by
+  have hm : witNeg.B ∈ witNeg.occ := Finset.max'_mem _ _
+  have hle : (2:ℤ) ≤ witNeg.B :=
+    Finset.le_max' _ _ (by rw [witNeg_occ]; simp)
+  rw [witNeg_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -3252,3 +3352,8 @@ end EltBridge
 #print axioms EltBridge.cut_at_zero_parity_ok
 #print axioms EltBridge.cut_at_zero_iff
 #print axioms EltBridge.cut_at_kstar_iff
+#print axioms EltBridge.witNeg
+#print axioms EltBridge.witNeg_no_virtual_cut
+#print axioms EltBridge.witNeg_cut_at_one
+#print axioms EltBridge.witNeg_A
+#print axioms EltBridge.witNeg_B
