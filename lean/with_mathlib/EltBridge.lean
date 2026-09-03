@@ -6936,3 +6936,45 @@ theorem no_cross_turn_at_cut {Pass : Prop} (P : SiteCost.PathData) (s : ℤ)
 #print axioms siteCost_zero_of_cut
 #print axioms no_pass_at_zero_cost_site
 #print axioms no_cross_turn_at_cut
+
+/-!
+### The cut-site cost gap, for any sign split
+
+BLOCK 133 argued the bounce beats the pass at a cut site via the site cost being
+`0`.  With `sitecost`'s explicit weight matrix
+
+    costOf i j = if i = j then 0 else if i/2 = j/2 then 2 else 1
+
+(classes `0,1` the left edge, `2,3` the right, so "same class" is a bounce,
+"same half" a sign flip, "different half" a pass) the gap is visible directly
+and needs no minimality argument.
+
+At a cut site both deposits vanish, so `pd = pu` on each side, so the arrival
+and departure classes **agree** on each side.  The bounce then pairs each class
+with itself at cost `0`, while the pass crosses halves twice at cost `1 + 1`.
+-/
+
+/-- `sitecost`'s cost matrix: bounce `0`, sign flip `2`, pass `1`. -/
+def costOf (i j : Fin 4) : ℕ :=
+  if i = j then 0 else if i.val / 2 = j.val / 2 then 2 else 1
+
+/-- **At a cut site the bounce strictly beats the pass**, for every sign split.
+`l` is the class carried by the left edge and `r` that of the right; a cut site
+forces arrival and departure to share each, so the bounce is `costOf l l +
+costOf r r` and the pass is `costOf l r + costOf r l`. -/
+theorem bounce_beats_pass_at_cut (l r : Fin 4) (hl : l.val < 2) (hr : 2 ≤ r.val) :
+    costOf l l + costOf r r < costOf l r + costOf r l := by
+  have hne : l ≠ r := by
+    intro h; rw [h] at hl; omega
+  have hhalf : l.val / 2 ≠ r.val / 2 := by omega
+  have h1 : costOf l r = 1 := by
+    unfold costOf; rw [if_neg hne, if_neg hhalf]
+  have h2 : costOf r l = 1 := by
+    unfold costOf; rw [if_neg (Ne.symm hne), if_neg (Ne.symm hhalf)]
+  have h0 : ∀ x : Fin 4, costOf x x = 0 := by
+    intro x; unfold costOf; rw [if_pos rfl]
+  rw [h0, h0, h1, h2]
+  omega
+
+#print axioms costOf
+#print axioms bounce_beats_pass_at_cut

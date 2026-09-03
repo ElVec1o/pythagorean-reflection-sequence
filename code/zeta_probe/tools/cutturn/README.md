@@ -51,8 +51,38 @@ fixed-point-free involution on a two-element side -- the position is: at the cut
 sites everything is determined, and determined the right way.  What remains open
 in `HasInitialTurnInv` is `MergesMin` itself, off the cut sites.
 
+## Deposit-bearing chains (`cutturn dep <nmax>`)
+
+The gap chain carries no signs, so the flip weight is never exercised.  The
+`dep` mode adds deposits: edge `j` carries `a_j` in `{-2, 0, 2}`, still
+`mu = 2` and one strand each way, but now the sign CLASSES differ and the full
+`(bounce, flip, pass) = (0, 2, 1)` matrix is live, as
+`cost_of(i,j) = 0 if i=j, 2 if i/2=j/2, else 1`.  A realisation chooses `pu_j`,
+which is pinned when `a_j != 0` and free when `a_j = 0`; the minimum is taken
+over realisations as well as pairings.  A cut site is `a_{s-1} = a_s = 0`.
+
+    cutturn dep 9
+
+     29520 (chain, deposit) configurations
+     min-cost pairings that pass at a cut site : 0
+     configurations with walks-at-min != |Z|+1 : 0
+
+The second line is the cut-site condition again, now with signs.  The third is
+`c = |Z|` itself -- the walk count at the minimum equals `|Z| + 1` in every
+configuration, which is the shield law, not merely its cut-site half.
+
+The cut-site half also no longer needs a minimality argument.  A cut site has
+both deposits zero, hence `pd = pu` on each side, hence the arrival and
+departure classes AGREE on each side; the bounce then pairs each class with
+itself at cost 0 while the pass crosses halves twice at cost 1+1.  Proved as
+`bounce_beats_pass_at_cut` in `EltBridge.lean`, for every sign split.
+
 ## Not shown
 
-That a minimal-cost merging pairing exists in general.  The chain here is the
-all-gap family only; deposits, travel and the sign structure are absent, and the
-flip weight is untested because nothing flips.  M4b is not closed by this.
+That a minimal-cost merging pairing exists in general.  Both families here hold
+`|a_j| <= 2`, so `mu = 2` on every edge: one up strand and one down strand, and
+exactly two pairings per site.  The first genuinely richer case is `|a| = 4`,
+where `mu = 4` gives two strands each way, the number of pairings per site
+grows, and flips can combine across a site -- none of that is tested.  Travel
+edges (`f = +-1`) and the marker sites are absent too.  M4b is not closed by
+this.

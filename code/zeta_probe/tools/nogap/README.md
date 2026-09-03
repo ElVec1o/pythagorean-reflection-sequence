@@ -5449,3 +5449,32 @@ determined (BLOCK 132), and determined the right way (this block).
 NOT DONE.  `MergesMin` off the cut sites is untouched, and that is where the two
 recorded obstructions live.  The chain carries no deposits, no travel and no
 signs, so the flip weight is untested here.  M4b stays yellow.
+
+## 2026-09-03 — BLOCK 134: deposits added; the walk count comes out right too
+
+`cutturn dep` extends the enumeration off the gap chain.  Edge `j` now carries
+`a_j` in `{-2,0,2}`, so the sign classes differ and `sitecost`'s full weight
+matrix is live, `cost_of(i,j) = 0 if i=j, 2 if i/2=j/2, else 1`.  Realisations
+(`pu_j`, free exactly where `a_j = 0`) are minimised over along with pairings.
+
+    cutturn dep 9      29520 (chain, deposit) configurations
+                       min-cost pairings that pass at a cut site : 0
+                       configurations with walks-at-min != |Z|+1 : 0
+
+The first count repeats BLOCK 133's cut-site condition with signs present.  The
+second is stronger and is the point: the walk count at the minimum equals
+`|Z| + 1` in every configuration -- that is `c = |Z|`, the shield law itself,
+not merely its cut-site half.
+
+The cut-site half also stops needing a minimality argument.  At a cut site both
+deposits vanish, so `pd = pu` on each side, so the arrival and departure classes
+agree on each side; the bounce pairs each class with itself at cost 0 while the
+pass crosses halves twice at 1+1.  `bounce_beats_pass_at_cut` proves the gap for
+every sign split (with `costOf`, the weight matrix, axiom-free).
+
+NOT DONE, and the limitation is sharper than before.  Both families hold
+`|a_j| <= 2`, hence `mu = 2` everywhere: one strand each way, exactly two
+pairings per site.  The first genuinely richer case is `|a| = 4`, where `mu = 4`
+gives two strands each way, the pairings per site multiply, and flips can
+combine across a site.  Travel edges and the markers are absent as well.  So
+this is evidence on a thin slice, not a proof, and M4b stays yellow.
