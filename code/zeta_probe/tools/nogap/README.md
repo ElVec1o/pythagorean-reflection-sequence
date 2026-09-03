@@ -3135,3 +3135,32 @@ not: Local gives |pos x - pos y| <= 1 and edgeOf u ranges over {s0-1, s0}, so th
 is [s0-2, s0+1]. omega caught it -- the proof simply would not close, and the reason was
 that the statement was too strong, not that the tactic was wrong. Corrected before
 recording.
+
+## 2026-09-03 — BLOCK 41: LOCALITY BOUNDS THE TRAVEL — a real obstruction
+
+  VEndpt.local_confines_bnd'  -- the mirror at the virtual departure: s1-2 <= bnd <= s1+1
+  VEndpt.local_bounds_travel  -- both windows must hold, so |s0 - s1| <= 3
+
+Since s0 = -A and s1 = kstar - A, this says: **if the extended graph is
+CutComponents.Local, then |kstar| <= 3.**
+
+So the shield law's locality hypothesis CANNOT hold on the extended type for a
+configuration whose travel is longer than three. This is not a defect in the
+construction and not something a different choice of bnd can fix: the virtual pair
+joins site s0 to site s1 in ONE graph step, and `Local` is precisely the statement
+that a graph edge does not span more than one site. A virtual strand running the whole
+travel interval is non-local by definition.
+
+WHAT THIS MEANS FOR M3/M4b AT ELEMENT LEVEL. The lower bound c >= |Z| is proved in
+CutComponents from `Local`. That route does not transport to VEndpt. Either
+  (a) the lower bound is re-proved from a weaker locality that tolerates one long edge,
+      or
+  (b) the virtual pair is excluded from the graph used for the cut count, and the two
+      graphs related afterwards.
+Both are real work. (b) looks more promising: BLOCK 39 showed cut sites are never
+virtual sites, so deleting the virtual pair from the graph does not touch any cut site.
+
+This is the third genuine obstruction found tonight by trying to USE a construction
+rather than by inspecting it (after BLOCK 28's negative edges and BLOCK 32's missing
+role flip). The pattern is now consistent enough to state as a rule: a construction is
+not known to work until something downstream consumes it.

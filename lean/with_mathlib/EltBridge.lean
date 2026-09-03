@@ -2189,6 +2189,56 @@ edge at `s0 - 1`, which is exactly one of the two positions locality allows. -/
 theorem VEndpt.mirrored_bnd_ok (s0 : ℤ) : (s0 - 1) = s0 ∨ (s0 - 1) = s0 - 1 :=
   Or.inr rfl
 
+/-! ### Locality bounds the travel
+
+`local_confines_bnd` pins `bnd` to a window around `s0`, using the turn of the virtual
+**arrival**.  The same argument at the virtual **departure** pins it to a window around
+`s1`.  Both must hold at once, so the two windows meet -- and that bounds `|s0 - s1|`,
+which is the length of the travel interval. -/
+
+/-- The mirror of `local_confines_bnd`, at the virtual departure. -/
+theorem VEndpt.local_confines_bnd' {n : ℕ} {mm : Fin n → ℕ} (s1 bnd : ℤ)
+    (Zf : Finset ℤ) (E : WalkGraph.Data (VEndpt n mm))
+    (hloc : CutComponents.Local (WalkGraph.graph E) (VEndpt.edgeOf bnd) Zf)
+    (u : EndType.Endpt n mm) (hu : E.t (Sum.inr true) = Sum.inl u)
+    (hsu : EndType.siteOf u = s1) :
+    s1 - 2 ≤ bnd ∧ bnd ≤ s1 + 1 := by
+  have hadj : (WalkGraph.graph E).Adj (Sum.inr true : VEndpt n mm)
+      (E.t (Sum.inr true)) := Or.inr rfl
+  obtain ⟨t, h1, h2, _⟩ := hloc _ _ hadj
+  rw [hu] at h2
+  have h1' : bnd = t - 1 ∨ bnd = t := h1
+  have h2' : EndType.edgeOf u = t - 1 ∨ EndType.edgeOf u = t := h2
+  have hue : EndType.edgeOf u = s1 ∨ EndType.edgeOf u = s1 - 1 := by
+    have hs : EndType.edgeOf u + (if EndType.atTop u then (1:ℤ) else 0) = s1 := hsu
+    cases hb : EndType.atTop u
+    · have e : (if EndType.atTop u then (1:ℤ) else 0) = 0 := by rw [hb]; rfl
+      rw [e] at hs; omega
+    · have e : (if EndType.atTop u then (1:ℤ) else 0) = 1 := by rw [hb]; rfl
+      rw [e] at hs; omega
+  omega
+
+/-- **Locality bounds the travel interval.**
+
+If the extended graph is `CutComponents.Local`, the two virtual sites are within three
+of each other.  Since `s0 = -A` and `s1 = kstar - A`, that says `|kstar| <= 3`.
+
+So the shield law's locality hypothesis **cannot** hold on the extended type for a
+configuration with travel longer than three.  This is not a defect in the
+construction: the virtual pair joins site `s0` to site `s1` in one step, and locality
+is precisely the statement that graph edges do not span more than one site. -/
+theorem VEndpt.local_bounds_travel {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ)
+    (Zf : Finset ℤ) (E : WalkGraph.Data (VEndpt n mm))
+    (hloc : CutComponents.Local (WalkGraph.graph E) (VEndpt.edgeOf bnd) Zf)
+    (u v : EndType.Endpt n mm)
+    (hu : E.t (Sum.inr false) = Sum.inl u) (hsu : EndType.siteOf u = s0)
+    (hv : E.t (Sum.inr true) = Sum.inl v) (hsv : EndType.siteOf v = s1) :
+    |s0 - s1| ≤ 3 := by
+  obtain ⟨h1, h2⟩ := VEndpt.local_confines_bnd s0 s1 bnd Zf E hloc u hu hsu
+  obtain ⟨h3, h4⟩ := VEndpt.local_confines_bnd' s1 bnd Zf E hloc v hv hsv
+  rw [abs_le]
+  omega
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2279,3 +2329,5 @@ end EltBridge
 #print axioms EltBridge.VEndpt.empty_edges_at_arrivalfree
 #print axioms EltBridge.VEndpt.cut_site_picture
 #print axioms EltBridge.VEndpt.local_confines_bnd
+#print axioms EltBridge.VEndpt.local_confines_bnd'
+#print axioms EltBridge.VEndpt.local_bounds_travel
