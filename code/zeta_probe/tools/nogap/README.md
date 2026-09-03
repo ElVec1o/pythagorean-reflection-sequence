@@ -9432,3 +9432,21 @@ term -- `.insert` the method instead).
 satisfies `harrv` by construction -- the obstruction BLOCK 283 found is closed by
 construction rather than by a further lemma.  Assembling `T` itself and running the
 `Finset.sum_subset` argument through it is the next and, on current evidence, final step.
+
+## 2026-09-04 — BLOCK 287: a configuration's own path lies inside the box
+
+    boxSet_bounds   a configuration of relaxed length <= N has every position's BoxState
+                    data inside boxSet N
+
+0 sorry.  Three failures, all diagnosed: the off-span case does not need `mu` at all --
+`travel` vanishes directly by `houter`, so routing it through `mu` (which is `2` off the
+span, not `0`) was the wrong path entirely; and the `dep` bound needs `1 <= N`, which is
+not free -- it follows from `mu_pos` at the left endpoint of the (non-empty) span, chained
+through `lR`, and had to be proved as its own fact rather than assumed.
+
+**Both halves of the box construction are now in place**: `boxSet_finite` says the box is
+finite, `boxSet_bounds` says a configuration's own data sits inside it.  What remains is
+assembling `T` -- images of `boxSet N`-valued position lists under `toFlag` -- and running
+`Finset.sum_subset`/`coeff_sum_subset` through it, using `guards_of_coeff_ne_zero`
+(BLOCK 282), `headCond_of_headVec_ne_zero` (BLOCK 283) and `exists_config_of_path`
+(BLOCK 267) to place a non-vanishing complement path back in the image.

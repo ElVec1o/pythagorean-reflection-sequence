@@ -9231,6 +9231,53 @@ theorem boxSet_finite (N : ℕ) : (boxSet N).Finite := by
   · left; exact h
   · right; simp [h]
 
+/-! ### The finite `Finset` of degree-`N` flagged paths, and the containment
+
+`boxSet N` bounds a single position; `finite_spanData_degree_le` (BLOCK 271) already gives
+finiteness for the whole configuration.  What remains is that a configuration's own
+flagged path lies inside the analogous PRODUCT box, position by position -- which is
+`dcur_le_muOf`/`fcur_le_muOf` (BLOCK 208) chained through `lR`. -/
+
+/-- **A configuration of relaxed length `N` has every entry of its BoxState data bounded
+by `N`.**  This is what places its flagged path inside a finite product. -/
+theorem boxSet_bounds (P : SiteCost.PathData) (N : ℕ) (hN : P.lR ≤ N) (j : ℤ) :
+    ({ dprev := (stateOf P j).dprev, dcur := (stateOf P j).dcur, fcur := (stateOf P j).fcur,
+        dep := (stateOf P j).dep, eps := (stateOf P j).eps,
+        delta := (stateOf P j).delta } : BoxState) ∈ boxSet N := by
+  have hdA : ∀ i : ℤ, (P.d i).natAbs ≤ N := fun i => le_trans (abs_d_le_lR P i) hN
+  refine ⟨?_, ?_, ?_, ?_, P.heps⟩
+  · show (stateOf P j).dprev.natAbs ≤ N
+    show (P.d (j - 1)).natAbs ≤ N
+    exact hdA (j - 1)
+  · show (stateOf P j).dcur.natAbs ≤ N
+    show (P.d j).natAbs ≤ N
+    exact hdA j
+  · show (stateOf P j).fcur.natAbs ≤ N
+    show (SiteCost.travel P.kstar j).natAbs ≤ N
+    by_cases hj : P.A ≤ j ∧ j ≤ P.B
+    · have h1 := LocalState.fcur_le_muOf (stateOf P j)
+      have h2 : (stateOf P j).muOf = P.mu j := mu_factors P j
+      have h4 : P.mu j ≤ ∑ i ∈ Finset.Icc P.A P.B, P.mu i :=
+        Finset.single_le_sum (fun i _ => Nat.zero_le _) (Finset.mem_Icc.mpr hj)
+      unfold SiteCost.PathData.lR at hN
+      have h5 : (stateOf P j).fcur = SiteCost.travel P.kstar j := rfl
+      rw [← h5]
+      omega
+    · have : SiteCost.travel P.kstar j = 0 := (P.houter j (by omega)).2
+      simp [this]
+  · show P.vD j ≤ N
+    have hN1 : 1 ≤ N := by
+      have hAB : P.A ≤ P.B := by have := P.hA; have := P.hB; omega
+      have h4 : P.mu P.A ≤ ∑ i ∈ Finset.Icc P.A P.B, P.mu i :=
+        Finset.single_le_sum (fun i _ => Nat.zero_le _) (Finset.mem_Icc.mpr ⟨le_rfl, hAB⟩)
+      have h5 := P.mu_pos P.A
+      unfold SiteCost.PathData.lR at hN
+      omega
+    show (if j = P.kstar then 1 else 0) ≤ N
+    split_ifs with h
+    · exact hN1
+    · exact Nat.zero_le _
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16967,3 +17014,4 @@ end EltBridge
 #print axioms EltBridge.boxState_toLocal_stateOf
 #print axioms EltBridge.boxState_toFlag_flagOf
 #print axioms EltBridge.boxSet_finite
+#print axioms EltBridge.boxSet_bounds
