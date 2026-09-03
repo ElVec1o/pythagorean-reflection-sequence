@@ -6518,6 +6518,54 @@ theorem toPath_injective {A B : ℤ} : Function.Injective (SpanData.toPath (A :=
   funext j
   rw [← S.toPath_d j, ← T.toPath_d j, h]
 
+/-! ### List packaging: the state path as a list determines the configuration
+
+The bijection of BLOCK 218 is stated for guarded data; `IsAssembly` sums over state paths
+as lists.  The bridge is that two functions agreeing on the mapped span list agree
+pointwise -- proved by induction on the list, with no index arithmetic, which is the
+lesson of the two aborts earlier in this file. -/
+
+/-- Two functions whose images along `A :: idxList A n` agree, agree on `[A, A + n]`. -/
+theorem map_idxList_inj {S : Type*} (f g : ℤ → S) :
+    ∀ (n : ℕ) (A : ℤ), (A :: idxList A n).map f = (A :: idxList A n).map g →
+      ∀ j : ℤ, A ≤ j → j ≤ A + n → f j = g j := by
+  intro n
+  induction n with
+  | zero =>
+      intro A h j hj1 hj2
+      have hhead : f A = g A := by
+        have := congrArg List.head? h; simpa using this
+      push_cast at hj2
+      have hjA : j = A := by omega
+      rw [hjA]; exact hhead
+  | succ m ih =>
+      intro A h j hj1 hj2
+      have hhead : f A = g A := by
+        have := congrArg List.head? h; simpa using this
+      have htail : ((A + 1) :: idxList (A + 1) m).map f
+          = ((A + 1) :: idxList (A + 1) m).map g := by
+        have := congrArg List.tail h; simpa [idxList] using this
+      by_cases hjA : j = A
+      · rw [hjA]; exact hhead
+      · refine ih (A + 1) htail j (by omega) ?_
+        push_cast at hj2 ⊢
+        omega
+
+/-- **The state path, as a list, determines the configuration.**  This is the list-level
+form of (M3)'s bijection: distinct guarded data give distinct state paths, so a sum over
+paths counts each configuration exactly once. -/
+theorem statePath_inj {A B : ℤ} {S T : SpanData A B} {n : ℕ} (hn : B + 1 ≤ A + n)
+    (h : (A :: idxList A n).map (stateOf S.toPath)
+        = (A :: idxList A n).map (stateOf T.toPath)) :
+    S = T := by
+  refine toPath_injective (stateOf_injective' rfl rfl ?_)
+  intro j hj1 hj2
+  have hAe : S.toPath.A = A := rfl
+  have hBe : S.toPath.B = B := rfl
+  rw [hAe] at hj1
+  rw [hBe] at hj2
+  exact map_idxList_inj _ _ n A h j hj1 (by omega)
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -14115,3 +14163,5 @@ end EltBridge
 #print axioms EltBridge.ofPath_toPath
 #print axioms EltBridge.toPath_ofPath
 #print axioms EltBridge.toPath_injective
+#print axioms EltBridge.map_idxList_inj
+#print axioms EltBridge.statePath_inj

@@ -8039,3 +8039,28 @@ present.
 state paths as LISTS; the bijection above is stated for guarded data as a STRUCTURE.
 Turning one sum into the other is index bookkeeping of the kind that has twice cost a
 whole block in this file.  Until it is written, (M3) is not green.
+
+## 2026-09-04 — BLOCK 219: list packaging — the state path determines the configuration
+
+The bijection of BLOCK 218 is stated for guarded data; `IsAssembly` sums over state paths
+as LISTS.  The bridge is that two functions agreeing on the mapped span list agree
+pointwise -- proved by induction on the list, with no index arithmetic at all, which is
+the lesson of the two aborts earlier in this file:
+
+    map_idxList_inj    images agreeing along A :: idxList A n agree on [A, A+n]
+    statePath_inj      hence distinct guarded data give distinct state paths
+
+0 sorry.  `map_idxList_inj` needs only `propext` and `Quot.sound` -- no choice.
+`omega` treats `S.toPath.B` as an atom distinct from `B`, so the projections must be
+reduced by an explicit `rfl` rewrite first; that is not a defeq failure, just omega's
+atomisation.
+
+**So a sum over state paths counts each configuration exactly once.**  Together with
+BLOCK 218's round trips, the correspondence is complete in the form the sum needs.
+
+**What (M3) still lacks is finiteness.**  Both sums have to be finite before they can be
+compared: `SpanData A B` is not a finite type (`dspan : Z -> Z` is unbounded off the
+guards), so the sum over configurations only makes sense once cut by degree.
+`dcur_le_muOf`/`fcur_le_muOf` (BLOCK 208) bound the states by the cost, which is the
+right tool, but the cut is not built.  That is the honest remaining gap, and it is the
+same gap on both sides.
