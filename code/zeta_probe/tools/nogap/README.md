@@ -2977,3 +2977,33 @@ awkward end is the virtual DEPARTURE and bnd must sit above every edge; for ksta
 it is the virtual ARRIVAL and bnd sits just below s0. BLOCK 15 predicted exactly this
 ("the condition can be MOVED between the two ends but not removed"), and both branches
 came out as that note said they would.
+
+## 2026-09-03 — BLOCK 35: B1 INSTANTIATED — the bridge carries an actual element
+
+  witElt            -- the smallest non-trivial group element: kstar = 1, one deposit
+                       at edge 0, travel +1 there and nowhere else
+  witElt_occ        -- its occupied set is {0}
+  witElt_A, witElt_B -- so A = B = 0
+  witElt_width      -- its span has exactly ONE edge
+  witElt_mm_pos     -- and that edge carries a crossing (via mm_eq_mu and mu_pos)
+  witElt_edge_lt    -- every real end sits at edge 0
+  witElt_hcov0      -- the covering condition holds with phantom edge 1
+  witElt_merges     -- **B1 INSTANTIATED**: this element yields a cost-minimal datum
+                       on the extended type that merges to a single walk
+
+This is the check that broke the premature green at BLOCK 28, and it passes. The
+theorem is applied to a concrete Elt, not to a hypothetical configuration: the element
+is built, its span computed, its covering condition proved, and Elt.merges_to_one
+applied with every hypothesis discharged.
+
+The hcov0 proof is the informative part. Every end sits at edge 0 (real) or 1
+(virtual), so an end with a strict predecessor forces j = 1, and the required top end
+at edge 0 exists because the single edge has positive multiplicity. Both facts are
+theorems, not computations.
+
+Trap hit again, for the third time tonight: `i : Fin (pdWidth P)` means rewriting
+pdWidth in `i.isLt` is never type-correct. Fix is always the same -- state both facts
+and let omega combine them, never rw.
+
+B1: YELLOW -> GREEN. Built, covering the whole parameter range (BLOCKS 33-34), and
+instantiated on an actual element (BLOCK 35).

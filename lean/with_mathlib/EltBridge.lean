@@ -1773,6 +1773,131 @@ theorem Elt.merges_to_one_neg (g : Elt) (ds : Bool → Bool)
     (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A) (by omega)
     hcov0 z₀ E hE
 
+/-! ### A concrete instantiation
+
+The theorems above are only worth their statements if an `Elt` can actually be fed to
+them.  This is the smallest non-trivial one: cursor `1`, a single deposit at edge `0`,
+travel `+1` there and nowhere else. -/
+
+/-- The witness element: `kstar = 1`, one deposit at edge `0`. -/
+noncomputable def witElt : Elt where
+  kstar := 1
+  eps := 1
+  delta := false
+  heps := Or.inl rfl
+  d := fun j => if j = 0 then 1 else 0
+  hpar := by
+    intro j
+    unfold travel
+    by_cases h : j = 0 <;> simp [h] <;> split_ifs <;> omega
+  supp := {0}
+  hsupp := by
+    intro j hj
+    have h0 : j ≠ 0 := by
+      intro hc; exact hj (by simp [hc])
+    refine ⟨by simp [h0], ?_⟩
+    unfold travel
+    split_ifs <;> omega
+
+@[simp] theorem witElt_kstar : witElt.kstar = 1 := rfl
+
+/-- Its occupied set is `{0}`. -/
+theorem witElt_occ : witElt.occ = {0} := by
+  classical
+  unfold Elt.occ
+  ext x
+  simp only [Finset.mem_insert, Finset.mem_filter, Finset.mem_singleton]
+  constructor
+  · rintro (h | ⟨h, _⟩)
+    · exact h
+    · simpa [witElt] using h
+  · intro h; exact Or.inl h
+
+theorem witElt_A : witElt.A = 0 := by
+  have h : witElt.A ∈ witElt.occ := Finset.min'_mem _ _
+  rw [witElt_occ, Finset.mem_singleton] at h
+  exact h
+
+theorem witElt_B : witElt.B = 0 := by
+  have h : witElt.B ∈ witElt.occ := Finset.max'_mem _ _
+  rw [witElt_occ, Finset.mem_singleton] at h
+  exact h
+
+@[simp] theorem witElt_pd_A : witElt.toPathData.A = 0 := witElt_A
+@[simp] theorem witElt_pd_B : witElt.toPathData.B = 0 := witElt_B
+@[simp] theorem witElt_pd_kstar : witElt.toPathData.kstar = 1 := rfl
+
+/-- **Its span has exactly one edge.** -/
+theorem witElt_width : pdWidth witElt.toPathData = 1 := by
+  unfold pdWidth
+  rw [witElt_pd_A, witElt_pd_B]
+  rfl
+
+/-- Its single edge carries a crossing. -/
+theorem witElt_mm_pos (i : Fin (pdWidth witElt.toPathData)) :
+    0 < pdMm witElt.toPathData i := by
+  have hi := i.isLt
+  have hw := witElt_width
+  have hz : (i : ℤ) = 0 := by omega
+  have hA := witElt_pd_A
+  have hB := witElt_pd_B
+  have : witElt.toPathData.A + (i : ℤ) = 0 := by rw [hA, hz]; ring
+  simp only [pdMm, this]
+  have hmm := witElt.toPathData.mm_eq_mu (j := 0) ⟨by rw [hA], by rw [hB]⟩
+  rw [hmm]
+  exact witElt.toPathData.mu_pos 0
+
+/-- Every real end of the witness lies on edge `0`. -/
+theorem witElt_edge_lt (u : EndType.Endpt (pdWidth witElt.toPathData)
+    (pdMm witElt.toPathData)) : EndType.edgeOf u < 1 := by
+  have hi := u.edge.isLt
+  have hw := witElt_width
+  unfold EndType.edgeOf
+  omega
+
+/-- **The witness satisfies the covering condition** with phantom edge `1`. -/
+theorem witElt_hcov0 : ∀ j : ℤ,
+    (∃ u : VEndpt (pdWidth witElt.toPathData) (pdMm witElt.toPathData),
+      VEndpt.edgeOf 1 u = j) →
+    (∃ v : VEndpt (pdWidth witElt.toPathData) (pdMm witElt.toPathData),
+      VEndpt.edgeOf 1 v < j) →
+    ∃ y : VEndpt (pdWidth witElt.toPathData) (pdMm witElt.toPathData),
+      VEndpt.edgeOf 1 y = j - 1 ∧ VEndpt.atTop y = true := by
+  rintro j ⟨u, hu⟩ ⟨v, hv⟩
+  -- every end sits at edge `0` or `1`, so a strict predecessor forces `j = 1`
+  have hj : j = 1 := by
+    have h1 : VEndpt.edgeOf (1 : ℤ) u = 0 ∨ VEndpt.edgeOf (1 : ℤ) u = 1 := by
+      cases u with
+      | inl w => exact Or.inl (by
+          have := witElt_edge_lt w
+          have := EndType_edgeOf_nonneg w
+          simp only [VEndpt.edgeOf]; omega)
+      | inr b => exact Or.inr rfl
+    have h2 : 0 ≤ VEndpt.edgeOf (1 : ℤ) v := by
+      cases v with
+      | inl w => simpa [VEndpt.edgeOf] using EndType_edgeOf_nonneg w
+      | inr b => simp [VEndpt.edgeOf]
+    omega
+  subst hj
+  -- the top end of the single real edge
+  have hpos : 0 < pdMm witElt.toPathData ⟨0, by rw [witElt_width]; omega⟩ :=
+    witElt_mm_pos _
+  exact ⟨Sum.inl ⟨⟨0, by rw [witElt_width]; omega⟩, ⟨0, hpos⟩, true⟩, by
+    simp [VEndpt.edgeOf, EndType.edgeOf], rfl⟩
+
+/-- **B1, instantiated.**  The witness element yields a cost-minimal datum on the
+extended type that merges to a single walk.  Not a statement about a hypothetical
+configuration: an actual group element, carried the whole way through. -/
+theorem witElt_merges (ds : Bool → Bool) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth witElt.toPathData) (pdMm witElt.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-witElt.toPathData.A)
+          (witElt.toPathData.kstar - witElt.toPathData.A))
+        (VEndpt.isArr (pdUp witElt.toPathData)) VEndpt.partner
+        (vEndDataP (pdUp witElt.toPathData) ds) D' ∧ WalkGraph.walkCount D' ≤ 1 :=
+  Elt.merges_to_one witElt ds 1 (by simp) (by rw [witElt_pd_A]; omega)
+    witElt_edge_lt witElt_hcov0 (Sum.inr false)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1844,3 +1969,8 @@ end EltBridge
 #print axioms EltBridge.VEndpt.wlo_le_s1
 #print axioms EltBridge.VEndpt.merges_to_oneN
 #print axioms EltBridge.Elt.merges_to_one_neg
+#print axioms EltBridge.witElt
+#print axioms EltBridge.witElt_occ
+#print axioms EltBridge.witElt_width
+#print axioms EltBridge.witElt_hcov0
+#print axioms EltBridge.witElt_merges
