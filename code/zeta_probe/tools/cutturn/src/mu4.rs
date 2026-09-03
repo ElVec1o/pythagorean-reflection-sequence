@@ -55,6 +55,8 @@ pub fn run(nmax: usize, amax: i64) {
     let mut walks_ne = 0u64;
     let mut saw_mu4 = 0u64;
     let mut big_site = 0u64;          // sites with more than two pairings
+    let mut min_not_at_base = 0u64;   // elements whose minimum needs extra crossing pairs
+    let mut cutadj_wide = 0u64;       // minimal data with a cut-adjacent edge wider than 2
     let mut pe_good_by_width = [0u64; 2];   // [all mu=2, some mu=4]
     let mut pe_bad_by_width = [0u64; 2];
     let mut pe_total = 0u64;          // minimal data passing at EVERY non-cut site
@@ -79,6 +81,8 @@ pub fn run(nmax: usize, amax: i64) {
             let mut best_pass = false;
             let mut pe_seen = 0u64;
             let mut pe_bad = 0u64;
+            let mut best_extra = 0usize;
+            let mut min_at_base = false;
             for mextra in 0usize..(1usize << n) {
                 let m: Vec<usize> = (0..n).map(|j| mbase[j] + 2 * ((mextra >> j) & 1)).collect();
                 if m.iter().any(|&x| x > 4) { continue; }
@@ -175,6 +179,16 @@ pub fn run(nmax: usize, amax: i64) {
                                 if total_cost < best_cost {
                                     best_cost = total_cost; best_walks = walks; best_pass = passed_cut;
                                     pe_seen = 0; pe_bad = 0;
+                                    best_extra = mextra;
+                                }
+                                if total_cost == best_cost && mextra == 0 { min_at_base = true; }
+                                if total_cost == best_cost {
+                                    // is any cut-adjacent edge wider than 2 here?
+                                    for s2 in 1..n {
+                                        if a[s2 - 1] == 0 && a[s2] == 0 {
+                                            if m[s2 - 1] > 2 || m[s2] > 2 { cutadj_wide += 1; }
+                                        }
+                                    }
                                 } 
                                 if total_cost == best_cost && passes_everywhere && !passed_cut {
                                     pe_seen += 1;
@@ -223,6 +237,8 @@ pub fn run(nmax: usize, amax: i64) {
             if best_cost == usize::MAX { continue; }
             tested += 1;
             if best_pass { pass_at_cut += 1; }
+            if !min_at_base { min_not_at_base += 1; }
+            let _ = best_extra;
             pe_total += pe_seen;
             pe_wrong += pe_bad;
             if best_walks != ncut + 1 {
@@ -242,6 +258,8 @@ pub fn run(nmax: usize, amax: i64) {
     println!("  cut sites where SOME min-cost pairing passes : {cut_with_pass}");
     println!("  min-cost pairings that pass at a cut site    : {pass_at_cut}");
     println!("  elements with walks-at-min != |Z|+1          : {walks_ne}");
+    println!("  elements whose minimum needs extra pairs     : {min_not_at_base}");
+    println!("  minimal data with a cut-adjacent edge > 2    : {cutadj_wide}");
     println!("  minimal data passing at EVERY non-cut site   : {pe_total}");
     println!("  ... of those, walks != |Z|+1                 : {pe_wrong}");
     println!("  split by widest edge:");

@@ -7116,3 +7116,46 @@ whose cut sites are real.
 NOT proved at `mu >= 4`, and not for want of effort: BLOCK 158 measured 5072 of 8192
 failures, because with two strands each way the passes can be chosen so as not to chain
 and nothing local forces the choice.  Ledger updated for both atoms.
+
+## 2026-09-03 — BLOCK 187: mu >= 4 is not blocked after all
+
+BLOCK 158 showed that passing at every non-cut site does NOT give `|Z|+1` at `mu = 4`
+(5072 of 8192 fail), and BLOCK 159 attributed that to the absence of the two-chain
+structure.  Both are right, and neither is the end of it.
+
+**What the failure actually is.**  Model a run of `k` edges each carrying `u = mu/2` up
+and `u` down strands (`cutturn chain`).  A pass between adjacent edges is a permutation
+`sigma` of levels, a bounce at a run end is a permutation `beta`.  The run is ONE
+component exactly when the return map `betaL^-1 . T' . betaR . Sigma` is a single
+`u`-cycle.  At `u = 1` every permutation is the identity and that is automatic -- the
+`mu = 2` case.  At `u = 2` exactly HALF the choices work:
+
+    k = 1..5, mu = 4:  2/4, 8/16, 32/64, 128/256, 512/1024 give one component
+
+and the ALL-IDENTITY choice -- what any local rule picks -- gives `u` components, never
+one.  So the obstruction is a PARITY, which is global.  That is exactly why no local
+rule forces it.
+
+**Why that does not block the shield law.**  The parity is FREE to choose, because a
+pass costs `1` whichever levels it pairs.  Putting a single `u`-cycle in one pass and the
+identity everywhere else gives one component at every `k` and every `mu` tested
+(4, 6, 8).
+
+The one case with no pass to put it in is a run of length `1`.  There the cycle would
+have to sit in a BOUNCE, which is free only if some sign class holds two strands -- and
+a cut site forces `d = 0`, so at `u = 2` the case `pu = pd = 1` has singleton classes and
+no cycle.
+
+**But that case cannot arise.**  A cut site forces `d = 0` on BOTH its adjacent edges,
+and `mu = 2` whenever `d = 0`.  A length-1 run's single edge touches both of its bounding
+cut sites, so it has `mu = 2` -- the case already proved.  Measured, with zero
+exceptions:
+
+    elements whose minimum needs extra pairs   : 0
+    minimal data with a cut-adjacent edge > 2  : 0
+
+the first because `lR` counts the crossings, so extra pairs only raise the cost.
+
+**So the construction extends to all `mu`:** runs of length `>= 2` take the cycle in a
+pass, runs of length `1` are `mu = 2` throughout.  `mu >= 4` is a formalisation task, not
+an obstruction.
