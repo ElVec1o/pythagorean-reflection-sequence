@@ -2836,3 +2836,33 @@ STILL TO DO for the A < 0 case: the partner site-distinctness (needs -A != kstar
 i.e. kstar != 0, unchanged), the locality discharges (BLOCKS 16/18 rewritten against
 s0/s1 rather than 0/kstar), and the re-indexing PathData -> Fin n itself, which no
 block has yet written. That last one is the actual remaining content of B1.
+
+## 2026-09-03 — BLOCK 30: the re-indexing is WRITTEN; Elt -> balanced configuration
+
+The map I had been building around for twenty blocks without writing:
+
+  pdWidth, pdWidth_pos   -- the span has (B - A + 1) edges, and at least one
+  pdMm, pdUp             -- edge i of the shifted configuration is edge A + i of the
+                            original; multiplicities and up-counts transported
+  pd_tr_eq               -- the shifted configuration carries the RIGHT SIGNED TRAVEL:
+                            tr = 2 min(cu, mm) - mm = 2 cu - mm = cu - cdn = travel,
+                            using cu <= mm from cu_add_cdn and cu_sub_cdn
+  pd_travelS_zero_outside -- and the travel vanishes off the index range (houter)
+  pd_balanced            -- THE JOIN: those two plus balanced_allP give balance at
+                            every site, virtual events at -A and kstar - A
+  Elt.balanced           -- and hence for a group element:
+                            Elt -> PathData -> Fin n -> VEndpt -> balanced
+
+So the composite the whole bridge was for now exists as a single theorem, and it works
+for A < 0 -- the case BLOCK 28 showed the unparametrised version could not reach.
+
+The key computation is three lines and was available from the start: cu + cdn = mm
+gives cu <= mm, so min(cu, mm) = cu and tr = cu - cdn, which cu_sub_cdn says is
+travel. BLOCK 6 proved the naive re-indexing cannot balance and I read that as the map
+being hard; it was not -- what was hard was everything the map needed AROUND it (the
+virtual pair, its forcing, its pairing, the locality discharges), and that is what
+BLOCKS 8-29 built.
+
+REMAINING FOR B1: the locality discharges (BLOCKS 16/18) are written against the
+literals 0 and kstar; they need the s0/s1 parameters threaded, exactly as siteP did for
+the site map. Then the assembled merge theorems apply to Elt.balanced directly.

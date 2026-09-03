@@ -1340,6 +1340,81 @@ theorem VEndpt.balanced_allP {n : ℕ} {mm : Fin n → ℕ} (up : Fin n → ℕ)
   have hfacts := travelS_site_facts A kstar s
   split_ifs at hfacts ⊢ <;> omega
 
+/-! ### The re-indexing `PathData -> Fin n`
+
+The map that was missing.  A `PathData` indexes edges by `Z` over the span `[A, B]`;
+`Endpt` indexes them by `Fin n`.  The shift by `-A` is the bridge, and `travelS` is
+exactly the travel indicator read through it. -/
+
+variable (P : SiteCost.PathData)
+
+/-- The number of edges in the span. -/
+def pdWidth : ℕ := (P.B - P.A + 1).toNat
+
+theorem pdWidth_pos : 0 < pdWidth P := by
+  have h1 := P.hA; have h2 := P.hB
+  unfold pdWidth; omega
+
+/-- Edge `i` of the shifted configuration is edge `A + i` of the original. -/
+def pdMm : Fin (pdWidth P) → ℕ := fun i => P.mm (P.A + i)
+
+/-- Its up-crossing count. -/
+def pdUp : Fin (pdWidth P) → ℕ := fun i => P.cu (P.A + i)
+
+/-- **The re-indexed configuration has the right signed travel.**
+
+`tr = 2 min(up, m) - m`, and since `cu <= mm` this is `2 cu - mm = cu - cdn`, which is
+`travel` at the original index -- that is, `travelS` at the shifted one. -/
+theorem pd_tr_eq (i : Fin (pdWidth P)) :
+    ConfigLoop.tr (m := pdMm P) (pdUp P) i = travelS P.A P.kstar (i : ℤ) := by
+  have hsum := P.cu_add_cdn (P.A + i)
+  have hdiff := P.cu_sub_cdn (P.A + i)
+  have hle : pdUp P i ≤ pdMm P i := by
+    simp only [pdUp, pdMm]; omega
+  unfold ConfigLoop.tr travelS
+  rw [min_eq_left hle]
+  simp only [pdUp, pdMm] at *
+  omega
+
+/-- **Outside the index range the travel vanishes.** -/
+theorem pd_travelS_zero_outside (s : ℤ) (h : ∀ e : Fin (pdWidth P), (e : ℤ) ≠ s) :
+    travelS P.A P.kstar s = 0 := by
+  have hout : P.A + s < P.A ∨ P.B < P.A + s := by
+    by_contra hc
+    push_neg at hc
+    obtain ⟨h1, h2⟩ := hc
+    have hs0 : 0 ≤ s := by omega
+    have hsw : s < (pdWidth P : ℤ) := by unfold pdWidth; omega
+    exact h ⟨s.toNat, by unfold pdWidth at hsw ⊢; omega⟩ (by simp; omega)
+  exact (P.houter (P.A + s) hout).2
+
+
+/-- **The re-indexed configuration is balanced at every site.**
+
+This is the join: `pd_tr_eq` says the shifted configuration carries the right signed
+travel, `pd_travelS_zero_outside` says the travel vanishes off the index range, and
+`balanced_allP` turns those into balance -- with the two virtual events at `-A` and
+`kstar - A`. -/
+theorem pd_balanced (P : SiteCost.PathData) :
+    ∀ s : ℤ,
+      (VEndpt.arrAtP (mm := pdMm P) (-P.A) (P.kstar - P.A) (pdUp P) s).card
+        = (VEndpt.depAtP (mm := pdMm P) (-P.A) (P.kstar - P.A) (pdUp P) s).card :=
+  VEndpt.balanced_allP (pdUp P) P.A P.kstar
+    (fun s e he => by rw [pd_tr_eq P e, he])
+    (fun s h => pd_travelS_zero_outside P s h)
+
+/-- **And so is the configuration of a group element.**
+
+`Elt -> PathData -> Fin n -> VEndpt -> balanced`.  This is the composite the whole
+bridge was for; every step is a theorem above. -/
+theorem Elt.balanced (g : Elt) :
+    ∀ s : ℤ,
+      (VEndpt.arrAtP (mm := pdMm g.toPathData) (-g.toPathData.A)
+        (g.toPathData.kstar - g.toPathData.A) (pdUp g.toPathData) s).card
+        = (VEndpt.depAtP (mm := pdMm g.toPathData) (-g.toPathData.A)
+          (g.toPathData.kstar - g.toPathData.A) (pdUp g.toPathData) s).card :=
+  pd_balanced g.toPathData
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -1396,3 +1471,7 @@ end EltBridge
 #print axioms EltBridge.VEndpt.card_depAtP
 #print axioms EltBridge.travelS_site_facts
 #print axioms EltBridge.VEndpt.balanced_allP
+#print axioms EltBridge.pd_tr_eq
+#print axioms EltBridge.pd_travelS_zero_outside
+#print axioms EltBridge.pd_balanced
+#print axioms EltBridge.Elt.balanced
