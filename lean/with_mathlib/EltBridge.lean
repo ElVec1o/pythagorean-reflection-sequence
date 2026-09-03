@@ -9853,3 +9853,131 @@ theorem shield_upper_bound_passTurn {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m
 end EltBridge
 #print axioms EltBridge.passTurn_site
 #print axioms EltBridge.shield_upper_bound_passTurn
+
+namespace EltBridge
+
+/-! ### Concrete `up` and `dn`
+
+At `mu = 2` an edge has strands `0` and `1`.  Given a section `sec : ℤ → Fin n` naming
+the edge at each position, `upOf` and `dnOf` are the bottoms of those two strands.
+
+The six distinctness facts need no hypothesis at all: the four ends of a site differ in
+`idx` or in `top`.  Only the SITE facts need `sec` to be a genuine section, and only
+where the position is in range -- which is what BLOCK 177's occupancy condition
+provides. -/
+
+noncomputable def upOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) : EndType.Endpt n m :=
+  ⟨sec j, ⟨0, by rw [hm]; norm_num⟩, false⟩
+
+noncomputable def dnOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) : EndType.Endpt n m :=
+  ⟨sec j, ⟨1, by rw [hm]; norm_num⟩, false⟩
+
+@[simp] theorem upOf_edge {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) : (upOf (m := m) hm sec j).edge = sec j := rfl
+
+@[simp] theorem dnOf_edge {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) : (dnOf (m := m) hm sec j).edge = sec j := rfl
+
+/-- **The two strands of an edge share it.** -/
+theorem upOf_dnOf_edgeOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) :
+    EndType.edgeOf (upOf (m := m) hm sec j) = EndType.edgeOf (dnOf (m := m) hm sec j) :=
+  rfl
+
+/-- **The two strands are distinct**: their indices differ. -/
+theorem upOf_ne_dnOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) : upOf (m := m) hm sec j ≠ dnOf (m := m) hm sec j := by
+  intro h
+  have := congrArg (fun x => (x.idx : ℕ)) h
+  simp [upOf, dnOf] at this
+
+/-- **A top is never a bottom**: `partner` flips `top`, so the tops of edge `s-1` differ
+from the bottoms of edge `s`. -/
+theorem partner_ne_bot {n : ℕ} {m : Fin n → ℕ} (x y : EndType.Endpt n m)
+    (hx : x.top = false) (hy : y.top = false) : EndType.partner x ≠ y := by
+  intro h
+  have := congrArg EndType.Endpt.top h
+  simp [EndType.partner, hx, hy] at this
+
+/-- **And the two tops are distinct**, again by index. -/
+theorem partner_upOf_ne_partner_dnOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2)
+    (sec : ℤ → Fin n) (j : ℤ) :
+    EndType.partner (upOf (m := m) hm sec j) ≠ EndType.partner (dnOf (m := m) hm sec j) := by
+  intro h
+  have := congrArg (fun x => (x.idx : ℕ)) h
+  simp [EndType.partner, upOf, dnOf] at this
+
+end EltBridge
+
+#print axioms EltBridge.upOf_dnOf_edgeOf
+#print axioms EltBridge.upOf_ne_dnOf
+#print axioms EltBridge.partner_ne_bot
+#print axioms EltBridge.partner_upOf_ne_partner_dnOf
+
+namespace EltBridge
+
+/-! ### The site facts
+
+`siteOf x = edgeOf x + [top x]`, so a bottom sits at its own edge and a top one to the
+right.  Each site fact is therefore exactly the statement that `sec` is a section at
+that position. -/
+
+theorem upOf_siteOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) (hsec : ((sec j : ℕ) : ℤ) = j) :
+    EndType.siteOf (upOf (m := m) hm sec j) = j := by
+  unfold EndType.siteOf EndType.edgeOf upOf EndType.atTop
+  simpa using hsec
+
+theorem dnOf_siteOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) (hsec : ((sec j : ℕ) : ℤ) = j) :
+    EndType.siteOf (dnOf (m := m) hm sec j) = j := by
+  unfold EndType.siteOf EndType.edgeOf dnOf EndType.atTop
+  simpa using hsec
+
+theorem partner_upOf_siteOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) (hsec : ((sec j : ℕ) : ℤ) = j) :
+    EndType.siteOf (EndType.partner (upOf (m := m) hm sec j)) = j + 1 := by
+  unfold EndType.siteOf EndType.edgeOf EndType.partner upOf EndType.atTop
+  simp only [Bool.not_false, if_true]
+  rw [hsec]
+
+theorem partner_dnOf_siteOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (j : ℤ) (hsec : ((sec j : ℕ) : ℤ) = j) :
+    EndType.siteOf (EndType.partner (dnOf (m := m) hm sec j)) = j + 1 := by
+  unfold EndType.siteOf EndType.edgeOf EndType.partner dnOf EndType.atTop
+  simp only [Bool.not_false, if_true]
+  rw [hsec]
+
+/-- **`upOf` and `dnOf` name the strand bottoms.**  Given the section property at `x`'s
+own edge, `up (edgeOf x)` is `botOf x` when `x`'s strand is `0`. -/
+theorem upOf_eq_botOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (x : EndType.Endpt n m) (hidx : (x.idx : ℕ) = 0)
+    (hsec : sec (EndType.edgeOf x) = x.edge) :
+    upOf (m := m) hm sec (EndType.edgeOf x) = botOf x := by
+  obtain ⟨e, i, t⟩ := x
+  have he : sec ((e : ℕ) : ℤ) = e := hsec
+  unfold upOf botOf
+  simp only [EndType.edgeOf]
+  congr 1
+  · rw [Fin.heq_ext_iff (by rw [he])]
+    simpa using hidx.symm
+
+theorem dnOf_eq_botOf {n : ℕ} {m : Fin n → ℕ} (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (x : EndType.Endpt n m) (hidx : (x.idx : ℕ) = 1)
+    (hsec : sec (EndType.edgeOf x) = x.edge) :
+    dnOf (m := m) hm sec (EndType.edgeOf x) = botOf x := by
+  obtain ⟨e, i, t⟩ := x
+  have he : sec ((e : ℕ) : ℤ) = e := hsec
+  unfold dnOf botOf
+  simp only [EndType.edgeOf]
+  congr 1
+  · rw [Fin.heq_ext_iff (by rw [he])]
+    simpa using hidx.symm
+
+end EltBridge
+
+#print axioms EltBridge.upOf_siteOf
+#print axioms EltBridge.partner_upOf_siteOf
+#print axioms EltBridge.upOf_eq_botOf

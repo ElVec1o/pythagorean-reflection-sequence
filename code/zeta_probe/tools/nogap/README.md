@@ -6870,3 +6870,35 @@ That is the second defect in two blocks found by trying to discharge the hypothe
 rather than by reading them, and both were in my own work: BLOCK 176 in the definition,
 this one in the quantification.  Instantiating is what tests a statement; until then it
 is only well-typed.
+
+## 2026-09-03 — BLOCK 178: concrete `up` and `dn`
+
+Given a section `sec : ℤ → Fin n` naming the edge at each position, `upOf` and `dnOf`
+are the bottoms of that edge's two strands.  With them the geometry hypotheses split
+cleanly in two.
+
+**Unconditional** -- no hypothesis at all, because the four ends of a site differ in
+`idx` or in `top`:
+
+    upOf_dnOf_edgeOf              the two strands share their edge (rfl)
+    upOf_ne_dnOf                  they differ, by index
+    partner_ne_bot                a top is never a bottom
+    partner_upOf_ne_partner_dnOf  the two tops differ, by index
+
+**Conditional on `sec` being a section at that position**, which is exactly BLOCK 177's
+occupancy:
+
+    upOf_siteOf, dnOf_siteOf                  a bottom sits at its own edge
+    partner_upOf_siteOf, partner_dnOf_siteOf  a top sits one to the right
+    upOf_eq_botOf, dnOf_eq_botOf              they name the strand bottoms
+
+So `h12`-`h34`, `hs1`-`hs4`, `hud`, `hupn` and `hdnn` are all discharged from one fact:
+`sec` is a section where the span is occupied.  0 sorry.
+
+The dependent field bit again: `Endpt`'s `idx : Fin (m edge)` has a type depending on
+`edge`, so equality of endpoints is not `congr`-friendly.  `Fin.heq_ext_iff` after
+supplying the edge equality is what works, and `congr 1` returns the `HEq` goal FIRST,
+which cost two attempts to notice.
+
+What is left of the instantiation: `hfour` -- a site's ends are exactly those four --
+and the run indexing `hrange`, `hbdry`, `hint`, `hocc`.
