@@ -3946,6 +3946,150 @@ theorem run_step_turnInvG {α : Type*} [Fintype α] [DecidableEq α]
           · exact Or.inl (by rw [← hside a, ← hside a']; exact h)
           · exact Or.inr (by rw [← hside (D.t a), ← hside (D.t a')]; exact h)) hteq
 
+/-! ### The `hturn` chain, parametrised by the top map
+
+`site_edge_at_cut` and everything above it were stated with `VEndpt.atTop`.  The only
+property used is that the map agrees with `EndType.atTop` on real ends, which `atTopN`
+also satisfies.  These are the parametrised forms. -/
+
+/-- The site-edge relation at a cut site, for any top map agreeing on real ends. -/
+theorem VEndpt.site_edge_at_cutT {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hle : s1 ≤ s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0)) (bnd : ℤ)
+    (top : VEndpt n mm → Bool) (htop : ∀ u, top (Sum.inl u) = EndType.atTop u)
+    (x : VEndpt n mm) (hmem : VEndpt.siteP s0 s1 x ∈ Zf) :
+    VEndpt.siteP s0 s1 x = VEndpt.edgeOf bnd x + (if top x then 1 else 0) := by
+  obtain ⟨u, hu⟩ := VEndpt.cut_ends_real s0 s1 hle Zf hgap x hmem
+  rw [hu, htop u]
+  rfl
+
+/-- The free pair lies on one edge at a cut site, parametrised. -/
+theorem VEndpt.freePair_same_edge_at_cutT {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ)
+    (hle : s1 ≤ s0) (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (bnd : ℤ) (top : VEndpt n mm → Bool)
+    (htop : ∀ u, top (Sum.inl u) = EndType.atTop u)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (D.t x) ≠ VEndpt.edgeOf bnd x → VEndpt.siteP s0 s1 x ∉ Zf)
+    (a a' : VEndpt n mm) (hss : VEndpt.siteP s0 s1 a' = VEndpt.siteP s0 s1 a)
+    (hcut : VEndpt.siteP s0 s1 a ∈ Zf)
+    (hshared : top a = top a' ∨ top (D.t a) = top (D.t a')) :
+    VEndpt.edgeOf bnd a = VEndpt.edgeOf bnd a' := by
+  have hcut' : VEndpt.siteP s0 s1 a' ∈ Zf := hss ▸ hcut
+  have hka : VEndpt.edgeOf bnd (D.t a) = VEndpt.edgeOf bnd a := by
+    by_contra hc; exact hturn a hc hcut
+  have hka' : VEndpt.edgeOf bnd (D.t a') = VEndpt.edgeOf bnd a' := by
+    by_contra hc; exact hturn a' hc hcut'
+  have ea := VEndpt.site_edge_at_cutT s0 s1 hle Zf hgap bnd top htop a hcut
+  have ea' := VEndpt.site_edge_at_cutT s0 s1 hle Zf hgap bnd top htop a' hcut'
+  rcases hshared with h | h
+  · rw [h] at ea; omega
+  · have eta := VEndpt.site_edge_at_cutT s0 s1 hle Zf hgap bnd top htop (D.t a)
+      (by rw [hts]; exact hcut)
+    have eta' := VEndpt.site_edge_at_cutT s0 s1 hle Zf hgap bnd top htop (D.t a')
+      (by rw [hts]; exact hcut')
+    rw [h] at eta
+    rw [hts a] at eta
+    rw [hts a', hss] at eta'
+    omega
+
+/-- `hturn` survives the merge, parametrised. -/
+theorem VEndpt.hturn_step_nohZT {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hle : s1 ≤ s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0)) (bnd : ℤ)
+    (top : VEndpt n mm → Bool) (htop : ∀ u, top (Sum.inl u) = EndType.atTop u)
+    (D D' : WalkGraph.Data (VEndpt n mm)) (a a' : VEndpt n mm)
+    (hts : ∀ e, VEndpt.siteP s0 s1 (D.t e) = VEndpt.siteP s0 s1 e)
+    (hturn : ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (D.t x) ≠ VEndpt.edgeOf bnd x → VEndpt.siteP s0 s1 x ∉ Zf)
+    (hss : VEndpt.siteP s0 s1 a' = VEndpt.siteP s0 s1 a)
+    (hshared : top a = top a' ∨ top (D.t a) = top (D.t a'))
+    (heq : D'.t = WalkGraph.swapT D.t a (D.t a) a' (D.t a')) :
+    ∀ x : VEndpt n mm,
+      VEndpt.edgeOf bnd (D'.t x) ≠ VEndpt.edgeOf bnd x →
+      VEndpt.siteP s0 s1 x ∉ Zf := by
+  rw [heq]
+  by_cases hcut : VEndpt.siteP s0 s1 a ∈ Zf
+  · have hea := VEndpt.freePair_same_edge_at_cutT s0 s1 hle Zf hgap bnd top htop D
+      hts hturn a a' hss hcut hshared
+    have keep : ∀ y : VEndpt n mm, VEndpt.siteP s0 s1 y ∈ Zf →
+        VEndpt.edgeOf bnd (D.t y) = VEndpt.edgeOf bnd y := by
+      intro y hy
+      by_contra hc; exact hturn y hc hy
+    have hka := keep a hcut
+    have hka' := keep a' (hss ▸ hcut)
+    intro x hne hmem
+    exact hne (swapT_pos_eq D.t (VEndpt.edgeOf bnd) a (D.t a) a' (D.t a') x
+      hka.symm hea (by omega) (keep x hmem))
+  · exact hturn_swapT_gen D.t (VEndpt.edgeOf bnd) (VEndpt.siteP s0 s1) Zf
+      a (D.t a) a' (D.t a') hturn hcut (hts a) hss (by rw [hts a']; exact hss)
+
+/-! ### The descent on the extended type, mirrored orientation
+
+`run_step_turnInvG` instantiated at `VEndpt` with `bnd = s0 - 1`, `atTopN`, and the
+three discharges of BLOCK 51.  Its `hstep` is `hturn_step_nohZV`. -/
+
+/-- **The run step on `VEndpt`.** -/
+theorem VEndpt.run_step_turnInvN {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1 < s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hcov : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ z v : VEndpt n mm,
+      VEndpt.edgeOf (s0 - 1) v
+        < WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z →
+      ∃ w : VEndpt n mm, VEndpt.edgeOf (s0 - 1) w
+        = WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z - 1 ∧
+        VEndpt.atTopN w = true)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+      (vEndDataN up ds) Zf D) :
+    (∃ D' : WalkGraph.Data (VEndpt n mm),
+      TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+        (vEndDataN up ds) Zf D' ∧
+      WalkGraph.walkCount D' < WalkGraph.walkCount D) ∨
+      (∀ x y : VEndpt n mm,
+        runIndexG (VEndpt.edgeOf (s0 - 1)) Zf x
+          = runIndexG (VEndpt.edgeOf (s0 - 1)) Zf y →
+        (WalkGraph.graph D).Reachable x y) :=
+  run_step_turnInvG (vEndDataN up ds) (VEndpt.edgeOf (s0 - 1)) (VEndpt.siteP s0 s1)
+    VEndpt.atTopN VEndpt.partner Zf (fun _ => rfl) (VEndpt.hpe (s0 - 1)) VEndpt.hptN
+    (VEndpt.partner_site_neP s0 s1 (by omega))
+    (fun _ _ _ x _ _ => VEndpt.hsW_negP s0 s1 x)
+    (fun E hE w x hwx hxe hxb => VEndpt.hsX_negP s0 s1 hlt E hE.2.1 w x hwx hxe hxb)
+    (fun _ _ _ y _ hyt => VEndpt.hsT_negP s0 s1 y hyt)
+    hcov
+    (fun D D' a a' hts hturn hss hshared heq =>
+      VEndpt.hturn_step_nohZT s0 s1 (by omega) Zf hgap (s0 - 1) VEndpt.atTopN
+        (fun _ => rfl) D D' a a' hts hturn hss hshared heq)
+    D hD
+
+/-- **Iterated: a `TurnInvG` datum on `VEndpt` whose runs are connected.** -/
+theorem VEndpt.exists_turnInvN_connected {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ)
+    (hlt : s1 < s0) (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hcov : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ z v : VEndpt n mm,
+      VEndpt.edgeOf (s0 - 1) v
+        < WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z →
+      ∃ w : VEndpt n mm, VEndpt.edgeOf (s0 - 1) w
+        = WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z - 1 ∧
+        VEndpt.atTopN w = true)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+      (vEndDataN up ds) Zf D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+        (vEndDataN up ds) Zf D' ∧
+      ∀ x y : VEndpt n mm,
+        runIndexG (VEndpt.edgeOf (s0 - 1)) Zf x
+          = runIndexG (VEndpt.edgeOf (s0 - 1)) Zf y →
+        (WalkGraph.graph D').Reachable x y :=
+  ConfigMerge.reaches_stuck
+    (P := TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+      (vEndDataN up ds) Zf)
+    (Stuck := fun E => ∀ x y : VEndpt n mm,
+      runIndexG (VEndpt.edgeOf (s0 - 1)) Zf x
+        = runIndexG (VEndpt.edgeOf (s0 - 1)) Zf y →
+      (WalkGraph.graph E).Reachable x y)
+    (fun E hE => VEndpt.run_step_turnInvN s0 s1 hlt Zf hgap up ds hcov E hE) D hD
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4098,3 +4242,6 @@ end EltBridge
 #print axioms EltBridge.hturn_swapT_gen
 #print axioms EltBridge.VEndpt.hturn_step_nohZV
 #print axioms EltBridge.run_step_turnInvG
+#print axioms EltBridge.VEndpt.run_step_turnInvN
+#print axioms EltBridge.VEndpt.exists_turnInvN_connected
+#print axioms EltBridge.VEndpt.hturn_step_nohZT

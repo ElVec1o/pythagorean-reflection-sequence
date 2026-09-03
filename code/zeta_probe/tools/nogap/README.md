@@ -3804,3 +3804,22 @@ shorter development than generalising in advance would have: swapT_pos_eq,
 walkCount_ge_of_avoiding_gen, hturn_swapT_gen, run_step_turnInvG. In each case the
 Endpt-specific proof was already written and the generic version is the same script with
 the type fixed later.
+
+## 2026-09-03 — BLOCK 68: the descent runs on VEndpt
+
+  VEndpt.site_edge_at_cutT, freePair_same_edge_at_cutT, hturn_step_nohZT
+      -- the hturn chain parametrised by the top map. The only property used is that
+         the map agrees with EndType.atTop on REAL ends, and both VEndpt.atTop and
+         VEndpt.atTopN do.
+  VEndpt.run_step_turnInvN        -- run_step_turnInvG instantiated at VEndpt, mirrored
+                                     orientation (bnd = s0-1, atTopN)
+  VEndpt.exists_turnInvN_connected -- iterated: a TurnInvG datum whose runs are connected
+
+So the descent that BLOCKS 60-64 repaired on Endpt now runs on the type that carries a
+group element's configuration, with hZ absent throughout.
+
+The parametrisation was forced, not chosen: hturn_step_nohZV had been written against
+VEndpt.atTop, and the mirrored orientation needs atTopN. Rather than duplicate the
+chain I added the top map as a parameter with the one hypothesis its proofs actually
+use (agreement on real ends). Same pattern as BLOCK 50, where the shield law itself
+turned out to parametrise over the orientation with a single extra hypothesis.
