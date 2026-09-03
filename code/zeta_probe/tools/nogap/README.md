@@ -9152,3 +9152,26 @@ injective (BLOCK 218) and lands in a set finite by `finite_degree_le` (BLOCK 222
 
 **[Rule 0] VERIFIED.**  The `Finset` the comparison wants exists, via
 `Set.Finite.toFinset`.
+
+## 2026-09-04 — BLOCK 272: why the comparison must be coefficient-wise
+
+Instantiating `sum_configs_eq_sum_all_paths` (BLOCK 270) at "all configurations of degree
+at most `N`" **does not work**, and the reason is structural, not technical: a guarded path
+of the right length can belong to a configuration whose relaxed length EXCEEDS `N`, and its
+weight is not zero, so the two sums genuinely differ.
+
+The fix is the one `IsAssembly` (BLOCK 116) already encodes -- compare COEFFICIENTS:
+
+    coeff_pow_lR        the degree-N coefficient of X^k is 1 exactly when N = k
+    coeff_pow_lR_ne     so a configuration of the wrong degree contributes nothing
+    coeff_pow_lR_self   and at its own degree it contributes one
+
+0 sorry, all three clean on the first build; `PowerSeries.coeff_X_pow` is in this Mathlib
+with argument order `coeff m (X^n) = if m = n then 1 else 0`.
+
+**This is why `IsAssembly` was stated degree-wise in the first place**, which BLOCK 116
+recorded without the reason.  Each coefficient sees only the configurations of that exact
+relaxed length, and those are finite by `finite_spanData_degree_le` (BLOCK 271).
+
+**[Rule 0] VERIFIED.**  The selection mechanism is in place; the degree-wise instantiation
+is the remaining step.

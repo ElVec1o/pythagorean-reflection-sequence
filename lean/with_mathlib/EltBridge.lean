@@ -8700,6 +8700,33 @@ theorem finite_spanData_degree_le (A : ℤ) (m : ℕ) (N : ℕ) :
   · intro S _ T _ h
     exact toPath_injective h
 
+/-! ### Why the comparison must be coefficient-wise
+
+Instantiating `sum_configs_eq_sum_all_paths` (BLOCK 270) at "all configurations of degree
+at most `N`" does not work, and the reason is structural rather than technical: a guarded
+path of the right length can belong to a configuration whose relaxed length EXCEEDS `N`,
+and that path's weight is not zero, so the two sums genuinely differ.
+
+The fix is the one `IsAssembly` (BLOCK 116) already encodes -- compare COEFFICIENTS.  In
+`PowerSeries` the degree-`N` coefficient of `X ^ lR` is `1` exactly when `lR = N`, so each
+side sees only the configurations of relaxed length exactly `N`, and both are finite by
+`finite_spanData_degree_le` (BLOCK 271). -/
+
+/-- A configuration contributes to the degree-`N` coefficient only at its own length. -/
+theorem coeff_pow_lR (N k : ℕ) :
+    PowerSeries.coeff N ((PowerSeries.X : PowerSeries ℤ) ^ k) = if N = k then 1 else 0 :=
+  PowerSeries.coeff_X_pow N k
+
+/-- **So a configuration of the wrong degree contributes nothing.** -/
+theorem coeff_pow_lR_ne (N k : ℕ) (h : N ≠ k) :
+    PowerSeries.coeff N ((PowerSeries.X : PowerSeries ℤ) ^ k) = 0 := by
+  rw [coeff_pow_lR, if_neg h]
+
+/-- **And at its own degree it contributes one.** -/
+theorem coeff_pow_lR_self (N : ℕ) :
+    PowerSeries.coeff N ((PowerSeries.X : PowerSeries ℤ) ^ N) = 1 := by
+  rw [coeff_pow_lR, if_pos rfl]
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -16408,3 +16435,6 @@ end EltBridge
 #print axioms EltBridge.headOk_of_weight_ne_zero
 #print axioms EltBridge.sum_configs_eq_sum_all_paths
 #print axioms EltBridge.finite_spanData_degree_le
+#print axioms EltBridge.coeff_pow_lR
+#print axioms EltBridge.coeff_pow_lR_ne
+#print axioms EltBridge.coeff_pow_lR_self
