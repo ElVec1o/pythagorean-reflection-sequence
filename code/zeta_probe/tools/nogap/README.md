@@ -4825,3 +4825,23 @@ So the generating-function step has its combinatorial atom. What it still needs 
 same statement for a SEQUENCE of deposits rather than one -- a product of fibrations,
 which is the standard Finset.prod over the index set, and the multiplicity is
 2^(number of non-zero magnitudes).
+
+## 2026-09-03 — BLOCK 112: the product of fibrations
+
+  sum_prod_signed      -- summing an UNCOUPLED magnitude-dependent product over signed
+                          deposit sequences factorises into per-edge sums, each given by
+                          the sign fibration of BLOCK 111
+  uncoupled_factorises -- and the normalised case
+
+This is the generating-function step for an uncoupled weight, via
+Finset.prod_univ_sum. Higher-order unification could not see `g i (d i).natAbs` as
+`f i (d i)`; supplying f explicitly fixed it.
+
+WHAT IT SHOWS BY CONTRAST. lR is NOT uncoupled: its site costs max |d(s-1)| |d(s)| tie
+consecutive deposits (site_cost_couples, BLOCK 103). So sum_prod_signed does not apply
+to it directly, and the transfer matrix is not a convenience but a necessity --
+pathGF_succ (BLOCK 105) is the coupled statement, and this block is the uncoupled one.
+
+Having both makes the role of the coupling explicit: without it the generating function
+is a product of scalars; with it, a product of matrices. That is the whole distance
+between a trivial (M3) and the real one.

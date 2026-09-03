@@ -5845,6 +5845,34 @@ theorem sum_signed_eq_magnitudes (f : ℕ → ℤ) : ∀ N : ℕ,
     simp only [Int.natAbs_neg, Int.natAbs_natCast]
     ring
 
+/-! ### The product of fibrations
+
+For a weight that is a **product** over edges of magnitude-dependent factors, summing
+over signed deposit sequences factorises into a product of per-edge sums, each given by
+the sign fibration.  This is the generating-function step for an uncoupled weight. -/
+
+/-- **The sum over signed sequences factorises.** -/
+theorem sum_prod_signed (n N : ℕ) (g : Fin n → ℕ → ℤ) :
+    ∑ d ∈ Fintype.piFinset (fun _ : Fin n => Finset.Icc (-(N : ℤ)) (N : ℤ)),
+        ∏ i : Fin n, g i (d i).natAbs
+      = ∏ i : Fin n, (g i 0 + 2 * ∑ m ∈ Finset.Icc 1 N, g i m) := by
+  classical
+  rw [← Finset.prod_univ_sum (fun _ : Fin n => Finset.Icc (-(N : ℤ)) (N : ℤ))
+    (fun (i : Fin n) (z : ℤ) => g i z.natAbs)]
+  exact Finset.prod_congr rfl (fun i _ => sum_signed_eq_magnitudes (g i) N)
+
+/-- **So an uncoupled weight's generating function is a product**, and the coupling in
+`lR` -- the site costs `max |d(s-1)| |d(s)|` -- is exactly what makes the transfer
+matrix necessary instead.  `pathGF_succ` handles the coupled case; this is the
+uncoupled one, and comparing them isolates what the coupling costs. -/
+theorem uncoupled_factorises (n N : ℕ) (g : Fin n → ℕ → ℤ)
+    (h : ∀ i, g i 0 + 2 * ∑ m ∈ Finset.Icc 1 N, g i m = 1) :
+    ∑ d ∈ Fintype.piFinset (fun _ : Fin n => Finset.Icc (-(N : ℤ)) (N : ℤ)),
+        ∏ i : Fin n, g i (d i).natAbs = 1 := by
+  rw [sum_prod_signed n N g]
+  rw [Finset.prod_congr rfl (fun i _ => h i)]
+  simp
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6064,3 +6092,5 @@ end EltBridge
 #print axioms EltBridge.lR_site_split
 #print axioms EltBridge.lR_interior_terms
 #print axioms EltBridge.sum_signed_eq_magnitudes
+#print axioms EltBridge.sum_prod_signed
+#print axioms EltBridge.uncoupled_factorises
