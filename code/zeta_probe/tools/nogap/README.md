@@ -4179,3 +4179,24 @@ and BLOCK 77 proved cannot exist in the forced-sign model.
 The partition lemma needed Bool.not_eq_true rather than Bool.eq_false_iff to convert
 `sgnOf x = false` into `¬ sgnOf x = true`; the filter predicates are stated one way and
 Finset's negation lemma the other.
+
+## 2026-09-03 — BLOCK 84: a class-preserving turn costs nothing
+
+  gcostAt, gcostOf   -- the site and global cost of a turn in the free-sign model
+  gcostAt_zero       -- a class-preserving turn costs 0 over any set of ends
+  gcostOf_zero       -- and 0 globally
+  gcostOf_nonneg     -- costs are non-negative, so 0 is the minimum and it is ATTAINED
+
+Contrast with the forced model, where pcostF_ge_one (BLOCK 77) says every
+arrival/departure pair costs at least one, so the minimum is the number of arrivals and
+a cut site's siteValue of 0 is unreachable unless the site is empty.
+
+That contrast is the whole content of the free-sign detour: in EndData the minimum
+achievable cost at an occupied site is positive, while the site model says a cut site
+costs 0. The two disagree, and GData is the model where they agree.
+
+So the free-sign line now has: the cost function, the zero-cost turn, the balance that
+produces it, and the proof that zero is the minimum. What it does not yet have is the
+merge development ported onto it -- CostMerge is written against EndData.Data
+throughout, and BLOCK 78 already identified pcost_eq_of_arr_dep as the lemma that will
+not survive the port, since it is a consequence of the forcing.

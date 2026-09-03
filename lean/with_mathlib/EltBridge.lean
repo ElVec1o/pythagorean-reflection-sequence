@@ -5006,6 +5006,44 @@ theorem class_balance_of_cut {α : Type*} [Fintype α] [DecidableEq α] (d : GDa
   intro sd sg
   cases sd <;> cases sg <;> assumption
 
+/-! ### The cost of a class-preserving turn is zero -/
+
+/-- The cost of a turn over a set of ends, in the free-sign model. -/
+noncomputable def gcostAt {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (S : Finset α) (t : α → α) : ℤ := ∑ x ∈ S, d.pcost x (t x)
+
+/-- **A class-preserving turn costs nothing.** -/
+theorem gcostAt_zero {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (S : Finset α) (t : α → α)
+    (h : ∀ x ∈ S, d.side (t x) = d.side x ∧ d.sgnOf (t x) = d.sgnOf x) :
+    gcostAt d S t = 0 := by
+  unfold gcostAt
+  refine Finset.sum_eq_zero (fun x hx => ?_)
+  obtain ⟨h1, h2⟩ := h x hx
+  exact GData.pcost_zero d x (t x) h1.symm h2.symm
+
+/-- The global cost of a turn, summed over arrivals. -/
+noncomputable def gcostOf {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (t : α → α) : ℤ := by
+  classical
+  exact ∑ x ∈ Finset.univ.filter (fun x => d.isArr x = true), d.pcost x (t x)
+
+theorem gcostOf_nonneg {α : Type*} [Fintype α] [DecidableEq α] (d : GData α)
+    (t : α → α) : 0 ≤ gcostOf d t := by
+  unfold gcostOf
+  exact Finset.sum_nonneg (fun x _ => GData.pcost_nonneg d x (t x))
+
+/-- **A globally class-preserving turn costs nothing.**  So in the free-sign model the
+minimum cost is `0` and is attained -- unlike the forced model, where every pair costs
+at least one (`pcostF_ge_one`). -/
+theorem gcostOf_zero {α : Type*} [Fintype α] [DecidableEq α] (d : GData α) (t : α → α)
+    (h : ∀ x, d.side (t x) = d.side x ∧ d.sgnOf (t x) = d.sgnOf x) :
+    gcostOf d t = 0 := by
+  unfold gcostOf
+  refine Finset.sum_eq_zero (fun x _ => ?_)
+  obtain ⟨h1, h2⟩ := h x
+  exact GData.pcost_zero d x (t x) h1.symm h2.symm
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5185,3 +5223,5 @@ end EltBridge
 #print axioms EltBridge.per_edge_sign_collapses
 #print axioms EltBridge.clsCount_sum
 #print axioms EltBridge.class_balance_of_cut
+#print axioms EltBridge.gcostAt_zero
+#print axioms EltBridge.gcostOf_zero
