@@ -4090,6 +4090,62 @@ theorem VEndpt.exists_turnInvN_connected {n : ℕ} {mm : Fin n → ℕ} (s0 s1 :
       (WalkGraph.graph E).Reachable x y)
     (fun E hE => VEndpt.run_step_turnInvN s0 s1 hlt Zf hgap up ds hcov E hE) D hD
 
+/-- A `TurnInvG` datum's edges preserve the block index or are local, on `VEndpt`. -/
+theorem VEndpt.blk_or_local_of_turnInvN {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ)
+    (hlt : s1 < s0) (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (up : Fin n → ℕ) (ds : Bool → Bool) (E : WalkGraph.Data (VEndpt n mm))
+    (hE : TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+      (vEndDataN up ds) Zf E) :
+    ∀ x y : VEndpt n mm, (WalkGraph.graph E).Adj x y →
+      CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf x
+        = CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf y ∨ (∃ t : ℤ,
+        (VEndpt.edgeOf (s0 - 1) x = t - 1 ∨ VEndpt.edgeOf (s0 - 1) x = t) ∧
+        (VEndpt.edgeOf (s0 - 1) y = t - 1 ∨ VEndpt.edgeOf (s0 - 1) y = t) ∧
+        (VEndpt.edgeOf (s0 - 1) x ≠ VEndpt.edgeOf (s0 - 1) y → t ∉ Zf)) := by
+  have hts := hE.1.1.2.1
+  have hvirt := VEndpt.hvirt_of_gap s0 s1 hlt Zf hgap E hts
+  refine VEndpt.blk_or_local (s0 - 1) Zf E hE.1.1.1 ?_ hvirt
+  refine VEndpt.hreal_of_hturn s0 s1 (s0 - 1) Zf E hts ?_ hvirt
+  intro u v huv hedge
+  have : VEndpt.siteP s0 s1 (Sum.inl u : VEndpt n mm) ∉ Zf := by
+    refine hE.2 (Sum.inl u) ?_
+    rw [huv]
+    simpa [VEndpt.edgeOf] using Ne.symm hedge
+  simpa [VEndpt.siteP] using this
+
+/-- **The shield law on `VEndpt`, from `TurnInvG`: `c = |Z|`.**
+
+No `hZ`, no `hturn` hypothesis -- both come from the invariant, which the descent
+maintains.  What is left are `hcov`, `hruns`, `hgap` and a basepoint. -/
+theorem VEndpt.shield_turnInvN {n : ℕ} {mm : Fin n → ℕ} (s0 s1 : ℤ) (hlt : s1 < s0)
+    (Zf : Finset ℤ) (hgap : ∀ z ∈ Zf, ¬ (s1 - 1 < z ∧ z ≤ s0))
+    (up : Fin n → ℕ) (ds : Bool → Bool)
+    (hcov : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ z v : VEndpt n mm,
+      VEndpt.edgeOf (s0 - 1) v
+        < WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z →
+      ∃ w : VEndpt n mm, VEndpt.edgeOf (s0 - 1) w
+        = WalkSupport.wLo (VEndpt.edgeOf (s0 - 1)) (WalkGraph.graph E) z - 1 ∧
+        VEndpt.atTopN w = true)
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf (s0 - 1)) Zf v = i)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+      (vEndDataN up ds) Zf D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0 - 1)) VEndpt.partner
+        (vEndDataN up ds) Zf D' ∧
+      WalkGraph.walkCount D' = Zf.card + 1 := by
+  obtain ⟨D', hD', hsep⟩ :=
+    VEndpt.exists_turnInvN_connected s0 s1 hlt Zf hgap up ds hcov D hD
+  have hedge := VEndpt.blk_or_local_of_turnInvN s0 s1 hlt Zf hgap up ds D' hD'
+  refine ⟨D', hD', le_antisymm ?_ ?_⟩
+  · exact walkCount_le_runs_blk D' (VEndpt.edgeOf (s0 - 1)) Zf hedge hsep
+  · obtain ⟨F, hinj, havoid⟩ :=
+      CutComponents.exists_injective_components_avoiding_blk_or_local hedge hruns
+        ((WalkGraph.graph D').connectedComponentMk z₀)
+    exact walkCount_ge_of_avoiding_gen D' Zf.card _ F hinj havoid
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -4245,3 +4301,4 @@ end EltBridge
 #print axioms EltBridge.VEndpt.run_step_turnInvN
 #print axioms EltBridge.VEndpt.exists_turnInvN_connected
 #print axioms EltBridge.VEndpt.hturn_step_nohZT
+#print axioms EltBridge.VEndpt.shield_turnInvN

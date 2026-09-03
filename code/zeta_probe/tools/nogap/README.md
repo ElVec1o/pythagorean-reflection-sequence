@@ -3823,3 +3823,30 @@ VEndpt.atTop, and the mirrored orientation needs atTopN. Rather than duplicate t
 chain I added the top map as a parameter with the one hypothesis its proofs actually
 use (agreement on real ends). Same pattern as BLOCK 50, where the shield law itself
 turned out to parametrise over the orientation with a single extra hypothesis.
+
+## 2026-09-03 — BLOCK 69: THE SHIELD LAW ON VEndpt, FROM THE INVARIANT
+
+  VEndpt.blk_or_local_of_turnInvN -- a TurnInvG datum's edges preserve the block index
+                                     or are local (hvirt from hvirt_of_gap, hreal from
+                                     the invariant's own hturn restricted to real ends)
+  VEndpt.shield_turnInvN          -- **c = |Z| on VEndpt, from TurnInvG**
+
+NO hZ. NO hturn hypothesis. Both come from the invariant, which the descent maintains
+(BLOCK 68). What remains: hcov, hruns, hgap, a basepoint.
+
+This is the end of the repair that BLOCK 60 opened. The full arc:
+  BLOCK 59  forall-E hturn cannot be discharged -- a cut site carries real ends
+  BLOCK 60  hZ collides with mu_pos -- the shield law was inapplicable to elements
+  BLOCK 61  hturn follows from zero-crossing, so hZ was never the right hypothesis
+  BLOCK 62  hturn is self-maintaining across a merge
+  BLOCK 63  so it belongs in the descent invariant
+  BLOCK 64  and the shield law follows from that invariant     (Endpt)
+  BLOCK 65  under hgap, cut sites carry only real ends
+  BLOCK 66  so the free-pair argument transfers
+  BLOCK 67  the descent is generic once hturn maintenance is a parameter
+  BLOCK 68  it runs on VEndpt
+  BLOCK 69  and the shield law follows there too               (VEndpt)
+
+Eleven blocks, one hypothesis removed. The upper and lower bounds are now fed by the
+same fact on both end types, which is the structural change: before BLOCK 60 they took
+different hypotheses, and that is why the incompatibility survived sixty blocks.
