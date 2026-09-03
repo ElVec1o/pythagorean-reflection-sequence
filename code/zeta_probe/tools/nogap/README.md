@@ -8796,3 +8796,28 @@ unrealisable.**
 direction -- configurations satisfy the guard either way -- and both would have made the
 converse unprovable while looking like a mathematical obstruction.  The lesson is that a
 guard is only tested by the direction that consumes it.
+
+## 2026-09-04 — BLOCK 253: a THIRD gap of the same kind — the head vector's flow condition
+
+The step from `A - 1` into `A` needs `flowB` there.  With the state before the span
+carrying no travel, that reads
+
+    arr A = fcur A + dep A,
+
+a condition on the FIRST state alone.  `headOkB` (BLOCK 231) carries `dprev = 0` -- the
+`compatB` half of that step -- but not this, the `flowB` half.
+
+    head_flow_stateOf   the condition holds for a configuration
+    headOk2B            the repaired head guard
+    headOk2B_stateOf    and a configuration satisfies it
+    flowB_preState      with it, the step into the left end holds
+
+0 sorry, all three clean on the first build.
+
+**Three gaps of identical shape now** (BLOCKS 226, 252, 253), each found by trying to USE
+the guard rather than by reading it, and each invisible from the configuration side.  The
+pattern is precise enough to state as a rule: **every step the extension makes across a
+boundary imposes a condition on the boundary state, and the guard must carry it.**  There
+are four such steps -- into `A`, out of `B`, and the two beyond -- and their `compatB` and
+`flowB` halves are eight conditions.  Six are now accounted for; the two beyond the ends
+are trivial, since both extension states are inert.

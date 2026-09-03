@@ -8082,6 +8082,43 @@ theorem flowB_extState (σ : LocalState) (h : 0 ≤ σ.fcur) :
   simp only [flowB, extState, decide_eq_true_eq]
   omega
 
+/-! ### A third gap of the same kind: the head vector's flow condition
+
+The step from `A - 1` into `A` needs `flowB` there.  With the state before the span
+carrying no travel, that reads
+
+    arr A = fcur A + dep A,
+
+a condition on the FIRST state alone.  `headOkB` (BLOCK 231) carries `dprev = 0`, which is
+the `compatB` half of that step, but not this, the `flowB` half.  Same shape of gap as
+BLOCK 252 and BLOCK 226, and found the same way -- by trying to use the guard. -/
+
+/-- **The head flow condition holds for a configuration.** -/
+theorem head_flow_stateOf (P : SiteCost.PathData) :
+    (((stateOf P P.A).arr : ℕ) : ℤ)
+      = (stateOf P P.A).fcur + (((stateOf P P.A).dep : ℕ) : ℤ) := by
+  have hf := flowB_stateOf P (P.A - 1)
+  simp only [flowB, decide_eq_true_eq] at hf
+  rw [show P.A - 1 + 1 = P.A by ring] at hf
+  have h0 : (stateOf P (P.A - 1)).fcur = 0 :=
+    (congrArg LocalState.fcur (preState_stateOf P)).symm
+  rw [h0] at hf
+  omega
+
+/-- The repaired head guard: BLOCK 231's, plus the flow condition. -/
+def headOk2B (σ : LocalState) : Bool :=
+  headOkB σ && decide ((σ.arr : ℤ) = σ.fcur + (σ.dep : ℤ))
+
+theorem headOk2B_stateOf (P : SiteCost.PathData) : headOk2B (stateOf P P.A) = true := by
+  simp only [headOk2B, Bool.and_eq_true, decide_eq_true_eq]
+  exact ⟨headOkB_stateOf P, head_flow_stateOf P⟩
+
+/-- **With it, the step into the left end holds.** -/
+theorem flowB_preState (σ : LocalState) (h : ((σ.arr : ℕ) : ℤ) = σ.fcur + ((σ.dep : ℕ) : ℤ)) :
+    flowB (preState σ) σ = true := by
+  simp only [flowB, preState, decide_eq_true_eq]
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15756,3 +15793,6 @@ end EltBridge
 #print axioms EltBridge.fcur_B_nonneg
 #print axioms EltBridge.tailOk2B_stateOf
 #print axioms EltBridge.flowB_extState
+#print axioms EltBridge.head_flow_stateOf
+#print axioms EltBridge.headOk2B_stateOf
+#print axioms EltBridge.flowB_preState
