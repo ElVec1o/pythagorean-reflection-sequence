@@ -5422,3 +5422,30 @@ block says the cut sites themselves contribute no degrees of freedom to that
 search, so the obstruction is entirely in the off-cut pairing.
 
 NOT DONE.  No pairing is constructed.  M4b stays where it was.
+
+## 2026-09-03 — BLOCK 133: the cut-site condition is implied, not extra
+
+New tool `tools/cutturn`, and the lemma behind it.
+
+`TurnInvG` = `MergesMin` AND no turn crossing a cut site.  BLOCK 132 showed the
+second half has no freedom at the cut sites.  This block shows it is not an
+extra demand at all.
+
+A cut site has `alpha = beta = Phi = 0`, hence site cost `0`
+(`siteCost_zero_of_cut`).  A turn crossing a site is a pass, and a pass costs
+`1` in the weights `sitecost`'s H0 certifies as `(0, 2, 1)` with 0 exceptions.
+A pairing attaining cost `0` at a site therefore cannot pass there
+(`no_pass_at_zero_cost_site`, `no_cross_turn_at_cut`; 0 sorry).
+
+`cutturn` confirms it on the extreme family, the all-gap chain of `n` edges
+where every interior site is a cut site and `|Z| = n-1`.  For `n = 2..12`:
+minimum cost 0, attained only by the bounce-only pairing, which has exactly
+`|Z| + 1` walks.  Cost model `bounce 0, pass 1`, a lower bound on the full
+model, which is the safe direction for this claim.
+
+So `HasInitialTurnInv` reduces to `MergesMin` alone.  The cut sites are settled:
+determined (BLOCK 132), and determined the right way (this block).
+
+NOT DONE.  `MergesMin` off the cut sites is untouched, and that is where the two
+recorded obstructions live.  The chain carries no deposits, no travel and no
+signs, so the flip weight is untested here.  M4b stays yellow.

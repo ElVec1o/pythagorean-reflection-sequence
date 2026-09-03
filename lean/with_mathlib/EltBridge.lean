@@ -6894,3 +6894,45 @@ theorem cut_site_pairing_has_no_freedom {α : Type*} (t t' : α → α)
 #print axioms mu_eq_two_of_gap
 #print axioms turn_forced_at_two
 #print axioms cut_site_pairing_has_no_freedom
+
+/-!
+### `TurnInvG`'s second condition is implied by minimality
+
+`TurnInvG` demands a minimal-cost merging pairing **and** that no turn cross a
+cut site.  The second half is not an independent demand: a cut site has site
+cost `0`, and a turn crossing a site is a *pass*, which costs `1` in the
+`(bounce, flip, pass) = (0, 2, 1)` weights that `sitecost`'s H0 certifies with
+0 exceptions.  A pairing attaining cost `0` at a site therefore has no pass
+there.
+
+The enumerator `tools/cutturn` confirms this on the extreme family -- the
+all-gap chain of `n` edges, where every interior site is a cut site and
+`|Z| = n-1`.  For `n = 2..12` the minimum cost is `0`, it is attained only by
+the bounce-only pairing, and that pairing has exactly `|Z| + 1` walks.
+-/
+
+/-- A cut site has site cost zero. -/
+theorem siteCost_zero_of_cut (P : SiteCost.PathData) (s : ℤ) (h : P.cut s) :
+    P.siteCost s = 0 := by
+  obtain ⟨ha, hb, -⟩ := h
+  unfold SiteCost.PathData.siteCost
+  rw [ha, hb]
+  simp
+
+/-- **A pairing that attains cost zero at a site cannot pass there.**  This is
+the whole of `TurnInvG`'s second condition, given the two facts either side of
+it: the site cost at a cut site is `0`, and a pass costs at least `1`. -/
+theorem no_pass_at_zero_cost_site {P : Prop} (lc : ℕ) (hmin : lc = 0)
+    (hpass : P → 1 ≤ lc) : ¬ P := by
+  intro h; have := hpass h; omega
+
+/-- The two combined, as the statement the shield law needs: at a cut site, a
+cost-attaining pairing turns within one edge. -/
+theorem no_cross_turn_at_cut {Pass : Prop} (P : SiteCost.PathData) (s : ℤ)
+    (hcut : P.cut s) (lc : ℕ) (hattain : lc = P.siteCost s)
+    (hpass : Pass → 1 ≤ lc) : ¬ Pass :=
+  no_pass_at_zero_cost_site lc (by rw [hattain, siteCost_zero_of_cut P s hcut]) hpass
+
+#print axioms siteCost_zero_of_cut
+#print axioms no_pass_at_zero_cost_site
+#print axioms no_cross_turn_at_cut
