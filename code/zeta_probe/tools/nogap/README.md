@@ -4310,3 +4310,30 @@ enters and where the free-sign version supplies the same thing.
 BLOCK 89's pigeonhole is now less central: five arrivals force a same-class ARRIVAL
 pair, but the disjunctive criterion also fires on the departures, so the counting bound
 is sufficient, not necessary, and by a wider margin than it looked.
+
+## 2026-09-03 — BLOCK 91: free_pair_of_minimal does NOT port — a proved no-go
+
+  altGData                              -- one side, alternating signs on Fin 4
+  altGData_swap_raises                  -- the swap RAISES the cost (by decide)
+  altGData_no_disjunct                  -- and neither disjunct of the criterion holds
+  free_pair_of_minimal_fails_in_free_model -- so the forced model's derivation is FALSE
+                                             as stated in the free-sign model
+
+(propext only; both computations by kernel `decide`.)
+
+In the forced model, if neither the arrivals nor their departures share a SIDE, the
+swap strictly lowers the cost, so cost-minimality forces the disjunction. With four
+classes that argument breaks: put all four ends on one side with signs +, -, +, -.
+Neither disjunct holds, yet the swap raises the cost by four, so minimality permits the
+configuration and gives no free pair.
+
+WHAT THIS MEANS. The free-sign model buys the zero-cost turn at cut sites (BLOCKS
+80-84) and a cleaner swap criterion (BLOCKS 87-90), but it LOSES the automatic
+existence of free pairs. The forced model's two-valued side is what made "not sharing a
+side" imply a strict decrease; with four classes the cost landscape has local minima
+that are not free.
+
+So the free-sign line is not a strict improvement. It trades one obstruction for
+another, and both are now proved rather than suspected:
+  forced model  cut sites must be empty        (BLOCK 77, pcostF_ge_one)
+  free model    free pairs need not exist      (BLOCK 91, this)

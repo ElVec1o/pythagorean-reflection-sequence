@@ -5215,6 +5215,43 @@ theorem gcostOf_swapImg_or {α : Type*} [Fintype α] [DecidableEq α] (d : GData
         · exact Or.inl h
         · exact Or.inr ⟨h1.symm, h2.symm⟩)
 
+/-! ### `free_pair_of_minimal` does NOT port
+
+In the forced model, if neither the arrivals nor their departures share a side, the
+swap strictly *lowers* the cost -- so cost-minimality forces the disjunction
+(`CostMerge.free_pair_of_minimal`).
+
+With four classes that fails.  Put all four ends on one side with signs
+`x = +, y = -, a = +, b = -`.  Neither disjunct holds -- the arrivals differ in sign,
+and so do the departures -- yet the swap **raises** the cost by four, so minimality
+permits the configuration and yields no free pair. -/
+
+/-- The witness assignment: one side, alternating signs. -/
+def altGData : GData (Fin 4) :=
+  ⟨fun _ => true, fun i => decide (i.val < 2), fun i => decide (i.val % 2 = 0)⟩
+
+/-- **The swap raises the cost**, so minimality does not exclude this configuration. -/
+theorem altGData_swap_raises :
+    altGData.pcost 0 2 + altGData.pcost 1 3
+      < altGData.pcost 0 3 + altGData.pcost 1 2 := by
+  decide
+
+/-- **And neither disjunct of the criterion holds.** -/
+theorem altGData_no_disjunct :
+    ¬ ((altGData.side 0 = altGData.side 1 ∧ altGData.sgnOf 0 = altGData.sgnOf 1) ∨
+      (altGData.side 2 = altGData.side 3 ∧ altGData.sgnOf 2 = altGData.sgnOf 3)) := by
+  decide
+
+/-- **So the forced model's derivation does not carry over.**  A cost-minimal datum in
+the free-sign model may have a cross-walk pair admitting no free swap: the analogue of
+`free_pair_of_minimal` is false as stated. -/
+theorem free_pair_of_minimal_fails_in_free_model :
+    ∃ d : GData (Fin 4), ∃ x y a b : Fin 4,
+      d.pcost x a + d.pcost y b < d.pcost x b + d.pcost y a ∧
+      ¬ ((d.side x = d.side y ∧ d.sgnOf x = d.sgnOf y) ∨
+        (d.side a = d.side b ∧ d.sgnOf a = d.sgnOf b)) :=
+  ⟨altGData, 0, 1, 2, 3, altGData_swap_raises, altGData_no_disjunct⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5403,3 +5440,4 @@ end EltBridge
 #print axioms EltBridge.free_pair_of_five
 #print axioms EltBridge.GData.swap_free_or
 #print axioms EltBridge.gcostOf_swapImg_or
+#print axioms EltBridge.free_pair_of_minimal_fails_in_free_model
