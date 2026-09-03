@@ -10374,3 +10374,241 @@ end EltBridge
 
 #print axioms EltBridge.mem_of_gz_lt
 #print axioms EltBridge.runLo_mem_bounce
+
+namespace EltBridge
+
+/-! ### The chain conditions for the `passTurn` datum
+
+Each is the corresponding `passTurn` equation, read through `chain_*_of_pass` and the
+site facts.  The site `lo r + k + 1` is inside the run, so `no_bounce_inside_run` makes
+the turn PASS there; the site `lo r` is the run's left end, so `runLo_mem_bounce` makes
+it BOUNCE. -/
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+theorem chain_up_passTurn (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ) (r k : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty) (hk : k < runLen Zf A B r)
+    (hsecA : ((sec (runLo Zf A B r + (k : ℤ)) : ℕ) : ℤ) = runLo Zf A B r + (k : ℤ))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = passTurn EndType.siteOf EndType.partner
+      (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+      (insert A (insert (B + 1) Zf)) (EndType.siteOf x) x) :
+    (WalkGraph.graph E).Reachable
+      (upOf (m := m) hm sec (runLo Zf A B r + (k : ℤ)))
+      (upOf (m := m) hm sec (runLo Zf A B r + ((k : ℤ) + 1))) := by
+  set a := runLo Zf A B r + (k : ℤ) with ha
+  have hgoal : runLo Zf A B r + ((k : ℤ) + 1) = a + 1 := by rw [ha]; ring
+  rw [hgoal]
+  refine chain_up_of_pass E (upOf (m := m) hm sec) a (a + 1) ?_
+  have hsite : EndType.siteOf (E.p (upOf (m := m) hm sec a)) = a + 1 := by
+    rw [hEp]
+    exact partner_upOf_siteOf hm sec a hsecA
+  rw [hEt, hsite, hEp]
+  have harith : a + 1 - 1 = a := by ring
+  have h := passTurn_pass_up EndType.siteOf EndType.partner
+    (upOf (m := m) hm sec) (dnOf (m := m) hm sec) (insert A (insert (B + 1) Zf)) (a + 1)
+    (by
+      have h := no_bounce_inside_run Zf A B r k hne hk
+      have he : a + 1 = runLo Zf A B r + ((k : ℤ) + 1) := by rw [ha]; ring
+      rw [he]
+      exact h)
+    (by rw [harith]; exact partner_upOf_siteOf hm sec a hsecA)
+  rw [harith] at h
+  exact h
+
+end EltBridge
+
+#print axioms EltBridge.chain_up_passTurn
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+theorem chain_dn_passTurn (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ) (r k : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty) (hk : k < runLen Zf A B r)
+    (hsecB : ((sec (runLo Zf A B r + ((k : ℤ) + 1)) : ℕ) : ℤ)
+      = runLo Zf A B r + ((k : ℤ) + 1))
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = passTurn EndType.siteOf EndType.partner
+      (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+      (insert A (insert (B + 1) Zf)) (EndType.siteOf x) x) :
+    (WalkGraph.graph E).Reachable
+      (dnOf (m := m) hm sec (runLo Zf A B r + (k : ℤ)))
+      (dnOf (m := m) hm sec (runLo Zf A B r + ((k : ℤ) + 1))) := by
+  set a := runLo Zf A B r + (k : ℤ) with ha
+  have hgoal : runLo Zf A B r + ((k : ℤ) + 1) = a + 1 := by rw [ha]; ring
+  rw [hgoal] at hsecB ⊢
+  refine chain_dn_of_pass E (dnOf (m := m) hm sec) a (a + 1) ?_
+  have hsite : EndType.siteOf (dnOf (m := m) hm sec (a + 1)) = a + 1 :=
+    dnOf_siteOf hm sec (a + 1) hsecB
+  rw [hEt, hsite, hEp]
+  have harith : a + 1 - 1 = a := by ring
+  have h := passTurn_pass_dn EndType.siteOf EndType.partner
+    (upOf (m := m) hm sec) (dnOf (m := m) hm sec) (insert A (insert (B + 1) Zf)) (a + 1)
+    (by
+      have h := no_bounce_inside_run Zf A B r k hne hk
+      have he : a + 1 = runLo Zf A B r + ((k : ℤ) + 1) := by rw [ha]; ring
+      rw [he]; exact h)
+    hsite
+    (by rw [harith]; exact partner_ne_bot _ _ rfl rfl)
+    (upOf_ne_dnOf hm sec (a + 1))
+  rw [harith] at h
+  exact h
+
+theorem chain_join_passTurn (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ) (r : ℕ)
+    (hne : (levelSet Zf A B r).Nonempty)
+    (hmin : ∀ j : ℤ, A ≤ j → j ≤ B → CutComponents.gz Zf j = r → runLo Zf A B r ≤ j)
+    (hsecL : ((sec (runLo Zf A B r) : ℕ) : ℤ) = runLo Zf A B r)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = passTurn EndType.siteOf EndType.partner
+      (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+      (insert A (insert (B + 1) Zf)) (EndType.siteOf x) x) :
+    (WalkGraph.graph E).Reachable
+      (upOf (m := m) hm sec (runLo Zf A B r)) (dnOf (m := m) hm sec (runLo Zf A B r)) := by
+  refine chain_join_of_bounce E (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+    (runLo Zf A B r) ?_
+  have hsite : EndType.siteOf (dnOf (m := m) hm sec (runLo Zf A B r)) = runLo Zf A B r :=
+    dnOf_siteOf hm sec _ hsecL
+  rw [hEt, hsite]
+  exact passTurn_bounce EndType.siteOf EndType.partner
+    (upOf (m := m) hm sec) (dnOf (m := m) hm sec) (insert A (insert (B + 1) Zf))
+    (runLo Zf A B r) (runLo_mem_bounce Zf A B r hne hmin) hsite
+    (partner_ne_bot _ _ rfl rfl) (partner_ne_bot _ _ rfl rfl)
+    (upOf_ne_dnOf hm sec _)
+
+end EltBridge
+
+#print axioms EltBridge.chain_dn_passTurn
+#print axioms EltBridge.chain_join_passTurn
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- `runLo_mem_bounce` without the nonemptiness side condition: an empty run's `runLo`
+is `A` by definition, and `A` is a bounce site. -/
+theorem runLo_mem_bounce' (Zf : Finset ℤ) (A B : ℤ) (r : ℕ)
+    (hmin : ∀ j : ℤ, A ≤ j → j ≤ B → CutComponents.gz Zf j = r → runLo Zf A B r ≤ j) :
+    runLo Zf A B r ∈ insert A (insert (B + 1) Zf) := by
+  classical
+  by_cases hne : (levelSet Zf A B r).Nonempty
+  · exact runLo_mem_bounce Zf A B r hne hmin
+  · have : runLo Zf A B r = A := by rw [runLo, dif_neg hne]
+    rw [this]
+    exact Finset.mem_insert_self _ _
+
+/-- An empty run has no positions to chain. -/
+theorem runLen_eq_zero_of_empty (Zf : Finset ℤ) (A B : ℤ) (r : ℕ)
+    (hne : ¬ (levelSet Zf A B r).Nonempty) : runLen Zf A B r = 0 := by
+  rw [runLen, dif_neg hne]
+
+/-- **`hrun` for the `passTurn` datum.**  The runs are the level sets of `gz`, the chain
+conditions are the three `passTurn` equations, and `hrun_multi` glues them. -/
+theorem hrun_passTurn (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ)
+    (hsecLo : ∀ r : ℕ, ((sec (runLo Zf A B r) : ℕ) : ℤ) = runLo Zf A B r)
+    (hsecRun : ∀ (r k : ℕ), k ≤ runLen Zf A B r →
+      ((sec (runLo Zf A B r + (k : ℤ)) : ℕ) : ℤ) = runLo Zf A B r + (k : ℤ))
+    (hmin : ∀ (r : ℕ) (j : ℤ), A ≤ j → j ≤ B → CutComponents.gz Zf j = r →
+      runLo Zf A B r ≤ j)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = passTurn EndType.siteOf EndType.partner
+      (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+      (insert A (insert (B + 1) Zf)) (EndType.siteOf x) x) :
+    ∀ x y : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = CutComponents.gz Zf (EndType.edgeOf y) →
+      (WalkGraph.graph E).Reachable (botOf x) (botOf y) := by
+  classical
+  refine hrun_multi E Zf (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+    (runLo Zf A B) (runLen Zf A B)
+    (hcover_of_mu_two hm _ _
+      (fun x hidx => upOf_eq_botOf hm sec x hidx (hsecEdge x))
+      (fun x hidx => dnOf_eq_botOf hm sec x hidx (hsecEdge x)))
+    (fun x => runLo_le_and_le_len Zf A B _ (hspan x)) ?_
+  intro r j j' hj hj' b b'
+  by_cases hne : (levelSet Zf A B r).Nonempty
+  · exact run_connected_of_reachability E (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+      (runLo Zf A B r) (runLen Zf A B r)
+      (fun k hk => chain_up_passTurn hm sec Zf A B r k hne hk
+        (hsecRun r k (le_of_lt hk)) E hEp hEt)
+      (fun k hk => chain_dn_passTurn hm sec Zf A B r k hne hk
+        (by
+          have := hsecRun r (k + 1) hk
+          push_cast at this ⊢
+          exact this) E hEp hEt)
+      (chain_join_passTurn hm sec Zf A B r hne (hmin r) (hsecLo r) E hEp hEt)
+      j j' hj hj' b b'
+  · -- an empty run: no positions to chain, so both indices are `0`
+    have hlen := runLen_eq_zero_of_empty Zf A B r hne
+    have hj0 : j = 0 := by omega
+    have hj0' : j' = 0 := by omega
+    subst hj0; subst hj0'
+    have hjoin : (WalkGraph.graph E).Reachable
+        (upOf (m := m) hm sec (runLo Zf A B r))
+        (dnOf (m := m) hm sec (runLo Zf A B r)) := by
+      refine chain_join_of_bounce E _ _ _ ?_
+      have hsite : EndType.siteOf (dnOf (m := m) hm sec (runLo Zf A B r))
+          = runLo Zf A B r := dnOf_siteOf hm sec _ (hsecLo r)
+      rw [hEt, hsite]
+      exact passTurn_bounce EndType.siteOf EndType.partner _ _ _ _
+        (runLo_mem_bounce' Zf A B r (hmin r)) hsite
+        (partner_ne_bot _ _ rfl rfl) (partner_ne_bot _ _ rfl rfl)
+        (upOf_ne_dnOf hm sec _)
+    cases b <;> cases b' <;> simp only [Nat.cast_zero, add_zero]
+    · exact SimpleGraph.Reachable.refl _
+    · exact hjoin.symm
+    · exact hjoin
+    · exact SimpleGraph.Reachable.refl _
+
+end EltBridge
+
+#print axioms EltBridge.hrun_passTurn
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-- **The `mu = 2` shield bound, with `hrun` derived.**
+
+This is BLOCK 182's composition with the hole filled: `hrun` is no longer assumed but
+produced by `hrun_passTurn` from the turn's own pass and bounce equations.  The inputs
+are the section, the span, the cut set, and the glued datum; the conclusion is
+`walkCount ≤ |Zf| + 1`.
+
+No merge, no swap, no free pair: `CostMerge` is not invoked anywhere beneath this. -/
+theorem shield_mu_two (hm : ∀ e, m e = 2) (sec : ℤ → Fin n)
+    (Zf : Finset ℤ) (A B : ℤ)
+    (hsecLo : ∀ r : ℕ, ((sec (runLo Zf A B r) : ℕ) : ℤ) = runLo Zf A B r)
+    (hsecRun : ∀ (r k : ℕ), k ≤ runLen Zf A B r →
+      ((sec (runLo Zf A B r + (k : ℤ)) : ℕ) : ℤ) = runLo Zf A B r + (k : ℤ))
+    (hmin : ∀ (r : ℕ) (j : ℤ), A ≤ j → j ≤ B → CutComponents.gz Zf j = r →
+      runLo Zf A B r ≤ j)
+    (hspan : ∀ x : EndType.Endpt n m, EndType.edgeOf x ∈ Finset.Icc A B)
+    (hsecEdge : ∀ x : EndType.Endpt n m, sec (EndType.edgeOf x) = x.edge)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hEt : ∀ x, E.t x = passTurn EndType.siteOf EndType.partner
+      (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+      (insert A (insert (B + 1) Zf)) (EndType.siteOf x) x)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x) :
+    WalkGraph.walkCount E ≤ Zf.card + 1 :=
+  shield_upper_bound_bounce_set Zf (insert A (insert (B + 1) Zf))
+    (fun z hz => Finset.mem_insert_of_mem (Finset.mem_insert_of_mem hz))
+    (upOf (m := m) hm sec) (dnOf (m := m) hm sec)
+    (fun s => upOf_dnOf_edgeOf hm sec s)
+    E hEp hEt hTsite
+    (hrun_passTurn hm sec Zf A B hsecLo hsecRun hmin hspan hsecEdge
+      E hEp hEt)
+
+end EltBridge
+
+#print axioms EltBridge.shield_mu_two

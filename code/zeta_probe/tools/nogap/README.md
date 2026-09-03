@@ -7029,3 +7029,30 @@ A note on the previous block's composition: it BUILT, and the linter then flagge
 hypothesis, so the section property did no work and the theorem was true for a reason
 that had nothing to do with the construction.  Deriving `hrun` rather than assuming it
 is the remaining task, and these two lemmas are its first half.
+
+## 2026-09-03 — BLOCK 184: the composition, with `hrun` derived
+
+`shield_mu_two`.  BLOCK 182's composition with the hole filled: `hrun` is no longer a
+hypothesis but is PRODUCED, by `hrun_passTurn`, from the turn's own equations.
+
+    chain_up_passTurn     the pass at an interior site chains the up strands
+    chain_dn_passTurn     and the down strands, in the opposite composition
+    chain_join_passTurn   the bounce at the run's left end joins the two chains
+    hrun_passTurn         hrun_multi over the level sets, with the empty runs handled
+                          separately -- their runLo is `A` by definition and `A` is a
+                          bounce site (runLo_mem_bounce')
+    shield_mu_two         the whole thing: walkCount E <= |Zf| + 1
+
+0 sorry, and the check that matters: the unused-variable linter reports NOTHING in this
+material.  Every hypothesis does work.  That is what was wrong with BLOCK 182, where
+`hsec`, `hspan` and `hm` were flagged as idle because `hrun` had been assumed -- the
+theorem was true for reasons unrelated to the construction.  It is not the case here.
+
+So the `mu = 2` shield bound is a theorem whose hypotheses are: `mu = 2`, a section
+naming the edges of the span, the run structure of the cut set, and the glued `passTurn`
+datum.  `CostMerge` is not invoked anywhere beneath it -- no merge, no swap, no free
+pair, which is the point, since BLOCK 149 refuted `HasFreePair` in the only sign model
+that can express gap edges.
+
+Scope unchanged and load-bearing: `mu = 2`.  BLOCK 158 measured 5072 of 8192 failures at
+`mu = 4`, where the two-chain structure does not exist, and nothing here lifts.
