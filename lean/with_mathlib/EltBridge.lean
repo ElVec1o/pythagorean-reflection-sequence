@@ -12885,3 +12885,69 @@ end EltBridge
 
 #print axioms EltBridge.shield_law_joined
 #print axioms EltBridge.allJoined_pair
+
+namespace EltBridge
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ### The link
+
+A turn step joins the two ends' representatives, whatever it does: an end reaches its
+own strand's bottom by the partner, and its image likewise.  So a PASS at a site -- a
+turn step whose two ends lie on different edges -- links the strand sets of those two
+edges, which is the link `allJoined_union` consumes. -/
+
+/-- **Any turn step joins the two representatives.** -/
+theorem link_of_turn (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner) (x : EndType.Endpt n m) :
+    (WalkGraph.graph E).Reachable (botOf x) (botOf (E.t x)) := by
+  have h1 : (WalkGraph.graph E).Reachable (botOf x) x :=
+    (reachable_to_base E botOf (fun y => by rw [hEp]; exact botOf_eq_or_partner y) x).symm
+  have h2 : (WalkGraph.graph E).Reachable x (E.t x) := reachable_turn E x
+  have h3 : (WalkGraph.graph E).Reachable (E.t x) (botOf (E.t x)) :=
+    reachable_to_base E botOf (fun y => by rw [hEp]; exact botOf_eq_or_partner y) (E.t x)
+  exact (h1.trans h2).trans h3
+
+/-- **A pass links two edges' strand sets.**  Given singleton-to-singleton, the union
+lemma does the rest. -/
+theorem allJoined_of_pass (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner) (S T : Finset (EndType.Endpt n m))
+    (hS : AllJoined (WalkGraph.graph E) S) (hT : AllJoined (WalkGraph.graph E) T)
+    (x : EndType.Endpt n m) (hx : botOf x ∈ S) (hy : botOf (E.t x) ∈ T) :
+    AllJoined (WalkGraph.graph E) (S ∪ T) :=
+  allJoined_union (WalkGraph.graph E) S T hS hT _ _ hx hy (link_of_turn E hEp x)
+
+/-- **What (M2) still owes, named.**  `shield_law_joined` needs a joined set per run.
+Building it by `allJoined_of_pass` needs, for each run, that the turn's pairing graph on
+that run's STRANDS is connected -- which is the Eulerian statement, and is the content:
+every site has even degree and the run's strand multigraph is a connected path of
+parallel edges, so a turn whose pairing graph is connected exists.
+
+That existence is not proved here.  This names it as the single remaining input, and
+records that everything else in the chain is discharged. -/
+def RunStrandsConnected (E : WalkGraph.Data (EndType.Endpt n m)) (Zf : Finset ℤ) : Prop :=
+  ∀ r : ℕ, ∃ S : Finset (EndType.Endpt n m),
+    AllJoined (WalkGraph.graph E) S ∧
+    ∀ x : EndType.Endpt n m,
+      CutComponents.gz Zf (EndType.edgeOf x) = r → botOf x ∈ S
+
+/-- And with it the shield law follows at any widths. -/
+theorem shield_law_of_connected (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (E : WalkGraph.Data (EndType.Endpt n m))
+    (hEp : E.p = EndType.partner)
+    (hTsite : ∀ x, EndType.siteOf (E.t x) = EndType.siteOf x)
+    (hturn : ∀ x, EndType.edgeOf (E.t x) ≠ EndType.edgeOf x → EndType.siteOf x ∉ Zf)
+    (hconn : RunStrandsConnected E Zf)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : EndType.Endpt n m, EndType.edgeOf x = t)
+    (hnonempty : Nonempty (EndType.Endpt n m)) :
+    WalkGraph.walkCount E = Zf.card + 1 := by
+  classical
+  choose S hSjoined hSmem using hconn
+  exact shield_law_joined Zf A B hAB E hEp hTsite hturn S hSjoined
+    (fun x => hSmem _ x rfl) hlow hhigh hoc hnonempty
+
+end EltBridge
+
+#print axioms EltBridge.link_of_turn
+#print axioms EltBridge.shield_law_of_connected

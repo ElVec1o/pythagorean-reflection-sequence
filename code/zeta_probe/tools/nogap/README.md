@@ -7568,3 +7568,30 @@ reliable.
 
 What remains for (M2) in full is the link itself: that consecutive edges' strand sets
 share a reachable pair at their common site, which is a pass there.
+
+## 2026-09-03 — BLOCK 202: the link, and what (M2) still owes
+
+    link_of_turn            ANY turn step joins the two ends' representatives -- each
+                            end reaches its own strand's bottom by the partner
+    allJoined_of_pass       so a pass links two edges' strand sets, which is the link
+                            `allJoined_union` consumes
+    RunStrandsConnected     the remaining input, named
+    shield_law_of_connected and with it `walkCount = |Zf| + 1` at any widths
+
+All 0 sorry.
+
+**What remains, stated plainly.**  `RunStrandsConnected` says: for each run there is a
+set of representatives, all mutually reachable, containing every end of that run.
+Building it by `allJoined_of_pass` needs the turn's pairing graph on a run's STRANDS to
+be connected, and THAT is the Eulerian statement -- every site has even degree, the run's
+strand multigraph is a connected path of parallel edges, so a turn with a connected
+pairing graph exists.
+
+It is not proved here.  The set formulation of BLOCK 201 repackaged the argument but did
+not reduce it: `AllJoined` on a run and one-component-per-run are the same statement, so
+the Eulerian existence is still the content, not bookkeeping around it.
+
+What HAS been established is everything on either side of it.  Given
+`RunStrandsConnected`, the shield law follows at any widths; and at UNIFORM widths the
+existence is proved outright (`shield_law`, BLOCK 197), by tracking a level cycle -- which
+is that Eulerian circuit written out by hand for the case where all the edges match.
