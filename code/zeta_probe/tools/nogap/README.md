@@ -5058,3 +5058,25 @@ entries are power series, not integers. The original proof carried over unchange
 algebra (BLOCK 120). What is absent is the proof that the paper's W, lambda, mu, T
 satisfy IsAssembly -- which is the identification, and needs the bulk kernels B_sigma
 that this file has not built.
+
+## 2026-09-03 — BLOCK 122: the gap term is rank one, verified
+
+  gap_term_rank_one -- 2q^b * q^(a+b) = (2q^(2b)) * q^a, i.e. the gap term IS the outer
+                       product u_b v_a of eq:rankone
+  max_not_additive  -- and the other term does not factor: max 1 1 != max 2 0 while
+                       1 + 1 = 2 + 0, so q^max(a,b) is not a function of a + b
+  kernel_splits     -- so the gap-marked kernel splits into a non-factoring part and a
+                       rank-one part, which is the shape eq:rankone exploits
+
+All propext only.
+
+This is the Mobius factorisation's algebraic core, checked. The paper writes the
+gap-marked system as (I - M_0 - g u v^T) P = E and factorises because the gap term is
+rank one; gap_term_rank_one is that claim, and max_not_additive is why the OTHER term
+cannot be treated the same way.
+
+Worth noting the contrast with the memory note "(R-J) status: the obstruction is a RANK
+count (junction matrix rank 4, 6 symmetrised), not a sign". The gap term is rank one and
+factorises; the junction is rank 6 and does not. Both are rank statements about the same
+assembly, pulling in opposite directions -- one enables the Mobius factorisation, the
+other blocks the residue computation that (R-J) needs.

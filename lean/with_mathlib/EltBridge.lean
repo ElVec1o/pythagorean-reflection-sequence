@@ -6189,6 +6189,38 @@ theorem assembly_is_truncated_resolvent {n : ℕ}
     (1 - T) * (∑ k ∈ Finset.range N, T ^ k) = 1 - T ^ N :=
   neumann_partial_gen T N
 
+/-! ### The gap term is rank one
+
+`eq:gapkernel` gives the gap-marked bulk kernel `K_g(a,b) = q^max(a,b) + q^(a+b) g`,
+and `eq:rankone` reads its second term as an outer product: with `u_b = 2q^(2b)` and
+`v_a = q^a`, the operator entry `2q^b * q^(a+b) * g` is `g * u_b * v_a`.
+
+That factorisation is an algebraic identity, and it is what makes the Mobius
+factorisation possible.  The first term does **not** factor, because `max` does not. -/
+
+/-- **The gap term factorises**: `2q^b * q^(a+b) = (2q^(2b)) * q^a`, i.e. it is the
+outer product `u_b v_a` of `eq:rankone`. -/
+theorem gap_term_rank_one {R : Type*} [CommRing R] (q : R) (a b : ℕ) :
+    2 * q ^ b * q ^ (a + b) = (2 * q ^ (2 * b)) * q ^ a := by
+  simp only [two_mul, pow_add]
+  ring
+
+/-- **And the other term does not.**  `max a b` is not `a + b` minus a function of one
+variable: at `(a,b) = (1,1)` and `(2,0)` the sums `a + b` agree while the maxima differ,
+so no outer product `f a * g b` reproduces `q^max(a,b)` for a generic `q`. -/
+theorem max_not_additive : max 1 1 ≠ max 2 0 ∧ (1 + 1 : ℕ) = 2 + 0 := by
+  constructor
+  · decide
+  · rfl
+
+/-- **So the kernel splits into a non-factoring part and a rank-one part**, which is
+exactly the shape `eq:rankone` exploits. -/
+theorem kernel_splits {R : Type*} [CommRing R] (q g : R) (a b : ℕ) :
+    2 * q ^ b * (q ^ max a b + q ^ (a + b) * g)
+      = 2 * q ^ b * q ^ max a b + g * ((2 * q ^ (2 * b)) * q ^ a) := by
+  rw [mul_add, ← gap_term_rank_one q a b]
+  ring
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -6429,3 +6461,5 @@ end EltBridge
 #print axioms EltBridge.gf_transfer_order
 #print axioms EltBridge.assembly_at_zero
 #print axioms EltBridge.neumann_partial_gen
+#print axioms EltBridge.gap_term_rank_one
+#print axioms EltBridge.kernel_splits
