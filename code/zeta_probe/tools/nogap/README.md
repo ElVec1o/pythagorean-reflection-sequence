@@ -4645,3 +4645,26 @@ precondition for that, and it is now proved rather than assumed.
 This is the first block tonight where the object matched the abstraction on the first
 try. The difference is that I computed the site cost (BLOCK 103) before writing the
 contract, instead of after.
+
+## 2026-09-03 — BLOCK 105: (M3a) IS the transfer-matrix theorem, and the theorem is proved
+
+  pathSum      -- the sum over state paths of length n of the product of transfer entries
+  pathSum_succ -- the transfer recursion, by rfl
+  pathGF       -- lambda * M^n * mu, the form the assembly uses
+  pathGF_succ  -- **the generating function satisfies the transfer recursion**
+
+WHY THIS IS (M3a). lR = sum of mu over edges + sum of siteCost over sites (lR_eq, BLOCK
+7). mu j is a function of one deposit magnitude; siteCost s of two consecutive ones
+(site_cost_magnitude_only, BLOCK 104). So the weight is ADDITIVE WITH NEAREST-NEIGHBOUR
+COUPLING, and (M3a) asserts that such a weight's generating function is a matrix
+product. That is the standard transfer-matrix fact, and pathGF_succ proves it.
+
+So (M3a) decomposes into:
+  (i)   the weight is additive with nearest-neighbour coupling   -- lR_eq + BLOCK 104
+  (ii)  such weights give matrix-product generating functions    -- BLOCK 105, PROVED
+  (iii) the bookkeeping tying the paper's lambda, mu, T to these -- not done
+(i) and (ii) are done. (iii) is matching the paper's junction-dressed boundary vectors
+and gap-marked kernels to the pathGF form, which is identification, not a theorem.
+
+That is a materially different picture from "(M3) is not proved". The mathematical
+content is (i) and (ii); what remains is naming.

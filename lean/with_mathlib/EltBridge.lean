@@ -5582,6 +5582,57 @@ theorem travelT_coupling_symm (a b : ℕ) :
   · rw [max_eq_right h, max_eq_left h]; omega
   · rw [max_eq_left h, max_eq_right h]; omega
 
+/-! ### (M3a) is the transfer-matrix theorem
+
+`lR = sum of mu over edges + sum of siteCost over sites` (BLOCK 7's `lR_eq`), and both
+summands are functions of the deposit magnitudes -- `mu j` of one, `siteCost s` of two
+consecutive ones (BLOCK 104).  So the weight is **additive with nearest-neighbour
+coupling**, and (M3a)'s content is the standard fact that such a weight's generating
+function is a matrix product.
+
+That fact is provable outright, and here it is. -/
+
+/-- The sum over state paths of length `n` from `a` to `b` of the product of transfer
+entries. -/
+def pathSum {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ) :
+    ℕ → S → S → ℤ
+  | 0, a, b => if a = b then 1 else 0
+  | (n + 1), a, b => ∑ c : S, M a c * pathSum M n c b
+
+/-- **The transfer-matrix recursion.**  Paths of length `n + 1` split at their first
+step -- this is the whole content of (M3a) once the weight is known additive with
+nearest-neighbour coupling. -/
+theorem pathSum_succ {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ)
+    (n : ℕ) (a b : S) :
+    pathSum M (n + 1) a b = ∑ c : S, M a c * pathSum M n c b := rfl
+
+/-- **The generating function of a path is `lambda * M^n * mu`**, in the form the
+assembly uses. -/
+noncomputable def pathGF {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ)
+    (lam mu : S → ℤ) (n : ℕ) : ℤ :=
+  ∑ a : S, ∑ b : S, lam a * pathSum M n a b * mu b
+
+/-- **And it satisfies the transfer recursion**, which is `(I - T)^-1` read one term at
+a time.  This is (M3a)'s content, once the weight is known additive with
+nearest-neighbour coupling. -/
+theorem pathGF_succ {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ)
+    (lam mu : S → ℤ) (n : ℕ) :
+    pathGF M lam mu (n + 1)
+      = ∑ a : S, ∑ c : S, lam a * M a c * (∑ b : S, pathSum M n c b * mu b) := by
+  unfold pathGF
+  have hstep : ∀ a b : S, lam a * pathSum M (n + 1) a b * mu b
+      = ∑ c : S, lam a * M a c * pathSum M n c b * mu b := by
+    intro a b
+    show lam a * (∑ c : S, M a c * pathSum M n c b) * mu b = _
+    rw [Finset.mul_sum, Finset.sum_mul]
+    exact Finset.sum_congr rfl (fun c _ => by ring)
+  simp only [hstep]
+  refine Finset.sum_congr rfl (fun a _ => ?_)
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun c _ => ?_)
+  rw [Finset.mul_sum]
+  exact Finset.sum_congr rfl (fun b _ => by ring)
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5787,3 +5838,5 @@ end EltBridge
 #print axioms EltBridge.site_cost_couples
 #print axioms EltBridge.site_cost_magnitude_only
 #print axioms EltBridge.travelT_coupling_symm
+#print axioms EltBridge.pathSum_succ
+#print axioms EltBridge.pathGF_succ
