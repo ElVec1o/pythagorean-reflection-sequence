@@ -4106,3 +4106,28 @@ That closes the diagnosis loop that ran from BLOCK 59:
 
 Drafted with a `sorry` for the final combine and completed before building; the
 `grep -c sorry` check ran before `lake build`, as in BLOCK 63.
+
+## 2026-09-03 — BLOCK 81: four-class balance at a cut site
+
+  left_classes_match   -- alpha = Phi = 0 forces A+ = C+ and A- = C-. Phi gives the
+                          totals, alpha the signed difference; adding and subtracting
+                          separates them.
+  right_classes_match  -- beta = 0 with the total balance then forces B+ = D+, B- = D-
+  four_classes_match   -- **the four (side, sign) classes match individually at a cut
+                          site**
+
+This is exactly the input exists_zero_cost_turn (BLOCK 80) consumes. So in the
+free-sign model the chain is complete:
+
+  cut site (alpha = beta = Phi = 0) + balance
+    -> four classes match individually            (BLOCK 81)
+    -> a zero-cost turn exists                     (BLOCK 80)
+    -> the turn keeps side and sign, so it keeps the EDGE, which is hturn
+
+and none of it needs hZ or an empty cut site. The forced-sign model cannot reach this
+because alpha = 0 there means A + C = 0 (BLOCK 77), collapsing the four classes to
+nothing rather than matching them.
+
+The arithmetic is three omega calls. It was invisible before only because the forced
+sign made two of the four classes empty by construction, so "the classes match" and
+"the site is empty" were the same statement.

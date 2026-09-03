@@ -4851,6 +4851,45 @@ theorem exists_zero_cost_turn {α : Type*} [Fintype α] [DecidableEq α]
             [exact hxA (Finset.mem_filter.mp h').1; exact hxD (Finset.mem_filter.mp h').1;
              exact hxA (Finset.mem_filter.mp h').1; exact hxD (Finset.mem_filter.mp h').1]
 
+/-! ### Four-class balance at a cut site
+
+A cut site has `alpha = beta = Phi = 0`.  With the total balance that forces the four
+`(side, sign)` classes to match **individually**, which is what
+`exists_zero_cost_turn` consumes. -/
+
+/-- **`alpha = Phi = 0` matches the left classes individually.**
+
+`Phi = 0` gives `A+ + A- = C+ + C-` and `alpha = 0` gives `C+ - C- = A+ - A-`; adding
+and subtracting gives `A+ = C+` and `A- = C-`. -/
+theorem left_classes_match (Ap Am Cp Cm : ℕ)
+    (ha : SiteCost.alpha Ap Am Cp Cm = 0) (hf : SiteCost.Phi Ap Am Cp Cm = 0) :
+    Ap = Cp ∧ Am = Cm := by
+  unfold SiteCost.alpha at ha
+  unfold SiteCost.Phi at hf
+  omega
+
+/-- **And `beta = 0` with the total balance matches the right classes.** -/
+theorem right_classes_match (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (ha : SiteCost.alpha Ap Am Cp Cm = 0) (hf : SiteCost.Phi Ap Am Cp Cm = 0)
+    (hb : SiteCost.beta Bp Bm Dp Dm = 0)
+    (htot : Ap + Am + Bp + Bm = Cp + Cm + Dp + Dm) :
+    Bp = Dp ∧ Bm = Dm := by
+  obtain ⟨h1, h2⟩ := left_classes_match Ap Am Cp Cm ha hf
+  unfold SiteCost.beta at hb
+  subst h1; subst h2
+  omega
+
+/-- **The four classes match at a cut site.**  This is the input
+`exists_zero_cost_turn` needs, and it is exactly the cut condition plus balance. -/
+theorem four_classes_match (Ap Am Bp Bm Cp Cm Dp Dm : ℕ)
+    (ha : SiteCost.alpha Ap Am Cp Cm = 0) (hb : SiteCost.beta Bp Bm Dp Dm = 0)
+    (hf : SiteCost.Phi Ap Am Cp Cm = 0)
+    (htot : Ap + Am + Bp + Bm = Cp + Cm + Dp + Dm) :
+    Ap = Cp ∧ Am = Cm ∧ Bp = Dp ∧ Bm = Dm :=
+  ⟨(left_classes_match Ap Am Cp Cm ha hf).1, (left_classes_match Ap Am Cp Cm ha hf).2,
+   (right_classes_match Ap Am Bp Bm Cp Cm Dp Dm ha hf hb htot).1,
+   (right_classes_match Ap Am Bp Bm Cp Cm Dp Dm ha hf hb htot).2⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -5025,3 +5064,4 @@ end EltBridge
 #print axioms EltBridge.combine_involutions
 #print axioms EltBridge.involution_of_pair
 #print axioms EltBridge.exists_zero_cost_turn
+#print axioms EltBridge.four_classes_match
