@@ -4595,3 +4595,29 @@ All three of (M)'s weakest links now have a shape:
   (M3)                    IsM3 = IsBlockDecomposition + IsResolventForm  (BLOCK 102)
 None is proved. What changed tonight is that each is now a named obligation with its
 difficulty localised, rather than prose in a settlement paragraph.
+
+## 2026-09-03 — BLOCK 103: (M3) contract CORRECTED — the weight needs an operator
+
+BLOCK 102 made the per-block weight a scalar. Wrong, and the cost itself shows why:
+
+  site_cost_couples -- at a site strictly inside the travel interval,
+                       siteCost s = max(|d(s-1)|, |d(s)|)
+
+That couples CONSECUTIVE deposits. No per-edge scalar reproduces it, which is exactly
+why the paper's (M3) uses a transfer OPERATOR. Corrected:
+
+  pathWeight              -- lambda at the head, T across each step, mu at the tail
+  IsTransferDecomposition -- (M3a): a configuration's weight is its state path's weight
+  IsResolventSum          -- (M3b): summing over all path lengths gives the resolvent
+  IsM3                    -- the conjunction
+  pathWeight_single       -- and with ONE state the operator IS a scalar, which is why
+                             the first attempt looked plausible
+
+Caught by computing the site cost rather than by inspecting the contract. site_cost_
+couples is three lines and would have prevented BLOCK 102's version had I written it
+first -- the same order-of-operations mistake as BLOCK 28 (mark green, then instantiate)
+and BLOCK 92 (assume the criterion, then enumerate).
+
+The state space is the junction-adjacent deposit magnitude, which is what the paper's
+B_sigma is indexed by. So (M3a)'s content is: the walk decomposition tracks that
+magnitude across travel edges, and the cost is multiplicative in it.

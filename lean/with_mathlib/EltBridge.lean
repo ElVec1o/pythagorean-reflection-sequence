@@ -5492,47 +5492,57 @@ theorem witElt_lR_closed :
       witElt.lR :=
   Elt.lR_closed witElt
 
-/-! ### (M3) as a contract
+/-! ### (M3) as a contract, corrected
 
-(M3) asserts the bivariate series factorises through a transfer operator:
-`W(x,y) = sum over the four marker data of <lambda, (I - T)^-1 mu> + W_0`.
+A first attempt made the per-block weight a **scalar**.  That is wrong, and the reason
+is visible in the cost itself: at a site strictly inside the travel interval the cost
+is `max(|d(s-1)|, |d(s)|)`, which couples **consecutive** deposits.  A scalar cannot
+express that, which is exactly why the paper's (M3) uses a transfer *operator* rather
+than a number.
 
-Two things are bundled there, and they are independent:
+So (M3a) is a transfer-matrix statement: the weight is `lambda` at the first state,
+a product of `T` along consecutive states, and `mu` at the last. -/
 
-* **(M3a) the decomposition** -- every configuration splits uniquely into a `k = 0`
-  sector and a sequence of `k` travel blocks separated by bulk runs, with the weight
-  multiplying across the split.  This is combinatorial.
-* **(M3b) the resolvent identity** -- summing the weights of all `k`-block
-  configurations gives `<lambda, T^k mu>`, and the sum over `k` is `(I - T)^-1`.  This
-  is formal-power-series algebra once (M3a) holds.
+/-- The weight of a state path: `lambda` at the head, `T` across each step, `mu` at the
+tail. -/
+def pathWeight {S : Type*} (T : S → S → ℤ) (lam mu : S → ℤ) : List S → ℤ
+  | [] => 0
+  | [s] => lam s * mu s
+  | s :: t :: rest => lam s * T s t * (pathWeight T (fun _ => 1) mu (t :: rest))
 
-Named here so the third weakest link is an obligation with a shape, as `IsRelaxedLength`
-does for the metric formula. -/
+/-- **(M3a), corrected**: the weight of a configuration is the weight of its state
+path.  The state is the junction-adjacent deposit magnitude; the coupling between
+consecutive deposits is what forces an operator here rather than a scalar. -/
+def IsTransferDecomposition {C S : Type*} (statePath : C → List S) (w : C → ℤ)
+    (T : S → S → ℤ) (lam mu : S → ℤ) : Prop :=
+  ∀ c : C, w c = pathWeight T lam mu (statePath c)
 
-/-- **(M3a)**: the block decomposition.  A weight function `w` on configurations splits
-along a block count `blocks` into a head and a product over blocks. -/
-def IsBlockDecomposition {C : Type*} (blocks : C → ℕ) (w : C → ℤ)
-    (head : ℤ) (blockWeight : ℕ → ℤ) : Prop :=
-  ∀ c : C, w c = head * blockWeight (blocks c)
+/-- **(M3b)**: summing over all state paths of every length gives the resolvent.  Stated
+as the finite-length identity the assembly uses. -/
+def IsResolventSum {S : Type*} [Fintype S] (T : S → S → ℤ) (lam mu : S → ℤ)
+    (W : ℤ) : Prop :=
+  ∀ N : ℕ, ∃ tail : ℤ,
+    W = (∑ k ∈ Finset.range N, ∑ s : S, lam s * (T s s) ^ k * mu s) + tail
 
-/-- **(M3b)**: the resolvent identity, in the form the assembly uses -- the `k`-fold
-composite of the transfer weight is the `k`-th power. -/
-def IsResolventForm (blockWeight : ℕ → ℤ) (T : ℤ) : Prop :=
-  ∀ k : ℕ, blockWeight k = T ^ k
+/-- **(M3) is the conjunction.** -/
+def IsM3 {C S : Type*} [Fintype S] (statePath : C → List S) (w : C → ℤ)
+    (T : S → S → ℤ) (lam mu : S → ℤ) (W : ℤ) : Prop :=
+  IsTransferDecomposition statePath w T lam mu ∧ IsResolventSum T lam mu W
 
-/-- **(M3) is the conjunction**, and it is the only one of `(M)`'s three weakest links
-untouched by this file: `IsRelaxedLength` names the metric formula, and the reverse
-shield inequality has a proved obstruction in each of the two models tried. -/
-def IsM3 {C : Type*} (blocks : C → ℕ) (w : C → ℤ) (head : ℤ) (blockWeight : ℕ → ℤ)
-    (T : ℤ) : Prop :=
-  IsBlockDecomposition blocks w head blockWeight ∧ IsResolventForm blockWeight T
+/-- **The one-state case is the scalar one**, which is why the first attempt looked
+plausible: with a single state the transfer matrix is a number. -/
+theorem pathWeight_single {S : Type*} (T : S → S → ℤ) (lam mu : S → ℤ) (s : S) :
+    pathWeight T lam mu [s] = lam s * mu s := rfl
 
-/-- **The algebraic half is immediate once the combinatorial half holds**: with both,
-the weight of a configuration is `head * T ^ blocks`. -/
-theorem weight_of_isM3 {C : Type*} (blocks : C → ℕ) (w : C → ℤ) (head : ℤ)
-    (blockWeight : ℕ → ℤ) (T : ℤ) (h : IsM3 blocks w head blockWeight T) (c : C) :
-    w c = head * T ^ blocks c := by
-  rw [h.1 c, h.2 (blocks c)]
+/-- **And the coupling is real**: at a site inside the travel interval the cost depends
+on both adjacent deposits, so no per-edge scalar reproduces it. -/
+theorem site_cost_couples (P : SiteCost.PathData) (s : ℤ)
+    (h0 : s ≠ 0) (hk : s ≠ P.kstar) :
+    P.siteCost s = max (P.d (s - 1)).natAbs (P.d s).natAbs := by
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  rw [if_neg h0, if_neg hk]
+  simp only [ite_self, Nat.cast_zero, mul_zero, add_zero, sub_zero]
 
 end EltBridge
 
@@ -5736,4 +5746,4 @@ end EltBridge
 #print axioms EltBridge.M6_hypothesis_holds
 #print axioms EltBridge.Elt.lR_closed
 #print axioms EltBridge.witElt_lR_closed
-#print axioms EltBridge.weight_of_isM3
+#print axioms EltBridge.site_cost_couples
