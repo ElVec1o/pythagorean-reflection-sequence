@@ -2692,6 +2692,62 @@ theorem exists_run_connected {α : Type*} [Fintype α] [DecidableEq α]
     (fun E hE => run_step_min_gen d edgeOf siteOf atTop p₀ Zf hside hpe hpt hpsite
       hsW hsX hsT hcov E hE) D hD
 
+/-- **The shield law with `hsep` discharged.**
+
+`c = |Z|` for a cost-minimal datum on the extended type.  `hsep` is now produced by
+`exists_run_connected` rather than assumed; what remains are `hturn` (the paper's cut
+condition on real turns) and `hruns` (every run carries an end), both statements about
+the configuration, plus the construction's own hypotheses. -/
+theorem VEndpt.shield_final {n : ℕ} {mm : Fin n → ℕ} (s0 s1 bnd : ℤ) (Zf : Finset ℤ)
+    (d : EndData.Data (VEndpt n mm)) (up : Fin n → ℕ)
+    (hd : d.isArr = VEndpt.isArr up)
+    (hside : ∀ x, d.side x = VEndpt.atTop x)
+    (hpsite : ∀ x : VEndpt n mm,
+      VEndpt.siteP s0 s1 (VEndpt.partner x) ≠ VEndpt.siteP s0 s1 x)
+    (hsW : ∀ E : WalkGraph.Data (VEndpt n mm),
+      WalkSupport.Merges (VEndpt.siteP s0 s1) d.isArr VEndpt.partner E →
+      ∀ w x : VEndpt n mm, (WalkGraph.graph E).Reachable w x →
+      VEndpt.siteP s0 s1 x
+        = WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph E) w →
+      VEndpt.atTop x = false ∨ VEndpt.siteP s0 s1 x
+        = VEndpt.edgeOf bnd x + (if VEndpt.atTop x then 1 else 0))
+    (hsX : ∀ E : WalkGraph.Data (VEndpt n mm),
+      WalkSupport.Merges (VEndpt.siteP s0 s1) d.isArr VEndpt.partner E →
+      ∀ w x : VEndpt n mm, (WalkGraph.graph E).Reachable w x →
+      VEndpt.edgeOf bnd x = WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph E) w →
+      VEndpt.atTop x = false → VEndpt.siteP s0 s1 x
+        = VEndpt.edgeOf bnd x + (if VEndpt.atTop x then 1 else 0))
+    (hsT : ∀ E : WalkGraph.Data (VEndpt n mm),
+      WalkSupport.Merges (VEndpt.siteP s0 s1) d.isArr VEndpt.partner E →
+      ∀ w y : VEndpt n mm, VEndpt.edgeOf bnd y
+        = WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph E) w - 1 →
+      VEndpt.atTop y = true → VEndpt.siteP s0 s1 y
+        = VEndpt.edgeOf bnd y + (if VEndpt.atTop y then 1 else 0))
+    (hcov : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ z v : VEndpt n mm,
+      VEndpt.edgeOf bnd v < WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph E) z →
+      ∃ w : VEndpt n mm, VEndpt.edgeOf bnd w
+        = WalkSupport.wLo (VEndpt.edgeOf bnd) (WalkGraph.graph E) z - 1 ∧
+        VEndpt.atTop w = true)
+    (hturn : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ u v : EndType.Endpt n mm,
+      E.t (Sum.inl u) = Sum.inl v →
+      EndType.edgeOf u ≠ EndType.edgeOf v → EndType.siteOf u ∉ Zf)
+    (hvirt : ∀ E : WalkGraph.Data (VEndpt n mm), ∀ b : Bool,
+      CutComponents.blk (VEndpt.edgeOf bnd) Zf (Sum.inr b : VEndpt n mm)
+        = CutComponents.blk (VEndpt.edgeOf bnd) Zf (E.t (Sum.inr b : VEndpt n mm)))
+    (hruns : ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n mm, CutComponents.blk (VEndpt.edgeOf bnd) Zf v = i)
+    (z₀ : VEndpt n mm)
+    (D : WalkGraph.Data (VEndpt n mm))
+    (hD : CostMerge.MergesMin (VEndpt.siteP s0 s1) d.isArr VEndpt.partner d D) :
+    ∃ D' : WalkGraph.Data (VEndpt n mm),
+      CostMerge.MergesMin (VEndpt.siteP s0 s1) d.isArr VEndpt.partner d D' ∧
+      WalkGraph.walkCount D' = Zf.card + 1 := by
+  obtain ⟨D', hD', hsep⟩ :=
+    exists_run_connected d (VEndpt.edgeOf bnd) (VEndpt.siteP s0 s1) VEndpt.atTop
+      VEndpt.partner Zf hside (VEndpt.hpe bnd) VEndpt.hpt hpsite hsW hsX hsT hcov D hD
+  exact ⟨D', hD', VEndpt.shield s0 s1 bnd Zf D' hD'.1.1 hD'.1.2.1 (hturn D')
+    (hvirt D') hruns hsep z₀⟩
+
 end EltBridge
 
 #print axioms EltBridge.Elt.outer
@@ -2799,3 +2855,4 @@ end EltBridge
 #print axioms EltBridge.run_step_gen
 #print axioms EltBridge.run_step_min_gen
 #print axioms EltBridge.exists_run_connected
+#print axioms EltBridge.VEndpt.shield_final

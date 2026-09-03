@@ -3346,3 +3346,26 @@ model, and both are the same inputs the Endpt-side argument has always taken.
 One direction error: `hss` from step_of_split' is `siteOf a' = siteOf a`, and I applied
 `.symm` to it before passing it on. The error message named the expected and actual
 types, so this was a one-line diagnosis rather than a guess.
+
+## 2026-09-03 — BLOCK 49: VEndpt.shield_final — c = |Z| with hsep discharged
+
+  VEndpt.shield_final -- c = |Z| for a cost-minimal datum on the extended type, with
+                         hsep produced by exists_run_connected rather than assumed
+
+The remaining hypotheses are of three kinds:
+  CONSTRUCTION   hside, hpsite, hpe, hpt   -- all supplied by the VEndpt construction
+  DISCHARGED     hsW, hsX, hsT             -- BLOCKS 16, 18, 31, 34 prove these for
+                                              both orientations
+  CONFIGURATION  hturn, hruns, hcov        -- statements about the configuration, and
+                                              the same ones the Endpt-side argument has
+                                              always taken
+  PROVED         hvirt                     -- BLOCK 42
+
+So nothing model-specific remains. The shield law on the end type that carries a group
+element's configuration now rests on exactly the inputs the paper's own argument rests
+on, and on nothing about the virtual pair beyond hvirt, which is a theorem.
+
+Failure mode worth noting: `forall w y` with no type annotation. In hsW and hsX the
+following `Reachable w x` pins the types; in hsT nothing does, and the error
+("don't know how to synthesize implicit argument n") points at the USE site rather than
+at the binder. Annotating the binders fixed it.
