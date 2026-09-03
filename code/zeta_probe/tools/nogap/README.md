@@ -6170,3 +6170,40 @@ where gaps are expressible -- and where BLOCK 149 refuted `HasFreePair`.
 Fourth retraction of this run.  The previous three came from asserting a route before
 tracing it; this one came from computing a set with two parameters free that only one
 parameter controls.  The check that caught it was recomputing with them linked.
+
+## 2026-09-03 — BLOCK 153: passing without swapping
+
+BLOCK 149 refuted `HasFreePair` in the per-strand model, which kills the swap route to
+`hsep`: walks cannot be MERGED there.  But `hsep` never needed merging.  What
+`exists_run_connected` produces is a minimal datum whose runs are connected, and such a
+datum can be CHOSEN instead: take a passing pairing at every non-cut site and the forced
+bounce at every cut site.
+
+What makes the choice legitimate is that the pass attains the minimum off a cut site.
+BLOCK 135 proved that when the LEFT side's classes differ; a non-cut site may instead
+differ on the right, so both cases are needed.  Proved here:
+
+    pass_le_bounce_of_either_differs   a difference on either side makes the bounce pay
+                                       a flip, which the two passes match
+    noncut_gives_a_difference          a non-cut site differs on some side
+    choose_pass_off_cut                the two together: off a cut site the pass attains
+                                       the minimum, at one the bounce strictly wins
+
+So M4b's route no longer runs through `HasFreePair`.  It runs through a direct
+construction, and the refuted hypothesis is not on it.
+
+NOT DONE, and stated carefully because four claims have already been retracted in this
+run:
+
+  * the gluing is not written -- per-site choices have to be assembled into one turn
+    (`DataBuild.glue` exists) and shown globally minimal (`sum_min_is_min` is the
+    principle, since cost is a sum over sites);
+  * run connectivity from the passes is not written;
+  * `choose_pass_off_cut` is stated on `Fin 4` classes, i.e. one strand per class per
+    side.  That is the `mu = 2` shape.  For larger `mu` a cut site is a statement about
+    class COUNTS matching, not about individual classes agreeing, and the lemma has to
+    be restated over counts.
+
+What HAS changed is the character of the blocker.  M4b was blocked by a hypothesis
+refuted in the only model that can express gap edges.  It is now blocked by three
+pieces of formalisation, each of which has its principle already proved.

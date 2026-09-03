@@ -8198,3 +8198,72 @@ end EltBridge
 
 #print axioms EltBridge.sum_min_is_min
 #print axioms EltBridge.reachable_turn
+
+namespace EltBridge
+
+/-! ### Passing without swapping
+
+BLOCK 149 refuted `HasFreePair` in the per-strand model, which kills the swap route to
+`hsep`: one cannot MERGE walks there.  But `hsep` does not require merging.  What
+`exists_run_connected` produces is a minimal datum whose runs are connected, and such a
+datum can be CHOSEN rather than reached by swaps -- take a passing pairing at every
+non-cut site and the forced bounce at every cut site.
+
+The step that makes the choice legitimate is that a passing pairing attains the
+minimum off a cut site.  `pass_le_bounce_of_left_differs` covers the case where the left
+side's classes differ; in the bulk a non-cut site has `alpha != 0` or `beta != 0`, and
+`beta != 0` is the right side's classes differing, so both cases are needed. -/
+
+/-- **Off a cut site the pass attains the minimum, whichever side differs.**  A
+difference on either side forces the bounce to pay a flip there, which the two passes
+match. -/
+theorem pass_le_bounce_of_either_differs (l l' r r' : Fin 4)
+    (hl : l.val < 2) (hl' : l'.val < 2) (hr : 2 ≤ r.val) (hr' : 2 ≤ r'.val)
+    (hne : l ≠ l' ∨ r ≠ r') :
+    costOf l r' + costOf r l' ≤ costOf l l' + costOf r r' := by
+  have h1 : costOf l r' = 1 := by
+    unfold costOf
+    rw [if_neg (by intro h; rw [h] at hl; omega), if_neg (by omega)]
+  have h2 : costOf r l' = 1 := by
+    unfold costOf
+    rw [if_neg (by intro h; rw [h] at hr; omega), if_neg (by omega)]
+  rw [h1, h2]
+  rcases hne with h | h
+  · have h3 : costOf l l' = 2 := by
+      unfold costOf; rw [if_neg h, if_pos (by omega)]
+    have h4 : 0 ≤ costOf r r' := Nat.zero_le _
+    omega
+  · have h3 : costOf r r' = 2 := by
+      unfold costOf; rw [if_neg h, if_pos (by omega)]
+    have h4 : 0 ≤ costOf l l' := Nat.zero_le _
+    omega
+
+/-- **The non-cut criterion in the bulk.**  A bulk site is a cut site exactly when both
+sides' classes agree, so a non-cut bulk site has one side differing -- which is the
+hypothesis `pass_le_bounce_of_either_differs` wants. -/
+theorem noncut_gives_a_difference (l l' r r' : Fin 4)
+    (hnotcut : ¬ (l = l' ∧ r = r')) : l ≠ l' ∨ r ≠ r' := by
+  by_cases h : l = l'
+  · exact Or.inr (fun hc => hnotcut ⟨h, hc⟩)
+  · exact Or.inl h
+
+/-- **So the choice is available everywhere it is needed**: at a non-cut bulk site a
+passing pairing attains the minimum, and at a cut site the bounce strictly wins.  Taking
+the pass off the cut sites and the bounce on them is therefore a minimal datum, and its
+runs are connected because passes link adjacent edges.  No swap and no free pair
+appears. -/
+theorem choose_pass_off_cut (l l' r r' : Fin 4)
+    (hl : l.val < 2) (hl' : l'.val < 2) (hr : 2 ≤ r.val) (hr' : 2 ≤ r'.val) :
+    (¬ (l = l' ∧ r = r') →
+      costOf l r' + costOf r l' ≤ costOf l l' + costOf r r') ∧
+    ((l = l' ∧ r = r') →
+      costOf l l' + costOf r r' < costOf l r' + costOf r l') := by
+  refine ⟨fun h => pass_le_bounce_of_either_differs l l' r r' hl hl' hr hr'
+    (noncut_gives_a_difference l l' r r' h), ?_⟩
+  rintro ⟨rfl, rfl⟩
+  exact bounce_beats_pass_at_cut l r hl hr
+
+end EltBridge
+
+#print axioms EltBridge.pass_le_bounce_of_either_differs
+#print axioms EltBridge.choose_pass_off_cut
