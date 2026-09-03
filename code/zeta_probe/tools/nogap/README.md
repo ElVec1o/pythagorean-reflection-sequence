@@ -8770,3 +8770,29 @@ flagged extension is immediate.  This is the piece that carries a finite path --
 to the state function `exists_config_of_flag` (BLOCK 243) consumes: `exists_fun_of_length`
 (BLOCK 225) turns the list into a function on the span, and `extendFlag` extends it to `Z`
 with `outer` holding by construction.
+
+## 2026-09-04 — BLOCK 252: a GAP in my own tail vector, and its repair
+
+Checking whether `extendFlag` always satisfies the guard exposed a gap in BLOCK 234's
+`tailVec`.  The step from `B` to `B + 1` needs `flowB`:
+
+    fcur B + arr (B+1) = fcur (B+1) + dep (B+1),
+
+and with `arr (B+1) = 0`, `fcur (B+1) = 0` and `dep (B+1) = |fcur B|` that is
+`fcur B = |fcur B|`, i.e. `fcur B >= 0`.  A configuration satisfies it -- the travel
+indicator is `-1` only strictly left of the origin, and `B >= 0`.  **But nothing in
+`tailVec` enforced it, so a path with `fcur B = -1` passed every guard while being
+unrealisable.**
+
+    fcur_B_nonneg       the travel indicator at the last edge is never negative
+    tailOk2B            the repaired tail guard: BLOCK 234's, plus the sign condition
+    tailOk2B_stateOf    and a configuration satisfies it
+    flowB_extState      with it, the step past the right end holds
+
+0 sorry, all three clean on the first build.
+
+**This is the second gap found by trying to use a guard rather than by inspecting it**
+(BLOCK 226 was the first, with `arrv` and `depv`).  Both were invisible in the forward
+direction -- configurations satisfy the guard either way -- and both would have made the
+converse unprovable while looking like a mathematical obstruction.  The lesson is that a
+guard is only tested by the direction that consumes it.

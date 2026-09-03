@@ -8043,6 +8043,45 @@ theorem extendFlag_eq_on (g : ℤ → FlagState) (A B : ℤ) {j : ℤ} (h1 : A �
   show (⟨extendFn (fun i => (g i).st) A B j, decide (0 ≤ j)⟩ : FlagState) = g j
   rw [extendFn_eq_on _ A B h1 h2, ← hflag]
 
+/-! ### A gap in the tail vector, and its repair
+
+Checking whether `extendFlag` always satisfies the guard exposed a gap in BLOCK 234's
+`tailVec`.  The step from `B` to `B + 1` needs `flowB`, which reads
+
+    fcur B + arr (B+1) = fcur (B+1) + dep (B+1),
+
+and with `arr (B+1) = 0`, `fcur (B+1) = 0` and `dep (B+1) = |fcur B|` that becomes
+`fcur B = |fcur B|` -- i.e. `fcur B >= 0`.  For a configuration this holds, because the
+travel indicator is `-1` only strictly left of the origin and `B >= 0`.  But NOTHING in
+`tailVec` enforced it, so a path with `fcur B = -1` passed every guard while being
+unrealisable.
+
+The repair is one more conjunct in the tail vector. -/
+
+/-- **The travel indicator at the last edge is never negative**, since `B >= 0`. -/
+theorem fcur_B_nonneg (P : SiteCost.PathData) : 0 ≤ (stateOf P P.B).fcur := by
+  have hB := P.hB
+  show 0 ≤ SiteCost.travel P.kstar P.B
+  unfold SiteCost.travel
+  split_ifs <;> omega
+
+/-- The repaired tail guard: BLOCK 234's, plus the sign condition the flow needs. -/
+def tailOk2B (σ : LocalState) : Bool :=
+  validB σ && epsValidB σ && endValidB σ && decide (0 ≤ σ.fcur)
+
+/-- **And a configuration satisfies it.** -/
+theorem tailOk2B_stateOf (P : SiteCost.PathData) : tailOk2B (stateOf P P.B) = true := by
+  simp only [tailOk2B, Bool.and_eq_true, decide_eq_true_eq]
+  exact ⟨⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩,
+    fcur_B_nonneg P⟩
+
+/-- **With it, the step past the right end holds.**  `flowB` at `B` reduces to
+`fcur B = |fcur B|`, which the sign condition supplies. -/
+theorem flowB_extState (σ : LocalState) (h : 0 ≤ σ.fcur) :
+    flowB σ (extState σ) = true := by
+  simp only [flowB, extState, decide_eq_true_eq]
+  omega
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -15714,3 +15753,6 @@ end EltBridge
 #print axioms EltBridge.extendFlag_flagOf
 #print axioms EltBridge.extendFlag_outer
 #print axioms EltBridge.extendFlag_eq_on
+#print axioms EltBridge.fcur_B_nonneg
+#print axioms EltBridge.tailOk2B_stateOf
+#print axioms EltBridge.flowB_extState
