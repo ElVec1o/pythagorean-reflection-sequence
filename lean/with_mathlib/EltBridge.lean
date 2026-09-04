@@ -17583,6 +17583,62 @@ theorem coeff_flagPathsFinset_eq_C_image_sum (N : ℕ) (A : ℤ) (n : ℕ)
   coeff_sum_subset N _ _ (image_C_subset_flagPathsFinset N A n C hC) _
     (fun L hL hnotim => coeff_vanish_on_complement N A n hA hAn C hC L hL hnotim)
 
+/-- **(M3), one step further: the box coefficient IS the marker-fiber sum over `C`.**
+Composes `coeff_flagPathsFinset_eq_C_image_sum` (BLOCK 299: the box coefficient equals
+the coefficient of `C`'s image) with `flagPath_inj` (BLOCK 248: that image map is
+injective on `C`, so its sum reindexes to a sum over `C` itself) and
+`coeff_C_eq_sum_marker_fiber_coeffs` (BLOCK 300: `C`'s coefficient splits into its
+four marker fibers). This is the exact left-hand shape `IsAssembly` (line 10128)
+states for its `lambda`-side `Fin 4` sum, applied to the real box/`C` objects rather
+than to an abstract weight -- still not `IsAssembly` itself, since the right-hand
+per-fiber transfer/Neumann form is not identified here. -/
+theorem coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs (N : ℕ) (A : ℤ) (n : ℕ)
+    (hA : A ≤ 0) (hAn : 0 ≤ A + (n : ℤ))
+    (C : Finset (SpanData A (A + n))) (hC : ∀ S : SpanData A (A + n), S ∈ C ↔ S.toPath.lR = N) :
+    PowerSeries.coeff N
+        (∑ L ∈ flagPathsFinset N A n,
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L)
+      = ∑ i : Fin 4, PowerSeries.coeff N
+          (∑ S ∈ C with markerIdx S = i,
+            pathWeightR (fun σ τ => if flagStepB σ τ then
+                (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+              (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X)
+              ((A :: idxList A n).map (flagOf S.toPath))) := by
+  rw [← coeff_flagPathsFinset_eq_C_image_sum N A n hA hAn C hC,
+    Finset.sum_image (fun x _ y _ h => flagPath_inj h)]
+  exact coeff_C_eq_sum_marker_fiber_coeffs N C _
+
+/-- **(M3), the counting form: the box coefficient equals exactly `C.card`.** Every
+element of `C` already has degree `N` (`hC`), so `pathWeightR_flag_guarded` (BLOCK 236,
+ported) collapses each of `C`'s per-element weights to the same monomial `X^N`, and
+`coeff_sum_configs` (BLOCK 272) reads that off as a count. This is the actual content
+`IsAssembly` states for `W`'s constant behaviour on a single degree: the degree-`N`
+coefficient of the whole box counts exactly the degree-`N` spans, no resolvent or
+transfer-matrix machinery needed once the span-length `n` is fixed and `C` is read
+directly rather than split by marker data. -/
+theorem coeff_flagPathsFinset_eq_card_C (N : ℕ) (A : ℤ) (n : ℕ)
+    (hA : A ≤ 0) (hAn : 0 ≤ A + (n : ℤ))
+    (C : Finset (SpanData A (A + n))) (hC : ∀ S : SpanData A (A + n), S ∈ C ↔ S.toPath.lR = N) :
+    PowerSeries.coeff N
+        (∑ L ∈ flagPathsFinset N A n,
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L)
+      = (C.card : ℤ) := by
+  classical
+  rw [← coeff_flagPathsFinset_eq_C_image_sum N A n hA hAn C hC,
+    Finset.sum_image (fun x _ y _ h => flagPath_inj h)]
+  have hweq : ∀ S ∈ C, pathWeightR (fun σ τ => if flagStepB σ τ then
+        (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+      (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X)
+      ((A :: idxList A n).map (flagOf S.toPath))
+      = (PowerSeries.X : PowerSeries ℤ) ^ S.toPath.lR :=
+    fun S _ => pathWeightR_flag_guarded (PowerSeries.X : PowerSeries ℤ) S.toPath n rfl
+  rw [Finset.sum_congr rfl hweq, coeff_sum_configs N C,
+    Finset.filter_true_of_mem (fun S hS => ((hC S).mp hS).symm)]
+
 end EltBridge
 
 #print axioms EltBridge.sum_vArr_range_eq_one
@@ -17591,3 +17647,5 @@ end EltBridge
 #print axioms EltBridge.coeff_vanish_on_complement
 #print axioms EltBridge.image_C_subset_flagPathsFinset
 #print axioms EltBridge.coeff_flagPathsFinset_eq_C_image_sum
+#print axioms EltBridge.coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs
+#print axioms EltBridge.coeff_flagPathsFinset_eq_card_C
