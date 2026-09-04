@@ -17639,6 +17639,19 @@ theorem coeff_flagPathsFinset_eq_card_C (N : ℕ) (A : ℤ) (n : ℕ)
   rw [Finset.sum_congr rfl hweq, coeff_sum_configs N C,
     Finset.filter_true_of_mem (fun S hS => ((hC S).mp hS).symm)]
 
+/-- **Cross-check (Rule 3): `C`'s cardinality splits into its marker fibers exactly the
+way `coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs` needs it to.** Each fiber is
+itself a sub-`Finset` of `C`, so every element of a fiber also has degree `N`; running
+the same collapse as `coeff_flagPathsFinset_eq_card_C` on a fiber gives that fiber's
+coefficient contribution equals its cardinality, and summing the four fiber
+cardinalities reproduces `C.card` -- consistent with `coeff_flagPathsFinset_eq_card_C`
+counting the whole set directly. This does not depend on the box/`flagPathsFinset`
+machinery at all: it is the general `Finset.sum_fiberwise` fact for `fun _ => 1`. -/
+theorem card_C_eq_sum_marker_fiber_card {A B : ℤ} (C : Finset (SpanData A B)) :
+    C.card = ∑ i : Fin 4, (C.filter (fun S => markerIdx S = i)).card := by
+  simp_rw [Finset.card_eq_sum_ones]
+  exact (Finset.sum_fiberwise C markerIdx (fun _ => (1 : ℕ))).symm
+
 end EltBridge
 
 #print axioms EltBridge.sum_vArr_range_eq_one
@@ -17649,3 +17662,4 @@ end EltBridge
 #print axioms EltBridge.coeff_flagPathsFinset_eq_C_image_sum
 #print axioms EltBridge.coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs
 #print axioms EltBridge.coeff_flagPathsFinset_eq_card_C
+#print axioms EltBridge.card_C_eq_sum_marker_fiber_card
