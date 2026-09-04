@@ -12141,6 +12141,61 @@ theorem cstep_right (g : Elt) (hδ : g.delta = true) :
   · show (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps)
     rw [s3, dif_pos hδ]
 
+/-! ### The baseline: `cstep` alone always matches `travel`, whichever way it walks
+
+`cstep_iter_one` (below) computes the deposit profile of one specific monotone walk
+from `one`. The same fact holds in far more generality and needs no monotonicity: if
+`d j = -(eps * travel(kstar, j))` before a `cstep`, the same identity holds after it,
+regardless of which way `cstep` turns (it reads `delta` itself). `travel` is a
+path-independent potential for `cstep`'s deposits: `travel_pred_at`/`travel_succ_at`
+give the exact differential `cstep` implements at the crossed edge, and `cstep`
+preserves `eps` (neither `s1` nor `s3` touches it), so the same sign carries through
+however many times, and in whichever order, the cursor crosses a given edge. This is
+the key fact H1a's reachability induction needs: ANY walk built purely from `cstep`
+(any mix of outward and return legs) lands on the exact `travel`-matching profile for
+wherever it ends up, with no accumulated drift from the route taken. -/
+
+theorem cstep_preserves_neg_eps_travel (g : Elt)
+    (h : ∀ j, g.d j = -(g.eps * SiteCost.travel g.kstar j)) :
+    ∀ j, (cstep g).d j = -((cstep g).eps * SiteCost.travel (cstep g).kstar j) := by
+  by_cases hδ : g.delta = false
+  · obtain ⟨hk, he, -, hd⟩ := cstep_left g hδ
+    intro j
+    rw [hd, hk, he]
+    by_cases hj : j = g.kstar - 1
+    · subst hj
+      rw [Function.update_self, h (g.kstar - 1), travel_pred_at]
+      ring
+    · rw [Function.update_of_ne hj, h j, travel_pred_ne g.kstar j hj]
+  · have hδt : g.delta = true := by revert hδ; cases g.delta <;> simp
+    obtain ⟨hk, he, -, hd⟩ := cstep_right g hδt
+    intro j
+    rw [hd, hk, he]
+    by_cases hj : j = g.kstar
+    · subst hj
+      rw [Function.update_self, h g.kstar, travel_succ_at]
+      ring
+    · rw [Function.update_of_ne hj, h j, travel_succ_ne g.kstar j hj]
+
+/-- **`one` sits at the base case.** -/
+theorem one_travel_inv : ∀ j, one.d j = -(one.eps * SiteCost.travel one.kstar j) := by
+  intro j
+  show (0 : ℤ) = -((1 : ℤ) * SiteCost.travel 0 j)
+  rw [SiteCost.travel_of_kstar_zero]
+  ring
+
+/-- **So EVERY element reached by iterating `cstep` from `one` -- any mix of outward
+and return legs, in any order -- matches `travel` at its own `kstar`.** This subsumes
+`cstep_iter_one`'s single monotone walk as the special case where `delta` never
+flips. -/
+theorem cstep_iter_travel_inv (n : ℕ) :
+    ∀ j, (cstep^[n] one).d j = -((cstep^[n] one).eps * SiteCost.travel (cstep^[n] one).kstar j) := by
+  induction n with
+  | zero => simpa using one_travel_inv
+  | succ m ih =>
+      rw [Function.iterate_succ_apply']
+      exact cstep_preserves_neg_eps_travel (cstep^[m] one) ih
+
 theorem reachable_cstep {g : Elt} (h : Reachable g) : Reachable (cstep g) :=
   reachable_s1 (reachable_s3 h)
 
@@ -12181,6 +12236,10 @@ end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.cstep_left
+#print axioms EltBridge.Elt.cstep_right
+#print axioms EltBridge.Elt.cstep_preserves_neg_eps_travel
+#print axioms EltBridge.Elt.one_travel_inv
+#print axioms EltBridge.Elt.cstep_iter_travel_inv
 #print axioms EltBridge.Elt.cstep_iter_left
 #print axioms EltBridge.Elt.reachable_kstar_nonpos
 
