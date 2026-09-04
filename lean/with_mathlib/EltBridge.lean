@@ -9449,6 +9449,29 @@ theorem exists_stateFn_of_mem_flagPathsFinset (N : ℕ) (A : ℤ) (n : ℕ) (L :
       have := hb1.2.2.2.1
       omega
 
+/-! ### Sign data is constant along a bounded guarded path -/
+
+theorem compatB_of_flagStepB (g : ℤ → FlagState) (j : ℤ)
+    (hs : flagStepB (g j) (g (j + 1)) = true) :
+    compatB (g j).st (g (j + 1)).st = true := by
+  simp only [flagStepB, fullStepB, stepB, Bool.and_eq_true] at hs
+  exact hs.1.1.1.1.1
+
+theorem eps_delta_const_bounded (g : ℤ → FlagState) (A : ℤ) (n : ℕ)
+    (hstep : ∀ j : ℤ, A ≤ j → j < A + n → flagStepB (g j) (g (j + 1)) = true) :
+    ∀ k : ℕ, k ≤ n → (g (A + k)).st.eps = (g A).st.eps ∧ (g (A + k)).st.delta = (g A).st.delta := by
+  intro k
+  induction k with
+  | zero => intro _; simp
+  | succ m ih =>
+      intro hk
+      obtain ⟨he, hd⟩ := ih (by omega)
+      have hcp := compatB_of_flagStepB g (A + m) (hstep (A + m) (by omega) (by omega))
+      simp only [compatB, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at hcp
+      have hcast : A + (((m : ℕ) + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 := by push_cast; ring
+      rw [hcast]
+      exact ⟨hcp.1.2.trans he, hcp.2.trans hd⟩
+
 
 /-! ### The deposit magnitude is a sufficient state
 
@@ -17191,6 +17214,8 @@ end EltBridge
 #print axioms EltBridge.boxSet_bounds
 #print axioms EltBridge.mem_flagPathsFinset_of_config
 #print axioms EltBridge.exists_stateFn_of_mem_flagPathsFinset
+#print axioms EltBridge.compatB_of_flagStepB
+#print axioms EltBridge.eps_delta_const_bounded
 
 namespace EltBridge
 

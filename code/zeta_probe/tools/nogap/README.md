@@ -9648,3 +9648,21 @@ left dangling after the new case was appended, closing on an already-solved goal
 **Both hypotheses `exists_unique_kstar_of_flowA` needs beyond the guard itself -- `harrv`
 and `hdepv` -- are now available with no argument beyond box membership**, for any element
 of `flagPathsFinset`, not only for configurations.
+
+## 2026-09-04 — BLOCK 297: sign data is constant along a BOUNDED guarded path
+
+`FlagPath.epsAB`/`delAB` (eps and delta agreeing at the two ends) is the last field with
+no source: `eps_const_of_guarded`/`delta_const_of_guarded` (much earlier blocks) prove this
+but need `Guarded`, whose `step` field is UNCONDITIONAL over all of `Z` -- not available
+for a bare `hstep` restricted to `[A, A+n)`.
+
+    compatB_of_flagStepB     the compatB component of flagStepB, extracted cleanly
+    eps_delta_const_bounded  both fields agree across the WHOLE bounded span, by
+                             induction from A rather than from 0
+
+0 sorry.  One failure: `Eq.trans`'s argument order was backwards -- `hcp.1.2` proves
+`eps(A+m+1) = eps(A+m)`, so composing with `he : eps(A+m) = eps(A)` needs
+`hcp.1.2.trans he`, not `he.trans hcp.1.2`.
+
+**Every field `FlagPath` needs now has a source usable from bare `hstep` and the box
+membership facts, with no remaining gaps.**  The assembly can now proceed.
