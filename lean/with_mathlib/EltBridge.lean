@@ -12483,11 +12483,49 @@ theorem reachable_single_correction_right {g : Elt} (hg : Reachable g) (hδ : g.
     rw [hh2j] at e2
     linarith [e1, e2]
 
+/-- **Either direction, in one call.** -/
+theorem reachable_single_correction {g : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (p : ℤ) (k : ℕ) :
+    ∃ h : Elt, Reachable h ∧ h.kstar = g.kstar ∧ h.eps = g.eps ∧ h.delta = false ∧
+      h.d = Function.update g.d p (g.d p + 2 * (k : ℤ) * g.eps) := by
+  by_cases hp : p ≤ g.kstar
+  · exact reachable_single_correction_left hg hδ p hp k
+  · exact reachable_single_correction_right hg hδ p (by omega) k
+
+/-- **Corrections at a whole finite set of positions, applied one at a time.**  Each
+single correction (`reachable_single_correction`) leaves every OTHER position exactly
+as it was, including positions already corrected by an earlier step -- so a plain
+`Finset.induction` suffices, with no interference argument needed beyond the one
+`reachable_single_correction` already proves. This is the H1a reachability
+induction: any target profile that agrees with a reachable baseline outside a finite
+set, and differs from it there by even amounts, is itself reachable. -/
+theorem reachable_multi_correction {g : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (S : Finset ℤ) (c : ℤ → ℕ) :
+    ∃ h : Elt, Reachable h ∧ h.kstar = g.kstar ∧ h.eps = g.eps ∧ h.delta = false ∧
+      ∀ j : ℤ, h.d j = if j ∈ S then g.d j + 2 * (c j : ℤ) * g.eps else g.d j := by
+  classical
+  induction S using Finset.induction with
+  | empty => exact ⟨g, hg, rfl, rfl, hδ, fun j => by simp⟩
+  | insert p S' hpS ih =>
+      obtain ⟨h', hh', hk', he', hδ', hd'⟩ := ih
+      obtain ⟨h, hh, hk, he, hδf, hdd⟩ := reachable_single_correction hh' hδ' p (c p)
+      refine ⟨h, hh, hk.trans hk', he.trans he', hδf, fun j => ?_⟩
+      by_cases hj : j = p
+      · subst hj
+        rw [hdd, Function.update_self, hd' j, he', if_neg hpS]
+        simp
+      · rw [hdd, Function.update_of_ne hj, hd' j]
+        by_cases hjS : j ∈ S'
+        · simp [Finset.mem_insert, hjS]
+        · simp [Finset.mem_insert, hjS, hj]
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.reachable_single_correction_left
 #print axioms EltBridge.Elt.reachable_single_correction_right
+#print axioms EltBridge.Elt.reachable_single_correction
+#print axioms EltBridge.Elt.reachable_multi_correction
 #print axioms EltBridge.Elt.reachable_kstar_nonneg
 #print axioms EltBridge.Elt.reachable_kstar
 
