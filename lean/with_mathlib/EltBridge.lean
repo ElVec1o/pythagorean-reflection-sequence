@@ -7418,10 +7418,13 @@ the arrival fires here. -/
 def flagHeadVec (x : ℤ) (σ : FlagState) : ℤ :=
   if headOk2B σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
 
+def tailOk2B (σ : LocalState) : Bool :=
+  validB σ && epsValidB σ && endValidB σ && decide (0 ≤ σ.fcur)
+
 /-- The doubled tail vector: the ordinary tail guard, plus the flag SET -- which is what
 forces the arrival to have happened somewhere along the path. -/
 def flagTailVec (x : ℤ) (σ : FlagState) : ℤ :=
-  if validB σ.st && epsValidB σ.st && endValidB σ.st && σ.past then
+  if tailOk2B σ.st && σ.past then
     x ^ (σ.st.muOf + tailSiteOf σ.st) else 0
 
 theorem flagHeadVec_flagOf (x : ℤ) (P : SiteCost.PathData) :
@@ -7450,10 +7453,15 @@ theorem flagTailVec_flagOf (x : ℤ) (P : SiteCost.PathData) :
     flagTailVec x (flagOf P P.B)
       = x ^ ((stateOf P P.B).muOf + tailSiteOf (stateOf P P.B)) := by
   have hB := P.hB
-  have hcond : (validB (flagOf P P.B).st && epsValidB (flagOf P P.B).st
-      && endValidB (flagOf P P.B).st && (flagOf P P.B).past) = true := by
+  have hfcurnn : 0 ≤ (stateOf P P.B).fcur := by
+    show 0 ≤ SiteCost.travel P.kstar P.B
+    unfold SiteCost.travel; split_ifs <;> omega
+  have htailOk2 : tailOk2B (stateOf P P.B) = true := by
+    simp only [tailOk2B, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩, hfcurnn⟩
+  have hcond : (tailOk2B (flagOf P P.B).st && (flagOf P P.B).past) = true := by
     simp only [flagOf, Bool.and_eq_true, decide_eq_true_eq]
-    exact ⟨⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩, hB⟩
+    exact ⟨htailOk2, hB⟩
   rw [flagTailVec, if_pos hcond]
   rfl
 
@@ -8079,10 +8087,6 @@ theorem fcur_B_nonneg (P : SiteCost.PathData) : 0 ≤ (stateOf P P.B).fcur := by
   show 0 ≤ SiteCost.travel P.kstar P.B
   unfold SiteCost.travel
   split_ifs <;> omega
-
-/-- The repaired tail guard: BLOCK 234's, plus the sign condition the flow needs. -/
-def tailOk2B (σ : LocalState) : Bool :=
-  validB σ && epsValidB σ && endValidB σ && decide (0 ≤ σ.fcur)
 
 /-- **And a configuration satisfies it.** -/
 theorem tailOk2B_stateOf (P : SiteCost.PathData) : tailOk2B (stateOf P P.B) = true := by
@@ -8936,7 +8940,7 @@ def flagHeadVecR {R : Type*} [CommRing R] (x : R) (σ : FlagState) : R :=
   if headOk2B σ.st && (σ.past == decide (σ.st.arr = 1)) then x ^ σ.st.siteOf else 0
 
 def flagTailVecR {R : Type*} [CommRing R] (x : R) (σ : FlagState) : R :=
-  if validB σ.st && epsValidB σ.st && endValidB σ.st && σ.past then
+  if tailOk2B σ.st && σ.past then
     x ^ (σ.st.muOf + tailSiteOf σ.st) else 0
 
 theorem flagHeadVecR_flagOf {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathData) :
@@ -8965,10 +8969,15 @@ theorem flagTailVecR_flagOf {R : Type*} [CommRing R] (x : R) (P : SiteCost.PathD
     flagTailVecR x (flagOf P P.B)
       = x ^ ((stateOf P P.B).muOf + tailSiteOf (stateOf P P.B)) := by
   have hB := P.hB
-  have hcond : (validB (flagOf P P.B).st && epsValidB (flagOf P P.B).st
-      && endValidB (flagOf P P.B).st && (flagOf P P.B).past) = true := by
+  have hfcurnn : 0 ≤ (stateOf P P.B).fcur := by
+    show 0 ≤ SiteCost.travel P.kstar P.B
+    unfold SiteCost.travel; split_ifs <;> omega
+  have htailOk2 : tailOk2B (stateOf P P.B) = true := by
+    simp only [tailOk2B, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩, hfcurnn⟩
+  have hcond : (tailOk2B (flagOf P P.B).st && (flagOf P P.B).past) = true := by
     simp only [flagOf, Bool.and_eq_true, decide_eq_true_eq]
-    exact ⟨⟨⟨validB_stateOf P P.B, epsValidB_stateOf P P.B⟩, endValidB_at_B P⟩, hB⟩
+    exact ⟨htailOk2, hB⟩
   rw [flagTailVecR, if_pos hcond]
   rfl
 
@@ -9175,11 +9184,11 @@ theorem tailOkR_of_weight_ne_zero {R : Type*} [CommRing R] (x : R) (g : ℤ → 
         hz]
       ring
 
-/-- **And the tail guard itself.**  A non-vanishing tail vector is a firing `tailOkB`
+/-- **And the tail guard itself.**  A non-vanishing tail vector is a firing `tailOk2B`
 condition with the flag set. -/
 theorem tailCond_of_tailVec_ne_zero {R : Type*} [CommRing R] (x : R) (σ : FlagState)
     (h : flagTailVecR x σ ≠ 0) :
-    (validB σ.st && epsValidB σ.st && endValidB σ.st && σ.past) = true := by
+    (tailOk2B σ.st && σ.past) = true := by
   by_contra hc
   apply h
   rw [flagTailVecR, if_neg]

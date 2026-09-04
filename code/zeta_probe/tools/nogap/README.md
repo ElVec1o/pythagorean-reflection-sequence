@@ -9600,3 +9600,34 @@ is now derivable from `hstep` (BLOCK 282), `headOk2B` (BLOCKS 290-291), the arr-
 fact (BLOCK 291), `past_eq_decide` (BLOCK 258), and this block's `kstar` -- nothing is
 left unaccounted for.  Assembling them into one `FlagPath` and finishing
 `coeff_vanish_on_complement` is now pure composition.
+
+## 2026-09-04 — BLOCK 295: RETRACTION and repair — the SAME missed-wiring bug in the tail vector
+
+Preparing to assemble the final composition, I checked whether `fcurB : 0 <= fcur_B` (a
+`FlagPath` field `exists_config_of_path` needs) is derivable from the tail vector's
+condition -- and it is NOT.  `flagTailVec`/`flagTailVecR` gated on
+`validB && epsValidB && endValidB && past`, but `tailOk2B` (BLOCK 252) -- `validB &&
+epsValidB && endValidB && decide(0 <= fcur)` -- was ALREADY BUILT to repair exactly this,
+and, like `headOk2B` (BLOCK 290), was never wired into the actual kernel.
+
+Same repair, same shape: both `flagTailVec` and `flagTailVecR` now gate on `tailOk2B`.
+Re-proved three downstream theorems, inlining `fcur_B_nonneg`'s argument (`travel` is
+never `-1` at a non-negative index) directly rather than forward-referencing a theorem
+defined later in the file:
+
+    flagTailVec_flagOf     (Z version)
+    flagTailVecR_flagOf    (R version)
+    tailCond_of_tailVec_ne_zero -- conclusion strengthened to tailOk2B
+
+0 sorry, all four re-certified; `tailCond_of_tailVec_ne_zero` needs `propext` alone.  Same
+two mechanical snags as BLOCK 290's repair: doc-comments stacked illegally where a
+definition was relocated, and a stray orphaned doc-comment left behind at the old site.
+
+**Why caught before use, this time.**  Unlike `headOk2B` (found only when the converse
+direction actually failed to typecheck against `exists_config_of_path`), this one was
+caught by CHECKING the needed hypothesis against what the vector's condition actually
+proves, before attempting the composition -- the same audit BLOCK 291 should have run when
+it built the tail vector's guard extraction, and did not.  Two repairs of the identical
+shape in five blocks is a pattern: **every `flagHeadVec`/`flagTailVec`-style gate needs
+checking against ALL of `FlagPath`'s fields, not just the ones a given proof attempt
+happens to need next.**
