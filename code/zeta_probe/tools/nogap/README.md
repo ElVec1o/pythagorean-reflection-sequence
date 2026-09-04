@@ -10077,3 +10077,17 @@ what `hpar`'s parity condition should supply once unfolded against this baseline
 This is real work but bookkeeping, not new mathematical content -- the hard
 combinatorial argument (BLOCKS 303-310) is done. H1a stays 🟠 at the composite
 level; call the reachability CORE 🟢.
+
+## 2026-09-05 — checked M4b/RunStrandsConnected before picking the next target
+
+Investigated whether the Eulerian-route machinery already in EltBridge.lean
+(lines 16648-17257) had progressed past what the research log's older entries
+record. It has not: `RunStrandsConnected` (line ~17208) is still an unproved
+existence statement. Checked whether Mathlib could discharge it directly --
+`Mathlib/Combinatorics/SimpleGraph/Trails.lean` has Eulerian-circuit
+*necessary conditions* only; its own header TODO says circuit EXISTENCE is
+not proved in Mathlib either. So this atom needs a from-scratch existence
+argument (e.g. formalizing Hierholzer's algorithm), which is real, hard,
+unattempted-anywhere work, not a quick citation. Confirms rather than
+overturns the project's prior NO-GOs on this route. Not pursued further this
+session; picked a different target instead.
