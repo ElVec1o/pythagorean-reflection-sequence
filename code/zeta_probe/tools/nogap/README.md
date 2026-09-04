@@ -10024,3 +10024,56 @@ right case, and the generalization from one correction position to an arbitrary
 finite support, are both still open. H1a stays 🟠 at the composite level, but this is
 real, substantial, verified progress -- the hardest algebraic content of the
 single-position case is now done.
+
+## 2026-09-05 — BLOCKS 308-310: H1a's reachability induction, fully general
+
+Continuing directly from BLOCK 307 (left case): built the right-case mirror, then the
+full induction.
+
+    reachable_single_correction_right   mirror of BLOCK 307 for p > g.kstar (walk
+                                         right first, flip to correct, walk back --
+                                         no final flip needed, unlike the left case)
+    reachable_single_correction         either direction in one call
+    reachable_multi_correction          Finset.induction over a set of positions
+                                         with NONNEGATIVE corrections c : Z -> N:
+                                         a reachable h matching a baseline g outside
+                                         the set, differing by 2*c(p)*eps on it
+    reachable_single_correction_int     the single-position case generalized to
+                                         ARBITRARY INTEGER corrections (via feps to
+                                         flip eps for negative ones)
+    reachable_multi_correction_int      the full induction, arbitrary integer
+                                         corrections: THE combinatorial core of
+                                         H1a's reachability gap
+
+0 sorry throughout, four separate clean builds (one per theorem group), all real
+bugs caught and fixed by the type checker rather than guessed around:
+`le_or_lt` isn't in unqualified scope (used `by_cases` instead, twice, in two
+different theorems); a combined `rw [...] at e1 e2` tried applying both legs'
+excess hypotheses to both equations in the right-case mirror (split into two
+rewrites, mirroring but NOT identical to the left case's split -- each leg's
+hypothesis needed checking against what it actually contained, not assumed from
+the mirror symmetry); `rw [..., Finset.mem_insert]` on an `if`-condition failed
+with "motive is not type correct" (rewriting inside a Decidable instance) --
+replaced with `simp [Finset.mem_insert, ...]`; and `Eq.trans` composition failed
+for the eps field when a sign flip was involved (`q2.trans (he1.trans p2)` doesn't
+typecheck since q2's target is "-h1.eps" not "h1.eps") -- replaced with a
+`rw [...]; ring` tactic proof. `#print axioms` on every new theorem shows only
+`propext, Classical.choice, Quot.sound`.
+
+**What this closes.** Any finite-support target deposit profile that differs from a
+reachable baseline by even amounts, at any positions, in either direction, is itself
+reachable -- fully general, no remaining case restrictions. This is the actual
+combinatorial content the log named as missing ("cursor placement and the deposit
+engine exist, their composition does not").
+
+**What remains for H1a, stated honestly.** Connecting this machinery to an actual
+PathData/SpanData target: (a) obtain a reachable baseline at the target kstar/eps/
+delta (via `reachable_kstar`, already proved, plus `feps`/`s1` to match the target
+eps/delta exactly); (b) show the baseline's own deposit profile is exactly
+`-eps*travel(kstar,.)` (already proved for the specific `one`/`s1 one`-based
+constructions via `cstep_iter_travel_inv`); (c) show the correction needed at each
+position (target minus baseline) is an even multiple of `2*eps`, which is exactly
+what `hpar`'s parity condition should supply once unfolded against this baseline.
+This is real work but bookkeeping, not new mathematical content -- the hard
+combinatorial argument (BLOCKS 303-310) is done. H1a stays 🟠 at the composite
+level; call the reachability CORE 🟢.
