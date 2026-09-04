@@ -9880,3 +9880,50 @@ guarantees an even number of calls suffices) to match the target value there. Th
 induction has not been attempted; it is now buildable from pieces that all exist,
 where before this block one of those pieces (the right-side engine) did not. H1a stays
 🟠.
+
+## 2026-09-05 — BLOCK 304: found the real accumulation word (H1a), via BFS first
+
+BLOCK 303's closing note was wrong in one respect: it suggested `reachable_deposit_step`/
+`reachable_deposit_step_right` applied repeatedly would suffice for the induction. They
+do not -- checked by hand before writing more Lean (Rule 3): two applications of
+`reachable_deposit_step` at a fixed `kstar` cancel exactly (each flips `eps`, so the two
+`+2*eps` contributions at opposite signs sum to zero).
+
+Wrote `src/bin/reach_check.rs`, a small standalone BFS (reusing this tool's own
+`Elt`/generator model) to settle the question computationally rather than guess again.
+Ground covered: BFS to depth 22 from `one`, 118938 elements enumerated. Result: the
+element with `kstar=0, d(0)=2k`, else matching `one`, is reached at word length exactly
+`6k` for k=1,2,3 (lengths 6,12,18); k=4,5,6 not yet reached within depth 22 (consistent
+with the pattern, not a contradiction of it). Reconstructed the exact witnessing words:
+`["s2","s3","s1"]` repeated `k` times -- a genuinely different word from the 4-letter
+round trip, not that round trip repeated.
+
+Formalized that word in `EltBridge.lean`:
+
+    depositCycle                       s1 (s3 (s2 g)) -- one turn
+    depositCycle_from_false/_from_true the cycle's exact per-field effect from
+                                        each side
+    depositCycle_sq                    two turns: kstar, eps, delta all restored,
+                                        deposit at kstar moves by exactly 2*eps --
+                                        matches the BFS length-6 pattern exactly
+    reachable_depositCycle             closure under Reachable
+    reachable_deposit_accumulate       the real accumulation step for induction,
+                                        replacing the cancelling
+                                        reachable_deposit_step
+
+0 sorry. Two failures: `(!false)=true`/`(!true)=false` needed `simp` rather than bare
+`rw` (the rw-then-rfl heuristic didn't fire); a `congr 1` in the delta=true branch
+closed its own goal via defeq of `a+(-b)` and `a-b`, so a trailing `ring` errored
+"no goals" and had to be removed -- the delta=false branch's parallel step genuinely
+needed `ring`, so the two branches are not interchangeable despite the symmetric
+statement shape. `#print axioms` on all six new theorems shows only `propext,
+Classical.choice, Quot.sound`. Committed `fe47f6a`.
+
+**Scope, stated honestly:** this supplies the missing accumulation PRIMITIVE, found by
+computation before being proved (Rule 3), not yet the full reachability induction.
+What remains for H1a: given an arbitrary target deposit profile of bounded support
+consistent with `hpar`, walk the cursor over its support (`cstep`, already done) and
+apply `reachable_deposit_accumulate` the right number of times at each visited
+position to match the target value there, then assemble into one existence theorem.
+H1a stays 🟠, closer than BLOCK 303 left it -- the primitive that was actually missing
+(not the one BLOCK 303 guessed) is no longer missing.
