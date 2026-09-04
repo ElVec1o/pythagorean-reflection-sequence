@@ -11975,6 +11975,131 @@ end EltBridge
 namespace EltBridge
 namespace Elt
 
+/-! ### The deposit engine actually accumulates via a DIFFERENT word
+
+`reachable_deposit_step` alone does not accumulate: applying it twice at a fixed
+`kstar` cancels exactly, since each call flips `eps` and the two `+2*eps`
+contributions (at opposite signs of `eps`) sum to zero. This was found by hand and
+then confirmed computationally (`code/zeta_probe/tools/nogap/src/bin/reach_check.rs`,
+BFS from `one`, exact word reconstruction): the element with `kstar = 0`, `d 0 = 2`,
+else matching `one`, is reached at word length exactly 6 by `s2, s3, s1, s2, s3, s1`
+-- the 3-letter cycle `s1 ∘ s3 ∘ s2` applied TWICE, not the 4-letter round trip applied
+twice. `d 0 = 4` is reached at length 12 by the same cycle four times, confirming the
+pattern: two applications of the cycle leave `kstar`, `eps`, `delta` all fixed and add
+exactly `2 * eps` to the deposit at `kstar`. -/
+
+/-- One turn of the accumulating cycle. -/
+noncomputable def depositCycle (g : Elt) : Elt := s1 (s3 (s2 g))
+
+/-- **The cycle from `delta = false`**: it lands on `delta = true`, one cursor step
+further out, having added `eps` (not yet `2 * eps`) at the ORIGINAL `kstar`. -/
+theorem depositCycle_from_false (g : Elt) (hδ : g.delta = false) :
+    (depositCycle g).kstar = g.kstar + 1 ∧
+    (depositCycle g).eps = -g.eps ∧
+    (depositCycle g).delta = true ∧
+    (depositCycle g).d = Function.update g.d g.kstar (g.d g.kstar + g.eps) := by
+  unfold depositCycle
+  -- s2 g: kstar, d unchanged; eps flips; delta flips to true.
+  have e1 : (s2 g).kstar = g.kstar := rfl
+  have e2 : (s2 g).eps = -g.eps := rfl
+  have e3 : (s2 g).delta = true := by show (!g.delta) = true; rw [hδ]; simp
+  have e4 : (s2 g).d = g.d := rfl
+  -- s3 (s2 g): current delta = true, so the dif_pos branch fires.
+  have h1 : (s2 g).delta = true := e3
+  have f1 : (s3 (s2 g)).kstar = g.kstar + 1 := by rw [s3, dif_pos h1]; show (s2 g).kstar + 1 = g.kstar + 1; rw [e1]
+  have f2 : (s3 (s2 g)).eps = -g.eps := by rw [s3, dif_pos h1]; exact e2
+  have f3 : (s3 (s2 g)).delta = false := by rw [s3, dif_pos h1]
+  have f4 : (s3 (s2 g)).d = Function.update g.d g.kstar (g.d g.kstar + g.eps) := by
+    rw [s3, dif_pos h1]
+    show Function.update (s2 g).d (s2 g).kstar ((s2 g).d (s2 g).kstar - (s2 g).eps)
+      = Function.update g.d g.kstar (g.d g.kstar + g.eps)
+    rw [e1, e2, e4]
+    congr 1
+    ring
+  -- s1 of that: flips delta only.
+  refine ⟨f1, f2, ?_, f4⟩
+  show (!(s3 (s2 g)).delta) = true
+  simp [f3]
+
+/-- **The cycle from `delta = true`**: it lands back on `delta = false`, one cursor
+step back in, having added `-eps` at `kstar - 1` -- the position the outbound half of
+the round trip touches. -/
+theorem depositCycle_from_true (g : Elt) (hδ : g.delta = true) :
+    (depositCycle g).kstar = g.kstar - 1 ∧
+    (depositCycle g).eps = -g.eps ∧
+    (depositCycle g).delta = false ∧
+    (depositCycle g).d
+      = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) - g.eps) := by
+  unfold depositCycle
+  have e1 : (s2 g).kstar = g.kstar := rfl
+  have e2 : (s2 g).eps = -g.eps := rfl
+  have e3 : (s2 g).delta = false := by show (!g.delta) = false; rw [hδ]; simp
+  have e4 : (s2 g).d = g.d := rfl
+  have h1 : ¬ ((s2 g).delta = true) := by rw [e3]; simp
+  have f1 : (s3 (s2 g)).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]; show (s2 g).kstar - 1 = g.kstar - 1; rw [e1]
+  have f2 : (s3 (s2 g)).eps = -g.eps := by rw [s3, dif_neg h1]; exact e2
+  have f3 : (s3 (s2 g)).delta = true := by rw [s3, dif_neg h1]
+  have f4 : (s3 (s2 g)).d
+      = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) - g.eps) := by
+    rw [s3, dif_neg h1]
+    show Function.update (s2 g).d ((s2 g).kstar - 1) ((s2 g).d ((s2 g).kstar - 1) + (s2 g).eps)
+      = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) - g.eps)
+    rw [e1, e2, e4]
+    congr 1
+  refine ⟨f1, f2, ?_, f4⟩
+  show (!(s3 (s2 g)).delta) = false
+  simp [f3]
+
+/-- **Two turns of the cycle**: `kstar`, `eps` and `delta` are all restored, and the
+deposit at `kstar` has moved by `2 * eps`. This IS the accumulation step -- run it
+`k` times to add `2k * eps`, alternating with `cstep` (BLOCK 141) to relocate `kstar`,
+and the whole target profile is reachable by induction. -/
+theorem depositCycle_sq (g : Elt) (hδ : g.delta = false) :
+    (depositCycle (depositCycle g)).kstar = g.kstar ∧
+    (depositCycle (depositCycle g)).eps = g.eps ∧
+    (depositCycle (depositCycle g)).delta = false ∧
+    (depositCycle (depositCycle g)).d
+      = Function.update g.d g.kstar (g.d g.kstar + 2 * g.eps) := by
+  obtain ⟨h1, h2, h3, h4⟩ := depositCycle_from_false g hδ
+  obtain ⟨p1, p2, p3, p4⟩ := depositCycle_from_true (depositCycle g) h3
+  refine ⟨?_, ?_, p3, ?_⟩
+  · rw [p1, h1]; ring
+  · rw [p2, h2]; ring
+  · rw [p4, h1, h2, h4]
+    have hkk : g.kstar + 1 - 1 = g.kstar := by ring
+    rw [hkk, Function.update_self, Function.update_idem]
+    congr 1
+    ring
+
+theorem reachable_depositCycle {g : Elt} (h : Reachable g) : Reachable (depositCycle g) :=
+  reachable_s1 (reachable_s3 (reachable_s2 h))
+
+/-- **The accumulation step, on reachability.** From a reachable `g` with
+`delta = false`, moving the deposit at `g.kstar` by `2 * eps` (everything else fixed)
+is reachable, at a cost of 12 generator applications (two calls to `depositCycle`,
+6 generators each). -/
+theorem reachable_deposit_accumulate {g h : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (hk : h.kstar = g.kstar) (he : h.eps = g.eps) (hd : h.delta = g.delta)
+    (hdd : h.d = Function.update g.d g.kstar (g.d g.kstar + 2 * g.eps)) :
+    Reachable h := by
+  obtain ⟨n, hn⟩ := reachable_depositCycle (reachable_depositCycle hg)
+  obtain ⟨p1, p2, p3, p4⟩ := depositCycle_sq g hδ
+  exact ⟨n, Reaches.congr hn ⟨p1.trans hk.symm, p2.trans he.symm,
+    (p3.trans hδ.symm).trans hd.symm, p4.trans hdd.symm⟩⟩
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.depositCycle
+#print axioms EltBridge.Elt.depositCycle_from_false
+#print axioms EltBridge.Elt.depositCycle_from_true
+#print axioms EltBridge.Elt.depositCycle_sq
+#print axioms EltBridge.Elt.reachable_depositCycle
+#print axioms EltBridge.Elt.reachable_deposit_accumulate
+
+namespace EltBridge
+namespace Elt
+
 /-! ### Cursor placement
 
 `s3` alone cannot be iterated: it flips the side, so the next `s3` walks back.  But
