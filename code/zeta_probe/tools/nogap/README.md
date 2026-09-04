@@ -9823,3 +9823,25 @@ count for ANY span length and target degree. It is still NOT `IsAssembly`
 TRUNCATED NEUMANN SERIES (the transfer-matrix resolvent), not a plain cardinality --
 that per-fiber resolvent identification is what remains. (M3) stays 🟡, closer than
 before.
+
+## 2026-09-05 — BLOCK 302: cross-check, `C.card` splits into marker-fiber cardinalities
+
+`card_C_eq_sum_marker_fiber_card`: `C.card = sum over the 4 marker fibers of each
+fiber's cardinality`, via `Finset.sum_fiberwise` with the constant weight 1. A Rule 3
+cross-check, not new machinery: BLOCK 301's `coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs`
+gives per-fiber coefficient terms that are themselves fiber cardinalities (same collapse
+argument as `coeff_flagPathsFinset_eq_card_C`, restricted to a sub-`Finset`), and this
+theorem confirms they sum back to `C.card` as required for internal consistency. 0 sorry,
+clean build, standard axioms. Committed `25a25cf`.
+
+**Found while assessing the next step toward the real `IsAssembly`:** the actual
+generating function `W` the paper's `eq:assembly` refers to has NO Lean definition
+anywhere in this file -- `IsAssembly` is a Prop about an ARBITRARY `W`, `W0`, `T`, `lam`,
+`mu`, and nothing instantiates it for the real objects. Composing the per-fiber
+transfer/Neumann form (`lR_exp_is_transfer` + `neumann_partial`) into `IsAssembly` for
+the real `W` is therefore not "one more composition step" but requires first designing
+what `W` even is as a `PowerSeries ℤ` (a single object graded by degree, whereas the
+current `flagPathsFinset N A n` machinery is parametrised per-degree, per-span-length).
+That design question is real, unsolved work, not routine formalization glue -- logged
+here rather than attempted under time pressure, per Rule 2 (name the obstruction) rather
+than rushing a composition that risks another overstated claim.
