@@ -9754,3 +9754,30 @@ anywhere proves `IsAssembly` for the paper's real `W`/`T`/`lam`/`mu`. BLOCK 299 
 verified machinery toward the "sum over elements" gap BLOCK 117 left open, but did not
 close it. See `private/RESEARCH_LOG.md`, "(M3) reconciliation, 2026-09-05" for the full
 account. The atom-table status for (M3) is 🟡, not 🟢.
+
+## 2026-09-05 — BLOCK 300: the four marker data, indexed and partitioned
+
+Toward `IsAssembly` (EltBridge.lean:10128), following the reconciliation above: its
+left side sums over `Fin 4`, one term per `(eps*, delta*) ∈ {1,-1} x {false,true}`
+(BLOCK 106's "why the assembly sums over the four marker data"). This block makes
+that index concrete and proves the target span set `C` splits into its four fibers.
+
+    markerIdx                              SpanData A B -> Fin 4, encoding
+                                            (eps*, delta*)
+    markerIdx_eps, markerIdx_delta         the index recovers each component
+    sum_C_eq_sum_marker_fibers             C's weighted sum splits into 4 fibers,
+                                            via Mathlib's Finset.sum_fiberwise
+    coeff_C_eq_sum_marker_fiber_coeffs     the coefficient distributes over the split
+
+0 sorry, clean build on the first attempt (`Finset.sum_fiberwise` was already the
+right Mathlib lemma for this, found by grepping the local Mathlib source rather than
+guessing a name). `#print axioms` on all four shows only `propext`/`Quot.sound`
+(the two `markerIdx_*` facts) or those plus `Classical.choice` (the two `Finset.sum`
+facts) -- no `sorryAx`.
+
+**Scope, stated honestly:** this is the grouping `IsAssembly`'s left side needs, not
+`IsAssembly` itself. What is still missing: composing this fiber split with
+`lR_exp_is_transfer` (BLOCK 115) and `neumann_partial`/`resolvent_remainder`
+(BLOCK 116-117) inside each fiber, and identifying the real `W` with a
+`flagPathsFinset`-derived sum via `coeff_flagPathsFinset_eq_C_image_sum` (BLOCK 299).
+(M3) stays 🟡.
