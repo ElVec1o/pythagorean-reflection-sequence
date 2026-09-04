@@ -12418,10 +12418,76 @@ theorem reachable_single_correction_left {g : Elt} (hg : Reachable g) (hδ : g.d
       rw [hh2j] at e2
       linarith [e1, e2]
 
+/-- **The mirror: add `2k * eps` at any position `p > g.kstar`, disturbing nothing
+else.** Walk right first (flip delta to reach it), flip back to correct, walk left
+to return -- no final flip needed this time, since the return leg already ends on
+`delta = false`. -/
+theorem reachable_single_correction_right {g : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (p : ℤ) (hp : g.kstar < p) (k : ℕ) :
+    ∃ h : Elt, Reachable h ∧ h.kstar = g.kstar ∧ h.eps = g.eps ∧ h.delta = false ∧
+      h.d = Function.update g.d p (g.d p + 2 * (k : ℤ) * g.eps) := by
+  set n : ℕ := (p - g.kstar).toNat with hn
+  have hnp : g.kstar + (n : ℤ) = p := by rw [hn]; omega
+  have hs0δ : (s1 g).delta = true := by show (!g.delta) = true; rw [hδ]; rfl
+  have hs0e : (s1 g).eps = g.eps := rfl
+  have hs0k : (s1 g).kstar = g.kstar := rfl
+  -- outward leg: g1 := cstep^[n] (s1 g), lands on kstar = p, delta = true
+  set g1 := cstep^[n] (s1 g) with hg1def
+  have hg1k : g1.kstar = p := by
+    obtain ⟨hk1, -⟩ := cstep_iter_right (s1 g) hs0δ n
+    rw [hg1def, hk1, hs0k, hnp]
+  have hg1e : g1.eps = g.eps := by rw [cstep_iter_eps (s1 g) n, hs0e]
+  have hg1r : Reachable g1 := reachable_cstep_iter (reachable_s1 hg) n
+  -- flip delta to false to correct
+  have hs1g1k : (s1 g1).kstar = p := hg1k
+  have hs1g1e : (s1 g1).eps = g.eps := hg1e
+  have hs1g1δ : (s1 g1).delta = false := by
+    show (!g1.delta) = false
+    rw [(cstep_iter_right (s1 g) hs0δ n).2]; rfl
+  have hs1g1d : (s1 g1).d = g1.d := rfl
+  -- correction: h2 has kstar = p, everything else of g1 preserved except d at p
+  obtain ⟨h2, hh2, hk2, he2, hδ2, hdd2⟩ :=
+    reachable_deposit_accumulate_iter (reachable_s1 hg1r) hs1g1δ k
+  rw [hs1g1k] at hk2
+  rw [hs1g1e] at he2
+  -- return leg: g2 := cstep^[n] h2, lands on kstar = g.kstar, delta = false
+  set g2 := cstep^[n] h2 with hg2def
+  have hg2k : g2.kstar = g.kstar := by
+    obtain ⟨hk3, -⟩ := cstep_iter_left h2 hδ2 n
+    rw [hg2def, hk3, hk2]; omega
+  have hg2δ : g2.delta = false := (cstep_iter_left h2 hδ2 n).2
+  have hg2e : g2.eps = g.eps := by rw [cstep_iter_eps h2 n, he2]
+  have hg2r : Reachable g2 := reachable_cstep_iter hh2 n
+  refine ⟨g2, hg2r, hg2k, hg2e, hg2δ, ?_⟩
+  -- the excess law across both legs
+  have hs0d : (s1 g).d = g.d := rfl
+  have hexc1 := cstep_iter_preserves_excess (s1 g) n
+  have hexc2 := cstep_iter_preserves_excess h2 n
+  funext j
+  rw [← hg1def] at hexc1
+  rw [← hg2def] at hexc2
+  have e1 := hexc1 j
+  have e2 := hexc2 j
+  rw [hs0k, hs0e, hs0d, hg1k, hg1e] at e1
+  rw [hk2, he2, hg2k, hg2e] at e2
+  by_cases hj : j = p
+  · subst hj
+    rw [Function.update_self]
+    have hh2j : h2.d j = g1.d j + 2 * (k : ℤ) * g.eps := by
+      rw [hdd2, hs1g1k, hs1g1d, Function.update_self, hs1g1e]
+    rw [hh2j] at e2
+    linarith [e1, e2]
+  · rw [Function.update_of_ne hj]
+    have hh2j : h2.d j = g1.d j := by
+      rw [hdd2, hs1g1k, hs1g1d, Function.update_of_ne hj]
+    rw [hh2j] at e2
+    linarith [e1, e2]
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.reachable_single_correction_left
+#print axioms EltBridge.Elt.reachable_single_correction_right
 #print axioms EltBridge.Elt.reachable_kstar_nonneg
 #print axioms EltBridge.Elt.reachable_kstar
 
