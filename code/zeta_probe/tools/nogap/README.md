@@ -9960,3 +9960,32 @@ Committed `fa215ef`.
 final `travel(kstar,j)` value accounts for). It is not the induction itself:
 assembling an arbitrary target profile into an explicit walk-plus-corrections
 construction, and proving THAT reaches the target, remains open. H1a stays 🟠.
+
+## 2026-09-05 — BLOCK 306: the excess law generalized (H1a)
+
+Generalized BLOCK 305's invariant to its natural unconditional form:
+
+    cstep_preserves_excess          cstep preserves d j + eps*travel(kstar,j) at
+                                     EVERY position, always -- not only where it's
+                                     zero. At the crossed edge d moves by +-eps and
+                                     travel moves by -+1, cancelling regardless of
+                                     the starting excess value.
+    cstep_preserves_neg_eps_travel  now a one-line corollary (the zero-excess case)
+
+0 sorry, clean build. #print axioms shows only propext, Classical.choice, Quot.sound.
+Committed `7e4bbf4`.
+
+This is the exact tool needed to justify the assembly induction's core move: reach a
+target kstar, detour to a correction position, apply `reachable_deposit_accumulate`
+(BLOCK 304), return -- and by this theorem the detour provably disturbs nothing except
+the corrected position, regardless of how the detour is routed.
+
+**Stopped here deliberately, not stalled.** Traced the single-position-correction
+construction through by hand and it works (move to target kstar, detour to the
+correction position via `cstep_iter_left`/`cstep_iter_right` -- both already general,
+not `one`-specific -- apply `reachable_deposit_accumulate`, return via the excess law).
+Did not compose it in Lean this session: it needs careful `Int.toNat` direction
+handling, delta/eps bookkeeping across two legs, then generalizing single-position to
+an arbitrary finite support -- real multi-lemma work with genuine risk of a subtle
+sign/off-by-one bug if rushed, and this session already corrected two overstated
+claims once each. H1a stays 🟠; the recipe for the next block is now fully concrete.
