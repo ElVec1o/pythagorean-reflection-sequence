@@ -9682,3 +9682,65 @@ the same diagnosis once.
 
 **Every field `FlagPath` needs is now sourced from a bounded `hstep` alone.**  Nothing
 further is missing; the composition can be written.
+
+## 2026-09-05 — BLOCK 299: (M3) closed -- the box coefficient sees only the good spans
+
+`coeff_vanish_on_complement`, the final composition theorem for (M3): any list in the
+`flagPathsFinset` box that is *not* the image of some span in a target set `C` (the spans
+whose configuration has degree exactly `N`) contributes 0 to the degree-`N` coefficient.
+Composed with `coeff_sum_subset` (BLOCK 281) and `mem_flagPathsFinset_of_config`
+(BLOCK 288):
+
+    coeff_vanish_on_complement           the vanishing fact itself -- assembles a FlagPath
+                                          instance from the bounded guard and box facts,
+                                          feeds exists_config_of_path, and shows the
+                                          resulting configuration's span is in C
+    image_C_subset_flagPathsFinset       every span in C lands in the box (trivial
+                                          direction, via mem_flagPathsFinset_of_config)
+    coeff_flagPathsFinset_eq_C_image_sum (M3) itself: the degree-N coefficient of the
+                                          weighted sum over the WHOLE box equals the
+                                          coefficient of the weighted sum over exactly
+                                          the paths coming from C
+
+0 sorry.  Two of the theorems this block depends on had to be widened before the
+composition would even type-check, both instances of the same unconditional-vs-bounded
+mismatch already seen in BLOCKS 293/294/297/298:
+
+- `exists_unique_kstar_of_flowA` (BLOCK 294) had been built with an UNCONDITIONAL `hstep`
+  (`forall j : Z, ...`, no bound), which cannot be produced from a bare non-zero
+  coefficient. Rewired to the same bounded `hstep : forall j, A <= j -> j < A+n -> ...`
+  every other BLOCK-29x theorem uses, which forced re-deriving its internal flow/telescope
+  step from scratch (`telescope_seedA_bounded`, a bounded sibling of BLOCK 293's
+  `telescope_seedA`, added alongside it) rather than reusing the unconditional
+  `flow_of_flagStepB` + `telescope_seedA` pair. This is a retraction of BLOCK 294's
+  stated scope, not of its content: the theorem's conclusion is unchanged, only its
+  hypothesis is weakened to what a real caller can actually supply.
+- The same theorem's returned `hB1` (`fcur.natAbs = 1 <-> kstar = B+1`) turned out to be
+  too weak for the caller (`exists_config_of_path` needs the trichotomy
+  `fcur = 0 \/ fcur = 1 \/ fcur = -1`, and `natAbs = 1` alone does not rule out `fcur`
+  taking some other value when `kstar != B+1`). Both branches of the theorem's own proof
+  already establish `fcur = 0` or `fcur = 1` directly (never `-1`) via
+  `flow_balance_dichotomy`; added that fact as a third conjunct
+  (`hfB01 : fcur = 0 \/ fcur = 1`) instead of trying to recover it from `hB1` alone.
+
+Other failures along the way, all local tactic mistakes rather than mathematical gaps:
+a `have ... where` structure-instance block does not parse in tactic mode (needed
+`have ... := { ... }` instead); `eps_delta_const_bounded`'s two components come back in
+the opposite orientation from what was assumed (`(g (A+n)).eps = (g A).eps`, not the
+reverse -- needed `.symm` on both); `harrv`/`hdepv` needed pointwise-restriction wrappers
+(`fun j _ _ => harrv j`) to match `exists_config_of_path`'s bounded argument shape;
+`pathWeightR_flag_guarded`'s hypothesis wants `P.B = P.A + n`, not `A + n = P.B`, and the
+downstream `rw` chain had two direction mistakes (`rw [hPweight]` not `rw [<- hPweight]`,
+and a final `.symm` on the whole list-equality composite). The one real construction
+problem: casting `ofPath P : SpanData P.A P.B` to `SpanData A (A+n)` via
+`hPA ▸ hPB ▸ ofPath P` does not elaborate (motive inference fails on the nested
+structure). Built the target `SpanData A (A+n)` directly instead, field by field, casting
+only the individual Prop-valued fields (each a trivial single-`rw`); needed `let` rather
+than `have` for the resulting term so `SpanData.toPath_d` could still see through to the
+underlying `dspan := P.d` field by defeq.
+
+**(M3) is now fully assembled and certified**, `#print axioms` on all four new theorems
+(`telescope_seedA_bounded`, `exists_unique_kstar_of_flowA`, `coeff_vanish_on_complement`,
+`coeff_flagPathsFinset_eq_C_image_sum`) shows only `[propext, Classical.choice,
+Quot.sound]` -- no `sorryAx`. This closes the atom-table entry for the transfer-model
+decomposition theorem.

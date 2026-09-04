@@ -9510,6 +9510,7 @@ theorem past_eq_decide_bounded (g : ℤ → FlagState) (A : ℤ) (hA : A ≤ 0) 
           simp
 
 
+
 /-! ### The deposit magnitude is a sufficient state
 
 `site_cost_couples` gives the interior site cost as `max |d(s-1)| |d(s)|` -- a function
@@ -17304,20 +17305,44 @@ theorem telescope_seedA (f a d : ℤ → ℤ) (A : ℤ) (hseed : a A = f A + d A
 Composing `telescope_seedA` with the marker-sum lemmas (BLOCKS 240, 265) locates the
 departure without any pre-span vanishing point. -/
 
+theorem telescope_seedA_bounded (f a d : ℤ → ℤ) (A : ℤ) (hseed : a A = f A + d A) :
+    ∀ n : ℕ, (∀ k : ℕ, k < n → f (A + k) + a (A + k + 1) = f (A + k + 1) + d (A + k + 1)) →
+      ∑ k ∈ Finset.range (n + 1), a (A + k)
+        = f (A + n) + ∑ k ∈ Finset.range (n + 1), d (A + k) := by
+  intro n
+  induction n with
+  | zero => intro _; simpa using hseed
+  | succ m ih =>
+      intro hstep
+      rw [Finset.sum_range_succ (fun k : ℕ => a (A + (k : ℤ))) (m + 1),
+        Finset.sum_range_succ (fun k : ℕ => d (A + (k : ℤ))) (m + 1)]
+      have hprev := ih (fun k hk => hstep k (by omega))
+      have h2 := hstep m (by omega)
+      have e1 : A + (((m : ℕ) + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 := by push_cast; ring
+      rw [e1]
+      omega
+
 theorem exists_unique_kstar_of_flowA (g : ℤ → FlagState) (A : ℤ) (n : ℕ)
     (hA : A ≤ 0) (hB : 0 ≤ A + (n : ℤ))
-    (hstep : ∀ j : ℤ, flagStepB (g j) (g (j + 1)) = true)
+    (hstep : ∀ j : ℤ, A ≤ j → j < A + n → flagStepB (g j) (g (j + 1)) = true)
     (hflowA : (((g A).st.arr : ℕ) : ℤ) = (g A).st.fcur + (((g A).st.dep : ℕ) : ℤ))
     (harrv : ∀ j : ℤ, (g j).st.arr = SiteCost.vArr j)
     (hdepv : ∀ j : ℤ, (g j).st.dep = 0 ∨ (g j).st.dep = 1)
     (hfcurBnn : 0 ≤ (g (A + n)).st.fcur) :
     ∃ kstar : ℤ, A ≤ kstar ∧ kstar ≤ A + n + 1
       ∧ (∀ j : ℤ, A ≤ j → j ≤ A + n → ((g j).st.dep = 1 ↔ j = kstar))
-      ∧ ((g (A + n)).st.fcur.natAbs = 1 ↔ kstar = A + n + 1) := by
-  have hflow : ∀ j : ℤ, (g j).st.fcur + (((g (j + 1)).st.arr : ℕ) : ℤ)
-      = (g (j + 1)).st.fcur + (((g (j + 1)).st.dep : ℕ) : ℤ) := flow_of_flagStepB g hstep
-  have htel := telescope_seedA (fun j => (g j).st.fcur) (fun j => ((( g j).st.arr : ℕ) : ℤ))
-    (fun j => (((g j).st.dep : ℕ) : ℤ)) A hflowA hflow n
+      ∧ ((g (A + n)).st.fcur.natAbs = 1 ↔ kstar = A + n + 1)
+      ∧ ((g (A + n)).st.fcur = 0 ∨ (g (A + n)).st.fcur = 1) := by
+  have hflow : ∀ k : ℕ, k < n → (g (A + k)).st.fcur + (((g (A + k + 1)).st.arr : ℕ) : ℤ)
+      = (g (A + k + 1)).st.fcur + (((g (A + k + 1)).st.dep : ℕ) : ℤ) := by
+    intro k hk
+    have hs := hstep (A + k) (by omega) (by push_cast; omega)
+    simp only [flagStepB, fullStepB, stepB, Bool.and_eq_true] at hs
+    have hf := hs.1.1.1.1.2
+    simp only [flowB, decide_eq_true_eq] at hf
+    exact hf
+  have htel := telescope_seedA_bounded (fun j => (g j).st.fcur)
+    (fun j => (((g j).st.arr : ℕ) : ℤ)) (fun j => (((g j).st.dep : ℕ) : ℤ)) A hflowA n hflow
   have harrsum : ∑ k ∈ Finset.range (n + 1), (((g (A + k)).st.arr : ℕ) : ℤ) = 1 := by
     have h1 := sum_vArr_range_eq_one A n hA hB
     simp_rw [harrv]
@@ -17328,7 +17353,7 @@ theorem exists_unique_kstar_of_flowA (g : ℤ → FlagState) (A : ℤ) (n : ℕ)
   rcases flow_balance_dichotomy (g (A + (n:ℤ))).st.fcur
       (∑ k ∈ Finset.range (n + 1), (((g (A + (k:ℤ))).st.dep : ℕ) : ℤ))
       hfcurBnn hSnn htel with ⟨hf1, hS0⟩ | ⟨hf0, hS1⟩
-  · refine ⟨A + n + 1, by omega, le_rfl, ?_, ?_⟩
+  · refine ⟨A + n + 1, by omega, le_rfl, ?_, ?_, Or.inr hf1⟩
     · have hSn : (∑ k ∈ Finset.range (n + 1), (g (A + (k:ℤ))).st.dep : ℕ) = 0 := by
         exact_mod_cast hS0
       have hz : ∀ k ∈ Finset.range (n + 1), (g (A + (k:ℤ))).st.dep = 0 :=
@@ -17351,7 +17376,8 @@ theorem exists_unique_kstar_of_flowA (g : ℤ → FlagState) (A : ℤ) (n : ℕ)
       exact_mod_cast hS1
     obtain ⟨k0, hk0mem, hk0⟩ := exists_of_sum_one (fun k => (g (A + (k:ℤ))).st.dep) (n + 1)
       (fun k => hdepv (A + k)) hSn
-    refine ⟨A + (k0 : ℤ), by omega, by simp only [Finset.mem_range] at hk0mem; omega, ?_, ?_⟩
+    refine ⟨A + (k0 : ℤ), by omega, by simp only [Finset.mem_range] at hk0mem; omega, ?_, ?_,
+      Or.inl hf0⟩
     · intro j hj1 hj2
       constructor
       · intro hdep1
@@ -17371,6 +17397,151 @@ theorem exists_unique_kstar_of_flowA (g : ℤ → FlagState) (A : ℤ) (n : ℕ)
 
 end EltBridge
 
+namespace EltBridge
+
+/-! ### The complement's coefficient vanishes: the full assembly -/
+
+theorem coeff_vanish_on_complement (N : ℕ) (A : ℤ) (n : ℕ) (hA : A ≤ 0) (hAn : 0 ≤ A + (n : ℤ))
+    (C : Finset (SpanData A (A + n))) (hC : ∀ S : SpanData A (A + n), S ∈ C ↔ S.toPath.lR = N)
+    (L : List FlagState) (hL : L ∈ flagPathsFinset N A n)
+    (hnotim : L ∉ C.image (fun S => (A :: idxList A n).map (flagOf S.toPath))) :
+    PowerSeries.coeff N
+        (pathWeightR (fun σ τ => if flagStepB σ τ then
+            (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+          (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L) = 0 := by
+  obtain ⟨g, rfl, harrv, hdepv⟩ := exists_stateFn_of_mem_flagPathsFinset N A n L hL
+  by_contra hne
+  set X := (PowerSeries.X : PowerSeries ℤ) with hX
+  have hstep : ∀ k : ℤ, A ≤ k → k < A + n → flagStepB (g k) (g (k + 1)) = true :=
+    guards_of_coeff_ne_zero N g n A (flagHeadVecR X) (flagTailVecR X) hne
+  have hwne : pathWeightR (fun σ τ => if flagStepB σ τ then X ^ (σ.st.muOf + τ.st.siteOf) else 0)
+      (flagHeadVecR X) (flagTailVecR X) ((A :: idxList A n).map g) ≠ 0 :=
+    ne_zero_of_coeff_ne_zero N _ hne
+  have hheadne : flagHeadVecR X (g A) ≠ 0 :=
+    headOkR_of_weight_ne_zero X g n A (flagTailVecR X) hwne
+  have htailne0 : flagTailVecR X (lastOf (g A) ((idxList A n).map g)) ≠ 0 :=
+    tailOkR_of_weight_ne_zero X g n A (flagHeadVecR X) (flagTailVecR X) hwne
+  have hlastEqB : lastOf (g A) ((idxList A n).map g) = g (A + n) := by
+    rw [lastOf_map, lastOf_idxList]
+  rw [hlastEqB] at htailne0
+  have hcondHead := headCond_of_headVec_ne_zero X (g A) hheadne
+  have hcondTail := tailCond_of_tailVec_ne_zero X (g (A + n)) htailne0
+  simp only [Bool.and_eq_true, beq_iff_eq] at hcondHead
+  obtain ⟨hheadOk2, hpastA⟩ := hcondHead
+  simp only [headOk2B, Bool.and_eq_true, decide_eq_true_eq] at hheadOk2
+  obtain ⟨hheadOkB, hflowA⟩ := hheadOk2
+  simp only [headOkB, Bool.and_eq_true, decide_eq_true_eq] at hheadOkB
+  obtain ⟨⟨⟨hvalidA, hepsvA⟩, hendA⟩, hdprevA⟩ := hheadOkB
+  simp only [Bool.and_eq_true] at hcondTail
+  obtain ⟨htailOk2, hpastB⟩ := hcondTail
+  simp only [tailOk2B, Bool.and_eq_true, decide_eq_true_eq] at htailOk2
+  obtain ⟨⟨⟨hvalidB, hepsvB0⟩, hendB⟩, hfcurBnn⟩ := htailOk2
+  obtain ⟨kstar, hk1, hk2, hdep, hB1, hfB01⟩ :=
+    exists_unique_kstar_of_flowA g A n hA hAn hstep hflowA harrv hdepv hfcurBnn
+  have hedconst := eps_delta_const_bounded g A n hstep n le_rfl
+  have hepsAB : (g A).st.eps = (g (A + n)).st.eps := hedconst.1.symm
+  have hdelAB : (g A).st.delta = (g (A + n)).st.delta := hedconst.2.symm
+  have hpath : FlagPath A (A + n) g := {
+    loA := hA
+    hiB := hAn
+    step := hstep
+    flag := fun j hj1 hj2 => by
+      have h := past_eq_decide_bounded g A hA n hstep harrv hpastA (j - A).toNat (by omega)
+      rwa [show A + (((j - A).toNat : ℕ) : ℤ) = j by omega] at h
+    arrv := harrv A
+    dprevA := hdprevA
+    flowA := hflowA
+    validA := hvalidA
+    epsvA := hepsvA
+    fcurB := hfcurBnn
+    epsvB := hepsvB0
+    epsAB := hepsAB
+    delAB := hdelAB
+    epsv1 := by simpa [epsValidB] using hepsvA }
+  obtain ⟨P, hPA, hPB, hPk, hPst⟩ := exists_config_of_path (kstar := kstar) g hpath
+    hendA hendB hvalidB (fun j _ _ => harrv j) hk1 hk2 hdep (fun j _ _ => hdepv j)
+    (by rcases hfB01 with h | h
+        · exact Or.inl h
+        · exact Or.inr (Or.inl h))
+    hB1
+  have hflagEq : ∀ j : ℤ, flagOf P j = extendFlag g A (A + n) j := by
+    intro j
+    show (⟨stateOf P j, decide (0 ≤ j)⟩ : FlagState) = extendFlag g A (A + n) j
+    show (⟨stateOf P j, decide (0 ≤ j)⟩ : FlagState)
+      = ⟨extendFn (fun i => (g i).st) A (A + n) j, decide (0 ≤ j)⟩
+    have h := congrFun hPst j
+    rw [h]
+    rfl
+  have hlistEq : (P.A :: idxList P.A n).map (flagOf P) = (A :: idxList A n).map g := by
+    rw [hPA, ← ofFn_idxFn A n, List.map_ofFn, List.map_ofFn]
+    refine congrArg List.ofFn (funext fun i => ?_)
+    show flagOf P (idxFn A n i) = g (idxFn A n i)
+    rw [hflagEq (idxFn A n i)]
+    have hj1 : A ≤ idxFn A n i := by show A ≤ A + (i : ℕ); omega
+    have hj2 : idxFn A n i ≤ A + n := by show A + (i : ℕ) ≤ A + n; omega
+    exact extendFlag_at_span g A (A + n) hj1 hj2 (hpath.flag (idxFn A n i) hj1 hj2)
+  have hPweight := pathWeightR_flag_guarded X P n (by rw [hPA, hPB])
+  rw [hlistEq] at hPweight
+  rw [hPweight] at hne
+  have hPlr : P.lR = N := by
+    by_contra hcon
+    exact hne (coeff_pow_lR_ne N P.lR (Ne.symm hcon))
+  apply hnotim
+  let hS : SpanData A (A + n) := {
+    kstar := P.kstar
+    eps := P.eps
+    delta := P.delta
+    dspan := P.d
+    heps := P.heps
+    hA := hPA ▸ P.hA
+    hB := hPB ▸ P.hB
+    hk1 := hPA ▸ A_le_kstar P
+    hk2 := hPB ▸ kstar_le_B_succ P
+    hzero := fun j hj => (P.houter j (by rw [hPA, hPB]; exact hj)).1
+    hpar := fun j _ _ => P.hpar j
+    hAmin := hPA ▸ P.hAmin
+    hBmin := hPB ▸ P.hBmin }
+  have hStoPath : hS.toPath = P :=
+    pathData_ext rfl rfl rfl (funext fun j => hS.toPath_d j) hPA.symm hPB.symm
+  refine Finset.mem_image.mpr ⟨hS, (hC hS).mpr (by rw [hStoPath]; exact hPlr), ?_⟩
+  rw [hStoPath]
+  exact (hlistEq.symm.trans (by rw [hPA])).symm
+
+/-! ### (M3) assembled: the good-span image is exactly what the coefficient sees -/
+
+/-- **Every candidate span's path lands in the box.** -/
+theorem image_C_subset_flagPathsFinset (N : ℕ) (A : ℤ) (n : ℕ)
+    (C : Finset (SpanData A (A + n))) (hC : ∀ S : SpanData A (A + n), S ∈ C ↔ S.toPath.lR = N) :
+    C.image (fun S => (A :: idxList A n).map (flagOf S.toPath)) ⊆ flagPathsFinset N A n := by
+  intro L hL
+  obtain ⟨S, hS, rfl⟩ := Finset.mem_image.mp hL
+  exact mem_flagPathsFinset_of_config N S.toPath n rfl ((hC S).mp hS).le
+
+/-- **(M3): the degree-`N` coefficient only sees the spans of the right length.**  Every
+list in the box outside the image of `C` contributes nothing (`coeff_vanish_on_complement`),
+so the coefficient of the full box sum equals the coefficient of the sum over exactly the
+paths coming from `C`. -/
+theorem coeff_flagPathsFinset_eq_C_image_sum (N : ℕ) (A : ℤ) (n : ℕ)
+    (hA : A ≤ 0) (hAn : 0 ≤ A + (n : ℤ))
+    (C : Finset (SpanData A (A + n))) (hC : ∀ S : SpanData A (A + n), S ∈ C ↔ S.toPath.lR = N) :
+    PowerSeries.coeff N
+        (∑ L ∈ C.image (fun S => (A :: idxList A n).map (flagOf S.toPath)),
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L)
+      = PowerSeries.coeff N
+        (∑ L ∈ flagPathsFinset N A n,
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L) :=
+  coeff_sum_subset N _ _ (image_C_subset_flagPathsFinset N A n C hC) _
+    (fun L hL hnotim => coeff_vanish_on_complement N A n hA hAn C hC L hL hnotim)
+
+end EltBridge
+
 #print axioms EltBridge.sum_vArr_range_eq_one
 #print axioms EltBridge.telescope_seedA
 #print axioms EltBridge.exists_unique_kstar_of_flowA
+#print axioms EltBridge.coeff_vanish_on_complement
+#print axioms EltBridge.image_C_subset_flagPathsFinset
+#print axioms EltBridge.coeff_flagPathsFinset_eq_C_image_sum
