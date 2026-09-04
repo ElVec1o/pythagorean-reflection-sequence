@@ -9742,5 +9742,15 @@ underlying `dspan := P.d` field by defeq.
 **(M3) is now fully assembled and certified**, `#print axioms` on all four new theorems
 (`telescope_seedA_bounded`, `exists_unique_kstar_of_flowA`, `coeff_vanish_on_complement`,
 `coeff_flagPathsFinset_eq_C_image_sum`) shows only `[propext, Classical.choice,
-Quot.sound]` -- no `sorryAx`. This closes the atom-table entry for the transfer-model
-decomposition theorem.
+Quot.sound]` -- no `sorryAx`.
+
+**CORRECTION, 2026-09-05, same day:** the closing line above ("this closes the atom-table
+entry for the transfer-model decomposition theorem") is an overstatement, caught by
+re-reading `private/RESEARCH_LOG.md`'s BLOCKS 102-117 entry before trusting this file's own
+framing (MATH_RULES_V6 Rule 13: re-certify per atom, never from memory or a prior commit
+message). BLOCK 299 is a continuation of that earlier thread in the same file, not an
+independent closure: the honest target is `IsAssembly` (EltBridge.lean:10128), and no theorem
+anywhere proves `IsAssembly` for the paper's real `W`/`T`/`lam`/`mu`. BLOCK 299 built real,
+verified machinery toward the "sum over elements" gap BLOCK 117 left open, but did not
+close it. See `private/RESEARCH_LOG.md`, "(M3) reconciliation, 2026-09-05" for the full
+account. The atom-table status for (M3) is 🟡, not 🟢.
