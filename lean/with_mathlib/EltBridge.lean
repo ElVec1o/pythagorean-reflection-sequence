@@ -12631,6 +12631,31 @@ theorem feps_spec (g : Elt) :
 theorem reachable_feps {g : Elt} (h : Reachable g) : Reachable (feps g) :=
   reachable_s1 (reachable_s2 h)
 
+/-- **The single-position correction, for an arbitrary INTEGER multiple of `2 * eps`**,
+positive or negative. Negative corrections flip `eps` first (`feps`), apply the
+positive-`k` case (BLOCK 308) with the flipped sign, then flip back -- `feps`
+preserves `kstar`, `delta` and `d`, touching only `eps`, so nothing else needs
+re-deriving. -/
+theorem reachable_single_correction_int {g : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (p : ℤ) (k : ℤ) :
+    ∃ h : Elt, Reachable h ∧ h.kstar = g.kstar ∧ h.eps = g.eps ∧ h.delta = false ∧
+      h.d = Function.update g.d p (g.d p + 2 * k * g.eps) := by
+  by_cases hk : 0 ≤ k
+  · obtain ⟨h, hh, hk1, he1, hδ1, hd1⟩ := reachable_single_correction hg hδ p k.toNat
+    refine ⟨h, hh, hk1, he1, hδ1, ?_⟩
+    rw [hd1, Int.toNat_of_nonneg hk]
+  · obtain ⟨p1, p2, p3, p4⟩ := feps_spec g
+    obtain ⟨h1, hh1, hk1, he1, hδ1, hd1⟩ :=
+      reachable_single_correction (reachable_feps hg) (p3.trans hδ) p (-k).toNat
+    obtain ⟨q1, q2, q3, q4⟩ := feps_spec h1
+    refine ⟨feps h1, reachable_feps hh1, ?_, ?_, ?_, ?_⟩
+    · rw [q1, hk1, p1]
+    · rw [q2, he1, p2]; ring
+    · rw [q3, hδ1]
+    · rw [q4, hd1, p4, p2, Int.toNat_of_nonneg (by omega : (0 : ℤ) ≤ -k)]
+      congr 2
+      ring
+
 /-- **The excursion word, as a specification.**  To change the deposit at an arbitrary
 edge while returning the cursor, the word is
 
@@ -12651,6 +12676,7 @@ end EltBridge
 
 #print axioms EltBridge.Elt.feps_spec
 #print axioms EltBridge.Elt.reachable_feps
+#print axioms EltBridge.Elt.reachable_single_correction_int
 
 namespace EltBridge
 
