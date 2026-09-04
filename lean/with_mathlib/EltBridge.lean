@@ -12671,12 +12671,38 @@ def IsExcursion (w : Elt → Elt) (j : ℤ) : Prop :=
   ∀ g : Elt, (w g).kstar = g.kstar ∧ (w g).delta = g.delta ∧
     (w g).d = Function.update g.d j (g.d j + 2 * g.eps)
 
+/-- **The full H1a reachability induction: arbitrary integer corrections at an
+arbitrary finite set of positions.** The same `Finset.induction` as
+`reachable_multi_correction`, with `reachable_single_correction_int` in place of the
+nonnegative-only step -- the generalization is exactly as trivial as it looks, since
+the single-position theorem already carries the sign handling. -/
+theorem reachable_multi_correction_int {g : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (S : Finset ℤ) (c : ℤ → ℤ) :
+    ∃ h : Elt, Reachable h ∧ h.kstar = g.kstar ∧ h.eps = g.eps ∧ h.delta = false ∧
+      ∀ j : ℤ, h.d j = if j ∈ S then g.d j + 2 * c j * g.eps else g.d j := by
+  classical
+  induction S using Finset.induction with
+  | empty => exact ⟨g, hg, rfl, rfl, hδ, fun j => by simp⟩
+  | insert p S' hpS ih =>
+      obtain ⟨h', hh', hk', he', hδ', hd'⟩ := ih
+      obtain ⟨h, hh, hk, he, hδf, hdd⟩ := reachable_single_correction_int hh' hδ' p (c p)
+      refine ⟨h, hh, hk.trans hk', he.trans he', hδf, fun j => ?_⟩
+      by_cases hj : j = p
+      · subst hj
+        rw [hdd, Function.update_self, hd' j, he', if_neg hpS]
+        simp
+      · rw [hdd, Function.update_of_ne hj, hd' j]
+        by_cases hjS : j ∈ S'
+        · simp [Finset.mem_insert, hjS]
+        · simp [Finset.mem_insert, hjS, hj]
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.feps_spec
 #print axioms EltBridge.Elt.reachable_feps
 #print axioms EltBridge.Elt.reachable_single_correction_int
+#print axioms EltBridge.Elt.reachable_multi_correction_int
 
 namespace EltBridge
 
