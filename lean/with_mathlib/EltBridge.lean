@@ -11908,11 +11908,69 @@ theorem reachable_deposit_step {g h : Elt} (hg : Reachable g) (hδ : g.delta = f
   exact ⟨n, Reaches.congr hn ⟨r1.trans hk.symm, r2.trans he.symm,
     r3.trans hd.symm, r4.trans hdd.symm⟩⟩
 
+/-- **The mirror round trip, for `delta = true`.**  The same word `s3, s2, s1, s3`,
+run from the other side: `s3` now takes the `dif_pos` branch first (touching
+`g.kstar`, not `g.kstar - 1`), and the touched position stays `g.kstar` throughout
+(the excursion this time is to `g.kstar + 1` and back), so the deposit that moves is
+at `g.kstar` and it moves by `-2 * eps` rather than `+2 * eps`. -/
+theorem roundTrip_right (g : Elt) (hδ : g.delta = true) :
+    (s3 (s1 (s2 (s3 g)))).kstar = g.kstar ∧
+    (s3 (s1 (s2 (s3 g)))).eps = -g.eps ∧
+    (s3 (s1 (s2 (s3 g)))).delta = g.delta ∧
+    (s3 (s1 (s2 (s3 g)))).d
+      = Function.update g.d g.kstar (g.d g.kstar - 2 * g.eps) := by
+  -- the first step
+  have e1 : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+  have e2 : (s3 g).eps = g.eps := by rw [s3, dif_pos hδ]
+  have e3 : (s3 g).delta = false := by rw [s3, dif_pos hδ]
+  have e4 : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hδ]
+  -- the two side moves: both are definitional on every field
+  have f1 : (s1 (s2 (s3 g))).kstar = g.kstar + 1 := e1
+  have f2 : (s1 (s2 (s3 g))).eps = -g.eps := by
+    show -(s3 g).eps = -g.eps
+    rw [e2]
+  have f3 : (s1 (s2 (s3 g))).delta = false := by
+    show (!(!(s3 g).delta)) = false
+    rw [e3]
+    simp
+  have f4 : (s1 (s2 (s3 g))).d
+      = Function.update g.d g.kstar (g.d g.kstar - g.eps) := e4
+  -- the return step
+  have h1 : ¬ ((s1 (s2 (s3 g))).delta = true) := by rw [f3]; simp
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rw [s3, dif_neg h1]; show (s1 (s2 (s3 g))).kstar - 1 = g.kstar; rw [f1]; ring
+  · rw [s3, dif_neg h1]; show (s1 (s2 (s3 g))).eps = -g.eps; exact f2
+  · rw [s3, dif_neg h1]; show true = g.delta; exact hδ.symm
+  · rw [s3, dif_neg h1]
+    show Function.update (s1 (s2 (s3 g))).d ((s1 (s2 (s3 g))).kstar - 1)
+      ((s1 (s2 (s3 g))).d ((s1 (s2 (s3 g))).kstar - 1) + (s1 (s2 (s3 g))).eps)
+      = Function.update g.d g.kstar (g.d g.kstar - 2 * g.eps)
+    rw [f1, f2, f4]
+    have hkk : g.kstar + 1 - 1 = g.kstar := by ring
+    rw [hkk, Function.update_self, Function.update_idem]
+    congr 1
+    ring
+
+/-- **The deposit engine, `delta = true` side.**  The mirror of
+`reachable_deposit_step`: from a reachable `g` with `delta = true`, moving the deposit
+at `g.kstar` by `-2 * eps` (and flipping the sign) is reachable. -/
+theorem reachable_deposit_step_right {g h : Elt} (hg : Reachable g) (hδ : g.delta = true)
+    (hk : h.kstar = g.kstar) (he : h.eps = -g.eps) (hd : h.delta = g.delta)
+    (hdd : h.d = Function.update g.d g.kstar (g.d g.kstar - 2 * g.eps)) :
+    Reachable h := by
+  obtain ⟨n, hn⟩ := reachable_roundTrip hg
+  obtain ⟨r1, r2, r3, r4⟩ := roundTrip_right g hδ
+  exact ⟨n, Reaches.congr hn ⟨r1.trans hk.symm, r2.trans he.symm,
+    r3.trans hd.symm, r4.trans hdd.symm⟩⟩
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.reachable_roundTrip
 #print axioms EltBridge.Elt.reachable_deposit_step
+#print axioms EltBridge.Elt.roundTrip_right
+#print axioms EltBridge.Elt.reachable_deposit_step_right
 
 namespace EltBridge
 namespace Elt
