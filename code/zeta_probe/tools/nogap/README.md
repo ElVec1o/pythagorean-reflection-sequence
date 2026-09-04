@@ -9845,3 +9845,38 @@ current `flagPathsFinset N A n` machinery is parametrised per-degree, per-span-l
 That design question is real, unsolved work, not routine formalization glue -- logged
 here rather than attempted under time pressure, per Rule 2 (name the obstruction) rather
 than rushing a composition that risks another overstated claim.
+
+## 2026-09-05 — BLOCK 303: the deposit engine's missing right-side mirror (H1a)
+
+Switched targets, per the crux entry above and the user's push to keep moving: H1a's
+generating-set section (`private/RESEARCH_LOG.md` line ~383) names the gap as "cursor
+placement and the deposit engine exist, their composition does not." Investigating that
+directly (rather than the blocked `IsAssembly`/`W` design question) found a real,
+previously unnoticed asymmetry: `roundTrip_left` / `reachable_deposit_step` (the earlier
+"deposit engine") only handle `delta = false` -- walking left. There was no `delta = true`
+counterpart, so the engine could not build up an arbitrary target deposit profile while
+walking right; half the composition genuinely did not exist, not just "not yet wired
+together."
+
+    roundTrip_right              the mirror of roundTrip_left: same word s3,s2,s1,s3,
+                                  but s3's dif_pos branch fires first, so the touched
+                                  position is g.kstar (not g.kstar - 1) and it moves
+                                  by -2*eps (not +2*eps)
+    reachable_deposit_step_right the mirror of reachable_deposit_step
+
+0 sorry. One failure: the final `show` in `roundTrip_right` didn't defeq-match because
+`s3`'s branch left `kstar` as the unreduced term `g.kstar + 1 - 1`, not `g.kstar` --
+fixed by rewriting that equality explicitly rather than relying on defeq to see through
+it. `#print axioms` on both shows only `propext, Classical.choice, Quot.sound`.
+Committed `07a1d0e`.
+
+**Scope, stated honestly:** this closes one real missing piece of the deposit engine,
+not the composition itself. What full reachability still needs: an induction that,
+given an arbitrary target deposit function `d` of bounded support consistent with the
+parity constraint (`hpar`), walks the cursor to cover that support (via `cstep`,
+already done) while applying `reachable_deposit_step`/`reachable_deposit_step_right` at
+each visited position enough times (each call moves a deposit by exactly 2, and parity
+guarantees an even number of calls suffices) to match the target value there. That
+induction has not been attempted; it is now buildable from pieces that all exist,
+where before this block one of those pieces (the right-side engine) did not. H1a stays
+🟠.
