@@ -9631,3 +9631,20 @@ it built the tail vector's guard extraction, and did not.  Two repairs of the id
 shape in five blocks is a pattern: **every `flagHeadVec`/`flagTailVec`-style gate needs
 checking against ALL of `FlagPath`'s fields, not just the ones a given proof attempt
 happens to need next.**
+
+## 2026-09-04 — BLOCK 296: the dep bound, exposed for free too
+
+`exists_stateFn_of_mem_flagPathsFinset` (BLOCK 289) exposed the `arr = vArr` fact for
+free; the same box-membership argument gives `dep ∈ {0,1}` for free too, once the
+discarded `Fintype.piFinset` membership is kept and unfolded via `mem_boxFinset`
+(BLOCK 292's tightened bound) at whichever `Fin` index each branch of the state function
+uses.
+
+    exists_stateFn_of_mem_flagPathsFinset   now also returns `∀ j, dep_j = 0 ∨ dep_j = 1`
+
+0 sorry.  One failure: a leftover `split_ifs <;> rfl` from the theorem's earlier form was
+left dangling after the new case was appended, closing on an already-solved goal.
+
+**Both hypotheses `exists_unique_kstar_of_flowA` needs beyond the guard itself -- `harrv`
+and `hdepv` -- are now available with no argument beyond box membership**, for any element
+of `flagPathsFinset`, not only for configurations.

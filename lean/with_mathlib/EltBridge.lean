@@ -9411,12 +9411,14 @@ form the rest of the development uses. -/
 theorem exists_stateFn_of_mem_flagPathsFinset (N : ℕ) (A : ℤ) (n : ℕ) (L : List FlagState)
     (hL : L ∈ flagPathsFinset N A n) :
     ∃ gg : ℤ → FlagState, L = (A :: idxList A n).map gg
-      ∧ ∀ j : ℤ, (gg j).st.arr = SiteCost.vArr j := by
-  obtain ⟨g, -, rfl⟩ := Finset.mem_image.mp hL
+      ∧ (∀ j : ℤ, (gg j).st.arr = SiteCost.vArr j)
+      ∧ (∀ j : ℤ, (gg j).st.dep = 0 ∨ (gg j).st.dep = 1) := by
+  obtain ⟨g, hgmem, rfl⟩ := Finset.mem_image.mp hL
+  rw [Fintype.mem_piFinset] at hgmem
   set gg : ℤ → FlagState := fun j =>
     if h : (j - A).toNat < n + 1 then (g ⟨(j - A).toNat, h⟩).toFlag j
     else (g ⟨0, Nat.succ_pos n⟩).toFlag j with hgg
-  refine ⟨gg, ?_, ?_⟩
+  refine ⟨gg, ?_, ?_, ?_⟩
   · rw [← ofFn_idxFn A n, List.map_ofFn]
     refine congrArg List.ofFn (funext fun i => ?_)
     show (g i).toFlag (idxFn A n i) = gg (idxFn A n i)
@@ -9432,6 +9434,20 @@ theorem exists_stateFn_of_mem_flagPathsFinset (N : ℕ) (A : ℤ) (n : ℕ) (L :
     rw [hgg]
     simp only
     split_ifs <;> rfl
+  · intro j
+    rw [hgg]
+    simp only
+    split_ifs with h
+    · have hb1 : g ⟨(j - A).toNat, h⟩ ∈ boxFinset N := hgmem _
+      rw [mem_boxFinset] at hb1
+      show (g ⟨(j - A).toNat, h⟩).dep = 0 ∨ (g ⟨(j - A).toNat, h⟩).dep = 1
+      have := hb1.2.2.2.1
+      omega
+    · have hb1 : g ⟨0, Nat.succ_pos n⟩ ∈ boxFinset N := hgmem _
+      rw [mem_boxFinset] at hb1
+      show (g ⟨0, Nat.succ_pos n⟩).dep = 0 ∨ (g ⟨0, Nat.succ_pos n⟩).dep = 1
+      have := hb1.2.2.2.1
+      omega
 
 
 /-! ### The deposit magnitude is a sufficient state
