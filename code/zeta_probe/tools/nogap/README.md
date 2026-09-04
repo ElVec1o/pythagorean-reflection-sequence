@@ -9578,3 +9578,25 @@ rather than trying to reduce to it by reindexing.
 
 **With this, `kstar`'s existence and uniqueness can be derived from `flowA` alone** --
 the last structural piece before assembling `coeff_vanish_on_complement`.
+
+## 2026-09-04 — BLOCK 294: `kstar` exists and is unique, from `flowA` alone
+
+    exists_unique_kstar_of_flowA   the departure exists, is unique, and the hB1
+                                   dichotomy holds -- from flowA and the guard alone,
+                                   with no pre-span vanishing point
+
+0 sorry.  Several failures, each diagnosed and fixed in turn per Rule 4.1/4.3 rather than
+guessed at collectively: a `Nat.cast_sum`-shaped step that did not exist by that name (the
+whole sub-lemma was replaced by a three-line `simp_rw [harrv]; exact_mod_cast`), a
+`.symm` on `htel` applied in the wrong direction for `flow_balance_dichotomy`, and --
+the substantive one -- `hdepv` was stated restricted to the span `[A, A+n]`, but
+`sum_zero_iff_no_one`/`exists_of_sum_one` need their `0/1` hypothesis UNCONDITIONALLY over
+all of `Nat`, not just the summed range.  Widened `hdepv` to hold at every integer, which
+is true anyway for a `gg` built from `boxSet` (every position, in range or not, comes from
+a `boxSet`-valued choice with `dep <= 1`), so the widening costs nothing at the call site.
+
+**This closes the last structural gap.**  Every hypothesis `exists_config_of_path` needs
+is now derivable from `hstep` (BLOCK 282), `headOk2B` (BLOCKS 290-291), the arr-for-free
+fact (BLOCK 291), `past_eq_decide` (BLOCK 258), and this block's `kstar` -- nothing is
+left unaccounted for.  Assembling them into one `FlagPath` and finishing
+`coeff_vanish_on_complement` is now pure composition.

@@ -17211,7 +17211,78 @@ theorem telescope_seedA (f a d : ℤ → ℤ) (A : ℤ) (hseed : a A = f A + d A
       rw [e1]
       omega
 
+/-! ### `kstar` exists and is unique, from `flowA` alone
+
+Composing `telescope_seedA` with the marker-sum lemmas (BLOCKS 240, 265) locates the
+departure without any pre-span vanishing point. -/
+
+theorem exists_unique_kstar_of_flowA (g : ℤ → FlagState) (A : ℤ) (n : ℕ)
+    (hA : A ≤ 0) (hB : 0 ≤ A + (n : ℤ))
+    (hstep : ∀ j : ℤ, flagStepB (g j) (g (j + 1)) = true)
+    (hflowA : (((g A).st.arr : ℕ) : ℤ) = (g A).st.fcur + (((g A).st.dep : ℕ) : ℤ))
+    (harrv : ∀ j : ℤ, (g j).st.arr = SiteCost.vArr j)
+    (hdepv : ∀ j : ℤ, (g j).st.dep = 0 ∨ (g j).st.dep = 1)
+    (hfcurBnn : 0 ≤ (g (A + n)).st.fcur) :
+    ∃ kstar : ℤ, A ≤ kstar ∧ kstar ≤ A + n + 1
+      ∧ (∀ j : ℤ, A ≤ j → j ≤ A + n → ((g j).st.dep = 1 ↔ j = kstar))
+      ∧ ((g (A + n)).st.fcur.natAbs = 1 ↔ kstar = A + n + 1) := by
+  have hflow : ∀ j : ℤ, (g j).st.fcur + (((g (j + 1)).st.arr : ℕ) : ℤ)
+      = (g (j + 1)).st.fcur + (((g (j + 1)).st.dep : ℕ) : ℤ) := flow_of_flagStepB g hstep
+  have htel := telescope_seedA (fun j => (g j).st.fcur) (fun j => ((( g j).st.arr : ℕ) : ℤ))
+    (fun j => (((g j).st.dep : ℕ) : ℤ)) A hflowA hflow n
+  have harrsum : ∑ k ∈ Finset.range (n + 1), (((g (A + k)).st.arr : ℕ) : ℤ) = 1 := by
+    have h1 := sum_vArr_range_eq_one A n hA hB
+    simp_rw [harrv]
+    exact_mod_cast h1
+  rw [harrsum] at htel
+  have hSnn : (0 : ℤ) ≤ ∑ k ∈ Finset.range (n + 1), (((g (A + (k:ℤ))).st.dep : ℕ) : ℤ) := by
+    refine Finset.sum_nonneg (fun k _ => ?_); positivity
+  rcases flow_balance_dichotomy (g (A + (n:ℤ))).st.fcur
+      (∑ k ∈ Finset.range (n + 1), (((g (A + (k:ℤ))).st.dep : ℕ) : ℤ))
+      hfcurBnn hSnn htel with ⟨hf1, hS0⟩ | ⟨hf0, hS1⟩
+  · refine ⟨A + n + 1, by omega, le_rfl, ?_, ?_⟩
+    · have hSn : (∑ k ∈ Finset.range (n + 1), (g (A + (k:ℤ))).st.dep : ℕ) = 0 := by
+        exact_mod_cast hS0
+      have hz : ∀ k ∈ Finset.range (n + 1), (g (A + (k:ℤ))).st.dep = 0 :=
+        (sum_zero_iff_no_one (fun k => (g (A + (k:ℤ))).st.dep) (n + 1)
+          (fun k => hdepv (A + k))).mp hSn
+      intro j hj1 hj2
+      constructor
+      · intro hdep1
+        exfalso
+        have hjk : (j - A).toNat ∈ Finset.range (n + 1) := by
+          simp only [Finset.mem_range]; omega
+        have hjeq : A + (((j - A).toNat : ℕ) : ℤ) = j := by omega
+        have := hz ((j - A).toNat) hjk
+        rw [hjeq] at this
+        omega
+      · intro hj; omega
+    · rw [hf1]; simp
+  · refine ?_
+    have hSn : (∑ k ∈ Finset.range (n + 1), (g (A + (k:ℤ))).st.dep : ℕ) = 1 := by
+      exact_mod_cast hS1
+    obtain ⟨k0, hk0mem, hk0⟩ := exists_of_sum_one (fun k => (g (A + (k:ℤ))).st.dep) (n + 1)
+      (fun k => hdepv (A + k)) hSn
+    refine ⟨A + (k0 : ℤ), by omega, by simp only [Finset.mem_range] at hk0mem; omega, ?_, ?_⟩
+    · intro j hj1 hj2
+      constructor
+      · intro hdep1
+        have hjk : (j - A).toNat ∈ Finset.range (n + 1) := by
+          simp only [Finset.mem_range]; omega
+        have hjeq : A + (((j - A).toNat : ℕ) : ℤ) = j := by omega
+        have hdj : (g (A + (((j - A).toNat : ℕ) : ℤ))).st.dep = 1 := by rw [hjeq]; exact hdep1
+        have := unique_of_sum_one (fun k => (g (A + (k:ℤ))).st.dep) (n + 1) hSn hjk hk0mem hdj hk0
+        omega
+      · intro hj
+        rw [hj]; exact hk0
+    · have hne : (A + (k0 : ℤ)) ≠ A + n + 1 := by
+        simp only [Finset.mem_range] at hk0mem; omega
+      constructor
+      · intro hcon; rw [hf0] at hcon; simp at hcon
+      · intro hcon; exact absurd hcon hne
+
 end EltBridge
 
 #print axioms EltBridge.sum_vArr_range_eq_one
 #print axioms EltBridge.telescope_seedA
+#print axioms EltBridge.exists_unique_kstar_of_flowA
