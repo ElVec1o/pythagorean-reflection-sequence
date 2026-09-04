@@ -9543,3 +9543,16 @@ just the span -- true "for free" since every branch of `gg`'s definition goes th
 `epsvB`, `hendB`, `fcurB`), the arr-for-free fact, `past_eq_decide` (`flag`), and
 `exists_dep_index`/`hB1_of_balance` (`kstar`, `hdep`, `hB1`).  Composing them into one
 `FlagPath` and feeding `exists_config_of_path` is the last step.
+
+## 2026-09-04 — BLOCK 292: `boxSet`'s dep bound tightened to `{0,1}`
+
+Assembling the final composition needs `hdepv : dep ∈ {0,1}` for `exists_config_of_path`,
+and `boxSet` only bounded `dep <= N`, not `<= 1`, even though a real departure marker
+(`P.vD j`) is always `0` or `1` -- `boxSet` was looser than the object it was meant to
+enclose.  Tightened the bound; `boxSet_bounds`'s `dep` clause simplifies to `P.vD j <= 1`
+directly, dropping the `1 <= N` derivation it previously needed.
+
+0 sorry, one edit each to `boxSet` and `boxSet_bounds`, both re-certified.  First attempt
+at the edit script silently failed both replacements (a chained `assert` inside a `try`
+raised before either `write` ran) -- caught by re-checking the file rather than trusting
+the script's exit code, per the standing rule against guessing after a failure.

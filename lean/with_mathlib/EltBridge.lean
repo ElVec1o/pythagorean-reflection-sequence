@@ -9273,7 +9273,7 @@ theorem boxState_toFlag_flagOf (P : SiteCost.PathData) (j : ℤ) :
 
 /-- The bounded set of `BoxState`s of magnitude at most `N`. -/
 def boxSet (N : ℕ) : Set BoxState :=
-  {b | b.dprev.natAbs ≤ N ∧ b.dcur.natAbs ≤ N ∧ b.fcur.natAbs ≤ N ∧ b.dep ≤ N
+  {b | b.dprev.natAbs ≤ N ∧ b.dcur.natAbs ≤ N ∧ b.fcur.natAbs ≤ N ∧ b.dep ≤ 1
     ∧ (b.eps = 1 ∨ b.eps = -1)}
 
 theorem boxSet_finite (N : ℕ) : (boxSet N).Finite := by
@@ -9289,7 +9289,7 @@ theorem boxSet_finite (N : ℕ) : (boxSet N).Finite := by
   refine Set.Finite.subset
     (Set.Finite.prod (Set.finite_Icc (-(N:ℤ)) N) (Set.Finite.prod
       (Set.finite_Icc (-(N:ℤ)) N) (Set.Finite.prod (Set.finite_Icc (-(N:ℤ)) N)
-        (Set.Finite.prod (Set.finite_Icc (0:ℕ) N) (Set.Finite.prod
+        (Set.Finite.prod (Set.finite_Icc (0:ℕ) 1) (Set.Finite.prod
           ((Set.finite_singleton (-1 : ℤ)).insert 1) Set.finite_univ))))) ?_
   rintro _ ⟨b, hb, rfl⟩
   obtain ⟨h1, h2, h3, h4, h5⟩ := hb
@@ -9332,17 +9332,10 @@ theorem boxSet_bounds (P : SiteCost.PathData) (N : ℕ) (hN : P.lR ≤ N) (j : �
       omega
     · have : SiteCost.travel P.kstar j = 0 := (P.houter j (by omega)).2
       simp [this]
-  · show P.vD j ≤ N
-    have hN1 : 1 ≤ N := by
-      have hAB : P.A ≤ P.B := by have := P.hA; have := P.hB; omega
-      have h4 : P.mu P.A ≤ ∑ i ∈ Finset.Icc P.A P.B, P.mu i :=
-        Finset.single_le_sum (fun i _ => Nat.zero_le _) (Finset.mem_Icc.mpr ⟨le_rfl, hAB⟩)
-      have h5 := P.mu_pos P.A
-      unfold SiteCost.PathData.lR at hN
-      omega
-    show (if j = P.kstar then 1 else 0) ≤ N
+  · show P.vD j ≤ 1
+    show (if j = P.kstar then 1 else 0) ≤ 1
     split_ifs with h
-    · exact hN1
+    · exact le_refl 1
     · exact Nat.zero_le _
 
 /-! ### The Finset of degree-`N` flagged paths, assembled -/
