@@ -9666,3 +9666,19 @@ for a bare `hstep` restricted to `[A, A+n)`.
 
 **Every field `FlagPath` needs now has a source usable from bare `hstep` and the box
 membership facts, with no remaining gaps.**  The assembly can now proceed.
+
+## 2026-09-04 — BLOCK 298: the flag is canonical along a BOUNDED guarded path
+
+The last unconditional-vs-bounded mismatch: `past_eq_decide` (BLOCK 258) needs `hstep` for
+ALL of `Z`, but the guard extracted from a coefficient (BLOCK 282) is only bounded to
+`[A, A+n)`.  Same fix as BLOCKS 294 and 297: reprove the bounded form directly.
+
+    past_eq_decide_bounded   the flag matches `decide (0 <= j)` throughout the bounded
+                             span, mirroring the unconditional proof exactly
+
+0 sorry, clean on the first build -- the only block in this run of repairs that needed no
+fix after the initial write, since its source proof (BLOCK 258) had already been through
+the same diagnosis once.
+
+**Every field `FlagPath` needs is now sourced from a bounded `hstep` alone.**  Nothing
+further is missing; the composition can be written.

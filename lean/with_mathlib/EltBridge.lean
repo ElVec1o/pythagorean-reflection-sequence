@@ -9472,6 +9472,43 @@ theorem eps_delta_const_bounded (g : ℤ → FlagState) (A : ℤ) (n : ℕ)
       rw [hcast]
       exact ⟨hcp.1.2.trans he, hcp.2.trans hd⟩
 
+/-! ### The flag is canonical along a BOUNDED guarded path -/
+
+theorem past_eq_decide_bounded (g : ℤ → FlagState) (A : ℤ) (hA : A ≤ 0) (n : ℕ)
+    (hstep : ∀ j : ℤ, A ≤ j → j < A + n → flagStepB (g j) (g (j + 1)) = true)
+    (harrv : ∀ j : ℤ, (g j).st.arr = SiteCost.vArr j)
+    (hhead : (g A).past = decide ((g A).st.arr = 1)) :
+    ∀ m : ℕ, m ≤ n → (g (A + m)).past = decide (0 ≤ A + (m : ℤ)) := by
+  intro m
+  induction m with
+  | zero =>
+      intro _
+      have h2 : decide ((g A).st.arr = 1) = decide ((0 : ℤ) ≤ A) := by
+        rw [harrv A]
+        unfold SiteCost.vArr
+        by_cases h : A = 0
+        · rw [if_pos h]; simp [h]
+        · rw [if_neg h]; simp only [decide_eq_decide]; omega
+      simpa using hhead.trans h2
+  | succ m ih =>
+      intro hm
+      have hs := hstep (A + m) (by omega) (by omega)
+      simp only [flagStepB, Bool.and_eq_true, beq_iff_eq] at hs
+      have hp := hs.1.2
+      have hcast : A + ((m + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 := by push_cast; ring
+      rw [hcast, hp, ih (by omega), harrv]
+      unfold SiteCost.vArr
+      by_cases h : A + (m : ℤ) + 1 = 0
+      · rw [if_pos h, decide_eq_true (by omega : (0 : ℤ) ≤ A + (m : ℤ) + 1)]
+        simp
+      · rw [if_neg h]
+        by_cases hsg : (0 : ℤ) ≤ A + (m : ℤ)
+        · rw [decide_eq_true hsg, decide_eq_true (by omega : (0 : ℤ) ≤ A + (m : ℤ) + 1)]
+          simp
+        · rw [decide_eq_false hsg,
+            decide_eq_false (by omega : ¬((0 : ℤ) ≤ A + (m : ℤ) + 1))]
+          simp
+
 
 /-! ### The deposit magnitude is a sufficient state
 
@@ -17216,6 +17253,7 @@ end EltBridge
 #print axioms EltBridge.exists_stateFn_of_mem_flagPathsFinset
 #print axioms EltBridge.compatB_of_flagStepB
 #print axioms EltBridge.eps_delta_const_bounded
+#print axioms EltBridge.past_eq_decide_bounded
 
 namespace EltBridge
 
