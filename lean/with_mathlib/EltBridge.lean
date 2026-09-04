@@ -12155,27 +12155,45 @@ the key fact H1a's reachability induction needs: ANY walk built purely from `cst
 (any mix of outward and return legs) lands on the exact `travel`-matching profile for
 wherever it ends up, with no accumulated drift from the route taken. -/
 
-theorem cstep_preserves_neg_eps_travel (g : Elt)
-    (h : ∀ j, g.d j = -(g.eps * SiteCost.travel g.kstar j)) :
-    ∀ j, (cstep g).d j = -((cstep g).eps * SiteCost.travel (cstep g).kstar j) := by
+/-- **The general, unconditional form**: `cstep` preserves the "excess" `d j +
+eps * travel(kstar, j)` at EVERY position, not only where it is zero. At the crossed
+edge `d` moves by `±eps` and `travel` moves by `∓1`, so `eps * travel`'s change is
+exactly `∓eps`, cancelling `d`'s `±eps` regardless of what the excess already was;
+elsewhere neither term moves. This is what makes it safe to apply a correction
+(`reachable_deposit_accumulate`, BLOCK 304) at a position and then walk away with
+more `cstep` calls: the correction is carried forward as a constant offset, added to
+whatever the pure-`cstep` trajectory's value would otherwise be, however many more
+times the cursor later crosses that same edge. -/
+theorem cstep_preserves_excess (g : Elt) :
+    ∀ j : ℤ, (cstep g).d j + (cstep g).eps * SiteCost.travel (cstep g).kstar j
+      = g.d j + g.eps * SiteCost.travel g.kstar j := by
   by_cases hδ : g.delta = false
   · obtain ⟨hk, he, -, hd⟩ := cstep_left g hδ
     intro j
     rw [hd, hk, he]
     by_cases hj : j = g.kstar - 1
     · subst hj
-      rw [Function.update_self, h (g.kstar - 1), travel_pred_at]
+      rw [Function.update_self, travel_pred_at]
       ring
-    · rw [Function.update_of_ne hj, h j, travel_pred_ne g.kstar j hj]
+    · rw [Function.update_of_ne hj, travel_pred_ne g.kstar j hj]
   · have hδt : g.delta = true := by revert hδ; cases g.delta <;> simp
     obtain ⟨hk, he, -, hd⟩ := cstep_right g hδt
     intro j
     rw [hd, hk, he]
     by_cases hj : j = g.kstar
     · subst hj
-      rw [Function.update_self, h g.kstar, travel_succ_at]
+      rw [Function.update_self, travel_succ_at]
       ring
-    · rw [Function.update_of_ne hj, h j, travel_succ_ne g.kstar j hj]
+    · rw [Function.update_of_ne hj, travel_succ_ne g.kstar j hj]
+
+/-- **The zero-excess special case**, as a corollary. -/
+theorem cstep_preserves_neg_eps_travel (g : Elt)
+    (h : ∀ j, g.d j = -(g.eps * SiteCost.travel g.kstar j)) :
+    ∀ j, (cstep g).d j = -((cstep g).eps * SiteCost.travel (cstep g).kstar j) := by
+  intro j
+  have hex := cstep_preserves_excess g j
+  rw [h j] at hex
+  linarith [hex]
 
 /-- **`one` sits at the base case.** -/
 theorem one_travel_inv : ∀ j, one.d j = -(one.eps * SiteCost.travel one.kstar j) := by
@@ -12237,6 +12255,7 @@ end EltBridge
 
 #print axioms EltBridge.Elt.cstep_left
 #print axioms EltBridge.Elt.cstep_right
+#print axioms EltBridge.Elt.cstep_preserves_excess
 #print axioms EltBridge.Elt.cstep_preserves_neg_eps_travel
 #print axioms EltBridge.Elt.one_travel_inv
 #print axioms EltBridge.Elt.cstep_iter_travel_inv
