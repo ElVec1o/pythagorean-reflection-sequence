@@ -9708,6 +9708,48 @@ theorem marker_asymmetry :
     (∀ dL dR : ℤ, Site0 dL dR = Site0 dL dR) :=
   ⟨⟨1, -1, FarSite_eps_dependent⟩, fun _ _ => rfl⟩
 
+/-! ### The four marker data, indexed, and `C` partitioned by them
+
+`IsAssembly` (BLOCK 116) sums over `Fin 4` on the `lambda` side.  The four data are
+`(eps*, delta*) ∈ {1, -1} x {false, true}` (`SpanData.heps`, `SpanData.delta`).  This
+section makes the index concrete and partitions a target span set `C` by it, so the
+per-class transfer-matrix argument (`lR_exp_is_transfer`, BLOCK 115) can later be run
+one class at a time and reassembled by `Finset.sum_fiberwise`. -/
+
+/-- **The four marker data, as an index into `Fin 4`.**  `0`/`1` carry `eps* = 1`,
+`2`/`3` carry `eps* = -1`; the parity of the index carries `delta*`. -/
+def markerIdx {A B : ℤ} (S : SpanData A B) : Fin 4 :=
+  (if S.eps = 1 then 0 else 2) + (if S.delta then 1 else 0)
+
+/-- **The index recovers `eps*`.** -/
+theorem markerIdx_eps {A B : ℤ} (S : SpanData A B) :
+    S.eps = 1 ∨ S.eps = -1 → (markerIdx S = 0 ∨ markerIdx S = 1 ↔ S.eps = 1) := by
+  intro _
+  unfold markerIdx
+  rcases S.heps with h | h <;> simp [h] <;> split_ifs <;> decide
+
+/-- **The index recovers `delta*`.** -/
+theorem markerIdx_delta {A B : ℤ} (S : SpanData A B) :
+    (markerIdx S = 0 ∨ markerIdx S = 2 ↔ S.delta = false) := by
+  unfold markerIdx
+  rcases S.heps with h | h <;> simp [h] <;> cases S.delta <;> decide
+
+/-- **`C` splits into (at most) four fibers by marker data, and the split reassembles
+by plain summation.**  This is `Finset.sum_fiberwise` specialised to `markerIdx`: the
+grouping `IsAssembly` needs on the `lambda` side, stated once for any weight `f`. -/
+theorem sum_C_eq_sum_marker_fibers {A B : ℤ} (C : Finset (SpanData A B))
+    (f : SpanData A B → PowerSeries ℤ) :
+    ∑ S ∈ C, f S = ∑ i : Fin 4, ∑ S ∈ C with markerIdx S = i, f S :=
+  (Finset.sum_fiberwise C markerIdx f).symm
+
+/-- **And the coefficient distributes over the fiber split**, which is the shape
+`IsAssembly`'s left side needs before the per-class transfer argument runs. -/
+theorem coeff_C_eq_sum_marker_fiber_coeffs {A B : ℤ} (N : ℕ) (C : Finset (SpanData A B))
+    (f : SpanData A B → PowerSeries ℤ) :
+    PowerSeries.coeff N (∑ S ∈ C, f S)
+      = ∑ i : Fin 4, PowerSeries.coeff N (∑ S ∈ C with markerIdx S = i, f S) := by
+  rw [sum_C_eq_sum_marker_fibers C f, map_sum]
+
 /-! ### `cor:marker` verified against `siteCost`
 
 `Site0` and `FarSite` were transcribed from `cor:marker`.  They are not independent
@@ -10512,6 +10554,10 @@ end EltBridge
 #print axioms EltBridge.FarSite_eps_dependent
 #print axioms EltBridge.FarSite_not_mirror
 #print axioms EltBridge.marker_asymmetry
+#print axioms EltBridge.markerIdx_eps
+#print axioms EltBridge.markerIdx_delta
+#print axioms EltBridge.sum_C_eq_sum_marker_fibers
+#print axioms EltBridge.coeff_C_eq_sum_marker_fiber_coeffs
 #print axioms EltBridge.siteCost_at_zero
 #print axioms EltBridge.siteCost_at_kstar
 #print axioms EltBridge.lR_site_split
