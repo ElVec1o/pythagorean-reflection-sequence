@@ -9927,3 +9927,36 @@ apply `reachable_deposit_accumulate` the right number of times at each visited
 position to match the target value there, then assemble into one existence theorem.
 H1a stays 🟠, closer than BLOCK 303 left it -- the primitive that was actually missing
 (not the one BLOCK 303 guessed) is no longer missing.
+
+## 2026-09-05 — BLOCK 305: cstep's deposits are path-independent (H1a)
+
+Worked out the design sketch for the full H1a reachability induction by hand: the
+plan is to walk the cursor to cover a target profile's support (possibly in several
+legs, out and back), applying `reachable_deposit_accumulate` (BLOCK 304) at each
+position needing correction. The concern was whether a position visited on an
+earlier leg gets corrupted by a later leg crossing it again. It does not, because
+`cstep`'s own bookkeeping (independent of any manual corrections) is exactly the
+differential of `travel` -- a path-independent potential. Formalized that fact
+directly rather than just asserting it:
+
+    cstep_preserves_neg_eps_travel   d j = -(eps * travel(kstar,j)) is preserved by
+                                      cstep, whichever way it turns
+    one_travel_inv                   the base case at `one`
+    cstep_iter_travel_inv            so ANY cstep-only walk from `one`, any mix of
+                                      legs and directions, lands on the exact
+                                      travel-matching profile wherever it ends up
+
+0 sorry, clean build on the first attempt. One real risk avoided: the naive guess
+`d = eps * travel` (or `d = travel`) is WRONG -- checked the sign against
+`cstep_iter_one`'s own explicit formula (d=+1 on [-n,-1], where `travel` is -1
+there) BEFORE writing the general theorem, catching the sign error at the
+falsification stage rather than after a failed proof attempt. `#print axioms` on
+all three new theorems shows only `propext, Classical.choice, Quot.sound`.
+Committed `fa215ef`.
+
+**Scope, stated honestly:** this is the key invariant the full induction needs
+(corrections at any point, in any order, on any route, are safe -- the automatic
+`cstep` bookkeeping never re-corrupts an already-fixed position beyond what the
+final `travel(kstar,j)` value accounts for). It is not the induction itself:
+assembling an arbitrary target profile into an explicit walk-plus-corrections
+construction, and proving THAT reaches the target, remains open. H1a stays 🟠.
