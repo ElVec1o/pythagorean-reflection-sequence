@@ -9781,3 +9781,45 @@ facts) -- no `sorryAx`.
 (BLOCK 116-117) inside each fiber, and identifying the real `W` with a
 `flagPathsFinset`-derived sum via `coeff_flagPathsFinset_eq_C_image_sum` (BLOCK 299).
 (M3) stays 🟡.
+
+## 2026-09-05 — BLOCK 301: the box coefficient IS `C.card` -- a bigger, composed block
+
+User direction this session: make blocks bigger when it helps, rather than the smallest
+independently-checkable step every time. This block composes BLOCKS 299-300 two steps
+further, in one sitting, rather than stopping at BLOCK 300's partition lemma alone.
+
+    coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs   the box coefficient equals the
+                                                        sum over the 4 marker fibers of
+                                                        C's per-fiber coefficient
+                                                        (composes BLOCK 299's image-sum
+                                                        identity with flagPath_inj's
+                                                        injectivity, via
+                                                        Finset.sum_image, and BLOCK 300's
+                                                        partition)
+    coeff_flagPathsFinset_eq_card_C                    the real content: every element
+                                                        of C already has degree N by
+                                                        construction (hC), so
+                                                        pathWeightR_flag_guarded
+                                                        collapses every per-element
+                                                        weight to the SAME monomial X^N,
+                                                        and coeff_sum_configs
+                                                        (BLOCK 272, already in the file)
+                                                        reads that off as a count. The
+                                                        box coefficient equals C.card
+                                                        exactly.
+
+0 sorry, two failures along the way: `coeff_sum_configs` needed a `DecidableEq` instance
+for `SpanData A (A+n)` that was not found automatically (fixed with a `classical` line);
+and the final `congr 1` on a `Finset.card` goal produced the wrong subgoal shape (fixed
+by folding the `Finset.filter_true_of_mem` rewrite directly into the `rw` chain instead
+of leaving it for `congr`). `#print axioms` on both shows only `propext,
+Classical.choice, Quot.sound`.
+
+**Scope, stated honestly, again:** `coeff_flagPathsFinset_eq_card_C` is a genuinely
+strong, clean result -- the "sum over elements... needs formal power series" gap named
+at BLOCK 117 is discharged in the sense that the coefficient is now a concrete finite
+count for ANY span length and target degree. It is still NOT `IsAssembly`
+(EltBridge.lean:10128): `IsAssembly`'s right side is a sum over `Fin 4` of per-fiber
+TRUNCATED NEUMANN SERIES (the transfer-matrix resolvent), not a plain cardinality --
+that per-fiber resolvent identification is what remains. (M3) stays 🟡, closer than
+before.
