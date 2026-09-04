@@ -9989,3 +9989,38 @@ handling, delta/eps bookkeeping across two legs, then generalizing single-positi
 an arbitrary finite support -- real multi-lemma work with genuine risk of a subtle
 sign/off-by-one bug if rushed, and this session already corrected two overstated
 claims once each. H1a stays 🟠; the recipe for the next block is now fully concrete.
+
+## 2026-09-05 — BLOCK 307: the single-position-correction theorem (H1a), left case
+
+User: attack whichever open atom is closest to completion. Assessed all three
+(H1c/IsAssembly needs W defined -- design work; M4b/H1b needs RunStrandsConnected --
+a long-unsolved graph existence, multiple prior NO-GOs recorded; H1a has, after
+BLOCKS 303-306, every primitive the recipe in BLOCK 306 needs) and picked H1a.
+
+Built the actual assembly theorem for the first nontrivial case:
+
+    reachable_deposit_accumulate_iter   iterating the BLOCK 304 accumulation step k
+                                         times adds 2k*eps at a fixed kstar
+    cstep_eps / cstep_iter_eps          cstep and its iterates never change eps
+    cstep_iter_preserves_excess         the n-step iterate of BLOCK 306's excess law
+    reachable_single_correction_left    for any reachable g (delta=false) and any
+                                         p <= g.kstar: a reachable h with the SAME
+                                         kstar/eps/delta as g, differing from g.d by
+                                         exactly 2k*eps at p and NOWHERE ELSE
+
+Construction: walk out to p, correct, flip delta, walk back, flip delta back. The
+"disturbs nothing else" claim is proved directly from the excess law on both legs,
+combined algebraically per position -- not asserted.
+
+0 sorry, clean build. Two real bugs the type checker caught: an `rw [...] at e1 e2`
+tried to rewrite both excess equations with the union of both legs' hypotheses, but
+they don't both apply to both equations (split into two rewrites); a `have` computing
+h2's value at the correction site needed an explicit g1.eps -> g.eps substitution the
+rewrite chain didn't perform implicitly. `#print axioms` on all four new theorems
+shows only `propext, Classical.choice, Quot.sound`. Committed `25b800c`.
+
+**Scope, stated honestly:** this is the LEFT case only (p <= g.kstar). The symmetric
+right case, and the generalization from one correction position to an arbitrary
+finite support, are both still open. H1a stays 🟠 at the composite level, but this is
+real, substantial, verified progress -- the hardest algebraic content of the
+single-position case is now done.
