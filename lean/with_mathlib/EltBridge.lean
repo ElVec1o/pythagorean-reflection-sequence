@@ -9141,6 +9141,50 @@ theorem headCond_of_headVec_ne_zero {R : Type*} [CommRing R] (x : R) (σ : FlagS
   rw [flagHeadVecR, if_neg]
   simpa using hc
 
+/-! ### The tail vector's guard, over an arbitrary ring
+
+The head vector's argument (BLOCK 283) mirrored for the last state: a non-zero weight
+means the tail vector at the LAST state does not vanish, by induction tracking `lastOf`. -/
+
+theorem tailOkR_of_weight_ne_zero {R : Type*} [CommRing R] (x : R) (g : ℤ → FlagState) :
+    ∀ (n : ℕ) (A : ℤ) (lam mu : FlagState → R),
+      pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+          lam mu ((A :: idxList A n).map g) ≠ 0 →
+      mu (lastOf (g A) ((idxList A n).map g)) ≠ 0 := by
+  intro n
+  induction n with
+  | zero =>
+      intro A lam mu hne hz
+      apply hne
+      show lam (g A) * mu (g A) = 0
+      have hz' : mu (g A) = 0 := hz
+      rw [hz']; ring
+  | succ m ih =>
+      intro A lam mu hne
+      have hlast : lastOf (g A) ((idxList A (m + 1)).map g)
+          = lastOf (g (A + 1)) ((idxList (A + 1) m).map g) := rfl
+      rw [hlast]
+      refine ih (A + 1) (fun _ => (1 : R)) mu ?_
+      intro hz
+      apply hne
+      show lam (g A) * (if flagStepB (g A) (g (A + 1)) then
+              x ^ ((g A).st.muOf + (g (A + 1)).st.siteOf) else 0)
+            * pathWeightR (fun σ τ => if flagStepB σ τ then x ^ (σ.st.muOf + τ.st.siteOf) else 0)
+              (fun _ => (1 : R)) mu ((idxList A (m + 1)).map g) = 0
+      rw [show ((idxList A (m + 1)).map g) = (((A + 1) :: idxList (A + 1) m).map g) from rfl,
+        hz]
+      ring
+
+/-- **And the tail guard itself.**  A non-vanishing tail vector is a firing `tailOkB`
+condition with the flag set. -/
+theorem tailCond_of_tailVec_ne_zero {R : Type*} [CommRing R] (x : R) (σ : FlagState)
+    (h : flagTailVecR x σ ≠ 0) :
+    (validB σ.st && epsValidB σ.st && endValidB σ.st && σ.past) = true := by
+  by_contra hc
+  apply h
+  rw [flagTailVecR, if_neg]
+  simpa using hc
+
 /-! ### The arrival sets the flag wherever it fires
 
 `past_of_arr` (BLOCK 238) reads the step INTO an index; applying it at `a - 1` gives the
@@ -9364,23 +9408,28 @@ function `gg`.**  This is the bridge back from the `Fin`-indexed box to the inte
 form the rest of the development uses. -/
 theorem exists_stateFn_of_mem_flagPathsFinset (N : ℕ) (A : ℤ) (n : ℕ) (L : List FlagState)
     (hL : L ∈ flagPathsFinset N A n) :
-    ∃ gg : ℤ → FlagState, L = (A :: idxList A n).map gg := by
+    ∃ gg : ℤ → FlagState, L = (A :: idxList A n).map gg
+      ∧ ∀ j : ℤ, (gg j).st.arr = SiteCost.vArr j := by
   obtain ⟨g, -, rfl⟩ := Finset.mem_image.mp hL
   set gg : ℤ → FlagState := fun j =>
     if h : (j - A).toNat < n + 1 then (g ⟨(j - A).toNat, h⟩).toFlag j
     else (g ⟨0, Nat.succ_pos n⟩).toFlag j with hgg
-  refine ⟨gg, ?_⟩
-  rw [← ofFn_idxFn A n, List.map_ofFn]
-  refine congrArg List.ofFn (funext fun i => ?_)
-  show (g i).toFlag (idxFn A n i) = gg (idxFn A n i)
-  have hidx : (idxFn A n i - A).toNat = (i : ℕ) := by
-    show (A + (i : ℕ) - A).toNat = (i : ℕ)
-    simp
-  rw [hgg]
-  simp only
-  rw [dif_pos (by rw [hidx]; exact i.isLt)]
-  congr 2
-  exact Fin.ext hidx.symm
+  refine ⟨gg, ?_, ?_⟩
+  · rw [← ofFn_idxFn A n, List.map_ofFn]
+    refine congrArg List.ofFn (funext fun i => ?_)
+    show (g i).toFlag (idxFn A n i) = gg (idxFn A n i)
+    have hidx : (idxFn A n i - A).toNat = (i : ℕ) := by
+      show (A + (i : ℕ) - A).toNat = (i : ℕ)
+      simp
+    rw [hgg]
+    simp only
+    rw [dif_pos (by rw [hidx]; exact i.isLt)]
+    congr 2
+    exact Fin.ext hidx.symm
+  · intro j
+    rw [hgg]
+    simp only
+    split_ifs <;> rfl
 
 
 /-! ### The deposit magnitude is a sufficient state
@@ -17114,6 +17163,8 @@ end EltBridge
 #print axioms EltBridge.guards_of_coeff_ne_zero
 #print axioms EltBridge.headOkR_of_weight_ne_zero
 #print axioms EltBridge.headCond_of_headVec_ne_zero
+#print axioms EltBridge.tailOkR_of_weight_ne_zero
+#print axioms EltBridge.tailCond_of_tailVec_ne_zero
 #print axioms EltBridge.past_of_arr_at
 #print axioms EltBridge.arr_unique_after
 #print axioms EltBridge.boxState_toLocal_stateOf

@@ -9512,3 +9512,34 @@ through unchanged with `headOk2B_stateOf` in place of `headOkB_stateOf`).  What 
 that BLOCK 283's `headCond_of_headVec_ne_zero` now gives the RIGHT fact for the final
 composition -- `headOk2B`, which supplies both `dprevA` AND `flowA` for `FlagPath` in one
 step, closing exactly the gap that composition was stuck on.
+
+## 2026-09-04 — BLOCK 291: the tail vector's guard, over an arbitrary ring
+
+Assembling `coeff_vanish_on_complement` needs `hendA`, `hendB`, `hvalidB`, `fcurB`, `epsvB`
+for `exists_config_of_path` -- and BLOCK 283 only extracted the HEAD vector's condition.
+The tail vector's is a separate argument, tracking `lastOf` through the recursion rather
+than the head:
+
+    tailOkR_of_weight_ne_zero    a non-zero weight means the tail vector at the LAST
+                                 state does not vanish
+    tailCond_of_tailVec_ne_zero  and that IS the tail guard firing with the flag set
+
+0 sorry.  `tailOkR_of_weight_ne_zero` needs `propext` alone.  Two failures on the
+successor case, both from a `show` not matching the goal up to defeq; fixed by copying the
+exact working parenthesisation from `pathWeightR_zero_of_guard_fails` (BLOCK 275) rather
+than re-deriving the shape by hand -- multiplication is associative as a THEOREM, not
+definitionally, so a `show` with different grouping can fail even when the underlying
+terms are equal.
+
+**Also strengthened**, while wiring this in: `exists_stateFn_of_mem_flagPathsFinset`
+(BLOCK 289) now also returns `∀ j, (gg j).st.arr = SiteCost.vArr j` for every integer, not
+just the span -- true "for free" since every branch of `gg`'s definition goes through
+`BoxState.toFlag j`, which sets `arr := vArr j` unconditionally.  This directly supplies
+`FlagPath.arrv` and `exists_config_of_path`'s `harrv` without further argument.
+
+**All six pieces `coeff_vanish_on_complement` needs are now available**: `guards_of_coeff_ne_zero`
+(step), `headCond_of_headVec_ne_zero` (giving `headOk2B` -- `validA`, `epsvA`, `dprevA`,
+`flowA`, `hendA` in one shot), `tailCond_of_tailVec_ne_zero` (this block -- `hvalidB`,
+`epsvB`, `hendB`, `fcurB`), the arr-for-free fact, `past_eq_decide` (`flag`), and
+`exists_dep_index`/`hB1_of_balance` (`kstar`, `hdep`, `hB1`).  Composing them into one
+`FlagPath` and feeding `exists_config_of_path` is the last step.
