@@ -12087,6 +12087,23 @@ theorem reachable_deposit_accumulate {g h : Elt} (hg : Reachable g) (hδ : g.del
   exact ⟨n, Reaches.congr hn ⟨p1.trans hk.symm, p2.trans he.symm,
     (p3.trans hδ.symm).trans hd.symm, p4.trans hdd.symm⟩⟩
 
+/-- **Iterating the accumulation step `k` times adds `2k * eps`.** -/
+theorem reachable_deposit_accumulate_iter {g : Elt} (hg : Reachable g) (hδ : g.delta = false) :
+    ∀ k : ℕ, ∃ h : Elt, Reachable h ∧ h.kstar = g.kstar ∧ h.eps = g.eps ∧ h.delta = false ∧
+      h.d = Function.update g.d g.kstar (g.d g.kstar + 2 * (k : ℤ) * g.eps) := by
+  intro k
+  induction k with
+  | zero => exact ⟨g, hg, rfl, rfl, hδ, by simp⟩
+  | succ m ih =>
+      obtain ⟨h, hh, hk, he, hd, hdd⟩ := ih
+      obtain ⟨p1, p2, p3, p4⟩ := depositCycle_sq h hd
+      refine ⟨depositCycle (depositCycle h),
+        reachable_depositCycle (reachable_depositCycle hh), p1.trans hk, p2.trans he, p3, ?_⟩
+      rw [p4, hk, he, hdd, Function.update_self, Function.update_idem]
+      congr 1
+      push_cast
+      ring
+
 end Elt
 end EltBridge
 
@@ -12096,6 +12113,7 @@ end EltBridge
 #print axioms EltBridge.Elt.depositCycle_sq
 #print axioms EltBridge.Elt.reachable_depositCycle
 #print axioms EltBridge.Elt.reachable_deposit_accumulate
+#print axioms EltBridge.Elt.reachable_deposit_accumulate_iter
 
 namespace EltBridge
 namespace Elt
@@ -12214,6 +12232,36 @@ theorem cstep_iter_travel_inv (n : ℕ) :
       rw [Function.iterate_succ_apply']
       exact cstep_preserves_neg_eps_travel (cstep^[m] one) ih
 
+/-- **`cstep` never changes `eps`**: neither `s1` nor either branch of `s3` touches
+it. -/
+theorem cstep_eps (g : Elt) : (cstep g).eps = g.eps := by
+  unfold cstep
+  show (s3 g).eps = g.eps
+  unfold s3
+  split <;> rfl
+
+theorem cstep_iter_eps (g : Elt) (n : ℕ) : (cstep^[n] g).eps = g.eps := by
+  induction n with
+  | zero => simp
+  | succ m ih => rw [Function.iterate_succ_apply', cstep_eps, ih]
+
+/-- **The excess law, iterated**: any number of `cstep` calls from any starting
+element preserves `d j + eps * travel(kstar, j)` at every position, unconditionally.
+This is the tool the single-position-correction construction needs: apply it once for
+the outward leg (to see the correction site's pre-correction value) and once for the
+return leg (to see that every OTHER position is untouched, and that the correction
+itself survives). -/
+theorem cstep_iter_preserves_excess (g : Elt) (n : ℕ) :
+    ∀ j : ℤ, (cstep^[n] g).d j + (cstep^[n] g).eps * SiteCost.travel (cstep^[n] g).kstar j
+      = g.d j + g.eps * SiteCost.travel g.kstar j := by
+  induction n with
+  | zero => intro j; simp
+  | succ m ih =>
+      intro j
+      rw [Function.iterate_succ_apply']
+      rw [cstep_preserves_excess (cstep^[m] g) j]
+      exact ih j
+
 theorem reachable_cstep {g : Elt} (h : Reachable g) : Reachable (cstep g) :=
   reachable_s1 (reachable_s3 h)
 
@@ -12259,6 +12307,9 @@ end EltBridge
 #print axioms EltBridge.Elt.cstep_preserves_neg_eps_travel
 #print axioms EltBridge.Elt.one_travel_inv
 #print axioms EltBridge.Elt.cstep_iter_travel_inv
+#print axioms EltBridge.Elt.cstep_eps
+#print axioms EltBridge.Elt.cstep_iter_eps
+#print axioms EltBridge.Elt.cstep_iter_preserves_excess
 #print axioms EltBridge.Elt.cstep_iter_left
 #print axioms EltBridge.Elt.reachable_kstar_nonpos
 
@@ -12302,9 +12353,75 @@ theorem reachable_kstar (m : ℤ) : ∃ g : Elt, Reachable g ∧ g.kstar = m := 
     obtain ⟨g, hg, hk, -⟩ := reachable_kstar_nonpos n
     exact ⟨g, hg, by rw [hk, hn]⟩
 
+/-! ### A single-position correction, leaving everything else untouched
+
+The recipe: walk `cstep` out to the target position, apply
+`reachable_deposit_accumulate_iter`, walk back. `cstep_iter_preserves_excess`
+guarantees the round trip disturbs no position other than the one visited for the
+correction, and returns exactly to the starting `kstar`/`eps`/`delta`. This is the
+case where the correction site lies at or to the left of the starting cursor. -/
+
+/-- **Add `2k * eps` at any position `p <= g.kstar`, disturbing nothing else.** -/
+theorem reachable_single_correction_left {g : Elt} (hg : Reachable g) (hδ : g.delta = false)
+    (p : ℤ) (hp : p ≤ g.kstar) (k : ℕ) :
+    ∃ h : Elt, Reachable h ∧ h.kstar = g.kstar ∧ h.eps = g.eps ∧ h.delta = false ∧
+      h.d = Function.update g.d p (g.d p + 2 * (k : ℤ) * g.eps) := by
+  set n : ℕ := (g.kstar - p).toNat with hn
+  have hnp : g.kstar - (n : ℤ) = p := by rw [hn]; omega
+  -- outward leg: g1 := cstep^[n] g, lands on kstar = p
+  set g1 := cstep^[n] g with hg1def
+  have hg1k : g1.kstar = p := by
+    obtain ⟨hk1, -⟩ := cstep_iter_left g hδ n; rw [hg1def, hk1, hnp]
+  have hg1δ : g1.delta = false := (cstep_iter_left g hδ n).2
+  have hg1e : g1.eps = g.eps := cstep_iter_eps g n
+  have hg1r : Reachable g1 := reachable_cstep_iter hg n
+  -- correction: h2 has kstar = p, everything else of g1 preserved except d at p
+  obtain ⟨h2, hh2, hk2, he2, hδ2, hdd2⟩ :=
+    reachable_deposit_accumulate_iter hg1r hg1δ k
+  rw [hg1k] at hk2
+  rw [hg1e] at he2
+  -- flip delta, walk back: g2 := cstep^[n] (s1 h2), lands on kstar = g.kstar
+  have hs1h2k : (s1 h2).kstar = p := hk2
+  have hs1h2δ : (s1 h2).delta = true := by show (!h2.delta) = true; rw [hδ2]; rfl
+  have hs1h2e : (s1 h2).eps = g.eps := he2
+  have hs1h2d : (s1 h2).d = h2.d := rfl
+  set g2 := cstep^[n] (s1 h2) with hg2def
+  have hg2k : g2.kstar = g.kstar := by
+    obtain ⟨hk3, -⟩ := cstep_iter_right (s1 h2) hs1h2δ n
+    rw [hg2def, hk3, hs1h2k]; omega
+  have hg2δ : g2.delta = true := (cstep_iter_right (s1 h2) hs1h2δ n).2
+  have hg2e : g2.eps = g.eps := by rw [cstep_iter_eps (s1 h2) n, hs1h2e]
+  have hg2r : Reachable g2 := reachable_cstep_iter (reachable_s1 hh2) n
+  -- final flip back to delta = false; kstar, eps, d unaffected
+  set h := s1 g2 with hgdef
+  refine ⟨h, reachable_s1 hg2r, hg2k, hg2e, ?_, ?_⟩
+  · show (!g2.delta) = false; rw [hg2δ]; rfl
+  · show g2.d = Function.update g.d p (g.d p + 2 * (k : ℤ) * g.eps)
+    -- the excess law across both legs
+    have hexc1 := cstep_iter_preserves_excess g n
+    have hexc2 := cstep_iter_preserves_excess (s1 h2) n
+    funext j
+    rw [← hg2def] at hexc2
+    have e1 := hexc1 j
+    have e2 := hexc2 j
+    rw [hg1k, hg1e] at e1
+    rw [hs1h2k, hs1h2e, hs1h2d, hg2k, hg2e] at e2
+    by_cases hj : j = p
+    · subst hj
+      rw [Function.update_self]
+      have hh2j : h2.d j = g1.d j + 2 * (k : ℤ) * g.eps := by
+        rw [hdd2, hg1k, Function.update_self, hg1e]
+      rw [hh2j] at e2
+      linarith [e1, e2]
+    · rw [Function.update_of_ne hj]
+      have hh2j : h2.d j = g1.d j := by rw [hdd2, hg1k, Function.update_of_ne hj]
+      rw [hh2j] at e2
+      linarith [e1, e2]
+
 end Elt
 end EltBridge
 
+#print axioms EltBridge.Elt.reachable_single_correction_left
 #print axioms EltBridge.Elt.reachable_kstar_nonneg
 #print axioms EltBridge.Elt.reachable_kstar
 
