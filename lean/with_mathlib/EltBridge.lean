@@ -17166,3 +17166,52 @@ end EltBridge
 #print axioms EltBridge.boxSet_bounds
 #print axioms EltBridge.mem_flagPathsFinset_of_config
 #print axioms EltBridge.exists_stateFn_of_mem_flagPathsFinset
+
+namespace EltBridge
+
+/-! ### Locating `kstar` from `flowA` alone, without a pre-span vanishing point
+
+`exists_dep_index` (BLOCK 242) and `telescope_flow`/`flow_balance` (BLOCKS 230, 264) both
+seed the telescoping from a point BEFORE the span where the travel indicator vanishes --
+available for a configuration via `preState_stateOf`, but not for an arbitrary guarded box
+function, which has no such point.  `flowA` (from `headOk2B`) gives a different but
+equally usable seed: it says the balance holds AT `A` itself, with the arrival's own
+value standing in for "the travel indicator one step before A", i.e. `A`'s own `flowB`
+step with an implicit predecessor of `0`.  Telescoping from that seed instead closes the
+same argument without a pre-span point. -/
+
+theorem sum_vArr_range_eq_one (A : ℤ) (n : ℕ) (hA : A ≤ 0) (hB : 0 ≤ A + (n : ℤ)) :
+    ∑ k ∈ Finset.range (n + 1), SiteCost.vArr (A + k) = 1 := by
+  have hmem : ((0 : ℤ) - A).toNat ∈ Finset.range (n + 1) := by
+    simp only [Finset.mem_range]; omega
+  rw [Finset.sum_eq_single_of_mem ((0 : ℤ) - A).toNat hmem]
+  · have hcast : A + (((0 : ℤ) - A).toNat : ℤ) = 0 := by omega
+    rw [hcast]; unfold SiteCost.vArr; rw [if_pos rfl]
+  · intro k hk hne
+    have hk' : (k : ℤ) < n + 1 := by exact_mod_cast Finset.mem_range.mp hk
+    unfold SiteCost.vArr
+    rw [if_neg]
+    intro hcon
+    apply hne
+    have : (k : ℤ) = (0 : ℤ) - A := by omega
+    omega
+
+theorem telescope_seedA (f a d : ℤ → ℤ) (A : ℤ) (hseed : a A = f A + d A)
+    (hstep : ∀ j : ℤ, f j + a (j + 1) = f (j + 1) + d (j + 1)) :
+    ∀ n : ℕ, ∑ k ∈ Finset.range (n + 1), a (A + k)
+      = f (A + n) + ∑ k ∈ Finset.range (n + 1), d (A + k) := by
+  intro n
+  induction n with
+  | zero => simpa using hseed
+  | succ m ih =>
+      rw [Finset.sum_range_succ (fun k : ℕ => a (A + (k : ℤ))) (m + 1),
+        Finset.sum_range_succ (fun k : ℕ => d (A + (k : ℤ))) (m + 1)]
+      have h2 := hstep (A + m)
+      have e1 : A + (((m : ℕ) + 1 : ℕ) : ℤ) = A + (m : ℤ) + 1 := by push_cast; ring
+      rw [e1]
+      omega
+
+end EltBridge
+
+#print axioms EltBridge.sum_vArr_range_eq_one
+#print axioms EltBridge.telescope_seedA

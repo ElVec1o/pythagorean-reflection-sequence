@@ -9556,3 +9556,25 @@ directly, dropping the `1 <= N` derivation it previously needed.
 at the edit script silently failed both replacements (a chained `assert` inside a `try`
 raised before either `write` ran) -- caught by re-checking the file rather than trusting
 the script's exit code, per the standing rule against guessing after a failure.
+
+## 2026-09-04 — BLOCK 293: telescoping seeded from `A` itself, no pre-span point needed
+
+`exists_dep_index` (BLOCK 242) and `telescope_flow`/`flow_balance` (BLOCKS 230, 264) all
+seed the telescoping from a point BEFORE the span where the travel indicator vanishes --
+available for a configuration via `preState_stateOf`, but NOT for an arbitrary guarded box
+function `g`, which has no such point (its value at `A-1` is uncontrolled junk).  `flowA`
+(from `headOk2B`) gives a different seed that does not need one: it is the balance AT `A`
+itself, with the arrival's own value standing in for a fictitious predecessor.
+
+    sum_vArr_range_eq_one   the arrival marker sums to 1 over any range containing 0
+    telescope_seedA         telescoping seeded by flowA at A, no predecessor required
+
+0 sorry.  Three failures on `sum_vArr_range_eq_one`, all mechanical: a type mismatch
+(`0 - A : Z` fed where a `Finset Nat` membership was wanted -- needed `.toNat`), and a
+`Finset.sum_eq_single_of_mem` call missing its membership argument.  One failure on
+`telescope_seedA`: reindexing via `Finset.sum_range_succ'` left a `simp` with nothing to
+rewrite; switched to direct induction on `n`, mirroring `telescope_flow`'s own proof shape
+rather than trying to reduce to it by reindexing.
+
+**With this, `kstar`'s existence and uniqueness can be derived from `flowA` alone** --
+the last structural piece before assembling `coeff_vanish_on_complement`.
