@@ -10286,3 +10286,33 @@ move TWO site-cost terms (the old and new kstar) rather than one, and one mu ter
 not been computed, and the span-growth case needs its own argument (probably using
 the path-independence excess law from BLOCKS 305-306, which already tracks exactly
 how cstep's bookkeeping changes site by site). Not attempted yet. H1a stays 🟠.
+
+## 2026-09-05 — cloud environment: cache CDN confirmed blocked, scoped build fixes it
+
+Checked the cloud routine's actual runs rather than just re-triggering blindly. One run
+(cse_01XbHKeqC7sK5jc9pERPjoc8) has been "running" for over an hour, still compiling
+Mathlib from source, and will likely keep going indefinitely or time out -- a real cost
+of the earlier bootstrap_ci.sh fix (BLOCK -- the `lake exe cache get` addition), which
+turned out not to help.
+
+Another run (cse_01K2sq981SubQHqCbsSnTPeT) diagnosed WHY precisely: Mathlib's
+precompiled-cache CDN (`lakecache.blob.core.windows.net`) is BLOCKED by this sandbox's
+org egress policy, confirmed via the proxy's own `/__agentproxy/status` diagnostics --
+not a transient failure. `lake exe cache get` will never succeed in this environment.
+That run found the real fix itself: `lake build EltBridge` (a SCOPED target, ~400
+files -- only what EltBridge.lean actually depends on) instead of a bare `lake build`
+(all 60 defaultTargets, effectively the whole of Mathlib). It was progressing
+(400ish/400ish targets) when it ran out of its own session budget before committing
+the fix.
+
+Rewrote `bootstrap_ci.sh` from scratch based on that run's transcript (the fix itself
+was never pushed -- it lived only in that now-gone container): removed the futile
+`cache get` step entirely, documented the CDN block explicitly so future runs don't
+re-diagnose it, fixed a real bug the same run found (the final `lean --version` sanity
+check ran from the wrong cwd, printing a harmless-but-alarming "no default toolchain"
+error even on full success), and pointed callers at `lake build EltBridge` explicitly.
+Committed `95d4629`. Updated the routine's own prompt to match.
+
+**Honest note:** this is real, useful environment-hardening work, not H1a/H1b/H1c
+progress. Every hourly cloud fire before this fix was likely burning its whole budget
+on infrastructure. The next fires should finally reach real math work.
