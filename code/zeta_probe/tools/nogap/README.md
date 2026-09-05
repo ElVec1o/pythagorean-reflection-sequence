@@ -11329,3 +11329,92 @@ confirmed to need a new modeling decision (`side`/cost for phantom ends)
 before any regeneralization can start, not merely a bigger diff. This
 matches, and sharpens, BLOCK 332's own "next concrete step" framing rather
 than contradicting it. No sorry added, nothing forced.
+
+## BLOCK 336 (2026-09-06, commit 669dccb) -- a THIRD route past BLOCK 335's two,
+## closed: the desubdivision identity, proved general over the choice; plus a
+## redirection finding (`VEndpt.shield_of_initial`/`HasInitialTurnInv` already
+## supersedes the whole VEndpt-vs-Endpt framing as the route to `Elt.c<=|Z|`)
+
+Assigned the exact strategy BLOCK 332/335 didn't try: not a projection (BLOCK
+335's ruled-out (a)) and not regeneralizing `RunInv` (BLOCK 335's (b)), but
+building the real-only datum **from `Elt.dataOf`'s own output**, by treating
+the two virtual points as subdividing one edge of a smaller graph and undoing
+that subdivision.
+
+**Hand check first, as instructed.** Verified by direct computation on two
+tiny explicit `Data (Fin 6/8)` examples (worked by hand, not Rust -- the claim
+reduces to elementary permutation-cycle bookkeeping small enough to trace by
+hand and not worth a Rust job) that: given `D : Data (α ⊕ Bool)` with the two
+extra points `u=inr false`,`v=inr true` partnered by `p` (`p u = v`), `t`
+necessarily sends `u`,`v` to two REAL points `x0 = t u`, `x1 = t v` (forced:
+`t` can't fix them, `pt_ne` rules out `t u = v`) -- and forgetting `u,v`,
+rewiring `t` so `x0`,`x1` point at each other directly, leaves `walkCount`
+**exactly unchanged**, UNLESS `x0`,`x1` were already `p`-partners of each
+other, in which case `{x0,u,v,x1}` is an isolated 4-cycle and `walkCount`
+drops by exactly 1 on removal. This is a sharper, EXACT dichotomy (0 or -1,
+not the task brief's guessed "bounded by 1 either direction, non-constructive")
+-- it is literally "subdividing an edge doesn't change component count",
+plus the one genuine exception (the edge being subdivided was a loop-to-be).
+Crucially, the argument uses NOTHING about `t` away from `u`,`v` -- it is
+correct for *whatever* `TurnBuild.exists_involution_of_card_eq`'s
+`Classical.choice` produced, which is exactly BLOCK 332/335's obstruction.
+
+**Formalized in full**, generic case only (the corner case is real but was
+not formalized -- see honest scope below). `WalkGraph.lean`, new section
+`Desub`: `desub_exists_x0x1` (existence of `x0,x1`, unconditional -- no
+hypothesis on `t` beyond `p u = v`), `desubP`/`desubT` (the rewired datum's
+two maps), `desubData` (a genuine `Data α`, needing the one hypothesis
+`hne : desubP D hpuv x0 ≠ x1`, i.e. the generic case), and
+`walkCount_desub : walkCount D = walkCount (desubData D hpuv x0 x1 hx0 hx1
+hne)`, proved via an explicit `ConnectedComponent` equivalence (`desubEquiv`):
+collapsing `u,v` onto `x0,x1` one way, embedding `α` the other, both
+directions checked by hand-written `SimpleGraph.Walk` induction
+(`reach_of_step`, a small reusable general lemma: a step function that turns
+every edge into an equal-or-reachable pair extends to full reachability).
+`EltBridge.lean`: `Elt.dataOf_p`/`Elt.dataOf_hpuv` (the two virtual points
+of `Elt.dataOf`'s output ARE `partner`s, read off `Elt.dataOf_mergesMin`),
+`Elt.dataOf_exists_x0x1` (instantiates the existence lemma), and
+`Elt.dataOf_walkCount_eq` (the assembled bridge: `walkCount (Elt.dataOf ...)
+= walkCount (desubData (Elt.dataOf ...) ...)`, a genuine `Data (Endpt
+(pdWidth ..) (pdMm ..))` on the right). `lake build` (whole project, 8629
+jobs) clean; every new theorem's `#print axioms` is exactly `[propext,
+Classical.choice, Quot.sound]`, 0 `sorry`.
+
+**This is real, but it does NOT close `Elt.c <= |Z| + O(1)`, for a specific
+reason distinct from BLOCK 335's.** `walkCount_desub`/`Elt.dataOf_walkCount_eq`
+give a genuine `Data (Endpt n mm)` with equal (or `hne`-conditionally equal)
+`walkCount` to `Elt.dataOf`'s -- but `c_le_Z_final` doesn't consume a bare
+`Data (Endpt n m)`, it consumes one satisfying the full six-condition
+`RunInv`, and `RunInv.hmin` is cost-minimality against `CostMerge.costOf
+(endDataOf up ds)` -- a condition about the constructed datum, unrelated to
+anything the walkCount identity says. Nothing here shows `desubData
+(Elt.dataOf ...) ...` is `RunInv`-cost-minimal (or even that it's a sensible
+question -- `endDataOf up ds` is built from a real configuration's `up`/`ds`,
+and whether the desubdivided datum's implicit "real-only" reading agrees with
+that configuration was never checked). So this closes exactly the question
+BLOCK 332 posed ("is there a way to relate `Data (VEndpt n mm)`'s walkCount
+to a genuine `Data (Endpt n m)`'s") and no more -- BLOCK 335's deeper
+`hmin`/phantom-end modeling gap for option (b) is UNTOUCHED, not smaller.
+
+**Redirection finding (the most load-bearing part of this session): the
+VEndpt-vs-Endpt bridge is very likely not the route to `Elt.c<=|Z|` at all.**
+While reading `EltBridge.lean` to place the Elt-level instantiation, found
+`VEndpt.shield_turnInvN`/`VEndpt.shield_of_initial` (~4244-4350), an ALREADY-BUILT
+chain that reaches `walkCount D' = Zf.card + 1` **directly on `VEndpt`**, no
+`Endpt` bridge of any kind needed -- it takes a `TurnInvG`-satisfying `D` (a
+VEndpt-level analogue of `RunInv`, with `hZ`/`hturn` already discharged by the
+descent) and produces the exact shield law. Its own doc comment names the one
+gap precisely: `HasInitialTurnInv` (an initial datum in `TurnInvG` -- the file
+says the natural witness "should come from a `Realisation`... not built
+abstractly from `dataG`"). This is a DIFFERENT, and by the file's own
+account nearer-term, obstruction than either BLOCK 332/335's bridge or
+`RunInv.hmin` on the `Endpt` side. A future session attacking `Elt.c<=|Z|`
+should check `HasInitialTurnInv` first, not continue down the VEndpt-vs-Endpt
+or `RunInv.hmin` framings -- this block's bridge, while real, is very likely
+not on the critical path.
+
+**Honest scope.** Corner case (`¬hne`) stated but not formalized (would need
+a `Data` on a 2-point-removed subtype -- doable, not attempted, since the
+generic case was the deliverable and the corner case doesn't change the
+overall verdict above). `HasInitialTurnInv` itself: read but not attempted
+this session -- flagged as the next concrete step, not investigated further.
