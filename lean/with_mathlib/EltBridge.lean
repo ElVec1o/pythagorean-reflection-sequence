@@ -12096,12 +12096,78 @@ theorem s3_siteCost_eq (g : Elt) (s : ℤ) :
   unfold SiteCost.PathData.siteCost
   rw [s3_alphaAt_eq, s3_betaAt_eq]
 
+/-- **`s3` leaves `PhiAt` unchanged too.**  Same cancellation as `alphaAt`/`betaAt`: the
+`travel`-shift `s3` induces at the crossed edge (`travel_succ_at`/`travel_pred_at`) exactly
+cancels the change in `vL` there, and both are literally unchanged everywhere else
+(`travel_succ_ne`/`travel_pred_ne`).  `vArr` doesn't depend on `kstar`/`delta` at all, so it
+cancels trivially on both sides. -/
+theorem s3_PhiAt_eq (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.PhiAt s = g.toPathData.PhiAt s := by
+  by_cases hg : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by simp [s3, hg]
+    have hδ : (s3 g).delta = false := by simp [s3, hg]
+    have hpk : (s3 g).toPathData.kstar = g.kstar + 1 := (toPathData_kstar _).trans hk
+    have hpδ : (s3 g).toPathData.delta = false := hδ
+    have hgδ : g.toPathData.delta = true := hg
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    rcases eq_or_ne s (g.kstar + 1) with hs | hs
+    · have h1 : s - 1 = g.kstar := by omega
+      have htr : (s3 g).toPathData.f (s - 1) = g.toPathData.f (s - 1) + 1 := by
+        unfold SiteCost.PathData.f
+        rw [hpk, hgk, h1]; exact travel_succ_at g.kstar
+      simp only [SiteCost.PathData.PhiAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+        htr, hpk, hpδ, hgδ, hgk, if_true, if_false, Bool.false_eq_true]
+      rw [if_pos hs]
+      ring
+    · have h1 : s - 1 ≠ g.kstar := by omega
+      have htr : (s3 g).toPathData.f (s - 1) = g.toPathData.f (s - 1) := by
+        unfold SiteCost.PathData.f
+        rw [hpk, hgk]; exact travel_succ_ne g.kstar (s - 1) h1
+      simp only [SiteCost.PathData.PhiAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+        htr, hpk, hpδ, hgδ, hgk, if_true, if_false, Bool.false_eq_true]
+      rw [if_neg hs]
+  · have hgf : g.delta = false := by
+      rcases hgb : g.delta with _ | _
+      · rfl
+      · exact absurd hgb hg
+    have hk : (s3 g).kstar = g.kstar - 1 := by simp [s3, hgf]
+    have hδ : (s3 g).delta = true := by simp [s3, hgf]
+    have hpk : (s3 g).toPathData.kstar = g.kstar - 1 := (toPathData_kstar _).trans hk
+    have hpδ : (s3 g).toPathData.delta = true := hδ
+    have hgδ : g.toPathData.delta = false := hgf
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    rcases eq_or_ne s g.kstar with hs | hs
+    · have h1 : s - 1 = g.kstar - 1 := by omega
+      have htr : (s3 g).toPathData.f (s - 1) = g.toPathData.f (s - 1) - 1 := by
+        unfold SiteCost.PathData.f
+        rw [hpk, hgk, h1]; exact travel_pred_at g.kstar
+      simp only [SiteCost.PathData.PhiAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+        htr, hpk, hpδ, hgδ, hgk, if_true, if_false, Bool.false_eq_true]
+      rw [if_pos hs]
+      ring
+    · have h1 : s - 1 ≠ g.kstar - 1 := by omega
+      have htr : (s3 g).toPathData.f (s - 1) = g.toPathData.f (s - 1) := by
+        unfold SiteCost.PathData.f
+        rw [hpk, hgk]; exact travel_pred_ne g.kstar (s - 1) h1
+      simp only [SiteCost.PathData.PhiAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+        htr, hpk, hpδ, hgδ, hgk, if_true, if_false, Bool.false_eq_true]
+      rw [if_neg hs]
+
+/-- **`s3` leaves `cut` unchanged everywhere**: `alphaAt`, `betaAt` and `PhiAt` are each
+exactly conserved, and `cut` is exactly their joint vanishing. -/
+theorem s3_cut_iff (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.cut s ↔ g.toPathData.cut s := by
+  unfold SiteCost.PathData.cut
+  rw [s3_alphaAt_eq, s3_betaAt_eq, s3_PhiAt_eq]
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.s3_alphaAt_eq
 #print axioms EltBridge.Elt.s3_betaAt_eq
 #print axioms EltBridge.Elt.s3_siteCost_eq
+#print axioms EltBridge.Elt.s3_PhiAt_eq
+#print axioms EltBridge.Elt.s3_cut_iff
 
 namespace EltBridge
 
@@ -19379,3 +19445,16 @@ end EltBridge
 #print axioms EltBridge.card_C_eq_sum_marker_fiber_card
 #print axioms EltBridge.exists_C
 #print axioms EltBridge.coeff_flagPathsFinset_eq_some_card
+
+namespace EltBridge
+namespace Elt
+
+/-- **The connectivity defect `c`, as a concrete cardinality.** `pdCutSites` (already defined
+and instantiated on `witElt`/`witNeg`) counts the interior cut sites of `g.toPathData` --
+exactly the `|Z|` of `prop:cut` this file's header says is NOT otherwise formalised. This is a
+real, non-vacuous candidate for the uninterpreted `c` of `IsTrueLength`, not yet connected to
+it. -/
+noncomputable def c (g : Elt) : ℕ := (pdCutSites g.toPathData).card
+
+end Elt
+end EltBridge
