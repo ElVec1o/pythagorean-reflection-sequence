@@ -18223,8 +18223,54 @@ theorem coeff_flagPathsFinset_eq_some_card (N : ℕ) (A : ℤ) (n : ℕ)
   obtain ⟨C, hC⟩ := exists_C N A n
   exact ⟨C.card, coeff_flagPathsFinset_eq_card_C N A n hA hAn C hC⟩
 
+/-- **Different `(A, n)` slices of the box are disjoint.** Same argument in two
+halves: different `n` give `List.ofFn` lists of different length
+(`List.length_ofFn`); same `n` but different `A` are told apart by the `arr` field,
+which is `Realisation.vArr` evaluated at the absolute position -- and since
+`A ∈ [-n, 0]` puts `0` inside the span, the index where `arr = 1` fires is exactly
+`-A`, which differs for different `A`. -/
+theorem flagPathsFinset_disjoint {N : ℕ} {A1 A2 : ℤ} {n1 n2 : ℕ}
+    (hA1 : A1 ≤ 0) (hAn1 : 0 ≤ A1 + (n1 : ℤ)) (hA2 : A2 ≤ 0) (hAn2 : 0 ≤ A2 + (n2 : ℤ))
+    (h : (A1, n1) ≠ (A2, n2)) :
+    Disjoint (flagPathsFinset N A1 n1) (flagPathsFinset N A2 n2) := by
+  rw [Finset.disjoint_left]
+  intro L hL1 hL2
+  unfold flagPathsFinset at hL1 hL2
+  obtain ⟨f1, -, hL1eq⟩ := Finset.mem_image.mp hL1
+  obtain ⟨f2, -, hL2eq⟩ := Finset.mem_image.mp hL2
+  have hLL : List.ofFn (fun i : Fin (n1 + 1) => (f1 i).toFlag (idxFn A1 n1 i))
+      = List.ofFn (fun i : Fin (n2 + 1) => (f2 i).toFlag (idxFn A2 n2 i)) := by
+    rw [hL1eq, hL2eq]
+  by_cases hn : n1 = n2
+  · subst hn
+    apply h
+    have heq : (fun i : Fin (n1 + 1) => (f1 i).toFlag (idxFn A1 n1 i))
+        = (fun i : Fin (n1 + 1) => (f2 i).toFlag (idxFn A2 n1 i)) := List.ofFn_inj.mp hLL
+    have hi0 : (-A1).toNat < n1 + 1 := by omega
+    have hpt := congrFun heq ⟨(-A1).toNat, hi0⟩
+    have harr := congrArg (fun σ : FlagState => σ.st.arr) hpt
+    simp only [BoxState.toFlag, BoxState.toLocal] at harr
+    have hidx1 : idxFn A1 n1 ⟨(-A1).toNat, hi0⟩ = 0 := by
+      show A1 + (((-A1).toNat : ℕ) : ℤ) = 0
+      omega
+    rw [hidx1] at harr
+    unfold SiteCost.vArr at harr
+    rw [if_pos rfl] at harr
+    have hidx2 : idxFn A2 n1 ⟨(-A1).toNat, hi0⟩ = A2 + (((-A1).toNat : ℕ) : ℤ) := rfl
+    rw [hidx2] at harr
+    by_cases hz : A2 + (((-A1).toNat : ℕ) : ℤ) = 0
+    · have : A1 = A2 := by omega
+      simp [this]
+    · rw [if_neg hz] at harr
+      exact absurd harr.symm (by norm_num)
+  · exfalso
+    apply hn
+    have hlen := congrArg List.length hLL
+    simpa [List.length_ofFn] using hlen
+
 end EltBridge
 
+#print axioms EltBridge.flagPathsFinset_disjoint
 #print axioms EltBridge.sum_vArr_range_eq_one
 #print axioms EltBridge.telescope_seedA
 #print axioms EltBridge.exists_unique_kstar_of_flowA
