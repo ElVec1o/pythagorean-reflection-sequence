@@ -10873,3 +10873,56 @@ need: either (a) a proof that `cut` implies membership in `[A, B+1]`-ish
 (closing the missing "outside the span" fact), or (b) reformulating `c` over
 an absolute `Finset.Icc`-style index instead of `pdCutSites`'s `A`-relative
 one, so the reindexing problem doesn't arise in the first place.
+
+## BLOCK 328: `Elt.c`'s Lipschitz bound closed -- the reindexing obstruction dissolves,
+## and BLOCK 327's diagnosis of the "outside the span" gap was itself wrong
+
+Followed BLOCK 327's own suggested option (b): reformulate `pdCutSites` over an
+absolute index instead of chasing option (a) (a "cut never holds outside `[A,B+1]`"
+fact). Checked `pdWidth P := (P.B - P.A + 1).toNat` first: since `hA : A <= 0` and
+`hB : 0 <= B` force `B - A >= 0`, `(pdWidth P : ZZ) = P.B - P.A + 1` exactly, so
+`pdCutSites`'s relative window `Ioo 0 (pdWidth P)` filtered by `s -> P.cut (P.A+s)`
+is *already* nothing but `Ioo P.A (P.B+1)` filtered by `P.cut`, reindexed by the
+shift `s |-> P.A + s`. Proved this as `pdCutSites_card_eq_abs` via `Finset.card_bij`
+with that shift as the bijection (both directions checked by `omega` once `hw :
+(pdWidth P : ZZ) = P.B - P.A + 1` is in hand). `0 sorry`, clean axioms.
+
+**BLOCK 327's "PhiAt might not vanish outside the span" claim was checked by hand
+and found FALSE, but this turned out not to matter.** Working it out: `PhiAt(s) =
+f(s-1) + vArr(s) - vL(s)`. For `s` outside `[A, B+1]`: `f(s-1) = travel kstar (s-1)
+= 0` by `houter` (since `s-1` is outside `[A,B]` too); `vArr(s) = [s=0] = 0` since
+`0` is inside `[A,B]` (`hA`/`hB`) so `s != 0`; and `vL(s) = [delta=false][s=kstar]
+= 0` since `kstar` is inside `[A, B+1]` (`A_le_kstar`/`kstar_le_B_succ`, already in
+the file) so `s != kstar`. So `PhiAt(s) = 0` outside `[A,B+1]` too, by the exact
+same `houter`-style argument as `alphaAt`/`betaAt` -- `cut` in fact holds
+*identically true* everywhere outside `[A, B+1]`, the opposite of BLOCK 327's
+worry. This was a real error in that block's reasoning, now corrected. But it
+turned out to be moot: once `pdCutSites` is in the absolute form above, the
+`Elt.c` Lipschitz bound doesn't need to know anything about `cut`'s behavior
+outside either span at all -- see below.
+
+**The actual closing move needed something simpler than the whole `s3_lR_dist_le`
+machine.** `Elt.s3_cut_iff` (BLOCK 327, already exact and unconditional: `(s3
+g).toPathData.cut s <-> g.toPathData.cut s` for *every* absolute `s`, not just
+inside some span) means `cut` is *literally the same predicate* on `g` and `s3 g`
+-- there is no discrepancy to bound between the two summands the way `mu`/`siteCost`
+had one at the crossed edge. All that moves is the *window* `Ioo A (B+1)` itself,
+by at most one at each end (`s3_A_dist_le_one`, `s3_B_dist_le_one`). So the
+"outside the span, the summand is a known constant" step from `s3_lR_dist_le` is
+not needed at all here; what's needed instead is the purely combinatorial fact
+that a filter's cardinality over two `Ioo`-windows whose ends move by <= 1 each
+differs by at most 2. Proved as `window_sdiff_subset`: `Ioo A' (B'+1) \ Ioo A
+(B+1) subseteq {A, B+1}` given `|A-A'| <= 1` and `|B-B'| <= 1` (pure `omega` once
+membership is unfolded), then a union-of-windows card bound (`T := W1 union W2`;
+`card(T.filter p) <= card(Wi.filter p) + card(T \ Wi)` from a subset-then-
+`card_union_le` step; `T \ W1 = W2 \ W1` etc.) closes both directions.
+
+`Elt.s3_c_dist_le : |c(s3 g) - c g| <= 2`. `0 sorry`, `lake build EltBridge` clean,
+`#print axioms` on `pdCutSites_card_eq_abs`, `window_sdiff_subset`, `s3_c_dist_le`
+all show only `propext, Classical.choice, Quot.sound`. Commit `d2f40f2`.
+
+**Honest scope.** This closes the `c`-Lipschitz gap BLOCK 327 left open. It does
+NOT connect `Elt.c` to `IsTrueLength`'s uninterpreted `c`, and does not touch
+`prop:travelinv`/the shield inequality `c <= |Z|` (paper2's still-open core, per
+`travelinv-is-the-shield-inequality.md`) -- `Elt.c` here is a candidate model of
+`|Z|`, formalized and now Lipschitz, nothing more.
