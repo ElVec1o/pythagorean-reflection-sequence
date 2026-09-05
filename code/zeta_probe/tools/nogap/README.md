@@ -10218,3 +10218,49 @@ ALSO this specific transfer-matrix formula" -- is the one piece of the whole
 IsAssembly chain not yet attempted. This is the hard original mathematical content
 (the actual claim of eq:assembly), not more bookkeeping. H1c stays 🟡, but the
 crux that opened this thread this morning is gone.
+
+## 2026-09-05 — BLOCK 316: s1/s2 change lR by at most 1 (H1a, local session)
+
+The cloud routine (a fresh, toolchain-less container) identified a promising lead
+mid-bootstrap but never reached it (spent the whole session on setup): `s1`/`s2`
+only touch `delta`/`eps`, never `d`/`kstar`/`supp`, so they should change `lR` by at
+most a bounded amount. Picked this up directly in a local session (instant build,
+no bootstrap tax) rather than wait for the cloud run to finish setup.
+
+    s1_occ/s1_A/s1_B, s2_occ/s2_A/s2_B   the span is LITERALLY unchanged by s1/s2
+                                          (all rfl, since occ/A/B depend only on
+                                          supp/d/kstar)
+    siteCost_eq_of_ne_kstar               siteCost away from kstar depends only on
+                                           d, kstar and the universal vArr -- also
+                                           unchanged by s1/s2
+    s1_siteCost_kstar                     AT kstar, flipping delta swaps which of
+                                           alphaAt/betaAt carries a +-eps term; each
+                                           changes by exactly eps, natAbs is
+                                           1-Lipschitz, so their max moves by at
+                                           most 1
+
+Together: mu is untouched everywhere (depends only on d, kstar), and only ONE
+siteCost term (at kstar) can move, by at most 1 -- so s1 changes lR by at most 1
+total. This is exactly the Lipschitz property a word-length lower bound needs.
+
+0 sorry, clean build after several real, diagnosed failures (not guesses): a
+`rw [if_pos rfl]` inside a combined simp set hit "motive is not type correct" (a
+known dependent-rewrite pitfall); `rw [h]` on the eps disjunction hit the same
+issue, fixed with `simp only [h]`; the goal's `delta`/`eps` conditions stayed
+symbolic even after casing on `g.delta` because `toPathData.eps`/`.delta` were
+never linked back to `g`'s own fields -- added those links explicitly; and, found
+only after three failed `omega` attempts (three-strike rule), `norm_num` was
+silently converting `Int.natAbs` to the generic `abs` notation, which `omega`
+(natAbs-aware, not abs-aware) then saw as unrelated opaque terms -- removing
+`norm_num` fixed it immediately. `#print axioms` shows only `propext` (the pure
+site-cost equality) and `propext, Classical.choice, Quot.sound` (the Lipschitz
+bound). Committed `1e263b3`.
+
+**Scope, stated honestly:** this is the Lipschitz bound for `s1` ONLY. `s2`'s
+version (flip delta AND eps) needs the same argument with a sign check, not yet
+done. `s3` (the cursor-move generator) needs a SEPARATE bound -- it can touch `mu`
+at one edge plus `siteCost` at two sites, so its constant is likely larger than 1,
+not yet computed. The actual lower-bound theorem (`wordLength >= lR / constant`,
+composing per-generator bounds by induction on word length) has not been
+attempted. Real progress on H1a's previously-untouched lower-bound half, not a
+closure.
