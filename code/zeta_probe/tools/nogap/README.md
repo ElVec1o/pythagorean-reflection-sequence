@@ -10364,3 +10364,43 @@ a field projection's Bool value, use `revert hδ; cases g.delta <;> simp`.
 
 Still open: sub-piece 2 (mu-change at the crossed edge) and sub-piece 3
 (two-site siteCost bound). H1c and H1b/M4b untouched this block.
+
+## 2026-09-05 — BLOCK 321: `pathSum` generalized to `CommRing`, matrix powers as walk sums
+
+(Renumbered twice on merge: originally logged as "316", then "320", each time
+colliding with a concurrent session's own use of the same number for unrelated
+H1a work on `s1`/`s2`/`s3` (see the entries immediately above). At least two,
+possibly three, sessions ran on this repo in the same window. No content
+conflict either time -- different files/theorems -- but the block counter is
+clearly not synchronized across concurrent sessions; treat any single
+session's next free number as provisional until push time.)
+
+Before attempting `IsAssembly`'s right-hand side directly, closed a smaller, clearly
+necessary gap it exposed: `pathSum`/`pathGF` (BLOCK 112-113) are hard-coded to `M : S ->
+S -> ℤ`, but `IsAssembly`'s transfer matrix `T` is `Matrix (Fin n) (Fin n) (PowerSeries
+ℤ)` -- a different ring, so neither applies to it as stated.
+
+    pathSumR                     the same walk-sum recursion as pathSum, over an
+                                  arbitrary CommRing R
+    pathSumR_zero / pathSumR_succ   the two defining equations, both rfl (as pathSum's
+                                  own succ equation already was)
+    matrixPow_apply_eq_pathSumR  (T^k) a b = pathSumR (fun i j => T i j) k a b, by
+                                  induction on k generalizing a b, via pow_succ' and
+                                  Matrix.mul_apply
+
+0 sorry, clean build on the first attempt, no bugs this round. `#print axioms` on all
+three shows only `propext`/`Classical.choice`/`Quot.sound` (the two rfl-equations don't
+even need `Classical.choice`). Committed `7c9389a`.
+
+**What this gives.** `IsAssembly`'s literal `(T ^ k) a b` term can now be read as a
+walk sum over any commutative ring, not just algebraically via `Matrix.pow` -- the
+combinatorial reading the eventual proof needs.
+
+**What this does NOT touch, stated honestly.** The actual hard gap named at the end of
+BLOCKS 314-315 is untouched: turning the box's `flagPathsFinset`/`globalBox` sum
+(indexed by `List FlagState`, built over the integer-indexed `idxFn`) into a sum
+indexed by a concrete `Fin n` state space with an explicit transfer matrix `T`,
+`lambda`, `mu` is separate, unattempted infrastructure -- `pathWeightR` (the box's
+actual per-path weight) and `pathSumR` (this block's walk-sum) are not yet connected
+to each other at all. `IsAssembly` itself remains unproved for any concrete
+`W, W0, T, lam, mu`. H1c stays 🟡.
