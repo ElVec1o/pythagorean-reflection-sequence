@@ -10218,3 +10218,93 @@ ALSO this specific transfer-matrix formula" -- is the one piece of the whole
 IsAssembly chain not yet attempted. This is the hard original mathematical content
 (the actual claim of eq:assembly), not more bookkeeping. H1c stays 🟡, but the
 crux that opened this thread this morning is gone.
+
+## 2026-09-05 — hourly cloud run: container bootstrap takes ~2h45m, no shortcut found
+
+This run's container had no Lean toolchain and no `.lake` build cache at all (fresh
+checkout, as expected -- confirmed the prior run's note that `private/RESEARCH_LOG.md`
+does not survive between cloud fires). `bootstrap_ci.sh` (committed by an earlier run)
+still works and needed no changes to its actual logic. Checked whether Mathlib's own
+`.olean` cache (`lake exe cache get`, which would turn this into a few-minute download
+instead of a from-source build) is reachable from this sandbox: it is not --
+`oleanstorage.azureedge.net` gets the same `403 CONNECT tunnel failed` from the egress
+proxy as `release.lean-lang.org` already did. So every fresh cloud container genuinely
+has to compile Mathlib from source; there is no faster path available given this
+sandbox's network policy. `lake build` took right around 2h45m wall-clock end to end
+(~8600 jobs: ~8600 Mathlib modules plus this project's ~110 files), most of it single
+core. **Consequence stated plainly for whoever reads this next:** on an hourly cadence,
+if the container is not reused between fires, a large fraction of every fire's budget
+goes to this rebuild before any new theorem-proving can start. This run's real
+mathematical output (below) had well under an hour of actual working time after the
+build finished.
+
+Fixed one harmless cosmetic bug while here: `bootstrap_ci.sh`'s last line called
+plain `lean --version` after linking the toolchain, which fails with "no default
+toolchain configured" when the script is sourced from a directory with no
+`lean-toolchain` file in it (e.g. the repo root) -- it does not affect anything (the
+`lake`/`lean` on PATH after sourcing work fine either way, and the actual build in
+`lean/with_mathlib/` picks the right toolchain from its own `lean-toolchain` file
+regardless), but it prints a scary Rust backtrace that could mislead a future run
+into thinking bootstrap failed. Changed it to call `"$DEST/bin/lean" --version`
+(the binary just linked, by explicit path) so the version print actually succeeds.
+
+`lake build` in `lean/with_mathlib/` after bootstrapping: **clean, 0 sorry**
+(`grep -c sorry EltBridge.lean` = 0), `Build completed successfully (8637 jobs)`,
+exit code 0. Confirmed before touching anything, per MATH_RULES_V6.
+
+## 2026-09-05 — BLOCK 316: a first (weak) lower bound on `wordLength` (H1a)
+
+With the build clean, picked H1a over H1c: H1c's remaining step (the per-fiber
+resolvent identification connecting `W`'s combinatorial count to the actual
+transfer-matrix formula) needs a real design decision this session's remaining
+time did not leave room to make carefully (see BLOCK 315's honest scope note --
+still true, untouched this run). H1a had a smaller, well-scoped opening instead.
+
+**What was actually missing.** Every H1a result on record so far was either the
+(closed) reachability upper bound or a statement ABOUT `IsRelaxedLength`/
+`IsTrueLength` (e.g. `isRelaxedLength_wordLength_forces_no_defect`). No lower bound
+of any kind on `wordLength` had ever been proved -- not even a weak one. And `c`,
+the defect `IsTrueLength` needs (`wordLength g = g.lR + 2 * c g`), has no Lean
+definition anywhere; it is only known empirically (`nogap` BFS: "max c observed = 3"
+at depth 21). So the real lower bound (`wordLength g ≥ g.lR + 2 * c g`) needs `c`
+defined first -- a genuine design step, not attempted this block.
+
+**What was proved instead, cleanly.** The simplest possible potential function,
+`|kstar|`, which needs no new definition:
+
+    gen_kstar_natAbs_le        every generator step moves `kstar` by at most one:
+                                `s1`/`s2` don't move it at all (`s1_kstar`/`s2_kstar`
+                                already on record), `s3` moves it by exactly `+-1`
+                                depending on `delta` (case split on the `s3` dite,
+                                closed by `simp [s3, hd]; omega` in both branches)
+    reaches_kstar_natAbs_le    induction on `Reaches n g`: `|g.kstar| <= n` for ANY
+                                walk of length `n` reaching `g`, using
+                                `gen_kstar_natAbs_le` at the step case
+    wordLength_ge_kstar_natAbs `|g.kstar| <= wordLength g` for any reachable `g`,
+                                by specialising the induction fact to
+                                `n := wordLength g` via the already-proved
+                                `reaches_wordLength`
+
+0 sorry, clean build on the first attempt (`lake build EltBridge`, 2982 jobs,
+incremental after the Mathlib rebuild above). `#print axioms` on all three shows
+only `propext, Classical.choice, Quot.sound`. Committed alongside this log entry
+and the bootstrap fix.
+
+**Scope, stated honestly.** This is a real, previously-nonexistent lower bound, but
+a WEAK one: `|kstar|` is dominated by `lR` itself (`lR` sums over several quantities
+`kstar` is only one of), so this is nowhere near `IsTrueLength`'s actual target
+`lR + 2 * c`. It does not close H1a's hard half, and should not be read as being
+close to doing so. What it does establish, rigorously, is the shape any real lower
+bound will need: a potential that is `1`-Lipschitz along `s1`, `s2`, `s3` and equals
+the target at `one`. The two generators `s1`/`s2` being complete no-ops on `kstar`
+(and, from their definitions, on `d` too -- `s1_d`/`s2_d`) is exactly why the eventual
+potential can afford to depend only on `kstar` and `d`, ignoring `eps`/`delta`
+entirely; that structural fact is now proved rather than assumed. H1a stays 🟠.
+The next real step, honestly: formally DEFINE `c` (the natural candidate is built
+from BLOCK 306's excess law, `d j + eps * travel(kstar, j)`, summed and halved --
+matching what BLOCKS 303-310's reachability construction actually uses to build
+corrections), then prove the Lipschitz property for that potential under `s3`
+specifically (the `s1`/`s2` cases would already be handled, by the fact above). Not
+attempted this block -- defining `c` correctly is itself a real decision with room
+to get the sign or the halving wrong, and this run's remaining time was better spent
+closing the smaller, fully-verified piece above than rushing that decision.
