@@ -10316,3 +10316,28 @@ Committed `95d4629`. Updated the routine's own prompt to match.
 **Honest note:** this is real, useful environment-hardening work, not H1a/H1b/H1c
 progress. Every hourly cloud fire before this fix was likely burning its whole budget
 on infrastructure. The next fires should finally reach real math work.
+
+## BLOCK 319 (2026-09-05, commit 44a6a29) — kstar within 1 of span, for Elt
+
+Proved `Elt.A_le_kstar` and `Elt.kstar_le_B_add_one`: `g.A <= g.kstar <= g.B + 1`
+for ANY group element `g`, not just cost-minimal `PathData`. This was NOT new
+math — the same fact was already proved at the `SiteCost.PathData` level
+(`A_le_kstar`/`kstar_le_B_succ`). It only needed two new `rfl` field-projection
+lemmas (`toPathData_A`, `toPathData_B`) to transfer it across `Elt.toPathData`.
+
+Why this matters: BLOCK 318's `s3_occ_agree_true/false` showed that `s3`
+changes `occ` by inserting/removing exactly the crossed edge. But inserting a
+single point into a Finset can move its min'/max' by an unbounded amount if
+that point is far from the current range. Without today's theorem, s3's
+Lipschitz bound on lR could genuinely have failed for elements whose `kstar`
+sits far from their occupied region. With it, `kstar` is already sandwiched
+to within 1 of `[A,B]` before any move, so the span can move by at most 1 too.
+
+0 sorry. `#print axioms` on both new theorems: only propext, Classical.choice,
+Quot.sound. Build clean on `lake build EltBridge`.
+
+Still NOT done for s3's full bound: the actual A/B movement bound (combining
+this with BLOCK 318), the mu-change bound at the crossed edge, and the
+two-site siteCost bound (old kstar loses its marker, new kstar gains it).
+None of these three attempted yet. H1c (IsAssembly resolvent identity) and
+H1b/M4b (RunStrandsConnected, deprioritized) remain untouched this block.
