@@ -2084,6 +2084,117 @@ theorem Elt.dataOf_defect_zero (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
     ConfigLoop.defect (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀) = 0 :=
   (Classical.choose_spec (Elt.defect_zero g ds bnd hk hb hbnd hcov0 z₀)).2
 
+/-! ### The VEndpt-vs-Endpt bridge (BLOCK 332/335), resolved
+
+`Elt.dataOf` builds a `WalkGraph.Data (VEndpt n mm)`, two points larger than the
+`Data (Endpt n m)` the `ConfigLoop`/`RunInv` shield-law machinery consumes, and BLOCK
+332 found no forced way to relate the two: `Elt.dataOf`'s turn `t` is rebuilt fresh, by
+`TurnBuild.exists_involution_of_card_eq`'s bare `Classical.choice`, at the two sites the
+virtual points sit on, with no theorem tying that choice back to any particular
+`Endpt`-only matching. BLOCK 335 checked the natural fix -- a `t`-preserving projection
+`Data (VEndpt n mm) → Data (Endpt n m)` -- and ruled it out: there is no such
+projection, *for any* fixed target matching, since the choice at those two sites is
+free.
+
+The fix below is not a projection onto an independently-given `Endpt`-Data: it builds
+the real-only datum **from `Elt.dataOf` itself**, by un-subdividing the length-3 path
+its two virtual points sit on (`WalkGraph.desubData`, `WalkGraph.walkCount_desub`,
+proved generically above). That identity holds for *whatever* `t` the choice produced,
+so it needs no further theorem tying the choice to anything else -- it only reads off,
+after the fact, which two real ends `t` happened to send the virtual arrival and
+departure to. -/
+
+/-- **`Elt.dataOf`'s crossing map is `VEndpt.partner`.**  The first component of
+`Merges`, read out of `Elt.dataOf_mergesMin`. -/
+theorem Elt.dataOf_p (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀).p = VEndpt.partner :=
+  (Elt.dataOf_mergesMin g ds bnd hk hb hbnd hcov0 z₀).1.1
+
+/-- **`Elt.dataOf`'s two virtual points are `partner`s of each other.**  Exactly the
+`hpuv` hypothesis `WalkGraph.walkCount_desub` needs, for `α := Endpt (pdWidth ..) (pdMm
+..)`. -/
+theorem Elt.dataOf_hpuv (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀).p (Sum.inr false) = Sum.inr true := by
+  rw [Elt.dataOf_p g ds bnd hk hb hbnd hcov0 z₀]
+  rfl
+
+/-- **`Elt.dataOf`'s two virtual points always have real turn-partners.**  No matter
+what `TurnBuild.exists_involution_of_card_eq`'s `Classical.choice` picked for the turn,
+the virtual arrival and departure each look across at some genuine end of `g`. -/
+theorem Elt.dataOf_exists_x0x1 (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    ∃ x0 x1 : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀).t (Sum.inr false) = Sum.inl x0 ∧
+      (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀).t (Sum.inr true) = Sum.inl x1 :=
+  WalkGraph.desub_exists_x0x1 _ (Elt.dataOf_hpuv g ds bnd hk hb hbnd hcov0 z₀)
+
+/-- **The bridge itself: `walkCount (Elt.dataOf ...)` equals the `walkCount` of a
+genuine `Data (Endpt n mm)`.**  Forgetting the virtual arrival and departure --
+un-subdividing the length-3 path through them down to the single edge between the two
+real ends `t` happened to send them to -- does not change the walk count, in the
+generic case where those two real ends were not already `partner`s of each other
+(`hne`). This holds for *whatever* turn the choice in `Elt.dataOf` produced: `x0`, `x1`
+are read off from that turn (via `hx0`, `hx1`), not fixed in advance. -/
+theorem Elt.dataOf_walkCount_eq (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData))
+    (x0 x1 : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData))
+    (hx0 : (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀).t (Sum.inr false) = Sum.inl x0)
+    (hx1 : (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀).t (Sum.inr true) = Sum.inl x1)
+    (hne : WalkGraph.desubP (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀)
+      (Elt.dataOf_hpuv g ds bnd hk hb hbnd hcov0 z₀) x0 ≠ x1) :
+    WalkGraph.walkCount (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀)
+      = WalkGraph.walkCount
+          (WalkGraph.desubData (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀)
+            (Elt.dataOf_hpuv g ds bnd hk hb hbnd hcov0 z₀) x0 x1 hx0 hx1 hne) :=
+  WalkGraph.walkCount_desub (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀)
+    (Elt.dataOf_hpuv g ds bnd hk hb hbnd hcov0 z₀) x0 x1 hx0 hx1 hne
+
 /-! ### The cut set of a group element
 
 `SiteCost.PathData.cut` is `alphaAt = betaAt = PhiAt = 0`.  Away from the two virtual
@@ -19688,3 +19799,7 @@ end EltBridge
 #print axioms EltBridge.Elt.defect_zero_neg
 #print axioms EltBridge.Elt.dataOf_mergesMin
 #print axioms EltBridge.Elt.dataOf_defect_zero
+#print axioms EltBridge.Elt.dataOf_p
+#print axioms EltBridge.Elt.dataOf_hpuv
+#print axioms EltBridge.Elt.dataOf_exists_x0x1
+#print axioms EltBridge.Elt.dataOf_walkCount_eq

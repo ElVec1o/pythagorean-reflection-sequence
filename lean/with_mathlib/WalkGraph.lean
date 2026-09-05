@@ -660,5 +660,397 @@ theorem swapT_arr {β : Type*} [DecidableEq β] (isArr : β → Bool) (t : β �
   rw [if_neg h1, if_neg h2, if_neg h3, if_neg h4]
   exact hflip x
 
+/-! ### Desubdivision: collapsing two `p`-partnered extra points
+
+Extending `α` by two points `u = inr false`, `v = inr true`, glued to *each other* by
+`p` (`p u = v`) and to `α` by `t` (`t u`, `t v` land back in `α` -- forced, since `p u
+= v` rules out `t u = v` via `pt_ne`, and `t_ne` rules out `t u = u`, leaving only the
+two `α`-shaped branches of `Sum`), is exactly *subdividing* one edge of the smaller
+graph into a path through two new degree-preserving points.  Subdividing an edge never
+changes how many connected components a graph has (generic case), or changes it by
+exactly one, when the edge being subdivided is a self-loop-to-be, i.e. when the two
+real neighbours the subdivision attaches to were already `p`-partners of each other
+(corner case).  This is the fact `Elt.dataOf`'s `Classical.choice`-derived turn needs,
+proved once, generically, in the `Data` model itself -- with no hypothesis at all on
+*which* involution `t` extends to past the two new points, since the argument only
+ever uses where `t` sends `u` and `v`, never how it behaves anywhere else. -/
+
+section ReachMap
+
+variable {β γ : Type*} [DecidableEq β] [Fintype β] [DecidableEq γ] [Fintype γ]
+
+omit [DecidableEq β] [Fintype β] [DecidableEq γ] [Fintype γ] in
+/-- **Mapping reachability along a step function.**  If every `Db`-edge becomes a
+`Dc`-reachable pair under `f`, every `Db`-reachable pair does too: induct on the walk,
+using `hstep` at each edge and `Reachable.trans` to thread them together. -/
+theorem reach_of_step (Db : Data β) (Dc : Data γ) (f : β → γ)
+    (hstep : ∀ x y, Adj Db x y → (graph Dc).Reachable (f x) (f y)) :
+    ∀ {x y}, (graph Db).Reachable x y → (graph Dc).Reachable (f x) (f y) := by
+  rintro x y ⟨w⟩
+  induction w with
+  | nil => exact SimpleGraph.Reachable.refl _
+  | cons h w ih => exact (hstep _ _ h).trans ih
+
+end ReachMap
+
+section Desub
+
+variable {α : Type*} [DecidableEq α] [Fintype α]
+
+/-- `p` never carries a real point out of `α`: the only two points it could land on
+outside `α` are already `p`'s images of `u` and `v`, and `p` is injective. -/
+theorem desub_p_real (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (a : α) : ∃ a', D.p (Sum.inl a) = Sum.inl a' := by
+  have hinj : Function.Injective D.p := Function.Involutive.injective D.p_invol
+  have hvu : D.p (Sum.inr true) = Sum.inr false := by
+    have h := D.p_invol (Sum.inr false); rwa [hpuv] at h
+  rcases hD : D.p (Sum.inl a) with a' | b
+  · exact ⟨a', rfl⟩
+  · exfalso
+    cases b with
+    | false => exact Sum.inl_ne_inr (hinj (hD.trans hvu.symm))
+    | true => exact Sum.inl_ne_inr (hinj (hD.trans hpuv.symm))
+
+/-- **`u` and `v` always have real turn-partners.**  Neither `t u` nor `t v` can be
+`u`, `v` or each other (`t_ne` and `pt_ne` rule those out), so -- there being nothing
+else in `Bool` -- both land in `α`.  This is what makes `walkCount_desub` applicable to
+*any* `Data (α ⊕ Bool)` with `p u = v`, without having to name `x0`, `x1` up front:
+whatever `t` turns out to be (in particular, whatever
+`TurnBuild.exists_involution_of_card_eq`'s `Classical.choice` picked), its two real
+turn-partners exist and can be read off after the fact. -/
+theorem desub_exists_x0x1 (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true) :
+    ∃ x0 x1 : α, D.t (Sum.inr false) = Sum.inl x0 ∧ D.t (Sum.inr true) = Sum.inl x1 := by
+  have hvu : D.p (Sum.inr true) = Sum.inr false := by
+    have hh := D.p_invol (Sum.inr false); rwa [hpuv] at hh
+  have h0 : D.t (Sum.inr false) ≠ Sum.inr false := D.t_ne _
+  have h0' : D.t (Sum.inr false) ≠ Sum.inr true := fun h =>
+    D.pt_ne (Sum.inr false) (hpuv.trans h.symm)
+  have h1 : D.t (Sum.inr true) ≠ Sum.inr true := D.t_ne _
+  have h1' : D.t (Sum.inr true) ≠ Sum.inr false := fun h =>
+    D.pt_ne (Sum.inr true) (hvu.trans h.symm)
+  obtain ⟨x0, hx0⟩ : ∃ x0, D.t (Sum.inr false) = Sum.inl x0 := by
+    rcases hD0 : D.t (Sum.inr false) with x0 | b0
+    · exact ⟨x0, rfl⟩
+    · cases b0 with
+      | false => exact absurd hD0 h0
+      | true => exact absurd hD0 h0'
+  obtain ⟨x1, hx1⟩ : ∃ x1, D.t (Sum.inr true) = Sum.inl x1 := by
+    rcases hD1 : D.t (Sum.inr true) with x1 | b1
+    · exact ⟨x1, rfl⟩
+    · cases b1 with
+      | false => exact absurd hD1 h1'
+      | true => exact absurd hD1 h1
+  exact ⟨x0, x1, hx0, hx1⟩
+
+/-- The two real turn-partners of `u` and `v` are distinct: `t` is injective and
+`u ≠ v`. -/
+theorem desub_hx0x1 (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1) :
+    x0 ≠ x1 := by
+  intro h
+  have hinj : Function.Injective D.t := Function.Involutive.injective D.t_invol
+  have heq : D.t (Sum.inr false) = D.t (Sum.inr true) := by rw [hx0, hx1, h]
+  exact absurd (hinj heq) (by simp)
+
+theorem desub_t_x0_eq (D : Data (α ⊕ Bool)) (x0 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) : D.t (Sum.inl x0) = Sum.inr false := by
+  have h := D.t_invol (Sum.inr false); rwa [hx0] at h
+
+theorem desub_t_x1_eq (D : Data (α ⊕ Bool)) (x1 : α)
+    (hx1 : D.t (Sum.inr true) = Sum.inl x1) : D.t (Sum.inl x1) = Sum.inr true := by
+  have h := D.t_invol (Sum.inr true); rwa [hx1] at h
+
+/-- Away from `x0`/`x1`, `t` also never carries a real point out of `α`. -/
+theorem desub_t_real (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (a : α) (h1 : a ≠ x0) (h2 : a ≠ x1) :
+    ∃ b, D.t (Sum.inl a) = Sum.inl b := by
+  have hinj : Function.Injective D.t := Function.Involutive.injective D.t_invol
+  rcases hD : D.t (Sum.inl a) with b | c
+  · exact ⟨b, rfl⟩
+  · exfalso
+    cases c with
+    | false => exact h1 (Sum.inl_injective (hinj (hD.trans (desub_t_x0_eq D x0 hx0).symm)))
+    | true => exact h2 (Sum.inl_injective (hinj (hD.trans (desub_t_x1_eq D x1 hx1).symm)))
+
+/-- **The desubdivided crossing map.**  `D.p` with the two virtual points forgotten;
+well defined by `desub_p_real`. -/
+noncomputable def desubP (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true) :
+    α → α := fun a => (desub_p_real D hpuv a).choose
+
+theorem desubP_spec (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (a : α) : D.p (Sum.inl a) = Sum.inl (desubP D hpuv a) :=
+  (desub_p_real D hpuv a).choose_spec
+
+/-- **The desubdivided turn.**  `D.t` with the two virtual points removed and their
+outer real neighbours `x0`, `x1` wired directly to each other -- exactly
+un-subdividing the length-3 path `x0 - u - v - x1` down to a single edge `x0 - x1`. -/
+noncomputable def desubT (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1) :
+    α → α := fun a =>
+  if _ : a = x0 then x1
+  else if _ : a = x1 then x0
+  else (desub_t_real D x0 x1 hx0 hx1 a ‹a ≠ x0› ‹a ≠ x1›).choose
+
+theorem desubT_x0 (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1) :
+    desubT D x0 x1 hx0 hx1 x0 = x1 := by
+  simp [desubT]
+
+theorem desubT_x1 (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1) :
+    desubT D x0 x1 hx0 hx1 x1 = x0 := by
+  have hxx : x0 ≠ x1 := desub_hx0x1 D x0 x1 hx0 hx1
+  unfold desubT
+  rw [dif_neg (Ne.symm hxx), dif_pos rfl]
+
+theorem desubT_spec (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (a : α) (h1 : a ≠ x0) (h2 : a ≠ x1) :
+    D.t (Sum.inl a) = Sum.inl (desubT D x0 x1 hx0 hx1 a) := by
+  unfold desubT
+  rw [dif_neg h1, dif_neg h2]
+  exact (desub_t_real D x0 x1 hx0 hx1 a h1 h2).choose_spec
+
+theorem desubP_invol (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (a : α) : desubP D hpuv (desubP D hpuv a) = a := by
+  have h1 := desubP_spec D hpuv a
+  have h2 := desubP_spec D hpuv (desubP D hpuv a)
+  have h3 := D.p_invol (Sum.inl a)
+  rw [h1, h2] at h3
+  exact Sum.inl_injective h3
+
+theorem desubT_invol (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (a : α) :
+    desubT D x0 x1 hx0 hx1 (desubT D x0 x1 hx0 hx1 a) = a := by
+  by_cases h1 : a = x0
+  · rw [h1, desubT_x0 D x0 x1 hx0 hx1, desubT_x1 D x0 x1 hx0 hx1]
+  by_cases h2 : a = x1
+  · rw [h2, desubT_x1 D x0 x1 hx0 hx1, desubT_x0 D x0 x1 hx0 hx1]
+  have hb := desubT_spec D x0 x1 hx0 hx1 a h1 h2
+  have hbx0 : desubT D x0 x1 hx0 hx1 a ≠ x0 := by
+    intro hcon
+    have e1 : D.t (Sum.inl a) = Sum.inl x0 := hcon ▸ hb
+    have e2 : D.t (D.t (Sum.inl a)) = D.t (Sum.inl x0) := congrArg D.t e1
+    rw [D.t_invol (Sum.inl a), desub_t_x0_eq D x0 hx0] at e2
+    exact Sum.inl_ne_inr e2
+  have hbx1 : desubT D x0 x1 hx0 hx1 a ≠ x1 := by
+    intro hcon
+    have e1 : D.t (Sum.inl a) = Sum.inl x1 := hcon ▸ hb
+    have e2 : D.t (D.t (Sum.inl a)) = D.t (Sum.inl x1) := congrArg D.t e1
+    rw [D.t_invol (Sum.inl a), desub_t_x1_eq D x1 hx1] at e2
+    exact Sum.inl_ne_inr e2
+  have hbspec := desubT_spec D x0 x1 hx0 hx1 _ hbx0 hbx1
+  have e4 : D.t (Sum.inl (desubT D x0 x1 hx0 hx1 a)) = Sum.inl a := by
+    rw [← hb, D.t_invol (Sum.inl a)]
+  rw [hbspec] at e4
+  exact Sum.inl_injective e4
+
+theorem desubP_ne (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (a : α) : desubP D hpuv a ≠ a := by
+  intro hcon
+  have h1 := desubP_spec D hpuv a
+  rw [hcon] at h1
+  exact D.p_ne (Sum.inl a) h1
+
+theorem desubT_ne (D : Data (α ⊕ Bool)) (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (a : α) : desubT D x0 x1 hx0 hx1 a ≠ a := by
+  by_cases h1 : a = x0
+  · rw [h1, desubT_x0 D x0 x1 hx0 hx1]
+    exact (desub_hx0x1 D x0 x1 hx0 hx1).symm
+  by_cases h2 : a = x1
+  · rw [h2, desubT_x1 D x0 x1 hx0 hx1]
+    exact desub_hx0x1 D x0 x1 hx0 hx1
+  intro hcon
+  have hb := desubT_spec D x0 x1 hx0 hx1 a h1 h2
+  rw [hcon] at hb
+  exact D.t_ne (Sum.inl a) hb
+
+theorem desub_pt_ne (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (hne : desubP D hpuv x0 ≠ x1) (a : α) :
+    desubP D hpuv a ≠ desubT D x0 x1 hx0 hx1 a := by
+  by_cases h1 : a = x0
+  · rw [h1, desubT_x0 D x0 x1 hx0 hx1]
+    exact hne
+  by_cases h2 : a = x1
+  · rw [h2, desubT_x1 D x0 x1 hx0 hx1]
+    intro hcon
+    have h3 : desubP D hpuv (desubP D hpuv x1) = desubP D hpuv x0 :=
+      congrArg (desubP D hpuv) hcon
+    rw [desubP_invol D hpuv] at h3
+    exact hne h3.symm
+  intro hcon
+  have hpspec := desubP_spec D hpuv a
+  have htspec := desubT_spec D x0 x1 hx0 hx1 a h1 h2
+  rw [hcon, ← htspec] at hpspec
+  exact D.pt_ne (Sum.inl a) hpspec
+
+/-- **The desubdivided datum.**  A genuine `Data α`: the two virtual points are gone,
+`p` is exactly the original crossing map restricted to `α`, and `t` is the original
+turn restricted to `α`, except at the two points that used to look across at the
+virtual points, which now look directly at each other.  Only defined in the *generic*
+case `desubP D hpuv x0 ≠ x1`: if the two outer neighbours were already `p`-partners,
+wiring them together directly would repeat an edge (`pt_ne` would fail), and the
+corner case needs the different treatment recorded in the block that formalizes this
+lemma. -/
+noncomputable def desubData (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (hne : desubP D hpuv x0 ≠ x1) : Data α where
+  p := desubP D hpuv
+  t := desubT D x0 x1 hx0 hx1
+  p_invol := desubP_invol D hpuv
+  t_invol := desubT_invol D x0 x1 hx0 hx1
+  p_ne := desubP_ne D hpuv
+  t_ne := desubT_ne D x0 x1 hx0 hx1
+  pt_ne := desub_pt_ne D hpuv x0 x1 hx0 hx1 hne
+
+/-- Collapse the two virtual points onto the real turn-partner each looks across at. -/
+def rep (x0 x1 : α) : α ⊕ Bool → α
+  | Sum.inl a => a
+  | Sum.inr false => x0
+  | Sum.inr true => x1
+
+theorem desub_hstepI (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (hne : desubP D hpuv x0 ≠ x1) :
+    ∀ x y : α ⊕ Bool, Adj D x y →
+      (graph (desubData D hpuv x0 x1 hx0 hx1 hne)).Reachable
+        (rep x0 x1 x) (rep x0 x1 y) := by
+  intro x y hxy
+  rcases hxy with rfl | rfl
+  · rcases x with a | b
+    · rw [desubP_spec D hpuv a]
+      exact SimpleGraph.Adj.reachable (Or.inl rfl)
+    · cases b with
+      | false =>
+        rw [hpuv]
+        exact SimpleGraph.Adj.reachable
+          (Or.inr (desubT_x0 D x0 x1 hx0 hx1).symm)
+      | true =>
+        have hvu : D.p (Sum.inr true) = Sum.inr false := by
+          have h := D.p_invol (Sum.inr false); rwa [hpuv] at h
+        rw [hvu]
+        exact SimpleGraph.Adj.reachable
+          (Or.inr (desubT_x1 D x0 x1 hx0 hx1).symm)
+  · rcases x with a | b
+    · by_cases h1 : a = x0
+      · rw [h1, desub_t_x0_eq D x0 hx0]; exact SimpleGraph.Reachable.refl _
+      by_cases h2 : a = x1
+      · rw [h2, desub_t_x1_eq D x1 hx1]; exact SimpleGraph.Reachable.refl _
+      · rw [desubT_spec D x0 x1 hx0 hx1 a h1 h2]
+        exact SimpleGraph.Adj.reachable (Or.inr rfl)
+    · cases b with
+      | false => rw [hx0]; exact SimpleGraph.Reachable.refl _
+      | true => rw [hx1]; exact SimpleGraph.Reachable.refl _
+
+theorem desub_hstepII (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (hne : desubP D hpuv x0 ≠ x1) :
+    ∀ a b : α, Adj (desubData D hpuv x0 x1 hx0 hx1 hne) a b →
+      (graph D).Reachable (Sum.inl a : α ⊕ Bool) (Sum.inl b) := by
+  intro a b hab
+  rcases hab with rfl | rfl
+  · show (graph D).Reachable (Sum.inl a) (Sum.inl (desubP D hpuv a))
+    rw [← desubP_spec D hpuv a]
+    exact SimpleGraph.Adj.reachable (Or.inl rfl)
+  · show (graph D).Reachable (Sum.inl a) (Sum.inl (desubT D x0 x1 hx0 hx1 a))
+    by_cases h1 : a = x0
+    · rw [h1, desubT_x0 D x0 x1 hx0 hx1]
+      have s1 : Adj D (Sum.inl x0) (Sum.inr false) := Or.inr (desub_t_x0_eq D x0 hx0).symm
+      have s2 : Adj D (Sum.inr false : α ⊕ Bool) (Sum.inr true) := Or.inl hpuv.symm
+      have s3 : Adj D (Sum.inr true : α ⊕ Bool) (Sum.inl x1) := Or.inr hx1.symm
+      exact (SimpleGraph.Adj.reachable s1).trans
+        ((SimpleGraph.Adj.reachable s2).trans (SimpleGraph.Adj.reachable s3))
+    by_cases h2 : a = x1
+    · rw [h2, desubT_x1 D x0 x1 hx0 hx1]
+      have hvu : D.p (Sum.inr true) = Sum.inr false := by
+        have h := D.p_invol (Sum.inr false); rwa [hpuv] at h
+      have s1 : Adj D (Sum.inl x1) (Sum.inr true) := Or.inr (desub_t_x1_eq D x1 hx1).symm
+      have s2 : Adj D (Sum.inr true : α ⊕ Bool) (Sum.inr false) := Or.inl hvu.symm
+      have s3 : Adj D (Sum.inr false : α ⊕ Bool) (Sum.inl x0) := Or.inr hx0.symm
+      exact (SimpleGraph.Adj.reachable s1).trans
+        ((SimpleGraph.Adj.reachable s2).trans (SimpleGraph.Adj.reachable s3))
+    · rw [← desubT_spec D x0 x1 hx0 hx1 a h1 h2]
+      exact SimpleGraph.Adj.reachable (Or.inr rfl)
+
+/-- **The desubdivision equivalence.**  Components of `D` correspond exactly to
+components of `desubData D`, via collapsing the two virtual points onto their real
+turn-partners one way, and the real embedding the other. -/
+noncomputable def desubEquiv (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (hne : desubP D hpuv x0 ≠ x1) :
+    (graph D).ConnectedComponent ≃
+      (graph (desubData D hpuv x0 x1 hx0 hx1 hne)).ConnectedComponent where
+  toFun := Quot.lift
+    (fun x => (graph (desubData D hpuv x0 x1 hx0 hx1 hne)).connectedComponentMk
+      (rep x0 x1 x))
+    (fun x y h => SimpleGraph.ConnectedComponent.eq.mpr
+      (reach_of_step D (desubData D hpuv x0 x1 hx0 hx1 hne) (rep x0 x1)
+        (desub_hstepI D hpuv x0 x1 hx0 hx1 hne) h))
+  invFun := Quot.lift
+    (fun a => (graph D).connectedComponentMk (Sum.inl a))
+    (fun a b h => SimpleGraph.ConnectedComponent.eq.mpr
+      (reach_of_step (desubData D hpuv x0 x1 hx0 hx1 hne) D Sum.inl
+        (desub_hstepII D hpuv x0 x1 hx0 hx1 hne) h))
+  left_inv := by
+    intro c
+    induction c using Quot.inductionOn with
+    | _ x =>
+      show (graph D).connectedComponentMk (Sum.inl (rep x0 x1 x))
+          = (graph D).connectedComponentMk x
+      apply SimpleGraph.ConnectedComponent.eq.mpr
+      apply SimpleGraph.Reachable.symm
+      rcases x with a | b
+      · exact SimpleGraph.Reachable.refl _
+      · cases b with
+        | false =>
+          exact SimpleGraph.Adj.reachable
+            (show Adj D (Sum.inr false) (Sum.inl x0) from Or.inr hx0.symm)
+        | true =>
+          exact SimpleGraph.Adj.reachable
+            (show Adj D (Sum.inr true) (Sum.inl x1) from Or.inr hx1.symm)
+  right_inv := by
+    intro c
+    induction c using Quot.inductionOn with
+    | _ a => rfl
+
+/-- **`walkCount` is unchanged by forgetting the two virtual points**, in the generic
+case where their real turn-partners were not already `p`-partners of each other.  No
+hypothesis at all is placed on *how* `t` behaves past `u`, `v` and `x0`, `x1` --
+`TurnBuild.exists_involution_of_card_eq`'s `Classical.choice` can pick anything, and
+the identity still holds, since the whole argument is that subdividing an edge never
+changes the number of components. -/
+theorem walkCount_desub (D : Data (α ⊕ Bool)) (hpuv : D.p (Sum.inr false) = Sum.inr true)
+    (x0 x1 : α)
+    (hx0 : D.t (Sum.inr false) = Sum.inl x0) (hx1 : D.t (Sum.inr true) = Sum.inl x1)
+    (hne : desubP D hpuv x0 ≠ x1) :
+    walkCount D = walkCount (desubData D hpuv x0 x1 hx0 hx1 hne) :=
+  Fintype.card_congr (desubEquiv D hpuv x0 x1 hx0 hx1 hne)
+
+end Desub
+
 -- Certification (Rule 5).
 #print axioms WalkGraph.swapT_arr
+#print axioms WalkGraph.reach_of_step
+#print axioms WalkGraph.desub_p_real
+#print axioms WalkGraph.desub_exists_x0x1
+#print axioms WalkGraph.desub_hx0x1
+#print axioms WalkGraph.desub_t_real
+#print axioms WalkGraph.desubP_spec
+#print axioms WalkGraph.desubT_spec
+#print axioms WalkGraph.desubP_invol
+#print axioms WalkGraph.desubT_invol
+#print axioms WalkGraph.desubP_ne
+#print axioms WalkGraph.desubT_ne
+#print axioms WalkGraph.desub_pt_ne
+#print axioms WalkGraph.desub_hstepI
+#print axioms WalkGraph.desub_hstepII
+#print axioms WalkGraph.walkCount_desub
