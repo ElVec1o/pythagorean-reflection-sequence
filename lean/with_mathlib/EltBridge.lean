@@ -11611,6 +11611,62 @@ end EltBridge
 namespace EltBridge
 namespace Elt
 
+/-! ### A first, weak lower bound on `wordLength` (H1a)
+
+`IsTrueLength`'s lower bound (defined later, `wordLength g = g.lR + 2 * c g` for a
+still-undefined defect `c`) is open and needs a potential function that is
+`1`-Lipschitz along every generator step -- real, unattempted design work, since `c`
+itself has no Lean definition yet (only an empirical bound from the `nogap` BFS).
+
+Before building that potential, here is the simplest one available: `|kstar|`. It is
+far weaker than the eventual target (`lR` already dominates `|kstar|`, since `kstar`
+is only one of several quantities `lR` sums over), but it is a real, honest first
+lower bound on `wordLength` where previously none existed at all, and it isolates
+exactly why `s3` is the only generator that can matter for any such argument: `s1`
+and `s2` never move the cursor (`s1_kstar`, `s2_kstar`), so only `s3`'s unit steps can
+separate `g` from `one`. -/
+
+/-- **Every generator step moves `kstar` by at most one.** `s1`/`s2` do not move it at
+all; `s3` moves it by exactly `+1` or `-1` depending on `delta`. -/
+theorem gen_kstar_natAbs_le (a b : Elt) (h : Gen a b) :
+    b.kstar.natAbs ≤ a.kstar.natAbs + 1 := by
+  rcases h with h | h | h
+  · rw [h.1, s1_kstar]; omega
+  · rw [h.1, s2_kstar]; omega
+  · rw [h.1]
+    by_cases hd : a.delta = true
+    · simp [s3, hd]; omega
+    · simp only [Bool.not_eq_true] at hd
+      simp [s3, hd]; omega
+
+/-- **Any walk of `n` steps reaching `g` has `n` at least `|g.kstar|`.** -/
+theorem reaches_kstar_natAbs_le {n : ℕ} {g : Elt} (hn : Reaches n g) :
+    g.kstar.natAbs ≤ n := by
+  induction hn with
+  | refl hsame => simp [hsame.1, one]
+  | step hstep hgen ih =>
+    have hb := gen_kstar_natAbs_le _ _ hgen
+    omega
+
+/-- **`wordLength` is at least the cursor's distance from `0`.** The first proved
+lower bound on `wordLength` of any kind -- far short of `IsTrueLength`'s target
+`lR + 2 * c`, but real and honest: it is not subsumed by anything proved before this
+theorem, since every earlier H1a result was either the (now-closed) reachability
+upper bound or a statement about `IsRelaxedLength`/`IsTrueLength` themselves. -/
+theorem wordLength_ge_kstar_natAbs {g : Elt} (h : Reachable g) :
+    g.kstar.natAbs ≤ wordLength g :=
+  reaches_kstar_natAbs_le (reaches_wordLength h)
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.gen_kstar_natAbs_le
+#print axioms EltBridge.Elt.reaches_kstar_natAbs_le
+#print axioms EltBridge.Elt.wordLength_ge_kstar_natAbs
+
+namespace EltBridge
+namespace Elt
+
 /-! ### `Elt` is not extensional, and the generators are involutions only modulo that
 
 Applying `s3` twice returns `kstar`, `eps`, `delta` and `d` to their original values --
