@@ -18338,12 +18338,38 @@ theorem globalBox_coeff_eq_some_card (N : ℕ) :
         (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L))]
   exact Finset.sum_congr rfl (fun A _ => hM n A A.2)
 
+open scoped Classical in
+/-- **`W` itself.** The `N`-th coefficient is exactly the total degree-`N`
+configuration count `globalBox_coeff_eq_some_card` proves exists. This is the actual
+object `IsAssembly` (line 10128) states a decomposition for -- the first time this
+file has a concrete `W` rather than an arbitrary one quantified over. -/
+noncomputable def W : PowerSeries ℤ :=
+  PowerSeries.mk (fun N => ((globalBox_coeff_eq_some_card N).choose : ℤ))
+
+theorem coeff_W (N : ℕ) : PowerSeries.coeff N W = ((globalBox_coeff_eq_some_card N).choose : ℤ) :=
+  PowerSeries.coeff_mk N _
+
+/-- **`W`'s coefficient is literally the global box's coefficient**, by construction:
+`coeff_W` unfolds `W` to the witness `Classical.choose` supplies, and
+`globalBox_coeff_eq_some_card`'s own proof is exactly that this witness equals the
+box's coefficient. -/
+theorem coeff_W_eq_globalBox (N : ℕ) :
+    PowerSeries.coeff N W = PowerSeries.coeff N
+        (∑ L ∈ globalBox N,
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L) := by
+  rw [coeff_W]
+  exact (globalBox_coeff_eq_some_card N).choose_spec.symm
+
 end EltBridge
 
 #print axioms EltBridge.flagPathsFinset_disjoint
 #print axioms EltBridge.globalBox_inner_disjoint
 #print axioms EltBridge.globalBox_outer_disjoint
 #print axioms EltBridge.globalBox_coeff_eq_some_card
+#print axioms EltBridge.coeff_W
+#print axioms EltBridge.coeff_W_eq_globalBox
 #print axioms EltBridge.sum_vArr_range_eq_one
 #print axioms EltBridge.telescope_seedA
 #print axioms EltBridge.exists_unique_kstar_of_flowA
