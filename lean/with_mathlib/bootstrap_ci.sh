@@ -44,3 +44,14 @@ tar --zstd -xf "$ARCHIVE" --strip-components=1 -C "$DEST"
 elan toolchain link "$TOOLCHAIN" "$DEST"
 
 echo "[bootstrap] done: $(lean --version)"
+
+# Fetch Mathlib's precompiled olean cache so `lake build` links instead of
+# recompiling Mathlib from source. Without this step a cold build compiles the
+# whole of Mathlib, which can take on the order of hours; `cache get` normally
+# takes a few minutes. Found the hard way, 2026-09-05: a run that skipped this
+# and went straight to `lake build` was still compiling Mathlib from source
+# 20+ minutes in.
+PROJDIR="$(dirname "${BASH_SOURCE[0]}")"
+echo "[bootstrap] fetching Mathlib's precompiled cache (lake exe cache get)"
+( cd "$PROJDIR" && lake exe cache get 2>&1 | tail -40 ) || \
+  echo "[bootstrap] cache get failed or partial -- lake build will fall back to compiling whatever it's missing from source"
