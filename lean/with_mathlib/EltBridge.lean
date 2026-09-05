@@ -115,6 +115,8 @@ noncomputable def toPathData : PathData where
 
 @[simp] theorem toPathData_d : g.toPathData.d = g.d := rfl
 @[simp] theorem toPathData_kstar : g.toPathData.kstar = g.kstar := rfl
+@[simp] theorem toPathData_A : g.toPathData.A = g.A := rfl
+@[simp] theorem toPathData_B : g.toPathData.B = g.B := rfl
 
 /-- **The relaxed length of a group element.**  This is the definition the
 development did not have: with `toPathData`, `lR` is now a function of `g`. -/
@@ -139,6 +141,9 @@ theorem lR_eq : g.lR =
       + ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s := rfl
 
 end Elt
+
+#print axioms EltBridge.Elt.toPathData_A
+#print axioms EltBridge.Elt.toPathData_B
 
 /-! ### B1, second half: exactly two sites need repair
 
@@ -6216,6 +6221,27 @@ theorem A_le_kstar (P : SiteCost.PathData) : P.A ≤ P.kstar := by
     if_pos (by omega : P.kstar ≤ P.A - 1 ∧ P.A - 1 < 0)] at h0
   omega
 
+namespace Elt
+
+/-- **`kstar` is always within one step of the span, for a group element too.** Free
+from the `PathData`-level fact just above via `toPathData`: `A <= kstar` and
+`kstar <= B + 1` for ANY group element, not just cost-minimal configurations. This is
+exactly the structural fact `s3`'s Lipschitz bound needs -- without it, moving `kstar`
+by one step could in principle move the span by an unbounded amount (if `kstar` were
+far from `[A, B]`), but it never is. -/
+theorem A_le_kstar (g : Elt) : g.A ≤ g.kstar := by
+  have h := EltBridge.A_le_kstar g.toPathData
+  rwa [toPathData_A, toPathData_kstar] at h
+
+theorem kstar_le_B_add_one (g : Elt) : g.kstar ≤ g.B + 1 := by
+  have h := EltBridge.kstar_le_B_succ g.toPathData
+  rwa [toPathData_kstar, toPathData_B] at h
+
+end Elt
+
+#print axioms EltBridge.Elt.A_le_kstar
+#print axioms EltBridge.Elt.kstar_le_B_add_one
+
 /-- **Injectivity of `stateOf`, with no side hypotheses.**  Two configurations with the
 same span whose states agree across it are the same configuration. -/
 theorem stateOf_injective' {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B = Q.B)
@@ -9600,6 +9626,45 @@ theorem pathGF_succ {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl (fun b _ => by ring)
 
+/-! ### `pathSum`, generalized to `IsAssembly`'s coefficient ring
+
+`IsAssembly` (BLOCK 116) states its transfer matrix `T` over `PowerSeries ℤ`, not `ℤ`,
+so `pathSum`/`pathGF` (BLOCK 112-113) cannot be applied to it directly: they are fixed to
+`ℤ`. Here is the same walk-sum, over an arbitrary commutative ring, together with the
+fact that connects it to `IsAssembly`'s literal `(T ^ k) a b` -- a matrix power's entry
+is the sum, over every length-`k` walk from `a` to `b`, of the product of transfer
+entries along it. This is one composable step toward `IsAssembly`'s right-hand side,
+not the whole bridge: turning the box's `flagPathsFinset` sum into a sum indexed by a
+concrete `Fin n` state space is separate, unattempted work. -/
+
+/-- The sum over state paths of length `n` from `a` to `b` of the product of transfer
+entries, over an arbitrary commutative ring. -/
+def pathSumR {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → R) :
+    ℕ → S → S → R
+  | 0, a, b => if a = b then 1 else 0
+  | (n + 1), a, b => ∑ c : S, M a c * pathSumR M n c b
+
+theorem pathSumR_zero {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S]
+    (M : S → S → R) (a b : S) :
+    pathSumR M 0 a b = if a = b then 1 else 0 := rfl
+
+theorem pathSumR_succ {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S]
+    (M : S → S → R) (n : ℕ) (a b : S) :
+    pathSumR M (n + 1) a b = ∑ c : S, M a c * pathSumR M n c b := rfl
+
+/-- **`IsAssembly`'s matrix power, unfolded as a walk sum.** The `(a, b)` entry of
+`T ^ k` is the sum, over every length-`k` walk from `a` to `b`, of the product of
+transfer entries along it -- so `IsAssembly`'s `(T ^ k) a b` can be read
+combinatorially, via `pathSumR`, rather than only algebraically via `Matrix.pow`. -/
+theorem matrixPow_apply_eq_pathSumR {R : Type*} [CommRing R] {n : ℕ}
+    (T : Matrix (Fin n) (Fin n) R) (k : ℕ) (a b : Fin n) :
+    (T ^ k) a b = pathSumR (fun i j => T i j) k a b := by
+  induction k generalizing a b with
+  | zero => rw [pow_zero, pathSumR_zero, Matrix.one_apply]
+  | succ m ih =>
+    rw [pow_succ', Matrix.mul_apply, pathSumR_succ]
+    exact Finset.sum_congr rfl (fun c _ => by rw [ih])
+
 /-! ### Why the assembly sums over the four marker data
 
 The bulk and travel transfer entries depend on the deposits only through their
@@ -11417,6 +11482,19 @@ def s2 (g : Elt) : Elt where
 @[simp] theorem s1_d (g : Elt) : (s1 g).d = g.d := rfl
 @[simp] theorem s2_kstar (g : Elt) : (s2 g).kstar = g.kstar := rfl
 @[simp] theorem s2_d (g : Elt) : (s2 g).d = g.d := rfl
+@[simp] theorem s1_supp (g : Elt) : (s1 g).supp = g.supp := rfl
+@[simp] theorem s2_supp (g : Elt) : (s2 g).supp = g.supp := rfl
+
+/-- **`s1` moves the span nowhere**: it only touches `delta`, and `occ`/`A`/`B` depend
+only on `supp`, `d` and `kstar`, all of which `s1` leaves alone. -/
+@[simp] theorem s1_occ (g : Elt) : (s1 g).occ = g.occ := rfl
+@[simp] theorem s1_A (g : Elt) : (s1 g).A = g.A := rfl
+@[simp] theorem s1_B (g : Elt) : (s1 g).B = g.B := rfl
+
+/-- **Neither does `s2`**, for the same reason. -/
+@[simp] theorem s2_occ (g : Elt) : (s2 g).occ = g.occ := rfl
+@[simp] theorem s2_A (g : Elt) : (s2 g).A = g.A := rfl
+@[simp] theorem s2_B (g : Elt) : (s2 g).B = g.B := rfl
 
 /-- Both side moves return the side after two applications. -/
 theorem s1_delta_involutive (g : Elt) : (s1 (s1 g)).delta = g.delta := by
@@ -11425,11 +11503,81 @@ theorem s1_delta_involutive (g : Elt) : (s1 (s1 g)).delta = g.delta := by
 theorem s2_eps_involutive (g : Elt) : (s2 (s2 g)).eps = g.eps := by
   simp [s2]
 
+/-! ### `s1` and `s2` change `lR` by at most 1
+
+`mu` depends only on `d` and `kstar`, both of which `s1`/`s2` leave alone, so the
+edge-sum half of `lR` is untouched. `siteCost s` for `s != kstar` also depends only on
+`d`, `kstar` and the universal `vArr` (the marker indicators `vL`/`vR` vanish there),
+so only the SINGLE site `kstar` can move. There, flipping `delta` swaps which of
+`alphaAt`/`betaAt` carries a `+-eps` term, changing each by exactly `eps` (so `|eps|`
+in absolute value); `natAbs` is `1`-Lipschitz, so the max of the two changes by at
+most `1`. This is the Lipschitz property the word-length lower bound needs: every
+generator moves `lR` by a bounded amount, so `wordLength` cannot outrun it. -/
+
+theorem siteCost_eq_of_ne_kstar {P Q : SiteCost.PathData} (hk : P.kstar = Q.kstar)
+    (hd : P.d = Q.d) (s : ℤ) (hs : s ≠ P.kstar) : P.siteCost s = Q.siteCost s := by
+  have hsQ : s ≠ Q.kstar := hk ▸ hs
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD
+  rw [if_neg hs, if_neg hsQ]
+  simp [hd]
+
+/-- **The site cost at `kstar` moves by at most 1 under `s1`.** -/
+theorem s1_siteCost_kstar (g : Elt) :
+    ((s1 g).toPathData.siteCost g.kstar : ℤ) ≤ g.toPathData.siteCost g.kstar + 1 ∧
+    (g.toPathData.siteCost g.kstar : ℤ) ≤ (s1 g).toPathData.siteCost g.kstar + 1 := by
+  have he : (s1 g).eps = g.eps := rfl
+  have hk : (s1 g).kstar = g.kstar := rfl
+  have hd : (s1 g).d = g.d := rfl
+  have hpe : g.toPathData.eps = g.eps := rfl
+  have hpd : g.toPathData.delta = g.delta := rfl
+  have hpe1 : (s1 g).toPathData.eps = g.eps := rfl
+  have hpd1 : (s1 g).toPathData.delta = !g.delta := rfl
+  simp only [SiteCost.PathData.siteCost, SiteCost.PathData.alphaAt, SiteCost.PathData.betaAt,
+    SiteCost.PathData.vL, SiteCost.PathData.vR, SiteCost.PathData.vD, toPathData_kstar,
+    toPathData_d, he, hk, hd, hpe, hpd, hpe1, hpd1, if_true, eq_self_iff_true]
+  rcases hδ : g.delta with _ | _ <;>
+    simp only [hδ, Bool.not_true, Bool.not_false, if_true, if_false, decide_eq_true_eq,
+      Bool.false_eq_true] <;>
+    rcases g.heps with h | h <;> rw [h] <;> omega
+
+/-- **The site cost at `kstar` moves by at most 1 under `s2`.** Same argument as
+`s1_siteCost_kstar`: `s2` flips `delta` too, and also `eps`, but each of `alphaAt`,
+`betaAt` still changes by exactly `eps` in absolute value. -/
+theorem s2_siteCost_kstar (g : Elt) :
+    ((s2 g).toPathData.siteCost g.kstar : ℤ) ≤ g.toPathData.siteCost g.kstar + 1 ∧
+    (g.toPathData.siteCost g.kstar : ℤ) ≤ (s2 g).toPathData.siteCost g.kstar + 1 := by
+  have he : (s2 g).eps = -g.eps := rfl
+  have hk : (s2 g).kstar = g.kstar := rfl
+  have hd : (s2 g).d = g.d := rfl
+  have hpe : g.toPathData.eps = g.eps := rfl
+  have hpd : g.toPathData.delta = g.delta := rfl
+  have hpe1 : (s2 g).toPathData.eps = -g.eps := rfl
+  have hpd1 : (s2 g).toPathData.delta = !g.delta := rfl
+  simp only [SiteCost.PathData.siteCost, SiteCost.PathData.alphaAt, SiteCost.PathData.betaAt,
+    SiteCost.PathData.vL, SiteCost.PathData.vR, SiteCost.PathData.vD, toPathData_kstar,
+    toPathData_d, he, hk, hd, hpe, hpd, hpe1, hpd1, if_true, eq_self_iff_true]
+  rcases hδ : g.delta with _ | _ <;>
+    simp only [hδ, Bool.not_true, Bool.not_false, if_true, if_false, decide_eq_true_eq,
+      Bool.false_eq_true] <;>
+    rcases g.heps with h | h <;> rw [h] <;> omega
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.s1
 #print axioms EltBridge.Elt.s2
+#print axioms EltBridge.Elt.s1_supp
+#print axioms EltBridge.Elt.s2_supp
+#print axioms EltBridge.Elt.s1_occ
+#print axioms EltBridge.Elt.s1_A
+#print axioms EltBridge.Elt.s1_B
+#print axioms EltBridge.Elt.s2_occ
+#print axioms EltBridge.Elt.s2_A
+#print axioms EltBridge.Elt.s2_B
+#print axioms EltBridge.Elt.siteCost_eq_of_ne_kstar
+#print axioms EltBridge.Elt.s1_siteCost_kstar
+#print axioms EltBridge.Elt.s2_siteCost_kstar
 
 namespace EltBridge
 namespace Elt
@@ -11520,10 +11668,309 @@ noncomputable def s3 (g : Elt) : Elt :=
         exact ⟨by rw [Function.update_of_ne hne]; exact hd0,
                by rw [travel_pred_ne g.kstar j hne]; exact ht0⟩ }
 
+/-! ### `s3` moves the span by at most inserting/removing the crossed edge
+
+Unlike `s1`/`s2`, `s3` moves `kstar`, so the span CAN change: `occ` gains the crossed
+edge in `supp` (`s3`'s own `hsupp` proof already shows this), and losing or gaining
+that one point is the only thing that can happen to `occ` -- everywhere else, `d` and
+`travel kstar` are exactly as before (`d` is `Function.update`d only at the crossed
+edge, and `travel_succ_ne`/`travel_pred_ne` say `travel` moves only there too). This
+is the first piece `lR`'s Lipschitz bound for `s3` needs: it bounds how far `A`/`B`
+can move, before the `mu`/`siteCost` changes are even considered. -/
+
+theorem s3_occ_agree_true {g : Elt} (hδ : g.delta = true) (j : ℤ) (hj : j ≠ g.kstar) :
+    j ∈ (s3 g).occ ↔ j ∈ g.occ := by
+  have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+  have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hδ]
+  have hsupp : (s3 g).supp = insert g.kstar g.supp := by rw [s3, dif_pos hδ]
+  unfold occ
+  simp only [Finset.mem_insert, hsupp, Finset.mem_filter, hd, hk]
+  rw [Function.update_of_ne hj, travel_succ_ne g.kstar j hj]
+  tauto
+
+theorem s3_occ_agree_false {g : Elt} (hδ : g.delta = false) (j : ℤ) (hj : j ≠ g.kstar - 1) :
+    j ∈ (s3 g).occ ↔ j ∈ g.occ := by
+  have h1 : ¬ (g.delta = true) := by rw [hδ]; simp
+  have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+  have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1]
+  have hsupp : (s3 g).supp = insert (g.kstar - 1) g.supp := by rw [s3, dif_neg h1]
+  unfold occ
+  simp only [Finset.mem_insert, hsupp, Finset.mem_filter, hd, hk]
+  rw [Function.update_of_ne hj, travel_pred_ne g.kstar j hj]
+  tauto
+
+end Elt
+
+/-! ### `s3`'s bound on `A`/`B` themselves
+
+Pure `Finset ℤ` facts: if two finsets agree everywhere except possibly at one point
+`p`, and each set's own min'/max' is within one step of `p` (exactly the shape
+`Elt.A_le_kstar`/`Elt.kstar_le_B_add_one` supply, on both sides of an `s3` move),
+then the two min's (resp. max's) are within one step of each other. This is the
+Finset-level content of "changing one point can move the extreme by at most one,
+given that point wasn't far from the extreme to begin with". -/
+
+private theorem min'_dist_le_one_of_agree {s t : Finset ℤ}
+    (hs : s.Nonempty) (ht : t.Nonempty) {p : ℤ}
+    (hagree : ∀ j : ℤ, j ≠ p → (j ∈ t ↔ j ∈ s))
+    (h1 : s.min' hs ≤ p + 1) (h2 : t.min' ht ≤ p + 1) :
+    t.min' ht ≤ s.min' hs + 1 ∧ s.min' hs ≤ t.min' ht + 1 := by
+  constructor
+  · by_cases hpA : p = s.min' hs
+    · omega
+    · have hAmem : s.min' hs ∈ s := s.min'_mem hs
+      have hAint : s.min' hs ∈ t := (hagree (s.min' hs) (Ne.symm hpA)).mpr hAmem
+      have hle := Finset.min'_le t (s.min' hs) hAint
+      omega
+  · have hlow : s.min' hs - 1 ≤ t.min' ht := by
+      apply Finset.le_min' t ht
+      intro x hx
+      by_cases hxp : x = p
+      · subst hxp; omega
+      · have hxs := (hagree x hxp).mp hx
+        have := Finset.min'_le s x hxs
+        omega
+    omega
+
+private theorem max'_dist_le_one_of_agree {s t : Finset ℤ}
+    (hs : s.Nonempty) (ht : t.Nonempty) {p : ℤ}
+    (hagree : ∀ j : ℤ, j ≠ p → (j ∈ t ↔ j ∈ s))
+    (h1 : p ≤ s.max' hs + 1) (h2 : p ≤ t.max' ht + 1) :
+    t.max' ht ≤ s.max' hs + 1 ∧ s.max' hs ≤ t.max' ht + 1 := by
+  constructor
+  · apply Finset.max'_le t ht
+    intro x hx
+    by_cases hxp : x = p
+    · subst hxp; omega
+    · have hxs := (hagree x hxp).mp hx
+      have := Finset.le_max' s x hxs
+      omega
+  · apply Finset.max'_le s hs
+    intro x hx
+    by_cases hxp : x = p
+    · subst hxp; omega
+    · have hxt := (hagree x hxp).mpr hx
+      have := Finset.le_max' t x hxt
+      omega
+
+namespace Elt
+
+theorem s3_A_dist_le_one (g : Elt) :
+    (s3 g).A ≤ g.A + 1 ∧ g.A ≤ (s3 g).A + 1 := by
+  by_cases hδ : g.delta = true
+  · have hagree := s3_occ_agree_true hδ
+    have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have h1 : g.A ≤ g.kstar + 1 := by have := A_le_kstar g; omega
+    have h2 : (s3 g).A ≤ g.kstar + 1 := by
+      have := A_le_kstar (s3 g); rw [hk] at this; omega
+    exact min'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hagree := s3_occ_agree_false hδ'
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have h1 : g.A ≤ (g.kstar - 1) + 1 := by have := A_le_kstar g; omega
+    have h2 : (s3 g).A ≤ (g.kstar - 1) + 1 := by
+      have := A_le_kstar (s3 g); rw [hk] at this; omega
+    exact min'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+
+theorem s3_B_dist_le_one (g : Elt) :
+    (s3 g).B ≤ g.B + 1 ∧ g.B ≤ (s3 g).B + 1 := by
+  by_cases hδ : g.delta = true
+  · have hagree := s3_occ_agree_true hδ
+    have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have h1 : g.kstar ≤ g.B + 1 := kstar_le_B_add_one g
+    have h2 : g.kstar ≤ (s3 g).B + 1 := by
+      have := kstar_le_B_add_one (s3 g); rw [hk] at this; omega
+    exact max'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hagree := s3_occ_agree_false hδ'
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have h1 : g.kstar - 1 ≤ g.B + 1 := by have := kstar_le_B_add_one g; omega
+    have h2 : g.kstar - 1 ≤ (s3 g).B + 1 := by
+      have := kstar_le_B_add_one (s3 g); rw [hk] at this; omega
+    exact max'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+
+/-! ### `mu` at the crossed edge moves by a bounded amount
+
+`s3`'s own `hsupp`/`hpar` proofs already show `d` moves only at the crossed edge (by
+exactly `eps`, i.e. `1` in absolute value) and `travel` moves only there too (by
+exactly `1`, `travel_succ_at`/`travel_pred_at`) -- everywhere else both are literally
+unchanged (`travel_succ_ne`/`travel_pred_ne`, `Function.update_of_ne`), so `mu`
+(built from `d` and `travel` at a single site) is unchanged off the crossed edge and
+moves by a small bounded amount at it. -/
+
+theorem s3_mu_dist_le_two (g : Elt) :
+    ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) ≤
+        (g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) + 2 ∧
+      (g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) ≤
+        ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) + 2 := by
+  by_cases hδ : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have hd : (s3 g).d g.kstar = g.d g.kstar - g.eps := by
+      have hde : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+        rw [s3, dif_pos hδ]
+      rw [hde, Function.update_self]
+    have htr : SiteCost.travel (s3 g).kstar g.kstar = SiteCost.travel g.kstar g.kstar + 1 := by
+      rw [hk]; exact travel_succ_at g.kstar
+    have hcases := SiteCost.travel_cases g.kstar g.kstar
+    rw [if_pos hδ]
+    simp only [SiteCost.PathData.mu, toPathData_d, toPathData_kstar, hd, htr]
+    rcases g.heps with h | h <;> rw [h] <;> rcases hcases with hc | hc | hc <;> rw [hc] <;>
+      split_ifs <;> omega
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have hd : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+      have hde : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+        rw [s3, dif_neg hδ]
+      rw [hde, Function.update_self]
+    have htr : SiteCost.travel (s3 g).kstar (g.kstar - 1) =
+        SiteCost.travel g.kstar (g.kstar - 1) - 1 := by
+      rw [hk]; exact travel_pred_at g.kstar
+    have hcases := SiteCost.travel_cases g.kstar (g.kstar - 1)
+    rw [if_neg (by rw [hδ']; simp)]
+    simp only [SiteCost.PathData.mu, toPathData_d, toPathData_kstar, hd, htr]
+    rcases g.heps with h | h <;> rw [h] <;> rcases hcases with hc | hc | hc <;> rw [hc] <;>
+      split_ifs <;> omega
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.s3
+#print axioms EltBridge.Elt.s3_occ_agree_true
+#print axioms EltBridge.Elt.s3_occ_agree_false
+#print axioms EltBridge.Elt.s3_A_dist_le_one
+#print axioms EltBridge.Elt.s3_B_dist_le_one
+#print axioms EltBridge.Elt.s3_mu_dist_le_two
+
+namespace EltBridge
+namespace Elt
+
+/-! ### `s3` changes `siteCost` nowhere
+
+Unlike `s1`/`s2`, `s3` moves `kstar` itself. But the `∓eps` deposit it places at the
+crossed edge exactly cancels the shift in the marker indicators `vL`/`vR` caused by
+moving `kstar`, at *every* site, not just the one being crossed -- so `siteCost` is
+not merely bounded under `s3`, it is literally unchanged everywhere. -/
+
+theorem s3_alphaAt_eq (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.alphaAt s = g.toPathData.alphaAt s := by
+  by_cases hg : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by simp [s3, hg]
+    have hδ : (s3 g).delta = false := by simp [s3, hg]
+    have he : (s3 g).eps = g.eps := by simp [s3, hg]
+    have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by simp [s3, hg]
+    have hpk : (s3 g).toPathData.kstar = g.kstar + 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d g.kstar (g.d g.kstar - g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = false := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = true := hg
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    simp only [SiteCost.PathData.alphaAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s (g.kstar + 1) with hs | hs
+    · have h1 : s - 1 = g.kstar := by omega
+      rw [if_pos h1, if_pos hs, h1]
+      ring
+    · have h1 : s - 1 ≠ g.kstar := by omega
+      rw [if_neg h1, if_neg hs]
+      ring
+  · have hgf : g.delta = false := by
+      rcases hgb : g.delta with _ | _
+      · rfl
+      · exact absurd hgb hg
+    have hk : (s3 g).kstar = g.kstar - 1 := by simp [s3, hgf]
+    have hδ : (s3 g).delta = true := by simp [s3, hgf]
+    have he : (s3 g).eps = g.eps := by simp [s3, hgf]
+    have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      simp [s3, hgf]
+    have hpk : (s3 g).toPathData.kstar = g.kstar - 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = true := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = false := hgf
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    have hgpe : g.toPathData.eps = g.eps := rfl
+    simp only [SiteCost.PathData.alphaAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, hgpe, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s g.kstar with hs | hs
+    · have h1 : s - 1 = g.kstar - 1 := by omega
+      rw [if_pos h1, if_pos hs, h1]
+      ring
+    · have h1 : s - 1 ≠ g.kstar - 1 := by omega
+      rw [if_neg h1, if_neg hs]
+
+/-- **`s3` leaves `betaAt` unchanged too.**  Same cancellation, on the `vR` side. -/
+theorem s3_betaAt_eq (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.betaAt s = g.toPathData.betaAt s := by
+  by_cases hg : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by simp [s3, hg]
+    have hδ : (s3 g).delta = false := by simp [s3, hg]
+    have he : (s3 g).eps = g.eps := by simp [s3, hg]
+    have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by simp [s3, hg]
+    have hpk : (s3 g).toPathData.kstar = g.kstar + 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d g.kstar (g.d g.kstar - g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = false := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = true := hg
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    have hgpe : g.toPathData.eps = g.eps := rfl
+    simp only [SiteCost.PathData.betaAt, SiteCost.PathData.vR, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, hgpe, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s g.kstar with hs | hs
+    · rw [if_pos hs, if_pos hs, hs]
+      ring
+    · rw [if_neg hs, if_neg hs]
+  · have hgf : g.delta = false := by
+      rcases hgb : g.delta with _ | _
+      · rfl
+      · exact absurd hgb hg
+    have hk : (s3 g).kstar = g.kstar - 1 := by simp [s3, hgf]
+    have hδ : (s3 g).delta = true := by simp [s3, hgf]
+    have he : (s3 g).eps = g.eps := by simp [s3, hgf]
+    have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      simp [s3, hgf]
+    have hpk : (s3 g).toPathData.kstar = g.kstar - 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = true := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = false := hgf
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    simp only [SiteCost.PathData.betaAt, SiteCost.PathData.vR, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s (g.kstar - 1) with hs | hs
+    · rw [if_pos hs, if_pos hs, hs]
+      ring
+    · rw [if_neg hs, if_neg hs]
+      ring
+
+/-- **`s3` leaves `siteCost` unchanged everywhere.**  Corollary of the two above:
+`siteCost` is `max` of the `natAbs` of `alphaAt`/`betaAt`, and both are literally
+unchanged, so the site cost law under `s3` is not a Lipschitz bound but an exact
+conservation law. -/
+theorem s3_siteCost_eq (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.siteCost s = g.toPathData.siteCost s := by
+  unfold SiteCost.PathData.siteCost
+  rw [s3_alphaAt_eq, s3_betaAt_eq]
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.s3_alphaAt_eq
+#print axioms EltBridge.Elt.s3_betaAt_eq
+#print axioms EltBridge.Elt.s3_siteCost_eq
 
 namespace EltBridge
 namespace Elt
@@ -18420,6 +18867,9 @@ theorem coeff_W_eq_globalBox (N : ℕ) :
 
 end EltBridge
 
+#print axioms EltBridge.pathSumR_zero
+#print axioms EltBridge.pathSumR_succ
+#print axioms EltBridge.matrixPow_apply_eq_pathSumR
 #print axioms EltBridge.flagPathsFinset_disjoint
 #print axioms EltBridge.globalBox_inner_disjoint
 #print axioms EltBridge.globalBox_outer_disjoint

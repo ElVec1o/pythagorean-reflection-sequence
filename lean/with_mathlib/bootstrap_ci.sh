@@ -9,9 +9,28 @@
 # directly from github.com/leanprover/lean4/releases works (200), so that is the path
 # here. If a future container already has `lake` on PATH, this script is a fast no-op.
 #
+# IMPORTANT, found 2026-09-05: Mathlib's precompiled-cache CDN
+# (lakecache.blob.core.windows.net, what `lake exe cache get` fetches from) is
+# BLOCKED by this sandbox's org egress policy -- confirmed via the proxy's own
+# `/__agentproxy/status` diagnostics, not a transient failure. `lake exe cache get`
+# will NEVER succeed here; do not attempt it, and do not spend time re-diagnosing
+# this each run. This is an environment policy issue, not something a script can
+# work around -- it needs the org to allowlist that host, or the environment image
+# to ship Mathlib prebuilt.
+#
+# The practical workaround: DO NOT run a bare `lake build` (that targets all 60
+# `defaultTargets` in lakefile.toml, i.e. effectively the whole of Mathlib -- a
+# from-source build that can run for hours). Instead build the SCOPED target you
+# actually need, e.g. `lake build EltBridge`, which only compiles the ~400 files
+# EltBridge.lean actually depends on and is comparatively tractable, though still
+# a genuine from-source compile (no cache) and not fast -- expect it to take a
+# real amount of wall-clock time on a cold container, not seconds.
+#
 # Usage: source this file (not execute), from anywhere:
 #   source lean/with_mathlib/bootstrap_ci.sh
-# so the PATH export in the final step affects the calling shell.
+# so the PATH export in the final step affects the calling shell. This script only
+# installs the TOOLCHAIN; it deliberately does not run `lake build` itself (that
+# should be run with the scoped target, in the background, by the caller).
 
 set -euo pipefail
 
@@ -20,8 +39,9 @@ if command -v lake >/dev/null 2>&1; then
   return 0 2>/dev/null || exit 0
 fi
 
-TOOLCHAIN="$(cat "$(dirname "${BASH_SOURCE[0]}")/lean-toolchain")"   # e.g. leanprover/lean4:v4.30.0
-VERSION="${TOOLCHAIN#*:}"                                            # e.g. v4.30.0
+PROJDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLCHAIN="$(cat "$PROJDIR/lean-toolchain")"   # e.g. leanprover/lean4:v4.30.0
+VERSION="${TOOLCHAIN#*:}"                       # e.g. v4.30.0
 
 echo "[bootstrap] installing elan (toolchain manager only, no default toolchain)"
 curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o /tmp/elan-init.sh
@@ -43,4 +63,14 @@ tar --zstd -xf "$ARCHIVE" --strip-components=1 -C "$DEST"
 
 elan toolchain link "$TOOLCHAIN" "$DEST"
 
-echo "[bootstrap] done: $("$DEST/bin/lean" --version)"
+# `lean --version`/`lake --version` with no arguments resolve the toolchain from a
+# `lean-toolchain` file in the CWD (or elan's configured default, which we
+# deliberately did not set with --default-toolchain none). Running the check from
+# an arbitrary directory therefore prints a harmless-but-alarming "no default
+# toolchain configured" error even though the link above succeeded -- run the
+# check from PROJDIR so it actually resolves.
+echo "[bootstrap] done: $(cd "$PROJDIR" && lean --version)"
+echo "[bootstrap] NOTE: lake exe cache get will NOT work here (Mathlib cache CDN is"
+echo "[bootstrap] blocked by egress policy) -- build a SCOPED target instead, e.g.:"
+echo "[bootstrap]   cd \"$PROJDIR\" && lake build EltBridge"
+echo "[bootstrap] NOT a bare 'lake build' (that pulls in all defaultTargets)."
