@@ -10174,3 +10174,47 @@ PairwiseDisjoint proofs and composing several existentials into one sum) --
 assessed as achievable but not attempted this iteration, to avoid rushing the
 final assembly at the end of an already long, productive session. H1c stays 🟡,
 with every ingredient for the final step now in hand.
+
+## 2026-09-05 — BLOCKS 314-315: the assembly completed -- W is now a concrete object
+
+Continued straight through from BLOCK 313's disjointness fact to the full assembly:
+
+    globalBox                    the whole degree-N box, nested Finset.biUnion
+                                  over every valid (A,n) slice
+    globalBox_inner_disjoint     Set.PairwiseDisjoint over A (fixed n), from
+                                  flagPathsFinset_disjoint
+    globalBox_outer_disjoint     Set.PairwiseDisjoint over n, same source
+    globalBox_coeff_eq_some_card the assembly: splits globalBox N's sum via
+                                  Finset.sum_biUnion (twice), reads off each
+                                  slice via coeff_flagPathsFinset_eq_some_card
+                                  (BLOCK 312), sums into ONE total -- the
+                                  degree-N coefficient over EVERY configuration
+                                  of every span and starting point, concretely
+    W                             PowerSeries.mk packaging that witness at
+                                  each degree -- the first CONCRETE W anywhere
+                                  in this file, not an arbitrary one
+                                  universally quantified over
+    coeff_W / coeff_W_eq_globalBox   W's coefficient IS the box's coefficient,
+                                      by construction
+
+0 sorry throughout, three clean builds this stretch (one had a `Set.PairwiseDisjoint`
+unfolding issue needing `show Disjoint _ _` before `rw`; one had a `.le_bot ⟨_,_⟩`
+application with unresolved metavariables from elaboration order, fixed with a fully
+explicit `have`; one had a backwards `choose_spec` needing `.symm`). `#print axioms`
+on every new theorem shows only `propext, Classical.choice, Quot.sound`.
+
+**What this actually closes.** H1c's crux (named at the start of today's session:
+"the actual generating function W has NO Lean definition anywhere in this file") is
+CLOSED. `W` exists, concretely, unconditionally, and its coefficient is provably the
+real configuration count.
+
+**What remains, stated honestly.** `IsAssembly` (line 10128) still needs the
+RIGHT-hand side proved for this `W`: the sum over `Fin 4` marker data (BLOCK 300's
+partition) of a truncated Neumann/resolvent series built from the per-element
+transfer identity (`lR_exp_is_transfer`, BLOCK 115) and the Neumann truncation
+(`neumann_partial`/`resolvent_remainder`, BLOCK 116-117). That per-fiber resolvent
+identification -- turning "W's coefficient is a count" into "W's coefficient is
+ALSO this specific transfer-matrix formula" -- is the one piece of the whole
+IsAssembly chain not yet attempted. This is the hard original mathematical content
+(the actual claim of eq:assembly), not more bookkeeping. H1c stays 🟡, but the
+crux that opened this thread this morning is gone.
