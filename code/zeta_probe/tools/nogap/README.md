@@ -10716,3 +10716,58 @@ Current real target, not yet started: the actual induction
 (s1/s2: change lR by <=1; s3: change lR by <=10, BLOCK 323) plus d664ce9's
 much weaker `|kstar| <= wordLength` fact (not obviously useful for this,
 since it bounds by kstar not lR). Attempting this next.
+
+## BLOCK 325 (2026-09-05) — lR is 10*wordLength+2-Lipschitz (commit 99dbd22)
+
+Filled in the two gaps BLOCK 323/324 flagged: a real per-step `lR` bound for
+`s1`/`s2` (BLOCK 316-317's `s1_siteCost_kstar`/`s2_siteCost_kstar` only bound
+the *site cost at kstar*, not `lR` itself), and the induction chaining all
+three generators' bounds into a wordLength-indexed statement.
+
+**New lemmas (`EltBridge.lean`, all `#print axioms` clean: `[propext,
+Classical.choice, Quot.sound]`, zero `sorry`):**
+
+- `Elt.s1_lR_dist_le`, `Elt.s2_lR_dist_le`: `s1`/`s2` move `lR` by at most 1.
+  `mu` depends only on `d` and `kstar`, both literally unchanged by `s1`/`s2`,
+  so the edge-sum half of `lR` doesn't move at all; the site-sum can only
+  move at the single site `kstar` (`siteCost_eq_of_ne_kstar` handles every
+  other site), by at most 1 (`s1_siteCost_kstar`/`s2_siteCost_kstar`).
+- `Elt.lR_congr`: `SameElt g h -> g.toPathData.lR = h.toPathData.lR`. Needed
+  because `Gen`/`Reaches` are stated only up to `SameElt` (BLOCK 141's
+  non-canonical `supp`), so a generator step's target is merely *SameElt* to
+  `s1 a`/`s2 a`/`s3 a`, not equal to it as a term.
+- `Elt.one_toPathData_lR : one.toPathData.lR = 2`. **This corrects a wrong
+  assumption in the task that specified this work**: the identity's `lR` is
+  NOT 0. `mu` is defined (`SiteCost.PathData.mu`) to read `2` at any
+  coordinate with neither a deposit nor travel, precisely to encode that a
+  minimal realisation must still visit and leave that edge; `one`'s only
+  span coordinate, edge `0`, is exactly such a coordinate (no deposit, and
+  `travel 0 0 = 0` since the marker sits at `kstar = 0` and induces no
+  travel anywhere), so `lR(one) = 2` exactly, computed directly (`A = B =
+  0`, `mu 0 = 2`, both site costs at `0` and `1` vanish).
+- `Elt.gen_lR_dist_le`: every `Gen` step moves `lR` by at most 10 (transport
+  via `lR_congr`, then `s1_lR_dist_le`/`s2_lR_dist_le`/`s3_lR_dist_le`).
+- `Elt.reaches_lR_le`: `Reaches n g -> (lR g : Z) <= 10 * n + 2`, by
+  induction on `Reaches` (mirroring `reaches_kstar_natAbs_le`'s shape),
+  base case `one_toPathData_lR`, step case `gen_lR_dist_le`.
+- `Elt.lR_le_wordLength_mul_C {g} (h : Reachable g) : (lR g : Z) <= (wordLength
+  g : Z) * 10 + 2`, via `reaches_lR_le (reaches_wordLength h)`.
+
+**Constant and honest scope.** C = 10 (s3's bound is the binding one, as the
+task anticipated), but the task's requested statement shape
+`g.toPathData.lR <= wordLength g * C` (no additive term) is FALSE at `g =
+one`: `wordLength one = 0` but `lR one = 2`, so `2 <= 0 * C` fails for every
+C. The additive `+2` above is not a weakening chosen for convenience -- it
+is forced by `one_toPathData_lR`, i.e. by `mu`'s own definition. The proved
+theorem is the honest correction of the requested one, not the literal
+statement asked for.
+
+**What this is, and is not.** This is the Lipschitz *upper* bound on `lR`
+against `wordLength` -- the direction opposite `wordLength_ge_kstar_natAbs`
+(d664ce9's weak *lower* bound via `|kstar|`). It does NOT touch H1a's actual
+target `wordLength = lR` (`IsTrueLength`'s `lR + 2*c`, both directions still
+open) nor supply any lower bound `wordLength >= lR / C` -- an upper bound on
+`lR` in terms of `wordLength` goes the wrong way for that; the induction the
+task and BLOCK 324 both described as "the actual induction" would need to
+bound `wordLength` from below in terms of `lR`, which is a different
+(harder, still fully open) argument this block does not attempt.
