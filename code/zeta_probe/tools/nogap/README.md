@@ -10144,3 +10144,33 @@ pairwise disjoint, but this needs an actual proof, not yet attempted). H1c stays
 closer than this morning's assessment: the coefficient is now unconditionally
 well-defined per (A,n) slice, and the honest remaining gap is narrower (assembling
 slices into one PowerSeries) than defining the object at all.
+
+## 2026-09-05 — BLOCK 313: different (A,n) box slices are disjoint
+
+flagPathsFinset_disjoint: for (A1,n1) != (A2,n2) (both satisfying the usual
+A<=0<=A+n bounds), flagPathsFinset N A1 n1 and flagPathsFinset N A2 n2 share no
+list. Different n gives different List.ofFn lengths (List.length_ofFn); same n
+but different A is told apart by the arr field (SiteCost.vArr from
+Realisation.lean, = 1 only at position 0): List.ofFn_inj turns list equality
+into pointwise function equality, evaluated at the index where A1's slice puts
+its "arr=1" marker (index -A1, in range since A1 in [-n,0]) forces A2's slice to
+put ITS marker there too, forcing A1=A2, contradiction.
+
+0 sorry. Two real bugs: an `rw [<- hL1eq] at hL2eq` produced the wrong equation
+orientation for `List.ofFn_inj` (fixed by deriving a fresh, correctly-oriented
+equality via plain `rw` instead of chained rewrites); `unfold SiteCost.vArr`
+was called twice on the same hypothesis and the second call failed because the
+first had already unfolded both occurrences of `vArr` in one pass (removed the
+redundant call). `#print axioms` shows only propext, Classical.choice,
+Quot.sound. Committed `99f8c4d`.
+
+**What remains to actually assemble W:** define the global box as a nested
+Finset.biUnion over n in range(N+1) and A in Icc(-n,0), apply Finset.sum_biUnion
+twice (using this disjointness fact for both the outer n-level and inner A-level
+pairwise-disjointness hypotheses), and combine with
+coeff_flagPathsFinset_eq_some_card (BLOCK 312) to get one final unconditional
+count per degree N. This is real remaining work (constructing two
+PairwiseDisjoint proofs and composing several existentials into one sum) --
+assessed as achievable but not attempted this iteration, to avoid rushing the
+final assembly at the end of an already long, productive session. H1c stays 🟡,
+with every ingredient for the final step now in hand.
