@@ -11417,6 +11417,19 @@ def s2 (g : Elt) : Elt where
 @[simp] theorem s1_d (g : Elt) : (s1 g).d = g.d := rfl
 @[simp] theorem s2_kstar (g : Elt) : (s2 g).kstar = g.kstar := rfl
 @[simp] theorem s2_d (g : Elt) : (s2 g).d = g.d := rfl
+@[simp] theorem s1_supp (g : Elt) : (s1 g).supp = g.supp := rfl
+@[simp] theorem s2_supp (g : Elt) : (s2 g).supp = g.supp := rfl
+
+/-- **`s1` moves the span nowhere**: it only touches `delta`, and `occ`/`A`/`B` depend
+only on `supp`, `d` and `kstar`, all of which `s1` leaves alone. -/
+@[simp] theorem s1_occ (g : Elt) : (s1 g).occ = g.occ := rfl
+@[simp] theorem s1_A (g : Elt) : (s1 g).A = g.A := rfl
+@[simp] theorem s1_B (g : Elt) : (s1 g).B = g.B := rfl
+
+/-- **Neither does `s2`**, for the same reason. -/
+@[simp] theorem s2_occ (g : Elt) : (s2 g).occ = g.occ := rfl
+@[simp] theorem s2_A (g : Elt) : (s2 g).A = g.A := rfl
+@[simp] theorem s2_B (g : Elt) : (s2 g).B = g.B := rfl
 
 /-- Both side moves return the side after two applications. -/
 theorem s1_delta_involutive (g : Elt) : (s1 (s1 g)).delta = g.delta := by
@@ -11425,11 +11438,59 @@ theorem s1_delta_involutive (g : Elt) : (s1 (s1 g)).delta = g.delta := by
 theorem s2_eps_involutive (g : Elt) : (s2 (s2 g)).eps = g.eps := by
   simp [s2]
 
+/-! ### `s1` and `s2` change `lR` by at most 1
+
+`mu` depends only on `d` and `kstar`, both of which `s1`/`s2` leave alone, so the
+edge-sum half of `lR` is untouched. `siteCost s` for `s != kstar` also depends only on
+`d`, `kstar` and the universal `vArr` (the marker indicators `vL`/`vR` vanish there),
+so only the SINGLE site `kstar` can move. There, flipping `delta` swaps which of
+`alphaAt`/`betaAt` carries a `+-eps` term, changing each by exactly `eps` (so `|eps|`
+in absolute value); `natAbs` is `1`-Lipschitz, so the max of the two changes by at
+most `1`. This is the Lipschitz property the word-length lower bound needs: every
+generator moves `lR` by a bounded amount, so `wordLength` cannot outrun it. -/
+
+theorem siteCost_eq_of_ne_kstar {P Q : SiteCost.PathData} (hk : P.kstar = Q.kstar)
+    (hd : P.d = Q.d) (s : ℤ) (hs : s ≠ P.kstar) : P.siteCost s = Q.siteCost s := by
+  have hsQ : s ≠ Q.kstar := hk ▸ hs
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD
+  rw [if_neg hs, if_neg hsQ]
+  simp [hd]
+
+/-- **The site cost at `kstar` moves by at most 1 under `s1`.** -/
+theorem s1_siteCost_kstar (g : Elt) :
+    ((s1 g).toPathData.siteCost g.kstar : ℤ) ≤ g.toPathData.siteCost g.kstar + 1 ∧
+    (g.toPathData.siteCost g.kstar : ℤ) ≤ (s1 g).toPathData.siteCost g.kstar + 1 := by
+  have he : (s1 g).eps = g.eps := rfl
+  have hk : (s1 g).kstar = g.kstar := rfl
+  have hd : (s1 g).d = g.d := rfl
+  have hpe : g.toPathData.eps = g.eps := rfl
+  have hpd : g.toPathData.delta = g.delta := rfl
+  have hpe1 : (s1 g).toPathData.eps = g.eps := rfl
+  have hpd1 : (s1 g).toPathData.delta = !g.delta := rfl
+  simp only [SiteCost.PathData.siteCost, SiteCost.PathData.alphaAt, SiteCost.PathData.betaAt,
+    SiteCost.PathData.vL, SiteCost.PathData.vR, SiteCost.PathData.vD, toPathData_kstar,
+    toPathData_d, he, hk, hd, hpe, hpd, hpe1, hpd1, if_true, eq_self_iff_true]
+  rcases hδ : g.delta with _ | _ <;>
+    simp only [hδ, Bool.not_true, Bool.not_false, if_true, if_false, decide_eq_true_eq,
+      Bool.false_eq_true] <;>
+    rcases g.heps with h | h <;> rw [h] <;> omega
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.s1
 #print axioms EltBridge.Elt.s2
+#print axioms EltBridge.Elt.s1_supp
+#print axioms EltBridge.Elt.s2_supp
+#print axioms EltBridge.Elt.s1_occ
+#print axioms EltBridge.Elt.s1_A
+#print axioms EltBridge.Elt.s1_B
+#print axioms EltBridge.Elt.s2_occ
+#print axioms EltBridge.Elt.s2_A
+#print axioms EltBridge.Elt.s2_B
+#print axioms EltBridge.Elt.siteCost_eq_of_ne_kstar
+#print axioms EltBridge.Elt.s1_siteCost_kstar
 
 namespace EltBridge
 namespace Elt
