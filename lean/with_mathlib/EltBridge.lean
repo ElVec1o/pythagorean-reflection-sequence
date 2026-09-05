@@ -9626,6 +9626,45 @@ theorem pathGF_succ {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl (fun b _ => by ring)
 
+/-! ### `pathSum`, generalized to `IsAssembly`'s coefficient ring
+
+`IsAssembly` (BLOCK 116) states its transfer matrix `T` over `PowerSeries ℤ`, not `ℤ`,
+so `pathSum`/`pathGF` (BLOCK 112-113) cannot be applied to it directly: they are fixed to
+`ℤ`. Here is the same walk-sum, over an arbitrary commutative ring, together with the
+fact that connects it to `IsAssembly`'s literal `(T ^ k) a b` -- a matrix power's entry
+is the sum, over every length-`k` walk from `a` to `b`, of the product of transfer
+entries along it. This is one composable step toward `IsAssembly`'s right-hand side,
+not the whole bridge: turning the box's `flagPathsFinset` sum into a sum indexed by a
+concrete `Fin n` state space is separate, unattempted work. -/
+
+/-- The sum over state paths of length `n` from `a` to `b` of the product of transfer
+entries, over an arbitrary commutative ring. -/
+def pathSumR {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → R) :
+    ℕ → S → S → R
+  | 0, a, b => if a = b then 1 else 0
+  | (n + 1), a, b => ∑ c : S, M a c * pathSumR M n c b
+
+theorem pathSumR_zero {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S]
+    (M : S → S → R) (a b : S) :
+    pathSumR M 0 a b = if a = b then 1 else 0 := rfl
+
+theorem pathSumR_succ {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S]
+    (M : S → S → R) (n : ℕ) (a b : S) :
+    pathSumR M (n + 1) a b = ∑ c : S, M a c * pathSumR M n c b := rfl
+
+/-- **`IsAssembly`'s matrix power, unfolded as a walk sum.** The `(a, b)` entry of
+`T ^ k` is the sum, over every length-`k` walk from `a` to `b`, of the product of
+transfer entries along it -- so `IsAssembly`'s `(T ^ k) a b` can be read
+combinatorially, via `pathSumR`, rather than only algebraically via `Matrix.pow`. -/
+theorem matrixPow_apply_eq_pathSumR {R : Type*} [CommRing R] {n : ℕ}
+    (T : Matrix (Fin n) (Fin n) R) (k : ℕ) (a b : Fin n) :
+    (T ^ k) a b = pathSumR (fun i j => T i j) k a b := by
+  induction k generalizing a b with
+  | zero => rw [pow_zero, pathSumR_zero, Matrix.one_apply]
+  | succ m ih =>
+    rw [pow_succ', Matrix.mul_apply, pathSumR_succ]
+    exact Finset.sum_congr rfl (fun c _ => by rw [ih])
+
 /-! ### Why the assembly sums over the four marker data
 
 The bulk and travel transfer entries depend on the deposits only through their
@@ -18600,6 +18639,9 @@ theorem coeff_W_eq_globalBox (N : ℕ) :
 
 end EltBridge
 
+#print axioms EltBridge.pathSumR_zero
+#print axioms EltBridge.pathSumR_succ
+#print axioms EltBridge.matrixPow_apply_eq_pathSumR
 #print axioms EltBridge.flagPathsFinset_disjoint
 #print axioms EltBridge.globalBox_inner_disjoint
 #print axioms EltBridge.globalBox_outer_disjoint
