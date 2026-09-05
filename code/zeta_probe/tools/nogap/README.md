@@ -11418,3 +11418,86 @@ a `Data` on a 2-point-removed subtype -- doable, not attempted, since the
 generic case was the deliverable and the corner case doesn't change the
 overall verdict above). `HasInitialTurnInv` itself: read but not attempted
 this session -- flagged as the next concrete step, not investigated further.
+
+## BLOCK 337 (2026-09-06) -- `HasInitialTurnInv` investigated in full: it is NOT a
+## bypass of M4b/`RunStrandsConnected`, and one of its two routes is PROVABLY
+## impossible, not just hard. No Lean committed (documentation-only finding).
+
+Assigned BLOCK 336's own recommended next step: attack `HasInitialTurnInv`
+(EltBridge.lean:4433) directly, the one remaining obligation
+`VEndpt.shield_of_initial` (4440) reduces the shield law to. Read `shield_of_initial`/
+`shield_turnInvN` (4244-4458) in full, then `Realisation`/`PathData.canon`
+(Realisation.lean:245-468) to check whether "the natural witness should come from a
+`Realisation`" (the file's own doc comment, 4428-4430) is a small bridging step or a
+real gap. It is a real gap, and a deeper one than the comment suggests -- deep enough
+that it reduces back to the SAME already-known-hard wall (`RunStrandsConnected`/M4b,
+BLOCKS 199-206/332/333) rather than around it.
+
+**`HasInitialTurnInv := ∃ D, TurnInvG (VEndpt.siteP s0 s1) (VEndpt.edgeOf (s0-1))
+VEndpt.partner (vEndDataN up ds) Zf D`, and `TurnInvG` unpacks to
+`CostMerge.MergesMin ... ∧ (∀ x, edge-changing turn ⇒ site ∉ Zf)`** -- a cost-minimal
+merging pairing (`vEndDataN up ds : EndData.Data`) in which no turn crosses an edge at
+a cut site. Two ways to get a `D`: (a) as the *end* of the merge-descent
+(`CostMerge.exists_mergesMin`/`VEndpt.exists_mergesMinN`, already built), checking it
+also satisfies `hturn`; (b) build `D`'s turn directly, site by site, bypassing
+`MergesMin` altogether. Both were checked. Both dead-end, for two different reasons.
+
+**Route (a) is not hard, it is PROVABLY IMPOSSIBLE, whenever a cut site is occupied.**
+`vEndDataN`'s cost is `EndData.Data`'s FORCED/derived sign (`EndData.sgn`, EndData.lean
+line 58): on one side of a site every arrival carries one sign and every departure the
+opposite, unconditionally. Three already-proved, unsorried theorems pin the
+consequence exactly: `EltBridge.pcost_same_side_two` (a same-side "bounce" pairing
+costs exactly `2`), `EltBridge.pcostF_ge_one` (every pairing costs at least `1`, i.e.
+a cross-side "pass" costs exactly `1`) and `ConfigLoop.no_ends_of_alpha_zero`
+(ConfigLoop.lean:1079, ` alpha A 0 0 C = 0 → A = 0 ∧ C = 0`, i.e. in this model a cut
+site's cost-zero condition forces it EMPTY of real ends). So in `vEndDataN`'s cost
+model bouncing never wins over passing -- the exact reverse of the real (`SiteCost`)
+site-cost model, where `bounce_beats_pass_at_cut` (EltBridge.lean:11271, using the
+real free-sign class structure) proves the opposite. A `CostMerge.MergesMin`-optimal
+`D` will therefore never choose to bounce at an occupied site, so it can never satisfy
+`hturn` there -- `HasInitialTurnInv` via route (a) is unsatisfiable for any element
+with an occupied cut site (which per `mu_eq_two_of_gap` a genuine multi-edge gap run
+always has, `mu = 2` on both adjacent edges, not `0`). This is exactly the "the
+obstruction is the derived sign" finding the file already recorded, independently, at
+EndData.lean:41-57 and EltBridge.lean:4821-4835/5656-5679 (`GData`/
+`GData.strictly_more_general`, the free-sign fix, EXISTS only as a bare cost function
+-- `gcostOf` and swap-freeness lemmas, EltBridge.lean 4862-5654 -- with NO
+`WalkGraph.Data`/`MergesMin`/`TurnInvG` analogue built over it). Connecting a
+`Realisation` to `HasInitialTurnInv` via route (a) therefore is not "supply a
+witness" -- it needs `TurnInvG`'s whole cost-merge layer (`CostMerge.lean`) rebuilt
+over the free-sign model first. Substantial new construction, not bookkeeping.
+
+**Route (b) exists in the file too, already worked out further than route (a) --
+and it reduces to `RunStrandsConnected` exactly.** EltBridge.lean ~14001-15127 (a
+much older, pre-BLOCK-199 layer: "The free-pair obstruction is not on the shield
+law's path" through "`hturn` from zero crossing") builds `walkCount ≤ |Z|+1` with NO
+`MergesMin` at all: `exists_glued_data` assembles a `WalkGraph.Data` directly from
+per-site involutions, and `shield_upper_bound_from_turn`/`_multi`/`_mu_two` get
+`hedge`+`hsep` straight from a CHOSEN turn's raw pass/bounce structure
+(`hpass_up`/`hpass_dn`/`hbounce`), no minimality argument anywhere. But every
+theorem in that chain is stated under `hm : ∀ e, m e = 2` (multiplicity exactly `2`
+on EVERY edge, not just at cut sites -- the "all-gap chain" extreme family), and even
+there `hturn`/`hpass_up`/`hpass_dn`/`hbounce` are left as hypotheses "to verify on a
+concrete configuration", never discharged for a general `up`. Generalizing past
+`mu = 2` means choosing, consistently across a whole run of edges with arbitrary
+strand counts, which specific strand passes and which bounces at each site -- which
+is verbatim `RunStrandsConnected` (H1b/M4b), the Eulerian-existence-shaped wall
+BLOCKS 199-206 built the bespoke reduction for and BLOCK 333 (hours earlier, same
+session family) re-confirmed hard today, with a concrete counterexample ruling out
+any site-local order-independent rule.
+
+**Verdict.** BLOCK 336's redirection ("`HasInitialTurnInv` is a different, nearer-term
+obstruction than `RunStrandsConnected`, check it first") does not survive contact:
+route (a) is a dead end for a reason unrelated to `RunStrandsConnected` (a proven
+model mismatch, not a difficulty gap), and route (b) -- the only route that could
+still work -- reduces to `RunStrandsConnected` exactly, at the point where `mu = 2`
+stops being assumed. `HasInitialTurnInv` is not on a shorter path to `Elt.c <= |Z|`
+than `RunStrandsConnected` was; it is, after full unpacking, the same wall (route b)
+or a worse one (route a). No Lean committed: forcing either route would mean either
+proving something false (route a, given an occupied cut site) or re-deriving
+`RunStrandsConnected` from scratch inside a new frame (route b), neither of which is
+"attack `HasInitialTurnInv`" in any sense narrower than the standing M4b problem.
+Next session should not re-attempt `HasInitialTurnInv` expecting a shortcut; the
+honest next step is still the one BLOCK 333 named: a genuine strong-induction
+Hierholzer-style construction for `RunStrandsConnected` at general multiplicity, or
+(separately, if ever wanted) building `CostMerge`'s layer over `GData` from scratch.
