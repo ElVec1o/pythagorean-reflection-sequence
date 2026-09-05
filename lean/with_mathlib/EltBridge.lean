@@ -18186,6 +18186,29 @@ theorem card_C_eq_sum_marker_fiber_card {A B : ℤ} (C : Finset (SpanData A B)) 
   simp_rw [Finset.card_eq_sum_ones]
   exact (Finset.sum_fiberwise C markerIdx (fun _ => (1 : ℕ))).symm
 
+/-- **`C` actually exists.** Every earlier theorem in this file
+(`coeff_vanish_on_complement`, `coeff_flagPathsFinset_eq_card_C`, ...) takes a target
+span set `C` as a HYPOTHESIS. This constructs one: `S ↦ (A :: idxList A n).map
+(flagOf S.toPath)` is injective on `{S | S.toPath.lR = N}` (`flagPath_inj`) and maps
+it into the already-finite `flagPathsFinset N A n` (`mem_flagPathsFinset_of_config`),
+so the source set is finite (`Set.Finite.of_finite_image`) and `.toFinset` gives the
+genuine `Finset` every downstream theorem needs. This is the finiteness half of
+route (1) named in the `W`-definability check (2026-09-05): `SpanData` itself has no
+`Fintype` instance, so this is the only way to produce `C` without inventing a
+decidable filter on the box directly. -/
+theorem exists_C (N : ℕ) (A : ℤ) (n : ℕ) :
+    ∃ C : Finset (SpanData A (A + n)), ∀ S : SpanData A (A + n), S ∈ C ↔ S.toPath.lR = N := by
+  classical
+  have hfin : {S : SpanData A (A + n) | S.toPath.lR = N}.Finite := by
+    apply Set.Finite.of_finite_image
+      (f := fun S : SpanData A (A + n) => (A :: idxList A n).map (flagOf S.toPath))
+    · apply Set.Finite.subset (Finset.finite_toSet (flagPathsFinset N A n))
+      rintro L ⟨S, hS, rfl⟩
+      exact mem_flagPathsFinset_of_config N S.toPath n rfl (le_of_eq hS)
+    · intro S1 h1 S2 h2 heq
+      exact flagPath_inj heq
+  exact ⟨hfin.toFinset, fun S => hfin.mem_toFinset⟩
+
 end EltBridge
 
 #print axioms EltBridge.sum_vArr_range_eq_one
@@ -18197,3 +18220,4 @@ end EltBridge
 #print axioms EltBridge.coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs
 #print axioms EltBridge.coeff_flagPathsFinset_eq_card_C
 #print axioms EltBridge.card_C_eq_sum_marker_fiber_card
+#print axioms EltBridge.exists_C
