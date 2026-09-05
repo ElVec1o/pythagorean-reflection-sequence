@@ -11501,3 +11501,113 @@ Next session should not re-attempt `HasInitialTurnInv` expecting a shortcut; the
 honest next step is still the one BLOCK 333 named: a genuine strong-induction
 Hierholzer-style construction for `RunStrandsConnected` at general multiplicity, or
 (separately, if ever wanted) building `CostMerge`'s layer over `GData` from scratch.
+
+## BLOCK 338 (2026-09-06) -- H1c geometric-series transfer matrix: the natural
+## construction is numerically refuted; the required per-state information has
+## UNBOUNDED rank, not just an unbounded combinatorial range
+
+Assigned to attempt the specific fix BLOCK 334 pointed at but did not attempt:
+`IsAssembly`'s `T : Fin n -> Fin n -> PowerSeries ZZ` cannot index states by the raw
+magnitude of `dcur` (BLOCK 334, unbounded, confirmed again by reading
+`LocalState.muOf`/`dcur_le_muOf`, EltBridge.lean 6049-6100), but since `T`'s entries
+are full power series, the standard fix is to collapse the sum over all magnitudes
+into a geometric-series-valued matrix entry (`sum X^d = (1-X)^-1`), keeping the
+`Fin n` index to a small number of DISCRETE classes. No Lean touched this session
+(none of the work below needed the Lean file at all) -- this is a hand-derivation,
+checked against a Rust computation, of whether that idea is actually sound BEFORE
+attempting any Lean.
+
+**The exact per-site cost, read off `LocalState.siteOf`/`muOf` (EltBridge.lean
+6063-6071) and `flagStepB`'s weight `x^(sigma.st.muOf + tau.st.siteOf)` (7645,
+7729-7734).** At a "plain" site (`arr=0`, `dep=0`, so `vL=vR=0` and the `eps`/`arr`
+shift terms in `siteOf` vanish identically), the two formulas reduce to:
+
+    muOf(d)      = 2 if d=0, 1 if d=+-1, |d| if |d|>=2      (fcur=0 case)
+    siteOf(d,d') = max(|d|, |d'|)                            (dprev=d, dcur=d')
+
+i.e. the transfer weight between consecutive sites is `X^(muOf(d) + max(|d|,|d'|))`,
+`d` unbounded, `d'` fresh at every step, sign of `d` free (contributes a `x2`
+multiplicity per nonzero magnitude, itself already proved as `sum_signed_eq_magnitudes`/
+`sum_prod_signed`, EltBridge.lean ~10160-10180, for the FINITE-`N` truncation -- the
+open step is the untruncated, all-`N`-at-once version).
+
+**The candidate construction, precisely.** Define `u(a)` := the `PowerSeries ZZ`
+generating function of the total weight of a walk that starts at magnitude `a` and
+may stop after any number of further steps (`u = (I-K)^-1 . 1` for the infinite
+operator `(K f)(a) = X^muOf(a) * sum_b signmult(b) X^max(a,b) f(b)`, `signmult(b) = 1`
+if `b=0` else `2`). This satisfies the exact fixed-point equation (order-by-order
+well-posed since `muOf(a) >= 1` always):
+
+    u(a) = 1 + X^muOf(a) * [ X^a * S(a) + Ttail - S'(a) ]
+    S(a)  = sum_{b<=a} signmult(b) u(b)          (cumulative)
+    S'(a) = sum_{b<=a} signmult(b) X^b u(b)       (cumulative)
+    Ttail = S'(infinity)  (well defined mod X^(D+1) as S'(D) for any working cap D)
+
+If the task's geometric-series idea is right, `{u(a)}_a` -- or some other bounded
+summary of "the state at magnitude a" -- has to collapse into a FIXED (`a`-independent)
+finite-dimensional structure, since that is exactly what a bounded `Fin n` matrix `T`
+with `PowerSeries ZZ` entries can express (a constant-coefficient linear recursion in
+the walk-length variable, which is what `pathSumR`/`matrixPow_apply_eq_pathSumR`,
+BLOCK 321, already reduces `IsAssembly` to).
+
+**Rust check** (`rankcheck`, scratch, not part of the repo's tool tree -- this was a
+one-off sanity computation, not a reusable verify script, so not landed under
+`tools/`): solved the fixed-point equation above by Jacobi iteration (exact `i128`
+arithmetic, guaranteed convergent since every equation carries an explicit
+`X^muOf(a)`, order `>=1`, factor) at working degree `D`, for `D=36` and `D=70`.
+Cross-checked the fixed-point equation itself against brute-force enumeration of all
+finite walks from a fixed start state (`D'=6`): **exact agreement**, so the equation
+above is not a mis-derivation.
+
+Then tested the actual question: does `{u(0), u(1), ..., u(D)}`, as vectors of
+`X`-coefficients, have rank bounded independent of `D` (evidence a finite `T`
+exists), or does the rank grow with `D` (evidence it does not)? Result, unambiguous
+at both working degrees:
+
+    D=36: u(0..32) [33 vectors] -> rank 33 (FULL, zero dependencies)
+          u(0..36) [37 vectors] -> rank 19  (collapse -- but see below)
+    D=70: u(0..32) -> rank 33 (full); u(0..36) -> rank 36 (~full);
+          u(0..64), u(0..70) -> rank 36 flat
+
+The apparent "collapse" at the tail of each run is a TRUNCATION ARTIFACT, not a
+genuine algebraic relation: `u(a)-1` has leading order `~2a` (confirmed directly in
+the printed data, e.g. `a=10: order=20`, `a=12: order=24`), so once `2a` exceeds the
+working degree `D`, `u(a)` is INDISTINGUISHABLE from the trivial vector `[1,0,...,0]`
+at that truncation -- every such `a` contributes the identical vector, manufacturing
+a fake rank deficiency that is purely about running out of precision, not about the
+states becoming linearly dependent. Restricting to the genuinely-resolved range
+(`a` up to about `D/2`), rank is **exactly full at every degree tested, with zero
+relations found**, and the full-range rank itself grows from 19 (`D=36`) to 36
+(`D=70`) -- linearly in `D`, not bounded.
+
+**Conclusion.** This refutes the geometric-series idea as stated, and does so more
+sharply than BLOCK 334: it is not merely that the magnitude has no `N`-independent
+combinatorial cap (already known) -- it is that the *information* needed to predict
+future transfer weights from the current magnitude has provably unbounded rank as a
+`PowerSeries ZZ`-module, checked directly (not just argued informally) to working
+degree 70 with zero counterexamples to "more precision keeps finding more
+independent directions." No bounded number of discrete classes, and no finite-`Fin n`
+matrix of `PowerSeries ZZ` entries built from them via geometric sums (or by any
+other summary of the magnitude), can reproduce `flagStepB`'s exact weight for every
+degree simultaneously, because the site cost's `max(|d|,|d'|)` coupling to the *next*
+free variable `d'` requires knowing the *exact* current magnitude to unbounded
+precision, not a bounded class of it. This is the same character of obstruction
+(genuinely unbounded/transcendental structure resisting a finite closed form) as the
+"travel null vector" problem elsewhere in this project, which needed a real rank-one
+telescoping construction, not a geometric-series shortcut, to close -- and no such
+construction was attempted here (out of scope for tonight, and not implied by
+anything found).
+
+**Honest scope.** No Lean file touched -- nothing here reached the point of writing
+a Lean statement, because the mathematical content it would state is now believed
+false as stated (a bounded `Fin n` cannot exist via this route). `H1c` stays open,
+downgraded from "no known combinatorial cap" (BLOCK 334) to "the natural
+power-series collapse is numerically refuted; a working construction, if one exists,
+needs the same kind of exact closed-form/telescoping argument already used
+elsewhere in this project for the travel recursion, applied fresh to this
+`max`-coupled site-cost sum -- not attempted." Next session should not re-attempt
+the "collapse by geometric series over a small discrete class" idea in this form;
+it would need either (a) a genuinely different encoding of the state that isn't
+simply "the magnitude, or a bounded function of it" (unclear one exists, given the
+rank result), or (b) an exact telescoping solution of the boundary-value recursion
+above specifically (a real, separate research task, not attempted).
