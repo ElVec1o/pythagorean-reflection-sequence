@@ -10364,3 +10364,113 @@ a field projection's Bool value, use `revert hδ; cases g.delta <;> simp`.
 
 Still open: sub-piece 2 (mu-change at the crossed edge) and sub-piece 3
 (two-site siteCost bound). H1c and H1b/M4b untouched this block.
+
+## 2026-09-05 — BLOCK 321: `pathSum` generalized to `CommRing`, matrix powers as walk sums
+
+(Renumbered twice on merge: originally logged as "316", then "320", each time
+colliding with a concurrent session's own use of the same number for unrelated
+H1a work on `s1`/`s2`/`s3` (see the entries immediately above). At least two,
+possibly three, sessions ran on this repo in the same window. No content
+conflict either time -- different files/theorems -- but the block counter is
+clearly not synchronized across concurrent sessions; treat any single
+session's next free number as provisional until push time.)
+
+Before attempting `IsAssembly`'s right-hand side directly, closed a smaller, clearly
+necessary gap it exposed: `pathSum`/`pathGF` (BLOCK 112-113) are hard-coded to `M : S ->
+S -> ℤ`, but `IsAssembly`'s transfer matrix `T` is `Matrix (Fin n) (Fin n) (PowerSeries
+ℤ)` -- a different ring, so neither applies to it as stated.
+
+    pathSumR                     the same walk-sum recursion as pathSum, over an
+                                  arbitrary CommRing R
+    pathSumR_zero / pathSumR_succ   the two defining equations, both rfl (as pathSum's
+                                  own succ equation already was)
+    matrixPow_apply_eq_pathSumR  (T^k) a b = pathSumR (fun i j => T i j) k a b, by
+                                  induction on k generalizing a b, via pow_succ' and
+                                  Matrix.mul_apply
+
+0 sorry, clean build on the first attempt, no bugs this round. `#print axioms` on all
+three shows only `propext`/`Classical.choice`/`Quot.sound` (the two rfl-equations don't
+even need `Classical.choice`). Committed `7c9389a`.
+
+**What this gives.** `IsAssembly`'s literal `(T ^ k) a b` term can now be read as a
+walk sum over any commutative ring, not just algebraically via `Matrix.pow` -- the
+combinatorial reading the eventual proof needs.
+
+**What this does NOT touch, stated honestly.** The actual hard gap named at the end of
+BLOCKS 314-315 is untouched: turning the box's `flagPathsFinset`/`globalBox` sum
+(indexed by `List FlagState`, built over the integer-indexed `idxFn`) into a sum
+indexed by a concrete `Fin n` state space with an explicit transfer matrix `T`,
+`lambda`, `mu` is separate, unattempted infrastructure -- `pathWeightR` (the box's
+actual per-path weight) and `pathSumR` (this block's walk-sum) are not yet connected
+to each other at all. `IsAssembly` itself remains unproved for any concrete
+`W, W0, T, lam, mu`. H1c stays 🟡.
+
+## BLOCK 322 (2026-09-05) — `s3` doesn't just bound `siteCost`, it preserves it exactly
+
+(Numbered 322 to avoid yet another collision: this was drafted independently as
+"BLOCK 318" -- the same number the entries just above ended up using for
+`s3_occ_agree_true/false` -- before the two histories were merged. Same story as
+BLOCK 321's renumbering note: concurrent sessions, no content conflict, just an
+unsynchronized counter. Nicely, the two sessions' work is complementary rather
+than overlapping: BLOCKS 319-320 above close the *span*-movement half of `s3`'s
+Lipschitz bound; this block closes the *siteCost* half.)
+
+The fixed `bootstrap_ci.sh` worked as intended: bootstrap took a few minutes, `lake
+build EltBridge` then ran a genuine ~50-minute from-source compile of its ~400-file
+scoped dependency closure (no cache, CDN confirmed blocked as documented) and
+succeeded cleanly (`grep -c sorry EltBridge.lean` = 0 both before and after this
+block's edits). Went to H1a's remaining generator bound: `s3` (the cursor-move
+generator).
+
+Worked the algebra out by hand before touching Lean: `s3`'s two branches
+(`delta=true`: `kstar -> kstar+1`, deposit `-eps` at the old `kstar`; `delta=false`:
+mirror image) were substituted directly into `PathData.alphaAt`/`betaAt`'s
+definitions for an arbitrary site `s`. Result, checked case-by-case over every
+position of `s` relative to `kstar`: the `∓eps` deposit `s3` places at the crossed
+edge exactly cancels the shift in the marker indicators `vL`/`vR` caused by moving
+`kstar`, so `alphaAt s` and `betaAt s` -- and hence `siteCost s` -- are **literally
+unchanged, at every site**, not merely bounded. This is a stronger and cleaner fact
+than `s1_siteCost_kstar`/`s2_siteCost_kstar` (BLOCK 316-317), which only bounded a
+single site by 1.
+
+Formalized as three new theorems, each `0 sorry`:
+
+    s3_alphaAt_eq   (s3 g).toPathData.alphaAt s = g.toPathData.alphaAt s, for all s
+    s3_betaAt_eq    same for betaAt
+    s3_siteCost_eq  corollary: siteCost is an exact conservation law under s3
+
+`#print axioms` on all three shows only `propext, Classical.choice, Quot.sound`.
+Committed `e0a95ff` (pre-merge).
+
+**Bugs hit and fixed while proving this (three real, diagnosed failures, not
+guesses):** (1) first draft omitted `g.toPathData.eps = g.eps` (a `rfl` fact,
+distinct from the already-tracked `(s3 g).toPathData.eps` one) in two of the four
+branches -- `ring` failed leaving a bare `g.toPathData.eps` unrelated to `g.eps` in
+its eyes; fixed by adding the missing `have` and putting it in the `simp only` set.
+(2) `betaAt`'s branches needed an explicit `rw [hs]` (not just `if_pos`/`if_neg` on
+the marker conditions) to align a bare `g.d s` against `g.d g.kstar` that only
+`alphaAt`'s branches got automatically via an already-derived `s - 1 = kstar`
+lemma; adding this made two `rw` calls close their goals via `rw`'s own trailing
+`rfl` check, so the following `ring` then failed with "no goals" -- removed the
+now-redundant `ring` on those two lines. (3) one further negative-case branch
+looked structurally identical to the two above but wasn't already closed (its
+surviving terms were `g.eps * (0:ℤ)` vs `g.toPathData.eps * (0:ℤ)`, not
+syntactically `rfl`-equal even though `ring` trivially collapses both to `0`) --
+put `ring` back on that one line. Net: each fix was a distinct, understood cause,
+not the same mistake repeated; total 4 build attempts to a clean compile.
+
+**What this changes, stated honestly, now that both halves of the merge are on
+the table.** BLOCKS 319-320 (above) prove the span `[A,B]` moves by at most 1
+under `s3`; this block proves `siteCost` doesn't move at all. Between the two,
+`s3`'s effect on `lR = sum_mu + sum_siteCost` is now fully accounted for except
+for one piece neither session closed: `mu`'s own value at the crossed site moves
+by at most 1 (argued by hand in both sessions' logs, not yet a Lean theorem), and
+the *two-site* siteCost bookkeeping BLOCK 319 flagged (old `kstar` loses its
+marker, new `kstar` gains one) turns out, per this block's `s3_siteCost_eq`, not
+to be a bookkeeping problem at all -- `siteCost` is exactly conserved at every
+site, old and new `kstar` included, so nothing there needs bounding. What
+remains for a full `s3` Lipschitz bound on `lR`: the `mu`-at-the-crossed-site
+theorem, plus combining it with BLOCKS 319-320's span bound and this block's
+exact `siteCost` conservation into one `|lR (s3 g) - lR g| <= C` statement, and
+then the actual word-length lower-bound induction (`wordLength >= lR / C`) has
+not been attempted by either session. H1a stays 🟠, substantially narrowed.
