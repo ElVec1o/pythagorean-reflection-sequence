@@ -10807,3 +10807,69 @@ open composite (H1c or this). Separately, even a full `c`-Lipschitz bound
 would not by itself prove `IsTrueLength` -- that additionally needs the
 still-fully-unformalized bridge from a general `Elt g` to a `ConfigLoop`
 configuration, confirmed independently (again) as missing tonight.
+
+## BLOCK 327 (2026-09-05, commit c5841ad) — PhiAt IS exactly conserved by s3; c defined, Lipschitz bound NOT reached
+
+Followed up BLOCK 326's diagnosis. Worked the algebra by hand first: `PhiAt(s)
+= f(s-1) + vArr(s) - vL(s)`. Under `s3`'s true-delta branch (`kstar -> kstar+1`,
+`delta` true->false), at the crossed site `s = kstar+1` (i.e. `s-1 = kstar`),
+`travel_succ_at` gives `f(s-1)` shifting by `+1`, and `vL(s)` shifts from `0`
+(delta was true) to `1` (`vD'(s) = [s = kstar+1]`, now true) -- net change
+`+1 - 1 = 0`. Everywhere else (`s != kstar+1`) both `f(s-1)` (`travel_succ_ne`)
+and `vL(s)` are literally unchanged. `vArr(s)` never depends on `kstar`/`delta`
+so it cancels trivially throughout. The false-delta branch is the exact mirror
+(`travel_pred_at`/`travel_pred_ne`, crossed site `s = kstar`). So `PhiAt` is
+conserved by `s3` at every site, exactly, in both cases -- no discrepancy found.
+
+Formalized as `Elt.s3_PhiAt_eq` (same case-split shape as `s3_alphaAt_eq`/
+`s3_betaAt_eq`), plus `Elt.s3_cut_iff : (s3 g).toPathData.cut s <-> g.toPathData.cut
+s` (immediate corollary: `cut`'s three conjuncts are each exactly conserved).
+Both `0 sorry`, `#print axioms` clean (`propext, Classical.choice, Quot.sound`
+only). One real bug on the way: a first draft tried to close the "at the
+crossed site" branch with `simp only [..., hs]` where `hs : s = kstar +- 1` was
+thrown into the simp set to also collapse `vD`'s `if s = kstar' then ...`
+condition -- `simp only` doesn't reduce `if (kstar+1 = kstar+1) then _ else _`
+to the `then` branch without an explicit `eq_self_iff_true`/`if_pos` lemma in
+scope, so both branches left "unsolved goals" instead of failing loudly. Fixed
+by dropping `hs` from the `simp only` set and doing `rw [if_pos hs]` /
+`rw [if_neg hs]` explicitly afterward, matching `s3_alphaAt_eq`'s own style
+exactly (which already used this pattern and I should have copied verbatim
+the first time instead of taking a shortcut).
+
+Then defined the `c` candidate the diagnosis named: `Elt.c (g) := (pdCutSites
+g.toPathData).card`. Typechecks and builds clean (it's a `noncomputable def`,
+no axioms to check).
+
+**Did NOT reach the Lipschitz bound, and this is a real obstruction, not
+laziness.** `s3_lR_dist_le`'s technique (BLOCK 323) needed an "outside my own
+span the summand is a known constant" fact for each side (`mu_eq_two_outside`,
+`siteCost_eq_zero_outside`), both stated over the *absolute* edge coordinate
+via `Finset.Icc`/`houter`. `pdCutSites`, by contrast, is defined over
+`(Finset.Ioo 0 (pdWidth P)).filter (fun s => P.cut (P.A + s))` -- a window
+*relative to `P.A`*, i.e. it re-indexes every site by subtracting `A` before
+filtering. Reindexing to compare `pdCutSites (s3 g).toPathData` against
+`pdCutSites g.toPathData` needs a translation between two different origins
+(`(s3 g).A` vs `g.A`, which themselves differ by at most 1 per
+`s3_A_dist_le_one` but are not literally equal), which the existing lemma set
+doesn't supply. Worse: even after fixing that reindexing, the union-of-windows
+step needs an analogue of `siteCost_eq_zero_outside` for `cut` itself -- "outside
+the span, `cut` never holds" -- and no such lemma exists. `siteCost_eq_zero_outside`
+gives `alphaAt = betaAt = 0` outside `[A, B+1]` (since `siteCost = max(|alpha|,
+|beta|) = 0` there), which is two of `cut`'s three conjuncts, but says nothing
+about `PhiAt` outside that range -- `PhiAt` is not asserted to vanish outside
+the span by any lemma in the file, and there is no a priori reason it must
+(`f = travel kstar` is `0` outside the span by `houter`, and `vArr(s) = [s=0]`
+is `0` there too since `0` is inside `[A,B]` by `hA`/`hB`, but `vL(s)` need not
+be `0` at `s = kstar` itself, which can sit right at the span's edge). So a
+site just outside `[A, B+1]` genuinely *could* be a cut site under this
+definition, unlike `siteCost`. This is exactly the domain-mismatch the task
+anticipated as a plausible failure mode, confirmed rather than assumed.
+
+**Honest scope of this block.** `PhiAt`-conservation: CLOSED exactly (stronger
+than needed -- it wasn't merely bounded). `Elt.c`: DEFINED, builds, but has no
+Lipschitz bound and none was forced. `IsTrueLength`/the `Elt -> ConfigLoop`
+bridge: untouched, out of scope as instructed. What a future attempt would
+need: either (a) a proof that `cut` implies membership in `[A, B+1]`-ish
+(closing the missing "outside the span" fact), or (b) reformulating `c` over
+an absolute `Finset.Icc`-style index instead of `pdCutSites`'s `A`-relative
+one, so the reindexing problem doesn't arise in the first place.
