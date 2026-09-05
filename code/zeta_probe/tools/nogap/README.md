@@ -10110,3 +10110,37 @@ the flagPath_inj injection into the box, or sidestep SpanData with a decidable
 guarded-list filter on the box itself) -- both are genuinely new infrastructure, not
 a quick composition. Logged in full in private/RESEARCH_LOG.md rather than attempted
 under continued time pressure. H1c stays 🟡.
+
+## 2026-09-05 — BLOCKS 311-312: C actually exists; the box coefficient is unconditional
+
+Route (1) from the W-definability check above turned out to be cheap, not hard:
+
+    exists_C                            constructs the target span set C directly,
+                                         via Set.Finite.of_finite_image (the map
+                                         S -> its flagged list is injective by
+                                         flagPath_inj, and lands in the already-
+                                         finite flagPathsFinset N A n) -- no decidable
+                                         filter on the box needed, contrary to what
+                                         seemed like the more likely route
+    coeff_flagPathsFinset_eq_some_card  composes it with coeff_flagPathsFinset_eq_
+                                         card_C (BLOCK 301): for ANY N, A, n, the
+                                         degree-N box coefficient is SOME natural
+                                         number M -- unconditional, no assumed C
+
+0 sorry, both clean on the FIRST attempt -- no bugs this round. `#print axioms` on
+both shows only `propext, Classical.choice, Quot.sound`. Committed `8301fc8`,
+`07e402f`.
+
+**This corrects the earlier assessment.** The W-definability check above said "neither
+route is a one more composition step". Route (1) actually was, once tried -- the
+finiteness argument via `Set.Finite.of_finite_image` composed cleanly from pieces
+already in the file. Route (2) (the decidable box filter) is now unnecessary.
+
+**What is still needed for W itself:** the biUnion across the finite range of valid
+(A, n) pairs (n <= N via `span_le_lR`, A in [-n, 0] via `Elt.A_le_zero`/`zero_le_B`),
+and a disjointness argument for `Finset.sum_biUnion` (different (A,n) slices produce
+lists of different lengths or different position-derived field values, so should be
+pairwise disjoint, but this needs an actual proof, not yet attempted). H1c stays 🟡,
+closer than this morning's assessment: the coefficient is now unconditionally
+well-defined per (A,n) slice, and the honest remaining gap is narrower (assembling
+slices into one PowerSeries) than defining the object at all.
