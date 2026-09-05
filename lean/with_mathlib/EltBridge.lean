@@ -18268,9 +18268,82 @@ theorem flagPathsFinset_disjoint {N : ℕ} {A1 A2 : ℤ} {n1 n2 : ℕ}
     have hlen := congrArg List.length hLL
     simpa [List.length_ofFn] using hlen
 
+/-- The whole box for degree `N`: every list of every valid `(A, n)` slice, unioned. -/
+noncomputable def globalBox (N : ℕ) : Finset (List FlagState) :=
+  (Finset.range (N + 1)).biUnion
+    (fun n => (Finset.Icc (-(n : ℤ)) 0).biUnion (fun A => flagPathsFinset N A n))
+
+theorem globalBox_inner_disjoint (N : ℕ) (n : ℕ) :
+    Set.PairwiseDisjoint (↑(Finset.Icc (-(n : ℤ)) 0) : Set ℤ)
+      (fun A => flagPathsFinset N A n) := by
+  intro A1 hA1 A2 hA2 hne
+  simp only [Finset.coe_Icc, Set.mem_Icc] at hA1 hA2
+  exact flagPathsFinset_disjoint (by omega) (by omega) (by omega) (by omega)
+    (by simp [hne])
+
+theorem globalBox_outer_disjoint (N : ℕ) :
+    Set.PairwiseDisjoint (↑(Finset.range (N + 1)) : Set ℕ)
+      (fun n => (Finset.Icc (-(n : ℤ)) 0).biUnion (fun A => flagPathsFinset N A n)) := by
+  intro n1 _ n2 _ hne
+  show Disjoint _ _
+  rw [Finset.disjoint_left]
+  rintro L hL1 hL2
+  obtain ⟨A1, hA1, hL1'⟩ := Finset.mem_biUnion.mp hL1
+  obtain ⟨A2, hA2, hL2'⟩ := Finset.mem_biUnion.mp hL2
+  simp only [Finset.mem_Icc] at hA1 hA2
+  have hdisj := flagPathsFinset_disjoint (N := N) (A1 := A1) (A2 := A2) (n1 := n1) (n2 := n2)
+    (by omega) (by omega) (by omega) (by omega) (by simp [hne])
+  exact Finset.disjoint_left.mp hdisj hL1' hL2'
+
+/-- **`W`'s degree-`N` coefficient is unconditionally a natural number.** The last
+composition: split `globalBox N`'s sum into its `(A, n)` slices via
+`Finset.sum_biUnion` (twice, using `globalBox_outer_disjoint` and
+`globalBox_inner_disjoint`), then read off each slice's contribution from
+`coeff_flagPathsFinset_eq_some_card`. This is `IsAssembly`'s left-hand object,
+concretely: the degree-`N` coefficient of the sum over EVERY configuration, of
+every span and every starting point, is a specific, computable natural number --
+not merely "some `M`" per slice as BLOCK 312 had it, but the actual total. -/
+theorem globalBox_coeff_eq_some_card (N : ℕ) :
+    ∃ M : ℕ, PowerSeries.coeff N
+        (∑ L ∈ globalBox N,
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L) = (M : ℤ) := by
+  classical
+  have hsum : (∑ L ∈ globalBox N,
+        pathWeightR (fun σ τ => if flagStepB σ τ then
+            (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+          (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L)
+      = ∑ n ∈ Finset.range (N + 1), ∑ A ∈ Finset.Icc (-(n : ℤ)) 0,
+          ∑ L ∈ flagPathsFinset N A n,
+            pathWeightR (fun σ τ => if flagStepB σ τ then
+                (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+              (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L := by
+    unfold globalBox
+    rw [Finset.sum_biUnion (globalBox_outer_disjoint N)]
+    refine Finset.sum_congr rfl (fun n _ => ?_)
+    exact Finset.sum_biUnion (globalBox_inner_disjoint N n)
+  rw [hsum, map_sum]
+  choose M hM using fun (n : ℕ) (A : ℤ) (hA : A ∈ Finset.Icc (-(n : ℤ)) 0) =>
+    coeff_flagPathsFinset_eq_some_card N A n
+      (by simp only [Finset.mem_Icc] at hA; omega) (by simp only [Finset.mem_Icc] at hA; omega)
+  refine ⟨∑ n ∈ Finset.range (N + 1), ∑ A ∈ (Finset.Icc (-(n : ℤ)) 0).attach,
+      M n A A.2, ?_⟩
+  push_cast
+  refine Finset.sum_congr rfl (fun n _ => ?_)
+  rw [map_sum, ← Finset.sum_attach (Finset.Icc (-(n : ℤ)) 0)
+    (fun A => PowerSeries.coeff N (∑ L ∈ flagPathsFinset N A n,
+      pathWeightR (fun σ τ => if flagStepB σ τ then
+          (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+        (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L))]
+  exact Finset.sum_congr rfl (fun A _ => hM n A A.2)
+
 end EltBridge
 
 #print axioms EltBridge.flagPathsFinset_disjoint
+#print axioms EltBridge.globalBox_inner_disjoint
+#print axioms EltBridge.globalBox_outer_disjoint
+#print axioms EltBridge.globalBox_coeff_eq_some_card
 #print axioms EltBridge.sum_vArr_range_eq_one
 #print axioms EltBridge.telescope_seedA
 #print axioms EltBridge.exists_unique_kstar_of_flowA
