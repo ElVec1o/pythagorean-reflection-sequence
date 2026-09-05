@@ -11041,7 +11041,7 @@ general gapped case, both terminate at the same already-known open
 reverse-inequality crux. No further progress possible here without
 attacking that crux directly.
 
-## BLOCK 333 (2026-09-06) — H1c bulk-Fintype attempt: the "off near-marker" quotient does NOT
+## BLOCK 334 (2026-09-06) — H1c bulk-Fintype attempt: the "off near-marker" quotient does NOT
 ## sidestep the obstruction; `dcur` is unbounded everywhere, not just at the marker
 
 Followed the two independent H1c investigations' recommended next step (BLOCKS
@@ -11159,3 +11159,86 @@ applying it to real `Elt`s -- not just the `hcov`/`hcov0` semantic gap
 `Elt.dataOf` itself. Next concrete step for a future session: decide between
 options (a)/(b) above for the type mismatch before returning to `hZ`/`hruns`/
 `RunInv` at all -- attacking those on the wrong type would be wasted work.
+
+## BLOCK 333 (2026-09-06) — genuine fresh attempt at `RunStrandsConnected`
+## (H1b/M4b, Eulerian existence): re-confirmed hard, one real refinement of
+## WHY, no Lean committed
+
+Explicit user instruction tonight: attempt `RunStrandsConnected` for real,
+overriding the standing "don't re-attempt without a new idea" note. This is
+not a repeat of BLOCK 199-206 without checking -- it is a fresh look with two
+concrete falsifiable checks and one new (negative) idea, done before
+concluding the wall stands.
+
+**Check 1: has Mathlib grown an Eulerian-existence theorem since BLOCK 206?**
+Read `Mathlib/Combinatorics/SimpleGraph/Trails.lean` directly in this repo's
+`.lake/packages/mathlib` (not from memory). It still has only `IsEulerian`
+(def), `IsEulerian.isTrail`, `IsEulerian.mem_edges_iff`,
+`IsTrail.isEulerian_of_forall_mem`, `isEulerian_iff`,
+`IsEulerian.even_degree_iff`, `IsEulerian.card_odd_degree`/`card_filter_odd_degree`
+-- all NECESSARY-direction or definitional. No construction, no existence
+theorem (no Hierholzer). Confirmed unchanged; BLOCK 206's premise stands.
+
+**Check 2: is the object here actually a general graph, or something more
+restricted that might have a direct argument?** Read `EndType.lean` in full
+(the concrete `Endpt n m` type `RunStrandsConnected` is stated over) and the
+`turnGen`/`allJoined_*` machinery in `EltBridge.lean` (~lines 17000-18820,
+i.e. everything BLOCKS 199-206 built). Confirmed precisely what prior
+sessions already said: this is NOT an arbitrary multigraph. `Endpt n m` has
+`idx : Fin (m edge)`, so per-edge width is *already* fully general in the
+type -- `turnGen`'s restriction to a single global `u` (`hm : ∀ e, m e = 2 *
+u`) is an artificial narrowing of an already-general encoding, not a
+limitation of the mathematics. The real object is a linear chain of
+parallel-edge bundles between consecutive integer sites (`siteOf x = edgeOf x
++ (if top then 1 else 0)`), each bundle of even width `m e`. So the bespoke
+framing BLOCK 199 identified is right, and is not a red herring: general
+Hierholzer would be substantial overkill for this shape.
+
+**The new idea tried, and why it fails (worth recording so it isn't retried).**
+For a linear chain, the textbook explicit Eulerian circuit is: pick one
+"spine" strand per edge that threads straight through both its sites (a
+`pass` at both ends), and absorb every other strand of that edge into
+internal `bounce` pairs. Checked whether this closes the general case
+directly. It doesn't parse: a strand's two ends sit at two DIFFERENT sites
+(`siteOf` bottom = `e`, top = `e+1`), so "internal" is not a same-site notion
+-- `bounce` pairs two ends *at one site* (necessarily from different
+strands), never a strand's own two ends. So "every non-spine strand bounces
+internally" is not a well-formed local rule at all; it silently smuggled in
+the assumption that a strand's far and near ends could be paired directly,
+which the site structure forbids. This is a genuine (if elementary)
+dead end distinct from BLOCK 199's "fixed min(u[j],u[j+1]) pairing"
+counterexample -- that one failed numerically (found by enumeration), this
+one fails to typecheck as a construction at all. Recording both wrong ideas
+in one place should save a future session from re-deriving either.
+
+**What this leaves standing, precisely (same content as BLOCK 204-206,
+independently re-derived and re-verified here):** the per-edge round-trip
+pairing (`up 0 -- dn 0 -- up 1 -- dn 1 -- ...`, `allJoined_edge`) is correct
+and proved for ANY choice of which strands play "up"/"down" within an edge.
+What is NOT free is choosing, site by site, which arrival-departure pairs are
+`pass`es (crossing to the neighbour edge) versus internal round-trip steps,
+in a way that is *simultaneously* consistent along the whole chain so the
+result is one cycle and not several. That choice is exactly Eulerian-circuit
+existence for this restricted shape, and restricting the shape did not turn
+it into bookkeeping -- BLOCK 199's own counterexample already shows a
+site-local, order-independent rule for making that choice does not exist;
+any correct rule has to see the whole run's width sequence at once (which
+strand is a `pass` at site `e+1` depends on more than the two edges at that
+site). That is a genuine combinatorial-induction argument, not a translation
+step, and formalizing it (even in this restricted shape) is comparable in
+size to formalizing a Hierholzer-style argument, not smaller.
+
+**Honest verdict.** Confirmed harder, not closed: no new Lean committed
+(forcing a partial here risks exactly the sorry/vacuous outcome the ground
+rules forbid; every one-line special case already sits in BLOCK 197's
+uniform-width proof and adds nothing). Mathlib re-confirmed to lack the
+theorem. The bespoke-structure framing is correct and is not a place to look
+for a shortcut that removes the inductive content -- BLOCKS 199-206 already
+found the sharpest available reduction (the per-edge and per-link lemmas,
+all proved, `RunStrandsConnected` isolated as the sole remaining input). A
+future session's best next move is not more repackaging of `AllJoined` but
+an actual induction on the run's edge list building the pass/bounce choice
+by strong induction (e.g. on total strand count), carrying a connectivity
+invariant explicitly -- i.e., start writing the Hierholzer-shaped argument
+for this restricted shape, since no shortcut around it was found tonight
+either.
