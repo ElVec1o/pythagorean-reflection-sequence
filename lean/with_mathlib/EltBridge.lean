@@ -18209,6 +18209,20 @@ theorem exists_C (N : ℕ) (A : ℤ) (n : ℕ) :
       exact flagPath_inj heq
   exact ⟨hfin.toFinset, fun S => hfin.mem_toFinset⟩
 
+/-- **Unconditional at last**: the degree-`N` box coefficient IS a well-defined
+natural number, for any span length and any starting point -- no assumed-to-exist
+`C` required. Composes `exists_C` (BLOCK 311) with `coeff_flagPathsFinset_eq_card_C`
+(BLOCK 301). -/
+theorem coeff_flagPathsFinset_eq_some_card (N : ℕ) (A : ℤ) (n : ℕ)
+    (hA : A ≤ 0) (hAn : 0 ≤ A + (n : ℤ)) :
+    ∃ M : ℕ, PowerSeries.coeff N
+        (∑ L ∈ flagPathsFinset N A n,
+          pathWeightR (fun σ τ => if flagStepB σ τ then
+              (PowerSeries.X : PowerSeries ℤ) ^ (σ.st.muOf + τ.st.siteOf) else 0)
+            (flagHeadVecR PowerSeries.X) (flagTailVecR PowerSeries.X) L) = (M : ℤ) := by
+  obtain ⟨C, hC⟩ := exists_C N A n
+  exact ⟨C.card, coeff_flagPathsFinset_eq_card_C N A n hA hAn C hC⟩
+
 end EltBridge
 
 #print axioms EltBridge.sum_vArr_range_eq_one
@@ -18221,3 +18235,4 @@ end EltBridge
 #print axioms EltBridge.coeff_flagPathsFinset_eq_card_C
 #print axioms EltBridge.card_C_eq_sum_marker_fiber_card
 #print axioms EltBridge.exists_C
+#print axioms EltBridge.coeff_flagPathsFinset_eq_some_card
