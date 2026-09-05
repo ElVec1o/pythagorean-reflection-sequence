@@ -10926,3 +10926,45 @@ NOT connect `Elt.c` to `IsTrueLength`'s uninterpreted `c`, and does not touch
 `prop:travelinv`/the shield inequality `c <= |Z|` (paper2's still-open core, per
 `travelinv-is-the-shield-inequality.md`) -- `Elt.c` here is a candidate model of
 `|Z|`, formalized and now Lipschitz, nothing more.
+
+## BLOCK 329 (2026-09-05) — Elt -> ConfigLoop bridge: much more exists than "totally unformalized" claimed
+
+Investigated the Elt->ConfigLoop.Data bridge needed to connect tonight's
+Elt.c (BLOCK 326-328) to IsTrueLength's actual defect. No commit -- this
+corrects a standing claim in this log and elsewhere (repeated at least three
+times previously: thm_nogap, cor_localzero, prop:travelinv sections) that
+"the passage from a group element g to its configuration is not formalised."
+
+That claim is WRONG as stated. `Elt.balanced` (line 1452) is a fully
+UNCONDITIONAL theorem -- no side hypotheses -- giving the arrival/departure
+balance for any g. Combined with `GenericData.dataG` (needs only balance +
+VEndpt.partner/partner_invol/partner_ne/partner_site_neP, the last needing
+only kstar != 0), a total configuration-datum bridge for every g with
+kstar != 0 ALREADY EXISTS compositionally -- it has simply never been
+assembled into one named total definition. This is real, previously-missed
+structure, found by reading ConfigLoop.lean and the relevant EltBridge.lean
+theorems in full rather than trusting the prior sessions' summary.
+
+The GENUINE remaining gap is narrower and different from what was assumed:
+NOT "build the bridge" (compositionally done), but proving
+`ConfigLoop.defect (bridge g) = Elt.c g` in general. This splits in two:
+(1) gap-free g (hcov0 holds): defect=0 is essentially in hand via
+`Elt.defect_zero`'s existing pattern, modulo checking Elt.c g = 0 follows
+from pdCutSites being empty when there's no gap (plausible, unchecked).
+(2) gapped g: only a LOWER bound exists (`prop_cut_correct`/
+`CutComponents.exists_injective_components_avoiding` gives >= |Z|, not
+exact). The exact count needs an injectivity/surjectivity argument (each
+cut site contributes EXACTLY one isolated cycle) that is not in the file --
+this is the SAME known-open reverse inequality already tracked as
+`travelinv-is-the-shield-inequality` in memory, not a new distinct gap.
+It is algebraic/combinatorial (exact component counting), NOT the same
+obstruction as H1b (which needs Eulerian-circuit EXISTENCE) -- confirmed
+these are genuinely different blockers, not the same wall wearing two names.
+
+Recommended next scoped step (not attempted here): name the total bridge
+as `Elt.dataOf (g) (h : kstar != 0) (ds) : WalkGraph.Data (VEndpt ...)` via
+GenericData.dataG using Elt.balanced, then prove ONLY the gap-free case
+`Elt.c g = 0 -> ConfigLoop.defect (Elt.dataOf g h ds) = 0`, combining
+Elt.defect_zero's argument pattern with an unconditional hcov0 derivation.
+Assessed as likely a one-session task. The general (gapped) equality is
+not -- it needs the same open combinatorial argument tracked elsewhere.
