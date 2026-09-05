@@ -10091,3 +10091,22 @@ argument (e.g. formalizing Hierholzer's algorithm), which is real, hard,
 unattempted-anywhere work, not a quick citation. Confirms rather than
 overturns the project's prior NO-GOs on this route. Not pursued further this
 session; picked a different target instead.
+
+## 2026-09-05 — checked whether W is cheaply definable (H1c) -- it is not
+
+Investigated defining W := PowerSeries.mk (fun N => total degree-N config count),
+combining coeff_flagPathsFinset_eq_card_C (BLOCK 301) with span_le_lR (span <= N) and
+Elt.A_le_zero/zero_le_B (0 is always in the span, so A ranges over the finite [-n,0]).
+
+The union over (A,n) pairs turns out to be EASY: flagPathsFinset N A n is the same
+type (List FlagState) for every A,n, so a plain Finset.biUnion suffices -- no
+sigma-type construction needed, resolving an earlier worry.
+
+Where it breaks: coeff_flagPathsFinset_eq_card_C needs an actual constructed Finset C
+of SpanData A (A+n), and no such C has ever been built anywhere in the file -- every
+prior theorem takes C as a hypothesis. SpanData has no Fintype/DecidableEq instance,
+so there's no Finset.univ to filter. Two real fixes identified (exhibit finiteness via
+the flagPath_inj injection into the box, or sidestep SpanData with a decidable
+guarded-list filter on the box itself) -- both are genuinely new infrastructure, not
+a quick composition. Logged in full in private/RESEARCH_LOG.md rather than attempted
+under continued time pressure. H1c stays 🟡.
