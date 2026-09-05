@@ -10264,3 +10264,25 @@ not yet computed. The actual lower-bound theorem (`wordLength >= lR / constant`,
 composing per-generator bounds by induction on word length) has not been
 attempted. Real progress on H1a's previously-untouched lower-bound half, not a
 closure.
+
+## 2026-09-05 — BLOCK 317: s2 also changes lR by at most 1
+
+s2_siteCost_kstar: the same argument as BLOCK 316's s1 bound, adjusted for s2 also
+flipping eps (not just delta) -- each of alphaAt/betaAt still changes by exactly eps
+in absolute value, so the max moves by at most 1 as before. 0 sorry, clean build on
+the FIRST attempt -- copying BLOCK 316's now-working tactic pattern (no norm_num,
+explicit toPathData field links, explicit Bool reduction before the case split)
+worked directly with no new bugs. `#print axioms` shows only propext,
+Classical.choice, Quot.sound. Committed `22845a7`.
+
+**Both side/sign generators (s1, s2) now have their Lipschitz bound on lR.**
+
+**What's next, stated honestly, and why it's harder than s1/s2:** s3 (the
+cursor-move generator) is a materially different case. Unlike s1/s2, s3 can change
+the SPAN (A/B): moving kstar can bring a previously-outside edge into range, adding
+a new term to lR's sums rather than just perturbing an existing one. It can also
+move TWO site-cost terms (the old and new kstar) rather than one, and one mu term
+(the crossed edge). The bound is likely a small constant larger than 1, but it has
+not been computed, and the span-growth case needs its own argument (probably using
+the path-independence excess law from BLOCKS 305-306, which already tracks exactly
+how cstep's bookkeeping changes site by site). Not attempted yet. H1a stays 🟠.
