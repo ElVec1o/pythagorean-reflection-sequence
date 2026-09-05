@@ -10968,3 +10968,39 @@ GenericData.dataG using Elt.balanced, then prove ONLY the gap-free case
 Elt.defect_zero's argument pattern with an unconditional hcov0 derivation.
 Assessed as likely a one-session task. The general (gapped) equality is
 not -- it needs the same open combinatorial argument tracked elsewhere.
+
+## BLOCK 330 (2026-09-05, commit 7dba194) -- Elt.dataOf named; kstar<0 mirror added; step 4 not attempted
+
+Followed BLOCK 329's recommended step. Verified by reading: `Elt.defect_zero`
+(EltBridge.lean ~1963) was ALREADY stated for arbitrary `g : Elt` with
+`0 < g.toPathData.kstar`, not just `witElt` -- the "generalize from witElt"
+part of BLOCK 329's plan turned out to already be done. What was missing was
+a named object, since `exists_mergesMin` (CostMerge.lean:557) builds its
+witness via `Int.exists_least_of_bdd` + classical choice, so it is
+genuinely nonconstructive -- there is no way to name the datum except by
+choice.
+
+Added, all in EltBridge.lean, all building clean (`lake build EltBridge`,
+2982 jobs) with 0 `sorry` and axiom lists exactly
+`[propext, Classical.choice, Quot.sound]`:
+- `Elt.dataOf g ds bnd hk hb hbnd hcov0 z0` -- `Classical.choose` of
+  `Elt.defect_zero`'s existential; a genuine named `WalkGraph.Data`.
+- `Elt.dataOf_mergesMin`, `Elt.dataOf_defect_zero` -- its two defining
+  properties, via `Classical.choose_spec`.
+- `Elt.defect_zero_neg` -- the `kstar < 0` mirror that was missing:
+  `Elt.merges_to_one_neg` existed (walkCount <= 1) but nothing drew
+  `defect = 0` from it the way `Elt.defect_zero` does for `kstar > 0`.
+  (`Elt.dataOf` itself was left positive-only-honest-scope; a negative
+  mirror `dataOf` would just repeat the same choice-packaging and wasn't
+  built, to avoid an artificial single signature straddling two different
+  hypothesis sets for no mathematical gain.)
+
+**Did not attempt step 4** (connecting `Elt.c g = 0` to `hcov0`/gap-freeness
+and combining both directions). Checked first: no existing lemma in the file
+relates `hcov0` (the covering condition, stated over the extended `VEndpt`
+type at a chosen `bnd`) to `pdCutSites`/`pdCutAt` (stated over `PathData`
+via `P.cut`). Working out that equivalence from scratch is a real semantic
+question, not a repackaging -- exactly the kind of thing BLOCK 329 flagged
+as "plausible, unchecked" rather than in hand. Stopping here rather than
+forcing it; this is a legitimate open follow-up, scoped smaller than the
+gapped-case reverse inequality (which stays untouched, per instructions).
