@@ -10341,3 +10341,26 @@ this with BLOCK 318), the mu-change bound at the crossed edge, and the
 two-site siteCost bound (old kstar loses its marker, new kstar gains it).
 None of these three attempted yet. H1c (IsAssembly resolvent identity) and
 H1b/M4b (RunStrandsConnected, deprioritized) remain untouched this block.
+
+## BLOCK 320 (2026-09-05, commit 9317ea0) — s3's span moves by at most 1
+
+Proved `Elt.s3_A_dist_le_one` and `Elt.s3_B_dist_le_one`: `|(s3 g).A - g.A| <= 1`
+and `|(s3 g).B - g.B| <= 1`. Sub-piece 1 of s3's Lipschitz bound, closed.
+
+Method: two new private Finset ℤ lemmas (`min'_dist_le_one_of_agree`,
+`max'_dist_le_one_of_agree`) capturing the pure order-theoretic content --
+two finsets agreeing everywhere except one point p, each already within one
+step of p on its own min'/max', stay within one step of each other. Applied
+using BLOCK 318 (occ agrees except at the crossed edge) + BLOCK 319 (kstar
+within one step of the span, on both g and s3 g).
+
+0 sorry, #print axioms clean (propext/Classical.choice/Quot.sound only).
+
+Two Mathlib API mistakes hit and fixed: Finset.min'_le/le_max' do NOT take
+the Nonempty proof as a separate arg (unlike le_min'/max'_le, which do,
+because it appears in their conclusion) -- easy to get wrong by analogy;
+and `rcases g.delta with _|_ <;> simp_all` does not work for case-splitting
+a field projection's Bool value, use `revert hδ; cases g.delta <;> simp`.
+
+Still open: sub-piece 2 (mu-change at the crossed edge) and sub-piece 3
+(two-site siteCost bound). H1c and H1b/M4b untouched this block.
