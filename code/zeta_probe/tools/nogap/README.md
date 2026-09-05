@@ -11004,3 +11004,39 @@ question, not a repackaging -- exactly the kind of thing BLOCK 329 flagged
 as "plausible, unchecked" rather than in hand. Stopping here rather than
 forcing it; this is a legitimate open follow-up, scoped smaller than the
 gapped-case reverse inequality (which stays untouched, per instructions).
+
+## BLOCK 331 (2026-09-05) — hcov0 vs Elt.c=0: no clean equivalence found, correctly not forced
+
+Investigated whether `hcov0` (Elt.defect_zero's covering hypothesis, line
+1963-2020) is equivalent to `Elt.c g = 0` (pdCutSites empty, BLOCK 326-328).
+No commit -- genuine negative/inconclusive finding, not a failure to try.
+
+`hcov0` lives on the extended VEndpt/EndType.edgeOf/atTop level, quantified
+relative to a chosen phantom edge `bnd`; it is proved for exactly one
+concrete element (`witElt_hcov0`) via a bespoke argument specific to
+witElt's single-edge span. The file's ACTUAL bridge between cut sites and
+walkCount is a different, more elaborate hypothesis `hcov` (line 3087,
+via `WalkSupport.wLo`), used by the shield-law machinery (`VEndpt.shield`/
+`shield_gap`) -- `hcov` and `hcov0` are never shown to coincide, nor is
+`hcov0` shown to be `hcov` specialized at `Zf = empty`. The two available
+concrete data points (`witElt`: pdCutSites=empty, hcov0 holds; `witNeg`:
+pdCutSites={2}, never run through the hcov0-analogue anywhere in the file)
+don't settle it either way. The file even has an explicit warning (BLOCK 60
+comments, ~line 3149: "a virtual site CAN be a cut site") against assuming
+a clean iff here.
+
+Tracing this properly would require going through `Elt.merges_to_one`'s use
+of hcov0 down through `hvirt_of_gap`/`wLo`/the shield-law chain to
+`pdCutSites` -- which IS the general gapped-case machinery
+(`travelinv-is-the-shield-inequality`) already tracked as the known-open
+combinatorial crux. So this isn't a new distinct gap: it's confirmation
+that H1a-bridge's gap-free case (BLOCK 330) is the honest limit of what's
+reachable without opening that crux. Correctly not forced into a false or
+vacuous theorem.
+
+**H1a-bridge, final honest state for tonight:** Elt.dataOf (the named
+bridge) + dataOf_defect_zero/defect_zero_neg (gap-free case, both signs of
+kstar) are real and proved. Connecting this to Elt.c specifically, and the
+general gapped case, both terminate at the same already-known open
+reverse-inequality crux. No further progress possible here without
+attacking that crux directly.
