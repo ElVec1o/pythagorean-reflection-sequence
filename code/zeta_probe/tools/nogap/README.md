@@ -11041,7 +11041,7 @@ general gapped case, both terminate at the same already-known open
 reverse-inequality crux. No further progress possible here without
 attacking that crux directly.
 
-## BLOCK 332 (2026-09-06) — H1c bulk-Fintype attempt: the "off near-marker" quotient does NOT
+## BLOCK 333 (2026-09-06) — H1c bulk-Fintype attempt: the "off near-marker" quotient does NOT
 ## sidestep the obstruction; `dcur` is unbounded everywhere, not just at the marker
 
 Followed the two independent H1c investigations' recommended next step (BLOCKS
