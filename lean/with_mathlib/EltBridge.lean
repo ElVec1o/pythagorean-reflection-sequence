@@ -11973,6 +11973,248 @@ end EltBridge
 #print axioms EltBridge.Elt.s3_siteCost_eq
 
 namespace EltBridge
+
+/-! ### `s3`'s Lipschitz bound on `lR` itself
+
+Three pieces are already in hand: the span moves by at most one at each end
+(`s3_A_dist_le_one`, `s3_B_dist_le_one`), `mu` is unchanged off the one crossed edge
+and moves by at most `2` there (`s3_mu_dist_le_two`), and `siteCost` is *exactly*
+conserved everywhere (`s3_siteCost_eq`). What remains is bookkeeping: the two sums
+defining `lR` run over `Finset.Icc` ranges built from `A`/`B`, and those ranges
+themselves shift by at most one at each end, so up to two terms can enter or leave
+each sum even though the summand itself is unchanged (`siteCost`) or unchanged off
+one point (`mu`). This section closes that gap by extending both sides' sums to
+their union: the extra terms on each side are, by construction, genuinely outside
+that side's own span, where the summand is the known constant (`0` for `siteCost`,
+`2` for `mu`) -- so there is no need to ever evaluate either summand at its own
+span's boundary, which is the one place these facts do not apply. -/
+
+/-- **Outside the span, `mu` is the constant `2`.** Direct from `houter`: both `d`
+and `travel` vanish there, hitting `mu`'s `if`-branch. -/
+theorem mu_eq_two_outside (P : SiteCost.PathData) (j : ℤ) (hj : j < P.A ∨ P.B < j) :
+    P.mu j = 2 := by
+  obtain ⟨h1, h2⟩ := P.houter j hj
+  simp [SiteCost.PathData.mu, h1, h2]
+
+/-- **Outside `[A, B+1]`, `siteCost` vanishes.** Both `d(s-1)` and `d(s)` vanish
+there by `houter`, `vArr` vanishes because `s != 0` (using `hA`/`hB`), and `vL`/`vR`
+vanish because `s != kstar` (using `A_le_kstar`/`kstar_le_B_succ`). -/
+theorem siteCost_eq_zero_outside (P : SiteCost.PathData) (s : ℤ)
+    (hs : s < P.A ∨ P.B + 1 < s) : P.siteCost s = 0 := by
+  have hk1 := A_le_kstar P
+  have hk2 := kstar_le_B_succ P
+  have hA := P.hA
+  have hB := P.hB
+  have hd1 : P.d s = 0 := by
+    rcases hs with hs | hs
+    · exact (P.houter s (Or.inl hs)).1
+    · exact (P.houter s (Or.inr (by omega))).1
+  have hd2 : P.d (s - 1) = 0 := by
+    rcases hs with hs | hs
+    · exact (P.houter (s - 1) (Or.inl (by omega))).1
+    · exact (P.houter (s - 1) (Or.inr (by omega))).1
+  have hne0 : s ≠ 0 := by rcases hs with hs | hs <;> omega
+  have hnek : s ≠ P.kstar := by rcases hs with hs | hs <;> omega
+  simp [SiteCost.PathData.siteCost, SiteCost.PathData.alphaAt, SiteCost.PathData.betaAt,
+    SiteCost.vArr, SiteCost.PathData.vL, SiteCost.PathData.vR, SiteCost.PathData.vD,
+    hd1, hd2, hne0, hnek]
+
+namespace Elt
+
+/-- **`mu` is unchanged off the one crossed edge.** Same case split as
+`s3_mu_dist_le_two`, using that `d` and `travel kstar` are literally unchanged away
+from the crossed edge (`Function.update_of_ne`, `travel_succ_ne`/`travel_pred_ne`). -/
+theorem s3_mu_agree (g : Elt) (j : ℤ)
+    (hj : j ≠ (if g.delta then g.kstar else g.kstar - 1)) :
+    (s3 g).toPathData.mu j = g.toPathData.mu j := by
+  by_cases hδ : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have hj' : j ≠ g.kstar := by rw [if_pos hδ] at hj; exact hj
+    have hd : (s3 g).d j = g.d j := by
+      have hde : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+        rw [s3, dif_pos hδ]
+      rw [hde, Function.update_of_ne hj']
+    have htr : SiteCost.travel (s3 g).kstar j = SiteCost.travel g.kstar j := by
+      rw [hk]; exact travel_succ_ne g.kstar j hj'
+    simp only [SiteCost.PathData.mu, toPathData_d, toPathData_kstar, hd, htr]
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have hj' : j ≠ g.kstar - 1 := by rw [if_neg (by rw [hδ']; simp)] at hj; exact hj
+    have hd : (s3 g).d j = g.d j := by
+      have hde : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+        rw [s3, dif_neg hδ]
+      rw [hde, Function.update_of_ne hj']
+    have htr : SiteCost.travel (s3 g).kstar j = SiteCost.travel g.kstar j := by
+      rw [hk]; exact travel_pred_ne g.kstar j hj'
+    simp only [SiteCost.PathData.mu, toPathData_d, toPathData_kstar, hd, htr]
+
+/-- **`s3`'s `siteCost`-sum is exactly conserved.** Both endpoints of `[A, B+1]`
+move by at most one (`s3_A_dist_le_one`, `s3_B_dist_le_one`), but `siteCost` is
+`0` at every point that could possibly enter or leave the sum this way
+(`siteCost_eq_zero_outside`, applied to whichever of `g`/`s3 g` the point falls
+outside), and unchanged everywhere it stays (`s3_siteCost_eq`). Extending both
+sums to their union makes this precise: each extension only adds zero terms. -/
+theorem s3_siteCost_sum_eq (g : Elt) :
+    (∑ s ∈ Finset.Icc (s3 g).A ((s3 g).B + 1), (s3 g).toPathData.siteCost s) =
+      ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s := by
+  set T : Finset ℤ :=
+    Finset.Icc g.A (g.B + 1) ∪ Finset.Icc (s3 g).A ((s3 g).B + 1) with hT
+  have hsub1 : Finset.Icc g.A (g.B + 1) ⊆ T := Finset.subset_union_left
+  have hsub2 : Finset.Icc (s3 g).A ((s3 g).B + 1) ⊆ T := Finset.subset_union_right
+  have hgA : g.toPathData.A = g.A := toPathData_A g
+  have hgB : g.toPathData.B = g.B := toPathData_B g
+  have hsA : (s3 g).toPathData.A = (s3 g).A := toPathData_A (s3 g)
+  have hsB : (s3 g).toPathData.B = (s3 g).B := toPathData_B (s3 g)
+  have he1 : ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s
+      = ∑ s ∈ T, g.toPathData.siteCost s := by
+    apply Finset.sum_subset hsub1
+    intro x _ hx
+    have hx' : ¬ (g.A ≤ x ∧ x ≤ g.B + 1) := fun hc => hx (Finset.mem_Icc.mpr hc)
+    exact siteCost_eq_zero_outside g.toPathData x (by rw [hgA, hgB]; omega)
+  have he2 : ∑ s ∈ Finset.Icc (s3 g).A ((s3 g).B + 1), (s3 g).toPathData.siteCost s
+      = ∑ s ∈ T, (s3 g).toPathData.siteCost s := by
+    apply Finset.sum_subset hsub2
+    intro x _ hx
+    have hx' : ¬ ((s3 g).A ≤ x ∧ x ≤ (s3 g).B + 1) := fun hc => hx (Finset.mem_Icc.mpr hc)
+    exact siteCost_eq_zero_outside (s3 g).toPathData x (by rw [hsA, hsB]; omega)
+  have he3 : ∑ s ∈ T, (s3 g).toPathData.siteCost s = ∑ s ∈ T, g.toPathData.siteCost s :=
+    Finset.sum_congr rfl (fun s _ => s3_siteCost_eq g s)
+  exact he2.trans (he3.trans he1.symm)
+
+/-- **`s3`'s bound on the `mu`-sum half of `lR`.** `mu` agrees off the single
+crossed edge `p` (bounded there by `s3_mu_dist_le_two`) and is the constant `2`
+outside each configuration's own span (`mu_eq_two_outside`); since the two spans'
+ends move by at most one each (`s3_A_dist_le_one`, `s3_B_dist_le_one`), extending
+both sums to their union costs at most `2` per boundary that moved (at most two
+boundaries, since `A`/`B` are each within one point of their old value) plus `2`
+for the correction at `p` itself -- `10` in total, with room to spare. -/
+theorem s3_mu_sum_dist_le (g : Elt) :
+    ((∑ j ∈ Finset.Icc (s3 g).A (s3 g).B, (s3 g).toPathData.mu j : ℕ) : ℤ) ≤
+        ((∑ j ∈ Finset.Icc g.A g.B, g.toPathData.mu j : ℕ) : ℤ) + 10 ∧
+      ((∑ j ∈ Finset.Icc g.A g.B, g.toPathData.mu j : ℕ) : ℤ) ≤
+        ((∑ j ∈ Finset.Icc (s3 g).A (s3 g).B, (s3 g).toPathData.mu j : ℕ) : ℤ) + 10 := by
+  set p : ℤ := if g.delta then g.kstar else g.kstar - 1 with hp
+  have hgA : g.toPathData.A = g.A := toPathData_A g
+  have hgB : g.toPathData.B = g.B := toPathData_B g
+  have hsAeq : (s3 g).toPathData.A = (s3 g).A := toPathData_A (s3 g)
+  have hsBeq : (s3 g).toPathData.B = (s3 g).B := toPathData_B (s3 g)
+  have hAd := s3_A_dist_le_one g
+  have hBd := s3_B_dist_le_one g
+  set T : Finset ℤ := Finset.Icc g.A g.B ∪ Finset.Icc (s3 g).A (s3 g).B with hT
+  have hsub1 : Finset.Icc g.A g.B ⊆ T := Finset.subset_union_left
+  have hsub2 : Finset.Icc (s3 g).A (s3 g).B ⊆ T := Finset.subset_union_right
+  set S1 : ℕ := ∑ j ∈ Finset.Icc g.A g.B, g.toPathData.mu j with hS1
+  set S2 : ℕ := ∑ j ∈ Finset.Icc (s3 g).A (s3 g).B, (s3 g).toPathData.mu j with hS2
+  set STg : ℕ := ∑ j ∈ T, g.toPathData.mu j with hSTg
+  set STs : ℕ := ∑ j ∈ T, (s3 g).toPathData.mu j with hSTs
+  -- extend `g`'s own sum to `T`: the extra points are exactly among `{A-1, B+1}`
+  have hextra1 : T \ Finset.Icc g.A g.B ⊆ ({g.A - 1, g.B + 1} : Finset ℤ) := by
+    intro x hx
+    rw [Finset.mem_sdiff, hT, Finset.mem_union, Finset.mem_Icc, Finset.mem_Icc] at hx
+    obtain ⟨hxu, hxn⟩ := hx
+    rw [Finset.mem_insert, Finset.mem_singleton]
+    omega
+  have hextra2 : T \ Finset.Icc (s3 g).A (s3 g).B ⊆ ({(s3 g).A - 1, (s3 g).B + 1} : Finset ℤ) := by
+    intro x hx
+    rw [Finset.mem_sdiff, hT, Finset.mem_union, Finset.mem_Icc, Finset.mem_Icc] at hx
+    obtain ⟨hxu, hxn⟩ := hx
+    rw [Finset.mem_insert, Finset.mem_singleton]
+    omega
+  have hcard1 : (T \ Finset.Icc g.A g.B).card ≤ 2 :=
+    le_trans (Finset.card_le_card hextra1) (le_trans (Finset.card_insert_le _ _) (by simp))
+  have hcard2 : (T \ Finset.Icc (s3 g).A (s3 g).B).card ≤ 2 :=
+    le_trans (Finset.card_le_card hextra2) (le_trans (Finset.card_insert_le _ _) (by simp))
+  have hbound1 : ∑ j ∈ (T \ Finset.Icc g.A g.B), g.toPathData.mu j ≤ 4 := by
+    have hle : ∑ j ∈ (T \ Finset.Icc g.A g.B), g.toPathData.mu j
+        ≤ ∑ _j ∈ (T \ Finset.Icc g.A g.B), 2 := by
+      apply Finset.sum_le_sum
+      intro x hx
+      have hx' := hextra1 hx
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx'
+      rcases hx' with hx' | hx'
+      · rw [hx']
+        exact le_of_eq (mu_eq_two_outside g.toPathData (g.A - 1) (Or.inl (by rw [hgA]; omega)))
+      · rw [hx']
+        exact le_of_eq (mu_eq_two_outside g.toPathData (g.B + 1) (Or.inr (by rw [hgB]; omega)))
+    have heq : ∑ _j ∈ (T \ Finset.Icc g.A g.B), (2 : ℕ) = 2 * (T \ Finset.Icc g.A g.B).card := by
+      rw [Finset.sum_const, smul_eq_mul, Nat.mul_comm]
+    omega
+  have hbound2 : ∑ j ∈ (T \ Finset.Icc (s3 g).A (s3 g).B), (s3 g).toPathData.mu j ≤ 4 := by
+    have hle : ∑ j ∈ (T \ Finset.Icc (s3 g).A (s3 g).B), (s3 g).toPathData.mu j
+        ≤ ∑ _j ∈ (T \ Finset.Icc (s3 g).A (s3 g).B), 2 := by
+      apply Finset.sum_le_sum
+      intro x hx
+      have hx' := hextra2 hx
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx'
+      rcases hx' with hx' | hx'
+      · rw [hx']
+        exact le_of_eq
+          (mu_eq_two_outside (s3 g).toPathData ((s3 g).A - 1) (Or.inl (by rw [hsAeq]; omega)))
+      · rw [hx']
+        exact le_of_eq
+          (mu_eq_two_outside (s3 g).toPathData ((s3 g).B + 1) (Or.inr (by rw [hsBeq]; omega)))
+    have heq : ∑ _j ∈ (T \ Finset.Icc (s3 g).A (s3 g).B), (2 : ℕ)
+        = 2 * (T \ Finset.Icc (s3 g).A (s3 g).B).card := by
+      rw [Finset.sum_const, smul_eq_mul, Nat.mul_comm]
+    omega
+  have hsplit1 : ∑ j ∈ (T \ Finset.Icc g.A g.B), g.toPathData.mu j + S1 = STg :=
+    Finset.sum_sdiff hsub1
+  have hsplit2 : ∑ j ∈ (T \ Finset.Icc (s3 g).A (s3 g).B), (s3 g).toPathData.mu j + S2 = STs :=
+    Finset.sum_sdiff hsub2
+  have hp_agree : ∀ x ∈ T, x ≠ p → (s3 g).toPathData.mu x = g.toPathData.mu x :=
+    fun x _ hx => s3_mu_agree g x (by rw [← hp]; exact hx)
+  have hpcorr : (s3 g).toPathData.mu p ≤ g.toPathData.mu p + 2 ∧
+      g.toPathData.mu p ≤ (s3 g).toPathData.mu p + 2 := by
+    have h := s3_mu_dist_le_two g
+    rw [← hp] at h
+    constructor <;> [have h1 := h.1; have h2 := h.2] <;> omega
+  have hST : STs ≤ STg + 2 ∧ STg ≤ STs + 2 := by
+    by_cases hpT : p ∈ T
+    · have e1 : ∑ x ∈ T.erase p, (s3 g).toPathData.mu x + (s3 g).toPathData.mu p = STs :=
+        Finset.sum_erase_add T _ hpT
+      have e2 : ∑ x ∈ T.erase p, g.toPathData.mu x + g.toPathData.mu p = STg :=
+        Finset.sum_erase_add T _ hpT
+      have e3 : ∑ x ∈ T.erase p, (s3 g).toPathData.mu x = ∑ x ∈ T.erase p, g.toPathData.mu x :=
+        Finset.sum_congr rfl
+          (fun x hx => hp_agree x (Finset.mem_of_mem_erase hx) (Finset.ne_of_mem_erase hx))
+      omega
+    · have e1 : STs = STg := by
+        apply Finset.sum_congr rfl
+        intro x hx
+        exact hp_agree x hx (by rintro rfl; exact hpT hx)
+      omega
+  omega
+
+/-- **`s3`'s Lipschitz bound on `lR`.** The word-length lower bound the development
+is aiming for (`wordLength >= lR / C`) needs every generator to move `lR` by a
+bounded amount; `s1`/`s2` supply that (`s1_siteCost_kstar`, `s2_siteCost_kstar`,
+noting `mu` is untouched by either). This is the matching fact for `s3`, the
+harder generator: combining `s3_mu_sum_dist_le` (the `mu`-sum moves by at most
+`10`) with `s3_siteCost_sum_eq` (the `siteCost`-sum does not move at all). -/
+theorem s3_lR_dist_le (g : Elt) :
+    ((s3 g).toPathData.lR : ℤ) ≤ (g.toPathData.lR : ℤ) + 10 ∧
+      (g.toPathData.lR : ℤ) ≤ ((s3 g).toPathData.lR : ℤ) + 10 := by
+  have hmu := s3_mu_sum_dist_le g
+  push_cast at hmu
+  have hsite := s3_siteCost_sum_eq g
+  have hsiteZ : (∑ s ∈ Finset.Icc (s3 g).A ((s3 g).B + 1), (s3 g).toPathData.siteCost s : ℤ)
+      = (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ) := by exact_mod_cast hsite
+  unfold SiteCost.PathData.lR
+  simp only [toPathData_A, toPathData_B]
+  push_cast
+  omega
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.mu_eq_two_outside
+#print axioms EltBridge.siteCost_eq_zero_outside
+#print axioms EltBridge.Elt.s3_mu_agree
+#print axioms EltBridge.Elt.s3_siteCost_sum_eq
+#print axioms EltBridge.Elt.s3_mu_sum_dist_le
+#print axioms EltBridge.Elt.s3_lR_dist_le
+
+namespace EltBridge
 namespace Elt
 
 /-- The identity: cursor at `0`, no deposits. -/
