@@ -11562,6 +11562,135 @@ theorem s2_siteCost_kstar (g : Elt) :
       Bool.false_eq_true] <;>
     rcases g.heps with h | h <;> rw [h] <;> omega
 
+/-- **`s1`'s Lipschitz bound on `lR`.** `s1` leaves `d` and `kstar` untouched
+(`s1_d`, `s1_kstar`), so `mu` -- which depends on nothing else -- is the *same
+function*, and `A`, `B` (`s1_A`, `s1_B`) are unchanged too, so the `mu`-sum in `lR`
+does not move at all. `siteCost` can only move at the single site `kstar`
+(`siteCost_eq_of_ne_kstar` handles every other site), and there by at most `1`
+(`s1_siteCost_kstar`); every other term of the `siteCost`-sum is untouched, so the
+whole sum moves by at most `1`. -/
+theorem s1_lR_dist_le (g : Elt) :
+    ((s1 g).toPathData.lR : ℤ) ≤ (g.toPathData.lR : ℤ) + 1 ∧
+      (g.toPathData.lR : ℤ) ≤ ((s1 g).toPathData.lR : ℤ) + 1 := by
+  have hmuEq : (s1 g).toPathData.mu = g.toPathData.mu := by
+    funext j
+    unfold SiteCost.PathData.mu
+    simp only [toPathData_d, toPathData_kstar, s1_d, s1_kstar]
+  have hmuSum : ∑ j ∈ Finset.Icc (s1 g).A (s1 g).B, (s1 g).toPathData.mu j
+      = ∑ j ∈ Finset.Icc g.A g.B, g.toPathData.mu j := by
+    rw [s1_A, s1_B, hmuEq]
+  have hkey := s1_siteCost_kstar g
+  have hsiteSum : (∑ s ∈ Finset.Icc (s1 g).A ((s1 g).B + 1), (s1 g).toPathData.siteCost s : ℤ)
+      ≤ (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ) + 1 ∧
+      (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ)
+      ≤ (∑ s ∈ Finset.Icc (s1 g).A ((s1 g).B + 1), (s1 g).toPathData.siteCost s : ℤ) + 1 := by
+    rw [s1_A, s1_B]
+    by_cases hk : g.kstar ∈ Finset.Icc g.A (g.B + 1)
+    · have e1 : ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s1 g).toPathData.siteCost x
+          = ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x :=
+        Finset.sum_congr rfl fun x hx =>
+          siteCost_eq_of_ne_kstar (by rw [toPathData_kstar, toPathData_kstar, s1_kstar])
+            (by rw [toPathData_d, toPathData_d, s1_d]) x (Finset.ne_of_mem_erase hx)
+      have e2 : ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s1 g).toPathData.siteCost x
+            + (s1 g).toPathData.siteCost g.kstar
+          = ∑ s ∈ Finset.Icc g.A (g.B + 1), (s1 g).toPathData.siteCost s :=
+        Finset.sum_erase_add _ _ hk
+      have e3 : ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x
+            + g.toPathData.siteCost g.kstar
+          = ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s :=
+        Finset.sum_erase_add _ _ hk
+      have e1' : (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s1 g).toPathData.siteCost x : ℤ)
+          = (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x : ℤ) := by
+        exact_mod_cast e1
+      have e2' : (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s1 g).toPathData.siteCost x : ℤ)
+            + ((s1 g).toPathData.siteCost g.kstar : ℤ)
+          = (∑ s ∈ Finset.Icc g.A (g.B + 1), (s1 g).toPathData.siteCost s : ℤ) := by
+        exact_mod_cast e2
+      have e3' : (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x : ℤ)
+            + (g.toPathData.siteCost g.kstar : ℤ)
+          = (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ) := by
+        exact_mod_cast e3
+      omega
+    · have e1n : ∑ s ∈ Finset.Icc g.A (g.B + 1), (s1 g).toPathData.siteCost s
+          = ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s :=
+        Finset.sum_congr rfl fun x hx =>
+          siteCost_eq_of_ne_kstar (by rw [toPathData_kstar, toPathData_kstar, s1_kstar])
+            (by rw [toPathData_d, toPathData_d, s1_d]) x (by rintro rfl; exact hk hx)
+      have e1 : (∑ s ∈ Finset.Icc g.A (g.B + 1), (s1 g).toPathData.siteCost s : ℤ)
+          = (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ) := by
+        exact_mod_cast e1n
+      omega
+  have hmuSumZ : (∑ x ∈ Finset.Icc (s1 g).A (s1 g).B, (s1 g).toPathData.mu x : ℤ)
+      = (∑ x ∈ Finset.Icc g.A g.B, g.toPathData.mu x : ℤ) := by exact_mod_cast hmuSum
+  unfold SiteCost.PathData.lR
+  simp only [toPathData_A, toPathData_B]
+  push_cast at hmuSumZ ⊢
+  rw [hmuSumZ]
+  omega
+
+/-- **`s2`'s Lipschitz bound on `lR`.** Same argument as `s1_lR_dist_le`: `s2` also
+leaves `d` and `kstar` untouched (`s2_d`, `s2_kstar`), so `mu` is unchanged and only
+the site `kstar` of the `siteCost`-sum can move, by at most `1`
+(`s2_siteCost_kstar`). -/
+theorem s2_lR_dist_le (g : Elt) :
+    ((s2 g).toPathData.lR : ℤ) ≤ (g.toPathData.lR : ℤ) + 1 ∧
+      (g.toPathData.lR : ℤ) ≤ ((s2 g).toPathData.lR : ℤ) + 1 := by
+  have hmuEq : (s2 g).toPathData.mu = g.toPathData.mu := by
+    funext j
+    unfold SiteCost.PathData.mu
+    simp only [toPathData_d, toPathData_kstar, s2_d, s2_kstar]
+  have hmuSum : ∑ j ∈ Finset.Icc (s2 g).A (s2 g).B, (s2 g).toPathData.mu j
+      = ∑ j ∈ Finset.Icc g.A g.B, g.toPathData.mu j := by
+    rw [s2_A, s2_B, hmuEq]
+  have hkey := s2_siteCost_kstar g
+  have hsiteSum : (∑ s ∈ Finset.Icc (s2 g).A ((s2 g).B + 1), (s2 g).toPathData.siteCost s : ℤ)
+      ≤ (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ) + 1 ∧
+      (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ)
+      ≤ (∑ s ∈ Finset.Icc (s2 g).A ((s2 g).B + 1), (s2 g).toPathData.siteCost s : ℤ) + 1 := by
+    rw [s2_A, s2_B]
+    by_cases hk : g.kstar ∈ Finset.Icc g.A (g.B + 1)
+    · have e1 : ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s2 g).toPathData.siteCost x
+          = ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x :=
+        Finset.sum_congr rfl fun x hx =>
+          siteCost_eq_of_ne_kstar (by rw [toPathData_kstar, toPathData_kstar, s2_kstar])
+            (by rw [toPathData_d, toPathData_d, s2_d]) x (Finset.ne_of_mem_erase hx)
+      have e2 : ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s2 g).toPathData.siteCost x
+            + (s2 g).toPathData.siteCost g.kstar
+          = ∑ s ∈ Finset.Icc g.A (g.B + 1), (s2 g).toPathData.siteCost s :=
+        Finset.sum_erase_add _ _ hk
+      have e3 : ∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x
+            + g.toPathData.siteCost g.kstar
+          = ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s :=
+        Finset.sum_erase_add _ _ hk
+      have e1' : (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s2 g).toPathData.siteCost x : ℤ)
+          = (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x : ℤ) := by
+        exact_mod_cast e1
+      have e2' : (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, (s2 g).toPathData.siteCost x : ℤ)
+            + ((s2 g).toPathData.siteCost g.kstar : ℤ)
+          = (∑ s ∈ Finset.Icc g.A (g.B + 1), (s2 g).toPathData.siteCost s : ℤ) := by
+        exact_mod_cast e2
+      have e3' : (∑ x ∈ (Finset.Icc g.A (g.B + 1)).erase g.kstar, g.toPathData.siteCost x : ℤ)
+            + (g.toPathData.siteCost g.kstar : ℤ)
+          = (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ) := by
+        exact_mod_cast e3
+      omega
+    · have e1n : ∑ s ∈ Finset.Icc g.A (g.B + 1), (s2 g).toPathData.siteCost s
+          = ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s :=
+        Finset.sum_congr rfl fun x hx =>
+          siteCost_eq_of_ne_kstar (by rw [toPathData_kstar, toPathData_kstar, s2_kstar])
+            (by rw [toPathData_d, toPathData_d, s2_d]) x (by rintro rfl; exact hk hx)
+      have e1 : (∑ s ∈ Finset.Icc g.A (g.B + 1), (s2 g).toPathData.siteCost s : ℤ)
+          = (∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s : ℤ) := by
+        exact_mod_cast e1n
+      omega
+  have hmuSumZ : (∑ x ∈ Finset.Icc (s2 g).A (s2 g).B, (s2 g).toPathData.mu x : ℤ)
+      = (∑ x ∈ Finset.Icc g.A g.B, g.toPathData.mu x : ℤ) := by exact_mod_cast hmuSum
+  unfold SiteCost.PathData.lR
+  simp only [toPathData_A, toPathData_B]
+  push_cast at hmuSumZ ⊢
+  rw [hmuSumZ]
+  omega
+
 end Elt
 end EltBridge
 
@@ -11578,6 +11707,8 @@ end EltBridge
 #print axioms EltBridge.Elt.siteCost_eq_of_ne_kstar
 #print axioms EltBridge.Elt.s1_siteCost_kstar
 #print axioms EltBridge.Elt.s2_siteCost_kstar
+#print axioms EltBridge.Elt.s1_lR_dist_le
+#print axioms EltBridge.Elt.s2_lR_dist_le
 
 namespace EltBridge
 namespace Elt
@@ -12452,11 +12583,130 @@ theorem B_congr {g h : Elt} (H : SameElt g h) : g.B = h.B := by
   congr 1
   exact occ_congr H
 
+/-- **`lR` is a function of the element, not the term.** `SameElt` fixes `kstar`,
+`eps`, `delta` and `d` outright, so `mu` and `siteCost` -- which read nothing else --
+are the *same functions* on the nose, and `A_congr`/`B_congr` give the same summation
+range; the two sums making up `lR` (`lR_eq`) then agree termwise. -/
+theorem lR_congr {g h : Elt} (H : SameElt g h) : g.toPathData.lR = h.toPathData.lR := by
+  obtain ⟨hk, he, hδ, hd⟩ := H
+  have hpk : g.toPathData.kstar = h.toPathData.kstar := by simpa using hk
+  have hpe : g.toPathData.eps = h.toPathData.eps := by simpa using he
+  have hpd : g.toPathData.delta = h.toPathData.delta := by simpa using hδ
+  have hpdd : g.toPathData.d = h.toPathData.d := by simpa using hd
+  have hmuEq : g.toPathData.mu = h.toPathData.mu := by
+    funext j; unfold SiteCost.PathData.mu; rw [hpdd, hpk]
+  have hsiteEq : g.toPathData.siteCost = h.toPathData.siteCost := by
+    funext s
+    unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+      SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD
+    rw [hpdd, hpk, hpe, hpd]
+  unfold SiteCost.PathData.lR
+  rw [toPathData_A, toPathData_A, toPathData_B, toPathData_B, A_congr ⟨hk, he, hδ, hd⟩,
+    B_congr ⟨hk, he, hδ, hd⟩, hmuEq, hsiteEq]
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.occ_congr
 #print axioms EltBridge.Elt.A_congr
+#print axioms EltBridge.Elt.lR_congr
+
+namespace EltBridge
+namespace Elt
+
+/-! ### An upper bound on `lR` in terms of `wordLength`
+
+`s1_lR_dist_le`, `s2_lR_dist_le` and `s3_lR_dist_le` are the Lipschitz half of H1a: every
+generator moves `lR` by at most `10` (`s1`/`s2` move it by at most `1`, which is
+`<= 10`). Chaining that along a walk of `n` steps bounds `lR` by `10 * n` up to the
+one honest correction the base case forces: `one.toPathData.lR` is **not** `0` --
+`mu` is defined to read `2` at a coordinate with neither deposit nor travel
+(`SiteCost.PathData.mu`), and `one`'s only site, edge `0`, is exactly such a
+coordinate, so `lR` is *forced* to be `2` at the identity even though the identity's
+word length is `0`. So the honest statement carries that additive `2`: it is not
+`lR <= wordLength * 10`, which is false already at `g = one`, but
+`lR <= wordLength * 10 + 2`. -/
+
+/-- **The identity's `lR` is `2`, not `0`.** `one`'s span is the single edge `0`
+(`occ = {0}`, since `supp = ∅`), where there is no deposit and no travel -- exactly
+the case `mu` forces to `2` -- and the two site costs at `0` and `1` both vanish. -/
+theorem one_toPathData_lR : one.toPathData.lR = 2 := by
+  have hocc : one.occ = ({0} : Finset ℤ) := by
+    unfold occ; simp [one]
+  have hA : one.A = 0 := by unfold A; simp [hocc]
+  have hB : one.B = 0 := by unfold B; simp [hocc]
+  have hmu0 : one.toPathData.mu 0 = 2 := by
+    unfold SiteCost.PathData.mu
+    simp [Elt.toPathData, one, SiteCost.travel_of_kstar_zero]
+  have hsite0 : one.toPathData.siteCost 0 = 0 := by
+    unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+      SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+    simp [Elt.toPathData, one]
+  have hsite1 : one.toPathData.siteCost 1 = 0 := by
+    unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+      SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+    simp [Elt.toPathData, one]
+  unfold SiteCost.PathData.lR
+  rw [toPathData_A, toPathData_B, hA, hB]
+  have hIccAA : Finset.Icc (0 : ℤ) 0 = {0} := Finset.Icc_self 0
+  have hIccAB1 : Finset.Icc (0 : ℤ) (0 + 1) = ({0, 1} : Finset ℤ) := by decide
+  rw [hIccAA, hIccAB1]
+  simp [hmu0, hsite0, hsite1]
+
+/-- **Every generator step moves `lR` by at most `10`.** `s3` is the binding case
+(`s3_lR_dist_le`); `s1` and `s2` move it by at most `1 <= 10`
+(`s1_lR_dist_le`, `s2_lR_dist_le`). `Gen` is only up to `SameElt`, so the step first
+transports along `lR_congr`. -/
+theorem gen_lR_dist_le (a b : Elt) (h : Gen a b) :
+    (b.toPathData.lR : ℤ) ≤ (a.toPathData.lR : ℤ) + 10 := by
+  rcases h with h | h | h
+  · have hc := lR_congr h
+    have hb := s1_lR_dist_le a
+    omega
+  · have hc := lR_congr h
+    have hb := s2_lR_dist_le a
+    omega
+  · have hc := lR_congr h
+    have hb := s3_lR_dist_le a
+    omega
+
+/-- **Any walk of `n` steps reaching `g` bounds `lR g` by `10 * n + 2`.** The `+2` is
+the honest correction `one_toPathData_lR` forces at the base case; `gen_lR_dist_le`
+supplies the inductive step. -/
+theorem reaches_lR_le {n : ℕ} {g : Elt} (hn : Reaches n g) :
+    (g.toPathData.lR : ℤ) ≤ 10 * (n : ℤ) + 2 := by
+  induction hn with
+  | refl hsame =>
+    have hc := lR_congr hsame
+    have h2 := one_toPathData_lR
+    push_cast
+    omega
+  | step hstep hgen ih =>
+    have hb := gen_lR_dist_le _ _ hgen
+    push_cast
+    push_cast at ih
+    omega
+
+/-- **H1a's Lipschitz upper bound on `lR`, against `wordLength`.** The honest
+counterpart to `wordLength_ge_kstar_natAbs`: every generator moves `lR` by a
+bounded amount (`s1_lR_dist_le`, `s2_lR_dist_le`, `s3_lR_dist_le`, worst case `10`),
+so a shortest walk of length `wordLength g` cannot make `lR g` exceed
+`10 * wordLength g`, up to the additive `2` the identity's own `lR` forces
+(`one_toPathData_lR`). This is *not* the H1a target `wordLength = lR` (still open,
+via `IsTrueLength`'s `lR + 2 * c`): it is the Lipschitz half alone, in the other
+direction from `wordLength_ge_kstar_natAbs`. -/
+theorem lR_le_wordLength_mul_C {g : Elt} (h : Reachable g) :
+    (g.toPathData.lR : ℤ) ≤ (wordLength g : ℤ) * 10 + 2 := by
+  have h10 := reaches_lR_le (reaches_wordLength h)
+  linarith [h10]
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.one_toPathData_lR
+#print axioms EltBridge.Elt.gen_lR_dist_le
+#print axioms EltBridge.Elt.reaches_lR_le
+#print axioms EltBridge.Elt.lR_le_wordLength_mul_C
 
 namespace EltBridge
 namespace Elt
