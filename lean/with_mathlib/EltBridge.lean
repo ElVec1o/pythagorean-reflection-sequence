@@ -2040,6 +2040,36 @@ theorem pdCutSites_interior (P : SiteCost.PathData) {s : ℤ} (h : s ∈ pdCutSi
     0 < s ∧ s < (pdWidth P : ℤ) :=
   ((mem_pdCutSites P s).mp h).1
 
+/-- **`pdCutSites` in absolute coordinates.** `pdCutSites` filters the origin-relative
+window `Ioo 0 (pdWidth P)` by `s ↦ P.cut (P.A + s)`; since `pdWidth P = P.B - P.A + 1`
+(using `hA : A ≤ 0` and `hB : 0 ≤ B` to justify the `Int.toNat` round-trip), the shift
+`s ↦ P.A + s` carries this window bijectively onto the ABSOLUTE window
+`Ioo P.A (P.B + 1)`, and carries the predicate along with it. This converts the
+relative-offset form into the absolute-coordinate form needed to run the
+`s3_lR_dist_le`-style union-of-windows technique on `Elt.c`. -/
+theorem pdCutSites_card_eq_abs (P : SiteCost.PathData) :
+    (pdCutSites P).card = ((Finset.Ioo P.A (P.B + 1)).filter P.cut).card := by
+  classical
+  have hw : (pdWidth P : ℤ) = P.B - P.A + 1 := by
+    have hA := P.hA; have hB := P.hB
+    unfold pdWidth; omega
+  apply Finset.card_bij (fun s (_ : s ∈ pdCutSites P) => P.A + s)
+  · intro s hs
+    rw [mem_pdCutSites] at hs
+    obtain ⟨⟨h1, h2⟩, hcut⟩ := hs
+    rw [Finset.mem_filter, Finset.mem_Ioo]
+    exact ⟨⟨by omega, by omega⟩, hcut⟩
+  · intro a _ b _ hab
+    omega
+  · intro t ht
+    rw [Finset.mem_filter, Finset.mem_Ioo] at ht
+    obtain ⟨⟨h1, h2⟩, hcut⟩ := ht
+    refine ⟨t - P.A, ?_, by ring⟩
+    rw [mem_pdCutSites]
+    refine ⟨⟨by omega, by omega⟩, ?_⟩
+    show P.cut (P.A + (t - P.A))
+    rwa [show P.A + (t - P.A) = t by ring]
+
 /-- **The witness element has no cut site.**  Its span is a single edge, so there is no
 interior site at all -- `Ioo 0 1` is empty. -/
 theorem witElt_cutSites : pdCutSites witElt.toPathData = ∅ := by
@@ -19457,4 +19487,109 @@ it. -/
 noncomputable def c (g : Elt) : ℕ := (pdCutSites g.toPathData).card
 
 end Elt
+
+/-- **A shifted-window symmetric-difference bound.** If two absolute windows `Ioo A (B+1)`
+and `Ioo A' (B'+1)` have endpoints within `1` of each other, the second window's extra
+points (over the first) lie among `{A, B+1}` -- at most two candidates. This is the purely
+combinatorial fact underlying `Elt.s3_c_dist_le`: it says nothing about `cut` itself, only
+about how an `Ioo`-window moves when its ends move by at most one each. -/
+theorem window_sdiff_subset (A B A' B' : ℤ) (hA1 : A' ≤ A + 1) (hA2 : A ≤ A' + 1)
+    (hB1 : B' ≤ B + 1) (hB2 : B ≤ B' + 1) :
+    Finset.Ioo A' (B' + 1) \ Finset.Ioo A (B + 1) ⊆ ({A, B + 1} : Finset ℤ) := by
+  intro x hx
+  rw [Finset.mem_sdiff, Finset.mem_Ioo, Finset.mem_Ioo] at hx
+  obtain ⟨⟨h1, h2⟩, h3⟩ := hx
+  rw [Finset.mem_insert, Finset.mem_singleton]
+  push Not at h3
+  by_cases hxA : x ≤ A
+  · left; omega
+  · right; have := h3 (by omega); omega
+
+namespace Elt
+
+/-- **`s3`'s Lipschitz bound on `c`.** The bridge `pdCutSites_card_eq_abs` rewrites both
+`c g` and `c (s3 g)` as cardinalities of `cut`-filters over the ABSOLUTE windows
+`Ioo g.A (g.B+1)` and `Ioo (s3 g).A ((s3 g).B+1)`; `s3_cut_iff` identifies the filtering
+predicate on both windows (it is literally the same predicate `g.toPathData.cut`, since
+`s3` preserves `cut` at every absolute site, not just inside some span). What is left is
+the purely combinatorial fact that the two windows' symmetric difference has size at most
+`2` each way (`window_sdiff_subset`, from `s3_A_dist_le_one`/`s3_B_dist_le_one`), which
+bounds how much a filter's cardinality can change between them. -/
+theorem s3_c_dist_le (g : Elt) :
+    (c (s3 g) : ℤ) ≤ (c g : ℤ) + 2 ∧ (c g : ℤ) ≤ (c (s3 g) : ℤ) + 2 := by
+  classical
+  have hgA := toPathData_A g
+  have hgB := toPathData_B g
+  have hsA := toPathData_A (s3 g)
+  have hsB := toPathData_B (s3 g)
+  have hAd := s3_A_dist_le_one g
+  have hBd := s3_B_dist_le_one g
+  have hcg : c g = ((Finset.Ioo g.A (g.B + 1)).filter g.toPathData.cut).card := by
+    unfold c; rw [pdCutSites_card_eq_abs, hgA, hgB]
+  have hcs : c (s3 g) =
+      ((Finset.Ioo (s3 g).A ((s3 g).B + 1)).filter g.toPathData.cut).card := by
+    unfold c
+    rw [pdCutSites_card_eq_abs, hsA, hsB]
+    exact congrArg Finset.card (Finset.filter_congr (fun x _ => s3_cut_iff g x))
+  set p := g.toPathData.cut with hp
+  set W1 : Finset ℤ := Finset.Ioo g.A (g.B + 1) with hW1
+  set W2 : Finset ℤ := Finset.Ioo (s3 g).A ((s3 g).B + 1) with hW2
+  set T : Finset ℤ := W1 ∪ W2 with hT
+  have hsub1 : W1 ⊆ T := Finset.subset_union_left
+  have hsub2 : W2 ⊆ T := Finset.subset_union_right
+  have hTW1 : T \ W1 = W2 \ W1 := by
+    ext x; simp only [hT, Finset.mem_sdiff, Finset.mem_union]; tauto
+  have hTW2 : T \ W2 = W1 \ W2 := by
+    ext x; simp only [hT, Finset.mem_sdiff, Finset.mem_union]; tauto
+  have hsd1 : W2 \ W1 ⊆ ({g.A, g.B + 1} : Finset ℤ) :=
+    window_sdiff_subset g.A g.B (s3 g).A (s3 g).B hAd.1 hAd.2 hBd.1 hBd.2
+  have hsd2 : W1 \ W2 ⊆ ({(s3 g).A, (s3 g).B + 1} : Finset ℤ) :=
+    window_sdiff_subset (s3 g).A (s3 g).B g.A g.B hAd.2 hAd.1 hBd.2 hBd.1
+  have hcard1 : (W2 \ W1).card ≤ 2 :=
+    le_trans (Finset.card_le_card hsd1)
+      (le_trans (Finset.card_insert_le _ _) (by rw [Finset.card_singleton]))
+  have hcard2 : (W1 \ W2).card ≤ 2 :=
+    le_trans (Finset.card_le_card hsd2)
+      (le_trans (Finset.card_insert_le _ _) (by rw [Finset.card_singleton]))
+  have hstep1 : (T.filter p).card ≤ (W1.filter p).card + (T \ W1).card := by
+    have hsubset : T.filter p ⊆ (W1.filter p) ∪ (T \ W1) := by
+      intro x hx
+      rw [Finset.mem_filter] at hx
+      by_cases hxW1 : x ∈ W1
+      · exact Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨hxW1, hx.2⟩)
+      · exact Finset.mem_union_right _ (Finset.mem_sdiff.mpr ⟨hx.1, hxW1⟩)
+    exact le_trans (Finset.card_le_card hsubset) (Finset.card_union_le _ _)
+  have hstep2 : (T.filter p).card ≤ (W2.filter p).card + (T \ W2).card := by
+    have hsubset : T.filter p ⊆ (W2.filter p) ∪ (T \ W2) := by
+      intro x hx
+      rw [Finset.mem_filter] at hx
+      by_cases hxW2 : x ∈ W2
+      · exact Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨hxW2, hx.2⟩)
+      · exact Finset.mem_union_right _ (Finset.mem_sdiff.mpr ⟨hx.1, hxW2⟩)
+    exact le_trans (Finset.card_le_card hsubset) (Finset.card_union_le _ _)
+  have hge1 : (W1.filter p).card ≤ (T.filter p).card :=
+    Finset.card_le_card (Finset.filter_subset_filter p hsub1)
+  have hge2 : (W2.filter p).card ≤ (T.filter p).card :=
+    Finset.card_le_card (Finset.filter_subset_filter p hsub2)
+  have hfinal1 : (W2.filter p).card ≤ (W1.filter p).card + 2 := by
+    have := hstep1
+    rw [hTW1] at this
+    calc (W2.filter p).card ≤ (T.filter p).card := hge2
+      _ ≤ (W1.filter p).card + (W2 \ W1).card := this
+      _ ≤ (W1.filter p).card + 2 := by omega
+  have hfinal2 : (W1.filter p).card ≤ (W2.filter p).card + 2 := by
+    have := hstep2
+    rw [hTW2] at this
+    calc (W1.filter p).card ≤ (T.filter p).card := hge1
+      _ ≤ (W2.filter p).card + (W1 \ W2).card := this
+      _ ≤ (W2.filter p).card + 2 := by omega
+  constructor
+  · rw [hcg, hcs]; exact_mod_cast hfinal1
+  · rw [hcg, hcs]; exact_mod_cast hfinal2
+
+end Elt
 end EltBridge
+
+#print axioms EltBridge.pdCutSites_card_eq_abs
+#print axioms EltBridge.window_sdiff_subset
+#print axioms EltBridge.Elt.s3_c_dist_le
