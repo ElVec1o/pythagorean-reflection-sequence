@@ -11040,3 +11040,122 @@ kstar) are real and proved. Connecting this to Elt.c specifically, and the
 general gapped case, both terminate at the same already-known open
 reverse-inequality crux. No further progress possible here without
 attacking that crux directly.
+
+## BLOCK 332 (2026-09-06) — H1c bulk-Fintype attempt: the "off near-marker" quotient does NOT
+## sidestep the obstruction; `dcur` is unbounded everywhere, not just at the marker
+
+Followed the two independent H1c investigations' recommended next step (BLOCKS
+311-315, 321): build a genuine `Fintype` for the "bulk" (off the near-marker site)
+quotient state, define its transfer matrix from `flagStepB`'s weight, and reproduce
+the walk weight on paths avoiding site 0, deferring the `Fin 4` marker-fiber
+bookkeeping. Read `LocalState`/`FlagState` (EltBridge.lean:5938, 7523), `flagStepB`
+(7534), `travel` (MarkedSite.lean:26), `LocalState.muOf`/`dcur_le_muOf` (5956, 5973),
+`site_cost_magnitude_only` (9673, "BLOCK 104"), and `boxSet`/`boxSet_finite`
+(9432-9445, the actual N-dependent construction BLOCKS 314-315 used for `W`).
+
+**Checked exactly what "off the marker" buys.** `site_cost_magnitude_only` +
+`marker_needs_sign` (9793-9821) show the ONLY thing that distinguishes near-marker
+from bulk is that the bulk site cost depends on `dprev`/`dcur` through `.natAbs`
+only, so a bulk state could in principle be quotiented by sign (folding `dcur` and
+`-dcur` together, factor-2 shrink). That is real, but it is not the obstruction.
+The obstruction is that `dcur` itself (a raw `ℤ`-valued deposit count, present at
+EVERY site, marker or bulk) has no finite range anywhere in the file that doesn't
+depend on `N`: `LocalState.dcur_le_muOf` bounds `dcur.natAbs` by `muOf`, but `muOf`
+is DEFINED from `dcur`/`fcur` themselves (5956) — the bound is `|dcur| ≤
+max(|dcur|,|fcur|)`, true but empty of content. The only actual finite bound on
+`dcur` used anywhere is `boxSet N`'s `b.dcur.natAbs ≤ N` (9432-9433), which is
+exactly the per-degree box BLOCKS 314-315 built `W` from, and is `N`-dependent by
+construction. `fcur` (`= travel`) IS unconditionally in `{-1,0,1}` (`travel_cases`,
+MarkedSite.lean:29) with no `N`-dependence — so a bulk Fintype quotient by
+`(sign-class of dcur restricted to a fixed range, fcur, arr, dep, eps, delta)` would
+work for paths whose `dcur` stays inside that range, but not for arbitrary `N`: as
+`N` grows, `IsAssembly` must still cover degree-`N` configurations, and nothing in
+the file bounds how large `dcur` (i.e. `d j`, an accumulated signed deposit) can get
+along those paths independent of `N`.
+
+**Why this is not simply "impossible" (so this is a diagnosis, not a proof of
+impossibility).** `IsAssembly`'s `T` is `Matrix (Fin n) (Fin n) (PowerSeries ℤ)` —
+entries are power series, not scalars, so a single fixed-size transfer step CAN in
+principle already encode a full geometric sum over an unboundedly large `dcur`
+excursion (that is the entire point of using power-series-valued transfer matrices
+instead of enumerating states one integer at a time). So the right fix is not "find
+an N-independent cap on dcur" (there isn't one, and there shouldn't need to be one) —
+it is to exhibit the actual power-series-valued transition rule that sums out the
+`dcur` degree of freedom analytically, which is exactly the "per-fiber resolvent
+identification" BLOCKS 314-315/321 already named as the one unattempted piece of
+real mathematical content (`pathWeightR`'s box-indexed weight is still not connected
+to `pathSumR`'s `T`-indexed walk sum, BLOCK 321). My attempt to shortcut that by
+finding a purely combinatorial (non-power-series) bulk `Fintype` fails for the reason
+above; it does not fail for a new reason and does not narrow the crux further than
+BLOCK 321 already had it.
+
+**No commit.** No Lean file touched this session; nothing constructed was strong
+enough to be worth landing (would have been a `Fintype` that provably only covers
+bounded-`N` paths, i.e. exactly `boxSet N` again under a different name — not new
+content). H1c stays 🟡. The honest next step, unchanged from BLOCK 321, is the
+power-series transfer-matrix construction itself, not a combinatorial state-space
+restriction (bulk-only or otherwise).
+
+## BLOCK 332 (2026-09-06) — re-audit of prop:cut/`c <= |Z|`: the reverse inequality is
+## ALREADY PROVED in Lean (`c_le_Z_final`); the open item is a bridge, not the inequality;
+## plus a previously-unnamed type mismatch (`VEndpt` vs `Endpt`) in that bridge
+
+Assigned to re-attack the "reverse inequality" (`c <= |Z|`, `prop:cut`,
+`travelinv-is-the-shield-inequality`) directly. No commit to EltBridge.lean/
+ConfigLoop.lean -- re-reading first, per instructions, changed what there was
+to attack. No sorry added, no theorem forced. This is a diagnosis correction,
+not a new proof.
+
+**The inequality itself is not open in the Lean development.** Re-read
+`ConfigLoop.shield_law_runs` (line 2221) and its proof in full. It obtains
+`hle : walkCount E <= Zf.card + 1` from `c_le_Z_final` (line 1943) FIRST, then
+closes the matching `>=` from `CutComponents.exists_injective_components_avoiding_of_runs`
++ `walkCount_ge_of_avoiding`, and `le_antisymm`s the two into the exact
+equality `walkCount E = Zf.card + 1`. So both directions of "defect = |Z|"
+already exist as theorems, unconditionally, given three hypotheses on a
+configuration `D : Data (Endpt n m)`: `hZ` (cut sites carry no arrivals),
+`hruns` (every run 0..|Z| carries an end), and `RunInv up ds Zf D` (which
+itself bundles `hp`/`hts`/`hta`/`hturn`/`hcov`/`hmin` -- six conditions). This
+matches BLOCK 329's reframing exactly and I confirm it by direct reading of
+`c_le_Z_final`'s statement (not just its name): it literally concludes
+`walkCount E <= Zf.card + 1` from `RunInv up ds Zf D`. **So `c <= |Z|` is a
+proved theorem of the abstract run-graph model; what is open is showing a
+configuration built from a general `g : Elt` satisfies its hypotheses.**
+
+**New finding this session: the bridge has a type-level gap not previously
+named.** `ConfigLoop.RunInv`/`shield_law_runs`/`c_le_Z_final` are all stated
+over `Data (Endpt n m)`, where `Endpt` is `EndType.Endpt` (EndType.lean:29).
+But `Elt.dataOf` (BLOCK 330, EltBridge.lean) is built via `GenericData.dataG`
+over `VEndpt n mm`, where `VEndpt n mm := EndType.Endpt n mm ⊕ Bool`
+(EltBridge.lean:204) -- `Endpt` extended with two extra "virtual"/phantom
+points (the `Bool` summands). `Endpt` embeds into `VEndpt` via `Sum.inl`, but
+`Data (VEndpt n mm)` and `Data (Endpt n m)` are different types entirely --
+`shield_law_runs` cannot be applied to `Elt.dataOf`'s output as it stands.
+Closing this needs either (a) a further bridge showing the two virtual points
+of a `Elt.dataOf`-built `Data` pair off in a way that lets the whole thing
+project down to a genuine `Data (Endpt n m)`, or (b) re-deriving `RunInv`/
+`shield_law_runs`'s statement and proof generically over `VEndpt`, which
+would need `CutComponents.exists_injective_components_avoiding_of_runs` (and
+the whole graph-component machinery underneath it) regeneralized too --
+non-trivial, not attempted. BLOCK 331 traced `hcov` vs `hcov0` without
+surfacing this; it is a genuinely separate, additional obstruction sitting
+in front of even stating `hZ`/`hruns`/`RunInv` for `Elt.dataOf g`, on top of
+the semantic gap BLOCK 331 already found.
+
+**Relation to H1b.** Confirmed again, independently: this is NOT the same
+wall as H1b (Eulerian-circuit existence, missing from Mathlib). The
+component-counting machinery `CutComponents.exists_injective_components_avoiding[_of_runs]`
+that supplies the `>=|Z|` half is already built and used successfully
+(`wit_shield`); it does not invoke anything Eulerian-circuit-shaped. The two
+problems remain genuinely different blockers that happen to both terminate,
+independently, in "needs a bridge/hypothesis-discharge that isn't built yet"
+rather than "needs a missing inequality."
+
+**Honest scope.** No Lean file changed. This session's contribution: (1)
+confirms by direct reading, not just by name, that `c_le_Z_final` already
+proves the paper2 direction abstractly; (2) narrows further what blocks
+applying it to real `Elt`s -- not just the `hcov`/`hcov0` semantic gap
+(BLOCK 331) but a prior, more basic `VEndpt`-vs-`Endpt` type mismatch in
+`Elt.dataOf` itself. Next concrete step for a future session: decide between
+options (a)/(b) above for the type mismatch before returning to `hZ`/`hruns`/
+`RunInv` at all -- attacking those on the wrong type would be wasted work.
