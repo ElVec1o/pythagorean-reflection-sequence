@@ -11242,3 +11242,90 @@ by strong induction (e.g. on total strand count), carrying a connectivity
 invariant explicitly -- i.e., start writing the Hierholzer-shaped argument
 for this restricted shape, since no shortcut around it was found tonight
 either.
+
+## BLOCK 335 (2026-09-06) — VEndpt-vs-Endpt bridge (BLOCK 332's type mismatch):
+## option (a) projection ruled out concretely; option (b) confirmed genuinely
+## large, not a repackaging; no Lean committed
+
+Assigned BLOCK 332's exact open item: bridge `Data (VEndpt n mm)` (what
+`Elt.dataOf` produces, via `GenericData.dataG`) down to `Data (Endpt n m)`
+(what `ConfigLoop.c_le_Z_final`/`shield_law_runs` consume), or regeneralize
+the latter. No commit -- a concrete negative finding on option (a), and a
+confirmation (not just a repeat of the BLOCK 332 guess) that option (b) is
+real work, not a mechanical generalization.
+
+**What the two virtual points actually are, read from the source (task step
+1).** `VEndpt n mm := Endpt n mm ⊕ Bool` (EltBridge.lean:204). `.inr false`
+is the virtual arrival at site `0`, `.inr true` the virtual departure at
+`kstar` (doc comment, same line) -- together they patch the exact deficit
+`deficit_eq` proves the real model is short (`[s=kstar]-[s=0]`) so that
+`VEndpt.balanced` (line ~300) holds at every site. `VEndpt.partner`
+(line 318) pairs them with each other: `.inr b ↦ .inr (!b)`. This is a
+*choice*, flagged honestly in the file's own comment ("the one genuine
+choice in the extension... that reading belongs to (M)") -- not derived,
+posited as part of the transfer model.
+
+**Why option (a) (a projection `Data (VEndpt n mm) → Data (Endpt n m)`)
+does not work, concretely (task steps 2-3).** `Data` here is
+`WalkGraph.Data` (`p`,`t` : two fixed-point-free involutions never
+agreeing) -- confirmed `ConfigLoop`'s `Data (Endpt n m)` opens
+`WalkGraph` and is this same structure, not `EndData.Data` (a
+different, unrelated structure of the same name that carries
+`side`/`isArr`/`depSign`, EndData.lean:32 -- worth flagging since the two
+`Data`s coexist in the same import graph and are easy to conflate).
+`VEndpt.dataOf` (EltBridge.lean:906-930-ish, `GenericData.dataG`) sets
+`p := VEndpt.partner` directly (so the crossing pairing on the two virtual
+points is exactly the fixed `.inr b ↔ .inr (!b)`, never touching real
+ends -- that part IS clean and would restrict correctly), but sets
+`t := turnG siteOf isArr hbal`, built from
+`TurnBuild.exists_involution_of_card_eq` (TurnBuild.lean:20) -- a bare
+`Classical.choice`-backed existence theorem, no canonical order-based
+construction. Adding the virtual arrival/departure at sites `0`/`kstar`
+changes `arrOf`/`depOf` at exactly those two sites (one more element
+each, by `VEndpt.card_arrAt`/`card_depAt`), so the `t`-matching `dataG`
+chooses at those two sites is chosen *fresh* over the new, larger sets --
+there is no theorem, and structurally no reason, tying it back to "the
+plain-`Endpt` matching at that site, plus the new element matched to
+itself/dropped". So a `Data (VEndpt n mm)` built this way carries `t`-edges
+at sites `0`/`kstar` with **no forced relationship** to any
+`Data (Endpt n m)`'s `t` at those sites -- there is no well-defined
+"forget the two virtual points" map on `Data`, because `t` is not
+determined by anything the two `Data`s could be required to share.
+**This rules out (a) as stated** -- not "hard", but ill-typed at the level
+of "which theorem would you even try to prove": there is no `t`-preserving
+projection to write down, since `t` at those two sites is a free choice
+independent of the real-only choice. (A different route -- reproving
+`VEndpt.dataOf` with a *specific*, non-generic matching at sites `0`/`kstar`
+that provably restricts to the real-only matching -- is conceivable but is
+new construction, not a bridge from what `Elt.dataOf` already produces; out
+of scope for "make the existing objects connect".)
+
+**Option (b), checked against actual `RunInv`/`c_le_Z_final` dependencies
+(task step 4).** Read `RunInv` (ConfigLoop.lean:1355) and `run_step`/`c_le_Z`
+(1385-1500) in full. `edgeOf`/`atTop` DO have `VEndpt` analogues already
+(`VEndpt.edgeOf bnd`, `VEndpt.atTop`, EltBridge.lean:483-491) -- so far so
+good, generalizing the site/edge/orientation layer looks plausible. But
+`RunInv.hmin` and `run_step`'s cost-minimality argument are stated through
+`CostMerge.costOf (endDataOf up ds) E`, where `endDataOf` builds an
+`EndData.Data (Endpt n m)` (ConfigLoop.lean:345) -- `EndData.Data` carries
+`side`/`isArr`/`depSign : Bool → Bool`, i.e. **assigns a deposit sign to
+each of the two real sides of an edge**, a notion with no stated analogue
+for a *virtual*, phantom-edge end (`VEndpt.edgeOf` sends both virtual
+points to one arbitrary `bnd`, not two real sides of a real edge -- "side"
+is meaningless there as defined). Confirms BLOCK 332's guess was directionally
+right but understates it: this is not just "regeneralize `RunInv`'s type
+variable", it requires first deciding what `EndData.Data`/`CostMerge.costOf`
+*mean* for a phantom end (a new modeling choice, not a generalization of an
+existing definition), then redoing every lemma in `NoGapCutFree`/`CutComponents`
+that `run_step`/`c_le_Z_final` cite over that new meaning. That is genuinely
+comparable in size to rebuilding the run-descent chain, not a mechanical
+`variable {α}` change -- consistent with BLOCK 332's "non-trivial, not
+attempted" but now with the specific blocking definition named.
+
+**Verdict.** No Lean committed -- both routes named in BLOCK 332 checked for
+real; (a) is now ruled out with a specific reason (`t`'s nonconstructive,
+site-local choice has no forced restriction), not just deferred; (b) is
+confirmed to need a new modeling decision (`side`/cost for phantom ends)
+before any regeneralization can start, not merely a bigger diff. This
+matches, and sharpens, BLOCK 332's own "next concrete step" framing rather
+than contradicting it. No sorry added, nothing forced.
