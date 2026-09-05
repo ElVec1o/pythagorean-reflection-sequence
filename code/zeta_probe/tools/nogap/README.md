@@ -10771,3 +10771,39 @@ open) nor supply any lower bound `wordLength >= lR / C` -- an upper bound on
 task and BLOCK 324 both described as "the actual induction" would need to
 bound `wordLength` from below in terms of `lR`, which is a different
 (harder, still fully open) argument this block does not attempt.
+
+## BLOCK 326 (2026-09-05) — c-defect diagnosis: real candidate found, PhiAt is the missing check
+
+Investigated whether the connectivity defect `c : Elt -> N` (needed for
+`IsTrueLength`, `L g = g.lR + 2*c g`) can be defined and given a Lipschitz
+bound under s3, analogous to tonight's `lR` work (BLOCK 319-325). No commit,
+repo left clean -- this is a diagnosis, not a closure.
+
+`c` currently has NO Lean definition anywhere in the file -- only an
+uninterpreted parameter in `IsTrueLength` and an empirical Rust statistic in
+`nogap` (max observed c=3 at depth 21).
+
+A REAL, non-vacuous candidate exists already: `c(g) := (pdCutSites
+g.toPathData).card`, using `pdCutSites` (line ~2028, already defined and
+instantiated on concrete elements: `witElt_cutSites = empty`, `witNeg_cutSites
+= {2}`) and `PathData.cut` (`alphaAt=0 /\ betaAt=0 /\ PhiAt=0`, matching the
+paper's shield-law/|Z| notion).
+
+What blocks proving anything about it: BLOCK 322's exact-conservation
+theorems (`s3_alphaAt_eq`, `s3_betaAt_eq`) cover TWO of `cut`'s three
+conjuncts. `PhiAt` (the third) has never been checked under s3 -- nobody has
+proved or disproved that s3 preserves it. Without that, the union-of-windows
+technique that closed `s3_lR_dist_le` (BLOCK 323) can't even start on `c`.
+
+This is NOT the same obstruction as H1b/M4b (RunStrandsConnected, which needs
+Eulerian-circuit EXISTENCE, missing from Mathlib -- a real graph-theory gap).
+The `c`-obstruction is narrower and more mechanical: check whether
+`s3_alphaAt_eq`'s proof pattern extends to `PhiAt` (plausible, since `PhiAt`
+only involves `f`/`vArr`/`vL`, all already handled by that proof's case
+analysis). If it extends, `pdCutSites`'s cardinality Lipschitz bound is
+plausibly in reach by the same technique as `s3_lR_dist_le`. This is
+honestly the best-scoped concrete next step identified tonight on either
+open composite (H1c or this). Separately, even a full `c`-Lipschitz bound
+would not by itself prove `IsTrueLength` -- that additionally needs the
+still-fully-unformalized bridge from a general `Elt g` to a `ConfigLoop`
+configuration, confirmed independently (again) as missing tonight.
