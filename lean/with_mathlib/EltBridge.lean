@@ -11611,6 +11611,135 @@ end EltBridge
 namespace EltBridge
 namespace Elt
 
+/-! ### `s3` changes `siteCost` nowhere
+
+Unlike `s1`/`s2`, `s3` moves `kstar` itself. But the `∓eps` deposit it places at the
+crossed edge exactly cancels the shift in the marker indicators `vL`/`vR` caused by
+moving `kstar`, at *every* site, not just the one being crossed -- so `siteCost` is
+not merely bounded under `s3`, it is literally unchanged everywhere. -/
+
+theorem s3_alphaAt_eq (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.alphaAt s = g.toPathData.alphaAt s := by
+  by_cases hg : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by simp [s3, hg]
+    have hδ : (s3 g).delta = false := by simp [s3, hg]
+    have he : (s3 g).eps = g.eps := by simp [s3, hg]
+    have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by simp [s3, hg]
+    have hpk : (s3 g).toPathData.kstar = g.kstar + 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d g.kstar (g.d g.kstar - g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = false := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = true := hg
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    simp only [SiteCost.PathData.alphaAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s (g.kstar + 1) with hs | hs
+    · have h1 : s - 1 = g.kstar := by omega
+      rw [if_pos h1, if_pos hs, h1]
+      ring
+    · have h1 : s - 1 ≠ g.kstar := by omega
+      rw [if_neg h1, if_neg hs]
+      ring
+  · have hgf : g.delta = false := by
+      rcases hgb : g.delta with _ | _
+      · rfl
+      · exact absurd hgb hg
+    have hk : (s3 g).kstar = g.kstar - 1 := by simp [s3, hgf]
+    have hδ : (s3 g).delta = true := by simp [s3, hgf]
+    have he : (s3 g).eps = g.eps := by simp [s3, hgf]
+    have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      simp [s3, hgf]
+    have hpk : (s3 g).toPathData.kstar = g.kstar - 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = true := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = false := hgf
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    have hgpe : g.toPathData.eps = g.eps := rfl
+    simp only [SiteCost.PathData.alphaAt, SiteCost.PathData.vL, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, hgpe, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s g.kstar with hs | hs
+    · have h1 : s - 1 = g.kstar - 1 := by omega
+      rw [if_pos h1, if_pos hs, h1]
+      ring
+    · have h1 : s - 1 ≠ g.kstar - 1 := by omega
+      rw [if_neg h1, if_neg hs]
+
+/-- **`s3` leaves `betaAt` unchanged too.**  Same cancellation, on the `vR` side. -/
+theorem s3_betaAt_eq (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.betaAt s = g.toPathData.betaAt s := by
+  by_cases hg : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by simp [s3, hg]
+    have hδ : (s3 g).delta = false := by simp [s3, hg]
+    have he : (s3 g).eps = g.eps := by simp [s3, hg]
+    have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by simp [s3, hg]
+    have hpk : (s3 g).toPathData.kstar = g.kstar + 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d g.kstar (g.d g.kstar - g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = false := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = true := hg
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    have hgpe : g.toPathData.eps = g.eps := rfl
+    simp only [SiteCost.PathData.betaAt, SiteCost.PathData.vR, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, hgpe, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s g.kstar with hs | hs
+    · rw [if_pos hs, if_pos hs, hs]
+      ring
+    · rw [if_neg hs, if_neg hs]
+  · have hgf : g.delta = false := by
+      rcases hgb : g.delta with _ | _
+      · rfl
+      · exact absurd hgb hg
+    have hk : (s3 g).kstar = g.kstar - 1 := by simp [s3, hgf]
+    have hδ : (s3 g).delta = true := by simp [s3, hgf]
+    have he : (s3 g).eps = g.eps := by simp [s3, hgf]
+    have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      simp [s3, hgf]
+    have hpk : (s3 g).toPathData.kstar = g.kstar - 1 := (toPathData_kstar _).trans hk
+    have hpd : (s3 g).toPathData.d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) :=
+      (toPathData_d _).trans hd
+    have hpδ : (s3 g).toPathData.delta = true := hδ
+    have hpe : (s3 g).toPathData.eps = g.eps := he
+    have hgδ : g.toPathData.delta = false := hgf
+    have hgk : g.toPathData.kstar = g.kstar := toPathData_kstar _
+    have hgd : g.toPathData.d = g.d := toPathData_d _
+    simp only [SiteCost.PathData.betaAt, SiteCost.PathData.vR, SiteCost.PathData.vD,
+      hpk, hpd, hpδ, hpe, hgδ, hgk, hgd, if_true, if_false, Bool.false_eq_true,
+      Function.update_apply]
+    rcases eq_or_ne s (g.kstar - 1) with hs | hs
+    · rw [if_pos hs, if_pos hs, hs]
+      ring
+    · rw [if_neg hs, if_neg hs]
+      ring
+
+/-- **`s3` leaves `siteCost` unchanged everywhere.**  Corollary of the two above:
+`siteCost` is `max` of the `natAbs` of `alphaAt`/`betaAt`, and both are literally
+unchanged, so the site cost law under `s3` is not a Lipschitz bound but an exact
+conservation law. -/
+theorem s3_siteCost_eq (g : Elt) (s : ℤ) :
+    (s3 g).toPathData.siteCost s = g.toPathData.siteCost s := by
+  unfold SiteCost.PathData.siteCost
+  rw [s3_alphaAt_eq, s3_betaAt_eq]
+
+end Elt
+end EltBridge
+
+#print axioms EltBridge.Elt.s3_alphaAt_eq
+#print axioms EltBridge.Elt.s3_betaAt_eq
+#print axioms EltBridge.Elt.s3_siteCost_eq
+
+namespace EltBridge
+namespace Elt
+
 /-- The identity: cursor at `0`, no deposits. -/
 def one : Elt where
   kstar := 0

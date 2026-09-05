@@ -10316,3 +10316,74 @@ Committed `95d4629`. Updated the routine's own prompt to match.
 **Honest note:** this is real, useful environment-hardening work, not H1a/H1b/H1c
 progress. Every hourly cloud fire before this fix was likely burning its whole budget
 on infrastructure. The next fires should finally reach real math work.
+
+## 2026-09-05 — BLOCK 318: `s3` doesn't just bound `siteCost`, it preserves it exactly
+
+The fixed `bootstrap_ci.sh` worked as intended: bootstrap took a few minutes, `lake
+build EltBridge` then ran a genuine ~50-minute from-source compile of its ~400-file
+scoped dependency closure (no cache, CDN confirmed blocked as documented) and
+succeeded cleanly (`grep -c sorry EltBridge.lean` = 0 both before and after this
+block's edits). First real math work this session went to H1a's remaining
+generator bound: `s3` (the cursor-move generator).
+
+Worked the algebra out by hand before touching Lean: `s3`'s two branches
+(`delta=true`: `kstar -> kstar+1`, deposit `-eps` at the old `kstar`; `delta=false`:
+mirror image) were substituted directly into `PathData.alphaAt`/`betaAt`'s
+definitions for an arbitrary site `s`. Result, checked case-by-case over every
+position of `s` relative to `kstar`: the `∓eps` deposit `s3` places at the crossed
+edge exactly cancels the shift in the marker indicators `vL`/`vR` caused by moving
+`kstar`, so `alphaAt s` and `betaAt s` -- and hence `siteCost s` -- are **literally
+unchanged, at every site**, not merely bounded. This is a stronger and cleaner fact
+than `s1_siteCost_kstar`/`s2_siteCost_kstar` (BLOCK 316-317), which only bounded a
+single site by 1.
+
+Formalized as three new theorems, each `0 sorry`:
+
+    s3_alphaAt_eq   (s3 g).toPathData.alphaAt s = g.toPathData.alphaAt s, for all s
+    s3_betaAt_eq    same for betaAt
+    s3_siteCost_eq  corollary: siteCost is an exact conservation law under s3
+
+`#print axioms` on all three shows only `propext, Classical.choice, Quot.sound`.
+Committed `<pending>`.
+
+**Bugs hit and fixed while proving this (three real, diagnosed failures, not
+guesses):** (1) first draft omitted `g.toPathData.eps = g.eps` (a `rfl` fact,
+distinct from the already-tracked `(s3 g).toPathData.eps` one) in two of the four
+branches -- `ring` failed leaving a bare `g.toPathData.eps` unrelated to `g.eps` in
+its eyes; fixed by adding the missing `have` and putting it in the `simp only` set.
+(2) `betaAt`'s branches needed an explicit `rw [hs]` (not just `if_pos`/`if_neg` on
+the marker conditions) to align a bare `g.d s` against `g.d g.kstar` that only
+`alphaAt`'s branches got automatically via an already-derived `s - 1 = kstar`
+lemma; adding this made two `rw` calls close their goals via `rw`'s own trailing
+`rfl` check, so the following `ring` then failed with "no goals" -- removed the
+now-redundant `ring` on those two lines. (3) one further negative-case branch
+looked structurally identical to the two above but wasn't already closed (its
+surviving terms were `g.eps * (0:ℤ)` vs `g.toPathData.eps * (0:ℤ)`, not
+syntactically `rfl`-equal even though `ring` trivially collapses both to `0`) --
+put `ring` back on that one line. Net: each fix was a distinct, understood cause,
+not the same mistake repeated; total 4 build attempts to a clean compile.
+
+**What this changes, stated honestly.** `siteCost`'s sum term in `lR` is now known
+to be *exactly* invariant under every one of the three generators (`s1`, `s2` up to
+a bounded move at one site; `s3` exactly everywhere) -- so any future change in
+`lR` under `s3` can only come from `mu` (which does move, by at most 1, at the one
+crossed site -- not yet formalized as a theorem, only argued by hand) and/or from
+the **span** `[A, B]` itself moving. The span question is the real remaining
+difficulty, exactly as flagged before this block: `s3` can insert the old `kstar`
+into `occ` (verified by hand: `d'(kstar) = d(kstar) - eps` and
+`travel(kstar+1,kstar) = travel(kstar,kstar)+1` need not both vanish even when
+`kstar` was previously nowhere near the support), and for an arbitrary `Elt` term
+`kstar` can be arbitrarily far from `[A,B]`, which would make the span -- and thus
+`lR` -- jump by an unbounded amount in one `s3` step. This is NOT a counterexample
+to the word-length lower bound itself: `s1`/`s2` never move `kstar`, so for any
+*reachable* `g` (built from `one` by an actual word), `kstar` can only have moved
+by at most the number of `s3` steps used, and every `s3` step deposits at the edge
+it crosses, so the span should stay within a bounded distance of `kstar` by an
+inductive invariant carried alongside the main word-length induction. That
+invariant is not yet stated or proved. `mu`'s at-most-1 bound at the crossed site
+is also not yet a formal theorem (should be a direct analogue of
+`s1_siteCost_kstar`'s style, now that `siteCost` itself is out of the way). Neither
+attempted this block, to keep this entry's claims exactly to what was checked.
+H1a stays 🟠, with the `siteCost` side of the problem now fully closed for all
+three generators and the remaining work narrowed to `mu` plus the span/cursor
+invariant.
