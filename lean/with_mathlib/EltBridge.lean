@@ -11476,6 +11476,27 @@ theorem s1_siteCost_kstar (g : Elt) :
       Bool.false_eq_true] <;>
     rcases g.heps with h | h <;> rw [h] <;> omega
 
+/-- **The site cost at `kstar` moves by at most 1 under `s2`.** Same argument as
+`s1_siteCost_kstar`: `s2` flips `delta` too, and also `eps`, but each of `alphaAt`,
+`betaAt` still changes by exactly `eps` in absolute value. -/
+theorem s2_siteCost_kstar (g : Elt) :
+    ((s2 g).toPathData.siteCost g.kstar : ℤ) ≤ g.toPathData.siteCost g.kstar + 1 ∧
+    (g.toPathData.siteCost g.kstar : ℤ) ≤ (s2 g).toPathData.siteCost g.kstar + 1 := by
+  have he : (s2 g).eps = -g.eps := rfl
+  have hk : (s2 g).kstar = g.kstar := rfl
+  have hd : (s2 g).d = g.d := rfl
+  have hpe : g.toPathData.eps = g.eps := rfl
+  have hpd : g.toPathData.delta = g.delta := rfl
+  have hpe1 : (s2 g).toPathData.eps = -g.eps := rfl
+  have hpd1 : (s2 g).toPathData.delta = !g.delta := rfl
+  simp only [SiteCost.PathData.siteCost, SiteCost.PathData.alphaAt, SiteCost.PathData.betaAt,
+    SiteCost.PathData.vL, SiteCost.PathData.vR, SiteCost.PathData.vD, toPathData_kstar,
+    toPathData_d, he, hk, hd, hpe, hpd, hpe1, hpd1, if_true, eq_self_iff_true]
+  rcases hδ : g.delta with _ | _ <;>
+    simp only [hδ, Bool.not_true, Bool.not_false, if_true, if_false, decide_eq_true_eq,
+      Bool.false_eq_true] <;>
+    rcases g.heps with h | h <;> rw [h] <;> omega
+
 end Elt
 end EltBridge
 
@@ -11491,6 +11512,7 @@ end EltBridge
 #print axioms EltBridge.Elt.s2_B
 #print axioms EltBridge.Elt.siteCost_eq_of_ne_kstar
 #print axioms EltBridge.Elt.s1_siteCost_kstar
+#print axioms EltBridge.Elt.s2_siteCost_kstar
 
 namespace EltBridge
 namespace Elt
