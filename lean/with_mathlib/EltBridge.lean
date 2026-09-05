@@ -1992,6 +1992,98 @@ theorem witElt_defect_zero (ds : Bool → Bool) :
   Elt.defect_zero witElt ds 1 (by simp) (by rw [witElt_pd_A]; omega)
     witElt_edge_lt witElt_hcov0 (Sum.inr false)
 
+/-- **M5/M7, mirrored.**  The `kstar < 0` analogue of `Elt.defect_zero`: a cost-minimal
+datum on the mirrored-orientation configuration of an element with `kstar < 0` also has
+zero defect.  Same argument as `Elt.defect_zero`, run off `Elt.merges_to_one_neg`
+instead of `Elt.merges_to_one` -- this closes the asymmetry left by the file only
+having a `walkCount <= 1` statement (not a `defect = 0` one) on the negative side. -/
+theorem Elt.defect_zero_neg (g : Elt) (ds : Bool → Bool)
+    (hk : g.toPathData.kstar < 0)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf (-g.toPathData.A - 1) u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf (-g.toPathData.A - 1) v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf (-g.toPathData.A - 1) y = j - 1 ∧ VEndpt.atTopN y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    ∃ D' : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+      CostMerge.MergesMin
+        (VEndpt.siteP (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A))
+        (VEndpt.isArr (pdUp g.toPathData)) VEndpt.partner
+        (vEndDataN (pdUp g.toPathData) ds) D' ∧ ConfigLoop.defect D' = 0 := by
+  obtain ⟨D', hD', hle⟩ := Elt.merges_to_one_neg g ds hk hcov0 z₀
+  exact ⟨D', hD', by have := one_le_walkCount D'; unfold ConfigLoop.defect; omega⟩
+
+/-! ### A named total bridge: `Elt.dataOf`
+
+`Elt.defect_zero` already gives, for any `g` with `kstar > 0` (not just `witElt`), the
+*existence* of a cost-minimal datum with zero defect. What it does not give is a single
+named object -- every downstream user has had to re-open the existential. `Elt.dataOf`
+closes that: it is the datum picked out by that existence proof, via choice, and
+`Elt.dataOf_mergesMin` / `Elt.dataOf_defect_zero` record its two defining properties.
+
+This is honestly a repackaging, not new mathematics: the content is exactly
+`Elt.defect_zero`, generalised from `witElt` to arbitrary `g` -- which, on inspection,
+`Elt.defect_zero` already was. -/
+
+/-- **The total configuration-datum bridge for a group element with `kstar > 0`.**
+Picked, via choice, from the existence proof `Elt.defect_zero`. -/
+noncomputable def Elt.dataOf (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :=
+  Classical.choose (Elt.defect_zero g ds bnd hk hb hbnd hcov0 z₀)
+
+/-- **`Elt.dataOf` is a cost-minimal merge datum.** -/
+theorem Elt.dataOf_mergesMin (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    CostMerge.MergesMin
+      (VEndpt.siteP (-g.toPathData.A) (g.toPathData.kstar - g.toPathData.A))
+      (VEndpt.isArr (pdUp g.toPathData)) VEndpt.partner
+      (vEndDataP (pdUp g.toPathData) ds) (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀) :=
+  (Classical.choose_spec (Elt.defect_zero g ds bnd hk hb hbnd hcov0 z₀)).1
+
+/-- **`Elt.dataOf` has zero connectivity defect.**  This is the assembled form of the
+recommended next step in BLOCK 329: a named total bridge together with the proof that,
+in the case `Elt.defect_zero` already covers, its defect vanishes. -/
+theorem Elt.dataOf_defect_zero (g : Elt) (ds : Bool → Bool) (bnd : ℤ)
+    (hk : 0 < g.toPathData.kstar)
+    (hb : -g.toPathData.A < bnd)
+    (hbnd : ∀ u : EndType.Endpt (pdWidth g.toPathData) (pdMm g.toPathData),
+      EndType.edgeOf u < bnd)
+    (hcov0 : ∀ j : ℤ,
+      (∃ u : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd u = j) →
+      (∃ v : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd v < j) →
+      ∃ y : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData),
+        VEndpt.edgeOf bnd y = j - 1 ∧ VEndpt.atTop y = true)
+    (z₀ : VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)) :
+    ConfigLoop.defect (Elt.dataOf g ds bnd hk hb hbnd hcov0 z₀) = 0 :=
+  (Classical.choose_spec (Elt.defect_zero g ds bnd hk hb hbnd hcov0 z₀)).2
+
 /-! ### The cut set of a group element
 
 `SiteCost.PathData.cut` is `alphaAt = betaAt = PhiAt = 0`.  Away from the two virtual
@@ -19593,3 +19685,6 @@ end EltBridge
 #print axioms EltBridge.pdCutSites_card_eq_abs
 #print axioms EltBridge.window_sdiff_subset
 #print axioms EltBridge.Elt.s3_c_dist_le
+#print axioms EltBridge.Elt.defect_zero_neg
+#print axioms EltBridge.Elt.dataOf_mergesMin
+#print axioms EltBridge.Elt.dataOf_defect_zero
