@@ -11752,6 +11752,48 @@ theorem s3_B_dist_le_one (g : Elt) :
       have := kstar_le_B_add_one (s3 g); rw [hk] at this; omega
     exact max'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
 
+/-! ### `mu` at the crossed edge moves by a bounded amount
+
+`s3`'s own `hsupp`/`hpar` proofs already show `d` moves only at the crossed edge (by
+exactly `eps`, i.e. `1` in absolute value) and `travel` moves only there too (by
+exactly `1`, `travel_succ_at`/`travel_pred_at`) -- everywhere else both are literally
+unchanged (`travel_succ_ne`/`travel_pred_ne`, `Function.update_of_ne`), so `mu`
+(built from `d` and `travel` at a single site) is unchanged off the crossed edge and
+moves by a small bounded amount at it. -/
+
+theorem s3_mu_dist_le_two (g : Elt) :
+    ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) ≤
+        (g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) + 2 ∧
+      (g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) ≤
+        ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ) + 2 := by
+  by_cases hδ : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have hd : (s3 g).d g.kstar = g.d g.kstar - g.eps := by
+      have hde : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+        rw [s3, dif_pos hδ]
+      rw [hde, Function.update_self]
+    have htr : SiteCost.travel (s3 g).kstar g.kstar = SiteCost.travel g.kstar g.kstar + 1 := by
+      rw [hk]; exact travel_succ_at g.kstar
+    have hcases := SiteCost.travel_cases g.kstar g.kstar
+    rw [if_pos hδ]
+    simp only [SiteCost.PathData.mu, toPathData_d, toPathData_kstar, hd, htr]
+    rcases g.heps with h | h <;> rw [h] <;> rcases hcases with hc | hc | hc <;> rw [hc] <;>
+      split_ifs <;> omega
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have hd : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+      have hde : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+        rw [s3, dif_neg hδ]
+      rw [hde, Function.update_self]
+    have htr : SiteCost.travel (s3 g).kstar (g.kstar - 1) =
+        SiteCost.travel g.kstar (g.kstar - 1) - 1 := by
+      rw [hk]; exact travel_pred_at g.kstar
+    have hcases := SiteCost.travel_cases g.kstar (g.kstar - 1)
+    rw [if_neg (by rw [hδ']; simp)]
+    simp only [SiteCost.PathData.mu, toPathData_d, toPathData_kstar, hd, htr]
+    rcases g.heps with h | h <;> rw [h] <;> rcases hcases with hc | hc | hc <;> rw [hc] <;>
+      split_ifs <;> omega
+
 end Elt
 end EltBridge
 
@@ -11760,6 +11802,7 @@ end EltBridge
 #print axioms EltBridge.Elt.s3_occ_agree_false
 #print axioms EltBridge.Elt.s3_A_dist_le_one
 #print axioms EltBridge.Elt.s3_B_dist_le_one
+#print axioms EltBridge.Elt.s3_mu_dist_le_two
 
 namespace EltBridge
 namespace Elt
