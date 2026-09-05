@@ -11663,11 +11663,103 @@ theorem s3_occ_agree_false {g : Elt} (hδ : g.delta = false) (j : ℤ) (hj : j �
   tauto
 
 end Elt
+
+/-! ### `s3`'s bound on `A`/`B` themselves
+
+Pure `Finset ℤ` facts: if two finsets agree everywhere except possibly at one point
+`p`, and each set's own min'/max' is within one step of `p` (exactly the shape
+`Elt.A_le_kstar`/`Elt.kstar_le_B_add_one` supply, on both sides of an `s3` move),
+then the two min's (resp. max's) are within one step of each other. This is the
+Finset-level content of "changing one point can move the extreme by at most one,
+given that point wasn't far from the extreme to begin with". -/
+
+private theorem min'_dist_le_one_of_agree {s t : Finset ℤ}
+    (hs : s.Nonempty) (ht : t.Nonempty) {p : ℤ}
+    (hagree : ∀ j : ℤ, j ≠ p → (j ∈ t ↔ j ∈ s))
+    (h1 : s.min' hs ≤ p + 1) (h2 : t.min' ht ≤ p + 1) :
+    t.min' ht ≤ s.min' hs + 1 ∧ s.min' hs ≤ t.min' ht + 1 := by
+  constructor
+  · by_cases hpA : p = s.min' hs
+    · omega
+    · have hAmem : s.min' hs ∈ s := s.min'_mem hs
+      have hAint : s.min' hs ∈ t := (hagree (s.min' hs) (Ne.symm hpA)).mpr hAmem
+      have hle := Finset.min'_le t (s.min' hs) hAint
+      omega
+  · have hlow : s.min' hs - 1 ≤ t.min' ht := by
+      apply Finset.le_min' t ht
+      intro x hx
+      by_cases hxp : x = p
+      · subst hxp; omega
+      · have hxs := (hagree x hxp).mp hx
+        have := Finset.min'_le s x hxs
+        omega
+    omega
+
+private theorem max'_dist_le_one_of_agree {s t : Finset ℤ}
+    (hs : s.Nonempty) (ht : t.Nonempty) {p : ℤ}
+    (hagree : ∀ j : ℤ, j ≠ p → (j ∈ t ↔ j ∈ s))
+    (h1 : p ≤ s.max' hs + 1) (h2 : p ≤ t.max' ht + 1) :
+    t.max' ht ≤ s.max' hs + 1 ∧ s.max' hs ≤ t.max' ht + 1 := by
+  constructor
+  · apply Finset.max'_le t ht
+    intro x hx
+    by_cases hxp : x = p
+    · subst hxp; omega
+    · have hxs := (hagree x hxp).mp hx
+      have := Finset.le_max' s x hxs
+      omega
+  · apply Finset.max'_le s hs
+    intro x hx
+    by_cases hxp : x = p
+    · subst hxp; omega
+    · have hxt := (hagree x hxp).mpr hx
+      have := Finset.le_max' t x hxt
+      omega
+
+namespace Elt
+
+theorem s3_A_dist_le_one (g : Elt) :
+    (s3 g).A ≤ g.A + 1 ∧ g.A ≤ (s3 g).A + 1 := by
+  by_cases hδ : g.delta = true
+  · have hagree := s3_occ_agree_true hδ
+    have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have h1 : g.A ≤ g.kstar + 1 := by have := A_le_kstar g; omega
+    have h2 : (s3 g).A ≤ g.kstar + 1 := by
+      have := A_le_kstar (s3 g); rw [hk] at this; omega
+    exact min'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hagree := s3_occ_agree_false hδ'
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have h1 : g.A ≤ (g.kstar - 1) + 1 := by have := A_le_kstar g; omega
+    have h2 : (s3 g).A ≤ (g.kstar - 1) + 1 := by
+      have := A_le_kstar (s3 g); rw [hk] at this; omega
+    exact min'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+
+theorem s3_B_dist_le_one (g : Elt) :
+    (s3 g).B ≤ g.B + 1 ∧ g.B ≤ (s3 g).B + 1 := by
+  by_cases hδ : g.delta = true
+  · have hagree := s3_occ_agree_true hδ
+    have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have h1 : g.kstar ≤ g.B + 1 := kstar_le_B_add_one g
+    have h2 : g.kstar ≤ (s3 g).B + 1 := by
+      have := kstar_le_B_add_one (s3 g); rw [hk] at this; omega
+    exact max'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hagree := s3_occ_agree_false hδ'
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have h1 : g.kstar - 1 ≤ g.B + 1 := by have := kstar_le_B_add_one g; omega
+    have h2 : g.kstar - 1 ≤ (s3 g).B + 1 := by
+      have := kstar_le_B_add_one (s3 g); rw [hk] at this; omega
+    exact max'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+
+end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.s3
 #print axioms EltBridge.Elt.s3_occ_agree_true
 #print axioms EltBridge.Elt.s3_occ_agree_false
+#print axioms EltBridge.Elt.s3_A_dist_le_one
+#print axioms EltBridge.Elt.s3_B_dist_le_one
 
 namespace EltBridge
 namespace Elt
