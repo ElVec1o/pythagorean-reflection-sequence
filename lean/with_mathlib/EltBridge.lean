@@ -11603,10 +11603,45 @@ noncomputable def s3 (g : Elt) : Elt :=
         exact ⟨by rw [Function.update_of_ne hne]; exact hd0,
                by rw [travel_pred_ne g.kstar j hne]; exact ht0⟩ }
 
+/-! ### `s3` moves the span by at most inserting/removing the crossed edge
+
+Unlike `s1`/`s2`, `s3` moves `kstar`, so the span CAN change: `occ` gains the crossed
+edge in `supp` (`s3`'s own `hsupp` proof already shows this), and losing or gaining
+that one point is the only thing that can happen to `occ` -- everywhere else, `d` and
+`travel kstar` are exactly as before (`d` is `Function.update`d only at the crossed
+edge, and `travel_succ_ne`/`travel_pred_ne` say `travel` moves only there too). This
+is the first piece `lR`'s Lipschitz bound for `s3` needs: it bounds how far `A`/`B`
+can move, before the `mu`/`siteCost` changes are even considered. -/
+
+theorem s3_occ_agree_true {g : Elt} (hδ : g.delta = true) (j : ℤ) (hj : j ≠ g.kstar) :
+    j ∈ (s3 g).occ ↔ j ∈ g.occ := by
+  have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+  have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hδ]
+  have hsupp : (s3 g).supp = insert g.kstar g.supp := by rw [s3, dif_pos hδ]
+  unfold occ
+  simp only [Finset.mem_insert, hsupp, Finset.mem_filter, hd, hk]
+  rw [Function.update_of_ne hj, travel_succ_ne g.kstar j hj]
+  tauto
+
+theorem s3_occ_agree_false {g : Elt} (hδ : g.delta = false) (j : ℤ) (hj : j ≠ g.kstar - 1) :
+    j ∈ (s3 g).occ ↔ j ∈ g.occ := by
+  have h1 : ¬ (g.delta = true) := by rw [hδ]; simp
+  have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+  have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1]
+  have hsupp : (s3 g).supp = insert (g.kstar - 1) g.supp := by rw [s3, dif_neg h1]
+  unfold occ
+  simp only [Finset.mem_insert, hsupp, Finset.mem_filter, hd, hk]
+  rw [Function.update_of_ne hj, travel_pred_ne g.kstar j hj]
+  tauto
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.s3
+#print axioms EltBridge.Elt.s3_occ_agree_true
+#print axioms EltBridge.Elt.s3_occ_agree_false
 
 namespace EltBridge
 namespace Elt
