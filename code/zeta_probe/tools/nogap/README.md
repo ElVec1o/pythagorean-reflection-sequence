@@ -10317,14 +10317,110 @@ Committed `95d4629`. Updated the routine's own prompt to match.
 progress. Every hourly cloud fire before this fix was likely burning its whole budget
 on infrastructure. The next fires should finally reach real math work.
 
-## 2026-09-05 — BLOCK 318: `s3` doesn't just bound `siteCost`, it preserves it exactly
+## BLOCK 319 (2026-09-05, commit 44a6a29) — kstar within 1 of span, for Elt
+
+Proved `Elt.A_le_kstar` and `Elt.kstar_le_B_add_one`: `g.A <= g.kstar <= g.B + 1`
+for ANY group element `g`, not just cost-minimal `PathData`. This was NOT new
+math — the same fact was already proved at the `SiteCost.PathData` level
+(`A_le_kstar`/`kstar_le_B_succ`). It only needed two new `rfl` field-projection
+lemmas (`toPathData_A`, `toPathData_B`) to transfer it across `Elt.toPathData`.
+
+Why this matters: BLOCK 318's `s3_occ_agree_true/false` showed that `s3`
+changes `occ` by inserting/removing exactly the crossed edge. But inserting a
+single point into a Finset can move its min'/max' by an unbounded amount if
+that point is far from the current range. Without today's theorem, s3's
+Lipschitz bound on lR could genuinely have failed for elements whose `kstar`
+sits far from their occupied region. With it, `kstar` is already sandwiched
+to within 1 of `[A,B]` before any move, so the span can move by at most 1 too.
+
+0 sorry. `#print axioms` on both new theorems: only propext, Classical.choice,
+Quot.sound. Build clean on `lake build EltBridge`.
+
+Still NOT done for s3's full bound: the actual A/B movement bound (combining
+this with BLOCK 318), the mu-change bound at the crossed edge, and the
+two-site siteCost bound (old kstar loses its marker, new kstar gains it).
+None of these three attempted yet. H1c (IsAssembly resolvent identity) and
+H1b/M4b (RunStrandsConnected, deprioritized) remain untouched this block.
+
+## BLOCK 320 (2026-09-05, commit 9317ea0) — s3's span moves by at most 1
+
+Proved `Elt.s3_A_dist_le_one` and `Elt.s3_B_dist_le_one`: `|(s3 g).A - g.A| <= 1`
+and `|(s3 g).B - g.B| <= 1`. Sub-piece 1 of s3's Lipschitz bound, closed.
+
+Method: two new private Finset ℤ lemmas (`min'_dist_le_one_of_agree`,
+`max'_dist_le_one_of_agree`) capturing the pure order-theoretic content --
+two finsets agreeing everywhere except one point p, each already within one
+step of p on its own min'/max', stay within one step of each other. Applied
+using BLOCK 318 (occ agrees except at the crossed edge) + BLOCK 319 (kstar
+within one step of the span, on both g and s3 g).
+
+0 sorry, #print axioms clean (propext/Classical.choice/Quot.sound only).
+
+Two Mathlib API mistakes hit and fixed: Finset.min'_le/le_max' do NOT take
+the Nonempty proof as a separate arg (unlike le_min'/max'_le, which do,
+because it appears in their conclusion) -- easy to get wrong by analogy;
+and `rcases g.delta with _|_ <;> simp_all` does not work for case-splitting
+a field projection's Bool value, use `revert hδ; cases g.delta <;> simp`.
+
+Still open: sub-piece 2 (mu-change at the crossed edge) and sub-piece 3
+(two-site siteCost bound). H1c and H1b/M4b untouched this block.
+
+## 2026-09-05 — BLOCK 321: `pathSum` generalized to `CommRing`, matrix powers as walk sums
+
+(Renumbered twice on merge: originally logged as "316", then "320", each time
+colliding with a concurrent session's own use of the same number for unrelated
+H1a work on `s1`/`s2`/`s3` (see the entries immediately above). At least two,
+possibly three, sessions ran on this repo in the same window. No content
+conflict either time -- different files/theorems -- but the block counter is
+clearly not synchronized across concurrent sessions; treat any single
+session's next free number as provisional until push time.)
+
+Before attempting `IsAssembly`'s right-hand side directly, closed a smaller, clearly
+necessary gap it exposed: `pathSum`/`pathGF` (BLOCK 112-113) are hard-coded to `M : S ->
+S -> ℤ`, but `IsAssembly`'s transfer matrix `T` is `Matrix (Fin n) (Fin n) (PowerSeries
+ℤ)` -- a different ring, so neither applies to it as stated.
+
+    pathSumR                     the same walk-sum recursion as pathSum, over an
+                                  arbitrary CommRing R
+    pathSumR_zero / pathSumR_succ   the two defining equations, both rfl (as pathSum's
+                                  own succ equation already was)
+    matrixPow_apply_eq_pathSumR  (T^k) a b = pathSumR (fun i j => T i j) k a b, by
+                                  induction on k generalizing a b, via pow_succ' and
+                                  Matrix.mul_apply
+
+0 sorry, clean build on the first attempt, no bugs this round. `#print axioms` on all
+three shows only `propext`/`Classical.choice`/`Quot.sound` (the two rfl-equations don't
+even need `Classical.choice`). Committed `7c9389a`.
+
+**What this gives.** `IsAssembly`'s literal `(T ^ k) a b` term can now be read as a
+walk sum over any commutative ring, not just algebraically via `Matrix.pow` -- the
+combinatorial reading the eventual proof needs.
+
+**What this does NOT touch, stated honestly.** The actual hard gap named at the end of
+BLOCKS 314-315 is untouched: turning the box's `flagPathsFinset`/`globalBox` sum
+(indexed by `List FlagState`, built over the integer-indexed `idxFn`) into a sum
+indexed by a concrete `Fin n` state space with an explicit transfer matrix `T`,
+`lambda`, `mu` is separate, unattempted infrastructure -- `pathWeightR` (the box's
+actual per-path weight) and `pathSumR` (this block's walk-sum) are not yet connected
+to each other at all. `IsAssembly` itself remains unproved for any concrete
+`W, W0, T, lam, mu`. H1c stays 🟡.
+
+## BLOCK 322 (2026-09-05) — `s3` doesn't just bound `siteCost`, it preserves it exactly
+
+(Numbered 322 to avoid yet another collision: this was drafted independently as
+"BLOCK 318" -- the same number the entries just above ended up using for
+`s3_occ_agree_true/false` -- before the two histories were merged. Same story as
+BLOCK 321's renumbering note: concurrent sessions, no content conflict, just an
+unsynchronized counter. Nicely, the two sessions' work is complementary rather
+than overlapping: BLOCKS 319-320 above close the *span*-movement half of `s3`'s
+Lipschitz bound; this block closes the *siteCost* half.)
 
 The fixed `bootstrap_ci.sh` worked as intended: bootstrap took a few minutes, `lake
 build EltBridge` then ran a genuine ~50-minute from-source compile of its ~400-file
 scoped dependency closure (no cache, CDN confirmed blocked as documented) and
 succeeded cleanly (`grep -c sorry EltBridge.lean` = 0 both before and after this
-block's edits). First real math work this session went to H1a's remaining
-generator bound: `s3` (the cursor-move generator).
+block's edits). Went to H1a's remaining generator bound: `s3` (the cursor-move
+generator).
 
 Worked the algebra out by hand before touching Lean: `s3`'s two branches
 (`delta=true`: `kstar -> kstar+1`, deposit `-eps` at the old `kstar`; `delta=false`:
@@ -10344,7 +10440,7 @@ Formalized as three new theorems, each `0 sorry`:
     s3_siteCost_eq  corollary: siteCost is an exact conservation law under s3
 
 `#print axioms` on all three shows only `propext, Classical.choice, Quot.sound`.
-Committed `<pending>`.
+Committed `e0a95ff` (pre-merge).
 
 **Bugs hit and fixed while proving this (three real, diagnosed failures, not
 guesses):** (1) first draft omitted `g.toPathData.eps = g.eps` (a `rfl` fact,
@@ -10363,27 +10459,18 @@ syntactically `rfl`-equal even though `ring` trivially collapses both to `0`) --
 put `ring` back on that one line. Net: each fix was a distinct, understood cause,
 not the same mistake repeated; total 4 build attempts to a clean compile.
 
-**What this changes, stated honestly.** `siteCost`'s sum term in `lR` is now known
-to be *exactly* invariant under every one of the three generators (`s1`, `s2` up to
-a bounded move at one site; `s3` exactly everywhere) -- so any future change in
-`lR` under `s3` can only come from `mu` (which does move, by at most 1, at the one
-crossed site -- not yet formalized as a theorem, only argued by hand) and/or from
-the **span** `[A, B]` itself moving. The span question is the real remaining
-difficulty, exactly as flagged before this block: `s3` can insert the old `kstar`
-into `occ` (verified by hand: `d'(kstar) = d(kstar) - eps` and
-`travel(kstar+1,kstar) = travel(kstar,kstar)+1` need not both vanish even when
-`kstar` was previously nowhere near the support), and for an arbitrary `Elt` term
-`kstar` can be arbitrarily far from `[A,B]`, which would make the span -- and thus
-`lR` -- jump by an unbounded amount in one `s3` step. This is NOT a counterexample
-to the word-length lower bound itself: `s1`/`s2` never move `kstar`, so for any
-*reachable* `g` (built from `one` by an actual word), `kstar` can only have moved
-by at most the number of `s3` steps used, and every `s3` step deposits at the edge
-it crosses, so the span should stay within a bounded distance of `kstar` by an
-inductive invariant carried alongside the main word-length induction. That
-invariant is not yet stated or proved. `mu`'s at-most-1 bound at the crossed site
-is also not yet a formal theorem (should be a direct analogue of
-`s1_siteCost_kstar`'s style, now that `siteCost` itself is out of the way). Neither
-attempted this block, to keep this entry's claims exactly to what was checked.
-H1a stays 🟠, with the `siteCost` side of the problem now fully closed for all
-three generators and the remaining work narrowed to `mu` plus the span/cursor
-invariant.
+**What this changes, stated honestly, now that both halves of the merge are on
+the table.** BLOCKS 319-320 (above) prove the span `[A,B]` moves by at most 1
+under `s3`; this block proves `siteCost` doesn't move at all. Between the two,
+`s3`'s effect on `lR = sum_mu + sum_siteCost` is now fully accounted for except
+for one piece neither session closed: `mu`'s own value at the crossed site moves
+by at most 1 (argued by hand in both sessions' logs, not yet a Lean theorem), and
+the *two-site* siteCost bookkeeping BLOCK 319 flagged (old `kstar` loses its
+marker, new `kstar` gains one) turns out, per this block's `s3_siteCost_eq`, not
+to be a bookkeeping problem at all -- `siteCost` is exactly conserved at every
+site, old and new `kstar` included, so nothing there needs bounding. What
+remains for a full `s3` Lipschitz bound on `lR`: the `mu`-at-the-crossed-site
+theorem, plus combining it with BLOCKS 319-320's span bound and this block's
+exact `siteCost` conservation into one `|lR (s3 g) - lR g| <= C` statement, and
+then the actual word-length lower-bound induction (`wordLength >= lR / C`) has
+not been attempted by either session. H1a stays 🟠, substantially narrowed.

@@ -115,6 +115,8 @@ noncomputable def toPathData : PathData where
 
 @[simp] theorem toPathData_d : g.toPathData.d = g.d := rfl
 @[simp] theorem toPathData_kstar : g.toPathData.kstar = g.kstar := rfl
+@[simp] theorem toPathData_A : g.toPathData.A = g.A := rfl
+@[simp] theorem toPathData_B : g.toPathData.B = g.B := rfl
 
 /-- **The relaxed length of a group element.**  This is the definition the
 development did not have: with `toPathData`, `lR` is now a function of `g`. -/
@@ -139,6 +141,9 @@ theorem lR_eq : g.lR =
       + ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s := rfl
 
 end Elt
+
+#print axioms EltBridge.Elt.toPathData_A
+#print axioms EltBridge.Elt.toPathData_B
 
 /-! ### B1, second half: exactly two sites need repair
 
@@ -6216,6 +6221,27 @@ theorem A_le_kstar (P : SiteCost.PathData) : P.A ≤ P.kstar := by
     if_pos (by omega : P.kstar ≤ P.A - 1 ∧ P.A - 1 < 0)] at h0
   omega
 
+namespace Elt
+
+/-- **`kstar` is always within one step of the span, for a group element too.** Free
+from the `PathData`-level fact just above via `toPathData`: `A <= kstar` and
+`kstar <= B + 1` for ANY group element, not just cost-minimal configurations. This is
+exactly the structural fact `s3`'s Lipschitz bound needs -- without it, moving `kstar`
+by one step could in principle move the span by an unbounded amount (if `kstar` were
+far from `[A, B]`), but it never is. -/
+theorem A_le_kstar (g : Elt) : g.A ≤ g.kstar := by
+  have h := EltBridge.A_le_kstar g.toPathData
+  rwa [toPathData_A, toPathData_kstar] at h
+
+theorem kstar_le_B_add_one (g : Elt) : g.kstar ≤ g.B + 1 := by
+  have h := EltBridge.kstar_le_B_succ g.toPathData
+  rwa [toPathData_kstar, toPathData_B] at h
+
+end Elt
+
+#print axioms EltBridge.Elt.A_le_kstar
+#print axioms EltBridge.Elt.kstar_le_B_add_one
+
 /-- **Injectivity of `stateOf`, with no side hypotheses.**  Two configurations with the
 same span whose states agree across it are the same configuration. -/
 theorem stateOf_injective' {P Q : SiteCost.PathData} (hA : P.A = Q.A) (hB : P.B = Q.B)
@@ -9600,6 +9626,45 @@ theorem pathGF_succ {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → ℤ
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl (fun b _ => by ring)
 
+/-! ### `pathSum`, generalized to `IsAssembly`'s coefficient ring
+
+`IsAssembly` (BLOCK 116) states its transfer matrix `T` over `PowerSeries ℤ`, not `ℤ`,
+so `pathSum`/`pathGF` (BLOCK 112-113) cannot be applied to it directly: they are fixed to
+`ℤ`. Here is the same walk-sum, over an arbitrary commutative ring, together with the
+fact that connects it to `IsAssembly`'s literal `(T ^ k) a b` -- a matrix power's entry
+is the sum, over every length-`k` walk from `a` to `b`, of the product of transfer
+entries along it. This is one composable step toward `IsAssembly`'s right-hand side,
+not the whole bridge: turning the box's `flagPathsFinset` sum into a sum indexed by a
+concrete `Fin n` state space is separate, unattempted work. -/
+
+/-- The sum over state paths of length `n` from `a` to `b` of the product of transfer
+entries, over an arbitrary commutative ring. -/
+def pathSumR {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S] (M : S → S → R) :
+    ℕ → S → S → R
+  | 0, a, b => if a = b then 1 else 0
+  | (n + 1), a, b => ∑ c : S, M a c * pathSumR M n c b
+
+theorem pathSumR_zero {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S]
+    (M : S → S → R) (a b : S) :
+    pathSumR M 0 a b = if a = b then 1 else 0 := rfl
+
+theorem pathSumR_succ {R : Type*} [CommRing R] {S : Type*} [Fintype S] [DecidableEq S]
+    (M : S → S → R) (n : ℕ) (a b : S) :
+    pathSumR M (n + 1) a b = ∑ c : S, M a c * pathSumR M n c b := rfl
+
+/-- **`IsAssembly`'s matrix power, unfolded as a walk sum.** The `(a, b)` entry of
+`T ^ k` is the sum, over every length-`k` walk from `a` to `b`, of the product of
+transfer entries along it -- so `IsAssembly`'s `(T ^ k) a b` can be read
+combinatorially, via `pathSumR`, rather than only algebraically via `Matrix.pow`. -/
+theorem matrixPow_apply_eq_pathSumR {R : Type*} [CommRing R] {n : ℕ}
+    (T : Matrix (Fin n) (Fin n) R) (k : ℕ) (a b : Fin n) :
+    (T ^ k) a b = pathSumR (fun i j => T i j) k a b := by
+  induction k generalizing a b with
+  | zero => rw [pow_zero, pathSumR_zero, Matrix.one_apply]
+  | succ m ih =>
+    rw [pow_succ', Matrix.mul_apply, pathSumR_succ]
+    exact Finset.sum_congr rfl (fun c _ => by rw [ih])
+
 /-! ### Why the assembly sums over the four marker data
 
 The bulk and travel transfer entries depend on the deposits only through their
@@ -11603,10 +11668,137 @@ noncomputable def s3 (g : Elt) : Elt :=
         exact ⟨by rw [Function.update_of_ne hne]; exact hd0,
                by rw [travel_pred_ne g.kstar j hne]; exact ht0⟩ }
 
+/-! ### `s3` moves the span by at most inserting/removing the crossed edge
+
+Unlike `s1`/`s2`, `s3` moves `kstar`, so the span CAN change: `occ` gains the crossed
+edge in `supp` (`s3`'s own `hsupp` proof already shows this), and losing or gaining
+that one point is the only thing that can happen to `occ` -- everywhere else, `d` and
+`travel kstar` are exactly as before (`d` is `Function.update`d only at the crossed
+edge, and `travel_succ_ne`/`travel_pred_ne` say `travel` moves only there too). This
+is the first piece `lR`'s Lipschitz bound for `s3` needs: it bounds how far `A`/`B`
+can move, before the `mu`/`siteCost` changes are even considered. -/
+
+theorem s3_occ_agree_true {g : Elt} (hδ : g.delta = true) (j : ℤ) (hj : j ≠ g.kstar) :
+    j ∈ (s3 g).occ ↔ j ∈ g.occ := by
+  have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+  have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hδ]
+  have hsupp : (s3 g).supp = insert g.kstar g.supp := by rw [s3, dif_pos hδ]
+  unfold occ
+  simp only [Finset.mem_insert, hsupp, Finset.mem_filter, hd, hk]
+  rw [Function.update_of_ne hj, travel_succ_ne g.kstar j hj]
+  tauto
+
+theorem s3_occ_agree_false {g : Elt} (hδ : g.delta = false) (j : ℤ) (hj : j ≠ g.kstar - 1) :
+    j ∈ (s3 g).occ ↔ j ∈ g.occ := by
+  have h1 : ¬ (g.delta = true) := by rw [hδ]; simp
+  have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+  have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1]
+  have hsupp : (s3 g).supp = insert (g.kstar - 1) g.supp := by rw [s3, dif_neg h1]
+  unfold occ
+  simp only [Finset.mem_insert, hsupp, Finset.mem_filter, hd, hk]
+  rw [Function.update_of_ne hj, travel_pred_ne g.kstar j hj]
+  tauto
+
+end Elt
+
+/-! ### `s3`'s bound on `A`/`B` themselves
+
+Pure `Finset ℤ` facts: if two finsets agree everywhere except possibly at one point
+`p`, and each set's own min'/max' is within one step of `p` (exactly the shape
+`Elt.A_le_kstar`/`Elt.kstar_le_B_add_one` supply, on both sides of an `s3` move),
+then the two min's (resp. max's) are within one step of each other. This is the
+Finset-level content of "changing one point can move the extreme by at most one,
+given that point wasn't far from the extreme to begin with". -/
+
+private theorem min'_dist_le_one_of_agree {s t : Finset ℤ}
+    (hs : s.Nonempty) (ht : t.Nonempty) {p : ℤ}
+    (hagree : ∀ j : ℤ, j ≠ p → (j ∈ t ↔ j ∈ s))
+    (h1 : s.min' hs ≤ p + 1) (h2 : t.min' ht ≤ p + 1) :
+    t.min' ht ≤ s.min' hs + 1 ∧ s.min' hs ≤ t.min' ht + 1 := by
+  constructor
+  · by_cases hpA : p = s.min' hs
+    · omega
+    · have hAmem : s.min' hs ∈ s := s.min'_mem hs
+      have hAint : s.min' hs ∈ t := (hagree (s.min' hs) (Ne.symm hpA)).mpr hAmem
+      have hle := Finset.min'_le t (s.min' hs) hAint
+      omega
+  · have hlow : s.min' hs - 1 ≤ t.min' ht := by
+      apply Finset.le_min' t ht
+      intro x hx
+      by_cases hxp : x = p
+      · subst hxp; omega
+      · have hxs := (hagree x hxp).mp hx
+        have := Finset.min'_le s x hxs
+        omega
+    omega
+
+private theorem max'_dist_le_one_of_agree {s t : Finset ℤ}
+    (hs : s.Nonempty) (ht : t.Nonempty) {p : ℤ}
+    (hagree : ∀ j : ℤ, j ≠ p → (j ∈ t ↔ j ∈ s))
+    (h1 : p ≤ s.max' hs + 1) (h2 : p ≤ t.max' ht + 1) :
+    t.max' ht ≤ s.max' hs + 1 ∧ s.max' hs ≤ t.max' ht + 1 := by
+  constructor
+  · apply Finset.max'_le t ht
+    intro x hx
+    by_cases hxp : x = p
+    · subst hxp; omega
+    · have hxs := (hagree x hxp).mp hx
+      have := Finset.le_max' s x hxs
+      omega
+  · apply Finset.max'_le s hs
+    intro x hx
+    by_cases hxp : x = p
+    · subst hxp; omega
+    · have hxt := (hagree x hxp).mpr hx
+      have := Finset.le_max' t x hxt
+      omega
+
+namespace Elt
+
+theorem s3_A_dist_le_one (g : Elt) :
+    (s3 g).A ≤ g.A + 1 ∧ g.A ≤ (s3 g).A + 1 := by
+  by_cases hδ : g.delta = true
+  · have hagree := s3_occ_agree_true hδ
+    have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have h1 : g.A ≤ g.kstar + 1 := by have := A_le_kstar g; omega
+    have h2 : (s3 g).A ≤ g.kstar + 1 := by
+      have := A_le_kstar (s3 g); rw [hk] at this; omega
+    exact min'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hagree := s3_occ_agree_false hδ'
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have h1 : g.A ≤ (g.kstar - 1) + 1 := by have := A_le_kstar g; omega
+    have h2 : (s3 g).A ≤ (g.kstar - 1) + 1 := by
+      have := A_le_kstar (s3 g); rw [hk] at this; omega
+    exact min'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+
+theorem s3_B_dist_le_one (g : Elt) :
+    (s3 g).B ≤ g.B + 1 ∧ g.B ≤ (s3 g).B + 1 := by
+  by_cases hδ : g.delta = true
+  · have hagree := s3_occ_agree_true hδ
+    have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have h1 : g.kstar ≤ g.B + 1 := kstar_le_B_add_one g
+    have h2 : g.kstar ≤ (s3 g).B + 1 := by
+      have := kstar_le_B_add_one (s3 g); rw [hk] at this; omega
+    exact max'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hagree := s3_occ_agree_false hδ'
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg hδ]
+    have h1 : g.kstar - 1 ≤ g.B + 1 := by have := kstar_le_B_add_one g; omega
+    have h2 : g.kstar - 1 ≤ (s3 g).B + 1 := by
+      have := kstar_le_B_add_one (s3 g); rw [hk] at this; omega
+    exact max'_dist_le_one_of_agree g.occ_nonempty (s3 g).occ_nonempty hagree h1 h2
+
 end Elt
 end EltBridge
 
 #print axioms EltBridge.Elt.s3
+#print axioms EltBridge.Elt.s3_occ_agree_true
+#print axioms EltBridge.Elt.s3_occ_agree_false
+#print axioms EltBridge.Elt.s3_A_dist_le_one
+#print axioms EltBridge.Elt.s3_B_dist_le_one
 
 namespace EltBridge
 namespace Elt
@@ -18576,6 +18768,9 @@ theorem coeff_W_eq_globalBox (N : ℕ) :
 
 end EltBridge
 
+#print axioms EltBridge.pathSumR_zero
+#print axioms EltBridge.pathSumR_succ
+#print axioms EltBridge.matrixPow_apply_eq_pathSumR
 #print axioms EltBridge.flagPathsFinset_disjoint
 #print axioms EltBridge.globalBox_inner_disjoint
 #print axioms EltBridge.globalBox_outer_disjoint
