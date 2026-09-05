@@ -43,4 +43,4 @@ tar --zstd -xf "$ARCHIVE" --strip-components=1 -C "$DEST"
 
 elan toolchain link "$TOOLCHAIN" "$DEST"
 
-echo "[bootstrap] done: $(lean --version)"
+echo "[bootstrap] done: $("$DEST/bin/lean" --version)"
