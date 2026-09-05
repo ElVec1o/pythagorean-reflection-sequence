@@ -10613,3 +10613,106 @@ moved by <=1 each, plus the exactly-conserved siteCost sum over a span
 whose length also shifted by <=1. Not yet attempted. H1c's transfer-matrix
 piece (pathSum now over CommRing, from the cloud session) is a separate,
 promising but also not-yet-closed thread -- worth checking next.
+
+## BLOCK 323 (2026-09-05, commit 5abd370) — s3's Lipschitz bound on lR itself, closed
+
+Composed the three already-proved s3 sub-pieces -- span moves by <=1 at each
+end (BLOCK 320's `s3_A_dist_le_one`/`s3_B_dist_le_one`), mu unchanged off the
+crossed edge and moves by <=2 there (BLOCK 322's `s3_mu_dist_le_two`), siteCost
+exactly conserved everywhere (BLOCK 322's `s3_siteCost_eq`) -- into an actual
+bound on `lR = mu-sum + siteCost-sum`. This is the piece both BLOCK 322 entries
+flagged as the last remaining gap in s3's Lipschitz bound.
+
+New theorems, all 0 sorry, `#print axioms` clean (propext/Classical.choice/
+Quot.sound only, no `native_decide`):
+
+    mu_eq_two_outside         outside [A,B], mu is the constant 2 (from houter)
+    siteCost_eq_zero_outside  outside [A,B+1], siteCost vanishes
+    s3_mu_agree               mu unchanged off the one crossed edge (new; the
+                              file only had this bound AT the crossed edge, not
+                              a general off-edge agreement lemma)
+    s3_siteCost_sum_eq        s3's siteCost-sum is EXACTLY conserved
+    s3_mu_sum_dist_le         s3's mu-sum moves by at most 10
+    s3_lR_dist_le             **s3 changes lR by at most 10**
+
+Proof strategy, the part worth remembering: extend both sides' sums to their
+Finset UNION `T`. The extra terms landing in `T \ (each side's own Icc range)`
+are, by construction, strictly outside THAT side's own span -- never at its
+own boundary. This matters because the naive plan (shrink one domain directly
+into the other, one end at a time) tries to evaluate `mu` at a point that is
+about to LEAVE its own domain, and that value is genuinely unconstrained in
+general (`mu` at the boundary point A itself can be huge, e.g. a large
+deposit). The union construction never needs that: it only ever evaluates
+each summand at points strictly outside its OWN span, which is exactly where
+`mu_eq_two_outside`/`siteCost_eq_zero_outside` apply. Chased this dead end
+first (see the reasoning trail in the session), then found the union fix.
+
+siteCost's sum came out as an EXACT equality (not just bounded) -- the
+summand is 0 outside on both sides, so extending to the union adds nothing
+on either side. mu's sum picks up a safely generous constant: 10 = 4 + 4
+(at most 2 boundary points on each side, each worth <=2) + 2 (the correction
+at the crossed edge itself). The tight bound is closer to 6 but chasing it
+wasn't worth it given headroom is free for this purpose.
+
+Three real bugs hit and fixed, not guesses: (1) `SiteCost.PathData.vArr`
+doesn't exist -- `vArr` lives in the bare `SiteCost` namespace, not under
+`PathData` (`Realisation.lean` opens `SiteCost` but defines `vArr` before
+entering the `PathData` namespace). (2) the theorem statement
+`(∑ j ∈ s, f j : ℤ)` for `f : ℤ → ℕ` elaborates as `∑ j, (↑(f j) : ℤ)` (a
+per-element cast), NOT `↑(∑ j, f j)` (a single outer cast) -- this silently
+breaks a `set S := ∑ ...` abbreviation meant to fold the whole sum, and
+`omega` then reports goals with duplicate unconnected atoms for what should
+be the same quantity (caught from reading `omega`'s counterexample dump,
+which named the same sum expression twice under different letters). Fixed by
+forcing the ℕ elaboration first with a double ascription
+`((∑ ... : ℕ) : ℤ)` inside the lemma that needs `set`, then `push_cast`/
+`exact_mod_cast` bridging at the one call site (`s3_lR_dist_le`) that needs
+the other (fully distributed) form to match after `unfold`+`push_cast` there.
+(3) several `omega` calls needed `g.toPathData.A = g.A` (`toPathData_A`) fed
+in explicitly as a `have` in scope -- `omega` treats the two sides as
+unrelated opaque atoms otherwise, since it doesn't unfold definitions.
+
+Merged cleanly with origin/main (688dd7b, the concurrent H1a/H1c session's
+push) before committing -- `git fetch` + `git log HEAD..origin/main` showed
+nothing new both before and after the merge, so this pushed straight through
+with no conflict. Full `lake build EltBridge` verified clean (0 sorry) both
+right after the merge and after this block's own commit.
+
+**What remains for the actual word-length lower bound.** `s1`/`s2` already
+have their own `lR` bounds (BLOCK 316-317's `s1_siteCost_kstar`/
+`s2_siteCost_kstar`, noting `mu` is literally untouched by either generator);
+with `s3_lR_dist_le` this now covers all three generators of `Elt`. What is
+STILL missing, and not attempted by this session: the induction itself --
+`wordLength(g) >= lR(g) / C` by induction on reachability from `one`, using
+these three per-generator bounds to bound how much `lR` can change per step
+and hence how many steps (word-length) are needed to reach a given `lR`. H1a
+stays 🟠 until that induction is done, but the per-generator groundwork it
+needs is now complete.
+
+## BLOCK 324 (2026-09-05) — loop reconciliation note + a repo-convention violation found
+
+This loop iteration's instructions were already stale on arrival: BLOCK 323
+(`Elt.s3_lR_dist_le`, K=10, commit 5abd370) had already closed the
+lR-composition step they asked for, and it was independently adversarially
+verified twice in the interactive session (once for `s3_siteCost_eq`, once
+for `s3_lR_dist_le` itself) -- both CONFIRMED sound, non-vacuous, 0 sorry,
+clean axioms. No re-work done here; retracting nothing, everything from
+BLOCK 323 stands.
+
+Also found while reading recent history: commit d664ce9 ("a first, weak
+lower bound on wordLength", `gen_kstar_natAbs_le`/`reaches_kstar_natAbs_le`/
+`wordLength_ge_kstar_natAbs`) carries a `Co-Authored-By: Claude Sonnet 5`
+trailer and a `Claude-Session:` link -- this VIOLATES this repo's standing
+no-AI-attribution convention (some other concurrent session's slip, not
+this one's). The mathematical content looks fine on inspection (honestly
+labeled "weak", a real if modest first lower bound on wordLength via
+|kstar|) and is already pushed/shared, so rewriting history to strip the
+trailer would require a force-push on a branch multiple concurrent sessions
+are actively using -- NOT done unilaterally here; flagged to the user for a
+decision rather than silently editing shared git history.
+
+Current real target, not yet started: the actual induction
+`wordLength(g) >= lR(g) / C` using the now-complete per-generator lR bounds
+(s1/s2: change lR by <=1; s3: change lR by <=10, BLOCK 323) plus d664ce9's
+much weaker `|kstar| <= wordLength` fact (not obviously useful for this,
+since it bounds by kstar not lR). Attempting this next.
