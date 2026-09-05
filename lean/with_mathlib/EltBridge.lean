@@ -115,6 +115,8 @@ noncomputable def toPathData : PathData where
 
 @[simp] theorem toPathData_d : g.toPathData.d = g.d := rfl
 @[simp] theorem toPathData_kstar : g.toPathData.kstar = g.kstar := rfl
+@[simp] theorem toPathData_A : g.toPathData.A = g.A := rfl
+@[simp] theorem toPathData_B : g.toPathData.B = g.B := rfl
 
 /-- **The relaxed length of a group element.**  This is the definition the
 development did not have: with `toPathData`, `lR` is now a function of `g`. -/
@@ -139,6 +141,9 @@ theorem lR_eq : g.lR =
       + ∑ s ∈ Finset.Icc g.A (g.B + 1), g.toPathData.siteCost s := rfl
 
 end Elt
+
+#print axioms EltBridge.Elt.toPathData_A
+#print axioms EltBridge.Elt.toPathData_B
 
 /-! ### B1, second half: exactly two sites need repair
 
@@ -6215,6 +6220,27 @@ theorem A_le_kstar (P : SiteCost.PathData) : P.A ≤ P.kstar := by
   rw [if_neg (by omega : ¬((0 : ℤ) ≤ P.A - 1 ∧ P.A - 1 < P.kstar)),
     if_pos (by omega : P.kstar ≤ P.A - 1 ∧ P.A - 1 < 0)] at h0
   omega
+
+namespace Elt
+
+/-- **`kstar` is always within one step of the span, for a group element too.** Free
+from the `PathData`-level fact just above via `toPathData`: `A <= kstar` and
+`kstar <= B + 1` for ANY group element, not just cost-minimal configurations. This is
+exactly the structural fact `s3`'s Lipschitz bound needs -- without it, moving `kstar`
+by one step could in principle move the span by an unbounded amount (if `kstar` were
+far from `[A, B]`), but it never is. -/
+theorem A_le_kstar (g : Elt) : g.A ≤ g.kstar := by
+  have h := EltBridge.A_le_kstar g.toPathData
+  rwa [toPathData_A, toPathData_kstar] at h
+
+theorem kstar_le_B_add_one (g : Elt) : g.kstar ≤ g.B + 1 := by
+  have h := EltBridge.kstar_le_B_succ g.toPathData
+  rwa [toPathData_kstar, toPathData_B] at h
+
+end Elt
+
+#print axioms EltBridge.Elt.A_le_kstar
+#print axioms EltBridge.Elt.kstar_le_B_add_one
 
 /-- **Injectivity of `stateOf`, with no side hypotheses.**  Two configurations with the
 same span whose states agree across it are the same configuration. -/
