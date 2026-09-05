@@ -10474,3 +10474,31 @@ theorem, plus combining it with BLOCKS 319-320's span bound and this block's
 exact `siteCost` conservation into one `|lR (s3 g) - lR g| <= C` statement, and
 then the actual word-length lower-bound induction (`wordLength >= lR / C`) has
 not been attempted by either session. H1a stays 🟠, substantially narrowed.
+
+## BLOCK 322 (2026-09-05, commit 99cffff + merge 693282b) — mu-change bound; reconciled with concurrent cloud session
+
+Proved `Elt.s3_mu_dist_le_two`: mu is unchanged off the one crossed edge
+(free from d/travel being literally unchanged elsewhere), and at the crossed
+edge moves by at most 2. This was sub-piece 2 of s3's Lipschitz bound.
+
+While landing this, `git push` was rejected: a concurrent cloud-routine
+session had pushed BLOCK 318/321 (its own numbering, colliding with this
+session's numbering) proving `s3_alphaAt_eq`/`s3_betaAt_eq`/`s3_siteCost_eq`
+-- an EXACT conservation law (siteCost unchanged at every site, not just
+bounded) -- plus a CommRing generalization of pathSum for H1c's transfer
+matrix. That conservation law is STRONGER than and supersedes what this
+session's sub-piece 3 (a two-site siteCost bound) was aiming for: siteCost
+doesn't just move by a bounded amount at the two touched sites, it doesn't
+move at all, anywhere. Merged clean (`git merge origin/main`, no manual
+conflict resolution needed in EltBridge.lean itself), full merged build
+verified 0 sorry, clean `lake build EltBridge`.
+
+Net effect: sub-piece 3 is CLOSED (via the cloud session's exact
+conservation law, not this session's planned bound). Remaining for s3's
+full Lipschitz bound on lR: composing sub-pieces 1 (span moves by <=1),
+2 (mu moves by <=2 at one edge), and 3 (siteCost exactly conserved) into
+an actual bound on lR itself -- summing mu over a span whose endpoints
+moved by <=1 each, plus the exactly-conserved siteCost sum over a span
+whose length also shifted by <=1. Not yet attempted. H1c's transfer-matrix
+piece (pathSum now over CommRing, from the cloud session) is a separate,
+promising but also not-yet-closed thread -- worth checking next.
