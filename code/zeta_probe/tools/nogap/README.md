@@ -12143,3 +12143,42 @@ the difference that the widths are now the REAL ones, so the statement is no lon
 for elements with `kstar != 0` -- which is every element with non-zero travel, i.e. all the
 interesting ones.  Closing the remaining gap means relating the constructed datum to the
 element's defect, not building another turn.
+
+## BLOCK 342 (2026-09-06) — the project already had Euler's theorem, in lean/ not lean/with_mathlib/
+
+Found while cross-checking the H1b work against the project's own records.
+`lean/EulerCircuit.lean` (452 lines, core Lean 4, NO imports at all) proves
+
+    euler_circuit (E : List (DEdge V)) (base : V) (hbal : Balanced E)
+      (hconn : ∀ e ∈ E, ∃ P, (∀ f ∈ P, f ∈ E) ∧ IsTrail base e.1 P) :
+      ∃ L, L.Perm E ∧ IsTrail base base L
+
+i.e. Eulerian-circuit EXISTENCE (balanced + connected => a circuit using every
+edge exactly once), 0 sorry, axioms [propext, Quot.sound]. It has been in the
+repo since 2026-07-30, built as `lean/build/EulerCircuit.olean`.
+
+Every H1b / RunStrandsConnected investigation on record -- including several
+independent ones today -- reported "Mathlib has only `IsEulerian` and the
+NECESSARY degree condition, not existence, so this needs new-to-Mathlib graph
+theory". That is TRUE OF MATHLIB and FALSE OF THIS PROJECT. The reason it was
+missed every time is filing, not reasoning: all the shield-law work lives in
+`lean/with_mathlib/`, and every search was scoped to that directory plus
+Mathlib itself. `lean/EulerCircuit.lean` is a sibling directory up.
+
+Consequences, stated honestly:
+- This does NOT retract BLOCK 339. H1b was closed there by an explicit
+  construction (the spine+zigzag turn), which is strictly better for the
+  application than an existence theorem would have been: the shield law needs a
+  turn satisfying `hturn` (bounce at cut sites), and `euler_circuit` supplies a
+  circuit, not a turn with a prescribed pass/bounce pattern. The two are not
+  interchangeable.
+- It DOES mean the repeated "out of reach, needs new graph theory" framing in
+  earlier blocks was wrong about the project's own assets, and that anyone who
+  had wanted general Eulerian existence could have had it.
+- `lean/` and `lean/with_mathlib/` are two separate Lean developments in one
+  repo with no shared search discipline. Future sessions: grep BOTH, and note
+  `lean/` is core-Lean-4 (no Mathlib), so its results are import-free and
+  reusable but stated over its own `DEdge`/`IsTrail` vocabulary, not Mathlib's
+  `SimpleGraph`.
+- `lean/TriangleFlowMetric.lean` is in the same position (the VERIFIED half of
+  the translation metric theorem).
