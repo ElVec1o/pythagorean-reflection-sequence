@@ -5,7 +5,8 @@ defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "Si
   "DiscriminantIdentity",
   "GroupElt",
   "EltBridge",
-  "ZigzagParity"]
+  "ZigzagParity",
+  "TravelParity"]
 
 [[require]]
 name = "mathlib"
@@ -301,3 +302,6 @@ name = "GroupElt"
 
 [[lean_lib]]
 name = "ZigzagParity"
+
+[[lean_lib]]
+name = "TravelParity"
