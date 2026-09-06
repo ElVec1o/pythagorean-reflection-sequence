@@ -11611,3 +11611,73 @@ it would need either (a) a genuinely different encoding of the state that isn't
 simply "the magnitude, or a bounded function of it" (unclear one exists, given the
 rank result), or (b) an exact telescoping solution of the boundary-value recursion
 above specifically (a real, separate research task, not attempted).
+
+## The "zigzag turn" is FALSE for even multiplicities; `Through2` replaces it
+
+Session 2026-09-06, tool `src/bin/zigzag_check.rs` (`cargo run --release --bin
+zigzag_check`). Model: sites `0..L`, edge `j` carrying `m_j` (even, `> 0`) parallel
+strands; a turn is a fixed-point-free involution on strand ends pairing only ends at
+the same site; `hturn` forbids passes at cut sites (set `Z`, plus the chain ends
+`0` and `L`); a *run* is a maximal stretch of edges between cut sites. Target: every
+run's strands form exactly one closed walk.
+
+**M-Z1 | the design note's zigzag gives per-run connectivity | FALSE.** Its recipe
+("bounce `(2i,2i+1)` at the far site, `(2i+1,2i+2)` at the near site; loose ends are
+strand `0`'s near end and the last strand's far end") is self-inconsistent for even
+`m`: with `m` even the far matching `(2i,2i+1)` is already *perfect*, so both loose
+ends land at the **near** site, not one at each end. The quoted end-pattern only
+holds for **odd** `m`, which the model excludes. Consequence: a zigzagged edge has
+zero loose ends on one side, so it can never pass to the neighbour there, and every
+edge closes into its own cycle. Sweep over all `m in {2,4,6}^L`, `L = 1..5`, all
+`2^(L-1)` cut-sets (4665 configurations):
+
+| variant | pass | fail | first counterexample |
+|---|---|---|---|
+| V1 plain zigzag, loose ends left | 363 | 4302 | `m=[2,2]`, `Z={}`: 2 components, 1 run |
+| V2 plain zigzag, loose ends right | 363 | 4302 | same |
+| V3 zigzag alternating by edge parity | 1200 | 3465 | same |
+| V4 run-aware `Closed`/`Zig`/`Through2` | 4665 | 0 | none |
+| V5 uniform `Through2` | 4665 | 0 | none |
+| V6 uniform `Through2`, crossed passes | 4665 | 0 | none |
+
+Split by longest run: V1 passes 363/363 when **every** run has length 1, and
+0/4302 otherwise (0/2088 at max run 2, 0/1404 at 3, 0/567 at 4, 0/243 at 5). So the
+zigzag is exactly right for a one-edge run and exactly wrong for everything else.
+
+**Why 2 loose ends can never be enough.** All `m_j` are even, so at any site the
+pass count `p` satisfies `m - p` even, hence `p` is even and connecting two edges
+costs `p >= 2`. An edge interior to a run therefore needs `2` loose ends on *each*
+side, i.e. `4`, i.e. its bounces split it into **two** paths, not one chain. Further,
+the two paths must each run left-to-right (a left-hanging plus a right-hanging path
+gives `b - a + 2` components per run, not 1).
+
+**M-Z2 | the repaired convention `Through2` | VERIFIED (exhaustive, in range).**
+Per edge with `m` strands, uniformly, with no knowledge of `Z`:
+
+- left bounces `(2i, 2i+1)` for `i = 1 .. m/2 - 1`;
+- right bounces `(2i+1, 2i+2)` for `i = 0 .. m/2 - 2`;
+- loose left ends: strands `0` and `1`; loose right ends: strands `0` and `m-1`.
+
+(Strand `0` runs straight through; strands `1..m-1`, an odd count, zigzag.) Assemble
+by: at a non-cut site pass the two loose right ends of edge `j-1` to the two loose
+left ends of edge `j` (**either** bijection works — V5 and V6 both pass); at a cut
+site (including sites `0` and `L`) bounce each edge's own two loose ends together.
+`hturn` is then satisfied by construction and the run boundaries degenerate
+correctly: closing edge `a`'s left pair fuses its two paths into one path with both
+ends at site `a+1`, and for a one-edge run the two closings fuse the two paths into a
+single `m`-cycle. No run-length case split and no parity-of-`j` convention is needed,
+which is what makes it worth formalizing.
+
+Evidence: 4665/4665 above; stress sweep `m in {2,4,6,8}^L`, `L = 1..6`, all cut-sets:
+**149 796 / 149 796** pass; `L = 12` chains up to 156 strands, 1/2/7/12 runs, all
+exact. Sanity: `m_j = 2` everywhere, `L = 1..7`, all cut-sets, 127/127 — agreeing
+with the existing `m = 2` special case.
+
+Component counts are computed **twice** per configuration by independent methods
+(union-find over strands, and explicit walk tracing over ends) and asserted equal;
+every turn is separately validated as a fixed-point-free same-site involution
+obeying `hturn`. A brute-force enumerator additionally enumerates *all* hturn-legal
+turns for 42 small configurations (`m in {2,4}`, `L <= 3`, ~150k turns, both counters
+cross-checked on each): every configuration admits at least one good turn, so the
+target is achievable everywhere it was tested, e.g. `m=[4,4,4]`, `Z={}`: 31 104 of
+99 225 legal turns work.
