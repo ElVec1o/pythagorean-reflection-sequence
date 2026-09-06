@@ -11869,3 +11869,154 @@ axiom list) rather than re-asserting a build state this run could not itself
 confirm end-to-end. `git push origin main`: nothing to push -- this run made no
 commits (its own candidate work was either superseded or never reached a build
 to verify against, per MATH_RULES_V6's real-verified-work-only rule).
+
+## BLOCK 340 (2026-09-06) -- H1c: the rank-one telescoping DOES transfer.  The `max`
+## kernel's resolvent is a 2 x 2 chain in the SAME nilpotent family as `prop:bulkexact`.
+## Separately: `IsAssembly` as stated is VACUOUS, and that is now proved in Lean.
+
+Assigned BLOCK 338's own stated next step -- "a genuine closed-form/telescoping solution
+of the boundary-value recursion, comparable in kind to the already-solved travel null
+vector closed form, not a geometric-series shortcut".  Two results, one positive and one
+negative, both landed.
+
+### 1. The recursion, reconstructed from the Lean definitions
+
+From `LocalState.muOf` (EltBridge.lean:6067), `LocalState.siteOf` (6070),
+`interior_kernel_eq_max` (5862) and `flagStepB`'s weight `x^(sigma.st.muOf +
+tau.st.siteOf)` (7645), with sign multiplicity from `sum_signed_eq_magnitudes`:
+
+    states  a >= 0 (deposit magnitude);  m(b) = 1 if b = 0 else 2 (sign fibre)
+    mu(a)   = 2 if a = 0, else a                       (plain site, fcur = 0)
+    step a -> b weighs  m(b) * X^( mu(a) + max(a,b) )
+    u(a)    = 1 + X^mu(a) * sum_{b>=0} m(b) X^max(a,b) u(b)                       (*)
+
+This is BLOCK 338's equation, re-derived independently and re-validated (below).
+
+### 2. The reduction: (*) is a TWO-dimensional chain, exactly
+
+Write `S(a) = sum_{b<=a} m(b) u(b)`, `S'(a) = sum_{b<=a} m(b) X^b u(b)`,
+`T = S'(infinity)`.  Two steps.
+
+**(a) The `max` kernel is semiseparable** (Lean: `max_kernel_split`, proved for every
+finite truncation, over any `CommRing`):
+
+    sum_b m(b) X^max(a,b) u(b) = X^a S(a) + (T - S'(a)).
+
+**(b) The self-reference cancels IDENTICALLY.**  Substituting `S(a) = S(a-1) + 2u(a)`
+and `S'(a) = S'(a-1) + 2X^a u(a)` into (*) at `a >= 1`, the two occurrences of `u(a)`
+on the right (`+2X^{2a}u(a)` from `S`, `-2X^{2a}u(a)` from `S'`) cancel exactly, leaving
+
+    u(a) = 1 + X^{2a} S(a-1) - X^a S'(a-1) + X^a T            <- EXPLICIT, no solve
+
+(Lean: `maxchain_cancel`, and `maxchain_forward` composing it with (a).)  Hence
+
+    ( S(a), S'(a) ) = M_a ( S(a-1), S'(a-1) ) + (2 + 2X^a T, 2X^a + 2X^{2a} T),
+    M_a = [[ 1 + 2X^{2a},  -2X^a ], [ 2X^{3a},  1 - 2X^{2a} ]],
+
+with `S(0) = S'(0) = u(0) = 1 + X^2 T` (the `mu(0)=2`, `m(0)=1` boundary), and `T` fixed
+by the single scalar closure `S'(infinity) = T`.  So the infinite-state fixed point
+becomes a 2-dimensional forward recursion plus ONE global shooting unknown.
+
+### 3. It is the same nilpotent family as `prop:bulkexact`
+
+    M_a = I + (2 X^a) . N_a,   N_a = [[X^a, -1],[X^{2a}, -X^a]] = col(1,X^a) row(X^a,-1),
+    row . col = 0,  so  N_a^2 = 0,   and   det M_a = 1.
+
+Link factor: `N_a N_b = (X^a - X^b) . col(1,X^a) row(X^b,-1)`.  This is exactly
+`prop:travelexact`'s `w_a^T v_b = q^{(a-b)/2} - q^{(b-a)/2}` in the negative-power-free
+normalisation, and `M_a = I + c_a N_a` with `c_a = 2(X^2)^a` is exactly
+`prop:bulkexact`'s family `M_b = I + c_b N_b`, `c_b = 2(q^2)^b`, at index shift `+1`.
+(Lean: `maxN_eq_vecMulVec`, `maxN_dot`, `maxN_mul`, `maxN_sq`, `maxM_eq_one_add`,
+`maxM_det`, `maxchain_transfer`.)
+
+The shift `+1` and the different initial vector are the ONLY differences, and both come
+from the single boundary deviation `mu(0) = 2`, `m(0) = 1`.  So the telescoping of
+`prop:bulkexact` applies verbatim.  Predicted closed forms for the homogeneous pair
+started at `(A,B) = (S,-S') = (0,1)` at `a = 0`:
+
+    A_inf = sum_{k>=1} (-1)^{k-1} 2^k (1-X)^{k-1} X^{k^2}   / (X;X)_{2k-1}
+    B_inf = sum_{k>=0}            2^k (X-1)^k     X^{k^2+k} / (X;X)_{2k}
+
+a THIRD member of the paper's family (travel has `X^{k^2-k+1}` / `X^{k^2}`; bulk has
+`X^{(k-1)^2}` / `X^{k(k-1)}`).
+
+### 4. Numerical validation -- Rust, exact i128, `src/bin/maxchain.rs`
+
+`cargo run --release --bin maxchain` (tools/nogap).  Four independent checks, all pass
+on the first run, no tuning:
+
+| check | what | result |
+|---|---|---|
+| chain vs brute | `u(a)` from the 2x2 chain + shooting vs. direct iteration of the raw `max`-kernel double sum, every `a` in `0..D` | ALL EQUAL at `D = 12, 20, 30, 40, 56` |
+| brute vs DFS | direct iteration vs. explicit enumeration of all finite walks (no fixed point, no algebra) from `a = 0..4` | ALL EQUAL at `D = 8, 12, 14` |
+| structure | `det M_a = 1`, `N_a^2 = 0`, `a = 1..10` | OK |
+| closed form | homogeneous matrix product vs. the two `q`-series above | MATCH at `D = 20, 36, 56, 72` |
+
+Sample data (`D = 30`):
+
+    u(0) = 1, 0, 1, 2, 3, 10,  9, 30, 37, 82, 133, 236, 457, 702, 1455, 2248, 4469, ...
+    u(1) = 1, 0, 3, 2, 9,  8, 23, 38, 61, 126, 191, 406, 599, 1234, 2003, 3716, 6515, ...
+    T    = 1, 2, 3, 10, 9, 30, 37, 82, 133, 236, 457, 702, 1455, 2248, 4469, 7308, ...
+    A_inf = 0, 2, 2, 2, -2, 2, -2, -2, -2, 6, -14, 6, -6, 2, -6, 2, -26, 42, -42, 22, -26
+    B_inf = 1, 0, -2, 0, -2, 0, 2, -4, 2, 0, 2, -4, -2, 12, -10, 4, -2, 4, -6, 16, -6
+
+### 5. What this does and does NOT give
+
+**Does.** A closed-form solution of the boundary-value recursion, of exactly the kind
+BLOCK 338 asked for: homogeneous fundamental solutions as explicit `q`-series by
+rank-one telescoping, an exact discrete Wronskian (`det = 1`) so the inhomogeneous
+chain closes by variation of parameters, and one scalar linear closure for `T`.
+
+**Does not.** A finite `Fin n` transfer matrix for `IsAssembly`.  The chain index `a` is
+the deposit MAGNITUDE, not the walk length, and `M_a` depends on `a`; `IsAssembly`'s
+`T^k` indexes walk length with a FIXED `T`.  So this does not contradict BLOCK 338's
+rank computation -- BLOCK 338 refuted "bounded matrix indexed by magnitude classes", and
+this constructs "unbounded-index 2 x 2 chain in closed form".  Both are true.
+
+### 6. The separate negative: `IsAssembly` as stated carries no information
+
+While reading `IsAssembly` (EltBridge.lean:10468) closely enough to state a target, the
+contract turned out to be **satisfiable for arbitrary `W` and `W0`**.  Proved in Lean
+(`isAssembly_of_any`): take `n = 1`, `T = (X^2)`, `mu = 1`, and
+
+    lam md a = if md = 0 then (W - W0) * (1 - X^2) else 0 .
+
+Then `sum_{k <= N} lam * (T^k) * mu = (W - W0)(1 - X^{2N+2})`, whose degree-`N`
+coefficient is that of `W - W0` because `2N + 2 > N`.  The truncation `k in range (N+1)`
+is what does it: the Neumann sum is already exact to degree `N` for ANY `T` of positive
+order, so `lam` can be chosen to hit any target.  The witness is deliberately taken at
+ORDER TWO, so it also satisfies the order bound the surrounding text attaches to a
+transfer matrix (`travelT_ge_two` / `gf_transfer_order`) -- `isAssembly_of_any_order`.
+Adding that side condition does not restore content.
+
+**Consequence.** `exists n T lam mu, IsAssembly W W0 T lam mu` is vacuous.  Any future
+session that "closes H1c" by producing that existential has proved nothing.  A usable
+form of `eq:assembly` must NAME `T` (and `lambda`, `mu`) as built from the site kernel,
+e.g. as the resolvent of the `max` kernel above, and assert the identity for THAT `T`.
+This is a real target correction, and it is why no attempt was made here to reach the
+existential.
+
+### 7. Lean landed
+
+`max_kernel_split`, `maxchain_cancel`, `maxchain_forward`, `maxM`, `maxN`,
+`maxN_eq_vecMulVec`, `maxN_dot`, `maxN_mul`, `maxN_sq`, `maxM_eq_one_add`, `maxM_det`,
+`maxchain_transfer`, `pow_apply_fin_one`, `isAssembly_of_any`, `isAssembly_of_any_order`
+(EltBridge.lean ~10497-10730).  All over a general `CommRing` except the two
+`IsAssembly` ones.  0 sorry; `lake build EltBridge` clean; `#print axioms` on all
+thirteen theorems shows only `propext, Classical.choice, Quot.sound` (`maxchain_cancel`:
+`propext, Quot.sound`).  No `native_decide`.
+
+### 8. Honest remaining gap
+
+What is NOT done: (i) the ordered-product expansion over increasing chains is stated
+only in its two-factor form (`maxN_mul`) -- the full `k`-fold induction and the geometric
+resummation into the `q`-series of section 3 are verified numerically to degree 72 but
+not formalized; (ii) the inhomogeneous solution and the scalar closure for `T` are
+computed in Rust, not in closed form on paper; (iii) none of this is yet connected to
+the actual `W` of BLOCKS 314-315 -- that is still BLOCK 321's "per-fiber resolvent
+identification", untouched; (iv) the marker fibres (`Fin 4`) and the `mu(0)=2` /
+near-marker deviations are outside the bulk model used here.  H1c stays open, but the
+route is now different in kind: not "find a bounded transfer matrix" (refuted twice,
+BLOCKS 334 and 338, and now known to be the wrong target anyway since the existential is
+vacuous) but "identify `W` with the explicit resolvent of the `max` kernel, which is now
+in closed form".
