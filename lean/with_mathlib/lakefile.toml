@@ -10,6 +10,7 @@ defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "Si
   "TransTrick",
   "PointGroupReduction",
   "VZigzag",
+  "TrueLengthUpper",
   "LipschitzPotential",
   "AssemblyContract"]
 
@@ -319,6 +320,9 @@ name = "TransTrick"
 
 [[lean_lib]]
 name = "PointGroupReduction"
+
+[[lean_lib]]
+name = "TrueLengthUpper"
 
 [[lean_lib]]
 name = "LipschitzPotential"
