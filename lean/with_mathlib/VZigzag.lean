@@ -947,6 +947,670 @@ def vzData (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) :
 @[simp] theorem vzData_t (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) :
     (vzData C Zf hZ).t = vzTurn C Zf := rfl
 
+/-! ## Generic `AllJoined` plumbing
+
+`EltBridge`'s versions are stated for `EndType.Endpt` through `botOf`; nothing in their
+proofs uses that, so here they are with the representative map as a parameter. -/
+
+section Generic
+
+variable {α : Type*} [Fintype α] [DecidableEq α]
+
+/-- Any turn step joins the two representatives. -/
+theorem link_of_turn_gen (E : WalkGraph.Data α) (base : α → α)
+    (hbase : ∀ x, base x = x ∨ base x = E.p x) (x : α) :
+    (WalkGraph.graph E).Reachable (base x) (base (E.t x)) :=
+  (((reachable_to_base E base hbase x).symm).trans (reachable_turn E x)).trans
+    (reachable_to_base E base hbase (E.t x))
+
+/-- A chain of turn steps joins a whole family of representatives. -/
+theorem allJoined_step_gen (E : WalkGraph.Data α) (base : α → α)
+    (hbase : ∀ x, base x = x ∨ base x = E.p x) (f : ℕ → α) (N : ℕ)
+    (h : ∀ i : ℕ, i < N → base (E.t (f i)) = base (f (i + 1))) :
+    AllJoined (WalkGraph.graph E) ((Finset.range (N + 1)).image (fun i => base (f i))) := by
+  refine allJoined_image (WalkGraph.graph E) (fun i => base (f i)) N ?_
+  intro i hi
+  have hr := link_of_turn_gen E base hbase (f i)
+  rw [h i hi] at hr
+  exact hr
+
+/-- **Absorbing a family, with a mere reachability at each link.**  Weaker than
+`EltBridge.allJoined_biUnion`, which asks for a single turn step: here consecutive sets
+may even coincide, which is what happens along the travel span, where the "spine slot"
+is the one virtual strand for every edge at once. -/
+theorem allJoined_biUnion_gen (G : SimpleGraph α) (S : ℕ → Finset α) (N : ℕ)
+    (hS : ∀ j, AllJoined G (S j))
+    (hlink : ∀ j, j < N → ∃ p ∈ S j, ∃ q ∈ S (j + 1), G.Reachable p q) :
+    ∀ j : ℕ, j ≤ N → AllJoined G ((Finset.range (j + 1)).biUnion S) := by
+  intro j
+  induction j with
+  | zero => intro _; simpa using hS 0
+  | succ k ih =>
+    intro hk
+    have hprev := ih (by omega)
+    obtain ⟨p, hp, q, hq, hpq⟩ := hlink k (by omega)
+    have hrw : (Finset.range (k + 1 + 1)).biUnion S
+        = ((Finset.range (k + 1)).biUnion S) ∪ S (k + 1) := by
+      rw [Finset.range_add_one, Finset.biUnion_insert]
+      exact Finset.union_comm _ _
+    rw [hrw]
+    exact allJoined_union G _ _ hprev (hS (k + 1)) p q
+      (Finset.mem_biUnion.mpr ⟨k, Finset.mem_range.mpr (by omega), hp⟩) hq hpq
+
+/-- **A joined set per run gives `hrun` on representatives.** -/
+theorem hrun_of_allJoined_gen (G : SimpleGraph α) (base : α → α) (idx : α → ℕ)
+    (S : ℕ → Finset α) (hS : ∀ r, AllJoined G (S r)) (hmem : ∀ x, base x ∈ S (idx x)) :
+    ∀ x y : α, idx x = idx y → G.Reachable (base x) (base y) := by
+  intro x y hxy
+  have hx := hmem x
+  have hy := hmem y
+  rw [hxy] at hx
+  exact hS _ _ hx _ hy
+
+end Generic
+
+/-! ## The representative of a strand -/
+
+/-- The bottom end of a point's own strand: for a real end its crossing's bottom, for a
+virtual end the tag `false`. -/
+def vbot : VEndpt n m → VEndpt n m
+  | Sum.inl x => Sum.inl (botOf x)
+  | Sum.inr _ => Sum.inr false
+
+@[simp] theorem vbot_inl (x : Endpt n m) : vbot (Sum.inl x) = Sum.inl (botOf x) := rfl
+@[simp] theorem vbot_inr (b : Bool) : vbot (Sum.inr b : VEndpt n m) = Sum.inr false := rfl
+
+theorem vbot_eq_or_partner (v : VEndpt n m) :
+    vbot v = v ∨ vbot v = VEndpt.partner v := by
+  cases v with
+  | inl x =>
+    rcases botOf_eq_or_partner x with h | h
+    · exact Or.inl (by rw [vbot_inl, h])
+    · exact Or.inr (by rw [vbot_inl, h]; rfl)
+  | inr b => cases b
+             · exact Or.inl rfl
+             · exact Or.inr rfl
+
+theorem vbot_edgeOf (bnd : ℤ) (v : VEndpt n m) :
+    VEndpt.edgeOf bnd (vbot v) = VEndpt.edgeOf bnd v := by
+  cases v with
+  | inl x => rfl
+  | inr b => rfl
+
+/-! ## The zigzag chain of one edge
+
+Strands `sp e .. m e - 1`, an odd number of them, wired into a single path from strand
+`sp e`'s bottom end to strand `m e - 1`'s top end. -/
+
+/-- The `i`-th end of edge `e`'s chain: strand `m e - 1 - i`, approached from the bottom
+when `i` is even and from the top when `i` is odd. -/
+def fC (C : VZ n m) (e : Fin n) (i : ℕ) : Endpt n m :=
+  ⟨e, ⟨m e - 1 - i, by have := C.m_pos e; omega⟩, decide (i % 2 = 1)⟩
+
+@[simp] theorem fC_edge (C : VZ n m) (e : Fin n) (i : ℕ) : (fC C e i).edge = e := rfl
+@[simp] theorem fC_idx (C : VZ n m) (e : Fin n) (i : ℕ) :
+    (fC C e i).idx.val = m e - 1 - i := rfl
+@[simp] theorem fC_top (C : VZ n m) (e : Fin n) (i : ℕ) :
+    (fC C e i).top = decide (i % 2 = 1) := rfl
+
+/-- **The chain step.**  This is the only place the width parity is used: it is what
+makes the two internal pairings exhaust the chain. -/
+theorem vzC_step (C : VZ n m) (Zf : Finset ℤ) (e : Fin n) (i : ℕ)
+    (hi : i < m e - C.sp e - 1) :
+    vbot (vzTurn C Zf (Sum.inl (fC C e i))) = vbot (Sum.inl (fC C e (i + 1))) := by
+  have hsp := C.sp_le e
+  have hpar := C.m_par e
+  have hmp := C.m_pos e
+  have hlt := C.sp_lt e
+  by_cases hp2 : i % 2 = 1
+  · have hbt : (fC C e i).top = true := by rw [fC_top]; exact decide_eq_true hp2
+    obtain ⟨y, hy, hye, hyi, hyt⟩ := vzR_top_pair C Zf (fC C e i) hbt
+      (by show C.sp e ≤ m e - 1 - i ∧ m e - 1 - i + 2 ≤ m e; omega)
+    rw [vzTurn_inl, hy, vbot_inl, vbot_inl]
+    refine congrArg Sum.inl (endpt_ext ?_ ?_ rfl)
+    · simp only [botOf_edge, hye, fC_edge]
+    · simp only [botOf_idx_val, hyi, fC_edge, fC_idx]
+      split_ifs <;> omega
+  · have hbt : (fC C e i).top = false := by rw [fC_top]; exact decide_eq_false hp2
+    obtain ⟨y, hy, hye, hyi, hyt⟩ := vzR_bot_pair C Zf (fC C e i) hbt
+      (by show C.sp e + 1 ≤ m e - 1 - i; omega)
+    rw [vzTurn_inl, hy, vbot_inl, vbot_inl]
+    refine congrArg Sum.inl (endpt_ext ?_ ?_ rfl)
+    · simp only [botOf_edge, hye, fC_edge]
+    · simp only [botOf_idx_val, hyi, fC_edge, fC_idx]
+      split_ifs <;> omega
+
+/-- The chain of edge `e`, as a set of representatives. -/
+def vChain (C : VZ n m) (e : Fin n) : Finset (VEndpt n m) :=
+  (Finset.range (m e - C.sp e)).image (fun i => vbot (Sum.inl (fC C e i)))
+
+/-- **Each edge's chain is joined.** -/
+theorem vChain_joined (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) (e : Fin n) :
+    AllJoined (WalkGraph.graph (vzData C Zf hZ)) (vChain C e) := by
+  have h := allJoined_step_gen (vzData C Zf hZ) vbot
+    (fun x => by rw [vzData_p]; exact vbot_eq_or_partner x) (fun i => Sum.inl (fC C e i))
+    (m e - C.sp e - 1) (fun i hi => by rw [vzData_t]; exact vzC_step C Zf e i hi)
+  have hrw : m e - C.sp e - 1 + 1 = m e - C.sp e := by
+    have := C.sp_lt e; omega
+  rw [hrw] at h
+  exact h
+
+/-! ### Named ends and membership in the chain -/
+
+/-- The bottom end of edge `e`'s spine (only meaningful when `sp e = 1`). -/
+def spineB (C : VZ n m) (e : Fin n) : Endpt n m := ⟨e, ⟨0, C.m_pos e⟩, false⟩
+/-- The top end of edge `e`'s spine. -/
+def spineT (C : VZ n m) (e : Fin n) : Endpt n m := ⟨e, ⟨0, C.m_pos e⟩, true⟩
+/-- The loose bottom end of edge `e`'s chain: strand `sp e`. -/
+def chainB (C : VZ n m) (e : Fin n) : Endpt n m := ⟨e, ⟨C.sp e, C.sp_lt e⟩, false⟩
+
+@[simp] theorem spineB_edge (C : VZ n m) (e : Fin n) : (spineB C e).edge = e := rfl
+@[simp] theorem spineB_idx (C : VZ n m) (e : Fin n) : (spineB C e).idx.val = 0 := rfl
+@[simp] theorem spineB_top (C : VZ n m) (e : Fin n) : (spineB C e).top = false := rfl
+@[simp] theorem spineT_edge (C : VZ n m) (e : Fin n) : (spineT C e).edge = e := rfl
+@[simp] theorem spineT_idx (C : VZ n m) (e : Fin n) : (spineT C e).idx.val = 0 := rfl
+@[simp] theorem spineT_top (C : VZ n m) (e : Fin n) : (spineT C e).top = true := rfl
+@[simp] theorem chainB_edge (C : VZ n m) (e : Fin n) : (chainB C e).edge = e := rfl
+@[simp] theorem chainB_idx (C : VZ n m) (e : Fin n) : (chainB C e).idx.val = C.sp e := rfl
+@[simp] theorem chainB_top (C : VZ n m) (e : Fin n) : (chainB C e).top = false := rfl
+
+theorem vbot_spineT (C : VZ n m) (e : Fin n) :
+    vbot (Sum.inl (spineT C e)) = Sum.inl (spineB C e) := rfl
+
+theorem fC_zero_mem (C : VZ n m) (e : Fin n) :
+    vbot (Sum.inl (fC C e 0)) ∈ vChain C e :=
+  Finset.mem_image.mpr ⟨0, Finset.mem_range.mpr (by have := C.sp_lt e; omega), rfl⟩
+
+theorem chainB_mem (C : VZ n m) (e : Fin n) :
+    vbot (Sum.inl (chainB C e)) ∈ vChain C e := by
+  have hlt := C.sp_lt e
+  refine Finset.mem_image.mpr ⟨m e - C.sp e - 1, Finset.mem_range.mpr (by omega), ?_⟩
+  refine congrArg Sum.inl (endpt_ext ?_ ?_ rfl)
+  · simp only [botOf_edge, fC_edge, chainB_edge]
+  · simp only [botOf_idx_val, fC_idx, chainB_idx]; omega
+
+theorem vbot_mem_vChain (C : VZ n m) (x : Endpt n m) (h : C.sp x.edge ≤ x.idx.val) :
+    vbot (Sum.inl x) ∈ vChain C x.edge := by
+  have hlt := x.idx.isLt
+  have hsl := C.sp_lt x.edge
+  refine Finset.mem_image.mpr ⟨m x.edge - 1 - x.idx.val, Finset.mem_range.mpr (by omega), ?_⟩
+  refine congrArg Sum.inl (endpt_ext ?_ ?_ rfl)
+  · simp only [botOf_edge, fC_edge]
+  · simp only [botOf_idx_val, fC_idx]; omega
+
+/-! ### The local turn steps the assembly consumes -/
+
+/-- A spine passes up to the next spine. -/
+theorem vz_spine_pass (C : VZ n m) (Zf : Finset ℤ) (e f : Fin n) (hse : C.sp e = 1)
+    (hsf : C.sp f = 1) (hp : PassHi Zf e) (hf : f.val = e.val + 1) :
+    vbot (vzTurn C Zf (Sum.inl (spineT C e))) = Sum.inl (spineB C f) := by
+  have hk : C.sp (⟨e.val + 1, hp.1⟩ : Fin n) = 1 := by
+    rw [sp_val_eq (show ((⟨e.val + 1, hp.1⟩ : Fin n)).val = f.val from by
+      show e.val + 1 = f.val; omega)]
+    exact hsf
+  obtain ⟨y, hy, hye, hyi, hyt⟩ := vzR_top_spine_pass C Zf (spineT C e) rfl
+    (by show ¬ (C.sp e ≤ 0 ∧ 0 + 2 ≤ m e); rintro ⟨h1, -⟩; omega)
+    ⟨by rw [spineT_edge]; exact hse, rfl⟩ (by rw [spineT_edge]; exact hp)
+    (by exact hk)
+  rw [vzTurn_inl, hy, vbot_inl]
+  refine congrArg Sum.inl (endpt_ext ?_ ?_ ?_)
+  · simp only [botOf_edge, spineB_edge]; rw [hye, spineT_edge]; omega
+  · simp only [botOf_idx_val, spineB_idx]; exact hyi
+  · rfl
+
+/-- A spine at the bottom of the span passes up into the virtual strand. -/
+theorem vz_spine_virt (C : VZ n m) (Zf : Finset ℤ) (e f : Fin n) (hse : C.sp e = 1)
+    (hsf : C.sp f = 0) (hp : PassHi Zf e) (hf : f.val = e.val + 1) :
+    vbot (vzTurn C Zf (Sum.inl (spineT C e))) = (Sum.inr false : VEndpt n m) := by
+  have hk : ¬ (C.sp (⟨e.val + 1, hp.1⟩ : Fin n) = 1) := by
+    rw [sp_val_eq (show ((⟨e.val + 1, hp.1⟩ : Fin n)).val = f.val from by
+      show e.val + 1 = f.val; omega)]
+    omega
+  rw [vzTurn_inl, vzR_top_spine_virt C Zf (spineT C e) rfl
+    (by show ¬ (C.sp e ≤ 0 ∧ 0 + 2 ≤ m e); rintro ⟨h1, -⟩; omega)
+    ⟨by rw [spineT_edge]; exact hse, rfl⟩ (by rw [spineT_edge]; exact hp)
+    (by exact hk), vbot_inr]
+
+/-- The virtual strand passes up into the first spine above the span. -/
+theorem vz_virt_spine (C : VZ n m) (Zf : Finset ℤ) (hn : C.hi ≠ n) (f : Fin n)
+    (hf : f.val = C.hi) :
+    vbot (vzTurn C Zf (Sum.inr (!C.bl))) = Sum.inl (spineB C f) := by
+  obtain ⟨y, hy, hye, hyi, hyt⟩ := vzV_hi_mid (m := m) C hn
+  rw [vzTurn_inr, hy, vbot_inl]
+  refine congrArg Sum.inl (endpt_ext ?_ ?_ ?_)
+  · simp only [botOf_edge, spineB_edge]; omega
+  · simp only [botOf_idx_val, spineB_idx]; exact hyi
+  · rfl
+
+/-- At the top of a run the spine bounces into its own chain. -/
+theorem vz_spine_bounce (C : VZ n m) (Zf : Finset ℤ) (e : Fin n) (hse : C.sp e = 1)
+    (hp : ¬ PassHi Zf e) :
+    vbot (vzTurn C Zf (Sum.inl (spineT C e))) = vbot (Sum.inl (fC C e 0)) := by
+  obtain ⟨y, hy, hye, hyi, hyt⟩ := vzR_top_spine_bounce C Zf (spineT C e) rfl
+    (by show ¬ (C.sp e ≤ 0 ∧ 0 + 2 ≤ m e); rintro ⟨h1, -⟩; omega)
+    ⟨by rw [spineT_edge]; exact hse, rfl⟩ (by rw [spineT_edge]; exact hp)
+  rw [vzTurn_inl, hy, vbot_inl, vbot_inl]
+  refine congrArg Sum.inl (endpt_ext ?_ ?_ rfl)
+  · simp only [botOf_edge, hye, spineT_edge, fC_edge]
+  · simp only [botOf_idx_val, hyi, spineT_edge, fC_idx]; omega
+
+/-- At the top of the chain of edges the virtual strand bounces into the last chain. -/
+theorem vz_virt_bounce (C : VZ n m) (Zf : Finset ℤ) (hn : C.hi = n) (e : Fin n)
+    (he : e.val = n - 1) :
+    vbot (vzTurn C Zf (Sum.inr (!C.bl))) = vbot (Sum.inl (fC C e 0)) := by
+  obtain ⟨y, hy, hye, hyi, hyt⟩ := vzV_hi_top (m := m) C hn
+  have hey : y.edge.val = e.val := by omega
+  rw [vzTurn_inr, hy, vbot_inl, vbot_inl]
+  refine congrArg Sum.inl (endpt_ext ?_ ?_ rfl)
+  · simp only [botOf_edge, fC_edge]; exact hey
+  · simp only [botOf_idx_val, fC_idx]
+    rw [hyi, m_val_eq (m := m) hey]; omega
+
+/-- The chain's loose bottom passes down into the previous chain's loose top. -/
+theorem vz_chain_pass (C : VZ n m) (Zf : Finset ℤ) (e f : Fin n) (hp : PassLo Zf e)
+    (hf : f.val = e.val - 1) :
+    vbot (vzTurn C Zf (Sum.inl (chainB C e))) = vbot (Sum.inl (fC C f 0)) := by
+  have hsl := C.sp_le e
+  obtain ⟨y, hy, hye, hyi, hyt⟩ := vzR_bot_chain_pass C Zf (chainB C e) rfl
+    (by show ¬ (C.sp e + 1 ≤ C.sp e); omega)
+    (by show ¬ (C.sp e = 1 ∧ C.sp e = 0); rintro ⟨h1, h2⟩; omega)
+    (by rw [chainB_edge]; exact hp)
+  have hef : (edgePred (chainB C e).edge).val = f.val := by
+    rw [chainB_edge, edgePred_val]; omega
+  rw [vzTurn_inl, hy, vbot_inl, vbot_inl]
+  refine congrArg Sum.inl (endpt_ext ?_ ?_ rfl)
+  · simp only [botOf_edge, fC_edge]; rw [hye, chainB_edge]; omega
+  · simp only [botOf_idx_val, fC_idx]
+    rw [hyi, m_val_eq (m := m) hef]; omega
+
+/-! ## The run's joined set
+
+A run is an interval `[a, b]` of edges (`EltBridge.runSet_interval`).  Its cycle is:
+the spine line up -- with the one virtual strand standing in for the span's missing
+spines -- then a bounce at the top, then the chains coming back down. -/
+
+/-- Edge `lo`, the bottom edge of the span. -/
+def eLoE (C : VZ n m) : Fin n := ⟨C.lo, by have := C.hlh; have := C.hhn; omega⟩
+
+@[simp] theorem eLoE_val (C : VZ n m) : (eLoE C).val = C.lo := rfl
+
+theorem sp_eLoE (C : VZ n m) : C.sp (eLoE C) = 0 :=
+  sp_zero_val C _ (by simp) (by simp only [eLoE_val]; exact C.hlh)
+
+/-- The `j`-th slot of run `[a, b]`. -/
+def vFam (C : VZ n m) (a b : Fin n) (j : ℕ) : Finset (VEndpt n m) :=
+  if j ≤ b.val - a.val then
+    (if C.sp (eAdd a j) = 1 then {Sum.inl (spineB C (eAdd a j))}
+      else {(Sum.inr false : VEndpt n m)})
+  else if j ≤ 2 * (b.val - a.val) + 1 then vChain C (eSub b (j - (b.val - a.val) - 1))
+  else ∅
+
+theorem vFam_lo_spine (C : VZ n m) (a b : Fin n) (j : ℕ) (h : j ≤ b.val - a.val)
+    (hs : C.sp (eAdd a j) = 1) : vFam C a b j = {Sum.inl (spineB C (eAdd a j))} := by
+  unfold vFam; rw [if_pos h, if_pos hs]
+
+theorem vFam_lo_virt (C : VZ n m) (a b : Fin n) (j : ℕ) (h : j ≤ b.val - a.val)
+    (hs : ¬ (C.sp (eAdd a j) = 1)) :
+    vFam C a b j = {(Sum.inr false : VEndpt n m)} := by
+  unfold vFam; rw [if_pos h, if_neg hs]
+
+theorem vFam_hi' (C : VZ n m) (a b : Fin n) (k : ℕ) (h2 : k ≤ b.val - a.val) :
+    vFam C a b (b.val - a.val + 1 + k) = vChain C (eSub b k) := by
+  unfold vFam
+  rw [if_neg (by omega : ¬ (b.val - a.val + 1 + k ≤ b.val - a.val)),
+    if_pos (by omega : b.val - a.val + 1 + k ≤ 2 * (b.val - a.val) + 1),
+    show b.val - a.val + 1 + k - (b.val - a.val) - 1 = k from by omega]
+
+theorem vFam_joined (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) (a b : Fin n) (j : ℕ) :
+    AllJoined (WalkGraph.graph (vzData C Zf hZ)) (vFam C a b j) := by
+  unfold vFam
+  split_ifs
+  · exact allJoined_singleton _ _
+  · exact allJoined_singleton _ _
+  · exact vChain_joined C Zf hZ _
+  · exact allJoined_empty _
+
+/-- **The run's strands are all joined.** -/
+theorem vz_run_joined (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) (r : ℕ) (a b : Fin n)
+    (ha : a ∈ runSet Zf r) (hb : b ∈ runSet Zf r)
+    (hmin : ∀ e : Fin n, e ∈ runSet Zf r → a.val ≤ e.val)
+    (hmax : ∀ e : Fin n, e ∈ runSet Zf r → e.val ≤ b.val) :
+    AllJoined (WalkGraph.graph (vzData C Zf hZ))
+      ((Finset.range (2 * (b.val - a.val) + 1 + 1)).biUnion (vFam C a b)) := by
+  have hab : a.val ≤ b.val := hmin b hb
+  have hbn := b.isLt
+  have hbase : ∀ x : VEndpt n m, vbot x = x ∨ vbot x = (vzData C Zf hZ).p x :=
+    fun x => by rw [vzData_p]; exact vbot_eq_or_partner x
+  refine allJoined_biUnion_gen (WalkGraph.graph (vzData C Zf hZ)) (vFam C a b)
+    (2 * (b.val - a.val) + 1) (fun j => vFam_joined C Zf hZ a b j) ?_ _ (le_refl _)
+  intro j hj
+  rcases Nat.lt_or_ge j (b.val - a.val) with hjd | hjd
+  · -- a step along the spine line, strictly inside the run
+    have hj1 : j ≤ b.val - a.val := le_of_lt hjd
+    have hj2 : j + 1 ≤ b.val - a.val := hjd
+    have hva : (eAdd a j).val = a.val + j := eAdd_val a j (by omega)
+    have hva1 : (eAdd a (j + 1)).val = a.val + (j + 1) := eAdd_val a (j + 1) (by omega)
+    have hmem : eAdd a j ∈ runSet Zf r := eAdd_mem_runSet Zf r ha hb j hj1 hab
+    have hmem1 : eAdd a (j + 1) ∈ runSet Zf r := eAdd_mem_runSet Zf r ha hb (j + 1) hj2 hab
+    have hpass : PassHi Zf (eAdd a j) :=
+      ⟨by omega, runSet_no_cut Zf r hmem hmem1 (by omega)⟩
+    have hlink := link_of_turn_gen (vzData C Zf hZ) vbot hbase
+    by_cases hse : C.sp (eAdd a j) = 1
+    · by_cases hsf : C.sp (eAdd a (j + 1)) = 1
+      · refine ⟨Sum.inl (spineB C (eAdd a j)), ?_,
+          Sum.inl (spineB C (eAdd a (j + 1))), ?_, ?_⟩
+        · rw [vFam_lo_spine C a b j hj1 hse]; exact Finset.mem_singleton_self _
+        · rw [vFam_lo_spine C a b (j + 1) hj2 hsf]; exact Finset.mem_singleton_self _
+        · have h := hlink (Sum.inl (spineT C (eAdd a j)))
+          rw [vbot_spineT, vzData_t,
+            vz_spine_pass C Zf _ _ hse hsf hpass (by omega)] at h
+          exact h
+      · refine ⟨Sum.inl (spineB C (eAdd a j)), ?_, Sum.inr false, ?_, ?_⟩
+        · rw [vFam_lo_spine C a b j hj1 hse]; exact Finset.mem_singleton_self _
+        · rw [vFam_lo_virt C a b (j + 1) hj2 hsf]; exact Finset.mem_singleton_self _
+        · have h := hlink (Sum.inl (spineT C (eAdd a j)))
+          rw [vbot_spineT, vzData_t,
+            vz_spine_virt C Zf _ (eAdd a (j + 1)) hse (by have := C.sp_le (eAdd a (j+1)); omega)
+              hpass (by omega)] at h
+          exact h
+    · by_cases hsf : C.sp (eAdd a (j + 1)) = 1
+      · -- the virtual strand rejoins the spine line at `hi`
+        have h0 := C.sp_zero_mem (show C.sp (eAdd a j) = 0 by have := C.sp_le (eAdd a j); omega)
+        have h1 := C.sp_one_not_mem hsf
+        have hfhi : (eAdd a (j + 1)).val = C.hi := by omega
+        have hn : C.hi ≠ n := by have := (eAdd a (j+1)).isLt; omega
+        refine ⟨Sum.inr false, ?_, Sum.inl (spineB C (eAdd a (j + 1))), ?_, ?_⟩
+        · rw [vFam_lo_virt C a b j hj1 hse]; exact Finset.mem_singleton_self _
+        · rw [vFam_lo_spine C a b (j + 1) hj2 hsf]; exact Finset.mem_singleton_self _
+        · have h := hlink (Sum.inr (!C.bl))
+          rw [vbot_inr, vzData_t, vz_virt_spine C Zf hn _ hfhi] at h
+          exact h
+      · refine ⟨Sum.inr false, ?_, Sum.inr false, ?_, SimpleGraph.Reachable.refl _⟩
+        · rw [vFam_lo_virt C a b j hj1 hse]; exact Finset.mem_singleton_self _
+        · rw [vFam_lo_virt C a b (j + 1) hj2 hsf]; exact Finset.mem_singleton_self _
+  · rcases Nat.eq_or_lt_of_le hjd with hje | hjd2
+    · -- the bounce at the top of the run
+      have hj1 : j ≤ b.val - a.val := by omega
+      have hvab : (eAdd a j).val = b.val := by rw [eAdd_val a j (by omega)]; omega
+      have heb : eAdd a j = b := Fin.ext hvab
+      have hnp : ¬ PassHi Zf b := runSet_max_no_passHi Zf r hb hmax
+      have hlink := link_of_turn_gen (vzData C Zf hZ) vbot hbase
+      have hqmem : vbot (Sum.inl (fC C b 0)) ∈ vFam C a b (j + 1) := by
+        rw [show j + 1 = b.val - a.val + 1 + 0 from by omega, vFam_hi' C a b 0 (by omega),
+          show eSub b 0 = b from Fin.ext (by simp only [eSub_val]; omega)]
+        exact fC_zero_mem C b
+      by_cases hse : C.sp b = 1
+      · refine ⟨Sum.inl (spineB C b), ?_, vbot (Sum.inl (fC C b 0)), hqmem, ?_⟩
+        · rw [vFam_lo_spine C a b j hj1 (by rw [heb]; exact hse), heb]
+          exact Finset.mem_singleton_self _
+        · have h := hlink (Sum.inl (spineT C b))
+          rw [vbot_spineT, vzData_t, vz_spine_bounce C Zf b hse hnp] at h
+          exact h
+      · have hl := edge_eq_last C Zf hZ (by have := C.sp_le b; omega) hnp
+        refine ⟨Sum.inr false, ?_, vbot (Sum.inl (fC C b 0)), hqmem, ?_⟩
+        · rw [vFam_lo_virt C a b j hj1 (by rw [heb]; exact hse)]
+          exact Finset.mem_singleton_self _
+        · have h := hlink (Sum.inr (!C.bl))
+          rw [vbot_inr, vzData_t, vz_virt_bounce C Zf hl.2 b (by omega)] at h
+          exact h
+    · -- a chain pass, going back down the run
+      obtain ⟨k, rfl⟩ : ∃ k, j = b.val - a.val + 1 + k := ⟨j - (b.val - a.val) - 1, by omega⟩
+      have hkd : k + 1 ≤ b.val - a.val := by omega
+      have hmemk : eSub b k ∈ runSet Zf r := eSub_mem_runSet Zf r ha hb k (by omega) hab
+      have hmemk1 : eSub b (k + 1) ∈ runSet Zf r := eSub_mem_runSet Zf r ha hb (k + 1) hkd hab
+      have hpass : PassLo Zf (eSub b k) := by
+        refine ⟨by simp only [eSub_val]; omega, ?_⟩
+        have hnc := runSet_no_cut Zf r hmemk1 hmemk (by simp only [eSub_val]; omega)
+        rwa [show (((eSub b (k + 1)).val : ℤ) + 1) = ((eSub b k).val : ℤ) from by
+          simp only [eSub_val]; omega] at hnc
+      have hlink := link_of_turn_gen (vzData C Zf hZ) vbot hbase
+      refine ⟨vbot (Sum.inl (chainB C (eSub b k))), ?_,
+        vbot (Sum.inl (fC C (eSub b (k + 1)) 0)), ?_, ?_⟩
+      · rw [vFam_hi' C a b k (by omega)]; exact chainB_mem C _
+      · rw [show b.val - a.val + 1 + k + 1 = b.val - a.val + 1 + (k + 1) from by omega,
+          vFam_hi' C a b (k + 1) hkd]
+        exact fC_zero_mem C _
+      · have h := hlink (Sum.inl (chainB C (eSub b k)))
+        rw [vzData_t, vz_chain_pass C Zf (eSub b k) (eSub b (k + 1)) hpass
+          (by simp only [eSub_val]; omega)] at h
+        exact h
+
+/-! ## The run's joined set covers the run -/
+
+theorem vz_cover (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) (r : ℕ) (a b : Fin n)
+    (hb : b ∈ runSet Zf r)
+    (hmin : ∀ e : Fin n, e ∈ runSet Zf r → a.val ≤ e.val)
+    (hmax : ∀ e : Fin n, e ∈ runSet Zf r → e.val ≤ b.val)
+    (v : VEndpt n m)
+    (hv : CutComponents.gz Zf (VEndpt.edgeOf ((C.lo : ℤ) - 1) v) = r) :
+    vbot v ∈ (Finset.range (2 * (b.val - a.val) + 1 + 1)).biUnion (vFam C a b) := by
+  have hab : a.val ≤ b.val := hmin b hb
+  rw [Finset.mem_biUnion]
+  cases v with
+  | inl x =>
+    have hxe : x.edge ∈ runSet Zf r := mem_runSet.mpr (by
+      have : VEndpt.edgeOf ((C.lo : ℤ) - 1) (Sum.inl x : VEndpt n m)
+          = ((x.edge.val : ℕ) : ℤ) := rfl
+      rw [this] at hv; exact hv)
+    have h1 := hmin _ hxe
+    have h2 := hmax _ hxe
+    have hbn := b.isLt
+    by_cases h0 : x.idx.val = 0 ∧ C.sp x.edge = 1
+    · refine ⟨x.edge.val - a.val, Finset.mem_range.mpr (by omega), ?_⟩
+      have hEq : eAdd a (x.edge.val - a.val) = x.edge :=
+        Fin.ext (by rw [eAdd_val a _ (by omega)]; omega)
+      rw [vFam_lo_spine C a b _ (by omega) (by rw [hEq]; exact h0.2), hEq,
+        Finset.mem_singleton, vbot_inl]
+      refine congrArg Sum.inl (endpt_ext rfl ?_ rfl)
+      simp only [botOf_idx_val, spineB_idx]
+      exact h0.1
+    · have hsp : C.sp x.edge ≤ x.idx.val := by have := C.sp_le x.edge; omega
+      refine ⟨b.val - a.val + 1 + (b.val - x.edge.val), Finset.mem_range.mpr (by omega), ?_⟩
+      rw [vFam_hi' C a b (b.val - x.edge.val) (by omega),
+        show eSub b (b.val - x.edge.val) = x.edge from Fin.ext (by
+          simp only [eSub_val]; omega)]
+      exact vbot_mem_vChain C x hsp
+  | inr bb =>
+    have hlo : CutComponents.gz Zf ((C.lo : ℤ)) = r := by
+      rw [CutComponents.gz_step_eq Zf (lo_not_cut C Zf hZ)]
+      exact hv
+    have hmemlo : eLoE C ∈ runSet Zf r := mem_runSet.mpr hlo
+    have h1 := hmin _ hmemlo
+    have h2 := hmax _ hmemlo
+    simp only [eLoE_val] at h1 h2
+    have hbn := b.isLt
+    refine ⟨C.lo - a.val, Finset.mem_range.mpr (by omega), ?_⟩
+    have hEq : eAdd a (C.lo - a.val) = eLoE C :=
+      Fin.ext (by rw [eAdd_val a _ (by omega)]; simp only [eLoE_val]; omega)
+    rw [vFam_lo_virt C a b _ (by omega) (by rw [hEq, sp_eLoE]; omega), vbot_inr,
+      Finset.mem_singleton]
+
+/-- **Every run is one joined set.**  The analogue of `EltBridge.RunStrandsConnected`
+on the extended type. -/
+theorem vz_runs_connected (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) (r : ℕ) :
+    ∃ S : Finset (VEndpt n m), AllJoined (WalkGraph.graph (vzData C Zf hZ)) S ∧
+      ∀ v : VEndpt n m,
+        CutComponents.gz Zf (VEndpt.edgeOf ((C.lo : ℤ) - 1) v) = r → vbot v ∈ S := by
+  by_cases hne : (runSet Zf r : Finset (Fin n)).Nonempty
+  · have ha : (runSet Zf r).min' hne ∈ runSet Zf r := Finset.min'_mem _ _
+    have hb : (runSet Zf r).max' hne ∈ runSet Zf r := Finset.max'_mem _ _
+    have hmin : ∀ e : Fin n, e ∈ runSet Zf r → ((runSet Zf r).min' hne).val ≤ e.val :=
+      fun e he => Fin.le_def.mp (Finset.min'_le _ _ he)
+    have hmax : ∀ e : Fin n, e ∈ runSet Zf r → e.val ≤ ((runSet Zf r).max' hne).val :=
+      fun e he => Fin.le_def.mp (Finset.le_max' _ _ he)
+    exact ⟨_, vz_run_joined C Zf hZ r _ _ ha hb hmin hmax,
+      fun v hv => vz_cover C Zf hZ r _ _ hb hmin hmax v hv⟩
+  · refine ⟨∅, allJoined_empty _, ?_⟩
+    intro v hv
+    exfalso
+    cases v with
+    | inl x =>
+      refine hne ⟨x.edge, mem_runSet.mpr ?_⟩
+      have : VEndpt.edgeOf ((C.lo : ℤ) - 1) (Sum.inl x : VEndpt n m)
+          = ((x.edge.val : ℕ) : ℤ) := rfl
+      rw [this] at hv; exact hv
+    | inr bb =>
+      refine hne ⟨eLoE C, mem_runSet.mpr ?_⟩
+      simp only [eLoE_val]
+      rw [CutComponents.gz_step_eq Zf (lo_not_cut C Zf hZ)]
+      exact hv
+
+/-! ## Assembly: the shield law at odd-span widths -/
+
+/-- **`hsep`: two points of the same run share a walk.** -/
+theorem vz_hsep (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) :
+    ∀ x y : VEndpt n m,
+      runIndexG (VEndpt.edgeOf ((C.lo : ℤ) - 1)) Zf x
+        = runIndexG (VEndpt.edgeOf ((C.lo : ℤ) - 1)) Zf y →
+      (WalkGraph.graph (vzData C Zf hZ)).Reachable x y := by
+  classical
+  choose S hS hmem using vz_runs_connected C Zf hZ
+  have hbase : ∀ x : VEndpt n m, vbot x = x ∨ vbot x = (vzData C Zf hZ).p x :=
+    fun x => by rw [vzData_p]; exact vbot_eq_or_partner x
+  have hidx : ∀ x : VEndpt n m,
+      CutComponents.gz Zf (VEndpt.edgeOf ((C.lo : ℤ) - 1) (vbot x))
+        = CutComponents.gz Zf (VEndpt.edgeOf ((C.lo : ℤ) - 1) x) := by
+    intro x; rw [vbot_edgeOf]
+  have hrun := hrun_of_allJoined_gen (WalkGraph.graph (vzData C Zf hZ)) vbot
+    (fun v => CutComponents.gz Zf (VEndpt.edgeOf ((C.lo : ℤ) - 1) v)) S hS
+    (fun v => hmem _ v rfl)
+  have hfin := hsep_of_base_connected (vzData C Zf hZ) vbot
+    (fun v => CutComponents.gz Zf (VEndpt.edgeOf ((C.lo : ℤ) - 1) v)) hbase hidx hrun
+  intro x y hxy
+  exact hfin x y (congrArg Fin.val hxy)
+
+/-- **`hvirt`: the virtual pair stays inside one run.** -/
+theorem vz_hvirt (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) : ∀ bb : Bool,
+    CutComponents.blk (VEndpt.edgeOf ((C.lo : ℤ) - 1)) Zf (Sum.inr bb : VEndpt n m)
+      = CutComponents.blk (VEndpt.edgeOf ((C.lo : ℤ) - 1)) Zf
+          ((vzData C Zf hZ).t (Sum.inr bb : VEndpt n m)) := by
+  have hlh := C.hlh
+  have hhn := C.hhn
+  have hnp := C.n_pos
+  have hwin : ∀ z ∈ Zf, ¬ ((C.lo : ℤ) - 1 < z ∧ z ≤ (C.hi : ℤ)) := by
+    rintro z hz ⟨h1, h2⟩
+    exact hZ z hz ⟨by omega, h2⟩
+  have hconst := gz_const_on Zf ((C.lo : ℤ) - 1) ((C.hi : ℤ)) hwin
+  intro bb
+  rw [vzData_t, vzTurn_inr]
+  by_cases hbb : bb = C.bl
+  · subst hbb
+    by_cases h0 : C.lo = 0
+    · obtain ⟨y, hy, hye, hyi, hyt⟩ := vzV_lo_zero (m := m) C h0
+      rw [hy]
+      show CutComponents.gz Zf ((C.lo : ℤ) - 1)
+        = CutComponents.gz Zf ((y.edge.val : ℕ) : ℤ)
+      exact hconst _ _ (by omega) (by omega) (by omega) (by omega)
+    · obtain ⟨y, hy, hye, hyi, hyt⟩ := vzV_lo_pos (m := m) C h0
+      rw [hy]
+      show CutComponents.gz Zf ((C.lo : ℤ) - 1)
+        = CutComponents.gz Zf ((y.edge.val : ℕ) : ℤ)
+      exact hconst _ _ (by omega) (by omega) (by omega) (by omega)
+  · have hb2 : bb = !C.bl := by cases bb <;> cases hbl : C.bl <;> simp_all
+    subst hb2
+    by_cases hn : C.hi = n
+    · obtain ⟨y, hy, hye, hyi, hyt⟩ := vzV_hi_top (m := m) C hn
+      rw [hy]
+      show CutComponents.gz Zf ((C.lo : ℤ) - 1)
+        = CutComponents.gz Zf ((y.edge.val : ℕ) : ℤ)
+      exact hconst _ _ (by omega) (by omega) (by omega) (by omega)
+    · obtain ⟨y, hy, hye, hyi, hyt⟩ := vzV_hi_mid (m := m) C hn
+      rw [hy]
+      show CutComponents.gz Zf ((C.lo : ℤ) - 1)
+        = CutComponents.gz Zf ((y.edge.val : ℕ) : ℤ)
+      exact hconst _ _ (by omega) (by omega) (by omega) (by omega)
+
+/-- **`hruns`: every run carries a point.** -/
+theorem vz_hruns (C : VZ n m) (Zf : Finset ℤ) (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, EndType.edgeOf x = t) :
+    ∀ i : ℕ, i ≤ Zf.card →
+      ∃ v : VEndpt n m, CutComponents.blk (VEndpt.edgeOf ((C.lo : ℤ) - 1)) Zf v = i := by
+  intro i hi
+  obtain ⟨t, ht1, ht2, ht3⟩ := CutComponents.exists_pos_with_gz Zf A B hAB hlow hhigh i hi
+  obtain ⟨x, hx⟩ := hoc t ht1 ht2
+  refine ⟨Sum.inl x, ?_⟩
+  show CutComponents.gz Zf (EndType.edgeOf x) = i
+  rw [hx]; exact ht3
+
+/-- **THE SHIELD LAW AT ODD-SPAN WIDTHS.**  `walkCount = |Zf| + 1`, that is `c = |Z|`,
+on the extended end type `VEndpt`, for widths that are ODD exactly on the travel span
+`[lo, hi)` and even off it -- the parity a real configuration forces
+(`TravelParity.mu_odd_iff_mem`).  Compare `EltBridge.zz_shield_law`, which needs every
+width even, and `EltBridge.shield_law`, which needs them all equal. -/
+theorem vz_shield_law (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, EndType.edgeOf x = t) :
+    WalkGraph.walkCount (vzData C Zf hZ) = Zf.card + 1 :=
+  VEndpt.shield (vs0 C) (vs1 C) ((C.lo : ℤ) - 1) Zf (vzData C Zf hZ) rfl
+    (fun e => vz_site C Zf hZ e)
+    (fun u v huv hne => vz_hturn C Zf hZ u v huv hne)
+    (vz_hvirt C Zf hZ)
+    (vz_hruns C Zf A B hAB hlow hhigh hoc)
+    (vz_hsep C Zf hZ)
+    (Sum.inr false)
+
+/-- The existential form. -/
+theorem vz_shield_law_exists (C : VZ n m) (Zf : Finset ℤ) (hZ : NoCut C Zf) (A B : ℤ)
+    (hAB : A ≤ B) (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, EndType.edgeOf x = t) :
+    ∃ E : WalkGraph.Data (VEndpt n m), WalkGraph.walkCount E = Zf.card + 1 :=
+  ⟨vzData C Zf hZ, vz_shield_law C Zf hZ A B hAB hlow hhigh hoc⟩
+
+/-! ## Non-vacuity
+
+Four edges of widths `2, 3, 4, 2`: odd exactly on the span `[1, 2)`, even off it, and
+not constant there either.  One cut site, at `3`.  Neither `EltBridge.shield_law` (equal
+widths) nor `EltBridge.zz_shield_law` (all widths even) can even state this. -/
+
+/-- Widths `2, 3, 4, 2`. -/
+def w3 : Fin 4 → ℕ := fun e => if e.val = 1 then 3 else if e.val = 2 then 4 else 2
+
+/-- The span is the single edge `1`. -/
+def C3 : VZ 4 w3 where
+  lo := 1
+  hi := 2
+  bl := false
+  hlh := by norm_num
+  hhn := by norm_num
+  hodd := by
+    intro e h1 h2
+    have he : e.val = 1 := by omega
+    simp [w3, he]
+  heven := by
+    intro e h
+    have hlt := e.isLt
+    have he : e.val ≠ 1 := by omega
+    simp only [w3, if_neg he]
+    split_ifs <;> norm_num
+
+theorem C3_noCut : NoCut C3 ({(3 : ℤ)} : Finset ℤ) := by
+  intro z hz
+  rw [Finset.mem_singleton] at hz
+  subst hz
+  rintro ⟨h1, h2⟩
+  norm_num [C3] at h2
+
+/-- **The whole chain, on a configuration neither earlier shield law can state.** -/
+theorem vz_witness_shield :
+    WalkGraph.walkCount (vzData C3 ({(3 : ℤ)} : Finset ℤ) C3_noCut) = 2 := by
+  have h := vz_shield_law C3 ({(3 : ℤ)} : Finset ℤ) C3_noCut 0 3 (by norm_num)
+    (by intro z hz; rw [Finset.mem_singleton] at hz; omega)
+    (by intro z hz; rw [Finset.mem_singleton] at hz; omega)
+    (by
+      intro t h0 h1
+      have ht : t = 0 ∨ t = 1 ∨ t = 2 ∨ t = 3 := by omega
+      rcases ht with rfl | rfl | rfl | rfl
+      · exact ⟨⟨⟨0, by norm_num⟩, ⟨0, by norm_num [w3]⟩, true⟩, by
+          simp [EndType.edgeOf]⟩
+      · exact ⟨⟨⟨1, by norm_num⟩, ⟨0, by norm_num [w3]⟩, true⟩, by
+          simp [EndType.edgeOf]⟩
+      · exact ⟨⟨⟨2, by norm_num⟩, ⟨0, by norm_num [w3]⟩, true⟩, by
+          simp [EndType.edgeOf]⟩
+      · exact ⟨⟨⟨3, by norm_num⟩, ⟨0, by norm_num [w3]⟩, true⟩, by
+          simp [EndType.edgeOf]⟩)
+  simpa using h
+
 end VZigzag
 
 -- Certification (Rule 5).
@@ -980,3 +1644,26 @@ end VZigzag
 #print axioms VZigzag.vz_ne
 #print axioms VZigzag.vz_hturn
 #print axioms VZigzag.vzData
+#print axioms VZigzag.link_of_turn_gen
+#print axioms VZigzag.allJoined_step_gen
+#print axioms VZigzag.allJoined_biUnion_gen
+#print axioms VZigzag.hrun_of_allJoined_gen
+#print axioms VZigzag.vbot_eq_or_partner
+#print axioms VZigzag.vzC_step
+#print axioms VZigzag.vChain_joined
+#print axioms VZigzag.vz_spine_pass
+#print axioms VZigzag.vz_spine_virt
+#print axioms VZigzag.vz_virt_spine
+#print axioms VZigzag.vz_spine_bounce
+#print axioms VZigzag.vz_virt_bounce
+#print axioms VZigzag.vz_chain_pass
+#print axioms VZigzag.vz_run_joined
+#print axioms VZigzag.vz_cover
+#print axioms VZigzag.vz_runs_connected
+#print axioms VZigzag.vz_hsep
+#print axioms VZigzag.vz_hvirt
+#print axioms VZigzag.vz_hruns
+#print axioms VZigzag.vz_shield_law
+#print axioms VZigzag.vz_shield_law_exists
+#print axioms VZigzag.C3_noCut
+#print axioms VZigzag.vz_witness_shield
