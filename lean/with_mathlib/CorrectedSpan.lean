@@ -241,6 +241,57 @@ theorem wordLength_gBad_le_corrected :
   rw [gBad_corrected_total]
   exact EltBridge.Elt.wordLength_le EltBridge.Elt.reaches_gBad
 
+
+/-! ### `s1` and `s2` leave the corrected span, and the whole `mu` sum, alone
+
+`occTrue` is built from `supp`, `d` and `kstar`, and `s1`/`s2` touch none of them
+(`s1_supp`, `s1_d`, `s1_kstar`, and their `s2` counterparts are all `rfl`).  So the span
+is literally unchanged, and since `mu` also depends only on `d` and `kstar`, the entire
+edge sum of `lRTrue` is unchanged: for these two generators all of the movement in
+`lRTrue` sits in the site sum, and by `siteCost_eq_of_ne_kstar` only at `kstar`. -/
+
+@[simp] theorem occTrue_s1 (g : EltBridge.Elt) :
+    occTrue (EltBridge.Elt.s1 g) = occTrue g := rfl
+
+@[simp] theorem occTrue_s2 (g : EltBridge.Elt) :
+    occTrue (EltBridge.Elt.s2 g) = occTrue g := rfl
+
+@[simp] theorem ATrue_s1 (g : EltBridge.Elt) : ATrue (EltBridge.Elt.s1 g) = ATrue g := rfl
+
+@[simp] theorem ATrue_s2 (g : EltBridge.Elt) : ATrue (EltBridge.Elt.s2 g) = ATrue g := rfl
+
+@[simp] theorem BTrue_s1 (g : EltBridge.Elt) : BTrue (EltBridge.Elt.s1 g) = BTrue g := rfl
+
+@[simp] theorem BTrue_s2 (g : EltBridge.Elt) : BTrue (EltBridge.Elt.s2 g) = BTrue g := rfl
+
+/-- **The `mu` sum is invariant under `s1`.** -/
+theorem muSum_s1 (g : EltBridge.Elt) :
+    (∑ j ∈ Finset.Icc (ATrue (EltBridge.Elt.s1 g)) (BTrue (EltBridge.Elt.s1 g)),
+        (EltBridge.Elt.s1 g).toPathData.mu j)
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j := by
+  rw [ATrue_s1, BTrue_s1]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  unfold SiteCost.PathData.mu
+  simp [EltBridge.Elt.toPathData]
+
+/-- **The `mu` sum is invariant under `s2`.** -/
+theorem muSum_s2 (g : EltBridge.Elt) :
+    (∑ j ∈ Finset.Icc (ATrue (EltBridge.Elt.s2 g)) (BTrue (EltBridge.Elt.s2 g)),
+        (EltBridge.Elt.s2 g).toPathData.mu j)
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j := by
+  rw [ATrue_s2, BTrue_s2]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  unfold SiteCost.PathData.mu
+  simp [EltBridge.Elt.toPathData]
+
+/-- **`s3` is the only generator that can move the corrected span**, since it is the only
+one that moves `kstar` or `supp`.  Stated as the contrapositive of the four `rfl` facts
+above, to record where the difficulty in the Lipschitz problem actually sits. -/
+theorem span_moves_only_under_s3 (g : EltBridge.Elt) :
+    (ATrue (EltBridge.Elt.s1 g) = ATrue g ∧ BTrue (EltBridge.Elt.s1 g) = BTrue g)
+      ∧ (ATrue (EltBridge.Elt.s2 g) = ATrue g ∧ BTrue (EltBridge.Elt.s2 g) = BTrue g) :=
+  ⟨⟨rfl, rfl⟩, ⟨rfl, rfl⟩⟩
+
 end CorrectedSpan
 
 #print axioms CorrectedSpan.occTrue_one
@@ -265,3 +316,10 @@ end CorrectedSpan
 #print axioms CorrectedSpan.cTrue_gBad
 #print axioms CorrectedSpan.gBad_corrected_total
 #print axioms CorrectedSpan.wordLength_gBad_le_corrected
+#print axioms CorrectedSpan.occTrue_s1
+#print axioms CorrectedSpan.occTrue_s2
+#print axioms CorrectedSpan.ATrue_s1
+#print axioms CorrectedSpan.BTrue_s1
+#print axioms CorrectedSpan.muSum_s1
+#print axioms CorrectedSpan.muSum_s2
+#print axioms CorrectedSpan.span_moves_only_under_s3
