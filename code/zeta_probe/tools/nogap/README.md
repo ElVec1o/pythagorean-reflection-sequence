@@ -12270,3 +12270,109 @@ boundary-shield site to `pdCutSites`. Doing that is a refactor with real blast r
 and should be a deliberate decision, not a side effect. Until it happens, `Elt.lR` and
 `Elt.c` are NOT models of the paper's `l_R` and `|Z|`, and no theorem about them
 transfers to the metric identity.
+
+## BLOCK 345 (2026-09-07) -- H1c: the vacuous contract REPLACED by a named one, and the
+## named one PROVED for the bulk.  De-truncating alone does NOT repair `IsAssembly`.
+
+New file `lean/with_mathlib/AssemblyContract.lean` (38 theorems, 0 sorry, `lake build`
+clean, every `#print axioms` `[propext, Classical.choice, Quot.sound]`, no
+`native_decide`).  Added to `lakefile.toml` defaultTargets and as a `[[lean_lib]]`.
+`EltBridge.lean` and `VZigzag.lean` were NOT touched (other sessions were editing them).
+
+### 1. Sharper diagnosis than BLOCK 340's
+
+BLOCK 340 proved `EltBridge.IsAssembly`'s existential vacuous and blamed the
+`k in range (N + 1)` truncation.  The truncation is how the *witness* works, but it is not
+the defect.  `isAssemblyAll_of_any` proves the **untruncated** contract
+
+    IsAssemblyAll W W0 T lam mu := forall N M, N <= M ->
+      coeff N W = coeff N (W0 + sum_md sum_{k <= M} <lam md, T^k mu md>)
+
+-- the identity demanded at every cutoff, i.e. a genuine power-series identity -- is
+satisfied for **arbitrary** `W`, `W0` by BLOCK 340's own witness (`n = 1`, `T = X^2`,
+`mu = 1`, `lam = (W - W0)(1 - X^2)`), because `2(M+1) > N` for every `M >= N`.  So
+dropping the truncation restores nothing.  **The defect is the existential quantifier
+over `T`, `lam`, `mu`, and nothing else.**
+
+Conversely, naming them repairs it completely: `isAssembly_iff_eq_assemblyValue` shows
+that for named `T, lam, mu` the contract holds for **exactly one** `W`
+(`assemblyValue`), so `exists_not_isAssembly` / `not_forall_isAssembly` exhibit series
+that fail it.  `assembly_trunc_stable` adds that once `T` is named with entries divisible
+by `X`, raising the cutoff changes no coefficient (via `X_pow_dvd_pow_apply`), so the
+named contract *is* the power-series statement and the cutoff is bookkeeping.
+
+That much is formal.  Naming an *arbitrary* `T` pins `W` down for the trivial reason that
+any predicate "coeff N W = f N" does.  The mathematical content is that the named `T` is
+the site kernel's own transfer, which is 2 and 3.
+
+### 2. The named transfer: ordered products and variation of parameters
+
+`maxProd q j a` = `maxM q a * maxM q (a-1) * ... * maxM q (j+1)` (`1` when `a <= j`), with
+`maxM` BLOCK 340's transfer.  `vop` is the discrete variation-of-parameters formula:
+
+    v (a+1) = maxM q (a+1) *v v a + s (a+1)   for a+1 <= A
+    ==>  v a = maxProd q 0 a *v v 0 + sum_{j < a} maxProd q (j+1) a *v s (j+1)   (a <= A)
+
+over any `CommRing`.  This is the step BLOCK 340 listed as not formalized (its section 8,
+item (ii)); it is what `maxM_det = 1` buys.
+
+### 3. The contract, and the object
+
+    maxAlpha q M = ( maxProd q 0 M *v [1,1]
+                     + sum_{j<M} maxProd q (j+1) M *v [2, 2q^{j+1}] )_1
+    maxBeta  q M = ( maxProd q 0 M *v [q^2,q^2]
+                     + sum_{j<M} maxProd q (j+1) M *v [2q^{j+1}, 2q^{2(j+1)}] )_1
+
+    IsMaxAssembly q M W  :=  W = maxAlpha q M + maxBeta q M * W
+
+Both coefficients are explicitly constructed from the site kernel's transfer; nothing is
+existentially quantified.  Proved:
+
+* `maxbulk_closure` (any `CommRing`): if `u` solves the truncated `max`-kernel resolvent
+  equations at cutoff `M` -- `u 0 = 1 + q^2 S'(M)` and
+  `u a = 1 + q^a sum_{b<=M} m b q^{max a b} u b` for `1 <= a <= M` -- then its bulk
+  generating constant `S'(M) = sum_{b<=M} m b q^b u b` satisfies `IsMaxAssembly q M`.
+  Route: `max_kernel_split` + `maxchain_transfer` (BLOCK 340) give the chain step
+  (`maxbulk_step`); `vop` solves the chain; the initial vector and every source split as
+  `A + S'(M) . B`, and reading component 1 gives the scalar closure.
+
+* **NON-VACUITY (the mandatory item).**  Over `PowerSeries Z` at `q = X`:
+  `X_dvd_maxBeta` (`X | beta`), hence `1 - beta` is a unit, hence
+  `isMaxAssembly_exists` + `isMaxAssembly_unique` + `isMaxAssembly_existsUnique`:
+  **the contract has exactly one solution.**  `exists_not_isMaxAssembly` and
+  `not_forall_isMaxAssembly` are then immediate -- the analogue of `isAssembly_of_any`
+  FAILS for this contract.  So it is vacuous in neither direction: satisfiable, and it
+  determines its subject.
+
+* **THE MODEL EXISTS, unconditionally.**  `bulkSol M` is constructed for every cutoff:
+  the equations are the finite system `(1 - K) u = 1` with
+  `K a b = X^{mu a} (m b X^{max a b})`, `mu 0 = 2`, `mu a = a`, so every entry of `K` has
+  positive order, `constantCoeff (det (1 - K)) = 1`, `det` is a unit and `1 - K` is
+  invertible (`constantCoeff_det_one_sub`, `isUnit_det_one_sub`, `bulkVec_res`,
+  `bulkSol_res0`, `bulkSol_resa`).  Hence `bulk_isMaxAssembly` and
+  **`bulk_eq_of_isMaxAssembly`: the truncated bulk model's generating constant IS the
+  unique solution of the named contract.**
+
+### 4. Rust cross-check -- `src/bin/assemblycontract.rs`, exact i128
+
+`cargo run --release --bin assemblycontract`.  All checks pass on the first run:
+
+| check | what | result |
+|---|---|---|
+| AGREE | `alpha/(1-beta)` from the ordered products vs. a raw double-sum solution of the truncated bulk system, and the contract equation itself on the brute value | OK at every cutoff `M = 0..14`, degree 40 |
+| LIMIT | `S'(M)` at `M >= D` vs. BLOCK 340's tabulated `T` | `1, 2, 3, 10, 9, 30, 37, 82, 133, 236, 457, 702, 1455, 2248, 4469, 7308` -- exact match, both routes |
+| UNIT | constant term of `1 - beta(X,M)` | `1` at `M = 0,1,3,7,12` |
+
+### 5. What is NOT established
+
+* Nothing about `EltBridge.W`.  Identifying `W` with the site kernel's resolvent is still
+  BLOCK 321's per-fibre problem, untouched.  `IsMaxAssembly` is the BULK contract: no
+  marker fibres, no `Fin 4` head/tail data.
+* No `M -> infinity` limit.  The cutoff `M` is a parameter throughout.  The limit is
+  legitimate (`maxM q a -> 1` coefficientwise) but is not formalized.
+* BLOCK 340's `q`-series closed forms `A_inf`, `B_inf` are still not formalized:
+  `maxProd` is defined by its recursion, and the `k`-fold telescoping expansion over
+  strictly decreasing chains (`maxN_mul` iterated) remains numerically validated only.
+  `vop` needs none of it.
+* The old `EltBridge.IsAssembly` is left in place and is still vacuous; this file supplies
+  the replacement rather than editing `EltBridge.lean` (concurrent sessions).
