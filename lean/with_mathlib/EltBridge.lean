@@ -19803,3 +19803,504 @@ end EltBridge
 #print axioms EltBridge.Elt.dataOf_hpuv
 #print axioms EltBridge.Elt.dataOf_exists_x0x1
 #print axioms EltBridge.Elt.dataOf_walkCount_eq
+
+
+/-! ## BLOCK 339: the zigzag turn -- Eulerian existence at arbitrary even widths
+
+`shield_law` above closes `walkCount = |Z| + 1` only for CONSTANT even width, because
+`turnGen`'s pass carries a LEVEL across a site by a permutation of `Fin u`, and that
+forces every edge to have the same `u`.  The construction below carries no level: it
+passes exactly TWO ends per site, so the widths never have to agree.
+
+Strand `0` of each edge is the SPINE; strands `1 … N-1` form the ZIGZAG CHAIN, wired
+`N-1 —bot— N-2 —top— N-3 — … — 1`.  A spine's bottom passes to the previous spine; the
+chain's loose bottom (strand `1`) passes to the previous chain's loose top (strand
+`N-1`).  At a cut site, and at the two ends of the edge chain, both bounce instead:
+`bot 0 ↔ bot 1` and `top 0 ↔ top (N-1)`.  So each run closes into ONE cycle
+
+    A_a — … — A_b — (bounce at b+1) — B_b — … — B_a — (bounce at a) — A_a
+
+and the evenness of `m e` is used in exactly one place: the two internal pairings must
+exhaust `{2,…,N-1}` at the bottom and `{1,…,N-2}` at the top, which holds iff `N-2` is
+even.
+-/
+namespace EltBridge
+
+open EndType
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ## Step 0: extensionality at the value level -/
+
+theorem endpt_ext {x y : Endpt n m} (he : x.edge.val = y.edge.val)
+    (hi : x.idx.val = y.idx.val) (ht : x.top = y.top) : x = y := by
+  obtain ⟨e1, i1, b1⟩ := x
+  obtain ⟨e2, i2, b2⟩ := y
+  have he' : e1 = e2 := Fin.ext he
+  have ht' : b1 = b2 := ht
+  subst he'
+  subst ht'
+  have hii : i1 = i2 := Fin.ext hi
+  subst hii
+  rfl
+
+/-- The previous edge, as a total function on `Fin n`. -/
+def edgePred (e : Fin n) : Fin n :=
+  ⟨e.val - 1, Nat.lt_of_le_of_lt (Nat.sub_le _ _) e.isLt⟩
+
+@[simp] theorem edgePred_val (e : Fin n) : (edgePred e).val = e.val - 1 := rfl
+
+/-- The site below edge `e` is a pass site. -/
+def PassLo (Zf : Finset ℤ) (e : Fin n) : Prop := 1 ≤ e.val ∧ ((e : ℕ) : ℤ) ∉ Zf
+
+/-- The site above edge `e` is a pass site. -/
+def PassHi (Zf : Finset ℤ) (e : Fin n) : Prop := e.val + 1 < n ∧ (((e : ℕ) : ℤ) + 1) ∉ Zf
+
+instance instDecPassLo (Zf : Finset ℤ) (e : Fin n) : Decidable (PassLo Zf e) :=
+  inferInstanceAs (Decidable (1 ≤ e.val ∧ ((e : ℕ) : ℤ) ∉ Zf))
+
+instance instDecPassHi (Zf : Finset ℤ) (e : Fin n) : Decidable (PassHi Zf e) :=
+  inferInstanceAs (Decidable (e.val + 1 < n ∧ (((e : ℕ) : ℤ) + 1) ∉ Zf))
+
+/-- Every edge carries at least two strands, an even number of them. -/
+def EvenWidths (m : Fin n → ℕ) : Prop := ∀ e : Fin n, 2 ≤ m e ∧ m e % 2 = 0
+
+/-! ## The zigzag turn -/
+
+/-- **The zigzag turn.**  Strand `0` of each edge is the spine; strands `1 .. N-1`
+form a zigzag chain.  At a pass site the spine passes to the previous spine and the
+chain's loose bottom passes to the previous chain's loose top; at a cut site (or the
+two ends of the chain of edges) both bounce. -/
+def zzTurn (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m) : Endpt n m :=
+  if _hb : x.top = false then
+    if _hi : 2 ≤ x.idx.val then
+      ⟨x.edge, ⟨if x.idx.val % 2 = 0 then x.idx.val + 1 else x.idx.val - 1, by
+        obtain ⟨h1, h2⟩ := hm x.edge
+        have h3 := x.idx.isLt
+        split <;> omega⟩, false⟩
+    else if _hp : PassLo Zf x.edge then
+      ⟨edgePred x.edge,
+        ⟨if x.idx.val = 0 then 0 else m (edgePred x.edge) - 1, by
+          obtain ⟨h1, _⟩ := hm (edgePred x.edge)
+          split <;> omega⟩, true⟩
+    else
+      ⟨x.edge, ⟨if x.idx.val = 0 then 1 else 0, by
+        obtain ⟨h1, _⟩ := hm x.edge
+        split <;> omega⟩, false⟩
+  else
+    if hi : 1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge then
+      ⟨x.edge, ⟨if x.idx.val % 2 = 1 then x.idx.val + 1 else x.idx.val - 1, by
+        have h3 := x.idx.isLt
+        obtain ⟨ha, hbb⟩ := hi
+        split <;> omega⟩, true⟩
+    else if hp : PassHi Zf x.edge then
+      ⟨⟨x.edge.val + 1, hp.1⟩,
+        ⟨if x.idx.val = 0 then 0 else 1, by
+          obtain ⟨h1, _⟩ := hm ⟨x.edge.val + 1, hp.1⟩
+          split <;> omega⟩, false⟩
+    else
+      ⟨x.edge, ⟨if x.idx.val = 0 then m x.edge - 1 else 0, by
+        obtain ⟨h1, _⟩ := hm x.edge
+        split <;> omega⟩, true⟩
+
+/-! ### The six branch computations, stated on the three fields -/
+
+theorem zz_bot_pair (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m)
+    (hb : x.top = false) (hi : 2 ≤ x.idx.val) :
+    (zzTurn Zf hm x).edge = x.edge ∧
+      (zzTurn Zf hm x).idx.val
+        = (if x.idx.val % 2 = 0 then x.idx.val + 1 else x.idx.val - 1) ∧
+      (zzTurn Zf hm x).top = false := by
+  unfold zzTurn
+  rw [dif_pos hb, dif_pos hi]
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem zz_bot_pass (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m)
+    (hb : x.top = false) (hi : ¬ (2 ≤ x.idx.val)) (hp : PassLo Zf x.edge) :
+    (zzTurn Zf hm x).edge = edgePred x.edge ∧
+      (zzTurn Zf hm x).idx.val
+        = (if x.idx.val = 0 then 0 else m (edgePred x.edge) - 1) ∧
+      (zzTurn Zf hm x).top = true := by
+  unfold zzTurn
+  rw [dif_pos hb, dif_neg hi, dif_pos hp]
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem zz_bot_bounce (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m)
+    (hb : x.top = false) (hi : ¬ (2 ≤ x.idx.val)) (hp : ¬ PassLo Zf x.edge) :
+    (zzTurn Zf hm x).edge = x.edge ∧
+      (zzTurn Zf hm x).idx.val = (if x.idx.val = 0 then 1 else 0) ∧
+      (zzTurn Zf hm x).top = false := by
+  unfold zzTurn
+  rw [dif_pos hb, dif_neg hi, dif_neg hp]
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem zz_top_pair (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m)
+    (hb : x.top = true) (hi : 1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge) :
+    (zzTurn Zf hm x).edge = x.edge ∧
+      (zzTurn Zf hm x).idx.val
+        = (if x.idx.val % 2 = 1 then x.idx.val + 1 else x.idx.val - 1) ∧
+      (zzTurn Zf hm x).top = true := by
+  unfold zzTurn
+  rw [dif_neg (by simp [hb]), dif_pos hi]
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem zz_top_pass (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m)
+    (hb : x.top = true) (hi : ¬ (1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge))
+    (hp : PassHi Zf x.edge) :
+    (zzTurn Zf hm x).edge.val = x.edge.val + 1 ∧
+      (zzTurn Zf hm x).idx.val = (if x.idx.val = 0 then 0 else 1) ∧
+      (zzTurn Zf hm x).top = false := by
+  unfold zzTurn
+  rw [dif_neg (by simp [hb]), dif_neg hi, dif_pos hp]
+  exact ⟨rfl, rfl, rfl⟩
+
+theorem zz_top_bounce (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m)
+    (hb : x.top = true) (hi : ¬ (1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge))
+    (hp : ¬ PassHi Zf x.edge) :
+    (zzTurn Zf hm x).edge = x.edge ∧
+      (zzTurn Zf hm x).idx.val = (if x.idx.val = 0 then m x.edge - 1 else 0) ∧
+      (zzTurn Zf hm x).top = true := by
+  unfold zzTurn
+  rw [dif_neg (by simp [hb]), dif_neg hi, dif_neg hp]
+  exact ⟨rfl, rfl, rfl⟩
+
+/-! ## Step 1: the zigzag turn is an involution -/
+
+theorem zz_invol (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m) :
+    zzTurn Zf hm (zzTurn Zf hm x) = x := by
+  have hlt := x.idx.isLt
+  obtain ⟨hN2, hNe⟩ := hm x.edge
+  by_cases hb : x.top = false
+  · by_cases hi : 2 ≤ x.idx.val
+    · -- bottom, internal pairing
+      obtain ⟨e1, i1, t1⟩ := zz_bot_pair Zf hm x hb hi
+      have hi2 : 2 ≤ (zzTurn Zf hm x).idx.val := by rw [i1]; split <;> omega
+      obtain ⟨e2, i2, t2⟩ := zz_bot_pair Zf hm _ t1 hi2
+      refine endpt_ext ?_ ?_ ?_
+      · rw [e2, e1]
+      · rw [i2, i1]
+        by_cases h : x.idx.val % 2 = 0
+        · rw [if_pos h, if_neg (show ¬ ((x.idx.val + 1) % 2 = 0) by omega)]; omega
+        · rw [if_neg h, if_pos (show (x.idx.val - 1) % 2 = 0 by omega)]; omega
+      · rw [t2, hb]
+    · by_cases hp : PassLo Zf x.edge
+      · -- bottom, pass down
+        obtain ⟨hpa, hpb⟩ := hp
+        have hp : PassLo Zf x.edge := ⟨hpa, hpb⟩
+        obtain ⟨e1, i1, t1⟩ := zz_bot_pass Zf hm x hb hi hp
+        obtain ⟨hA2, hAe⟩ := hm (edgePred x.edge)
+        have hne : ¬ (1 ≤ (zzTurn Zf hm x).idx.val ∧
+            (zzTurn Zf hm x).idx.val + 2 ≤ m (zzTurn Zf hm x).edge) := by
+          rw [i1, e1]
+          by_cases h0 : x.idx.val = 0
+          · rw [if_pos h0]; rintro ⟨ha, hbb⟩; omega
+          · rw [if_neg h0]; rintro ⟨ha, hbb⟩; omega
+        have hp2 : PassHi Zf (zzTurn Zf hm x).edge := by
+          refine ⟨?_, ?_⟩
+          · have hh := x.edge.isLt
+            have : ((zzTurn Zf hm x).edge : ℕ) = x.edge.val - 1 := by rw [e1, edgePred_val]
+            rw [this]; omega
+          · have hcast : (((x.edge.val - 1 : ℕ)) : ℤ) + 1 = ((x.edge : ℕ) : ℤ) := by
+              have : (1 : ℕ) ≤ x.edge.val := hpa
+              omega
+            have hv : ((zzTurn Zf hm x).edge : ℕ) = x.edge.val - 1 := by rw [e1, edgePred_val]
+            rw [hv, hcast]
+            exact hpb
+        obtain ⟨e2, i2, t2⟩ := zz_top_pass Zf hm _ t1 hne hp2
+        refine endpt_ext ?_ ?_ ?_
+        · rw [e2]
+          have hv : ((zzTurn Zf hm x).edge : ℕ) = x.edge.val - 1 := by rw [e1, edgePred_val]
+          rw [hv]; omega
+        · rw [i2, i1]
+          by_cases h0 : x.idx.val = 0
+          · rw [if_pos h0, if_pos rfl]; omega
+          · rw [if_neg h0, if_neg (show ¬ (m (edgePred x.edge) - 1 = 0) by omega)]; omega
+        · rw [t2, hb]
+      · -- bottom, bounce
+        obtain ⟨e1, i1, t1⟩ := zz_bot_bounce Zf hm x hb hi hp
+        have hi2 : ¬ (2 ≤ (zzTurn Zf hm x).idx.val) := by rw [i1]; split <;> omega
+        have hp2 : ¬ PassLo Zf (zzTurn Zf hm x).edge := by rw [e1]; exact hp
+        obtain ⟨e2, i2, t2⟩ := zz_bot_bounce Zf hm _ t1 hi2 hp2
+        refine endpt_ext ?_ ?_ ?_
+        · rw [e2, e1]
+        · rw [i2, i1]
+          have h1 : x.idx.val = 0 ∨ x.idx.val = 1 := by omega
+          rcases h1 with h1 | h1 <;> rw [h1] <;> norm_num
+        · rw [t2, hb]
+  · have hbt : x.top = true := by
+      cases hxt : x.top
+      · exact absurd hxt hb
+      · rfl
+    by_cases hi : 1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge
+    · -- top, internal pairing
+      obtain ⟨e1, i1, t1⟩ := zz_top_pair Zf hm x hbt hi
+      obtain ⟨hia, hib⟩ := hi
+      have hi2 : 1 ≤ (zzTurn Zf hm x).idx.val ∧
+          (zzTurn Zf hm x).idx.val + 2 ≤ m (zzTurn Zf hm x).edge := by
+        rw [i1, e1]
+        refine ⟨?_, ?_⟩ <;> (split <;> omega)
+      obtain ⟨e2, i2, t2⟩ := zz_top_pair Zf hm _ t1 hi2
+      refine endpt_ext ?_ ?_ ?_
+      · rw [e2, e1]
+      · rw [i2, i1]
+        by_cases h : x.idx.val % 2 = 1
+        · rw [if_pos h, if_neg (show ¬ ((x.idx.val + 1) % 2 = 1) by omega)]; omega
+        · rw [if_neg h, if_pos (show (x.idx.val - 1) % 2 = 1 by omega)]; omega
+      · rw [t2, hbt]
+    · have hi' : x.idx.val = 0 ∨ x.idx.val + 1 = m x.edge := by
+        by_cases h0 : x.idx.val = 0
+        · exact Or.inl h0
+        · right
+          have hcon : ¬ (x.idx.val + 2 ≤ m x.edge) := fun hc => hi ⟨by omega, hc⟩
+          omega
+      by_cases hp : PassHi Zf x.edge
+      · -- top, pass up
+        obtain ⟨hpa, hpb⟩ := hp
+        have hp : PassHi Zf x.edge := ⟨hpa, hpb⟩
+        obtain ⟨e1, i1, t1⟩ := zz_top_pass Zf hm x hbt hi hp
+        have hi2 : ¬ (2 ≤ (zzTurn Zf hm x).idx.val) := by rw [i1]; split <;> omega
+        have hp2 : PassLo Zf (zzTurn Zf hm x).edge := by
+          refine ⟨?_, ?_⟩
+          · rw [show ((zzTurn Zf hm x).edge : ℕ) = x.edge.val + 1 from e1]; omega
+          · have hcast : (((x.edge.val + 1 : ℕ)) : ℤ) = ((x.edge : ℕ) : ℤ) + 1 := by
+              push_cast; ring
+            rw [show ((zzTurn Zf hm x).edge : ℕ) = x.edge.val + 1 from e1, hcast]
+            exact hpb
+        obtain ⟨e2, i2, t2⟩ := zz_bot_pass Zf hm _ t1 hi2 hp2
+        have hedge : (edgePred (zzTurn Zf hm x).edge).val = x.edge.val := by
+          rw [edgePred_val, show ((zzTurn Zf hm x).edge : ℕ) = x.edge.val + 1 from e1]
+          omega
+        refine endpt_ext ?_ ?_ ?_
+        · rw [e2]; exact hedge
+        · rw [i2, i1]
+          have hmm : m (edgePred (zzTurn Zf hm x).edge) = m x.edge := by
+            congr 1
+            exact Fin.ext hedge
+          rw [hmm]
+          by_cases h0 : x.idx.val = 0
+          · rw [if_pos h0, if_pos rfl]; omega
+          · rw [if_neg h0, if_neg (show ¬ ((1 : ℕ) = 0) by omega)]; omega
+        · rw [t2, hbt]
+      · -- top, bounce
+        obtain ⟨e1, i1, t1⟩ := zz_top_bounce Zf hm x hbt hi hp
+        have hi2 : ¬ (1 ≤ (zzTurn Zf hm x).idx.val ∧
+            (zzTurn Zf hm x).idx.val + 2 ≤ m (zzTurn Zf hm x).edge) := by
+          rw [i1, e1]
+          by_cases h0 : x.idx.val = 0
+          · rw [if_pos h0]; rintro ⟨ha, hbb⟩; omega
+          · rw [if_neg h0]; rintro ⟨ha, hbb⟩; omega
+        have hp2 : ¬ PassHi Zf (zzTurn Zf hm x).edge := by rw [e1]; exact hp
+        obtain ⟨e2, i2, t2⟩ := zz_top_bounce Zf hm _ t1 hi2 hp2
+        refine endpt_ext ?_ ?_ ?_
+        · rw [e2, e1]
+        · rw [i2, i1, e1]
+          rcases hi' with h0 | h0
+          · rw [if_pos h0, if_neg (show ¬ (m x.edge - 1 = 0) by omega)]; omega
+          · rw [if_neg (show ¬ (x.idx.val = 0) by omega), if_pos rfl]; omega
+        · rw [t2, hbt]
+
+/-! ## Steps 2, 3, 5: fixed-point freedom, the site, and the turn invariant -/
+
+theorem zz_ne (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m) :
+    zzTurn Zf hm x ≠ x := by
+  intro hcon
+  have hidx : (zzTurn Zf hm x).idx.val = x.idx.val := by rw [hcon]
+  have htop : (zzTurn Zf hm x).top = x.top := by rw [hcon]
+  have hlt := x.idx.isLt
+  obtain ⟨hN2, hNe⟩ := hm x.edge
+  by_cases hb : x.top = false
+  · by_cases hi : 2 ≤ x.idx.val
+    · obtain ⟨-, i1, -⟩ := zz_bot_pair Zf hm x hb hi
+      rw [i1] at hidx; revert hidx; split <;> omega
+    · by_cases hp : PassLo Zf x.edge
+      · obtain ⟨-, -, t1⟩ := zz_bot_pass Zf hm x hb hi hp
+        rw [t1, hb] at htop; exact Bool.noConfusion htop
+      · obtain ⟨-, i1, -⟩ := zz_bot_bounce Zf hm x hb hi hp
+        rw [i1] at hidx; revert hidx; split <;> omega
+  · have hbt : x.top = true := by
+      cases hxt : x.top
+      · exact absurd hxt hb
+      · rfl
+    by_cases hi : 1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge
+    · obtain ⟨-, i1, -⟩ := zz_top_pair Zf hm x hbt hi
+      obtain ⟨hia, hib⟩ := hi
+      rw [i1] at hidx; revert hidx; split <;> omega
+    · by_cases hp : PassHi Zf x.edge
+      · obtain ⟨-, -, t1⟩ := zz_top_pass Zf hm x hbt hi hp
+        rw [t1, hbt] at htop; exact Bool.noConfusion htop
+      · obtain ⟨-, i1, -⟩ := zz_top_bounce Zf hm x hbt hi hp
+        rw [i1] at hidx; revert hidx; split <;> omega
+
+theorem siteOf_val (y : Endpt n m) :
+    EndType.siteOf y = (y.edge.val : ℤ) + (if y.top = true then 1 else 0) := rfl
+
+theorem edgeOf_val (y : Endpt n m) : EndType.edgeOf y = (y.edge.val : ℤ) := rfl
+
+theorem zz_site (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m) :
+    EndType.siteOf (zzTurn Zf hm x) = EndType.siteOf x := by
+  rw [siteOf_val, siteOf_val]
+  by_cases hb : x.top = false
+  · by_cases hi : 2 ≤ x.idx.val
+    · obtain ⟨e1, -, t1⟩ := zz_bot_pair Zf hm x hb hi
+      rw [e1, t1, hb]
+    · by_cases hp : PassLo Zf x.edge
+      · obtain ⟨hpa, hpb⟩ := hp
+        have hp : PassLo Zf x.edge := ⟨hpa, hpb⟩
+        obtain ⟨e1, -, t1⟩ := zz_bot_pass Zf hm x hb hi hp
+        rw [e1, t1, hb, edgePred_val]
+        have h1 : (1 : ℕ) ≤ x.edge.val := hpa
+        norm_num
+        omega
+      · obtain ⟨e1, -, t1⟩ := zz_bot_bounce Zf hm x hb hi hp
+        rw [e1, t1, hb]
+  · have hbt : x.top = true := by
+      cases hxt : x.top
+      · exact absurd hxt hb
+      · rfl
+    by_cases hi : 1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge
+    · obtain ⟨e1, -, t1⟩ := zz_top_pair Zf hm x hbt hi
+      rw [e1, t1, hbt]
+    · by_cases hp : PassHi Zf x.edge
+      · obtain ⟨e1, -, t1⟩ := zz_top_pass Zf hm x hbt hi hp
+        rw [t1, hbt, show ((zzTurn Zf hm x).edge : ℕ) = x.edge.val + 1 from e1]
+        norm_num
+      · obtain ⟨e1, -, t1⟩ := zz_top_bounce Zf hm x hbt hi hp
+        rw [e1, t1, hbt]
+
+theorem zz_hturn (Zf : Finset ℤ) (hm : EvenWidths m) (x : Endpt n m)
+    (hne : EndType.edgeOf (zzTurn Zf hm x) ≠ EndType.edgeOf x) :
+    EndType.siteOf x ∉ Zf := by
+  rw [edgeOf_val, edgeOf_val] at hne
+  rw [siteOf_val]
+  by_cases hb : x.top = false
+  · by_cases hi : 2 ≤ x.idx.val
+    · obtain ⟨e1, -, -⟩ := zz_bot_pair Zf hm x hb hi
+      exact absurd (by rw [e1]) hne
+    · by_cases hp : PassLo Zf x.edge
+      · obtain ⟨hpa, hpb⟩ := hp
+        rw [hb]
+        simpa using hpb
+      · obtain ⟨e1, -, -⟩ := zz_bot_bounce Zf hm x hb hi hp
+        exact absurd (by rw [e1]) hne
+  · have hbt : x.top = true := by
+      cases hxt : x.top
+      · exact absurd hxt hb
+      · rfl
+    by_cases hi : 1 ≤ x.idx.val ∧ x.idx.val + 2 ≤ m x.edge
+    · obtain ⟨e1, -, -⟩ := zz_top_pair Zf hm x hbt hi
+      exact absurd (by rw [e1]) hne
+    · by_cases hp : PassHi Zf x.edge
+      · obtain ⟨hpa, hpb⟩ := hp
+        rw [hbt]
+        simpa using hpb
+      · obtain ⟨e1, -, -⟩ := zz_top_bounce Zf hm x hbt hi hp
+        exact absurd (by rw [e1]) hne
+
+/-! ## Step 4: the walk-graph data -/
+
+/-- **The zigzag walk-graph data.**  The crossing map is the end type's own partner;
+the turn is the zigzag. -/
+def zzData (Zf : Finset ℤ) (hm : EvenWidths m) : WalkGraph.Data (Endpt n m) where
+  p := EndType.partner
+  t := zzTurn Zf hm
+  p_invol := EndType.partner_invol
+  t_invol := zz_invol Zf hm
+  p_ne := EndType.partner_ne
+  t_ne := zz_ne Zf hm
+  pt_ne := TurnBuild.partner_ne_turn EndType.siteOf EndType.partner (zzTurn Zf hm)
+    (fun y => EndType.partner_site_ne y) (fun y => zz_site Zf hm y)
+
+@[simp] theorem zzData_p (Zf : Finset ℤ) (hm : EvenWidths m) :
+    (zzData Zf hm).p = EndType.partner := rfl
+
+@[simp] theorem zzData_t (Zf : Finset ℤ) (hm : EvenWidths m) :
+    (zzData Zf hm).t = zzTurn Zf hm := rfl
+
+/-! ## Step 6: `gz` is monotone -- already in the file as `gz_mono`. -/
+
+/-! ## Step 10: the chain lemma with `botOf` on both sides -/
+
+@[simp] theorem botOf_edge (y : Endpt n m) : (botOf y).edge = y.edge := rfl
+@[simp] theorem botOf_idx_val (y : Endpt n m) : (botOf y).idx.val = y.idx.val := rfl
+@[simp] theorem botOf_top (y : Endpt n m) : (botOf y).top = false := rfl
+
+theorem allJoined_edge' (E : WalkGraph.Data (Endpt n m)) (hEp : E.p = EndType.partner)
+    (f : ℕ → Endpt n m) (N : ℕ)
+    (h : ∀ i : ℕ, i < N → botOf (E.t (f i)) = botOf (f (i + 1))) :
+    AllJoined (WalkGraph.graph E) ((Finset.range (N + 1)).image (fun i => botOf (f i))) := by
+  refine allJoined_image (WalkGraph.graph E) (fun i => botOf (f i)) N ?_
+  intro i hi
+  have hr := link_of_turn E hEp (f i)
+  rw [h i hi] at hr
+  exact hr
+
+/-! ## Step 11: the zigzag chain of an edge -/
+
+/-- The `i`-th end of edge `e`'s zigzag chain: strand `m e - 1 - i`, approached from
+the bottom when `i` is even and from the top when `i` is odd. -/
+def fB (hm : EvenWidths m) (e : Fin n) (i : ℕ) : Endpt n m :=
+  ⟨e, ⟨m e - 1 - i, by have := (hm e).1; omega⟩, decide (i % 2 = 1)⟩
+
+@[simp] theorem fB_edge (hm : EvenWidths m) (e : Fin n) (i : ℕ) :
+    (fB hm e i).edge = e := rfl
+@[simp] theorem fB_idx (hm : EvenWidths m) (e : Fin n) (i : ℕ) :
+    (fB hm e i).idx.val = m e - 1 - i := rfl
+@[simp] theorem fB_top (hm : EvenWidths m) (e : Fin n) (i : ℕ) :
+    (fB hm e i).top = decide (i % 2 = 1) := rfl
+
+/-- **The zigzag chain step.**  Consecutive entries of `fB` are one turn apart.  This is
+the only place the evenness of `m e` is used: it is what makes the two internal pairings
+exhaust `{2,…,N-1}` at the bottom and `{1,…,N-2}` at the top. -/
+theorem zz_B_step (Zf : Finset ℤ) (hm : EvenWidths m) (e : Fin n) (i : ℕ)
+    (hi : i < m e - 2) :
+    botOf (zzTurn Zf hm (fB hm e i)) = botOf (fB hm e (i + 1)) := by
+  obtain ⟨hN2, hNe⟩ := hm e
+  by_cases hpar : i % 2 = 1
+  · have hbt : (fB hm e i).top = true := by rw [fB_top]; exact decide_eq_true hpar
+    have hcond : 1 ≤ (fB hm e i).idx.val ∧ (fB hm e i).idx.val + 2 ≤ m (fB hm e i).edge := by
+      rw [fB_idx, fB_edge]; omega
+    obtain ⟨e1, i1, t1⟩ := zz_top_pair Zf hm (fB hm e i) hbt hcond
+    refine endpt_ext ?_ ?_ rfl
+    · simp only [botOf_edge, e1, fB_edge]
+    · simp only [botOf_idx_val, i1, fB_idx, fB_edge]
+      rw [if_neg (show ¬ ((m e - 1 - i) % 2 = 1) by omega)]
+      omega
+  · have hbt : (fB hm e i).top = false := by rw [fB_top]; exact decide_eq_false hpar
+    have hcond : 2 ≤ (fB hm e i).idx.val := by rw [fB_idx]; omega
+    obtain ⟨e1, i1, t1⟩ := zz_bot_pair Zf hm (fB hm e i) hbt hcond
+    refine endpt_ext ?_ ?_ rfl
+    · simp only [botOf_edge, e1, fB_edge]
+    · simp only [botOf_idx_val, i1, fB_idx, fB_edge]
+      rw [if_neg (show ¬ ((m e - 1 - i) % 2 = 0) by omega)]
+      omega
+
+/-- The strands `1 … m e - 1` of edge `e`, as representatives. -/
+def bSet (hm : EvenWidths m) (e : Fin n) : Finset (Endpt n m) :=
+  (Finset.range (m e - 1)).image (fun i => botOf (fB hm e i))
+
+/-- **Each edge's zigzag chain is joined.** -/
+theorem zz_bSet_joined (Zf : Finset ℤ) (hm : EvenWidths m) (e : Fin n) :
+    AllJoined (WalkGraph.graph (zzData Zf hm)) (bSet hm e) := by
+  have h := allJoined_edge' (zzData Zf hm) rfl (fB hm e) (m e - 2)
+    (fun i hi => zz_B_step Zf hm e i hi)
+  have hrw : m e - 2 + 1 = m e - 1 := by have := (hm e).1; omega
+  rw [hrw] at h
+  exact h
+
+end EltBridge
+
+#print axioms EltBridge.endpt_ext
+#print axioms EltBridge.zz_bot_pair
+#print axioms EltBridge.zz_bot_pass
+#print axioms EltBridge.zz_bot_bounce
+#print axioms EltBridge.zz_top_pair
+#print axioms EltBridge.zz_top_pass
+#print axioms EltBridge.zz_top_bounce
+#print axioms EltBridge.zz_invol
+#print axioms EltBridge.zz_ne
+#print axioms EltBridge.zz_site
+#print axioms EltBridge.zz_hturn
+#print axioms EltBridge.zzData
+#print axioms EltBridge.allJoined_edge'
+#print axioms EltBridge.zz_B_step
+#print axioms EltBridge.zz_bSet_joined
