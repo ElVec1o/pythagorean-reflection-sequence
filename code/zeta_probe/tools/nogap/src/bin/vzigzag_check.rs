@@ -430,6 +430,22 @@ fn main() {
     sweep(3, &[1, 3, 5, 7], &[2, 4, 6, 8], "n<=3, odd<=7, even<=8");
     sweep(7, &[1, 3], &[2, 4], "n<=7, odd in {1,3}, even in {2,4}  (stress)");
 
+    // the two configurations the Lean file names as witnesses
+    println!();
+    for &(name, m, lo, hi, z) in &[
+        ("VZigzag.vz_witness_shield  (w3, span [1,2), Z={3})", [2usize, 3, 4, 2], 1usize, 2usize, [3usize].as_slice()),
+        ("VZigzag.witNeg_shield      (witNeg, span [0,1), Z={2})", [1, 2, 2, 2], 0, 1, [2].as_slice()),
+    ] {
+        match check_one(&m, lo, hi, z) {
+            Ok(cnt) => println!(
+                "{:<56} components {} (expected {}) {}",
+                name, cnt, z.len() + 1,
+                if cnt == z.len() + 1 { "OK" } else { "MISMATCH" }
+            ),
+            Err(e) => println!("{:<56} ERROR {}", name, e),
+        }
+    }
+
     // a couple of long chains, checked individually
     println!();
     for &(n, lo, hi) in &[(12usize, 3usize, 8usize), (12, 0, 12), (12, 0, 1), (12, 11, 12)] {

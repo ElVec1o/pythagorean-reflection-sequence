@@ -12020,3 +12020,126 @@ route is now different in kind: not "find a bounded transfer matrix" (refuted tw
 BLOCKS 334 and 338, and now known to be the wrong target anyway since the existential is
 vacuous) but "identify `W` with the explicit resolvent of the `max` kernel, which is now
 in closed form".
+
+## BLOCK 341 (2026-09-06, commits db04aff, eeed484, 05ab1db) -- route (b) RE-OPENED and
+## CLOSED at the level of the shield law: the ODD-SPAN turn on `VEndpt` is built,
+## `walkCount = |Z| + 1` holds for the widths a REAL group element actually has,
+## 0 sorry, and the forced-sign obstruction of BLOCK 337 does NOT arise on this route
+
+BLOCK 337 closed off route (b) ("build the turn directly, bypassing `MergesMin`") on the
+grounds that generalising past `mu = 2` "means choosing, consistently across a whole run,
+which strand passes and which bounces -- which is verbatim `RunStrandsConnected`".  BLOCK
+339 then closed `RunStrandsConnected` by explicit construction, so that premise is false
+and route (b) was re-opened.  This block walks it.
+
+**The obstacle, verified rather than assumed (task step 1).**  `SiteCost.PathData.mu_par`
+gives `mu j = travel kstar j (mod 2)` and `travel in {-1,0,1}`, so `mu j` is ODD exactly on
+the travel interval and EVEN off it -- already formalised as `TravelParity.mu_odd_iff_mem`
+/ `site_parity_defect` (an earlier commit today, not this block).  Confirmed by direct
+reading of `Realisation.lean` and `EltBridge.pdMm`.  So `EltBridge.zz_shield_law`, which
+needs `EvenWidths`, can NEVER apply to a configuration coming from an `Elt` with
+`kstar != 0`: at sites `0` and `kstar` the end count is odd and no turn exists on `Endpt`
+at all.  That is exactly why `VEndpt n mm = Endpt n mm (+) Bool` exists.
+
+**The construction.**  Write `sp e = 0` for an edge of the travel span (odd width) and
+`sp e = 1` off it (even width, `>= 2`, since `mu >= 1`).  Then edge `e`'s "chain" is its
+strands `sp e .. m e - 1` -- an ODD number in BOTH cases, which is the one uniformity that
+makes a single formula work -- zigzagged into one path from strand `sp e`'s bottom end to
+strand `m e - 1`'s top end.  The strands `0` of the non-span edges are spines, and the ONE
+long virtual strand is the missing spine across the span:
+
+    spine(0) .. spine(lo-1) -- V -- spine(hi) .. spine(n-1)
+
+is the spine line, the chains run back the other way, and every run closes into one cycle.
+The pass/bounce rule is the same as BLOCK 339's everywhere except at the four sites where
+a virtual point is one of the two ends being paired.
+
+**Validated in Rust FIRST** (`code/zeta_probe/tools/nogap/src/bin/vzigzag_check.rs`, new
+this block; `cargo run --release --bin vzigzag_check`).  Widths odd on a contiguous edge
+interval `[lo,hi)` and even elsewhere, all cut-sets avoiding `[lo,hi]`, all `(lo,hi)`:
+
+| sweep | pass | fail |
+|---|---|---|
+| `n<=5`, odd in {1,3}, even in {2,4} | 1934 | 0 |
+| `n<=4`, odd in {1,3,5}, even in {2,4,6} | 1866 | 0 |
+| `n<=6`, odd = 3, even = 2 | 192 | 0 |
+| `n<=6`, odd = 1, even = 4 | 192 | 0 |
+| `n<=3`, odd <= 7, even <= 8 | 564 | 0 |
+| `n<=7`, odd in {1,3}, even in {2,4} (stress) | 41870 | 0 |
+
+**46 618 / 46 618**, plus four `n = 12` chains checked individually.  Component counts are
+computed TWICE per configuration by independent methods (union-find over ends, explicit
+alternating-walk tracing) and asserted equal; every turn is separately validated as a
+fixed-point-free same-site involution obeying `hturn`.  The two configurations the Lean
+file names as witnesses are re-checked by name and both give 2 components.
+
+**What landed in Lean** (`lean/with_mathlib/VZigzag.lean`, new file, ~1980 lines, 0 sorry).
+
+* `VZ n m`: the odd-span configuration record (`lo`, `hi`, `bl`, plus the two width
+  conditions).  `bl` says which virtual tag sits at the LOW site, so ONE definition covers
+  both travel signs.
+* `vzTurn C Zf : VEndpt n m -> VEndpt n m`, 16 branch lemmas, then `vz_invol` (the
+  involution, all 16 branch pairs), `vzR_class` (a single classification of the turn on a
+  real end: same edge / pass down at a non-cut site / pass up at a non-cut site / one of
+  the two virtual points, whose site it then matches), and from it `vz_site`, `vz_ne`,
+  `vz_hturn` in three lines each.  `vzData` packages them with `p := VEndpt.partner` on
+  the nose.
+* Generic `AllJoined` plumbing (`link_of_turn_gen`, `allJoined_step_gen`,
+  `allJoined_biUnion_gen`, `hrun_of_allJoined_gen`).  `allJoined_biUnion_gen` is the one
+  genuinely new lemma: it asks only for a REACHABILITY at each link, not a single turn
+  step, because along the span consecutive "spine slots" are the SAME set (the one virtual
+  strand) and no turn step joins a set to itself.
+* `vz_run_joined`, `vz_cover`, `vz_runs_connected`, `vz_hsep`, `vz_hvirt`, `vz_hruns`, and
+  then `vz_shield_law` via the already-built `EltBridge.VEndpt.shield`.
+
+**Final statements.**
+
+    theorem vz_shield_law (C : VZ n m) (Zf : Finset ZZ) (hZ : NoCut C Zf)
+        (A B : ZZ) (hAB : A <= B) (hlow : forall z in Zf, A < z)
+        (hhigh : forall z in Zf, z <= B)
+        (hoc : forall t, A <= t -> t <= B -> exists x : Endpt n m, edgeOf x = t) :
+        WalkGraph.walkCount (vzData C Zf hZ) = Zf.card + 1
+
+    theorem pd_shield_exists (P : SiteCost.PathData) (hk : P.kstar != 0)
+        (hne0 : (-P.A) notin pdCutSites P) (hne1 : (P.kstar - P.A) notin pdCutSites P) :
+        exists E : WalkGraph.Data (VEndpt (pdWidth P) (pdMm P)),
+          WalkGraph.walkCount E = (pdCutSites P).card + 1
+
+`pd_shield_exists` is the point: it is about `pdMm P`, the widths a real configuration
+ACTUALLY has, not a hypothetical even family.  `Elt_shield_exists` states the same with
+the cut count in absolute coordinates via `pdCutSites_card_eq_abs`.
+
+**The two extra hypotheses are the known ones, not new ones.**  `hne0`/`hne1` say neither
+virtual site is a cut site.  They are exactly the two exclusions `EltBridge.pd_hgap`
+already takes, and they are NOT free: `EltBridge.cut_at_zero_iff` shows site `0` is cut
+exactly when `d(-1) = 1` and `d(0) = 0`, both parity-consistent.  The INTERIOR of the span
+is free, by `no_cut_inside_travel` / `no_cut_in_neg_travel`.
+
+**Task step 6 answered: the forced-sign obstruction does NOT arise on route (b).**
+`VEndpt.shield` consumes `hp`, `hts`, `hturn`, `hvirt`, `hruns`, `hsep` and a basepoint --
+and nothing else.  No `CostMerge.MergesMin`, no `EndData.Data`, no `costOf`, no `TurnInvG`
+anywhere in it or in `VEndpt.walkCount_le` / `walkCount_ge` beneath it.  So BLOCK 337's
+route-(a) killer (a cost-minimal datum never bounces at an occupied cut site, so it can
+never satisfy `hturn` there) is simply not reachable from here: this route never asks for
+cost-minimality.  Checked by reading the full dependency chain, not by name.
+
+**Non-vacuity, twice.**  `vz_witness_shield`: widths `(2,3,4,2)`, span `[1,2)`, `Z = {3}`,
+`walkCount = 2` -- a configuration neither `shield_law` (equal widths) nor
+`zz_shield_law` (all widths even) can even state.  `witNeg_shield`: `EltBridge.witNeg`, a
+GENUINE group element (`kstar = -1`, span `[-1,2]`, widths `(1,2,2,2)`, one cut site at
+shifted `2`, neither virtual site cut), `walkCount = 2`.  Both re-verified in Rust.
+
+**Certification.**  `lake build` succeeds on all 8639 jobs.  Every declaration has a
+`#print axioms` line; all report a subset of `[propext, Classical.choice, Quot.sound]`.
+No `sorry`, no `native_decide`, no `Lean.ofReduceBool`.
+
+**What is NOT claimed, precisely.**  This gives a `WalkGraph.Data` on the real
+configuration's own end type whose walk count is exactly `|Z| + 1`.  It does NOT say that
+the datum arising from a minimum-cost realisation has that walk count, and it does NOT
+identify `walkCount - 1` with `Elt.c` -- that identification is the separate semantic gap
+BLOCK 331 found (`hcov0` vs `Elt.c`, no clean equivalence) and nothing here touches it.
+The status is the exact odd-span analogue of BLOCK 339's own "What is NOT claimed", with
+the difference that the widths are now the REAL ones, so the statement is no longer vacuous
+for elements with `kstar != 0` -- which is every element with non-zero travel, i.e. all the
+interesting ones.  Closing the remaining gap means relating the constructed datum to the
+element's defect, not building another turn.
