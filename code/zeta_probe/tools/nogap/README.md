@@ -12502,6 +12502,14 @@ existentially quantified.  Proved:
 * The old `EltBridge.IsAssembly` is left in place and is still vacuous; this file supplies
   the replacement rather than editing `EltBridge.lean` (concurrent sessions).
 
+### 6. Repo note (shared working tree)
+
+`AssemblyContract.lean`, `assemblycontract.rs`, the `lakefile.toml` entry and this block
+were staged by this session but were swept into a concurrent session's commit `dd1c43a`
+(one working tree, one git index, three sessions).  That commit's message describes
+BLOCK 344, not this work; the content is nevertheless exactly what is described above.
+The follow-up commit carries a lint cleanup of the file and this note.
+
 **Repo-hygiene note against BLOCK 344's commits (`7e13e7f`, `dd1c43a`).** Two sessions
 were committing into the SAME working tree at the same time. `dd1c43a`, intended to carry
 only `README.md`, was made with a bare `git commit` while the other session had already

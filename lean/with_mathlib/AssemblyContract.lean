@@ -186,7 +186,7 @@ theorem X_pow_dvd_pow_apply {n : ℕ} (T : Matrix (Fin n) (Fin n) (PowerSeries �
     ∀ (k : ℕ) (a b : Fin n), (PowerSeries.X : PowerSeries ℤ) ^ k ∣ (T ^ k) a b := by
   intro k
   induction k with
-  | zero => intro a b; simpa using one_dvd _
+  | zero => intro a b; simp
   | succ k ih =>
       intro a b
       have : (T ^ (k + 1)) a b = ∑ c : Fin n, (T ^ k) a c * T c b := by
@@ -404,7 +404,7 @@ theorem maxbulk_closure (q : R) (u : ℕ → R) (M : ℕ)
   simp only [cS_zero, cS'_zero] at hvop
   rw [init_split q (cS' q u M) (u 0) hres0] at hvop
   have hcomp := congrFun hvop 1
-  simp only [Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_zero] at hcomp
+  simp only [Matrix.cons_val_one, Matrix.cons_val_zero] at hcomp
   rw [Matrix.mulVec_add, Matrix.mulVec_smul] at hcomp
   have hsrc : ∀ j ∈ Finset.range M,
       (maxProd q (j + 1) M).mulVec (maxSrc q (cS' q u M) (j + 1))
@@ -443,7 +443,7 @@ theorem X_dvd_maxBeta (M : ℕ) :
       (PowerSeries.X : PowerSeries ℤ) ∣ maxInitB (PowerSeries.X : PowerSeries ℤ) i := by
     have hX2 : (PowerSeries.X : PowerSeries ℤ) ∣ PowerSeries.X ^ 2 :=
       ⟨PowerSeries.X, by ring⟩
-    intro i; fin_cases i <;> simpa [maxInitB] using hX2
+    intro i; fin_cases i <;> simp [maxInitB]
   have hSrc : ∀ (j : ℕ) (i : Fin 2),
       (PowerSeries.X : PowerSeries ℤ) ∣ maxSrcB (PowerSeries.X : PowerSeries ℤ) (j + 1) i := by
     intro j i
