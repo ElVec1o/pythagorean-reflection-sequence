@@ -12182,3 +12182,91 @@ Consequences, stated honestly:
   `SimpleGraph`.
 - `lean/TriangleFlowMetric.lean` is in the same position (the VERIFIED half of
   the translation metric theorem).
+
+## BLOCK 343 (2026-09-07) — the `lR + 2c` POTENTIAL IS NOT 1-LIPSCHITZ, and `Elt.c` is not
+## the defect: both refuted in Lean at `s3 one`, one generator step from the identity
+
+Tested, before any Lean, the proposed lower-bound attack: if `Phi g := g.toPathData.lR
++ 2 * Elt.c g` moves by at most `1` under every generator, induction on `Reaches` gives
+`wordLength g >= Phi g - Phi one`, i.e. the open half of the metric identity. New Rust
+probe `src/bin/lipschitz_check.rs` (Rust only, flat frontiers, no Python).
+
+**Measured: `max |dPhi| = 3`, not `1`.** Over a BFS ball to depth 30 (3,336,511
+elements enumerated, 2,209,275 in complete layers) and an independent exhaustive
+structural sweep of 8,299,908 elements (all `(kstar, eps, delta, d)` with `|kstar| <= 6`,
+support in `[-5,4]`, `|d| <= 3`, parity-admissible — no reachability assumed). The
+witness is the smallest one there is:
+
+    g = one          lR = 2, c = 0, Phi = 2
+    g = s3 one       lR = 3, c = 1, Phi = 5        jump 3
+
+**Cross-validation of `c` DISAGREES, which is the second half of the finding.** The
+task asked for `c` two ways: `pdCutSites`'s cardinality (`Elt.c`) and `nogap`'s own
+defect statistic `(l_T - l_R)/2`. They differ on 30,968 of 2,209,275 elements at depth
+30, first at word length 1. So `Elt.c` is not `|Z|`, and `wordLength = lR + 2c` is
+FALSE for it: `Phi g - wordLength g` ranges over `[-2, 4]` — it overshoots AND
+undershoots, so no additive constant repairs it either.
+
+    smallest overshoot  : g = one,  Phi = 2, wordLength = 0
+    smallest undershoot : kstar=0, eps=+1, delta=false, d(1) = -2;
+                          Phi_lean = 8, wordLength = 10
+
+**Root cause, isolated exactly.** Two independent defects, and they are in the
+FORMALISED objects, not in the mathematics `main.rs` validates:
+
+1. **The span.** `SiteCost.PathData` carries `hA : A <= 0` AND `hB : 0 <= B`, so EDGE
+   `0` is in the span of every element. `main.rs`'s own `span` does not do this: it
+   takes the occupied edges and only requires `A <= 0 <= B+1`, i.e. that SITE `0` is in
+   the site range. The two differ exactly when `kstar <= 0` and nothing is deposited at
+   any edge `>= 0` — a walk that never crosses edge `0`. There `PathData` adds
+   `mu 0 = 2` (the gap-edge clause) to `lR`, and makes site `0` interior to
+   `Ioo A (B+1)`, so `pdCutSites` counts it too: `+2` and `+2`, total `+4`. The precise
+   repair is `hB : -1 <= B` with `hBmin : B = -1 \/ d B /= 0 \/ travel B /= 0`.
+2. **The cut set.** `pdCutSites` counts interior sites only; `main.rs`'s `|Z|` also
+   carries a boundary-shield site. Deleting it costs 28 `M4b` violations at depth 20
+   (re-run this session, matching the shipped tool), so it is real, not fitted. Its
+   firing condition was characterised and verified exactly (140 = 140, 0 disagreements
+   on 275,823 elements): it fires iff `kstar = 0`, `eps = +1`, `delta = false`, no
+   deposit at any edge `<= 0`, and some deposit at an edge `>= 1`.
+
+**Which potential IS 1-Lipschitz.** With both repairs — `main.rs`'s occupied-edge span
+and its `|Z|` — `Phi` is 1-Lipschitz with `max |dPhi| = 1` on both the 3.3M-element BFS
+ball and the 8.3M-element sweep, and equals `wordLength` with **0 violations through
+depth 29** (extending the previously recorded "exact to depth 24"). Fixing only the cut
+set (`leanBS`: `PathData`'s span, `main.rs`'s `|Z|`) is ALSO 1-Lipschitz, but then
+`Phi - wordLength` sits in `[0, 4]` rather than `{0}`. Fixing only the span is not
+enough: `max |dPhi| = 3` still.
+
+**Lean (`lean/with_mathlib/LipschitzPotential.lean`, new file, 0 sorry, `lake build`
+clean on all 8643 jobs, `#print axioms` on all 11 theorems shows only
+`[propext, Classical.choice, Quot.sound]`, no `native_decide`).**
+
+    Phi g               := g.toPathData.lR + 2 * Elt.c g
+    c_one               : Elt.c one = 0
+    Phi_one             : Phi one = 2
+    s3one_lR            : (s3 one).toPathData.lR = 3
+    c_s3one             : Elt.c (s3 one) = 1
+    Phi_s3one           : Phi (s3 one) = 5
+    not_isOneLipschitzAtS3      : ¬ ∀ g, Phi (s3 g) <= Phi g + 1
+    lipschitz_constant_ge_three : (∀ g, Phi (s3 g) <= Phi g + C) → 3 <= C
+    not_metric_identity : ¬ ∀ g, Reachable g → wordLength g = g.toPathData.lR + 2*Elt.c g
+    Phi_overshoots_s3one: wordLength (s3 one) + 4 <= Phi (s3 one)
+
+The Lean values and the Rust probe's values agree independently on all four numbers
+(`lR one = 2`, `c one = 0`, `lR (s3 one) = 3`, `c (s3 one) = 1`) — the kernel confirms
+the probe's model rather than the probe being trusted on its own.
+
+**What is NOT refuted.** `s1_lR_dist_le`, `s2_lR_dist_le`, `s3_lR_dist_le` (bound 10)
+and `s3_c_dist_le` (bound 2) all remain true; BLOCK 325 and BLOCK 328 stand. The attack
+needed those two to CANCEL down to `1`, and they do not. The lower bound on
+`wordLength` remains open. Nothing here touches `prop:travelinv`, `thm:nogap` or the
+shield inequality.
+
+**Where the programme should go instead.** The potential route is not dead — it is
+alive for the REPAIRED potential, which the measurements say is 1-Lipschitz on 11.6M
+elements. But the repair is not cosmetic: it means changing `SiteCost.PathData`'s `hB`
+(a structure field that ~20k lines of `EltBridge` depend on) and adding the
+boundary-shield site to `pdCutSites`. Doing that is a refactor with real blast radius,
+and should be a deliberate decision, not a side effect. Until it happens, `Elt.lR` and
+`Elt.c` are NOT models of the paper's `l_R` and `|Z|`, and no theorem about them
+transfers to the metric identity.
