@@ -12271,6 +12271,131 @@ and should be a deliberate decision, not a side effect. Until it happens, `Elt.l
 `Elt.c` are NOT models of the paper's `l_R` and `|Z|`, and no theorem about them
 transfers to the metric identity.
 
+## BLOCK 344 (2026-09-07) — BLOCK 341's three open ends CLOSED: `defect = Elt.c` is a named
+## theorem, `hne0`/`hne1` are characterised exactly (and shown sharp), and the `kstar = 0`
+## exclusion is REMOVED — plus: `ConfigLoop`'s `hZ` is FALSE on real configurations
+
+BLOCK 341 built the odd-span turn and got `walkCount = |Z| + 1` for a real `PathData`,
+but explicitly did NOT claim `walkCount - 1 = Elt.c`, carried two unexplained hypotheses
+`hne0`/`hne1`, and excluded `kstar = 0`. All three are now settled, in
+`lean/with_mathlib/VZigzag.lean` (+~850 lines, 0 sorry, `lake build VZigzag` succeeds on
+all 2984 jobs, every new declaration `#print axioms`-certified as exactly
+`[propext, Classical.choice, Quot.sound]`; `not_cut_at_zero_pos` is even choice-free).
+
+**Validated in Rust FIRST**, `code/zeta_probe/tools/nogap/src/bin/pdcut_check.rs` (new):
+33 372 legal `(kstar, eps, delta, d)` with `kstar` in `[-3,3]`, `eps = ±1`, `delta`
+either, `d : [-3,3] -> [-2,2]` filtered by the parity constraint, checking six read-off
+conjectures C1..C6 — **0 failures**; plus the widths and cut sets of the three new
+witnesses computed rather than asserted, `witZero` run through the even-width
+spine+zigzag turn with two independent component counters agreeing, and a
+680-configuration sweep of that turn. `cargo run --release --bin pdcut_check`.
+
+**(1) The defect identification.** `ConfigLoop.defect D = walkCount D - 1` and
+`EltBridge.Elt.c g = (pdCutSites g.toPathData).card`, so the shield law IS the statement
+`defect = c`. Named: `pd_defect_pos`, `pd_defect_neg`, `pd_defect_zero`, and at element
+level `Elt_c_eq_defect_pos` / `_neg` / `_zero`.
+
+The identification is made on the NAMED datum, not on the existential. Worth recording:
+`pd_shield_exists` (BLOCK 341's headline) is much weaker than it looks — it quantifies
+over an arbitrary `WalkGraph.Data`, i.e. any pair of fixed-point-free involutions, so it
+is satisfiable for almost any configuration. The content is entirely in `vzData`/`zzData`.
+
+**(2) `hne0`/`hne1`, characterised exactly.** `mem_pdCutSites_zero` and
+`mem_pdCutSites_kstar` strip the interiority filter:
+
+    -A       in pdCutSites P  <->  A < 0            & P.cut 0
+    kstar-A  in pdCutSites P  <->  A < kstar <= B   & P.cut kstar
+
+and the read-off table is now complete (`kstar < 0` was `EltBridge.cut_at_zero_iff` /
+`cut_at_kstar_iff`; the other two rows are new here):
+
+| | site `0` | site `kstar` |
+|---|---|---|
+| `kstar > 0` | **never cut** (`Phi = 1`) — `not_cut_at_zero_pos` | cut iff `!delta`, `d(k-1) = -eps`, `d(k) = 0` — `cut_at_kstar_iff_pos` |
+| `kstar = 0` | cut iff `!delta`, `d(-1) = 1-eps`, `d(0) = 0` — `cut_at_zero_iff_zero` | (same site) |
+| `kstar < 0` | cut iff `d(-1) = 1`, `d(0) = 0` | cut iff `delta`, `d(k-1) = 0`, `d(k) = eps` |
+
+The asymmetry is real and is the whole content: for positive travel the indicator sits on
+`[0, kstar)`, so `Phi(0) = 0 + 1 - 0 = 1` is forced non-zero, while for negative travel
+`Phi(0) = -1 + 1 - 0 = 0` and the site genuinely can be cut. Consequences, all proved:
+
+* `pd_hne0_of_pos` — `hne0` is FREE whenever `kstar > 0`.
+* `pd_hne1_of_pos_delta` — `hne1` is FREE for `kstar > 0 & delta`.
+* `pd_hne1_of_neg_not_delta` — `hne1` is FREE for `kstar < 0 & !delta`.
+* `pd_shield_law_pos_delta` — the shield law for `kstar > 0 & delta` with NO side
+  condition on the element at all.
+
+**Sharpness, honestly scoped.** The other two cases are NOT free. `witCut0`
+(`kstar = -1`, `d(-1) = 1`; span `[-1,0]`, widths `(1,2)`, cut set `{1}` and `1 = -A`)
+and `witCutK` (`kstar = 1`, `d(0) = -1`, `d(2) = 2`; span `[0,2]`, widths `(1,2,2)`, cut
+set `{1}` and `1 = kstar - A`) are genuine group elements for which `hne0` resp. `hne1`
+FAILS, and `witCut0_noCut` / `witCutK_noCut` prove `NoCut` is FALSE for them — the datum
+cannot be built. What is deliberately NOT claimed: that the EXISTENTIAL conclusion fails
+there. It almost certainly does not, for the reason in (1) — that existential is weak.
+So "these hypotheses cannot be removed" is established at the level of the construction,
+which is where the mathematics is, and not at the level of the existential, where it
+would be false. Future sessions: do not try to refute `pd_shield_exists` on `witCut0`.
+
+**(3) `kstar = 0`: the exclusion is GONE, unconditionally.** `travel 0 = 0`, so `hpar`
+makes every `d j` even and `mu j` is even and `>= 2` at every edge
+(`pdMm_evenWidths_of_kstar_zero`). A zero-travel element therefore has ALL widths even,
+needs no virtual points, and BLOCK 339's `EltBridge.zz_shield_law` — which carries no
+exclusion hypotheses whatsoever — applies verbatim: `pd_shield_law_zero`,
+`pd_defect_zero`, `Elt_c_eq_defect_zero`, all with `kstar = 0` as the only hypothesis.
+This is the highest-value item of the three: it is the one case where the identification
+`c = defect` is completely unconditional.
+
+`Elt_defect_eq_c` and `Elt_defect_eq_c_free` state the combined result over ALL `g`. It
+is a DISJUNCTION of two existentials and that is not laziness: the two cases live on
+different end types, and pushing the `kstar = 0` datum into `VEndpt` would add the
+virtual pair as its own component (both `VEndpt.partner` and any turn swap the two
+virtual tags, which at `kstar = 0` sit at the same site), giving `defect = |Z| + 1`.
+
+**Non-vacuity.** `witZero`: `kstar = 0`, deposits `2` at edges `-1` and `2`, span
+`[-1,2]`, widths `(2,2,2,2)`, exactly one interior cut site, `Elt.c = 1` and
+`walkCount = 2` (`witZero_c`, `witZero_shield`, `witZero_defect`). Neither
+`EltBridge.shield_law` (equal widths) nor BLOCK 341's `pd_shield_law_{pos,neg}`
+(`kstar /= 0`) can state this.
+
+**(4) The comparison with `ConfigLoop.c_le_Z_final` / `shield_law_runs` — a real finding,
+not a summary.** Those prove `walkCount = |Z| + 1` on `Endpt n m` from `RunInv` plus
+
+    hZ : forall x, isArrOf up x = true -> siteOf x notin Zf     ("cut sites carry no arrivals")
+
+`ConfigLoop.shield_final_hyps_incompatible` already noted `hZ` is incompatible with
+balance + occupancy in the abstract. The new point is that a REAL configuration always
+supplies both halves: `pdMm_pos` (`mu >= 1` on the span) gives occupancy, and a cut site
+has zero travel on both adjacent edges (`pdCutAt_iff` + `travel_const_off`), which gives
+balance. Hence, proved here:
+
+* `pd_balanced_at_cut` — a real configuration is balanced at any cut site away from the
+  two virtual sites;
+* `pd_balanced_of_kstar_zero` — a zero-travel configuration is balanced at EVERY site;
+* `hZ_false_at_cut`, `hZ_false_of_kstar_zero` — **`hZ` is FALSE for every real
+  configuration with such a cut site**, and outright false for every zero-travel
+  configuration with any cut site at all;
+* `witZero_hZ_false` — non-vacuous, on a named element.
+
+So the two routes are **not alternatives** for this application: `shield_law_runs` cannot
+be instantiated at a real configuration with a non-empty `Z`. The zigzag route asks
+instead for `hturn` (the turn BOUNCES at a cut site, rather than there being no end
+there), which is satisfiable and is exactly what the explicit construction supplies. The
+zigzag route supersedes it here. **What the zigzag route does NOT give**, and
+`shield_law_runs` does, is any relation to cost-minimality: `vzData`/`zzData` are not
+claimed to be `MergesMin`, and nothing here says the datum of a minimum-cost realisation
+has this walk count. That gap is unchanged from BLOCK 341.
+
+**Still open, unchanged.** The reverse inequality / lower bound of `|g| = lR + 2c`
+(2026-08-09 retraction: the chain was circular) is untouched and was not attempted.
+`IsTrueLength` is untouched. The `hcov0`-vs-`Elt.c` question of BLOCK 331 is now moot for
+this route — the route never uses `hcov0` — but that does not close BLOCK 331's own
+question about `Elt.defect_zero`'s hypothesis.
+
+**Infrastructure note.** `lake build` (all default targets) failed mid-session on
+`LipschitzPotential.lean`, a concurrent session's in-flight file; it was fixed and
+committed by that session (`5b1ae8e`) while this one ran. `lake build VZigzag` — which
+builds the whole dependency chain this block touches — succeeded throughout.
+
 ## BLOCK 345 (2026-09-07) -- H1c: the vacuous contract REPLACED by a named one, and the
 ## named one PROVED for the bulk.  De-truncating alone does NOT repair `IsAssembly`.
 
@@ -12376,3 +12501,12 @@ existentially quantified.  Proved:
   `vop` needs none of it.
 * The old `EltBridge.IsAssembly` is left in place and is still vacuous; this file supplies
   the replacement rather than editing `EltBridge.lean` (concurrent sessions).
+
+**Repo-hygiene note against BLOCK 344's commits (`7e13e7f`, `dd1c43a`).** Two sessions
+were committing into the SAME working tree at the same time. `dd1c43a`, intended to carry
+only `README.md`, was made with a bare `git commit` while the other session had already
+`git add`-ed its work, so it also swept in `lean/with_mathlib/AssemblyContract.lean`,
+`src/bin/assemblycontract.rs` and that session's `lakefile.toml` edit. Nothing was lost or
+altered — `lake build AssemblyContract` succeeds (2993 jobs, all axioms clean) at that
+commit — but the commit message is wrong for three of its four files. Future sessions
+sharing a tree: always `git commit -- <paths>`, never a bare `git commit`.
