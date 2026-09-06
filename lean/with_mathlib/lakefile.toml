@@ -329,3 +329,6 @@ name = "LipschitzPotential"
 
 [[lean_lib]]
 name = "AssemblyContract"
+
+[[lean_lib]]
+name = "CorrectedSpan"
