@@ -31,6 +31,7 @@
   `HEq` ever appears and `omega` closes every index obligation.
 -/
 import EltBridge
+import TravelParity
 
 namespace VZigzag
 
@@ -1611,6 +1612,294 @@ theorem vz_witness_shield :
           simp [EndType.edgeOf]⟩)
   simpa using h
 
+/-! ## The configuration of a real group element
+
+`SiteCost.PathData.mu_par` forces `mu j` to be ODD exactly on the travel interval
+(`TravelParity.mu_odd_iff_mem`) and even off it, and `mu_pos` makes the even ones at
+least `2`.  So the widths `pdMm P` of a real configuration ARE an odd-span family, with
+the span the shifted travel interval -- which is what this file's `VZ` asks for and what
+`EltBridge.zz_shield_law` (all widths even) cannot accommodate. -/
+
+section PathDataInstance
+
+open SiteCost
+
+theorem pdWidth_cast (P : SiteCost.PathData) : (pdWidth P : ℤ) = P.B - P.A + 1 := by
+  have := P.hA; have := P.hB; unfold pdWidth; omega
+
+/-- For positive travel the span reaches at most one past `B`. -/
+theorem kstar_le_B (P : SiteCost.PathData) (hk : 0 < P.kstar) : P.kstar ≤ P.B + 1 := by
+  by_contra hc
+  have h := (P.houter (P.kstar - 1) (Or.inr (by omega))).2
+  unfold travel at h
+  rw [if_pos (by omega)] at h
+  omega
+
+/-- For negative travel the span starts at or after `A`. -/
+theorem A_le_kstar (P : SiteCost.PathData) (hk : P.kstar < 0) : P.A ≤ P.kstar := by
+  by_contra hc
+  have h := (P.houter P.kstar (Or.inl (by omega))).2
+  unfold travel at h
+  rw [if_neg (by omega), if_pos (by omega)] at h
+  omega
+
+theorem pd_edge_range (P : SiteCost.PathData) (e : Fin (pdWidth P)) :
+    P.A ≤ P.A + ((e : ℕ) : ℤ) ∧ P.A + ((e : ℕ) : ℤ) ≤ P.B := by
+  have hw := pdWidth_cast P
+  have he : ((e : ℕ) : ℤ) < (pdWidth P : ℤ) := by exact_mod_cast e.isLt
+  have he0 : (0 : ℤ) ≤ ((e : ℕ) : ℤ) := Int.natCast_nonneg _
+  omega
+
+/-- **On the travel span the width is odd.** -/
+theorem pdMm_odd_of_travel (P : SiteCost.PathData) (e : Fin (pdWidth P))
+    (h : (0 ≤ P.A + ((e : ℕ) : ℤ) ∧ P.A + ((e : ℕ) : ℤ) < P.kstar)
+      ∨ (P.kstar ≤ P.A + ((e : ℕ) : ℤ) ∧ P.A + ((e : ℕ) : ℤ) < 0)) :
+    pdMm P e % 2 = 1 := by
+  simp only [pdMm]
+  rw [P.mm_eq_mu (pd_edge_range P e)]
+  exact (TravelParity.mu_odd_iff_mem P _).mpr h
+
+/-- **Off it the width is even and at least two.** -/
+theorem pdMm_even_of_no_travel (P : SiteCost.PathData) (e : Fin (pdWidth P))
+    (h : ¬ ((0 ≤ P.A + ((e : ℕ) : ℤ) ∧ P.A + ((e : ℕ) : ℤ) < P.kstar)
+      ∨ (P.kstar ≤ P.A + ((e : ℕ) : ℤ) ∧ P.A + ((e : ℕ) : ℤ) < 0))) :
+    2 ≤ pdMm P e ∧ pdMm P e % 2 = 0 := by
+  simp only [pdMm]
+  rw [P.mm_eq_mu (pd_edge_range P e)]
+  have h1 := (TravelParity.mu_even_iff_not_mem P _).mpr h
+  have h2 := P.mu_pos (P.A + ((e : ℕ) : ℤ))
+  omega
+
+/-- **The odd-span configuration of a `PathData` with positive travel.** -/
+noncomputable def pdVZpos (P : SiteCost.PathData) (hk : 0 < P.kstar) :
+    VZ (pdWidth P) (pdMm P) where
+  lo := (-P.A).toNat
+  hi := (P.kstar - P.A).toNat
+  bl := false
+  hlh := by have := P.hA; omega
+  hhn := by
+    have := P.hA; have := P.hB; have := kstar_le_B P hk; have := pdWidth_cast P; omega
+  hodd := by
+    intro e h1 h2
+    have he0 : (0 : ℤ) ≤ ((e : ℕ) : ℤ) := Int.natCast_nonneg _
+    have hc1 : ((((-P.A).toNat : ℕ)) : ℤ) ≤ ((e : ℕ) : ℤ) := by exact_mod_cast h1
+    have hc2 : ((e : ℕ) : ℤ) < ((((P.kstar - P.A).toNat : ℕ)) : ℤ) := by exact_mod_cast h2
+    have := P.hA
+    exact pdMm_odd_of_travel P e (Or.inl ⟨by omega, by omega⟩)
+  heven := by
+    intro e h
+    refine pdMm_even_of_no_travel P e ?_
+    have he0 : (0 : ℤ) ≤ ((e : ℕ) : ℤ) := Int.natCast_nonneg _
+    have hcn : ((e : ℕ) : ℤ) = ((e : ℕ) : ℤ) := rfl
+    have hA := P.hA
+    have hlo : ((((-P.A).toNat : ℕ)) : ℤ) = -P.A := by omega
+    have hhi : ((((P.kstar - P.A).toNat : ℕ)) : ℤ) = P.kstar - P.A := by omega
+    have h' : ¬ (((((-P.A).toNat : ℕ)) : ℤ) ≤ ((e : ℕ) : ℤ)
+        ∧ ((e : ℕ) : ℤ) < ((((P.kstar - P.A).toNat : ℕ)) : ℤ)) := by
+      rintro ⟨g1, g2⟩
+      exact h ⟨by exact_mod_cast g1, by exact_mod_cast g2⟩
+    rw [hlo, hhi] at h'
+    omega
+
+@[simp] theorem pdVZpos_lo (P : SiteCost.PathData) (hk : 0 < P.kstar) :
+    (pdVZpos P hk).lo = (-P.A).toNat := rfl
+@[simp] theorem pdVZpos_hi (P : SiteCost.PathData) (hk : 0 < P.kstar) :
+    (pdVZpos P hk).hi = (P.kstar - P.A).toNat := rfl
+
+/-- **The gap condition for the positive-travel configuration.**  Its interior is free
+(`EltBridge.no_cut_inside_travel`); the two endpoints are the two virtual sites, and
+`EltBridge.cut_at_zero` shows those genuinely can be cut, so they are hypotheses --
+exactly as in `EltBridge.pd_hgap`. -/
+theorem pdVZpos_noCut (P : SiteCost.PathData) (hk : 0 < P.kstar)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    NoCut (pdVZpos P hk) (pdCutSites P) := by
+  rintro z hz ⟨h1, h2⟩
+  have hA := P.hA
+  have hlo : (((pdVZpos P hk).lo : ℕ) : ℤ) = -P.A := by simp only [pdVZpos_lo]; omega
+  have hhi : (((pdVZpos P hk).hi : ℕ) : ℤ) = P.kstar - P.A := by
+    simp only [pdVZpos_hi]; omega
+  rw [hlo] at h1
+  rw [hhi] at h2
+  have hcut : P.cut (P.A + z) := ((mem_pdCutSites P z).mp hz).2
+  rcases lt_trichotomy (P.A + z) 0 with h | h | h
+  · omega
+  · exact hne0 (by rw [show (-P.A) = z from by omega]; exact hz)
+  · rcases lt_trichotomy (P.A + z) P.kstar with hh | hh | hh
+    · exact no_cut_inside_travel P (P.A + z) h hh hcut
+    · exact hne1 (by rw [show (P.kstar - P.A) = z from by omega]; exact hz)
+    · omega
+
+/-- Every edge of the span carries an end. -/
+theorem pd_hoc (P : SiteCost.PathData) :
+    ∀ t : ℤ, 0 ≤ t → t ≤ (pdWidth P : ℤ) - 1 →
+      ∃ x : Endpt (pdWidth P) (pdMm P), EndType.edgeOf x = t := by
+  intro t h0 h1
+  have hw := pdWidth_cast P
+  have hlt : t.toNat < pdWidth P := by omega
+  refine ⟨⟨⟨t.toNat, hlt⟩, ⟨0, ?_⟩, true⟩, ?_⟩
+  · exact pdMm_pos P ⟨t.toNat, hlt⟩ (by show P.A ≤ P.A + ((t.toNat : ℕ) : ℤ); omega)
+      (by show P.A + ((t.toNat : ℕ) : ℤ) ≤ P.B; omega)
+  · show (((t.toNat : ℕ)) : ℤ) = t
+    omega
+
+/-- **THE SHIELD LAW FOR A REAL CONFIGURATION** (positive travel): the walk count of the
+explicitly constructed datum on `VEndpt` is exactly `|Z| + 1`.  The only hypotheses
+beyond `0 < kstar` are that neither virtual site is a cut site -- the same two
+exclusions `EltBridge.pd_hgap` needs, and which `EltBridge.cut_at_zero_iff` shows are
+genuine conditions on the element, not free. -/
+theorem pd_shield_law_pos (P : SiteCost.PathData) (hk : 0 < P.kstar)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    WalkGraph.walkCount
+        (vzData (pdVZpos P hk) (pdCutSites P) (pdVZpos_noCut P hk hne0 hne1))
+      = (pdCutSites P).card + 1 := by
+  have hwp := pdWidth_pos P
+  refine vz_shield_law (pdVZpos P hk) (pdCutSites P) (pdVZpos_noCut P hk hne0 hne1)
+    0 ((pdWidth P : ℤ) - 1) (by omega) ?_ ?_ (pd_hoc P)
+  · intro z hz; exact (pdCutSites_interior P hz).1
+  · intro z hz; have := (pdCutSites_interior P hz).2; omega
+
+/-- The existential form: a real configuration's walk graph has exactly `|Z| + 1`
+components. -/
+theorem pd_shield_exists_pos (P : SiteCost.PathData) (hk : 0 < P.kstar)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    ∃ E : WalkGraph.Data (VEndpt (pdWidth P) (pdMm P)),
+      WalkGraph.walkCount E = (pdCutSites P).card + 1 :=
+  ⟨_, pd_shield_law_pos P hk hne0 hne1⟩
+
+end PathDataInstance
+
+/-! ### The mirror, for negative travel
+
+For `kstar < 0` the travel interval is `[kstar, 0)`, so the span sits below the origin
+and the two virtual tags swap sides: `Sum.inr false` (the virtual arrival, at site
+`-A`) is now the HIGH one, which is what `bl = true` records. -/
+
+section PathDataInstanceNeg
+
+open SiteCost
+
+/-- **The odd-span configuration of a `PathData` with negative travel.** -/
+noncomputable def pdVZneg (P : SiteCost.PathData) (hk : P.kstar < 0) :
+    VZ (pdWidth P) (pdMm P) where
+  lo := (P.kstar - P.A).toNat
+  hi := (-P.A).toNat
+  bl := true
+  hlh := by have := A_le_kstar P hk; omega
+  hhn := by have := P.hA; have := P.hB; have := pdWidth_cast P; omega
+  hodd := by
+    intro e h1 h2
+    have hak := A_le_kstar P hk
+    have hc1 : ((((P.kstar - P.A).toNat : ℕ)) : ℤ) ≤ ((e : ℕ) : ℤ) := by exact_mod_cast h1
+    have hc2 : ((e : ℕ) : ℤ) < ((((-P.A).toNat : ℕ)) : ℤ) := by exact_mod_cast h2
+    have := P.hA
+    exact pdMm_odd_of_travel P e (Or.inr ⟨by omega, by omega⟩)
+  heven := by
+    intro e h
+    refine pdMm_even_of_no_travel P e ?_
+    have he0 : (0 : ℤ) ≤ ((e : ℕ) : ℤ) := Int.natCast_nonneg _
+    have hA := P.hA
+    have hak := A_le_kstar P hk
+    have hlo : ((((P.kstar - P.A).toNat : ℕ)) : ℤ) = P.kstar - P.A := by omega
+    have hhi : ((((-P.A).toNat : ℕ)) : ℤ) = -P.A := by omega
+    have h' : ¬ (((((P.kstar - P.A).toNat : ℕ)) : ℤ) ≤ ((e : ℕ) : ℤ)
+        ∧ ((e : ℕ) : ℤ) < ((((-P.A).toNat : ℕ)) : ℤ)) := by
+      rintro ⟨g1, g2⟩
+      exact h ⟨by exact_mod_cast g1, by exact_mod_cast g2⟩
+    rw [hlo, hhi] at h'
+    omega
+
+@[simp] theorem pdVZneg_lo (P : SiteCost.PathData) (hk : P.kstar < 0) :
+    (pdVZneg P hk).lo = (P.kstar - P.A).toNat := rfl
+@[simp] theorem pdVZneg_hi (P : SiteCost.PathData) (hk : P.kstar < 0) :
+    (pdVZneg P hk).hi = (-P.A).toNat := rfl
+
+theorem pdVZneg_noCut (P : SiteCost.PathData) (hk : P.kstar < 0)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    NoCut (pdVZneg P hk) (pdCutSites P) := by
+  rintro z hz ⟨h1, h2⟩
+  have hA := P.hA
+  have hak := A_le_kstar P hk
+  have hlo : (((pdVZneg P hk).lo : ℕ) : ℤ) = P.kstar - P.A := by
+    simp only [pdVZneg_lo]; omega
+  have hhi : (((pdVZneg P hk).hi : ℕ) : ℤ) = -P.A := by simp only [pdVZneg_hi]; omega
+  rw [hlo] at h1
+  rw [hhi] at h2
+  have hcut : P.cut (P.A + z) := ((mem_pdCutSites P z).mp hz).2
+  rcases lt_trichotomy (P.A + z) P.kstar with h | h | h
+  · omega
+  · exact hne1 (by rw [show (P.kstar - P.A) = z from by omega]; exact hz)
+  · rcases lt_trichotomy (P.A + z) 0 with hh | hh | hh
+    · exact no_cut_in_neg_travel P (P.A + z) h hh hcut
+    · exact hne0 (by rw [show (-P.A) = z from by omega]; exact hz)
+    · omega
+
+/-- **THE SHIELD LAW FOR A REAL CONFIGURATION** (negative travel). -/
+theorem pd_shield_law_neg (P : SiteCost.PathData) (hk : P.kstar < 0)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    WalkGraph.walkCount
+        (vzData (pdVZneg P hk) (pdCutSites P) (pdVZneg_noCut P hk hne0 hne1))
+      = (pdCutSites P).card + 1 := by
+  have hwp := pdWidth_pos P
+  refine vz_shield_law (pdVZneg P hk) (pdCutSites P) (pdVZneg_noCut P hk hne0 hne1)
+    0 ((pdWidth P : ℤ) - 1) (by omega) ?_ ?_ (pd_hoc P)
+  · intro z hz; exact (pdCutSites_interior P hz).1
+  · intro z hz; have := (pdCutSites_interior P hz).2; omega
+
+/-- **Both signs at once**, in existential form.  `kstar = 0` is excluded and must be:
+there the two virtual points sit at the same site, `VEndpt.partner` no longer changes
+site, and no `WalkGraph.Data` of this shape exists. -/
+theorem pd_shield_exists (P : SiteCost.PathData) (hk : P.kstar ≠ 0)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    ∃ E : WalkGraph.Data (VEndpt (pdWidth P) (pdMm P)),
+      WalkGraph.walkCount E = (pdCutSites P).card + 1 := by
+  rcases lt_trichotomy P.kstar 0 with h | h | h
+  · exact ⟨_, pd_shield_law_neg P h hne0 hne1⟩
+  · exact absurd h hk
+  · exact ⟨_, pd_shield_law_pos P h hne0 hne1⟩
+
+/-- **And for a group element.**  `Elt.toPathData` is the bridge named in BLOCK 330;
+the cut count is the element's `|Z|` in absolute coordinates by
+`EltBridge.pdCutSites_card_eq_abs`. -/
+theorem Elt_shield_exists (g : Elt) (hk : g.toPathData.kstar ≠ 0)
+    (hne0 : (-g.toPathData.A) ∉ pdCutSites g.toPathData)
+    (hne1 : (g.toPathData.kstar - g.toPathData.A) ∉ pdCutSites g.toPathData) :
+    ∃ E : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+      WalkGraph.walkCount E
+        = ((Finset.Ioo g.toPathData.A (g.toPathData.B + 1)).filter
+            g.toPathData.cut).card + 1 := by
+  obtain ⟨E, hE⟩ := pd_shield_exists g.toPathData hk hne0 hne1
+  exact ⟨E, by rw [hE, pdCutSites_card_eq_abs]⟩
+
+end PathDataInstanceNeg
+
+/-! ### Non-vacuity at the `Elt` level
+
+`EltBridge.witNeg` is a genuine group element with `kstar = -1`, span `[-1, 2]`, ONE cut
+site, and neither virtual site cut -- so every hypothesis above holds of it and the
+whole chain runs.  Its widths are odd on the shifted span `[0, 1)` and even off it, so
+neither `EltBridge.shield_law` nor `EltBridge.zz_shield_law` can state this. -/
+
+theorem witNeg_kstar_neg : witNeg.toPathData.kstar < 0 := by rw [witNeg_pd_kstar]; norm_num
+
+theorem witNeg_hne0 : (-witNeg.toPathData.A) ∉ pdCutSites witNeg.toPathData := by
+  rw [witNeg_cutSites, witNeg_pd_A, Finset.mem_singleton]
+  norm_num
+
+theorem witNeg_hne1 :
+    (witNeg.toPathData.kstar - witNeg.toPathData.A) ∉ pdCutSites witNeg.toPathData := by
+  rw [witNeg_cutSites, witNeg_pd_A, witNeg_pd_kstar, Finset.mem_singleton]
+  norm_num
+
+/-- **The whole chain, on a real group element with a non-empty cut set.** -/
+theorem witNeg_shield :
+    WalkGraph.walkCount
+        (vzData (pdVZneg witNeg.toPathData witNeg_kstar_neg) (pdCutSites witNeg.toPathData)
+          (pdVZneg_noCut witNeg.toPathData witNeg_kstar_neg witNeg_hne0 witNeg_hne1))
+      = 2 := by
+  rw [pd_shield_law_neg witNeg.toPathData witNeg_kstar_neg witNeg_hne0 witNeg_hne1,
+    witNeg_cutSites]
+  simp
+
 end VZigzag
 
 -- Certification (Rule 5).
@@ -1667,3 +1956,21 @@ end VZigzag
 #print axioms VZigzag.vz_shield_law_exists
 #print axioms VZigzag.C3_noCut
 #print axioms VZigzag.vz_witness_shield
+#print axioms VZigzag.pdWidth_cast
+#print axioms VZigzag.kstar_le_B
+#print axioms VZigzag.A_le_kstar
+#print axioms VZigzag.pdMm_odd_of_travel
+#print axioms VZigzag.pdMm_even_of_no_travel
+#print axioms VZigzag.pdVZpos
+#print axioms VZigzag.pdVZpos_noCut
+#print axioms VZigzag.pd_hoc
+#print axioms VZigzag.pd_shield_law_pos
+#print axioms VZigzag.pd_shield_exists_pos
+#print axioms VZigzag.pdVZneg
+#print axioms VZigzag.pdVZneg_noCut
+#print axioms VZigzag.pd_shield_law_neg
+#print axioms VZigzag.pd_shield_exists
+#print axioms VZigzag.Elt_shield_exists
+#print axioms VZigzag.witNeg_hne0
+#print axioms VZigzag.witNeg_hne1
+#print axioms VZigzag.witNeg_shield
