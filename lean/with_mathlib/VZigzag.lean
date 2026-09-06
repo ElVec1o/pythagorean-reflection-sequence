@@ -1900,6 +1900,819 @@ theorem witNeg_shield :
     witNeg_cutSites]
   simp
 
+
+/-! ## The defect identification, the two virtual sites, and `kstar = 0`
+
+BLOCK 341 built the datum and computed its walk count.  Three things were left open and
+are settled here.
+
+1. **The walk count IS the element's defect.**  `ConfigLoop.defect D = walkCount D - 1`
+   and `EltBridge.Elt.c g = (pdCutSites g.toPathData).card`, so the shield law says
+   exactly `defect = c` on the constructed datum.  Stated as a named theorem rather than
+   left for the reader to assemble.  The identification is made on the NAMED datum
+   `vzData`/`zzData`, not on the existential `pd_shield_exists`: an existential over an
+   unconstrained `WalkGraph.Data` is weak (any fixed-point-free involution pair is one),
+   so the content lives in the construction.
+
+2. **The two hypotheses `hne0`, `hne1` are characterised exactly.**
+   `mem_pdCutSites_zero` and `mem_pdCutSites_kstar` reduce them to `P.cut 0` and
+   `P.cut P.kstar` plus interiority, and the read-offs then say:
+
+   | | site `0` | site `kstar` |
+   |---|---|---|
+   | `kstar > 0` | never cut (`Phi = 1`) | cut iff `!delta`, `d(k-1) = -eps`, `d(k) = 0` |
+   | `kstar = 0` | cut iff `!delta`, `d(-1) = 1 - eps`, `d(0) = 0` | (same site) |
+   | `kstar < 0` | cut iff `d(-1) = 1`, `d(0) = 0` | cut iff `delta`, `d(k-1) = 0`, `d(k) = eps` |
+
+   (`kstar < 0` is `EltBridge.cut_at_zero_iff` / `cut_at_kstar_iff`; the other two rows
+   are `not_cut_at_zero_pos`, `cut_at_kstar_iff_pos`, `cut_at_zero_iff_zero` here.)
+   So `hne0` is FREE for `kstar > 0`, `hne1` is FREE for `kstar > 0 & delta` and for
+   `kstar < 0 & !delta`, and the remaining two cases are genuine: `witCut0` and `witCutK`
+   below are group elements where the respective hypothesis FAILS and `NoCut` is FALSE,
+   so this route's construction does not apply to them.
+
+3. **`kstar = 0` needs no hypotheses at all.**  `travel 0 = 0`, so `mu j` is even and at
+   least `2` at every edge: the widths of a zero-travel element satisfy
+   `EltBridge.EvenWidths`, there are no virtual points, and `EltBridge.zz_shield_law`
+   (BLOCK 339) applies with NO exclusions.  This removes BLOCK 341's `kstar /= 0`
+   exclusion entirely.
+
+Every read-off above was checked first in Rust
+(`code/zeta_probe/tools/nogap/src/bin/pdcut_check.rs`: 33 372 legal `(kstar, eps, delta, d)`
+with `kstar` in `[-3,3]` and `d : [-3,3] -> [-2,2]`, 0 failures), together with the widths
+and cut sets of the three new witnesses and a 680-configuration sweep of the even-width
+turn. -/
+
+section DefectAndZero
+
+open SiteCost
+
+/-! ### The two virtual sites, as membership conditions
+
+`pdCutSites` filters the shifted window `Ioo 0 (pdWidth P)`, so a virtual site is a cut
+site only if it is INTERIOR.  These two lemmas strip the interiority off and leave the
+bare `P.cut` condition, which the read-offs then evaluate. -/
+
+/-- **Site `0` is a cut site of the shifted window iff `A < 0` and `P.cut 0`.**  The upper
+interiority bound is automatic, since `-A < pdWidth = B - A + 1` reduces to `0 ≤ B`. -/
+theorem mem_pdCutSites_zero (P : SiteCost.PathData) :
+    (-P.A) ∈ pdCutSites P ↔ (P.A < 0 ∧ P.cut 0) := by
+  rw [mem_pdCutSites]
+  have hw := pdWidth_cast P
+  have hA := P.hA
+  have hB := P.hB
+  constructor
+  · rintro ⟨⟨h1, h2⟩, hcut⟩
+    refine ⟨by omega, ?_⟩
+    unfold pdCutAt at hcut
+    rwa [show P.A + -P.A = (0 : ℤ) by ring] at hcut
+  · rintro ⟨h1, hcut⟩
+    refine ⟨⟨by omega, by omega⟩, ?_⟩
+    unfold pdCutAt
+    rwa [show P.A + -P.A = (0 : ℤ) by ring]
+
+/-- **Site `kstar` is a cut site of the shifted window iff `A < kstar ≤ B` and
+`P.cut P.kstar`.** -/
+theorem mem_pdCutSites_kstar (P : SiteCost.PathData) :
+    (P.kstar - P.A) ∈ pdCutSites P ↔ (P.A < P.kstar ∧ P.kstar ≤ P.B ∧ P.cut P.kstar) := by
+  rw [mem_pdCutSites]
+  have hw := pdWidth_cast P
+  constructor
+  · rintro ⟨⟨h1, h2⟩, hcut⟩
+    refine ⟨by omega, by omega, ?_⟩
+    unfold pdCutAt at hcut
+    rwa [show P.A + (P.kstar - P.A) = P.kstar by ring] at hcut
+  · rintro ⟨h1, h2, hcut⟩
+    refine ⟨⟨by omega, by omega⟩, ?_⟩
+    unfold pdCutAt
+    rwa [show P.A + (P.kstar - P.A) = P.kstar by ring]
+
+/-! ### The read-offs for `kstar ≥ 0`
+
+`EltBridge.cut_at_zero_iff` and `EltBridge.cut_at_kstar_iff` do the `kstar < 0` half.
+These are the missing rows, and they are not the mirror image: for positive travel the
+travel indicator sits on `[0, kstar)`, so it is site `0` whose `Phi` is forced non-zero
+and site `kstar` that can be cut -- the exact opposite of `kstar < 0`. -/
+
+/-- **For positive travel site `0` is NEVER cut.**  `f(-1) = 0` there, so
+`Phi(0) = 0 + 1 - 0 = 1`.  (For `kstar < 0` the same computation gives `-1 + 1 - 0 = 0`,
+which is why `cut_at_zero_iff` has content.) -/
+theorem not_cut_at_zero_pos (P : SiteCost.PathData) (hk : 0 < P.kstar) : ¬ P.cut 0 := by
+  rintro ⟨-, -, hc⟩
+  have hvD : P.vD 0 = 0 := by
+    unfold SiteCost.PathData.vD; rw [if_neg (by omega)]
+  have hf : P.f (0 - 1) = 0 := by
+    unfold SiteCost.PathData.f travel
+    rw [if_neg (by omega), if_neg (by omega)]
+  have hvL : P.vL 0 = 0 := by
+    unfold SiteCost.PathData.vL; rw [hvD]; split_ifs <;> rfl
+  unfold SiteCost.PathData.PhiAt SiteCost.vArr at hc
+  rw [hf, hvL, if_pos rfl] at hc
+  norm_num at hc
+
+/-- **For positive travel site `kstar` is cut exactly when `delta` is CLEAR and the two
+read-offs hold.**  `f(kstar - 1) = 1` there, so `Phi = 1 - vL(kstar)` vanishes only when
+the virtual departure is on the LEFT -- the mirror of `cut_at_kstar_iff`. -/
+theorem cut_at_kstar_iff_pos (P : SiteCost.PathData) (hk : 0 < P.kstar) :
+    P.cut P.kstar ↔
+      (P.delta = false ∧ P.d (P.kstar - 1) = -P.eps ∧ P.d P.kstar = 0) := by
+  have hvA : SiteCost.vArr P.kstar = 0 := by
+    unfold SiteCost.vArr; rw [if_neg (by omega)]
+  have hvD : P.vD P.kstar = 1 := by
+    unfold SiteCost.PathData.vD; rw [if_pos rfl]
+  have hf : P.f (P.kstar - 1) = 1 := by
+    unfold SiteCost.PathData.f travel
+    rw [if_pos (by omega)]
+  constructor
+  · rintro ⟨ha, hb, hc⟩
+    unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL at hc
+    rw [hvA, hvD, hf] at hc
+    have hd : P.delta = false := by
+      by_contra hcon
+      simp only [Bool.not_eq_false] at hcon
+      rw [hcon] at hc; norm_num at hc
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL at ha
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR at hb
+    rw [hvA, hvD, hd] at ha
+    rw [hvD, hd] at hb
+    norm_num at ha hb
+    exact ⟨hd, by omega, by omega⟩
+  · rintro ⟨hd, h1, h2⟩
+    refine ⟨?_, ?_, ?_⟩
+    · unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL
+      rw [hvA, hvD, hd]
+      norm_num
+      omega
+    · unfold SiteCost.PathData.betaAt SiteCost.PathData.vR
+      rw [hvD, hd]
+      norm_num
+      exact h2
+    · unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL
+      rw [hvA, hvD, hd, hf]
+      norm_num
+
+/-- **For zero travel the two virtual sites coincide at `0`**, and it is cut exactly when
+`delta` is clear and the two read-offs hold.  `f(-1) = 0` and the virtual departure sits
+at `0` too, so `Phi(0) = 0 + 1 - vL(0)`. -/
+theorem cut_at_zero_iff_zero (P : SiteCost.PathData) (hk : P.kstar = 0) :
+    P.cut 0 ↔ (P.delta = false ∧ P.d (-1) = 1 - P.eps ∧ P.d 0 = 0) := by
+  have hvA : SiteCost.vArr (0 : ℤ) = 1 := by
+    unfold SiteCost.vArr; rw [if_pos rfl]
+  have hvD : P.vD 0 = 1 := by
+    unfold SiteCost.PathData.vD; rw [if_pos (by omega)]
+  have hf : P.f (0 - 1) = 0 := by
+    unfold SiteCost.PathData.f
+    rw [hk, travel_of_kstar_zero]
+  constructor
+  · rintro ⟨ha, hb, hc⟩
+    unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL at hc
+    rw [hvA, hvD, hf] at hc
+    have hd : P.delta = false := by
+      by_contra hcon
+      simp only [Bool.not_eq_false] at hcon
+      rw [hcon] at hc; norm_num at hc
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL at ha
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR at hb
+    rw [hvA, hvD, hd] at ha
+    rw [hvD, hd] at hb
+    norm_num at ha hb
+    exact ⟨hd, by omega, by omega⟩
+  · rintro ⟨hd, h1, h2⟩
+    refine ⟨?_, ?_, ?_⟩
+    · unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL
+      rw [hvA, hvD, hd]
+      norm_num
+      omega
+    · unfold SiteCost.PathData.betaAt SiteCost.PathData.vR
+      rw [hvD, hd]
+      norm_num
+      exact h2
+    · unfold SiteCost.PathData.PhiAt SiteCost.PathData.vL
+      rw [hvA, hvD, hd, hf]
+      norm_num
+
+/-! ### Discharging the hypotheses where they are free -/
+
+/-- **`hne0` is automatic for positive travel.** -/
+theorem pd_hne0_of_pos (P : SiteCost.PathData) (hk : 0 < P.kstar) :
+    (-P.A) ∉ pdCutSites P := by
+  rw [mem_pdCutSites_zero]
+  rintro ⟨-, hc⟩
+  exact not_cut_at_zero_pos P hk hc
+
+/-- **`hne1` is automatic for positive travel with `delta` set.** -/
+theorem pd_hne1_of_pos_delta (P : SiteCost.PathData) (hk : 0 < P.kstar)
+    (hd : P.delta = true) : (P.kstar - P.A) ∉ pdCutSites P := by
+  rw [mem_pdCutSites_kstar]
+  rintro ⟨-, -, hc⟩
+  rw [cut_at_kstar_iff_pos P hk, hd] at hc
+  exact absurd hc.1 (by simp)
+
+/-- **`hne1` is automatic for negative travel with `delta` clear.** -/
+theorem pd_hne1_of_neg_not_delta (P : SiteCost.PathData) (hk : P.kstar < 0)
+    (hd : P.delta = false) : (P.kstar - P.A) ∉ pdCutSites P := by
+  rw [mem_pdCutSites_kstar]
+  rintro ⟨-, -, hc⟩
+  rw [cut_at_kstar_iff P hk, hd] at hc
+  exact absurd hc.1 (by simp)
+
+/-- **`hne0` for negative travel, as an explicit read-off.**  Not free: this is a genuine
+condition on the deposits, and `witCut0` below violates it. -/
+theorem pd_hne0_neg_iff (P : SiteCost.PathData) (hk : P.kstar < 0) :
+    (-P.A) ∈ pdCutSites P ↔ (P.A < 0 ∧ P.d (-1) = 1 ∧ P.d 0 = 0) := by
+  rw [mem_pdCutSites_zero, cut_at_zero_iff P hk]
+
+/-- **`hne1` for positive travel, as an explicit read-off.**  Not free either;
+`witCutK` below violates it. -/
+theorem pd_hne1_pos_iff (P : SiteCost.PathData) (hk : 0 < P.kstar) :
+    (P.kstar - P.A) ∈ pdCutSites P ↔
+      (P.A < P.kstar ∧ P.kstar ≤ P.B ∧ P.delta = false ∧
+        P.d (P.kstar - 1) = -P.eps ∧ P.d P.kstar = 0) := by
+  rw [mem_pdCutSites_kstar, cut_at_kstar_iff_pos P hk]
+
+/-! ### `kstar = 0`: the excluded case, closed with no hypotheses
+
+`travel 0 j = 0` for every `j`, so `mu j = 2` wherever `d j = 0` and `|d j|` otherwise --
+and `hpar` makes every `d j` even.  So all widths are even and at least `2`, there are no
+odd-width edges and hence no virtual points, and BLOCK 339's `EltBridge.zz_shield_law`
+applies verbatim.  It carries NO exclusion hypotheses, so the `kstar = 0` case of the
+shield law is unconditional. -/
+
+/-- **A zero-travel element has all widths even.** -/
+theorem pdMm_evenWidths_of_kstar_zero (P : SiteCost.PathData) (hk : P.kstar = 0) :
+    EvenWidths (pdMm P) := by
+  intro e
+  refine pdMm_even_of_no_travel P e ?_
+  rw [hk]
+  rintro (⟨h1, h2⟩ | ⟨h1, h2⟩) <;> omega
+
+/-- **THE SHIELD LAW FOR A REAL CONFIGURATION** (zero travel).  No `hne0`, no `hne1`:
+the two virtual points do not exist in this case, so nothing has to avoid them. -/
+theorem pd_shield_law_zero (P : SiteCost.PathData) (hk : P.kstar = 0) :
+    WalkGraph.walkCount (zzData (pdCutSites P) (pdMm_evenWidths_of_kstar_zero P hk))
+      = (pdCutSites P).card + 1 := by
+  have hwp := pdWidth_pos P
+  refine zz_shield_law (pdCutSites P) (pdMm_evenWidths_of_kstar_zero P hk)
+    0 ((pdWidth P : ℤ) - 1) (by omega) ?_ ?_ (pd_hoc P) ?_
+  · intro z hz; exact (pdCutSites_interior P hz).1
+  · intro z hz; have := (pdCutSites_interior P hz).2; omega
+  · obtain ⟨x, -⟩ := pd_hoc P 0 le_rfl (by omega)
+    exact ⟨x⟩
+
+/-! ### The defect identification
+
+`ConfigLoop.defect D = walkCount D - 1` by definition, so each shield law above is a
+statement about the defect of an explicitly named datum.  `EltBridge.Elt.c g` is
+`(pdCutSites g.toPathData).card`, so at the level of a group element these read
+`c = defect`. -/
+
+/-- **`defect = |Z|` for positive travel**, on the constructed datum. -/
+theorem pd_defect_pos (P : SiteCost.PathData) (hk : 0 < P.kstar)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    ConfigLoop.defect (vzData (pdVZpos P hk) (pdCutSites P) (pdVZpos_noCut P hk hne0 hne1))
+      = (pdCutSites P).card := by
+  unfold ConfigLoop.defect
+  rw [pd_shield_law_pos P hk hne0 hne1]
+  omega
+
+/-- **`defect = |Z|` for negative travel**, on the constructed datum. -/
+theorem pd_defect_neg (P : SiteCost.PathData) (hk : P.kstar < 0)
+    (hne0 : (-P.A) ∉ pdCutSites P) (hne1 : (P.kstar - P.A) ∉ pdCutSites P) :
+    ConfigLoop.defect (vzData (pdVZneg P hk) (pdCutSites P) (pdVZneg_noCut P hk hne0 hne1))
+      = (pdCutSites P).card := by
+  unfold ConfigLoop.defect
+  rw [pd_shield_law_neg P hk hne0 hne1]
+  omega
+
+/-- **`defect = |Z|` for zero travel**, on the constructed datum, with no hypotheses. -/
+theorem pd_defect_zero (P : SiteCost.PathData) (hk : P.kstar = 0) :
+    ConfigLoop.defect (zzData (pdCutSites P) (pdMm_evenWidths_of_kstar_zero P hk))
+      = (pdCutSites P).card := by
+  unfold ConfigLoop.defect
+  rw [pd_shield_law_zero P hk]
+  omega
+
+/-! ### At the level of a group element -/
+
+/-- **`Elt.c g = defect` for positive travel.**  This is the identification BLOCK 341
+explicitly did not claim. -/
+theorem Elt_c_eq_defect_pos (g : Elt) (hk : 0 < g.toPathData.kstar)
+    (hne0 : (-g.toPathData.A) ∉ pdCutSites g.toPathData)
+    (hne1 : (g.toPathData.kstar - g.toPathData.A) ∉ pdCutSites g.toPathData) :
+    Elt.c g = ConfigLoop.defect
+      (vzData (pdVZpos g.toPathData hk) (pdCutSites g.toPathData)
+        (pdVZpos_noCut g.toPathData hk hne0 hne1)) :=
+  (pd_defect_pos g.toPathData hk hne0 hne1).symm
+
+/-- **`Elt.c g = defect` for negative travel.** -/
+theorem Elt_c_eq_defect_neg (g : Elt) (hk : g.toPathData.kstar < 0)
+    (hne0 : (-g.toPathData.A) ∉ pdCutSites g.toPathData)
+    (hne1 : (g.toPathData.kstar - g.toPathData.A) ∉ pdCutSites g.toPathData) :
+    Elt.c g = ConfigLoop.defect
+      (vzData (pdVZneg g.toPathData hk) (pdCutSites g.toPathData)
+        (pdVZneg_noCut g.toPathData hk hne0 hne1)) :=
+  (pd_defect_neg g.toPathData hk hne0 hne1).symm
+
+/-- **`Elt.c g = defect` for zero travel**, with NO hypotheses at all. -/
+theorem Elt_c_eq_defect_zero (g : Elt) (hk : g.toPathData.kstar = 0) :
+    Elt.c g = ConfigLoop.defect
+      (zzData (pdCutSites g.toPathData) (pdMm_evenWidths_of_kstar_zero g.toPathData hk)) :=
+  (pd_defect_zero g.toPathData hk).symm
+
+/-! ### The hypothesis-free classes -/
+
+/-- **Positive travel with `delta` set: the shield law with no side conditions.** -/
+theorem pd_shield_law_pos_delta (P : SiteCost.PathData) (hk : 0 < P.kstar)
+    (hd : P.delta = true) :
+    WalkGraph.walkCount (vzData (pdVZpos P hk) (pdCutSites P)
+        (pdVZpos_noCut P hk (pd_hne0_of_pos P hk) (pd_hne1_of_pos_delta P hk hd)))
+      = (pdCutSites P).card + 1 :=
+  pd_shield_law_pos P hk (pd_hne0_of_pos P hk) (pd_hne1_of_pos_delta P hk hd)
+
+/-- **Negative travel with `delta` clear: only `hne0` survives.** -/
+theorem pd_shield_law_neg_not_delta (P : SiteCost.PathData) (hk : P.kstar < 0)
+    (hd : P.delta = false) (hne0 : (-P.A) ∉ pdCutSites P) :
+    WalkGraph.walkCount (vzData (pdVZneg P hk) (pdCutSites P)
+        (pdVZneg_noCut P hk hne0 (pd_hne1_of_neg_not_delta P hk hd)))
+      = (pdCutSites P).card + 1 :=
+  pd_shield_law_neg P hk hne0 (pd_hne1_of_neg_not_delta P hk hd)
+
+/-! ### One theorem for ALL elements
+
+The two cases live on different end types -- `kstar = 0` needs no virtual points and its
+datum is a `Data (Endpt ...)`, while `kstar /= 0` needs both and its datum is a
+`Data (VEndpt ...)`.  There is no single type to state them over: pushing the `kstar = 0`
+datum into `VEndpt` would add the virtual pair as its OWN component (`VEndpt.partner` and
+any turn both swap the two virtual tags, which at `kstar = 0` sit at the same site),
+giving `defect = |Z| + 1`, not `|Z|`.  So the honest single statement is the disjunction,
+with the hypotheses stated conditionally on `kstar /= 0` -- which is what makes the
+`kstar = 0` branch unconditional. -/
+
+/-- **The defect identification for EVERY group element.**  For `kstar = 0` the
+hypotheses are vacuous, so this covers all zero-travel elements outright. -/
+theorem Elt_defect_eq_c (g : Elt)
+    (hne0 : g.toPathData.kstar ≠ 0 → (-g.toPathData.A) ∉ pdCutSites g.toPathData)
+    (hne1 : g.toPathData.kstar ≠ 0 →
+      (g.toPathData.kstar - g.toPathData.A) ∉ pdCutSites g.toPathData) :
+    (∃ E : WalkGraph.Data (Endpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+        ConfigLoop.defect E = Elt.c g)
+      ∨ (∃ E : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+        ConfigLoop.defect E = Elt.c g) := by
+  rcases lt_trichotomy g.toPathData.kstar 0 with h | h | h
+  · exact Or.inr ⟨_, (Elt_c_eq_defect_neg g h (hne0 (by omega)) (hne1 (by omega))).symm⟩
+  · exact Or.inl ⟨_, (Elt_c_eq_defect_zero g h).symm⟩
+  · exact Or.inr ⟨_, (Elt_c_eq_defect_pos g h (hne0 (by omega)) (hne1 (by omega))).symm⟩
+
+/-- **The hypothesis-free class.**  `kstar = 0`, or `kstar > 0` with `delta` set: no side
+condition on the element whatsoever. -/
+theorem Elt_defect_eq_c_free (g : Elt) (hk : 0 ≤ g.toPathData.kstar)
+    (hd : g.toPathData.kstar = 0 ∨ g.toPathData.delta = true) :
+    (∃ E : WalkGraph.Data (Endpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+        ConfigLoop.defect E = Elt.c g)
+      ∨ (∃ E : WalkGraph.Data (VEndpt (pdWidth g.toPathData) (pdMm g.toPathData)),
+        ConfigLoop.defect E = Elt.c g) := by
+  rcases eq_or_lt_of_le hk with h | h
+  · exact Or.inl ⟨_, (Elt_c_eq_defect_zero g h.symm).symm⟩
+  · have hdd : g.toPathData.delta = true := by
+      rcases hd with h0 | h0
+      · omega
+      · exact h0
+    exact Or.inr ⟨_, (Elt_c_eq_defect_pos g h (pd_hne0_of_pos _ h)
+      (pd_hne1_of_pos_delta _ h hdd)).symm⟩
+
+end DefectAndZero
+
+/-! ## Non-vacuity, and the sharpness of `hne0` / `hne1`
+
+Three new witnesses, all genuine `Elt`s, all computed in Rust first.
+
+* `witZero` -- `kstar = 0`, deposits `2` at edges `-1` and `2`.  Span `[-1, 2]`, widths
+  `(2,2,2,2)`, one interior cut site.  Exercises the whole `kstar = 0` route, which
+  BLOCK 341 could not state at all.
+* `witCut0` -- `kstar = -1`, deposit `1` at edge `-1`.  Span `[-1, 0]`, widths `(1,2)`,
+  and its ONE cut site is `-A`: `hne0` FAILS and `NoCut` is FALSE.
+* `witCutK` -- `kstar = 1`, deposits `-1` at edge `0` and `2` at edge `2`.  Span `[0, 2]`,
+  widths `(1,2,2)`, and its ONE cut site is `kstar - A`: `hne1` FAILS and `NoCut` is
+  FALSE. -/
+
+section Sharpness
+
+open SiteCost
+
+/-! ### `witZero`: the `kstar = 0` route is non-vacuous -/
+
+/-- A zero-travel element with a genuine interior cut site. -/
+noncomputable def witZero : Elt where
+  kstar := 0
+  eps := 1
+  delta := true
+  heps := Or.inl rfl
+  d := fun j => if j = -1 then 2 else if j = 2 then 2 else 0
+  hpar := by
+    intro j
+    rw [travel_of_kstar_zero]
+    by_cases h1 : j = -1
+    · subst h1; norm_num
+    · by_cases h2 : j = 2
+      · subst h2; simp [h1]
+      · simp [h1, h2]
+  supp := {-1, 2}
+  hsupp := by
+    intro j hj
+    have h1 : j ≠ -1 := by intro hc; exact hj (by simp [hc])
+    have h2 : j ≠ 2 := by intro hc; exact hj (by simp [hc])
+    exact ⟨by simp [h1, h2], travel_of_kstar_zero j⟩
+
+@[simp] theorem witZero_pd_kstar : witZero.toPathData.kstar = 0 := rfl
+@[simp] theorem witZero_pd_delta : witZero.toPathData.delta = true := rfl
+
+theorem witZero_pd_d (j : ℤ) :
+    witZero.toPathData.d j = if j = -1 then 2 else if j = 2 then 2 else 0 := rfl
+
+theorem witZero_pd_f (j : ℤ) : witZero.toPathData.f j = 0 := by
+  unfold SiteCost.PathData.f
+  rw [witZero_pd_kstar, travel_of_kstar_zero]
+
+theorem witZero_occ : witZero.occ = {-1, 0, 2} := by
+  classical
+  unfold Elt.occ
+  ext x
+  simp only [Finset.mem_insert, Finset.mem_filter, Finset.mem_singleton]
+  constructor
+  · rintro (h | ⟨h, -⟩)
+    · simp [h]
+    · have : x = -1 ∨ x = 2 := by simpa [witZero] using h
+      rcases this with h | h <;> simp [h]
+  · rintro (h | h | h) <;> subst h
+    · exact Or.inr ⟨by simp [witZero], Or.inl (by simp [witZero])⟩
+    · exact Or.inl rfl
+    · exact Or.inr ⟨by simp [witZero], Or.inl (by simp [witZero])⟩
+
+theorem witZero_A : witZero.A = -1 := by
+  have hm : witZero.A ∈ witZero.occ := Finset.min'_mem _ _
+  have hle : witZero.A ≤ -1 := Finset.min'_le _ _ (by rw [witZero_occ]; simp)
+  rw [witZero_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
+theorem witZero_B : witZero.B = 2 := by
+  have hm : witZero.B ∈ witZero.occ := Finset.max'_mem _ _
+  have hle : (2 : ℤ) ≤ witZero.B := Finset.le_max' _ _ (by rw [witZero_occ]; simp)
+  rw [witZero_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
+@[simp] theorem witZero_pd_A : witZero.toPathData.A = -1 := witZero_A
+@[simp] theorem witZero_pd_B : witZero.toPathData.B = 2 := witZero_B
+
+theorem witZero_width : pdWidth witZero.toPathData = 4 := by
+  unfold pdWidth
+  rw [witZero_pd_A, witZero_pd_B]
+  rfl
+
+/-- **The cut set of `witZero` is a single site.**  Of the three interior shifted sites
+`1, 2, 3` (absolute `0, 1, 2`): the first is the virtual site and `delta` is SET there so
+it is not cut, the second is cut, the third carries the deposit `2`. -/
+theorem witZero_cutSites : pdCutSites witZero.toPathData = {2} := by
+  classical
+  ext z
+  rw [mem_pdCutSites, Finset.mem_singleton, witZero_width]
+  constructor
+  · rintro ⟨⟨h1, h2⟩, hcut⟩
+    interval_cases z
+    · exfalso
+      unfold pdCutAt at hcut
+      rw [witZero_pd_A, show (-1 : ℤ) + 1 = 0 by ring,
+        cut_at_zero_iff_zero _ witZero_pd_kstar, witZero_pd_delta] at hcut
+      exact absurd hcut.1 (by simp)
+    · rfl
+    · exfalso
+      rw [pdCutAt_iff witZero.toPathData 3 (by rw [witZero_pd_A]; norm_num)
+        (by rw [witZero_pd_A, witZero_pd_kstar]; norm_num)] at hcut
+      obtain ⟨-, hdd, -⟩ := hcut
+      rw [witZero_pd_A, show (-1 : ℤ) + 3 = 2 by ring, witZero_pd_d] at hdd
+      norm_num at hdd
+  · rintro rfl
+    refine ⟨⟨by norm_num, by norm_num⟩, ?_⟩
+    rw [pdCutAt_iff witZero.toPathData 2 (by rw [witZero_pd_A]; norm_num)
+      (by rw [witZero_pd_A, witZero_pd_kstar]; norm_num)]
+    rw [witZero_pd_A, show (-1 : ℤ) + 2 = 1 by ring]
+    refine ⟨?_, ?_, witZero_pd_f _⟩
+    · rw [show (1 : ℤ) - 1 = 0 by ring, witZero_pd_d]; norm_num
+    · rw [witZero_pd_d]; norm_num
+
+/-- **The whole `kstar = 0` chain, on a real group element with a non-empty cut set.**
+`walkCount = 2`, i.e. `defect = c = 1`, and NO hypotheses were needed. -/
+theorem witZero_shield :
+    WalkGraph.walkCount (zzData (pdCutSites witZero.toPathData)
+        (pdMm_evenWidths_of_kstar_zero witZero.toPathData witZero_pd_kstar))
+      = 2 := by
+  rw [pd_shield_law_zero witZero.toPathData witZero_pd_kstar, witZero_cutSites]
+  simp
+
+/-- **And as a defect identity**: `c = 1` is realised by an explicit datum. -/
+theorem witZero_defect :
+    Elt.c witZero = ConfigLoop.defect (zzData (pdCutSites witZero.toPathData)
+        (pdMm_evenWidths_of_kstar_zero witZero.toPathData witZero_pd_kstar)) :=
+  Elt_c_eq_defect_zero witZero witZero_pd_kstar
+
+theorem witZero_c : Elt.c witZero = 1 := by
+  unfold Elt.c
+  rw [witZero_cutSites]
+  simp
+
+/-! ### `witCut0`: `hne0` cannot be dropped -/
+
+/-- A negative-travel element whose virtual arrival site IS a cut site. -/
+noncomputable def witCut0 : Elt where
+  kstar := -1
+  eps := 1
+  delta := false
+  heps := Or.inl rfl
+  d := fun j => if j = -1 then 1 else 0
+  hpar := by
+    intro j
+    unfold travel
+    by_cases h1 : j = -1
+    · subst h1; norm_num
+    · simp only [h1, if_false]
+      split_ifs <;> omega
+  supp := {-1}
+  hsupp := by
+    intro j hj
+    have h1 : j ≠ -1 := by intro hc; exact hj (by simp [hc])
+    refine ⟨by simp [h1], ?_⟩
+    unfold travel
+    split_ifs <;> omega
+
+@[simp] theorem witCut0_pd_kstar : witCut0.toPathData.kstar = -1 := rfl
+
+theorem witCut0_pd_d (j : ℤ) :
+    witCut0.toPathData.d j = if j = -1 then 1 else 0 := rfl
+
+theorem witCut0_kstar_neg : witCut0.toPathData.kstar < 0 := by
+  rw [witCut0_pd_kstar]; norm_num
+
+theorem witCut0_occ : witCut0.occ = {-1, 0} := by
+  classical
+  unfold Elt.occ
+  ext x
+  simp only [Finset.mem_insert, Finset.mem_filter, Finset.mem_singleton]
+  constructor
+  · rintro (h | ⟨h, -⟩)
+    · simp [h]
+    · have : x = -1 := by simpa [witCut0] using h
+      simp [this]
+  · rintro (h | h) <;> subst h
+    · exact Or.inr ⟨by simp [witCut0], Or.inl (by simp [witCut0])⟩
+    · exact Or.inl rfl
+
+theorem witCut0_A : witCut0.A = -1 := by
+  have hm : witCut0.A ∈ witCut0.occ := Finset.min'_mem _ _
+  have hle : witCut0.A ≤ -1 := Finset.min'_le _ _ (by rw [witCut0_occ]; simp)
+  rw [witCut0_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
+theorem witCut0_B : witCut0.B = 0 := by
+  have hm : witCut0.B ∈ witCut0.occ := Finset.max'_mem _ _
+  have hle : (0 : ℤ) ≤ witCut0.B := Finset.le_max' _ _ (by rw [witCut0_occ]; simp)
+  rw [witCut0_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
+@[simp] theorem witCut0_pd_A : witCut0.toPathData.A = -1 := witCut0_A
+@[simp] theorem witCut0_pd_B : witCut0.toPathData.B = 0 := witCut0_B
+
+/-- **`hne0` FAILS for `witCut0`.**  Its virtual arrival site `-A = 1` is a cut site:
+`d(-1) = 1` and `d(0) = 0`, exactly `cut_at_zero_iff`'s condition. -/
+theorem witCut0_hne0_fails :
+    (-witCut0.toPathData.A) ∈ pdCutSites witCut0.toPathData := by
+  rw [pd_hne0_neg_iff _ witCut0_kstar_neg]
+  refine ⟨by rw [witCut0_pd_A]; norm_num, ?_, ?_⟩
+  · rw [witCut0_pd_d]; norm_num
+  · rw [witCut0_pd_d]; norm_num
+
+/-- **So `NoCut` is FALSE for it**, and `pd_shield_law_neg`'s construction does not apply:
+there is no `vzData` to build.
+
+What this does NOT show is that the EXISTENTIAL `pd_shield_exists` fails for `witCut0`.
+That existential quantifies over an arbitrary `WalkGraph.Data`, with no constraint beyond
+its two involutions, so it is satisfiable for almost any configuration and refuting it is
+a different question.  The content of the shield law is in the NAMED datum, and it is the
+named datum that `hne0` is needed for.  That is the sharp form of "this hypothesis cannot
+be removed" available here. -/
+theorem witCut0_noCut :
+    ¬ NoCut (pdVZneg witCut0.toPathData witCut0_kstar_neg)
+        (pdCutSites witCut0.toPathData) := by
+  intro h
+  refine h (-witCut0.toPathData.A) witCut0_hne0_fails ⟨?_, ?_⟩
+  · simp only [pdVZneg_lo, witCut0_pd_A, witCut0_pd_kstar]
+    norm_num
+  · simp only [pdVZneg_hi, witCut0_pd_A]
+    norm_num
+
+/-! ### `witCutK`: `hne1` cannot be dropped either -/
+
+/-- A positive-travel element whose virtual departure site IS a cut site. -/
+noncomputable def witCutK : Elt where
+  kstar := 1
+  eps := 1
+  delta := false
+  heps := Or.inl rfl
+  d := fun j => if j = 0 then -1 else if j = 2 then 2 else 0
+  hpar := by
+    intro j
+    unfold travel
+    by_cases h1 : j = 0
+    · subst h1; norm_num
+    · by_cases h2 : j = 2
+      · subst h2
+        simp only [h1, if_false, if_true]
+        split_ifs <;> omega
+      · simp only [h1, h2, if_false]
+        split_ifs <;> omega
+  supp := {0, 2}
+  hsupp := by
+    intro j hj
+    have h1 : j ≠ 0 := by intro hc; exact hj (by simp [hc])
+    have h2 : j ≠ 2 := by intro hc; exact hj (by simp [hc])
+    refine ⟨by simp [h1, h2], ?_⟩
+    unfold travel
+    split_ifs <;> omega
+
+@[simp] theorem witCutK_pd_kstar : witCutK.toPathData.kstar = 1 := rfl
+@[simp] theorem witCutK_pd_eps : witCutK.toPathData.eps = 1 := rfl
+@[simp] theorem witCutK_pd_delta : witCutK.toPathData.delta = false := rfl
+
+theorem witCutK_pd_d (j : ℤ) :
+    witCutK.toPathData.d j = if j = 0 then -1 else if j = 2 then 2 else 0 := rfl
+
+theorem witCutK_kstar_pos : 0 < witCutK.toPathData.kstar := by
+  rw [witCutK_pd_kstar]; norm_num
+
+theorem witCutK_occ : witCutK.occ = {0, 2} := by
+  classical
+  unfold Elt.occ
+  ext x
+  simp only [Finset.mem_insert, Finset.mem_filter, Finset.mem_singleton]
+  constructor
+  · rintro (h | ⟨h, -⟩)
+    · simp [h]
+    · have : x = 0 ∨ x = 2 := by simpa [witCutK] using h
+      rcases this with h | h <;> simp [h]
+  · rintro (h | h) <;> subst h
+    · exact Or.inl rfl
+    · exact Or.inr ⟨by simp [witCutK], Or.inl (by simp [witCutK])⟩
+
+theorem witCutK_A : witCutK.A = 0 := by
+  have hm : witCutK.A ∈ witCutK.occ := Finset.min'_mem _ _
+  have hle : witCutK.A ≤ 0 := Finset.min'_le _ _ (by rw [witCutK_occ]; simp)
+  rw [witCutK_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
+theorem witCutK_B : witCutK.B = 2 := by
+  have hm : witCutK.B ∈ witCutK.occ := Finset.max'_mem _ _
+  have hle : (2 : ℤ) ≤ witCutK.B := Finset.le_max' _ _ (by rw [witCutK_occ]; simp)
+  rw [witCutK_occ] at hm
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hm
+  omega
+
+@[simp] theorem witCutK_pd_A : witCutK.toPathData.A = 0 := witCutK_A
+@[simp] theorem witCutK_pd_B : witCutK.toPathData.B = 2 := witCutK_B
+
+/-- **`hne1` FAILS for `witCutK`.**  Its virtual departure site `kstar - A = 1` is a cut
+site: `delta` is clear, `d(0) = -1 = -eps` and `d(1) = 0`, exactly
+`cut_at_kstar_iff_pos`'s condition. -/
+theorem witCutK_hne1_fails :
+    (witCutK.toPathData.kstar - witCutK.toPathData.A) ∈ pdCutSites witCutK.toPathData := by
+  rw [pd_hne1_pos_iff _ witCutK_kstar_pos]
+  refine ⟨by rw [witCutK_pd_A, witCutK_pd_kstar]; norm_num,
+    by rw [witCutK_pd_B, witCutK_pd_kstar]; norm_num, witCutK_pd_delta, ?_, ?_⟩
+  · rw [witCutK_pd_kstar, witCutK_pd_eps, show (1 : ℤ) - 1 = 0 by ring, witCutK_pd_d]
+    norm_num
+  · rw [witCutK_pd_kstar, witCutK_pd_d]
+    norm_num
+
+/-- **So `NoCut` is FALSE for it too.**  Same caveat as `witCut0_noCut`: what fails is
+the construction, not the existential. -/
+theorem witCutK_noCut :
+    ¬ NoCut (pdVZpos witCutK.toPathData witCutK_kstar_pos)
+        (pdCutSites witCutK.toPathData) := by
+  intro h
+  refine h (witCutK.toPathData.kstar - witCutK.toPathData.A) witCutK_hne1_fails ⟨?_, ?_⟩
+  · simp only [pdVZpos_lo, witCutK_pd_A, witCutK_pd_kstar]
+    norm_num
+  · simp only [pdVZpos_hi, witCutK_pd_A, witCutK_pd_kstar]
+    norm_num
+
+/-! ### Item 4: how this relates to `ConfigLoop.c_le_Z_final` / `shield_law_runs`
+
+`ConfigLoop.shield_law_runs` proves `walkCount = |Z| + 1` on `Endpt n m` from `RunInv`
+(a cost-minimality-flavoured invariant), `hruns` (every run carries an end) and
+
+    hZ : ∀ x : Endpt n m, isArrOf up x = true → siteOf x ∉ Zf
+
+-- "cut sites carry no arrivals".  `ConfigLoop.shield_final_hyps_incompatible` already
+records that `hZ` is incompatible with balance plus an occupancy hypothesis.  The point
+here is that a REAL configuration always supplies both: `pd_hoc` says every edge of the
+span carries an end (`pdMm_pos`: `mu ≥ 1` everywhere on the span), and balance at a cut
+site is automatic because a cut site has zero travel on both adjacent edges.  So `hZ` is
+FALSE for every real configuration with a cut site away from the two virtual sites, and
+outright false for every zero-travel configuration with any cut site at all.
+
+That settles the comparison honestly: for this application the two routes are not
+alternatives.  `shield_law_runs` cannot be instantiated at a real configuration with a
+non-empty `Z`, because its `hZ` fails there; the zigzag route asks instead for `hturn`
+(the turn BOUNCES at a cut site rather than there being no end there), which is
+satisfiable and is what the explicit construction supplies.  The zigzag route therefore
+supersedes it here rather than duplicating it.  What the zigzag route does NOT give, and
+`shield_law_runs` does, is any relation to cost-minimality: `vzData`/`zzData` are not
+claimed to be `MergesMin`. -/
+
+/-- **A real configuration is balanced at a cut site away from the two virtual sites.**
+A cut site has `f = 0` on its left edge (`pdCutAt_iff`), and `travel` is constant away
+from `0` and `kstar`, so both adjacent edges carry the same signed travel. -/
+theorem pd_balanced_at_cut (P : SiteCost.PathData) (z : ℤ) (hz : z ∈ pdCutSites P)
+    (h0 : P.A + z ≠ 0) (hkz : P.A + z ≠ P.kstar) (e1 e2 : Fin (pdWidth P))
+    (h1 : ((e1 : ℕ) : ℤ) = z - 1) (h2 : ((e2 : ℕ) : ℤ) = z) :
+    (EndType.arrAt (m := pdMm P) (pdUp P) z).card
+      = (EndType.depAt (m := pdMm P) (pdUp P) z).card := by
+  refine (ConfigLoop.balance_iff_tr (m := pdMm P) (pdUp P) z e1 e2 h1 h2).mpr ?_
+  rw [pd_tr_eq, pd_tr_eq, h1, h2]
+  unfold travelS
+  rw [show P.A + (z - 1) = P.A + z - 1 by ring]
+  exact travel_const_off P.kstar (P.A + z) h0 hkz
+
+/-- **A zero-travel configuration is balanced everywhere**, with no side condition. -/
+theorem pd_balanced_of_kstar_zero (P : SiteCost.PathData) (hk : P.kstar = 0) (s : ℤ)
+    (e1 e2 : Fin (pdWidth P)) (h1 : ((e1 : ℕ) : ℤ) = s - 1) (h2 : ((e2 : ℕ) : ℤ) = s) :
+    (EndType.arrAt (m := pdMm P) (pdUp P) s).card
+      = (EndType.depAt (m := pdMm P) (pdUp P) s).card := by
+  refine (ConfigLoop.balance_iff_tr (m := pdMm P) (pdUp P) s e1 e2 h1 h2).mpr ?_
+  rw [pd_tr_eq, pd_tr_eq]
+  unfold travelS
+  rw [hk, travel_of_kstar_zero, travel_of_kstar_zero]
+
+/-- **`ConfigLoop`'s `hZ` is FALSE at a real cut site away from the virtual sites.** -/
+theorem hZ_false_at_cut (P : SiteCost.PathData) (z : ℤ) (hz : z ∈ pdCutSites P)
+    (h0 : P.A + z ≠ 0) (hkz : P.A + z ≠ P.kstar) :
+    ¬ (∀ x : Endpt (pdWidth P) (pdMm P),
+        EndType.isArrOf (pdUp P) x = true → EndType.siteOf x ∉ pdCutSites P) := by
+  intro hZ
+  obtain ⟨hlo, hhi⟩ := pdCutSites_interior P hz
+  have hw := pdWidth_cast P
+  have he1 : (z - 1).toNat < pdWidth P := by omega
+  have he2 : z.toNat < pdWidth P := by omega
+  have hc1 : (((⟨(z - 1).toNat, he1⟩ : Fin (pdWidth P)) : ℕ) : ℤ) = z - 1 := by
+    show (((z - 1).toNat : ℕ) : ℤ) = z - 1; omega
+  have hc2 : (((⟨z.toNat, he2⟩ : Fin (pdWidth P)) : ℕ) : ℤ) = z := by
+    show ((z.toNat : ℕ) : ℤ) = z; omega
+  have hbal := pd_balanced_at_cut P z hz h0 hkz ⟨(z - 1).toNat, he1⟩ ⟨z.toNat, he2⟩ hc1 hc2
+  have hzero := ConfigLoop.empty_edges_at_arrivalfree (m := pdMm P) (pdUp P) z hbal
+    (fun y hy hs => hZ y hy (hs ▸ hz)) ⟨z.toNat, he2⟩ (Or.inl hc2)
+  have hpos := pdMm_pos P ⟨z.toNat, he2⟩
+    (by show P.A ≤ P.A + ((z.toNat : ℕ) : ℤ); omega)
+    (by show P.A + ((z.toNat : ℕ) : ℤ) ≤ P.B; omega)
+  omega
+
+/-- **And for zero travel it is false as soon as there is any cut site at all.**  So the
+`RunInv` route of `ConfigLoop.shield_law_runs` cannot reach the very case the zigzag
+route closes unconditionally. -/
+theorem hZ_false_of_kstar_zero (P : SiteCost.PathData) (hk : P.kstar = 0)
+    (hne : (pdCutSites P).Nonempty) :
+    ¬ (∀ x : Endpt (pdWidth P) (pdMm P),
+        EndType.isArrOf (pdUp P) x = true → EndType.siteOf x ∉ pdCutSites P) := by
+  intro hZ
+  obtain ⟨z, hz⟩ := hne
+  obtain ⟨hlo, hhi⟩ := pdCutSites_interior P hz
+  have hw := pdWidth_cast P
+  have he1 : (z - 1).toNat < pdWidth P := by omega
+  have he2 : z.toNat < pdWidth P := by omega
+  have hc1 : (((⟨(z - 1).toNat, he1⟩ : Fin (pdWidth P)) : ℕ) : ℤ) = z - 1 := by
+    show (((z - 1).toNat : ℕ) : ℤ) = z - 1; omega
+  have hc2 : (((⟨z.toNat, he2⟩ : Fin (pdWidth P)) : ℕ) : ℤ) = z := by
+    show ((z.toNat : ℕ) : ℤ) = z; omega
+  have hbal := pd_balanced_of_kstar_zero P hk z ⟨(z - 1).toNat, he1⟩ ⟨z.toNat, he2⟩ hc1 hc2
+  have hzero := ConfigLoop.empty_edges_at_arrivalfree (m := pdMm P) (pdUp P) z hbal
+    (fun y hy hs => hZ y hy (hs ▸ hz)) ⟨z.toNat, he2⟩ (Or.inl hc2)
+  have hpos := pdMm_pos P ⟨z.toNat, he2⟩
+    (by show P.A ≤ P.A + ((z.toNat : ℕ) : ℤ); omega)
+    (by show P.A + ((z.toNat : ℕ) : ℤ) ≤ P.B; omega)
+  omega
+
+/-- **Non-vacuous**: `witZero` is a real element with a cut site, so `hZ` fails for it. -/
+theorem witZero_hZ_false :
+    ¬ (∀ x : Endpt (pdWidth witZero.toPathData) (pdMm witZero.toPathData),
+        EndType.isArrOf (pdUp witZero.toPathData) x = true →
+          EndType.siteOf x ∉ pdCutSites witZero.toPathData) := by
+  refine hZ_false_of_kstar_zero witZero.toPathData witZero_pd_kstar ?_
+  rw [witZero_cutSites]
+  exact ⟨2, by simp⟩
+
+end Sharpness
+
 end VZigzag
 
 -- Certification (Rule 5).
@@ -1974,3 +2787,46 @@ end VZigzag
 #print axioms VZigzag.witNeg_hne0
 #print axioms VZigzag.witNeg_hne1
 #print axioms VZigzag.witNeg_shield
+
+#print axioms VZigzag.mem_pdCutSites_zero
+#print axioms VZigzag.mem_pdCutSites_kstar
+#print axioms VZigzag.not_cut_at_zero_pos
+#print axioms VZigzag.cut_at_kstar_iff_pos
+#print axioms VZigzag.cut_at_zero_iff_zero
+#print axioms VZigzag.pd_hne0_of_pos
+#print axioms VZigzag.pd_hne1_of_pos_delta
+#print axioms VZigzag.pd_hne1_of_neg_not_delta
+#print axioms VZigzag.pd_hne0_neg_iff
+#print axioms VZigzag.pd_hne1_pos_iff
+#print axioms VZigzag.pdMm_evenWidths_of_kstar_zero
+#print axioms VZigzag.pd_shield_law_zero
+#print axioms VZigzag.pd_defect_pos
+#print axioms VZigzag.pd_defect_neg
+#print axioms VZigzag.pd_defect_zero
+#print axioms VZigzag.Elt_c_eq_defect_pos
+#print axioms VZigzag.Elt_c_eq_defect_neg
+#print axioms VZigzag.Elt_c_eq_defect_zero
+#print axioms VZigzag.pd_shield_law_pos_delta
+#print axioms VZigzag.pd_shield_law_neg_not_delta
+#print axioms VZigzag.Elt_defect_eq_c
+#print axioms VZigzag.Elt_defect_eq_c_free
+#print axioms VZigzag.witZero
+#print axioms VZigzag.witZero_occ
+#print axioms VZigzag.witZero_width
+#print axioms VZigzag.witZero_cutSites
+#print axioms VZigzag.witZero_shield
+#print axioms VZigzag.witZero_defect
+#print axioms VZigzag.witZero_c
+#print axioms VZigzag.witCut0
+#print axioms VZigzag.witCut0_occ
+#print axioms VZigzag.witCut0_hne0_fails
+#print axioms VZigzag.witCut0_noCut
+#print axioms VZigzag.witCutK
+#print axioms VZigzag.witCutK_occ
+#print axioms VZigzag.witCutK_hne1_fails
+#print axioms VZigzag.witCutK_noCut
+#print axioms VZigzag.pd_balanced_at_cut
+#print axioms VZigzag.pd_balanced_of_kstar_zero
+#print axioms VZigzag.hZ_false_at_cut
+#print axioms VZigzag.hZ_false_of_kstar_zero
+#print axioms VZigzag.witZero_hZ_false
