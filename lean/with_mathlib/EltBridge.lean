@@ -10495,6 +10495,238 @@ theorem assembly_is_truncated_resolvent {n : ℕ}
     (1 - T) * (∑ k ∈ Finset.range N, T ^ k) = 1 - T ^ N :=
   neumann_partial_gen T N
 
+/-! ### BLOCK 340: what `IsAssembly` pins down, and the two-dimensional chain that
+the `max` kernel's resolvent actually satisfies
+
+Two independent facts, both proved below.
+
+**(i) `IsAssembly` as stated is satisfiable for every `W`.**  `isAssembly_of_any`
+exhibits `n = 1`, `T` the constant `X` matrix, `lam` supported on one marker datum
+and `mu = 1`, verifying `IsAssembly W W0 T lam mu` for *arbitrary* `W` and `W0`.  The
+reason is the truncation `k in range (N + 1)`: since `X` has order one, the truncated
+Neumann sum already agrees with `(1 - X)^-1` to degree `N`, so `lam := (W - W0)(1 - X)`
+reproduces any target.  Hence the existential `exists n T lam mu, IsAssembly W W0 T lam mu`
+carries *no information*, and no future claim of that shape closes `eq:assembly`.  The
+content of `eq:assembly` is that `T` is **the transfer matrix of the site kernel**, so
+the statement has to name `T`, not quantify it away.
+
+**(ii) The site kernel's resolvent is a two-dimensional chain.**  The bulk site kernel
+is `q ^ max a b` (`interior_kernel_eq_max`), weighted by the sign multiplicity `m b`
+(`sum_signed_eq_magnitudes`).  `max_kernel_split` is its semiseparability: the sum
+against it is `q ^ a` times one cumulative sum plus the tail of another.  Feeding that
+into the resolvent equation, the term carrying the *unknown at the same index* cancels
+identically (`maxchain_cancel`), which turns the fixed-point equation over an infinite
+state space into an explicit forward recursion.  The resulting `2 x 2` transfer,
+`maxM`, is `1 + (2 q ^ a) . maxN q a` with `maxN q a` rank one and square zero
+(`maxN_sq`, `maxM_eq_one_add`), of determinant one (`maxM_det`) -- that is exactly the
+one-parameter rank-one-nilpotent family whose ordered product telescopes in
+`prop:travelexact` / `prop:bulkexact`, and `maxN_mul` supplies the link factor
+`q ^ a - q ^ b` that the telescoping expands over.  `maxchain_forward` states the
+reduction in one line: the resolvent equation at magnitude `a` determines `u a`
+explicitly from magnitudes strictly below `a` plus one global constant.
+
+What (ii) does **not** give is a finite `T` for (i): the chain index `a` is the deposit
+magnitude, not the walk length, and `maxM q a` depends on `a`.  It gives a closed form
+for the resolvent, not a bounded transfer matrix -- consistent with BLOCK 338's rank
+computation, which refuted the latter and said nothing about the former. -/
+
+/-- A `1 x 1` matrix power, entrywise. -/
+theorem pow_apply_fin_one {R : Type*} [CommRing R] (t : R) :
+    ∀ k : ℕ, ((Matrix.of (fun _ _ : Fin 1 => t)) ^ k) 0 0 = t ^ k
+  | 0 => by simp
+  | k + 1 => by
+      rw [pow_succ, Matrix.mul_apply, Fin.sum_univ_one, pow_apply_fin_one t k]
+      simp [pow_succ]
+
+/-- **`IsAssembly` is satisfiable for arbitrary `W` and `W0`.**  So the existential form
+of `eq:assembly` -- "there are `n`, `T`, `lambda`, `mu` with `IsAssembly W W0 T lam mu`" --
+is vacuous, and a proof of it would establish nothing whatever about `W`.
+
+What makes this possible is the truncation `k in range (N + 1)`.  The witness is the
+`1 x 1` matrix `X ^ 2`; its truncated Neumann sum already agrees with `(1 - X^2)^-1` to
+degree `2N + 1 >= N`, so `lambda := (W - W0)(1 - X^2)` reproduces any target degree by
+degree.  Note the witness is deliberately taken at order **two**, so it also satisfies
+the order bound (`travelT_ge_two`, `gf_transfer_order`) that the surrounding text
+attaches to a transfer matrix -- see `isAssembly_of_any_order`.  Adding that side
+condition therefore does not restore any content.
+
+The content of `eq:assembly` is that `T` is **the transfer matrix of the site kernel**.
+A usable statement has to name `T` (and `lambda`, `mu`) rather than quantify them away. -/
+theorem isAssembly_of_any (W W0 : PowerSeries ℤ) :
+    IsAssembly W W0 (Matrix.of (fun _ _ : Fin 1 => (PowerSeries.X ^ 2 : PowerSeries ℤ)))
+      (fun md _ => if md = 0 then (W - W0) * (1 - PowerSeries.X ^ 2) else 0)
+      (fun _ _ => 1) := by
+  intro N
+  have hgeom : (∑ k ∈ Finset.range (N + 1), (PowerSeries.X ^ 2 : PowerSeries ℤ) ^ k)
+      * (1 - PowerSeries.X ^ 2) = 1 - (PowerSeries.X ^ 2) ^ (N + 1) := geom_sum_mul_neg _ _
+  have hpow : ((PowerSeries.X : PowerSeries ℤ) ^ 2) ^ (N + 1)
+      = PowerSeries.X ^ (2 * (N + 1)) := by rw [← pow_mul]
+  have inner : ∀ md : Fin 4,
+      (∑ k ∈ Finset.range (N + 1), ∑ a : Fin 1, ∑ b : Fin 1,
+        (if md = 0 then (W - W0) * (1 - PowerSeries.X ^ 2) else 0)
+          * ((Matrix.of (fun _ _ : Fin 1 => (PowerSeries.X ^ 2 : PowerSeries ℤ))) ^ k) a b * 1)
+      = if md = 0 then (W - W0) * (1 - PowerSeries.X ^ (2 * (N + 1))) else 0 := by
+    intro md
+    by_cases h : md = 0
+    · simp only [Fin.sum_univ_one, mul_one, pow_apply_fin_one, h, if_pos]
+      rw [← Finset.mul_sum, ← hpow, mul_assoc, mul_comm (1 - PowerSeries.X ^ 2), hgeom]
+    · simp only [if_neg h, zero_mul, Finset.sum_const_zero]
+  have hsum : (∑ md : Fin 4, ∑ k ∈ Finset.range (N + 1), ∑ a : Fin 1, ∑ b : Fin 1,
+        (if md = 0 then (W - W0) * (1 - PowerSeries.X ^ 2) else 0)
+          * ((Matrix.of (fun _ _ : Fin 1 => (PowerSeries.X ^ 2 : PowerSeries ℤ))) ^ k) a b * 1)
+      = (W - W0) * (1 - PowerSeries.X ^ (2 * (N + 1))) := by
+    rw [Finset.sum_congr rfl (fun md _ => inner md), Fin.sum_univ_four]
+    simp
+  have hcoeff : PowerSeries.coeff N ((W - W0) * PowerSeries.X ^ (2 * (N + 1))) = 0 := by
+    rw [PowerSeries.coeff_mul_X_pow', if_neg (by omega)]
+  have hfin : W0 + (W - W0) * (1 - PowerSeries.X ^ (2 * (N + 1)))
+      = W - (W - W0) * PowerSeries.X ^ (2 * (N + 1)) := by ring
+  show PowerSeries.coeff N W = PowerSeries.coeff N (W0 + _)
+  rw [hsum, hfin, map_sub, hcoeff, sub_zero]
+
+/-- **And the witness meets the order bound too**, so the side condition
+`travelT_ge_two`/`gf_transfer_order` attaches to a transfer matrix does not rescue the
+statement: every entry of the witness `T` has order two. -/
+theorem isAssembly_of_any_order (a b : Fin 1) :
+    PowerSeries.coeff 0
+        ((Matrix.of (fun _ _ : Fin 1 => (PowerSeries.X ^ 2 : PowerSeries ℤ))) a b) = 0
+      ∧ PowerSeries.coeff 1
+        ((Matrix.of (fun _ _ : Fin 1 => (PowerSeries.X ^ 2 : PowerSeries ℤ))) a b) = 0 := by
+  constructor <;> simp [Matrix.of_apply, PowerSeries.coeff_X_pow]
+
+/-! #### The `max` kernel is semiseparable, and the resolvent's self-reference cancels -/
+
+/-- **Semiseparability of the `max` kernel.**  For `a <= M`,
+
+    sum_{b <= M} m b * q ^ max a b * u b
+      = q ^ a * (sum_{b <= a} m b * u b)  +  (sum_{b <= M} - sum_{b <= a}) m b * q ^ b * u b,
+
+i.e. the kernel `q ^ max a b` is the sum of a lower-triangular rank-one part and an
+upper-triangular rank-one part.  This is the structural fact `(M1)` of `paper2` asserts
+about the bulk transfer, here proved outright at every finite truncation. -/
+theorem max_kernel_split {R : Type*} [CommRing R] (q : R) (m u : ℕ → R) (a M : ℕ)
+    (h : a + 1 ≤ M + 1) :
+    ∑ b ∈ Finset.range (M + 1), m b * q ^ max a b * u b
+      = q ^ a * (∑ b ∈ Finset.range (a + 1), m b * u b)
+        + ((∑ b ∈ Finset.range (M + 1), m b * q ^ b * u b)
+            - ∑ b ∈ Finset.range (a + 1), m b * q ^ b * u b) := by
+  have hL := Finset.sum_range_add_sum_Ico (fun b => m b * q ^ max a b * u b) h
+  have hR := Finset.sum_range_add_sum_Ico (fun b => m b * q ^ b * u b) h
+  have hlow : ∑ b ∈ Finset.range (a + 1), m b * q ^ max a b * u b
+      = q ^ a * ∑ b ∈ Finset.range (a + 1), m b * u b := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun b hb => ?_)
+    have : max a b = a := max_eq_left (by simpa [Nat.lt_succ_iff] using Finset.mem_range.mp hb)
+    rw [this]; ring
+  have hhigh : ∑ b ∈ Finset.Ico (a + 1) (M + 1), m b * q ^ max a b * u b
+      = ∑ b ∈ Finset.Ico (a + 1) (M + 1), m b * q ^ b * u b := by
+    refine Finset.sum_congr rfl (fun b hb => ?_)
+    have : max a b = b := max_eq_right (Nat.le_of_succ_le (Finset.mem_Ico.mp hb).1)
+    rw [this]
+  rw [← hL, hlow, hhigh, ← hR]
+  ring
+
+/-- **The self-reference cancels exactly.**  This is the step that makes the reduction
+work.  In the resolvent equation the unknown `ua` appears on both sides, once directly
+and once inside the cumulative sums `S`, `S'` -- and the two occurrences cancel
+identically, leaving `ua` as an *explicit* function of the previous cumulative sums and
+the single global constant `T`.  No inversion, no bounded state space, and no hypothesis
+beyond the two cumulative-sum recursions. -/
+theorem maxchain_cancel {R : Type*} [CommRing R] (q : R) (a : ℕ) (Sp Sp' S S' T ua : R)
+    (hS : S = Sp + 2 * ua) (hS' : S' = Sp' + 2 * q ^ a * ua)
+    (hu : ua = 1 + q ^ a * (q ^ a * S + T - S')) :
+    ua = 1 + q ^ a * q ^ a * Sp - q ^ a * Sp' + q ^ a * T := by
+  rw [hS, hS'] at hu
+  linear_combination hu
+
+/-- **The reduction, in one statement.**  Suppose `u` satisfies the resolvent equation
+for the sign-weighted `max` kernel at magnitude `a`, truncated at any `M >= a`.  Then
+`u a` is *explicitly* determined by the two cumulative sums over magnitudes **strictly
+below** `a`, together with the single global constant
+`T = sum_{b <= M} m b * q ^ b * u b`.
+
+There is no linear solve at index `a` and no bound on the state space: the infinite
+fixed-point problem over all magnitudes has become a forward recursion.  Compare
+BLOCK 338, which refuted collapsing the magnitude into a bounded set of classes -- that
+is a different question, and this does not contradict it (see the header). -/
+theorem maxchain_forward {R : Type*} [CommRing R] (q : R) (m u : ℕ → R) (a M : ℕ)
+    (hM : a + 1 ≤ M + 1) (hm : m a = 2)
+    (hres : u a = 1 + q ^ a * ∑ b ∈ Finset.range (M + 1), m b * q ^ max a b * u b) :
+    u a = 1 + q ^ a * q ^ a * (∑ b ∈ Finset.range a, m b * u b)
+        - q ^ a * (∑ b ∈ Finset.range a, m b * q ^ b * u b)
+        + q ^ a * (∑ b ∈ Finset.range (M + 1), m b * q ^ b * u b) := by
+  rw [max_kernel_split q m u a M hM] at hres
+  refine maxchain_cancel q a _ _ (∑ b ∈ Finset.range (a + 1), m b * u b)
+    (∑ b ∈ Finset.range (a + 1), m b * q ^ b * u b)
+    (∑ b ∈ Finset.range (M + 1), m b * q ^ b * u b) (u a) ?_ ?_ ?_
+  · rw [Finset.sum_range_succ, hm]
+  · rw [Finset.sum_range_succ, hm]
+  · rw [hres]; ring
+
+/-- The `2 x 2` transfer of the cumulative pair `(S, S')` at magnitude `a`. -/
+def maxM {R : Type*} [CommRing R] (q : R) (a : ℕ) : Matrix (Fin 2) (Fin 2) R :=
+  !![1 + 2 * q ^ a * q ^ a, -(2 * q ^ a);
+     2 * q ^ a * q ^ a * q ^ a, 1 - 2 * q ^ a * q ^ a]
+
+/-- Its rank-one nilpotent increment, cleared of negative powers. -/
+def maxN {R : Type*} [CommRing R] (q : R) (a : ℕ) : Matrix (Fin 2) (Fin 2) R :=
+  !![q ^ a, -1; q ^ a * q ^ a, -(q ^ a)]
+
+/-- **`maxN` is the outer product of `(1, q^a)` and `(q^a, -1)`.** -/
+theorem maxN_eq_vecMulVec {R : Type*} [CommRing R] (q : R) (a : ℕ) :
+    maxN q a = Matrix.vecMulVec ![1, q ^ a] ![q ^ a, -1] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [maxN, Matrix.vecMulVec_apply]
+
+/-- **The two vectors are orthogonal**, which is why the increment is nilpotent. -/
+theorem maxN_dot {R : Type*} [CommRing R] (q : R) (a : ℕ) :
+    (![q ^ a, -1] : Fin 2 → R) ⬝ᵥ ![1, q ^ a] = 0 := by
+  simp [dotProduct, Fin.sum_univ_two]
+
+/-- **The link factor.**  Two increments at different magnitudes multiply to a single
+increment scaled by `q ^ a - q ^ b`.  This is exactly the factor
+`w_a^T v_b = q^{(a-b)/2} - q^{(b-a)/2}` that `prop:travelexact`'s expansion over
+increasing chains carries, here in the negative-power-free normalisation. -/
+theorem maxN_mul {R : Type*} [CommRing R] (q : R) (a b : ℕ) :
+    maxN q a * maxN q b = (q ^ a - q ^ b) • Matrix.vecMulVec ![1, q ^ a] ![q ^ b, -1] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [maxN, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+/-- **Hence the increment squares to zero.**  The link factor vanishes at `a = b`. -/
+theorem maxN_sq {R : Type*} [CommRing R] (q : R) (a : ℕ) : maxN q a * maxN q a = 0 := by
+  rw [maxN_mul]; simp
+
+/-- **The transfer is a rank-one unipotent update**, `1 + (2 q^a) . maxN q a` -- the
+shape `prop:bulkexact` telescopes. -/
+theorem maxM_eq_one_add {R : Type*} [CommRing R] (q : R) (a : ℕ) :
+    maxM q a = 1 + (2 * q ^ a) • maxN q a := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [maxM, maxN] <;> ring
+
+/-- **The transfer has determinant one**, so its discrete Wronskian is conserved and the
+inhomogeneous chain is closed by variation of parameters. -/
+theorem maxM_det {R : Type*} [CommRing R] (q : R) (a : ℕ) : (maxM q a).det = 1 := by
+  rw [Matrix.det_fin_two]
+  simp [maxM]
+  ring
+
+/-- **The chain step.**  Given the two cumulative-sum recursions and the resolvent
+equation at magnitude `a`, the pair `(S, S')` is `maxM q a` applied to the previous pair,
+plus a source that is affine in the single global constant `T`.  Together with
+`max_kernel_split` this is the whole reduction: an infinite-state fixed-point problem
+becomes a two-dimensional forward recursion with one scalar shooting unknown. -/
+theorem maxchain_transfer {R : Type*} [CommRing R] (q : R) (a : ℕ) (Sp Sp' S S' T ua : R)
+    (hS : S = Sp + 2 * ua) (hS' : S' = Sp' + 2 * q ^ a * ua)
+    (hu : ua = 1 + q ^ a * (q ^ a * S + T - S')) :
+    (maxM q a).mulVec ![Sp, Sp'] + ![2 + 2 * q ^ a * T, 2 * q ^ a + 2 * q ^ a * q ^ a * T]
+      = ![S, S'] := by
+  have hua := maxchain_cancel q a Sp Sp' S S' T ua hS hS' hu
+  funext i
+  fin_cases i <;>
+    simp [maxM, hS, hS', hua] <;> ring
+
 /-! ### The gap term is rank one
 
 `eq:gapkernel` gives the gap-marked bulk kernel `K_g(a,b) = q^max(a,b) + q^(a+b) g`,
@@ -20759,3 +20991,17 @@ end EltBridge
 #print axioms EltBridge.zz_shield_law_exists
 #print axioms EltBridge.w2_even
 #print axioms EltBridge.zz_witness_shield
+
+#print axioms EltBridge.pow_apply_fin_one
+#print axioms EltBridge.isAssembly_of_any
+#print axioms EltBridge.isAssembly_of_any_order
+#print axioms EltBridge.max_kernel_split
+#print axioms EltBridge.maxchain_cancel
+#print axioms EltBridge.maxchain_forward
+#print axioms EltBridge.maxN_eq_vecMulVec
+#print axioms EltBridge.maxN_dot
+#print axioms EltBridge.maxN_mul
+#print axioms EltBridge.maxN_sq
+#print axioms EltBridge.maxM_eq_one_add
+#print axioms EltBridge.maxM_det
+#print axioms EltBridge.maxchain_transfer
