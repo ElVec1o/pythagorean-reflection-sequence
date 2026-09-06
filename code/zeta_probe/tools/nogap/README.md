@@ -12518,3 +12518,88 @@ only `README.md`, was made with a bare `git commit` while the other session had 
 altered — `lake build AssemblyContract` succeeds (2993 jobs, all axioms clean) at that
 commit — but the commit message is wrong for three of its four files. Future sessions
 sharing a tree: always `git commit -- <paths>`, never a bare `git commit`.
+
+## BLOCK 346 (2026-09-07) — the UPPER half of `l_T = l_R + 2c`: PROVED on two explicit
+## classes (one infinite), and REFUTED in general — the counterexample formalised, with
+## `lR gBad = 8`, `c gBad = 0` and an explicit word of length 10
+
+Task: prove `wordLength g <= lR g + 2 * Elt.c g`, the half the paper's "what is not
+claimed" remark (`merged_novel_paper.tex` ~line 136) says is PROVED, and do not touch the
+lower half (open; the 2026-08-09 retraction found the old chain circular). New file
+`lean/with_mathlib/TrueLengthUpper.lean` (0 sorry, 96 declarations, `lake build` clean on
+all 8645 jobs, `#print axioms` on every declaration: 95 report
+`[propext, Classical.choice, Quot.sound]` and one `[propext, Quot.sound]`; no
+`native_decide`).
+
+**Step 1 — what the existing reachability development gives: no length bound at all.**
+`EltBridge`'s chain `reachable_of_trivial` -> `reachable_single_correction(_int)` ->
+`reachable_multi_correction_int` proves `Reachable g := exists n, Reaches n g` and never
+carries `n`. Every statement in it is an existential over the count, so it yields no
+upper bound on `wordLength`, and there was none in the repo: `wordLength_ge_kstar_natAbs`
+is a LOWER bound and `lR_le_wordLength_mul_C` bounds `lR` by `wordLength`, not the other
+way. The first thing this file adds is the counted toolkit `Reaches.s1/.s2/.s3` (+1
+each), `Reaches.feps` (+2), `Reaches.roundTrip` (+4), `Reaches.one` (0).
+
+**Step 2 — the target is FALSE as stated.** Rust BFS `src/bin/truelen_check.rs` (new;
+same generator rules as `reach_check.rs`, `lR`/`c` recomputed from
+`Realisation.lean`/`EltBridge.lean` definitions), depth 17, 13963 elements, histogram of
+`D = wordLength - (lR + 2c)`:
+
+| class | D=-4 | D=-2 | D=0 | D=+2 |
+|---|---|---|---|---|
+| gap-free (no `j` in span with `d j = 0` and `travel j = 0`) | 0 | 0 | **7588** | 0 |
+| with a gap edge | 3073 | 1932 | 1360 | **10** |
+
+`D > 0` is the upper bound FAILING. The smallest failure is `kstar = 0`, `eps = 1`,
+`delta = false`, `d = 2.[j=1]`: `lR = 8`, `c = 0`, `wordLength = 10`.
+
+This element is the same one BLOCK 343 found hours earlier as its "smallest undershoot"
+(`d 1 = -2`, the sign flip), from the opposite side — it was testing whether `lR + 2c` is
+a 1-Lipschitz potential for the LOWER bound. BLOCK 343 also has the root cause, and the
+gap-free/gap split above is its outside view: `SiteCost.PathData` requires `A <= 0 <= B`,
+so edge `0` is in EVERY element's span, and `mu` charges `2` for it whenever it is a gap
+edge. Off the gap-free class `Elt.c = |Z|` is simply not the defect of the identity.
+
+The new content is that the counterexample is now formalised on the metric side:
+`gBad_lR : gBad.lR = 8`, `gBad_c : c gBad = 0`, and `reaches_gBad : Reaches 10 gBad` via
+the explicit geodesic `s1 s3 s2 s3 s1 s2 s3 s1 s3 s1` read off the BFS. So
+`upperBound_forces_gBad_le_eight : UpperBound -> wordLength gBad <= 8` is a Lean theorem,
+and the BFS says the shortest word is 10. **The BFS half is NOT formalised and is not
+claimed**: `9 <= wordLength gBad` is a lower bound on `wordLength`, i.e. the open
+direction. Anyone closing it closes far more than this block.
+
+Separately, `not_isTrueLength_wordLength_c` refutes the identity outright in Lean at
+`one`: `wordLength one = 0` but `lR one = 2` (`one_toPathData_lR`) and `c one = 0`. That
+is the `+2` artifact and it is a DIFFERENT defect from `gBad`'s — `one` overshoots, `gBad`
+undershoots, so no additive constant repairs `lR + 2 * Elt.c` either (BLOCK 343 measured
+the same range `[-2,4]`).
+
+**Step 3 — the largest honest fragments, both proved.**
+
+1. *Trivial class* (`kstar = 0`, `d = 0`; four group elements):
+   `reaches_two_of_trivial` (`wordLength <= 2`, the counted `reachable_of_trivial`),
+   `two_le_lR_of_trivial` (`2 <= lR`, because the single span edge is a gap edge), hence
+   `wordLength_le_lR_add_two_c_of_trivial`.
+2. *Pure-travel family, INFINITE and gap-free*: `trav n` = cursor at `n+1`, `eps = -1`,
+   `delta = false`, deposits exactly the travel indicator, built by the word
+   `s2 s3 (s1 s3)^n`. Proved: `reaches_trav : Reaches (2*n+2) (trav n)`, `trav_spec` (all
+   four fields, by induction), `trav_occ`/`trav_A`/`trav_B` (span `[0,n]`),
+   `trav_mu = 1`, `trav_site = 1` on sites `0..n`, `trav_site_top = 0`, hence
+   `trav_lR : lR (trav n) = 2*n+2` and `trav_cutSites`/`trav_c : c (trav n) = 0`, hence
+   `wordLength_trav_le`. Equality, for every `n`.
+
+**Witnesses, all checked, none vacuous.** `reaches_witElt : Reaches 4 witElt` with
+`witElt_lR = 4` and `witElt_c = 0` (4 <= 4 + 0, tight). `reaches_witNeg : Reaches 16
+witNeg` with `witNeg_lR = 14` and `witNeg_c = 1` (16 <= 14 + 2, tight) — the only witness
+with a non-zero defect, so it is the one that checks the `2 * c` term is carrying weight.
+Both words are the BFS geodesics; both `SameElt` reductions are proved field by field.
+The Lean numbers and the Rust probe's agree independently on `lR` and `c` for `one`,
+`witElt`, `witNeg` and `gBad`.
+
+**Where an unrestricted upper bound has to come from.** Not from `Elt.c`. Either restrict
+to gap-free elements — where the census says the identity is EXACT on all 7588 of them —
+or take BLOCK 343's repair (`PathData.hB : -1 <= B` plus the boundary-shield site in
+`pdCutSites`), which is a refactor across ~20k lines of `EltBridge` and should be a
+deliberate decision. Proving the gap-free case is a real construction (a word of length
+exactly `lR`), not an assembly of what exists; the counted toolkit here is its first
+brick.
