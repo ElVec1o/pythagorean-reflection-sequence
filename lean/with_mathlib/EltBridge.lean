@@ -20304,3 +20304,458 @@ end EltBridge
 #print axioms EltBridge.allJoined_edge'
 #print axioms EltBridge.zz_B_step
 #print axioms EltBridge.zz_bSet_joined
+
+namespace EltBridge
+
+open EndType
+
+variable {n : ℕ} {m : Fin n → ℕ}
+
+/-! ## Steps 7-9: a run is an interval of edges, and its two ends bounce -/
+
+/-- The edges of run `r`. -/
+def runSet (Zf : Finset ℤ) (r : ℕ) : Finset (Fin n) :=
+  Finset.univ.filter (fun e : Fin n => CutComponents.gz Zf (e.val : ℤ) = r)
+
+theorem mem_runSet {Zf : Finset ℤ} {r : ℕ} {e : Fin n} :
+    e ∈ runSet Zf r ↔ CutComponents.gz Zf (e.val : ℤ) = r := by
+  simp only [runSet, Finset.mem_filter, Finset.mem_univ, true_and]
+
+/-- **Step 7.**  A run is an interval: `gz` is monotone, so an edge squeezed between two
+edges of a run is itself in that run. -/
+theorem runSet_interval (Zf : Finset ℤ) (r : ℕ) {a b e : Fin n}
+    (ha : a ∈ runSet Zf r) (hb : b ∈ runSet Zf r)
+    (h1 : a.val ≤ e.val) (h2 : e.val ≤ b.val) : e ∈ runSet Zf r := by
+  rw [mem_runSet] at ha hb ⊢
+  have m1 := gz_mono Zf (show (a.val : ℤ) ≤ (e.val : ℤ) by exact_mod_cast h1)
+  have m2 := gz_mono Zf (show (e.val : ℤ) ≤ (b.val : ℤ) by exact_mod_cast h2)
+  omega
+
+/-- **Step 8.**  The site between two consecutive edges of a run is not a cut site. -/
+theorem runSet_no_cut (Zf : Finset ℤ) (r : ℕ) {e f : Fin n}
+    (he : e ∈ runSet Zf r) (hf : f ∈ runSet Zf r) (hef : f.val = e.val + 1) :
+    ((e.val : ℤ) + 1) ∉ Zf := by
+  rw [mem_runSet] at he hf
+  have hcast : (f.val : ℤ) = (e.val : ℤ) + 1 := by rw [hef]; push_cast; ring
+  exact no_cut_between_of_gz_eq Zf (e.val : ℤ) (f.val : ℤ) (by omega) (by rw [he, hf])
+    ((e.val : ℤ) + 1) (by omega) (by omega)
+
+/-- **Step 9, low end.**  The bottom edge of a run has no pass below it. -/
+theorem runSet_min_no_passLo (Zf : Finset ℤ) (r : ℕ) {a : Fin n}
+    (ha : a ∈ runSet Zf r) (hmin : ∀ e : Fin n, e ∈ runSet Zf r → a.val ≤ e.val) :
+    ¬ PassLo Zf a := by
+  rintro ⟨h1, h2⟩
+  have hprev : edgePred a ∈ runSet Zf r := by
+    rw [mem_runSet] at ha ⊢
+    rw [edgePred_val, show (((a.val - 1 : ℕ)) : ℤ) = (a.val : ℤ) - 1 by omega,
+      ← CutComponents.gz_step_eq Zf h2]
+    exact ha
+  have h3 := hmin _ hprev
+  rw [edgePred_val] at h3
+  omega
+
+/-- **Step 9, high end.**  The top edge of a run has no pass above it. -/
+theorem runSet_max_no_passHi (Zf : Finset ℤ) (r : ℕ) {b : Fin n}
+    (hb : b ∈ runSet Zf r) (hmax : ∀ e : Fin n, e ∈ runSet Zf r → e.val ≤ b.val) :
+    ¬ PassHi Zf b := by
+  rintro ⟨h1, h2⟩
+  have hnext : (⟨b.val + 1, h1⟩ : Fin n) ∈ runSet Zf r := by
+    rw [mem_runSet] at hb ⊢
+    rw [show (((b.val + 1 : ℕ)) : ℤ) = (b.val : ℤ) + 1 by push_cast; ring,
+      CutComponents.gz_step_eq Zf h2, show ((b.val : ℤ) + 1 - 1) = (b.val : ℤ) by ring]
+    exact hb
+  have h3 : b.val + 1 ≤ b.val := hmax _ hnext
+  omega
+
+/-! ## Step 12: the run's joined set -/
+
+/-- `e + j`, clamped so as to be total. -/
+def eAdd (e : Fin n) (j : ℕ) : Fin n := ⟨min (e.val + j) (n - 1), by have := e.isLt; omega⟩
+
+/-- `e - j`, total by truncated subtraction. -/
+def eSub (e : Fin n) (j : ℕ) : Fin n :=
+  ⟨e.val - j, Nat.lt_of_le_of_lt (Nat.sub_le _ _) e.isLt⟩
+
+@[simp] theorem eSub_val (e : Fin n) (j : ℕ) : (eSub e j).val = e.val - j := rfl
+
+theorem eAdd_val (e : Fin n) (j : ℕ) (h : e.val + j < n) : (eAdd e j).val = e.val + j := by
+  show min (e.val + j) (n - 1) = e.val + j
+  omega
+
+/-- The bottom end of the spine of edge `e`. -/
+def spineBot (hm : EvenWidths m) (e : Fin n) : Endpt n m :=
+  ⟨e, ⟨0, by have := (hm e).1; omega⟩, false⟩
+
+/-- The top end of the spine of edge `e`. -/
+def spineTop (hm : EvenWidths m) (e : Fin n) : Endpt n m :=
+  ⟨e, ⟨0, by have := (hm e).1; omega⟩, true⟩
+
+/-- The loose bottom end of the zigzag chain of edge `e`: strand `1`. -/
+def chainBot (hm : EvenWidths m) (e : Fin n) : Endpt n m :=
+  ⟨e, ⟨1, by have := (hm e).1; omega⟩, false⟩
+
+@[simp] theorem spineBot_edge (hm : EvenWidths m) (e : Fin n) :
+    (spineBot hm e).edge = e := rfl
+@[simp] theorem spineBot_idx (hm : EvenWidths m) (e : Fin n) :
+    (spineBot hm e).idx.val = 0 := rfl
+@[simp] theorem spineBot_top (hm : EvenWidths m) (e : Fin n) :
+    (spineBot hm e).top = false := rfl
+@[simp] theorem spineTop_edge (hm : EvenWidths m) (e : Fin n) :
+    (spineTop hm e).edge = e := rfl
+@[simp] theorem spineTop_idx (hm : EvenWidths m) (e : Fin n) :
+    (spineTop hm e).idx.val = 0 := rfl
+@[simp] theorem spineTop_top (hm : EvenWidths m) (e : Fin n) :
+    (spineTop hm e).top = true := rfl
+@[simp] theorem chainBot_edge (hm : EvenWidths m) (e : Fin n) :
+    (chainBot hm e).edge = e := rfl
+@[simp] theorem chainBot_idx (hm : EvenWidths m) (e : Fin n) :
+    (chainBot hm e).idx.val = 1 := rfl
+@[simp] theorem chainBot_top (hm : EvenWidths m) (e : Fin n) :
+    (chainBot hm e).top = false := rfl
+
+theorem botOf_spineTop (hm : EvenWidths m) (e : Fin n) :
+    botOf (spineTop hm e) = spineBot hm e := rfl
+
+/-! ### The three local turn steps the assembly consumes -/
+
+/-- A spine passes up to the next spine. -/
+theorem zz_spine_pass (Zf : Finset ℤ) (hm : EvenWidths m) (e f : Fin n)
+    (hp : PassHi Zf e) (hf : f.val = e.val + 1) :
+    botOf (zzTurn Zf hm (spineTop hm e)) = spineBot hm f := by
+  have hcond : ¬ (1 ≤ (spineTop hm e).idx.val ∧
+      (spineTop hm e).idx.val + 2 ≤ m (spineTop hm e).edge) := by
+    rw [spineTop_idx]; rintro ⟨h, -⟩; omega
+  obtain ⟨e1, i1, t1⟩ := zz_top_pass Zf hm (spineTop hm e) (spineTop_top hm e) hcond
+    (by rw [spineTop_edge]; exact hp)
+  refine endpt_ext ?_ ?_ rfl
+  · simp only [botOf_edge, e1, spineTop_edge, spineBot_edge, hf]
+  · simp only [botOf_idx_val, i1, spineTop_idx, spineBot_idx, if_pos]
+
+/-- At the top of a run the spine bounces into the zigzag chain. -/
+theorem zz_spine_bounce (Zf : Finset ℤ) (hm : EvenWidths m) (e : Fin n)
+    (hp : ¬ PassHi Zf e) :
+    botOf (zzTurn Zf hm (spineTop hm e)) = botOf (fB hm e 0) := by
+  have hcond : ¬ (1 ≤ (spineTop hm e).idx.val ∧
+      (spineTop hm e).idx.val + 2 ≤ m (spineTop hm e).edge) := by
+    rw [spineTop_idx]; rintro ⟨h, -⟩; omega
+  obtain ⟨e1, i1, t1⟩ := zz_top_bounce Zf hm (spineTop hm e) (spineTop_top hm e) hcond
+    (by rw [spineTop_edge]; exact hp)
+  refine endpt_ext ?_ ?_ rfl
+  · simp only [botOf_edge, e1, spineTop_edge, fB_edge]
+  · simp only [botOf_idx_val, i1, spineTop_idx, spineTop_edge, fB_idx, if_pos]
+    omega
+
+/-- The zigzag chain's loose bottom passes down to the previous chain's loose top. -/
+theorem zz_chain_pass (Zf : Finset ℤ) (hm : EvenWidths m) (e f : Fin n)
+    (hp : PassLo Zf e) (hf : f.val = e.val - 1) :
+    botOf (zzTurn Zf hm (chainBot hm e)) = botOf (fB hm f 0) := by
+  have hcond : ¬ (2 ≤ (chainBot hm e).idx.val) := by rw [chainBot_idx]; omega
+  obtain ⟨e1, i1, t1⟩ :=
+    zz_bot_pass Zf hm (chainBot hm e) (chainBot_top hm e) hcond
+      (by rw [chainBot_edge]; exact hp)
+  have hpf : edgePred e = f := Fin.ext (by rw [edgePred_val, hf])
+  refine endpt_ext ?_ ?_ rfl
+  · simp only [botOf_edge, e1, chainBot_edge, fB_edge, hpf]
+  · simp only [botOf_idx_val, i1, chainBot_idx, chainBot_edge, fB_idx, hpf]
+    rw [if_neg (by omega : ¬ ((1 : ℕ) = 0))]
+    omega
+
+/-! ### Membership in the per-edge sets -/
+
+theorem fB_zero_mem_bSet (hm : EvenWidths m) (e : Fin n) :
+    botOf (fB hm e 0) ∈ bSet hm e := by
+  have h2 := (hm e).1
+  exact Finset.mem_image.mpr ⟨0, Finset.mem_range.mpr (by omega), rfl⟩
+
+theorem chainBot_mem_bSet (hm : EvenWidths m) (e : Fin n) :
+    chainBot hm e ∈ bSet hm e := by
+  have h2 := (hm e).1
+  refine Finset.mem_image.mpr ⟨m e - 2, Finset.mem_range.mpr (by omega), ?_⟩
+  refine endpt_ext ?_ ?_ rfl
+  · simp only [botOf_edge, fB_edge, chainBot_edge]
+  · simp only [botOf_idx_val, fB_idx, chainBot_idx]; omega
+
+theorem botOf_mem_bSet (hm : EvenWidths m) (x : Endpt n m) (h : 1 ≤ x.idx.val) :
+    botOf x ∈ bSet hm x.edge := by
+  have h2 := (hm x.edge).1
+  have hlt := x.idx.isLt
+  refine Finset.mem_image.mpr ⟨m x.edge - 1 - x.idx.val, Finset.mem_range.mpr (by omega), ?_⟩
+  refine endpt_ext ?_ ?_ rfl
+  · simp only [botOf_edge, fB_edge]
+  · simp only [botOf_idx_val, fB_idx]; omega
+
+theorem botOf_eq_spineBot (hm : EvenWidths m) (x : Endpt n m) (h : x.idx.val = 0) :
+    botOf x = spineBot hm x.edge :=
+  endpt_ext (by simp only [botOf_edge, spineBot_edge])
+    (by simp only [botOf_idx_val, spineBot_idx]; exact h) rfl
+
+/-! ### The family and the links -/
+
+/-- The run's strand sets: first the spines `a … b`, then the chains `b … a`. -/
+def runFam (hm : EvenWidths m) (a b : Fin n) (j : ℕ) : Finset (Endpt n m) :=
+  if j ≤ b.val - a.val then {spineBot hm (eAdd a j)}
+  else if j ≤ 2 * (b.val - a.val) + 1 then bSet hm (eSub b (j - (b.val - a.val) - 1))
+  else ∅
+
+/-- The end whose turn step links consecutive members of `runFam`. -/
+def runLink (hm : EvenWidths m) (a b : Fin n) (j : ℕ) : Endpt n m :=
+  if j ≤ b.val - a.val then spineTop hm (eAdd a j)
+  else chainBot hm (eSub b (j - (b.val - a.val) - 1))
+
+theorem runFam_lo (hm : EvenWidths m) (a b : Fin n) (j : ℕ) (h : j ≤ b.val - a.val) :
+    runFam hm a b j = {spineBot hm (eAdd a j)} := by unfold runFam; rw [if_pos h]
+
+theorem runFam_hi (hm : EvenWidths m) (a b : Fin n) (j : ℕ) (h1 : ¬ (j ≤ b.val - a.val))
+    (h2 : j ≤ 2 * (b.val - a.val) + 1) :
+    runFam hm a b j = bSet hm (eSub b (j - (b.val - a.val) - 1)) := by
+  unfold runFam; rw [if_neg h1, if_pos h2]
+
+theorem runLink_lo (hm : EvenWidths m) (a b : Fin n) (j : ℕ) (h : j ≤ b.val - a.val) :
+    runLink hm a b j = spineTop hm (eAdd a j) := by unfold runLink; rw [if_pos h]
+
+theorem runLink_hi (hm : EvenWidths m) (a b : Fin n) (j : ℕ) (h : ¬ (j ≤ b.val - a.val)) :
+    runLink hm a b j = chainBot hm (eSub b (j - (b.val - a.val) - 1)) := by
+  unfold runLink; rw [if_neg h]
+
+/-! ### Two trivial `AllJoined` sets -/
+
+theorem allJoined_singleton {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α)
+    (x : α) : AllJoined G {x} := by
+  intro p hp q hq
+  rw [Finset.mem_singleton] at hp hq
+  subst hp; subst hq
+  exact SimpleGraph.Reachable.refl _
+
+theorem allJoined_empty {α : Type*} [Fintype α] [DecidableEq α] (G : SimpleGraph α) :
+    AllJoined G (∅ : Finset α) := by
+  intro p hp
+  simp at hp
+
+/-! ### Run membership of the two index families -/
+
+theorem eAdd_mem_runSet (Zf : Finset ℤ) (r : ℕ) {a b : Fin n}
+    (ha : a ∈ runSet Zf r) (hb : b ∈ runSet Zf r) (j : ℕ) (hj : j ≤ b.val - a.val)
+    (hab : a.val ≤ b.val) : eAdd a j ∈ runSet Zf r := by
+  have hlt : a.val + j < n := by have := b.isLt; omega
+  have hv : (eAdd a j).val = a.val + j := eAdd_val a j hlt
+  exact runSet_interval Zf r ha hb (by omega) (by omega)
+
+theorem eSub_mem_runSet (Zf : Finset ℤ) (r : ℕ) {a b : Fin n}
+    (ha : a ∈ runSet Zf r) (hb : b ∈ runSet Zf r) (k : ℕ) (hk : k ≤ b.val - a.val)
+    (hab : a.val ≤ b.val) :
+    eSub b k ∈ runSet Zf r :=
+  runSet_interval Zf r ha hb (by simp only [eSub_val]; omega)
+    (by simp only [eSub_val]; omega)
+
+/-- The chain half of `runFam`, indexed by the offset `k` from the top edge. -/
+theorem runFam_hi' (hm : EvenWidths m) (a b : Fin n) (k : ℕ) (h2 : k ≤ b.val - a.val) :
+    runFam hm a b (b.val - a.val + 1 + k) = bSet hm (eSub b k) := by
+  unfold runFam
+  rw [if_neg (by omega : ¬ (b.val - a.val + 1 + k ≤ b.val - a.val)),
+    if_pos (by omega : b.val - a.val + 1 + k ≤ 2 * (b.val - a.val) + 1),
+    show b.val - a.val + 1 + k - (b.val - a.val) - 1 = k from by omega]
+
+theorem runLink_hi' (hm : EvenWidths m) (a b : Fin n) (k : ℕ) :
+    runLink hm a b (b.val - a.val + 1 + k) = chainBot hm (eSub b k) := by
+  unfold runLink
+  rw [if_neg (by omega : ¬ (b.val - a.val + 1 + k ≤ b.val - a.val)),
+    show b.val - a.val + 1 + k - (b.val - a.val) - 1 = k from by omega]
+
+/-! ### Step 12: the run is one joined set -/
+
+/-- **The run's strands are all joined.**  Spines `a … b` chained by passes, the top
+bounce at `b+1` into the zigzag chains, the chains `b … a` chained by passes.  The
+bounce at `a` closes the cycle and is not needed for joinedness. -/
+theorem zz_run_joined (Zf : Finset ℤ) (hm : EvenWidths m) (r : ℕ) (a b : Fin n)
+    (ha : a ∈ runSet Zf r) (hb : b ∈ runSet Zf r)
+    (hmin : ∀ e : Fin n, e ∈ runSet Zf r → a.val ≤ e.val)
+    (hmax : ∀ e : Fin n, e ∈ runSet Zf r → e.val ≤ b.val) :
+    AllJoined (WalkGraph.graph (zzData Zf hm))
+      ((Finset.range (2 * (b.val - a.val) + 1 + 1)).biUnion (runFam hm a b)) := by
+  have hab : a.val ≤ b.val := hmin b hb
+  have hbn := b.isLt
+  refine allJoined_biUnion (zzData Zf hm) rfl (runFam hm a b)
+    (2 * (b.val - a.val) + 1) ?_ (runLink hm a b) ?_ _ (le_refl _)
+  · intro j
+    by_cases h1 : j ≤ b.val - a.val
+    · rw [runFam_lo hm a b j h1]; exact allJoined_singleton _ _
+    · by_cases h2 : j ≤ 2 * (b.val - a.val) + 1
+      · rw [runFam_hi hm a b j h1 h2]; exact zz_bSet_joined Zf hm _
+      · rw [show runFam hm a b j = (∅ : Finset (Endpt n m)) by
+            unfold runFam; rw [if_neg h1, if_neg h2]]
+        exact allJoined_empty _
+  · intro j hj
+    simp only [zzData_t]
+    rcases Nat.lt_or_ge j (b.val - a.val) with hjd | hjd
+    · -- a spine pass, strictly inside the run
+      have hj1 : j ≤ b.val - a.val := le_of_lt hjd
+      have hj2 : j + 1 ≤ b.val - a.val := hjd
+      have hva : (eAdd a j).val = a.val + j := eAdd_val a j (by omega)
+      have hva1 : (eAdd a (j + 1)).val = a.val + (j + 1) := eAdd_val a (j + 1) (by omega)
+      have hmem : eAdd a j ∈ runSet Zf r := eAdd_mem_runSet Zf r ha hb j hj1 hab
+      have hmem1 : eAdd a (j + 1) ∈ runSet Zf r :=
+        eAdd_mem_runSet Zf r ha hb (j + 1) hj2 hab
+      have hpass : PassHi Zf (eAdd a j) :=
+        ⟨by omega, runSet_no_cut Zf r hmem hmem1 (by omega)⟩
+      refine ⟨?_, ?_⟩
+      · rw [runLink_lo hm a b j hj1, runFam_lo hm a b j hj1, botOf_spineTop]
+        exact Finset.mem_singleton_self _
+      · rw [runLink_lo hm a b j hj1, runFam_lo hm a b (j + 1) hj2,
+          zz_spine_pass Zf hm (eAdd a j) (eAdd a (j + 1)) hpass (by omega)]
+        exact Finset.mem_singleton_self _
+    · rcases Nat.eq_or_lt_of_le hjd with hje | hjd2
+      · -- the bounce at the top of the run, from the last spine into its chain
+        have hj1 : j ≤ b.val - a.val := by omega
+        have hvab : (eAdd a j).val = b.val := by rw [eAdd_val a j (by omega)]; omega
+        have heb : eAdd a j = b := Fin.ext hvab
+        have hnp : ¬ PassHi Zf b := runSet_max_no_passHi Zf r hb hmax
+        refine ⟨?_, ?_⟩
+        · rw [runLink_lo hm a b j hj1, runFam_lo hm a b j hj1, botOf_spineTop]
+          exact Finset.mem_singleton_self _
+        · rw [runLink_lo hm a b j hj1, heb, zz_spine_bounce Zf hm b hnp,
+            show j + 1 = b.val - a.val + 1 + 0 from by omega,
+            runFam_hi' hm a b 0 (by omega),
+            show eSub b 0 = b from Fin.ext (by simp only [eSub_val]; omega)]
+          exact fB_zero_mem_bSet hm b
+      · -- a chain pass, going back down the run
+        obtain ⟨k, rfl⟩ : ∃ k, j = b.val - a.val + 1 + k :=
+          ⟨j - (b.val - a.val) - 1, by omega⟩
+        have hkd : k + 1 ≤ b.val - a.val := by omega
+        have hmemk : eSub b k ∈ runSet Zf r :=
+          eSub_mem_runSet Zf r ha hb k (by omega) hab
+        have hmemk1 : eSub b (k + 1) ∈ runSet Zf r :=
+          eSub_mem_runSet Zf r ha hb (k + 1) hkd hab
+        have hpass : PassLo Zf (eSub b k) := by
+          refine ⟨by simp only [eSub_val]; omega, ?_⟩
+          have hnc := runSet_no_cut Zf r hmemk1 hmemk (by simp only [eSub_val]; omega)
+          rwa [show (((eSub b (k + 1)).val : ℤ) + 1) = ((eSub b k).val : ℤ) from by
+            simp only [eSub_val]; omega] at hnc
+        refine ⟨?_, ?_⟩
+        · rw [runLink_hi' hm a b k, runFam_hi' hm a b k (by omega)]
+          exact chainBot_mem_bSet hm _
+        · rw [runLink_hi' hm a b k,
+            show b.val - a.val + 1 + k + 1 = b.val - a.val + 1 + (k + 1) from by omega,
+            runFam_hi' hm a b (k + 1) hkd,
+            zz_chain_pass Zf hm (eSub b k) (eSub b (k + 1)) hpass
+              (by simp only [eSub_val]; omega)]
+          exact fB_zero_mem_bSet hm _
+
+/-! ### Step 13: the run's joined set covers the run -/
+
+theorem zz_cover (Zf : Finset ℤ) (hm : EvenWidths m) (r : ℕ) (a b : Fin n)
+    (_ha : a ∈ runSet Zf r) (hb : b ∈ runSet Zf r)
+    (hmin : ∀ e : Fin n, e ∈ runSet Zf r → a.val ≤ e.val)
+    (hmax : ∀ e : Fin n, e ∈ runSet Zf r → e.val ≤ b.val)
+    (x : Endpt n m) (hx : CutComponents.gz Zf (EndType.edgeOf x) = r) :
+    botOf x ∈ (Finset.range (2 * (b.val - a.val) + 1 + 1)).biUnion (runFam hm a b) := by
+  rw [edgeOf_val] at hx
+  have hxe : x.edge ∈ runSet Zf r := mem_runSet.mpr hx
+  have h1 := hmin _ hxe
+  have h2 := hmax _ hxe
+  have hab : a.val ≤ b.val := hmin b hb
+  rw [Finset.mem_biUnion]
+  by_cases h0 : x.idx.val = 0
+  · refine ⟨x.edge.val - a.val, Finset.mem_range.mpr (by omega), ?_⟩
+    rw [runFam_lo hm a b _ (by omega),
+      show eAdd a (x.edge.val - a.val) = x.edge from Fin.ext (by
+        rw [eAdd_val a _ (by have := x.edge.isLt; omega)]; omega),
+      Finset.mem_singleton]
+    exact botOf_eq_spineBot hm x h0
+  · refine ⟨b.val - a.val + 1 + (b.val - x.edge.val), Finset.mem_range.mpr (by omega), ?_⟩
+    rw [runFam_hi' hm a b (b.val - x.edge.val) (by omega),
+      show eSub b (b.val - x.edge.val) = x.edge from Fin.ext (by
+        simp only [eSub_val]; omega)]
+    exact botOf_mem_bSet hm x (by omega)
+
+/-! ### Step 14: `RunStrandsConnected`, and the shield law at arbitrary even widths -/
+
+/-- **The Eulerian existence, closed by explicit construction.** -/
+theorem zz_RunStrandsConnected (Zf : Finset ℤ) (hm : EvenWidths m) :
+    RunStrandsConnected (zzData Zf hm) Zf := by
+  intro r
+  by_cases hne : (runSet Zf r : Finset (Fin n)).Nonempty
+  · have ha : (runSet Zf r).min' hne ∈ runSet Zf r := Finset.min'_mem _ _
+    have hb : (runSet Zf r).max' hne ∈ runSet Zf r := Finset.max'_mem _ _
+    have hmin : ∀ e : Fin n, e ∈ runSet Zf r → ((runSet Zf r).min' hne).val ≤ e.val :=
+      fun e he => Fin.le_def.mp (Finset.min'_le _ _ he)
+    have hmax : ∀ e : Fin n, e ∈ runSet Zf r → e.val ≤ ((runSet Zf r).max' hne).val :=
+      fun e he => Fin.le_def.mp (Finset.le_max' _ _ he)
+    exact ⟨_, zz_run_joined Zf hm r _ _ ha hb hmin hmax,
+      fun x hx => zz_cover Zf hm r _ _ ha hb hmin hmax x hx⟩
+  · refine ⟨∅, allJoined_empty _, ?_⟩
+    intro x hx
+    rw [edgeOf_val] at hx
+    exact absurd ⟨x.edge, mem_runSet.mpr hx⟩ hne
+
+/-- **THE SHIELD LAW AT ARBITRARY EVEN WIDTHS.**  `walkCount = |Zf| + 1`, that is
+`c = |Z|`, with no hypothesis relating the widths of different edges: each `m e` need
+only be even and at least `2`.  Compare `shield_law`, which needs `∀ e, m e = 2 * u`. -/
+theorem zz_shield_law (Zf : Finset ℤ) (hm : EvenWidths m) (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, EndType.edgeOf x = t)
+    (hnonempty : Nonempty (Endpt n m)) :
+    WalkGraph.walkCount (zzData Zf hm) = Zf.card + 1 :=
+  shield_law_of_connected Zf A B hAB (zzData Zf hm) rfl
+    (fun x => zz_site Zf hm x) (fun x hx => zz_hturn Zf hm x hx)
+    (zz_RunStrandsConnected Zf hm) hlow hhigh hoc hnonempty
+
+/-- The existential form, matching `shield_law`'s conclusion. -/
+theorem zz_shield_law_exists (Zf : Finset ℤ) (hm : EvenWidths m) (A B : ℤ) (hAB : A ≤ B)
+    (hlow : ∀ z ∈ Zf, A < z) (hhigh : ∀ z ∈ Zf, z ≤ B)
+    (hoc : ∀ t : ℤ, A ≤ t → t ≤ B → ∃ x : Endpt n m, EndType.edgeOf x = t)
+    (hnonempty : Nonempty (Endpt n m)) :
+    ∃ E : WalkGraph.Data (Endpt n m), WalkGraph.walkCount E = Zf.card + 1 :=
+  ⟨zzData Zf hm, zz_shield_law Zf hm A B hAB hlow hhigh hoc hnonempty⟩
+
+/-! ### Non-vacuity
+
+The widths really may differ from edge to edge, which is exactly what `shield_law`
+cannot allow, and the whole hypothesis set is satisfiable: two edges carrying two and
+four strands, one interior cut site, gives `walkCount = 2`. -/
+
+/-- Two edges carrying two and four strands: even widths that are not constant. -/
+def w2 : Fin 2 → ℕ := fun e => if e.val = 0 then 2 else 4
+
+theorem w2_even : EvenWidths w2 := by
+  intro e
+  fin_cases e <;> exact ⟨by norm_num [w2], by norm_num [w2]⟩
+
+/-- **The whole chain, on a configuration `shield_law` cannot reach.** -/
+theorem zz_witness_shield :
+    WalkGraph.walkCount (zzData ({(1 : ℤ)} : Finset ℤ) w2_even) = 2 := by
+  have h := zz_shield_law ({(1 : ℤ)} : Finset ℤ) w2_even 0 1 (by norm_num)
+    (by intro z hz; rw [Finset.mem_singleton] at hz; omega)
+    (by intro z hz; rw [Finset.mem_singleton] at hz; omega)
+    (by
+      intro t h0 h1
+      have ht : t = 0 ∨ t = 1 := by omega
+      rcases ht with rfl | rfl
+      · exact ⟨⟨⟨0, by norm_num⟩, ⟨0, by norm_num [w2]⟩, true⟩, by simp [EndType.edgeOf]⟩
+      · exact ⟨⟨⟨1, by norm_num⟩, ⟨0, by norm_num [w2]⟩, true⟩, by simp [EndType.edgeOf]⟩)
+    ⟨⟨⟨0, by norm_num⟩, ⟨0, by norm_num [w2]⟩, true⟩⟩
+  simpa using h
+
+end EltBridge
+
+#print axioms EltBridge.runSet_interval
+#print axioms EltBridge.runSet_no_cut
+#print axioms EltBridge.runSet_min_no_passLo
+#print axioms EltBridge.runSet_max_no_passHi
+#print axioms EltBridge.zz_spine_pass
+#print axioms EltBridge.zz_spine_bounce
+#print axioms EltBridge.zz_chain_pass
+#print axioms EltBridge.fB_zero_mem_bSet
+#print axioms EltBridge.chainBot_mem_bSet
+#print axioms EltBridge.botOf_mem_bSet
+#print axioms EltBridge.botOf_eq_spineBot
+#print axioms EltBridge.allJoined_singleton
+#print axioms EltBridge.allJoined_empty
+#print axioms EltBridge.eAdd_mem_runSet
+#print axioms EltBridge.eSub_mem_runSet
+#print axioms EltBridge.zz_run_joined
+#print axioms EltBridge.zz_cover
+#print axioms EltBridge.zz_RunStrandsConnected
+#print axioms EltBridge.zz_shield_law
+#print axioms EltBridge.zz_shield_law_exists
+#print axioms EltBridge.w2_even
+#print axioms EltBridge.zz_witness_shield
