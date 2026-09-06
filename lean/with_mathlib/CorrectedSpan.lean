@@ -96,16 +96,25 @@ theorem lRTrue_one : lRTrue EltBridge.Elt.one = 0 := by
 /-! ### The corrected defect
 
 `pdCutSites` misses one site that `main.rs` counts: the boundary shield.  Its firing
-condition was characterised and machine-checked (140/140, BLOCK 343): `kstar = 0`,
-`eps = +1`, `delta = false`, no deposit at any edge `<= 0`, and some deposit at an edge
-`>= 1`.  Deleting it from the Rust tool costs 28 `M4b` violations at depth 20, so it is
-load-bearing, not decoration. -/
+condition is read directly off `nogap/src/main.rs`'s `cutset_gen`:
+
+    boundary_shield = !interior && e.k == 0 && e.dl == 0 && s == 0 && lo == 0 && hi > 0
+
+With `k = 0` the span starts at `lo = 0` and grows only through lamps, so `lo == 0` says
+no deposit at any edge `j < 0`, and `hi > 0` says some deposit at an edge `j >= 0`.
+
+NOTE: BLOCK 343 characterised this condition as "`kstar = 0`, `eps = +1`,
+`delta = false`, no deposit at any edge `<= 0`, some deposit at an edge `>= 1`".  That is
+WRONG on three counts, checked against the source: there is no `eps` condition at all, the
+left cut is at `j < 0` not `j <= 0`, and the right one at `j >= 0` not `j >= 1`.  It
+happens to agree on `gBad`, which is presumably why it survived.  Deleting the shield from
+the Rust tool costs 28 `M4b` violations at depth 20, so the term is load-bearing. -/
 
 open Classical in
 /-- `main.rs`'s boundary-shield condition. -/
 def ShieldFires : Prop :=
-  g.kstar = 0 ∧ g.eps = 1 ∧ g.delta = false ∧
-    (∀ j : ℤ, j ≤ 0 → g.d j = 0) ∧ (∃ j : ℤ, 1 ≤ j ∧ g.d j ≠ 0)
+  g.kstar = 0 ∧ g.delta = false ∧
+    (∀ j : ℤ, j < 0 → g.d j = 0) ∧ (∃ j : ℤ, 0 ≤ j ∧ g.d j ≠ 0)
 
 open Classical in
 /-- **The corrected defect**: cut sites interior to the CORRECTED span, plus the boundary
@@ -115,7 +124,7 @@ noncomputable def cTrue : ℕ :=
     + (if ShieldFires g then 1 else 0)
 
 theorem not_shieldFires_one : ¬ ShieldFires EltBridge.Elt.one := by
-  rintro ⟨-, -, -, -, ⟨j, -, hj⟩⟩
+  rintro ⟨-, -, -, ⟨j, -, hj⟩⟩
   exact hj (by simp [EltBridge.Elt.one])
 
 theorem cTrue_one : cTrue EltBridge.Elt.one = 0 := by
@@ -161,7 +170,7 @@ theorem BTrue_gBad : BTrue EltBridge.Elt.gBad = 1 := by
   simp [occTrue_gBad]
 
 theorem shieldFires_gBad : ShieldFires EltBridge.Elt.gBad := by
-  refine ⟨rfl, rfl, rfl, ?_, ⟨1, le_refl 1, ?_⟩⟩
+  refine ⟨rfl, rfl, ?_, ⟨1, by norm_num, ?_⟩⟩
   · intro j hj
     have : j ≠ 1 := by omega
     simp [EltBridge.Elt.gBad, this]

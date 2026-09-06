@@ -12603,3 +12603,71 @@ or take BLOCK 343's repair (`PathData.hB : -1 <= B` plus the boundary-shield sit
 deliberate decision. Proving the gap-free case is a real construction (a word of length
 exactly `lR`), not an assembly of what exists; the counted toolkit here is its first
 brick.
+
+## BLOCK 347 (2026-09-06) — the repair, done additively; and BLOCK 343's shield characterisation corrected
+
+Two things: the repair BLOCK 343 asked for is now in Lean without touching
+`PathData`, and BLOCK 343's own description of the boundary-shield condition
+was wrong and is corrected here against the source.
+
+**The additive repair.** `lean/with_mathlib/CorrectedSpan.lean` (new). BLOCK 343
+proposed weakening `PathData.hB : 0 <= B` to `-1 <= B`. That is invasive: it
+falsifies `pdWidth_pos` (an empty span has width 0) and cascades through the
+`Fin (pdWidth P)` edge type the whole shield-law development rests on. The
+additive route works because **`mu` and `siteCost` do not depend on `A` or `B`**
+-- they are functions of `kstar, d, eps, delta` alone. So the corrected length
+is the same summand over a corrected range:
+  `occTrue` = occupied edges (Elt.occ WITHOUT the forced `insert 0`);
+  `ATrue = min 0 (min')`, `BTrue = max (-1) (max')`, empty span -> (0, -1);
+  `lRTrue`, `cTrue` (interior cut sites + boundary shield).
+Nothing existing breaks; `lR`/`Elt.c` keep their meaning and every shield-law
+theorem stands. Full `lake build` clean, 0 sorry.
+
+Proved: `metric_identity_one` (wordLength one = lRTrue + 2*cTrue = 0, where the
+old reading was 2 and `not_metric_identity` refuted it) and, on `gBad` -- the
+element `TrueLengthUpper` found, where the OLD upper bound reads `10 <= 8` and
+FAILS -- `lRTrue gBad = 8`, `cTrue gBad = 1`, total `10`, matching `Reaches 10`.
+
+**The clamp is load-bearing and was got wrong first.** `ATrue`/`BTrue` initially
+took the raw `min'`/`max'` of the occupied edges. `main.rs`'s `span` starts at
+`(0.min(k), 0.max(k))` and only then extends over lamps, i.e. the span is the
+occupied range EXTENDED to reach site 0. For `gBad` (occupied edge {1}) the raw
+version gives `A = 1 > 0` and drops site 0 entirely. Caught by hand-checking
+`gBad` before trusting the definition.
+
+**CORRECTION to BLOCK 343.** It characterised the boundary shield as
+"`kstar = 0`, `eps = +1`, `delta = false`, no deposit at any edge `<= 0`, some
+deposit at an edge `>= 1`". Read off `main.rs`'s `cutset_gen` the actual
+condition is
+    `!interior && e.k == 0 && e.dl == 0 && s == 0 && lo == 0 && hi > 0`
+which is: `kstar = 0`, `delta = false`, no deposit at `j < 0`, some deposit at
+`j >= 0`. **There is no `eps` condition at all**, the left cut is `j < 0` not
+`j <= 0`, and the right is `j >= 0` not `j >= 1`. BLOCK 343's version and this
+one agree on `gBad` and on the 10 firing elements its sweep saw, which is
+presumably how the error survived; they differ on any element with `eps = -1`,
+or whose only deposit sits at `j = 0`. `CorrectedSpan.ShieldFires` follows the
+source.
+
+**A non-discrepancy, checked and dismissed.** `main.rs`'s `closed_lr` folds
+`|Phi|` into the site max (`a.abs().max(b.abs()).max(p.abs())`) while Lean's
+`siteCost` is `max |alpha| |beta|`. These agree: `MarkedSite.Phi_le_min` proves
+`|Phi| <= min |alpha| |beta|`. (It also makes `cut`'s `Phi = 0` conjunct
+redundant.)
+
+**Numerical confirmation, re-run independently (depth 16, 5789 elements in
+complete layers, plus a 370500-element exhaustive sweep):**
+
+    variant                       identity violations   c mismatches   max |dPhi|
+    lean   (Elt.lR + 2*Elt.c)            2175                48             3
+    nogap  (span only)                      8                 -             3
+    leanBS (shield only)                 2167                 -             1
+    nogapBS (= CorrectedSpan)               0                 0             1
+
+`nogapBS` has `Phi - wordLength in [0,0]`. Both corrections are necessary --
+span alone leaves 8 violations and a jump of 3, shield alone leaves 2167 -- and
+together they are sufficient on everything measured.
+
+**Still not claimed:** the identity in general. Its lower bound is open
+mathematics (2026-08-09 retraction: the previous chain was circular). This block
+fixes the definitions and settles the two points where the uncorrected statement
+was refuted.
