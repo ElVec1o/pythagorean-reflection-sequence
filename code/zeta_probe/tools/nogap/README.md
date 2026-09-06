@@ -11714,3 +11714,82 @@ all u levels, so neighbouring edges never need EQUAL width -- that is exactly
 the type obstruction that stops `turnGen`/`shield_law` (EltBridge.lean:18492,
 proved only for constant width m e = 2*u) from generalizing, and why this
 construction is the route to non-constant even widths.
+
+
+## BLOCK 339 (2026-09-06, commits e5f8c25, 6463355) -- `RunStrandsConnected` CLOSED by
+## explicit construction: the shield law now holds at ARBITRARY EVEN, NON-CONSTANT
+## widths, unconditionally, 0 sorry
+
+The Lean half of the design pass logged in the two entries above. The "spine + zigzag"
+(a.k.a. Through2 / V5) wiring is now built in `EltBridge.lean` and everything it was
+supposed to give is proved. Re-ran `zigzag_check` this session before starting, rather
+than trusting the logged numbers: 4665/4665 on V4/V5/V6, 127/127 on the `m_j = 2`
+degenerate family, 149796/149796 on the `m in {2,4,6,8}, L <= 6` stress sweep, and 42/42
+configurations admitting a good turn under the exhaustive enumerator.
+
+**What landed (all 14 steps of the plan, none skipped).**
+
+* `zzTurn Zf hm` (`EltBridge.lean` ~20000): the turn itself, a total map on
+  `EndType.Endpt n m`, taking `hm : EvenWidths m` (`forall e, 2 <= m e /\ m e % 2 = 0`)
+  as a proof argument so the `Fin (m e')` bounds when crossing to `e +- 1` are
+  discharged inside the definition.
+* Six branch computations (`zz_bot_pair/pass/bounce`, `zz_top_pair/pass/bounce`) and
+  then `zz_invol`, `zz_ne`, `zz_site`, `zz_hturn`, packaged as `zzData` with
+  `p := EndType.partner` on the nose, so `hEp` is `rfl` and the turn's formula stays
+  visible (`DataBuild.dataOf` is not used: its turn is `choose`n and opaque).
+* `zz_B_step` / `zz_bSet_joined`: each edge's zigzag chain is one joined set. This is
+  the ONLY place `Even (m e)` is used -- the bottom pairing `(2,3),(4,5),...` must
+  exhaust `{2..N-1}` and the top pairing `(1,2),(3,4),...` must exhaust `{1..N-2}`,
+  which needs `N-2` even. It is edge-local, so it holds for every edge, not only for
+  edges of the run under consideration.
+* `runSet_interval`, `runSet_no_cut`, `runSet_min_no_passLo`, `runSet_max_no_passHi`:
+  the run of an edge is an interval `[a,b]`, consecutive edges of a run are separated
+  by a non-cut site, and the two ends of the run bounce.
+* `zz_run_joined`, `zz_cover`, `zz_RunStrandsConnected`, `zz_shield_law`,
+  `zz_shield_law_exists`.
+
+**Final statement.**
+
+    theorem zz_shield_law {n} {m : Fin n -> NN} (Zf : Finset ZZ) (hm : EvenWidths m)
+        (A B : ZZ) (hAB : A <= B) (hlow : forall z in Zf, A < z)
+        (hhigh : forall z in Zf, z <= B)
+        (hoc : forall t, A <= t -> t <= B -> exists x : Endpt n m, edgeOf x = t)
+        (hnonempty : Nonempty (Endpt n m)) :
+        WalkGraph.walkCount (zzData Zf hm) = Zf.card + 1
+
+No hypothesis relates the widths of different edges. `shield_law` (line 18492) needs
+`forall e, m e = 2 * u`; this needs `2 <= m e` and `m e` even, per edge, independently.
+
+**Non-vacuity is concrete, not schematic.** `zz_witness_shield` instantiates the entire
+chain at `n = 2`, `m = (2, 4)`, `Zf = {1}`, `A = 0`, `B = 1` and proves
+`walkCount (zzData {1} w2_even) = 2`. That is a configuration `shield_law` cannot even
+state.
+
+**Certification.** `lake build` succeeds on all 8629 jobs. Every new declaration has a
+`#print axioms` line in the file; all of them report a subset of
+`[propext, Classical.choice, Quot.sound]`. No `sorry`, no `native_decide`, no
+`Lean.ofReduceBool` anywhere in the block.
+
+**Two corrections to the plan, recorded so the next reader does not repeat the guess.**
+
+1. Step 6 (`gz_mono`) was ALREADY in the file, at line 15991, and had been since an
+   earlier block. Nothing was added for it.
+2. Step 7 ("run is an interval") was budgeted as the moderate-confidence step because
+   of `Fin n <-> ZZ` casting. It is in fact three lines and needs ONLY monotonicity of
+   `gz`: `gz a <= gz e <= gz b` with `gz a = gz b = r` forces `gz e = r`. The plan
+   expected `no_cut_between_of_gz_eq` here; that lemma is used only in step 8.
+
+**What actually cost the time, and the technique that removed it.** The predicted
+friction -- transporting a dependent `Fin (m edge)` across `e +- 1` -- was removed
+wholesale by never stating an equation between `Endpt`s directly. Every fact about
+`zzTurn` is stated on the three fields `.edge` (or `.edge.val` when the edge changes),
+`.idx.val` and `.top`, and `endpt_ext` (val-level on all three) reassembles them. With
+that, `omega` closes every index obligation and no `HEq` ever appears. Recommended for
+any future work on this end type.
+
+**What is NOT claimed.** This closes `RunStrandsConnected` and the shield law for even
+widths only. Odd widths are genuinely outside the model here (a site's pass count is
+forced even), and nothing in this block says anything about them. It also does not
+by itself discharge anything upstream in `Elt`: `zz_shield_law` is a statement about
+`zzData`, i.e. about a turn this block constructs, not about a turn arising from a
+minimum-cost realisation. Connecting the two is separate work.
