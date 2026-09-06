@@ -7,7 +7,8 @@ defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "Si
   "EltBridge",
   "ZigzagParity",
   "TravelParity",
-  "TransTrick"]
+  "TransTrick",
+  "PointGroupReduction"]
 
 [[require]]
 name = "mathlib"
@@ -309,3 +310,6 @@ name = "TravelParity"
 
 [[lean_lib]]
 name = "TransTrick"
+
+[[lean_lib]]
+name = "PointGroupReduction"
