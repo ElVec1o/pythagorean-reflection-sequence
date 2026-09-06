@@ -11793,3 +11793,79 @@ forced even), and nothing in this block says anything about them. It also does n
 by itself discharge anything upstream in `Elt`: `zz_shield_law` is a statement about
 `zzData`, i.e. about a turn this block constructs, not about a turn arising from a
 minimum-cost realisation. Connecting the two is separate work.
+
+## 2026-09-06 — hourly cloud run (session cse_01K2sq981SubQHqCbsSnTPeT): no new theorem,
+## two infra findings, one outstanding item re-flagged for the user
+
+This run's own clock spanned about 33 hours wall time (09:05 -> 22:04 -> 10:58 UTC
+across three check-ins), almost none of it this session's own compute -- the
+container was reclaimed and restarted twice mid-session, and each restart cost
+whatever `lake build` progress existed. No new EltBridge theorem from this run:
+by the time each build attempt neared completion, either the container had reset
+or the concurrent-session firehose above had already closed everything this run
+was independently approaching (its own planned first target, `s1`/`s2`'s Lipschitz
+bound on `lR`, is exactly BLOCK 316-317 above, done before this run got a working
+build). Recording the two real findings and the one decision item rather than
+manufacturing a redundant theorem.
+
+**Finding 1: this container's `lake build EltBridge` does not survive a container
+restart, and restarts happened twice.** First attempt reached 2974/2982 (99.7%)
+before the container reset; the `.lake/build` tree afterward held only 21 oleans
+(the same stock baseline both times, not anything compiled this session). Git
+state (commits, working tree) survived both restarts intact; compiled build
+output did not. This is on top of the already-known cache-CDN block
+(`lakecache.blob.core.windows.net`, 403, documented in `bootstrap_ci.sh` and the
+entries above) -- so a session that draws a container subject to a mid-build
+restart can burn its entire budget on infrastructure twice over: once
+recompiling from source (no cache), and again if reclaimed before that finishes.
+Nothing actionable found for this from inside the session (no control over
+container lifecycle); flagging the pattern so a future run recognizes it
+immediately rather than re-diagnosing, and so whoever owns the scheduling knows
+two-strikes-in-one-session is a real observed rate, not a one-off.
+
+**Finding 2 (positive): this session's own local commit was redundant, correctly
+abandoned rather than pushed.** Independently found and fixed the same
+`bootstrap_ci.sh` bugs (cache-CDN block, the `lean --version` cwd bug) that a
+concurrent session had already fixed and pushed more thoroughly (commit
+`95d4629`); diffed the two versions, confirmed the pushed one strictly
+dominates, discarded this session's version via `git reset --hard origin/main`
+rather than adding a duplicate/conflicting commit. No history pollution.
+
+**Outstanding item, re-flagged, not resolved (same as BLOCK 324, still open at
+current HEAD `278b33d`):** commit `d664ce9` carries a `Co-Authored-By: Claude
+Sonnet 5` / `Claude-Session:` trailer, which violates this repo's own
+no-AI-attribution convention (every other commit in the history, this run's own
+commits included, carries only `ElVec1o <vico@anvilstack.com>`). BLOCK 324
+flagged this and correctly declined to rewrite shared history unilaterally --
+multiple concurrent sessions are actively reading/writing this branch, and a
+force-push to strip one trailer would risk clobbering work in flight (this run
+personally observed two container-loses-progress events; a bad-timed force-push
+onto a branch several other sessions are mid-write on is a materially worse
+version of the same risk). Still needs an explicit human decision: leave it
+(the mathematical content is fine, only the trailer is the problem), or
+schedule a coordinated rebase once no concurrent session is mid-write. Not
+actioned here either, for the same reason BLOCK 324 gave.
+
+**Genuinely large finding surfaced by simply reading forward to current HEAD
+rather than trusting the prompt's snapshot:** the task instructions that opened
+this run listed `H1b`/`M4b` (`RunStrandsConnected`) as "CONFIRMED HARD ... do
+NOT attempt again without a genuinely new angle." That snapshot is now stale by
+several sessions' worth of work: BLOCK 339 (commits `e5f8c25`, `6463355`,
+already on `main` before this entry) closes `RunStrandsConnected` and the
+shield law unconditionally for arbitrary EVEN, non-constant edge widths, via an
+explicit "spine+zigzag" construction, 0 sorry, `#print axioms` clean throughout,
+with a concrete non-vacuous witness (`zz_witness_shield`) at a shape
+`shield_law` itself cannot even state. Scoped honestly by that block itself:
+even widths only, and not yet wired to a turn arising from an actual
+minimum-cost realisation (`zzData`'s turn is exhibited directly, not derived
+from `Elt`). This run did not do that work and claims no credit for it; noting
+it here because the task prompt that launched this run would otherwise mislead
+whoever reads it next into re-avoiding an atom that is, in significant part,
+now closed.
+
+No `lake build` completed by this run's own process; relying on the concurrent
+sessions' own verified builds (each block above cites its own clean build and
+axiom list) rather than re-asserting a build state this run could not itself
+confirm end-to-end. `git push origin main`: nothing to push -- this run made no
+commits (its own candidate work was either superseded or never reached a build
+to verify against, per MATH_RULES_V6's real-verified-work-only rule).
