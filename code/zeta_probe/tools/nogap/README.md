@@ -11681,3 +11681,36 @@ turns for 42 small configurations (`m in {2,4}`, `L <= 3`, ~150k turns, both cou
 cross-checked on each): every configuration admits at least one good turn, so the
 target is achievable everywhere it was tested, e.g. `m=[4,4,4]`, `Z={}`: 31 104 of
 99 225 legal turns work.
+
+### Naming clarification for the entry above (same session, immediately after)
+
+The entry above labels "the zigzag" FALSE. That verdict is correct but the NAME
+is dangerously ambiguous, so pinning it down before a future session misreads it:
+
+FALSE (do not build): the SINGLE-CHAIN zigzag described in EltBridge.lean's own
+docstring at ~line 18869 ("up 0 - dn 0 - up 1 - dn 1 ...", two loose ends). For
+even m its far-site matching (2i,2i+1) is already PERFECT, so zero ends are
+loose on that side and both loose ends land on the near side. An edge can then
+link to at most one neighbour, so any run of >=2 edges splits. Smallest
+counterexample m=[2,2], Z={} (2 components, 1 run). The docstring's stated
+end-pattern is only correct for ODD m, which this model forbids -- i.e. the
+docstring itself is buggy, independently of any formalization. Confirmed by the
+parity argument (a connected-by-bounces edge of width 2w needs 2w-1 bounces,
+forcing (a,b)=(w,w-1) or (w-1,w), hence both loose ends on one side) and by the
+Rust sweep (V1/V2/V3: 363/4665 pass, and the 363 are exactly the configs where
+every run has length 1).
+
+VERIFIED (this is what is being formalized): SPINE + ZIGZAG, a.k.a. "Through2"
+/ V5 above. Strand 0 runs straight through (the spine); strands 1..m-1 zigzag.
+Left bounces (2i,2i+1) for i=1..m/2-1; right bounces (2i+1,2i+2) for
+i=0..m/2-2; loose left ends {0,1}, loose right ends {0,m-1} -- TWO loose ends
+per side, so every edge links to BOTH neighbours. Required because pass count
+at a site is forced even (all m_j even), so linking two edges costs >=2 passes,
+so an interior edge needs 4 loose ends and must split into two paths, not one
+chain. Verified twice independently: 4665/4665 and a 149796/149796 stress sweep
+in Rust (this entry), and 18724/18724 in a separate brute force during the
+design pass. Crucially it passes only TWO ends per site rather than permuting
+all u levels, so neighbouring edges never need EQUAL width -- that is exactly
+the type obstruction that stops `turnGen`/`shield_law` (EltBridge.lean:18492,
+proved only for constant width m e = 2*u) from generalizing, and why this
+construction is the route to non-constant even widths.
