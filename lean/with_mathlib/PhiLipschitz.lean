@@ -962,6 +962,86 @@ theorem occTrue_agree_false {g : EltBridge.Elt} (hδ : g.delta = false) (j : ℤ
   rw [Function.update_of_ne hj, travel_pred_ne g.kstar j hj]
   tauto
 
+
+/-! ### `s3`'s span movement: the case an empty `occTrue` becomes a singleton
+
+Worked out by hand first: if `occTrue g` is empty then `travel` must vanish identically
+on `g` (else it would witness a nonempty `occTrue`, via `hsupp`), forcing `kstar = 0`;
+and then `d` vanishes everywhere too (the same emptiness), including at the crossed edge
+`p`.  So `(s3 g).d p = g.d p -+ eps = -+ eps != 0`, and since `s3` always inserts `p` into
+`supp`, `p` genuinely lands in `occTrue (s3 g)`.  Combined with `occTrue_agree`, which
+pins `occTrue (s3 g) \ {p} = occTrue g \ {p} = empty`, this forces
+`occTrue (s3 g) = {p}` exactly -- never empty.  So an empty `occTrue` can only ever
+become a SINGLETON under `s3`, never stay empty. -/
+
+theorem occTrue_g_empty_kstar_zero {g : EltBridge.Elt} (he : occTrue g = ∅) :
+    g.kstar = 0 := by
+  by_contra hk
+  have : (0:ℤ) ∈ occTrue g ∨ g.kstar ∈ occTrue g := by
+    rcases lt_or_gt_of_ne hk with h | h
+    · right
+      unfold occTrue
+      refine Finset.mem_filter.mpr ⟨?_, Or.inr ?_⟩
+      · by_contra hns
+        exact absurd (g.hsupp g.kstar hns).2 (by
+          unfold SiteCost.travel; rw [if_neg (by omega), if_pos (by omega)]; omega)
+      · unfold SiteCost.travel; rw [if_neg (by omega), if_pos (by omega)]; omega
+    · left
+      unfold occTrue
+      refine Finset.mem_filter.mpr ⟨?_, Or.inr ?_⟩
+      · by_contra hns
+        exact absurd (g.hsupp 0 hns).2 (by
+          unfold SiteCost.travel; rw [if_pos (by omega)]; omega)
+      · unfold SiteCost.travel; rw [if_pos (by omega)]; omega
+  rw [he] at this
+  simp at this
+
+theorem occTrue_g_empty_d_zero {g : EltBridge.Elt} (he : occTrue g = ∅) (j : ℤ) :
+    g.d j = 0 := by
+  by_contra hd
+  have hmem : j ∈ occTrue g := by
+    unfold occTrue
+    by_cases hj : j ∈ g.supp
+    · exact Finset.mem_filter.mpr ⟨hj, Or.inl hd⟩
+    · exact absurd (g.hsupp j hj).1 hd
+  rw [he] at hmem; simp at hmem
+
+theorem occTrue_s3_singleton_of_g_empty (g : EltBridge.Elt) (he : occTrue g = ∅) :
+    occTrue (s3 g) = {(if g.delta then g.kstar else g.kstar - 1)} := by
+  have hkz := occTrue_g_empty_kstar_zero he
+  by_cases hδ : g.delta = true
+  · have hd0 : g.d g.kstar = 0 := occTrue_g_empty_d_zero he g.kstar
+    have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+      rw [s3, dif_pos hδ]
+    have hsupp : (s3 g).supp = insert g.kstar g.supp := by rw [s3, dif_pos hδ]
+    have hmem : g.kstar ∈ occTrue (s3 g) := by
+      unfold occTrue
+      refine Finset.mem_filter.mpr ⟨by rw [hsupp]; simp, Or.inl ?_⟩
+      rw [hd, Function.update_self, hd0]
+      rcases g.heps with h | h <;> rw [h] <;> norm_num
+    rw [if_pos hδ]
+    apply Finset.eq_singleton_iff_unique_mem.mpr
+    refine ⟨hmem, fun x hx => ?_⟩
+    by_contra hxk
+    have := (occTrue_agree_true hδ x hxk).mp hx
+    rw [he] at this; simp at this
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have hd0 : g.d (g.kstar - 1) = 0 := occTrue_g_empty_d_zero he (g.kstar - 1)
+    have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      rw [s3, dif_neg hδ]
+    have hsupp : (s3 g).supp = insert (g.kstar - 1) g.supp := by rw [s3, dif_neg hδ]
+    have hmem : (g.kstar - 1) ∈ occTrue (s3 g) := by
+      unfold occTrue
+      refine Finset.mem_filter.mpr ⟨by rw [hsupp]; simp, Or.inl ?_⟩
+      rw [hd, Function.update_self, hd0]
+      rcases g.heps with h | h <;> rw [h] <;> norm_num
+    rw [if_neg hδ]
+    apply Finset.eq_singleton_iff_unique_mem.mpr
+    refine ⟨hmem, fun x hx => ?_⟩
+    by_contra hxk
+    have := (occTrue_agree_false hδ' x hxk).mp hx
+    rw [he] at this; simp at this
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.interior_filter_s1_eq
@@ -974,3 +1054,6 @@ end PhiLipschitz
 #print axioms PhiLipschitz.phiZ_dist_le_one_s2_boundary_ne_zero
 #print axioms PhiLipschitz.occTrue_agree_true
 #print axioms PhiLipschitz.occTrue_agree_false
+#print axioms PhiLipschitz.occTrue_g_empty_kstar_zero
+#print axioms PhiLipschitz.occTrue_g_empty_d_zero
+#print axioms PhiLipschitz.occTrue_s3_singleton_of_g_empty
