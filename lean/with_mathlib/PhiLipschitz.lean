@@ -1582,7 +1582,92 @@ theorem cTrue_s3_eq_of_window_unchanged (g : EltBridge.Elt)
     Finset.filter_congr (fun x _ => by rw [cut_s3_eq])
   rw [hfilter, if_neg (fun h => hnf2 h.1), if_neg (fun h => hnf1 h.1)]
 
+/-! ### A single point can move at most one of a Finset's min/max, never both
+
+General fact, not specific to `occTrue`: if two nonempty `Finset ℤ`s agree off a single
+point `p`, at least one of their `min'`/`max'` is shared. This is the PROOF of the
+"boundaries never move simultaneously" finding logged several blocks ago as a numeric
+measurement (0 violations over 3336503 pairs) -- not a re-measurement of it. -/
+
+theorem min'_congr_of_eq {A B : Finset ℤ} (hA : A.Nonempty) (hB : B.Nonempty)
+    (h : A = B) : A.min' hA = B.min' hB := by subst h; rfl
+
+theorem max'_congr_of_eq {A B : Finset ℤ} (hA : A.Nonempty) (hB : B.Nonempty)
+    (h : A = B) : A.max' hA = B.max' hB := by subst h; rfl
+
+theorem min_or_max_unchanged {S S' : Finset ℤ} (hS : S.Nonempty) (hS' : S'.Nonempty)
+    {p : ℤ} (hsymm : ∀ x : ℤ, x ≠ p → (x ∈ S ↔ x ∈ S')) :
+    S.min' hS = S'.min' hS' ∨ S.max' hS = S'.max' hS' := by
+  by_cases hpS : p ∈ S
+  · by_cases hpS' : p ∈ S'
+    · left
+      have heq : S = S' := by
+        ext x
+        by_cases hx : x = p
+        · subst hx; exact ⟨fun _ => hpS', fun _ => hpS⟩
+        · exact hsymm x hx
+      exact min'_congr_of_eq hS hS' heq
+    · set T := S.erase p with hTdef
+      have hTS' : T = S' := by
+        ext x
+        rw [hTdef, Finset.mem_erase]
+        constructor
+        · rintro ⟨hne, hx⟩; exact (hsymm x hne).mp hx
+        · intro hx
+          refine ⟨fun h => hpS' (h ▸ hx), ?_⟩
+          exact (hsymm x (fun h => hpS' (h ▸ hx))).mpr hx
+      have hSins : S = insert p T := (Finset.insert_erase hpS).symm
+      have hTne : T.Nonempty := hTS' ▸ hS'
+      have hpT : p ∉ T := fun h => (Finset.mem_erase.mp h).1 rfl
+      have hne_min : p ≠ T.min' hTne := fun h => hpT (by rw [h]; exact T.min'_mem hTne)
+      rcases lt_or_gt_of_ne hne_min with hlt | hgt
+      · right
+        have hmax : S.max' hS = max p (T.max' hTne) := by
+          rw [max'_congr_of_eq hS (Finset.insert_nonempty p T) hSins]
+          exact Finset.max'_insert p T hTne
+        have hple : p ≤ T.max' hTne := le_trans hlt.le (T.min'_le_max' hTne)
+        rw [hmax, max_eq_right hple, max'_congr_of_eq hTne hS' hTS']
+      · left
+        have hmin : S.min' hS = min p (T.min' hTne) := by
+          rw [min'_congr_of_eq hS (Finset.insert_nonempty p T) hSins]
+          exact Finset.min'_insert p T hTne
+        rw [hmin, min_eq_right hgt.le, min'_congr_of_eq hTne hS' hTS']
+  · by_cases hpS' : p ∈ S'
+    · set T := S'.erase p with hTdef
+      have hTS : T = S := by
+        ext x
+        rw [hTdef, Finset.mem_erase]
+        constructor
+        · rintro ⟨hne, hx⟩; exact (hsymm x hne).mpr hx
+        · intro hx
+          refine ⟨fun h => hpS (h ▸ hx), ?_⟩
+          exact (hsymm x (fun h => hpS (h ▸ hx))).mp hx
+      have hS'ins : S' = insert p T := (Finset.insert_erase hpS').symm
+      have hTne : T.Nonempty := hTS ▸ hS
+      have hpT : p ∉ T := fun h => (Finset.mem_erase.mp h).1 rfl
+      have hne_min : p ≠ T.min' hTne := fun h => hpT (by rw [h]; exact T.min'_mem hTne)
+      rcases lt_or_gt_of_ne hne_min with hlt | hgt
+      · right
+        have hmax : S'.max' hS' = max p (T.max' hTne) := by
+          rw [max'_congr_of_eq hS' (Finset.insert_nonempty p T) hS'ins]
+          exact Finset.max'_insert p T hTne
+        have hple : p ≤ T.max' hTne := le_trans hlt.le (T.min'_le_max' hTne)
+        rw [hmax, max_eq_right hple, max'_congr_of_eq hTne hS hTS]
+      · left
+        have hmin : S'.min' hS' = min p (T.min' hTne) := by
+          rw [min'_congr_of_eq hS' (Finset.insert_nonempty p T) hS'ins]
+          exact Finset.min'_insert p T hTne
+        rw [hmin, min_eq_right hgt.le, min'_congr_of_eq hTne hS hTS]
+    · left
+      have heq : S = S' := by
+        ext x
+        by_cases hx : x = p
+        · subst hx; exact ⟨fun h => absurd h hpS, fun h => absurd h hpS'⟩
+        · exact hsymm x hx
+      exact min'_congr_of_eq hS hS' heq
+
 end PhiLipschitz
+
 
 
 

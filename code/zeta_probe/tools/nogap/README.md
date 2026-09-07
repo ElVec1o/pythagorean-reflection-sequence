@@ -13221,3 +13221,41 @@ shield-term accounting -- not done yet.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all three
 new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — min_or_max_unchanged PROVED: the "never both move" finding, now a theorem
+
+`PhiLipschitz.lean`. Proved, as a general fact about `Finset ℤ` (not specific to
+`occTrue`), what several blocks ago was only a numeric measurement: if two nonempty
+finsets agree off a single point `p`, at least one of their `min'`/`max'` is shared --
+i.e. `min'` and `max'` can never BOTH change from a single-point symmetric difference.
+This is the PROOF of "the two window boundaries never move simultaneously" (measured as
+`0 / 3336503` several blocks ago); the numeric result stands confirmed, not merely
+consistent.
+
+Proof by cases on whether `p` is in neither/both sets (trivially equal, `min'`/`max'`
+both preserved) or exactly one (`insert`/`erase` structure, `Finset.min'_insert`/
+`max'_insert`, then a two-way split on `p` vs the remaining set's `min'` -- if
+`p < T.min'` the `max'` is preserved (`p` can't exceed `T.max' >= T.min' > p`); if
+`p > T.min'` the `min'` is preserved directly).
+
+Two Lean pitfalls hit and fixed in this proof specifically (beyond the already-logged
+ones): (1) `Finset.min'_le_max'`, when applied via `Finset.min'_le_max' hTne` (dot-free)
+inferred the wrong implicit and rejected `hTne` as a `Finset` argument -- fixed by using
+dot notation `T.min'_le_max' hTne` instead, which resolves the implicit correctly.
+(2) `h ▸ e`/`h.symm ▸ e` (substitution notation) repeatedly failed to unify when `h`'s
+type was still a metavariable at the point of use (inside a `fun h => ...` passed
+directly as an argument to `lt_or_gt_of_ne`) -- fixed by pulling the `≠` fact out into
+its own named `have` first (giving Lean a concrete type to check the lambda against)
+and using an explicit `rw [h]; exact ...` tactic block instead of term-mode `▸` inside
+it.
+
+Combined with `cTrue_s3_eq_of_window_unchanged`, this now gives a genuine dispatch
+principle for `cTrue_s3_eq`'s remaining case: apply `min_or_max_unchanged` to `occTrue g`/
+`occTrue (s3 g)` (via `occTrue_s3_subset`/`occTrue_g_subset`, already in hand, giving the
+required `hsymm`) to conclude `ATrue (s3 g) = ATrue g ∨ BTrue (s3 g) = BTrue g` whenever
+both are nonempty -- reducing the true remaining work to two symmetric sub-cases
+("`ATrue` preserved, `BTrue` may move" and its mirror) rather than four independent
+hypotheses to juggle. Not yet assembled into `cTrue_s3_eq` itself.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
+`min_or_max_unchanged` gives only [propext, Classical.choice, Quot.sound].
