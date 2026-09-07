@@ -12984,3 +12984,48 @@ rewrite and closing with `omega` instead, which had `hkz`/`hgk` available in con
 theorem (cTrue_eq_zero_of_occTrue_empty, cTrue_s3_eq_of_g_empty, cTrue_s3_eq_of_s3g_empty,
 minOccTrue_eq_of_singleton, maxOccTrue_eq_of_singleton) gives only
 [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — cTrue's both-nonempty mechanism fully diagnosed; NOT proved; one retraction
+
+`PhiLipschitz.lean` + `s3_jump.rs`. Follow-up to the last block's diagnosis, going one
+level deeper numerically before attempting more Lean, per Rule 7/8 (falsify/measure
+before proving).
+
+Extended `s3_jump.rs` twice more this block. First: confirmed the sharper structural
+fact suggested last block -- across all 3336503 both-nonempty pairs, the two window
+boundaries `ATrue`/`BTrue` NEVER move simultaneously under `s3` (`0` violations). Second,
+having isolated "exactly one boundary moves, by exactly one site, in 1546464 of those
+pairs": checked whether the newly-interior site is ever a cut site. It is, in `1540` of
+them -- so the hoped-for shortcut from last block ("the new site is never a cut, so the
+filter-count literally doesn't change") is WRONG, retracted here explicitly. But in every
+one of those `1540` cases, the boundary shield's firing status flips between `g` and
+`s3 g` to exactly compensate (`1540 / 1540`, no exceptions). So `cTrue`'s `s3`-invariance
+is a genuine shield/interior-count EXCHANGE, the same kind of cancellation
+`exchange_le_one`/`exchange_sq_le_one` already formalizes for `s1`/`s2` -- not a "nothing
+moves" argument. This is now a complete, verified-by-enumeration description of the
+mechanism.
+
+Attempted, then explicitly retracted before committing (never landed in git, caught by
+hand-checking, not by the Lean build): a lemma claiming "if the window is unchanged,
+`ShieldFires` is unchanged, so `cTrue` is trivially invariant on that sub-case for free."
+False in general: `ShieldFires` requires `kstar = 0` exactly, and `kstar` can be `0` for
+at most one of `g`, `s3 g` (it changes by exactly `1`), so if `g.kstar = 0` and the window
+happens not to move (occTrue's symmetric-difference point already present on both sides,
+or absent from both), `ShieldFires g` can be true while `ShieldFires (s3 g)` is
+automatically false -- the two values genuinely differ, and the actual invariance in that
+sub-case must ALSO be going through a `cut 0` compensation, not a bare `ShieldFires`
+equality. Logged so nobody re-attempts this exact shortcut.
+
+Landed: `cut_s3_eq` (`(s3 g).toPathData.cut s ↔ g.toPathData.cut s`, for every site `s`) --
+the pointwise cut-invariance fact, immediate from `s3_siteCost_eq` +
+`cut_iff_siteCost_zero`, needed as a building block for whatever the eventual
+exchange-based proof of `cTrue_s3_eq` turns out to be. `cTrue_s3_eq` itself (any form
+covering the both-nonempty case) is NOT proved.
+
+Next concrete step, not started: build the shield/interior exchange proof on top of the
+existing `exchange_le_one`/`exchange_sq_le_one` machinery (same shape as the `s1`/`s2`
+cancellation), rather than attempting a fresh invariance lemma -- the `s1`/`s2` proofs in
+this file are the right template to adapt, not a new technique.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on `cut_s3_eq`
+gives only [propext, Classical.choice, Quot.sound].

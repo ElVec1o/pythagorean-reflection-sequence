@@ -104,6 +104,11 @@ fn main() {
     let mut max_cut: i64 = 0;
     let mut max_awin: i32 = 0;
     let mut max_bwin: i32 = 0;
+    let mut both_nonempty_cut_violation = 0u64;
+    let mut both_nonempty_count = 0u64;
+    let mut newly_interior_is_cut = 0u64;
+    let mut newly_interior_checked = 0u64;
+    let mut shield_compensates = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -117,6 +122,36 @@ fn main() {
         if dcut > max_cut { max_cut = dcut; }
         if (a2 - a1).abs() > max_awin { max_awin = (a2 - a1).abs(); }
         if (b2 - b1).abs() > max_bwin { max_bwin = (b2 - b1).abs(); }
+        // "both nonempty" proxy: span nonempty (a<=b) on both sides, i.e. not the
+        // degenerate empty-occTrue case (which shows up as a==0,b==-1 with no deposits).
+        let e_nonempty = !(a1 == 0 && b1 == -1 && e.lamps.is_empty());
+        let e2_nonempty = !(a2 == 0 && b2 == -1 && e2.lamps.is_empty());
+        if e_nonempty && e2_nonempty {
+            both_nonempty_count += 1;
+            if a1 != a2 && b1 != b2 {
+                // both endpoints moved simultaneously -- would refute the "only one
+                // moves" hypothesis
+                both_nonempty_cut_violation += 1;
+            }
+            // if a boundary moved, check whether the newly-interior site is a cut site
+            // (if it ever is, cTrue's invariance needs a compensating shield flip, not
+            // just "the new site is never a cut")
+            let shield1 = e.k == 0 && e.dl == 0 && a1 == 0 && b1 + 1 > 0 && is_cut(e, 0);
+            let shield2 = e2.k == 0 && e2.dl == 0 && a2 == 0 && b2 + 1 > 0 && is_cut(&e2, 0);
+            let mut new_site_cut = false;
+            let mut shift_happened = false;
+            if b2 == b1 + 1 { new_site_cut = is_cut(e, b1 + 1); shift_happened = true; }
+            if b1 == b2 + 1 { new_site_cut = is_cut(&e2, b2 + 1); shift_happened = true; }
+            if a2 == a1 - 1 { new_site_cut = is_cut(e, a1); shift_happened = true; }
+            if a1 == a2 - 1 { new_site_cut = is_cut(&e2, a2); shift_happened = true; }
+            if shift_happened {
+                newly_interior_checked += 1;
+                if new_site_cut {
+                    newly_interior_is_cut += 1;
+                    if shield1 != shield2 { shield_compensates += 1; }
+                }
+            }
+        }
         if jump > max_jump || (jump == max_jump && sz < wsize) {
             max_jump = jump; wsize = sz; wit = Some((e.clone(), e2, p1, p2));
         }
@@ -124,6 +159,9 @@ fn main() {
     println!("[s3] max |dPhi| under s3 ALONE (nogapBS potential) = {max_jump}");
     println!("[s3] max |d(lRTrue)| = {max_lr}, max |d(cTrue)| = {max_cut}");
     println!("[s3] max |d(ATrue)| = {max_awin}, max |d(BTrue)| = {max_bwin}");
+    println!("[s3] both-endpoints-moved-simultaneously count = {both_nonempty_cut_violation} / {both_nonempty_count} both-nonempty pairs checked");
+    println!("[s3] newly-interior site IS a cut site: {newly_interior_is_cut} / {newly_interior_checked} boundary-shift cases");
+    println!("[s3] of those, shield flips to compensate: {shield_compensates} / {newly_interior_is_cut}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");

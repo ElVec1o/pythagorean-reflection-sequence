@@ -1344,7 +1344,35 @@ exactly the "exact cancellation, not better bookkeeping" difficulty the file hea
 already named. Left open; the numeric evidence above says the cancellation is real, not
 that it is easy. -/
 
-end PhiLipschitz
+/-! ### `cTrue`'s `s3` movement in the both-nonempty case: mechanism fully diagnosed
+numerically, not yet formalized
+
+A second numeric pass (extending `s3_jump.rs` further) pinned the exact mechanism, and
+refutes a hoped-for shortcut. Over the 1546464 both-nonempty pairs where a window
+boundary actually shifts (confirmed separately: never both boundaries at once, `0`
+violations over 3336503 pairs), the newly-interior site IS a cut site in `1540` of them
+(so "the new site is never a cut" is WRONG -- retracting that hypothesis explicitly,
+tried this block before the check). But in every one of those `1540` cases, the boundary
+shield's firing status flips between `g` and `s3 g` to exactly compensate
+(`1540 / 1540`). So the mechanism is a genuine shield/interior-count exchange,
+structurally the same KIND of cancellation `exchange_sq_le_one` was built for on
+`s1`/`s2` -- not a "nothing changes" argument, and NOT reducible to a simpler
+"window unchanged implies ShieldFires unchanged" shortcut either: a first attempt at that
+shortcut this block was caught, before being committed, as false in general -- `ShieldFires`
+can hold for `g` (with `cut 0` true) while `g.kstar = 0` and the window happens not to
+move, and `ShieldFires (s3 g)` is then automatically false (`kstar` can be `0` for at most
+one of `g`, `s3 g`), so the two `ShieldFires` values genuinely can differ even with an
+unchanged window; the overall `cTrue` equality in that sub-case must still be going
+through a `cut 0` compensation, not a `ShieldFires` invariance. `cTrue_s3_eq` (any form)
+is NOT proved this block. This is now a complete, verified-by-enumeration description of
+the mechanism; formalizing the shield-flip exchange is the concrete next step, and it
+should be built on the general exchange machinery (`exchange_le_one`/`exchange_sq_le_one`)
+already in this file for `s1`/`s2`, not on a fresh invariance lemma. -/
+
+theorem cut_s3_eq (g : EltBridge.Elt) (s : ℤ) :
+    (s3 g).toPathData.cut s ↔ g.toPathData.cut s := by
+  rw [cut_iff_siteCost_zero, cut_iff_siteCost_zero, EltBridge.Elt.s3_siteCost_eq]
+
 
 #print axioms PhiLipschitz.interior_filter_s1_eq
 #print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_zero
@@ -1362,3 +1390,5 @@ end PhiLipschitz
 #print axioms PhiLipschitz.occTrue_g_singleton_of_s3_empty
 #print axioms PhiLipschitz.ATrue_eq_A
 #print axioms PhiLipschitz.ATrue_s3_dist_le_one
+
+end PhiLipschitz
