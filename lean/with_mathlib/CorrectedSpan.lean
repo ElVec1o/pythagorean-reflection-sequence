@@ -103,6 +103,12 @@ condition is read directly off `nogap/src/main.rs`'s `cutset_gen`:
 With `k = 0` the span starts at `lo = 0` and grows only through lamps, so `lo == 0` says
 no deposit at any edge `j < 0`, and `hi > 0` says some deposit at an edge `j >= 0`.
 
+The firing condition only makes site `0` ELIGIBLE: `cutset_gen` still applies the cut test
+`a == 0 && b == 0 && p == 0` to it, exactly as it does to an interior site.  So the shield
+contributes `1` only when site `0` is genuinely a cut, and `cTrue` below conjoins
+`ShieldFires` with `cut 0`.  (An earlier version of this file omitted the cut test and
+over-counted; it agreed on `one` and `gBad` by accident.)
+
 NOTE: BLOCK 343 characterised this condition as "`kstar = 0`, `eps = +1`,
 `delta = false`, no deposit at any edge `<= 0`, some deposit at an edge `>= 1`".  That is
 WRONG on three counts, checked against the source: there is no `eps` condition at all, the
@@ -121,7 +127,7 @@ open Classical in
 shield when it fires. -/
 noncomputable def cTrue : ℕ :=
   ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card
-    + (if ShieldFires g then 1 else 0)
+    + (if ShieldFires g ∧ g.toPathData.cut 0 then 1 else 0)
 
 theorem not_shieldFires_one : ¬ ShieldFires EltBridge.Elt.one := by
   rintro ⟨-, -, -, ⟨j, -, hj⟩⟩
@@ -129,7 +135,7 @@ theorem not_shieldFires_one : ¬ ShieldFires EltBridge.Elt.one := by
 
 theorem cTrue_one : cTrue EltBridge.Elt.one = 0 := by
   unfold cTrue
-  rw [ATrue_one, BTrue_one, if_neg not_shieldFires_one]
+  rw [ATrue_one, BTrue_one, if_neg (fun h => not_shieldFires_one h.1)]
   norm_num
 
 /-- **The metric identity holds at the identity element, with the corrected definitions.**
@@ -209,11 +215,20 @@ theorem lRTrue_gBad : lRTrue EltBridge.Elt.gBad = 8 := by
   rw [h1, h2]
   simp [gBad_mu0, gBad_mu1, gBad_site0, gBad_site1, gBad_site2]
 
+/-- Site `0` of `gBad` genuinely is a cut: `alpha = 0 - 1 + 1 = 0`, `beta = 0`,
+`Phi = 0 + 1 - 1 = 0`.  Needed because the shield only counts at a real cut site. -/
+theorem gBad_cut_zero : EltBridge.Elt.gBad.toPathData.cut 0 := by
+  unfold SiteCost.PathData.cut SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.PhiAt SiteCost.PathData.f SiteCost.PathData.vL SiteCost.PathData.vR
+    SiteCost.PathData.vD SiteCost.vArr
+  refine ⟨?_, ?_, ?_⟩ <;>
+    simp [EltBridge.Elt.toPathData, EltBridge.Elt.gBad, SiteCost.travel_of_kstar_zero]
+
 /-- **The corrected defect of `gBad` is `1`** -- the boundary shield, which `pdCutSites`
 misses entirely (`gBad_cutSites : pdCutSites gBad.toPathData = empty`). -/
 theorem cTrue_gBad : cTrue EltBridge.Elt.gBad = 1 := by
   unfold cTrue
-  rw [ATrue_gBad, BTrue_gBad, if_pos shieldFires_gBad]
+  rw [ATrue_gBad, BTrue_gBad, if_pos ⟨shieldFires_gBad, gBad_cut_zero⟩]
   have h : Finset.Ioo (0 : ℤ) (1 + 1) = ({1} : Finset ℤ) := by decide
   rw [h]
   have : ¬ EltBridge.Elt.gBad.toPathData.cut 1 := by
@@ -306,6 +321,7 @@ end CorrectedSpan
 #print axioms CorrectedSpan.ATrue_gBad
 #print axioms CorrectedSpan.BTrue_gBad
 #print axioms CorrectedSpan.shieldFires_gBad
+#print axioms CorrectedSpan.gBad_cut_zero
 
 #print axioms CorrectedSpan.gBad_mu0
 #print axioms CorrectedSpan.gBad_mu1
