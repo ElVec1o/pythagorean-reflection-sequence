@@ -13143,3 +13143,37 @@ from two blocks ago. Still open; this block adds two concrete atoms, not the ful
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on both new
 theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — all four generic-case direction lemmas now proved
+
+`PhiLipschitz.lean`. Landed the remaining two: `not_cut_kstarSucc_of_delta_true`
+(`delta = true` shrink, site `kstar + 1`, `alphaAt` -- needs the `kstar + 1 != 0` gate,
+exactly where `ShieldFires (s3 g)` becomes eligible) and
+`not_cut_kstarPred_of_delta_false` (`delta = false` shrink, site `kstar - 1` -- the
+crossed edge itself this time, via `betaAt`, no gate needed at all: even at
+`kstar = 1`, `(s3 g).kstar = 0` cannot trigger `ShieldFires (s3 g)` because `s3` also
+flips `delta` to `true` there and `ShieldFires` requires `delta = false`).
+
+Clean structural pattern now fully confirmed by these four proofs: `betaAt` has no
+`vArr` term, so the two `betaAt`-based directions (`delta = true` growth,
+`delta = false` shrink) need no gate at all; `alphaAt` has a `vArr` term, so the two
+`alphaAt`-based directions (`delta = true` shrink, `delta = false` growth) need a
+`site != 0` gate, and that gate's failure point is EXACTLY the site-0/`ShieldFires`
+exchange mechanism found several blocks ago -- the four generic-case lemmas and the
+`kstar = 0` special case are the same mechanism, not two unrelated things.
+
+All four directional "never a cut" facts for the generic (no boundary at `0`) case are
+now proved: `not_cut_kstar_of_delta_true`, `not_cut_kstar_of_delta_false`,
+`not_cut_kstarSucc_of_delta_true`, `not_cut_kstarPred_of_delta_false`. Remaining for
+`cTrue_s3_eq`: (1) the "neither boundary moves" trivial case (window and cut predicate
+both unchanged -> `Finset.filter_congr` via `cut_s3_eq`, shield term needs separate
+handling per the earlier retraction); (2) the `kstar = 0`-on-one-side shield-transfer
+case (mechanism understood via `ATrue_eq_zero_of_shieldFires`, not assembled); (3) tying
+which of the four directions applies to a given transition (needs relating
+`ATrue_s3_dist_le_one`/`BTrue_s3_dist_le_one`'s movement conclusion to the specific
+`d`/`delta` hypotheses each of these four lemmas needs). None of these three assembly
+steps is done yet -- this block adds the last two atomic "never a cut" facts, not the
+full equality.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on both new
+theorems gives only [propext, Classical.choice, Quot.sound].

@@ -1464,6 +1464,52 @@ theorem not_cut_kstar_of_delta_false (g : EltBridge.Elt) (hd : g.delta = false)
   rw [hdk] at ha
   rcases g.heps with h | h <;> rw [h] at ha <;> norm_num at ha
 
+/-! ### The two shrink-direction lemmas: all four generic-case directions now done
+
+Worked out by hand this block, correcting the site convention once more: for a
+window SHRINK, the site whose cut-status matters depends on WHICH side shrinks --
+`kstar + 1` for the `delta = true` (`A`-side) shrink (uses `alphaAt`, which has the
+`vArr` term, hence needs the `kstar + 1 != 0` gate -- exactly where `ShieldFires`
+becomes newly eligible on the `s3 g` side), but the crossed edge `kstar - 1` ITSELF
+for the `delta = false` (`B`-side) shrink (uses `betaAt`, which has NO `vArr` term at
+all, so no gate is needed -- even at `kstar = 1`, where `(s3 g).kstar = 0`, `ShieldFires
+(s3 g)` cannot fire regardless, because `s3` also flips `delta` to `true` there and
+`ShieldFires` requires `delta = false`). This asymmetry (`alphaAt` carries `vArr`,
+`betaAt` does not) is exactly why growth/shrink pair up with `alphaAt`/`betaAt`
+oppositely by side: `delta = true` growth and `delta = false` shrink both use `betaAt`
+(no gate); `delta = true` shrink and `delta = false` growth both use `alphaAt` (gated). -/
+
+theorem not_cut_kstarSucc_of_delta_true (g : EltBridge.Elt) (hd : g.delta = true)
+    (hk1 : g.kstar + 1 ≠ 0) (hdk : g.d g.kstar = g.eps) :
+    ¬ g.toPathData.cut (g.kstar + 1) := by
+  rintro ⟨ha, -, -⟩
+  have hvL : SiteCost.PathData.vL g.toPathData (g.kstar + 1) = 0 := by
+    unfold SiteCost.PathData.vL
+    have : g.toPathData.delta = true := hd
+    simp [this]
+  have hvArr : SiteCost.vArr (g.kstar + 1) = 0 := by unfold SiteCost.vArr; simp [hk1]
+  unfold SiteCost.PathData.alphaAt at ha
+  rw [hvL, hvArr] at ha
+  simp only [EltBridge.Elt.toPathData] at ha hdk
+  have : g.kstar + 1 - 1 = g.kstar := by ring
+  rw [this, hdk] at ha
+  rcases g.heps with h | h <;> rw [h] at ha <;> norm_num at ha
+
+theorem not_cut_kstarPred_of_delta_false (g : EltBridge.Elt) (hd : g.delta = false)
+    (hdk : g.d (g.kstar - 1) = -g.eps) :
+    ¬ g.toPathData.cut (g.kstar - 1) := by
+  rintro ⟨-, hb, -⟩
+  have hvR : SiteCost.PathData.vR g.toPathData (g.kstar - 1) = 0 := by
+    unfold SiteCost.PathData.vR
+    have : g.toPathData.delta = false := hd
+    simp [this]
+  unfold SiteCost.PathData.betaAt at hb
+  rw [hvR] at hb
+  simp only [EltBridge.Elt.toPathData] at hb hdk
+  rw [hdk] at hb
+  rcases g.heps with h | h <;> rw [h] at hb <;> norm_num at hb
+
 end PhiLipschitz
+
 
 
