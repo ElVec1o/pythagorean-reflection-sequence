@@ -3447,4 +3447,109 @@ theorem phiZ_dist_le_one_s3 (g : EltBridge.Elt) : (PhiZ (s3 g) - PhiZ g) ^ 2 ≤
   · rw [h]; ring_nf; omega
   · rw [show (lRTrue g : ℤ) = lRTrue (s3 g) + 1 from h]; ring_nf; omega
 
+
+theorem toPathData_mu_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) (j : ℤ) :
+    g.toPathData.mu j = h.toPathData.mu j := by
+  unfold SiteCost.PathData.mu
+  simp only [EltBridge.Elt.toPathData]
+  rw [H.1, H.2.2.2]
+
+theorem toPathData_siteCost_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) (s : ℤ) :
+    g.toPathData.siteCost s = h.toPathData.siteCost s := by
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD
+  simp only [EltBridge.Elt.toPathData, H.1, H.2.1, H.2.2.1, H.2.2.2]
+  rfl
+
+theorem toPathData_cut_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) (s : ℤ) :
+    g.toPathData.cut s ↔ h.toPathData.cut s := by
+  unfold SiteCost.PathData.cut SiteCost.PathData.alphaAt SiteCost.PathData.betaAt  
+    SiteCost.PathData.PhiAt SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD
+    SiteCost.PathData.f
+  simp only [EltBridge.Elt.toPathData, H.1, H.2.1, H.2.2.1, H.2.2.2]
+  tauto
+
+theorem occTrue_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
+    occTrue g = occTrue h := by
+  ext j
+  unfold occTrue
+  constructor
+  · intro hj
+    have hpred := (Finset.mem_filter.mp hj).2
+    have hpred' : h.d j ≠ 0 ∨ SiteCost.travel h.kstar j ≠ 0 := by
+      rw [← H.2.2.2, ← H.1]; exact hpred
+    have hmem : j ∈ h.supp := by
+      by_contra hc
+      have := (h.hsupp j hc)
+      rcases hpred' with hp | hp
+      · exact hp this.1
+      · exact hp this.2
+    exact Finset.mem_filter.mpr ⟨hmem, hpred'⟩
+  · intro hj
+    have hpred := (Finset.mem_filter.mp hj).2
+    have hpred' : g.d j ≠ 0 ∨ SiteCost.travel g.kstar j ≠ 0 := by
+      rw [H.2.2.2, H.1]; exact hpred
+    have hmem : j ∈ g.supp := by
+      by_contra hc
+      have := (g.hsupp j hc)
+      rcases hpred' with hp | hp
+      · exact hp this.1
+      · exact hp this.2
+    exact Finset.mem_filter.mpr ⟨hmem, hpred'⟩
+
+theorem ATrue_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
+    ATrue g = ATrue h := by
+  unfold ATrue
+  rw [occTrue_congr H]
+
+theorem BTrue_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
+    BTrue g = BTrue h := by
+  unfold BTrue
+  rw [occTrue_congr H]
+
+theorem lRTrue_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
+    lRTrue g = lRTrue h := by
+  unfold lRTrue
+  rw [ATrue_congr H, BTrue_congr H]
+  congr 1
+  · exact Finset.sum_congr rfl (fun x _ => toPathData_mu_congr H x)
+  · exact Finset.sum_congr rfl (fun x _ => toPathData_siteCost_congr H x)
+
+theorem ShieldFires_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
+    ShieldFires g ↔ ShieldFires h := by
+  unfold ShieldFires
+  rw [H.1, H.2.2.1]
+  constructor
+  · rintro ⟨hk, hd, hl, hr⟩
+    exact ⟨hk, hd, fun j hj => by rw [← H.2.2.2]; exact hl j hj,
+      by obtain ⟨j, hj1, hj2⟩ := hr; exact ⟨j, hj1, by rw [← H.2.2.2]; exact hj2⟩⟩
+  · rintro ⟨hk, hd, hl, hr⟩
+    exact ⟨hk, hd, fun j hj => by rw [H.2.2.2]; exact hl j hj,
+      by obtain ⟨j, hj1, hj2⟩ := hr; exact ⟨j, hj1, by rw [H.2.2.2]; exact hj2⟩⟩
+
+theorem cTrue_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
+    cTrue g = cTrue h := by
+  unfold cTrue
+  rw [ATrue_congr H, BTrue_congr H]
+  congr 1
+  · have hset : (Finset.Ioo (ATrue h) (BTrue h + 1)).filter g.toPathData.cut
+        = (Finset.Ioo (ATrue h) (BTrue h + 1)).filter h.toPathData.cut :=
+      Finset.filter_congr (fun x _ => toPathData_cut_congr H x)
+    rw [hset]
+  · by_cases hc : ShieldFires g ∧ g.toPathData.cut 0
+    · rw [if_pos hc]
+      have hc' : ShieldFires h ∧ h.toPathData.cut 0 :=
+        ⟨(ShieldFires_congr H).mp hc.1, (toPathData_cut_congr H 0).mp hc.2⟩
+      rw [if_pos hc']
+    · rw [if_neg hc]
+      have hc' : ¬ (ShieldFires h ∧ h.toPathData.cut 0) := by
+        rintro ⟨h1, h2⟩
+        exact hc ⟨(ShieldFires_congr H).mpr h1, (toPathData_cut_congr H 0).mpr h2⟩
+      rw [if_neg hc']
+
+theorem PhiZ_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
+    PhiZ g = PhiZ h := by
+  unfold PhiZ
+  rw [lRTrue_congr H, cTrue_congr H]
+
 end PhiLipschitz
