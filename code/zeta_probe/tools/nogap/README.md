@@ -13573,3 +13573,31 @@ own exact `mu`/`siteCost` computation at the (different) crossed site.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
 three new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — lRTrue's s3 movement: Bdecrease direction proved EXACTLY -1
+
+`PhiLipschitz.lean`. Second of four directions toward `phiZ_dist_le_one_s3`, mirroring
+the `Bincrease` technique for the removal direction.
+
+`mu_g_at_crossed_eq_one_of_Bdecrease`: the `mu`-sum loses the crossed edge
+`p = g.kstar - 1` exactly; `mu_g(p) = 1` regardless of `travel`'s value there, since
+`d_g(p) = -eps` (magnitude `1`) alone already forces `max(1, |travel|) = 1` for
+`travel ∈ {-1,0,1}` (`SiteCost.travel_cases`) -- did not even need to pin `travel`'s
+exact value, unlike `Bincrease`.
+
+`siteCost_removed_eq_zero_of_Bdecrease`: the `siteCost`-sum loses site
+`p + 1 = g.kstar`. Its `betaAt` vanishes because `g.kstar` itself sits STRICTLY beyond
+`BTrue g` (`BTrue g = p < g.kstar`), so `d_eq_zero_of_gt_BTrue` applies directly to
+`g.kstar` -- a clean reuse, not a fresh computation. `alphaAt` vanishes given
+`g.kstar != 0` (`hk1`, kept as a real hypothesis here, unlike `Bincrease` where the
+matching site never carried a `vArr` term).
+
+Assembled `lRTrue_s3_eq_of_Bdecrease_delta_false`: `lRTrue (s3 g) + 1 = lRTrue g`
+exactly. Two of four directions (`Bincrease`, `Bdecrease`) now proved for `lRTrue`'s
+`s3` movement. Remaining: `Aincrease`/`delta=true`, `Adecrease`/`delta=false` (expected
+to mirror the `A`-side pattern the same way `cTrue`'s did), plus the `kstar = 0`
+special cases and the empty/window-unchanged base cases, before `phiZ_dist_le_one_s3`
+is fully assembled.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
+three new theorems gives only [propext, Classical.choice, Quot.sound].

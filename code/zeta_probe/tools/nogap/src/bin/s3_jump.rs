@@ -124,6 +124,8 @@ fn main() {
     let mut b_incr_s3g_kstar_zero = 0u64;
     let mut b_decr_g_kstar_zero = 0u64;
     let mut b_decr_s3g_kstar_zero = 0u64;
+    let mut b_decr_nonzero_dkstar = 0u64;
+    let mut b_decr_checked = 0u64;
     let mut b_incr_false_kstar0 = 0u64;
     let mut a_decr_true_kstar0 = 0u64;
     for e in dist.keys() {
@@ -182,6 +184,11 @@ fn main() {
             if b2 == b1 + 1 && e.dl == 1 && e2.k == 0 { b_incr_s3g_kstar_zero += 1; }
             if b2 == b1 - 1 && e.dl == 0 && e.k == 0 { b_decr_g_kstar_zero += 1; }
             if b2 == b1 - 1 && e.dl == 0 && e2.k == 0 { b_decr_s3g_kstar_zero += 1; }
+            if b2 == b1 - 1 && e.dl == 0 {
+                let dep_kstar = dep(&e.lamps, e.k);
+                if dep_kstar != 0 { b_decr_nonzero_dkstar += 1; }
+                b_decr_checked += 1;
+            }
             if b2 == b1 + 1 && e.dl == 0 && e.k == 0 { b_incr_false_kstar0 += 1; }
             if a2 == a1 - 1 && e.dl == 1 && e2.k == 0 { a_decr_true_kstar0 += 1; }
             if b2 == b1 + 1 { new_site_cut = is_cut(e, b1 + 1); shift_happened = true; }
@@ -223,6 +230,7 @@ fn main() {
     println!("[s3] Bincrease: d(p+1) nonzero: {b_incr_nonzero_boundary_site} / {b_incr_checked}");
     println!("[s3] Bincrease at g.kstar=0: {b_incr_g_kstar_zero}; at s3g.kstar=0: {b_incr_s3g_kstar_zero}");
     println!("[s3] Bdecrease at g.kstar=0: {b_decr_g_kstar_zero}; at s3g.kstar=0: {b_decr_s3g_kstar_zero}");
+    println!("[s3] Bdecrease: d(kstar) nonzero: {b_decr_nonzero_dkstar} / {b_decr_checked}");
     println!("[s3] Bincrease-delta-false at g.kstar=0: {b_incr_false_kstar0}; Adecrease-delta-true at s3g.kstar=0: {a_decr_true_kstar0}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
