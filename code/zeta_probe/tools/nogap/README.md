@@ -13302,3 +13302,36 @@ identifier" -- fixed by reconstructing the witness directly, `dif_pos ⟨x, hx�
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all five
 new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — cTrue_s3_eq_of_Adecrease_delta_false PROVED: the mirror direction
+
+`PhiLipschitz.lean`. Mirrored the previous block's technique exactly for the `ATrue`-
+decreases direction: `ATrue_le`/`atrue_le_zero` (mirrors of `le_BTrue`/
+`neg_one_le_BTrue`), `crossed_eq_of_Adecrease`, `crossed_not_mem_g_of_Adecrease`,
+`d_crossed_eq_zero_of_Adecrease` (the identification chain, mirrored), and
+`cTrue_s3_eq_of_Adecrease_delta_false` (the assembled direction, using
+`not_cut_kstar_of_delta_false` and `card_filter_insert_left`).
+
+First-try clean build on all the substantive content this time (only the routine
+duplicate-`end` mechanical slip, now expected and immediately fixed) -- the mirroring
+technique from the previous block transferred directly, no new pitfalls.
+
+Both `kstar != 0` both-sides directions of `cTrue_s3_eq`'s final case are now proved:
+`cTrue_s3_eq_of_Bincrease_delta_true` (BTrue increases, delta=true) and
+`cTrue_s3_eq_of_Adecrease_delta_false` (ATrue decreases, delta=false). By the numeric
+finding two blocks ago (B-growth-delta-false and A-growth-delta-true both measured at
+`0` occurrences), these two ARE the only two directions that actually occur among
+`kstar != 0` both-sides transitions -- not yet proved as an impossibility fact, only
+measured, so the top-level `cTrue_s3_eq` assembly still needs either that impossibility
+proof or a case split covering the (believed-vacuous) other two directions honestly.
+
+Remaining before `cTrue_s3_eq` is fully assembled: (1) the impossibility of "BTrue
+increases with delta=false" / "ATrue decreases with delta=true" (or a direct handling
+of those cases, if the impossibility proof turns out harder than just handling them);
+(2) the `kstar = 0`-on-one-side shield-transfer case (mechanism known via
+`ATrue_eq_zero_of_shieldFires`, not assembled); (3) the top-level dispatch tying
+`min_or_max_unchanged` + `cTrue_s3_eq_of_window_unchanged` + these two directions
+together into one theorem.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all six
+new theorems gives only [propext, Classical.choice, Quot.sound].
