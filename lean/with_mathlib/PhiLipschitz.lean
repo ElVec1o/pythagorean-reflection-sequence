@@ -461,26 +461,60 @@ theorem shield_case_delta_s2 (g : EltBridge.Elt) (hs : ShieldFires g)
     (cut_iff_siteCost_zero g.toPathData 0).mp hc]
   norm_num
 
-end PhiLipschitz
 
-#print axioms PhiLipschitz.sum_eq_add_diff_of_eq_off
-#print axioms PhiLipschitz.siteSum_sub_eq_at_kstar_s1
-#print axioms PhiLipschitz.siteSum_sub_eq_at_kstar_s2
-#print axioms PhiLipschitz.siteSum_dist_le_one_s1
-#print axioms PhiLipschitz.cut_iff_siteCost_zero
-#print axioms PhiLipschitz.filter_cut_eq_filter_siteCost_zero
-#print axioms PhiLipschitz.exchange_le_one
-#print axioms PhiLipschitz.exchange_sq_le_one
+/-! ### `kstar` always sits in the corrected window
 
-#print axioms PhiLipschitz.shield_cut_pins
-#print axioms PhiLipschitz.siteCost_s1_zero_of_shield_cut
-#print axioms PhiLipschitz.shield_case_delta
-#print axioms PhiLipschitz.filter_card_eq_add_diff
-#print axioms PhiLipschitz.shieldFires_ATrue_zero
-#print axioms PhiLipschitz.shield_site_not_interior
-#print axioms PhiLipschitz.not_shieldFires_of_interior
-#print axioms PhiLipschitz.cTrue_eq_filter_of_not_shield
-#print axioms PhiLipschitz.phiZ_dist_le_one_s1_interior
-#print axioms PhiLipschitz.phiZ_dist_le_one_s2_interior
-#print axioms PhiLipschitz.siteCost_s2_zero_of_shield_cut
-#print axioms PhiLipschitz.shield_case_delta_s2
+The prerequisite the full (non-interior-restricted) bound needs: even though `ATrue`,
+`BTrue` are built from `occTrue` (occupied edges alone, no forced edge `0`), `kstar`
+never falls outside `[ATrue, BTrue + 1]`.  Three cases, each forcing one edge into
+`occTrue` via a nonzero `travel` value there:
+
+* `kstar > 0`: `travel kstar 0 = 1` puts edge `0` in `occTrue`, and
+  `travel kstar (kstar-1) = 1` puts edge `kstar-1` in it too, so `BTrue >= kstar-1`.
+* `kstar < 0`: symmetrically `travel kstar kstar = -1` puts edge `kstar` in `occTrue`,
+  so `ATrue <= kstar`.
+* `kstar = 0`: `ATrue <= 0` and `BTrue >= -1` hold by definition of the clamp, in every
+  case, occupied or not. -/
+theorem kstar_mem_corrected_window (g : EltBridge.Elt) :
+    g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := by
+  classical
+  have mem_occTrue_of_ne : ∀ j : ℤ, g.d j ≠ 0 ∨ SiteCost.travel g.kstar j ≠ 0 →
+      j ∈ occTrue g := by
+    intro j h
+    unfold occTrue
+    by_cases hj : j ∈ g.supp
+    · exact Finset.mem_filter.mpr ⟨hj, h⟩
+    · rcases h with h | h
+      · exact absurd (g.hsupp j hj).1 h
+      · exact absurd (g.hsupp j hj).2 h
+  simp only [Finset.mem_Icc]
+  rcases lt_trichotomy g.kstar 0 with hneg | hzero | hpos
+  · have hocc : g.kstar ∈ occTrue g := by
+      apply mem_occTrue_of_ne
+      right
+      unfold SiteCost.travel
+      rw [if_neg (by omega), if_pos (by omega)]
+      omega
+    have hATrue : ATrue g ≤ g.kstar := by
+      unfold ATrue
+      rw [dif_pos ⟨g.kstar, hocc⟩]
+      exact le_trans (min_le_right _ _) (Finset.min'_le _ _ hocc)
+    have hBTrue : (-1 : ℤ) ≤ BTrue g := by
+      unfold BTrue; split_ifs <;> omega
+    exact ⟨hATrue, by omega⟩
+  · have hATrue : ATrue g ≤ 0 := by unfold ATrue; split_ifs <;> omega
+    have hBTrue : (-1 : ℤ) ≤ BTrue g := by unfold BTrue; split_ifs <;> omega
+    exact ⟨by omega, by omega⟩
+  · have hocc : (g.kstar - 1) ∈ occTrue g := by
+      apply mem_occTrue_of_ne
+      right
+      unfold SiteCost.travel
+      rw [if_pos (by omega)]
+      omega
+    have hBTrue : g.kstar - 1 ≤ BTrue g := by
+      unfold BTrue
+      rw [dif_pos ⟨g.kstar - 1, hocc⟩]
+      exact le_trans (Finset.le_max' _ _ hocc) (le_max_right _ _)
+    have hATrue : ATrue g ≤ 0 := by unfold ATrue; split_ifs <;> omega
+    exact ⟨by omega, by omega⟩
+#print axioms PhiLipschitz.kstar_mem_corrected_window
