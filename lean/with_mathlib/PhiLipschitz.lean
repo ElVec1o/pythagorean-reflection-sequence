@@ -3437,4 +3437,14 @@ theorem lRTrue_s3_dist_one (g : EltBridge.Elt) :
     have := lRTrue_s3_eq_of_occTrue_g_empty g h1
     left; exact_mod_cast this
 
+
+theorem phiZ_dist_le_one_s3 (g : EltBridge.Elt) : (PhiZ (s3 g) - PhiZ g) ^ 2 ≤ 1 := by
+  have hc : cTrue (s3 g) = cTrue g := cTrue_s3_eq g
+  have hl := lRTrue_s3_dist_one g
+  unfold PhiZ
+  rw [hc]
+  rcases hl with h | h
+  · rw [h]; ring_nf; omega
+  · rw [show (lRTrue g : ℤ) = lRTrue (s3 g) + 1 from h]; ring_nf; omega
+
 end PhiLipschitz
