@@ -575,6 +575,48 @@ theorem phiZ_dist_le_one_s1_boundary_ne_zero (g : EltBridge.Elt) (hk0 : g.kstar 
   rw [key]; nlinarith
 
 
+theorem cTrue_s2_eq_of_not_interior_ne_zero (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    cTrue (s2 g) = cTrue g := by
+  have hs : ¬ ShieldFires g := not_shieldFires_of_kstar_ne_zero g hk0
+  have hs' : ¬ ShieldFires (s2 g) :=
+    not_shieldFires_of_kstar_ne_zero (s2 g) (by rw [s2_kstar]; exact hk0)
+  have hzcast : ((cTrue (s2 g) : ℤ)) = ((cTrue g : ℤ)) := by
+    rw [cTrue_eq_filter_of_not_shield _ hs', cTrue_eq_filter_of_not_shield _ hs,
+      ATrue_s2, BTrue_s2]
+    have : (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s2 g).toPathData.cut
+        = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut := by
+      apply Finset.filter_congr
+      intro s hsS
+      rw [cut_iff_siteCost_zero, cut_iff_siteCost_zero]
+      by_cases hsk : s = g.kstar
+      · exact absurd (hsk ▸ hsS) hk
+      · rw [siteCost_eq_of_ne_kstar (P := (s2 g).toPathData) (Q := g.toPathData) rfl rfl s hsk]
+    rw [this]
+  exact_mod_cast hzcast
+
+theorem phiZ_dist_le_one_s2_boundary_ne_zero (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1))
+    (hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1)) :
+    (PhiZ (s2 g) - PhiZ g) ^ 2 ≤ 1 := by
+  have hmu : (∑ j ∈ Finset.Icc (ATrue (s2 g)) (BTrue (s2 g)), ((s2 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s2, BTrue_s2]
+    exact Finset.sum_congr rfl
+      (fun j _ => by unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData])
+  have hlR : (lRTrue (s2 g) : ℤ)
+      = (lRTrue g : ℤ)
+        + (((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue; push_cast
+    rw [hmu, siteSum_sub_eq_at_kstar_s2 g hkw]; ring
+  have hc : cTrue (s2 g) = cTrue g := cTrue_s2_eq_of_not_interior_ne_zero g hk0 hk
+  obtain ⟨h1, h2⟩ := s2_siteCost_kstar g
+  have key : PhiZ (s2 g) - PhiZ g
+      = ((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ) := by
+    unfold PhiZ; rw [hlR, hc]; ring
+  rw [key]; nlinarith
+
+
 /-! ### The mirror shield case: the shield newly fires after `s1`/`s2`
 
 The case `shield_case_delta` does not cover: `g.delta = true` (so `ShieldFires g` is
@@ -776,8 +818,123 @@ theorem phiZ_dist_le_one_s1 (g : EltBridge.Elt) : (PhiZ (s1 g) - PhiZ g) ^ 2 ≤
     · exact phiZ_dist_le_one_s1_boundary_zero g hkz hint
     · exact phiZ_dist_le_one_s1_boundary_ne_zero g hkz hint hkw
 
+
+/-! ### The full `kstar = 0` boundary case for `s2` -- transcription, with `simp` proactive -/
+
+theorem interior_filter_s2_eq (g : EltBridge.Elt)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s2 g).toPathData.cut
+      = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut := by
+  apply Finset.filter_congr
+  intro s hsS
+  rw [cut_iff_siteCost_zero, cut_iff_siteCost_zero]
+  by_cases hsk : s = g.kstar
+  · exact absurd (hsk ▸ hsS) hk
+  · rw [siteCost_eq_of_ne_kstar (P := (s2 g).toPathData) (Q := g.toPathData) rfl rfl s hsk]
+
+theorem phiZ_dist_le_one_s2_boundary_zero (g : EltBridge.Elt) (hkz : g.kstar = 0)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    (PhiZ (s2 g) - PhiZ g) ^ 2 ≤ 1 := by
+  classical
+  have hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := kstar_mem_corrected_window g
+  have hmu : (∑ j ∈ Finset.Icc (ATrue (s2 g)) (BTrue (s2 g)), ((s2 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s2, BTrue_s2]
+    exact Finset.sum_congr rfl
+      (fun j _ => by unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData])
+  have hlR : (lRTrue (s2 g) : ℤ)
+      = (lRTrue g : ℤ)
+        + (((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue; push_cast
+    rw [hmu, siteSum_sub_eq_at_kstar_s2 g hkw]; ring
+  have hfilt : (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s2 g).toPathData.cut
+      = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut :=
+    interior_filter_s2_eq g hk
+  by_cases hd : g.delta = true
+  · have hs0 : ¬ ShieldFires g := fun h => absurd hd (by rw [h.2.1]; simp)
+    by_cases hsc : ShieldFires (s2 g) ∧ (s2 g).toPathData.cut 0
+    · have e1 : cTrue (s2 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card + 1 := by
+        unfold cTrue; rw [ATrue_s2, BTrue_s2, if_pos hsc, hfilt]
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [if_neg (fun h : ShieldFires g ∧ g.toPathData.cut 0 => hs0 h.1)]
+        simp
+      have hkey := shield_case_delta_s2_after g hsc.1 hsc.2 hd
+      have hc : (cTrue (s2 g) : ℤ) = (cTrue g : ℤ) + 1 := by rw [e1, e2]; push_cast; ring
+      have key : PhiZ (s2 g) - PhiZ g
+          = ((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)
+            + 2 * ((1 : ℤ) - 0) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key, hkz]; nlinarith [hkey]
+    · have e1 : cTrue (s2 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue; rw [ATrue_s2, BTrue_s2, if_neg hsc, hfilt]; simp
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [if_neg (fun h : ShieldFires g ∧ g.toPathData.cut 0 => hs0 h.1)]
+        simp
+      have hc : cTrue (s2 g) = cTrue g := by rw [e1, e2]
+      obtain ⟨h1, h2⟩ := s2_siteCost_kstar g
+      have key : PhiZ (s2 g) - PhiZ g
+          = ((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key]; nlinarith
+  · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+    have hs0' : ¬ ShieldFires (s2 g) := by
+      intro h; apply absurd h.2.1; rw [s2]; simp [hd']
+    by_cases hsc : ShieldFires g ∧ g.toPathData.cut 0
+    · have e1 : cTrue (s2 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [ATrue_s2, BTrue_s2,
+          if_neg (fun h : ShieldFires (s2 g) ∧ (s2 g).toPathData.cut 0 => hs0' h.1), hfilt]
+        simp
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card + 1 := by
+        unfold cTrue; rw [if_pos hsc]
+      have hkey := shield_case_delta_s2 g hsc.1 hsc.2
+      have hc : (cTrue (s2 g) : ℤ) = (cTrue g : ℤ) - 1 := by rw [e1, e2]; push_cast; ring
+      have key : PhiZ (s2 g) - PhiZ g
+          = ((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)
+            + 2 * ((0 : ℤ) - 1) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key, hkz]; nlinarith [hkey]
+    · have e1 : cTrue (s2 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [ATrue_s2, BTrue_s2,
+          if_neg (fun h : ShieldFires (s2 g) ∧ (s2 g).toPathData.cut 0 => hs0' h.1), hfilt]
+        simp
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue; rw [if_neg hsc]; simp
+      have hc : cTrue (s2 g) = cTrue g := by rw [e1, e2]
+      obtain ⟨h1, h2⟩ := s2_siteCost_kstar g
+      have key : PhiZ (s2 g) - PhiZ g
+          = ((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key]; nlinarith
+
+/-! ### `s2`, assembled: the unconditional bound -/
+
+theorem phiZ_dist_le_one_s2 (g : EltBridge.Elt) : (PhiZ (s2 g) - PhiZ g) ^ 2 ≤ 1 := by
+  have hkw := kstar_mem_corrected_window g
+  by_cases hint : g.kstar ∈ Finset.Ioo (ATrue g) (BTrue g + 1)
+  · exact phiZ_dist_le_one_s2_interior g hint
+  · by_cases hkz : g.kstar = 0
+    · exact phiZ_dist_le_one_s2_boundary_zero g hkz hint
+    · exact phiZ_dist_le_one_s2_boundary_ne_zero g hkz hint hkw
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.interior_filter_s1_eq
 #print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_zero
 #print axioms PhiLipschitz.phiZ_dist_le_one_s1
+#print axioms PhiLipschitz.interior_filter_s2_eq
+#print axioms PhiLipschitz.phiZ_dist_le_one_s2_boundary_zero
+#print axioms PhiLipschitz.phiZ_dist_le_one_s2
+#print axioms PhiLipschitz.cTrue_s2_eq_of_not_interior_ne_zero
+#print axioms PhiLipschitz.phiZ_dist_le_one_s2_boundary_ne_zero
