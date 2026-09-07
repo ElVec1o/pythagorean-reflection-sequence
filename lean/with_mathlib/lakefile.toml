@@ -341,3 +341,6 @@ name = "DeviationLaw"
 
 [[lean_lib]]
 name = "SparsityQuant"
+
+[[lean_lib]]
+name = "ModelM"
