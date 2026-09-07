@@ -13945,3 +13945,30 @@ to telescope phiZ_dist_le_one_of_Gen along a Reaches n g witness into |PhiZ g - 
 i.e. wordLength g ≥ |PhiZ g - PhiZ one| — this is the actual OPEN LOWER BOUND target for
 l_T = l_R + 2c (PhiZ g = lRTrue g + 2*cTrue g by definition, and PhiZ one = lRTrue one +
 2*cTrue one = 0 per metric_identity_one), giving the missing direction of the metric identity.
+
+## 🎆🎆🎆 Milestone: the open LOWER BOUND of the corrected metric identity, PROVED (df784e3)
+
+Assembled the Reaches-induction (mirroring EltBridge.lean's reaches_lR_le exactly): `PhiZ_one`
+(PhiZ one = 0, via lRTrue_one/cTrue_one), `reaches_phiZ_abs_le` (telescoping
+phiZ_dist_le_one_of_Gen along a Reaches n g witness: induction on Reaches, refl case uses
+PhiZ_congr + PhiZ_one, step case uses the |PhiZ b - PhiZ a| <= 1 bound derived from the
+squared Lipschitz inequality via nlinarith + abs_le/omega), `wordLength_ge_phiZ_abs`
+(specializes to a shortest word), and finally `wordLength_ge_lRTrue_add_two_cTrue`
+(drops the abs since PhiZ g = lRTrue g + 2*cTrue g >= 0 trivially, both terms being ℕ-casts):
+
+    wordLength g >= lRTrue g + 2 * cTrue g   (for all Reachable g)
+
+VERIFIED: lake build PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry,
+#print axioms clean ([propext, Classical.choice, Quot.sound]) on all 4 new theorems.
+
+**Precise scope, no overclaim**: this proves ONLY the lower-bound direction of the corrected
+metric identity `wordLength g = lRTrue g + 2*cTrue g`. The upper-bound direction (some actual
+walk of length <= lRTrue g + 2*cTrue g reaches g -- i.e. an explicit realisation/construction)
+is NOT proved and was not attempted this session; grepped for `IsTrueLength`/an upper-bound
+counterpart to `lR_le_wordLength_mul_C` for the corrected quantities and found none. The
+identity is confirmed to hold with equality only at `one` (`metric_identity_one`, both sides 0).
+Do not cite this as "the metric identity is proved" -- it is the lower bound (H1a-style) half only.
+
+This closes essentially all of the "orange" atoms flagged at the start of this session's work
+on phiZ_dist_le_one_s3: all three generators' 1-Lipschitz property is unconditional, and the
+open lower bound it was meant to unlock is now itself proved.
