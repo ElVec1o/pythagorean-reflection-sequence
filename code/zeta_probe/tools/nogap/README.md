@@ -12852,3 +12852,38 @@ existing private lemmas. This is real, additional casework, correctly not
 rushed.
 
 0 sorry, full lake build clean, #print axioms clean throughout.
+
+## BLOCK (2026-09) — s3's ATrue movement closed for free; BTrue is the genuine remainder
+
+`PhiLipschitz.lean`. Real progress on the diagnosed gap (s3's ATrue/BTrue
+movement bound), split cleanly into a free half and a genuinely hard half.
+
+Closed all four occTrue-emptiness combinations: the previous block proved
+"occTrue g empty forces occTrue(s3 g) a singleton"; this block proves the
+REVERSE ("occTrue(s3 g) empty forces occTrue g a singleton"), by the agree
+fact alone plus ruling out double-emptiness via the forward direction already
+in hand.
+
+Then a genuine shortcut spotted from the DEFINITIONS, not needed by grinding
+through cases: `ATrue g` clamps at 0 (`min 0 (...)`), and `insert 0 (occTrue g)`
+is literally `g.occ` (by rfl, occ's own definition). The min of a nonempty set
+with one extra point equals the min of the extra point and the set's own min,
+so `ATrue g = g.occ.min' _ = g.A` -- the OLD A -- identically, in BOTH the
+empty and nonempty case. So `EltBridge.Elt.s3_A_dist_le_one` (already proved,
+about the OLD A) transfers to the corrected span for free. No new case
+analysis needed for A at all.
+
+Mechanical note: hit the dependent-rewrite pitfall this project has hit
+before -- `rw` on a Finset equality inside a `min'` term whose own
+Nonempty-proof argument depends on that Finset gives "motive is not type
+correct". Worked around by proving the target Finset equals a literal
+singleton and using `Finset.min'_singleton`, rather than rewriting inside the
+dependent term.
+
+BTrue genuinely does NOT get the same shortcut: it clamps at -1
+(`max (-1) (...)`), not 0 -- this asymmetry is exactly the BLOCK 343 repair
+(old B was wrong because it forced >= 0 always). BTrue_s3_dist_le_one still
+needs real case analysis, now unblocked by the singleton lemmas but not
+attempted this block.
+
+0 sorry, full lake build clean, #print axioms clean throughout.
