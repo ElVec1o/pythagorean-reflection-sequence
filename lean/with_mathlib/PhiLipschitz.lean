@@ -763,5 +763,21 @@ theorem phiZ_dist_le_one_s1_boundary_zero (g : EltBridge.Elt) (hkz : g.kstar = 0
         unfold PhiZ; rw [hlR, hc]; ring
       rw [key]; nlinarith
 
+/-! ### `s1`, assembled: the unconditional bound -/
+
+/-- **`s1` moves `Phi` by at most one, unconditionally.**  The three cases proved above
+(interior, `kstar != 0` boundary, `kstar = 0` boundary) are exhaustive by
+`kstar_mem_corrected_window`. -/
+theorem phiZ_dist_le_one_s1 (g : EltBridge.Elt) : (PhiZ (s1 g) - PhiZ g) ^ 2 ≤ 1 := by
+  have hkw := kstar_mem_corrected_window g
+  by_cases hint : g.kstar ∈ Finset.Ioo (ATrue g) (BTrue g + 1)
+  · exact phiZ_dist_le_one_s1_interior g hint
+  · by_cases hkz : g.kstar = 0
+    · exact phiZ_dist_le_one_s1_boundary_zero g hkz hint
+    · exact phiZ_dist_le_one_s1_boundary_ne_zero g hkz hint hkw
+
+end PhiLipschitz
+
 #print axioms PhiLipschitz.interior_filter_s1_eq
 #print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_zero
+#print axioms PhiLipschitz.phiZ_dist_le_one_s1
