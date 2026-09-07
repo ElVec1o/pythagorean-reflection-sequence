@@ -80,6 +80,7 @@ fn show(e: &Elt) -> String {
 }
 
 fn main() {
+    probe_empty_occ();
     let depth: u32 = std::env::args().nth(1).and_then(|s| s.parse().ok()).unwrap_or(20);
     let cap: usize = std::env::args().nth(2).and_then(|s| s.parse().ok()).unwrap_or(6_000_000);
 
@@ -261,4 +262,20 @@ fn probe_manual() {
     // isn't needed -- travel(k,.) already occupies [0,k) so occTrue g is nonempty
     // via travel alone for k>0).
     one_probe("addition-false", Elt { eps: 1, dl: 0, k: 3, lamps: vec![] });
+}
+
+#[allow(dead_code)]
+fn probe_empty_occ() {
+    for delta in [0u8, 1u8] {
+        for eps in [1i8, -1i8] {
+            let e = Elt { eps, dl: delta, k: 0, lamps: vec![] };
+            let e2 = s3(&e);
+            let (a1, b1) = span_nogap(&e);
+            let (a2, b2) = span_nogap(&e2);
+            eprintln!(
+                "[empty] delta={delta} eps={eps} span_g=({a1},{b1}) span_s3g=({a2},{b2}) lr_g={} lr_s3g={} cuts_g={} cuts_s3g={}",
+                lr_on(&e, a1, b1), lr_on(&e2, a2, b2), cuts_on(&e, a1, b1), cuts_on(&e2, a2, b2)
+            );
+        }
+    }
 }

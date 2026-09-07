@@ -13677,3 +13677,47 @@ Remaining, in the order the next attempt should tackle them:
 Only after `phiZ_dist_le_one_s3` lands does the final `Reaches` induction (mirroring
 `EltBridge.lean`'s `reaches_lR_le`) for the actual open lower bound of `l_T = l_R + 2c`
 become attemptable.
+
+## BLOCK (2026-09) — lRTrue's s3 movement: the occTrue-g-empty case proved exactly +1
+
+`PhiLipschitz.lean` + `s3_jump.rs`. First base case toward `phiZ_dist_le_one_s3`
+(the roadmap from the last checkpoint), proved by REUSING the existing generic
+`Bincrease`/`Adecrease` `mu` lemmas rather than re-deriving them -- their hypotheses
+happen to be satisfied exactly by this degenerate transition.
+
+Numeric check first (extending `s3_jump.rs` with a small standalone probe over all
+four `delta`/`eps` combinations at `kstar=0, d≡0`): `lRTrue (s3 g) = lRTrue g + 1`
+held in EVERY case (values `0->1`, `2->3`, `1->2`, `1->2`), a single uniform relation
+despite `lRTrue g` itself varying with `delta`/`eps`.
+
+Landed the pieces: `vD_eq_zero_of_occTrue_empty`/`siteCost_eq_zero_of_occTrue_empty_
+ne_zero` (a clean, `delta`-independent fact: when `occTrue g` is empty, `d` vanishes
+everywhere and `kstar = 0`, so `vD s = [s = kstar]` is `0` for any site `s != 0`,
+killing `siteCost s` there too -- proved this BEFORE the `delta` case split, unlike
+`cTrue`'s analogous argument, since it needed no `delta` information at all).
+`lRTrue_eq_siteCost_zero_of_occTrue_g_empty` (the base value, matching `lRTrue_one = 0`
+from `CorrectedSpan.lean` as the `delta=false, eps=1` special case of this general
+fact). Then `lRTrue_s3_eq_of_occTrue_g_empty_delta_true`/`_delta_false`, each directly
+invoking `mu_s3g_at_crossed_eq_one_of_Bincrease`/`_of_Adecrease` (already proved for
+the GENERIC directions) since `ATrue`/`BTrue` happen to move by exactly the amount
+those lemmas need here -- no fresh `mu` computation required, only the `siteCost`
+bookkeeping (one new site, cost `0` via the lemma above; the old site `0`'s cost
+carried over unchanged via `s3_siteCost_eq`).
+
+Several instances of the "dependent-if-rewrite" pitfall hit again, now with a cleaner
+fix pattern recorded: rewriting a hypothesis like `kstar = 0` directly inside a nested
+`if s = kstar then ... else ...` breaks the motive check even when the OUTER context is
+just a plain equality goal (not embedded in another dependent term) -- the fix is
+`split_ifs with h <;> omega` instead of `rw`, closing each branch via the hypothesis
+directly rather than substituting it into the term. Also: `g.toPathData.d` and `g.d`
+are definitionally but not syntactically equal, so `rw [hdz j]` (stated about `g.d j`)
+needs a preliminary `rw [show g.toPathData.d = g.d from rfl]` first, rather than
+`simp only [EltBridge.Elt.toPathData]` (which unfolds the WHOLE structure literal,
+breaking syntactic match with other already-stated `g.toPathData.foo` facts).
+
+`lRTrue_s3_eq_of_occTrue_g_empty` combines both `delta` cases into one theorem. The
+`occTrue (s3 g) = ∅` case (the mirror) is not done yet, nor is the window-unchanged
+case (still flagged as needing genuinely new work) or the `kstar = 0` special cases.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all six
+new theorems gives only [propext, Classical.choice, Quot.sound].
