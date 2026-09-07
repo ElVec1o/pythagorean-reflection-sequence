@@ -88,9 +88,60 @@ theorem siteSum_dist_le_one_s1 (g : EltBridge.Elt)
       ≤ 1 := by nlinarith
   simpa using this
 
+
+/-! ### The cancellation, isolated: a cut site is exactly a zero-cost site
+
+This is the lemma that makes the `site cost` / `defect` cancellation automatic rather
+than a case analysis.  `cut s` asks for `alpha = beta = Phi = 0` while
+`siteCost s = max |alpha| |beta|`, so one direction is immediate; the content is that
+`alpha = beta = 0` already FORCES `Phi = 0`.
+
+Proof, by hand before Lean: from `alpha s = 0` and `hpar` (`d j = travel k j mod 2`),
+`Phi s` is even, since `eps = +-1` makes `eps * vL = vL (mod 2)`.  And `Phi s` lies in
+`[-2, 2]` because `f (s-1)` is `-1, 0, 1` and the two indicators are `0, 1`.  Both extremes
+are impossible: `Phi = 2` needs `vArr s = 1`, i.e. `s = 0`, together with
+`travel k (-1) = 1`, but `travel` is `1` only for `0 <= j`; `Phi = -2` needs `vL s = 1`,
+i.e. `s = kstar`, together with `travel k (kstar - 1) = -1`, but that value is only ever
+`0` or `1`.  So `Phi = 0`.
+
+Consequence: a site leaving the cut set is exactly a site whose cost rises from `0`, which
+is the exchange the Lipschitz bound needs. -/
+theorem cut_iff_siteCost_zero (P : SiteCost.PathData) (s : ℤ) :
+    P.cut s ↔ P.siteCost s = 0 := by
+  constructor
+  · rintro ⟨ha, hb, -⟩
+    unfold SiteCost.PathData.siteCost
+    rw [ha, hb]; simp
+  · intro h
+    unfold SiteCost.PathData.siteCost at h
+    have ha : P.alphaAt s = 0 := by
+      have : (P.alphaAt s).natAbs = 0 := by omega
+      omega
+    have hb : P.betaAt s = 0 := by
+      have : (P.betaAt s).natAbs = 0 := by omega
+      omega
+    refine ⟨ha, hb, ?_⟩
+    have hp := P.hpar (s - 1)
+    have he := P.heps
+    revert ha
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.PhiAt SiteCost.PathData.f
+      SiteCost.PathData.vL SiteCost.PathData.vD SiteCost.vArr SiteCost.travel at *
+    split_ifs at * <;> omega
+
+/-- **The defect counts exactly the zero-cost sites.**  Restating `cut_iff_siteCost_zero`
+as a `Finset` identity, which is the form the potential needs: the cut sites of a window
+are precisely the sites of that window carrying no cost. -/
+theorem filter_cut_eq_filter_siteCost_zero (P : SiteCost.PathData) (S : Finset ℤ) :
+    S.filter P.cut = S.filter (fun s => P.siteCost s = 0) := by
+  apply Finset.filter_congr
+  intro s _
+  simpa using cut_iff_siteCost_zero P s
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.sum_eq_add_diff_of_eq_off
 #print axioms PhiLipschitz.siteSum_sub_eq_at_kstar_s1
 #print axioms PhiLipschitz.siteSum_sub_eq_at_kstar_s2
 #print axioms PhiLipschitz.siteSum_dist_le_one_s1
+#print axioms PhiLipschitz.cut_iff_siteCost_zero
+#print axioms PhiLipschitz.filter_cut_eq_filter_siteCost_zero
