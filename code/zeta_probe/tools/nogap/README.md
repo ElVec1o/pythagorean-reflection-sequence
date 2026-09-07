@@ -13474,3 +13474,67 @@ written down even by hand in full generality.
 
 No theorems added this block; this is pure scoping to avoid a wrong first attempt at
 the actual proof next tick.
+
+## BLOCK (2026-09) — cTrue_s3_eq PROVED, FULLY, UNCONDITIONALLY
+
+`PhiLipschitz.lean` + `s3_jump.rs`. The culmination of this entire session's `cTrue`
+thread: `cTrue (s3 g) = cTrue g` for EVERY `g`, no hypotheses at all.
+
+Landed the two `kstar = 0` special-case theorems first:
+`cTrue_s3_eq_of_Adecrease_delta_false_at_kstar_zero` and
+`cTrue_s3_eq_of_Aincrease_delta_true_at_kstar_zero`. The key hand-derivation, done
+BEFORE writing any Lean (per this session's standing discipline): in the `Adecrease`
+direction, the identification chain already gives `g.kstar = ATrue g` (no separate
+hypothesis needed), so at `kstar = 0` we get `ATrue g = 0` for free -- and `ATrue g = 0`
+with `kstar = 0` (which kills `travel` everywhere) forces EVERY occupied edge to be
+`>= 0`, which is EXACTLY `ShieldFires`'s two `d`-clauses. So `ShieldFires g` is not a
+case to split on: it is FORCED (`shieldFires_of_kstar_zero_ATrue_zero`). With that,
+`cTrue g` and `cTrue (s3 g)` reduce to the SAME formula (`interior filter card + [cut
+0]`) -- no case split on `cut 0` either, resolving the "does ShieldFires hold but cut 0
+fail" worry from several blocks ago as moot.
+
+Assembling the top-level theorem then surfaced FOUR mechanical gaps, each caught by the
+Lean build itself (never silently assumed away) and each fixed the same way -- either
+by a delta-based shield exclusion or a `kstar_mem_corrected_window`/`neg_one_le_BTrue`
+contradiction, never a heavier argument:
+
+1. `cTrue_s3_eq_of_Bincrease_delta_true`/`cTrue_s3_eq_of_Bdecrease_delta_false`'s
+   hypotheses `hk1`/`hk2` were STRONGER than needed on the delta-matching side: since
+   `ShieldFires` requires a SPECIFIC `delta`, and `Bincrease` forces `delta = true`
+   while `ShieldFires` needs `delta = false`, `ShieldFires g` is excluded by `delta`
+   alone, regardless of `g.kstar`. New helper `not_shieldFires_of_delta_true`. Same fix
+   mirrored for `Bdecrease`'s `s3 g` side. This matters concretely: a numeric check
+   found `Bincrease` genuinely occurs at `g.kstar = 0` (`5790` times) and `Bdecrease` at
+   `(s3 g).kstar = 0` (`5790` times) -- not edge cases to exclude, real transitions the
+   assembly must cover.
+2. Symmetrically, `cTrue_s3_eq_of_Aincrease_delta_true`/`_Adecrease_delta_false` also
+   had one redundant `kstar != 0` hypothesis each (the one NOT gating their `not_cut`
+   step), fixed the same way.
+3. Two directions turned out to need genuinely NEW impossibility facts not covered by
+   the four already in hand: `Bincrease`/`delta = true` at `(s3 g).kstar = 0`, and
+   `Bdecrease`/`delta = false` at `g.kstar = 0` (confirmed real by yet another numeric
+   check before assuming impossibility). Both close in three lines via
+   `neg_one_le_BTrue` applied to whichever side the `kstar = 0` identity forces past
+   `-1` (`not_Bincrease_at_s3g_kstar_zero`, `not_Bdecrease_at_g_kstar_zero`) -- the same
+   short technique `not_Bdecrease_of_delta_true`/`not_Aincrease_of_delta_false` already
+   used, just applied to a different pairing.
+4. The now-redundant `cTrue_s3_eq_of_kstar_ne_zero` (the milestone from several blocks
+   ago) was DELETED, not kept alongside -- `cTrue_s3_eq` subsumes it entirely and
+   duplicating the dispatch logic would only rot.
+
+One real slip caught by the build, not silently fixed: an earlier `python` edit script
+combined two separate signature fixes in one file-write; the SECOND fix's assertion
+failed, and because the script only writes the file once at the very end, the FIRST
+(successful) fix was silently discarded along with it. Not visible until the next
+`lake build` reported the exact same error again. Lesson: when a multi-step scripted
+edit can partially fail, write (or verify) after each independent step, not once at
+the end.
+
+`cTrue_s3_eq` is now a real, unconditional, `#print axioms`-clean theorem. Next:
+bound `lRTrue`'s `s3` movement (not started -- mirror `sum_eq_add_diff_of_eq_off`/
+`siteSum_sub_eq_at_kstar_s1`'s pattern, using `s3_mu_dist_le_two` and `s3_siteCost_eq`
+from `EltBridge.lean`) to assemble `phiZ_dist_le_one_s3`, then the `Reaches` induction
+for the actual open lower bound of `l_T = l_R + 2c`.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
+`cTrue_s3_eq` gives only [propext, Classical.choice, Quot.sound].

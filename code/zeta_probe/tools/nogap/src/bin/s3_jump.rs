@@ -118,6 +118,12 @@ fn main() {
     let mut a_growth_delta_true = 0u64;
     let mut b_decrease_delta_true = 0u64;
     let mut a_increase_delta_false = 0u64;
+    let mut b_incr_g_kstar_zero = 0u64;
+    let mut b_incr_s3g_kstar_zero = 0u64;
+    let mut b_decr_g_kstar_zero = 0u64;
+    let mut b_decr_s3g_kstar_zero = 0u64;
+    let mut b_incr_false_kstar0 = 0u64;
+    let mut a_decr_true_kstar0 = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -164,6 +170,12 @@ fn main() {
             if a2 == a1 - 1 && e.dl == 1 { a_growth_delta_true += 1; }
             if b2 == b1 - 1 && e.dl == 1 { b_decrease_delta_true += 1; }
             if a2 == a1 + 1 && e.dl == 0 { a_increase_delta_false += 1; }
+            if b2 == b1 + 1 && e.dl == 1 && e.k == 0 { b_incr_g_kstar_zero += 1; }
+            if b2 == b1 + 1 && e.dl == 1 && e2.k == 0 { b_incr_s3g_kstar_zero += 1; }
+            if b2 == b1 - 1 && e.dl == 0 && e.k == 0 { b_decr_g_kstar_zero += 1; }
+            if b2 == b1 - 1 && e.dl == 0 && e2.k == 0 { b_decr_s3g_kstar_zero += 1; }
+            if b2 == b1 + 1 && e.dl == 0 && e.k == 0 { b_incr_false_kstar0 += 1; }
+            if a2 == a1 - 1 && e.dl == 1 && e2.k == 0 { a_decr_true_kstar0 += 1; }
             if b2 == b1 + 1 { new_site_cut = is_cut(e, b1 + 1); shift_happened = true; }
             if b1 == b2 + 1 { new_site_cut = is_cut(&e2, b2 + 1); shift_happened = true; }
             if a2 == a1 - 1 { new_site_cut = is_cut(e, a1); shift_happened = true; }
@@ -200,6 +212,9 @@ fn main() {
     println!("[s3] of those, cut(0) is true: {window_unchanged_shield_and_cut0}");
     println!("[s3] B-growth with delta=false: {b_growth_delta_false}; A-growth with delta=true: {a_growth_delta_true}");
     println!("[s3] B-decrease with delta=true: {b_decrease_delta_true}; A-increase with delta=false: {a_increase_delta_false}");
+    println!("[s3] Bincrease at g.kstar=0: {b_incr_g_kstar_zero}; at s3g.kstar=0: {b_incr_s3g_kstar_zero}");
+    println!("[s3] Bdecrease at g.kstar=0: {b_decr_g_kstar_zero}; at s3g.kstar=0: {b_decr_s3g_kstar_zero}");
+    println!("[s3] Bincrease-delta-false at g.kstar=0: {b_incr_false_kstar0}; Adecrease-delta-true at s3g.kstar=0: {a_decr_true_kstar0}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");
