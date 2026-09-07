@@ -928,6 +928,40 @@ theorem phiZ_dist_le_one_s2 (g : EltBridge.Elt) : (PhiZ (s2 g) - PhiZ g) ^ 2 ≤
     · exact phiZ_dist_le_one_s2_boundary_zero g hkz hint
     · exact phiZ_dist_le_one_s2_boundary_ne_zero g hkz hint hkw
 
+
+/-! ### `s3`: the span moves, and by how much
+
+Unlike `s1`/`s2`, `s3` moves `kstar` (hence can move `ATrue`/`BTrue`) and changes `d` at
+one edge. Two facts already proved in `EltBridge.lean` do almost all the work:
+`s3_siteCost_eq` (siteCost is EXACTLY unchanged at every site, no exceptions -- so, via
+`cut_iff_siteCost_zero`, `cut` status is unchanged at every site too) and
+`s3_mu_dist_le_two` (mu changes by at most 2, at the one crossed edge only). What is
+missing is the movement of the CORRECTED span `ATrue`/`BTrue` (`s3_A_dist_le_one`/
+`s3_B_dist_le_one` are for the OLD span, built from `occ`, not `occTrue`). -/
+
+theorem occTrue_agree_true {g : EltBridge.Elt} (hδ : g.delta = true) (j : ℤ)
+    (hj : j ≠ g.kstar) : j ∈ occTrue (s3 g) ↔ j ∈ occTrue g := by
+  have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+  have hd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hδ]
+  have hsupp : (s3 g).supp = insert g.kstar g.supp := by rw [s3, dif_pos hδ]
+  unfold occTrue
+  simp only [hsupp, Finset.mem_filter, Finset.mem_insert, hd, hk]
+  rw [Function.update_of_ne hj, travel_succ_ne g.kstar j hj]
+  tauto
+
+theorem occTrue_agree_false {g : EltBridge.Elt} (hδ : g.delta = false) (j : ℤ)
+    (hj : j ≠ g.kstar - 1) : j ∈ occTrue (s3 g) ↔ j ∈ occTrue g := by
+  have h1 : ¬ (g.delta = true) := by rw [hδ]; simp
+  have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+  have hd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1]
+  have hsupp : (s3 g).supp = insert (g.kstar - 1) g.supp := by rw [s3, dif_neg h1]
+  unfold occTrue
+  simp only [hsupp, Finset.mem_filter, Finset.mem_insert, hd, hk]
+  rw [Function.update_of_ne hj, travel_pred_ne g.kstar j hj]
+  tauto
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.interior_filter_s1_eq
@@ -938,3 +972,5 @@ end PhiLipschitz
 #print axioms PhiLipschitz.phiZ_dist_le_one_s2
 #print axioms PhiLipschitz.cTrue_s2_eq_of_not_interior_ne_zero
 #print axioms PhiLipschitz.phiZ_dist_le_one_s2_boundary_ne_zero
+#print axioms PhiLipschitz.occTrue_agree_true
+#print axioms PhiLipschitz.occTrue_agree_false
