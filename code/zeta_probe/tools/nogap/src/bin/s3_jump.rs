@@ -136,6 +136,7 @@ fn main() {
     let mut wu_p1_false = 0u64;
     let mut wu_m1_true = 0u64;
     let mut wu_m1_false = 0u64;
+    let mut window_unchanged_p_unoccupied = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -151,6 +152,10 @@ fn main() {
         if (b2 - b1).abs() > max_bwin { max_bwin = (b2 - b1).abs(); }
         if a1 == a2 && b1 == b2 {
             window_unchanged_count += 1;
+            let p = if e.dl == 1 { e.k } else { e.k - 1 };
+            let dp = dep(&e.lamps, p);
+            if dp == 0 { window_unchanged_p_unoccupied += 1; }
+
             let lr_delta = lr_on(&e2, a2, b2) - lr_on(e, a1, b1);
             if lr_delta.abs() > max_lr_window_unchanged { max_lr_window_unchanged = lr_delta.abs(); }
             if lr_delta != 0 { window_unchanged_lr_nonzero += 1; }
@@ -252,6 +257,7 @@ fn main() {
     println!("[s3] Bincrease-delta-false at g.kstar=0: {b_incr_false_kstar0}; Adecrease-delta-true at s3g.kstar=0: {a_decr_true_kstar0}");
     println!("[s3] window-unchanged: count={window_unchanged_count}, max|d(lRTrue)|={max_lr_window_unchanged}, nonzero cases={window_unchanged_lr_nonzero}");
     println!("[s3] window-unchanged by sign/delta: +1&true={wu_p1_true} +1&false={wu_p1_false} -1&true={wu_m1_true} -1&false={wu_m1_false}");
+    println!("[s3] window-unchanged with p unoccupied (d(p)=0): {window_unchanged_p_unoccupied}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");

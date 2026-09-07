@@ -3182,4 +3182,65 @@ theorem mu_dist_one_of_occupied (g : EltBridge.Elt)
     rw [if_neg hd] at hd0 ⊢
     exact mu_dist_one_of_occupied_false g hd' hd0
 
+/-! ### `mu`'s exact `+-1` shift, fully unconditionally (the vacuum case too)
+
+A numeric check found `mu_dist_one_of_occupied`'s hypothesis (`d != 0` at the crossed
+edge) genuinely fails in `181072` of the `1790039` window-unchanged transitions --
+the crossed edge can be a true VACUUM (`d = 0`, and by `hpar`'s parity constraint this
+forces `travel = 0` too, since `travel in {-1,0,1}` and only `0` is even) before the
+step. In that case `mu_g(p) = 2` (the vacuum clause) UNCONDITIONALLY, and after the
+step `d` becomes `+-eps` (magnitude `1`) while `travel` becomes `+-1` (magnitude `1`,
+`travel_succ_at`/`travel_pred_at` applied to `travel_g = 0`), so `mu_{s3g}(p) =
+max(1,1) = 1` -- ALWAYS exactly `2 -> 1`, no `eps`/`delta` case split even needed.
+Combined with `mu_dist_one_of_occupied`, `mu` moves by exactly `+-1` under `s3` at
+EVERY crossed edge, unconditionally -- no hypothesis on `d` at all. -/
+
+theorem mu_dist_one_unconditional (g : EltBridge.Elt) :
+    ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ)
+        = g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) + 1 ∨
+      (g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ)
+        = (s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) + 1 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  by_cases hd0 : g.d p ≠ 0
+  · rw [hpdef]
+    exact mu_dist_one_of_occupied g hd0
+  · push_neg at hd0
+    by_cases hd : g.delta = true
+    · have hpv : p = g.kstar := by rw [hpdef, if_pos hd]
+      rw [hpv] at hd0
+      have hpar := g.hpar g.kstar
+      have htc0 := SiteCost.travel_cases g.kstar g.kstar
+      have htz : SiteCost.travel g.kstar g.kstar = 0 := by omega
+      have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+      have hd1 : (s3 g).d g.kstar = g.d g.kstar - g.eps := by
+        have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+          rw [s3, dif_pos hd]
+        rw [hupd]; simp
+      have ht1 : SiteCost.travel (s3 g).kstar g.kstar = SiteCost.travel g.kstar g.kstar + 1 := by
+        rw [hkS, EltBridge.Elt.travel_succ_at]
+      have heps := g.heps
+      rw [hpdef, if_pos hd]
+      unfold SiteCost.PathData.mu
+      simp only [EltBridge.Elt.toPathData]
+      split_ifs with hvac1 hvac2 hvac2 <;> rcases heps with he | he <;> omega
+    · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+      have hpv : p = g.kstar - 1 := by rw [hpdef, if_neg hd]
+      rw [hpv] at hd0
+      have hpar := g.hpar (g.kstar - 1)
+      have htc0 := SiteCost.travel_cases g.kstar (g.kstar - 1)
+      have htz : SiteCost.travel g.kstar (g.kstar - 1) = 0 := by omega
+      have h1' : ¬ (g.delta = true) := by rw [hd']; simp
+      have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+      have hd1 : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+        have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+          rw [s3, dif_neg h1']
+        rw [hupd]; simp
+      have ht1 : SiteCost.travel (s3 g).kstar (g.kstar - 1) = SiteCost.travel g.kstar (g.kstar - 1) - 1 := by
+        rw [hkS, EltBridge.Elt.travel_pred_at]
+      have heps := g.heps
+      rw [hpdef, if_neg hd]
+      unfold SiteCost.PathData.mu
+      simp only [EltBridge.Elt.toPathData]
+      split_ifs with hvac1 hvac2 hvac2 <;> rcases heps with he | he <;> omega
+
 end PhiLipschitz

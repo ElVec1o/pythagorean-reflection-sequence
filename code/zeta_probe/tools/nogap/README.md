@@ -13827,3 +13827,25 @@ is now closed.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
 three new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — mu_dist_one_unconditional PROVED: no hypothesis needed at all
+
+`PhiLipschitz.lean`. Upgrades `mu_dist_one_of_occupied` to a FULLY unconditional fact,
+closing the remaining `181072`-case gap found while trying to assemble the
+window-unchanged case: when the crossed edge is a true VACUUM (`d = 0`, forcing
+`travel = 0` too via `hpar`'s parity), `mu_g(p) = 2` unconditionally, and after the
+step `d` becomes `+-eps` while `travel` becomes `+-1` (both magnitude `1`), giving
+`mu_{s3g}(p) = 1` -- a clean, deterministic `2 -> 1` drop needing no `eps`/`delta` case
+split at all. Combined with the already-proved occupied case,
+`mu_dist_one_unconditional (g) : mu(s3g) at p = mu(g) at p + 1 OR mu(g) at p =
+mu(s3g) at p + 1` holds for EVERY `g`, no hypothesis whatsoever.
+
+This is now the cleanest possible building block for `lRTrue`'s `s3` movement:
+combined with `s3_mu_agree` (unchanged everywhere else) and `s3_siteCost_eq`
+(unchanged everywhere, always), the window-unchanged case's `lRTrue` movement reduces
+DIRECTLY to this single fact -- no further case analysis needed on `d`'s magnitude,
+sign, or the specific window-unchanged sub-scenario. Assembling the actual
+`lRTrue`-level theorem from this is the next concrete step, not done yet this block.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
+`mu_dist_one_unconditional` gives only [propext, Classical.choice, Quot.sound].
