@@ -3552,4 +3552,12 @@ theorem PhiZ_congr {g h : EltBridge.Elt} (H : EltBridge.Elt.SameElt g h) :
   unfold PhiZ
   rw [lRTrue_congr H, cTrue_congr H]
 
+
+theorem phiZ_dist_le_one_of_Gen {a b : EltBridge.Elt} (H : EltBridge.Elt.Gen a b) :
+    (PhiZ b - PhiZ a) ^ 2 ≤ 1 := by
+  rcases H with h1 | h2 | h3
+  · rw [PhiZ_congr h1]; exact phiZ_dist_le_one_s1 a
+  · rw [PhiZ_congr h2]; exact phiZ_dist_le_one_s2 a
+  · rw [PhiZ_congr h3]; exact phiZ_dist_le_one_s3 a
+
 end PhiLipschitz
