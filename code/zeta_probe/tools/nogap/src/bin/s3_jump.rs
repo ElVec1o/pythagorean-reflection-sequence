@@ -114,6 +114,8 @@ fn main() {
     let mut shift_with_nonzero_kstar_both = 0u64;
     let mut window_unchanged_shield_eligible = 0u64;
     let mut window_unchanged_shield_and_cut0 = 0u64;
+    let mut b_growth_delta_false = 0u64;
+    let mut a_growth_delta_true = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -156,6 +158,8 @@ fn main() {
             let shield2 = e2.k == 0 && e2.dl == 0 && a2 == 0 && b2 + 1 > 0 && is_cut(&e2, 0);
             let mut new_site_cut = false;
             let mut shift_happened = false;
+            if b2 == b1 + 1 && e.dl == 0 { b_growth_delta_false += 1; }
+            if a2 == a1 - 1 && e.dl == 1 { a_growth_delta_true += 1; }
             if b2 == b1 + 1 { new_site_cut = is_cut(e, b1 + 1); shift_happened = true; }
             if b1 == b2 + 1 { new_site_cut = is_cut(&e2, b2 + 1); shift_happened = true; }
             if a2 == a1 - 1 { new_site_cut = is_cut(e, a1); shift_happened = true; }
@@ -190,6 +194,7 @@ fn main() {
     println!("[s3] boundary shifts with kstar!=0 on BOTH sides: {shift_with_nonzero_kstar_both} / {newly_interior_checked}");
     println!("[s3] window UNCHANGED but shield-eligible (kstar=0,delta=false on either side): {window_unchanged_shield_eligible}");
     println!("[s3] of those, cut(0) is true: {window_unchanged_shield_and_cut0}");
+    println!("[s3] B-growth with delta=false: {b_growth_delta_false}; A-growth with delta=true: {a_growth_delta_true}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");

@@ -1666,7 +1666,153 @@ theorem min_or_max_unchanged {S S' : Finset ℤ} (hS : S.Nonempty) (hS' : S'.Non
         · exact hsymm x hx
       exact min'_congr_of_eq hS hS' heq
 
+/-! ### Generic filter-card-under-one-site-shift lemmas, for assembling `cTrue_s3_eq`
+
+Two reusable, purely combinatorial facts (not specific to `cTrue`/`occTrue` at all):
+growing an `Ioo` range by one site on either end changes its filter-card by exactly
+`0` or `1`, and by `0` precisely when the new site fails the predicate. These are the
+arithmetic half of the `cTrue_s3_eq` assembly; the remaining half (proving WHICH
+direction applies and that the shift is by exactly `+1`/`-1`, from the growth/removal
+hypotheses each of the four direction lemmas needs) is not done yet -- see the note
+after. -/
+
+theorem ioo_insert_right {A B : ℤ} (h : A < B + 1) :
+    Finset.Ioo A (B + 2) = insert (B + 1) (Finset.Ioo A (B + 1)) := by
+  ext x; simp only [Finset.mem_Ioo, Finset.mem_insert]; omega
+
+theorem ioo_insert_left {A B : ℤ} (h : A < B + 1) :
+    Finset.Ioo (A - 1) (B + 1) = insert A (Finset.Ioo A (B + 1)) := by
+  ext x; simp only [Finset.mem_Ioo, Finset.mem_insert]; omega
+
+theorem card_filter_insert_right (C : ℤ → Prop) [DecidablePred C] {A B : ℤ}
+    (h : A < B + 1) (hnc : ¬ C (B + 1)) :
+    ((Finset.Ioo A (B + 2)).filter C).card = ((Finset.Ioo A (B + 1)).filter C).card := by
+  rw [ioo_insert_right h, Finset.filter_insert, if_neg hnc]
+
+theorem card_filter_insert_left (C : ℤ → Prop) [DecidablePred C] {A B : ℤ}
+    (h : A < B + 1) (hnc : ¬ C A) :
+    ((Finset.Ioo (A - 1) (B + 1)).filter C).card = ((Finset.Ioo A (B + 1)).filter C).card := by
+  rw [ioo_insert_left h, Finset.filter_insert, if_neg hnc]
+
+/-! `cTrue_s3_eq`'s last case (both `occTrue` nonempty, window moves) is STILL open
+after landing these. What's missing is the LINKING step: from a direction lemma's
+hypothesis (e.g. `g.delta = true`, `g.d g.kstar = 0`, the growth condition), derive the
+CONCRETE fact `BTrue (s3 g) = BTrue g + 1` (not just `<= BTrue g + 1` from the
+already-proved `BTrue_s3_dist_le_one`) -- i.e. that the window genuinely grows by
+exactly one on that side, using `kstar_mem_corrected_window` and the membership
+structure of `occTrue (s3 g) = occTrue g ∪ {p}` to pin `BTrue (s3 g) = max (-1) p`
+exactly. Not done this block; the combinatorial half above is ready for it. -/
+
+/-! ### `cTrue_s3_eq` for the "`BTrue` increases by exactly 1" case
+
+The identification step: whenever `BTrue` genuinely increases, the crossed edge `p` IS
+the new maximum (not merely bounded by it) -- because `occTrue g`/`occTrue (s3 g)` can
+only differ at `p` (`occTrue_s3_subset`), so if the actual maximum of `occTrue (s3 g)`
+were something OTHER than `p`, it would already have been present in `occTrue g` too,
+capping `BTrue g` at that same value and contradicting the increase. -/
+
+theorem occTrue_agree_off_p (g : EltBridge.Elt) (x : ℤ)
+    (hx : x ≠ (if g.delta then g.kstar else g.kstar - 1)) :
+    x ∈ occTrue g ↔ x ∈ occTrue (s3 g) := by
+  constructor
+  · intro h
+    rcases occTrue_g_subset g x h with hxp | hxs
+    · exact absurd hxp hx
+    · exact hxs
+  · intro h
+    rcases occTrue_s3_subset g x h with hxp | hxg
+    · exact absurd hxp hx
+    · exact hxg
+
+theorem crossed_eq_of_Bincrease (g : EltBridge.Elt) (h2 : (occTrue (s3 g)).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g + 1) :
+    (if g.delta then g.kstar else g.kstar - 1) = BTrue (s3 g) := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hunfold : BTrue (s3 g) = max (-1) ((occTrue (s3 g)).max' h2) := by
+    unfold BTrue; rw [dif_pos h2]
+  have hge : (-1 : ℤ) ≤ BTrue g := neg_one_le_BTrue g
+  have hM' : BTrue (s3 g) = (occTrue (s3 g)).max' h2 := by omega
+  have hmem : (occTrue (s3 g)).max' h2 ∈ occTrue (s3 g) := Finset.max'_mem _ h2
+  by_cases heqp : (occTrue (s3 g)).max' h2 = p
+  · rw [← hM'] at heqp; exact heqp.symm
+  · exfalso
+    have hMg : (occTrue (s3 g)).max' h2 ∈ occTrue g :=
+      (occTrue_s3_subset g _ hmem).resolve_left heqp
+    have hle : (occTrue (s3 g)).max' h2 ≤ BTrue g := le_BTrue hMg
+    rw [← hM'] at hle
+    omega
+
+/-- The crossed edge is genuinely NOT in `occTrue g` when `BTrue` increases -- else
+`occTrue g` and `occTrue (s3 g)` would agree everywhere (including at `p`), forcing
+`BTrue g = BTrue (s3 g)`, contradicting the increase. -/
+theorem crossed_not_mem_g_of_Bincrease (g : EltBridge.Elt) (h2 : (occTrue (s3 g)).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g + 1) :
+    (if g.delta then g.kstar else g.kstar - 1) ∉ occTrue g := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  intro hpg
+  have hunfold : BTrue (s3 g) = max (-1) ((occTrue (s3 g)).max' h2) := by
+    unfold BTrue; rw [dif_pos h2]
+  have hge : (-1 : ℤ) ≤ BTrue g := neg_one_le_BTrue g
+  have hM' : BTrue (s3 g) = (occTrue (s3 g)).max' h2 := by omega
+  have hpg' : p ∈ occTrue (s3 g) := by
+    rw [hpdef, crossed_eq_of_Bincrease g h2 hB, hM']; exact Finset.max'_mem _ h2
+  have heq : occTrue g = occTrue (s3 g) := by
+    ext x
+    by_cases hx : x = p
+    · subst hx; exact ⟨fun _ => hpg', fun _ => hpg⟩
+    · exact occTrue_agree_off_p g x hx
+  have hBeq : BTrue g = BTrue (s3 g) := by
+    unfold BTrue
+    rw [heq]
+  omega
+
+theorem d_crossed_eq_zero_of_Bincrease (g : EltBridge.Elt) (h2 : (occTrue (s3 g)).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g + 1) :
+    g.d (if g.delta then g.kstar else g.kstar - 1) = 0 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hnm := crossed_not_mem_g_of_Bincrease g h2 hB
+  by_contra hd
+  apply hnm
+  unfold occTrue
+  by_cases hj : p ∈ g.supp
+  · exact Finset.mem_filter.mpr ⟨hj, Or.inl hd⟩
+  · exact absurd (g.hsupp p hj).1 hd
+
+theorem cTrue_s3_eq_of_Bincrease_delta_true (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g + 1)
+    (hd : g.delta = true) (hk1 : g.kstar ≠ 0) (hk2 : (s3 g).kstar ≠ 0) :
+    cTrue (s3 g) = cTrue g := by
+  have hdk : g.d g.kstar = 0 := by
+    have := d_crossed_eq_zero_of_Bincrease g h2 hB
+    rwa [if_pos hd] at this
+  have hnc : ¬ g.toPathData.cut g.kstar := not_cut_kstar_of_delta_true g hd hdk
+  have hkeq : g.kstar = BTrue g + 1 := by
+    have hc := crossed_eq_of_Bincrease g h2 hB
+    rw [if_pos hd] at hc
+    omega
+  have hnc2 : ¬ g.toPathData.cut (BTrue g + 1) := hkeq ▸ hnc
+  obtain ⟨x, hx⟩ := h1
+  have hAle : ATrue g ≤ x := by
+    unfold ATrue
+    rw [dif_pos ⟨x, hx⟩]
+    exact le_trans (min_le_right _ _) (Finset.min'_le _ _ hx)
+  have hAB : ATrue g ≤ BTrue g := le_trans hAle (le_BTrue hx)
+  have hfilter : ((Finset.Ioo (ATrue g) (BTrue g + 2)).filter (s3 g).toPathData.cut).card
+      = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+    rw [Finset.filter_congr (fun x (_ : x ∈ Finset.Ioo (ATrue g) (BTrue g + 2)) => cut_s3_eq g x)]
+    exact card_filter_insert_right g.toPathData.cut (by omega) hnc2
+  have hshield1 : ¬ ShieldFires g := not_shieldFires_of_kstar_ne_zero g hk1
+  have hshield2 : ¬ ShieldFires (s3 g) := not_shieldFires_of_kstar_ne_zero (s3 g) hk2
+  unfold cTrue
+  rw [hA, hB, if_neg (fun h => hshield2 h.1), if_neg (fun h => hshield1 h.1)]
+  have hBB : BTrue g + 1 + 1 = BTrue g + 2 := by ring
+  rw [hBB]
+  omega
+
 end PhiLipschitz
+
+
 
 
 

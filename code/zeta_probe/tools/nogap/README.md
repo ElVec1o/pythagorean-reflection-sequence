@@ -13259,3 +13259,46 @@ hypotheses to juggle. Not yet assembled into `cTrue_s3_eq` itself.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
 `min_or_max_unchanged` gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — cTrue_s3_eq_of_Bincrease_delta_true PROVED: first concrete assembled direction
+
+`PhiLipschitz.lean` + `s3_jump.rs`. First fully-assembled directional case of
+`cTrue_s3_eq`'s final piece (both `occTrue` nonempty, window moves).
+
+Built the identification chain needed to actually USE the direction lemmas (which all
+need concrete facts like "`p = g.kstar`" and "`g.d g.kstar = 0`", not just "the window
+moved"): `crossed_eq_of_Bincrease` (if `BTrue` increases by exactly `1`, the crossed
+edge `p` IS the new maximum of `occTrue (s3 g)` -- proved by contradiction: any OTHER
+maximum would already be present in `occTrue g` via `occTrue_s3_subset`, capping
+`BTrue g` at that same value), `crossed_not_mem_g_of_Bincrease` (hence `p` was NOT in
+`occTrue g` beforehand -- else the two `occTrue` sets would agree everywhere, giving
+`BTrue g = BTrue (s3 g)`, contradicting the increase), `d_crossed_eq_zero_of_Bincrease`
+(hence `g.d p = 0`, EXACTLY the growth hypothesis `not_cut_kstar_of_delta_true` needs).
+
+Assembled `cTrue_s3_eq_of_Bincrease_delta_true`: given `delta = true`, `kstar != 0` on
+both sides, `ATrue` unchanged and `BTrue` increased by `1`, `cTrue (s3 g) = cTrue g`
+UNCONDITIONALLY. Uses `card_filter_insert_right` (landed last block) for the interior
+filter-card, `not_shieldFires_of_kstar_ne_zero` for both shield terms vanishing.
+
+A companion numeric check (extending `s3_jump.rs`) confirmed something suspected but
+not yet proved: `B`-growth with `delta = false` and `A`-growth with `delta = true`
+BOTH occur `0` times over the full enumeration -- each direction lemma really only
+pairs with the delta value the by-hand derivation assumed, not the other one. Not
+proved as an impossibility fact yet (only measured); the mirror case
+(`cTrue_s3_eq_of_Adecrease_delta_false`, `A` decreases with `delta = false`) still
+needs its own assembly, by the same technique mirrored.
+
+Three genuinely new Lean pitfalls hit and fixed in this block (all mechanical, none
+mathematical): (1) `omega` cannot see through an unfolded `BTrue`/`max` term that no
+longer syntactically matches a hypothesis stated in terms of the ORIGINAL folded name
+-- fixed by keeping a separate `have hunfold : BTrue (s3 g) = max (-1) (...)` fact
+alongside the untouched hypothesis, rather than `unfold`ing the goal directly (which
+breaks the syntactic link `omega` needs to combine them). (2) `rw` with a lemma whose
+LHS is a raw `if`-expression fails to find it once a `set p := (if ...)` has folded
+all such occurrences into `p` -- fixed by `rw [hpdef, ...]` to unfold `p` back to the
+`if`-expression first. (3) `obtain ⟨x, hx⟩ := h1` consumes `h1`, so a later
+`dif_pos h1` (needing the ORIGINAL `Nonempty` proof term) fails with "unknown
+identifier" -- fixed by reconstructing the witness directly, `dif_pos ⟨x, hx⟩`.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all five
+new theorems gives only [propext, Classical.choice, Quot.sound].
