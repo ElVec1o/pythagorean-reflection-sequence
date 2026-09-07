@@ -137,6 +137,40 @@ theorem filter_cut_eq_filter_siteCost_zero (P : SiteCost.PathData) (S : Finset �
   intro s _
   simpa using cut_iff_siteCost_zero P s
 
+
+/-! ### The exchange, in the abstract
+
+With `cut_iff_siteCost_zero` in hand the `s1`/`s2` cancellation is no longer a case
+analysis over the geometry: it is one arithmetic fact about a single site.  Let `c` be the
+site cost at `kstar` before the step and `c'` after.  The site sum moves by `c' - c`, and
+the defect moves by `[c' = 0] - [c = 0]`, because a cut site is precisely a zero-cost site.
+So the potential moves by
+
+    (c' - c) + 2 * ([c' = 0] - [c = 0])
+
+and the point is that this is bounded by `1` in absolute value whenever `|c' - c| <= 1`,
+even though its two summands are bounded only by `1` and `2`.  The two movements are the
+SAME event with opposite sign: a site can only leave the cut set by its cost rising off
+`0`, and then the `+1` in the cost is paid back twice over by the lost cut.
+
+This is why the naive estimate gives `5` and the truth is `1`. -/
+theorem exchange_le_one (c c' : ℕ) (h1 : (c' : ℤ) ≤ (c : ℤ) + 1) (h2 : (c : ℤ) ≤ (c' : ℤ) + 1) :
+    ((c' : ℤ) - (c : ℤ)
+        + 2 * ((if c' = 0 then (1 : ℤ) else 0) - (if c = 0 then (1 : ℤ) else 0))) ≤ 1
+      ∧ -1 ≤ ((c' : ℤ) - (c : ℤ)
+        + 2 * ((if c' = 0 then (1 : ℤ) else 0) - (if c = 0 then (1 : ℤ) else 0))) := by
+  by_cases hc : c = 0 <;> by_cases hc' : c' = 0 <;>
+    simp only [hc, hc', if_true, if_false, if_neg, Nat.cast_zero] <;> omega
+
+/-- **The same bound, stated on the squared difference**, which is the form an induction
+on `Reaches` consumes without carrying an absolute value. -/
+theorem exchange_sq_le_one (c c' : ℕ) (h1 : (c' : ℤ) ≤ (c : ℤ) + 1)
+    (h2 : (c : ℤ) ≤ (c' : ℤ) + 1) :
+    ((c' : ℤ) - (c : ℤ)
+      + 2 * ((if c' = 0 then (1 : ℤ) else 0) - (if c = 0 then (1 : ℤ) else 0))) ^ 2 ≤ 1 := by
+  obtain ⟨hu, hl⟩ := exchange_le_one c c' h1 h2
+  nlinarith
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.sum_eq_add_diff_of_eq_off
@@ -145,3 +179,5 @@ end PhiLipschitz
 #print axioms PhiLipschitz.siteSum_dist_le_one_s1
 #print axioms PhiLipschitz.cut_iff_siteCost_zero
 #print axioms PhiLipschitz.filter_cut_eq_filter_siteCost_zero
+#print axioms PhiLipschitz.exchange_le_one
+#print axioms PhiLipschitz.exchange_sq_le_one
