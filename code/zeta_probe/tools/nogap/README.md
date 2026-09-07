@@ -13873,3 +13873,28 @@ window-unchanged (closed, this commit) — window-unchanged needed no kstar=0 sp
 mu_dist_one_unconditional has zero hypotheses on g. Still open: the generic window-MOVES case
 (Bincrease/Bdecrease/Aincrease/Adecrease directions for lRTrue, mirroring cTrue's already-solved
 structure) plus their kstar=0 sub-cases if any, then the top-level dispatch assembling all cases.
+
+## Block: lRTrue's four window-move directions now fully unconditional (commit 41b9a29)
+
+Discovered (numeric-first, s3_jump.rs extended with a_incr_kstar0/a_decr_kstar0 counters,
+0 occurrences at depth 34 / 17.2M elements) that lRTrue's Aincrease (g.kstar=0) and Adecrease
+((s3g).kstar=0) hard sub-cases are IMPOSSIBLE, not just hard: proved `not_Aincrease_at_g_kstar_zero`
+and `not_Adecrease_at_s3g_kstar_zero` via a clean parity contradiction — at kstar=0,
+`SiteCost.travel_of_kstar_zero` forces `travel kstar kstar = 0`, so `hpar` forces `d(kstar)` even,
+but the Aincrease/Adecrease derivation chain (already-proved `d_new_crossed_eq_zero_of_Aincrease` /
+`d_crossed_eq_zero_of_Adecrease` + the s3 update formula) forces `d(kstar) = eps = ±1`, odd.
+Contradiction. Also discharged `lRTrue_s3_eq_of_Bdecrease_delta_false`'s existing `hk1` hypothesis
+via the already-proved `not_Bdecrease_at_g_kstar_zero`. Net result: all four primed lemmas
+(`lRTrue_s3_eq_of_Bincrease_delta_true` was already unconditional; `_Bdecrease_delta_false'`,
+`_Aincrease_delta_true'`, `_Adecrease_delta_false'` now added with zero kstar-side hypotheses)
+give the EXACT lRTrue value with no restriction beyond h1/h2 nonempty + hA/hB + delta. VERIFIED:
+lake build PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry, #print axioms clean
+([propext, Classical.choice, Quot.sound]) on all 6 new theorems.
+
+This means lRTrue's s3-movement needs NO kstar=0 special-casing anywhere (unlike cTrue, whose
+Aincrease/Adecrease DO have genuine kstar=0 sub-cases via ShieldFires). Remaining for
+phiZ_dist_le_one_s3: assemble the top-level dispatch — case split on occTrue g/occTrue(s3g)
+empty (done), window-unchanged (done), window-moves via one of the 4 directions determined by
+delta and which of ATrue/BTrue changed (all done, all unconditional) — into one
+lRTrue_s3_dist_one theorem giving `|lRTrue(s3g) - lRTrue(g)| = 1` unconditionally, then combine
+with cTrue_s3_eq (already fully unconditional) to close phiZ_dist_le_one_s3.
