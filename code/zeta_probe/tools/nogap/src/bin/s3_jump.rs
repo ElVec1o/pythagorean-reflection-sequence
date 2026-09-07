@@ -100,16 +100,30 @@ fn main() {
     eprintln!("[s3] enumerated {} elements", dist.len());
 
     let (mut max_jump, mut wsize, mut wit): (i64, i64, Option<(Elt, Elt, i64, i64)>) = (0, i64::MAX, None);
+    let mut max_lr: i64 = 0;
+    let mut max_cut: i64 = 0;
+    let mut max_awin: i32 = 0;
+    let mut max_bwin: i32 = 0;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
         let jump = (p2 - p1).abs();
         let sz = size(e);
+        let (a1, b1) = span_nogap(e);
+        let (a2, b2) = span_nogap(&e2);
+        let dlr = (lr_on(&e2, a2, b2) - lr_on(e, a1, b1)).abs();
+        let dcut = (cuts_on(&e2, a2, b2) - cuts_on(e, a1, b1)).abs();
+        if dlr > max_lr { max_lr = dlr; }
+        if dcut > max_cut { max_cut = dcut; }
+        if (a2 - a1).abs() > max_awin { max_awin = (a2 - a1).abs(); }
+        if (b2 - b1).abs() > max_bwin { max_bwin = (b2 - b1).abs(); }
         if jump > max_jump || (jump == max_jump && sz < wsize) {
             max_jump = jump; wsize = sz; wit = Some((e.clone(), e2, p1, p2));
         }
     }
     println!("[s3] max |dPhi| under s3 ALONE (nogapBS potential) = {max_jump}");
+    println!("[s3] max |d(lRTrue)| = {max_lr}, max |d(cTrue)| = {max_cut}");
+    println!("[s3] max |d(ATrue)| = {max_awin}, max |d(BTrue)| = {max_bwin}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");

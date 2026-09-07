@@ -12931,3 +12931,56 @@ tactic), full lake build clean (8645 jobs), #print axioms on every new theorem
 occTrue_g_subset, p_le_kstar_g, p_le_kstar_s3g) gives only
 [propext, Classical.choice, Quot.sound] (p_le_kstar_g omits Classical.choice, as expected
 for a pure omega fact).
+
+## BLOCK (2026-09) — cTrue is s3-invariant in the boundary cases; a plan-changing numeric find
+
+`PhiLipschitz.lean` + `s3_jump.rs`. This block found something the plan did not
+anticipate, and closed the two tractable consequences of it.
+
+Extended `s3_jump.rs` to report `lRTrue`'s and `cTrue`'s movement under `s3` SEPARATELY,
+not just the combined `PhiZ` jump already known to be exactly `1`. Result, at depth 30
+(3336511 elements): `max |d(lRTrue)| = 1`, `max |d(cTrue)| = 0` EXACTLY. `cTrue` never
+moves under `s3`, at all, on this entire ball. If that holds in general, the plan in the
+file header ("naive route fails, needs an exact cancellation between site cost and
+defect") does not apply to `s3` the way it applies to `s1`/`s2`: there is no cancellation
+to find, because one side of it (`cTrue`) does not move. `phiZ_dist_le_one_s3` would
+reduce to bounding `lRTrue` alone, once `cTrue`'s invariance is PROVED rather than
+measured (Rule 7/8: a 3.3M-element check is strong evidence, not proof).
+
+Proved the two tractable cases directly (both reduce the interior `Ioo` window to the
+empty set `Ioo(0,0)` or `Ioo(-1,-1+1)`, so the `.filter.card` term is `0` on both sides by
+construction, and `ShieldFires` is forced false on whichever side has `kstar != 0`):
+`cTrue_eq_zero_of_occTrue_empty` (an empty `occTrue` gives `cTrue = 0` outright, since the
+`d`-vanishing that makes `occTrue` empty also kills `ShieldFires`'s existential half),
+`cTrue_s3_eq_of_g_empty`, `cTrue_s3_eq_of_s3g_empty` (the two empty/singleton boundary
+transitions, both giving `cTrue (s3 g) = cTrue g = 0` by direct computation, casing on
+`g.delta` to pin the singleton value).
+
+NOT proved: the general case, both `occTrue g` and `occTrue (s3 g)` nonempty. Attempted
+by hand: `occTrue_s3_subset`/`occTrue_g_subset` (already in hand) pin the symmetric
+difference to the single crossed edge `p`, so the window gains or loses at most one
+occupied edge -- but this can ALSO move a site from excluded-boundary to counted-interior
+(or the reverse) in the `Ioo` filter, coupled with `p` itself entering/leaving the edge
+set, and there is no forced-empty-window shortcut here the way there was in the two
+boundary cases. Left open, logged precisely so the next attempt does not re-derive this
+diagnosis: the crux is the coupling between the window-boundary shift and the
+newly-(un)counted interior site, not the cut predicate itself (which IS already known
+pointwise invariant, via `s3_siteCost_eq` + `cut_iff_siteCost_zero`).
+
+Mechanical bugs hit and fixed, logged for the pattern: (1) rewriting a Finset-equality
+hypothesis (`occTrue X = {c}`) directly inside a `min'`/`max'` term whose own `Nonempty`
+argument depends on that Finset gives the same "motive is not type correct" error as
+`ATrue_eq_A` hit earlier -- fixed the same way, via two new small generic helpers
+(`minOccTrue_eq_of_singleton`, `maxOccTrue_eq_of_singleton`) that compute the value
+without ever rewriting inside the dependent term. (2) `Finset.eq_empty_of_forall_not_mem`
+and `Finset.eq_empty_iff_forall_not_mem` are NOT the right names in this Mathlib version
+(both gave "unknown constant") -- for these small concrete numeral intervals (`Ioo 0 1`,
+`Ioo (-1) 0`), `decide` closes them directly instead. (3) `rw [if_neg hδ, hkz]` where the
+final substituted goal was `(0:ℤ) - 1 = -1` did NOT auto-close via `rw`'s trailing `rfl`
+(integer subtraction is not syntactically reflexive here) -- fixed by dropping the second
+rewrite and closing with `omega` instead, which had `hkz`/`hgk` available in context.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on every new
+theorem (cTrue_eq_zero_of_occTrue_empty, cTrue_s3_eq_of_g_empty, cTrue_s3_eq_of_s3g_empty,
+minOccTrue_eq_of_singleton, maxOccTrue_eq_of_singleton) gives only
+[propext, Classical.choice, Quot.sound].

@@ -1213,6 +1213,137 @@ theorem BTrue_s3_dist_le_one (g : EltBridge.Elt) :
       omega
     · have := le_BTrue hxg; omega
 
+/-! ### `cTrue`'s `s3` movement: invariant in the two degenerate (empty-window) cases
+
+A numeric check (`s3_jump.rs`, extended this block to report `lRTrue`/`cTrue` movement
+separately, not just the combined `PhiZ` jump) found something the original plan did not
+anticipate: at depth 30 (3336511 elements), `max |d(cTrue)| = 0` EXACTLY, while
+`max |d(lRTrue)| = 1` carries the entire jump. If that holds in general, `cTrue` is
+`s3`-INVARIANT, and `phiZ_dist_le_one_s3` reduces to bounding `lRTrue` alone -- no
+exchange/cancellation argument needed for `s3`, unlike `s1`/`s2`. This is evidence, not
+proof (Rule 7/8: floats and finite enumeration are not proof); the two boundary-transition
+cases below ARE proved, by direct computation. The general (`occTrue g` and
+`occTrue (s3 g)` both nonempty) case is NOT proved this block -- see the note after. -/
+
+theorem minOccTrue_eq_of_singleton {g : EltBridge.Elt} {c : ℤ} (h : occTrue g = {c})
+    (hne : (occTrue g).Nonempty) : (occTrue g).min' hne = c := by
+  have hgen : ∀ (S : Finset ℤ) (hS : S.Nonempty), S = {c} → S.min' hS = c := by
+    intro S hS hS0; subst hS0; exact Finset.min'_singleton c
+  exact hgen _ hne h
+
+theorem maxOccTrue_eq_of_singleton {g : EltBridge.Elt} {c : ℤ} (h : occTrue g = {c})
+    (hne : (occTrue g).Nonempty) : (occTrue g).max' hne = c := by
+  have hgen : ∀ (S : Finset ℤ) (hS : S.Nonempty), S = {c} → S.max' hS = c := by
+    intro S hS hS0; subst hS0; exact Finset.max'_singleton c
+  exact hgen _ hne h
+
+theorem cTrue_eq_zero_of_occTrue_empty {g : EltBridge.Elt} (he : occTrue g = ∅) :
+    cTrue g = 0 := by
+  have hdz := occTrue_g_empty_d_zero he
+  have hA : ATrue g = 0 := by
+    unfold ATrue; rw [dif_neg (by rw [he]; exact Finset.not_nonempty_empty)]
+  have hB : BTrue g = -1 := by
+    unfold BTrue; rw [dif_neg (by rw [he]; exact Finset.not_nonempty_empty)]
+  unfold cTrue
+  rw [hA, hB]
+  have hIoo : Finset.Ioo (0:ℤ) (-1 + 1) = ∅ := by
+    decide
+  rw [hIoo]
+  have hns : ¬ ShieldFires g := fun h => h.2.2.2.elim (fun j hj => hj.2 (hdz j))
+  rw [if_neg (fun h => hns h.1)]
+  simp
+
+theorem cTrue_s3_eq_of_g_empty (g : EltBridge.Elt) (he : occTrue g = ∅) :
+    cTrue (s3 g) = cTrue g := by
+  rw [cTrue_eq_zero_of_occTrue_empty he]
+  have hkz := occTrue_g_empty_kstar_zero he
+  have hsing := occTrue_s3_singleton_of_g_empty g he
+  have hne : (occTrue (s3 g)).Nonempty := by rw [hsing]; exact Finset.singleton_nonempty _
+  by_cases hδ : g.delta = true
+  · have hp : (if g.delta then g.kstar else g.kstar - 1) = 0 := by rw [if_pos hδ, hkz]
+    rw [hp] at hsing
+    have hA : ATrue (s3 g) = 0 := by
+      unfold ATrue; rw [dif_pos hne, minOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hB : BTrue (s3 g) = 0 := by
+      unfold BTrue; rw [dif_pos hne, maxOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hk2 : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have hkne : (s3 g).kstar ≠ 0 := by omega
+    unfold cTrue
+    rw [hA, hB]
+    have hIoo : Finset.Ioo (0:ℤ) (0 + 1) = ∅ := by
+      decide
+    rw [hIoo, if_neg (fun h => not_shieldFires_of_kstar_ne_zero (s3 g) hkne h.1)]
+    simp
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have h1 : ¬ (g.delta = true) := by rw [hδ']; simp
+    have hp : (if g.delta then g.kstar else g.kstar - 1) = -1 := by rw [if_neg hδ]; omega
+    rw [hp] at hsing
+    have hA : ATrue (s3 g) = -1 := by
+      unfold ATrue; rw [dif_pos hne, minOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hB : BTrue (s3 g) = -1 := by
+      unfold BTrue; rw [dif_pos hne, maxOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hk2 : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+    have hkne : (s3 g).kstar ≠ 0 := by omega
+    unfold cTrue
+    rw [hA, hB]
+    have hIoo : Finset.Ioo (-1:ℤ) (-1 + 1) = ∅ := by
+      decide
+    rw [hIoo, if_neg (fun h => not_shieldFires_of_kstar_ne_zero (s3 g) hkne h.1)]
+    simp
+
+theorem cTrue_s3_eq_of_s3g_empty (g : EltBridge.Elt) (he : occTrue (s3 g) = ∅) :
+    cTrue (s3 g) = cTrue g := by
+  have h0 : cTrue (s3 g) = 0 := cTrue_eq_zero_of_occTrue_empty he
+  rw [h0]
+  symm
+  have hkz' : (s3 g).kstar = 0 := occTrue_g_empty_kstar_zero he
+  have hsing := occTrue_g_singleton_of_s3_empty g he
+  have hne : (occTrue g).Nonempty := by rw [hsing]; exact Finset.singleton_nonempty _
+  by_cases hδ : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    have hgk : g.kstar = -1 := by omega
+    have hp : (if g.delta then g.kstar else g.kstar - 1) = -1 := by rw [if_pos hδ, hgk]
+    rw [hp] at hsing
+    have hA : ATrue g = -1 := by
+      unfold ATrue; rw [dif_pos hne, minOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hB : BTrue g = -1 := by
+      unfold BTrue; rw [dif_pos hne, maxOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hgkne : g.kstar ≠ 0 := by omega
+    unfold cTrue
+    rw [hA, hB]
+    have hIoo : Finset.Ioo (-1:ℤ) (-1 + 1) = ∅ := by
+      decide
+    rw [hIoo, if_neg (fun h => not_shieldFires_of_kstar_ne_zero g hgkne h.1)]
+    simp
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    have h1 : ¬ (g.delta = true) := by rw [hδ']; simp
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+    have hgk : g.kstar = 1 := by omega
+    have hp : (if g.delta then g.kstar else g.kstar - 1) = 0 := by rw [if_neg hδ]; omega
+    rw [hp] at hsing
+    have hA : ATrue g = 0 := by
+      unfold ATrue; rw [dif_pos hne, minOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hB : BTrue g = 0 := by
+      unfold BTrue; rw [dif_pos hne, maxOccTrue_eq_of_singleton hsing hne]; norm_num
+    have hgkne : g.kstar ≠ 0 := by omega
+    unfold cTrue
+    rw [hA, hB]
+    have hIoo : Finset.Ioo (0:ℤ) (0 + 1) = ∅ := by
+      decide
+    rw [hIoo, if_neg (fun h => not_shieldFires_of_kstar_ne_zero g hgkne h.1)]
+    simp
+
+/-! `cTrue_s3_eq` (BOTH `occTrue g` and `occTrue (s3 g)` nonempty) is NOT proved here.
+Attempted approach: `occTrue_s3_subset`/`occTrue_g_subset` pin the symmetric difference to
+`{p}`, so the window can gain or lose at most one occupied edge; the obstruction is that
+this can ALSO shift which SITE is the boundary of the interior `Ioo` range, so a site can
+move from excluded-boundary to counted-interior (or vice versa) at the same step that `p`
+itself enters or leaves the edge set -- two coupled effects, not one, and unlike the
+empty-window cases there is no computation forcing both effects into `Ioo (0,0)`. This is
+exactly the "exact cancellation, not better bookkeeping" difficulty the file header
+already named. Left open; the numeric evidence above says the cancellation is real, not
+that it is easy. -/
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.interior_filter_s1_eq
