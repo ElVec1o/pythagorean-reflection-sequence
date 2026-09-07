@@ -13849,3 +13849,27 @@ sign, or the specific window-unchanged sub-scenario. Assembling the actual
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
 `mu_dist_one_unconditional` gives only [propext, Classical.choice, Quot.sound].
+
+## Block: lRTrue window-unchanged case closed (commit d938446)
+
+Closed `mu_dist_one_of_occupied` (occupied case, split by delta), `mu_dist_one_unconditional`
+(generalizes to the vacuum case `d(p)=0` too, using the parity constraint `hpar` + `travel_cases`
+to force `travel=0` there — no hypothesis on g needed at all), `crossed_mem_mu_window_of_window_unchanged`
+(crossed edge p lies in the closed mu-window [A,B] whenever ATrue/BTrue are both unchanged, via
+kstar_mem_corrected_window applied to both g and s3g), and `lRTrue_s3_dist_one_of_window_unchanged`
+(assembles the above with sum_eq_add_diff_of_eq_off + s3_siteCost_eq into the final |Delta lRTrue|=1
+statement). All VERIFIED: lake build PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry,
+#print axioms shows only [propext, Classical.choice, Quot.sound] for both new top-level theorems.
+
+Numeric backing (s3_jump.rs, depth 30): 1790039 window-unchanged transitions; max|Delta(lRTrue)|=1,
+nonzero in ALL cases; 181072/1790039 have d(p)=0 at the crossed edge (motivated generalizing beyond
+the occupied-only lemma); 0 cases where p falls outside [A,B].
+
+Retraction: `mu_dist_one_of_occupied`'s d(p)!=0 hypothesis alone is INSUFFICIENT to cover all
+window-unchanged transitions (see the 181072 count above) — superseded by the unconditional version.
+
+Remaining for phiZ_dist_le_one_s3: the empty/one-empty cases (already closed, prior commits),
+window-unchanged (closed, this commit) — window-unchanged needed no kstar=0 special-casing since
+mu_dist_one_unconditional has zero hypotheses on g. Still open: the generic window-MOVES case
+(Bincrease/Bdecrease/Aincrease/Adecrease directions for lRTrue, mirroring cTrue's already-solved
+structure) plus their kstar=0 sub-cases if any, then the top-level dispatch assembling all cases.
