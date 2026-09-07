@@ -347,3 +347,6 @@ name = "ModelM"
 
 [[lean_lib]]
 name = "BoundedDrift"
+
+[[lean_lib]]
+name = "PhiLipschitz"

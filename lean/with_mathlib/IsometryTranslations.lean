@@ -30,6 +30,7 @@
 
 import Mathlib.Analysis.Normed.Affine.Isometry
 import TransTrick
+import PointGroupReduction
 
 namespace IsometryTranslations
 
@@ -91,9 +92,28 @@ theorem transtrick_isometry {G K : Type*} [Group G] [Group K]
   TransTrick.transtrick ρ π
     (fun x y hx hy => commute_of_linear_trivial x y (hπ x hx) (hπ y hy)) u g hu
 
+
+/-- **`prop:reduce` for real Euclidean isometries, with `hab` discharged.**  The reduction
+to the point group now carries exactly ONE hypothesis, `lem:noab` (`G` has no nontrivial
+normal abelian subgroup), instead of two.  The geometric input -- that the kernel of the
+linear part is abelian -- is `commute_of_linear_trivial`, proved above.
+
+`lem:noab` genuinely remains: its proof runs through Caprace-Fujiwara rank-one isometries
+on the Davis complex, acylindrical hyperbolicity, and Osin's identification of the amenable
+radical with the finite radical, none of which is in Mathlib. -/
+theorem reduce_isometry {G K : Type*} [Group G] [Group K]
+    (φ : G →* (P ≃ᵃⁱ[𝕜] P)) (π : (P ≃ᵃⁱ[𝕜] P) →* K)
+    (hφ : Function.Injective φ)
+    (hπ : ∀ x : P ≃ᵃⁱ[𝕜] P, π x = 1 → ∀ v : V, x.linearIsometryEquiv v = v)
+    (hnoab : ∀ N : Subgroup G, N.Normal → (∀ x ∈ N, ∀ y ∈ N, x * y = y * x) → N = ⊥) :
+    Function.Injective (π.comp φ) :=
+  PointGroupReduction.injective_comp_of_no_normal_abelian φ π hφ
+    (fun x y hx hy => commute_of_linear_trivial x y (hπ x hx) (hπ y hy)) hnoab
+
 end IsometryTranslations
 
 #print axioms IsometryTranslations.vsub_const_of_linear_trivial
 #print axioms IsometryTranslations.apply_eq_vadd_of_linear_trivial
 #print axioms IsometryTranslations.commute_of_linear_trivial
 #print axioms IsometryTranslations.transtrick_isometry
+#print axioms IsometryTranslations.reduce_isometry
