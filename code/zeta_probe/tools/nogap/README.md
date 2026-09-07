@@ -13721,3 +13721,33 @@ case (still flagged as needing genuinely new work) or the `kstar = 0` special ca
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all six
 new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — lRTrue's s3 movement: occTrue-s3g-empty case proved exactly -1
+
+`PhiLipschitz.lean` + `s3_jump.rs`. Second and last base case toward
+`phiZ_dist_le_one_s3`, the mirror of the previous block's `occTrue g` empty case.
+
+Numeric check first (caught and fixed a construction bug: the first probe attempt
+built `g` with a zero deposit at the crossed edge, which can never make `occTrue (s3
+g)` empty since `s3` always deposits a nonzero value there when starting from `0` --
+needed the CANCELLING deposit, `g.d(crossed) = eps` or `-eps` depending on `delta`,
+matching the removal condition already used for `Aincrease`/`Bdecrease`). With the
+correct construction: `lRTrue (s3 g) = lRTrue g - 1` in all four `delta`/`eps`
+combinations checked (`1->0`, `3->2`, `2->1`, `2->1`).
+
+`lRTrue_eq_siteCost_zero_of_occTrue_g_empty` and `siteCost_eq_zero_of_occTrue_empty_
+ne_zero` are already generic in their `Elt` argument, so applying them to `s3 g`
+reuses them directly for the empty side, no new lemma needed. The occupied side (`g`)
+is exactly an `Aincrease`/`Bdecrease` REMOVAL transition (confirmed by matching the
+computed `ATrue`/`BTrue` shift against those lemmas' own hypotheses), so
+`mu_g_at_crossed_eq_one_of_Aincrease`/`_of_Bdecrease` and `siteCost_removed_eq_zero_
+of_Aincrease`/`_of_Bdecrease` (already proved for the generic directions) apply
+directly, with `g.kstar` (confirmed `= -1` or `1`, never `0`) as the crossed site.
+
+All four generic directions AND both empty-window base cases are now proved for
+`lRTrue`'s `s3` movement. Remaining: the window-unchanged case (still flagged as
+needing genuinely new work) and the `kstar = 0` special cases, then the final
+top-level dispatch into `phiZ_dist_le_one_s3`.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
+three new theorems gives only [propext, Classical.choice, Quot.sound].

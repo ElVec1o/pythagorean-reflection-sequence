@@ -3030,4 +3030,103 @@ theorem lRTrue_s3_eq_of_occTrue_g_empty (g : EltBridge.Elt) (he : occTrue g = �
   · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
     exact lRTrue_s3_eq_of_occTrue_g_empty_delta_false g he hd'
 
+/-! ### `lRTrue`'s `s3` movement: the `occTrue (s3 g)` empty case, exactly `-1`
+
+Mirror of the `occTrue g` empty case, in the removal direction: `lRTrue_eq_siteCost_
+zero_of_occTrue_g_empty` and `siteCost_eq_zero_of_occTrue_empty_ne_zero` are already
+generic in their `Elt` argument, so applying them to `s3 g` (rather than `g`) reuses
+them directly for the now-empty side. The occupied side (`g`, singleton `{p}`) is
+exactly an `Aincrease` (`delta = true`) or `Bdecrease` (`delta = false`) REMOVAL
+transition, so `mu_g_at_crossed_eq_one_of_Aincrease`/`_of_Bdecrease` and
+`siteCost_removed_eq_zero_of_Aincrease`/`_of_Bdecrease` (already proved for the
+generic directions) apply directly too, with `g.kstar` playing the role of the
+crossed site (confirmed `!= 0` since `g.kstar` equals `-1` or `1` at this transition,
+never `0`, matching the earlier `Bdecrease`/`Aincrease` "never at kstar=0" findings). -/
+
+theorem lRTrue_s3_eq_of_occTrue_s3g_empty_delta_true (g : EltBridge.Elt)
+    (he : occTrue (s3 g) = ∅) (hd : g.delta = true) :
+    lRTrue (s3 g) = lRTrue g - 1 := by
+  have hk0 := occTrue_g_empty_kstar_zero he
+  have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+  have hkm1 : g.kstar = -1 := by omega
+  have hlrS := lRTrue_eq_siteCost_zero_of_occTrue_g_empty (s3 g) he
+  have hsc0eq : (s3 g).toPathData.siteCost 0 = g.toPathData.siteCost 0 :=
+    EltBridge.Elt.s3_siteCost_eq g 0
+  have hsing := occTrue_g_singleton_of_s3_empty g he
+  rw [if_pos hd] at hsing
+  have hne : (occTrue g).Nonempty := by rw [hsing]; exact Finset.singleton_nonempty _
+  have hA : ATrue g = -1 := by
+    unfold ATrue; rw [dif_pos hne, minOccTrue_eq_of_singleton hsing hne, hkm1]; omega
+  have hB : BTrue g = -1 := by
+    unfold BTrue; rw [dif_pos hne, maxOccTrue_eq_of_singleton hsing hne, hkm1]; omega
+  have hAs3 : ATrue (s3 g) = 0 := by
+    unfold ATrue; rw [dif_neg (by rw [he]; exact Finset.not_nonempty_empty)]
+  have hAeq : ATrue (s3 g) = ATrue g + 1 := by rw [hA, hAs3]; omega
+  have hmu1 := mu_g_at_crossed_eq_one_of_Aincrease g hne hAeq hd
+  rw [hkm1] at hmu1
+  have hsc0 : g.toPathData.siteCost g.kstar = 0 :=
+    siteCost_removed_eq_zero_of_Aincrease g hne hAeq hd (by omega)
+  rw [hkm1] at hsc0
+  have step1 : lRTrue g = g.toPathData.mu (-1) + (g.toPathData.siteCost (-1) + g.toPathData.siteCost 0) := by
+    unfold lRTrue
+    rw [hA, hB]
+    have hmuone : Finset.Icc (-1:ℤ) (-1) = ({(-1:ℤ)} : Finset ℤ) := by
+      ext x; simp only [Finset.mem_Icc, Finset.mem_singleton]; omega
+    have hsiteins : Finset.Icc (-1:ℤ) (-1 + 1) = insert (-1:ℤ) (Finset.Icc (0:ℤ) (-1 + 1)) := by
+      ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+    have hsiteone : Finset.Icc (0:ℤ) (-1 + 1) = ({(0:ℤ)} : Finset ℤ) := by
+      ext x; simp only [Finset.mem_Icc, Finset.mem_singleton]; omega
+    rw [hmuone, Finset.sum_singleton, hsiteins,
+        Finset.sum_insert (by simp only [Finset.mem_Icc]; omega), hsiteone,
+        Finset.sum_singleton]
+  rw [step1, hmu1, hsc0, hlrS, hsc0eq]
+  omega
+
+theorem lRTrue_s3_eq_of_occTrue_s3g_empty_delta_false (g : EltBridge.Elt)
+    (he : occTrue (s3 g) = ∅) (hd : g.delta = false) :
+    lRTrue (s3 g) = lRTrue g - 1 := by
+  have hk0 := occTrue_g_empty_kstar_zero he
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+  have hk1 : g.kstar = 1 := by omega
+  have hlrS := lRTrue_eq_siteCost_zero_of_occTrue_g_empty (s3 g) he
+  have hsc0eq : (s3 g).toPathData.siteCost 0 = g.toPathData.siteCost 0 :=
+    EltBridge.Elt.s3_siteCost_eq g 0
+  have hsing := occTrue_g_singleton_of_s3_empty g he
+  rw [if_neg h1'] at hsing
+  have hne : (occTrue g).Nonempty := by rw [hsing]; exact Finset.singleton_nonempty _
+  have hA : ATrue g = 0 := by
+    unfold ATrue; rw [dif_pos hne, minOccTrue_eq_of_singleton hsing hne, hk1]; omega
+  have hB : BTrue g = 0 := by
+    unfold BTrue; rw [dif_pos hne, maxOccTrue_eq_of_singleton hsing hne, hk1]; omega
+  have hBs3 : BTrue (s3 g) = -1 := by
+    unfold BTrue; rw [dif_neg (by rw [he]; exact Finset.not_nonempty_empty)]
+  have hBeq : BTrue (s3 g) = BTrue g - 1 := by rw [hB, hBs3]; omega
+  have hmu1 := mu_g_at_crossed_eq_one_of_Bdecrease g hne hBeq hd
+  have hkm1 : g.kstar - 1 = 0 := by omega
+  rw [hkm1] at hmu1
+  have hsc0 : g.toPathData.siteCost g.kstar = 0 :=
+    siteCost_removed_eq_zero_of_Bdecrease g hne hBeq hd (by omega)
+  rw [hk1] at hsc0
+  have step1 : lRTrue g = g.toPathData.mu 0 + (g.toPathData.siteCost 0 + g.toPathData.siteCost 1) := by
+    unfold lRTrue
+    rw [hA, hB]
+    have hmuone : Finset.Icc (0:ℤ) 0 = ({(0:ℤ)} : Finset ℤ) := by
+      ext x; simp only [Finset.mem_Icc, Finset.mem_singleton]; omega
+    have hsiteins : Finset.Icc (0:ℤ) (0 + 1) = insert (1:ℤ) (Finset.Icc (0:ℤ) 0) := by
+      ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+    rw [hmuone, Finset.sum_singleton, hsiteins,
+        Finset.sum_insert (by simp only [Finset.mem_Icc]; omega), hmuone,
+        Finset.sum_singleton]
+    ring
+  rw [step1, hmu1, hsc0, hlrS, hsc0eq]
+  omega
+
+theorem lRTrue_s3_eq_of_occTrue_s3g_empty (g : EltBridge.Elt) (he : occTrue (s3 g) = ∅) :
+    lRTrue (s3 g) = lRTrue g - 1 := by
+  by_cases hd : g.delta = true
+  · exact lRTrue_s3_eq_of_occTrue_s3g_empty_delta_true g he hd
+  · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+    exact lRTrue_s3_eq_of_occTrue_s3g_empty_delta_false g he hd'
+
 end PhiLipschitz
