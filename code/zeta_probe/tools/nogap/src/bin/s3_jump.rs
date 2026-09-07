@@ -118,6 +118,8 @@ fn main() {
     let mut a_growth_delta_true = 0u64;
     let mut b_decrease_delta_true = 0u64;
     let mut a_increase_delta_false = 0u64;
+    let mut b_incr_nonzero_boundary_site = 0u64;
+    let mut b_incr_checked = 0u64;
     let mut b_incr_g_kstar_zero = 0u64;
     let mut b_incr_s3g_kstar_zero = 0u64;
     let mut b_decr_g_kstar_zero = 0u64;
@@ -170,6 +172,12 @@ fn main() {
             if a2 == a1 - 1 && e.dl == 1 { a_growth_delta_true += 1; }
             if b2 == b1 - 1 && e.dl == 1 { b_decrease_delta_true += 1; }
             if a2 == a1 + 1 && e.dl == 0 { a_increase_delta_false += 1; }
+            if b2 == b1 + 1 && e.dl == 1 {
+                let p = b2; // new BTrue
+                let dep_p1 = dep(&e.lamps, p + 1);
+                if dep_p1 != 0 { b_incr_nonzero_boundary_site += 1; }
+                b_incr_checked += 1;
+            }
             if b2 == b1 + 1 && e.dl == 1 && e.k == 0 { b_incr_g_kstar_zero += 1; }
             if b2 == b1 + 1 && e.dl == 1 && e2.k == 0 { b_incr_s3g_kstar_zero += 1; }
             if b2 == b1 - 1 && e.dl == 0 && e.k == 0 { b_decr_g_kstar_zero += 1; }
@@ -212,6 +220,7 @@ fn main() {
     println!("[s3] of those, cut(0) is true: {window_unchanged_shield_and_cut0}");
     println!("[s3] B-growth with delta=false: {b_growth_delta_false}; A-growth with delta=true: {a_growth_delta_true}");
     println!("[s3] B-decrease with delta=true: {b_decrease_delta_true}; A-increase with delta=false: {a_increase_delta_false}");
+    println!("[s3] Bincrease: d(p+1) nonzero: {b_incr_nonzero_boundary_site} / {b_incr_checked}");
     println!("[s3] Bincrease at g.kstar=0: {b_incr_g_kstar_zero}; at s3g.kstar=0: {b_incr_s3g_kstar_zero}");
     println!("[s3] Bdecrease at g.kstar=0: {b_decr_g_kstar_zero}; at s3g.kstar=0: {b_decr_s3g_kstar_zero}");
     println!("[s3] Bincrease-delta-false at g.kstar=0: {b_incr_false_kstar0}; Adecrease-delta-true at s3g.kstar=0: {a_decr_true_kstar0}");

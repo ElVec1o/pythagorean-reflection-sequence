@@ -13538,3 +13538,38 @@ for the actual open lower bound of `l_T = l_R + 2c`.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
 `cTrue_s3_eq` gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — lRTrue's s3 movement: Bincrease direction proved EXACTLY +1
+
+`PhiLipschitz.lean`. First concrete piece toward `phiZ_dist_le_one_s3`, now that
+`cTrue_s3_eq` is fully unconditional (commit c99a5d1): since `cTrue` doesn't move at
+all under `s3`, `phiZ_dist_le_one_s3` reduces exactly to bounding `lRTrue`'s movement.
+
+Landed the general facts needed first: `d_eq_zero_of_gt_BTrue`/`d_eq_zero_of_lt_ATrue`
+(an edge strictly beyond the corrected window is never occupied -- `BTrue`/`ATrue`'s own
+definitions as `max`/`min` of `occTrue` already force this, no new hypothesis needed).
+
+Then, for the `Bincrease`/`delta = true` direction specifically: `lRTrue`'s `mu`-sum
+window is `Icc(A,B)` (edges, no `+1` offset unlike `cTrue`'s `Ioo`), so it gains the
+crossed edge `p = g.kstar` itself when `B` increases -- and computed its EXACT `mu`
+value there (not merely the `<=2` bound `s3_mu_dist_le_two` gives): `d_{s3g}(p) = -eps`
+(magnitude `1`) and `travel` there is exactly `1` (`travel_succ_at` applied to the
+already-known `travel_g(p,p) = 0`), so `mu = max(1,1) = 1` exactly
+(`mu_s3g_at_crossed_eq_one_of_Bincrease`). The `siteCost`-sum window (`Icc(A,B+1)`,
+sites) gains site `p + 1`, whose cost is EXACTLY `0`
+(`siteCost_new_eq_zero_of_Bincrease`): `alphaAt`/`betaAt` both vanish there, using
+`d_eq_zero_of_gt_BTrue` for `betaAt` and the `vArr`/`vL` structure (plus `p + 1 != 0`,
+forced since `BTrue g = p - 1 >= -1` gives `p >= 0`) for `alphaAt`. Assembled:
+`lRTrue_s3_eq_of_Bincrease_delta_true` gives `lRTrue (s3 g) = lRTrue g + 1` EXACTLY,
+matching the numeric finding (`max |d(lRTrue)| = 1`) precisely, not just bounding it.
+
+Combined with `cTrue_s3_eq`, this already gives `phiZ_dist_le_one_s3` FOR THIS ONE
+DIRECTION (not yet assembled as a standalone corollary). The other three directions
+(`Bdecrease`/`delta=false`, `Aincrease`/`delta=true`, `Adecrease`/`delta=false`) plus
+the empty/window-unchanged cases still need the same treatment before
+`phiZ_dist_le_one_s3` is complete -- not done yet, mirroring is expected to be
+straightforward given the technique is now established, but each direction needs its
+own exact `mu`/`siteCost` computation at the (different) crossed site.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
+three new theorems gives only [propext, Classical.choice, Quot.sound].

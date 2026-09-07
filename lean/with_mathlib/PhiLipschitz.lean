@@ -2404,4 +2404,160 @@ theorem cTrue_s3_eq (g : EltBridge.Elt) : cTrue (s3 g) = cTrue g := by
   · rw [Finset.not_nonempty_iff_eq_empty] at h1
     exact cTrue_s3_eq_of_g_empty g h1
 
+/-! ### Toward `lRTrue`'s `s3` movement: `d` vanishes strictly outside the corrected window
+
+General fact, needed to bound the single new SITE term that enters `lRTrue`'s `siteCost`
+sum when the window grows: if `occTrue g`'s witnesses are all `<= BTrue g` (true by
+`BTrue`'s own definition, `max (-1) (occTrue g).max'`), then any edge strictly beyond
+`BTrue g` is not in `occTrue g`, hence (via the standard membership characterisation)
+has vanishing deposit. Mirrors for `ATrue` on the low side. -/
+
+theorem d_eq_zero_of_gt_BTrue (g : EltBridge.Elt) {j : ℤ} (hj : BTrue g < j) :
+    g.d j = 0 := by
+  by_cases hj0 : (occTrue g).Nonempty
+  · have hjmax : ¬ j ≤ (occTrue g).max' hj0 := by
+      have : (occTrue g).max' hj0 ≤ BTrue g := by
+        unfold BTrue; rw [dif_pos hj0]; exact le_max_right _ _
+      omega
+    have hjocc : j ∉ occTrue g := fun h => hjmax (Finset.le_max' _ j h)
+    by_contra hd
+    apply hjocc
+    unfold occTrue
+    by_cases hjs : j ∈ g.supp
+    · exact Finset.mem_filter.mpr ⟨hjs, Or.inl hd⟩
+    · exact absurd (g.hsupp j hjs).1 hd
+  · rw [Finset.not_nonempty_iff_eq_empty] at hj0
+    exact occTrue_g_empty_d_zero hj0 j
+
+theorem d_eq_zero_of_lt_ATrue (g : EltBridge.Elt) {j : ℤ} (hj : j < ATrue g) :
+    g.d j = 0 := by
+  by_cases hj0 : (occTrue g).Nonempty
+  · have hjmin : ¬ (occTrue g).min' hj0 ≤ j := by
+      have : ATrue g ≤ (occTrue g).min' hj0 := by
+        unfold ATrue; rw [dif_pos hj0]; exact min_le_right _ _
+      omega
+    have hjocc : j ∉ occTrue g := fun h => hjmin (Finset.min'_le _ j h)
+    by_contra hd
+    apply hjocc
+    unfold occTrue
+    by_cases hjs : j ∈ g.supp
+    · exact Finset.mem_filter.mpr ⟨hjs, Or.inl hd⟩
+    · exact absurd (g.hsupp j hjs).1 hd
+  · rw [Finset.not_nonempty_iff_eq_empty] at hj0
+    exact occTrue_g_empty_d_zero hj0 j
+
+/-! ### `lRTrue`'s `s3` movement: the `Bincrease`/`delta = true` direction, exactly `+1`
+
+Worked out by hand first (matching the numeric finding that `lRTrue` carries the whole
+`PhiZ` jump exactly): the `mu`-sum gains the crossed edge `p = g.kstar` itself (mu's
+window is `Icc(A,B)`, plain, unlike `cTrue`'s `Ioo`), with an EXACT value `1` there
+(computed directly from `d`/`travel` at `p`, not merely bounded by `s3_mu_dist_le_two`);
+the `siteCost`-sum gains site `p + 1`, whose cost is EXACTLY `0` (`alphaAt`/`betaAt`
+both vanish there, using `d_eq_zero_of_gt_BTrue` for the `betaAt` half and the
+`vArr`/`vL` structure plus `p + 1 != 0` -- forced since `BTrue g = p - 1 >= -1` gives
+`p >= 0`, hence `p + 1 >= 1` -- for `alphaAt`). So `lRTrue (s3 g) = lRTrue g + 1`
+exactly, not just `<= +1`. -/
+
+theorem mu_s3g_at_crossed_eq_one_of_Bincrease (g : EltBridge.Elt)
+    (h2 : (occTrue (s3 g)).Nonempty) (hB : BTrue (s3 g) = BTrue g + 1)
+    (hd : g.delta = true) : (s3 g).toPathData.mu g.kstar = 1 := by
+  have hdz : g.d g.kstar = 0 := by
+    have := d_crossed_eq_zero_of_Bincrease g h2 hB; rwa [if_pos hd] at this
+  have htz : SiteCost.travel g.kstar g.kstar = 0 := by
+    have := travel_crossed_eq_zero_of_Bincrease g h2 hB; rwa [if_pos hd] at this
+  have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hd]
+  have hdnew : (s3 g).d g.kstar = -g.eps := by
+    rw [hupd, Function.update_self, hdz]; ring
+  have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+  have htrnew : SiteCost.travel (s3 g).kstar g.kstar = 1 := by
+    rw [hkS, EltBridge.Elt.travel_succ_at, htz]
+    ring
+  unfold SiteCost.PathData.mu
+  simp only [EltBridge.Elt.toPathData]
+  rw [hdnew, htrnew]
+  have hcond : ¬ ((-g.eps : ℤ) = 0 ∧ (1:ℤ) = 0) := fun h => by norm_num at h
+  rw [if_neg hcond]
+  rcases g.heps with h | h <;> rw [h] <;> decide
+
+theorem siteCost_new_eq_zero_of_Bincrease (g : EltBridge.Elt)
+    (h2 : (occTrue (s3 g)).Nonempty) (hB : BTrue (s3 g) = BTrue g + 1)
+    (hd : g.delta = true) : g.toPathData.siteCost (g.kstar + 1) = 0 := by
+  have hdz : g.d g.kstar = 0 := by
+    have := d_crossed_eq_zero_of_Bincrease g h2 hB; rwa [if_pos hd] at this
+  have hge : (-1 : ℤ) ≤ BTrue g := neg_one_le_BTrue g
+  have hkeq : g.kstar = BTrue g + 1 := by
+    have hc := crossed_eq_of_Bincrease g h2 hB
+    rw [if_pos hd] at hc
+    omega
+  have hp0 : (0:ℤ) ≤ g.kstar := by omega
+  have hda : g.d (g.kstar + 1) = 0 := d_eq_zero_of_gt_BTrue g (by omega)
+  have halpha : g.toPathData.alphaAt (g.kstar + 1) = 0 := by
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD
+    simp only [EltBridge.Elt.toPathData]
+    have hnorm : g.kstar + 1 - 1 = g.kstar := by ring
+    rw [hnorm, hdz]
+    have hvArr : SiteCost.vArr (g.kstar + 1) = 0 := by unfold SiteCost.vArr; simp; omega
+    rw [hvArr]
+    have : g.toPathData.delta = true := hd
+    simp [this]
+  have hbeta : g.toPathData.betaAt (g.kstar + 1) = 0 := by
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+    simp only [EltBridge.Elt.toPathData]
+    rw [hda]
+    have hne : g.kstar + 1 ≠ g.kstar := by omega
+    simp [hne]
+  unfold SiteCost.PathData.siteCost
+  rw [halpha, hbeta]
+  rfl
+
+theorem lRTrue_s3_eq_of_Bincrease_delta_true (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g + 1)
+    (hd : g.delta = true) : lRTrue (s3 g) = lRTrue g + 1 := by
+  have hmu1 := mu_s3g_at_crossed_eq_one_of_Bincrease g h2 hB hd
+  have hsc0 := siteCost_new_eq_zero_of_Bincrease g h2 hB hd
+  have hkeq : g.kstar = BTrue g + 1 := by
+    have hc := crossed_eq_of_Bincrease g h2 hB
+    rw [if_pos hd] at hc
+    omega
+  have hAB : ATrue g ≤ BTrue g := by
+    obtain ⟨x, hx⟩ := h1
+    exact le_trans (ATrue_le hx) (le_BTrue hx)
+  have hmuins : Finset.Icc (ATrue g) (BTrue g + 1)
+      = insert (BTrue g + 1) (Finset.Icc (ATrue g) (BTrue g)) := by
+    ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+  have hmucongr : (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (s3 g).toPathData.mu j)
+      = (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j) :=
+    Finset.sum_congr rfl (fun x hx => s3_mu_agree g x (by
+      simp only [Finset.mem_Icc] at hx
+      rw [if_pos hd]; omega))
+  have hmusum : (∑ j ∈ Finset.Icc (ATrue g) (BTrue g + 1), (s3 g).toPathData.mu j)
+      = (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j) + 1 := by
+    rw [hmuins, Finset.sum_insert (by simp only [Finset.mem_Icc]; omega),
+        hmucongr, ← hkeq, hmu1]
+    omega
+  have hsiteins : Finset.Icc (ATrue g) (BTrue g + 2)
+      = insert (BTrue g + 2) (Finset.Icc (ATrue g) (BTrue g + 1)) := by
+    ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+  have hkeqB : g.kstar + 1 = BTrue g + 2 := by omega
+  have hsitecongr : (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), (s3 g).toPathData.siteCost s)
+      = (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), g.toPathData.siteCost s) :=
+    Finset.sum_congr rfl (fun x _ => EltBridge.Elt.s3_siteCost_eq g x)
+  have hsitesum : (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 2), (s3 g).toPathData.siteCost s)
+      = (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), g.toPathData.siteCost s) := by
+    rw [hsiteins, Finset.sum_insert (by simp only [Finset.mem_Icc]; omega),
+        ← hkeqB]
+    have hnew : (s3 g).toPathData.siteCost (g.kstar + 1) = 0 := by
+      rw [EltBridge.Elt.s3_siteCost_eq]; exact hsc0
+    rw [hnew, hsitecongr]
+    omega
+  unfold lRTrue
+  rw [hA, hB]
+  have hBB : BTrue g + 1 + 1 = BTrue g + 2 := by ring
+  rw [hBB, hmusum, hsitesum]
+  omega
+
 end PhiLipschitz
+
+
