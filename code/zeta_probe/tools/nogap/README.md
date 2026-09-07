@@ -12707,3 +12707,30 @@ something in `AssemblyContract`.
 
 Honest limit of this block: data plus a negative comparison.  No Lean, no identification,
 and the marker-fibre correction remains uncharacterised.  H1c's content stays open.
+
+## BLOCK (2026-09) — s1 boundary case away from kstar=0; a false lemma caught before commit
+
+`PhiLipschitz.lean`. Toward the full (non-interior-restricted) s1/s2 Lipschitz
+bound on Phi = lRTrue + 2*cTrue.
+
+Caught by the build, not by review: a draft `shieldFires_s1_iff` claimed
+ShieldFires is invariant under s1 because it only depends on kstar and d. FALSE
+-- it also depends on delta, which s1/s2 both flip, so the shield fires on at
+most one side of the step, never both. This is exactly the asymmetry
+shield_case_delta already isolates; the false lemma would have silently broken
+downstream use if it had compiled (it didn't -- Lean's own goal state after
+`rw` showed a delta mismatch, immediately visible).
+
+Replaced with the correct, sufficient special case: `kstar != 0` alone kills
+ShieldFires on both sides regardless of delta (`not_shieldFires_of_kstar_ne_zero`),
+which gives `cTrue_s1_eq_of_not_interior_ne_zero` (cTrue literally unchanged)
+and hence `phiZ_dist_le_one_s1_boundary_ne_zero` (Phi moves by <=1, no exchange
+needed since cTrue doesn't move at all here).
+
+Remaining gap for the full bound: kstar = 0 exactly at the boundary. Pieces
+exist (shield_cut_pins / siteCost_s1_zero_of_shield_cut / shield_case_delta,
+both generators) but only cover "cut 0 already holds before the step"; the
+mirror case (cut 0 false before, shield fires only after, via delta:true->false
+under s1's flip) is not assembled. s3 not attempted this block.
+
+0 sorry, full lake build clean, #print axioms clean throughout.
