@@ -13784,3 +13784,17 @@ number) but NOT a proof -- the `|d(p)|` case split (magnitude `0`, `1`, `>=2`, c
 in either direction, `4` x `2` = up to `8` sub-cases before accounting for which are
 vacuous) is real remaining work, not yet attempted in Lean. Logged precisely so the
 next attempt goes straight to formalizing this mechanism rather than re-diagnosing it.
+
+## REFINEMENT (2026-09) — window-unchanged mechanism: the parity constraint matters
+
+Follow-up hand analysis, no new theorems: for `delta = true`, `d` at the crossed edge
+shifts by `-eps` (`d1 = d0 - eps`) while `travel` there shifts by a FIXED `+1`
+(`travel_succ_at`, independent of `eps`) -- so the two shifts are NOT generally
+correlated by sign alone. The missing constraint is `hpar`
+(`(d j - travel kstar j) % 2 = 0` for every `j`), which forces `d0 ≡ travel_g(kstar,p)
+(mod 2)` BEFORE the step -- without this, `mu1 - mu0 = ±1` is not obviously forced
+from the raw shifts alone. The next attempt should enumerate `mu`'s value using
+`d0`'s parity-linked relationship to `travel_g(kstar,p)` (via `SiteCost.PathData.mu_par`
+or the underlying `hpar` field directly) rather than treating `d0`/`travel` as
+independent integers -- this is likely the key fact that collapses the `8`-way case
+split flagged in the previous block down to something tractable.
