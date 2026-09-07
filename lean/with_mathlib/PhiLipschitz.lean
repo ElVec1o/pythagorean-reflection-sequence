@@ -171,6 +171,82 @@ theorem exchange_sq_le_one (c c' : ℕ) (h1 : (c' : ℤ) ≤ (c : ℤ) + 1)
   obtain ⟨hu, hl⟩ := exchange_le_one c c' h1 h2
   nlinarith
 
+
+/-! ### The boundary-shield case, `kstar = 0`
+
+The one place where the exchange above does not immediately apply, because the shield's
+firing condition depends on `delta` and therefore flips under both `s1` and `s2`.  It
+closes, and the reason is rigid: `ShieldFires` forces `d (-1) = 0`, so `cut 0` reads
+`-1 + eps = 0`, pinning `eps = 1` and `d 0 = 0`.  After the flip the two indicators swap
+(`vL 0 : 1 -> 0` and `vR 0 : 0 -> 1`), giving `alpha = beta = -1` and a cost of exactly
+one.  So the shield is lost and the cost rises by exactly one, and the potential moves by
+`1 - 2 = -1`. -/
+
+/-- **A firing shield at a cut site pins the marker data.** -/
+theorem shield_cut_pins (g : EltBridge.Elt) (hs : ShieldFires g) (hc : g.toPathData.cut 0) :
+    g.eps = 1 ∧ g.d 0 = 0 := by
+  obtain ⟨hk, hd, hneg, -⟩ := hs
+  obtain ⟨ha, hb, -⟩ := hc
+  have hm1 : g.d (-1) = 0 := hneg (-1) (by norm_num)
+  constructor
+  · revert ha
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD SiteCost.vArr
+    simp [EltBridge.Elt.toPathData, hk, hd, hm1]
+    omega
+  · revert hb
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+    simp [EltBridge.Elt.toPathData, hk, hd]
+
+/-- **And then `s1` raises the cost at site `0` to exactly one.**  The `delta` flip swaps
+the two marker indicators, so `alpha` and `beta` both become `-1`. -/
+theorem siteCost_s1_zero_of_shield_cut (g : EltBridge.Elt) (hs : ShieldFires g)
+    (hc : g.toPathData.cut 0) : (s1 g).toPathData.siteCost 0 = 1 := by
+  obtain ⟨he, hd0⟩ := shield_cut_pins g hs hc
+  obtain ⟨hk, hd, hneg, -⟩ := hs
+  have hm1 : g.d (-1) = 0 := hneg (-1) (by norm_num)
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  simp [EltBridge.Elt.toPathData, EltBridge.Elt.s1, hk, hd, he, hd0, hm1]
+
+/-- **So in the shield case the potential moves by exactly `-1`**: the site cost rises by
+one and the shield term is lost, and the lost shield is worth two.  Stated on the three
+moving quantities, so it can be plugged into the window bookkeeping without re-deriving
+them. -/
+theorem shield_case_delta (g : EltBridge.Elt) (hs : ShieldFires g)
+    (hc : g.toPathData.cut 0) :
+    ((s1 g).toPathData.siteCost 0 : ℤ) - (g.toPathData.siteCost 0 : ℤ)
+      + 2 * ((0 : ℤ) - 1) = -1 := by
+  rw [siteCost_s1_zero_of_shield_cut g hs hc,
+    (cut_iff_siteCost_zero g.toPathData 0).mp hc]
+  norm_num
+
+
+/-! ### Window bookkeeping: a filter changes only where its predicate does -/
+
+/-- **The count of a filter moves by the indicator difference at the one point where the
+predicate moves.**  The `Finset` counterpart of `sum_eq_add_diff_of_eq_off`, and the last
+piece of bookkeeping the `s1`/`s2` bound needs: `cut` moves only at `kstar`, so the cut
+count of a window moves by `[cut' kstar] - [cut kstar]` and by nothing else. -/
+theorem filter_card_eq_add_diff {S : Finset ℤ} {p q : ℤ → Prop}
+    [DecidablePred p] [DecidablePred q] {k : ℤ} (hk : k ∈ S)
+    (h : ∀ s ∈ S, s ≠ k → (p s ↔ q s)) :
+    ((S.filter p).card : ℤ)
+      = ((S.filter q).card : ℤ)
+        + ((if p k then (1 : ℤ) else 0) - (if q k then (1 : ℤ) else 0)) := by
+  classical
+  have hcard : ∀ r : ℤ → Prop, ∀ _ : DecidablePred r,
+      ((S.filter r).card : ℤ) = ∑ s ∈ S, (if r s then (1 : ℤ) else 0) := by
+    intro r _
+    rw [Finset.card_filter]
+    push_cast
+    rfl
+  rw [hcard p inferInstance, hcard q inferInstance]
+  refine sum_eq_add_diff_of_eq_off hk (fun s hsS hsk => ?_)
+  have hiff := h s hsS hsk
+  by_cases hps : p s
+  · rw [if_pos hps, if_pos (hiff.mp hps)]
+  · rw [if_neg hps, if_neg (fun hq => hps (hiff.mpr hq))]
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.sum_eq_add_diff_of_eq_off
@@ -181,3 +257,8 @@ end PhiLipschitz
 #print axioms PhiLipschitz.filter_cut_eq_filter_siteCost_zero
 #print axioms PhiLipschitz.exchange_le_one
 #print axioms PhiLipschitz.exchange_sq_le_one
+
+#print axioms PhiLipschitz.shield_cut_pins
+#print axioms PhiLipschitz.siteCost_s1_zero_of_shield_cut
+#print axioms PhiLipschitz.shield_case_delta
+#print axioms PhiLipschitz.filter_card_eq_add_diff
