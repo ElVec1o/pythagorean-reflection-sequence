@@ -338,3 +338,6 @@ name = "IsometryTranslations"
 
 [[lean_lib]]
 name = "DeviationLaw"
+
+[[lean_lib]]
+name = "SparsityQuant"
