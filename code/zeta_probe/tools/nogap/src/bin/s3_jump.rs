@@ -112,6 +112,8 @@ fn main() {
     let mut cut_examples = 0u64;
     let mut nonzero_kstar_cut_case = 0u64;
     let mut shift_with_nonzero_kstar_both = 0u64;
+    let mut window_unchanged_shield_eligible = 0u64;
+    let mut window_unchanged_shield_and_cut0 = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -131,6 +133,17 @@ fn main() {
         let e2_nonempty = !(a2 == 0 && b2 == -1 && e2.lamps.is_empty());
         if e_nonempty && e2_nonempty {
             both_nonempty_count += 1;
+            fn shield_fires(e: &Elt) -> bool {
+                e.k == 0 && e.dl == 0
+                    && e.lamps.iter().all(|&(j, v)| v == 0 || j >= 0)
+                    && e.lamps.iter().any(|&(j, v)| j >= 0 && v != 0)
+            }
+            let shield1_any = shield_fires(e);
+            let shield2_any = shield_fires(&e2);
+            if (shield1_any || shield2_any) && a1 == a2 && b1 == b2 {
+                window_unchanged_shield_eligible += 1;
+                if is_cut(e, 0) { window_unchanged_shield_and_cut0 += 1; }
+            }
             if a1 != a2 && b1 != b2 {
                 // both endpoints moved simultaneously -- would refute the "only one
                 // moves" hypothesis
@@ -175,6 +188,8 @@ fn main() {
     println!("[s3] of those, shield flips to compensate: {shield_compensates} / {newly_interior_is_cut}");
     println!("[s3] of the cut cases, kstar!=0 on BOTH sides: {nonzero_kstar_cut_case} / {newly_interior_is_cut}");
     println!("[s3] boundary shifts with kstar!=0 on BOTH sides: {shift_with_nonzero_kstar_both} / {newly_interior_checked}");
+    println!("[s3] window UNCHANGED but shield-eligible (kstar=0,delta=false on either side): {window_unchanged_shield_eligible}");
+    println!("[s3] of those, cut(0) is true: {window_unchanged_shield_and_cut0}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");

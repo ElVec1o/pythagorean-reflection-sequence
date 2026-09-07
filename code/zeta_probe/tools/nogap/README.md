@@ -13177,3 +13177,47 @@ full equality.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on both new
 theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — the "neither moves" case of cTrue_s3_eq PROVED
+
+`PhiLipschitz.lean` + `s3_jump.rs`. First real piece of `cTrue_s3_eq`'s ASSEMBLY (not
+just a direction lemma feeding it).
+
+Numeric false alarm caught and fixed within this block, same discipline as before: a
+first probe used the WEAK condition `kstar = 0 ∧ delta = false` (not the real
+`ShieldFires`, which also needs the `d`-vanishing/existence clauses) and found `53715`
+apparent "window unchanged but shield-eligible" cases with `10194` even having
+`cut(0) = true` -- looked like a real problem. Re-ran with the CORRECT `ShieldFires`
+predicate and got `0` in both counts. Retracting the weak-predicate numbers; they never
+reflected the real condition.
+
+Proved directly (no numerics needed once the predicate was right):
+`shieldFires_forces_ATrue_move` (`ShieldFires g -> ATrue (s3 g) != ATrue g`) and its
+mirror `shieldFires_s3_forces_ATrue_move` (`ShieldFires (s3 g) -> ATrue (s3 g) !=
+ATrue g`). Mechanism: `ShieldFires g` pins `ATrue g = 0` (already had this) AND forces
+the crossed edge `g.kstar - 1 = -1` to be occupied in `s3 g` via `travel` alone
+(`SiteCost.travel` at the new `kstar = -1`, evaluated at `j = -1`, is nonzero
+unconditionally) -- so the window MUST extend to `-1`, contradicting an unchanged
+`ATrue`. The mirror direction is the same argument read the other way (`g.kstar = -1`
+forces edge `-1` occupied in `g` via `travel`, so `ATrue g <= -1 != 0 = ATrue (s3 g)`
+when `ShieldFires (s3 g)` holds).
+
+Assembled `cTrue_s3_eq_of_window_unchanged` (`ATrue (s3 g) = ATrue g -> BTrue (s3 g) =
+BTrue g -> cTrue (s3 g) = cTrue g`), UNCONDITIONALLY, no numeric caveat: `ShieldFires`
+is impossible on either side (the two lemmas above, applied to the hypothesis directly),
+so both shield terms vanish; the interior filter is over the identical window with the
+pointwise-identical `cut` predicate (`cut_s3_eq` + `Finset.filter_congr`).
+
+This is the first genuinely ASSEMBLED piece of `cTrue_s3_eq` (as opposed to a building
+block for it). Combined with the earlier `cTrue_eq_zero_of_occTrue_empty`/
+`cTrue_s3_eq_of_g_empty`/`cTrue_s3_eq_of_s3g_empty`, three of `cTrue_s3_eq`'s four
+top-level cases (both empty -- vacuous, one empty, window unchanged) are now closed.
+The one REMAINING case is: both `occTrue` nonempty AND the window actually moves --
+this is where the four direction lemmas (`not_cut_kstar_of_delta_true/false`,
+`not_cut_kstarSucc_of_delta_true`, `not_cut_kstarPred_of_delta_false`) and the
+`kstar = 0` shield-transfer mechanism (`ATrue_eq_zero_of_shieldFires`) need to be
+dispatched based on which direction actually occurred and combined with the matching
+shield-term accounting -- not done yet.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all three
+new theorems gives only [propext, Classical.choice, Quot.sound].

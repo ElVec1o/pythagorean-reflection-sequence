@@ -1509,7 +1509,81 @@ theorem not_cut_kstarPred_of_delta_false (g : EltBridge.Elt) (hd : g.delta = fal
   rw [hdk] at hb
   rcases g.heps with h | h <;> rw [h] at hb <;> norm_num at hb
 
+/-! ### `ShieldFires g` forces the window to move -- the "neither moves" case is trivial
+
+A numeric check (with the CORRECT `ShieldFires` predicate this time -- an earlier probe
+this block used the weaker `kstar = 0 ∧ delta = false` alone and wrongly found `53715`
+apparent counterexamples, all of which vanished once the `d`-conditions were checked
+too) confirms `0` cases where `ShieldFires` genuinely holds on either side while the
+window stays put. Proved here directly: `ShieldFires g` forces `ATrue g = 0`
+(`ATrue_eq_zero_of_shieldFires`) and forces the crossed edge `g.kstar - 1 = -1` into
+`occTrue (s3 g)` via `travel` alone (`SiteCost.travel` at the new `kstar = -1` is
+nonzero at `j = -1` unconditionally), giving `ATrue (s3 g) ≤ -1 < 0 = ATrue g`. So
+`ShieldFires g` and "the window doesn't move" cannot hold together. -/
+
+theorem shieldFires_forces_ATrue_move (g : EltBridge.Elt) (h : ShieldFires g) :
+    ATrue (s3 g) ≠ ATrue g := by
+  have hk0 : g.kstar = 0 := h.1
+  have hδ : g.delta = false := h.2.1
+  have hAg : ATrue g = 0 := ATrue_eq_zero_of_shieldFires h
+  have h1 : ¬ (g.delta = true) := by rw [hδ]; simp
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+  have hkS' : (s3 g).kstar = -1 := by omega
+  have htrav : SiteCost.travel (s3 g).kstar (-1) ≠ 0 := by
+    rw [hkS']; unfold SiteCost.travel; rw [if_neg (by omega), if_pos (by omega)]; omega
+  have hmem : (-1 : ℤ) ∈ occTrue (s3 g) := by
+    unfold occTrue
+    by_cases hj : (-1 : ℤ) ∈ (s3 g).supp
+    · exact Finset.mem_filter.mpr ⟨hj, Or.inr htrav⟩
+    · exact absurd ((s3 g).hsupp (-1) hj).2 htrav
+  have hne : (occTrue (s3 g)).Nonempty := ⟨-1, hmem⟩
+  have hle : ATrue (s3 g) ≤ -1 := by
+    unfold ATrue
+    rw [dif_pos hne]
+    exact le_trans (min_le_right _ _) (Finset.min'_le _ _ hmem)
+  omega
+
+theorem shieldFires_s3_forces_ATrue_move (g : EltBridge.Elt) (h : ShieldFires (s3 g)) :
+    ATrue (s3 g) ≠ ATrue g := by
+  have hk0 : (s3 g).kstar = 0 := h.1
+  have hδ : (s3 g).delta = false := h.2.1
+  have hAs3g : ATrue (s3 g) = 0 := ATrue_eq_zero_of_shieldFires h
+  have hgd : g.delta = true := by
+    by_contra hc
+    have hδ' : g.delta = false := by revert hc; cases g.delta <;> simp
+    have h1 : ¬ (g.delta = true) := by rw [hδ']; simp
+    have : (s3 g).delta = true := by rw [s3, dif_neg h1]
+    rw [this] at hδ; exact absurd hδ (by simp)
+  have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hgd]
+  have hgk : g.kstar = -1 := by omega
+  have htrav : SiteCost.travel g.kstar (-1) ≠ 0 := by
+    rw [hgk]; unfold SiteCost.travel; rw [if_neg (by omega), if_pos (by omega)]; omega
+  have hmem : (-1 : ℤ) ∈ occTrue g := by
+    unfold occTrue
+    by_cases hj : (-1 : ℤ) ∈ g.supp
+    · exact Finset.mem_filter.mpr ⟨hj, Or.inr htrav⟩
+    · exact absurd (g.hsupp (-1) hj).2 htrav
+  have hne : (occTrue g).Nonempty := ⟨-1, hmem⟩
+  have hle : ATrue g ≤ -1 := by
+    unfold ATrue
+    rw [dif_pos hne]
+    exact le_trans (min_le_right _ _) (Finset.min'_le _ _ hmem)
+  omega
+
+theorem cTrue_s3_eq_of_window_unchanged (g : EltBridge.Elt)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g) :
+    cTrue (s3 g) = cTrue g := by
+  have hnf1 : ¬ ShieldFires g := fun h => shieldFires_forces_ATrue_move g h hA
+  have hnf2 : ¬ ShieldFires (s3 g) := fun h => shieldFires_s3_forces_ATrue_move g h hA
+  unfold cTrue
+  rw [hA, hB]
+  have hfilter : (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s3 g).toPathData.cut
+      = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut :=
+    Finset.filter_congr (fun x _ => by rw [cut_s3_eq])
+  rw [hfilter, if_neg (fun h => hnf2 h.1), if_neg (fun h => hnf1 h.1)]
+
 end PhiLipschitz
+
 
 
 
