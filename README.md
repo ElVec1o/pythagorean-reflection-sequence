@@ -342,6 +342,51 @@ which always resolves to the latest archived release. Metadata in
 `CITATION.cff`.
 
 
+## Status of the formalisation (v10.0.0)
+
+The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
+(Mathlib-free). The whole build is clean with **0 `sorry`**, no `sorryAx`, no
+`native_decide` and no `ofReduceBool`; every declaration carries a
+`#print axioms` line. Claims below are machine-checked unless marked otherwise.
+
+**Closed.**
+
+- `RunStrandsConnected` (the Eulerian-existence input to the shield law), at
+  arbitrary even, non-constant widths, by explicit construction — `EltBridge`
+  (`zzTurn`/`zzData`) and `VZigzag` for the widths a real group element has.
+  This had been recorded for several releases as "confirmed hard, needs
+  new-to-Mathlib graph theory"; that verdict is **withdrawn**.
+- Hypothesis `(T)` (travel-block invariance) is a theorem and is no longer a
+  standing hypothesis.
+- `Elt.c = ConfigLoop.defect` for every group element.
+- `prop:transtrick` unconditionally for Euclidean isometries; `prop:reduce`
+  modulo `lem:noab` alone.
+- The three-regime deviation law as a computable, verified shape lookup
+  (`DeviationLaw`): `c_T`, `e_T` are closed forms in `(a,b)`, regime selection
+  is two integer comparisons, and `n_(1,2) = 33` verifies by `decide`.
+- `cut s ↔ siteCost s = 0` (`PhiLipschitz`): a cut site is exactly a zero-cost
+  site, so the `Φ = 0` conjunct in `PathData.cut` is redundant.
+
+**Retracted or corrected in this release** — anyone citing v9.x should re-check.
+
+- The metric identity `l_T = l_R + 2c` is **false as formalised**, for the Lean
+  development's own `c`; it fails at the identity element. Two definitional
+  causes (the formal span forces edge 0 into every configuration; the formal cut
+  set omits the boundary-shield site). Repaired additively in `CorrectedSpan`,
+  after which the identity holds with no violation to depth 29. The **lower
+  bound remains open**.
+- `(M3)`/`eq:assembly` is **vacuous as stated**: satisfiable for arbitrary `W`,
+  and de-truncating does not help. A proof in that form would establish nothing.
+  Named, non-vacuous replacement with a uniqueness theorem in
+  `AssemblyContract`.
+- The single-chain zigzag described in `EltBridge`'s own docstring is **false**
+  at even multiplicities; the correct construction is spine+zigzag. The counting
+  core is kernel-checked in `ZigzagParity`.
+
+**Open.** The lower bound of the metric identity; `(M2)`'s reverse shield
+inequality; `(M3)` after restatement, i.e. identifying `W` with the site-kernel
+resolvent; and `lem:noab`.
+
 ## On the use of AI
 
 This work was produced through extended human-AI collaboration. The
