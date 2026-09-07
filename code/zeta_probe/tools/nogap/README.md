@@ -12671,3 +12671,39 @@ together they are sufficient on everything measured.
 mathematics (2026-08-09 retraction: the previous chain was circular). This block
 fixes the definitions and settles the two points where the uncorrected statement
 was refuted.
+
+## BLOCK 348 (2026-09-06) — W's coefficient series computed for the first time; it is NOT the bulk resolvent
+
+H1c's remaining content (BLOCK 321) is identifying `EltBridge.W` with the resolvent
+of the named site kernel.  `AssemblyContract` (BLOCK 345) gave a NON-VACUOUS named
+contract and proved it for the BULK max-kernel model; nothing had ever touched `W`
+itself.  Step one is data, and there was none.
+
+New tool `src/bin/wcount.rs`.  `coeff N W` is the degree-`N` configuration count, so
+it enumerates valid `SiteCost.PathData` directly from the Lean definitions --
+`hA : A <= 0`, `hB : 0 <= B`, `hpar` (`d j = travel j mod 2`), `houter` (travel must
+vanish off the span, so the travel interval sits inside `[A,B]`), `hAmin`/`hBmin`
+minimality, `A <= kstar <= B+1` -- computes `lR` by the `Realisation.lean` formula, and
+bins by its value.  Exact integers, running-cost pruning (each edge contributes
+`mu >= 1` and site `j` is fixed once `d j` is, so partial sums prune hard).
+
+    coeff N W  for N = 0..12:   0, 0, 3, 7, 9, 14, 25, 41, 68, 109, 181, 288, 463
+
+Sanity check that the series passes: the minimum is at `N = 2`, i.e. no configuration
+has `lR` equal to 0 or 1.  That matches `EltBridge.Elt.one_toPathData_lR : lR one = 2`,
+proved in Lean (BLOCK 325), independently.
+
+**The comparison, stated plainly: this is NOT the bulk resolvent series.**  BLOCK 340's
+bulk chain gives `1,2,3,10,9,30,37,82,133,236,457,702,1455`; `W` gives the above.  They
+do not agree and no simple relation (ratio, shift, difference) between them was found.
+
+This does not refute the identification -- the bulk model deliberately has NO marker
+fibres, while `W` sums over all four (`coeff_flagPathsFinset_eq_sum_marker_fiber_coeffs`)
+and includes the near-marker deviations.  What it does establish is that the
+identification cannot be a direct equality with the bulk series, so the marker-fibre
+correction is not a cosmetic term: it carries most of the count.  Anyone attacking
+BLOCK 321 should expect to construct that correction, not to find `W` already equal to
+something in `AssemblyContract`.
+
+Honest limit of this block: data plus a negative comparison.  No Lean, no identification,
+and the marker-fibre correction remains uncharacterised.  H1c's content stays open.
