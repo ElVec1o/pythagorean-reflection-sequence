@@ -3367,4 +3367,74 @@ theorem lRTrue_s3_eq_of_Bdecrease_delta_false' (g : EltBridge.Elt)
   lRTrue_s3_eq_of_Bdecrease_delta_false g h1 h2 hA hB hd
     (fun hk1 => not_Bdecrease_at_g_kstar_zero g h1 hB hd hk1)
 
+
+theorem lRTrue_s3_dist_one (g : EltBridge.Elt) :
+    (lRTrue (s3 g) : ℤ) = lRTrue g + 1 ∨ (lRTrue g : ℤ) = lRTrue (s3 g) + 1 := by
+  by_cases h1 : (occTrue g).Nonempty
+  · by_cases h2 : (occTrue (s3 g)).Nonempty
+    · have hdispRaw := min_or_max_unchanged h1 h2 (occTrue_agree_off_p g)
+      have hdisp : ATrue (s3 g) = ATrue g ∨ BTrue (s3 g) = BTrue g := by
+        rcases hdispRaw with hmin | hmax
+        · left; unfold ATrue; rw [dif_pos h1, dif_pos h2, hmin]
+        · right; unfold BTrue; rw [dif_pos h1, dif_pos h2, hmax]
+      by_cases hAeq : ATrue (s3 g) = ATrue g
+      · by_cases hBeq : BTrue (s3 g) = BTrue g
+        · exact lRTrue_s3_dist_one_of_window_unchanged g hAeq hBeq
+        · obtain ⟨hBd1, hBd2⟩ := BTrue_s3_dist_le_one g
+          rcases (by omega : BTrue (s3 g) = BTrue g + 1 ∨ BTrue (s3 g) = BTrue g - 1)
+            with hBp | hBm
+          · by_cases hd : g.delta = true
+            · have := lRTrue_s3_eq_of_Bincrease_delta_true g h1 h2 hAeq hBp hd
+              left; exact_mod_cast this
+            · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+              exact (not_Bincrease_of_delta_false g h2 hBp hd').elim
+          · by_cases hd : g.delta = false
+            · have := lRTrue_s3_eq_of_Bdecrease_delta_false' g h1 h2 hAeq hBm hd
+              right; exact_mod_cast this.symm
+            · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+              exact (not_Bdecrease_of_delta_true g h1 hBm hd').elim
+      · have hBeq : BTrue (s3 g) = BTrue g := hdisp.resolve_left hAeq
+        obtain ⟨hAd1, hAd2⟩ := ATrue_s3_dist_le_one g
+        rcases (by omega : ATrue (s3 g) = ATrue g + 1 ∨ ATrue (s3 g) = ATrue g - 1)
+          with hAp | hAm
+        · by_cases hd : g.delta = true
+          · have := lRTrue_s3_eq_of_Aincrease_delta_true' g h1 h2 hAp hBeq hd
+            right; exact_mod_cast this.symm
+          · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+            exact (not_Aincrease_of_delta_false g h1 hAp hd').elim
+        · by_cases hd : g.delta = false
+          · have := lRTrue_s3_eq_of_Adecrease_delta_false' g h1 h2 hAm hBeq hd
+            left; exact_mod_cast this
+          · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+            exact (not_Adecrease_of_delta_true g h2 hAm hd').elim
+    · rw [Finset.not_nonempty_iff_eq_empty] at h2
+      have hnat := lRTrue_s3_eq_of_occTrue_s3g_empty g h2
+      obtain ⟨x, hx⟩ := h1
+      have hxA : ATrue g ≤ x := ATrue_le hx
+      have hxB : x ≤ BTrue g := le_BTrue hx
+      have hxIcc : x ∈ Finset.Icc (ATrue g) (BTrue g) := Finset.mem_Icc.mpr ⟨hxA, hxB⟩
+      have hmux1 : 1 ≤ g.toPathData.mu x := by
+        unfold SiteCost.PathData.mu
+        simp only [EltBridge.Elt.toPathData]
+        split_ifs with h
+        · omega
+        · push_neg at h
+          rcases eq_or_ne (g.d x) 0 with hz | hz
+          · have hf := h hz
+            have := Int.natAbs_pos.mpr hf
+            omega
+          · have := Int.natAbs_pos.mpr hz
+            omega
+      have hsumge : g.toPathData.mu x ≤ ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j :=
+        Finset.single_le_sum (fun j _ => Nat.zero_le _) hxIcc
+      have hpos : 1 ≤ lRTrue g := by
+        unfold lRTrue
+        omega
+      right
+      have : (lRTrue (s3 g) : ℤ) = lRTrue g - 1 := by exact_mod_cast hnat
+      omega
+  · rw [Finset.not_nonempty_iff_eq_empty] at h1
+    have := lRTrue_s3_eq_of_occTrue_g_empty g h1
+    left; exact_mod_cast this
+
 end PhiLipschitz
