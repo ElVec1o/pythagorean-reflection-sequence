@@ -110,6 +110,8 @@ fn main() {
     let mut newly_interior_checked = 0u64;
     let mut shield_compensates = 0u64;
     let mut cut_examples = 0u64;
+    let mut nonzero_kstar_cut_case = 0u64;
+    let mut shift_with_nonzero_kstar_both = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -147,9 +149,11 @@ fn main() {
             if a1 == a2 - 1 { new_site_cut = is_cut(&e2, a2); shift_happened = true; }
             if shift_happened {
                 newly_interior_checked += 1;
+                if e.k != 0 && e2.k != 0 { shift_with_nonzero_kstar_both += 1; }
                 if new_site_cut {
                     newly_interior_is_cut += 1;
                     if shield1 != shield2 { shield_compensates += 1; }
+                    if e.k != 0 && e2.k != 0 { nonzero_kstar_cut_case += 1; }
                     if cut_examples < 6 {
                         let dir = if b2 == b1 + 1 { "B+1" } else if b1 == b2 + 1 { "B-1" }
                             else if a2 == a1 - 1 { "A-1" } else { "A+1" };
@@ -169,8 +173,35 @@ fn main() {
     println!("[s3] both-endpoints-moved-simultaneously count = {both_nonempty_cut_violation} / {both_nonempty_count} both-nonempty pairs checked");
     println!("[s3] newly-interior site IS a cut site: {newly_interior_is_cut} / {newly_interior_checked} boundary-shift cases");
     println!("[s3] of those, shield flips to compensate: {shield_compensates} / {newly_interior_is_cut}");
+    println!("[s3] of the cut cases, kstar!=0 on BOTH sides: {nonzero_kstar_cut_case} / {newly_interior_is_cut}");
+    println!("[s3] boundary shifts with kstar!=0 on BOTH sides: {shift_with_nonzero_kstar_both} / {newly_interior_checked}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");
     }
+}
+
+#[allow(dead_code)]
+fn one_probe(name: &str, e: Elt) {
+    let e2 = s3(&e);
+    let (a1, b1) = span_nogap(&e);
+    let (a2, b2) = span_nogap(&e2);
+    eprintln!("[{name}] e={:?} -> e2={:?}", e, e2);
+    eprintln!("[{name}] span before=({a1},{b1}) after=({a2},{b2})");
+    eprintln!("[{name}] cuts before={} after={}", cuts_on(&e, a1, b1), cuts_on(&e2, a2, b2));
+    for s in (a1.min(a2) - 1)..=(b1.max(b2) + 2) {
+        eprintln!("[{name}]   is_cut(e,{s})={} is_cut(e2,{s})={}", is_cut(&e, s), is_cut(&e2, s));
+    }
+}
+#[allow(dead_code)]
+fn probe_manual() {
+    // delta=true, A-side removal (window shrinks): k=-3 (avoid k=-1 which is the
+    // kstar=0-adjacent special case), d(-3)=eps=1 so s3 zeroes it (removal).
+    one_probe("removal-true", Elt { eps: 1, dl: 1, k: -3, lamps: vec![(-3, 1)] });
+    // delta=false, A-side growth: need g.kstar=k>0 (generic), p=k-1 vacant in g
+    // (d(k-1)=0), becoming occupied in s3g. Use k=3, some other deposit to keep
+    // occTrue g nonempty independent of p (e.g. an existing deposit further left
+    // isn't needed -- travel(k,.) already occupies [0,k) so occTrue g is nonempty
+    // via travel alone for k>0).
+    one_probe("addition-false", Elt { eps: 1, dl: 0, k: 3, lamps: vec![] });
 }

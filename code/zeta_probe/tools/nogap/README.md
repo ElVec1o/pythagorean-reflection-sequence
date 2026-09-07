@@ -13067,3 +13067,59 @@ proof nor new content, that is the actual stall point.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
 `ATrue_eq_zero_of_shieldFires` gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — fourth pass: the generic-case formula pinned exactly, per direction
+
+`s3_jump.rs`. Fourth attempt at `cTrue_s3_eq`'s both-nonempty case. Not landed in Lean
+this block, but the by-hand mechanism is now fully pinned for the generic case
+(`kstar != 0` on both sides), correcting a real error made mid-block before it reached
+Lean.
+
+Error caught and corrected (by direct Rust construction, not just algebra): the first
+draft of this block assumed the "newly relevant site" in a window-SHRINK (removal) is
+always the crossed edge `p` itself. Built a concrete hand-constructed `Elt`
+(`eps=1, delta=true, k=-3, d=[(-3,1)]`, deliberately NOT reachable, to separate the
+FIELD-level question from reachability) and ran it through the real `is_cut`/`cuts_on`
+functions: the window shrank `(-3,-1) -> (-2,-1)`, `cuts_on` stayed `1 -> 1` (consistent),
+but `is_cut` at the crossed edge `p = -3` is `true` on BOTH sides (matching cut being
+pointwise-invariant) while the actual site that leaves the interior filter is `p + 1 = -2`
+(NOT `p`), and `is_cut(-2)` is `false` -- so the invariance holds, but via a DIFFERENT
+site than the one first assumed. Corrected the by-hand model: for a window SHRINK, the
+relevant site is `p + 1` (`= (s3 g).kstar`, the new boundary), not `p`.
+
+With that correction, worked out concrete formulas for the site's `alphaAt`/`betaAt`
+using `Realisation.lean`'s definitions directly (`vD s = [s = kstar]`, `vArr s = [s = 0]`,
+`vL`/`vR` select `vD` by `delta`), for three of the four directional sub-cases:
+- `delta = true`, window GROWS (site `p = kstar_g`, addition, `d(kstar_g) = 0` beforehand):
+  `betaAt(kstar_g) = -eps != 0` (`vR = vD = 1` since `delta = true`; `d(kstar_g) = 0` by
+  the addition hypothesis) -- never a cut. Matches the very first hand-check this
+  session.
+- `delta = true`, window SHRINKS (site `p + 1 = (s3 g).kstar`, removal,
+  `d(kstar_g) = eps` beforehand): `alphaAt(p+1) = eps != 0` directly from the removal
+  condition (`vL = 0` unconditionally when `delta = true`, so the `vD`/`vArr`
+  interaction drops out and the nonzero value comes straight from the removal
+  hypothesis) -- never a cut, PROVIDED `p + 1 != 0`, i.e. `(s3 g).kstar != 0` (exactly
+  the "kstar != 0 on both sides" gate).
+- `delta = false`, window GROWS (site `kstar_g` itself, using `vD(kstar_g) = 1` and
+  `delta = false` giving `vL(kstar_g) = 1`): `alphaAt(kstar_g) = eps != 0` (using
+  `d(kstar_g - 1) = 0`, the addition condition) -- never a cut, provided `kstar_g != 0`.
+- `delta = false`, `kstar_g > 0`: checked separately and it is NOT a growth/shrink case
+  at all -- `travel kstar_g (kstar_g - 1)` is already nonzero for `kstar_g >= 1`
+  (`0 <= kstar_g - 1 < kstar_g`), so the crossed edge is ALWAYS already occupied via
+  `travel` alone regardless of `d`, meaning `occTrue` never actually changes here
+  (falls into the trivial "occTrue literally unchanged" case, not a real transition).
+  The genuine `delta = false` SHRINK case (mirroring the `delta = true` shrink) was not
+  worked out this block.
+
+All three worked-out formulas match the exhaustive-enumeration finding exactly
+(`0 / 1524400` cut violations when `kstar != 0` on both sides) -- no formula found so far
+gives a counterexample, and the mechanism (a nonzero `eps` value forced directly by the
+addition/removal hypothesis, with `vArr` only able to interfere when the site is
+literally `0`) is now understood well enough to attempt formalization. NOT formalized in
+Lean this block -- the remaining work is real bookkeeping (tying `ATrue_s3_dist_le_one`/
+`BTrue_s3_dist_le_one`'s "moved by <=1" conclusion to WHICH direction moved and hence
+which formula applies), not further diagnosis. This is the fourth attempt at this
+sub-goal; it produced new, checked content (a corrected site identification plus three
+concrete matching formulas) rather than a stall, so continuing is still judged
+worthwhile -- but the next attempt should go straight to Lean casework using this
+roadmap, not further hand-derivation.
