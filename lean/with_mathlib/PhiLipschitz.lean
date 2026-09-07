@@ -3243,4 +3243,61 @@ theorem mu_dist_one_unconditional (g : EltBridge.Elt) :
       simp only [EltBridge.Elt.toPathData]
       split_ifs with hvac1 hvac2 hvac2 <;> rcases heps with he | he <;> omega
 
+/-! ### `lRTrue`'s `s3` movement: the window-unchanged case, assembled
+
+The crossed edge `p` lies in the (closed) `mu`-window `[ATrue g, BTrue g]` whenever the
+window is unchanged: `kstar_mem_corrected_window` applied to BOTH `g` and `s3 g`,
+combined with `hA`/`hB`, pins `p` on both sides at once (the `+1` slack in each
+individual bound cancels against the OTHER side's bound). With `p` inside the window,
+`sum_eq_add_diff_of_eq_off` (using `s3_mu_agree` elsewhere) reduces the `mu`-sum's
+difference to exactly the `p`-term difference, closed by the now-unconditional
+`mu_dist_one_unconditional`. `siteCost` needs no argument at all here (`s3_siteCost_eq`
+is unconditional, and the window is unchanged so it's the same sum). -/
+
+theorem crossed_mem_mu_window_of_window_unchanged (g : EltBridge.Elt)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g) :
+    (if g.delta then g.kstar else g.kstar - 1) ∈
+      Finset.Icc (ATrue g) (BTrue g) := by
+  have hwg := kstar_mem_corrected_window g
+  have hws := kstar_mem_corrected_window (s3 g)
+  simp only [Finset.mem_Icc] at hwg hws
+  by_cases hd : g.delta = true
+  · have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+    rw [if_pos hd]
+    simp only [Finset.mem_Icc]
+    omega
+  · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+    have h1' : ¬ (g.delta = true) := by rw [hd']; simp
+    have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+    rw [if_neg hd]
+    simp only [Finset.mem_Icc]
+    omega
+
+theorem lRTrue_s3_dist_one_of_window_unchanged (g : EltBridge.Elt)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g) :
+    (lRTrue (s3 g) : ℤ) = lRTrue g + 1 ∨ (lRTrue g : ℤ) = lRTrue (s3 g) + 1 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hpmem := crossed_mem_mu_window_of_window_unchanged g hA hB
+  rw [← hpdef] at hpmem
+  have hmusum : (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), ((s3 g).toPathData.mu j : ℤ))
+      = (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ))
+          + (((s3 g).toPathData.mu p : ℤ) - (g.toPathData.mu p : ℤ)) :=
+    sum_eq_add_diff_of_eq_off hpmem (fun x _ hx => by
+      have hx' : x ≠ (if g.delta then g.kstar else g.kstar - 1) := by rwa [hpdef] at hx
+      have := s3_mu_agree g x hx'
+      exact_mod_cast this)
+  have hsitesum : (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), ((s3 g).toPathData.siteCost s : ℤ))
+      = (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), (g.toPathData.siteCost s : ℤ)) :=
+    Finset.sum_congr rfl (fun x _ => by exact_mod_cast EltBridge.Elt.s3_siteCost_eq g x)
+  have hlr : (lRTrue (s3 g) : ℤ) = (lRTrue g : ℤ)
+      + (((s3 g).toPathData.mu p : ℤ) - (g.toPathData.mu p : ℤ)) := by
+    unfold lRTrue
+    rw [hA, hB]
+    push_cast
+    rw [hmusum, hsitesum]
+    ring
+  rcases mu_dist_one_unconditional g with h | h
+  · rw [← hpdef] at h; left; rw [hlr, h]; ring
+  · rw [← hpdef] at h; right; rw [hlr] at *; omega
+
 end PhiLipschitz
