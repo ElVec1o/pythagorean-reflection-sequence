@@ -373,6 +373,70 @@ theorem phiZ_dist_le_one_s1_interior (g : EltBridge.Elt)
   rw [key]
   exact hex
 
+
+/-! ### The `s2` bound at an interior cursor -- transcription of the `s1` case -/
+
+/-- **The `s2` bound, at an interior cursor.**  Identical shape to the `s1` case: span and
+`mu` sum fixed, site sum and cut count both move only at `kstar`, and the exchange between
+them is bounded by one. -/
+theorem phiZ_dist_le_one_s2_interior (g : EltBridge.Elt)
+    (hk : g.kstar ∈ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    (PhiZ (s2 g) - PhiZ g) ^ 2 ≤ 1 := by
+  classical
+  have hkIcc : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := by
+    simp only [Finset.mem_Ioo] at hk
+    simp only [Finset.mem_Icc]
+    omega
+  have hs : ¬ ShieldFires g := not_shieldFires_of_interior g hk
+  have hs' : ¬ ShieldFires (s2 g) := by
+    have hk' : (s2 g).kstar ∈ Finset.Ioo (ATrue (s2 g)) (BTrue (s2 g) + 1) := by
+      rw [ATrue_s2, BTrue_s2]; exact hk
+    exact not_shieldFires_of_interior (s2 g) hk'
+  have hmu : (∑ j ∈ Finset.Icc (ATrue (s2 g)) (BTrue (s2 g)),
+        ((s2 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s2, BTrue_s2]
+    refine Finset.sum_congr rfl (fun j _ => ?_)
+    unfold SiteCost.PathData.mu
+    simp [EltBridge.Elt.toPathData]
+  have hlR : (lRTrue (s2 g) : ℤ)
+      = (lRTrue g : ℤ)
+        + (((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue
+    push_cast
+    rw [hmu, siteSum_sub_eq_at_kstar_s2 g hkIcc]
+    ring
+  have hc : (cTrue (s2 g) : ℤ)
+      = (cTrue g : ℤ)
+        + ((if (s2 g).toPathData.cut g.kstar then (1 : ℤ) else 0)
+            - (if g.toPathData.cut g.kstar then (1 : ℤ) else 0)) := by
+    rw [cTrue_eq_filter_of_not_shield _ hs', cTrue_eq_filter_of_not_shield _ hs,
+      ATrue_s2, BTrue_s2]
+    refine filter_card_eq_add_diff hk (fun s _ hsne => ?_)
+    rw [cut_iff_siteCost_zero, cut_iff_siteCost_zero,
+      siteCost_eq_of_ne_kstar (P := (s2 g).toPathData) (Q := g.toPathData) rfl rfl s hsne]
+  have hcut : ∀ h : EltBridge.Elt,
+      (if h.toPathData.cut g.kstar then (1 : ℤ) else 0)
+        = (if h.toPathData.siteCost g.kstar = 0 then (1 : ℤ) else 0) := by
+    intro h
+    by_cases hh : h.toPathData.siteCost g.kstar = 0
+    · rw [if_pos ((cut_iff_siteCost_zero h.toPathData g.kstar).mpr hh), if_pos hh]
+    · rw [if_neg (fun hcc => hh ((cut_iff_siteCost_zero h.toPathData g.kstar).mp hcc)),
+        if_neg hh]
+  rw [hcut, hcut] at hc
+  obtain ⟨h1, h2⟩ := s2_siteCost_kstar g
+  have hex := exchange_sq_le_one (g.toPathData.siteCost g.kstar)
+    ((s2 g).toPathData.siteCost g.kstar) h1 h2
+  have key : PhiZ (s2 g) - PhiZ g
+      = (((s2 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)
+          + 2 * ((if (s2 g).toPathData.siteCost g.kstar = 0 then (1 : ℤ) else 0)
+              - (if g.toPathData.siteCost g.kstar = 0 then (1 : ℤ) else 0))) := by
+    unfold PhiZ
+    rw [hlR, hc]
+    ring
+  rw [key]
+  exact hex
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.sum_eq_add_diff_of_eq_off
@@ -393,3 +457,4 @@ end PhiLipschitz
 #print axioms PhiLipschitz.not_shieldFires_of_interior
 #print axioms PhiLipschitz.cTrue_eq_filter_of_not_shield
 #print axioms PhiLipschitz.phiZ_dist_le_one_s1_interior
+#print axioms PhiLipschitz.phiZ_dist_le_one_s2_interior
