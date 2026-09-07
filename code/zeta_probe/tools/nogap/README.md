@@ -13426,3 +13426,51 @@ plus the final `Reaches` induction for the open lower bound.
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
 `cTrue_s3_eq_of_kstar_ne_zero` and all its new supporting theorems gives only
 [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — kstar=0 case precisely scoped: it's Adecrease/Aincrease with the gate violated
+
+`PhiLipschitz.lean`. Analysis only this block, no new theorems -- scoping the one
+remaining piece of `cTrue_s3_eq` precisely before attempting it, since it needs a
+genuinely different technique from the four direction lemmas.
+
+`cTrue_s3_eq_of_window_unchanged` and all four `cTrue_s3_eq_of_*` direction theorems'
+IDENTIFICATION chains (`crossed_eq_of_*`, `crossed_not_mem_*`, `d_(new_)crossed_eq_
+zero_of_*`) do NOT require `kstar != 0` anywhere in their statements or proofs -- that
+hypothesis only enters at the very last step of each direction theorem, where the
+`not_cut_kstar_of_delta_false`/`not_cut_kstarSucc_of_delta_true` lemmas need it (their
+proofs use `vArr`, which activates exactly at site `0`). So the "window unchanged"
+case and the identification machinery are ALREADY fully general; only the final
+`not_cut` step is gated.
+
+Cross-referencing the numeric witnesses from several blocks ago (the `1540` cases
+where the newly-interior site is a cut, kstar=0 on one side): both sampled directions
+are `ATrue` moving (`A-1`/`A+1` in the old `s3_jump.rs` tags), which correspond to
+EXACTLY `Adecrease` (`g.kstar = 0`, `delta = false`) and `Aincrease` (`(s3 g).kstar =
+0`, `delta = true`) -- the SAME two directions already proved for the generic case,
+just with the `kstar != 0` gate violated. So the remaining work is NOT a fifth
+direction: it is `cTrue_s3_eq_of_Adecrease_delta_false_at_kstar_zero` and
+`cTrue_s3_eq_of_Aincrease_delta_true_at_kstar_zero`, using the shield-transfer
+mechanism (`ATrue_eq_zero_of_shieldFires`) in place of `not_cut_kstar_of_delta_false`/
+`not_cut_kstarSucc_of_delta_true` at exactly the step where those need the violated
+gate. `Bincrease`/`Bdecrease` (the `B`-side directions) are NOT affected by `kstar = 0`
+at all -- their `not_cut` lemmas (`not_cut_kstar_of_delta_true`,
+`not_cut_kstarPred_of_delta_false`) use `betaAt`, which has no `vArr` term, so they
+need no gate and already cover `kstar = 0` for free (confirmed by the numeric finding
+several blocks ago: `0/1540` cut-witnesses had a `B`-side move).
+
+Concrete next step, not started: write `cTrue_s3_eq_of_Adecrease_delta_false_at_kstar_
+zero (g)(h1)(h2)(hA : ATrue (s3 g) = ATrue g - 1)(hB : BTrue (s3 g) = BTrue g)
+(hd : g.delta = false)(hk0 : g.kstar = 0) : cTrue (s3 g) = cTrue g`, splitting on
+whether `ShieldFires g` actually holds (its `d`-conditions, not just `kstar = 0 ∧
+delta = false`): if not, `cut 0` must be handled directly (the interior filter card
+changes by 0 or 1 depending on `cut (g.kstar - 1) = cut (-1)`, need to check by hand
+whether `-1` is forced non-cut when `ShieldFires` genuinely fails); if `ShieldFires g`
+holds, the transfer is exact (`ATrue_eq_zero_of_shieldFires` pins `ATrue g = 0`, and
+the shield term lost from `g`'s `cTrue` must equal the interior-filter term gained by
+`s3 g`, both concerning site `0` specifically) -- this exact-transfer sub-case is the
+one the `1540/1540` numeric confirmation already covers, but the ALGEBRAIC identity
+connecting the two accounting mechanisms (shield term vs. filter term) is not yet
+written down even by hand in full generality.
+
+No theorems added this block; this is pure scoping to avoid a wrong first attempt at
+the actual proof next tick.
