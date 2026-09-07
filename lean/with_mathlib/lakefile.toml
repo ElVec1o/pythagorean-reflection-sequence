@@ -335,3 +335,6 @@ name = "CorrectedSpan"
 
 [[lean_lib]]
 name = "IsometryTranslations"
+
+[[lean_lib]]
+name = "DeviationLaw"
