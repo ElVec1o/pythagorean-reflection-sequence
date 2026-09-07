@@ -129,6 +129,13 @@ fn main() {
     let mut b_decr_checked = 0u64;
     let mut b_incr_false_kstar0 = 0u64;
     let mut a_decr_true_kstar0 = 0u64;
+    let mut window_unchanged_count = 0u64;
+    let mut max_lr_window_unchanged = 0i64;
+    let mut window_unchanged_lr_nonzero = 0u64;
+    let mut wu_p1_true = 0u64;
+    let mut wu_p1_false = 0u64;
+    let mut wu_m1_true = 0u64;
+    let mut wu_m1_false = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -142,6 +149,16 @@ fn main() {
         if dcut > max_cut { max_cut = dcut; }
         if (a2 - a1).abs() > max_awin { max_awin = (a2 - a1).abs(); }
         if (b2 - b1).abs() > max_bwin { max_bwin = (b2 - b1).abs(); }
+        if a1 == a2 && b1 == b2 {
+            window_unchanged_count += 1;
+            let lr_delta = lr_on(&e2, a2, b2) - lr_on(e, a1, b1);
+            if lr_delta.abs() > max_lr_window_unchanged { max_lr_window_unchanged = lr_delta.abs(); }
+            if lr_delta != 0 { window_unchanged_lr_nonzero += 1; }
+            if lr_delta == 1 && e.dl == 1 { wu_p1_true += 1; }
+            if lr_delta == 1 && e.dl == 0 { wu_p1_false += 1; }
+            if lr_delta == -1 && e.dl == 1 { wu_m1_true += 1; }
+            if lr_delta == -1 && e.dl == 0 { wu_m1_false += 1; }
+        }
         // "both nonempty" proxy: span nonempty (a<=b) on both sides, i.e. not the
         // degenerate empty-occTrue case (which shows up as a==0,b==-1 with no deposits).
         let e_nonempty = !(a1 == 0 && b1 == -1 && e.lamps.is_empty());
@@ -233,6 +250,8 @@ fn main() {
     println!("[s3] Bdecrease at g.kstar=0: {b_decr_g_kstar_zero}; at s3g.kstar=0: {b_decr_s3g_kstar_zero}");
     println!("[s3] Bdecrease: d(kstar) nonzero: {b_decr_nonzero_dkstar} / {b_decr_checked}");
     println!("[s3] Bincrease-delta-false at g.kstar=0: {b_incr_false_kstar0}; Adecrease-delta-true at s3g.kstar=0: {a_decr_true_kstar0}");
+    println!("[s3] window-unchanged: count={window_unchanged_count}, max|d(lRTrue)|={max_lr_window_unchanged}, nonzero cases={window_unchanged_lr_nonzero}");
+    println!("[s3] window-unchanged by sign/delta: +1&true={wu_p1_true} +1&false={wu_p1_false} -1&true={wu_m1_true} -1&false={wu_m1_false}");
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");

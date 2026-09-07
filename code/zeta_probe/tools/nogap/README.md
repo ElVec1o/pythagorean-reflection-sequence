@@ -13751,3 +13751,36 @@ top-level dispatch into `phiZ_dist_le_one_s3`.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
 three new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — window-unchanged case: mechanism diagnosed numerically
+
+`s3_jump.rs`. Numeric investigation of the flagged-as-hard window-unchanged case for
+`lRTrue`'s `s3` movement, per the roadmap checkpoint.
+
+Extended `s3_jump.rs` to isolate window-unchanged transitions (`ATrue`/`BTrue` both
+literally equal before/after) and report `lRTrue`'s exact delta there. Result, at
+depth 30: `lRTrue` moves by EXACTLY `+-1` in ALL `1790039` window-unchanged
+transitions (never `0`), with the sign not determined by `delta` alone (`+1` occurs
+for both `delta` values, so does `-1`).
+
+Mechanism, worked out by hand from this: the crossed edge `p`'s occTrue membership
+being unchanged does NOT mean `p` is absent from occTrue on both sides -- it CANNOT
+be absent on both, since `s3` always modifies `d(p)` by exactly `+-eps` (deterministic,
+regardless of context), so if `d_g(p) = 0` (required for `p` absent from `occTrue g`),
+then `d_{s3g}(p) = +-eps != 0` forces `p` present in `occTrue (s3 g)` -- contradicting
+"unchanged" unless `p` was ALREADY present in `occTrue g` too. So "window unchanged"
+in the both-nonempty case forces `p` OCCUPIED on both sides (`d_g(p) != 0` already),
+with `d` shifting by exactly `eps` (magnitude `1`) between the two. Since `travel` is
+always bounded by `1` in magnitude (`SiteCost.travel_cases`), `mu(p) = max(|d(p)|,
+|travel|)` moves by exactly the same `+-1` as `|d(p)|` whenever `|d(p)| >= 2` (the
+`travel` term never dominates); the boundary cases (`|d(p)|` crossing `0<->1` or
+`1<->2`, or the "vacuum" `d=0 ∧ travel=0` clause activating/deactivating) need their
+own sub-argument, not yet worked out, since `mu`'s definition has that special `= 2`
+clause exactly at the vanishing point. `siteCost` is unaffected throughout
+(`s3_siteCost_eq`, always true, window unchanged means no site enters/leaves either).
+
+This is real progress on the flagged-hard case (a diagnosed mechanism, not just a
+number) but NOT a proof -- the `|d(p)|` case split (magnitude `0`, `1`, `>=2`, crossed
+in either direction, `4` x `2` = up to `8` sub-cases before accounting for which are
+vacuous) is real remaining work, not yet attempted in Lean. Logged precisely so the
+next attempt goes straight to formalizing this mechanism rather than re-diagnosing it.
