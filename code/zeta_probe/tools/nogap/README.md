@@ -13364,3 +13364,65 @@ sub-case) is not yet written -- this block proves the pieces, not the dispatch.
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on both new
 top-level theorems (and their `travel_crossed_eq_zero_of_*` helpers) gives only
 [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — cTrue_s3_eq_of_kstar_ne_zero PROVED: the whole kstar!=0 case is one theorem
+
+`PhiLipschitz.lean` + `s3_jump.rs`. Completes the `kstar != 0` both-sides case of
+`cTrue_s3_eq`: found and closed the last two directions (`BTrue` decreases /
+`ATrue` increases, mirroring `Bincrease`/`Adecrease`), then assembled all eight pieces
+into one dispatch theorem.
+
+New this block: `crossed_eq_of_Bdecrease`/`crossed_not_mem_s3g_of_Bdecrease`/
+`d_new_crossed_eq_zero_of_Bdecrease`/`cTrue_s3_eq_of_Bdecrease_delta_false` (`BTrue`
+decreases, `delta = false`, using `not_cut_kstarPred_of_delta_false`), the symmetric
+`..._of_Aincrease` quartet (`ATrue` increases, `delta = true`, using
+`not_cut_kstarSucc_of_delta_true`), and `not_Bdecrease_of_delta_true`/
+`not_Aincrease_of_delta_false` (the other two directions, impossible). A numeric check
+(extending `s3_jump.rs` once more) confirmed both new directions occur `0` times with
+the "wrong" delta, matching the earlier pattern.
+
+The two impossibility proofs turned out MUCH simpler than the earlier
+(`Bincrease`/`Adecrease`-side) ones: no `travel`-vanishing argument needed at all --
+just `kstar_mem_corrected_window` applied to `s3 g`, combined with the crossed-edge
+identification (`p = BTrue g` / `p = ATrue g`) and the `s3`-kstar-shift formula,
+gives a direct arithmetic contradiction (`kstar + 1 <= BTrue(s3g)+1 = BTrue g = kstar`,
+i.e. `1 <= 0`). A first attempt at `not_Bdecrease_of_delta_true` used the heavier
+`travel`-vanishing technique (mirroring the earlier two) and got STUCK at exactly
+`BTrue g = -1` with no contradiction in sight -- re-examining with
+`kstar_mem_corrected_window` found the missing piece and gave a strictly shorter proof.
+Retracting the assumption that all four impossibility proofs need the same technique.
+
+Assembled `cTrue_s3_eq_of_kstar_ne_zero`: given both `occTrue` nonempty and
+`kstar != 0` on both sides, `cTrue (s3 g) = cTrue g`, UNCONDITIONALLY -- dispatches on
+`min_or_max_unchanged` (converted from its raw `min'`/`max'` statement to `ATrue`/
+`BTrue` via `unfold` + the shared `dif_pos` proof-irrelevance, since `ATrue`/`BTrue`
+are literally `min 0 (...)`/`max (-1) (...)` of that same `min'`/`max'`), then
+`ATrue_s3_dist_le_one`/`BTrue_s3_dist_le_one` to pin the exact `+1`/`-1` shift, then
+one of the four directional theorems or one of the two impossibility proofs.
+
+Several mechanical fixes this block, logged for the pattern: (1) `card_filter_insert_
+left/right`'s strict `A < B + 1` hypothesis needs a STRICT bound from context --
+deriving it from an occTrue-nonempty WITNESS on the SMALLER side (`h2` when the
+window shrank) rather than the natural-seeming `h1`, since only the smaller side's
+witness gives the strict inequality directly via `omega`. (2) `omega` cannot bridge a
+goal built by substituting a hypothesis into `cTrue`'s literal `Ioo (ATrue _)
+(BTrue _ + 1)` template when the substituted value needs arithmetic normalization
+first (`BTrue g - 1 + 1` is not syntactically `BTrue g`) -- add an explicit `have
+hnorm := by ring` and `rw` it into the goal BEFORE relying on a matching `have` fact,
+rather than expecting `omega` to unify two differently-shaped `Finset.card` atoms.
+(3) `ext x; simp [...]; omega` on a goal built from `ATrue g`/`BTrue g` directly
+(rather than abstract variables) can time out or report bizarre unrelated atom names
+in its counterexample -- avoid entirely by reusing the already-proved abstract
+`ioo_insert_right`/`_left` lemmas (instantiated at concrete values, with the resulting
+arithmetic offsets bridged via small `ring` facts) instead of re-deriving the `Ioo`
+identity inline with concrete terms.
+
+With this, `cTrue_s3_eq`'s remaining open piece is ONLY the `kstar = 0`-on-one-side
+shield-transfer sub-case (mechanism known via `ATrue_eq_zero_of_shieldFires`, not
+assembled). Once that lands, `cTrue_s3_eq` is complete, and the remaining work toward
+`phiZ_dist_le_one_s3` is bounding `lRTrue`'s `s3` movement (separate, not yet started)
+plus the final `Reaches` induction for the open lower bound.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
+`cTrue_s3_eq_of_kstar_ne_zero` and all its new supporting theorems gives only
+[propext, Classical.choice, Quot.sound].

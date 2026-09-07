@@ -1973,7 +1973,264 @@ theorem not_Adecrease_of_delta_true (g : EltBridge.Elt) (h2 : (occTrue (s3 g)).N
   have hle : ATrue (s3 g) ≤ 0 := atrue_le_zero (s3 g)
   omega
 
+/-! ### The two remaining directions: `BTrue` decreases, `A` increases
+
+Same technique as `Bincrease`/`Adecrease`, mirrored again: this time the crossed edge
+`p` is being REMOVED from `occTrue g` (present before, gone after), so the
+identification runs on `occTrue g`'s own max/min rather than `occTrue (s3 g)`'s, and
+the resulting `d`-condition lands on the `s3`-UPDATED deposit being `0`, which
+translates back (via `s3`'s `Function.update` formula) to `g`'s own deposit at the
+crossed point being `g.eps`/`-g.eps` -- exactly the hypotheses
+`not_cut_kstarSucc_of_delta_true`/`not_cut_kstarPred_of_delta_false` already need. -/
+
+theorem crossed_eq_of_Bdecrease (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g - 1) :
+    (if g.delta then g.kstar else g.kstar - 1) = BTrue g := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hunfold : BTrue g = max (-1) ((occTrue g).max' h1) := by unfold BTrue; rw [dif_pos h1]
+  have hge2 : (-1 : ℤ) ≤ BTrue (s3 g) := neg_one_le_BTrue (s3 g)
+  have hmax : BTrue g = (occTrue g).max' h1 := by omega
+  have hmem : (occTrue g).max' h1 ∈ occTrue g := Finset.max'_mem _ h1
+  by_cases heqp : (occTrue g).max' h1 = p
+  · rw [← hmax] at heqp; exact heqp.symm
+  · exfalso
+    have hMg' : (occTrue g).max' h1 ∈ occTrue (s3 g) :=
+      (occTrue_g_subset g _ hmem).resolve_left heqp
+    have hle : (occTrue g).max' h1 ≤ BTrue (s3 g) := le_BTrue hMg'
+    rw [← hmax] at hle
+    omega
+
+theorem crossed_not_mem_s3g_of_Bdecrease (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g - 1) :
+    (if g.delta then g.kstar else g.kstar - 1) ∉ occTrue (s3 g) := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  intro hpg'
+  have hunfold : BTrue g = max (-1) ((occTrue g).max' h1) := by unfold BTrue; rw [dif_pos h1]
+  have hge2 : (-1 : ℤ) ≤ BTrue (s3 g) := neg_one_le_BTrue (s3 g)
+  have hmax : BTrue g = (occTrue g).max' h1 := by omega
+  have hpg : p ∈ occTrue g := by
+    rw [hpdef, crossed_eq_of_Bdecrease g h1 hB, hmax]; exact Finset.max'_mem _ h1
+  have heq : occTrue g = occTrue (s3 g) := by
+    ext x
+    by_cases hx : x = p
+    · subst hx; exact ⟨fun _ => hpg', fun _ => hpg⟩
+    · exact occTrue_agree_off_p g x hx
+  have hBeq : BTrue g = BTrue (s3 g) := by unfold BTrue; rw [heq]
+  omega
+
+theorem d_new_crossed_eq_zero_of_Bdecrease (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g - 1) :
+    (s3 g).d (if g.delta then g.kstar else g.kstar - 1) = 0 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hnm := crossed_not_mem_s3g_of_Bdecrease g h1 hB
+  by_contra hd
+  apply hnm
+  unfold occTrue
+  by_cases hj : p ∈ (s3 g).supp
+  · exact Finset.mem_filter.mpr ⟨hj, Or.inl hd⟩
+  · exact absurd ((s3 g).hsupp p hj).1 hd
+
+theorem cTrue_s3_eq_of_Bdecrease_delta_false (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g - 1)
+    (hd : g.delta = false) (hk1 : g.kstar ≠ 0) (hk2 : (s3 g).kstar ≠ 0) :
+    cTrue (s3 g) = cTrue g := by
+  have hkeq : g.kstar - 1 = BTrue g := by
+    have hc := crossed_eq_of_Bdecrease g h1 hB
+    rwa [if_neg (by rw [hd]; simp)] at hc
+  have hdnew : (s3 g).d (g.kstar - 1) = 0 := by
+    have := d_new_crossed_eq_zero_of_Bdecrease g h1 hB
+    rwa [if_neg (by rw [hd]; simp)] at this
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1']
+  have hdk : g.d (g.kstar - 1) = -g.eps := by
+    have : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+      rw [hupd]; simp
+    rw [hdnew] at this
+    omega
+  have hnc : ¬ g.toPathData.cut (g.kstar - 1) := not_cut_kstarPred_of_delta_false g hd hdk
+  have hnc2 : ¬ g.toPathData.cut (BTrue g) := hkeq ▸ hnc
+  have hAB : ATrue g ≤ BTrue g - 1 := by
+    obtain ⟨y, hy⟩ := h2
+    have hy1 : ATrue (s3 g) ≤ y := ATrue_le hy
+    have hy2 : y ≤ BTrue (s3 g) := le_BTrue hy
+    omega
+  have hfilter : ((Finset.Ioo (ATrue g) (BTrue g)).filter (s3 g).toPathData.cut).card
+      = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+    have hins : Finset.Ioo (ATrue g) (BTrue g + 1)
+        = insert (BTrue g) (Finset.Ioo (ATrue g) (BTrue g)) := by
+      have hh := ioo_insert_right (A := ATrue g) (B := BTrue g - 1) (by omega)
+      have heq1 : BTrue g - 1 + 2 = BTrue g + 1 := by ring
+      have heq2 : BTrue g - 1 + 1 = BTrue g := by ring
+      rw [heq1, heq2] at hh
+      exact hh
+    rw [hins, Finset.filter_insert, if_neg hnc2,
+        Finset.filter_congr (fun x (_ : x ∈ Finset.Ioo (ATrue g) (BTrue g)) => cut_s3_eq g x)]
+  have hshield1 : ¬ ShieldFires g := not_shieldFires_of_kstar_ne_zero g hk1
+  have hshield2 : ¬ ShieldFires (s3 g) := not_shieldFires_of_kstar_ne_zero (s3 g) hk2
+  have hnorm : BTrue g - 1 + 1 = BTrue g := by ring
+  unfold cTrue
+  rw [hA, hB, if_neg (fun h => hshield2 h.1), if_neg (fun h => hshield1 h.1), hnorm, hfilter]
+
+theorem not_Bdecrease_of_delta_true (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g - 1) (hd : g.delta = true) (hk1 : g.kstar ≠ 0) :
+    False := by
+  have hpeq := crossed_eq_of_Bdecrease g h1 hB
+  rw [if_pos hd] at hpeq
+  have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+  have hwin := kstar_mem_corrected_window (s3 g)
+  simp only [Finset.mem_Icc] at hwin
+  omega
+
+/-! ### The fourth and last direction: `ATrue` increases (`delta = true`)
+
+Mirrors `Bdecrease` exactly (crossed edge removed, this time from the LEFT), using
+`not_cut_kstarSucc_of_delta_true` and `card_filter_insert_left`. -/
+
+theorem crossed_eq_of_Aincrease (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) :
+    (if g.delta then g.kstar else g.kstar - 1) = ATrue g := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hunfold : ATrue g = min 0 ((occTrue g).min' h1) := by unfold ATrue; rw [dif_pos h1]
+  have hle : ATrue (s3 g) ≤ 0 := atrue_le_zero (s3 g)
+  have hmin : ATrue g = (occTrue g).min' h1 := by omega
+  have hmem : (occTrue g).min' h1 ∈ occTrue g := Finset.min'_mem _ h1
+  by_cases heqp : (occTrue g).min' h1 = p
+  · rw [← hmin] at heqp; exact heqp.symm
+  · exfalso
+    have hMg' : (occTrue g).min' h1 ∈ occTrue (s3 g) :=
+      (occTrue_g_subset g _ hmem).resolve_left heqp
+    have hge2 : ATrue (s3 g) ≤ (occTrue g).min' h1 := ATrue_le hMg'
+    rw [← hmin] at hge2
+    omega
+
+theorem crossed_not_mem_s3g_of_Aincrease (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) :
+    (if g.delta then g.kstar else g.kstar - 1) ∉ occTrue (s3 g) := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  intro hpg'
+  have hunfold : ATrue g = min 0 ((occTrue g).min' h1) := by unfold ATrue; rw [dif_pos h1]
+  have hle : ATrue (s3 g) ≤ 0 := atrue_le_zero (s3 g)
+  have hmin : ATrue g = (occTrue g).min' h1 := by omega
+  have hpg : p ∈ occTrue g := by
+    rw [hpdef, crossed_eq_of_Aincrease g h1 hA, hmin]; exact Finset.min'_mem _ h1
+  have heq : occTrue g = occTrue (s3 g) := by
+    ext x
+    by_cases hx : x = p
+    · subst hx; exact ⟨fun _ => hpg', fun _ => hpg⟩
+    · exact occTrue_agree_off_p g x hx
+  have hAeq : ATrue g = ATrue (s3 g) := by unfold ATrue; rw [heq]
+  omega
+
+theorem d_new_crossed_eq_zero_of_Aincrease (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) :
+    (s3 g).d (if g.delta then g.kstar else g.kstar - 1) = 0 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hnm := crossed_not_mem_s3g_of_Aincrease g h1 hA
+  by_contra hd
+  apply hnm
+  unfold occTrue
+  by_cases hj : p ∈ (s3 g).supp
+  · exact Finset.mem_filter.mpr ⟨hj, Or.inl hd⟩
+  · exact absurd ((s3 g).hsupp p hj).1 hd
+
+theorem cTrue_s3_eq_of_Aincrease_delta_true (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) (hB : BTrue (s3 g) = BTrue g)
+    (hd : g.delta = true) (hk1 : g.kstar ≠ 0) (hk2 : (s3 g).kstar ≠ 0) :
+    cTrue (s3 g) = cTrue g := by
+  have hkeq : g.kstar = ATrue g := by
+    have hc := crossed_eq_of_Aincrease g h1 hA
+    rwa [if_pos hd] at hc
+  have hdnew : (s3 g).d g.kstar = 0 := by
+    have := d_new_crossed_eq_zero_of_Aincrease g h1 hA
+    rwa [if_pos hd] at this
+  have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hd]
+  have hdk : g.d g.kstar = g.eps := by
+    have : (s3 g).d g.kstar = g.d g.kstar - g.eps := by rw [hupd]; simp
+    rw [hdnew] at this
+    omega
+  have hk1' : g.kstar + 1 ≠ 0 := by
+    have : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+    omega
+  have hnc : ¬ g.toPathData.cut (g.kstar + 1) := not_cut_kstarSucc_of_delta_true g hd hk1' hdk
+  have hnc2 : ¬ g.toPathData.cut (ATrue g + 1) := by rw [← hkeq]; exact hnc
+  have hAB : ATrue g + 1 ≤ BTrue g := by
+    obtain ⟨y, hy⟩ := h2
+    have hy1 : ATrue (s3 g) ≤ y := ATrue_le hy
+    have hy2 : y ≤ BTrue (s3 g) := le_BTrue hy
+    omega
+  have hfilter : ((Finset.Ioo (ATrue g + 1) (BTrue g + 1)).filter (s3 g).toPathData.cut).card
+      = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+    rw [Finset.filter_congr (fun x (_ : x ∈ Finset.Ioo (ATrue g + 1) (BTrue g + 1)) => cut_s3_eq g x)]
+    have hstep := card_filter_insert_left g.toPathData.cut
+      (A := ATrue g + 1) (B := BTrue g) (by omega) hnc2
+    have hnorm : ATrue g + 1 - 1 = ATrue g := by ring
+    rw [hnorm] at hstep
+    exact hstep.symm
+  have hshield1 : ¬ ShieldFires g := not_shieldFires_of_kstar_ne_zero g hk1
+  have hshield2 : ¬ ShieldFires (s3 g) := not_shieldFires_of_kstar_ne_zero (s3 g) hk2
+  unfold cTrue
+  rw [hA, hB, if_neg (fun h => hshield2 h.1), if_neg (fun h => hshield1 h.1)]
+  omega
+
+theorem not_Aincrease_of_delta_false (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) (hd : g.delta = false) (hk1 : g.kstar ≠ 0) :
+    False := by
+  have hpeq := crossed_eq_of_Aincrease g h1 hA
+  rw [if_neg (by rw [hd]; simp)] at hpeq
+  have hkS : (s3 g).kstar = g.kstar - 1 := by
+    have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+    rw [s3, dif_neg h1']
+  have hwin := kstar_mem_corrected_window (s3 g)
+  simp only [Finset.mem_Icc] at hwin
+  omega
+
+/-! ### `cTrue_s3_eq`, the `kstar != 0` both-sides case: fully dispatched
+
+All eight pieces (`window_unchanged`, four directions, three impossibilities -- the
+fourth impossibility direction is absent because `min_or_max_unchanged` already rules
+out both boundaries moving at once) assembled into one theorem. -/
+
+theorem cTrue_s3_eq_of_kstar_ne_zero (g : EltBridge.Elt) (h1 : (occTrue g).Nonempty)
+    (h2 : (occTrue (s3 g)).Nonempty) (hk1 : g.kstar ≠ 0) (hk2 : (s3 g).kstar ≠ 0) :
+    cTrue (s3 g) = cTrue g := by
+  have hdispRaw := min_or_max_unchanged h1 h2 (occTrue_agree_off_p g)
+  have hdisp : ATrue (s3 g) = ATrue g ∨ BTrue (s3 g) = BTrue g := by
+    rcases hdispRaw with hmin | hmax
+    · left; unfold ATrue; rw [dif_pos h1, dif_pos h2, hmin]
+    · right; unfold BTrue; rw [dif_pos h1, dif_pos h2, hmax]
+  by_cases hAeq : ATrue (s3 g) = ATrue g
+  · by_cases hBeq : BTrue (s3 g) = BTrue g
+    · exact cTrue_s3_eq_of_window_unchanged g hAeq hBeq
+    · obtain ⟨hBd1, hBd2⟩ := BTrue_s3_dist_le_one g
+      rcases (by omega : BTrue (s3 g) = BTrue g + 1 ∨ BTrue (s3 g) = BTrue g - 1) with hBp | hBm
+      · by_cases hd : g.delta = true
+        · exact cTrue_s3_eq_of_Bincrease_delta_true g h1 h2 hAeq hBp hd hk1 hk2
+        · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+          exact (not_Bincrease_of_delta_false g h2 hBp hd' hk1).elim
+      · by_cases hd : g.delta = false
+        · exact cTrue_s3_eq_of_Bdecrease_delta_false g h1 h2 hAeq hBm hd hk1 hk2
+        · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+          exact (not_Bdecrease_of_delta_true g h1 hBm hd' hk1).elim
+  · have hBeq : BTrue (s3 g) = BTrue g := hdisp.resolve_left hAeq
+    obtain ⟨hAd1, hAd2⟩ := ATrue_s3_dist_le_one g
+    rcases (by omega : ATrue (s3 g) = ATrue g + 1 ∨ ATrue (s3 g) = ATrue g - 1) with hAp | hAm
+    · by_cases hd : g.delta = true
+      · exact cTrue_s3_eq_of_Aincrease_delta_true g h1 h2 hAp hBeq hd hk1 hk2
+      · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+        exact (not_Aincrease_of_delta_false g h1 hAp hd' hk1).elim
+    · by_cases hd : g.delta = false
+      · exact cTrue_s3_eq_of_Adecrease_delta_false g h1 h2 hAm hBeq hd hk1 hk2
+      · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+        exact (not_Adecrease_of_delta_true g h2 hAm hd' hk1).elim
+
 end PhiLipschitz
+
+
+
 
 
 
