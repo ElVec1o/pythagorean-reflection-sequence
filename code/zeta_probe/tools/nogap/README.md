@@ -13898,3 +13898,26 @@ empty (done), window-unchanged (done), window-moves via one of the 4 directions 
 delta and which of ATrue/BTrue changed (all done, all unconditional) — into one
 lRTrue_s3_dist_one theorem giving `|lRTrue(s3g) - lRTrue(g)| = 1` unconditionally, then combine
 with cTrue_s3_eq (already fully unconditional) to close phiZ_dist_le_one_s3.
+
+## 🎆 Milestone: phiZ_dist_le_one_s3 CLOSED, unconditional (commit 8153ca3)
+
+Assembled `lRTrue_s3_dist_one` (top-level dispatch: empty/empty-mirror/window-unchanged/
+four window-move directions, all now unconditional per the two blocks above) with the
+already-unconditional `cTrue_s3_eq` into `phiZ_dist_le_one_s3 (g) : (PhiZ (s3 g) - PhiZ g)^2 ≤ 1`.
+Proof is short: PhiZ = lRTrue + 2*cTrue, cTrue is s3-invariant (cTrue_s3_eq), so the PhiZ
+delta equals the lRTrue delta exactly, which is ±1 by lRTrue_s3_dist_one; squared, ≤1 (in fact =1).
+VERIFIED: lake build PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry,
+#print axioms shows only [propext, Classical.choice, Quot.sound].
+
+This matches phiZ_dist_le_one_s1 and phiZ_dist_le_one_s2 (already proved, prior sessions) —
+**all three generators' 1-Lipschitz property for PhiZ is now proved, unconditionally.**
+
+Remaining for the open lower bound of l_T = l_R + 2c:
+- No combined `phiZ_dist_le_one_gen` (over `EltBridge.Elt.Gen`, which wraps each generator's
+  effect in `SameElt`) exists yet. PhiZ is defined on the raw `Elt` structure (via ATrue/BTrue/
+  occTrue/lRTrue/cTrue), NOT proved invariant under `SameElt` yet — this is a real, unstarted gap:
+  need `PhiZ_congr : SameElt a b → PhiZ a = PhiZ b` (or equivalent) before phiZ_dist_le_one_s1/s2/s3
+  combine into a single Lipschitz-under-Gen statement usable in a `Reaches`-induction.
+- Once that's done, mirror `EltBridge.lean`'s `reaches_lR_le` (an existing induction over `Reaches`)
+  to derive the actual open lower bound of l_T = l_R + 2c via `PhiZ`'s telescoping/triangle-inequality
+  argument from the 1-Lipschitz property.
