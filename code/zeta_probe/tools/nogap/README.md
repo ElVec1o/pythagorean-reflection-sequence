@@ -12763,3 +12763,26 @@ within boundary, then on delta before the step within kstar=0, into single
 unconditional theorems phiZ_dist_le_one_s1 / _s2. Not yet done -- next block.
 
 0 sorry, full lake build clean, #print axioms clean throughout.
+
+## BLOCK (2026-09) — s1's kstar=0 boundary case closed; every piece for phiZ_dist_le_one_s1 now exists
+
+`PhiLipschitz.lean`. Real Lean debugging worth recording: a chain of near-identical
+`unfold cTrue; rw [...]` proofs kept reporting "unsolved goals" with no arithmetic
+shown, taking several iterations to isolate as a `.card + 0 = .card` residue that
+`rw` leaves behind (needs `simp` after, not automatic). Fixed by locating the exact
+line via the error's own printed goal state rather than guessing.
+
+Mathematically: the case split collapses cleanly because ShieldFires requires
+delta=false outright and s1 flips delta, so the shield can be eligible on at
+most ONE side of the step, never both -- by_cases on g.delta gives exactly two
+branches, each a straightforward two-way split (shield transitions vs cTrue
+invariant). interior_filter_s1_eq extracted the reusable "non-interior kstar
+doesn't move the interior filter" argument.
+
+Status: s1's three cases (interior, kstar!=0 boundary, kstar=0 boundary) are
+ALL proved individually. s2's kstar=0 boundary case remains unassembled (the
+raw shield arithmetic exists: shield_case_delta_s2 / shield_case_delta_s2_after,
+proved earlier). Neither s1 nor s2 has been assembled into a single
+unconditional theorem yet -- that assembly, plus s3, are the next blocks.
+
+0 sorry, full lake build clean, #print axioms clean throughout.
