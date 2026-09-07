@@ -13921,3 +13921,27 @@ Remaining for the open lower bound of l_T = l_R + 2c:
 - Once that's done, mirror `EltBridge.lean`'s `reaches_lR_le` (an existing induction over `Reaches`)
   to derive the actual open lower bound of l_T = l_R + 2c via `PhiZ`'s telescoping/triangle-inequality
   argument from the 1-Lipschitz property.
+
+## 🎆🎆 Milestone: PhiZ_congr + phiZ_dist_le_one_of_Gen CLOSED (0471a93, 14e804b)
+
+Proved the SameElt-invariance chain needed to combine s1/s2/s3 into one Gen-level statement:
+`toPathData_mu_congr`, `toPathData_siteCost_congr`, `toPathData_cut_congr` (mu/siteCost/cut
+depend only on kstar/d/eps/delta, which SameElt equates directly — trivial once unfolded),
+`occTrue_congr` (the one nontrivial step: occTrue is nominally `g.supp.filter(pred)`, but
+`hsupp`'s contrapositive shows `pred j → j ∈ supp` for any Elt, so occTrue is ACTUALLY
+determined purely by `pred`, i.e. by `d`/`kstar` alone, regardless of the specific `supp`
+Finset chosen — occTrue_congr follows by a direct Finset.ext + hsupp argument), then
+`ATrue_congr`/`BTrue_congr`/`lRTrue_congr`/`ShieldFires_congr`/`cTrue_congr`/`PhiZ_congr`
+all follow mechanically. Assembled `phiZ_dist_le_one_of_Gen (H : Gen a b) : (PhiZ b - PhiZ a)^2 ≤ 1`
+by case-splitting Gen's three SameElt-wrapped disjuncts and rewriting via PhiZ_congr into the
+already-proved phiZ_dist_le_one_s1/s2/s3. VERIFIED: lake build PhiLipschitz clean, full
+lake build (8645 jobs) clean, 0 sorry, #print axioms clean on all 11 new theorems
+([propext, Classical.choice, Quot.sound], with occTrue_congr/ShieldFires_congr needing only
+[propext, Quot.sound] — no Classical.choice).
+
+**This is the full 1-Lipschitz property of PhiZ, unconditional, over the actual `Gen` relation
+used by `Reaches`.** Next: mirror EltBridge.lean's `reaches_lR_le` (an existing Reaches-induction)
+to telescope phiZ_dist_le_one_of_Gen along a Reaches n g witness into |PhiZ g - PhiZ one| ≤ n,
+i.e. wordLength g ≥ |PhiZ g - PhiZ one| — this is the actual OPEN LOWER BOUND target for
+l_T = l_R + 2c (PhiZ g = lRTrue g + 2*cTrue g by definition, and PhiZ one = lRTrue one +
+2*cTrue one = 0 per metric_identity_one), giving the missing direction of the metric identity.
