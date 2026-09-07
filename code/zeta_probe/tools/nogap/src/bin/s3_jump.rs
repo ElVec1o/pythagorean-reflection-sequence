@@ -137,6 +137,13 @@ fn main() {
     let mut wu_m1_true = 0u64;
     let mut wu_m1_false = 0u64;
     let mut window_unchanged_p_unoccupied = 0u64;
+    let mut window_unchanged_p_outside_mu_window = 0u64;
+    let mut a_incr_kstar0_count = 0u64;
+    let mut a_incr_kstar0_lr_p1 = 0u64;
+    let mut a_incr_kstar0_lr_other: Vec<i64> = vec![];
+    let mut a_decr_kstar0_count = 0u64;
+    let mut a_decr_kstar0_lr_m1 = 0u64;
+    let mut a_decr_kstar0_lr_other: Vec<i64> = vec![];
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -155,6 +162,7 @@ fn main() {
             let p = if e.dl == 1 { e.k } else { e.k - 1 };
             let dp = dep(&e.lamps, p);
             if dp == 0 { window_unchanged_p_unoccupied += 1; }
+            if !(a1 <= p && p <= b1) { window_unchanged_p_outside_mu_window += 1; }
 
             let lr_delta = lr_on(&e2, a2, b2) - lr_on(e, a1, b1);
             if lr_delta.abs() > max_lr_window_unchanged { max_lr_window_unchanged = lr_delta.abs(); }
@@ -214,6 +222,18 @@ fn main() {
             }
             if b2 == b1 + 1 && e.dl == 0 && e.k == 0 { b_incr_false_kstar0 += 1; }
             if a2 == a1 - 1 && e.dl == 1 && e2.k == 0 { a_decr_true_kstar0 += 1; }
+            // Aincrease (delta=true, ATrue increases by 1): kstar=0 sub-case for lRTrue
+            if a2 == a1 + 1 && e.dl == 1 && e.k == 0 {
+                a_incr_kstar0_count += 1;
+                let dlr2 = lr_on(&e2, a2, b2) - lr_on(e, a1, b1);
+                if dlr2 == -1 { a_incr_kstar0_lr_p1 += 1; } else { a_incr_kstar0_lr_other.push(dlr2); }
+            }
+            // Adecrease (delta=false, ATrue decreases by 1): kstar=0 sub-case for lRTrue
+            if a2 == a1 - 1 && e.dl == 0 && e2.k == 0 {
+                a_decr_kstar0_count += 1;
+                let dlr2 = lr_on(&e2, a2, b2) - lr_on(e, a1, b1);
+                if dlr2 == 1 { a_decr_kstar0_lr_m1 += 1; } else { a_decr_kstar0_lr_other.push(dlr2); }
+            }
             if b2 == b1 + 1 { new_site_cut = is_cut(e, b1 + 1); shift_happened = true; }
             if b1 == b2 + 1 { new_site_cut = is_cut(&e2, b2 + 1); shift_happened = true; }
             if a2 == a1 - 1 { new_site_cut = is_cut(e, a1); shift_happened = true; }
@@ -258,6 +278,9 @@ fn main() {
     println!("[s3] window-unchanged: count={window_unchanged_count}, max|d(lRTrue)|={max_lr_window_unchanged}, nonzero cases={window_unchanged_lr_nonzero}");
     println!("[s3] window-unchanged by sign/delta: +1&true={wu_p1_true} +1&false={wu_p1_false} -1&true={wu_m1_true} -1&false={wu_m1_false}");
     println!("[s3] window-unchanged with p unoccupied (d(p)=0): {window_unchanged_p_unoccupied}");
+    println!("[s3] window-unchanged with p outside mu window [A,B]: {window_unchanged_p_outside_mu_window}");
+    println!("[s3] Aincrease(delta=true) at g.kstar=0: count={a_incr_kstar0_count}, d(lRTrue)=-1 in {a_incr_kstar0_lr_p1}, other deltas: {:?}", &a_incr_kstar0_lr_other[..a_incr_kstar0_lr_other.len().min(10)]);
+    println!("[s3] Adecrease(delta=false) at s3g.kstar=0: count={a_decr_kstar0_count}, d(lRTrue)=+1 in {a_decr_kstar0_lr_m1}, other deltas: {:?}", &a_decr_kstar0_lr_other[..a_decr_kstar0_lr_other.len().min(10)]);
     if let Some((e, e2, p1, p2)) = wit {
         println!("  witness: {}  ->  {}", show(&e), show(&e2));
         println!("  Phi before = {p1}, Phi after = {p2}");

@@ -3300,4 +3300,71 @@ theorem lRTrue_s3_dist_one_of_window_unchanged (g : EltBridge.Elt)
   · rw [← hpdef] at h; left; rw [hlr, h]; ring
   · rw [← hpdef] at h; right; rw [hlr] at *; omega
 
+
+theorem not_Aincrease_at_g_kstar_zero (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (hA : ATrue (s3 g) = ATrue g + 1)
+    (hd : g.delta = true) (hk0 : g.kstar = 0) : False := by
+  have hc := crossed_eq_of_Aincrease g h1 hA
+  rw [if_pos hd] at hc
+  have hkeq : g.kstar = ATrue g := hc
+  have hdnew : (s3 g).d g.kstar = 0 := by
+    have := d_new_crossed_eq_zero_of_Aincrease g h1 hA
+    rwa [if_pos hd] at this
+  have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hd]
+  have hdk : g.d g.kstar = g.eps := by
+    have : (s3 g).d g.kstar = g.d g.kstar - g.eps := by rw [hupd]; simp
+    rw [hdnew] at this; omega
+  have hpar := g.hpar g.kstar
+  have htz : SiteCost.travel g.kstar g.kstar = 0 := by
+    rw [hk0]; exact SiteCost.travel_of_kstar_zero 0
+  have heps := g.heps
+  rw [hdk, htz] at hpar
+  rcases heps with he | he <;> omega
+
+theorem not_Adecrease_at_s3g_kstar_zero (g : EltBridge.Elt)
+    (h2 : (occTrue (s3 g)).Nonempty) (hA : ATrue (s3 g) = ATrue g - 1)
+    (hd : g.delta = false) (hk0 : (s3 g).kstar = 0) : False := by
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hc := crossed_eq_of_Adecrease g h2 hA
+  rw [if_neg h1'] at hc
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+  have hdz : g.d (g.kstar - 1) = 0 := by
+    have := d_crossed_eq_zero_of_Adecrease g h2 hA
+    rwa [if_neg h1'] at this
+  have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1']
+  have hdk : (s3 g).d (g.kstar - 1) = g.eps := by
+    have : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by rw [hupd]; simp
+    rw [hdz] at this; omega
+  have hdk' : (s3 g).d (s3 g).kstar = g.eps := by rw [hkS]; exact hdk
+  have hpar := (s3 g).hpar (s3 g).kstar
+  have htz : SiteCost.travel (s3 g).kstar (s3 g).kstar = 0 := by
+    rw [hk0]; exact SiteCost.travel_of_kstar_zero 0
+  have heps := g.heps
+  rw [hdk', htz] at hpar
+  rcases heps with he | he <;> omega
+
+theorem lRTrue_s3_eq_of_Aincrease_delta_true' (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) (hB : BTrue (s3 g) = BTrue g)
+    (hd : g.delta = true) : lRTrue (s3 g) + 1 = lRTrue g :=
+  lRTrue_s3_eq_of_Aincrease_delta_true g h1 h2 hA hB hd
+    (fun hk0 => not_Aincrease_at_g_kstar_zero g h1 hA hd hk0)
+
+theorem lRTrue_s3_eq_of_Adecrease_delta_false' (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g - 1) (hB : BTrue (s3 g) = BTrue g)
+    (hd : g.delta = false) : lRTrue (s3 g) = lRTrue g + 1 :=
+  lRTrue_s3_eq_of_Adecrease_delta_false g h1 h2 hA hB hd
+    (fun hk0 => not_Adecrease_at_s3g_kstar_zero g h2 hA hd hk0)
+
+
+theorem lRTrue_s3_eq_of_Bdecrease_delta_false' (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g - 1)
+    (hd : g.delta = false) : lRTrue (s3 g) + 1 = lRTrue g :=
+  lRTrue_s3_eq_of_Bdecrease_delta_false g h1 h2 hA hB hd
+    (fun hk1 => not_Bdecrease_at_g_kstar_zero g h1 hB hd hk1)
+
 end PhiLipschitz
