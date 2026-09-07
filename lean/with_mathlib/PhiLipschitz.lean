@@ -648,18 +648,120 @@ theorem shield_case_delta_s2_after (g : EltBridge.Elt) (hs' : ShieldFires (s2 g)
     (cut_iff_siteCost_zero (s2 g).toPathData 0).mp hc']
   norm_num
 
-end PhiLipschitz
 
-#print axioms PhiLipschitz.kstar_mem_corrected_window
-#print axioms PhiLipschitz.not_shieldFires_of_kstar_ne_zero
-#print axioms PhiLipschitz.cTrue_s1_eq_of_not_interior_ne_zero
-#print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_ne_zero
-#print axioms PhiLipschitz.not_shieldFires_of_kstar_ne_zero
-#print axioms PhiLipschitz.cTrue_s1_eq_of_not_interior_ne_zero
-#print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_ne_zero
-#print axioms PhiLipschitz.shield_cut_pins_s1_after
-#print axioms PhiLipschitz.siteCost_zero_of_shield_cut_s1_after
-#print axioms PhiLipschitz.shield_case_delta_s1_after
-#print axioms PhiLipschitz.shield_cut_pins_s2_after
-#print axioms PhiLipschitz.siteCost_zero_of_shield_cut_s2_after
-#print axioms PhiLipschitz.shield_case_delta_s2_after
+/-! ### The full `kstar = 0` boundary case for `s1`
+
+`ShieldFires` requires `delta = false` outright, and `s1` flips `delta`, so at most ONE
+side of the step can ever have `ShieldFires` true -- never both, matching the four cases
+already computed (`shield_case_delta`, `shield_case_delta_s1_after`) plus the case where
+neither fires. -/
+
+/-- **The interior filter is unaffected by a non-interior `kstar`, regardless of shield
+status.**  Extracted from the argument already used in `cTrue_s1_eq_of_not_interior_ne_zero`,
+since the boundary case at `kstar = 0` needs it independently of `ShieldFires`. -/
+theorem interior_filter_s1_eq (g : EltBridge.Elt)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s1 g).toPathData.cut
+      = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut := by
+  apply Finset.filter_congr
+  intro s hsS
+  rw [cut_iff_siteCost_zero, cut_iff_siteCost_zero]
+  by_cases hsk : s = g.kstar
+  · exact absurd (hsk ▸ hsS) hk
+  · rw [siteCost_eq_of_ne_kstar (P := (s1 g).toPathData) (Q := g.toPathData) rfl rfl s hsk]
+
+/-- **`s1`'s `kstar = 0` boundary case, unconditionally.**  Splits on `g.delta`: at most
+one side can have the shield eligible (`delta = false` is required and `s1` flips it), so
+each branch reduces to either the already-computed shield transition (`+-1` on the site
+cost/shield pair, `shield_case_delta` / `shield_case_delta_s1_after`) or to `cTrue` not
+moving at all (the direct bound, no exchange). -/
+theorem phiZ_dist_le_one_s1_boundary_zero (g : EltBridge.Elt) (hkz : g.kstar = 0)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    (PhiZ (s1 g) - PhiZ g) ^ 2 ≤ 1 := by
+  classical
+  have hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := kstar_mem_corrected_window g
+  have hmu : (∑ j ∈ Finset.Icc (ATrue (s1 g)) (BTrue (s1 g)), ((s1 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s1, BTrue_s1]
+    exact Finset.sum_congr rfl
+      (fun j _ => by unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData])
+  have hlR : (lRTrue (s1 g) : ℤ)
+      = (lRTrue g : ℤ)
+        + (((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue; push_cast
+    rw [hmu, siteSum_sub_eq_at_kstar_s1 g hkw]; ring
+  have hfilt : (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s1 g).toPathData.cut
+      = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut :=
+    interior_filter_s1_eq g hk
+  by_cases hd : g.delta = true
+  · have hs0 : ¬ ShieldFires g := fun h => absurd hd (by rw [h.2.1]; simp)
+    by_cases hsc : ShieldFires (s1 g) ∧ (s1 g).toPathData.cut 0
+    · have e1 : cTrue (s1 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card + 1 := by
+        unfold cTrue; rw [ATrue_s1, BTrue_s1, if_pos hsc, hfilt]
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [if_neg (fun h : ShieldFires g ∧ g.toPathData.cut 0 => hs0 h.1)]
+        simp
+      have hkey := shield_case_delta_s1_after g hsc.1 hsc.2 hd
+      have hc : (cTrue (s1 g) : ℤ) = (cTrue g : ℤ) + 1 := by rw [e1, e2]; push_cast; ring
+      have key : PhiZ (s1 g) - PhiZ g
+          = ((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)
+            + 2 * ((1 : ℤ) - 0) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key, hkz]; nlinarith [hkey]
+    · have e1 : cTrue (s1 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [ATrue_s1, BTrue_s1, if_neg hsc, hfilt]
+        simp
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [if_neg (fun h : ShieldFires g ∧ g.toPathData.cut 0 => hs0 h.1)]
+        simp
+      have hc : cTrue (s1 g) = cTrue g := by rw [e1, e2]
+      obtain ⟨h1, h2⟩ := s1_siteCost_kstar g
+      have key : PhiZ (s1 g) - PhiZ g
+          = ((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key]; nlinarith
+  · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+    have hs0' : ¬ ShieldFires (s1 g) := by
+      intro h; apply absurd h.2.1; rw [s1]; simp [hd']
+    by_cases hsc : ShieldFires g ∧ g.toPathData.cut 0
+    · have e1 : cTrue (s1 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [ATrue_s1, BTrue_s1, if_neg (fun h : ShieldFires (s1 g) ∧ (s1 g).toPathData.cut 0 => hs0' h.1),
+          hfilt]
+        simp
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card + 1 := by
+        unfold cTrue; rw [if_pos hsc]
+      have hkey := shield_case_delta g hsc.1 hsc.2
+      have hc : (cTrue (s1 g) : ℤ) = (cTrue g : ℤ) - 1 := by rw [e1, e2]; push_cast; ring
+      have key : PhiZ (s1 g) - PhiZ g
+          = ((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)
+            + 2 * ((0 : ℤ) - 1) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key, hkz]; nlinarith [hkey]
+    · have e1 : cTrue (s1 g)
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue
+        rw [ATrue_s1, BTrue_s1, if_neg (fun h : ShieldFires (s1 g) ∧ (s1 g).toPathData.cut 0 => hs0' h.1),
+          hfilt]
+        simp
+      have e2 : cTrue g
+          = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+        unfold cTrue; rw [if_neg hsc]; simp
+      have hc : cTrue (s1 g) = cTrue g := by rw [e1, e2]
+      obtain ⟨h1, h2⟩ := s1_siteCost_kstar g
+      have key : PhiZ (s1 g) - PhiZ g
+          = ((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ) := by
+        unfold PhiZ; rw [hlR, hc]; ring
+      rw [key]; nlinarith
+
+#print axioms PhiLipschitz.interior_filter_s1_eq
+#print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_zero
