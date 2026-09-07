@@ -12887,3 +12887,47 @@ needs real case analysis, now unblocked by the singleton lemmas but not
 attempted this block.
 
 0 sorry, full lake build clean, #print axioms clean throughout.
+
+## BLOCK (2026-09) — BTrue_s3_dist_le_one closed; s3's span-movement bound is DONE
+
+`PhiLipschitz.lean`. The genuine remainder flagged last block.
+
+The originally planned 4-way case split on emptiness of `occTrue g`/`occTrue (s3 g)`
+turned out unnecessary. A single generic criterion,
+`BTrue_le_of_bound {Y} (hY : -1 <= Y) (h : forall x in occTrue g, x <= Y) : BTrue g <= Y`,
+absorbs the empty case vacuously (empty makes `h` hold trivially, and `BTrue g = -1 <= Y`
+is exactly `hY`), so the caller never needs to branch on emptiness at all.
+
+With that, the only content needed was: every element of `occTrue (s3 g)` is
+`<= BTrue g + 1`. `occTrue_s3_subset` (built from the existing `occTrue_agree_true/false`
+by casing on `x = p` vs not, `p` the crossed edge) gives `x = p` or `x ∈ occTrue g`. The
+`x ∈ occTrue g` case is `le_BTrue`. The `x = p` case is `p <= g.kstar <= BTrue g + 1`
+(the second inequality is `kstar_mem_corrected_window`, already proved; the first,
+`p_le_kstar_g`, is `split_ifs <;> omega` since `p` is `kstar` or `kstar - 1`). The
+symmetric direction is the mirror (`occTrue_g_subset`, `p_le_kstar_s3g`, this time using
+`kstar_mem_corrected_window (s3 g)`).
+
+Correction to the plan logged last block: no fresh max'-agreement argument mirroring
+EltBridge's private `max'_dist_le_one_of_agree` was needed after all -- the vacuous-empty
+absorption trick made that machinery unnecessary. Logged here since the prior entry
+predicted it would be needed.
+
+One mechanical bug caught by the build (not committed): `Finset.max'_le _ _ h` inside
+`BTrue_le_of_bound` was missing an underscore -- `Finset.max'_le` takes `(s) (H) (b)
+(proof)`, four explicit args, and three left `h` unifying against the wrong slot (`b`
+instead of the proof), giving an application type mismatch. Fixed to
+`Finset.max'_le _ _ _ h`.
+
+s3's span-movement bound (`ATrue_s3_dist_le_one` + `BTrue_s3_dist_le_one`) is now fully
+closed, unconditionally, 0 sorry. What remains for s3's full Lipschitz bound
+(`phiZ_dist_le_one_s3`, mirroring `phiZ_dist_le_one_s1`/`_s2`) is assembling this with
+`s3_mu_dist_le_two` and `s3_siteCost_eq` (both already proved in `EltBridge.lean`) --
+genuine casework since the summation WINDOW itself can shift by <=1 on each end, on top
+of the single-site mu change, not yet attempted.
+
+0 sorry (grep spot-check: the one hit is the file's own doc-comment "No `sorry`.", not a
+tactic), full lake build clean (8645 jobs), #print axioms on every new theorem
+(BTrue_s3_dist_le_one, neg_one_le_BTrue, le_BTrue, BTrue_le_of_bound, occTrue_s3_subset,
+occTrue_g_subset, p_le_kstar_g, p_le_kstar_s3g) gives only
+[propext, Classical.choice, Quot.sound] (p_le_kstar_g omits Classical.choice, as expected
+for a pure omega fact).

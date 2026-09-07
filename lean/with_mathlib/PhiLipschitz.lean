@@ -1118,6 +1118,101 @@ theorem ATrue_s3_dist_le_one (g : EltBridge.Elt) :
     ATrue (s3 g) ≤ ATrue g + 1 ∧ ATrue g ≤ ATrue (s3 g) + 1 := by
   rw [ATrue_eq_A, ATrue_eq_A]; exact EltBridge.Elt.s3_A_dist_le_one g
 
+/-! ### `BTrue`'s movement: no shortcut, but a uniform bound criterion avoids the
+occTrue-emptiness case split entirely
+
+`BTrue g = max (-1) (M)` when `occTrue g` is nonempty (`M` its max), else `-1`.  Rather
+than case-splitting on emptiness of `occTrue g`/`occTrue (s3 g)` as originally planned,
+one generic criterion (`BTrue_le_of_bound`) handles all combinations uniformly: to show
+`BTrue g <= Y` it suffices that `Y >= -1` and every element of `occTrue g` is `<= Y` --
+true vacuously when `occTrue g` is empty, so the empty/nonempty split never needs to
+surface in the caller. -/
+
+theorem neg_one_le_BTrue (g : EltBridge.Elt) : (-1 : ℤ) ≤ BTrue g := by
+  unfold BTrue; split_ifs <;> omega
+
+theorem le_BTrue {g : EltBridge.Elt} {x : ℤ} (hx : x ∈ occTrue g) : x ≤ BTrue g := by
+  unfold BTrue
+  have hne : (occTrue g).Nonempty := ⟨x, hx⟩
+  rw [dif_pos hne]
+  exact le_trans (Finset.le_max' _ x hx) (le_max_right _ _)
+
+theorem BTrue_le_of_bound {g : EltBridge.Elt} {Y : ℤ} (hY : (-1 : ℤ) ≤ Y)
+    (h : ∀ x ∈ occTrue g, x ≤ Y) : BTrue g ≤ Y := by
+  unfold BTrue
+  split_ifs with hne
+  · exact max_le hY (Finset.max'_le _ _ _ h)
+  · exact hY
+
+/-- The two containments an `s3` step gives `occTrue`: each set differs from the other
+by at most the single crossed edge `p`.  Follows directly from `occTrue_agree_true/false`
+by case-splitting on whether the element in question equals `p`. -/
+theorem occTrue_s3_subset (g : EltBridge.Elt) :
+    ∀ x ∈ occTrue (s3 g), x = (if g.delta then g.kstar else g.kstar - 1) ∨ x ∈ occTrue g := by
+  intro x hx
+  by_cases hδ : g.delta = true
+  · by_cases hxk : x = g.kstar
+    · exact Or.inl (by rw [if_pos hδ]; exact hxk)
+    · exact Or.inr ((occTrue_agree_true hδ x hxk).mp hx)
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    by_cases hxk : x = g.kstar - 1
+    · exact Or.inl (by rw [if_neg hδ]; exact hxk)
+    · exact Or.inr ((occTrue_agree_false hδ' x hxk).mp hx)
+
+theorem occTrue_g_subset (g : EltBridge.Elt) :
+    ∀ x ∈ occTrue g, x = (if g.delta then g.kstar else g.kstar - 1) ∨ x ∈ occTrue (s3 g) := by
+  intro x hx
+  by_cases hδ : g.delta = true
+  · by_cases hxk : x = g.kstar
+    · exact Or.inl (by rw [if_pos hδ]; exact hxk)
+    · exact Or.inr ((occTrue_agree_true hδ x hxk).mpr hx)
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    by_cases hxk : x = g.kstar - 1
+    · exact Or.inl (by rw [if_neg hδ]; exact hxk)
+    · exact Or.inr ((occTrue_agree_false hδ' x hxk).mpr hx)
+
+/-- The crossed edge `p` sits at or below BOTH `g.kstar` and `(s3 g).kstar` -- in the
+`delta = true` case `p = g.kstar = (s3 g).kstar - 1`, in the `delta = false` case
+`p = g.kstar - 1 = (s3 g).kstar`, so `p` equals the smaller of the two cursor
+positions exactly. -/
+theorem p_le_kstar_g (g : EltBridge.Elt) :
+    (if g.delta then g.kstar else g.kstar - 1) ≤ g.kstar := by
+  split_ifs <;> omega
+
+theorem p_le_kstar_s3g (g : EltBridge.Elt) :
+    (if g.delta then g.kstar else g.kstar - 1) ≤ (s3 g).kstar := by
+  by_cases hδ : g.delta = true
+  · have hk : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hδ]
+    rw [if_pos hδ]; omega
+  · have h1 : ¬ (g.delta = true) := by revert hδ; cases g.delta <;> simp
+    have hk : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1]
+    rw [if_neg hδ]; omega
+
+/-- **`BTrue`'s `s3` movement bound, unconditional.**  No occTrue-emptiness case split
+needed: `BTrue_le_of_bound` absorbs the empty case vacuously, so the only content is
+"every element of the moved set is `<= BTrue g + 1`", which follows from the subset
+relation (`x = p`, bounded via `p <= kstar <= BTrue g + 1` by `kstar_mem_corrected_window`,
+or `x ∈ occTrue g`, bounded via `le_BTrue`), and symmetrically. -/
+theorem BTrue_s3_dist_le_one (g : EltBridge.Elt) :
+    BTrue (s3 g) ≤ BTrue g + 1 ∧ BTrue g ≤ BTrue (s3 g) + 1 := by
+  constructor
+  · apply BTrue_le_of_bound (by have := neg_one_le_BTrue g; omega)
+    intro x hx
+    rcases occTrue_s3_subset g x hx with hxp | hxg
+    · have hk := kstar_mem_corrected_window g
+      simp only [Finset.mem_Icc] at hk
+      have := p_le_kstar_g g
+      omega
+    · have := le_BTrue hxg; omega
+  · apply BTrue_le_of_bound (by have := neg_one_le_BTrue (s3 g); omega)
+    intro x hx
+    rcases occTrue_g_subset g x hx with hxp | hxg
+    · have hk := kstar_mem_corrected_window (s3 g)
+      simp only [Finset.mem_Icc] at hk
+      have := p_le_kstar_s3g g
+      omega
+    · have := le_BTrue hxg; omega
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.interior_filter_s1_eq
