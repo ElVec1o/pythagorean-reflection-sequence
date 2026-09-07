@@ -574,6 +574,48 @@ theorem phiZ_dist_le_one_s1_boundary_ne_zero (g : EltBridge.Elt) (hk0 : g.kstar 
     unfold PhiZ; rw [hlR, hc]; ring
   rw [key]; nlinarith
 
+
+/-! ### The mirror shield case: the shield newly fires after `s1`/`s2`
+
+The case `shield_case_delta` does not cover: `g.delta = true` (so `ShieldFires g` is
+false outright, `delta = false` being required), but `ShieldFires (s1 g)` can still
+hold, since `s1` flips `delta` to `false`.  Worked out by hand first: with `kstar = 0`,
+`delta = true`, `ShieldFires (s1 g)` pins (via `shield_cut_pins` applied to `s1 g`,
+using that `s1` does not change `eps` or `d`) `eps = 1` and `d 0 = 0`; together with
+`ShieldFires`'s own `d (-1) = 0` this gives `alpha_before = beta_before = -1` (the
+indicators sit the OTHER way while `delta = true`), so `siteCost g 0 = 1`, while
+`siteCost (s1 g) 0 = 0` by `cut_iff_siteCost_zero`.  So the cost DROPS by one and the
+shield is GAINED (worth `2`): the potential moves by `-1 + 2 = +1`, the mirror image of
+`shield_case_delta`'s `-1`. -/
+
+/-- **`s1`'s shield-cut pins transported backward.**  Since `s1` does not change `eps`
+or `d`, `shield_cut_pins` applied to `s1 g` gives the same pins on `g` directly. -/
+theorem shield_cut_pins_s1_after (g : EltBridge.Elt) (hs' : ShieldFires (s1 g))
+    (hc' : (s1 g).toPathData.cut 0) : g.eps = 1 ∧ g.d 0 = 0 :=
+  shield_cut_pins (s1 g) hs' hc'
+
+/-- **Before the step, with `delta = true`, the cost at site `0` is exactly one.**  The
+indicators sit oppositely to the `delta = false` case: `vL = 0`, `vR = vD = 1`. -/
+theorem siteCost_zero_of_shield_cut_s1_after (g : EltBridge.Elt) (hkz : g.kstar = 0)
+    (hdelta : g.delta = true) (hneg : g.d (-1) = 0) (he : g.eps = 1) (hd0 : g.d 0 = 0) :
+    g.toPathData.siteCost 0 = 1 := by
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  simp [EltBridge.Elt.toPathData, hkz, hdelta, hneg, he, hd0]
+
+/-- **So the mirror shield case moves the potential by exactly `+1`.**  The cost drops
+from `1` to `0` and the shield (worth `2`) is gained: `-1 + 2 = 1`. -/
+theorem shield_case_delta_s1_after (g : EltBridge.Elt) (hs' : ShieldFires (s1 g))
+    (hc' : (s1 g).toPathData.cut 0) (hdelta : g.delta = true) :
+    ((s1 g).toPathData.siteCost 0 : ℤ) - (g.toPathData.siteCost 0 : ℤ) + 2 * (1 - 0) = 1 := by
+  obtain ⟨he, hd0⟩ := shield_cut_pins_s1_after g hs' hc'
+  obtain ⟨hkz, -, hneg, -⟩ := hs'
+  rw [s1_kstar] at hkz
+  have hneg0 : g.d (-1) = 0 := hneg (-1) (by norm_num)
+  rw [siteCost_zero_of_shield_cut_s1_after g hkz hdelta hneg0 he hd0,
+    (cut_iff_siteCost_zero (s1 g).toPathData 0).mp hc']
+  norm_num
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.kstar_mem_corrected_window
@@ -583,3 +625,6 @@ end PhiLipschitz
 #print axioms PhiLipschitz.not_shieldFires_of_kstar_ne_zero
 #print axioms PhiLipschitz.cTrue_s1_eq_of_not_interior_ne_zero
 #print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_ne_zero
+#print axioms PhiLipschitz.shield_cut_pins_s1_after
+#print axioms PhiLipschitz.siteCost_zero_of_shield_cut_s1_after
+#print axioms PhiLipschitz.shield_case_delta_s1_after
