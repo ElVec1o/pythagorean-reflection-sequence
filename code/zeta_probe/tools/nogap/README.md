@@ -13601,3 +13601,41 @@ is fully assembled.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
 three new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — lRTrue's s3 movement: all four generic directions proved exactly
+
+`PhiLipschitz.lean`. Completes the third and fourth directions
+(`Aincrease`/`delta=true`, `Adecrease`/`delta=false`), mirroring `Bdecrease`/
+`Bincrease` on the `A` side. Both `A`-side directions lose/gain the SAME index from
+`mu`'s and `siteCost`'s sums (unlike the `B`-side, where the two sums' bounds differ by
+one) -- a genuine structural asymmetry between the two sides, not an artifact:
+`mu`'s and `siteCost`'s sums both use `ATrue` as their bare lower bound, but `siteCost`'s
+uses `BTrue + 1` as its upper bound while `mu`'s uses `BTrue` bare.
+
+`Aincrease` (`ATrue` increases, shrink): loses `p = g.kstar` from both sums;
+`mu_g(p) = 1` (from `d_g(p) = eps`, forced regardless of `travel`), `siteCost_g(p) = 0`
+given `g.kstar != 0` (a gate on `g.kstar` this time, not `(s3 g).kstar` -- different
+from `cTrue`'s `Aincrease`, which gated on the OTHER site). Gives
+`lRTrue (s3 g) + 1 = lRTrue g` exactly.
+
+`Adecrease` (`ATrue` decreases, growth): gains `p = (s3 g).kstar` into both sums;
+`mu_{s3g}(p) = 1`, `siteCost_g(p) = 0` given `(s3 g).kstar != 0`. Gives
+`lRTrue (s3 g) = lRTrue g + 1` exactly.
+
+All four generic (`kstar != 0` on the relevant side) directions for `lRTrue`'s `s3`
+movement are now proved, each EXACTLY `+-1`, matching the numeric finding precisely.
+One mechanical bug hit and fixed: a `rw [hA, hB]` at the very end substituted `ATrue`'s
+off-by-one value into the goal, breaking the syntactic match with the already-proved
+sum lemmas (stated in terms of the un-substituted `ATrue (s3 g)`) -- fixed by dropping
+the `hA` rewrite and keeping `hB` only (a plain substitution, safe), matching the
+`Bincrease`/`Bdecrease` proofs' own successful pattern more carefully this time.
+
+Remaining before `phiZ_dist_le_one_s3` is fully assembled: the `kstar = 0` special
+cases for `lRTrue` (not yet attempted -- likely need their own exact computation,
+mirroring `cTrue`'s shield-transfer mechanism but for `mu`/`siteCost` instead of the
+interior-filter/shield split), the empty-window and window-unchanged base cases, and
+the final top-level dispatch tying `lRTrue`'s four-direction result together with
+`cTrue_s3_eq` into `phiZ_dist_le_one_s3` itself.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all six
+new theorems gives only [propext, Classical.choice, Quot.sound].

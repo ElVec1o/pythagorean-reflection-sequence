@@ -2670,7 +2670,229 @@ theorem lRTrue_s3_eq_of_Bdecrease_delta_false (g : EltBridge.Elt)
   rw [hBB]
   omega
 
+/-! ### `lRTrue`'s `s3` movement: the `Aincrease`/`delta = true` direction, exactly `-1`
+
+Mirror of `Bdecrease`, on the left. Both `mu`'s and `siteCost`'s sums use `ATrue` as
+their (bare) lower bound, so this direction loses the SAME index `p = g.kstar` from
+BOTH sums -- unlike the `B`-side directions, which lose different-but-adjacent indices
+from `mu` and `siteCost`. `mu_g(p) = 1` (forced by `d_g(p) = eps`, magnitude `1`,
+regardless of `travel`). `siteCost_g(p) = 0` given `g.kstar != 0`: `betaAt(p) = 0`
+directly from the removal condition `d_g(p) = eps` cancelling `eps * vR(p) = eps`;
+`alphaAt(p) = -[p = 0]` (using `d_eq_zero_of_lt_ATrue` at `p - 1 < ATrue g = p`),
+vanishing exactly when `p != 0`. -/
+
+theorem mu_g_at_crossed_eq_one_of_Aincrease (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (hA : ATrue (s3 g) = ATrue g + 1)
+    (hd : g.delta = true) : g.toPathData.mu g.kstar = 1 := by
+  have hdnew : (s3 g).d g.kstar = 0 := by
+    have := d_new_crossed_eq_zero_of_Aincrease g h1 hA; rwa [if_pos hd] at this
+  have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+    rw [s3, dif_pos hd]
+  have hdz : g.d g.kstar = g.eps := by
+    have : (s3 g).d g.kstar = g.d g.kstar - g.eps := by rw [hupd]; simp
+    rw [hdnew] at this
+    omega
+  unfold SiteCost.PathData.mu
+  simp only [EltBridge.Elt.toPathData]
+  rw [hdz]
+  have hne : ¬ ((g.eps : ℤ) = 0 ∧ SiteCost.travel g.kstar g.kstar = 0) := by
+    rintro ⟨he, -⟩
+    rcases g.heps with h | h <;> rw [h] at he <;> norm_num at he
+  rw [if_neg hne]
+  have htc := SiteCost.travel_cases g.kstar g.kstar
+  rcases g.heps with h | h <;> rw [h] <;> rcases htc with ht | ht | ht <;> rw [ht] <;> decide
+
+theorem siteCost_removed_eq_zero_of_Aincrease (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (hA : ATrue (s3 g) = ATrue g + 1)
+    (hd : g.delta = true) (hk1 : g.kstar ≠ 0) : g.toPathData.siteCost g.kstar = 0 := by
+  have hkeq : g.kstar = ATrue g := by
+    have hc := crossed_eq_of_Aincrease g h1 hA; rwa [if_pos hd] at hc
+  have hdz : g.d g.kstar = g.eps := by
+    have hdnew : (s3 g).d g.kstar = 0 := by
+      have := d_new_crossed_eq_zero_of_Aincrease g h1 hA; rwa [if_pos hd] at this
+    have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+      rw [s3, dif_pos hd]
+    have : (s3 g).d g.kstar = g.d g.kstar - g.eps := by rw [hupd]; simp
+    rw [hdnew] at this
+    omega
+  have hda : g.d (g.kstar - 1) = 0 := d_eq_zero_of_lt_ATrue g (by omega)
+  have hbeta : g.toPathData.betaAt g.kstar = 0 := by
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+    simp only [EltBridge.Elt.toPathData]
+    rw [hdz, if_pos hd]
+    simp
+  have halpha : g.toPathData.alphaAt g.kstar = 0 := by
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD
+    simp only [EltBridge.Elt.toPathData]
+    rw [hda]
+    have hvArr : SiteCost.vArr g.kstar = 0 := by unfold SiteCost.vArr; simp; exact hk1
+    rw [hvArr, if_pos hd]
+    simp
+  unfold SiteCost.PathData.siteCost
+  rw [halpha, hbeta]
+  rfl
+
+theorem lRTrue_s3_eq_of_Aincrease_delta_true (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) (hB : BTrue (s3 g) = BTrue g)
+    (hd : g.delta = true) (hk1 : g.kstar ≠ 0) : lRTrue (s3 g) + 1 = lRTrue g := by
+  have hmu1 := mu_g_at_crossed_eq_one_of_Aincrease g h1 hA hd
+  have hsc0 := siteCost_removed_eq_zero_of_Aincrease g h1 hA hd hk1
+  have hkeq : g.kstar = ATrue g := by
+    have hc := crossed_eq_of_Aincrease g h1 hA; rwa [if_pos hd] at hc
+  have hAB : ATrue g ≤ BTrue g - 1 := by
+    obtain ⟨y, hy⟩ := h1
+    have hy1 : ATrue g ≤ y := ATrue_le hy
+    have hy2 : y ≤ BTrue g := le_BTrue hy
+    have hAB0 : ATrue g ≤ BTrue g := le_trans hy1 hy2
+    obtain ⟨z, hz⟩ := h2
+    have hz1 : ATrue (s3 g) ≤ z := ATrue_le hz
+    have hz2 : z ≤ BTrue (s3 g) := le_BTrue hz
+    omega
+  have hmu1' : g.toPathData.mu (ATrue g) = 1 := by rw [← hkeq]; exact hmu1
+  have hsc0' : g.toPathData.siteCost (ATrue g) = 0 := by rw [← hkeq]; exact hsc0
+  have hmuins : Finset.Icc (ATrue g) (BTrue g)
+      = insert (ATrue g) (Finset.Icc (ATrue g + 1) (BTrue g)) := by
+    ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+  have hmucongr : (∑ j ∈ Finset.Icc (ATrue g + 1) (BTrue g), g.toPathData.mu j)
+      = (∑ j ∈ Finset.Icc (ATrue g + 1) (BTrue g), (s3 g).toPathData.mu j) :=
+    Finset.sum_congr rfl (fun x hx => (s3_mu_agree g x (by
+      simp only [Finset.mem_Icc] at hx
+      rw [if_pos hd]; omega)).symm)
+  have hmusum : (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j)
+      = (∑ j ∈ Finset.Icc (ATrue g + 1) (BTrue g), (s3 g).toPathData.mu j) + 1 := by
+    rw [hmuins, Finset.sum_insert (by simp only [Finset.mem_Icc]; omega),
+        hmu1', hmucongr]
+    omega
+  have hsiteins : Finset.Icc (ATrue g) (BTrue g + 1)
+      = insert (ATrue g) (Finset.Icc (ATrue g + 1) (BTrue g + 1)) := by
+    ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+  have hsitecongr : (∑ s ∈ Finset.Icc (ATrue g + 1) (BTrue g + 1), g.toPathData.siteCost s)
+      = (∑ s ∈ Finset.Icc (ATrue g + 1) (BTrue g + 1), (s3 g).toPathData.siteCost s) :=
+    Finset.sum_congr rfl (fun x _ => (EltBridge.Elt.s3_siteCost_eq g x).symm)
+  have hsitesum : (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), g.toPathData.siteCost s)
+      = (∑ s ∈ Finset.Icc (ATrue g + 1) (BTrue g + 1), (s3 g).toPathData.siteCost s) := by
+    rw [hsiteins, Finset.sum_insert (by simp only [Finset.mem_Icc]; omega),
+        hsc0', hsitecongr]
+    omega
+  unfold lRTrue
+  rw [hA, hB]
+  omega
+
+/-! ### `lRTrue`'s `s3` movement: the `Adecrease`/`delta = false` direction, exactly `+1`
+
+Mirror of `Aincrease`, in the addition direction (mirrors `Bincrease` on the `A` side):
+both sums gain the SAME index `p = (s3 g).kstar = g.kstar - 1`. `mu_{s3g}(p) = 1`
+(`d_{s3g}(p) = eps`, magnitude `1`, forced regardless of `travel`). `siteCost_g(p) = 0`
+given `(s3 g).kstar != 0`: `betaAt(p) = d_g(p) = 0` directly (the growth condition);
+`alphaAt(p) = -[p = 0]` (`d_eq_zero_of_lt_ATrue` at `p - 1 < ATrue g`), vanishing
+exactly when `p != 0`. -/
+
+theorem mu_s3g_at_crossed_eq_one_of_Adecrease (g : EltBridge.Elt)
+    (h2 : (occTrue (s3 g)).Nonempty) (hA : ATrue (s3 g) = ATrue g - 1)
+    (hd : g.delta = false) : (s3 g).toPathData.mu (g.kstar - 1) = 1 := by
+  have hdz : g.d (g.kstar - 1) = 0 := by
+    have := d_crossed_eq_zero_of_Adecrease g h2 hA; rwa [if_neg (by rw [hd]; simp)] at this
+  have htz : SiteCost.travel g.kstar (g.kstar - 1) = 0 := by
+    have := travel_crossed_eq_zero_of_Adecrease g h2 hA; rwa [if_neg (by rw [hd]; simp)] at this
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+    rw [s3, dif_neg h1']
+  have hdnew : (s3 g).d (g.kstar - 1) = g.eps := by
+    rw [hupd, Function.update_self, hdz]; ring
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+  have htrnew : SiteCost.travel (s3 g).kstar (g.kstar - 1) = -1 := by
+    rw [hkS]
+    have := EltBridge.Elt.travel_pred_at g.kstar
+    omega
+  unfold SiteCost.PathData.mu
+  simp only [EltBridge.Elt.toPathData]
+  rw [hdnew, htrnew]
+  have hcond : ¬ ((g.eps : ℤ) = 0 ∧ (-1:ℤ) = 0) := fun h => by norm_num at h
+  rw [if_neg hcond]
+  rcases g.heps with h | h <;> rw [h] <;> decide
+
+theorem siteCost_new_eq_zero_of_Adecrease (g : EltBridge.Elt)
+    (h2 : (occTrue (s3 g)).Nonempty) (hA : ATrue (s3 g) = ATrue g - 1)
+    (hd : g.delta = false) (hk2 : (s3 g).kstar ≠ 0) :
+    g.toPathData.siteCost (g.kstar - 1) = 0 := by
+  have hdz : g.d (g.kstar - 1) = 0 := by
+    have := d_crossed_eq_zero_of_Adecrease g h2 hA; rwa [if_neg (by rw [hd]; simp)] at this
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+  have hda : g.d (g.kstar - 2) = 0 := by
+    have hlt : g.kstar - 2 < ATrue g := by
+      have hc := crossed_eq_of_Adecrease g h2 hA
+      rw [if_neg (by rw [hd]; simp)] at hc
+      omega
+    exact d_eq_zero_of_lt_ATrue g hlt
+  have halpha : g.toPathData.alphaAt (g.kstar - 1) = 0 := by
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD
+    simp only [EltBridge.Elt.toPathData]
+    have hnorm : g.kstar - 1 - 1 = g.kstar - 2 := by ring
+    rw [hnorm, hda]
+    have hvArr : SiteCost.vArr (g.kstar - 1) = 0 := by
+      unfold SiteCost.vArr; simp
+      intro hcontra
+      apply hk2; rw [hkS]; omega
+    rw [hvArr, if_neg (by rw [hd]; simp)]
+    simp
+  have hbeta : g.toPathData.betaAt (g.kstar - 1) = 0 := by
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+    simp only [EltBridge.Elt.toPathData]
+    rw [hdz, if_neg (by rw [hd]; simp)]
+    simp
+  unfold SiteCost.PathData.siteCost
+  rw [halpha, hbeta]
+  rfl
+
+theorem lRTrue_s3_eq_of_Adecrease_delta_false (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g - 1) (hB : BTrue (s3 g) = BTrue g)
+    (hd : g.delta = false) (hk2 : (s3 g).kstar ≠ 0) :
+    lRTrue (s3 g) = lRTrue g + 1 := by
+  have hmu1 := mu_s3g_at_crossed_eq_one_of_Adecrease g h2 hA hd
+  have hsc0 := siteCost_new_eq_zero_of_Adecrease g h2 hA hd hk2
+  have hkeq : g.kstar - 1 = ATrue (s3 g) := by
+    have hc := crossed_eq_of_Adecrease g h2 hA
+    rwa [if_neg (by rw [hd]; simp)] at hc
+  have hAB : ATrue (s3 g) ≤ BTrue g := by
+    obtain ⟨z, hz⟩ := h2
+    have hz1 : ATrue (s3 g) ≤ z := ATrue_le hz
+    have hz2 : z ≤ BTrue (s3 g) := le_BTrue hz
+    omega
+  have hmuins : Finset.Icc (ATrue (s3 g)) (BTrue g)
+      = insert (ATrue (s3 g)) (Finset.Icc (ATrue g) (BTrue g)) := by
+    ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+  have hmucongr : (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (s3 g).toPathData.mu j)
+      = (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j) :=
+    Finset.sum_congr rfl (fun x hx => s3_mu_agree g x (by
+      simp only [Finset.mem_Icc] at hx
+      rw [if_neg (by rw [hd]; simp)]; omega))
+  have hmu1' : (s3 g).toPathData.mu (ATrue (s3 g)) = 1 := by rw [← hkeq]; exact hmu1
+  have hmusum : (∑ j ∈ Finset.Icc (ATrue (s3 g)) (BTrue g), (s3 g).toPathData.mu j)
+      = (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j) + 1 := by
+    rw [hmuins, Finset.sum_insert (by simp only [Finset.mem_Icc]; omega), hmu1', hmucongr]
+    omega
+  have hsiteins : Finset.Icc (ATrue (s3 g)) (BTrue g + 1)
+      = insert (ATrue (s3 g)) (Finset.Icc (ATrue g) (BTrue g + 1)) := by
+    ext x; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+  have hsc0' : (s3 g).toPathData.siteCost (ATrue (s3 g)) = 0 := by
+    rw [← hkeq, EltBridge.Elt.s3_siteCost_eq]; exact hsc0
+  have hsitecongr : (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), (s3 g).toPathData.siteCost s)
+      = (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), g.toPathData.siteCost s) :=
+    Finset.sum_congr rfl (fun x _ => EltBridge.Elt.s3_siteCost_eq g x)
+  have hsitesum : (∑ s ∈ Finset.Icc (ATrue (s3 g)) (BTrue g + 1), (s3 g).toPathData.siteCost s)
+      = (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), g.toPathData.siteCost s) := by
+    rw [hsiteins, Finset.sum_insert (by simp only [Finset.mem_Icc]; omega), hsc0', hsitecongr]
+    omega
+  unfold lRTrue
+  rw [hB]
+  omega
+
 end PhiLipschitz
+
+
 
 
 
