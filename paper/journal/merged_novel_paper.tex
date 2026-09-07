@@ -117,24 +117,48 @@ The denominator $1-\Sigma_1$ is the identical, cycle-marker-free object in the g
 functions of $U$ and of $V$, so $U$ and $V$ share the travel poles.
 \end{hypothesis}
 
-Hypothesis~\ref{hyp:T} is HEURISTIC. Its strand-walk argument rests on the localisation of
-cycles, checked exhaustively on the $3869$ pure-travel elements of true length at most $16$, and
-on the metric identity $\ell_T=\ell_R+2c$, whose upper bound is PROVED and whose lower bound is
-open. Hypothesis~\ref{hyp:RJ} is CONJECTURE. Hypothesis~\ref{hyp:M} is HEURISTIC and everything
-in the block-assembly sections is conditional on it.
+Hypothesis~\ref{hyp:T} is PROVED (Proposition~\ref{prop:travelinv} of paper~2, via
+Theorem~\ref{thm:nogap} and Corollary~\ref{cor:localzero}); it is listed above only to keep the
+statements that cite it readable, and nothing is conditional on it. Its earlier HEURISTIC standing
+rested on the localisation of cycles, checked exhaustively on the $3869$ pure-travel elements of
+true length at most $16$, and on the metric identity $\ell_T=\ell_R+2c$, whose upper bound is
+PROVED and whose lower bound is open. Hypothesis~\ref{hyp:RJ} is CONJECTURE.
+Hypothesis~\ref{hyp:M} is HEURISTIC and everything in the block-assembly sections is conditional
+on it; of its three parts, $(M1)$ is proved and machine-verified, $(M2)$ is proved apart from the
+reverse shield inequality, and $(M3)$ is unproved and vacuous as stated
+(Remark~\ref{rem:notclaimed}).
 
 \begin{remark}[what is not claimed]\label{rem:notclaimed}
-Three claims that appeared in a draft consolidation are withdrawn here because they are not
-supported by the sources.
+Claims that appeared in a draft consolidation and are withdrawn or corrected here, because
+they are not supported by the sources or have since been settled.
 \begin{enumerate}[label=(\roman*),leftmargin=2.2em]
 \item Irrationality of $\beta_2$ is \emph{open}. It is not proved, and no effective irrationality
 measure for $\beta_2$ is available. What is proved is $\beta_2\ne3/2$, by the squeeze of
 \S\ref{sec:beta}. The reformulation known is that $\beta_2$ is irrational if and only if a
 Hahn--Exton function omits the value $0$ at the relevant rational points; that is a restatement,
 not a proof, and it supplies no exponent.
-\item Hypothesis~\ref{hyp:T} is \emph{not} a theorem.
+\item Hypothesis~\ref{hyp:T} \emph{is} now a theorem, and this item is corrected: it is
+Proposition~\ref{prop:travelinv} of paper~2, proved there from Theorem~\ref{thm:nogap} and
+Corollary~\ref{cor:localzero}. It is retained in the hypothesis list above only so that
+statements citing $(T)$ remain readable; nothing is conditional on it.
 \item The lower bound of the metric identity $\ell_T=\ell_R+2c$ is \emph{open}; only the upper
 bound is PROVED. Statements that consume the identity inherit that standing.
+\item \textsc{Added.} The identity $\ell_T=\ell_R+2c$ is moreover \emph{false} as currently
+formalised, for the formal $c$ of the Lean development, and this is a defect of two definitions
+rather than of the mathematics. It fails already at the identity element, where
+$\ell_T=0$ but $\ell_R=2$. The causes are that the formal span forces edge $0$ into every
+configuration, and that the formal cut set omits the boundary-shield site of the reference
+implementation. Both are repaired additively in \texttt{CorrectedSpan.lean}, after which the
+identity holds with no violation on every element enumerated to depth $29$, and the potential
+$\ell_R+2c$ becomes $1$-Lipschitz along the generators. The repair does not close the lower
+bound, which remains open.
+\item \textsc{Added.} The decomposition \eqref{eq:assembly}, i.e.\ part $(M3)$ of the transfer
+model, is \emph{vacuous as stated}: for arbitrary $\mathcal W$ and $\mathcal W_0$ there exist
+$n$, $\mathcal T$, $\lambda$, $\mu$ satisfying it, and removing the degree truncation does not
+change this. The defect is the existential quantifier over $(\mathcal T,\lambda,\mu)$ alone, so a
+proof of $(M3)$ in that form would establish nothing about $\mathcal W$. A usable statement must
+\emph{name} the transfer matrix; one such, with a uniqueness theorem showing it is not vacuous, is
+given in the accompanying Lean development.
 \end{enumerate}
 \end{remark}
 
