@@ -12734,3 +12734,32 @@ mirror case (cut 0 false before, shield fires only after, via delta:true->false
 under s1's flip) is not assembled. s3 not attempted this block.
 
 0 sorry, full lake build clean, #print axioms clean throughout.
+
+## BLOCK (2026-09) — the kstar=0 boundary case, both directions, both generators
+
+`PhiLipschitz.lean`. All four boundary sub-cases at the window's kstar=0 edge
+are now proved, correcting a stale uncertainty from the previous block's own
+commit message (it asked whether s2's "shield lost" direction needed fresh
+work; it does not -- siteCost_s2_zero_of_shield_cut / shield_case_delta_s2
+were already proved earlier in this session, before the mirror-case work):
+
+  s1: shield lost  (delta false->true, shield_case_delta,        Phi moves -1)
+      shield gained (delta true->false, shield_case_delta_s1_after, Phi moves +1)
+  s2: shield lost  (delta false->true, shield_case_delta_s2,     Phi moves -1)
+      shield gained (delta true->false, shield_case_delta_s2_after, Phi moves +1)
+
+The s2 "gained" direction caught a real sign error before it compiled: a
+straight transcription of s1's siteCost_zero_of_shield_cut_s1_after assumed
+eps=1, but s2 also flips eps (not just delta), so the pin from
+shield_cut_pins applied to s2 g comes out as g.eps = -1. The build's
+`rewrite` failed to find the pattern it expected, catching it immediately.
+siteCost_zero_of_shield_cut_s2_after is a fresh computation with the correct
+sign, not a reuse.
+
+With all four boundary cases and the two earlier cases (interior, kstar!=0
+boundary) now on hand, the remaining work is pure assembly: split on
+kstar_mem_corrected_window (interior vs boundary), then on kstar=0 vs !=0
+within boundary, then on delta before the step within kstar=0, into single
+unconditional theorems phiZ_dist_le_one_s1 / _s2. Not yet done -- next block.
+
+0 sorry, full lake build clean, #print axioms clean throughout.
