@@ -247,6 +247,132 @@ theorem filter_card_eq_add_diff {S : Finset ℤ} {p q : ℤ → Prop}
   · rw [if_pos hps, if_pos (hiff.mp hps)]
   · rw [if_neg hps, if_neg (fun hq => hps (hiff.mpr hq))]
 
+
+/-! ### Disjointness of the two branches
+
+The `s1`/`s2` argument splits on whether the moving site `kstar` is interior to the window
+or on its boundary, and the shield lives only on the boundary.  That the two never overlap
+is not an assumption: a firing shield forces the window to start at `0`, and `0` is then
+not interior. -/
+
+/-- **A firing shield pins the left end of the corrected span to `0`.**  `ShieldFires`
+gives `kstar = 0`, so `travel` vanishes identically, and forbids deposits below `0`; hence
+every occupied edge is `>= 0`, the minimum is `>= 0`, and the clamp `min 0 _` returns `0`. -/
+theorem shieldFires_ATrue_zero (g : EltBridge.Elt) (hs : ShieldFires g) : ATrue g = 0 := by
+  obtain ⟨hk, -, hneg, -⟩ := hs
+  unfold ATrue
+  split_ifs with hne
+  · have hmin : 0 ≤ (occTrue g).min' hne := by
+      refine Finset.le_min' _ _ _ (fun j hj => ?_)
+      by_contra hlt
+      push_neg at hlt
+      have : g.d j ≠ 0 ∨ SiteCost.travel g.kstar j ≠ 0 := by
+        have := Finset.mem_filter.mp hj
+        simpa [occTrue] using this.2
+      rcases this with hd | hf
+      · exact hd (hneg j hlt)
+      · exact hf (by rw [hk]; exact SiteCost.travel_of_kstar_zero j)
+    omega
+  · rfl
+
+/-- **So the shield site is never interior**: if the shield fires, `0` is the left endpoint
+of the window and `Finset.Ioo` excludes it.  This is what keeps the exchange bound (which
+governs interior sites) and the shield case (which governs `0`) from double-counting. -/
+theorem shield_site_not_interior (g : EltBridge.Elt) (hs : ShieldFires g) :
+    (0 : ℤ) ∉ Finset.Ioo (ATrue g) (BTrue g + 1) := by
+  rw [shieldFires_ATrue_zero g hs]
+  simp
+
+
+/-! ### The potential, and the `s1` bound at an interior cursor -/
+
+/-- The corrected potential, over `ZZ` so that differences need no truncated subtraction. -/
+noncomputable def PhiZ (g : EltBridge.Elt) : ℤ := (lRTrue g : ℤ) + 2 * (cTrue g : ℤ)
+
+/-- **At an interior cursor the shield cannot fire.**  It would need `kstar = 0`, and then
+`shieldFires_ATrue_zero` puts `0` at the left endpoint, where `Ioo` does not reach. -/
+theorem not_shieldFires_of_interior (g : EltBridge.Elt)
+    (hk : g.kstar ∈ Finset.Ioo (ATrue g) (BTrue g + 1)) : ¬ ShieldFires g := by
+  intro hs
+  have h0 : g.kstar = 0 := hs.1
+  rw [h0] at hk
+  exact shield_site_not_interior g hs hk
+
+/-- **`cTrue` is just the interior cut count when the shield does not fire.** -/
+theorem cTrue_eq_filter_of_not_shield (g : EltBridge.Elt) (hs : ¬ ShieldFires g) :
+    (cTrue g : ℤ)
+      = (((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card : ℤ) := by
+  unfold cTrue
+  rw [if_neg (fun h => hs h.1)]
+  simp
+
+/-- **The `s1` bound, at an interior cursor.**  Every ingredient is in place: the span and
+the `mu` sum are fixed (`CorrectedSpan`), the site sum moves only at `kstar`, the cut count
+moves only at `kstar`, a cut site is exactly a zero-cost site, and the resulting exchange
+is bounded by one.  The shield is absent here by `not_shieldFires_of_interior`, so the two
+branches do not interact. -/
+theorem phiZ_dist_le_one_s1_interior (g : EltBridge.Elt)
+    (hk : g.kstar ∈ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    (PhiZ (s1 g) - PhiZ g) ^ 2 ≤ 1 := by
+  classical
+  have hkIcc : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := by
+    simp only [Finset.mem_Ioo] at hk
+    simp only [Finset.mem_Icc]
+    omega
+  -- the shield is absent on both sides (`s1` moves neither `kstar` nor the span)
+  have hs : ¬ ShieldFires g := not_shieldFires_of_interior g hk
+  have hs' : ¬ ShieldFires (s1 g) := by
+    have hk' : (s1 g).kstar ∈ Finset.Ioo (ATrue (s1 g)) (BTrue (s1 g) + 1) := by
+      rw [ATrue_s1, BTrue_s1]; exact hk
+    exact not_shieldFires_of_interior (s1 g) hk'
+  -- `lRTrue` moves by the site cost at `kstar` alone
+  have hlR : (lRTrue (s1 g) : ℤ)
+      = (lRTrue g : ℤ)
+        + (((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    have hmu : (∑ j ∈ Finset.Icc (ATrue (s1 g)) (BTrue (s1 g)),
+          ((s1 g).toPathData.mu j : ℤ))
+        = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+      rw [ATrue_s1, BTrue_s1]
+      refine Finset.sum_congr rfl (fun j _ => ?_)
+      unfold SiteCost.PathData.mu
+      simp [EltBridge.Elt.toPathData]
+    unfold lRTrue
+    push_cast
+    rw [hmu, siteSum_sub_eq_at_kstar_s1 g hkIcc]
+    ring
+  -- `cTrue` moves by the cut indicator at `kstar` alone
+  have hc : (cTrue (s1 g) : ℤ)
+      = (cTrue g : ℤ)
+        + ((if (s1 g).toPathData.cut g.kstar then (1 : ℤ) else 0)
+            - (if g.toPathData.cut g.kstar then (1 : ℤ) else 0)) := by
+    rw [cTrue_eq_filter_of_not_shield _ hs', cTrue_eq_filter_of_not_shield _ hs,
+      ATrue_s1, BTrue_s1]
+    refine filter_card_eq_add_diff hk (fun s _ hsne => ?_)
+    rw [cut_iff_siteCost_zero, cut_iff_siteCost_zero,
+      siteCost_eq_of_ne_kstar (P := (s1 g).toPathData) (Q := g.toPathData) rfl rfl s hsne]
+  -- rewrite both cut indicators as zero-cost indicators, then apply the exchange bound
+  have hcut : ∀ h : EltBridge.Elt,
+      (if h.toPathData.cut g.kstar then (1 : ℤ) else 0)
+        = (if h.toPathData.siteCost g.kstar = 0 then (1 : ℤ) else 0) := by
+    intro h
+    by_cases hh : h.toPathData.siteCost g.kstar = 0
+    · rw [if_pos ((cut_iff_siteCost_zero h.toPathData g.kstar).mpr hh), if_pos hh]
+    · rw [if_neg (fun hcc => hh ((cut_iff_siteCost_zero h.toPathData g.kstar).mp hcc)),
+        if_neg hh]
+  rw [hcut, hcut] at hc
+  obtain ⟨h1, h2⟩ := s1_siteCost_kstar g
+  have hex := exchange_sq_le_one (g.toPathData.siteCost g.kstar)
+    ((s1 g).toPathData.siteCost g.kstar) h1 h2
+  have key : PhiZ (s1 g) - PhiZ g
+      = (((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)
+          + 2 * ((if (s1 g).toPathData.siteCost g.kstar = 0 then (1 : ℤ) else 0)
+              - (if g.toPathData.siteCost g.kstar = 0 then (1 : ℤ) else 0))) := by
+    unfold PhiZ
+    rw [hlR, hc]
+    ring
+  rw [key]
+  exact hex
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.sum_eq_add_diff_of_eq_off
@@ -262,3 +388,8 @@ end PhiLipschitz
 #print axioms PhiLipschitz.siteCost_s1_zero_of_shield_cut
 #print axioms PhiLipschitz.shield_case_delta
 #print axioms PhiLipschitz.filter_card_eq_add_diff
+#print axioms PhiLipschitz.shieldFires_ATrue_zero
+#print axioms PhiLipschitz.shield_site_not_interior
+#print axioms PhiLipschitz.not_shieldFires_of_interior
+#print axioms PhiLipschitz.cTrue_eq_filter_of_not_shield
+#print axioms PhiLipschitz.phiZ_dist_le_one_s1_interior
