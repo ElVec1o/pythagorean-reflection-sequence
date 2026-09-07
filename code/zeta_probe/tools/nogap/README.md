@@ -12786,3 +12786,35 @@ proved earlier). Neither s1 nor s2 has been assembled into a single
 unconditional theorem yet -- that assembly, plus s3, are the next blocks.
 
 0 sorry, full lake build clean, #print axioms clean throughout.
+
+## BLOCK (2026-09) — phiZ_dist_le_one_s1 AND _s2 both proved unconditionally
+
+`PhiLipschitz.lean`. Both generators' Lipschitz bound on Phi = lRTrue + 2*cTrue
+now closed: `phiZ_dist_le_one_s1`, `phiZ_dist_le_one_s2`, each
+`(g : Elt) : (PhiZ (s_i g) - PhiZ g)^2 <= 1`, no hypothesis beyond `g : Elt`.
+
+CORRECTION to the previous block's summary: it claimed s2's kstar!=0 boundary
+case was "already proved". It was not -- only the interior case existed for
+s2. Caught immediately when the assembly tried to reference
+`phiZ_dist_le_one_s2_boundary_ne_zero` and got "Unknown constant". Written now
+as a direct transcription of the s1 version (same argument: ShieldFires needs
+kstar=0 exactly, so kstar!=0 blocks it on both sides regardless of delta).
+
+s1's assembly (`phiZ_dist_le_one_s1`) worked first attempt: case-split via
+`kstar_mem_corrected_window` into interior / kstar!=0 boundary / kstar=0
+boundary, dispatching to the three theorems already proved individually.
+
+s2's kstar=0 boundary case (transcribed from s1's) hit two mechanical bugs:
+- a forward reference (new theorems placed before `not_shieldFires_of_kstar_
+  ne_zero`, which is defined LATER in the file) -- "Unknown identifier",
+  fixed by relocating;
+- a proactive `simp` added after every `unfold cTrue; rw [...]` chain (to
+  preempt the `.card+0` residue bug from the prior block) broke ONE spot
+  where the `rw` chain already closes the goal exactly -- "No goals to be
+  solved". Proactive fixes still need per-site verification, not blanket
+  application.
+
+Two of Elt's three generators now have the full bound. s3 (span moves) and
+the induction on Reaches for the actual open lower bound remain.
+
+0 sorry, full lake build clean, #print axioms clean throughout.
