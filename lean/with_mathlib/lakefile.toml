@@ -344,3 +344,6 @@ name = "SparsityQuant"
 
 [[lean_lib]]
 name = "ModelM"
+
+[[lean_lib]]
+name = "BoundedDrift"
