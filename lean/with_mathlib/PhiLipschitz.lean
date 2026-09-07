@@ -517,4 +517,69 @@ theorem kstar_mem_corrected_window (g : EltBridge.Elt) :
       exact le_trans (Finset.le_max' _ _ hocc) (le_max_right _ _)
     have hATrue : ATrue g ≤ 0 := by unfold ATrue; split_ifs <;> omega
     exact ⟨by omega, by omega⟩
+
+/-! ### The non-interior case at `kstar != 0`: `cTrue` does not move at all
+
+`ShieldFires` requires `kstar = 0` outright, so at `kstar != 0` it is false on BOTH sides
+of an `s1`/`s2` step regardless of `delta` (which those generators do flip, so an
+iff-invariance claim in terms of `delta` alone is false -- the shield can fire on at most
+one side, exactly the phenomenon `shield_case_delta` isolates; here we simply stay away
+from `kstar = 0` instead of tracking that flip). -/
+
+theorem not_shieldFires_of_kstar_ne_zero (g : EltBridge.Elt) (hk : g.kstar ≠ 0) :
+    ¬ ShieldFires g := fun h => hk h.1
+
+/-- **If `kstar != 0` and is not interior, `s1` does not move `cTrue`.**  Neither term of
+`cTrue` can see `kstar`: the interior filter excludes it (not interior), and the shield
+term is `0` on both sides (`kstar != 0`, and `s1` does not move `kstar`). -/
+theorem cTrue_s1_eq_of_not_interior_ne_zero (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1)) :
+    cTrue (s1 g) = cTrue g := by
+  have hs : ¬ ShieldFires g := not_shieldFires_of_kstar_ne_zero g hk0
+  have hs' : ¬ ShieldFires (s1 g) := not_shieldFires_of_kstar_ne_zero (s1 g) (by rw [s1_kstar]; exact hk0)
+  have hzcast : ((cTrue (s1 g) : ℤ)) = ((cTrue g : ℤ)) := by
+    rw [cTrue_eq_filter_of_not_shield _ hs', cTrue_eq_filter_of_not_shield _ hs,
+      ATrue_s1, BTrue_s1]
+    have : (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s1 g).toPathData.cut
+        = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut := by
+      apply Finset.filter_congr
+      intro s hsS
+      rw [cut_iff_siteCost_zero, cut_iff_siteCost_zero]
+      by_cases hsk : s = g.kstar
+      · exact absurd (hsk ▸ hsS) hk
+      · rw [siteCost_eq_of_ne_kstar (P := (s1 g).toPathData) (Q := g.toPathData) rfl rfl s hsk]
+    rw [this]
+  exact_mod_cast hzcast
+
+/-- **So the potential moves by at most one there too**, directly from the site cost
+bound at `kstar` -- no exchange needed, since `cTrue` is fixed. -/
+theorem phiZ_dist_le_one_s1_boundary_ne_zero (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hk : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1))
+    (hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1)) :
+    (PhiZ (s1 g) - PhiZ g) ^ 2 ≤ 1 := by
+  have hmu : (∑ j ∈ Finset.Icc (ATrue (s1 g)) (BTrue (s1 g)), ((s1 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s1, BTrue_s1]
+    exact Finset.sum_congr rfl
+      (fun j _ => by unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData])
+  have hlR : (lRTrue (s1 g) : ℤ)
+      = (lRTrue g : ℤ)
+        + (((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue; push_cast
+    rw [hmu, siteSum_sub_eq_at_kstar_s1 g hkw]; ring
+  have hc : cTrue (s1 g) = cTrue g := cTrue_s1_eq_of_not_interior_ne_zero g hk0 hk
+  obtain ⟨h1, h2⟩ := s1_siteCost_kstar g
+  have key : PhiZ (s1 g) - PhiZ g
+      = ((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ) := by
+    unfold PhiZ; rw [hlR, hc]; ring
+  rw [key]; nlinarith
+
+end PhiLipschitz
+
 #print axioms PhiLipschitz.kstar_mem_corrected_window
+#print axioms PhiLipschitz.not_shieldFires_of_kstar_ne_zero
+#print axioms PhiLipschitz.cTrue_s1_eq_of_not_interior_ne_zero
+#print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_ne_zero
+#print axioms PhiLipschitz.not_shieldFires_of_kstar_ne_zero
+#print axioms PhiLipschitz.cTrue_s1_eq_of_not_interior_ne_zero
+#print axioms PhiLipschitz.phiZ_dist_le_one_s1_boundary_ne_zero
