@@ -437,6 +437,30 @@ theorem phiZ_dist_le_one_s2_interior (g : EltBridge.Elt)
   rw [key]
   exact hex
 
+
+/-- **`s2` also raises the cost at site `0` to exactly one, in the shield case.**  `s2`
+flips `delta` just as `s1` does (and additionally flips `eps`, which does not enter: the
+indicator swap alone forces `alpha = beta = -1` regardless of the sign of `eps`, since
+`shield_cut_pins` already pins `eps = 1` and `d 0 = 0`). -/
+theorem siteCost_s2_zero_of_shield_cut (g : EltBridge.Elt) (hs : ShieldFires g)
+    (hc : g.toPathData.cut 0) : (s2 g).toPathData.siteCost 0 = 1 := by
+  obtain ⟨he, hd0⟩ := shield_cut_pins g hs hc
+  obtain ⟨hk, hd, hneg, -⟩ := hs
+  have hm1 : g.d (-1) = 0 := hneg (-1) (by norm_num)
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  simp [EltBridge.Elt.toPathData, EltBridge.Elt.s2, hk, hd, he, hd0, hm1]
+
+/-- **And the `s2` shield case moves the potential by exactly `-1`**, by the same
+accounting as `s1`: the cost rises from `0` to `1` and the shield (worth `2`) is lost. -/
+theorem shield_case_delta_s2 (g : EltBridge.Elt) (hs : ShieldFires g)
+    (hc : g.toPathData.cut 0) :
+    ((s2 g).toPathData.siteCost 0 : ℤ) - (g.toPathData.siteCost 0 : ℤ)
+      + 2 * ((0 : ℤ) - 1) = -1 := by
+  rw [siteCost_s2_zero_of_shield_cut g hs hc,
+    (cut_iff_siteCost_zero g.toPathData 0).mp hc]
+  norm_num
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.sum_eq_add_diff_of_eq_off
@@ -458,3 +482,5 @@ end PhiLipschitz
 #print axioms PhiLipschitz.cTrue_eq_filter_of_not_shield
 #print axioms PhiLipschitz.phiZ_dist_le_one_s1_interior
 #print axioms PhiLipschitz.phiZ_dist_le_one_s2_interior
+#print axioms PhiLipschitz.siteCost_s2_zero_of_shield_cut
+#print axioms PhiLipschitz.shield_case_delta_s2
