@@ -616,6 +616,38 @@ theorem shield_case_delta_s1_after (g : EltBridge.Elt) (hs' : ShieldFires (s1 g)
     (cut_iff_siteCost_zero (s1 g).toPathData 0).mp hc']
   norm_num
 
+
+/-! ### The `s2` mirror -- transcription -/
+
+theorem shield_cut_pins_s2_after (g : EltBridge.Elt) (hs' : ShieldFires (s2 g))
+    (hc' : (s2 g).toPathData.cut 0) : g.eps = -1 ∧ g.d 0 = 0 := by
+  have h := shield_cut_pins (s2 g) hs' hc'
+  have he : (s2 g).eps = -g.eps := rfl
+  have hd : (s2 g).d = g.d := rfl
+  rw [he, hd] at h
+  exact ⟨by omega, h.2⟩
+
+/-- With `s2`'s sign flip the pinned value is `eps = -1`, not `1` -- a genuinely
+different case from `s1`'s, since `siteCost` depends on `eps` through `alphaAt`/`betaAt`.
+Recomputed directly rather than reused. -/
+theorem siteCost_zero_of_shield_cut_s2_after (g : EltBridge.Elt) (hkz : g.kstar = 0)
+    (hdelta : g.delta = true) (hneg : g.d (-1) = 0) (he : g.eps = -1) (hd0 : g.d 0 = 0) :
+    g.toPathData.siteCost 0 = 1 := by
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  simp [EltBridge.Elt.toPathData, hkz, hdelta, hneg, he, hd0]
+
+theorem shield_case_delta_s2_after (g : EltBridge.Elt) (hs' : ShieldFires (s2 g))
+    (hc' : (s2 g).toPathData.cut 0) (hdelta : g.delta = true) :
+    ((s2 g).toPathData.siteCost 0 : ℤ) - (g.toPathData.siteCost 0 : ℤ) + 2 * (1 - 0) = 1 := by
+  obtain ⟨he, hd0⟩ := shield_cut_pins_s2_after g hs' hc'
+  obtain ⟨hkz, -, hneg, -⟩ := hs'
+  rw [s2_kstar] at hkz
+  have hneg0 : g.d (-1) = 0 := hneg (-1) (by norm_num)
+  rw [siteCost_zero_of_shield_cut_s2_after g hkz hdelta hneg0 he hd0,
+    (cut_iff_siteCost_zero (s2 g).toPathData 0).mp hc']
+  norm_num
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.kstar_mem_corrected_window
@@ -628,3 +660,6 @@ end PhiLipschitz
 #print axioms PhiLipschitz.shield_cut_pins_s1_after
 #print axioms PhiLipschitz.siteCost_zero_of_shield_cut_s1_after
 #print axioms PhiLipschitz.shield_case_delta_s1_after
+#print axioms PhiLipschitz.shield_cut_pins_s2_after
+#print axioms PhiLipschitz.siteCost_zero_of_shield_cut_s2_after
+#print axioms PhiLipschitz.shield_case_delta_s2_after
