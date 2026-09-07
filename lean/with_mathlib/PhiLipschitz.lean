@@ -3560,4 +3560,38 @@ theorem phiZ_dist_le_one_of_Gen {a b : EltBridge.Elt} (H : EltBridge.Elt.Gen a b
   · rw [PhiZ_congr h2]; exact phiZ_dist_le_one_s2 a
   · rw [PhiZ_congr h3]; exact phiZ_dist_le_one_s3 a
 
+
+theorem PhiZ_one : PhiZ EltBridge.Elt.one = 0 := by
+  unfold PhiZ
+  rw [lRTrue_one, cTrue_one]
+  norm_num
+
+theorem reaches_phiZ_abs_le {n : ℕ} {g : EltBridge.Elt} (hn : EltBridge.Elt.Reaches n g) :
+    |PhiZ g| ≤ (n : ℤ) := by
+  induction hn with
+  | refl hsame =>
+    rw [PhiZ_congr hsame, PhiZ_one]
+    simp
+  | @step n a b hstep hgen ih =>
+    have hdist := phiZ_dist_le_one_of_Gen hgen
+    have habs : -1 ≤ PhiZ b - PhiZ a ∧ PhiZ b - PhiZ a ≤ 1 := by
+      constructor <;> nlinarith [sq_abs (PhiZ b - PhiZ a), abs_nonneg (PhiZ b - PhiZ a)]
+    have hia := abs_le.mp ih
+    rw [abs_le]
+    push_cast
+    omega
+
+theorem wordLength_ge_phiZ_abs {g : EltBridge.Elt} (h : EltBridge.Elt.Reachable g) :
+    (EltBridge.Elt.wordLength g : ℤ) ≥ |PhiZ g| :=
+  reaches_phiZ_abs_le (EltBridge.Elt.reaches_wordLength h)
+
+
+theorem wordLength_ge_lRTrue_add_two_cTrue {g : EltBridge.Elt} (h : EltBridge.Elt.Reachable g) :
+    (EltBridge.Elt.wordLength g : ℤ) ≥ (lRTrue g : ℤ) + 2 * (cTrue g : ℤ) := by
+  have hge := wordLength_ge_phiZ_abs h
+  have hnn : (0 : ℤ) ≤ PhiZ g := by unfold PhiZ; positivity
+  rw [abs_of_nonneg hnn] at hge
+  unfold PhiZ at hge
+  omega
+
 end PhiLipschitz
