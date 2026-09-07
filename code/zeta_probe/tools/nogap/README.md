@@ -13029,3 +13029,41 @@ this file are the right template to adapt, not a new technique.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on `cut_s3_eq`
 gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — the site-0 mechanism: ShieldFires pins ATrue to exactly 0
+
+`PhiLipschitz.lean` + `s3_jump.rs`. Third pass at `cTrue_s3_eq`'s both-nonempty case,
+still open, but the mechanism is now much sharper.
+
+Extended `s3_jump.rs` to print the concrete witnesses where the newly-interior site is a
+cut (the `1540` cases from last block). All six sampled witnesses have the SAME shape:
+the moving boundary is `ATrue` crossing exactly `0` (`0 <-> -1`), on whichever side has
+`kstar = 0`, with the OTHER side's `ShieldFires` correspondingly on/off. This is not
+coincidence: proved `ATrue_eq_zero_of_shieldFires` (`ShieldFires g -> ATrue g = 0`,
+not just `<= 0`) -- `ShieldFires` forces `kstar = 0`, which kills `travel` identically
+(`SiteCost.travel_of_kstar_zero`), and forbids any deposit at a negative edge, so every
+edge `ShieldFires` allows to be occupied is `>= 0`, pinning the window's left edge to `0`
+exactly. This explains why site `0` specifically is the one that flips between excluded
+boundary and counted interior when `kstar` crosses `0`: it is the site the
+`ShieldFires`-clamp forces to sit exactly at the window edge, not one site away from it.
+
+`cTrue_s3_eq`'s both-nonempty case is STILL open. Remaining casework, now precisely
+scoped by this mechanism: (a) neither side has `kstar = 0` -- expected to reduce to "the
+newly-interior site is never a cut" via the same `vD`/`vArr` structure that makes
+`betaAt`/`alphaAt` forcibly nonzero next to a nonzero `kstar` (worked out by hand for one
+of the four directional sub-cases this block: `betaAt s = -eps != 0` when the crossed
+edge `p = kstar` and `kstar != 0`, using `vR p = vD p = 1`; not yet done for the other
+three, not yet formalized in Lean); (b) `kstar = 0` on one side -- `ATrue_eq_zero_of_
+shieldFires` sets up the shield-to-interior transfer, but the actual equality (shield
+term lost on one side exactly compensates the interior filter gaining/losing site `0` on
+the other) is not yet assembled.
+
+This is the third attempt at this specific sub-goal and it is NOT yet a proof, but it is
+NOT a stall either by the loop's own criterion: each attempt has produced new, checked
+content (attempt 1: coupling diagnosed; attempt 2: exact mechanism pinned by
+enumeration; attempt 3: the site-0/`ShieldFires`-clamp reason for the mechanism, plus one
+proved lemma). Continuing is judged worthwhile; if a FOURTH attempt lands neither a
+proof nor new content, that is the actual stall point.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on
+`ATrue_eq_zero_of_shieldFires` gives only [propext, Classical.choice, Quot.sound].

@@ -1391,4 +1391,42 @@ theorem cut_s3_eq (g : EltBridge.Elt) (s : ℤ) :
 #print axioms PhiLipschitz.ATrue_eq_A
 #print axioms PhiLipschitz.ATrue_s3_dist_le_one
 
+/-! ### A sharper mechanism for the both-nonempty case: `ShieldFires` pins `ATrue` to `0`
+
+A third numeric pass (`s3_jump.rs`, printing the concrete witnesses where the
+newly-interior site is a cut) found the special role of site `0` directly: in every
+witness, the boundary that moves is exactly `ATrue` crossing `0` (`0 <-> -1`), on
+whichever side has `kstar = 0`. That is not a coincidence: `ShieldFires` forces
+`travel kstar _ = 0` everywhere (via `SiteCost.travel_of_kstar_zero`, since it requires
+`kstar = 0`) and forbids any deposit at a negative edge, so every occupied edge of a
+`ShieldFires` element sits at `>= 0` -- pinning `ATrue` to exactly `0`, not merely
+`<= 0`. This explains why the exchange only ever involves site `0`: it is the one site
+the `ShieldFires`-clamp forces to be the window's own left edge, so it is EXACTLY the
+site that flips between "excluded boundary" and "counted interior" when `kstar` moves
+away from `0`. `cTrue_s3_eq`'s both-nonempty case is still open, but the remaining
+casework is now: (a) neither side has `kstar = 0` -- expected to reduce to "the
+newly-interior site is never a cut", by the same `vD`/`vArr` mechanism that makes
+`betaAt`/`alphaAt` nonzero at a nonzero `kstar`'s neighbouring site (checked by hand for
+one of the four directional sub-cases, not yet for all four, not yet formalized); (b)
+`kstar = 0` on one side -- the shield-to-interior transfer this lemma sets up, not yet
+assembled into the full equality. -/
+
+theorem ATrue_eq_zero_of_shieldFires {g : EltBridge.Elt} (h : ShieldFires g) :
+    ATrue g = 0 := by
+  obtain ⟨hk0, -, hneg, -⟩ := h
+  unfold ATrue
+  split_ifs with hne
+  · have hmin : ∀ x ∈ occTrue g, 0 ≤ x := by
+      intro x hx
+      unfold occTrue at hx
+      rw [Finset.mem_filter] at hx
+      rcases hx.2 with hd | hf
+      · by_contra hxneg
+        exact hd (hneg x (by omega))
+      · exact absurd hf (by rw [hk0]; simp [SiteCost.travel_of_kstar_zero])
+    have h0 : 0 ≤ (occTrue g).min' hne := hmin _ (Finset.min'_mem (occTrue g) hne)
+    exact min_eq_left h0
+  · rfl
+
 end PhiLipschitz
+

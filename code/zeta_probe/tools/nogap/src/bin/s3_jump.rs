@@ -109,6 +109,7 @@ fn main() {
     let mut newly_interior_is_cut = 0u64;
     let mut newly_interior_checked = 0u64;
     let mut shield_compensates = 0u64;
+    let mut cut_examples = 0u64;
     for e in dist.keys() {
         let e2 = s3(e);
         let (p1, p2) = (phi(e), phi(&e2));
@@ -149,6 +150,12 @@ fn main() {
                 if new_site_cut {
                     newly_interior_is_cut += 1;
                     if shield1 != shield2 { shield_compensates += 1; }
+                    if cut_examples < 6 {
+                        let dir = if b2 == b1 + 1 { "B+1" } else if b1 == b2 + 1 { "B-1" }
+                            else if a2 == a1 - 1 { "A-1" } else { "A+1" };
+                        eprintln!("[cutcase] dir={dir} delta={} k={} eps={} a1={a1} b1={b1} a2={a2} b2={b2} shield1={shield1} shield2={shield2}", e.dl, e.k, e.eps);
+                        cut_examples += 1;
+                    }
                 }
             }
         }
