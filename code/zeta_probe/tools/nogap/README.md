@@ -12818,3 +12818,37 @@ Two of Elt's three generators now have the full bound. s3 (span moves) and
 the induction on Reaches for the actual open lower bound remain.
 
 0 sorry, full lake build clean, #print axioms clean throughout.
+
+## BLOCK (2026-09) — s3: confirmed 1-Lipschitz numerically, occTrue agreement proved, ATrue/BTrue movement not yet closed
+
+Toward s3's Lipschitz bound (the last generator needed for the open lower
+bound). Real progress, honestly not a closure.
+
+Numerical gate (per the loop's own instruction, before committing to a Lean
+strategy): a NEW isolated measurement, src/bin/s3_jump.rs, checks s3's
+contribution to the jump SEPARATELY from the combined s1/s2/s3 measurement
+prior blocks reported. Result: max |dPhi| under s3 ALONE is exactly 1,
+confirmed at depth 20 (50763 elements) and depth 30 (3336511 elements). So s3
+needs no larger constant than s1/s2 -- worth knowing before investing in the
+proof, since a larger constant would have meant the whole approach's final
+bound is not simply "1" for all three generators.
+
+Lean: occTrue_agree_true/false proved (the occTrue analogue of EltBridge's
+existing s3_occ_agree_true/false, which are for the OLD forced-nonempty occ).
+Caught one bug: the kstar rewrite was missing before travel_succ_ne/
+travel_pred_ne could fire.
+
+NOT closed, and here is exactly why, so the next attempt doesn't re-derive
+it: EltBridge's min'_dist_le_one_of_agree/max'_dist_le_one_of_agree (used to
+get the OLD A/B's movement bound from occ-agreement) are `private` to
+EltBridge.lean, and more fundamentally assume the two Finsets are NONEMPTY.
+That was free for the old span because `insert 0` into occ guarantees
+nonemptiness always. occTrue has no such guarantee -- it is literally empty
+at `one`. ATrue/BTrue's own definitions already handle this with a clamp
+(`if h : (occTrue g).Nonempty then ... else 0/-1`), so the movement bound
+needs a genuinely new argument, case-splitting on emptiness of occTrue g and
+occTrue (s3 g) separately (up to 4 combinations), not a straight port of the
+existing private lemmas. This is real, additional casework, correctly not
+rushed.
+
+0 sorry, full lake build clean, #print axioms clean throughout.
