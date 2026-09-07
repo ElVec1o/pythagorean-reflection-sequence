@@ -3129,4 +3129,57 @@ theorem lRTrue_s3_eq_of_occTrue_s3g_empty (g : EltBridge.Elt) (he : occTrue (s3 
   · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
     exact lRTrue_s3_eq_of_occTrue_s3g_empty_delta_false g he hd'
 
+
+theorem mu_dist_one_of_occupied_true (g : EltBridge.Elt) (hd : g.delta = true)
+    (hd0 : g.d g.kstar ≠ 0) :
+    ((s3 g).toPathData.mu g.kstar : ℤ) = g.toPathData.mu g.kstar + 1 ∨
+      (g.toPathData.mu g.kstar : ℤ) = (s3 g).toPathData.mu g.kstar + 1 := by
+  have hpar := g.hpar g.kstar
+  have htc := SiteCost.travel_cases g.kstar g.kstar
+  have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+  have hd1 : (s3 g).d g.kstar = g.d g.kstar - g.eps := by
+    have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+      rw [s3, dif_pos hd]
+    rw [hupd]; simp
+  have ht1 : SiteCost.travel (s3 g).kstar g.kstar = SiteCost.travel g.kstar g.kstar + 1 := by
+    rw [hkS, EltBridge.Elt.travel_succ_at]
+  have heps := g.heps
+  unfold SiteCost.PathData.mu
+  simp only [EltBridge.Elt.toPathData]
+  split_ifs with hvac1 hvac2 hvac2 <;>
+    rcases htc with ht | ht | ht <;> rcases heps with he | he <;> omega
+
+theorem mu_dist_one_of_occupied_false (g : EltBridge.Elt) (hd : g.delta = false)
+    (hd0 : g.d (g.kstar - 1) ≠ 0) :
+    ((s3 g).toPathData.mu (g.kstar - 1) : ℤ) = g.toPathData.mu (g.kstar - 1) + 1 ∨
+      (g.toPathData.mu (g.kstar - 1) : ℤ) = (s3 g).toPathData.mu (g.kstar - 1) + 1 := by
+  have hpar := g.hpar (g.kstar - 1)
+  have htc := SiteCost.travel_cases g.kstar (g.kstar - 1)
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+  have hd1 : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+    have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      rw [s3, dif_neg h1']
+    rw [hupd]; simp
+  have ht1 : SiteCost.travel (s3 g).kstar (g.kstar - 1) = SiteCost.travel g.kstar (g.kstar - 1) - 1 := by
+    rw [hkS, EltBridge.Elt.travel_pred_at]
+  have heps := g.heps
+  unfold SiteCost.PathData.mu
+  simp only [EltBridge.Elt.toPathData]
+  split_ifs with hvac1 hvac2 hvac2 <;>
+    rcases htc with ht | ht | ht <;> rcases heps with he | he <;> omega
+
+theorem mu_dist_one_of_occupied (g : EltBridge.Elt)
+    (hd0 : g.d (if g.delta then g.kstar else g.kstar - 1) ≠ 0) :
+    ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ)
+        = g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) + 1 ∨
+      (g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ)
+        = (s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) + 1 := by
+  by_cases hd : g.delta = true
+  · rw [if_pos hd] at hd0 ⊢
+    exact mu_dist_one_of_occupied_true g hd hd0
+  · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+    rw [if_neg hd] at hd0 ⊢
+    exact mu_dist_one_of_occupied_false g hd' hd0
+
 end PhiLipschitz

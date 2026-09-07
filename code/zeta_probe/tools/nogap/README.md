@@ -13798,3 +13798,32 @@ from the raw shifts alone. The next attempt should enumerate `mu`'s value using
 or the underlying `hpar` field directly) rather than treating `d0`/`travel` as
 independent integers -- this is likely the key fact that collapses the `8`-way case
 split flagged in the previous block down to something tractable.
+
+## BLOCK (2026-09) — mu_dist_one_of_occupied PROVED: the window-unchanged mechanism, formalized
+
+`PhiLipschitz.lean`. Formalizes the mechanism diagnosed in the last two blocks: when
+the crossed edge is occupied (`d != 0`) BEFORE the `s3` step, `mu` there moves by
+EXACTLY `+-1`, never `0` or more -- fully general, no `kstar = 0` gate, no window
+hypothesis at all (it's a fact about `mu` at one site, not about `lRTrue`).
+
+The proof needed no manual case-by-case arithmetic: `unfold`ing `mu`'s two `if`s
+(vacuum-before, vacuum-after) via `split_ifs`, then `rcases` on `SiteCost.travel_cases`
+(the crossed edge's travel value, `{-1,0,1}`) and `g.heps` (`eps = +-1`), leaves each of
+the resulting branches to `omega` alone -- it handles the `Int.natAbs`/`max`/parity
+(`hpar`) reasoning needed to close every branch without any further guidance. This
+matches the earlier hand-derived worry from two blocks ago (that the `|d|` case split
+could be `8`-way and genuinely hard) turning out to be exactly the kind of arithmetic
+`omega`'s built-in `natAbs` support handles automatically once the two vacuum booleans
+are resolved and the relevant equalities (`hpar`, the `d`/`travel` shift formulas) are
+all in context -- no manual splitting on `|d|`'s magnitude was needed after all.
+
+`mu_dist_one_of_occupied_true`/`_of_occupied_false`/`mu_dist_one_of_occupied` (the
+combined `if`-based statement) are all proved. This is the last missing piece
+diagnosed for the window-unchanged case; the remaining work is assembling it into the
+actual `lRTrue` window-unchanged theorem (showing the crossed edge really is occupied
+in that case, matching the disjunct to the correct sign, and folding in the unchanged
+`siteCost`/other-`mu` terms) -- not done yet this block, but the hard arithmetic core
+is now closed.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all
+three new theorems gives only [propext, Classical.choice, Quot.sound].
