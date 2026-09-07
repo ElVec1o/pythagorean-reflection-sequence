@@ -1428,5 +1428,42 @@ theorem ATrue_eq_zero_of_shieldFires {g : EltBridge.Elt} (h : ShieldFires g) :
     exact min_eq_left h0
   · rfl
 
+/-! ### Two of the four generic-case direction lemmas: never a cut at the crossed site
+
+Concrete formulas, matching the exhaustive-enumeration finding exactly (`0` cut
+violations among 1524400 both-nonempty boundary shifts with `kstar != 0` on both
+sides). Two of the four directional sub-cases (`delta = true` growth, `delta = false`
+growth); the two shrink-direction sub-cases and their assembly into `cTrue_s3_eq` are
+not done here. -/
+
+theorem not_cut_kstar_of_delta_true (g : EltBridge.Elt) (hd : g.delta = true)
+    (hdk : g.d g.kstar = 0) : ¬ g.toPathData.cut g.kstar := by
+  rintro ⟨-, hb, -⟩
+  have hvR : SiteCost.PathData.vR g.toPathData g.kstar = 1 := by
+    unfold SiteCost.PathData.vR SiteCost.PathData.vD
+    have : g.toPathData.delta = true := hd
+    simp [this]
+  unfold SiteCost.PathData.betaAt at hb
+  rw [hvR] at hb
+  simp only [EltBridge.Elt.toPathData] at hb hdk
+  rw [hdk] at hb
+  rcases g.heps with h | h <;> rw [h] at hb <;> norm_num at hb
+
+theorem not_cut_kstar_of_delta_false (g : EltBridge.Elt) (hd : g.delta = false)
+    (hk0 : g.kstar ≠ 0) (hdk : g.d (g.kstar - 1) = 0) :
+    ¬ g.toPathData.cut g.kstar := by
+  rintro ⟨ha, -, -⟩
+  have hvL : SiteCost.PathData.vL g.toPathData g.kstar = 1 := by
+    unfold SiteCost.PathData.vL SiteCost.PathData.vD
+    have : g.toPathData.delta = false := hd
+    simp [this]
+  have hvArr : SiteCost.vArr g.kstar = 0 := by unfold SiteCost.vArr; simp [hk0]
+  unfold SiteCost.PathData.alphaAt at ha
+  rw [hvL, hvArr] at ha
+  simp only [EltBridge.Elt.toPathData] at ha hdk
+  rw [hdk] at ha
+  rcases g.heps with h | h <;> rw [h] at ha <;> norm_num at ha
+
 end PhiLipschitz
+
 

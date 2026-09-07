@@ -13123,3 +13123,23 @@ sub-goal; it produced new, checked content (a corrected site identification plus
 concrete matching formulas) rather than a stall, so continuing is still judged
 worthwhile -- but the next attempt should go straight to Lean casework using this
 roadmap, not further hand-derivation.
+
+## BLOCK (2026-09) — two of the four generic-case direction lemmas landed in Lean
+
+`PhiLipschitz.lean`. Formalized two of the four by-hand formulas from the previous
+block: `not_cut_kstar_of_delta_true` (`delta = true`, `d(kstar) = 0` -> `betaAt(kstar) =
+-eps != 0`, so `kstar` is never a cut -- the `delta = true` window-growth direction) and
+`not_cut_kstar_of_delta_false` (`delta = false`, `kstar != 0`, `d(kstar - 1) = 0` ->
+`alphaAt(kstar) = eps != 0` -- the `delta = false` window-growth direction). Both proved
+directly from `Realisation.lean`'s `alphaAt`/`betaAt`/`vL`/`vR`/`vD` definitions, no
+numerics involved (the numerics only informed which formula to attempt).
+
+Remaining for `cTrue_s3_eq`'s generic case: the two SHRINK-direction formulas
+(`delta = true` shrink, site `p + 1`; `delta = false` shrink, symmetric, not yet worked
+out by hand) plus tying all four together with the `ATrue`/`BTrue` movement facts
+(showing WHICH direction applies from a given `g`, then applying the matching lemma) and
+the trivial "neither boundary moves" case, then the `kstar = 0`-side shield-transfer case
+from two blocks ago. Still open; this block adds two concrete atoms, not the full result.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on both new
+theorems gives only [propext, Classical.choice, Quot.sound].
