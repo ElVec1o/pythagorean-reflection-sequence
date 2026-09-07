@@ -13335,3 +13335,32 @@ together into one theorem.
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all six
 new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## BLOCK (2026-09) — the other two directions PROVED impossible (not just measured)
+
+`PhiLipschitz.lean`. Upgrades the numeric finding two blocks ago ("B-growth with
+delta=false" and "A-growth with delta=true" both measured at `0` occurrences) to an
+actual proof: `not_Bincrease_of_delta_false` and `not_Adecrease_of_delta_true`.
+
+Mechanism: the same emptiness (`p ∉ occTrue g`) that gives `d p = 0`
+(`d_crossed_eq_zero_of_Bincrease`/`_of_Adecrease`) ALSO gives `travel g.kstar p = 0`
+(`travel_crossed_eq_zero_of_Bincrease`/`_of_Adecrease`, new this block, same proof
+shape). For `delta = false`, `p = kstar - 1`, and `travel kstar (kstar - 1)` is
+nonzero exactly when `kstar >= 1` -- so the vanishing forces `kstar <= 0`, hence
+(`kstar != 0`) `kstar <= -1`, hence `p <= -2`. But `crossed_eq_of_Bincrease` already
+identifies `p` with `BTrue (s3 g)`, which is `>= -1` unconditionally
+(`neg_one_le_BTrue`) -- direct contradiction. The `delta = true`/`A`-decrease case is
+the exact mirror (`travel kstar kstar` nonzero exactly when `kstar < 0`, forcing
+`kstar >= 0` hence `>= 1`, hence `p = kstar >= 1`, contradicting `ATrue <= 0`).
+
+With this, `cTrue_s3_eq`'s "`kstar != 0` on both sides" sub-case is now FULLY closed
+in principle: `min_or_max_unchanged` gives exactly one boundary moves (or neither,
+already handled), and of the two possible moving directions per boundary, one is
+proved impossible and the other is the already-assembled
+`cTrue_s3_eq_of_Bincrease_delta_true` / `cTrue_s3_eq_of_Adecrease_delta_false`. The
+top-level theorem stitching all of this together (plus the `kstar = 0` shield-transfer
+sub-case) is not yet written -- this block proves the pieces, not the dispatch.
+
+0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on both new
+top-level theorems (and their `travel_crossed_eq_zero_of_*` helpers) gives only
+[propext, Classical.choice, Quot.sound].

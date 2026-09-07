@@ -1904,7 +1904,77 @@ theorem cTrue_s3_eq_of_Adecrease_delta_false (g : EltBridge.Elt)
   rw [hA, hB, if_neg (fun h => hshield2 h.1), if_neg (fun h => hshield1 h.1)]
   omega
 
+/-! ### The other two directions are impossible when `kstar != 0` on both sides
+
+Proves what the last-but-one block only measured (`0` occurrences of `B`-growth with
+`delta = false` / `A`-growth with `delta = true`): `d_crossed_eq_zero_of_Bincrease`
+already gives `g.d p = 0`; the SAME emptiness (`p ∉ occTrue g`) also forces
+`travel g.kstar p = 0`, and for `delta = false` that pins `g.kstar <= 0`
+(`travel g.kstar (g.kstar - 1)` is nonzero exactly when `g.kstar >= 1`), hence
+(`kstar != 0`) `g.kstar <= -1`, hence `p = g.kstar - 1 <= -2` -- but
+`crossed_eq_of_Bincrease` says `p = BTrue (s3 g) >= -1` (`neg_one_le_BTrue`), a direct
+contradiction. The `A`-decrease/`delta = true` case is the exact mirror. -/
+
+theorem travel_crossed_eq_zero_of_Bincrease (g : EltBridge.Elt)
+    (h2 : (occTrue (s3 g)).Nonempty) (hB : BTrue (s3 g) = BTrue g + 1) :
+    SiteCost.travel g.kstar (if g.delta then g.kstar else g.kstar - 1) = 0 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hnm := crossed_not_mem_g_of_Bincrease g h2 hB
+  by_contra ht
+  apply hnm
+  unfold occTrue
+  by_cases hj : p ∈ g.supp
+  · exact Finset.mem_filter.mpr ⟨hj, Or.inr ht⟩
+  · exact absurd (g.hsupp p hj).2 ht
+
+theorem not_Bincrease_of_delta_false (g : EltBridge.Elt) (h2 : (occTrue (s3 g)).Nonempty)
+    (hB : BTrue (s3 g) = BTrue g + 1) (hd : g.delta = false) (hk1 : g.kstar ≠ 0) :
+    False := by
+  have htz := travel_crossed_eq_zero_of_Bincrease g h2 hB
+  rw [if_neg (by rw [hd]; simp)] at htz
+  have hkle : g.kstar ≤ 0 := by
+    by_contra hpos
+    push_neg at hpos
+    have hne : SiteCost.travel g.kstar (g.kstar - 1) ≠ 0 := by
+      unfold SiteCost.travel
+      rw [if_pos (by omega)]; omega
+    exact hne htz
+  have hpeq := crossed_eq_of_Bincrease g h2 hB
+  rw [if_neg (by rw [hd]; simp)] at hpeq
+  have hge : (-1 : ℤ) ≤ BTrue (s3 g) := neg_one_le_BTrue (s3 g)
+  omega
+
+theorem travel_crossed_eq_zero_of_Adecrease (g : EltBridge.Elt)
+    (h2 : (occTrue (s3 g)).Nonempty) (hA : ATrue (s3 g) = ATrue g - 1) :
+    SiteCost.travel g.kstar (if g.delta then g.kstar else g.kstar - 1) = 0 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hnm := crossed_not_mem_g_of_Adecrease g h2 hA
+  by_contra ht
+  apply hnm
+  unfold occTrue
+  by_cases hj : p ∈ g.supp
+  · exact Finset.mem_filter.mpr ⟨hj, Or.inr ht⟩
+  · exact absurd (g.hsupp p hj).2 ht
+
+theorem not_Adecrease_of_delta_true (g : EltBridge.Elt) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g - 1) (hd : g.delta = true) (hk1 : g.kstar ≠ 0) :
+    False := by
+  have htz := travel_crossed_eq_zero_of_Adecrease g h2 hA
+  rw [if_pos hd] at htz
+  have hkge : (0:ℤ) ≤ g.kstar := by
+    by_contra hneg
+    push_neg at hneg
+    have hne : SiteCost.travel g.kstar g.kstar ≠ 0 := by
+      unfold SiteCost.travel
+      rw [if_neg (by omega), if_pos (by omega)]; omega
+    exact hne htz
+  have hpeq := crossed_eq_of_Adecrease g h2 hA
+  rw [if_pos hd] at hpeq
+  have hle : ATrue (s3 g) ≤ 0 := atrue_le_zero (s3 g)
+  omega
+
 end PhiLipschitz
+
 
 
 
