@@ -1042,6 +1042,82 @@ theorem occTrue_s3_singleton_of_g_empty (g : EltBridge.Elt) (he : occTrue g = �
     have := (occTrue_agree_false hδ' x hxk).mp hx
     rw [he] at this; simp at this
 
+
+/-! ### The reverse direction: `occTrue (s3 g)` empty forces `occTrue g` a singleton
+
+By the agree fact alone (no fresh computation needed): if `occTrue (s3 g)` is empty then
+`occTrue g \ {p} = occTrue (s3 g) \ {p} = empty`, so `occTrue g ⊆ {p}`.  If it were
+ALSO empty, `occTrue_s3_singleton_of_g_empty` would force `occTrue (s3 g) = {p}`,
+contradicting emptiness.  So `occTrue g` is nonempty, hence exactly `{p}`. -/
+
+theorem occTrue_g_singleton_of_s3_empty (g : EltBridge.Elt) (he : occTrue (s3 g) = ∅) :
+    occTrue g = {(if g.delta then g.kstar else g.kstar - 1)} := by
+  by_cases hδ : g.delta = true
+  · rw [if_pos hδ]
+    apply Finset.eq_singleton_iff_unique_mem.mpr
+    constructor
+    · by_contra hgne
+      have hge : occTrue g = ∅ := by
+        by_contra hne
+        obtain ⟨x, hx⟩ := Finset.nonempty_iff_ne_empty.mpr hne
+        by_cases hxk : x = g.kstar
+        · exact hgne (hxk ▸ hx)
+        · have := (occTrue_agree_true hδ x hxk).mpr hx
+          rw [he] at this; simp at this
+      have := occTrue_s3_singleton_of_g_empty g hge
+      rw [if_pos hδ] at this
+      rw [this] at he; simp at he
+    · intro x hx
+      by_contra hxk
+      have := (occTrue_agree_true hδ x hxk).mpr hx
+      rw [he] at this; simp at this
+  · have hδ' : g.delta = false := by revert hδ; cases g.delta <;> simp
+    rw [if_neg hδ]
+    apply Finset.eq_singleton_iff_unique_mem.mpr
+    constructor
+    · by_contra hgne
+      have hge : occTrue g = ∅ := by
+        by_contra hne
+        obtain ⟨x, hx⟩ := Finset.nonempty_iff_ne_empty.mpr hne
+        by_cases hxk : x = g.kstar - 1
+        · exact hgne (hxk ▸ hx)
+        · have := (occTrue_agree_false hδ' x hxk).mpr hx
+          rw [he] at this; simp at this
+      have := occTrue_s3_singleton_of_g_empty g hge
+      rw [if_neg hδ] at this
+      rw [this] at he; simp at he
+    · intro x hx
+      by_contra hxk
+      have := (occTrue_agree_false hδ' x hxk).mpr hx
+      rw [he] at this; simp at this
+
+
+/-! ### `ATrue` is literally the old `A` -- no new work needed
+
+`ATrue g := min 0 ((occTrue g).min' h)` when `occTrue g` is nonempty, else `0`.  But
+`insert 0 (occTrue g)` is EXACTLY `g.occ` (that is `occ`'s own definition), and the
+minimum of a nonempty set with one extra point equals the minimum of the extra point
+and the set's own minimum -- so `ATrue g = (insert 0 (occTrue g)).min' _ = g.occ.min' _
+= g.A`.  In the empty case both sides are `0` directly.  So `s3`'s already-proved
+`EltBridge.Elt.s3_A_dist_le_one` (about the OLD `A`) transfers to `ATrue` for free. -/
+
+theorem ATrue_eq_A (g : EltBridge.Elt) : ATrue g = g.A := by
+  unfold ATrue
+  split_ifs with h
+  · exact (Finset.min'_insert 0 (occTrue g) h).symm
+  · rw [Finset.not_nonempty_iff_eq_empty] at h
+    have hset : insert (0:ℤ) (occTrue g) = {0} := by rw [h]; rfl
+    show (0:ℤ) = (insert (0:ℤ) (occTrue g)).min' g.occ_nonempty
+    have hgen : ∀ (S : Finset ℤ) (hS : S.Nonempty), S = {0} → S.min' hS = 0 := by
+      intro S hS hS0
+      subst hS0
+      exact Finset.min'_singleton 0
+    exact (hgen _ g.occ_nonempty hset).symm
+
+theorem ATrue_s3_dist_le_one (g : EltBridge.Elt) :
+    ATrue (s3 g) ≤ ATrue g + 1 ∧ ATrue g ≤ ATrue (s3 g) + 1 := by
+  rw [ATrue_eq_A, ATrue_eq_A]; exact EltBridge.Elt.s3_A_dist_le_one g
+
 end PhiLipschitz
 
 #print axioms PhiLipschitz.interior_filter_s1_eq
@@ -1057,3 +1133,6 @@ end PhiLipschitz
 #print axioms PhiLipschitz.occTrue_g_empty_kstar_zero
 #print axioms PhiLipschitz.occTrue_g_empty_d_zero
 #print axioms PhiLipschitz.occTrue_s3_singleton_of_g_empty
+#print axioms PhiLipschitz.occTrue_g_singleton_of_s3_empty
+#print axioms PhiLipschitz.ATrue_eq_A
+#print axioms PhiLipschitz.ATrue_s3_dist_le_one
