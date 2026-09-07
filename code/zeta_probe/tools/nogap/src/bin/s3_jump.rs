@@ -99,6 +99,21 @@ fn main() {
         if dist.len() > cap { eprintln!("[s3] cap hit at depth {}", d + 1); break; }
     }
     eprintln!("[s3] enumerated {} elements", dist.len());
+    let mut ub_violations = 0u64;
+    let mut ub_checked = 0u64;
+    let mut ub_witness: Option<(Elt, u8, i64)> = None;
+    for (e, &wl) in dist.iter() {
+        let ph = phi(e);
+        ub_checked += 1;
+        if (wl as i64) > ph {
+            ub_violations += 1;
+            if ub_witness.is_none() { ub_witness = Some((e.clone(), wl, ph)); }
+        }
+    }
+    eprintln!("[s3] UPPER BOUND CHECK: wordLength <= phi (=lRTrue+2*cTrue) violated in {ub_violations} / {ub_checked} elements");
+    if let Some((e, wl, ph)) = &ub_witness {
+        eprintln!("[s3] UB witness: {} wordLength={} phi={}", show(e), wl, ph);
+    }
 
     let (mut max_jump, mut wsize, mut wit): (i64, i64, Option<(Elt, Elt, i64, i64)>) = (0, i64::MAX, None);
     let mut max_lr: i64 = 0;
