@@ -13639,3 +13639,41 @@ the final top-level dispatch tying `lRTrue`'s four-direction result together wit
 
 0 sorry (spot-check only), full lake build clean (8645 jobs), #print axioms on all six
 new theorems gives only [propext, Classical.choice, Quot.sound].
+
+## STATUS CHECKPOINT (2026-09) — phiZ_dist_le_one_s3 roadmap, precisely scoped
+
+`PhiLipschitz.lean`. No new theorems this checkpoint -- pure scoping of what remains,
+written down before the next attempt so it starts from the right piece.
+
+Done for `lRTrue`'s `s3` movement: all four generic (`kstar != 0` on the relevant
+side) directions, each exactly `+-1` (`lRTrue_s3_eq_of_Bincrease_delta_true`,
+`_of_Bdecrease_delta_false`, `_of_Aincrease_delta_true`, `_of_Adecrease_delta_false`).
+
+Remaining, in the order the next attempt should tackle them:
+1. The two `occTrue`-empty cases (`occTrue g = ∅`, `occTrue (s3 g) = ∅`) -- narrow,
+   well-understood configurations (kstar = 0 forced, span degenerate to `Icc(0,-1)`
+   for the empty side), already handled for `cTrue` via `cTrue_eq_zero_of_occTrue_
+   empty`/`cTrue_s3_eq_of_g_empty`/`_of_s3g_empty`; `lRTrue`'s version needs the
+   analogous direct computation (`lRTrue` on the empty side reduces to a single
+   `siteCost` term at site `0`, matching `lRTrue_one = 0`'s pattern already proved in
+   `CorrectedSpan.lean`), then the two sub-cases by `delta` (`p ∈ {0, -1}`) on the
+   nonempty side.
+2. The window-unchanged case: genuinely harder than `cTrue`'s analogous case, because
+   `mu` at the crossed edge `p` is only bounded by `s3_mu_dist_le_two` (`<= 2`, not
+   exact) when the window doesn't move -- `cTrue`'s window-unchanged proof worked
+   because `ShieldFires` is FORCED to fail on both sides there (`shieldFires_forces_
+   ATrue_move`), giving an exact `0`, but `lRTrue`'s analogous claim (`mu` also doesn't
+   change, or changes by an amount that exactly cancels against `siteCost`) is NOT yet
+   derived by hand. This is the piece most likely to need genuine new work, not a
+   mirror of an existing technique.
+3. The `kstar = 0` special cases for `lRTrue` (mirroring `cTrue`'s shield-transfer
+   mechanism, but here presumably a `mu`/`siteCost` exchange instead of an interior-
+   filter/shield exchange) -- not attempted, mechanism not yet diagnosed by hand.
+4. The top-level dispatch assembling all of the above (mirroring `cTrue_s3_eq`'s own
+   dispatch structure) into `lRTrue_s3_dist_le_one` (`(lRTrue (s3 g) - lRTrue g)^2 <=
+   1`), then combining with `cTrue_s3_eq` (already unconditional) into
+   `phiZ_dist_le_one_s3` itself.
+
+Only after `phiZ_dist_le_one_s3` lands does the final `Reaches` induction (mirroring
+`EltBridge.lean`'s `reaches_lR_le`) for the actual open lower bound of `l_T = l_R + 2c`
+become attemptable.
