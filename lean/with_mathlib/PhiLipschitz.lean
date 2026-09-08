@@ -4177,4 +4177,64 @@ theorem exists_descent_of_not_window_unchanged_ascent (g : EltBridge.Elt)
     rw [Finset.not_nonempty_iff_eq_empty] at h1
     exact hk0 (occTrue_g_empty_kstar_zero h1)
 
+
+theorem d_ne_zero_of_mu_ascent (g : EltBridge.Elt)
+    (hasc : ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ)
+        = g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) + 1) :
+    g.d (if g.delta then g.kstar else g.kstar - 1) ≠ 0 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  intro hd0
+  by_cases hd : g.delta = true
+  · have hpv : p = g.kstar := by rw [hpdef, if_pos hd]
+    rw [hpv] at hd0
+    have hpar := g.hpar g.kstar
+    have htc0 := SiteCost.travel_cases g.kstar g.kstar
+    have htz : SiteCost.travel g.kstar g.kstar = 0 := by omega
+    have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+    have hd1 : (s3 g).d g.kstar = g.d g.kstar - g.eps := by
+      have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+        rw [s3, dif_pos hd]
+      rw [hupd]; simp
+    have ht1 : SiteCost.travel (s3 g).kstar g.kstar = SiteCost.travel g.kstar g.kstar + 1 := by
+      rw [hkS, EltBridge.Elt.travel_succ_at]
+    have heps := g.heps
+    have hmug : g.toPathData.mu g.kstar = 2 := by
+      unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData, hd0, htz]
+    have hmus3 : (s3 g).toPathData.mu g.kstar = 1 := by
+      unfold SiteCost.PathData.mu
+      simp only [EltBridge.Elt.toPathData]
+      rw [hd1, hd0, ht1, htz]
+      rcases heps with he | he <;> simp [he]
+    rw [hpv, hmug, hmus3] at hasc
+    norm_num at hasc
+  · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+    have hpv : p = g.kstar - 1 := by rw [hpdef, if_neg (by rw [hd']; simp)]
+    rw [hpv] at hd0
+    have hpar := g.hpar (g.kstar - 1)
+    have htc0 := SiteCost.travel_cases g.kstar (g.kstar - 1)
+    have htz : SiteCost.travel g.kstar (g.kstar - 1) = 0 := by
+      have h1' : ¬ (g.delta = true) := by rw [hd']; simp
+      have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+      have hself : SiteCost.travel (g.kstar - 1) (g.kstar - 1) = 0 ∨
+          SiteCost.travel (g.kstar - 1) (g.kstar - 1) ≠ 0 := em _
+      omega
+    have h1' : ¬ (g.delta = true) := by rw [hd']; simp
+    have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+    have hd1 : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+      have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+        rw [s3, dif_neg h1']
+      rw [hupd]; simp
+    have ht1 : SiteCost.travel (s3 g).kstar (g.kstar - 1) = SiteCost.travel g.kstar (g.kstar - 1) - 1 := by
+      rw [hkS, EltBridge.Elt.travel_pred_at]
+    have heps := g.heps
+    have hmug : g.toPathData.mu (g.kstar - 1) = 2 := by
+      unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData, hd0, htz]
+    have hmus3 : (s3 g).toPathData.mu (g.kstar - 1) = 1 := by
+      unfold SiteCost.PathData.mu
+      simp only [EltBridge.Elt.toPathData]
+      rw [hd1, hd0, ht1, htz]
+      rcases heps with he | he <;> simp [he]
+    rw [hpv, hmug, hmus3] at hasc
+    norm_num at hasc
+
 end PhiLipschitz
