@@ -14575,3 +14575,49 @@ direction uses `siteCost_descent_left_delta_false` which DOES need hk0 for a dif
 | Descent: kstar=0, genuine growth-transition | NOT closed | 🟠 precisely scoped, likely tractable |
 | General upper bound, all g | -- | 🟡 one small lemma + induction away |
 | Full corrected metric identity, all g | -- | 🟡 one small lemma + induction away |
+
+## Update: kstar=0 Adecrease growth-transition, shield case + eps=-1 closed
+
+Commits e038ad9, ca51367. Continuing the kstar=0 genuine-growth-transition track
+(Bincrease was already closed, commit c3f61f6). The Adecrease direction (window grows
+to the left, `g.kstar = 0`, `g.delta = false`) splits on `ShieldFires g ∧ cut g 0`:
+
+- Shield-case (`ShieldFires g ∧ cut g 0` both true): closed via
+  `descent_of_shield_case_kstar_zero`, reusing the pre-existing exact-value lemma
+  `shield_case_delta`. The earlier draft's `hfilt` sub-proof used a plain `omega` on
+  `hsc.1.1` alone (insufficient -- that only gives `g.kstar = 0`, not `ATrue g = 0`).
+  Fixed using `ATrue_eq_zero_of_shieldFires`. VERIFIED clean.
+- Shield-absent, `eps = -1`: closed via `descent_of_Adecrease_shield_absent_kstar_zero_eps_neg`.
+  New pinning lemma `alphaAt_kstar_eq_of_left_boundary_kstar_zero` gives
+  `alphaAt(0) = eps - 1` (vs. the kstar!=0 case's `alphaAt(kstar)=eps`, since `vArr(0)=1`).
+  At `eps=-1` this pins `alphaAt(0) = -2 != 0`, which makes `cut g 0` trivially false
+  regardless of whether `ShieldFires g` itself holds -- so the shield conjunction is false
+  unconditionally, `cTrue` is invariant under `s1`/`s2` via the boundary-exclusion argument
+  (`kstar = ATrue g` is excluded from the open interior interval), and the descent reduces
+  to a plain sign-of-beta case split (`siteCost_descent_left_delta_false_kstar_zero`).
+- Shield-absent, `eps = 1`: NOT yet done. `alphaAt(0) = 0` in this case, which is harder --
+  `cut g 0` is no longer automatically false, so the boundary-exclusion argument for `cTrue`
+  invariance still holds (kstar is still excluded from the interior filter regardless of its
+  own cut status), but the siteCost descent argument needs separate care since alpha starts
+  exactly at 0. Scoped, not yet attempted in Lean.
+
+All three new theorems verified: `lake build PhiLipschitz` clean, full `lake build`
+(8645 jobs) clean, `#print axioms` on all three showing only
+`[propext, Classical.choice, Quot.sound]`, `sorry` count unchanged at 1 (pre-existing
+doc-comment mention).
+
+## FINAL ATOM TABLE (updated)
+
+| Atom | Label | Status |
+|---|---|---|
+| Lower bound, all g | VERIFIED | 🟢 |
+| Trivial-class upper bound + full identity, EXACT | VERIFIED | 🟢 |
+| 1-Lipschitz property, cTrue_s3_eq, lRTrue_s3_dist_one | VERIFIED | 🟢 |
+| exists_descent: descent lemma, kstar != 0 | VERIFIED | 🟢 |
+| Descent: kstar=0, window-unchanged-ascent (both delta) | VERIFIED | 🟢 |
+| Descent: kstar=0, Bincrease growth-transition | VERIFIED | 🟢 |
+| Descent: kstar=0, Adecrease growth-transition, shield case | VERIFIED | 🟢 (this block) |
+| Descent: kstar=0, Adecrease growth-transition, shield-absent, eps=-1 | VERIFIED | 🟢 (this block) |
+| Descent: kstar=0, Adecrease growth-transition, shield-absent, eps=1 | NOT closed | 🟠 scoped, harder (alpha pins to 0) |
+| General upper bound, all g | -- | 🟡 one small lemma + induction away |
+| Full corrected metric identity, all g | -- | 🟡 one small lemma + induction away |
