@@ -475,6 +475,19 @@ fn main() {
         if a < e.k && e.k < b + 1 { sc0_interior += 1; }
     }
     eprintln!("[sc0-interior] siteCost==0 cases: {sc0_checked}, interior to (A,B+1): {sc0_interior}");
+    // Check: kstar=0, nontrivial (d not all zero) -- does some generator still descend?
+    let mut k0nt_checked = 0u64;
+    let mut k0nt_works = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        if e.k != 0 { continue; }
+        if e.lamps.iter().all(|&(_,v)| v == 0) { continue; } // skip trivial (d==0 everywhere)
+        k0nt_checked += 1;
+        let g3 = s3(e);
+        if phi(&g3) < ph { k0nt_works += 1; }
+    }
+    eprintln!("[k0-nontrivial] kstar=0 nontrivial descent via s3 ALONE: {k0nt_works} / {k0nt_checked}");
     // Print raw (alpha,beta,d(kstar-1),d(kstar)) for delta=true interior-ascent cases.
     let mut printed3 = 0;
     for e in dist.keys() {
