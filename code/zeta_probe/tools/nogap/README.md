@@ -14344,3 +14344,34 @@ Atom status, honest final tally for this session's arc:
   new derivation (exchange formula + cut-flip, c=1 edge case)
 
 This is now the FULL, precise, honest scope of what remains for the general upper bound.
+
+## Block: d_ne_zero_of_mu_ascent -- one more real building block toward the interior case
+
+Continuing on the interior-ascent gap (per Rule 2, still following the same lead rather than
+abandoning it): proved `d_ne_zero_of_mu_ascent` -- if `mu(s3g,p) = mu(g,p)+1` (the ascent
+disjunct), then `g.d p != 0` (the crossed edge must be OCCUPIED). This follows directly from
+`mu_dist_one_unconditional`'s own proof structure: the VACUUM sub-case (`d(p)=0`) always gives
+a DESCENT (`mu(g,p)=2 -> mu(s3g,p)=1`), so ascent can only happen in the occupied branch.
+VERIFIED: lake build PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry,
+#print axioms clean ([propext, Classical.choice, Quot.sound]).
+
+**Numeric finding this session's tail** (commit 42feb27): siteCost(kstar) is NEVER exactly 1
+in the actual interior-ascent regime (0 / 82036 sampled at depth 25, values only ever
+{0,2,3,4,5,6,7,8}). This matters because the exchange formula
+(Delta = (c'-c) + 2*([c'=0]-[c=0])) proves that FROM c=1, every possible +-1 shift gives an
+ASCENT (never descent) -- so if c=1 ever occurred here, the whole descent claim would be FALSE
+for that g. Its total absence is exactly what makes the claim survive.
+
+Attempted to derive WHY c!=1 algebraically using `d_ne_zero_of_mu_ascent` (giving d(kstar)!=0,
+hence |d(kstar)|>=2 when kstar>=0 via the travel(kstar,kstar) parity fact, or d(kstar) odd
+nonzero when kstar<0) combined with betaAt(kstar)=d(kstar)-eps (delta=true case). This
+constrains beta but does NOT by itself rule out alpha ALSO landing at +-1 (which parity alone
+would allow, since beta odd forces alpha odd too) -- ruling that out needs a further relation
+between alphaAt(kstar) [involving d(kstar-1)] and betaAt(kstar) [involving d(kstar)] that
+hasn't been found. Likely candidate: some consequence of `occTrue_agree_off_p` /
+`crossed_mem_mu_window_of_window_unchanged`'s STRICT interior membership, constraining
+neighboring occupancy structure -- not derived this block.
+
+This remains the honest boundary of what's closed vs open in the general upper-bound direction.
+Recommend a genuinely fresh session for the interior case, focused specifically on the
+alphaAt(kstar)-betaAt(kstar) relationship under the window-unchanged invariant.
