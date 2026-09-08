@@ -5501,4 +5501,82 @@ theorem descent_of_Adecrease_delta_false_kstar_zero (g : EltBridge.Elt)
         unfold PhiZ; rw [hlR2, hc2]; omega
     · exact descent_of_Adecrease_shield_absent_kstar_zero_eps_neg g h1 h2 hA hB hd hkz he
 
+theorem exists_descent_kstar_zero (g : EltBridge.Elt) (hkz : g.kstar = 0)
+    (hne : ¬ EltBridge.Elt.SameElt g EltBridge.Elt.one) :
+    PhiZ (s1 g) < PhiZ g ∨ PhiZ (s2 g) < PhiZ g ∨ PhiZ (s3 g) < PhiZ g := by
+  by_cases h1 : (occTrue g).Nonempty
+  · by_cases h2 : (occTrue (s3 g)).Nonempty
+    · have hdispRaw := min_or_max_unchanged h1 h2 (occTrue_agree_off_p g)
+      have hdisp : ATrue (s3 g) = ATrue g ∨ BTrue (s3 g) = BTrue g := by
+        rcases hdispRaw with hmin | hmax
+        · left; unfold ATrue; rw [dif_pos h1, dif_pos h2, hmin]
+        · right; unfold BTrue; rw [dif_pos h1, dif_pos h2, hmax]
+      by_cases hAeq : ATrue (s3 g) = ATrue g
+      · by_cases hBeq : BTrue (s3 g) = BTrue g
+        · -- window unchanged: either a genuine ascent (dispatch to the kstar=0 ascent
+          -- lemmas) or the plain `s3`-descent bound applies.
+          rcases lRTrue_s3_dist_one_of_window_unchanged g hAeq hBeq with hl | hl
+          · have hasc := mu_ascent_of_lRTrue_ascent_window_unchanged g hAeq hBeq hl
+            by_cases hd : g.delta = true
+            · rw [if_pos hd] at hasc
+              rcases descent_of_ascent_true_kstar_zero g hkz hd hasc with hh | hh
+              · left; exact hh
+              · right; left; exact hh
+            · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+              rw [if_neg (by rw [hd']; simp)] at hasc
+              rcases descent_of_ascent_false_kstar_zero g hkz hd' hasc with hh | hh
+              · left; exact hh
+              · right; left; exact hh
+          · right; right
+            have heq := phiZ_s3_eq_lRTrue_dist g
+            omega
+        · obtain ⟨hBd1, hBd2⟩ := BTrue_s3_dist_le_one g
+          rcases (by omega : BTrue (s3 g) = BTrue g + 1 ∨ BTrue (s3 g) = BTrue g - 1)
+            with hBp | hBm
+          · by_cases hd : g.delta = true
+            · rcases descent_of_Bincrease_via_s1_or_s2_kstar_zero g h1 h2 hAeq hBp hd hkz with hh | hh
+              · left; exact hh
+              · right; left; exact hh
+            · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+              exact (not_Bincrease_of_delta_false g h2 hBp hd').elim
+          · by_cases hd : g.delta = false
+            · right; right; exact descent_of_Bdecrease g h1 h2 hAeq hBm hd
+            · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+              exact (not_Bdecrease_of_delta_true g h1 hBm hd').elim
+      · have hBeq : BTrue (s3 g) = BTrue g := hdisp.resolve_left hAeq
+        obtain ⟨hAd1, hAd2⟩ := ATrue_s3_dist_le_one g
+        rcases (by omega : ATrue (s3 g) = ATrue g + 1 ∨ ATrue (s3 g) = ATrue g - 1)
+          with hAp | hAm
+        · by_cases hd : g.delta = true
+          · right; right; exact descent_of_Aincrease g h1 h2 hAp hBeq hd
+          · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+            exact (not_Aincrease_of_delta_false g h1 hAp hd').elim
+        · by_cases hd : g.delta = false
+          · rcases descent_of_Adecrease_delta_false_kstar_zero g h1 h2 hAm hBeq hd hkz with hh | hh
+            · left; exact hh
+            · right; left; exact hh
+          · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+            exact (not_Adecrease_of_delta_true g h2 hAm hd').elim
+    · rw [Finset.not_nonempty_iff_eq_empty] at h2
+      right; right; exact descent_of_s3g_empty g h2
+  · rw [Finset.not_nonempty_iff_eq_empty] at h1
+    have hd0 : ∀ j, g.d j = 0 := fun j => occTrue_g_empty_d_zero h1 j
+    have hne' : ¬ (g.delta = false ∧ g.eps = 1) := by
+      rintro ⟨hdf, he1⟩
+      exact hne ⟨hkz, he1, hdf, funext hd0⟩
+    rcases trivial_descent g hkz hd0 hne' with hh | hh
+    · left; exact hh
+    · right; left; exact hh
+
+/-- **The descent lemma, fully unconditional.**  No hypothesis on `g.kstar` remains:
+`exists_descent` handles `kstar != 0`, `exists_descent_kstar_zero` handles `kstar = 0`
+(splitting further into the trivial class, window-unchanged ascent, and the four
+genuine window-transition directions, all now closed at `kstar = 0` as well). -/
+theorem exists_descent_unconditional (g : EltBridge.Elt)
+    (hne : ¬ EltBridge.Elt.SameElt g EltBridge.Elt.one) :
+    PhiZ (s1 g) < PhiZ g ∨ PhiZ (s2 g) < PhiZ g ∨ PhiZ (s3 g) < PhiZ g := by
+  by_cases hk0 : g.kstar = 0
+  · exact exists_descent_kstar_zero g hk0 hne
+  · exact exists_descent g hk0 hne
+
 end PhiLipschitz
