@@ -227,6 +227,33 @@ fn main() {
         eprintln!("[corr] delta={} eps={} siteCostKstar={} sign_dk={} parity={} -> s1_works={} s2_works={} total={}",
             k.0, k.1, k.2, k.3, k.4, v.0, v.1, v.2);
     }
+    // Print raw (alpha,beta) examples for the mixed siteCost=3 case to check hand-derived
+    // shift formulas: s1 shifts (a,b) by (+/-eps,+/-eps) same sign; s2 shifts by (-eps,+eps).
+    let mut printed = 0;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        let site_kstar = al.abs().max(be.abs());
+        if site_kstar != 3 || e.dl != 0 || e.eps != -1 { continue; }
+        let dk = dep(&e.lamps, e.k);
+        if dk.signum() != -1 { continue; }
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let (al1, be1, _) = abphi(&g1, g1.k);
+        let (al2, be2, _) = abphi(&g2, g2.k);
+        let w1 = phi(&g1) < ph;
+        let w2 = phi(&g2) < ph;
+        if printed < 15 {
+            eprintln!("[raw] delta={} eps={} a={} b={} -> s1(a={},b={},works={}) s2(a={},b={},works={})",
+                e.dl, e.eps, al, be, al1, be1, w1, al2, be2, w2);
+            printed += 1;
+        }
+    }
 
     let (mut max_jump, mut wsize, mut wit): (i64, i64, Option<(Elt, Elt, i64, i64)>) = (0, i64::MAX, None);
     let mut max_lr: i64 = 0;

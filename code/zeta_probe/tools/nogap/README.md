@@ -14099,3 +14099,44 @@ delta alone [s1] or delta+eps [s2]) which flip strictly decreases siteCost(kstar
 via cut(kstar)'s effect on cTrue, doesn't offset that by +2 elsewhere], for the general
 occupied (nonzero d(kstar)) case -- covering all magnitudes of alphaAt/betaAt, not just
 sign of d(kstar) alone.
+
+## Block: nontrivial descent — corrected characterization, still unproved (numeric only)
+
+**Retraction of two claims from the previous block's log entry**:
+1. "the pattern breaks down at siteCost(kstar)>=3" was a MISREADING of the correlation
+   table. Re-examined: `s1_works`/`s2_works` counts show that for EVERY (delta,eps,sign_dk)
+   bucket at EVERY siteCost magnitude tested (0 through 8), exactly one of s1/s2 has
+   s_works == total (100% reliable), the other is a strict subset. The rule is clean and
+   uniform, not "mixed" -- I misread a 54%-reliable secondary generator as evidence of no
+   rule, when the PRIMARY generator (the other one) was 100% reliable throughout.
+2. A derivation I made inline (not committed) claiming "d(kstar) is always even via hpar,
+   since travel(kstar,kstar)=0 always" is FALSE in general -- travel(k,k) = -1 for k<0, 0 for
+   k>=0 (checked directly from `SiteCost.travel`'s definition), so this parity fact only
+   holds when kstar=0 (which is exactly the case used correctly in `not_Aincrease_at_g_kstar_
+   zero`/`not_Adecrease_at_s3g_kstar_zero`, NOT as a universal fact). No Lean code using this
+   false claim was committed -- caught during the hand derivation before writing Lean.
+
+**Confirmed via raw (alpha,beta) printouts** (matches hand-derived shift formulas): under s1
+(flip delta only), alphaAt(kstar) and betaAt(kstar) BOTH shift by the same amount delta1 =
+(eps if delta_old=true else -eps). Under s2 (flip both delta and eps), they shift by
+DIFFERENT amounts: alphaAt shifts by -eps, betaAt shifts by +eps, uniformly regardless of
+delta_old. **The reliable generator (100% in every tested bucket) is determined by
+sign(d(kstar)) vs eps**: matches the exact clean rule found in the correlation table.
+
+**New numeric observation, unexplained**: the sign_dk=0 bucket (both s1,s2 reliable) only
+ever appears at EVEN siteCost(kstar) values (0,2,4,6,8) in the sampled data, never odd (1,3,
+5,7) -- suggesting alphaAt(kstar) and betaAt(kstar) satisfy a genuine hidden parity relation
+(likely alphaAt(kstar) ≡ betaAt(kstar) mod 2, or both ≡ some travel-derived parity) that has
+NOT yet been derived by hand. This is exactly the kind of structural fact (parallel to the
+`hpar` constraint already used extensively this session) that would be needed to close the
+general nontrivial descent lemma cleanly via the same "unfold + travel_cases + omega" recipe
+that worked for `mu_dist_one_of_occupied`/`mu_dist_one_unconditional` earlier -- but it has
+NOT been found or verified. No Lean proof attempted for the general nontrivial descent case
+this block; this remains open, honestly unstarted at the Lean level despite the numeric
+characterization being solid.
+
+Next concrete step: derive (numerically first, Rust) the exact parity relationship between
+alphaAt(kstar) and betaAt(kstar) (likely via d(kstar-1), d(kstar), travel(kstar,kstar-1),
+travel(kstar,kstar) and hpar applied at both kstar-1 and kstar), then attempt the general
+nontrivial descent lemma using that relationship the same way lem `mu_dist_one_unconditional`
+used `hpar`+`travel_cases`+`omega`.
