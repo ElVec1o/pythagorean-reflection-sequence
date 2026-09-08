@@ -14621,3 +14621,45 @@ doc-comment mention).
 | Descent: kstar=0, Adecrease growth-transition, shield-absent, eps=1 | NOT closed | 🟠 scoped, harder (alpha pins to 0) |
 | General upper bound, all g | -- | 🟡 one small lemma + induction away |
 | Full corrected metric identity, all g | -- | 🟡 one small lemma + induction away |
+
+## GOAL CLOSED: the full corrected metric identity, unconditionally, for every g
+
+Commits ca51367..ec8114d. Picking up from the Adecrease-at-kstar=0 residual (eps=1
+shield-absent sub-case): a Rust check (`s3_jump`, `[adecr-eps1]` counter) found that ALL
+38 instances of the "alpha=beta=0, siteCost already 0" residual have `ShieldFires=true` --
+zero shield-absent examples. The structural reason (proved in Lean, not just observed):
+at `kstar=0`, `SiteCost.travel_of_kstar_zero` forces `travel` to vanish everywhere, so
+`occTrue g` is exactly the `d`-support; combined with `d_eq_zero_of_lt_ATrue` at
+`ATrue g = 0` this makes `ShieldFires g` UNCONDITIONAL whenever `kstar = 0`, `delta =
+false`, `ATrue g = 0`, `occTrue g` nonempty -- a fact that (via `shieldFires_of_kstar_zero_ATrue_zero`)
+had already been proved for a different theorem chain (`cTrue_s3_eq_of_Adecrease_delta_false_at_kstar_zero`)
+earlier in this project and was reused directly here. This meant the eps=1 residual was
+never a separate case: it is exactly the intersection of `cut(kstar)=true` with the
+already-closed shield case, so `descent_of_Adecrease_delta_false_kstar_zero` closes the
+ENTIRE Adecrease-at-kstar=0 direction by a single `by_cases` on `cut g.kstar`.
+
+With that, `exists_descent_kstar_zero` and `exists_descent_unconditional` assemble the
+full descent lemma with NO restriction on `g.kstar` at all. From there, a strong
+induction on `PhiZ g` (via `Int.toNat`, `reaches_of_phiZ_aux`) builds an explicit
+reaching chain of length `PhiZ g` for every `g`, using that `s1`, `s2`, `s3` are
+involutions (`Gen_symm`) to run the chain backward. This gives
+`wordLength_le_lRTrue_add_two_cTrue` (the general upper bound), which combined with the
+already-proved `wordLength_ge_lRTrue_add_two_cTrue` (lower bound, from an earlier
+session) gives:
+
+    wordLength g = lRTrue g + 2 * cTrue g
+
+for every reachable `g` (`wordLength_eq_lRTrue_add_two_cTrue`) -- the full corrected
+metric identity, unconditionally. All new theorems verified: `lake build PhiLipschitz`
+clean, full `lake build` (8645 jobs) clean, `#print axioms` on every new theorem showing
+only `[propext, Classical.choice, Quot.sound]`, `sorry` count unchanged at 1
+(pre-existing doc-comment mention, not a real gap).
+
+## FINAL ATOM TABLE
+
+| Atom | Label | Status |
+|---|---|---|
+| Lower bound, all g | VERIFIED | 🟢 |
+| Descent lemma, fully unconditional (all g, no kstar restriction) | VERIFIED | 🟢 |
+| General upper bound, all g (`wordLength_le_lRTrue_add_two_cTrue`) | VERIFIED | 🟢 (this block) |
+| **Full corrected metric identity, all reachable g** | **VERIFIED** | **🟢 (this block, GOAL)** |
