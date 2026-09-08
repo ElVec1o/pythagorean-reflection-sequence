@@ -196,6 +196,37 @@ fn main() {
         }
     }
     eprintln!("[s3] s3-fails cases: s1-only={s3fail_s1only} s2-only={s3fail_s2only} both={s3fail_both} neither={s3fail_neither}");
+    // Correlate which of s1/s2 works with (delta, eps, siteCost(kstar) parity) in the
+    // s3-fails cases, to find a by-hand rule.
+    let mut corr: std::collections::HashMap<(u8,i8,i64,i64,i64),(u64,u64,u64)> = std::collections::HashMap::new();
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        let is_trivial = a == 0 && b == -1;
+        if is_trivial { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let w1 = phi(&g1) < ph;
+        let w2 = phi(&g2) < ph;
+        let (al, be, _) = abphi(e, e.k);
+        let site_kstar = al.abs().max(be.abs());
+        let dk = dep(&e.lamps, e.k);
+        let key = (e.dl, e.eps, site_kstar as i64, dk.signum() as i64, (site_kstar % 2) as i64);
+        let ent = corr.entry(key).or_insert((0,0,0));
+        if w1 { ent.0 += 1; }
+        if w2 { ent.1 += 1; }
+        ent.2 += 1;
+    }
+    let mut keys: Vec<_> = corr.keys().cloned().collect();
+    keys.sort();
+    for k in keys.iter().take(30) {
+        let v = corr[k];
+        eprintln!("[corr] delta={} eps={} siteCostKstar={} sign_dk={} parity={} -> s1_works={} s2_works={} total={}",
+            k.0, k.1, k.2, k.3, k.4, v.0, v.1, v.2);
+    }
 
     let (mut max_jump, mut wsize, mut wit): (i64, i64, Option<(Elt, Elt, i64, i64)>) = (0, i64::MAX, None);
     let mut max_lr: i64 = 0;
