@@ -4386,4 +4386,81 @@ theorem descent_of_ascent_true (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0) (hd : g
   · left; unfold PhiZ; rw [hlR1, hc1]; push_cast; omega
   · right; unfold PhiZ; rw [hlR2, hc2]; push_cast; omega
 
+
+theorem travel_pred_ne_neg_one (k : ℤ) : SiteCost.travel k (k - 1) ≠ -1 := by
+  unfold SiteCost.travel; split_ifs <;> omega
+
+theorem alphaAt_ne_pm_one_of_ascent_false (g : EltBridge.Elt) (hd : g.delta = false)
+    (hk0 : g.kstar ≠ 0)
+    (hasc : ((s3 g).toPathData.mu (g.kstar - 1) : ℤ) = g.toPathData.mu (g.kstar - 1) + 1) :
+    g.toPathData.alphaAt g.kstar ≠ 1 ∧ g.toPathData.alphaAt g.kstar ≠ -1 := by
+  have hpar := g.hpar (g.kstar - 1)
+  have htc := SiteCost.travel_cases g.kstar (g.kstar - 1)
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+  have hd1 : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+    have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      rw [s3, dif_neg h1']
+    rw [hupd]; simp
+  have ht1 : SiteCost.travel (s3 g).kstar (g.kstar - 1) = SiteCost.travel g.kstar (g.kstar - 1) - 1 := by
+    rw [hkS, EltBridge.Elt.travel_pred_at]
+  have heps := g.heps
+  have halpha : g.toPathData.alphaAt g.kstar = g.d (g.kstar - 1) + g.eps := by
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD SiteCost.vArr
+    simp [EltBridge.Elt.toPathData, hd, hk0]
+  have htne := travel_pred_ne_neg_one g.kstar
+  have hkey : g.d (g.kstar - 1) + g.eps ≠ 1 ∧ g.d (g.kstar - 1) + g.eps ≠ -1 := by
+    unfold SiteCost.PathData.mu at hasc
+    simp only [EltBridge.Elt.toPathData] at hasc
+    split_ifs at hasc with hvac1 hvac2 hvac2 <;>
+      rcases htc with ht | ht | ht <;> rcases heps with he | he <;> omega
+  rw [halpha]; exact hkey
+
+theorem alphaAt_sign_of_ascent_false (g : EltBridge.Elt) (hd : g.delta = false)
+    (hk0 : g.kstar ≠ 0)
+    (hasc : ((s3 g).toPathData.mu (g.kstar - 1) : ℤ) = g.toPathData.mu (g.kstar - 1) + 1) :
+    g.toPathData.alphaAt g.kstar * g.eps ≥ 0 := by
+  have hpar := g.hpar (g.kstar - 1)
+  have htc := SiteCost.travel_cases g.kstar (g.kstar - 1)
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+  have hd1 : (s3 g).d (g.kstar - 1) = g.d (g.kstar - 1) + g.eps := by
+    have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+      rw [s3, dif_neg h1']
+    rw [hupd]; simp
+  have ht1 : SiteCost.travel (s3 g).kstar (g.kstar - 1) = SiteCost.travel g.kstar (g.kstar - 1) - 1 := by
+    rw [hkS, EltBridge.Elt.travel_pred_at]
+  have heps := g.heps
+  have halpha : g.toPathData.alphaAt g.kstar = g.d (g.kstar - 1) + g.eps := by
+    unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD SiteCost.vArr
+    simp [EltBridge.Elt.toPathData, hd, hk0]
+  have htne := travel_pred_ne_neg_one g.kstar
+  unfold SiteCost.PathData.mu at hasc
+  simp only [EltBridge.Elt.toPathData] at hasc
+  rw [halpha]
+  split_ifs at hasc with hvac1 hvac2 hvac2 <;>
+    rcases htc with ht | ht | ht <;> rcases heps with he | he <;> simp only [he] at * <;> omega
+
+theorem siteCost_descent_of_ascent_false (g : EltBridge.Elt) (hd : g.delta = false)
+    (hk0 : g.kstar ≠ 0)
+    (hasc : ((s3 g).toPathData.mu (g.kstar - 1) : ℤ) = g.toPathData.mu (g.kstar - 1) + 1)
+    (hM : 0 < g.toPathData.siteCost g.kstar) :
+    (s1 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar ∨
+      (s2 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar := by
+  have ha1 := alphaAt_s1_kstar g
+  have hb1 := betaAt_s1_kstar g
+  have ha2 := alphaAt_s2_kstar g
+  have hb2 := betaAt_s2_kstar g
+  have heps := g.heps
+  have hpar := alphaAt_betaAt_kstar_parity g
+  have hne1 := alphaAt_ne_pm_one_of_ascent_false g hd hk0 hasc
+  have hsign := alphaAt_sign_of_ascent_false g hd hk0 hasc
+  clear hasc
+  unfold SiteCost.PathData.siteCost at hM ⊢
+  rcases heps with he | he <;>
+    simp [hd, he] at ha1 hb1 ha2 hb2 hpar hne1 hsign hM <;>
+    rcases lt_trichotomy (g.toPathData.betaAt g.kstar) 0 with hb | hb | hb <;>
+    first | (left; omega) | (right; omega)
+
+
 end PhiLipschitz
