@@ -14225,3 +14225,31 @@ the boundary position ATrue/BTrue itself, not just d(kstar)/d(kstar-1) in isolat
 comparable in difficulty to the whole previous session's Lipschitz-direction work. Recommend
 treating this as its own dedicated future session rather than continuing to chip at it
 piecemeal, per Rule 2 (step back when stuck three times in a row).
+
+## Block: wordLength_eq_phiZ_of_trivial -- full metric identity, EXACT, on the trivial class
+
+Per Rule 2 (step back after repeated stalls on the general nontrivial descent), switched
+representation: instead of the local-generator descent argument, directly matched
+`trivial_PhiZ_val`'s case-by-case PhiZ values (0,1,1,2 for the four (delta,eps) combos)
+against `TrueLengthUpper.lean`'s EXISTING `reaches_two_of_trivial` construction, which (upon
+inspection) already gives the EXACT same n per case (0,1,1,2) -- not just the "<=2" bound its
+own theorem name suggests. Extracted this into `reaches_exact_of_trivial` (an exact-n version
+of reaches_two_of_trivial, same construction, tracking the precise value instead of discarding
+it into an existential bound), then combined with the already-proved
+`wordLength_ge_lRTrue_add_two_cTrue` (the lower bound, this session's earlier milestone) to
+get `wordLength_eq_phiZ_of_trivial`: **wordLength g = PhiZ g EXACTLY (both directions) for
+every trivial g** (kstar=0, d=0 everywhere). VERIFIED: lake build PhiLipschitz clean, full
+lake build (8645 jobs) clean, 0 sorry, #print axioms clean on both new theorems.
+
+This is a genuinely complete result -- the full corrected metric identity, not just one
+direction -- on a real (if small) sub-class of elements, and it re-purposes machinery already
+present in TrueLengthUpper.lean rather than requiring new descent-lemma machinery. Good
+concrete progress after stepping back from the stuck nontrivial-descent line.
+
+Atom status:
+- lower bound (wordLength >= lRTrue+2cTrue), ALL g: 🟢 VERIFIED (df784e3)
+- upper bound (wordLength <= lRTrue+2cTrue), trivial class only: 🟢 VERIFIED (077b598)
+- upper bound, general nontrivial g: 🟠 blocked (3 retractions logged; needs new structural
+  insight beyond alphaAt_betaAt_kstar_parity, recommend fresh session/approach)
+- full metric identity (both directions), trivial class: 🟢 VERIFIED (077b598)
+- full metric identity, general g: ⚪ depends on the blocked upper-bound piece
