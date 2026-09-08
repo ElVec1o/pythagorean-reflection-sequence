@@ -227,6 +227,22 @@ fn main() {
         eprintln!("[corr] delta={} eps={} siteCostKstar={} sign_dk={} parity={} -> s1_works={} s2_works={} total={}",
             k.0, k.1, k.2, k.3, k.4, v.0, v.1, v.2);
     }
+    // Check the exact parity relationship between alphaAt(kstar) and betaAt(kstar).
+    let mut parity_match = 0u64;
+    let mut parity_mismatch = 0u64;
+    let mut parity_mismatch_example: Option<(Elt, i32, i32)> = None;
+    for e in dist.keys() {
+        let (al, be, _) = abphi(e, e.k);
+        if (al.rem_euclid(2)) == (be.rem_euclid(2)) { parity_match += 1; }
+        else {
+            parity_mismatch += 1;
+            if parity_mismatch_example.is_none() { parity_mismatch_example = Some((e.clone(), al, be)); }
+        }
+    }
+    eprintln!("[parity] alpha(kstar)%2 == beta(kstar)%2: {parity_match} match, {parity_mismatch} mismatch");
+    if let Some((e, al, be)) = &parity_mismatch_example {
+        eprintln!("[parity] mismatch example: {} alpha={} beta={}", show(e), al, be);
+    }
     // Print raw (alpha,beta) examples for the mixed siteCost=3 case to check hand-derived
     // shift formulas: s1 shifts (a,b) by (+/-eps,+/-eps) same sign; s2 shifts by (-eps,+eps).
     let mut printed = 0;
