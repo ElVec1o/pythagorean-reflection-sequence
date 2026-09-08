@@ -12,7 +12,9 @@ defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "Si
   "VZigzag",
   "TrueLengthUpper",
   "LipschitzPotential",
-  "AssemblyContract"]
+  "AssemblyContract",
+  "CorrectedSpan",
+  "PhiLipschitz"]
 
 [[require]]
 name = "mathlib"

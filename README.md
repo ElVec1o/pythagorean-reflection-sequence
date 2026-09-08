@@ -342,7 +342,7 @@ which always resolves to the latest archived release. Metadata in
 `CITATION.cff`.
 
 
-## Status of the formalisation (v10.0.0)
+## Status of the formalisation (v10.1.0)
 
 The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
 (Mathlib-free). The whole build is clean with **0 `sorry`**, no `sorryAx`, no
@@ -366,15 +366,28 @@ The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
   is two integer comparisons, and `n_(1,2) = 33` verifies by `decide`.
 - `cut s ↔ siteCost s = 0` (`PhiLipschitz`): a cut site is exactly a zero-cost
   site, so the `Φ = 0` conjunct in `PathData.cut` is redundant.
+- **The full corrected metric identity, unconditionally, for every reachable
+  `g`**: `wordLength g = lRTrue g + 2 * cTrue g` (`PhiLipschitz.wordLength_eq_lRTrue_add_two_cTrue`).
+  This release closes both directions left open at v10.0.0. The lower bound
+  (`wordLength_ge_lRTrue_add_two_cTrue`) follows from the 1-Lipschitz property
+  of `Φ = lRTrue + 2·cTrue` over all three generators. The upper bound
+  (`wordLength_le_lRTrue_add_two_cTrue`) follows from a fully unconditional
+  descent lemma (`exists_descent_unconditional`: for any `g` not the identity,
+  at least one of the three generators strictly decreases `Φ`, with no
+  restriction on the cursor position `kstar`) and a strong induction on `Φ`
+  that builds an explicit reaching word of length `Φ(g)` (`reaches_of_phiZ`),
+  using that all three generators are involutions to run the chain backward
+  from `g` to the identity.
 
 **Retracted or corrected in this release** — anyone citing v9.x should re-check.
 
 - The metric identity `l_T = l_R + 2c` is **false as formalised**, for the Lean
   development's own `c`; it fails at the identity element. Two definitional
   causes (the formal span forces edge 0 into every configuration; the formal cut
-  set omits the boundary-shield site). Repaired additively in `CorrectedSpan`,
-  after which the identity holds with no violation to depth 29. The **lower
-  bound remains open**.
+  set omits the boundary-shield site). Repaired additively in `CorrectedSpan`;
+  the repaired identity is now proved, both directions, unconditionally, for
+  every reachable `g` (`PhiLipschitz.wordLength_eq_lRTrue_add_two_cTrue`, see
+  above).
 - `(M3)`/`eq:assembly` is **vacuous as stated**: satisfiable for arbitrary `W`,
   and de-truncating does not help. A proof in that form would establish nothing.
   Named, non-vacuous replacement with a uniqueness theorem in
@@ -383,9 +396,10 @@ The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
   at even multiplicities; the correct construction is spine+zigzag. The counting
   core is kernel-checked in `ZigzagParity`.
 
-**Open.** The lower bound of the metric identity; `(M2)`'s reverse shield
-inequality; `(M3)` after restatement, i.e. identifying `W` with the site-kernel
-resolvent; and `lem:noab`.
+**Open.** `(M2)`'s reverse shield inequality; `(M3)` after restatement, i.e.
+identifying `W` with the site-kernel resolvent; and `lem:noab`. (The formalised
+metric identity's own lower bound, listed as open in v10.0.0, is closed as of
+this release — see above.)
 
 ## On the use of AI
 
