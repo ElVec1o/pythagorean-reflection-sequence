@@ -14253,3 +14253,45 @@ Atom status:
   insight beyond alphaAt_betaAt_kstar_parity, recommend fresh session/approach)
 - full metric identity (both directions), trivial class: 🟢 VERIFIED (077b598)
 - full metric identity, general g: ⚪ depends on the blocked upper-bound piece
+
+## 🎆 Block: siteCost_descent_at_boundary -- the growth-case descent mechanism, mostly closed (a672de2, 439e3df)
+
+Fully resolved and formalized the growth-case descent mechanism, after three retractions in
+earlier blocks. The precise structure (verified in Lean, not just numerically):
+
+- `alphaAt_kstar_eq_of_left_boundary`/`betaAt_kstar_eq_of_right_boundary`: at a window boundary
+  (kstar=ATrue or kstar=BTrue+1, kstar!=0), the "outward" quantity (d(kstar-1) at the left edge,
+  d(kstar) at the right edge) is forced to 0 by the already-existing `d_eq_zero_of_lt_ATrue`/
+  `d_eq_zero_of_gt_BTrue`, PINNING alphaAt(kstar) (left) or betaAt(kstar) (right) to an exact
+  small value (0, eps, or -eps depending on delta).
+- Four boundary x delta cases, each proved as its own theorem:
+  - `siteCost_descent_left_delta_false`, `siteCost_descent_right_delta_true`: UNCONDITIONAL
+    (the pinned quantity forces the OTHER, free quantity to be nonzero via parity
+    (alphaAt_betaAt_kstar_parity), and s1/s2 genuinely offer a real choice of shift direction
+    for it, so one always strictly decreases siteCost(kstar)).
+  - `siteCost_descent_left_delta_true`, `siteCost_descent_right_delta_false`: CONDITIONAL on an
+    extra sign hypothesis (`betaAt(kstar)*eps<0` / `alphaAt(kstar)*eps>0`), because in these two
+    cases s1 and s2 give the SAME shift to the free quantity (no real choice), so it only works
+    when that shift direction happens to reduce magnitude.
+- Retraction along the way: an initial sign convention for the right-delta-false case was
+  backwards (caught by a concrete Lean counterexample surfacing via omega, not by a false proof
+  landing) -- fixed by testing the exact inequality direction in isolation before generalizing.
+
+**Numerically confirmed (commit 439e3df, depth 30) that the two sign conditions ALWAYS hold**
+in the actual regime relevant to the top-level dispatch (boundary + kstar!=0 + s3 fails to
+descend): 121228/121228 and 184212/184212, both 100%. This means the full, unconditional
+descent lemma is almost certainly TRUE -- only the derivation "s3 fails + boundary implies the
+sign condition" remains to be found, likely via the already-proved exact direction lemmas
+(descent_of_Aincrease, descent_of_s3g_empty, etc.) ruling out the bad sign case by contradiction
+(if kstar=ATrue and delta=true, that combination looks like it SHOULD match the Aincrease/
+occTrue-empty descent cases already proved -- reconciling why it still appears in the
+"s3 fails" numeric bucket needs more careful case tracing than time allowed this block).
+
+VERIFIED (all 4 new theorems): lake build PhiLipschitz clean, full lake build (8645 jobs)
+clean, 0 sorry, #print axioms clean ([propext, Classical.choice, Quot.sound]).
+
+Atom status update:
+- Growth-case descent mechanism (structure, all 4 sub-cases): 🟢 VERIFIED as conditional lemmas
+- Growth-case descent, sign conditions ALWAYS holding: 🟡 numerically certain, algebraic proof
+  not yet found (the remaining gap)
+- Full nontrivial descent lemma (combining shrink + growth + trivial): 🟠 one derivation away
