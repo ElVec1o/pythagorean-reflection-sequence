@@ -14492,3 +14492,40 @@ ShieldFires becomes live). This is now the ONE remaining gap before the general 
 | Descent: kstar=0, nontrivial d | numerically 100%, NOT formalized | 🟠 open, newly scoped |
 | General upper bound (wordLength <= lRTrue+2cTrue), ALL g | depends on kstar=0 case | 🟡 one lemma + induction away |
 | Full corrected metric identity, ALL g | depends on the above | 🟡 one lemma + induction away |
+
+## Block: kstar=0 nontrivial descent -- deep investigation, mechanism partially mapped, not closed
+
+Confirmed the key simplifying fact: for delta=false at kstar=0, ShieldFires(s1 g)/(s2 g) are
+IMPOSSIBLE (s1/s2 flip delta to true, and ShieldFires needs delta=false) -- so only g's OWN
+shield status matters. However, attempting to conclude "cTrue(s1 g) = cTrue g whenever
+siteCost(kstar)>0" hit the SAME exchange-formula subtlety already seen for kstar!=0's
+interior case: if siteCost(g,0)=1 exactly, s1's shift (bounded to move by at most 1, per
+`s1_siteCost_kstar`) COULD land exactly on 0, newly firing cut(s1g,0) and changing cTrue by
++-1 -- so the naive "shield inactive => cTrue unchanged" argument is NOT unconditionally valid;
+it needs the FULL `filter_card_eq_add_diff`-style exchange bookkeeping (interior vs boundary,
+old-vs-new cut status) exactly like `descent_of_siteCost_zero_interior` did for the
+kstar!=0/siteCost=0 case, but layered together with the shield term here too.
+
+Numerically mapped (commit 9cce67b): for delta=false at kstar=0, s1 and s2 ALWAYS have
+IDENTICAL success status (100% match in every sampled bucket) -- a useful simplification
+(don't need to case-split which generator to use for delta=false). For delta=true, the
+pattern is cleaner in one sub-case (`cut(s1g,0)=true => only s1 works`, 625/625) but mixed
+in the general case (908/1937 s1-only, requiring genuine s1-vs-s2 choice).
+
+**Not closed this block.** This is a real, comparably-sized new sub-problem to everything
+closed earlier this session -- correctly NOT rushed. The path forward is understood in
+outline (reuse `filter_card_eq_add_diff` + `siteCost_descent_of_ascent_false`/`_true`'s
+existing machinery, now tracking the shield term's OWN before/after status alongside the
+interior filter's, for all four combinations of (interior/boundary) x (shield-eligible/not)).
+
+## FINAL ATOM TABLE (comprehensive, this entire session)
+
+| Atom | Label | Status |
+|---|---|---|
+| Lower bound: wordLength >= lRTrue+2cTrue, ALL g | VERIFIED | 🟢 |
+| Upper bound + full identity, trivial class (kstar=0,d=0), EXACT | VERIFIED | 🟢 |
+| 1-Lipschitz property (s1/s2/s3), cTrue_s3_eq, lRTrue_s3_dist_one | VERIFIED | 🟢 |
+| exists_descent: full descent lemma, kstar != 0 | VERIFIED | 🟢 |
+| Descent: kstar=0, nontrivial d | mechanism mapped, NOT formalized | 🟠 |
+| General upper bound (wordLength <= lRTrue+2cTrue), ALL g | -- | 🟡 kstar=0 case + induction |
+| Full corrected metric identity, ALL g | -- | 🟡 kstar=0 case + induction |
