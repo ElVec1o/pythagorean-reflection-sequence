@@ -430,6 +430,51 @@ fn main() {
         if sc == 1 { sc1_count += 1; }
     }
     eprintln!("[sc-dist-interior] siteCost(kstar)==1 count: {sc1_count}, full dist: {:?}", sc_dist);
+    // Check: is siteCost(kstar) ALWAYS >0 whenever mu ascends at the crossed site (window
+    // unchanged or not)?
+    let mut hm_checked = 0u64;
+    let mut hm_violated = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let g3 = s3(e);
+        let p = if e.dl == 1 { e.k } else { e.k - 1 };
+        let (a, b) = span_nogap(e);
+        let (a2, b2) = span_nogap(&g3);
+        if a2 != a || b2 != b { continue; } // window must be unchanged
+        let mu_before = mu(e, p);
+        let mu_after = mu(&g3, p);
+        if mu_after != mu_before + 1 { continue; } // only the ascent disjunct
+        hm_checked += 1;
+        let (al, be, _) = abphi(e, e.k);
+        let sc = al.abs().max(be.abs());
+        if sc == 0 { hm_violated += 1; }
+    }
+    eprintln!("[hM-check] siteCost(kstar)==0 while mu ascends: {hm_violated} / {hm_checked}");
+    // For the siteCost==0 sub-case (window unchanged, ascent), is kstar always INTERIOR
+    // to (ATrue, BTrue+1), i.e. counted by cTrue's filter?
+    let mut sc0_checked = 0u64;
+    let mut sc0_interior = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.k == 0 { continue; }
+        let g3 = s3(e);
+        let (a2, b2) = span_nogap(&g3);
+        if a2 != a || b2 != b { continue; }
+        let p = if e.dl == 1 { e.k } else { e.k - 1 };
+        let mu_before = mu(e, p);
+        let mu_after = mu(&g3, p);
+        if mu_after != mu_before + 1 { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        let sc = al.abs().max(be.abs());
+        if sc != 0 { continue; }
+        sc0_checked += 1;
+        if a < e.k && e.k < b + 1 { sc0_interior += 1; }
+    }
+    eprintln!("[sc0-interior] siteCost==0 cases: {sc0_checked}, interior to (A,B+1): {sc0_interior}");
     // Print raw (alpha,beta,d(kstar-1),d(kstar)) for delta=true interior-ascent cases.
     let mut printed3 = 0;
     for e in dist.keys() {
