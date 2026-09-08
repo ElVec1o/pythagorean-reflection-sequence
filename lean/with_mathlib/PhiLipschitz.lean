@@ -3676,4 +3676,80 @@ theorem phiZ_eq_zero_imp_sameElt_one {g : EltBridge.Elt} (h0 : PhiZ g = 0) :
   rw [hd j]
   rfl
 
+
+theorem trivial_siteCost0_val (g : EltBridge.Elt) (hk : g.kstar = 0)
+    (hd : ∀ j, g.d j = 0) :
+    g.toPathData.siteCost 0
+      = if g.delta = false ∧ g.eps = 1 then 0 else if g.delta = true then 1 else 2 := by
+  have heps := g.heps
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  simp only [EltBridge.Elt.toPathData, hd, hk]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ
+  · simp only [hδ, if_true, if_false]
+    rcases heps with he | he <;> simp [he]
+  · simp only [hδ]
+    rcases heps with he | he <;> simp [he]
+
+theorem trivial_PhiZ_val (g : EltBridge.Elt) (hk : g.kstar = 0) (hd : ∀ j, g.d j = 0) :
+    PhiZ g = if g.delta = false ∧ g.eps = 1 then 0 else if g.delta = true then 1 else 2 := by
+  have hlrs := trivial_lRTrue_eq_siteCost0 hk hd
+  have hcz : cTrue g = 0 := by
+    unfold cTrue
+    have hoc : occTrue g = ∅ := by
+      unfold occTrue
+      rw [Finset.filter_eq_empty_iff]
+      intro j _
+      rw [hd j, hk, SiteCost.travel_of_kstar_zero]
+      simp
+    have hA : ATrue g = 0 := by unfold ATrue; rw [dif_neg (by rw [hoc]; simp)]
+    have hB : BTrue g = -1 := by unfold BTrue; rw [dif_neg (by rw [hoc]; simp)]
+    rw [hA, hB]
+    have hshield : ¬ ShieldFires g := by
+      rintro ⟨-, -, -, ⟨j, hj1, hj2⟩⟩
+      exact hj2 (hd j)
+    rw [if_neg (fun h => hshield h.1)]
+    norm_num
+  unfold PhiZ
+  rw [hlrs, hcz, trivial_siteCost0_val g hk hd]
+  split_ifs <;> ring
+
+theorem trivial_descent (g : EltBridge.Elt) (hk : g.kstar = 0) (hd : ∀ j, g.d j = 0)
+    (hne : ¬ (g.delta = false ∧ g.eps = 1)) :
+    PhiZ (EltBridge.Elt.s1 g) < PhiZ g ∨ PhiZ (EltBridge.Elt.s2 g) < PhiZ g := by
+  have hkg := trivial_PhiZ_val g hk hd
+  have hk1 : (EltBridge.Elt.s1 g).kstar = 0 := by rw [EltBridge.Elt.s1_kstar]; exact hk
+  have hd1 : ∀ j, (EltBridge.Elt.s1 g).d j = 0 := by rw [EltBridge.Elt.s1_d]; exact hd
+  have hk2 : (EltBridge.Elt.s2 g).kstar = 0 := by
+    show g.kstar = 0; exact hk
+  have hd2 : ∀ j, (EltBridge.Elt.s2 g).d j = 0 := by
+    show ∀ j, g.d j = 0; exact hd
+  have hval1 := trivial_PhiZ_val (EltBridge.Elt.s1 g) hk1 hd1
+  have hval2 := trivial_PhiZ_val (EltBridge.Elt.s2 g) hk2 hd2
+  have hδ1 : (EltBridge.Elt.s1 g).delta = !g.delta := rfl
+  have hδ2 : (EltBridge.Elt.s2 g).delta = !g.delta := rfl
+  have heps2 : (EltBridge.Elt.s2 g).eps = -g.eps := rfl
+  have heps1 : (EltBridge.Elt.s1 g).eps = g.eps := rfl
+  have heps := g.heps
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ
+  · -- delta = true
+    rcases heps with he | he
+    · left
+      rw [hval1, hδ1, hδ, heps1, he]
+      rw [hkg, hδ, he]
+      simp
+    · right
+      rw [hval2, hδ2, hδ, heps2, he]
+      rw [hkg, hδ, he]
+      simp
+  · -- delta = false, so eps must be -1 (else hne contradicted)
+    have he : g.eps = -1 := by
+      rcases heps with h | h
+      · exact absurd ⟨hδ, h⟩ hne
+      · exact h
+    left
+    rw [hval1, hδ1, hδ, heps1, he]
+    rw [hkg, hδ, he]
+    simp
+
 end PhiLipschitz
