@@ -430,6 +430,29 @@ fn main() {
         if sc == 1 { sc1_count += 1; }
     }
     eprintln!("[sc-dist-interior] siteCost(kstar)==1 count: {sc1_count}, full dist: {:?}", sc_dist);
+    // Print raw (alpha,beta,d(kstar-1),d(kstar)) for delta=true interior-ascent cases.
+    let mut printed3 = 0;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        let g3 = s3(e);
+        let (a2, b2) = span_nogap(&g3);
+        if a2 != a || b2 != b { continue; }
+        let dlr = lr_on(&g3, a2, b2) - lr_on(e, a, b);
+        if dlr <= 0 { continue; }
+        if e.k == 0 || e.k == a || e.k == b { continue; }
+        if e.dl != 1 { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        let dkm1 = dep(&e.lamps, e.k - 1);
+        let dk = dep(&e.lamps, e.k);
+        if printed3 < 20 {
+            eprintln!("[raw-interior] alpha={} beta={} d(k-1)={} d(k)={} eps={} k={} A={} B={}",
+                al, be, dkm1, dk, e.eps, e.k, a, b);
+            printed3 += 1;
+        }
+    }
     // Dump raw truth table for delta=true, boundary, kstar!=0, s3-fails cases.
     let mut seen: std::collections::HashSet<(i32,i32,i8,bool,bool,bool)> = std::collections::HashSet::new();
     for e in dist.keys() {
