@@ -3877,4 +3877,50 @@ theorem betaAt_s2_kstar (g : EltBridge.Elt) :
   simp only [EltBridge.Elt.toPathData, hpd1, hpe1]
   rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ] <;> ring
 
+
+theorem reaches_exact_of_trivial (g : EltBridge.Elt) (hk : g.kstar = 0)
+    (hd : ∀ j, g.d j = 0) :
+    EltBridge.Elt.Reaches (if g.delta = false ∧ g.eps = 1 then 0
+        else if g.delta = true then 1 else 2) g := by
+  have hd' : g.d = fun _ => 0 := funext hd
+  rcases g.heps with he | he
+  · by_cases hδ : g.delta = true
+    · rw [if_neg (fun h => absurd hδ (by simp [h.1])), if_pos hδ]
+      exact EltBridge.Elt.Reaches.congr (EltBridge.Elt.Reaches.one.s1)
+        ⟨by simp [EltBridge.Elt.one, EltBridge.Elt.s1, hk],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s1, he],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s1, hδ],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s1, hd']⟩
+    · simp only [Bool.not_eq_true] at hδ
+      rw [if_pos ⟨hδ, he⟩]
+      exact EltBridge.Elt.Reaches.congr EltBridge.Elt.Reaches.one
+        ⟨by simp [EltBridge.Elt.one, hk], by simp [EltBridge.Elt.one, he],
+         by simp [EltBridge.Elt.one, hδ], by simp [EltBridge.Elt.one, hd']⟩
+  · by_cases hδ : g.delta = true
+    · rw [if_neg (fun h => absurd hδ (by simp [h.1])), if_pos hδ]
+      exact EltBridge.Elt.Reaches.congr (EltBridge.Elt.Reaches.one.s2)
+        ⟨by simp [EltBridge.Elt.one, EltBridge.Elt.s2, hk],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s2, he],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s2, hδ],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s2, hd']⟩
+    · simp only [Bool.not_eq_true] at hδ
+      rw [if_neg (by simp [hδ, he]), if_neg (by simp [hδ])]
+      exact EltBridge.Elt.Reaches.congr (EltBridge.Elt.Reaches.one.s2.s1)
+        ⟨by simp [EltBridge.Elt.one, EltBridge.Elt.s1, EltBridge.Elt.s2, hk],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s1, EltBridge.Elt.s2, he],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s1, EltBridge.Elt.s2, hδ],
+         by simp [EltBridge.Elt.one, EltBridge.Elt.s1, EltBridge.Elt.s2, hd']⟩
+
+theorem wordLength_eq_phiZ_of_trivial (g : EltBridge.Elt) (hk : g.kstar = 0)
+    (hd : ∀ j, g.d j = 0) : (EltBridge.Elt.wordLength g : ℤ) = PhiZ g := by
+  have hval := trivial_PhiZ_val g hk hd
+  have hreach := reaches_exact_of_trivial g hk hd
+  have hle : EltBridge.Elt.wordLength g
+      ≤ (if g.delta = false ∧ g.eps = 1 then 0 else if g.delta = true then 1 else 2) :=
+    EltBridge.Elt.wordLength_le hreach
+  have hreachable : EltBridge.Elt.Reachable g := ⟨_, hreach⟩
+  have hge := wordLength_ge_lRTrue_add_two_cTrue hreachable
+  unfold PhiZ at hge hval ⊢
+  split_ifs at hval hle <;> omega
+
 end PhiLipschitz
