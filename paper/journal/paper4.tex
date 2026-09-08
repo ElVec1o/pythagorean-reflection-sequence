@@ -868,7 +868,10 @@ independent count of the same fact). \texttt{\#print axioms} shows only
 half only: the passage from ``infinite order in the abstract group $W_m$'' to an actual
 word-length coincidence in the geometric reflection group -- already established
 elsewhere in this paper's argument, but not re-derived from this Lean lemma -- is not
-part of the formalization.
+part of the formalization. The other half of the corollary, that the depth $m+m/d$ is
+minimized by the largest valid divisor $d$, is the one-line \texttt{Nat} monotonicity
+fact \texttt{depth\_antitone} in the same file; the identification of that largest
+divisor with $m/p$ ($p$ the least prime factor) is not formalized.
 \end{remark}
 
 \begin{remark}\label{rem:onset-m3}

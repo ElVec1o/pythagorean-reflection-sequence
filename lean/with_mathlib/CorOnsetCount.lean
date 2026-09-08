@@ -13,10 +13,14 @@ do not" -- that needs a `Finset`-cardinality argument bridging the two, which is
 here from scratch (independent of `pairCount`, so this is also a second, independent
 count of the same combinatorial fact).
 
+`depth_antitone` at the end is the corollary's other half: the depth `m + m/d` is
+antitone in `d`, so the largest valid divisor always minimizes it (pure `Nat` division
+monotonicity, one line).
+
 What this file does NOT do: connect "infinite order in the abstract group `W_m`" to an
-actual geodesic/word-length coincidence in the reflection group. That translation step
-(needed for the full statement of `cor:onset`) was not located in this development and is
-not attempted here.
+actual geodesic/word-length coincidence in the reflection group, or identify the largest
+valid divisor `d <= m/2` with `m / m.minFac`. Those steps (needed for the full statement
+of `cor:onset`) were not located in this development and are not attempted here.
 
 No `sorry`.
 -/
@@ -134,8 +138,19 @@ theorem infiniteOrder_count (m n : ℕ) (hnm : n ≤ m) (hn : 2 ≤ n) :
   rw [hfilt, Finset.card_sdiff, Finset.singleton_inter_of_mem hmem, Finset.card_singleton,
     admPairs_card]
 
+/-- **The depth-minimization arithmetic of `cor:onset`.** The depth `m + m/d` at which a
+divisor `d` of `m` contributes its `d^2-1` relations is (weakly) antitone in `d`: taking
+`d` as large as possible always minimizes it, among any two valid divisors. (Pure `Nat`
+division monotonicity; does not need `d1`, `d2` to divide `m`.) The paper's further
+identification of the largest valid `d <= m/2` with `m / m.minFac` is not formalized
+here. -/
+theorem depth_antitone {m d1 d2 : ℕ} (hd1 : 0 < d1) (h : d1 ≤ d2) :
+    m + m / d2 ≤ m + m / d1 :=
+  Nat.add_le_add_left (Nat.div_le_div_left h hd1) m
+
 end CoxeterTorsion
 
 -- Rule 5 axiom audit.
 #print axioms CoxeterTorsion.admPairs_card
 #print axioms CoxeterTorsion.infiniteOrder_count
+#print axioms CoxeterTorsion.depth_antitone
