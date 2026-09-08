@@ -3923,4 +3923,108 @@ theorem wordLength_eq_phiZ_of_trivial (g : EltBridge.Elt) (hk : g.kstar = 0)
   unfold PhiZ at hge hval ⊢
   split_ifs at hval hle <;> omega
 
+
+
+theorem alphaAt_kstar_eq_of_left_boundary (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hleft : g.kstar = ATrue g) :
+    g.toPathData.alphaAt g.kstar = if g.delta = true then 0 else g.eps := by
+  have hlt : g.kstar - 1 < ATrue g := by rw [hleft]; omega
+  have hd0 : g.d (g.kstar - 1) = 0 := d_eq_zero_of_lt_ATrue g hlt
+  unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD SiteCost.vArr
+  simp only [EltBridge.Elt.toPathData]
+  rw [hd0]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ, hk0]
+
+theorem betaAt_kstar_eq_of_right_boundary (g : EltBridge.Elt) (hright : g.kstar = BTrue g + 1) :
+    g.toPathData.betaAt g.kstar = if g.delta = true then -g.eps else 0 := by
+  have hd0 := d_eq_zero_of_gt_BTrue g (j := g.kstar) (by rw [hright]; omega)
+  unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+  simp only [EltBridge.Elt.toPathData]
+  rw [hd0]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ]
+
+
+
+
+
+
+
+theorem siteCost_descent_left_delta_false (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hd : g.delta = false) (hleft : g.kstar = ATrue g) :
+    (s1 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar ∨
+      (s2 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar := by
+  have ha1 := alphaAt_s1_kstar g
+  have hb1 := betaAt_s1_kstar g
+  have ha2 := alphaAt_s2_kstar g
+  have hb2 := betaAt_s2_kstar g
+  have heps := g.heps
+  unfold SiteCost.PathData.siteCost
+  have hpin := alphaAt_kstar_eq_of_left_boundary g hk0 hleft
+  have hpar := alphaAt_betaAt_kstar_parity g
+  rw [hpin] at hpar
+  rcases heps with he | he <;>
+    simp [hd, he] at hpin hpar <;>
+    simp [hd, he, hpin] at ha1 ha2 hb1 hb2 <;>
+    · have hbne : g.toPathData.betaAt g.kstar ≠ 0 := by omega
+      rw [ha1, hb1, ha2, hb2, hpin]
+      omega
+
+theorem siteCost_descent_right_delta_true (g : EltBridge.Elt)
+    (hd : g.delta = true) (hright : g.kstar = BTrue g + 1) :
+    (s1 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar ∨
+      (s2 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar := by
+  have ha1 := alphaAt_s1_kstar g
+  have hb1 := betaAt_s1_kstar g
+  have ha2 := alphaAt_s2_kstar g
+  have hb2 := betaAt_s2_kstar g
+  have heps := g.heps
+  unfold SiteCost.PathData.siteCost
+  have hpin := betaAt_kstar_eq_of_right_boundary g hright
+  have hpar := alphaAt_betaAt_kstar_parity g
+  rw [hpin] at hpar
+  rcases heps with he | he <;>
+    simp [hd, he] at hpin hpar <;>
+    simp [hd, he, hpin] at ha1 ha2 hb1 hb2 <;>
+    · have hane : g.toPathData.alphaAt g.kstar ≠ 0 := by omega
+      rw [ha1, hb1, ha2, hb2, hpin]
+      omega
+
+theorem siteCost_descent_left_delta_true (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hd : g.delta = true) (hleft : g.kstar = ATrue g)
+    (hsign : g.toPathData.betaAt g.kstar * g.eps < 0) :
+    (s1 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar ∨
+      (s2 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar := by
+  have ha1 := alphaAt_s1_kstar g
+  have hb1 := betaAt_s1_kstar g
+  have ha2 := alphaAt_s2_kstar g
+  have hb2 := betaAt_s2_kstar g
+  have heps := g.heps
+  unfold SiteCost.PathData.siteCost
+  have hpin := alphaAt_kstar_eq_of_left_boundary g hk0 hleft
+  have hpar := alphaAt_betaAt_kstar_parity g
+  rw [hpin] at hpar
+  rcases heps with he | he <;>
+    simp [hd, he] at hpin hsign hpar <;>
+    simp [hd, he, hpin] at ha1 ha2 hb1 hb2 <;>
+    (left; rw [ha1, hb1, hpin]; omega)
+
+theorem siteCost_descent_right_delta_false (g : EltBridge.Elt)
+    (hd : g.delta = false) (hright : g.kstar = BTrue g + 1)
+    (hsign : g.toPathData.alphaAt g.kstar * g.eps > 0) :
+    (s1 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar ∨
+      (s2 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar := by
+  have ha1 := alphaAt_s1_kstar g
+  have hb1 := betaAt_s1_kstar g
+  have ha2 := alphaAt_s2_kstar g
+  have hb2 := betaAt_s2_kstar g
+  have heps := g.heps
+  unfold SiteCost.PathData.siteCost
+  have hpin := betaAt_kstar_eq_of_right_boundary g hright
+  have hpar := alphaAt_betaAt_kstar_parity g
+  rw [hpin] at hpar
+  rcases heps with he | he <;>
+    simp [hd, he] at hpin hsign hpar <;>
+    simp [hd, he, hpin] at ha1 ha2 hb1 hb2 <;>
+    (left; rw [ha1, hb1, hpin]; omega)
+
 end PhiLipschitz
