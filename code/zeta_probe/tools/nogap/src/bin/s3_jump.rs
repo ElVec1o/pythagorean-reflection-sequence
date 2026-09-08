@@ -349,6 +349,67 @@ fn main() {
     }
     eprintln!("[sign-check] left+delta=true: beta*eps<0 holds in {lt_ok}/{lt_checked}");
     eprintln!("[sign-check] right+delta=false: alpha*eps>0 holds in {rf_ok}/{rf_checked}");
+    // Nail the EXACT boundary relation for delta=true "s3-fails" cases: is kstar == ATrue,
+    // ATrue-1, BTrue, or BTrue+1?
+    let mut rel_counts: std::collections::HashMap<&str, u64> = std::collections::HashMap::new();
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.k == 0 { continue; }
+        if e.dl != 1 { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        if al.abs().max(be.abs()) == 0 { continue; }
+        let rel = if e.k == a { "k=A" } else if e.k == a - 1 { "k=A-1" }
+            else if e.k == b { "k=B" } else if e.k == b + 1 { "k=B+1" } else { "other" };
+        *rel_counts.entry(rel).or_insert(0) += 1;
+    }
+    eprintln!("[rel-delta1] {:?}", rel_counts);
+    // Check: in the window-UNCHANGED + s3-ascent case, is kstar always at the boundary
+    // of the mu-window [ATrue,BTrue]?
+    let mut wu_ascent_checked = 0u64;
+    let mut wu_ascent_boundary = 0u64;
+    let mut wu_ascent_kstar0 = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        let g3 = s3(e);
+        let (a2, b2) = span_nogap(&g3);
+        if a2 != a || b2 != b { continue; } // window must be unchanged
+        let dlr = lr_on(&g3, a2, b2) - lr_on(e, a, b);
+        if dlr <= 0 { continue; } // only the ascent sub-case
+        wu_ascent_checked += 1;
+        if e.k == 0 { wu_ascent_kstar0 += 1; continue; }
+        if e.k == a || e.k == b { wu_ascent_boundary += 1; }
+    }
+    eprintln!("[wu-ascent] checked={wu_ascent_checked} kstar=0:{wu_ascent_kstar0} at boundary(A or B):{wu_ascent_boundary}");
+    // For the genuinely INTERIOR window-unchanged-ascent cases, does phi(s1) or phi(s2) < phi(g)?
+    let mut int_checked = 0u64;
+    let mut int_s1_or_s2 = 0u64;
+    let mut int_neither = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        let g3 = s3(e);
+        let (a2, b2) = span_nogap(&g3);
+        if a2 != a || b2 != b { continue; }
+        let dlr = lr_on(&g3, a2, b2) - lr_on(e, a, b);
+        if dlr <= 0 { continue; }
+        if e.k == 0 || e.k == a || e.k == b { continue; } // skip boundary/zero, already handled
+        int_checked += 1;
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        if phi(&g1) < ph || phi(&g2) < ph { int_s1_or_s2 += 1; }
+        else { int_neither += 1; }
+    }
+    eprintln!("[wu-ascent-interior] checked={int_checked} s1-or-s2-works={int_s1_or_s2} neither={int_neither}");
     // Dump raw truth table for delta=true, boundary, kstar!=0, s3-fails cases.
     let mut seen: std::collections::HashSet<(i32,i32,i8,bool,bool,bool)> = std::collections::HashSet::new();
     for e in dist.keys() {
