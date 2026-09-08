@@ -4843,4 +4843,34 @@ theorem descent_of_siteCost_zero_interior_s2 (g : EltBridge.Elt) (hk0 : g.kstar 
   push_cast
   omega
 
+
+theorem exists_descent (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hne : ¬ EltBridge.Elt.SameElt g EltBridge.Elt.one) :
+    PhiZ (s1 g) < PhiZ g ∨ PhiZ (s2 g) < PhiZ g ∨ PhiZ (s3 g) < PhiZ g := by
+  by_cases hcase : ∃ h1 : (occTrue g).Nonempty, ∃ h2 : (occTrue (s3 g)).Nonempty,
+      ATrue (s3 g) = ATrue g ∧ BTrue (s3 g) = BTrue g ∧
+      (lRTrue (s3 g) : ℤ) = lRTrue g + 1
+  · obtain ⟨h1, h2, hA, hB, hlr⟩ := hcase
+    have hasc := mu_ascent_of_lRTrue_ascent_window_unchanged g hA hB hlr
+    by_cases hM : 0 < g.toPathData.siteCost g.kstar
+    · by_cases hd : g.delta = true
+      · rw [if_pos hd] at hasc
+        rcases descent_of_ascent_true g hk0 hd hasc hM with hh | hh
+        · left; exact hh
+        · right; left; exact hh
+      · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+        rw [if_neg (by rw [hd']; simp)] at hasc
+        rcases descent_of_ascent_false g hk0 hd' hasc hM with hh | hh
+        · left; exact hh
+        · right; left; exact hh
+    · have hM0 : g.toPathData.siteCost g.kstar = 0 := by omega
+      have hint := kstar_interior_of_siteCost_zero_ascent g hk0 h1 h2 hA hB hM0
+      have hintIoo : g.kstar ∈ Finset.Ioo (ATrue g) (BTrue g + 1) := by
+        simp only [Finset.mem_Ioo]; omega
+      left; exact descent_of_siteCost_zero_interior g hk0 hM0 hintIoo
+  · push_neg at hcase
+    exact exists_descent_of_not_window_unchanged_ascent g hne hk0
+      (fun ⟨h1, h2, hA, hB, hlr⟩ => absurd hlr (by
+        intro hlr'; exact absurd (hcase h1 h2 hA hB) (by simp [hlr'])))
+
 end PhiLipschitz
