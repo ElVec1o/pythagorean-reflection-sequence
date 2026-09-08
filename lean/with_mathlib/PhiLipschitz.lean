@@ -3815,4 +3815,31 @@ theorem descent_of_s3g_empty (g : EltBridge.Elt) (he : occTrue (s3 g) = ∅) :
   have heq := phiZ_s3_eq_lRTrue_dist g
   omega
 
+
+theorem alphaAt_sub_betaAt_kstar (g : EltBridge.Elt) :
+    g.toPathData.alphaAt g.kstar - g.toPathData.betaAt g.kstar
+      = g.d (g.kstar - 1) - g.d g.kstar - SiteCost.vArr g.kstar + g.eps := by
+  unfold SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD
+  simp only [EltBridge.Elt.toPathData]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ] <;> ring
+
+theorem travel_kstar_pred_sub_kstar (g : EltBridge.Elt) :
+    SiteCost.travel g.kstar (g.kstar - 1) - SiteCost.travel g.kstar g.kstar
+      = if g.kstar = 0 then 0 else 1 := by
+  unfold SiteCost.travel
+  split_ifs <;> omega
+
+theorem alphaAt_betaAt_kstar_parity (g : EltBridge.Elt) :
+    (g.toPathData.alphaAt g.kstar - g.toPathData.betaAt g.kstar) % 2 = 0 := by
+  have hd := alphaAt_sub_betaAt_kstar g
+  have hp1 := g.hpar (g.kstar - 1)
+  have hp2 := g.hpar g.kstar
+  have ht := travel_kstar_pred_sub_kstar g
+  have heps := g.heps
+  have hvarr : SiteCost.vArr g.kstar = if g.kstar = 0 then 1 else 0 := by
+    unfold SiteCost.vArr
+    rfl
+  split_ifs at ht hvarr with hk0 <;> rw [hvarr] at hd <;> omega
+
 end PhiLipschitz
