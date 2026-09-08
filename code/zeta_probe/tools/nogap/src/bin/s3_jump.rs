@@ -566,6 +566,22 @@ fn main() {
         eprintln!("[k0-combo] dl={} sfg={} sf1={} cut0g={} cut0s1={} -> s1={} s2={} total={}",
             k.0, k.1, k.2, k.3, k.4, v.0, v.1, v.2);
     }
+    // How many of the "kstar=0 nontrivial" cases are genuine growth-transitions (window
+    // moves) vs window-unchanged-ascent (already closed)?
+    let mut growth_checked = 0u64;
+    let mut wu_checked = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        if e.k != 0 { continue; }
+        if e.lamps.iter().all(|&(_,v)| v == 0) { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let (a, b) = span_nogap(e);
+        let (a2, b2) = span_nogap(&g3);
+        if a2 == a && b2 == b { wu_checked += 1; } else { growth_checked += 1; }
+    }
+    eprintln!("[k0-split] window-unchanged-ascent: {wu_checked}, genuine growth-transition: {growth_checked}");
     // Print raw (alpha,beta,d(kstar-1),d(kstar)) for delta=true interior-ascent cases.
     let mut printed3 = 0;
     for e in dist.keys() {
