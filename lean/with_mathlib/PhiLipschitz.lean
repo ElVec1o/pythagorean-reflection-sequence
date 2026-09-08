@@ -4069,4 +4069,47 @@ theorem descent_of_Bincrease_via_s1_or_s2 (g : EltBridge.Elt) (hk0 : g.kstar ≠
   · left; unfold PhiZ; rw [hlR1, hc1]; push_cast; omega
   · right; unfold PhiZ; rw [hlR2, hc2]; push_cast; omega
 
+
+theorem descent_of_Adecrease_via_s1_or_s2 (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g - 1) (hB : BTrue (s3 g) = BTrue g)
+    (hd : g.delta = false) :
+    PhiZ (s1 g) < PhiZ g ∨ PhiZ (s2 g) < PhiZ g := by
+  have h1' : ¬ (g.delta = true) := by rw [hd]; simp
+  have hkeq : g.kstar = ATrue g := by
+    have hc := crossed_eq_of_Adecrease g h2 hA
+    rw [if_neg h1', hA] at hc
+    omega
+  have hnotint : g.kstar ∉ Finset.Ioo (ATrue g) (BTrue g + 1) := by simp [hkeq]
+  have hAB : ATrue g ≤ BTrue g := by
+    obtain ⟨x, hx⟩ := h1
+    exact le_trans (ATrue_le hx) (le_BTrue hx)
+  have hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := by
+    rw [hkeq]; simp only [Finset.mem_Icc]; omega
+  have hc1 : cTrue (s1 g) = cTrue g := cTrue_s1_eq_of_not_interior_ne_zero g hk0 hnotint
+  have hc2 : cTrue (s2 g) = cTrue g := cTrue_s2_eq_of_not_interior_ne_zero g hk0 hnotint
+  have hmu1 : (∑ j ∈ Finset.Icc (ATrue (s1 g)) (BTrue (s1 g)), ((s1 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s1, BTrue_s1]
+    exact Finset.sum_congr rfl
+      (fun j _ => by unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData])
+  have hmu2 : (∑ j ∈ Finset.Icc (ATrue (s2 g)) (BTrue (s2 g)), ((s2 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s2, BTrue_s2]
+    exact Finset.sum_congr rfl
+      (fun j _ => by unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData])
+  have hlR1 : (lRTrue (s1 g) : ℤ)
+      = (lRTrue g : ℤ) + (((s1 g).toPathData.siteCost g.kstar : ℤ)
+          - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue; push_cast
+    rw [hmu1, siteSum_sub_eq_at_kstar_s1 g hkw]; ring
+  have hlR2 : (lRTrue (s2 g) : ℤ)
+      = (lRTrue g : ℤ) + (((s2 g).toPathData.siteCost g.kstar : ℤ)
+          - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue; push_cast
+    rw [hmu2, siteSum_sub_eq_at_kstar_s2 g hkw]; ring
+  rcases siteCost_descent_left_delta_false g hk0 hd hkeq with hs1 | hs2
+  · left; unfold PhiZ; rw [hlR1, hc1]; push_cast; omega
+  · right; unfold PhiZ; rw [hlR2, hc2]; push_cast; omega
+
 end PhiLipschitz
