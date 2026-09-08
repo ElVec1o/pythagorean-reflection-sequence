@@ -14415,3 +14415,37 @@ Atom status, final for this session:
 - All descent sub-cases except siteCost(kstar)=0-under-window-unchanged-ascent: 🟢 VERIFIED
 - siteCost(kstar)=0 sub-case: 🟠 newly characterized, not yet closed (next concrete target)
 - Full general upper bound (wordLength <= lRTrue+2cTrue): 🟡 one lemma away
+
+## Block: siteCost=0 sub-case confirmed closeable, mechanism understood, formalization pending
+
+Worked out the mechanism for the last remaining gap (siteCost(kstar)=0 under window-unchanged
+ascent). By hand: if siteCost(kstar)=0, alpha=beta=0, and BOTH s1 and s2 shift (alpha,beta) to
+magnitude exactly 1 in every coordinate (since the shifts are always +-eps in each slot) --
+so siteCost(kstar) jumps 0->1 under EITHER generator, unconditionally. Via the exchange
+formula, this gives PhiZ movement = (1-0) + 2*([1=0]-[0=0]) = 1 - 2 = -1 (a clean descent)
+PROVIDED kstar is actually counted by cTrue's interior filter (Ioo(ATrue,BTrue+1)) -- losing a
+phantom, uncounted cut wouldn't help. Confirmed numerically (100%, 5562/5562 at depth 25):
+kstar is ALWAYS interior in this exact sub-case. This is not yet formalized in Lean (would
+need a fresh small lemma showing kstar strictly between ATrue and BTrue+1 whenever siteCost
+(kstar)=0 together with the ascent+window-unchanged hypotheses) -- the mechanism is fully
+understood and numerically airtight, just not yet written as a checked proof.
+
+**Final honest status of this extended session's work on the general upper bound**:
+- Lower bound (wordLength >= lRTrue+2cTrue), ALL g: 🟢 VERIFIED, complete (prior session arc)
+- Upper bound, trivial class: 🟢 VERIFIED, complete, EXACT both directions
+- Upper bound, general g: 🟡 `exists_descent_of_hM` gives the full descent-existence argument
+  MODULO one precisely-scoped, numerically-airtight (100% at depth 25), mechanism-understood-
+  but-not-yet-Lean-verified sub-case (siteCost(kstar)=0 under window-unchanged ascent implies
+  kstar interior). This is now the single, sharply-defined remaining gap for turning the
+  general upper bound fully green.
+- Once that lemma lands, `exists_descent_of_hM`'s hypothesis discharges unconditionally,
+  giving a genuine, fully unconditional descent-existence theorem for all non-identity g,
+  from which the general upper bound follows by strong induction on PhiZ (mirroring
+  `reaches_phiZ_abs_le`'s Reaches-induction pattern already used for the lower bound), and
+  combined with the lower bound gives the FULL corrected metric identity for all g.
+
+This session (spanning many turns) produced roughly 40 new verified Lean theorems, 3 honestly
+logged and corrected retractions, and multiple genuine mathematical discoveries (the parity
+identity, the boundary-pinning mechanism, the ascent sign/magnitude constraints) that were not
+obvious at the outset and required real back-and-forth between numeric falsification (Rust)
+and formal proof (Lean) to find.
