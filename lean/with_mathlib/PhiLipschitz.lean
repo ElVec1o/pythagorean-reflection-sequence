@@ -4112,4 +4112,69 @@ theorem descent_of_Adecrease_via_s1_or_s2 (g : EltBridge.Elt) (hk0 : g.kstar ≠
   · left; unfold PhiZ; rw [hlR1, hc1]; push_cast; omega
   · right; unfold PhiZ; rw [hlR2, hc2]; push_cast; omega
 
+
+/-- **The descent lemma, EXCEPT for the window-unchanged-with-mu-ascent case.**
+Assembles: the trivial class (via `trivial_descent`), `occTrue (s3 g) = ∅` (via
+`descent_of_s3g_empty`, a direct `s3`-descent), the two direct-descent window-move
+directions (`Bdecrease`, `Aincrease`, both direct `s3`-descents), and the two genuine
+growth directions where `s3` itself ascends (`Bincrease`, `Adecrease`, closed via
+`descent_of_Bincrease_via_s1_or_s2`/`descent_of_Adecrease_via_s1_or_s2`). The one case
+NOT covered: `occTrue g` and `occTrue (s3 g)` both nonempty, window UNCHANGED under `s3`,
+and `s3`'s own movement is an ascent (the `mu`-ascent disjunct of
+`mu_dist_one_unconditional`) -- this needs the interior-kstar machinery
+(`phiZ_dist_le_one_s1/s2_interior`), not yet connected to a genuine descent argument. -/
+theorem exists_descent_of_not_window_unchanged_ascent (g : EltBridge.Elt)
+    (hne : ¬ EltBridge.Elt.SameElt g EltBridge.Elt.one) (hk0 : g.kstar ≠ 0)
+    (hnotcase : ¬ (∃ h1 : (occTrue g).Nonempty, ∃ h2 : (occTrue (s3 g)).Nonempty,
+        ATrue (s3 g) = ATrue g ∧ BTrue (s3 g) = BTrue g ∧
+        (lRTrue (s3 g) : ℤ) = lRTrue g + 1)) :
+    PhiZ (s1 g) < PhiZ g ∨ PhiZ (s2 g) < PhiZ g ∨ PhiZ (s3 g) < PhiZ g := by
+  by_cases h1 : (occTrue g).Nonempty
+  · by_cases h2 : (occTrue (s3 g)).Nonempty
+    · have hdispRaw := min_or_max_unchanged h1 h2 (occTrue_agree_off_p g)
+      have hdisp : ATrue (s3 g) = ATrue g ∨ BTrue (s3 g) = BTrue g := by
+        rcases hdispRaw with hmin | hmax
+        · left; unfold ATrue; rw [dif_pos h1, dif_pos h2, hmin]
+        · right; unfold BTrue; rw [dif_pos h1, dif_pos h2, hmax]
+      by_cases hAeq : ATrue (s3 g) = ATrue g
+      · by_cases hBeq : BTrue (s3 g) = BTrue g
+        · -- window unchanged: use lRTrue_s3_dist_one_of_window_unchanged
+          rcases lRTrue_s3_dist_one_of_window_unchanged g hAeq hBeq with hl | hl
+          · exact absurd ⟨h1, h2, hAeq, hBeq, hl⟩ hnotcase
+          · right; right
+            have heq := phiZ_s3_eq_lRTrue_dist g
+            omega
+        · obtain ⟨hBd1, hBd2⟩ := BTrue_s3_dist_le_one g
+          rcases (by omega : BTrue (s3 g) = BTrue g + 1 ∨ BTrue (s3 g) = BTrue g - 1)
+            with hBp | hBm
+          · by_cases hd : g.delta = true
+            · rcases descent_of_Bincrease_via_s1_or_s2 g hk0 h1 h2 hAeq hBp hd with hh | hh
+              · left; exact hh
+              · right; left; exact hh
+            · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+              exact (not_Bincrease_of_delta_false g h2 hBp hd').elim
+          · by_cases hd : g.delta = false
+            · right; right; exact descent_of_Bdecrease g h1 h2 hAeq hBm hd
+            · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+              exact (not_Bdecrease_of_delta_true g h1 hBm hd').elim
+      · have hBeq : BTrue (s3 g) = BTrue g := hdisp.resolve_left hAeq
+        obtain ⟨hAd1, hAd2⟩ := ATrue_s3_dist_le_one g
+        rcases (by omega : ATrue (s3 g) = ATrue g + 1 ∨ ATrue (s3 g) = ATrue g - 1)
+          with hAp | hAm
+        · by_cases hd : g.delta = true
+          · right; right; exact descent_of_Aincrease g h1 h2 hAp hBeq hd
+          · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+            exact (not_Aincrease_of_delta_false g h1 hAp hd').elim
+        · by_cases hd : g.delta = false
+          · rcases descent_of_Adecrease_via_s1_or_s2 g hk0 h1 h2 hAm hBeq hd with hh | hh
+            · left; exact hh
+            · right; left; exact hh
+          · have hd' : g.delta = true := by revert hd; cases g.delta <;> simp
+            exact (not_Adecrease_of_delta_true g h2 hAm hd').elim
+    · rw [Finset.not_nonempty_iff_eq_empty] at h2
+      right; right; exact descent_of_s3g_empty g h2
+  · exfalso
+    rw [Finset.not_nonempty_iff_eq_empty] at h1
+    exact hk0 (occTrue_g_empty_kstar_zero h1)
+
 end PhiLipschitz
