@@ -248,8 +248,10 @@ axiom audit. Certification is by exit status of a cold elaboration, then by
 `#print axioms`; an empty axiom line is not evidence of success, because it also
 appears for a failed constant.
 
-Ten files use `native_decide` and so trust the Lean compiler in addition to the
-kernel, each such declaration carrying its own reflection axiom. This is
+Nine files (`CensusUniversal`, `CensusWitness`, `ComputableUniversality`,
+`CylCensus`, `PolyaCarlson`, `QZeroSeries`, `SigmaKernel`, `SymbolicUniversality`,
+`UKernel`) use `native_decide` and so trust the Lean compiler in addition to
+the kernel, each such declaration carrying its own reflection axiom. This is
 declared in the papers. `CylCensus.lean` is the slowest target at about 21
 minutes; `SymbolicVerification.lean` needs about 9.6 GB to elaborate and is
 cited by paper 1 as a tier-(i) result. The remaining files use only Lean's standard axioms.
