@@ -114,6 +114,88 @@ fn main() {
     if let Some((e, wl, ph)) = &ub_witness {
         eprintln!("[s3] UB witness: {} wordLength={} phi={}", show(e), wl, ph);
     }
+    let mut descent_checked = 0u64;
+    let mut descent_found = 0u64;
+    let mut descent_missing_witness: Option<Elt> = None;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        descent_checked += 1;
+        let mut found = false;
+        for c in gens_all(e) {
+            if phi(&c) < ph { found = true; break; }
+        }
+        if found { descent_found += 1; }
+        else if descent_missing_witness.is_none() { descent_missing_witness = Some(e.clone()); }
+    }
+    eprintln!("[s3] DESCENT CHECK: strict-decrease generator exists in {descent_found} / {descent_checked} non-identity elements");
+    if let Some(e) = &descent_missing_witness {
+        eprintln!("[s3] descent-missing witness: {} phi={}", show(e), phi(e));
+    }
+    // Characterize WHICH generator descends, by case: trivial (occTrue empty) vs not,
+    // and (for nontrivial) whether s3 alone suffices.
+    let mut trivial_nonone_count = 0u64;
+    let mut trivial_s1_works = 0u64;
+    let mut trivial_s2_works = 0u64;
+    let mut nontrivial_count = 0u64;
+    let mut nontrivial_s3_works = 0u64;
+    let mut nontrivial_s3_fails_other_works = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        let is_trivial = a == 0 && b == -1; // occTrue empty <=> ATrue=0,BTrue=-1
+        if is_trivial {
+            trivial_nonone_count += 1;
+            let g1 = gens_all(e)[0].clone();
+            let g2 = gens_all(e)[1].clone();
+            if phi(&g1) < ph { trivial_s1_works += 1; }
+            if phi(&g2) < ph { trivial_s2_works += 1; }
+        } else {
+            nontrivial_count += 1;
+            let g3 = s3(e);
+            if phi(&g3) < ph { nontrivial_s3_works += 1; }
+            else {
+                let g1 = gens_all(e)[0].clone();
+                let g2 = gens_all(e)[1].clone();
+                if phi(&g1) < ph || phi(&g2) < ph { nontrivial_s3_fails_other_works += 1; }
+            }
+        }
+    }
+    eprintln!("[s3] trivial non-one: {trivial_nonone_count}, s1 descends: {trivial_s1_works}, s2 descends: {trivial_s2_works}");
+    eprintln!("[s3] nontrivial: {nontrivial_count}, s3 descends: {nontrivial_s3_works}, (s3 fails but s1/s2 works): {nontrivial_s3_fails_other_works}");
+    // When s3 fails, characterize s1/s2 exactly, and check siteCost(kstar) relationship.
+    let mut s3fail_s1only = 0u64;
+    let mut s3fail_s2only = 0u64;
+    let mut s3fail_both = 0u64;
+    let mut s3fail_neither = 0u64;
+    let mut s3fail_neither_examples = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        let is_trivial = a == 0 && b == -1;
+        if is_trivial { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let w1 = phi(&g1) < ph;
+        let w2 = phi(&g2) < ph;
+        match (w1, w2) {
+            (true, false) => s3fail_s1only += 1,
+            (false, true) => s3fail_s2only += 1,
+            (true, true) => s3fail_both += 1,
+            (false, false) => {
+                s3fail_neither += 1;
+                if s3fail_neither_examples < 5 {
+                    eprintln!("[descent-fail] {} phi={} k={}", show(e), ph, e.k);
+                    s3fail_neither_examples += 1;
+                }
+            }
+        }
+    }
+    eprintln!("[s3] s3-fails cases: s1-only={s3fail_s1only} s2-only={s3fail_s2only} both={s3fail_both} neither={s3fail_neither}");
 
     let (mut max_jump, mut wsize, mut wit): (i64, i64, Option<(Elt, Elt, i64, i64)>) = (0, i64::MAX, None);
     let mut max_lr: i64 = 0;
