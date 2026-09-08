@@ -13972,3 +13972,48 @@ Do not cite this as "the metric identity is proved" -- it is the lower bound (H1
 This closes essentially all of the "orange" atoms flagged at the start of this session's work
 on phiZ_dist_le_one_s3: all three generators' 1-Lipschitz property is unconditional, and the
 open lower bound it was meant to unlock is now itself proved.
+
+## NEW GOAL SET: the upper-bound direction of the corrected metric identity
+
+Per user instruction to always have an active goal: the lower bound
+(wordLength g >= lRTrue g + 2*cTrue g, commit df784e3) is closed. The natural next goal is
+the UPPER bound: wordLength g <= lRTrue g + 2*cTrue g, for all reachable g -- together these
+would give the FULL corrected metric identity wordLength = lRTrue + 2*cTrue.
+
+Falsify-first (Rust, s3_jump.rs, commit 34a0524): extended the BFS to directly compare
+dist[e] (=wordLength, since BFS from `one` over all 3 generators is exhaustive/optimal)
+against phi(e)=lr_on+2*cuts_on (=lRTrue+2*cTrue in the corrected formalization). Result:
+**0 violations of wordLength <= phi across 17,214,686 elements at BFS depth 34.** Strong
+numeric support for attempting the Lean proof.
+
+Proof strategy (standard for such upper bounds): strong induction on phi(g). Base case
+phi(g)=0 -> SameElt g one (hence wordLength g = 0). Inductive step needs a DESCENT lemma:
+for g not SameElt one, find some generator step h with Gen g h and phi(h) < phi(g) (ideally
+= phi(g)-1), then wordLength(g) <= wordLength(h)+1 <= phi(h)+1 <= phi(g) by IH, using
+Gen.symm (EltBridge.lean, generators are involutions so the Cayley graph is undirected).
+The descent lemma is NOT yet proved and is the real remaining difficulty -- dual to (harder
+than) the Lipschitz work already done, since it requires EXISTENCE of a decreasing step, not
+just a bound on all steps.
+
+Progress this block (commit d65ec1a), VERIFIED (lake build PhiLipschitz clean, full lake
+build 8645 jobs clean, 0 sorry, #print axioms clean on all 5 theorems):
+- `occTrue_empty_of_lRTrue_eq_zero`: lRTrue g = 0 forces occTrue g = empty (else the mu-sum
+  over the nonempty window is >= 1, using a per-site mu>=1 lemma, same technique as the
+  hpos derivation in reaches_phiZ_abs_le's occTrue-empty branch).
+- `siteCost_zero_trivial`/`siteCost_zero_trivial_pos`: on a trivial element (kstar=0, d=0
+  everywhere), computed BY HAND that siteCost(0) = 0 exactly when (delta=false, eps=1) --
+  i.e. matching `one`'s own fields exactly -- and is STRICTLY POSITIVE (1 or 2, depending on
+  the other 3 (delta,eps) combinations) otherwise. This was NOT obvious a priori: a trivial
+  element (no lamps, cursor at 0) can still have nonzero lRTrue if its internal eps/delta
+  state differs from `one`'s canonical state -- matches TrueLengthUpper.lean's existing
+  `wordLength_le_two_of_trivial` (trivial elements can need up to 2 steps to reach `one`
+  exactly, via flipping delta and/or eps).
+- `trivial_lRTrue_eq_siteCost0`: for a trivial element, lRTrue = siteCost(0) exactly (the
+  mu-sum vanishes since occTrue is empty, degenerating ATrue=0, BTrue=-1).
+- `phiZ_eq_zero_imp_sameElt_one`: **the base case**, assembling the above: PhiZ g = 0 forces
+  lRTrue g = 0 and cTrue g = 0 (both nonneg naturals summing/scaling to 0), lRTrue g = 0
+  forces occTrue empty hence g trivial (kstar=0, d≡0 everywhere), and then lRTrue g = 0
+  forces (via siteCost_zero_trivial_pos's contrapositive) exactly (delta=false, eps=1) --
+  giving SameElt g one.
+
+Remaining: the descent lemma (the hard, unstarted part) and the induction assembly itself.
