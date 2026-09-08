@@ -410,6 +410,26 @@ fn main() {
         else { int_neither += 1; }
     }
     eprintln!("[wu-ascent-interior] checked={int_checked} s1-or-s2-works={int_s1_or_s2} neither={int_neither}");
+    // Does siteCost(kstar)==1 ever occur in the interior-ascent regime?
+    let mut sc1_count = 0u64;
+    let mut sc_dist: std::collections::HashMap<i64,u64> = std::collections::HashMap::new();
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        let g3 = s3(e);
+        let (a2, b2) = span_nogap(&g3);
+        if a2 != a || b2 != b { continue; }
+        let dlr = lr_on(&g3, a2, b2) - lr_on(e, a, b);
+        if dlr <= 0 { continue; }
+        if e.k == 0 || e.k == a || e.k == b { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        let sc = al.abs().max(be.abs()) as i64;
+        *sc_dist.entry(sc).or_insert(0) += 1;
+        if sc == 1 { sc1_count += 1; }
+    }
+    eprintln!("[sc-dist-interior] siteCost(kstar)==1 count: {sc1_count}, full dist: {:?}", sc_dist);
     // Dump raw truth table for delta=true, boundary, kstar!=0, s3-fails cases.
     let mut seen: std::collections::HashSet<(i32,i32,i8,bool,bool,bool)> = std::collections::HashSet::new();
     for e in dist.keys() {
