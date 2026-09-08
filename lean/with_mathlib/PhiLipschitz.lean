@@ -5269,4 +5269,41 @@ theorem descent_of_Bincrease_via_s1_or_s2_kstar_zero (g : EltBridge.Elt)
   · left; unfold PhiZ; rw [hlR1, hc1]; omega
   · right; unfold PhiZ; rw [hlR2, hc2]; omega
 
+
+theorem descent_of_shield_case_kstar_zero (g : EltBridge.Elt) (hkz : g.kstar = 0)
+    (hd : g.delta = false) (hsc : ShieldFires g ∧ g.toPathData.cut 0) :
+    PhiZ (s1 g) < PhiZ g := by
+  have hkey := shield_case_delta g hsc.1 hsc.2
+  have hmu1 : (∑ j ∈ Finset.Icc (ATrue (s1 g)) (BTrue (s1 g)), ((s1 g).toPathData.mu j : ℤ))
+      = ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ) := by
+    rw [ATrue_s1, BTrue_s1]
+    exact Finset.sum_congr rfl
+      (fun j _ => by unfold SiteCost.PathData.mu; simp [EltBridge.Elt.toPathData])
+  have hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := kstar_mem_corrected_window g
+  have hlR : (lRTrue (s1 g) : ℤ)
+      = (lRTrue g : ℤ) + (((s1 g).toPathData.siteCost g.kstar : ℤ)
+          - (g.toPathData.siteCost g.kstar : ℤ)) := by
+    unfold lRTrue; push_cast
+    rw [hmu1, siteSum_sub_eq_at_kstar_s1 g hkw]; ring
+  have hs0' : ¬ ShieldFires (s1 g) := by intro h; apply absurd h.2.1; rw [s1]; simp [hd]
+  have hAeq : ATrue g = 0 := ATrue_eq_zero_of_shieldFires hsc.1
+  have hfilt : (Finset.Ioo (ATrue g) (BTrue g + 1)).filter (s1 g).toPathData.cut
+      = (Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut :=
+    interior_filter_s1_eq g (by rw [hkz, hAeq]; simp)
+  have e1 : cTrue (s1 g)
+      = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card := by
+    unfold cTrue
+    rw [ATrue_s1, BTrue_s1, if_neg (fun h : ShieldFires (s1 g) ∧ (s1 g).toPathData.cut 0 => hs0' h.1), hfilt]
+    simp
+  have e2 : cTrue g
+      = ((Finset.Ioo (ATrue g) (BTrue g + 1)).filter g.toPathData.cut).card + 1 := by
+    unfold cTrue; rw [if_pos hsc]
+  have hc : (cTrue (s1 g) : ℤ) = (cTrue g : ℤ) - 1 := by rw [e1, e2]; push_cast; ring
+  have key : PhiZ (s1 g) - PhiZ g
+      = ((s1 g).toPathData.siteCost g.kstar : ℤ) - (g.toPathData.siteCost g.kstar : ℤ)
+        + 2 * ((0 : ℤ) - 1) := by
+    unfold PhiZ; rw [hlR, hc]; ring
+  rw [hkz] at key
+  linarith [hkey]
+
 end PhiLipschitz
