@@ -14017,3 +14017,30 @@ build 8645 jobs clean, 0 sorry, #print axioms clean on all 5 theorems):
   giving SameElt g one.
 
 Remaining: the descent lemma (the hard, unstarted part) and the induction assembly itself.
+
+## Block: trivial-class descent lemma proved (commit efb63c3)
+
+Extended s3_jump.rs's descent characterization (commit aa749bd): for nontrivial g, s3 alone
+descends phi only ~40% of the time (1330316/3336507); when it fails, s1 or s2 always works
+(707850 s1-only, 707850 s2-only, 590491 both, **0 neither** -- confirms the descent lemma
+holds robustly, just not via s3 alone). For trivial g (kstar=0,d=0 everywhere), only 3 such
+elements appear at depth 30 (kstar stays fixed under s1/s2, so the trivial class is tiny and
+mostly explored already) -- s1 or s2 always descends there too.
+
+Proved this trivial-class case in Lean: `trivial_siteCost0_val` (exact numeric value of
+siteCost(0) as a function of (delta,eps): 0 if (false,1), 1 if delta=true, 2 if (false,-1)),
+`trivial_PhiZ_val` (PhiZ g on the trivial class equals that same value, since cTrue=0 always
+there), `trivial_descent` (for g trivial and not (delta=false,eps=1) [i.e. not one], s1
+strictly decreases PhiZ UNLESS (delta=true,eps=-1), in which case s2 does -- an explicit
+case-by-case construction, not just an existence argument). VERIFIED: lake build
+PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry, #print axioms clean
+([propext, Classical.choice, Quot.sound]) on all 3 theorems.
+
+Remaining, substantially harder, NOT yet proved: the nontrivial-class descent lemma (occTrue
+g nonempty). Numerically confirmed to hold (0 "neither" cases / 3336507 nontrivial elements
+at depth 30, aa749bd) but the case split (s3 alone works ~40%, else s1/s2 split 707850/
+707850/590491) does not yet have a clean by-hand characterization -- needs the same kind of
+by-hand derivation that closed lRTrue's window-move directions, likely conditioned on
+siteCost(kstar)'s exact alphaAt/betaAt values and whether s3's specific direction (Bincrease
+etc.) happens to be the movement-reducing one for the CURRENT g, not just the abstract
+existence of some g'. This is the next concrete sub-goal.
