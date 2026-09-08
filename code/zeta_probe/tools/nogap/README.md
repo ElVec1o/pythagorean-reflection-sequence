@@ -14044,3 +14044,35 @@ by-hand derivation that closed lRTrue's window-move directions, likely condition
 siteCost(kstar)'s exact alphaAt/betaAt values and whether s3's specific direction (Bincrease
 etc.) happens to be the movement-reducing one for the CURRENT g, not just the abstract
 existence of some g'. This is the next concrete sub-goal.
+
+## Block: descent lemmas for the window-SHRINK s3 directions (commit 8d7ff0c)
+
+**Retraction (caught before committing, not after)**: initially attempted `descent_of_Adecrease`
+using `lRTrue_s3_eq_of_Adecrease_delta_false'`, assuming "Adecrease" (ATrue(s3g)=ATrue g - 1)
+was a window-SHRINK case. It is not -- ATrue DECREASING means the window's left edge moves
+further left, i.e. the window GROWS, and indeed that lemma gives `lRTrue(s3g) = lRTrue g + 1`
+(an INCREASE), not a decrease. Caught by the exact_mod_cast type mismatch before any commit.
+The correct pair of window-SHRINK directions (window size decreases, so lRTrue decreases) is
+Bdecrease (BTrue(s3g)=BTrue g - 1, delta=false) and Aincrease (ATrue(s3g)=ATrue g + 1,
+delta=true) -- fixed to use the latter.
+
+Proved (VERIFIED: lake build PhiLipschitz clean, full lake build 8645 jobs clean, 0 sorry,
+#print axioms clean on all 5 theorems):
+- `phiZ_s3_eq_lRTrue_dist`: PhiZ(s3g) - PhiZ(g) = lRTrue(s3g) - lRTrue(g) exactly (trivial
+  corollary of cTrue_s3_eq, but useful as a clean rewrite target for all descent lemmas).
+- `descent_of_Bdecrease`, `descent_of_Aincrease`: the two genuine window-shrink directions
+  give PhiZ(s3g) < PhiZ(g) directly (immediate from the already-proved exact lRTrue values).
+- `descent_of_g_empty`: occTrue g = empty gives PhiZ g < PhiZ(s3g) (an ASCENT, not descent --
+  kept as a true, useful dual fact, not part of the descent dispatch itself).
+- `descent_of_s3g_empty`: occTrue(s3g) = empty gives PhiZ(s3g) < PhiZ(g) (genuine descent,
+  needed a fresh `occTrue g nonempty` derivation via the contrapositive of
+  `occTrue_s3_singleton_of_g_empty`, plus the same per-site mu>=1 argument used elsewhere
+  this session, since `lRTrue_s3_eq_of_occTrue_s3g_empty`'s ℕ-subtraction statement needs
+  `lRTrue g >= 1` to safely cast to ℤ).
+
+Remaining, still the hard/unstarted part: when s3's DETERMINED effect on a given g is a
+GROWTH (Bincrease or Adecrease direction) or a window-unchanged-with-increase, s3 alone does
+NOT provide descent -- per the numeric characterization (commit aa749bd), s1 or s2 must be
+used instead in these cases (707850 s1-only + 707850 s2-only + 590491 both, 0 neither, out of
+2006191 "s3 fails" nontrivial elements at depth 30). This sub-case has NOT been characterized
+by hand yet and is the concrete next step.
