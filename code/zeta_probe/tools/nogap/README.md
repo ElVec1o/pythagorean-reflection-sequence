@@ -14295,3 +14295,52 @@ Atom status update:
 - Growth-case descent, sign conditions ALWAYS holding: 🟡 numerically certain, algebraic proof
   not yet found (the remaining gap)
 - Full nontrivial descent lemma (combining shrink + growth + trivial): 🟠 one derivation away
+
+## 🎆🎆 Block: descent lemma consolidated for ALL cases except window-unchanged-interior-ascent
+
+Untangled a real confusion from the previous block: kstar's numeric coincidence with ATrue/
+BTrue does NOT mean the genuine Bincrease/Adecrease TRANSITION is occurring -- it can equally
+happen under a window-UNCHANGED transition where kstar merely happens to sit at the edge value.
+The two truly-unconditional siteCost_descent lemmas (`_left_delta_false`, `_right_delta_true`)
+turn out to correspond EXACTLY to the two genuine growth transitions (`Adecrease`, `Bincrease`
+respectively) -- confirmed by matching `crossed_eq_of_Adecrease`/`crossed_eq_of_Bincrease`'s
+own conclusions to the boundary hypotheses. Assembled the FULL PhiZ descent (not just local
+siteCost) for both:
+- `descent_of_Bincrease_via_s1_or_s2`, `descent_of_Adecrease_via_s1_or_s2`: combine the
+  boundary siteCost lemma with `cTrue_s1/s2_eq_of_not_interior_ne_zero` (cTrue unchanged,
+  since kstar sits at the boundary of the window, not interior) and the mu-sum invariance
+  under s1/s2, giving the exact lRTrue movement and hence full PhiZ descent. VERIFIED: lake
+  build PhiLipschitz clean, full lake build clean, 0 sorry, #print axioms clean.
+
+Then assembled `exists_descent_of_not_window_unchanged_ascent`: for ANY g with kstar!=0, not
+already SameElt one, EXCEPT the specific case of (occTrue g/occTrue(s3g) both nonempty, window
+UNCHANGED under s3, AND s3's own lRTrue movement is an ascent), some generator among s1,s2,s3
+strictly decreases PhiZ. This covers: the two direct-descent window-move directions
+(Bdecrease, Aincrease, already-proved exact s3-descents), the two growth directions (via the
+new via_s1_or_s2 lemmas), and occTrue(s3g)=empty (direct s3-descent). VERIFIED: lake build
+PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry, #print axioms clean.
+
+**Numerically characterized the one remaining case** (window-unchanged, ascent): 1079877
+instances at depth 30, split into kstar=0 (13017), kstar at the mu-window boundary (320148,
+already numerically confirmed 100% closeable via similar mechanisms), and GENUINELY INTERIOR
+kstar (746712, the majority) -- confirmed 100% closeable numerically (746712/746712, s1 or s2
+always works) but requiring the DIFFERENT interior mechanism (`exchange_sq_le_one`'s siteCost+
+2*cut-flip combined formula, not the simple boundary pinning), which has a known subtlety:
+when siteCost(kstar)=1 exactly, NEITHER a +1 nor -1 shift in isolation gives a strict PhiZ
+decrease via the exchange formula alone (shown by hand earlier) -- the real mechanism must
+involve something else (possibly relating to the SPECIFIC combination of which of
+alphaAt/betaAt is 0 or matches vArr, not yet derived). This is a substantial, separate
+derivation -- not attempted this block, correctly deferred rather than rushed.
+
+Atom status, honest final tally for this session's arc:
+- Trivial class (kstar=0): 🟢 fully closed (trivial_descent + phiZ_eq_zero_imp_sameElt_one)
+- occTrue(s3g) empty: 🟢 closed (descent_of_s3g_empty)
+- Direct s3-descent window moves (Bdecrease, Aincrease): 🟢 closed (already proved this session)
+- Growth-direction window moves (Bincrease, Adecrease): 🟢 CLOSED THIS BLOCK (via s1/s2)
+- Window-unchanged, s3-descends: 🟢 closed (direct, via lRTrue_s3_dist_one_of_window_unchanged)
+- Window-unchanged, s3-ascends, kstar at boundary: 🟡 numerically closeable, Lean proof not
+  yet assembled (should reuse the same siteCost_descent_at_boundary machinery)
+- Window-unchanged, s3-ascends, kstar interior: 🟠 the genuinely hard remaining piece, needs
+  new derivation (exchange formula + cut-flip, c=1 edge case)
+
+This is now the FULL, precise, honest scope of what remains for the general upper bound.
