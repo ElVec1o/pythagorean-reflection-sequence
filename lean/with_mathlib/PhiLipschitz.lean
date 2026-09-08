@@ -4602,4 +4602,27 @@ theorem exists_descent_of_hM (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
       (fun ⟨h1, h2, hA, hB, hlr⟩ => absurd hlr (by
         intro hlr'; exact absurd (hcase h1 h2 hA hB) (by simp [hlr'])))
 
+
+theorem ATrue_mem_occTrue_of_ne_zero {g : EltBridge.Elt} (h1 : (occTrue g).Nonempty)
+    (hne : ATrue g ≠ 0) : ATrue g ∈ occTrue g := by
+  unfold ATrue at hne ⊢
+  rw [dif_pos h1] at hne ⊢
+  have hmin : min 0 ((occTrue g).min' h1) = (occTrue g).min' h1 := by
+    by_cases h : (occTrue g).min' h1 < 0
+    · omega
+    · exfalso; apply hne; omega
+  rw [hmin]
+  exact Finset.min'_mem _ h1
+
+theorem BTrue_mem_occTrue_of_ne_neg_one {g : EltBridge.Elt} (h1 : (occTrue g).Nonempty)
+    (hne : BTrue g ≠ -1) : BTrue g ∈ occTrue g := by
+  unfold BTrue at hne ⊢
+  rw [dif_pos h1] at hne ⊢
+  have hmax : max (-1) ((occTrue g).max' h1) = (occTrue g).max' h1 := by
+    by_cases h : (-1 : ℤ) < (occTrue g).max' h1
+    · omega
+    · exfalso; apply hne; omega
+  rw [hmax]
+  exact Finset.max'_mem _ h1
+
 end PhiLipschitz
