@@ -14076,3 +14076,26 @@ NOT provide descent -- per the numeric characterization (commit aa749bd), s1 or 
 used instead in these cases (707850 s1-only + 707850 s2-only + 590491 both, 0 neither, out of
 2006191 "s3 fails" nontrivial elements at depth 30). This sub-case has NOT been characterized
 by hand yet and is the concrete next step.
+
+## Block: growth-case descent correlation, partial pattern found (commit e168c73)
+
+Correlated (delta, eps, siteCost(kstar), sign(d(kstar)), siteCost(kstar) parity) against
+which of s1/s2 descends, in the "s3 fails to descend" (growth-direction) cases. **Clean
+pattern for siteCost(kstar) in {0,1,2}**: sign(d(kstar)) fully determines which generator
+works (sign=-1 -> s1 always, sign=+1 -> s2 always, sign=0 -> both always) -- 100% deterministic
+in the sampled buckets (e.g. siteCost=1: 10759/10759 s1-only when sign=-1, 0/10759 when
+sign=+1, matching a clean flip). **Breaks down at siteCost(kstar)>=3**: e.g. delta=0,eps=-1,
+siteCost=3,sign_dk=-1 gives a MIXED 2858 s1 / 1561 s2 split, not deterministic by
+(delta,eps,siteCost,sign) alone -- the actual rule must depend on the individual alphaAt(kstar)
+and betaAt(kstar) values separately (which one attains the max), not just their combined
+max and d's sign. This needs a finer correlation (or a direct by-hand derivation from the
+alphaAt/betaAt formulas under a delta flip) before the general growth-case descent lemma can
+be written in Lean. NOT YET attempted in Lean -- numeric-only investigation this block,
+correctly following the falsify/measure-first discipline (Rule 3) before any proof attempt.
+
+This is now the precise, scoped remaining task: derive by hand (using the explicit
+alphaAt(kstar)/betaAt(kstar) formulas, already used throughout this session, under flipping
+delta alone [s1] or delta+eps [s2]) which flip strictly decreases siteCost(kstar) [and,
+via cut(kstar)'s effect on cTrue, doesn't offset that by +2 elsewhere], for the general
+occupied (nonzero d(kstar)) case -- covering all magnitudes of alphaAt/betaAt, not just
+sign of d(kstar) alone.
