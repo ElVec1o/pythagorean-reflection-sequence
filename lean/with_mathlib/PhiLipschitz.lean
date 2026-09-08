@@ -3842,4 +3842,39 @@ theorem alphaAt_betaAt_kstar_parity (g : EltBridge.Elt) :
     rfl
   split_ifs at ht hvarr with hk0 <;> rw [hvarr] at hd <;> omega
 
+
+theorem alphaAt_s1_kstar (g : EltBridge.Elt) :
+    (s1 g).toPathData.alphaAt g.kstar
+      = g.toPathData.alphaAt g.kstar + (if g.delta = true then g.eps else -g.eps) := by
+  have hpd1 : (s1 g).delta = !g.delta := rfl
+  have hpe1 : (s1 g).eps = g.eps := rfl
+  unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD
+  simp only [EltBridge.Elt.toPathData, hpd1, hpe1]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ] <;> ring
+
+theorem betaAt_s1_kstar (g : EltBridge.Elt) :
+    (s1 g).toPathData.betaAt g.kstar
+      = g.toPathData.betaAt g.kstar + (if g.delta = true then g.eps else -g.eps) := by
+  have hpd1 : (s1 g).delta = !g.delta := rfl
+  have hpe1 : (s1 g).eps = g.eps := rfl
+  unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+  simp only [EltBridge.Elt.toPathData, hpd1, hpe1]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ] <;> ring
+
+theorem alphaAt_s2_kstar (g : EltBridge.Elt) :
+    (s2 g).toPathData.alphaAt g.kstar = g.toPathData.alphaAt g.kstar - g.eps := by
+  have hpd1 : (s2 g).delta = !g.delta := rfl
+  have hpe1 : (s2 g).eps = -g.eps := rfl
+  unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD
+  simp only [EltBridge.Elt.toPathData, hpd1, hpe1]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ] <;> ring
+
+theorem betaAt_s2_kstar (g : EltBridge.Elt) :
+    (s2 g).toPathData.betaAt g.kstar = g.toPathData.betaAt g.kstar + g.eps := by
+  have hpd1 : (s2 g).delta = !g.delta := rfl
+  have hpe1 : (s2 g).eps = -g.eps := rfl
+  unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+  simp only [EltBridge.Elt.toPathData, hpd1, hpe1]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ <;> simp [hδ] <;> ring
+
 end PhiLipschitz
