@@ -488,6 +488,84 @@ fn main() {
         if phi(&g3) < ph { k0nt_works += 1; }
     }
     eprintln!("[k0-nontrivial] kstar=0 nontrivial descent via s3 ALONE: {k0nt_works} / {k0nt_checked}");
+    // When s3 fails at kstar=0 nontrivial, does s1 or s2 work?
+    let mut k0f_checked = 0u64;
+    let mut k0f_s1 = 0u64;
+    let mut k0f_s2 = 0u64;
+    let mut k0f_neither = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        if e.k != 0 { continue; }
+        if e.lamps.iter().all(|&(_,v)| v == 0) { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        k0f_checked += 1;
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let w1 = phi(&g1) < ph;
+        let w2 = phi(&g2) < ph;
+        if w1 { k0f_s1 += 1; }
+        if w2 { k0f_s2 += 1; }
+        if !w1 && !w2 { k0f_neither += 1; }
+    }
+    eprintln!("[k0-fail] s3 fails: {k0f_checked}, s1 works: {k0f_s1}, s2 works: {k0f_s2}, neither: {k0f_neither}");
+    // Does ShieldFires ever activate for s1(g) or s2(g) in the kstar=0 nontrivial s3-fails regime?
+    fn shield_fires(e: &Elt) -> bool {
+        e.k == 0 && e.dl == 0
+            && e.lamps.iter().all(|&(j, v)| v == 0 || j >= 0)
+            && e.lamps.iter().any(|&(j, v)| j >= 0 && v != 0)
+    }
+    let mut sf_checked = 0u64;
+    let mut sf_g = 0u64;
+    let mut sf_s1 = 0u64;
+    let mut sf_s2 = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        if e.k != 0 { continue; }
+        if e.lamps.iter().all(|&(_,v)| v == 0) { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        sf_checked += 1;
+        if shield_fires(e) { sf_g += 1; }
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        if shield_fires(&g1) { sf_s1 += 1; }
+        if shield_fires(&g2) { sf_s2 += 1; }
+    }
+    eprintln!("[shield-check] checked={sf_checked} shield(g)={sf_g} shield(s1)={sf_s1} shield(s2)={sf_s2}");
+    // Combined: for kstar=0 nontrivial s3-fails cases, correlate delta, shield(g), shield(s1),
+    // cut(0) status with which generator (s1/s2) works.
+    let mut combo: std::collections::HashMap<(u8,bool,bool,bool,bool),(u64,u64,u64)> = std::collections::HashMap::new();
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        if e.k != 0 { continue; }
+        if e.lamps.iter().all(|&(_,v)| v == 0) { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let w1 = phi(&g1) < ph;
+        let w2 = phi(&g2) < ph;
+        let sfg = shield_fires(e);
+        let sf1 = shield_fires(&g1);
+        let cut0g = is_cut(e, 0);
+        let cut0s1 = is_cut(&g1, 0);
+        let key = (e.dl, sfg, sf1, cut0g, cut0s1);
+        let ent = combo.entry(key).or_insert((0,0,0));
+        if w1 { ent.0 += 1; }
+        if w2 { ent.1 += 1; }
+        ent.2 += 1;
+    }
+    let mut keys: Vec<_> = combo.keys().cloned().collect();
+    keys.sort();
+    for k in keys {
+        let v = combo[&k];
+        eprintln!("[k0-combo] dl={} sfg={} sf1={} cut0g={} cut0s1={} -> s1={} s2={} total={}",
+            k.0, k.1, k.2, k.3, k.4, v.0, v.1, v.2);
+    }
     // Print raw (alpha,beta,d(kstar-1),d(kstar)) for delta=true interior-ascent cases.
     let mut printed3 = 0;
     for e in dist.keys() {
