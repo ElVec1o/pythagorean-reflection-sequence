@@ -855,6 +855,22 @@ throughout. It is increasing in $c$, and $c=1$ contributes $c^2-1=0$ relations,
 so the least depth carrying relations is at $c=2$: depth $3m$, three relations.
 \end{proof}
 
+\begin{remark}[the count, formalized]\label{rem:onset-lean}
+The combinatorial count underlying this corollary -- among the $(n-1)^2$ admissible index
+pairs of Theorem~\textup{\ref{thm:rot}}(iii), exactly one gives a word of finite order in
+$W_m$, so $(n-1)^2-1$ give genuine coincidences -- is formalized as
+\texttt{CoxeterTorsion.infiniteOrder\_count} in
+\texttt{lean/with\_mathlib/CorOnsetCount.lean}, built as a \texttt{Finset}-cardinality
+argument on top of \texttt{Bridge.unique\_finite\_order} and independent of the
+hand-rolled \texttt{pairCount} recursion of \texttt{RotationRelations.lean} (a second,
+independent count of the same fact). \texttt{\#print axioms} shows only
+\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}. This is the counting
+half only: the passage from ``infinite order in the abstract group $W_m$'' to an actual
+word-length coincidence in the geometric reflection group -- already established
+elsewhere in this paper's argument, but not re-derived from this Lean lemma -- is not
+part of the formalization.
+\end{remark}
+
 \begin{remark}\label{rem:onset-m3}
 The prime branch uses $c=2$, which lies in the range $c\le m/2$ of
 Theorem~\ref{thm:rot}(iii) for every prime $m\ge5$ but not for $m=3$, where
