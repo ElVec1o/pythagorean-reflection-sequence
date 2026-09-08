@@ -582,6 +582,54 @@ fn main() {
         if a2 == a && b2 == b { wu_checked += 1; } else { growth_checked += 1; }
     }
     eprintln!("[k0-split] window-unchanged-ascent: {wu_checked}, genuine growth-transition: {growth_checked}");
+    // Adecrease, delta=false, eps=1, kstar=0: is the alpha=0,beta=0 residual (siteCost(kstar)=0)
+    // actually reachable, and if so, which generator (or generator pair) closes it?
+    let mut adecr_f_eps1 = 0u64;
+    let mut adecr_f_eps1_beta0 = 0u64;
+    let mut beta0_examples: Vec<Elt> = vec![];
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        if e.k != 0 || e.dl != 0 || e.eps != 1 { continue; }
+        if e.lamps.iter().all(|&(_, v)| v == 0) { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let (a, b) = span_nogap(e);
+        let (a2, _b2) = span_nogap(&g3);
+        if a2 != a - 1 { continue; }
+        adecr_f_eps1 += 1;
+        let (al, be, _) = abphi(e, 0);
+        if al == 0 && be == 0 {
+            adecr_f_eps1_beta0 += 1;
+            if !shield_fires(e) && beta0_examples.len() < 20 { beta0_examples.push(e.clone()); }
+        }
+    }
+    let sf_count = {
+        let mut c = 0u64;
+        for e in dist.keys() {
+            let ph = phi(e);
+            if ph == 0 { continue; }
+            if e.k != 0 || e.dl != 0 || e.eps != 1 { continue; }
+            if e.lamps.iter().all(|&(_, v)| v == 0) { continue; }
+            let g3 = s3(e);
+            if phi(&g3) < ph { continue; }
+            let (a, _b) = span_nogap(e);
+            let (a2, _b2) = span_nogap(&g3);
+            if a2 != a - 1 { continue; }
+            let (al, be, _) = abphi(e, 0);
+            if al == 0 && be == 0 && shield_fires(e) { c += 1; }
+        }
+        c
+    };
+    eprintln!("[adecr-eps1] delta=false eps=1 genuine-Adecrease count={adecr_f_eps1}, alpha=beta=0 residual={adecr_f_eps1_beta0}, of which ShieldFires={sf_count}, shield-absent-examples-found={}", beta0_examples.len());
+    for e in &beta0_examples {
+        let ph = phi(e);
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let g3 = s3(e);
+        eprintln!("  example k={} dl={} eps={} lamps={:?} phi={} phi(s1)={} phi(s2)={} phi(s3)={}",
+            e.k, e.dl, e.eps, e.lamps, ph, phi(&g1), phi(&g2), phi(&g3));
+    }
     // Print raw (alpha,beta,d(kstar-1),d(kstar)) for delta=true interior-ascent cases.
     let mut printed3 = 0;
     for e in dist.keys() {
