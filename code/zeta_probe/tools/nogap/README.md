@@ -14529,3 +14529,49 @@ interior filter's, for all four combinations of (interior/boundary) x (shield-el
 | Descent: kstar=0, nontrivial d | mechanism mapped, NOT formalized | 🟠 |
 | General upper bound (wordLength <= lRTrue+2cTrue), ALL g | -- | 🟡 kstar=0 case + induction |
 | Full corrected metric identity, ALL g | -- | 🟡 kstar=0 case + induction |
+
+## 🎆🎆🎆🎆🎆 MAJOR MILESTONE: kstar=0 window-unchanged-ascent case FULLY CLOSED (both delta)
+
+Following the exact lead from the previous block, closed the kstar=0 sub-case of the descent
+lemma completely for the window-unchanged-ascent scenario:
+- `alphaAt_ge_two_of_ascent_false_kstar_zero`: at kstar=0, delta=false, ascent forces
+  alphaAt(kstar)*eps >= 2 EXACTLY (a stronger bound than the generic kstar!=0 case's "!=+-1",
+  found by hand-deriving the vArr(0)=1 offset into the same Python-verified combinatorics).
+  This makes siteCost(kstar)>=2 ALWAYS here -- no shield/cut-flip complication is even
+  possible (cut(0) can never be true, before or after either generator).
+- `descent_of_ascent_false_kstar_zero`: full PhiZ descent, unconditional, for delta=false.
+- For delta=true: reused the ALREADY-UNCONDITIONAL `betaAt_ne_pm_one_of_ascent_true` (never
+  needed hk0!) plus a newly-found unconditional fact `siteCost != 1` (whenever ascent+delta=
+  true, ANY kstar) to split into two sub-cases: siteCost>=2 (`descent_of_ascent_true_kstar_
+  zero_pos`, same clean no-shield-complication mechanism) and siteCost=0
+  (`kstar_interior_of_siteCost_zero_ascent_true_kstar_zero` + a hk0-free duplicate of
+  `descent_of_siteCost_zero_interior` -- discovered that theorem's `hk0` parameter was
+  actually UNUSED in its own proof, so a trivial duplicate without it sufficed).
+- `descent_of_ascent_true_kstar_zero`: assembles both sub-cases, full PhiZ descent for
+  delta=true, kstar=0, unconditional.
+
+ALL VERIFIED: lake build PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry,
+#print axioms clean ([propext, Classical.choice, Quot.sound]) on every theorem in this block
+(commits 47015f9, 8c303b0).
+
+**Precise remaining scope** (commit 397d4db): the kstar=0 nontrivial "s3 fails" bucket splits
+into 2201 window-unchanged-ascent (NOW CLOSED) and 2704 genuine growth-transition cases
+(Bincrease/Adecrease with kstar=0 specifically) -- NOT yet closed. Checked:
+`siteCost_descent_right_delta_true` (used by the Bincrease direction) is ALREADY unconditional
+in kstar (no hk0 needed!), so the Bincrease-at-kstar=0 sub-case likely only needs a kstar=0
+cTrue-invariance argument (mirroring what was just done for the ascent case). The Adecrease
+direction uses `siteCost_descent_left_delta_false` which DOES need hk0 for a different reason
+(the d_eq_zero_of_lt_ATrue argument) -- likely needs its own small extension.
+
+## FINAL ATOM TABLE (updated, this session's arc)
+
+| Atom | Label | Status |
+|---|---|---|
+| Lower bound, all g | VERIFIED | 🟢 |
+| Trivial-class upper bound + full identity, EXACT | VERIFIED | 🟢 |
+| 1-Lipschitz property, cTrue_s3_eq, lRTrue_s3_dist_one | VERIFIED | 🟢 |
+| exists_descent: descent lemma, kstar != 0 | VERIFIED | 🟢 |
+| Descent: kstar=0, window-unchanged-ascent (both delta) | VERIFIED | 🟢 (this block) |
+| Descent: kstar=0, genuine growth-transition | NOT closed | 🟠 precisely scoped, likely tractable |
+| General upper bound, all g | -- | 🟡 one small lemma + induction away |
+| Full corrected metric identity, all g | -- | 🟡 one small lemma + induction away |
