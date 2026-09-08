@@ -4625,4 +4625,119 @@ theorem BTrue_mem_occTrue_of_ne_neg_one {g : EltBridge.Elt} (h1 : (occTrue g).No
   rw [hmax]
   exact Finset.max'_mem _ h1
 
+
+theorem travel_self_ne_one (k : ℤ) : SiteCost.travel k k ≠ 1 := by
+  unfold SiteCost.travel; split_ifs <;> omega
+
+theorem kstar_interior_of_siteCost_zero_ascent (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g)
+    (hM0 : g.toPathData.siteCost g.kstar = 0) :
+    ATrue g < g.kstar ∧ g.kstar < BTrue g + 1 := by
+  have halphabeta : g.toPathData.alphaAt g.kstar = 0 ∧ g.toPathData.betaAt g.kstar = 0 := by
+    unfold SiteCost.PathData.siteCost at hM0
+    constructor <;> omega
+  by_cases hd : g.delta = true
+  · have hbeta : g.toPathData.betaAt g.kstar = g.d g.kstar - g.eps := by
+      unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+      simp [EltBridge.Elt.toPathData, hd]
+    have halpha : g.toPathData.alphaAt g.kstar = g.d (g.kstar - 1) - SiteCost.vArr g.kstar := by
+      unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD
+      simp [EltBridge.Elt.toPathData, hd]
+    have hvarr : SiteCost.vArr g.kstar = 0 := by unfold SiteCost.vArr; simp [hk0]
+    rw [hvarr] at halpha
+    have hdk : g.d g.kstar = g.eps := by rw [hbeta] at halphabeta; omega
+    have hdk1 : g.d (g.kstar - 1) = 0 := by rw [halpha] at halphabeta; omega
+    refine ⟨?_, ?_⟩
+    · have hmemocc : g.kstar ∈ occTrue g := by
+        unfold occTrue
+        by_cases hsup : g.kstar ∈ g.supp
+        · exact Finset.mem_filter.mpr ⟨hsup, Or.inl (by rw [hdk]; rcases g.heps with he|he <;> omega)⟩
+        · exact absurd (g.hsupp g.kstar hsup).1 (by rw [hdk]; rcases g.heps with he|he <;> omega)
+      have hkmem : ATrue g ≤ g.kstar := ATrue_le hmemocc
+      rcases eq_or_lt_of_le hkmem with heq | hlt
+      · exfalso
+        have hd0' : (s3 g).d g.kstar = 0 := by
+          have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+            rw [s3, dif_pos hd]
+          rw [hupd]; simp [hdk]
+        have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+        have ht0 : SiteCost.travel g.kstar g.kstar = -1 := by
+          have hpar := g.hpar g.kstar
+          rw [hdk] at hpar
+          have heps := g.heps
+          have htc := SiteCost.travel_cases g.kstar g.kstar
+          have htne1 := travel_self_ne_one g.kstar
+          rcases heps with he | he <;> omega
+        have ht0' : SiteCost.travel (s3 g).kstar g.kstar = 0 := by
+          rw [hkS, EltBridge.Elt.travel_succ_at, ht0]; ring
+        have hnotmem : g.kstar ∉ occTrue (s3 g) := by
+          unfold occTrue
+          by_cases hsup : g.kstar ∈ (s3 g).supp
+          · simp [Finset.mem_filter, hsup, hd0', ht0']
+          · intro hc; exact hsup (Finset.mem_filter.mp hc).1
+        have hAne : ATrue (s3 g) ≠ 0 := by rw [hA]; omega
+        exact hnotmem (heq ▸ hA ▸ ATrue_mem_occTrue_of_ne_zero h2 hAne)
+      · exact hlt
+    · have hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := kstar_mem_corrected_window g
+      simp only [Finset.mem_Icc] at hkw
+      rcases eq_or_lt_of_le hkw.2 with heq | hlt
+      · exfalso
+        have hgt : BTrue g < g.kstar := by omega
+        have hz := d_eq_zero_of_gt_BTrue g (j := g.kstar) hgt
+        have heps := g.heps
+        rw [hdk] at hz
+        rcases heps with he | he <;> omega
+      · omega
+  · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+    have h1' : ¬ (g.delta = true) := by rw [hd']; simp
+    have halpha : g.toPathData.alphaAt g.kstar
+        = g.d (g.kstar - 1) - SiteCost.vArr g.kstar + g.eps := by
+      unfold SiteCost.PathData.alphaAt SiteCost.PathData.vL SiteCost.PathData.vD
+      simp [EltBridge.Elt.toPathData, h1']
+    have hvarr : SiteCost.vArr g.kstar = 0 := by unfold SiteCost.vArr; simp [hk0]
+    rw [hvarr] at halpha
+    have hdk1 : g.d (g.kstar - 1) = -g.eps := by rw [halpha] at halphabeta; omega
+    refine ⟨?_, ?_⟩
+    · have hkw : g.kstar ∈ Finset.Icc (ATrue g) (BTrue g + 1) := kstar_mem_corrected_window g
+      simp only [Finset.mem_Icc] at hkw
+      rcases eq_or_lt_of_le hkw.1 with heq | hlt
+      · exfalso
+        have hlt' : g.kstar - 1 < ATrue g := by omega
+        have hz := d_eq_zero_of_lt_ATrue g (j := g.kstar - 1) hlt'
+        have heps := g.heps
+        rw [hdk1] at hz
+        rcases heps with he | he <;> omega
+      · omega
+    · have hmemocc : g.kstar - 1 ∈ occTrue g := by
+        unfold occTrue
+        by_cases hsup : g.kstar - 1 ∈ g.supp
+        · exact Finset.mem_filter.mpr ⟨hsup, Or.inl (by rw [hdk1]; rcases g.heps with he|he <;> omega)⟩
+        · exact absurd (g.hsupp (g.kstar - 1) hsup).1 (by rw [hdk1]; rcases g.heps with he|he <;> omega)
+      have hkmem : g.kstar - 1 ≤ BTrue g := le_BTrue hmemocc
+      rcases eq_or_lt_of_le hkmem with heq | hlt
+      · exfalso
+        have hd0' : (s3 g).d (g.kstar - 1) = 0 := by
+          have hupd : (s3 g).d = Function.update g.d (g.kstar - 1) (g.d (g.kstar - 1) + g.eps) := by
+            rw [s3, dif_neg h1']
+          rw [hupd]; simp [hdk1]
+        have hkS : (s3 g).kstar = g.kstar - 1 := by rw [s3, dif_neg h1']
+        have ht0 : SiteCost.travel g.kstar (g.kstar - 1) = 1 := by
+          have hpar := g.hpar (g.kstar - 1)
+          rw [hdk1] at hpar
+          have heps := g.heps
+          have htc := SiteCost.travel_cases g.kstar (g.kstar - 1)
+          have htne := travel_pred_ne_neg_one g.kstar
+          rcases heps with he | he <;> omega
+        have ht0' : SiteCost.travel (s3 g).kstar (g.kstar - 1) = 0 := by
+          rw [hkS, EltBridge.Elt.travel_pred_at, ht0]; ring
+        have hnotmem : g.kstar - 1 ∉ occTrue (s3 g) := by
+          unfold occTrue
+          by_cases hsup : g.kstar - 1 ∈ (s3 g).supp
+          · simp [Finset.mem_filter, hsup, hd0', ht0']
+          · intro hc; exact hsup (Finset.mem_filter.mp hc).1
+        have hBne : BTrue (s3 g) ≠ -1 := by rw [hB]; omega
+        exact hnotmem (heq ▸ hB ▸ BTrue_mem_occTrue_of_ne_neg_one h2 hBne)
+      · omega
+
 end PhiLipschitz
