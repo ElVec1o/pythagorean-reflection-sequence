@@ -4260,4 +4260,48 @@ theorem betaAt_ne_pm_one_of_ascent_true (g : EltBridge.Elt) (hd : g.delta = true
   split_ifs at hasc with hvac1 hvac2 hvac2 <;>
     rcases htc with ht | ht | ht <;> rcases heps with he | he <;> omega
 
+
+theorem betaAt_sign_of_ascent_true (g : EltBridge.Elt) (hd : g.delta = true)
+    (hasc : ((s3 g).toPathData.mu g.kstar : ℤ) = g.toPathData.mu g.kstar + 1) :
+    g.toPathData.betaAt g.kstar * g.eps ≤ 0 := by
+  have hpar := g.hpar g.kstar
+  have htc := SiteCost.travel_cases g.kstar g.kstar
+  have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+  have hd1 : (s3 g).d g.kstar = g.d g.kstar - g.eps := by
+    have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+      rw [s3, dif_pos hd]
+    rw [hupd]; simp
+  have ht1 : SiteCost.travel (s3 g).kstar g.kstar = SiteCost.travel g.kstar g.kstar + 1 := by
+    rw [hkS, EltBridge.Elt.travel_succ_at]
+  have heps := g.heps
+  have hbeta : g.toPathData.betaAt g.kstar = g.d g.kstar - g.eps := by
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+    simp [EltBridge.Elt.toPathData, hd]
+  unfold SiteCost.PathData.mu at hasc
+  simp only [EltBridge.Elt.toPathData] at hasc
+  rw [hbeta]
+  split_ifs at hasc with hvac1 hvac2 hvac2 <;>
+    rcases htc with ht | ht | ht <;> rcases heps with he | he <;> simp only [he] at * <;> omega
+
+
+theorem siteCost_descent_of_ascent_true (g : EltBridge.Elt) (hd : g.delta = true)
+    (hasc : ((s3 g).toPathData.mu g.kstar : ℤ) = g.toPathData.mu g.kstar + 1)
+    (hM : 0 < g.toPathData.siteCost g.kstar) :
+    (s1 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar ∨
+      (s2 g).toPathData.siteCost g.kstar < g.toPathData.siteCost g.kstar := by
+  have ha1 := alphaAt_s1_kstar g
+  have hb1 := betaAt_s1_kstar g
+  have ha2 := alphaAt_s2_kstar g
+  have hb2 := betaAt_s2_kstar g
+  have heps := g.heps
+  have hpar := alphaAt_betaAt_kstar_parity g
+  have hne1 := betaAt_ne_pm_one_of_ascent_true g hd hasc
+  have hsign := betaAt_sign_of_ascent_true g hd hasc
+  clear hasc
+  unfold SiteCost.PathData.siteCost at hM ⊢
+  rcases heps with he | he <;>
+    simp [hd, he] at ha1 hb1 ha2 hb2 hpar hne1 hsign hM <;>
+    rcases lt_trichotomy (g.toPathData.alphaAt g.kstar) 0 with ha | ha | ha <;>
+    first | (left; omega) | (right; omega)
+
 end PhiLipschitz
