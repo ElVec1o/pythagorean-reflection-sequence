@@ -14375,3 +14375,43 @@ neighboring occupancy structure -- not derived this block.
 This remains the honest boundary of what's closed vs open in the general upper-bound direction.
 Recommend a genuinely fresh session for the interior case, focused specifically on the
 alphaAt(kstar)-betaAt(kstar) relationship under the window-unchanged invariant.
+
+## 🎆🎆🎆 Block: BOTH interior-ascent cases (delta=true AND delta=false) fully closed
+
+Major breakthrough following the exact lead from the previous blocks. The key missing fact
+was found and proved: `betaAt_ne_pm_one_of_ascent_true`/`alphaAt_ne_pm_one_of_ascent_false`
+(the crossed edge's "free" alpha/beta-analog quantity is NEVER exactly +-1 under ascent) plus
+`betaAt_sign_of_ascent_true`/`alphaAt_sign_of_ascent_false` (its SIGN relative to eps is also
+pinned: <=0 for beta/true, >=0 for alpha/false -- caught and fixed a sign-convention error for
+the false case via a fresh Python brute-force check before committing anything wrong).
+
+Combined these into `siteCost_descent_of_ascent_true`/`_false` (existence of a strict
+siteCost(kstar) decrease via s1 or s2), then `cut_kstar_false_of_ascent_true`/`_false`
+(cut(kstar) is NEVER true, before or after either shift -- a clean consequence of the same
+"never +-1" fact, since hitting exactly the cut-triggering value 0 would require passing
+through +-1), then finally `descent_of_ascent_true`/`descent_of_ascent_false`: **full,
+unconditional PhiZ descent whenever delta matches and there's a mu-ascent at the crossed
+site -- valid REGARDLESS of window state (boundary, interior, window-moving, all covered by
+one proof, no case split needed on window position)**. All VERIFIED: lake build PhiLipschitz
+clean, full lake build (8645 jobs) clean, 0 sorry, #print axioms clean on every theorem in
+this chain.
+
+A NEW gap was discovered while assembling the top-level dispatch: `siteCost(kstar)` CAN be
+exactly 0 even in the window-unchanged-ascent regime (5562/130789 at depth 25) -- a case my
+`descent_of_ascent_true/false` theorems (which need `0 < siteCost(kstar)`) don't cover. This
+is a genuinely NEW, different, likely easier sub-case (cut(kstar) is CURRENTLY true; applying
+s1/s2 forces it to exactly 1, a clean deterministic jump, whose sign depends on whether kstar
+sits in cTrue's counted interior region) -- not yet closed, honestly left as an explicit
+hypothesis in the final consolidated theorem `exists_descent_of_hM`.
+
+`exists_descent_of_hM` is now the ALMOST-complete descent theorem: for any g with kstar!=0,
+not already SameElt one, GIVEN that whenever occTrue/occTrue(s3g) are nonempty, window
+unchanged, and s3 ascends, siteCost(kstar) is actually positive there -- some generator among
+s1,s2,s3 strictly decreases PhiZ. The remaining gap is precisely that one hypothesis, itself
+now precisely characterized (the siteCost=0 sub-case) rather than the vague "interior case"
+of earlier blocks.
+
+Atom status, final for this session:
+- All descent sub-cases except siteCost(kstar)=0-under-window-unchanged-ascent: 🟢 VERIFIED
+- siteCost(kstar)=0 sub-case: 🟠 newly characterized, not yet closed (next concrete target)
+- Full general upper bound (wordLength <= lRTrue+2cTrue): 🟡 one lemma away
