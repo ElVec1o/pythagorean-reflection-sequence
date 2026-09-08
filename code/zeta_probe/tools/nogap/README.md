@@ -14140,3 +14140,44 @@ alphaAt(kstar) and betaAt(kstar) (likely via d(kstar-1), d(kstar), travel(kstar,
 travel(kstar,kstar) and hpar applied at both kstar-1 and kstar), then attempt the general
 nontrivial descent lemma using that relationship the same way lem `mu_dist_one_unconditional`
 used `hpar`+`travel_cases`+`omega`.
+
+## Block: nontrivial descent — RETRACTION of the "clean single-generator rule", real mechanism found
+
+**Retraction**: the previous block's claimed clean rule ("sign(d(kstar)) vs eps determines a
+100%-reliable single generator, uniformly") is FALSE as a precise implication. Tested directly
+(not just correlated): restricting to delta=false, excluding kstar=0, the rule
+"sign(d(kstar))*eps>=0 => s1 descends, else s2 descends" is violated in 378002 / 1566016 cases
+(~24%) at depth 30. The earlier bucketed correlation table LOOKED clean because it grouped by
+siteCost(kstar) magnitude AND sign(d(kstar)) together and reported percentages per bucket that
+happened to read as 100% in the specific slices sampled -- re-deriving directly exposed the
+error. This is now the SECOND retraction in this line of investigation (see the prior block's
+two retractions) -- the growth-case descent mechanism is more subtle than three successive
+numeric read attempts suggested.
+
+**Root cause identified by hand**: for SMALL siteCost(kstar) (1 or 2), the s1/s2 shift can land
+EXACTLY on alphaAt(kstar)=betaAt(kstar)=0, which makes kstar a NEW cut site (cut also needs
+PhiAt(kstar)=0, not checked here but often coincident) -- this flips cTrue's interior-filter
+count by +1 (if kstar is interior to the window), contributing +2 to PhiZ, which can OVERWHELM
+a siteCost(kstar) decrease of 1, giving a NET INCREASE. Concrete witness: k=-10,eps=-1,
+delta=false, alpha=-1,beta=1 (siteCost=1); s2's shift (via the now-proved alphaAt_betaAt_kstar_
+parity's shift formula) sends (alpha,beta) to (0,0) exactly, and this was flagged as a
+"violation" of the naive siteCost-only rule -- i.e. cTrue's flip is what actually needs
+tracking here, not siteCost alone (matching phiZ_dist_le_one_s1/s2's ALREADY-PROVED technique,
+which correctly bundles both the siteCost delta AND the cut-flip delta together -- exactly what
+this descent analysis was missing by looking at siteCost(kstar) in isolation).
+
+**Verified, solid, and kept**: `alphaAt_betaAt_kstar_parity` (commit 4681106) -- the algebraic
+identity alphaAt(kstar)-betaAt(kstar) = d(kstar-1)-d(kstar)-vArr(kstar)+eps (exact, regardless
+of delta) plus the hpar/travel argument giving the mod-2 parity fact -- remains TRUE and
+VERIFIED; only the DOWNSTREAM "clean descent rule" built on top of it (not yet formalized in
+Lean, correctly) was wrong.
+
+**Corrected path forward**: the general nontrivial descent lemma needs to combine, per
+generator (s1 or s2), BOTH the siteCost(kstar) delta AND the cut(kstar)-flip's 2x contribution
+into a single ΔPhiZ formula (mirroring exactly how `phiZ_dist_le_one_s1`/`_s2` are already
+built and proved, just now needed as an EQUALITY/existence tool rather than a bound). This is
+a real, substantial, still-open piece -- not attempted further this block, to avoid a third
+retraction under continued time pressure. The next honest step is to re-derive the combined
+ΔPhiZ formula for s1/s2 by hand (reusing phiZ_dist_le_one_s1/s2's own internal case structure,
+which already computes this correctly for the BOUND direction) before any further Rust
+correlation attempts.
