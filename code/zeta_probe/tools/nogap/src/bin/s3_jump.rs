@@ -274,6 +274,107 @@ fn main() {
         let (al, be, _) = abphi(e, e.k);
         eprintln!("[impl] violation: {} alpha={} beta={}", show(e), al, be);
     }
+    // RETRY: restrict to the actual relevant scenario -- kstar at the window BOUNDARY
+    // (matching Bincrease/Aincrease's structural requirement), kstar != 0, delta=false only
+    // for now (mirrors the original clean-looking correlation table).
+    let mut impl2_checked = 0u64;
+    let mut impl2_violated = 0u64;
+    let mut impl2_violation_example: Option<Elt> = None;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.k == 0 { continue; }
+        let is_boundary = e.k == a || e.k == b + 1;
+        if !is_boundary { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; } // s3 already descends; not the relevant case
+        let (al, be, _) = abphi(e, e.k);
+        let m = al.abs().max(be.abs());
+        if m == 0 { continue; }
+        impl2_checked += 1;
+        let e_eps = e.eps as i32;
+        let want_s1 = if e.dl == 0 { be.signum() * e_eps >= 0 } else { al.signum() * e_eps <= 0 };
+        let cand = if want_s1 { gens_all(e)[0].clone() } else { gens_all(e)[1].clone() };
+        if !(phi(&cand) < ph) {
+            impl2_violated += 1;
+            if impl2_violation_example.is_none() { impl2_violation_example = Some(e.clone()); }
+        }
+    }
+    eprintln!("[impl2] boundary-only, kstar!=0, DELTA-DEPENDENT rule violations: {impl2_violated} / {impl2_checked}");
+    if let Some(e) = &impl2_violation_example {
+        let (al, be, _) = abphi(e, e.k);
+        eprintln!("[impl2] violation: {} alpha={} beta={}", show(e), al, be);
+    }
+    let mut max_ab_gap = 0i32;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.k == 0 { continue; }
+        let is_boundary = e.k == a || e.k == b + 1;
+        if !is_boundary { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        let gap = (al - be).abs();
+        if gap > max_ab_gap { max_ab_gap = gap; }
+    }
+    eprintln!("[gap] max |alpha(kstar)-beta(kstar)| in the relevant regime: {max_ab_gap}");
+    // Check: whenever s3 fails AND we're at left-boundary+delta=true, is beta*eps < 0 always?
+    // And right-boundary+delta=false: alpha*eps > 0 always?
+    let mut lt_checked = 0u64; let mut lt_ok = 0u64;
+    let mut rf_checked = 0u64; let mut rf_ok = 0u64;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.k == 0 { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        if al.abs().max(be.abs()) == 0 { continue; }
+        let eps = e.eps as i32;
+        if e.dl == 1 && e.k == a {
+            lt_checked += 1;
+            if be * eps < 0 { lt_ok += 1; }
+        }
+        if e.dl == 0 && e.k == b + 1 {
+            rf_checked += 1;
+            if al * eps > 0 { rf_ok += 1; }
+        }
+    }
+    eprintln!("[sign-check] left+delta=true: beta*eps<0 holds in {lt_ok}/{lt_checked}");
+    eprintln!("[sign-check] right+delta=false: alpha*eps>0 holds in {rf_ok}/{rf_checked}");
+    // Dump raw truth table for delta=true, boundary, kstar!=0, s3-fails cases.
+    let mut seen: std::collections::HashSet<(i32,i32,i8,bool,bool,bool)> = std::collections::HashSet::new();
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.dl != 1 { continue; }
+        if e.k == 0 { continue; }
+        let is_boundary = e.k == a || e.k == b + 1;
+        if !is_boundary { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        let m = al.abs().max(be.abs());
+        if m == 0 || m > 3 { continue; }
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let w1 = phi(&g1) < ph;
+        let w2 = phi(&g2) < ph;
+        let is_left = e.k == a;
+        let key = (al, be, e.eps, w1, w2, is_left);
+        if seen.insert(key) {
+            eprintln!("[truth-delta1] alpha={} beta={} eps={} s1={} s2={} is_left={}", al, be, e.eps, w1, w2, is_left);
+        }
+    }
     // Check delta=true specifically: does sign(kstar) matter too?
     let mut corr2: std::collections::HashMap<(i8,i32,i32),(u64,u64,u64)> = std::collections::HashMap::new();
     for e in dist.keys() {
@@ -300,6 +401,28 @@ fn main() {
     for k in keys2.iter() {
         let v = corr2[k];
         eprintln!("[corr2-delta1] eps={} sign_dk={} sign_kstar={} -> s1={} s2={} total={}", k.0, k.1, k.2, v.0, v.1, v.2);
+    }
+    // Directly verify the exchange-formula sign-flip claim: at siteCost=1, does s1/s2 EVER
+    // achieve a strict phi decrease? Print c, c', and actual phi delta for siteCost=1 cases.
+    let mut printed2 = 0;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.k == 0 { continue; }
+        let (al, be, _) = abphi(e, e.k);
+        let c = al.abs().max(be.abs());
+        if c != 1 { continue; }
+        let g1 = gens_all(e)[0].clone();
+        let (al1, be1, _) = abphi(&g1, g1.k);
+        let c1 = al1.abs().max(be1.abs());
+        let ph1 = phi(&g1);
+        if ph1 < ph && printed2 < 10 {
+            let is_boundary = e.k == a || e.k == b + 1;
+            eprintln!("[c1check] {} c={} c'={} phi={} phi'={} A={} B={} is_boundary={}", show(e), c, c1, ph, ph1, a, b, is_boundary);
+            printed2 += 1;
+        }
     }
     // Print raw (alpha,beta) examples for the mixed siteCost=3 case to check hand-derived
     // shift formulas: s1 shifts (a,b) by (+/-eps,+/-eps) same sign; s2 shifts by (-eps,+eps).
