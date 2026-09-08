@@ -13,14 +13,17 @@ do not" -- that needs a `Finset`-cardinality argument bridging the two, which is
 here from scratch (independent of `pairCount`, so this is also a second, independent
 count of the same combinatorial fact).
 
-`depth_antitone` at the end is the corollary's other half: the depth `m + m/d` is
-antitone in `d`, so the largest valid divisor always minimizes it (pure `Nat` division
-monotonicity, one line).
+`depth_antitone` and `le_div_minFac` at the end are the corollary's other half, now
+complete: the depth `m + m/d` is antitone in `d` (pure `Nat` division monotonicity), and
+the largest valid divisor `d <= m/2` is exactly `m / m.minFac` (`le_div_minFac`, via
+`Nat.minFac_le_of_dvd` on the cofactor). Together these give the full arithmetic content
+of `cor:onset`: `d = m/p` (`p` the least prime factor) minimizes the depth among all
+valid divisors.
 
 What this file does NOT do: connect "infinite order in the abstract group `W_m`" to an
-actual geodesic/word-length coincidence in the reflection group, or identify the largest
-valid divisor `d <= m/2` with `m / m.minFac`. Those steps (needed for the full statement
-of `cor:onset`) were not located in this development and are not attempted here.
+actual geodesic/word-length coincidence in the reflection group. That step (needed for
+the full statement of `cor:onset`) was not located in this development and is not
+attempted here.
 
 No `sorry`.
 -/
@@ -141,12 +144,29 @@ theorem infiniteOrder_count (m n : ℕ) (hnm : n ≤ m) (hn : 2 ≤ n) :
 /-- **The depth-minimization arithmetic of `cor:onset`.** The depth `m + m/d` at which a
 divisor `d` of `m` contributes its `d^2-1` relations is (weakly) antitone in `d`: taking
 `d` as large as possible always minimizes it, among any two valid divisors. (Pure `Nat`
-division monotonicity; does not need `d1`, `d2` to divide `m`.) The paper's further
-identification of the largest valid `d <= m/2` with `m / m.minFac` is not formalized
-here. -/
+division monotonicity; does not need `d1`, `d2` to divide `m`.) -/
 theorem depth_antitone {m d1 d2 : ℕ} (hd1 : 0 < d1) (h : d1 ≤ d2) :
     m + m / d2 ≤ m + m / d1 :=
   Nat.add_le_add_left (Nat.div_le_div_left h hd1) m
+
+/-- **The largest valid divisor is `m / m.minFac`.** For any divisor `d` of `m` with
+`2 <= d <= m/2`, `d <= m / m.minFac`: the cofactor `m/d` is itself a divisor of `m` at
+least `2`, so `m.minFac <= m/d` (`Nat.minFac_le_of_dvd`), and since `d` divides `m`
+exactly this rearranges to `d <= m / m.minFac`. Combined with `depth_antitone`, this is
+the missing link completing `cor:onset`'s claim that `d = m / m.minFac` (equivalently
+`d = m/p`, `p` the least prime factor) minimizes the depth `m + m/d` among all valid
+divisors. -/
+theorem le_div_minFac {m d : ℕ} (hd : d ∣ m) (hd2 : 2 ≤ d) (hdm : 2 * d ≤ m) :
+    d ≤ m / m.minFac := by
+  obtain ⟨k, rfl⟩ := hd
+  have hd0 : 0 < d := by omega
+  have hk2 : 2 ≤ k := by
+    have h' : d * 2 ≤ d * k := by rw [mul_comm d 2]; omega
+    exact Nat.le_of_mul_le_mul_left h' hd0
+  have hkdvd : k ∣ d * k := ⟨d, by ring⟩
+  have hmf : (d * k).minFac ≤ k := Nat.minFac_le_of_dvd hk2 hkdvd
+  calc d ≤ (d * k) / k := by rw [Nat.mul_div_cancel _ (by omega)]
+    _ ≤ (d * k) / (d * k).minFac := Nat.div_le_div_left hmf (Nat.minFac_pos _)
 
 end CoxeterTorsion
 
@@ -154,3 +174,4 @@ end CoxeterTorsion
 #print axioms CoxeterTorsion.admPairs_card
 #print axioms CoxeterTorsion.infiniteOrder_count
 #print axioms CoxeterTorsion.depth_antitone
+#print axioms CoxeterTorsion.le_div_minFac

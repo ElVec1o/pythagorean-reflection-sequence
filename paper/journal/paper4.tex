@@ -871,7 +871,10 @@ elsewhere in this paper's argument, but not re-derived from this Lean lemma -- i
 part of the formalization. The other half of the corollary, that the depth $m+m/d$ is
 minimized by the largest valid divisor $d$, is the one-line \texttt{Nat} monotonicity
 fact \texttt{depth\_antitone} in the same file; the identification of that largest
-divisor with $m/p$ ($p$ the least prime factor) is not formalized.
+divisor with $m/p$ ($p$ the least prime factor) is \texttt{le\_div\_minFac} (via
+\texttt{Nat.minFac\_le\_of\_dvd} applied to the cofactor $m/d$), completing the full
+arithmetic content of the corollary. Only the geometric translation noted above remains
+outside the formalization.
 \end{remark}
 
 \begin{remark}\label{rem:onset-m3}
