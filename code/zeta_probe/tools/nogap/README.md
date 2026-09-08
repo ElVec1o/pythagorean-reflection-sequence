@@ -14449,3 +14449,46 @@ logged and corrected retractions, and multiple genuine mathematical discoveries 
 identity, the boundary-pinning mechanism, the ascent sign/magnitude constraints) that were not
 obvious at the outset and required real back-and-forth between numeric falsification (Rust)
 and formal proof (Lean) to find.
+
+## 🎆🎆🎆🎆 MILESTONE: exists_descent -- the fully unconditional descent lemma, PROVED
+
+Assembled the complete chain from this session's arc into `exists_descent (g) (hk0 : kstar!=0)
+(hne : not SameElt g one) : PhiZ(s1 g) < PhiZ g OR PhiZ(s2 g) < PhiZ g OR PhiZ(s3 g) < PhiZ g`.
+This combines EVERY sub-case closed this session:
+- occTrue(s3g) empty / genuine descent window-moves (Bdecrease, Aincrease): direct s3-descent
+- genuine growth window-moves (Bincrease, Adecrease): via `descent_of_Bincrease/Adecrease_via_s1_or_s2`
+- window-unchanged, s3 descends: direct
+- window-unchanged, s3 ascends, siteCost(kstar)>0: via `descent_of_ascent_true/false`
+- window-unchanged, s3 ascends, siteCost(kstar)=0: via `kstar_interior_of_siteCost_zero_ascent`
+  + `descent_of_siteCost_zero_interior` (the LAST piece, closed this block)
+
+VERIFIED: lake build PhiLipschitz clean, full lake build (8645 jobs) clean, 0 sorry,
+#print axioms clean ([propext, Classical.choice, Quot.sound]) on ALL ~15 theorems in this
+final assembly, including the capstone `exists_descent` itself.
+
+**New sub-case discovered while checking whether `exists_descent` extends to `kstar=0`**:
+non-trivial `kstar=0` elements (cursor at 0, but `d` nonzero somewhere) also always have a
+descending generator (100%, 11149/11149 at depth 25), but NOT always via `s3` alone (only
+56%, 6244/11149) -- meaning `kstar=0` nontrivial genuinely needs its own `s1`/`s2` analysis,
+structurally different again (vArr(0)=1 changes every formula used this session, and
+ShieldFires becomes live). This is now the ONE remaining gap before the general upper bound
+(and hence the full corrected metric identity) is completely unconditional.
+
+## FULL ATOM TABLE (this session's entire arc, honest final tally)
+
+| Atom | Label | Status |
+|---|---|---|
+| Lower bound: wordLength >= lRTrue+2cTrue, ALL g | VERIFIED | 🟢 done (df784e3, prior arc) |
+| Upper bound, trivial class (kstar=0,d=0), EXACT | VERIFIED | 🟢 done (077b598) |
+| Full identity, trivial class, EXACT both directions | VERIFIED | 🟢 done (077b598) |
+| phiZ_dist_le_one_s1/s2/s3 (1-Lipschitz, all gens) | VERIFIED | 🟢 done (prior arc) |
+| cTrue_s3_eq (cTrue invariant under s3) | VERIFIED | 🟢 done (prior arc) |
+| lRTrue_s3_dist_one (unconditional |Delta|=1 under s3) | VERIFIED | 🟢 done (prior arc) |
+| Descent: occTrue(s3g) empty / direct-descent window moves | VERIFIED | 🟢 done |
+| Descent: growth window moves (Bincrease/Adecrease) via s1/s2 | VERIFIED | 🟢 done (this block) |
+| Descent: window-unchanged, siteCost(kstar)>0 (delta=true/false) | VERIFIED | 🟢 done (this block) |
+| Descent: window-unchanged, siteCost(kstar)=0, interior | VERIFIED | 🟢 done (this block) |
+| **exists_descent**: full descent lemma, kstar!=0 | **VERIFIED** | **🟢 done (this block)** |
+| Descent: kstar=0, nontrivial d | numerically 100%, NOT formalized | 🟠 open, newly scoped |
+| General upper bound (wordLength <= lRTrue+2cTrue), ALL g | depends on kstar=0 case | 🟡 one lemma + induction away |
+| Full corrected metric identity, ALL g | depends on the above | 🟡 one lemma + induction away |
