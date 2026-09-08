@@ -3594,4 +3594,86 @@ theorem wordLength_ge_lRTrue_add_two_cTrue {g : EltBridge.Elt} (h : EltBridge.El
   unfold PhiZ at hge
   omega
 
+
+theorem occTrue_empty_of_lRTrue_eq_zero {g : EltBridge.Elt} (h0 : lRTrue g = 0) :
+    occTrue g = ∅ := by
+  by_contra hne
+  have hne' : (occTrue g).Nonempty := Finset.nonempty_iff_ne_empty.mpr hne
+  obtain ⟨x, hx⟩ := hne'
+  have hxA : ATrue g ≤ x := ATrue_le hx
+  have hxB : x ≤ BTrue g := le_BTrue hx
+  have hxIcc : x ∈ Finset.Icc (ATrue g) (BTrue g) := Finset.mem_Icc.mpr ⟨hxA, hxB⟩
+  have hmux1 : 1 ≤ g.toPathData.mu x := by
+    unfold SiteCost.PathData.mu
+    simp only [EltBridge.Elt.toPathData]
+    split_ifs with h
+    · omega
+    · push_neg at h
+      rcases eq_or_ne (g.d x) 0 with hz | hz
+      · have hf := h hz
+        have := Int.natAbs_pos.mpr hf
+        omega
+      · have := Int.natAbs_pos.mpr hz
+        omega
+  have hsumge : g.toPathData.mu x ≤ ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j :=
+    Finset.single_le_sum (fun j _ => Nat.zero_le _) hxIcc
+  unfold lRTrue at h0
+  omega
+
+theorem siteCost_zero_trivial (g : EltBridge.Elt) (hk : g.kstar = 0)
+    (hd : ∀ j, g.d j = 0) (hδ : g.delta = false) (heps : g.eps = 1) :
+    g.toPathData.siteCost 0 = 0 := by
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  simp only [EltBridge.Elt.toPathData, hd, hk, heps, hδ]
+  norm_num
+
+theorem siteCost_zero_trivial_pos (g : EltBridge.Elt) (hk : g.kstar = 0)
+    (hd : ∀ j, g.d j = 0) (hne : ¬ (g.delta = false ∧ g.eps = 1)) :
+    0 < g.toPathData.siteCost 0 := by
+  have heps := g.heps
+  unfold SiteCost.PathData.siteCost SiteCost.PathData.alphaAt SiteCost.PathData.betaAt
+    SiteCost.PathData.vL SiteCost.PathData.vR SiteCost.PathData.vD SiteCost.vArr
+  simp only [EltBridge.Elt.toPathData, hd, hk]
+  rcases Bool.eq_false_or_eq_true g.delta with hδ | hδ
+  · simp only [hδ]
+    rcases heps with he | he <;> simp [he]
+  · simp only [hδ]
+    rcases heps with he | he
+    · exact absurd ⟨hδ, he⟩ hne
+    · simp [he]
+
+theorem trivial_lRTrue_eq_siteCost0 {g : EltBridge.Elt} (hk : g.kstar = 0)
+    (hd : ∀ j, g.d j = 0) : lRTrue g = g.toPathData.siteCost 0 := by
+  have hoc : occTrue g = ∅ := by
+    unfold occTrue
+    rw [Finset.filter_eq_empty_iff]
+    intro j _
+    rw [hd j, hk, SiteCost.travel_of_kstar_zero]
+    simp
+  have hA : ATrue g = 0 := by unfold ATrue; rw [dif_neg (by rw [hoc]; simp)]
+  have hB : BTrue g = -1 := by unfold BTrue; rw [dif_neg (by rw [hoc]; simp)]
+  unfold lRTrue
+  rw [hA, hB]
+  simp
+
+theorem phiZ_eq_zero_imp_sameElt_one {g : EltBridge.Elt} (h0 : PhiZ g = 0) :
+    EltBridge.Elt.SameElt g EltBridge.Elt.one := by
+  have hlc : lRTrue g = 0 ∧ cTrue g = 0 := by
+    unfold PhiZ at h0
+    constructor <;> omega
+  have hoc := occTrue_empty_of_lRTrue_eq_zero hlc.1
+  have hk : g.kstar = 0 := occTrue_g_empty_kstar_zero hoc
+  have hd : ∀ j, g.d j = 0 := occTrue_g_empty_d_zero hoc
+  have hlrs : lRTrue g = g.toPathData.siteCost 0 := trivial_lRTrue_eq_siteCost0 hk hd
+  have hsc0 : g.toPathData.siteCost 0 = 0 := by omega
+  have hcase : g.delta = false ∧ g.eps = 1 := by
+    by_contra hne
+    have := siteCost_zero_trivial_pos g hk hd hne
+    omega
+  refine ⟨hk, hcase.2, hcase.1, ?_⟩
+  funext j
+  rw [hd j]
+  rfl
+
 end PhiLipschitz
