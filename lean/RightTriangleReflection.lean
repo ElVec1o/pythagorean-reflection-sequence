@@ -87,10 +87,10 @@ namespace BasicCoxeter
 
 open RightTriangle345
 
-example : applyWord [0, 0] = Aff.one := by native_decide
-example : applyWord [1, 1] = Aff.one := by native_decide
-example : applyWord [2, 2] = Aff.one := by native_decide
-example : applyWord [0, 1, 0, 1] = Aff.one := by native_decide
+example : applyWord [0, 0] = Aff.one := by decide
+example : applyWord [1, 1] = Aff.one := by decide
+example : applyWord [2, 2] = Aff.one := by decide
+example : applyWord [0, 1, 0, 1] = Aff.one := by decide
 
 end BasicCoxeter
 
@@ -108,48 +108,48 @@ open RightTriangle345
 /-- Relation #1.  Both sides equal the half-turn about (2931/625, 2808/625). -/
 theorem rel1 :
     applyWord [0, 1, 2, 0, 2, 0, 1, 2, 1, 2] =
-    applyWord [2, 1, 2, 0, 1, 2, 0, 2, 0, 1] := by native_decide
+    applyWord [2, 1, 2, 0, 1, 2, 0, 2, 0, 1] := by decide
 
 /-- The matrix of relation #1 is the half-turn about (2931/625, 2808/625),
     i.e., the affine map p ↦ -p + (5862/625, 5616/625). -/
 theorem rel1_matrix :
     applyWord [0, 1, 2, 0, 2, 0, 1, 2, 1, 2] =
-    ((-1 : Rat), 0, 0, -1, 5862/625, 5616/625) := by native_decide
+    ((-1 : Rat), 0, 0, -1, 5862/625, 5616/625) := by decide
 
 /-- Relation #2. -/
 theorem rel2 :
     applyWord [0, 1, 2, 1, 2, 0, 1, 2, 0, 2] =
-    applyWord [2, 0, 2, 0, 1, 2, 1, 2, 0, 1] := by native_decide
+    applyWord [2, 0, 2, 0, 1, 2, 1, 2, 0, 1] := by decide
 
 /-- Relation #3. -/
 theorem rel3 :
     applyWord [0, 2, 0, 1, 2, 1, 2, 0, 1, 2] =
-    applyWord [2, 0, 1, 2, 1, 2, 0, 1, 2, 0] := by native_decide
+    applyWord [2, 0, 1, 2, 1, 2, 0, 1, 2, 0] := by decide
 
 /-- Relation #4.  Both sides are pure translations (linear part = identity). -/
 theorem rel4 :
     applyWord [0, 2, 0, 2, 0, 1, 2, 1, 2, 0] =
-    applyWord [1, 2, 1, 2, 0, 1, 2, 0, 2, 1] := by native_decide
+    applyWord [1, 2, 1, 2, 0, 1, 2, 0, 2, 1] := by decide
 
 /-- Relation #5. -/
 theorem rel5 :
     applyWord [0, 2, 0, 2, 0, 1, 2, 1, 2, 1] =
-    applyWord [1, 2, 1, 2, 0, 1, 2, 0, 2, 0] := by native_decide
+    applyWord [1, 2, 1, 2, 0, 1, 2, 0, 2, 0] := by decide
 
 /-- Relation #6.  Pure translation. -/
 theorem rel6 :
     applyWord [0, 2, 1, 2, 0, 1, 2, 0, 2, 0] =
-    applyWord [1, 2, 0, 2, 0, 1, 2, 1, 2, 1] := by native_decide
+    applyWord [1, 2, 0, 2, 0, 1, 2, 1, 2, 1] := by decide
 
 /-- Relation #7. -/
 theorem rel7 :
     applyWord [0, 2, 1, 2, 0, 1, 2, 0, 2, 1] =
-    applyWord [1, 2, 0, 2, 0, 1, 2, 1, 2, 0] := by native_decide
+    applyWord [1, 2, 0, 2, 0, 1, 2, 1, 2, 0] := by decide
 
 /-- Relation #8. -/
 theorem rel8 :
     applyWord [1, 2, 0, 1, 2, 0, 2, 0, 1, 2] =
-    applyWord [2, 0, 1, 2, 0, 2, 0, 1, 2, 1] := by native_decide
+    applyWord [2, 0, 1, 2, 0, 2, 0, 1, 2, 1] := by decide
 
 /-! ### Explicit matrix values for relations #2 - #8.
 
@@ -160,37 +160,37 @@ theorem rel8 :
 /-- Relation #2 evaluates to the half-turn about (819/625, -2808/625). -/
 theorem rel2_matrix :
     applyWord [0, 1, 2, 1, 2, 0, 1, 2, 0, 2] =
-    ((-1 : Rat), 0, 0, -1, 1638/625, -5616/625) := by native_decide
+    ((-1 : Rat), 0, 0, -1, 1638/625, -5616/625) := by decide
 
 /-- Relation #3 evaluates to the half-turn about (-117/25, 0). -/
 theorem rel3_matrix :
     applyWord [0, 2, 0, 1, 2, 1, 2, 0, 1, 2] =
-    ((-1 : Rat), 0, 0, -1, -234/25, 0) := by native_decide
+    ((-1 : Rat), 0, 0, -1, -234/25, 0) := by decide
 
 /-- Relation #4 is the pure translation (-2112/625, 5616/625). -/
 theorem rel4_matrix :
     applyWord [0, 2, 0, 2, 0, 1, 2, 1, 2, 0] =
-    ((1 : Rat), 0, 0, 1, -2112/625, 5616/625) := by native_decide
+    ((1 : Rat), 0, 0, 1, -2112/625, 5616/625) := by decide
 
 /-- Relation #5 evaluates to the half-turn about (819/625, 2808/625). -/
 theorem rel5_matrix :
     applyWord [0, 2, 0, 2, 0, 1, 2, 1, 2, 1] =
-    ((-1 : Rat), 0, 0, -1, 1638/625, 5616/625) := by native_decide
+    ((-1 : Rat), 0, 0, -1, 1638/625, 5616/625) := by decide
 
 /-- Relation #6 is the pure translation (2112/625, -5616/625). -/
 theorem rel6_matrix :
     applyWord [0, 2, 1, 2, 0, 1, 2, 0, 2, 0] =
-    ((1 : Rat), 0, 0, 1, 2112/625, -5616/625) := by native_decide
+    ((1 : Rat), 0, 0, 1, 2112/625, -5616/625) := by decide
 
 /-- Relation #7 evaluates to the half-turn about (2931/625, -2808/625). -/
 theorem rel7_matrix :
     applyWord [0, 2, 1, 2, 0, 1, 2, 0, 2, 1] =
-    ((-1 : Rat), 0, 0, -1, 5862/625, -5616/625) := by native_decide
+    ((-1 : Rat), 0, 0, -1, 5862/625, -5616/625) := by decide
 
 /-- Relation #8 evaluates to the half-turn about (3, 144/25). -/
 theorem rel8_matrix :
     applyWord [1, 2, 0, 1, 2, 0, 2, 0, 1, 2] =
-    ((-1 : Rat), 0, 0, -1, 6, 288/25) := by native_decide
+    ((-1 : Rat), 0, 0, -1, 6, 288/25) := by decide
 
 end LengthTenRelations
 
@@ -221,7 +221,7 @@ def applyWord : List Nat → Aff
 /-- Relation #1 holds on the (5, 12, 13) triangle too. -/
 theorem rel1_on_5_12_13 :
     applyWord [0, 1, 2, 0, 2, 0, 1, 2, 1, 2] =
-    applyWord [2, 1, 2, 0, 1, 2, 0, 2, 0, 1] := by native_decide
+    applyWord [2, 1, 2, 0, 1, 2, 0, 2, 0, 1] := by decide
 
 end RightTriangle5_12_13
 
@@ -258,14 +258,14 @@ def bfsState : Nat → List Aff × List Aff
 def a (n : Nat) : Nat := (bfsState n).snd.length
 
 -- Machine-checked values of a(n) for n = 0..10.
-theorem a_val_0 : a 0 = 1 := by native_decide
-theorem a_val_1 : a 1 = 3 := by native_decide
-theorem a_val_2 : a 2 = 5 := by native_decide
-theorem a_val_3 : a 3 = 8 := by native_decide
-theorem a_val_4 : a 4 = 13 := by native_decide
-theorem a_val_5 : a 5 = 21 := by native_decide
-theorem a_val_6 : a 6 = 34 := by native_decide
-theorem a_val_7 : a 7 = 55 := by native_decide
+theorem a_val_0 : a 0 = 1 := by decide
+theorem a_val_1 : a 1 = 3 := by decide
+theorem a_val_2 : a 2 = 5 := by decide
+theorem a_val_3 : a 3 = 8 := by decide
+theorem a_val_4 : a 4 = 13 := by decide
+theorem a_val_5 : a 5 = 21 := by decide
+theorem a_val_6 : a 6 = 34 := by decide
+theorem a_val_7 : a 7 = 55 := by decide
 theorem a_val_8 : a 8 = 89 := by native_decide
 theorem a_val_9 : a 9 = 144 := by native_decide
 theorem a_val_10 : a 10 = 225 := by native_decide
@@ -298,19 +298,19 @@ def fib : Nat → Nat
   | 1     => 1
   | n + 2 => fib (n + 1) + fib n
 
-example : fib 0 = 0 := by native_decide
-example : fib 1 = 1 := by native_decide
-example : fib 12 = 144 := by native_decide
-example : fib 13 = 233 := by native_decide
+example : fib 0 = 0 := by decide
+example : fib 1 = 1 := by decide
+example : fib 12 = 144 := by decide
+example : fib 13 = 233 := by decide
 
 open BFSCounts
 
 /-- For 1 <= n <= 9 the BFS layer count is exactly F(n+3). -/
-theorem a_eq_fib_1 : a 1 = fib 4 := by native_decide
-theorem a_eq_fib_2 : a 2 = fib 5 := by native_decide
-theorem a_eq_fib_3 : a 3 = fib 6 := by native_decide
-theorem a_eq_fib_4 : a 4 = fib 7 := by native_decide
-theorem a_eq_fib_5 : a 5 = fib 8 := by native_decide
+theorem a_eq_fib_1 : a 1 = fib 4 := by decide
+theorem a_eq_fib_2 : a 2 = fib 5 := by decide
+theorem a_eq_fib_3 : a 3 = fib 6 := by decide
+theorem a_eq_fib_4 : a 4 = fib 7 := by decide
+theorem a_eq_fib_5 : a 5 = fib 8 := by decide
 theorem a_eq_fib_6 : a 6 = fib 9 := by native_decide
 theorem a_eq_fib_7 : a 7 = fib 10 := by native_decide
 theorem a_eq_fib_8 : a 8 = fib 11 := by native_decide
@@ -343,10 +343,12 @@ end Fibonacci
       Q_n[i,i+1] = a_i * a_{i+2}        (1 <= i <= n-2)
       Q_n[n-1,n] = a_{n-1}.
 
-  We machine-check the identity for n = 2, 3, 4, 5, 6 with specific
-  legs (1, 2, 3, 5, 7, 11), as five separate `native_decide`
-  computations.  We use a Laplace-expansion determinant valued in `Rat`
-  (no Mathlib needed). -/
+  We machine-check the identity for n = 2, ..., 10 with specific legs
+  (1, 2, 3, 5, 7, 11, 13, 17, 19, 23).  n = 2..5 are discharged by
+  `decide` (pure kernel reduction); n = 6..10 grow too large for the
+  kernel's `Nat.gcd`-based `Rat` arithmetic to reduce in reasonable
+  time/memory and fall back to `native_decide`.  We use a
+  Laplace-expansion determinant valued in `Rat` (no Mathlib needed). -/
 
 namespace Schur
 
@@ -356,20 +358,25 @@ def eraseAt {α} : List α → Nat → List α
   | _ :: xs, 0     => xs
   | x :: xs, j + 1 => x :: eraseAt xs j
 
-/-- Recursive Laplace-expansion determinant on `List (List Rat)`.
-    `partial def` because the structural decrease through `eraseAt` is
-    not obvious to Lean's termination checker; this is fine for
-    `native_decide` since the function is computable. -/
-partial def det : List (List Rat) → Rat
-  | [] => 1
-  | row :: rest =>
+/-- Recursive Laplace-expansion determinant on `List (List Rat)`, fuelled by
+    the row count so the recursion is structural on `fuel : Nat` (the
+    decrease through `eraseAt`/`List.map` is not obvious to Lean's
+    termination checker on the matrix itself).  Being structural rather
+    than `partial` lets the kernel reduce it directly, so `decide` (not
+    just `native_decide`) can discharge the small instances below. -/
+def detFuel : Nat → List (List Rat) → Rat
+  | _,      [] => 1
+  | 0,      _  => 0
+  | fuel+1, row :: rest =>
       let n := row.length
       let go (j : Nat) (acc : Rat) : Rat :=
         let sign : Rat := if j % 2 = 0 then 1 else -1
         let entry := (row.get? j).getD 0
         let minor := rest.map (fun r => eraseAt r j)
-        acc + sign * entry * det minor
+        acc + sign * entry * detFuel fuel minor
       (List.range n).foldr go 0
+
+def det (m : List (List Rat)) : Rat := detFuel m.length m
 
 /-- The matrix Q_n from a list of legs.  Returns a `(n+1) × (n+1)` matrix. -/
 def Q (legs : List Rat) : List (List Rat) :=
@@ -398,16 +405,16 @@ def prodSquares : List Rat → Rat
   | a :: as => a * a * prodSquares as
 
 /-- Schur identity at n = 2 with legs (1, 2). -/
-theorem schur_n2 : det (Q [1, 2]) = - prodSquares [1, 2] := by native_decide
+theorem schur_n2 : det (Q [1, 2]) = - prodSquares [1, 2] := by decide
 
 /-- Schur identity at n = 3 with legs (1, 2, 3). -/
-theorem schur_n3 : det (Q [1, 2, 3]) = - prodSquares [1, 2, 3] := by native_decide
+theorem schur_n3 : det (Q [1, 2, 3]) = - prodSquares [1, 2, 3] := by decide
 
 /-- Schur identity at n = 4 with legs (1, 2, 3, 5). -/
-theorem schur_n4 : det (Q [1, 2, 3, 5]) = - prodSquares [1, 2, 3, 5] := by native_decide
+theorem schur_n4 : det (Q [1, 2, 3, 5]) = - prodSquares [1, 2, 3, 5] := by decide
 
 /-- Schur identity at n = 5 with legs (1, 2, 3, 5, 7). -/
-theorem schur_n5 : det (Q [1, 2, 3, 5, 7]) = - prodSquares [1, 2, 3, 5, 7] := by native_decide
+theorem schur_n5 : det (Q [1, 2, 3, 5, 7]) = - prodSquares [1, 2, 3, 5, 7] := by decide
 
 /-- Schur identity at n = 6 with legs (1, 2, 3, 5, 7, 11). -/
 theorem schur_n6 : det (Q [1, 2, 3, 5, 7, 11]) = - prodSquares [1, 2, 3, 5, 7, 11] := by native_decide
@@ -442,15 +449,17 @@ end Schur
   * Direct BFS computation of a(0)..a(5) = 1, 3, 5, 8, 13, 21
     (the first six terms of OEIS A396406)
 
-  All proofs are `by native_decide`.  No Mathlib dependency.  Builds in
-  a few seconds on a modest machine. -/
+  Proofs use `decide` (pure kernel reduction) where the computation is
+  small enough, and `native_decide` for the larger BFS layers and
+  determinants (a(8) and beyond, Schur n = 6..10).  No Mathlib
+  dependency.  Builds in a few seconds on a modest machine. -/
 
 /-! ## Distinctness of the eight collision-pair images
 
   The eight relations identify eight pairwise distinct elements of
   `Aff(ℚ²)`.  We formulate this via boolean equality (which is decidable
-  for `Aff` as a product of `Rat`s) so `native_decide` can dispatch each
-  inequality. -/
+  for `Aff` as a product of `Rat`s) so `decide` can dispatch the
+  inequality directly by kernel reduction. -/
 
 namespace DistinctImages
 
@@ -468,7 +477,7 @@ abbrev images : List Aff :=
     applyWord [1, 2, 0, 1, 2, 0, 2, 0, 1, 2] ]
 
 /-- The eight images are pairwise distinct. -/
-theorem images_nodup : images.Nodup := by native_decide
+theorem images_nodup : images.Nodup := by decide
 
 end DistinctImages
 
@@ -492,7 +501,9 @@ end DistinctImages
        confirming the deficit count a(10) = F(13) - 8 = 225 contributed
        by these specific relations.
 
-  All proofs are `by native_decide`, i.e., compiled to native code,
+  Proofs use `decide` (pure kernel reduction, no extra axiom) where
+  feasible and `native_decide` (compiled evaluation, trusts
+  `Lean.ofReduceBool`) for the computations too large for the kernel;
   running in seconds without Mathlib.
 -/
 

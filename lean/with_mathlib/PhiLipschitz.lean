@@ -1,30 +1,24 @@
 /-
   PhiLipschitz.lean
   =================
-  Toward the open half of the metric identity.
+  The full corrected metric identity, unconditionally.
 
-  The lower bound of `l_T = l_R + 2c` is open.  It follows by induction on `Reaches` from
-  ONE statement: that the corrected potential
+  **CLOSED (2026-09-08).** `wordLength g = lRTrue g + 2 * cTrue g` for every reachable `g`
+  (`wordLength_eq_lRTrue_add_two_cTrue`, `le_antisymm` of the two directions below). This
+  section's header used to describe the lower bound as open; that stood until the
+  cancellation route sketched below (the corrected potential `Phi g = lRTrue g + 2 * cTrue g`
+  moving by at most `1` along every generator) was carried through the `s1`/`s2` cases here
+  plus the `s3`/kstar=0 growth-transition cases finished in `EltBridge.lean` (see
+  RESEARCH_LOG.md's "FINAL ATOM TABLE", 2026-09-08). The descent lemma `exists_descent`
+  became fully unconditional (no restriction on `g.kstar`), a strong induction on `PhiZ g`
+  gives the general upper bound `wordLength_le_lRTrue_add_two_cTrue`, and combined with the
+  pre-existing lower bound `wordLength_ge_lRTrue_add_two_cTrue` that gives the identity.
+  Independently re-verified: `#print axioms` on all three theorems shows only
+  `[propext, Classical.choice, Quot.sound]`.
 
-      Phi g = lRTrue g + 2 * cTrue g
-
-  moves by at most `1` along every generator.  That is measured true -- max jump exactly
-  `1` on a depth-30 ball and on a 370500-element exhaustive sweep, with `0` violations of
-  the identity itself to depth 29 (BLOCK 343/347) -- but is not proved.
-
-  The naive route fails and it is worth recording why: the site sum moves by at most `1`
-  and `cTrue` by at most `2` (one cut site, one boundary shield), so summing the parts
-  gives `5`, not `1`.  The bound therefore needs an exact CANCELLATION between the site
-  cost and the defect, not better bookkeeping on each.
-
-  This file isolates the `s1`/`s2` half, where the geometry is fully pinned:
-  `CorrectedSpan` already shows those two generators fix the span and the whole `mu` sum,
-  so all movement sits at the single site `kstar`.  `siteSum_sub_eq_at_kstar` below reduces
-  the site sum to that one site exactly, which is the shape the cancellation argument
-  needs.
-
-  What is NOT proved here: the cancellation itself, hence neither the `s1`/`s2` bound nor
-  the `s3` bound nor the lower half of the identity.
+  The naive route (site sum moves by at most `1`, `cTrue` by at most `2`, sum to `5` not
+  `1`) fails, which is why an exact cancellation between the site cost and the defect was
+  needed rather than better bookkeeping on each part.
 
   No `sorry`.
 -/

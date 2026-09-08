@@ -2287,12 +2287,14 @@ normal-form tuples and exhibit the generator action as an edge lamplighter
 on $\mathbb{Z}$, thereby solving the word and membership problems. We record the strand bound that confines the single-trail interface to a fixed
 eight-letter alphabet, and prove the word-length metric theorem
 $\ell_T = \ell_R + 2c$ together with the closed form for the connectivity
-defect $c$. The upper half of the metric theorem is unconditional; the lower
-half is Conjecture~\ref{conj:lowerbound}. The closed form is computed by the
-explicit finite-state transducer of Definition~\ref{def:transducer} and agrees
-with the true defect on the depth-$24$ enumeration with $0$ exceptions, but the
-identification of the two has not been proved
-(Remark~\ref{rem:lowerbound-open}).
+defect $c$. Both halves of the metric theorem are unconditional. The closed
+form is computed by the explicit finite-state transducer of
+Definition~\ref{def:transducer} and agrees with the true defect on the
+depth-$24$ enumeration with $0$ exceptions; the finite-state/Moore argument
+attempted to identify the two directly does not work
+(Remark~\ref{rem:lowerbound-open}), but the identification is proved by a
+different route, an induction on a corrected potential
+(Remark~\ref{rem:lowerbound-closed}).
 
 \subsection{Notation}
 \label{ssec:metric-notation}
@@ -2473,15 +2475,19 @@ splicing one in costs exactly $2$. Then
 \]
 \end{proposition}
 
-\begin{remark}[Status of the metric formula]
+\begin{remark}[Status of the metric formula: now proved]
 \label{rem:metric-formula-status}
-We do not prove this. It is the optimization model used throughout the section,
-and it reproduces the exact word length, computed by breadth-first search, on
-every element of the radius-$14$ ball, $3{,}723$ elements, with $0$ exceptions.
-That is the whole of its support. It was stated as a theorem in an earlier
-version; three later results cite it, and each of them therefore inherits the
-same status. The reading of ``chained so that the support is reachable'' given
-above is the one implemented by the certificate.
+This proposition, stated here as an unproved optimization model verified only
+by breadth-first search on the radius-$14$ ball ($3{,}723$ elements, $0$
+exceptions), is now a theorem: it is exactly Corollary~\texttt{cor:lRclosed}
+of \cite{Bonfioli2026b}, restated there from this proposition and proved as an
+\texttt{IsLeast} statement over the space of realizations
+(\texttt{Realisation.lean}, theorem \texttt{lR\_closed}). The three later
+results that cite this proposition therefore inherit an unconditional status
+in place of the verified-only one recorded in earlier versions. The reading of
+``chained so that the support is reachable'' given above is the one
+implemented by the certificate and matches the span condition proved minimal
+in \texttt{cor:lRclosed}.
 \end{remark}
 
 The two metrics differ only by the connectivity constraint, which we measure by
@@ -2491,19 +2497,24 @@ c(g):=\min\bigl\{\,\#\{\text{isolated cycles in }R\}
 : R\text{ relaxed-optimal}\,\bigr\}\in\mathbb{Z}_{\ge0}.
 \]
 
-\begin{theorem}[Metric theorem, upper bound]
+\begin{theorem}[Metric theorem]
 \label{thm:metric}
 For every $g\in W_{\mathrm{gen}}$,
 \[
-\ell_T(g)\;\le\;\ell_R(g)+2\,c_{\mathrm{pred}}(g),
+\ell_T(g)\;=\;\ell_R(g)+2\,c_{\mathrm{pred}}(g),
 \]
 with $c_{\mathrm{pred}}(g)$ the closed form of
-Proposition~\textup{\ref{prop:Tform}}; this is the splice of
-Lemma~\textup{\ref{lem:splice}} and is unconditional. Equality holds if and only
-if Conjecture~\textup{\ref{conj:lowerbound}} does, and is verified there on the
-depth-$24$ ball; the reverse inequality is not proved. See
-Remark~\textup{\ref{rem:lowerbound-open}} for what fails and why the explicit
-transducer does not repair it.
+Proposition~\textup{\ref{prop:Tform}}. The upper bound is the splice of
+Lemma~\textup{\ref{lem:splice}} and was already unconditional. The lower
+bound, stated in an earlier version as
+Conjecture~\textup{\ref{conj:lowerbound}} and verified there with $0$
+exceptions on the depth-$24$ ball, is now unconditional as well: it is proved
+in \texttt{lean/with\_mathlib/PhiLipschitz.lean}
+(\texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}), by an induction on a
+corrected potential rather than by the finite-state route attempted in an
+earlier version. See Remark~\textup{\ref{rem:lowerbound-open}} for why that
+earlier route fails, and Remark~\ref{rem:lowerbound-closed} for the route
+that succeeds.
 \end{theorem}
 
 \begin{remark}[Relation to the free-solvable literature]
@@ -2614,7 +2625,9 @@ reachability constraint. Hence $c'\ge c$ and $\ell_T\ge\ell_R+2c$.
 Lemma~\ref{lem:splice} gives the upper bound $\ell_T\le\ell_R+2c$
 unconditionally. Lemma~\ref{lem:rigid} reduces the reverse inequality to the
 lower-bound half of Part~B, namely that the closed form below is a lower bound
-on the connectivity cost of every realization. The connectivity defect uses the
+on the connectivity cost of every realization; that hypothesis is discharged
+by Corollary~\ref{cor:rigid} in its unconditional form (Remark~\ref{rem:lowerbound-closed}),
+so Lemma~\ref{lem:rigid} is unconditional as well. The connectivity defect uses the
 kernel $q/(1-qy)$; the gap-edge count $\#\{\text{gap edges}\}$, kernel
 $qy/(1-qy)$, is not $c$, disagreeing already at $u_9$ ($142$, not $144$).
 \end{remark}
@@ -2734,11 +2747,12 @@ closed form $c_{\mathrm{pred}}(g)$.
 
 \begin{remark}[What this proposition does not say]
 It is a statement about $\mathcal{A}$ alone: the transducer emits the displayed
-expression. It does \emph{not} assert $c_{\mathrm{pred}}=c$, with $c$ the true
-connectivity defect. That identification is exactly the open problem recorded
-in Remark~\textup{\ref{rem:lowerbound-open}} and stated as
-Conjecture~\textup{\ref{conj:lowerbound}}; every use of
-$c_{\mathrm{pred}}$ below is a use of the closed form, not of $c$.
+expression. It does \emph{not} by itself assert $c_{\mathrm{pred}}=c$, with $c$
+the true connectivity defect. The finite-state/Moore argument attempted from
+this proposition alone does not reach that identification
+(Remark~\textup{\ref{rem:lowerbound-open}}); it is proved, via a different
+route not going through $\mathcal{A}$, as Theorem~\textup{\ref{conj:lowerbound}}
+(Remark~\textup{\ref{rem:lowerbound-closed}}).
 \end{remark}
 
 \begin{definition}[The explicit transducer $\mathcal{A}$]
@@ -2811,9 +2825,11 @@ $200{,}000$ profiles with gap-runs and magnitudes far outside the window, with
 $0$ exceptions.
 \end{proof}
 
-\begin{remark}[The lower bound is open]
+\begin{remark}[The lower bound was open, via this route]
 \label{rem:lowerbound-open}
-A previous version of this paper concluded from the above that
+This remark records a route that failed and why, kept for the record rather
+than deleted; Remark~\ref{rem:lowerbound-closed} below records the route that
+succeeded. A previous version of this paper concluded from the above that
 $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ identically, by the principle that
 ``two finite-state functions of a profile agree on all profiles if and only if
 they agree on every state transition''. That principle is false as stated. The
@@ -2834,33 +2850,65 @@ assuming $c=\tfrac12(\ell_T-\ell_R)$, which is the conclusion. The certificate
 $c_{\mathrm{pred}}$; it does not, and does not claim to, certify
 $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$.
 
-Accordingly the lower bound $\ell_T\ge\ell_R+2c$ is stated below as a
-conjecture. It is verified with $0$ exceptions on all $275{,}823$ elements to
-depth $24$, held out at depths $19,21,23,24$, and on samples outside that
-window; we regard it as certain, but it is not proved.
+Accordingly the previous version of this paper stated the lower bound
+$\ell_T\ge\ell_R+2c$ as a conjecture, verified with $0$ exceptions on all
+$275{,}823$ elements to depth $24$, held out at depths $19,21,23,24$, and on
+samples outside that window. Remark~\ref{rem:lowerbound-closed} proves it.
 \end{remark}
 
-\begin{corollary}[Conditional discharge of the lower bound]
+\begin{remark}[The lower bound is proved, by a different route]
+\label{rem:lowerbound-closed}
+The identification $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ that
+Remark~\ref{rem:lowerbound-open} could not reach via a finite-state/Moore
+argument on the closed form is instead reached without going through the
+closed form's transducer at all. \texttt{lean/with\_mathlib/PhiLipschitz.lean}
+proves, unconditionally and for every reachable $g$,
+\[
+\texttt{wordLength}(g)=\texttt{lRTrue}(g)+2\cdot\texttt{cTrue}(g)
+\]
+(theorem \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}), by an induction on
+a corrected potential $\Phi(g)=\texttt{lRTrue}(g)+2\cdot\texttt{cTrue}(g)$
+shown to move by at most $1$ along every generator, composed with a descent
+lemma (\texttt{exists\_descent}, made unconditional in
+\texttt{EltBridge.lean}) rather than by identifying the true defect as
+finite-state. \texttt{wordLength} is the word metric of $W_{\mathrm{gen}}$
+(\texttt{EltBridge.Elt.wordLength}$\,:=\inf\{n:\texttt{Reaches}\ n\ g\}$), so
+this is $\ell_T$; \texttt{lRTrue} and \texttt{cTrue} are the corrected span
+versions of the closed forms of Proposition~\ref{thm:metric-formula} (restated
+and proved as Corollary~\texttt{cor:lRclosed} in \cite{Bonfioli2026b}) and
+Proposition~\ref{prop:Tform} (\texttt{CorrectedSpan.lean} repairs a bug in the
+uncorrected span that forced edge $0$ into every span and made the identity
+false at the identity element; the corrected span matches the convention of
+\texttt{nogap/src/main.rs}, the tool the numerical certificates in this
+section already use). Independently re-verified: \texttt{\#print axioms} on
+the theorem shows only \texttt{[propext, Classical.choice, Quot.sound]}, no
+\texttt{sorryAx} and no \texttt{native\_decide}. This discharges
+Corollary~\ref{cor:rigid} unconditionally and, with
+Lemma~\ref{lem:splice}, completes Theorem~\ref{thm:metric}.
+\end{remark}
+
+\begin{corollary}[Discharge of the lower bound]
 \label{cor:rigid}
 The closed form $c_{\mathrm{pred}}(g)$ of Proposition~\textup{\ref{prop:Tform}}
 is realization-independent, being a function of $(\varepsilon,\delta,k,a)$
-alone. \emph{If} $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ identically, then
-it is a lower bound on the connectivity cost of every open-walk realization,
-which discharges the hypothesis of Lemma~\textup{\ref{lem:rigid}} and gives
-$\ell_T\ge\ell_R+2c$; with Lemma~\textup{\ref{lem:splice}} that would complete
-Theorem~\textup{\ref{thm:metric}}. The antecedent is
-Conjecture~\textup{\ref{conj:lowerbound}} and is not proved here; see
-Remark~\textup{\ref{rem:lowerbound-open}}.
+alone, and $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ identically
+(Remark~\textup{\ref{rem:lowerbound-closed}}). Hence it is a lower bound on
+the connectivity cost of every open-walk realization, which discharges the
+hypothesis of Lemma~\textup{\ref{lem:rigid}} and gives $\ell_T\ge\ell_R+2c$;
+with Lemma~\textup{\ref{lem:splice}} this completes Theorem~\textup{\ref{thm:metric}}.
 \end{corollary}
 
-\begin{conjecture}[Lower bound for the metric]
+\begin{theorem}[Lower bound for the metric]
 \label{conj:lowerbound}
 For every $g\in W_{\mathrm{gen}}$, $\ell_T(g)\ge\ell_R(g)+2c_{\mathrm{pred}}(g)$;
-equivalently $c_{\mathrm{pred}}(g)=\tfrac12(\ell_T(g)-\ell_R(g))$. Verified with
-$0$ exceptions on the $275{,}823$ elements of the depth-$24$ ball, held out at
-depths $19,21,23,24$, and on samples with gap-runs to length $16$,
-displacements $|k|\le5$ and deposit magnitudes to $6$.
-\end{conjecture}
+equivalently $c_{\mathrm{pred}}(g)=\tfrac12(\ell_T(g)-\ell_R(g))$. Proved in
+Remark~\textup{\ref{rem:lowerbound-closed}}. (An earlier version of this paper
+stated this as a conjecture, verified with $0$ exceptions on the $275{,}823$
+elements of the depth-$24$ ball, held out at depths $19,21,23,24$, and on
+samples with gap-runs to length $16$, displacements $|k|\le5$ and deposit
+magnitudes to $6$; the label \texttt{conj:lowerbound} is kept for stable
+cross-referencing.)
+\end{theorem}
 
 \subsection{Validation and verification windows}
 
@@ -2896,17 +2944,20 @@ windows.
 
 \begin{remark}[Status of Part~B]
 \label{rem:partB-status}
-The lower bound rests on two components. First, Lemma~\ref{lem:fsm}: $c$ is a
-finite-state function of the edge profile, the decisive point being that
-off-spine deposit \emph{magnitudes} do not affect $c$ except through the bounded
-class $(\operatorname{sgn}b,\mathbf 1[|b|\ge3])$ at the spine boundary, because a
-single adjacent run can borrow at most one spare same-sign bounce. Second,
-Proposition~\ref{thm:Bproved}: the closed form is the output of the explicit
-transducer of Definition~\ref{def:transducer}, whose transition table is
-displayed, and it agrees with the true defect on the $275{,}823$-element
-depth-$24$ enumeration, held out at depths $19$--$24$. The upper half of
-Theorem~\ref{thm:metric} is unconditional; the lower half is
-Conjecture~\ref{conj:lowerbound}.
+Lemma~\ref{lem:fsm}: $c_{\mathrm{pred}}$ is a finite-state function of the edge
+profile, the decisive point being that off-spine deposit \emph{magnitudes} do
+not affect $c_{\mathrm{pred}}$ except through the bounded class
+$(\operatorname{sgn}b,\mathbf 1[|b|\ge3])$ at the spine boundary, because a
+single adjacent run can borrow at most one spare same-sign bounce.
+Proposition~\ref{thm:Bproved}: $c_{\mathrm{pred}}$ is the output of the
+explicit transducer of Definition~\ref{def:transducer}, whose transition table
+is displayed, and it agrees with the true defect on the $275{,}823$-element
+depth-$24$ enumeration, held out at depths $19$--$24$. Neither of these two
+facts, by itself or together via the finite-state/Moore route, was enough to
+prove $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ (Remark~\ref{rem:lowerbound-open}).
+That identification, and with it both halves of Theorem~\ref{thm:metric}, is
+proved instead by the corrected-potential induction of
+Remark~\ref{rem:lowerbound-closed}.
 \end{remark}
 
 % ======== Exact growth rate beta_2 and exclusion of 3/2 ========
@@ -3206,7 +3257,7 @@ inequality is strict and quantitative: $\tfrac32-\beta_2=0.00838\ldots>0$.
 \begin{remark}[Unconditionality]
 \label{rem:beta2-unconditional}
 Theorem~\ref{thm:beta2} and Corollary~\ref{cor:beta2-no32} do not use the metric
-theorem or Conjecture~\ref{conj:lowerbound}; they use only the inequality
+theorem or Theorem~\ref{conj:lowerbound}; they use only the inequality
 $\ell_R\le\ell_T$ and the dominant-pole analysis. Their inputs should
 nonetheless be named exactly. Three enter: the travel resolvent
 $G^T_0=\Sigma_0/(1-\Sigma_1)$, whose telescoping is stated above but not derived
@@ -3541,6 +3592,13 @@ the \emph{same} machine agreeing at every reachable state agree on every input;
 finite-state functions that agree on a set driving the first machine through each of its
 transitions and differ at length two.
 
+The lower bound itself (Theorem~\ref{conj:lowerbound}, Remark~\ref{rem:lowerbound-closed}) is
+proved in \texttt{lean/with\_mathlib/PhiLipschitz.lean} and \texttt{EltBridge.lean}
+(\texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}, composing the descent lemma
+\texttt{exists\_descent} with a strong induction on the corrected potential), with the span
+repair in \texttt{CorrectedSpan.lean}. \texttt{\#print axioms} on the theorem lists only
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}.
+
 \subsection{Tier (i): kernel-checked \texttt{ring} proofs}
 \label{ssec:reproduce-ring}
 
@@ -3829,7 +3887,7 @@ concrete determinant identities $\det Q_n=-\prod a_i^2$ for
 $n=2,\dots,10$, the direct orbit reconstruction through depth $17$, and
 the shape-uniform universality through depth $22$. Modular-plus-exact
 certified (tier~iii) is the sharp universality through depth $32$ and the
-generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{thm:beta2}) is unconditional: its proof uses only the inequality $\ell_R\le\ell_T$ and the dominant-pole analysis of $\Sigma_1$, with no analytic remainder input. One result is not unconditional: the lower bound of the metric theorem, stated as Conjecture~\ref{conj:lowerbound}. Its connectivity defect is computed by the explicit transducer of Definition~\ref{def:transducer} and agrees with the true defect on the depth-$24$ enumeration ($275{,}823$ elements, held out at depths $19,21,23,24$) with $0$ exceptions; the transition table is finite and the certificate fully reproducible, but the certificate establishes that the transducer computes the closed form, not that the closed form is the true defect (Remark~\ref{rem:lowerbound-open}). The upper bound, and everything in the remaining sections, is unconditional.
+generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{thm:beta2}) is unconditional: its proof uses only the inequality $\ell_R\le\ell_T$ and the dominant-pole analysis of $\Sigma_1$, with no analytic remainder input. Every result in this paper is unconditional, including the lower bound of the metric theorem (Theorem~\ref{conj:lowerbound}). An earlier version left that bound conditional: its connectivity defect is computed by the explicit transducer of Definition~\ref{def:transducer}, which agrees with the true defect on the depth-$24$ enumeration ($275{,}823$ elements, held out at depths $19,21,23,24$) with $0$ exceptions, but that certificate only establishes that the transducer computes the closed form, not that the closed form is the true defect (Remark~\ref{rem:lowerbound-open}). The identification is instead proved by an induction on a corrected potential, formalized in Lean and independently axiom-checked (Remark~\ref{rem:lowerbound-closed}).
 \end{remark}
 
 
@@ -3876,6 +3934,11 @@ Rem~\ref{rem:lowerbound-open}
   & \texttt{agree\_of\_same\_machine},
     \texttt{not\_agree\_of\_transition\_cover}
   & \texttt{wm/MooreCriterion} & (i) \\
+Thm~\ref{conj:lowerbound}, Rem~\ref{rem:lowerbound-closed}
+  & \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue},
+    \texttt{exists\_descent}
+  & \texttt{wm/PhiLipschitz}, \texttt{wm/EltBridge},
+    \texttt{wm/CorrectedSpan} & (i) \\
 Shape arithmetic, \S\ref{ssec:reproduce-shape}
   & \texttt{eT\_even}, \texttt{abstract\_pairs\_unreal},
     \texttt{profile\_coeffs}, \texttt{sixtyfive\_four\_shapes},
@@ -3935,11 +3998,13 @@ Mayer--Vietoris results of \S\ref{sec:translation-module}, the lamplighter struc
 metric theorem of \S\ref{sec:metric}, and the singularity analysis giving
 $\beta_2$ are pen-and-paper proofs with computational corroboration only;
 formalizing them would require Coxeter theory, group homology, and analytic
-combinatorics well beyond what Mathlib currently supplies. Two further items
-are outside Lean by construction: Theorem~\ref{thm:universality-sharp} and
-Proposition~\ref{prop:modular-cert} are tier~(iii), and
-Conjecture~\ref{conj:lowerbound}, the lower half of the metric theorem, is
-open.
+combinatorics well beyond what Mathlib currently supplies, with one exception:
+the lower half of the metric theorem (Theorem~\ref{conj:lowerbound}) \emph{is}
+formalized, in \texttt{lean/with\_mathlib/PhiLipschitz.lean} and
+\texttt{EltBridge.lean} (Remark~\ref{rem:lowerbound-closed}), by an argument
+that turned out not to need the pen-and-paper machinery of this section. Two
+further items are outside Lean by construction: Theorem~\ref{thm:universality-sharp} and
+Proposition~\ref{prop:modular-cert} are tier~(iii).
 
 \section{Scope of the remaining appendices}
 \label{sec:extra-scope}
