@@ -14181,3 +14181,47 @@ retraction under continued time pressure. The next honest step is to re-derive t
 ΔPhiZ formula for s1/s2 by hand (reusing phiZ_dist_le_one_s1/s2's own internal case structure,
 which already computes this correctly for the BOUND direction) before any further Rust
 correlation attempts.
+
+## Block: exact shift-value lemmas proved; general descent claim shown FALSE as pure arithmetic
+
+Proved (VERIFIED: lake build PhiLipschitz clean, full build clean, 0 sorry, #print axioms
+clean on all 4): `alphaAt_s1_kstar`, `betaAt_s1_kstar` (s1 shifts both alphaAt(kstar) and
+betaAt(kstar) by the SAME amount, +eps if delta=true else -eps), `alphaAt_s2_kstar`,
+`betaAt_s2_kstar` (s2 shifts alphaAt by -eps, betaAt by +eps, always, regardless of delta).
+These confirm exactly the shift formulas derived by hand and checked against raw Rust data
+earlier this session.
+
+**Important negative result (brute-forced in Python, not Lean)**: the natural next step would
+be a PURE ARITHMETIC lemma -- "for integers a,b with a==b (mod 2) [proved: alphaAt_betaAt_
+kstar_parity] and eps=+-1, at least one of the two available shifts (delta,delta) or
+(-eps,+eps) strictly decreases max(|a|,|b|) whenever it's positive" -- attempted in Lean
+(`siteCost_descent_s1_or_s2`) and it FAILED TO BUILD (multiple omega failures). Brute-forced
+the exact claim in Python over a=b=-10 (and many others): COUNTEREXAMPLE, e.g. a=b=-10,eps=1,
+delta=false: both shifts give M'=11>10=M. So this pure-(a,b)-only lemma is FALSE in general --
+there must be ADDITIONAL structure (beyond a≡b mod 2) constraining which (a,b) pairs actually
+arise in the "s3 fails to descend" regime that rules out configurations like a=b=-10. This
+constraint has NOT been identified. No false theorem was committed (build failure caught it).
+
+**Also resolved a real question from the prior block**: verified directly (Rust, `[c1check]`
+probe) that in EVERY observed case where siteCost(kstar) drops from 1 to 0 via s1/s2, `kstar`
+sits EXACTLY at the window boundary (`is_boundary=true` in all 10 sampled cases) -- meaning
+the applicable existing lemma is `cTrue_s1_eq_of_not_interior_ne_zero`/`_s2` (cTrue is
+UNCHANGED, no interior filter or shield involvement), NOT the interior `exchange_sq_le_one`
+mechanism I worried about. This explains why the earlier "cut-flip could overwhelm the
+decrease" concern (previous block's retraction) does not actually apply in the regime
+relevant to the growth-case descent -- ΔPhiZ = ΔsiteCost(kstar) EXACTLY there, confirmed by
+`phiZ_dist_le_one_s1_boundary_ne_zero`'s own `key` step (already proved, reused not
+re-derived). So the mechanism IS just "does one of s1/s2 strictly decrease siteCost(kstar)",
+but the general (a,b)-only sufficient condition for that is false as shown above -- the real
+proof needs the ADDITIONAL constraint linking a,b to the actual d/travel values at the
+boundary-specific kstar position, not yet found.
+
+**Summary of state**: three retractions now logged in this line of investigation (window-move
+mislabel, growth-rule misread, general-(a,b)-only claim false). Real, solid, verified progress:
+alphaAt_betaAt_kstar_parity, four shift-value lemmas, and the confirmation that the boundary
+case avoids the cut-flip complication entirely. The FULL general nontrivial descent lemma
+remains open and appears to require genuinely new structural insight (likely relating a,b to
+the boundary position ATrue/BTrue itself, not just d(kstar)/d(kstar-1) in isolation) --
+comparable in difficulty to the whole previous session's Lipschitz-direction work. Recommend
+treating this as its own dedicated future session rather than continuing to chip at it
+piecemeal, per Rule 2 (step back when stuck three times in a row).
