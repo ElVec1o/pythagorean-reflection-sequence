@@ -5579,4 +5579,96 @@ theorem exists_descent_unconditional (g : EltBridge.Elt)
   · exact exists_descent_kstar_zero g hk0 hne
   · exact exists_descent g hk0 hne
 
+theorem Gen_symm {a b : EltBridge.Elt} (h : EltBridge.Elt.Gen a b) : EltBridge.Elt.Gen b a := by
+  rcases h with h | h | h
+  · exact Or.inl ((s1_involutive a).symm.trans (s1_congr h.symm))
+  · exact Or.inr (Or.inl ((s2_involutive a).symm.trans (s2_congr h.symm)))
+  · exact Or.inr (Or.inr ((s3_involutive a).symm.trans (s3_congr h.symm)))
+
+theorem reaches_of_reaches_gen {n : ℕ} {a b : EltBridge.Elt}
+    (hb : EltBridge.Elt.Reaches n b) (hg : EltBridge.Elt.Gen a b) :
+    EltBridge.Elt.Reaches (n + 1) a :=
+  EltBridge.Elt.Reaches.step hb (Gen_symm hg)
+
+set_option maxHeartbeats 1000000 in
+/-- **The general upper bound, by strong induction on `PhiZ` via the descent lemma.**
+`PhiZ` is a nonnegative integer, and `exists_descent_unconditional` gives a strict
+decrease along one of `s1`, `s2`, `s3` whenever `g` is not (up to `SameElt`) the
+identity; since each generator is an involution, reachability transfers backward along
+that step (`reaches_of_reaches_gen`), so induction on `PhiZ g` (as a natural number, via
+`Int.toNat`) builds an explicit reaching chain of length `PhiZ g` for `g` itself. -/
+theorem reaches_of_phiZ_aux : ∀ (n : ℕ) (g : EltBridge.Elt),
+    (PhiZ g).toNat ≤ n → EltBridge.Elt.Reaches (PhiZ g).toNat g := by
+  intro n
+  induction n with
+  | zero =>
+    intro g hn
+    have hnn : (0:ℤ) ≤ PhiZ g := by unfold PhiZ; positivity
+    have hz : (PhiZ g).toNat = 0 := by omega
+    rw [hz]
+    by_cases hne : EltBridge.Elt.SameElt g EltBridge.Elt.one
+    · exact EltBridge.Elt.Reaches.refl hne
+    · exfalso
+      rcases exists_descent_unconditional g hne with hh | hh | hh
+      · have : (0:ℤ) ≤ PhiZ (s1 g) := by unfold PhiZ; positivity
+        omega
+      · have : (0:ℤ) ≤ PhiZ (s2 g) := by unfold PhiZ; positivity
+        omega
+      · have : (0:ℤ) ≤ PhiZ (s3 g) := by unfold PhiZ; positivity
+        omega
+  | succ n ih =>
+    intro g hn
+    by_cases hne : EltBridge.Elt.SameElt g EltBridge.Elt.one
+    · have hz : (PhiZ g).toNat = 0 := by
+        rw [PhiZ_congr hne, PhiZ_one]; rfl
+      rw [hz]
+      exact EltBridge.Elt.Reaches.refl hne
+    · rcases exists_descent_unconditional g hne with hh | hh | hh
+      · have hnn1 : (0:ℤ) ≤ PhiZ (s1 g) := by unfold PhiZ; positivity
+        have hb := phiZ_dist_le_one_s1 g
+        have hle1 : (PhiZ (s1 g)).toNat ≤ n := by omega
+        have hstep := ih (s1 g) hle1
+        have hgen : EltBridge.Elt.Gen g (s1 g) := Or.inl (SameElt.refl _)
+        have hres := reaches_of_reaches_gen hstep hgen
+        have hexact : PhiZ (s1 g) = PhiZ g - 1 := by nlinarith [hb, hh]
+        have heq : (PhiZ g).toNat = (PhiZ (s1 g)).toNat + 1 := by omega
+        rwa [heq]
+      · have hnn1 : (0:ℤ) ≤ PhiZ (s2 g) := by unfold PhiZ; positivity
+        have hb := phiZ_dist_le_one_s2 g
+        have hle1 : (PhiZ (s2 g)).toNat ≤ n := by omega
+        have hstep := ih (s2 g) hle1
+        have hgen : EltBridge.Elt.Gen g (s2 g) := Or.inr (Or.inl (SameElt.refl _))
+        have hres := reaches_of_reaches_gen hstep hgen
+        have hexact : PhiZ (s2 g) = PhiZ g - 1 := by nlinarith [hb, hh]
+        have heq : (PhiZ g).toNat = (PhiZ (s2 g)).toNat + 1 := by omega
+        rwa [heq]
+      · have hnn1 : (0:ℤ) ≤ PhiZ (s3 g) := by unfold PhiZ; positivity
+        have hb := phiZ_dist_le_one_s3 g
+        have hle1 : (PhiZ (s3 g)).toNat ≤ n := by omega
+        have hstep := ih (s3 g) hle1
+        have hgen : EltBridge.Elt.Gen g (s3 g) := Or.inr (Or.inr (SameElt.refl _))
+        have hres := reaches_of_reaches_gen hstep hgen
+        have hexact : PhiZ (s3 g) = PhiZ g - 1 := by nlinarith [hb, hh]
+        have heq : (PhiZ g).toNat = (PhiZ (s3 g)).toNat + 1 := by omega
+        rwa [heq]
+
+theorem reaches_of_phiZ (g : EltBridge.Elt) :
+    EltBridge.Elt.Reaches (PhiZ g).toNat g :=
+  reaches_of_phiZ_aux (PhiZ g).toNat g le_rfl
+
+theorem wordLength_le_lRTrue_add_two_cTrue (g : EltBridge.Elt) :
+    (EltBridge.Elt.wordLength g : ℤ) ≤ (lRTrue g : ℤ) + 2 * (cTrue g : ℤ) := by
+  have hreach := reaches_of_phiZ g
+  have hle : g.wordLength ≤ (PhiZ g).toNat := EltBridge.Elt.wordLength_le hreach
+  have hnn : (0:ℤ) ≤ PhiZ g := by unfold PhiZ; positivity
+  have htoNat : ((PhiZ g).toNat : ℤ) = PhiZ g := Int.toNat_of_nonneg hnn
+  have hphi : PhiZ g = (lRTrue g : ℤ) + 2 * (cTrue g : ℤ) := by unfold PhiZ; ring
+  have hlecast : (g.wordLength : ℤ) ≤ ((PhiZ g).toNat : ℤ) := by exact_mod_cast hle
+  omega
+
+/-- **The full corrected metric identity, for every `g`.** -/
+theorem wordLength_eq_lRTrue_add_two_cTrue {g : EltBridge.Elt} (h : EltBridge.Elt.Reachable g) :
+    (EltBridge.Elt.wordLength g : ℤ) = (lRTrue g : ℤ) + 2 * (cTrue g : ℤ) :=
+  le_antisymm (wordLength_le_lRTrue_add_two_cTrue g) (wordLength_ge_lRTrue_add_two_cTrue h)
+
 end PhiLipschitz
