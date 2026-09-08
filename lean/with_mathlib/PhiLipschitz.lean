@@ -3752,4 +3752,67 @@ theorem trivial_descent (g : EltBridge.Elt) (hk : g.kstar = 0) (hd : ∀ j, g.d 
     rw [hkg, hδ, he]
     simp
 
+
+theorem phiZ_s3_eq_lRTrue_dist (g : EltBridge.Elt) :
+    PhiZ (s3 g) - PhiZ g = (lRTrue (s3 g) : ℤ) - lRTrue g := by
+  have hc : cTrue (s3 g) = cTrue g := cTrue_s3_eq g
+  unfold PhiZ
+  rw [hc]; ring
+
+theorem descent_of_Bdecrease (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g - 1)
+    (hd : g.delta = false) : PhiZ (s3 g) < PhiZ g := by
+  have hl : (lRTrue (s3 g) : ℤ) + 1 = lRTrue g := by
+    exact_mod_cast lRTrue_s3_eq_of_Bdecrease_delta_false' g h1 h2 hA hB hd
+  have heq := phiZ_s3_eq_lRTrue_dist g
+  omega
+
+theorem descent_of_Aincrease (g : EltBridge.Elt)
+    (h1 : (occTrue g).Nonempty) (h2 : (occTrue (s3 g)).Nonempty)
+    (hA : ATrue (s3 g) = ATrue g + 1) (hB : BTrue (s3 g) = BTrue g)
+    (hd : g.delta = true) : PhiZ (s3 g) < PhiZ g := by
+  have hl : (lRTrue (s3 g) : ℤ) + 1 = lRTrue g := by
+    exact_mod_cast lRTrue_s3_eq_of_Aincrease_delta_true' g h1 h2 hA hB hd
+  have heq := phiZ_s3_eq_lRTrue_dist g
+  omega
+
+theorem descent_of_g_empty (g : EltBridge.Elt) (he : occTrue g = ∅) :
+    PhiZ g < PhiZ (s3 g) := by
+  have hl : (lRTrue (s3 g) : ℤ) = lRTrue g + 1 := by
+    exact_mod_cast lRTrue_s3_eq_of_occTrue_g_empty g he
+  have heq := phiZ_s3_eq_lRTrue_dist g
+  omega
+
+theorem descent_of_s3g_empty (g : EltBridge.Elt) (he : occTrue (s3 g) = ∅) :
+    PhiZ (s3 g) < PhiZ g := by
+  have h1 : (occTrue g).Nonempty := by
+    rw [← Finset.not_nonempty_iff_eq_empty] at he
+    by_contra hc
+    rw [Finset.not_nonempty_iff_eq_empty] at hc
+    exact he (occTrue_s3_singleton_of_g_empty g hc ▸ Finset.singleton_nonempty _)
+  have hnat := lRTrue_s3_eq_of_occTrue_s3g_empty g he
+  obtain ⟨x, hx⟩ := h1
+  have hxA : ATrue g ≤ x := ATrue_le hx
+  have hxB : x ≤ BTrue g := le_BTrue hx
+  have hxIcc : x ∈ Finset.Icc (ATrue g) (BTrue g) := Finset.mem_Icc.mpr ⟨hxA, hxB⟩
+  have hmux1 : 1 ≤ g.toPathData.mu x := by
+    unfold SiteCost.PathData.mu
+    simp only [EltBridge.Elt.toPathData]
+    split_ifs with h
+    · omega
+    · push_neg at h
+      rcases eq_or_ne (g.d x) 0 with hz | hz
+      · have hf := h hz
+        have := Int.natAbs_pos.mpr hf
+        omega
+      · have := Int.natAbs_pos.mpr hz
+        omega
+  have hsumge : g.toPathData.mu x ≤ ∑ j ∈ Finset.Icc (ATrue g) (BTrue g), g.toPathData.mu j :=
+    Finset.single_le_sum (fun j _ => Nat.zero_le _) hxIcc
+  have hpos : 1 ≤ lRTrue g := by unfold lRTrue; omega
+  have hl : (lRTrue (s3 g) : ℤ) = lRTrue g - 1 := by exact_mod_cast hnat
+  have heq := phiZ_s3_eq_lRTrue_dist g
+  omega
+
 end PhiLipschitz
