@@ -4546,4 +4546,60 @@ theorem descent_of_ascent_false (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0) (hd : 
   · left; unfold PhiZ; rw [hlR1, hc1]; push_cast; omega
   · right; unfold PhiZ; rw [hlR2, hc2]; push_cast; omega
 
+
+theorem mu_ascent_of_lRTrue_ascent_window_unchanged (g : EltBridge.Elt)
+    (hA : ATrue (s3 g) = ATrue g) (hB : BTrue (s3 g) = BTrue g)
+    (hasc : (lRTrue (s3 g) : ℤ) = lRTrue g + 1) :
+    ((s3 g).toPathData.mu (if g.delta then g.kstar else g.kstar - 1) : ℤ)
+      = g.toPathData.mu (if g.delta then g.kstar else g.kstar - 1) + 1 := by
+  set p := (if g.delta then g.kstar else g.kstar - 1) with hpdef
+  have hpmem := crossed_mem_mu_window_of_window_unchanged g hA hB
+  rw [← hpdef] at hpmem
+  have hmusum : (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), ((s3 g).toPathData.mu j : ℤ))
+      = (∑ j ∈ Finset.Icc (ATrue g) (BTrue g), (g.toPathData.mu j : ℤ))
+          + (((s3 g).toPathData.mu p : ℤ) - (g.toPathData.mu p : ℤ)) :=
+    sum_eq_add_diff_of_eq_off hpmem (fun x _ hx => by
+      have hx' : x ≠ (if g.delta then g.kstar else g.kstar - 1) := by rwa [hpdef] at hx
+      have := s3_mu_agree g x hx'
+      exact_mod_cast this)
+  have hsitesum : (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), ((s3 g).toPathData.siteCost s : ℤ))
+      = (∑ s ∈ Finset.Icc (ATrue g) (BTrue g + 1), (g.toPathData.siteCost s : ℤ)) :=
+    Finset.sum_congr rfl (fun x _ => by exact_mod_cast EltBridge.Elt.s3_siteCost_eq g x)
+  have hlr : (lRTrue (s3 g) : ℤ) = (lRTrue g : ℤ)
+      + (((s3 g).toPathData.mu p : ℤ) - (g.toPathData.mu p : ℤ)) := by
+    unfold lRTrue
+    rw [hA, hB]
+    push_cast
+    rw [hmusum, hsitesum]
+    ring
+  omega
+
+
+theorem exists_descent_of_hM (g : EltBridge.Elt) (hk0 : g.kstar ≠ 0)
+    (hne : ¬ EltBridge.Elt.SameElt g EltBridge.Elt.one)
+    (hMcase : ∀ h1 : (occTrue g).Nonempty, ∀ h2 : (occTrue (s3 g)).Nonempty,
+        ATrue (s3 g) = ATrue g → BTrue (s3 g) = BTrue g →
+        (lRTrue (s3 g) : ℤ) = lRTrue g + 1 → 0 < g.toPathData.siteCost g.kstar) :
+    PhiZ (s1 g) < PhiZ g ∨ PhiZ (s2 g) < PhiZ g ∨ PhiZ (s3 g) < PhiZ g := by
+  by_cases hcase : ∃ h1 : (occTrue g).Nonempty, ∃ h2 : (occTrue (s3 g)).Nonempty,
+      ATrue (s3 g) = ATrue g ∧ BTrue (s3 g) = BTrue g ∧
+      (lRTrue (s3 g) : ℤ) = lRTrue g + 1
+  · obtain ⟨h1, h2, hA, hB, hlr⟩ := hcase
+    have hasc := mu_ascent_of_lRTrue_ascent_window_unchanged g hA hB hlr
+    have hM : 0 < g.toPathData.siteCost g.kstar := hMcase h1 h2 hA hB hlr
+    by_cases hd : g.delta = true
+    · rw [if_pos hd] at hasc
+      rcases descent_of_ascent_true g hk0 hd hasc hM with hh | hh
+      · left; exact hh
+      · right; left; exact hh
+    · have hd' : g.delta = false := by revert hd; cases g.delta <;> simp
+      rw [if_neg (by rw [hd']; simp)] at hasc
+      rcases descent_of_ascent_false g hk0 hd' hasc hM with hh | hh
+      · left; exact hh
+      · right; left; exact hh
+  · push_neg at hcase
+    exact exists_descent_of_not_window_unchanged_ascent g hne hk0
+      (fun ⟨h1, h2, hA, hB, hlr⟩ => absurd hlr (by
+        intro hlr'; exact absurd (hcase h1 h2 hA hB) (by simp [hlr'])))
+
 end PhiLipschitz
