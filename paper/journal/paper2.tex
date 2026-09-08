@@ -83,8 +83,9 @@ least $3$. The relaxed growth series $V$ is therefore transcendental over $\Q(x)
 one statement, \textup{(R-J)}, that a junction pairing does not vanish at infinitely many travel
 poles (Theorem~\ref{thm:V}); \textup{(R-J)} holds at the dominant pole and is open in general. For
 the true series $U$ we prove the analytic half in full and $U$'s transcendence conditionally
-(Theorem~\ref{thm:U}), on the invariance of the travel block \textup{(T)} and on the same
-\textup{(R-J)}; the former hypothesis \textup{(L)} is now a theorem. All of this rests on the
+(Theorem~\ref{thm:U}), on \textup{(R-J)} alone; the invariance of the travel block
+\textup{(T)} that earlier versions carried as a hypothesis is now Proposition~\ref{prop:travelinv},
+a theorem, and the former hypothesis \textup{(L)} is now a theorem as well. All of this rests on the
 strand-walk transfer model \textup{(M)}. Its local cost law is now a theorem inside the crossing
 optimisation \textup{(}Lemma~\ref{lem:transport}, Corollary~\ref{cor:localcost}\textup{)}, and its
 marker clause is corrected: with $d_L$ the last bulk deposit and $d_R$ the first travel deposit, the
@@ -138,8 +139,9 @@ transcendental over $\Q(x)$ with every input proved self-contained
 (Theorem~\ref{thm:travelres}), and reduces both growth series to combinatorial statements about the
 strand-walk model: the relaxed companion $V$ is transcendental over $\Q(x)$ conditional on the
 junction non-vanishing \textup{(R-J)} of Theorem~\ref{thm:V}, and the true series $U$ conditional
-on the travel-block invariance \textup{(T)} and the same \textup{(R-J)}
-(Theorem~\ref{thm:U}); both additionally on the transfer model \textup{(M)} of
+on the same \textup{(R-J)} alone (Theorem~\ref{thm:U}) -- the travel-block invariance
+\textup{(T)} that earlier versions carried as a second hypothesis is now proved
+(Proposition~\ref{prop:travelinv}); both theorems additionally rest on the transfer model \textup{(M)} of
 Hypothesis~\ref{hyp:model}. The algebraic layer between the blocks and those two series, which
 earlier versions of this paper carried as the hypotheses \textup{(R)} and \textup{(L)}, is proved
 in \S\ref{sec:assembly}, and so is the local cost law of \textup{(M)}, together with the correction
@@ -213,17 +215,18 @@ same certificate into the denominator lower bound, closing the gate
 (Corollary~\ref{app:gate}). The gate now also delivers $B_U(q_m)\ne0$ at every travel pole
 (Theorem~\ref{thm:L}). What it does \emph{not} supply is the passage from there to a pole of $U$,
 because the assembled residue is a junction pairing and not a multiple of $B_U$
-(Proposition~\ref{prop:junction}); that passage, and the invariance of the travel block under the
-cycle marker, are the two unproved inputs \textup{(R-J)} and \textup{(T)} of
-Theorem~\ref{thm:U} (Remark~\ref{rem:Ustatus}). The sharp constants behind the picture are \emph{derived} in
+(Proposition~\ref{prop:junction}); that passage is the one unproved input \textup{(R-J)} of
+Theorem~\ref{thm:U} (Remark~\ref{rem:Ustatus}) -- the invariance of the travel block under the
+cycle marker, once a second hypothesis \textup{(T)} alongside it, is now proved
+(Proposition~\ref{prop:travelinv}). The sharp constants behind the picture are \emph{derived} in
 Remark~\ref{rem:elemY3}: the pole--zero offset $\delta w=\tfrac{\sqrt2}8\tau^{3/2}$ and
 $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$, a fourfold margin below the gate threshold. (The
 turning-point atom feeding that analysis, the rational envelope
 $h(X)=(1+\tfrac3{2X^2})/(1+\tfrac1{X^2})\in[1,\tfrac32]$ of Lemma~\ref{lem:atomN}, is formally
 verified in Lean~4.) $U$ and $V$ therefore rest on the same self-contained \emph{analysis}; no
 special-function input separates them, and after \S\ref{sec:assembly} they share the junction
-hypothesis \textup{(R-J)} as well. What separates them is the single combinatorial input
-\textup{(T)}, which $V$ does not use.
+hypothesis \textup{(R-J)} as the only combinatorial input each carries beyond \textup{(M)} --
+\textup{(T)}, which once separated them, is now proved and no longer a hypothesis of either.
 
 Section~\ref{sec:modp} records an independent arithmetic route: by Christol's theorem
 \cite{Christol1979,CKMR1980}, if
@@ -2657,7 +2660,8 @@ on $G^T_0$ alone, but it does \emph{not} need \textup{(R-J)}: at the dominant po
 pairing is a sum of non-negative terms and is positive (Proposition~\ref{prop:RJdominant}). The
 lower bound $\beta_2$ for $u_n$ and $v_n$ is free even of \textup{(M)}, coming from the
 pure-travel subcount \cite{Bonfioli2026a}. The same rate for $u_n$
-follows from Proposition~\ref{prop:travelinv} (hypothesis \textup{(T)} of Theorem~\ref{thm:U})
+follows from Proposition~\ref{prop:travelinv} (the former hypothesis \textup{(T)} of
+Theorem~\ref{thm:U}, now proved)
 together with the same positivity at $q_1$; $u_n\le v_n$ gives the upper bound
 unconditionally.
 \end{corollary}
@@ -2670,12 +2674,13 @@ Appendix~\ref{app:beta2}, which is independent of everything else in this paper.
 
 Transcendence of $U$ needs two things that the analysis of \S\ref{sec:sd} and
 Appendix~\ref{app:star} does not supply: that $U$ has the travel poles at all, and that the residue
-of $U$ at each of them is non-zero. The first is the combinatorial hypothesis \textup{(T)}, which
-is not proved here or in \cite{supplement}. The second was previously the hypothesis \textup{(L)};
-its algebraic content is now a theorem (\S\ref{sec:mob}, Theorem~\ref{thm:L}), and what survives
+of $U$ at each of them is non-zero. The first was the combinatorial hypothesis \textup{(T)}; it is
+now Proposition~\ref{prop:travelinv} and is proved (\S\ref{sec:inputT}). The second was previously
+the hypothesis \textup{(L)}; its algebraic content is now a theorem (\S\ref{sec:mob},
+Theorem~\ref{thm:L}), and what survives
 of it is the junction non-vanishing \textup{(R-J)} at $y=q$, the same statement that
 Theorem~\ref{thm:V} consumes at $y=1$. This section states \textup{(T)} in full, with its
-dependencies, with every place it is used, and with what would close it, and records what the
+dependencies, with every place it is used, and with the proof that closes it, and records what the
 lifting reduction now does and does not give, before turning to the analytic content. A reader
 should not have to open \cite{supplement} to see what Theorem~\ref{thm:U} rests on.
 
@@ -2690,8 +2695,12 @@ the grading being by \emph{relaxed} length. Then $V(x)=\mathcal W(x,1)$ and, sin
 $\ell_T=\ell_R+2c$ and $q=x^2$, $U(x)=\mathcal W(x,x^2)=\mathcal W(x,q)$: the two series are two
 evaluations of one bivariate object, at $y=1$ and at $y=q$, and everything separating them is
 carried by the marker $y$. The second identity is the one place where the metric identity
-$\ell_T=\ell_R+2c$ is used, and it is that identity whose lower bound is open
-(\S\ref{sec:inputT}). Both evaluations are validated against enumeration to the radius of the
+$\ell_T=\ell_R+2c$ is used; its lower bound, open when this section was written, is now a theorem
+of \cite{Bonfioli2026a}\footnote{Proved unconditionally, for every reachable element, by an
+induction on a corrected potential in \texttt{lean/with\_mathlib/PhiLipschitz.lean}
+(\texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}), independently of the finite-state route that
+paper's discussion of the lower bound shows does not work.}, so this bridge is unconditional.
+Both evaluations are validated against enumeration to the radius of the
 enumeration, $u_0,\dots,u_{22}$ and $v_0,\dots,v_{14}$ exactly \cite{supplement}.
 
 \subsection{The former input \textup{(T)}: the travel block carries no marker}\label{sec:inputT}
@@ -2714,9 +2723,9 @@ relaxed minimum ranges over a superset of the realisations. Hence $\ell_T=\ell_R
 elements, the two gradings agree termwise, and the travel recursion \eqref{eq:krec}, assembled from
 pure-travel runs alone, is computed inside a $c\equiv0$ sector, so the marker cannot enter it.
 
-In particular the open reverse inequality of $\ell_T=\ell_R+2c$, which earlier versions of this
-section listed as a dependency, plays no role. Only the direction that follows from an exhibited
-realisation is used.
+In particular the reverse inequality of $\ell_T=\ell_R+2c$ -- open when earlier versions of this
+section listed it as a dependency, and since proved in \cite{Bonfioli2026a} -- plays no role here
+regardless: only the direction that follows from an exhibited realisation is used.
 
 \emph{Evidence.} The pure-travel generating function computed in both gradings to radius $18$ is
 identical coefficient by coefficient,
@@ -2882,8 +2891,9 @@ Then the true growth series $U$ is transcendental over $\Q(x)$.
 
 The input \textup{(T)} that earlier versions of this theorem carried is also gone:
 Proposition~\ref{prop:travelinv} is now proved, via Theorem~\ref{thm:nogap} and
-Corollary~\ref{cor:localzero}, and the proof does not use the open lower bound of the metric
-identity.
+Corollary~\ref{cor:localzero}, and the proof does not use the lower bound of the metric
+identity at all -- which is itself now a theorem of \cite{Bonfioli2026a} rather than open, so
+neither route leaves anything conditional here.
 
 The hypothesis \textup{(L)} that earlier versions of this theorem carried is gone: its content,
 the factorisation \eqref{eq:mobius} with the dictionary \eqref{eq:dict} and the reciprocity
@@ -2955,7 +2965,7 @@ Proposition~\ref{prop:selower} it is \emph{false}, which is precisely why Lemma~
 $0.63$ is required.
 \end{remark}
 
-\begin{remark}[what is proved, and what \textup{(T)} and \textup{(R-J)} still owe]\label{rem:Ustatus}
+\begin{remark}[what is proved, and what \textup{(R-J)} still owes]\label{rem:Ustatus}
 The unconditional content of this section is the gate: at every travel pole,
 $|P_{12}|\le0.619\,\tau^{3/2}$ (Theorem~\ref{thm:star}), $|S_e|\ge0.63\sqrt\tau$
 (Lemma~\ref{app:Se}) and hence $|s|\le0.983<1$ (Corollary~\ref{app:gate}), together with the
