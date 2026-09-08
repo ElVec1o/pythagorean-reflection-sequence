@@ -222,7 +222,7 @@ fn main() {
     }
     let mut keys: Vec<_> = corr.keys().cloned().collect();
     keys.sort();
-    for k in keys.iter().take(30) {
+    for k in keys.iter() {
         let v = corr[k];
         eprintln!("[corr] delta={} eps={} siteCostKstar={} sign_dk={} parity={} -> s1_works={} s2_works={} total={}",
             k.0, k.1, k.2, k.3, k.4, v.0, v.1, v.2);
@@ -242,6 +242,64 @@ fn main() {
     eprintln!("[parity] alpha(kstar)%2 == beta(kstar)%2: {parity_match} match, {parity_mismatch} mismatch");
     if let Some((e, al, be)) = &parity_mismatch_example {
         eprintln!("[parity] mismatch example: {} alpha={} beta={}", show(e), al, be);
+    }
+    // Precise implication check: for delta=false, does b*eps>=0 imply s1 strictly
+    // decreases siteCost(kstar)? And b*eps<0 imply s2 does? (independent of window movement,
+    // i.e. checking the FULL PhiZ descent, not just siteCost, to match the real target.)
+    let mut impl_checked = 0u64;
+    let mut impl_violated = 0u64;
+    let mut impl_violation_example: Option<Elt> = None;
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; } // skip trivial
+        if e.dl != 0 { continue; } // delta=false ONLY for this precise check
+        if e.k == 0 { continue; } // exclude kstar=0 (vArr active, different mechanism)
+        let (al, be, _) = abphi(e, e.k);
+        let m = al.abs().max(be.abs());
+        if m == 0 { continue; }
+        impl_checked += 1;
+        let e_eps = e.eps as i32;
+        let dk = dep(&e.lamps, e.k);
+        let want_s1 = dk.signum() * e_eps >= 0;
+        let cand = if want_s1 { gens_all(e)[0].clone() } else { gens_all(e)[1].clone() };
+        if !(phi(&cand) < ph) {
+            impl_violated += 1;
+            if impl_violation_example.is_none() { impl_violation_example = Some(e.clone()); }
+        }
+    }
+    eprintln!("[impl] sign(beta)*eps>=0 => s1 else s2 descends: {impl_violated} violations / {impl_checked} checked");
+    if let Some(e) = &impl_violation_example {
+        let (al, be, _) = abphi(e, e.k);
+        eprintln!("[impl] violation: {} alpha={} beta={}", show(e), al, be);
+    }
+    // Check delta=true specifically: does sign(kstar) matter too?
+    let mut corr2: std::collections::HashMap<(i8,i32,i32),(u64,u64,u64)> = std::collections::HashMap::new();
+    for e in dist.keys() {
+        let ph = phi(e);
+        if ph == 0 { continue; }
+        let (a, b) = span_nogap(e);
+        if a == 0 && b == -1 { continue; }
+        if e.dl != 1 { continue; }
+        let g3 = s3(e);
+        if phi(&g3) < ph { continue; }
+        let g1 = gens_all(e)[0].clone();
+        let g2 = gens_all(e)[1].clone();
+        let w1 = phi(&g1) < ph;
+        let w2 = phi(&g2) < ph;
+        let dk = dep(&e.lamps, e.k);
+        let key = (e.eps, dk.signum(), e.k.signum());
+        let ent = corr2.entry(key).or_insert((0,0,0));
+        if w1 { ent.0 += 1; }
+        if w2 { ent.1 += 1; }
+        ent.2 += 1;
+    }
+    let mut keys2: Vec<_> = corr2.keys().cloned().collect();
+    keys2.sort();
+    for k in keys2.iter() {
+        let v = corr2[k];
+        eprintln!("[corr2-delta1] eps={} sign_dk={} sign_kstar={} -> s1={} s2={} total={}", k.0, k.1, k.2, v.0, v.1, v.2);
     }
     // Print raw (alpha,beta) examples for the mixed siteCost=3 case to check hand-derived
     // shift formulas: s1 shifts (a,b) by (+/-eps,+/-eps) same sign; s2 shifts by (-eps,+eps).
