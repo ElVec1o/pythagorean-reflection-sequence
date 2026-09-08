@@ -4237,4 +4237,27 @@ theorem d_ne_zero_of_mu_ascent (g : EltBridge.Elt)
     rw [hpv, hmug, hmus3] at hasc
     norm_num at hasc
 
+
+theorem betaAt_ne_pm_one_of_ascent_true (g : EltBridge.Elt) (hd : g.delta = true)
+    (hasc : ((s3 g).toPathData.mu g.kstar : ℤ) = g.toPathData.mu g.kstar + 1) :
+    g.toPathData.betaAt g.kstar ≠ 1 ∧ g.toPathData.betaAt g.kstar ≠ -1 := by
+  have hpar := g.hpar g.kstar
+  have htc := SiteCost.travel_cases g.kstar g.kstar
+  have hkS : (s3 g).kstar = g.kstar + 1 := by rw [s3, dif_pos hd]
+  have hd1 : (s3 g).d g.kstar = g.d g.kstar - g.eps := by
+    have hupd : (s3 g).d = Function.update g.d g.kstar (g.d g.kstar - g.eps) := by
+      rw [s3, dif_pos hd]
+    rw [hupd]; simp
+  have ht1 : SiteCost.travel (s3 g).kstar g.kstar = SiteCost.travel g.kstar g.kstar + 1 := by
+    rw [hkS, EltBridge.Elt.travel_succ_at]
+  have heps := g.heps
+  have hbeta : g.toPathData.betaAt g.kstar = g.d g.kstar - g.eps := by
+    unfold SiteCost.PathData.betaAt SiteCost.PathData.vR SiteCost.PathData.vD
+    simp [EltBridge.Elt.toPathData, hd]
+  unfold SiteCost.PathData.mu at hasc
+  simp only [EltBridge.Elt.toPathData] at hasc
+  rw [hbeta]
+  split_ifs at hasc with hvac1 hvac2 hvac2 <;>
+    rcases htc with ht | ht | ht <;> rcases heps with he | he <;> omega
+
 end PhiLipschitz
