@@ -2695,11 +2695,15 @@ the grading being by \emph{relaxed} length. Then $V(x)=\mathcal W(x,1)$ and, sin
 $\ell_T=\ell_R+2c$ and $q=x^2$, $U(x)=\mathcal W(x,x^2)=\mathcal W(x,q)$: the two series are two
 evaluations of one bivariate object, at $y=1$ and at $y=q$, and everything separating them is
 carried by the marker $y$. The second identity is the one place where the metric identity
-$\ell_T=\ell_R+2c$ is used; its lower bound, open when this section was written, is now a theorem
-of \cite{Bonfioli2026a}\footnote{Proved unconditionally, for every reachable element, by an
-induction on a corrected potential in \texttt{lean/with\_mathlib/PhiLipschitz.lean}
+$\ell_T=\ell_R+2c$ is used. Of its two open ingredients, the identification $c_{\mathrm{pred}}=c$
+is now a theorem of \cite{Bonfioli2026a}\footnote{Proved unconditionally, for every reachable
+element, by an induction on a corrected potential in
+\texttt{lean/with\_mathlib/PhiLipschitz.lean}
 (\texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}), independently of the finite-state route that
-paper's discussion of the lower bound shows does not work.}, so this bridge is unconditional.
+paper's discussion of the lower bound shows does not work.}; the other, that the crossing--pairing
+optimization computes $\ell_R$ at all, remains the verified-not-proved standing of
+\cite{Bonfioli2026a}'s own metric formula (its \textup{rem:metric-formula-status}), unaffected by
+this. This bridge is accordingly unconditional in the first respect and unchanged in the second.
 Both evaluations are validated against enumeration to the radius of the
 enumeration, $u_0,\dots,u_{22}$ and $v_0,\dots,v_{14}$ exactly \cite{supplement}.
 
@@ -2892,8 +2896,10 @@ Then the true growth series $U$ is transcendental over $\Q(x)$.
 The input \textup{(T)} that earlier versions of this theorem carried is also gone:
 Proposition~\ref{prop:travelinv} is now proved, via Theorem~\ref{thm:nogap} and
 Corollary~\ref{cor:localzero}, and the proof does not use the lower bound of the metric
-identity at all -- which is itself now a theorem of \cite{Bonfioli2026a} rather than open, so
-neither route leaves anything conditional here.
+identity at all -- moot here regardless of that identity's own standing, which is only
+partly resolved: the identification $c_{\mathrm{pred}}=c$ it needs is now a theorem of
+\cite{Bonfioli2026a}, but the identity as a whole still rests on that paper's separately
+unproved metric formula.
 
 The hypothesis \textup{(L)} that earlier versions of this theorem carried is gone: its content,
 the factorisation \eqref{eq:mobius} with the dictionary \eqref{eq:dict} and the reciprocity

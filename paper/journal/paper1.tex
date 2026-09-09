@@ -2287,14 +2287,17 @@ normal-form tuples and exhibit the generator action as an edge lamplighter
 on $\mathbb{Z}$, thereby solving the word and membership problems. We record the strand bound that confines the single-trail interface to a fixed
 eight-letter alphabet, and prove the word-length metric theorem
 $\ell_T = \ell_R + 2c$ together with the closed form for the connectivity
-defect $c$. Both halves of the metric theorem are unconditional. The closed
-form is computed by the explicit finite-state transducer of
-Definition~\ref{def:transducer} and agrees with the true defect on the
-depth-$24$ enumeration with $0$ exceptions; the finite-state/Moore argument
-attempted to identify the two directly does not work
+defect $c$. The upper half of the metric theorem is unconditional. The lower
+half was open because no argument identified the closed form $c_{\mathrm{pred}}$
+with the true defect $c$ (Conjecture~\ref{conj:lowerbound}); the
+finite-state/Moore argument attempted for that identification does not work
 (Remark~\ref{rem:lowerbound-open}), but the identification is proved by a
 different route, an induction on a corrected potential
-(Remark~\ref{rem:lowerbound-closed}).
+(Remark~\ref{rem:lowerbound-closed}). The metric theorem as a whole still
+carries the separate, pre-existing standing of Proposition~\ref{thm:metric-formula}
+(Remark~\ref{rem:metric-formula-status}): that the crossing--pairing
+optimization computes $\ell_R$ at all is verified, not proved, independently
+of this section's new result.
 
 \subsection{Notation}
 \label{ssec:metric-notation}
@@ -2475,19 +2478,28 @@ splicing one in costs exactly $2$. Then
 \]
 \end{proposition}
 
-\begin{remark}[Status of the metric formula: now proved]
+\begin{remark}[Status of the metric formula]
 \label{rem:metric-formula-status}
-This proposition, stated here as an unproved optimization model verified only
-by breadth-first search on the radius-$14$ ball ($3{,}723$ elements, $0$
-exceptions), is now a theorem: it is exactly Corollary~\texttt{cor:lRclosed}
-of \cite{Bonfioli2026b}, restated there from this proposition and proved as an
-\texttt{IsLeast} statement over the space of realizations
-(\texttt{Realisation.lean}, theorem \texttt{lR\_closed}). The three later
-results that cite this proposition therefore inherit an unconditional status
-in place of the verified-only one recorded in earlier versions. The reading of
-``chained so that the support is reachable'' given above is the one
-implemented by the certificate and matches the span condition proved minimal
-in \texttt{cor:lRclosed}.
+We do not prove this. It is the optimization model used throughout the section,
+and it reproduces the exact word length, computed by breadth-first search, on
+every element of the radius-$14$ ball, $3{,}723$ elements, with $0$ exceptions.
+That is the whole of its support. It was stated as a theorem in an earlier
+version; three later results cite it, and each of them therefore inherits the
+same status. The reading of ``chained so that the support is reachable'' given
+above is the one implemented by the certificate.
+
+Corollary~\texttt{cor:lRclosed} of \cite{Bonfioli2026b}, restated there from
+this proposition, is proved (\texttt{Realisation.lean}, theorem
+\texttt{lR\_closed}: an \texttt{IsLeast} statement over the space of
+`Realisation`s) -- but that is a fact internal to the combinatorial
+optimization model itself, not a proof that the model computes the true
+relaxed word length of the group. \cite{Bonfioli2026b}'s own
+\textup{rem:pairingstatus} states this precisely: ``[the optimisation]
+computes the relaxed word length is verified there and is not proved;
+everything in this subsection is a statement about the optimisation itself.''
+An earlier version of this remark conflated the two and claimed this
+proposition was thereby proved; that was an overclaim, corrected here. The
+proposition's status is unchanged: verified, not proved.
 \end{remark}
 
 The two metrics differ only by the connectivity constraint, which we measure by
@@ -2505,16 +2517,21 @@ For every $g\in W_{\mathrm{gen}}$,
 \]
 with $c_{\mathrm{pred}}(g)$ the closed form of
 Proposition~\textup{\ref{prop:Tform}}. The upper bound is the splice of
-Lemma~\textup{\ref{lem:splice}} and was already unconditional. The lower
-bound, stated in an earlier version as
+Lemma~\textup{\ref{lem:splice}}. The identification $c_{\mathrm{pred}}=c$
+needed for the reverse inequality, stated in an earlier version as
 Conjecture~\textup{\ref{conj:lowerbound}} and verified there with $0$
-exceptions on the depth-$24$ ball, is now unconditional as well: it is proved
+exceptions on the depth-$24$ ball, is proved
 in \texttt{lean/with\_mathlib/PhiLipschitz.lean}
 (\texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}), by an induction on a
 corrected potential rather than by the finite-state route attempted in an
 earlier version. See Remark~\textup{\ref{rem:lowerbound-open}} for why that
 earlier route fails, and Remark~\ref{rem:lowerbound-closed} for the route
-that succeeds.
+that succeeds, including exactly what it does and does not establish. The
+theorem as displayed additionally rests, as it always has, on
+Proposition~\ref{thm:metric-formula} identifying $\ell_R$ itself with the
+closed-form optimization -- verified, not proved
+(Remark~\ref{rem:metric-formula-status}) -- a separate matter that this
+session's result does not touch.
 \end{theorem}
 
 \begin{remark}[Relation to the free-solvable literature]
@@ -2874,17 +2891,33 @@ lemma (\texttt{exists\_descent}, made unconditional in
 finite-state. \texttt{wordLength} is the word metric of $W_{\mathrm{gen}}$
 (\texttt{EltBridge.Elt.wordLength}$\,:=\inf\{n:\texttt{Reaches}\ n\ g\}$), so
 this is $\ell_T$; \texttt{lRTrue} and \texttt{cTrue} are the corrected span
-versions of the closed forms of Proposition~\ref{thm:metric-formula} (restated
-and proved as Corollary~\texttt{cor:lRclosed} in \cite{Bonfioli2026b}) and
-Proposition~\ref{prop:Tform} (\texttt{CorrectedSpan.lean} repairs a bug in the
+versions of the closed forms of Proposition~\ref{thm:metric-formula} (the same
+optimization, restated in \cite{Bonfioli2026b} as Corollary~\texttt{cor:lRclosed})
+and Proposition~\ref{prop:Tform} (\texttt{CorrectedSpan.lean} repairs a bug in the
 uncorrected span that forced edge $0$ into every span and made the identity
 false at the identity element; the corrected span matches the convention of
 \texttt{nogap/src/main.rs}, the tool the numerical certificates in this
 section already use). Independently re-verified: \texttt{\#print axioms} on
 the theorem shows only \texttt{[propext, Classical.choice, Quot.sound]}, no
-\texttt{sorryAx} and no \texttt{native\_decide}. This discharges
-Corollary~\ref{cor:rigid} unconditionally and, with
-Lemma~\ref{lem:splice}, completes Theorem~\ref{thm:metric}.
+\texttt{sorryAx} and no \texttt{native\_decide}.
+
+What this proves and what it does not: it proves the identity with
+$\texttt{lRTrue}$, $\texttt{cTrue}$ exactly as those closed forms are displayed
+in Proposition~\textup{\ref{prop:Tform}} and this section's optimization --
+which is the identification $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ this
+remark's title refers to, and the antecedent Corollary~\ref{cor:rigid} needs.
+It does \emph{not} independently prove Proposition~\ref{thm:metric-formula}: an
+earlier version of this remark and of Remark~\ref{rem:metric-formula-status}
+claimed \texttt{cor:lRclosed}'s \texttt{IsLeast} proof (that the closed form
+equals the minimum over the \texttt{Realisation} type) upgraded that
+proposition to a theorem, which conflates a fact internal to the optimization
+model with the separate, still-open claim that the model computes the true
+$\ell_R$ of the group (\cite{Bonfioli2026b}'s own \textup{rem:pairingstatus}
+states this distinction directly). That was an overclaim, corrected in both
+remarks. This discharges Corollary~\ref{cor:rigid} and, with
+Lemma~\ref{lem:splice}, completes the metric theorem \emph{as displayed, in
+terms of $c_{\mathrm{pred}}$ and the closed form for $\ell_R$} -- the same
+terms Theorem~\ref{thm:metric} was already stated in before this result.
 \end{remark}
 
 \begin{corollary}[Discharge of the lower bound]
@@ -2955,9 +2988,11 @@ is displayed, and it agrees with the true defect on the $275{,}823$-element
 depth-$24$ enumeration, held out at depths $19$--$24$. Neither of these two
 facts, by itself or together via the finite-state/Moore route, was enough to
 prove $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ (Remark~\ref{rem:lowerbound-open}).
-That identification, and with it both halves of Theorem~\ref{thm:metric}, is
-proved instead by the corrected-potential induction of
-Remark~\ref{rem:lowerbound-closed}.
+That identification is proved instead by the corrected-potential induction of
+Remark~\ref{rem:lowerbound-closed}, discharging Corollary~\ref{cor:rigid} and,
+with Lemma~\ref{lem:splice}, the metric theorem as displayed. It remains tied,
+as it always was, to the separate standing of Proposition~\ref{thm:metric-formula}
+(Remark~\ref{rem:metric-formula-status}).
 \end{remark}
 
 % ======== Exact growth rate beta_2 and exclusion of 3/2 ========
@@ -3887,7 +3922,7 @@ concrete determinant identities $\det Q_n=-\prod a_i^2$ for
 $n=2,\dots,10$, the direct orbit reconstruction through depth $17$, and
 the shape-uniform universality through depth $22$. Modular-plus-exact
 certified (tier~iii) is the sharp universality through depth $32$ and the
-generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{thm:beta2}) is unconditional: its proof uses only the inequality $\ell_R\le\ell_T$ and the dominant-pole analysis of $\Sigma_1$, with no analytic remainder input. Every result in this paper is unconditional, including the lower bound of the metric theorem (Theorem~\ref{conj:lowerbound}). An earlier version left that bound conditional: its connectivity defect is computed by the explicit transducer of Definition~\ref{def:transducer}, which agrees with the true defect on the depth-$24$ enumeration ($275{,}823$ elements, held out at depths $19,21,23,24$) with $0$ exceptions, but that certificate only establishes that the transducer computes the closed form, not that the closed form is the true defect (Remark~\ref{rem:lowerbound-open}). The identification is instead proved by an induction on a corrected potential, formalized in Lean and independently axiom-checked (Remark~\ref{rem:lowerbound-closed}).
+generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{thm:beta2}) is unconditional: its proof uses only the inequality $\ell_R\le\ell_T$ and the dominant-pole analysis of $\Sigma_1$, with no analytic remainder input. The identification $c_{\mathrm{pred}}=c$ needed for the lower bound of the metric theorem (Theorem~\ref{conj:lowerbound}) is now proved. An earlier version left it conditional: the connectivity defect's closed form is computed by the explicit transducer of Definition~\ref{def:transducer}, which agrees with the true defect on the depth-$24$ enumeration ($275{,}823$ elements, held out at depths $19,21,23,24$) with $0$ exceptions, but that certificate only establishes that the transducer computes the closed form, not that the closed form is the true defect (Remark~\ref{rem:lowerbound-open}). The identification is instead proved by an induction on a corrected potential, formalized in Lean and independently axiom-checked (Remark~\ref{rem:lowerbound-closed}). This does not make the metric theorem as a whole unconditional: it is displayed in terms of the closed-form optimization of Proposition~\ref{thm:metric-formula}, which remains verified and not proved (Remark~\ref{rem:metric-formula-status}), exactly as before this result.
 \end{remark}
 
 
