@@ -141,17 +141,25 @@ not a proof, and it supplies no exponent.
 Proposition~\ref{prop:travelinv} of paper~2, proved there from Theorem~\ref{thm:nogap} and
 Corollary~\ref{cor:localzero}. It is retained in the hypothesis list above only so that
 statements citing $(T)$ remain readable; nothing is conditional on it.
-\item The lower bound of the metric identity $\ell_T=\ell_R+2c$ is \emph{open}; only the upper
-bound is PROVED. Statements that consume the identity inherit that standing.
-\item \textsc{Added.} The identity $\ell_T=\ell_R+2c$ is moreover \emph{false} as currently
-formalised, for the formal $c$ of the Lean development, and this is a defect of two definitions
-rather than of the mathematics. It fails already at the identity element, where
-$\ell_T=0$ but $\ell_R=2$. The causes are that the formal span forces edge $0$ into every
-configuration, and that the formal cut set omits the boundary-shield site of the reference
+\item \textsc{Corrected.} The identification $c_{\mathrm{pred}}=c$ needed for the lower bound of
+the metric identity $\ell_T=\ell_R+2c$ -- open when this item was first written -- is now proved:
+\texttt{lean/with\_mathlib/PhiLipschitz.lean} proves, unconditionally and for every reachable
+element, \texttt{wordLength}$(g)=$\texttt{lRTrue}$(g)+2\cdot$\texttt{cTrue}$(g)$, by an induction
+on a corrected potential composed with a descent lemma made unconditional in
+\texttt{EltBridge.lean} (theorem \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue};
+\texttt{\#print axioms} shows only the standard axioms). This does not by itself discharge
+Hypothesis~\ref{hyp:M}: that the crossing-optimisation closed forms
+(\texttt{lRTrue}, \texttt{cTrue}) compute the true relaxed length and defect the model is
+\emph{about} is a separate question, still HEURISTIC, unaffected by this identity.
+\item \textsc{Added.} The identity $\ell_T=\ell_R+2c$ was moreover \emph{false} as formalised
+before the repair below, for the formal $c$ of the Lean development, and this was a defect of
+two definitions rather than of the mathematics. It failed already at the identity element, where
+$\ell_T=0$ but $\ell_R=2$. The causes were that the formal span forced edge $0$ into every
+configuration, and that the formal cut set omitted the boundary-shield site of the reference
 implementation. Both are repaired additively in \texttt{CorrectedSpan.lean}, after which the
-identity holds with no violation on every element enumerated to depth $29$, and the potential
-$\ell_R+2c$ becomes $1$-Lipschitz along the generators. The repair does not close the lower
-bound, which remains open.
+identity holds with no violation on every element enumerated to depth $29$, the potential
+$\ell_R+2c$ is $1$-Lipschitz along the generators, and -- per the item above -- the lower bound
+built from these corrected closed forms is now proved rather than open.
 \item \textsc{Added.} The decomposition \eqref{eq:assembly}, i.e.\ part $(M3)$ of the transfer
 model, is \emph{vacuous as stated}: for arbitrary $\mathcal W$ and $\mathcal W_0$ there exist
 $n$, $\mathcal T$, $\lambda$, $\mu$ satisfying it, and removing the degree truncation does not
@@ -1488,10 +1496,17 @@ If $c_T=N(a-ib)>2d$ then no deviation occurs at depth $d$.
 
 \begin{remark}[status of the metric]\label{rem:metric}
 Word length equals relaxed length plus twice the connectivity defect, $\ell_T=\ell_R+2c$. The
-upper bound is PROVED. The lower bound is open and is stated as a conjecture; the closed form
-$c_{\mathrm{pred}}$ computed by the explicit transducer agrees with the true defect with $0$
-exceptions on the $275{,}823$ elements of the ball of radius $24$, held out at depths
-$19,21,23,24$, which is HEURISTIC support and not a proof. The junction site cost is
+upper bound is PROVED. The identification $c_{\mathrm{pred}}=c$ needed for the lower bound,
+stated here as a conjecture in an earlier version, is now PROVED
+(\texttt{lean/with\_mathlib/PhiLipschitz.lean}, \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue},
+by an induction on a corrected potential rather than by identifying $c_{\mathrm{pred}}$ as
+finite-state and matching it to the transducer directly) -- see Remark~\ref{rem:notclaimed}. It
+does not by itself discharge Hypothesis~\ref{hyp:M}, that the
+crossing-optimisation closed forms compute the true relaxed length and defect, which remains
+HEURISTIC. The explicit transducer's agreement with the true defect, $0$ exceptions on the
+$275{,}823$ elements of the ball of radius $24$, held out at depths $19,21,23,24$, is retained as
+corroborating computational evidence, not the route by which the identification was proved. The
+junction site cost is
 $\max(|d_L-1|,|d_R|)$, which depends on the sign of $d_L$ and not on its magnitude alone; the
 form $\max(|d_L|-1,|d_R|)$ is false on every cell with $d_L\le-2$ and $|d_R|\le|d_L|$. This is a
 term inside the site-cost chain of the strand model, not an additive correction to the length
