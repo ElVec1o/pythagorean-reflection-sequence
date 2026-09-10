@@ -344,7 +344,7 @@ which always resolves to the latest archived release. Metadata in
 `CITATION.cff`.
 
 
-## Status of the formalisation (v10.1.0)
+## Status of the formalisation (v10.2.0)
 
 The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
 (Mathlib-free). The whole build is clean with **0 `sorry`**, no `sorryAx`, no
@@ -353,6 +353,14 @@ The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
 
 **Closed.**
 
+- The free-product block-reduction step of paper4's `cor:onset`: for `W_m =
+  D_m * C_2`, any list of blocks that are each nontrivial in `D_m` and
+  individually geodesic concatenates geodesically across all three
+  generators, unconditionally (`BlockAdditivity.block_additivity`,
+  `BlockAdditivityGeneral.lean`), combined with the per-block dihedral
+  geodesic bound (`ev_ne_rotation_of_short`, `DihedralGeodesic.lean`) and the
+  general `D_m` word-length function (`DmLength.lean`). Together these give
+  the full geometric-translation argument `rem:onset-lean` cites.
 - `RunStrandsConnected` (the Eulerian-existence input to the shield law), at
   arbitrary even, non-constant widths, by explicit construction — `EltBridge`
   (`zzTurn`/`zzData`) and `VZigzag` for the widths a real group element has.
