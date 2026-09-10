@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
+defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DihedralGeodesic", "DmLength", "BlockAdditivity", "BlockAdditivityGeneral", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
   "TranslationTrick",
   "TransferChain",
   "DiscriminantIdentity",
@@ -223,6 +223,18 @@ name = "PlaneGroup"
 
 [[lean_lib]]
 name = "Bridge"
+
+[[lean_lib]]
+name = "DihedralGeodesic"
+
+[[lean_lib]]
+name = "DmLength"
+
+[[lean_lib]]
+name = "BlockAdditivity"
+
+[[lean_lib]]
+name = "BlockAdditivityGeneral"
 
 [[lean_lib]]
 name = "CorOnsetCount"

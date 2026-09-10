@@ -873,8 +873,26 @@ minimized by the largest valid divisor $d$, is the one-line \texttt{Nat} monoton
 fact \texttt{depth\_antitone} in the same file; the identification of that largest
 divisor with $m/p$ ($p$ the least prime factor) is \texttt{le\_div\_minFac} (via
 \texttt{Nat.minFac\_le\_of\_dvd} applied to the cofactor $m/d$), completing the full
-arithmetic content of the corollary. Only the geometric translation noted above remains
-outside the formalization.
+arithmetic content of the corollary. The geometric translation noted above is now
+fully formalized, in two pieces. \texttt{lean/with\_mathlib/DihedralGeodesic.lean}'s
+\texttt{ev\_ne\_rotation\_of\_short} proves, for the dihedral factor $D_m$ with its
+standard two-reflection generating set, that no word of length strictly less than
+$2k$ can reach the rotation $r^k$ once $2k\le m$ -- the block-wise geodesicity bound
+this proof's range $c\le m/2$ depends on, verified by an unreduced-integer-trace
+argument (\texttt{\#print axioms} clean). The remaining free-product step -- from
+block-wise geodesicity in $D_m$ to overall geodesicity of the full word $w_{a,b}$
+across all three generators $x_0,x_1,x_2$ together -- is proved by
+\texttt{BlockAdditivity.block\_additivity} in
+\texttt{lean/with\_mathlib/BlockAdditivityGeneral.lean}: for any $m$ and any list of
+blocks that are each nontrivial in $D_m$ and individually geodesic, the word formed
+by concatenating them with $x_2$-separators is geodesic in $W_m=D_m * C_2$,
+unconditionally (no range restriction on the blocks is needed for this step). The
+argument is a syllable-cost potential on $\mathrm{CoprodI.Word}(D_m,C_2)$ that is
+$1$-Lipschitz under left multiplication by either apex reflection, hence bounds the
+true word length from below; \texttt{\#print axioms} again shows only
+\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, with no
+\texttt{sorry}. Combining the two pieces certifies, in Lean, the full
+geometric-translation argument this corollary's range $c\le m/2$ relies on.
 \end{remark}
 
 \begin{remark}\label{rem:onset-m3}
