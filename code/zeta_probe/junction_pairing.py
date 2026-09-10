@@ -26,6 +26,22 @@ def bulk_solve(q,y,N):
     P0,B0=run(mp.mpf(0)); P1,B1=run(mp.mpf(1))
     t=-B0/(B1-B0)
     return [P0[b]+t*(P1[b]-P0[b]) for b in range(N+1)]
+def extra_vec(q,P,N):
+    """delta*=0 far-junction branch (both eps*), room-derived 2026-09-10:
+       Extra_s = sum_{b=1}^N P_b [x^max(2s,2b) + x^max(2s+2,2b)], via O(N) prefix/suffix sums
+       mirroring mu_vec's own technique. C[k]=sum_{b<=k}P_b, T[k]=sum_{b>=k}P_b x^{2b}."""
+    x=mp.sqrt(q)
+    C=[mp.mpf(0)]*(N+2)
+    for b in range(1,N+1): C[b]=C[b-1]+P[b]
+    C[N+1]=C[N]
+    T=[mp.mpf(0)]*(N+3)
+    for b in range(N,0,-1): T[b]=T[b+1]+P[b]*x**(2*b)
+    extra=[mp.mpf(0)]*N
+    for s in range(N):
+        term1=x**(2*s)*C[min(s,N)] + T[min(s+1,N+1)]
+        term2=x**(2*s+2)*C[min(s+1,N)] + T[min(s+2,N+1)]
+        extra[s]=term1+term2
+    return extra
 def mu_vec(q,P,N):
     """O(N) via prefix sums:
        mu_s = 1/2 [ x^{2s+1}(C[s+1]+C[s]) + T1[s+2] + T2[s+1] ]
@@ -54,7 +70,8 @@ print(" m   q_m            Sigma_0(q_m)     <lam,R>          <L,mu>           Pi
 for m,qm in enumerate(qs,1):
     N=Nfor(qm)
     R,res=travel_null(qm,N); P=bulk_solve(qm,mp.mpf(1),N); mu=mu_vec(qm,P,N)
-    lam=mu
+    extra=extra_vec(qm,P,N)
+    lam=[extra[s]+2*mu[s] for s in range(N)]  # room-derived 2026-09-10: lambda = Extra_s (delta*=0) + 2*mu_s (delta*=1); was the placeholder lam=mu
     lr=sum(lam[s]*R[s] for s in range(N))
     lm=sum(R[s]/(2*qm**(1+s))*mu[s] for s in range(N))
     Pi=lr*lm; S0=Sig(qm,0)
