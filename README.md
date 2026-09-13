@@ -344,12 +344,16 @@ which always resolves to the latest archived release. Metadata in
 `CITATION.cff`.
 
 
-## Status of the formalisation (v10.2.0)
+## Status of the formalisation (v10.3.0)
 
 The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
-(Mathlib-free). The whole build is clean with **0 `sorry`**, no `sorryAx`, no
-`native_decide` and no `ofReduceBool`; every declaration carries a
-`#print axioms` line. Claims below are machine-checked unless marked otherwise.
+(Mathlib-free). The whole build is clean with **0 `sorry`** and every
+declaration carries a `#print axioms` line. Nine files use `native_decide`
+(named and scoped below); the rest use only Lean's standard axioms. This
+release's own new content (`BlockAdditivity`, `BlockAdditivityGeneral`,
+`DihedralGeodesic`, `DmLength`, `PhiLipschitz`, `CorrectedSpan`) uses neither
+`native_decide` nor `ofReduceBool`. Claims below are machine-checked unless
+marked otherwise.
 
 **Closed.**
 
