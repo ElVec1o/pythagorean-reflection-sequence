@@ -18,10 +18,13 @@ paste-ready per-field blocks live in `clean/` and `submit/`, which are in
 | [A397437](https://oeis.org/A397437) | 4D orthoscheme, pairwise distinct legs. |
 | [A396927](https://oeis.org/A396927) | 5D orthoscheme, pairwise distinct legs. |
 | [A397438](https://oeis.org/A397438) | 6D orthoscheme, pairwise distinct legs. |
+| [A396953](https://oeis.org/A396953) | 7D orthoscheme, pairwise distinct legs. |
 
-The `n = 7` entry is in preparation. Each orthoscheme entry is the coefficient
-sequence of the rational function `W_n(t)` of `paper_orthoscheme.tex`, with
-dominant pole `1/r_n`, `r_n = 1 + 2 cos(2 pi/(n+3))`; see `rem:oeis` there.
+The `n = 8` entry (and beyond) is not yet filed; the formula is fully general and proved
+unconditionally for every `n >= 3`, so filing further members is mechanical whenever wanted.
+Each orthoscheme entry is the coefficient sequence of the rational function `W_n(t)` of
+`paper_orthoscheme.tex`, with dominant pole `1/r_n`, `r_n = 1 + 2 cos(2 pi/(n+3))`; see
+`rem:oeis` there.
 
 The 3D cube corner `(1,1,1)` was dropped as a duplicate of
 [A008137](https://oeis.org/A008137), the growth series of the affine Weyl
