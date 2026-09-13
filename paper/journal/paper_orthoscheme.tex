@@ -1558,24 +1558,28 @@ with non-rational orbit growth. If instead $\ker\rho_a$ is nontrivial in some di
 the growth deviates below the envelope at $\cd_n(a)=K(a)/2\ge4$, and the arithmetic of the
 deviated series past that horizon is open even in the cases where the horizon can be located.
 
-\begin{problem}[The ambient embedding]\label{prob:embed}
+\begin{remark}[The ambient embedding, RESOLVED]\label{prob:embed}
 Fix $n\ge3$. Is $W_n$ isomorphic to a subgroup of $\Isom(\R^n)$; that is, does statement
-$(E_n)$ of Theorem~\ref{thm:barrier} hold?
-\end{problem}
+$(E_n)$ of Theorem~\ref{thm:barrier} hold? This was open when this section was first drafted.
+It is now known: $(E_n)$ holds for every $n\ge3$, unconditionally, proved in the companion paper
+on generic orthoscheme embeddings (its right-angled embedding theorem applied to $\Gamma_n$,
+whose complement is the connected path $P_{n+1}$). The discussion below, written when the
+question was open, is retained because its content -- what a positive answer does and does not
+settle -- remains correct and relevant now that the answer is known.
 
-\emph{What is known.} $(E_2)$ is false, by amenability, and that is the entire content of
-Proposition~\ref{prop:plane}. For $n\ge3$ the amenability route to $\neg(E_n)$ is closed:
-$\Isom(\R^n)$ contains a free subgroup of rank $2$ and so does $W_n$
-(Theorem~\ref{thm:barrier}(iii)). The obvious finite-subgroup invariant does not separate them
-either: every finite subgroup of $W_n$ is conjugate into one of the elementary abelian
-$2$-groups on the cliques of $\Gamma_n$ \cite{Davis}, hence has rank at most
-$\lceil(n+1)/2\rceil\le n$, while $O(n)$ contains $(\Z/2)^n$. By
-Theorem~\ref{thm:barrier}(ii) this single question governs the entire class of ambient
-obstructions: if $(E_n)$ holds, no such obstruction exists in dimension $n$; if it fails,
-Problem~\ref{prob:alternative} is answered negatively at every leg tuple at once. We do not
-conjecture a direction. Note that a positive answer would not touch
-Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ need not be by reflections in the
-facets of an orthoscheme, or by reflections at all.
+\emph{What was known, and what the resolution does not decide.} $(E_2)$ is false, by amenability,
+and that is the entire content of Proposition~\ref{prop:plane}. For $n\ge3$ the amenability route
+to $\neg(E_n)$ was closed even before the resolution: $\Isom(\R^n)$ contains a free subgroup of
+rank $2$ and so does $W_n$ (Theorem~\ref{thm:barrier}(iii)). The obvious finite-subgroup invariant
+did not separate them either: every finite subgroup of $W_n$ is conjugate into one of the
+elementary abelian $2$-groups on the cliques of $\Gamma_n$ \cite{Davis}, hence has rank at most
+$\lceil(n+1)/2\rceil\le n$, while $O(n)$ contains $(\Z/2)^n$. By Theorem~\ref{thm:barrier}(ii)
+this single question governed the entire class of ambient obstructions; since $(E_n)$ holds, no
+such obstruction exists in any dimension $n\ge3$. Note that this positive answer does \emph{not}
+touch Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ need not be by reflections in
+the facets of an orthoscheme, or by reflections at all, so the resolution here does not by itself
+decide whether the specific reflection representation $\rho_a$ is injective for generic $a$.
+\end{remark}
 
 \begin{problem}[Finite presentation]\label{prob:fp}
 Fix $n\ge3$. Is the generic $n$-orthoscheme reflection group $W_n/N_{\mathrm{gen}}$ finitely
@@ -1642,11 +1646,11 @@ Corollary~\ref{cor:K-eq-six} ($K=6\iff t\ge1$)   & proved$^\star$ & none \\
 Theorem~\ref{thm:cd-general}, case $t\ge1$       & proved$^\star$ & none; $\cd_n=3$ \\
 Theorem~\ref{thm:cd-general}, case $e\ge1,t=0$   & proved$^\star$ & none; $\cd_n=4$, unconditional \\
 Theorem~\ref{thm:cd-general}, case $e=t=0$       & conditional    & equivalent to Conj.~\ref{conj:master-C} \\
-Conjecture~\ref{conj:master-C} (Class C)         & conjecture     & one Class C tuple per dimension $3\le n\le10$, checked to the depths of \eqref{eq:classC-depths} \\
+Conjecture~\ref{conj:master-C} (Class C)         & \textbf{FALSE}, Rem.~\ref{rem:masterC-false} & seven primitive counterexample triples exhibited, entries at most $12$ \\
 Proposition~\ref{prop:plane} (the plane)         & proved$^\star$ & none \\
 Theorem~\ref{thm:barrier} (ambient obstruction)  & proved$^\star$ & none \\
 Problem~\ref{prob:alternative}                   & open in both directions & \\
-Problem~\ref{prob:embed} (ambient embedding)     & open in both directions & false at $n=2$ \\
+Problem~\ref{prob:embed} (ambient embedding), Rem.~\ref{prob:embed} & \textbf{RESOLVED}, true & false at $n=2$; true for every $n\ge3$, proved in the companion paper \\
 Problem~\ref{prob:fp} (finite presentation)      & open in both directions & answered ``no'' at $n=2$ \cite{isola-piergallini} \\
 \bottomrule
 \caption{Status of the numbered statements. ``Proved'' means a complete written proof, and

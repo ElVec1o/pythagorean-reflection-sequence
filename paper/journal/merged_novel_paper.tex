@@ -117,8 +117,8 @@ The denominator $1-\Sigma_1$ is the identical, cycle-marker-free object in the g
 functions of $U$ and of $V$, so $U$ and $V$ share the travel poles.
 \end{hypothesis}
 
-Hypothesis~\ref{hyp:T} is PROVED (Proposition~\ref{prop:travelinv} of paper~2, via
-Theorem~\ref{thm:nogap} and Corollary~\ref{cor:localzero}); it is listed above only to keep the
+Hypothesis~\ref{hyp:T} is PROVED (the travel-invariance proposition of paper~2, via
+that paper's no-gap theorem and local-zero corollary); it is listed above only to keep the
 statements that cite it readable, and nothing is conditional on it. Its earlier HEURISTIC standing
 rested on the localisation of cycles, checked exhaustively on the $3869$ pure-travel elements of
 true length at most $16$, and on the metric identity $\ell_T=\ell_R+2c$, whose upper bound is
@@ -138,15 +138,16 @@ measure for $\beta_2$ is available. What is proved is $\beta_2\ne3/2$, by the sq
 Hahn--Exton function omits the value $0$ at the relevant rational points; that is a restatement,
 not a proof, and it supplies no exponent.
 \item Hypothesis~\ref{hyp:T} \emph{is} now a theorem, and this item is corrected: it is
-Proposition~\ref{prop:travelinv} of paper~2, proved there from Theorem~\ref{thm:nogap} and
-Corollary~\ref{cor:localzero}. It is retained in the hypothesis list above only so that
+the travel-invariance proposition of paper~2, proved there from that paper's no-gap theorem and
+local-zero corollary. It is retained in the hypothesis list above only so that
 statements citing $(T)$ remain readable; nothing is conditional on it.
 \item \textsc{Corrected.} The identification $c_{\mathrm{pred}}=c$ needed for the lower bound of
 the metric identity $\ell_T=\ell_R+2c$ -- open when this item was first written -- is now proved:
 \texttt{lean/with\_mathlib/PhiLipschitz.lean} proves, unconditionally and for every reachable
 element, \texttt{wordLength}$(g)=$\texttt{lRTrue}$(g)+2\cdot$\texttt{cTrue}$(g)$, by an induction
-on a corrected potential composed with a descent lemma made unconditional in
-\texttt{EltBridge.lean} (theorem \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue};
+on a corrected potential composed with a descent lemma made unconditional there
+(theorem \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}, in the same file, built on the
+underlying element type of \texttt{EltBridge.lean};
 \texttt{\#print axioms} shows only the standard axioms). This does not by itself discharge
 Hypothesis~\ref{hyp:M}: that the crossing-optimisation closed forms
 (\texttt{lRTrue}, \texttt{cTrue}) compute the true relaxed length and defect the model is
@@ -160,8 +161,8 @@ implementation. Both are repaired additively in \texttt{CorrectedSpan.lean}, aft
 identity holds with no violation on every element enumerated to depth $29$, the potential
 $\ell_R+2c$ is $1$-Lipschitz along the generators, and -- per the item above -- the lower bound
 built from these corrected closed forms is now proved rather than open.
-\item \textsc{Added.} The decomposition \eqref{eq:assembly}, i.e.\ part $(M3)$ of the transfer
-model, is \emph{vacuous as stated}: for arbitrary $\mathcal W$ and $\mathcal W_0$ there exist
+\item \textsc{Added.} The decomposition of the transfer model's assembly step, part $(M3)$,
+is \emph{vacuous as stated}: for arbitrary $\mathcal W$ and $\mathcal W_0$ there exist
 $n$, $\mathcal T$, $\lambda$, $\mu$ satisfying it, and removing the degree truncation does not
 change this. The defect is the existential quantifier over $(\mathcal T,\lambda,\mu)$ alone, so a
 proof of $(M3)$ in that form would establish nothing about $\mathcal W$. A usable statement must
@@ -1539,8 +1540,8 @@ $\Sigma_0/(1-\Sigma_1)$ is transcendental over $\Q(x)$, unconditionally.
 
 Transcendence of $V$ is conditional on $(M)$ and $(R\!-\!J)$; transcendence of $U$ is conditional
 on the same two. $(T)$ is \emph{no longer} a standing hypothesis: it is
-Proposition~\ref{prop:travelinv} of paper~2, proved there via Theorem~\ref{thm:nogap} and
-Corollary~\ref{cor:localzero}. Neither transcendence statement is claimed here.
+the travel-invariance proposition of paper~2, proved there via that paper's no-gap theorem and
+local-zero corollary. Neither transcendence statement is claimed here.
 
 \section{The \texorpdfstring{$q$}{q}-cosine increment}\label{sec:qcos}
 
@@ -1555,12 +1556,12 @@ The general hypertranscendence statement, for all $q$ not a root of unity and ov
 $\bigcup_j\C(z^{1/j})$, is due to Adamczewski, Dreyfus and Hardouin and is stronger. The increment
 is the removal of a transcendence hypothesis on $q$ in the $SL_2$ statement.
 
-\section{The five directions}\label{sec:open}
+\section{The remaining directions}\label{sec:open}
 
 \begin{problem}[Prove $(R\!-\!J)$]\label{prob:rj}
 Show $\Pi_y(q_m)\ne0$ for infinitely many travel poles. This would make $V$ and $U$
 transcendental over $\Q(x)$ unconditionally, modulo $(M)$; $(T)$, which this step once also
-required, is now proved (Proposition~\ref{prop:travelinv}). What exists is an upper bound
+required, is now proved (the travel-invariance proposition of paper~2). What exists is an upper bound
 $|P_{12}|w^3<2$; what is needed is a lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$.
 \end{problem}
 
@@ -2011,15 +2012,20 @@ The conjecture that $\rho_a$ is injective for every $a\in\Q_{>0}^n$ with $e(a)=t
 $n\ge3$ is FALSE, by Theorem~\ref{thm:masterCfalse}. Only the generic form (a) survives.
 \end{remark}
 
-\begin{problem}[Ambient embedding]\label{prob:embed}
-For $n\ge3$, does $W_n$ embed in $O(n)$? By Proposition~\ref{prop:reduce} this is equivalent to
-the ambient embedding question for $\Isom(\R^n)$, and by Remark~\ref{rem:buys} it asks whether
-$W_n$ has a faithful orthogonal representation of degree $n$.
-\end{problem}
+\begin{remark}[Ambient embedding, RESOLVED]\label{prob:embed}
+For $n\ge3$, does $W_n$ embed in $O(n)$ -- equivalently, by Proposition~\ref{prop:reduce}, in
+$\Isom(\R^n)$, and by Remark~\ref{rem:buys} equivalently does $W_n$ have a faithful orthogonal
+representation of degree $n$? This was open when this section was first drafted and is retained
+here, in the resolved form, only because it was carried as one of the paper's own listed open
+directions; it is answered affirmatively, unconditionally, in Theorem~\ref{thm:alln}, via the
+right-angled version (Theorem~\ref{thm:racg}) applied to $\Gamma_n$.
+\end{remark}
 
 \begin{problem}[Finite presentation]\label{prob:fp}
 For $n\ge3$, is $W_n/N_{\mathrm{gen}}$ finitely presented? A negative answer refutes
-Problem~\ref{prob:alternative}(a). At $n=2$ the answer is no.
+Problem~\ref{prob:alternative}(a). At $n=2$ the answer is no. At $n=3$ the answer is yes --
+$N_{\mathrm{gen}}=1$ there (Corollary~\ref{cor:three}(iii)), so $W_3/N_{\mathrm{gen}}=W_3$,
+finitely presented since $W_3$ is. The question is open for every $n\ge4$.
 \end{problem}
 
 \begin{problem}[Transcendence of the zeros]\label{prob:zeros}
