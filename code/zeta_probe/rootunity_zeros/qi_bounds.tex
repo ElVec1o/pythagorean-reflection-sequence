@@ -1,0 +1,190 @@
+% qi_bounds.tex -- Room J, step (b): uniform bounds on log|f| for the two interpolants of B near q = i.
+% Companion of certify_landscape_i.py (step (c)). Not part of paper2a.tex; uses its notation.
+% Labels: PROVED = argument written out here; VERIFIED = checked by the interval certificate or by
+% floating-point comparison with the exact products (scripts named); HEURISTIC = neither.
+
+\paragraph{Setting.} Write $q=ip$, $p=e^{-t}$, $P=p^4$, $t=re^{i\theta}$ with
+$|\theta-\theta_i|\le10^{-3}$, $\theta_i=\arctan\frac{\pi}{6\log2}=37.067\ldots^\circ$, and
+$0<r\le\bar r=0.005$. Let $b_k=a^kq^{k^2}/(q;q)_{2k}$, $a=-2(1-q)$, $c_0=-2+2i$, $L_w=\log c_0$, and
+$\ell(t)=\log\bigl(1-\tfrac{1-i}{2}(1-e^{-t})\bigr)$, so that $\log a=L_w+\ell(t)$. The entire interpolants
+\[
+ f_e(s)=\frac{e^{2s\log a-4ts^2}}{(q;q)_\infty}\prod_{j=1}^{4}(i^jp^{4s+j};P)_\infty,\qquad
+ f_o(s)=\frac{i\,e^{(2s+1)\log a-t(2s+1)^2}}{(q;q)_\infty}\prod_{j=3}^{6}(i^jp^{4s+j};P)_\infty
+\]
+satisfy $f_e(k)=b_{2k}$, $f_o(k)=b_{2k+1}$ for $k\ge0$, and $f_e(k)=f_o(k)=0$ for integers $k<0$. We use
+$x=2st$ for $f_e$ and $x=(2s+1)t$ for $f_o$, and write $f(x)$ for either one in this coordinate. Put
+\[
+ \Phi(x)=xL_w-x^2-\tfrac1{16}\operatorname{Li}_2(e^{-8x})+\tfrac{\pi^2}{96}\quad(\Re x\ge0),
+\]
+\[
+ U(x)=\Re\Bigl(\bigl(xL_w-x^2+\tfrac{17\pi^2}{96}+\tfrac1{16}\operatorname{Li}_2(e^{8x})\bigr)e^{-i\theta}\Bigr)
+  +\sum_{\varrho=0}^{3}\max_{m\equiv\varrho\ (4)}\tfrac12\Re\bigl((x-\tfrac{i\pi m}4)^2e^{-i\theta}\bigr)
+  \quad(\Re x\le0),
+\]
+\[
+ C_\pm(x)=\tfrac14\log(1\mp ie^{-2x})-\tfrac14\log(1\pm ie^{-2x})-\tfrac12\log(1\mp e^{-2x}).
+\]
+For $a\ge0$ and $\varphi\in[0,\pi]$ let
+$\mathcal D(a,\varphi)=\inf_{\rho\ge0}\max\bigl\{\sigma(\varphi-\rho\sin\theta),\,1-e^{-a-\rho\cos\theta}\bigr\}$,
+with $\sigma(u)=\sin\min(\operatorname{dist}(u,2\pi\mathbb Z),\frac\pi2)$. For a point $x$ put
+\[
+ D(x)=\min_{c^4=1}\mathcal D\bigl(2\Re x,\operatorname{dist}(\arg c-2\Im x,2\pi\mathbb Z)\bigr),\qquad
+ D'(x)=\min_{c^4=1}\mathcal D\bigl(-2\Re x,\operatorname{dist}(2\Im x-\arg c,2\pi\mathbb Z)\bigr).
+\]
+Finally $D_n=\mathcal D(0,\frac\pi2)$,
+$K_n=\frac1{D_n}+\frac1{D_n^2\cos\theta}+\frac{4.75}{D_n}+\frac16+10^{-3}$,
+$\mu=\frac{\sqrt2}2(e^{\bar r}-1)$, $c_\ell=\bar r^{-2}\bigl(\frac{\sqrt2}2(e^{\bar r}-1-\bar r)+\frac{\mu^2}{2(1-\mu)}\bigr)$, and
+$m^\ast(x)=4\Im(xe^{-i\theta})/(\pi\cos\theta)$.
+
+\begin{lemma}[uniform bounds on $\log|f|$ near $q=i$]\label{lem:qi-bounds}
+In this setting the following hold for both branches.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item \emph{(Saddle region, Euler--Maclaurin.)} If $\Re x\ge0$ and $D(x)>0$, then, modulo $2\pi i$,
+\[
+ \log f(x)=\frac{\Phi(x)}t-\frac{(1-i)x}2+C_\pm(x)+i\pi\bigl(\tfrac18+\tfrac{\epsilon}{2}\bigr)
+   -\tfrac12\log\frac{\pi}{2t}+E,\qquad |E|\le K(x)\,|t|,
+\]
+with $+,\epsilon=0$ for $f_e$ and $-,\epsilon=1$ for $f_o$, and
+\[
+ K(x)=c_\ell|x|+\frac{121}{12\,D(x)}+\frac{4}{3\cos\theta\,D(x)^2}+K_n .
+\]
+In particular $\log|f(x)|\le\Re(\Phi(x)e^{-i\theta})/r+\Lambda(x)+\frac12\log\frac{2r}\pi+K(x)r$, and the same
+with $\ge$ and $-\Lambda$, where $\Lambda(x)=|x|/\sqrt2+\max(-\log D(x),\log2)$.
+\item \emph{(Crossing region, theta reflection.)} If $\Re x\le0$ and $D'(x)>0$, then
+\[
+ \log|f(x)|\le\frac{U(x)}r+\Lambda'(x)+\tfrac12\log\frac{2r}\pi+4\log\bigl(3+3e^{-\pi^2\cos\theta/r}\bigr)+K'(x)\,r,
+\]
+\[
+ \Lambda'(x)=\bigl(\tfrac1{\sqrt2}+2\bigr)|x|+\tfrac\pi2\bigl(|m^\ast(x)|+4\bigr)+2\pi+\max(-\log D'(x),\log2),\quad
+ K'(x)=c_\ell|x|+\frac{73}{12\,D'(x)}+\frac{4}{3\cos\theta\,D'(x)^2}+\frac34+K_n .
+\]
+The leading exponent is the analytic continuation of $\Phi$ past $\Re x=0$ with the $+2x^2$ of the
+dilogarithm inversion $\operatorname{Li}_2(z)+\operatorname{Li}_2(1/z)=-\frac{\pi^2}6-\frac12\log^2(-z)$, except
+that the square is split over the four classes $m\bmod4$ and each class keeps only its dominant term.
+On the lines $\Im x\equiv\frac\pi8\pmod{\frac\pi4}$ the dominant $m$ is unique in every class, and
+$U(x)=\Re(\Phi(x)e^{-i\theta})$ at $\Re x=0$ there.
+\item \emph{(Tail.)} If $\Re x\ge X>0$, then
+\[
+ r\log|f(x)|\le\Re\bigl((xL_w-x^2+\tfrac{\pi^2}{96})e^{-i\theta}\bigr)+\tau(X)
+ +r\bigl(\tfrac{|x|}{\sqrt2}+c_\ell r|x|+\tfrac12\log\tfrac{2r}\pi+K_nr\bigr),\quad
+ \tau(X)=\frac{e^{-2X}}{(1-e^{-2X})\cos\theta\,(1-2r\cos\theta)}.
+\]
+\item \emph{(Kernel.)} Let $\Gamma_\pm$ leave a half-integer $s_c$ and be polygons whose pieces have
+directions $\arg(dx\,e^{-i\theta})$ in a closed cone contained in $(0,\pi)$ for $\Gamma_+$, and in $(-\pi,0)$ for
+$\Gamma_-$. Let $\alpha_{\min}$ be the least angle between a direction in the cone and the real axis. Then
+$|1-e^{\pm2\pi is}|^{-1}\le\kappa=(1-e^{-(\pi/2)\tan\alpha_{\min}})^{-1}$ on $\Gamma_\pm$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\emph{Euler--Maclaurin on a ray.} Let $|c|=1$, $G(v)=\log(1-ce^{-v})$, and let $v_0$ satisfy $|ce^{-v_0}|\le1$
+and $\delta:=\inf_{\rho\ge0}|1-ce^{-v_0-\rho e^{i\theta}}|>0$. Apply Euler--Maclaurin of order two to
+$F(m)=G(v_0+4tm)$, $m\ge0$ real. The point $v_0+4tm$ runs along the ray from $v_0$ in direction
+$e^{i\theta}$, so
+\[
+ \sum_{m\ge0}G(v_0+4tm)=-\frac{\operatorname{Li}_2(ce^{-v_0})}{4t}+\tfrac12G(v_0)+E_0,\qquad
+ |E_0|\le\frac{|t|}3\Bigl(|G'(v_0)|+\int_{\rm ray}|G''|\,|dv|\Bigr).
+\]
+Here $\int_{v_0}^{\infty}G=-\operatorname{Li}_2(ce^{-v_0})$ with the principal branch, because $|ce^{-v}|\le1$
+on the ray. The remainder is $\frac1{12}\int|F''|$, since $|\tilde B_2|\le\frac16$, plus the boundary term
+$\frac1{12}F'(0)$. Along the ray $w=ce^{-v}$ has $|w|\le e^{-\rho\cos\theta}$. So $|G'|=|w|/|1-w|\le1/\delta$ and
+$\int|G''|=\int|w|/|1-w|^2\le1/(\delta^2\cos\theta)$. A Taylor step with integral remainder gives
+$\operatorname{Li}_2(ce^{-v-h})=\operatorname{Li}_2(ce^{-v})+hG(v)+R$, $|R|\le\frac{|h|^2}2\sup|G'|$ on
+$[v,v+h]$, because $\frac{d}{dv}\operatorname{Li}_2(ce^{-v})=G(v)$.
+
+\emph{The bound $\delta\ge\mathcal D(a,\varphi)$.} Write $w(\rho)=w_0e^{-\rho e^{i\theta}}$, $|w_0|=e^{-a}$,
+$\varphi=\operatorname{dist}(\arg w_0,2\pi\mathbb Z)$. The argument of $w$ decreases at rate $\sin\theta$ and
+$|w|\le e^{-a-\rho\cos\theta}$. For every $\rho$, $|1-w|\ge1-|w|$. Also $|1-w|\ge\sigma(\arg w)$, since the
+distance from $1$ to the ray at angle $u$ is $|\sin u|$ when $\cos u>0$ and at least $1$ otherwise. If
+$\arg w_0=+\varphi$ this gives exactly $\mathcal D(a,\varphi)$. If $\arg w_0=-\varphi$ the argument first
+moves away from $0$, and it returns to within $u$ of $0$ only after $\rho\ge(2\pi-\varphi-u)/\sin\theta\ge
+(\varphi-u)/\sin\theta$. So the same bound holds. $\mathcal D$ is nondecreasing in $a$ and in $\varphi$.
+
+\emph{Part \textup{(i)}.} For $f_e$, $\log(i^je^{-2x-jt};P)_\infty=\sum_mG_j(2x+jt+4tm)$ with
+$G_j(v)=\log(1-i^je^{-v})$. The ray from $2x$ contains the ray from $2x+jt$, since $\arg t=\theta$, and on it
+$\delta\ge D(x)$. The ray lemma, the Taylor step from $2x+jt$ back to $2x$ (error
+$\frac{j^2}{8}|t|/D$), and $\frac12G_j(2x+jt)=\frac12G_j(2x)+O(\frac j2|t|/D)$ give
+$-\operatorname{Li}_2(i^je^{-2x})/(4t)+(\frac12-\frac j4)G_j(2x)$. Now sum over $j$:
+$\sum_j\operatorname{Li}_2(i^jz)=\frac14\operatorname{Li}_2(z^4)$ for $|z|\le1$ gives
+$-\operatorname{Li}_2(e^{-8x})/(16t)$, and $\sum_j(\frac12-\frac j4)G_j(2x)=C_+(x)$. The error constants add up to
+$\frac43(\frac1D+\frac1{D^2\cos\theta})+\frac{30/8+5}{D}$, which is $\frac{121}{12D}+\frac{4}{3\cos\theta D^2}$.
+The normalisation is $(q;q)_\infty=\prod_{j=1}^4(i^je^{-jt};P)_\infty$. The factors $j=1,2,3$ are handled by the
+ray lemma from $v=0$, where $w_0=i^j$, so $\delta\ge D_n$. With
+$\sum_{j\le3}\operatorname{Li}_2(i^j)=-\frac{\pi^2}8$ and $\sum_{j\le3}(\frac j4-\frac12)\log(1-i^j)=
+\frac14\log\frac{1+i}{1-i}=\frac{i\pi}8$ they contribute $\frac{\pi^2}{32t}+\frac{i\pi}8$ to $-\log(q;q)_\infty$,
+with error $\le(K_n-\frac16-10^{-3})|t|$. The factor $j=4$ is Dedekind's $\eta$:
+$\log(P;P)_\infty=-\frac{\pi^2}{24t}+\frac12\log\frac\pi{2t}+\frac t6+\log(P';P')_\infty$, with
+$P'=e^{-\pi^2/t}$ and $|\log(P';P')_\infty|\le2e^{-\pi^2\cos\theta/r}<10^{-3}|t|$. Finally
+$x\log a/t=xL_w/t-\frac{(1-i)x}2+x(\ell(t)/t+\frac{1-i}2)$. Put $u=\frac{1-i}2(1-e^{-t})$. Then
+$|u-\frac{1-i}2t|\le\frac{\sqrt2}2(e^{r}-1-r)$, $|u|\le\mu$ and $|\log(1-u)+u|\le\frac{|u|^2}{2(1-|u|)}$. So
+$|\ell(t)/t+\frac{1-i}2|\le c_\ell|t|$, because the bracket in $c_\ell$ is increasing in $r$. For $f_o$ the
+four factors are $(-i^{j'}e^{-2x-j't};P)_\infty$, $j'=j-2$. The same computation gives $C_-$, the same
+$\operatorname{Li}_2(e^{-8x})/16$ (the four $-i^{j'}$ are again the fourth roots of unity), and the extra
+factor $i$ gives $\frac{i\pi}2$. For the real-part bounds, $1-ce^{-2x}$ is the start of the ray, so
+$D(x)\le|1-ce^{-2x}|\le2$, and $|\Re C_\pm|\le(\frac14+\frac14+\frac12)\max(-\log D,\log2)$.
+
+\emph{Part \textup{(ii)}.} Put $z_j=c_je^{-2x-jt}$ with $c_j=i^j$ (or $-i^{j-2}$), and write
+$(z;P)_\infty=\vartheta(z)/(P/z;P)_\infty$ with $\vartheta(z)=(z;P)_\infty(P/z;P)_\infty$. By Jacobi's triple
+product and Poisson summation, for $z=e^{-v}$,
+\[
+ (P;P)_\infty\,\vartheta(e^{-v})=\sqrt{\tfrac{\pi}{2t}}\sum_{k\in\mathbb Z}
+ \exp\Bigl(\frac{\beta_k^2}{8t}\Bigr),\qquad \beta_k=2t-v+i\pi(1-2k).
+\]
+(VERIFIED to $10^{-28}$ at a sample point.) The exponent is a concave quadratic in $k$ with leading
+coefficient $-c=-\pi^2\cos\theta/(2r)$. If $k_\ast$ is the best integer, $A_{k_\ast\pm l}\le A_{k_\ast}-cl(l-1)$,
+so $\sum_ke^{A_k}\le e^{A_{k_\ast}}(3+3e^{-2c})$. With $v_j=2x+jt-i\pi\gamma_j/2$ ($c_j=e^{i\pi\gamma_j/2}$) we get
+$\beta_k=-2(x-\frac{i\pi m}4)+(2-j)t$, $m=\gamma_j+2-4k$, so
+$\beta_k^2/(8t)=(x-\frac{i\pi m}4)^2/(2t)-\frac{2-j}2(x-\frac{i\pi m}4)+\frac{(2-j)^2t}8$ exactly. As $j$ runs
+over $1,\dots,4$ the classes $m\bmod4$ are each met once, on both branches. The index maximising the
+leading part is one of the two class members next to the vertex $m^\ast(x)$. Any other index loses
+$\ge c\,l(l-1)$ and gains at most $\frac\pi2|2-j|\,l$ in the linear part. For $r\le\frac\pi2\cos\theta$ this is
+a net loss when $l\ge2$, which accounts for the terms $\frac\pi2(|m^\ast|+4)$ and $2\pi$ in $\Lambda'$. Next,
+$-\log|(P;P)_\infty|+\frac12\log\frac\pi{2r}=\Re\frac{\pi^2}{24t}-\Re\frac t6-\log|(P';P')_\infty|$ by $\eta$. The
+$\frac12\log$ terms cancel for each $j$, and $-\Re\frac t6<0$ is dropped. The factor $(P/z_j;P)_\infty=(w_j;P)_\infty$,
+$w_j=c_j^{-1}e^{2x}e^{-(4-j)t}$, has $|w_j|\le1$ for $\Re x\le0$. The ray lemma (with $\delta\ge D'(x)$) and a
+Taylor step of length $(4-j)|t|$ give
+$-\log(w_j;P)_\infty=\operatorname{Li}_2(c_j^{-1}e^{2x})/(4t)+\frac{2-j}4\log(1-c_j^{-1}e^{2x})+O(|t|)$. The error
+constants are $\frac43(\frac1{D'}+\frac1{D'^2\cos\theta})+\frac{14/8+3}{D'}$, and
+$\sum_j\operatorname{Li}_2(c_j^{-1}e^{2x})=\frac14\operatorname{Li}_2(e^{8x})$. The $1/t$ terms add up to $U(x)/r$:
+$4\cdot\frac{\pi^2}{24}+\frac{\pi^2}{96}=\frac{17\pi^2}{96}$, the $\operatorname{Li}_2(e^{8x})/16$, the four maxima,
+and $xL_w-x^2$. The remaining terms are $\Re(-\frac{(1-i)x}2)$, the linear parts, and
+$\frac{2-j}4\log(1-c_j^{-1}e^{2x})$ (with $\sum|2-j|=4$), the constant $\frac34|t|$ from
+$\sum(2-j)^2/8$, and $K_n$ and $c_\ell$ as in (i). Together they give $\Lambda'$ and $K'$. At
+$x=-i\pi/8$: $e^{-8x}=-1$, and the class maxima are $m=-1,0,1,-2$ with squares
+$(1+2m)^2=1,1,9,9$. So $U(-\frac{i\pi}8)=\Re\bigl((\frac{\pi^2}{32}-\frac{i\pi L_w}8)e^{-i\theta}\bigr)
+=\Re(\Phi(-\frac{i\pi}8)e^{-i\theta})$, and the same holds on the other crossing lines. (Also VERIFIED numerically: \texttt{chk\_refl}-type comparison,
+bound minus exact $=4\log3+O(r)$.)
+
+\emph{Part \textup{(iii)}.} Use $-\log|1-w|\le|w|/(1-|w|)$ termwise. With $|z_j|\le e^{-2X}$ and
+$1-|P|\ge4r\cos\theta(1-2r\cos\theta)$, $r\sum_j\sum_m|z_jP^m|/(1-|z_j|)\le\tau(X)$. The rest is as in (i).
+
+\emph{Part \textup{(iv)}.} Let $\Delta=s-s_c$. It is a sum of vectors in the cone, so it lies in the cone
+(for $\Gamma_+$). With $e^{2\pi is_c}=-1$ we get $|1-e^{2\pi is}|=|1+e^{-A+iB}|$, where $A=2\pi|\Delta|\sin\alpha\ge0$
+and $B=2\pi|\Delta|\cos\alpha$. If $|B|\le\frac\pi2$ it is $\ge1$. Otherwise $A=|B|\tan\alpha'\ge\frac\pi2\tan\alpha_{\min}$
+and it is $\ge1-e^{-A}$. The case $\Gamma_-$ is the mirror image.
+\end{proof}
+
+\paragraph{Status.}
+\begin{itemize}
+\item PROVED: (i)--(iv) as stated. The Poisson form of the triple product is classical. The saddles are
+$x_0=\frac14\log(4+\sqrt{15})+\frac{3\pi i}8$ ($\Phi'(x_0)=0$) and $x_-=x_0-\frac{i\pi}2$ ($\Phi'(x_-)=i\pi$), exactly:
+$\Re\Phi'(x_0)=\frac12\log\frac{8}{(4+\sqrt{15})(1+(4-\sqrt{15})^2)}=0$ and $\Im\Phi'(x_0)=\frac{3\pi}4-2\cdot\frac{3\pi}8=0$.
+\item VERIFIED (floating point, exact products, $r=0.02,0.01,0.005$): the error in (i) is $\approx(0.13\text{--}0.58)|t|$
+at $x_0$, $x_-$, $-i\pi/8$, $3i\pi/8+0.02$ and $1.5+0.3i$, far below the proved $K(x)|t|$. In (ii), bound minus
+exact equals $4\log3+O(r)$ at ten points with $\Re x<0$. On all paths of \texttt{certify\_landscape\_i.py}
+at $r=0.004,0.002$, $r\log|fe^{2\pi ins}|$ is at most the leading exponent $W_n$ or $U_n$, for both branches.
+\item VERIFIED (interval arithmetic, \texttt{certify\_landscape\_i.py}): on the certified paths
+$D\ge0.2442$, $\Lambda\le4.460$, $K\le81.35$ in region (i); on the saddle windows
+$x_0+u$, $x_-+u$, $|u|\le0.4$ $D\ge0.4629$, $K\le41.88$; in region (ii) $D'\ge0.2542$,
+$\Lambda'\le19.95$, $K'\le62.29$; also $c_\ell\le0.6063$, $D_n\ge0.6686$, $K_n\le11.574$, $\kappa\le2.539$.
+\end{itemize}
+
+\paragraph{Use in step (c).} In \texttt{certify\_landscape\_i.py} the paths are: $\Pi_0$ ($x_c\to$ vertical
+to $\Im x=\frac{3\pi}8$, then horizontal through $x_0$), $\Gamma_-$ (horizontal on $\Im x=-\frac\pi8$ through $x_-$),
+and $\Gamma_+$ ($x_c\to\frac{i\pi}8\to$ ray at $55^\circ$). They cross $\Re x=0$ at $\frac{3\pi i}8$, $-\frac{\pi i}8$
+and $\frac{\pi i}8$. The start $x_c$ ($s_c<0$ a half-integer, so there is no head) lies within $0.02$ of
+$-\frac\pi8(\cot\theta_i+i)$. The exact split is $B=J_0+J_-+R_-+R_+$, where $R_\mp$ carry all $n\le-2$ and all
+$n\ge1$ through the kernel bound (iv). Let $T_{\rm LO}=\min(T_0,T_-)$ over the $\theta$-box, $=-0.072274$. It
+certifies $\sup(\text{leading exponent})-T_{\rm LO}\le-0.1002$ on every competing piece. Both saddle
+windows have $\Re(\Phi''e^{-i\theta})\le-0.682$. With (i)--(iii), each competing contribution is at most
+$e^{(T_{\rm LO}-0.05)/r}$ for $r\le r_0=1.56\cdot10^{-3}$.
