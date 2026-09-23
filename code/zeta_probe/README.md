@@ -29,6 +29,8 @@ they once carried is reproduced in full in the papers.
 | `series_tests.py` | Exact complexity tests on the 43 known terms: no constant-coefficient linear recurrence, no holonomic recurrence in the stated box, positive-control validated. |
 | `algguess.py` | Exact search for an algebraic equation `P(x, F) = 0` satisfied by the growth series. |
 | `wf2_relaxed_*.py`, `wf2_relaxed_README.md` | The relaxed-model counting dynamic program and the catalytic-kernel scaffold used for the growth-rate analysis. |
+| `wt_growth/` | Section 8, the rational triangle groups `W_T`: modular sphere counts (lower bounds, `rem:WT-numerics`), the carry-window computation `wt_carry`, the `rem:kappa` word check `kcheck`, and `guess.py`, the modular rank exclusions of `thm:WT-lowcomplexity`. Its own `README.md`. |
+| `zeta_toy_growth/` | Section 8, the toy groups `Z[zeta^{+-1}] x| Z` of `rem:WT-numerics`(d) and the `BS(1,2)` calibration of `rem:BS-calibration`. Exact. Its own `README.md`. |
 
 
 ## Paper 2: the transcendence certificates
@@ -54,11 +56,16 @@ is treated as a bug.
 | `cumulant_verify.py` | The cumulant chain at the tabulated travel poles. That route is closed and superseded; the script is kept as a check on the identities it verifies. |
 | `budget.py`, `budget_iv.py` | The bound chain of the same closed route, the second in interval arithmetic. |
 | `rj_certificates/` | `thm:RJ` and `thm:model`. `r35rust/src/bin/r54b.rs` proves positivity of the junction pairing `<lambda,R>` at `q_1..q_12`, and `r39pole` gives the certified count of 13 zeros of `1 - Sigma_1` on `[0, 0.9988]`. Both use MPFR interval arithmetic. The directory also holds supporting interval certificates and the group BFS `mnk` and tuple enumerator `revO` behind the assembly evidence (exact to `x^26` at `y = q`, 816 coefficients at symbolic `y`, `v_0..v_19`). Its own `README.md` gives arguments and trust base. |
+| `nondfinite/` | Section `sec:beyond` (`thm:nonDfinite`, `thm:natboundary`, the poles of `U` and `V` at `-x_m`): floating-point checks at 40 to 90 digits, not interval certificates. Its own `README.md`. |
+| `qbessel/` | Section `sec:fredholmdet` (`thm:fredholm`): the travel poles as zeros of the Hahn-Exton function `J^(3)_{-1/2}(Z; q^2)` at `q_1..q_10`. Floating point, not interval certificates. Its own `README.md`. |
 
-## paper_orthoscheme
+## paper_orthoscheme and merged_novel_paper
 
 | File | What it certifies |
 |---|---|
+| `kplus/` | `lem:Kplus` of `merged_novel_paper.tex`: floating-point check that the positive compact locus of the Gram hypersurface is the orthoscheme locus, and an exact integer check at the Vinberg points for `n = 3..200`. The proof is `lean/with_mathlib/OrthoschemeGram.lean`. Its own `README.md`. |
+
+The length-six exclusion and the collision depth are `tools/ortho_len6` and `tools/ortho_cd` (below).
 
 ## `tools/`
 

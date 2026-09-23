@@ -1,7 +1,7 @@
 # Symbolic verification (with Mathlib)
 
 A separate Lean 4 project requiring Mathlib, pinned to `leanprover/lean4:v4.30.0`
-(matching Mathlib `v4.30.0`). It has **128 build targets**: 127 source files in
+(matching Mathlib `v4.30.0`). It has **130 build targets**: 129 source files in
 this directory plus `RotationRelations`, which is compiled in place from
 `../RotationRelations.lean` through a `srcDir` entry so that there is exactly
 one copy of it. Every target is registered both as a `[[lean_lib]]` and in
@@ -82,6 +82,18 @@ project, carry the rest of the appendix propositions.
 | `GateInputs.lean` | The algebraic core of the four inputs G1 to G4, chosen because they are where the derivation went wrong in practice. |
 | `SDAssembly.lean` | `lem:infpoles`, infinitude and accumulation of the travel poles, machine-checked from its analytic input. |
 | `UAssembly.lean` | The assembly of `thm:U`. Each analytic lemma enters as an explicit named hypothesis, so what is certified is that they compose into the conclusion, not that they hold. |
+| `FredholmMinor.lean` | `thm:fredholm`(iii): `det[y_max(i,j)] = y_k prod_{i<k}(y_i - y_{i+1})` for every `k`, the principal minors of the travel kernel `T` and its symmetrisation, the gap sums, and the closed form `(2(1-q))^k q^{k^2}/(q;q)_{2k}` of the sum of the `k`-point minors as a `HasSum`. Added in v10.5.0. |
+
+### Beyond transcendence: non-D-finiteness
+
+Added in v10.5.0 (`sec:beyond` of paper 2). Standard axioms only, no `sorry`, no `native_decide`.
+
+| File | Contents |
+|---|---|
+| `ODEPoles.lean` | `lem:odeposes`: if `a_0, ..., a_r` are analytic at `p` with `a_r(p) != 0` and a meromorphic `f` satisfies `sum a_i f^(i) = 0` near `p`, then `f` has no pole at `p`. The elementary indicial argument; no Cauchy existence theorem. |
+| `NonDFinite.lean` | `thm:nonDfinite` in abstract and disc form: a function meromorphic on the unit disc with infinitely many poles there satisfies no linear ODE, homogeneous or inhomogeneous, with coefficients holomorphic on `|z| < R`, `R > 1`; in particular none with polynomial coefficients (`not_DFinite_poly`); and no contracting linear q-difference equation (`no_qdiff_contracting`, part (i) of `prop:noqdiff` for `0 < |Q| < 1`). Pole existence is a hypothesis: the analytic input that `U` and `V` have infinitely many poles is not formalised. |
+| `RoundNorm.lean` | Abstract round stable norm (paper 1 `prop:round-norm`): subadditive, homogeneous, invariant under an irrational rotation `zeta`, and bounded on the circle imply `s v = s 1 * |v|`. The concrete group-theoretic input (Fekete, the extension from the lattice) is not formalised. |
+| `GapRuns.lean` | For `k* != 0`: `cTrue` equals the sum over maximal gap runs of `(L - shield)`, with the shield given by the junction cuts of Lemma J (`RJLemmaJ`). The `k* = 0` sector (clamps, `ShieldFires`) is not covered. |
 
 ### The model (M) and the junction pairing (R-J)
 
@@ -140,6 +152,13 @@ equation, but not the triple product that would connect it to the q-world.
 | `RankTwoExclusion.lean` | The exclusion feeding `thm:rank2` and the two finite branches of `thm:cd-general`. Its docstring states the narrower scope at length three, and the citation to it in the paper was narrowed to match. |
 | `ReflectionTriple.lean` | Step (2) of `thm:len6`, the linear-algebra heart of the length-six exclusion. |
 
+## merged_novel_paper
+
+| File | Contents |
+|---|---|
+| `OrthoschemeGram.lean` | `lem:Kplus`: for leg squares `b_1..b_n > 0` the continuants of the orthoscheme Gram data satisfy `D_{k+1} = prod_{j<=k} b_j/(b_j+b_{j+1}) > 0` and `D_{n+1} = 0`; the explicit inverse map is a surjection onto the positive continuant locus, and the forward map is injective up to scale. Added in v10.5.0. |
+| `OrthoschemeLoci.lean` | The two dimension-four hypersurfaces on which the orthoscheme point group collapses: for each family a fixed pair of words whose linear parts differ by a multiple of an explicit polynomial in the legs. |
+
 
 ## hahn_exton_qcosine
 
@@ -167,10 +186,10 @@ statement-to-declaration table and the list of what is not formalised.
 ```bash
 lake update           # fetches the Mathlib source
 lake exe cache get    # downloads prebuilt Mathlib .olean files
-lake build            # builds all 60 targets
+lake build            # builds all 130 targets
 ```
 
-A warm `lake build` over all 60 targets replays unchanged traces in seconds.
+A warm `lake build` over all 130 targets replays unchanged traces in seconds.
 
 
 ## Why is this a separate project?

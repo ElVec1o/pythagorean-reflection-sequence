@@ -5,7 +5,7 @@ Two Lean 4 projects sit here.
 | Directory | Toolchain | Targets | Mathlib |
 |---|---|---|---|
 | `lean/` (this one) | `leanprover/lean4:v4.13.0` | 6 | no |
-| `lean/with_mathlib/` | `leanprover/lean4:v4.30.0` | 128 | yes |
+| `lean/with_mathlib/` | `leanprover/lean4:v4.30.0` | 130 | yes |
 
 Neither contains a `sorry`. Every target is registered both as a `[[lean_lib]]`
 and in `defaultTargets`, so a clean `lake build` builds and checks all of them
@@ -20,8 +20,8 @@ the legitimate output for a `decide`-proved theorem. Grepping the log for
 For the statement-to-declaration tables, and for the list of what is deliberately
 not formalised and why, see the Lean sections of the papers themselves:
 `paper1.tex` (`tab:lean-index`), `paper2.tex` (the site-cost index, the junction-pairing and model files of
-`sec:RJlean`, and the table of blocked analytic atoms), `paper4.tex`, `paper_orthoscheme.tex` and
-`hahn_exton_qcosine.tex`. Absence of a statement from those tables means there is
+`sec:RJlean`, and the table of blocked analytic atoms), `paper4.tex`, `paper_orthoscheme.tex`,
+`merged_novel_paper.tex` and `hahn_exton_qcosine.tex`. Absence of a statement from those tables means there is
 no certificate for it. `README_triangle.md` in this directory tabulates the files
 backing paper 4 and the rotation-relation chain.
 
@@ -70,7 +70,7 @@ rings, `MvPolynomial`, free products or q-series lives in `with_mathlib/`.
 
 ## Reference
 
-Bonfioli, V., the five papers in `paper/journal/`, 2026.
+Bonfioli, V., the six papers in `paper/journal/`, 2026.
 GitHub: <https://github.com/ElVec1o/pythagorean-reflection-sequence>
 Zenodo: [10.5281/zenodo.20370090](https://doi.org/10.5281/zenodo.20370090)
 OEIS: [A396406](https://oeis.org/A396406)
