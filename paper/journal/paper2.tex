@@ -74,7 +74,9 @@ travel poles, $|S_e(q_m)|\ge0.35\sqrt{\tau_m}$, by an elementary explicit chain 
 numerical and no cited asymptotic theorem (Appendix~\ref{app:annulus}); and the non-vanishing of
 both numerators, from the exact identity $\Sigma_0(q_m)S_0(q_m)=2q_m/(1-q_m)$
 (Proposition~\ref{prop:numnonvanish}), a consequence of the $q$-Pythagorean identity at a zero of
-the $q$-cosine. The block assembly itself is developed in \S\ref{sec:assembly}: the travel and the
+the $q$-cosine. The travel poles are the zeros of the Hahn--Exton $q$-Bessel function
+$J^{(3)}_{-1/2}(Z(q);q^2)$, $Z=\sqrt{2(1-q)/q}$, which up to a positive factor is the Fredholm
+determinant $\det(I-\mathcal T)$ of the travel transfer operator (Theorem~\ref{thm:fredholm}). The block assembly itself is developed in \S\ref{sec:assembly}: the travel and the
 bulk block are one resolvent of the semiseparable kernel $q^{\max(a,b)}$ seen twice, one
 three-term recursion covers both, and this proves the travel telescoping
 $G^T_0=\Sigma_0/(1-\Sigma_1)$, the bulk dressing $b_0=S_0/(1-S_1)$, the reciprocity $t_0=b_1$
@@ -232,7 +234,10 @@ indices, verified for the first $34$ square indices for $\Sigma_1$ and out to de
 four blocks, and not proved (\S\ref{sec:blocks}).
 Both $V$ and $U$ acquire poles at the \emph{travel poles} $q_m$, the roots of
 $\Sigma_1^T(q)=1$; transcendence follows from accumulation of these poles at $q=1$ once a certain
-auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). What the theorems consume is only
+auxiliary integral $T_2$ is shown to be small (\S\ref{sec:sd}). The travel poles are the zeros of
+the Hahn--Exton $q$-Bessel function $J^{(3)}_{-1/2}(Z(q);q^2)$, $Z=\sqrt{2(1-q)/q}$, because that
+function is, up to a positive factor, the Fredholm determinant $\det(I-\mathcal T)$ of the travel
+transfer operator (Theorem~\ref{thm:fredholm}, Corollary~\ref{cor:qbessel}). What the theorems consume is only
 $|T_2|\to0$, and that is proved self-contained in Lemma~\ref{lem:T2abs} by an absolute bound on a
 rectangle: no saddle, no path through a saddle, no cited asymptotic theorem. Its quantitative part
 is a verified enclosure of the contour majorant, in interval arithmetic and quantified over
@@ -432,7 +437,9 @@ all of which lie in that range. So the pole route carries no unproved arithmetic
 the only route. What the corollary buys besides the label is a shorter dependency list: the
 exclusion of \textup{(a)} for the two denominators consumes the same single analytic input as
 Theorems~\ref{thm:travelres}, \ref{thm:V}, \ref{thm:U} and Corollary~\ref{cor:beta}, instead of a
-second input of its own.
+second input of its own. Proposition~\ref{prop:infpolesalt} gives both infinitude statements a
+second proof with no $T_2$ input, so for the two denominators, and for the joint statement on the
+numerators, the exclusion of \textup{(a)} does not need Lemma~\ref{lem:T2abs} at all.
 \end{remark}
 
 \noindent The hypothesis \eqref{eq:growth} concerns $\Sigma_1$ alone. Its counterpart for the other
@@ -922,6 +929,16 @@ $(m\pi,(m+1)\pi)$, $m\ge1$. The dominant pole $q_1$ is the one below this ladder
 $w\in(0,\pi)$. The transport identity and the sign alternation (checked for $m\le40$, worst
 $|T_2(m\pi)|=0.0267$) are verified in \texttt{star\_gate\_certificate.py}.
 
+\emph{Alternative proof of the first sentence, without $T_2$.} Proposition~\ref{prop:infpolesalt}
+proves that the travel poles are infinite from the Fredholm determinant of
+Theorem~\ref{thm:fredholm} alone: $\lambda_1(q)>(1-q^2)/(2q)$, the uniform domination
+$|t_k|\le(2|y|)^k/(2k-1)!!$ with Hurwitz's theorem, which gives
+$\lambda_k(q)\sim(1-q)(2k-1)^2\pi^2/8$ at fixed $k$, and the fact that distinct branches cross the
+level $1$ at distinct $q$; no single-crossing property is needed. With Lemma~\ref{lem:polefinite}
+this also gives the accumulation at $q=1$. It does not localise the poles: the window statement
+above, a travel pole with $w\in(m\pi,(m+1)\pi)$ for every large $m$, still uses
+Lemma~\ref{lem:T2abs}.
+
 \begin{lemma}[infinitude of the zeros of the bulk block]\label{lem:infzeros}
 The zero set of $S_e$ in $(0,1)$, equivalently $\{q\in(0,1):S_1(q)=1\}$, is infinite.
 \end{lemma}
@@ -1109,6 +1126,23 @@ degree $1160$ in \texttt{blocks\_growth.py} and at two truncation degrees in
 \texttt{Classical.choice}, \texttt{Quot.sound}, no \texttt{sorry}).
 \end{proof}
 
+\noindent\emph{The Hahn--Exton normalisation.} Write
+$J^{(3)}_\nu(x;q^2)=x^\nu\frac{(q^{2\nu+2};q^2)_\infty}{(q^2;q^2)_\infty}\,
+{}_1\phi_1(0;q^{2\nu+2};q^2,q^2x^2)$ for the Hahn--Exton $q$-Bessel function, in the
+normalisation of \cite[eq.~(2.4)]{KoelinkSwarttouw1994} with base $q^2$, and put
+\[
+   c_q:=\frac{(q^2;q^2)_\infty}{(q;q^2)_\infty}>0 .
+\]
+Since $(q^2;q^2)_k(q;q^2)_k=(q;q)_{2k}$ and $(q^2;q^2)_k(q^3;q^2)_k=(q;q)_{2k+1}/(1-q)$, comparing
+coefficients gives, for $x>0$,
+\[
+   \cos(x;q^2)=c_q\,x^{1/2}J^{(3)}_{-1/2}(x;q^2),\qquad
+   \sin(x;q^2)=c_q\,x^{1/2}J^{(3)}_{1/2}(x;q^2).
+\]
+So the travel poles are the zeros in $(0,1)$ of $q\mapsto J^{(3)}_{-1/2}(Z(q);q^2)$
+(Corollary~\ref{cor:qbessel}); Proposition~\ref{prop:zerostructure}(i) records the same identity in
+the variable of Appendix~\ref{app:beta2}.
+
 \begin{remark}\label{rem:qtrig}
 The identification is consistent with the pole data: at all $58$ tabulated poles the computed value
 of $\cos(z_0;q^2)$ agrees with the stored $S_e$ to at least thirty digits, and $|S_e|/\sqrt\tau$
@@ -1124,6 +1158,206 @@ Appendix~\ref{app:annulus} (Lemma~\ref{app:M2} bounds $\max|f''|$ on $[qZ,Z]$, a
 Proposition~\ref{prop:selower} converts it into the lower bound), independently of
 Remark~\ref{lem:cos}.
 \end{remark}
+
+\subsection{The pole equation as a Fredholm determinant}\label{sec:fredholmdet}
+
+The $q$-cosine of Proposition~\ref{prop:qtrig} is the Fredholm determinant of the travel operator.
+Throughout this subsection $0<q<1$, $D_e=\operatorname{diag}(2q^{1+s})_{s\ge0}$ and
+$K=[q^{\max(s,s')}]_{s,s'\ge0}$, so that $\mathcal T=D_eK$ is the travel operator of
+Definition~\ref{def:model}. Put
+\[
+   \mathbf S:=D_e^{1/2}KD_e^{1/2},\quad \mathbf S[s,s']=2q^{1+(s+s')/2+\max(s,s')},\quad
+   F(\lambda,q):=\sum_{k\ge0}\frac{(-2\lambda(1-q))^k\,q^{k^2}}{(q;q)_{2k}}\ \ (\lambda\in\C).
+\]
+The spectral parameter $\lambda$ is not to be confused with the junction vectors
+$\lambda^{(y)}$ of \S\ref{sec:modelassembly}.
+
+\begin{theorem}[the travel determinant]\label{thm:fredholm}
+Let $0<q<1$ and $Z=\sqrt{2(1-q)/q}$.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item $\mathbf S$ is a positive definite trace-class operator on $\ell^2(\Z_{\ge0})$, with
+$\operatorname{tr}\mathbf S=2q/(1-q^2)$.
+\item $\mathcal T$ and $\mathbf S$ have the same principal minors,
+$\det\mathcal T[I,I]=\det\mathbf S[I,I]$ for every finite $I\subset\Z_{\ge0}$, and the same non-zero
+eigenvalues, the eigenvectors corresponding by $R=D_e^{1/2}\phi$: if $\mathbf S\phi=\kappa\phi$ with
+$\phi\in\ell^2$ and $\kappa\ne0$, then $R\in\ell^1$ and $\mathcal TR=\kappa R$; conversely, if
+$R\in\ell^1$ and $\mathcal TR=\kappa R$ with $\kappa\ne0$, then $\phi=D_e^{-1/2}R\in\ell^2$ and
+$\mathbf S\phi=\kappa\phi$.
+\item For every $\lambda\in\C$, with absolutely convergent series,
+\[
+   \det(I-\lambda\mathbf S)=\sum_{k\ge0}(-\lambda)^k\!\!\sum_{|I|=k}\det\mathbf S[I,I]
+   =F(\lambda,q),
+\]
+\[
+   F(\lambda,q)=\cos(\sqrt\lambda\,Z;q^2)
+   =c_q\,(\sqrt\lambda\,Z)^{1/2}J^{(3)}_{-1/2}(\sqrt\lambda\,Z;q^2),
+\]
+the last two expressions being even in $\sqrt\lambda$. We write $\det(I-\lambda\mathcal T)$ for the
+same Fredholm series formed with the minors of $\mathcal T$; by \textup{(ii)} it is the same
+function.
+\item The eigenvalues of $\mathbf S$ are $1/\lambda_k(q)$, $k\ge1$, with
+$0<\lambda_1(q)<\lambda_2(q)<\cdots\to\infty$, all simple; $\sum_k1/\lambda_k(q)=2q/(1-q^2)$ and
+$F(\lambda,q)=\prod_{k\ge1}\bigl(1-\lambda/\lambda_k(q)\bigr)$.
+\item $1-\Sigma_1=F(1,q)=\det(I-\mathcal T)$, and $S_e=F(q,q)=\det(I-q\mathcal T)=\det(I-M_0)$: the
+bulk operator $M_0$ of Definition~\ref{def:model} is $q\mathcal T$ after the index shift $b=s+1$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) For $x\in\ell^2$ put $X=D_e^{1/2}x$, which lies in $\ell^1$ by Cauchy--Schwarz. Since
+$q^{\max(s,s')}=(1-q)\sum_{t\ge\max(s,s')}q^t$,
+\[
+   \langle x,\mathbf Sx\rangle=\langle X,KX\rangle
+   =(1-q)\sum_{t\ge0}q^t\Bigl|\sum_{s\le t}X_s\Bigr|^2\ \ge\ 0,
+\]
+the double sums converging absolutely, with equality only if every partial sum of $X$ vanishes,
+that is $X=0$, that is $x=0$. $\mathbf S$ is Hilbert--Schmidt, hence bounded, and it is positive
+definite; a positive operator with summable diagonal is trace class, with trace
+$\sum_s2q^{1+s}q^s=2q/(1-q^2)$.
+
+(ii) $\mathcal T[I,I]=D_e[I,I]\,K[I,I]$ and $\mathbf S[I,I]=D_e[I,I]^{1/2}K[I,I]D_e[I,I]^{1/2}$
+with $D_e[I,I]$ diagonal, so the two determinants agree. If $\mathbf S\phi=\kappa\phi$, then
+$R=D_e^{1/2}\phi\in\ell^1$ and $\mathcal TR=D_e^{1/2}\mathbf S\phi=\kappa R$. Conversely,
+$\mathcal TR=\kappa R$ gives $R=\kappa^{-1}D_e(KR)$ with $|(KR)_s|\le\|R\|_{\ell^1}$, so
+$\phi=D_e^{-1/2}R=\kappa^{-1}D_e^{1/2}KR\in\ell^2$ and
+$\mathbf S\phi=D_e^{1/2}KR=\kappa\phi$. The operators are not boundedly similar, $D_e^{-1/2}$ being
+unbounded; only \textup{(ii)} is used.
+
+(iii) For trace-class $A$, $\det(I-\lambda A)=\sum_k(-\lambda)^k\operatorname{tr}\Lambda^k(A)$
+\cite[Thm.~3.10]{Simon} (von Koch; Plemelj--Smithies), and computing the trace of $\Lambda^k(\mathbf
+S)$ in the orthonormal basis $e_{s_1}\wedge\cdots\wedge e_{s_k}$, $s_1<\cdots<s_k$, whose diagonal
+entries are the principal minors, gives the first equality. The principal minors of the positive
+$\mathbf S$ are $\ge0$, so the inner sums converge absolutely, to the values computed next, and the
+outer series then converges absolutely for every $\lambda$. For $I=\{s_1<\cdots<s_k\}$ the matrix $K[I,I]$ is $(a_{\max(i,j)})$ with
+$a_i=q^{s_i}$ decreasing; subtracting row $i+1$ from row $i$ for $i<k$ leaves a lower triangular
+matrix with diagonal $a_1-a_2,\dots,a_{k-1}-a_k,a_k$, so
+$\det K[I,I]=q^{s_k}\prod_{i<k}(q^{s_i}-q^{s_{i+1}})$ and, with the gaps
+$g_i=s_{i+1}-s_i\ge1$,
+\[
+   \det\mathbf S[I,I]=2^kq^k\,q^{2(s_1+\cdots+s_k)}\prod_{i<k}\bigl(1-q^{g_i}\bigr).
+\]
+Since $s_1+\cdots+s_k=ks_1+\sum_{j<k}(k-j)g_j$, the sum over $s_1\ge0$ and $g_1,\dots,g_{k-1}\ge1$
+factorises; with $\sum_{g\ge1}q^{2rg}(1-q^g)=q^{2r}(1-q)/\bigl((1-q^{2r})(1-q^{2r+1})\bigr)$,
+\[
+   \sum_{|I|=k}\det\mathbf S[I,I]
+   =\frac{(2q)^k}{1-q^{2k}}\prod_{r=1}^{k-1}\frac{q^{2r}(1-q)}{(1-q^{2r})(1-q^{2r+1})}
+   =\frac{(2(1-q))^k\,q^{k^2}}{(q;q)_{2k}} .
+\]
+Hence $\det(I-\lambda\mathbf S)=F(\lambda,q)$; the case $k=1$ is the trace. Finally
+$(2\lambda(1-q))^kq^{k^2}=q^{k^2+k}(\sqrt\lambda\,Z)^{2k}$, since $Z^2=2(1-q)/q$, so
+$F(\lambda,q)=\cos(\sqrt\lambda\,Z;q^2)$, and the Hahn--Exton form is the normalisation after
+Proposition~\ref{prop:qtrig}.
+
+(iv) For positive trace-class $\mathbf S$ the determinant is the product
+$\prod_k(1-\lambda\kappa_k)$ over its eigenvalues $\kappa_k>0$ counted with multiplicity
+\cite[Ch.~3]{Simon}, so the $1/\kappa_k$ are the zeros of $F(\cdot,q)$, the multiplicity of
+$\kappa_k$ being the order of the zero. By \textup{(iii)} these are the $\lambda=x^2/Z^2$ with $x>0$
+a zero of $\cos(x;q^2)=c_qx^{1/2}J^{(3)}_{-1/2}(x;q^2)$ ($\cos(\cdot;q^2)$ is even with
+$\cos(0;q^2)=1$). For $\nu>-1$ the zeros of $J^{(3)}_\nu(\cdot;q^2)$ are real and simple and form
+an infinite sequence \cite[Cor.~3.2, Lemma~3.3, Thm.~3.4]{KoelinkSwarttouw1994}; here
+$\nu=-\tfrac12$ with base $q^2$. So the eigenvalues are simple and infinitely many, and the sum of
+the $1/\lambda_k$ is the trace.
+
+(v) At $\lambda=1$, $F(1,q)=\sum_k(-1)^k(2(1-q))^kq^{k^2}/(q;q)_{2k}=1-\Sigma_1$
+(Proposition~\ref{prop:qtrig}); at $\lambda=q$, $F(q,q)=\sum_k(-2(1-q))^kq^{k^2+k}/(q;q)_{2k}=S_e$
+by \eqref{eq:blocks}. And $M_0[s+1,s'+1]=2q^{s+1}q^{\max(s,s')+1}=q\,\mathcal T[s,s']$, so $M_0$
+has the principal minors of $q\mathcal T$.
+\end{proof}
+
+\noindent The identity $\det(I-\lambda\mathbf S)=F(\lambda,q)$ was checked in double precision
+against truncated matrices at $q=0.3,0.6,0.8$ and four values of $\lambda$ (one of them non-real),
+to within $3.2\cdot10^{-15}$, and the gap sum against a brute-force sum of minors for $k\le3$ at
+$q=0.3$.
+
+\begin{remark}[a $q$-string]\label{rem:qstring}
+With the Jackson integral $\int_0^1f\,d_qt=(1-q)\sum_{s\ge0}q^sf(q^s)$, let
+$K_qf(x)=\int_0^1\min(x,t)f(t)\,d_qt$ on the lattice $x\in\{q^s\}$. At $x=q^s$,
+$(KD_eu)_s=\sum_{s'}q^{\max(s,s')}2q^{1+s'}u_{s'}=\tfrac{2q}{1-q}(K_qu)(q^s)$, that is,
+\[
+   \mathcal T^{\!\top}=KD_e=\frac{2q}{1-q}\,K_q ,
+\]
+so up to the transposition, which changes neither the principal minors nor the eigenvalues,
+$\mathcal T=\tfrac{2q}{1-q}K_q$. The kernel $\min(x,t)$ is the Green function of $-d^2/dx^2$ on
+$[0,1]$ with a Dirichlet end at $0$ and a Neumann end at $1$: $\mathcal T$ is the compliance operator
+of a $q$-string with uniform Jackson mass, fixed at $0$ and free at $1$, and $u=KR$ is its
+displacement ($u_s\to0$ as $x=q^s\to0$). As $q\to1$ the kernel tends to the classical one, with
+eigenvalues $4/((2k-1)^2\pi^2)$; this is the heuristic behind
+$\lambda_k(q)\sim(1-q)(2k-1)^2\pi^2/8$, proved for fixed $k$ in
+Proposition~\ref{prop:infpolesalt}.
+\end{remark}
+
+\begin{corollary}[the travel poles are Hahn--Exton zeros]\label{cor:qbessel}
+A point $q\in(0,1)$ is a travel pole if and only if
+\[
+   J^{(3)}_{-1/2}\bigl(Z(q);q^2\bigr)=0,\qquad Z(q)=\sqrt{2(1-q)/q},
+\]
+if and only if $1$ is an eigenvalue of $\mathcal T(q)$, that is $\lambda_k(q)=1$ for some $k$. That
+$k$ is unique, the eigenvalue is simple, its eigenvector is the travel null vector $R$ of
+Proposition~\ref{prop:shape}, and $\phi=D_e^{-1/2}R$ is the corresponding eigenvector of $\mathbf S$.
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:fredholm}\textup{(iii)--(v)}, with $c_q>0$ and $Z>0$, and
+Proposition~\ref{prop:qtrig}; uniqueness of $k$ is the simplicity in
+Theorem~\ref{thm:fredholm}\textup{(iv)}, and the eigenvector is Theorem~\ref{thm:fredholm}\textup{(ii)}
+with Lemma~\ref{lem:nullspace}.
+\end{proof}
+
+\noindent The zero theory used is that of Koelink--Swarttouw \cite{KoelinkSwarttouw1994}, at
+$\nu=-\tfrac12$ and base $q^2$, where its hypothesis $\nu>-1$ holds. The eigenvalues also agree with
+the Jacobi-matrix description of the zeros of $J^{(3)}_\nu$ by \v{S}tampach and \v{S}\v{t}ov\'{\i}\v{c}ek
+\cite{StampachStovicek2014}, in its Friedrichs extension; the positive form of $\mathbf S$ is the
+Friedrichs realisation, on which $u_s=(KR)_s\to0$. At $q_1,\dots,q_{10}$, located at $90$-digit
+precision, $|J^{(3)}_{-1/2}(Z;q^2)|\le2\cdot10^{-79}$, and exactly $m-1$ zeros of
+$\cos(\cdot;q_m^2)$ lie below $Z(q_m)$ (a numerical check, not a certificate).
+
+\begin{proposition}[infinitely many travel poles, without $T_2$]\label{prop:infpolesalt}
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item $\lambda_1(q)>(1-q^2)/(2q)$ on $(0,1)$. In particular every $\lambda_k(q)>1$ for
+$q\le\sqrt2-1$, and there is no travel pole in $(0,\sqrt2-1]$.
+\item For each fixed $k$, $\lambda_k(q)/(1-q)\to(2k-1)^2\pi^2/8$ as $q\to1^-$.
+\item Each $\lambda_k$ is continuous on $(0,1)$, and there is $c_k\in(\sqrt2-1,1)$ with
+$\lambda_k(c_k)=1$. The $c_k$ are pairwise distinct travel poles; in particular there are infinitely
+many travel poles.
+\end{enumerate}
+None of this uses $T_2$, Lemma~\ref{lem:T2abs}, or a single-crossing property.
+\end{proposition}
+
+\begin{proof}
+(a) The largest eigenvalue of the positive trace-class $\mathbf S$ is strictly less than its trace,
+since $\mathbf S$ has infinitely many positive eigenvalues: $1/\lambda_1<2q/(1-q^2)$. And
+$(1-q^2)/(2q)\ge1$ exactly for $q\le\sqrt2-1$. At such $q$ no $\lambda_k$ equals $1$, so
+$1-\Sigma_1=F(1,q)\ne0$ by Theorem~\ref{thm:fredholm}\textup{(iv)}.
+
+(b) Put $\varepsilon=1-q$ and $\lambda=\varepsilon y$. The $k$-th term of $F(\varepsilon y,q)$ is
+$t_k(y,\varepsilon)=(-1)^k(2y\varepsilon^2)^kq^{k^2}/(q;q)_{2k}$. By the arithmetic--geometric mean
+inequality, $1-q^n=\varepsilon\sum_{i<n}q^i\ge n\varepsilon q^{(n-1)/2}$, so
+$(q;q)_{2k}\ge\varepsilon^{2k}(2k)!\,q^{k(2k-1)/2}$ and
+\[
+   |t_k(y,\varepsilon)|\ \le\ \frac{(2|y|)^k\,q^{k/2}}{(2k)!}\ \le\ \frac{(2|y|)^k}{(2k-1)!!},
+\]
+uniformly in $\varepsilon\in(0,1)$. Each $t_k(y,\varepsilon)$ tends to $(-1)^k(2y)^k/(2k)!$ as
+$\varepsilon\to0$, because $q^{k^2}\to1$ and $(q;q)_{2k}/\varepsilon^{2k}\to(2k)!$. The domination
+is summable locally uniformly in $y\in\C$, so $F(\varepsilon y,1-\varepsilon)\to\cos\sqrt{2y}$
+uniformly on compact sets. The limit has the simple zeros $y_j=(2j-1)^2\pi^2/8$, and the zeros of
+$y\mapsto F(\varepsilon y,1-\varepsilon)$ are the $\lambda_j(q)/\varepsilon$, positive and ordered.
+By Hurwitz's theorem, for $\varepsilon$ small each disc $|y-y_j|<\delta$, $j\le k$, contains exactly
+one of them and $|y|\le y_k+\delta$ contains no other; hence $\lambda_j(q)/\varepsilon\to y_j$ for
+$j\le k$.
+
+(c) $q\mapsto\mathbf S(q)$ is continuous in trace norm, hence in operator norm, on $(0,1)$: its
+entries are continuous and $\sum_{s,s'}|\mathbf S[s,s']|$ converges locally uniformly. The ordered
+eigenvalues of positive compact operators are $1$-Lipschitz in operator norm (min--max), so each
+$1/\lambda_k$, and so each $\lambda_k$, is continuous. By (a) $\lambda_k>1$ on $(0,\sqrt2-1]$, and by
+(b) $\lambda_k(q)\to0$ as $q\to1$, so the intermediate value theorem gives $c_k$; it is a travel pole
+by Corollary~\ref{cor:qbessel}. If $c_j=c_k$ with $j\ne k$, then $\lambda_j(c_k)=\lambda_k(c_k)=1$,
+against simplicity (Theorem~\ref{thm:fredholm}\textup{(iv)}).
+
+The same argument with $\lambda_k(q)/q$ in place of $\lambda_k(q)$ gives Lemma~\ref{lem:infzeros}
+without $T_2$ too: $S_e=F(q,q)=\prod_k(1-q/\lambda_k(q))$ vanishes exactly where some
+$\lambda_k(q)=q$; $\lambda_k(q)/q>(1-q^2)/(2q^2)>1$ for $q<1/\sqrt3$ by (a); $\lambda_k(q)/q\to0$ by
+(b); and two branches cannot both equal $q$ at the same point.
+\end{proof}
 
 \subsection{The numerators, and why they do not vanish at the poles}\label{sec:numerators}
 
@@ -1233,6 +1467,228 @@ extreme-phase ladder and being bracketed separately). This matches the asymptoti
 $\Sigma_0\sim w\sin w$, the
 amplitude companion of $1-\Sigma_1\sim1-\cos w$; but \eqref{eq:numprod} is an identity and the
 asymptotic is not used anywhere.
+\end{remark}
+
+\subsection{Spectral consequences at the travel poles}\label{sec:spectral}
+
+Theorem~\ref{thm:fredholm} turns questions about the travel poles into questions about the
+eigenvalue branches $\lambda_k(q)$. This subsection records what that gives, and at what standing.
+Write $\mathbf B(q):=1-\Sigma_1(q)=\det(I-\mathcal T(q))$.
+
+\begin{lemma}[Hellmann--Feynman]\label{lem:HF}
+The map $q\mapsto\mathbf S(q)$ is real-analytic from $(0,1)$ into the trace-class operators, and
+each $\lambda_k$ is real-analytic on $(0,1)$. Let $\mathcal TR=\lambda_k(q)^{-1}R$ with $R\ne0$ real
+(Theorem~\ref{thm:fredholm}\textup{(ii)}), and put $u=KR$. Then
+\[
+   \frac{\lambda_k'(q)}{\lambda_k(q)}=-\frac{\mathfrak e_1+\mathfrak e_2}{q}-\frac{1-2q}{q(1-q)},
+   \qquad
+   \mathfrak e_1=\frac{\sum_ss\,q^{-s}(u_{s+1}-u_s)^2}{\sum_sq^{-s}(u_{s+1}-u_s)^2},\quad
+   \mathfrak e_2=\frac{\sum_ss\,q^su_s^2}{\sum_sq^su_s^2} .
+\]
+In particular $\lambda_k'(q)<0$ if and only if $\mathfrak e_1+\mathfrak e_2>(2q-1)/(1-q)$.
+\end{lemma}
+
+\begin{proof}
+With the principal branch of $q^{1/2}$, the entries $2q^{1+(s+s')/2+\max(s,s')}$ are holomorphic
+on $\{|q|<1,\ \Re q>0\}$ and the sum of their moduli converges locally uniformly there, so
+$\mathbf S$ is holomorphic in trace norm, and self-adjoint for real $q$. Its non-zero eigenvalues are
+isolated and simple (Theorem~\ref{thm:fredholm}\textup{(iv)}), so by analytic perturbation theory for
+a bounded holomorphic self-adjoint family \cite[Ch.~II and Ch.~VII]{Kato} each eigenvalue
+$\kappa(q)=1/\lambda_k(q)$ and its eigenvector $\phi(q)$ are real-analytic, and
+$\kappa'=\langle\phi,\mathbf S'\phi\rangle/\langle\phi,\phi\rangle$. No $q$-dependent domain
+enters: $\mathbf S(q)$ is a bounded family.
+
+It remains to evaluate $\langle\phi,\mathbf S'\phi\rangle$. Put $R=D_e^{1/2}\phi$ and $u=KR$, so
+that $D_eu=\mathcal TR=\kappa R$ and $\phi_s^2=\kappa^{-2}2q^{1+s}u_s^2$; put
+$N=\sum_sq^su_s^2$ and $E=\sum_sq^{-s}(u_{s+1}-u_s)^2$. Since
+$q\partial_q\mathbf S[s,s']=\bigl(1+\tfrac{s+s'}2+\max(s,s')\bigr)\mathbf S[s,s']$,
+\[
+   q\langle\phi,\mathbf S'\phi\rangle=\kappa\langle\phi,\phi\rangle+\kappa\sum_ss\,\phi_s^2
+   +\sum_{s,s'}R_sR_{s'}\max(s,s')\,q^{\max(s,s')},
+\]
+and the first two terms are $(2qN/\kappa)(1+\mathfrak e_2)$. For the third apply $q\partial_q$ to
+$q^{\max(s,s')}=(1-q)\sum_{t\ge\max(s,s')}q^t$: with $\rho_t=\sum_{s\le t}R_s$, bounded by
+$\|R\|_{\ell^1}$, it equals $\sum_t\bigl(t(1-q)-q\bigr)q^t\rho_t^2$, all sums converging absolutely.
+Since $u_{t+1}-u_t=\sum_{s'}(q^{\max(t+1,s')}-q^{\max(t,s')})R_{s'}=-(1-q)q^t\rho_t$, one has
+$q^t\rho_t^2=q^{-t}(u_{t+1}-u_t)^2/(1-q)^2$, so the third term is
+$E\bigl((1-q)\mathfrak e_1-q\bigr)/(1-q)^2$. Finally $\langle R,KR\rangle=(1-q)\sum_tq^t\rho_t^2
+=E/(1-q)$ and $\langle R,KR\rangle=\sum_sR_su_s=2qN/\kappa$, so $E=2q(1-q)N/\kappa$. Collecting,
+$q\langle\phi,\mathbf S'\phi\rangle=(2qN/\kappa)\bigl(1+\mathfrak e_1+\mathfrak e_2-q/(1-q)\bigr)$
+and $\langle\phi,\phi\rangle=2qN/\kappa^2$, so
+$\kappa'/\kappa=(\mathfrak e_1+\mathfrak e_2)/q+(1-2q)/(q(1-q))$, and
+$\lambda_k'/\lambda_k=-\kappa'/\kappa$.
+\end{proof}
+
+\noindent At $q_1,\dots,q_6$ the right-hand side agrees to $12$ digits with
+$\lambda_m'(q_m)=-\partial_qF/\partial_\lambda F$ computed from the explicit $F$ of
+Theorem~\ref{thm:fredholm}. At a travel pole the eigenvalue $1$ has eigenvector the travel null vector
+(Corollary~\ref{cor:qbessel}), so the following is a statement about $R$ alone.
+
+\begin{hypothesis}[\textup{(T$^\ast_{\mathrm{poles}}$)}]\label{hyp:Tstar}
+At every travel pole $q_m>\tfrac12$, the travel null vector $R$, with $u=KR$ and
+$\mathfrak e_1,\mathfrak e_2$ as in Lemma~\ref{lem:HF}, satisfies
+\[
+   \mathfrak e_1+\mathfrak e_2\ >\ \frac{2q_m-1}{1-q_m}.
+\]
+\end{hypothesis}
+
+\noindent At a pole $q_m\le\tfrac12$ (only $q_1=0.4494\ldots$) the inequality holds automatically:
+the right-hand side is $\le0$ and $\mathfrak e_2>0$, since $u$ is not supported at $s=0$ (if it were,
+$R=\kappa^{-1}D_eu$ would be a multiple of $\delta_0$ and $(KR)_1=qR_0\ne0$).
+
+\begin{proposition}[simple poles and the sign of $\mathbf B'$; conditional on
+\textup{(T$^\ast_{\mathrm{poles}}$)}]\label{prop:simplepoles}
+Assume Hypothesis~\ref{hyp:Tstar}. Then:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item each $\lambda_k$ takes the value $1$ at exactly one point $c_k\in(0,1)$, and
+$c_1<c_2<\cdots$; the $m$-th travel pole is $q_m=c_m$, and $\lambda_j(q_m)<1$ for $j<m$,
+$\lambda_m(q_m)=1$, $\lambda_j(q_m)>1$ for $j>m$;
+\item $\lambda_m'(q_m)<0$, and $\mathbf B$ has a simple zero at $q_m$:
+$\mathbf B'(q_m)=\lambda_m'(q_m)\prod_{j\ne m}\bigl(1-1/\lambda_j(q_m)\bigr)\ne0$. Hence in
+Proposition~\ref{prop:shape} $p=\pi=1$: every travel pole is a simple pole of $(I-\mathcal T)^{-1}$;
+\item $\operatorname{sign}\mathbf B'(q_m)=(-1)^m$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) At a point $c$ with $\lambda_k(c)=1$, $c$ is a travel pole with eigenvector $R$
+(Corollary~\ref{cor:qbessel}), so Hypothesis~\ref{hyp:Tstar} and the note after it, with
+Lemma~\ref{lem:HF}, give $\lambda_k'(c)<0$. A real-analytic function that is strictly decreasing at
+every point where it equals $1$ takes the value $1$ at most once: between two consecutive such points
+it would be $<1$ just after the first and $>1$ just before the second, and the intermediate value
+theorem would give a third point between them. With Proposition~\ref{prop:infpolesalt}, $\lambda_k$
+takes the value $1$ exactly once, at $c_k$, and $\lambda_k<1$ exactly on $(c_k,1)$. Since
+$\lambda_k(c_{k+1})<\lambda_{k+1}(c_{k+1})=1$, $c_k<c_{k+1}$. The travel poles are the points where
+some $\lambda_k$ equals $1$ (Corollary~\ref{cor:qbessel}), so their increasing enumeration is
+$q_m=c_m$, and $\lambda_j(q_m)<1$ exactly for $j<m$.
+
+(ii) Near $q_m$ let $P(q)$ be the analytic rank-one eigenprojection of $\kappa_m=1/\lambda_m$
+\cite[Ch.~VII]{Kato}. Since $\mathbf S$ commutes with $P$,
+$\mathbf B=\det(I-\mathbf S)=(1-\kappa_m)\det\bigl(I-\mathbf S(I-P)\bigr)$, and the second factor
+is real-analytic near $q_m$, equal to $\prod_{j\ne m}(1-1/\lambda_j(q_m))\ne0$ at $q_m$. So
+$\mathbf B'(q_m)=-\kappa_m'(q_m)\prod_{j\ne m}(1-1/\lambda_j(q_m))$ with
+$-\kappa_m'(q_m)=\lambda_m'(q_m)<0$, and $p=1$. For $\pi$, on $\ell^1$
+\[
+   (I-\mathcal T)^{-1}=I+D_e^{1/2}(I-\mathbf S)^{-1}D_e^{1/2}K,
+\]
+as follows from $(I-D_eK)D_e^{1/2}=D_e^{1/2}(I-\mathbf S)$ and $D_e^{1/2}KD_eK=\mathbf SD_e^{1/2}K$;
+here $D_e^{1/2}K:\ell^1\to\ell^2$ and $D_e^{1/2}:\ell^2\to\ell^1$ are bounded and analytic in $q$.
+Near $q_m$, $(I-\mathbf S)^{-1}=P/(1-\kappa_m)$ plus the reduced resolvent, which is holomorphic
+there because the other eigenvalues stay away from $1$; and $1-\kappa_m$ has a simple zero. So
+$(I-\mathcal T)^{-1}$ has a pole of order at most $1$, and $\pi\ge p\ge1$
+(Proposition~\ref{prop:shape}) gives $\pi=p=1$.
+
+(iii) By (i) the product in (ii) has exactly $m-1$ negative factors, and $\lambda_m'(q_m)<0$.
+\end{proof}
+
+\noindent The alternation $\operatorname{sign}\mathbf B'(q_m)=(-1)^m$ is checked numerically for
+$m\le10$ ($\mathbf B'(q_1)=-2.630$, $\mathbf B'(q_2)=28.71$, \dots, $\mathbf B'(q_{10})=6661$).
+
+\begin{proposition}[the sign of $S_e$, and half-interlacing]\label{prop:signlaws}
+Put $\mathbf v=D_e^{1/2}\mathbf 1=(\sqrt{2q^{1+s}})_{s\ge0}\in\ell^2$.
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item Off the travel poles in $(0,1)$,
+$\Sigma_0/\mathbf B=\langle\mathbf v,(I-\mathbf S)^{-1}\mathbf v\rangle$. At a travel pole $q_m$, with
+$\lambda_k(q_m)=1$ and $\phi$ the normalised eigenvector,
+\[
+   \Sigma_0(q_m)=w_m\prod_{j\ne k}\bigl(1-1/\lambda_j(q_m)\bigr),\qquad
+   w_m=\langle\mathbf v,\phi\rangle^2>0 .
+\]
+\item Under Hypothesis~\ref{hyp:Tstar}, $\operatorname{sign}\Sigma_0(q_m)=(-1)^{m-1}$; hence
+$\Sigma_0$ has at least one zero in each interval $(q_m,q_{m+1})$.
+\item Under Hypothesis~\ref{hyp:Tstar}, if moreover $\lambda_{m-1}(q_m)<q_m$, then
+$\operatorname{sign}S_e(q_m)=(-1)^{m-1}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) By Proposition~\ref{prop:travelsum}, $\Sigma_0/\mathbf B=\mathbf 1^{\!\top}(I-\mathcal
+T)^{-1}D_e\mathbf 1$ off the poles, and by the resolvent identity in the proof of
+Proposition~\ref{prop:simplepoles},
+$(I-\mathcal T)^{-1}D_e=D_e+D_e^{1/2}(I-\mathbf S)^{-1}\mathbf SD_e^{1/2}
+=D_e^{1/2}(I-\mathbf S)^{-1}D_e^{1/2}$; and $\mathbf 1^{\!\top}D_e^{1/2}g=\langle\mathbf v,g\rangle$
+for $g\in\ell^2$. For the value at a pole fix $q$ and put
+$N_q(\lambda)=\det(I-\lambda\mathbf S+\mathbf v\mathbf v^{\!\top})-\det(I-\lambda\mathbf S)$, entire
+in $\lambda$. Where $I-\lambda\mathbf S$ is invertible, the rank-one identity
+$\det(A+\mathbf v\mathbf v^{\!\top})=\det A\,(1+\langle\mathbf v,A^{-1}\mathbf v\rangle)$ and the
+expansion of $\mathbf S$ in its orthonormal eigenbasis $(\phi_j)$ (complete, $\mathbf S$ being
+compact, self-adjoint and injective) give
+\[
+   N_q(\lambda)=\det(I-\lambda\mathbf S)\,\langle\mathbf v,(I-\lambda\mathbf S)^{-1}\mathbf v\rangle
+   =\sum_jw_j\prod_{i\ne j}\bigl(1-\lambda/\lambda_i(q)\bigr),\qquad
+   w_j=\langle\mathbf v,\phi_j\rangle^2 ,
+\]
+and since $|\prod_{i\ne j}(1-\lambda/\lambda_i)|\le e^{|\lambda|\operatorname{tr}\mathbf S}$ and
+$\sum_jw_j=\|\mathbf v\|^2$, the series converges locally uniformly and the identity holds for all
+$\lambda$. At $\lambda=1$ and $q$ off the poles, $N_q(1)=\Sigma_0(q)$; both sides are continuous in
+$q$, $N_q(1)$ as a difference of Fredholm determinants of trace-norm continuous families, so
+$N_q(1)=\Sigma_0(q)$ on all of $(0,1)$. At $q=q_m$ every term $j\ne k$ of the series contains the
+factor $1-1/\lambda_k(q_m)=0$. This gives the formula, and $w_m>0$ because $\Sigma_0(q_m)\ne0$
+(Proposition~\ref{prop:numnonvanish}).
+
+(b) By Proposition~\ref{prop:simplepoles}\textup{(i)}, $k=m$ and exactly $m-1$ factors are negative.
+So $\Sigma_0$ alternates in sign along the poles, and, being continuous, vanishes between
+consecutive ones.
+
+(c) By Theorem~\ref{thm:fredholm}\textup{(iv)},\textup{(v)} at $\lambda=q$,
+$S_e(q_m)=\prod_j\bigl(1-q_m/\lambda_j(q_m)\bigr)$. For $j>m$, $\lambda_j>1>q_m$; for $j=m$ the
+factor is $1-q_m>0$; for $j<m$, $\lambda_j\le\lambda_{m-1}<q_m$ and the factor is negative.
+\end{proof}
+
+\noindent The extra condition in (c) would follow from a shift inequality
+$\lambda_n(q)\le q^2\lambda_{n+1}(q)$, which gives $\lambda_{m-1}(q_m)\le q_m^2<q_m$; that
+inequality is \emph{not} proved in this paper, so (c) carries it as a hypothesis. Numerically, at
+$m=2,\dots,6$, $\lambda_{m-1}(q_m)=0.112,\ 0.360,\ 0.510,\ 0.605,\ 0.670$, well below $q_m^2$, and
+$S_e(q_m)=0.520,\ -0.210,\ 0.127,\ -0.091,\ 0.071,\ -0.058$ for $m=1,\dots,6$ ($50$ digits). The
+sign alternation of $\Sigma_0$ is the one recorded for the first $32$ poles in
+Remark~\ref{rem:numsize}.
+
+\begin{remark}[standing of Propositions~\ref{prop:simplepoles} and~\ref{prop:signlaws}]\label{rem:spectralstanding}
+Earlier versions of this paper stated neither Hypothesis~\ref{hyp:Tstar} nor the three inputs that
+our working notes carried beside it for the same purpose: \textup{(I1)} a Sturm oscillation theorem
+for the Friedrichs realisation of the eigenvalue problem; \textup{(I2)} Hellmann--Feynman on a
+$q$-dependent form domain; \textup{(I3)} Proposition~\ref{prop:qtrig} with
+Lemma~\ref{lem:infpoles}. Here \textup{(I2)} is Lemma~\ref{lem:HF}, proved because $\mathbf S(q)$ is
+a bounded norm-analytic family, so Kato's theory applies with no domain question;
+\textup{(I3)} is covered by Proposition~\ref{prop:qtrig}, Theorem~\ref{thm:fredholm} and
+Proposition~\ref{prop:infpolesalt}, and Lemma~\ref{lem:infpoles} is not used; \textup{(I1)} is not used at all: it would turn the index
+statement of Proposition~\ref{prop:simplepoles}\textup{(i)} into the count of $m-1$ sign changes of
+$R_s$, which nothing here needs. What remains is Hypothesis~\ref{hyp:Tstar} itself, which is
+\emph{not} proved here. Numerically, the ratio of its two sides exceeds $2$ at every pole
+$2\le m\le50$ and decreases towards $2$ ($2.145$ at $m=2$, $2.014$ at $m=5$). A proof with the
+constant $1.25$ in front of the right-hand side, from a flux identity expressing
+$\mathfrak e_1+\mathfrak e_2$ as twice a mean position, an amplitude bound, and an interval
+certificate on $q\in[\tfrac12,1-10^{-6}]$, has been written and independently reviewed, but it is
+not part of this paper. So Proposition~\ref{prop:simplepoles} and
+Proposition~\ref{prop:signlaws}\textup{(b)} are proved given Hypothesis~\ref{hyp:Tstar},
+Proposition~\ref{prop:signlaws}\textup{(c)} given also the shift inequality, and
+Proposition~\ref{prop:signlaws}\textup{(a)} unconditionally. No theorem of this paper depends on
+them: Proposition~\ref{prop:shape} needs only $\pi\ge p\ge1$, and Theorem~\ref{thm:RJ} gives the
+non-vanishing of the residue directly.
+\end{remark}
+
+\begin{remark}[what the known theory does not give]\label{rem:knowntheory}
+Two statements about the travel poles lie outside what Theorem~\ref{thm:fredholm} and the
+literature on Hahn--Exton zeros deliver.
+
+\emph{The accumulation law.} The zero theory of \cite{KoelinkSwarttouw1994,StampachStovicek2014}
+concerns the zeros in $x$ at fixed $q$; the travel poles sit on the diagonal $x=Z(q)$. With
+Hurwitz's theorem it gives each branch at fixed $k$,
+$\lambda_k(q)\sim\varepsilon(2k-1)^2\pi^2/8$ with $\varepsilon=1-q$
+(Proposition~\ref{prop:infpolesalt}\textup{(b)}). The $m$-th pole is where $\lambda_m=1$, that is
+in the regime $k=m\asymp\varepsilon^{-1/2}$, and no fixed-$k$ statement reaches it. So the law
+$\varepsilon_m=1-q_m\sim8/(\pi^2(2m-1)^2)$, equivalently $w_m\sim(m-\tfrac12)\pi$, recorded
+numerically in Remark~\ref{rem:family}, is not a consequence. It needs a count lemma: an asymptotic
+for $\#\{k:\lambda_k(q)<1\}$, the number of zeros of $\cos(\cdot;q^2)$ in $(0,Z(q))$, uniform as
+$q\to1$. Lemma~\ref{lem:T2abs} puts at least one travel pole in each window of $w$ (the proof of
+Lemma~\ref{lem:infpoles}), and Proposition~\ref{prop:simplepoles}\textup{(i)} identifies the index
+under Hypothesis~\ref{hyp:Tstar}, but neither bounds the number of poles in a window. The count
+lemma is open.
+
+\emph{Complex $q$.} The identity $\det(I-\mathcal T)=\cos(Z;q^2)$ continues analytically to complex
+$q$, but positivity and self-adjointness do not, and the zero theory cited is for $0<q<1$. We know of
+no result on zeros of $q$-Bessel functions at complex base that would locate the non-real zeros of
+Remark~\ref{rem:polesdensity}; their density on the circle remains a conjecture.
 \end{remark}
 
 \section{The transfer model and the block assembly}\label{sec:assembly}
@@ -4283,10 +4739,15 @@ $\rho=\tfrac12$; one notch beyond the proven $\rho\ge1$ theory.
 
 \begin{remark}[the $\beta_2$ family]\label{rem:family}
 $q^\ast$ is the first member of an infinite family. On $(0,1)$ the parabola $w(q)=2q(1-q)$ falls
-like $1-q$ while every zero branch falls like $(1-q)^2$ (the confluent limit), so $w$ overtakes
-each branch exactly once: $S$ has infinitely many zeros $q^\ast_1<q^\ast_2<\cdots\to1$, the
-$j$-th given by $w(q^\ast_j)=z_j(q^\ast_j)$ (verified at $j=2$ to $43$ digits: exactly one zero
-of $G(q^\ast_2,\cdot)$ lies below $w$). The accumulation obeys the classical cosine-zero law
+like $1-q$ while every zero branch falls like $(1-q)^2$ (the confluent limit): the branches are
+$z_j(q)=2q(1-q)\lambda_j(q)$ with $\lambda_j$ the eigenvalue branches of
+Theorem~\ref{thm:fredholm}, and $w=z_j$ means $\lambda_j=1$. So $w$ overtakes each branch at least
+once, distinct branches at distinct points, and $S$ has infinitely many zeros
+$q^\ast_1<q^\ast_2<\cdots\to1$, which are the travel poles $q_j$
+(Proposition~\ref{prop:infpolesalt}). That $w$ overtakes each branch \emph{exactly} once, so that
+the $j$-th zero is the crossing of the $j$-th branch, $w(q^\ast_j)=z_j(q^\ast_j)$, is
+Proposition~\ref{prop:simplepoles}\textup{(i)}, at the standing of Hypothesis~\ref{hyp:Tstar}
+(verified at $j=2$ to $43$ digits: exactly one zero of $G(q^\ast_2,\cdot)$ lies below $w$). The accumulation obeys the classical cosine-zero law
 \[
    1-q^\ast_j\ \sim\ \frac{8}{\pi^2(2j-1)^2},\qquad
    \text{measured }(1-q^\ast_j)\,\frac{(2j-1)^2\pi^2}{8}
@@ -4306,7 +4767,12 @@ Three refinements (all computations at $115$ digits, $30$ cosine and $10$ sine m
 the sine side has its own family, $H(q^{\mathrm s}_j,2q(1-q))=0$ with
 $1-q^{\mathrm s}_j\sim2/(j\pi)^2$ (law ratios $0.913,\dots,0.9991$ for $j\le10$), and the two
 families \emph{interlace}: $q^\ast_j<q^{\mathrm s}_j<q^\ast_{j+1}$ (verified $j\le9$); its
-head is $q^{\mathrm s}_1=0.815032640290\ldots$ Second, the accumulation law has an exact-looking
+head is $q^{\mathrm s}_1=0.815032640290\ldots$ Since $H(q,2q(1-q))=(1-q)\Sigma_0(q)/(2q)$, the sine
+family is exactly the zero set of $\Sigma_0$ in $(0,1)$, that is, of
+$q\mapsto J^{(3)}_{1/2}(z_0(q);q^2)$ with $z_0=\sqrt{2(1-q)}$ (Lemma~\ref{lem:qsinenum} and the
+normalisation after Proposition~\ref{prop:qtrig}). Half of the interlacing, at least one sine member
+in each $(q^\ast_j,q^\ast_{j+1})$, is Proposition~\ref{prop:signlaws}\textup{(b)}, at the standing
+of Hypothesis~\ref{hyp:Tstar}; that there is exactly one is verified only. Second, the accumulation law has an exact-looking
 rational second order, identical for both families:
 \[
    1-q^\ast_j=\frac{2}{\mu_j}\Bigl(1-\frac{8}{9\mu_j}+\frac{B}{\mu_j^2}
@@ -6185,6 +6651,9 @@ arXiv:1405.1881 [math.MG], 2014.
 solutions to the $q$-Painlev\'e equations}, Int.\ Math.\ Res.\ Not.\ \textbf{2004}, no.~47,
 2497--2521.
 
+\bibitem{Kato} T.~Kato, \emph{Perturbation Theory for Linear Operators}, 2nd ed., Grundlehren
+Math.\ Wiss.~132, Springer, Berlin, 1976; reprinted in Classics in Mathematics, 1995.
+
 \bibitem{KoelinkSwarttouw1994} H.~T.~Koelink and R.~F.~Swarttouw, \emph{On the zeros of the
 Hahn--Exton $q$-Bessel function and associated $q$-Lommel polynomials}, J. Math. Anal. Appl.
 \textbf{186} (1994), 690--710.
@@ -6254,8 +6723,15 @@ $q$-difference equations}, Ast\'erisque \textbf{355} (2013).
 \bibitem{Siegel1929} C.~L.~Siegel, \emph{\"Uber einige Anwendungen diophantischer Approximationen},
 Abh.\ Preuss.\ Akad.\ Wiss.\ Phys.-Math.\ Kl.\ \textbf{1929}, no.~1, 1--70.
 
+\bibitem{Simon} B.~Simon, \emph{Trace Ideals and Their Applications}, 2nd ed., Math.\ Surveys
+Monogr.~120, Amer.\ Math.\ Soc., Providence, RI, 2005.
+
 \bibitem{OEIS} N.~J.~A.~Sloane et al., \emph{The On-Line Encyclopedia of Integer Sequences},
 \url{https://oeis.org}, sequence A396406.
+
+\bibitem{StampachStovicek2014} F.~\v{S}tampach and P.~\v{S}\v{t}ov\'{\i}\v{c}ek, \emph{The
+Hahn--Exton $q$-Bessel function as the characteristic function of a Jacobi matrix}, Spec.\
+Matrices \textbf{2} (2014), 131--147.
 
 \bibitem{StanleyEC2} R.~P.~Stanley, \emph{Enumerative Combinatorics, Volume~2}, Cambridge Univ.
 Press, 1999.

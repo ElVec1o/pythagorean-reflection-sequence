@@ -1,0 +1,51 @@
+# wt_carry c=2 e=1 D=20  closed-form mismatches=0  time=24.7s rss=11MB
+# W_T spheres (exact for d<=D):
+uT 0 1 univ 1
+uT 1 3 univ 3
+uT 2 5 univ 5
+uT 3 8 univ 8
+uT 4 13 univ 13
+uT 5 21 univ 21
+uT 6 34 univ 34
+uT 7 55 univ 55
+uT 8 89 univ 89
+uT 9 144 univ 144
+uT 10 225 univ 225
+uT 11 351 univ 351
+uT 12 554 univ 554
+uT 13 864 univ 875
+uT 14 1303 univ 1345
+uT 15 1949 univ 2066
+uT 16 2954 univ 3203
+uT 17 4460 univ 4971
+uT 18 6581 univ 7574
+uT 19 9689 univ 11543
+uT 20 14409 univ 17683
+# per univ depth d: #h non-optimal, max best-overhang, max |f| (best), max (ell_univ(h)-ell_T)
+nd 0 0 0 0 0
+nd 1 0 0 0 0
+nd 2 0 0 0 0
+nd 3 0 0 0 0
+nd 4 0 0 0 0
+nd 5 0 0 0 0
+nd 6 0 0 0 0
+nd 7 0 0 0 0
+nd 8 0 0 0 0
+nd 9 0 0 0 0
+nd 10 0 0 0 0
+nd 11 0 0 0 0
+nd 12 0 0 0 0
+nd 13 0 0 0 0
+nd 14 19 1 1 2
+nd 15 54 1 1 4
+nd 16 149 2 1 6
+nd 17 271 2 1 8
+nd 18 573 2 1 10
+nd 19 1086 2 1 12
+nd 20 2001 3 1 14
+# overhang of best optimal lift beyond hull(A_h): [(0, 3825), (1, 312), (2, 15), (3, 1)]
+# overhang over all optimal lifts: [(0, 3970), (1, 372), (2, 17), (3, 1)]
+# max|f| of best carry: [(1, 4153)]
+# worst max|f| / max|a_h| = 0.500; nonopt lifts = 4153
+# #optimal lifts per W_T element: [(1, 41061), (2, 2410), (3, 235), (4, 6)]
+# DP check (DPCHECK=Some((2, 4))): 50763 elements, 0 mismatches

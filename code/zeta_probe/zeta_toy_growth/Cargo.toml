@@ -1,0 +1,12 @@
+[package]
+name = "zeta_toy_growth"
+version = "0.1.0"
+edition = "2021"
+[[bin]]
+name = "zeta_toy_growth"
+path = "src/main.rs"
+[dependencies]
+rayon = "1.12"
+[profile.release]
+opt-level = 3
+codegen-units = 1

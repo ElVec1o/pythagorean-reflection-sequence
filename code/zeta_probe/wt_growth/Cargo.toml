@@ -1,0 +1,12 @@
+[package]
+name = "wt_growth"
+version = "0.1.0"
+edition = "2021"
+[[bin]]
+name = "wt_growth"
+path = "src/main.rs"
+[dependencies]
+rayon = "1.12"
+[profile.release]
+opt-level = 3
+codegen-units = 1

@@ -1,0 +1,39 @@
+/Users/vico/Library/Python/3.12/lib/python/site-packages/numpy/linalg/_linalg.py:2406: RuntimeWarning: divide by zero encountered in det
+  r = _umath_linalg.det(a, signature=signature)
+/Users/vico/Library/Python/3.12/lib/python/site-packages/numpy/linalg/_linalg.py:2406: RuntimeWarning: overflow encountered in det
+  r = _umath_linalg.det(a, signature=signature)
+/Users/vico/Library/Python/3.12/lib/python/site-packages/numpy/linalg/_linalg.py:2406: RuntimeWarning: invalid value encountered in det
+  r = _umath_linalg.det(a, signature=signature)
+q_10 = 0.997756894996171356935282772804393640232281569  |B|= 2.02e-79  |J3_{-1/2}(Z;q^2)|= 1.21e-79  ref 0.0427
+  zeros of G(q_10,.) strictly below z*: 9 (expect 9);  eps*pi^2*19^2/8 = 0.999002475682
+  B'(q_10)= 6661.1551  dlambda/dq= -446.20032
+
+== Fredholm determinant / spectrum checks (double precision, numpy) ==
+  q=0.3 lam=0.5: det(I-lam S)=0.676774617207632  F=0.676774617207632+0j  |diff|=0.00e+00
+  q=0.3 lam=2.7: det(I-lam S)=-0.5936971886818  F=-0.5936971886818+0j  |diff|=4.44e-16
+  q=0.3 lam=1.0: det(I-lam S)=0.366395082926961  F=0.366395082926961+0j  |diff|=5.00e-16
+  q=0.3 lam=(1.5+2j): det(I-lam S)=-0.0329146934784785-1.16422352828503j  F=-0.0329146934784783-1.16422352828503j  |diff|=3.14e-16
+  q=0.3: 1/mu_k (numpy) = ['1.61872610157', '26.4323285435', '293.944733224', '3266.05264877']
+        pencil zeros    = ['1.61872610157', '26.4323285435', '293.944733224', '3266.05264877']
+  q=0.3: det(I-qS)=0.804519569042738  S_e=0.804519569042738  F(q,q)=0.804519569042738
+  trace S=0.659340659340659 vs 2q/(1-q^2)=0.659340659340659; sum 1/lambda_k over found = 0.65931
+  q=0.6 lam=0.5: det(I-lam S)=0.177049564340559  F=0.177049564340559+0j  |diff|=5.55e-17
+  q=0.6 lam=2.7: det(I-lam S)=-1.2215272828542  F=-1.2215272828542+0j  |diff|=2.22e-16
+  q=0.6 lam=1.0: det(I-lam S)=-0.433013988899049  F=-0.433013988899049+0j  |diff|=0.00e+00
+  q=0.6 lam=(1.5+2j): det(I-lam S)=-2.17796338883598-1.10187830462494j  F=-2.17796338883598-1.10187830462493j  |diff|=1.11e-15
+  q=0.6: 1/mu_k (numpy) = ['0.629180370837', '5.30930227445', '16.0539585543', '44.6529706553']
+        pencil zeros    = ['0.629180370837', '5.30930227445', '16.0539585543', '44.6529706553']
+  q=0.6: det(I-qS)=0.0387729491258996  S_e=0.0387729491258996  F(q,q)=0.0387729491258996
+  trace S=1.875 vs 2q/(1-q^2)=1.875; sum 1/lambda_k over found = 1.8624
+  q=0.8 lam=0.5: det(I-lam S)=-0.530327788195002  F=-0.530327788195+0j  |diff|=1.44e-15
+  q=0.8 lam=2.7: det(I-lam S)=0.305988622578482  F=0.305988622578482+0j  |diff|=0.00e+00
+  q=0.8 lam=1.0: det(I-lam S)=-1.02057905159265  F=-1.02057905159264+0j  |diff|=3.11e-15
+  q=0.8 lam=(1.5+2j): det(I-lam S)=-2.38882934703899+3.91113151963876j  F=-2.38882934703899+3.91113151963876j  |diff|=2.22e-15
+  q=0.8: 1/mu_k (numpy) = ['0.27497654348', '2.41062741868', '6.34553000065', '11.6082424426']
+        pencil zeros    = ['0.27497654348', '2.41062741868', '6.34553000065', '11.6082424426']
+  q=0.8: det(I-qS)=-0.919766240837193  S_e=-0.91976624083719  F(q,q)=-0.91976624083719
+  trace S=4.44444444444445 vs 2q/(1-q^2)=4.44444444444445; sum 1/lambda_k over found = 4.29524
+
+== normalisation of the sine side ==
+  j_{k,-1/2}(q^2): ['0.915918752464123', '2.6606521191745']  G(q, q^2 j^2): ['-1.42e-91', '-3.0e-90']
+  j_{k,+1/2}(q^2): ['(1.39597692646609 - 1.05531781441079e-227j)', '2.75845312145344']  H(q, q j^2): ['(-1.0e-92 + 9.71e-228j)', '-7.47e-92']
