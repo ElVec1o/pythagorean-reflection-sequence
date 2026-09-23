@@ -1707,16 +1707,175 @@ zeros of the leading coefficient of its equation, so Theorem~\ref{thm:natboundar
 proof of the polynomial-coefficient case of Theorem~\ref{thm:nonDfinite}. The first proof is
 elementary and also covers coefficients holomorphic near the closed disc.
 
+The real travel poles accumulate only at $q=1$. The next proposition gives a second accumulation
+point of poles of $G^T_0$ on the circle, at $q=-1$. It is not needed for
+Theorem~\ref{thm:natboundary}.
+
+\begin{proposition}[the zeros of $\cos(Z;q^2)$ accumulate at $q=-1$]\label{prop:minusone}
+Write $q=-e^{-t}$ with $\Re t>0$. Put $L=\log4$, $\Lambda=-\pi^2+i\pi L$,
+$\theta_1=\arctan(\pi/L)=66.19\ldots^\circ$ and $t^0_j=(L+i\pi)/(2j+\tfrac32)$, so that
+$\arg t^0_j=\theta_1$. There is a $j_0$ such that for every $j\ge j_0$ the function
+$1-\Sigma_1=\cos(Z;q^2)$ has exactly one zero $t^\ast_j$ in the disc
+$D_j=\{t:|1/t-1/t^0_j|<1/|\Lambda|\}$. This zero is simple, and
+\[
+   t^\ast_j=t^0_j+O(j^{-3}) .
+\]
+Hence $q^\ast_j=-e^{-t^\ast_j}\to-1$ along the ray $\arg t=\theta_1$. Their conjugates tend to $-1$
+along $\arg t=-\theta_1$. Every $q^\ast_j$ is a simple pole of $G^T_0=\Sigma_0/(1-\Sigma_1)$. So the
+poles of $G^T_0$ accumulate at $q=-1$, and in $x=q^{1/2}$ the poles of $G^T_0(x^2)$ accumulate at
+$x=\pm i$.
+\end{proposition}
+
+\begin{proof}
+Write $1-\Sigma_1=\sum_{k\ge0}b_k$ with $b_k=(-2(1-q))^kq^{k^2}/(q;q)_{2k}$
+(Proposition~\ref{prop:qtrig}), and put $p=e^{-t}$, $t=re^{i\theta}$. Then
+$(q;q)_{2k}=(-p;p^2)_k(p^2;p^2)_k$ and $(-2(1-q))^kq^{k^2}=(2(1+p))^kp^{k^2}$.
+
+\emph{Step 1: an exact decomposition.} Let $L_t=\log(2(1+p))=L-\tfrac t2+O(t^2)$, and let
+\[
+   f(s)=e^{sL_t-ts^2}\,
+   \frac{(-p^{2s+1};p^2)_\infty\,(p^{2s+2};p^2)_\infty}{(-p;p^2)_\infty\,(p^2;p^2)_\infty}.
+\]
+This function is entire in $s$, and $f(k)=b_k$ for $k\ge0$. Put $a=i\pi/t$. Since $p^{2a}=1$,
+\begin{equation}\label{eq:quasiper}
+   f(s+a)=e^{-2\pi is}\,e^{(\pi^2+i\pi L_t)/t}\,f(s).
+\end{equation}
+Fix $K\ge0$, and put $s_A=K+\tfrac12$ and $x_A=s_At$. We describe paths in the coordinate $x=st$.
+The path $P_0$ runs from $x_A$ to $|x_A|$ along the circle $|x|=|x_A|$ and then along
+$[|x_A|,\infty)$. The segments $C_1$, $C_-$ and $C_+$ are $x_A+iy$ with $0\le y\le\pi$, $x_A-iy$
+with $0\le y\le\pi$, and $x_A+iy$ with $0\le y\le2\pi$. Put $\gamma_-=C_-\cup(P_0-i\pi)$ and
+$\gamma_+=C_+\cup(x_A+2\pi i+e^{i\theta}[0,\infty))$. Since $\operatorname{Im}s=
+\operatorname{Im}(xe^{-i\theta})/r$, the path $\gamma_-$ lies in $\operatorname{Im}s<0$ and
+$\gamma_+$ in $\operatorname{Im}s>0$, except at $s_A$. At the far ends of both paths $f$ decays
+like $e^{-|x|^2\cos\theta/r}$. The kernel $1/(1-e^{-2\pi is})$ has residue $1/(2\pi i)$ at each
+integer. Integrate it against $f$ around the region between $\gamma_-$ and $\gamma_+$, closed at
+infinity through half-integers. This gives
+$\sum_{k>K}b_k=\int_{\gamma_-}f/(1-e^{-2\pi is})\,ds+\int_{\gamma_+}fe^{2\pi is}/(1-e^{2\pi is})\,ds$.
+Expand each kernel once, as $1+e^{-2\pi is}/(1-e^{-2\pi is})$ and
+$e^{2\pi is}+e^{4\pi is}/(1-e^{2\pi is})$. The integrands $f$ and $fe^{2\pi is}$ are entire, so
+their integrals can be moved to $P_0$ and to $C_1\cup(P_0+i\pi)$. Then \eqref{eq:quasiper} on
+$P_0+i\pi$ gives
+\begin{equation}\label{eq:Bdecomp}
+   1-\Sigma_1=H+J_0\bigl(1+e^{\Lambda_t/t}\bigr)+\mathrm{conn}_1+E_-+E_+ ,\qquad
+   \Lambda_t=-\pi^2+i\pi L_t,
+\end{equation}
+where $H=\sum_{k\le K}b_k$, $J_0=\int_{P_0}f\,ds$, $\mathrm{conn}_1=\int_{C_1}fe^{2\pi is}ds$,
+$E_-=\int_{\gamma_-}fe^{-2\pi is}(1-e^{-2\pi is})^{-1}ds$ and
+$E_+=\int_{\gamma_+}fe^{4\pi is}(1-e^{2\pi is})^{-1}ds$. On the shifted pieces,
+\eqref{eq:quasiper} gives $f(s-a)e^{-2\pi i(s-a)}=e^{(-\pi^2-i\pi L_t)/t}f(s)$ and
+$f(s+2a)e^{4\pi i(s+2a)}=e^{(-4\pi^2+2\pi iL_t)/t}f(s)$. The identity \eqref{eq:Bdecomp} is exact
+for every $t$ with $\Re t>0$ and every $K$. We also checked it numerically, to relative error
+$10^{-12}$, for $K=1,\dots,6$.
+
+\emph{Step 2: uniform approximation.} Let
+$\Phi(x)=xL-x^2-\tfrac14\operatorname{Li}_2(e^{-4x})+\tfrac{\pi^2}{24}$. For fixed
+$\delta,\varepsilon>0$, uniformly in $\Re x\ge\delta$, $|\arg t|\le\frac\pi2-\varepsilon$ and $|t|\le1$,
+\begin{equation}\label{eq:unifPhi}
+   \log f(x/t)=\frac{\Phi(x)}t-\frac x2-\tfrac12\log(1-e^{-2x})-\tfrac12\log\frac\pi t
+   +O\bigl(|t|(1+|x|)\bigr).
+\end{equation}
+Indeed, $\log(p^{2s+2};p^2)_\infty=\sum_{m\ge0}g(x+(m+1)t)$ with $g(y)=\log(1-e^{-2y})$. Apply the
+Euler--Maclaurin formula in the real variable $m$. The error term is
+$O(|t|\int|g''(y)|\,|dy|)$, taken along the ray from $x+t$ in the direction $\theta$. On that ray
+$\Re y\ge\delta$, so the ray stays at distance at least $\delta$ from the singularities $i\pi\Z$
+of $g$. The antiderivative is $-\frac12\operatorname{Li}_2(e^{-2y})$. The factor
+$(-p^{2s+1};p^2)_\infty$ is treated in the same way with $\log(1+e^{-2y})$, and the two
+dilogarithms combine by $\operatorname{Li}_2(z)+\operatorname{Li}_2(-z)=\frac12\operatorname{Li}_2(z^2)$.
+The normalisation uses the $\eta$-transformation
+$\log(p^2;p^2)_\infty=-\frac{\pi^2}{12t}+\frac12\log\frac\pi t+O(|t|)$ and
+$\log(-p;p^2)_\infty=\frac{\pi^2}{24t}+O(|t|)$ (midpoint rule). Finally
+$x(L_t-L)/t=-\frac x2+O(|x||t|)$.
+
+\emph{Step 3: the main term.} On $[|x_A|,\infty)$ the function $\Phi$ is real and strictly
+concave. Its only critical point is where $\Phi'(x)=L-2x-\log(1-e^{-4x})=0$, that is
+$\sinh2x=2$. This is $x_0=\frac32\log\phi$, with $e^{-2x_0}=\sqrt5-2$, $\phi$ the golden ratio.
+There $\Phi_0=\Phi(x_0)=0.8767334422\ldots$ and $\Phi''(x_0)=-\sqrt5$. Laplace's method (Watson's
+lemma holds uniformly for a complex parameter $1/t$ with $|\arg t|\le\frac\pi2-\varepsilon$
+\cite{Olver1974}) and \eqref{eq:unifPhi} give $(\phi/5)^{1/4}e^{\Phi_0/t}(1+O(t))$ for the
+integral over $[|x_A|,\infty)$. By Step~4 the arc of $P_0$ contributes
+$O(e^{(\Phi_0\cos\theta-0.14)/r})$. Hence
+\[
+   J_0=(\phi/5)^{1/4}\,e^{\Phi_0/t}\bigl(1+O(t)\bigr),\qquad |J_0|\asymp e^{T/r},\quad
+   T=\Phi_0\cos\theta .
+\]
+
+\emph{Step 4: the landscape inequalities.} Put $W_n(x)=\Re\bigl((\Phi(x)+2\pi inx)e^{-i\theta}\bigr)$,
+so that $|e^{(\Phi(x)+2\pi inx)/t}|=e^{W_n(x)/r}$. Take $|\theta-\theta_1|\le10^{-3}$ and
+$|x_A|\in[0.0495,0.0505]$. Then:
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item $W_0\le T-0.14$ on the arc of $P_0$, and $W_1\le T-0.10$ on $C_1$, $W_{-1}\le T-0.10$ on
+$C_-$, $W_2\le T-0.10$ on $C_+$.
+\item After the shifts, the exponent on $P_0-i\pi$ is $W_0-(\pi^2\cos\theta+\pi L\sin\theta)\le T-7.9$.
+On the real axis this uses $W_0=\Phi\cos\theta\le T$. On the shifted ray the exponent is at most
+$L^2/(4\cos\theta)+\pi^2/12-4\pi^2\cos\theta+2\pi L\sin\theta\le T-6.2$.
+\item On $C_\pm$ the kernels satisfy $|1-e^{\mp2\pi is}|=|1+e^{-ve^{-i\theta}}|$ with
+$v=2\pi y/r\ge0$. This is at least $1-e^{-\pi/(2\tan\theta)}$, so the kernels are at most
+$2.01$. On the shifted pieces they are at most $2$ for small $r$.
+\item For the head, $k\le K$ gives $2k|t|\le2|x_A|$. Hence $|1-p^{2i}|\ge0.94\cdot2ir$,
+$\Re p^{2i-1}>0$ and $|2(1+p)|\le4$. So $|b_k|\le4^k/(k!(1.8r)^k)\le e^{0.2417/r}\le e^{(T-0.11)/r}$.
+\end{enumerate}
+All of these are certified in interval arithmetic by
+\texttt{code/zeta\_probe/rootunity\_zeros/certify\_landscape.py} (mpmath \texttt{iv}, $6.9$\,s).
+The certificate subdivides each segment into cells. On each cell it uses the mean value theorem
+with the explicit bound
+$|\Phi'(x)+2\pi in|\le L+2|x|+\max(-\log(1-\rho),\log2)+\frac\pi2+2\pi|n|$, where
+$\rho=e^{-4\Re x}$. It encloses $\operatorname{Li}_2$ by its series with an explicit tail, and it
+carries $\theta$ and $|x_A|$ as intervals. On all these paths $\Re x\ge0.0199$, so
+\eqref{eq:unifPhi} applies and
+\[
+   |H|+|\mathrm{conn}_1|+|E_-|+|E_+|\le C\,r^{-2}e^{(T-0.10)/r}.
+\]
+
+\emph{Step 5: Rouch\'e.} Put $u=1/t$ and $u_j=1/t^0_j=i\pi(2j+\frac32)/\Lambda$. For
+$t\in D_j$ we have $|t|/|t^0_j|=1+O(1/j)$ and $\arg t=\theta_1+O(1/j)$. So if $K=K_j$ is chosen with
+$(K+\frac12)|t^0_j|$ nearest to $0.05$, then for $j\ge j_0$ every $t\in D_j$ satisfies the
+hypotheses of Step~4 with this fixed $K$. Then $J_0$ is analytic and non-zero on $D_j$, and
+Steps~1--4 give $(1-\Sigma_1)/J_0=1+e^{\Lambda_t/t}+O(r^{-2}e^{-0.10/r})$. Since
+$L_t=L-\frac t2+O(t^2)$, we have $\Lambda_t/t=\Lambda u-\frac{i\pi}2+O(1/j)$ on $D_j$, so
+\[
+   \frac{1-\Sigma_1}{J_0}=g_0(u)+O(1/j),\qquad g_0(u)=1-ie^{\Lambda u}=1-e^{\Lambda(u-u_j)} .
+\]
+For $|w|\le1$ we have $|1-e^w|\ge|w|\bigl(1-(e-2)\bigr)>0.28|w|$. So $|g_0|>0.28$ on $\partial D_j$,
+where $|\Lambda(u-u_j)|=1$. The zeros of $g_0$ are $2\pi/|\Lambda|$ apart, which exceeds the diameter
+$2/|\Lambda|$ of $D_j$, so $u_j$ is the only zero of $g_0$ in $D_j$, and it is simple. By Rouch\'e's
+theorem $1-\Sigma_1$ has exactly one zero $u^\ast$ in $D_j$, and it is simple. From
+$|g_0(u^\ast)|=O(1/j)$ we get $|u^\ast-u_j|=O(1/j)$, that is
+$t^\ast_j-t^0_j=O(|t^0_j|^2/j)=O(j^{-3})$. Since $q=-e^{-t}$ is conformal, the zero is also simple in $q$.
+
+Numerically, at $80$ digits (\texttt{rootunity\_zeros/zeros\_rate.py}),
+$|t^\ast_j-t^0_j|\,j^3=0.087,\,0.148,\,0.178$ at $j=3,10,60$. The evaluation of $\sum b_k$ at
+these points cancels heavily: the largest term is about $e^{c/|t|}$ times the sum, so the working
+precision must exceed this.
+
+\emph{Step 6: the poles of $G^T_0$.} Lemma~\ref{lem:halfstep}\textup{(iii)} is an identity
+between power series in $u$. Its coefficients are rational functions of $q$: the half-integer
+powers cancel, since $\mathfrak s(u)=\sum_j(-1)^jq^{j^2+2j}u^{2j+1}/(q;q)_{2j+1}$. The series
+converge for all $u$ when $|q|<1$. The identity holds for $0<q<1$, so it holds for all $0<|q|<1$.
+Lemma~\ref{lem:qsinenum} is a termwise identity of power series in $q$ that converge on $|q|<1$,
+so it also holds there. The resulting pole invariant, and
+$\Sigma_0S_0=2q/(1-q)$, involve only $Z^2=2(1-q)/q$ and $z_0^2=2(1-q)$, so no branch has to be
+chosen. At $q=q^\ast_j$ this gives $\Sigma_0S_0=2q^\ast_j/(1-q^\ast_j)\ne0$, hence
+$\Sigma_0(q^\ast_j)\ne0$, and $q^\ast_j$ is a simple pole of $G^T_0$.
+\end{proof}
+
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
-Theorem~\ref{thm:natboundary} does not locate the singularities on the circle. The poles proved
-above accumulate only at $x=\pm1$ (at $q=1$ for $G^T_0$), yet every point of the circle is singular.
-Numerically the pole set is much larger. The function $1-\Sigma_1=\cos(Z;q^2)$ has $64$ zeros in
-$|q|<0.94$ by the argument principle: the travel poles $q_1,q_2$ and $62$ non-real zeros in $31$
-conjugate pairs, the first at $q=-0.4075\pm0.5449i$. At each non-real zero $\Pi_q$ was found
-non-zero at $40$ digits, so these are candidate poles of $G^T_0$ and of $U$ off the real axis. Plotted,
-the zeros approach roots of unity along straight lines. We conjecture that the poles are dense on
-the circle; a route is a $q$-cosine resummation at $q=\zeta e^{-t}$, $\zeta$ a root of unity. The
-natural boundary does not depend on this.
+Theorem~\ref{thm:natboundary} does not locate the singularities on the circle. The real travel
+poles accumulate only at $x=\pm1$ (at $q=1$ for $G^T_0$). By Proposition~\ref{prop:minusone}, the
+poles of $G^T_0$ also accumulate at $q=-1$, along the two rays $\arg t=\pm\arctan(\pi/\log4)$ in
+$q=-e^{-t}$, that is at $x=\pm i$. This is proved unconditionally, with the computer-assisted part
+confined to the interval certificate of Step~4. Every point of the circle is singular. Numerically
+the pole set is much larger. The function $1-\Sigma_1=\cos(Z;q^2)$ has $64$ zeros in $|q|<0.94$ by
+the argument principle: the travel poles $q_1,q_2$ and $62$ non-real zeros in $31$ conjugate pairs,
+the first at $q=-0.4075\pm0.5449i$. By Step~6 of the proof of Proposition~\ref{prop:minusone}, every
+zero of $1-\Sigma_1$ in $0<|q|<1$ is a pole of $G^T_0$. For $U$ one also needs $\Pi_q\ne0$
+there. At each of the $62$ non-real zeros $\Pi_q$ was found non-zero at $40$ digits. At the zeros
+$q^\ast_j$ of Proposition~\ref{prop:minusone} the condition $\Pi_q(q^\ast_j)\ne0$ is not proved. So
+accumulation of the poles of $U$ at $x=\pm i$ remains open. Plotted, the zeros approach roots of
+unity along straight lines. We conjecture that the poles are dense on the circle. A route is the
+same resummation at $q=\zeta e^{-t}$ for other roots of unity $\zeta$. Proposition~\ref{prop:minusone}
+is the case $\zeta=-1$. For $\zeta=i$ the analogous computation predicts a ray that the numerics
+follow, but this is heuristic: no exact decomposition like \eqref{eq:Bdecomp} and no landscape
+certificate have been established there. The natural boundary does not depend on any of this.
 \end{remark}
 
 \section{Open questions}\label{sec:conclusion}
@@ -1822,6 +1981,9 @@ multiples of $\pi$).
 \bibitem{Daalhuis1994} A.~B.~Olde Daalhuis, \emph{Asymptotic expansions for $q$-gamma, $q$-exponential,
 and $q$-Bessel functions}, J. Math. Anal. Appl. \textbf{186} (1994), 896--913; \S4 (the numerically
 satisfactory pair and exact $q$-Wronskians for the Hahn--Exton equation).
+
+\bibitem{Olver1974} F.~W.~J.~Olver, \emph{Asymptotics and Special Functions}, Academic Press,
+New York, 1974.
 
 \bibitem{Parry1992} W.~Parry, \emph{Growth series of some wreath products}, Trans.\ Amer.\ Math.\
 Soc.\ \textbf{331} (1992), 751--759.
