@@ -22,3 +22,4 @@ Caution: evaluating B's series near q = -1 cancels badly. Below |t| of about 0.0
 - Obstruction demo: `zi_growth_obstruction.py`.
 - Correction to the earlier heuristic: e^{-4x*} = +i(4 - sqrt15).
 - A proof would need a closed contour crossing the negative s-axis, together with a reflection formula. This is open.
+- Room J (2026-09-24): `ident.py` (contour identity, matches the series to 15 digits at r=0.2, 0.1), `sad.py` (the two saddles, height -0.0706856), `land_i.py` (finite-t landscape) were copied here from the scratchpad. `t1_i.py` is HEURISTIC: at the true zeros for j=5..40, t1 -> about 0.07-0.57i at rate O(t); 1-g_U t1, 1-g_V t1 and both pairing factors at both roots stay near 0.72, 0.75-0.31i, 0.92-0.92i / 0.21-0.21i, 0.37-0.52i / -0.24-0.61i. Nothing here is certified yet: steps (b), (L), (c), (R) and (T) are still open.
