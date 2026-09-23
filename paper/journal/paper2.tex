@@ -83,7 +83,12 @@ gap-marked bulk resolvent, and the \emph{shape} of the local form at a travel po
 numerator is the square of one junction pairing $\langle\lambda,R\rangle$, which has an exact closed
 form in $t_1$ and is positive at every travel pole (Theorem~\ref{thm:RJ}; analytic for
 $\tau\le5\cdot10^{-3}$, a certificate at the first twelve poles). Hence $V$ and $U$ are
-transcendental over $\Q(x)$ (Theorems~\ref{thm:V}, \ref{thm:U}); the invariance of the travel block
+transcendental over $\Q(x)$ (Theorems~\ref{thm:V}, \ref{thm:U}). More holds: both are meromorphic on
+$|x|<1$ with infinitely many poles there, so they are not $D$-finite ($u_n$ and $v_n$ are not
+P-recursive), satisfy no linear $q$-difference equation with $Q$ not a root of unity and no Mahler
+equation, and, by the P\'olya--Bertrandias theorem, have $|x|=1$ as a natural boundary
+(Theorems~\ref{thm:nonDfinite}, \ref{thm:natboundary}); for the travel resolvent the same holds
+unconditionally, with natural boundary $|q|=1$. The invariance of the travel block
 \textup{(T)} is Proposition~\ref{prop:travelinv}, and the former hypothesis \textup{(L)} is a
 theorem. All of this rests on the
 strand-walk transfer model \textup{(M)}. Its local cost law is now a theorem inside the crossing
@@ -122,7 +127,8 @@ and machine-checked, the remainders are at the standard simple-saddle level, and
 (analytically for $\tau\le5\cdot10^{-3}$, by certificate at the first twelve poles). The precise rigor standing, including
 the arithmetic model of the committed certificates, is stated in the text. In sharp contrast with the rational growth of
 hyperbolic groups and the algebraic growth series of Parry's wreath products, the geometric word
-metric places this virtually-lamplighter group outside every algebraic class.
+metric places this virtually-lamplighter group outside every algebraic class, and outside the
+$D$-finite one.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -157,21 +163,43 @@ gate (numerator bound and denominator lower bound) are proved at every travel po
 Appendix~\ref{app:star} (Theorem~\ref{thm:star}, Lemma~\ref{app:Se},
 Corollary~\ref{app:gate}), and the two numerator non-vanishing statements the resolvents need are
 proved in \S\ref{sec:numerators}.
+Section~\ref{sec:beyond} goes past algebraicity. $U$ and $V$ continue meromorphically to $|x|<1$
+(Lemma~\ref{lem:mero}), and their infinitely many poles there make them non-$D$-finite, so that
+$u_n$ and $v_n$ are not P-recursive (Theorem~\ref{thm:nonDfinite}); they exclude linear
+$q$-difference equations with $Q$ not a root of unity and Mahler equations
+(Proposition~\ref{prop:noqdiff}); and, with the P\'olya--Bertrandias rationality theorem, they make
+$|x|=1$ a natural boundary (Theorem~\ref{thm:natboundary}). For the travel resolvent these
+statements are unconditional, with natural boundary $|q|=1$. $U$ also has a pole at $-x_m$ for
+every travel pole (Proposition~\ref{prop:minusx}).
 
 \paragraph{Context.} For word-growth series of groups, rationality is the norm in the classical
 families: hyperbolic groups have rational growth series with respect to every finite generating set
 (Cannon \cite{Cannon1984}), Coxeter systems are governed by Steinberg's rational formula \cite[\S5.12]{Humphreys1990}, and for
 wreath products (including lamplighter-type groups) Parry computed the growth series for
 natural generating sets and found them \emph{algebraic} \cite{Parry1992}. Provably transcendental
-growth series are rare; the classical example is Stoll's \cite{Stoll1996}: the higher Heisenberg
-groups admit both rational and transcendental growth series, the transcendental one arising from a
-carefully constructed generating set. The group studied here is virtually the lamplighter
+growth series are rare. The classical example is Stoll's \cite{Stoll1996}: the higher Heisenberg
+group $H_5$ has a transcendental growth series with respect to its standard generating set, and a
+rational one with respect to a specially chosen generating set; the three-dimensional Heisenberg
+group, by contrast, has rational growth for every finite generating set (Duchin--Shapiro
+\cite{DuchinShapiro2019}). Non-$D$-finite growth series are known as well. For groups of polynomial
+growth, and for groups of intermediate growth such as Grigorchuk's \cite{Grigorchuk1984}, the growth
+series has radius of convergence $1$ and integer coefficients, so by P\'olya--Carlson
+\cite{Carlson1921} it is rational or has $|x|=1$ as a natural boundary; in the second case, which
+includes Stoll's series for $H_5$ and every group of intermediate growth, it is not $D$-finite. And a
+finitely presented group with unsolvable word problem has a non-computable growth function, while
+a $D$-finite series with rational coefficients has computable coefficients, so its growth series is
+not $D$-finite either. The group studied here is virtually the lamplighter
 $\Z\wr\Z$ \cite{Bonfioli2026a}, and its generating set is not constructed but imposed by Euclidean
 geometry; the three side-reflections of a generic right triangle. The results below show that for
-this natural geometric system the growth series is transcendental, by an explicit mechanism (a natural
-boundary for the building blocks; an accumulation of poles for the series themselves). This places
-the example in sharp contrast with the algebraicity of Parry's wreath-product series: the
-geometric word metric moves a virtually-lamplighter group outside every algebraic class. The
+this natural geometric system the growth series is transcendental and not $D$-finite, by an explicit
+mechanism: infinitely many poles inside the disc $|x|<1$ of meromorphy, beyond the radius of
+convergence $1/\beta_2$, together with a natural boundary on $|x|=1$ (\S\ref{sec:beyond}). For a
+group generated by reflections this is the opposite of the Coxeter case, where Steinberg's formula
+makes the growth series rational. It also places the example in sharp contrast with the
+algebraicity of Parry's wreath-product series: the geometric word metric moves a
+virtually-lamplighter group outside every algebraic class. The cogrowth series is settled by
+general theory: $W_{\mathrm{univ}}$ is amenable, being virtually metabelian, and not virtually
+nilpotent, so its cogrowth series is not $D$-finite by Bell--Mishna \cite{BellMishna2020}. The
 higher-dimensional picture is subtler than a clean dimensional dichotomy \cite{Bonfioli2026c}: the
 abstract right-angled Coxeter envelope of an $n$-orthoscheme has rational growth (rate
 $r_n=1+2\cos\frac{2\pi}{n+3}$), but the geometric group is an amenable proper quotient that matches
@@ -2362,6 +2390,83 @@ Remark~\ref{M3:rem:W0regroup} it is a polynomial in $B_0$ with coefficients buil
 vector $P$ and monomials, so its only possible singularities are at $S_e=0$ and at
 $1-\mathfrak gt_1=0$.
 
+The growth series are defined as power series, with radius of convergence
+$x_1=\sqrt{q_1}=1/\beta_2=0.6704\ldots$ (Corollary~\ref{cor:beta}), and the local forms below are
+statements about functions on a larger disc. The following lemma supplies that continuation and
+identifies it with the series.
+
+\begin{lemma}[meromorphic continuation]\label{lem:mero}
+Let $y$ be either a complex constant with $|y|\le1$ or $y=x^2$. Then the specialisation
+$x\mapsto\mathcal W(x,y)$ of the series of Theorem~\ref{thm:M3prime} converges near $x=0$ and is
+the Taylor series at $0$ of a single-valued meromorphic function on the disc $|x|<1$, given there
+by \eqref{eq:assembly} and $\mathcal W_0=A_0+B_0A_1+B_0^2A_2$ read as analytic expressions. Its
+poles in $0<|x|<1$ lie over points $q=x^2$ at which $1-\Sigma_1(q)=0$, $S_e(q)=0$ or
+$1-\mathfrak g(q,y)\,t_1(q)=0$. In particular $V=\mathcal W(x,1)$ and $U=\mathcal W(x,x^2)$ are
+meromorphic on $|x|<1$, and $G^T_0=\Sigma_0/(1-\Sigma_1)$ is meromorphic on $|q|<1$.
+\textup{(}The continuation concerns the explicit operators of \S\S\ref{sec:sect}--\ref{sec:mob}; its
+identification with $U$ and $V$ is Theorem~\ref{thm:model}.\textup{)}
+\end{lemma}
+
+\begin{proof}
+Put $q=x^2$, so $|q|<1$; $\mathfrak g=q/(1-qy)$ is holomorphic on the disc, since $|qy|<1$ in both
+cases.
+
+\emph{Operators.} $q\mapsto\mathcal T(q)$ and $q\mapsto M_0(q)$ are holomorphic on $|q|<1$ as maps
+into the bounded operators on $\ell^1$, in operator norm: the row truncations $M_N$ in the proof of
+Lemma~\ref{lem:fred} have finitely many non-zero rows, each a norm-convergent $\ell^\infty$-valued
+power series in $q$ (the row $s$ is $e_s\sum_{s'}q^{\max(s,s')}\delta_{s'}$), hence are
+holomorphic in norm, and $\|M-M_N\|\le\sum_{s>N}2|q|^{\vartheta+s}\to0$ uniformly on $|q|\le r<1$; a locally
+uniform norm limit of holomorphic operator-valued maps is holomorphic. With compactness
+(Lemma~\ref{lem:fred}) and invertibility near $q=0$ (Lemma~\ref{lem:modelexist}), the analytic
+Fredholm theorem makes $(I-\mathcal T)^{-1}$ and $R_0=(I-M_0)^{-1}$ meromorphic on $|q|<1$ in
+operator norm, with poles only where $1-\Sigma_1=0$, resp.\ $S_e=0$ (Corollary~\ref{cor:sing}).
+
+\emph{Bulk quantities.} $u=(2q^{2b})_b$ is a norm-convergent, hence holomorphic, $\ell^1$-valued
+function, so $\Psi=R_0u$ is meromorphic $\ell^1$-valued and $t_1=v^{\!\top}\Psi$ is meromorphic.
+$1-\mathfrak gt_1$ tends to $1$ as $x\to0$, so it is not identically zero, and $B_0=1/(1-\mathfrak
+gt_1)$, $P=B_0\Psi$, $\mathfrak gS=B_0-1$ and $B_{0z}=1+y(B_0-1)$ are meromorphic
+(Remark~\ref{M3:rem:W0regroup}).
+
+\emph{Boundary vectors and the sectors $k^\ast\ne0$.} Every entry of
+\eqref{eq:app-mu}--\eqref{eq:app-lambda} is a combination of $B_0$, $B_{0z}$ and sums
+$\sum_bP_bx^{m_b}$ with $m_b\ge0$, so $|\mu^{(y)}_s|,|E^{(y)}_s|,|\lambda^{(y)}_s|\le
+C\,(|B_0|+|B_{0z}|+\|P\|_{\ell^1})$ uniformly in $s$, locally uniformly in $x$ away from the poles
+of $B_0$ and $\Psi$. Hence $D_e\lambda^{(y)}$ has $\ell^1$-tails
+$\sum_{s>N}|e_s\lambda^{(y)}_s|=O(|q|^{N+2})$, locally uniformly, and is meromorphic
+$\ell^1$-valued; so is $(I-\mathcal T)^{-1}D_e\lambda^{(y)}$. Its pairing with the bounded vectors
+$\mu^{(y)}$ and $\tfrac12E^{(y)}$ is an absolutely convergent sum, locally uniformly convergent
+away from the poles (an $\ell^1$-valued continuous map has uniformly small tails on compact sets),
+hence meromorphic. This gives $\mathcal W_\pm$; the prefactor $x^{-1}$ is at most a pole at $x=0$,
+and is removed below.
+
+\emph{The sector $k^\ast=0$.} By Remark~\ref{M3:rem:W0regroup},
+$\mathcal W_0=A_0+B_0A_1+B_0^2A_2$. The $A_i$ are not finite sums: each is an absolutely convergent
+double sum, over the left and the right chain kinds $\mathsf E,\mathsf Z,\mathsf N_{\pm,b}$ of
+\eqref{eq:app-W0} ($b\ge1$), of monomials $x^jy^\chi$ with $j\ge0$, $\chi\in\{0,1\}$, times at most
+two entries of $\Psi$. Since $|x^jy^\chi|\le1$, the double sum is dominated by a constant times
+$(1+\|\Psi\|_{\ell^1})^2$, converges locally uniformly where $\Psi$ is holomorphic, and is
+meromorphic.
+
+\emph{Identification with the $x$-adic series.} Choose $r_0>0$ so small that on $|x|<r_0$ the
+operators $\mathcal T$, $M_0$ and $M_0+\mathfrak guv^{\!\top}$ have $\ell^1$-norm below $\tfrac12$
+(Lemma~\ref{lem:modelexist}; the rank-one term has norm at most $|\mathfrak g|\,\|u\|_{\ell^1}$) and
+$|\mathfrak gt_1|<\tfrac12$. There every object above is the sum
+of a norm-convergent Neumann series ($(I-\mathcal T)^{-1}$, $R_0$, $P=(I-M_0-\mathfrak
+guv^{\!\top})^{-1}u$, and $B_0=\sum_n(\mathfrak gt_1)^n$), whose terms are holomorphic on
+$|x|<r_0$ and whose Taylor series at $0$ are the terms of the $x$-adic Neumann series of
+Lemma~\ref{M3:lem:conv}, of $x$-adic order tending to infinity. If $\sum_nh_n$ converges uniformly
+on a disc about $0$, the Taylor coefficients of the sum are the sums of the Taylor coefficients of
+the $h_n$ (Weierstrass); when $\operatorname{ord}h_n\to\infty$ each of these sums is finite and is
+the $x$-adic sum. Applying this to each Neumann series, to the absolutely convergent pairings and
+to the double sums $A_i$, the Taylor series at $0$ of the analytic $\mathcal W(x,y)$ is the
+$x$-adic series of Theorem~\ref{thm:M3prime}, specialised at $y$ (the specialisation
+$\Z[y][[x]]\to\C[[x]]$ at a constant $y$, or at $y=x^2$, is $x$-adically continuous and commutes
+with the sums). In particular that function is holomorphic at $x=0$. At $y=1$ the series is $V$,
+and at $y=x^2$ it is $U$ (Corollary~\ref{cor:M3prime-growth}). A power series that agrees near $0$
+with a function meromorphic on the disc is continued by it, uniquely. For $G^T_0$, $\Sigma_0$ and
+$1-\Sigma_1\not\equiv0$ are holomorphic on $|q|<1$ (Theorem~\ref{thm:blocks}, first clause).
+\end{proof}
+
 \begin{proposition}[the shape of the local form]\label{prop:shape}
 Let $q_m$ be a travel pole, let $p\ge1$ be the order of the zero of $1-\Sigma_1$ there
 \textup{(}finite, Lemma~\ref{lem:polefinite}\textup{)}, and let $\pi$ be the order of the pole of
@@ -2682,8 +2787,12 @@ vanish, by Proposition~\ref{prop:numnonvanish}. Hence every $q_m$ is a pole of $
 the vanishing order of $1-\Sigma_1$ there, which is finite. So $G^T_0$ has infinitely many poles in
 $|q|<1$ accumulating at $|q|=1$; under $q=x^2$ these are infinitely many poles in $|x|<1$
 accumulating at $|x|=1$. An algebraic function over $\Q(x)$ has only finitely many poles in
-$|x|<1$, so no algebraic function has such a pole set; hence $G^T_0$ is transcendental. (The same
-argument shows it is not $D$-finite.)
+$|x|<1$, so no algebraic function has such a pole set; hence $G^T_0$ is transcendental. It is not
+$D$-finite either, in $q$ or in $x$, and $|q|=1$ is its natural boundary
+(Theorems~\ref{thm:nonDfinite} and~\ref{thm:natboundary}): for $D$-finiteness the finiteness of the
+pole set of an algebraic function is replaced by Lemma~\ref{lem:odeposes}, which confines the poles
+in the disc of a solution of a linear differential equation to the finitely many zeros of its
+leading coefficient.
 \end{proof}
 
 \begin{theorem}\label{thm:V}
@@ -2692,7 +2801,8 @@ The relaxed growth series $V$ is transcendental over $\Q(x)$.
 \end{theorem}
 
 \begin{proof}
-By Proposition~\ref{prop:shape}, at a travel pole $q_m$ the relaxed series has the local form
+By Lemma~\ref{lem:mero}, $V$ is meromorphic on $|x|<1$, and the local forms below are those of
+this continuation. By Proposition~\ref{prop:shape}, at a travel pole $q_m$ the relaxed series has the local form
 $V=\mathcal N_1(q-q_m)^{-\pi}+(\text{poles of order}<\pi)+H_m$ with $H_m$ holomorphic, $\pi\ge1$,
 and $\mathcal N_1=(2x_m)^{-1}c_\star\Pi_1(q_m)^2$ with $c_\star\ne0$. That proposition consumes two
 non-vanishing statements, and they are separate: $S_e(q_m)\ne0$, in the quantitative form
@@ -2702,8 +2812,9 @@ $\Sigma_0(q_m)\ne0$, from Proposition~\ref{prop:numnonvanish}, which pins the po
 $\pi\ge p\ge1$; and $\Pi_1(q_m)\ne0$ at every travel pole, by Theorem~\ref{thm:RJ}.
 
 So the leading Laurent coefficient is non-zero at every travel pole, and $V$ has a pole at each of
-them. The travel poles are infinite in number and accumulate at the
-boundary of the disc of convergence (Lemma~\ref{lem:infpoles}) and are locally finite in $(0,1)$
+them. The travel poles are infinite in number and accumulate at $q=1$, that is at $|x|=1$
+(Lemma~\ref{lem:infpoles}); this is the boundary of the disc $|x|<1$ of meromorphy, not of the disc
+of convergence $|x|<x_1$, which only the dominant pole bounds. They are locally finite in $(0,1)$
 (Lemma~\ref{lem:polefinite}), so an infinite subset of them accumulates at $q=1$ and nowhere else.
 Hence $V$ has infinitely many poles in $|q|<1$ accumulating at $|q|=1$; under $q=x^2$ these are
 infinitely many poles in $|x|<1$ accumulating at $|x|=1$. An algebraic function over $\Q(x)$ has
@@ -2984,7 +3095,8 @@ Proposition~\ref{prop:P12second}.
 \end{theorem}
 
 \begin{proof}
-By \textup{(T)}, $U$ inherits the travel poles. By Proposition~\ref{prop:shape} at $y=q$, at each
+By Lemma~\ref{lem:mero} at $y=x^2$, $U$ is meromorphic on $|x|<1$, and the local forms below are
+those of this continuation. By \textup{(T)}, $U$ inherits the travel poles. By Proposition~\ref{prop:shape} at $y=q$, at each
 travel pole $U$ has the local form $\mathcal N_q(q-q_m)^{-\pi}+(\text{lower order})+H_m$ with
 $\mathcal N_q=(2x_m)^{-1}c_\star\Pi_q(q_m)^2$ and $c_\star\ne0$; the boundary vectors are holomorphic there
 because the gate \eqref{eq:gate} holds at \emph{every} travel pole. Indeed, on the uniform range
@@ -3090,6 +3202,259 @@ route of
 \S\ref{sec:modp} would settle $U$ without any of this analysis, but is itself open.)
 \end{remark}
 
+\section{Beyond algebraicity: \texorpdfstring{$D$}{D}-finiteness, functional equations and the
+natural boundary}\label{sec:beyond}
+
+Theorems~\ref{thm:V} and~\ref{thm:U} exclude algebraic equations. The pole set that proves them
+excludes much more, because it is infinite and lies inside the disc $|x|<1$ on which $U$ and $V$ are
+meromorphic (Lemma~\ref{lem:mero}), well beyond their radius of convergence $x_1=0.6704\ldots$. This
+section records what it excludes. Every statement below about $U$ or $V$ has the standing of
+Theorems~\ref{thm:V} and~\ref{thm:U} (Theorems~\ref{thm:model} and~\ref{thm:RJ}); every statement
+about the travel resolvent $G^T_0$ alone is unconditional, as Theorem~\ref{thm:travelres} is.
+
+\subsection{Poles of \texorpdfstring{$U$}{U} on the negative axis}
+
+\begin{proposition}\label{prop:minusx}
+At every travel pole $q_m$, $U$ has a pole at $x=-x_m$ as well as at $x=x_m$, both of order
+$\pi$, the order of the pole of $(I-\mathcal T)^{-1}$ at $q_m$. At $x=-x_m$ the junction pairing is
+negative:
+\[
+   \Pi_q\big|_{x=-x_m}=\frac{2q_mB_0(1-x_m)}{1+x_m}\Bigl(t_1\frac{1+x_m+q_m}{1+q_m}
+   -\frac1{2x_m}\Bigr)<0,\qquad B_0=\frac1{1-\mathfrak g_Ut_1}.
+\]
+\textup{(}Standing: Theorems~\ref{thm:model} and~\ref{thm:RJ}; at the six poles with
+$\tau_m>5\cdot10^{-3}$, the enumeration standing of Theorem~\ref{thm:star}.\textup{)}
+\end{proposition}
+
+\begin{proof}
+The travel resolvent $(I-\mathcal T)^{-1}$, the bulk vector $\Psi$, $t_1$ and $B_0$ depend on $x$
+only through $q=x^2$; $x$ itself enters $\mathcal W(x,q)$ only through the monomials of
+\eqref{eq:app-mu}--\eqref{eq:app-E} and the prefactor $x^{-1}$. The proofs of
+Proposition~\ref{prop:shape} and of \eqref{eq:RJclosedq} use only $q=x^2$, never the sign of $x$
+(the reductions $x^{\max(2s+1,2b\pm1)}=x\,q^{\max(\cdot,\cdot)}$ and the final polynomial identities
+hold for either root). Near $x=-x_m$ one has $q-q_m=(x+x_m)(x-x_m)$ with the second factor
+non-zero, so $U=\mathcal N_q(-2x_m)^{-\pi}(x+x_m)^{-\pi}+(\text{lower order})$ with
+$\mathcal N_q=c_\star(-2x_m)^{-1}\Pi_q|_{x=-x_m}^2$, and \eqref{eq:RJclosedq} at $x=-x_m$ is the
+displayed formula. The prefactor is positive: $0<x_m<1$, and $1-\mathfrak g_Ut_1>0$ because
+$|\mathfrak g_Ut_1|<|\mathfrak g_Vt_1|=|s|<1$ (Corollary~\ref{app:gate}). For the bracket write
+$t_1=s(1-q)/q$ and use $(1+x+q)/(1+q)=1+x/(1+x^2)\le\tfrac32$:
+\[
+   2x_m\,|t_1|\,\frac{1+x_m+q_m}{1+q_m}\;\le\;3|s|\,\frac{1-q_m}{x_m}.
+\]
+For $\tau_m\le5\cdot10^{-3}$, $|s|\le0.983$ and $(1-q_m)/x_m\le\tau_me^{\tau_m/2}\le0.00502$, so the
+right side is below $0.015$. At the six poles with $\tau_m>5\cdot10^{-3}$, $|s|\le0.296$
+(Corollary~\ref{app:gate}) and $(1-q_m)/x_m\le(1-q_1)/x_1=0.8212$, since $q\mapsto(1-q)/\sqrt q$
+decreases; the right side is at most $0.730$. In both cases $|t_1|(1+x_m+q_m)/(1+q_m)<1/(2x_m)$, the
+bracket is negative, $\mathcal N_q\ne0$, and $-x_m$ is a pole of order exactly $\pi$.
+\end{proof}
+
+\noindent At the dominant pole the bracket is $-0.2155$, and it tends to $-\tfrac12$ along the
+ladder. Only the uniform range is needed for infinitely many poles at $-x_m$; the six-pole list
+upgrades this to every travel pole.
+
+\begin{remark}[$V$ at $-x_m$: verified, not proved]\label{rem:Vminusx}
+For $V$ the same substitution in \eqref{eq:RJclosed1} gives
+\[
+   (1-\mathfrak g_Vt_1)\,\Pi_1\big|_{x=-x_m}=\frac{2q_m(1-x_m)}{1-q_m}\Bigl(t_1-\frac{1-x_m}{2x_m}\Bigr),
+\]
+and here the gate does not decide the sign. With $t_1=s(e^{\tau}-1)$, $s\to\tfrac14$, and
+$(1-x_m)/(2x_m)=(e^{\tau/2}-1)/2=\tfrac\tau4+O(\tau^2)$, the two terms cancel at leading order and
+the bracket is $O(\tau^2)$; its sign is decided by the $O(\tau)$ correction to $s$, which is not
+proved. Evaluated at $90$ digits at the first twelve travel poles, the bracket is positive, from
+$0.117$ at $m=1$ to $2.9\cdot10^{-7}$ at $m=12$, and close to $\tau_m^2/8$. So $V$ has a pole at
+$-x_m$ for $m\le12$; for all $m$ this is open. Nothing below uses it: every statement about $V$ uses
+only the poles $x_m$.
+\end{remark}
+
+\subsection{\texorpdfstring{$D$}{D}-finiteness}
+
+\begin{lemma}\label{lem:odeposes}
+Let $\Omega\subset\C$ be a domain, let $a_0,\dots,a_r,b$ be holomorphic on $\Omega$ with
+$a_r\not\equiv0$, and let $f$ be meromorphic on $\Omega$ with
+$a_rf^{(r)}+\cdots+a_1f'+a_0f=b$ off the poles of $f$. Then every pole of $f$ in $\Omega$ is a zero
+of $a_r$.
+\end{lemma}
+
+\begin{proof}
+Let $z_0$ be a pole of $f$ of order $k\ge1$. Then $f^{(j)}$ has a pole of order exactly $k+j$ at
+$z_0$, so for $j<r$ the term $a_jf^{(j)}$ has a pole of order at most $k+r-1$, and $b$ is
+holomorphic. If $a_r(z_0)\ne0$, the term $a_rf^{(r)}$ has a pole of order exactly $k+r$, which
+nothing else in the equation cancels. Hence $a_r(z_0)=0$.
+\end{proof}
+
+\begin{theorem}\label{thm:nonDfinite}
+$U$ and $V$ are not $D$-finite: neither satisfies a linear differential equation
+$\sum_{j=0}^ra_j(x)f^{(j)}(x)=b(x)$ with polynomial coefficients and $a_r\not\equiv0$, nor even one
+whose coefficients $a_j$ and $b$ are holomorphic on a neighbourhood of the closed disc $|x|\le1$.
+Equivalently, $(u_n)$ and $(v_n)$ are not P-recursive. The same holds for the travel resolvent
+$G^T_0$, as a series in $q$ and as a series in $x$, and for $G^T_0$ it is unconditional.
+\textup{(}Standing for $U$ and $V$: Theorems~\ref{thm:model} and~\ref{thm:RJ}.\textup{)}
+\end{theorem}
+
+\begin{proof}
+Let $f$ be one of the series and suppose it satisfies such an equation. By Lemma~\ref{lem:mero}
+(for $G^T_0$, Theorem~\ref{thm:blocks}, first clause) $f$ continues to a meromorphic function on the
+open unit disc $D$. The expression $\sum_ja_jf^{(j)}-b$ is then meromorphic on $D$ and vanishes near
+$0$, so by the identity theorem it vanishes on $D$ off the poles of $f$. By
+Lemma~\ref{lem:odeposes} every pole of $f$ in $D$ is a zero of $a_r$. Since $a_r\not\equiv0$ is
+holomorphic on a neighbourhood of the compact closed disc, its zeros there are isolated and hence
+finite in number. But $f$ has infinitely many poles in $D$: $V$ at every $x_m$
+(Theorem~\ref{thm:V}), $U$ at every $\pm x_m$ (Theorem~\ref{thm:U} and
+Proposition~\ref{prop:minusx}), and $G^T_0$ at every $q_m$ in the variable $q$ and at every $\pm x_m$
+in the variable $x$ (Theorem~\ref{thm:travelres}). This is a contradiction. $D$-finiteness of a
+power series is equivalent to P-recursiveness of its coefficients \cite[\S6.4]{StanleyEC2}.
+\end{proof}
+
+\noindent The pole argument does not reach differential algebraicity: $1/\cos(\pi/(1-x))$ has
+poles at $x=1-2/(2n+1)$, $n\ge1$, infinitely many in $|x|<1$ and accumulating at $x=1$, and satisfies
+an algebraic differential equation. Whether $U$ and $V$ are $D$-algebraic is open; we expect not.
+
+\begin{corollary}\label{cor:Wnotdfinite}
+The bivariate series $\mathcal W(x,y)\in\Z[y][[x]]\subset\Z[[x,y]]$ is not $D$-finite in $(x,y)$.
+\textup{(}Standing: Theorems~\ref{thm:model} and~\ref{thm:RJ}.\textup{)}
+\end{corollary}
+
+\begin{proof}
+$D$-finiteness is preserved under substitution of algebraic power series without constant term
+\cite{Lipshitz1989}. If $\mathcal W$ were $D$-finite, the substitution $y=x^2$ would make
+$\mathcal W(x,x^2)=U$ $D$-finite (Corollary~\ref{cor:M3prime-growth}), contrary to
+Theorem~\ref{thm:nonDfinite}.
+\end{proof}
+
+\subsection{Linear \texorpdfstring{$q$}{q}-difference and Mahler equations}
+
+\begin{proposition}\label{prop:noqdiff}
+Let $f$ be $U$ or $V$, as series in $x$, or $G^T_0$, as a series in $q$, and let $a_0,\dots,a_r,b$
+be polynomials with $a_0a_r\not\equiv0$.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item If $Q\in\C^\times$ is not a root of unity, then $\sum_{i=0}^ra_i(x)f(Q^ix)\ne b(x)$.
+\item If $k\ge2$ is an integer, then $\sum_{i=0}^ra_i(x)f(x^{k^i})\ne b(x)$.
+\end{enumerate}
+For $G^T_0$ both statements are unconditional; for $U$ and $V$ the standing is that of
+Theorems~\ref{thm:V} and~\ref{thm:U}. When $Q$ is a root of unity the case is open: the pole set can
+be invariant under $x\mapsto Qx$, as that of $U$ is under $x\mapsto-x$
+\textup{(}Proposition~\ref{prop:minusx}\textup{)}, and the argument below gives nothing.
+\end{proposition}
+
+\begin{proof}
+Let $D$ be the open unit disc, $P$ the pole set of $f$ in $D$, and $\rho>0$ the radius of
+convergence of $f$; $P$ lies in $\rho\le|x|<1$, has finitely many points in each disc $|x|\le R<1$,
+and is infinite (proof of Theorem~\ref{thm:nonDfinite}). An equation as in (i) or (ii) holds as an
+identity of power series near $0$.
+
+(i) If $|Q|>1$, replacing $x$ by $Q^{-r}x$ and $i$ by $r-i$ gives an equation of the same form with
+$Q^{-1}$ in place of $Q$ and new leading and trailing coefficients $a_r(Q^{-r}x)$, $a_0(Q^{-r}x)$; so
+we may assume $|Q|\le1$. Then every $f(Q^ix)$ is meromorphic on $D$, and the equation holds on $D$
+by the identity theorem. Let $E$ be the finite zero set of $a_0$ in $D$. At $p\in P\setminus E$ the
+term $a_0f$ is singular and $b$ is not, so some $f(Q^ix)$ with $1\le i\le r$ is singular at $p$,
+that is $Q^ip\in P$. Thus every $p\in P\setminus E$ has a \emph{successor} $Q^ip\in P$, $1\le i\le
+r$, and every point of $P$ is the successor of at most $r$ points. Follow successors from any $p\in
+P$; along the chain the exponent of $Q$ increases strictly.
+
+If $|Q|<1$ the moduli decrease strictly, so the chain stays in the finite set $P\cap\{|x|\le|p|\}$
+and ends, necessarily at a point of $E$. A chain of $n$ steps ends at modulus at most
+$|Q|^n|p|<|Q|^n$, and that modulus is at least $\rho$, so $n<N:=\log\rho/\log|Q|$. Hence every
+point of $P$ is reached backwards from $E$ in fewer than $N$ steps, and $|P|\le|E|\sum_{n<N}r^n$ is
+finite.
+
+If $|Q|=1$ the chain stays on the circle $|x|=|p|$, which meets $P$ in a finite set, and its points
+are pairwise distinct because $Q$ is not a root of unity; so it ends in $E$. Hence $P$ lies on the
+finitely many circles $|x|=|e|$, $e\in E$, each meeting $P$ in finitely many points, and $P$ is
+finite. Both cases contradict the infinitude of $P$.
+
+(ii) Here every $f(x^{k^i})$ is meromorphic on $D$ and the equation holds on $D$. Work on the
+positive axis: let $P_+=P\cap(0,1)$ and let $E_+$ be the finite zero set of $a_0$ in $(0,1)$. As in
+(i), every $p\in P_+\setminus E_+$ has a successor $p^{k^i}\in P_+$ with $1\le i\le r$; it is
+smaller than $p$, so every chain ends in $E_+$, and reading a chain backwards,
+$p=e^{k^{-n}}$ for some $e\in E_+$ and some integer $n\ge0$. Hence, for $0<R<1$ and
+$\ell=\log(1/R)$,
+\[
+   \#\bigl(P_+\cap(0,R]\bigr)\;\le\;\sum_{e\in E_+}\#\bigl\{n\ge0:k^n\le\log(1/e)/\ell\bigr\}
+   \;\le\;|E_+|\Bigl(1+\log_k\frac L\ell\Bigr),\qquad L=\max_{e\in E_+}\log(1/e),
+\]
+which grows like $\log(1/\ell)$ as $R\uparrow1$. On the other hand, by Lemma~\ref{lem:infpoles}
+there is a travel pole with $w\in(m\pi,(m+1)\pi)$ for every $m\ge4$, at
+$x=e^{-1/w^2}<e^{-1/((m+1)\pi)^2}$, equivalently $q=e^{-2/w^2}<e^{-2/((m+1)\pi)^2}$, and it lies in
+$P_+$ (Theorems~\ref{thm:V}, \ref{thm:U}, \ref{thm:travelres}). Distinct windows give distinct
+poles, so $P_+\cap(0,R]$ has at least $\lfloor c/(\pi\sqrt\ell)\rfloor-4$ points, with $c=1$ in the
+variable $x$ and $c=\sqrt2$ in $q$. This grows like $\ell^{-1/2}$, faster than $\log(1/\ell)$, a
+contradiction for $R$ close to $1$.
+\end{proof}
+
+\noindent The count in (ii) is made on the real axis on purpose. It uses only the travel poles that
+are proved to exist, and it needs no statement about where on the circle the poles of $f$
+accumulate; compare Remark~\ref{rem:polesdensity}. Mahler equations are those of
+\cite{Nishioka1996}. The catalytic equation of \S\ref{sec:setup} is a $q$-difference equation in
+the catalytic variable, not in $x$, and is not affected by (i).
+
+\subsection{The natural boundary}
+
+We use the following rationality theorem.
+
+\begin{theorem}[P\'olya--Bertrandias]\label{thm:PB}
+Let $\Omega\subset\C$ be a simply connected domain containing $0$ and stable under complex
+conjugation, and let $\varphi$ be the Riemann map of the unit disc onto $\Omega$ with
+$\varphi(0)=0$, $\varphi'(0)>0$. If $\varphi'(0)>1$ and $f\in\Z[[x]]$ is the Taylor series at $0$ of
+a function meromorphic on $\Omega$, then $f$ is a rational function.
+\end{theorem}
+
+\noindent This is P\'olya's theorem \cite{Polya1928} for holomorphic continuation, extended to
+meromorphic continuation by Bertrandias \cite{Bertrandias1964}; see
+\cite[Thm.~7.9]{BostChambertLoir2009} for a modern statement and proof and
+\cite[Thm.~5.2.2]{Cantor1980} for the capacity-theoretic form. Meromorphy suffices, but the strict
+inequality $\varphi'(0)>1$ is needed: for $\Omega$ the unit disc, $\varphi'(0)=1$, and
+$\sum_nx^{2^n}$ is not rational.
+
+\begin{theorem}\label{thm:natboundary}
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item The travel resolvent $G^T_0=\Sigma_0/(1-\Sigma_1)\in\Z[[q]]$ has $|q|=1$ as a natural
+boundary. This is unconditional.
+\item $U$ and $V$ have $|x|=1$ as a natural boundary. \textup{(}Standing: Theorems~\ref{thm:model}
+and~\ref{thm:RJ}.\textup{)}
+\end{enumerate}
+More precisely, in each case there is no point $\zeta$ of the unit circle and no disc $B$ about
+$\zeta$ such that the function continues meromorphically to $D\cup B$, $D$ the open unit disc.
+\end{theorem}
+
+\begin{proof}
+Let $f$ be $G^T_0$ (in $q$), $U$ or $V$ (in $x$). In each case $f$ has integer coefficients (the
+travel-run counts, $u_n$, $v_n$), is meromorphic on $D$ (Lemma~\ref{lem:mero}), and is not rational,
+having infinitely many poles in $D$ (Theorems~\ref{thm:travelres}, \ref{thm:V}, \ref{thm:U}).
+Suppose $f$ continues meromorphically to $D\cup B$ with $B$ the disc of radius $\delta>0$ about
+$\zeta$, $|\zeta|=1$. Shrinking $\delta$, we may assume $\delta<|\operatorname{Im}\zeta|$ when
+$\zeta\notin\R$, so that $B$ and its conjugate $\bar B$ are disjoint; when $\zeta=\pm1$,
+$\bar B=B$. Because the coefficients are real, $\overline{f(\bar x)}=f(x)$ near $0$, hence on $D$,
+and $x\mapsto\overline{f(\bar x)}$ continues $f$ meromorphically to $\bar B$, agreeing with $f$ on
+$\bar B\cap D$. So $f$ is meromorphic and single-valued on
+\[
+   \Omega=D\cup B\cup\bar B ,
+\]
+which is stable under conjugation and simply connected: it is the disc $D$ with one or two disjoint
+discs attached, each meeting $D$ in a convex set. Let $\varphi$ be its Riemann map, $\varphi(0)=0$,
+$\varphi'(0)>0$. By uniqueness of the Riemann map, $\overline{\varphi(\bar z)}=\varphi(z)$, so
+$\varphi$ has real Taylor coefficients (Schwarz reflection). The map $\psi=\varphi^{-1}|_D$ sends $D$
+into $D$ with $\psi(0)=0$ and is not onto, since $\Omega\ne D$; by the Schwarz lemma
+$0<\psi'(0)<1$, that is $\varphi'(0)>1$. Theorem~\ref{thm:PB} now makes $f$ rational, a
+contradiction.
+\end{proof}
+
+\noindent A $D$-finite series continues analytically along every path avoiding the finitely many
+zeros of the leading coefficient of its equation, so Theorem~\ref{thm:natboundary} gives a second
+proof of the polynomial-coefficient case of Theorem~\ref{thm:nonDfinite}. The first proof is
+elementary and also covers coefficients holomorphic near the closed disc.
+
+\begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
+Theorem~\ref{thm:natboundary} does not locate the singularities on the circle. The poles proved
+above accumulate only at $x=\pm1$ (at $q=1$ for $G^T_0$), yet every point of the circle is singular.
+Numerically the pole set is much larger. The function $1-\Sigma_1=\cos(Z;q^2)$ has $64$ zeros in
+$|q|<0.94$ by the argument principle: the travel poles $q_1,q_2$ and $62$ non-real zeros in $31$
+conjugate pairs, the first at $q=-0.4075\pm0.5449i$. At each non-real zero $\Pi_q$ was found
+non-zero at $40$ digits, so these are candidate poles of $G^T_0$ and of $U$ off the real axis. Plotted,
+the zeros approach roots of unity along straight lines. We conjecture that the poles are dense on
+the circle; a route is a $q$-cosine resummation at $q=\zeta e^{-t}$, $\zeta$ a root of unity. The
+natural boundary does not depend on this.
+\end{remark}
+
 \section{An orthogonal arithmetic route}\label{sec:modp}
 
 For each prime $p$, $U\bmod p\in\F_p[[q]]$ is algebraic over $\F_p(q)$ iff its coefficient sequence
@@ -3161,7 +3526,11 @@ values $|P_{12}|/\tau^{3/2}\to1/(4\sqrt2)$ and $s\to\tfrac14$.
 \textup{(T)} that earlier versions of this theorem carried is gone: Proposition~\ref{prop:travelinv}
 is now proved (\S\ref{sec:inputT}), via Theorem~\ref{thm:nogap} and Corollary~\ref{cor:localzero},
 and does not depend on the metric identity. \textup{(R-J)} is
-Theorem~\ref{thm:RJ}, and the hypothesis \textup{(L)} of earlier versions is Theorem~\ref{thm:L}.
+Theorem~\ref{thm:RJ}, and the hypothesis \textup{(L)} of earlier versions is Theorem~\ref{thm:L}. Neither series is $D$-finite,
+and $|x|=1$ is a natural boundary of both (Theorems~\ref{thm:nonDfinite} and~\ref{thm:natboundary},
+by the P\'olya--Bertrandias theorem); for the travel resolvent the natural boundary $|q|=1$ is
+unconditional. Two questions remain open: whether the poles are dense on the circle, and whether
+$U$ and $V$ are $D$-algebraic.
 Every statement in \S\ref{sec:assembly} beyond the operator algebra rests on the transfer model
 \textup{(M)}, now Theorem~\ref{thm:model}, whose assembly step is a hand proof not yet formalised.
 No input separates $U$ from $V$. Two finite ranges are computer-assisted: the six gate poles above
@@ -5091,7 +5460,8 @@ and let $\mathcal T=D_eK$. Define
   \mathcal W_+=x^{-1}\bigl\langle\mu^{(y)},(I-\mathcal T)^{-1}D_e\lambda^{(y)}\bigr\rangle,\qquad
   \mathcal W_-=x^{-1}\bigl\langle\tfrac12E^{(y)},(I-\mathcal T)^{-1}D_e\lambda^{(y)}\bigr\rangle,
 \]
-and let $\mathcal W_0$ be the finite branch sum \eqref{eq:app-W0} of \S\ref{app:k0}.
+and let $\mathcal W_0$ be the branch sum \eqref{eq:app-W0} of \S\ref{app:k0}, a double sum over the
+left and right chain kinds (summable, not finite).
 
 \begin{theorem}[\textup{(M3$'$)}]\label{thm:M3prime}
 The following identity holds in $\mathbb Z[y][[x]]$:
@@ -5174,8 +5544,8 @@ and $x^{-1}D'=\operatorname{diag}(x^{2s+1})$ is integral. \textbf{So $\mathcal W
 integral because $D_e$ carries the factor $2$.} The $\tfrac12$ on $E^{(y)}$ is cancelled by
 that factor, and $E^{(y)}$ itself is not divisible by $2$: its $s=0$ entry has constant
 term $1$. The same factorisation shows $\mathcal W_+\in\mathbb Z[y][[x]]$, with the factor
-$2$ to spare. $\mathcal W_0$ is a finite combination of $x^j$, $1$, $\mathfrak gS$,
-$y\mathfrak gS$ and $P_b/2$, as \eqref{eq:app-W0} shows.
+$2$ to spare. $\mathcal W_0$ is a summable double sum of products $x^jw_{\mathrm L}w_{\mathrm R}$
+with weights from $1$, $\mathfrak gS$, $y\mathfrak gS$ and $P_b/2$, as \eqref{eq:app-W0} shows.
 \end{proof}
 
 All rearrangements below are of families of monomials with nonnegative integer coefficients,
@@ -5729,6 +6099,13 @@ for $q$-difference equations}, Acta Arith.\ \textbf{127} (2007), 309--335.
 for second-order linear difference equations and elliptic hypergeometric functions},
 J.~\'Ec.\ polytech.\ Math.\ \textbf{8} (2021), 147--168.
 
+\bibitem{BellMishna2020} J.~P.~Bell and M.~Mishna, \emph{On the complexity of the cogrowth
+sequence}, J.~Comb.\ Algebra \textbf{4} (2020), 73--85.
+
+\bibitem{Bertrandias1964} F.~Bertrandias, expos\'e in \emph{S\'eminaire Delange--Pisot--Poitou,
+Th\'eorie des nombres} \textbf{5} (1963--1964) (rationality of integer power series with
+meromorphic continuation to a domain of conformal radius $>1$).
+
 \bibitem{Bonfioli2026a} V.~Bonfioli, \emph{The universal right-triangle reflection sequence:
 metric, universality, and the lamplighter structure}, preprint (2026),
 \texttt{doi:10.5281/zenodo.20370090}.
@@ -5744,8 +6121,16 @@ takes from them is reproduced and proved in full in \S\ref{sec:assembly} and
 Appendix~\ref{app:M3prime}. No
 theorem of this paper depends on the notes.
 
+\bibitem{BostChambertLoir2009} J.-B.~Bost and A.~Chambert-Loir, \emph{Analytic curves in algebraic
+varieties over number fields}, in: Algebra, Arithmetic, and Geometry (in honor of Yu.~I.~Manin),
+Vol.~I, Progr.\ Math.~\textbf{269}, Birkh\"auser, 2009, 69--124; Thm.~7.9.
+
 \bibitem{Cannon1984} J.~W.~Cannon, \emph{The combinatorial structure of cocompact discrete
 hyperbolic groups}, Geom.\ Dedicata \textbf{16} (1984), 123--148.
+
+\bibitem{Cantor1980} D.~G.~Cantor, \emph{On an extension of the definition of transfinite
+diameter and some applications}, J.~Reine Angew.\ Math.\ \textbf{316} (1980), 160--207;
+Thm.~5.2.2.
 
 \bibitem{Carlson1921} F.~Carlson, \emph{\"Uber Potenzreihen mit ganzzahligen Koeffizienten},
 Math. Z. \textbf{9} (1921), 1--13.
@@ -5763,6 +6148,9 @@ of difference equations: confluence and $q$-dependence}, Pacific J. Math.\ \text
 \bibitem{DHR2018} T.~Dreyfus, C.~Hardouin, J.~Roques, \emph{Hypertranscendence of solutions of
 Mahler equations}, J.~Eur.\ Math.\ Soc.\ \textbf{20} (2018), 2209--2238.
 
+\bibitem{DuchinShapiro2019} M.~Duchin and M.~Shapiro, \emph{The Heisenberg group is pan-rational},
+Adv.\ Math.\ \textbf{346} (2019), 219--263.
+
 \bibitem{DNNS1996} D.~Duverney, Ke.~Nishioka, Ku.~Nishioka and I.~Shiokawa, \emph{Transcendence
 of Jacobi's theta series}, Proc.\ Japan Acad.\ Ser.~A \textbf{72} (1996), 202--203.
 
@@ -5774,6 +6162,10 @@ J.~\'Ec.\ polytech.\ Math.\ \textbf{3} (2016), 31--65.
 
 \bibitem{GasperRahman2004} G.~Gasper and M.~Rahman, \emph{Basic Hypergeometric Series}, 2nd ed.,
 Encyclopedia of Mathematics and its Applications~96, Cambridge Univ.\ Press, 2004.
+
+\bibitem{Grigorchuk1984} R.~I.~Grigorchuk, \emph{Degrees of growth of finitely generated groups
+and the theory of invariant means}, Izv.\ Akad.\ Nauk SSSR Ser.\ Mat.\ \textbf{48} (1984),
+939--985.
 
 \bibitem{Hahn1953} W.~Hahn, \emph{Die mechanische Deutung einer geometrischen
 Differenzengleichung}, Z. Angew.\ Math.\ Mech.\ \textbf{33} (1953), 270--272.
@@ -5802,6 +6194,9 @@ Hankel transforms}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{333} (1992), 445--461.
 
 \bibitem{Lang1966} S.~Lang, \emph{Introduction to Transcendental Numbers}, Addison--Wesley, 1966;
 Ch.~III (the Schneider--Lang theorem).
+
+\bibitem{Lipshitz1989} L.~Lipshitz, \emph{$D$-finite power series}, J.~Algebra \textbf{122} (1989),
+353--373.
 
 \bibitem{LorentzenWaadeland1992} L.~Lorentzen and H.~Waadeland, \emph{Continued Fractions with
 Applications}, Studies in Computational Mathematics~3, North-Holland, 1992; \S IV.2 (Pincherle's
@@ -5843,6 +6238,9 @@ Math.\ \textbf{136} (1909), 17--37.
 
 \bibitem{Poincare1885} H.~Poincar\'e, \emph{Sur les \'equations lin\'eaires aux diff\'erentielles
 ordinaires et aux diff\'erences finies}, Amer.\ J. Math.\ \textbf{7} (1885), 203--258.
+
+\bibitem{Polya1928} G.~P\'olya, \emph{\"Uber gewisse notwendige Determinantenkriterien f\"ur die
+Fortsetzbarkeit einer Potenzreihe}, Math.\ Ann.\ \textbf{99} (1928), 687--706.
 
 \bibitem{PutSinger1997} M.~van der Put and M.~F.~Singer, \emph{Galois Theory of Difference
 Equations}, Lecture Notes in Mathematics~1666, Springer, 1997.
