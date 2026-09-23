@@ -56,7 +56,7 @@ paper/
   journal/    the five release papers, .tex and .pdf
   OEIS/       b-files and the published-sequence index
 lean/         Lean 4, Mathlib-free project (6 targets)
-  with_mathlib/   Lean 4, Mathlib project (124 targets)
+  with_mathlib/   Lean 4, Mathlib project (127 targets)
 code/
   data/       u_terms_43.txt
   zeta_probe/     symbolic group model, word metric, certificates, Rust tools
@@ -278,7 +278,7 @@ Two projects, no `sorry` in either.
 | | Toolchain | Targets | Contents |
 |---|---|---|---|
 | `lean/` | `v4.13.0` | 6 | Mathlib-free. The eight length-10 affine relations on `(3,4,5)`, the Coxeter relations, a first-principles BFS of A396406 to depth 17, the Fibonacci coincidence, the Schur-complement determinant identity on concrete leg sequences, Euler's theorem for finite directed multigraphs, the combinatorial core of the metric bounds, the rotation-relation classification, and the finite content of paper 1's appendices. |
-| `lean/with_mathlib/` | `v4.30.0` | 124 | Requires Mathlib. Symbolic universality over `Q(a,b)` through `u_22`; the site-cost chain of paper 2's model; Mobius/Riccati factorisation at `l^1`; the Polya-Carlson coefficient bound; the mod-3 kernel censuses; the orthoscheme normals, rank-two exclusion and length-6 triple; the honeycomb distance and its graph realisation; the census identities and stratum censuses of paper 4; the Hahn-Exton exponent, ledger, exclusion and zero-series files; the corrected metric identity (`CorrectedSpan`, `PhiLipschitz`); and paper 2's junction pairing and model (`RJ*`, `Tstar*`, `RoomB34`, see below). |
+| `lean/with_mathlib/` | `v4.30.0` | 127 | Requires Mathlib. Symbolic universality over `Q(a,b)` through `u_22`; the site-cost chain of paper 2's model; Mobius/Riccati factorisation at `l^1`; the Polya-Carlson coefficient bound; the mod-3 kernel censuses; the orthoscheme normals, rank-two exclusion and length-6 triple; the honeycomb distance and its graph realisation; the census identities and stratum censuses of paper 4; the Hahn-Exton exponent, ledger, exclusion and zero-series files; the corrected metric identity (`CorrectedSpan`, `PhiLipschitz`); and paper 2's junction pairing and model (`RJ*`, `Tstar*`, `RoomB34`, see below). |
 
 Every target is registered both as a `[[lean_lib]]` and in `defaultTargets`, so
 a clean `lake build` builds and checks all of them and all are covered by the

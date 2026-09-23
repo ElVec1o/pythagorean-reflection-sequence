@@ -5,7 +5,7 @@ Two Lean 4 projects sit here.
 | Directory | Toolchain | Targets | Mathlib |
 |---|---|---|---|
 | `lean/` (this one) | `leanprover/lean4:v4.13.0` | 6 | no |
-| `lean/with_mathlib/` | `leanprover/lean4:v4.30.0` | 124 | yes |
+| `lean/with_mathlib/` | `leanprover/lean4:v4.30.0` | 127 | yes |
 
 Neither contains a `sorry`. Every target is registered both as a `[[lean_lib]]`
 and in `defaultTargets`, so a clean `lake build` builds and checks all of them

@@ -1,7 +1,7 @@
 # Symbolic verification (with Mathlib)
 
 A separate Lean 4 project requiring Mathlib, pinned to `leanprover/lean4:v4.30.0`
-(matching Mathlib `v4.30.0`). It has **124 build targets**: 123 source files in
+(matching Mathlib `v4.30.0`). It has **127 build targets**: 126 source files in
 this directory plus `RotationRelations`, which is compiled in place from
 `../RotationRelations.lean` through a `srcDir` entry so that there is exactly
 one copy of it. Every target is registered both as a `[[lean_lib]]` and in

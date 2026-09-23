@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["OrthoschemeLoci", "RJIdentities", "RJShift", "RJClosedForm", "RJMain", "RJPhi", "RJLemmaJ", "RJMetricAll", "TstarCore", "TstarAmplitude", "RoomB34", "CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DihedralGeodesic", "DmLength", "BlockAdditivity", "BlockAdditivityGeneral", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
+defaultTargets = ["OrthoschemeGram", "FredholmMinor", "ODEPoles", "OrthoschemeLoci", "RJIdentities", "RJShift", "RJClosedForm", "RJMain", "RJPhi", "RJLemmaJ", "RJMetricAll", "TstarCore", "TstarAmplitude", "RoomB34", "CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DihedralGeodesic", "DmLength", "BlockAdditivity", "BlockAdditivityGeneral", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
   "TranslationTrick",
   "TransferChain",
   "DiscriminantIdentity",
@@ -427,3 +427,12 @@ name = "RoomB34"
 
 [[lean_lib]]
 name = "OrthoschemeLoci"
+
+[[lean_lib]]
+name = "OrthoschemeGram"
+
+[[lean_lib]]
+name = "FredholmMinor"
+
+[[lean_lib]]
+name = "ODEPoles"
