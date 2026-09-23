@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}[lemma]{Proposition}
+\theoremstyle{remark}\newtheorem{remark}[lemma]{Remark}
+\title{Room K, atom A1: non-vanishing of $S_0(\zeta)$\\ \small status report, 2026-09-24}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Outcome.}
+The requested uniform statement (``$S_0(\zeta)\ne0$ for all $N\ge N_1(\delta)$, with $N_1$ explicit'') is \textbf{NOT PROVED}.
+What this note establishes:
+\begin{enumerate}
+\item[(i)] PROVED: two exact reductions of $S_0$. The first is a telescoping to a cyclic quantum dilogarithm (Lemma~\ref{lem:tel}). The second factors out a Gauss sum, $S_0=(1-w)^{-1/2N}\,G(a,N)\,\Psi$, where $\Psi$ is a finite Rogers--Ramanujan-type sum at the root of unity $\zeta^{-1}$ (Lemma~\ref{lem:gauss}).
+\item[(ii)] VERIFIED (interval arithmetic): $S_0\ne0$ for all 2850 values $\zeta$ with $N\le150$ and $\ell\ge0.05$ (\texttt{certify\_S0.py}).
+\item[(iii)] VERIFIED (floating point, negative): the premise of the suggested route is false for large $N$. Along $a/N\to p/q$, the ratio $|S_0|/\|\text{terms}\|$ tends to $0$ exponentially. Near $p/q=1/3$, even $|S_0|/\sqrt N$ decays like $e^{-\kappa N/\theta}$.
+\item[(iv)] A precise statement of why no proof is available by the suggested route (\S\ref{sec:obst}).
+\end{enumerate}
+
+\section{Setting}
+Let $\zeta=e^{2\pi i a/N}$ with $\gcd(a,N)=1$, and write $c=-2(1-\zeta)$ and $\ell=\log|c|\ge\delta>0$.
+Let $w$ be the root of $c^Nw=(1-w)^2$ with $|w|<1$; it is unique because the product of the two roots is $1$ and $|c^N|>1$.
+Let $\lambda=(1-w)^{1/N}$ (principal branch), let $n_0=1$ if $N\equiv2\pmod 4$ and $n_0=0$ otherwise, and put $\varepsilon=e^{-2\pi i n_0/N}$.
+PROVED: the saddle of \texttt{k1.py} satisfies $u:=e^{-2x^*}\varepsilon=\varepsilon\lambda^2/c$. Indeed, $\Phi'(x)=0$ reads $2x=L-\tfrac2N\operatorname{Log}(1-e^{-2Nx})$, and consistency $u^N=w$ is exactly $c^Nw=(1-w)^2$. VERIFIED to $10^{-31}$.
+Then
+\[S_0=\sum_{r=0}^{N-1}\zeta^{r^2}\varepsilon^{r}\prod_{j=1}^{N}(1-\zeta^ju)^{-(\frac12-\frac{d_{rj}}N)},\qquad d_{rj}=(2r-j)\bmod N,\]
+with principal powers. Every $\operatorname{Log}(1-\zeta^ju)$ is given by its power series, since $|u|<1$.
+Replacing $a$ by $N-a$ conjugates every quantity, so $S_0(\bar\zeta)=\overline{S_0(\zeta)}$ and it suffices to take $a\le N/2$.
+
+\section{Exact reductions}
+\begin{lemma}[PROVED]\label{lem:tel}
+Let $F(v)=\exp H(v)$ with $H(v)=\sum_{k\ge1,\,N\nmid k}\dfrac{v^k}{k(1-\zeta^{-k})}$. Then
+\[S_0=(1-w)^{-\frac1{2N}}\sum_{r}\zeta^{r^2}\varepsilon^rF(\zeta^{2r}u),\qquad F(\zeta v)=F(v)\,\frac{(1-v^N)^{1/N}}{1-\zeta v}.\]
+Consequently $S_0=K\cdot\Sigma$, where $K=S_0$'s $r=0$ term (an exponential, hence $\ne0$) and
+\[\Sigma=\sum_{r=0}^{N-1}\zeta^{r^2}\varepsilon^r\,\frac{\lambda^{2r}}{(\zeta u;\zeta)_{2r}}.\]
+\end{lemma}
+\begin{proof}
+Substitute $j\equiv2r-d$. Use $\frac1N\sum_{d=0}^{N-1}d\,\omega^d=\frac1{\omega-1}$ for $\omega^N=1$, $\omega\ne1$ (and $\frac{N-1}2$ for $\omega=1$). Expanding $\sum_d\frac dN\operatorname{Log}(1-\zeta^{-d}v)$ gives $\frac{N-1}{2N}\operatorname{Log}(1-v^N)+H(v)$. Together with $\sum_j\operatorname{Log}(1-\zeta^ju)=\operatorname{Log}(1-w)$, this gives the first formula.
+Next, $H(\zeta v)-H(v)=\sum_{N\nmid k}(\zeta v)^k/k$, because $\frac{\zeta^k-1}{1-\zeta^{-k}}=\zeta^k$. This gives the functional equation. Iterating it $2r$ times gives the ratio of the $r$-th term to the $0$-th.
+VERIFIED against the direct definition to $10^{-30}$ for six values $(a,N)$.
+\end{proof}
+
+\begin{lemma}[PROVED for $N$ odd or $4\mid N$]\label{lem:gauss}
+Write $F(v)=\sum_{n\ge0}h_nv^n$ and $G(a,N)=\sum_{r\bmod N}\zeta^{r^2}$, so that $|G|=\sqrt N$ for $N$ odd and $|G|=\sqrt{2N}$ for $4\mid N$. Then
+\[S_0=(1-w)^{-\frac1{2N}}G(a,N)\,\Psi,\qquad \Psi=\sum_{n\ge0}h_n\zeta^{-n^2}u^n=f_0(w)\sum_{s=0}^{N-1}\frac{q^{s^2}u^s}{(\lambda q;q)_s},\quad q=\zeta^{-1},\]
+where $f_0(W)$ is the $v^{0\bmod N}$-component of $F$, and $f_0(w)=1+O(w)$.
+\end{lemma}
+\begin{proof}
+$\sum_r\zeta^{r^2+2rn}=\zeta^{-n^2}G$. Absolute convergence holds because $|u|<1$.
+The functional equation forces $F(v)=f_0(v^N)\sum_{s<N}v^s/(\lambda(v)q;q)_s$, with $\lambda(v)=(1-v^N)^{1/N}$ (compare coefficients of $v^{s+mN}$).
+Finally, $\zeta^{-(s+mN)^2}=\zeta^{-s^2}$ when $N$ is odd or $4\mid N$.
+VERIFIED to $10^{-40}$ for seven values $(a,N)$ (scratch \texttt{dual.py}).
+\end{proof}
+
+For $N\equiv2\pmod4$, the same computation with the twist $\varepsilon^r$ gives an analogous factorization. The Gauss factor then has modulus $\sqrt{2N}$, because $b=2an-1$ is odd, and $\zeta^{-n^2}$ is replaced by an $N/2$-periodic quadratic character (PROVED, derivation only; not separately machine-checked).
+\emph{Corollary.} For $N\not\equiv2\pmod4$, $S_0\ne0\iff\Psi\ne0$. The sum $\Psi$ is the partial Rogers--Ramanujan sum $\sum_{s<N}q^{s^2}z^s/(q)_s$ at a primitive $N$-th root of unity, deformed by $\lambda=1+O(w/N)$. Its terms have modulus $|u|^s/|(\lambda q;q)_s|\approx e^{-s\ell}/P_s(a/N)$, where $P_s(\alpha)=\prod_{i\le s}|2\sin\pi i\alpha|$ is the Sudler product.
+
+\emph{Trivial sufficient criterion (PROVED).} If $f_0(w)\ne0$ and $\sum_{1\le s<N}|u|^s/|(\lambda q;q)_s|<1$, then $S_0\ne0$. It fails exactly in the resonant regimes below. For example, near $\zeta=-1$ the $s=2$ term already carries $1/|1-\zeta^2|\sim N/2\pi$.
+
+\section{Certification for small $N$ (VERIFIED)}
+\texttt{certify\_S0.py} uses \texttt{mpmath.iv} at 50 digits with rectangular complex intervals. It works as follows:
+\begin{itemize}
+\item It encloses $w$ by a contraction argument: $T(w)=(1-w)^2/c^N$ maps a disk of radius $10^{-20}|w_0|$ around the floating guess into itself, with Lipschitz constant $<1$.
+\item It encloses $\lambda$ through $\operatorname{atan2}$, which is valid because $\operatorname{Re}(1-w)>0$.
+\item It evaluates $\Sigma$ of Lemma~\ref{lem:tel} by the exact recursion and checks $0\notin\Sigma$.
+\end{itemize}
+Whether $\ell\ge\delta$ holds is itself decided in interval arithmetic.
+Results:
+\begin{itemize}
+\item $N\le60$, $\delta=0.05$: 461 cases (matching the brief), ALL CERTIFIED, 12\,s.
+\item $N\le150$, $\delta=0.05$: 2850 cases, ALL CERTIFIED, 135\,s, 30\,MB.
+\end{itemize}
+In both runs the smallest certified value of $|\Sigma|/\max|\text{term}|$ is $0.521$, at $(a,N)=(1,9)$.
+The command is \verb|perl -e 'alarm 290; exec @ARGV' python3 certify_S0.py 150 0.05|.
+
+\section{The premise fails at large $N$ (VERIFIED, floating point)}
+Write $a/N=p/q+\theta/(qN)$ with $\theta=qa-pN\in\mathbb Z$. The data come from scratch scripts \texttt{fam*.py} and \texttt{abs0.py}, in double precision with log-scaled terms.
+\begin{itemize}
+\item $p/q=1/2$, $\theta=\pm1$: $|S_0|/\max|\text{term}|$ is $5.9$ at $N=101$, $0.51$ at $N=801$, $0.014$ at $N=1601$, and about $2\times10^{-4}$ at $N=3201$. So $|S_0|/\|\text{terms}\|$ is \emph{not} bounded below; the range $[0.271,1.647]$ holds only for small $N$. Nevertheless, $|S_0|/\sqrt N=e^{0.06452}$ holds to 5 digits for $331\le N\le1787$, which is consistent with $16/15=1/(1-u^2)|_{u=1/4}$ (HEURISTIC identification).
+\item $p/q=1/3$: $\log(|S_0|/\sqrt N)$ is exactly linear in $N$ on each parity branch, with slope $-0.001277/\theta$ for $\theta=1,2,3,4$ and the opposite sign for $\theta<0$. So $|S_0|\approx C_\pm\sqrt N\,e^{-\kappa N/\theta}$ with $\kappa\approx0.00128$: $S_0$ is exponentially small, with no sign of oscillation.
+\item Similar exponential decay of $|S_0|/\|\text{terms}\|$ occurs near $1/11$ ($\theta>0$) and $1/9$ ($\theta<0$).
+\end{itemize}
+The scaling $e^{V N/\theta}=e^{V/(q^2(x-p/q))}$ is the signature of a quantum modular form. $\Psi(a/N)$ behaves like $\Psi^*(p/q)\,e^{V_{p/q}/(q^2(x-p/q))}(1+o(1))$ (HEURISTIC).
+
+\section{Why no proof is available by the suggested route}\label{sec:obst}
+\begin{enumerate}
+\item Steps 1--2 of the route (logs and the finite Fourier expansion of the sawtooth) are carried out exactly in Lemmas~\ref{lem:tel}--\ref{lem:gauss}. They do not produce a ``smooth phase''. The $r$-dependence becomes the orbit $\zeta^{2r}u$ of a function $F$ whose Taylor coefficients $1/(k(1-\zeta^{-k}))$ are of size $N/(k\,|\theta|)$ at every resonance $k\equiv0\pmod q$ with $\|ka/N\|$ small.
+\item Consequently, for $a/N$ near $p/q$ with $q$ bounded, the terms of $\Sigma$ (equivalently of $\Psi$, via Sudler products) reach size $e^{cN/(q\theta)}$, while $S_0$ is of size $\sqrt N e^{-\kappa N/\theta}$. Any bound of the form $|S_0|\ge c\,\|\text{terms}\|$, or $|S_0|\ge c\sqrt N$, is false. Step 3 therefore cannot be a Riemann-sum limit to a fixed nonzero theta value or integral. It must be a complex saddle-point evaluation of a Clausen/Lobachevsky-type potential in each resonant family.
+\item Nonvanishing then reduces to three requirements:
+ \begin{enumerate}
+ \item the saddle amplitude $\Psi^*(p/q)$ at level $q$, itself a sum of the same type, is nonzero for every $q$;
+ \item a single saddle dominates, with no two-saddle interference;
+ \item the errors are uniform over all continued-fraction regimes, including $q$ and $\theta$ growing with $N$, where the exponent is $O(1)$ rather than $O(N)$.
+ \end{enumerate}
+ This is a renormalization over the continued fraction of $a/N$, in the style of Bettin--Drappeau for the Kashaev invariant. It differs in one important way: the terms here carry phases, whereas the Kashaev terms are positive, so the analysis is not monotone. No explicit $N_1(\delta)$ follows from any argument available here.
+\end{enumerate}
+Precise open statement: \emph{for every rational $p/q$, the quantum-modular limit $\Psi^*(p/q)$ of Lemma~\ref{lem:gauss}'s $\Psi$ is nonzero, and the resulting asymptotic holds uniformly in $a/N$}. This, together with (ii), would imply A1. Numerically, there is no evidence that A1 fails.
+
+\paragraph{Claim census.} PROVED: Lemmas~\ref{lem:tel} and \ref{lem:gauss}, the trivial criterion, and the $N\equiv2\pmod4$ Gauss modulus. VERIFIED (interval arithmetic): $S_0\ne0$ for $N\le150$, $\ell\ge0.05$. VERIFIED (floating point): failure of the ratio premise, and the $e^{-\kappa N/\theta}$ scaling. HEURISTIC: the $16/15$ identification and quantum modularity. OPEN: A1 for $N>150$.
+\end{document}
