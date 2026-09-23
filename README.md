@@ -457,8 +457,8 @@ v10.3.0 content (`BlockAdditivity`, `BlockAdditivityGeneral`,
 `native_decide` nor `ofReduceBool`. Claims below are machine-checked unless
 marked otherwise.
 
-**New in v10.5.0.** Four files in `lean/with_mathlib/`, all in `defaultTargets`
-(130 targets). None uses `sorry` or `native_decide`; the recorded axiom output
+**New in v10.5.0.** Six files in `lean/with_mathlib/`, all in `defaultTargets`
+(130 targets from 129 source files). None uses `sorry` or `native_decide`; the recorded axiom output
 lists only the standard axioms.
 
 | File | Theorems | Contents |

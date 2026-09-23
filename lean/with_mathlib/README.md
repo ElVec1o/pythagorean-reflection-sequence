@@ -84,9 +84,11 @@ project, carry the rest of the appendix propositions.
 | `UAssembly.lean` | The assembly of `thm:U`. Each analytic lemma enters as an explicit named hypothesis, so what is certified is that they compose into the conclusion, not that they hold. |
 | `FredholmMinor.lean` | `thm:fredholm`(iii): `det[y_max(i,j)] = y_k prod_{i<k}(y_i - y_{i+1})` for every `k`, the principal minors of the travel kernel `T` and its symmetrisation, the gap sums, and the closed form `(2(1-q))^k q^{k^2}/(q;q)_{2k}` of the sum of the `k`-point minors as a `HasSum`. Added in v10.5.0. |
 
-### Beyond transcendence: non-D-finiteness
+### Added in v10.5.0: non-D-finiteness, and two further files
 
-Added in v10.5.0 (`sec:beyond` of paper 2). Standard axioms only, no `sorry`, no `native_decide`.
+`ODEPoles` and `NonDFinite` back `sec:beyond` of paper 2; `RoundNorm` backs paper 1's
+`prop:round-norm`, and `GapRuns` the gap-run form of the defect used with Lemma J of paper 2's
+`app:M3prime`. Standard axioms only, no `sorry`, no `native_decide`.
 
 | File | Contents |
 |---|---|
