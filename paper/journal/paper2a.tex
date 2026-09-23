@@ -1708,8 +1708,8 @@ proof of the polynomial-coefficient case of Theorem~\ref{thm:nonDfinite}. The fi
 elementary and also covers coefficients holomorphic near the closed disc.
 
 The real travel poles accumulate only at $q=1$. The next proposition gives a second accumulation
-point of poles of $G^T_0$ on the circle, at $q=-1$. It is not needed for
-Theorem~\ref{thm:natboundary}.
+point of poles of $G^T_0$ on the circle, at $q=-1$, and Corollary~\ref{cor:Uminusone} carries it
+over to $U$ and $V$. Neither is needed for Theorem~\ref{thm:natboundary}.
 
 \begin{proposition}[the zeros of $\cos(Z;q^2)$ accumulate at $q=-1$]\label{prop:minusone}
 Write $q=-e^{-t}$ with $\Re t>0$. Put $L=\log4$, $\Lambda=-\pi^2+i\pi L$,
@@ -1858,6 +1858,184 @@ chosen. At $q=q^\ast_j$ this gives $\Sigma_0S_0=2q^\ast_j/(1-q^\ast_j)\ne0$, hen
 $\Sigma_0(q^\ast_j)\ne0$, and $q^\ast_j$ is a simple pole of $G^T_0$.
 \end{proof}
 
+The zeros $q^\ast_j$ carry over to $U$ and $V$ once the bulk quantities are controlled there. The
+bulk denominator $S_e$ and the numerator $P_{12}$ are $q$-cosines of the same type as $1-\Sigma_1$,
+and the resummation of Proposition~\ref{prop:minusone} applies to them with one change: near $q=-1$
+their terms alternate in sign relative to those of $1-\Sigma_1$.
+
+\begin{proposition}[$t_1$ near $q=-1$]\label{prop:t1minusone}
+Keep the notation of Proposition~\ref{prop:minusone}, and put
+\[
+   S_\pm(q)=\sum_{j\ge0}\frac{(-2(1-q))^jq^{j^2\pm j}}{(q;q)_{2j}},\qquad
+   x_+=x_0+\tfrac{i\pi}2,\qquad E_+=\Phi_0-\tfrac{\pi^2}4+\tfrac{i\pi L}2 ,
+\]
+so that $S_+=S_e=\cos(z_0;q^2)$ and $S_-=\cos(z_0/q;q^2)$. There is $r_0>0$ such that, uniformly for
+$|\theta-\theta_1|\le10^{-3}$ and $0<r\le r_0$,
+\begin{equation}\label{eq:Spmasym}
+   S_\pm=(5\phi)^{-1/4}e^{-i\pi/4}\,e^{\mp x_+}\,e^{E_+/t}\bigl(1+O(t)\bigr).
+\end{equation}
+In particular $S_e\ne0$ there, and
+\[
+   t_1=\frac{P_{12}}{S_e}=-\frac12\Bigl(1+\frac{S_-}{S_e}\Bigr)=\phi+O(t).
+\]
+At the zeros of Proposition~\ref{prop:minusone}: $S_e(q^\ast_j)\ne0$ for all large $j$, and
+$t_1(q^\ast_j)=\phi+O(1/j)$.
+\end{proposition}
+
+\begin{proof}
+\emph{Step 0: $t_1$ as a ratio of two $q$-cosines.} Write $c(u)=\cos(u;q^2)$, so that
+$S_e=c(z_0)$ (Proposition~\ref{prop:qtrig}) and, from the series, $S_-=c(z_0/q)$. By
+\cite[Lemma ``the gate block in closed form'', \textup{lem:P12closed}]{Bonfioli2026bB},
+$P_{12}=\tfrac{qZ}2\mathfrak s(Z)-c(z_0)$, and Lemma~\ref{lem:halfstep}\textup{(i)} at $u=z_0/q$ gives
+$c(z_0)-c(z_0/q)=qZ\,\mathfrak s(Z)$. Hence
+\[
+   P_{12}=-\tfrac12\bigl(S_e+S_-\bigr)
+\]
+on $(0,1)$. This is the identity of \cite[Proposition \textup{prop:P12second}]{Bonfioli2026bB}; it
+is stated there at the travel poles, but these two steps do not use $c(Z)=0$. Every term is
+holomorphic on $|q|<1$: $qZ\mathfrak s(Z)=2(1-q)\sum_j(-1)^jq^{j^2+j}(2(1-q))^j/(q;q)_{2j+1}$
+involves only $Z^2$. So the identity holds on $|q|<1$. Since $t_1=P_{12}/S_e$ as meromorphic
+functions (\cite[Corollary \textup{cor:cocycle}]{Bonfioli2026bB} and continuation),
+$t_1=-\frac12(1+S_-/S_e)$ wherever $S_e\ne0$.
+
+\emph{Step 1: an exact decomposition.} With $p$, $b_k$ and $f$ as in the proof of
+Proposition~\ref{prop:minusone}, the $k$-th term of $S_\pm$ is $b_kq^{\pm k}=(-1)^kp^{\pm k}b_k$.
+So $S_\pm=\sum_k(-1)^kF_\pm(k)$ with $F_\pm(s)=e^{\mp ts}f(s)$, which is entire. We use the
+kernel $1/(2i\sin\pi s)$, whose residue at the integer $k$ is $(-1)^k/(2\pi i)$. It equals
+$e^{-i\pi s}/(1-e^{-2\pi is})$ below the real axis and $-e^{i\pi s}/(1-e^{2\pi is})$ above it. With
+$K$, $s_A$, $x_A$ and $C_-$ as there (we take $r_0\le10^{-3}$, so that some $K$ has
+$|x_A|=(K+\frac12)r\in[0.0495,0.0505]$, and fix such a $K$), and in the coordinate $x=st$, let
+$C'_+$ be $x_A+iy$ with
+$0\le y\le\pi$. Put $\gamma'_\pm=C'_\pm\cup(x_A\pm i\pi+e^{i\theta}[0,\infty))$, where $C'_-=C_-$.
+These paths lie in $\pm\operatorname{Im}s>0$ except at $s_A$. The argument of Step~1 there gives
+\[
+   S_\pm=H_\pm+J^+_\pm+J^-_\pm+E^+_\pm+E^-_\pm .
+\]
+Here $H_\pm=\sum_{k\le K}(-1)^kF_\pm(k)$, $J^\nu_\pm=\int_{\gamma'_\nu}F_\pm e^{\nu i\pi s}ds$,
+and $E^\nu_\pm=\int_{\gamma'_\nu}F_\pm e^{3\nu i\pi s}(1-e^{2\nu\pi is})^{-1}ds$ for
+$\nu=\pm1$. The integrands of $J^\pm_\pm$ are entire and decay in the sector between the
+directions $0$ and $\theta$ of $x$. So we move $J^\pm_\pm$ to the path $V_\pm\cup\ell_\pm$. Here
+$V_\pm$ is the vertical segment from $x_A$ to $\operatorname{Re}x_A\pm\frac{i\pi}2$, and
+$\ell_\pm=\{\xi\pm\frac{i\pi}2:\xi\ge\operatorname{Re}x_A\}$.
+
+\emph{Step 2: the landscape.} Put $\Omega_\nu(x)=\operatorname{Re}\bigl((\Phi(x)+i\pi\nu x)e^{-i\theta}\bigr)$
+and $T'=\operatorname{Re}(E_+e^{-i\theta})$. At $\theta=\theta_1$, $T'=(\Phi_0+\pi^2/4)\cos\theta_1=1.3500\ldots$,
+which exceeds $T$ by about $1$. Since $\operatorname{Li}_2(e^{-4x})$ has period $\frac{i\pi}2$ in $x$,
+\[
+   \Phi\bigl(x\pm\tfrac{i\pi}2\bigr)\pm i\pi\bigl(x\pm\tfrac{i\pi}2\bigr)=\Phi(x)\pm\tfrac{i\pi L}2-\tfrac{\pi^2}4
+\]
+exactly. On $\ell_+$ this gives $\Omega_1=\Phi(\xi)\cos\theta+T'-T\le T'$. Equality holds only at
+$\xi=x_0$, which is the saddle $x_+$. On $\ell_-$ it gives
+$\Omega_{-1}=\Phi(\xi)\cos\theta-\frac{\pi^2}4\cos\theta-\frac{\pi L}2\sin\theta$. On the two rays,
+\eqref{eq:quasiper} turns the integrand of $E^\nu_\pm$ into
+$-e^{\nu i\pi s}e^{(-2\pi^2+\nu i\pi L_t)/t}F_\pm(s)$ with $s$ real. There
+$\operatorname{Re}(\Phi e^{-i\theta})\le L^2/(4\cos\theta)+\pi^2/12$, as in Step~4\textup{(b)}. The
+following hold for $|\theta-\theta_1|\le10^{-3}$ and $|x_A|\in[0.0495,0.0505]$:
+\[
+ \begin{gathered}
+   \Omega_1\le T'-0.19\ \text{on }V_+,\qquad \Omega_{-1}\le T'-1.05\ \text{on }V_-,\\
+   \Omega_3\le T'-0.63\ \text{on }C'_+,\qquad \Omega_{-3}\le T'-0.79\ \text{on }C_-,\\
+   \Omega_{-1}\le T'-3.9\ \text{on }\ell_-,\qquad
+   \text{ray exponents}\le T'-3.2,\\
+   r\log|F_\pm(k)|\le T'-1.1\ (k\le K).
+ \end{gathered}
+\]
+The connector kernels are bounded by $2.01$, as in Step~4\textup{(c)}, and the kernels on the rays
+by $2$. All of these are certified in interval arithmetic by the script
+\texttt{certify\_landscape\_alt.py} in \texttt{code/zeta\_probe/rootunity\_zeros} (mpmath
+\texttt{iv}, $2.7$\,s).
+It uses the same cells, the same derivative bound with $2\pi|n|$ replaced by $\pi|\nu|$, and the
+same $\operatorname{Li}_2$ enclosure as \texttt{certify\_landscape.py}. On every path
+$\operatorname{Re}x\ge0.0199$, so \eqref{eq:unifPhi} applies, and the factor $e^{\mp ts}=e^{\mp x}$
+is bounded on the bounded pieces. On $\ell_\pm$ and on the rays it is at most $e^{|x|}$, which is
+dominated by the Gaussian decay of $f$; on the head it adds at most $r|x_A|$ to $r\log|b_k|$. Hence
+\[
+   |H_\pm|+\Bigl|\int_{V_+}\Bigr|+|J^-_\pm|+|E^+_\pm|+|E^-_\pm|\le C\,r^{-2}e^{(T'-0.19)/r}.
+\]
+
+\emph{Step 3: the main term.} On $\ell_+$ apply \eqref{eq:unifPhi} and Laplace's method at
+$\xi=x_0$, as in Step~3, with $\Phi''(x_0)=-\sqrt5$. The factor $e^{\mp x}$ is exact and is
+evaluated at $x_+$. So are $e^{-x_+/2}=\phi^{-3/4}e^{-i\pi/4}$ and
+$(1-e^{-2x_+})^{-1/2}=(\sqrt5-1)^{-1/2}=(\phi/2)^{1/2}$. This gives
+$\int_{\ell_+}F_\pm e^{i\pi s}ds=(5\phi)^{-1/4}e^{-i\pi/4}e^{\mp x_+}e^{E_+/t}(1+O(t))$. Its modulus
+is $\asymp e^{T'/r}$. With Step~2 this is \eqref{eq:Spmasym}.
+
+\emph{Step 4: the limit.} By \eqref{eq:Spmasym}, $S_-/S_e=e^{2x_+}(1+O(t))$, and
+$e^{2x_+}=-e^{2x_0}=-\phi^3$. So $t_1=\frac12(\phi^3-1)+O(t)=\phi+O(t)$, since
+$\phi^3=2\phi+1$. At $q^\ast_j$, Proposition~\ref{prop:minusone} gives $|t^\ast_j|\asymp1/j$ and
+$\arg t^\ast_j-\theta_1=O(j^{-2})$. With $K=K_j$ chosen as in its Step~5, the hypotheses above hold
+for all large $j$.
+\end{proof}
+
+\noindent Numerically (\texttt{rootunity\_zeros/t1\_minusone.py}, $40$--$100$ digits, floating
+point): the two expressions for $t_1$ agree to working precision at every zero tested. The ratio of
+$S_e$ to the right side of \eqref{eq:Spmasym} is $0.9897+0.0331i$, $0.9933+0.0192i$ and
+$0.9962+0.0103i$ at $j=10,20,40$. Also $(t_1-\phi)/t^\ast_j=-0.1440+0.0387i$, $-0.1529+0.0197i$ and
+$-0.1574+0.0099i$ at $j=40,80,160$. The next order of Laplace's method, computed formally, gives
+$t_1=\phi-\tfrac{\phi}{10}\,t+O(t^2)$, and $\phi/10=0.1618$. This is consistent with the numerics
+but is not proved.
+
+\begin{corollary}[the poles of $U$ and $V$ accumulate at $x=\pm i$]\label{cor:Uminusone}
+For all sufficiently large $j$, $U$ and $V$ have poles at $x=\pm\sqrt{q^\ast_j}$ and at
+$x=\pm\sqrt{\bar q^{\,\ast}_j}$. These tend to $x=\pm i$. At $q=q^\ast_j$,
+\[
+   1-\mathfrak g_Ut_1=\frac{\phi}{2t^\ast_j}\bigl(1+O(1/j)\bigr),\qquad
+   1-\mathfrak g_Vt_1=1+\frac\phi2+O(1/j),
+\]
+and, at the root $x\to\pm i$,
+\[
+   \Pi_q=-4+O(1/j),\qquad \Pi_1=-\frac{2\phi(\phi\pm i)}{2+\phi}+O(1/j).
+\]
+\textup{(}Standing: Theorems~\ref{thm:model} and~\ref{thm:RJ}.\textup{)}
+\end{corollary}
+
+\begin{proof}
+\emph{Proposition~\ref{prop:shape} at a non-real zero.} Let $q^\ast$ be a zero of $1-\Sigma_1$ with
+$0<|q^\ast|<1$. Suppose $S_e(q^\ast)\ne0$ and $1-\mathfrak g(q^\ast,y)t_1(q^\ast)\ne0$. Then the
+proof of Proposition~\ref{prop:shape} applies at $q^\ast$ without change. The resolvent is
+meromorphic on $|q|<1$ (Lemma~\ref{lem:mero}). The kernel is at most one-dimensional and is
+normalised by $\sum_sq^sR_s=\Sigma_1(q^\ast)=1$; this is
+\cite[Lemma \textup{lem:nullspace}]{Bonfioli2026bB}, which is stated for $0<|q|<1$. The boundary
+vectors and $\mathcal W_0$ are holomorphic at $q^\ast$ under the two conditions above
+(Lemma~\ref{lem:mero}). And $\Sigma_0(q^\ast)\ne0$ by Step~6 of the proof of
+Proposition~\ref{prop:minusone}. So $\Pi_y\ne0$ at a root $x^\ast$ of $x^2=q^\ast$ makes $x^\ast$ a
+pole of $\mathcal W(\cdot,y)$.
+
+\emph{The closed forms at a non-real zero.} The proof of \eqref{eq:RJclosed1}--\eqref{eq:RJclosedq}
+uses $\mathcal TR=R$ with $R\in\ell^1$, the normalisation $\sum_sq^sR_s=1$, and $\Psi=R_0u\in\ell^1$,
+which needs $S_e\ne0$. It also uses absolute convergence of the double sums and polynomial
+identities in $x$ with $x^2=q$. It never uses $q>0$; only the positivity paragraphs do. So both
+closed forms hold at $q^\ast$, for either root $x$. This is a re-reading of the proof, not an analytic
+continuation: $R$ depends on the point. We checked it directly at $q^\ast_3=-0.7604+0.3406i$ and
+$q^\ast_4=-0.8181+0.2819i$ with truncated operators ($N=186$ and $230$). There
+$\langle\lambda^{(y)},R\rangle$ agrees with the closed forms to relative error at most
+$5\cdot10^{-35}$ for $y\in\{1,q\}$ and both roots
+(\texttt{rootunity\_zeros/pairing\_complex\_check.py}).
+
+\emph{The asymptotics.} Let $q=q^\ast_j=-e^{-t}$ with $t=t^\ast_j$. Then $1+q=t(1+O(t))$ and
+$1-q=2+O(t)$. By Proposition~\ref{prop:t1minusone}, $S_e(q)\ne0$ and $t_1=\phi+O(t)$. Hence
+$\mathfrak g_Ut_1=\frac{qt_1}{(1-q)(1+q)}=-\frac\phi{2t}(1+O(t))$ and
+$\mathfrak g_Vt_1=-\frac\phi2+O(t)$, which gives the two displayed denominators. Both are non-zero
+for large $j$. So $B_0=\frac{2t}\phi(1+O(t))$ at $y=q$. Then
+$B_0t_1\frac{1-x+q}{1+q}=2(1-x+q)(1+O(t))=-2x+O(t)$ and $B_0/(2x)=O(t)$, so
+\eqref{eq:RJclosedq} gives $\Pi_q=-4qx\frac{1+x}{1-x}+O(t)$. At $q=-1$ and $x=\pm i$ this is $-4$.
+In \eqref{eq:RJclosed1}, $\frac{2q(1+x)}{1-q}\to-(1+x)$, and
+$t_1+\frac{1+x}{2x}\to\phi+\frac12\mp\frac i2$; dividing by $1+\frac\phi2$ gives the value
+of $\Pi_1$.
+
+\emph{Conclusion.} For large $j$ the hypotheses of the first paragraph hold at $q^\ast_j$ for $y=1$
+and $y=q$, and $\Pi_1,\Pi_q\ne0$ at both roots. So $\pm\sqrt{q^\ast_j}$ are poles of $V$ and of
+$U$. The coefficients of $U$ and $V$ are real, so $\overline{f(\bar x)}=f(x)$ on $|x|<1$, and the
+conjugate points are poles as well. Finally, $q^\ast_j\to-1$ gives $\sqrt{q^\ast_j}\to\pm i$.
+\end{proof}
+
+\noindent For $U$ the exact value of $t_1$ does not matter. The limit $-4$ needs only
+$t_1\asymp1$, since $\mathfrak g_U$ has a pole at $q=-1$ and $t_1$ cancels in $\Pi_q$. For $V$ it
+does matter: $\Pi_1$ vanishes only if $t_1=-(1+x)/(2x)$, and $1-\mathfrak g_Vt_1$ vanishes only if
+$t_1=-2$ in the limit. The limit $\phi$ is neither. Numerically all four pairings and both
+denominators are non-zero at every $j\ge3$ tested, and approach the limits above at rate $O(1/j)$
+(\texttt{t1\_minusone.py}). The computer-assisted inputs are the two landscape certificates.
+
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
 Theorem~\ref{thm:natboundary} does not locate the singularities on the circle. The real travel
 poles accumulate only at $x=\pm1$ (at $q=1$ for $G^T_0$). By Proposition~\ref{prop:minusone}, the
@@ -1868,10 +2046,13 @@ the pole set is much larger. The function $1-\Sigma_1=\cos(Z;q^2)$ has $64$ zero
 the argument principle: the travel poles $q_1,q_2$ and $62$ non-real zeros in $31$ conjugate pairs,
 the first at $q=-0.4075\pm0.5449i$. By Step~6 of the proof of Proposition~\ref{prop:minusone}, every
 zero of $1-\Sigma_1$ in $0<|q|<1$ is a pole of $G^T_0$. For $U$ one also needs $\Pi_q\ne0$
-there. At each of the $62$ non-real zeros $\Pi_q$ was found non-zero at $40$ digits. At the zeros
-$q^\ast_j$ of Proposition~\ref{prop:minusone} the condition $\Pi_q(q^\ast_j)\ne0$ is not proved. So
-accumulation of the poles of $U$ at $x=\pm i$ remains open. Plotted, the zeros approach roots of
-unity along straight lines. We conjecture that the poles are dense on the circle. A route is the
+there, together with $S_e\ne0$ and $1-\mathfrak g_Ut_1\ne0$. At each of the $62$ non-real zeros
+$\Pi_q$ was found non-zero at $40$ digits; this is numerical. At the zeros $q^\ast_j$ of
+Proposition~\ref{prop:minusone} all three are proved for large $j$, by
+Proposition~\ref{prop:t1minusone} and Corollary~\ref{cor:Uminusone}. So the poles of $U$ and of
+$V$ accumulate at $x=\pm i$, along the images of the rays $\arg t=\pm\theta_1$, with the standing
+of Theorems~\ref{thm:model} and~\ref{thm:RJ}. The computer-assisted inputs are the two landscape
+certificates. Plotted, the zeros approach roots of unity along straight lines. We conjecture that the poles are dense on the circle. A route is the
 same resummation at $q=\zeta e^{-t}$ for other roots of unity $\zeta$. Proposition~\ref{prop:minusone}
 is the case $\zeta=-1$. For $\zeta=i$ the analogous computation predicts a ray that the numerics
 follow, but this is heuristic: no exact decomposition like \eqref{eq:Bdecomp} and no landscape
