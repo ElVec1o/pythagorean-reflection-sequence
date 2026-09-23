@@ -58,6 +58,7 @@ is treated as a bug.
 | `rj_certificates/` | `thm:RJ` and `thm:model`. `r35rust/src/bin/r54b.rs` proves positivity of the junction pairing `<lambda,R>` at `q_1..q_12`, and `r39pole` gives the certified count of 13 zeros of `1 - Sigma_1` on `[0, 0.9988]`. Both use MPFR interval arithmetic. The directory also holds supporting interval certificates and the group BFS `mnk` and tuple enumerator `revO` behind the assembly evidence (exact to `x^26` at `y = q`, 816 coefficients at symbolic `y`, `v_0..v_19`). Its own `README.md` gives arguments and trust base. |
 | `nondfinite/` | Section `sec:beyond` (`thm:nonDfinite`, `thm:natboundary`, the poles of `U` and `V` at `-x_m`): floating-point checks at 40 to 90 digits, not interval certificates. Its own `README.md`. |
 | `qbessel/` | Section `sec:fredholmdet` (`thm:fredholm`): the travel poles as zeros of the Hahn-Exton function `J^(3)_{-1/2}(Z; q^2)` at `q_1..q_10`. Floating point, not interval certificates. Its own `README.md`. |
+| `beta2_certificate/` | `prop:finiteexcl`: computer-assisted finite exclusion. `q*` (and so `beta_2`) is not a root of any integer polynomial of degree <= 16 with height < 10^120 (the proposition lists the other degrees). Uses a certified 2090-digit bracket and exact Gram-Schmidt bounds on an LLL basis. Replaces the earlier PSLQ claims, which were heuristic. Its own `README.md`. |
 
 ## paper_orthoscheme and merged_novel_paper
 

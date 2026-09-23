@@ -4647,11 +4647,14 @@ $\Sigma_1^T(q)=1-S(q)$,
    \;=\;{}_1\phi_1\!\bigl(0;q;q^2,\,2q(1-q)\bigr),
 \]
 a $q$-Bessel-class function (using $(q;q)_{2k}=(q;q^2)_k(q^2;q^2)_k$); $\beta_2$ is algebraic iff the
-least positive zero $q^\ast=0.449453630\ldots$ of $S$ is. Certified exclusions at $430$ digits
-(residual $10^{-442}$; PSLQ with post-verification of every candidate): neither $q^\ast$ nor
-$\beta_2$ satisfies an integer polynomial of degree $\le8$ with height $10^{20}$, degree $\le12$
-with height $10^{18}$, or degree $\le16$ with height $10^{14}$; no bilinear relation ties
-$q^\ast$ to the fold point $q_c$ of the zero curve (height $10^{12}$). The continued fraction of
+least positive zero $q^\ast=0.449453630\ldots$ of $S$ is. What is proved about low-degree algebraic
+relations is the certified finite exclusion of Proposition~\ref{prop:finiteexcl}: neither $q^\ast$ nor
+$\beta_2$ is a root of a nonzero integer polynomial of degree $\le8$ with height below $10^{228}$, or of
+degree $\le16$ with height below $10^{118}$ (for $q^\ast$ alone: $10^{230}$, $10^{120}$, and also degree
+$\le24$ below $10^{80}$, degree $\le64$ below $10^{28}$). That proposition is a computer-assisted lattice
+certificate on a $2090$-digit certified bracket. By contrast, a PSLQ run that returns ``no relation'' is
+heuristic, not a proof; so the PSLQ observation that no bilinear relation of height $\le10^{12}$ ties
+$q^\ast$ to the fold point $q_c$ of the zero curve ($430$ digits) is evidence only. The continued fraction of
 $q^\ast$ ($383$ certified partial quotients, two-precision guard) is Gauss--Kuzmin generic:
 digit frequencies match, Khinchin mean $2.63$ ($2.685$), L\'evy exponent $3.21$ ($3.276$),
 largest quotient $a_{170}=8250$ (probability $\approx6\%$ over $383$ draws, consistent with chance).
@@ -4758,9 +4761,12 @@ Proposition~\ref{prop:simplepoles}\textup{(i)}, at the standing of Hypothesis~\r
    =0.679,\,0.961,\,0.986,\,0.993,\,0.9956,\,0.9970,\,0.9979,\,0.9984\ (j\le8).
 \]
 The second member is $q^\ast_2=0.913486638731047141696\ldots$, i.e.\
-$\beta_2^{(2)}:=1/\sqrt{q^\ast_2}=1.046282352687417855\ldots$; neither satisfies an integer
-polynomial of degree $\le8$ with height $10^{10}$, and no bilinear relation ties $q^\ast_1$ to
-$q^\ast_2$ (PSLQ, $100$ digits). The family interpolates between the open head ($j=1$, the wild
+$\beta_2^{(2)}:=1/\sqrt{q^\ast_2}=1.046282352687417855\ldots$. PSLQ at $100$ digits finds no integer
+polynomial of degree $\le8$ and height $\le10^{10}$ vanishing at either number, and no bilinear
+relation between $q^\ast_1$ and $q^\ast_2$. This is heuristic evidence, not a proof: a PSLQ
+``no relation'' output certifies nothing, and unlike $q^\ast_1$
+\textup{(}Proposition~\ref{prop:finiteexcl}\textup{)} no certified exclusion has been computed for
+$q^\ast_2$. The family interpolates between the open head ($j=1$, the wild
 $\beta_2$) and the classical tail (the $\pi^2$-law): the roots become ``provably transcendental
 in the limit'' while the first, the one of combinatorial interest, remains untouched; the
 confluent boundary of the step-ratio mechanism made visible inside a single object. (That the
@@ -5662,8 +5668,7 @@ which by $z^\ast=z_1(q^\ast)$ implies $\beta_2$ transcendental) reduces to exten
 Shidlovskii past the margin for a class that is additionally irregular at $\infty$. The connection
 theory of this paper supplies the irregular-$\infty$ data explicitly; the margin itself is the
 value-theoretic face of the multiplicity estimate of Remark~\ref{rem:valuedescent}, and is equal in
-strength to $\beta_2$-transcendence, not weaker. A detailed program is recorded in the repository
-(\texttt{paper/journal/qSS\_program.md}).
+strength to $\beta_2$-transcendence, not weaker.
 
 One further mechanism deserves record, because it isolates which half of the Siegel scheme is
 actually blocked. Under the rationality hypothesis all tail power sums
@@ -5805,6 +5810,94 @@ $n=t_0>10^{1044}$, a contradiction. Thus no rational with denominator $\le10^{10
 $[a,b]$ at all, in particular none equals $q^\ast$. For $\beta_2=u/v$ in lowest terms,
 $q^\ast=v^2/u^2$ in lowest terms, so $u^2>10^{1044}$.
 \end{proof}
+
+Proposition~\ref{prop:effective} is the degree-one case of a finite algebraic exclusion. The same
+certified bracket excludes low-degree algebraic relations. For $P=\sum_{i\le d}p_ix^i\in\Z[x]$ write
+$H(P)=\max_i|p_i|$ for the height.
+
+\begin{proposition}[certified finite algebraic exclusion; computer-assisted]
+\label{prop:finiteexcl}
+Let $q^\ast$ be the least positive zero of $S$ and $\beta_2=1/\sqrt{q^\ast}$, and let
+$P\in\Z[x]\setminus\{0\}$.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item If $P(q^\ast)=0$, then $H(P)\ge10^{230}$ when $\deg P\le8$, $H(P)\ge10^{120}$ when
+$\deg P\le16$, $H(P)\ge10^{80}$ when $\deg P\le24$, and $H(P)\ge10^{28}$ when $\deg P\le64$.
+\item If $P(\beta_2)=0$, then $H(P)\ge10^{228}$ when $\deg P\le8$, and $H(P)\ge10^{118}$ when
+$\deg P\le16$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+The proof is a finite computation in two steps. The scripts are \texttt{step1\_bracket.py} and
+\texttt{step2\_lattice.py}, in the folder
+\texttt{code/\allowbreak zeta\_probe/\allowbreak beta2\_certificate/}. The trust base is
+outward-rounded interval arithmetic (\texttt{mpmath.iv}) in step~1, and exact integer and rational
+arithmetic (\texttt{python-flint} and Python integers) in step~2.
+
+\emph{Step 1: certified bracket.} Steps \textup{(i)}--\textup{(iii)} of the proof of
+Proposition~\ref{prop:effective} give $q^\ast\in[a,b]$ with $a=(A-2)\cdot10^{-2090}$,
+$b=(A+2)\cdot10^{-2090}$ and $A\in\Z$ the $2090$-digit truncation of $q^\ast$. Then
+$\beta_2\in[1/\sqrt b,1/\sqrt a]\subset[\beta_{\rm lo},\beta_{\rm hi}]$ with
+$\beta_{\rm lo}=m_{\rm lo}\cdot10^{-2080}$, $\beta_{\rm hi}=m_{\rm hi}\cdot10^{-2080}$ and
+$m_{\rm hi}-m_{\rm lo}=5$. The two inclusions are checked exactly, as the integer inequalities
+$m_{\rm lo}^2(A+2)\le10^{2\cdot2080+2090}\le m_{\rm hi}^2(A-2)$.
+
+\emph{Step 2: lattice.} Let $x^\ast\in[c,c+w]$ be one of the two numbers, with $c$ rational and $w$
+the width of its bracket. Let $R$ bound $|x|$ on the bracket ($R=1$ for $q^\ast$, $R=\tfrac32$ for
+$\beta_2$), and put $M=\lfloor1/w\rfloor$. Let $L_d\subset\Z^{d+2}$ be the lattice with basis rows
+$e_i+\lfloor Mc^i\rfloor e_{d+1}$, $0\le i\le d$. To $P$ with $\deg P\le d$ assign
+$v_P=\bigl(p_0,\dots,p_d,\sum_ip_i\lfloor Mc^i\rfloor\bigr)\in L_d$. It is nonzero when $P\ne0$. Its
+last coordinate differs from $MP(c)$ by at most $(d+1)H(P)$. If $P(x^\ast)=0$, then
+$|P(c)|\le w\max_{[c,c+w]}|P'|\le wH(P)s_d$ with $s_d=\sum_{i=1}^diR^{i-1}$, and $Mw\le1$. Hence
+\[
+   \|v_P\|\;\le\;H(P)\,K_d,\qquad K_d^2=(d+1)+(s_d+d+1)^2 .
+\]
+For any basis $b_0,\dots,b_d$ of $L_d$ with Gram--Schmidt vectors $b_k^\ast$, every nonzero lattice
+vector has norm at least $\min_k\|b_k^\ast\|$. We take the basis returned by LLL reduction
+($\delta=0.99$). LLL serves only to find a good basis: the script checks exactly that the output is
+$TB$ with $B$ the basis above and $|\det T|=1$, so it is a basis of $L_d$. It then computes
+$\|b_k^\ast\|^2=\Delta_k/\Delta_{k-1}$ exactly, where $\Delta_k$ are the leading principal minors of
+the integer Gram matrix. Any $P$ with $P(x^\ast)=0$ and $H(P)K_d<\min_k\|b_k^\ast\|$ would give a
+nonzero lattice vector shorter than this bound, which is impossible. The certified values of
+$\log_{10}\bigl(\min_k\|b_k^\ast\|/K_d\bigr)$ are $230.45$, $120.63$, $80.90$ and $28.29$ for $q^\ast$
+at $d=8,16,24,64$, and $228.66$ and $118.15$ for $\beta_2$ at $d=8,16$. These give the stated bounds.
+\end{proof}
+
+\noindent\emph{Controls and consistency.} As a negative control, the same procedure applied to
+$x^\ast=\sqrt2-1$, a root of $x^2+2x-1$ of height $2$, certifies at $d=2$ only $H<10^{-0.30}$, which
+excludes nothing, as it must. At $d=1$ the procedure gives $H(P)\ge10^{1043.99}$ for $q^\ast$. This
+agrees with Proposition~\ref{prop:effective}, whose Stern--Brocot argument on the same bracket gives
+the marginally sharper $t>10^{1044}$. Both statements are finite. Neither says anything about
+irrationality or transcendence. A PSLQ search that returns ``no relation'' is weaker still: it is
+heuristic, and it is not a proof of any exclusion.
+
+\begin{remark}[the obstruction to transcendence and to irrationality of $\beta_2$]
+\label{rem:betawall}
+No available theory turns Propositions~\ref{prop:effective} and~\ref{prop:finiteexcl} into an
+irrationality or transcendence proof. Three features of the problem are responsible.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item \emph{A zero in the base variable.} $q^\ast$ is a zero of $S$ in the base $q$ itself, not a value
+at a fixed base. Base-variable transcendence results exist for modular forms (Nesterenko
+\cite{Nesterenko1996}) and for Mahler functions (Nishioka \cite{Nishioka1996}). $S$ is neither modular
+nor Mahler in any available sense. No modular transformation law is known for it. A search to
+$O(q^{48})$ finds no Mahler equation for $S$ (Remark~\ref{rem:betanumber}), and for the travel
+resolvent $G^T_0=\Sigma_0/S$ Proposition~\ref{prop:noqdiff} excludes Mahler equations
+unconditionally.
+\item \emph{The fixed-base ratio is $\rho=\tfrac12$.} Freezing the base and working in the argument,
+as the $q$-Siegel--Shidlovskii and $q$-irrationality methods do, gives the arithmetic ratio
+$\rho=\log(t/s)/(2\log t)\le\tfrac12$ of Proposition~\ref{prop:nogo}, with equality at the most
+favourable bases $q=1/t$. The factor $2$ is the double Pochhammer $(q;q)_{2k}$. The fixed-base value
+theorems of Amou--Katsurada--V\"a\"an\"anen \cite{AKV2002} and of
+Krattenthaler--Rochev--V\"a\"an\"anen--Zudilin \cite{KRVZ2009} therefore do not apply: their
+constructions need the decay of the terms to outrun the growth of the cleared denominators, and at
+$\rho=\tfrac12$ it does not. The same margin fails in Remark~\ref{rem:qSS}.
+\item \emph{The Hahn--Exton identification is analytic only.} Corollary~\ref{cor:qbessel} identifies
+the zeros of $S$ in $(0,1)$ with the zeros of $J^{(3)}_{-1/2}\bigl(Z(q);q^2\bigr)$. This is an
+identity of analytic functions. It transports zeros, asymptotics and $q$-Wronskians, but no arithmetic. No irrationality or
+transcendence theorem is known for zeros of Hahn--Exton functions, and here the base is itself the
+unknown.
+\end{enumerate}
+\end{remark}
 
 
 % ============================================================
@@ -6559,6 +6652,10 @@ The inputs taken from Lean are the definitions of \texttt{siteCost}, \texttt{cut
 junction lemmas of \texttt{RJLemmaJ.lean}, and \texttt{metricAll} (for the corollary only).
 
 \begin{thebibliography}{99}
+\bibitem{AKV2002} M.~Amou, M.~Katsurada, K.~V\"a\"an\"anen, \emph{On the values of certain
+$q$-hypergeometric series II}, in: Analytic Number Theory, eds.\ C.~Jia, K.~Matsumoto,
+Developments in Mathematics~\textbf{6}, Kluwer Acad.\ Publ., Boston, MA, 2002, 17--25.
+
 \bibitem{AMV2007} M.~Amou, T.~Matala-aho, K.~V\"a\"an\"anen, \emph{On Siegel--Shidlovskii's theory
 for $q$-difference equations}, Acta Arith.\ \textbf{127} (2007), 309--335.
 
@@ -6664,6 +6761,10 @@ Hahn--Exton $q$-Bessel function and associated $q$-Lommel polynomials}, J. Math.
 
 \bibitem{KS1992} T.~H.~Koornwinder and R.~F.~Swarttouw, \emph{On $q$-analogues of the Fourier and
 Hankel transforms}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{333} (1992), 445--461.
+
+\bibitem{KRVZ2009} C.~Krattenthaler, I.~Rochev, K.~V\"a\"an\"anen, W.~Zudilin, \emph{On the
+non-quadraticity of values of the $q$-exponential function and related $q$-series}, Acta Arith.\
+\textbf{136} (2009), 243--269.
 
 \bibitem{Lang1966} S.~Lang, \emph{Introduction to Transcendental Numbers}, Addison--Wesley, 1966;
 Ch.~III (the Schneider--Lang theorem).
