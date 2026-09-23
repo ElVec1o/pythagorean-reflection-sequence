@@ -15,3 +15,10 @@ Floating-point checks (not certified):
 - `rho*.py`: residue ratios for the rem:rootunity route.
 
 Caution: evaluating B's series near q = -1 cancels badly. Below |t| of about 0.015 it needs more than 40 digits.
+
+## zeta = i (Room I, 2026-09-24): partial result only
+- The proof at q = -1 does NOT carry over to q = i. The dominant exponent on the ray is T = -0.0707 < 0, but the first term of B is b_0 = 1, so the bound on the initial terms of the sum fails whatever cutoff is used. B is small here only through massive cancellation.
+- Two-saddle prediction: VERIFIED against root-finding, with error decaying like 1/j. Amplitude factors are 1 + phi i and 1 - i/phi. Script: `zi_twosaddle.py`.
+- Obstruction demo: `zi_growth_obstruction.py`.
+- Correction to the earlier heuristic: e^{-4x*} = +i(4 - sqrt15).
+- A proof would need a closed contour crossing the negative s-axis, together with a reflection formula. This is open.
