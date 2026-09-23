@@ -1509,13 +1509,16 @@ be polynomials with $a_0a_r\not\equiv0$.
 \begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
 \item If $Q\in\C^\times$ is not a root of unity, then $\sum_{i=0}^ra_i(x)f(Q^ix)\ne b(x)$.
 \item If $k\ge2$ is an integer, then $\sum_{i=0}^ra_i(x)f(x^{k^i})\ne b(x)$.
+\item If $f=G^T_0$, as a series in $q$, and $A_0,A_1,b$ are polynomials with $A_0,A_1$ not both
+zero, then $A_0(q)f(q)+A_1(q)f(-q)\ne b(q)$.
 \end{enumerate}
-For $G^T_0$ both statements are unconditional \textup{(}\textup{(ii)} uses the window statement of
+For $G^T_0$ all three statements are unconditional \textup{(}\textup{(ii)} uses the window statement of
 \cite[Lemma \textup{lem:infpoles}]{Bonfioli2026bB}, hence the verified bound of
 \cite[Lemma \textup{lem:T2abs}]{Bonfioli2026bB}\textup{)}; for $U$ and $V$ the standing is that of
-Theorems~\ref{thm:V} and~\ref{thm:U}. When $Q$ is a root of unity the case is open: the pole set can
-be invariant under $x\mapsto Qx$, as that of $U$ is under $x\mapsto-x$
-\textup{(}Proposition~\ref{prop:minusx}\textup{)}, and the argument below gives nothing.
+Theorems~\ref{thm:V} and~\ref{thm:U}. The other cases with $Q$ a root of unity are open, and for
+$U$ and $V$ this includes $Q=-1$: their pole sets are invariant under $x\mapsto-x$
+\textup{(}Propositions~\ref{prop:minusx} and~\ref{prop:Vminusx}\textup{)}, and the argument below
+gives nothing. Remark~\ref{rem:rootunity} records what such a relation would force.
 \end{proposition}
 
 \begin{proof}
@@ -1561,7 +1564,83 @@ $P_+$ (Theorems~\ref{thm:V}, \ref{thm:U}, \ref{thm:travelres}). Distinct windows
 poles, so $P_+\cap(0,R]$ has at least $\lfloor c/(\pi\sqrt\ell)\rfloor-4$ points, with $c=1$ in the
 variable $x$ and $c=\sqrt2$ in $q$. This grows like $\ell^{-1/2}$, faster than $\log(1/\ell)$, a
 contradiction for $R$ close to $1$.
+
+(iii) Write $g=1-\Sigma_1$, so $f=\Sigma_0/g$ with $\Sigma_0$ and $g$ holomorphic on $|q|<1$. For
+$0<p<1$ every term of the series for $g$ in the proof of Lemma~\ref{lem:polefinite} is positive at
+$q=-p$: $(-1)^j(-p)^{j^2}=p^{j^2}$, $1-q=1+p$, and
+$(q;q)_{2j}=\prod_{i\le2j}\bigl(1-(-p)^i\bigr)$ has the factors $1+p^i$ ($i$ odd) and $1-p^i$
+($i$ even). The term $j=0$ is $1$, so $g(-p)\ge1$. Hence $f(-q)=\Sigma_0(-q)/g(-q)$ is holomorphic
+at every travel pole $q_m$. Suppose the relation holds. Both sides are meromorphic on the disc, so it
+holds there. At $q_m$ the terms $A_1(q)f(-q)$ and $b$ are holomorphic, and $f$ has a pole
+(Theorem~\ref{thm:travelres}), so $A_0(q_m)=0$. This holds at the infinitely many $q_m$, so
+$A_0\equiv0$. Then $A_1(q)f(-q)=b(q)$ with $A_1\not\equiv0$, which makes $f$ rational, against its
+infinitely many poles.
 \end{proof}
+
+\noindent In the variable $x$, $G^T_0(x^2)$ is even, and $G^T_0(x^2)-G^T_0((-x)^2)=0$ is a
+relation of the form (i) with $Q=-1$. This is why (iii) is stated in $q$.
+
+\begin{remark}[roots of unity]\label{rem:rootunity}
+\emph{Reduction.} Let $Q$ have exact order $N\ge2$ and put $\zeta=Q$. A relation
+$\sum_ia_i(x)f(Q^ix)=b(x)$ is the same as
+$\sum_{j=0}^{N-1}A_j(x)f(\zeta^jx)=b(x)$ with $A_j=\sum_{i\equiv j\ (N)}a_i$. The hypothesis
+$a_0a_r\not\equiv0$ does not make this relation non-trivial: $a_0=1$, $a_N=-1$ gives
+$f(x)-f(Q^Nx)=0$ for every $f$. For a root of unity the question is therefore whether some
+relation with $A_0,\dots,A_{N-1}$ not all zero holds.
+
+\emph{$Q=-1$ for $U$.} Suppose $A_0(x)U(x)+A_1(x)U(-x)=b(x)$ with $A_0,A_1$ not both zero. By
+{\cite[Proposition \textup{prop:simplepoles}]{Bonfioli2026bB}}, $\pi=1$. By
+Proposition~\ref{prop:shape}, with the factor $x^{-1}$ of \eqref{eq:assembly} and
+$q-q_m=(x-x_m)(x+x_m)$, $U$ then has simple poles at $\pm x_m$ with residues
+$R_\pm=c_\star\Pi_q|_{x=\pm x_m}^2/(4x_m^2)$. Both residues are non-zero
+(Theorem~\ref{thm:RJ} and Proposition~\ref{prop:minusx}). The residues of $U(-x)$ at $x_m$ and
+$-x_m$ are $-R_-$ and $-R_+$. Comparing residues gives, for every $m$,
+\[
+   A_0(x_m)R_+=A_1(x_m)R_-,\qquad A_0(-x_m)R_-=A_1(-x_m)R_+ .
+\]
+If $A_1\equiv0$, the first identity gives $A_0(x_m)=0$ for all $m$, so $A_0\equiv0$; likewise if
+$A_0\equiv0$. So neither $A_i$ vanishes identically. Multiplying the two identities and dividing
+by $R_+R_-$ gives $A_0(x)A_0(-x)=A_1(x)A_1(-x)$ at every $x_m$, hence identically. So $r=A_0/A_1$
+satisfies $r(x)r(-x)=1$ and, by \eqref{eq:RJclosedq} at $\pm x_m$,
+\begin{equation}\label{eq:rhom}
+   r(x_m)=\rho_m:=\frac{R_-}{R_+}
+   =\Bigl(\frac{1-x_m}{1+x_m}\Bigr)^{4}\Bigl(\frac{b_-}{b_+}\Bigr)^{2},\qquad
+   b_\pm=t_1\frac{1\mp x_m+q_m}{1+q_m}\pm\frac1{2x_m},
+\end{equation}
+at every $m$ with $A_1(x_m)\ne0$, that is, at all but finitely many $m$. The map
+$t_1\mapsto b_-/b_+$ is a M\"obius map with coefficients in $\Q(x_m)$ and determinant $1/x_m\ne0$.
+So a relation forces $t_1(q_m)=\theta(x_m)$ for all large $m$, where $\theta$ is a branch of an
+algebraic function of degree at most $2$ over $\C(x)$. For $V$ the same argument gives
+$\rho^V_m=\bigl((1-x_m)/(1+x_m)\bigr)^2\bigl(\beta_m/(t_1+(1+x_m)/(2x_m))\bigr)^2$, from
+\eqref{eq:RJclosed1} and Proposition~\ref{prop:Vminusx}, with the same conclusion. We have not
+excluded this. Leading asymptotics do not decide it: $16\rho_m/(1-x_m)^4\to1$ and
+$16\rho^V_m/(1-x_m)^6\to1$, and a finite jet of $\rho_m$ at $x=1$ is matched by a polynomial.
+
+\emph{Numerics.} If $\deg A_0,\deg A_1\le D$, \eqref{eq:rhom} is a homogeneous linear system with
+one equation for each travel pole, $m=1,\dots,20$, and $2D+2$ unknowns. For
+$D=0,\dots,9$ its smallest singular value, with rows and columns normalised, is non-zero. It
+falls from $0.88$ at $D=0$ to $6.6\cdot10^{-50}$ for $U$, and to $3.9\cdot10^{-50}$ for $V$, at
+$D=9$. The values agree to $12$ digits at $150$- and $220$-digit working precision. So no
+relation with $\deg A_i\le9$ holds (\texttt{code/zeta\_probe/nondfinite/rootunity\_fit.py},
+floating point, not an interval certificate). The fast decay in $D$ shows that $\rho_m$ is very
+well approximated by rational functions of $x_m$. A test of this kind therefore cannot become a
+proof.
+
+\emph{Other orders.} Let $N\ge3$. If $U$ has no pole at $\zeta^jx_m$ for $\zeta^j\ne\pm1$, only
+$U(x)$ and, for even $N$, $U(-x)$ are singular at $x_m$ among the $U(\zeta^jx)$. For odd $N$ this
+gives $A_0(x_m)=0$. Applied at $\zeta^{-j}x_m$, it gives $A_j(\zeta^{-j}x_m)=0$. If this holds for
+infinitely many $m$, then every $A_j$ vanishes and there is no relation. For even $N$ the same
+step leaves the pairs $(j,j+N/2)$, and each pair satisfies the $Q=-1$ condition above with the
+polynomials $A_j(\zeta^{-j}x)$ and $A_{j+N/2}(\zeta^{-j}x)$. By Lemma~\ref{lem:mero}, a pole at
+$\zeta^jx_m$ requires $g$, $S_e$ or $1-\mathfrak gt_1$ to vanish at $q=\zeta^{2j}q_m$. For
+$\zeta^{2j}=-1$ the first cannot vanish, since $g(-p)\ge1$ (proof of (iii)). The others are not
+controlled, and neither is $g$ at the other roots of unity. At $m\le20$ all three are non-zero at
+$\omega q_m$, for $\omega=-1$ and $\omega$ a primitive cube or fifth root of unity, and the same
+holds with $\mathfrak g_V$ (\texttt{rootunity\_check.py}, \texttt{rootunity\_minus.py}). At
+$\omega=-1$ the evaluation cancels heavily: $S_e(-q_m)\,g(-q_m)\approx1.171$, and
+$|S_e(-q_{20})|\approx5\cdot10^{-715}$, computed at $1500$ digits. The same caveat applies to
+$G^T_0$ in $q$ at roots of unity other than $-1$.
+\end{remark}
 
 \noindent The count in (ii) is made on the real axis on purpose. It uses only the travel poles that
 are proved to exist, and it needs no statement about where on the circle the poles of $f$
