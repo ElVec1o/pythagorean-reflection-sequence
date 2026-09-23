@@ -66,14 +66,16 @@ poles; and the amplitude estimate $(\star)$, $|P_{12}|\le0.619\,\tau^{3/2}$, whi
 identity $S_e=\tfrac{qZ}2\mathfrak s(Z)-P_{12}$ closes the gate $|s|\le0.983$. \emph{Further
 material}: the P\'olya--Carlson dichotomy for the four catalytic building blocks, unconditional for
 the two denominators and resting on a verified, unproved coefficient-growth hypothesis for the two
-numerators; the spectral and sign laws at the travel poles, resting on the inequality
+numerators; the spectral and sign laws at the travel poles (every travel pole is simple, and
+$\Sigma_0$ and $S_e$ both have sign $(-1)^{m-1}$ at the $m$-th pole), resting on the inequality
 \textup{(T$^\ast_{\mathrm{poles}}$)}, which is proved here by a flux identity, an amplitude bound and
-an interval certificate; an orthogonal arithmetic route through Christol's theorem;
+an interval certificate, and on the shift inequality $\lambda_n\le q^2\lambda_{n+1}$ between
+consecutive eigenvalue branches of the travel operator, proved here by min-max; an orthogonal arithmetic route through Christol's theorem;
 the value-transcendence question for the number $\beta_2$, reduced to a Hahn--Exton value statement
 with a certified finite algebraic exclusion; and the history of the former hypotheses \textup{(R)},
 \textup{(T)} and \textup{(L)}. Every statement keeps the standing it has in the archival full
-version, except \textup{(T$^\ast_{\mathrm{poles}}$)}, which is a hypothesis there and is proved
-here.
+version, except \textup{(T$^\ast_{\mathrm{poles}}$)} and the shift inequality, which are
+hypotheses there and are proved here.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -1225,6 +1227,111 @@ $(I-\mathcal T)^{-1}$ has a pole of order at most $1$, and $\pi\ge p\ge1$
 \noindent The alternation $\operatorname{sign}\mathbf B'(q_m)=(-1)^m$ is checked numerically for
 $m\le10$ ($\mathbf B'(q_1)=-2.630$, $\mathbf B'(q_2)=28.71$, \dots, $\mathbf B'(q_{10})=6661$).
 
+\paragraph{The variational setting.} Fix $q\in(0,1)$; all sequences are real. For a sequence
+$u=(u_s)_{s\ge0}$ put
+\[
+   E(u)=\sum_{s\ge0}q^{-s}(u_{s+1}-u_s)^2,\qquad M(u)=\sum_{s\ge0}2(1-q)q^{s+1}u_s^2,
+\]
+both in $[0,\infty]$; $E$ is the energy of Lemma~\ref{lem:HF}, and $M=2q(1-q)N$ in the notation of
+its proof. The quotient $E/M$ is the Rayleigh quotient of the $q$-string of
+{\cite[Remark ``a $q$-string'', \textup{rem:qstring}]{Bonfioli2026bA}} in its Friedrichs
+realisation, free at $s=0$ and fixed at $s=\infty$ ($u_s\to0$). We do not identify the closed form
+domain of that realisation. We work instead on the explicit subspace
+\[
+   \mathcal D:=KD_e^{1/2}\ell^2=\Bigl\{KX:\ \sum_{s\ge0}X_s^2q^{-s}<\infty\Bigr\},\qquad
+   J:=KD_e^{1/2}:\ell^2\to\mathcal D ,
+\]
+which contains every eigenfunction $u=KR$, and we derive the variational principle on $\mathcal D$
+directly from the positive trace-class operator $\mathbf S$ of
+{\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(i)}. On
+$\mathcal D$ every quantity below is finite and no closure is taken, so nothing depends on the choice
+of form domain. Let $\phi_1,\phi_2,\dots$ be the orthonormal eigenvectors of $\mathbf S$,
+$\mathbf S\phi_k=\kappa_k\phi_k$ with $\kappa_k=1/\lambda_k(q)$
+({\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(iv)}).
+They form a complete orthonormal system, $\mathbf S$ being compact, self-adjoint and injective, and
+they can be taken real, $\mathbf S$ being real symmetric.
+
+\begin{lemma}[the shift inequality]\label{lem:shift}
+For every $q\in(0,1)$ and every $n\ge1$,
+\[
+   \lambda_n(q)\le q^2\,\lambda_{n+1}(q).
+\]
+\end{lemma}
+
+\begin{proof}
+\emph{Step 1: the quotient on $\mathcal D$.} Let $x\in\ell^2$, $X=D_e^{1/2}x$, which lies in
+$\ell^1$ by Cauchy--Schwarz, and $u=Jx=KX$. Then
+\begin{equation}\label{eq:EMS}
+   E(u)=(1-q)\langle x,\mathbf Sx\rangle,\qquad M(u)=(1-q)\|\mathbf Sx\|^2 .
+\end{equation}
+Indeed, with $\rho_t=\sum_{s\le t}X_s$ one has $u_{t+1}-u_t=-(1-q)q^t\rho_t$, as in the proof of
+Lemma~\ref{lem:HF}, so $E(u)=(1-q)^2\sum_tq^t\rho_t^2=(1-q)\langle x,\mathbf Sx\rangle$ by the
+proof of {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(i)};
+and $M(u)=(1-q)\|D_e^{1/2}u\|^2$ with $D_e^{1/2}u=D_e^{1/2}KD_e^{1/2}x=\mathbf Sx$. In particular
+$J$ is injective: $Jx=0$ gives $\mathbf Sx=0$, hence $x=0$. So $M(u)>0$ for every
+$u\in\mathcal D\setminus\{0\}$.
+
+\emph{Step 2: the variational principle.} Let $V\subset\mathcal D$ be a subspace of dimension $n$.
+Then
+\begin{equation}\label{eq:minmax}
+   \max_{u\in V\setminus\{0\}}\frac{E(u)}{M(u)}\ \ge\ \lambda_n ,
+\end{equation}
+and on $V_n:=J\operatorname{span}\{\phi_1,\dots,\phi_n\}$ one has $E(u)/M(u)\le\lambda_n$ for every
+$u\ne0$. (The maximum exists: $E/M$ is a quotient of positive definite quadratic forms on the
+finite-dimensional $V$.) For the proof write $V=JV'$ with $\dim V'=n$ and put
+$Y=\mathbf S^{1/2}V'$, again of dimension $n$ because $\mathbf S^{1/2}$ is injective. For $u=Jx$
+and $y=\mathbf S^{1/2}x$, \eqref{eq:EMS} gives $E(u)/M(u)=\|y\|^2/\langle y,\mathbf Sy\rangle$.
+Since $\dim Y=n$, some $y\in Y\setminus\{0\}$ is orthogonal to $\phi_1,\dots,\phi_{n-1}$, and for it
+$\langle y,\mathbf Sy\rangle=\sum_{k\ge n}\kappa_k\langle y,\phi_k\rangle^2\le\kappa_n\|y\|^2$,
+by completeness of the $\phi_k$ and $\kappa_k\le\kappa_n$ for $k\ge n$. So $E/M\ge1/\kappa_n=\lambda_n$
+at the corresponding $u$, which is \eqref{eq:minmax}. If $V'=\operatorname{span}\{\phi_1,\dots,\phi_n\}$,
+then $Y=V'$, and $\langle y,\mathbf Sy\rangle=\sum_{k\le n}\kappa_k\langle y,\phi_k\rangle^2
+\ge\kappa_n\|y\|^2$ for $y\in Y$, so $E/M\le\lambda_n$ on $V_n\setminus\{0\}$.
+
+\emph{Step 3: the shift.} For a sequence $u$ put $(\sigma u)_s=u_{s+1}$. If $u=KX\in\mathcal D$,
+then $\sigma u=KX'$ with $X'_0=q(X_0+X_1)$ and $X'_t=qX_{t+1}$ for $t\ge1$. Indeed
+$q^{\max(s+1,t)}=q^{s+1}$ for $t\in\{0,1\}$ and $q^{\max(s+1,r+1)}=q\,q^{\max(s,r)}$, so
+\[
+   u_{s+1}=\sum_{t\ge0}q^{\max(s+1,t)}X_t=q^{\max(s,0)}\,q(X_0+X_1)
+   +\sum_{r\ge1}q^{\max(s,r)}\,qX_{r+1}=(KX')_s ,
+\]
+and $\sum_tX_t'^2q^{-t}\le2q^2(X_0^2+X_1^2)+q^3\sum_{r\ge2}X_r^2q^{-r}<\infty$. So
+$\sigma\mathcal D\subset\mathcal D$. Reindexing $t=s+1$ in the two series gives
+\begin{equation}\label{eq:shiftEM}
+   E(\sigma u)=q\bigl(E(u)-(u_1-u_0)^2\bigr),\qquad
+   M(\sigma u)=\frac{M(u)-2(1-q)q\,u_0^2}{q},
+\end{equation}
+all four series converging by Step~1. Hence, if $u\in\mathcal D\setminus\{0\}$ and $u_0=0$,
+\[
+   \frac{E(\sigma u)}{M(\sigma u)}=q^2\,\frac{E(u)-u_1^2}{M(u)}\ \le\ q^2\,\frac{E(u)}{M(u)} .
+\]
+On $\{u_0=0\}$ the map $\sigma$ is injective: $\sigma u=0$ and $u_0=0$ give $u=0$.
+
+\emph{Step 4: conclusion.} The space $V_{n+1}$ has dimension $n+1$ (Step~1, $J$ injective), so its
+subspace $\{u\in V_{n+1}:u_0=0\}$, the kernel of one linear functional, has dimension at least $n$.
+Choose an $n$-dimensional subspace $W'$ of it and put $W=\sigma W'$. By Step~3, $W\subset\mathcal D$
+and $\dim W=n$. For $w=\sigma u\in W\setminus\{0\}$, $u\in W'\setminus\{0\}\subset V_{n+1}$, Steps~3
+and~2 give $E(w)/M(w)\le q^2E(u)/M(u)\le q^2\lambda_{n+1}$. By \eqref{eq:minmax} applied to $W$,
+$\lambda_n\le q^2\lambda_{n+1}$.
+\end{proof}
+
+\noindent\emph{Standing and checks.} Lemma~\ref{lem:shift} is proved, with no computer-assisted
+step. It uses only {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(i)},\textup{(iv)};
+it uses neither Theorem~\ref{thm:Tstar}, nor a Sturm oscillation theorem, nor any information on the
+index of an eigenvalue. The finite-horizon form of Step~3 is machine-checked in Lean~4 with Mathlib
+\cite{MathlibCommunity}, in \texttt{RoomB34.lean}: with $E_N(u)=\sum_{s<N}q^{-s}(u_{s+1}-u_s)^2$ and
+$M_N(u)=\sum_{s<N}2(1-q)q^{s+1}u_s^2$, \texttt{E\_shift\_eq} is
+$E_N(\sigma u)=q\bigl(E_{N+1}(u)-(u_1-u_0)^2\bigr)$, \texttt{E\_shift\_le} is
+$E_N(\sigma u)\le qE_{N+1}(u)$, \texttt{M\_shift\_eq\_general} and \texttt{M\_shift\_eq} are the
+identity for $M_N$ without and with $u_0=0$, and \texttt{rayleigh\_shift} is
+$E_N(\sigma u)/M_N(\sigma u)\le q^2E_{N+1}(u)/M_{N+1}(u)$ for $u_0=0$ and $M_{N+1}(u)>0$. Each
+depends only on \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. Letting
+$N\to\infty$ in these identities of partial sums of non-negative series gives \eqref{eq:shiftEM}.
+Steps~1, 2 and~4, the description of $\sigma$ on $X$, and the passage $N\to\infty$ are not
+formalised. The inequality is sharp as $n\to\infty$ at fixed $q$: at $q=0.6$ ($40$ digits, truncation
+$90$) the ratios $\lambda_n/(q^2\lambda_{n+1})$ for $n=1,\dots,6$ are $0.3292$, $0.9187$,
+$0.99869$, $0.9999979$, $1-3.8\cdot10^{-10}$ and $1-8\cdot10^{-15}$.
+
 \begin{proposition}[the sign of $S_e$, and half-interlacing]\label{prop:signlaws}
 Put $\mathbf v=D_e^{1/2}\mathbf 1=(\sqrt{2q^{1+s}})_{s\ge0}\in\ell^2$.
 \begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
@@ -1237,8 +1344,9 @@ $\lambda_k(q_m)=1$ and $\phi$ the normalised eigenvector,
 \]
 \item $\operatorname{sign}\Sigma_0(q_m)=(-1)^{m-1}$; hence
 $\Sigma_0$ has at least one zero in each interval $(q_m,q_{m+1})$.
-\item If $\lambda_{m-1}(q_m)<q_m$, then
-$\operatorname{sign}S_e(q_m)=(-1)^{m-1}$.
+\item $\lambda_{m-1}(q_m)\le q_m^2<q_m$ for $m\ge2$, and
+$\operatorname{sign}S_e(q_m)=(-1)^{m-1}$; hence $S_e$ has at least one zero in each interval
+$(q_m,q_{m+1})$.
 \end{enumerate}
 \end{proposition}
 
@@ -1271,14 +1379,23 @@ factor $1-1/\lambda_k(q_m)=0$. This gives the formula, and $w_m>0$ because $\Sig
 So $\Sigma_0$ alternates in sign along the poles, and, being continuous, vanishes between
 consecutive ones.
 
-(c) By {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(iv)},\textup{(v)} at $\lambda=q$,
-$S_e(q_m)=\prod_j\bigl(1-q_m/\lambda_j(q_m)\bigr)$. For $j>m$, $\lambda_j>1>q_m$; for $j=m$ the
-factor is $1-q_m>0$; for $j<m$, $\lambda_j\le\lambda_{m-1}<q_m$ and the factor is negative.
+(c) Let $\lambda_k(q_m)=1$. By Lemma~\ref{lem:shift} with $n=k-1$, if $k\ge2$ then
+\[
+   \lambda_{k-1}(q_m)\le q_m^2\,\lambda_k(q_m)=q_m^2<q_m .
+\]
+By {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(iv)},\textup{(v)} at $\lambda=q$,
+$S_e(q_m)=\prod_j\bigl(1-q_m/\lambda_j(q_m)\bigr)$. For $j>k$, $\lambda_j>1>q_m$ and the factor is
+positive; for $j=k$ the factor is $1-q_m>0$; for $j<k$, $\lambda_j\le\lambda_{k-1}<q_m$ and the factor
+is negative. So $\operatorname{sign}S_e(q_m)=(-1)^{k-1}$, for whichever $k$ has $\lambda_k(q_m)=1$.
+By Proposition~\ref{prop:simplepoles}\textup{(i)}, $k=m$, which gives both statements of (c).
+Finally $S_e(q)=F(q,q)$ is continuous in $q$ on $(0,1)$, so it vanishes between consecutive poles.
 \end{proof}
 
-\noindent The extra condition in (c) would follow from a shift inequality
-$\lambda_n(q)\le q^2\lambda_{n+1}(q)$, which gives $\lambda_{m-1}(q_m)\le q_m^2<q_m$; that
-inequality is \emph{not} proved in this paper, so (c) carries it as a hypothesis. Numerically, at
+\noindent The first half of the proof of (c) does not use the index: without
+Proposition~\ref{prop:simplepoles}, and so without Theorem~\ref{thm:Tstar}, it gives
+$\operatorname{sign}S_e(q_m)=(-1)^{k-1}$ where $\lambda_k(q_m)=1$. The index identification $k=m$ is
+Proposition~\ref{prop:simplepoles}\textup{(i)}; it is the only place where (c) uses
+Theorem~\ref{thm:Tstar}. Numerically, at
 $m=2,\dots,6$, $\lambda_{m-1}(q_m)=0.112,\ 0.360,\ 0.510,\ 0.605,\ 0.670$, well below $q_m^2$, and
 $S_e(q_m)=0.520,\ -0.210,\ 0.127,\ -0.091,\ 0.071,\ -0.058$ for $m=1,\dots,6$ ($50$ digits). The
 sign alternation of $\Sigma_0$ is the one recorded for the first $32$ poles in
@@ -1289,7 +1406,8 @@ Earlier versions of this paper carried \textup{(T$^\ast_{\mathrm{poles}}$)} as a
 working notes also carried three inputs beside it for the same purpose: \textup{(I1)} a Sturm
 oscillation theorem for the Friedrichs realisation of the eigenvalue problem; \textup{(I2)}
 Hellmann--Feynman on a $q$-dependent form domain; \textup{(I3)}
-{\cite[Proposition \textup{prop:qtrig}]{Bonfioli2026bA}} with Lemma~\ref{lem:infpoles}. Their
+{\cite[Proposition \textup{prop:qtrig}]{Bonfioli2026bA}} with Lemma~\ref{lem:infpoles}; and
+Proposition~\ref{prop:signlaws}\textup{(c)} carried a shift inequality as an extra hypothesis. Their
 standing is now as follows.
 \begin{itemize}[leftmargin=1.5em,itemsep=0.1em,topsep=0.2em]
 \item \textup{(T$^\ast_{\mathrm{poles}}$)} is Theorem~\ref{thm:Tstar}. It is proved, with one
@@ -1307,11 +1425,17 @@ Proposition~\ref{prop:simplepoles}\textup{(i)} into the count of $m-1$ sign chan
 nothing here needs; that count remains unproved here (it is checked numerically for $m\le50$).
 The Friedrichs-domain question behind \textup{(I1)} and \textup{(I2)} does not arise either:
 $u_s=(KR)_s\to0$ follows from $R\in\ell^1$ (Step~0 of the proof of Theorem~\ref{thm:Tstar}).
+\item The shift inequality $\lambda_n\le q^2\lambda_{n+1}$, formerly an extra hypothesis of
+Proposition~\ref{prop:signlaws}\textup{(c)}, is Lemma~\ref{lem:shift}. It is proved, by min-max on
+the explicit subspace $\mathcal D=KD_e^{1/2}\ell^2$, with no computer-assisted step and none of
+\textup{(I1)}--\textup{(I3)} or Theorem~\ref{thm:Tstar}; its finite-horizon shift identities are
+formalised in \texttt{RoomB34.lean}.
 \end{itemize}
-So Proposition~\ref{prop:simplepoles} and Proposition~\ref{prop:signlaws}\textup{(a)},\textup{(b)}
-are proved, at the standing of Theorem~\ref{thm:Tstar}. Proposition~\ref{prop:signlaws}\textup{(c)}
-is proved under its stated extra condition $\lambda_{m-1}(q_m)<q_m$, which would follow from the
-shift inequality $\lambda_n\le q^2\lambda_{n+1}$; that inequality is \emph{not} proved here.
+So Proposition~\ref{prop:simplepoles} and Proposition~\ref{prop:signlaws} are proved, all three
+parts of the latter without extra hypotheses, at the standing of Theorem~\ref{thm:Tstar}. For
+Proposition~\ref{prop:signlaws}\textup{(c)} that standing enters only through the index
+identification $\lambda_m(q_m)=1$ of Proposition~\ref{prop:simplepoles}\textup{(i)}; the sign
+$(-1)^{k-1}$ at a pole where $\lambda_k=1$ follows from Lemma~\ref{lem:shift} alone.
 No other theorem of this paper depends on these propositions:
 {\cite[Proposition ``the shape of the local form'', \textup{prop:shape}]{Bonfioli2026bA}} needs only
 $\pi\ge p\ge1$, and {\cite[Theorem ``closed form of the junction pairing'', \textup{thm:RJ}]{Bonfioli2026bA}}
