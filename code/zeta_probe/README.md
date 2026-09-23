@@ -53,6 +53,7 @@ is treated as a bug.
 | `gaussint_verify.py` | The Hubbard-Stratonovich Gaussian-integral representation of `S_e` (`rem:gaussint`, `eq:HS`). |
 | `cumulant_verify.py` | The cumulant chain at the tabulated travel poles. That route is closed and superseded; the script is kept as a check on the identities it verifies. |
 | `budget.py`, `budget_iv.py` | The bound chain of the same closed route, the second in interval arithmetic. |
+| `rj_certificates/` | `thm:RJ` and `thm:model`. `r35rust/src/bin/r54b.rs` proves positivity of the junction pairing `<lambda,R>` at `q_1..q_12`, and `r39pole` gives the certified count of 13 zeros of `1 - Sigma_1` on `[0, 0.9988]`. Both use MPFR interval arithmetic. The directory also holds supporting interval certificates and the group BFS `mnk` and tuple enumerator `revO` behind the assembly evidence (exact to `x^26` at `y = q`, 816 coefficients at symbolic `y`, `v_0..v_19`). Its own `README.md` gives arguments and trust base. |
 
 ## paper_orthoscheme
 
@@ -68,7 +69,8 @@ gap-run cycle count of the transfer model), `ortho_len6` and `ortho_cd` (the
 length-six kernel exclusion and the collision depth), `nodfinite` and `norec`
 (the finite-horizon exclusion certificates and their Lean data), `u_modp_rust`
 (the mod-`p` kernel census), `shape_arith`, `hexdist`, `paper4_ball12` and
-`paper4_strata`.
+`paper4_strata`. The (R-J) certificates `r54b` and `r39pole` are not under
+`tools/`; they are in `rj_certificates/` (see above).
 
 ## Build
 

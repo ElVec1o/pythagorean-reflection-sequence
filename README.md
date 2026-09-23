@@ -56,10 +56,11 @@ paper/
   journal/    the five release papers, .tex and .pdf
   OEIS/       b-files and the published-sequence index
 lean/         Lean 4, Mathlib-free project (6 targets)
-  with_mathlib/   Lean 4, Mathlib project (62 targets)
+  with_mathlib/   Lean 4, Mathlib project (124 targets)
 code/
   data/       u_terms_43.txt
   zeta_probe/     symbolic group model, word metric, certificates, Rust tools
+    rj_certificates/  interval certificates for (R-J) and the pole count, model BFS (paper 2)
   rust_bfs/       disk-streaming exact-rational orbit BFS
   rust_christol_bfs/  mod-p kernel census
   triangle_relations/ shortest-relation and stratum scripts (paper 4)
@@ -79,7 +80,7 @@ All five are in `paper/journal/`, source and PDF.
 | File | Pages | Title |
 |---|---|---|
 | `paper1` | 58 | The Universal Right-Triangle Reflection Sequence: a word-length metric, effective universality, and the lamplighter structure of A396406 |
-| `paper2` | 74 | Transcendence of a planar reflection-group growth series and its relaxed companion |
+| `paper2` | 89 | Transcendence of a planar reflection-group growth series and its relaxed companion |
 | `paper4` | 32 | The shortest relations of planar triangle reflection groups |
 | `paper_orthoscheme` | 31 | Universality for orthoscheme reflection groups: the right-angled Coxeter envelope and the collision depth |
 | `hahn_exton_qcosine` | 20 | Differential transcendence of the Hahn-Exton q-cosine and the arithmetic of its zeros |
@@ -120,22 +121,40 @@ papers state the same fact at different strengths, the weaker is used here.
   translation lattice is computed exactly as `T = 2(t-1) Z[t^{+-1}]` by a
   Mayer-Vietoris/Crowell identification with a cyclic `Z[Q]`-ideal.
 - The word metric: `l_T = l_R + 2c`, a relaxed length plus twice an explicit
-  connectivity penalty. **The upper bound is proved; the lower bound is not.**
-  It is stated as `conj:lowerbound` and verified with 0 exceptions on all
-  275,823 elements to depth 24. A previous version deduced it from a
-  finite-state argument that was circular; the retraction is `rem:lowerbound-open`.
+  connectivity penalty. **Both bounds are proved**: with `l_R` and `c` the
+  site-local closed forms, `wordLength = l_R + 2c` holds for every element
+  (Lean theorem `metricAll`, via `PhiLipschitz.lean`). `conj:lowerbound` was
+  verified with 0 exceptions on all 275,823 elements to depth 24 before it was
+  proved; a previous version deduced it from a finite-state argument that was
+  circular, retracted in `rem:lowerbound-open`. Still verified, not proved:
+  that the closed form `l_R` is also the minimum over relaxed realisations.
 - Growth rate `beta_2 = 1.4916177871...`, and `3/2` is excluded. Paper 1 proves
   this by squeezing `u_d` between the pure-travel subcount and the relaxed
   count. Paper 2's `cor:beta` records the dependency more finely: the lower
-  bound `beta_2` for both `u_n` and `v_n` is free of the transfer model **(M)**;
-  identifying the rate of `v_n` with `beta_2` uses **(M)**; the same rate for
-  `u_n` additionally uses **(T)**.
+  bound `beta_2` for both `u_n` and `v_n` is free of the transfer model (M);
+  identifying the rate of `v_n` with `beta_2` uses (M), now a theorem
+  (`thm:model`); the same rate for `u_n` additionally uses (T), now
+  `prop:travelinv`, and the positivity of the junction pairing at `q_1`.
 
 ### Arithmetic of the growth series (paper 2)
 
-Three hypotheses appear by name. **(M)** is the strand-walk transfer model.
-**(T)** is invariance of the travel block, `prop:travelinv`. **(R-J)** is
-non-vanishing of the junction pairing at infinitely many travel poles.
+`U` and `V` are the growth series of the universal group `W_univ`: `U` counts
+by word length (`U = A396406`), and `V` counts by relaxed length. Three inputs
+were carried as hypotheses by earlier versions. All three are now theorems:
+
+- **(M)**, the strand-walk transfer model, is `thm:model`. The metric identity
+  `wordLength = l_R + 2c` for every element (`metricAll`) and the faithfulness
+  of the model to `W_univ` (`RJPhi.lean`) are formalised in Lean. The assembly
+  step (M3'), in corrected form, has a hand proof in Appendix `app:M3prime` and
+  is not formalised.
+- **(T)**, invariance of the travel block, is `prop:travelinv`.
+- **(R-J)**, the junction pairing, is `thm:RJ`. `<lambda,R>` has an exact
+  closed form in `t_1` at `y = 1` and at `y = q`. It is positive at every
+  travel pole: analytically, from the gate, for `tau_m <= 5e-3` (all
+  `m >= 7`), and by MPFR interval certificate at `q_1, ..., q_12`
+  (`code/zeta_probe/rj_certificates/`).
+
+The results:
 
 - **`thm:blocks` splits.** For each catalytic block `Sigma_0, Sigma_1, S_0, S_1`
   the Polya-Carlson dichotomy is **unconditional**: each is rational with poles
@@ -152,25 +171,39 @@ non-vanishing of the junction pairing at infinitely many travel poles.
   numerical input is `lem:T2abs`, of which it consumes only `|T_2(m pi)| < 1`
   against a computed worst value of 0.027; that bound is a verified enclosure
   over the parameter region, not a sampled one.
-- **`thm:V` is conditional** on **(R-J)** at `y = 1`, with **(M)** beneath it.
-- **`thm:U` is conditional** on **(T)**, on **(R-J)** at `y = q`, and on **(M)**.
-  The hypothesis **(L)** that earlier versions carried is now a theorem
-  (`thm:L`). Neither `U` nor `V` is transcendental unconditionally in this
-  repository.
-- Unconditionally, and independently of **(M)**, **(T)** and **(R-J)**: the
-  amplitude estimate `(star)` holds at every travel pole (`thm:star`), as does
-  the denominator bound `|S_e| >= 0.63 sqrt(tau)`, so the gate closes. The
-  passage from the gate to a pole of `U` is what is missing.
+- **`thm:V` and `thm:U` carry no hypotheses.** `V` and `U` are transcendental
+  over `Q(x)`. The proofs are computer-assisted in two finite ranges: the
+  interval certificates for (R-J) at the first twelve poles, and the six poles
+  above `tau = 5e-3` in the gate `thm:star`, checked at 120-digit precision. The
+  hand proof of (M3') is the one unformalised combinatorial step. Only
+  infinitely many poles are needed, and the analytic range supplies them, so
+  the pole certificate is needed only for the statement "at every travel pole".
+- The gate: the amplitude estimate `(star)` holds at every travel pole
+  (`thm:star`), as does the denominator bound `|S_e| >= 0.63 sqrt(tau)`.
+  `thm:L` gives the bulk dictionary and the finiteness of
+  `B_0 = 1/(1 - g t_1)` at every travel pole. The false positivity claim that
+  earlier versions attached to `thm:L`, and the identity `eq:liftident`, are
+  removed.
+- **Evidence for the assembly.** Earlier versions cited agreement "to `v_14`".
+  That check was a sweep of the bridge `l_T = l_R + 2c`, not of the assembled
+  blocks, and it is withdrawn. It is replaced by a breadth-first enumeration of
+  `W_univ`: exact series agreement to `x^26` at `y = q` in all three sectors, and
+  to `x^22` at `y = q^2`. At symbolic `y` all 816 coefficients with `l_T <= 31`
+  agree (`5.03e6` elements), and a deliberately corrupted model is detected.
+  `v_0 .. v_19` are certified.
 - The site-cost law of the model is a theorem inside the crossing optimisation
   (`lem:transport`, `cor:localcost`), and its marker clause is corrected: the
   junction cost is `max(|d_L - 1|, |d_R|)`, not the `max(|d_L| - 1, |d_R|)`
   carried by earlier versions, which is false on every cell with `d_L <= -2`
-  and `|d_R| <= |d_L|`. The shield law is half proved: the inequality
-  `c >= L - 1` per gap run (`prop:cut`). The reverse inequality, the
-  decomposition (M3), and the crossing optimisation itself remain verified and
-  not proved.
-- An orthogonal route via Christol's theorem would settle `U` with none of the
-  above. The `p`-kernel of `(u_n mod p)` is computed to be maximally
+  and `|d_R| <= |d_L|`. The shield law is half proved: `c >= |Z|` (`prop:cut`).
+  The reverse inequality `c <= |Z|` is verified and not proved
+  (`rem:shieldowes`). `thm:model` no longer needs it, because `metricAll`
+  proves the metric identity directly. That the closed form `l_R` is also the
+  minimum over relaxed realisations is paper 1's metric formula. It bears only
+  on reading `V` as a relaxed count.
+- Open: whether the **number** `beta_2` is transcendental.
+- An orthogonal route via Christol's theorem, independent of all the above,
+  would give a second proof for `U`. The `p`-kernel of `(u_n mod p)` is computed to be maximally
   non-automatic at `p = 3, 5` and machine-checked at `p = 3`; a proof for
   dense-support series is open.
 
@@ -205,9 +238,14 @@ curves `24a1`, `72a2` and `y^2 = x^3 - x`.
 Together these give the collision depth from two positional statistics of the
 leg sequence: `cd_n = 3` when three consecutive legs are equal and `cd_n = 4`
 when only an endpoint pair is equal, both **unconditional**. On the remaining
-stratum `cd_n = infinity` exactly when the affine representation is injective,
-and that is **open for `n >= 3`** (Conjecture "Class C faithfulness"). It is
-settled in the plane only, where the representation is not injective.
+stratum `cd_n = infinity` exactly when the affine representation is injective.
+The envelope `W_n` itself embeds in `O(n)`, hence in `Isom(R^n)`, for every
+`n >= 3` (`thm:alln` in `merged_novel_paper.tex`), and `n = 2` is the proved
+exception. Injectivity of the affine representation at a given shape is a
+separate question: its arithmetic form ("Class C faithfulness") is **false**
+(`thm:masterCfalse`); the generic form holds at `n = 3`, where the tuple
+`(1,2,11)` is faithful, and is open for `n >= 4`. In the plane the
+representation is not injective.
 
 `thm:barrier` shows the planar amenability argument cannot be run in any
 dimension `n >= 3`: `O(n)` contains a free subgroup of rank two for `n >= 3`, so
@@ -240,7 +278,7 @@ Two projects, no `sorry` in either.
 | | Toolchain | Targets | Contents |
 |---|---|---|---|
 | `lean/` | `v4.13.0` | 6 | Mathlib-free. The eight length-10 affine relations on `(3,4,5)`, the Coxeter relations, a first-principles BFS of A396406 to depth 17, the Fibonacci coincidence, the Schur-complement determinant identity on concrete leg sequences, Euler's theorem for finite directed multigraphs, the combinatorial core of the metric bounds, the rotation-relation classification, and the finite content of paper 1's appendices. |
-| `lean/with_mathlib/` | `v4.30.0` | 108 | Requires Mathlib. Symbolic universality over `Q(a,b)` through `u_22`; the site-cost chain of paper 2's model; Mobius/Riccati factorisation at `l^1`; the Polya-Carlson coefficient bound; the mod-3 kernel censuses; the orthoscheme normals, rank-two exclusion and length-6 triple; the honeycomb distance and its graph realisation; the census identities and stratum censuses of paper 4; the Hahn-Exton exponent, ledger, exclusion and zero-series files; and the corrected metric identity (`CorrectedSpan`, `PhiLipschitz`). |
+| `lean/with_mathlib/` | `v4.30.0` | 124 | Requires Mathlib. Symbolic universality over `Q(a,b)` through `u_22`; the site-cost chain of paper 2's model; Mobius/Riccati factorisation at `l^1`; the Polya-Carlson coefficient bound; the mod-3 kernel censuses; the orthoscheme normals, rank-two exclusion and length-6 triple; the honeycomb distance and its graph realisation; the census identities and stratum censuses of paper 4; the Hahn-Exton exponent, ledger, exclusion and zero-series files; the corrected metric identity (`CorrectedSpan`, `PhiLipschitz`); and paper 2's junction pairing and model (`RJ*`, `Tstar*`, `RoomB34`, see below). |
 
 Every target is registered both as a `[[lean_lib]]` and in `defaultTargets`, so
 a clean `lake build` builds and checks all of them and all are covered by the
@@ -256,10 +294,13 @@ declared in the papers. `CylCensus.lean` is the slowest target at about 21
 minutes; `SymbolicVerification.lean` needs about 9.6 GB to elaborate and is
 cited by paper 1 as a tier-(i) result. The remaining files use only Lean's standard axioms.
 
-**What is not formalised.** Paper 2 measures its own formalisation debt against
-a reproducible criterion and prints it: of its 67 statements, 5 are formalised,
-53 carry a complete written proof that has not been formalised, and 9 are
-supported by computation only. Eighteen analytic atoms are blocked
+**What is not formalised.** Paper 2's combinatorial layer is formalised and its
+analytic layer is not. The paper lists, per analytic statement, the missing
+Mathlib object that blocks it (`sec:leanboundary`). For `thm:V` and `thm:U` the
+unformalised inputs are the assembly (M3') (a hand proof), the gate
+`thm:star` and every analytic estimate behind it, the identification of the
+Lean eigen-recursion hypotheses with the operators at an actual travel pole,
+and the interval certificates. The analytic atoms are blocked
 by Mathlib's current contents, which has no q-Pochhammer, no Jacobi triple
 product, no Hahn-Exton q-Bessel, no q-difference equations and no steepest
 descent. Each remaining star carries a recorded blocker in the paper. Absence of
@@ -315,7 +356,18 @@ python3 code/zeta_probe/blocks_growth.py
 # Length-6 kernel exclusion for orthoschemes, exact integer matrices,
 # over primitive integer leg tuples in dimension n with legs bounded by L
 cd code/zeta_probe/tools/ortho_len6 && cargo run --release -- 3 200
+
+# (R-J) positivity at q_1..q_12, MPFR interval arithmetic (thm:RJ)
+cd code/zeta_probe/rj_certificates/r35rust && cargo build --release && \
+  ./target/release/r54b ../models/poles_40.json 8,200 1 2 3 4 5 6 7 8 9 10 11 12
+
+# Certified zero count of 1 - Sigma_1: 13 zeros on [0, 0.9988]
+cd code/zeta_probe/rj_certificates/r39pole && cargo build --release && \
+  ./target/release/r39pole 0.985 0.9988 256 40 8
 ```
+
+`code/zeta_probe/rj_certificates/README.md` lists every certificate there, with
+its arguments and trust base (MPFR plus hand-written interval code).
 
 `code/zeta_probe/README.md` indexes that directory. `code/reproduce/` holds
 standalone scripts that do not depend on it.
@@ -344,16 +396,37 @@ which always resolves to the latest archived release. Metadata in
 `CITATION.cff`.
 
 
-## Status of the formalisation (v10.3.0)
+## Status of the formalisation (v10.4.0)
 
 The Lean development is in `lean/with_mathlib/` (Mathlib project) and `lean/`
 (Mathlib-free). The whole build is clean with **0 `sorry`** and every
 declaration carries a `#print axioms` line. Nine files use `native_decide`
-(named and scoped below); the rest use only Lean's standard axioms. This
-release's own new content (`BlockAdditivity`, `BlockAdditivityGeneral`,
+(named and scoped below); the rest use only Lean's standard axioms. The
+v10.3.0 content (`BlockAdditivity`, `BlockAdditivityGeneral`,
 `DihedralGeodesic`, `DmLength`, `PhiLipschitz`, `CorrectedSpan`) uses neither
 `native_decide` nor `ofReduceBool`. Claims below are machine-checked unless
 marked otherwise.
+
+**New in v10.4.0 (paper 2's (M) and (R-J)).** Ten files in `lean/with_mathlib/`,
+all in `defaultTargets`. None uses `sorry` or `native_decide`, and the recorded
+`#print axioms` output lists only the standard axioms. Counts are `#print axioms`
+lines per file, 104 in all:
+
+| File | `#print axioms` | Contents |
+|---|---|---|
+| `RJMain.lean` | 24 | The `X`, `Y` shift identities and their solutions (`X_shift`, `Y_shift`, `X_closed`, `Y_closed`), including the double-sum interchange (`summable_swap`). |
+| `RJShift.lean` | 7 | Shift-identity support for `RJMain`. |
+| `RJClosedForm.lean` | 11 | The closed forms of `Pi_1`, `Pi_q` (`closed_form`, `closed_form_yq`) and the positivity step from the gate bound (`gate_bound`, `bracket_pos`, `bracket_yq_pos`). |
+| `RJIdentities.lean` | 15 | Auxiliary finite identities for the travel recursion (Casoratian telescoping). |
+| `RJLemmaJ.lean` | 10 | The junction cut criterion used in `app:M3prime`, against `SiteCost.PathData.cut`. |
+| `RJPhi.lean` | 15 | Faithfulness of the model: the affine realisation intertwines the three generators and is injective. |
+| `RJMetricAll.lean` | 1 | `metricAll`: `wordLength = lRTrue + 2 cTrue` for every element. |
+| `TstarCore.lean` | 2 | The leapfrog drift identity behind the gate amplitude. |
+| `TstarAmplitude.lean` | 8 | Amplitude bounds for the leapfrog invariant `G_s` (AM-GM step, per-step ratio, telescoped max/min bound). |
+| `RoomB34.lean` | 11 | A parallel development of the same leapfrog amplitude bounds. |
+
+In these files the gate, the analytic estimates and the eigen-relations of `R`
+enter as hypotheses.
 
 **Closed.**
 
@@ -382,7 +455,7 @@ marked otherwise.
   site, so the `Φ = 0` conjunct in `PathData.cut` is redundant.
 - **The full corrected metric identity, unconditionally, for every reachable
   `g`**: `wordLength g = lRTrue g + 2 * cTrue g` (`PhiLipschitz.wordLength_eq_lRTrue_add_two_cTrue`).
-  This release closes both directions left open at v10.0.0. The lower bound
+  v10.3.0 closed both directions left open at v10.0.0. The lower bound
   (`wordLength_ge_lRTrue_add_two_cTrue`) follows from the 1-Lipschitz property
   of `Φ = lRTrue + 2·cTrue` over all three generators. The upper bound
   (`wordLength_le_lRTrue_add_two_cTrue`) follows from a fully unconditional
@@ -393,7 +466,7 @@ marked otherwise.
   using that all three generators are involutions to run the chain backward
   from `g` to the identity.
 
-**Retracted or corrected in this release** — anyone citing v9.x should re-check.
+**Retracted or corrected in v10.3.0** — anyone citing v9.x should re-check.
 
 - The metric identity `l_T = l_R + 2c` is **false as formalised**, for the Lean
   development's own `c`; it fails at the identity element. Two definitional
@@ -410,10 +483,10 @@ marked otherwise.
   at even multiplicities; the correct construction is spine+zigzag. The counting
   core is kernel-checked in `ZigzagParity`.
 
-**Open.** `(M2)`'s reverse shield inequality; `(M3)` after restatement, i.e.
-identifying `W` with the site-kernel resolvent; and `lem:noab`. (The formalised
-metric identity's own lower bound, listed as open in v10.0.0, is closed as of
-this release — see above.)
+**Open.** `(M2)`'s reverse shield inequality, which `thm:model` no longer needs;
+a Lean formalisation of the assembly (M3'), which has a hand proof in paper 2's
+Appendix `app:M3prime`; and `lem:noab`. (The formalised metric identity's own
+lower bound, listed as open in v10.0.0, was closed in v10.3.0.)
 
 ## On the use of AI
 

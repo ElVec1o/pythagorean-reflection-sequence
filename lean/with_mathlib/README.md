@@ -1,7 +1,7 @@
 # Symbolic verification (with Mathlib)
 
 A separate Lean 4 project requiring Mathlib, pinned to `leanprover/lean4:v4.30.0`
-(matching Mathlib `v4.30.0`). It has **60 build targets**: 59 source files in
+(matching Mathlib `v4.30.0`). It has **124 build targets**: 123 source files in
 this directory plus `RotationRelations`, which is compiled in place from
 `../RotationRelations.lean` through a `srcDir` entry so that there is exactly
 one copy of it. Every target is registered both as a `[[lean_lib]]` and in
@@ -83,10 +83,28 @@ project, carry the rest of the appendix propositions.
 | `SDAssembly.lean` | `lem:infpoles`, infinitude and accumulation of the travel poles, machine-checked from its analytic input. |
 | `UAssembly.lean` | The assembly of `thm:U`. Each analytic lemma enters as an explicit named hypothesis, so what is certified is that they compose into the conclusion, not that they hold. |
 
-**What is not formalised.** Paper 2 prints its own formalisation debt against a
-reproducible criterion: of 67 statements, 53 carry a complete written proof that
-has not been formalised, and each carries a recorded blocker. Eighteen analytic
-atoms are blocked by Mathlib's current contents, which has no q-Pochhammer, no
+### The model (M) and the junction pairing (R-J)
+
+Added in v10.4.0 (`thm:model`, `thm:RJ`, `sec:RJlean` of paper 2). All ten use
+only the standard axioms, with no `sorry` and no `native_decide`. The gate, the
+analytic estimates and the eigen-relations of `R` enter as hypotheses.
+
+| File | Contents |
+|---|---|
+| `RJMetricAll.lean` | `metricAll`: `wordLength = lRTrue + 2 cTrue` for every element, via `reaches_of_phiZ` in `PhiLipschitz.lean`. |
+| `RJPhi.lean` | The faithfulness of the model: the affine realisation over `Z[t,t^-1]` intertwines the three generators (`intertwine_s1..s3`) and is `injective`. |
+| `RJLemmaJ.lean` | The junction cut criterion and the bulk-site cut rule used in `app:M3prime`, against `SiteCost.PathData.cut`. |
+| `RJMain.lean`, `RJShift.lean` | The `X`, `Y` shift identities and their solutions (`X_shift`, `Y_shift`, `X_closed`, `Y_closed`), with the double-sum interchange `summable_swap`. |
+| `RJClosedForm.lean` | The closed forms `closed_form`, `closed_form_yq` of `Pi_1`, `Pi_q`, and the positivity step from the gate (`gate_bound`, `bracket_pos`, `bracket_yq_pos`). |
+| `RJIdentities.lean` | Auxiliary finite identities for the travel recursion. |
+| `TstarCore.lean`, `TstarAmplitude.lean`, `RoomB34.lean` | The leapfrog drift identity and the amplitude bounds on its invariant behind the gate. `RoomB34` is a parallel development of the same bounds. |
+
+The assembly (M3') (Appendix `app:M3prime`) is a hand proof and is not
+formalised.
+
+**What is not formalised.** Paper 2's analytic layer, and the assembly (M3').
+The paper lists, per analytic statement, the missing Mathlib object that blocks
+it (`sec:leanboundary`). The analytic atoms are blocked by Mathlib's current contents, which has no q-Pochhammer, no
 q-binomial, no Bessel functions, no Jacobi triple product, no q-difference
 equations and no steepest descent or stationary phase. Mathlib does carry
 `jacobiTheta2` with summability, analyticity and the modular functional

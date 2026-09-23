@@ -1,0 +1,9 @@
+[package]
+name = "r39pole"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+rug = { version = "1.30", default-features = false, features = ["float"] }
+libc = "0.2"
+[profile.release]
+opt-level = 3

@@ -63,11 +63,13 @@ ambient embedding problem is equivalent to the question of whether $W_n$ embeds 
 $O(2)$ alone, without amenability of $\Isom(\R^2)$, and it isolates non-commutativity of $O(n)$
 as the exact point at which the planar argument fails for $n\ge3$.
 
-Section~\ref{sec:status} states, for each result, what it is conditional on. Three hypotheses are
-open and are named wherever they are used: the strand-walk transfer model $(M)$, the junction
-pairing $(R\!-\!J)$, and the invariance of the travel block $(T)$. Transcendence of the full
-growth series $U$ and of its relaxed companion $V$ is conditional on these and is not claimed
-here. Irrationality of $\beta_2$ is open.
+Section~\ref{sec:status} states, for each result, what it is conditional on. Three statements
+that earlier versions carried as open hypotheses are named wherever they are used: the
+strand-walk transfer model $(M)$, the junction pairing $(R\!-\!J)$, and the invariance of the
+travel block $(T)$. All three are now proved in paper~2 \cite{paper2}, $(R\!-\!J)$ with computer
+assistance in the certificate ranges, and there the full growth series $U$ and its relaxed
+companion $V$ are proved transcendental over $\Q(x)$ with no hypothesis. That proof is not
+repeated here. Irrationality of $\beta_2$ is open.
 
 Sections~\ref{sec:masterC} and \ref{sec:faithful} settle the three-dimensional case. The
 conjecture that the orthoscheme representation is faithful at every Class C rational leg tuple is
@@ -104,14 +106,16 @@ axioms only and no \texttt{sorry}: Proposition~\ref{prop:transtrick} and its con
 $\det=1$ for the travel and bulk transfer matrices; nilpotence of their increments; and the
 half-shift identity. The effective strength of a result is the weakest label in its dependency chain.
 
-\subsection{The three open hypotheses}
-\begin{hypothesis}[transfer model, $(M)$]\label{hyp:M}
+\subsection{The three former hypotheses}
+\begin{theorem}[transfer model, $(M)$; PROVED in \cite{paper2}]\label{hyp:M}
 The strand-walk model computes the relaxed word length, that is, the crossing optimisation of the
-site-cost chain is the relaxed length.
-\end{hypothesis}
-\begin{hypothesis}[junction pairing, $(R\!-\!J)$]\label{hyp:RJ}
-The junction pairing $\Pi_y(q_m)$ is nonzero at infinitely many travel poles $q_m$.
-\end{hypothesis}
+site-cost chain is the relaxed length. This is Theorem~\texttt{thm:model} of \cite{paper2}.
+\end{theorem}
+\begin{theorem}[junction pairing, $(R\!-\!J)$; PROVED in \cite{paper2}]\label{hyp:RJ}
+The junction pairing $\Pi_y(q_m)$ is nonzero at infinitely many travel poles $q_m$. This is
+Theorem~\texttt{thm:RJ} of \cite{paper2}, which gives $\Pi_y(q_m)$ in closed form and shows it
+positive at every travel pole, with computer assistance in the certificate ranges.
+\end{theorem}
 \begin{hypothesis}[travel-block invariance, $(T)$]\label{hyp:T}
 The denominator $1-\Sigma_1$ is the identical, cycle-marker-free object in the generating
 functions of $U$ and of $V$, so $U$ and $V$ share the travel poles.
@@ -122,11 +126,11 @@ that paper's no-gap theorem and local-zero corollary); it is listed above only t
 statements that cite it readable, and nothing is conditional on it. Its earlier HEURISTIC standing
 rested on the localisation of cycles, checked exhaustively on the $3869$ pure-travel elements of
 true length at most $16$, and on the metric identity $\ell_T=\ell_R+2c$, whose upper bound is
-PROVED and whose lower bound is open. Hypothesis~\ref{hyp:RJ} is CONJECTURE.
-Hypothesis~\ref{hyp:M} is HEURISTIC and everything in the block-assembly sections is conditional
-on it; of its three parts, $(M1)$ is proved and machine-verified, $(M2)$ is proved apart from the
-reverse shield inequality, and $(M3)$ is unproved and vacuous as stated
-(Remark~\ref{rem:notclaimed}).
+PROVED and whose lower bound was then open (it is now the Lean theorem \texttt{metricAll}). Theorem~\ref{hyp:RJ} was CONJECTURE in earlier versions
+and is now PROVED in \cite{paper2}. Theorem~\ref{hyp:M} was HEURISTIC in earlier versions, with
+everything in the block-assembly sections conditional on it; it is now PROVED in \cite{paper2}
+(Theorem~\texttt{thm:model} there, whose word-length identity is the Lean theorem
+\texttt{metricAll}), so those sections are no longer conditional on it.
 
 \begin{remark}[what is not claimed]\label{rem:notclaimed}
 Claims that appeared in a draft consolidation and are withdrawn or corrected here, because
@@ -148,10 +152,8 @@ element, \texttt{wordLength}$(g)=$\texttt{lRTrue}$(g)+2\cdot$\texttt{cTrue}$(g)$
 on a corrected potential composed with a descent lemma made unconditional there
 (theorem \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue}, in the same file, built on the
 underlying element type of \texttt{EltBridge.lean};
-\texttt{\#print axioms} shows only the standard axioms). This does not by itself discharge
-Hypothesis~\ref{hyp:M}: that the crossing-optimisation closed forms
-(\texttt{lRTrue}, \texttt{cTrue}) compute the true relaxed length and defect the model is
-\emph{about} is a separate question, still HEURISTIC, unaffected by this identity.
+\texttt{\#print axioms} shows only the standard axioms). This identity, extended to every element as the Lean theorem \texttt{metricAll}, is part of
+Theorem~\ref{hyp:M}, now PROVED in \cite{paper2}.
 \item \textsc{Added.} The identity $\ell_T=\ell_R+2c$ was moreover \emph{false} as formalised
 before the repair below, for the formal $c$ of the Lean development, and this was a defect of
 two definitions rather than of the mathematics. It failed already at the identity element, where
@@ -1501,10 +1503,8 @@ upper bound is PROVED. The identification $c_{\mathrm{pred}}=c$ needed for the l
 stated here as a conjecture in an earlier version, is now PROVED
 (\texttt{lean/with\_mathlib/PhiLipschitz.lean}, \texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue},
 by an induction on a corrected potential rather than by identifying $c_{\mathrm{pred}}$ as
-finite-state and matching it to the transducer directly) -- see Remark~\ref{rem:notclaimed}. It
-does not by itself discharge Hypothesis~\ref{hyp:M}, that the
-crossing-optimisation closed forms compute the true relaxed length and defect, which remains
-HEURISTIC. The explicit transducer's agreement with the true defect, $0$ exceptions on the
+finite-state and matching it to the transducer directly) -- see Remark~\ref{rem:notclaimed}. Extended to every element as the Lean theorem \texttt{metricAll}, it is part of
+Theorem~\ref{hyp:M}, now PROVED in \cite{paper2}. The explicit transducer's agreement with the true defect, $0$ exceptions on the
 $275{,}823$ elements of the ball of radius $24$, held out at depths $19,21,23,24$, is retained as
 corroborating computational evidence, not the route by which the identification was proved. The
 junction site cost is
@@ -1538,10 +1538,11 @@ $\Sigma_1$ and $S_1$ are transcendental over $\Q(q)$ and have $|q|=1$ as a natur
 $\Sigma_0/(1-\Sigma_1)$ is transcendental over $\Q(x)$, unconditionally.
 \end{theorem}
 
-Transcendence of $V$ is conditional on $(M)$ and $(R\!-\!J)$; transcendence of $U$ is conditional
-on the same two. $(T)$ is \emph{no longer} a standing hypothesis: it is
-the travel-invariance proposition of paper~2, proved there via that paper's no-gap theorem and
-local-zero corollary. Neither transcendence statement is claimed here.
+Transcendence of $V$ and of $U$ over $\Q(x)$ is PROVED in paper~2 \cite{paper2}, with no
+hypothesis: $(M)$ and $(R\!-\!J)$ are theorems there (Theorems~\ref{hyp:M} and~\ref{hyp:RJ}), the
+latter computer-assisted in the certificate ranges, and $(T)$ is the travel-invariance
+proposition of paper~2, proved there via that paper's no-gap theorem and local-zero corollary.
+The proof is not repeated here.
 
 \section{The \texorpdfstring{$q$}{q}-cosine increment}\label{sec:qcos}
 
@@ -1558,12 +1559,13 @@ is the removal of a transcendence hypothesis on $q$ in the $SL_2$ statement.
 
 \section{The remaining directions}\label{sec:open}
 
-\begin{problem}[Prove $(R\!-\!J)$]\label{prob:rj}
-Show $\Pi_y(q_m)\ne0$ for infinitely many travel poles. This would make $V$ and $U$
-transcendental over $\Q(x)$ unconditionally, modulo $(M)$; $(T)$, which this step once also
-required, is now proved (the travel-invariance proposition of paper~2). What exists is an upper bound
-$|P_{12}|w^3<2$; what is needed is a lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$.
-\end{problem}
+\begin{remark}[$(R\!-\!J)$, formerly an open problem]\label{prob:rj}
+Earlier versions posed as a problem: show $\Pi_y(q_m)\ne0$ for infinitely many travel poles. This
+is now PROVED in \cite{paper2} (Theorem~\ref{hyp:RJ}), by a closed form for the pairing, and with
+$(M)$ and $(T)$, also proved there, it makes $V$ and $U$ transcendental over $\Q(x)$
+unconditionally. The route recorded here, through an upper bound $|P_{12}|w^3<2$ and a needed
+lower bound $|P_{12}(q_m)|\ge c\,w_m^{-3}$, is not the one that closed it.
+\end{remark}
 
 \begin{remark}[the travel problem is a Jacobi eigenvalue problem in a spectral gap]\label{rem:jacobi}
 The trailing coefficient of the three-term recursion is the constant $-q$, so the recursion
@@ -1634,7 +1636,9 @@ quantisation is not an independent statement. Writing $S_e=\cos W-T_2$, the size
 $(\sqrt2/36)\sqrt\tau\,\sin X+O(\tau)$ uniformly in the phase, so the zeros of $S_e$ are those of
 $\cos W$ displaced by $O(\sqrt\tau)$, which is exactly $w_m=(m-\tfrac12)\pi+O(\sqrt\tau)$.
 
-So the chain reads: $(R\!-\!J)$ follows from $(S1)$ and $(S2)$, and $(S2)$ is the inequality
+(The remainder of this section records a reduction of $(R\!-\!J)$ that predates its proof in
+\cite{paper2}, which goes by a closed form for $\Pi_y(q_m)$ instead; $(S1)$ and $(S2)$ are not
+needed for it.) So the chain reads: $(R\!-\!J)$ follows from $(S1)$ and $(S2)$, and $(S2)$ is the inequality
 $|C_\lambda|>xB$, whose measured margin is $w/2$.
 
 It is worth being precise about what this does \emph{not} need. An earlier version of this remark
@@ -1720,7 +1724,8 @@ $(R\!-\!J)$ follows from the two statements
 \item $|C_\lambda|>xB$ and the corresponding inequality for $\mu$, for infinitely many $m$.
 \end{enumerate}
 Both are inequalities about explicitly given finite sums, and neither is proved here. This is
-where we leave the problem: not at ``show the pairing is non-zero'' but at (S1) and (S2).
+where this route stopped; $(R\!-\!J)$ itself is proved in \cite{paper2} by a different route
+(Theorem~\ref{hyp:RJ}).
 
 Both hold at every pole computed, and with sharp laws rather than marginally. For (S1) the ratio
 $\text{head}/(-\Sigma_0(q_m))$ takes the values
@@ -2038,6 +2043,10 @@ functions. Even irrationality of $\beta_2$ is open.
 \bibitem{orthoscheme}
 V.~Bonfioli, \emph{Universality for orthoscheme reflection groups: the right-angled Coxeter
 envelope and the collision depth}, companion paper.
+
+\bibitem{paper2}
+V.~Bonfioli, \emph{Transcendence of a planar reflection-group growth series and its relaxed
+companion}, preprint (2026), \texttt{doi:10.5281/zenodo.20370090}.
 
 \bibitem{vinberg1971}
 E.~B. Vinberg,

@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DihedralGeodesic", "DmLength", "BlockAdditivity", "BlockAdditivityGeneral", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
+defaultTargets = ["OrthoschemeLoci", "RJIdentities", "RJShift", "RJClosedForm", "RJMain", "RJPhi", "RJLemmaJ", "RJMetricAll", "TstarCore", "TstarAmplitude", "RoomB34", "CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DihedralGeodesic", "DmLength", "BlockAdditivity", "BlockAdditivityGeneral", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
   "TranslationTrick",
   "TransferChain",
   "DiscriminantIdentity",
@@ -394,3 +394,36 @@ name = "BoundedDrift"
 
 [[lean_lib]]
 name = "PhiLipschitz"
+
+[[lean_lib]]
+name = "RJIdentities"
+
+[[lean_lib]]
+name = "RJShift"
+
+[[lean_lib]]
+name = "RJClosedForm"
+
+[[lean_lib]]
+name = "RJMain"
+
+[[lean_lib]]
+name = "RJPhi"
+
+[[lean_lib]]
+name = "RJLemmaJ"
+
+[[lean_lib]]
+name = "RJMetricAll"
+
+[[lean_lib]]
+name = "TstarCore"
+
+[[lean_lib]]
+name = "TstarAmplitude"
+
+[[lean_lib]]
+name = "RoomB34"
+
+[[lean_lib]]
+name = "OrthoschemeLoci"

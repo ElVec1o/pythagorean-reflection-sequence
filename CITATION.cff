@@ -20,27 +20,36 @@ abstract: >
   triangle (transcendental leg ratio), whose group is virtually the
   lamplighter Z wr Z; its translation lattice 2(t-1)Z[t] and the kernel
   of every algebraic specialization are computed exactly, and the word
-  metric is given by a closed form whose upper bound is proved and whose
-  lower bound is stated as a conjecture, verified with 0 exceptions on
-  all 275823 elements to depth 24. In n dimensions the right-angled
+  metric is given by a closed form, word length = l_R + 2c with l_R and
+  c explicit site-local closed forms, proved for every element (Lean
+  theorem metricAll); that the closed form l_R is also the minimum over
+  relaxed realisations is verified, not proved. In n dimensions the right-angled
   Coxeter envelope of the orthoscheme has rational growth with rate
   r_n = 1 + 2 cos(2 pi / (n+3)); for n >= 3 every kernel element of word
   length 6 lies in a rank-two standard parabolic, and the rank-two
   relations are classified by rank-0 descent on the elliptic curves
   24a1, 72a2 and y^2 = x^3 - x. These give the collision depth
   unconditionally on two of the three strata. On the third, the depth is
-  infinite exactly when the affine representation is injective, which is
-  open for n >= 3; an earlier claim of unconditional faithfulness from
-  det Q_n = -prod a_i^2 was a non sequitur and is withdrawn. On the
+  infinite exactly when the affine representation is injective. The
+  envelope W_n itself embeds in O(n), hence in Isom(R^n), for every
+  n >= 3 (thm:alln), and n = 2 is the proved exception; injectivity of
+  the affine representation at a given shape is a separate question, and
+  its arithmetic Class C form is false, while the generic form holds at
+  n = 3 (the tuple (1,2,11) is faithful) and is open for n >= 4. An earlier claim of
+  unconditional faithfulness from det Q_n = -prod a_i^2 was a non
+  sequitur and is withdrawn. On the
   arithmetic of the growth series, the Polya-Carlson dichotomy for the
   four catalytic blocks is unconditional, and the rational branch is
   excluded unconditionally for the two denominators, leaving the two
   numerators under an unproved coefficient-growth hypothesis. The travel
-  resolvent is transcendental over Q(x) unconditionally. The relaxed
-  companion V and the true series U = A396406 are transcendental over
-  Q(x) conditionally: V on a junction non-vanishing hypothesis, U on
-  that and on the invariance of the travel block, both on a transfer
-  model. The growth rate is beta_2 = 1.4916177871..., which excludes
+  resolvent is transcendental over Q(x) unconditionally. The growth
+  series U = A396406 of the universal group and its relaxed companion V
+  are transcendental over Q(x), with no hypotheses: the transfer model
+  (M), the invariance of the travel block (T) and the junction pairing
+  (R-J) are now theorems. The proof is computer-assisted in two finite
+  ranges (MPFR interval certificates at the first twelve travel poles
+  and at the six gate poles above tau = 5e-3), and the assembly step of
+  (M) is a hand proof that is not formalised. The growth rate is beta_2 = 1.4916177871..., which excludes
   3/2.
 keywords:
   - right-triangle reflection group
@@ -59,8 +68,8 @@ keywords:
 license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
-date-released: 2026-09-14
-version: 10.3.1
+date-released: 2026-09-23
+version: 10.4.0
 doi: 10.5281/zenodo.20370090
 identifiers:
   - type: doi

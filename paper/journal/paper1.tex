@@ -264,14 +264,12 @@ period-$4$ oscillation, had suggested.
 The growth rate $\beta_2=1.4916177871\ldots$ is determined unconditionally in Section~\ref{sec:beta2} as $1/\sqrt{q^\ast}$, where $q^\ast$ is the least positive root of $\Sigma_1(q)=1$; in particular $\beta_2\neq 3/2$. Transcendence questions are treated in the companion paper \cite{Bonfioli2026b}, where each
 catalytic building block is proved transcendental unconditionally, by a P\'olya--Carlson natural
 boundary; the growth series of A396406 and of its relaxed companion are transcendental over
-$\Q(x)$ \emph{conditionally} on that paper's transfer model \textup{(M)} and on its junction
-pairing hypothesis \textup{(R-J)} (that the junction pairing does not vanish at infinitely many
-travel poles), neither of which is proved --
-this is the one point at which the present paper's claims rest on an open hypothesis elsewhere,
-and it is not needed for anything proved in this paper itself. Granting (M) and (R-J), this
-explains the empirical absence, recorded below, of any low-order linear, holonomic, or
-low-degree algebraic relation over the $43$ known terms; unconditionally, the absence is only
-empirical. The transcendence of the \emph{number}
+$\Q(x)$, with no hypothesis: that paper proves its transfer model \textup{(M)} and its junction
+pairing statement \textup{(R-J)} (that the junction pairing does not vanish at infinitely many
+travel poles), the latter with computer assistance in the certificate ranges
+\cite{Bonfioli2026b}. The result is not needed for anything proved in this paper itself. It
+explains the absence, recorded below, of any low-order linear, holonomic, or
+low-degree algebraic relation over the $43$ known terms. The transcendence of the \emph{number}
 $\beta_2$ itself remains open. In higher dimensions (the reflection groups of Euclidean
 orthoschemes (path simplices), of which the right triangle is the planar case) the abstract
 right-angled Coxeter envelope has \emph{rational} growth with rate $r_n=1+2\cos\frac{2\pi}{n+3}$, but
@@ -2300,10 +2298,10 @@ finite-state/Moore argument attempted for that identification does not work
 (Remark~\ref{rem:lowerbound-open}), but the identification is proved by a
 different route, an induction on a corrected potential
 (Remark~\ref{rem:lowerbound-closed}). The metric theorem as a whole still
-carries the separate, pre-existing standing of Proposition~\ref{thm:metric-formula}
-(Remark~\ref{rem:metric-formula-status}): that the crossing--pairing
-optimization computes $\ell_R$ at all is verified, not proved, independently
-of this section's new result.
+reads $\ell_R$ as the closed form, and in that reading it is proved for every
+element (\texttt{metricAll}, Remark~\ref{rem:metric-formula-status}); that the
+closed form is also the relaxed minimum over realizations is verified, not
+proved.
 
 \subsection{Notation}
 \label{ssec:metric-notation}
@@ -2504,8 +2502,18 @@ relaxed word length of the group. \cite{Bonfioli2026b}'s own
 computes the relaxed word length is verified there and is not proved;
 everything in this subsection is a statement about the optimisation itself.''
 An earlier version of this remark conflated the two and claimed this
-proposition was thereby proved; that was an overclaim, corrected here. The
-proposition's status is unchanged: verified, not proved.
+proposition was thereby proved; that was an overclaim, corrected here.
+
+The word-length formula itself is now proved: the Lean theorem
+\texttt{metricAll} (\texttt{lean/with\_mathlib/RJMetricAll.lean}, composing
+\texttt{wordLength\_eq\_lRTrue\_add\_two\_cTrue} of \texttt{PhiLipschitz.lean}
+with reachability of every element) gives
+$\texttt{wordLength}(g)=\texttt{lRTrue}(g)+2\cdot\texttt{cTrue}(g)$ for every
+$g\in W_{\mathrm{gen}}$, with \texttt{lRTrue}, \texttt{cTrue} the site-local
+closed forms of this section (Remark~\ref{rem:lowerbound-closed}); it is
+Theorem~\texttt{thm:model} of \cite{Bonfioli2026b}. What remains verified and
+not proved is only the relaxed-minimum reading: that the closed form
+\texttt{lRTrue} equals $\ell_R$, the minimum over relaxed realizations.
 \end{remark}
 
 The two metrics differ only by the connectivity constraint, which we measure by
@@ -2535,9 +2543,10 @@ earlier route fails, and Remark~\ref{rem:lowerbound-closed} for the route
 that succeeds, including exactly what it does and does not establish. The
 theorem as displayed additionally rests, as it always has, on
 Proposition~\ref{thm:metric-formula} identifying $\ell_R$ itself with the
-closed-form optimization -- verified, not proved
-(Remark~\ref{rem:metric-formula-status}) -- a separate matter that this
-session's result does not touch.
+closed-form optimization. With $\ell_R$ read as the closed form, the
+theorem is proved for every element (\texttt{metricAll},
+Remark~\ref{rem:metric-formula-status}); that the closed form is also the
+relaxed minimum over realizations is verified, not proved.
 \end{theorem}
 
 \begin{remark}[Relation to the free-solvable literature]
@@ -2917,8 +2926,8 @@ earlier version of this remark and of Remark~\ref{rem:metric-formula-status}
 claimed \texttt{cor:lRclosed}'s \texttt{IsLeast} proof (that the closed form
 equals the minimum over the \texttt{Realisation} type) upgraded that
 proposition to a theorem, which conflates a fact internal to the optimization
-model with the separate, still-open claim that the model computes the true
-$\ell_R$ of the group (\cite{Bonfioli2026b}'s own \textup{rem:pairingstatus}
+model with the separate, still-open claim that the closed form is the
+relaxed minimum $\ell_R$ over realizations (\cite{Bonfioli2026b}'s own \textup{rem:pairingstatus}
 states this distinction directly). That was an overclaim, corrected in both
 remarks. This discharges Corollary~\ref{cor:rigid} and, with
 Lemma~\ref{lem:splice}, completes the metric theorem \emph{as displayed, in
@@ -2996,9 +3005,10 @@ facts, by itself or together via the finite-state/Moore route, was enough to
 prove $c_{\mathrm{pred}}=\tfrac12(\ell_T-\ell_R)$ (Remark~\ref{rem:lowerbound-open}).
 That identification is proved instead by the corrected-potential induction of
 Remark~\ref{rem:lowerbound-closed}, discharging Corollary~\ref{cor:rigid} and,
-with Lemma~\ref{lem:splice}, the metric theorem as displayed. It remains tied,
-as it always was, to the separate standing of Proposition~\ref{thm:metric-formula}
-(Remark~\ref{rem:metric-formula-status}).
+with Lemma~\ref{lem:splice}, the metric theorem as displayed. With $\ell_R$
+read as the closed form the metric theorem holds for every element
+(\texttt{metricAll}); only the relaxed-minimum reading of the closed form
+remains verified, not proved (Remark~\ref{rem:metric-formula-status}).
 \end{remark}
 
 % ======== Exact growth rate beta_2 and exclusion of 3/2 ========
@@ -3928,7 +3938,7 @@ concrete determinant identities $\det Q_n=-\prod a_i^2$ for
 $n=2,\dots,10$, the direct orbit reconstruction through depth $17$, and
 the shape-uniform universality through depth $22$. Modular-plus-exact
 certified (tier~iii) is the sharp universality through depth $32$ and the
-generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{thm:beta2}) is unconditional: its proof uses only the inequality $\ell_R\le\ell_T$ and the dominant-pole analysis of $\Sigma_1$, with no analytic remainder input. The identification $c_{\mathrm{pred}}=c$ needed for the lower bound of the metric theorem (Theorem~\ref{conj:lowerbound}) is now proved. An earlier version left it conditional: the connectivity defect's closed form is computed by the explicit transducer of Definition~\ref{def:transducer}, which agrees with the true defect on the depth-$24$ enumeration ($275{,}823$ elements, held out at depths $19,21,23,24$) with $0$ exceptions, but that certificate only establishes that the transducer computes the closed form, not that the closed form is the true defect (Remark~\ref{rem:lowerbound-open}). The identification is instead proved by an induction on a corrected potential, formalized in Lean and independently axiom-checked (Remark~\ref{rem:lowerbound-closed}). This does not make the metric theorem as a whole unconditional: it is displayed in terms of the closed-form optimization of Proposition~\ref{thm:metric-formula}, which remains verified and not proved (Remark~\ref{rem:metric-formula-status}), exactly as before this result.
+generic layer data through depth $36$. The growth rate $\beta_2$ (Theorem~\ref{thm:beta2}) is unconditional: its proof uses only the inequality $\ell_R\le\ell_T$ and the dominant-pole analysis of $\Sigma_1$, with no analytic remainder input. The identification $c_{\mathrm{pred}}=c$ needed for the lower bound of the metric theorem (Theorem~\ref{conj:lowerbound}) is now proved. An earlier version left it conditional: the connectivity defect's closed form is computed by the explicit transducer of Definition~\ref{def:transducer}, which agrees with the true defect on the depth-$24$ enumeration ($275{,}823$ elements, held out at depths $19,21,23,24$) with $0$ exceptions, but that certificate only establishes that the transducer computes the closed form, not that the closed form is the true defect (Remark~\ref{rem:lowerbound-open}). The identification is instead proved by an induction on a corrected potential, formalized in Lean and independently axiom-checked (Remark~\ref{rem:lowerbound-closed}). With $\ell_R$ read as the closed form of Proposition~\ref{thm:metric-formula}, the metric theorem holds for every element (Lean theorem \texttt{metricAll}); only the relaxed-minimum reading, that the closed form is the minimum over relaxed realizations, remains verified and not proved (Remark~\ref{rem:metric-formula-status}).
 \end{remark}
 
 
@@ -4091,15 +4101,18 @@ the arithmetic nature of $\beta_2$ remains open.
 
 \begin{conjecture}[Transcendence of $\beta_2$]
 \label{conj:beta2-transcendence}
-$\beta_2$ is transcendental over $\mathbb{Q}$, and the generating
-function $U(t) = \sum_{d \ge 0} u_d t^d$ is transcendental over
-$\mathbb{Q}(t)$.
+$\beta_2$ is transcendental over $\mathbb{Q}$.
 \end{conjecture}
+The conjecture as first stated also asserted that the generating function
+$U(t)=\sum_{d\ge0}u_dt^d$ is transcendental over $\mathbb{Q}(t)$; that half is
+now proved, unconditionally, in \cite{Bonfioli2026b}. Only the number $\beta_2$
+remains open.
 
 We collect three independent attack routes.  Each rests on a different
 finite-horizon hypothesis that is empirically verified and structurally
-attackable; the routes are logically independent and would each
-individually settle Conjecture~\ref{conj:beta2-transcendence}.
+attackable; the routes are logically independent and each was aimed at the
+transcendence of $U(t)$, now proved by another route in \cite{Bonfioli2026b}.
+They are recorded as history.
 
 \subsection{Route 1: Christol mod-\texorpdfstring{$p$}{p} via the explicit
 cyclic-module structure}
