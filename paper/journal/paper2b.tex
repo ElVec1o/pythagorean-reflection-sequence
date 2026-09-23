@@ -1443,23 +1443,236 @@ gives the non-vanishing of the residue directly. Proposition~\ref{prop:simplepol
 adds that the orders there are $\pi=p=1$ at every travel pole.
 \end{remark}
 
+\paragraph{The pole-location law.} We now locate the $m$-th travel pole to relative accuracy
+$O(1/m)$. The input is a two-sided bound on every eigenvalue branch, obtained by comparing the
+quotient $E/M$ of the variational setting with the Rayleigh quotient of the string
+$-g''=k^2g$ on $[0,1]$, $g(0)=0$, $g'(1)=0$. That string has eigenvalues $k_n^2$, where
+\[
+   k_n:=\frac{(2n-1)\pi}{2}\qquad(n\ge1).
+\]
+Throughout, $\varepsilon=1-q$ and $\lambda_n(q)$ is the $n$-th smallest zero of $F(\cdot,q)$, that
+is, $1/\kappa_n$ with $\kappa_1>\kappa_2>\cdots$ the eigenvalues of $\mathbf S$
+({\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(iii)},\textup{(iv)}). This is the
+labelling used in \eqref{eq:minmax} and in Proposition~\ref{prop:simplepoles}. All the eigenvalues
+are simple, so the ordered labelling and the analytic branches coincide.
+
+\begin{lemma}[the eigenvalue sandwich]\label{lem:sandwich}
+For every $q\in(0,1)$ and every $n\ge1$,
+\[
+   \lambda_n(q)\ \ge\ \frac{\varepsilon k_n^2}{2q\,(1+2\varepsilon k_n)} ,
+\]
+and, if $2\varepsilon k_n<1$,
+\[
+   \lambda_n(q)\ \le\ \frac{\varepsilon k_n^2}{2q\,(1-2\varepsilon k_n)} .
+\]
+\end{lemma}
+
+\begin{proof}
+\emph{Step 1: the grid, and two transfer relations.} Put $z_s=q^s$ and $I_s=[z_{s+1},z_s]$
+($s\ge0$), so $|I_s|=\varepsilon q^s\le\varepsilon$. The $I_s$ cover $(0,1]$ and overlap only at
+endpoints. With this grid
+\[
+   E(u)=\sum_{s\ge0}\frac{(u_s-u_{s+1})^2}{q^s},\qquad
+   M(u)=2q\sum_{s\ge0}|I_s|\,u_s^2 ,
+\]
+the second because $2(1-q)q^{s+1}=2q|I_s|$. So $M$ is a Riemann sum for $2q\int_0^1g^2$, with no
+factor $\varepsilon$, while $E$ carries the factor $\varepsilon$ below. Let $\mathcal H$ be the space
+of absolutely continuous $g:[0,1]\to\R$ with $g(0)=0$ and $g'\in L^2(0,1)$, and write
+$\|\cdot\|$ for the norm of $L^2(0,1)$. We use two relations.
+
+(a) \emph{Energy.} Let $g\in\mathcal H$ and $u_s=g(z_s)$. By Cauchy--Schwarz on each $I_s$,
+$(u_s-u_{s+1})^2=(\int_{I_s}g')^2\le|I_s|\int_{I_s}g'^2$, so $E(u)\le\varepsilon\|g'\|^2$. If $g$ is
+linear on every $I_s$, this is an equality term by term, so $E(u)=\varepsilon\|g'\|^2$.
+
+(b) \emph{Riemann error.} Let $g\in\mathcal H$ and $u_s=g(z_s)$. For $z\in I_s$,
+$|g(z_s)^2-g(z)^2|\le\int_{I_s}2|gg'|$. Integrating over $I_s$ gives
+$\bigl||I_s|u_s^2-\int_{I_s}g^2\bigr|\le\varepsilon\int_{I_s}2|gg'|$. Summing over $s$ and applying
+Cauchy--Schwarz,
+\[
+   \bigl|M(u)-2q\|g\|^2\bigr|\ \le\ 4q\,\varepsilon\,\|g\|\,\|g'\| ,
+\]
+the series defining $M(u)$ converging because its partial sums are bounded by
+$2q(\|g\|^2+2\varepsilon\|g\|\|g'\|)$.
+
+\emph{Step 2: the continuum quotient.} Put $\psi_j(z)=\sqrt2\sin(k_jz)$ and
+$\chi_j(z)=\sqrt2\cos(k_jz)$. Each of $(\psi_j)_{j\ge1}$ and $(\chi_j)_{j\ge1}$ is a complete
+orthonormal system in $L^2(0,1)$. (They are the eigenfunctions of $-d^2/dz^2$ on $[0,1]$ with the
+boundary conditions $g(0)=g'(1)=0$, respectively $g'(0)=g(1)=0$.) For $g\in\mathcal H$, integration by
+parts gives $\langle g',\chi_j\rangle=[g\chi_j]_0^1+k_j\langle g,\psi_j\rangle=k_j\langle
+g,\psi_j\rangle$, since $g(0)=0$ and $\cos k_j=0$. Parseval in both systems then gives
+\[
+   \|g'\|^2=\sum_jk_j^2\langle g,\psi_j\rangle^2,\qquad \|g\|^2=\sum_j\langle g,\psi_j\rangle^2 .
+\]
+Two consequences. (a) If $W\subset\mathcal H$ has dimension $n$, some $g\in W\setminus\{0\}$ is
+orthogonal to $\psi_1,\dots,\psi_{n-1}$, and for it $\|g'\|\ge k_n\|g\|$. (b) If
+$g\in G_n:=\operatorname{span}\{\psi_1,\dots,\psi_n\}$, then $\|g'\|\le k_n\|g\|$.
+
+\emph{Step 3: the lower bound.} Let $V_n=J\operatorname{span}\{\phi_1,\dots,\phi_n\}$. By Step~2 of
+the proof of Lemma~\ref{lem:shift}, $V_n\subset\mathcal D$ has dimension $n$, and $E(u)\le\lambda_nM(u)$
+on $V_n$. Every $u=KX\in\mathcal D$ has $u_s\to0$, because
+$|u_s|\le q^s\sum_{t\le s}|X_t|+\sum_{t>s}|X_t|$ and $X\in\ell^1$. So the function $g_u$ that is
+linear on each $I_s$, with $g_u(z_s)=u_s$ and $g_u(0)=0$, is continuous on $[0,1]$. By Step~1(a),
+$\|g_u'\|^2=E(u)/\varepsilon<\infty$, so $g_u\in\mathcal H$. The map $u\mapsto g_u$ is linear and
+injective, so $W=\{g_u:u\in V_n\}$ has dimension $n$. By Step~2(a) there is $u\in V_n\setminus\{0\}$
+with $a:=\|g_u'\|\ge k_n b$, where $b:=\|g_u\|>0$. Step~1 gives $E(u)=\varepsilon a^2$ and
+$M(u)\le2q(b^2+2\varepsilon ab)$, and $M(u)>0$ by Step~1 of the proof of Lemma~\ref{lem:shift}.
+Hence, with $t=a/b\ge k_n$,
+\[
+   \lambda_n\ \ge\ \frac{E(u)}{M(u)}\ \ge\ \frac{\varepsilon t^2}{2q(1+2\varepsilon t)}
+   \ \ge\ \frac{\varepsilon k_n^2}{2q(1+2\varepsilon k_n)} ,
+\]
+because $t\mapsto t^2/(1+2\varepsilon t)$ increases on $(0,\infty)$.
+
+\emph{Step 4: the upper bound.} Assume $2\varepsilon k_n<1$. For $g\in G_n$ put $u^g_s=g(z_s)$. First,
+$u^g\in\mathcal D$. Put $\rho_t=(u^g_t-u^g_{t+1})/(\varepsilon q^t)$, the mean of $g'$ over $I_t$,
+and $X_0=\rho_0$, $X_t=\rho_t-\rho_{t-1}$ for $t\ge1$. Since $\rho_t$ and $\rho_{t-1}$ are values of
+$g'$ on $[z_{t+1},z_{t-1}]$, $|X_t|\le\|g''\|_\infty(z_{t-1}-z_{t+1})\le2\|g''\|_\infty q^{t-1}$.
+So $X\in\ell^1$ and $\sum_tX_t^2q^{-t}<\infty$. As in the proof of Lemma~\ref{lem:HF},
+$(KX)_s-(KX)_{s+1}=(1-q)q^s\sum_{t\le s}X_t=\varepsilon q^s\rho_s=u^g_s-u^g_{s+1}$. Both $(KX)_s$
+and $u^g_s$ tend to $0$, the latter because $g(0)=0$. Telescoping gives $u^g=KX\in\mathcal D$.
+
+Now let $g\in G_n\setminus\{0\}$, $b=\|g\|$ and $a=\|g'\|\le k_nb$ (Step~2(b)). By Step~1,
+$E(u^g)\le\varepsilon a^2\le\varepsilon k_n^2b^2$ and
+$M(u^g)\ge2q(b^2-2\varepsilon ab)\ge2qb^2(1-2\varepsilon k_n)>0$. In particular $g\mapsto u^g$ is
+injective on $G_n$, so $V=\{u^g:g\in G_n\}\subset\mathcal D$ has dimension $n$, and
+$E/M\le\varepsilon k_n^2/(2q(1-2\varepsilon k_n))$ on $V\setminus\{0\}$. By \eqref{eq:minmax},
+$\lambda_n\le\max_{V\setminus\{0\}}E/M$, which is the upper bound.
+\end{proof}
+
+\noindent\emph{Standing and checks.} Lemma~\ref{lem:sandwich} is proved, with no computer-assisted
+step. It uses only {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(i)},\textup{(iii)},\textup{(iv)}, through the
+variational principle \eqref{eq:minmax} on the explicit subspace $\mathcal D$. It uses neither
+Theorem~\ref{thm:Tstar} nor a Sturm oscillation theorem. Three points of the statement are
+deliberate. First, $\lambda_n$ is the min--max value on $\mathcal D$, which by \eqref{eq:minmax} is
+the $n$-th zero of $F(\cdot,q)$; no Friedrichs form domain is identified. Second, the upper bound
+is claimed only when $2\varepsilon k_n<1$, which is where the Riemann error keeps $M(u^g)>0$ and
+makes the sampling injective. Third, $M$ is normalised with the factor $1-q$, so $M\approx2q\|g\|^2$
+while $E=\varepsilon\|g'\|^2$; the quotient is $\varepsilon\|g'\|^2/(2q\|g\|^2)$, not
+$\|g'\|^2/(2q\|g\|^2)$. As a check, at $q=q_m$ for $m\in\{1,2,3,4,5,8,12,20,30,40\}$ we computed all
+the zeros of $F(\cdot,q_m)$ below $1.08^2(k_{m+3}/k_m)^2$ by a sign-change scan in $\sqrt\lambda$ ($120$
+digits). That is at least the first $m+2$ zeros. Every one satisfies both bounds of the lemma wherever they apply, and the zero
+at $\lambda=1$ has index exactly $m$, as Proposition~\ref{prop:simplepoles}\textup{(i)} requires
+(\texttt{code/\allowbreak zeta\_probe/\allowbreak rj\_certificates/\allowbreak polelaw\_check.py}).
+
+\begin{theorem}[the pole-location law]\label{thm:polelaw}
+For $m\ge1$ put $\varepsilon_m=1-q_m$ and
+\[
+   x_m:=\frac{\varepsilon_mk_m^2}{2q_m},\qquad
+   y_m:=\frac{\varepsilon_mk_m^2}{2}=\varepsilon_m\Big/\frac{8}{\pi^2(2m-1)^2}\ =q_mx_m .
+\]
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item For every $m\ge1$, $|x_m-1|\le2\varepsilon_mk_m$.
+\item For every $m\ge1$, $\varepsilon^-(k_m)\le\varepsilon_m\le\varepsilon^+(k_m)$, where
+\[
+   \varepsilon^+(k)=\frac{\sqrt{(k^2-4k+2)^2+32k}-(k^2-4k+2)}{8k},\qquad
+   \varepsilon^-(k)=\frac{k^2+4k+2-\sqrt{(k^2+4k+2)^2-32k}}{8k} .
+\]
+\item For every $m\ge2$,
+\[
+   \varepsilon_m<\frac{2}{k_m(k_m-4)},\qquad
+   |x_m-1|\le2\varepsilon_mk_m<\delta_m:=\frac{8}{(2m-1)\pi-8} ,
+\]
+and $\delta_m<1$ exactly when $m\ge4$.
+\item For every $m\ge4$, $|y_m-1|<\eta_m:=2(2k_m+1)/(k_m(k_m-4))$. The sequence $m\eta_m$ decreases,
+from $2.3912$ at $m=4$ to the limit $4/\pi$. For every $m\ge1$, $|y_m-1|\le3/m$.
+\end{enumerate}
+In particular
+\[
+   1-q_m=\frac{2q_m}{k_m^2}\bigl(1+O(1/m)\bigr)=\frac{8}{\pi^2(2m-1)^2}\bigl(1+O(1/m)\bigr),
+\]
+with the explicit constants of \textup{(iii)} and \textup{(iv)}. Parts \textup{(i)}--\textup{(iii)}
+hold, with $k_m$ replaced by $k_n$, at every $q\in(0,1)$ where $\lambda_n(q)=1$, whatever $n$ is.
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:simplepoles}\textup{(i)}, $\lambda_m(q_m)=1$. Write $q=q_m$,
+$\varepsilon=\varepsilon_m$, $k=k_m$, $x=x_m$, $y=y_m$.
+
+(i) The lower bound of Lemma~\ref{lem:sandwich} at $n=m$ reads $1\ge x/(1+2\varepsilon k)$, that is
+$x\le1+2\varepsilon k$. If $2\varepsilon k<1$, its upper bound reads $1\le x/(1-2\varepsilon k)$, that
+is $x\ge1-2\varepsilon k$. If $2\varepsilon k\ge1$, then $x>0\ge1-2\varepsilon k$ anyway. So
+$|x-1|\le2\varepsilon k$ for every $m$, with no condition.
+
+(ii) By (i), $\varepsilon k^2\le2q(1+2\varepsilon k)$ and $\varepsilon k^2\ge2q(1-2\varepsilon k)$.
+Substitute $q=1-\varepsilon$. The first inequality becomes
+$4k\varepsilon^2+(k^2-4k+2)\varepsilon-2\le0$. This quadratic is $-2$ at $\varepsilon=0$ and has a
+positive leading coefficient, so $\varepsilon\le\varepsilon^+(k)$, its positive root. The second
+becomes $4k\varepsilon^2-(k^2+4k+2)\varepsilon+2\le0$. Its discriminant exceeds
+$(4k+2)^2-32k=4(2k-1)^2\ge0$, so it has two real roots, and $\varepsilon$ lies between them. In
+particular $\varepsilon\ge\varepsilon^-(k)$, the smaller root.
+
+(iii) From (i) and $q<1$, $\varepsilon k^2<2(1+2\varepsilon k)$, that is
+$\varepsilon k(k-4)<2$. For $m\ge2$, $k\ge3\pi/2>4$, so $\varepsilon<2/(k(k-4))$ and
+$2\varepsilon k<4/(k-4)=8/((2m-1)\pi-8)=\delta_m$. Finally, $\delta_m<1$ if and only if
+$(2m-1)\pi>16$, that is, $m\ge4$ (at $m=3$, $\delta_3=1.038$).
+
+(iv) Let $m\ge4$. Then $2\varepsilon k<\delta_m<1$ by (iii). Upward,
+$y=qx\le x\le1+2\varepsilon k<1+4/(k-4)=1+4k/(k(k-4))<1+\eta_m$. Downward,
+$y=(1-\varepsilon)x\ge(1-\varepsilon)(1-2\varepsilon k)\ge1-\varepsilon(1+2k)>1-\eta_m$, by the
+bound on $\varepsilon$ in (iii). For the monotonicity, $m=k/\pi+\tfrac12$ gives
+\[
+   m\eta_m=\frac{(2k+\pi)(2k+1)}{\pi k(k-4)}=\frac1\pi\Bigl(4+\frac{(18+2\pi)k+\pi}{k^2-4k}\Bigr).
+\]
+For $a,b>0$ the function $h(k)=(ak+b)/(k^2-4k)$ satisfies
+$(k^2-4k)^2h'(k)=-ak^2-2bk+4b<0$ for $k\ge2$, so $m\eta_m$ decreases on $k>4$. Its value at $m=4$
+($k=7\pi/2$) is $2.39116\ldots$, and its limit is $4/\pi$. So $|y_m-1|<\eta_m<3/m$ for $m\ge4$.
+For $m=1,2,3$, part (ii) gives $y_m=\varepsilon_mk_m^2/2\in[0.2620,0.8968]$, $[0.5266,2.3682]$ and
+$[0.6531,1.8084]$ respectively. Hence $m|y_m-1|\le0.738$, $2.737$ and $2.426$, all below $3$.
+
+The final displays restate (iii) and (iv), using $2q_m/k_m^2=\frac{8q_m}{\pi^2(2m-1)^2}$ and
+$q_m=1-\varepsilon_m=1+O(m^{-2})$. The index-free statement follows from the same proof, with
+Lemma~\ref{lem:sandwich} applied at $n$ in place of $m$. Proposition~\ref{prop:simplepoles}\textup{(i)}
+is used only to identify that index as $m$.
+\end{proof}
+
+\noindent\emph{Standing and checks.} Parts \textup{(i)}--\textup{(iii)} in their index-free form
+rest only on Lemma~\ref{lem:sandwich}. They are unconditional and have no computer-assisted step. The
+identification $n=m$, and with it the statements indexed by $m$, is
+Proposition~\ref{prop:simplepoles}\textup{(i)}. So Theorem~\ref{thm:polelaw} as stated is proved at the
+standing of Theorem~\ref{thm:Tstar}, that is, with the interval certificate \eqref{eq:Tstarcert} as its
+one computer-assisted input. The constants $0.2620,\dots,1.8084$ at $m\le3$ and $2.39116$ are
+evaluations of the closed forms of (ii) and (iv), rounded outward.
+
+Since $\tau_m=-\log q_m$ satisfies $\varepsilon_m\le\tau_m\le\varepsilon_m/(1-\varepsilon_m)$, the
+parameter $w_m=\sqrt{2/\tau_m}$ satisfies
+$(1-\varepsilon_m)/y_m\le w_m^2/k_m^2\le1/y_m$. So $w_m=(m-\tfrac12)\pi\,(1+O(1/m))$ as well.
+
+We checked the theorem against the $41$ poles $q_1,\dots,q_{41}$ of
+\texttt{code/\allowbreak zeta\_probe/\allowbreak rj\_certificates/\allowbreak models/\allowbreak poles\_40.json} ($200$ digits). Every pole lies in
+the interval of (ii) and satisfies (i), and (iii) for $m\ge2$ and (iv) for $m\ge4$. The measured
+$m|y_m-1|$ falls from $0.321$ at $m=1$ to $0.0023$ at $m=41$ (\texttt{polelaw\_check.py}). So the measured
+relative error behaves like $m^{-2}$, not merely $1/m$: $1-y_m=8/(9k_m^2)+O(k_m^{-4})$ reproduces the
+measured $1-y_{40}=5.77\cdot10^{-5}$, in line with the second-order law of Remark~\ref{rem:family}.
+The theorem proves only the first order. The $O(1/m)$ loss comes from the Riemann error of
+Step~1(b). For $g=\psi_n$, a first-order expansion of the Riemann sum gives
+$M/(2q)-\|g\|^2\approx\tfrac\varepsilon2\bigl(g(1)^2-\|g\|^2\bigr)$, which is $O(\varepsilon)$ when
+$\varepsilon k_n^2=O(1)$; this is a heuristic and is not used. The bound of Step~1(b) takes absolute
+values before integrating, and so charges $O(\varepsilon k_n)$.
+
 \begin{remark}[what the known theory does not give]\label{rem:knowntheory}
 Two statements about the travel poles lie outside what {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}} and the
-literature on Hahn--Exton zeros deliver.
+literature on Hahn--Exton zeros deliver. The first is now proved here; the second is open.
 
-\emph{The accumulation law.} The zero theory of \cite{KoelinkSwarttouw1994,StampachStovicek2014}
-concerns the zeros in $x$ at fixed $q$; the travel poles sit on the diagonal $x=Z(q)$. With
-Hurwitz's theorem it gives each branch at fixed $k$,
+\emph{The accumulation law \textup{(}now proved\textup{)}.} The zero theory of
+\cite{KoelinkSwarttouw1994,StampachStovicek2014} concerns the zeros in $x$ at fixed $q$; the travel
+poles sit on the diagonal $x=Z(q)$. With Hurwitz's theorem it gives each branch at fixed $k$,
 $\lambda_k(q)\sim\varepsilon(2k-1)^2\pi^2/8$ with $\varepsilon=1-q$
 ({\cite[Proposition ``infinitely many travel poles, without $T_2$'', \textup{prop:infpolesalt}]{Bonfioli2026bA}}\textup{(b)}). The $m$-th pole is where $\lambda_m=1$, that is
 in the regime $k=m\asymp\varepsilon^{-1/2}$, and no fixed-$k$ statement reaches it. So the law
-$\varepsilon_m=1-q_m\sim8/(\pi^2(2m-1)^2)$, equivalently $w_m\sim(m-\tfrac12)\pi$, recorded
-numerically in Remark~\ref{rem:family}, is not a consequence. It needs a count lemma: an asymptotic
-for $\#\{k:\lambda_k(q)<1\}$, the number of zeros of $\cos(\cdot;q^2)$ in $(0,Z(q))$, uniform as
-$q\to1$. Lemma~\ref{lem:T2abs} puts at least one travel pole in each window of $w$ (the proof of
-Lemma~\ref{lem:infpoles}), and Proposition~\ref{prop:simplepoles}\textup{(i)} identifies the index,
-but neither bounds the number of poles in a window. The count
-lemma is open.
+$\varepsilon_m=1-q_m\sim8/(\pi^2(2m-1)^2)$, equivalently $w_m\sim(m-\tfrac12)\pi$, does not follow
+from that theory. Earlier versions of this paper recorded it only numerically, and said it needed a
+count lemma: an asymptotic for $\#\{k:\lambda_k(q)<1\}$, uniform as $q\to1$. It is now
+Theorem~\ref{thm:polelaw}, with explicit error bounds for every $m\ge1$:
+$\varepsilon_m=\frac{8}{\pi^2(2m-1)^2}(1+\theta_m)$ with $|\theta_m|\le3/m$, and $|\theta_m|<\eta_m\sim4/(\pi m)$
+for $m\ge4$. No count lemma is needed. Two inputs replace it. The uniform-in-$n$ eigenvalue sandwich
+of Lemma~\ref{lem:sandwich} is valid in the regime $n\asymp\varepsilon^{-1/2}$ that the fixed-$k$
+theory misses. The index identification $\lambda_m(q_m)=1$ of
+Proposition~\ref{prop:simplepoles}\textup{(i)} supplies the count at $q=q_m$, namely exactly $m-1$
+branches below $1$. The law is therefore proved at the standing of Theorem~\ref{thm:Tstar}. Its
+index-free form is unconditional: at any $q$ with $\lambda_n(q)=1$,
+$|\varepsilon k_n^2/(2q)-1|\le2\varepsilon k_n$. Only the first order is proved. The rational
+second-order term $-8/(9\mu_j)$ of Remark~\ref{rem:family} is derived there by a formal crossing
+calculus and verified numerically, but it is not proved.
 
 \emph{Complex $q$.} The identity $\det(I-\mathcal T)=\cos(Z;q^2)$ continues analytically to complex
 $q$, but positivity and self-adjointness do not, and the zero theory cited is for $0<q<1$. We know of
@@ -3797,10 +4010,16 @@ the $j$-th zero is the crossing of the $j$-th branch, $w(q^\ast_j)=z_j(q^\ast_j)
 Proposition~\ref{prop:simplepoles}\textup{(i)}, at the standing of Theorem~\ref{thm:Tstar}
 (also verified at $j=2$ to $43$ digits: exactly one zero of $G(q^\ast_2,\cdot)$ lies below $w$). The accumulation obeys the classical cosine-zero law
 \[
-   1-q^\ast_j\ \sim\ \frac{8}{\pi^2(2j-1)^2},\qquad
+   1-q^\ast_j\ =\ \frac{8}{\pi^2(2j-1)^2}\bigl(1+\theta_j\bigr),\quad|\theta_j|\le\frac3j,\qquad
    \text{measured }(1-q^\ast_j)\,\frac{(2j-1)^2\pi^2}{8}
    =0.679,\,0.961,\,0.986,\,0.993,\,0.9956,\,0.9970,\,0.9979,\,0.9984\ (j\le8).
 \]
+This law is now \emph{proved}: it is Theorem~\ref{thm:polelaw}. That theorem gives explicit two-sided
+bounds for every $j\ge1$, from the eigenvalue sandwich of Lemma~\ref{lem:sandwich} and the index
+identification of Proposition~\ref{prop:simplepoles}\textup{(i)}, at the standing of
+Theorem~\ref{thm:Tstar}. Every measured value above lies inside those bounds, and so do those of the
+first $41$ poles. Only the first order is proved. The second-order corrections below are derived by a
+formal calculus and checked numerically; they are not proved.
 The second member is $q^\ast_2=0.913486638731047141696\ldots$, i.e.\
 $\beta_2^{(2)}:=1/\sqrt{q^\ast_2}=1.046282352687417855\ldots$. PSLQ at $100$ digits finds no integer
 polynomial of degree $\le8$ and height $\le10^{10}$ vanishing at either number, and no bilinear
