@@ -79,12 +79,14 @@ code/reproduce/  standalone reproduction scripts
 
 ## The papers
 
-All six are in `paper/journal/`, source and PDF.
+All the papers are in `paper/journal/`, source and PDF. Paper 2 is also split, into a short headline paper `paper2a` and a methods-and-certificates companion `paper2b`. `paper2` itself is kept as the full archival version.
 
 | File | Pages | Title |
 |---|---|---|
 | `paper1` | 68 | The Universal Right-Triangle Reflection Sequence: a word-length metric, effective universality, and the lamplighter structure of A396406 |
-| `paper2` | 102 | Transcendence of a planar reflection-group growth series and its relaxed companion |
+| `paper2` | 103 | Transcendence of a planar reflection-group growth series and its relaxed companion (full archival version) |
+| `paper2a` | 28 | The growth series of the generic right-triangle reflection group is not D-finite |
+| `paper2b` | 86 | The growth series of the generic right-triangle reflection group: block assembly, analytic estimates and certificates |
 | `paper4` | 34 | The shortest relations of planar triangle reflection groups |
 | `paper_orthoscheme` | 32 | Universality for orthoscheme reflection groups: the right-angled Coxeter envelope and the collision depth |
 | `merged_novel_paper` | 36 | Growth, collisions and lamplighter structure of generic triangle and orthoscheme reflection groups |

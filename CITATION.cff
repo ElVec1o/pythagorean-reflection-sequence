@@ -8,6 +8,7 @@ authors:
     affiliation: "Independent researcher"
     email: vicobonfioli@gmail.com
 abstract: >
+  Paper 2 is also split into a headline paper (paper2a: the growth series is not D-finite, has natural boundary |x|=1, and V has poles at both +x_m and -x_m) and a methods-and-certificates companion (paper2b).
   For every right triangle in the plane with positive unequal rational
   legs, the BFS orbit-growth sequence of its three side-reflections
   agrees with one common sequence u_d (OEIS A396406) through depth 32,
@@ -81,7 +82,7 @@ license: CC-BY-4.0
 license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/ElVec1o/pythagorean-reflection-sequence"
 date-released: 2026-09-23
-version: 10.6.0
+version: 10.7.0
 doi: 10.5281/zenodo.20370090
 identifiers:
   - type: doi
