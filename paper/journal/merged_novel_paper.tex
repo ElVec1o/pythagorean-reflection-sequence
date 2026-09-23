@@ -56,6 +56,16 @@ $\det(I-C(c))$ of the Gram matrix with independent edge variables is irreducible
 connected graph with at least two edges, by an argument whose key step is that the discriminant of
 $f_H$ in a single edge variable equals $4f_{H-u}f_{H-v}$. In particular $W_n$ embeds in $O(n)$, and
 hence in $\Isom(\R^n)$, for every $n\ge3$, while $n=2$ is a genuine exception.
+Section~\ref{sec:generic} shows that the positive points of the compact locus used there are
+exactly the facet-normal Gram matrices of $n$-orthoschemes, with an explicit inverse from Gram
+matrices to leg ratios. With the Vinberg point this proves that for every $n\ge3$ the orthoscheme
+representation $\rho_a$ is faithful for generic legs, on a co-null, comeagre set containing every
+leg tuple with algebraically independent ratios: the generic $n$-orthoscheme group is $W_n$, and
+its growth series is the rational envelope. No rational tuple is certified for $n\ge4$. Since in
+the plane the generic growth series is not $D$-finite and has $|x|=1$ as a natural boundary
+\cite{paper2}, the plane is the only dimension $n\ge2$ in which the generic growth series is not
+rational. Rationality at the non-generic shapes and faithfulness at individual Class C shapes
+remain open.
 Section~\ref{sec:reduce} contains the other statement not in the source preprints:
 for every $n\ge2$, any embedding of $W_n$ into $\Isom(\R^n)$ has injective linear part, so the
 ambient embedding problem is equivalent to the question of whether $W_n$ embeds in the
@@ -411,10 +421,12 @@ commutator lies in $\ker\rho_a$ for \emph{every} $a$, so $N_{\mathrm{gen}}\ne1$ 
 group is a proper quotient of $W_n$.
 \end{enumerate}
 So $U_n=1$ answers all three affirmatively at once. The converse is one-directional, and only
-for the first: $U_n\ne1$ refutes Problem~\textup{\ref{prob:alternative}}, but it refutes neither
-Problem~\textup{\ref{prob:embed}} nor Problem~\textup{\ref{prob:fp}}, since a proper quotient of
-$W_n$ may still be finitely presented, and $W_n$ may still embed in $O(n)$ by a map that is not
-the point group of any orthoscheme.
+for the first: $U_n\ne1$ would refute Problem~\textup{\ref{prob:alternative}}, but it would refute
+neither Problem~\textup{\ref{prob:embed}} nor Problem~\textup{\ref{prob:fp}}, since a proper
+quotient of $W_n$ may still be finitely presented, and $W_n$ may still embed in $O(n)$ by a map
+that is not the point group of any orthoscheme. In fact $U_n=1$ for every $n\ge3$
+\textup{(}Theorem~\textup{\ref{thm:generic})}, so \textup{(i)} holds in every dimension $n\ge3$
+and \textup{(ii)} never occurs.
 \end{theorem}
 
 \begin{proof}
@@ -440,15 +452,20 @@ $U_4$, because each of those $Z_w$ is a proper hypersurface and not the whole or
 exhaustive scan is evidence for $U_4=1$: were $U_4$ nontrivial, some word would fail at
 \emph{every} tuple, and no tuple in the scan fails at all outside the two loci.
 
-What (i) needs is therefore not a faithful tuple in dimension four but the triviality of $U_4$,
-and the two are equivalent. We do not prove it, but the computations bound it from below.
+What (i) needs is therefore not a faithful \emph{rational} tuple in dimension four but the
+triviality of $U_4$, which is equivalent to the existence of a single faithful tuple, rational or
+not. The computations of Proposition~\ref{prop:Ubound} bound $U_n$ from below; its triviality is
+now proved for every $n\ge3$ in Theorem~\ref{thm:generic}, without exhibiting a faithful tuple for
+$n\ge4$, the input being the Vinberg point of Lemma~\ref{lem:vinbergpoint} transported to the
+orthoscheme locus by Lemma~\ref{lem:Kplus}.
 
 It should be stressed that Problems~\textup{\ref{prob:embed}} and \textup{\ref{prob:fp}} require
 strictly less. The embedding problem asks only for \emph{some} injective homomorphism
 $W_n\to O(n)$, which need not be a point group of an orthoscheme and need not be by reflections
 at all; and finite presentation of $W_n/N_{\mathrm{gen}}$ does not require
-$N_{\mathrm{gen}}=1$. So a negative answer for $U_n$ would leave both of them open, and either
-could be settled affirmatively by a construction that says nothing about $U_n$.
+$N_{\mathrm{gen}}=1$. So a negative answer for $U_n$ would have left both of them open. Both are
+now settled for every $n\ge3$: Problem~\ref{prob:embed} by Theorem~\ref{thm:alln}, and
+Problem~\ref{prob:fp} by Theorem~\ref{thm:generic}, which gives $N_{\mathrm{gen}}=1$.
 \end{remark}
 
 \begin{proposition}[a lower bound on the universal kernel; PROVED]\label{prop:Ubound}
@@ -494,11 +511,12 @@ nontrivial for the reason that $O(2)$ is solvable, so the induction has no base.
 \end{remark}
 
 \begin{remark}[what the bound does and does not say]\label{rem:Uboundmeaning}
-At $n=3$ the bound is superseded: $U_3=1$ outright. For $n\ge4$ it is the only unconditional
-information we have about $U_n$, and it is not close to triviality, since $U_n$ could still be
-generated in some length beyond the computed range. The bound degrades with $n$ because the
-envelope grows faster, so a fixed memory budget reaches a smaller depth; it is a limitation of the
-search and not evidence that $U_n$ is more likely to be nontrivial in higher dimensions.
+As a statement about $U_n$ the bound is superseded in every dimension: $U_3=1$ by
+Theorem~\ref{thm:faithful}, and $U_n=1$ for every $n\ge3$ by Theorem~\ref{thm:generic}. What
+survives is its content at the listed rational tuples, which Theorem~\ref{thm:generic} does not
+cover: at each of them the kernel of the point group, and hence $\ker\rho_a$, has no nontrivial
+element of length at most $2d_n$. The bound degrades with $n$ because the envelope grows faster,
+so a fixed memory budget reaches a smaller depth; it is a limitation of the search.
 \end{remark}
 
 \begin{remark}[what remains open]\label{rem:stillopen}
@@ -506,7 +524,8 @@ Theorem~\ref{thm:masterCfalse} settles the arithmetic form of Problem~\ref{prob:
 negatively. It does \emph{not} settle the generic form: the tuples above are single points, and
 $N_{\mathrm{gen}}=\bigcap_a\ker\rho_a$ may still be trivial, since a kernel element at one tuple
 need not be a kernel element at another. It also leaves Problem~\ref{prob:embed} open, an
-abstract embedding not being required to come from an orthoscheme.
+abstract embedding not being required to come from an orthoscheme. Both have since been settled
+affirmatively for every $n\ge3$, by Theorems~\ref{thm:alln} and~\ref{thm:generic}.
 \end{remark}
 
 \section{A faithful tuple in dimension three}\label{sec:faithful}
@@ -724,9 +743,9 @@ of which deviates.
 So in dimension four the tuples at which $\rho_a$ is known to fail are not sporadic: they lie on
 explicit hypersurfaces in the leg space, cut out by $a_1a_3=a_2a_4$ and by
 $a_4|a_1^2-a_2^2|=2a_1a_2a_3$, and on each the witness is a single word independent of the tuple.
-Whether the failure locus is exhausted by finitely many such hypersurfaces is open. This is the
-form in which we would expect an answer to Problem~\textup{\ref{prob:alternative}} in dimension
-four: not a single faithful tuple or a single counterexample, but a description of the locus.
+Whether the failure locus is exhausted by finitely many such hypersurfaces is open. The generic
+form of Problem~\textup{\ref{prob:alternative}} is settled by Theorem~\ref{thm:generic}; what
+remains in dimension four is a description of this locus.
 \end{remark}
 
 \begin{remark}[the loci are local to a window, and propagate]\label{rem:windows}
@@ -959,28 +978,55 @@ semidefinite with a one-dimensional kernel.
 \begin{theorem}[right-angled version]\label{thm:racg}
 Let $\Gamma$ be a graph on $N\ge3$ vertices whose complement is connected, so that $W_\Gamma$ is
 irreducible, infinite and non-affine. Suppose there are weights $c_e\ge1$ on the complement edges
-with $\det(I-C(c))=0$, Then $W_\Gamma$ embeds in $O(N-1)$.
+with $\det(I-C(c))=0$. Then $W_\Gamma$ embeds in $O(N-1)$.
 \end{theorem}
 
 \begin{proof}
-Let $E$ be the edge set of the complement and $Y=\{c:\det(I-C(c))=0\}$, irreducible of dimension
-$|E|-1$ by Theorem~\ref{thm:irred}. By Lemma~\ref{lem:radline} the condition that $\rho_c(w)$ act trivially on
-$V/V_0$ is $(\rho_c(w)-I)V\subseteq V_0(c)$, which is Zariski closed; write $Z_w\subseteq Y$ for
-that locus. Replacing $c_e$ by $-c_e$ is conjugation by a diagonal sign change, so the condition
-depends only on $c_e^2$ and $Z_w$ is well defined. At the assumed point with all $c_e\ge1$,
-Theorem~\ref{thm:dimdrop} gives faithfulness on the quotient, so that point lies in no $Z_w$ with
-$w\ne1$; hence each $Z_w$ is a \emph{proper} Zariski-closed subset of the irreducible $Y$.
+Let $E$ be the edge set of the complement, $f(c)=\det(I-C(c))$ and $Y=\{c:f(c)=0\}$, a
+hypersurface of dimension $|E|-1$. As in Lemma~\ref{lem:radline}, with $V_0(c)$ the radical of
+the form $I-C(c)$, the condition that $\rho_c(w)$ act trivially on $V/V_0$ is $(\rho_c(w)-I)V\subseteq V_0(c)$, that is $(I-C(c))(\rho_c(w)-I)=0$, a system of
+polynomial equations in $c$; write $Z_w\subseteq Y$ for that Zariski-closed locus. No sign symmetry
+of $c$ is used. \textup{(}Replacing a single $c_e$ by $-c_e$ is a conjugation by a diagonal sign
+matrix when $e$ lies on no cycle of the complement, so for every $e$ when the complement is a tree,
+as for $\Gamma_n$; it is not one in general, since the product of the signs of the $c_e$ around a
+cycle of the complement is invariant under diagonal sign conjugation.\textup{)} At the assumed point
+with all $c_e\ge1$, Theorem~\ref{thm:dimdrop} gives faithfulness on the quotient, so that point lies
+in no $Z_w$ with $w\ne1$; hence each $Z_w$ is a \emph{proper} Zariski-closed subset of $Y$.
+
+We next show that $Y$ is irreducible over $\C$; Theorem~\ref{thm:irred} states irreducibility over
+$\Q$ only, and that alone would not suffice, since a polynomial irreducible over $\Q$ can split over
+$\R$ into conjugate factors. First, the proof of Theorem~\ref{thm:irred}, with those of
+Lemmas~\ref{lem:nosquare}--\ref{lem:coprime2} and Theorem~\ref{thm:irredbridge}, is valid verbatim
+over $\R$: the ground field enters only in Lemma~\ref{lem:nosquare}, through the impossibility of
+$\alpha(0)^2=-1$, and in the step that a product of two coprime polynomials with constant term $1$
+is a square only if each factor is, both of which hold over $\R$. So $f$ is irreducible over $\R$.
+Second, let $c_0$ be the point of Lemma~\ref{lem:perron}, with positive weights. The kernel of
+$M=I-C(c_0)$ is spanned by a Perron vector $z$ with every $z_v>0$, normalised to unit length, and
+$\operatorname{adj}M=\mu\,zz^{\!\top}$ with $\mu>0$ the product of the nonzero eigenvalues, so $\partial f/\partial c_e(c_0)=-2\mu z_uz_v\ne0$
+for $e=uv$; thus $c_0$ is a nonsingular real zero of $f$. A polynomial irreducible over $\R$ with a
+nonsingular real zero is irreducible over $\C$: otherwise it equals $\lambda h\bar h$ with $h$ not
+proportional to a real polynomial, and at every real zero $p$ both $h(p)$ and
+$\bar h(p)=\overline{h(p)}$ vanish, so $\nabla f(p)=0$. Hence $Y$ is irreducible over $\C$.
 
 By Lemma~\ref{lem:perron} the compact locus
 $K=\{c\in Y(\mathbb{R}):I-C(c)\text{ is positive semidefinite of rank }N-1\}$ is nonempty, and
-positive semidefiniteness with nullity one is an open condition, so $K$ is open in $Y(\mathbb{R})$
-of dimension $|E|-1$ and therefore Zariski dense in $Y$. Consequently each $Z_w\cap K$ is closed
-with empty interior in $K$: otherwise it would be $(|E|-1)$-dimensional, hence Zariski dense in the
-irreducible $Y$, forcing $Z_w=Y$. As $W_\Gamma$ is countable and $K$ is a Baire space, some $c\in K$
-avoids every $Z_w$ with $w\ne1$. At that point $I-C(c)$ is the Gram matrix of $N$ unit vectors in
-$\mathbb{R}^{N-1}$ with the prescribed orthogonality pattern; the reflections in them generate
-$W_\Gamma$ inside $O(N-1)$, faithfully.
+it is open in $Y(\R)$, positivity of the remaining $N-1$ eigenvalues being an open condition. Let
+$K'\subseteq K$ be the set of its nonsingular points, open in $Y(\R)$ and nonempty since
+$c_0\in K'$; it is a real-analytic manifold of dimension $|E|-1$ and a Baire space. Each
+$Z_w\cap K'$ is closed with empty interior in $K'$. Otherwise the equations of $Z_w$ vanish on a
+neighbourhood in $Y(\R)$ of some nonsingular point $p$. Near $p$ the complex hypersurface $Y$ is a
+graph $c_e=\varphi(c')$ with $\varphi$ holomorphic and real on real arguments, so each equation,
+restricted to that graph, is a holomorphic function of $c'$ vanishing on a real open set, hence on
+a complex neighbourhood; it therefore vanishes on an open subset of the connected complex manifold
+of nonsingular points of the irreducible $Y$, hence on all of $Y$, forcing $Z_w=Y$. As $W_\Gamma$
+is countable, some $c\in K'$ avoids every $Z_w$ with $w\ne1$. At that point $I-C(c)$ is the Gram
+matrix of $N$ unit vectors in $\mathbb{R}^{N-1}$ with the prescribed orthogonality pattern; the
+reflections in them generate $W_\Gamma$ inside $O(N-1)$, faithfully.
 \end{proof}
+
+\noindent For $\Gamma_n$ this density step is not needed: Theorem~\ref{thm:generic} below gives a
+proof in the squared variables $x_i=c_i^2$ that uses neither Theorem~\ref{thm:irred} nor any
+irreducibility over $\R$ or $\C$.
 
 Part of the irreducibility hypothesis can be discharged outright. Write
 $f_H(c)=\det(I-C(c))$ for a graph $H$ with independent edge variables, so that $f_H$ has constant
@@ -1126,15 +1172,17 @@ coefficients. In general it was checked by symbolic factorisation of $\det(I-C(c
 $\mathbb{Q}$, with the $c_e$ independent indeterminates, for every isomorphism class of connected
 complement on at most six vertices: all $2$, $6$, $21$ and $112$ classes at $N=3,4,5,6$ give an
 irreducible polynomial. At $N=2$ it fails, $\det=1-c^2=(1-c)(1+c)$, but there $W$ is infinite
-dihedral and affine, so it is excluded already. We expect irreducibility for every connected
-complement on at least three vertices and do not prove it.
+dihedral and affine, so it is excluded already. Irreducibility for every connected complement on
+at least three vertices is Theorem~\ref{thm:irred} over $\Q$, and over $\R$ and $\C$ by the
+argument in the proof of Theorem~\ref{thm:racg}.
 
 The hypothesis cannot simply be dropped by relocating the Vinberg point. At any $c$ with
 $c_e\ge1$ one has $C(c)\ge C(1)$ entrywise, so $\lambda_{\max}(C(c))\ge\lambda_{\max}(C(1))>1$,
 the last inequality because the Tits form of an irreducible infinite non-affine system is
 indefinite. A Vinberg point therefore never lies on the Perron sheet $\lambda_{\max}=1$, which is
 exactly the compact locus: the two live on different sheets of the real hypersurface, and only
-irreducibility over $\mathbb{C}$ connects them.
+irreducibility over $\mathbb{C}$ connects them. For $\Gamma_n$ the connection can be made without
+it, by the graph structure in the variables $x_i=c_i^2$ used in Theorem~\ref{thm:generic}.
 \end{remark}
 
 The hypothesis on $c$ is the only other one, and it holds widely. Over all right-angled systems with
@@ -1461,15 +1509,257 @@ the argument does not need any.
 \end{remark}
 
 \begin{remark}[what the reduction does not buy]\label{rem:notbuys}
-It does not decide Problem~\ref{prob:embed} for any $n\ge4$, the case $n=3$ being settled
-affirmatively by Corollary~\ref{cor:three}, and by itself it does not touch
-Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ into $O(n)$ need not be by
-reflections, and the faithfulness of the particular map $\rho_a$ is a separate question. The two
-standard invariants remain undecisive. Finite subgroups do not separate: every finite subgroup of
+By itself it does not decide Problem~\ref{prob:embed} for any $n\ge4$, the case $n=3$ being settled
+affirmatively by Corollary~\ref{cor:three} and every $n\ge3$ by Theorem~\ref{thm:alln}, and by
+itself it does not touch Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ into
+$O(n)$ need not be by reflections, and the faithfulness of the particular map $\rho_a$ is a
+separate question. For the embedding of Theorem~\ref{thm:alln} that gap is closed in
+Section~\ref{sec:generic}: by Lemma~\ref{lem:Kplus} the compact points it uses are, up to sign,
+exactly the facet-normal Gram matrices of $n$-orthoschemes, so the reflections are those of an
+orthoscheme point group, and Theorem~\ref{thm:generic} answers Problem~\ref{prob:alternative}
+affirmatively for every $n\ge3$. The two standard invariants remain undecisive as invariants. Finite subgroups do not separate: every finite subgroup of
 $W_n$ is conjugate into an elementary abelian $2$-group on a clique of $\Gamma_n$, of rank at
 most $\lceil(n+1)/2\rceil\le n$, while $O(n)$ contains $(\Z/2)^n$. Free subgroups do not
 separate either, both groups containing free subgroups of rank two for $n\ge3$.
 \end{remark}
+
+\section{The generic orthoscheme group in dimension \texorpdfstring{$n\ge3$}{n>=3}}\label{sec:generic}
+
+Theorem~\ref{thm:alln} embeds $W_n$ in $O(n)$ by reflections, but as stated it does not say that
+the reflections are those in the facets of an orthoscheme. This section shows that they are: the
+positive points of the compact locus of Theorem~\ref{thm:racg} for $\Gamma_n$ are exactly the
+facet-normal Gram matrices of $n$-orthoschemes. Combined with the Vinberg point of
+Lemma~\ref{lem:vinbergpoint}, this decides the generic form of Problem~\ref{prob:alternative} in
+every dimension $n\ge3$.
+
+\emph{Notation.} For $c\in\R^n$ let $C(c)$ be the adjacency matrix of the path $P_{n+1}$ on
+$\{0,\dots,n\}$ with weight $c_i$ on the edge $e_i=\{i-1,i\}$, and $G(c)=I-C(c)$. Put
+$x_i=c_i^2$, $D_0=D_1=1$ and $D_{k+1}=D_k-x_kD_{k-1}$, so that $D_k$ is the $k$-th leading
+principal minor of $G(c)$ and $\det G(c)=D_{n+1}$; note that $D_k$ involves only
+$x_1,\dots,x_{k-1}$. Let $K$ be the compact locus of the proof of Theorem~\ref{thm:racg} for
+$\Gamma_n$, so $N=n+1$, and $K^+=K\cap\R_{>0}^n$. For legs $a\in\R_{>0}^n$ put
+$r_k=(a_k/a_{k+1})^2$ for $1\le k\le n-1$, and let $\theta_{i-1,i}\in(0,\pi/2)$ be the angle
+between the facets $i-1$ and $i$ of $O(a)$.
+
+\begin{lemma}[the compact locus is the orthoscheme locus; PROVED]\label{lem:Kplus}
+Let $n\ge2$.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item For $c\in\R_{>0}^n$ the following are equivalent: $c\in K^+$; $D_1,\dots,D_n>0$ and
+$D_{n+1}=0$; the Perron root of $C(c)$ equals $1$.
+\item \emph{Forward formula.} For $a\in\R_{>0}^n$ put
+\begin{gather*}
+ c_1(a)=\frac{a_2}{\sqrt{a_1^2+a_2^2}},\qquad
+ c_n(a)=\frac{a_{n-1}}{\sqrt{a_{n-1}^2+a_n^2}},\\
+ c_i(a)=\frac{a_{i-1}a_{i+1}}{\sqrt{(a_{i-1}^2+a_i^2)(a_i^2+a_{i+1}^2)}}\qquad(2\le i\le n-1).
+\end{gather*}
+Then $c_i(a)=\cos\theta_{i-1,i}$, $c(a)\in K^+$, and $G(c(a))$ is the Gram matrix of the unit
+facet normals of $O(a)$, signed so that consecutive normals have negative inner product. In terms
+of the $r_k$, $x_1=1/(1+r_1)$, $x_i=r_{i-1}/\bigl((1+r_{i-1})(1+r_i)\bigr)$ for $2\le i\le n-1$,
+and $x_n=r_{n-1}/(1+r_{n-1})$.
+\item \emph{Inverse map.} $a\mapsto c(a)$ is a bijection from $\R_{>0}^n$ modulo scaling onto
+$K^+$. Its inverse is given by
+\[
+  \rho_k\;=\;\frac{D_{k+1}}{D_k}\;=\;\frac{r_k}{1+r_k}\qquad(1\le k\le n-1),
+\]
+that is, $(a_k/a_{k+1})^2=\rho_k/(1-\rho_k)$, the $D_k$ being evaluated at $c$.
+\item \emph{Signs.} If $c\in K$ has every $c_i\ne0$, then $|c|=(|c_1|,\dots,|c_n|)\in K^+$ and
+$G(c)=S\,G(|c|)\,S$ for a diagonal sign matrix $S$.
+\end{enumerate}
+Consequently, for every $c\in K$ with nonzero entries, the action of $W_n$ on $V/V_0$ by
+reflections in $\bar e_0,\dots,\bar e_n$, as in Lemma~\ref{lem:radline}, is conjugate in $O(n)$
+to the point group $\pi\circ\rho_a$ of the orthoscheme with $c(a)=|c|$.
+\end{lemma}
+
+\begin{proof}
+(i) Let $c>0$ and $c\in K$, with $z$ spanning $\ker G(c)$. If $z_n=0$, the rows of the Jacobi
+matrix $G(c)$ read from the last one upwards force $z_{n-1}=\dots=z_0=0$, since every $c_i\ne0$;
+so $z_n\ne0$. For $0\ne y\in\R^n$ the vector $(y,0)$ is then not in the kernel, so
+$(y,0)^{\!\top}G(c)(y,0)>0$: the leading $n\times n$ block is positive definite, $D_1,\dots,D_n>0$,
+and $D_{n+1}=\det G(c)=0$. Conversely, $D_1,\dots,D_n>0$ makes the leading block positive definite,
+so by interlacing $G(c)$ has at most one nonpositive eigenvalue, and $D_{n+1}=0$ makes it a simple
+zero. For the third condition, $C(c)$ is nonnegative and irreducible, the path being connected, so
+its largest eigenvalue is its Perron root and is simple; $G(c)$ is positive semidefinite of rank $n$
+exactly when that root is $1$.
+
+(ii) By \cite[Lemma~\texttt{lem:normals}]{orthoscheme} the facet normals are $m_0=e_1$,
+$m_j=a_{j+1}e_j-a_je_{j+1}$ for $1\le j\le n-1$, and $m_n=e_n$, with $m_i\cdot m_j=0$ for
+$|i-j|\ge2$, $m_0\cdot m_1=a_2$, $m_j\cdot m_{j+1}=-a_ja_{j+2}$ and $m_{n-1}\cdot m_n=-a_{n-1}$.
+Put $u_0=-m_0$ and $u_j=m_j/|m_j|$ for $j\ge1$, with $|m_j|^2=a_j^2+a_{j+1}^2$. Then every
+consecutive inner product is negative and its absolute value is the displayed $c_i(a)$, which is
+$\cos\theta_{i-1,i}$; so $\mathrm{Gram}(u_0,\dots,u_n)=G(c(a))$. The $u_j$ span $\R^n$, since
+$m_1,\dots,m_n$ is a basis, so this Gram matrix is positive semidefinite of rank $n$ and
+$c(a)\in K^+$. The expressions in the $r_k$ follow on dividing numerator and denominator of $c_i(a)^2$
+by $a_2^2$, by $a_i^2a_{i+1}^2$, and by $a_n^2$ respectively.
+
+(iii) Write $\rho_k=a_k^2/(a_k^2+a_{k+1}^2)=r_k/(1+r_k)$ for $1\le k\le n-1$, and $\rho_0=1$,
+$\rho_n=0$. Part (ii) says exactly $x_k=\rho_{k-1}(1-\rho_k)$ for $1\le k\le n$, and then
+$D_{k+1}/D_k=\rho_k$ by induction, since
+$D_{k+1}/D_k=1-x_k/(D_k/D_{k-1})=1-x_k/\rho_{k-1}=\rho_k$. Conversely let $c\in K^+$. By (i) the
+$\rho_k=D_{k+1}/D_k$ are positive for $k\le n-1$, $\rho_n=0$, and $\rho_k=1-x_k/\rho_{k-1}<1$.
+Choose legs with $(a_k/a_{k+1})^2=\rho_k/(1-\rho_k)$, which determines $a$ up to scaling. The
+recursion for the $D_k$, divided by $D_{k-1}$, gives $x_k=\rho_{k-1}(1-\rho_k)$ for $c$ as well,
+so $c(a)$ and $c$ have the same squares; both are positive, so $c(a)=c$. Injectivity modulo
+scaling holds because $c$ determines the $\rho_k$, hence the ratios $a_k/a_{k+1}$.
+
+(iv) The path is a tree, so there are signs $s_0,\dots,s_n$ with $s_{i-1}s_i=\operatorname{sign}c_i$
+for every $i$, and $S=\mathrm{diag}(s_i)$ satisfies $S\,G(|c|)\,S=G(c)$. Conjugate symmetric
+matrices have the same inertia, so $|c|\in K$, and $|c|>0$, so $|c|\in K^+$; by (i) this is the
+statement that the Perron root of $C(|c|)$ is $1$.
+
+For the final statement, the construction of Lemma~\ref{lem:radline} uses only that $G(c)$ is a
+Jacobi matrix with $\det G(c)=0$, so it applies to $c$. As $G(c)$ is positive semidefinite of rank
+$n$, the induced form on $V/V_0$ is positive definite, and $\bar e_0,\dots,\bar e_n$ are unit
+vectors spanning $V/V_0$ with Gram matrix $G(c)=S\,G(|c|)\,S$. By (ii) and (iii) the vectors
+$s_0u_0,\dots,s_nu_n$ for the orthoscheme with $c(a)=|c|$ have the same Gram matrix, so an isometry
+$V/V_0\to\R^n$ carries $\bar e_i$ to $s_iu_i$; it conjugates the reflection in $\bar e_i$ to the
+reflection in $u_i$, which is the linear part of $\widehat R_i$.
+\end{proof}
+
+The forward and inverse maps were checked in exact arithmetic for $n=2,\dots,9$.
+
+\begin{theorem}[generic faithfulness in every dimension $n\ge3$; PROVED]\label{thm:generic}
+Let $n\ge3$. For each $w\in W_n\setminus\{1\}$ the locus
+$Z_w=\{a\in\R_{>0}^n:\pi(\rho_a(w))=I\}$ is contained in the zero set of a nonzero polynomial with
+integer coefficients in $r_1(a),\dots,r_{n-1}(a)$. Consequently the set
+\[
+   F_n\;=\;\{a\in\R_{>0}^n:\rho_a\ \text{is injective}\}\;=\;\R_{>0}^n\setminus\bigcup_{w\ne1}Z_w
+\]
+has the following properties.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item $F_n$ is co-null and comeagre in $\R_{>0}^n$, and it contains every leg tuple $a$ whose
+ratios $a_2/a_1$, \dots, $a_n/a_{n-1}$ are algebraically independent over $\Q$.
+\item $U_n=1$ and $N_{\mathrm{gen}}=1$. The generic $n$-orthoscheme group is $W_n$, and for
+$a\in F_n$ the point group $\pi\circ\rho_a$ is injective as well.
+\item For every $a\in F_n$ the growth series of $W(a)$ is
+\[
+  W_n(t)=\frac{(1+t)^{\lfloor n/2\rfloor+1}}{K_{n+1}(t)},
+\]
+which is rational, with growth rate $1+2\cos\bigl(2\pi/(n+3)\bigr)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The equality of the two descriptions of $F_n$ holds because $\rho_a$ is injective if and only if
+$\pi\circ\rho_a$ is, by Corollary~\ref{cor:necessary} and $\ker\rho_a\subseteq\ker(\pi\circ\rho_a)$.
+
+\emph{Step 1: a polynomial model of the quotient.} For $x\in\C^n$ let $\widetilde A(x)$ be the
+$(n+1)\times(n+1)$ matrix with $\widetilde A_{ii}=2$, $\widetilde A_{i-1,i}=-2x_i$,
+$\widetilde A_{i,i-1}=-2$ for $1\le i\le n$, and all other entries $0$, and put
+$\widetilde\rho_x(R_i)=I-E_{ii}\widetilde A(x)$, with $E_{ii}=e_ie_i^{\!\top}$. Since
+$\widetilde A_{ii}=2$ each $\widetilde\rho_x(R_i)$ is an involution, and since
+$\widetilde A_{ij}=0$ for $|i-j|\ge2$ the images of $R_i$ and $R_j$ commute; so $\widetilde\rho_x$
+is a representation of $W_n$ for every $x$, and every entry of $\widetilde\rho_x(w)$ lies in
+$\Z[x_1,\dots,x_n]$. Put
+\[
+  P_w(x)=\widetilde A(x)\bigl(\widetilde\rho_x(w)-I\bigr).
+\]
+Now let $c\in\R^n$ have every $c_i\ne0$ and $\det G(c)=0$, and put $x=c^2$. With
+$\Delta=\mathrm{diag}(\delta_0,\dots,\delta_n)$, $\delta_0=1$ and $\delta_i=\delta_{i-1}/c_i$, one
+has $\Delta\cdot2G(c)\cdot\Delta^{-1}=\widetilde A(x)$, and therefore
+$\Delta\rho_A(R_i)\Delta^{-1}=\widetilde\rho_x(R_i)$ for the Vinberg representation
+$\rho_A(R_i)=I-E_{ii}A$ of $A=2G(c)$. The radical is $V_0=\ker A$, so $w$ acts trivially on
+$V/V_0$ if and only if $(\rho_A(w)-I)V\subseteq\ker A$, that is $A(\rho_A(w)-I)=0$, that is
+$P_w(x)=0$. The entries of $P_w$ are polynomials in $x=c^2$, so this locus is cut out by
+sign-flip-invariant polynomials in $c$.
+
+\emph{Step 2: the graph.} Let $Y^\times=\{x\in(\C^\times)^n:D_{n+1}(x)=0\}$. On $Y^\times$ one has
+$D_{n-1}\ne0$ automatically. Indeed, if $D_{n-1}=0$ then $D_n=D_{n+1}+x_nD_{n-1}=0$, and whenever
+$D_k=D_{k-1}=0$ the recursion gives $x_{k-1}D_{k-2}=D_{k-1}-D_k=0$, hence $D_{k-2}=0$ as
+$x_{k-1}\ne0$; descending, $D_1=D_0=0$, which is false. Since $D_n$ and $D_{n-1}$ involve only
+$x'=(x_1,\dots,x_{n-1})$, $Y^\times$ is the graph of $x_n=D_n(x')/D_{n-1}(x')$ over the set of
+$x'\in(\C^\times)^{n-1}$ with $D_{n-1}(x')D_n(x')\ne0$. For $p\in\Z[x]$ of degree $N$ in $x_n$ put
+\[
+  p^\flat(x')=D_{n-1}(x')^N\,p\bigl(x',D_n(x')/D_{n-1}(x')\bigr)\in\Z[x_1,\dots,x_{n-1}] ;
+\]
+then for $x\in Y^\times$, $p(x)=0$ if and only if $p^\flat(x')=0$.
+
+\emph{Step 3: the Vinberg point.} Lemma~\ref{lem:vinbergpoint} gives $c^\ast\in[1,\infty)^n$ with
+$\det G(c^\ast)=0$, and $x^\ast=(c^\ast)^2\in Y^\times$. The matrix $A=2G(c^\ast)$ is a symmetric
+Cartan matrix for $W_n$ of rank $n$ (Lemma~\ref{lem:radline}), and $(W_n,S)$ is irreducible,
+infinite and non-affine (proof of Lemma~\ref{lem:quotfaith}), so $W_n$ acts faithfully on
+$V/V_0$ by Theorem~\ref{thm:dimdrop}, which for this $A$ is Lemma~\ref{lem:quotfaith}. By Step~1, $P_w(x^\ast)\ne0$ for
+every $w\ne1$; choose an entry $p_w$ of $P_w$ with $p_w(x^\ast)\ne0$. By Step~2,
+$p_w^\flat(x^{\ast\prime})\ne0$, so $p_w^\flat$ is a nonzero polynomial.
+
+\emph{Step 4: the legs.} Let $a\in\R_{>0}^n$. By Lemma~\ref{lem:Kplus}, $x(a)=c(a)^2$ lies in
+$K^+\subseteq Y^\times$ and $\pi\circ\rho_a$ is conjugate to the action on $V/V_0$ at $c(a)$. So
+$\pi(\rho_a(w))=I$ if and only if $P_w(x(a))=0$, by Step~1, and this forces
+$p_w^\flat(x'(a))=0$, by Step~2. By Lemma~\ref{lem:Kplus}(ii), $x'$ is a rational function of
+$r=(r_1,\dots,r_{n-1})$ whose denominators are products of the $1+r_k$; by
+Lemma~\ref{lem:Kplus}(iii), $r$ is recovered rationally from $x'$ through $\rho_1=1-x_1$,
+$\rho_k=1-x_k/\rho_{k-1}$ and $r_k=\rho_k/(1-\rho_k)$, and the composite $x'\mapsto r\mapsto x'$
+is the identity where defined. So $r\mapsto x'(r)$ is birational, and
+$h_w(r)=\prod_k(1+r_k)^M\,p_w^\flat\bigl(x'(r)\bigr)$ is, for $M$ large, a nonzero polynomial in
+$\Z[r_1,\dots,r_{n-1}]$: if it vanished identically, substituting $r=r(x')$ would make
+$p_w^\flat$ vanish on a dense open set. Hence $Z_w\subseteq\{a:h_w(r(a))=0\}$, which is the
+first statement.
+
+\emph{Step 5: conclusion.} Multiplying $h_w(r(a))$ by a power of $\prod_ka_{k+1}^2$ gives a
+polynomial $H_w$ in $a$ with rational coefficients. It is nonzero, because $a\mapsto r(a)$ maps
+$\R_{>0}^n$ onto the open set $(0,\infty)^{n-1}$, on which the nonzero polynomial $h_w$ cannot
+vanish identically. So $\{a\in\R_{>0}^n:H_w(a)=0\}$ is a proper real-algebraic subset defined over
+$\Q$, closed, nowhere dense and null, and it contains $Z_w$. As $W_n$ is countable, $F_n$ is
+co-null and comeagre. If $a_2/a_1,\dots,a_n/a_{n-1}$ are algebraically independent over $\Q$, then
+so are $r_k=(a_k/a_{k+1})^2$, the former being algebraic over $\Q(r)$; so $h_w(r(a))\ne0$ for every
+$w\ne1$ and $a\in F_n$. This is (i).
+
+For (ii), $F_n\ne\emptyset$, and an element $1\ne w\in U_n$ would have $Z_w=\R_{>0}^n$; so
+$U_n=1$, and $N_{\mathrm{gen}}\subseteq\ker\rho_a=1$ for any $a\in F_n$. Theorem~\ref{thm:unify}(i)
+then applies. For (iii), when $\rho_a$ is injective it is an isomorphism of marked groups
+$W_n\to W(a)$, so the sphere sizes agree in every degree, and Theorem~\ref{thm:envelope} gives the
+series and the rate.
+\end{proof}
+
+\begin{remark}[scope of Theorem~\ref{thm:generic}]\label{rem:genericscope}
+The case $n=3$ is not new: it is Corollary~\ref{cor:three}, obtained from the faithful tuple
+$(1,2,11)$. The new content is $n\ge4$, where no faithful tuple is exhibited; the input is the
+Vinberg point, which is not an orthoscheme, transported to the orthoscheme locus by the polynomial
+identity principle in the variables $x'$. The Vinberg point has all $c_i\ge1$ and $K^+$ has all
+$c_i<1$, so they lie on different sheets of the real hypersurface (Remark~\ref{rem:irred}); the
+graph structure of Step~2 connects them without Theorem~\ref{thm:irred}. The same identification
+bridges Theorem~\ref{thm:alln} directly. The Baire point of Theorem~\ref{thm:racg} for $\Gamma_n$
+has every $c_i\ne0$, since $c_i=0$ would make $(R_{i-1}R_i)^2\ne1$ act trivially, so by
+Lemma~\ref{lem:Kplus}(iv) it is, up to sign, the Gram matrix of an orthoscheme, and
+Theorem~\ref{thm:unify}(i) applies to it.
+
+The theorem certifies no rational tuple. For $n\ge4$ it proves no given $a\in\Q_{>0}^n$ faithful,
+and some rational tuples are not: those of Theorem~\ref{thm:masterCfalse}, and the rational points
+of the hypersurfaces of Theorems~\ref{thm:family4}, \ref{thm:family4b} and~\ref{thm:family4c}.
+Two questions therefore remain open. First, rationality at every non-generic shape: whether the
+growth series of $W(a)$ is rational for every $a\notin F_n$, where $W(a)$ is a proper quotient of
+$W_n$ and its series departs from the envelope at depth $\cd_n(a)=K(\ker\rho_a)/2$. Second, the Class C shapes:
+whether $\rho_a$ is injective at a given Class C tuple, and whether the failure locus is a finite
+union of hypersurfaces as in Remark~\ref{rem:hypersurfaces}.
+\end{remark}
+
+\begin{corollary}[the dimension contrast; PROVED]\label{cor:dimcontrast}
+For $n\ge1$ let $\mathcal G_n(t)$ be the growth series of the generic $n$-orthoscheme group
+$W_n/N_{\mathrm{gen}}$ with respect to its facet reflections.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item For $n=1$ the group is $D_\infty$ for every leg, and $\mathcal G_1(t)=(1+t)/(1-t)$.
+\item For $n=2$, $\mathcal G_2=U$ is not $D$-finite and has $|x|=1$ as a natural boundary.
+\item For $n\ge3$, $\mathcal G_n(t)=W_n(t)=(1+t)^{\lfloor n/2\rfloor+1}/K_{n+1}(t)$.
+\end{enumerate}
+In particular the plane is the only dimension $n\ge2$, and indeed $n\ge1$, in which the generic
+growth series is not rational.
+\end{corollary}
+
+\begin{proof}
+(i) The $1$-orthoscheme is a segment $[0,a_1]$, whose two facet reflections $x\mapsto-x$ and
+$x\mapsto2a_1-x$ have product a translation by $2a_1$, of infinite order. $\Gamma_1$ has no edges,
+so $W_1=\Z/2\ast\Z/2=D_\infty$, and $\rho_a$ is injective, the proper quotients of $D_\infty$ being
+finite. Its growth series is $1+2t+2t^2+\dots=(1+t)/(1-t)$, which is also the envelope formula at
+$n=1$, since $K_2=1-t$. (ii) The generic $2$-orthoscheme group is the generic right-triangle group
+$W_{\mathrm{univ}}$ of \cite{paper2}, whose growth series is $U$. It is not $D$-finite by
+Theorem~\texttt{thm:nonDfinite} of \cite{paper2}, and $|x|=1$ is a natural boundary by
+Theorem~\texttt{thm:natboundary} there; the standing hypotheses of both, the transfer model and the
+junction pairing, are Theorems~\texttt{thm:model} and \texttt{thm:RJ} of \cite{paper2}
+(Theorems~\ref{hyp:M} and \ref{hyp:RJ} here), the latter with computer assistance in the
+certificate ranges. A rational series is $D$-finite, so $\mathcal G_2$ is not rational. Here
+$N_{\mathrm{gen}}\ne1$: the generic group is a subgroup of $\Isom(\R^2)$, into which $W_2$ does not
+embed (Corollary~\ref{cor:plane}). (iii) is
+Theorem~\ref{thm:generic}(ii)--(iii).
+\end{proof}
 
 \section{The planar case}\label{sec:plane}
 
@@ -2006,15 +2296,25 @@ theory applies to it. We have not carried the argument out, and record only that
 preconditions hold.
 \end{remark}
 
-\begin{problem}[The alternative in dimension $n\ge4$]\label{prob:alternative}
+\begin{remark}[The alternative in dimension $n\ge4$, RESOLVED]\label{prob:alternative}
 Is $N_{\mathrm{gen}}=\bigcap_a\ker\rho_a$ trivial, equivalently is $\rho_a$ injective for
-generic $a$? A single faithful tuple answers this affirmatively. The arithmetic form is FALSE
-(Theorem~\ref{thm:masterCfalse}), which does not decide the generic form.
-\end{problem}
+generic $a$? This was carried as an open problem. It is answered affirmatively, unconditionally,
+for every $n\ge3$ by Theorem~\ref{thm:generic}, the case $n=3$ being Corollary~\ref{cor:three}:
+$\rho_a$ is injective on a co-null, comeagre set of leg tuples containing every tuple with
+algebraically independent ratios, the generic $n$-orthoscheme group is $W_n$, and its growth series
+is the rational envelope. The arithmetic form is FALSE (Theorems~\ref{thm:masterCfalse},
+\ref{thm:family4}, \ref{thm:family4b} and~\ref{thm:family4c}). Two questions stay open:
+rationality at every non-generic shape, that is whether the growth series of $W(a)$ is rational
+for every $a$ at which $\rho_a$ is not injective; and the Class C shapes, where for $n\ge4$
+faithfulness at a given Class C tuple is not decided, Theorem~\ref{thm:generic} certifying no
+rational tuple, and where it is open whether the failure locus is a finite union of hypersurfaces
+(Remark~\ref{rem:hypersurfaces}).
+\end{remark}
 
 \begin{remark}[Class C faithfulness]\label{conj:masterC}
 The conjecture that $\rho_a$ is injective for every $a\in\Q_{>0}^n$ with $e(a)=t(a)=0$ and
-$n\ge3$ is FALSE, by Theorem~\ref{thm:masterCfalse}. Only the generic form (a) survives.
+$n\ge3$ is FALSE, by Theorem~\ref{thm:masterCfalse}. Only the generic form survives, and it is
+true, by Theorem~\ref{thm:generic}.
 \end{remark}
 
 \begin{remark}[Ambient embedding, RESOLVED]\label{prob:embed}
@@ -2026,12 +2326,13 @@ directions; it is answered affirmatively, unconditionally, in Theorem~\ref{thm:a
 right-angled version (Theorem~\ref{thm:racg}) applied to $\Gamma_n$.
 \end{remark}
 
-\begin{problem}[Finite presentation]\label{prob:fp}
-For $n\ge3$, is $W_n/N_{\mathrm{gen}}$ finitely presented? A negative answer refutes
-Problem~\ref{prob:alternative}(a). At $n=2$ the answer is no. At $n=3$ the answer is yes --
-$N_{\mathrm{gen}}=1$ there (Corollary~\ref{cor:three}(iii)), so $W_3/N_{\mathrm{gen}}=W_3$,
-finitely presented since $W_3$ is. The question is open for every $n\ge4$.
-\end{problem}
+\begin{remark}[Finite presentation, RESOLVED]\label{prob:fp}
+For $n\ge3$, is $W_n/N_{\mathrm{gen}}$ finitely presented? At $n=2$ the answer is no. For every
+$n\ge3$ the answer is yes: $N_{\mathrm{gen}}=1$ by Theorem~\ref{thm:generic}, so
+$W_n/N_{\mathrm{gen}}=W_n$, a right-angled Coxeter group and hence finitely presented; at $n=3$
+this was Corollary~\ref{cor:three}(iii). Finite presentation of $W(a)$ at an individual
+non-generic shape, where $W(a)$ is a proper quotient of $W_n$, is not addressed.
+\end{remark}
 
 \begin{problem}[Transcendence of the zeros]\label{prob:zeros}
 Are the zeros $z_k(q)$ of the Hahn--Exton $q$-cosine transcendental at algebraic $q\in(0,1)$, and

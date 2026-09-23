@@ -441,9 +441,9 @@ using $N_{\mathrm{gen}}\subseteq\ker\rho_a$ for every $a$.
 
 Corollary~\ref{cor:one-shape} is what allows the generic question and the arithmetic question of
 \S\ref{sec:open} to be treated as two forms of one problem in one direction. It gives nothing in
-the other direction: a specific rational tuple need not lie in $U_{\mathrm{gen}}$, and
-$U_{\mathrm{gen}}$ contains no tuple with algebraically dependent coordinates, hence no rational
-tuple at all.
+the other direction: a specific rational tuple need not lie in $U_{\mathrm{gen}}$, since
+Theorem~\ref{thm:rigidity} places there every tuple with algebraically independent coordinates and
+says nothing about any tuple with algebraically dependent ones, rational tuples included.
 
 \section{The universality--deviation dichotomy}\label{sec:dichotomy}
 
@@ -1526,7 +1526,9 @@ end at a horizon beyond the computed range. Nothing here decides between them.
 The three problems below are the whole of what this paper leaves open. Each is stated in full,
 with what is known about it. Only the first is stated as a conjecture, and the evidence on
 both sides of it is recorded below; for the other two we state a question and decline to guess
-a direction.
+a direction. Since this section was written, all three have been answered affirmatively for
+generic legs in every dimension $n\ge3$ \cite{Bonfioli3}; each is followed by the resolution and
+by what stays open.
 
 \begin{problem}[The alternative in dimension $n\ge3$]\label{prob:alternative}
 Fix $n\ge3$.
@@ -1541,11 +1543,23 @@ $a\in\Q_{>0}^n$? This is Conjecture~\ref{conj:master-C}, and the answer is \emph
 \end{enumerate}
 \end{problem}
 
-\emph{What is known.} The two forms are related in one direction only. By
+\emph{Resolution.} Part (a) is answered affirmatively for every $n\ge3$, by the generic
+faithfulness theorem of \cite{Bonfioli3}: $N_{\mathrm{gen}}=\{1\}$, and $\rho_a$ is injective on a
+co-null, comeagre set of leg tuples containing every $a$ whose ratios $a_2/a_1,\dots,a_n/a_{n-1}$
+are algebraically independent over $\Q$. The generic $n$-orthoscheme group is therefore $W_n$, and
+by Corollary~\ref{cor:alternative}(i) its growth series is the rational envelope $W_n(t)$ with
+rate $r_n$. The key input is that the positive points of the compact locus of Gram matrices used
+for the embedding of Remark~\ref{prob:embed} are exactly the facet-normal Gram matrices of
+$n$-orthoschemes. At $n=3$ this was already known from the faithful tuple $(1,2,11)$
+\cite{Bonfioli3}. Part (b) stays false, and two questions stay open: whether the growth series of
+$W(a)$ is rational at every non-generic shape, and, for $n\ge4$, whether $\rho_a$ is injective at a
+given Class C tuple, no rational tuple being certified by the generic theorem.
+
+\emph{What was known.} The two forms are related in one direction only. By
 Corollary~\ref{cor:one-shape}, a single faithful tuple, rational or not, answers (a)
-affirmatively; so (b) implies (a). The converse is not automatic, because $U_{\mathrm{gen}}$
-contains no tuple with algebraically dependent coordinates, hence no rational tuple: an
-affirmative answer to (a) says nothing directly about any given rational $a$. The rank-two half
+affirmatively; so (b) implies (a). The converse is not automatic, because a given rational tuple
+need not lie in $U_{\mathrm{gen}}$: an affirmative answer to (a) says nothing directly about any
+given rational $a$. The rank-two half
 of (b) is proved, Theorem~\ref{thm:rank2}(iii). No soft upgrade of that half to the whole is
 available: faithfulness would follow if every nontrivial kernel element lay in a rank-two
 parabolic, and that implication is false, the plane being a counterexample, where for
@@ -1555,17 +1569,19 @@ counterexample is a warning about (b) itself: the $n=2$ analogue of
 Conjecture~\ref{conj:master-C} is false. The positive evidence is confined to $n\ge3$ and is
 computational, the agreement to the depths of \eqref{eq:classC-depths} recorded above, together with
 Theorem~\ref{thm:len6}, which removes the shortest length at which a relation could have
-appeared. If the answer to (a) is affirmative for all $n\ge3$, the plane is the unique dimension
-with non-rational orbit growth. If instead $\ker\rho_a$ is nontrivial in some dimension $n\ge3$,
-the growth deviates below the envelope at $\cd_n(a)=K(a)/2\ge4$, and the arithmetic of the
-deviated series past that horizon is open even in the cases where the horizon can be located.
+appeared. Since the answer to (a) is affirmative for all $n\ge3$, the plane is the only dimension
+$n\ge2$ in which the generic orbit growth is not rational: there the generic growth series is not
+$D$-finite and has $|x|=1$ as a natural boundary \cite{Bonfioli2}, while in dimension one the group
+is $D_\infty$ \cite{Bonfioli3}. At a non-generic tuple with $\ker\rho_a$ nontrivial, the growth
+deviates below the envelope at $\cd_n(a)=K(a)/2\ge4$, and the arithmetic of the deviated series
+past that horizon is open even in the cases where the horizon can be located.
 
 \begin{remark}[The ambient embedding, RESOLVED]\label{prob:embed}
 Fix $n\ge3$. Is $W_n$ isomorphic to a subgroup of $\Isom(\R^n)$; that is, does statement
 $(E_n)$ of Theorem~\ref{thm:barrier} hold? This was open when this section was first drafted.
 It is now known: $(E_n)$ holds for every $n\ge3$, unconditionally, proved in the companion paper
-on generic orthoscheme embeddings (its right-angled embedding theorem applied to $\Gamma_n$,
-whose complement is the connected path $P_{n+1}$). The discussion below, written when the
+on generic orthoscheme embeddings \cite{Bonfioli3} (its right-angled embedding theorem applied to
+$\Gamma_n$, whose complement is the connected path $P_{n+1}$). The discussion below, written when the
 question was open, is retained because its content -- what a positive answer does and does not
 settle -- remains correct and relevant now that the answer is known.
 
@@ -1580,7 +1596,11 @@ this single question governed the entire class of ambient obstructions; since $(
 such obstruction exists in any dimension $n\ge3$. Note that this positive answer does \emph{not}
 touch Problem~\ref{prob:alternative}: an abstract embedding of $W_n$ need not be by reflections in
 the facets of an orthoscheme, or by reflections at all, so the resolution here does not by itself
-decide whether the specific reflection representation $\rho_a$ is injective for generic $a$.
+decide whether the specific reflection representation $\rho_a$ is injective for generic $a$. For
+the embedding of \cite{Bonfioli3} that gap is closed there: the positive points of the compact
+locus it uses are, up to sign, exactly the facet-normal Gram matrices of $n$-orthoschemes, so the
+embedding is realised by orthoscheme point groups, and Problem~\ref{prob:alternative}(a) is
+answered affirmatively (see the resolution above).
 \end{remark}
 
 \begin{problem}[Finite presentation]\label{prob:fp}
@@ -1588,7 +1608,11 @@ Fix $n\ge3$. Is the generic $n$-orthoscheme reflection group $W_n/N_{\mathrm{gen
 presented?
 \end{problem}
 
-\emph{What is known.} At $n=2$ the answer is no: Isola and Piergallini~\cite{isola-piergallini}
+\emph{Resolution.} For every $n\ge3$ the answer is yes: $N_{\mathrm{gen}}=\{1\}$ by the generic
+faithfulness theorem of \cite{Bonfioli3}, so $W_n/N_{\mathrm{gen}}=W_n$, which is finitely presented.
+Finite presentation of $W(a)$ at an individual non-generic shape is not addressed.
+
+\emph{What was known.} At $n=2$ the answer is no: Isola and Piergallini~\cite{isola-piergallini}
 show that the generic triangle reflection group is not finitely presented, which gives
 non-injectivity in the plane independently of the amenability argument. Since $W_n$ is finitely
 presented, an answer either way decides Problem~\ref{prob:alternative}(a): a negative answer
@@ -1596,7 +1620,8 @@ refutes it, and hence also refutes Conjecture~\ref{conj:master-C} by
 Corollary~\ref{cor:one-shape}, while an affirmative answer is consistent with it and does not
 prove it. Problems~\ref{prob:alternative} and \ref{prob:fp} are therefore not independent, and
 the direction in which the plane answers Problem~\ref{prob:fp} is the direction that would
-refute Conjecture~\ref{conj:master-C}. We know of no argument in either direction for $n\ge3$.
+refute Conjecture~\ref{conj:master-C}. Before \cite{Bonfioli3} we knew of no argument in either
+direction for $n\ge3$.
 
 \subsection{Further questions}
 
@@ -1651,9 +1676,9 @@ Theorem~\ref{thm:cd-general}, case $e=t=0$       & conditional    & equivalent t
 Conjecture~\ref{conj:master-C} (Class C)         & \textbf{FALSE}, Rem.~\ref{rem:masterC-false} & seven primitive counterexample triples exhibited, entries at most $12$ \\
 Proposition~\ref{prop:plane} (the plane)         & proved$^\star$ & none \\
 Theorem~\ref{thm:barrier} (ambient obstruction)  & proved$^\star$ & none \\
-Problem~\ref{prob:alternative}                   & open in both directions & \\
+Problem~\ref{prob:alternative}                   & (a) \textbf{RESOLVED}, true; (b) false & (a) true for every $n\ge3$, generic legs \cite{Bonfioli3}; (b) Rem.~\ref{rem:masterC-false} \\
 Problem~\ref{prob:embed} (ambient embedding), Rem.~\ref{prob:embed} & \textbf{RESOLVED}, true & false at $n=2$; true for every $n\ge3$, proved in the companion paper \\
-Problem~\ref{prob:fp} (finite presentation)      & open in both directions & answered ``no'' at $n=2$ \cite{isola-piergallini} \\
+Problem~\ref{prob:fp} (finite presentation)      & \textbf{RESOLVED}, true & true for every $n\ge3$ \cite{Bonfioli3}; answered ``no'' at $n=2$ \cite{isola-piergallini} \\
 \bottomrule
 \caption{Status of the numbered statements. ``Proved'' means a complete written proof, and
 nothing more. The star marks formalisation debt: the statement is not verified in Lean~4, and
@@ -1663,8 +1688,8 @@ Table~\ref{tab:lean} gives the declarations and their hypotheses, and \S\ref{sec
 what blocks the rest. ``Reviewed'' means that the written proof has been re-examined in full
 against a hostile reading, independently of its drafting; the hypothesis audit that review
 produced is Remark~\ref{rem:len6-hyp}, and the status of the excluded dimension is
-Remark~\ref{rem:len6-n2}. The three rows at the bottom are the whole of what the paper leaves
-open.}
+Remark~\ref{rem:len6-n2}. The three rows at the bottom were the whole of what the paper left
+open; all three are now resolved for generic legs \cite{Bonfioli3}.}
 \label{tab:status}
 \end{longtable}
 \normalsize
@@ -2016,9 +2041,9 @@ A32 & Prop.~\ref{prop:plane}: $\rho_a$ is not injective at $n=2$ & proved$^\star
 A33 & Cor.~\ref{cor:plane}: the planar horizon is $\cd_2=10$ & proved$^\star$ & A32, lit.\ (companion paper) & done \\
 A34 & Thm.~\ref{thm:barrier}: ambient obstructions exist only at $n=2$ & proved$^\star$ & lit.\ (free subgroups of $SO(3)$) & done \\
 A35 & Rem.~\ref{rem:amenability-fails}: reading of A34 & proved$^\star$ & A34 & done \\
-A36 & Prob.~\ref{prob:alternative}: is $\rho_a$ injective for $n\ge3$? & open & A6, A25, A29 & open \\
-A37 & Prob.~\ref{prob:embed}: does $W_n$ embed in $\Isom(\R^n)$? & open & A34 & open \\
-A38 & Prob.~\ref{prob:fp}: is the generic $n$-orthoscheme group finitely presented? & open & A36, lit.\ \cite{isola-piergallini} & open \\
+A36 & Prob.~\ref{prob:alternative}: is $\rho_a$ injective for $n\ge3$? & resolved \cite{Bonfioli3} & A6, A25, A29 & (a) true, (b) false \\
+A37 & Prob.~\ref{prob:embed}: does $W_n$ embed in $\Isom(\R^n)$? & resolved \cite{Bonfioli3} & A34 & true \\
+A38 & Prob.~\ref{prob:fp}: is the generic $n$-orthoscheme group finitely presented? & resolved \cite{Bonfioli3} & A36, lit.\ \cite{isola-piergallini} & true \\
 \bottomrule
 \caption{The $38$ numbered statements as atoms, with labels, dependencies and status.
 Twenty-two are theorem-like: twenty-one carry \textsc{proved} in full and A29 carries it on two
@@ -2050,6 +2075,10 @@ formalization at \texttt{github.com/ElVec1o/pythagorean-reflection-sequence}.
 \bibitem{Bonfioli2}
 V.~Bonfioli, \emph{Transcendence of a planar reflection-group growth series and its relaxed
 companion}, companion paper, \texttt{doi:10.5281/zenodo.20370090}.
+
+\bibitem{Bonfioli3}
+V.~Bonfioli, \emph{Growth, collisions and lamplighter structure of generic triangle and
+orthoscheme reflection groups}, companion paper.
 
 \bibitem{Bourbaki}
 N.~Bourbaki, \emph{Groupes et alg\`ebres de Lie, Chapitres IV--VI}, Hermann, Paris, 1968.
