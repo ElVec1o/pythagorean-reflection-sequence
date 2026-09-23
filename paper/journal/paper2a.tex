@@ -1709,7 +1709,8 @@ elementary and also covers coefficients holomorphic near the closed disc.
 
 The real travel poles accumulate only at $q=1$. The next proposition gives a second accumulation
 point of poles of $G^T_0$ on the circle, at $q=-1$, and Corollary~\ref{cor:Uminusone} carries it
-over to $U$ and $V$. Neither is needed for Theorem~\ref{thm:natboundary}.
+over to $U$ and $V$. Proposition~\ref{prop:qi} and Corollary~\ref{cor:Ui} in \S\ref{sec:qi} do the same
+at $q=\pm i$. None of these is needed for Theorem~\ref{thm:natboundary}.
 
 \begin{proposition}[the zeros of $\cos(Z;q^2)$ accumulate at $q=-1$]\label{prop:minusone}
 Write $q=-e^{-t}$ with $\Re t>0$. Put $L=\log4$, $\Lambda=-\pi^2+i\pi L$,
@@ -2036,6 +2037,336 @@ $t_1=-2$ in the limit. The limit $\phi$ is neither. Numerically all four pairing
 denominators are non-zero at every $j\ge3$ tested, and approach the limits above at rate $O(1/j)$
 (\texttt{t1\_minusone.py}). The computer-assisted inputs are the two landscape certificates.
 
+\subsection{The point \texorpdfstring{$q=i$}{q=i}}\label{sec:qi}
+
+The resummation also works at $q=i$, with two changes. First, $q^{k^2}$ depends on $k\bmod 2$, so
+the even and odd terms get separate interpolants. Second, two saddles of equal height compete, so
+the zeros come from a cancellation between two saddle contributions and not from the
+quasi-periodicity \eqref{eq:quasiper}. Throughout, $q=ip$, $p=e^{-t}$, $P=p^4$ and $t=re^{i\theta}$ with
+\[
+   |\theta-\theta_i|\le10^{-3},\qquad \theta_i=\arctan\frac{\pi}{6\log2}=37.067\ldots^\circ,\qquad 0<r\le0.005 .
+\]
+Put $a=-2(1-q)$, $c_0=-2+2i$, $L_w=\log c_0=\frac32\log2+\frac{3\pi i}4$ and
+$\ell(t)=\log\bigl(1-\frac{1-i}2(1-e^{-t})\bigr)$, so that $\log a=L_w+\ell(t)$. The functions
+\[
+ f_e(s)=\frac{e^{2s\log a-4ts^2}}{(q;q)_\infty}\prod_{j=1}^{4}(i^jp^{4s+j};P)_\infty,\qquad
+ f_o(s)=\frac{i\,e^{(2s+1)\log a-t(2s+1)^2}}{(q;q)_\infty}\prod_{j=3}^{6}(i^jp^{4s+j};P)_\infty
+\]
+are entire, $f_e(k)=b_{2k}$ and $f_o(k)=b_{2k+1}$ for $k\ge0$, and both vanish at the negative
+integers. We use the coordinate $x=2st$ for $f_e$ and $x=(2s+1)t$ for $f_o$, so that $x=kt$ at the
+$k$-th term, and write $f(x)$ for either one. Let
+\begin{gather*}
+ \Phi_i(x)=xL_w-x^2-\tfrac1{16}\operatorname{Li}_2(e^{-8x})+\tfrac{\pi^2}{96},\\
+ h_\pm(x)=-\tfrac{(1-i)x}2+\tfrac14\log(1\mp ie^{-2x})-\tfrac14\log(1\pm ie^{-2x})-\tfrac12\log(1\mp e^{-2x}),
+\end{gather*}
+with principal logarithms, and for $\operatorname{Re}x\le0$ let
+\[
+ \Upsilon(x)=\operatorname{Re}\Bigl(\bigl(xL_w-x^2+\tfrac{17\pi^2}{96}+\tfrac1{16}\operatorname{Li}_2(e^{8x})\bigr)e^{-i\theta}\Bigr)
+  +\sum_{\varrho=0}^{3}\max_{m\equiv\varrho\ (4)}\tfrac12\operatorname{Re}\bigl((x-\tfrac{i\pi m}4)^2e^{-i\theta}\bigr).
+\]
+For $a'\ge0$ and $\varphi\in[0,\pi]$ put
+$\mathcal D(a',\varphi)=\inf_{\rho\ge0}\max\{\sigma(\varphi-\rho\sin\theta),\,1-e^{-a'-\rho\cos\theta}\}$, with
+$\sigma(u)=\sin\min(\operatorname{dist}(u,2\pi\Z),\frac\pi2)$. Let
+\begin{gather*}
+ d(x)=\min_{c^4=1}\mathcal D\bigl(2\operatorname{Re}x,\operatorname{dist}(\arg c-2\operatorname{Im}x,2\pi\Z)\bigr),\\
+ d'(x)=\min_{c^4=1}\mathcal D\bigl(-2\operatorname{Re}x,\operatorname{dist}(2\operatorname{Im}x-\arg c,2\pi\Z)\bigr).
+\end{gather*}
+Finally $K_n=\frac1{D_n}+\frac1{D_n^2\cos\theta}+\frac{4.75}{D_n}+\frac16+10^{-3}$ with
+$D_n=\mathcal D(0,\frac\pi2)$, and $c_\ell=\bar r^{-2}\bigl(\frac{\sqrt2}2(e^{\bar r}-1-\bar r)+\frac{\mu^2}{2(1-\mu)}\bigr)$
+with $\bar r=0.005$ and $\mu=\frac{\sqrt2}2(e^{\bar r}-1)$. Numerically $c_\ell\le0.607$,
+$D_n\ge0.668$ and $K_n\le11.58$.
+
+\begin{lemma}[bounds for the interpolants near $q=i$]\label{lem:qi-bounds}
+In this setting the following hold for $f_e$ and for $f_o$.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
+\item If $\operatorname{Re}x\ge0$ and $d(x)>0$, then, modulo $2\pi i$,
+\begin{gather*}
+ \log f(x)=\frac{\Phi_i(x)}t+h_\pm(x)+i\pi\bigl(\tfrac18+\tfrac\epsilon2\bigr)-\tfrac12\log\frac{\pi}{2t}+E,\\
+ |E|\le\Bigl(c_\ell|x|+\frac{121}{12\,d(x)}+\frac{4}{3\cos\theta\,d(x)^2}+K_n\Bigr)|t|,
+\end{gather*}
+with $+$, $\epsilon=0$ for $f_e$ and $-$, $\epsilon=1$ for $f_o$.
+\item If $\operatorname{Re}x\le0$ and $d'(x)>0$, then
+$\log|f(x)|\le\Upsilon(x)/r+M'(x)+\frac12\log\frac{2r}\pi+4\log(3+3e^{-\pi^2\cos\theta/r})+K'(x)r$, where
+$M'(x)=(\frac1{\sqrt2}+2)|x|+\frac\pi2(|m^\ast|+4)+2\pi+\max(-\log d'(x),\log2)$,
+$m^\ast=4\operatorname{Im}(xe^{-i\theta})/(\pi\cos\theta)$ and
+$K'(x)=c_\ell|x|+\frac{73}{12d'(x)}+\frac4{3\cos\theta\,d'(x)^2}+\frac34+K_n$.
+\item If $\operatorname{Re}x\ge X>0$, then $r\log|f(x)|\le\operatorname{Re}\bigl((xL_w-x^2+\frac{\pi^2}{96})e^{-i\theta}\bigr)
++\frac{e^{-2X}}{(1-e^{-2X})\cos\theta(1-2r\cos\theta)}+r\bigl(\frac{|x|}{\sqrt2}+c_\ell r|x|+\frac12\log\frac{2r}\pi+K_nr\bigr)$.
+\item Let $\Gamma_\pm$ be polygonal paths leaving a half-integer, whose pieces have directions
+$\arg(dx\,e^{-i\theta})$ in a closed cone inside $(0,\pi)$ for $\Gamma_+$ and inside $(-\pi,0)$ for
+$\Gamma_-$, and let $\alpha_{\min}$ be the least angle between the cone and the real axis. Then
+$|1-e^{\pm2\pi is}|^{-1}\le(1-e^{-(\pi/2)\tan\alpha_{\min}})^{-1}$ on $\Gamma_\pm$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\emph{A ray lemma.} Let $|c|=1$, $G(v)=\log(1-ce^{-v})$, $|ce^{-v_0}|\le1$, and
+$\delta=\inf_{\rho\ge0}|1-ce^{-v_0-\rho e^{i\theta}}|>0$. Euler--Maclaurin of order two for $m\mapsto G(v_0+4tm)$
+along the ray $v_0+e^{i\theta}\R_{\ge0}$ gives
+$\sum_{m\ge0}G(v_0+4tm)=-\operatorname{Li}_2(ce^{-v_0})/(4t)+\frac12G(v_0)+E_0$ with
+$|E_0|\le\frac{|t|}3(\frac1\delta+\frac1{\delta^2\cos\theta})$, because $|G'|\le1/\delta$ and
+$\int|G''|\le1/(\delta^2\cos\theta)$ on the ray. Moving the base point by $h$ costs
+$hG(v)+O(\frac{|h|^2}{2\delta})$, since $\frac d{dv}\operatorname{Li}_2(ce^{-v})=G(v)$. Along the ray
+$w=ce^{-v}$ has $|w|\le e^{-a'-\rho\cos\theta}$ and $|1-w|\ge\max(1-|w|,\sigma(\arg w))$, and the argument of
+$w$ turns at rate $\sin\theta$; this gives $\delta\ge\mathcal D(a',\varphi)$ with $e^{-a'}=|w_0|$ and
+$\varphi=\operatorname{dist}(\arg w_0,2\pi\Z)$, in either direction of turning.
+
+\emph{Part \textup{(i)}.} For $f_e$, $\log(i^je^{-2x-jt};P)_\infty=\sum_mG_j(2x+jt+4tm)$ with $c=i^j$, and
+$\delta\ge d(x)$. The ray lemma, the shift from $2x+jt$ to $2x$, and
+$\sum_{j=1}^4\operatorname{Li}_2(i^jz)=\frac14\operatorname{Li}_2(z^4)$ give $-\operatorname{Li}_2(e^{-8x})/(16t)$ and
+the term $\sum_j(\frac12-\frac j4)G_j(2x)$, which is the logarithmic part of $h_+$. The normalisation
+$(q;q)_\infty=\prod_{j=1}^4(i^je^{-jt};P)_\infty$ is treated by the ray lemma from $v=0$ for $j\le3$
+($\delta\ge D_n$), which contributes $-\frac{\pi^2}{32t}+\frac{i\pi}8$ to $-\log(q;q)_\infty$, and by the $\eta$-transformation for $j=4$,
+$\log(P;P)_\infty=-\frac{\pi^2}{24t}+\frac12\log\frac\pi{2t}+O(|t|)$. Finally
+$x\log a/t=xL_w/t-\frac{(1-i)x}2+O(c_\ell|x||t|)$. The branch $f_o$ is the same with $c=-i^{j-2}$, which gives
+$h_-$, and its factor $i$ gives $\frac{i\pi}2$. The error constants add up to the stated bound.
+
+\emph{Part \textup{(ii)}.} Write $(z;P)_\infty=\vartheta(z)/(P/z;P)_\infty$ with
+$\vartheta(z)=(z;P)_\infty(P/z;P)_\infty$. The triple product and Poisson summation give
+$(P;P)_\infty\vartheta(e^{-v})=\sqrt{\pi/(2t)}\sum_{k\in\Z}\exp(\beta_k^2/(8t))$ with
+$\beta_k=2t-v+i\pi(1-2k)$. With $v=2x+jt-\frac{i\pi\gamma_j}2$ ($c_j=e^{i\pi\gamma_j/2}$) the exponent is
+$(x-\frac{i\pi m}4)^2/(2t)-\frac{2-j}2(x-\frac{i\pi m}4)+\frac{(2-j)^2t}8$, $m=\gamma_j+2-4k$, and $m$ runs
+over one class mod $4$ for each $j$. The exponent is a concave quadratic in $k$ with leading coefficient
+$-\pi^2\cos\theta/(2r)$, so the sum is at most $3+3e^{-\pi^2\cos\theta/r}$ times its largest term, which is one
+of the two class members next to $m^\ast$. The factors $(P/z_j;P)_\infty$ have argument
+$c_j^{-1}e^{2x}e^{-(4-j)t}$ of modulus $\le1$ and are treated by the ray lemma with $\delta\ge d'(x)$.
+The $1/t$ terms add up to $\Upsilon(x)/r$, and the rest to $M'$ and $K'$.
+
+\emph{Part \textup{(iii)}} uses $-\log|1-w|\le|w|/(1-|w|)$ termwise, with $|z_j|\le e^{-2X}$ and
+$1-|P|\ge4r\cos\theta(1-2r\cos\theta)$. \emph{Part \textup{(iv)}}: $s-s_c$ lies in the cone, and
+$e^{2\pi is_c}=-1$ gives $|1-e^{2\pi is}|=|1+e^{-A+iB}|$ with $A=|B|\tan\alpha'\ge0$; this is $\ge1$ if
+$|B|\le\frac\pi2$ and $\ge1-e^{-(\pi/2)\tan\alpha_{\min}}$ otherwise.
+\end{proof}
+
+\noindent The Poisson form of the triple product was also checked to $10^{-28}$ at a sample point, and
+the error in (i) is $(0.13$--$0.58)|t|$ at the points tested, well below the bound. The full proof, with
+every constant, is in \texttt{rootunity\_zeros/qi\_bounds.tex}.
+
+\begin{proposition}[the zeros of $\cos(Z;q^2)$ accumulate at $q=i$]\label{prop:qi}
+Write $q=ie^{-t}$ with $\operatorname{Re}t>0$. Put
+\[
+   \Delta V=\frac{\pi^2}8-\frac{3\pi i}4\log2,\qquad
+   t^0_j=\frac{6\log2+i\pi}{16j+6-2i},\qquad u_j=1/t^0_j ,
+\]
+so that $\arg t^0_j=\theta_i+O(1/j)$. There is a $j_0$ such that for every $j\ge j_0$ the function
+$1-\Sigma_1=\cos(Z;q^2)$ has exactly one zero $t^\ast_j$ in the disc
+$D_j=\{t:|1/t-u_j|<1/|\Delta V|\}$. This zero is simple, and
+\[
+   t^\ast_j=t^0_j+O(j^{-3}).
+\]
+Hence $q^\ast_j=ie^{-t^\ast_j}\to i$ along the ray $\arg t=\theta_i$, and the conjugates
+$\bar q^{\,\ast}_j\to-i$. Every $q^\ast_j$ and every $\bar q^{\,\ast}_j$ is a simple pole of
+$G^T_0=\Sigma_0/(1-\Sigma_1)$. In $x=q^{1/2}$ the poles of $G^T_0(x^2)$ accumulate at the four points
+$\pm e^{\pm i\pi/4}$. More precisely, with $x_0=\frac14\log(4+\sqrt{15})+\frac{3\pi i}8$ and
+$x_-=x_0-\frac{i\pi}2$, uniformly for $|\theta-\theta_i|\le10^{-3}$ as $r\to0$,
+\begin{equation}\label{eq:qitwosaddle}
+   1-\Sigma_1=A_0e^{V_0/t}\bigl(1+O(t)\bigr)+A_-e^{V_-/t}\bigl(1+O(t)\bigr)
+   +O\bigl(e^{(T_i-0.05)/r}\bigr),
+\end{equation}
+where $V_0=\Phi_i(x_0)$, $V_-=\Phi_i(x_-)-i\pi x_-$, $V_--V_0=\Delta V$,
+$T_i=\min(\operatorname{Re}(V_0e^{-i\theta}),\operatorname{Re}(V_-e^{-i\theta}))$, and
+\[
+   A_0=\bigl(\tfrac2{\sqrt{15}}\bigr)^{1/2}e^{i\pi/8}e^{h_+(x_0)}(1+i\phi),\qquad
+   A_-=\bigl(\tfrac2{\sqrt{15}}\bigr)^{1/2}e^{i\pi/8}e^{h_+(x_-)}\bigl(1-\tfrac i\phi\bigr),\qquad
+   \frac{A_-}{A_0}=e^{(1-i)\pi/4}.
+\]
+Both amplitudes are non-zero.
+\end{proposition}
+
+\begin{proof}
+\emph{Step 0: the saddles.} Here $\Phi_i'(x)=L_w-2x-\frac12\log(1-e^{-8x})$. With $a_0=\frac{\sqrt5-\sqrt3}2$
+we have $e^{-2x_0}=-a_0(1+i)$, $e^{-4x_0}=i(4-\sqrt{15})$ and $e^{-8x_0}=-(4-\sqrt{15})^2$, so
+$1-e^{-8x_0}=8(4-\sqrt{15})$ and $\Phi_i'(x_0)=0$ exactly. Since $\operatorname{Li}_2(e^{-8x})$ has period
+$\frac{i\pi}4$ in $x$,
+\[
+   \Phi_i\bigl(x-\tfrac{i\pi}2\bigr)=\Phi_i(x)-\tfrac{i\pi L_w}2+i\pi x+\tfrac{\pi^2}4 ,
+\]
+so $\Phi_i'(x_-)=i\pi$ and $V_--V_0=-\frac{i\pi L_w}2-\frac{\pi^2}4=\Delta V$. Hence
+$\operatorname{Re}(\Delta Ve^{-i\theta})=\frac{\pi^2}8\cos\theta-\frac{3\pi}4\log2\sin\theta$, which vanishes exactly at
+$\theta=\theta_i$: there the two saddles have the same height, $-0.0706856\ldots$. Also
+$\Phi_i''=-2-4e^{-8x}/(1-e^{-8x})=-\frac{\sqrt{15}}2$ at $x_0$ and at $x_-$.
+
+\emph{Step 1: an exact decomposition.} Fix a branch $F\in\{f_e,f_o\}$ and a half-integer $s_c<0$ with
+$x_c$ (the point $s_c$ in the coordinate $x$) within $0.02$ of $-\frac\pi8(\cot\theta_i+i)$. Since $F$
+vanishes at the negative integers, $\sum_{k\ge0}F(k)=\int_{\Gamma_-}FK_-\,ds+\int_{\Gamma_+}FK_+\,ds$ with
+$K_-=(1-e^{-2\pi is})^{-1}$ and $K_+=e^{2\pi is}(1-e^{2\pi is})^{-1}$, where $\Gamma_\mp$ leave $s_c$ in
+$\operatorname{Im}s\lessgtr0$. In the coordinate $x$: $\Gamma_-$ runs from $x_c$ to the line
+$\operatorname{Im}x=-\frac\pi8$ and along it to $+\infty$ through $x_-$; $\Gamma_+$ runs from $x_c$ to
+$\frac{i\pi}8$ and then along the ray $\frac{i\pi}8+e^{i\cdot55^\circ}\R_{\ge0}$. Expand
+$K_-=1+e^{-2\pi is}+e^{-4\pi is}K_-$, and move the integral of the entire function $F$ to the path $\Pi_0$
+that runs from $x_c$ vertically to $\operatorname{Im}x=\frac{3\pi}8$ and then horizontally to $+\infty$
+through $x_0$. Summing over the two branches,
+\begin{gather*}
+   1-\Sigma_1=J_0+J_-+R_-+R_+,\qquad J_0=\int_{\Pi_0}F\,ds,\quad J_-=\int_{\Gamma_-}Fe^{-2\pi is}ds,\\
+   R_-=\int_{\Gamma_-}Fe^{-4\pi is}K_-\,ds,\quad R_+=\int_{\Gamma_+}FK_+\,ds .
+\end{gather*}
+This is exact; $R_\mp$ carry all the terms $e^{2\pi ins}$ with $n\le-2$ and $n\ge1$ through the kernel.
+All three paths cross $\operatorname{Re}x=0$ on the lines $\operatorname{Im}x\equiv\frac\pi8\pmod{\frac\pi4}$,
+where Lemma~\ref{lem:qi-bounds}\textup{(ii)} is sharp. We checked the contour identity numerically at
+$r=0.2$ and $0.1$ to $14$ digits (\texttt{ident.py}).
+
+\emph{Step 2: the landscape.} A factor $e^{2\pi ins}$ has modulus $e^{-n\pi\operatorname{Im}(xe^{-i\theta})/r}$ on
+either branch, so the leading exponent of $|Fe^{2\pi ins}|$ is
+$W_n(x)=\operatorname{Re}((\Phi_i(x)+i\pi nx)e^{-i\theta})$ for $\operatorname{Re}x\ge0$, and at most
+$\Upsilon(x)-n\pi\operatorname{Im}(xe^{-i\theta})$ for $\operatorname{Re}x\le0$. Let $T_{\rm LO}=-0.072274$ be the
+minimum of $T_i$ over the $\theta$-range. The following are certified in interval arithmetic by
+\texttt{certify\_landscape\_i.py} (mpmath \texttt{iv}, $30$\,s), for all $\theta$ in the range and all
+admissible $x_c$: the leading exponent is at most $T_{\rm LO}-0.1002$ on the start box, on $\Pi_0$ outside
+$|x-x_0|\le0.4$ ($n=0$), on $\Gamma_-$ outside $|x-x_-|\le0.4$ ($n=-1$), on $\Gamma_-$ for $n=-2$ and on
+$\Gamma_+$ for $n=1$, including the tails, by (iii); on the two windows
+$\operatorname{Re}(\Phi_i''e^{-i\theta})\le-0.682$; the kernels are at most $2.539$ by (iv); and on all paths
+$d\ge0.244$, $d'\ge0.254$. With Lemma~\ref{lem:qi-bounds} each competing piece is at most
+$e^{(T_{\rm LO}-0.05)/r}$ for $r\le r_0=1.56\cdot10^{-3}$.
+
+\emph{Step 3: Laplace's method at the two saddles.} On the window $x_0+[-0.4,0.4]$ the certificate gives
+$d\ge0.4629$, so by Lemma~\ref{lem:qi-bounds}\textup{(i)} $|E|\le41.9|t|$ there, for both branches. Since
+$ds=dx/(2t)$ on both branches,
+\[
+   \int_{\rm window}F\,ds=\frac1{2t}\Bigl(\frac{2t}\pi\Bigr)^{1/2}e^{i\pi/8}\int_{\rm window}
+   e^{\Phi_i(x)/t}\bigl(e^{h_+(x)}+ie^{h_-(x)}\bigr)dx+\mathcal E ,
+\]
+summed over the branches, where $|\mathcal E|$ is at most $(e^{41.9r}-1)$ times the same expression with
+absolute values inside. On the window
+$\operatorname{Re}(\Phi_i(x)e^{-i\theta})\le\operatorname{Re}(V_0e^{-i\theta})-0.341(x-x_0)^2$, so $\mathcal E$ is
+$O(|t|)$ relative to $e^{\operatorname{Re}(V_0e^{-i\theta})/r}$. The remaining integral has an analytic
+integrand and a non-degenerate saddle at $x_0$ with $\Phi_i''(x_0)=-\frac{\sqrt{15}}2$, and the path is
+horizontal there. Laplace's method with a complex large parameter, uniform for $\arg t$ in a compact
+subset of $(-\frac\pi2,\frac\pi2)$ \cite{Olver1974}, gives
+$\bigl(2\pi t\cdot\frac2{\sqrt{15}}\bigr)^{1/2}e^{V_0/t}\bigl(e^{h_+(x_0)}+ie^{h_-(x_0)}\bigr)(1+O(t))$. The
+endpoints of the window contribute $O(e^{(\operatorname{Re}(V_0e^{-i\theta})-0.054)/r})$. The powers of $t$
+cancel, and $J_0=A_0e^{V_0/t}(1+O(t))+O(e^{(T_{\rm LO}-0.05)/r})$ with
+$A_0=(2/\sqrt{15})^{1/2}e^{i\pi/8}(e^{h_+(x_0)}+ie^{h_-(x_0)})$. For $J_-$ the factor $e^{-2\pi is}$ is
+$e^{-i\pi x/t}$ on the even branch and $-e^{-i\pi x/t}$ on the odd branch. The saddle is $x_-$, and the same
+argument gives $A_-=(2/\sqrt{15})^{1/2}e^{i\pi/8}(e^{h_+(x_-)}-ie^{h_-(x_-)})$. With Step~2 this is
+\eqref{eq:qitwosaddle}.
+
+\emph{The amplitudes.} Put $z=e^{-2x}$. Then
+$h_--h_+=\frac12\bigl(\log(1+iz)-\log(1-iz)+\log(1-z)-\log(1+z)\bigr)$. At $x_0$ and at $x_-$,
+$|z|=a_0\sqrt2<0.36$, so each logarithm has imaginary part below $0.37$ in modulus, and $e^{h_--h_+}$ is the
+square root with positive real part of $\frac{(1+iz)(1-z)}{(1-iz)(1+z)}$. At $z=-a_0(1+i)$ this ratio is
+$\frac{1+2a_0+2a_0^2}{1-2a_0+2a_0^2}$. With $2a_0=\sqrt5-\sqrt3$ and $2a_0^2=4-\sqrt{15}$ one checks
+$\phi(1-2a_0+2a_0^2)=4a_0=\phi^{-1}(1+2a_0+2a_0^2)$, so the ratio is $\phi^2$ and $e^{h_--h_+}=\phi$ at $x_0$.
+At $x_-$, $z=a_0(1+i)$, the ratio is $\phi^{-2}$ and $e^{h_--h_+}=\phi^{-1}$. This gives the stated $A_0$ and
+$A_-$, and $1+i\phi\ne0$, $1-i/\phi\ne0$. For the ratio, $h_+(x_-)-h_+(x_0)=\frac{(1+i)\pi}4+h_-(x_0)-h_+(x_0)$, because
+$e^{-2x_-}=-e^{-2x_0}$ and the logarithmic part of $h_+$ at $-z$ is that of $h_-$ at $z$. So
+$e^{h_+(x_-)-h_+(x_0)}=\phi e^{(1+i)\pi/4}$. Also $(1-i/\phi)/(1+i\phi)=-i/\phi$, since
+$\phi+\phi^{-1}=\sqrt5$ and $1+\phi^2=\frac{5+\sqrt5}2$. Hence $A_-/A_0=-ie^{(1+i)\pi/4}=e^{(1-i)\pi/4}$.
+
+\emph{Step 4: Rouch\'e.} Put $u=1/t$ and $\varrho=A_-/A_0$. The zeros of $1+\varrho e^{\Delta Vu}$ are the
+solutions of $\Delta Vu=-\frac{(1-i)\pi}4+i\pi(2m+1)$, $m\in\Z$. Those with $\operatorname{Re}u>0$ and
+$\arg u\to-\theta_i$ are $m=-j-1$, $j\ge0$, that is $u=u_j$. For $t\in\overline{D_j}$ we have
+$|t|\le1.15\cdot10^{-3}$ and $|\arg t-\theta_i|\le10^{-3}$ once $j\ge285$. Here
+$\arg t^0_j-\theta_i=\arctan\frac2{16j+6}$, the disc subtends an angle $O(1/j)$, and both extremes are
+attained on $\partial D_j$, where we evaluated them. So for $j\ge285$ every $t\in\overline{D_j}$ satisfies the hypotheses of Steps~1--3. On $D_j$ the
+function $A_0e^{V_0/t}$ is analytic and non-zero, and
+\[
+   \frac{1-\Sigma_1}{A_0e^{V_0/t}}=g_0(u)+O(1/j),\qquad g_0(u)=1+\varrho e^{\Delta Vu}=1-e^{\Delta V(u-u_j)} ,
+\]
+using $|\varrho e^{\Delta Vu}|\le e$ on $D_j$, $|e^{V_-/t}/e^{V_0/t}|=|e^{\Delta Vu}|$ and
+$e^{(T_{\rm LO}-0.05)/r}/|e^{V_0/t}|\le e^{-0.05/r}$. As in Step~5 of the proof of
+Proposition~\ref{prop:minusone}, $|g_0|>0.28$ on $\partial D_j$, where $|\Delta V(u-u_j)|=1$, and $u_j$ is
+the only zero of $g_0$ in $D_j$, a simple one, because the zeros of $g_0$ are $2\pi/|\Delta V|$ apart. By
+Rouch\'e's theorem $1-\Sigma_1$ has exactly one zero in $D_j$ for large $j$, and it is simple. From
+$|g_0(u^\ast)|=O(1/j)$ we get $u^\ast-u_j=O(1/j)$, that is $t^\ast_j-t^0_j=O(j^{-3})$. The map
+$t\mapsto ie^{-t}$ is conformal, so the zero is simple in $q$.
+
+\emph{Step 5: the poles of $G^T_0$.} Step~6 of the proof of Proposition~\ref{prop:minusone} applies at
+every zero of $1-\Sigma_1$ in $0<|q|<1$: $\Sigma_0S_0=2q/(1-q)\ne0$, so $\Sigma_0(q^\ast_j)\ne0$ and
+$q^\ast_j$ is a simple pole of $G^T_0$. The coefficients of $1-\Sigma_1$ and $\Sigma_0$ are real, so the
+same holds at $\bar q^{\,\ast}_j$. Finally $\sqrt{q^\ast_j}\to\pm e^{i\pi/4}$ and
+$\sqrt{\bar q^{\,\ast}_j}\to\pm e^{-i\pi/4}$.
+\end{proof}
+
+\noindent The constants in Steps~2 and 4 are explicit. The $O(t)$ of Laplace's method is not made
+explicit, so $j_0$ is not either. Numerically (\texttt{rootunity\_zeros/amp\_i.py}), the ratio of
+$1-\Sigma_1$ to the two-saddle sum in \eqref{eq:qitwosaddle} minus $1$ is $0.0143+0.0107i$,
+$0.0088+0.0008i$ and $0.0064+0.0043i$ at $r=0.04,0.02,0.01$ on the ray $\theta=\theta_i$. The
+predicted zeros are accurate far below $j_0$: at $80$--$430$ digits (\texttt{zeros\_i.py}),
+$|t^\ast_j-t^0_j|\,j^3=0.0092,\,0.0060,\,0.0065,\,0.0065$ at $j=1,10,40,80$. The first zero is
+$q^\ast_1=0.1404+0.8293i$.
+
+\begin{corollary}[the poles of $U$ and $V$ accumulate at $x=\pm e^{\pm i\pi/4}$]\label{cor:Ui}
+For all sufficiently large $j$, $U$ and $V$ have poles at $x=\pm\sqrt{q^\ast_j}$ and at
+$x=\pm\sqrt{\bar q^{\,\ast}_j}$, with $q^\ast_j$ as in Proposition~\ref{prop:qi}. These tend to the four
+primitive eighth roots of unity $\pm e^{\pm i\pi/4}$, that is to $\pm\sqrt i$ and $\pm\sqrt{-i}$. At
+$q=q^\ast_j$ we have $S_e\ne0$,
+\[
+   t_1=t_1^\ast+O(1/j),\qquad t_1^\ast=\frac{(\sqrt{15}-3)-(\sqrt{15}+3)\,i}{12}=0.07275-0.57275\,i,
+\]
+\[
+   1-\mathfrak g_Ut_1=\frac{(21-\sqrt{15})-(\sqrt{15}-3)\,i}{24}+O(1/j),\qquad
+   1-\mathfrak g_Vt_1=\frac34-\frac{\sqrt{15}}{12}\,i+O(1/j),
+\]
+and $\Pi_1$, $\Pi_q$ tend to non-zero limits at both roots:
+$\Pi_1\to-3.0048+2.9237i$, $\Pi_q\to-2.7091+3.3891i$ at the root tending to $e^{i\pi/4}$, and
+$\Pi_1\to0.2866+0.2945i$, $\Pi_q\to-0.2287-0.7363i$ at the root tending to $-e^{i\pi/4}$.
+\textup{(}Standing: Theorems~\ref{thm:model} and~\ref{thm:RJ}.\textup{)}
+\end{corollary}
+
+\begin{proof}
+\emph{Step 1: $S_\pm$ near $q=i$.} On the two branches, $b_{2s}q^{\pm2s}=(-1)^se^{\mp x}f_e(s)$ and
+$b_{2s+1}q^{\pm(2s+1)}=\pm i(-1)^se^{\mp x}f_o(s)$, with $x$ the branch coordinate. So on each branch
+$S_\pm$ is $\sum_s(-1)^sG(s)$ with $G$ entire and vanishing at the negative integers. Use the kernel
+$1/(2i\sin\pi s)$, which equals $e^{-i\pi s}/(1-e^{-2\pi is})=e^{-i\pi s}+e^{-3\pi is}/(1-e^{-2\pi is})$, with
+the same $s_c$ and paths $\Gamma_\pm$ as in Step~1 of the proof of Proposition~\ref{prop:qi}. Move the
+integral of the entire term $Ge^{-i\pi s}$ to the path $\Pi_S$ that runs from $x_c$ vertically to
+$\operatorname{Im}x=\frac\pi8$ and then horizontally to $+\infty$. This gives the exact split
+$S_\pm=J_S+R^-_S+R^+_S$, with $J_S=\int_{\Pi_S}Ge^{-i\pi s}ds$,
+$R^-_S=\int_{\Gamma_-}Ge^{-3\pi is}(1-e^{-2\pi is})^{-1}ds$ and
+$R^+_S=\int_{\Gamma_+}Ge^{i\pi s}(1-e^{2\pi is})^{-1}ds$. (The contour identity was checked numerically
+at $r=0.2$, \texttt{ident\_S\_i.py}.) The leading exponents are now $W_\nu$ with $\nu=-\frac12$ on
+$\Pi_S$, $\nu=-\frac32$ on $\Gamma_-$ and $\nu=\frac12$ on $\Gamma_+$. The main saddle is
+$y_0=x_0-\frac{i\pi}4$: there $e^{-4y_0}=-i(4-\sqrt{15})$, so $\Phi_i'(y_0)=\frac{i\pi}2$ exactly, and
+$\Phi_i''(y_0)=-\frac{\sqrt{15}}2$. Let $E_S=\Phi_i(y_0)-\frac{i\pi y_0}2$ and
+$T_S=\operatorname{Re}(E_Se^{-i\theta})\in[0.42106,0.42198]$. The certificate
+\texttt{certify\_landscape\_S\_i.py} (same machinery, $21$\,s) proves that the leading exponent is at most
+$T_S-0.1065$ on every competing piece (start box, $\Pi_S$ outside $|x-y_0|\le0.4$, $\Gamma_\pm$, tails),
+that $\operatorname{Re}(\Phi_i''e^{-i\theta})\le-0.682$ on the window, and that $d\ge0.4629$ there. The factor
+$e^{\mp x}$ is $O(1)$ in the exponent. On the odd branch the kernel term is
+$e^{-i\pi s}=ie^{-i\pi x/(2t)}$, so the odd weight is $(\pm i)\cdot i\cdot ie^{h_-}=\mp ie^{h_-}$. Laplace's
+method as in Step~3 gives, for $r\le1.557\cdot10^{-3}$,
+\[
+   S_\pm=\bigl(\tfrac2{\sqrt{15}}\bigr)^{1/2}e^{i\pi/8}e^{\mp y_0}e^{h_+(y_0)}\bigl(1\mp e^{2\pi i/3}\bigr)e^{E_S/t}\bigl(1+O(t)\bigr).
+\]
+Here $ie^{h_-(y_0)-h_+(y_0)}=e^{2\pi i/3}$. Indeed $z=e^{-2y_0}=a_0(1-i)$, the ratio
+$\frac{(1+iz)(1-z)}{(1-iz)(1+z)}$ equals $w/\bar w$ with $w=(\sqrt{15}-3)+(\sqrt5-\sqrt3)i$, and
+$\arg w=\frac\pi6$ because $\sqrt3(\sqrt5-\sqrt3)=\sqrt{15}-3$; the root with positive real part is
+$e^{i\pi/6}$. Since $1-e^{2\pi i/3}\ne0$, $S_e=S_+\ne0$.
+
+\emph{Step 2: $t_1$.} Step~0 of the proof of Proposition~\ref{prop:t1minusone} holds on $|q|<1$, so
+$t_1=-\frac12(1+S_-/S_e)$. By Step~1,
+$S_-/S_e=e^{2y_0}\frac{1+e^{2\pi i/3}}{1-e^{2\pi i/3}}(1+O(t))=e^{2y_0}\frac i{\sqrt3}(1+O(t))$, and
+$e^{2y_0}=\frac{\sqrt5+\sqrt3}{\sqrt2}e^{i\pi/4}$. So $S_-/S_e=\frac{3+\sqrt{15}}6(-1+i)+O(t)$ and
+$t_1=t_1^\ast+O(t)$. At $q^\ast_j$, $t=t^\ast_j$ satisfies the hypotheses for large $j$ (Step~4 of the proof
+of Proposition~\ref{prop:qi}), and $|t^\ast_j|\asymp1/j$.
+
+\emph{Step 3: the factors.} As $q\to i$, $\mathfrak g_U=\frac q{1-q^2}\to\frac i2$ and
+$\mathfrak g_V=\frac q{1-q}\to\frac{-1+i}2$. This gives the two displayed limits, which are non-zero; the
+second has modulus $\sqrt{2/3}$. So $B_0=1/(1-\mathfrak g_Ut_1)$ is finite and non-zero at $q^\ast_j$ for
+large $j$. The first two paragraphs of the proof of Corollary~\ref{cor:Uminusone} apply at $q^\ast_j$
+without change: they need only $0<|q^\ast_j|<1$, $S_e(q^\ast_j)\ne0$ and $1-\mathfrak g\,t_1\ne0$. So
+$x^\ast=\pm\sqrt{q^\ast_j}$ is a pole of $\mathcal W(\cdot,y)$ as soon as $\Pi_y(x^\ast)\ne0$, and
+\eqref{eq:RJclosed1}--\eqref{eq:RJclosedq} hold at $q^\ast_j$ for both roots. In the limit $q=i$,
+$x=\pm e^{i\pi/4}$, every factor of these closed forms is an explicit algebraic number:
+$\frac{2q(1+x)}{1-q}$ and $\frac{1+x}{1-x}$ are finite and non-zero because $x\ne\pm1$; the real part of
+$t_1^\ast+\frac{1+x}{2x}$ is $\frac{\sqrt{15}-3}{12}+\frac12+\frac{\sqrt2}4>0$ at $x=e^{i\pi/4}$, and its
+imaginary part is $\frac{3\sqrt2-3-\sqrt{15}}{12}\ne0$ at $x=-e^{i\pi/4}$; and
+$t_1^\ast\frac{1-x+q}{1+q}+\frac1{2x}$ has modulus above $0.64$ at both roots. The last bound and the four
+limit values above are enclosed in interval arithmetic by \texttt{rootunity\_zeros/factors\_i.py}. So
+$\Pi_1,\Pi_q\ne0$ at both roots for large $j$.
+
+\emph{Conclusion.} For large $j$, $\pm\sqrt{q^\ast_j}$ are poles of $V$ and of $U$. The coefficients are
+real, so the conjugate points are poles as well, and $\sqrt{q^\ast_j}\to\pm e^{i\pi/4}$.
+\end{proof}
+
+\noindent Numerically (\texttt{zeros\_i.py}, \texttt{t1lim\_i.py}): $S_+$ divided by the right side of
+Step~1, minus $1$, is $0.0261+0.0022i$ and $0.0128+0.0010i$ at $r=0.02,0.01$. At the zeros,
+$t_1(q^\ast_j)=0.0599-0.5540i$, $0.0663-0.5632i$ and $0.0696-0.5680i$ at $j=20,40,80$, and
+$(t_1-t_1^\ast)/t^\ast_j\approx0.08+1.42i$. At $q^\ast_1=0.1404+0.8293i$ and $q^\ast_2=0.0802+0.8974i$ the closed forms
+\eqref{eq:RJclosed1}--\eqref{eq:RJclosedq} agree with the pairings computed from truncated operators
+($N=195$ and $311$) to relative error at most $1.3\cdot10^{-33}$, for $y\in\{1,q\}$ and both roots
+(\texttt{pairing\_check\_i.py}).
+
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
 Theorem~\ref{thm:natboundary} does not locate the singularities on the circle. The real travel
 poles accumulate only at $x=\pm1$ (at $q=1$ for $G^T_0$). By Proposition~\ref{prop:minusone}, the
@@ -2052,11 +2383,17 @@ Proposition~\ref{prop:minusone} all three are proved for large $j$, by
 Proposition~\ref{prop:t1minusone} and Corollary~\ref{cor:Uminusone}. So the poles of $U$ and of
 $V$ accumulate at $x=\pm i$, along the images of the rays $\arg t=\pm\theta_1$, with the standing
 of Theorems~\ref{thm:model} and~\ref{thm:RJ}. The computer-assisted inputs are the two landscape
-certificates. Plotted, the zeros approach roots of unity along straight lines. We conjecture that the poles are dense on the circle. A route is the
-same resummation at $q=\zeta e^{-t}$ for other roots of unity $\zeta$. Proposition~\ref{prop:minusone}
-is the case $\zeta=-1$. For $\zeta=i$ the analogous computation predicts a ray that the numerics
-follow, but this is heuristic: no exact decomposition like \eqref{eq:Bdecomp} and no landscape
-certificate have been established there. The natural boundary does not depend on any of this.
+certificates. The same holds at $q=\pm i$. By Proposition~\ref{prop:qi} the poles of $G^T_0$
+accumulate at $q=i$ along the ray $\arg t=\theta_i=\arctan(\pi/(6\log2))$ in $q=ie^{-t}$, and at $q=-i$
+along the conjugate ray. By Corollary~\ref{cor:Ui} the poles of $U$ and $V$ accumulate at the four
+primitive eighth roots of unity $x=\pm e^{\pm i\pi/4}$, with the same standing. There two saddles of
+equal height compete, and the computer-assisted inputs are the certificates
+\texttt{certify\_landscape\_i.py} and \texttt{certify\_landscape\_S\_i.py} and the interval evaluation
+\texttt{factors\_i.py}. So the poles of $U$ and $V$ are proved to accumulate at $x=\pm1$, $\pm i$ and
+$\pm e^{\pm i\pi/4}$. Plotted, the zeros approach roots of unity along straight lines. We conjecture
+that the poles are dense on the circle. A route is the same resummation at $q=\zeta e^{-t}$ for other
+roots of unity $\zeta$; Propositions~\ref{prop:minusone} and~\ref{prop:qi} are the cases $\zeta=-1$ and
+$\zeta=\pm i$. For other $\zeta$ nothing is claimed. The natural boundary does not depend on any of this.
 \end{remark}
 
 \section{Open questions}\label{sec:conclusion}
