@@ -66,12 +66,14 @@ poles; and the amplitude estimate $(\star)$, $|P_{12}|\le0.619\,\tau^{3/2}$, whi
 identity $S_e=\tfrac{qZ}2\mathfrak s(Z)-P_{12}$ closes the gate $|s|\le0.983$. \emph{Further
 material}: the P\'olya--Carlson dichotomy for the four catalytic building blocks, unconditional for
 the two denominators and resting on a verified, unproved coefficient-growth hypothesis for the two
-numerators; the spectral and sign laws at the travel poles, conditional on a stated hypothesis
-\textup{(T$^\ast_{\mathrm{poles}}$)}; an orthogonal arithmetic route through Christol's theorem;
+numerators; the spectral and sign laws at the travel poles, resting on the inequality
+\textup{(T$^\ast_{\mathrm{poles}}$)}, which is proved here by a flux identity, an amplitude bound and
+an interval certificate; an orthogonal arithmetic route through Christol's theorem;
 the value-transcendence question for the number $\beta_2$, reduced to a Hahn--Exton value statement
 with a certified finite algebraic exclusion; and the history of the former hypotheses \textup{(R)},
 \textup{(T)} and \textup{(L)}. Every statement keeps the standing it has in the archival full
-version.
+version, except \textup{(T$^\ast_{\mathrm{poles}}$)}, which is a hypothesis there and is proved
+here.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -1057,21 +1059,127 @@ $\lambda_m'(q_m)=-\partial_qF/\partial_\lambda F$ computed from the explicit $F$
 {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}. At a travel pole the eigenvalue $1$ has eigenvector the travel null vector
 ({\cite[Corollary ``the travel poles are Hahn--Exton zeros'', \textup{cor:qbessel}]{Bonfioli2026bA}}), so the following is a statement about $R$ alone.
 
-\begin{hypothesis}[\textup{(T$^\ast_{\mathrm{poles}}$)}]\label{hyp:Tstar}
-At every travel pole $q_m>\tfrac12$, the travel null vector $R$, with $u=KR$ and
-$\mathfrak e_1,\mathfrak e_2$ as in Lemma~\ref{lem:HF}, satisfies
+\begin{theorem}[\textup{(T$^\ast_{\mathrm{poles}}$)}]\label{thm:Tstar}
+Let $\tfrac12<q<1$, and let $R\ne0$ be real with $R\in\ell^1$ and $\mathcal T(q)R=R$. With $u=KR$
+and $\mathfrak e_1,\mathfrak e_2$ as in Lemma~\ref{lem:HF},
 \[
-   \mathfrak e_1+\mathfrak e_2\ >\ \frac{2q_m-1}{1-q_m}.
+   \mathfrak e_1+\mathfrak e_2\ \ge\ \frac54\cdot\frac{2q-1}{1-q}\ >\ \frac{2q-1}{1-q}.
 \]
-\end{hypothesis}
+In particular the strict inequality holds for the travel null vector at every travel pole
+$q_m>\tfrac12$. One step of the proof, the inequality \eqref{eq:Tstarcert} on
+$[\tfrac12,1-10^{-6}]$, is computer-assisted \textup{(}interval arithmetic\textup{)}.
+\end{theorem}
+
+\begin{proof}
+Put $\alpha=2q(1-q)$. Everything below is for this fixed $q$.
+
+\emph{Step 0: the recursion.} From $R=\mathcal TR=D_eu$, $R_s=2q^{1+s}u_s$, so
+$(1-q)R_s=\alpha q^su_s$. Define $p_s=-\alpha\sum_{t\le s}q^tu_t$ for $s\ge-1$, so $p_{-1}=0$. Since
+$q^{\max(s+1,t)}-q^{\max(s,t)}$ equals $-(1-q)q^s$ for $t\le s$ and $0$ for $t>s$,
+\begin{equation}\label{eq:leapfrog}
+   u_{s+1}=u_s+q^sp_s,\qquad p_s=p_{s-1}-\alpha q^su_s\qquad(s\ge0).
+\end{equation}
+Also $|u_s|\le q^s\sum_{t\le s}|R_t|+\sum_{t>s}|R_t|\to0$, and $|p_s|\le\alpha\sup|u|/(1-q)$. The map
+$(u_s,p_s)\mapsto(u_{s+1},p_{s+1})$ given by \eqref{eq:leapfrog} is linear and invertible, and
+$(u_0,p_0)=(u_0,-\alpha u_0)$. If $u_0=0$ then $u\equiv0$ and $R=D_eu=0$. So $u_0\ne0$ and
+$(u_s,p_s)\ne(0,0)$ for every $s\ge0$.
+
+\emph{Step 1: the flux identity.} Summation by parts in \eqref{eq:leapfrog} gives, for every $N$,
+\[
+   \sum_{s=0}^Nq^sp_s^2=p_Nu_{N+1}+\alpha\sum_{s=0}^Nq^su_s^2 .
+\]
+Here $p$ is bounded and $u_{N+1}\to0$, so $\sum_sq^sp_s^2=\alpha\sum_sq^su_s^2$. Since
+$q^{-s}(u_{s+1}-u_s)^2=q^sp_s^2$, the two quotients of Lemma~\ref{lem:HF} have denominators
+$\alpha\mathcal N$ and $\mathcal N$, where $\mathcal N=\sum_sq^su_s^2>0$. Put
+$F_s=u_s^2+p_s^2/\alpha$ and $f_s=q^sF_s$, so that $\sum_sf_s=2\mathcal N$. Then
+\[
+   \mathfrak e_1+\mathfrak e_2=\frac{\sum_ss\,q^sp_s^2}{\alpha\mathcal N}
+   +\frac{\sum_ss\,q^su_s^2}{\mathcal N}=2\,\langle s\rangle_f,\qquad
+   \langle s\rangle_f:=\frac{\sum_ss\,f_s}{\sum_sf_s}.
+\]
+If $F$ were constant, $\langle s\rangle_f$ would be $q/(1-q)$. The rest of the proof shows that $F$ is
+constant up to a bounded factor.
+
+\emph{Step 2: the amplitude.} Put $c=q\sqrt{(1-q)/2}$, so $c^2=\alpha q/4$ and $0<c\le\sqrt6/9<1$ on
+$(\tfrac12,1)$. Put $F'_s=u_s^2+p_s^2/(\alpha q)$ and $G_s=F'_s+q^su_sp_s$. By the
+arithmetic--geometric mean inequality $|u_sp_s|\le cF'_s$, so
+\[
+   (1-c)F'_s\le G_s\le(1+c)F'_s,\qquad qF'_s\le F_s\le F'_s,
+\]
+and $G_s>0$ by Step 0. A direct computation from \eqref{eq:leapfrog} gives the drift identity
+\[
+   G_{s+1}-G_s=-(1-q)\,q^s\,u_{s+1}p_{s+1}.
+\]
+Hence $|G_s-G_{s+1}|\le(1-q)q^scF'_{s+1}\le\bar d\,q^sG_{s+1}$ with $\bar d=(1-q)c/(1-c)<1$, so
+$|\log G_s-\log G_{s+1}|\le\bar d\,q^s/(1-\bar d)$. Summing over $s\ge0$, for all $s,t\ge0$,
+\[
+   |\log G_s-\log G_t|\le\Lambda(q):=\frac{\bar d}{(1-\bar d)(1-q)}=\frac{c}{(1-c)(1-\bar d)},
+\]
+and therefore
+\[
+   \frac{F_s}{F_t}\le\frac{G_s/(1-c)}{qG_t/(1+c)}\le\mathcal R(q):=\frac{e^{\Lambda(q)}(1+c)}{q(1-c)} .
+\]
+
+\emph{Step 3: the mean.} Let $m=\inf_sF_s$ and $M=\sup_sF_s$. By Step 2, $M\le\mathcal R m$, and
+$M\ge F_0>0$, so $m>0$. For $s\ge1$ put $A=\sum_{t\ge s}f_t\ge mq^s/(1-q)$ and
+$B=\sum_{t<s}f_t\le M(1-q^s)/(1-q)$. Since $A/(A+B)$ increases in $A$ and decreases in $B$,
+\[
+   \frac{\sum_{t\ge s}f_t}{\sum_{t\ge0}f_t}\ \ge\ g(s):=\frac{q^s}{\mathcal R-(\mathcal R-1)q^s} .
+\]
+Summing over $s\ge1$ gives $\langle s\rangle_f\ge\sum_{s\ge1}g(s)$. The function $g$ decreases in
+$s$, so $\sum_{s>K}g(s)\ge\int_{K+1}^\infty g$, and for every $K\ge0$
+\[
+   \mathfrak e_1+\mathfrak e_2\ \ge\ \Phi_K(q):=2\sum_{s=1}^Kg(s)
+   +\frac{2}{(\mathcal R-1)\log(1/q)}\,
+   \log\frac{\mathcal R}{\mathcal R-(\mathcal R-1)q^{K+1}} .
+\]
+Here $\mathcal R=\mathcal R(q)>1$.
+
+\emph{Step 4: the certificate.} It remains to show $\Phi_K(q)\ge\frac54(2q-1)/(1-q)$. On
+$[\tfrac12,1-10^{-6}]$ this is checked with $K=30$:
+\begin{equation}\label{eq:Tstarcert}
+   \Phi_{30}(q)-\frac54\cdot\frac{2q-1}{1-q}>0\qquad\bigl(\tfrac12\le q\le1-10^{-6}\bigr).
+\end{equation}
+The check is done by interval arithmetic (\texttt{mpmath.iv}, $30$ digits, outward rounding) on $770$
+consecutive subintervals covering $[\tfrac12,0.9999990026]$. Each subinterval passes on the first
+evaluation or after at most eight bisections, and none fails (\texttt{tstar\_certificate.py}).
+The smallest ratio of $\Phi_{30}$ to the right-hand side is about $1.069$, near $q\approx0.781$.
+On $[1-10^{-6},1)$ use $g(s)\ge q^s/\mathcal R$ instead, valid because $\mathcal R\ge1$. This
+gives $\mathfrak e_1+\mathfrak e_2\ge2q/(\mathcal R(1-q))$. There $\mathcal R\le1.0021251$, so
+$2q/\mathcal R-\frac54(2q-1)\ge0.7457>0$, again checked in interval arithmetic on the closed
+interval $[1-10^{-6},1]$ (\texttt{tstar\_endpoint.py}). Finally $\frac54\frac{2q-1}{1-q}>\frac{2q-1}{1-q}$
+because $q>\tfrac12$.
+
+For the last sentence of the theorem: at a travel pole the eigenvector of $\mathcal T$ for the
+eigenvalue $1$ is the travel null vector ({\cite[Corollary ``the travel poles are Hahn--Exton zeros'', \textup{cor:qbessel}]{Bonfioli2026bA}}). It lies in $\ell^1$ and can be taken real
+({\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}}\textup{(ii)}, $\mathbf S$ being real symmetric).
+\end{proof}
+
+\noindent\emph{Standing and checks.} Theorem~\ref{thm:Tstar} is proved, with one computer-assisted
+step: the interval certificate for \eqref{eq:Tstarcert} and the endpoint check. Both are in
+\texttt{code/zeta\_probe/tstar\_certificate/}, and their trust base is \texttt{mpmath.iv}. They are
+not formally verified. The proof uses no Sturm oscillation theorem, no analyticity in $q$ and no
+information on the index of the eigenvalue: only $\mathcal TR=R$ with $R\in\ell^1$. The algebraic and
+amplitude steps are machine-checked in Lean~4 with Mathlib \cite{MathlibCommunity}. Each theorem
+listed depends only on the axioms \texttt{propext}, \texttt{Classical.choice} and
+\texttt{Quot.sound}, with no \texttt{sorry} and no \texttt{native\_decide}. The files are:
+\texttt{TstarCore.lean} (\texttt{sbp}, the finite summation by parts of Step~1, and \texttt{drift},
+the one-step drift identity); \texttt{TstarAmplitude.lean} (\texttt{amgm}, \texttt{G\_bounds},
+\texttt{drift} for the recursion \eqref{eq:leapfrog}, the per-step bound \texttt{step}, and the
+finite-horizon bound \texttt{log\_ratio} on $|\log G_m-\log G_n|$, which assumes $G>0$); and
+\texttt{RoomB34.lean} (\texttt{leapfrog\_ne}, \texttt{G\_F'\_compare}, and \texttt{G\_pos}, which
+discharges that positivity hypothesis). The following are \emph{not} formalised: Step~0, the
+passage $N\to\infty$ in Steps~1 and~2, Step~3, and Step~4. As a check, at $q_2=0.913486638731\ldots$
+the left-hand side is $\mathfrak e_1+\mathfrak e_2=20.507$ and $(2q_2-1)/(1-q_2)=9.559$, a ratio
+of $2.145$. Numerically the ratio exceeds $2$ at every pole $2\le m\le50$ and decreases towards $2$
+($2.014$ at $m=5$). The constant $\frac54$ is therefore not sharp.
 
 \noindent At a pole $q_m\le\tfrac12$ (only $q_1=0.4494\ldots$) the inequality holds automatically:
 the right-hand side is $\le0$ and $\mathfrak e_2>0$, since $u$ is not supported at $s=0$ (if it were,
 $R=\kappa^{-1}D_eu$ would be a multiple of $\delta_0$ and $(KR)_1=qR_0\ne0$).
 
-\begin{proposition}[simple poles and the sign of $\mathbf B'$; conditional on
-\textup{(T$^\ast_{\mathrm{poles}}$)}]\label{prop:simplepoles}
-Assume Hypothesis~\ref{hyp:Tstar}. Then:
+\begin{proposition}[simple poles and the sign of $\mathbf B'$]\label{prop:simplepoles}
+The following hold.
 \begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
 \item each $\lambda_k$ takes the value $1$ at exactly one point $c_k\in(0,1)$, and
 $c_1<c_2<\cdots$; the $m$-th travel pole is $q_m=c_m$, and $\lambda_j(q_m)<1$ for $j<m$,
@@ -1085,8 +1193,8 @@ $\mathbf B'(q_m)=\lambda_m'(q_m)\prod_{j\ne m}\bigl(1-1/\lambda_j(q_m)\bigr)\ne0
 
 \begin{proof}
 (i) At a point $c$ with $\lambda_k(c)=1$, $c$ is a travel pole with eigenvector $R$
-({\cite[Corollary ``the travel poles are Hahn--Exton zeros'', \textup{cor:qbessel}]{Bonfioli2026bA}}), so Hypothesis~\ref{hyp:Tstar} and the note after it, with
-Lemma~\ref{lem:HF}, give $\lambda_k'(c)<0$. A real-analytic function that is strictly decreasing at
+({\cite[Corollary ``the travel poles are Hahn--Exton zeros'', \textup{cor:qbessel}]{Bonfioli2026bA}}), so Theorem~\ref{thm:Tstar} (if $c>\tfrac12$) or the note after it (if $c\le\tfrac12$), with
+Lemma~\ref{lem:HF}, gives $\lambda_k'(c)<0$. A real-analytic function that is strictly decreasing at
 every point where it equals $1$ takes the value $1$ at most once: between two consecutive such points
 it would be $<1$ just after the first and $>1$ just before the second, and the intermediate value
 theorem would give a third point between them. With {\cite[Proposition ``infinitely many travel poles, without $T_2$'', \textup{prop:infpolesalt}]{Bonfioli2026bA}}, $\lambda_k$
@@ -1127,9 +1235,9 @@ $\lambda_k(q_m)=1$ and $\phi$ the normalised eigenvector,
    \Sigma_0(q_m)=w_m\prod_{j\ne k}\bigl(1-1/\lambda_j(q_m)\bigr),\qquad
    w_m=\langle\mathbf v,\phi\rangle^2>0 .
 \]
-\item Under Hypothesis~\ref{hyp:Tstar}, $\operatorname{sign}\Sigma_0(q_m)=(-1)^{m-1}$; hence
+\item $\operatorname{sign}\Sigma_0(q_m)=(-1)^{m-1}$; hence
 $\Sigma_0$ has at least one zero in each interval $(q_m,q_{m+1})$.
-\item Under Hypothesis~\ref{hyp:Tstar}, if moreover $\lambda_{m-1}(q_m)<q_m$, then
+\item If $\lambda_{m-1}(q_m)<q_m$, then
 $\operatorname{sign}S_e(q_m)=(-1)^{m-1}$.
 \end{enumerate}
 \end{proposition}
@@ -1177,27 +1285,38 @@ sign alternation of $\Sigma_0$ is the one recorded for the first $32$ poles in
 Remark~\ref{rem:numsize}.
 
 \begin{remark}[standing of Propositions~\ref{prop:simplepoles} and~\ref{prop:signlaws}]\label{rem:spectralstanding}
-Earlier versions of this paper stated neither Hypothesis~\ref{hyp:Tstar} nor the three inputs that
-our working notes carried beside it for the same purpose: \textup{(I1)} a Sturm oscillation theorem
-for the Friedrichs realisation of the eigenvalue problem; \textup{(I2)} Hellmann--Feynman on a
-$q$-dependent form domain; \textup{(I3)} {\cite[Proposition \textup{prop:qtrig}]{Bonfioli2026bA}} with
-Lemma~\ref{lem:infpoles}. Here \textup{(I2)} is Lemma~\ref{lem:HF}, proved because $\mathbf S(q)$ is
-a bounded norm-analytic family, so Kato's theory applies with no domain question;
-\textup{(I3)} is covered by {\cite[Proposition \textup{prop:qtrig}]{Bonfioli2026bA}}, {\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}} and
-{\cite[Proposition ``infinitely many travel poles, without $T_2$'', \textup{prop:infpolesalt}]{Bonfioli2026bA}}, and Lemma~\ref{lem:infpoles} is not used; \textup{(I1)} is not used at all: it would turn the index
-statement of Proposition~\ref{prop:simplepoles}\textup{(i)} into the count of $m-1$ sign changes of
-$R_s$, which nothing here needs. What remains is Hypothesis~\ref{hyp:Tstar} itself, which is
-\emph{not} proved here. Numerically, the ratio of its two sides exceeds $2$ at every pole
-$2\le m\le50$ and decreases towards $2$ ($2.145$ at $m=2$, $2.014$ at $m=5$). A proof with the
-constant $1.25$ in front of the right-hand side, from a flux identity expressing
-$\mathfrak e_1+\mathfrak e_2$ as twice a mean position, an amplitude bound, and an interval
-certificate on $q\in[\tfrac12,1-10^{-6}]$, has been written and independently reviewed, but it is
-not part of this paper. So Proposition~\ref{prop:simplepoles} and
-Proposition~\ref{prop:signlaws}\textup{(b)} are proved given Hypothesis~\ref{hyp:Tstar},
-Proposition~\ref{prop:signlaws}\textup{(c)} given also the shift inequality, and
-Proposition~\ref{prop:signlaws}\textup{(a)} unconditionally. No theorem of this paper depends on
-them: {\cite[Proposition ``the shape of the local form'', \textup{prop:shape}]{Bonfioli2026bA}} needs only $\pi\ge p\ge1$, and {\cite[Theorem ``closed form of the junction pairing'', \textup{thm:RJ}]{Bonfioli2026bA}} gives the
-non-vanishing of the residue directly.
+Earlier versions of this paper carried \textup{(T$^\ast_{\mathrm{poles}}$)} as a hypothesis. Our
+working notes also carried three inputs beside it for the same purpose: \textup{(I1)} a Sturm
+oscillation theorem for the Friedrichs realisation of the eigenvalue problem; \textup{(I2)}
+Hellmann--Feynman on a $q$-dependent form domain; \textup{(I3)}
+{\cite[Proposition \textup{prop:qtrig}]{Bonfioli2026bA}} with Lemma~\ref{lem:infpoles}. Their
+standing is now as follows.
+\begin{itemize}[leftmargin=1.5em,itemsep=0.1em,topsep=0.2em]
+\item \textup{(T$^\ast_{\mathrm{poles}}$)} is Theorem~\ref{thm:Tstar}. It is proved, with one
+computer-assisted step (the interval certificate \eqref{eq:Tstarcert} and its endpoint check). Its
+proof uses none of \textup{(I1)}--\textup{(I3)}.
+\item \textup{(I2)} is Lemma~\ref{lem:HF}. It is proved: $\mathbf S(q)$ is a bounded norm-analytic
+family, so Kato's theory applies and no domain question arises.
+\item \textup{(I3)} is covered by {\cite[Proposition \textup{prop:qtrig}]{Bonfioli2026bA}},
+{\cite[Theorem ``the travel determinant'', \textup{thm:fredholm}]{Bonfioli2026bA}},
+{\cite[Corollary ``the travel poles are Hahn--Exton zeros'', \textup{cor:qbessel}]{Bonfioli2026bA}}
+and {\cite[Proposition ``infinitely many travel poles, without $T_2$'', \textup{prop:infpolesalt}]{Bonfioli2026bA}},
+all proved in the companion. Lemma~\ref{lem:infpoles} is not used.
+\item \textup{(I1)} is not used. It would turn the index statement of
+Proposition~\ref{prop:simplepoles}\textup{(i)} into the count of $m-1$ sign changes of $R_s$, which
+nothing here needs; that count remains unproved here (it is checked numerically for $m\le50$).
+The Friedrichs-domain question behind \textup{(I1)} and \textup{(I2)} does not arise either:
+$u_s=(KR)_s\to0$ follows from $R\in\ell^1$ (Step~0 of the proof of Theorem~\ref{thm:Tstar}).
+\end{itemize}
+So Proposition~\ref{prop:simplepoles} and Proposition~\ref{prop:signlaws}\textup{(a)},\textup{(b)}
+are proved, at the standing of Theorem~\ref{thm:Tstar}. Proposition~\ref{prop:signlaws}\textup{(c)}
+is proved under its stated extra condition $\lambda_{m-1}(q_m)<q_m$, which would follow from the
+shift inequality $\lambda_n\le q^2\lambda_{n+1}$; that inequality is \emph{not} proved here.
+No other theorem of this paper depends on these propositions:
+{\cite[Proposition ``the shape of the local form'', \textup{prop:shape}]{Bonfioli2026bA}} needs only
+$\pi\ge p\ge1$, and {\cite[Theorem ``closed form of the junction pairing'', \textup{thm:RJ}]{Bonfioli2026bA}}
+gives the non-vanishing of the residue directly. Proposition~\ref{prop:simplepoles}\textup{(ii)}
+adds that the orders there are $\pi=p=1$ at every travel pole.
 \end{remark}
 
 \begin{remark}[what the known theory does not give]\label{rem:knowntheory}
@@ -1214,8 +1333,8 @@ $\varepsilon_m=1-q_m\sim8/(\pi^2(2m-1)^2)$, equivalently $w_m\sim(m-\tfrac12)\pi
 numerically in Remark~\ref{rem:family}, is not a consequence. It needs a count lemma: an asymptotic
 for $\#\{k:\lambda_k(q)<1\}$, the number of zeros of $\cos(\cdot;q^2)$ in $(0,Z(q))$, uniform as
 $q\to1$. Lemma~\ref{lem:T2abs} puts at least one travel pole in each window of $w$ (the proof of
-Lemma~\ref{lem:infpoles}), and Proposition~\ref{prop:simplepoles}\textup{(i)} identifies the index
-under Hypothesis~\ref{hyp:Tstar}, but neither bounds the number of poles in a window. The count
+Lemma~\ref{lem:infpoles}), and Proposition~\ref{prop:simplepoles}\textup{(i)} identifies the index,
+but neither bounds the number of poles in a window. The count
 lemma is open.
 
 \emph{Complex $q$.} The identity $\det(I-\mathcal T)=\cos(Z;q^2)$ continues analytically to complex
@@ -3551,8 +3670,8 @@ once, distinct branches at distinct points, and $S$ has infinitely many zeros
 $q^\ast_1<q^\ast_2<\cdots\to1$, which are the travel poles $q_j$
 ({\cite[Proposition ``infinitely many travel poles, without $T_2$'', \textup{prop:infpolesalt}]{Bonfioli2026bA}}). That $w$ overtakes each branch \emph{exactly} once, so that
 the $j$-th zero is the crossing of the $j$-th branch, $w(q^\ast_j)=z_j(q^\ast_j)$, is
-Proposition~\ref{prop:simplepoles}\textup{(i)}, at the standing of Hypothesis~\ref{hyp:Tstar}
-(verified at $j=2$ to $43$ digits: exactly one zero of $G(q^\ast_2,\cdot)$ lies below $w$). The accumulation obeys the classical cosine-zero law
+Proposition~\ref{prop:simplepoles}\textup{(i)}, at the standing of Theorem~\ref{thm:Tstar}
+(also verified at $j=2$ to $43$ digits: exactly one zero of $G(q^\ast_2,\cdot)$ lies below $w$). The accumulation obeys the classical cosine-zero law
 \[
    1-q^\ast_j\ \sim\ \frac{8}{\pi^2(2j-1)^2},\qquad
    \text{measured }(1-q^\ast_j)\,\frac{(2j-1)^2\pi^2}{8}
@@ -3580,7 +3699,7 @@ family is exactly the zero set of $\Sigma_0$ in $(0,1)$, that is, of
 $q\mapsto J^{(3)}_{1/2}(z_0(q);q^2)$ with $z_0=\sqrt{2(1-q)}$ ({\cite[Lemma ``the numerators in closed form'', \textup{lem:qsinenum}]{Bonfioli2026bA}} and the
 normalisation after {\cite[Proposition \textup{prop:qtrig}]{Bonfioli2026bA}}). Half of the interlacing, at least one sine member
 in each $(q^\ast_j,q^\ast_{j+1})$, is Proposition~\ref{prop:signlaws}\textup{(b)}, at the standing
-of Hypothesis~\ref{hyp:Tstar}; that there is exactly one is verified only. Second, the accumulation law has an exact-looking
+of Theorem~\ref{thm:Tstar}; that there is exactly one is verified only. Second, the accumulation law has an exact-looking
 rational second order, identical for both families:
 \[
    1-q^\ast_j=\frac{2}{\mu_j}\Bigl(1-\frac{8}{9\mu_j}+\frac{B}{\mu_j^2}
