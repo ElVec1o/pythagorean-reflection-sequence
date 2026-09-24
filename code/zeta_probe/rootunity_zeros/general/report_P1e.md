@@ -29,3 +29,12 @@ PROVED, computer-assisted, resting on P1d's lemmas dec and lap.
 - l in [0.05, 0.855).
 - The zeros-of-B step near a general zeta.
 - The transfer to U and V.
+
+## Reviewer AA verdict: Theorem M is CORRECT (computer-assisted)
+All the P1d theorems it depends on are CORRECT.
+
+Editorial gaps, none affecting the result:
+- The m' = n case in Lemma H is missing from the write-up.
+- Some low-seed constants are rounded down in their last digit. The margins are 3.8x or more, so nothing changes.
+- The base-case scan skips failures silently. It should fail loudly instead.
+- The cross-references to P1d theorems are misnumbered. The correct numbers are Thm 2, 5 and 9.
