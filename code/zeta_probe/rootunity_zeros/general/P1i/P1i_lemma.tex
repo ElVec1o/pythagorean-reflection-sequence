@@ -1,0 +1,208 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\Li}{\operatorname{Li}_2}
+\title{P1i: Theorems B and C of P1f at the small denominators $3\le N\le16$\\ of the arc $[0.143,\,0.857]$, by per-case landscape certificates\\
+\small research programme P1, ninth atom, 2026-09-24. Not yet reviewed.}
+\date{}
+\begin{document}\maketitle
+
+Notation and numbering are those of P1f (Sections set, dec, est; Lemmas saddle, amp, classes, EM, head, LS, LSp; Theorems asym, B, C) and P1h (Theorems M$'$, main$'$, B$'$, C$'$).
+Labels: PROVED; \emph{computer-assisted} (reduced to finitely many Arb ball inequalities, checked by the named script, which fails loudly); VERIFIED (numerics, not a proof); HEURISTIC; OPEN.
+The level of rigour is that of P1f: the $O(t)$ of Laplace's method and the index $j_0$ are not made explicit.
+
+\paragraph{Outcome.} The family is every reduced $a/N$ with $3\le N\le16$, $0.143\le a/N\le0.857$ and $a/N\ne\frac12$. It has 56 members.
+\begin{enumerate}
+\item[(a)] \textbf{Theorem~\ref{thm:Bsmall} (PROVED, computer-assisted).} For each of the 52 members with $N\notin\{4,6\}$, every conclusion of P1f Theorem~B holds at $\zeta=\e(a/N)$. So the zeros of $B$ accumulate at $\zeta$ along the tie ray $\arg t=\theta^*$, they are simple, $t^*_j=t^0_j+O(j^{-3})$, and they are simple poles of $G^T_0$. The analytic Lemmas LS, LSp, head of P1f are replaced by a per-case Arb certificate (\texttt{P1i\_landscape\_cert.py}: all 52 CERTIFIED, 34\,s in total, 27\,MB).
+\item[(b)] \textbf{Theorem~\ref{thm:Csmall} (PROVED, computer-assisted; standing \texttt{thm:model}, \texttt{thm:RJ}).} For the same 52 members, P1f Theorem~C(i)--(iii) holds. So the poles of $U$ and $V$ accumulate at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$, along the square roots of the zeros of (a). The transfer conditions are re-certified for all 56 members (\texttt{P1i\_transfer.py}; min certified modulus $0.2351$).
+\item[(c)] \textbf{$N=4$} ($\frac14,\frac34$) is \texttt{prop:qi}/\texttt{cor:Ui} of paper2a, and is not redone here. The certificate reproduces the known obstruction there: $T=-0.0707<0$.
+\item[(d)] \textbf{$N=6$} ($\frac16,\frac56$): P1f Theorem~B is \emph{not} closed by this method. The tie height is $T=-0.10878<0$, below the head height $0$ of $b_0=1$ (Section~\ref{sec:six}). The zeros exist numerically on the predicted tie ray (VERIFIED). A proof needs the $q=i$ technique of a contour through $\operatorname{Re}x<0$ with theta reflection, generalised from 4 to 6 classes (OPEN).
+\end{enumerate}
+
+\paragraph{Correction to the brief: what is new.}
+The bare statement ``the zeros of $B$ accumulate at $\zeta$'' is \emph{already} a consequence of P1h. The accumulation set is closed, and P1h Theorem~B$'$ puts the zeros of $B$ densely at every point of $\arg q\in[2\pi\cdot0.143,\,2\pi\cdot0.857]$. Likewise, P1h Theorem~C$'$ (with closure) gives accumulation of the poles of $U,V$ at $\pm\sqrt\zeta$ for every $\zeta$ with $a/N\in[\frac16,\frac56]$, and this includes $\frac16$ and $\frac56$.
+The new content is therefore the following:
+\begin{itemize}
+\item[(i)] the \emph{direct} statement at each small-$N$ point: an explicit sequence of simple zeros on the tie ray at $\zeta$ itself, with the two-saddle asymptotic, and the limit $t_1\to t_1^*=-\frac12(1+\omega)$ of P1f Theorem~C along it;
+\item[(ii)] accumulation of the poles of $U,V$ at $\pm\sqrt{\e(\pm\frac2{13})}$. Since $\frac2{13}=0.1538\in[0.143,\frac16)$, this is not implied by P1h. It is the only small-$N$ member of $[0.143,\frac16)\cup(\frac56,0.857]$.
+\end{itemize}
+
+\section{Why the P1f constants fail at small $N$}
+In P1f the landscape inequalities are proved from crude, $N$-uniform bounds. Examples are $|R_\mu|\le\frac{\pi^2}{6N^2}+\dots$, $\cos\theta^*\ge0.9087$, $|w|\le2.3\cdot10^{-6}$, and the head constant $0.0837$. All of these need $N\ge16$ (P1h: $N\ell\gtrsim9$). At $N=3$, $\frac{\pi^2}{3N^2}=0.366$ already exceeds $T=0.3335$, $|w|=0.024$, and $|\theta^*|=22.9^\circ$.
+The \emph{true} landscape is fine except at $N=4,6$ (VERIFIED first by the floating sampler \texttt{P1f\_landscape\_check.py}, then certified).
+So we keep the whole P1f architecture: the exact class decomposition (Lemma classes), the kernel expansion with $M=2N$ modes, the EM lemma, Laplace, Rouch\'e, and the transfer. Only Lemmas head, LS, LSp are replaced by the per-case Lemma~\ref{lem:headN} and Proposition~\ref{prop:cert}.
+Lemma W of P1d needs $N\ell\ge3$. Over the 52 members, $\min N\ell=3.727$ (at $\frac13$).
+
+\section{The head at fixed $N$}
+\begin{lemma}[head$_N$; PROVED]\label{lem:headN}
+Let $N\ge3$, $\ell>0$, $\delta=\frac1{8N}$, $|\theta|<\frac\pi2$, $K=\lfloor\delta/r\rfloor$, and
+\[\varrho_N=1-\frac{e^{1/(4N)}}{4N\cdot2\sin(\pi/N)},\qquad
+H_N=\delta\big(\ell+2\log\tfrac1{\varrho_N}\big)+\frac{2\delta}N\Big(1+\log\frac1{1.8\,\delta}\Big).\]
+Then $\max_{k\le K}r\log|b_k|\le H_N+o(1)$ as $r\to0$. So $|H|=|\sum_{k\le K}b_k|\le e^{(H_N+o(1))/r}$. The same holds for $\sum_{k\le K}b_kq^{\pm k}$.
+\end{lemma}
+\begin{proof}
+This is the proof of P1f Lemma head with the $N$-dependence kept.
+\begin{itemize}
+\item $|q^{k^2}|\le1$. Also $|c_t-c|=2|1-e^{-t}|\le2re^r$, so $k\,r\log|c_t|\le\delta\ell+o(1)$.
+\item For $i\le2k\le2\delta/r$ with $N\nmid i$: $|1-e^{-it}|\le ir\,e^{ir}\le\frac{e^{1/(4N)}}{4N}$ and $|1-\zeta^i|\ge2\sin\frac\pi N$. Hence $|1-\zeta^ie^{-it}|\ge\varrho_N|1-\zeta^i|$, with $\varrho_N>0$ for $N\ge3$. There are at most $2k$ such factors, so they cost at most $2\delta\log(1/\varrho_N)$ in $r\log|b_k|$.
+\item The remaining product $\prod_{i\le2k,N\nmid i}|1-\zeta^i|$ is $N^{M'}\ge1$ over $M'$ full periods, times a partial period $\ge P_N>0$. This costs $r\log(1/P_N)=o(1)$.
+\item For $i=Nm$, $m\le M'=\lfloor2k/N\rfloor$: $|z|=Nmr\le2\delta=\frac1{4N}\le\frac1{12}$, so $|1-e^{-z}|\ge|z|(1-\frac{|z|}2e^{|z|})\ge0.95\,Nmr$.
+With $\log M'!\ge M'\log M'-M'$ this costs $r\log\frac1{\prod_m0.95Nmr}\le f(rM')$, where $f(y)=y(1+\log\frac1{0.95Ny})$. The function $f$ is increasing for $y\le\frac1{0.95N}$, and $rM'\le\frac{2\delta}N=\frac1{4N^2}$, which gives the last term (with $1.9\ge1.8$).
+\item The factor $q^{\pm k}$ contributes $\le kr^2\le\delta r=o(1)$.
+\item There are $K+1$ terms, and $r\log(K+1)=o(1)$.
+\end{itemize}
+\end{proof}
+
+\section{The per-case landscape certificate}\label{sec:cert}
+Fix a member $a/N$ with $N\ne4,6$. Let $n,s,\theta^*,T,x_\mu,V_\mu,W_\mu$ be as in P1f (Section set), with $n$ chosen by the P1f rule. Let $\Theta=[\theta^*-10^{-5},\theta^*+10^{-5}]$ and $\mathcal X_A=\{\rho e^{i\theta}:\rho\in[\frac\delta2,2\delta],\ \theta\in\Theta\}$; this contains every start point $x_A^\rho$ of P1f Section~dec for $r\le\delta/(2N)$.
+\begin{itemize}
+\item The \emph{explicit modes} of P1f Section~dec:
+ \begin{itemize}
+ \item $N$ odd: $\mu\in\{-(2N-1),\dots,2N\}$, with remainders $\mu_-=-2N$, $\mu_+=2N+1$;
+ \item $N$ even, $\epsilon=+1$: the even $\mu\in[-(4N-2),4N]$, with remainders $-4N$, $4N+2$;
+ \item $N$ even, $\epsilon=-1$: the odd $\mu\in[-(4N-1),4N-1]$, with remainders $\mp(4N+1)$.
+ \end{itemize}
+ For $S_\pm$ with $N$ even, $\epsilon$ flips (P1f Theorem~C(i)).
+\item \emph{Reference height}: $V_{\rm ref}=V_n$ for $B$, and for $S_\pm$ with $N$ odd. For $S_\pm$ with $N$ even, $V_{\rm ref}=V_{n+1}$ (height $T'$). Put $h_{\rm ref}(\theta)=\operatorname{Re}(V_{\rm ref}e^{-i\theta})$.
+\item \emph{Dominant modes}: $\{n,n+s\}$ for $B$ and for $S_\pm$ with $N$ odd, and $\{n+1\}$ for $S_\pm$ with $N$ even.
+\end{itemize}
+
+\paragraph{Paths.}
+\begin{itemize}
+\item Non-dominant explicit mode: $\Pi_\mu=[x_A,x_\mu]\cup(x_\mu+e^{i\theta/2}[0,\infty))$, as in P1f.
+\item Dominant mode: $\Pi_\mu=[x_A,P_\mu]\cup(x_\mu+e^{i\theta/2}[-\lambda_\mu,\infty))$ with $P_\mu=x_\mu-\lambda_\mu e^{i\theta/2}$ and $\lambda_\mu=\operatorname{Re}x_\mu/(2\cos\frac\theta2)$. So the path crosses the saddle on its steepest-descent line.
+ This change of path from P1f is needed at small $N$. At $\frac13$ the straight segment $[x_A,x_\mu]$ meets the saddle at $80.5^\circ$ from the steepest-descent direction, within $9.5^\circ$ of a level direction. The integrands are entire, so any path with the same endpoints gives the same integral.
+\item Remainder modes: $\gamma_\mp=x_A+e^{i(\theta\mp\pi/8)}[0,\infty)$, as in P1f. The kernel bound is $\le2.09$ by (iv) of \texttt{lem:qi-bounds}.
+\end{itemize}
+
+\begin{proposition}[computer-assisted: \texttt{P1i\_landscape\_cert.py}]\label{prop:cert}
+Take $\theta\in\Theta$ and $x_A\in\mathcal X_A$ on the ray $\arg x_A=\theta$, and put $\eta=10^{-3}$. For each of the 52 members and for $B$ (and, for $N$ even, $S_\pm$):
+\begin{enumerate}
+\item[(H)] $H_N\le h_{\rm ref}(\theta)-\eta$.
+\item[(a)] For every non-dominant explicit $\mu$: $\operatorname{Re}((\Omega_\mu(x)-V_{\rm ref})e^{-i\theta})\le-\eta$ on $\Pi_\mu$.
+\item[(b)] For every dominant $\mu$:
+ \begin{itemize}
+ \item $\operatorname{Re}\,\Omega_\mu''(x_\mu+ve^{i\theta/2})<0$ for $|v|\le\frac14$;
+ \item $\operatorname{Re}((\Omega_\mu(x)-V_\mu)e^{-i\theta})<0$ on the rest of $\Pi_\mu$, with a uniform negative bound on each piece outside $|v|<\frac14$.
+ \end{itemize}
+\item[(c)] On $\gamma_\mp$: $\operatorname{Re}((\Omega_{\mu_\mp}(x)-V_{\rm ref})e^{-i\theta})\le-\eta$.
+\item[(d)] $\operatorname{Re}x>0$ on every certified box. So $\operatorname{Re}x\ge\delta'>0$ on the compact pieces, and $\operatorname{Re}x$ increases on the rays: $\cos\frac\theta2>0$, and $\cos(\theta\mp\frac\pi8)>0$ and $\cos(\theta\mp\frac\pi4)>0$ are certified.
+\end{enumerate}
+\end{proposition}
+\begin{proof}[Method (all in Arb, 128 bits)]
+\begin{itemize}
+\item $w$ is the quadratic-formula root of $c^Nw=(1-w)^2$. The script certifies $|w|<1$ and the residual; $|w|\le0.024$ for all members.
+\item $x_\mu=\frac{L_\mu}2-\xi$ is an enclosure of the exact saddle (P1f Lemma saddle(i)). $\theta^*$ is enclosed, and the tie $h_n(\theta^*)=h_{n+s}(\theta^*)$ is checked.
+\item \emph{Boxes}: on a box $X$, $\operatorname{Re}((\Omega_\mu(X)-V)e^{-i\Theta})$ is bounded by the centred form $\operatorname{Re}((\Omega_\mu(m)-V)e^{-i\Theta})+\operatorname{rad}(X)\,|\Omega'_\mu(X)|$, with $m$ the exact midpoint. $\Li$ is evaluated only at exact points. $\Omega'_\mu=L_\mu-2x-\frac2N\operatorname{Log}(1-e^{-2Nx})$ and $\Omega''_\mu=-2-4/(e^{2Nx}-1)$ are evaluated on balls.
+ \begin{itemize}
+ \item Each piece is parametrised by one real interval. On the segments the point $x_A$ is a ball, in four pieces of $[\frac\delta2,2\delta]$.
+ \item Pieces are bisected adaptively until the bound is below the target. The target is $\min(-\eta,\frac12\cdot{}$sampled maximum$)$, or $\frac12\cdot{}$sampled maximum for dominant pieces, where the sampled maximum is itself an Arb upper bound at 49 points. Failure at depth 22 aborts the run.
+ \end{itemize}
+\item \emph{Taylor (b)}: $\Omega'_\mu(x_\mu)=0$ exactly, so for $x=x_\mu+ve^{i\theta/2}$
+\[W_\mu(x)-h_\mu=\operatorname{Re}\int_0^v(v-u)\,\Omega''_\mu(x_\mu+ue^{i\theta/2})\,du\le\tfrac{v^2}2\sup\operatorname{Re}\Omega''_\mu<0\]
+(since $e^{-i\theta}(e^{i\theta/2})^2=1$). This is certified on sub-balls of $v\in[-\frac14,\frac14]$. The certified supremum is $\le-0.96$ over all members.
+\item \emph{Ray tails, explicit modes} ($v\ge V_1$): P1f Lemma saddle(iii) gives $\Omega_\mu=V_\mu-(x-x_\mu)^2-R_\mu$ with $|R_\mu|\le C_0+C_1v$, where $C_0=(\frac{\pi^2}6+|\Li(w)|)/N^2$ and $C_1=2|\operatorname{Log}(1-w)|/N$ (because $|\Li(e^{-2Nx})|\le\frac{\pi^2}6$ for $\operatorname{Re}x\ge0$). So the exponent is $\le\operatorname{Re}((V_\mu-V)e^{-i\theta})+C_0+C_1v-v^2$, which decreases for $v\ge C_1/2$. The script checks that this is $\le$ the target at $V_1$.
+\item \emph{Ray tails, remainder modes} ($\varrho\ge P_1$): $\operatorname{Re}(\Omega e^{-i\theta})\le\operatorname{Re}((xL_\mu-x^2)e^{-i\theta})+\frac{\pi^2}{3N^2}$. With $x=x_A+\varrho e^{i\beta}$, $\beta=\theta\mp\frac\pi8$, this is
+\[A_0+A_1\varrho-\cos(\theta\mp\tfrac\pi4)\varrho^2,\qquad A_1=\operatorname{Re}\big((L_\mu-2x_A)e^{\mp i\pi/8}\big).\]
+The script checks that the vertex lies below $P_1$ and that the value at $P_1$ is $\le-\eta$.
+\end{itemize}
+The run prints, per member and per sum, upper bounds for the head margin $H_N-h_{\rm ref}$, for $\max(a)$, for $\sup\operatorname{Re}\Omega''$ (column \texttt{domQ}), for $\max(b)$ off the Taylor window (\texttt{domfar}), and for $\max(c)$.
+\end{proof}
+
+\paragraph{Certified margins} (\texttt{P1i\_certlog.txt}; worst over the 52 members; all are Arb upper bounds):
+\begin{itemize}
+\item $H_N-T\le-0.0789$ (at $\frac2{13}$);
+\item non-dominant $\le-0.0166$ (at $\frac15$);
+\item dominant: $\sup\operatorname{Re}\Omega''\le-0.96$ (at $\frac2{13}$), and off the window $\le-0.0123$ ($\frac2{13}$);
+\item remainder $\le-0.0010$ (at $\frac16$ for $S_\pm$, not used; among the 52 members $\le-0.0057$, at $\frac13$).
+\end{itemize}
+The printed values are the loosest box bounds that met the target, not the true maxima. The floating sampler gives much larger true margins, e.g.\ $-0.087$ non-dominant at $\frac15$.
+Fail-loud test: with $\eta=0.1$ (\texttt{P1I\_ETA=0.1}) the run at $\frac2{13}$ aborts with exit status 1.
+
+\begin{table}[h]\centering\small
+\caption{Tie data for the certified members with $a/N<\frac12$; conjugates have $\theta^*\mapsto-\theta^*$. From the certlog.}\label{tab:data}
+\begin{tabular}{lrrl|lrrl}\toprule
+$a/N$ & $\theta^*$ & $T$ & $T'$ & $a/N$ & $\theta^*$ & $T$ & $T'$\\\midrule
+1/3 & $-22.85^\circ$ & 0.3335 & & 3/11 & $-7.36^\circ$ & 0.3017 &\\
+1/5 & $20.18^\circ$ & 0.1636 & & 4/11 & $6.31^\circ$ & 0.4128 &\\
+2/5 & $-13.23^\circ$ & 0.4264 & & 5/11 & $-5.93^\circ$ & 0.4692 &\\
+2/7 & $11.13^\circ$ & 0.3148 & & 5/12 & $10.96^\circ$ & 0.4091 & 0.4764\\
+3/7 & $-9.36^\circ$ & 0.4527 & & 2/13 & $-11.03^\circ$ & 0.0931 &\\
+3/8 & $16.72^\circ$ & 0.3229 & 0.4706 & 3/13 & $7.06^\circ$ & 0.2349 &\\
+2/9 & $-10.47^\circ$ & 0.2167 & & 4/13 & $-5.79^\circ$ & 0.3519 &\\
+4/9 & $-7.26^\circ$ & 0.4636 & & 5/13 & $5.23^\circ$ & 0.4320 &\\
+3/10 & $0^\circ$ & 0.2625 & 0.3612 & 6/13 & $-5.01^\circ$ & 0.4724 &\\
+2/11 & $10.49^\circ$ & 0.1446 & & 3/14 & $-26.16^\circ$ & 0.1949 & 0.2401\\
+ & & & & 5/14 & $0^\circ$ & 0.3689 & 0.4193\\
+ & & & & 4/15, 7/15 & $5.49^\circ,-4.34^\circ$ & 0.2944, 0.4744 &\\
+ & & & & 3/16, 5/16, 7/16 & $13.81^\circ,-9.28^\circ,8.17^\circ$ & 0.1330, 0.3341, 0.4401 & 0.1704, 0.3722, 0.4783\\\bottomrule
+\end{tabular}\end{table}
+Consistency with P1f: $\theta^*=0^\circ$ at $\frac3{10}$ and $6.31^\circ$ at $\frac4{11}$, as printed there. The rerun of $N=16$ agrees with P1f/P1h, which already proved these members.
+
+\section{The theorems}
+\begin{theorem}[B at small $N$; PROVED, computer-assisted]\label{thm:Bsmall}
+Let $\zeta=\e(a/N)$ with $3\le N\le16$, $N\notin\{4,6\}$, $\gcd(a,N)=1$, $0.143\le a/N\le0.857$, and $a/N\ne\frac12$ (52 members). Then every conclusion of P1f Theorem~asym and Theorem~B holds at $\zeta$.
+\end{theorem}
+\begin{proof}
+Run the proof of P1f Theorem~asym with the following inputs:
+\begin{itemize}
+\item Lemma~\ref{lem:headN} and Proposition~\ref{prop:cert}(H) in place of Lemma head. This gives $|H|\le e^{(T(\theta)-\eta+o(1))/r}$.
+\item Proposition~\ref{prop:cert}(a),(c),(d) in place of Lemma LS(a),(c),(d). With the EM lemma at $\delta'>0$, this bounds all non-dominant explicit modes and both remainders by $C_Nr^{-2}e^{(T(\theta)-\eta)/r}$.
+\item Proposition~\ref{prop:cert}(b) in place of Lemma LS(b). On the dominant path the exponent is $\le h_\mu-\kappa v^2$ near $x_\mu$ with $\kappa\ge0.48$, and $<h_\mu$ uniformly away from it; the path crosses the saddle along its steepest-descent line. So Laplace's method \cite{Olver1974} gives $\kappa A(\mu)e^{V_\mu/t}(1+O(t))$ exactly as in P1f.
+\end{itemize}
+All inequalities hold on the box $\Theta$, which gives the uniformity in $|\theta-\theta^*|\le10^{-5}$.
+Every other ingredient is independent of $N$ or holds at fixed $N$: Lemmas classes and EM, the kernel expansion, Lemma amp (with $Z_N\ne0$, Theorem~M$'$ of P1h, re-certified in \texttt{P1i\_transfer.py}), and the Rouch\'e step and Step~6 of \texttt{prop:minusone} in the proof of Theorem~B.
+Lemma W holds since $N\ell\ge3.72$.
+\end{proof}
+
+\begin{theorem}[C at small $N$; PROVED, computer-assisted; standing \texttt{thm:model}, \texttt{thm:RJ}]\label{thm:Csmall}
+For the 52 members of Theorem~\ref{thm:Bsmall}, P1f Theorem~C(i)--(iii) holds at the zeros $q^*_j$ of Theorem~\ref{thm:Bsmall}. In particular $\pm\sqrt{q^*_j}$ and $\pm\sqrt{\bar q^*_j}$ are poles of $U$ and of $V$ for large $j$, and they accumulate at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$.
+\end{theorem}
+\begin{proof}
+\begin{itemize}
+\item (i) For $N$ odd, the landscape of $S_\pm$ is that of $B$ (same modes, same classes, amplitude factor $e^{\mp x}$ subexponential), so Proposition~\ref{prop:cert} for $B$ applies. The bracket equals $2$ by the $N$-free Gauss-sum identity of P1f.
+ For $N$ even, Proposition~\ref{prop:cert} was run separately for $S_\pm$: the modes are $\mathcal M'$, the single dominant mode is $n+1$, the reference height is $T'$, and $\epsilon$ is flipped. It replaces Lemma LSp.
+\item (ii) The identity $G^*(\mu+a)=\e(-\mu/N)G^*(\mu-a)$ holds for all $N$.
+\item (iii) \texttt{P1i\_transfer.py} (which calls \texttt{check} of \texttt{P1f\_transfer\_cert.py}) certifies $Z_N\ne0$, $Z^+_N\ne0$ and the six $\omega$-conditions for both roots at all 56 members, with min modulus $0.2351$. At $\frac13$ the factor with $1-x+\zeta=0$ reduces to $1/(2x)\ne0$ (P1g), and the certificate encloses it directly.
+\end{itemize}
+\end{proof}
+
+\begin{corollary}\label{cor:213}
+The poles of $U$ and $V$ accumulate at $\pm\sqrt{\e(\pm\frac2{13})}$. This point is not covered by P1h Theorem~C$'$, which works on $[\frac16,\frac56]$ only.
+\end{corollary}
+
+\section{$N=6$: exactly why it is not closed}\label{sec:six}
+At $\zeta=\e(\frac16)$ we have $c=2e^{2\pi i/3}$, $\ell=\log2$, $\theta^*=0$, tie pair $(-3,-1)$, and $T=-0.10878$ (certified enclosure; the head check fails with $H_6-T\ge0.1548$).
+In the decomposition $B=H+\sum$(integrals), the integrals are $e^{(T+o(1))/r}\to0$ exponentially, while $H\ni b_0=1$. So $|H|$ is of order one unless it cancels. No bound of the form $|H|\le e^{(T-\eta)/r}$ can hold term by term, whatever cutoff $K$ is used; this is the same mechanism as at $q=i$, where $T=-0.0707$.
+The landscape itself is healthy: for $S_\pm$ ($T'=0.1654$) the certificate passes at $\frac16$ with every margin negative. So only the head blocks.
+\begin{itemize}
+\item VERIFIED (\texttt{P1f\_zeros.py 1 6}, 30+ digits): zeros of $B$ lie on the ray $\theta^*=0$ at the two-saddle prediction, with $|1/t^*_j-u_j|\,|\Delta V|=0.19,\ 0.032,\ 0.0082$ at $j=4,8,12$. Theorem~B's conclusion is numerically true at $\frac16$.
+\item OPEN: a proof. The $q=i$ route (paper2a \texttt{prop:qi}: start at a negative half-integer $s_c$ so that there is no head, and cross $\operatorname{Re}x=0$ with the theta reflection of \texttt{lem:qi-bounds}(ii)) would need that lemma for 6 residue classes and a new path certificate.
+\end{itemize}
+Accumulation of the zeros of $B$ at $\e(\frac16)$, and of the poles of $U,V$ at $\pm\sqrt{\e(\pm\frac16)}$, holds anyway by closure from P1h (see the correction above). What is open at $\frac16$ is the direct tie-ray statement.
+
+\section{VERIFIED cross-checks}
+\texttt{P1f\_zeros.py} (floating, 30+ digits) at $\frac13$: $|1/t^*_j-u_j||\Delta V|=0.0109,\,0.0052,\,0.0025$ for $j=4,8,16$, decaying like $|t_j|$, on $\theta^*=-22.85^\circ$; at $\frac2{13}$: $0.00084,\,0.00042$ ($j=4,8$); at $\frac15$: $0.0050,\,0.0025,\,0.0013$ ($j=4,8,16$). The sampled floating check (P1f's sampler, run for all 56 members) agrees in sign with the certificate on every member, including the two failures at $N=4,6$.
+
+\section{What is not proved; weakest points}
+\begin{enumerate}
+\item \textbf{Inherited level of rigour.} As in P1f and paper2a, the $O(t)$ of the EM lemma and of Laplace's method, and hence $j_0$, are not explicit. The certificate proves the exponent inequalities with a uniform margin; that is exactly what the P1f argument uses.
+\item \textbf{Transcription risk.} The script re-implements the mode bookkeeping of P1f Section~dec: the explicit set, the remainder modes, and the flip of $\epsilon$ for $S_\pm$. It checks parity consistency and that the dominant modes are explicit, but the bookkeeping itself is taken from P1f and not re-derived here. It agrees with \texttt{P1f\_landscape\_check.py}.
+\item \textbf{Path change.} The dominant paths differ from P1f (descent-line polygon). This is legitimate because the integrands are entire, but it has not been reviewed.
+\item \textbf{Range of $x_A$.} We cover $|x_A|\in[\delta/2,2\delta]$ as P1f does. The true range is $\delta(1+O(r))$.
+\item \textbf{Thin printed margins.} These are artefacts of stopping the bisection early (e.g.\ remainder $-0.0057$ at $\frac13$), not true tightness. Any positive margin suffices.
+\item \textbf{Not closed:} $N=6$ (Section~\ref{sec:six}). $N=4$ is not re-proved here (\texttt{prop:qi}).
+\item \textbf{Novelty is limited} (see the correction): the accumulation statements themselves, except $U,V$ at $\frac2{13}$, already follow from P1h by closure.
+\item \textbf{Standing}: python-flint/Arb (\texttt{polylog}, \texttt{exp}, \texttt{log} on balls), P1d/P1e/P1f/P1h as cited; for $U,V$ also \texttt{thm:model}, \texttt{thm:RJ}.
+\end{enumerate}
+
+\paragraph{Files} (\texttt{rootunity\_zeros/general/P1i/}): \texttt{P1i\_landscape\_cert.py}, \texttt{P1i\_transfer.py}, \texttt{P1i\_certlog.txt}. Every run used \verb|perl -e 'alarm 290; exec @ARGV'|. The peak RSS was 27\,MB (fresh pre-flight: 24\,GB RAM, 5.4\,GB disk free), and the files written total under 40\,kB.
+
+\begin{thebibliography}{9}
+\bibitem{Olver1974} F.~W.~J.~Olver, \emph{Asymptotics and Special Functions}, Academic Press, 1974.
+\end{thebibliography}
+\end{document}

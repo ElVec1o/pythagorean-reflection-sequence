@@ -1,0 +1,150 @@
+== P1i certlog, Thu Sep 24 13:29:27 +07 2026
+== fresh pre-flight: hw.memsize=25769803776 bytes; disk free 5.4Gi
+== landscape: perl -e 'alarm 290; exec @ARGV' python3 P1i_landscape_cert.py range 3 16  (xlo=0.143)
+1/3 n=-2 th*=-22.852deg ell=1.2425 |w|<=2.40e-02 | B Tref=0.3335 head-T<=-0.1775 nd<=-0.0459 domQ<=-1.2568 domfar<=-0.0404 rem<=-0.0057  CERTIFIED (0.1s)
+2/3 n=1 th*=22.852deg ell=1.2425 |w|<=2.40e-02 | B Tref=0.3335 head-T<=-0.1775 nd<=-0.0476 domQ<=-1.2568 domfar<=-0.0404 rem<=-0.0175  CERTIFIED (0.1s)
+1/4 n=-2 th*=37.067deg ell=1.0397 |w|<=1.61e-02 | B FAILED: 1/4 B head: H_head - h_ref = [0.16679 +/- 3.93e-6] | S Tref=0.4215 head-T<=-0.3254 nd<=-0.1088 domQ<=-1.4692 domfar<=-0.0392 rem<=-0.0731  NOT CERTIFIED (0.2s)
+3/4 n=0 th*=-37.067deg ell=1.0397 |w|<=1.61e-02 | B FAILED: 3/4 B head: H_head - h_ref = [0.16680 +/- 2.63e-6] | S Tref=0.4215 head-T<=-0.3254 nd<=-0.1088 domQ<=-1.4692 domfar<=-0.0392 rem<=-0.0731  NOT CERTIFIED (0.2s)
+1/5 n=-2 th*=20.177deg ell=0.8549 |w|<=1.39e-02 | B Tref=0.1636 head-T<=-0.0989 nd<=-0.0166 domQ<=-1.4004 domfar<=-0.0354 rem<=-0.0128  CERTIFIED (0.3s)
+2/5 n=-3 th*=-13.232deg ell=1.3361 |w|<=1.26e-03 | B Tref=0.4264 head-T<=-0.3497 nd<=-0.1438 domQ<=-1.4614 domfar<=-0.0403 rem<=-0.1605  CERTIFIED (0.2s)
+3/5 n=2 th*=13.232deg ell=1.3361 |w|<=1.26e-03 | B Tref=0.4264 head-T<=-0.3497 nd<=-0.1438 domQ<=-1.4614 domfar<=-0.0403 rem<=-0.1533  CERTIFIED (0.2s)
+4/5 n=1 th*=-20.177deg ell=0.8549 |w|<=1.39e-02 | B Tref=0.1636 head-T<=-0.0989 nd<=-0.0166 domQ<=-1.4004 domfar<=-0.0354 rem<=-0.0142  CERTIFIED (0.3s)
+1/6 n=-3 th*=0.000deg ell=0.6931 |w|<=1.52e-02 | B FAILED: 1/6 B head: H_head - h_ref = [0.15482 +/- 5.39e-7] | S Tref=0.1654 head-T<=-0.1193 nd<=-0.0444 domQ<=-1.2027 domfar<=-0.0234 rem<=-0.0010  NOT CERTIFIED (0.3s)
+5/6 n=1 th*=0.000deg ell=0.6931 |w|<=1.52e-02 | B FAILED: 5/6 B head: H_head - h_ref = [0.15482 +/- 5.39e-7] | S Tref=0.1654 head-T<=-0.1193 nd<=-0.0444 domQ<=-1.2027 domfar<=-0.0234 rem<=-0.0064  NOT CERTIFIED (0.3s)
+2/7 n=-3 th*=11.134deg ell=1.1402 |w|<=3.42e-04 | B Tref=0.3148 head-T<=-0.2702 nd<=-0.1093 domQ<=-1.8282 domfar<=-0.0403 rem<=-0.1238  CERTIFIED (0.3s)
+3/7 n=-4 th*=-9.363deg ell=1.3609 |w|<=7.29e-05 | B Tref=0.4527 head-T<=-0.4042 nd<=-0.1889 domQ<=-1.9593 domfar<=-0.0403 rem<=-0.1848  CERTIFIED (0.3s)
+4/7 n=3 th*=9.363deg ell=1.3609 |w|<=7.29e-05 | B Tref=0.4527 head-T<=-0.4042 nd<=-0.1889 domQ<=-1.9593 domfar<=-0.0403 rem<=-0.1762  CERTIFIED (0.3s)
+5/7 n=2 th*=-11.134deg ell=1.1402 |w|<=3.42e-04 | B Tref=0.3148 head-T<=-0.2702 nd<=-0.1093 domQ<=-1.8282 domfar<=-0.0403 rem<=-0.1309  CERTIFIED (0.4s)
+3/8 n=-4 th*=16.722deg ell=1.3071 |w|<=2.87e-05 | B Tref=0.3229 head-T<=-0.2833 nd<=-0.1098 domQ<=-1.7709 domfar<=-0.0403 rem<=-0.1143 | S Tref=0.4706 head-T<=-0.4310 nd<=-0.1888 domQ<=-1.7709 domfar<=-0.0403 rem<=-0.1924  CERTIFIED (0.7s)
+5/8 n=2 th*=-16.722deg ell=1.3071 |w|<=2.87e-05 | B Tref=0.3229 head-T<=-0.2833 nd<=-0.1098 domQ<=-1.7709 domfar<=-0.0403 rem<=-0.1224 | S Tref=0.4706 head-T<=-0.4310 nd<=-0.1888 domQ<=-1.7709 domfar<=-0.0403 rem<=-0.1924  CERTIFIED (0.6s)
+2/9 n=-4 th*=-10.471deg ell=0.9444 |w|<=2.04e-04 | B Tref=0.2167 head-T<=-0.1880 nd<=-0.0798 domQ<=-1.0224 domfar<=-0.0318 rem<=-0.0995  CERTIFIED (0.3s)
+4/9 n=-5 th*=-7.255deg ell=1.3710 |w|<=4.38e-06 | B Tref=0.4636 head-T<=-0.4289 nd<=-0.1214 domQ<=-1.9907 domfar<=-0.0403 rem<=-0.1971  CERTIFIED (0.3s)
+5/9 n=4 th*=7.255deg ell=1.3710 |w|<=4.38e-06 | B Tref=0.4636 head-T<=-0.4289 nd<=-0.1214 domQ<=-1.9907 domfar<=-0.0403 rem<=-0.2056  CERTIFIED (0.3s)
+7/9 n=3 th*=10.471deg ell=0.9444 |w|<=2.04e-04 | B Tref=0.2167 head-T<=-0.1880 nd<=-0.0798 domQ<=-1.0224 domfar<=-0.0318 rem<=-0.0945  CERTIFIED (0.4s)
+3/10 n=-5 th*=-0.000deg ell=1.1744 |w|<=7.94e-06 | B Tref=0.2625 head-T<=-0.2348 nd<=-0.0985 domQ<=-1.3082 domfar<=-0.0403 rem<=-0.0916 | S Tref=0.3612 head-T<=-0.3335 nd<=-0.1496 domQ<=-1.3082 domfar<=-0.0403 rem<=-0.1576  CERTIFIED (0.8s)
+7/10 n=3 th*=-0.000deg ell=1.1744 |w|<=7.94e-06 | B Tref=0.2625 head-T<=-0.2348 nd<=-0.0986 domQ<=-1.3082 domfar<=-0.0403 rem<=-0.0916 | S Tref=0.3612 head-T<=-0.3335 nd<=-0.1496 domQ<=-1.3082 domfar<=-0.0403 rem<=-0.1408  CERTIFIED (0.7s)
+2/11 n=-4 th*=10.489deg ell=0.7713 |w|<=2.07e-04 | B Tref=0.1446 head-T<=-0.1247 nd<=-0.0529 domQ<=-1.3135 domfar<=-0.0211 rem<=-0.0508  CERTIFIED (0.4s)
+3/11 n=-5 th*=-7.355deg ell=1.1062 |w|<=5.19e-06 | B Tref=0.3017 head-T<=-0.2781 nd<=-0.0813 domQ<=-1.8789 domfar<=-0.0403 rem<=-0.1351  CERTIFIED (0.5s)
+4/11 n=-5 th*=6.309deg ell=1.2916 |w|<=6.76e-07 | B Tref=0.4128 head-T<=-0.3871 nd<=-0.1111 domQ<=-1.9901 domfar<=-0.0403 rem<=-0.1735  CERTIFIED (0.4s)
+5/11 n=-6 th*=-5.925deg ell=1.3761 |w|<=2.67e-07 | B Tref=0.4692 head-T<=-0.4425 nd<=-0.1120 domQ<=-1.9966 domfar<=-0.0403 rem<=-0.2216  CERTIFIED (0.4s)
+6/11 n=5 th*=5.925deg ell=1.3761 |w|<=2.67e-07 | B Tref=0.4692 head-T<=-0.4425 nd<=-0.1120 domQ<=-1.9966 domfar<=-0.0403 rem<=-0.2283  CERTIFIED (0.3s)
+7/11 n=4 th*=-6.309deg ell=1.2916 |w|<=6.76e-07 | B Tref=0.4128 head-T<=-0.3871 nd<=-0.1111 domQ<=-1.9901 domfar<=-0.0403 rem<=-0.1801  CERTIFIED (0.4s)
+8/11 n=4 th*=7.355deg ell=1.1062 |w|<=5.19e-06 | B Tref=0.3017 head-T<=-0.2781 nd<=-0.0813 domQ<=-1.8789 domfar<=-0.0403 rem<=-0.1286  CERTIFIED (0.4s)
+9/11 n=3 th*=-10.489deg ell=0.7713 |w|<=2.07e-04 | B Tref=0.1446 head-T<=-0.1247 nd<=-0.0529 domQ<=-1.3135 domfar<=-0.0211 rem<=-0.0534  CERTIFIED (0.5s)
+5/12 n=-6 th*=10.962deg ell=1.3516 |w|<=9.04e-08 | B Tref=0.4091 head-T<=-0.3855 nd<=-0.1702 domQ<=-1.9991 domfar<=-0.0403 rem<=-0.1736 | S Tref=0.4764 head-T<=-0.4528 nd<=-0.1393 domQ<=-1.9991 domfar<=-0.0403 rem<=-0.2444  CERTIFIED (0.8s)
+7/12 n=4 th*=-10.962deg ell=1.3516 |w|<=9.04e-08 | B Tref=0.4091 head-T<=-0.3855 nd<=-0.1702 domQ<=-1.9991 domfar<=-0.0403 rem<=-0.1806 | S Tref=0.4764 head-T<=-0.4528 nd<=-0.1393 domQ<=-1.9991 domfar<=-0.0403 rem<=-0.2444  CERTIFIED (0.9s)
+2/13 n=-5 th*=-11.028deg ell=0.6200 |w|<=3.16e-04 | B Tref=0.0931 head-T<=-0.0789 nd<=-0.0284 domQ<=-0.9615 domfar<=-0.0123 rem<=-0.0306  CERTIFIED (0.6s)
+3/13 n=-5 th*=7.061deg ell=0.9755 |w|<=3.11e-06 | B Tref=0.2349 head-T<=-0.2172 nd<=-0.0590 domQ<=-1.9696 domfar<=-0.0370 rem<=-0.1050  CERTIFIED (0.5s)
+4/13 n=-6 th*=-5.791deg ell=1.1915 |w|<=1.88e-07 | B Tref=0.3519 head-T<=-0.3321 nd<=-0.0804 domQ<=-1.9664 domfar<=-0.0403 rem<=-0.1924  CERTIFIED (0.4s)
+5/13 n=-6 th*=5.234deg ell=1.3191 |w|<=3.57e-08 | B Tref=0.4320 head-T<=-0.4110 nd<=-0.0816 domQ<=-1.9961 domfar<=-0.0403 rem<=-0.2032  CERTIFIED (0.4s)
+6/13 n=-7 th*=-5.008deg ell=1.3790 |w|<=1.64e-08 | B Tref=0.4724 head-T<=-0.4508 nd<=-0.0811 domQ<=-1.9985 domfar<=-0.0403 rem<=-0.2375  CERTIFIED (0.4s)
+7/13 n=6 th*=5.008deg ell=1.3790 |w|<=1.64e-08 | B Tref=0.4724 head-T<=-0.4508 nd<=-0.0811 domQ<=-1.9985 domfar<=-0.0403 rem<=-0.2430  CERTIFIED (0.4s)
+8/13 n=5 th*=-5.234deg ell=1.3191 |w|<=3.57e-08 | B Tref=0.4320 head-T<=-0.4110 nd<=-0.0816 domQ<=-1.9961 domfar<=-0.0403 rem<=-0.2086  CERTIFIED (0.4s)
+9/13 n=5 th*=5.791deg ell=1.1915 |w|<=1.88e-07 | B Tref=0.3519 head-T<=-0.3321 nd<=-0.0804 domQ<=-1.9664 domfar<=-0.0403 rem<=-0.1870  CERTIFIED (0.6s)
+10/13 n=4 th*=-7.061deg ell=0.9755 |w|<=3.11e-06 | B Tref=0.2349 head-T<=-0.2172 nd<=-0.0590 domQ<=-1.9696 domfar<=-0.0370 rem<=-0.1081  CERTIFIED (0.5s)
+11/13 n=4 th*=11.028deg ell=0.6200 |w|<=3.16e-04 | B Tref=0.0931 head-T<=-0.0789 nd<=-0.0284 domQ<=-0.9615 domfar<=-0.0123 rem<=-0.0295  CERTIFIED (0.6s)
+3/14 n=-7 th*=-26.155deg ell=0.9139 |w|<=2.78e-06 | B Tref=0.1949 head-T<=-0.1795 nd<=-0.0736 domQ<=-1.8011 domfar<=-0.0360 rem<=-0.0710 | S Tref=0.2401 head-T<=-0.2247 nd<=-0.0884 domQ<=-1.8011 domfar<=-0.0359 rem<=-0.1041  CERTIFIED (1.2s)
+5/14 n=-7 th*=0.000deg ell=1.2820 |w|<=1.60e-08 | B Tref=0.3689 head-T<=-0.3502 nd<=-0.1575 domQ<=-1.9230 domfar<=-0.0403 rem<=-0.1530 | S Tref=0.4193 head-T<=-0.4005 nd<=-0.1534 domQ<=-1.9230 domfar<=-0.0403 rem<=-0.2005  CERTIFIED (1.0s)
+9/14 n=5 th*=-0.000deg ell=1.2820 |w|<=1.60e-08 | B Tref=0.3689 head-T<=-0.3502 nd<=-0.1575 domQ<=-1.9230 domfar<=-0.0403 rem<=-0.1530 | S Tref=0.4193 head-T<=-0.4005 nd<=-0.1534 domQ<=-1.9230 domfar<=-0.0403 rem<=-0.2062  CERTIFIED (1.1s)
+11/14 n=3 th*=-26.155deg ell=0.9139 |w|<=2.78e-06 | B Tref=0.1949 head-T<=-0.1795 nd<=-0.0680 domQ<=-1.8011 domfar<=-0.0360 rem<=-0.0715 | S Tref=0.2401 head-T<=-0.2247 nd<=-0.1017 domQ<=-1.8011 domfar<=-0.0359 rem<=-0.1082  CERTIFIED (1.2s)
+4/15 n=-6 th*=5.491deg ell=1.0894 |w|<=8.00e-08 | B Tref=0.2944 head-T<=-0.2789 nd<=-0.0609 domQ<=-1.9974 domfar<=-0.0403 rem<=-0.1426  CERTIFIED (0.6s)
+7/15 n=-8 th*=-4.337deg ell=1.3808 |w|<=1.01e-09 | B Tref=0.4744 head-T<=-0.4564 nd<=-0.0554 domQ<=-1.9987 domfar<=-0.0403 rem<=-0.2485  CERTIFIED (0.6s)
+8/15 n=7 th*=4.337deg ell=1.3808 |w|<=1.01e-09 | B Tref=0.4744 head-T<=-0.4564 nd<=-0.0554 domQ<=-1.9987 domfar<=-0.0403 rem<=-0.2532  CERTIFIED (0.6s)
+11/15 n=5 th*=-5.491deg ell=1.0894 |w|<=8.00e-08 | B Tref=0.2944 head-T<=-0.2789 nd<=-0.0609 domQ<=-1.9974 domfar<=-0.0403 rem<=-0.1379  CERTIFIED (0.6s)
+3/16 n=-6 th*=13.814deg ell=0.7985 |w|<=2.83e-06 | B Tref=0.1330 head-T<=-0.1209 nd<=-0.0443 domQ<=-1.6886 domfar<=-0.0239 rem<=-0.0437 | S Tref=0.1704 head-T<=-0.1584 nd<=-0.0652 domQ<=-1.6886 domfar<=-0.0310 rem<=-0.0620  CERTIFIED (1.2s)
+5/16 n=-8 th*=-9.279deg ell=1.2017 |w|<=4.46e-09 | B Tref=0.3341 head-T<=-0.3189 nd<=-0.1427 domQ<=-1.9987 domfar<=-0.0403 rem<=-0.1645 | S Tref=0.3722 head-T<=-0.3570 nd<=-0.1064 domQ<=-1.9987 domfar<=-0.0403 rem<=-0.1659  CERTIFIED (1.2s)
+7/16 n=-8 th*=8.174deg ell=1.3669 |w|<=3.18e-10 | B Tref=0.4401 head-T<=-0.4236 nd<=-0.1744 domQ<=-1.9999 domfar<=-0.0403 rem<=-0.2280 | S Tref=0.4783 head-T<=-0.4618 nd<=-0.1083 domQ<=-1.9999 domfar<=-0.0403 rem<=-0.2686  CERTIFIED (1.2s)
+9/16 n=6 th*=-8.174deg ell=1.3669 |w|<=3.18e-10 | B Tref=0.4401 head-T<=-0.4236 nd<=-0.1744 domQ<=-1.9999 domfar<=-0.0403 rem<=-0.2328 | S Tref=0.4783 head-T<=-0.4618 nd<=-0.1083 domQ<=-1.9999 domfar<=-0.0403 rem<=-0.2686  CERTIFIED (1.0s)
+11/16 n=6 th*=9.279deg ell=1.2017 |w|<=4.46e-09 | B Tref=0.3341 head-T<=-0.3189 nd<=-0.1427 domQ<=-1.9987 domfar<=-0.0403 rem<=-0.1596 | S Tref=0.3722 head-T<=-0.3570 nd<=-0.1064 domQ<=-1.9987 domfar<=-0.0403 rem<=-0.1659  CERTIFIED (1.2s)
+13/16 n=4 th*=-13.814deg ell=0.7985 |w|<=2.83e-06 | B Tref=0.1330 head-T<=-0.1209 nd<=-0.0443 domQ<=-1.6886 domfar<=-0.0239 rem<=-0.0457 | S Tref=0.1704 head-T<=-0.1584 nd<=-0.0652 domQ<=-1.6886 domfar<=-0.0310 rem<=-0.0620  CERTIFIED (1.2s)
+CERT FAILED for 4 of 56 cases: 1/4:B 3/4:B 1/6:B 5/6:B
+exit status 1
+       31.49 real        12.16 user         0.09 sys
+            27656192  maximum resident set size
+== fail-injection: P1I_ETA=0.1 ... P1i_landscape_cert.py 2/13
+2/13 n=-5 th*=-11.028deg ell=0.6200 |w|<=3.16e-04 | B FAILED: 2/13 B head: H_head - h_ref = [-0.078878 +/- 9.31e-8]  NOT CERTIFIED (0.0s)
+CERT FAILED for 1 of 1 cases: 2/13:B
+exit status 1
+== transfer: perl -e 'alarm 290; exec @ARGV' python3 P1i_transfer.py 3 16
+1/3  min certified modulus of Z, Z+, six factors >= 0.4999   omega ~ -2.29096 + 1.06410j
+2/3  min certified modulus of Z, Z+, six factors >= 0.4999   omega ~ -2.29096 - 1.06410j
+1/4  min certified modulus of Z, Z+, six factors >= 0.3099   omega ~ -1.14550 + 1.14550j
+3/4  min certified modulus of Z, Z+, six factors >= 0.3099   omega ~ -1.14550 - 1.14550j
+1/5  min certified modulus of Z, Z+, six factors >= 0.2885   omega ~ -0.388116 + 0.982472j
+2/5  min certified modulus of Z, Z+, six factors >= 0.6430   omega ~ -3.22207 + 0.370471j
+3/5  min certified modulus of Z, Z+, six factors >= 0.6430   omega ~ -3.22207 - 0.370471j
+4/5  min certified modulus of Z, Z+, six factors >= 0.2885   omega ~ -0.388116 - 0.982472j
+1/6  min certified modulus of Z, Z+, six factors >= 0.4479   omega ~ 0.116801 + 0.720522j
+5/6  min certified modulus of Z, Z+, six factors >= 0.4479   omega ~ 0.116801 - 0.720522j
+2/7  min certified modulus of Z, Z+, six factors >= 0.5963   omega ~ -1.73547 + 1.21311j
+3/7  min certified modulus of Z, Z+, six factors >= 0.8973   omega ~ -3.69857 + 0.125432j
+4/7  min certified modulus of Z, Z+, six factors >= 0.8973   omega ~ -3.69857 - 0.125432j
+5/7  min certified modulus of Z, Z+, six factors >= 0.5963   omega ~ -1.73547 - 1.21311j
+3/8  min certified modulus of Z, Z+, six factors >= 0.3754   omega ~ -2.83898 + 0.636854j
+5/8  min certified modulus of Z, Z+, six factors >= 0.3754   omega ~ -2.83898 - 0.636854j
+2/9  min certified modulus of Z, Z+, six factors >= 0.2353   omega ~ -0.700422 + 1.10880j
+4/9  min certified modulus of Z, Z+, six factors >= 0.8563   omega ~ -3.94075 + 0.0716079j
+5/9  min certified modulus of Z, Z+, six factors >= 0.8563   omega ~ -3.94075 - 0.0716079j
+7/9  min certified modulus of Z, Z+, six factors >= 0.2353   omega ~ -0.700422 - 1.10880j
+3/10  min certified modulus of Z, Z+, six factors >= 0.6137   omega ~ -1.91627 + 1.21693j
+7/10  min certified modulus of Z, Z+, six factors >= 0.6137   omega ~ -1.91627 - 1.21693j
+2/11  min certified modulus of Z, Z+, six factors >= 0.4019   omega ~ -0.0953836 + 0.840456j
+3/11  min certified modulus of Z, Z+, six factors >= 0.4919   omega ~ -1.53880 + 1.18766j
+4/11  min certified modulus of Z, Z+, six factors >= 0.3791   omega ~ -2.67200 + 0.761188j
+5/11  min certified modulus of Z, Z+, six factors >= 0.8385   omega ~ -4.05546 + 0.0648277j
+6/11  min certified modulus of Z, Z+, six factors >= 0.8385   omega ~ -4.05546 - 0.0648277j
+7/11  min certified modulus of Z, Z+, six factors >= 0.3791   omega ~ -2.67200 - 0.761188j
+8/11  min certified modulus of Z, Z+, six factors >= 0.4919   omega ~ -1.53880 - 1.18766j
+9/11  min certified modulus of Z, Z+, six factors >= 0.4019   omega ~ -0.0953836 - 0.840456j
+5/12  min certified modulus of Z, Z+, six factors >= 0.9335   omega ~ -3.49710 + 0.209496j
+7/12  min certified modulus of Z, Z+, six factors >= 0.9335   omega ~ -3.49710 - 0.209496j
+2/13  min certified modulus of Z, Z+, six factors >= 0.3909   omega ~ 0.279478 + 0.562215j
+3/13  min certified modulus of Z, Z+, six factors >= 0.2351   omega ~ -0.825930 + 1.12710j
+4/13  min certified modulus of Z, Z+, six factors >= 0.5934   omega ~ -2.00484 + 1.20047j
+5/13  min certified modulus of Z, Z+, six factors >= 0.4253   omega ~ -2.98429 + 0.533682j
+6/13  min certified modulus of Z, Z+, six factors >= 0.8304   omega ~ -4.11268 + 0.0624430j
+7/13  min certified modulus of Z, Z+, six factors >= 0.8304   omega ~ -4.11268 - 0.0624430j
+8/13  min certified modulus of Z, Z+, six factors >= 0.4253   omega ~ -2.98429 - 0.533682j
+9/13  min certified modulus of Z, Z+, six factors >= 0.5934   omega ~ -2.00484 - 1.20047j
+10/13  min certified modulus of Z, Z+, six factors >= 0.2351   omega ~ -0.825930 - 1.12710j
+11/13  min certified modulus of Z, Z+, six factors >= 0.3909   omega ~ 0.279478 - 0.562215j
+3/14  min certified modulus of Z, Z+, six factors >= 0.2461   omega ~ -0.591385 + 1.07755j
+5/14  min certified modulus of Z, Z+, six factors >= 0.3988   omega ~ -2.58113 + 0.832569j
+9/14  min certified modulus of Z, Z+, six factors >= 0.3988   omega ~ -2.58113 - 0.832569j
+11/14  min certified modulus of Z, Z+, six factors >= 0.2461   omega ~ -0.591385 - 1.07755j
+4/15  min certified modulus of Z, Z+, six factors >= 0.4410   omega ~ -1.43843 + 1.17470j
+7/15  min certified modulus of Z, Z+, six factors >= 0.8261   omega ~ -4.14505 + 0.0585431j
+8/15  min certified modulus of Z, Z+, six factors >= 0.8261   omega ~ -4.14505 - 0.0585431j
+11/15  min certified modulus of Z, Z+, six factors >= 0.4410   omega ~ -1.43843 - 1.17470j
+3/16  min certified modulus of Z, Z+, six factors >= 0.3611   omega ~ -0.187393 + 0.882329j
+5/16  min certified modulus of Z, Z+, six factors >= 0.5787   omega ~ -2.05929 + 1.18408j
+7/16  min certified modulus of Z, Z+, six factors >= 0.8726   omega ~ -3.84169 + 0.0868367j
+9/16  min certified modulus of Z, Z+, six factors >= 0.8726   omega ~ -3.84169 - 0.0868367j
+11/16  min certified modulus of Z, Z+, six factors >= 0.5787   omega ~ -2.05929 - 1.18408j
+13/16  min certified modulus of Z, Z+, six factors >= 0.3611   omega ~ -0.187393 - 0.882329j
+TRANSFER CERT PASSED: 56 cases, 3<=N<=16, [0.143, 0.857], min modulus >= 0.2351
+exit status 0
+== closing runs without the N=4, N=6 B-failures (python exit status must be 0):
+-- range 3 3
+ALL CERTIFIED: 2 cases
+python exit status 0
+-- range 5 5
+ALL CERTIFIED: 4 cases
+python exit status 0
+-- range 7 16
+ALL CERTIFIED: 46 cases
+python exit status 0
+== VERIFIED (floating, not a certificate): ../P1f/P1f_zeros.py a N j...
+1/3 tie pair (-2,-1) theta*=-22.8517 deg  T=0.333498  |dV|=1.41191  Re(dV e^{-i th})=-1.25e-31
+  j=4 t0=(0.058105039 - 0.02357327j) |t0|=0.0627 arg=-22.082  t*=(0.05812690828 - 0.02359440244j)  |1/t*-u0|*|dV|=0.01092  |t*-t0|/|t0|^2=0.007735
+  j=8 t0=(0.027378575 - 0.011333962j) |t0|=0.02963 arg=-22.488  t*=(0.02738084779 - 0.01133622813j)  |1/t*-u0|*|dV|=0.005161  |t*-t0|/|t0|^2=0.003656
+  j=16 t0=(0.013305434 - 0.0055589072j) |t0|=0.01442 arg=-22.675  t*=(0.01330569397 - 0.005559170526j)  |1/t*-u0|*|dV|=0.002514  |t*-t0|/|t0|^2=0.001781
+2/13 tie pair (-5,-4) theta*=-11.0284 deg  T=0.0931249  |dV|=0.152644  Re(dV e^{-i th})=-7.51e-33
+  j=4 t0=(0.0058864592 - 0.0010921576j) |t0|=0.005987 arg=-10.511  t*=(0.00588664302 - 0.001092227164j)  |1/t*-u0|*|dV|=0.0008368  |t*-t0|/|t0|^2=0.005482
+  j=8 t0=(0.0029618979 - 0.00056328771j) |t0|=0.003015 arg=-10.768  t*=(0.002961921272 - 0.0005632968582j)  |1/t*-u0|*|dV|=0.0004216  |t*-t0|/|t0|^2=0.002762
+1/5 tie pair (-2,-1) theta*=20.1774 deg  T=0.163583  |dV|=0.572271  Re(dV e^{-i th})=-1.08e-31
+  j=4 t0=(0.020468855 + 0.0079095361j) |t0|=0.02194 arg=21.127  t*=(0.02047195352 + 0.007912392253j)  |1/t*-u0|*|dV|=0.005007  |t*-t0|/|t0|^2=0.008752
+  j=8 t0=(0.010456285 + 0.0039430084j) |t0|=0.01118 arg=20.661  t*=(0.01045670047 + 0.00394337668j)  |1/t*-u0|*|dV|=0.002545  |t*-t0|/|t0|^2=0.004448
+  j=16 t0=(0.0052851179 + 0.0019677798j) |t0|=0.00564 arg=20.422  t*=(0.005285171746 + 0.001967826527j)  |1/t*-u0|*|dV|=0.001283  |t*-t0|/|t0|^2=0.002242
+
+1/6 (N=6, NOT certified): tie pair (-3,-1) theta*=0 T=-0.108779; j=4,8,12: |1/t*-u0|*|dV| = 0.1915, 0.03186, 0.008248
