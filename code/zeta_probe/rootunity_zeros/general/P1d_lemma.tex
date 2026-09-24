@@ -1,0 +1,283 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\title{P1d: Lemma (1$''$) --- a single-saddle main term, a certified corrected lemma,\\ and a counterexample to the $N$-uniform version\\ \small research programme P1, fourth atom, 2026-09-24}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Outcome.}
+\begin{enumerate}
+\item[(a)] \textbf{Lemma (1$''$) as stated is FALSE} (Proposition~\ref{prop:false}). No seed and no radius $r>0$ can satisfy it for \emph{all} $N\ge151$.
+The obstruction is a \emph{deep rational} $j/n_0$ with $n_0$ odd inside the neighbourhood. Along $x_N=j/n_0\pm1/(n_0N)$, $|\Sigma_N|/\sqrt N$ drifts exponentially to $0$ on one side and to $\infty$ on the other.
+Two worked cases are given, with rigorous (Arb) enclosures of the main term:
+\begin{itemize}
+\item $j/n_0=2/21$, which any covering of $\ell\ge0.107$ must cover. There $|\Sigma_N|/\sqrt N\approx4\cdot10^{-10}$ at $N\approx10^8$.
+\item $j/n_0=18/53$, at distance $1/159$ from the pilot seed $1/3$. There $|\Sigma_N|/\sqrt N\approx5\cdot10^{-36}$ at $N\approx10^{91}$.
+\end{itemize}
+So the reduction ``Lemma (1$''$) $\Rightarrow$ no induction needed'' of P1c does not hold.
+\item[(b)] \textbf{PROVED (computer-assisted, Arb):} the corrected Lemma (1$''$-$\Delta$) (Theorem~\ref{thm:main}) for all 22 seeds $q\le12$, on both sides of each seed and for all residue classes of $N$ mod~4. The statement carries an explicit ``deep-rational'' hypothesis $\Delta_N(x)\le\Delta_0$, and this hypothesis holds automatically for $151\le N\le N^*$, with $N^*\ge10^{10}$ in every case.
+The radii obtained are small, $r\approx 8\cdot10^{-3}$ at $1/2$ and decreasing towards the arc edge (Table~\ref{tab:cert}).
+\item[(c)] New structural tools. The first is a Fresnel-contour representation with a \emph{single} saddle (Theorem~\ref{thm:fresnel}), which replaces the $2|\theta|$ saddles of P1a. The second is an $O(1)$-cost evaluation of $\Sigma_N$ near a rational at any $N$, used for (a). Theorem~\ref{thm:gauss} is S0\_lemma's Lemma~gauss, restated and completed for $N\equiv2\pmod4$.
+\end{enumerate}
+Labels: PROVED = complete proof here, where ``computer-assisted'' means the proof reduces to finitely many Arb ball-arithmetic inequalities, checked by the named script. VERIFIED = high-precision numerics, not a proof. HEURISTIC = argument without error control.
+
+\section{Setting}
+Let $N\ge151$, $\gcd(a,N)=1$, $x=a/N$ and $\zeta=\e(x)$, where $\e(y):=e^{2\pi i y}$. Put $c=-2(1-\zeta)$ and $\ell=\log|c|$, and assume $\ell\ge0.02$.
+Let $w$ be the root of $c^Nw=(1-w)^2$ with $|w|<1$, and $\lambda=(1-w)^{1/N}$ (principal branch).
+Let $n_0=1$ if $N\equiv2\ (4)$ and $n_0=0$ otherwise, and put $\varepsilon=\e(-n_0/N)$. Define
+\[u_0=\lambda^2/c,\qquad u=\varepsilon u_0,\qquad \Sigma_N(x)=\sum_{r=0}^{N-1}\zeta^{r^2}\frac{(\varepsilon\lambda^2)^r}{(\zeta u;\zeta)_{2r}}\]
+as in S0\_lemma and P1a. By S0\_lemma, $S_0=K\Sigma_N$ with $K\neq0$.
+
+\begin{lemma}[W, PROVED]\label{lem:W}
+$|w|\le2|c|^{-N}$. Consequently $|\lambda^2-1|\le 0.1\,e^{-151\ell}$ and $|u_0|<1$.
+\end{lemma}
+\begin{proof}
+Put $X=c^N$, so $|X|\ge e^{151\ell}\ge e^{3}$. The map $T(w)=(1-w)^2/X$ sends the disc $|w|\le2/|X|$ into itself, because $(1+2/|X|)^2\le2$. It is a contraction there, since $|T'|\le2(1+2/|X|)/|X|<1$. So it has a fixed point in the disc.
+The two roots of $w^2-(2+X)w+1$ have product~$1$, so this fixed point is \emph{the} root with $|w|<1$.
+Then $|\mathrm{Log}(1-w)|\le1.1|w|$, which gives $|\lambda^2-1|\le e^{2.2|w|/N}-1\le 4.6|c|^{-N}/N\le0.1e^{-151\ell}$.
+\end{proof}
+
+\section{Exact reductions}
+\begin{theorem}[Gauss factorisation; PROVED, and VERIFIED to $10^{-66}$]\label{thm:gauss}
+Put $\Phi(Y)=\sum_{n\ge1,\ N\nmid n}\dfrac{u_0^n}{n}\,\dfrac{Y^n}{1-\zeta^{-n}}$, which converges for $|Y|<1/|u_0|$, and write $e^{\Phi(Y)}=\sum_{n\ge0}\psi_nY^n$. Then, for every residue class of $N$ mod $4$,
+\[\Sigma_N=G^*_N\,e^{-\Phi(\varepsilon)}\,Z_N,\qquad Z_N:=\sum_{n\ge0}\psi_n\zeta^{-n^2},\qquad G^*_N:=\sum_{r\bmod N}\e\Big(\frac{ar^2-n_0r}{N}\Big),\]
+with $|G^*_N|=\sqrt N$ for $N$ odd and $|G_N^*|=\sqrt{2N}$ for $N$ even. In particular $\Sigma_N\ne0\iff Z_N\ne0$.
+\end{theorem}
+\begin{proof}
+Since $|u|<1$, we have $\log(\zeta u;\zeta)_{2r}=-\sum_n\frac{u^n}{n}\sum_{i=1}^{2r}\zeta^{in}$.
+\begin{itemize}
+\item For $N\mid n$ the inner sum is $2r$. Since $u^N=\lambda^{2N}c^{-N}=w$, these terms contribute $\frac{2r}N\mathrm{Log}(1-w)$, that is, the factor $\lambda^{2r}$.
+\item For $N\nmid n$ the inner sum is $\zeta^n(\zeta^{2rn}-1)/(\zeta^n-1)$.
+\end{itemize}
+Hence $T_r=\zeta^{r^2}\varepsilon^r\exp(\Phi(\varepsilon\zeta^{2r})-\Phi(\varepsilon))$. The $\varepsilon$ enters $\Phi$ through $u^n=\varepsilon^nu_0^n$.
+Expand $e^{\Phi(\varepsilon\zeta^{2r})}=\sum_n\psi_n\varepsilon^n\zeta^{2rn}$. This converges absolutely, since $|\varepsilon\zeta^{2r}|=1<1/|u_0|$.
+The summand $r\mapsto\e((ar^2+2anr-n_0r)/N)$ is $N$-periodic, so shifting $r\to r-n$ gives $\sum_r(\cdots)=\zeta^{-n^2}\varepsilon^{-n}G^*_N$, and the factor $\varepsilon^{n}\varepsilon^{-n}$ cancels.
+
+For the Gauss sums: $N$ odd and $4\mid N$ are classical. For $N=2M$ with $M$ odd, CRT with $\frac1{2M}\equiv\frac{1}{2}+\frac{\bar2}{M}\pmod 1$ factors $G^*$ as
+\[\Big(\sum_{r\bmod 2}\e(\tfrac{ar^2-r}{2})\Big)\cdot\Big(\sum_{r\bmod M}\e(\tfrac{\bar2(ar^2-r)}{M})\Big)=2\cdot(\text{a Gauss sum of modulus }\sqrt M),\]
+since $a$ is odd.
+\end{proof}
+
+\begin{remark}
+For $N$ odd or $4\mid N$ this is Lemma~gauss of S0\_lemma.tex (there in the $S_0$ normalisation, with $\Psi=Z_N$). What is new is the class $N\equiv2\ (4)$. There the twist $\varepsilon$ cancels exactly, so $Z_N$ is the same object in all classes, and the empirical ``SGN'' twist rule of P1b is explained.
+VERIFIED: \texttt{P1d\_factor.py} checks the theorem against the direct Arb value of $\Sigma_N$ in all four classes, with maximal relative difference $8\cdot10^{-66}$.
+\end{remark}
+
+\begin{lemma}[conjugation, PROVED]\label{lem:conj}
+$Z_N((N-a)/N)=\overline{Z_N(a/N)}$. Every ingredient of $Z_N$ ($\zeta,c,w,\lambda,u_0,\psi_n$) is conjugated, and $\varepsilon$ does not enter $Z_N$.
+\end{lemma}
+
+\section{The single-saddle representation}
+Fix a seed $p/q$ and write $x=p/q+d$ with $d>0$; the case $d<0$ follows from Lemma~\ref{lem:conj} applied to the seed $(q-p)/q$.
+Put $\zeta_0=\e(p/q)$, $U=u_0^q$, $W(t)=U\e(-qt)$, and
+\[\gamma_k=\frac1q\sum_{\nu\bmod q}\zeta_0^{-\nu^2-k\nu},\qquad L(t)=\frac{\mathrm{Li}_2(W(t))}{2\pi i q^2},\qquad F(t)=\frac{\pi i t^2}2+L(t),\]
+so that $\zeta_0^{-n^2}=\sum_k\gamma_k\zeta_0^{kn}$ for all $n$.
+Let $\eta>0$ with $|u_0|e^{2\pi\eta}<1$.
+Let $\Gamma$ be the contour that comes from $\infty\cdot e^{i(\pi+\alpha)}$ along a ray with direction $e^{i\alpha}$, $0<\alpha<\pi/2$, up to height $\operatorname{Im}t=\eta$, and then runs horizontally to $+\infty+i\eta$.
+
+\begin{theorem}[Fresnel representation; PROVED]\label{thm:fresnel}
+\[Z_N=\frac{e^{-i\pi/4}}{\sqrt{2d}}\sum_{k\bmod q}\gamma_k\,J_k,\qquad J_k=\int_\Gamma e^{\pi i t^2/(2d)}\,e^{\Phi(\zeta_0^k\e(-t))}\,dt.\]
+\end{theorem}
+\begin{proof}
+For every $n$, completing the square and applying the Fresnel integral along the shifted contour $\Gamma-2dn$ gives $\int_\Gamma e^{\pi it^2/(2d)}\e(-nt)\,dt=\sqrt{2d}\,e^{i\pi/4}\e(-dn^2)$. The integrand decays in both end-sectors: in the third quadrant $|e^{\pi i t^2/2d}|=e^{-\pi\operatorname{Im}(t^2)/2d}$, and on the horizontal end it is $e^{-\pi\eta\operatorname{Re}t/d}$.
+On $\Gamma$ we have $|\e(-nt)|\le e^{2\pi n\eta}$, and $\sum|\psi_n|e^{2\pi n\eta}<\infty$ because $e^\Phi$ is analytic on $|Y|<1/|u_0|$. So Fubini applies, and
+\[\sum_n\psi_n\zeta_0^{-n^2}\e(-dn^2)=\frac{e^{-i\pi/4}}{\sqrt{2d}}\int_\Gamma e^{\pi it^2/2d}\sum_k\gamma_k e^{\Phi(\zeta_0^k\e(-t))}\,dt.\]
+Finally $\zeta^{-n^2}=\zeta_0^{-n^2}\e(-dn^2)$.
+\end{proof}
+Unlike P1a, there is exactly one saddle, $t_0\approx -iU/(\pi q)$. The $2|\theta|$ saddles of P1a have been summed into $G^*_N$ exactly.
+
+\begin{lemma}[decomposition of $\Phi$; PROVED]\label{lem:dec}
+Let $n_2\ge q$, $0<d\le r\le 1/(2n_2)$, and $m_c=\lfloor1/(2qd)\rfloor$. Split $\{n\ge1:N\nmid n\}$ into three sets:
+\begin{itemize}
+\item $M=\{qm:1\le m\le m_c\}$;
+\item $A=\{n\le n_2:q\nmid n\}$;
+\item $T$, the rest.
+\end{itemize}
+Then, with $c_n=\frac{u_0^n}{n(1-\zeta^{-n})}$,
+\[\Phi(\zeta_0^k\e(-t))=\frac{L(t)}d+B_k(t)+\epsilon_k(t),\qquad B_k(t)=-\frac{\log(1-W)}{2q}+\sum_{n\in A}c_n\zeta_0^{kn}\e(-nt),\]
+\[|\epsilon_k(t)|\le d\,K_E(|W|)+\Delta_N(x;e^{2\pi\operatorname{Im}t}),\qquad K_E(w)=\big(\tfrac{2\pi}9+\tfrac2\pi+1\big)\frac{w}{1-w},\qquad
+\Delta_N(x;\rho):=\sum_{n\in T}\frac{(|u_0|\rho)^n}{n\,|1-\zeta^{-n}|}.\]
+\end{lemma}
+\begin{proof}
+For $n=qm\in M$ we have $\zeta^{-qm}=\e(-qmd)$ and $Y^{qm}=\e(-qmt)$. Use
+\[\frac1{1-e^{-z}}=\frac1z+\frac12+\beta(z),\qquad \beta(z)=\sum_{j\ge1}\frac{B_{2j}z^{2j-1}}{(2j)!},\qquad |\beta(z)|\le\frac{|z|}{9}\ \text{ for }|z|\le\pi,\]
+where the bound comes from $|B_{2j}|/(2j)!=2\zeta(2j)/(2\pi)^{2j}\le 2\zeta(2)/(2\pi)^{2j}$. Take $z=2\pi iqmd$, so that $|z|\le\pi$.
+The terms $1/z$ and $\frac12$ sum to $\mathrm{Li}_2/(2\pi iq^2d)$ and $-\frac1{2q}\log(1-W)$, minus tails over $m>m_c$. These tails are bounded using $m_c+1\ge1/(2qd)$ and $|W|^{m_c+1}\le|W|$.
+Since $d\le1/(2n_2)$, no $n\le n_2$ with $q\mid n$ lies outside $M$. For $n\in M$ we have $|1-\zeta^{-n}|\ge4qmd>0$, so $N\nmid n$.
+\end{proof}
+
+\begin{definition}[single-saddle main term]\label{def:main}
+Let $t_0$ be the zero of $F'(t)=\pi it+\frac1q\log(1-W)$ in the Krawczyk ball $B^*$ printed by the certificate; it is unique there.
+Put $A=|F''(t_0)|/2$, where $F''=\pi i\frac{1+W}{1-W}$, and $\alpha=\frac12(\pi-\arg F''(t_0))$. Define
+\[\mathrm{Main}'_Z(x)=e^{i(\alpha-\pi/4)}\sqrt{\frac{\pi}{2A}}\;e^{F(t_0)/d}\,S_{\rm amp},\qquad S_{\rm amp}=\sum_k\gamma_k e^{B_k(t_0)},\qquad
+\mathrm{Main}'_N(x)=G^*_Ne^{-\Phi(\varepsilon)}\mathrm{Main}'_Z(x).\]
+For $d<0$, set $\mathrm{Main}'_Z(x):=\overline{\mathrm{Main}'_{Z,(q-p)/q}(1-x)}$. VERIFIED: this equals the direct $d<0$ formula with $\alpha=-\frac12\arg F''$, to 40 digits.
+\end{definition}
+
+\begin{lemma}[Laplace remainder; PROVED]\label{lem:lap}
+Let $v_0\le v_1$ with $K_3v_0\le A/2$. Here $K_3=\sup|L'''|/6$ and $K_4=\sup|L''''|/24$ on the core segment $t_0+e^{i\alpha}[-v_0,v_0]$, where
+\[L'''=4\pi^2q\,\frac{W}{(1-W)^2},\qquad |L''''|=8\pi^3q^2\,\frac{|W||1+W|}{|1-W|^3}.\]
+On the same segment let $B_m,B_d,K_b$ bound $|b|$, $|b'|$ and $|b''|/2$ for $b=e^{B_k}$.
+Let $\delta_c=dK_E(w_{\rm seg})+\Delta_0$ and $\delta_\eta=dK_E(w_\eta)+\Delta_1$, where $w_\eta=|U|e^{2\pi q\eta}$.
+Let $A'=A-\tfrac12(S_2+|L''(t_0)|)$ with $S_2=2\pi w_\eta/(1-w_\eta)$, and let $\beta_\eta=\sup_{\operatorname{Im}t\le\eta}|e^{B_k}|$.
+Let $X_1$ be the abscissa where $\Gamma$ turns, and $\mathrm{gap}=\pi\eta X_1-C_0$ with
+$C_0=\frac{\mathrm{Li}_2(w_\eta)}{2\pi q^2}+\pi\operatorname{Re}t_0\operatorname{Im}t_0-\operatorname{Re}L(t_0)$. Then
+\[\frac{|J_k-\mathrm{Main}_k|}{\sqrt{\pi d/A}\,|e^{F(t_0)/d}|}\le r_1+\dots+r_5,\qquad \mathrm{Main}_k=e^{i\alpha}\sqrt{\pi d/A}\,e^{F(t_0)/d}e^{B_k(t_0)},\]
+where
+\begin{align*}
+r_1&=d\Big[\frac{K_b}{2A}+\frac{3(|b_0|K_4+K_3B_d)}{4A^2}+\frac{15\cdot2^{7/2}}{16}\frac{K_3^2B_m}{A^3}\Big],\qquad r_2=|b_0|\,\mathrm{erfc}(v_0\sqrt{A/d}),\\
+r_3&=(e^{\delta_c}-1)\sqrt2\,B_m,\qquad r_4=\sqrt{A/A'}\,\mathrm{erfc}(v_0\sqrt{A'/d})\,\beta_\eta e^{\delta_\eta},\\
+r_5&=\frac{\sqrt{dA/\pi}}{\pi\eta}\,e^{-\mathrm{gap}/d}\,\beta_\eta e^{\delta_\eta}.
+\end{align*}
+Hence $|Z_N/\mathrm{Main}'_Z-1|\le\sum_k|\gamma_k|(r_1+\dots+r_5)/|S_{\rm amp}|$.
+\end{lemma}
+\begin{proof}
+On the ray, $t=t_0+e^{i\alpha}v$. The quadratic part of $F$ is exact, so
+\[(F(t)-F(t_0))/d=-Av^2/d+\psi(v)/d,\qquad \psi=L-(\text{its Taylor polynomial of degree 2 at }t_0),\]
+with $|\psi|\le K_3|v|^3$ and $\psi=c_3v^3+\psi_4$, $|\psi_4|\le K_4v^4$.
+
+\emph{Core $|v|\le v_0$.} Write
+\[e^{\psi/d}b-b_0=b_1v+b_0c_3v^3/d+R,\qquad |R|\le K_bv^2+|b_0|K_4v^4/d+K_3B_dv^4/d+\tfrac12(K_3|v|^3/d)^2e^{K_3|v|^3/d}B_m.\]
+The odd terms integrate to $0$ over $[-v_0,v_0]$. Since $K_3v_0\le A/2$, we have $e^{-Av^2/d}e^{K_3|v|^3/d}\le e^{-Av^2/2d}$. The Gaussian moments then give $r_1$.
+The Gaussian tail of $\mathrm{Main}_k$ gives $r_2$. The factor $e^{\epsilon}-1$ gives $r_3$, via Lemma~\ref{lem:dec}.
+
+\emph{Outer ray.} $|L(t)-L(t_0)-L'(t_0)(t-t_0)|\le\frac12\sup|L''||t-t_0|^2$, so $\operatorname{Re}(F-F_0)/d\le-A'v^2/d$. This gives $r_4$.
+
+\emph{Horizontal part.} $\operatorname{Re}F(X+i\eta)=-\pi\eta X+\operatorname{Re}L$ and $|L|\le\mathrm{Li}_2(w_\eta)/(2\pi q^2)$. Integrating from $X_1$ to $\infty$ gives $r_5$.
+
+All bounds increase in $d$ for $d\le2\,\mathrm{gap}$, so on each piece $d\in[d_{\rm lo},d_{\rm hi}]$ they are evaluated at $d_{\rm hi}$.
+\end{proof}
+
+\section{The corrected lemma}
+\begin{theorem}[Lemma (1$''$-$\Delta$); PROVED, computer-assisted]\label{thm:main}
+For each seed $p/q$ with $q\le12$ and $\ell(p/q)\ge0.02$ (the 22 seeds of P1c), and each side, Table~\ref{tab:cert} gives $r>0$, $B<1$, $n_2$ and $N^*$ such that the following holds.
+
+For every $N\ge151$ in every residue class mod~4, and every $a$ with $\gcd(a,N)=1$ and $0<|a/N-p/q|\le r$, if $\Delta_N(a/N;\rho_{\rm core})\le10^{-3}$ and $\Delta_N(a/N;\rho_\eta)\le1$, then
+\[\Big|\frac{\Sigma_N(a/N)}{\mathrm{Main}'_N(a/N)}-1\Big|\le B.\]
+Here $\rho_{\rm core}\le\rho_\eta=e^{2\pi\eta}$.
+Both $\Delta$-hypotheses hold automatically when $N\le N^*$, since $|1-\zeta^{-n}|\ge4\|na/N\|\ge4/N$.
+In particular $\Sigma_N\ne0$, and hence $S_0\ne0$, for all such $(a,N)$ with $N\le N^*$.
+\end{theorem}
+\begin{proof}
+Combine Theorems~\ref{thm:gauss} and~\ref{thm:fresnel} with Lemmas~\ref{lem:W}, \ref{lem:conj}, \ref{lem:dec} and~\ref{lem:lap}.
+Every constant is an Arb enclosure valid simultaneously for all $x$ in a piece $[p/q+d_{\rm lo},p/q+d_{\rm hi}]$; six geometric pieces cover $(0,r]$.
+The script \texttt{P1d\_cert.py} carries out the following steps:
+\begin{itemize}
+\item encloses $u_0$, with the $\lambda$-uncertainty of Lemma~\ref{lem:W};
+\item checks $|1-\zeta^{-n}|>0$ for $n\in A$ (no rational of height $\le n_2$ in the piece);
+\item encloses $t_0$ by Krawczyk inside $B^*$;
+\item bounds $K_3$, $K_4$, $B_m$, $B_d$, $K_b$ on 32 sub-balls of the core segment;
+\item checks $K_3v_0\le A/2$, $A'>0$, $\mathrm{gap}>0$, $d_{\rm hi}\le2\,\mathrm{gap}$ and $|S_{\rm amp}|>0$;
+\item outputs $B=\max\sum_k|\gamma_k|\sum r_i/|S_{\rm amp}|$ and $N^*$.
+\end{itemize}
+\end{proof}
+
+\begin{table}[h]\centering\small
+\caption{Certified constants (\texttt{P1d\_all.py}, reproducible with \texttt{P1d\_cert.py} and the printed arguments). The side $d<0$ of $p/q$ is the row $(q-p)/q$. Search target: $B<0.9$ and $N^*\ge10^{10}$.}\label{tab:cert}
+\begin{tabular}{lllll}\toprule
+seed (side $d>0$) & $r$ & $B\le$ & $n_2$ & $N^*\ge$\\\midrule
+1/2 & 0.0084127 & 0.8961 & 58 & 2.91e+21\\
+1/3 & 0.0062882 & 0.8674 & 52 & 4.16e+16\\
+2/3 & 0.0062882 & 0.8854 & 52 & 5.96e+16\\
+1/4 & 0.0052237 & 0.8941 & 46 & 1.62e+12\\
+3/4 & 0.004895 & 0.8739 & 50 & 8.37e+12\\
+1/5 & 0.002751 & 0.8962 & 71 & 9.14e+15\\
+2/5 & 0.0064028 & 0.2850 & 30 & 1.1e+10\\
+3/5 & 0.0061314 & 0.2615 & 31 & 1.98e+10\\
+4/5 & 0.0025779 & 0.8789 & 76 & 2.09e+16\\
+1/6 & 0.0018294 & 0.8867 & 90 & 1.97e+16\\
+5/6 & 0.0017143 & 0.8700 & 96 & 8.14e+16\\
+1/7 & 0.00065763 & 0.8858 & 216 & 8.48e+30\\
+2/7 & 0.0038848 & 0.1963 & 35 & 1.03e+10\\
+3/7 & 0.005038 & 0.8667 & 27 & 1.75e+11\\
+4/7 & 0.005038 & 0.8590 & 27 & 1.48e+11\\
+5/7 & 0.0038016 & 0.1909 & 36 & 1.29e+10\\
+6/7 & 0.00062975 & 0.8572 & 225 & 4.55e+31\\
+1/8 & 0.00023591 & 0.8993 & 250 & 7e+27\\
+3/8 & 0.0045871 & 0.6138 & 26 & 2.01e+10\\
+5/8 & 0.0045871 & 0.6169 & 26 & 1.56e+10\\
+7/8 & 0.00022591 & 0.8673 & 250 & 4.27e+27\\
+1/9 & 8.1841e-05 & 0.8983 & 250 & 9.79e+20\\
+2/9 & 0.0025079 & 0.2097 & 43 & 1.55e+10\\
+4/9 & 0.0037037 & 0.4342 & 29 & 1.84e+12\\
+5/9 & 0.0037037 & 0.4270 & 29 & 1.66e+12\\
+7/9 & 0.0024541 & 0.2075 & 44 & 1.62e+10\\
+8/9 & 7.5049e-05 & 0.8848 & 250 & 5.75e+19\\
+1/10 & 1.7186e-05 & 0.8631 & 250 & 2.06e+18\\
+3/10 & 0.003 & 0.4329 & 32 & 3.25e+11\\
+7/10 & 0.003 & 0.4306 & 32 & 2.33e+11\\
+9/10 & 1.6818e-05 & 0.8578 & 250 & 1.96e+18\\
+2/11 & 0.0016788 & 0.3182 & 53 & 1.74e+10\\
+3/11 & 0.0024793 & 0.5432 & 35 & 7.74e+11\\
+4/11 & 0.0024793 & 0.1870 & 35 & 1.2e+14\\
+5/11 & 0.0024793 & 0.1333 & 35 & 1.22e+15\\
+6/11 & 0.0024793 & 0.1298 & 35 & 1.14e+15\\
+7/11 & 0.0024793 & 0.1899 & 35 & 9.85e+13\\
+8/11 & 0.0024793 & 0.5490 & 35 & 5.52e+11\\
+9/11 & 0.0016429 & 0.3161 & 54 & 1.54e+10\\
+5/12 & 0.0020833 & 0.0514 & 39 & 3.96e+16\\
+7/12 & 0.0020833 & 0.0513 & 39 & 3.55e+16\\
+2/21 & 3.6535e-05 & 0.8714 & 250 & 1e+10\\
+19/21 & 3.6535e-05 & 0.8632 & 250 & 2.39e+10\\
+18/53 & 0.0001068 & 0.0154 & 175 & 4.87e+69\\
+35/53 & 0.0001068 & 0.0156 & 175 & 4.64e+69\\
+1/11, 10/11 & --- & \multicolumn{3}{l}{not certified: $A'\le0$ since $|U|=0.27$ (OPEN)}\\
+\bottomrule\end{tabular}
+\end{table}
+
+\begin{remark}[sharpness, VERIFIED]
+\texttt{P1d\_check.py} gives $|Z_N/\mathrm{Main}'_Z-1|=K|d|(1+o(1))$ with $K$ independent of $N$ and of $N$ mod~4. For example: $K(1/2)=0.46$, $K(2/5)=0.45$, $K(3/8)=0.78$, $K(1/3)=0.87$, $K(2/7)=1.35$, $K(3/10)=1.53$, $K(1/4)=2.2$.
+End to end, \texttt{P1d\_sanity.py} computes $\Sigma_N$ directly (Arb) and $\mathrm{Main}'_N$ from Definition~\ref{def:main}. At the seed $1/3$ it finds $|\Sigma_N/\mathrm{Main}'_N-1|=0.87|d|$ to 3 digits for $N\in\{400,\dots,2007\}$ in all four classes mod~4.\\ The certified $r_1$ is about $50K|d|$, so the radii in Table~\ref{tab:cert} are limited by the crude straight-ray geometry, not by the truth. The binding constraint is $\operatorname{Im}t<-\log|U|/(2\pi q)$, i.e.\ the Li$_2$ branch point.
+The radii shrink as $\ell\to0$ because $|U|=|u_0|^q\to1$.
+\end{remark}
+
+\section{Lemma (1$''$) as stated is false}
+\begin{proposition}\label{prop:false}
+\begin{enumerate}
+\item[(i)] (PROVED, computer-assisted.) Let $j/n_0\in\{2/21,\ 18/53\}$ and $x_N=j/n_0+\theta/(n_0N)$ with $\theta=\pm1$. Then
+\[\frac{|\Sigma_N(x_N)|}{\sqrt N}=\frac{|G^*_N|}{\sqrt N}\,P(N)\,(1+\vartheta B_{j/n_0}),\qquad |\vartheta|\le1,\qquad P(N)=|e^{-\Phi(\varepsilon)}\mathrm{Main}'_{Z,j/n_0}(x_N)|,\]
+by Theorem~\ref{thm:main} applied at the seed $j/n_0$. Its $\Delta$-hypotheses hold along $x_N$ for all $N$: for $n_0\nmid n$ and $n<N/2$ one has $\|nx_N\|\ge1/(2n_0)$, and the multiples of $n_0$ below $n_0N/2$ lie in $M$.
+$P(N)$ is enclosed in Arb by \texttt{P1d\_drift.py}:
+\begin{center}\small
+\begin{tabular}{llll}\toprule
+$j/n_0$ & $N$ & $\theta=+1$ & $\theta=-1$\\\midrule
+$2/21$ & $10^4$ & 7.32 & 5.16\\
+$2/21$ & $10^7$ & 76.9 & 0.492\\
+$2/21$ & $10^8$ & $8.6\cdot10^{10}$ & $4.4\cdot10^{-10}$\\
+$18/53$ & $10^{40}$ & 1.84 & 1.30\\
+$18/53$ & $10^{90}$ & 6558 & $5.1\cdot10^{-4}$\\
+$18/53$ & $10^{91}$ & $6.2\cdot10^{35}$ & $5.5\cdot10^{-36}$\\\bottomrule
+\end{tabular}
+\end{center}
+(The table lists $|G^*|P/\sqrt N$. The certificates for the seeds $2/21$, $19/21$, $18/53$ and $35/53$ are in Table~\ref{tab:cert}.)
+\item[(ii)] (VERIFIED.) For any seed $p/q\ne j/n_0$, P1a's multi-saddle main term satisfies $m\le|\mathrm{Main}_{p/q}(x)|/\sqrt N\le M$ for $x$ near $j/n_0$. It is a smooth nonvanishing function of $x$ times a Gauss sum of length $2|\theta|$, and P1b evaluated the modulus of that Gauss sum. Hence $\Sigma_N/\mathrm{Main}_{p/q}\to0$ along one side, and $\to\infty$ along the other.
+So Lemma (1$''$) fails at any seed whose neighbourhood contains $2/21$; one of the seeds must contain it for the covering of $\ell\ge0.107$. It also fails at $1/3$ for every $r>1/159$.
+\item[(iii)] (HEURISTIC.) The same happens at every odd-denominator $j/n_0$ with $\operatorname{Re}g_0(j/n_0)\ne0$. This quantity is of size $|U|^3/n_0^2$ and is nonzero numerically for all odd $n_0\le11$ tested. Such $j/n_0$ are dense, so no $r>0$ works at any seed. Even-denominator deep rationals give a pure phase rotation $e^{i\operatorname{Im}g_0/\tau}$, which also violates $|{\rm ratio}-1|\le B<1$.
+\end{enumerate}
+\end{proposition}
+\begin{remark}[cross-check, VERIFIED]
+At $1/11$, $\theta=\pm1$, $N=10^3$--$4\cdot10^3$, the value $|G^*|P(N)/\sqrt N$ agrees with the direct Arb value of $|\Sigma_N|/\sqrt N$ to within $0.6\%\to0.15\%$, i.e.\ $O(1/N)$.
+At $N=10^6$ it gives $|\Sigma_N|/\sqrt N\approx10^{-91}$ ($\theta=-1$).
+The exponential drift near odd $q$ noted in P1b is this effect.
+\end{remark}
+
+\section{Consequences for P1}
+\begin{itemize}
+\item A finite seed list with $N$-uniform constants cannot work (Proposition~\ref{prop:false}). The correct building block is Theorem~\ref{thm:main}, with its $\Delta$-hypothesis. The hypothesis fails only in exponentially thin neighbourhoods $|x-j/n|\lesssim(|u_0|\rho)^n/n^2$ of deeper rationals $j/n$, $n>n_2$. There the same theorem must be applied at the seed $j/n$. This is the continued-fraction recursion of P1a~\S4, now with a single saddle and exact $N$-independence.
+\item OPEN for that recursion:
+ \begin{enumerate}
+ \item a version of Lemma~\ref{lem:lap} uniform in $q$, with the Li$_2$ wall at $\operatorname{Im}t=q\ell/(2\pi q)=\ell/2\pi$, which is uniform;
+ \item $S_{\rm amp}(j/n)\ne0$ for all $j/n$ (renormalisation: this is the level-$n$ sum, P1a~\S2);
+ \item overlapping the scales $d\approx(|u_0|\rho)^n$, where the seed-$p/q$ and seed-$j/n$ descriptions must both hold.
+ \end{enumerate}
+\item The radii of Table~\ref{tab:cert} are much smaller than P1c's Farey-scale covering radii. Covering $\ell\ge0.107$ with this certificate would need many more seeds, or a sharper contour for moderate $d$.
+\end{itemize}
+
+\paragraph{Files.} \texttt{P1d\_factor.py} (Thm~\ref{thm:gauss}), \texttt{P1d\_check.py} (Remark, $K$ constants), \texttt{P1d\_cert.py} (Thm~\ref{thm:main}), \texttt{P1d\_all.py} (parameter search, Table~\ref{tab:cert}), \texttt{P1d\_drift.py} (Prop.~\ref{prop:false}), \texttt{P1d\_sanity.py} (end-to-end check), \texttt{P1d\_delta.py} (rigorous $\Delta$-hypothesis along $x_N$ for Prop.~\ref{prop:false}(i)).
+Every run used \verb|perl -e 'alarm 290; exec @ARGV'| and stayed below 200\,MB.
+\end{document}
