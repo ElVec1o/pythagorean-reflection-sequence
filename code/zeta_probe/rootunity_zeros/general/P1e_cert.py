@@ -16,6 +16,7 @@
 # CLI: perl -e 'alarm 290; exec @ARGV' python3 P1d_cert.py p q r n2 eta V0 kappa npieces [DELTA0 DELTA1 KSEG]
 import sys
 from math import gcd
+from dround import fdn, fup
 from flint import arb, acb, ctx
 ctx.prec = 160
 PI = arb.pi(); I = acb(0, 1)
@@ -215,7 +216,7 @@ def certify(p, q, r, n2, ETA, V0, KAPPA, NP, DELTA0=arb('1e-3'), DELTA1=arb(1), 
         Ns = Nstar(rho_core, DELTA0).min(Nstar(rho_eta, DELTA1))
         Bmax = Bmax.max(Bb); Nmin = Ns if Nmin is None else Nmin.min(Ns)
         row = 'piece d in [%.3e,%.3e]: B<=%s N*>=%s |S|>=%s A>=%s A\'>=%s v0=%s K3<=%s w_seg<=%s w_eta<=%s gap2>=%s parts=%s' % (
-            dlo, dhi, Bb.str(3, radius=False), Ns.str(3, radius=False), Slo.str(4, radius=False), A.str(4, radius=False),
+            dlo, dhi, fup(Bb, 3), fdn(Ns, 3), fdn(Slo, 4), fdn(A, 4),
             Ap.str(3, radius=False), v0.str(3, radius=False), K3.str(3, radius=False), wseg.str(3, radius=False),
             w_eta.str(3, radius=False), gap2.str(3, radius=False), [z.str(2, radius=False) for z in parts])
         rows.append(row)
@@ -232,7 +233,7 @@ if __name__ == '__main__':
     try:
         Bmax, Nmin, Bstar, rows = certify(p, q, r, n2, ETA, V0, KAPPA, NP, D0, D1, KS, VQ=VQa, NPC=NPCa)
         print('SEED %d/%d side d>0: r=%g n2=%d eta=%s V0=%s kappa=%s DELTA0=%s DELTA1=%s t0-ball=%s => B <= %s, N* >= %s' % (
-            p, q, r, n2, ETA, V0, KAPPA, D0.str(3, radius=False), D1.str(3, radius=False), Bstar.str(5), Bmax.str(4, radius=False), Nmin.str(3, radius=False)))
+            p, q, r, n2, ETA, V0, KAPPA, D0.str(3, radius=False), D1.str(3, radius=False), Bstar.str(5), fup(Bmax, 4), fdn(Nmin, 3)))
         print('CERTIFIED' if bool(Bmax < 1) else 'NOT CERTIFIED (B >= 1)')
     except Fail as ex:
         print('FAILED:', ex)

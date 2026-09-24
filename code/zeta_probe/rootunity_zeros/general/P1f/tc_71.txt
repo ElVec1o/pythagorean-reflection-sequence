@@ -1,0 +1,37 @@
+N<=71: 42 cases certified, min certified modulus >= 0.2334
+N<=72: 56 cases certified, min certified modulus >= 0.2334
+N<=73: 100 cases certified, min certified modulus >= 0.2334
+N<=74: 122 cases certified, min certified modulus >= 0.2334
+N<=75: 146 cases certified, min certified modulus >= 0.2331
+N<=76: 166 cases certified, min certified modulus >= 0.2331
+N<=77: 202 cases certified, min certified modulus >= 0.2331
+N<=78: 218 cases certified, min certified modulus >= 0.2331
+N<=79: 266 cases certified, min certified modulus >= 0.2331
+N<=80: 286 cases certified, min certified modulus >= 0.2331
+N<=81: 318 cases certified, min certified modulus >= 0.2331
+N<=82: 342 cases certified, min certified modulus >= 0.2331
+N<=83: 392 cases certified, min certified modulus >= 0.2331
+N<=84: 408 cases certified, min certified modulus >= 0.2331
+N<=85: 446 cases certified, min certified modulus >= 0.2331
+N<=86: 470 cases certified, min certified modulus >= 0.2331
+N<=87: 502 cases certified, min certified modulus >= 0.2331
+N<=88: 526 cases certified, min certified modulus >= 0.2331
+N<=89: 580 cases certified, min certified modulus >= 0.2331
+N<=90: 594 cases certified, min certified modulus >= 0.2331
+N<=91: 636 cases certified, min certified modulus >= 0.2331
+N<=92: 662 cases certified, min certified modulus >= 0.2331
+N<=93: 698 cases certified, min certified modulus >= 0.2331
+N<=94: 726 cases certified, min certified modulus >= 0.2331
+N<=95: 768 cases certified, min certified modulus >= 0.2331
+N<=96: 786 cases certified, min certified modulus >= 0.2331
+N<=97: 844 cases certified, min certified modulus >= 0.2331
+N<=98: 868 cases certified, min certified modulus >= 0.2331
+N<=99: 904 cases certified, min certified modulus >= 0.2331
+N<=100: 928 cases certified, min certified modulus >= 0.2331
+N<=101: 988 cases certified, min certified modulus >= 0.2331
+N<=102: 1008 cases certified, min certified modulus >= 0.2331
+N<=103: 1070 cases certified, min certified modulus >= 0.2331
+N<=104: 1100 cases certified, min certified modulus >= 0.2331
+N<=105: 1130 cases certified, min certified modulus >= 0.2331
+CERT PASSED: 1130 cases, 71<=N<=105, all conditions certified nonzero, min modulus >= 0.2331
+exit 0

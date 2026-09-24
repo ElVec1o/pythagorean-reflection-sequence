@@ -10,6 +10,7 @@
 import sys
 from math import gcd, log, sin, pi
 from flint import arb, acb, ctx
+from dround import fdn, fup
 ctx.prec = 200
 PI = arb.pi(); I = acb(0, 1)
 def e(y): return (2*PI*I*y).exp()
@@ -70,15 +71,26 @@ if __name__ == '__main__':
             Z, Lam, D1, D2, l = data(p, q)
             print('%d/%d (theta=%+d at %d/%d): |Z_q|>=%s  Lam<=%s  D1<=%s  D2<=%s' % (p, q, th, j, n0, s(Z), s(Lam), s(D1), s(D2)), flush=True)
     else:
-        Q0, QM = int(a[1]), int(a[2]); lmin = float(a[3]) if len(a) > 3 else 0.02
-        mx = [arb(0)]*3; arg = [None]*3; mnZ = None
+        # scan QMIN QMAX [ell_min | arc]: 'arc' selects exactly the reduced p/q with 1/5 <= p/q <= 4/5 (integer test).
+        # FAILS LOUDLY (P1f fix of Reviewer AA gap 3): any exception, non-finite or non-positive lower bound for |Z_q|
+        # aborts the scan with exit status 1 and the message 'SCAN FAILED'; a complete scan ends with 'SCAN PASSED'.
+        Q0, QM = int(a[1]), int(a[2]); mode = a[3] if len(a) > 3 else '0.02'
+        def sel(p, q):
+            if mode == 'arc': return q <= 5*p <= 4*q
+            return log(4*sin(pi*p/q)) >= float(mode)
+        mx = [arb(0)]*3; arg = [None]*3; mnZ = None; cnt = 0
         for q in range(Q0, QM+1):
             for p in range(1, q):
-                if gcd(p, q) != 1 or log(4*sin(pi*p/q)) < lmin: continue
+                if gcd(p, q) != 1 or not sel(p, q): continue
                 try: Z, Lam, D1, D2, l = data(p, q)
-                except Exception: print('skip (degenerate w)', p, q); continue
-                if not Z.is_finite() or not bool(Z > 0): print('skip', p, q); continue
+                except Exception as ex:
+                    print('SCAN FAILED at %d/%d: exception %r' % (p, q, ex), flush=True); sys.exit(1)
+                if not Z.is_finite() or not bool(Z > 0):
+                    print('SCAN FAILED at %d/%d: |Z_q| lower bound %s not > 0' % (p, q, Z.str(5)), flush=True); sys.exit(1)
+                cnt += 1
                 for i, v in enumerate((D1, D2, Lam)):
                     if bool(v > mx[i]): mx[i] = v; arg[i] = (p, q)
                 mnZ = Z if mnZ is None else mnZ.min(Z)
-            print('q<=%d  maxD1<=%s %s  maxD2<=%s %s  maxLam<=%s %s  min|Z|>=%s' % (q, s(mx[0]), arg[0], s(mx[1]), arg[1], s(mx[2]), arg[2], s(mnZ)), flush=True)
+            if mnZ is not None:
+                print('q<=%d  maxD1<=%s %s  maxD2<=%s %s  maxLam<=%s %s  min|Z|>=%s  (%d cases)' % (q, fup(mx[0]), arg[0], fup(mx[1]), arg[1], fup(mx[2]), arg[2], fdn(mnZ), cnt), flush=True)
+        print('SCAN PASSED: %d reduced p/q with %d<=q<=%d, selection %s; min|Z_q|>=%s' % (cnt, Q0, QM, mode, fdn(mnZ)), flush=True)

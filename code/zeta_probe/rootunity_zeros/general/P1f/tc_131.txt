@@ -1,0 +1,22 @@
+N<=131: 78 cases certified, min certified modulus >= 0.2337
+N<=132: 102 cases certified, min certified modulus >= 0.2337
+N<=133: 166 cases certified, min certified modulus >= 0.2333
+N<=134: 206 cases certified, min certified modulus >= 0.2333
+N<=135: 250 cases certified, min certified modulus >= 0.2333
+N<=136: 288 cases certified, min certified modulus >= 0.2333
+N<=137: 370 cases certified, min certified modulus >= 0.2332
+N<=138: 398 cases certified, min certified modulus >= 0.2332
+N<=139: 482 cases certified, min certified modulus >= 0.2332
+N<=140: 512 cases certified, min certified modulus >= 0.2332
+N<=141: 566 cases certified, min certified modulus >= 0.2331
+N<=142: 608 cases certified, min certified modulus >= 0.2331
+N<=143: 680 cases certified, min certified modulus >= 0.2331
+N<=144: 710 cases certified, min certified modulus >= 0.2331
+N<=145: 776 cases certified, min certified modulus >= 0.2331
+N<=146: 818 cases certified, min certified modulus >= 0.2331
+N<=147: 868 cases certified, min certified modulus >= 0.2331
+N<=148: 910 cases certified, min certified modulus >= 0.2331
+N<=149: 1000 cases certified, min certified modulus >= 0.2331
+N<=150: 1024 cases certified, min certified modulus >= 0.2331
+CERT PASSED: 1024 cases, 131<=N<=150, all conditions certified nonzero, min modulus >= 0.2331
+exit 0

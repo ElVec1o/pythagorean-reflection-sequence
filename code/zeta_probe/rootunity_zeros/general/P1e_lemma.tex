@@ -10,7 +10,7 @@
 \date{}
 \begin{document}\maketitle
 
-Notation and numbering of P1d\_lemma.tex are used throughout: Theorem~1 (Gauss factorisation $\Sigma_N=G^*_Ne^{-\Phi(\varepsilon)}Z_N$), Theorem~3 (Fresnel representation), Lemmas W, conj, dec, lap, Definition main ($\mathrm{Main}'_Z$, $S_{\rm amp}$, $t_0$, $F$, $L$, $B_k$, $\gamma_k$).
+Notation of P1d\_lemma.tex is used throughout. Cross-references use the numbering of the compiled P1d\_lemma.tex, which has a single shared counter: Lemma~1 (W), Theorem~2 (Gauss factorisation $\Sigma_N=G^*_Ne^{-\Phi(\varepsilon)}Z_N$), Lemma~4 (conj), Theorem~5 (Fresnel representation), Lemma~6 (dec), Definition~7 (main), Lemma~8 (lap), Theorem~9 (the corrected Lemma (1$''$-$\Delta$)). (Earlier drafts of this note, and report\_P1d.md, called Theorems 2, 5, 9 ``Theorems 1, 3, 5''; corrected here, Reviewer AA.) Definition main ($\mathrm{Main}'_Z$, $S_{\rm amp}$, $t_0$, $F$, $L$, $B_k$, $\gamma_k$).
 Labels: PROVED = complete proof here or in P1d; ``computer-assisted'' = reduced to finitely many Arb ball-arithmetic inequalities checked by the named script. VERIFIED = numerics, not a proof. HEURISTIC = argument without error control.
 
 \paragraph{Outcome.}
@@ -97,7 +97,7 @@ Let $x=a/N\in[\frac15,\frac12]$.
 \item[(1)] Every hazard containing $x$ has $n<N$, and the set of such hazards is finite.
 \item[(2)] Let $j/n$ be the hazard of largest $n\ge10$ containing $x$ (\emph{deepest}), $d=x-j/n$, and $n_2=\lfloor1/(2n|d|)\rfloor$. Then every $m>n_2$ that lies in the set $T$ of Lemma dec satisfies $\|mx\|\ge m\,y^m/(4\tau)$, and so $\Delta_N(x;\rho)\le\tau/n_2$ for every $\rho\le y/g_i$.
 \item[(3)] If $x$ lies in no hazard with $n\ge10$ and in no low-seed disc, then $\|mx\|\ge my^m/(4\tau)$ for all $m\ge60$ with $N\nmid m$, and $\sum_{m\ge60}|a_m|\le\tau/59$.
-\item[(4)] If $x$ lies in no hazard with $n\ge10$ but in a low-seed disc of $p/q$ (radius $r\le1/120$, $n_2=60$), then $\Delta_N(x;\rho_\eta)\le\tau/60<10^{-3}$. So the $\Delta$-hypotheses of Theorem 5 of P1d hold.
+\item[(4)] If $x$ lies in no hazard with $n\ge10$ but in a low-seed disc of $p/q$ (radius $r\le1/120$, $n_2=60$), then $\Delta_N(x;\rho_\eta)\le\tau/60<10^{-3}$. So the $\Delta$-hypotheses of Theorem~9 of P1d hold.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -109,7 +109,12 @@ Let $x=a/N\in[\frac15,\frac12]$.
 \item $10\le m'\le52$. Then $m\ge\max(60,2m')$ (in (2) $m>n_2\ge2560$), and $y^{\max(60,2m')}/(4\tau)\le2y^{m'}/m'^2$. So $x\in H(i'/m')$, with the same contradictions.
 \item $m'\le9$. In (3) this puts $x$ in a low-seed disc. In (4), $i'/m'\ne p/q$ is impossible since $|p/q-i'/m'|\ge1/81$; and $i'/m'=p/q$ forces $m=kq$ with $kqd<\frac12$, i.e.\ $m\in M$, not $T$.
 \end{itemize}
-In (2), a shallower hazard $i'/m'$ ($m'<n$) also containing $x$ satisfies $|x-i'/m'|\ge1/(2nm')$, because $nm'\varepsilon_n\le\frac12$. That is incompatible with $y^m/(4\tau)$ for $m>n_2$.
+In (2) the reduced fraction $i'/m'$ can also have $m'\le n$, and the three cases above do not exclude this (a hazard with $m'\le n$ containing $x$ does not contradict ``deepest''). Two sub-cases.
+\begin{itemize}
+\item $m'<n$ (\emph{shallower}). Then $i'/m'\ne j/n$, so $|j/n-i'/m'|\ge1/(nm')$ and $|x-i'/m'|\ge1/(nm')-|d|\ge1/(2nm')$, because $|d|<\varepsilon_n$ and $nm'\varepsilon_n\le\frac12$. That is incompatible with $|x-i'/m'|<y^m/(4\tau)$ for $m>n_2\ge2560$.
+\item $m'=n$. If $i'\ne j$, then $|x-i'/n|\ge1/n-|d|\ge1/(2n)$, again incompatible. If $i'/n=j/n$, then $|d|=|x-j/n|<y^m/(4\tau)$ with $m>n_2=\lfloor1/(2n|d|)\rfloor$, so $m\ge1/(2n|d|)$ and $D:=|d|$ satisfies $D\,y^{-1/(2nD)}<\frac1{4\tau}=12.5$. The function $f(D)=D\,2^{1/(2nD)}$ decreases on $(0,\log2/(2n)]$, and $\varepsilon_n<\log2/(2n)$, so $f(D)\ge f(\varepsilon_n)$ on $(0,\varepsilon_n)$. For $n\ge53$: $f(\varepsilon_n)=12.5\cdot2^{-n+2^n/(25n)}\ge12.5$, since $2^n\ge25n^2$. For $10\le n\le52$: $1/(2n\varepsilon_n)=n2^n/4$ and $f(\varepsilon_n)=2n^{-2}2^{-n+n2^n/4}\ge12.5$, since $n2^n/4\ge n+2\log_2n+3$. Either way $f(D)\ge12.5$, a contradiction.
+\end{itemize}
+(The multiples $m=kn$ with $k\le n_2$ are not in $T$: they form the set $M$ of Lemma~6 (dec) of P1d at the seed $j/n$, whose $m_c=\lfloor1/(2n|d|)\rfloor$ equals $n_2$. The case $m'=n$, $i'=j$ is exactly the case of the remaining multiples $m=kn$, $k>n_2$, which the argument above excludes. This sub-case was missing from the earlier write-up; Reviewer AA.)
 So every $m$ in question has $\|mx\|\ge my^m/(4\tau)$, and the term is at most $(|u_0|\rho)^m\tau/(m^2y^m)\le\tau/m^2$, since $|u_0|\rho\le g_i\rho\le y$. Sum over $m$.
 \end{proof}
 
@@ -119,7 +124,7 @@ Let $j/n\in$ region $i$ with $n\ge53$, and $0<|d|\le y^n/(4\tau)$. Assume $\Delt
 where $E,R$ are the explicit functions evaluated by \texttt{P1e\_lemmaB.py}.
 \end{lemma}
 \begin{proof}
-Apply Lemma lap (P1d) with $v_0=\eta/2$, $t_0$ the unique zero of $F'$ in $|t|\le\eta$ (a contraction: $|t_0|\le R_0=\bar w/((1-\bar w)\pi n)$, $\bar w=(g\rho)^n\le y^n$), and the following bounds valid on $\operatorname{Im}t\le\eta$.
+Apply Lemma~8 (lap) of P1d with $v_0=\eta/2$, $t_0$ the unique zero of $F'$ in $|t|\le\eta$ (a contraction: $|t_0|\le R_0=\bar w/((1-\bar w)\pi n)$, $\bar w=(g\rho)^n\le y^n$), and the following bounds valid on $\operatorname{Im}t\le\eta$.
 \begin{itemize}
 \item $|W|\le\bar w$.
 \item $A\ge\frac\pi2\frac{1-\bar w}{1+\bar w}$ and $|\alpha-\pi/4|\le\arcsin\frac{\bar w}{1-\bar w}$.
@@ -156,26 +161,27 @@ Implemented in \texttt{P1e\_cert.py}, which is \texttt{P1d\_cert.py} with Lemma~
 \caption{Low seeds (\texttt{P1e\_lowseed.py}; side $d>0$; $n_2=60$; the $d<0$ side of $p/q$ is the row $(q-p)/q$). $c_{\rm seed}=(1-B)\sqrt{\pi/2A}\,|S_{\rm amp}|$ and $\kappa_{\rm seed}=q\max(0,-\operatorname{Re}F(t_0))$.}\label{tab:low}
 \begin{tabular}{lllllll}\toprule
 seed & $r$ & $\eta$ & $B\le$ & $\kappa_{\rm seed}\le$ & $|S_{\rm amp}|\ge$ & $c_{\rm seed}\ge$\\\midrule
-1/2 & 0.0083 & 0.102 & 0.4944 & 0.000270 & 1.144 & 0.5468 \\
-1/3 & 0.004 & 0.087 & 0.2927 & 0.00131 & 1.089 & 0.7689 \\
-2/3 & 0.003 & 0.055 & 0.6472 & 0 & 1.093 & 0.3847 \\
-1/4 & 0.003 & 0.055 & 0.7730 & 9.79e-6 & 1.045 & 0.2409 \\
-3/4 & 0.0007 & 0.0257 & 0.8204 & 2.09e-6 & 1.054 & 0.1924 \\
-1/5 & 0.0005 & 0.0257 & 0.4907 & 0 & 0.9681 & 0.4928 \\
-2/5 & 0.003 & 0.102 & 0.05721 & 4.10e-5 & 1.086 & 1.024 \\
-3/5 & 0.003 & 0.087 & 0.06302 & 0 & 1.087 & 1.018 \\
-2/7 & 0.002 & 0.055 & 0.3018 & 0 & 1.077 & 0.7519 \\
-5/7 & 0.002 & 0.055 & 0.3032 & 8.21e-6 & 1.078 & 0.7512 \\
-3/7 & 0.002 & 0.102 & 0.02727 & 1.69e-6 & 1.074 & 1.045 \\
-4/7 & 0.002 & 0.102 & 0.02694 & 0 & 1.076 & 1.047 \\
-3/8 & 0.002 & 0.087 & 0.02048 & 9.70e-9 & 1.095 & 1.073 \\
-5/8 & 0.002 & 0.087 & 0.01971 & 1.01e-8 & 1.097 & 1.075 \\
-2/9 & 0.0005 & 0.0257 & 0.5568 & 3.62e-6 & 1.019 & 0.4516 \\
-7/9 & 0.0005 & 0.0257 & 0.5579 & 0 & 1.019 & 0.4505 \\
-4/9 & 0.0015 & 0.102 & 0.02222 & 7.85e-8 & 1.068 & 1.044 \\
-5/9 & 0.002 & 0.102 & 0.03171 & 0 & 1.068 & 1.034 \\\bottomrule
+1/2 & 0.0083 & 0.102 & 0.4945 & 0.000270 & 1.142 & 0.5463 \\
+1/3 & 0.004 & 0.087 & 0.2927 & 0.00132 & 1.087 & 0.7682 \\
+2/3 & 0.003 & 0.055 & 0.6473 & 0 & 1.092 & 0.3847 \\
+1/4 & 0.003 & 0.055 & 0.7730 & 9.79e-6 & 1.043 & 0.2406 \\
+3/4 & 0.0007 & 0.0257 & 0.8204 & 2.10e-6 & 1.052 & 0.1921 \\
+1/5 & 0.0005 & 0.0257 & 0.4907 & 0 & 0.9679 & 0.4927 \\
+2/5 & 0.003 & 0.102 & 0.05722 & 4.10e-5 & 1.084 & 1.022 \\
+3/5 & 0.003 & 0.087 & 0.06302 & 0 & 1.086 & 1.018 \\
+2/7 & 0.002 & 0.055 & 0.3019 & 0 & 1.075 & 0.7511 \\
+5/7 & 0.002 & 0.055 & 0.3032 & 8.22e-6 & 1.077 & 0.7511 \\
+3/7 & 0.002 & 0.102 & 0.02728 & 1.69e-6 & 1.073 & 1.044 \\
+4/7 & 0.002 & 0.102 & 0.02695 & 0 & 1.074 & 1.046 \\
+3/8 & 0.002 & 0.087 & 0.02049 & 9.70e-9 & 1.094 & 1.072 \\
+5/8 & 0.002 & 0.087 & 0.01971 & 1.02e-8 & 1.095 & 1.074 \\
+2/9 & 0.0005 & 0.0257 & 0.5569 & 3.63e-6 & 1.018 & 0.4515 \\
+7/9 & 0.0005 & 0.0257 & 0.5579 & 0 & 1.018 & 0.4505 \\
+4/9 & 0.0015 & 0.102 & 0.02223 & 7.86e-8 & 1.066 & 1.043 \\
+5/9 & 0.002 & 0.102 & 0.03172 & 0 & 1.067 & 1.034 \\
+\bottomrule
 \end{tabular}\end{table}
-(The $|S_{\rm amp}|$ and $c_{\rm seed}$ columns are parsed from 4-digit printouts of Arb lower bounds. The margin over the needed $c_0=0.02$ is a factor of at least 9.)
+(Directed rounding, Reviewer AA: every entry is printed by \texttt{dround.py} from the Arb ball, lower bounds ($|S_{\rm amp}|$, $c_{\rm seed}$) rounded \emph{down} and upper bounds ($B$, $\kappa_{\rm seed}$) rounded \emph{up} in the last printed digit; $c_{\rm seed}$ is computed in Arb from the rounded-down $|S_{\rm amp}|$. Raw output: \texttt{lowseed\_directed.txt}. The smallest $c_{\rm seed}$ is $0.1921$ (seed $3/4$), a factor $9.6$ above the needed $c_0=0.02$; the largest $\kappa_{\rm seed}$ is $0.00132<\kappa=0.005$.)
 
 \begin{theorem}[M; PROVED, computer-assisted]\label{thm:M}
 For all $N\ge1$ and $\gcd(a,N)=1$ with $a/N\in[\frac15,\frac45]$: $|Z_N(a/N)|\ge c_0e^{-\kappa N}$, where $c_0=0.02$ and $\kappa=0.005$. In particular $\Sigma_N\ne0$ and $S_0\ne0$ there.
@@ -183,17 +189,17 @@ For all $N\ge1$ and $\gcd(a,N)=1$ with $a/N\in[\frac15,\frac45]$: $|Z_N(a/N)|\ge
 \begin{proof}
 By Lemma conj it suffices to take $x=a/N\in[\frac15,\frac12]$. Strong induction on $N$.
 
-\emph{Base} $N\le150$. \texttt{P1e\_logderiv.py scan} encloses $Z_N(a/N)$ by Lemma~\ref{lem:Zk} for all $N\le150$ and $\ell\ge0.8546$, giving $|Z_N|\ge0.9135$. (Nonvanishing of $\Sigma_N$ for $N\le150$ is also P1b's interval certificate.)
+\emph{Base} $N\le150$. \texttt{P1e\_logderiv.py scan 2 150 arc} (run in the four blocks $2$--$70$, $71$--$105$, $106$--$130$, $131$--$150$) encloses $Z_N(a/N)$ by Lemma~\ref{lem:Zk} for every reduced $a/N$ with $N\le150$ and $N\le5a\le4N$ (an exact integer test), $4117$ cases, giving $|Z_N|\ge0.9134$ (rounded down). The scan fails loudly: an exception or a lower bound for $|Z_N|$ that is not certified positive aborts it with exit status~1 and the message \texttt{SCAN FAILED}; each block ended with \texttt{SCAN PASSED} and exit status~0 (\texttt{base\_arc\_*.txt}). This was tested by injecting a failure at $2/5$. (Nonvanishing of $\Sigma_N$ for $N\le150$ is also P1b's interval certificate.)
 
 \emph{Step} $N\ge151$. Four cases.
 \begin{enumerate}
 \item \emph{$x$ lies in a hazard with $n\ge53$.} Take the deepest hazard $j/n$. Lemma~\ref{lem:H}(2) gives the $\Delta$-hypothesis. The induction hypothesis at level $n<N$ gives $|Z_n(j/n)|\ge c_0e^{-\kappa n}$. Lemma~\ref{lem:B} then gives $|Z_N|\ge\frac12|\mathrm{Main}'_Z|\ge\frac14\sqrt{\pi/2A}\,c_0e^{-\kappa n}e^{-n|F(t_0)|N}$.
 Here $N\ge1/(n|d|)\ge0.08\cdot2^n/n$ and $n|F(t_0)|\le2^{-n}$, so this is at least $c_0e^{-\kappa N}$.
 \item \emph{The deepest hazard has $10\le n\le52$.} The same argument, with Lemma~\ref{lem:Bp} and the exact $|Z_n|\ge0.91$.
-\item \emph{$x$ lies in no hazard with $n\ge10$ but in a low-seed disc.} Lemma~\ref{lem:H}(4) and Theorem 5 of P1d (the certificate of Table~\ref{tab:low}) give $|Z_N|\ge c_{\rm seed}e^{-\kappa_{\rm seed}N}\ge c_0e^{-\kappa N}$.
+\item \emph{$x$ lies in no hazard with $n\ge10$ but in a low-seed disc.} Lemma~\ref{lem:H}(4) and Theorem~9 of P1d (the certificate of Table~\ref{tab:low}) give $|Z_N|\ge c_{\rm seed}e^{-\kappa_{\rm seed}N}\ge c_0e^{-\kappa N}$.
 \item \emph{Otherwise.} \texttt{P1e\_caseA.py} covers $[\frac15,\frac12]$ minus all hazards of height $\le59$ and the low-seed discs, by 22,546 Arb intervals with 0 failures. It shows $\sum_{m<60}\sup|a_m|+\tau/59\le0.6057$. With Lemma~\ref{lem:H}(3) and Lemma~\ref{lem:A} this gives $|Z_N|\ge2-e^{0.6057}=0.167$.
 \end{enumerate}
-The cases are exhaustive. Theorem 1 of P1d converts the result to $\Sigma_N$, and S0\_lemma converts it to $S_0$.
+The cases are exhaustive. Theorem~2 of P1d converts the result to $\Sigma_N$, and S0\_lemma converts it to $S_0$.
 \end{proof}
 
 \begin{remark}[scope and the golden threshold]
@@ -203,7 +209,7 @@ Below that, the loss $\Lambda$ of Section~2 must be removed. That needs the stru
 
 \begin{remark}[direct argument]
 Lemma~\ref{lem:A} is the direct zero-free argument ($Z=1+$small). It covers all but 2.6\% of $[0.2,0.5]$ (VERIFIED on a grid), and 0\% of $\ell<0.21$, because there $|u|^1$ alone exceeds the budget.
-An argument-principle proof from Theorem 3 was not found; the integrand $e^{\Phi}$ has no positivity. (HEURISTIC assessment.)
+An argument-principle proof from Theorem~5 of P1d was not found; the integrand $e^{\Phi}$ has no positivity. (HEURISTIC assessment.)
 \end{remark}
 
 \paragraph{Seed 1/11 (PROVED, computer-assisted).} \texttt{P1e\_cert.py 1 11 1e-5 600 0.012 0.008 4 6 1e-3 1 32 0.4 48} gives $B\le0.3150$ and $N^*\ge3.36\cdot10^{13}$.
@@ -211,6 +217,6 @@ The same arguments with \texttt{10 11} give $B\le0.1994$ and $N^*\ge3.12\cdot10^
 P1d failed at this seed with $A'\le0$, because the single global quadratic bound wastes $|L''(t_0)|\approx A$ when $|U|=0.27$. Lemma~\ref{lem:O} replaces it by a cubic local bound and Arb-enclosed pieces.
 VERIFIED end to end: \texttt{P1d\_sanity.py 1 11 600 10000} gives $|\Sigma_N/\mathrm{Main}'_N-1|=6.05\cdot10^{-4}$ at $|d|=9.1\cdot10^{-6}$, so $K(1/11)\approx67$, against a certified $0.315$.
 
-\paragraph{Files.} \texttt{P1e\_renorm.py} (Lemma R), \texttt{P1e\_logderiv.py} (Lemma Zk enclosures; $\Lambda,D_1,D_2$; base scan), \texttt{P1e\_cert.py}, \texttt{P1e\_all.py} (Lemma O certificate and search), \texttt{P1e\_lowseed.py} (Table~\ref{tab:low}), \texttt{P1e\_lemmaB.py} (Lemma B), \texttt{P1e\_lemmaBp.py} (Lemma B$'$), \texttt{P1e\_caseA.py} (case A covering), \texttt{P1e\_certlog.txt} (raw outputs).
+\paragraph{Files.} \texttt{P1e\_renorm.py} (Lemma R), \texttt{P1e\_logderiv.py} (Lemma Zk enclosures; $\Lambda,D_1,D_2$; base scan), \texttt{P1e\_cert.py}, \texttt{P1e\_all.py} (Lemma O certificate and search), \texttt{P1e\_lowseed.py} (Table~\ref{tab:low}), \texttt{P1e\_lemmaB.py} (Lemma B), \texttt{P1e\_lemmaBp.py} (Lemma B$'$), \texttt{P1e\_caseA.py} (case A covering), \texttt{P1e\_certlog.txt} (raw outputs), \texttt{dround.py} (directed-rounding printing), \texttt{lowseed\_directed.txt}, \texttt{base\_arc\_*.txt} (reruns with directed rounding and the fail-loud scan, P1f).
 Every run used \verb|perl -e 'alarm 290; exec @ARGV'| and stayed below about 300\,MB.
 \end{document}

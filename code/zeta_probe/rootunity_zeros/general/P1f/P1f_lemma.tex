@@ -1,0 +1,195 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\Li}{\operatorname{Li}_2}
+\title{P1f: zeros of $B$ at every root of unity of the middle arc,\\ density of the poles of $G^T_0$, and the transfer to $U$ and $V$\\ \small research programme P1, sixth atom, 2026-09-24. UNREVIEWED.}
+\date{}
+\begin{document}\maketitle
+
+Notation of P1d\_lemma.tex and P1e\_lemma.tex; P1d numbering as compiled (Theorem~2 Gauss factorisation, Theorem~5 Fresnel, Theorem~9 corrected Lemma (1$''$-$\Delta$)). Paper templates: paper2a.tex, Propositions \texttt{prop:minusone}, \texttt{prop:t1minusone}, \texttt{prop:qi}, Corollaries \texttt{cor:Uminusone}, \texttt{cor:Ui}.
+Labels: PROVED (complete proof here, at the level of rigour of \texttt{prop:minusone}: the $O(t)$ of Laplace's method and the index $j_0$ are not made explicit), \emph{computer-assisted} (reduced to finitely many Arb inequalities checked by the named script, which fails loudly), VERIFIED (numerics, not a proof), HEURISTIC, OPEN.
+
+\paragraph{Outcome.}
+\begin{enumerate}
+\item[(A)] The four editorial gaps of Reviewer AA in P1e\_lemma.tex are fixed (\S\ref{sec:A}).
+\item[(B)] \textbf{Theorem~\ref{thm:B} (PROVED; computer-assisted only through Theorem M of P1e).} Let $\zeta=\e(a/N)$, $\gcd(a,N)=1$, $\frac15\le\frac aN\le\frac45$, $N\ge16$. Then the zeros of $B(q)=1-\Sigma_1(q)=\cos(Z;q^2)$ accumulate at $q=\zeta$ along an explicit tie ray, they are simple, and they are simple poles of $G^T_0$.
+\textbf{Corollary~\ref{cor:dense} (PROVED):} the poles of $G^T_0$ accumulate at every point of the arc $\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$; in $x=q^{1/2}$, at every point of the arcs $\arg x\in[\frac\pi5,\frac{4\pi}5]$ and $\arg x\in[\frac{6\pi}5,\frac{9\pi}5]$. No transfer-model standing is needed for $G^T_0$.
+\item[(C)] \textbf{Transfer to $U$, $V$: reduced to two explicit finite conditions, NOT closed for a dense set.} Theorem~\ref{thm:C} (PROVED): at the zeros of Theorem~\ref{thm:B}, $S_e\to$ a multiple of $Z^+_N:=\sum_k\psi_k\zeta^{-k^2-k}$ and $t_1\to t_1^*=-\frac12(1+\omega)$ with $\omega=Z^-_N/(u_0Z^+_N)$, for every $N\ge16$ in the family. So $U,V$ have poles accumulating at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$ as soon as $Z^+_N\neq0$ and $\omega$ avoids six explicit values (standing: Theorems \texttt{thm:model}, \texttt{thm:RJ}). Both conditions are certified in Arb for all $4116$ roots of unity with $3\le N\le150$ in the family except $\zeta=-1$ (\texttt{P1f\_transfer\_cert.py}); combined with Theorem~\ref{thm:B}, the poles of $U$ and $V$ are PROVED (computer-assisted) to accumulate at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$ for every such $\zeta$ with $16\le N\le150$.
+\textbf{OPEN:} $Z^+_N\ne0$ and the $\omega$-conditions for infinitely many $N$ forming a dense set; hence \emph{density} of the poles of $U$ and $V$ on the arcs is OPEN. The formula $t_1^*=-\frac12(1+\omega)$ reproduces the published $q=i$ value $t_1^*=0.07275-0.57275i$ of \texttt{cor:Ui} exactly (VERIFIED).
+\end{enumerate}
+Remark on the brief: $a/N\in[\frac15,\frac45]$ is $\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$, which is $\arg x\in[\frac\pi5,\frac{4\pi}5]$ (and its negative $x$-image), not $[\frac\pi{10},\frac{2\pi}5]$ as written in the brief.
+
+\section{Task A: the Reviewer AA gaps in P1e\_lemma.tex}\label{sec:A}
+\begin{itemize}
+\item \emph{Lemma H, case $m'=n$} (PROVED, written into P1e\_lemma.tex). In (2) the reduced fraction $i'/m'$ may have $m'\le n$. For $m'<n$ the old shallower-hazard sentence applies. For $m'=n$, $i'\ne j$ gives $|x-i'/n|\ge1/(2n)$; $i'=j$ gives $D=|d|<y^m/(4\tau)$ with $m\ge1/(2nD)$, i.e.\ $D\,2^{1/(2nD)}<12.5$, which contradicts $f(D)=D2^{1/(2nD)}\ge f(\varepsilon_n)\ge12.5$ ($f$ decreasing on $(0,\log2/(2n)]$; $2^n\ge25n^2$ for $n\ge53$, $n2^n/4\ge n+2\log_2n+3$ for $10\le n\le52$).
+\item \emph{Directed rounding} (\texttt{dround.py}; \texttt{P1e\_cert.py} and \texttt{P1e\_lowseed.py} now print lower bounds rounded down and upper bounds rounded up; $c_{\rm seed}$ is recomputed in Arb from the rounded-down $|S_{\rm amp}|$). All 18 low seeds re-certified; the low-seed table of P1e replaced. Smallest $c_{\rm seed}=0.1921$ (seed $3/4$), largest $\kappa_{\rm seed}=0.00132$; the conclusions of Theorem M are unchanged.
+\item \emph{Fail-loud base scan}: \texttt{P1e\_logderiv.py scan 2 150 arc} selects $N\le5a\le4N$ by an integer test and aborts with exit status 1 and \texttt{SCAN FAILED} on any exception or non-certified $|Z|>0$ (tested by injecting a failure at $2/5$). Rerun: 4117 cases, all pass, $\min|Z_N|\ge0.9134$.
+\item \emph{Cross-references}: P1d Theorems 1, 3, 5 of the old text are Theorems 2, 5, 9 of the compiled P1d; Lemmas W, conj, dec, lap are Lemmas 1, 4, 6, 8. Corrected throughout P1e\_lemma.tex.
+\end{itemize}
+
+\section{Setting and the saddle data}\label{sec:set}
+Fix $\zeta=\e(a/N)$ in the family, $N\ge3$, $\zeta\ne-1$. Put $c=-2(1-\zeta)$, $L=\operatorname{Log}c=\ell+i\varphi$ ($\ell\ge\ell_0:=\log(4\sin\frac\pi5)=0.85483$, $|\varphi|\le\pi$), $w$ the root of $c^Nw=(1-w)^2$ with $|w|\le2|c|^{-N}$ (Lemma~1 of P1d), $\xi=\frac1N\operatorname{Log}(1-w)$, $u_0=e^{2\xi}/c=\lambda^2/c$, $\mathrm{lin}=\zeta/(1-\zeta)$, and $q=\zeta e^{-t}$, $t=re^{i\theta}$, $p=e^{-t}$. Write $b_k=c_t^kq^{k^2}/(q;q)_{2k}$, $c_t=-2(1-q)$, so $B=\sum_kb_k$.
+For $m\in\mathbb Z$ let
+\[L_m=L+\tfrac{2\pi im}N,\quad \psi_m=\varphi+\tfrac{2\pi m}N,\quad x_m=\tfrac{L_m}2-\xi,\quad
+\Phi(x)=xL-x^2-\frac{\Li(e^{-2Nx})}{N^2}+\frac{\pi^2}{6N^2},\quad \Omega_m(x)=\Phi(x)+\tfrac{2\pi imx}N,\]
+$V_m=\Omega_m(x_m)$, $h_m(\theta)=\operatorname{Re}(V_me^{-i\theta})$, $G^*(m)=\sum_{r\bmod N}\e((ar^2-mr)/N)$.
+
+\begin{lemma}[saddles; PROVED]\label{lem:saddle}
+(i) $\Omega_m'(x_m)=0$ and $\Omega''_m(x_m)=-2\frac{1+w}{1-w}$.
+(ii) $V_m=\frac{L_m^2}4+E_w$ with $E_w=\frac{\pi^2}{6N^2}-\xi^2-\frac{\Li(w)}{N^2}$ independent of $m$; hence
+$h_m(\theta)=\frac14\big[\frac{\ell^2}{\cos\theta}-\cos\theta(\psi_m-\ell\tan\theta)^2\big]+\operatorname{Re}(E_we^{-i\theta})$, a concave quadratic in $\psi_m$.
+(iii) $\Omega_m(x)=V_m-(x-x_m)^2-R_m(x)$ with $R_m(x)=N^{-2}[\Lambda(2Nx)-\Lambda(2Nx_m)-\Lambda'(2Nx_m)\,2N(x-x_m)]$, $\Lambda(v)=\Li(e^{-v})$, $\Lambda'(v)=\operatorname{Log}(1-e^{-v})$, $\Lambda''(v)=1/(e^v-1)$. For $\operatorname{Re}x>0$:
+$|R_m(x)|\le2|x-x_m|^2\sup_{y\in[x,x_m]}|e^{2Ny}-1|^{-1}$ and $|R_m(x)|\le N^{-2}\big(\Li(e^{-2N\operatorname{Re}x})+1.1|w|(1+2N|x-x_m|)\big)$.
+(iv) $G^*(m)\neq0$ iff $m\in\mathcal M$, where $\mathcal M=\mathbb Z$ ($N$ odd), $2\mathbb Z$ ($4\mid N$), $2\mathbb Z+1$ ($N\equiv2\bmod4$); then $|G^*(m)|=\sqrt N$ resp.\ $\sqrt{2N}$. For $N$ odd, $G^*(m)=\e(-\overline{4a}m^2/N)\,G^*(0)$ ($\bar{\ }$ = inverse mod $N$).
+\end{lemma}
+\begin{proof}
+(i) $\Omega_m'(x)=L_m-2x-\frac2N\operatorname{Log}(1-e^{-2Nx})$ and $e^{-2Nx_m}=c^{-N}(1-w)^2=w$. (ii) Expand $x_mL_m-x_m^2$. (iii) Taylor at $v=2Nx_m$, using $\Lambda'(2Nx_m)=\operatorname{Log}(1-w)=N\xi$; the second bound is the triangle inequality with $|\Li(z)|\le\Li(|z|)$, $|\operatorname{Log}(1-w)|\le1.1|w|$. (iv) Classical quadratic Gauss sums (as in Theorem~2 of P1d).
+\end{proof}
+VERIFIED: the $V_m$, the family $x_m$ and $|A(n)/A(n+1)|=e^{\pi\operatorname{Im}(\mathrm{lin})/N}$ agree with the scoping script \texttt{k1.py}.
+
+\paragraph{The tie ray.} Let $s=1$ ($N$ odd), $s=2$ ($N$ even), and choose $n\in\mathcal M$ minimising $|\psi_n+\pi s/N|$; so $n,n+s$ are consecutive in $\mathcal M$. Define $\theta^*$ by $\tan\theta^*=(\psi_n+\pi s/N)/\ell$. Then $|\tan\theta^*|\le\pi s/(N\ell)$, $h_n(\theta^*)=h_{n+s}(\theta^*)=:T$,
+\[T=\frac{\ell^2}{4\cos\theta^*}-\frac{\pi^2s^2\cos\theta^*}{4N^2}+\operatorname{Re}(E_we^{-i\theta^*}),\qquad h_m(\theta^*)\le T-\frac{2\pi^2s^2\cos\theta^*}{N^2}\ (m\in\mathcal M\setminus\{n,n+s\}).\]
+\textbf{Numerical facts for $N\ge16$ (PROVED by the displayed elementary estimates):} $|\tan\theta^*|\le0.4594$, $|\theta^*|\le24.7^\circ$, $\cos\theta^*\ge0.9087$; $|w|\le2e^{-16\ell_0}\le2.3\cdot10^{-6}$; $T\ge\frac{\ell_0^2}4-\frac{\pi^2(s^2/4-\cos\theta^*/6)}{N^2}-10^{-8}\ge0.1499$.
+
+\section{The amplitude}\label{sec:amp}
+\begin{lemma}[PROVED]\label{lem:amp}
+Let $d_{rj}=(2r-j)\bmod N$ and, for $m\in\mathbb Z$,
+\[A(m)=e^{x_m\mathrm{lin}}\sum_{r\bmod N}\zeta^{r^2}\e(-\tfrac{mr}N)\prod_{j=1}^N\big(1-\zeta^je^{-2x_m}\big)^{-(\frac12-\frac{d_{rj}}N)}\quad\text{(principal powers)}.\]
+Then $A(m)=e^{x_m\mathrm{lin}}(1-w)^{-1/(2N)}G^*(m)\,Z_N$, with $Z_N=\sum_k\psi_k\zeta^{-k^2}$ the object of Theorem~2 of P1d and Theorem~M of P1e. In particular $A(m)\ne0$ for every $m\in\mathcal M$, and $A(m)=0$ for $m\notin\mathcal M$.
+More generally, with $\zeta^{\pm r}$ inserted in the $r$-sum and $e^{x_m\mathrm{lin}}$ replaced by $e^{x_m(\mathrm{lin}\mp1)}$ (the amplitude $A^\pm(m)$ of $S_\pm$ below),
+$A^\pm(m)=e^{x_m(\mathrm{lin}\mp1)}(1-w)^{-1/(2N)}G^*(m\mp a)\,Z^\pm_N$, $Z^\pm_N:=\sum_k\psi_k\zeta^{-k^2\mp k}$.
+\end{lemma}
+\begin{proof}
+$e^{-2x_m}=u_0\e(-m/N)$ with $|u_0|<1$. By Lemma~tel of S0\_lemma, applied termwise in $r$ (its proof is termwise), the product equals $(1-w)^{-1/(2N)}F(\zeta^{2r}u_0\e(-m/N))$ with $F(v)=\sum_kh_kv^k$, $h_ku_0^k=\psi_k$, absolutely convergent on $|v|=|u_0|$. Then
+$\sum_r\e((ar^2+2akr-(m\mp a')r)/N)$, $a'\in\{0,\pm a\}$, becomes $\e((-ak^2+(m\mp a')k)/N)\,G^*(m\mp a')$ after $r\mapsto r-k$; the factor $\e(-mk/N)$ from $e^{-2kx_m}$ cancels the $m$-dependence, leaving $\zeta^{-k^2\mp' k}$. Nonvanishing: Lemma~\ref{lem:saddle}(iv) and Theorem~M ($Z_N\ne0$ on the whole family).
+\end{proof}
+VERIFIED: \texttt{P1f\_model.py}: $B(\zeta e^{-t})$ divided by $\kappa\sum_mA(m)e^{V_m/t}$ (Theorem~\ref{thm:asym}) is $0.9992-0.0088i$, $1.0041-0.0029i$ at $1/3$ ($r=0.05,0.02$), $1.0121-0.0098i$, $1.0042-0.0035i$ at $2/5$, $1.0076+0.0040i$, $1.0039+0.0020i$ at $3/10$ ($r=0.03,0.015$): the error is $O(t)$.
+
+\section{Exact decomposition}\label{sec:dec}
+Let $N'=N$ ($N$ odd) and $N'=N/2$ ($N$ even), and $\epsilon=-1$ if $N\equiv2\bmod4$, else $\epsilon=1$. For $0\le\rho<N'$ and $k\in\mathbb C$ put
+\[F_\rho(k)=\zeta^{\rho^2}\exp\big(k\operatorname{Log}c_t-tk^2\big)\prod_{\iota=1}^{N}\big(\zeta^{2\rho+\iota}e^{-t(2k+\iota)};p^N\big)_\infty\Big/(q;q)_\infty .\]
+\begin{lemma}[PROVED]\label{lem:classes}
+$F_\rho$ is entire and $b_{N'j+\rho}=\epsilon^jF_\rho(N'j+\rho)$ for $j\ge0$.
+\end{lemma}
+\begin{proof}
+$(q;q)_{2k}=(q;q)_\infty/(q^{2k+1};q)_\infty$ and $(q^{2k+1};q)_\infty=\prod_{\iota=1}^N(\zeta^{2k+\iota}p^{2k+\iota};p^N)_\infty$; $\zeta^{2(N'j+\rho)}=\zeta^{2\rho}$ since $N\mid2N'$. Finally $\zeta^{(N'j+\rho)^2}=\zeta^{\rho^2}\,\zeta^{2N'j\rho}\,\e(aN'^2j^2/N)$ with $\zeta^{2N'j\rho}=1$. If $N$ is odd, $N'^2/N=N$ and the last factor is $1$. If $N$ is even, it is $\e(aN'j^2/2)$: $1$ when $N'$ is even ($4\mid N$), and $(-1)^{j^2}=(-1)^j$ when $N'$ and $a$ are odd ($N\equiv2\bmod4$).
+\end{proof}
+Fix $\delta=\frac1{8N}$, $K=\lfloor\delta/r\rfloor$, $H=\sum_{k\le K}b_k$, and for each $\rho$ let $j_\rho$ be the least $j$ with $N'j+\rho>K$, $s_\rho=j_\rho-\frac12$, $g_\rho(s)=F_\rho(N's+\rho)$. In the coordinate $x=kt$ the point $s_\rho$ is $x_A^\rho=(N's_\rho+\rho)t$, which lies on the ray $\arg x=\theta$ with $|x_A^\rho|\in[\delta/2,2\delta]$ for $r\le\delta/(2N)$.
+With $\gamma_\mp^\rho$ the rays $x_A^\rho+e^{i(\theta\mp\pi/8)}[0,\infty)$ (in the $s$-plane they leave the half-integer $s_\rho$ into $\mp\operatorname{Im}s>0$ at angle $\pi/8$), the residue theorem gives exactly (as Step~1 of \texttt{prop:minusone} for $\epsilon=1$ and Step~1 of \texttt{prop:t1minusone} for $\epsilon=-1$)
+\[B=H+\sum_{\rho<N'}\Big(\int_{\gamma_-^\rho}g_\rho\,\mathcal K_-\,ds+\int_{\gamma_+^\rho}g_\rho\,\mathcal K_+\,ds\Big),\]
+where for $\epsilon=1$ $\mathcal K_-=(1-e^{-2\pi is})^{-1}$, $\mathcal K_+=e^{2\pi is}(1-e^{2\pi is})^{-1}$; for $\epsilon=-1$, $\mathcal K_\mp=e^{\mp i\pi s}(1-e^{\mp2\pi is})^{-1}$. Decay at the ends and on the closing arcs holds because $|\theta|<\pi/4$ (so all directions between $\theta-\pi/8$ and $\theta+\pi/8$ lie in the Gaussian sector $|\arg x-\theta/2|<\pi/4$) and the product is bounded on $\operatorname{Re}x>0$.
+Expanding the kernels $M=2N$ times,
+\[\mathcal K_-=\sum_{\nu\in I_-}e^{2\pi i\nu s}+e^{2\pi i\nu_-s}\frac{1}{1-e^{-2\pi is}},\qquad \mathcal K_+=\sum_{\nu\in I_+}e^{2\pi i\nu s}+e^{2\pi i\nu_+s}\frac{1}{1-e^{2\pi is}},\]
+with $I_-=\{0,-1,\dots,-(M-1)\}$, $\nu_-=-M$, $I_+=\{1,\dots,M\}$, $\nu_+=M+1$ for $\epsilon=1$, and the same shifted by $-\frac12$ (resp.\ $+\frac12$ on the upper side) for $\epsilon=-1$. The mode $\nu$ has $x$-frequency $\mu=\nu N/N'\in\mathcal M$: $e^{2\pi i\nu s}=\e(-\mu\rho/N)\,e^{2\pi i\mu x/(Nt)}$. Each explicit-mode integral has an entire integrand and is moved, with fixed endpoints, to
+\[\Pi^\rho_\mu=[x_A^\rho,x_\mu]\cup\big(x_\mu+e^{i\theta/2}[0,\infty)\big).\]
+
+\section{Euler--Maclaurin, head, landscape}\label{sec:est}
+\begin{lemma}[EM; PROVED]\label{lem:EM}
+Fix $N$, $\delta'>0$, $\theta_{\max}<\pi/2$. Uniformly for $|\theta|\le\theta_{\max}$, $0<r\le r_0$, $\operatorname{Re}x\ge\delta'$ and every $\rho$,
+\[\log F_\rho(x/t)=\frac{\Phi(x)}t+a_\rho(x)+\tfrac12\log\frac{Nt}{2\pi}+O(|t|(1+|x|)),\]
+\[a_\rho(x)=x\,\mathrm{lin}+\tfrac{2\pi ia\rho^2}N-\sum_{j=1}^N\big(\tfrac12-\tfrac{d_{\rho j}}N\big)\operatorname{Log}(1-\zeta^je^{-2x})-\sum_{i=1}^{N-1}\big(\tfrac12-\tfrac iN\big)\operatorname{Log}(1-\zeta^i).\]
+\end{lemma}
+\begin{proof}
+As Step~2 of \texttt{prop:minusone} and the ray lemma of \texttt{lem:qi-bounds}. For each $\iota$, $\sum_{M\ge0}G(2x+\iota t+NtM)$ with $G(v)=\operatorname{Log}(1-\zeta^{2\rho+\iota}e^{-v})$ equals $-\frac{\Li(\zeta^{2\rho+\iota}e^{-2x-\iota t})}{Nt}+\frac12G(2x+\iota t)+E_0$, $|E_0|\le\frac{N|t|}3(\frac1{\delta_d}+\frac1{\delta_d^2\cos\theta})$, where along the ray $|1-\zeta^{2\rho+\iota}e^{-v}|\ge\delta_d:=1-e^{-2\delta'}$. Taylor in $\iota t$ ($\frac{d}{dv}\Li(ce^{-v})=\operatorname{Log}(1-ce^{-v})$) gives $-\frac{\Li(\cdot e^{-2x})}{Nt}+(\frac12-\frac\iota N)\operatorname{Log}(1-\zeta^{2\rho+\iota}e^{-2x})+O(t)$; with $j\equiv2\rho+\iota$, $\frac12-\frac\iota N=-(\frac12-\frac{d_{\rho j}}N)$, and $\sum_{j}\Li(\zeta^jz)=\frac1N\Li(z^N)$. $(q;q)_\infty=\prod_{i=1}^N(\zeta^ip^i;p^N)_\infty$: for $i<N$ the ray lemma from $v=it$ (distance $\ge\mathcal D(0,\operatorname{dist}(2\pi i a/N,2\pi\mathbb Z))>0$), for $i=N$ the $\eta$-transformation; $\sum_{i<N}\Li(\zeta^i)=\frac{\pi^2}6(\frac1N-1)$. Finally $\operatorname{Log}c_t=L+t\,\mathrm{lin}+O(t^2)$.
+\end{proof}
+
+\begin{lemma}[head; PROVED]\label{lem:head}
+For $N\ge16$ and $0\le k\le K$: $r\log|b_k|\le H_{\rm head}+r\log(1/P_N)$ with $H_{\rm head}=\delta(\ell+0.0837+r)+\frac{2\delta}N(1+\log\frac1{1.8\delta})\le0.0167+r$, where $P_N>0$ is the least partial product $\prod_{i\le J,\,N\nmid i}0.959|1-\zeta^i|$ over one period.
+\end{lemma}
+\begin{proof}
+$|q^{k^2}|\le1$; $|c_t|\le|c|+2r(1.01)$, so $\log|c_t|\le\ell+r$. For $i\le2k\le2\delta/r$, $N\nmid i$: $|1-e^{-it}|\le\frac1{4N}e^{1/64}\le\frac{0.254}N$ and $|1-\zeta^i|\ge2\sin\frac\pi N\ge\frac{6.24}N$, so $|1-\zeta^ie^{-it}|\ge0.959|1-\zeta^i|$; full periods contribute $N\ge1$. For $i=Nm$: $|1-e^{-Nmt}|\ge0.99Nmr$. With $M'=\lfloor2k/N\rfloor\le2\delta/(Nr)$ and $\log M'!\ge M'\log M'-M'$, the function $M'(1+\log\frac1{0.99NrM'})$ is increasing on the range, which gives the second term. Numerically at $N=16$: $0.01148+0.00514$; both terms decrease in $N$.
+\end{proof}
+
+\begin{lemma}[landscape; PROVED for $N\ge16$]\label{lem:LS}
+Let $N\ge16$, $\theta=\theta^*$, $W_\mu=\operatorname{Re}(\Omega_\mu e^{-i\theta})$, and $x_A$ any point of the ray $\arg x=\theta$ with $|x_A|\in[\delta/2,2\delta]$. Then:
+\begin{enumerate}
+\item[(a)] For $\mu\in\mathcal M\setminus\{n,n+s\}$ with $|\mu|\le4N$: $W_\mu\le T-\eta_N$ on $\Pi_\mu$, $\eta_N=\min(16.2/N^2,\,0.1)$.
+\item[(b)] For $\mu\in\{n,n+s\}$: on $[x_A,x_\mu]$, $W_\mu(x)-T\le-0.12\,|x-x_\mu|^2/\Delta^2$ for $|x-x_\mu|\le\Delta/2$ and $\le-0.024$ otherwise ($\Delta=|x_\mu-x_A|\le0.88$); on the ray, $W_\mu-T\le-0.99v^2$.
+\item[(c)] On $\gamma_\mp$ (from $x_A$), for the remainder modes $\mu_\mp=\nu_\mp N/N'$: $W_{\mu_\mp}\le2\delta\ell+\frac{\pi^2}{3N^2}\le0.035$; the kernels are $\le(1-e^{-(\pi/2)\tan(\pi/8)})^{-1}\le2.09$.
+\item[(d)] Every point of these paths has $\operatorname{Re}x\ge0.45\,\delta$.
+\end{enumerate}
+The same holds with $\theta$ in a neighbourhood $|\theta-\theta^*|\le\varepsilon_N$, with $T$ replaced by $T(\theta)=\max(h_n(\theta),h_{n+s}(\theta))$ and the margins halved.
+\end{lemma}
+\begin{proof}
+Write $W_\mu(x)=h_\mu-\operatorname{Re}((x-x_\mu)^2e^{-i\theta})-\operatorname{Re}(R_\mu e^{-i\theta})$ (Lemma~\ref{lem:saddle}(iii)). On the segment put $x=x_\mu-\sigma(x_\mu-x_A)$, $0\le\sigma\le1$, and $D=\operatorname{Re}((x_\mu-x_A)^2e^{-i\theta})$. Since $x_Ae^{-i\theta}=|x_A|>0$,
+$D=\operatorname{Re}(L_\mu^2e^{-i\theta})/4-|x_A|\ell+O(|L_\mu||\xi|+|x_A|^2)$, and $\operatorname{Re}x$ increases along the segment from $\operatorname{Re}x_A\ge\frac\delta2\cos\theta$ to $\operatorname{Re}x_\mu\ge\ell/2-10^{-7}$. Always $|\frac{\pi^2}6-\Lambda(2Nx)|\le\frac{\pi^2}3$, so $W_\mu(x_A)\le|x_A|\ell+\frac{\pi^2}{3N^2}\le0.0345$.
+
+(a) If $D\ge0$: $W_\mu\le h_\mu+|R_\mu|\le T-\frac{2\pi^2s^2\cos\theta^*}{N^2}+\frac{1.647}{N^2}\le T-\frac{16.2}{N^2}$, using the crude bound of Lemma~\ref{lem:saddle}(iii) with $|x-x_\mu|\le15$ and $1.1|w|(1+30N)\le1.3\cdot10^{-3}$. If $D<0$: $W_\mu\le h_\mu-D+|R_\mu|=W_\mu(x_A)+\operatorname{Re}(R_\mu(x_A)e^{-i\theta})+|R_\mu(x)|\le0.0345+\frac{3.3}{N^2}\le0.048\le T-0.1$. On the ray, $W_\mu-h_\mu=-v^2+O(v^2e^{-0.85N})$.
+
+(b) Here $h_\mu=T$, $D\ge T-\frac{\pi^2}{6N^2}-2\delta\ell-10^{-6}\ge0.1217$, and $|L_\mu|\le\sqrt{\ell^2+(0.4594\ell+2\pi/16)^2}\le1.727$, so $\Delta\le0.88$. For $\sigma\le\frac12$ the Taylor bound with $\operatorname{Re}y\ge0.2137$ gives $|R_\mu|\le2\sigma^2\Delta^2/(e^{6.84}-1)\le0.0017\sigma^2$, hence $W_\mu-T\le-\sigma^2(D-0.0017)\le-0.12\sigma^2$. For $\sigma\ge\frac12$ the crude bound gives $W_\mu-T\le-D/4+1.647/N^2\le-0.024$.
+
+(c) With $x=x_A+\varrho e^{i(\theta-\pi/8)}$: $\operatorname{Re}(xL_\mu e^{-i\theta})=|x_A|\ell+\varrho(\ell\cos\frac\pi8+\psi_\mu\sin\frac\pi8)$, and $\operatorname{Re}(x^2e^{-i\theta})=|x_A|^2\cos\theta+2|x_A|\varrho\cos(\theta-\frac\pi8)+\varrho^2\cos(\theta-\frac\pi4)\ge0.34\varrho^2$ for $|\theta|\le24.7^\circ$. The remainder mode has $\psi_{\mu_-}\le\varphi-4\pi\le-3\pi$, so the linear coefficient is $\le1.281-3.608<0$. Symmetrically on $\gamma_+$ with $\psi_{\mu_+}\ge3\pi$. The kernel bound is (iv) of \texttt{lem:qi-bounds} with $\alpha_{\min}=\pi/8$.
+
+(d) Clear from the geometry. The perturbation in $\theta$ changes every quantity continuously, and all inequalities above are strict.
+\end{proof}
+VERIFIED independently (sampled, floating; \texttt{P1f\_landscape\_check.py}): for every $a/N$ of the family with $N\in\{16,17,20,23\}$ the sampled maxima satisfy (a)--(c) with room (e.g.\ $7/17$: nondominant $W-T\le-0.068$, dominant $(W-T)/\sigma^2\le-0.43$, remainder $\le-0.43$). The same sampled check also passes for every family member with $5\le N\le13$, where Lemma~\ref{lem:LS} is \emph{not} proved (its crude constants need $N\ge16$).
+
+\section{The two-saddle asymptotic and the zeros}\label{sec:main}
+\begin{theorem}[PROVED]\label{thm:asym}
+Let $N\ge16$ and $\zeta$ in the family. Put $\kappa=C_\zeta\sqrt{(1-w)/(2N(1+w))}$, $C_\zeta=\prod_{i<N}(1-\zeta^i)^{-(\frac12-\frac iN)}$. There are $\varepsilon_N,\eta'_N>0$ such that, uniformly for $|\theta-\theta^*|\le\varepsilon_N$ as $r\to0$,
+\[B(\zeta e^{-t})=\kappa\big(A(n)e^{V_n/t}(1+O(t))+A(n+s)e^{V_{n+s}/t}(1+O(t))\big)+O\big(e^{(T(\theta)-\eta'_N)/r}\big).\]
+\end{theorem}
+\begin{proof}
+Section~\ref{sec:dec} writes $B$ exactly as $H$ plus explicit-mode integrals over $\Pi^\rho_\mu$ plus kernel remainders over $\gamma^\rho_\mp$. By Lemma~\ref{lem:EM} (with $\delta'=0.45\delta\cos\theta$, Lemma~\ref{lem:LS}(d)), $|g_\rho e^{2\pi i\nu s}|\le C_Nr^{1/2}e^{W_\mu(x)/r+O(r(1+|x|))}$ on all paths, and $ds=dx/(N't)$. Lemma~\ref{lem:head} bounds $|H|\le(K+1)e^{(0.0167+o(1))/r}$, Lemma~\ref{lem:LS}(a),(c) bound all non-dominant explicit modes and both remainders by $C_Nr^{-2}e^{(T-\eta_N)/r}$ (the Gaussian decay on the infinite pieces and the kernel bound $2.09$). For $\mu\in\{n,n+s\}$, Lemma~\ref{lem:LS}(b) localises the integral at $x_\mu$; the path enters from the valley of $x_A$ (since $D>0$, the direction $x_A-x_\mu$ lies in the descent sector) and leaves along $e^{i\theta/2}$, so Laplace's method with a complex large parameter, uniform for $\arg t$ in a compact subset of $(-\frac\pi2,\frac\pi2)$ \cite{Olver1974}, gives
+\[\frac1{N't}\int_{\Pi^\rho_\mu}F_\rho(x/t)e^{2\pi i\mu x/(Nt)}\e(-\tfrac{\mu\rho}N)\,dx=\frac1{N'}\sqrt{\frac{N(1-w)}{2(1+w)}}\,C_\zeta\,\e(-\tfrac{\mu\rho}N)e^{a_\rho(x_\mu)-\log C_\zeta}e^{V_\mu/t}(1+O(t)),\]
+with $\Omega_\mu''=-2(1+w)/(1-w)$ and the principal root. Summing over $\rho<N'$ (for $N$ even, $\sum_{\rho<N'}=\frac12\sum_{r<N}$ on $\mathcal M$, because the $r$ and $r+N'$ summands agree when $\mu\in\mathcal M$) gives $\kappa A(\mu)e^{V_\mu/t}(1+O(t))$ with $A(\mu)$ as in Lemma~\ref{lem:amp}. Continuity in $\theta$ (last sentence of Lemma~\ref{lem:LS}) gives the uniformity.
+\end{proof}
+
+\begin{theorem}[zeros of $B$ at $\zeta$; PROVED]\label{thm:B}
+Let $N\ge16$ and $\zeta=\e(a/N)$, $\frac15\le\frac aN\le\frac45$. Put $\Delta V=V_{n+s}-V_n=\frac{\pi is}N(L_n+\frac{i\pi s}N)$, $\varrho=A(n+s)/A(n)=\frac{G^*(n+s)}{G^*(n)}e^{i\pi s\,\mathrm{lin}/N}$, and let $u_j$ be the solutions of $1+\varrho e^{\Delta Vu}=0$ with $\operatorname{Re}u>0$, $\arg u\to-\theta^*$, ordered by modulus, $t^0_j=1/u_j$. There is $j_0$ such that for $j\ge j_0$, $B(\zeta e^{-t})$ has exactly one zero $t^*_j$ in $D_j=\{|1/t-u_j|<1/|\Delta V|\}$; it is simple and $t^*_j=t^0_j+O(j^{-3})$. So $q^*_j=\zeta e^{-t^*_j}\to\zeta$ along $\arg t=\theta^*$, the conjugates tend to $\bar\zeta$, and every $q^*_j$, $\bar q^*_j$ is a simple pole of $G^T_0=\Sigma_0/(1-\Sigma_1)$.
+\end{theorem}
+\begin{proof}
+$A(n)\ne0$ (Lemma~\ref{lem:amp}, Theorem~M). On $D_j$, $\arg t=\theta^*+O(1/j)$ and $|\operatorname{Re}(\Delta V/t)|\le1$, so Theorem~\ref{thm:asym} applies and $B/(\kappa A(n)e^{V_n/t})=g_0(u)+O(1/j)$, $g_0(u)=1+\varrho e^{\Delta Vu}=1-e^{\Delta V(u-u_j)}$, using $|\varrho e^{\Delta Vu}|\le e$ on $D_j$ and $e^{(T(\theta)-\eta'_N)/r}/|e^{V_n/t}|\le e^{1-\eta'_N/r}$. $\operatorname{Re}(\Delta Ve^{-i\theta^*})=0$ by the choice of $\theta^*$, so the zeros $u_j$ lie on a line with $\arg u\to-\theta^*$, spaced $2\pi/|\Delta V|$ apart, more than the diameter $2/|\Delta V|$ of $D_j$; $|g_0|>0.28$ on $\partial D_j$. Rouch\'e as in Step~5 of \texttt{prop:minusone}. Simple poles of $G^T_0$: Step~6 of \texttt{prop:minusone} ($\Sigma_0S_0=2q/(1-q)\ne0$ at every zero of $1-\Sigma_1$ in $0<|q|<1$), and real coefficients for the conjugates.
+\end{proof}
+VERIFIED (\texttt{P1f\_zeros.py}, floating, 30--300 digits): $|1/t^*_j-u_j|\,|\Delta V|=0.0018,\,0.00036,\,0.00014$ at $j=8$ for $3/10$, $4/11$, $7/17$, decreasing like $|t_j|$; the tie rays are $\theta^*=0^\circ$, $6.31^\circ$, $3.92^\circ$.
+
+\begin{corollary}[density of the poles of $G^T_0$; PROVED]\label{cor:dense}
+The set of accumulation points on $|q|=1$ of the poles of $G^T_0$ contains the closed arc $\{\arg q\in[\frac{2\pi}5,\frac{8\pi}5]\}$. Equivalently, the poles of $G^T_0(x^2)$ accumulate at every point of $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$.
+\end{corollary}
+\begin{proof}
+The accumulation set is closed. By Theorem~\ref{thm:B} it contains every $\e(a/N)$ with $N\ge16$, $\frac15\le\frac aN\le\frac45$, and these are dense in the arc.
+\end{proof}
+
+\section{Transfer to $U$ and $V$}\label{sec:C}
+$S_\pm=\sum_kb_kq^{\pm k}$, $S_e=S_+$, $t_1=-\frac12(1+S_-/S_e)$ on $|q|<1$ wherever $S_e\ne0$ (Step~0 of \texttt{prop:t1minusone}).
+\begin{theorem}[PROVED]\label{thm:C}
+Let $N\ge16$, $\zeta$ in the family, and $q^*_j$ as in Theorem~\ref{thm:B}.
+(i) $S_\pm(q^*_j)=2\kappa A(n)\frac{Z^\pm_N}{Z_N}e^{\mp x_n}\frac{G^*(n\mp a)}{G^*(n)}e^{V_n/t^*_j}(1+O(1/j))$ for $N$ odd, and $S_\pm(q^*_j)=\kappa A^\pm(n+1)e^{V_{n+1}/t^*_j}(1+O(1/j))$ for $N$ even. In particular $S_e(q^*_j)\ne0$ for large $j$ if and only if $Z^+_N\ne0$.
+(ii) If $Z^+_N\ne0$: $t_1(q^*_j)=t_1^*+O(1/j)$, $t_1^*=-\frac12(1+\omega)$, $\omega=\dfrac{Z^-_N}{u_0Z^+_N}$.
+(iii) If moreover $\omega\notin\Big\{-1-\frac{2(1-\zeta^2)}\zeta,\ -1-\frac{2(1-\zeta)}\zeta\Big\}\cup\Big\{\frac1x,\ \frac{1+\zeta}{x(1-x+\zeta)}-1:\ x=\pm\sqrt\zeta\Big\}$, then $1-\mathfrak g_Ut_1$, $1-\mathfrak g_Vt_1$, $\Pi_1$, $\Pi_q$ have non-zero limits at $q^*_j$ for both roots, and for large $j$, $\pm\sqrt{q^*_j}$, $\pm\sqrt{\bar q^*_j}$ are poles of $U$ and of $V$; these tend to $\pm\sqrt\zeta$, $\pm\sqrt{\bar\zeta}$. \textup{(Standing: Theorems \texttt{thm:model}, \texttt{thm:RJ}, as in \texttt{cor:Uminusone}.)}
+\end{theorem}
+\begin{proof}
+(i) The $k$-th term of $S_\pm$ is $b_k\zeta^{\pm k}e^{\mp tk}$; in the class decomposition $\zeta^{\pm(N'j+\rho)}=\zeta^{\pm\rho}(\pm1)^{\cdots}$, which multiplies $F_\rho$ by $\zeta^{\pm\rho}e^{\mp x}$ and, for $N$ even, flips $\epsilon$ (as $\zeta^{N'}=-1$). So the proof of Theorem~\ref{thm:asym} applies verbatim with amplitude $A^\pm(\mu)$ of Lemma~\ref{lem:amp} and modes $\mu$ with $G^*(\mu\mp a)\ne0$: for $N$ odd the same pair $n,n+1$ is dominant on $\theta^*$; for $N$ even the single mode $n+1$, of height $T+\pi^2\cos\theta^*/N^2$, with the others lower by $4\pi^2\cos\theta^*/N^2$ (Lemma~\ref{lem:LS} holds with these heights; $e^{\mp x}$ is bounded on the paths). For $N$ odd insert $e^{\Delta V/t^*_j}=-A(n)/A(n+1)+O(1/j)$ (Theorem~\ref{thm:B}):
+$S_\pm\propto A^\pm(n)-A^\pm(n+1)A(n)/A(n+1)=A^\pm(n)\big[1-e^{\mp i\pi/N}R_\pm^{-1}\big]$, with $R_\pm=\frac{G^*(n\mp a)G^*(n+1)}{G^*(n+1\mp a)G^*(n)}$. By Lemma~\ref{lem:saddle}(iv), $R_\pm=\e(\mp\overline{4a}\cdot2a/N)=\e(\mp\bar2/N)=-\e(\mp\frac1{2N})$, since $\bar2=\frac{N+1}2$. So $e^{\mp i\pi/N}R_\pm^{-1}=-1$ and the bracket is exactly $2$.
+(ii) $S_-/S_e=\frac{A^-}{A^+}$ at the dominant mode $\mu$ ($\mu=n$ or $n+1$) $=e^{2x_\mu}\frac{G^*(\mu+a)}{G^*(\mu-a)}\frac{Z^-_N}{Z^+_N}$. For $N$ odd $\frac{G^*(\mu+a)}{G^*(\mu-a)}=\e(-\mu/N)$; for $4\mid N$ the same from $G^*(2m')=\e(-\bar am'^2/N)G^*(0)$; for $N\equiv2\ (4)$ likewise by the CRT factorisation of Theorem~2 of P1d. And $e^{2x_\mu}=c\,\e(\mu/N)(1-w)^{-2/N}=\e(\mu/N)/u_0$. Hence $S_-/S_e\to\omega$.
+(iii) As in \texttt{cor:Uminusone}/\texttt{cor:Ui}: the first two paragraphs of the proof of \texttt{cor:Uminusone} need only $0<|q^*_j|<1$, $S_e(q^*_j)\ne0$ and $1-\mathfrak g t_1\ne0$; $\mathfrak g_U\to\zeta/(1-\zeta^2)$, $\mathfrak g_V\to\zeta/(1-\zeta)$ are finite as $\zeta\ne\pm1$; the listed values of $\omega$ are exactly the zeros of $1-\mathfrak g_Ut_1^*$, $1-\mathfrak g_Vt_1^*$, $t_1^*+\frac{1+x}{2x}$ and $t_1^*\frac{1-x+\zeta}{1+\zeta}+\frac1{2x}$ in the closed forms \texttt{eq:RJclosed1}, \texttt{eq:RJclosedq} of paper2a (Theorem \texttt{thm:RJ}), whose remaining factors are finite and non-zero for $x=\pm\sqrt\zeta\ne\pm1$, $\zeta\ne-1$.
+\end{proof}
+\noindent VERIFIED: \texttt{P1f\_t1.py} finds $|t_1(q^*_j)-t_1^*|/|t^*_j|\approx0.91,\,1.44,\,1.53$ (stable in $j$) at $3/10$, $4/11$, $7/17$. At $1/4$ the formula gives $\omega=-1.1454972+1.1454972i$ and $t_1^*=0.072748612-0.57274861i=\frac{(\sqrt{15}-3)-(\sqrt{15}+3)i}{12}$, and $\Pi_1\to-3.0048+2.9237i$, $\Pi_q\to-2.7091+3.3891i$ at $x\to e^{i\pi/4}$: the values of \texttt{cor:Ui}, obtained there by a different route.
+
+\begin{proposition}[computer-assisted]\label{prop:cert}
+For every reduced $a/N$ with $3\le N\le150$, $N\le5a\le4N$, $a/N\ne\frac12$ (4116 cases), $Z_N\ne0$, $Z^+_N\ne0$ and the six $\omega$-conditions of Theorem~\ref{thm:C}(iii) hold; the certified moduli of $Z_N$, $Z^+_N$ and of the five transfer factors (both roots) are $\ge0.2331$.
+\end{proposition}
+\noindent Script \texttt{P1f\_transfer\_cert.py}: $Z,Z^\pm$ by the exact finite formula $\sum_k\gamma^{(\pm)}_ke^{\Phi(\zeta^k)}$ with $\gamma^{(\pm)}_k=\frac1N\sum_\nu\zeta^{-\nu^2\mp\nu-k\nu}$ and a rigorous tail; fails loudly; blocks $3$--$70$, $71$--$105$, $106$--$130$, $131$--$150$ all \texttt{CERT PASSED}.
+
+\begin{corollary}[computer-assisted]\label{cor:UV}
+For every $\zeta=\e(a/N)$ with $16\le N\le150$ and $\frac15\le\frac aN\le\frac45$, the poles of $U$ and of $V$ accumulate at $\pm\sqrt\zeta$ and $\pm\sqrt{\bar\zeta}$ (standing: Theorems \texttt{thm:model}, \texttt{thm:RJ}).
+\end{corollary}
+
+\section{What is not proved}\label{sec:open}
+\begin{enumerate}
+\item \textbf{Density of the poles of $U$ and $V$ on the arcs (OPEN).} Theorem~\ref{thm:C} reduces it to: for a dense set of $a/N$ in $[\frac15,\frac45]$, $Z^+_N(a/N)\ne0$ and $\omega(a/N)$ avoids six explicit values. $Z^\pm_N=Z_N(Y)$ at $Y=\zeta^{\mp1}$ is the generating function of Theorem~2 of P1d at a rotated point; Theorem M does not cover it. The Lemma~A regime of P1e ($|Z^\pm-1|\le e^{\mathcal A}-1$) covers only a nowhere dense set of $a/N$, since every rational $j/m$ has a neighbourhood of radius $\asymp|u_0|^m/m^2$ where $\mathcal A\ge\log2$; a hazard induction for $Z^\pm$ and a quantitative two-sided control of $\omega$ inside hazards would be needed. The certificate (4116 cases, margin $\ge0.233$, the margin essentially constant in $N$) is strong evidence (VERIFIED) but not a proof for $N>150$.
+\item \textbf{Theorem~\ref{thm:B} for $3\le N\le15$} is not proved here (except $N=2$, $N=4$: \texttt{prop:minusone}, \texttt{prop:qi}). The crude perturbation constant $\frac{\pi^2}6N^{-2}$ in Lemma~\ref{lem:LS}(b) needs $N\ge10$ (with thin margins) and is taken at $N\ge16$; a sampled check passes for all $5\le N\le13$ (VERIFIED). Not needed for Corollary~\ref{cor:dense}.
+\item The $O(t)$ of Laplace's method and $j_0$ are not explicit (as in paper2a).
+\end{enumerate}
+
+\paragraph{Files} (all in \texttt{rootunity\_zeros/general/P1f/} unless noted). \texttt{P1f\_model.py} (saddle model vs.\ $B$), \texttt{P1f\_zeros.py} (zeros vs.\ prediction), \texttt{P1f\_t1.py} ($t_1$, transfer factors at the zeros), \texttt{P1f\_zpm.py} ($Z^\pm$, floating), \texttt{P1f\_transfer\_cert.py} (Proposition~\ref{prop:cert}, Arb, fail-loud), \texttt{P1f\_landscape\_check.py} (sampled check of Lemma~\ref{lem:LS}), \texttt{P1f\_certlog.txt} (raw outputs); \texttt{../dround.py}, \texttt{../lowseed\_directed.txt}, \texttt{../base\_arc\_*.txt} (Task A). Every run used \verb|perl -e 'alarm 290; exec @ARGV'| and stayed below 300\,MB.
+
+\begin{thebibliography}{9}
+\bibitem{Olver1974} F.~W.~J.~Olver, \emph{Asymptotics and Special Functions}, Academic Press, 1974.
+\end{thebibliography}
+\end{document}

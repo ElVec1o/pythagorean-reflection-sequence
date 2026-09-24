@@ -1,0 +1,81 @@
+CERT 1/2 d>0 r=0.0083 eta=0.102 n2=60 V0=0.131191 kappa=3: B<=0.4945 N*>=6.76e+21  ReF0 in [+/- 1.35e-4]  kappa_seed<=0.000270  sqrt(pi/2A)>=0.9453  min|S_amp|>=1.142  c_seed>=0.5463
+CERT 1/3 d>0 r=0.004 eta=0.087 n2=60 V0=0.102817 kappa=3: B<=0.2927 N*>=4.26e+19  ReF0 in [-0.0004 +/- 3.83e-5]  kappa_seed<=0.00132  sqrt(pi/2A)>=0.9982  min|S_amp|>=1.087  c_seed>=0.7682
+Traceback (most recent call last):
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/P1e_lowseed.py", line 38, in <module>
+    p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/dround.py", line 35, in fup
+    m = math.ceil(y/10.0**e)
+                  ~^~~~~~~~
+ZeroDivisionError: float division by zero
+FAILED 2 3 0.055 0.003
+CERT 1/4 d>0 r=0.003 eta=0.055 n2=60 V0=0.063427 kappa=3: B<=0.7730 N*>=1.00e+19  ReF0 in [+/- 8.37e-6]  kappa_seed<=9.79e-6  sqrt(pi/2A)>=1.015  min|S_amp|>=1.043  c_seed>=0.2406
+CERT 3/4 d>0 r=0.0007 eta=0.0257 n2=60 V0=0.0288367 kappa=3: B<=0.8204 N*>=1.07e+23  ReF0 in [+/- 1.93e-6]  kappa_seed<=2.10e-6  sqrt(pi/2A)>=1.016  min|S_amp|>=1.052  c_seed>=0.1921
+Traceback (most recent call last):
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/P1e_lowseed.py", line 38, in <module>
+    p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/dround.py", line 35, in fup
+    m = math.ceil(y/10.0**e)
+                  ~^~~~~~~~
+ZeroDivisionError: float division by zero
+FAILED 1 5 0.0257 0.0005
+CERT 2/5 d>0 r=0.003 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.05722 N*>=2.03e+20  ReF0 in [-8e-6 +/- 3.36e-7]  kappa_seed<=4.10e-5  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.084  c_seed>=1.022
+Traceback (most recent call last):
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/P1e_lowseed.py", line 38, in <module>
+    p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/dround.py", line 35, in fup
+    m = math.ceil(y/10.0**e)
+                  ~^~~~~~~~
+ZeroDivisionError: float division by zero
+FAILED 3 5 0.087 0.003
+Traceback (most recent call last):
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/P1e_lowseed.py", line 38, in <module>
+    p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/dround.py", line 35, in fup
+    m = math.ceil(y/10.0**e)
+                  ~^~~~~~~~
+ZeroDivisionError: float division by zero
+FAILED 2 7 0.055 0.002
+CERT 5/7 d>0 r=0.002 eta=0.055 n2=60 V0=0.0649306 kappa=3: B<=0.3032 N*>=3.41e+21  ReF0 in [-1.1e-6 +/- 7.31e-8]  kappa_seed<=8.22e-6  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.077  c_seed>=0.7511
+CERT 3/7 d>0 r=0.002 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.02728 N*>=1.43e+21  ReF0 in [-2e-7 +/- 4.12e-8]  kappa_seed<=1.69e-6  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.073  c_seed>=1.044
+Traceback (most recent call last):
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/P1e_lowseed.py", line 38, in <module>
+    p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/dround.py", line 35, in fup
+    m = math.ceil(y/10.0**e)
+                  ~^~~~~~~~
+ZeroDivisionError: float division by zero
+FAILED 4 7 0.102 0.002
+CERT 3/8 d>0 r=0.002 eta=0.087 n2=60 V0=0.102707 kappa=3: B<=0.02049 N*>=4.69e+21  ReF0 in [+/- 4.78e-9]  kappa_seed<=9.70e-9  sqrt(pi/2A)>=1.000  min|S_amp|>=1.094  c_seed>=1.072
+CERT 5/8 d>0 r=0.002 eta=0.087 n2=60 V0=0.102707 kappa=3: B<=0.01971 N*>=3.67e+21  ReF0 in [+/- 4.90e-9]  kappa_seed<=1.02e-8  sqrt(pi/2A)>=1.000  min|S_amp|>=1.095  c_seed>=1.074
+CERT 2/9 d>0 r=0.0005 eta=0.0257 n2=60 V0=0.0303403 kappa=3: B<=0.5569 N*>=3.85e+20  ReF0 in [-4.0e-7 +/- 9.03e-9]  kappa_seed<=3.63e-6  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.018  c_seed>=0.4515
+Traceback (most recent call last):
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/P1e_lowseed.py", line 38, in <module>
+    p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/dround.py", line 35, in fup
+    m = math.ceil(y/10.0**e)
+                  ~^~~~~~~~
+ZeroDivisionError: float division by zero
+FAILED 7 9 0.0257 0.0005
+CERT 4/9 d>0 r=0.0015 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.02223 N*>=2.71e+21  ReF0 in [-9e-9 +/- 5.92e-10]  kappa_seed<=7.86e-8  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.066  c_seed>=1.043
+Traceback (most recent call last):
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/P1e_lowseed.py", line 38, in <module>
+    p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/vico/Documents/elvec1o/certify_run/code/zeta_probe/rootunity_zeros/general/dround.py", line 35, in fup
+    m = math.ceil(y/10.0**e)
+                  ~^~~~~~~~
+ZeroDivisionError: float division by zero
+FAILED 5 9 0.102 0.002
+CERT 2/3 d>0 r=0.003 eta=0.055 n2=60 V0=0.0650389 kappa=3: B<=0.6473 N*>=2.62e+24  ReF0 in [0.0004 +/- 4.23e-5]  kappa_seed<=0  sqrt(pi/2A)>=0.9976  min|S_amp|>=1.092  c_seed>=0.3847
+CERT 1/5 d>0 r=0.0005 eta=0.0257 n2=60 V0=0.0303621 kappa=3: B<=0.4907 N*>=1.71e+18  ReF0 in [9e-5 +/- 2.87e-6]  kappa_seed<=0  sqrt(pi/2A)>=0.9994  min|S_amp|>=0.9679  c_seed>=0.4927
+CERT 3/5 d>0 r=0.003 eta=0.087 n2=60 V0=0.102709 kappa=3: B<=0.06302 N*>=2.12e+22  ReF0 in [8e-6 +/- 3.24e-7]  kappa_seed<=0  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.086  c_seed>=1.018
+CERT 2/7 d>0 r=0.002 eta=0.055 n2=60 V0=0.0649306 kappa=3: B<=0.3019 N*>=5.32e+21  ReF0 in [1.1e-6 +/- 5.13e-8]  kappa_seed<=0  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.075  c_seed>=0.7511
+CERT 4/7 d>0 r=0.002 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.02695 N*>=1.25e+21  ReF0 in [2.4e-7 +/- 7.80e-9]  kappa_seed<=0  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.074  c_seed>=1.046
+CERT 7/9 d>0 r=0.0005 eta=0.0257 n2=60 V0=0.0303403 kappa=3: B<=0.5579 N*>=3.31e+20  ReF0 in [4.0e-7 +/- 9.41e-9]  kappa_seed<=0  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.018  c_seed>=0.4505
+CERT 5/9 d>0 r=0.002 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.03172 N*>=2.42e+21  ReF0 in [9e-9 +/- 5.81e-10]  kappa_seed<=0  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.067  c_seed>=1.034

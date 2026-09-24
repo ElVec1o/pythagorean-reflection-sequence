@@ -6,6 +6,7 @@
 import sys, time
 from math import log, pi
 from flint import arb, acb
+from dround import fdn, fup
 from P1e_cert import certify, Fail, setup_x, find_t0, e, PI, I, aup, li2_ball
 p, q, eta = int(sys.argv[1]), int(sys.argv[2]), float(sys.argv[3]); RMIN = float(sys.argv[4]); RSTART = float(sys.argv[5]) if len(sys.argv) > 5 else 1.0
 _, _, U, _ = setup_x(p, q, 0.0, 1e-9, q)
@@ -28,11 +29,14 @@ for r in (0.0083, 0.006, 0.004, 0.003, 0.002, 0.0015, 0.001, 7e-4, 5e-4, 3e-4, 2
             F0 = PI*I*tb*tb/2 + li2_ball(W0)/(2*PI*I*q*q)
             kap = q*(-F0.real).max(arb(0))
             import re
-            Smin = min(float(re.search(r'\|S\|>=([0-9.e+-]+)', rw).group(1)) for rw in rows)
-            cseed = (1 - B.upper().mid())*float((PI/(2*Aup)).sqrt().lower().mid())*Smin
-            print('CERT %d/%d d>0 r=%g eta=%g n2=60 V0=%.6g kappa=%g: B<=%s N*>=%s  ReF0 in %s  kappa_seed<=%s  sqrt(pi/2A)>=%s  min|S_amp|>=%.4g  c_seed>=%.4g' % (
-                p, q, r, eta, V0, ka, B.str(4, radius=False), Ns.str(3, radius=False), F0.real.str(4), arb(kap.upper()).str(3, radius=False),
-                (PI/(2*Aup)).sqrt().str(4, radius=False), Smin, cseed), flush=True)
+            Svals = [re.search(r'\|S\|>=([0-9.e+-]+)', rw).group(1) for rw in rows]
+            Smin_s = min(Svals, key=float)
+            # Smin is parsed from rows printed by fdn (directed DOWN), so it is a rigorous lower bound; all arithmetic below is Arb.
+            Sm = arb(Smin_s)
+            cseed = (1 - arb(B.upper()))*arb((PI/(2*Aup)).sqrt().lower())*Sm
+            print('CERT %d/%d d>0 r=%g eta=%g n2=60 V0=%.6g kappa=%g: B<=%s N*>=%s  ReF0 in %s  kappa_seed<=%s  sqrt(pi/2A)>=%s  min|S_amp|>=%s  c_seed>=%s' % (
+                p, q, r, eta, V0, ka, fup(B, 4), fdn(Ns, 3), F0.real.str(4), fup(arb(kap.upper()), 3),
+                fdn((PI/(2*Aup)).sqrt(), 4), fdn(Sm, 4), fdn(cseed, 4)), flush=True)
             sys.exit(0)
         print('  r=%g ka=%g: B=%s' % (r, ka, B.str(3, radius=False)), flush=True)
 print('NONE %d/%d eta=%g' % (p, q, eta))
