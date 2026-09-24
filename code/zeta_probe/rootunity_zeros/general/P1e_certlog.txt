@@ -1,0 +1,142 @@
+# P1e certificate log (2026-09-24). Raw outputs of the runs cited in P1e_lemma.tex.
+## lsf_1_2.txt
+CERT 1/2 d>0 r=0.0083 eta=0.102 n2=60 V0=0.131191 kappa=3: B<=0.4944 N*>=6.76e+21  ReF0 in [+/- 1.35e-4]  kappa_seed<=0.000270  sqrt(pi/2A)>=0.9454  min|S_amp|>=1.144  c_seed>=0.5468
+## lsf_1_3.txt
+CERT 1/3 d>0 r=0.004 eta=0.087 n2=60 V0=0.102817 kappa=3: B<=0.2927 N*>=4.26e+19  ReF0 in [-0.0004 +/- 3.83e-5]  kappa_seed<=0.00131  sqrt(pi/2A)>=0.9983  min|S_amp|>=1.089  c_seed>=0.7689
+## lsf_1_4.txt
+CERT 1/4 d>0 r=0.003 eta=0.055 n2=60 V0=0.063427 kappa=3: B<=0.7730 N*>=1.00e+19  ReF0 in [+/- 8.37e-6]  kappa_seed<=9.79e-6  sqrt(pi/2A)>=1.015  min|S_amp|>=1.045  c_seed>=0.2409
+## lsf_1_5.txt
+CERT 1/5 d>0 r=0.0005 eta=0.0257 n2=60 V0=0.0303621 kappa=3: B<=0.4907 N*>=1.72e+18  ReF0 in [9e-5 +/- 2.87e-6]  kappa_seed<=0  sqrt(pi/2A)>=0.9994  min|S_amp|>=0.9681  c_seed>=0.4928
+## lsf_2_3.txt
+CERT 2/3 d>0 r=0.003 eta=0.055 n2=60 V0=0.0650389 kappa=3: B<=0.6472 N*>=2.63e+24  ReF0 in [0.0004 +/- 4.23e-5]  kappa_seed<=0  sqrt(pi/2A)>=0.9977  min|S_amp|>=1.093  c_seed>=0.3847
+## lsf_2_5.txt
+CERT 2/5 d>0 r=0.003 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.05721 N*>=2.04e+20  ReF0 in [-8e-6 +/- 3.36e-7]  kappa_seed<=4.10e-5  sqrt(pi/2A)>=1.000  min|S_amp|>=1.086  c_seed>=1.024
+## lsf_2_7.txt
+CERT 2/7 d>0 r=0.002 eta=0.055 n2=60 V0=0.0649306 kappa=3: B<=0.3018 N*>=5.33e+21  ReF0 in [1.1e-6 +/- 5.13e-8]  kappa_seed<=0  sqrt(pi/2A)>=1.000  min|S_amp|>=1.077  c_seed>=0.7519
+## lsf_2_9.txt
+CERT 2/9 d>0 r=0.0005 eta=0.0257 n2=60 V0=0.0303403 kappa=3: B<=0.5568 N*>=3.85e+20  ReF0 in [-4.0e-7 +/- 9.03e-9]  kappa_seed<=3.62e-6  sqrt(pi/2A)>=1.000  min|S_amp|>=1.019  c_seed>=0.4516
+## lsf_3_4.txt
+CERT 3/4 d>0 r=0.0007 eta=0.0257 n2=60 V0=0.0288367 kappa=3: B<=0.8204 N*>=1.07e+23  ReF0 in [+/- 1.93e-6]  kappa_seed<=2.09e-6  sqrt(pi/2A)>=1.016  min|S_amp|>=1.054  c_seed>=0.1924
+## lsf_3_5.txt
+CERT 3/5 d>0 r=0.003 eta=0.087 n2=60 V0=0.102709 kappa=3: B<=0.06302 N*>=2.13e+22  ReF0 in [8e-6 +/- 3.24e-7]  kappa_seed<=0  sqrt(pi/2A)>=0.9999  min|S_amp|>=1.087  c_seed>=1.018
+## lsf_3_7.txt
+CERT 3/7 d>0 r=0.002 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.02727 N*>=1.44e+21  ReF0 in [-2e-7 +/- 4.12e-8]  kappa_seed<=1.69e-6  sqrt(pi/2A)>=1.000  min|S_amp|>=1.074  c_seed>=1.045
+## lsf_3_8.txt
+CERT 3/8 d>0 r=0.002 eta=0.087 n2=60 V0=0.102707 kappa=3: B<=0.02048 N*>=4.69e+21  ReF0 in [+/- 4.78e-9]  kappa_seed<=9.70e-9  sqrt(pi/2A)>=1.000  min|S_amp|>=1.095  c_seed>=1.073
+## lsf_4_7.txt
+CERT 4/7 d>0 r=0.002 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.02694 N*>=1.25e+21  ReF0 in [2.4e-7 +/- 7.80e-9]  kappa_seed<=0  sqrt(pi/2A)>=1.000  min|S_amp|>=1.076  c_seed>=1.047
+## lsf_4_9.txt
+CERT 4/9 d>0 r=0.0015 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.02222 N*>=2.72e+21  ReF0 in [-9e-9 +/- 5.92e-10]  kappa_seed<=7.85e-8  sqrt(pi/2A)>=1.000  min|S_amp|>=1.068  c_seed>=1.044
+## lsf_5_7.txt
+CERT 5/7 d>0 r=0.002 eta=0.055 n2=60 V0=0.0649306 kappa=3: B<=0.3032 N*>=3.42e+21  ReF0 in [-1.1e-6 +/- 7.31e-8]  kappa_seed<=8.21e-6  sqrt(pi/2A)>=1.000  min|S_amp|>=1.078  c_seed>=0.7512
+## lsf_5_8.txt
+CERT 5/8 d>0 r=0.002 eta=0.087 n2=60 V0=0.102707 kappa=3: B<=0.01971 N*>=3.68e+21  ReF0 in [+/- 4.90e-9]  kappa_seed<=1.01e-8  sqrt(pi/2A)>=1.000  min|S_amp|>=1.097  c_seed>=1.075
+## lsf_5_9.txt
+CERT 5/9 d>0 r=0.002 eta=0.102 n2=60 V0=0.120417 kappa=3: B<=0.03171 N*>=2.42e+21  ReF0 in [9e-9 +/- 5.81e-10]  kappa_seed<=0  sqrt(pi/2A)>=1.000  min|S_amp|>=1.068  c_seed>=1.034
+## lsf_7_9.txt
+CERT 7/9 d>0 r=0.0005 eta=0.0257 n2=60 V0=0.0303403 kappa=3: B<=0.5579 N*>=3.31e+20  ReF0 in [4.0e-7 +/- 9.41e-9]  kappa_seed<=0  sqrt(pi/2A)>=1.000  min|S_amp|>=1.019  c_seed>=0.4505
+## Case A covering
+discs 342, segments 326
+evaluations 22546, max A <= 0.6057, failures 0
+CASE A COVERED on [1/5,1/2] with A < [0.6800 +/- 3e-9]
+## Lemma B' bp_10.txt
+n=10 done, seeds so far 2, fails 0, max E <= 0.00190
+n=11 done, seeds so far 8, fails 0, max E <= 0.00190
+n=12 done, seeds so far 10, fails 0, max E <= 0.00190
+n=13 done, seeds so far 18, fails 0, max E <= 0.00190
+n=14 done, seeds so far 22, fails 0, max E <= 0.00190
+n=15 done, seeds so far 26, fails 0, max E <= 0.00190
+n=16 done, seeds so far 30, fails 0, max E <= 0.00190
+n=17 done, seeds so far 40, fails 0, max E <= 0.00190
+n=18 done, seeds so far 44, fails 0, max E <= 0.00190
+n=19 done, seeds so far 56, fails 0, max E <= 0.00190
+n=20 done, seeds so far 60, fails 0, max E <= 0.00190
+n=21 done, seeds so far 66, fails 0, max E <= 0.00190
+n=22 done, seeds so far 72, fails 0, max E <= 0.00190
+n=23 done, seeds so far 86, fails 0, max E <= 0.00190
+n=24 done, seeds so far 92, fails 0, max E <= 0.00190
+n=25 done, seeds so far 104, fails 0, max E <= 0.00190
+n=26 done, seeds so far 110, fails 0, max E <= 0.00190
+## Lemma B' bp_27.txt
+n=27 done, seeds so far 10, fails 0, max E <= 1.28e-8
+n=28 done, seeds so far 16, fails 0, max E <= 1.28e-8
+n=29 done, seeds so far 34, fails 0, max E <= 1.28e-8
+n=30 done, seeds so far 40, fails 0, max E <= 1.28e-8
+n=31 done, seeds so far 58, fails 0, max E <= 1.28e-8
+n=32 done, seeds so far 68, fails 0, max E <= 1.28e-8
+n=33 done, seeds so far 80, fails 0, max E <= 1.28e-8
+n=34 done, seeds so far 90, fails 0, max E <= 1.28e-8
+n=35 done, seeds so far 104, fails 0, max E <= 1.28e-8
+n=36 done, seeds so far 110, fails 0, max E <= 1.28e-8
+## Lemma B' bp_37.txt
+n=37 done, seeds so far 22, fails 0, max E <= 1.40e-11
+n=38 done, seeds so far 32, fails 0, max E <= 1.40e-11
+n=39 done, seeds so far 46, fails 0, max E <= 1.40e-11
+n=40 done, seeds so far 56, fails 0, max E <= 1.40e-11
+n=41 done, seeds so far 80, fails 0, max E <= 1.40e-11
+n=42 done, seeds so far 88, fails 0, max E <= 1.40e-11
+n=43 done, seeds so far 114, fails 0, max E <= 1.40e-11
+## Lemma B' bp_44.txt
+n=44 done, seeds so far 12, fails 0, max E <= 4.11e-14
+n=45 done, seeds so far 26, fails 0, max E <= 6.20e-14
+n=46 done, seeds so far 38, fails 0, max E <= 6.20e-14
+n=47 done, seeds so far 66, fails 0, max E <= 6.20e-14
+n=48 done, seeds so far 76, fails 0, max E <= 6.20e-14
+## Lemma B' bp_49.txt
+n=49 done, seeds so far 26, fails 0, max E <= 4.15e-15
+n=50 done, seeds so far 38, fails 0, max E <= 4.15e-15
+n=51 done, seeds so far 56, fails 0, max E <= 4.15e-15
+n=52 done, seeds so far 70, fails 0, max E <= 4.15e-15
+## Lemma B lbh_0.26288.txt (lines n=53..3000; fails:)
+0
+n=53  E(n)<=0.424  R(n)<=0.0685  OK []
+n=54  E(n)<=0.309  R(n)<=0.0509  OK []
+n=3000  E(n)<=3.05e-435  R(n)<=5.49e-436  OK []
+## Lemma B lbh_0.28869.txt (lines n=53..3000; fails:)
+0
+n=53  E(n)<=0.420  R(n)<=0.0771  OK []
+n=54  E(n)<=0.305  R(n)<=0.0573  OK []
+n=3000  E(n)<=1.26e-435  R(n)<=2.58e-436  OK []
+## Lemma B lbh_0.35357.txt (lines n=53..3000; fails:)
+0
+n=53  E(n)<=0.458  R(n)<=0.110  OK []
+n=54  E(n)<=0.330  R(n)<=0.0815  OK []
+n=3000  E(n)<=1.53e-434  R(n)<=4.20e-435  OK []
+## Lemma B lbh_0.42535.txt (lines n=53..3000; fails:)
+0
+n=53  E(n)<=0.492  R(n)<=0.153  OK []
+n=54  E(n)<=0.350  R(n)<=0.114  OK []
+n=3000  E(n)<=4.60e-434  R(n)<=1.70e-434  OK []
+## base base_106.txt
+q<=130  maxD1<=0.009119 (64, 129)  maxD2<=0.0002030 (54, 107)  maxLam<=12.02 (83, 125)  min|Z|>=0.9384
+## base base_131.txt
+q<=150  maxD1<=0.009121 (75, 149)  maxD2<=0.0001728 (65, 131)  maxLam<=13.58 (50, 149)  min|Z|>=0.9135
+## base base_2.txt
+q<=70  maxD1<=0.1103 (4, 5)  maxD2<=0.03103 (1, 2)  maxLam<=8.476 (14, 69)  min|Z|>=0.9768
+## base base_71.txt
+q<=105  maxD1<=0.009115 (52, 105)  maxD2<=0.0002896 (36, 71)  maxLam<=10.49 (22, 105)  min|Z|>=0.9679
+## logderiv f11p
+10/109 (theta=+1 at 1/11): |Z_q|>=1.057  Lam<=17.90  D1<=0.04666  D2<=0.001946
+28/307 (theta=+1 at 1/11): |Z_q|>=0.4805  Lam<=87.96  D1<=0.02896  D2<=0.002332
+91/1000 (theta=+1 at 1/11): |Z_q|>=0.03825  Lam<=1.036e+4  D1<=0.03516  D2<=0.001675
+182/2001 (theta=+1 at 1/11): |Z_q|>=0.0009951  Lam<=2.707e+7  D1<=0.03658  D2<=0.001553
+## logderiv f21m
+11/116 (theta=-1 at 2/21): |Z_q|>=1.351  Lam<=9.259  D1<=0.04158  D2<=0.0005360
+29/305 (theta=-1 at 2/21): |Z_q|>=1.390  Lam<=20.57  D1<=0.01932  D2<=0.0001982
+97/1019 (theta=-1 at 2/21): |Z_q|>=1.635  Lam<=32.33  D1<=0.009348  D2<=3.867e-5
+191/2006 (theta=-1 at 2/21): |Z_q|>=2.065  Lam<=26.47  D1<=0.007215  D2<=8.173e-6
+## logderiv f21p
+11/115 (theta=+1 at 2/21): |Z_q|>=1.197  Lam<=14.49  D1<=0.03506  D2<=0.0002443
+29/304 (theta=+1 at 2/21): |Z_q|>=1.174  Lam<=17.08  D1<=0.009973  D2<=0.0001924
+97/1018 (theta=+1 at 2/21): |Z_q|>=0.9993  Lam<=37.30  D1<=0.0005920  D2<=8.209e-5
+191/2005 (theta=+1 at 2/21): |Z_q|>=0.7912  Lam<=97.51  D1<=0.002768  D2<=5.468e-5
+## logderiv fam 1 11 -1 (terminal output)
+9/100 (theta=-1 at 1/11): |Z_q|>=2.084  Lam<=6.450  D1<=0.06580  D2<=0.003108
+28/309 (theta=-1 at 1/11): |Z_q|>=4.488  Lam<=9.983  D1<=0.04738  D2<=0.001116
+91/1002 (theta=-1 at 1/11): |Z_q|>=56.26  Lam<=7.593  D1<=0.04090  D2<=0.001269
+182/2003 (theta=-1 at 1/11): |Z_q|>=2.162e+3  Lam<=13.47  D1<=0.03946  D2<=0.001350
+## seed 1/11 (P1e_cert.py 1 11 1e-5 600 0.012 0.008 4 6 1e-3 1 32 0.4 48)
+SEED 1/11 side d>0: r=1e-05 n2=600 eta=0.012 V0=0.008 kappa=4 => B <= 0.3150, N* >= 3.36e+13  CERTIFIED
+## seed 10/11 (P1e_cert.py 10 11 1e-5 600 0.012 0.008 4 6 1e-3 1 32 0.4 48)
+SEED 10/11 side d>0: r=1e-05 n2=600 eta=0.012 V0=0.008 kappa=4 => B <= 0.1994, N* >= 3.12e+13  CERTIFIED
+## P1d_sanity 1 11 600 10000: |Sigma/Main'_N - 1| = 6.05e-4 at d = +-9.1e-6 (K ~ 67)

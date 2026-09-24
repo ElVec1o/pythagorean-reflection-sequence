@@ -1,0 +1,216 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\title{P1e: the continued-fraction induction --- renormalisation of the amplitude,\\ the triangle-loss obstruction, a hazard induction that proves $Z_N\neq0$ on $[\tfrac15,\tfrac45]$,\\ and the seed $1/11$\\ \small research programme P1, fifth atom, 2026-09-24}
+\date{}
+\begin{document}\maketitle
+
+Notation and numbering of P1d\_lemma.tex are used throughout: Theorem~1 (Gauss factorisation $\Sigma_N=G^*_Ne^{-\Phi(\varepsilon)}Z_N$), Theorem~3 (Fresnel representation), Lemmas W, conj, dec, lap, Definition main ($\mathrm{Main}'_Z$, $S_{\rm amp}$, $t_0$, $F$, $L$, $B_k$, $\gamma_k$).
+Labels: PROVED = complete proof here or in P1d; ``computer-assisted'' = reduced to finitely many Arb ball-arithmetic inequalities checked by the named script. VERIFIED = numerics, not a proof. HEURISTIC = argument without error control.
+
+\paragraph{Outcome.}
+\begin{enumerate}
+\item[(a)] \textbf{Theorem M (PROVED, computer-assisted).} For every $N\ge1$ and every $a$ with $\gcd(a,N)=1$ and $a/N\in[\frac15,\frac45]$ (equivalently $\ell\ge\log(4\sin\frac\pi5)=0.8548$): $Z_N(a/N)\ne0$, hence $\Sigma_N\ne0$ and $S_0\ne0$. Quantitatively $|Z_N|\ge0.02\,e^{-0.005N}$.
+The proof is an induction on $N$, not along the continued fraction but along a \emph{hazard} decomposition, which is the continued-fraction recursion made $N$-free (Section~\ref{sec:M}).
+\item[(b)] \textbf{Item (ii) of the brief is exactly the induction hypothesis} (Lemma~\ref{lem:R}, PROVED): $S_{\rm amp}(p/q;x)\to(1-w_q)^{-1/(2q)}Z_q(p/q)$, with an explicit error bound. VERIFIED to $10^{-8}$--$10^{-10}$ at 8 seeds.
+\item[(c)] \textbf{The obstruction to items (i),(iii) as posed} (VERIFIED): the error bound of Lemma lap sums errors over $k$ with the triangle inequality. The loss $\Lambda=\sum_k|\gamma_k||e^{B_k}|/|S_{\rm amp}|$ grows exponentially along drift families ($\Lambda\approx2.7\cdot10^7$ at $182/2001$). Structured quantities stay bounded: $D_1\le0.05$ and $D_2\le0.003$ on the same families. A $q$-uniform version of Lemma lap therefore cannot work near drifted seeds. Theorem M avoids the loss by applying the seed lemma only in exponentially thin neighbourhoods, where the loss is beaten by the size of $d$. This works while $|u|e^{2\pi\eta}<0.618$ (golden threshold), and the region $\ell<0.48$ stays OPEN.
+\item[(d)] \textbf{Seed $1/11$ fixed} (PROVED, computer-assisted). A sharpened outer-contour bound (Lemma~\ref{lem:O}) certifies $1/11$ and $10/11$ with $r=10^{-5}$, $B\le0.315$ and $0.199$ respectively, $n_2=600$ and $N^*\ge3.1\cdot10^{13}$.
+\end{enumerate}
+
+\section{Exact finite formula and renormalisation}
+\begin{lemma}[Zk; PROVED]\label{lem:Zk}
+Let $x_0=p/q$ in lowest terms, with $\ell(x_0)>0$ and $4\nmid q$ or $q\ell>\log4$. At level $q$ (i.e.\ $u=u_q=\lambda_q^2/c_0$, $\Phi_q$ excluding $q\mid n$),
+\[Z_q(p/q)=\sum_{n\ge0}\psi_n\zeta_0^{-n^2}=\sum_{k\bmod q}\gamma_k\,e^{\Phi_q(\zeta_0^k)},\qquad\gamma_k=\frac1q\sum_{\nu\bmod q}\zeta_0^{-\nu^2-k\nu}.\]
+\end{lemma}
+\begin{proof}
+$n\mapsto\zeta_0^{-n^2}$ is $q$-periodic, so $\zeta_0^{-n^2}=\sum_k\gamma_k\zeta_0^{kn}$ (finite Fourier inversion).
+$\sum_n|\psi_n|<\infty$ because $e^{\Phi_q}$ is analytic on $|Y|<1/|u_q|$ and $|u_q|<1$. Exchange the sums.
+\end{proof}
+
+\begin{lemma}[R: the amplitude is the level-$q$ object; PROVED]\label{lem:R}
+In the setting of Definition main at the seed $p/q$, let $W_0=U\e(-qt_0)$ and $X_k:=-\frac1{2q}\log(1-w_q)+\Phi_q(\zeta_0^k)$. Then
+\[\Big|S_{\rm amp}-(1-w_q)^{-1/(2q)}Z_q(p/q)\Big|\le\Big(\sum_k|\gamma_k||e^{X_k}|\Big)\,(e^{\delta_R}-1),\]
+with
+\[\delta_R\le\frac{|W_0|+|w_q|}{2q(1-\max)}+\frac q2\,\epsilon_u\frac{y'}{1-y'}+\frac\pi4q^2d\,\frac{g}{1-g}+\frac q4\,\frac{g^{n_2+1}}{(n_2+1)(1-g)},\]
+where $g\ge|u_0|,|u_q|$, $y'=(1+\epsilon_u)g$, and $\epsilon_u=|\tilde u/u_q-1|$ for $\tilde u=u_0\e(-t_0)$.
+Here $\epsilon_u\le\exp(4\pi dg+|\lambda_N^2-1|+|\lambda_q^2-1|+2\pi|t_0|e^{2\pi|t_0|})-1$.
+In particular $S_{\rm amp}\to(1-w_q)^{-1/(2q)}Z_q(p/q)$ as $d\to0$, $N\to\infty$, $n_2\to\infty$.
+\end{lemma}
+\begin{proof}
+The saddle equation $\pi it_0+\frac1q\log(1-W_0)=0$ gives $\e(-t_0)=(1-W_0)^{2/q}$, so $\tilde u^q=U(1-W_0)^2=W_0$. At level $q$, $u_q^q=w_q=c_0^{-q}(1-w_q)^2$.
+Hence $B_k(t_0)=-\frac1{2q}\log(1-W_0)+\sum_{m\in A}\tilde u^m\zeta_0^{km}/(m(1-\zeta^{-m}))$, and this differs from $X_k$ in three ways:
+\begin{itemize}
+\item $\tilde u$ against $u_q$: $|\tilde u^m-u_q^m|\le m\epsilon_u(1+\epsilon_u)^{m-1}|u_q|^m$, with $|1-\zeta^{-m}|\ge2/q$ for $m\le n_2$.
+\item $\zeta$ against $\zeta_0$ in the denominators: $|\frac1{1-\zeta^{-m}}-\frac1{1-\zeta_0^{-m}}|\le 2\pi md\cdot\frac q2\cdot\frac q4$.
+\item The truncation $m>n_2$: $|1-\zeta_0^{-m}|\ge4/q$.
+\end{itemize}
+Then $|e^{a}-e^{b}|\le|e^b|(e^{|a-b|}-1)$, summed with weights $|\gamma_k|$, and Lemma~\ref{lem:Zk} identifies $\sum_k\gamma_ke^{X_k}$.
+The bound on $\epsilon_u$ uses $|c_0/c-1|\le4\pi d/|c|$, Lemma W at levels $N$ and $q$, and $|\e(-t_0)-1|\le2\pi|t_0|e^{2\pi|t_0|}$.
+\end{proof}
+VERIFIED (\texttt{P1e\_renorm.py}, $N\approx10^8$, $n_2=200$). $Z_q$ by Lemma~\ref{lem:Zk} agrees with $\Sigma_q/(G^*_qe^{-\Phi_q(\varepsilon)})$ to $10^{-25}$--$10^{-51}$. $|S_{\rm amp}/((1-w_q)^{-1/2q}Z_q)-1|$ is:
+$1.5\cdot10^{-9}$ (1/3), $8\cdot10^{-10}$ (2/5), $8\cdot10^{-10}$ (3/7), $6\cdot10^{-8}$ (1/11), $9\cdot10^{-10}$ (4/9), $4\cdot10^{-10}$ (5/12), $3.5\cdot10^{-8}$ (2/21), $2\cdot10^{-9}$ (18/53).
+Every case is $O(d)$.
+
+\section{Why a $q$-uniform Lemma lap cannot close the induction (VERIFIED)}
+Lemma lap bounds $|Z_N/\mathrm{Main}'_Z-1|$ by $\sum_k|\gamma_k|(r_1+\dots+r_5)/|S_{\rm amp}|$. Each $r_i$ carries a factor $\sup|e^{B_k}|$, so the bound carries the loss factor $\Lambda=\sum_k|\gamma_k||e^{X_k}|/|Z_q|$.
+\texttt{P1e\_logderiv.py} encloses (in Arb, rigorously) $|Z_q|$, $\Lambda$, and the moment ratios
+\[D_1=\frac{|f'(0)|}{2\pi q|f(0)|},\qquad D_2=\frac{|f''(0)|}{(2\pi q)^2|f(0)|},\qquad f(t)=\sum_k\gamma_ke^{\Phi_q(\zeta_0^k\e(-t))}.\]
+\begin{center}\small\begin{tabular}{lllll}\toprule
+seed (family) & $|Z_q|\ge$ & $\Lambda\le$ & $D_1\le$ & $D_2\le$\\\midrule
+10/109 ($\theta=+1$ at 1/11) & 1.057 & 17.9 & 0.047 & 0.0019\\
+28/307 & 0.48 & 88 & 0.029 & 0.0023\\
+91/1000 & 0.038 & $1.0\cdot10^4$ & 0.035 & 0.0017\\
+182/2001 & $9.95\cdot10^{-4}$ & $2.7\cdot10^7$ & 0.037 & 0.0016\\
+182/2003 ($\theta=-1$ at 1/11) & $2.2\cdot10^3$ & 13.5 & 0.039 & 0.0014\\
+191/2005 ($\theta=+1$ at 2/21) & 0.79 & 97.5 & 0.0028 & $5\cdot10^{-5}$\\
+all $q\le150$, $\ell\ge0.855$ & 0.91 & 13.6 & 0.11 & 0.031\\\bottomrule
+\end{tabular}\end{center}
+Two points follow.
+\begin{itemize}
+\item $Z_q$ itself drifts. The drift of $\Sigma_N$ found in P1d is shared between $e^{-\Phi(\varepsilon)}$ and $Z$, and on the $\theta=+1$ side at $1/11$ it is in $Z$. So $\Lambda$ grows exponentially in $q$, like $e^{0.008q}$ here.
+\item $D_1$ and $D_2$ stay bounded.
+\end{itemize}
+Hence (HEURISTIC) the natural strengthened induction hypothesis for the full arc is a \emph{moment} hypothesis: $|f^{(j)}(t)|\le C_j(2\pi q)^j|f(0)|$ on $|t|\lesssim1/q$. The error of the level-$N$ main term would then be a structured sum, of relative size about $D_2(2\pi q)^2d/A\approx0.03\,q/q'$, with no loss factor $\Lambda$. This route is not carried out here (OPEN).
+Theorem M below sidesteps it in the regime where it can.
+
+\section{The hazard induction}\label{sec:M}
+Fix $y=\frac12$ and $\tau=\frac1{50}$. For a reduced fraction $j/n$ define its \emph{hazard radius}
+\[\varepsilon_n=\begin{cases}\text{(low seeds, $n\le9$)}&\text{the certified radii of Table~\ref{tab:low}}\\ 2y^n/n^2&10\le n\le52\\ y^n/(4\tau)&n\ge53,\end{cases}\]
+and the hazard $H(j/n)=\{x:0<|x-j/n|<\varepsilon_n\}$ (one-sided radii for the low seeds).
+Write the arc piece as the four regions $[\frac15,\frac14],[\frac14,\frac13],[\frac13,\frac25],[\frac25,\frac12]$ (and mirror images). On region $i$ put $g_i=\sup|u_0|$, which is $0.42535$, $0.35357$, $0.28869$, $0.26288$ respectively, and $\eta_i$ with $g_ie^{2\pi\eta_i}\le y$ ($\eta_i=0.0257,0.055,0.087,0.102$).
+
+\begin{lemma}[A: direct nonvanishing; PROVED]\label{lem:A}
+Let $N\ge151$ and $x=a/N$, and put $\mathcal A:=\sum_{m\ge1,\,N\nmid m}\frac{|u_0|^m}{m|1-\zeta^{-m}|}$. Then $|Z_N-1|\le e^{\mathcal A}-1$. So $\mathcal A<\log2$ implies $Z_N\ne0$, with $|Z_N|\ge2-e^{\mathcal A}$.
+\end{lemma}
+\begin{proof}
+$Z_N=\sum_n\psi_n\zeta^{-n^2}$ with $\psi_0=1$. The series $e^{\Phi}$ is coefficientwise majorised by $\exp(\sum_m|a_m|Y^m)$, where $a_m=u_0^m/(m(1-\zeta^{-m}))$. Evaluate at $Y=1$.
+\end{proof}
+
+\begin{lemma}[H: hazard combinatorics; PROVED]\label{lem:H}
+Let $x=a/N\in[\frac15,\frac12]$.
+\begin{enumerate}
+\item[(1)] Every hazard containing $x$ has $n<N$, and the set of such hazards is finite.
+\item[(2)] Let $j/n$ be the hazard of largest $n\ge10$ containing $x$ (\emph{deepest}), $d=x-j/n$, and $n_2=\lfloor1/(2n|d|)\rfloor$. Then every $m>n_2$ that lies in the set $T$ of Lemma dec satisfies $\|mx\|\ge m\,y^m/(4\tau)$, and so $\Delta_N(x;\rho)\le\tau/n_2$ for every $\rho\le y/g_i$.
+\item[(3)] If $x$ lies in no hazard with $n\ge10$ and in no low-seed disc, then $\|mx\|\ge my^m/(4\tau)$ for all $m\ge60$ with $N\nmid m$, and $\sum_{m\ge60}|a_m|\le\tau/59$.
+\item[(4)] If $x$ lies in no hazard with $n\ge10$ but in a low-seed disc of $p/q$ (radius $r\le1/120$, $n_2=60$), then $\Delta_N(x;\rho_\eta)\le\tau/60<10^{-3}$. So the $\Delta$-hypotheses of Theorem 5 of P1d hold.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(1) $|a/N-j/n|\ge1/(nN)$ for $j/n\ne a/N$, and $\varepsilon_n<1/(nN)$ once $n\ge N$ with $n\ge10$.
+
+(2),(3),(4) Suppose $\|mx\|<my^m/(4\tau)$. Then $x$ is within $y^m/(4\tau)$ of some $i/m$; reduce it to $i'/m'$, which has $m'\le m$. Three cases:
+\begin{itemize}
+\item $m'\ge53$. Then $x\in H(i'/m')$, which contradicts deepest in (2) when $m'>n$, and contradicts the hypothesis in (3),(4).
+\item $10\le m'\le52$. Then $m\ge\max(60,2m')$ (in (2) $m>n_2\ge2560$), and $y^{\max(60,2m')}/(4\tau)\le2y^{m'}/m'^2$. So $x\in H(i'/m')$, with the same contradictions.
+\item $m'\le9$. In (3) this puts $x$ in a low-seed disc. In (4), $i'/m'\ne p/q$ is impossible since $|p/q-i'/m'|\ge1/81$; and $i'/m'=p/q$ forces $m=kq$ with $kqd<\frac12$, i.e.\ $m\in M$, not $T$.
+\end{itemize}
+In (2), a shallower hazard $i'/m'$ ($m'<n$) also containing $x$ satisfies $|x-i'/m'|\ge1/(2nm')$, because $nm'\varepsilon_n\le\frac12$. That is incompatible with $y^m/(4\tau)$ for $m>n_2$.
+So every $m$ in question has $\|mx\|\ge my^m/(4\tau)$, and the term is at most $(|u_0|\rho)^m\tau/(m^2y^m)\le\tau/m^2$, since $|u_0|\rho\le g_i\rho\le y$. Sum over $m$.
+\end{proof}
+
+\begin{lemma}[B: uniform deep-seed estimate; PROVED, explicit]\label{lem:B}
+Let $j/n\in$ region $i$ with $n\ge53$, and $0<|d|\le y^n/(4\tau)$. Assume $\Delta_N(x;e^{2\pi\eta_i})\le\tau/n_2$ and $|Z_n(j/n)|\ge c_0e^{-\kappa n}$, where $c_0=0.02$ and $\kappa=0.005$. Then
+\[|Z_N/\mathrm{Main}'_Z-1|\le E(n)\le\tfrac12,\qquad |S_{\rm amp}|\ge(1-R(n))(1-w_n)^{-1/2n}|Z_n(j/n)|,\ R(n)\le\tfrac12,\]
+where $E,R$ are the explicit functions evaluated by \texttt{P1e\_lemmaB.py}.
+\end{lemma}
+\begin{proof}
+Apply Lemma lap (P1d) with $v_0=\eta/2$, $t_0$ the unique zero of $F'$ in $|t|\le\eta$ (a contraction: $|t_0|\le R_0=\bar w/((1-\bar w)\pi n)$, $\bar w=(g\rho)^n\le y^n$), and the following bounds valid on $\operatorname{Im}t\le\eta$.
+\begin{itemize}
+\item $|W|\le\bar w$.
+\item $A\ge\frac\pi2\frac{1-\bar w}{1+\bar w}$ and $|\alpha-\pi/4|\le\arcsin\frac{\bar w}{1-\bar w}$.
+\item $K_3\le\frac{4\pi^2n\bar w}{6(1-\bar w)^2}$ and $K_4\le\frac{8\pi^3n^2\bar w(1+\bar w)}{24(1-\bar w)^3}$.
+\item For $m\le n_2$ with $n\nmid m$: $\|mx\|\ge\frac1n-m|d|\ge\frac1{2n}$, hence $|c_m\e(-mt)|\le ny^m/(2m)$. This gives $|e^{B_k}|\le\beta=\exp(\frac{\bar w}{2n(1-\bar w)}+\frac n2L)$ with $L=-\log(1-y)$, $|B_k'|\le P_1=\frac{\pi\bar w}{1-\bar w}+\frac{\pi ny}{1-y}$, and $|B_k''|\le P_2=\frac{2\pi^2n\bar w}{(1-\bar w)^2}+\frac{2\pi^2ny}{(1-y)^2}$.
+\end{itemize}
+The $\Delta$-terms are bounded by $\tau/n_2$. The gap uses $X_1\ge-R_0+(\eta-R_0)\cot\alpha_{\max}$ and $C_0\le2\frac{\bar w+\bar w^2/4(1-\bar w)}{2\pi n^2}+\pi R_0^2$.
+$|S_{\rm amp}|$ is bounded below by Lemma~\ref{lem:R} with $\sum|\gamma_k||e^{X_k}|\le\sqrt{2n}\,\beta$, since $|\gamma_k|\le\sqrt{2/n}$. In $\epsilon_u$ one uses $N\ge1/(n|d|)$, which makes $|\lambda_N^2-1|$ doubly exponentially small.
+All bounds increase with $|d|$ and are evaluated at $|d|=y^n/(4\tau)$.
+Numerical evaluation: \texttt{P1e\_lemmaB.py} evaluates every quantity in Arb and checks all side conditions ($K_3v_0\le A/2$, $A'>0$, gap $>0$, $d\le2\,$gap, $n_2\ge n$, $n\ell\ge3$, $g_ie^{2\pi\eta_i}\le y$) and $E,R\le\frac12$. The check covers all $53\le n\le3000$ and all four regions: 2948 values each, 0 failures; the maximum is $E(53)\le0.5$.
+Tail $n>3000$: here $\bar w\le2^{-n}$, $\beta\le1.01\cdot2^{n/2}$, $d\le12.5\cdot2^{-n}$ and $n_2\ge2^n/(25n)$. Then $r_1\le200n^22^{-n/2}$ and $r_3\le2n2^{-n/2}$, while $r_2,r_4,r_5\le\exp(-2^{n/2})$. Also $R\le10^4n^{5/2}(e^{\kappa}/\sqrt2)^n$ and $E\le10^6n^{5/2}(e^\kappa/\sqrt2)^n$, with $e^{\kappa}/\sqrt2=0.7107$. So $E,R<10^{-400}$ for $n>3000$.
+Spot values are consistent with this: $E(10^4)\le1.7\cdot10^{-1471}$, $E(10^8)\le3\cdot10^{-14839060}$.
+\end{proof}
+
+\begin{lemma}[B$'$: seeds $10\le n\le52$; PROVED, computer-assisted]\label{lem:Bp}
+For every reduced $j/n\in[\frac15,\frac45]$ with $10\le n\le52$ (480 seeds), side $d>0$ (side $d<0$ is the seed $(n-j)/n$ by Lemma conj), and $0<d\le2y^n/n^2$: the conclusion of Lemma~\ref{lem:B} holds with $E\le0.0019$ and $R\le\frac12$.
+Here $\beta,P_1,P_2$ are replaced by the exact sums over $m\le200$ (with $|1-\zeta^{-m}|\ge|1-\zeta_0^{-m}|-2\pi md$), and $|Z_n(j/n)|$ and $\sum|\gamma_k||e^{X_k}|$ are enclosed exactly by Lemma~\ref{lem:Zk}. Script: \texttt{P1e\_lemmaBp.py}; all 480 seeds pass.
+\end{lemma}
+
+\begin{lemma}[O: sharpened outer contour; PROVED]\label{lem:O}
+In Lemma lap the term $r_4$ may be replaced by $(r_{4a}+r_{4b}+r_{4c})\beta_\eta e^{\delta_\eta}$, and the horizontal term by $r_5$ with $X_1\to X_2$ plus $r_{5h}$. Here:
+\begin{itemize}
+\item $r_{4a}=\sqrt{A/A_{\rm loc}}\operatorname{erfc}(v_0\sqrt{A_{\rm loc}/d})$ with $A_{\rm loc}=A-K_3^{\rm loc}V_q$. This rests on $\operatorname{Re}(F-F_0)\le-Av^2+K_3^{\rm loc}|v|^3$ on $|v|\le V_q$.
+\item $r_{4b}$ and $r_{5h}$ are the sums $\sum_j\mathrm{len}_j\,e^{-\kappa_j/d}\sqrt{A/(\pi d)}$ over sub-balls of the upper ray and of $[X_1,X_2]+i\eta$, where $\kappa_j\le-\operatorname{Re}(F-F_0)$ is Arb-enclosed and $d\le2\kappa_j$ is checked.
+\item $r_{4c}$ is the same for the lower ray on $[-V_{\rm neg},-V_q]$, plus $\frac12\sqrt{A/c_q}\operatorname{erfc}(V_{\rm neg}\sqrt{c_q/d})$. This rests on $\operatorname{Re}(F-F_0)\le-\frac\pi2\sin2\alpha\,v^2+\pi|t_0||v|+2L_{\max}$ on the lower ray, where $|W|\le|W_0|$.
+\end{itemize}
+\end{lemma}
+\begin{proof}
+Each piece bounds $\int|e^{(F-F_0)/d}|\,|dt|$ on its part of the same contour $\Gamma$ as Lemma lap, and together the pieces cover $\Gamma$. The ray pieces use $|e^{B_k}|\le\beta_\eta$ and $|e^{\epsilon}|\le e^{\delta_\eta}$ exactly as $r_4$ does.
+\end{proof}
+Implemented in \texttt{P1e\_cert.py}, which is \texttt{P1d\_cert.py} with Lemma~\ref{lem:O}.
+
+\begin{table}[h]\centering\small
+\caption{Low seeds (\texttt{P1e\_lowseed.py}; side $d>0$; $n_2=60$; the $d<0$ side of $p/q$ is the row $(q-p)/q$). $c_{\rm seed}=(1-B)\sqrt{\pi/2A}\,|S_{\rm amp}|$ and $\kappa_{\rm seed}=q\max(0,-\operatorname{Re}F(t_0))$.}\label{tab:low}
+\begin{tabular}{lllllll}\toprule
+seed & $r$ & $\eta$ & $B\le$ & $\kappa_{\rm seed}\le$ & $|S_{\rm amp}|\ge$ & $c_{\rm seed}\ge$\\\midrule
+1/2 & 0.0083 & 0.102 & 0.4944 & 0.000270 & 1.144 & 0.5468 \\
+1/3 & 0.004 & 0.087 & 0.2927 & 0.00131 & 1.089 & 0.7689 \\
+2/3 & 0.003 & 0.055 & 0.6472 & 0 & 1.093 & 0.3847 \\
+1/4 & 0.003 & 0.055 & 0.7730 & 9.79e-6 & 1.045 & 0.2409 \\
+3/4 & 0.0007 & 0.0257 & 0.8204 & 2.09e-6 & 1.054 & 0.1924 \\
+1/5 & 0.0005 & 0.0257 & 0.4907 & 0 & 0.9681 & 0.4928 \\
+2/5 & 0.003 & 0.102 & 0.05721 & 4.10e-5 & 1.086 & 1.024 \\
+3/5 & 0.003 & 0.087 & 0.06302 & 0 & 1.087 & 1.018 \\
+2/7 & 0.002 & 0.055 & 0.3018 & 0 & 1.077 & 0.7519 \\
+5/7 & 0.002 & 0.055 & 0.3032 & 8.21e-6 & 1.078 & 0.7512 \\
+3/7 & 0.002 & 0.102 & 0.02727 & 1.69e-6 & 1.074 & 1.045 \\
+4/7 & 0.002 & 0.102 & 0.02694 & 0 & 1.076 & 1.047 \\
+3/8 & 0.002 & 0.087 & 0.02048 & 9.70e-9 & 1.095 & 1.073 \\
+5/8 & 0.002 & 0.087 & 0.01971 & 1.01e-8 & 1.097 & 1.075 \\
+2/9 & 0.0005 & 0.0257 & 0.5568 & 3.62e-6 & 1.019 & 0.4516 \\
+7/9 & 0.0005 & 0.0257 & 0.5579 & 0 & 1.019 & 0.4505 \\
+4/9 & 0.0015 & 0.102 & 0.02222 & 7.85e-8 & 1.068 & 1.044 \\
+5/9 & 0.002 & 0.102 & 0.03171 & 0 & 1.068 & 1.034 \\\bottomrule
+\end{tabular}\end{table}
+(The $|S_{\rm amp}|$ and $c_{\rm seed}$ columns are parsed from 4-digit printouts of Arb lower bounds. The margin over the needed $c_0=0.02$ is a factor of at least 9.)
+
+\begin{theorem}[M; PROVED, computer-assisted]\label{thm:M}
+For all $N\ge1$ and $\gcd(a,N)=1$ with $a/N\in[\frac15,\frac45]$: $|Z_N(a/N)|\ge c_0e^{-\kappa N}$, where $c_0=0.02$ and $\kappa=0.005$. In particular $\Sigma_N\ne0$ and $S_0\ne0$ there.
+\end{theorem}
+\begin{proof}
+By Lemma conj it suffices to take $x=a/N\in[\frac15,\frac12]$. Strong induction on $N$.
+
+\emph{Base} $N\le150$. \texttt{P1e\_logderiv.py scan} encloses $Z_N(a/N)$ by Lemma~\ref{lem:Zk} for all $N\le150$ and $\ell\ge0.8546$, giving $|Z_N|\ge0.9135$. (Nonvanishing of $\Sigma_N$ for $N\le150$ is also P1b's interval certificate.)
+
+\emph{Step} $N\ge151$. Four cases.
+\begin{enumerate}
+\item \emph{$x$ lies in a hazard with $n\ge53$.} Take the deepest hazard $j/n$. Lemma~\ref{lem:H}(2) gives the $\Delta$-hypothesis. The induction hypothesis at level $n<N$ gives $|Z_n(j/n)|\ge c_0e^{-\kappa n}$. Lemma~\ref{lem:B} then gives $|Z_N|\ge\frac12|\mathrm{Main}'_Z|\ge\frac14\sqrt{\pi/2A}\,c_0e^{-\kappa n}e^{-n|F(t_0)|N}$.
+Here $N\ge1/(n|d|)\ge0.08\cdot2^n/n$ and $n|F(t_0)|\le2^{-n}$, so this is at least $c_0e^{-\kappa N}$.
+\item \emph{The deepest hazard has $10\le n\le52$.} The same argument, with Lemma~\ref{lem:Bp} and the exact $|Z_n|\ge0.91$.
+\item \emph{$x$ lies in no hazard with $n\ge10$ but in a low-seed disc.} Lemma~\ref{lem:H}(4) and Theorem 5 of P1d (the certificate of Table~\ref{tab:low}) give $|Z_N|\ge c_{\rm seed}e^{-\kappa_{\rm seed}N}\ge c_0e^{-\kappa N}$.
+\item \emph{Otherwise.} \texttt{P1e\_caseA.py} covers $[\frac15,\frac12]$ minus all hazards of height $\le59$ and the low-seed discs, by 22,546 Arb intervals with 0 failures. It shows $\sum_{m<60}\sup|a_m|+\tau/59\le0.6057$. With Lemma~\ref{lem:H}(3) and Lemma~\ref{lem:A} this gives $|Z_N|\ge2-e^{0.6057}=0.167$.
+\end{enumerate}
+The cases are exhaustive. Theorem 1 of P1d converts the result to $\Sigma_N$, and S0\_lemma converts it to $S_0$.
+\end{proof}
+
+\begin{remark}[scope and the golden threshold]
+The only non-uniform input of Lemma~\ref{lem:B} is the crude bound $\sup|e^{B_k}|\le e^{nL/2}$. Against the hazard size $y^n$ it closes iff $y\,e^{L/2+\kappa}<1$, i.e.\ $y<(\sqrt5-1)/2$ as $\kappa\to0$. The method therefore extends, with more low seeds, up to about $4\sin\pi x>1.618$, i.e.\ $\ell>0.48$.
+Below that, the loss $\Lambda$ of Section~2 must be removed. That needs the structured (moment) induction hypothesis; this remains OPEN, and so does the edge $\ell<0.48$, including the 1/11 region ($\ell=0.12$).
+\end{remark}
+
+\begin{remark}[direct argument]
+Lemma~\ref{lem:A} is the direct zero-free argument ($Z=1+$small). It covers all but 2.6\% of $[0.2,0.5]$ (VERIFIED on a grid), and 0\% of $\ell<0.21$, because there $|u|^1$ alone exceeds the budget.
+An argument-principle proof from Theorem 3 was not found; the integrand $e^{\Phi}$ has no positivity. (HEURISTIC assessment.)
+\end{remark}
+
+\paragraph{Seed 1/11 (PROVED, computer-assisted).} \texttt{P1e\_cert.py 1 11 1e-5 600 0.012 0.008 4 6 1e-3 1 32 0.4 48} gives $B\le0.3150$ and $N^*\ge3.36\cdot10^{13}$.
+The same arguments with \texttt{10 11} give $B\le0.1994$ and $N^*\ge3.12\cdot10^{13}$.
+P1d failed at this seed with $A'\le0$, because the single global quadratic bound wastes $|L''(t_0)|\approx A$ when $|U|=0.27$. Lemma~\ref{lem:O} replaces it by a cubic local bound and Arb-enclosed pieces.
+VERIFIED end to end: \texttt{P1d\_sanity.py 1 11 600 10000} gives $|\Sigma_N/\mathrm{Main}'_N-1|=6.05\cdot10^{-4}$ at $|d|=9.1\cdot10^{-6}$, so $K(1/11)\approx67$, against a certified $0.315$.
+
+\paragraph{Files.} \texttt{P1e\_renorm.py} (Lemma R), \texttt{P1e\_logderiv.py} (Lemma Zk enclosures; $\Lambda,D_1,D_2$; base scan), \texttt{P1e\_cert.py}, \texttt{P1e\_all.py} (Lemma O certificate and search), \texttt{P1e\_lowseed.py} (Table~\ref{tab:low}), \texttt{P1e\_lemmaB.py} (Lemma B), \texttt{P1e\_lemmaBp.py} (Lemma B$'$), \texttt{P1e\_caseA.py} (case A covering), \texttt{P1e\_certlog.txt} (raw outputs).
+Every run used \verb|perl -e 'alarm 290; exec @ARGV'| and stayed below about 300\,MB.
+\end{document}
