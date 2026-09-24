@@ -1,0 +1,297 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\e}{\mathrm e}
+\title{P3: no $Q=-1$ relation for $U$ and $V$}
+\date{2026-09-24}
+\begin{document}
+\maketitle
+
+\noindent Labels: PROVED means a complete argument, given the inputs it cites. VERIFIED means high-precision
+floating-point numerics, not interval arithmetic. HEURISTIC means an argument without error control.
+Notation follows \texttt{paper/journal/paper2a.tex} (``paper2a'') and
+\texttt{rootunity\_zeros/general/P1f/P1f\_lemma.tex} (``P1f'').
+
+\section*{Result}
+
+\begin{theorem}[PROVED, with the standing of Corollary~\texttt{cor:arcUV}]\label{thm:main}
+Let $f=U$ or $f=V$. There are no polynomials $A_0,A_1,b\in\mathbb C[x]$ with $(A_0,A_1)\neq(0,0)$ and
+\[
+   A_0(x)f(x)+A_1(x)f(-x)=b(x).
+\]
+Hence no relation $\sum_ia_i(x)f((-1)^ix)=b(x)$ holds unless $\sum_{i\,\mathrm{even}}a_i=\sum_{i\,\mathrm{odd}}a_i=0$
+(paper2a, Remark~\texttt{rem:rootunity}, reduction).
+\end{theorem}
+
+\noindent\emph{Standing.} The proof uses the poles of $f$ near $\pm\sqrt\zeta$ for infinitely many roots
+of unity $\zeta=\e(a/N)$ with $N$ odd, together with the limits of $t_1$ and of the pairings there.
+These come from paper2a Corollary~\texttt{cor:arcUV}, i.e.\ P1f Theorem~C and the main theorem of
+\texttt{P1g\_lemma.tex}. So the standing is that of Theorems~\texttt{thm:model} and~\texttt{thm:RJ}, plus
+the computer-assisted inputs of those results (the Arb certificates of P1e and P1g and the landscape bounds
+of P1f). The range $\frac aN\in[\frac15,\frac45]$ is enough, for example $a=\frac{N-1}2$. Nothing else is
+computer-assisted: the new steps (Lemmas~\ref{lem:finite}--\ref{lem:sep} and \S\ref{sec:proof}) are proved by hand.
+
+\noindent\emph{Idea.} Comparing pole \emph{sets} gives nothing at $Q=-1$ (\S\ref{sec:nogo}). What a relation
+does force is an \emph{arithmetic} constraint. At a root of unity $\zeta$ of odd order $N$, the limit
+$t_1^\ast(\zeta)$ must lie in a quadratic extension of $K=\Q(\zeta)$ of the form $K(\sqrt\kappa)$, where
+$\kappa$ is the value at $\sqrt\zeta\in K$ of a fixed rational function. We show that
+$t_1^\ast(\zeta)$ generates $K(\sqrt{D_N})$ with $D_N=c^N(c^N+4)$, $c=-2(1-\zeta)$. At the primes above $2$,
+$D_N$ has odd valuation and $\kappa$ has even valuation. The quadratic irrationality is carried by
+the root $w$ of $c^Nw=(1-w)^2$. In the complex embedding $w$ is exponentially small, $|w|\le2|c|^{-N}$.
+This is the ``exponentially small information'' of the programme row, read $2$-adically.
+
+\section{Why the pole sets and the two limit points alone do not decide}\label{sec:nogo}
+
+\begin{proposition}[PROVED, same standing]\label{prop:sym}
+For $Q=-1$ the successor argument of paper2a Proposition~\texttt{prop:noqdiff} gives nothing. Every pole
+$p$ of $f$ with $q^\ast=p^2$ a zero of $1-\Sigma_1$, $S_e(q^\ast)\ne0$, $1-\mathfrak g t_1\ne0$ and
+$\Pi(\pm p)\ne0$ has $-p$ as a pole of the same order. The families near $\sqrt\zeta$ and $-\sqrt\zeta$ are
+the two square roots of \emph{one} family $q^\ast_j$. They have the same $t^\ast_j$, the same tie ray, the same
+spacing $2\pi/|\Delta V|$ and the same $V$-values.
+\end{proposition}
+\begin{proof}
+The resolvent, $\Psi$, $t_1$ and $B_0$ depend on $x$ only through $q=x^2$ (proof of \texttt{prop:minusx}).
+The local form of \texttt{prop:shape} at a non-real zero (proof of \texttt{cor:Uminusone}) gives order $\pi$
+at both roots once $\Pi(\pm p)\ne0$.
+\end{proof}
+
+\noindent So the only information is in the leading Laurent coefficients. At $x=\pm i$ ($q\to-1$) they give
+nothing either: by \texttt{cor:Uminusone}, $\Pi_q\to-4$ at \emph{both} roots, whatever the value of
+$t_1\asymp1$. The ratio $\rho$ below tends to $1$ and its first-order behaviour needs the unproved
+$O(t)$ term of $t_1$ (HEURISTIC $t_1=\phi-\frac\phi{10}t$). At $q=i$ the limit
+$t_1^\ast=\frac{(\sqrt{15}-3)-(\sqrt{15}+3)i}{12}$ lies in $\Q(\zeta_8)(\sqrt{15})$, a quadratic extension
+of $\Q(\sqrt i)$. This is exactly what a relation allows (Lemma~\ref{lem:resid}), so one point cannot
+refute it. The argument therefore needs infinitely many roots of unity of \emph{odd} order, where
+$\sqrt\zeta\in\Q(\zeta)$ and $2$ is unramified. The arc supplies them.
+
+\section{The residue identity at a non-real pole}
+
+\begin{lemma}[PROVED]\label{lem:rational}
+If a relation as in Theorem~\ref{thm:main} exists, one exists with $A_0,A_1,b\in\Z[x]$ and
+$(A_0,A_1)\ne(0,0)$.
+\end{lemma}
+\begin{proof}
+$f(x),f(-x)\in\Z[[x]]$. For a degree bound $d$, the relation is a homogeneous linear system with integer
+coefficients in the coefficients of $(A_0,A_1,b)$. A non-zero complex solution gives a non-zero rational one.
+Scale it to be integral. If $A_0=A_1=0$ then $b=0$, so $(A_0,A_1)\ne0$.
+\end{proof}
+
+\begin{lemma}[PROVED, same standing]\label{lem:resid}
+Assume a relation with $A_i\in\Z[x]$. Let $\zeta=\e(a/N)$ be in the family of \texttt{cor:arcUV}, let
+$x_0$ be either square root of $\zeta$, and let $t_1^\ast=t_1^\ast(\zeta)$ be the limit of P1f Theorem~C(ii).
+Put
+\[
+   \beta_\pm=t_1^\ast\frac{1\mp x_0+\zeta}{1+\zeta}\pm\frac1{2x_0},\qquad
+   \gamma_+=t_1^\ast+\frac{1+x_0}{2x_0},\qquad \gamma_-=t_1^\ast-\frac{1-x_0}{2x_0}.
+\]
+Then
+\[
+   \text{for }f=U:\ A_0(x_0)(1+x_0)^4\beta_+^2=A_1(x_0)(1-x_0)^4\beta_-^2,\qquad
+   \text{for }f=V:\ A_0(x_0)(1+x_0)^2\gamma_+^2=A_1(x_0)(1-x_0)^2\gamma_-^2 ,
+\]
+and $\beta_\pm,\gamma_\pm\ne0$. Moreover $A_0\not\equiv0$, $A_1\not\equiv0$ and $A_0(x)A_0(-x)=A_1(x)A_1(-x)$.
+\end{lemma}
+\begin{proof}
+Let $q^\ast_j\to\zeta$ be the zeros of Theorem~\texttt{thm:arc}, and let $p=p_j\to x_0$ be the root of
+$x^2=q^\ast_j$ near $x_0$. By \texttt{prop:shape} at a non-real zero (proof of \texttt{cor:Uminusone}),
+$f=\mathcal N(q-q^\ast_j)^{-\pi}+\dots$ with $\mathcal N=c_\star\Pi(x)^2/(2x)$. The factors
+$c_\star\ne0$ and $\pi\ge1$ depend on $q^\ast_j$ only. Since $q-q^\ast_j=(x-p)(x+p)$, the leading
+coefficients are $N_+=c_\star\Pi(p)^2/(2p)\cdot(2p)^{-\pi}$ at $x=p$, and $c_\star\Pi(-p)^2/(-2p)\cdot(-2p)^{-\pi}$
+at $x=-p$. The function $f(-x)$ has leading coefficient $N_-=c_\star\Pi(-p)^2/(-2p)\cdot(2p)^{-\pi}$ at $x=p$.
+The polynomials $A_i$ and $b$ are holomorphic, so the coefficient of $(x-p)^{-\pi}$ in the relation gives
+$A_0(p)\Pi(p)^2=A_1(p)\Pi(-p)^2$. The same step at $-p$ gives $A_0(-p)\Pi(-p)^2=A_1(-p)\Pi(p)^2$.
+Here $\Pi=\Pi_q$ for $U$ and $\Pi=\Pi_1$ for $V$. For large $j$ the pairings at $\pm p$ are non-zero
+(\texttt{cor:arcUV}). If $A_1\equiv0$, then $A_0(p_j)=0$ for all large $j$, so $A_0\equiv0$; the same holds
+with the roles exchanged. Multiplying the two identities gives $A_0A_0(-\cdot)=A_1A_1(-\cdot)$ at the
+infinitely many distinct $p_j$, hence identically.
+Now insert the closed forms \texttt{eq:RJclosedq} and \texttt{eq:RJclosed1}, which hold at $q^\ast_j$ for
+both roots (proof of \texttt{cor:Uminusone}). For $U$,
+$\Pi_q(\pm p)=\frac{2qB_0(1\pm p)}{1\mp p}\bigl(t_1\frac{1\mp p+q}{1+q}\pm\frac1{2p}\bigr)$. The factor
+$2qB_0$ is common to both roots and cancels. For $V$, $(1-\mathfrak g_Vt_1)\Pi_1(\pm p)=\frac{2q(1\pm p)}{1-q}
+(t_1\pm\frac{1\pm p}{2p})$, and $(1-\mathfrak g_Vt_1)$ and $2q/(1-q)$ cancel. Let $j\to\infty$. Then
+$t_1(q^\ast_j)\to t_1^\ast$ (P1f Thm.~C(ii)), $B_0$ and $(1-\mathfrak g_Vt_1)^{-1}$ have finite non-zero
+limits, and the brackets tend to $\beta_\pm$, $\gamma_\pm$, which are non-zero by the $\omega$-conditions of
+P1f Thm.~C(iii) (certified in P1g). This gives the displayed identities.
+\end{proof}
+
+\section{Arithmetic of $t_1^\ast$ at odd order}
+
+Fix $N\ge5$ odd, $\gcd(a,N)=1$, $\zeta=\e(a/N)$, $K=\Q(\zeta)$. As in P1f \S2, $c=-2(1-\zeta)$, $X=c^N$,
+$w$ is the root of $w^2-(2+X)w+1=0$ (that is, $c^Nw=(1-w)^2$) with $|w|<1$, $\lambda=(1-w)^{1/N}$
+(principal), $u_0=\lambda^2/c$, and $q:=\zeta^{-1}$ inside $q$-Pochhammer symbols in this section only.
+P1f Theorem~C(ii) gives $t_1^\ast=-\frac12(1+\omega)$ with $\omega=Z^-_N/(u_0Z^+_N)$,
+$Z^\pm_N=\sum_{k\ge0}\psi_k\zeta^{-k^2\mp k}$, $Z_N^+\ne0$.
+
+\begin{lemma}[finite form; PROVED]\label{lem:finite}
+For $y\in\mathbb C$ with $y^N=1-w$ put $u(y)=y^2/c$ and
+\[
+   T^\pm(y)=\sum_{s=0}^{N-1}\frac{\zeta^{-s^2\mp s}\,u(y)^s}{(yq;q)_s},\qquad
+   \Omega(y)=\frac{T^-(y)}{u(y)\,T^+(y)} .
+\]
+Then $Z^\pm_N=f_0(w)\,T^\pm(\lambda)$ with $f_0(w)\ne0$, and $\omega=\Omega(\lambda)$.
+\end{lemma}
+\begin{proof}
+$e^{\Phi(Y)}=F(u_0Y)$ with $F=\exp H$, $H(v)=\sum_{N\nmid n}v^n/(n(1-\zeta^{-n}))$. So $\psi_k=h_ku_0^k$, where
+$F=\sum h_kv^k$ converges on $|v|<1$ and $|u_0|<1$. Write $F(v)=\sum_{s<N}v^sg_s(v^N)$. The functional
+equation $(1-\zeta v)F(\zeta v)=(1-v^N)^{1/N}F(v)$ (S0 Lemma~tel, PROVED), compared in the class
+$v^{s\bmod N}$, $1\le s\le N-1$, gives $g_s=g_{s-1}/(1-\lambda(W)\zeta^{-s})$, $W=v^N$. Hence
+$g_s=g_0/(\lambda(W)q;q)_s$. Since $\zeta^{-k^2\mp k}$ depends only on $k\bmod N$, and the sums converge
+absolutely,
+$Z^\pm_N=\sum_{s<N}\zeta^{-s^2\mp s}u_0^sg_s(u_0^N)$. Here $u_0^N=(1-w)^2/c^N=w$ and $\lambda(w)=\lambda$.
+So $Z^\pm_N=g_0(w)T^\pm(\lambda)$, and $g_0(w)\ne0$ because $Z^+_N\ne0$. VERIFIED: $\Omega(\lambda)$ agrees
+with the series value of $\omega$ to working precision at $\frac14,\frac13,\frac25$ (\texttt{P3\_conj.py},
+\texttt{P3\_explore.py}).
+\end{proof}
+
+\begin{lemma}[Galois invariance; PROVED]\label{lem:inv}
+$\Omega(\zeta^jy)=\Omega(y)$ for every $j$ and every $y$ with $y^N=1-w$. Consequently $\omega\in K(w)$.
+\end{lemma}
+\begin{proof}
+Extend $(yq;q)_n$ to $n\in\Z$ by $(yq;q)_n=(yq;q)_{n-1}(1-y\zeta^{-n})$. All factors are non-zero because
+$y^N\ne1$. Then $(yq;q)_{n+N}=(yq;q)_n(1-y^N)$. The summand $\tau_s=\zeta^{-s^2\mp s}u^s/(yq;q)_s$ is
+$N$-periodic because $u^N/(1-y^N)=(1-w)^2/(c^Nw)=1$. Next, $u(\zeta^jy)=\zeta^{2j}u(y)$ and
+$(\zeta^jyq;q)_s=(yq;q)_{s-j}/(yq;q)_{-j}$. With $s'=s-j$ we have
+$-s^2\mp s+2js=-s'^2\mp s'+j^2\mp j$, hence
+$T^\pm(\zeta^jy)=\zeta^{j^2\mp j}u^j(yq;q)_{-j}\,T^\pm(y)$. So $T^-/T^+$ is multiplied by $\zeta^{2j}$, and so is $u$.
+$\Omega$ is therefore invariant. The field $K(w,\lambda)$ is a Kummer extension of $K(w)$, since
+$\zeta\in K$ and $\lambda^N=1-w$. Its automorphisms are $\lambda\mapsto\zeta^j\lambda$. $\Omega$ has
+coefficients in $K$, so $\omega=\Omega(\lambda)$ is fixed by them and lies in $K(w)$. VERIFIED:
+$\max_j|\Omega(\zeta^j\lambda)-\Omega(\lambda)|<10^{-398}$ at 400 digits ($N=3,\dots,11$, \texttt{P3\_check.py}).
+\end{proof}
+
+Fix a prime $\mathfrak p\mid2$ of $K$, and let $v$ be the valuation with $v(2)=1$ on an algebraic closure of
+$K_{\mathfrak p}$. Since $N$ is odd, $2$ is unramified in $K$ and $1-\zeta^i$ ($N\nmid i$) is a $2$-unit. So $v(c)=1$.
+
+\begin{lemma}[PROVED]\label{lem:D}
+$D_N:=X(X+4)$ has $v_{\mathfrak p}(D_N)=N+2$, which is odd. Hence $w\notin K$, $K(w)=K(\sqrt{D_N})$ is
+quadratic, and the non-trivial $\sigma\in\mathrm{Gal}(K(w)/K)$ sends $w\mapsto1/w$.
+\end{lemma}
+\begin{proof}
+$v(X)=N$, and $v(X+4)=2$ because $N\ge3$. The discriminant of $w^2-(2+X)w+1$ is $D_N$.
+\end{proof}
+
+\begin{lemma}[separation; PROVED]\label{lem:sep}
+$v(\omega-\sigma\omega)=\frac32$. In particular $\omega\notin K$, and $t_1^\ast\in K(w)\setminus K$.
+\end{lemma}
+\begin{proof}
+Embed $K(w,\lambda)$ in $\overline{K_{\mathfrak p}}$. Write $w=1-\delta$. From $(w-1)^2=Xw$ we get $v(\delta)=N/2$.
+The principal $2$-adic root $w^{1/N}=\sum_k\binom{1/N}{k}(-\delta)^k$ converges ($N$ is a $2$-adic unit) and
+satisfies $w^{1/N}\equiv1$ modulo valuation $N/2$. Take $u_0:=w^{1/N}$ and let $\lambda$ be the square root
+of $cu_0$ with $\lambda^N=1-w$: we have $(cu_0)^N=c^Nw=(1-w)^2$, and since $N$ is odd one of $\pm\sqrt{cu_0}$
+works. By Lemma~\ref{lem:inv}, $\omega=\Omega(\lambda)$ for this root. Here $v(\lambda)=\frac12$ and $u(\lambda)=u_0$.
+Apply $\sigma$, extended to $K(w,\lambda)$. It sends $\lambda$ to a root $\lambda'$ of $Y^N=1-1/w=-\delta/(1-\delta)$,
+and by Lemma~\ref{lem:inv} we may take $\lambda'=-\lambda(1-\delta)^{-1/N}=-\lambda(1+\varepsilon)$ with
+$v(\varepsilon)\ge N/2$.
+
+With $u_0$ held fixed, put $\hat T^\pm(y)=\sum_s\zeta^{-s^2\mp s}u_0^s/(yq;q)_s$. For $v(y)>0$ each factor
+$(1-y\zeta^{-i})^{-1}$ is a geometric series with integral coefficients, so
+$\hat T^\pm(y)=P^\pm(y^2)+yQ^\pm(y^2)$ with $P^\pm,Q^\pm$ integral. Also
+$P^\pm(0)=A^\pm:=\sum_s\zeta^{-s^2\mp s}u_0^s$ and $Q^\pm(0)=B^\pm:=\sum_s\zeta^{-s^2\mp s}u_0^se_s$, where
+$e_s=\sum_{i=1}^s\zeta^{-i}$. Exactly,
+\[
+   \hat T^-(y)\hat T^+(-y)-\hat T^-(-y)\hat T^+(y)=2y\bigl(Q^-P^+-P^-Q^+\bigr)(y^2).
+\]
+So $\Omega(\lambda)-\Omega(-\lambda)\big|_{u_0\ \mathrm{fixed}}=2\lambda(Q^-P^+-P^-Q^+)(\lambda^2)/\bigl(u_0\hat T^+(\lambda)\hat T^+(-\lambda)\bigr)$.
+Replacing $-\lambda,u_0$ by $\lambda',u(\lambda')=u_0(1+\varepsilon)^2$ changes $\Omega$ by valuation at least $N/2$,
+since every quantity is integral and the denominators are units (below).
+
+\emph{Gauss sums.} Let $h=2^{-1}\bmod N$ and $G_0=\sum_{s\bmod N}\zeta^{-s^2}$. Completing the square,
+$\sum_s\zeta^{-s^2+bs}=\zeta^{b^2h^2}G_0$. So $G^\pm:=\sum_s\zeta^{-s^2\mp s}=\zeta^{h^2}G_0$, and these sums are
+equal. Using $e_s=\zeta^{-1}(1-\zeta^{-s})/(1-\zeta^{-1})$, which is $N$-periodic,
+\[
+   (1-\zeta^{-1})\sum_s\zeta^{-s^2}(\zeta^s-\zeta^{-s})e_s=\zeta^{-1}\Bigl[\zeta^{h^2}G_0-G_0-\zeta^{h^2}G_0+\zeta G_0\Bigr]
+   =(1-\zeta^{-1})G_0,
+\]
+so $B_0^--B_0^+=G_0$, where $B_0^\pm=\sum_s\zeta^{-s^2\mp s}e_s$. Since $G_0\bar G_0=N$ is odd, $G_0$ is a
+$2$-unit.
+
+\emph{Valuations.} Since $u_0\equiv1$, $A^\pm\equiv G^\pm$ and $B^\pm\equiv B^\pm_0$ modulo valuation $N/2$.
+So $\hat T^+(\pm\lambda)\equiv\zeta^{h^2}G_0$ modulo valuation $\frac12$, which is a unit, and
+\[
+   (Q^-P^+-P^-Q^+)(\lambda^2)\equiv B^-_0G^+-G^-B^+_0=\zeta^{h^2}G_0^2\pmod{v\ge1},
+\]
+which is also a unit. Hence $v\bigl(\Omega(\lambda)-\Omega(-\lambda)\bigr)=1+\frac12=\frac32$, while the
+corrections have valuation at least $\min(\frac52,\frac N2)>\frac32$ for $N\ge5$. So
+$v(\omega-\sigma\omega)=\frac32$. Finally $t_1^\ast=-\frac12(1+\omega)$.
+
+VERIFIED (\texttt{P3\_check.py}, 400 digits): $G^+=G^-$ and $B^-_0-B^+_0=G_0$ to $10^{-399}$. The norm
+$N_{K(w)/\Q}(\omega-\sigma\omega)$ is identified as a rational number (fit error $<10^{-393}$), and its
+$2$-adic valuation equals $3\varphi(N)$, which is what $v=\frac32$ at every $\mathfrak p\mid2$ predicts
+($e=2$): $6,12,18,18,30$ for $N=3,5,7,9,11$. At $N=3$ this holds as well, although the proof needs $N\ge5$.
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
+
+Suppose a relation exists. By Lemmas~\ref{lem:rational} and~\ref{lem:resid}, $A_0,A_1\in\Z[x]$ are both
+non-zero and $A_0(x)A_0(-x)=A_1(x)A_1(-x)$. Write $A_i=2^{e_i}\tilde A_i$ with $\tilde A_i\in\Z[x]$ and
+content prime to $2$. By Gauss's lemma, the $2$-part of the content of $A_i(x)A_i(-x)$ is $2^{2e_i}$. Hence
+$e_0=e_1$. The reductions $\bar A_i\in\mathbb F_2[x]$ of $\tilde A_i$ are non-zero and have finitely many
+roots in $\overline{\mathbb F}_2^\times$, each a root of unity of some odd order. Let $M$ be the largest of
+these orders.
+
+Choose $N$ odd, $N\ge\max(17,M+1)$, and $a=\frac{N-1}2$. Then $\gcd(a,N)=1$ and $\frac aN\in[\frac15,\frac45]$,
+so $\zeta=\e(a/N)$ is in the family of \texttt{cor:arcUV}, and Lemma~\ref{lem:resid} applies. Take
+$x_0=\zeta^{(N+1)/2}\in K$, a square root of $\zeta$. Let $\mathfrak p\mid2$. The reduction of $x_0$ modulo
+$\mathfrak p$ has exact order $N>M$, so $\bar A_i(\bar x_0)\ne0$, and $v_{\mathfrak p}(A_i(x_0))=e_i$. The
+elements $1\pm x_0$ are $2$-units, because $x_0$ and $-x_0$ are roots of unity of order $N$ and $2N$, and
+$1+x_0=(1-x_0^2)/(1-x_0)$. So
+\[
+   \kappa_U:=\frac{A_0(x_0)(1+x_0)^4}{A_1(x_0)(1-x_0)^4},\qquad
+   \kappa_V:=\frac{A_0(x_0)(1+x_0)^2}{A_1(x_0)(1-x_0)^2}
+\]
+are elements of $K^\times$ with $v_{\mathfrak p}=e_0-e_1=0$.
+
+For $U$, Lemma~\ref{lem:resid} gives $m^2=\kappa_U$ with $m=\beta_-/\beta_+=M(t_1^\ast)$. Here $M$ is the
+M\"obius map $t\mapsto\bigl(t\frac{1+x_0+\zeta}{1+\zeta}-\frac1{2x_0}\bigr)/\bigl(t\frac{1-x_0+\zeta}{1+\zeta}+\frac1{2x_0}\bigr)$,
+with coefficients in $K$ and determinant $1/x_0\ne0$. By Lemma~\ref{lem:sep}, $t_1^\ast\in K(w)\setminus K$,
+so $m\in K(w)\setminus K$. Therefore $K(\sqrt{\kappa_U})=K(m)=K(w)=K(\sqrt{D_N})$, and $\kappa_UD_N\in K^{\times2}$.
+But $v_{\mathfrak p}(\kappa_UD_N)=0+N+2$ is odd (Lemma~\ref{lem:D}), a contradiction.
+For $V$ the same argument applies with $m=\gamma_-/\gamma_+$, the M\"obius map
+$t\mapsto(t-\frac{1-x_0}{2x_0})/(t+\frac{1+x_0}{2x_0})$ of determinant $1/x_0$, and $\kappa_V$. \qed
+
+\begin{remark}
+Only one suitable $N$ is used, but it has to exceed a bound $M$ that depends on the unknown $A_i$. That is
+why an infinite supply of odd-order accumulation points is needed. The $q=-1$ and $q=i$ families
+(\texttt{cor:Uminusone}, \texttt{cor:Ui}) are not used, for the reasons in \S\ref{sec:nogo}. The real travel
+poles are not used either. The proof does not need the degree-$9$ numerics of \texttt{rem:rootunity}. It
+needs no bound on $\deg A_i$ and no information on $\rho_m$ at the real poles.
+\end{remark}
+
+\section{Scope, and the weakest points}
+
+\begin{itemize}
+\item \textbf{Standing.} The proof inherits everything \texttt{cor:arcUV} rests on: Theorems
+\texttt{thm:model}, \texttt{thm:RJ}, the non-real use of \texttt{prop:shape} and of the closed forms
+(a re-reading of proofs, checked numerically in paper2a), P1f Theorem~C (the formula for $\omega$,
+including the Gauss-sum ratio $G^\ast(\mu+a)/G^\ast(\mu-a)=\e(-\mu/N)$), and the Arb certificates of
+P1g ($Z_N^+\ne0$ and the six $\omega$-margins on $[\frac15,\frac45]$). For $G^T_0$ nothing new is claimed.
+Part (iii) of \texttt{prop:noqdiff} already settles $Q=-1$ in $q$.
+\item \textbf{New hand proofs.} Lemmas~\ref{lem:finite}--\ref{lem:sep} and \S\ref{sec:proof} are proved by
+hand only. They have not been reviewed adversarially. The $2$-adic step (Lemma~\ref{lem:sep}) is the most
+delicate: it relies on choosing the branch $u_0=w^{1/N}$, which Lemma~\ref{lem:inv} permits, and on the
+integrality bookkeeping. It is cross-checked by the norm valuations above. That check is VERIFIED
+(floating point with rational identification), not certified.
+\item \textbf{Branch conventions.} Lemma~\ref{lem:finite} uses the principal $\lambda$ of P1f. Lemma~\ref{lem:inv}
+makes $\omega$ independent of the branch, so no convention enters the arithmetic.
+\item \textbf{Not covered.} Other roots of unity $Q$ of order $\ge3$ are not treated. Their reduction in
+\texttt{rem:rootunity} needs control of $g$, $S_e$ and $1-\mathfrak gt_1$ at $\zeta^{2j}q_m$, which is still
+missing. Relations with non-polynomial (for example holomorphic) coefficients are not covered, and neither
+is $D$-algebraicity.
+\end{itemize}
+
+\paragraph{Files} (in \texttt{rootunity\_zeros/general/P3/}; all light, mpmath floating point, each under
+\verb|perl -e 'alarm 290; exec @ARGV'|, under 100\,MB). \texttt{P3\_explore.py} ($\omega$ along $a/N\to$ seed;
+it shows that $\omega$ varies continuously, so a discontinuity route fails), \texttt{P3\_degree.py}
+(minimal polynomials of $\operatorname{Re}t_1^\ast$), \texttt{P3\_field.py} (PSLQ: $t_1^\ast\in\Q(\zeta,w)$ at
+$\frac13,\frac25,\frac38$), \texttt{P3\_conj.py} (the finite form, $\omega$ against $\sigma\omega$, branch
+independence), and \texttt{P3\_check.py} (Gauss identities, invariance, norm valuations). No heavy
+computation was needed, so no Rust or Arb run was made. The only computer-assisted inputs are the inherited ones.
+
+\end{document}
