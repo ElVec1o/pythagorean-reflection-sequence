@@ -1,0 +1,8 @@
+[package]
+name = "p2scan"
+version = "0.1.0"
+edition = "2021"
+[profile.release]
+opt-level = 3
+[dependencies]
+rug = { version = "1.30", default-features = false, features = ["float", "integer", "complex"] }

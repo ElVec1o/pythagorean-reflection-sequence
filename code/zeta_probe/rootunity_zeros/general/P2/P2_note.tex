@@ -1,0 +1,208 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\Li}{\operatorname{Li}_2}
+\title{P2: the zeros of $B$ near roots of unity with $\ell\le0$ ($|1-\zeta|\le\frac12$)\\
+\small research programme P2, 2026-09-24. Not reviewed.}
+\date{}
+\begin{document}\maketitle
+
+Notation of P1f\_lemma.tex (Section ``Setting and the saddle data'') and P1h\_lemma.tex. $B(q)=\sum_k(-2(1-q))^kq^{k^2}/(q;q)_{2k}$,
+$\zeta=\e(a/N)$, $\gcd(a,N)=1$, $q=\zeta\e^{-t}$, $t=r\e^{i\theta}$, $c=-2(1-\zeta)$, $L=\operatorname{Log}c=\ell+i\varphi$,
+$\ell=\log(4\sin\pi\frac aN)$, $\delta:=|c|^{N/2}=\e^{N\ell/2}$. The saddle data $w$, $x_m$, $V_m=\frac{L_m^2}4+E_w$, $G^*(m)$ are those of P1f
+Lemma~saddle, but now for \emph{both} roots $w$ of $(1-w)^2=c^Nw$.
+Labels: PROVED; \emph{computer-assisted} (finitely many Arb inequalities, script fails loudly); VERIFIED (numerics, not a proof);
+HEURISTIC; OPEN; CONDITIONAL.
+
+\paragraph{Outcome.}
+\begin{enumerate}
+\item[(A)] \textbf{Why the zeros were not found.} The P1f modes have $\operatorname{Re}x_m\approx\ell/2<0$ when $\ell<0$: they leave the
+half-plane, as the row of RESEARCH\_PROGRAM\_OPEN.md says. The saddles that matter for $\ell\le0$ are different. They are
+a pair $\pm x_*$ exponentially close to the endpoint $x=0$ ($k=0$), with $|x_*|\approx\delta/(2N)$ and heights
+$\pm V_*$, $V_*=\sigma c^{N/2}/N^2\,(1+O(\delta^2))$, $\sigma=\pm1$. So the zeros, if any, sit at $|t|\asymp|V_*|\approx\e^{N\ell/2}/N^2$,
+which is exponentially small in $N|\ell|$ (for example $|t|\approx6\cdot10^{-9}$ at $\frac1{25}$). This is PROVED for the pairing (Lemma~\ref{lem:odd})
+and VERIFIED for the size.
+\item[(B)] \textbf{The answer depends on the parity of $N$.}
+\begin{itemize}
+\item $N$ odd: both members of the pair have $G^*\ne0$, so $B\approx A_+\e^{V_*/t}+A_-\e^{-V_*/t}$. The zeros accumulate at $\zeta$ along
+the tie ray $\operatorname{Re}(V_*\e^{-i\theta})=0$, which is $\theta^*\approx\pm\frac\pi4$, at $1/t_j=(\log(-A_-/A_+)+2\pi ij)/(2V_*)$.
+This is VERIFIED at $\frac1{13},\frac1{15},\frac1{17},\frac2{31},\frac1{21},\frac3{41},\frac1{25}$: the zeros sit where predicted, to relative
+error $10^{-4}$ to $10^{-10}$, and the argument-principle count matches the prediction ($21$ against $21.26$). It is PROVED,
+computer-assisted, for individual zeros (Proposition~\ref{prop:cert}): for example there is exactly one zero of $B$ in an explicit disc
+of radius $3\cdot10^{-5}$ about $t=3.5486\cdot10^{-4}+3.6006\cdot10^{-4}i$ at $\zeta=\e(\frac1{13})$. The accumulation itself
+(infinitely many zeros) is HEURISTIC with strong VERIFIED support. It is not proved.
+\item $N$ even: exactly one member of the pair has $G^*\ne0$ (Corollary~\ref{cor:parity}), so $B\approx H\,\e^{V_*/t}$ is a single exponential.
+The zeros do not accumulate at $\zeta$ inside any sector $|\theta|\le\frac\pi2-\eta$. This is HEURISTIC, and VERIFIED
+(argument principle in MPFR, $|\theta|\le1.2$): no zeros at $\frac1{20}$ ($10^{-6}\le|t|\le10^{-2}$), $\frac1{16}$ ($10^{-5}\le|t|\le10^{-2}$),
+$\frac1{12}$ ($2\cdot10^{-4}\le|t|\le0.05$), $\frac1{14}$ ($10^{-4}\le|t|\le0.05$), $\frac1{18}$ ($10^{-5}\le|t|\le10^{-2}$) and $\frac1{22}$ ($10^{-6}\le|t|\le10^{-3}$). On the real ray $|B|$ is constant to $10^{-5}$, $\log|B|=0.82318$ at $\frac1{16}$ for $10^{-6}\le t\le10^{-3}$, because $V_*\in i\mathbb R$.
+\end{itemize}
+\item[(C)] \textbf{Accumulation at every point of the small arc: CONDITIONAL.} The accumulation set is closed, and the odd-$N$ points are
+dense. So if the odd-$N$ mechanism holds on a dense set of $a/N\in(0,0.0804)$, then every point of the arc
+$|\arg q|\le2\pi\cdot0.0804$ is an accumulation point of zeros, even-$N$ points included. At even-$N$ points the approach is then
+tangential (through nearby odd-$N$ points), never along a ray. What is missing is Theorem-M-type non-vanishing
+of the two amplitudes $A_\pm=\frac12(H_e\pm H_o)$ (finite sums, Section~\ref{sec:model}) for a dense set of $N$, together with an
+error bound for the model. OPEN.
+\item[(D)] \textbf{$q\to1$.} paper2a (Proposition~\texttt{prop:infpolesalt} with Lemma~\texttt{lem:polefinite}) proves that the zeros of $B$
+accumulate at $q=1$ along $(0,1)$, with $B\approx\cos\sqrt{2/t}$ (two exponentials $\e^{\pm i\sqrt{2/t}}$). This is the degenerate member $N=1$
+($c=0$) of the odd case: two conjugate exponentials, with zeros on a tie ray. The exponent $\pm i\sqrt{2/t}$ replaces $\pm V_*/t$ because
+$c=0$ (HEURISTIC link).
+\end{enumerate}
+
+\section{The landscape when $\ell\le0$}
+
+\begin{lemma}[the two roots; PROVED]\label{lem:roots}
+$c=4\sin(\pi\frac aN)\,\e^{i(\frac\pi2+\pi\frac aN)}$, so $c^N=|c|^N\e^{i\pi(\frac N2+a)}$. Hence $c^N\in\pm i\,\mathbb R_{>0}$ for $N$ odd,
+$c^N>0$ for $N\equiv2\pmod 4$, and $c^N<0$ for $4\mid N$. The roots $w,1/w$ of $w^2-(2+c^N)w+1=0$ are: off the unit circle and
+non-real for $N$ odd; real positive, $w<1<1/w$, for $N\equiv2\pmod4$; conjugate and on the unit circle for $4\mid N$ and $|c|^N\le4$
+(real negative for $4\mid N$, $|c|^N>4$, the P1f regime).
+\end{lemma}
+\begin{proof}
+$1-\zeta=-2i\sin(\pi\frac aN)\e^{i\pi a/N}$. For $N\equiv2\pmod4$, $a$ is odd and $\frac N2+a$ is even. The discriminant is
+$c^N(c^N+4)$. If $|w|=1$ then $w+1/w=2+c^N$ is real, which is impossible for $c^N\in i\mathbb R\setminus\{0\}$. For $c^N=-\epsilon$,
+$0<\epsilon\le4$, the discriminant $\epsilon^2-4\epsilon\le0$.
+\end{proof}
+
+\begin{lemma}[the landscape is odd; PROVED]\label{lem:odd}
+Let $\Omega_m(x)=xL_m-x^2-\Li(\e^{-2Nx})/N^2+\pi^2/(6N^2)$ (P1f), and let $\tilde\Omega_m$ be its continuation to
+$\operatorname{Re}x<0$, with the principal $\Li$ (cut $[1,\infty)$). For $\operatorname{Re}x>0$, $0<|\operatorname{Im}2Nx|<\pi$ and
+$s=\operatorname{sgn}\operatorname{Im}x$,
+\[\tilde\Omega_{m-s}(-x)=-\Omega_m(x).\]
+Consequently, if $x$ is a critical point of $\Omega_m$ (root $w=\e^{-2Nx}$), then $-x$ is a critical point of $\tilde\Omega_{m-s}$ (root $1/w$),
+with value $-V_m$. The partner mode $m-s$ has the opposite parity to $m$. The same holds on $\operatorname{Re}x=0$ ($|w|=1$) by continuity.
+\end{lemma}
+\begin{proof}
+Put $u=2Nx$, $z=\e^{-u}$, $|z|<1$. Inversion gives $\Li(z)+\Li(1/z)=-\frac{\pi^2}6-\frac12\operatorname{Log}^2(-z)$ for $z\notin(0,1]$.
+Here $\operatorname{Log}(-z)=-u+i\pi s$ when $0<|\operatorname{Im}u|<\pi$. Then
+$\Omega_m(x)+\tilde\Omega_{m'}(-x)=\frac{2\pi i(m-m')x}N-2x^2+\frac{\pi^2}{3N^2}+\frac{\pi^2}{6N^2}+\frac{(u-i\pi s)^2}{2N^2}
+=\frac{2\pi ix(m-m'-s)}N$, which vanishes for $m'=m-s$. Critical points and values follow by differentiation.
+\end{proof}
+VERIFIED (\texttt{P2\_landscape.py}, 40 digits): for all 14 cases of the table, $|x_*+x_{\rm partner}|\le3\cdot10^{-41}$ and
+$|V_*+V_{\rm partner}|\le6\cdot10^{-41}$, with the partner mode $m\pm1$.
+
+\begin{corollary}[parity rule; PROVED from Lemma~\ref{lem:odd} and P1f Lemma saddle (iv)]\label{cor:parity}
+The saddle values come in pairs $\pm V$. For $N$ odd both members have $G^*\ne0$. For $N$ even exactly one member has $G^*\ne0$
+($G^*(m)=0$ unless $m$ is even for $4\mid N$, or odd for $N\equiv2\bmod4$).
+\end{corollary}
+\emph{Reality of $V_*$ (VERIFIED, not proved).} $V_*\in i\mathbb R$ for $4\mid N$, $|c|^N\le4$, and $V_*\in\mathbb R$ for $N\equiv2\pmod4$ (to $10^{-40}$,
+\texttt{P2\_landscape.log}). A proof would combine Lemma~\ref{lem:odd} with the conjugation symmetry that exists for even $N$: $\bar L=L-2i\varphi$ and
+$\varphi N/\pi=\frac N2+a\in\mathbb Z$, so $\overline{\Omega_m(x)}=\Omega_{\tilde m}(\bar x)$. With $-x_*=\bar x_*$ (case $|w|=1$), one gets $-V_*=\bar V_*$
+\emph{if} the two partner modes coincide. That mode bookkeeping is not done here.
+For $N$ odd, $\arg V_*\approx\arg c^{N/2}\equiv\pm\frac\pi4\pmod\pi$ (Lemma~\ref{lem:roots} and the size estimate below), so the tie ray is
+$\theta^*\approx\pm\frac\pi4$, well inside $|\theta|<\frac\pi2$.
+
+\paragraph{Size (VERIFIED).} Expanding $\Li(\e^{-u})=\frac{\pi^2}6+u\log u-u+O(u^2)$ at the small root $w=1+O(\delta)$ gives
+$V_*=\sigma c^{N/2}/N^2\,(1+O(\delta^2))$ (HEURISTIC expansion). The measured relative deviation is about $0.014\,\delta^2$:
+$7.9\cdot10^{-3}$ at $\frac1{13}$ ($\delta=0.75$) and $4.4\cdot10^{-10}$ at $\frac1{25}$ ($\delta=1.8\cdot10^{-4}$).
+
+\section{The block model}\label{sec:model}
+HEURISTIC derivation. In the window $|t|\asymp|V_*|$, the saddle $x=kt\approx\delta/(2N)$ is tiny, so $p^j\approx1$ except in the
+factors $1-q^{Ni}=1-p^{Ni}\approx Nit$. Write $2k=Nn+r$, $0\le r<N$. With $\prod_{j=1}^{N-1}(1-\zeta^j)=N$ this gives
+$b_k\approx c^k\zeta^{k^2}/\big(n!\,(N^2t)^n\,(\zeta;\zeta)_r\big)$. The dropped factors cost $\exp O(N|t|n^2+|x|^2/|t|)=\exp O(N\delta+\delta)$ at $n\asymp|V_*/t|$.
+Summing over $n$:
+\begin{itemize}
+\item $N$ even: $B\approx H\,\e^{\epsilon c^{N/2}/(N^2t)}$, where $H=\sum_{\rho<N/2}c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}$ and
+$\epsilon=1$ for $4\mid N$, $\epsilon=-1$ for $N\equiv2\bmod4$ (from $\e(aNn^2/4)$).
+\item $N$ odd: $B\approx H_e\cosh\frac{s}{N^2t}+H_o\sinh\frac{s}{N^2t}$, $s=c^{N/2}$, where $H_e=\sum_{\rho\le\frac{N-1}2}c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}$
+and $H_o=s^{-1}\sum_{\kappa=\frac{N+1}2}^{N-1}c^\kappa\zeta^{\kappa^2}/(\zeta;\zeta)_{2\kappa-N}$. Even $n$ give the cosh; for odd $n$, $r$ is odd.
+So $A_\pm=\frac12(H_e\pm H_o)$.
+\end{itemize}
+This is the ``$\cos\sqrt{2/t}$'' mechanism of $q=1$, transplanted to $\zeta$: for $N$ odd two exponentials; for $N$ even one.
+VERIFIED (\texttt{P2\_heads.py} against \texttt{P2\_zeros.py}/\texttt{P2\_fitV.py}; amplitudes are $t$-independent):
+\begin{center}\begin{tabular}{lcccc}\toprule
+$a/N$ & model $|A_+|,|A_-|$ (or $|H|$) & measured & model $V$ & measured $V$\\\midrule
+$1/13$ & $1.4598,\ 1.4578$ & $1.4671,\ 1.4766$ & $\pm(3.150-3.150i)\cdot10^{-3}$ & $(3.1737-3.1242i)\cdot10^{-3}$\\
+$2/31$ & $0.31936,\ 2.35318$ & $0.32039,\ 2.35344$ & & $(2.55993-2.55984i)\cdot10^{-5}$\\
+$1/25$ & $2.597302,\ 2.522243$ & $2.597313,\ 2.522239$ & & $(2.01922-2.01922i)\cdot10^{-7}$\\
+$3/41$ & $1.84041,\ 0.96455$ & $1.84182,\ 0.95772$ & & \\
+$1/16$ & $2.30557$ & $\e^{0.823183}=2.27770$ & $5.3719\cdot10^{-4}i$ & $5.37328\cdot10^{-4}i$\\
+$1/20$ & $2.84789$ & $\e^{1.047612}=2.85081$ & $-2.30072\cdot10^{-5}i$ & $-2.30081\cdot10^{-5}i$\\
+$1/24$ & $3.42573$ & $\e^{1.2312}=3.4252$ & $7.1231\cdot10^{-7}i$ & $7.1111\cdot10^{-7}i$\\\bottomrule
+\end{tabular}\end{center}
+The measured $V$ agrees with the \emph{exact} saddle $V_*$ of P1f Lemma saddle to $10^{-9}$ relative. It agrees with the model value
+$\sigma c^{N/2}/N^2$ only to $O(\delta^2)$, as it should (\texttt{P2\_fitV.py}, \texttt{P2\_fitV.log}). The discrepancies of the amplitudes are
+$O(\delta)$ and $O(|t|)$ corrections.
+
+\section{Numerics (VERIFIED)}
+$B$ is summed in MPFR (\texttt{p2scan}, Rust/rug), with the precision raised until $70$ bits survive the cancellation
+$\max_k|b_k|/|B|$. That cancellation reaches $\e^{65}$ at $\frac1{13}$, $|t|=6\cdot10^{-5}$. In plain f64 every run below $|t|\approx10^{-5}$ is garbage.
+\begin{itemize}
+\item \emph{Odd $N$, zeros on the tie ray} (\texttt{P2\_zeros.py}): each predicted zero was refined by secant to $|f|\le3\cdot10^{-14}$. The relative
+deviation from the two-exponential prediction is $\le4\cdot10^{-4}$ ($\frac1{13}$ at $|t|=5\cdot10^{-4}$), falling to $10^{-10}$ ($\frac1{25}$,
+$|t|\approx2\cdot10^{-9}$). The arguments approach $\theta^*$.
+\item \emph{Count} (\texttt{p2scan mcount}, adaptive argument principle): $\frac1{13}$, $5\cdot10^{-5}\le r\le2\cdot10^{-4}$,
+$0.6\le\theta\le1$: $21$ zeros, against the predicted $(1/r_1-1/r_2)|V_*|/\pi=21.26$.
+\item \emph{Even $N$}: $\log|B|-\operatorname{Re}(V_*/t)$ is constant to $10^{-3}$ across $|\theta|\le0.6$ and $10^{-6}\le r\le10^{-3}$
+(\texttt{P2\_fitV.py}). At $\frac1{16}$ this holds down to $|B|=\e^{-302}$ at $\theta=-0.6$, $r=10^{-6}$, so no second exponential is seen to
+that depth. The argument principle finds no zeros in any of the six even cases listed in (B) (\texttt{P2\_evenN\_count.log}).
+\item \emph{Odd $N$, the switch} (\texttt{P2\_ray.py}, $\frac1{13}$, $r=10^{-4}$): $\log|B|-\operatorname{Re}(V_*/t)=0.3832$ for
+$\theta\le0.7$. Past $\theta^*=0.7933$, $\log|B|+\operatorname{Re}(V_*/t)=0.39$, which is the partner $\e^{-V_*/t}$ taking over.
+\end{itemize}
+
+\section{Certified zeros (PROVED, computer-assisted)}
+\begin{proposition}\label{prop:cert}
+Each disc listed in \texttt{P2\_certlog.txt} contains exactly one zero of $t\mapsto B(\zeta\e^{-t})$ (winding number $1$). In particular:
+\begin{itemize}
+\item $\zeta=\e(\frac1{13})$: $|t-(3.5485736701+3.6006300470i)\cdot10^{-4}|\le3\cdot10^{-5}$ ($48$ arcs, $n_0=40$, 300 bits).
+\item $\zeta=\e(\frac1{13})$: $|t-(4.3610782252+4.4297740295i)\cdot10^{-5}|\le5\cdot10^{-7}$ ($24$ arcs, $n_0=40$, 300 bits, run in
+checkpointed chunks, \texttt{P2\_cert\_1\_13\_b.log}; worst $\mathrm{rad}/|\mathrm{mid}|=0.423$, truncation index $K\le15322$, Cauchy majorant
+$\le3.9\cdot10^{32}$, which shows the cancellation, error $\le4.2\cdot10^{-5}$).
+\item $\zeta=\e(\frac1{17})$: $|t-(2.5340248445+2.5392660205i)\cdot10^{-5}|\le3\cdot10^{-6}$ ($24$ arcs, $n_0=40$, 300 bits,
+\texttt{P2\_cert\_1\_17.log}). A first attempt at $|t|\approx5.6\cdot10^{-6}$ with 16 arcs failed the $\mathrm{rad}<\frac12|\mathrm{mid}|$
+test (ratio $0.56$) after $K=146889$ terms per arc. It is kept as \texttt{P2\_cert\_1\_17\_failedM16.log}.
+\end{itemize}
+So there are zeros $q=\zeta\e^{-t}$ with $|q-\zeta|<6.3\cdot10^{-5}$ at $\e(\frac1{13})$ and $|q-\zeta|<3.9\cdot10^{-5}$ at $\e(\frac1{17})$,
+exactly where the pair $\pm V_*$ predicts them.
+\end{proposition}
+\begin{proof}[Method (\texttt{P2\_cert.py})]
+Naive ball evaluation over a $t$-ball fails, because the radius is multiplied by $\max|b_k|/|B|$ (up to $\e^{65}$). Complex ball
+multiplication also inflates by $\sqrt2$ per product, so $q^j$ and $b_k$ are never formed by repeated multiplication. On each arc piece
+$|t-t_c|\le\rho$ the script uses a Taylor model:
+$\log b_k=k(\log2+i\pi+\operatorname{Log}(1-q))+k^2(2\pi i\frac aN-t)-\sum_{j\le2k}\operatorname{Log}(1-q^j)$ as an \texttt{acb\_series} at the exact point $t_c$.
+Here $\operatorname{Re}(1-q^j)>0$, so the principal Log has no cut, and $1-q^j=-\operatorname{expm1}(-jt)$ when $N\mid j$.
+The Taylor truncation is bounded by Cauchy on $|h|\le R=8\rho$ with the majorant $\sum_k\sup|b_k|$. That needs no cancellation, only
+an upper bound. The tail is bounded by the decreasing ratio bound $\rho_k=|c_t|Q^{2k+1}/((1-Q^{2k+1})(1-Q^{2k+2}))<\frac12$. Each
+image enclosure must avoid $0$ with $\mathrm{rad}<\frac12|\mathrm{mid}|$. Two consecutive images then lie in a sector of opening $<\pi$,
+and the principal argument differences add up to $2\pi\cdot$winding.
+\end{proof}
+These are finitely many zeros. They prove that zeros exist at exponentially small $|t|$ where the pair predicts them. They do not prove
+accumulation.
+
+\section{What would close P2}
+\begin{enumerate}
+\item \emph{Odd $N$, accumulation at $\zeta$}: an asymptotic $B=A_+\e^{V_*/t}+A_-\e^{-V_*/t}+o(1)$ on the tie ray, uniformly as $t\to0$, and $A_+A_-\ne0$.
+The block model is accurate only for $N|t|n^2\ll1$, i.e.\ $|t|\gg N|V_*|^2$. Below that, the full saddle $V_*$ (P1f Lemma saddle, both
+roots) takes over. The saddle is within $O(\delta/N)$ of the endpoint $x=0$ and on the far side of $\operatorname{Re}x=0$ for one member
+($|w|>1$), so the P1f contour and the Lemma LS estimates do not apply as they stand. OPEN.
+\item \emph{A dense set}: non-vanishing of $A_\pm=\frac12(H_e\pm H_o)$ uniformly on a dense set of odd $N$. These are finite
+sums with near-cancellation, the same kind of object as $Z_N$ in Theorem M. With that and (1) at the level of the window $|t|\asymp|V_*|$
+(where the model error is $O(N\delta)$, exponentially small), Rouch\'e would give one zero near each such $\zeta$. By closure that suffices
+for accumulation at \emph{every} point of the small arc (item (C)). This is the shortest route: it needs no $t\to0$ limit. OPEN.
+\item \emph{Even $N$, zero-free sector}: $B=H\e^{V_*/t}(1+o(1))$ uniformly in $|\theta|\le\frac\pi2-\eta$, and $H\ne0$. OPEN.
+\end{enumerate}
+
+\section*{Weakest points}
+\begin{itemize}
+\item The mechanism is specific to $\ell\le0$ (more precisely to $\delta\lesssim1$). At $\frac1{11}$ ($\ell=+0.12$, $\delta=1.93$) the same fit fails: the 
+fitted $|A_-|\approx1.2\cdot10^5$ and the secant runs off to an unrelated zero. So other saddles (the P1f modes) matter there. The gap
+$0.0804<\frac aN<0.143$ is not addressed.
+\item Nothing about accumulation is proved. The certified statement is finitely many zeros per $\zeta$.
+\item The model for even $N$ and odd $N$ is heuristic. Its agreement with the numerics is to $O(\delta)$ in the amplitudes and $10^{-9}$ in the exact $V_*$.
+There is no proof that the other $\pm$ pairs (for example $\pm0.049i$ at $\frac1{16}$, which is admissible) contribute nothing. They are
+invisible numerically down to $|B|=\e^{-302}$ and $e^{\pm302}$.
+\item The zero-free claim for even $N$ is sampled only on $|\theta|\le1.2$. The tangential directions, where zeros from nearby odd-$N$
+points must enter if (C) holds, are not sampled.
+\item The MPFR argument-principle counts use adaptive sampling, not a certificate.
+\item Lemma~\ref{lem:odd} is proved off the real $x$-axis; the $N\equiv2\pmod4$ case ($x_*$ real) is by continuity from either side,
+where the two sides of the $\Li$ cut differ. The numerical pairing check covers it.
+\end{itemize}
+
+\paragraph{Files.} \texttt{p2scan/} (Rust: f64 and MPFR evaluation, argument principle), \texttt{P2\_B.py} (unused first Arb
+attempt, kept for the record of the $\sqrt2$ radius blow-up), \texttt{P2\_fitV.py}, \texttt{P2\_ray.py}, \texttt{P2\_zeros.py},
+\texttt{P2\_heads.py}, \texttt{P2\_landscape.py}, \texttt{P2\_cert.py}, \texttt{P2\_cert\_chunks.sh}; logs \texttt{P2\_fitV.log}, \texttt{P2\_ray.log},
+\texttt{P2\_zeros.log}, \texttt{P2\_heads.log}, \texttt{P2\_cert\_1\_13\_b.log}, \texttt{P2\_cert\_1\_17.log}, \texttt{P2\_log.txt}, \texttt{P2\_landscape.log},
+\texttt{P2\_evenN\_count.log}, \texttt{P2\_certlog.txt}.
+\end{document}

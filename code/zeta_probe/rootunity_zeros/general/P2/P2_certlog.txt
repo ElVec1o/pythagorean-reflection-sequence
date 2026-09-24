@@ -1,0 +1,6 @@
+CERTIFIED 1/13: |t-(3.548573670100e-04+3.600630047000e-04j)| = 3.000e-05, M=48 pieces, n0=40, prec=300: winding number of B = 1 (max rad/|mid| 0.207, max K 2079, max majorant 7.10e+04, max err 1.96e-20)   [run with R=4 rho, 94 s]
+CERTIFIED 1/13: |t-(3.548573670100e-04+3.600630047000e-04j)| = 3.000e-05, M=48 pieces, n0=40, prec=300: winding number of B = 1 (max rad/|mid| 0.207, max K 2179, max majorant 1.06e+05, max err 1.14e-32)
+exit 0
+NOTE: the monolithic run for 1/13 at |t|~6.2e-5 (M=24) hit the 290 s alarm (exit 142); it was redone in checkpointed chunks:
+CERTIFIED 1/13: |t-(4.3610782252e-05+4.4297740295e-05j)| = 5e-7, M=24 pieces, n0=40, prec=300: winding number 1 (max rad/|mid| 0.4228, K<=15322, majorant<=3.9e32, err<=4.2e-5)  [P2_cert_1_13_b.log]
+CERTIFIED 1/17: |t-(2.5340248445e-05+2.5392660205e-05j)| = 3e-6, M=24 pieces, n0=40, prec=300: winding number 1 (max ratio=0.4371, max K=33558)  [P2_cert_1_17.log]

@@ -1,0 +1,15 @@
+P2 log, 2026-09-24.  Machine check before the runs: 24 GB RAM, 5.3 GB free on the data volume; all runs < 30 MB RSS; every run wrapped in perl alarm 290.
+Build: p2scan (Rust, rug/MPFR), target dir 63 MB.
+
+1. f64 is useless near zeta: at 1/16, t=1e-5 the f64 sum loses 15 digits (max|b_k|/|B|).  All numerics below use p2scan meval (MPFR, precision raised until 70 bits survive).
+2. Python-flint acb: naive ball evaluation fails (sqrt2 radius inflation per complex product; and max|b_k|/|B| up to e^65). P2_B.py kept as the record; P2_cert.py uses Taylor models.
+3. Landscape (P2_landscape.log): pairing -x*, -V* exact to 1e-40 in all 14 cases; parity rule as in the note.
+4. Single/two-exponential fits (P2_fitV.log): fitted V equals the exact small saddle V* to ~1e-9 relative:
+   1/16 V=+5.37328e-4 i ; 1/20 V=-2.30081e-5 i ; 1/24 V=+7.1111e-7 i ; 1/14 V=-2.25212e-3 ; 1/18 V=+1.16151e-4 ; 1/22 V=-4.20214e-6 ;
+   odd: 1/13 V=(3.17372-3.12424 i)e-3 ; 1/15 (7.8926+7.8788 i)e-4 ; 1/17 (1.7864-1.7871 i)e-4.
+5. Switch at the tie ray (P2_ray.log, 1/13, r=1e-4): log|B|-Re(V/t)=0.3832 for theta<=0.7; beyond 0.7933, log|B|+Re(V/t)=0.39.
+6. Zeros (P2_zeros.log): 21 zeros refined at 7 odd-N points; all within rel. 4e-4 .. 1e-10 of the two-exponential prediction; theta -> theta*.
+   Count: 1/13, r in [5e-5,2e-4], theta in [0.6,1.0]: 21 zeros (predicted 21.26).
+7. Even N (P2_evenN_count.log): no zeros for |theta|<=1.2 in the listed annuli (1/12,1/14,1/16,1/18,1/20,1/22).
+8. Block-model amplitudes (P2_heads.log) vs measured: see note table.
+9. Certificates: P2_certlog.txt.
