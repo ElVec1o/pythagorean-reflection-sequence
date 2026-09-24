@@ -79,14 +79,14 @@ def evaluate(lo, hi, M, ZREQ, MREQ):
     if ZONLY:
         z0 = arb(Zs[0].abs_lower())
         if not bool(z0 > ZREQ): return None, 'Z T=%s' % T.str(3, radius=False)
-        return (z0, arb(1), arb(0), A, T, z0), 'ok'
+        return (z0, arb(1), arb(0), A, T, z0, g), 'ok'
     if not bool(zl > ZREQ): return None, 'Z T=%s' % T.str(3, radius=False)
     om = Zs[-1]/(u*Zs[1]); t1 = -(1 + om)/2
     G = Gfactors(z, t1, e(xb/2))
     mg = arb(G[0].abs_lower())
     for gg in G[1:]: mg = mg.min(arb(gg.abs_lower()))
     if not bool(mg > MREQ): return None, 'margin T=%s' % T.str(3, radius=False)
-    return (zl, mg, arb(om.abs_upper()), A, T, arb(Zs[0].abs_lower())), "ok"
+    return (zl, mg, arb(om.abs_upper()), A, T, arb(Zs[0].abs_lower()), g), "ok"
 if __name__ == '__main__':
     XLO, XHI, ZREQ, MREQ = Fr(sys.argv[1]), Fr(sys.argv[2]), arb(sys.argv[3]), arb(sys.argv[4])
     low = {}
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         f, rl, rr = tok.split(':'); low[Fr(f)] = (Fr(rl), Fr(rr))
     segs = build_discs(XLO, XHI, low)
     print('segments %d' % len(segs), flush=True)
-    worstZ = None; worstZ0 = None; worstM = None; maxom = arb(0); maxT = arb(0); nev = 0; nok = 0; Mhist = {}
+    worstZ = None; worstZ0 = None; worstM = None; maxom = arb(0); maxT = arb(0); maxg = arb(0); nev = 0; nok = 0; Mhist = {}
     for (a0, b0) in segs:
         stack = [(a0, b0)]
         while stack:
@@ -106,14 +106,14 @@ if __name__ == '__main__':
                 T = float(why.split('T=')[1].split()[0].strip('[]')) if 'T=' in why else 1
                 if T < 1e-3: break
             if res is not None:
-                zl, mg, oa, A, T, z0 = res; nok += 1; Mhist[M] = Mhist.get(M, 0) + 1
+                zl, mg, oa, A, T, z0, gg0 = res; maxg = maxg.max(gg0); nok += 1; Mhist[M] = Mhist.get(M, 0) + 1
                 worstZ = zl if worstZ is None else worstZ.min(zl)
                 worstZ0 = z0 if worstZ0 is None else worstZ0.min(z0)
                 if worstM is None or bool(mg < worstM): worstM = mg; wloc = (float(lo), float(hi))
                 maxom = maxom.max(oa); maxT = maxT.max(T)
                 continue
-            if hi - lo < Fr(1, 10**30):
+            if hi - lo < Fr(1, 10**15):   # minimum interval width 1e-15 (Reviewer AD)
                 print('CASEA FAILED at x in [%.17g, %.17g] (%s)' % (float(lo), float(hi), why), flush=True); sys.exit(1)
             mid = (lo + hi)/2; stack.append((mid, hi)); stack.append((lo, mid))
-    print('CASEA PASSED on [%s,%s]: %d intervals (%d evaluations), M-histogram %s, min|Z|>=%s, min|Z^s|(s=0,+-1)>=%s, min margin>=%s (at x in [%.9g,%.9g]), max|omega|<=%s, max T<=%s' % (
-        XLO, XHI, nok, nev, sorted(Mhist.items()), fdn(worstZ0), fdn(worstZ), fdn(worstM), wloc[0], wloc[1], fup(maxom), fup(maxT)), flush=True)
+    print('CASEA PASSED [Y=%s G=n/a(per-interval sup|u0|<=%s) ETA=n/a(not used by caseA)] on [%s,%s]: %d intervals (%d evaluations), M-histogram %s, min|Z|>=%s, min|Z^s|(s=0,+-1)>=%s, min margin>=%s (at x in [%.9g,%.9g]), max|omega|<=%s, max T<=%s' % (
+        YS, fup(maxg), XLO, XHI, nok, nev, sorted(Mhist.items()), fdn(worstZ0), fdn(worstZ), fdn(worstM), wloc[0], wloc[1], fup(maxom), fup(maxT)), flush=True)

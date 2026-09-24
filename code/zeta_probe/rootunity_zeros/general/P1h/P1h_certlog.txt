@@ -6,11 +6,19 @@ CERT 5/6 d>0 r=0.0005 eta=0.026 n2=60 V0=0.0316509 kappa=3: B<=0.4308 N*>=5.03e+
 CERT 1/6 d>0 r=2e-05 eta=0.006 n2=60 V0=0.00803976 kappa=3: B<=0.06820 N*>=4.21e+16  ReF0 in [+/- 5.61e-8]  kappa_seed<=3.37e-7  sqrt(pi/2A)>=0.9849  min|S_amp|>=0.8311  c_seed>=0.7628
   (1/7 at eta=0.00375: P1e_lowseed radii >= 1e-5 all fail (B=0.989 at 1e-5); P1h_lowseed certifies r=5e-6. 1/7 is NOT used by Theorem M' -- arc starts at 0.143.)
 
-## Low seeds, twisted (../P1g/P1g_lowseed.py)
+## Low seeds, twisted (../P1g/P1g_lowseed.py p q r eta V0 3 8 0.05 RTARGET), RERUN 2026-09-24 with RTARGET; 'exit' = the script's own exit code (output redirected to file, no pipe)
 SEED 1/6 r=2e-05: all pieces B+-<1: True ; RPRIME=2e-05 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+LOWSEED PASSED 1/6: RPRIME=2e-05 >= target 2e-05
+exit 0
 SEED 5/6 r=0.0005: all pieces B+-<1: True ; RPRIME=0.00025 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+LOWSEED PASSED 5/6: RPRIME=0.00025 >= target 0.00025
+exit 0
 SEED 4/5 r=0.0005: all pieces B+-<1: False ; RPRIME=0.00025 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+LOWSEED PASSED 4/5: RPRIME=0.00025 >= target 0.00025
+exit 0
 SEED 1/7 r=5e-06: all pieces B+-<1: True ; RPRIME=5e-06 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+LOWSEED PASSED 1/7: RPRIME=5e-06 >= target 5e-06
+exit 0
 
 ## Base / level-n data (P1h_seeds.py)
 SEEDS PASSED: 125 seeds 3<=n<=110 in [1/6,1/5); min|Z|>=0.8269; min|Z^pm|>=0.5269; min margin>=0.2971
@@ -50,12 +58,16 @@ lemmaB_R0_crude_3001_20000.txt:
 LEMMAB_R0 CRUDE PASSED 3001<=n<=20000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.13e-54, sum rho<=2.76e-55
 lemmaB_R0_crude_20001_200000.txt:
 LEMMAB_R0 CRUDE PASSED 20001<=n<=200000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.37e-53, sum rho<=2.92e-54
-lemmaB_R1_crude.txt:
-n=301  E0<=0.430 R0<=0.125  E+-<=0.438  rho(n)<=9.75  sigma(n)<=147  sum sigma<=147
-n=500  E0<=2.88e-7 R0<=9.48e-8  E+-<=2.92e-7  rho(n)<=1.55e-6  sigma(n)<=2.32e-5  sum sigma<=1050
-LEMMAB_R0 CRUDE PASSED 301<=n<=20000: max E0<=0.430, max E+-<=0.438, sum sigma<=1050, sum rho<=70.0
-lemmaB_R1_crude_20001_200000.txt:
-LEMMAB_R0 CRUDE PASSED 20001<=n<=200000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.37e-53, sum rho<=2.92e-54
+lemmaB_R1_crude.txt (REGENERATED 2026-09-24, P1H_Y=0.59 P1H_G=0.5762 P1H_ETA=0.0037, OMEGA=10):
+n=301  logE0<=-0.844004 logE+-<=-0.827815  E0<=0.430 R0<=0.125  E+-<=0.438  rho(n)<=9.75  sigma(n)<=147  sum sigma<=147
+n=500  logE0<=-15.0623 logE+-<=-15.0479  E0<=2.88e-7 R0<=9.48e-8  E+-<=2.92e-7  rho(n)<=1.55e-6  sigma(n)<=2.32e-5  sum sigma<=1050
+n=3000  logE0<=-203.426 logE+-<=-203.413  E0<=4.50e-89 R0<=1.49e-89  E+-<=4.56e-89  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1050
+LEMMAB_R0 CRUDE PASSED [Y=0.59 G=0.5762 ETA=0.0037] 301<=n<=20000: max E0<=0.430, max E+-<=0.438, sum sigma<=1050, sum rho<=70.0
+exit 0
+lemmaB_R1_crude_20001_200000.txt (REGENERATED 2026-09-24 with the R1 parameters; the previous file was a byte-identical copy of the R0 run):
+n=200000  logE0<=-15388.5 logE+-<=-15388.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.37e-53
+LEMMAB_R0 CRUDE PASSED [Y=0.59 G=0.5762 ETA=0.0037] 20001<=n<=200000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.37e-53, sum rho<=2.92e-54
+exit 0
 
 ## Case A refined covering (P1h_caseA.py; Z^0, Z^+, Z^- and omega margins)
 caseA_R0_a.txt:
@@ -89,3 +101,13 @@ ell1=0.12  N1=105  N1*ell1=12.60  window-check OK
 ell1=0.1  N1=132  N1*ell1=13.20  window-check OK
 ell1=0.05  N1=311  N1*ell1=15.55  window-check OK
 ell1=0.02  N1=947  N1*ell1=18.94  window-check OK
+
+## Exit-code convention (Reviewer AD, 2026-09-24)
+Lines 'exit N' recorded from 2026-09-24 on are the exit status of the certificate script itself: each run is
+  perl -e 'alarm 290; exec @ARGV' python3 SCRIPT ARGS > FILE 2>&1; echo "exit $?" >> FILE
+(no pipe, so $? is the script's status; with a pipe use ${PIPESTATUS[0]}). 'exit' lines ABOVE the 2026-09-24 reruns
+(seeds, Lemma B' exact) may have been written after a '| tail' pipe and then record tail's status, not the script's; their PASSED lines are
+printed only after all checks, and every failure path calls sys.exit(1) after printing FAILED, so PASSED lines are
+still conclusive, but the exit codes there are not independent evidence.
+P1h_caseA.py minimum interval width is now 1e-15 (was 1e-30): below it the script prints CASEA FAILED and exits 1.
+The caseA_R*.txt logs above predate this change (and the Y/G/ETA fields in PASSED lines) and were NOT rerun.

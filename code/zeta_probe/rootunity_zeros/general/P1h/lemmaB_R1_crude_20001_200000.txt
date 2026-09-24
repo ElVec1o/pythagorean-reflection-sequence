@@ -1,363 +1,363 @@
-n=20001  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-58
-n=20500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.22e-55
-n=21000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-55
-n=21500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.65e-55
-n=22000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.86e-55
-n=22500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.07e-55
-n=23000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.29e-55
-n=23500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.50e-55
-n=24000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.71e-55
-n=24500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.10e-54
-n=25000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.22e-54
-n=25500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.34e-54
-n=26000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.46e-54
-n=26500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.58e-54
-n=27000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.70e-54
-n=27500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.83e-54
-n=28000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.95e-54
-n=28500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.07e-54
-n=29000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.19e-54
-n=29500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.31e-54
-n=30000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-54
-n=30500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.55e-54
-n=31000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.67e-54
-n=31500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.80e-54
-n=32000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.92e-54
-n=32500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.04e-54
-n=33000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.16e-54
-n=33500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.28e-54
-n=34000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.40e-54
-n=34500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.52e-54
-n=35000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.65e-54
-n=35500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.77e-54
-n=36000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.89e-54
-n=36500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.01e-54
-n=37000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.13e-54
-n=37500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.25e-54
-n=38000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.37e-54
-n=38500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.49e-54
-n=39000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.62e-54
-n=39500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.74e-54
-n=40000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.86e-54
-n=40500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.98e-54
-n=41000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.10e-54
-n=41500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.22e-54
-n=42000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.34e-54
-n=42500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.47e-54
-n=43000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.59e-54
-n=43500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.71e-54
-n=44000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.83e-54
-n=44500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.95e-54
-n=45000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.07e-54
-n=45500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.19e-54
-n=46000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.32e-54
-n=46500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.44e-54
-n=47000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.56e-54
-n=47500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.68e-54
-n=48000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.80e-54
-n=48500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.92e-54
-n=49000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.04e-54
-n=49500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.16e-54
-n=50000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.29e-54
-n=50500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.41e-54
-n=51000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.53e-54
-n=51500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.65e-54
-n=52000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.77e-54
-n=52500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.89e-54
-n=53000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.01e-54
-n=53500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.14e-54
-n=54000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.26e-54
-n=54500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.38e-54
-n=55000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.50e-54
-n=55500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.62e-54
-n=56000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.74e-54
-n=56500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.86e-54
-n=57000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.99e-54
-n=57500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.11e-54
-n=58000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.23e-54
-n=58500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.35e-54
-n=59000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.47e-54
-n=59500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.59e-54
-n=60000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.71e-54
-n=60500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.83e-54
-n=61000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.96e-54
-n=61500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.01e-53
-n=62000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.02e-53
-n=62500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.04e-53
-n=63000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.05e-53
-n=63500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.06e-53
-n=64000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.07e-53
-n=64500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.09e-53
-n=65000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.10e-53
-n=65500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.11e-53
-n=66000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.12e-53
-n=66500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.13e-53
-n=67000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.15e-53
-n=67500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.16e-53
-n=68000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.17e-53
-n=68500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.18e-53
-n=69000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.19e-53
-n=69500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.21e-53
-n=70000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.22e-53
-n=70500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.23e-53
-n=71000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.24e-53
-n=71500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.25e-53
-n=72000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.27e-53
-n=72500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.28e-53
-n=73000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.29e-53
-n=73500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.30e-53
-n=74000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.32e-53
-n=74500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.33e-53
-n=75000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.34e-53
-n=75500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.35e-53
-n=76000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.36e-53
-n=76500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.38e-53
-n=77000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.39e-53
-n=77500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.40e-53
-n=78000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.41e-53
-n=78500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.42e-53
-n=79000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.44e-53
-n=79500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.45e-53
-n=80000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.46e-53
-n=80500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.47e-53
-n=81000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.49e-53
-n=81500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.50e-53
-n=82000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.51e-53
-n=82500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.52e-53
-n=83000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.53e-53
-n=83500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.55e-53
-n=84000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.56e-53
-n=84500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.57e-53
-n=85000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.58e-53
-n=85500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.59e-53
-n=86000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.61e-53
-n=86500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.62e-53
-n=87000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.63e-53
-n=87500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.64e-53
-n=88000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.66e-53
-n=88500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.67e-53
-n=89000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.68e-53
-n=89500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.69e-53
-n=90000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.70e-53
-n=90500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.72e-53
-n=91000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.73e-53
-n=91500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.74e-53
-n=92000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.75e-53
-n=92500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.76e-53
-n=93000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.78e-53
-n=93500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.79e-53
-n=94000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.80e-53
-n=94500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.81e-53
-n=95000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.83e-53
-n=95500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.84e-53
-n=96000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.85e-53
-n=96500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.86e-53
-n=97000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.87e-53
-n=97500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.89e-53
-n=98000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.90e-53
-n=98500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.91e-53
-n=99000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.92e-53
-n=99500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.93e-53
-n=100000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.95e-53
-n=100500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.96e-53
-n=101000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.97e-53
-n=101500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.98e-53
-n=102000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.00e-53
-n=102500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.01e-53
-n=103000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.02e-53
-n=103500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.03e-53
-n=104000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.04e-53
-n=104500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.06e-53
-n=105000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.07e-53
-n=105500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.08e-53
-n=106000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.09e-53
-n=106500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.10e-53
-n=107000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.12e-53
-n=107500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.13e-53
-n=108000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.14e-53
-n=108500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.15e-53
-n=109000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.17e-53
-n=109500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.18e-53
-n=110000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.19e-53
-n=110500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.20e-53
-n=111000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.21e-53
-n=111500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.23e-53
-n=112000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.24e-53
-n=112500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.25e-53
-n=113000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.26e-53
-n=113500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.27e-53
-n=114000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.29e-53
-n=114500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.30e-53
-n=115000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.31e-53
-n=115500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.32e-53
-n=116000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.34e-53
-n=116500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.35e-53
-n=117000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.36e-53
-n=117500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.37e-53
-n=118000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.38e-53
-n=118500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.40e-53
-n=119000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.41e-53
-n=119500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.42e-53
-n=120000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-53
-n=120500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.44e-53
-n=121000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.46e-53
-n=121500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.47e-53
-n=122000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.48e-53
-n=122500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.49e-53
-n=123000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.50e-53
-n=123500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.52e-53
-n=124000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.53e-53
-n=124500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.54e-53
-n=125000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.55e-53
-n=125500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.57e-53
-n=126000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.58e-53
-n=126500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.59e-53
-n=127000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.60e-53
-n=127500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.61e-53
-n=128000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.63e-53
-n=128500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.64e-53
-n=129000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.65e-53
-n=129500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.66e-53
-n=130000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.67e-53
-n=130500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.69e-53
-n=131000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.70e-53
-n=131500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.71e-53
-n=132000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.72e-53
-n=132500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.74e-53
-n=133000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.75e-53
-n=133500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.76e-53
-n=134000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.77e-53
-n=134500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.78e-53
-n=135000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.80e-53
-n=135500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.81e-53
-n=136000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.82e-53
-n=136500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.83e-53
-n=137000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.84e-53
-n=137500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.86e-53
-n=138000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.87e-53
-n=138500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.88e-53
-n=139000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.89e-53
-n=139500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.91e-53
-n=140000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.92e-53
-n=140500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.93e-53
-n=141000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.94e-53
-n=141500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.95e-53
-n=142000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.97e-53
-n=142500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.98e-53
-n=143000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.99e-53
-n=143500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.00e-53
-n=144000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.01e-53
-n=144500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.03e-53
-n=145000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.04e-53
-n=145500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.05e-53
-n=146000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.06e-53
-n=146500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.08e-53
-n=147000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.09e-53
-n=147500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.10e-53
-n=148000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.11e-53
-n=148500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.12e-53
-n=149000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.14e-53
-n=149500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.15e-53
-n=150000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.16e-53
-n=150500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.17e-53
-n=151000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.18e-53
-n=151500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.20e-53
-n=152000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.21e-53
-n=152500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.22e-53
-n=153000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.23e-53
-n=153500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.25e-53
-n=154000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.26e-53
-n=154500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.27e-53
-n=155000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.28e-53
-n=155500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.29e-53
-n=156000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.31e-53
-n=156500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.32e-53
-n=157000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.33e-53
-n=157500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.34e-53
-n=158000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.35e-53
-n=158500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.37e-53
-n=159000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.38e-53
-n=159500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.39e-53
-n=160000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.40e-53
-n=160500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.42e-53
-n=161000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.43e-53
-n=161500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.44e-53
-n=162000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.45e-53
-n=162500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.46e-53
-n=163000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.48e-53
-n=163500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.49e-53
-n=164000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.50e-53
-n=164500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.51e-53
-n=165000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.52e-53
-n=165500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.54e-53
-n=166000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.55e-53
-n=166500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.56e-53
-n=167000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.57e-53
-n=167500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.59e-53
-n=168000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.60e-53
-n=168500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.61e-53
-n=169000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.62e-53
-n=169500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.63e-53
-n=170000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.65e-53
-n=170500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.66e-53
-n=171000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.67e-53
-n=171500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.68e-53
-n=172000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.69e-53
-n=172500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.71e-53
-n=173000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.72e-53
-n=173500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.73e-53
-n=174000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.74e-53
-n=174500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.76e-53
-n=175000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.77e-53
-n=175500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.78e-53
-n=176000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.79e-53
-n=176500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.80e-53
-n=177000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.82e-53
-n=177500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.83e-53
-n=178000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.84e-53
-n=178500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.85e-53
-n=179000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.86e-53
-n=179500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.88e-53
-n=180000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.89e-53
-n=180500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.90e-53
-n=181000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.91e-53
-n=181500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.92e-53
-n=182000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.94e-53
-n=182500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.95e-53
-n=183000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.96e-53
-n=183500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.97e-53
-n=184000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.99e-53
-n=184500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.00e-53
-n=185000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.01e-53
-n=185500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.02e-53
-n=186000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.03e-53
-n=186500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.05e-53
-n=187000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.06e-53
-n=187500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.07e-53
-n=188000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.08e-53
-n=188500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.09e-53
-n=189000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.11e-53
-n=189500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.12e-53
-n=190000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.13e-53
-n=190500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.14e-53
-n=191000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.16e-53
-n=191500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.17e-53
-n=192000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.18e-53
-n=192500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.19e-53
-n=193000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.20e-53
-n=193500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.22e-53
-n=194000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.23e-53
-n=194500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.24e-53
-n=195000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.25e-53
-n=195500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.26e-53
-n=196000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.28e-53
-n=196500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.29e-53
-n=197000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.30e-53
-n=197500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.31e-53
-n=198000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.33e-53
-n=198500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.34e-53
-n=199000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.35e-53
-n=199500  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.36e-53
-n=200000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.37e-53
-LEMMAB_R0 CRUDE PASSED 20001<=n<=200000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.37e-53, sum rho<=2.92e-54
+n=20001  logE0<=-1510.05 logE+-<=-1510.04  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-58
+n=20500  logE0<=-1548.48 logE+-<=-1548.47  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.22e-55
+n=21000  logE0<=-1586.99 logE+-<=-1586.97  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-55
+n=21500  logE0<=-1625.50 logE+-<=-1625.48  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.65e-55
+n=22000  logE0<=-1664.01 logE+-<=-1663.99  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.86e-55
+n=22500  logE0<=-1702.52 logE+-<=-1702.50  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.07e-55
+n=23000  logE0<=-1741.03 logE+-<=-1741.02  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.29e-55
+n=23500  logE0<=-1779.54 logE+-<=-1779.53  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.50e-55
+n=24000  logE0<=-1818.06 logE+-<=-1818.05  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.71e-55
+n=24500  logE0<=-1856.57 logE+-<=-1856.56  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.10e-54
+n=25000  logE0<=-1895.09 logE+-<=-1895.08  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.22e-54
+n=25500  logE0<=-1933.61 logE+-<=-1933.60  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.34e-54
+n=26000  logE0<=-1972.13 logE+-<=-1972.12  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.46e-54
+n=26500  logE0<=-2010.65 logE+-<=-2010.64  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.58e-54
+n=27000  logE0<=-2049.17 logE+-<=-2049.16  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.70e-54
+n=27500  logE0<=-2087.69 logE+-<=-2087.68  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.83e-54
+n=28000  logE0<=-2126.21 logE+-<=-2126.20  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.95e-54
+n=28500  logE0<=-2164.74 logE+-<=-2164.72  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.07e-54
+n=29000  logE0<=-2203.26 logE+-<=-2203.25  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.19e-54
+n=29500  logE0<=-2241.78 logE+-<=-2241.77  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.31e-54
+n=30000  logE0<=-2280.31 logE+-<=-2280.30  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-54
+n=30500  logE0<=-2318.84 logE+-<=-2318.82  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.55e-54
+n=31000  logE0<=-2357.36 logE+-<=-2357.35  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.67e-54
+n=31500  logE0<=-2395.89 logE+-<=-2395.88  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.80e-54
+n=32000  logE0<=-2434.42 logE+-<=-2434.41  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.92e-54
+n=32500  logE0<=-2472.95 logE+-<=-2472.93  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.04e-54
+n=33000  logE0<=-2511.48 logE+-<=-2511.46  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.16e-54
+n=33500  logE0<=-2550.01 logE+-<=-2549.99  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.28e-54
+n=34000  logE0<=-2588.54 logE+-<=-2588.52  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.40e-54
+n=34500  logE0<=-2627.07 logE+-<=-2627.06  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.52e-54
+n=35000  logE0<=-2665.60 logE+-<=-2665.59  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.65e-54
+n=35500  logE0<=-2704.13 logE+-<=-2704.12  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.77e-54
+n=36000  logE0<=-2742.66 logE+-<=-2742.65  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.89e-54
+n=36500  logE0<=-2781.20 logE+-<=-2781.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.01e-54
+n=37000  logE0<=-2819.73 logE+-<=-2819.72  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.13e-54
+n=37500  logE0<=-2858.26 logE+-<=-2858.25  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.25e-54
+n=38000  logE0<=-2896.80 logE+-<=-2896.79  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.37e-54
+n=38500  logE0<=-2935.33 logE+-<=-2935.32  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.49e-54
+n=39000  logE0<=-2973.87 logE+-<=-2973.86  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.62e-54
+n=39500  logE0<=-3012.40 logE+-<=-3012.39  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.74e-54
+n=40000  logE0<=-3050.94 logE+-<=-3050.93  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.86e-54
+n=40500  logE0<=-3089.48 logE+-<=-3089.46  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.98e-54
+n=41000  logE0<=-3128.01 logE+-<=-3128.00  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.10e-54
+n=41500  logE0<=-3166.55 logE+-<=-3166.54  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.22e-54
+n=42000  logE0<=-3205.09 logE+-<=-3205.08  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.34e-54
+n=42500  logE0<=-3243.63 logE+-<=-3243.61  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.47e-54
+n=43000  logE0<=-3282.16 logE+-<=-3282.15  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.59e-54
+n=43500  logE0<=-3320.70 logE+-<=-3320.69  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.71e-54
+n=44000  logE0<=-3359.24 logE+-<=-3359.23  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.83e-54
+n=44500  logE0<=-3397.78 logE+-<=-3397.77  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.95e-54
+n=45000  logE0<=-3436.32 logE+-<=-3436.31  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.07e-54
+n=45500  logE0<=-3474.86 logE+-<=-3474.85  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.19e-54
+n=46000  logE0<=-3513.40 logE+-<=-3513.39  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.32e-54
+n=46500  logE0<=-3551.94 logE+-<=-3551.93  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.44e-54
+n=47000  logE0<=-3590.48 logE+-<=-3590.47  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.56e-54
+n=47500  logE0<=-3629.02 logE+-<=-3629.01  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.68e-54
+n=48000  logE0<=-3667.56 logE+-<=-3667.55  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.80e-54
+n=48500  logE0<=-3706.11 logE+-<=-3706.09  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=6.92e-54
+n=49000  logE0<=-3744.65 logE+-<=-3744.64  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.04e-54
+n=49500  logE0<=-3783.19 logE+-<=-3783.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.16e-54
+n=50000  logE0<=-3821.73 logE+-<=-3821.72  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.29e-54
+n=50500  logE0<=-3860.27 logE+-<=-3860.26  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.41e-54
+n=51000  logE0<=-3898.82 logE+-<=-3898.81  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.53e-54
+n=51500  logE0<=-3937.36 logE+-<=-3937.35  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.65e-54
+n=52000  logE0<=-3975.90 logE+-<=-3975.89  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.77e-54
+n=52500  logE0<=-4014.45 logE+-<=-4014.44  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=7.89e-54
+n=53000  logE0<=-4052.99 logE+-<=-4052.98  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.01e-54
+n=53500  logE0<=-4091.53 logE+-<=-4091.52  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.14e-54
+n=54000  logE0<=-4130.08 logE+-<=-4130.07  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.26e-54
+n=54500  logE0<=-4168.62 logE+-<=-4168.61  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.38e-54
+n=55000  logE0<=-4207.17 logE+-<=-4207.16  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.50e-54
+n=55500  logE0<=-4245.71 logE+-<=-4245.70  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.62e-54
+n=56000  logE0<=-4284.26 logE+-<=-4284.25  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.74e-54
+n=56500  logE0<=-4322.80 logE+-<=-4322.79  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.86e-54
+n=57000  logE0<=-4361.35 logE+-<=-4361.34  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=8.99e-54
+n=57500  logE0<=-4399.89 logE+-<=-4399.88  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.11e-54
+n=58000  logE0<=-4438.44 logE+-<=-4438.43  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.23e-54
+n=58500  logE0<=-4476.99 logE+-<=-4476.97  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.35e-54
+n=59000  logE0<=-4515.53 logE+-<=-4515.52  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.47e-54
+n=59500  logE0<=-4554.08 logE+-<=-4554.07  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.59e-54
+n=60000  logE0<=-4592.63 logE+-<=-4592.61  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.71e-54
+n=60500  logE0<=-4631.17 logE+-<=-4631.16  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.83e-54
+n=61000  logE0<=-4669.72 logE+-<=-4669.71  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=9.96e-54
+n=61500  logE0<=-4708.27 logE+-<=-4708.25  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.01e-53
+n=62000  logE0<=-4746.81 logE+-<=-4746.80  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.02e-53
+n=62500  logE0<=-4785.36 logE+-<=-4785.35  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.04e-53
+n=63000  logE0<=-4823.91 logE+-<=-4823.90  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.05e-53
+n=63500  logE0<=-4862.46 logE+-<=-4862.44  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.06e-53
+n=64000  logE0<=-4901.00 logE+-<=-4900.99  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.07e-53
+n=64500  logE0<=-4939.55 logE+-<=-4939.54  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.09e-53
+n=65000  logE0<=-4978.10 logE+-<=-4978.09  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.10e-53
+n=65500  logE0<=-5016.65 logE+-<=-5016.64  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.11e-53
+n=66000  logE0<=-5055.20 logE+-<=-5055.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.12e-53
+n=66500  logE0<=-5093.75 logE+-<=-5093.73  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.13e-53
+n=67000  logE0<=-5132.29 logE+-<=-5132.28  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.15e-53
+n=67500  logE0<=-5170.84 logE+-<=-5170.83  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.16e-53
+n=68000  logE0<=-5209.39 logE+-<=-5209.38  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.17e-53
+n=68500  logE0<=-5247.94 logE+-<=-5247.93  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.18e-53
+n=69000  logE0<=-5286.49 logE+-<=-5286.48  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.19e-53
+n=69500  logE0<=-5325.04 logE+-<=-5325.03  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.21e-53
+n=70000  logE0<=-5363.59 logE+-<=-5363.58  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.22e-53
+n=70500  logE0<=-5402.14 logE+-<=-5402.13  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.23e-53
+n=71000  logE0<=-5440.69 logE+-<=-5440.68  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.24e-53
+n=71500  logE0<=-5479.24 logE+-<=-5479.23  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.25e-53
+n=72000  logE0<=-5517.79 logE+-<=-5517.78  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.27e-53
+n=72500  logE0<=-5556.34 logE+-<=-5556.33  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.28e-53
+n=73000  logE0<=-5594.89 logE+-<=-5594.88  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.29e-53
+n=73500  logE0<=-5633.44 logE+-<=-5633.43  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.30e-53
+n=74000  logE0<=-5671.99 logE+-<=-5671.98  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.32e-53
+n=74500  logE0<=-5710.54 logE+-<=-5710.53  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.33e-53
+n=75000  logE0<=-5749.09 logE+-<=-5749.08  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.34e-53
+n=75500  logE0<=-5787.64 logE+-<=-5787.63  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.35e-53
+n=76000  logE0<=-5826.19 logE+-<=-5826.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.36e-53
+n=76500  logE0<=-5864.74 logE+-<=-5864.73  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.38e-53
+n=77000  logE0<=-5903.30 logE+-<=-5903.28  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.39e-53
+n=77500  logE0<=-5941.85 logE+-<=-5941.84  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.40e-53
+n=78000  logE0<=-5980.40 logE+-<=-5980.39  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.41e-53
+n=78500  logE0<=-6018.95 logE+-<=-6018.94  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.42e-53
+n=79000  logE0<=-6057.50 logE+-<=-6057.49  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.44e-53
+n=79500  logE0<=-6096.05 logE+-<=-6096.04  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.45e-53
+n=80000  logE0<=-6134.60 logE+-<=-6134.59  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.46e-53
+n=80500  logE0<=-6173.16 logE+-<=-6173.15  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.47e-53
+n=81000  logE0<=-6211.71 logE+-<=-6211.70  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.49e-53
+n=81500  logE0<=-6250.26 logE+-<=-6250.25  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.50e-53
+n=82000  logE0<=-6288.81 logE+-<=-6288.80  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.51e-53
+n=82500  logE0<=-6327.37 logE+-<=-6327.35  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.52e-53
+n=83000  logE0<=-6365.92 logE+-<=-6365.91  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.53e-53
+n=83500  logE0<=-6404.47 logE+-<=-6404.46  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.55e-53
+n=84000  logE0<=-6443.02 logE+-<=-6443.01  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.56e-53
+n=84500  logE0<=-6481.58 logE+-<=-6481.56  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.57e-53
+n=85000  logE0<=-6520.13 logE+-<=-6520.12  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.58e-53
+n=85500  logE0<=-6558.68 logE+-<=-6558.67  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.59e-53
+n=86000  logE0<=-6597.23 logE+-<=-6597.22  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.61e-53
+n=86500  logE0<=-6635.79 logE+-<=-6635.78  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.62e-53
+n=87000  logE0<=-6674.34 logE+-<=-6674.33  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.63e-53
+n=87500  logE0<=-6712.89 logE+-<=-6712.88  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.64e-53
+n=88000  logE0<=-6751.45 logE+-<=-6751.43  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.66e-53
+n=88500  logE0<=-6790.00 logE+-<=-6789.99  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.67e-53
+n=89000  logE0<=-6828.55 logE+-<=-6828.54  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.68e-53
+n=89500  logE0<=-6867.11 logE+-<=-6867.09  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.69e-53
+n=90000  logE0<=-6905.66 logE+-<=-6905.65  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.70e-53
+n=90500  logE0<=-6944.21 logE+-<=-6944.20  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.72e-53
+n=91000  logE0<=-6982.77 logE+-<=-6982.76  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.73e-53
+n=91500  logE0<=-7021.32 logE+-<=-7021.31  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.74e-53
+n=92000  logE0<=-7059.87 logE+-<=-7059.86  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.75e-53
+n=92500  logE0<=-7098.43 logE+-<=-7098.42  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.76e-53
+n=93000  logE0<=-7136.98 logE+-<=-7136.97  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.78e-53
+n=93500  logE0<=-7175.54 logE+-<=-7175.53  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.79e-53
+n=94000  logE0<=-7214.09 logE+-<=-7214.08  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.80e-53
+n=94500  logE0<=-7252.65 logE+-<=-7252.63  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.81e-53
+n=95000  logE0<=-7291.20 logE+-<=-7291.19  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.83e-53
+n=95500  logE0<=-7329.75 logE+-<=-7329.74  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.84e-53
+n=96000  logE0<=-7368.31 logE+-<=-7368.30  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.85e-53
+n=96500  logE0<=-7406.86 logE+-<=-7406.85  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.86e-53
+n=97000  logE0<=-7445.42 logE+-<=-7445.41  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.87e-53
+n=97500  logE0<=-7483.97 logE+-<=-7483.96  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.89e-53
+n=98000  logE0<=-7522.53 logE+-<=-7522.52  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.90e-53
+n=98500  logE0<=-7561.08 logE+-<=-7561.07  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.91e-53
+n=99000  logE0<=-7599.64 logE+-<=-7599.62  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.92e-53
+n=99500  logE0<=-7638.19 logE+-<=-7638.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.93e-53
+n=100000  logE0<=-7676.75 logE+-<=-7676.73  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.95e-53
+n=100500  logE0<=-7715.30 logE+-<=-7715.29  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.96e-53
+n=101000  logE0<=-7753.86 logE+-<=-7753.84  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.97e-53
+n=101500  logE0<=-7792.41 logE+-<=-7792.40  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=1.98e-53
+n=102000  logE0<=-7830.97 logE+-<=-7830.95  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.00e-53
+n=102500  logE0<=-7869.52 logE+-<=-7869.51  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.01e-53
+n=103000  logE0<=-7908.08 logE+-<=-7908.07  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.02e-53
+n=103500  logE0<=-7946.63 logE+-<=-7946.62  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.03e-53
+n=104000  logE0<=-7985.19 logE+-<=-7985.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.04e-53
+n=104500  logE0<=-8023.74 logE+-<=-8023.73  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.06e-53
+n=105000  logE0<=-8062.30 logE+-<=-8062.29  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.07e-53
+n=105500  logE0<=-8100.85 logE+-<=-8100.84  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.08e-53
+n=106000  logE0<=-8139.41 logE+-<=-8139.40  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.09e-53
+n=106500  logE0<=-8177.97 logE+-<=-8177.95  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.10e-53
+n=107000  logE0<=-8216.52 logE+-<=-8216.51  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.12e-53
+n=107500  logE0<=-8255.08 logE+-<=-8255.07  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.13e-53
+n=108000  logE0<=-8293.63 logE+-<=-8293.62  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.14e-53
+n=108500  logE0<=-8332.19 logE+-<=-8332.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.15e-53
+n=109000  logE0<=-8370.75 logE+-<=-8370.73  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.17e-53
+n=109500  logE0<=-8409.30 logE+-<=-8409.29  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.18e-53
+n=110000  logE0<=-8447.86 logE+-<=-8447.85  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.19e-53
+n=110500  logE0<=-8486.41 logE+-<=-8486.40  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.20e-53
+n=111000  logE0<=-8524.97 logE+-<=-8524.96  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.21e-53
+n=111500  logE0<=-8563.53 logE+-<=-8563.51  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.23e-53
+n=112000  logE0<=-8602.08 logE+-<=-8602.07  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.24e-53
+n=112500  logE0<=-8640.64 logE+-<=-8640.63  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.25e-53
+n=113000  logE0<=-8679.19 logE+-<=-8679.18  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.26e-53
+n=113500  logE0<=-8717.75 logE+-<=-8717.74  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.27e-53
+n=114000  logE0<=-8756.31 logE+-<=-8756.30  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.29e-53
+n=114500  logE0<=-8794.86 logE+-<=-8794.85  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.30e-53
+n=115000  logE0<=-8833.42 logE+-<=-8833.41  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.31e-53
+n=115500  logE0<=-8871.98 logE+-<=-8871.97  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.32e-53
+n=116000  logE0<=-8910.53 logE+-<=-8910.52  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.34e-53
+n=116500  logE0<=-8949.09 logE+-<=-8949.08  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.35e-53
+n=117000  logE0<=-8987.65 logE+-<=-8987.64  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.36e-53
+n=117500  logE0<=-9026.20 logE+-<=-9026.19  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.37e-53
+n=118000  logE0<=-9064.76 logE+-<=-9064.75  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.38e-53
+n=118500  logE0<=-9103.32 logE+-<=-9103.31  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.40e-53
+n=119000  logE0<=-9141.88 logE+-<=-9141.86  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.41e-53
+n=119500  logE0<=-9180.43 logE+-<=-9180.42  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.42e-53
+n=120000  logE0<=-9218.99 logE+-<=-9218.98  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.43e-53
+n=120500  logE0<=-9257.55 logE+-<=-9257.53  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.44e-53
+n=121000  logE0<=-9296.10 logE+-<=-9296.09  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.46e-53
+n=121500  logE0<=-9334.66 logE+-<=-9334.65  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.47e-53
+n=122000  logE0<=-9373.22 logE+-<=-9373.21  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.48e-53
+n=122500  logE0<=-9411.78 logE+-<=-9411.76  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.49e-53
+n=123000  logE0<=-9450.33 logE+-<=-9450.32  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.50e-53
+n=123500  logE0<=-9488.89 logE+-<=-9488.88  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.52e-53
+n=124000  logE0<=-9527.45 logE+-<=-9527.44  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.53e-53
+n=124500  logE0<=-9566.00 logE+-<=-9565.99  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.54e-53
+n=125000  logE0<=-9604.56 logE+-<=-9604.55  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.55e-53
+n=125500  logE0<=-9643.12 logE+-<=-9643.11  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.57e-53
+n=126000  logE0<=-9681.68 logE+-<=-9681.67  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.58e-53
+n=126500  logE0<=-9720.23 logE+-<=-9720.22  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.59e-53
+n=127000  logE0<=-9758.79 logE+-<=-9758.78  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.60e-53
+n=127500  logE0<=-9797.35 logE+-<=-9797.34  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.61e-53
+n=128000  logE0<=-9835.91 logE+-<=-9835.90  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.63e-53
+n=128500  logE0<=-9874.47 logE+-<=-9874.45  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.64e-53
+n=129000  logE0<=-9913.02 logE+-<=-9913.01  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.65e-53
+n=129500  logE0<=-9951.58 logE+-<=-9951.57  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.66e-53
+n=130000  logE0<=-9990.14 logE+-<=-9990.13  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.67e-53
+n=130500  logE0<=-10028.7 logE+-<=-10028.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.69e-53
+n=131000  logE0<=-10067.2 logE+-<=-10067.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.70e-53
+n=131500  logE0<=-10105.8 logE+-<=-10105.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.71e-53
+n=132000  logE0<=-10144.3 logE+-<=-10144.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.72e-53
+n=132500  logE0<=-10182.9 logE+-<=-10182.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.74e-53
+n=133000  logE0<=-10221.4 logE+-<=-10221.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.75e-53
+n=133500  logE0<=-10260.0 logE+-<=-10260.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.76e-53
+n=134000  logE0<=-10298.6 logE+-<=-10298.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.77e-53
+n=134500  logE0<=-10337.1 logE+-<=-10337.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.78e-53
+n=135000  logE0<=-10375.7 logE+-<=-10375.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.80e-53
+n=135500  logE0<=-10414.2 logE+-<=-10414.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.81e-53
+n=136000  logE0<=-10452.8 logE+-<=-10452.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.82e-53
+n=136500  logE0<=-10491.3 logE+-<=-10491.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.83e-53
+n=137000  logE0<=-10529.9 logE+-<=-10529.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.84e-53
+n=137500  logE0<=-10568.5 logE+-<=-10568.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.86e-53
+n=138000  logE0<=-10607.0 logE+-<=-10607.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.87e-53
+n=138500  logE0<=-10645.6 logE+-<=-10645.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.88e-53
+n=139000  logE0<=-10684.1 logE+-<=-10684.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.89e-53
+n=139500  logE0<=-10722.7 logE+-<=-10722.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.91e-53
+n=140000  logE0<=-10761.3 logE+-<=-10761.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.92e-53
+n=140500  logE0<=-10799.8 logE+-<=-10799.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.93e-53
+n=141000  logE0<=-10838.4 logE+-<=-10838.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.94e-53
+n=141500  logE0<=-10876.9 logE+-<=-10876.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.95e-53
+n=142000  logE0<=-10915.5 logE+-<=-10915.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.97e-53
+n=142500  logE0<=-10954.1 logE+-<=-10954.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.98e-53
+n=143000  logE0<=-10992.6 logE+-<=-10992.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=2.99e-53
+n=143500  logE0<=-11031.2 logE+-<=-11031.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.00e-53
+n=144000  logE0<=-11069.7 logE+-<=-11069.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.01e-53
+n=144500  logE0<=-11108.3 logE+-<=-11108.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.03e-53
+n=145000  logE0<=-11146.8 logE+-<=-11146.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.04e-53
+n=145500  logE0<=-11185.4 logE+-<=-11185.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.05e-53
+n=146000  logE0<=-11224.0 logE+-<=-11224.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.06e-53
+n=146500  logE0<=-11262.5 logE+-<=-11262.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.08e-53
+n=147000  logE0<=-11301.1 logE+-<=-11301.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.09e-53
+n=147500  logE0<=-11339.6 logE+-<=-11339.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.10e-53
+n=148000  logE0<=-11378.2 logE+-<=-11378.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.11e-53
+n=148500  logE0<=-11416.8 logE+-<=-11416.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.12e-53
+n=149000  logE0<=-11455.3 logE+-<=-11455.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.14e-53
+n=149500  logE0<=-11493.9 logE+-<=-11493.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.15e-53
+n=150000  logE0<=-11532.4 logE+-<=-11532.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.16e-53
+n=150500  logE0<=-11571.0 logE+-<=-11571.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.17e-53
+n=151000  logE0<=-11609.6 logE+-<=-11609.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.18e-53
+n=151500  logE0<=-11648.1 logE+-<=-11648.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.20e-53
+n=152000  logE0<=-11686.7 logE+-<=-11686.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.21e-53
+n=152500  logE0<=-11725.2 logE+-<=-11725.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.22e-53
+n=153000  logE0<=-11763.8 logE+-<=-11763.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.23e-53
+n=153500  logE0<=-11802.3 logE+-<=-11802.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.25e-53
+n=154000  logE0<=-11840.9 logE+-<=-11840.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.26e-53
+n=154500  logE0<=-11879.5 logE+-<=-11879.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.27e-53
+n=155000  logE0<=-11918.0 logE+-<=-11918.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.28e-53
+n=155500  logE0<=-11956.6 logE+-<=-11956.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.29e-53
+n=156000  logE0<=-11995.1 logE+-<=-11995.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.31e-53
+n=156500  logE0<=-12033.7 logE+-<=-12033.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.32e-53
+n=157000  logE0<=-12072.3 logE+-<=-12072.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.33e-53
+n=157500  logE0<=-12110.8 logE+-<=-12110.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.34e-53
+n=158000  logE0<=-12149.4 logE+-<=-12149.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.35e-53
+n=158500  logE0<=-12187.9 logE+-<=-12187.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.37e-53
+n=159000  logE0<=-12226.5 logE+-<=-12226.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.38e-53
+n=159500  logE0<=-12265.1 logE+-<=-12265.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.39e-53
+n=160000  logE0<=-12303.6 logE+-<=-12303.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.40e-53
+n=160500  logE0<=-12342.2 logE+-<=-12342.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.42e-53
+n=161000  logE0<=-12380.7 logE+-<=-12380.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.43e-53
+n=161500  logE0<=-12419.3 logE+-<=-12419.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.44e-53
+n=162000  logE0<=-12457.9 logE+-<=-12457.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.45e-53
+n=162500  logE0<=-12496.4 logE+-<=-12496.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.46e-53
+n=163000  logE0<=-12535.0 logE+-<=-12535.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.48e-53
+n=163500  logE0<=-12573.5 logE+-<=-12573.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.49e-53
+n=164000  logE0<=-12612.1 logE+-<=-12612.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.50e-53
+n=164500  logE0<=-12650.7 logE+-<=-12650.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.51e-53
+n=165000  logE0<=-12689.2 logE+-<=-12689.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.52e-53
+n=165500  logE0<=-12727.8 logE+-<=-12727.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.54e-53
+n=166000  logE0<=-12766.3 logE+-<=-12766.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.55e-53
+n=166500  logE0<=-12804.9 logE+-<=-12804.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.56e-53
+n=167000  logE0<=-12843.5 logE+-<=-12843.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.57e-53
+n=167500  logE0<=-12882.0 logE+-<=-12882.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.59e-53
+n=168000  logE0<=-12920.6 logE+-<=-12920.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.60e-53
+n=168500  logE0<=-12959.1 logE+-<=-12959.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.61e-53
+n=169000  logE0<=-12997.7 logE+-<=-12997.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.62e-53
+n=169500  logE0<=-13036.3 logE+-<=-13036.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.63e-53
+n=170000  logE0<=-13074.8 logE+-<=-13074.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.65e-53
+n=170500  logE0<=-13113.4 logE+-<=-13113.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.66e-53
+n=171000  logE0<=-13151.9 logE+-<=-13151.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.67e-53
+n=171500  logE0<=-13190.5 logE+-<=-13190.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.68e-53
+n=172000  logE0<=-13229.1 logE+-<=-13229.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.69e-53
+n=172500  logE0<=-13267.6 logE+-<=-13267.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.71e-53
+n=173000  logE0<=-13306.2 logE+-<=-13306.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.72e-53
+n=173500  logE0<=-13344.7 logE+-<=-13344.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.73e-53
+n=174000  logE0<=-13383.3 logE+-<=-13383.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.74e-53
+n=174500  logE0<=-13421.9 logE+-<=-13421.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.76e-53
+n=175000  logE0<=-13460.4 logE+-<=-13460.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.77e-53
+n=175500  logE0<=-13499.0 logE+-<=-13499.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.78e-53
+n=176000  logE0<=-13537.5 logE+-<=-13537.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.79e-53
+n=176500  logE0<=-13576.1 logE+-<=-13576.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.80e-53
+n=177000  logE0<=-13614.7 logE+-<=-13614.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.82e-53
+n=177500  logE0<=-13653.2 logE+-<=-13653.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.83e-53
+n=178000  logE0<=-13691.8 logE+-<=-13691.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.84e-53
+n=178500  logE0<=-13730.3 logE+-<=-13730.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.85e-53
+n=179000  logE0<=-13768.9 logE+-<=-13768.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.86e-53
+n=179500  logE0<=-13807.5 logE+-<=-13807.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.88e-53
+n=180000  logE0<=-13846.0 logE+-<=-13846.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.89e-53
+n=180500  logE0<=-13884.6 logE+-<=-13884.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.90e-53
+n=181000  logE0<=-13923.1 logE+-<=-13923.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.91e-53
+n=181500  logE0<=-13961.7 logE+-<=-13961.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.92e-53
+n=182000  logE0<=-14000.3 logE+-<=-14000.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.94e-53
+n=182500  logE0<=-14038.8 logE+-<=-14038.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.95e-53
+n=183000  logE0<=-14077.4 logE+-<=-14077.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.96e-53
+n=183500  logE0<=-14116.0 logE+-<=-14115.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.97e-53
+n=184000  logE0<=-14154.5 logE+-<=-14154.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=3.99e-53
+n=184500  logE0<=-14193.1 logE+-<=-14193.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.00e-53
+n=185000  logE0<=-14231.6 logE+-<=-14231.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.01e-53
+n=185500  logE0<=-14270.2 logE+-<=-14270.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.02e-53
+n=186000  logE0<=-14308.8 logE+-<=-14308.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.03e-53
+n=186500  logE0<=-14347.3 logE+-<=-14347.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.05e-53
+n=187000  logE0<=-14385.9 logE+-<=-14385.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.06e-53
+n=187500  logE0<=-14424.4 logE+-<=-14424.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.07e-53
+n=188000  logE0<=-14463.0 logE+-<=-14463.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.08e-53
+n=188500  logE0<=-14501.6 logE+-<=-14501.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.09e-53
+n=189000  logE0<=-14540.1 logE+-<=-14540.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.11e-53
+n=189500  logE0<=-14578.7 logE+-<=-14578.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.12e-53
+n=190000  logE0<=-14617.2 logE+-<=-14617.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.13e-53
+n=190500  logE0<=-14655.8 logE+-<=-14655.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.14e-53
+n=191000  logE0<=-14694.4 logE+-<=-14694.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.16e-53
+n=191500  logE0<=-14732.9 logE+-<=-14732.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.17e-53
+n=192000  logE0<=-14771.5 logE+-<=-14771.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.18e-53
+n=192500  logE0<=-14810.0 logE+-<=-14810.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.19e-53
+n=193000  logE0<=-14848.6 logE+-<=-14848.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.20e-53
+n=193500  logE0<=-14887.2 logE+-<=-14887.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.22e-53
+n=194000  logE0<=-14925.7 logE+-<=-14925.7  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.23e-53
+n=194500  logE0<=-14964.3 logE+-<=-14964.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.24e-53
+n=195000  logE0<=-15002.9 logE+-<=-15002.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.25e-53
+n=195500  logE0<=-15041.4 logE+-<=-15041.4  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.26e-53
+n=196000  logE0<=-15080.0 logE+-<=-15080.0  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.28e-53
+n=196500  logE0<=-15118.5 logE+-<=-15118.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.29e-53
+n=197000  logE0<=-15157.1 logE+-<=-15157.1  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.30e-53
+n=197500  logE0<=-15195.7 logE+-<=-15195.6  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.31e-53
+n=198000  logE0<=-15234.2 logE+-<=-15234.2  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.33e-53
+n=198500  logE0<=-15272.8 logE+-<=-15272.8  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.34e-53
+n=199000  logE0<=-15311.3 logE+-<=-15311.3  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.35e-53
+n=199500  logE0<=-15349.9 logE+-<=-15349.9  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.36e-53
+n=200000  logE0<=-15388.5 logE+-<=-15388.5  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.37e-53
+LEMMAB_R0 CRUDE PASSED [Y=0.59 G=0.5762 ETA=0.0037] 20001<=n<=200000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.37e-53, sum rho<=2.92e-54
 exit 0

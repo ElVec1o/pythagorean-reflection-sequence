@@ -79,7 +79,7 @@ if __name__ == '__main__':
         for n in sorted(worst):
             w = worst[n]
             print('n=%d  maxE0<=%s  maxE+-<=%s maxR+-<=%s max rho<=%s  min(margin-loss)>=%s' % (n, fup(w[4], 3), fup(w[0], 3), fup(w[1], 3), fup(w[2], 3), fdn(w[3], 4)), flush=True)
-        print('LEMMAB_R0 EXACT PASSED: %d seeds (10<=n<=%d, y=%s), max E0<=%s, min(margin_n - loss)>=%s' % (cnt, max(r[1] for r in rows), Y0.str(3), fup(maxE0, 3), fdn(minm, 4)), flush=True)
+        print('LEMMAB_R0 EXACT PASSED [Y=%s G=%s ETA=%s; exact mode uses per-seed g, eta]: %d seeds (10<=n<=%d), max E0<=%s, min(margin_n - loss)>=%s' % (os.environ.get('P1H_Y', '0.52'), GREG, EREG, cnt, max(r[1] for r in rows), fup(maxE0, 3), fdn(minm, 4)), flush=True)
     else:
         n1, n2, OM = int(sys.argv[2]), int(sys.argv[3]), arb(sys.argv[4])
         c0, kappa = arb('0.02'), arb('0.005')
@@ -98,5 +98,5 @@ if __name__ == '__main__':
             maxE = maxE.max(E); maxE0 = maxE0.max(E0)
             sn = loss(rho, OM, d); tot += sn; totr += rho
             if n % 500 == 0 or n == n1 or n == n2:
-                print('n=%d  E0<=%s R0<=%s  E+-<=%s  rho(n)<=%s  sigma(n)<=%s  sum sigma<=%s' % (n, fup(E0, 3), fup(R0_, 3), fup(E, 3), fup(rho, 3), fup(sn, 3), fup(tot, 3)), flush=True)
-        print('LEMMAB_R0 CRUDE PASSED %d<=n<=%d: max E0<=%s, max E+-<=%s, sum sigma<=%s, sum rho<=%s' % (n1, n2, fup(maxE0, 3), fup(maxE, 3), fup(tot, 3), fup(totr, 3)), flush=True)
+                print('n=%d  logE0<=%s logE+-<=%s  E0<=%s R0<=%s  E+-<=%s  rho(n)<=%s  sigma(n)<=%s  sum sigma<=%s' % (n, fup(E0.log(), 6) if bool(E0 > 0) else '-inf', fup(E.log(), 6) if bool(E > 0) else '-inf', fup(E0, 3), fup(R0_, 3), fup(E, 3), fup(rho, 3), fup(sn, 3), fup(tot, 3)), flush=True)
+        print('LEMMAB_R0 CRUDE PASSED [Y=%s G=%s ETA=%s] %d<=n<=%d: max E0<=%s, max E+-<=%s, sum sigma<=%s, sum rho<=%s' % (os.environ.get('P1H_Y', '0.52'), GREG, EREG, n1, n2, fup(maxE0, 3), fup(maxE, 3), fup(tot, 3), fup(totr, 3)), flush=True)

@@ -62,9 +62,9 @@ follows from a spectral argument with no asymptotic estimate. They survive in $U
 the leading Laurent coefficient at each of them is the square of a junction pairing, which has an
 exact closed form in one bulk quantity and is positive at every travel pole. For the travel
 resolvent $\Sigma_0/(1-\Sigma_1)$ all of this is unconditional, and its poles moreover accumulate at
-every point of the arc $\arg q\in[2\pi/5,8\pi/5]$, by a computer-assisted proof; with the same standing
+every point of the arc $\arg q\in[0.286\pi,1.714\pi]$, by a computer-assisted proof; with the same standing
 as the other statements about $U$ and $V$, their poles accumulate at every point of
-$\arg x\in[\pi/5,4\pi/5]\cup[6\pi/5,9\pi/5]$. For $U$ and $V$ it rests on the
+$\arg x\in[\pi/6,5\pi/6]\cup[7\pi/6,11\pi/6]$. For $U$ and $V$ it rests on the
 transfer model, a theorem whose assembly step is a hand proof, and on the junction-pairing
 theorem, whose positivity uses an analytic gate estimate proved partly by verified interval
 arithmetic. The long proofs are given in a companion paper.
@@ -188,13 +188,14 @@ $q$-Pythagorean identity at a zero of the $q$-cosine.
 
 \paragraph{Where the poles accumulate.} Besides $q=1$, the poles of $G^T_0$ accumulate at $q=-1$
 and $q=\pm i$ (Propositions~\ref{prop:minusone}, \ref{prop:qi}) and, more generally, at every point
-of the arc $\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$ (Theorem~\ref{thm:arc}; computer-assisted through a
+of the arc $\arg q\in[0.286\pi,1.714\pi]$ (Theorem~\ref{thm:arc}; computer-assisted through a
 non-vanishing certificate). For $U$ and $V$ the accumulation is proved, with the standing of
 Theorems~\ref{thm:model} and~\ref{thm:RJ}, at $x=\pm1$, $\pm i$, $\pm e^{\pm i\pi/4}$
 (Corollaries~\ref{cor:Uminusone}, \ref{cor:Ui}) and at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$ for the roots
-of unity $\zeta=e^{2\pi ia/N}$ of that arc with $N\ge16$, hence at every point of
-$\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$ (Corollary~\ref{cor:arcUV}, also
-computer-assisted). Off these arcs, and away from $x=\pm1$, the accumulation is open for $U$ and $V$.
+of unity $\zeta=e^{2\pi ia/N}$ with $\frac aN\in[\frac16,\frac56]$ and $N\ge16$, hence at every point of
+$\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$ (Corollary~\ref{cor:arcUV}, also
+computer-assisted). Off these arcs, and away from $x=\pm1$, the accumulation is open for $U$ and $V$; in particular
+it is open for $\frac aN\in[0.143,\frac16)$, where the zeros of $B$ are proved (Remark~\ref{rem:arcobstruction}).
 
 \paragraph{Standing, and what is cited from the companion paper.} The statements about the travel
 resolvent are unconditional. The statements about $U$ and $V$ rest on two theorems. The transfer
@@ -1724,7 +1725,7 @@ The real travel poles accumulate only at $q=1$. The next proposition gives a sec
 point of poles of $G^T_0$ on the circle, at $q=-1$, and Corollary~\ref{cor:Uminusone} carries it
 over to $U$ and $V$. Proposition~\ref{prop:qi} and Corollary~\ref{cor:Ui} in \S\ref{sec:qi} do the same
 at $q=\pm i$, and Theorem~\ref{thm:arc} in \S\ref{sec:arc} shows that the poles of $G^T_0$
-accumulate at every point of the arc $\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$. None of these is needed for
+accumulate at every point of the arc $\arg q\in[0.286\pi,1.714\pi]$. None of these is needed for
 Theorem~\ref{thm:natboundary}.
 
 \begin{proposition}[the zeros of $\cos(Z;q^2)$ accumulate at $q=-1$]\label{prop:minusone}
@@ -2385,28 +2386,39 @@ $(t_1-t_1^\ast)/t^\ast_j\approx0.08+1.42i$. At $q^\ast_1=0.1404+0.8293i$ and $q^
 \subsection{The middle arc}\label{sec:arc}
 
 Propositions~\ref{prop:minusone} and~\ref{prop:qi} extend to every root of unity $\zeta=e^{2\pi ia/N}$ with
-$N\ge16$ and $\frac15\le\frac aN\le\frac45$, and hence, by density, to a whole arc.
+$\frac aN\in[0.143,0.857]$ and $N\ge17$ (or $N\ge16$ if $\frac aN\in[\frac16,\frac56]$), and hence, by density, to a whole arc.
+Write $\ell=\log|2(1-\zeta)|=\log(4\sin\pi\frac aN)$. The resummation below needs $\ell>0$, i.e.\
+$\frac aN\in(0.0804,0.9196)$; the arc proved here is a sub-arc of this range.
 
 \begin{theorem}[the poles of $G^T_0$ accumulate on the middle arc]\label{thm:arc}
 The zeros of $1-\Sigma_1=\cos(Z;q^2)$ in $0<|q|<1$, which are the poles of $G^T_0$, accumulate at
-every point of the arc $\{|q|=1,\ \arg q\in[\frac{2\pi}5,\frac{8\pi}5]\}$. Equivalently, the poles of
-$G^T_0(x^2)$ accumulate at every point of $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$.
+every point of the arc $\{|q|=1,\ \arg q\in[0.286\pi,1.714\pi]\}$, where $0.286\pi=2\pi\cdot0.143$. Equivalently, the poles of
+$G^T_0(x^2)$ accumulate at every point of $\arg x\in[0.143\pi,0.857\pi]\cup[1.143\pi,1.857\pi]$.
 \end{theorem}
 
 \begin{proof}[Proof sketch]
 The full proof is \texttt{rootunity\_zeros/general/P1f/P1f\_lemma.tex} (Theorem ``zeros of $B$ at
-$\zeta$'' and its corollary). Fix $\zeta=e^{2\pi ia/N}$, $\gcd(a,N)=1$, $N\ge16$, $\frac15\le\frac aN\le\frac45$,
+$\zeta$'' and its corollary) for $\frac aN\in[\frac15,\frac45]$, extended to $[0.143,0.857]$ in
+\texttt{rootunity\_zeros/general/P1h/P1h\_lemma.tex} (Theorems M$'$ and B$'$). Fix $\zeta=e^{2\pi ia/N}$, $\gcd(a,N)=1$, $\frac aN\in[0.143,0.857]$,
+$N\ge17$ ($N\ge16$ if $\frac aN\in[\frac16,\frac56]$),
 and put $q=\zeta e^{-t}$. As in Proposition~\ref{prop:qi}, the resummation writes $1-\Sigma_1$ as a sum
 over saddle modes $m$ of terms $\kappa A(m)e^{V_m/t}$, with $V_m=L_m^2/4+E_w$, $L_m=\operatorname{Log}(-2(1-\zeta))+2\pi im/N$,
 and amplitudes $A(m)$ given by a quadratic Gauss sum times a finite generating function $Z_N$. Along an
 explicit tie ray $\arg t=\theta^\ast$, $|\tan\theta^\ast|\le\pi s/(N\ell)$, two consecutive admissible
 modes $n,n+s$ have equal height and every other mode, the head and the kernel remainders are
 exponentially smaller; the landscape bounds are proved analytically for $N\ge16$ and checked by
-sampling in \texttt{P1f\_landscape\_check.py}. The amplitude is non-zero because $Z_N(a/N)\ne0$ for
+sampling in \texttt{P1f\_landscape\_check.py} when $\frac aN\in[\frac15,\frac45]$. On the larger arc they are Lemma LS$(\ell_1)$ of
+\texttt{P1h\_lemma.tex}: the P1f estimates are monotone in $\ell$ and are checked in Arb by \texttt{P1h\_landscape.py}
+for $\ell_1=\log2$, $16\le N\le10^5$, and $\ell_1=0.5522$, $17\le N\le10^5$, with a hand argument for $N>10^5$. The amplitude is non-zero because $Z_N(a/N)\ne0$ for
 every such $a/N$: this is Theorem~M of \texttt{rootunity\_zeros/general/P1e\_lemma.tex}, proved with an
 Arb certificate (\texttt{P1e\_cert.py}, \texttt{P1e\_lowseed.py}, \texttt{P1e\_logderiv.py}, directed
 rounding via \texttt{dround.py}; outputs \texttt{P1e\_certlog.txt}, \texttt{lowseed\_directed.txt},
-\texttt{base\_arc\_*.txt}), and it is the only computer-assisted input. Rouch\'e's theorem against
+\texttt{base\_arc\_*.txt}) for $\frac aN\in[\frac15,\frac45]$. For $\frac aN\in[0.143,\frac15)$ (and by conjugation
+$(\frac45,0.857]$) it is Theorem~M$'$ of \texttt{P1h\_lemma.tex}, $|Z_N(a/N)|\ge0.02e^{-0.005N}$, which runs the same hazard
+induction with region-dependent hazard bases $y=0.52$ on $[\frac16,\frac15]$ and $y=0.59$ on $[0.143,\frac16]$. Its
+Arb certificates are \texttt{P1h\_seeds.py}, \texttt{P1h\_lowseed.py}, \texttt{P1h\_lemmaB.py},
+\texttt{P1h\_caseA.py} and \texttt{P1h\_hazard\_check.py}, with outputs summarised in \texttt{P1h\_certlog.txt}.
+These certificates and the landscape bounds are the only computer-assisted inputs. Rouch\'e's theorem against
 $1+\varrho e^{\Delta V/t}$, $\Delta V=V_{n+s}-V_n$, then gives for all large $j$ exactly one zero
 $q^\ast_j=\zeta e^{-t^\ast_j}$ of $1-\Sigma_1$ in an explicit disc, simple, with $q^\ast_j\to\zeta$ along
 $\arg t=\theta^\ast$. Step~6 of the proof of Proposition~\ref{prop:minusone} makes each $q^\ast_j$ a pole of
@@ -2416,9 +2428,9 @@ and the accumulation set is closed.
 
 \begin{corollary}[transfer to $U$ and $V$]\label{cor:arcUV}
 Assume Theorems~\ref{thm:model} and~\ref{thm:RJ}. Then for every $\zeta=e^{2\pi ia/N}$ with $\gcd(a,N)=1$,
-$N\ge16$ and $\frac15\le\frac aN\le\frac45$, the poles of $U$ and of $V$ accumulate at $\pm\sqrt\zeta$ and
+$N\ge16$ and $\frac16\le\frac aN\le\frac56$, the poles of $U$ and of $V$ accumulate at $\pm\sqrt\zeta$ and
 $\pm\sqrt{\bar\zeta}$. Consequently they accumulate at every point of
-$\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$.
+$\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$.
 \end{corollary}
 
 \begin{proof}[Proof sketch]
@@ -2427,7 +2439,8 @@ $Z^+_N:=\sum_k\psi_k\zeta^{-k^2-k}\ne0$, and then $t_1(q^\ast_j)\to t_1^\ast=-\f
 $\omega=Z^-_N/(u_0Z^+_N)$; if moreover $\omega$ avoids six explicit algebraic values, then
 $1-\mathfrak g_Ut_1$, $1-\mathfrak g_Vt_1$, $\Pi_1$, $\Pi_q$ have non-zero limits, and the poles of $U$ and
 $V$ accumulate at $\pm\sqrt\zeta$, $\pm\sqrt{\bar\zeta}$ (\texttt{P1f\_lemma.tex}, Theorem~C, which uses
-Theorems~\ref{thm:model} and~\ref{thm:RJ}; $Z_N\ne0$ is Theorem~M of \texttt{P1e\_lemma.tex}). Both
+Theorems~\ref{thm:model} and~\ref{thm:RJ}; $Z_N\ne0$ is Theorem~M of \texttt{P1e\_lemma.tex}, and Theorem~M$'$ of
+\texttt{P1h\_lemma.tex} on $[\frac16,\frac15)$). Both
 conditions hold for every reduced $a/N\in[\frac15,\frac45]$, $a/N\ne\frac12$, $N\ge3$: this is the main
 theorem of \texttt{rootunity\_zeros/general/P1g/P1g\_lemma.tex}, which adapts the hazard induction of
 Theorem~M to $Z^\pm_N$ and carries a quantitative $\omega$-margin along the chain of deepest hazards. It
@@ -2438,15 +2451,34 @@ adaptive cover of $[\frac15,\frac12]$ off the hazard discs) and \texttt{P1g\_lem
 hazards of large height); outputs in \texttt{P1g\_certlog.txt}. The seeds $N\le150$ were certified
 independently by \texttt{P1f\_transfer\_cert.py}. \texttt{P1g\_lemma.tex} has been reviewed
 adversarially; the gaps found were fixed and all certificates rerun. The formula for $t_1^\ast$
-reproduces the value of Corollary~\ref{cor:Ui} at $\zeta=i$. The points $\pm e^{\pm\pi ia/N}$ are dense in the
+reproduces the value of Corollary~\ref{cor:Ui} at $\zeta=i$. On $[\frac16,\frac15)$ and, by conjugation, $(\frac45,\frac56]$, the
+same conditions, with the same constants ($|\omega|\le7.96$, factors $\ge0.0499$), are Theorem~main$'$ of
+\texttt{P1h\_lemma.tex}. It uses the region base $y=0.52$, the twisted low seeds $\frac16$ and $\frac45$ (\texttt{P1g\_lowseed.py},
+rerun with target radii), the exact and crude twisted Lemma B$^\pm$ (\texttt{P1h\_lemmaB.py}) and the covering
+\texttt{P1h\_caseA.py}. \texttt{P1h\_lemma.tex} has been reviewed by one reviewer, who judged it correct with minor
+gaps. Those gaps have been addressed. The points $\pm e^{\pm\pi ia/N}$ are dense in the
 two arcs and the accumulation set is closed.
 \end{proof}
 
 \begin{remark}\label{rem:arcUV}
 Corollary~\ref{cor:arcUV} is conditional exactly as the other statements about the poles of $U$ and $V$
 are, on Theorems~\ref{thm:model} and~\ref{thm:RJ}, and it is computer-assisted through the certificates of
-Theorem~M and of \texttt{P1g\_lemma.tex}. The index beyond which $q^\ast_j$ is a pole of $U$ and $V$ is
+Theorems~M, M$'$, main$'$ and of \texttt{P1g\_lemma.tex}. The index beyond which $q^\ast_j$ is a pole of $U$ and $V$ is
 not made explicit. Nothing is proved for $U$ and $V$ off the two arcs, except at $x=\pm1$.
+\end{remark}
+
+\begin{remark}[the limits of the method]\label{rem:arcobstruction}
+For $G^T_0$ the arc stops at $\frac aN=0.143$, and for $U$, $V$ at $\frac aN=\frac16$. In both cases the obstruction is the
+hazard induction behind Theorem~M, and not the saddle landscape. The landscape estimates hold whenever
+$\ell\ge\ell_1>0$ and $N\ell_1\gtrsim10$ (\texttt{P1h\_lemma.tex}, Lemma LS$(\ell_1)$ and its table). The hazard step, however,
+bounds the error at a deep seed by the triangle inequality, and this closes only if $y<\sqrt{1-y}\,e^{-\kappa}$ with
+$y>\sup|u_0|=e^{-\ell}$. That forces $\ell>0.484$ (about $\frac aN>0.1330$), the ``golden threshold'': as $\kappa\to0$ the
+bound becomes $y<\frac{\sqrt5-1}2$. Below it no choice of hazard base works, and a structured (moment) bound for the
+level-$n$ sums would be needed. Near the threshold, the height from which the crude bound applies grows without
+limit. At $\frac17$ the certifiable low-seed disc ($5\cdot10^{-6}$) no longer meets the direct covering. For $U$ and $V$
+the twisted $\omega$-margin fails earlier: on $[0.143,\frac16)$ one exact seed ($\frac2{13}$) and the first crude
+heights lose more than the margin. So, although $Z_N\ne0$ is proved there, the density of the poles of $U$ and $V$
+for $\frac aN\in[0.143,\frac16)$ is open. Everything on $\frac aN\in(0.0804,0.143)$ is open, even for $G^T_0$.
 \end{remark}
 
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
@@ -2475,8 +2507,8 @@ equal height compete, and the computer-assisted inputs are the certificates
 $\pm e^{\pm i\pi/4}$. Plotted, the zeros approach roots of unity along straight lines. We conjecture
 that the poles are dense on the circle. The same resummation at $q=\zeta e^{-t}$ for other roots of
 unity $\zeta$ gives Theorem~\ref{thm:arc}: the poles of $G^T_0$ accumulate at every point of the arc
-$\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$. By Corollary~\ref{cor:arcUV} the poles of $U$ and $V$ accumulate at
-every point of $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$, with the standing of
+$\arg q\in[0.286\pi,1.714\pi]$. By Corollary~\ref{cor:arcUV} the poles of $U$ and $V$ accumulate at
+every point of $\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$, with the standing of
 Theorems~\ref{thm:model} and~\ref{thm:RJ}. Every statement about the poles of $G^T_0$, $U$ or $V$ off these
 arcs and away from $q=1$ is open. The natural boundary does not depend on
 any of this.
@@ -2495,9 +2527,13 @@ triangle it agrees with that of $W_T$ only to the effective universality depth o
 \cite{Bonfioli2026a}. Several questions remain open.
 \begin{enumerate}[label=\textup{(\arabic*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
 \item Are the poles of $U$ dense on the unit circle (Remark~\ref{rem:polesdensity})? On the arcs
-$\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$ they are, with the standing of
+$\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$ they are, with the standing of
 Theorems~\ref{thm:model} and~\ref{thm:RJ} (Corollary~\ref{cor:arcUV}); off these arcs, away from $x=\pm1$,
-it is open, for $G^T_0$ as well.
+it is open. For $G^T_0$ it is proved on the larger arc $\arg q\in[0.286\pi,1.714\pi]$ (Theorem~\ref{thm:arc}) and open beyond it.
+For $U$ and $V$ with $\frac aN\in[0.143,\frac16)$ it is open, although $Z_N\ne0$ is proved there.
+\item Can the hazard induction pass the golden threshold $\ell\approx0.484$ (Remark~\ref{rem:arcobstruction})? The
+triangle-inequality step cannot, for any hazard base. Reaching all of $\ell>0$, i.e.\ $\frac aN\in(0.0804,0.9196)$, needs
+a structured bound on the level-$n$ sums that is inductively closed.
 \item Are $U$ and $V$ $D$-algebraic? The pole argument does not decide this.
 \item Is the number $\beta_2$ transcendental? The question reduces to a value statement for a
 Hahn--Exton $q$-Bessel function, and the obstruction sits at the arithmetic ratio $\rho=\tfrac12$

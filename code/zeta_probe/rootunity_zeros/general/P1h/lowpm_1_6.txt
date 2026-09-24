@@ -7,3 +7,5 @@ CERTPM 1/6 d in [2.5000e-06,5.0000e-06]: B+<=0.00254 B-<=0.00696 |S+|>=1.459 |S-
 CERTPM 1/6 d in [5.0000e-06,1.0000e-05]: B+<=0.00274 B-<=0.00739 |S+|>=1.459 |S-|>=0.5323 c+>=1.433 c->=0.5205 kappa<=1.20e-7 margin>=0.4981 |omega|<=0.7405
 CERTPM 1/6 d in [1.0000e-05,2.0000e-05]: B+<=0.0394 B-<=0.111 |S+|>=1.458 |S-|>=0.5321 c+>=1.380 c->=0.4661 kappa<=2.40e-7 margin>=0.4239 |omega|<=0.8984
 SEED 1/6 r=2e-05: all pieces B+-<1: True ; RPRIME=2e-05 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+LOWSEED PASSED 1/6: RPRIME=2e-05 >= target 2e-05
+exit 0

@@ -7,3 +7,5 @@ CERTPM 1/7 d in [6.2500e-07,1.2500e-06]: B+<=0.00435 B-<=0.0127 |S+|>=1.535 |S-|
 CERTPM 1/7 d in [1.2500e-06,2.5000e-06]: B+<=0.00415 B-<=0.0120 |S+|>=1.535 |S-|>=0.5324 c+>=1.527 c->=0.5255 kappa<=0.000480 margin>=0.4759 |omega|<=0.6222
 CERTPM 1/7 d in [2.5000e-06,5.0000e-06]: B+<=0.0197 B-<=0.0586 |S+|>=1.534 |S-|>=0.5322 c+>=1.503 c->=0.5006 kappa<=0.000480 margin>=0.4380 |omega|<=0.7016
 SEED 1/7 r=5e-06: all pieces B+-<1: True ; RPRIME=5e-06 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+LOWSEED PASSED 1/7: RPRIME=5e-06 >= target 5e-06
+exit 0
