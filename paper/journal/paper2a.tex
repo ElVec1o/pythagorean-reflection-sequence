@@ -62,8 +62,9 @@ follows from a spectral argument with no asymptotic estimate. They survive in $U
 the leading Laurent coefficient at each of them is the square of a junction pairing, which has an
 exact closed form in one bulk quantity and is positive at every travel pole. For the travel
 resolvent $\Sigma_0/(1-\Sigma_1)$ all of this is unconditional, and its poles moreover accumulate at
-every point of the arc $\arg q\in[2\pi/5,8\pi/5]$, by a computer-assisted proof; whether the poles of
-$U$ and $V$ are dense there is open. For $U$ and $V$ it rests on the
+every point of the arc $\arg q\in[2\pi/5,8\pi/5]$, by a computer-assisted proof; with the same standing
+as the other statements about $U$ and $V$, their poles accumulate at every point of
+$\arg x\in[\pi/5,4\pi/5]\cup[6\pi/5,9\pi/5]$. For $U$ and $V$ it rests on the
 transfer model, a theorem whose assembly step is a hand proof, and on the junction-pairing
 theorem, whose positivity uses an analytic gate estimate proved partly by verified interval
 arithmetic. The long proofs are given in a companion paper.
@@ -191,8 +192,9 @@ of the arc $\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$ (Theorem~\ref{thm:arc}; comput
 non-vanishing certificate). For $U$ and $V$ the accumulation is proved, with the standing of
 Theorems~\ref{thm:model} and~\ref{thm:RJ}, at $x=\pm1$, $\pm i$, $\pm e^{\pm i\pi/4}$
 (Corollaries~\ref{cor:Uminusone}, \ref{cor:Ui}) and at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$ for the roots
-of unity $\zeta=e^{2\pi ia/N}$ of that arc with $16\le N\le150$ (Remark~\ref{rem:arcUV}); density of the
-poles of $U$ and $V$ on the arc is open.
+of unity $\zeta=e^{2\pi ia/N}$ of that arc with $N\ge16$, hence at every point of
+$\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$ (Corollary~\ref{cor:arcUV}, also
+computer-assisted). Off these arcs, and away from $x=\pm1$, the accumulation is open for $U$ and $V$.
 
 \paragraph{Standing, and what is cited from the companion paper.} The statements about the travel
 resolvent are unconditional. The statements about $U$ and $V$ rest on two theorems. The transfer
@@ -2412,21 +2414,39 @@ $G^T_0$. So every such $\zeta$ is an accumulation point of poles. These $\zeta$ 
 and the accumulation set is closed.
 \end{proof}
 
-\begin{remark}[transfer to $U$ and $V$]\label{rem:arcUV}
+\begin{corollary}[transfer to $U$ and $V$]\label{cor:arcUV}
+Assume Theorems~\ref{thm:model} and~\ref{thm:RJ}. Then for every $\zeta=e^{2\pi ia/N}$ with $\gcd(a,N)=1$,
+$N\ge16$ and $\frac15\le\frac aN\le\frac45$, the poles of $U$ and of $V$ accumulate at $\pm\sqrt\zeta$ and
+$\pm\sqrt{\bar\zeta}$. Consequently they accumulate at every point of
+$\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$.
+\end{corollary}
+
+\begin{proof}[Proof sketch]
 At the zeros $q^\ast_j$ of Theorem~\ref{thm:arc}, $S_e(q^\ast_j)\ne0$ for large $j$ if and only if
 $Z^+_N:=\sum_k\psi_k\zeta^{-k^2-k}\ne0$, and then $t_1(q^\ast_j)\to t_1^\ast=-\frac12(1+\omega)$ with
 $\omega=Z^-_N/(u_0Z^+_N)$; if moreover $\omega$ avoids six explicit algebraic values, then
 $1-\mathfrak g_Ut_1$, $1-\mathfrak g_Vt_1$, $\Pi_1$, $\Pi_q$ have non-zero limits, and the poles of $U$ and
-$V$ accumulate at $\pm\sqrt\zeta$, $\pm\sqrt{\bar\zeta}$ (\texttt{P1f\_lemma.tex}, Theorem~C; standing:
-Theorems~\ref{thm:model} and~\ref{thm:RJ}). This transfer is thus proved \emph{conditional} on
-$Z^+_N\ne0$ and the $\omega$-conditions. Both conditions are certified in Arb for all $4116$ admissible
-$a/N$ with $3\le N\le150$, $a/N\ne\frac12$, with all certified moduli at least $0.233$
-(\texttt{P1f\_transfer\_cert.py}, fail-loud; outputs \texttt{tc\_*.txt}, \texttt{P1f\_certlog.txt}).
-Combined with Theorem~\ref{thm:arc}, the poles of $U$ and $V$ accumulate at $\pm\sqrt\zeta$,
-$\pm\sqrt{\bar\zeta}$ for every such $\zeta$ with $16\le N\le150$, with the same standing. The formula for
-$t_1^\ast$ reproduces the value of Corollary~\ref{cor:Ui} at $\zeta=i$. Nothing is proved for
-$N>150$: Theorem~M does not cover $Z^\pm_N$. \emph{Density of the poles of $U$ and $V$ on this arc is
-open.}
+$V$ accumulate at $\pm\sqrt\zeta$, $\pm\sqrt{\bar\zeta}$ (\texttt{P1f\_lemma.tex}, Theorem~C, which uses
+Theorems~\ref{thm:model} and~\ref{thm:RJ}; $Z_N\ne0$ is Theorem~M of \texttt{P1e\_lemma.tex}). Both
+conditions hold for every reduced $a/N\in[\frac15,\frac45]$, $a/N\ne\frac12$, $N\ge3$: this is the main
+theorem of \texttt{rootunity\_zeros/general/P1g/P1g\_lemma.tex}, which adapts the hazard induction of
+Theorem~M to $Z^\pm_N$ and carries a quantitative $\omega$-margin along the chain of deepest hazards. It
+gives $Z^+_N\ne0$, $|\omega|\le7.96$ and all six normalised transfer factors of modulus at least $0.0499$.
+The computer-assisted inputs are Arb certificates: \texttt{P1g\_seeds.py} (the $4116$ reduced seeds with
+$N\le150$), \texttt{P1g\_cert.py} and \texttt{P1g\_lowseed.py} (low seeds), \texttt{P1g\_caseA.py} (an
+adaptive cover of $[\frac15,\frac12]$ off the hazard discs) and \texttt{P1g\_lemmaB.py} (the tail over
+hazards of large height); outputs in \texttt{P1g\_certlog.txt}. The seeds $N\le150$ were certified
+independently by \texttt{P1f\_transfer\_cert.py}. \texttt{P1g\_lemma.tex} has been reviewed
+adversarially; the gaps found were fixed and all certificates rerun. The formula for $t_1^\ast$
+reproduces the value of Corollary~\ref{cor:Ui} at $\zeta=i$. The points $\pm e^{\pm\pi ia/N}$ are dense in the
+two arcs and the accumulation set is closed.
+\end{proof}
+
+\begin{remark}\label{rem:arcUV}
+Corollary~\ref{cor:arcUV} is conditional exactly as the other statements about the poles of $U$ and $V$
+are, on Theorems~\ref{thm:model} and~\ref{thm:RJ}, and it is computer-assisted through the certificates of
+Theorem~M and of \texttt{P1g\_lemma.tex}. The index beyond which $q^\ast_j$ is a pole of $U$ and $V$ is
+not made explicit. Nothing is proved for $U$ and $V$ off the two arcs, except at $x=\pm1$.
 \end{remark}
 
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
@@ -2455,9 +2475,10 @@ equal height compete, and the computer-assisted inputs are the certificates
 $\pm e^{\pm i\pi/4}$. Plotted, the zeros approach roots of unity along straight lines. We conjecture
 that the poles are dense on the circle. The same resummation at $q=\zeta e^{-t}$ for other roots of
 unity $\zeta$ gives Theorem~\ref{thm:arc}: the poles of $G^T_0$ accumulate at every point of the arc
-$\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$. For $U$ and $V$ the transfer is proved only at the roots of unity
-of that arc with $16\le N\le150$ (Remark~\ref{rem:arcUV}); density of their poles on the arc, and every
-statement about $G^T_0$ off the arc and away from $q=1$, is open. The natural boundary does not depend on
+$\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$. By Corollary~\ref{cor:arcUV} the poles of $U$ and $V$ accumulate at
+every point of $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$, with the standing of
+Theorems~\ref{thm:model} and~\ref{thm:RJ}. Every statement about the poles of $G^T_0$, $U$ or $V$ off these
+arcs and away from $q=1$ is open. The natural boundary does not depend on
 any of this.
 \end{remark}
 
@@ -2473,9 +2494,10 @@ in question is the growth series of the universal group $W_{\mathrm{univ}}$; for
 triangle it agrees with that of $W_T$ only to the effective universality depth of
 \cite{Bonfioli2026a}. Several questions remain open.
 \begin{enumerate}[label=\textup{(\arabic*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
-\item Are the poles of $U$ dense on the unit circle (Remark~\ref{rem:polesdensity})? Even on the arc
-$\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$, where those of $G^T_0$ are (Theorem~\ref{thm:arc}), this is open
-(Remark~\ref{rem:arcUV}); off that arc it is open for $G^T_0$ as well.
+\item Are the poles of $U$ dense on the unit circle (Remark~\ref{rem:polesdensity})? On the arcs
+$\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$ they are, with the standing of
+Theorems~\ref{thm:model} and~\ref{thm:RJ} (Corollary~\ref{cor:arcUV}); off these arcs, away from $x=\pm1$,
+it is open, for $G^T_0$ as well.
 \item Are $U$ and $V$ $D$-algebraic? The pole argument does not decide this.
 \item Is the number $\beta_2$ transcendental? The question reduces to a value statement for a
 Hahn--Exton $q$-Bessel function, and the obstruction sits at the arithmetic ratio $\rho=\tfrac12$

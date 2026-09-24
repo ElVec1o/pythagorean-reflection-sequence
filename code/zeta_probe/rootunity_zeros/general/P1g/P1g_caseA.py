@@ -31,7 +31,7 @@ def build_discs(XLO, XHI, low):
                 if c in low: disc.append((c,) + low[c])
                 elif XLO <= c <= XHI: raise SystemExit('CASEA FAILED: low rational %s has no disc' % c)
                 continue
-            r = Fr(2, 2**n*n*n) if n <= 52 else Fr(25, 2**n)
+            r = Fr(2, 2**n*n*n) if n <= 52 else Fr(25, 2**(n+1))   # y^n/(4tau)=12.5*2^-n; was Fr(25,2**n) (Reviewer AC)
             disc.append((c, r, r))
     disc.sort()
     segs = []; cur = XLO

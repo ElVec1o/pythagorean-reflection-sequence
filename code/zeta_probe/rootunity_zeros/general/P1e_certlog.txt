@@ -236,3 +236,11 @@ exit 0
 ## base_arc_131.txt
 SCAN PASSED: 1024 reduced p/q with 131<=q<=150, selection arc; min|Z_q|>=0.9134
 exit 0
+
+## Case A covering RERUN 2026-09-24 after Reviewer AC fix (radius 53<=n<=59: Fr(25,2**n) -> Fr(25,2**(n+1)))
+$ python3 P1e_caseA.py 1/5 1/2 0.68 1/5:0.0005:0.0005 2/9:0.0005:0.0005 1/4:0.003:0.003 2/7:0.002:0.002 1/3:0.004:0.004 3/8:0.002:0.002 2/5:0.003:0.003 3/7:0.002:0.002 4/9:0.0015:0.0015 1/2:0.0083:0.0083
+discs 342, segments 326
+evaluations 22546, max A <= 0.6057, failures 0
+CASE A COVERED on [1/5,1/2] with A < [0.6800 +/- 3e-9]
+exit status 0
+(identical counts to the pre-fix run; the pre-fix run was reproduced first with the same arguments.)

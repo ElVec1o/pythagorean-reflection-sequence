@@ -461,3 +461,44 @@ seed 4/11  Z+/Z=(0.94601602 - 0.2155234j) Z-/Z=(0.73888943 - 0.054126938j) omega
    80/221 d=-0.00165  Z+/Z=(0.9488094 - 0.21530097j) Z-/Z=(0.73787942 - 0.055986839j) omega=(-2.6485842 + 0.77930813j) |dom|=0.0296
    240/661 d=-0.00055  Z+/Z=(0.94695902 - 0.21545708j) Z-/Z=(0.73854866 - 0.054746032j) omega=(-2.6641476 + 0.76724618j) |dom|=0.00992
    600/1651 d=-0.00022  Z+/Z=(0.94639461 - 0.21549787j) Z-/Z=(0.73875263 - 0.054374437j) omega=(-2.668856 + 0.76361336j) |dom|=0.00397
+
+=== P1g_caseA.py RERUN 2026-09-24 after Reviewer AC fix (radius 53<=n<=59: Fr(25,2**n) -> Fr(25,2**(n+1))) ===
+$ python3 P1g_caseA.py 1/5 1/4 0.05 0.05 $(cat caseA_discs.txt)
+segments 55
+CASEA PASSED on [1/5,1/4]: 2440 intervals certified (4825 evaluations), M-histogram [(8, 2368), (20, 27), (40, 17), (59, 28)], min|Z^pm|>=0.5402, min margin>=0.05011 (at x in [0.224489796,0.224489796]), max|omega|<=2.077, max A<=1.189
+exit status 0
+$ python3 P1g_caseA.py 1/4 1/3 0.05 0.05 $(cat caseA_discs.txt)
+segments 90
+CASEA PASSED on [1/4,1/3]: 3340 intervals certified (6590 evaluations), M-histogram [(8, 3320), (20, 7), (40, 8), (59, 5)], min|Z^pm|>=0.6292, min margin>=0.05625 (at x in [0.277740816,0.277777754]), max|omega|<=3.525, max A<=0.7792
+exit status 0
+$ python3 P1g_caseA.py 1/3 2/5 0.05 0.05 $(cat caseA_discs.txt)
+segments 72
+CASEA PASSED on [1/3,2/5]: 2576 intervals certified (5080 evaluations), M-histogram [(8, 2575), (20, 1)], min|Z^pm|>=0.4799, min margin>=0.06541 (at x in [0.334332333,0.334477668]), max|omega|<=4.127, max A<=0.6227
+exit status 0
+$ python3 P1g_caseA.py 2/5 1/2 0.05 0.05 $(cat caseA_discs.txt)
+segments 109
+CASEA PASSED on [2/5,1/2]: 3849 intervals certified (7589 evaluations), M-histogram [(8, 3847), (20, 2)], min|Z^pm|>=0.6694, min margin>=0.05027 (at x in [0.496326662,0.496726765]), max|omega|<=7.954, max A<=1.349
+exit status 0
+(output identical to the pre-fix run: the corrected discs shift segment endpoints by ~1e-15 only; bisection tree unchanged. Peak RSS 27MB, <3s per block.)
+
+=== P1g_lowseed.py RERUN 2026-09-24 with target r' (exit 1 if RPRIME < target; Reviewer AC) ===
+LOWSEED PASSED 1/2: RPRIME=0.002075 >= target 0.002075
+LOWSEED PASSED 1/3: RPRIME=0.001 >= target 0.001
+LOWSEED PASSED 2/3: RPRIME=0.00075 >= target 0.00075
+LOWSEED PASSED 1/4: RPRIME=0.00075 >= target 0.00075
+LOWSEED PASSED 3/4: RPRIME=0.000175 >= target 0.000175
+LOWSEED PASSED 1/5: RPRIME=0.00025 >= target 0.00025
+LOWSEED PASSED 2/5: RPRIME=0.003 >= target 0.003
+LOWSEED PASSED 3/5: RPRIME=0.0015 >= target 0.0015
+LOWSEED PASSED 2/7: RPRIME=0.001 >= target 0.001
+LOWSEED PASSED 5/7: RPRIME=0.001 >= target 0.001
+LOWSEED PASSED 3/7: RPRIME=0.002 >= target 0.002
+LOWSEED PASSED 4/7: RPRIME=0.002 >= target 0.002
+LOWSEED PASSED 3/8: RPRIME=0.002 >= target 0.002
+LOWSEED PASSED 5/8: RPRIME=0.002 >= target 0.002
+LOWSEED PASSED 2/9: RPRIME=0.00025 >= target 0.00025
+LOWSEED PASSED 7/9: RPRIME=0.00025 >= target 0.00025
+LOWSEED PASSED 4/9: RPRIME=0.0015 >= target 0.0015
+LOWSEED PASSED 5/9: RPRIME=0.002 >= target 0.002
+fail-loud test: 1/5 with target 0.0005 -> LOWSEED FAILED 1/5: RPRIME=0.00025 < target 0.0005 [exit status 1]
+(CERTPM/SEED lines identical to the previous run.)

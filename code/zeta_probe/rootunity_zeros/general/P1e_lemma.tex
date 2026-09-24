@@ -197,7 +197,7 @@ By Lemma conj it suffices to take $x=a/N\in[\frac15,\frac12]$. Strong induction 
 Here $N\ge1/(n|d|)\ge0.08\cdot2^n/n$ and $n|F(t_0)|\le2^{-n}$, so this is at least $c_0e^{-\kappa N}$.
 \item \emph{The deepest hazard has $10\le n\le52$.} The same argument, with Lemma~\ref{lem:Bp} and the exact $|Z_n|\ge0.91$.
 \item \emph{$x$ lies in no hazard with $n\ge10$ but in a low-seed disc.} Lemma~\ref{lem:H}(4) and Theorem~9 of P1d (the certificate of Table~\ref{tab:low}) give $|Z_N|\ge c_{\rm seed}e^{-\kappa_{\rm seed}N}\ge c_0e^{-\kappa N}$.
-\item \emph{Otherwise.} \texttt{P1e\_caseA.py} covers $[\frac15,\frac12]$ minus all hazards of height $\le59$ and the low-seed discs, by 22,546 Arb intervals with 0 failures. It shows $\sum_{m<60}\sup|a_m|+\tau/59\le0.6057$. With Lemma~\ref{lem:H}(3) and Lemma~\ref{lem:A} this gives $|Z_N|\ge2-e^{0.6057}=0.167$.
+\item \emph{Otherwise.} \texttt{P1e\_caseA.py} covers $[\frac15,\frac12]$ minus all hazards of height $\le59$ and the low-seed discs, by 22,546 Arb intervals with 0 failures. It shows $\sum_{m<60}\sup|a_m|+\tau/59\le0.6057$. (Correction, Reviewer~AC: the script had excluded the hazards of height $53\le n\le59$ with radius $25\cdot2^{-n}$, twice $\varepsilon_n=y^n/(4\tau)$, leaving the annuli $\varepsilon_n\le|x-j/n|<2\varepsilon_n$ uncovered. Fixed and rerun 2026-09-24: still 22,546 intervals, 0 failures, bound $0.6057$.) With Lemma~\ref{lem:H}(3) and Lemma~\ref{lem:A} this gives $|Z_N|\ge2-e^{0.6057}=0.167$.
 \end{enumerate}
 The cases are exhaustive. Theorem~2 of P1d converts the result to $\Sigma_N$, and S0\_lemma converts it to $S_0$.
 \end{proof}

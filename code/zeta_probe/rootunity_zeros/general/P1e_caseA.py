@@ -27,7 +27,7 @@ for n in range(2, MMAX):
             if c in low: disc.append((c,) + low[c])
             elif XLO <= c <= XHI: print('WARNING: low rational %s has no certificate' % c)
             continue
-        r = Fr(2, 2**n*n*n) if n <= 52 else Fr(25, 2**n)       # 2 y^n/n^2  or  y^n/(4 tau), y = 1/2, tau = 1/50
+        r = Fr(2, 2**n*n*n) if n <= 52 else Fr(25, 2**(n+1))   # FIX (Reviewer AC): was Fr(25,2**n), twice y^n/(4tau). 2 y^n/n^2  or  y^n/(4 tau), y = 1/2, tau = 1/50
         disc.append((c, r, r))
 disc.sort()
 # complement segments of [XLO, XHI]

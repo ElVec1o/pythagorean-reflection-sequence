@@ -6,7 +6,7 @@
 \theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
 \theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
 \newcommand{\e}{\mathrm{e}}
-\title{P1g: the hazard induction for $Z^\pm_N$ and the $\omega$-conditions of Theorem C\\ at every root of unity of the middle arc\\ \small research programme P1, seventh atom, 2026-09-24. UNREVIEWED.}
+\title{P1g: the hazard induction for $Z^\pm_N$ and the $\omega$-conditions of Theorem C\\ at every root of unity of the middle arc\\ \small research programme P1, seventh atom, 2026-09-24. Reviewed adversarially (Reviewer~AC); all gaps fixed, all certificates rerun.}
 \date{}
 \begin{document}\maketitle
 
@@ -102,7 +102,7 @@ Implemented in \texttt{P1g\_cert.py} (low seeds; Lemma~O form; the twist is encl
 \begin{lemma}[R$^\pm$; PROVED]\label{lem:R}
 With $T^s:=(1-w_q)^{-1/(2q)}Z^s_q(p/q)$ and $\mathrm{env}^s:=\sum_k|\gamma^s_k||e^{X_k}|$:
 \[\Big|e^{s\pi it_0}S^s-T^s\Big|\le\mathrm{env}^s\,(e^{\delta_R}-1),\]
-with $\delta_R$ exactly as in P1e Lemma~R. In particular $|S^s|\ge e^{-\pi|t_0|}(1-R^s)|T^s|$, where $R^s:=\mathrm{env}^s(e^{\delta_R}-1)/|T^s|$.
+with $\delta_R$ exactly as in P1e Lemma~R. In particular $|S^s|\ge e^{-\pi|\operatorname{Im}t_0|}(1-R^s)|T^s|$, where $R^s:=\mathrm{env}^s(e^{\delta_R}-1)/|T^s|$.
 \end{lemma}
 \begin{proof}
 $e^{s\pi it_0}S^s=\sum_k\gamma^s_ke^{B_k(t_0)}$. P1e's proof bounds $|B_k(t_0)-X_k|\le\delta_R$ for each $k$, independently of the weights. Lemma~\ref{lem:Zk} identifies $\sum_k\gamma^s_ke^{X_k}=T^s$.
@@ -137,7 +137,7 @@ The files \texttt{seeds\_*.txt} give, per seed and in directed rounding: $|Z^s_n
 The enclosures use Lemma~\ref{lem:Zk} with the rigorous $\Phi$-tail of P1f.
 
 \begin{proposition}[L: low seeds; PROVED, computer-assisted]\label{prop:L}
-For each of the 18 low seeds of P1e (side $d>0$; the side $d<0$ of $p/q$ is the side $d>0$ of $(q-p)/q$), P1e's parameters $r,\eta,V_0$, $n_2=60$ and $\kappa=3$, and 8 geometric pieces, \texttt{P1g\_lowseed.py} certifies, on every piece of $(0,r']$ with $r'$ as in Table~\ref{tab:L}:
+For each of the 18 low seeds of P1e (side $d>0$; the side $d<0$ of $p/q$ is the side $d>0$ of $(q-p)/q$), P1e's parameters $r,\eta,V_0$, $n_2=60$ and $\kappa=3$, and 8 geometric pieces, \texttt{P1g\_lowseed.py} certifies (it exits~1 if the certified $r'$ falls below the tabulated value, which is passed as a target; all 18 pass, \texttt{run\_lowseeds.sh}), on every piece of $(0,r']$ with $r'$ as in Table~\ref{tab:L}:
 \begin{itemize}
 \item $|Z^s_N/\mathrm{Main}^s-1|\le B_s$;
 \item $c^s_{\rm seed}=(1-B_s)\sqrt{\pi/2A}\,|S^s|$ and $\kappa_{\rm seed}=q\max(0,-\operatorname{Re}F(t_0))$;
@@ -188,6 +188,7 @@ For $M<60\le N$, split $Z^s_N=P^s_M(x)+\mathcal R$, where $P^s_M(x)=\sum_{n\le M
 \emph{The tail.} $e^\Phi$ is coefficientwise majorised by $\exp\big(\sum_{m<60}\alpha_mY^m+\sum_{m\ge60}|a_m|Y^m\big)$ with $\alpha_m\ge\sup|a_m|$. By P1e Lemma~H(3), $\sum_{m\ge60}|a_m|\le\tau/59$. The disc hypothesis of H(3) is met: a low rational $i'/m'$ within $y^{60}/(4\tau)=1.1\cdot10^{-17}$ of $x$ would put $x$ in its disc of radius $0.999r'\ge1.7\cdot10^{-4}$, and every low rational in $[\frac15,\frac12]$ has a disc. The second exponent has only degrees $\ge60>M$. Therefore
 \[\sum_{n>M}|\psi_n|\le T_M:=e^{\sum_{m<60}\alpha_m+\tau/59}-\sum_{n\le M}c_n,\]
 where the $c_n$ are the coefficients of $\exp(\sum_{m<60}\alpha_mY^m)$.
+(Correction, Reviewer~AC: the script previously excluded the hazard discs of height $53\le n\le59$ with radius $25\cdot2^{-n}$, twice $y^n/(4\tau)=12.5\cdot2^{-n}$, so the annuli $12.5\cdot2^{-n}\le|x-j/n|<25\cdot2^{-n}$ were not covered. Fixed to $25\cdot2^{-(n+1)}$ and all four blocks rerun on 2026-09-24; the interval count and all constants below are unchanged.)
 \texttt{P1g\_caseA.py} covers $[\frac15,\frac12]\setminus\mathcal D$ adaptively ($M\in\{8,20,40,59\}$, bisection), in four blocks, with 12,205 intervals and 0 failures (\texttt{caseA\_out.txt}). On each interval it encloses $Z^\pm\in P^\pm_M+D(T_M)$, $\omega$ and the $G_i$ in Arb, and checks $|Z^\pm|>0.05$ and $\min|G_i|>0.05$.
 A failure is fatal (exit~1). This was tested with the threshold $0.3$, above the true minimum $0.232$: the script failed at $x=0.22$.
 \end{proof}
@@ -203,7 +204,12 @@ Let $j/n$ be a hazard seed, $0<|d|<\varepsilon_n$ (P1e hazard radii), and assume
 \[E_\pm,R_\pm\le1.9\cdot10^{-14},\qquad\sum_{151\le n\le6000}\sigma(n)\le4.96\cdot10^{-12},\qquad\sum_{151\le n\le6000}\rho(n)\le3.31\cdot10^{-13}\]
 (\texttt{P1g\_lemmaB.py crude 151 6000 10}), with all side conditions checked, including the new one, $v_0\ge2\pi d/A'$.
 \item[(iii)] \emph{Tail $n>6000$ (by hand, not machine-checked; as in P1e).} Here $\bar w,R_0\le2^{-n}$, $d\le12.5\cdot2^{-n}$ and $n_2\ge2^n/(25n)-1$. Also $\beta e^{\pi\eta}\le1.4\cdot2^{n/2}$, $P_1+\pi\le4n$ and $P_2\le40n$. So $r_1+r_3\le(400n^2+3n+110)2^{-n/2}$, while $r_2,r_4,r_5\le\exp(-10^{-5}2^{n})$. This gives $E\le10^5n^{5/2}(e^{0.005}/\sqrt2)^n<10^{-860}$, and $R\le10^4n^{5/2}(e^{0.005}/\sqrt2)^n<10^{-860}$ as in P1e.
- Further, $\epsilon_u\le160\cdot2^{-n}$, $\rho\le500\cdot2^{-n}$ and $\sigma(n)\le9000\cdot2^{-n}$, so $\sum_{n>6000}\sigma(n)<10^{-1800}$.
+ Further, $\epsilon_u\le160\cdot2^{-n}$. Put $\theta:=e^{0.005}/\sqrt2=0.71066$. Since $E,R<10^{-860}$, $\frac{(1+R)(1+E)}{(1-R)(1-E)}\le1+2.001(E+R)$, so by Lemma~\ref{lem:I}
+ \[\rho\le2\epsilon_u+4.02(E+R)\le320\cdot2^{-n}+4.43\cdot10^5n^{5/2}\theta^n\le4.5\cdot10^5\,n^{5/2}\theta^n,\]
+ using $2^{-n}\le10^{-600}n^{5/2}\theta^n$ for $n>6000$ (as $2\theta>1.42$). With $|\omega_q|\le10$ and $|d|\le12.5\cdot2^{-n}$,
+ \[\sigma(n)\le15\rho+12.5\cdot2^{-n}\big(\tfrac{33\pi}2+4\pi\big)\le7\cdot10^6\,n^{5/2}\theta^n .\]
+ The ratio of consecutive terms is $\le\theta(1+\frac1{6000})^{5/2}<0.7110$, so $\sum_{n>6000}\sigma(n)\le7\cdot10^6\cdot6001^{5/2}\theta^{6001}/0.289<10^{-870}$, and likewise $\sum_{n>6000}\rho(n)<10^{-871}$.
+ (Correction, Reviewer~AC: an earlier version stated $\rho\le500\cdot2^{-n}$ and $\sigma(n)\le9000\cdot2^{-n}$, which ignored the $E,R$ contributions to $\rho$; those decay only like $n^{5/2}\theta^n$. The conclusion $S\le4.97\cdot10^{-12}$ is unaffected.)
 \end{enumerate}
 \end{lemma}
 The crude hazard discs are $10^{-15}$ wide or less, and every hazard seed $j/n$ ($n\ge10$) is at distance $\ge1/(qn)\gg\varepsilon_n$ from each region boundary $\frac15,\frac14,\frac13,\frac25,\frac12$. So a hazard disc never crosses a region boundary. The factor $1+10^{-6}$ is extra safety for $|u_0|$ on the disc.
@@ -236,14 +242,14 @@ The cases are exhaustive: case~4 is the complement of the hazards of height $\ge
 \end{proof}
 
 \begin{corollary}[PROVED, computer-assisted; standing \texttt{thm:model}, \texttt{thm:RJ}]\label{cor:UV}
-For every $N\ge16$ and every $\zeta=\e(a/N)$ with $\frac15\le\frac aN\le\frac45$ ($\zeta\ne-1$ automatically), the hypotheses of P1f Theorem~C hold: $Z^+_N\ne0$, and $\omega$ avoids the six values (Lemma~\ref{lem:Geq}). Hence:
+For every $N\ge16$ and every $\zeta=\e(a/N)$ with $\frac15\le\frac aN\le\frac45$ ($\zeta\ne-1$ automatically), the hypotheses of P1f Theorem~C hold: $Z_N\ne0$ (P1e Theorem~M), $Z^+_N\ne0$, and $\omega$ avoids the six values (Lemma~\ref{lem:Geq}). Hence:
 \begin{itemize}
 \item the poles of $U$ and of $V$ accumulate at $\pm\sqrt\zeta$ and $\pm\sqrt{\bar\zeta}$;
 \item the accumulation set of these poles on $|x|=1$ contains the closed arcs $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$.
 \end{itemize}
 \end{corollary}
 \begin{proof}
-P1f Theorem~C(i)--(iii) with Theorem~\ref{thm:main}. For the arcs: the accumulation set is closed and contains $\pm\e(\frac a{2N})$ and $\pm\e(-\frac a{2N})$ for all admissible $a/N$, $N\ge16$, and these points are dense in the two arcs.
+P1f Theorem~C(i)--(iii) with Theorem~\ref{thm:main}, and P1e Theorem~M for $Z_N\ne0$ on $[\frac15,\frac45]$ (reference added at the request of Reviewer~AC). For the arcs: the accumulation set is closed and contains $\pm\e(\frac a{2N})$ and $\pm\e(-\frac a{2N})$ for all admissible $a/N$, $N\ge16$, and these points are dense in the two arcs.
 \end{proof}
 
 \section{Numerical cross-checks (VERIFIED)}
@@ -262,7 +268,7 @@ P1f Theorem~C(i)--(iii) with Theorem~\ref{thm:main}. For the arcs: the accumulat
 
 \section{What is not proved; weakest points}\label{sec:open}
 \begin{enumerate}
-\item \textbf{Unreviewed adaptations.} Lemma~\ref{lem:lap} is a transcription of P1d Lemma~8 and P1e Lemma~O with a bounded analytic factor inserted. The only genuinely new estimate is the lower-ray tail (halved Gaussian). Both scripts are line-by-line edits of the reviewed \texttt{P1e\_cert.py} and \texttt{P1e\_lemmaB.py}, but no independent reviewer has checked the edits yet.
+\item \textbf{Adaptations (reviewed).} Lemma~\ref{lem:lap} is a transcription of P1d Lemma~8 and P1e Lemma~O with a bounded analytic factor inserted. The only genuinely new estimate is the lower-ray tail (halved Gaussian). Both scripts are line-by-line edits of the reviewed \texttt{P1e\_cert.py} and \texttt{P1e\_lemmaB.py}, and were checked by Reviewer~AC; the gaps found are corrected in place above and all certificates were rerun.
 \item \textbf{Hand-checked tail} (Lemma~\ref{lem:B}(iii), $n>6000$). The constants are generous, but the tail is not machine-checked, as in P1e Lemma~B for $n>3000$.
 \item \textbf{Inherited standing.} Theorem~\ref{thm:main} rests on P1d (Lemmas~W, 6, 8, Theorems~2, 5, 9), P1e (Lemmas~H, R, O and the hazard scheme; reviewed CORRECT by Reviewer~AA), and \texttt{python-flint}/Arb. Corollary~\ref{cor:UV} further rests on P1f Theorem~C, whose Laplace $O(t)$ and index $j_0$ are not explicit, and on the standing Theorems \texttt{thm:model}, \texttt{thm:RJ}.
 \item \textbf{Precision floor.} \texttt{P1g\_lemmaB.py} runs at 200 bits. For $n\gtrsim400$ the printed $\rho(n)$ sits at the rounding floor $1.6\cdot10^{-59}$. These are valid upper bounds, merely not sharp, and their sum over $n\le6000$ is included in the $4.96\cdot10^{-12}$.

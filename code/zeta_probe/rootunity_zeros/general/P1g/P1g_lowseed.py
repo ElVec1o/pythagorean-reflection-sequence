@@ -3,7 +3,8 @@
 #   B_s (s=+-1) from P1g_cert.certify_pm, |S^s| lower,  c^s_seed = (1-B_s) sqrt(pi/(2 Aup)) |S^s|,  kappa_seed = q max(0,-Re F0),
 #   omega in S^-/(u S^+) * (1+D(B_-))/(1+D(B_+))  (D(b) = complex square of half-width b), margins |G_i| of P1g Def. G.
 # Prints one line per piece; 'RPRIME' = largest edge up to which every piece has B_+-,<1 and certified margin > MREQ.
-# Usage: perl -e 'alarm 290; exec @ARGV' python3 P1g_lowseed.py p q r eta V0 kappa NP MREQ
+# Usage: perl -e 'alarm 290; exec @ARGV' python3 P1g_lowseed.py p q r eta V0 kappa NP MREQ [RTARGET]
+# If RTARGET (the r' claimed in the paper) is given, exits 1 when the certified RPRIME < RTARGET (Reviewer AC).
 import sys
 sys.path.insert(0, '..')
 from flint import arb, acb
@@ -13,6 +14,7 @@ from P1g_seeds import Gfactors
 from P1e_cert import e
 p, q, r = int(sys.argv[1]), int(sys.argv[2]), float(sys.argv[3])
 eta, V0, ka, NP, MREQ = sys.argv[4], sys.argv[5], sys.argv[6], int(sys.argv[7]), arb(sys.argv[8])
+RTARGET = float(sys.argv[9]) if len(sys.argv) > 9 else None
 rows = certify_pm(p, q, r, 60, eta, V0, ka, NP)
 rprime = 0.0; ok = True; allB = True
 for (dlo, dhi, Sp, Sm, Bp, Bm, u, x, Aup, F0) in rows:
@@ -35,3 +37,7 @@ for (dlo, dhi, Sp, Sm, Bp, Bm, u, x, Aup, F0) in rows:
     else: ok = False
     print(line, flush=True)
 print('SEED %d/%d r=%g: all pieces B+-<1: %s ; RPRIME=%.6g (margin > %s on (0,RPRIME])' % (p, q, r, allB, rprime, MREQ.str(3)))
+if RTARGET is not None:
+    if rprime < RTARGET*(1 - 1e-12):
+        print('LOWSEED FAILED %d/%d: RPRIME=%.6g < target %.6g' % (p, q, rprime, RTARGET), flush=True); sys.exit(1)
+    print('LOWSEED PASSED %d/%d: RPRIME=%.6g >= target %.6g' % (p, q, rprime, RTARGET), flush=True)
