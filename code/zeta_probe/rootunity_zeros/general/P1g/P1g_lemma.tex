@@ -1,0 +1,284 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\title{P1g: the hazard induction for $Z^\pm_N$ and the $\omega$-conditions of Theorem C\\ at every root of unity of the middle arc\\ \small research programme P1, seventh atom, 2026-09-24. UNREVIEWED.}
+\date{}
+\begin{document}\maketitle
+
+Notation of P1d\_lemma.tex, P1e\_lemma.tex and P1f/P1f\_lemma.tex (compiled numbering: P1d Theorem~2 Gauss factorisation, Theorem~5 Fresnel, Lemma~6 dec, Lemma~8 lap, Theorem~9 corrected lemma; P1e Lemmas Zk, R, A, H, B, B$'$, O and Theorem~M; P1f Theorem~C).
+Labels: PROVED (complete proof here or in the cited notes); \emph{computer-assisted} (reduced to finitely many Arb ball-arithmetic inequalities checked by the named script, which fails loudly); VERIFIED (numerics, not a proof); HEURISTIC; OPEN.
+
+\paragraph{Outcome.}
+\begin{enumerate}
+\item[(a)] \textbf{Theorem~\ref{thm:main} (PROVED, computer-assisted).} For every $N\ge3$ and every $a$ with $\gcd(a,N)=1$, $\frac aN\in[\frac15,\frac45]$, $\frac aN\ne\frac12$:
+ \begin{itemize}
+ \item $|Z^+_N|,\,|Z^-_N|\ge0.02\,e^{-0.005N}$; in particular $Z^+_N\neq0$;
+ \item $|\omega|\le7.96$, and every one of the six normalised transfer factors $G_i$ of Definition~\ref{def:G} has modulus $\ge0.0499$. So $\omega$ avoids the six values of P1f Theorem~C(iii).
+ \end{itemize}
+ The proof adapts the hazard induction of P1e Theorem~M to $Z^\pm$ (Lemmas~\ref{lem:F}--\ref{lem:I}). It carries a quantitative $\omega$-margin along the chain of deepest hazards (Lemma~\ref{lem:I}, Lemma~\ref{lem:Lip}).
+\item[(b)] \textbf{Corollary~\ref{cor:UV} (PROVED, computer-assisted; standing Theorems \texttt{thm:model}, \texttt{thm:RJ} as in P1f).} For every $N\ge16$ and every $\zeta=\e(a/N)$ with $\frac15\le\frac aN\le\frac45$, the poles of $U$ and $V$ accumulate at $\pm\sqrt\zeta$ and $\pm\sqrt{\bar\zeta}$. Consequently the poles of $U$ and of $V$ accumulate at every point of the arcs $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$. This closes item~1 of \S\ref{sec:open} of P1f (``density of the poles of $U$ and $V$ on the arcs: OPEN'').
+\item[(c)] \textbf{What made it work.} $Z^\pm_N$ has the same single-saddle structure as $Z_N$, with the weights $\gamma_k$ shifted to $\gamma_{k\pm1}$ and the amplitude multiplied by $e^{\mp\pi it}$ (Lemma~\ref{lem:F}). So the renormalisation of P1e Lemma~R carries over unchanged: near a seed $j/n$, $Z^\pm_N$ inherits $Z^\pm_n(j/n)$, and $\omega_N$ inherits $\omega_n(j/n)$ up to an exponentially small relative error (Lemma~\ref{lem:I}). A further point is new. P1e's direct Lemma~A (``$Z=1+$small'') is too crude to control $\omega$. It is replaced by an exact low-order expansion with a rigorous majorant tail (Proposition~\ref{prop:A}). That expansion is a continuous function of $x=a/N$, uniform in $N\ge151$, and it covers the whole complement of the hazards and of shrunken low-seed discs. The covering has 12,205 intervals and takes about 10\,s.
+\end{enumerate}
+
+\section{Objects}\label{sec:obj}
+Let $\zeta=\e(x)$, $x=a/N$, $u_0=\lambda^2/c$, $e^{\Phi(Y)}=\sum_n\psi_nY^n$ as in P1d Theorem~2. For $s\in\{0,+1,-1\}$ put
+\[Z^s_N:=\sum_{n\ge0}\psi_n\zeta^{-n^2-sn}\qquad(Z^0_N=Z_N,\ Z^{\pm1}_N=Z^\pm_N\text{ of P1f}),\qquad \omega:=\frac{Z^-_N}{u_0Z^+_N},\qquad t_1^*:=-\tfrac12(1+\omega).\]
+\begin{definition}[normalised transfer factors]\label{def:G}
+With $X:=\e(x/2)$ (so $\{X,-X\}=\{\pm\sqrt\zeta\}$) and $t=t_1^*$:
+\[G_1=\frac{1-\zeta^2}\zeta-t,\quad G_2=\frac{1-\zeta}\zeta-t,\quad G_3^{\pm}=t+\frac{1\pm X}{\pm2X},\quad G_4^{\pm}=t\,(1\mp X+\zeta)+\frac{1+\zeta}{\pm2X}.\]
+Each is $p_i(x)t+q_i(x)$ with $p_i\in\{-1,1,1\mp X+\zeta\}$, so $|p_i|\le3$.
+\end{definition}
+\begin{lemma}[PROVED]\label{lem:Geq}
+For $\zeta\ne\pm1$: all six $G_i\ne0$ $\iff$ $\omega\notin\big\{-1-\frac{2(1-\zeta^2)}\zeta,\,-1-\frac{2(1-\zeta)}\zeta\big\}\cup\big\{\frac1y,\,\frac{1+\zeta}{y(1-y+\zeta)}-1:y=\pm\sqrt\zeta\big\}$. This is the hypothesis of P1f Theorem~C(iii). When $1-y+\zeta=0$ (this happens only for $\zeta=\e(\pm\frac13)$, $y=\e(\pm\frac16)$) the corresponding excluded value is $\infty$ and $G_4=(1+\zeta)/(2y)\ne0$ automatically.
+\end{lemma}
+\begin{proof}
+$1-\mathfrak g_Ut_1^*=0\iff t_1^*=(1-\zeta^2)/\zeta\iff\omega=-1-2(1-\zeta^2)/\zeta$, and similarly for $\mathfrak g_V=\zeta/(1-\zeta)$. $G_3=0\iff1+\omega=1+1/y$. $G_4=0\iff(1+\omega)(1-y+\zeta)=(1+\zeta)/y$.
+\end{proof}
+The normalisation removes the poles of the P1f factors: $\mathfrak g_U$ blows up at $\zeta=-1$, and the factor $\Pi_q$ blows up at $1-y+\zeta=0$. The coefficients are bounded and Lipschitz:
+\begin{lemma}[Lip; PROVED]\label{lem:Lip}
+For real $x,x'$ and $t,t'\in\mathbb C$, and each $i$:
+\[|G_i(x,t)-G_i(x',t')|\le3|t-t'|+|x-x'|\big(3\pi|t'|+4\pi\big).\]
+\end{lemma}
+\begin{proof}
+$|p_i|\le3$. $|\frac{d}{dx}p_i|\le3\pi$, since $X'=\pi iX$ and $\zeta'=2\pi i\zeta$. The $q_i$ are $\zeta^{-1}-\zeta$, $\zeta^{-1}-1$, $\frac12\pm\frac1{2X}$ and $\pm\frac12(X^{-1}+X)$, with derivatives of modulus $\le4\pi,2\pi,\frac\pi2,\pi$.
+\end{proof}
+
+\begin{lemma}[conjugation; PROVED]\label{lem:conj}
+$Z^s_N(\frac{N-a}N)=\overline{Z^s_N(\frac aN)}$ for each $s$. Hence $\omega(\frac{N-a}N)=\overline{\omega(\frac aN)}$, and the multiset $\{|G_i|\}$ is the same at $\frac aN$ and $\frac{N-a}N$.
+\end{lemma}
+\begin{proof}
+As P1d Lemma~4. Every ingredient is conjugated, and $\zeta^{-n^2-sn}\mapsto\bar\zeta^{-n^2-sn}$. The $G_i$ have real rational coefficients in $\zeta,X$, and $X\mapsto\bar X$ is a root of $\bar\zeta$.
+\end{proof}
+So it suffices to treat $x\in[\frac15,\frac12)$.
+
+\section{The single-saddle structure of $Z^\pm$}\label{sec:struct}
+\begin{lemma}[Zpm, finite formula; PROVED]\label{lem:Zk}
+At a reduced $p/q$ (level $q$, $\Phi_q$ excludes $q\mid n$): $Z^s_q(p/q)=\sum_{k\bmod q}\gamma^s_k e^{\Phi_q(\zeta_0^k)}$, where $\gamma^s_k=\frac1q\sum_{\nu\bmod q}\zeta_0^{-\nu^2-s\nu-k\nu}=\gamma_{k+s}$.
+\end{lemma}
+\begin{proof}
+$n\mapsto\zeta_0^{-n^2-sn}$ is $q$-periodic; finite Fourier inversion and absolute convergence exactly as P1e Lemma~Zk.
+\end{proof}
+
+\begin{lemma}[F$^\pm$, twisted Fresnel representation; PROVED]\label{lem:F}
+In the setting of P1d Theorem~5 (seed $p/q$, $x=p/q+d$, $d>0$, contour $\Gamma$):
+\[Z^s_N=\e(\tfrac d4)\,\frac{e^{-i\pi/4}}{\sqrt{2d}}\sum_{k\bmod q}\gamma^s_k\,J^s_k,\qquad J^s_k=\int_\Gamma e^{\pi it^2/(2d)}\,e^{-s\pi it}\,e^{\Phi(\zeta_0^k\e(-t))}\,dt .\]
+\end{lemma}
+\begin{proof}
+$\zeta^{-n^2-sn}=\zeta_0^{-n^2-sn}\,\e(-d(n+\frac s2)^2)\,\e(\frac d4)$. Expand the first factor by Lemma~\ref{lem:Zk}. For $m=n+\frac s2$ the Fresnel identity $\int_\Gamma e^{\pi it^2/(2d)}\e(-mt)\,dt=\sqrt{2d}\,e^{i\pi/4}\e(-dm^2)$ holds for every real $m$: complete the square and shift the contour to $\Gamma-2dm$, as in P1d. Also $\e(-mt)=\e(-nt)e^{-s\pi it}$.
+Fubini holds as in P1d. On $\Gamma$, $\sum|\psi_n||\e(-nt)|\le\sum|\psi_n|e^{2\pi n\eta}<\infty$. The factor $|e^{-s\pi it}|\le e^{\pi|t|}$ is dominated by the Gaussian in both end sectors.
+\end{proof}
+So $Z^s$ is P1d's integral with amplitude $b^s_k(t)=e^{B_k(t)}e^{-s\pi it}$ (P1d Lemma~6 is unchanged), and the main term is
+\[\mathrm{Main}^s=\e(\tfrac d4)\,e^{i(\alpha-\pi/4)}\sqrt{\tfrac\pi{2A}}\,e^{F(t_0)/d}\,S^s,\qquad S^s=\sum_k\gamma^s_k\,e^{B_k(t_0)-s\pi it_0}.\]
+The prefactor of $S^s$ does not depend on $s$.
+
+\begin{lemma}[Lap$^\pm$; PROVED]\label{lem:lap}
+P1d Lemma~8, and its sharpening P1e Lemma~O, hold for $Z^s_N/\mathrm{Main}^s$ with the following changes:
+\begin{enumerate}
+\item the weights are $\gamma^s_k$;
+\item on the core segment, $B_m,B_d,K_b$ are the bounds for $b^s_k$, $(b^s_k)'$, $(b^s_k)''/2$, where $(b^s)'=(B_k'-s\pi i)b^s$;
+\item each outer piece of $\Gamma$ carries the extra factor $\sup|e^{-s\pi it}|=\sup e^{s\pi\operatorname{Im}t}$ over that piece;
+\item on the unbounded part of the lower ray ($|v|\ge V$, $t=t_0+e^{i\alpha}v$), the growth $e^{\pi|v|\sin\alpha}$ is absorbed by halving the Gaussian constant: $c\to c/2$, valid as soon as $V\ge2\pi d/c$. The factor $e^{\pi|\operatorname{Im}t_0|}$ is kept.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+The proofs of P1d Lemma~8 and P1e Lemma~O use only analyticity of the amplitude and the bounds listed.
+The core expansion $e^{\psi/d}b-b_0=b_1v+b_0c_3v^3/d+R$ is unchanged, with $b=b^s$.
+Each outer integral $\int|e^{(F-F_0)/d}||b^s|\,|dt|$ is bounded by (sup of the twist on the piece)$\times$(the old bound).
+On the lower tail, $\pi|v|\le\frac c{2d}v^2$ for $|v|\ge2\pi d/c$. So $\int_V^\infty e^{-cv^2/d+\pi v}\,dv\le\int_V^\infty e^{-cv^2/(2d)}\,dv$.
+\end{proof}
+Implemented in \texttt{P1g\_cert.py} (low seeds; Lemma~O form; the twist is enclosed exactly on the core and at $t_0$). In the crude uniform form of P1e Lemma~B it is implemented in \texttt{P1g\_lemmaB.py}. There:
+\begin{itemize}
+\item $\beta\to\beta e^{\pi\eta}$ on the core, at $t_0$ and on the horizontal part (valid because $R_0+v_0<\eta$);
+\item $P_1\to P_1+\pi$;
+\item $r_4\to\sqrt{2A/A'}\operatorname{erfc}(v_0\sqrt{A'/(2d)})\,\beta e^{\pi R_0}e^{\delta_\eta}$, with the side condition $v_0\ge2\pi d/A'$ checked;
+\item $r_5\to r_5\,e^{\pi\eta}$.
+\end{itemize}
+
+\begin{lemma}[R$^\pm$; PROVED]\label{lem:R}
+With $T^s:=(1-w_q)^{-1/(2q)}Z^s_q(p/q)$ and $\mathrm{env}^s:=\sum_k|\gamma^s_k||e^{X_k}|$:
+\[\Big|e^{s\pi it_0}S^s-T^s\Big|\le\mathrm{env}^s\,(e^{\delta_R}-1),\]
+with $\delta_R$ exactly as in P1e Lemma~R. In particular $|S^s|\ge e^{-\pi|t_0|}(1-R^s)|T^s|$, where $R^s:=\mathrm{env}^s(e^{\delta_R}-1)/|T^s|$.
+\end{lemma}
+\begin{proof}
+$e^{s\pi it_0}S^s=\sum_k\gamma^s_ke^{B_k(t_0)}$. P1e's proof bounds $|B_k(t_0)-X_k|\le\delta_R$ for each $k$, independently of the weights. Lemma~\ref{lem:Zk} identifies $\sum_k\gamma^s_ke^{X_k}=T^s$.
+\end{proof}
+
+\begin{lemma}[I: inheritance of $\omega$; PROVED]\label{lem:I}
+Suppose that, at the seed $p/q$ and the point $x=a/N$, for $s=\pm1$:
+\begin{itemize}
+\item $|Z^s_N/\mathrm{Main}^s-1|\le E<1$;
+\item $R^s\le R<1$;
+\item $\epsilon_u=|\tilde u/u_q-1|<1$, with $\tilde u=u_0\e(-t_0)$ as in P1e Lemma~R.
+\end{itemize}
+Then $\omega_N=\omega_q(p/q)\cdot\frac{u_q}{\tilde u}\cdot Q$, with $|Q-1|\le\big(\frac{(1+R)(1+E)}{(1-R)(1-E)}\big)^2-1$. Hence
+\[\Big|\frac{\omega_N}{\omega_q(p/q)}-1\Big|\le\rho:=\Big(1+\frac{\epsilon_u}{1-\epsilon_u}\Big)\Big(\frac{(1+R)(1+E)}{(1-R)(1-E)}\Big)^2-1 .\]
+With Lemma~\ref{lem:Lip}, every $|G_i|$ at $(x,\omega_N)$ is at least $\min_i|G_i|$ at $(p/q,\omega_q)$ minus
+\[\sigma:=\tfrac32|\omega_q|\rho+|d|\big(\tfrac{3\pi}2(1+|\omega_q|)+4\pi\big).\]
+\end{lemma}
+\begin{proof}
+Write $Z^s_N=\mathrm{Main}^s(1+\theta_s)$ and $e^{s\pi it_0}S^s=T^s(1+\varepsilon_s)$, with $|\theta_s|\le E$ and $|\varepsilon_s|\le R$.
+The common prefactor cancels in $Z^-_N/Z^+_N$, and $S^-/S^+=\e(t_0)\frac{T^-}{T^+}\frac{1+\varepsilon_-}{1+\varepsilon_+}$ with $T^-/T^+=Z^-_q/Z^+_q$.
+So $\omega_N=\frac{Z^-_q}{u_0\e(-t_0)Z^+_q}Q=\omega_q\frac{u_q}{\tilde u}Q$, where $Q=\frac{(1+\varepsilon_-)(1+\theta_-)}{(1+\varepsilon_+)(1+\theta_+)}$.
+The loss $\sigma$ follows from Lemma~\ref{lem:Lip} with $|t-t'|=|\omega_N-\omega_q|/2\le|\omega_q|\rho/2$ and $|t'|\le(1+|\omega_q|)/2$.
+\end{proof}
+VERIFIED (\texttt{P1g\_inherit\_check.py}, mpmath): along $x_N=j/n-1/(nN)$ at $1/3$, $2/5$, $3/7$, $4/11$, $|\omega_N-\omega_n(j/n)|$ is $0.07,0.025,0.010$ at $|d|=5.5,1.8,0.74\cdot10^{-3}$ ($1/3$), i.e.\ $O(d)$. The ratios $Z^\pm_N/Z_N$ converge to $Z^\pm_n/Z_n$ as well.
+
+\section{The certificates}\label{sec:cert}
+\begin{proposition}[S: seeds and base; PROVED, computer-assisted]\label{prop:S}
+For all $4116$ reduced $j/n$ with $3\le n\le150$, $n\le5j\le4n$, $j/n\ne\frac12$ (\texttt{P1g\_seeds.py}, blocks $3$--$70$, $71$--$105$, $106$--$130$, $131$--$150$, all \texttt{SEEDS PASSED}):
+\[|Z^\pm_n(j/n)|\ge0.6067,\qquad\min_i|G_i|\ge0.2331,\qquad|\omega_n|\le4.2352.\]
+The files \texttt{seeds\_*.txt} give, per seed and in directed rounding: $|Z^s_n|$, $\mathrm{env}^\pm$, $|\omega_n|$ and the margin.
+\end{proposition}
+The enclosures use Lemma~\ref{lem:Zk} with the rigorous $\Phi$-tail of P1f.
+
+\begin{proposition}[L: low seeds; PROVED, computer-assisted]\label{prop:L}
+For each of the 18 low seeds of P1e (side $d>0$; the side $d<0$ of $p/q$ is the side $d>0$ of $(q-p)/q$), P1e's parameters $r,\eta,V_0$, $n_2=60$ and $\kappa=3$, and 8 geometric pieces, \texttt{P1g\_lowseed.py} certifies, on every piece of $(0,r']$ with $r'$ as in Table~\ref{tab:L}:
+\begin{itemize}
+\item $|Z^s_N/\mathrm{Main}^s-1|\le B_s$;
+\item $c^s_{\rm seed}=(1-B_s)\sqrt{\pi/2A}\,|S^s|$ and $\kappa_{\rm seed}=q\max(0,-\operatorname{Re}F(t_0))$;
+\item an enclosure $\omega\in\frac{S^-}{u_0S^+}\cdot\frac{1+D(B_-)}{1+D(B_+)}$, and a lower bound for $\min_i|G_i|$ on it.
+\end{itemize}
+These hold for every $N\ge151$ and $x=a/N$ in the piece, under the $\Delta$-hypotheses of P1d Theorem~9, which hold by P1e Lemma~H(4).
+\end{proposition}
+\begin{table}[h]\centering\small
+\caption{Low seeds, twisted certificate on $(0,r']$ (raw output \texttt{lowseeds\_pm.txt}; lower bounds rounded down, upper bounds up).}\label{tab:L}
+\begin{tabular}{lllllll}\toprule
+seed & $r'$ & $\max B_\pm\le$ & $\min c^\pm_{\rm seed}\ge$ & $\kappa_{\rm seed}\le$ & margin $\ge$ & $|\omega|\le$\\\midrule
+1/2 & 0.002075 & 0.0572 & 0.7866 & 6.45e-5 & 1.336 & 4.787\\
+1/3 & 0.001 & 0.0386 & 0.7708 & 0.00128 & 0.4902 & 2.918\\
+2/3 & 0.00075 & 0.0240 & 0.7823 & 0 & 0.4999 & 2.767\\
+1/4 & 0.00075 & 0.0303 & 0.6914 & 6.01e-8 & 0.2132 & 1.825\\
+3/4 & 0.000175 & 0.0104 & 0.7061 & 1.42e-8 & 0.2794 & 1.678\\
+1/5 & 0.00025 & 0.0631 & 0.5657 & 0 & 0.1842 & 1.253\\
+2/5 & 0.003 & 0.103 & 0.7589 & 4.02e-5 & 0.1220 & 4.519\\
+3/5 & 0.0015 & 0.0332 & 0.8128 & 0 & 0.3026 & 3.570\\
+2/7 & 0.001 & 0.0429 & 0.7344 & 0 & 0.4195 & 2.534\\
+5/7 & 0.001 & 0.0428 & 0.7329 & 7.95e-6 & 0.4104 & 2.516\\
+3/7 & 0.002 & 0.0588 & 0.8173 & 1.67e-6 & 0.5592 & 4.256\\
+4/7 & 0.002 & 0.0573 & 0.8180 & 0 & 0.5351 & 4.249\\
+3/8 & 0.002 & 0.0365 & 0.7949 & 6.32e-11 & 0.2043 & 3.310\\
+5/8 & 0.002 & 0.0387 & 0.7923 & 6.32e-11 & 0.2100 & 3.322\\
+2/9 & 0.00025 & 0.0636 & 0.6187 & 3.61e-6 & 0.1349 & 1.587\\
+7/9 & 0.00025 & 0.0639 & 0.6173 & 0 & 0.1337 & 1.582\\
+4/9 & 0.0015 & 0.0481 & 0.8090 & 7.77e-8 & 0.7893 & 4.392\\
+5/9 & 0.002 & 0.0722 & 0.7884 & 0 & 0.6703 & 4.652\\\bottomrule
+\end{tabular}\end{table}
+The radius $r'$ is the largest piece edge up to which every piece has $B_\pm<1$ and margin $>0.05$. Beyond $r'$ the certified $B_-$ reaches $1.46$ (seed $3/4$), so a twisted analogue of P1e's full-radius low-seed certificate fails there. Proposition~\ref{prop:A} takes over.
+At the seed $1/2$ the $\omega$-limit is finite and far from the excluded set: $Z^\pm_2=e^{\Phi_2(1)}$, so $\omega_2=1/u_2$ and $t^*_1\approx\frac32$. Near $\zeta=-1$ this is the reason the normalised $G_i$ (not the P1f factors) are used.
+
+\begin{proposition}[A$^\pm$: refined direct covering; PROVED, computer-assisted]\label{prop:A}
+Let $\mathcal D$ consist of the following discs:
+\begin{itemize}
+\item the hazard discs of P1e for $10\le n\le59$;
+\item the low-seed discs of radius $0.999r'$, with left radius $0.999\,r'((q-p)/q)$ and right radius $0.999\,r'(p/q)$ (file \texttt{caseA\_discs.txt}).
+\end{itemize}
+For every $x\in[\frac15,\frac12]\setminus\mathcal D$ that lies in no hazard of height $\ge60$, and every $N\ge151$ with $x=a/N$, $\gcd(a,N)=1$:
+\[|Z^\pm_N|\ge0.4799,\qquad\min_i|G_i|\ge0.05011,\qquad|\omega|\le7.954 .\]
+\end{proposition}
+\begin{proof}
+For $M<60\le N$, split $Z^s_N=P^s_M(x)+\mathcal R$, where $P^s_M(x)=\sum_{n\le M}\psi_n(x)\e(-(n^2+sn)x)$.
+
+\emph{The polynomial part.} For $n\le M$, $\psi_n$ depends only on $a_m=u_0^m/(m(1-\e(-mx)))$, $m\le M$ (no $m\le M$ is a multiple of $N$). The only $N$-dependence is through $u_0\in\frac1c(1+D(0.1e^{-151\ell}))$ (P1d Lemma~W). So $P^s_M$ is enclosed on an $x$-interval uniformly in $N\ge151$.
+
+\emph{The tail.} $e^\Phi$ is coefficientwise majorised by $\exp\big(\sum_{m<60}\alpha_mY^m+\sum_{m\ge60}|a_m|Y^m\big)$ with $\alpha_m\ge\sup|a_m|$. By P1e Lemma~H(3), $\sum_{m\ge60}|a_m|\le\tau/59$. The disc hypothesis of H(3) is met: a low rational $i'/m'$ within $y^{60}/(4\tau)=1.1\cdot10^{-17}$ of $x$ would put $x$ in its disc of radius $0.999r'\ge1.7\cdot10^{-4}$, and every low rational in $[\frac15,\frac12]$ has a disc. The second exponent has only degrees $\ge60>M$. Therefore
+\[\sum_{n>M}|\psi_n|\le T_M:=e^{\sum_{m<60}\alpha_m+\tau/59}-\sum_{n\le M}c_n,\]
+where the $c_n$ are the coefficients of $\exp(\sum_{m<60}\alpha_mY^m)$.
+\texttt{P1g\_caseA.py} covers $[\frac15,\frac12]\setminus\mathcal D$ adaptively ($M\in\{8,20,40,59\}$, bisection), in four blocks, with 12,205 intervals and 0 failures (\texttt{caseA\_out.txt}). On each interval it encloses $Z^\pm\in P^\pm_M+D(T_M)$, $\omega$ and the $G_i$ in Arb, and checks $|Z^\pm|>0.05$ and $\min|G_i|>0.05$.
+A failure is fatal (exit~1). This was tested with the threshold $0.3$, above the true minimum $0.232$: the script failed at $x=0.22$.
+\end{proof}
+Points inside hazards of height $\ge60$ are covered by the intervals but not by the proposition. They are handled by the hazard step below, exactly as in P1e.
+
+\begin{lemma}[B$^\pm$; PROVED, computer-assisted, tail by hand]\label{lem:B}
+Let $j/n$ be a hazard seed, $0<|d|<\varepsilon_n$ (P1e hazard radii), and assume the $\Delta$-hypothesis of P1e Lemma~H(2).
+\begin{enumerate}
+\item[(i)] \emph{Exact seeds} $10\le n\le150$ (all 4098 in $[\frac15,\frac45]$): with the level-$n$ data of Proposition~\ref{prop:S}, the exact sums of P1e Lemma~B$'$ (extended to $53\le n\le150$ with the radius $y^n/(4\tau)$), and Lemma~\ref{lem:lap} in crude form, we get
+\[E_\pm\le0.0048,\qquad R_\pm\le0.0040,\qquad\rho\le0.0361,\qquad\min_i|G_i|(j/n)-\sigma\ge0.2208\]
+(\texttt{P1g\_lemmaB.py exact}; per-$n$ maxima in \texttt{lemmaB\_exact.txt}).
+\item[(ii)] \emph{Deep seeds} $n\ge151$: under the induction hypothesis $|Z^\pm_n(j/n)|\ge c_0e^{-\kappa n}$ ($c_0=0.02$, $\kappa=0.005$) and $|\omega_n|\le10$, the uniform region bounds of P1e (with $g_i$ enlarged by the factor $1+10^{-6}$) give
+\[E_\pm,R_\pm\le1.9\cdot10^{-14},\qquad\sum_{151\le n\le6000}\sigma(n)\le4.96\cdot10^{-12},\qquad\sum_{151\le n\le6000}\rho(n)\le3.31\cdot10^{-13}\]
+(\texttt{P1g\_lemmaB.py crude 151 6000 10}), with all side conditions checked, including the new one, $v_0\ge2\pi d/A'$.
+\item[(iii)] \emph{Tail $n>6000$ (by hand, not machine-checked; as in P1e).} Here $\bar w,R_0\le2^{-n}$, $d\le12.5\cdot2^{-n}$ and $n_2\ge2^n/(25n)-1$. Also $\beta e^{\pi\eta}\le1.4\cdot2^{n/2}$, $P_1+\pi\le4n$ and $P_2\le40n$. So $r_1+r_3\le(400n^2+3n+110)2^{-n/2}$, while $r_2,r_4,r_5\le\exp(-10^{-5}2^{n})$. This gives $E\le10^5n^{5/2}(e^{0.005}/\sqrt2)^n<10^{-860}$, and $R\le10^4n^{5/2}(e^{0.005}/\sqrt2)^n<10^{-860}$ as in P1e.
+ Further, $\epsilon_u\le160\cdot2^{-n}$, $\rho\le500\cdot2^{-n}$ and $\sigma(n)\le9000\cdot2^{-n}$, so $\sum_{n>6000}\sigma(n)<10^{-1800}$.
+\end{enumerate}
+\end{lemma}
+The crude hazard discs are $10^{-15}$ wide or less, and every hazard seed $j/n$ ($n\ge10$) is at distance $\ge1/(qn)\gg\varepsilon_n$ from each region boundary $\frac15,\frac14,\frac13,\frac25,\frac12$. So a hazard disc never crosses a region boundary. The factor $1+10^{-6}$ is extra safety for $|u_0|$ on the disc.
+
+\section{The induction}\label{sec:ind}
+\begin{theorem}[main; PROVED, computer-assisted]\label{thm:main}
+For all $N\ge3$ and $\gcd(a,N)=1$ with $\frac aN\in[\frac15,\frac45]\setminus\{\frac12\}$:
+\begin{enumerate}
+\item[(M$^\pm$)] $|Z^\pm_N(a/N)|\ge c_0e^{-\kappa N}$, with $c_0=0.02$ and $\kappa=0.005$;
+\item[($\Omega$)] $\min_i|G_i|\ge0.05-S$ and $|\omega|\le7.954\prod_{n\ge151}(1+\rho(n))\le7.954(1+10^{-12})$, where $S:=\sum_{n\ge151}\sigma(n)\le4.97\cdot10^{-12}$. Hence $\min_i|G_i|\ge0.0499$ and $|\omega|\le7.96$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+By Lemma~\ref{lem:conj}, take $x=a/N\in[\frac15,\frac12)$. We use strong induction on $N$, with the hypothesis strengthened to $\min_i|G_i|\ge0.05-S(N)$ and $|\omega|\le7.954\prod_{151\le m<N}(1+\rho(m))$, where $S(N):=\sum_{151\le m<N}\sigma(m)$ and $\rho(m)$, $\sigma(m)$ are the crude bounds of Lemma~\ref{lem:B}(ii),(iii). Since $\prod(1+\rho)\le1+10^{-12}$, the $|\omega|$-hypothesis implies $|\omega|\le10$, which is the value used in Lemma~\ref{lem:B}(ii).
+
+\emph{Base} $N\le150$: Proposition~\ref{prop:S}, which gives $|Z^\pm|\ge0.6067$, margin $\ge0.2331$ and $|\omega|\le4.236$.
+
+\emph{Step} $N\ge151$. The case split of P1e Theorem~M, with the low-seed discs shrunk to $r'$:
+\begin{enumerate}
+\item \emph{$x$ lies in a hazard with $n\ge151$; take the deepest one, $j/n$.} P1e Lemma~H(2) gives the $\Delta$-hypothesis. The induction hypothesis at level $n<N$ gives $|Z^\pm_n|\ge c_0e^{-\kappa n}$, margin $\ge0.05-S(n)$ and $|\omega_n|\le10$.
+ By Lemma~\ref{lem:B}(ii) and Lemma~\ref{lem:R}:
+ \[|Z^\pm_N|\ge(1-E)\sqrt{\pi/2A}\,e^{-\pi R_0}(1-R)\,|T^\pm|\,e^{-n|F(t_0)|N}\ge c_0e^{-\kappa N},\]
+ as in P1e: $N\ge1/(n|d|)$ and $n|F(t_0)|\le g^n/(5n)+n\pi R_0^2\le2^{-n}$.
+ By Lemma~\ref{lem:I}, the margin is $\ge0.05-S(n)-\sigma(n)\ge0.05-S(N)$, and $|\omega_N|\le|\omega_n|(1+\rho(n))$.
+\item \emph{The deepest hazard has $10\le n\le150$.} The same argument with Lemma~\ref{lem:B}(i) and the exact level-$n$ data: $|Z^\pm_N|\ge\frac12\cdot0.7\cdot0.99\cdot0.6067\,e^{-2^{-10}N}\ge c_0e^{-\kappa N}$. The margin is $\ge0.2208$, and $|\omega_N|\le4.236\cdot1.037$.
+\item \emph{$x$ lies in no hazard with $n\ge10$, but $0<|x-p/q|\le r'$ for a low seed.} Proposition~\ref{prop:L}: $|Z^\pm_N|\ge c_{\rm seed}e^{-\kappa_{\rm seed}N}\ge0.5657\,e^{-0.00128N}$, margin $\ge0.122$ and $|\omega|\le4.787$.
+\item \emph{Otherwise.} Proposition~\ref{prop:A}: $|Z^\pm_N|\ge0.4799$, margin $\ge0.05011$ and $|\omega|\le7.954$.
+\end{enumerate}
+The cases are exhaustive: case~4 is the complement of the hazards of height $\ge10$ and of the $r'$-discs. Only case~1 lowers the margin below its terminal value, and by at most $\sigma(n)$ with $n\ge151$ each time.
+\end{proof}
+
+\begin{corollary}[PROVED, computer-assisted; standing \texttt{thm:model}, \texttt{thm:RJ}]\label{cor:UV}
+For every $N\ge16$ and every $\zeta=\e(a/N)$ with $\frac15\le\frac aN\le\frac45$ ($\zeta\ne-1$ automatically), the hypotheses of P1f Theorem~C hold: $Z^+_N\ne0$, and $\omega$ avoids the six values (Lemma~\ref{lem:Geq}). Hence:
+\begin{itemize}
+\item the poles of $U$ and of $V$ accumulate at $\pm\sqrt\zeta$ and $\pm\sqrt{\bar\zeta}$;
+\item the accumulation set of these poles on $|x|=1$ contains the closed arcs $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$.
+\end{itemize}
+\end{corollary}
+\begin{proof}
+P1f Theorem~C(i)--(iii) with Theorem~\ref{thm:main}. For the arcs: the accumulation set is closed and contains $\pm\e(\frac a{2N})$ and $\pm\e(-\frac a{2N})$ for all admissible $a/N$, $N\ge16$, and these points are dense in the two arcs.
+\end{proof}
+
+\section{Numerical cross-checks (VERIFIED)}
+\begin{itemize}
+\item \texttt{P1g\_verify.py}: the direct $\omega_N$ (exact finite formula, floating) against the certified model $S^-/(u_0S^+)$ of Lemma~\ref{lem:F}.
+ \begin{itemize}
+ \item At $1/3$: $|\Delta\omega|=7.1\cdot10^{-3}$ at $d=1.5\cdot10^{-3}$, and $2.4\cdot10^{-2}$ at $d=3.7\cdot10^{-3}$.
+ \item At $3/4$: $7.4\cdot10^{-4}$ at $d=8.3\cdot10^{-5}$.
+ \item At $2/5$: $8.8\cdot10^{-3}$ at $d=6.7\cdot10^{-4}$.
+ \end{itemize}
+ All are $O(d)$ and inside the certified $|\omega|(B_++B_-)$.
+ The refined direct enclosures of Proposition~\ref{prop:A} at $71/301$, $97/400$, $133/401$, $180/499$ contain the direct values.
+\item \texttt{P1g\_margin\_profile.py}: sharp point enclosures (tail $T_M\le2\cdot10^{-3}$) at $x=k/20000$, 5923 points. The $N\to\infty$ margin profile has its minimum $0.2319$ at $x\approx0.227$, a smooth minimum of the factor $G_3^-$. It matches the base minimum $0.2331$ at $22/97$.
+ So the certified threshold $0.05$ is conservative. Its near-attainment ($0.05011$) comes from wide intervals at hazard and disc edges, where the bisection stops as soon as the enclosure clears $0.05$.
+\end{itemize}
+
+\section{What is not proved; weakest points}\label{sec:open}
+\begin{enumerate}
+\item \textbf{Unreviewed adaptations.} Lemma~\ref{lem:lap} is a transcription of P1d Lemma~8 and P1e Lemma~O with a bounded analytic factor inserted. The only genuinely new estimate is the lower-ray tail (halved Gaussian). Both scripts are line-by-line edits of the reviewed \texttt{P1e\_cert.py} and \texttt{P1e\_lemmaB.py}, but no independent reviewer has checked the edits yet.
+\item \textbf{Hand-checked tail} (Lemma~\ref{lem:B}(iii), $n>6000$). The constants are generous, but the tail is not machine-checked, as in P1e Lemma~B for $n>3000$.
+\item \textbf{Inherited standing.} Theorem~\ref{thm:main} rests on P1d (Lemmas~W, 6, 8, Theorems~2, 5, 9), P1e (Lemmas~H, R, O and the hazard scheme; reviewed CORRECT by Reviewer~AA), and \texttt{python-flint}/Arb. Corollary~\ref{cor:UV} further rests on P1f Theorem~C, whose Laplace $O(t)$ and index $j_0$ are not explicit, and on the standing Theorems \texttt{thm:model}, \texttt{thm:RJ}.
+\item \textbf{Precision floor.} \texttt{P1g\_lemmaB.py} runs at 200 bits. For $n\gtrsim400$ the printed $\rho(n)$ sits at the rounding floor $1.6\cdot10^{-59}$. These are valid upper bounds, merely not sharp, and their sum over $n\le6000$ is included in the $4.96\cdot10^{-12}$.
+\item \textbf{$N\le15$.} Theorem~\ref{thm:main} holds there, but P1f Theorem~B (zeros of $B$) is proved only for $N\ge16$. So Corollary~\ref{cor:UV} is stated for $N\ge16$; this does not affect density.
+\item \textbf{Scope.} Only the middle arc $[\frac15,\frac45]$ is treated. The edge $\ell<0.855$ is OPEN, as in P1e.
+\end{enumerate}
+
+\paragraph{Files} (in \texttt{rootunity\_zeros/general/P1g/}):
+\begin{itemize}
+\item \texttt{P1g\_seeds.py}: Proposition~\ref{prop:S}; data in \texttt{seeds\_*.txt}.
+\item \texttt{P1g\_cert.py}: Lemma~\ref{lem:lap} at the low seeds.
+\item \texttt{P1g\_lowseed.py} and \texttt{run\_lowseeds.sh}: Proposition~\ref{prop:L}; output in \texttt{lowseeds\_pm.txt}.
+\item \texttt{P1g\_caseA.py}: Proposition~\ref{prop:A}; \texttt{caseA\_discs.txt}, \texttt{caseA\_out.txt}.
+\item \texttt{P1g\_lemmaB.py}: Lemma~\ref{lem:B}; \texttt{lemmaB\_exact.txt}, \texttt{lemmaB\_crude\_151\_6000.txt}.
+\item \texttt{P1g\_inherit\_check.py}, \texttt{P1g\_verify.py}, \texttt{P1g\_margin\_profile.py}, \texttt{P1g\_scope.py}: VERIFIED checks only.
+\item \texttt{P1g\_certlog.txt}: raw outputs.
+\end{itemize}
+Every run used \verb|perl -e 'alarm 290; exec @ARGV'|. All runs were single python-flint processes under 300\,MB (fresh check: 24\,GB RAM). No Rust was needed, because no enumeration beyond these Arb certificates was required.
+\end{document}

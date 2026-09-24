@@ -1,0 +1,13 @@
+margin 0.2319 at x=0.226950 |omega|~1.362
+margin 0.2319 at x=0.227000 |omega|~1.363
+margin 0.2319 at x=0.226900 |omega|~1.362
+margin 0.2319 at x=0.227050 |omega|~1.363
+margin 0.2319 at x=0.226850 |omega|~1.361
+margin 0.2319 at x=0.227100 |omega|~1.364
+margin 0.2319 at x=0.226800 |omega|~1.361
+margin 0.2319 at x=0.227150 |omega|~1.364
+margin 0.2319 at x=0.226750 |omega|~1.360
+margin 0.2319 at x=0.227200 |omega|~1.365
+margin 0.2319 at x=0.226700 |omega|~1.360
+margin 0.2319 at x=0.227250 |omega|~1.365
+points evaluated: 5923

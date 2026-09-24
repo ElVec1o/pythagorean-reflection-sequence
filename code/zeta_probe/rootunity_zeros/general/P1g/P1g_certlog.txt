@@ -1,0 +1,463 @@
+# P1g_certlog.txt -- raw outputs of every P1g run (2026-09-24). All runs wrapped in perl -e 'alarm 290; exec @ARGV'; each < 300 MB.
+# fresh pre-flight: sysctl hw.memsize = 25769803776 (24 GB); runs are single python-flint processes (< 300 MB).
+
+=== P1g_seeds.py (run_seeds_3_70.log; per-seed data in seeds_3_70.log) ===
+  n<=3: 2 seeds, min|Z^pm|>=0.8047, min margin>=0.4999
+  n<=4: 4 seeds, min|Z^pm|>=0.7071, min margin>=0.3099
+  n<=5: 8 seeds, min|Z^pm|>=0.6067, min margin>=0.2885
+  SEEDS PASSED: 896 seeds 3<=n<=70; min|Z^pm|>=0.6067; min margin>=0.2331
+
+=== P1g_seeds.py (run_seeds_71_105.log; per-seed data in seeds_71_105.log) ===
+  n<=71: 42 seeds, min|Z^pm|>=0.6405, min margin>=0.2334
+  n<=72: 56 seeds, min|Z^pm|>=0.6405, min margin>=0.2334
+  n<=73: 100 seeds, min|Z^pm|>=0.6306, min margin>=0.2334
+  SEEDS PASSED: 1130 seeds 71<=n<=105; min|Z^pm|>=0.6301; min margin>=0.2331
+
+=== P1g_seeds.py (run_seeds_106_130.log; per-seed data in seeds_106_130.log) ===
+  n<=106: 30 seeds, min|Z^pm|>=0.6524, min margin>=0.2416
+  n<=107: 94 seeds, min|Z^pm|>=0.6307, min margin>=0.2338
+  n<=108: 116 seeds, min|Z^pm|>=0.6307, min margin>=0.2338
+  SEEDS PASSED: 1066 seeds 106<=n<=130; min|Z^pm|>=0.6302; min margin>=0.2331
+
+=== P1g_seeds.py (run_seeds_131_150.log; per-seed data in seeds_131_150.log) ===
+  n<=131: 78 seeds, min|Z^pm|>=0.6313, min margin>=0.2337
+  n<=132: 102 seeds, min|Z^pm|>=0.6313, min margin>=0.2337
+  n<=133: 166 seeds, min|Z^pm|>=0.6313, min margin>=0.2333
+  SEEDS PASSED: 1024 seeds 131<=n<=150; min|Z^pm|>=0.6301; min margin>=0.2331
+
+=== P1g_lowseed.py (run_lowseeds.sh) ===
+CERTPM 1/2 d in [0.0000e+00,6.4844e-05]: B+<=0.00195 B-<=0.00207 |S+|>=0.8740 |S-|>=0.9256 c+>=0.8249 c->=0.8735 kappa<=2.17e-6 margin>=1.608 |omega|<=4.254
+CERTPM 1/2 d in [6.4844e-05,1.2969e-04]: B+<=0.00232 B-<=0.00255 |S+|>=0.8740 |S-|>=0.9256 c+>=0.8246 c->=0.8731 kappa<=4.03e-6 margin>=1.606 |omega|<=4.257
+CERTPM 1/2 d in [1.2969e-04,2.5938e-04]: B+<=0.00321 B-<=0.00368 |S+|>=0.8740 |S-|>=0.9255 c+>=0.8239 c->=0.8721 kappa<=8.06e-6 margin>=1.600 |omega|<=4.266
+CERTPM 1/2 d in [2.5938e-04,5.1875e-04]: B+<=0.00567 B-<=0.00671 |S+|>=0.8739 |S-|>=0.9255 c+>=0.8218 c->=0.8694 kappa<=1.62e-5 margin>=1.585 |omega|<=4.291
+CERTPM 1/2 d in [5.1875e-04,1.0375e-03]: B+<=0.0140 B-<=0.0172 |S+|>=0.8739 |S-|>=0.9255 c+>=0.8149 c->=0.8602 kappa<=3.23e-5 margin>=1.538 |omega|<=4.378
+CERTPM 1/2 d in [1.0375e-03,2.0750e-03]: B+<=0.0482 B-<=0.0572 |S+|>=0.8738 |S-|>=0.9254 c+>=0.7866 c->=0.8251 kappa<=6.45e-5 margin>=1.336 |omega|<=4.787
+CERTPM 1/2 d in [2.0750e-03,4.1500e-03]: B+<=0.194 B-<=0.230 |S+|>=0.8736 |S-|>=0.9252 c+>=0.6665 c->=0.6743 kappa<=0.000130 margin>=0 |omega|<=8.266
+CERTPM 1/2 d in [4.1500e-03,8.3000e-03]: B+<=0.626 B-<=0.973 |S+|>=0.8731 |S-|>=0.9246 c+>=0.3093 c->=0.02385 kappa<=0.000260 margin>=0 |omega|<=142.3
+SEED 1/2 r=0.0083: all pieces B+-<1: True ; RPRIME=0.002075 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 1/3 d in [0.0000e+00,3.1250e-05]: B+<=0.00283 B-<=0.00380 |S+|>=1.103 |S-|>=0.8049 c+>=1.099 c->=0.8009 kappa<=0.00128 margin>=0.4996 |omega|<=2.559
+CERTPM 1/3 d in [3.1250e-05,6.2500e-05]: B+<=0.00317 B-<=0.00419 |S+|>=1.103 |S-|>=0.8049 c+>=1.099 c->=0.8006 kappa<=0.00128 margin>=0.4994 |omega|<=2.563
+CERTPM 1/3 d in [6.2500e-05,1.2500e-04]: B+<=0.00393 B-<=0.00507 |S+|>=1.103 |S-|>=0.8048 c+>=1.098 c->=0.7998 kappa<=0.00128 margin>=0.4989 |omega|<=2.573
+CERTPM 1/3 d in [1.2500e-04,2.5000e-04]: B+<=0.00582 B-<=0.00726 |S+|>=1.103 |S-|>=0.8044 c+>=1.095 c->=0.7977 kappa<=0.00128 margin>=0.4978 |omega|<=2.598
+CERTPM 1/3 d in [2.5000e-04,5.0000e-04]: B+<=0.0116 B-<=0.0148 |S+|>=1.102 |S-|>=0.8038 c+>=1.088 c->=0.7910 kappa<=0.00128 margin>=0.4955 |omega|<=2.673
+CERTPM 1/3 d in [5.0000e-04,1.0000e-03]: B+<=0.0308 B-<=0.0386 |S+|>=1.100 |S-|>=0.8025 c+>=1.065 c->=0.7708 kappa<=0.00128 margin>=0.4902 |omega|<=2.918
+CERTPM 1/3 d in [1.0000e-03,2.0000e-03]: B+<=0.117 B-<=0.148 |S+|>=1.097 |S-|>=0.8000 c+>=0.9683 c->=0.6816 kappa<=0.00128 margin>=0 |omega|<=4.358
+CERTPM 1/3 d in [2.0000e-03,4.0000e-03]: B+<=0.367 B-<=0.655 |S+|>=1.089 |S-|>=0.7948 c+>=0.6900 c->=0.2744 kappa<=0.00129 margin>=0 |omega|<=20.82
+SEED 1/3 r=0.004: all pieces B+-<1: True ; RPRIME=0.001 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 2/3 d in [0.0000e+00,2.3438e-05]: B+<=0.00270 B-<=0.00363 |S+|>=1.103 |S-|>=0.8049 c+>=1.099 c->=0.8011 kappa<=0 margin>=0.4999 |omega|<=2.557
+CERTPM 2/3 d in [2.3438e-05,4.6875e-05]: B+<=0.00295 B-<=0.00390 |S+|>=1.103 |S-|>=0.8049 c+>=1.099 c->=0.8008 kappa<=0 margin>=0.5000 |omega|<=2.559
+CERTPM 2/3 d in [4.6875e-05,9.3750e-05]: B+<=0.00352 B-<=0.00452 |S+|>=1.103 |S-|>=0.8048 c+>=1.098 c->=0.8002 kappa<=0 margin>=0.5001 |omega|<=2.566
+CERTPM 2/3 d in [9.3750e-05,1.8750e-04]: B+<=0.00523 B-<=0.00673 |S+|>=1.103 |S-|>=0.8045 c+>=1.096 c->=0.7981 kappa<=0 margin>=0.5003 |omega|<=2.587
+CERTPM 2/3 d in [1.8750e-04,3.7500e-04]: B+<=0.00890 B-<=0.0109 |S+|>=1.103 |S-|>=0.8038 c+>=1.091 c->=0.7941 kappa<=0 margin>=0.5006 |omega|<=2.631
+CERTPM 2/3 d in [3.7500e-04,7.5000e-04]: B+<=0.0207 B-<=0.0240 |S+|>=1.101 |S-|>=0.8026 c+>=1.077 c->=0.7823 kappa<=0 margin>=0.5009 |omega|<=2.767
+CERTPM 2/3 d in [7.5000e-04,1.5000e-03]: B+<=0.0955 B-<=0.177 |S+|>=1.099 |S-|>=0.8001 c+>=0.9932 c->=0.6578 kappa<=0 margin>=0 |omega|<=4.227
+CERTPM 2/3 d in [1.5000e-03,3.0000e-03]: B+<=0.708 B-<=1.41 |S+|>=1.095 |S-|>=0.7951 c+>=0.3199 c->=-0.3231 kappa<=0
+SEED 2/3 r=0.003: all pieces B+-<1: False ; RPRIME=0.00075 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 1/4 d in [0.0000e+00,2.3438e-05]: B+<=0.00203 B-<=0.00340 |S+|>=1.227 |S-|>=0.7027 c+>=1.244 c->=0.7117 kappa<=6.01e-8 margin>=0.3005 |omega|<=1.640
+CERTPM 1/4 d in [2.3438e-05,4.6875e-05]: B+<=0.00227 B-<=0.00367 |S+|>=1.227 |S-|>=0.7028 c+>=1.244 c->=0.7116 kappa<=0 margin>=0.2997 |omega|<=1.642
+CERTPM 1/4 d in [4.6875e-05,9.3750e-05]: B+<=0.00281 B-<=0.00430 |S+|>=1.226 |S-|>=0.7027 c+>=1.243 c->=0.7110 kappa<=0 margin>=0.2973 |omega|<=1.647
+CERTPM 1/4 d in [9.3750e-05,1.8750e-04]: B+<=0.00444 B-<=0.00672 |S+|>=1.226 |S-|>=0.7026 c+>=1.240 c->=0.7092 kappa<=0 margin>=0.2895 |omega|<=1.664
+CERTPM 1/4 d in [1.8750e-04,3.7500e-04]: B+<=0.00821 B-<=0.0118 |S+|>=1.225 |S-|>=0.7023 c+>=1.235 c->=0.7052 kappa<=0 margin>=0.2725 |omega|<=1.701
+CERTPM 1/4 d in [3.7500e-04,7.5000e-04]: B+<=0.0207 B-<=0.0303 |S+|>=1.224 |S-|>=0.7017 c+>=1.218 c->=0.6914 kappa<=0 margin>=0.2132 |omega|<=1.825
+CERTPM 1/4 d in [7.5000e-04,1.5000e-03]: B+<=0.110 B-<=0.251 |S+|>=1.221 |S-|>=0.7006 c+>=1.105 c->=0.5334 kappa<=0 margin>=0 |omega|<=3.287
+CERTPM 1/4 d in [1.5000e-03,3.0000e-03]: B+<=0.727 B-<=1.77 |S+|>=1.215 |S-|>=0.6983 c+>=0.3373 c->=-0.5449 kappa<=0
+SEED 1/4 r=0.003: all pieces B+-<1: False ; RPRIME=0.00075 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 3/4 d in [0.0000e+00,5.4687e-06]: B+<=0.00184 B-<=0.00314 |S+|>=1.227 |S-|>=0.7028 c+>=1.244 c->=0.7120 kappa<=1.42e-8 margin>=0.3017 |omega|<=1.637
+CERTPM 3/4 d in [5.4687e-06,1.0937e-05]: B+<=0.00189 B-<=0.00320 |S+|>=1.227 |S-|>=0.7028 c+>=1.244 c->=0.7119 kappa<=0 margin>=0.3015 |omega|<=1.637
+CERTPM 3/4 d in [1.0937e-05,2.1875e-05]: B+<=0.00201 B-<=0.00332 |S+|>=1.227 |S-|>=0.7027 c+>=1.244 c->=0.7118 kappa<=0 margin>=0.3009 |omega|<=1.638
+CERTPM 3/4 d in [2.1875e-05,4.3750e-05]: B+<=0.00251 B-<=0.00413 |S+|>=1.227 |S-|>=0.7026 c+>=1.243 c->=0.7111 kappa<=0 margin>=0.2983 |omega|<=1.643
+CERTPM 3/4 d in [4.3750e-05,8.7500e-05]: B+<=0.00303 B-<=0.00474 |S+|>=1.227 |S-|>=0.7024 c+>=1.243 c->=0.7105 kappa<=0 margin>=0.2956 |omega|<=1.648
+CERTPM 3/4 d in [8.7500e-05,1.7500e-04]: B+<=0.00611 B-<=0.0104 |S+|>=1.226 |S-|>=0.7020 c+>=1.239 c->=0.7061 kappa<=0 margin>=0.2794 |omega|<=1.678
+CERTPM 3/4 d in [1.7500e-04,3.5000e-04]: B+<=0.103 B-<=0.210 |S+|>=1.226 |S-|>=0.7013 c+>=1.118 c->=0.5632 kappa<=0 margin>=0 |omega|<=2.957
+CERTPM 3/4 d in [3.5000e-04,7.0000e-04]: B+<=0.730 B-<=1.46 |S+|>=1.225 |S-|>=0.6997 c+>=0.3364 c->=-0.3251 kappa<=0
+SEED 3/4 r=0.0007: all pieces B+-<1: False ; RPRIME=0.000175 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 1/5 d in [0.0000e+00,3.9063e-06]: B+<=0.00274 B-<=0.00602 |S+|>=1.350 |S-|>=0.6066 c+>=1.346 c->=0.6028 kappa<=0 margin>=0.2796 |omega|<=1.073
+CERTPM 1/5 d in [3.9063e-06,7.8125e-06]: B+<=0.00282 B-<=0.00612 |S+|>=1.350 |S-|>=0.6067 c+>=1.346 c->=0.6027 kappa<=0 margin>=0.2794 |omega|<=1.074
+CERTPM 1/5 d in [7.8125e-06,1.5625e-05]: B+<=0.00297 B-<=0.00631 |S+|>=1.350 |S-|>=0.6066 c+>=1.345 c->=0.6025 kappa<=0 margin>=0.2787 |omega|<=1.075
+CERTPM 1/5 d in [1.5625e-05,3.1250e-05]: B+<=0.00336 B-<=0.00693 |S+|>=1.350 |S-|>=0.6064 c+>=1.344 c->=0.6020 kappa<=0 margin>=0.2771 |omega|<=1.078
+CERTPM 1/5 d in [3.1250e-05,6.2500e-05]: B+<=0.00444 B-<=0.00902 |S+|>=1.349 |S-|>=0.6061 c+>=1.342 c->=0.6003 kappa<=0 margin>=0.2725 |omega|<=1.087
+CERTPM 1/5 d in [6.2500e-05,1.2500e-04]: B+<=0.00620 B-<=0.0117 |S+|>=1.348 |S-|>=0.6054 c+>=1.339 c->=0.5980 kappa<=0 margin>=0.2653 |omega|<=1.100
+CERTPM 1/5 d in [1.2500e-04,2.5000e-04]: B+<=0.0258 B-<=0.0631 |S+|>=1.346 |S-|>=0.6040 c+>=1.311 c->=0.5657 kappa<=0 margin>=0.1842 |omega|<=1.253
+CERTPM 1/5 d in [2.5000e-04,5.0000e-04]: B+<=0.366 B-<=0.971 |S+|>=1.342 |S-|>=0.6013 c+>=0.8509 c->=0.01748 kappa<=0 margin>=0 |omega|<=10.44
+SEED 1/5 r=0.0005: all pieces B+-<1: True ; RPRIME=0.00025 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 2/5 d in [0.0000e+00,2.3438e-05]: B+<=0.00378 B-<=0.00437 |S+|>=0.9834 |S-|>=0.8383 c+>=0.9796 c->=0.8347 kappa<=4.00e-5 margin>=0.3881 |omega|<=3.278
+CERTPM 2/5 d in [2.3438e-05,4.6875e-05]: B+<=0.00399 B-<=0.00453 |S+|>=0.9834 |S-|>=0.8383 c+>=0.9794 c->=0.8345 kappa<=4.00e-5 margin>=0.3878 |omega|<=3.280
+CERTPM 2/5 d in [4.6875e-05,9.3750e-05]: B+<=0.00442 B-<=0.00485 |S+|>=0.9832 |S-|>=0.8382 c+>=0.9789 c->=0.8341 kappa<=4.00e-5 margin>=0.3866 |omega|<=3.285
+CERTPM 2/5 d in [9.3750e-05,1.8750e-04]: B+<=0.00533 B-<=0.00550 |S+|>=0.9829 |S-|>=0.8379 c+>=0.9777 c->=0.8333 kappa<=4.00e-5 margin>=0.3841 |omega|<=3.295
+CERTPM 2/5 d in [1.8750e-04,3.7500e-04]: B+<=0.00746 B-<=0.00692 |S+|>=0.9823 |S-|>=0.8374 c+>=0.9750 c->=0.8316 kappa<=4.00e-5 margin>=0.3786 |omega|<=3.317
+CERTPM 2/5 d in [3.7500e-04,7.5000e-04]: B+<=0.0136 B-<=0.0121 |S+|>=0.9812 |S-|>=0.8363 c+>=0.9679 c->=0.8262 kappa<=4.00e-5 margin>=0.3627 |omega|<=3.381
+CERTPM 2/5 d in [7.5000e-04,1.5000e-03]: B+<=0.0317 B-<=0.0245 |S+|>=0.9788 |S-|>=0.8341 c+>=0.9479 c->=0.8137 kappa<=4.01e-5 margin>=0.3202 |omega|<=3.559
+CERTPM 2/5 d in [1.5000e-03,3.0000e-03]: B+<=0.103 B-<=0.0854 |S+|>=0.9741 |S-|>=0.8297 c+>=0.8744 c->=0.7589 kappa<=4.02e-5 margin>=0.1220 |omega|<=4.519
+SEED 2/5 r=0.003: all pieces B+-<1: True ; RPRIME=0.003 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 3/5 d in [0.0000e+00,2.3438e-05]: B+<=0.00376 B-<=0.00434 |S+|>=0.9833 |S-|>=0.8383 c+>=0.9796 c->=0.8347 kappa<=0 margin>=0.3880 |omega|<=3.278
+CERTPM 3/5 d in [2.3438e-05,4.6875e-05]: B+<=0.00397 B-<=0.00451 |S+|>=0.9833 |S-|>=0.8383 c+>=0.9794 c->=0.8346 kappa<=0 margin>=0.3874 |omega|<=3.280
+CERTPM 3/5 d in [4.6875e-05,9.3750e-05]: B+<=0.00440 B-<=0.00485 |S+|>=0.9832 |S-|>=0.8382 c+>=0.9789 c->=0.8341 kappa<=0 margin>=0.3857 |omega|<=3.284
+CERTPM 3/5 d in [9.3750e-05,1.8750e-04]: B+<=0.00534 B-<=0.00554 |S+|>=0.9829 |S-|>=0.8379 c+>=0.9776 c->=0.8333 kappa<=0 margin>=0.3822 |omega|<=3.294
+CERTPM 3/5 d in [1.8750e-04,3.7500e-04]: B+<=0.00770 B-<=0.00748 |S+|>=0.9822 |S-|>=0.8374 c+>=0.9746 c->=0.8311 kappa<=0 margin>=0.3740 |omega|<=3.319
+CERTPM 3/5 d in [3.7500e-04,7.5000e-04]: B+<=0.0139 B-<=0.0125 |S+|>=0.9809 |S-|>=0.8363 c+>=0.9673 c->=0.8258 kappa<=0 margin>=0.3547 |omega|<=3.382
+CERTPM 3/5 d in [7.5000e-04,1.5000e-03]: B+<=0.0332 B-<=0.0255 |S+|>=0.9783 |S-|>=0.8341 c+>=0.9458 c->=0.8128 kappa<=0 margin>=0.3026 |omega|<=3.570
+CERTPM 3/5 d in [1.5000e-03,3.0000e-03]: B+<=0.104 B-<=0.146 |S+|>=0.9729 |S-|>=0.8295 c+>=0.8723 c->=0.7085 kappa<=0 margin>=0.02835 |omega|<=4.916
+SEED 3/5 r=0.003: all pieces B+-<1: True ; RPRIME=0.0015 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 2/7 d in [0.0000e+00,1.5625e-05]: B+<=0.00380 B-<=0.00552 |S+|>=1.140 |S-|>=0.7722 c+>=1.136 c->=0.7680 kappa<=0 margin>=0.5774 |omega|<=2.159
+CERTPM 2/7 d in [1.5625e-05,3.1250e-05]: B+<=0.00397 B-<=0.00567 |S+|>=1.140 |S-|>=0.7723 c+>=1.136 c->=0.7679 kappa<=0 margin>=0.5769 |omega|<=2.160
+CERTPM 2/7 d in [3.1250e-05,6.2500e-05]: B+<=0.00432 B-<=0.00597 |S+|>=1.140 |S-|>=0.7721 c+>=1.135 c->=0.7675 kappa<=0 margin>=0.5747 |omega|<=2.166
+CERTPM 2/7 d in [6.2500e-05,1.2500e-04]: B+<=0.00508 B-<=0.00664 |S+|>=1.140 |S-|>=0.7718 c+>=1.134 c->=0.7667 kappa<=0 margin>=0.5700 |omega|<=2.177
+CERTPM 2/7 d in [1.2500e-04,2.5000e-04]: B+<=0.00729 B-<=0.00926 |S+|>=1.139 |S-|>=0.7711 c+>=1.130 c->=0.7640 kappa<=0 margin>=0.5568 |omega|<=2.208
+CERTPM 2/7 d in [2.5000e-04,5.0000e-04]: B+<=0.0117 B-<=0.0128 |S+|>=1.137 |S-|>=0.7699 c+>=1.124 c->=0.7600 kappa<=0 margin>=0.5333 |omega|<=2.263
+CERTPM 2/7 d in [5.0000e-04,1.0000e-03]: B+<=0.0299 B-<=0.0429 |S+|>=1.133 |S-|>=0.7673 c+>=1.100 c->=0.7344 kappa<=0 margin>=0.4195 |omega|<=2.534
+CERTPM 2/7 d in [1.0000e-03,2.0000e-03]: B+<=0.318 B-<=0.719 |S+|>=1.126 |S-|>=0.7621 c+>=0.7689 c->=0.2147 kappa<=0 margin>=0 |omega|<=15.37
+SEED 2/7 r=0.002: all pieces B+-<1: True ; RPRIME=0.001 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 5/7 d in [0.0000e+00,1.5625e-05]: B+<=0.00380 B-<=0.00551 |S+|>=1.140 |S-|>=0.7722 c+>=1.136 c->=0.7680 kappa<=7.78e-6 margin>=0.5773 |omega|<=2.159
+CERTPM 5/7 d in [1.5625e-05,3.1250e-05]: B+<=0.00397 B-<=0.00566 |S+|>=1.140 |S-|>=0.7722 c+>=1.136 c->=0.7678 kappa<=7.78e-6 margin>=0.5766 |omega|<=2.160
+CERTPM 5/7 d in [3.1250e-05,6.2500e-05]: B+<=0.00432 B-<=0.00595 |S+|>=1.140 |S-|>=0.7720 c+>=1.135 c->=0.7674 kappa<=7.79e-6 margin>=0.5741 |omega|<=2.165
+CERTPM 5/7 d in [6.2500e-05,1.2500e-04]: B+<=0.00509 B-<=0.00658 |S+|>=1.140 |S-|>=0.7716 c+>=1.134 c->=0.7665 kappa<=7.80e-6 margin>=0.5689 |omega|<=2.175
+CERTPM 5/7 d in [1.2500e-04,2.5000e-04]: B+<=0.00730 B-<=0.00913 |S+|>=1.139 |S-|>=0.7707 c+>=1.131 c->=0.7637 kappa<=7.82e-6 margin>=0.5546 |omega|<=2.203
+CERTPM 5/7 d in [2.5000e-04,5.0000e-04]: B+<=0.0117 B-<=0.0126 |S+|>=1.138 |S-|>=0.7690 c+>=1.124 c->=0.7594 kappa<=7.86e-6 margin>=0.5290 |omega|<=2.254
+CERTPM 5/7 d in [5.0000e-04,1.0000e-03]: B+<=0.0298 B-<=0.0428 |S+|>=1.135 |S-|>=0.7656 c+>=1.101 c->=0.7329 kappa<=7.95e-6 margin>=0.4104 |omega|<=2.516
+CERTPM 5/7 d in [1.0000e-03,2.0000e-03]: B+<=0.320 B-<=0.726 |S+|>=1.129 |S-|>=0.7587 c+>=0.7689 c->=0.2082 kappa<=8.13e-6 margin>=0 |omega|<=15.38
+SEED 5/7 r=0.002: all pieces B+-<1: True ; RPRIME=0.001 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 3/7 d in [0.0000e+00,1.5625e-05]: B+<=0.00480 B-<=0.00500 |S+|>=0.8972 |S-|>=0.8514 c+>=0.8929 c->=0.8472 kappa<=1.66e-6 margin>=0.7093 |omega|<=3.742
+CERTPM 3/7 d in [1.5625e-05,3.1250e-05]: B+<=0.00497 B-<=0.00512 |S+|>=0.8972 |S-|>=0.8514 c+>=0.8928 c->=0.8471 kappa<=1.66e-6 margin>=0.7091 |omega|<=3.743
+CERTPM 3/7 d in [3.1250e-05,6.2500e-05]: B+<=0.00532 B-<=0.00536 |S+|>=0.8971 |S-|>=0.8513 c+>=0.8923 c->=0.8468 kappa<=1.66e-6 margin>=0.7080 |omega|<=3.747
+CERTPM 3/7 d in [6.2500e-05,1.2500e-04]: B+<=0.00605 B-<=0.00581 |S+|>=0.8969 |S-|>=0.8511 c+>=0.8915 c->=0.8462 kappa<=1.66e-6 margin>=0.7060 |omega|<=3.754
+CERTPM 3/7 d in [1.2500e-04,2.5000e-04]: B+<=0.00763 B-<=0.00674 |S+|>=0.8965 |S-|>=0.8507 c+>=0.8896 c->=0.8450 kappa<=1.66e-6 margin>=0.7016 |omega|<=3.770
+CERTPM 3/7 d in [2.5000e-04,5.0000e-04]: B+<=0.0116 B-<=0.00920 |S+|>=0.8956 |S-|>=0.8499 c+>=0.8852 c->=0.8421 kappa<=1.66e-6 margin>=0.6909 |omega|<=3.807
+CERTPM 3/7 d in [5.0000e-04,1.0000e-03]: B+<=0.0224 B-<=0.0161 |S+|>=0.8939 |S-|>=0.8482 c+>=0.8739 c->=0.8346 kappa<=1.67e-6 margin>=0.6613 |omega|<=3.909
+CERTPM 3/7 d in [1.0000e-03,2.0000e-03]: B+<=0.0588 B-<=0.0327 |S+|>=0.8903 |S-|>=0.8448 c+>=0.8380 c->=0.8173 kappa<=1.67e-6 margin>=0.5592 |omega|<=4.256
+SEED 3/7 r=0.002: all pieces B+-<1: True ; RPRIME=0.002 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 4/7 d in [0.0000e+00,1.5625e-05]: B+<=0.00480 B-<=0.00500 |S+|>=0.8972 |S-|>=0.8514 c+>=0.8929 c->=0.8472 kappa<=0 margin>=0.7091 |omega|<=3.742
+CERTPM 4/7 d in [1.5625e-05,3.1250e-05]: B+<=0.00497 B-<=0.00512 |S+|>=0.8972 |S-|>=0.8514 c+>=0.8928 c->=0.8471 kappa<=0 margin>=0.7086 |omega|<=3.743
+CERTPM 4/7 d in [3.1250e-05,6.2500e-05]: B+<=0.00532 B-<=0.00536 |S+|>=0.8971 |S-|>=0.8514 c+>=0.8923 c->=0.8468 kappa<=0 margin>=0.7071 |omega|<=3.747
+CERTPM 4/7 d in [6.2500e-05,1.2500e-04]: B+<=0.00604 B-<=0.00582 |S+|>=0.8969 |S-|>=0.8512 c+>=0.8915 c->=0.8462 kappa<=0 margin>=0.7041 |omega|<=3.754
+CERTPM 4/7 d in [1.2500e-04,2.5000e-04]: B+<=0.00764 B-<=0.00677 |S+|>=0.8965 |S-|>=0.8508 c+>=0.8896 c->=0.8450 kappa<=0 margin>=0.6978 |omega|<=3.769
+CERTPM 4/7 d in [2.5000e-04,5.0000e-04]: B+<=0.0117 B-<=0.00925 |S+|>=0.8956 |S-|>=0.8500 c+>=0.8852 c->=0.8422 kappa<=0 margin>=0.6833 |omega|<=3.807
+CERTPM 4/7 d in [5.0000e-04,1.0000e-03]: B+<=0.0226 B-<=0.0162 |S+|>=0.8938 |S-|>=0.8485 c+>=0.8737 c->=0.8348 kappa<=0 margin>=0.6461 |omega|<=3.910
+CERTPM 4/7 d in [1.0000e-03,2.0000e-03]: B+<=0.0573 B-<=0.0325 |S+|>=0.8903 |S-|>=0.8454 c+>=0.8393 c->=0.8180 kappa<=0 margin>=0.5351 |omega|<=4.249
+SEED 4/7 r=0.002: all pieces B+-<1: True ; RPRIME=0.002 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 3/8 d in [0.0000e+00,1.5625e-05]: B+<=0.00311 B-<=0.00389 |S+|>=1.045 |S-|>=0.8228 c+>=1.041 c->=0.8196 kappa<=6.32e-11 margin>=0.2817 |omega|<=2.941
+CERTPM 3/8 d in [1.5625e-05,3.1250e-05]: B+<=0.00322 B-<=0.00399 |S+|>=1.045 |S-|>=0.8228 c+>=1.041 c->=0.8195 kappa<=0 margin>=0.2815 |omega|<=2.942
+CERTPM 3/8 d in [3.1250e-05,6.2500e-05]: B+<=0.00346 B-<=0.00417 |S+|>=1.044 |S-|>=0.8227 c+>=1.041 c->=0.8193 kappa<=0 margin>=0.2808 |omega|<=2.945
+CERTPM 3/8 d in [6.2500e-05,1.2500e-04]: B+<=0.00394 B-<=0.00452 |S+|>=1.044 |S-|>=0.8225 c+>=1.040 c->=0.8188 kappa<=0 margin>=0.2793 |omega|<=2.951
+CERTPM 3/8 d in [1.2500e-04,2.5000e-04]: B+<=0.00500 B-<=0.00523 |S+|>=1.044 |S-|>=0.8222 c+>=1.039 c->=0.8179 kappa<=0 margin>=0.2764 |omega|<=2.964
+CERTPM 3/8 d in [2.5000e-04,5.0000e-04]: B+<=0.00797 B-<=0.00803 |S+|>=1.043 |S-|>=0.8215 c+>=1.035 c->=0.8149 kappa<=0 margin>=0.2686 |omega|<=3.000
+CERTPM 3/8 d in [5.0000e-04,1.0000e-03]: B+<=0.0147 B-<=0.0125 |S+|>=1.041 |S-|>=0.8201 c+>=1.026 c->=0.8099 kappa<=0 margin>=0.2528 |omega|<=3.074
+CERTPM 3/8 d in [1.0000e-03,2.0000e-03]: B+<=0.0365 B-<=0.0276 |S+|>=1.038 |S-|>=0.8174 c+>=1.000 c->=0.7949 kappa<=0 margin>=0.2043 |omega|<=3.310
+SEED 3/8 r=0.002: all pieces B+-<1: True ; RPRIME=0.002 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 5/8 d in [0.0000e+00,1.5625e-05]: B+<=0.00311 B-<=0.00389 |S+|>=1.045 |S-|>=0.8228 c+>=1.041 c->=0.8196 kappa<=6.32e-11 margin>=0.2817 |omega|<=2.941
+CERTPM 5/8 d in [1.5625e-05,3.1250e-05]: B+<=0.00323 B-<=0.00399 |S+|>=1.045 |S-|>=0.8227 c+>=1.041 c->=0.8195 kappa<=0 margin>=0.2815 |omega|<=2.941
+CERTPM 5/8 d in [3.1250e-05,6.2500e-05]: B+<=0.00346 B-<=0.00417 |S+|>=1.044 |S-|>=0.8226 c+>=1.041 c->=0.8192 kappa<=0 margin>=0.2809 |omega|<=2.944
+CERTPM 5/8 d in [6.2500e-05,1.2500e-04]: B+<=0.00396 B-<=0.00453 |S+|>=1.044 |S-|>=0.8224 c+>=1.040 c->=0.8187 kappa<=0 margin>=0.2796 |omega|<=2.950
+CERTPM 5/8 d in [1.2500e-04,2.5000e-04]: B+<=0.00504 B-<=0.00529 |S+|>=1.044 |S-|>=0.8220 c+>=1.039 c->=0.8177 kappa<=0 margin>=0.2769 |omega|<=2.963
+CERTPM 5/8 d in [2.5000e-04,5.0000e-04]: B+<=0.00807 B-<=0.00821 |S+|>=1.043 |S-|>=0.8212 c+>=1.035 c->=0.8145 kappa<=0 margin>=0.2697 |omega|<=2.998
+CERTPM 5/8 d in [5.0000e-04,1.0000e-03]: B+<=0.0151 B-<=0.0131 |S+|>=1.041 |S-|>=0.8196 c+>=1.026 c->=0.8090 kappa<=0 margin>=0.2551 |omega|<=3.071
+CERTPM 5/8 d in [1.0000e-03,2.0000e-03]: B+<=0.0387 B-<=0.0294 |S+|>=1.038 |S-|>=0.8163 c+>=0.9985 c->=0.7923 kappa<=0 margin>=0.2100 |omega|<=3.322
+SEED 5/8 r=0.002: all pieces B+-<1: True ; RPRIME=0.002 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 2/9 d in [0.0000e+00,3.9063e-06]: B+<=0.00371 B-<=0.00720 |S+|>=1.299 |S-|>=0.6630 c+>=1.295 c->=0.6582 kappa<=3.61e-6 margin>=0.2239 |omega|<=1.340
+CERTPM 2/9 d in [3.9063e-06,7.8125e-06]: B+<=0.00377 B-<=0.00727 |S+|>=1.299 |S-|>=0.6630 c+>=1.294 c->=0.6582 kappa<=3.61e-6 margin>=0.2238 |omega|<=1.341
+CERTPM 2/9 d in [7.8125e-06,1.5625e-05]: B+<=0.00389 B-<=0.00739 |S+|>=1.299 |S-|>=0.6629 c+>=1.294 c->=0.6580 kappa<=3.61e-6 margin>=0.2233 |omega|<=1.342
+CERTPM 2/9 d in [1.5625e-05,3.1250e-05]: B+<=0.00425 B-<=0.00790 |S+|>=1.299 |S-|>=0.6627 c+>=1.294 c->=0.6575 kappa<=3.60e-6 margin>=0.2219 |omega|<=1.346
+CERTPM 2/9 d in [3.1250e-05,6.2500e-05]: B+<=0.00518 B-<=0.00949 |S+|>=1.299 |S-|>=0.6624 c+>=1.292 c->=0.6562 kappa<=3.60e-6 margin>=0.2183 |omega|<=1.355
+CERTPM 2/9 d in [6.2500e-05,1.2500e-04]: B+<=0.00624 B-<=0.0107 |S+|>=1.298 |S-|>=0.6618 c+>=1.290 c->=0.6548 kappa<=3.60e-6 margin>=0.2140 |omega|<=1.367
+CERTPM 2/9 d in [1.2500e-04,2.5000e-04]: B+<=0.0283 B-<=0.0636 |S+|>=1.296 |S-|>=0.6606 c+>=1.259 c->=0.6187 kappa<=3.60e-6 margin>=0.1349 |omega|<=1.587
+CERTPM 2/9 d in [2.5000e-04,5.0000e-04]: B+<=0.453 B-<=1.07 |S+|>=1.293 |S-|>=0.6582 c+>=0.7084 c->=-0.04352 kappa<=3.59e-6
+SEED 2/9 r=0.0005: all pieces B+-<1: False ; RPRIME=0.00025 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 7/9 d in [0.0000e+00,3.9063e-06]: B+<=0.00371 B-<=0.00721 |S+|>=1.299 |S-|>=0.6630 c+>=1.295 c->=0.6582 kappa<=0 margin>=0.2239 |omega|<=1.340
+CERTPM 7/9 d in [3.9063e-06,7.8125e-06]: B+<=0.00377 B-<=0.00727 |S+|>=1.299 |S-|>=0.6629 c+>=1.295 c->=0.6581 kappa<=0 margin>=0.2237 |omega|<=1.340
+CERTPM 7/9 d in [7.8125e-06,1.5625e-05]: B+<=0.00389 B-<=0.00740 |S+|>=1.299 |S-|>=0.6628 c+>=1.294 c->=0.6579 kappa<=0 margin>=0.2232 |omega|<=1.342
+CERTPM 7/9 d in [1.5625e-05,3.1250e-05]: B+<=0.00425 B-<=0.00792 |S+|>=1.299 |S-|>=0.6626 c+>=1.294 c->=0.6574 kappa<=0 margin>=0.2217 |omega|<=1.345
+CERTPM 7/9 d in [3.1250e-05,6.2500e-05]: B+<=0.00519 B-<=0.00954 |S+|>=1.299 |S-|>=0.6621 c+>=1.292 c->=0.6558 kappa<=0 margin>=0.2180 |omega|<=1.354
+CERTPM 7/9 d in [6.2500e-05,1.2500e-04]: B+<=0.00626 B-<=0.0108 |S+|>=1.298 |S-|>=0.6612 c+>=1.290 c->=0.6541 kappa<=0 margin>=0.2135 |omega|<=1.365
+CERTPM 7/9 d in [1.2500e-04,2.5000e-04]: B+<=0.0284 B-<=0.0639 |S+|>=1.297 |S-|>=0.6594 c+>=1.260 c->=0.6173 kappa<=0 margin>=0.1337 |omega|<=1.582
+CERTPM 7/9 d in [2.5000e-04,5.0000e-04]: B+<=0.453 B-<=1.08 |S+|>=1.294 |S-|>=0.6558 c+>=0.7089 c->=-0.04761 kappa<=0
+SEED 7/9 r=0.0005: all pieces B+-<1: False ; RPRIME=0.00025 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 4/9 d in [0.0000e+00,1.1719e-05]: B+<=0.00566 B-<=0.00560 |S+|>=0.8562 |S-|>=0.8566 c+>=0.8513 c->=0.8518 kappa<=7.75e-8 margin>=0.9233 |omega|<=3.990
+CERTPM 4/9 d in [1.1719e-05,2.3438e-05]: B+<=0.00582 B-<=0.00571 |S+|>=0.8562 |S-|>=0.8566 c+>=0.8512 c->=0.8517 kappa<=7.75e-8 margin>=0.9230 |omega|<=3.991
+CERTPM 4/9 d in [2.3438e-05,4.6875e-05]: B+<=0.00615 B-<=0.00592 |S+|>=0.8561 |S-|>=0.8565 c+>=0.8508 c->=0.8515 kappa<=7.75e-8 margin>=0.9219 |omega|<=3.995
+CERTPM 4/9 d in [4.6875e-05,9.3750e-05]: B+<=0.00681 B-<=0.00632 |S+|>=0.8559 |S-|>=0.8564 c+>=0.8500 c->=0.8510 kappa<=7.75e-8 margin>=0.9198 |omega|<=4.001
+CERTPM 4/9 d in [9.3750e-05,1.8750e-04]: B+<=0.00824 B-<=0.00712 |S+|>=0.8555 |S-|>=0.8560 c+>=0.8484 c->=0.8499 kappa<=7.75e-8 margin>=0.9152 |omega|<=4.015
+CERTPM 4/9 d in [1.8750e-04,3.7500e-04]: B+<=0.0116 B-<=0.00882 |S+|>=0.8547 |S-|>=0.8553 c+>=0.8448 c->=0.8478 kappa<=7.75e-8 margin>=0.9051 |omega|<=4.047
+CERTPM 4/9 d in [3.7500e-04,7.5000e-04]: B+<=0.0211 B-<=0.0150 |S+|>=0.8531 |S-|>=0.8539 c+>=0.8351 c->=0.8412 kappa<=7.76e-8 margin>=0.8742 |omega|<=4.139
+CERTPM 4/9 d in [7.5000e-04,1.5000e-03]: B+<=0.0481 B-<=0.0260 |S+|>=0.8498 |S-|>=0.8510 c+>=0.8090 c->=0.8289 kappa<=7.77e-8 margin>=0.7893 |omega|<=4.392
+SEED 4/9 r=0.0015: all pieces B+-<1: True ; RPRIME=0.0015 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+CERTPM 5/9 d in [0.0000e+00,1.5625e-05]: B+<=0.00571 B-<=0.00564 |S+|>=0.8561 |S-|>=0.8566 c+>=0.8513 c->=0.8518 kappa<=0 margin>=0.9229 |omega|<=3.991
+CERTPM 5/9 d in [1.5625e-05,3.1250e-05]: B+<=0.00593 B-<=0.00578 |S+|>=0.8562 |S-|>=0.8566 c+>=0.8511 c->=0.8517 kappa<=0 margin>=0.9221 |omega|<=3.992
+CERTPM 5/9 d in [3.1250e-05,6.2500e-05]: B+<=0.00637 B-<=0.00605 |S+|>=0.8560 |S-|>=0.8565 c+>=0.8506 c->=0.8513 kappa<=0 margin>=0.9201 |omega|<=3.996
+CERTPM 5/9 d in [6.2500e-05,1.2500e-04]: B+<=0.00729 B-<=0.00657 |S+|>=0.8558 |S-|>=0.8563 c+>=0.8496 c->=0.8507 kappa<=0 margin>=0.9161 |omega|<=4.005
+CERTPM 5/9 d in [1.2500e-04,2.5000e-04]: B+<=0.00932 B-<=0.00763 |S+|>=0.8554 |S-|>=0.8559 c+>=0.8475 c->=0.8493 kappa<=0 margin>=0.9076 |omega|<=4.024
+CERTPM 5/9 d in [2.5000e-04,5.0000e-04]: B+<=0.0144 B-<=0.0105 |S+|>=0.8546 |S-|>=0.8550 c+>=0.8423 c->=0.8461 kappa<=0 margin>=0.8876 |omega|<=4.071
+CERTPM 5/9 d in [5.0000e-04,1.0000e-03]: B+<=0.0282 B-<=0.0181 |S+|>=0.8530 |S-|>=0.8533 c+>=0.8290 c->=0.8379 kappa<=0 margin>=0.8352 |omega|<=4.200
+CERTPM 5/9 d in [1.0000e-03,2.0000e-03]: B+<=0.0722 B-<=0.0354 |S+|>=0.8497 |S-|>=0.8499 c+>=0.7884 c->=0.8199 kappa<=0 margin>=0.6703 |omega|<=4.652
+SEED 5/9 r=0.002: all pieces B+-<1: True ; RPRIME=0.002 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+
+=== P1g_caseA.py ===
+$ python3 P1g_caseA.py 1/5 1/4 0.05 0.05 $(cat caseA_discs.txt)
+segments 55
+CASEA PASSED on [1/5,1/4]: 2440 intervals certified (4825 evaluations), M-histogram [(8, 2368), (20, 27), (40, 17), (59, 28)], min|Z^pm|>=0.5402, min margin>=0.05011 (at x in [0.224489796,0.224489796]), max|omega|<=2.077, max A<=1.189
+exit status 0
+$ python3 P1g_caseA.py 1/4 1/3 0.05 0.05 $(cat caseA_discs.txt)
+segments 90
+CASEA PASSED on [1/4,1/3]: 3340 intervals certified (6590 evaluations), M-histogram [(8, 3320), (20, 7), (40, 8), (59, 5)], min|Z^pm|>=0.6292, min margin>=0.05625 (at x in [0.277740816,0.277777754]), max|omega|<=3.525, max A<=0.7792
+exit status 0
+$ python3 P1g_caseA.py 1/3 2/5 0.05 0.05 $(cat caseA_discs.txt)
+segments 72
+CASEA PASSED on [1/3,2/5]: 2576 intervals certified (5080 evaluations), M-histogram [(8, 2575), (20, 1)], min|Z^pm|>=0.4799, min margin>=0.06541 (at x in [0.334332333,0.334477668]), max|omega|<=4.127, max A<=0.6227
+exit status 0
+$ python3 P1g_caseA.py 2/5 1/2 0.05 0.05 $(cat caseA_discs.txt)
+segments 109
+CASEA PASSED on [2/5,1/2]: 3849 intervals certified (7589 evaluations), M-histogram [(8, 3847), (20, 2)], min|Z^pm|>=0.6694, min margin>=0.05027 (at x in [0.496326662,0.496726765]), max|omega|<=7.954, max A<=1.349
+exit status 0
+
+=== P1g_caseA.py fail-loud test (MREQ=0.3 > true minimum 0.232) ===
+CASEA FAILED at x in [0.22, 0.22] (margin T=0.000942)   [exit status 1]
+
+=== P1g_lemmaB.py exact (seeds 10<=n<=150) ===
+n=10  maxE<=0.00479 maxR<=0.00400 max rho<=0.0361  min(margin-loss)>=0.5715
+n=11  maxE<=0.00261 maxR<=0.00340 max rho<=0.0222  min(margin-loss)>=0.2383
+n=12  maxE<=0.000877 maxR<=0.000765 max rho<=0.00664  min(margin-loss)>=0.5362
+n=13  maxE<=0.000588 maxR<=0.00125 max rho<=0.00684  min(margin-loss)>=0.2208
+n=14  maxE<=0.000206 maxR<=0.000540 max rho<=0.00300  min(margin-loss)>=0.2406
+n=15  maxE<=0.000138 maxR<=0.000244 max rho<=0.00133  min(margin-loss)>=0.4373
+n=16  maxE<=4.42e-5 maxR<=6.85e-5 max rho<=0.000454  min(margin-loss)>=0.6414
+n=17  maxE<=3.29e-5 maxR<=8.14e-5 max rho<=0.000407  min(margin-loss)>=0.2418
+n=18  maxE<=7.79e-6 maxR<=2.15e-5 max rho<=0.000118  min(margin-loss)>=0.3196
+n=19  maxE<=7.99e-6 maxR<=2.73e-5 max rho<=0.000127  min(margin-loss)>=0.2537
+n=20  maxE<=2.38e-6 maxR<=4.28e-6 max rho<=2.68e-5  min(margin-loss)>=0.3878
+n=21  maxE<=1.97e-6 maxR<=5.37e-6 max rho<=2.55e-5  min(margin-loss)>=0.2504
+n=22  maxE<=5.28e-7 maxR<=2.13e-6 max rho<=1.02e-5  min(margin-loss)>=0.2331
+n=23  maxE<=4.88e-7 maxR<=1.69e-6 max rho<=7.52e-6  min(margin-loss)>=0.2410
+n=24  maxE<=1.09e-7 maxR<=6.69e-7 max rho<=3.10e-6  min(margin-loss)>=0.2594
+n=25  maxE<=1.22e-7 maxR<=3.54e-7 max rho<=1.63e-6  min(margin-loss)>=0.2571
+n=26  maxE<=3.11e-8 maxR<=1.03e-7 max rho<=4.85e-7  min(margin-loss)>=0.4125
+n=27  maxE<=3.06e-8 maxR<=7.87e-8 max rho<=3.62e-7  min(margin-loss)>=0.2935
+n=28  maxE<=6.98e-9 maxR<=1.99e-8 max rho<=1.08e-7  min(margin-loss)>=0.3431
+n=29  maxE<=7.73e-9 maxR<=3.23e-8 max rho<=1.40e-7  min(margin-loss)>=0.2626
+n=30  maxE<=1.05e-9 maxR<=8.93e-9 max rho<=4.00e-8  min(margin-loss)>=0.2387
+n=31  maxE<=1.96e-9 maxR<=6.85e-9 max rho<=2.94e-8  min(margin-loss)>=0.2332
+n=32  maxE<=4.35e-10 maxR<=2.63e-9 max rho<=1.15e-8  min(margin-loss)>=0.2391
+n=33  maxE<=4.98e-10 maxR<=2.02e-9 max rho<=8.53e-9  min(margin-loss)>=0.2504
+n=34  maxE<=9.73e-11 maxR<=7.70e-10 max rho<=3.36e-9  min(margin-loss)>=0.2666
+n=35  maxE<=1.27e-10 maxR<=4.40e-10 max rho<=1.87e-9  min(margin-loss)>=0.2335
+n=36  maxE<=2.25e-11 maxR<=9.41e-11 max rho<=4.24e-10  min(margin-loss)>=0.3261
+n=37  maxE<=3.25e-11 maxR<=1.27e-10 max rho<=5.31e-10  min(margin-loss)>=0.2428
+n=38  maxE<=6.31e-12 maxR<=3.75e-11 max rho<=1.63e-10  min(margin-loss)>=0.2467
+n=39  maxE<=8.31e-12 maxR<=3.64e-11 max rho<=1.53e-10  min(margin-loss)>=0.2690
+n=40  maxE<=1.41e-12 maxR<=1.07e-11 max rho<=4.53e-11  min(margin-loss)>=0.2335
+n=41  maxE<=2.13e-12 maxR<=8.02e-12 max rho<=3.34e-11  min(margin-loss)>=0.2381
+n=42  maxE<=1.77e-13 maxR<=2.02e-12 max rho<=8.75e-12  min(margin-loss)>=0.4012
+n=43  maxE<=5.48e-13 maxR<=2.28e-12 max rho<=9.43e-12  min(margin-loss)>=0.2374
+n=44  maxE<=9.41e-14 maxR<=8.51e-13 max rho<=3.61e-12  min(margin-loss)>=0.2709
+n=45  maxE<=1.41e-13 maxR<=4.20e-13 max rho<=1.80e-12  min(margin-loss)>=0.2769
+n=46  maxE<=2.08e-14 maxR<=1.57e-13 max rho<=6.66e-13  min(margin-loss)>=0.2539
+n=47  maxE<=3.64e-14 maxR<=1.43e-13 max rho<=5.88e-13  min(margin-loss)>=0.2400
+n=48  maxE<=5.29e-15 maxR<=4.34e-14 max rho<=1.82e-13  min(margin-loss)>=0.2338
+n=49  maxE<=9.37e-15 maxR<=3.96e-14 max rho<=1.64e-13  min(margin-loss)>=0.2337
+n=50  maxE<=1.43e-15 maxR<=1.21e-14 max rho<=5.01e-14  min(margin-loss)>=0.2376
+n=51  maxE<=2.42e-15 maxR<=8.97e-15 max rho<=3.69e-14  min(margin-loss)>=0.2437
+n=52  maxE<=3.31e-16 maxR<=3.34e-15 max rho<=1.39e-14  min(margin-loss)>=0.2516
+n=53  maxE<=1.10e-11 maxR<=2.70e-11 max rho<=1.13e-10  min(margin-loss)>=0.2331
+n=54  maxE<=7.38e-13 maxR<=1.04e-11 max rho<=4.43e-11  min(margin-loss)>=0.2600
+n=55  maxE<=3.06e-12 maxR<=6.61e-12 max rho<=2.74e-11  min(margin-loss)>=0.2399
+n=56  maxE<=4.31e-13 maxR<=2.14e-12 max rho<=9.06e-12  min(margin-loss)>=0.2368
+n=57  maxE<=8.51e-13 maxR<=1.64e-12 max rho<=6.81e-12  min(margin-loss)>=0.2333
+n=58  maxE<=9.97e-14 maxR<=6.28e-13 max rho<=2.64e-12  min(margin-loss)>=0.2339
+n=59  maxE<=2.36e-13 maxR<=5.68e-13 max rho<=2.38e-12  min(margin-loss)>=0.2372
+n=60  maxE<=2.97e-14 maxR<=1.84e-13 max rho<=7.66e-13  min(margin-loss)>=0.2421
+n=61  maxE<=6.54e-14 maxR<=1.41e-13 max rho<=5.78e-13  min(margin-loss)>=0.2341
+n=62  maxE<=8.21e-15 maxR<=5.35e-14 max rho<=2.23e-13  min(margin-loss)>=0.2559
+n=63  maxE<=1.81e-14 maxR<=4.07e-14 max rho<=1.68e-13  min(margin-loss)>=0.2651
+n=64  maxE<=2.15e-15 maxR<=1.54e-14 max rho<=6.48e-14  min(margin-loss)>=0.2407
+n=65  maxE<=5.00e-15 maxR<=9.99e-15 max rho<=4.11e-14  min(margin-loss)>=0.2442
+n=66  maxE<=2.18e-16 maxR<=2.55e-15 max rho<=1.09e-14  min(margin-loss)>=0.2884
+n=67  maxE<=1.38e-15 maxR<=2.88e-15 max rho<=1.19e-14  min(margin-loss)>=0.2340
+n=68  maxE<=1.55e-16 maxR<=9.36e-16 max rho<=3.89e-15  min(margin-loss)>=0.2369
+n=69  maxE<=3.80e-16 maxR<=8.16e-16 max rho<=3.38e-15  min(margin-loss)>=0.2365
+n=70  maxE<=3.45e-17 maxR<=2.07e-16 max rho<=8.74e-16  min(margin-loss)>=0.2692
+n=71  maxE<=1.05e-16 maxR<=2.03e-16 max rho<=8.29e-16  min(margin-loss)>=0.2334
+n=72  maxE<=1.11e-17 maxR<=5.85e-17 max rho<=2.44e-16  min(margin-loss)>=0.2447
+n=73  maxE<=2.88e-17 maxR<=5.75e-17 max rho<=2.36e-16  min(margin-loss)>=0.2379
+n=74  maxE<=2.89e-18 maxR<=2.14e-17 max rho<=8.96e-17  min(margin-loss)>=0.2342
+n=75  maxE<=7.88e-18 maxR<=1.42e-17 max rho<=5.79e-17  min(margin-loss)>=0.2331
+n=76  maxE<=7.84e-19 maxR<=4.67e-18 max rho<=1.93e-17  min(margin-loss)>=0.2341
+n=77  maxE<=2.17e-18 maxR<=4.01e-18 max rho<=1.64e-17  min(margin-loss)>=0.2367
+n=78  maxE<=7.14e-20 maxR<=1.32e-18 max rho<=5.41e-18  min(margin-loss)>=0.2402
+n=79  maxE<=5.92e-19 maxR<=1.12e-18 max rho<=4.58e-18  min(margin-loss)>=0.2333
+n=80  maxE<=5.57e-20 maxR<=3.71e-19 max rho<=1.52e-18  min(margin-loss)>=0.2486
+n=81  maxE<=1.62e-19 maxR<=2.78e-19 max rho<=1.14e-18  min(margin-loss)>=0.2411
+n=82  maxE<=1.15e-20 maxR<=1.04e-19 max rho<=4.27e-19  min(margin-loss)>=0.2362
+n=83  maxE<=4.43e-20 maxR<=7.75e-20 max rho<=3.17e-19  min(margin-loss)>=0.2337
+n=84  maxE<=3.94e-21 maxR<=2.86e-20 max rho<=1.19e-19  min(margin-loss)>=0.2332
+n=85  maxE<=1.21e-20 maxR<=1.92e-20 max rho<=7.81e-20  min(margin-loss)>=0.2342
+n=86  maxE<=9.85e-22 maxR<=6.35e-21 max rho<=2.61e-20  min(margin-loss)>=0.2365
+n=87  maxE<=3.30e-21 maxR<=4.74e-21 max rho<=2.11e-20  min(margin-loss)>=0.2343
+n=88  maxE<=2.78e-22 maxR<=1.77e-21 max rho<=7.22e-21  min(margin-loss)>=0.2433
+n=89  maxE<=8.99e-22 maxR<=1.46e-21 max rho<=5.97e-21  min(margin-loss)>=0.2336
+n=90  maxE<=2.29e-23 maxR<=4.91e-22 max rho<=2.01e-21  min(margin-loss)>=0.2526
+n=91  maxE<=2.45e-22 maxR<=3.65e-22 max rho<=1.54e-21  min(margin-loss)>=0.2378
+n=92  maxE<=1.96e-23 maxR<=1.36e-22 max rho<=5.55e-22  min(margin-loss)>=0.2334
+n=93  maxE<=6.67e-23 maxR<=1.01e-22 max rho<=4.13e-22  min(margin-loss)>=0.2448
+n=94  maxE<=3.74e-24 maxR<=3.68e-23 max rho<=1.52e-22  min(margin-loss)>=0.2343
+n=95  maxE<=1.82e-23 maxR<=2.24e-23 max rho<=1.12e-22  min(margin-loss)>=0.2361
+n=96  maxE<=1.38e-24 maxR<=6.88e-24 max rho<=2.83e-23  min(margin-loss)>=0.2556
+n=97  maxE<=4.93e-24 maxR<=6.86e-24 max rho<=2.99e-23  min(margin-loss)>=0.2331
+n=98  maxE<=3.28e-25 maxR<=1.89e-24 max rho<=7.71e-24  min(margin-loss)>=0.2414
+n=99  maxE<=1.34e-24 maxR<=1.85e-24 max rho<=8.04e-24  min(margin-loss)>=0.2371
+n=100  maxE<=9.61e-26 maxR<=6.29e-25 max rho<=2.56e-24  min(margin-loss)>=0.2344
+n=101  maxE<=3.63e-25 maxR<=4.66e-25 max rho<=2.16e-24  min(margin-loss)>=0.2332
+n=102  maxE<=7.15e-27 maxR<=1.42e-25 max rho<=5.76e-25  min(margin-loss)>=0.2333
+n=103  maxE<=9.85e-26 maxR<=1.27e-25 max rho<=5.80e-25  min(margin-loss)>=0.2344
+n=104  maxE<=6.71e-27 maxR<=4.60e-26 max rho<=1.90e-25  min(margin-loss)>=0.2363
+n=105  maxE<=2.67e-26 maxR<=3.15e-26 max rho<=1.56e-25  min(margin-loss)>=0.2387
+n=106  maxE<=1.19e-27 maxR<=1.06e-26 max rho<=4.29e-26  min(margin-loss)>=0.2416
+n=107  maxE<=7.23e-27 maxR<=8.58e-27 max rho<=4.18e-26  min(margin-loss)>=0.2338
+n=108  maxE<=4.68e-28 maxR<=2.88e-27 max rho<=1.17e-26  min(margin-loss)>=0.2359
+n=109  maxE<=1.96e-27 maxR<=2.28e-27 max rho<=1.13e-26  min(margin-loss)>=0.2340
+n=110  maxE<=1.07e-28 maxR<=7.84e-28 max rho<=3.19e-27  min(margin-loss)>=0.2574
+n=111  maxE<=5.30e-28 maxR<=5.78e-28 max rho<=3.01e-27  min(margin-loss)>=0.2334
+n=112  maxE<=3.26e-29 maxR<=2.13e-28 max rho<=8.65e-28  min(margin-loss)>=0.2345
+n=113  maxE<=1.44e-28 maxR<=1.56e-28 max rho<=8.05e-28  min(margin-loss)>=0.2345
+n=114  maxE<=2.21e-30 maxR<=5.62e-29 max rho<=2.31e-28  min(margin-loss)>=0.2384
+n=115  maxE<=3.87e-29 maxR<=3.89e-29 max rho<=2.16e-28  min(margin-loss)>=0.2332
+n=116  maxE<=2.26e-30 maxR<=1.31e-29 max rho<=5.30e-29  min(margin-loss)>=0.2378
+n=117  maxE<=1.05e-29 maxR<=9.61e-30 max rho<=5.77e-29  min(margin-loss)>=0.2473
+n=118  maxE<=3.71e-31 maxR<=3.54e-30 max rho<=1.44e-29  min(margin-loss)>=0.2336
+n=119  maxE<=2.83e-30 maxR<=2.76e-30 max rho<=1.55e-29  min(margin-loss)>=0.2331
+n=120  maxE<=1.57e-31 maxR<=7.00e-31 max rho<=2.86e-30  min(margin-loss)>=0.2638
+n=121  maxE<=7.62e-31 maxR<=7.03e-31 max rho<=4.14e-30  min(margin-loss)>=0.2345
+n=122  maxE<=3.42e-32 maxR<=2.58e-31 max rho<=1.05e-30  min(margin-loss)>=0.2361
+n=123  maxE<=2.06e-31 maxR<=1.88e-31 max rho<=1.11e-30  min(margin-loss)>=0.2332
+n=124  maxE<=1.09e-32 maxR<=6.74e-32 max rho<=2.77e-31  min(margin-loss)>=0.2397
+n=125  maxE<=5.54e-32 maxR<=4.70e-32 max rho<=2.96e-31  min(margin-loss)>=0.2340
+n=126  maxE<=6.71e-34 maxR<=1.37e-32 max rho<=5.52e-32  min(margin-loss)>=0.2346
+n=127  maxE<=1.50e-32 maxR<=1.26e-32 max rho<=7.90e-32  min(margin-loss)>=0.2334
+n=128  maxE<=7.48e-34 maxR<=4.27e-33 max rho<=1.73e-32  min(margin-loss)>=0.2331
+n=129  maxE<=4.03e-33 maxR<=3.28e-33 max rho<=2.12e-32  min(margin-loss)>=0.2336
+n=130  maxE<=1.15e-34 maxR<=1.15e-33 max rho<=4.64e-33  min(margin-loss)>=0.2346
+n=131  maxE<=1.09e-33 maxR<=8.40e-34 max rho<=5.65e-33  min(margin-loss)>=0.2337
+n=132  maxE<=5.17e-35 maxR<=2.63e-34 max rho<=1.07e-33  min(margin-loss)>=0.2379
+n=133  maxE<=2.92e-34 maxR<=2.23e-34 max rho<=1.51e-33  min(margin-loss)>=0.2333
+n=134  maxE<=1.09e-35 maxR<=7.95e-35 max rho<=3.26e-34  min(margin-loss)>=0.2358
+n=135  maxE<=7.84e-35 maxR<=5.58e-35 max rho<=4.03e-34  min(margin-loss)>=0.2341
+n=136  maxE<=3.56e-36 maxR<=1.89e-35 max rho<=7.64e-35  min(margin-loss)>=0.2333
+n=137  maxE<=2.11e-35 maxR<=1.49e-35 max rho<=1.08e-34  min(margin-loss)>=0.2332
+n=138  maxE<=2.02e-37 maxR<=5.06e-36 max rho<=2.05e-35  min(margin-loss)>=0.2336
+n=139  maxE<=5.67e-36 maxR<=3.84e-36 max rho<=2.87e-35  min(margin-loss)>=0.2346
+n=140  maxE<=2.45e-37 maxR<=1.36e-36 max rho<=5.47e-36  min(margin-loss)>=0.2360
+n=141  maxE<=1.53e-36 maxR<=9.88e-37 max rho<=7.66e-36  min(margin-loss)>=0.2331
+n=142  maxE<=3.48e-38 maxR<=3.60e-37 max rho<=1.46e-36  min(margin-loss)>=0.2372
+n=143  maxE<=4.10e-37 maxR<=2.61e-37 max rho<=2.05e-36  min(margin-loss)>=0.2341
+n=144  maxE<=1.69e-38 maxR<=9.25e-38 max rho<=3.78e-37  min(margin-loss)>=0.2444
+n=145  maxE<=1.10e-37 maxR<=6.09e-38 max rho<=5.45e-37  min(margin-loss)>=0.2332
+n=146  maxE<=3.39e-39 maxR<=2.23e-38 max rho<=8.97e-38  min(margin-loss)>=0.2332
+n=147  maxE<=2.95e-38 maxR<=1.63e-38 max rho<=1.46e-37  min(margin-loss)>=0.2357
+n=148  maxE<=1.16e-39 maxR<=5.92e-39 max rho<=2.39e-38  min(margin-loss)>=0.2346
+n=149  maxE<=7.92e-39 maxR<=4.44e-39 max rho<=3.88e-38  min(margin-loss)>=0.2334
+n=150  maxE<=6.01e-41 maxR<=1.58e-39 max rho<=6.36e-39  min(margin-loss)>=0.2642
+LEMMAB EXACT PASSED: 4098 seeds, min(margin_n - loss) >= 0.2208
+
+=== P1g_lemmaB.py crude 151 6000 10 ===
+n=151  E<=1.90e-14  rho(n)<=9.18e-14  sigma(n)<=1.38e-12  sum sigma<=1.38e-12  sum rho<=9.18e-14
+n=200  E<=1.94e-21  rho(n)<=9.84e-21  sigma(n)<=1.48e-19  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=300  E<=7.00e-36  rho(n)<=3.90e-35  sigma(n)<=5.84e-34  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=400  E<=1.90e-50  rho(n)<=1.16e-49  sigma(n)<=1.73e-48  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=500  E<=4.37e-65  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=600  E<=9.09e-80  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=700  E<=1.77e-94  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=800  E<=3.27e-109  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=900  E<=5.79e-124  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1000  E<=9.97e-139  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1100  E<=1.68e-153  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1200  E<=2.76e-168  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1300  E<=4.45e-183  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1400  E<=7.09e-198  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1500  E<=1.12e-212  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1600  E<=1.74e-227  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1700  E<=2.67e-242  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1800  E<=4.08e-257  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=1900  E<=6.17e-272  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2000  E<=9.28e-287  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2100  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2200  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2300  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2400  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2500  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2600  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2700  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2800  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=2900  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3000  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3100  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3200  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3300  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3400  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3500  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3600  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3700  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3800  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=3900  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4000  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4100  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4200  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4300  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4400  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4500  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4600  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4700  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4800  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=4900  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5000  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5100  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5200  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5300  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5400  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5500  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5600  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5700  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5800  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=5900  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+n=6000  E<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=4.96e-12  sum rho<=3.31e-13
+LEMMAB CRUDE PASSED 151<=n<=6000: max E<=1.90e-14, sum_{n} sigma(n) <= 4.96e-12, sum rho(n) <= 3.31e-13
+
+=== VERIFIED: P1g_verify.py ===
+1/3 at 337/1000 d=3.67e-03: omega_direct=(-2.332064+1.034412j)  omega_model(mid)=(-2.318883+1.054107j)  |diff|=2.37e-02  (certified B+=0.366 B-=0.654)
+1/3 at 837/2500 d=1.47e-03: omega_direct=(-2.307336+1.052546j)  omega_model(mid)=(-2.304976+1.059193j)  |diff|=7.05e-03  (certified B+=0.116 B-=0.147)
+3/4 at 1501/2000 d=5.00e-04: omega_direct=(-1.136606-1.144964j)  omega_model(mid)=(-1.13935-1.143319j)  |diff|=3.20e-03  (certified B+=0.73 B-=1.46)
+3/4 at 2251/3001 d=8.33e-05: omega_direct=(-1.144015-1.145407j)  omega_model(mid)=(-1.144729-1.145226j)  |diff|=7.37e-04  (certified B+=0.00302 B-=0.00473)
+2/5 at 201/500 d=2.00e-03: omega_direct=(-3.253975+0.349634j)  omega_model(mid)=(-3.229911+0.350192j)  |diff|=2.41e-02  (certified B+=0.102 B-=0.0854)
+2/5 at 601/1500 d=6.67e-04: omega_direct=(-3.232673+0.363502j)  omega_model(mid)=(-3.224079+0.365444j)  |diff|=8.81e-03  (certified B+=0.0135 B-=0.0121)
+caseA check 71/301: direct |Z+|=1.28313 |Z-|=0.68955 omega=(-0.90583+1.13364j) ; certified min|Z^pm|>=[0.68905 +/- 4.06e-6], |omega|<=[1.4548 +/- 1.91e-5] (ok)
+caseA check 97/400: direct |Z+|=1.27029 |Z-|=0.70192 omega=(-1.0148+1.13919j) ; certified min|Z^pm|>=[0.70142 +/- 2.99e-6], |omega|<=[1.5295 +/- 3.62e-6] (ok)
+caseA check 133/401: direct |Z+|=1.42749 |Z-|=1.03938 omega=(-2.27248+1.07668j) ; certified min|Z^pm|>=[1.0388 +/- 4.31e-5], |omega|<=[2.5197 +/- 1.20e-5] (ok)
+caseA check 180/499: direct |Z+|=1.06838 |Z-|=0.81023 omega=(-2.63069+0.79328j) ; certified min|Z^pm|>=[0.80981 +/- 2.30e-6], |omega|<=[2.7525 +/- 3.94e-5] (ok)
+
+=== VERIFIED: P1g_margin_profile.py 20000 ===
+margin 0.2319 at x=0.226950 |omega|~1.362
+margin 0.2319 at x=0.227000 |omega|~1.363
+margin 0.2319 at x=0.226900 |omega|~1.362
+margin 0.2319 at x=0.227050 |omega|~1.363
+margin 0.2319 at x=0.226850 |omega|~1.361
+margin 0.2319 at x=0.227100 |omega|~1.364
+margin 0.2319 at x=0.226800 |omega|~1.361
+margin 0.2319 at x=0.227150 |omega|~1.364
+margin 0.2319 at x=0.226750 |omega|~1.360
+margin 0.2319 at x=0.227200 |omega|~1.365
+margin 0.2319 at x=0.226700 |omega|~1.360
+margin 0.2319 at x=0.227250 |omega|~1.365
+points evaluated: 5923
+
+=== VERIFIED: P1g_inherit_check.py ===
+seed 1/3  Z+/Z=(0.97794395 - 0.21752921j) Z-/Z=(0.72537848 - 0.0831229j) omega=(-2.2909618 + 1.0641011j)
+   20/61 d=-0.00546  Z+/Z=(0.98216758 - 0.21099661j) Z-/Z=(0.72278376 - 0.0946917j) omega=(-2.2303801 + 1.1034353j) |dom|=0.0722
+   60/181 d=-0.00184  Z+/Z=(0.98035224 - 0.20996186j) Z-/Z=(0.72420027 - 0.090908198j) omega=(-2.2704899 + 1.0780081j) |dom|=0.0247
+   150/451 d=-0.000739  Z+/Z=(0.97977074 - 0.20974999j) Z-/Z=(0.72461995 - 0.089739571j) omega=(-2.2827358 + 1.0697627j) |dom|=0.00999
+seed 2/5  Z+/Z=(0.87458012 - 0.20190843j) Z-/Z=(0.76496403 - 0.020431934j) omega=(-3.2220738 + 0.3704714j)
+   40/101 d=-0.00396  Z+/Z=(0.88290202 - 0.20470583j) Z-/Z=(0.7619394 - 0.023590274j) omega=(-3.1597642 + 0.41220589j) |dom|=0.075
+   120/301 d=-0.00133  Z+/Z=(0.8774248 - 0.20274481j) Z-/Z=(0.76394059 - 0.021600795j) omega=(-3.201045 + 0.3844198j) |dom|=0.0252
+   300/751 d=-0.000533  Z+/Z=(0.87575272 - 0.20211763j) Z-/Z=(0.76455029 - 0.021013161j) omega=(-3.2136299 + 0.37605349j) |dom|=0.0101
+seed 3/7  Z+/Z=(0.81351726 - 0.16297844j) Z-/Z=(0.78732111 - 0.0056694055j) omega=(-3.6985744 + 0.12543156j)
+   60/141 d=-0.00304  Z+/Z=(0.81961644 - 0.16875715j) Z-/Z=(0.78504167 - 0.0066418394j) omega=(-3.6476274 + 0.14360362j) |dom|=0.0541
+   180/421 d=-0.00102  Z+/Z=(0.81553499 - 0.16495275j) Z-/Z=(0.78656505 - 0.0059834574j) omega=(-3.6815889 + 0.13124415j) |dom|=0.018
+   450/1051 d=-0.000408  Z+/Z=(0.81432317 - 0.16376956j) Z-/Z=(0.78701918 - 0.0057980642j) omega=(-3.6917813 + 0.12772628j) |dom|=0.00717
+seed 4/11  Z+/Z=(0.94601602 - 0.2155234j) Z-/Z=(0.73888943 - 0.054126938j) omega=(-2.6720048 + 0.76118792j)
+   80/221 d=-0.00165  Z+/Z=(0.9488094 - 0.21530097j) Z-/Z=(0.73787942 - 0.055986839j) omega=(-2.6485842 + 0.77930813j) |dom|=0.0296
+   240/661 d=-0.00055  Z+/Z=(0.94695902 - 0.21545708j) Z-/Z=(0.73854866 - 0.054746032j) omega=(-2.6641476 + 0.76724618j) |dom|=0.00992
+   600/1651 d=-0.00022  Z+/Z=(0.94639461 - 0.21549787j) Z-/Z=(0.73875263 - 0.054374437j) omega=(-2.668856 + 0.76361336j) |dom|=0.00397
