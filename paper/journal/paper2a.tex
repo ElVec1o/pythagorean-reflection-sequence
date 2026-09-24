@@ -61,7 +61,9 @@ Fredholm determinant of the travel transfer operator; that there are infinitely 
 follows from a spectral argument with no asymptotic estimate. They survive in $U$ and $V$ because
 the leading Laurent coefficient at each of them is the square of a junction pairing, which has an
 exact closed form in one bulk quantity and is positive at every travel pole. For the travel
-resolvent $\Sigma_0/(1-\Sigma_1)$ all of this is unconditional. For $U$ and $V$ it rests on the
+resolvent $\Sigma_0/(1-\Sigma_1)$ all of this is unconditional, and its poles moreover accumulate at
+every point of the arc $\arg q\in[2\pi/5,8\pi/5]$, by a computer-assisted proof; whether the poles of
+$U$ and $V$ are dense there is open. For $U$ and $V$ it rests on the
 transfer model, a theorem whose assembly step is a hand proof, and on the junction-pairing
 theorem, whose positivity uses an analytic gate estimate proved partly by verified interval
 arithmetic. The long proofs are given in a companion paper.
@@ -182,6 +184,15 @@ and this is positive at every travel pole: analytically for $\tau_m\le5\cdot10^{
 For the travel resolvent the corresponding non-vanishing is an exact identity,
 $\Sigma_0(q_m)S_0(q_m)=2q_m/(1-q_m)$ (Proposition~\ref{prop:numnonvanish}), a consequence of the
 $q$-Pythagorean identity at a zero of the $q$-cosine.
+
+\paragraph{Where the poles accumulate.} Besides $q=1$, the poles of $G^T_0$ accumulate at $q=-1$
+and $q=\pm i$ (Propositions~\ref{prop:minusone}, \ref{prop:qi}) and, more generally, at every point
+of the arc $\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$ (Theorem~\ref{thm:arc}; computer-assisted through a
+non-vanishing certificate). For $U$ and $V$ the accumulation is proved, with the standing of
+Theorems~\ref{thm:model} and~\ref{thm:RJ}, at $x=\pm1$, $\pm i$, $\pm e^{\pm i\pi/4}$
+(Corollaries~\ref{cor:Uminusone}, \ref{cor:Ui}) and at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$ for the roots
+of unity $\zeta=e^{2\pi ia/N}$ of that arc with $16\le N\le150$ (Remark~\ref{rem:arcUV}); density of the
+poles of $U$ and $V$ on the arc is open.
 
 \paragraph{Standing, and what is cited from the companion paper.} The statements about the travel
 resolvent are unconditional. The statements about $U$ and $V$ rest on two theorems. The transfer
@@ -1710,7 +1721,9 @@ elementary and also covers coefficients holomorphic near the closed disc.
 The real travel poles accumulate only at $q=1$. The next proposition gives a second accumulation
 point of poles of $G^T_0$ on the circle, at $q=-1$, and Corollary~\ref{cor:Uminusone} carries it
 over to $U$ and $V$. Proposition~\ref{prop:qi} and Corollary~\ref{cor:Ui} in \S\ref{sec:qi} do the same
-at $q=\pm i$. None of these is needed for Theorem~\ref{thm:natboundary}.
+at $q=\pm i$, and Theorem~\ref{thm:arc} in \S\ref{sec:arc} shows that the poles of $G^T_0$
+accumulate at every point of the arc $\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$. None of these is needed for
+Theorem~\ref{thm:natboundary}.
 
 \begin{proposition}[the zeros of $\cos(Z;q^2)$ accumulate at $q=-1$]\label{prop:minusone}
 Write $q=-e^{-t}$ with $\Re t>0$. Put $L=\log4$, $\Lambda=-\pi^2+i\pi L$,
@@ -2367,6 +2380,55 @@ $(t_1-t_1^\ast)/t^\ast_j\approx0.08+1.42i$. At $q^\ast_1=0.1404+0.8293i$ and $q^
 ($N=195$ and $311$) to relative error at most $1.3\cdot10^{-33}$, for $y\in\{1,q\}$ and both roots
 (\texttt{pairing\_check\_i.py}).
 
+\subsection{The middle arc}\label{sec:arc}
+
+Propositions~\ref{prop:minusone} and~\ref{prop:qi} extend to every root of unity $\zeta=e^{2\pi ia/N}$ with
+$N\ge16$ and $\frac15\le\frac aN\le\frac45$, and hence, by density, to a whole arc.
+
+\begin{theorem}[the poles of $G^T_0$ accumulate on the middle arc]\label{thm:arc}
+The zeros of $1-\Sigma_1=\cos(Z;q^2)$ in $0<|q|<1$, which are the poles of $G^T_0$, accumulate at
+every point of the arc $\{|q|=1,\ \arg q\in[\frac{2\pi}5,\frac{8\pi}5]\}$. Equivalently, the poles of
+$G^T_0(x^2)$ accumulate at every point of $\arg x\in[\frac\pi5,\frac{4\pi}5]\cup[\frac{6\pi}5,\frac{9\pi}5]$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The full proof is \texttt{rootunity\_zeros/general/P1f/P1f\_lemma.tex} (Theorem ``zeros of $B$ at
+$\zeta$'' and its corollary). Fix $\zeta=e^{2\pi ia/N}$, $\gcd(a,N)=1$, $N\ge16$, $\frac15\le\frac aN\le\frac45$,
+and put $q=\zeta e^{-t}$. As in Proposition~\ref{prop:qi}, the resummation writes $1-\Sigma_1$ as a sum
+over saddle modes $m$ of terms $\kappa A(m)e^{V_m/t}$, with $V_m=L_m^2/4+E_w$, $L_m=\operatorname{Log}(-2(1-\zeta))+2\pi im/N$,
+and amplitudes $A(m)$ given by a quadratic Gauss sum times a finite generating function $Z_N$. Along an
+explicit tie ray $\arg t=\theta^\ast$, $|\tan\theta^\ast|\le\pi s/(N\ell)$, two consecutive admissible
+modes $n,n+s$ have equal height and every other mode, the head and the kernel remainders are
+exponentially smaller; the landscape bounds are proved analytically for $N\ge16$ and checked by
+sampling in \texttt{P1f\_landscape\_check.py}. The amplitude is non-zero because $Z_N(a/N)\ne0$ for
+every such $a/N$: this is Theorem~M of \texttt{rootunity\_zeros/general/P1e\_lemma.tex}, proved with an
+Arb certificate (\texttt{P1e\_cert.py}, \texttt{P1e\_lowseed.py}, \texttt{P1e\_logderiv.py}, directed
+rounding via \texttt{dround.py}; outputs \texttt{P1e\_certlog.txt}, \texttt{lowseed\_directed.txt},
+\texttt{base\_arc\_*.txt}), and it is the only computer-assisted input. Rouch\'e's theorem against
+$1+\varrho e^{\Delta V/t}$, $\Delta V=V_{n+s}-V_n$, then gives for all large $j$ exactly one zero
+$q^\ast_j=\zeta e^{-t^\ast_j}$ of $1-\Sigma_1$ in an explicit disc, simple, with $q^\ast_j\to\zeta$ along
+$\arg t=\theta^\ast$. Step~6 of the proof of Proposition~\ref{prop:minusone} makes each $q^\ast_j$ a pole of
+$G^T_0$. So every such $\zeta$ is an accumulation point of poles. These $\zeta$ are dense in the arc,
+and the accumulation set is closed.
+\end{proof}
+
+\begin{remark}[transfer to $U$ and $V$]\label{rem:arcUV}
+At the zeros $q^\ast_j$ of Theorem~\ref{thm:arc}, $S_e(q^\ast_j)\ne0$ for large $j$ if and only if
+$Z^+_N:=\sum_k\psi_k\zeta^{-k^2-k}\ne0$, and then $t_1(q^\ast_j)\to t_1^\ast=-\frac12(1+\omega)$ with
+$\omega=Z^-_N/(u_0Z^+_N)$; if moreover $\omega$ avoids six explicit algebraic values, then
+$1-\mathfrak g_Ut_1$, $1-\mathfrak g_Vt_1$, $\Pi_1$, $\Pi_q$ have non-zero limits, and the poles of $U$ and
+$V$ accumulate at $\pm\sqrt\zeta$, $\pm\sqrt{\bar\zeta}$ (\texttt{P1f\_lemma.tex}, Theorem~C; standing:
+Theorems~\ref{thm:model} and~\ref{thm:RJ}). This transfer is thus proved \emph{conditional} on
+$Z^+_N\ne0$ and the $\omega$-conditions. Both conditions are certified in Arb for all $4116$ admissible
+$a/N$ with $3\le N\le150$, $a/N\ne\frac12$, with all certified moduli at least $0.233$
+(\texttt{P1f\_transfer\_cert.py}, fail-loud; outputs \texttt{tc\_*.txt}, \texttt{P1f\_certlog.txt}).
+Combined with Theorem~\ref{thm:arc}, the poles of $U$ and $V$ accumulate at $\pm\sqrt\zeta$,
+$\pm\sqrt{\bar\zeta}$ for every such $\zeta$ with $16\le N\le150$, with the same standing. The formula for
+$t_1^\ast$ reproduces the value of Corollary~\ref{cor:Ui} at $\zeta=i$. Nothing is proved for
+$N>150$: Theorem~M does not cover $Z^\pm_N$. \emph{Density of the poles of $U$ and $V$ on this arc is
+open.}
+\end{remark}
+
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
 Theorem~\ref{thm:natboundary} does not locate the singularities on the circle. The real travel
 poles accumulate only at $x=\pm1$ (at $q=1$ for $G^T_0$). By Proposition~\ref{prop:minusone}, the
@@ -2391,9 +2453,12 @@ equal height compete, and the computer-assisted inputs are the certificates
 \texttt{certify\_landscape\_i.py} and \texttt{certify\_landscape\_S\_i.py} and the interval evaluation
 \texttt{factors\_i.py}. So the poles of $U$ and $V$ are proved to accumulate at $x=\pm1$, $\pm i$ and
 $\pm e^{\pm i\pi/4}$. Plotted, the zeros approach roots of unity along straight lines. We conjecture
-that the poles are dense on the circle. A route is the same resummation at $q=\zeta e^{-t}$ for other
-roots of unity $\zeta$; Propositions~\ref{prop:minusone} and~\ref{prop:qi} are the cases $\zeta=-1$ and
-$\zeta=\pm i$. For other $\zeta$ nothing is claimed. The natural boundary does not depend on any of this.
+that the poles are dense on the circle. The same resummation at $q=\zeta e^{-t}$ for other roots of
+unity $\zeta$ gives Theorem~\ref{thm:arc}: the poles of $G^T_0$ accumulate at every point of the arc
+$\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$. For $U$ and $V$ the transfer is proved only at the roots of unity
+of that arc with $16\le N\le150$ (Remark~\ref{rem:arcUV}); density of their poles on the arc, and every
+statement about $G^T_0$ off the arc and away from $q=1$, is open. The natural boundary does not depend on
+any of this.
 \end{remark}
 
 \section{Open questions}\label{sec:conclusion}
@@ -2408,7 +2473,9 @@ in question is the growth series of the universal group $W_{\mathrm{univ}}$; for
 triangle it agrees with that of $W_T$ only to the effective universality depth of
 \cite{Bonfioli2026a}. Several questions remain open.
 \begin{enumerate}[label=\textup{(\arabic*)},leftmargin=2.2em,itemsep=0.1em,topsep=0.2em]
-\item Are the poles of $U$ dense on the unit circle (Remark~\ref{rem:polesdensity})?
+\item Are the poles of $U$ dense on the unit circle (Remark~\ref{rem:polesdensity})? Even on the arc
+$\arg q\in[\frac{2\pi}5,\frac{8\pi}5]$, where those of $G^T_0$ are (Theorem~\ref{thm:arc}), this is open
+(Remark~\ref{rem:arcUV}); off that arc it is open for $G^T_0$ as well.
 \item Are $U$ and $V$ $D$-algebraic? The pole argument does not decide this.
 \item Is the number $\beta_2$ transcendental? The question reduces to a value statement for a
 Hahn--Exton $q$-Bessel function, and the obstruction sits at the arithmetic ratio $\rho=\tfrac12$
