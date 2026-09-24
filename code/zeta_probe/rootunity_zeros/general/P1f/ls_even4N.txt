@@ -1,0 +1,251 @@
+5/16 th*=-9.28 head=0.0152 | B Tref=0.3341 nondom=-0.30439 dom/sig^2=-0.3092 rem=-0.3120 | S Tref=0.3722 nondom=-0.15219 dom/sig^2=-0.3473 rem=-0.3501  OK
+7/16 th*=8.17 head=0.0165 | B Tref=0.4401 nondom=-0.30529 dom/sig^2=-0.4126 rem=-0.4154 | S Tref=0.4783 nondom=-0.15265 dom/sig^2=-0.4508 rem=-0.4536  OK
+9/16 th*=-8.17 head=0.0165 | B Tref=0.4401 nondom=-0.30529 dom/sig^2=-0.4126 rem=-0.4154 | S Tref=0.4783 nondom=-0.15265 dom/sig^2=-0.4508 rem=-0.4536  OK
+11/16 th*=9.28 head=0.0152 | B Tref=0.3341 nondom=-0.30439 dom/sig^2=-0.3092 rem=-0.3120 | S Tref=0.3722 nondom=-0.15219 dom/sig^2=-0.3473 rem=-0.3501  OK
+4/17 th*=-5.33 head=0.0125 | B Tref=0.2439 nondom=-0.06801 dom/sig^2=-0.2239 rem=-0.2264  OK
+5/17 th*=4.55 head=0.0138 | B Tref=0.3350 nondom=-0.06809 dom/sig^2=-0.3125 rem=-0.3150  OK
+6/17 th*=-4.14 head=0.0146 | B Tref=0.4050 nondom=-0.06812 dom/sig^2=-0.3808 rem=-0.3833  OK
+7/17 th*=3.92 head=0.0151 | B Tref=0.4521 nondom=-0.06814 dom/sig^2=-0.4268 rem=-0.4293  OK
+8/17 th*=-3.83 head=0.0154 | B Tref=0.4757 nondom=-0.06815 dom/sig^2=-0.4499 rem=-0.4525  OK
+9/17 th*=3.83 head=0.0154 | B Tref=0.4757 nondom=-0.06815 dom/sig^2=-0.4499 rem=-0.4525  OK
+10/17 th*=-3.92 head=0.0151 | B Tref=0.4521 nondom=-0.06814 dom/sig^2=-0.4268 rem=-0.4293  OK
+11/17 th*=4.14 head=0.0146 | B Tref=0.4050 nondom=-0.06812 dom/sig^2=-0.3808 rem=-0.3833  OK
+12/17 th*=-4.55 head=0.0138 | B Tref=0.3350 nondom=-0.06809 dom/sig^2=-0.3125 rem=-0.3150  OK
+13/17 th*=5.33 head=0.0125 | B Tref=0.2439 nondom=-0.06801 dom/sig^2=-0.2239 rem=-0.2264  OK
+5/18 th*=-17.31 head=0.0125 | B Tref=0.3041 nondom=-0.23265 dom/sig^2=-0.2838 rem=-0.2860 | S Tref=0.3332 nondom=-0.11633 dom/sig^2=-0.3130 rem=-0.3150  OK
+7/18 th*=0.00 head=0.0139 | B Tref=0.4129 nondom=-0.24369 dom/sig^2=-0.3896 rem=-0.3919 | S Tref=0.4434 nondom=-0.12185 dom/sig^2=-0.4201 rem=-0.4224  OK
+11/18 th*=-0.00 head=0.0139 | B Tref=0.4129 nondom=-0.24369 dom/sig^2=-0.3896 rem=-0.3919 | S Tref=0.4434 nondom=-0.12185 dom/sig^2=-0.4201 rem=-0.4224  OK
+13/18 th*=-17.31 head=0.0125 | B Tref=0.3041 nondom=-0.23265 dom/sig^2=-0.2838 rem=-0.2860 | S Tref=0.3332 nondom=-0.11633 dom/sig^2=-0.3130 rem=-0.3150  OK
+4/19 th*=5.25 head=0.0102 | B Tref=0.2006 nondom=-0.05445 dom/sig^2=-0.1844 rem=-0.1864  OK
+5/19 th*=-4.38 head=0.0114 | B Tref=0.2899 nondom=-0.05452 dom/sig^2=-0.2713 rem=-0.2733  OK
+6/19 th*=3.91 head=0.0123 | B Tref=0.3637 nondom=-0.05455 dom/sig^2=-0.3435 rem=-0.3455  OK
+7/19 th*=-3.64 head=0.0129 | B Tref=0.4200 nondom=-0.05457 dom/sig^2=-0.3985 rem=-0.4006  OK
+8/19 th*=3.49 head=0.0132 | B Tref=0.4577 nondom=-0.05458 dom/sig^2=-0.4355 rem=-0.4376  OK
+9/19 th*=-3.42 head=0.0134 | B Tref=0.4767 nondom=-0.05458 dom/sig^2=-0.4541 rem=-0.4561  OK
+10/19 th*=3.42 head=0.0134 | B Tref=0.4767 nondom=-0.05458 dom/sig^2=-0.4541 rem=-0.4561  OK
+11/19 th*=-3.49 head=0.0132 | B Tref=0.4577 nondom=-0.05458 dom/sig^2=-0.4355 rem=-0.4376  OK
+12/19 th*=3.64 head=0.0129 | B Tref=0.4200 nondom=-0.05457 dom/sig^2=-0.3985 rem=-0.4006  OK
+13/19 th*=-3.91 head=0.0123 | B Tref=0.3637 nondom=-0.05455 dom/sig^2=-0.3435 rem=-0.3455  OK
+14/19 th*=4.38 head=0.0114 | B Tref=0.2899 nondom=-0.05452 dom/sig^2=-0.2713 rem=-0.2733  OK
+15/19 th*=-5.25 head=0.0102 | B Tref=0.2006 nondom=-0.05445 dom/sig^2=-0.1844 rem=-0.1864  OK
+7/20 th*=-7.05 head=0.0119 | B Tref=0.3865 nondom=-0.19590 dom/sig^2=-0.3666 rem=-0.3685 | S Tref=0.4109 nondom=-0.09795 dom/sig^2=-0.3911 rem=-0.3929  OK
+9/20 th*=6.52 head=0.0125 | B Tref=0.4546 nondom=-0.19611 dom/sig^2=-0.4334 rem=-0.4353 | S Tref=0.4791 nondom=-0.09806 dom/sig^2=-0.4580 rem=-0.4598  OK
+11/20 th*=-6.52 head=0.0125 | B Tref=0.4546 nondom=-0.19611 dom/sig^2=-0.4334 rem=-0.4353 | S Tref=0.4791 nondom=-0.09806 dom/sig^2=-0.4580 rem=-0.4598  OK
+13/20 th*=7.05 head=0.0119 | B Tref=0.3865 nondom=-0.19590 dom/sig^2=-0.3666 rem=-0.3685 | S Tref=0.4109 nondom=-0.09795 dom/sig^2=-0.3911 rem=-0.3929  OK
+5/21 th*=4.27 head=0.0096 | B Tref=0.2493 nondom=-0.04464 dom/sig^2=-0.2338 rem=-0.2355  OK
+8/21 th*=-3.26 head=0.0115 | B Tref=0.4309 nondom=-0.04469 dom/sig^2=-0.4117 rem=-0.4134  OK
+10/21 th*=-3.09 head=0.0119 | B Tref=0.4774 nondom=-0.04469 dom/sig^2=-0.4573 rem=-0.4590  OK
+11/21 th*=3.09 head=0.0119 | B Tref=0.4774 nondom=-0.04469 dom/sig^2=-0.4573 rem=-0.4590  OK
+13/21 th*=3.26 head=0.0115 | B Tref=0.4309 nondom=-0.04469 dom/sig^2=-0.4117 rem=-0.4134  OK
+16/21 th*=-4.27 head=0.0096 | B Tref=0.2493 nondom=-0.04464 dom/sig^2=-0.2338 rem=-0.2355  OK
+5/22 th*=0.00 head=0.0088 | B Tref=0.2148 nondom=-0.16313 dom/sig^2=-0.2006 rem=-0.2021 | S Tref=0.2352 nondom=-0.08157 dom/sig^2=-0.2210 rem=-0.2225  OK
+7/22 th*=13.24 head=0.0103 | B Tref=0.3616 nondom=-0.15879 dom/sig^2=-0.3446 rem=-0.3461 | S Tref=0.3815 nondom=-0.07940 dom/sig^2=-0.3645 rem=-0.3659  OK
+9/22 th*=0.00 head=0.0110 | B Tref=0.4352 nondom=-0.16313 dom/sig^2=-0.4167 rem=-0.4182 | S Tref=0.4556 nondom=-0.08157 dom/sig^2=-0.4371 rem=-0.4386  OK
+13/22 th*=0.00 head=0.0110 | B Tref=0.4352 nondom=-0.16313 dom/sig^2=-0.4167 rem=-0.4182 | S Tref=0.4556 nondom=-0.08157 dom/sig^2=-0.4371 rem=-0.4386  OK
+15/22 th*=13.24 head=0.0103 | B Tref=0.3616 nondom=-0.15879 dom/sig^2=-0.3446 rem=-0.3461 | S Tref=0.3815 nondom=-0.07940 dom/sig^2=-0.3645 rem=-0.3659  OK
+17/22 th*=0.00 head=0.0088 | B Tref=0.2148 nondom=-0.16313 dom/sig^2=-0.2006 rem=-0.2021 | S Tref=0.2352 nondom=-0.08157 dom/sig^2=-0.2210 rem=-0.2225  OK
+5/23 th*=-4.22 head=0.0081 | B Tref=0.2134 nondom=-0.03721 dom/sig^2=-0.2003 rem=-0.2017  OK
+6/23 th*=3.64 head=0.0089 | B Tref=0.2867 nondom=-0.03724 dom/sig^2=-0.2721 rem=-0.2735  OK
+7/23 th*=-3.30 head=0.0095 | B Tref=0.3496 nondom=-0.03725 dom/sig^2=-0.3337 rem=-0.3351  OK
+8/23 th*=3.08 head=0.0100 | B Tref=0.4006 nondom=-0.03726 dom/sig^2=-0.3838 rem=-0.3852  OK
+9/23 th*=-2.95 head=0.0103 | B Tref=0.4391 nondom=-0.03726 dom/sig^2=-0.4217 rem=-0.4231  OK
+10/23 th*=2.86 head=0.0105 | B Tref=0.4649 nondom=-0.03727 dom/sig^2=-0.4471 rem=-0.4485  OK
+11/23 th*=-2.83 head=0.0106 | B Tref=0.4779 nondom=-0.03727 dom/sig^2=-0.4598 rem=-0.4612  OK
+12/23 th*=2.83 head=0.0106 | B Tref=0.4779 nondom=-0.03727 dom/sig^2=-0.4598 rem=-0.4612  OK
+13/23 th*=-2.86 head=0.0105 | B Tref=0.4649 nondom=-0.03727 dom/sig^2=-0.4471 rem=-0.4485  OK
+14/23 th*=2.95 head=0.0103 | B Tref=0.4391 nondom=-0.03726 dom/sig^2=-0.4217 rem=-0.4231  OK
+15/23 th*=-3.08 head=0.0100 | B Tref=0.4006 nondom=-0.03726 dom/sig^2=-0.3838 rem=-0.3852  OK
+16/23 th*=3.30 head=0.0095 | B Tref=0.3496 nondom=-0.03725 dom/sig^2=-0.3337 rem=-0.3351  OK
+17/23 th*=-3.64 head=0.0089 | B Tref=0.2867 nondom=-0.03724 dom/sig^2=-0.2721 rem=-0.2735  OK
+18/23 th*=4.22 head=0.0081 | B Tref=0.2134 nondom=-0.03721 dom/sig^2=-0.2003 rem=-0.2017  OK
+5/24 th*=-8.37 head=0.0075 | B Tref=0.1860 nondom=-0.13562 dom/sig^2=-0.1740 rem=-0.1753 | S Tref=0.2030 nondom=-0.06781 dom/sig^2=-0.1910 rem=-0.1922  OK
+7/24 th*=6.47 head=0.0089 | B Tref=0.3213 nondom=-0.13621 dom/sig^2=-0.3066 rem=-0.3078 | S Tref=0.3384 nondom=-0.06810 dom/sig^2=-0.3236 rem=-0.3249  OK
+11/24 th*=5.43 head=0.0101 | B Tref=0.4624 nondom=-0.13646 dom/sig^2=-0.4454 rem=-0.4466 | S Tref=0.4795 nondom=-0.06823 dom/sig^2=-0.4624 rem=-0.4637  OK
+13/24 th*=-5.43 head=0.0101 | B Tref=0.4624 nondom=-0.13646 dom/sig^2=-0.4454 rem=-0.4466 | S Tref=0.4795 nondom=-0.06823 dom/sig^2=-0.4624 rem=-0.4637  OK
+17/24 th*=-6.47 head=0.0089 | B Tref=0.3213 nondom=-0.13621 dom/sig^2=-0.3066 rem=-0.3078 | S Tref=0.3384 nondom=-0.06810 dom/sig^2=-0.3236 rem=-0.3249  OK
+19/24 th*=8.37 head=0.0075 | B Tref=0.1860 nondom=-0.13562 dom/sig^2=-0.1740 rem=-0.1753 | S Tref=0.2030 nondom=-0.06781 dom/sig^2=-0.1910 rem=-0.1922  OK
+6/25 th*=-3.57 head=0.0077 | B Tref=0.2528 nondom=-0.03152 dom/sig^2=-0.2402 rem=-0.2414  OK
+7/25 th*=3.19 head=0.0083 | B Tref=0.3159 nondom=-0.03153 dom/sig^2=-0.3021 rem=-0.3033  OK
+8/25 th*=-2.96 head=0.0088 | B Tref=0.3695 nondom=-0.03154 dom/sig^2=-0.3548 rem=-0.3560  OK
+9/25 th*=2.80 head=0.0091 | B Tref=0.4128 nondom=-0.03155 dom/sig^2=-0.3974 rem=-0.3986  OK
+11/25 th*=2.63 head=0.0095 | B Tref=0.4673 nondom=-0.03155 dom/sig^2=-0.4511 rem=-0.4523  OK
+12/25 th*=-2.60 head=0.0096 | B Tref=0.4783 nondom=-0.03155 dom/sig^2=-0.4619 rem=-0.4631  OK
+13/25 th*=2.60 head=0.0096 | B Tref=0.4783 nondom=-0.03155 dom/sig^2=-0.4619 rem=-0.4631  OK
+14/25 th*=-2.63 head=0.0095 | B Tref=0.4673 nondom=-0.03155 dom/sig^2=-0.4511 rem=-0.4523  OK
+16/25 th*=-2.80 head=0.0091 | B Tref=0.4128 nondom=-0.03155 dom/sig^2=-0.3974 rem=-0.3986  OK
+17/25 th*=2.96 head=0.0088 | B Tref=0.3695 nondom=-0.03154 dom/sig^2=-0.3548 rem=-0.3560  OK
+18/25 th*=-3.19 head=0.0083 | B Tref=0.3159 nondom=-0.03153 dom/sig^2=-0.3021 rem=-0.3033  OK
+19/25 th*=3.57 head=0.0077 | B Tref=0.2528 nondom=-0.03152 dom/sig^2=-0.2402 rem=-0.2414  OK
+7/26 th*=0.00 head=0.0078 | B Tref=0.2885 nondom=-0.11680 dom/sig^2=-0.2756 rem=-0.2767 | S Tref=0.3031 nondom=-0.05840 dom/sig^2=-0.2902 rem=-0.2913  OK
+9/26 th*=10.82 head=0.0086 | B Tref=0.3951 nondom=-0.11472 dom/sig^2=-0.3806 rem=-0.3817 | S Tref=0.4095 nondom=-0.05736 dom/sig^2=-0.3950 rem=-0.3960  OK
+11/26 th*=-0.00 head=0.0091 | B Tref=0.4481 nondom=-0.11680 dom/sig^2=-0.4327 rem=-0.4338 | S Tref=0.4627 nondom=-0.05840 dom/sig^2=-0.4473 rem=-0.4484  OK
+15/26 th*=0.00 head=0.0091 | B Tref=0.4481 nondom=-0.11680 dom/sig^2=-0.4327 rem=-0.4338 | S Tref=0.4627 nondom=-0.05840 dom/sig^2=-0.4473 rem=-0.4484  OK
+17/26 th*=-10.82 head=0.0086 | B Tref=0.3951 nondom=-0.11472 dom/sig^2=-0.3806 rem=-0.3817 | S Tref=0.4095 nondom=-0.05736 dom/sig^2=-0.3950 rem=-0.3960  OK
+19/26 th*=0.00 head=0.0078 | B Tref=0.2885 nondom=-0.11680 dom/sig^2=-0.2756 rem=-0.2767 | S Tref=0.3031 nondom=-0.05840 dom/sig^2=-0.2902 rem=-0.2913  OK
+7/27 th*=-3.12 head=0.0073 | B Tref=0.2844 nondom=-0.02704 dom/sig^2=-0.2724 rem=-0.2734  OK
+8/27 th*=2.86 head=0.0078 | B Tref=0.3391 nondom=-0.02704 dom/sig^2=-0.3261 rem=-0.3271  OK
+10/27 th*=2.56 head=0.0084 | B Tref=0.4224 nondom=-0.02705 dom/sig^2=-0.4082 rem=-0.4092  OK
+11/27 th*=-2.48 head=0.0086 | B Tref=0.4505 nondom=-0.02705 dom/sig^2=-0.4359 rem=-0.4369  OK
+13/27 th*=-2.41 head=0.0088 | B Tref=0.4786 nondom=-0.02705 dom/sig^2=-0.4636 rem=-0.4646  OK
+14/27 th*=2.41 head=0.0088 | B Tref=0.4786 nondom=-0.02705 dom/sig^2=-0.4636 rem=-0.4646  OK
+16/27 th*=2.48 head=0.0086 | B Tref=0.4505 nondom=-0.02705 dom/sig^2=-0.4359 rem=-0.4369  OK
+17/27 th*=-2.56 head=0.0084 | B Tref=0.4224 nondom=-0.02705 dom/sig^2=-0.4082 rem=-0.4092  OK
+19/27 th*=-2.86 head=0.0078 | B Tref=0.3391 nondom=-0.02704 dom/sig^2=-0.3261 rem=-0.3271  OK
+20/27 th*=3.12 head=0.0073 | B Tref=0.2844 nondom=-0.02704 dom/sig^2=-0.2724 rem=-0.2734  OK
+9/28 th*=5.25 head=0.0077 | B Tref=0.3632 nondom=-0.10029 dom/sig^2=-0.3503 rem=-0.3512 | S Tref=0.3757 nondom=-0.05014 dom/sig^2=-0.3628 rem=-0.3637  OK
+11/28 th*=-4.83 head=0.0082 | B Tref=0.4324 nondom=-0.10035 dom/sig^2=-0.4185 rem=-0.4194 | S Tref=0.4449 nondom=-0.05018 dom/sig^2=-0.4310 rem=-0.4320  OK
+13/28 th*=4.65 head=0.0084 | B Tref=0.4672 nondom=-0.10038 dom/sig^2=-0.4529 rem=-0.4538 | S Tref=0.4798 nondom=-0.05019 dom/sig^2=-0.4654 rem=-0.4664  OK
+15/28 th*=-4.65 head=0.0084 | B Tref=0.4672 nondom=-0.10038 dom/sig^2=-0.4529 rem=-0.4538 | S Tref=0.4798 nondom=-0.05019 dom/sig^2=-0.4654 rem=-0.4664  OK
+17/28 th*=4.83 head=0.0082 | B Tref=0.4324 nondom=-0.10035 dom/sig^2=-0.4185 rem=-0.4194 | S Tref=0.4449 nondom=-0.05018 dom/sig^2=-0.4310 rem=-0.4320  OK
+19/28 th*=-5.25 head=0.0077 | B Tref=0.3632 nondom=-0.10029 dom/sig^2=-0.3503 rem=-0.3512 | S Tref=0.3757 nondom=-0.05014 dom/sig^2=-0.3628 rem=-0.3637  OK
+6/29 th*=-3.51 head=0.0059 | B Tref=0.1948 nondom=-0.02343 dom/sig^2=-0.1853 rem=-0.1862  OK
+7/29 th*=3.06 head=0.0065 | B Tref=0.2554 nondom=-0.02344 dom/sig^2=-0.2448 rem=-0.2456  OK
+8/29 th*=-2.78 head=0.0069 | B Tref=0.3100 nondom=-0.02344 dom/sig^2=-0.2985 rem=-0.2994  OK
+9/29 th*=2.59 head=0.0073 | B Tref=0.3577 nondom=-0.02345 dom/sig^2=-0.3455 rem=-0.3464  OK
+10/29 th*=-2.46 head=0.0075 | B Tref=0.3978 nondom=-0.02345 dom/sig^2=-0.3851 rem=-0.3859  OK
+11/29 th*=2.36 head=0.0078 | B Tref=0.4301 nondom=-0.02345 dom/sig^2=-0.4169 rem=-0.4178  OK
+12/29 th*=-2.30 head=0.0079 | B Tref=0.4544 nondom=-0.02345 dom/sig^2=-0.4409 rem=-0.4418  OK
+13/29 th*=2.26 head=0.0080 | B Tref=0.4707 nondom=-0.02345 dom/sig^2=-0.4570 rem=-0.4579  OK
+14/29 th*=-2.24 head=0.0081 | B Tref=0.4788 nondom=-0.02345 dom/sig^2=-0.4650 rem=-0.4659  OK
+15/29 th*=2.24 head=0.0081 | B Tref=0.4788 nondom=-0.02345 dom/sig^2=-0.4650 rem=-0.4659  OK
+16/29 th*=-2.26 head=0.0080 | B Tref=0.4707 nondom=-0.02345 dom/sig^2=-0.4570 rem=-0.4579  OK
+17/29 th*=2.30 head=0.0079 | B Tref=0.4544 nondom=-0.02345 dom/sig^2=-0.4409 rem=-0.4418  OK
+18/29 th*=-2.36 head=0.0078 | B Tref=0.4301 nondom=-0.02345 dom/sig^2=-0.4169 rem=-0.4178  OK
+19/29 th*=2.46 head=0.0075 | B Tref=0.3978 nondom=-0.02345 dom/sig^2=-0.3851 rem=-0.3859  OK
+20/29 th*=-2.59 head=0.0073 | B Tref=0.3577 nondom=-0.02345 dom/sig^2=-0.3455 rem=-0.3464  OK
+21/29 th*=2.78 head=0.0069 | B Tref=0.3100 nondom=-0.02344 dom/sig^2=-0.2985 rem=-0.2994  OK
+22/29 th*=-3.06 head=0.0065 | B Tref=0.2554 nondom=-0.02344 dom/sig^2=-0.2448 rem=-0.2456  OK
+23/29 th*=3.51 head=0.0059 | B Tref=0.1948 nondom=-0.02343 dom/sig^2=-0.1853 rem=-0.1862  OK
+7/30 th*=-12.01 head=0.0061 | B Tref=0.2388 nondom=-0.08581 dom/sig^2=-0.2289 rem=-0.2297 | S Tref=0.2495 nondom=-0.04290 dom/sig^2=-0.2396 rem=-0.2404  OK
+11/30 th*=9.18 head=0.0074 | B Tref=0.4162 nondom=-0.08661 dom/sig^2=-0.4037 rem=-0.4045 | S Tref=0.4271 nondom=-0.04330 dom/sig^2=-0.4145 rem=-0.4153  OK
+13/30 th*=0.00 head=0.0077 | B Tref=0.4561 nondom=-0.08773 dom/sig^2=-0.4430 rem=-0.4438 | S Tref=0.4671 nondom=-0.04386 dom/sig^2=-0.4540 rem=-0.4548  OK
+17/30 th*=0.00 head=0.0077 | B Tref=0.4561 nondom=-0.08773 dom/sig^2=-0.4430 rem=-0.4438 | S Tref=0.4671 nondom=-0.04386 dom/sig^2=-0.4540 rem=-0.4548  OK
+19/30 th*=9.18 head=0.0074 | B Tref=0.4162 nondom=-0.08661 dom/sig^2=-0.4037 rem=-0.4045 | S Tref=0.4271 nondom=-0.04330 dom/sig^2=-0.4145 rem=-0.4153  OK
+23/30 th*=12.01 head=0.0061 | B Tref=0.2388 nondom=-0.08581 dom/sig^2=-0.2289 rem=-0.2297 | S Tref=0.2495 nondom=-0.04290 dom/sig^2=-0.2396 rem=-0.2404  OK
+7/31 th*=-3.03 head=0.0057 | B Tref=0.2287 nondom=-0.02051 dom/sig^2=-0.2194 rem=-0.2201  OK
+8/31 th*=2.73 head=0.0062 | B Tref=0.2827 nondom=-0.02052 dom/sig^2=-0.2725 rem=-0.2733  OK
+9/31 th*=-2.52 head=0.0065 | B Tref=0.3310 nondom=-0.02052 dom/sig^2=-0.3201 rem=-0.3208  OK
+10/31 th*=2.37 head=0.0068 | B Tref=0.3729 nondom=-0.02052 dom/sig^2=-0.3614 rem=-0.3622  OK
+11/31 th*=-2.27 head=0.0070 | B Tref=0.4081 nondom=-0.02052 dom/sig^2=-0.3961 rem=-0.3969  OK
+12/31 th*=2.19 head=0.0072 | B Tref=0.4364 nondom=-0.02053 dom/sig^2=-0.4241 rem=-0.4249  OK
+13/31 th*=-2.14 head=0.0073 | B Tref=0.4577 nondom=-0.02053 dom/sig^2=-0.4451 rem=-0.4459  OK
+14/31 th*=2.11 head=0.0074 | B Tref=0.4719 nondom=-0.02053 dom/sig^2=-0.4592 rem=-0.4599  OK
+15/31 th*=-2.10 head=0.0075 | B Tref=0.4790 nondom=-0.02053 dom/sig^2=-0.4662 rem=-0.4670  OK
+16/31 th*=2.10 head=0.0075 | B Tref=0.4790 nondom=-0.02053 dom/sig^2=-0.4662 rem=-0.4670  OK
+17/31 th*=-2.11 head=0.0074 | B Tref=0.4719 nondom=-0.02053 dom/sig^2=-0.4592 rem=-0.4599  OK
+18/31 th*=2.14 head=0.0073 | B Tref=0.4577 nondom=-0.02053 dom/sig^2=-0.4451 rem=-0.4459  OK
+19/31 th*=-2.19 head=0.0072 | B Tref=0.4364 nondom=-0.02053 dom/sig^2=-0.4241 rem=-0.4249  OK
+20/31 th*=2.27 head=0.0070 | B Tref=0.4081 nondom=-0.02052 dom/sig^2=-0.3961 rem=-0.3969  OK
+21/31 th*=-2.37 head=0.0068 | B Tref=0.3729 nondom=-0.02052 dom/sig^2=-0.3614 rem=-0.3622  OK
+22/31 th*=2.52 head=0.0065 | B Tref=0.3310 nondom=-0.02052 dom/sig^2=-0.3201 rem=-0.3208  OK
+23/31 th*=-2.73 head=0.0062 | B Tref=0.2827 nondom=-0.02052 dom/sig^2=-0.2725 rem=-0.2733  OK
+24/31 th*=3.03 head=0.0057 | B Tref=0.2287 nondom=-0.02051 dom/sig^2=-0.2194 rem=-0.2201  OK
+7/32 th*=6.02 head=0.0054 | B Tref=0.2100 nondom=-0.07668 dom/sig^2=-0.2012 rem=-0.2019 | S Tref=0.2196 nondom=-0.03834 dom/sig^2=-0.2108 rem=-0.2115  OK
+9/32 th*=-4.97 head=0.0062 | B Tref=0.3118 nondom=-0.07682 dom/sig^2=-0.3014 rem=-0.3021 | S Tref=0.3214 nondom=-0.03841 dom/sig^2=-0.3110 rem=-0.3117  OK
+11/32 th*=4.45 head=0.0067 | B Tref=0.3905 nondom=-0.07687 dom/sig^2=-0.3791 rem=-0.3798 | S Tref=0.4001 nondom=-0.03844 dom/sig^2=-0.3887 rem=-0.3894  OK
+13/32 th*=-4.18 head=0.0070 | B Tref=0.4436 nondom=-0.07690 dom/sig^2=-0.4316 rem=-0.4323 | S Tref=0.4532 nondom=-0.03845 dom/sig^2=-0.4412 rem=-0.4419  OK
+15/32 th*=4.06 head=0.0072 | B Tref=0.4703 nondom=-0.07691 dom/sig^2=-0.4580 rem=-0.4587 | S Tref=0.4799 nondom=-0.03846 dom/sig^2=-0.4676 rem=-0.4683  OK
+17/32 th*=-4.06 head=0.0072 | B Tref=0.4703 nondom=-0.07691 dom/sig^2=-0.4580 rem=-0.4587 | S Tref=0.4799 nondom=-0.03846 dom/sig^2=-0.4676 rem=-0.4683  OK
+19/32 th*=4.18 head=0.0070 | B Tref=0.4436 nondom=-0.07690 dom/sig^2=-0.4316 rem=-0.4323 | S Tref=0.4532 nondom=-0.03845 dom/sig^2=-0.4412 rem=-0.4419  OK
+21/32 th*=-4.45 head=0.0067 | B Tref=0.3905 nondom=-0.07687 dom/sig^2=-0.3791 rem=-0.3798 | S Tref=0.4001 nondom=-0.03844 dom/sig^2=-0.3887 rem=-0.3894  OK
+23/32 th*=4.97 head=0.0062 | B Tref=0.3118 nondom=-0.07682 dom/sig^2=-0.3014 rem=-0.3021 | S Tref=0.3214 nondom=-0.03841 dom/sig^2=-0.3110 rem=-0.3117  OK
+25/32 th*=-6.02 head=0.0054 | B Tref=0.2100 nondom=-0.07668 dom/sig^2=-0.2012 rem=-0.2019 | S Tref=0.2196 nondom=-0.03834 dom/sig^2=-0.2108 rem=-0.2115  OK
+7/33 th*=3.01 head=0.0051 | B Tref=0.2044 nondom=-0.01810 dom/sig^2=-0.1961 rem=-0.1968  OK
+8/33 th*=-2.68 head=0.0055 | B Tref=0.2573 nondom=-0.01811 dom/sig^2=-0.2481 rem=-0.2488  OK
+10/33 th*=-2.31 head=0.0062 | B Tref=0.3483 nondom=-0.01811 dom/sig^2=-0.3379 rem=-0.3386  OK
+13/33 th*=2.05 head=0.0067 | B Tref=0.4416 nondom=-0.01811 dom/sig^2=-0.4300 rem=-0.4307  OK
+14/33 th*=-2.01 head=0.0068 | B Tref=0.4604 nondom=-0.01811 dom/sig^2=-0.4486 rem=-0.4493  OK
+16/33 th*=-1.97 head=0.0069 | B Tref=0.4792 nondom=-0.01812 dom/sig^2=-0.4673 rem=-0.4679  OK
+17/33 th*=1.97 head=0.0069 | B Tref=0.4792 nondom=-0.01812 dom/sig^2=-0.4673 rem=-0.4679  OK
+19/33 th*=2.01 head=0.0068 | B Tref=0.4604 nondom=-0.01811 dom/sig^2=-0.4486 rem=-0.4493  OK
+20/33 th*=-2.05 head=0.0067 | B Tref=0.4416 nondom=-0.01811 dom/sig^2=-0.4300 rem=-0.4307  OK
+23/33 th*=2.31 head=0.0062 | B Tref=0.3483 nondom=-0.01811 dom/sig^2=-0.3379 rem=-0.3386  OK
+25/33 th*=2.68 head=0.0055 | B Tref=0.2573 nondom=-0.01811 dom/sig^2=-0.2481 rem=-0.2488  OK
+26/33 th*=-3.01 head=0.0051 | B Tref=0.2044 nondom=-0.01810 dom/sig^2=-0.1961 rem=-0.1968  OK
+7/34 th*=0.00 head=0.0048 | B Tref=0.1864 nondom=-0.06830 dom/sig^2=-0.1786 rem=-0.1792 | S Tref=0.1950 nondom=-0.03415 dom/sig^2=-0.1871 rem=-0.1878  OK
+9/34 th*=-9.68 head=0.0056 | B Tref=0.2909 nondom=-0.06733 dom/sig^2=-0.2816 rem=-0.2822 | S Tref=0.2993 nondom=-0.03367 dom/sig^2=-0.2900 rem=-0.2906  OK
+11/34 th*=0.00 head=0.0061 | B Tref=0.3674 nondom=-0.06830 dom/sig^2=-0.3571 rem=-0.3577 | S Tref=0.3760 nondom=-0.03415 dom/sig^2=-0.3656 rem=-0.3663  OK
+13/34 th*=-7.99 head=0.0064 | B Tref=0.4304 nondom=-0.06764 dom/sig^2=-0.4194 rem=-0.4200 | S Tref=0.4389 nondom=-0.03382 dom/sig^2=-0.4278 rem=-0.4285  OK
+15/34 th*=0.00 head=0.0066 | B Tref=0.4615 nondom=-0.06830 dom/sig^2=-0.4501 rem=-0.4507 | S Tref=0.4700 nondom=-0.03415 dom/sig^2=-0.4586 rem=-0.4592  OK
+19/34 th*=0.00 head=0.0066 | B Tref=0.4615 nondom=-0.06830 dom/sig^2=-0.4501 rem=-0.4507 | S Tref=0.4700 nondom=-0.03415 dom/sig^2=-0.4586 rem=-0.4592  OK
+21/34 th*=7.99 head=0.0064 | B Tref=0.4304 nondom=-0.06764 dom/sig^2=-0.4194 rem=-0.4200 | S Tref=0.4389 nondom=-0.03382 dom/sig^2=-0.4278 rem=-0.4285  OK
+23/34 th*=-0.00 head=0.0061 | B Tref=0.3674 nondom=-0.06830 dom/sig^2=-0.3571 rem=-0.3577 | S Tref=0.3760 nondom=-0.03415 dom/sig^2=-0.3656 rem=-0.3663  OK
+25/34 th*=-9.68 head=0.0056 | B Tref=0.2909 nondom=-0.06733 dom/sig^2=-0.2816 rem=-0.2822 | S Tref=0.2993 nondom=-0.03367 dom/sig^2=-0.2900 rem=-0.2906  OK
+27/34 th*=0.00 head=0.0048 | B Tref=0.1864 nondom=-0.06830 dom/sig^2=-0.1786 rem=-0.1792 | S Tref=0.1950 nondom=-0.03415 dom/sig^2=-0.1871 rem=-0.1878  OK
+8/35 th*=2.66 head=0.0050 | B Tref=0.2337 nondom=-0.01610 dom/sig^2=-0.2255 rem=-0.2261  OK
+9/35 th*=-2.42 head=0.0053 | B Tref=0.2814 nondom=-0.01610 dom/sig^2=-0.2725 rem=-0.2731  OK
+11/35 th*=-2.13 head=0.0058 | B Tref=0.3629 nondom=-0.01610 dom/sig^2=-0.3530 rem=-0.3536  OK
+12/35 th*=2.04 head=0.0060 | B Tref=0.3959 nondom=-0.01610 dom/sig^2=-0.3857 rem=-0.3863  OK
+13/35 th*=-1.97 head=0.0062 | B Tref=0.4236 nondom=-0.01610 dom/sig^2=-0.4130 rem=-0.4136  OK
+16/35 th*=1.87 head=0.0065 | B Tref=0.4738 nondom=-0.01611 dom/sig^2=-0.4626 rem=-0.4632  OK
+17/35 th*=-1.86 head=0.0065 | B Tref=0.4793 nondom=-0.01611 dom/sig^2=-0.4681 rem=-0.4688  OK
+18/35 th*=1.86 head=0.0065 | B Tref=0.4793 nondom=-0.01611 dom/sig^2=-0.4681 rem=-0.4688  OK
+19/35 th*=-1.87 head=0.0065 | B Tref=0.4738 nondom=-0.01611 dom/sig^2=-0.4626 rem=-0.4632  OK
+22/35 th*=1.97 head=0.0062 | B Tref=0.4236 nondom=-0.01610 dom/sig^2=-0.4130 rem=-0.4136  OK
+23/35 th*=-2.04 head=0.0060 | B Tref=0.3959 nondom=-0.01610 dom/sig^2=-0.3857 rem=-0.3863  OK
+24/35 th*=2.13 head=0.0058 | B Tref=0.3629 nondom=-0.01610 dom/sig^2=-0.3530 rem=-0.3536  OK
+26/35 th*=2.42 head=0.0053 | B Tref=0.2814 nondom=-0.01610 dom/sig^2=-0.2725 rem=-0.2731  OK
+27/35 th*=-2.66 head=0.0050 | B Tref=0.2337 nondom=-0.01610 dom/sig^2=-0.2255 rem=-0.2261  OK
+11/36 th*=-4.21 head=0.0056 | B Tref=0.3468 nondom=-0.06076 dom/sig^2=-0.3373 rem=-0.3379 | S Tref=0.3543 nondom=-0.03038 dom/sig^2=-0.3449 rem=-0.3455  OK
+13/36 th*=3.88 head=0.0059 | B Tref=0.4093 nondom=-0.06078 dom/sig^2=-0.3991 rem=-0.3997 | S Tref=0.4169 nondom=-0.03039 dom/sig^2=-0.4067 rem=-0.4073  OK
+17/36 th*=3.61 head=0.0063 | B Tref=0.4724 nondom=-0.06080 dom/sig^2=-0.4616 rem=-0.4622 | S Tref=0.4800 nondom=-0.03040 dom/sig^2=-0.4692 rem=-0.4698  OK
+19/36 th*=-3.61 head=0.0063 | B Tref=0.4724 nondom=-0.06080 dom/sig^2=-0.4616 rem=-0.4622 | S Tref=0.4800 nondom=-0.03040 dom/sig^2=-0.4692 rem=-0.4698  OK
+23/36 th*=-3.88 head=0.0059 | B Tref=0.4093 nondom=-0.06078 dom/sig^2=-0.3991 rem=-0.3997 | S Tref=0.4169 nondom=-0.03039 dom/sig^2=-0.4067 rem=-0.4073  OK
+25/36 th*=4.21 head=0.0056 | B Tref=0.3468 nondom=-0.06076 dom/sig^2=-0.3373 rem=-0.3379 | S Tref=0.3543 nondom=-0.03038 dom/sig^2=-0.3449 rem=-0.3455  OK
+8/37 th*=-2.64 head=0.0045 | B Tref=0.2119 nondom=-0.01440 dom/sig^2=-0.2045 rem=-0.2050  OK
+9/37 th*=2.39 head=0.0048 | B Tref=0.2587 nondom=-0.01441 dom/sig^2=-0.2507 rem=-0.2512  OK
+10/37 th*=-2.21 head=0.0051 | B Tref=0.3019 nondom=-0.01441 dom/sig^2=-0.2933 rem=-0.2938  OK
+11/37 th*=2.08 head=0.0053 | B Tref=0.3408 nondom=-0.01441 dom/sig^2=-0.3317 rem=-0.3322  OK
+12/37 th*=-1.98 head=0.0055 | B Tref=0.3751 nondom=-0.01441 dom/sig^2=-0.3657 rem=-0.3662  OK
+13/37 th*=1.91 head=0.0057 | B Tref=0.4048 nondom=-0.01441 dom/sig^2=-0.3950 rem=-0.3956  OK
+14/37 th*=-1.85 head=0.0058 | B Tref=0.4296 nondom=-0.01441 dom/sig^2=-0.4196 rem=-0.4201  OK
+15/37 th*=1.81 head=0.0059 | B Tref=0.4495 nondom=-0.01441 dom/sig^2=-0.4393 rem=-0.4398  OK
+16/37 th*=-1.78 head=0.0060 | B Tref=0.4645 nondom=-0.01441 dom/sig^2=-0.4541 rem=-0.4546  OK
+17/37 th*=1.76 head=0.0061 | B Tref=0.4745 nondom=-0.01441 dom/sig^2=-0.4640 rem=-0.4645  OK
+18/37 th*=-1.76 head=0.0061 | B Tref=0.4795 nondom=-0.01441 dom/sig^2=-0.4689 rem=-0.4695  OK
+19/37 th*=1.76 head=0.0061 | B Tref=0.4795 nondom=-0.01441 dom/sig^2=-0.4689 rem=-0.4695  OK
+20/37 th*=-1.76 head=0.0061 | B Tref=0.4745 nondom=-0.01441 dom/sig^2=-0.4640 rem=-0.4645  OK
+21/37 th*=1.78 head=0.0060 | B Tref=0.4645 nondom=-0.01441 dom/sig^2=-0.4541 rem=-0.4546  OK
+22/37 th*=-1.81 head=0.0059 | B Tref=0.4495 nondom=-0.01441 dom/sig^2=-0.4393 rem=-0.4398  OK
+23/37 th*=1.85 head=0.0058 | B Tref=0.4296 nondom=-0.01441 dom/sig^2=-0.4196 rem=-0.4201  OK
+24/37 th*=-1.91 head=0.0057 | B Tref=0.4048 nondom=-0.01441 dom/sig^2=-0.3950 rem=-0.3956  OK
+25/37 th*=1.98 head=0.0055 | B Tref=0.3751 nondom=-0.01441 dom/sig^2=-0.3657 rem=-0.3662  OK
+26/37 th*=-2.08 head=0.0053 | B Tref=0.3408 nondom=-0.01441 dom/sig^2=-0.3317 rem=-0.3322  OK
+27/37 th*=2.21 head=0.0051 | B Tref=0.3019 nondom=-0.01441 dom/sig^2=-0.2933 rem=-0.2938  OK
+28/37 th*=-2.39 head=0.0048 | B Tref=0.2587 nondom=-0.01441 dom/sig^2=-0.2507 rem=-0.2512  OK
+29/37 th*=2.64 head=0.0045 | B Tref=0.2119 nondom=-0.01440 dom/sig^2=-0.2045 rem=-0.2050  OK
+9/38 th*=0.00 head=0.0046 | B Tref=0.2426 nondom=-0.05468 dom/sig^2=-0.2350 rem=-0.2355 | S Tref=0.2495 nondom=-0.02734 dom/sig^2=-0.2418 rem=-0.2423  OK
+11/38 th*=-8.19 head=0.0051 | B Tref=0.3281 nondom=-0.05412 dom/sig^2=-0.3194 rem=-0.3199 | S Tref=0.3349 nondom=-0.02706 dom/sig^2=-0.3262 rem=-0.3267  OK
+13/38 th*=0.00 head=0.0055 | B Tref=0.3899 nondom=-0.05468 dom/sig^2=-0.3805 rem=-0.3810 | S Tref=0.3967 nondom=-0.02734 dom/sig^2=-0.3873 rem=-0.3878  OK
+15/38 th*=-7.08 head=0.0057 | B Tref=0.4404 nondom=-0.05426 dom/sig^2=-0.4305 rem=-0.4310 | S Tref=0.4472 nondom=-0.02713 dom/sig^2=-0.4373 rem=-0.4378  OK
+17/38 th*=0.00 head=0.0059 | B Tref=0.4653 nondom=-0.05468 dom/sig^2=-0.4552 rem=-0.4557 | S Tref=0.4721 nondom=-0.02734 dom/sig^2=-0.4620 rem=-0.4625  OK
+21/38 th*=0.00 head=0.0059 | B Tref=0.4653 nondom=-0.05468 dom/sig^2=-0.4552 rem=-0.4557 | S Tref=0.4721 nondom=-0.02734 dom/sig^2=-0.4620 rem=-0.4625  OK
+23/38 th*=7.08 head=0.0057 | B Tref=0.4404 nondom=-0.05426 dom/sig^2=-0.4305 rem=-0.4310 | S Tref=0.4472 nondom=-0.02713 dom/sig^2=-0.4373 rem=-0.4378  OK
+25/38 th*=0.00 head=0.0055 | B Tref=0.3899 nondom=-0.05468 dom/sig^2=-0.3805 rem=-0.3810 | S Tref=0.3967 nondom=-0.02734 dom/sig^2=-0.3873 rem=-0.3878  OK
+27/38 th*=8.19 head=0.0051 | B Tref=0.3281 nondom=-0.05412 dom/sig^2=-0.3194 rem=-0.3199 | S Tref=0.3349 nondom=-0.02706 dom/sig^2=-0.3262 rem=-0.3267  OK
+29/38 th*=0.00 head=0.0046 | B Tref=0.2426 nondom=-0.05468 dom/sig^2=-0.2350 rem=-0.2355 | S Tref=0.2495 nondom=-0.02734 dom/sig^2=-0.2418 rem=-0.2423  OK
+8/39 th*=2.63 head=0.0041 | B Tref=0.1918 nondom=-0.01296 dom/sig^2=-0.1852 rem=-0.1856  OK
+10/39 th*=2.18 head=0.0047 | B Tref=0.2803 nondom=-0.01297 dom/sig^2=-0.2724 rem=-0.2729  OK
+11/39 th*=-2.04 head=0.0049 | B Tref=0.3194 nondom=-0.01297 dom/sig^2=-0.3111 rem=-0.3116  OK
+14/39 th*=1.80 head=0.0054 | B Tref=0.4123 nondom=-0.01297 dom/sig^2=-0.4030 rem=-0.4035  OK
+16/39 th*=1.71 head=0.0056 | B Tref=0.4526 nondom=-0.01297 dom/sig^2=-0.4429 rem=-0.4434  OK
+17/39 th*=-1.69 head=0.0057 | B Tref=0.4661 nondom=-0.01297 dom/sig^2=-0.4563 rem=-0.4568  OK
+19/39 th*=-1.67 head=0.0057 | B Tref=0.4796 nondom=-0.01297 dom/sig^2=-0.4696 rem=-0.4701  OK
+20/39 th*=1.67 head=0.0057 | B Tref=0.4796 nondom=-0.01297 dom/sig^2=-0.4696 rem=-0.4701  OK
+22/39 th*=1.69 head=0.0057 | B Tref=0.4661 nondom=-0.01297 dom/sig^2=-0.4563 rem=-0.4568  OK
+23/39 th*=-1.71 head=0.0056 | B Tref=0.4526 nondom=-0.01297 dom/sig^2=-0.4429 rem=-0.4434  OK
+25/39 th*=-1.80 head=0.0054 | B Tref=0.4123 nondom=-0.01297 dom/sig^2=-0.4030 rem=-0.4035  OK
+28/39 th*=2.04 head=0.0049 | B Tref=0.3194 nondom=-0.01297 dom/sig^2=-0.3111 rem=-0.3116  OK
+29/39 th*=-2.18 head=0.0047 | B Tref=0.2803 nondom=-0.01297 dom/sig^2=-0.2724 rem=-0.2729  OK
+31/39 th*=-2.63 head=0.0041 | B Tref=0.1918 nondom=-0.01296 dom/sig^2=-0.1852 rem=-0.1856  OK
+9/40 th*=-4.70 head=0.0042 | B Tref=0.2235 nondom=-0.04918 dom/sig^2=-0.2165 rem=-0.2170 | S Tref=0.2296 nondom=-0.02459 dom/sig^2=-0.2227 rem=-0.2231  OK
+11/40 th*=4.04 head=0.0047 | B Tref=0.3050 nondom=-0.04923 dom/sig^2=-0.2971 rem=-0.2975 | S Tref=0.3111 nondom=-0.02461 dom/sig^2=-0.3032 rem=-0.3037  OK
+13/40 th*=-3.66 head=0.0051 | B Tref=0.3719 nondom=-0.04925 dom/sig^2=-0.3633 rem=-0.3638 | S Tref=0.3781 nondom=-0.02462 dom/sig^2=-0.3694 rem=-0.3699  OK
+17/40 th*=-3.31 head=0.0055 | B Tref=0.4569 nondom=-0.04927 dom/sig^2=-0.4474 rem=-0.4478 | S Tref=0.4630 nondom=-0.02463 dom/sig^2=-0.4535 rem=-0.4540  OK
+19/40 th*=3.25 head=0.0055 | B Tref=0.4740 nondom=-0.04927 dom/sig^2=-0.4643 rem=-0.4648 | S Tref=0.4801 nondom=-0.02463 dom/sig^2=-0.4705 rem=-0.4709  OK
+21/40 th*=-3.25 head=0.0055 | B Tref=0.4740 nondom=-0.04927 dom/sig^2=-0.4643 rem=-0.4648 | S Tref=0.4801 nondom=-0.02463 dom/sig^2=-0.4705 rem=-0.4709  OK
+23/40 th*=3.31 head=0.0055 | B Tref=0.4569 nondom=-0.04927 dom/sig^2=-0.4474 rem=-0.4478 | S Tref=0.4630 nondom=-0.02463 dom/sig^2=-0.4535 rem=-0.4540  OK
+27/40 th*=3.66 head=0.0051 | B Tref=0.3719 nondom=-0.04925 dom/sig^2=-0.3633 rem=-0.3638 | S Tref=0.3781 nondom=-0.02462 dom/sig^2=-0.3694 rem=-0.3699  OK
+29/40 th*=-4.04 head=0.0047 | B Tref=0.3050 nondom=-0.04923 dom/sig^2=-0.2971 rem=-0.2975 | S Tref=0.3111 nondom=-0.02461 dom/sig^2=-0.3032 rem=-0.3037  OK
+31/40 th*=4.70 head=0.0042 | B Tref=0.2235 nondom=-0.04918 dom/sig^2=-0.2165 rem=-0.2170 | S Tref=0.2296 nondom=-0.02459 dom/sig^2=-0.2227 rem=-0.2231  OK
+SUMMARY: 250 cases, 0 violations
