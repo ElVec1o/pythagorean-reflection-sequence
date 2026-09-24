@@ -1,0 +1,8 @@
+n=151  E0<=1.49e-10 R0<=6.34e-11  E+-<=1.54e-10  rho(n)<=8.66e-10  sigma(n)<=1.30e-8  sum sigma<=1.30e-8
+n=500  E0<=5.11e-52 R0<=2.18e-52  E+-<=5.23e-52  rho(n)<=2.97e-51  sigma(n)<=4.45e-50  sum sigma<=5.56e-8
+n=1000  E0<=1.61e-112 R0<=6.85e-113  E+-<=1.64e-112  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.56e-8
+n=1500  E0<=2.47e-173 R0<=1.05e-173  E+-<=2.52e-173  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.56e-8
+n=2000  E0<=2.82e-234 R0<=1.20e-234  E+-<=2.88e-234  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.56e-8
+n=2500  E0<=2.74e-295 R0<=1.17e-295  E+-<=2.80e-295  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.56e-8
+n=3000  E0<=1e-300 R0<=1e-300  E+-<=1e-300  rho(n)<=1.62e-59  sigma(n)<=2.43e-58  sum sigma<=5.56e-8
+LEMMAB_R0 CRUDE PASSED 151<=n<=3000: max E0<=1.49e-10, max E+-<=1.54e-10, sum sigma<=5.56e-8, sum rho<=3.71e-9

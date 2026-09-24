@@ -1,0 +1,10 @@
+ell1=0.693147  N1=13  N1*ell1=9.01  window-check OK
+ell1=0.6  N1=15  N1*ell1=9.00  window-check OK
+ell1=0.5  N1=18  N1*ell1=9.00  window-check OK
+ell1=0.4  N1=24  N1*ell1=9.60  window-check OK
+ell1=0.3  N1=34  N1*ell1=10.20  window-check OK
+ell1=0.2  N1=55  N1*ell1=11.00  window-check OK
+ell1=0.12  N1=105  N1*ell1=12.60  window-check OK
+ell1=0.1  N1=132  N1*ell1=13.20  window-check OK
+ell1=0.05  N1=311  N1*ell1=15.55  window-check OK
+ell1=0.02  N1=947  N1*ell1=18.94  window-check OK

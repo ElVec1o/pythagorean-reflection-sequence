@@ -1,0 +1,31 @@
+  r=0.0083 ka=3: FAIL rational of height <= n2 in the x-ball (n=20) [0s]
+  r=0.0083 ka=4: FAIL rational of height <= n2 in the x-ball (n=20) [0s]
+  r=0.006 ka=3: FAIL rational of height <= n2 in the x-ball (n=27) [0s]
+  r=0.006 ka=4: FAIL rational of height <= n2 in the x-ball (n=27) [0s]
+  r=0.004 ka=3: FAIL rational of height <= n2 in the x-ball (n=41) [0s]
+  r=0.004 ka=4: FAIL rational of height <= n2 in the x-ball (n=41) [0s]
+  r=0.003 ka=3: FAIL rational of height <= n2 in the x-ball (n=48) [0s]
+  r=0.003 ka=4: FAIL rational of height <= n2 in the x-ball (n=48) [0s]
+  r=0.002 ka=3: FAIL lower-ray monotonicity [0s]
+  r=0.002 ka=4: FAIL lower-ray monotonicity [0s]
+  r=0.0015 ka=3: FAIL horizontal monotonicity [0s]
+  r=0.0015 ka=4: FAIL lower-ray monotonicity [1s]
+  r=0.001 ka=3: FAIL lower-ray monotonicity [1s]
+  r=0.001 ka=4: FAIL lower-ray monotonicity [1s]
+  r=0.0007 ka=3: FAIL horizontal monotonicity [1s]
+  r=0.0007 ka=4: FAIL lower-ray monotonicity [2s]
+  r=0.0005 ka=3: FAIL lower-ray monotonicity [2s]
+  r=0.0005 ka=4: FAIL lower-ray monotonicity [2s]
+  r=0.0003 ka=3: FAIL lower-ray monotonicity [3s]
+  r=0.0003 ka=4: FAIL lower-ray monotonicity [3s]
+  r=0.0002 ka=3: FAIL horizontal monotonicity [4s]
+  r=0.0002 ka=4: FAIL lower-ray monotonicity [4s]
+  r=0.0001 ka=3: FAIL horizontal monotonicity [5s]
+  r=0.0001 ka=4: FAIL lower-ray monotonicity [6s]
+  r=5e-05 ka=3: B=20.3
+  r=5e-05 ka=4: FAIL lower-ray monotonicity [7s]
+  r=2e-05 ka=3: B=5.68
+  r=2e-05 ka=4: B=14.1
+  r=1e-05 ka=3: B=0.989
+  r=1e-05 ka=4: B=5.33
+NONE 1/7 eta=0.00375

@@ -1,0 +1,27 @@
+  r=0.0083 ka=3: FAIL rational of height <= n2 in the x-ball (n=23) [0s]
+  r=0.0083 ka=4: FAIL rational of height <= n2 in the x-ball (n=23) [0s]
+  r=0.006 ka=3: FAIL rational of height <= n2 in the x-ball (n=29) [0s]
+  r=0.006 ka=4: FAIL rational of height <= n2 in the x-ball (n=29) [0s]
+  r=0.004 ka=3: FAIL rational of height <= n2 in the x-ball (n=47) [0s]
+  r=0.004 ka=4: FAIL rational of height <= n2 in the x-ball (n=47) [0s]
+  r=0.003 ka=3: FAIL rational of height <= n2 in the x-ball (n=59) [0s]
+  r=0.003 ka=4: FAIL rational of height <= n2 in the x-ball (n=59) [0s]
+  r=0.002 ka=3: FAIL Gamma_2 monotonicity needs d <= 2 gap [0s]
+  r=0.002 ka=4: FAIL lower-ray monotonicity [0s]
+  r=0.0015 ka=3: FAIL Gamma_2 monotonicity needs d <= 2 gap [1s]
+  r=0.0015 ka=4: FAIL Gamma_2 monotonicity needs d <= 2 gap [1s]
+  r=0.001 ka=3: FAIL Gamma_2 monotonicity needs d <= 2 gap [1s]
+  r=0.001 ka=4: FAIL lower-ray monotonicity [1s]
+  r=0.0007 ka=3: FAIL Gamma_2 monotonicity needs d <= 2 gap [2s]
+  r=0.0007 ka=4: FAIL Gamma_2 monotonicity needs d <= 2 gap [2s]
+  r=0.0005 ka=3: FAIL Gamma_2 monotonicity needs d <= 2 gap [3s]
+  r=0.0005 ka=4: FAIL lower-ray monotonicity [3s]
+  r=0.0003 ka=3: FAIL Gamma_2 monotonicity needs d <= 2 gap [3s]
+  r=0.0003 ka=4: FAIL lower-ray monotonicity [4s]
+  r=0.0002 ka=3: FAIL Gamma_2 monotonicity needs d <= 2 gap [4s]
+  r=0.0002 ka=4: FAIL lower-ray monotonicity [5s]
+  r=0.0001 ka=3: B=5.38
+  r=0.0001 ka=4: FAIL lower-ray monotonicity [6s]
+  r=5e-05 ka=3: B=1.62
+  r=5e-05 ka=4: B=4.33
+CERT 1/6 d>0 r=2e-05 eta=0.006 n2=60 V0=0.00803976 kappa=3: B<=0.06820 N*>=4.21e+16  ReF0 in [+/- 5.61e-8]  kappa_seed<=3.37e-7  sqrt(pi/2A)>=0.9849  min|S_amp|>=0.8311  c_seed>=0.7628

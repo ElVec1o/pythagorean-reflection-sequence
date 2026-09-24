@@ -1,0 +1,91 @@
+# P1h certlog (2026-09-24). Every run: perl -e 'alarm 290; exec @ARGV'; single python-flint processes, < 300 MB (fresh sysctl: hw.memsize 24 GB; df: 7.9 GB free).
+
+## Low seeds, untwisted (P1e_lowseed.py / P1h_lowseed.py)
+CERT 4/5 d>0 r=0.0005 eta=0.0257 n2=60 V0=0.0303621 kappa=3: B<=0.5332 N*>=1.13e+18  ReF0 in [-9e-5 +/- 1.91e-6]  kappa_seed<=0.000451  sqrt(pi/2A)>=0.9995  min|S_amp|>=0.9687  c_seed>=0.4520
+CERT 5/6 d>0 r=0.0005 eta=0.026 n2=60 V0=0.0316509 kappa=3: B<=0.4308 N*>=5.03e+13  ReF0 in [+/- 1.40e-6]  kappa_seed<=8.36e-6  sqrt(pi/2A)>=0.9846  min|S_amp|>=0.8208  c_seed>=0.4600
+CERT 1/6 d>0 r=2e-05 eta=0.006 n2=60 V0=0.00803976 kappa=3: B<=0.06820 N*>=4.21e+16  ReF0 in [+/- 5.61e-8]  kappa_seed<=3.37e-7  sqrt(pi/2A)>=0.9849  min|S_amp|>=0.8311  c_seed>=0.7628
+  (1/7 at eta=0.00375: P1e_lowseed radii >= 1e-5 all fail (B=0.989 at 1e-5); P1h_lowseed certifies r=5e-6. 1/7 is NOT used by Theorem M' -- arc starts at 0.143.)
+
+## Low seeds, twisted (../P1g/P1g_lowseed.py)
+SEED 1/6 r=2e-05: all pieces B+-<1: True ; RPRIME=2e-05 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+SEED 5/6 r=0.0005: all pieces B+-<1: True ; RPRIME=0.00025 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+SEED 4/5 r=0.0005: all pieces B+-<1: False ; RPRIME=0.00025 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+SEED 1/7 r=5e-06: all pieces B+-<1: True ; RPRIME=5e-06 (margin > [0.0500 +/- 3e-9] on (0,RPRIME])
+
+## Base / level-n data (P1h_seeds.py)
+SEEDS PASSED: 125 seeds 3<=n<=110 in [1/6,1/5); min|Z|>=0.8269; min|Z^pm|>=0.5269; min margin>=0.2971
+exit 0
+SEEDS PASSED: 103 seeds 111<=n<=150 in [1/6,1/5); min|Z|>=0.8244; min|Z^pm|>=0.5261; min margin>=0.2946
+exit 0
+SEEDS PASSED: 189 seeds 151<=n<=220 in [1/7,1/6); min|Z|>=0.5696; min|Z^pm|>=0.4794; min margin>=0.4917
+exit 0
+SEEDS PASSED: 138 seeds 221<=n<=260 in [1/7,1/6); min|Z|>=0.5571; min|Z^pm|>=0.4701; min margin>=0.4907
+exit 0
+SEEDS PASSED: 166 seeds 261<=n<=300 in [1/7,1/6); min|Z|>=0.5452; min|Z^pm|>=0.4610; min margin>=0.4900
+exit 0
+SEEDS PASSED: 162 seeds 3<=n<=150 in [1/7,1/6); min|Z|>=0.5926; min|Z^pm|>=0.4948; min margin>=0.4855
+exit 0
+
+## Hazard-lemma numerics (P1h_hazard_check.py)
+HAZARD CHECK PASSED y=0.5: H1-H5 for 10<=n<=10000 (monotone beyond)
+HAZARD CHECK PASSED y=0.52: H1-H5 for 10<=n<=10000 (monotone beyond)
+HAZARD CHECK PASSED y=0.59: H1-H5 for 10<=n<=10000 (monotone beyond)
+
+## Lemma B'/B^pm exact (P1h_lemmaB.py exact)
+R0 (y=0.52):
+LEMMAB_R0 EXACT PASSED: 227 seeds (10<=n<=150, y0=0.52), max E0<=0.00214, min(margin_n - loss)>=0.1713
+R1 (y=0.59), P1H_NOMARGIN=1 for block a:
+LEMMAB_R0 EXACT PASSED: 304 seeds (10<=n<=300, y=[0.590 +/- 3e-8]), max E0<=1.30e-46, min(margin_n - loss)>=0.4900
+exit 0
+MARGIN-ONLY failure (omega part, not Z) at 2/13: margin [0.5804 +/- 4.51e-5] loss [3.389 +/- 4.64e-4]
+LEMMAB_R0 EXACT PASSED: 350 seeds (10<=n<=219, y=[0.590 +/- 3e-8]), max E0<=0.0136, min(margin_n - loss)>=-2.809
+exit 0
+
+## Lemma B/B^pm crude (P1h_lemmaB.py crude)
+lemmaB_R0_crude_151_3000.txt:
+n=151  E0<=1.49e-10 R0<=6.34e-11  E+-<=1.54e-10  rho(n)<=8.66e-10  sigma(n)<=1.30e-8  sum sigma<=1.30e-8
+n=500  E0<=5.11e-52 R0<=2.18e-52  E+-<=5.23e-52  rho(n)<=2.97e-51  sigma(n)<=4.45e-50  sum sigma<=5.56e-8
+LEMMAB_R0 CRUDE PASSED 151<=n<=3000: max E0<=1.49e-10, max E+-<=1.54e-10, sum sigma<=5.56e-8, sum rho<=3.71e-9
+lemmaB_R0_crude_3001_20000.txt:
+LEMMAB_R0 CRUDE PASSED 3001<=n<=20000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.13e-54, sum rho<=2.76e-55
+lemmaB_R0_crude_20001_200000.txt:
+LEMMAB_R0 CRUDE PASSED 20001<=n<=200000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.37e-53, sum rho<=2.92e-54
+lemmaB_R1_crude.txt:
+n=301  E0<=0.430 R0<=0.125  E+-<=0.438  rho(n)<=9.75  sigma(n)<=147  sum sigma<=147
+n=500  E0<=2.88e-7 R0<=9.48e-8  E+-<=2.92e-7  rho(n)<=1.55e-6  sigma(n)<=2.32e-5  sum sigma<=1050
+LEMMAB_R0 CRUDE PASSED 301<=n<=20000: max E0<=0.430, max E+-<=0.438, sum sigma<=1050, sum rho<=70.0
+lemmaB_R1_crude_20001_200000.txt:
+LEMMAB_R0 CRUDE PASSED 20001<=n<=200000: max E0<=1e-300, max E+-<=1e-300, sum sigma<=4.37e-53, sum rho<=2.92e-54
+
+## Case A refined covering (P1h_caseA.py; Z^0, Z^+, Z^- and omega margins)
+caseA_R0_a.txt:
+/Users/vico/.claude/shell-snapshots/snapshot-bash-1790213434436-tk8cf5.sh: child setpgid (45888 to 45888): Operation not permitted
+CASEA PASSED on [1/6,11/60]: 1003 intervals (1989 evaluations), M-histogram [(8, 830), (20, 9), (40, 32), (59, 71), (100, 61)], min|Z|>=0.5215, min|Z^s|(s=0,+-1)>=0.2907, min margin>=0.05267 (at x in [0.175,0.175]), max|omega|<=1.875, max T<=0.1576
+caseA_R0_b.txt:
+CASEA PASSED on [11/60,1/5]: 936 intervals (1852 evaluations), M-histogram [(8, 906), (20, 8), (40, 9), (59, 13)], min|Z|>=0.6527, min|Z^s|(s=0,+-1)>=0.3458, min margin>=0.05217 (at x in [0.183673469,0.183673469]), max|omega|<=1.807, max T<=0.07955
+caseA_R1_1001_7000.txt:
+CASEA PASSED on [143/1000,3/20]: 310 intervals (613 evaluations), M-histogram [(8, 290), (20, 9), (40, 5), (59, 6)], min|Z|>=0.2959, min|Z^s|(s=0,+-1)>=0.2102, min margin>=0.05071 (at x in [0.14814813,0.148148146]), max|omega|<=1.722, max T<=0.2076
+caseA_R1_3_20.txt:
+CASEA PASSED on [3/20,31/200]: 183 intervals (360 evaluations), M-histogram [(8, 177), (20, 2), (40, 2), (59, 2)], min|Z|>=0.3617, min|Z^s|(s=0,+-1)>=0.2080, min margin>=0.05455 (at x in [0.150000131,0.150001052]), max|omega|<=1.812, max T<=0.2002
+caseA_R1_31_200.txt:
+CASEA PASSED on [31/200,4/25]: 271 intervals (535 evaluations), M-histogram [(8, 264), (20, 1), (40, 4), (59, 2)], min|Z|>=0.4435, min|Z^s|(s=0,+-1)>=0.2378, min margin>=0.06599 (at x in [0.156862745,0.156862745]), max|omega|<=1.909, max T<=0.2204
+caseA_R1_4_25.txt:
+CASEA PASSED on [4/25,1/6]: 259 intervals (511 evaluations), M-histogram [(8, 254), (20, 1), (40, 2), (59, 2)], min|Z|>=0.5023, min|Z^s|(s=0,+-1)>=0.2666, min margin>=0.05077 (at x in [0.166243132,0.166416917]), max|omega|<=1.784, max T<=0.1941
+caseA_R1_1_7.txt:
+CASEA FAILED at x in [0.14286213785714286, 0.14286213785714286] (Z T=7.54e+2)
+  discs R0: 1/6:0:999/50000000 1/5:999/4000000:0   discs R1: 1/7:0:999/200000000 1/6:999/4000000:0
+  (caseA_R1_1_7 = [1/7, 1001/7000]: FAILS at d=5e-6 from 1/7 -- documented obstruction, not used.)
+
+## Landscape (P1h_landscape.py)
+LANDSCAPE PASSED ell1=log2, 16<=N<=100000
+LANDSCAPE PASSED ell1=0.5522, 17<=N<=100000
+ell1=0.693147  N1=13  N1*ell1=9.01  window-check OK
+ell1=0.6  N1=15  N1*ell1=9.00  window-check OK
+ell1=0.5  N1=18  N1*ell1=9.00  window-check OK
+ell1=0.4  N1=24  N1*ell1=9.60  window-check OK
+ell1=0.3  N1=34  N1*ell1=10.20  window-check OK
+ell1=0.2  N1=55  N1*ell1=11.00  window-check OK
+ell1=0.12  N1=105  N1*ell1=12.60  window-check OK
+ell1=0.1  N1=132  N1*ell1=13.20  window-check OK
+ell1=0.05  N1=311  N1*ell1=15.55  window-check OK
+ell1=0.02  N1=947  N1*ell1=18.94  window-check OK

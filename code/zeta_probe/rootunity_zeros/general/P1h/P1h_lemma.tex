@@ -1,0 +1,245 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\title{P1h: pushing Theorems M, B, C and the P1g conditions towards $\ell\to0$\\
+the arc $[0.143,\,0.857]$ for $Z_N\neq0$, the arc $[\frac16,\frac56]$ for $U,V$,\\ and the exact obstructions below\\
+\small research programme P1, eighth atom, 2026-09-24. UNREVIEWED.}
+\date{}
+\begin{document}\maketitle
+
+Notation and numbering of P1d, P1e (Theorem M, Lemmas Zk, R, A, H, B, B$'$, O), P1f (Theorems B, C, Lemmas LS, LSp, head) and P1g (Theorem main, Lemmas B$^\pm$, I, Propositions S, L, A$^\pm$). $x=a/N$, $\ell=\log|2(1-\zeta)|=\log(4\sin\pi x)$, $g(x)=e^{-\ell}=1/(4\sin\pi x)\approx\sup|u_0|$.
+Labels: PROVED; \emph{computer-assisted} (finitely many Arb ball inequalities, checked by the named script, which fails loudly); VERIFIED (numerics, not a proof); HEURISTIC; OPEN.
+
+\paragraph{Correction to the brief.} $\ell>0$ is $x\in(0.08043,\,0.91957)$, not $(\frac16,\frac56)$: at $x=\frac16$, $\ell=\log2=0.693$. The arc $[\frac16,\frac56]$ is well inside the good arc, and even inside the region $\ell>0.484$ where the P1e method can work in principle (Section~\ref{sec:obs}).
+
+\paragraph{Outcome.}
+\begin{enumerate}
+\item[(a)] \textbf{Theorem M$'$ (PROVED, computer-assisted).} For all $N\ge1$ and $\gcd(a,N)=1$ with $a/N\in[x_1,1-x_1]$, $x_1=0.143$ (so $\ell\ge0.55224$): $|Z_N(a/N)|\ge0.02\,e^{-0.005N}$. So $\Sigma_N\ne0$ and $S_0\ne0$ there. This is $[\frac17+\delta,\frac67-\delta]$ with $\delta=1.43\cdot10^{-4}$, and it contains $[\frac16,\frac56]$.
+\item[(b)] \textbf{Theorem main$'$ (P1g conditions; PROVED, computer-assisted).} On $[\frac16,\frac56]\setminus\{\frac12\}$: $|Z^\pm_N|\ge0.02e^{-0.005N}$, $|\omega|\le7.96$, and $\min_i|G_i|\ge0.0499$.
+\item[(c)] \textbf{Theorems B$'$, C$'$ (PROVED; computer-assisted through (a), (b)).} Every conclusion of P1f Theorem~B holds for $a/N\in[x_1,1-x_1]$ with $N\ge17$, and for $a/N\in[\frac16,\frac56]$ with $N\ge16$. The conclusions of P1f Theorem~C hold on $[\frac16,\frac56]$, $N\ge16$. Hence:
+ \begin{itemize}
+ \item the poles of $G^T_0$ accumulate at every point of $\arg q\in[2\pi x_1,2\pi(1-x_1)]$;
+ \item the poles of $U$ and $V$ accumulate at every point of $\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$ (standing: \texttt{thm:model}, \texttt{thm:RJ}).
+ \end{itemize}
+\item[(d)] \textbf{The landscape is not the obstruction (PROVED for each listed $\ell_1$, computer-assisted).} Lemma LS$(\ell_1)$: every estimate of P1f Lemmas LS, LSp and head holds for $\ell\ge\ell_1$ and $N\ge N_1(\ell_1)$, with $N_1\ell_1\approx9$--$19$ (Table~\ref{tab:N1}). So P1f Theorem~B holds at \emph{every} $\zeta$ with $\ell>0$, $N\ge N_1(\ell)$ and $Z_N(a/N)\ne0$. The bound $T\ge0.1499$ was tight only because the constants had been frozen at $\ell_0=0.855$, $N=16$. The true requirement is $N\ell\gtrsim10$.
+\item[(e)] \textbf{The obstruction is Theorem M's hazard step.} It has three parts (Section~\ref{sec:obs}):
+ \begin{itemize}
+ \item the golden threshold $\ell>0.4840$ ($x>0.13295$) of the crude Lemma B;
+ \item the crossover height $n_0(y)$ at which Lemma B takes over from exact seeds, which blows up as $y\to0.6163$;
+ \item the low-seed/direct-covering handover. The contour height $\eta\le\log(y/g)/2\pi$ shrinks the certifiable disc of $1/7$ to $5\cdot10^{-6}$, while the direct covering needs about $3\cdot10^{-5}$. This is why the arc stops at $0.143$ and not at $\frac17$.
+ \end{itemize}
+ Below $\ell\approx0.484$ the crude triangle bound cannot close the induction for any choice of $y$, and a structured (moment) hypothesis is needed (OPEN).
+\end{enumerate}
+
+\section{Region-dependent hazard bases}\label{sec:haz}
+P1e uses one hazard base $y=\frac12$, with $\sup|u_0|\,e^{2\pi\eta_i}\le y$ on each region. Since $g(\frac16)=\frac12$ exactly, $y=\frac12$ cannot serve $x<\frac15$ with any $\eta>0$. We use a base per region:
+\[R_1=[0.143,\tfrac16]:\ y_1=0.59,\qquad R_0=[\tfrac16,\tfrac15]:\ y_0=0.52,\qquad [\tfrac15,\tfrac12]:\ y=\tfrac12\ \text{(P1e, unchanged)}.\]
+The hazard radius of a reduced $j/n$ ($n\ge10$) is $\varepsilon_n=2y^n/n^2$ ($n\le52$) or $y^n/(4\tau)$ ($n\ge53$), $\tau=\frac1{50}$, with $y$ the base of the region containing $j/n$.
+
+\begin{lemma}[H$_y$; PROVED, computer-assisted]\label{lem:Hy}
+P1e Lemma H(1)--(4) holds verbatim on each region with its own base, provided $\sup_{\rm region}|u_0|\,\rho\le y$ for the $\rho$ used. In particular this holds on $R_0,R_1$ with the parameters of Table~\ref{tab:reg}.
+\end{lemma}
+\begin{proof}
+The proof of P1e Lemma H uses $y=\frac12$ only through five numerical facts:
+\begin{itemize}
+\item (H1) $n^2\varepsilon_n\le\frac12$;
+\item (H2) $y^{\max(60,2m')}/(4\tau)\le2y^{m'}/m'^2$ for $10\le m'\le52$;
+\item (H3) $\varepsilon_n<\log(1/y)/(2n)$ and $f(\varepsilon_n)=\varepsilon_ny^{-1/(2n\varepsilon_n)}\ge1/(4\tau)$ (for $n\ge53$ this is $y^{-n}\ge25n^2$);
+\item (H4) $y^{n_2+1}/(4\tau)<1/(2n^2)$ for $n_2=\lfloor1/(2n\varepsilon_n)\rfloor-1$. This replaces the P1e phrase ``$n_2\ge2560$'', which was specific to $y=\frac12$.
+\item (H5) $y^{60}/(4\tau)<10^{-6}$ and $12.5y^m<1/(9m)$ for $m\ge60$.
+\end{itemize}
+\texttt{P1h\_hazard\_check.py} checks (H1)--(H5) in Arb for $y\in\{0.5,0.52,0.59\}$ and $10\le n\le10^4$. Beyond that they are monotone, since $1/y\ge(1+\frac1{53})^2$.
+
+\emph{No region crossing.} Suppose $x$ is in one region and a reduced $i'/m'$ with $\|mx\|<my^m/(4\tau)$, $m\ge60$, lies across a boundary $b=P/Q\in\{\frac16,\frac15\}$ ($Q\le9$). Then $|i'/m'-b|\ge1/(Qm')\ge1/(9m)>12.5y^m$ by (H5), which is impossible. The same holds for hazards of height $10\le n\le59$: $|j/n-b|\ge1/(9n)>\varepsilon_n$.
+At the arc end $x_1=0.143$ there is nothing to cross. It is not a rational of small height, every seed of $[\frac17,x_1)$ belongs to $R_1$ and is included in all of the certificates below, and $1/7$ itself lies at distance $1.43\cdot10^{-4}\gg y_1^{60}$ from the arc.
+So every hazard or low rational that is relevant for $x$ has the base of $x$'s region, and the P1e proof applies with $y$ replaced by that base. The low-seed disc radii used ($\ge2\cdot10^{-5}$) exceed $y^{60}/(4\tau)$ by (H5).
+\end{proof}
+
+\begin{table}[h]\centering\small
+\caption{Region data (all Arb-checked). $g$ = upper bound for $\sup|u_0|$ on the region (with factor $1+10^{-6}$). $\eta$ = contour height of the crude Lemma~B, with $g\,e^{2\pi\eta}\le y$ checked in Arb. $n_0$ = first height of the crude Lemma B.}\label{tab:reg}
+\begin{tabular}{lllllll}\toprule
+region & $y$ & $g$ & $\eta$ & $n_0$ (crude from) & exact seeds & $\theta=e^\kappa y/\sqrt{1-y}$\\\midrule
+$R_0=[\frac16,\frac15]$ & 0.52 & 0.5 & 0.0062 & 67 (used: 151) & 227, $10\le n\le150$ & 0.7544\\
+$R_1=[0.143,\frac16]$ & 0.59 & 0.5762 & 0.0037 & 301 & 654, $10\le n\le300$ & 0.9260\\\bottomrule
+\end{tabular}\end{table}
+
+\section{Theorem M$'$}\label{sec:M}
+\begin{proposition}[certificates; PROVED, computer-assisted]\label{prop:cert}
+\begin{enumerate}
+\item \emph{Base and level-$n$ data} (\texttt{P1h\_seeds.py}). Covered: all 228 reduced $a/N\in[\frac16,\frac15)$ with $3\le N\le150$, and all 655 reduced $a/N\in[\frac17,\frac16)$ with $3\le N\le300$. Every one has $Z_N,Z^\pm_N\ne0$ and all $G_i\ne0$. On $R_0$: $|Z|\ge0.8244$, $|Z^\pm|\ge0.5261$, margin $\ge0.2946$, $|\omega|\le1.039$. On $[\frac17,\frac16)$: $|Z|\ge0.5452$, $|Z^\pm|\ge0.4610$, margin $\ge0.4855$.
+\item \emph{Low seeds} (\texttt{P1e\_lowseed.py}, \texttt{P1h\_lowseed.py}; P1d Theorem 9 with P1e Lemma O; side $d>0$):
+ \begin{center}\small\begin{tabular}{llllllll}\toprule
+ seed & region side & $r$ & $\eta$ & $B\le$ & $\kappa_{\rm seed}\le$ & $c_{\rm seed}\ge$ & $\sup|u_0|e^{2\pi\eta}$ on disc\\\midrule
+ $1/6$ & $R_0$, right & $2\cdot10^{-5}$ & 0.006 & 0.0682 & $3.4\cdot10^{-7}$ & 0.7628 & $0.51921\le0.52$\\
+ $4/5$ ($=\frac15$ left) & $R_0$ & $5\cdot10^{-4}$ & 0.0257 & 0.5332 & $4.5\cdot10^{-4}$ & 0.4520 & $0.50040\le0.52$\\
+ $5/6$ ($=\frac16$ left) & $R_1$ & $5\cdot10^{-4}$ & 0.026 & 0.4308 & $8.4\cdot10^{-6}$ & 0.4600 & $0.58953\le0.59$ (on $r'=2.5\cdot10^{-4}$)\\
+ $1/7$ (not used) & -- & $5\cdot10^{-6}$ & 0.00375 & 0.0483 & $4.8\cdot10^{-4}$ & 0.5914 & --\\\bottomrule
+ \end{tabular}\end{center}
+ The last column is the $\Delta$-hypothesis of P1e Lemma H(4) with the region base.
+\item \emph{Middle and exact seeds} (\texttt{P1h\_lemmaB.py exact}). P1e Lemma B$'$ holds, with exact $\beta,P_1,P_2$, exact $|Z_n|$ and $\mathrm{env}^0$, at every seed:
+ \begin{itemize}
+ \item $R_0$: all 227 seeds with $10\le n\le150$ and radius $\varepsilon_n(y_0)$ satisfy $E\le0.00214$;
+ \item $R_1$: all 654 seeds with $10\le n\le300$ and radius $\varepsilon_n(y_1)$ satisfy $E\le0.0136$ (the maximum is at $2/13$);
+ \end{itemize}
+ $R\le\frac12$ throughout, and all side conditions pass.
+\item \emph{Deep seeds} (\texttt{P1h\_lemmaB.py crude}). P1e Lemma B holds with the region data of Table~\ref{tab:reg} and the induction hypothesis $|Z_n|\ge0.02e^{-0.005n}$:
+ \begin{itemize}
+ \item on $R_0$ for $151\le n\le2\cdot10^5$, with $\max E\le1.5\cdot10^{-10}$;
+ \item on $R_1$ for $301\le n\le2\cdot10^5$, with $\max E\le0.430$ (at $n=301$), $R\le0.125$, and $E(3000)\le4.5\cdot10^{-89}$, $E(2\cdot10^5)\le7.2\cdot10^{-6684}$.
+ \end{itemize}
+\item \emph{Direct covering} (\texttt{P1h\_caseA.py}; Proposition~\ref{prop:A}). $[x_1,\frac16]\setminus\mathcal D_1$ and $[\frac16,\frac15]\setminus\mathcal D_0$ are covered with $|Z^0|,|Z^\pm|>0.05$ and margin $>0.05$:
+ \begin{itemize}
+ \item $R_1$: $1023$ intervals, $\min|Z|\ge0.2959$;
+ \item $R_0$: $1939$ intervals, $\min|Z|\ge0.5215$, $\min|Z^\pm|\ge0.2907$, margin $\ge0.05217$, $|\omega|\le1.875$.
+ \end{itemize}
+ The discs are the hazards of height $10\le n\le59$ (region base), $(\frac16,\frac16+0.999\cdot2\cdot10^{-5})$, $(\frac15-0.999\cdot2.5\cdot10^{-4},\frac15)$ and $(\frac16-0.999\cdot2.5\cdot10^{-4},\frac16)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proposition}[A$'$, refined covering with $M>59$; PROVED]\label{prop:A}
+Let $x$ lie in no hazard of height $\ge10$ and in no low-seed disc, and let $N\ge151$. Write $\Phi=\Phi_{<60}+\Phi_{\ge60}$ by the degree of the $a_m$. Let $\psi'_n$ be the coefficients of $e^{\Phi_{<60}}$, $A=\sum_{m<60}\sup|a_m|$, and $c_n$ the coefficients of $\exp(\sum_{m<60}\sup|a_m|Y^m)$. Then for every $M\ge0$ and $s\in\{0,\pm1\}$:
+\[\Big|Z^s_N-\sum_{n\le M}\psi'_n\zeta^{-n^2-sn}\Big|\le e^{A}(e^{\tau/59}-1)+\Big(e^{A}-\sum_{n\le M}c_n\Big).\]
+\end{proposition}
+\begin{proof}
+By Lemma~\ref{lem:Hy} (P1e H(3) with base $y$), $\sum_{m\ge60}|a_m|\le\tau/59$, so the coefficient sum of $e^{\Phi_{\ge60}}$ is at most $e^{\tau/59}$.
+Since $\psi=\psi'*\chi$ with $\chi$ the coefficients of $e^{\Phi_{\ge60}}$ and $\chi_0=1$, we get $\sum|\psi-\psi'|\le(\sum|\psi'|)(\sum|\chi|-1)\le e^A(e^{\tau/59}-1)$. Also $\sum_{n>M}|\psi'_n|\le\sum_{n>M}c_n$.
+For $M\le59$ this is P1g Proposition A$^\pm$. Allowing $M$ up to 400 matters near the seeds: the resonant coefficient $a_q$ is large there.
+\end{proof}
+
+\begin{theorem}[M$'$; PROVED, computer-assisted]\label{thm:M}
+For all $N\ge1$ and $\gcd(a,N)=1$ with $a/N\in[0.143,0.857]$: $|Z_N(a/N)|\ge0.02\,e^{-0.005N}$.
+\end{theorem}
+\begin{proof}
+On $[\frac15,\frac45]$ this is P1e Theorem M. By conjugation it remains to treat $x\in[0.143,\frac15)$. The proof is the strong induction of P1e Theorem M, case by case, with the data of Proposition~\ref{prop:cert} in place of P1e's.
+\begin{itemize}
+\item \emph{Base} $N\le150$: item~1 (on $R_1$, $N\le300$).
+\item \emph{Deepest hazard $n\ge151$ ($R_0$) or $n\ge301$ ($R_1$).} Use item~4 and Lemma~\ref{lem:Hy}(2). Then $|Z_N|\ge\frac12\cdot\frac12\sqrt{\pi/2A}\,c_0e^{-\kappa n}e^{-n|F(t_0)|N}$ with $n|F(t_0)|\le g^n/(5n)+n\pi R_0^2\le y^n\le0.59^{151}$ and $N\ge1/(n|d|)\ge0.08/(ny^n)$. This is $\ge c_0e^{-\kappa N}$.
+\item \emph{Deepest hazard $10\le n\le150$ ($R_0$) or $\le300$ ($R_1$).} Use item~3: $|Z_N|\ge\frac12\cdot0.99\cdot\frac12\cdot0.545\,e^{-10^{-4}N}\ge c_0e^{-\kappa N}$.
+\item \emph{Low-seed disc, no hazard.} Use item~2: $|Z_N|\ge0.452\,e^{-4.5\cdot10^{-4}N}$.
+\item \emph{Otherwise.} Use item~5 and Proposition~\ref{prop:A}: $|Z_N|\ge0.2959$.
+\end{itemize}
+The cases are exhaustive, exactly as in P1e.
+\end{proof}
+
+\section{The P1g conditions on $[\frac16,\frac56]$}
+\begin{theorem}[main$'$; PROVED, computer-assisted]\label{thm:main}
+P1g Theorem main holds on $[\frac16,\frac56]\setminus\{\frac12\}$ with the same constants: $|Z^\pm_N|\ge0.02e^{-0.005N}$, $|\omega|\le7.96$, $\min_i|G_i|\ge0.0499$.
+\end{theorem}
+\begin{proof}
+On $R_0$ run the P1g induction with the data below.
+\begin{itemize}
+\item Base: item~1.
+\item Twisted low seeds (\texttt{P1g\_lowseed.py}):
+ \begin{itemize}
+ \item $1/6$: $r'=2\cdot10^{-5}$, $\max B_\pm\le0.111$, $c^\pm\ge0.4661$, margin $\ge0.4239$, $|\omega|\le0.8984$;
+ \item $4/5$: $r'=2.5\cdot10^{-4}$, $\max B_\pm\le0.0656$, $c^\pm\ge0.5628$, margin $\ge0.1817$, $|\omega|\le1.254$.
+ \end{itemize}
+\item Exact Lemma B$^\pm$ at the 227 seeds: $\min(\text{margin}_n-\sigma)\ge0.1713$.
+\item Crude Lemma B$^\pm$ for $n\ge151$: $\sum_{151\le n\le2\cdot10^5}\sigma(n)\le5.6\cdot10^{-8}$ and $\sum\rho(n)\le3.8\cdot10^{-9}$. The tail $n>2\cdot10^5$ is handled as in P1g Lemma B$^\pm$(iii) with $\theta=0.7544$.
+\item Covering: item~5.
+\end{itemize}
+A chain of deepest hazards starting in $R_0$ stays in $R_0$ (Lemma~\ref{lem:Hy}). So the margin is $\ge0.05-5.6\cdot10^{-8}-10^{-50}\ge0.0499$, and $|\omega|\le\max(1.875,1.254,1.039)(1+10^{-8})$.
+\end{proof}
+
+\section{Theorems B$'$, C$'$: the landscape at general $\ell$}\label{sec:LS}
+\begin{lemma}[LS$(\ell_1)$; PROVED for $(\ell_1,N)=(\log2,\,N\ge16)$ and $(0.5522,\,N\ge17)$, computer-assisted]\label{lem:LS}
+P1f Lemmas LS, LSp and head hold for every $\zeta$ with $\ell\in[\ell_1,\log4]$ and $N\ge N_1$. The margins are as printed by \texttt{P1h\_landscape.py}; at $\ell_1=\log2$, $N=16$: $T-W_{D<0}\ge0.050$, $D\ge0.070$, head margin $\ge0.076$, $\frac\pi4-|\theta^*|\ge0.27$.
+\end{lemma}
+\begin{proof}
+Each estimate in the proofs of P1f Lemmas LS, LSp, head is an explicit expression in $(\ell,N,\theta^*)$. The quantities that are compared with the tie height are:
+\begin{itemize}
+\item $T-2\delta\ell$, $T-W_{D<0}$, $T-H_{\rm head}$, $D=T-\frac{\pi^2}{6N^2}-2\delta\ell$, and $D'=\frac{\ell^2}4-2\delta\ell$.
+\item Here $T=\frac{\ell^2}{4\cos\theta^*}-\frac{\pi^2s^2\cos\theta^*}{4N^2}+\operatorname{Re}(E_we^{-i\theta^*})$ and $\delta=\frac1{8N}$.
+\item Each has the form $\frac{\ell^2}4-\frac{\ell}{4N}+(\ell\text{-free})$, which increases in $\ell$ for $\ell>\frac1{2N}$.
+\item The Taylor factor $1/(e^{2N\operatorname{Re}y}-1)$ with $\operatorname{Re}y\ge\ell/4$ decreases in $\ell$.
+\end{itemize}
+So these are evaluated at $\ell=\ell_1$. The size bounds ($|L_\mu|$, $\Delta$, $|x-x_\mu|\le15$) increase with $\ell$ and are evaluated at $\log4$. The angle is $|\tan\theta^*|\le\pi s/(N\ell_1)$.
+The two places where P1f used a frozen constant are replaced by the exact quantity: the ray coefficient $0.34$ by $\cos(|\theta^*|_{\max}+\frac\pi4)$, and $\eta_N=\min(16.2/N^2,0.1)$ by $\min((2\pi^2s^2\cos\theta^*-C_R)/N^2,\,T-W_{D<0})$.
+\texttt{P1h\_landscape.py} evaluates all of them in Arb for $N_1\le N\le10^5$ (all positive). For $N>10^5$ every height margin exceeds half its limit ($\ge\ell_1^2/8$), and the $N^{-2}$ margins are $\ge(2\pi^2\cdot0.99-1.65)/N^2>0$.
+The head lemma's constant $0.0837$ requires $N\ge16$, which is why $N_1\ge16$.
+\end{proof}
+
+\begin{theorem}[B$'$, C$'$; PROVED, computer-assisted through Theorems~\ref{thm:M},~\ref{thm:main}]
+\begin{enumerate}
+\item P1f Theorem B (zeros of $B$ accumulating at $\zeta$ along the tie ray; simple; simple poles of $G^T_0$) holds for every $\zeta=\e(a/N)$ with $a/N\in[0.143,0.857]$ and $N\ge17$, and with $a/N\in[\frac16,\frac56]$ and $N\ge16$.
+\item P1f Theorem C(i)--(iii) holds for $a/N\in[\frac16,\frac56]$, $N\ge16$.
+\end{enumerate}
+Consequently the poles of $G^T_0$ accumulate on the whole arc $\arg q\in[0.286\pi,1.714\pi]$. The poles of $U$ and $V$ accumulate on $\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$ (standing \texttt{thm:model}, \texttt{thm:RJ}).
+\end{theorem}
+\begin{proof}
+The proof of P1f Theorems asym, B, C uses $\ell\ge\ell_0$ only through Lemmas LS, LSp, head (now Lemma~\ref{lem:LS}), through $A(n)\ne0$, i.e.\ $Z_N\ne0$ (Theorem~\ref{thm:M}), and, for C, through $Z^+_N\ne0$ and the $\omega$-conditions (Theorem~\ref{thm:main}).
+The EM lemma, the class decomposition and Rouch\'e are $\ell$-free, given $|u_0|<1$ and $N\ell\ge3$ (Lemma W).
+\end{proof}
+
+\begin{table}[h]\centering\small
+\caption{$N_1(\ell_1)$: least $N$ with all landscape margins positive (\texttt{P1h\_landscape.py scan}). The $\ell_1=\log2$ and $0.5522$ rows are PROVED ($N\le10^5$ in Arb plus the asymptotic remark). The others are checked on the window $[N_1,N_1+4000]$ only (VERIFIED).}\label{tab:N1}
+\begin{tabular}{lcccccccccc}\toprule
+$\ell_1$ & $\log 2$ & 0.6 & 0.5 & 0.4 & 0.3 & 0.2 & 0.12 & 0.1 & 0.05 & 0.02\\
+$N_1$ & 13 (16) & 15 (16) & 18 & 24 & 34 & 55 & 105 & 132 & 311 & 947\\
+$N_1\ell_1$ & 9.0 & 9.0 & 9.0 & 9.6 & 10.2 & 11.0 & 12.6 & 13.2 & 15.6 & 18.9\\\bottomrule
+\end{tabular}\end{table}
+So the tie-ray analysis needs only $N\ell\gtrsim10$. The slow growth comes from the head term $\frac{2\delta}N\log\frac1{1.8\delta}\sim\frac{\log N}{4N^2}$. \textbf{Conditional statement (PROVED modulo the window check for $\ell_1\notin\{\log2,0.5522\}$):} for every $\zeta$ with $\ell\ge\ell_1>0$, $N\ge\max(16,N_1(\ell_1))$ and $Z_N(a/N)\ne0$, P1f Theorem~B holds at $\zeta$. The only missing input on the full arc $\ell>0$ is $Z_N\ne0$.
+
+\section{The obstruction as $\ell$ decreases}\label{sec:obs}
+The P1e induction has three components: seeds (low and exact), hazards (Lemma B crude), and the direct covering. Each degrades in a quantifiable way.
+
+\paragraph{1. Golden threshold (PROVED as a statement about Lemma B).} The crude Lemma B controls the error at a deep seed $j/n$ by $\sqrt{2n}\sup_k|e^{B_k}|\le\sqrt{2n}(1-y)^{-n/2}$ (triangle inequality over $k$) against $|Z_n|\ge c_0e^{-\kappa n}$ and the hazard size $d\le12.5y^n$. So $E,R\asymp n^{5/2}\theta^n$ with $\theta=e^\kappa y/\sqrt{1-y}$, and one needs $g<y$ and $\theta<1$. That is
+\[y<y^*=0.61633\ (\kappa=0.005;\ \tfrac{\sqrt5-1}2\text{ as }\kappa\to0),\qquad\text{i.e.}\quad\ell>0.48398,\quad x>0.132948 .\]
+For $x\le0.13295$ no choice of $(y,\eta)$ makes the crude Lemma B hold at any height. This is the sharp form of P1e's ``$\ell>0.48$'' remark.
+
+\paragraph{2. Crossover height (VERIFIED, \texttt{P1e\_lemmaB.py}).} Below $n_0$ the exact data (Lemma B$'$) must be used:
+\begin{center}\small\begin{tabular}{lllllll}\toprule
+$g$ (region left end) & 0.5 ($\frac16$) & & & 0.5762 ($\frac17$) & & \\
+$y$ & 0.52 & 0.54 & 0.56 & 0.59 & 0.60 & 0.61\\
+$n_0$ & 67 & 89 & 126 & 301 & 514 & 1467\\\bottomrule
+\end{tabular}\end{center}
+$n_0\sim\log(C)/\log(1/\theta)$ with $\theta\to1$ as $y\to y^*$. The exact seeds up to $n_0$ number $\approx0.3\,n_0^2\,|{\rm region}|$, at cost $O(n^2)$ each.
+The region $[0.1335,\frac17]$ ($g\in[0.576,0.615]$) would need $n_0$ in the thousands, and near $x=0.133$ it needs $n_0\to\infty$. HEURISTIC estimate: about $10^4$--$10^6$ Arb seed evaluations for $[0.135,\frac17]$, a Rust job, not attempted.
+
+\paragraph{3. Low-seed/covering handover (VERIFIED).} Two constraints conflict near a low seed $p/q$:
+\begin{itemize}
+\item The seed certificate needs $\sup|u_0|e^{2\pi\eta}\le y$, so $\eta\le\log(y/g)/2\pi$. At $\frac17$ with $y=0.59$ this gives $\eta\le0.00376$.
+\item With that $\eta$, P1e Lemma O certifies only $r=5\cdot10^{-6}$. At $10^{-5}$ it gives $B=0.989$, and larger radii fail the gap condition $d\le2\,$gap.
+\end{itemize}
+The direct covering (Proposition~\ref{prop:A}) needs $A=\sum\sup|a_m|$ moderate, but at distance $d$ from $p/q$, $|a_q|\approx g^q/(2\pi q^2d)$. At $d=5\cdot10^{-6}$ from $\frac17$ this is $13.6$, and the bound is $e^A(e^{\tau/59}-1)=754$ even with $M=800$ (\texttt{caseA\_R1\_1\_7.txt}, FAILED as expected).
+So the disc and the covering do not meet at $1/7$. The arc stops at $x_1=0.143=\frac17+1.43\cdot10^{-4}$, where $|a_7|\approx0.48$ and the covering passes.
+A larger $y$ near $\frac17$ (e.g.\ $0.60$, $\eta\le0.0064$) would enlarge the disc, at the price of $n_0=514$ (item 2).
+
+\paragraph{4. The $\omega$-margin (P1g) fails first (computer-assisted diagnosis).} On $R_1$, Theorem M$'$ closes, but the P1g $\omega$-induction does not, for two reasons:
+\begin{itemize}
+\item At the seed $2/13$ the exact twisted Lemma B$^\pm$ gives $E_\pm\le0.332$, hence $\rho\le3.60$ and a loss $3.39$ against a margin $0.58$. This is the only one of the 654 seeds that fails.
+\item The crude chain has $E_\pm\le0.438$ at $n=301$, $\rho(301)\le9.75$ and $\sum\sigma\le1050$. The $\omega$-induction needs $\sum\sigma<0.05$, which requires $E\lesssim10^{-3}$ at the first crude height, i.e.\ exact seeds to $n\approx500$ at $y_1=0.59$.
+\end{itemize}
+Hence $U,V$ density is proved only on $[\frac16,\frac56]$, not on $[0.143,0.857]$ (OPEN there). The covering itself passes on all of $[x_1,\frac16]$ with margin $\ge0.0507$ (VERIFIED as part of the Z-certificate runs).
+
+\paragraph{5. Below $\ell\approx0.484$: the moment hypothesis (HEURISTIC/OPEN).} The failing input is the single inequality $\sup_k|e^{B_k(t)}|\le(1-y)^{-n/2}$, used with $\sum_k|\gamma_k|$, i.e.\ the loss factor $\Lambda=\mathrm{env}/|Z_n|$ of P1e \S2.
+\begin{itemize}
+\item On drift families $\Lambda$ grows like $e^{0.008q}$ (P1e: $\Lambda\le2.7\cdot10^7$ at $182/2001$).
+\item The moment ratios stay bounded: $D_1\le0.05$, $D_2\le0.003$.
+\item The replacement hypothesis would be $|f^{(j)}(t)|\le C_j(2\pi n)^j|f(0)|$ on $|t|\lesssim1/n$ for $f(t)=\sum_k\gamma_ke^{\Phi_n(\zeta_0^k\e(-t))}$. Carried through Lemma lap, it would give an error $\approx D_2(2\pi n)^2d$ with no $\Lambda$, and hence a threshold $y<1$, i.e.\ all of $\ell>0$.
+\end{itemize}
+The hypothesis is not inductively closed by anything proved here. The derivative $f'$ at level $N$ is not controlled by level-$n$ moments without a second-order version of Lemma R, which is not available (OPEN).
+The exact seed data remain healthy well below the threshold: on $[\frac17,\frac16)$, $|Z_n|\ge0.545$ for all $n\le300$, with a slow drift $0.593\to0.545$ from $n\le150$ to $n\le300$ (VERIFIED). So the obstruction is in the method, not in the object.
+
+\section{What is not proved; weakest points}
+\begin{enumerate}
+\item \textbf{Unreviewed.} Lemma~\ref{lem:Hy} (region-dependent bases), Proposition~\ref{prop:A} ($M>59$), and the transcription of the P1f landscape estimates into \texttt{P1h\_landscape.py} have not been reviewed adversarially. The landscape script re-derives the P1f bounds as functions of $(\ell,N)$; an error there would affect Theorem B$'$ only, not Theorem M$'$.
+\item \textbf{Hand tails.} The crude Lemma B is machine-checked to $n=2\cdot10^5$. Beyond that $E,R\le Cn^{5/2}\theta^n$ with $\theta\le0.926$ by P1e's term-by-term argument, not machine-checked. The margin is absurd: $E(2\cdot10^5)\le10^{-6683}$.
+\item \textbf{Tight $\Delta$-hypothesis at $5/6$.} $\sup|u_0|e^{2\pi\eta}=0.58953\le0.59$ on the disc of radius $2.5\cdot10^{-4}$. It is rigorous, but it has only $5\cdot10^{-4}$ of room. (On the full $5\cdot10^{-4}$ disc it would exceed $0.59$, so only $r'=2.5\cdot10^{-4}$ is used.)
+\item \textbf{Monotonicity in $g$.} The crude region bound uses one $g$ per region, as P1e does, and relies on P1e's statement that all terms increase with $|d|$ and $g$. This is inherited, not re-proved.
+\item \textbf{Inherited standing.} P1d (Lemmas W, 6, 8; Theorems 2, 5, 9), P1e (H, R, O), P1f ($O(t)$ and $j_0$ not explicit), P1g, python-flint/Arb. For $U,V$ also \texttt{thm:model}, \texttt{thm:RJ}.
+\item \textbf{Not reached.} $Z_N\ne0$ on $(0.0804,0.143)$: OPEN. The target $[\frac16+\delta,\frac56-\delta]$ of the brief is exceeded (on $\ell$: from $0.855$ to $0.552$), but the gap to the golden threshold $0.484$ and to $\ell=0$ remains.
+\end{enumerate}
+
+\paragraph{Files} (\texttt{rootunity\_zeros/general/P1h/}):
+\begin{itemize}
+\item Scripts: \texttt{P1h\_seeds.py}, \texttt{P1h\_lemmaB.py} (environment variables \texttt{P1H\_Y}, \texttt{P1H\_G}, \texttt{P1H\_ETA}, \texttt{P1H\_NOMARGIN}), \texttt{P1h\_caseA.py} (\texttt{P1H\_Y}, \texttt{P1H\_ZONLY}), \texttt{P1h\_lowseed.py}, \texttt{P1h\_hazard\_check.py}, \texttt{P1h\_landscape.py}.
+\item Outputs: \texttt{seeds\_R0\_*.txt}, \texttt{seeds\_R1\_*.txt}, \texttt{lemmaB\_R*\_*.txt}, \texttt{caseA\_R*\_*.txt}, \texttt{caseA\_discs\_R*.txt}, \texttt{low*\_*.txt}, \texttt{landscape\_*.txt}.
+\item Summary: \texttt{P1h\_certlog.txt}.
+\end{itemize}
+Every run used \verb|perl -e 'alarm 290; exec @ARGV'| and stayed under 300\,MB. A fresh check gave 24\,GB RAM and 7.9\,GB free disk; P1h writes under 0.5\,MB. No Rust was needed at this range. Rust is the natural tool for item~2 of \S\ref{sec:obs}.
+\end{document}

@@ -1,0 +1,17 @@
+  r=0.0083 ka=3: FAIL rational of height <= n2 in the x-ball (n=25) [0s]
+  r=0.0083 ka=4: FAIL rational of height <= n2 in the x-ball (n=25) [0s]
+  r=0.006 ka=3: FAIL rational of height <= n2 in the x-ball (n=31) [0s]
+  r=0.006 ka=4: FAIL rational of height <= n2 in the x-ball (n=31) [0s]
+  r=0.004 ka=3: FAIL rational of height <= n2 in the x-ball (n=43) [0s]
+  r=0.004 ka=4: FAIL rational of height <= n2 in the x-ball (n=43) [0s]
+  r=0.003 ka=3: B=11.8
+  r=0.003 ka=4: FAIL lower-ray monotonicity [1s]
+  r=0.002 ka=3: B=7.55
+  r=0.002 ka=4: FAIL lower-ray monotonicity [2s]
+  r=0.0015 ka=3: B=5.14
+  r=0.0015 ka=4: B=9.60
+  r=0.001 ka=3: B=2.60
+  r=0.001 ka=4: B=6.34
+  r=0.0007 ka=3: B=1.16
+  r=0.0007 ka=4: B=3.97
+CERT 5/6 d>0 r=0.0005 eta=0.026 n2=60 V0=0.0316509 kappa=3: B<=0.4308 N*>=5.03e+13  ReF0 in [+/- 1.40e-6]  kappa_seed<=8.36e-6  sqrt(pi/2A)>=0.9846  min|S_amp|>=0.8208  c_seed>=0.4600

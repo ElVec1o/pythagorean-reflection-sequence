@@ -1,0 +1,25 @@
+  theta<pi/4 s=1     min 0.5094 at N=16
+  quad coeff s=1     min 0.4876 at N=16
+  (a) D>=0 s=1       min 1.809e-9 at N=100000
+  (a) D<0 s=1        min 0.08000 at N=16
+  (b) D>0 s=1        min 0.09940 at N=16
+  (b) quad s=1       min 0.09423 at N=16
+  (b) far s=1        min 0.01836 at N=16
+  (c) s=1            min 0.09298 at N=16
+  head s=1           min 0.1054 at N=16
+  theta<pi/4 s=2     min 0.2699 at N=16
+  quad coeff s=2     min 0.2667 at N=16
+  (a) D>=0 s=2       min 7.731e-9 at N=100000
+  (a) D<0 s=2        min 0.05049 at N=16
+  (b) D>0 s=2        min 0.06989 at N=16
+  (b) quad s=2       min 0.06318 at N=16
+  (b) far s=2        min 0.01098 at N=16
+  (c) s=2            min 0.06347 at N=16
+  head s=2           min 0.07594 at N=16
+  (a') D>=0          min 3.783e-9 at N=100000
+  (a') D<0           min 0.08905 at N=16
+  (b') quad          min 0.1041 at N=16
+  (b') far           min 0.02083 at N=16
+  (c) lin coeff      min 2.326 at N=16
+  Lemma W            min 8.090 at N=16
+LANDSCAPE PASSED ell1=log2, 16<=N<=100000

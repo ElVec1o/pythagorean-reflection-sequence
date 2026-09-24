@@ -1,0 +1,3 @@
+segments 7
+CASEA PASSED on [4/25,1/6]: 259 intervals (511 evaluations), M-histogram [(8, 254), (20, 1), (40, 2), (59, 2)], min|Z|>=0.5023, min|Z^s|(s=0,+-1)>=0.2666, min margin>=0.05077 (at x in [0.166243132,0.166416917]), max|omega|<=1.784, max T<=0.1941
+exit 0
