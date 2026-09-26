@@ -195,7 +195,10 @@ Theorems~\ref{thm:model} and~\ref{thm:RJ}, at $x=\pm1$, $\pm i$, $\pm e^{\pm i\p
 of unity $\zeta=e^{2\pi ia/N}$ with $\frac aN\in[\frac16,\frac56]$ and $N\ge16$, hence at every point of
 $\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$ (Corollary~\ref{cor:arcUV}, also
 computer-assisted). Off these arcs, and away from $x=\pm1$, the accumulation is open for $U$ and $V$; in particular
-it is open for $\frac aN\in[0.143,\frac16)$, where the zeros of $B$ are proved (Remark~\ref{rem:arcobstruction}).
+it is open for $\frac aN\in[0.143,\frac16)$, where the zeros of $B$ are proved (Remark~\ref{rem:arcobstruction}),
+except at the single point $\frac aN=\frac2{13}$, where a direct per-case certificate gives accumulation
+of the poles of $U$ and $V$ at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$ for $\zeta=e^{2\pi ia/N}$
+(Remark~\ref{rem:arcobstruction}).
 
 \paragraph{Standing, and what is cited from the companion paper.} The statements about the travel
 resolvent are unconditional. The statements about $U$ and $V$ rest on two theorems. The transfer
@@ -2479,6 +2482,32 @@ limit. At $\frac17$ the certifiable low-seed disc ($5\cdot10^{-6}$) no longer me
 the twisted $\omega$-margin fails earlier: on $[0.143,\frac16)$ one exact seed ($\frac2{13}$) and the first crude
 heights lose more than the margin. So, although $Z_N\ne0$ is proved there, the density of the poles of $U$ and $V$
 for $\frac aN\in[0.143,\frac16)$ is open. Everything on $\frac aN\in(0.0804,0.143)$ is open, even for $G^T_0$.
+
+The one exception in $[0.143,\frac16)$ is the single reduced point $\frac aN=\frac2{13}=0.1538$, which is
+not reached by the hazard induction above but is covered directly by a per-case landscape certificate:
+\texttt{rootunity\_zeros/general/P1i/P1i\_lemma.tex} (Theorem~C at small $N$ and its Corollary on
+$\frac2{13}$) proves that the poles of $U$ and $V$ accumulate at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$ for
+$\zeta=e^{2\pi i\cdot2/13}$, conditional on Theorems~\ref{thm:model} and~\ref{thm:RJ} as usual. More
+generally, that paper proves the zeros of $B$ (Theorem~asym/B of \texttt{P1f\_lemma.tex}) and the
+corresponding poles of $U,V$ (Theorem~C) directly, by a per-case Arb certificate, at every reduced
+$\frac aN\in[0.143,0.857]$ with $3\le N\le16$ except $N=4$ (already \texttt{prop:qi}/Corollary~\ref{cor:Ui}
+above) and $N=6$: 52 points in all. This is a direct, single-point statement at each such $\zeta$, not a
+re-derivation of the density statements of Theorem~\ref{thm:arc} or Corollary~\ref{cor:arcUV}, both of
+which already cover these points (save $\frac2{13}$) by closure once $N\ge16$ or $\frac aN\in[\frac16,\frac56]$;
+it does not enlarge the arcs on which density is proved.
+
+The point $N=6$ ($\frac aN=\frac16,\frac56$) is not merely unproved by this method but structurally
+excluded from it: \texttt{P1i\_lemma.tex} (the section ``$N=6$: exactly why it is not closed'') shows the
+tie height there is $T=-0.10878<0$ while the head term $b_0=1$ has rate $0$, so no term-by-term bound of
+the shape used throughout this programme (here and in Theorem~\ref{thm:arc}) can ever close the head at
+$N=6$, whatever the cutoff or constants; this is exactly the mechanism already met at $q=i$
+($T=-0.0707$, \texttt{prop:qi}) but is not resolved there either. A proof at $N=6$ would need the $q=i$
+contour-through-$\operatorname{Re}x<0$ technique of \texttt{lem:qi-bounds}(ii), generalised from the two
+residue classes used at $q=i$ to six; this is open. (Accumulation of the zeros of $B$ at
+$e^{2\pi i/6}$, and of the poles of $U,V$ at $\pm\sqrt{e^{\pm2\pi i/6}}$, still holds
+unconditionally-in-method by closure from Theorem~\ref{thm:arc}/Corollary~\ref{cor:arcUV}, since $N=6<16$
+is not required there once $\frac16$ is a limit of larger-$N$ points in the arc; what is open at $\frac16$
+is only the direct, single-point, tie-ray statement.)
 \end{remark}
 
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}

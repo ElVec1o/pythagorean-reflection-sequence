@@ -75,7 +75,7 @@ Fix a member $a/N$ with $N\ne4,6$. Let $n,s,\theta^*,T,x_\mu,V_\mu,W_\mu$ be as 
 \begin{itemize}
 \item Non-dominant explicit mode: $\Pi_\mu=[x_A,x_\mu]\cup(x_\mu+e^{i\theta/2}[0,\infty))$, as in P1f.
 \item Dominant mode: $\Pi_\mu=[x_A,P_\mu]\cup(x_\mu+e^{i\theta/2}[-\lambda_\mu,\infty))$ with $P_\mu=x_\mu-\lambda_\mu e^{i\theta/2}$ and $\lambda_\mu=\operatorname{Re}x_\mu/(2\cos\frac\theta2)$. So the path crosses the saddle on its steepest-descent line.
- This change of path from P1f is needed at small $N$. At $\frac13$ the straight segment $[x_A,x_\mu]$ meets the saddle at $80.5^\circ$ from the steepest-descent direction, within $9.5^\circ$ of a level direction. The integrands are entire, so any path with the same endpoints gives the same integral.
+ This change of path from P1f is needed at small $N$. At $\frac13$ the straight segment $[x_A,x_\mu]$ meets the saddle at $80.5^\circ$ from the steepest-descent direction, within $9.5^\circ$ of a level direction. $\Omega_\mu$ is not entire: it has a logarithmic/dilogarithm branch point from $\operatorname{Li}_2(e^{-2Nx})$ at $e^{-2Nx}=1$, i.e.\ on $\operatorname{Re}x=0$. Condition (d) of Proposition~\ref{prop:cert} certifies $\operatorname{Re}x>0$ on every box and ray of both the old and the new path, so $\Omega_\mu$ is holomorphic on the simply-connected half-plane containing both paths, and Cauchy's theorem (not global entireness) gives the same integral for any path with the same endpoints there.
 \item Remainder modes: $\gamma_\mp=x_A+e^{i(\theta\mp\pi/8)}[0,\infty)$, as in P1f. The kernel bound is $\le2.09$ by (iv) of \texttt{lem:qi-bounds}.
 \end{itemize}
 
@@ -192,7 +192,7 @@ Accumulation of the zeros of $B$ at $\e(\frac16)$, and of the poles of $U,V$ at 
 \begin{enumerate}
 \item \textbf{Inherited level of rigour.} As in P1f and paper2a, the $O(t)$ of the EM lemma and of Laplace's method, and hence $j_0$, are not explicit. The certificate proves the exponent inequalities with a uniform margin; that is exactly what the P1f argument uses.
 \item \textbf{Transcription risk.} The script re-implements the mode bookkeeping of P1f Section~dec: the explicit set, the remainder modes, and the flip of $\epsilon$ for $S_\pm$. It checks parity consistency and that the dominant modes are explicit, but the bookkeeping itself is taken from P1f and not re-derived here. It agrees with \texttt{P1f\_landscape\_check.py}.
-\item \textbf{Path change.} The dominant paths differ from P1f (descent-line polygon). This is legitimate because the integrands are entire, but it has not been reviewed.
+\item \textbf{Path change.} The dominant paths differ from P1f (descent-line polygon). This is legitimate because $\Omega_\mu$ is holomorphic on the half-plane $\operatorname{Re}x>0$ that condition (d) certifies both paths lie in, not because it is entire; the deformation is Cauchy's theorem on that half-plane. Reviewed by Reviewer AE (CORRECT, with this wording fixed).
 \item \textbf{Range of $x_A$.} We cover $|x_A|\in[\delta/2,2\delta]$ as P1f does. The true range is $\delta(1+O(r))$.
 \item \textbf{Thin printed margins.} These are artefacts of stopping the bisection early (e.g.\ remainder $-0.0057$ at $\frac13$), not true tightness. Any positive margin suffices.
 \item \textbf{Not closed:} $N=6$ (Section~\ref{sec:six}). $N=4$ is not re-proved here (\texttt{prop:qi}).
