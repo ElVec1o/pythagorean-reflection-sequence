@@ -2615,6 +2615,29 @@ $e^{2\pi i/6}$, and of the poles of $U,V$ at $\pm\sqrt{e^{\pm2\pi i/6}}$, still 
 unconditionally-in-method by closure from Theorem~\ref{thm:arc}/Corollary~\ref{cor:arcUV}, since $N=6<16$
 is not required there once $\frac16$ is a limit of larger-$N$ points in the arc; what is open at $\frac16$
 is only the direct, single-point, tie-ray statement.)
+
+A sharper diagnosis of \emph{why} the generalisation just described does not go through, beyond
+restating $T<0$, is given by \texttt{P1\_N6/P1\_N6\_note.tex} (reviewed by Reviewer AK: correct, one
+wording fix applied). Two natural guesses for the obstruction are checked there and ruled out: it is not
+that $N=6$'s tie is a three-way (rather than pairwise) tie forced by the extra divisor $3\mid6$ (the
+certified tie pair is $(-3,-1)$, a clean pairwise tie, exactly as at $q=i$), and it is not that
+$6=2\cdot3$'s composite residue structure breaks the mod-$2$ even/odd nesting used throughout the
+programme (the phase function and the Pochhammer/theta factorisation are $N$-generic and the mod-$2$
+split nests inside a mod-$6$ decomposition exactly as it does inside mod-$4$). The actual obstruction
+identified is that every part of \texttt{lem:qi-bounds} rests on a \emph{ray lemma} whose proof needs
+$\sin\theta\ne0$ at the tie-ray angle $\theta$, to get the argument of $w=ce^{-v}$ to rotate away from
+resonance along the ray; at $q=i$ this holds ($\theta_i\ne0$), but at $N=6$ the certified tie-ray angle is
+exactly $\theta^\ast=0$, where the rotation mechanism has no content and the ray lemma's proof, as
+written, gives no lower bound. The note stresses this is a diagnosis, not a proof of impossibility: a
+modulus-only rescue of the ray lemma at $\theta=0$ (using only the $\cos\theta=1$ decay of $|w|$, without
+the rotation term) was not checked case-by-case against the six residue points occurring at $N=6$, so it
+remains conceivable that a variant argument closes this case. The note also records that $\theta^\ast=0$
+occurs at two already-closed points, $\frac3{10}$ and $\frac5{14}$, without being fatal there --- those
+points are closed by \texttt{P1i\_lemma.tex}'s per-case landscape certificate, which does not invoke the
+ray lemma at all and does not need a head-elimination trick, since at those points the head does not
+exceed the tie height. This is consistent with, and does not weaken, the $N=6$ diagnosis: $N=6$ is the
+case where the head genuinely beats the tie height, forcing exactly the head-elimination route whose sole
+known tool is the ray lemma.
 \end{remark}
 
 \begin{remark}[the innermost arc $\frac aN\in(0.0804,0.143)$: what a first probe shows]\label{rem:innerarc}
