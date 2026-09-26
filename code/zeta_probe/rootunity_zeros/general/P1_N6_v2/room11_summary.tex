@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 11 (P1 N=6 contour construction, P2 odd-a): moderator summary}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\textbf{Erd\H os: the direct N=4-template contour construction for N=6 fails, for a precise and
+now fully verified reason (Reviewer AV).} Computing the exact N=6 saddle data
+($x_{-3}=0.349119-i\pi/6$, $x_{-1}=0.349119+i\pi/6$, confirmed algebraically exact -- $c^6=64$
+real forces the fixed-point root $w$ real, giving $\mathrm{Im}(x_m)=\arg(c)/2+\pi m/6$ as an
+identity, not a numerical coincidence) shows the two saddle-\emph{pinned} constant-height contour
+legs coincide \emph{exactly}, along their entire length, with two of Room 8's five N=6 resonance
+loci ($\pi/6$, $5\pi/6\equiv-\pi/6$). A calibration check (Reviewer AV, independently confirmed)
+shows N=4's own saddle heights ($3\pi/8$, $-\pi/8$) miss its own three resonance loci by a clear
+nonzero margin -- so this is a genuine N=6-specific obstruction, not an assumed pattern. The
+contour height is forced by the saddle equation (not a free design choice), and rerouting away
+from it would make the contour miss the actual stationary point, defeating the Laplace-method step
+that produces the leading asymptotic term (\texttt{prop:qi} Step~3) -- a real mechanism, not
+assertion. \textbf{Correctly scoped conclusion (per Reviewer AV, softening the room's own slightly
+stronger framing):} this rules out the \emph{direct N=4-template transplant} specifically, for a
+precise, saddle-equation-forced reason; it does not prove no technique whatsoever can work at
+$N=6$. Two unclosed escape routes remain explicitly open in the underlying note, one described as
+``not obviously possible,'' the other as needing a bound not written anywhere in the repository.
+
+\textbf{Tao: pushing P2's odd-$a$ branch found nothing rigorous, plus an important precision
+caution (URGENTLY audited, resolved).} No exact recursion or rigorous convergence proof was found
+for the odd-$a$ branch. In the course of this, Tao's seat found that the \texttt{ratio\_amp} tool
+suffers catastrophic cancellation (values changing by $\sim100$ orders of magnitude under 200$\to$500-bit
+precision doubling) for a \emph{different} construction ($N=aq+2$, which forces $N\equiv2\pmod q$,
+manufacturing an artificial resonance). This raised an urgent question of whether Room 7's
+committed findings were themselves precision-converged. \textbf{Resolved: Reviewer AU audited 10 of
+Room 7's actually-cited points at 200/400/800/1600-bit precision; all are bit-identical to 40
+digits. Room 7's construction ($a=\mathrm{round}(N/q)$) has no such forced resonance, so the
+cancellation issue does not transfer. No retraction needed; Room 7/9 stand as reported.}
+
+\textbf{Room verdict: ADVANCED.} N=6's obstruction is now located with algebraic exactness (not
+just numerically observed), a genuine advance in precision over Room 1/8's findings, with one
+specific technique now precisely ruled out rather than merely stalled-on. The precision scare
+around Room 7 was investigated urgently and resolved negatively (no problem found) -- itself
+valuable due diligence, not wasted effort. Neither result closes its target problem; both narrow
+it further with verified, not merely asserted, mechanisms.
+
+\end{document}

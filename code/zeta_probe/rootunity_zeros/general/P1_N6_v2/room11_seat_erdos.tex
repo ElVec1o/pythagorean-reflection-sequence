@@ -1,0 +1,155 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 11 (seat: Erd\H os) --- attempting the explicit $N=6$ contours
+$\Gamma_\pm^{(6)},\Pi_0^{(6)}$}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\section*{Calibration point}
+
+Read in full: \texttt{paper2a.tex}'s proof of \texttt{prop:qi} (the exact decomposition of Step~1:
+paths $\Gamma_\mp$ leaving a half-integer $x_c$ near $-\frac\pi8(\cot\theta_i+i)$, with $\Gamma_-$
+running to the constant-height line $\operatorname{Im}x=-\pi/8$ and out to $+\infty$ through
+$x_-=x_0-\frac{i\pi}2$, $\Gamma_+$ running to $\operatorname{Im}x=\pi/8$ and then along the tilted
+ray $\frac{i\pi}8+e^{i55^\circ}\mathbb R_{\ge0}$, and $\Pi_0$ running to the constant-height line
+$\operatorname{Im}x=3\pi/8$ and out to $+\infty$ through $x_0$), and \texttt{lem:qi-bounds} in full
+(the ray lemma and parts (i)--(iv), including the proof paragraph deriving $\delta\ge\mathcal
+D(a',\varphi)$ from ``the argument of $w$ turns at rate $\sin\theta$''). Also read
+\texttt{room8\_seat\_hilbert.tex}: its finding is that the ray lemma ($d(x)$-type angular estimate)
+is used in \texttt{prop:qi}'s proof only on bounded windows and on the two height-constant infinite
+legs ($\operatorname{Im}x=-\pi/8$, $3\pi/8$), never on the one genuinely unbounded, non-constant-height
+leg (the $55^\circ$ tilted ray of $\Gamma_+$), which is instead certified by the angle-free part-(iii)
+modulus bound $-\log|1-w|\le|w|/(1-|w|)$ with $|z_j|\le e^{-2X}$. Room 8 also computed the five $N=6$
+resonance loci $\operatorname{Im}(x)\equiv\arg(\zeta_6^i)/2\pmod\pi=\pi/6,\pi/3,\pi/2,2\pi/3,5\pi/6$
+and found that $N=4$'s two constant-height legs ($-\pi/8,3\pi/8$) miss all four $N=4$-analogue loci
+with margin $0.13$--$0.39$, while the tilted leg sweeps through all resonance angles infinitely often
+but never needs the ray lemma there.
+
+This room's task is different: not to re-check the $N=4$ template's contours against the $N=6$ loci
+(done in Room 8), but to actually \emph{build} the $N=6$ saddle/contour data from the $N$-generic
+machinery of \texttt{P1f\_lemma.tex} (\S~``Setting and the saddle data'', Lemma~\ref{lem:saddle}) and
+see what geometry results. That machinery gives, for general $N$ and $\zeta=e(a/N)$: $c=-2(1-\zeta)$,
+$L=\operatorname{Log}c=\ell+i\varphi$, $w$ the small root of $c^Nw=(1-w)^2$, $\xi=\frac1N\log(1-w)$,
+$x_m=\frac{L_m}2-\xi$ with $L_m=L+\frac{2\pi im}N$, and $\Phi(x)=xL-x^2-\frac{\operatorname{Li}_2(e^{-2Nx})}{N^2}+\frac{\pi^2}{6N^2}$, $\Omega_m(x)=\Phi(x)+\frac{2\pi imx}N$, with $\Omega_m'(x_m)=0$.
+For $N=6$, $a=1$: \texttt{P1i\_lemma.tex} (\S~``$N=6$: exactly why it is not closed'') records
+$c=2e^{2\pi i/3}$, $\ell=\log2$, $\theta^\ast=0$, tie pair $(-3,-1)$, $T=-0.10878$.
+
+\section*{Step 1: the $N=6$ saddle data, computed exactly}
+
+Direct computation (elementary trig plus one fixed-point iteration for $w$, cross-checked in
+30-digit mpmath, \texttt{perl -e 'alarm 120; exec @ARGV'} wrapper, well inside the 24\,GB/5.3\,GB
+pre-flight budget; peak use negligible) confirms and extends the calibration data:
+\[
+   \zeta=e^{i\pi/3},\quad c=-2(1-\zeta)=-1+i\sqrt3=2e^{2\pi i/3},\quad
+   L=\log2+\tfrac{2\pi i}3,\quad \ell=\log2=0.693147,
+\]
+\[
+   w=0.0151549950587\ldots\ (\text{real, to working precision}),\qquad
+   \xi=\tfrac16\log(1-w)=-0.0025451676\ldots\ (\text{real}).
+\]
+The tie pair is $m=-3,-1\in\mathcal M=2\mathbb Z+1$ (correct residue class for $N\equiv2\bmod4$), and
+\[
+   x_{-3}=\frac{L_{-3}}2-\xi=0.349119-0.523599\,i,\qquad
+   x_{-1}=\frac{L_{-1}}2-\xi=0.349119+0.523599\,i,
+\]
+with $\operatorname{Im}(x_{-3})=-\pi/6$ and $\operatorname{Im}(x_{-1})=+\pi/6$ \textbf{exactly}
+(matches to $30$ digits; $\xi$ is real here so it shifts only $\operatorname{Re}(x_m)$, not
+$\operatorname{Im}(x_m)$, and $\operatorname{Im}(L_m)/2=(\varphi+2\pi m/6)/2$ lands on an exact
+multiple of $\pi/6$ for $m$ odd because $\varphi=2\pi/3$ is itself a multiple of $\pi/3$). These are
+the direct $N=6$ analogues of $N=4$'s $x_0$ ($\operatorname{Im}=3\pi/8$) and $x_-$
+($\operatorname{Im}=-\pi/8$): the two tied saddles of the dominant pair.
+
+\section*{Step 2: attempting the contour --- where it runs into a wall}
+
+Following the $N=4$ template literally: put $\Pi_0^{(6)}$ through $x_{-1}$ at the constant height
+$\operatorname{Im}x=\pi/6$, and $\Gamma_-^{(6)}$ through $x_{-3}$ at the constant height
+$\operatorname{Im}x=-\pi/6$ (the direct analogues of $N=4$'s $\Pi_0$ through $x_0$ at $3\pi/8$ and
+$\Gamma_-$ through $x_-$ at $-\pi/8$); a start box near a negative half-integer $x_c$; and a third,
+genuinely unbounded tilted leg $\Gamma_+^{(6)}$, playing the role of $N=4$'s $55^\circ$ ray, to be
+routed through the angle-free part-(iii) bound exactly as Room~8 found necessary.
+
+\textbf{This is exactly where the construction stalls, and it is a sharper, different wall than
+either Room~1's $T<0$ or Room~8's $\theta=0$ diagnosis.} Room~8 asked whether the $N=4$-\emph{shaped}
+constant-height legs ($-\pi/8,3\pi/8$, which are specific to $N=4$'s own saddle geometry) happen to
+avoid the five $N=6$ resonance loci, and found they do (those are the wrong numbers for $N=6$ in the
+first place, so that check was necessarily hypothetical). Constructing the \emph{actual} $N=6$
+saddle-determined legs, as attempted here, shows something stronger: the constant heights are not a
+free design choice that might or might not dodge the resonance loci --- they are \emph{pinned by the
+saddle equation itself} to $\operatorname{Im}x=\pm\pi/6$, and $\pi/6,5\pi/6\,(\equiv-\pi/6\bmod\pi)$
+are two of the five loci Room~8 identified ($\arg(\zeta_6^i)/2$ at $i=1,5$). So the two
+constant-height legs of the $N=6$ contour do not narrowly avoid resonance with an explicit margin
+(as $N=4$'s $-\pi/8,3\pi/8$ do, margin $\ge0.13$): \textbf{they sit exactly on a resonance line for
+its entire infinite length}, not merely crossing one at isolated points.
+
+This is qualitatively worse than the tilted-leg situation Room~8 examined. A leg that crosses a
+resonance locus \emph{transversally} at isolated points can in principle be routed around each
+crossing (or, as at $N=4$, avoided by the angle-free part-(iii) bound, which only needs
+$\operatorname{Re}x$ bounded away from $0$, not $\operatorname{Im}x$ away from resonance). A leg
+that \emph{coincides} with a resonance locus along its whole length is a different kind of problem:
+part-(iii)'s bound is also angle-free in this sense and would still apply verbatim to bound $F$
+along $\Gamma_-^{(6)}$ and $\Pi_0^{(6)}$ for $\operatorname{Re}x\ge X>0$ (its derivation, $-\log|1-w|\le
+|w|/(1-|w|)$ with $|z_j|\le e^{-2X}$, never used $d(x)$, $d'(x)$, or the ray lemma at all, so it is
+$N$-generic and immune to this). \emph{But} \texttt{lem:qi-bounds}(i)/(ii) --- the ray-lemma-based
+bounds --- are exactly what is needed near the start of these two legs (the bounded windows around
+$x_c$, and near $\operatorname{Re}x$ small, where part (iii)'s bound is not yet operative because
+$X$ is not yet large), and it is precisely there, on the very locus the ray lemma needs
+$\sin\theta\ne0$ to control, that these two legs begin and run for a while before $\operatorname{Re}x$
+grows enough for part (iii) to take over. Since $\theta^\ast=0$ exactly (Room~8, \texttt{P1i\_lemma.tex}),
+the ray lemma gives no lower bound on $\delta$ at all on the initial stretch of \emph{both}
+constant-height legs, not just at isolated crossing points on one leg.
+
+\section*{Step 3: can the tilted leg alone carry the whole construction?}
+
+One might try to dodge Step~2's problem by choosing $\Gamma_+^{(6)}$'s and $\Gamma_-^{(6)}$'s initial
+legs, and $\Pi_0^{(6)}$'s vertical run, to avoid ever sitting at $\operatorname{Im}x=\pm\pi/6$ near
+$\operatorname{Re}x=0$ --- i.e.\ re-route the bounded windows themselves off the resonance line,
+using the freedom in choosing $x_c$ and the shape of the initial rise, exactly as $N=4$'s $\Gamma_+$
+rises from $\approx-\pi/8$ to $+\pi/8$ before tilting. But this freedom does not survive contact with
+the saddle-point requirement: the whole point of routing the entire term through $\Pi_0^{(6)}$
+(instead of bounding it termwise, which is what \texttt{P1i\_lemma.tex}'s $T<0$ finding rules out) is
+that $\Pi_0^{(6)}$ \emph{must pass through the actual saddle} $x_{-1}$ for Laplace's method (Step~3 of
+\texttt{prop:qi}'s proof) to produce the asymptotic $A_0e^{V_0/t}$ term at all; a $\Pi_0^{(6)}$ that
+avoided $\operatorname{Im}x=\pi/6$ near the saddle would simply miss the saddle and the whole
+head-elimination mechanism would fail for a different reason (no valid steepest-descent evaluation).
+So the resonance-avoidance freedom Room~8 found useable in the hypothetical $N=4$-template check is
+not actually available once the contour is required to pass through $N=6$'s own saddles, which are
+rigidly fixed at $\operatorname{Im}x=\pm\pi/6$ by the saddle equation $\Omega_m'(x_m)=0$ together with
+$\varphi=2\pi/3$ being a rational multiple of $\pi$ that happens to coincide with a resonance angle.
+
+\section*{Verdict}
+
+\textbf{CONSTRUCTION STALLS, at a precise and new point.} The $N=6$ saddle data was computed exactly
+(Step~1, not hypothetical): $x_{-3}=0.349119-\frac{i\pi}6$, $x_{-1}=0.349119+\frac{i\pi}6$, confirming
+the tie pair $(-3,-1)$ and $\theta^\ast=0$ of \texttt{P1i\_lemma.tex}. Attempting the direct $N=6$
+analogue of \texttt{prop:qi}'s contour --- constant-height legs $\Gamma_-^{(6)}$ through $x_{-3}$ at
+$\operatorname{Im}x=-\pi/6$ and $\Pi_0^{(6)}$ through $x_{-1}$ at $\operatorname{Im}x=\pi/6$, plus a
+tilted unbounded leg $\Gamma_+^{(6)}$ carrying the angle-free part-(iii) bound --- fails at the first
+step that matters: \emph{both} constant-height legs, which the $N=4$ template needs the ray lemma for
+near their bounded starting windows, sit exactly on two of Room~8's five resonance loci ($\pi/6$ and
+$5\pi/6\equiv-\pi/6$) for their entire length, not merely at isolated crossings. This is forced, not a
+free choice that could be re-routed: $\operatorname{Im}(x_{-3})=-\pi/6$ and $\operatorname{Im}(x_{-1})=
+\pi/6$ follow directly from the saddle equation and cannot be moved without moving off the saddle,
+which would break the Laplace-method step that makes the whole head-elimination trick work. Since
+$\theta^\ast=0$ exactly (Room~8's finding, confirmed here from the saddle data directly), the ray
+lemma's proof gives no lower bound on the separation constant $\delta$ anywhere along these legs, and
+unlike Room~8's tilted-leg case (isolated crossings, escaped via the angle-free part-(iii) bound),
+here part-(iii) is not usable near $\operatorname{Re}x\approx0$, which is exactly where the bounded
+windows around $x_c$ and the saddles themselves live.
+
+What would be needed to go further (not attempted here, and this is now a much narrower target than
+before): either (a) an entirely different choice of decomposition whose constant-height legs are not
+forced through the saddles at exactly the resonance angle --- not obviously possible, since $\varphi=
+2\pi/3$ and the resonance angles are both rigidly determined by $\zeta=e^{i\pi/3}$ itself, or (b) a
+genuinely new, $\theta=0$-adapted replacement for the ray lemma that supplies a lower bound on
+$|1-w|$ using only the modulus decay $\cos\theta=1$ (no rotation term) \emph{along a path that
+coincides with the resonance line}, which is a strictly harder ask than the modulus-only rescue
+already flagged as unattempted in \texttt{P1\_N6\_note.tex} \S\ref{sec:weak} (that note's rescue was
+imagined for isolated crossing points or a generic $\theta\ne0$ path, not for a path lying exactly on
+the singular locus throughout). No such bound is written anywhere in the repository, and nothing here
+constructs one. This room does not close $N=6$, and identifies a concrete reason --- the saddle-pinned
+coincidence of the two constant-height legs with two of the five resonance loci --- why the direct
+transplant of the $N=4$ contour is worse-obstructed than Room~8's more optimistic partial reading
+suggested.
+
+\end{document}
