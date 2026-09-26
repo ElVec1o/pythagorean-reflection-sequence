@@ -1,0 +1,119 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\title{Room of Mathematicians, item 3 (P2 accumulation) — Seat: Tao (analytic)\\
+\small Attempt: incomplete Gauss sum / stationary phase for $A_+A_-\neq0$. Not reviewed.}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Calibration point.} Read P2\_v2/P2\_v2\_note.tex in full and the block-model section of P2/P2\_note.tex.
+Reproduced by hand (mpmath, 50 digits, $N=13$, $a=1$):
+\[H_e=\sum_{\rho=0}^{6}\frac{c^\rho\zeta^{\rho^2}}{(\zeta;\zeta)_{2\rho}},\quad
+c=-2(1-\zeta),\ \zeta=e^{2\pi i/13},\]
+giving $H_e=0.05993-1.93604i$, $H_o=1.26625+1.71861i$, $A_+=0.66309-0.10871i$,
+$A_-=-0.60316-1.82732i$ — matches the formula in P2\_v2\_note.tex \S1 exactly (independent
+re-derivation, own script, not copy of P2v2\_terms.py/P2v2\_renorm.py). Term-spread confirmed at this
+small case too: $|w_\rho|$ over $\rho=0..6$ is $1.0,\,2.15,\,0.94,\,0.243,\,0.063,\,0.0275,\,0.059$ —
+non-monotone, no single/edge-dominant term, same qualitative Weyl-spread signature reported for
+$N=131$ in P2\_v2\_note.tex \S3. Confirms the prior finding; not retried as a fresh check beyond this.
+
+\paragraph{Task.} Attempt the one alternative route P2\_v2\_note.tex flags as untried: treat $H_e$
+(equivalently $H_o$) as an \emph{incomplete} quadratic Gauss sum
+\[H_e=\sum_{\rho=0}^{M}w_\rho\,\zeta^{\rho^2},\qquad w_\rho=\frac{c^\rho}{(\zeta;\zeta)_{2\rho}},\qquad
+M=\tfrac{N-1}2,\]
+and ask whether completion-to-full-period or stationary-phase/van-der-Corput machinery gives an
+asymptotic or a nontrivial bound.
+
+\section{Structural check: is $w_\rho$ slowly varying?}
+Completion and stationary-phase-with-amplitude methods for incomplete exponential sums (Weyl
+differencing, van der Corput, Pólya--Vinogradov-style completion) all require the amplitude
+multiplying the phase to be \emph{slowly varying}: bounded total variation, or a bounded number of
+monotonicity intervals, on the summation range, so that Abel summation / partial-summation against
+the phase's own cancellation is profitable. I checked $|w_\rho|$ directly (own script, $N=131,a=10$,
+same case as P2\_v2\_note.tex \S3, extended over the full range $\rho\in[0,65]$):
+\begin{center}\small
+\begin{tabular}{lllllllllllll}\toprule
+$\rho$&0&1&5&10&15&20&21&25&30&40&50&60&65\\
+$|w_\rho|$&1.00&2.17&0.026&0.149&0.754&0.565&0.561&0.0079&0.0094&0.035&0.00036&0.0104&0.00027\\\bottomrule
+\end{tabular}\end{center}
+This is \textbf{not} slowly varying: it spans four orders of magnitude and is non-monotone with at
+least $4$--$5$ sign changes of its derivative across the range (up at $\rho=1$, down through $\rho=5$,
+up again to a local max near $\rho=15$, down again, a small bump near $\rho=40$, then down to near-zero
+at $\rho=50$, back up at $\rho=60$). Reason: $w_\rho=c^\rho/(\zeta;\zeta)_{2\rho}$ is a ratio of a
+geometric factor $c^\rho$ (smooth) against a $q$-Pochhammer product $\prod_{j=1}^{2\rho}(1-\zeta^j)$
+whose partial products pick up near-zero factors $1-\zeta^j$ whenever $j$ is close to a multiple of
+$N$ in the "wrap" sense used by the block model — i.e.\ $w_\rho$ itself already encodes a second,
+independent oscillatory/near-singular structure in $\rho$, not a tame envelope.
+
+\section{Consequence for completion}
+Completing $\sum_{\rho=0}^M w_\rho\zeta^{\rho^2}$ to a sum over a full period (length $N$ or $2N$,
+whichever the quadratic phase's true period is) and bounding the tail requires either (a) $w_\rho$
+extending periodically/smoothly past $\rho=M$ so the completed sum is itself meaningful, or (b) the
+tail $\sum_{\rho>M} w_\rho\zeta^{\rho^2}$ being controllably small. Neither holds:
+\begin{itemize}
+\item[(a)] $w_\rho$ has no natural period in $\rho$ matching the phase's period in $\rho^2$; the
+denominator $(\zeta;\zeta)_{2\rho}$ is defined by a product up to index $2\rho$ and is not $N$- or
+$2N$-periodic in $\rho$ (it strictly accumulates factors). There is no off-the-shelf periodic
+extension to complete to.
+\item[(b)] The tail is not small: P2\_v2\_note.tex's own table (\S3) and the table above show
+$|w_\rho|$ recovering to order $1$ multiple times past small $\rho$ (e.g.\ $\rho=15,20,21$ all
+$\gtrsim0.5$, comparable to $\rho=0,1$), so truncating/extending changes the sum by $O(1)$-relative
+amounts, not a decaying error.
+\end{itemize}
+So "complete the incomplete sum" is not merely technically awkward here — the object doesn't have
+the shape (slowly-decaying or periodic amplitude) that makes completion an approximation to something
+computable; completing it would just be computing a different, unrelated sum.
+
+\section{Stationary phase in $\rho$}
+The phase is $\phi(\rho)=a\rho^2/N \pmod 1$, $\phi'(\rho)=2a\rho/N$. As a pure quadratic phase this has
+a single stationary point at $\rho=0$ (an endpoint of the sum, not interior), so classical
+stationary-phase (which extracts an asymptotic from an interior critical point with $\phi''\neq0$)
+degenerates to a boundary/endpoint analysis — exactly the regime where the method is weakest and where
+the amplitude's smoothness at the endpoint matters most. Here $w_0=1$ is fine, but the amplitude's wild
+behavior a few steps in (Section 1) means even a boundary stationary-phase expansion (Euler-Maclaurin/
+endpoint corrections in $\rho$) cannot be truncated at low order: the "error" terms involving
+derivatives of $w_\rho$ are not small since $w_\rho$ is not smooth on the scale of the sum.
+
+\section{Verdict}
+\textbf{TECHNIQUE DOES NOT APPLY, precisely because of the weight.} The phase $\zeta^{\rho^2}$ is
+exactly the right shape for incomplete-Gauss-sum/stationary-phase methods on its own, but the
+accompanying weight $w_\rho=c^\rho/(\zeta;\zeta)_{2\rho}$ fails the one hypothesis all of these methods
+share (slowly-varying/bounded-variation amplitude, or a periodic/decaying tail to complete against):
+it is itself a comparably-sized second oscillatory object, non-monotone over 4 orders of magnitude,
+with no periodic extension. This is consistent with, and gives a mechanistic reason for, the
+term-spread finding already reported in P2\_v2\_note.tex \S3 (Weyl-type spread, no dominant term): the
+spread is not an accident of the phase but is manufactured by the weight's own irregular size.
+
+No asymptotic formula and no nontrivial bound was obtained. This is not merely "harder than expected" —
+the specific mechanism (amplitude as irregular as the phase) is the standard obstruction that rules out
+van der Corput/completion methods in the literature (they require Lemma-type smoothness hypotheses on
+the amplitude that are stated, and violated here, explicitly). A route that might still work would
+need to treat $w_\rho\zeta^{\rho^2}$ as a single unified $q$-series exponential-phase object (true
+saddle-point analysis of $c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}$ as a whole, in the spirit of the
+$q$-Pochhammer-times-quadratic-phase saddle already used for the outer sum in P2\_note.tex, as
+suggested in P2\_v2\_note.tex's own "what would actually be needed" paragraph) rather than splitting
+into "smooth amplitude times bare Gauss phase" — but that is a different, harder technique (a genuine
+$q$-series saddle point) not the elementary incomplete-Gauss-sum/stationary-phase toolkit named in this
+brief, and is not attempted here.
+
+\paragraph{Files.} \texttt{small\_hand.py}, \texttt{weight\_check.py} in the session scratchpad
+(not committed to the repo; independent re-derivation scripts, mpmath 40--50 digits, each under a
+second, run without the perl-alarm wrapper since interactive and well under any risk of hanging;
+no BFS/enumeration; negligible memory).
+
+\section*{Weakest points of this note}
+\begin{itemize}
+\item Only two numeric cases were examined ($N=13,a=1$ by hand; $N=131,a=10$ for the weight table),
+both already used or closely mirrored in P2\_v2\_note.tex. The claim that $w_\rho$ is never slowly
+varying across the whole window $a/N\in(0,0.0804)$ is not established for other $(a,N)$; it is a
+single-case structural diagnosis, offered as a mechanism, not a swept verification.
+\item The negative verdict is about the \emph{elementary} incomplete-Gauss-sum/van-der-Corput toolkit
+specifically (amplitude-times-phase completion/stationary-phase). It does not rule out a genuine
+joint $q$-series saddle-point treatment of $w_\rho\zeta^{\rho^2}$ as one phase (Section 5's suggested
+harder alternative), which was not attempted and is a distinct research atom.
+\item No attempt was made to check whether a different splitting of the summand (e.g.\ absorbing part
+of $(\zeta;\zeta)_{2\rho}$'s phase into an effective quadratic-plus-linear phase and only treating the
+remaining magnitude as amplitude) could rescue slow variation; only the literal $w_\rho$ vs.\
+$\zeta^{\rho^2}$ split named in the brief was tested.
+\end{itemize}
+\end{document}

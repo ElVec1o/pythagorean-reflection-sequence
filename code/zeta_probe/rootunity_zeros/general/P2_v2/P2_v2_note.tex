@@ -124,4 +124,44 @@ independently re-derived; it is offered as a plausibility check on why (i)-(ii) 
 mpmath (Python), $30$--$40$ decimal digits, each well under a second, run under \texttt{perl -e 'alarm 290; exec @ARGV'}.
 No BFS/enumeration; memory footprint negligible (a handful of $131\times131$-scale complex arrays at $40$ digits).
 
+
+\subsection*{Room 3 (2026-09-26): two seats, moderator verdict ADVANCED}
+
+A room of mathematicians (two blind seats: Tao, Erd\H os; Reviewer AR independently rechecked
+the numerical finding) explored two further routes. Neither closes P2's accumulation question,
+but one produced a genuinely new asymptotic lead.
+
+\textbf{Tao's finding: the incomplete-Gauss-sum/stationary-phase route does not apply, and not for
+a generic reason.} $H_e=\sum_\rho c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}$ pairs a quadratic
+phase $\zeta^{\rho^2}$ with a weight $w_\rho=c^\rho/(\zeta;\zeta)_{2\rho}$. Every classical
+completion/van~der~Corput/stationary-phase-with-amplitude technique needs $w_\rho$ to be a
+slowly-varying envelope. At $N=131,a=10$ it is not: $|w_\rho|$ spans four orders of magnitude and
+is non-monotone with multiple sign changes across $\rho$. $w_\rho$ is itself a second oscillatory
+$q$-Pochhammer object, not a tame amplitude, so the hypothesis these methods share is genuinely
+violated, not merely untried.
+
+\textbf{Erd\H os's finding, confirmed by independent rerun (Reviewer AR): the ratio $A_+/A_-$
+converges to a root of unity along some (not all) seed families.} Along $a/N\to1/13$
+($a=\lfloor N/13\rceil$), $A_+/A_-\to-i$ (matched to $10^{-9}$ by $N=2081$). Along $a/N\to1/17$,
+it converges to $+i$ (confirmed at $N=69633$: modulus and argument both correct to 8 displayed
+digits, though convergence is markedly slower than at $1/13$). Along $a/N\to1/25$ it does
+\emph{not} converge: $|A_+/A_-|$ climbs monotonically from $1.024$ ($N=25$) to $1.207$
+($N=102401$), confirmed not a rounding artifact (round vs.\ floor give identical residues
+throughout). This is a genuine asymptotic phenomenon, not a hidden exact identity: at finite $N$
+the ratio is never exactly modulus $1$ (e.g.\ $1.126$ at $N=13$), only approaching it in the
+limit -- new information not previously extracted from $A_\pm$'s separate behaviour.
+
+\textbf{What this is not, yet.} No closed form for the limit (why $-i$ at $1/13$, $+i$ at $1/17$,
+divergence at $1/25$) was found; no mechanism connects this $N\to\infty$-along-one-fixed-seed limit
+to the level-$N$-to-level-$q$ induction Theorem M actually performs (this limit fixes the seed and
+lets $N$ grow, not the other way around); and universality across seed families is unconfirmed
+($2$ converge, $1$ does not, out of $3$ tested). A natural next step, not attempted: push $1/25$
+much further, and attempt a closed form for the ratio via the same saddle-point/$q$-Bessel
+technology $B$'s own asymptotics already use.
+
+\textbf{Room verdict: ADVANCED.} A real, independently-reconfirmed new lead (the $A_+/A_-$ ratio)
+alongside a precise negative diagnosis (the stationary-phase route's amplitude hypothesis fails
+mechanistically, not generically). P2's accumulation question stays OPEN; this is repo-only, not
+yet warranting a paper mention (no closed form, no induction mechanism, non-universal across the
+three seeds tried).
 \end{document}

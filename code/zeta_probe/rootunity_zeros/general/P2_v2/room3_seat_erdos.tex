@@ -1,0 +1,90 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newcommand{\e}{\mathrm{e}}
+\title{Room of mathematicians, item 3 (P2 accumulation), Seat: Erd\H os\\
+\small Is there a different renormalisation of $A_\pm$ that converges? 2026-09-26. Not reviewed.}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Calibration point (done by hand).} From P2\_note.tex \S\ref{sec:model} (there labelled \S3, ``The block model''),
+for $N$ odd, $\zeta=\e(a/N)$, $c=-2(1-\zeta)$, $s=c^{N/2}$:
+\[H_e=\sum_{\rho=0}^{(N-1)/2}\frac{c^\rho\zeta^{\rho^2}}{(\zeta;\zeta)_{2\rho}},\qquad
+H_o=\frac1s\sum_{\kappa=(N+1)/2}^{N-1}\frac{c^\kappa\zeta^{\kappa^2}}{(\zeta;\zeta)_{2\kappa-N}},\qquad
+A_\pm=\tfrac12(H_e\pm H_o).\]
+At the seed $a/N=1/13$ ($N=13,a=1$) I evaluated this by hand-checked script (mpmath, 40 digits):
+$H_e=0.05992928937730\ldots-1.93603676959\ldots i$, $H_o=2.18089733546\ldots+0.06451984187\ldots i$, giving
+$|A_+|=1.45978$, $|A_-|=1.4578$ — this matches P2\_note.tex's own table row ($1/13$: $1.4598,1.4578$) to 4 digits, so the
+formulas above are the correct objects and the extraction is faithful. (Script: \texttt{/tmp/calib.py}, reproduced from
+\texttt{P2v2\_renorm.py}'s \texttt{heads()} routine, which is itself the source already used by P2\_v2\_note.tex — not re-derived
+independently, just re-run to confirm by hand.)
+
+\paragraph{Task.} P2\_v2\_note.tex found $A_+,A_-$ diverge like $\e^{cN}$ under $a/N\to1/13$, $N\to\infty$ along $a=\mathrm{round}(N/13)$.
+Per the brief, I looked for a different rescaling of $A_\pm$ (leading-order divide-out, or a joint quantity like $A_+/A_-$ or
+$A_+A_-$) that converges to something nonzero, tractable enough to induct on.
+
+\section{Idea checked: the ratio $A_+/A_-$ (equivalently $H_o/H_e$)}
+Numerically (mpmath, 50--60 digits, \texttt{perl alarm 290} wrapper, negligible memory): along $a/N\to1/13$ with
+$N=13,27,53,\ldots,1665$ ($a=\mathrm{round}(N/13)$),
+\[A_+/A_-\ \longrightarrow\ -i \quad\text{(to $10^{-9}$ by $N=1665$, to machine precision by construction at larger $N$)},\]
+equivalently $H_o/H_e\to -i$. This is a genuine convergence: both $A_+,A_-$ (and $H_e,H_o$) diverge like $\e^{cN}$
+individually (confirming P2\_v2\_note.tex), but their \emph{ratio} settles down to a fixed nonzero, finite constant of
+modulus $1$. I checked $\log|A_+|/N$ over the same sequence: it also stabilizes, to $\approx0.00650$ by $N=521$--$2081$
+(i.e.\ the divergence rate itself is an explicit, apparently convergent number along this seed — consistent with the
+brief's idea 1, though I did not identify $0.0065\ldots$ in closed form).
+
+I then repeated the ratio check at two more seeds:
+\begin{itemize}
+\item $a/N\to1/17$ ($a=\mathrm{round}(N/17)$, $N$ up to $69633$): $H_o/H_e\to +i$ cleanly (to $10^{-30}$ by $N=69633$). Converges,
+opposite sign from $1/13$.
+\item $a/N\to1/25$ ($a=\mathrm{round}(N/25)$, $N$ up to $102401$): $H_o/H_e$ does \emph{not} settle — it drifts monotonically
+away from $\approx-1$ (magnitude $1.03\to1.21$ as $N: 6401\to102401$), the opposite of convergence. Whether this is a slower
+convergence not yet visible at these $N$, a different limiting behaviour for this seed, or an artefact of the particular
+rational-approximant sequence $a=\mathrm{round}(N/25)$ (as opposed to true continued-fraction convergents) was not
+resolved — I ran out of budget to push $N$ another order of magnitude or to try alternative approximant sequences.
+\end{itemize}
+
+\section{Idea checked: $A_+A_-$}
+$A_+A_-=\tfrac14(H_e^2-H_o^2)$ diverges even faster than either factor alone (roughly $\e^{2cN}$ along $1/13$, matching
+the two individually-diverging factors with a nondegenerate ratio) — no cancellation, no convergence. This is the
+expected consequence of \S1's finding (the ratio tends to a modulus-$1$ constant, not to $0$ or $\infty$, so the product
+inherits the full double growth rate). Not a useful renormalisation target on its own.
+
+\section{Verdict: PARTIAL}
+A converging renormalisation of a piece of $A_\pm$ \emph{was} found: $H_o/H_e$ (equivalently $A_+/A_-$) converges to a
+fixed nonzero root of unity ($\pm i$ in the two clean cases) as $N\to\infty$ along $a/N\to$ a fixed rational seed. This
+is new information not in P2\_v2\_note.tex, which only checked $A_\pm$ separately. It is potentially useful precisely
+because it is what's needed for non-vanishing of $A_+A_-$: if $H_o/H_e\to\lambda\ne0,\infty$ with $|\lambda|=1$, then
+$A_+=\tfrac12H_e(1+\lambda_N)$ and $A_-=\tfrac12H_e(1-\lambda_N)$ (with $\lambda_N\to\lambda\ne\pm1$) are simultaneously
+zero only if $H_e=0$ or $\lambda_N=\pm1$ exactly — a codimension-1 coincidence that a limiting argument might rule out
+for large $N$, \emph{if} the convergence $\lambda_N\to\lambda\ne\pm1$ is uniform and $H_e\ne0$ in the limit. That would
+be a genuine route to non-vanishing not resting on the hazard-induction machinery (which P2\_v2\_note.tex already showed
+does not transfer) — a Weyl/Gauss-sum-flavoured argument on the ratio, not on $H_e,H_o$ separately.
+
+However this is NOT a closed result:
+\begin{enumerate}
+\item Convergence of $H_o/H_e$ held cleanly at $1/13,1/17$ but did not (yet, at accessible $N$) hold at $1/25$ — so
+universality across seeds is unconfirmed, and might fail or need a different approximant sequence.
+\item Even where it converges, I have no derivation of \emph{why} (no closed form for the limit $\lambda$, no argument for
+why it should be $\pm i$, no proof it is uniform in the seed, and no handle on $H_e$ itself not vanishing in the limit).
+It is a numerically-observed pattern, not a proof, and not yet a mechanism to induct on down to smaller $q$ (nothing
+here reduces a level-$N$ statement to a level-$q$ one the way Theorem M's hazard induction does — this is a different
+kind of limit, an $N\to\infty$ along a fixed seed, not a level-reduction step).
+\item I did not attempt the "different structural target" framing the seat is meant to supply beyond this: e.g. whether
+$\lambda$ itself has a closed form as a function of the seed $p/q$ (only 2 data points, $-i$ at $q=13$, $+i$ at $q=17$,
+suggestive of a sign depending on $q\bmod4$ ($13\equiv1$, $17\equiv1\bmod4$ — same residue, so that guess is already
+wrong) or on $q\bmod8$ ($13\equiv5$, $17\equiv1\bmod8$ — also same-ish, inconclusive with 2 points) — not resolved).
+\end{enumerate}
+
+\paragraph{Files.} \texttt{/tmp/calib.py} (calibration, not saved in repo per scratch-directory convention),
+scripts run inline via \texttt{perl -e 'alarm 290; exec @ARGV' python3 <script>}, mpmath 40--60 digits, all $O(N)$ sums up
+to $N\approx10^5$, negligible memory (well under any cap). No new files added under \texttt{tools/}; this note only
+extends the numerical scan already present in \texttt{P2v2\_renorm.py}.
+
+\paragraph{Recommendation for the next seat.} Push the $1/25$ case to larger $N$ or a true continued-fraction approximant
+sequence to settle whether $H_o/H_e$ genuinely fails to converge there, and try to find a closed-form expression for
+$H_o/H_e$ in the block-model window directly from the sum definitions (it may be a ratio of two theta-like finite sums
+whose leading saddle terms have an exact quotient, the way $B$ itself decomposes in \S\ref{sec:model} of P2\_note.tex) — that
+would explain the $\pm i$ observed and settle universality without more numerics.
+
+\end{document}
