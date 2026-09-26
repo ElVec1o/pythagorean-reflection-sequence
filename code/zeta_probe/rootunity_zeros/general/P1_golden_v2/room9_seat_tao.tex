@@ -1,0 +1,172 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\title{Room of Mathematicians, item 9 (P1 golden threshold) --- Seat: Tao (analytic)\\
+\small Attempt: Weyl differencing / van der Corput on the moment sums $D_j$. Not reviewed.}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Calibration point.} Read P1\_golden/P1\_golden\_note.tex, ``Room 2'' (2026-09-26), in
+full. Reproduced its content: the Fourier-duality identity inside Lemma Zk of P1e\_lemma.tex gives
+\[Z_q(p/q)=\sum_{n\ge0}\psi_n\zeta_0^{-n^2}=\sum_{k\bmod q}\gamma_k e^{\Phi_q(\zeta_0^k)},\qquad
+f(t)=\sum_n\psi_n\zeta_0^{-n^2}e(-nt)=\sum_k\gamma_k e^{\Phi_q(\zeta_0^k e(-t))},\]
+and $D_j=|f^{(j)}(0)|/((2\pi q)^j|f(0)|)$, equivalently $D_j=|\sum_n n^j\psi_n\zeta_0^{-n^2}|/
+((2\pi q)^j|Z_q|)$. Room 2's finding: the crude coefficient-sum bound on the $n$-basis form of
+$D_j$ and the triangle-inequality bound on the $k$-basis form are literally the same bound viewed
+through dual finite-Fourier bases, both $O(e^{qL/2})$-type, so neither is a new route; a genuine
+oscillatory-cancellation (Weyl-type) argument was flagged as the missing ingredient but not
+attempted. I confirm this reproduction and do not retry the coefficient-sum or $k$-basis triangle
+routes.
+
+Extracted the exact formula for $\psi_n$ from Lemma~Zk's proof and \texttt{P1e\_logderiv.py} (which
+computes it): $\psi_n=[Y^n]\exp(\Phi_q(Y))$ where
+\[\Phi_q(Y)=\sum_{\substack{m\ge1\\ q\nmid m}}\frac{u^m}{m\,(1-\zeta_0^{-m})}\,Y^m,\qquad
+u=u_q,\ \ \zeta_0=e(p/q).\]
+This is exactly a q-series object: $1/(1-\zeta_0^{-m})$ is the standard building block of a
+$q$-Pochhammer-type product (its reciprocal-log is $-\log(1-\zeta_0^{-m})$, the same shape as the
+factors of $(\zeta;\zeta)_{2\rho}$ that appeared in the unrelated P2 problem). $q\nmid m$ removes
+the genuine poles ($1-\zeta_0^{-m}=0$ iff $q\mid m$), so $\Phi_q$ is entire in $Y$ on $|Y|<1/|u|$
+and $\psi_n$ is well defined for all $n$, but nothing a priori makes $\psi_n$ smooth in $n$.
+
+\section{Is $\psi_n$ slowly varying?}
+Computed $\psi_n$ directly from the recursion $n\psi_n=\sum_{m=1}^n m\,c_m\,\psi_{n-m}$,
+$c_m=u^m/(m(1-\zeta_0^{-m}))$ ($c_m=0$ if $q\mid m$), by hand in mpmath (50 digits, own script, not
+\texttt{P1e\_logderiv.py} itself, using its same $u\approx1/c_0$ large-$q$ approximation as a probe
+-- adequate for a qualitative smoothness check, not a certified bound), for three seeds
+($1/11$, $2/21$, $1/9$), $n\le60$. Ratios $|\psi_{n+1}|/|\psi_n|$:
+\begin{center}\small
+\begin{tabular}{lrrrrrr}\toprule
+$p/q=1/11$ & $n=8$ & $n=9$ & $n=10$ & $n=11$ & $n=12$ & $n=13$\\
+ratio & 0.821 & 0.588 (n=3 shown) & 1.575 & \textbf{2.928} & 1.448 & --\\
+\midrule
+$p/q=2/21$ & $n=19$&$n=20$&$n=21$&$n=22$& & \\
+ratio & 0.753&1.439&\textbf{4.539}&1.481& & \\
+\midrule
+$p/q=1/9$ & $n=8$&$n=9$&$n=17$&$n=18$&$n=26$&$n=27$\\
+ratio &1.069&\textbf{1.830}&1.202&\textbf{1.787}&1.226&\textbf{1.734}\\
+\bottomrule
+\end{tabular}\end{center}
+Away from multiples of $q$ the ratio sits in a modest band ($\sim0.4$--$1.5$) and drifts smoothly.
+\textbf{At every $n\equiv0\pmod q$ the ratio spikes} by a factor of $\sim1.6$--$4.5$ above its
+neighbours, repeating each period with slowly decreasing (but persistent) amplitude as $n$ grows.
+This is not noise: it is exactly at the residues excluded from the defining sum ($q\mid m$ is
+dropped from $c_m$), and it repeats at every multiple of $q$ out to $n=60$ in all three test cases.
+
+\textbf{Verdict: $\psi_n$ is NOT slowly varying at the scale Weyl differencing needs.} It behaves
+like a smooth envelope $|u|^n\times(\text{mild drift})$ multiplied by a genuinely $q$-periodic
+correction factor with an $O(1)$-relative jump at $n\equiv0\ (q)$ -- i.e.\ its total variation over
+one period of length $q$ is \emph{dominated by a single jump comparable in size to $\psi_n$ itself},
+not spread evenly (which is what ``bounded variation, small relative to the sum'' would require).
+This is the same qualitative failure Tao's seat found for P2's weight $w_\rho=c^\rho/(\zeta;\zeta)_{2\rho}$:
+there the near-singular factor was the $q$-Pochhammer partial product picking up near-small factors
+$1-\zeta^j$ periodically in the block index; here it is the same mechanism one level down --
+$\Phi_q$'s own defining coefficients $c_m$ involve $1/(1-\zeta_0^{-m})$, and although the truly
+singular residues $q\mid m$ are excluded by hand, the neighbouring residues $m\equiv\pm1,\pm2,\dots$
+$\pmod q$ still carry the accumulated resonance of that near-exclusion into $\psi_n$'s recursion,
+surfacing as the periodic spike. \textbf{Same mechanism, one convolution removed.}
+
+\section{Attempted Weyl differencing}
+Proceed anyway, to see precisely where the amplitude failure enters the estimate. Write
+$S_j=\sum_n n^j\psi_n\zeta_0^{-n^2}$ (drop $j$ below; $j=0,1,2$ only changes the polynomial weight,
+not the mechanism). Square:
+\[|S|^2=\sum_{n,n'}\psi_n\bar\psi_{n'}\,\zeta_0^{-(n^2-n'^2)}=\sum_h\zeta_0^{h^2}\Big(\sum_n
+A_n(h)\,\zeta_0^{2nh}\Big),\qquad A_n(h):=\psi_n\,\bar\psi_{n+h},\]
+substituting $n'=n+h$ (this is the textbook Weyl step: a quadratic phase differences down to a
+\emph{linear} phase $\zeta_0^{2nh}$ in $n$ for each fixed shift $h$, plus a residual quadratic phase
+$\zeta_0^{h^2}$ in $h$ alone -- quadratic phases are indeed the easiest case, exactly because this
+step terminates after one differencing, unlike a degree-$k>2$ phase which needs $k-1$ rounds).
+
+The inner sum over $n$ is a pure geometric/linear-phase sum against amplitude $A_n(h)$. The standard
+next step is partial (Abel) summation: writing $S_N(x)=\sum_{n\le N}\zeta_0^{2nh}$ (bounded by
+$O(1/\|2h/q\|)$, the usual geometric-sum bound, small unless $2h\equiv0\pmod q$), one gets
+\[\Big|\sum_n A_n(h)\zeta_0^{2nh}\Big|\ \le\ \big(\sup_n|S_n(x)|\big)\cdot\mathrm{TV}(A_\bullet(h)),\]
+where $\mathrm{TV}$ is the total variation $\sum_n|A_{n+1}(h)-A_n(h)|$. \textbf{This is the entire
+content of the method}: it converts a bound on the amplitude's variation into cancellation, and it
+only beats the trivial bound $\sum_n|A_n(h)|$ when $\mathrm{TV}(A_\bullet(h))\ll\sum_n|A_n(h)|$.
+
+Because $A_n(h)=\psi_n\bar\psi_{n+h}$ inherits the periodic spike of $\psi_n$ at $n\equiv0\ (q)$ and
+of $\psi_{n+h}$ at $n\equiv-h\ (q)$ (two spikes per period unless $h\equiv0\ (q)$, one doubled spike
+if $h\equiv0\ (q)$), \textbf{$\mathrm{TV}(A_\bullet(h))$ is again dominated by these $O(1)$-relative
+jumps, not by a slowly accumulating drift}. Concretely, at the jump itself
+$|A_{n+1}-A_n|\gtrsim|A_n|$ (ratio $2$--$4.5$ from Section~1, both for $\psi_n$ and, by the same
+mechanism at the shifted index, for $\bar\psi_{n+h}$), so summed over the $O(N/q)$ periods in range
+$n\le N$,
+\[\mathrm{TV}(A_\bullet(h))\ \gtrsim\ \sum_{\text{periods}}|A_{n_{\rm spike}}(h)|\ \sim\ \sum_n|A_n(h)|
+\quad(\text{same order, not smaller}).\]
+So the Abel-summation bound collapses to $\big(\sup|S_n(x)|\big)\cdot\sum_n|A_n(h)|$, i.e.\ the
+\emph{trivial} bound up to the geometric factor -- exactly reproducing the original triangle/Cauchy
+wall one differencing level down, now for $|S|^2$ in terms of $h$-sums of $\sum_n|\psi_n||\psi_{n+h}|$,
+which by Cauchy--Schwarz is again $\sum_n|\psi_n|^2$-type, i.e.\ the same $O(e^{qL})$ (squared)
+object Room~2 already identified. No net gain survives the square root.
+
+\emph{Why the ``quadratic phases are the easy case'' heuristic does not rescue this.} That heuristic
+(complete quadratic Gauss sums evaluate exactly via reciprocity, e.g.\ Gauss/Landsberg--Schaar) is a
+statement about the \emph{phase} being tractable once differenced to linear; it says nothing about
+the \emph{amplitude}. Here differencing succeeds at turning the phase into something classical
+(linear plus a residual quadratic in $h$), precisely as advertised -- but the amplitude $A_n(h)$
+was never smooth to begin with, so the one estimate that needs amplitude smoothness (bounding the
+linear sum via Abel summation) fails at the first attempt, for a reason intrinsic to $\psi_n$, not
+to the phase.
+
+\section{Comparison to the $q$-Pochhammer / near-singular mechanism (P2, Tao seat, 2026-09-2x)}
+P2's obstruction: $w_\rho=c^\rho/(\zeta;\zeta)_{2\rho}$ is a ratio of a smooth geometric factor
+against an accumulating $q$-Pochhammer product $\prod_{j\le2\rho}(1-\zeta^j)$, which picks up
+near-small factors whenever $j$ nears a multiple of $N$ -- making $w_\rho$ itself a second
+oscillatory object comparable in size to the phase, non-monotone across orders of magnitude, with
+\emph{no} periodic extension to complete against.
+
+Here the situation is structurally the same one level down the construction: $\Phi_q(Y)=\sum
+c_mY^m$ has $c_m$ built from $1/(1-\zeta_0^{-m})$, the very same q-Pochhammer-adjacent factor
+(these $c_m$ are literally $-\tfrac1m\log(1-\zeta_0^{-m}Y^m u^m)$'s coefficients, i.e.\ $\Phi_q$ is
+$\log$ of an actual $q$-Pochhammer-type product $\prod_{m,\,q\nmid m}(1-\zeta_0^{-m}u^mY^m)^{-1}$,
+minus the excluded-multiples factor). Exponentiating a log-Pochhammer object does not remove the
+periodicity, it \emph{convolves} it into every Taylor coefficient $\psi_n$: each $\psi_n$ sees
+contributions from all $m\le n$, so the near-resonance at $m\equiv0\ (q)$ shows up as a period-$q$
+modulation of $\psi_n$ itself, exactly the spike measured in Section~1. \textbf{Same mechanism as
+P2}: an amplitude that is a ratio/exponential built on $1-\zeta^{(\cdot)}$ factors is never
+uniformly slowly varying on the scale these differencing/completion methods need, because those
+factors are periodic and near-degenerate on exactly the scale ($\bmod\ q$) that matters. The one
+difference from P2 is where the resonance sits: P2's $w_\rho$ resonates in the partial-product index
+directly; here it is pushed through a $\log\to\exp$ (partial-fraction $\to$ Taylor-coefficient)
+transform first, but survives it intact.
+
+\section{Verdict}
+\textbf{AMPLITUDE FAILS.} $\psi_n$ is not slowly varying: it has genuine $O(1)$-relative jumps at
+every $n\equiv0\pmod q$ (measured ratio spikes $1.6$--$4.5\times$ the local baseline, persisting
+out to $n=60$ in all three test seeds), driven by the near-exclusion of $q\mid m$ in $\Phi_q$'s
+defining sum -- the same $q$-Pochhammer-near-singularity mechanism Tao's seat diagnosed for P2's
+$w_\rho$, one convolution (a $\log$/Taylor-coefficient step) removed. Weyl differencing does perform
+its advertised job on the \emph{phase} (quadratic $\to$ linear in one step, as expected for the
+easy case), but the resulting linear sum's standard bound (Abel summation against total variation
+of the amplitude) needs $\mathrm{TV}(A_\bullet(h))\ll\sum_n|A_n(h)|$, and here
+$\mathrm{TV}(A_\bullet(h))=\Theta(\sum_n|A_n(h)|)$ because the periodic spikes dominate the
+variation budget -- so the bound collapses back to the trivial/Cauchy-Schwarz wall, reproducing
+Room~2's $O(e^{qL})$-type exponent with no improvement. Van der Corput's higher-order variants
+(which iterate differencing) do not help either: they reduce a degree-$k$ phase to degree $k-1$,
+but the phase here is already linear after one step; the obstruction was never the phase's degree,
+it is the amplitude, which no amount of further phase-differencing touches.
+
+This is a genuine attempt, not a restatement: it isolates the exact estimate (Abel summation /
+total variation of the differenced amplitude) at which the method fails, rather than reasserting
+Room~2's coefficient-sum finding by a different route. No numerical survey was repeated (Room~2's
+Ramanujan seat already covers that ground); this note is a structural/analytic diagnosis plus a
+three-seed, $n\le60$ smoothness check sufficient to falsify the amplitude-smoothness hypothesis,
+not to re-certify anything already certified elsewhere.
+
+\paragraph{Weakest points.} (i) The smoothness check in Section~1 used the large-$q$ approximation
+$u\approx1/c_0$ (as \texttt{P1e\_logderiv.py} itself does when $q$ is large enough that $|w_q|$ is
+negligible), not the exact renormalised $u_q$; this is adequate for a qualitative
+slowly-varying/not-slowly-varying verdict (the spike is an order-of-magnitude effect, not a fine
+correction) but is not a certified bound. (ii) Only three seeds and $n\le60$ were checked; the claim
+that the spike persists for all $q$ and all $n$ is a structural argument (Section~3, from the
+definition of $c_m$) backed by, not established solely by, the numerics. (iii) The total-variation
+argument in Section~2 is asymptotic/order-of-magnitude ($\Theta$, $\gtrsim$), not an explicit
+constant; sharpening it to an explicit bound comparable to Room~2's $O(e^{qL/2})$ was not attempted
+and would be the natural next step if this route were revisited, though Section~3's structural
+argument suggests it would not beat the existing wall.
+
+\paragraph{Files.} No new repository scripts (disk budget, $\sim5$GB free); the Section~1 check was
+a standalone mpmath script (own re-derivation of $\psi_n$ from Lemma~Zk's proof, not calling
+\texttt{P1e\_logderiv.py}), run once under \texttt{perl -e 'alarm 280; exec @ARGV'}, well under 1s
+and negligible memory, not saved to disk.
+\end{document}

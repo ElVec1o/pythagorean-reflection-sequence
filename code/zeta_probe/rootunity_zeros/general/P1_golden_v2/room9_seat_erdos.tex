@@ -1,0 +1,120 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\title{Room of mathematicians, item 9 (P1 golden threshold) --- Seat: Erd\H{o}s\\
+\small elementary route, explicit non-vanishing certificates, 2026-09-26}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Calibration point.} Read \texttt{P1\_golden\_note.tex} in full, including ``Room 2''.
+Goal confirmed: prove $Z_N(a/N)\ne0$ for $a/N$ in the window $\ell\in(0.08,0.48)$ (roughly
+$x\in(0.0804,0.143)$), where the crude Lemma~B induction structurally cannot converge because it
+needs base $y<0.61633$, i.e.\ $\ell>0.48398$. Room~2 already showed (numerically, honestly, not a
+proof) that the crude bound's pessimism is a property of the triangle-inequality method, not of
+$Z_N$ itself, on several families inside the window, and pursued a moment-hypothesis
+(Weyl-differencing-flavoured) route to a second-order Lemma~R --- that route is explicitly out of
+scope here (Tao seat's job).
+
+\section{Task}
+Find a genuinely different route to non-vanishing in the hard window: a different exact
+representation, a weaker-but-useful statement, an interpolation/Rouch\'e argument, or explicit
+per-point certificates.
+
+\subsection{Ideas 1--3: examined, not pursued further}
+\begin{itemize}
+\item \textbf{(1) Alternative exact formula / modular transform.} Lemma~Zk's formula for
+$Z_q(p/q)$ is already the exact object (finite sum of $q$ Gauss-sum-weighted exponentials); it is
+not an asymptotic approximation that a different quadrature could improve on. A genuine
+reciprocity/modular transform would need to relate $\Phi_q$ at $p/q$ to $\Phi_{q'}$ at a
+\emph{dual} point with larger $\ell$ -- i.e.\ a Landen/theta-transformation-type identity for the
+underlying $u$-series. I looked for such an identity in \texttt{P1e\_lemma.tex} and found none
+recorded, and constructing one from scratch (the defining series is a truncated $q$-th root
+power series in $u$, not a classical theta function) is exactly the kind of ``second, unrelated,
+open sub-project'' that a single Erd\H{o}s-seat pass should not attempt to originate. Flagged as
+open, not attempted further.
+\item \textbf{(2) Weaker statement (dense subset) via downstream need.} Checked what P1f/P1h
+actually consume from Theorem~M: both cite it as a \emph{blanket} non-vanishing statement over the
+whole good arc, used to rule out cancellation at every hazard $j/n$ in the induction, not at a
+density-one subset of hazards. A dense-subset result would not obviously plug into either
+downstream file without re-deriving which specific hazards the induction visits and checking they
+avoid the excluded (density-zero) set -- itself a nontrivial audit, not attempted here for lack of
+scope, but flagged as a plausible cheaper target for a future room.
+\item \textbf{(3) Interpolation/Jensen/Rouch\'e across $\ell$.} $Z_N(a/N)$ for fixed $N$ is a
+single complex number, not a value of an analytic family in a continuous parameter $\ell$ that
+would let a zero-free-strip argument apply directly -- $\ell$ only takes finitely many rational
+values (as $a/N$ ranges) for each $N$, and different $N$ are different functions on the unit
+circle, not restrictions of one analytic function of $\ell$. A genuine Jensen/Rouch\'e route would
+need $Z_N(z)$ treated as a function of $z=e(a/N)$ analytically continued off the unit circle and a
+count of zeros in an annulus bounding the good arc -- plausible in principle, but building the
+right auxiliary function and getting an effective (not just qualitative) zero count is a
+substantial separate undertaking; not completed.
+\end{itemize}
+
+\section{Idea 4 (executed): direct rigorous per-point certificates deep in the window}
+\texttt{P1e\_logderiv.py}'s \texttt{data(p,q)} computes $|Z_q(p/q)|$ via the exact finite Lemma~Zk
+formula in Arb (python-flint) with a rigorous tail enclosure, returning $F=\texttt{arb}(f_0
+\texttt{.abs\_lower()})$ --- a certified \emph{lower} bound on $|Z_q(p/q)|$, with no crude Lemma~B
+step involved at all. \textbf{Whenever this lower bound is strictly positive, that is by itself a
+rigorous certificate that $Z_N(a/N)\ne0$ for that specific $(a,N)=(p,q)$} -- exactly the ``few
+explicit non-vanishing certificates in the hard window'' idea~4 asks for, and it needs no new
+mathematics, only running the existing tool at well-chosen points and reading off $F>0$.
+
+\paragraph{Method.} Computed the cheap closed form $\ell(p,q)=\log|{-2(1-e(p/q))}|$ (no Arb needed)
+over $q\in\{53,101,151,211,307,401,503,601,701\}$ to locate $(p,q)$ with $\ell$ spread through
+$(0.08,0.40)$, avoiding the boundary regions already flagged in Room~2 (the $|c_0|<1$ domain issue
+near $\ell\to0^-$, and the module-load precision bug, already fixed). Then ran
+\texttt{data(p,q)} (the full rigorous Arb pipeline, 200-to-3200-bit precision escalation, same
+code Room~2 verified) at 12 of these points, wrapped in \texttt{perl -e 'alarm 290; exec @ARGV'};
+peak memory negligible (single Arb evaluations, $q\le701$); no files written besides this note and
+the two throwaway driver scripts in \texttt{/tmp} (outside the repo, not committed).
+
+\paragraph{Result: 12 rigorous certificates spanning the window.}
+\begin{center}\small\begin{tabular}{lllll}\toprule
+$a/N$ & $\ell$ & $|Z_N(a/N)|\ge$ & loss factor $\Lambda\le$ & in window?\\\midrule
+44/503 & 0.0820 & 1.528 & 28.7 & yes (near $\ell\to0.08$ edge)\\
+54/601 & 0.1081 & 1.980 & 23.4 & yes\\
+37/401 & 0.1339 & 1.411 & 24.8 & yes\\
+29/307 & 0.1568 & 1.369 & 21.2 & yes\\
+68/701 & 0.1825 & 0.987 & 42.4 & yes\\
+15/151 & 0.2055 & 0.811 & 23.6 & yes\\
+73/701 & 0.2511 & 0.743 & 50.7 & yes\\
+16/151 & 0.2678 & 0.700 & 24.5 & yes\\
+76/701 & 0.2898 & 0.601 & 59.8 & yes\\
+69/601 & 0.3448 & 0.428 & 73.4 & yes\\
+59/503 & 0.3652 & 0.406 & 69.4 & yes\\
+48/401 & 0.3846 & 0.415 & 59.7 & yes\\\bottomrule
+\end{tabular}\end{center}
+Every listed $|Z_N|$ lower bound is strictly positive and rigorous (Arb ball arithmetic, not a
+floating-point estimate): the enclosure radius was checked $<10^{-6}\times$ the midpoint before
+acceptance (\texttt{data()}'s own convergence gate), so this is a genuine, checkable
+non-vanishing certificate, not a numerical suggestion. All 12 points lie strictly inside the
+target window $(0.08,0.48)$, including three ($44/503,\,54/601,\,37/401$) close to the
+lower (good-arc) edge where Room~2 found the exact-formula script itself becomes numerically
+fragile at smaller, more extreme seeds ($1/12,1/13$) -- here it is well-behaved because $q$ was
+chosen directly rather than via a drift family running $\ell\to0$.
+
+\section{Verdict: PARTIAL}
+\textbf{No general theorem for the window was found}; ideas (1)--(3) were examined and abandoned
+or scoped out for good stated reasons (no modular/reciprocity identity exists in the repository to
+exploit; the downstream density-subset audit is itself nontrivial; the interpolation route needs a
+zero-counting argument in $z$ that was not built). \textbf{What was produced is real but narrow}:
+12 explicit, individually rigorous non-vanishing certificates $Z_N(a/N)\ne0$ at specific
+$(a,N)$ pairs spread through $\ell\in(0.082,0.385)\subset(0.08,0.48)$ -- the same style of result
+as P2's individual-zero certificates, extended here to individual \emph{non-zero} certificates
+inside the golden-threshold gap. This does not cover ``for a/N in the window'' as a theorem (only
+finitely many explicit points, and only up to $q\le701$); it is exactly idea~4's scope: a few
+explicit points in the hard window certified the way P2 certifies individual zeros, using
+machinery (\texttt{P1e\_logderiv.py}, already fixed and verified in Room~2) that the note already
+established works fine numerically throughout this window even though the crude bound cannot.
+
+\paragraph{Honest rigor level.} The 12 $|Z_N|>0$ statements are as rigorous as the rest of this
+research programme's Arb-based numerics (genuine ball-arithmetic enclosures with a tight
+convergence gate, same tool Room~2 already audited and fixed a real precision bug in) -- \emph{not}
+a formally machine-checked proof (no Lean), and not re-derived independently in this pass (trusted
+the already-fixed and already-verified \texttt{data()} pipeline rather than re-deriving Lemma~Zk).
+No new mathematics; no crude Lemma~B step anywhere in this section.
+
+\paragraph{Files.} This note only. Two throwaway Python driver scripts lived in \texttt{/tmp}
+(outside the repo) and called \texttt{P1e\_logderiv.py} read-only; nothing else was written, no
+files committed.
+\end{document}

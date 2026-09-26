@@ -1,0 +1,46 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 9 (P1 golden threshold): moderator summary}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+Two seats pushed on closing the golden-threshold gap directly.
+
+\textbf{Tao: genuine Weyl differencing attempted, AMPLITUDE FAILS, and the mechanism is now shown
+to be the SAME ONE found independently in P2.} $\psi_n=[Y^n]\exp(\Phi_q(Y))$ with
+$\Phi_q(Y)=\sum_{m\ge1,\,q\nmid m}u^mY^m/(m(1-\zeta_0^{-m}))$ is not slowly varying: the ratio
+$|\psi_{n+1}/\psi_n|$ jumps $1.6$--$4.5\times$ exactly at every $n\equiv0\pmod q$, riding on an
+otherwise smooth envelope. Weyl differencing correctly reduces the quadratic phase to a linear one
+after one step (the phase step works exactly as advertised), but the resulting Abel-summation bound
+needs the total variation of the shifted amplitude to be small relative to its sum; instead it is
+dominated by the same periodic $O(1)$-relative spikes, so no net cancellation survives past the
+square root. \textbf{This is mechanistically the same obstruction Tao's seat found independently
+for P2's $w_\rho=c^\rho/(\zeta;\zeta)_{2\rho}$}: both amplitudes are built from $1-\zeta^{(\cdot)}$
+factors that are never uniformly slowly varying modulo the relevant period, and in this problem
+$\Phi_q$ is literally $\log$ of a $q$-Pochhammer-type product excluding $q\mid m$, so exponentiating
+it convolves the near-resonance at $m\equiv0\pmod q$ into every coefficient. A real, unifying
+diagnosis across two of this session's hardest problems, not a coincidence.
+
+\textbf{Erd\H os: 12 genuine rigorous point-certificates deep in the previously-unreachable
+window.} Three alternative routes (a modular-transform reciprocity, a weaker dense-subset
+statement, a Jensen/Rouch\'e interpolation-in-$\ell$ argument) were examined and set aside with
+stated reasons -- none constructed. A fourth, more direct idea worked: using the already-existing
+rigorous exact-formula tool (\texttt{P1e\_logderiv.py}, Arb ball arithmetic, no crude bound
+anywhere), 12 explicit $(a,N)$ points were located and certified throughout $\ell\in(0.082,0.385)$
+-- well inside the window the crude method cannot reach -- with $N$ up to $701$. Every one gives a
+genuine, machine-verified lower bound on $|Z_N(a/N)|$, e.g.\ $44/503$ ($\ell=0.082$,
+$|Z|\ge1.528$), $68/701$ ($\ell=0.183$, $|Z|\ge0.987$), $48/401$ ($\ell=0.385$, $|Z|\ge0.415$).
+These are narrow (individual points, not a density statement) but entirely genuine, analogous to
+P2's individual certified zeros.
+
+\textbf{Room verdict: ADVANCED.} No general theorem for the window and no route to one was found
+that survives scrutiny -- but real content survives: (a) 12 genuine non-vanishing certificates
+deep in the hard window, narrow but citable; (b) a precise, unifying mechanistic diagnosis
+connecting this problem's amplitude obstruction to P2's independently-discovered one, suggesting
+both hard problems in this research program share a common root cause (near-resonant
+$1-\zeta^{(\cdot)}$-type amplitudes defeating standard analytic-number-theory smoothing
+techniques). The golden threshold $\ell\approx0.484$ remains the boundary of what the general
+method proves; the window below it is not empty of results, just not yet covered by a theorem.
+
+\end{document}
