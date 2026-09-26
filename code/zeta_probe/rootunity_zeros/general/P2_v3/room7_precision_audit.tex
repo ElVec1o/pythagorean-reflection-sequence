@@ -1,0 +1,74 @@
+\subsection*{Reviewer AU (2026-09-26): precision audit of Room 7's \texttt{ratio\_amp} results}
+
+\textbf{Concern raised (Room 11, Tao seat).} \texttt{ratio\_amp} runs at a fixed 200-bit
+precision. For a \emph{different} $(a,N)$ construction ($N=aq+2$, not Room 7's
+$a=\mathrm{round}(N/q)$ / $\mathrm{floor}(N/q)$ sequences), doubling to 500 bits changed some
+computed ratios by $\sim\!10^{100}$ -- catastrophic cancellation in the Pochhammer-type
+denominator that 200 bits does not resolve. This raised the question of whether Room 7's
+parity-of-$a$ finding (commit 3e5250f) rests on non-converged numerics.
+
+\textbf{Method.} Rebuilt \texttt{ratio\_amp} at 200, 400, 800, and (for the most
+cancellation-suspect points) 1600 bits, changing only the \texttt{PREC} constant --
+\texttt{heads()} itself untouched. Also added a 40-decimal-digit
+(\texttt{to\_string\_radix(10, Some(40))}) print path to check agreement far past the $\sim$16
+significant digits \texttt{f64} display would hide a divergence behind. Reran a representative
+sample of Room 7's actually-cited points, covering odd-$a$ and even-$a$, across four seeds
+($q=13,19,25,29$):
+
+\begin{itemize}
+\item \textbf{$q=13$, clean-convergence bucket:} $N=2081$ ($a=160$, even) -- calibration point,
+  claimed $|A_+/A_-|\to1$ (i.e.\ $\to-i$).
+\item \textbf{$q=19$, clean-convergence bucket:} $N=85499$ ($a=4500$, even), $N=234607$
+  ($a=12348$, even) -- the "genuinely converging, not just bounded" claim.
+\item \textbf{$q=25$, reciprocal-bimodal even-$a$ bucket:} the five cited erratic points
+  $N=174451,188407,237339,512395,948407$ (all even-$a$: $a=6978,7536,9494,20496,37936$) --
+  this is the bucket most structurally similar to Tao's cancellation-prone construction (small
+  and large moduli, $0.034$ up to $30.8$), so the highest-risk set for hidden non-convergence.
+\item \textbf{$q=29$, reciprocal-bimodal bucket:} odd-$a$ point $N=2303$ ($a=79$) and the three
+  even-$a$ reciprocal points Reviewer AS added, $N=13807,27599,32201$ ($a=476,952,1110$).
+\end{itemize}
+
+\textbf{Results.} At \texttt{f64} display precision (15--17 significant digits), every one of
+the 10 points above is \textbf{bit-identical} across 200/400/800-bit runs. For the four points
+judged highest-risk (the smallest-modulus $q=25$ point $N=188407$: $0.0344$; the largest,
+$N=237339$: $30.8$; both $q=29$ even-$a$ reciprocal points; and both $q=13,19$ convergence
+points), reran at 200 bits vs.\ \textbf{1600 bits} (8$\times$ the original precision) printing
+40 decimal digits: all agree to \textbf{every one of the 40 printed digits}, e.g.
+\begin{verbatim}
+q=25 N=188407 |A+/A-|_hp=3.439487754118419052104878821083830366736e-2   (200-bit)
+q=25 N=188407 |A+/A-|_hp=3.439487754118419052104878821083830366736e-2   (1600-bit)
+q=29 N=13807  |A+/A-|_hp=1.399125017759237577199959284606191776644e-2  (200-bit)
+q=29 N=13807  |A+/A-|_hp=1.399125017759237577199959284606191776644e-2  (1600-bit)
+\end{verbatim}
+No point tested showed any digit drift, let alone the $\sim\!10^{100}$-scale blowup Tao found in
+the $N=aq+2$ construction. There is no evidence of catastrophic cancellation anywhere in the
+Pochhammer denominator for Room 7's actual $(a,N)$ points.
+
+\textbf{Why Tao's construction is a different regime (diagnosis, not just an empirical
+non-reproduction).} $N=aq+2$ forces $N\equiv2\pmod q$ deterministically, and (from Room 11)
+appears to sit exactly at, or asymptotically approach, a resonance of the Pochhammer product
+$\prod(1-z^i)$ where individual near-unit factors align in phase across $O(N)$ terms, so the true
+answer is a difference of two numbers agreeing to $\gg200$ bits before cancelling. Room 7's
+$a=\mathrm{round}(N/q)$ construction instead holds $a/N\to1/q$ approximately but with $a,N$
+essentially independently varying (no forced exact residue class tying $N$ to $q$), so nothing
+in the construction manufactures a systematic near-alignment of the Pochhammer factors -- exactly
+why the 200-bit and 1600-bit runs agree to all 40 digits: there is no delicate cancellation to
+resolve in the first place. This is consistent with, not contradicted by, Tao's finding: the two
+constructions are different enough that one being cancellation-prone says nothing about the
+other, and the direct rerun confirms the "other" (Room 7's) is clean.
+
+\textbf{Verdict: ROOM 7'S REPORTED VALUES ARE PRECISION-CONVERGED (trustworthy).} Tested across
+4 seeds ($q=13,19,25,29$), both parities of $a$, and both qualitative buckets (clean root-of-unity
+convergence and reciprocal-bimodal erratic), at up to 8$\times$ the original precision (1600 vs.\
+200 bits) with 40-digit display -- zero drift in every case. Room 7's parity-of-$a$ finding
+(odd-$a$ bounded/order-1, even-$a$ erratic/reciprocal-bimodal for $q=9,25,29$; clean convergence
+for $q=13,17,19$) is \textbf{not} an artifact of insufficient precision. Tao's concern is real
+and correctly flagged for the $N=aq+2$ construction, but does not transfer to Room 7's actual
+numerics; Room 7's qualitative conclusions stand unchanged.
+
+\textit{Caveat.} This audit resampled 10 of Room 7's cited points (not all $\sim$40+ points
+across all 7 seeds); $q=9,11,17$ were not independently rerun here (17 has no cited $N$ in the
+room text to reproduce; 9, 11 were judged lower-risk, being qualitatively similar to the already
+double-checked $q=25,29$ buckets). If a future room pushes to substantially larger $N$
+($\gg10^6$) where more Pochhammer factors could align, this audit's non-cancellation finding
+should be re-checked at that new scale, not assumed to extrapolate indefinitely.

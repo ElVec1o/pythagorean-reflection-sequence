@@ -1,0 +1,81 @@
+\subsection*{Room 11 (2026-09-26): seat Tao, pushing for a closed form on the odd-$a$ branch}
+
+\textbf{Calibration (done first).} Read \texttt{room7\_seat\_ramanujan.tex} (post-Reviewer-AS
+version) in full. Confirmed the key finding as stated: across every seed tested
+($q=9,11,13,17,19,25,29$), the odd-$a$ subsequence of $A_+/A_-$ stays bounded and order-1, close
+to the unit circle, while even-$a$ carries all the wild/reciprocal-bimodal behaviour. This is
+correctly reported in room7 as the cleanest, most robust part of the pattern, with no closed
+form and no mechanism found.
+
+\textbf{Scope.} Per instructions, only the odd-$a$ branch was pursued (even-$a$
+reciprocal-bimodal structure and Hilbert's B-saddle route were both left untouched, as directed).
+Tool: \texttt{ratio\_amp} (this directory), extended only by re-running at higher precision;
+no new binary was needed for the exploration below. Wrapped every run in \texttt{perl -e 'alarm
+280; exec @ARGV'}; \texttt{sysctl hw.memsize} confirmed 24GB fresh this session; \texttt{df -h /}
+showed 5.3GB free, so no large intermediate files were written.
+
+\textbf{Attempt 1: exact recursion in $m$ ($a=2m+1$), $q=13$.} To get consecutive odd-$a$ points
+at a fixed seed without perturbing $q$, $N$ was built directly as $N=aq+2$ for each desired odd
+$a$ (offset $2$ keeps $N$ odd since $aq$ is odd$\times$odd$=$odd, and keeps
+$\mathrm{round}(N/q)=a$ since $2/q<1/2$; $\gcd(a,N)=\gcd(a,2)=1$ automatically for odd $a$). Two
+regimes were sampled at $q=13$: (i) $a=101,103,\dots,199$ (50 consecutive odd points,
+$N\sim1300$--$2600$), and (ii) isolated points at $a\approx1000,5000,20000,50000$
+($N\sim1.3\times10^4$ to $6.5\times10^5$).
+
+Regime (i) did \emph{not} show order-1 boundedness at all -- it showed a striking period-4
+pattern in $a\bmod 8$: $a\equiv5,7\pmod 8$ gives $|A_+/A_-|\sim10^{-4}$ (shrinking further as $a$
+grows within the window), while $a\equiv1,3\pmod8$ gives $|A_+/A_-|\sim10^{4}$--$10^{7}$ (growing).
+This looked like a genuine sub-parity structure within odd-$a$ worth reporting as a finding --
+until the precision check below.
+
+\textbf{Precision check -- the "structure" is a numerical artifact, not math.} Re-running the
+same regime-(ii) points at 500-bit precision (vs.\ the tool's default 200-bit) changes the
+computed values by tens to \emph{hundreds} of orders of magnitude at fixed $(a,N)$: e.g.\ $q=13,
+N=65015$ ($a=5001$) gives $|A_+/A_-|\approx1.6\times10^{18}$ at 200 bits and
+$\approx2.7\times10^{114}$ at 500 bits, with the argument also shifting substantially (arg
+$2.78\to1.17$). This is not a converging tail of a legitimate large number -- it is catastrophic
+cancellation: some factor $(1-z^i)$ in the Pochhammer-type denominator is landing extremely close
+to $0$ for these $(a,N)$ (an artifact of the specific coprime-perturbation construction used to
+fix $\mathrm{round}(N/q)=a$), and $O(N)$ accumulated rounding error in the running product swamps
+the true value long before 200 bits, and apparently still at 500 bits, is exhausted. Even the
+regime-(ii) points that superficially looked ``order-1, clean'' at 200 bits ($a=20001\dots50007$,
+values $0.05$--$3.9$) are \emph{not} precision-stable: re-run at 500 bits, the same $(a,N)$ pairs
+give different $O(1)$ values (e.g.\ $N=260015$: $0.351$ at 200 bits vs.\ $0.727$ at 500 bits) --
+same order of magnitude, but not the same number, so these should be read as ``not yet resolved,''
+not as confirmed order-1 data points.
+
+\textbf{Conclusion on Attempt 1.} No exact recursion was extracted, and the apparent mod-8
+sub-pattern in regime (i) is retracted as a precision artifact, not a mathematical finding. This
+also means the room's PSLQ step (which needs trustworthy exact/high-precision algebraic values of
+$H_e,H_o$) could not be reached responsibly: PSLQ on numerically unresolved inputs would produce
+spurious "exact" relations. \textbf{Important caveat for room7's own boundedness claim:} room7's
+odd-$a$ data points were sampled from natural $N$-sequences (doubling / $\times1.08$ scaling),
+which may avoid the near-zero-denominator resonances hit by this room's $N=aq+2$ construction --
+so this finding does not contradict room7's specific reported numbers, but it does mean the
+odd-$a$ "boundedness" has only been checked at whatever precision room7's tool used at those
+specific points, not verified precision-stable under a $200\to500$-bit doubling. That
+cross-check (rerun room7's own $(q,N)$ list at 500 bits) was \emph{not} done here (out of budget)
+and is a natural, cheap next step.
+
+\textbf{Attempt 2: direct rigorous estimate for odd-$a$ convergence/Cauchy-ness.} Not attempted
+beyond diagnosis. Given Attempt 1's finding that even the numerics are precision-fragile at the
+$a\sim10^3$--$10^5$ scale for a naively-constructed odd-$a$ sequence, a "crude direct estimate"
+bounding each term of $H_e,H_o$ would need to first pin down which regime of $(a,N)$ is genuinely
+free of near-zero Pochhammer factors (i.e.\ where $\min_i \|ia/N\|$ stays bounded away from $0$
+relative to $N$ -- a three-distance-theorem / continued-fraction question about $a/N$'s
+convergents to $1/q$, not yet formulated precisely) before any term-by-term bound could be
+trusted. No such estimate was derived.
+
+\textbf{Room verdict: NOTHING WORKED (rigorous claim), but one concrete methodological finding.}
+No exact algebraic recursion in $m$ was found for the odd-$a=2m+1$ branch, and no rigorous
+convergence/Cauchy proof was obtained. \emph{Reason:} the intended PSLQ/pattern-matching step
+requires numerically trustworthy high-precision data, and this room's own precision doubling
+($200\to500$ bits) showed the existing tool's outputs at $a\sim10^3$--$10^5$ are not yet converged
+-- values change by up to $\sim100$ orders of magnitude (clearly-artifact cases) or by an $O(1)$
+factor (the superficially-clean cases) under the doubling. This is a real, reproducible
+🌊 (scaled failure) finding, not a null result: before any exact-relation or convergence-rate claim
+can be made for the odd-$a$ branch, the room7 tool needs either (a) precision scaled adaptively
+with $N$ (e.g.\ tie working precision to $-\log_2(\min_i\|ia/N\|)$), or (b) a reformulation that
+avoids dividing through the raw Pochhammer product entirely (e.g.\ working with $\log$ of the
+product, or a recursion that cancels the near-zero factor analytically before it is floated).
+Neither was attempted here; both are concrete, actionable next steps, left open.
