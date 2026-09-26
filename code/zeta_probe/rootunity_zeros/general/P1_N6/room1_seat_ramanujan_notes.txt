@@ -1,0 +1,99 @@
+=== calibration/context (from P1i_landscape_cert.Case, N=6, a=1) ===
+ell=[0.69314718055994530942 +/- 2.77e-21]
+theta* (certified) = [+/- 9.87e-39] (deg 0.000000)
+tie pair (n, n+s) = (-3, -1), s=2
+delta = [0.02083333333 +/- 3.34e-12]
+rho_N = [0.956560545617084 +/- 3.08e-16]
+H_head (theta-independent) = [0.046036965594036058309 +/- 2.64e-22]
+Vref = V(n=-3) = [-0.10877886711640732983 +/- 1.59e-21] + [-0.36293101505060035508 +/- 3.45e-21]j
+  |Vref| = [0.3788822556 +/- 1.09e-11] , arg(Vref) = [1.279593441 +/- 2.30e-10]
+
+=== TASK 1: head term + dominant-mode Omega(x) along the real ray (theta fixed at theta*=0) ===
+Head "term": the b_0=1 coefficient sits at analytic height 0 (constant, no decay in rho).
+  H_head(rho) := Hh  for all rho>=0  (it is a bound on the WHOLE head sum, not rho-dependent;
+  the head decomposition in P1f/P1i has no path parameter of its own -- it is a finite sum bound).
+
+Dominant mode Omega_n(x) along the descent line x = x_n + v*e^{i theta/2} (theta=0 => real line):
+  saddle x_n = [0.34911875787685021571 +/- 2.53e-21] + [-0.52359877559829887308 +/- 2.90e-21]j
+rho    Re((Omega_n(x_n+rho) - Vref)*e^{-i theta*})   Omega_n height (mid)
+    0   [+/- 2.89e-38]
+[0.200 +/- 3e-8]   [-0.0406336920209842 +/- 4.98e-17]
+[0.400 +/- 3e-8]   [-0.161617020801476 +/- 4.06e-16]
+[0.600 +/- 3e-8]   [-0.362631937531096 +/- 4.08e-16]
+[0.800 +/- 3e-8]   [-0.643649718789089 +/- 2.15e-16]
+ 1.00   [-1.00466775990247 +/- 2.98e-15]
+[1.20 +/- 3e-7]   [-1.44568582458932 +/- 1.90e-15]
+[1.40 +/- 3e-7]   [-1.96670389141471 +/- 3.72e-15]
+[1.60 +/- 3e-7]   [-2.56772195843411 +/- 7.71e-16]
+[1.80 +/- 3e-7]   [-3.24874002547110 +/- 4.37e-15]
+ 2.00   [-4.00975809250970 +/- 3.91e-15]
+
+=== TASK 2: margin(theta) = H_head - Re(Vref * e^{-i theta})  as theta -> 0 from either side ===
+(all other N=6 constants -- Vref, Hh, delta, ell, tie pair -- held FIXED at their certified values;
+ theta alone is swept as a free perturbation parameter, ignoring whether such theta is realizable)
+theta            margin = Hh - href          href = Re(Vref e^{-i theta})
+0.500000    [0.315497799844389 +/- 4.04e-16]   [-0.269460834250 +/- 3.54e-13]
+[0.200000 +/- 3e-11]   [0.224750759515136 +/- 3.76e-16]   [-0.178713793921 +/- 9.96e-14]
+[0.100000 +/- 3e-11]   [0.190505034708689 +/- 6.34e-17]   [-0.144468069115 +/- 3.48e-13]
+[0.0500000 +/- 3e-12]   [0.172818878086810 +/- 3.70e-16]   [-0.126781912493 +/- 2.26e-13]
+[0.0200000 +/- 3e-12]   [0.162052214064873 +/- 1.08e-16]   [-0.116015248471 +/- 1.64e-13]
+[0.0100000 +/- 3e-12]   [0.158439643474718 +/- 1.19e-16]   [-0.112402677881 +/- 3.19e-13]
+[0.00500000 +/- 3e-13]   [0.156629120491637 +/- 1.47e-16]   [-0.110592154898 +/- 4.00e-13]
+[0.00100000 +/- 3e-13]   [0.155178709275576 +/- 4.64e-16]   [-0.109141743682 +/- 4.60e-13]
+[0.000100000 +/- 3e-14]   [0.154852125267994 +/- 3.76e-16]   [-0.108815159674 +/- 4.25e-14]
+0           [0.154815832710443 +/- 3.89e-16]   [-0.108778867116 +/- 4.08e-13]
+[-0.000100000 +/- 3e-14]   [0.154779539065104 +/- 4.82e-16]   [-0.108742573471 +/- 6.85e-14]
+[-0.00100000 +/- 3e-13]   [0.154452847366452 +/- 2.62e-16]   [-0.108415881772 +/- 4.17e-13]
+[-0.00500000 +/- 3e-13]   [0.152999825463238 +/- 4.26e-16]   [-0.106962859869 +/- 2.02e-13]
+[-0.0100000 +/- 3e-12]   [0.151181144150106 +/- 7.76e-18]   [-0.105144178556 +/- 7.00e-14]
+[-0.0200000 +/- 3e-12]   [0.147535941259533 +/- 1.23e-16]   [-0.101498975665 +/- 4.97e-13]
+[-0.0500000 +/- 3e-12]   [0.136540896817224 +/- 2.51e-16]   [-0.0905039312232 +/- 1.19e-14]
+[-0.100000 +/- 3e-11]   [0.118039748229483 +/- 3.76e-16]   [-0.0720027826354 +/- 4.74e-14]
+[-0.200000 +/- 3e-11]   [0.0805442357453855 +/- 4.2e-19]   [-0.0345072701513 +/- 4.95e-14]
+-0.500000   [-0.0324989948892190 +/- 4.27e-17]   [0.0785359604833 +/- 4.51e-14]
+
+analytic slope check: d(href)/dtheta |_{theta=0} = Im(Vref) = %s  (nonzero => margin(theta) is LINEAR
+  near theta=0, not flat/degenerate -- it does NOT vanish or blow up as theta->0, it just crosses
+  through the fixed offset Hh - Re(Vref) linearly with slope -Im(Vref)).
+slope = [-0.362931015050600 +/- 3.56e-16]
+margin(theta) ~= [Hh - Re(Vref)] + Im(Vref)*theta + O(theta^2) near theta=0
+  linear model: margin(theta) ~= [0.154815832710 +/- 4.44e-13] + ([-0.362931015051 +/- 4.00e-13])*theta
+
+=== TASK 3: head vs dominant-mode margin, at the CERTIFIED theta*=0, along increasing rho ===
+Since H_head is a single bound on the whole head sum (not itself rho-dependent), the comparison
+that matters is: H_head (=[0.04603696559 +/- 4.04e-12]) vs. href = Re(Vref e^{-i theta*}) = Vref.real (=[-0.1087788671 +/- 1.65e-11]).
+margin at theta*=0 exactly: Hh - Re(Vref) = [0.154815832710443 +/- 3.89e-16]   (POSITIVE => head genuinely overtakes the tie height)
+
+Cross-check against the dominant-mode dynamics itself (does the *saddle* landscape, not just the
+scalar head bound, ever dip below the head level along the real ray?):
+rho     Re(Omega_n(x_n+rho))            Re(Omega_n) - Hh   (negative = head still above the local dominant height)
+    0   [-0.108778867116407 +/- 3.30e-16]   [-0.154815832710 +/- 4.44e-13]
+0.250   [-0.172149835957822 +/- 2.13e-16]   [-0.218186801552 +/- 1.43e-13]
+0.500   [-0.360902500330727 +/- 3.09e-16]   [-0.406939465925 +/- 2.38e-13]
+0.750   [-0.674674092586000 +/- 4.53e-16]   [-0.720711058180 +/- 3.66e-14]
+ 1.00   [-1.11344662701887 +/- 4.36e-15]   [-1.15948359261 +/- 2.92e-12]
+ 1.25   [-1.67721920835955 +/- 2.48e-15]   [-1.72325617395 +/- 3.59e-12]
+ 1.50   [-2.36599179203562 +/- 1.37e-15]   [-2.41202875763 +/- 3.43e-13]
+ 1.75   [-3.17976437582797 +/- 2.05e-15]   [-3.22580134142 +/- 2.01e-12]
+ 2.00   [-4.11853695962610 +/- 3.43e-15]   [-4.16457392522 +/- 1.40e-13]
+ 2.25   [-5.18230954342453 +/- 2.90e-15]   [-5.22834650902 +/- 1.44e-12]
+ 2.50   [-6.37108212722297 +/- 4.87e-15]   [-6.41711909282 +/- 3.00e-12]
+ 2.75   [-7.68485471102140 +/- 3.88e-15]   [-7.73089167662 +/- 4.57e-12]
+ 3.00   [-9.12362729481984 +/- 2.66e-15]   [-9.16966426041 +/- 3.88e-12]
+
+For reference, the S-mode (n+1) tie height (this mode DID certify in P1i, head-T<=-0.1193):
+Vref_S = [0.165376810691630 +/- 4.10e-16] + [+/- 6.56e-39]j ; Re(Vref_S) = [0.165376810692 +/- 3.70e-13] ; Hh - Re(Vref_S) = [-0.119339845098 +/- 4.06e-13] (NEGATIVE, comfortably certified)
+
+=== VERDICT ===
+margin at theta*=0 is [0.154816 +/- 1.68e-7] (fixed, order 0.15, not a knife-edge near-zero number).
+The margin(theta) sweep in TASK 2 shows NO singular behaviour as theta->0: it is a smooth, LINEAR
+crossing (slope = Im(Vref) = %s, |slope| ~ 0.36), not a blow-up, not a vanishing degeneracy. The bad
+sign at theta=0 is not a boundary artifact of theta->0 -- it holds on a whole neighbourhood of
+theta=0 (theta in roughly (-0.42, 0.42) by the linear model, i.e. the ENTIRE relevant range near the
+actual tie angle, since |lin_const/slope| ~ [-0.426571 +/- 3.67e-8]), and only flips sign once theta leaves that band.
+So there is no "just barely fails at theta=0, would pass at nearby theta" story: the B-mode head
+failure at N=6 is a robust, finite-margin (~0.15) failure of the CRUDE bound, not a razor-thin one
+that a small modulus-only correction (replacing the ray lemma's sin(theta) rotation argument with a
+pure |1-w| modulus estimate) could plausibly patch by shaving off a few percent. A modulus-only rescue
+would need to find ~0.15 of otherwise-uncounted decay/cancellation -- comparable in size to the whole
+head bound itself -- not a marginal tightening.

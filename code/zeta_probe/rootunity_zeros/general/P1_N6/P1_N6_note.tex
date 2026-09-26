@@ -141,6 +141,58 @@ residual modulus decay, $\cos\theta=1$ being the \emph{best} possible rate for t
 estimate, to compensate for the loss of the rotation half in some or all of the needed windows) --- but
 that is exactly the missing derivation, not a bookkeeping relabelling from $4$ to $6$.
 
+\subsection*{Room 1 (2026-09-26): three seats, moderator verdict ADVANCED}
+
+A room of mathematicians (three blind seats: Ramanujan, Hilbert, Erd\H os; moderated and
+adversarially rechecked by Reviewer AQ) sharpened this diagnosis on two independent fronts and
+produced one small, semi-rigorous positive result. Nothing below closes $N=6$.
+
+\textbf{Ramanujan's finding: the crude method's own margin is robust, not a knife-edge.} At the
+certified $\theta^\ast=0$, the head-vs-tie-height gap is $H_h-\operatorname{Re}(V_{\rm ref})\approx
++0.1548$ (the same number as $H_6-T\ge0.1548$ above), and sweeping $\theta$ artificially around $0$
+shows this margin is \emph{linear} in $\theta$ near $0$ (slope $\approx-0.363$, matched to machine
+precision) and stays positive (i.e.\ uncertifiable) over a wide band $\theta\in(-0.42,0.42)$, not a
+narrow near-miss. A ``modulus-only'' patch of the whole term-by-term method at $N=6$ would need to
+manufacture $\sim0.15$ of decay out of nothing; \emph{this specific rescue is confirmed doomed}, not
+merely unattempted.
+
+\textbf{Hilbert's finding: the ray lemma's own separation constant is fine at one slice, but the
+uniformity gap is now localized to five loci.} At $\theta=0$, $v_0=0$, the formula
+$\mathcal D(a',\varphi)=\inf_\rho\max(\sigma(\varphi-\rho\sin\theta),1-e^{-a'-\rho\cos\theta})$
+collapses cleanly (no $1/\cos\theta$ blow-up, since $\cos\theta=1$ is the best case for that factor),
+and the five non-head resonance constants at $N=6$ ($c=\zeta_6^i$, $i=1,\dots,5$, at angles
+$60^\circ,120^\circ,180^\circ,240^\circ,300^\circ$) give $\mathcal D\ge0.866$ at that slice for every
+$\rho\ge0$ --- $\theta=0$ is \emph{not} automatically fatal to this particular piece. What remains
+open is that \texttt{lem:qi-bounds}'s actual use of this lemma needs a bound uniform over the
+unbounded $x$-contours of \texttt{prop:qi}'s proof, with $\operatorname{Im}(x)$ free; there are five
+codimension-1 loci $\arg(\zeta_6^i)-2\operatorname{Im}(x)\equiv0$ where the angular safety net
+vanishes and only bare modulus decay $1-e^{-2\operatorname{Re}(x)}$ remains, and whether that alone
+suffices near $\operatorname{Re}(x)\approx0$ on the actual contours $\Gamma_\pm,\Pi_0$ has not been
+checked. This narrows ``check case-by-case for the actual $c$'s'' (above) to five explicit angles.
+
+\textbf{Erd\H os's finding: two individual zeros of $B$ near $\zeta=e(1/6)$, certified by a different,
+elementary method.} Using the numerically-located tie-ray candidates ($j=4,5$) and Arb ball
+arithmetic (60-digit precision, the genuinely convergent series with an explicit super-geometric tail
+bound --- no head/tie-height comparison anywhere), the discrete winding number of $\arg B$ around
+each candidate is exactly $1$. Reviewer AQ reran this and additionally stress-tested it at $16\times$
+the sample density (24$\to$96$\to$400 points per disk): the winding number stays exactly $1.0000$ at
+every resolution, with the maximum per-step argument turn shrinking linearly as expected for smooth,
+single-winding behaviour (no jump, oscillation, or aliasing signature). \textbf{This is not yet a
+full rigorous certificate}: it lacks an explicit modulus-of-continuity/derivative bound on $B$ on the
+two disks (radius $\approx0.0026$--$0.0033$) that would rule out aliasing analytically rather than
+empirically; that specific missing bound is the one thing standing between this and a P2-style
+certificate. Erd\H os's other observation --- that accumulation of poles at $\zeta=e(1/6)$ itself is
+\emph{not} open, since it already follows by closure from Theorem~\texttt{thm:arc}/Corollary
+\texttt{cor:arcUV} (\texttt{paper2a.tex}, the remark following $N=6<16$) --- is confirmed accurate
+but is \textbf{not new}; it was already documented before this room convened. What stays genuinely
+open is only the \emph{direct, self-contained} tie-ray argument at the exact point $N=6$, independent
+of the closure route.
+
+\textbf{Room verdict: ADVANCED.} Two independent sharper diagnoses plus one reproducible partial
+computational result, none of which closes $N=6$. Not integrated into paper2a: the certified zeros
+need the missing derivative bound before they meet citation-grade rigor there.
+
+
 \textbf{Why this is a sharper diagnosis than ``$T<0$'':} $T<0$ says the crude term-by-term method cannot
 possibly work at $N=6$, which was already known (\texttt{P1i\_lemma.tex}). It does \emph{not} say why the
 one alternative method on record (the $q=i$ reflected-contour trick) fails to transfer. The finding here

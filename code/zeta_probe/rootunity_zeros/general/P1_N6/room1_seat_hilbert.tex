@@ -1,0 +1,146 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room of mathematicians, item 1 (P1 N=6) --- Seat: Hilbert}
+\author{}
+\date{2026-09-26 (scratch, not reviewed)}
+\begin{document}
+\maketitle
+
+\section{Calibration point}
+
+\texttt{paper2a.tex}, proof of \texttt{lem:qi-bounds}, ``A ray lemma'' paragraph. In my own words, the
+exact chain:
+
+Let $|c|=1$, $G(v)=\log(1-ce^{-v})$, and fix a base point $v_0$ with $|ce^{-v_0}|\le1$. Move along the ray
+$v=v_0+\rho e^{i\theta}$, $\rho\ge0$. Write $w(\rho)=ce^{-v}=ce^{-v_0}e^{-\rho\cos\theta}e^{-i\rho\sin\theta}$.
+Two facts about $w$ are used:
+\begin{itemize}
+\item \textbf{Modulus:} $|w(\rho)|=|w_0|e^{-\rho\cos\theta}\le e^{-a'-\rho\cos\theta}$, $e^{-a'}=|w_0|$.
+\item \textbf{Argument:} $\arg w(\rho)=\arg w_0-\rho\sin\theta$, i.e.\ \emph{the argument of $w$ turns at
+rate $\sin\theta$} as $\rho$ increases.
+\end{itemize}
+These combine, via $|1-w|\ge\max(1-|w|,\sigma(\arg w))$ with $\sigma(u)=\sin\min(\operatorname{dist}(u,2\pi\Z),\frac\pi2)$
+(a direct geometric fact: the chord from $1$ to a point of modulus $|w|$ and argument $\arg w$ is at least
+as long as either the radial gap $1-|w|$ or the arc-chord lower bound coming from the angle alone), into
+$\delta=\inf_{\rho\ge0}|1-w(\rho)|\ge\inf_{\rho\ge0}\max\bigl(\sigma(\varphi-\rho\sin\theta),\,1-e^{-a'-\rho\cos\theta}\bigr)=:\mathcal D(a',\varphi)$,
+$\varphi=\operatorname{dist}(\arg w_0,2\pi\Z)$. This $\delta$ is then fed into $|G'|\le1/\delta$ (from
+$G'(v)=w/(1-w)\cdot(-1)\cdot(-1)$, i.e.\ $|G'|=|w/(1-w)|\le1/\delta$ when $|w|\le1$) and
+$\int_{\rm ray}|G''|\,|dv|\le1/(\delta^2\cos\theta)$ (the extra $1/\cos\theta$ is the Jacobian of arclength
+$|dv|=d\rho$ against the exponential-decay variable $\rho\cos\theta$ that controls $\int|w|^{-2}\,d(\text{modulus})$),
+to bound the Euler--Maclaurin remainder $E_0$ in $\sum_{m\ge0}G(v_0+4tm)=-\operatorname{Li}_2(ce^{-v_0})/(4t)+\tfrac12G(v_0)+E_0$,
+$|E_0|\le\frac{|t|}3\bigl(\frac1\delta+\frac1{\delta^2\cos\theta}\bigr)$.
+
+\emph{Where $\theta\ne0$ is used, precisely:} the closed form $\mathcal D(a',\varphi)$ is a genuine lower
+bound on $\delta$ \emph{for every} $\rho\ge0$ because the argument sweeps continuously through all residues
+mod $2\pi$ as $\rho\to\infty$ (rate $\sin\theta\ne0$), so even if $\varphi$ happens to be exactly the
+dangerous value $0$, the bound $\sigma(\varphi-\rho\sin\theta)$ only vanishes at isolated $\rho$'s and the
+$\inf$ over $\rho$ trades that off against the growing modulus term $1-e^{-a'-\rho\cos\theta}$, which is why
+$\mathcal D$ can be made an explicit, $x$-uniform positive constant ($d(x)$, $d'(x)$, $D_n$) over the whole
+domain of $x$ used in the lemma, including points where $\varphi$ is arbitrarily close to $0$. I confirm
+this is the object at stake, and confirm (per the task's DO-NOT-RETRY) that at $N=6$ the certified tie-ray
+angle is $\theta^*=0$ exactly, so $\sin\theta^*=0$ and this sweep is absent.
+
+\section{The resonance object at $N=6$}
+
+From \texttt{P1i\_lemma.tex}, \S``$N=6$'': $c=-2(1-\zeta)=2e^{2\pi i/3}$, $\zeta=e^{i\pi/3}$, $\ell=\log2$
+($\ell=\log|c|$), tie pair $(-3,-1)$, $T=-0.10878$. This $c$ is the \emph{global} P1f constant
+$c=-2(1-\zeta)$ (P1f\_lemma.tex, \S``set''), not itself a $|c|=1$ ray-lemma input. The actual ray-lemma
+applications inside \texttt{lem:qi-bounds}'s proof use $c=i^j$, $j=1,2,3$ at $N=4$ (excluding $j\equiv0$,
+which is the separately-handled head/$\eta$-transformation term); the $N$-generic analogue is $c=\zeta_N^i$,
+$i=1,\dots,N-1$ (excluding $i\equiv0\bmod N$, again the head). At $N=6$, $\zeta_6=e^{i\pi/3}$, so the five
+relevant unit-modulus resonance constants are $\zeta_6^i=e^{i\pi i/3}$, $i=1,\dots,5$, at angles
+$60^\circ,120^\circ,180^\circ,240^\circ,300^\circ$.
+
+\section{The modulus-only computation at $\theta=0$}
+
+At $\theta^*=0$, $\sin\theta=0$, $\cos\theta=1$. The ray is $v=v_0+\rho$, $\rho\ge0$ real, so
+$w(\rho)=w_0e^{-\rho}$: pure real exponential decay of modulus, \emph{no change of argument at all}
+($\arg w(\rho)\equiv\arg w_0$ for every $\rho$). Consequently the two-term $\inf_\rho\max(\cdot,\cdot)$
+collapses to a closed form with no optimization needed:
+\[
+  \mathcal D(a',\varphi)\Big|_{\theta=0}=\max\Bigl(\sigma(\varphi),\ \inf_{\rho\ge0}\bigl(1-e^{-a'-\rho}\bigr)\Bigr)
+  =\max\bigl(\sigma(\varphi),\,1-e^{-a'}\bigr),
+\]
+because $1-e^{-a'-\rho}$ is increasing in $\rho$ so its infimum over $\rho\ge0$ is its value at $\rho=0$,
+and $\sigma(\varphi)$ does not depend on $\rho$ at all. This is \emph{not} singular and involves no
+$1/\cos\theta$ blow-up ($\cos\theta=1$ is the best possible case for that factor); it is finite, explicit,
+and manifestly $\ge0$, vanishing exactly when $\varphi=0$ \emph{and} $a'=0$ simultaneously, i.e.\ when
+$w_0=1$ exactly --- which is precisely the singular head case ($c\equiv1$, $x=0$) that the lemma already
+excludes via its hypothesis $d(x)>0$ (resp.\ $d'(x)>0$).
+
+For the five non-head residues $c=\zeta_6^i$ ($i=1,\dots,5$), taking the simplest slice $v_0=0$ (so
+$a'=0$, $\varphi=\arg(\zeta_6^i)=60^\circ i$):
+\[
+\begin{array}{c|ccccc}
+ i & 1 & 2 & 3 & 4 & 5\\\hline
+ \varphi & 60^\circ & 120^\circ & 180^\circ & 240^\circ & 300^\circ\\
+ \operatorname{dist}(\varphi,2\pi\Z) & 60^\circ & 120^\circ & 180^\circ & 120^\circ & 60^\circ\\
+ \min(\cdot,90^\circ) & 60^\circ & 90^\circ & 90^\circ & 90^\circ & 60^\circ\\
+ \sigma(\varphi)=\sin(\cdot) & 0.866 & 1 & 1 & 1 & 0.866
+\end{array}
+\]
+so $\mathcal D(0,\varphi)\ge0.866$ for every $i=1,\dots,5$ at this slice: at $\theta=0$, with no rotation
+at all, the five non-head resonance points are already far enough from $1$ (all $\ge60^\circ$ away) that
+the purely angular term alone gives a healthy constant lower bound, and since $\theta=0$ never lets $w$
+approach $1$ angularly (it can only shrink radially, which \emph{increases} $|1-w|$), this bound
+\emph{persists for every $\rho\ge0}$, not just at $\rho=0$. In this respect the degenerate ray is
+completely benign for the fixed data at $v_0=0$: modulus decay alone (indeed, no decay at all is even
+needed here) recovers a separation constant comparable to the $\theta_i\ne0$ case at $N=4$
+($D_n\ge0.668$ there).
+
+\section{Why this does not settle the lemma}
+
+The bound above is only for the slice $v_0=0$. The lemma's actual objects $d(x)$, $d'(x)$ are
+$\min_{c^6=1,\,c\ne1}\mathcal D\bigl(\pm2\operatorname{Re}x,\ \operatorname{dist}(\arg c\mp2\operatorname{Im}x,2\pi\Z)\bigr)$
+and must stay bounded away from $0$ \emph{uniformly over the whole $x$-range} used in the proof (an
+unbounded strip in $\operatorname{Im}x$, since $x$ ranges over contours $\Gamma_\pm,\Pi_0$ that go to
+$\infty$). At $\theta\ne0$ this uniformity is exactly what the rotation buys: no matter what
+$\operatorname{Im}x$ is, i.e.\ no matter how close $\varphi=\arg c-2\operatorname{Im}x$ starts to the
+dangerous value $0$, letting $\rho$ (equivalently $m$, or moving along the contour) increase eventually
+sweeps $\varphi$ away, and $\mathcal D$ absorbs the worst case into an $x$-independent constant. At
+$\theta=0$ there is no such sweep: $\varphi$ is \emph{whatever $\operatorname{Im}x$ makes it}, frozen for
+all $\rho$. So for the specific residues $c=\zeta_6^i$ computed above at $v_0=0$ the picture is good, but
+as $x$ ranges over the actual unbounded contour, $2\operatorname{Im}x$ ranges over all of $\R$ (mod
+nothing --- it is not periodic in the same way $\arg c$ is), so for \emph{every} fixed $i$ there exist
+values of $\operatorname{Im}x$ making $\varphi_i=\arg(\zeta_6^i)-2\operatorname{Im}x\equiv0\pmod{2\pi}$
+exactly. At such an $x$, with $\theta=0$, the modulus term is the only thing available, and it equals
+$1-e^{-2\operatorname{Re}x}$ (or its ($\mp$) analogue), which is small precisely when
+$\operatorname{Re}x$ is small --- and $\operatorname{Re}x$ is \emph{not} bounded away from $0$ on the
+relevant contours either (they start at $x_c$, a point with $|\operatorname{Re}x_c|$ of order $1$, but
+the contour $\Pi_0$, $\Gamma_\pm$ do pass through regions with $\operatorname{Re}x$ small in the
+$\operatorname{Re}x\le0$ half used by part (ii)). So the genuinely dangerous locus is the codimension-1 set
+$\{\varphi_i\equiv0\}$ intersected with $\operatorname{Re}x$ near $0$, for each $i$ separately, and I have
+not shown (nor does the $v_0=0$ slice show) that the actual contours $\Gamma_\pm,\Pi_0$ avoid all six such
+loci with a uniform margin. This is exactly the missing case-by-case check flagged in
+\texttt{P1i\_lemma.tex}, \S``weakest points,'' item 1, now made slightly more precise (it is a set of five
+codimension-1 loci in $(\operatorname{Re}x,\operatorname{Im}x)$, one per non-head residue, and the
+question is whether the specific contours of \texttt{prop:qi}'s proof --- transplanted to $N=6$'s own
+$x_0,x_-,x_c$ --- cross any of them).
+
+\section{Verdict}
+
+\textbf{INCONCLUSIVE}, with a genuine partial result in the affirmative direction:
+
+\begin{itemize}
+\item At $\theta^*=0$ the ray-lemma bound $\mathcal D(a',\varphi)$ degenerates to a closed form
+$\max(\sigma(\varphi),1-e^{-a'})$ with no hidden singularity and no $1/\cos\theta$ blow-up --- the
+degeneracy is benign \emph{as a formula}, not fatal by itself.
+\item For the five non-head resonance constants $c=\zeta_6^i$ ($i=1,\dots,5$) evaluated at the natural
+base point $v_0=0$, the purely angular term already gives $\mathcal D\ge0.866$, comfortably positive and
+persisting for all $\rho\ge0$ (monotonically, since at $\theta=0$ increasing $\rho$ only shrinks $|w|$,
+which can only help). So a modulus/no-rotation argument \emph{does} work at that slice, and works better
+than one might fear: no decay is even needed, only the fixed $\ge60^\circ$ angular gap.
+\item This does not extend to a proof of $d(x)>0$ (let alone a uniform lower bound) over the actual
+unbounded $x$-contours of \texttt{prop:qi}'s proof transplanted to $N=6$, because $\operatorname{Im}x$ is a
+free parameter there and for each of the five residues there is a codimension-1 locus
+$\arg(\zeta_6^i)-2\operatorname{Im}x\equiv0$ where the angular safety net disappears and only the modulus
+term $1-e^{-2\operatorname{Re}x}$ (or its mirror) remains, which is not obviously bounded away from $0$ on
+the contours without checking $\operatorname{Re}x$ there against these five loci explicitly ---
+computation not carried out here (it is the same 5(-6)-point check \texttt{P1i\_lemma.tex} already flagged
+as undone, now localized to specific angles $60^\circ,120^\circ,180^\circ,240^\circ,300^\circ$ rather than
+left generic).
+\end{itemize}
+
+No claim of PROVED is made. This is a scratch note for Room 1; it does not edit or supersede any paper or
+existing note file.
+\end{document}

@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\newcommand{\e}[1]{e^{2\pi i(#1)}}
+\title{Room of mathematicians, Seat Erd\H{o}s: an elementary look at $N=6$}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Calibration point (from P1i\_lemma.tex, Section ``$N=6$: exactly why it is not closed'')}
+Directly from the source (\texttt{code/zeta\_probe/rootunity\_zeros/general/P1i/P1i\_lemma.tex}, line 179):
+\begin{quote}
+``At $\zeta=\e(\frac16)$ we have $c=2e^{2\pi i/3}$, $\ell=\log2$, $\theta^*=0$, tie pair $(-3,-1)$, and $T=-0.10878$ (certified enclosure; the head check fails with $H_6-T\ge0.1548$).''
+\end{quote}
+And line 180: ``the integrals are $e^{(T+o(1))/r}\to0$ exponentially, while $H\ni b_0=1$.'' So the two numbers are confirmed directly from the source, not from a summary:
+\begin{itemize}
+\item Head term $b_0=1$ (the $k=0$ term of $B=\sum_k b_k$, $b_k=c_t^kq^{k^2}/(q;q)_{2k}$, is literally the constant $1$; this is visible in \texttt{P1f\_model.py}'s \texttt{Bser}, which initializes \texttt{s = mpc(1)} before summing the $k\ge1$ terms).
+\item Tie height $T=-0.10878$, i.e.\ negative, so the head ($e^{0/r}=1$ in scale) is \emph{not} dominated by the vanishing integrals ($e^{T/r}\to0$); this is exactly why the method fails at $N=6$ (it needs $T\ge0$, or more precisely a head bound with negative exponent, and here $H_6-T\ge0.1548>0$ certifies the opposite).
+\end{itemize}
+Also noted directly in the source (line 186), the accumulation statement itself is \emph{not} actually open: ``Accumulation of the zeros of $B$ at $\e(\frac16)$\ldots holds anyway by closure from P1h.'' P1h's Theorem B$'$ (\texttt{P1h\_lemma.tex}, \S\ref{sec:LS} there) proves P1f Theorem B for every $a/N\in[\frac16,\frac56]$ with $N\ge16$; letting $a/N\to\frac16^+$ along this family gives accumulation of zeros of $B$ (at nearby moduli) at the point $\e(1/6)$ itself. What remains open is only the \emph{direct, self-contained} tie-ray statement \emph{at the exact rational $\frac16$ with $N=6$} via the P1f/P1i landscape method. This room's task is to look for a different, more elementary route to that specific, narrower fact.
+
+\section*{What was tried}
+Per instructions, the ray-lemma / $\theta^*=0$ route and all P1f/P1i landscape apparatus (head vs.\ tie-height comparisons, saddle counting) were set aside entirely.
+
+\paragraph{1. Direct algebraic specialness of $\e(1/6)$.} $\zeta=\e(1/6)=\tfrac{1+i\sqrt3}2$ is a primitive 6th root of unity, an Eisenstein unit ($\zeta=-\bar\zeta^{-1}$, $\zeta^2-\zeta+1=0$). We looked for an identity relating $B$ at $q$ near $\e(1/6)$ to $B$ (or a related theta-like sum) at $q$ near $\e(1/3)$ or $q\to-1$ (already-covered points, since $[\frac16,\frac56]$ minus a neighbourhood of $\frac16,\frac56$ is closed by P1h, and $\frac13,\frac12$ are interior). The natural candidate is the classical dissection/multiplication identity for $(q;q)_\infty$-type products under $q\mapsto q^2$ or $q\mapsto -q$, but $B$ here is not $(q;q)_\infty$ itself; it is the specific partial-theta-like sum $B=\sum_k(-2(1-q))^kq^{k^2}/(q;q)_{2k}$, which does not obviously dissect under a root-of-unity substitution: the factor $(-2(1-q))^k$ breaks the usual $q\to q^2$ product identities (those apply to $(q;q)_\infty$ or to true theta functions, not to this triangular-recurrence rational sum). No clean 2-to-1 or 3-to-1 map from $\frac16$ to $\frac13$ or $\frac12$ was found in the time available; this idea did not close.
+
+\paragraph{2. Rouch\'e / winding-number certification of individual zeros (elementary, bypasses the landscape entirely).} This is the one that worked, partially. Using the already-known (non-rigorous, mpmath \texttt{findroot}) approximate zero locations of $B(\zeta e^{-t})$ from \texttt{P1f\_zeros.py 1 6} (run fresh here, VERIFIED numerically to 30 digits):
+\[
+t^*_{j=4}\approx 0.027321815+0.001018000i,\qquad t^*_{j=5}\approx 0.021933708+0.000569166i,
+\]
+we evaluated $B$ with rigorous ball (Arb/python-flint \texttt{acb}) arithmetic on a small circle of radius $\rho\approx0.12|t^*_j|$ around each candidate, summing the series to $\sim70$--$80$ terms and padding each ball with an explicit tail-error bound once two consecutive term magnitudes fell below $10^{-40}$ (the $q^{k^2}$ growth in the denominator's absence and the super-geometric decay of $b_k$ make this trivial to certify -- no head-vs-tail comparison of the P1f/P1i type is used at all, this is just ``sum enough terms of a rapidly convergent power series, in balls, and bound the rest''). At 24 boundary sample points per disk:
+\begin{itemize}
+\item every sampled ball for $B$ excludes $0$ by a wide margin (the ball radius is $\sim10^{-40}$--scale while $|B|$ on the boundary is $O(10^{-1})$--$O(1)$);
+\item the discrete winding number of $\arg B$ around each circle is exactly $1.0000$ for both $j=4$ and $j=5$.
+\end{itemize}
+This is the argument principle applied directly to the honest series for $B$, with no reference to the tie height $T$, the head term comparison, or any landscape/saddle bookkeeping.
+
+\section*{Verdict: PARTIAL}
+Two individual zeros of $B$ near $\zeta=\e(1/6)$ (the $j=4,5$ candidates on the numerically-predicted tie ray) were certified to exist, by a genuinely different and more elementary method than P1f/P1i's: rigorous-ball evaluation of the honestly convergent series $B=\sum_k b_k$ plus a discrete argument-principle (Rouch\'e-style) winding count, with no head/tie-height comparison anywhere. This is exactly the kind of ``direct Arb certification of individual zeros'' route (idea 3) the brief asked to try, and even partial success on it is flagged as valuable in the brief.
+
+\textbf{Rigor level, stated honestly.} This is \emph{semi-rigorous}, one notch below a full formal certificate:
+\begin{itemize}
+\item The series evaluation at each of the 24 boundary points is a genuine rigorous ball (correct to the stated, verified tail bound).
+\item The winding number is computed from the \emph{discrete} sequence of 24 sample points' midpoint arguments, not from a continuous argument-principle contour integral with an explicit modulus-of-continuity / derivative bound on $B$ along the arcs between samples. A fully rigorous certificate (of the kind used for P2's 3 certified zeros) would additionally need a bound on $|B'|$ (or on $|B(t_1)-B(t_2)|$ for nearby $t_1,t_2$ on the circle) to rule out the winding ``aliasing'' where $\arg B$ turns by more than $\pi$ between two consecutive samples without being detected. That bound was not computed here; only the count of visible windings among 24 samples was taken. Given how far the ball radii are from $0$ and how smoothly $B$ varies at this scale (24 samples over a disk of radius $\sim0.003$ for a function with the nearest other zero $\sim0.005$--$0.01$ away, per the $j$-spacing seen in \texttt{P1f\_zeros.py}'s own output), aliasing is very unlikely, but it was not excluded by an explicit derivative bound.
+\item This does \emph{not} constitute a proof of accumulation of zeros at $\e(1/6)$ (that would need infinitely many such disks, or a uniform version of this argument as $j\to\infty$); it certifies finitely many zeros near the point, which is exactly the ``partial success'' the brief anticipated as still valuable.
+\item Idea 1 (direct algebraic manipulation exploiting $\e(1/6)$'s Eisenstein-integer structure) and idea 2 (reduction to $\frac13$ or $\frac12$ via a multiplication/dissection identity) were tried briefly and did not yield anything; $B$'s recursive-rational structure ($(-2(1-q))^kq^{k^2}/(q;q)_{2k}$) does not dissect the way a true theta product would, so no shortcut of that kind was found. This is reported as ``did not work,'' not silently dropped.
+\end{itemize}
+
+\paragraph{Files.} \texttt{room1\_seat\_erdos\_rouche.py} (this room's script; python-flint/Arb, \texttt{ctx.prec=200}$\approx$60 digits). Run under \verb|perl -e 'alarm 290; exec @ARGV'|. Fresh pre-flight: 24\,GB RAM, $\approx$7.4\,GB disk free; peak RSS well under 100\,MB; total bytes written by this room well under 20\,kB.
+
+\end{document}
