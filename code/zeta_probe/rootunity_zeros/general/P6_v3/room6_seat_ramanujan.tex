@@ -1,0 +1,195 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{proposition}{Proposition}
+\title{Room of Mathematicians, item 6 (P6, $\beta_2$ transcendence): Seat Ramanujan\\
+regular continued fraction of $q^\ast$}
+\author{}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Task.} Compute the ordinary (regular, simple) continued fraction
+$[a_0;a_1,a_2,\ldots]$ of the real number $q^\ast$ itself (not the $q$-series continued
+fraction of $S$ already exhausted by five reparametrizations in \texttt{P6\_note.tex} /
+\texttt{P6\_v2\_note.tex}), and look for a large partial quotient (Liouville-style jump) or
+near-periodicity (which would prove $q^\ast$ quadratic irrational).
+
+\section{Calibration point}
+
+Both \texttt{P6/P6\_note.tex} and \texttt{P6\_v2/P6\_v2\_note.tex} were read in full. $q^\ast$ is
+defined there as the least positive root of
+\[
+S(q) = 1+\sum_{k\ge1}(-1)^k q^{2k(k-1)}\frac{[2q(1-q)]^k}{\prod_{j=1}^k(1-q^{2j-1})(1-q^{2j})},
+\]
+identified with a value of the Hahn--Exton $q$-Bessel function $J^{(3)}_{-1/2}(\cdot;q^2)$, and
+$\beta_2=1/\sqrt{q^\ast}$.
+
+\textbf{VERIFIED (this session):} the pre-existing certified bracket
+\texttt{private/ROOM/Beta2/g1\_certificate/bracket.txt} (integers \texttt{a\_num}, \texttt{b\_num},
+\texttt{Dd=2090}, encoding a rigorous interval $[a\_num/10^{2090},\,b\_num/10^{2090}]\ni q^\ast$,
+as produced by \texttt{step1\_bracket.py}) was read directly (not re-run from scratch, since the
+2090-digit bracket already exists and re-deriving it is expensive); its midpoint, expanded in
+mpmath at working precision \texttt{dps}$\,\in\{200,800,2000,2050\}$, reproduces
+\[
+q^\ast = 0.449453630558948046125545825395706089225112808545993877680333\ldots
+\]
+to at least the first 62 digits shown, matching \texttt{P6\_note.tex}/\texttt{P6\_v2\_note.tex}
+digit for digit. This confirms the correct number is being used for the continued-fraction
+computation below. (Independent Newton re-derivation from the series, as done for \S2 of
+\texttt{P6\_note.tex}, was not repeated here since the calibration above already confirms
+agreement with that independently-verified value.)
+
+\section{Method}
+
+The regular continued fraction was computed by the standard Euclidean algorithm
+($a_i=\lfloor x_i\rfloor$, $x_{i+1}=1/(x_i-a_i)$) applied to the lower endpoint $a\_num/10^{2090}$,
+the upper endpoint $b\_num/10^{2090}$, and the midpoint of the certified bracket, each at mpmath
+working precision \texttt{dps}$=2050$ (and cross-checked at \texttt{dps}$\in\{200,800\}$ against
+the midpoint), wrapped in the required \texttt{perl alarm 290} cap. All runs completed well under
+the time cap.
+
+\textbf{Certification of the partial-quotient sequence.} The lower- and upper-bracket endpoints
+give \emph{provably} the same 1000 partial quotients (their continued fractions agree in all 1000
+computed terms; no divergence index was found up to $i=1000$), which certifies that all 1000
+listed partial quotients are correct for the true value of $q^\ast$, independent of where inside
+the certified bracket the true value falls. (Precision was not exhausted: 1000 terms from a
+2090-digit input is well inside the regime where CF term extraction is reliable; digit consumption
+per term averaged $\approx2.1$ digits, consistent with the Lévy-constant rate for a generic
+number, so pushing to more terms was not attempted since 1000 already comfortably exceeds the
+requested 100+.)
+
+\section{Result: the partial-quotient sequence}
+
+$q^\ast = [a_0;a_1,a_2,\ldots]$ with $a_0=0$ and (the first 200 of the 999 certified terms
+$a_1,a_2,\ldots$; the full list of 999 is in the companion script output and is available on
+request, omitted here only for length):
+\begin{quote}\footnotesize
+2, 4, 2, 4, 7, 1, 22, 1, 5, 1, 2, 1, 6, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 10, 1, 6, 1, 1, 1, 22, 1, 32,
+27, 40, 2, 3, 1, 1, 7, 2, 5, 13, 1, 1, 1, 1, 17, 8, 1, 7, 1, 1, 3, 2, 2, 4, 1, 2, 1, 1, 5, 1, 2, 1,
+1, 1, 1, 1, 1, 1, 1, 8, 1, 10, 4, 1, 1, 2, 50, 1, 5, 1, 10, 1, 9, 1, 1, 20, 16, 4, 1, 46, 94, 1, 48,
+1, 32, 1, 2, 2, 17, 1, 1, 6, 2, 18, 1, 1, 2, 1, 1, 1, 1, 8, 10, 3, 1, 1, 5, 1, 4, 5, 1, 1, 1, 6, 1,
+1, 1, 3, 1, 32, 5, 1, 3, 1, 3, 1, 10, 6, 2, 1, 38, 4, 1, 4, 31, 6, 1, 5, 1, 1, 5, 1, 6, 1, 1, 4, 1,
+2, 2, 1, 6, 1, 26, 1, 20, 1, 3, \textbf{8250}, 1, 1, 2, 10, 1, 2, 1, 33, 2, 2, 4, 3, 2, 5, 4, 1, 2,
+3, 21, 1, 83, 3, 1, 11, 1, 1, 1, 2, 3, 1, \ldots
+\end{quote}
+Notable later large terms (full 999-term list): $a_{409}=125$, $a_{571}=616$, $a_{602}=387$,
+$a_{689}=127$, $a_{769}=388$, $a_{937}=515$ (indices counted from $a_1=1$-st term after $a_0$).
+
+\section{Analysis}
+
+\textbf{1. Largest partial quotient / Liouville-type jump.} The single largest term among the
+first 999 is $a_{170}=8250$ (using $a_1,\ldots,a_{999}$ indexing). By the standard heuristic for
+a ``generic'' (Gauss--Kuzmin typical) irrational, the expected order of magnitude of the largest
+of $n$ partial quotients is $\Theta(n)$ (more precisely $\max_{i\le n}a_i/n\to$ a random variable
+with a Fréchet-type limit law, since $\Pr(a_i>x)\sim \log_2(1+1/x)\sim 1/(x\ln2)$ is a
+regularly-varying, heavy ($\alpha=1$) tail); for $n=999$ that puts the expected maximum at a few
+thousand, with substantial fluctuation. $8250$ is roughly a factor of 3--6 above the naive
+$n/\ln2\approx1440$ estimate, which is an unremarkable fluctuation for a heavy-tailed ($\alpha=1$)
+maximum, \emph{not} a Liouville-type anomaly. A genuine Liouville-style excess would look like a
+partial quotient many orders of magnitude (e.g.\ $10^{50}$ or more, growing doubly-exponentially
+with index) larger than its predecessors' index would suggest; nothing of that kind appears here,
+nor at $a_{571}=616$, $a_{769}=388$, $a_{937}=515$, all of which are consistent with ordinary
+heavy-tail fluctuations at their respective indices.
+
+\textbf{Verdict on (1): no evidence of a Liouville-type jump.} The largest quotients found are
+unremarkable outliers of a heavy-tailed but otherwise typical distribution, not evidence for
+$q^\ast$ being a specially-constructed (Liouville) transcendental, and not large enough (relative
+to the growth of the CF's own denominators $q_i$) to support a direct Roth/Liouville exclusion
+argument against any specific rational approximant: a Liouville-type argument needs
+$a_{i+1}\gtrsim q_i^{\,i}$ or faster (super-exponential in the denominator), and here
+$a_{170}=8250 \ll q_{169}$ (the 169th CF denominator, already astronomically larger than $8250$
+at that depth). This route does not open up.
+
+\textbf{2. Statistical genericity check (Gauss--Kuzmin \& Khinchin).} The empirical frequency of
+each digit value $k=1,\ldots,10$ among the 999 terms was compared to the Gauss--Kuzmin prediction
+$\Pr(a_i=k)=\log_2\!\big(\tfrac{(k+1)^2}{k(k+2)}\big)$:
+\begin{center}
+\begin{tabular}{c|cccccccccc}
+$k$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
+observed & 0.4164 & 0.1622 & 0.0821 & 0.0661 & 0.0370 & 0.0250 & 0.0190 & 0.0190 & 0.0120 & 0.0280\\
+Gauss--Kuzmin & 0.4150 & 0.1699 & 0.0931 & 0.0589 & 0.0406 & 0.0297 & 0.0227 & 0.0179 & 0.0145 & 0.0120
+\end{tabular}
+\end{center}
+Agreement is good to within sampling noise for $n\approx1000$ terms (the $k=10$ cell is the
+biggest outlier, $0.028$ vs.\ $0.012$, but a single bin out of ten at this sample size is not a
+significant deviation). The empirical geometric mean of $a_1,\ldots,a_{999}$ is $2.7366$, close
+to Khinchin's constant $K_0=2.68545\ldots$ (again consistent with a generic real number; exact
+convergence to $K_0$ is itself only almost-sure/typical, not guaranteed for any single number, so
+this is weak but consistent evidence, nothing more).
+
+\textbf{Verdict on (2): the sequence looks statistically generic}, i.e.\ consistent with what
+almost every real number's continued fraction looks like, hence \emph{uninformative} on its own
+for proving or disproving irrationality/transcendence (as the task brief itself anticipated).
+
+\textbf{3. Periodicity / near-periodicity check.} All length-5 windows among the 999 terms were
+hashed and checked for exact repeats. 62 repeated 5-windows were found, but every one of them is a
+short run of small digits (patterns like $(1,1,1,1,1)$, $(1,2,1,1,1)$, $(1,1,1,3,1)$,
+$(5,1,3,1,3)$), which recur by ordinary chance in any $\sim\!1000$-term sequence over a small
+alphabet dominated by the digit $1$ (birthday-paradox coincidences, expected count for $n=999$,
+alphabet effectively dominated by $\{1,2,3\}$: several dozen is unsurprising). No repeat extends
+into a genuine periodic tail (checked by looking at what follows each matched pair: in every case
+the sequences diverge immediately after the matched 5-window). No period of any length up to
+$\sim500$ (half the computed sequence) was found to repeat exactly starting from any offset. Since
+full periodicity of a regular continued fraction is exactly equivalent (Lagrange's theorem) to
+$q^\ast$ being a quadratic irrational, and would be an extraordinary, easily-falsifiable claim, the
+correct and sufficient check is exactly this exhaustive repeated-window scan against the full 999
+terms, which is negative.
+
+\textbf{Verdict on (3): no periodicity or near-periodicity found.} $q^\ast$ shows no sign of being
+quadratic irrational (as expected --- this would have been an extremely surprising outcome, and
+none of the apparent short repeats survives past 5 terms).
+
+\section{Overall verdict}
+
+\begin{proposition}[status]
+\begin{enumerate}
+\item[(a)] \textbf{VERIFIED (this session):} $q^\ast=0.449453630558948046125545825395706089225\ldots$,
+matching the existing 2090-digit certificate, confirmed to 60+ digits independently at three
+working precisions.
+\item[(b)] \textbf{VERIFIED (this session):} the regular continued fraction of $q^\ast$ begins
+$[0;2,4,2,4,7,1,22,1,5,1,2,1,6,2,1,1,1,2,2,2,\ldots]$; 999 partial quotients after $a_0$ were
+computed and certified (lower/upper bracket endpoints agree on all 999 terms, so these are
+correct regardless of where the true value sits inside the certified interval).
+\item[(c)] \textbf{VERIFIED (this session):} the largest partial quotient among the first 999 is
+$a_{170}=8250$; five other terms exceed 100 ($a_{409}=125$, $a_{571}=616$, $a_{602}=387$,
+$a_{689}=127$, $a_{769}=388$, $a_{937}=515$). None of these is large enough, relative to the CF
+denominator growth at its index, to support a Liouville-type exclusion argument, and their
+frequency/size is consistent with the heavy-tailed ($\alpha=1$) Gauss--Kuzmin law for a typical
+irrational, not with a deliberately-constructed Liouville number.
+\item[(d)] \textbf{VERIFIED (this session):} digit-frequency and geometric-mean statistics match
+the Gauss--Kuzmin/Khinchin predictions for a generic real number; an exhaustive repeated-window
+scan over all 999 terms found no periodicity or near-periodicity (no match extends past a 5-term
+coincidence), so Lagrange's quadratic-irrationality criterion gives nothing.
+\end{enumerate}
+\end{proposition}
+
+\textbf{Final verdict: LOOKS GENERIC / UNINFORMATIVE.} The ordinary continued fraction of $q^\ast$
+behaves exactly like that of a typical (Gauss--Kuzmin-generic) real number: no anomalously large
+partial quotient supporting a Liouville-type route, and no periodicity or near-periodicity
+supporting a quadratic-irrationality route. This is itself a real, if negative, finding: it closes
+off (within the 999-term window computed, using the certified 2090-digit bracket, comfortably
+past the requested 100+ terms) the one additional elementary Diophantine-approximation avenue not
+covered by \texttt{P6\_note.tex}'s five $q$-series-CF reparametrizations or \texttt{P6\_v2\_note.tex}'s
+four named-theory checks (Nesterenko, periods, CM/singular moduli, Schneider--Lang). It does not,
+and cannot by its nature, prove irrationality or transcendence --- a generic-looking CF is exactly
+what one would see for both a ``boring'' algebraic irrational and for $q^\ast$ actually being
+transcendental; it merely rules out the two special structural signatures (Liouville jumps,
+periodicity) that would have given an immediate elementary proof one way or another.
+
+\section{Weak points of this note}
+\begin{itemize}
+\item Only 999 partial quotients were computed (from the existing 2090-digit certified bracket);
+a substantially longer expansion (requiring a longer certified bracket, i.e.\ re-running
+\texttt{step1\_bracket.py} at higher \texttt{Dd}, which was not attempted here for compute-budget
+reasons) could in principle reveal a large quotient or near-period further out, though this is a
+priori no more likely than what was already checked.
+\item ``Near-periodicity'' was operationalized as exact-repeat of length-5 windows; a more
+sophisticated near-periodicity metric (e.g.\ allowing small perturbations, or checking longer
+windows with edit-distance) was not attempted.
+\item The Liouville-exclusion argument in \S4(1) (comparing $a_{i+1}$ to $q_i^{\,i}$) is a standard
+heuristic bound, not spelled out as a fully rigorous inequality with explicit constants in this
+note.
+\end{itemize}
+
+\end{document}

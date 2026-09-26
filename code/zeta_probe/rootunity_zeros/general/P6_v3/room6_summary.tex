@@ -1,0 +1,36 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 6 (P6 beta2 irrationality): moderator summary}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+Two seats (Ramanujan, Erd\H os), each trying a route independent of the $\rho$-type criteria
+already exhausted in \texttt{P6\_note.tex}/\texttt{P6\_v2\_note.tex}.
+
+\textbf{Ramanujan: the regular continued fraction of $q^\ast$ itself looks generic.} All $999$
+partial quotients were computed and certified against both endpoints of the $2090$-digit bracket
+(they agree throughout, so the sequence is correct regardless of where $q^\ast$ sits inside the
+bracket). The maximum quotient ($8250$ at index $170$) is a normal heavy-tailed Gauss--Kuzmin
+fluctuation at this length, not a Liouville-type jump; the digit-frequency histogram matches the
+Gauss--Kuzmin law and the geometric mean ($2.7366$) is close to Khinchin's constant ($2.68545$); an
+exhaustive length-5 window scan found no periodicity or near-periodicity (which would have proved
+quadratic irrationality via Lagrange's theorem, an exciting but a priori extremely unlikely
+outcome). \textbf{Verdict: genuine, but uninformative} -- it closes off the one elementary
+Diophantine-approximation avenue not already covered, without being able to prove or disprove
+irrationality itself (a generic-looking CF is consistent with irrational, transcendental, or even
+a ``boring'' algebraic number of no special approximation quality).
+
+\textbf{Erd\H os: wider PSLQ search against Gamma values, $q$-Pochhammer/eta-type constants,
+Bessel zeros, and algebraic self-combinations of $\beta_2$ -- nothing found.} All searches returned
+no relation, except one which the seat itself correctly identified as spurious (a tautology from
+including $\beta_2-1$ in its own search basis) and explicitly flagged as such rather than reporting
+a false discovery.
+
+\textbf{Room verdict: NO PROGRESS,} honestly, with two more elementary approaches closed off for
+precise reasons (generic CF; no exotic-constant relation found) rather than left untried. P6 stands
+exactly where \texttt{P6\_note.tex}/\texttt{P6\_v2\_note.tex} left it (v10.21.0): $\beta_2$ is
+proved not to be a root of any integer polynomial of degree $\le64$; irrationality and
+transcendence remain OPEN.
+
+\end{document}
