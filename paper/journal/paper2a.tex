@@ -2638,6 +2638,29 @@ ray lemma at all and does not need a head-elimination trick, since at those poin
 exceed the tie height. This is consistent with, and does not weaken, the $N=6$ diagnosis: $N=6$ is the
 case where the head genuinely beats the tie height, forcing exactly the head-elimination route whose sole
 known tool is the ray lemma.
+
+This diagnosis has since been sharpened from a proof-technique limitation to a structural fact about
+the saddle geometry itself, verified algebraically exact rather than merely numerically observed:
+\texttt{room11\_seat\_erdos.tex} (reviewed adversarially by Reviewer AV: correct, one framing softened)
+shows that the direct $N=4$-template contour construction cannot be transplanted to $N=6$, for a
+precise and now fully verified reason. The exact $N=6$ saddle data is $x_{-3}=0.349119-i\pi/6$,
+$x_{-1}=0.349119+i\pi/6$, and this is algebraically exact, not numerical: $c^6=64$ is real, which
+forces the fixed-point root $w$ real, giving $\operatorname{Im}(x_m)=\arg(c)/2+\pi m/6$ as an identity.
+Consequently the two saddle-\emph{pinned} constant-height contour legs coincide \emph{exactly}, along
+their entire length, with two of the five $N=6$ resonance loci ($\pi/6$, $5\pi/6\equiv-\pi/6$) — not
+merely crossing them transversally at isolated points (which could be routed around), but lying on
+them throughout. A calibration check confirms this is $N=6$-specific and not an assumed pattern: $N=4$'s
+own saddle heights ($3\pi/8$, $-\pi/8$) miss its own three resonance loci by a clear nonzero margin.
+The contour height is forced by the saddle equation, not a free design choice; rerouting it would miss
+the actual stationary point and defeat the Laplace-method step (\texttt{prop:qi} Step~3) that produces
+the leading asymptotic term. The correctly scoped conclusion, per Reviewer AV's review (which softened
+the room's own slightly stronger framing): this rules out the \emph{direct $N=4$-template transplant}
+specifically, for this precise, saddle-equation-forced reason — it does \emph{not} prove that no
+technique whatsoever can work at $N=6$. Two escape routes remain explicitly open, described in
+\texttt{room11\_seat\_erdos.tex}: an entirely different decomposition whose constant-height legs avoid
+the resonance loci (not obviously possible, not ruled out), and a bound not written anywhere in the
+repository that would let the angle-free part-(iii) estimate be used directly on the resonance-coincident
+legs. $N=6$ remains open.
 \end{remark}
 
 \begin{remark}[the innermost arc $\frac aN\in(0.0804,0.143)$: what a first probe shows]\label{rem:innerarc}
