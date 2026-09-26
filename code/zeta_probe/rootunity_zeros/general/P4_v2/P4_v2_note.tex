@@ -1,0 +1,268 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+\newcommand{\e}{\mathrm e}
+\title{P4 v2: a global lower bound on $n(r,U)$ from summing thm:arc's local pole rate}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent Labels: PROVED means a complete argument, given the inputs it cites (here, given
+\texttt{thm:arc}/\texttt{cor:arcUV} of paper2a, which are themselves conditional on
+Theorems~\texttt{thm:model} and~\texttt{thm:RJ}). VERIFIED means high-precision floating point
+checked against paper2a's own reported numbers, not a fresh interval certificate. HEURISTIC means an
+argument without full error control. This note continues \texttt{P4/P4\_note.tex} (``P4v1''), which
+identified two missing ingredients for a Nevanlinna-theoretic resolution of P4 (is $U$ D-algebraic):
+(a) a quantitative global pole-counting rate $n(r,U)$ as $r\to1^-$, summed from the local rate
+\texttt{thm:arc} gives near each fixed root of unity; (b) a disc-analogue of the
+Bank--Kaufman/Steinmetz counting theorem. P4v1 explicitly did not carry out the summation in (a). This
+note carries it out.
+
+\section*{Summary of outcome}
+
+\textbf{New result (PROVED given \texttt{cor:arcUV}):} for every $A>0$,
+\[
+   n(r,U)\ \ge\ \frac{A}{1-r}\qquad\text{for all $r$ sufficiently close to $1$},
+\]
+i.e.\ $\displaystyle\liminf_{r\to1^-}(1-r)\,n(r,U)=+\infty$: the pole-counting function of $U$ grows
+\emph{strictly faster than any constant multiple of $1/(1-r)$}. This sharpens, and in one respect
+corrects, the back-of-envelope guess in P4v1 \S5(a) (which guessed a $\log(1/(1-r))$-type count near
+each root of unity, times $\sim1/(1-r)$ many roots of unity): the correct per-root-of-unity count is
+itself \emph{linear} in $1/(1-r)$, not logarithmic, and a super-any-fixed-multiple bound already
+follows from a two-line diagonal argument that needs no uniform control over the certificate
+constants across roots of unity. \textbf{What this does not do:} it stops short of a super-polynomial
+bound $n(r,U)\ge (1-r)^{-\rho}$ for every fixed $\rho$, which is what would be needed to beat every
+fixed-order/degree Bank--Kaufman-type bound at once (ingredient (c) of P4v1); that stronger statement
+needs uniform-in-$N$ control of thresholds and constants that paper2a explicitly does not make
+explicit (\texttt{rem:arcUV}). \S\ref{sec:diagnosis} pins down exactly what extra input would close
+that gap. Ingredient (b) (the disc-analogue counting theorem itself) is untouched by this note.
+
+\section{The local rate, extracted precisely}\label{sec:local}
+
+From \texttt{paper2a.tex}, \texttt{thm:arc} (\S\ref{sec:arc} there) and its corollary
+\texttt{cor:arcUV}: fix $\zeta=e^{2\pi ia/N}$, $\gcd(a,N)=1$, admissible in the sense of
+\texttt{cor:arcUV} ($N\ge16$, $\frac aN\in[\frac16,\frac56]$; wider ranges are available via
+P1h/P1i but are not needed below). Write
+\[
+   \ell=\ell(\zeta):=\log\bigl|2(1-\zeta)\bigr|,\qquad L=L(\zeta):=\operatorname{Log}\bigl(-2(1-\zeta)\bigr),
+\]
+so $\operatorname{Re}L=\ell$. The proof of \texttt{thm:arc} produces, for each such $\zeta$, an
+explicit sequence of poles $q^\ast_j(\zeta)=\zeta\,\e^{-t^\ast_j}$ of $G^T_0$ (hence, by
+\texttt{cor:arcUV}, of $U$ and $V$ after transfer through $x=\pm\sqrt{q^\ast_j}$), valid for all $j$
+past some finite, $\zeta$-dependent threshold $j_0(\zeta)$ (``the index beyond which $q^\ast_j$ is a
+pole $\ldots$ is not made explicit'', \texttt{rem:arcUV}), with
+\[
+   t^\ast_j=\frac{L+i\pi}{2j+3/2}+O(t)\qquad(j\to\infty),\qquad\text{so}\qquad
+   \operatorname{Re}(t^\ast_j)=\frac{\ell}{2j+3/2}\bigl(1+o(1)\bigr).
+\]
+Since $|q^\ast_j|=\e^{-\operatorname{Re}(t^\ast_j)}$, and $\ell>0$ on the arc (required for the
+resummation to apply at all, \texttt{thm:arc}'s statement), $\operatorname{Re}(t^\ast_j)\downarrow0$
+monotonically for large $j$, i.e.\ \emph{$|q^\ast_j(\zeta)|$ increases to $1$ as $j\to\infty$}, and
+\begin{equation}\label{eq:localrate}
+   1-|q^\ast_j(\zeta)|=\operatorname{Re}(t^\ast_j)\bigl(1+o(1)\bigr)=\frac{\ell(\zeta)}{2j}\bigl(1+o(1)\bigr)\qquad(j\to\infty).
+\end{equation}
+
+\noindent\textbf{Numerical corroboration (VERIFIED against paper2a's own reported values, no new
+computation).} At $\zeta=i$ ($N=4$, outside the $N\ge16$ arc but governed by the same mechanism,
+Corollary~\texttt{cor:Ui}), paper2a reports $q^\ast_1=0.1404+0.8293i$, $q^\ast_2=0.0802+0.8974i$, so
+$1-|q^\ast_1|=1-0.8411=0.1589$ and $1-|q^\ast_2|=1-0.9010=0.0990$. Equation~\eqref{eq:localrate}
+predicts the ratio $(1-|q^\ast_1|)/(1-|q^\ast_2|)\approx(2\cdot2+3/2)/(2\cdot1+3/2)=5.5/3.5=1.571$; the
+reported values give $0.1589/0.0990=1.605$, a $2\%$ match consistent with the stated $O(t)$ correction
+at these small $j$. This is a sanity check on \eqref{eq:localrate}'s shape, not a new certificate.
+
+\section{Inverting the local rate: linear, not logarithmic, per-$\zeta$ count}\label{sec:invert}
+
+Fix an admissible $\zeta$ and $r\in(0,1)$. Using $1-r\le-\log r\le(1-r)/r$, the two notions of
+``close to the boundary'' agree to leading order as $r\to1^-$, so I write $-\log r=1-r+O((1-r)^2)$ and
+suppress the difference below. By \eqref{eq:localrate}, $|q^\ast_j(\zeta)|\le r$ iff
+$\operatorname{Re}(t^\ast_j)\ge-\log r$, i.e.\ (for $j$ past the threshold where \eqref{eq:localrate}
+is valid)
+\[
+   \frac{\ell(\zeta)}{2j+3/2}(1+o(1))\ \ge\ 1-r+O((1-r)^2)
+   \iff j\ \le\ \frac{\ell(\zeta)}{2(1-r)}\bigl(1+o(1)\bigr)-\frac34.
+\]
+So the number of $j\ge j_0(\zeta)$ with $|q^\ast_j(\zeta)|\le r$ is
+\begin{equation}\label{eq:percount}
+   n_\zeta(r):=\#\{j\ge j_0(\zeta):|q^\ast_j(\zeta)|\le r\}
+   =\frac{\ell(\zeta)}{2}\cdot\frac1{1-r}\ -\ j_0(\zeta)\ +\ o\Bigl(\frac1{1-r}\Bigr)\qquad(r\to1^-).
+\end{equation}
+This is \textbf{linear} in $1/(1-r)$, with an explicit leading coefficient $\ell(\zeta)/2$, not the
+$\log(1/(1-r))$ shape guessed in P4v1 \S5(a). (The $\log$ intuition would be the right one if the
+question were ``how large is $\sum_j$ [something $1/j$]'' -- a harmonic-sum question -- but the
+question here is ``how many terms of a sequence decaying like $1/j$ exceed a threshold $1-r$'', which
+is answered by inverting $\ell/(2j)=1-r$ directly, giving a term count linear in $1/(1-r)$, not a
+harmonic sum.) This is the concrete correction to P4v1's back-of-envelope estimate that carrying out
+the summation actually produces.
+
+\section{Diagonal summation over finitely many roots of unity}\label{sec:diagonal}
+
+\begin{lemma}\label{lem:many}
+There is a constant $\ell_{\min}>0$ and infinitely many pairwise distinct admissible $\zeta$ (in the
+sense of \S\ref{sec:local}) with $\ell(\zeta)\ge\ell_{\min}$.
+\end{lemma}
+\begin{proof}
+$\ell(\zeta)=\log|2(1-\zeta)|$ is continuous and strictly positive on the closed arc
+$\frac aN\in[\frac16,\frac56]$ minus $\{a/N=\frac12\}$... in fact it is strictly positive and
+continuous on all of $\arg\zeta\in[\frac\pi3,\frac{5\pi}3]\setminus\{0\}$, in particular on the
+compact sub-arc $\arg\zeta\in[\frac\pi3+\delta,\pi-\delta]$ for any small fixed $\delta>0$, hence
+bounded below there by some $\ell_{\min}(\delta)>0$. For any prime $N\ge16$ the point $a=\lfloor
+N/2\rfloor$ satisfies $\gcd(a,N)=1$ automatically and $a/N\to\frac12$ as $N\to\infty$, so for $N$
+large enough $a/N$ lies in $[\frac16+\delta',\frac56-\delta']$ for any fixed $\delta'>0$; there are
+infinitely many primes, giving infinitely many distinct admissible $\zeta_N=e^{2\pi ia/N}$, pairwise
+distinct since they have pairwise distinct arguments in $(0,2\pi)$, with $\ell(\zeta_N)$ bounded below
+uniformly (by continuity, $\ell(\zeta_N)\to\ell(-1)=\log4$ as $N\to\infty$ along this family, and is
+bounded below on the whole compact range visited).
+\end{proof}
+
+\begin{proposition}[main result of this note]\label{prop:main}
+Assume \texttt{thm:model} and \texttt{thm:RJ} (so that \texttt{cor:arcUV} holds). Then
+$\displaystyle\liminf_{r\to1^-}(1-r)\,n(r,U)=+\infty$, where $n(r,U)$ counts poles of $U$ in
+$|x|\le r$ with multiplicity.
+\end{proposition}
+\begin{proof}
+Fix $A>0$. By Lemma~\ref{lem:many}, choose finitely many distinct admissible
+$\zeta_1,\ldots,\zeta_K$ (all with $N\ge16$) with $\sum_{k=1}^K\ell(\zeta_k)/2>A$; this is possible
+for $K$ large enough since $\ell(\zeta_k)\ge\ell_{\min}>0$ for infinitely many of them. Each $\zeta_k$
+has a finite threshold $j_0(\zeta_k)$ (\texttt{thm:arc}'s proof; not numerically given, but finite).
+By \eqref{eq:percount}, for each fixed $k$,
+\[
+   n_{\zeta_k}(r)=\frac{\ell(\zeta_k)}2\cdot\frac1{1-r}-j_0(\zeta_k)+o\Bigl(\frac1{1-r}\Bigr)\qquad(r\to1^-).
+\]
+Since $K$ is fixed, summing these $K$ (finitely many) asymptotics is legitimate term-by-term:
+\[
+   \sum_{k=1}^Kn_{\zeta_k}(r)=\Bigl(\sum_{k=1}^K\frac{\ell(\zeta_k)}2\Bigr)\frac1{1-r}-\sum_{k=1}^Kj_0(\zeta_k)+o\Bigl(\frac1{1-r}\Bigr)
+   >\;\frac{A}{1-r}\quad\text{for $r$ close enough to $1$ (depending on $K$, hence on $A$).}
+\]
+The poles counted at distinct $\zeta_k$ are, for $r$ close enough to $1$, genuinely distinct points
+of $\{|x|\le r\}$: along the tie ray $\arg t=\theta^\ast(\zeta_k)$, $q^\ast_j(\zeta_k)\to\zeta_k$ in
+\emph{both} modulus and argument as $j\to\infty$ (the perturbation from $\zeta_k$ has size
+$|t^\ast_j|=O(1/j)$ in every direction, not just radially), so for fixed distinct $\zeta_1,\ldots,\zeta_K$
+the corresponding pole clusters live in disjoint shrinking neighbourhoods of $\zeta_1,\ldots,\zeta_K$
+once $j$ (equivalently $r$) is large enough; no double counting occurs. Transferring through
+$x=\pm\sqrt{q^\ast_j}$ and complex conjugation (\texttt{cor:arcUV}) multiplies every count by an
+absolute constant ($\le4$) and does not affect distinctness for the same reason (the four points
+$\pm\sqrt{q^\ast_j},\pm\sqrt{\overline{q^\ast_j}}$ cluster near the four fixed points
+$\pm\sqrt{\zeta_k},\pm\sqrt{\overline{\zeta_k}}$, distinct across distinct $k$ once close enough).
+Hence $n(r,U)\ge\sum_{k=1}^Kn_{\zeta_k}(r)>A/(1-r)$ for $r$ close enough to $1$. Since $A>0$ was
+arbitrary, $\liminf_{r\to1^-}(1-r)n(r,U)=+\infty$.
+\end{proof}
+
+\begin{remark}[why no uniform constants are needed here, and where they would be needed]\label{rem:diagonal}
+The proof above needs, for each \emph{fixed} $K$, only the $K$ individual (finite, if unspecified)
+thresholds $j_0(\zeta_1),\ldots,j_0(\zeta_K)$ -- a quantifier order (``for all $A$ there is $r_0(A)$'')
+that lets $K$, and hence the finite list of thresholds used, depend on $A$ freely. This is why P4v1's
+concern about uncontrolled implied constants does not block Proposition~\ref{prop:main}: no
+uniformity \emph{across} $\zeta$ is used, only finitely-many, one-at-a-time applications of
+\texttt{thm:arc}. Uniformity across $\zeta$ would only be needed to let $K=K(r)\to\infty$ \emph{as
+$r\to1$} (i.e.\ to use more and more roots of unity as $r$ approaches $1$, rather than a fixed finite
+list), which is exactly what would be needed to push the bound from ``faster than every fixed multiple
+of $1/(1-r)$'' to ``faster than every fixed power of $1/(1-r)$'' (superpolynomial) -- see
+\S\ref{sec:diagnosis}.
+\end{remark}
+
+\section{Comparison with what a disc Bank--Kaufman/Steinmetz bound would need}\label{sec:compare}
+
+P4v1 \S3 already flags that the plane-case Malmquist/Steinmetz/Bank--Kaufman theorems bound the
+Nevanlinna characteristic $T(r,y)$ (equivalently, via the first main theorem, $N(r,y)=\int_0^r
+n(t,y)/t\,dt$, hence $n(r,y)$ up to the usual logarithmic-derivative slack) of a transcendental
+meromorphic solution of a fixed algebraic ODE with polynomial/rational coefficients, in terms of the
+order $k$ and degree $d$ of the equation and the growth of its coefficients; for coefficients of
+bounded degree the resulting bound on $T(r,y)$ is of \emph{finite order} in $r$ (a fixed power of
+$r$) as $r\to\infty$ on $\C$. The natural disc analogue (Tsuji-type; Bank's disc papers, per
+\texttt{rem:disc} of P4v1, cited from memory and not independently re-verified here either) should
+bound $T(r,y)$, as $r\to1^-$, by a fixed power of $1/(1-r)$ -- i.e.\ ``finite order'' becomes
+\emph{polynomial growth in $1/(1-r)$}, for coefficients bounded by a fixed power of $1/(1-r)$ as well
+(rational functions of $x$ alone have coefficients bounded near $|x|=1$ unless they have poles
+exactly on the unit circle, which would need separate handling; assume for this comparison
+coefficients holomorphic on $\overline D$, the case relevant to ruling out a fixed ODE with, e.g.,
+polynomial coefficients).
+
+\textbf{What Proposition~\ref{prop:main} gives, and what it does not give, against this.}
+Proposition~\ref{prop:main} shows $n(r,U)$ is not $O(1/(1-r))$ for any constant -- it beats every
+\emph{linear-order-1} bound in $1/(1-r)$. If the disc Bank--Kaufman analogue for a fixed order-$k$,
+degree-$d$ ODE gave a bound of the shape $n(r,y)=O((1-r)^{-\rho(k,d)})$ with $\rho(k,d)=1$ for the
+simplest (e.g.\ Riccati, $k=1,d=2$) case, Proposition~\ref{prop:main} would already rule out
+\emph{that specific} equation class. But it does \emph{not} rule out equations with $\rho(k,d)>1$
+(which presumably exist for higher $k,d$, exactly mirroring how in the plane case higher-order
+algebraic ODEs admit solutions of higher finite order): to rule out \emph{every} $(k,d)$
+simultaneously one needs $n(r,U)$ to beat $(1-r)^{-\rho}$ for \emph{every} fixed $\rho$, i.e.\
+superpolynomial growth in $1/(1-r)$, which is a strictly stronger statement than
+Proposition~\ref{prop:main} and is \textbf{not established here}.
+
+\section{Diagnosis: what closing the superpolynomial gap needs}\label{sec:diagnosis}
+
+Pushing \S\ref{sec:diagonal}'s argument from ``beats every constant multiple of $1/(1-r)$'' to
+``beats every power of $1/(1-r)$'' means letting the number of roots of unity used, $K$, grow as
+$r\to1^-$ (e.g.\ $K(r)\sim(1-r)^{-\rho}$ for growing $\rho$), and this needs, uniformly over the
+$K(r)$ many $\zeta$'s used simultaneously:
+\begin{enumerate}
+\item A bound on $j_0(\zeta)$ (the threshold past which \eqref{eq:localrate} is valid) as a function
+of $N$ (or of $\ell(\zeta)$), rather than the qualitative ``eventually true'' statement
+\texttt{thm:arc}'s proof gives. \texttt{rem:arcUV} states explicitly that this index ``is not made
+explicit''.
+\item A bound on how many admissible $\zeta=e(a/N)$ with $N\le N_{\max}(r)$ exist, for $N_{\max}(r)$
+tied to $1-r$ -- this part is elementary number theory (Euler-phi counting of reduced fractions in an
+interval, $\Theta(N_{\max}^2)$ many with $N\le N_{\max}$) and is \emph{not} an obstruction.
+\item Crucially, the hazard-induction certificates behind Theorems~M, M$'$, main$'$
+(\texttt{P1e\_lemma.tex}, \texttt{P1g\_lemma.tex}, \texttt{P1h\_lemma.tex}) are stated as certified
+for $N$ up to $10^5$ by direct computation and by ``a hand argument for $N>10^5$'' (\texttt{thm:arc}'s
+proof sketch, quoting \texttt{P1h\_lemma.tex}); whether that hand argument gives an \emph{explicit,
+uniform} lower bound on $|\omega|$-margins / non-vanishing constants as $N\to\infty$ (as opposed to
+merely an existence statement for each large $N$) is not something this note verifies -- it would
+need rereading \texttt{P1g\_lemma.tex}/\texttt{P1h\_lemma.tex} in full with this specific question
+(``is the $N\to\infty$ tail bound uniform and explicit?'') in mind, which was not done here.
+\end{enumerate}
+If (1) and (3) can be answered with an explicit polynomial-in-$N$ (or even just \emph{any} explicit)
+bound on $j_0(\zeta)$, the diagonal argument of \S\ref{sec:diagonal} upgrades mechanically: take
+$K(r)\to\infty$ at a controlled rate, and the leading coefficient $\sum\ell(\zeta_k)/2$ over
+$K(r)\sim(1-r)^{-\rho}$ many terms (each $\ell(\zeta_k)$ bounded below, hence the sum growing at least
+linearly in $K(r)$) would give $n(r,U)\gtrsim(1-r)^{-1-\rho}\cdot(1-r)$-type improvement -- growing
+without bound in $\rho$, i.e.\ superpolynomial. This is plausible but is exactly the missing
+computation; it is not carried out here for lack of the explicit thresholds in (1)/(3), and is left as
+the next concrete step.
+
+\section*{Weakest points}
+\begin{itemize}
+\item \textbf{The whole note is conditional} on \texttt{thm:model}, \texttt{thm:RJ} (as
+\texttt{cor:arcUV} already is), and on the correctness of \texttt{thm:arc}'s proof sketch as quoted
+in paper2a (this note did not re-derive \texttt{thm:arc} from \texttt{P1f}/\texttt{P1h\_lemma.tex}
+from scratch; it takes the stated asymptotic $t^\ast_j\sim(L+i\pi)/(2j+3/2)$ at face value from
+paper2a's text).
+\item \S\ref{sec:invert}'s inversion treats $1-r\approx-\log r$ and drops the stated $O(t)$/$o(1)$
+correction terms uniformly; this is standard but was not made into an explicit error bound (e.g.\ no
+claim of the form ``for $r>1-\epsilon_0(\zeta)$'', only ``eventually''). Making
+Proposition~\ref{prop:main}'s proof fully quantitative (an explicit $r_0(A)$) would require exactly
+the same threshold data flagged missing in \S\ref{sec:diagnosis}.
+\item Proposition~\ref{prop:main} is a genuinely new statement (not present in paper2a or in P4v1),
+but it is \textbf{weaker than what P4 needs}: superlinear-in-every-constant is not superpolynomial,
+and \S\ref{sec:compare} shows superpolynomial is the actual threshold to beat every fixed-order,
+fixed-degree algebraic ODE via a Bank--Kaufman/Steinmetz-shaped bound (itself still uncited in
+citable disc form, ingredient (b), untouched here).
+\item Lemma~\ref{lem:many}'s use of primes $N$ with $a=\lfloor N/2\rfloor$ is one convenient
+witnessing family, chosen for a clean proof that $\gcd(a,N)=1$; nothing hinges on primality beyond
+that convenience, and any infinite family of coprime pairs landing in a fixed compact sub-arc away
+from $\zeta=1,-1$ would do equally well.
+\item The claim in \S\ref{sec:diagonal}'s proof that distinct-$\zeta_k$ pole clusters do not overlap
+for $r$ close to $1$ is argued qualitatively (tie-ray convergence in both modulus and argument); it
+was not turned into an explicit separation bound. For a fixed finite $K$ this is not a real risk
+(compactness of the finite set $\{\zeta_1,\ldots,\zeta_k\}$ suffices), but it is the same missing
+uniformity that would need to be resolved to let $K\to\infty$ with $r$, per \S\ref{sec:diagnosis}.
+\item No computation (Rust, Arb, or otherwise) was run for this note beyond the arithmetic sanity
+check in \S\ref{sec:local}, which reuses numbers already printed in paper2a; nothing here required
+new numerics, since the content is an asymptotic inversion and a diagonal summation argument, not a
+new numerical claim. If \S\ref{sec:diagnosis}'s item (3) is pursued next, that would be the first
+place a fresh computation (checking whether \texttt{P1g\_lemma.tex}'s $N\to\infty$ hand argument
+gives an explicit uniform bound) becomes relevant, and should be scoped as a targeted re-reading of
+\texttt{P1g\_lemma.tex}/\texttt{P1h\_lemma.tex}, not a new Rust enumeration.
+\end{itemize}
+
+\end{document}
