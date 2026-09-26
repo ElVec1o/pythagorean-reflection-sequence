@@ -2772,6 +2772,34 @@ this, and state it only as a heuristic. A proof of
 Conjecture~\ref{conj:WT-nonDfinite} would seem to need a transfer in which the
 planar carry is the catalytic variable, and no such equation is available.
 
+\begin{remark}[The gap, stated as a reduction]
+\label{rem:WT-nonDfinite-reduction}
+The mechanism above that proves non-$D$-finiteness for $U$, $V$ and the travel
+resolvent $G^T_0$ (Theorem~\texttt{thm:nonDfinite} of paper2a, via
+Lemma~\texttt{lem:odeposes}) transfers to $F_T$ verbatim once two hypotheses are
+supplied: (a) a meromorphic continuation of $F_T$ to some domain $\Omega\ni0$,
+and (b) infinitely many poles of that continuation in a relatively compact
+subset of $\Omega$. Given (a) and (b), Lemma~\texttt{lem:odeposes} applied on
+$\Omega$ shows $F_T$ solves no linear ODE with coefficients holomorphic on
+$\Omega$, hence none with polynomial coefficients, exactly as for $U,V,G^T_0$;
+this reduction step is itself immediate and content-free. What blocks it is
+three missing ingredients, none available at present: no representation of
+$F_T$ analogous to the Fredholm-determinant form of the travel operator is
+known, so (a) cannot even be tested; the natural transfer variable for $F_T$ is
+not the travel block but the planar carry $f\in\Z[t^{\pm1}]$ of
+Corollary~\ref{cor:kernel-classification-restate}, whose numeration base
+$\zeta_T$ has $|\zeta_T|=1$ and so does not contract, unlike the rational bases
+$q/p$ to which the Akiyama--Frougny--Sakarovitch theory applies; and no
+functional/transfer equation for $F_T$ (or the toy groups' growth series) with
+that carry as an explicit catalytic variable is known to exist. This isolates
+precisely what a proof of Conjecture~\ref{conj:WT-nonDfinite} along this route
+would still need, without establishing any of it; it is a sharper statement of
+the open problem, not progress toward its resolution. See
+\texttt{code/zeta\_probe/rootunity\_zeros/general/P5/P5\_note.tex}, an
+adversarially reviewed scoping note (Reviewer AI verdict: correct, no fixes
+needed) that states this reduction in full and records the same three gaps.
+\end{remark}
+
 \subsection{Numerical record}
 
 \begin{remark}[Computations for $W_T$ and the toy groups]

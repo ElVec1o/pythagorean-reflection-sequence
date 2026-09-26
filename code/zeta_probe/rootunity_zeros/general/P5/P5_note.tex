@@ -83,7 +83,7 @@ $\Z[\zeta_T^{\pm1}]\rtimes_{\zeta_T}\Z$ with generators $\{1,\mathrm{shift}\}$.
 \section{What is already proved: a computer-assisted finite-order exclusion}\label{sec:proved}
 
 \begin{itemize}
-\item[(PROVED, computer-assisted)] Theorem~\texttt{thm:WT-lowcomplexity} (paper1, line 2564): for every
+\item[(PROVED, computer-assisted)] Theorem~\texttt{thm:WT-lowcomplexity} (paper1, line 2565): for every
 such $T$, $F_T$ satisfies no algebraic relation $\sum_iP_iF_T^i=0$ with $(k,\max\deg P_i)$ at most
 $(1,14),(2,9),(3,6),(4,5),(5,4),(6,3)$, and $(u_d^T)$ satisfies no P-recursion with $(r,\max\deg Q_i)$
 at most $(1,14),\dots,(11,0)$ (paper1 line 2572--2574). The proof uses only the $33$ shape-independent
@@ -92,7 +92,7 @@ computation, tier (ii) trust; through $u_{32}$ by an exact Rust BFS plus modular
 tier (iii) trust — see paper1 \S8.6/App.~\texttt{sec:reproduce}) and full-rank-mod-$(2^{61}-1)$ linear
 algebra in \texttt{code/zeta\_probe/wt\_growth/guess.py}, which is exact in the direction used (full
 rank mod $p$ implies full rank over $\Q$) but is a script, not formalized.
-\item[(PROVED, conditional)] Theorem~\texttt{thm:WT-blowup} (paper1, line 2625): \emph{if} the universal
+\item[(PROVED, conditional)] Theorem~\texttt{thm:WT-blowup} (paper1, line 2626): \emph{if} the universal
 series $U$ is not $D$-finite (paper2a's Theorem~\texttt{thm:nonDfinite}, unconditional there — see
 \S\ref{sec:mechanism}), then for every complexity bound $d$ only finitely many similarity classes of
 $T$ have $F_T$ of complexity $\le d$. The proof is a clean finite-dimensional nested-kernel argument and
