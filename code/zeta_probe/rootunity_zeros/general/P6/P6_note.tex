@@ -191,13 +191,22 @@ than removable, but that is an assessment, not a proof of non-removability.
 \end{enumerate}
 \end{proposition}
 
+\textbf{Correction (post-review, Reviewer AJ):} \texttt{report\_G1.md} itself distinguishes two
+tiers in its LLL exclusion runs: degree $\le16$ (height $<10^{120}$), $\le8$ (height $<10^{230}$)
+and $\le64$ (height $<10^{28}$) are \textbf{PROVED}, backed by an explicit unimodularity check
+(\texttt{assert T*B==L and abs(det T)==1} in \texttt{step2\_lattice.py}); the degree-24, -96 and
+-128 runs predate that check and are labeled \textbf{VERIFIED only} there, a strictly weaker
+guarantee. The sentence below is corrected to scope the PROVED-tier claim to degree $\le64$ and
+report degree 128 separately, at its true (weaker) tier.
+
 The strongest \emph{true} statement I can make, in one sentence: \emph{$\beta_2$ is a
-well-defined, unconditionally-established growth-rate constant that is provably not a root of
-any integer polynomial of the many specific low-degree/bounded-height families tested (up to
-degree 128 under a specific height cap in the prior room's certificate), but no proof of even
-its irrationality is known, and the one natural route (a $q$-Siegel/Shidlovskii-type argument on
-its Hahn--Exton $q$-Bessel representation) is blocked at exactly $\rho=1/2$, one notch below
-every published sufficient condition I am aware of.}
+well-defined, unconditionally-established growth-rate constant that is provably (PROVED tier) not
+a root of any integer polynomial of degree $\le64$ under the height caps in \S2, and additionally
+(VERIFIED-only tier, predating the prior room's unimodularity check) not one of degree $\le128$
+under a further height cap, but no proof of even its irrationality is known, and the one natural
+route (a $q$-Siegel/Shidlovskii-type argument on its Hahn--Exton $q$-Bessel representation) is
+blocked at exactly $\rho=1/2$, a factor of two below every published sufficient condition I am
+aware of.}
 
 \section{What would be needed for full transcendence}
 
