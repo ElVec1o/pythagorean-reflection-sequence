@@ -2481,7 +2481,8 @@ level-$n$ sums would be needed. Near the threshold, the height from which the cr
 limit. At $\frac17$ the certifiable low-seed disc ($5\cdot10^{-6}$) no longer meets the direct covering. For $U$ and $V$
 the twisted $\omega$-margin fails earlier: on $[0.143,\frac16)$ one exact seed ($\frac2{13}$) and the first crude
 heights lose more than the margin. So, although $Z_N\ne0$ is proved there, the density of the poles of $U$ and $V$
-for $\frac aN\in[0.143,\frac16)$ is open. Everything on $\frac aN\in(0.0804,0.143)$ is open, even for $G^T_0$.
+for $\frac aN\in[0.143,\frac16)$ is open. Everything on $\frac aN\in(0.0804,0.143)$ is open, even for $G^T_0$
+(Remark~\ref{rem:innerarc} reports a first, heuristic-with-certified-points probe of this range).
 
 The one exception in $[0.143,\frac16)$ is the single reduced point $\frac aN=\frac2{13}=0.1538$, which is
 not reached by the hazard induction above but is covered directly by a per-case landscape certificate:
@@ -2508,6 +2509,37 @@ $e^{2\pi i/6}$, and of the poles of $U,V$ at $\pm\sqrt{e^{\pm2\pi i/6}}$, still 
 unconditionally-in-method by closure from Theorem~\ref{thm:arc}/Corollary~\ref{cor:arcUV}, since $N=6<16$
 is not required there once $\frac16$ is a limit of larger-$N$ points in the arc; what is open at $\frac16$
 is only the direct, single-point, tie-ray statement.)
+\end{remark}
+
+\begin{remark}[the innermost arc $\frac aN\in(0.0804,0.143)$: what a first probe shows]\label{rem:innerarc}
+On $\frac aN\in(0.0804,0.143)$, i.e.\ $\ell:=\log|2(1-\zeta)|\le0$, the saddle mechanism of Theorem~\ref{thm:arc} does not apply at all:
+its modes $x_m$ have $\operatorname{Re}x_m\approx\ell/2<0$ and leave the half-plane on which the resummation is built. A separate
+research note, \texttt{rootunity\_zeros/general/P2/P2\_note.tex} (with \texttt{P2\_cert.py}, \texttt{P2\_certlog.txt}), examines this
+range directly and has been reviewed adversarially, with verdict ``mostly correct, gaps already honestly disclosed, no new fatal
+errors, no overclaiming''; its content is summarised here without enlarging any arc on which density is proved. The relevant
+saddles there are a different pair $\pm x_*$, exponentially close to the endpoint $x=0$, of height $\pm V_*$ with
+$V_*=\sigma c^{N/2}/N^2(1+O(\delta^2))$, $c=-2(1-\zeta)$, $\delta=|c|^{N/2}$. Which of the pair survives depends on the parity of $N$:
+an oddness lemma (proved by an inversion identity for the dilogarithm, one sub-case at $N\equiv2\!\pmod4$ resting on an asserted,
+not derived, continuity step) shows both members of the pair contribute when $N$ is odd, giving $B\approx A_+e^{V_*/t}+A_-e^{-V_*/t}$,
+while exactly one contributes when $N$ is even, giving a single exponential $B\approx He^{V_*/t}$. For odd $N$ this two-term
+landscape is verified numerically (not proved) to match the zeros of $B$ closely at $\frac1{13},\frac1{15},\frac1{17},\frac2{31}
+,\frac1{21},\frac3{41},\frac1{25}$; for even $N$, an argument-principle search finds no zeros in the sectors tested at
+$\frac1{12},\frac1{14},\frac1{16},\frac1{18},\frac1{20},\frac1{22}$.
+
+Three explicit zeros of $B$ are proved to exist, by an Arb interval certificate (winding number~$1$ in a small disc, no
+cancellation issue once the terms are expanded as a Taylor model at the disc centre rather than evaluated by repeated ball
+multiplication): two at $\zeta=e(\frac1{13})$, at $t=(3.5485736701+3.6006300470i)\cdot10^{-4}$ (radius $3\cdot10^{-5}$) and
+$t=(4.3610782252+4.4297740295i)\cdot10^{-5}$ (radius $5\cdot10^{-7}$), and one at $\zeta=e(\frac1{17})$, at
+$t=(2.5340248445+2.5392660205i)\cdot10^{-5}$ (radius $3\cdot10^{-6}$). These are existence statements for finitely many zeros at
+explicit, exponentially small $|t|$, exactly where the odd-$N$ two-saddle model predicts them; they are \emph{not} an
+accumulation statement.
+
+Accumulation of the zeros of $B$ at $\zeta$ for odd $N$ -- let alone density of the poles of $U,V$ on this innermost arc, or any
+extension of Theorem~\ref{thm:arc} or Corollary~\ref{cor:arcUV} into $\frac aN\in(0.0804,0.143)$ -- is \textbf{not proved}. It is
+HEURISTIC, resting on two open ingredients: a Theorem-M-style non-vanishing $A_+A_-\ne0$ for a dense set of odd $N$, and a
+uniform error bound making the two-exponential model exact as $t\to0$. Nothing is claimed here about the even-$N$ sector beyond
+the numerical absence of nearby zeros in the sectors sampled, and nothing here enlarges the region on which any density or
+accumulation theorem in this paper is proved.
 \end{remark}
 
 \begin{remark}[where on the circle the poles accumulate]\label{rem:polesdensity}
