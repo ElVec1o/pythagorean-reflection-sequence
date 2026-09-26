@@ -1,0 +1,212 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,enumitem,hyperref}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newcommand{\e}[1]{e^{2\pi i #1}}
+\newcommand{\Li}{\operatorname{Li}_2}
+
+\title{Track A item 1: does the $q=i$ reflected-contour lemma extend to $N=6$?\\
+\large STATUS: OPEN, with a sharper diagnosis than ``$T<0$''}
+\author{}
+\date{2026-09-26}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+At $N=6$ ($a/N=1/6,5/6$) the P1f/P1i term-by-term method for the poles of $U,V$ (accumulation at
+$\pm\sqrt{\e{(\pm1/6)}}$, standing on \texttt{thm:model}/\texttt{thm:RJ} as always in this programme) is
+documented (\texttt{P1i\_lemma.tex}, \S~``$N=6$: exactly why it is not closed'') as structurally
+unclosable by the crude landscape method: the tie height is $T=-0.10878<0$ while the head term $b_0=1$
+sits at height $0$ (indeed $H_6-T\ge0.1548$), so no term-by-term cutoff bound of the P1f/P1h shape can
+ever work at $N=6$, regardless of constants. \texttt{P1i\_lemma.tex} and \texttt{paper2a.tex}
+(Remark~\texttt{rem:arcobstruction}) both flag that the only known route around an analogous obstruction
+--- met and resolved at $q=i$ ($N=4$, $T=-0.0707$) by \texttt{prop:qi} --- would need
+\texttt{lem:qi-bounds}(ii) ``generalised from the two residue classes used at $q=i$ to six,'' and call
+this open without saying why it is not simply a relabelling exercise.
+
+This note reports an attempt to carry out that generalisation. \textbf{Result: it does not go through as
+stated, and the reason is not a restatement of $T<0$.} The tie at $N=6$ is a clean two-saddle
+(``pairwise'') tie exactly as at $N=4$ --- so the fear that $6=2\cdot3$'s extra divisor forces a
+three-way tie, breaking the two-term Rouch\'e argument, is checked and is \emph{false}. The phase function
+$\Phi(x)=xL-x^2-\Li(e^{-2Nx})/N^2+\pi^2/(6N^2)$ and the Jacobi-triple-product/Poisson-summation core of
+\texttt{lem:qi-bounds}(ii) are themselves fully $N$-generic and carry over to $N=6$ with only bookkeeping
+changes (mod-$6$ residues in place of mod-$4$, and the pre-existing mod-$2$ even/odd branch split nests
+inside mod-$6$ exactly as it nests inside mod-$4$, since $2\mid6$ just as $2\mid4$). \textbf{The actual
+obstruction is that the \emph{ray lemma} underlying every part of \texttt{lem:qi-bounds} --- the tool that
+produces the separation constants $\delta$, $d(x)$, $d'(x)$ that make the whole $\operatorname{Re}x\le0$
+continuation rigorous --- is proved only under $\sin\theta\ne0$ (the tie-ray angle), via the explicit
+statement ``the argument of $w$ turns at rate $\sin\theta$.'' At $q=i$ this holds:
+$\theta_i=\arctan(\pi/(6\log2))\ne0$. At $N=6$ the certified tie-ray angle is exactly $\theta^*=0$
+(\texttt{P1i\_lemma.tex}, \S\ref{sec:six}-data), i.e.\ the ray is real and $w=ce^{-v}$ does not rotate away
+from resonance as $\rho\to\infty$ along it. As currently proved, the ray lemma simply does not apply at
+$N=6$'s own tie ray.} This is a genuinely different, and sharper, statement than ``$T<0$'': it says the
+one analytic tool capable of getting around $T<0$ is itself degenerate at exactly the angle where $N=6$
+needs it.
+\end{abstract}
+
+\section{What was read}
+\texttt{paper2a.tex} (\texttt{prop:qi}, \texttt{lem:qi-bounds}, and \S~``the middle arc''/Remarks
+\texttt{rem:arcobstruction}, \texttt{rem:polesdensity}); \texttt{general/P1i/P1i\_lemma.tex}
+(\S~``$N=6$: exactly why it is not closed,'' and the small-$N$ table in the proof of the landscape
+certificate); \texttt{general/P1f/P1f\_lemma.tex} (the $N$-generic phase function $\Phi$ and \S~``head'');
+\texttt{qi\_bounds.tex}, \texttt{certify\_landscape\_i.py}, \texttt{certify\_landscape\_S\_i.py},
+\texttt{factors\_i.py} (the $q=i$ certificates, read for their role, not re-run --- see
+\S\ref{sec:weak}). No paper \texttt{.tex} file was edited.
+
+\section{The $N=4$ mechanism, precisely}
+
+\subsection{Why $T<0$ blocks the crude method}
+The P1f/P1h machinery decomposes $B$ (equivalently $1-\Sigma_1$) as a head $H$ (finitely many low
+coefficients $b_k$, dominated by $b_0=1$) plus a sum of saddle-mode integrals plus kernel remainders. The
+non-head pieces decay like $e^{(T-\eta)/r}$ for the certified tie height $T$; the head is controlled
+separately by \texttt{lem:head}, which needs $N\ge16$ and gives $H_{\rm head}\le0.0167+r$. When $T<0$ and
+the head sits at height $0$ (or, at $N=6$, strictly above $T$ by $\ge0.1548$), \emph{no} choice of cutoff
+or constants can make a term-by-term bound $|H|\le e^{(T-\eta)/r}$ hold, because $H$ genuinely does not
+decay --- $b_0=1$ is a constant. This is the mechanism common to $q=i$ and $N=6$, and it is a hard wall
+for \emph{this method}, not a numerical accident.
+
+\subsection{The resolution at $q=i$: eliminate the head, don't bound it}
+\texttt{prop:qi}'s proof does not find a sharper bound on $H$. It changes the decomposition so that no
+head term appears at all: Step~1 starts the contour split at a \emph{negative} half-integer $s_c<0$ (with
+$x_c$ near $-\frac\pi8(\cot\theta_i+i)$), so that $\sum_{k\ge0}F(k)$ is written via
+$K_-=(1-e^{-2\pi is})^{-1}$, $K_+=e^{2\pi is}(1-e^{2\pi is})^{-1}$ over paths $\Gamma_\mp$ leaving $s_c$,
+and the entire term is moved to a path $\Pi_0$ through the \emph{saddle} $x_0$ rather than through the
+would-be head index $s=0$. Concretely, $b_0$ is folded into the analytic integral $J_0=\int_{\Pi_0}F\,ds$,
+which the Laplace-method Step~3 controls via the saddle height $V_0$, not via a term-by-term coefficient
+bound. Making this legitimate requires that $F$ (the interpolant, built from $f_e,f_o$) be controlled
+uniformly on paths that cross into $\operatorname{Re}x\le0$ (the paths $\Gamma_\mp$ and $\Pi_0$ pass
+through $\operatorname{Im}x=\pm\pi/8$ and effectively sample $F$ on both sides of $\operatorname{Re}x=0$).
+That control is exactly \texttt{lem:qi-bounds}(ii): a bound on $\log|f(x)|$ for $\operatorname{Re}x\le0$,
+obtained by writing $(z;P)_\infty=\vartheta(z)/(P/z;P)_\infty$, expanding $\vartheta$ via the Jacobi triple
+product, Poisson-summing over $k\in\mathbb Z$ (the resulting Gaussian sum in $k$ is a concave quadratic,
+so it is dominated, up to the factor $3+3e^{-\pi^2\cos\theta/r}$, by its two largest terms near
+$m^\ast$), and bounding the remaining $(P/z_j;P)_\infty$ factor by the \emph{ray lemma} with separation
+constant $\delta\ge d'(x)$.
+
+\subsection{Is the two-tied-saddle structure special to $N=4$?}
+No: the tie itself (two saddle modes $x_0,x_-$ of equal height along $\theta=\theta_i$, coming from the
+quasi-period shift $\Phi_i(x-i\pi/2)=\Phi_i(x)-\frac{i\pi L_w}2+i\pi x+\frac{\pi^2}4$, itself a special
+case at $N=4$ of the general fact that $\Li(e^{-2Nx})$ has exact period $i\pi/N$ in $x$, so shifting by a
+half-period picks up a computable affine correction) is the same kind of object as the general P1f/P1h
+``two consecutive admissible modes $n,n+s$ tie along an explicit tie ray'' statement used for all $N$.
+\texttt{P1i\_lemma.tex} confirms this directly for $N=6$: the certified tie pair is $(-3,-1)$, i.e.\ a
+clean \emph{pairwise} tie, not a three-way or six-way tie. \textbf{So the hypothesis floated in the task
+description --- that $6=2\cdot3$'s extra proper divisor $3$ might force a multi-way (not pairwise) tie
+that breaks the two-term Rouch\'e argument $g_0(u)=1-e^{\Delta V(u-u_j)}$ --- is checked against the
+existing certificate and is false.} The Rouch\'e step itself would carry over unchanged in shape.
+
+Likewise the phase function $\Phi(x)=xL-x^2-\Li(e^{-2Nx})/N^2+\pi^2/(6N^2)$ (\texttt{P1f\_lemma.tex}) and
+the Pochhammer factorisation $(q;q)_\infty=\prod_{i=1}^N(\zeta^ip^i;p^N)_\infty$ used throughout the
+programme are already fully $N$-generic; nothing in them privileges $N=4$. The pre-existing mod-$2$ split
+into even/odd branches $f_e,f_o$ (used for \emph{every} $N$ in this programme, to handle $b_{2s}$ vs.\
+$b_{2s+1}$) nests inside a further mod-$6$ residue decomposition of the Pochhammer product exactly as it
+nests inside mod-$4$, because $2\mid6$ just as $2\mid4$: there is no clash between the mod-$2$ branch
+structure and a mod-$6$ theta decomposition analogous to the clash one might fear from $6$ having two
+distinct prime factors. \textbf{So the ``$4=2^2$ vs.\ $6=2\cdot3$'' framing in the task description, taken
+as ``does 6 having a genuinely different residue structure break the nesting,'' is also not the true
+obstruction}: the nesting survives.
+
+\section{The actual obstruction found}
+\label{sec:obstruction}
+
+The one place where $N=4$ is used in \texttt{lem:qi-bounds}'s \emph{proof}, not merely in its statement,
+is the \emph{ray lemma} that opens the proof of the lemma. Quoting its derivation: for $G(v)=\log(1-ce^{-v})$
+along a ray $v_0+e^{i\theta}\mathbb R_{\ge0}$, the separation constant $\delta$ used to bound $|G'|\le1/\delta$
+and $\int|G''|\le1/(\delta^2\cos\theta)$ is obtained because ``$w=ce^{-v}$ has $|w|\le e^{-a'-\rho\cos\theta}$
+and $|1-w|\ge\max(1-|w|,\sigma(\arg w))$, and \emph{the argument of $w$ turns at rate $\sin\theta$}; this
+gives $\delta\ge\mathcal D(a',\varphi)$.'' In words: as $\rho$ increases along the ray, $w$ both shrinks in
+modulus (rate $\cos\theta$) and rotates in argument (rate $\sin\theta$); the rotation is what guarantees
+that $w$ does not sit exactly on top of $1$ (or any other resonance point) for an extended stretch of the
+ray, which is what the quantitative lower bound $\mathcal D(a',\varphi)$ on $|1-w|$ needs. Every part of
+\texttt{lem:qi-bounds} --- (i)'s $E$-bound, (ii)'s $M'(x)$, $K'(x)$, and even (iv)'s kernel bound --- is
+built by invoking this ray lemma (or its $\delta',D_n$ variants) along rays with $\theta=\theta_i\ne0$.
+
+At $N=6$ the certified tie-ray angle is $\theta^\ast=0$ exactly (\texttt{P1i\_lemma.tex},
+\S~``$N=6$: exactly why it is not closed'': ``$c=2e^{2\pi i/3}$, $\ell=\log2$, $\theta^\ast=0$, tie pair
+$(-3,-1)$''). At $\theta=0$, $\sin\theta=0$: the ray is exactly the positive real axis in the relevant
+coordinate, $w=ce^{-v}$ does not rotate at all as $\rho\to\infty$, and the argument-turning mechanism that
+produces $\mathcal D(a',\varphi)$ has no content. If $\arg w_0$ happens to sit near a resonance
+($\arg w_0\approx0\pmod{2\pi}$, i.e.\ $c$ itself near a positive real axis crossing of the relevant
+singular set), the ray lemma's proof, as written, gives no lower bound on $|1-w|$ along the whole ray, and
+hence no bound on $\log|f(x)|$ of the shape \texttt{lem:qi-bounds}(i)/(ii) at that $\theta$. This would need
+to be checked case-by-case for the actual $c$'s occurring in the $N=6$ decomposition (there may be enough
+residual modulus decay, $\cos\theta=1$ being the \emph{best} possible rate for the modulus half of the
+estimate, to compensate for the loss of the rotation half in some or all of the needed windows) --- but
+that is exactly the missing derivation, not a bookkeeping relabelling from $4$ to $6$.
+
+\textbf{Why this is a sharper diagnosis than ``$T<0$'':} $T<0$ says the crude term-by-term method cannot
+possibly work at $N=6$, which was already known (\texttt{P1i\_lemma.tex}). It does \emph{not} say why the
+one alternative method on record (the $q=i$ reflected-contour trick) fails to transfer. The finding here
+is that the alternative method's core analytic tool, the ray lemma, was proved under a nondegeneracy
+hypothesis ($\sin\theta\ne0$) that happens to hold at $q=i$'s own tie angle but fails at $N=6$'s own tie
+angle --- a fact about the \emph{geometry of $N=6$'s specific tie ray}, not about the sign of $T$, and not
+about $6$'s divisor structure either (the two hypotheses suggested in the task prompt were checked and
+ruled out in \S3 above).
+
+\begin{remark}[$\theta^\ast=0$ is not universally fatal]
+The certificate table in \texttt{P1i\_lemma.tex} also lists $\theta^\ast=0$ at $a/N=3/10$, one of the $52$
+members where P1f's \emph{general} (non-$q$-$i$-style) method \emph{does} close successfully. This does
+not contradict the diagnosis above: $N=10\ge16$ fails the P1f hypothesis too in principle, but that
+particular member is handled by \texttt{P1i\_lemma.tex}'s per-case Arb landscape certificate
+(\texttt{P1i\_landscape\_cert.py}), which does not go through \texttt{lem:qi-bounds} or its ray lemma at
+all --- it replaces the analytic Lemmas LS/LSp/head of P1f with a direct numerical certificate of the
+landscape inequalities, and never needs a head-elimination trick because at $3/10$ the head does not
+exceed the tie height. So $\theta^\ast=0$ being survivable for the general P1f certificate machinery does
+not show it is survivable for the \emph{ray lemma} specifically, which is the one piece $N=6$ actually
+needs (since $N=6$'s head genuinely beats its tie height, unlike $3/10$'s).
+\end{remark}
+
+\section{No certificate written}
+No Arb/python-flint certificate was written for $N=6$ beyond confirming (by reading, not by a fresh
+computation) the tie-pair and $\theta^\ast=0$ data already printed in \texttt{P1i\_lemma.tex}. Writing a
+certificate would require first resolving \S\ref{sec:obstruction}: either (a) proving a
+$\theta=0$-degenerate replacement for the ray lemma (plausibly using pure modulus decay
+$|w|\le e^{-a'-\rho}$ alone, without the rotation term, if the relevant $c$'s at $N=6$ stay far enough
+from $\arg=0$ resonance in modulus alone --- untested here), or (b) finding a different decomposition of
+$B$ at $N=6$ whose tie ray is not exactly $\theta=0$ (not attempted here; it is not clear the tie ray is a
+free choice, since it is pinned by $\ell=\log2$ and the specific $N=6$, $a=1$ data, the same way $\theta_i$
+is pinned at $N=4$). Neither was carried out. This note stops at the diagnosis in
+\S\ref{sec:obstruction} and reports it as OPEN.
+
+\section{Weakest points, stated honestly}
+\label{sec:weak}
+\begin{enumerate}
+\item \textbf{The ray-lemma obstruction is a diagnosis, not a proof of impossibility.} I have not shown
+that no $\theta=0$ version of the ray lemma can be proved; I have shown that the \emph{existing} proof
+uses $\sin\theta\ne0$ essentially, and that $N=6$'s certified tie ray sits exactly at $\theta=0$. It is
+plausible a modulus-only argument rescues the needed bound at $N=6$'s specific $c=2e^{2\pi i/3}$-derived
+resonance points; I did not attempt to check this case-by-case (it would require identifying every $c_j$,
+$j=1,\dots,6$, occurring in the $N=6$ Pochhammer/theta decomposition, and checking whether any lies close
+enough to a positive-real resonance to make the missing rotation term actually matter). This is squarely
+the open mathematical content flagged by \texttt{P1i\_lemma.tex}, now with a specific, checkable target
+(the six $c_j$'s and their distance from $\arg=0$) rather than a vague ``generalise the lemma.''
+\item \textbf{I did not re-derive the general mod-$N$ Poisson/theta bookkeeping in full}, i.e.\ I did not
+write out the $N=6$ analogues of $\Upsilon(x)$, $M'(x)$, $K'(x)$ term by term. I argued from the structure
+of the derivation (which is visibly $N$-generic apart from the ray lemma) that this bookkeeping step is
+mechanical, but ``mechanical'' claims in an eight-line proof with several explicit numeric constants
+(e.g.\ $\frac{73}{12}$, $\frac43$) deserve suspicion until actually carried out; I have not carried it out.
+\item \textbf{The claim that the pairwise-tie and mod-2/mod-6 nesting concerns are non-issues rests on
+reading \texttt{P1i\_lemma.tex}'s printed tie-pair $(-3,-1)$ and on the general divisibility argument in
+\S3, not on an independent re-derivation of the $N=6$ saddle set from scratch.} If \texttt{P1i\_lemma.tex}
+has an error in its tie-pair computation (I have no reason to think so, but did not re-derive it), this
+part of the analysis would need revisiting.
+\item \textbf{No numerics were run.} Per the task's own framing this is by design (``this requires
+genuinely new mathematical work, not more numerics''), but it means the one thing that could most cheaply
+sharpen \S\ref{sec:obstruction} into either a fix or a firm no-go --- computing the six $c_j$'s for $N=6$
+and their distances from $\arg=0$ resonance, which is a five-minute Arb computation, not a search --- was
+deliberately left undone here and is the natural next step for anyone picking this up.
+\end{enumerate}
+
+\section{Conclusion}
+\textbf{OPEN.} The reflected-contour ($q=i$-style) route does not obviously extend to $N=6$, and the
+reason is not a restatement of $T<0$, nor the multi-way-tie fear, nor a divisor-structure clash in the
+mod-$N$ residue bookkeeping (both checked and ruled out). The reason found is that the ray lemma
+underlying \texttt{lem:qi-bounds} is proved under $\sin(\text{tie angle})\ne0$, and $N=6$'s own certified
+tie angle is exactly $0$. Whether a degenerate-angle version of the ray lemma can be proved, or whether it
+fails outright for the specific resonance data at $N=6$, is not resolved here.
+\end{document}
