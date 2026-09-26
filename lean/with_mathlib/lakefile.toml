@@ -41,7 +41,8 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "DeviationLaw",
   "SparsityQuant",
   "ModelM",
-  "BoundedDrift"]
+  "BoundedDrift",
+  "P3Separation"]
 
 [[require]]
 name = "mathlib"
@@ -445,3 +446,9 @@ name = "RoundNorm"
 
 [[lean_lib]]
 name = "GapRuns"
+
+[[lean_lib]]
+name = "P3Separation"
+
+[[lean_lib]]
+name = "P3NoQRelation"
