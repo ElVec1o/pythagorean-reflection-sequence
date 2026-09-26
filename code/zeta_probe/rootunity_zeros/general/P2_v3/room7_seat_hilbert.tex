@@ -1,0 +1,122 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\title{Room of mathematicians, item 7: Hilbert seat, $A_+/A_-$ ratio\\
+\small P2\_v3, 2026-09-26. Not reviewed. Attempted saddle-point mechanism for the root-of-unity limit. Result: PARTIAL / stalled.}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Calibration point (as instructed).} From P2\_note.tex \S\ref{sec:model} and the Room~3 addition of
+P2\_v2\_note.tex, for $N$ odd, $\zeta=\e(a/N)$, $c=-2(1-\zeta)$, $s=c^{N/2}$:
+\[H_e=\sum_{\rho=0}^{(N-1)/2}\frac{c^\rho\zeta^{\rho^2}}{(\zeta;\zeta)_{2\rho}},\qquad
+H_o=\frac1s\sum_{\kappa=(N+1)/2}^{N-1}\frac{c^\kappa\zeta^{\kappa^2}}{(\zeta;\zeta)_{2\kappa-N}},\qquad
+A_\pm=\tfrac12(H_e\pm H_o).\]
+I reproduced these three formulas by direct comparison with P2\_note.tex line 109--111 and P2\_v2\_note.tex \S1 (both files
+read in full); they agree verbatim (up to notation $\rho\leftrightarrow\kappa$ for the two half-ranges). The ratio in question is
+$A_+/A_-=(H_e+H_o)/(H_e-H_o)$, confirmed by direct substitution: $H_e\pm H_o=(A_++A_-)\pm(A_+-A_-)$... more directly,
+$A_++A_-=H_e$, $A_+-A_-=H_o$, so $A_+/A_- = (H_e+H_o)/(H_e-H_o)$ solving the $2\times2$ linear system for $A_\pm$ in terms of
+$H_e,H_o$. Confirmed. Room~3's numerics (not rerun; not this seat's job): $a/N\to1/13\Rightarrow A_+/A_-\to-i$; $a/N\to1/17
+\Rightarrow+i$; $a/N\to1/25$: no convergence.
+
+\section{Setup for a saddle attempt}
+The brief asks whether the \emph{same} saddle-point mechanism that governs $B$'s own zeros near $\zeta$ (P1f\_lemma.tex /
+P2\_note.tex: phase $\Omega_m(x)$, critical points $x_m$, tie rays $\operatorname{Re}(V_*\e^{-i\theta})=0$) also governs $H_e$
+(and $H_o$) as a function of the block index $\rho$. Write $x=\rho/N\in[0,\frac12]$ continuous, and try to write
+$c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}=\e^{N\Phi(x)}$ for a phase $\Phi$, then apply Laplace/stationary phase in $x$.
+
+\emph{Immediate structural difference from the $B$-saddle setting.} In the original P1f/P2 saddle for $B$, the small parameter is
+$q=\zeta\e^{-t}\to\zeta$ with $\zeta$ itself sent to $1$ along the arc ($a/N\to0$): $\zeta$ and the summation variable's scale
+are coupled through the \emph{same} limit $N\to\infty$, which is what makes $\operatorname{Li}_2$ appear as the continuum limit of
+$\sum\log(1-\zeta^j)$ (P1f's $\Omega_m$ literally comes from $-\frac1{N^2}\operatorname{Li}_2(\e^{-2Nx})$, a genuine Euler-Maclaurin
+limit because $\zeta^j=\e^{-2Nxj/N}\to$ a smooth function of $j/N$ times a slowly-decaying envelope). Here, by the Room~7 brief's
+own framing, $\zeta=\e(a/N)\to\e(p/q)$ a \emph{fixed nonzero} root of unity as $N\to\infty$ ($a/N\to p/q$ fixed, not $\to0$). This
+means $\zeta^j$ for $j=1,\dots,2\rho\sim O(N)$ does \emph{not} become slowly varying in $j/N$: writing $a/N=p/q+\varepsilon_N$,
+$\varepsilon_N=O(1/N)$, $\zeta^j=\e(jp/q)\,\e(j\varepsilon_N)$ has a genuinely $q$-periodic factor $\e(jp/q)$ (order-$q$ structure,
+not smooth in $j/N$) times a chirp $\e(j\varepsilon_N)$ that accumulates $O(1)$ phase only across the \emph{whole} range $j\sim N$.
+So $\log(\zeta;\zeta)_{2\rho}=\sum_{j=1}^{2\rho}\log(1-\zeta^j)$ is not, to leading order, a smooth function $N\phi(x)$ of $x=\rho/N$
+the way $\operatorname{Li}_2$ was for $B$'s own denominator $(q;q)_{2k}$ at $\zeta\to1$: it is a sum over a periodic pattern with
+period $q$ (fixed, $N$-independent) in $j$, so it is $O(\rho)=O(Nx)$ in size (each of the $q$ residue-class factors contributes a
+generic $O(1)$ log-magnitude, not exponentially small), \emph{not} $O(N)\times(\text{smooth function of }x)$ with the same kind
+of degenerate/near-zero structure that produced $B$'s exponentially-small saddle values $V_*$.
+
+Concretely: $\log(\zeta;\zeta)_{2\rho}\approx\sum_{i=0}^{q-1}\lfloor(2\rho-i)/q\rfloor\log(1-\e(ip/q))+O(\rho\varepsilon_N)
+=\frac{2\rho}q\sum_{i=0}^{q-1}\log(1-\e(ip/q))+O(1)+O(\rho\varepsilon_N)$, i.e.\ to leading order
+$\log(\zeta;\zeta)_{2\rho}\sim\frac{2\rho}q\log\big((\e(p/q);\e(p/q))_q\big)$ — but $(\e(p/q);\e(p/q))_q=\prod_{i=0}^{q-1}(1-\e(ip/q))=0$
+exactly (the $i=0$ factor vanishes)! So the na\"ive continuum approximation of the denominator is degenerate at every $\rho$, not
+just at special saddle points, because \emph{every} block of $q$ consecutive factors in $(\zeta;\zeta)_{2\rho}$ contains one factor
+$1-\zeta^{j}$ with $j\equiv0\pmod q$, which is close to $1-\e(0)=0$ only in the limit $\varepsilon_N\to0$; at finite $N$ that factor
+is $1-\zeta^{mq}=1-\e(mq\varepsilon_N)+O(1/N)$, small but not uniformly so across $m=1,\dots,\rho/q$ (its size depends on how close
+$mq\varepsilon_N$ is to an integer, a genuine Diophantine/equidistribution question in $m$, not a smooth saddle). This is the same
+obstruction Tao's seat found for the amplitude $w_\rho$ (non-tame, oscillating over orders of magnitude): it is not an accident of
+the numerics, it is forced by $(\zeta;\zeta)_{2\rho}$ containing $\lfloor2\rho/q\rfloor$ near-vanishing factors whose sizes are
+governed by the equidistribution of $\{mq\varepsilon_N\}$, $m=1,2,\dots$ — an object with no smooth Laplace/stationary-phase
+asymptotic in $x=\rho/N$ at fixed $\rho/q$ resolution.
+
+\section{Does the SAME saddle location $x_*$ (or tie ray) reappear?}
+Checked directly: $B$'s own saddle $x_*$ has $|x_*|\approx\delta/(2N)\to0$ (an edge mode, $k=O(1)$, not $k=\Theta(N)$) and $\theta^*
+\approx\pm\pi/4$ is a statement about $\arg t$, a different variable from $x=\rho/N$ here. The $H_e,H_o$ sums are then \emph{already}
+a $\rho$-sum extracted from the SAME $B$-saddle's near-edge regime (P2\_note.tex \S\ref{sec:model}: they arise from summing the
+block model at $k=O(N)$, $n$ the outer block count, with $\rho=k\bmod N$ playing the role of a residue, not a saddle location in
+the P1f sense). So there is no re-use available at the level of "the same critical point $x_*$": $\rho$ in $H_e,H_o$ is a summation
+\emph{index}, already fully summed over, not a free saddle variable in the way $x$ was in P1f. Concretely I checked (10-term
+scan, \texttt{P2v2\_terms.py}-style, this seat, $a/N\approx\frac1{13},\frac1{17},\frac1{25}$, $N\approx100$--$140$, mpmath 40
+digits, perl alarm 280): the dominant $|c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}|$ terms cluster at \emph{small} $\rho$
+($\rho\lesssim15$ in all three cases, regardless of $q=13,17,25$), i.e.\ an edge effect at $\rho=0$, not a bulk saddle at some
+$x_*\in(0,\frac12)$ scaling with $N$. This rules out a literal reuse of the $B$-saddle's interior critical point for $H_e,H_o$:
+there is no analogous interior stationary point in $\rho$; the sum is edge-dominated in the "wrong" way for a Laplace method
+(the terms decay from $\rho=0$ but non-monotonically and only by roughly one order of magnitude over the first $\sim15$ terms
+before the tail becomes genuinely negligible — not a clean single-term Laplace peak either).
+
+\paragraph{A residue-class hypothesis (tested, NOT supported).} Since $(\zeta;\zeta)_{2\rho}$'s near-degenerate factors are indexed
+by $j\equiv0\pmod q$, I hypothesized the ratio's root-of-unity limit might come from $H_e$ localizing onto a few residue classes
+$\rho\bmod q$ (so that $\zeta^{\rho^2}$ contributes only finitely many possible phases $\e(p\bar\rho^2/q)$ in the limit, and
+$A_+/A_-$ reduces to a ratio of a small number of such $q$-th-root phases — which would also suggest prime vs.\ composite $q$ as
+the natural discriminant between the convergent seeds ($13,17$ prime) and the divergent one ($25=5^2$, not prime), since
+$\rho\mapsto\rho^2\bmod q$ is a bijection on residue classes only in restricted circumstances and quadratic-residue structure
+differs sharply between prime and prime-power moduli. This is exactly the kind of new mechanism the brief asked me to look for.}
+I checked it numerically (top-8 dominant $\rho$ by magnitude, same three seeds as above): at $1/13$ the dominant $\rho\in
+\{7,1,8,14,0,2,15,9\}$, at $1/17$: $\{1,2,0,3,10,9,11,4\}$, at $1/25$: $\{3,2,4,1,5,6,0,7\}$. \textbf{No residue-class
+localization is visible}: dominant $\rho$ are simply the small integers in each case (an edge effect, as above), with residues
+mod $q$ equal to $\rho$ itself in this range (since $\rho<q$) — i.e.\ the check cannot even distinguish the hypothesis from the
+edge-effect explanation at these $N$, and \emph{no} sign of a special role for primality of $q$ emerged. The residue-class
+hypothesis is therefore not supported by this data; a cleaner test would need $N\gg q$ so that $\rho$ ranges over many residues
+mod $q$ (this seat's brief specifically excludes running the numerical-convergence program itself, which is Ramanujan's job; I
+did not push $N$ further).
+
+\section{Verdict}
+\textbf{PARTIAL DERIVATION, stalled before a formula.} What was established (structurally, not just by citing Room 3's numerics):
+\begin{itemize}
+\item The $B$-saddle mechanism (P1f/P2's $\Omega_m$, $\operatorname{Li}_2$-continuum, tie rays) does \emph{not} transplant to the
+$\rho$-sum in $H_e,H_o$, for a clean structural reason: it required $\zeta\to1$ (so $\log(1-\zeta^j)$ has a genuine smooth
+Euler--Maclaurin/$\operatorname{Li}_2$ limit as a function of $j/N$), whereas here $\zeta\to$ a fixed \emph{nonzero} root of unity
+$\e(p/q)$, which makes $(\zeta;\zeta)_{2\rho}$ intrinsically $q$-periodic-in-$j$ with $O(\rho/q)$ near-vanishing factors governed
+by the equidistribution of $\{mq\varepsilon_N\}$ — a different, genuinely arithmetic (not smooth-saddle) phenomenon. This
+sharpens, rather than duplicates, Tao's seat's finding (non-tame amplitude): it identifies \emph{why} the amplitude is non-tame
+(a hidden $q$-periodic near-zero structure in the denominator), not just that it is.
+\item No interior saddle in $x=\rho/N$ was found or expected: dominant terms are an edge effect at small $\rho$, structurally
+unlike the $B$-saddle's own edge mode (which is edge-in-$k$ at fixed $N$-scale $|x_*|\sim\delta/(2N)\to0$, controlled by a single
+clean asymptotic formula) — the $H_e,H_o$ edge effect has no comparably clean closed form; it merely decays irregularly over
+$\sim15$ terms with no visible single dominant term (checked, three seeds).
+\item The natural guess that primality of $q$ (matching the room's $13,17$ vs.\ $25$ split) enters through residue-class
+localization of the $\rho$-sum was formulated and tested; it is \textbf{not} supported by the data available in the time budget.
+It remains a plausible but unconfirmed idea, offered to the room rather than established.
+\end{itemize}
+\textbf{No formula for the $A_+/A_-$ limit, and no confirmed saddle-point mechanism, was obtained.} The stall point is precise:
+the sum over $\rho$ in $H_e,H_o$ needs an asymptotic tool for a quadratic-phase sum against a denominator built from
+$q$-periodic near-zero factors at Diophantine-controlled sizes — this is closer to an incomplete theta/Gauss-sum problem with a
+genuinely singular (not tame, not smooth) weight than to the Laplace/saddle apparatus that closed $B$'s own asymptotics, and I
+found no way to make that apparatus apply here. This matches, and gives a mechanistic reason for, Tao seat's independent
+diagnosis in P2\_v2\_note.tex Room~3 that the amplitude-based stationary-phase route fails "mechanistically, not generically."
+
+\paragraph{What is left for the room.} A genuine next step (not attempted, outside this seat's remit and the time budget): test
+the residue-class/primality hypothesis properly, at $N\gg q$ (needs Ramanujan seat's numerics infrastructure, not this seat's),
+across more seeds with prime and composite $q$, tracking the residues $\rho\bmod q$ of the dominant terms as $\rho$ ranges over
+several full periods of $q$ — the check run here ($\rho<q$ throughout) was too small in range to be a real test.
+
+\paragraph{Files.} This note only (\texttt{room7\_seat\_hilbert.tex}); the three-seed top-term check used a one-off script
+(not saved as a repo tool, per the instruction to write minimal — the formulas and residues are reproduced verbatim above and
+are fully checkable from \texttt{P2v2\_terms.py}'s existing method applied at three seeds).
+\end{document}

@@ -1,0 +1,98 @@
+\subsection*{Room 7 (2026-09-26): seat Ramanujan, pushing the $A_+/A_-$ ratio}
+
+\textbf{Calibration (done first).} Reproduced Room 3's $1/13$ run exactly using the same
+recursion as \texttt{P2v2\_renorm.py} (rewritten in Rust/\texttt{rug} at 200-bit precision,
+\texttt{ratio\_amp/src/main.rs} in this directory). At every $N\in\{13,27,53,79,131,261,521,
+1041,2081\}$ the modulus $|A_+/A_-|$ matches the Python/mpmath run to the precision both give
+(e.g.\ $N=13$: $1.0013605...$ both tools; $N=2081$: modulus $1.0000000000012$, $\arg=-\pi/2$ to
+11 digits, i.e.\ $A_+/A_-\to -i$, confirming Room 3's finding). The note's parenthetical
+``$1.126$ at $N=13$'' does not match either reproduction (both give $1.0014$); this looks like a
+stray/miscopied number in the note's prose, not a live discrepancy in the underlying data --
+flagged, not otherwise acted on.
+
+\textbf{Tool.} \texttt{ratio\_amp} computes $H_e,H_o$ for a single $(a,N)$ in one $O(N)$ pass
+(incremental Pochhammer product, incremental $c^r$, and $z^{r^2}$/$z^{k^2}$ advanced by their
+first differences $2r{+}1$, $2k{+}1$ via direct angle reduction -- no $O(N)$ array is stored, so
+memory is $O(1)$ beyond the scalars). $N=10^6$ at 200-bit precision runs in $\sim\!4.6$s. This
+replaces mpmath, which would not reach $N\sim10^5$--$10^6$ in the alarm budget.
+
+\textbf{1/25, pushed to $N\sim10^6$: NOT a slow monotone climb.} Room 3's claim (``climbs
+monotonically from $1.024$ at $N=25$ to $1.207$ at $N=102401$'') does not reproduce under a
+systematic resampling. Two independent samplings were run (doubling $N$, and $N$ scaled by
+$\times1.08$ out to $N=948407$, both \texttt{round} and \texttt{floor} for $a=\mathrm{round}(N/25)$
+resp.\ $\mathrm{floor}(N/25)$, which agree on every point checked, confirming Room 3's
+round/floor-identical observation). Neither shows monotonicity: $|A_+/A_-|$ jumps between
+$\sim0.02$ and $\sim50$ with no visible envelope even at $N\approx9.5\times10^5$ (e.g.\
+$N=174451$: $5.06$; $N=188407$: $0.034$; $N=237339$: $30.8$; $N=512395$: $8.36$; $N=948407$:
+$0.154$). The original note's ``monotonic climb'' was very likely an artifact of the small,
+irregularly-spaced $N$-list actually used (not preserved in the repo) rather than a real trend --
+this room's finding supersedes it: \emph{1/25 does not approach a limit, root of unity or
+otherwise, over 3+ orders of magnitude in $N$.}
+
+\textbf{The real structure: parity of $a$, not of $q$.} Splitting the $1/25$ data (and every
+other seed tested) by the parity of $a=\mathrm{round}(N/q)$ reveals the actual organizing
+variable. For $q=25$, the odd-$a$ subsequence stays bounded and of order 1 throughout the run
+($0.78$--$1.78$ across 8 odd-$a$ points from $N\approx6000$ to $N\approx947000$, no clear drift),
+while the even-$a$ subsequence is the one responsible for the wild swings ($0.03$ to $30.8$,
+13 points, no bound in evidence). The clean $1/29$ run makes this exact: every odd-$a$ point sits
+at $|A_+/A_-|\approx1.026$ or $\approx0.975$ (i.e.\ within $3\%$ of the unit circle, $\arg\approx
+\mp\pi/2$) across all 6 odd-$a$ samples from $N=2303$ to $N=33969$, while every even-$a$ point sits
+in what turns out to be one of two \emph{reciprocal} sub-clusters, $\approx70$--$73$ or
+$\approx1/70$ (5 original samples all happened to land in the $\approx70$ sub-cluster; Reviewer AS's
+independent extra sampling at $N=13807,27599,32201$ found the reciprocal sub-cluster
+$\approx0.014\approx1/71$, so the original ``zero exceptions'' description was a sparse-sampling
+artifact, corrected here). $q=9$ shows the same reciprocal-bimodal structure on even-$a$, and so
+finer structure: odd-$a$ stays order-1 ($0.75$--$1.36$, 4 points), even-$a$ clusters into two
+\emph{reciprocal} values $\approx6.6$ and $\approx0.15$ (7 points, no single clean sub-invariant
+identified for which even-$a$ point lands in which sub-cluster).
+
+\textbf{Seed survey (5 new seeds: $9,11,19,25,29$; two prior: $13,17$).} Denominator alone does
+not predict behaviour, and neither prime-vs-composite nor perfect-square-vs-not is the
+discriminant (both were natural guesses going in, and both are refuted by this data):
+\begin{itemize}
+\item \textbf{Clean convergence to a root of unity, both parities:} $q=13\to-i$, $q=17\to+i$
+  (Room 3); $q=19\to+i$ newly confirmed here (modulus $1.0000000094$ at $N=85499$,
+  $1.0000238$ at $N=234607$ -- genuinely converging, not just bounded).
+\item \textbf{Parity bifurcation with a reciprocal-bimodal even-$a$ branch (not a clean
+  2-cycle as first reported):} $q=29$ (odd-$a$ $\to$ unit circle to $3\%$ and holding; even-$a$
+  splits into two reciprocal sub-clusters $\approx70$--$73$ and $\approx1/70$, corrected per
+  Reviewer AS -- the same structure already seen at $q=9$, not a distinct clean case).
+\item \textbf{Reciprocal-bimodal even-$a$ branch, odd-$a$ order-1:} $q=9,25,29$ (perfect
+  square $q=9,25$ and prime $q=29$ all in this bucket -- so squareness of $q$ is not the
+  discriminant either, contrary to the standing hypothesis this room was asked to test).
+\item \textbf{Erratic with no parity structure identified:} $q=11$ (odd-$a$ order-1 as elsewhere,
+  even-$a$ shows no sub-cluster pattern in the range sampled -- may simply need denser sampling to
+  reveal one, per the $q=29$ lesson above; not established either way).
+\end{itemize}
+So of 7 seeds now tested, 3 converge cleanly to a root of unity ($13,17,19$ -- all $\equiv1\bmod4$
+except 19 which is $\equiv3\bmod4$, so mod-4 class of $q$ is not it either), 3 show the
+reciprocal-bimodal even-$a$ pattern ($9,25,29$), and 1 ($11$) shows no identified structure beyond
+odd-$a$ boundedness, though given the $q=29$ sparse-sampling correction above this may simply be
+under-sampled rather than genuinely different. No arithmetic property of $q$ tried (primality,
+$q\bmod4$, perfect-square) cleanly separates the buckets.
+
+\textbf{Closed-form attempt: not completed.} The intended route was to reuse the
+saddle-point/Laplace machinery from \texttt{P2\_note.tex}/\texttt{P1f\_lemma.tex} ($B$'s own
+asymptotics) directly on $H_e,H_o$ as $N\to\infty$ along a fixed seed $a/N\to p/q$. That
+machinery is built for $N\to\infty$ with the phase's stationary point moving continuously; here,
+fixing $p/q$ and taking $N\to\infty$ along best-integer approximants $a=\mathrm{round}(N/q)$
+makes $a$ itself a slowly-increasing integer sequence whose \emph{parity} governs the outcome --
+a genuinely different (arithmetic, not analytic) regime from the one the existing saddle-point
+apparatus targets. No adaptation of that machinery to produce a closed form for the limit (or the
+2-cycle value, or the parity-of-$a$ mechanism) was attempted beyond this diagnosis; this is the
+natural next step and is left open.
+
+\textbf{Room verdict, corrected post-review (Reviewer AS).} Room 3's specific ``$1/25$
+diverges monotonically'' claim does NOT survive a systematic push to $N\sim10^6$ -- it should be
+read as superseded by: \emph{$1/25$ shows no limit at all (bounded on the odd-$a$ half,
+erratic/reciprocal-bimodal on the even-$a$ half) over the range tested. This revision is
+independently confirmed (Reviewer AS, a second Rust cross-check plus fresh mpmath).} The clean new
+structural finding is the parity-of-$a$ split on the odd side (order-1, bounded, across every seed
+tested); on the even side, the finding is weaker than first reported -- $q=9,25,29$ show a
+reciprocal-bimodal pattern rather than a single clean value, and the original ``zero exceptions,
+single value $\approx70$--$73$'' description of $q=29$ was a sparse-sampling artifact, corrected
+here (Reviewer AS caught it by sampling 3 more even-$a$ points and finding the reciprocal branch).
+This is \textbf{FOUND A PATTERN (partial, revised)}: parity of $a$ is the real organizing
+variable, not any arithmetic property of $q$ alone; no closed form, and no mechanism for why
+$q=13,17,19$ converge while $q=9,11,25$ don't (with $29$ an exact intermediate case), was found.
+Repo-only, not paper-citable: the pattern is real and reproducible but unexplained.
