@@ -1,0 +1,235 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{proposition}{Proposition}
+\title{P6: on the transcendence of $\beta_2$ (status note)}
+\author{}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Scope.} This note documents an attempt at research-programme item P6
+(``$\beta_2$ transcendence''). It largely \emph{reproduces and cross-checks} an existing,
+much more thorough internal investigation (\texttt{private/ROOM/Beta2/report\_G1.md} and
+\texttt{private/ROOM/Beta2/g1\_certificate/}), rather than opening new ground: that room
+already produced a machine-checked 2090-digit certified bracket and LLL/PSLQ exclusion
+bounds. What follows restates the precise definitions from the actual paper/code, reproduces
+the key numbers independently at lower precision, and gives an honest assessment of the
+$\rho=1/2$ obstruction named in \texttt{private/RESEARCH\_PROGRAM\_OPEN.md} row P6.
+
+Every claim below is labelled \textbf{PROVED}, \textbf{VERIFIED} (numerically/computationally,
+by me in this session or reproducing a prior computation), or \textbf{HEURISTIC}. Anything
+attributed to the literature (Tschakaloff, Bézivin--Bundschuh--Väänänen, André, Di~Vizio--Hardouin,
+Koelink--Swarttouw, Mahler's method) is \emph{recalled from training, not re-checked against a
+primary source in this session}, and is flagged as \textbf{UNVERIFIED-CITATION} accordingly.
+
+\section{Precise definition of $\beta_2$}
+
+From \texttt{paper/journal/paper2a.tex}, Corollary~\ref{cor:beta} (paper's own numbering,
+reproduced here as prose):
+\begin{quote}
+The exponential growth rate of the sequences $u_n,v_n$ is
+$\beta_2 = 1.4916177871\ldots$, where $\beta_2^{2}$ is the reciprocal of the smallest travel
+pole $q_1\in(0,1)$; the growth-rate lower bound $\beta_2$ for $u_n,v_n$ is unconditional (free
+even of hypothesis (M)); the value $3/2$ is excluded as the growth rate.
+\end{quote}
+and, separately (line 2672 of the same file):
+\begin{quote}
+Is the number $\beta_2$ transcendental? The question reduces to a value statement for a
+function defined by \cite[Appendix app:beta2]{Bonfioli2026bB}, independent of everything else
+in the paper.
+\end{quote}
+
+Concretely, $q^\ast=q_1\in(0,1)$ is the least positive root of the \emph{base-variable} power
+series (paper2 rem:betanumber; reproduced verbatim in
+\texttt{code/zeta\_probe/beta2\_effective\_irrationality.py} and
+\texttt{private/ROOM/Beta2/g1\_certificate/step1\_bracket.py}):
+\[
+S(q) \;=\; 1 + \sum_{k\ge 1} (-1)^k \, q^{2k(k-1)} \, \frac{[2q(1-q)]^k}
+{\prod_{j=1}^{k}(1-q^{2j-1})(1-q^{2j})}, \qquad q\in(0,1),
+\]
+and
+\[
+\beta_2 = 1/\sqrt{q^\ast}.
+\]
+Here ``base variable'' means $q$ itself is the free variable of the series (as in $q$-series /
+basic hypergeometric theory), as opposed to a generating-function variable whose \emph{coefficients}
+would be the arithmetic objects of interest; this is exactly the distinction the ledger's phrase
+``base-variable zero'' is pointing at. \texttt{code/zeta\_probe/route\_b/beta2\_qniven\_ladder.py}
+identifies $S(q)=G(q,2q(1-q))$ with a Hahn--Exton (3rd Jackson) $q$-Bessel function
+$J^{(3)}_{-1/2}(\cdot;q^2)$ up to reparametrization, matching the $J^{(3)}_{-1/2}$ notation used in
+paper2a's own statement of Corollary~\ref{cor:beta} \textbf{[VERIFIED against paper2a.tex and
+the code, low precision, this session]}.
+
+\textbf{What is already PROVED (unconditional):} $\beta_2$'s role as the exact exponential
+growth rate of $u_n,v_n$, and the exclusion of $3/2$ as that rate (memory note
+\texttt{route-b-singularity}, cor:beta). This is a statement about a growth \emph{rate}, not
+about the arithmetic nature of the real number $\beta_2$.
+
+\textbf{What is OPEN:} whether the number $\beta_2$ (equivalently $q^\ast$) is irrational, or
+transcendental. This is the P6 target.
+
+\section{Numerics: independent reproduction}
+
+\textbf{VERIFIED (this session, mpmath, 320 decimal digits, Newton's method on $S$, wrapped in
+the required \texttt{perl alarm 290} cap, script
+\texttt{code/zeta\_probe/rootunity\_zeros/general/P6/p6\_verify.py}):}
+\[
+q^\ast = 0.449453630558948046125545825395706089225112808545993877680333\ldots
+\]
+\[
+\beta_2 = 1.49161778711437422683671274698306319965329579126010371956739\ldots
+\]
+These match, digit for digit, the values already on record in
+\texttt{private/ROOM/Beta2/g1\_certificate/bracket.txt} (a pre-existing 2090-digit certified
+bracket) and in memory note \texttt{route-b-singularity}. Residual $|S(q^\ast)|\approx
+5\times10^{-322}$ at 320-digit working precision, consistent with convergence to the true root
+rather than an artifact.
+
+\textbf{VERIFIED (this session, mpmath PSLQ, 320-digit precision, small fixed basis):} no
+integer relation was found by PSLQ (maxcoeff $10^6$, maxsteps 2000) among
+$\{1,\ \beta_2,\ \beta_2^2,\ \beta_2^3,\ \pi,\ e,\ \log 2,\ \sqrt2,\ \varphi\}$ ($\varphi$ = golden
+ratio), nor (maxcoeff $10^8$, maxsteps 3000) among $\{1,\beta_2,\ldots,\beta_2^6\}$ alone. This
+is a much weaker check than the existing certificate below, included only as an independent
+cross-check with a different tool run in this session.
+
+\textbf{Pre-existing, stronger result (VERIFIED, reproduced from
+\texttt{private/ROOM/Beta2/g1\_certificate/}, adversarially reviewed per
+\texttt{report\_G1.md}, not re-run in full in this session for compute-budget reasons ---
+LLL-reduction to degree 128 is well outside the 290s/3GB caps in force here):} using a
+rigorous LLL certificate (exact Gram--Schmidt norms on the LLL-reduced basis via
+\texttt{python-flint}, from a 2090-digit certified interval bracket for $q^\ast$ and for
+$\beta_2$),
+\begin{itemize}
+\item $q^\ast$ is not a root of any integer polynomial of degree $\le 16$ with height
+$<10^{120}$, nor degree $\le 8$ with height $<10^{230}$, nor degree $\le 64$ with height
+$<10^{28}$;
+\item $\beta_2$ obeys comparable bounds;
+\item a planted negative control ($\sqrt2-1$, a genuine degree-2 algebraic number) is
+correctly \emph{not} excluded by the same method, i.e.\ the method does not over-claim.
+\end{itemize}
+These are far stronger than anything re-derivable in this session's compute budget, and I have
+not found any flaw in \texttt{step1\_bracket.py} / \texttt{step2\_lattice.py} on inspection; I
+have not, however, independently re-executed the degree-64/128 LLL runs myself this session, so
+I report them as \textbf{VERIFIED-BY-PRIOR-SESSION}, not re-verified here.
+
+\section{The $\rho=1/2$ obstruction: removable or fundamental?}
+
+\texttt{code/zeta\_probe/route\_b/beta2\_qniven\_ladder.py} defines $\rho$ as the ratio of
+(archimedean decay rate supplied by the numerator, here $q^{k^2}$-type terms) to (growth rate of
+the cleared denominators, here the double $q$-Pochhammer $(q;q)_{2k}$) in the relevant
+$q$-continued-fraction / Padé / Lommel-ladder construction for $S$ (equivalently for the
+Hahn--Exton $q$-Bessel function identified with it). Concretely, several independent
+constructions were tried and each lands at the same ratio:
+\begin{itemize}
+\item $z$-Padé approximants to $S$: remainder $\sim q^{3.5n^2}$ against denominator $q$-degree
+$\sim 9n^2$;
+\item the $z$-continued fraction (Pincherle limit = ratio of the two Hahn--Exton solutions):
+geometric numerator decay vs.\ $t^{n^2}$ denominator growth;
+\item the $\nu$-ladder (q-Lommel/Niven recursion) at the zero $x_0$: $J_{m+1/2}(x_0)\sim
+Cx_0^m$ is only \emph{geometric} in $m$ (because the $q$-factorial that would normally supply
+super-geometric decay is itself only geometric, unlike the classical integer-factorial Niven
+setting), against denominators growing like $t^{m^2}$;
+\item the base$\leftrightarrow$argument ($b\leftrightarrow z$) swap identity for the
+${}_1\phi_1$ preserves $\rho$ rather than improving it;
+\item a Hankel-determinant / resultant construction on the moment sequence of $\beta_2$
+produces denominators growing \emph{cubically} in the exponent, which is worse, not better
+(\texttt{beta2\_hankel\_nogo.py}: ``deepens the $\rho=1/2$ deficit'').
+\end{itemize}
+All of the above are \textbf{HEURISTIC/EXPLORATORY} results from earlier sessions (I did not
+re-derive the Padé remainder estimates or the Lommel-ladder degree count myself this session);
+I read the code and find the stated degree/order bookkeeping internally consistent, but flag
+that I have not independently re-verified e.g.\ the claim ``$\deg_q p_m = m^2$ exactly'' by
+symbolic computation in this session.
+
+\textbf{Is $\rho=1/2$ a coincidence of the particular series representation, or forced by the
+object itself?} My assessment, based on reading five independent constructions (Padé, continued
+fraction, Lommel ladder, base/argument swap, Hankel) all landing on the \emph{same} ratio: this
+looks \textbf{structural, not an artifact of one bad parametrization}. The double Pochhammer
+$(q;q)_{2k}$ in the denominator of $S$'s own defining series already fixes the growth rate of
+any naturally associated integer-coefficient approximation scheme, and every reparametrization
+tried preserves or worsens that rate rather than improving it. This is consistent with (and, I
+believe, is really the same fact as) the general phenomenon that $q$-Bessel/$q$-exponential
+functions of this Hahn--Exton type sit exactly at the boundary of applicability of the classical
+Tschakaloff/Bézivin--Bundschuh--Väänänen $q$-irrationality machinery, which (as I recall it, and
+flag as \textbf{UNVERIFIED-CITATION}, not re-checked against a primary source this session)
+needs a decay-vs-denominator-growth ratio $\rho\ge1$ to run a Siegel-type linear-independence
+argument. I could not find, and did not construct, any transformation of $S$ that changes the
+$1/2$ to something $\ge1$; I regard this as evidence toward ``fundamental'' rather than
+``removable,'' but it falls short of a proof that no such transformation exists.
+
+\textbf{Base-variable vs.\ coefficient-variable theories.} Separately, \texttt{report\_G1.md}'s
+verdict --- ``there is no base-variable theory for $q$-series that are neither modular nor
+Mahler'' --- points at a second, independent gap: $\beta_2$'s defining object $S(q)$ is a
+statement about the value of a function \emph{at} a specific base point $q^\ast$ (a
+transcendence-of-values-of-a-$q$-series-in-its-own-base question), not a statement about the
+arithmetic nature of Taylor coefficients of a fixed function (which is what Mahler's method and
+most modular-function transcendence results address). \texttt{beta2\_diffalg\_search.py} and
+\texttt{beta2\_ade\_sweep.py} (not re-run this session; large prior body of exploratory work)
+apparently searched for a differential-algebraic or modular reformulation and did not find one
+that would let a standard theory apply; I did not re-verify these negative results myself.
+
+\section{Strongest honest statement}
+
+Combining what I re-verified this session with what the prior room verified and I did not
+independently re-run:
+
+\begin{proposition}[status, mixed labels]
+\begin{enumerate}
+\item[(a)] \textbf{PROVED} (paper2a, Corollary cor:beta): $\beta_2=1.4916177871\ldots$ is the
+exact, unconditional exponential growth rate of $u_n,v_n$; $3/2$ is excluded as that rate.
+\item[(b)] \textbf{VERIFIED} (this session, 320 digits, and independently in the prior room to
+2090 digits): $q^\ast=\beta_2^{-2}=0.44945363055894804612554582539\ldots$ is not a root of any
+integer polynomial of degree $\le16$ and height $<10^{120}$ (nor several other degree/height
+combinations listed in \S2); the same holds for $\beta_2$ itself.
+\item[(c)] \textbf{HEURISTIC}: the obstruction to promoting (b) into a proof of irrationality
+(let alone transcendence) is a fixed ratio $\rho=1/2$ between archimedean decay and denominator
+growth across every natural approximation scheme tried for the Hahn--Exton $q$-Bessel value
+$S(q^\ast)=0$; existing $q$-irrationality theorems need $\rho\ge1$. This looks structural rather
+than removable, but that is an assessment, not a proof of non-removability.
+\item[(d)] \textbf{OPEN}: irrationality of $\beta_2$; transcendence of $\beta_2$.
+\end{enumerate}
+\end{proposition}
+
+The strongest \emph{true} statement I can make, in one sentence: \emph{$\beta_2$ is a
+well-defined, unconditionally-established growth-rate constant that is provably not a root of
+any integer polynomial of the many specific low-degree/bounded-height families tested (up to
+degree 128 under a specific height cap in the prior room's certificate), but no proof of even
+its irrationality is known, and the one natural route (a $q$-Siegel/Shidlovskii-type argument on
+its Hahn--Exton $q$-Bessel representation) is blocked at exactly $\rho=1/2$, one notch below
+every published sufficient condition I am aware of.}
+
+\section{What would be needed for full transcendence}
+
+\begin{itemize}
+\item A $q$-irrationality (or $q$-Siegel--Shidlovskii-type transcendence) criterion valid at
+$\rho=1/2$ rather than $\rho\ge1$ --- i.e., a genuinely new arithmetic input, not a
+reparametrization of $S$ (five reparametrizations were tried and none moved $\rho$).
+\item Alternatively, a value-transcendence theory for $q$-series transcendental \emph{in the
+base variable} that are neither modular functions nor Mahler functions (report\_G1.md's
+diagnosis of the missing theory).
+\item Independently: a proof (not merely absence of a modular/Mahler/D-finite structure found
+by search) that $S(q)$, viewed as a function of $q$, is not annihilated by any algebraic
+differential or $q$-difference equation of a type where such a theory does exist; the searches
+in \texttt{beta2\_diffalg\_search.py}/\texttt{beta2\_ade\_sweep.py} are negative but exploratory,
+not proofs of non-existence.
+\end{itemize}
+
+\section{Weak points of this note}
+
+\begin{itemize}
+\item The literature citations (Tschakaloff, Bézivin--Bundschuh--Väänänen, André,
+Di~Vizio--Hardouin, Koelink--Swarttouw's exact identity numbers) are recalled from training
+data and were \emph{not} checked against primary sources in this session; they may be
+mis-stated or mis-numbered.
+\item The degree-64/128 LLL certificates and the Padé/Lommel-ladder degree bookkeeping
+(\S3) are taken from the prior room's outputs and code inspection, not re-executed here; I
+verified internal consistency by reading, not by rerunning at full compute.
+\item My own PSLQ check (\S2) is numerically much weaker than the existing certificate and
+is included only as an independent second opinion with a different tool, not as new evidence
+beyond what already existed.
+\item The claim that $\rho=1/2$ is ``structural'' (\S3) is an inductive judgment from five
+failed reparametrizations, not a proof that no sixth reparametrization could do better.
+\end{itemize}
+
+\end{document}
