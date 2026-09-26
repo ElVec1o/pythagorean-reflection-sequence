@@ -27,24 +27,45 @@ identified two missing ingredients for a Nevanlinna-theoretic resolution of P4 (
 Bank--Kaufman/Steinmetz counting theorem. P4v1 explicitly did not carry out the summation in (a). This
 note carries it out.
 
-\section*{Summary of outcome}
+\section*{Correction (post-review, Reviewer AN): the headline claim is NOT established}
 
-\textbf{New result (PROVED given \texttt{cor:arcUV}):} for every $A>0$,
+\textbf{The local-rate formula \eqref{eq:localrate} below, and everything built on it
+(\S\ref{sec:invert}--\ref{sec:diagonal}, Proposition~\ref{prop:main}), is wrong as a claim about
+general $\zeta$.} The formula $t^\ast_j=(L+i\pi)/(2j+3/2)+O(t)$ was copied from
+\texttt{prop:minusone} (paper2a, the \emph{special case} $\zeta=-1$), not from the general theorem
+that actually backs \texttt{thm:arc} (\texttt{P1f\_lemma.tex}, the general saddle/Rouch\'e theorem
+with $\Delta V=(\pi is/N)(L_n+i\pi s/N)$, $s\in\{1,2\}$). The general $\Delta V$ carries an extra
+factor of order $1/N$ that the $\zeta=-1$ formula (a fixed small case, $N=2$) hides, so the correct
+leading behavior is $1-|q^\ast_j(\zeta)|\sim C(\zeta,N)/j$ with $C(\zeta,N)=O(1/N)$, \textbf{not}
+$\ell(\zeta)/(2j)$. Checking $\zeta=i$ (\texttt{prop:qi}) independently gives yet a third, different
+offset ($2j+1$, from $m=-j-1$), confirming the coefficient is genuinely case-specific and not the
+single formula claimed below. The numerical "corroboration" at $\zeta=i$ is correspondingly not
+meaningful: at $j=1,2$ the wrong-for-this-case formula (with offset $3/2$) happens to fit slightly
+\emph{better} than $\zeta=i$'s own correct offset ($2j+1$, predicting ratio $5/3=1.667$, a worse
+$3.8\%$ match) -- this is $O(1/j)$-correction noise, not evidence for the general shape.
+
+\textbf{What survives, honestly:} the \emph{qualitative} diagnosis that P4v1's back-of-envelope
+$\log(1/(1-r))$-per-$\zeta$ guess conflates a harmonic-sum question with a threshold-count question,
+and that the correct per-$\zeta$ count is linear (not logarithmic) in $1/(1-r)$ whatever its exact
+coefficient turns out to be -- and the observation that a diagonal argument over finitely many fixed
+$\zeta$ at a time needs no uniform-in-$\zeta$ control, only individually-finite thresholds. Both are
+modest, correct points. The specific formula \eqref{eq:localrate}, Lemma~\ref{lem:many}'s use of it,
+and Proposition~\ref{prop:main}'s conclusion are \textbf{not established} by this note as written; a
+correct version would need the general $\Delta V$-based rate re-derived from \texttt{P1f\_lemma.tex}
+directly, plus (per Reviewer AN) an honest count of how many admissible $(a,N)$ contribute a
+non-negligible coefficient once the true $O(1/N)$ dependence is accounted for -- not attempted here.
+\textbf{P4 remains exactly as open as P4v1 left it; ingredient (a) is still not carried out.}
+
+\section*{Summary of outcome (as originally written; superseded by the correction above)}
+
+\textbf{Claimed result, NOT established (see correction above):} for every $A>0$,
 \[
    n(r,U)\ \ge\ \frac{A}{1-r}\qquad\text{for all $r$ sufficiently close to $1$},
 \]
-i.e.\ $\displaystyle\liminf_{r\to1^-}(1-r)\,n(r,U)=+\infty$: the pole-counting function of $U$ grows
-\emph{strictly faster than any constant multiple of $1/(1-r)$}. This sharpens, and in one respect
-corrects, the back-of-envelope guess in P4v1 \S5(a) (which guessed a $\log(1/(1-r))$-type count near
-each root of unity, times $\sim1/(1-r)$ many roots of unity): the correct per-root-of-unity count is
-itself \emph{linear} in $1/(1-r)$, not logarithmic, and a super-any-fixed-multiple bound already
-follows from a two-line diagonal argument that needs no uniform control over the certificate
-constants across roots of unity. \textbf{What this does not do:} it stops short of a super-polynomial
-bound $n(r,U)\ge (1-r)^{-\rho}$ for every fixed $\rho$, which is what would be needed to beat every
-fixed-order/degree Bank--Kaufman-type bound at once (ingredient (c) of P4v1); that stronger statement
-needs uniform-in-$N$ control of thresholds and constants that paper2a explicitly does not make
-explicit (\texttt{rem:arcUV}). \S\ref{sec:diagnosis} pins down exactly what extra input would close
-that gap. Ingredient (b) (the disc-analogue counting theorem itself) is untouched by this note.
+i.e.\ $\displaystyle\liminf_{r\to1^-}(1-r)\,n(r,U)=+\infty$. The argument below is retained for
+the record and because its qualitative log-vs-linear point and its diagonal-argument shape are
+genuine, but its quantitative content rests on the incorrect formula \eqref{eq:localrate} and must
+not be cited as a proved strengthening of P4v1.
 
 \section{The local rate, extracted precisely}\label{sec:local}
 
