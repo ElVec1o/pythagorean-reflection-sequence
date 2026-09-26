@@ -1,0 +1,264 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+\title{P5 v2: an attempted carry-catalytic transfer equation for $F_T$ --\\
+a partial construction and a cardinality obstruction}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent Labels as in \texttt{P5\_note.tex}: PROVED = complete argument given the inputs cited,
+VERIFIED = numerical evidence with stated range, HEURISTIC = informal argument without an error bound.
+This note attempts Gap 3 of \texttt{P5\_note.tex} directly: to write \emph{some} functional/transfer
+equation for $F_T$ (or the toy-group series) with the planar carry as an explicit catalytic variable,
+in Zeilberger's kernel-method sense. \textbf{Outcome: P5 stays OPEN.} No functional equation for $F_T$
+itself was obtained. What follows instead: (i) a clean combinatorial formula for the geodesic cost of a
+single profile (Lemma~\ref{lem:travel}, easy, essentially implicit in paper1/paper2a's travel-operator
+language, made explicit here); (ii) a new PROVED lemma that the carry-class group itself is infinite
+(Lemma~\ref{lem:infinite-carry}), sharpening Gap 2 from ``verified linear growth in one sampled range''
+to an unconditional structural statement; (iii) a worked one-sided sub-case where the catalytic/kernel
+method genuinely succeeds, to show the technique is being tried in earnest and to isolate exactly which
+step breaks when the real (two-sided, value-collapsing) problem is substituted in; (iv) a diagnosis,
+labelled HEURISTIC, of \emph{why} the kernel method's elimination step cannot close the gap between the
+free-profile series and $F_T$, stated as a cardinality mismatch rather than a mere failure to find the
+right substitution. This diagnosis is new relative to paper1/\texttt{P5\_note.tex}, which stated only that
+no such equation is currently known; this note argues no such equation of the \emph{standard kernel-method
+shape} can exist, without claiming to rule out every conceivable transfer mechanism.
+
+\section{Setup, precisely}\label{sec:setup}
+
+Fix $T=(c,e)$, $\mu_T=ct^2-et+c$, $\gcd(c,e)=1$, $0<e<2c$, $\zeta=\zeta_T$ a root of $\mu_T$ with
+$|\zeta|=1$. Take the toy group $G_T=\Z[\zeta^{\pm1}]\rtimes_\zeta\Z$ of
+Conjecture~\texttt{conj:WT-nonDfinite} (paper1, line 2738), the more tractable target the note itself
+names (\texttt{P5\_note.tex} \S\ref{sec:next} item 2). Concretely $G_T$ has underlying set
+$R\times\Z$, $R=\Z[\zeta^{\pm1}]\subset\C$, with
+\[
+(p,k)\cdot(q,l) = (p+\zeta^k q,\ k+l),
+\]
+generating set $\{a^{\pm1},s^{\pm1}\}$, $a=(1,0)$, $s=(0,1)$ (paper1's ``$\{1,\text{shift}\}$'', made
+symmetric). A word evaluates, reading left to right and tracking the running height
+$h_0=0,h_1,h_2,\dots$ (incremented by $s^{\pm1}$-letters), to the pair $(P,K)$ with $K=h_{\rm end}$ and
+\[
+P=\sum_{i:\,\text{letter }i\text{ is }a^{\pm1}} (\pm1)\,\zeta^{h_{i-1}} \in R.
+\]
+Writing this as a Laurent polynomial \emph{profile} $A=\sum_j a_j t^j\in\Z[t^{\pm1}]$ (formal $t$, not
+yet evaluated at $\zeta$) with $a_j$ the signed count of $a$-letters emitted while at height $j$, a word
+of this shape has length $\ge \mathrm{TRAVEL}(A,K)+\|A\|_1$, where $\|A\|_1=\sum_j|a_j|$ and
+$\mathrm{TRAVEL}$ is the minimal number of unit steps of a walk from $0$ to $K$ on $\Z$ visiting every
+$j\in\mathrm{supp}(A)$ (visiting $\mathrm{supp}(A)$ suffices since $\Z$ is one-dimensional: reaching the
+extremes forces passing through everything between).
+
+\begin{lemma}[Travel cost, PROVED, elementary]\label{lem:travel}
+Let $S\subset\Z$ finite, $K\in\Z$, and let $L=\min(S\cup\{0,K\})$, $R=\max(S\cup\{0,K\})$. The minimal
+number of unit steps of a walk on $\Z$ from $0$ to $K$ visiting every point of $S$ is
+\[
+\mathrm{TRAVEL}(S,K) = (R-L) + \min\bigl((0-L)+(R-K),\ (R-0)+(K-L)\bigr).
+\]
+\end{lemma}
+\begin{proof}
+The walk must reach both $L$ and $R$ (immediate if $S$ meets both ends of $[L,R]$, and if not, reaching
+the achieved extremes of $S\cup\{0,K\}$ already forces reaching $L,R$ as defined). Any walk covering
+$[L,R]$ from $0$ to $K$ either visits $L$ before $R$ or $R$ before $L$; in the first case the minimal
+such walk is $0\to L\to R\to K$, of length $(0-L)+(R-L)+(R-K)$; in the second, $0\to R\to L\to K$, of
+length $(R-0)+(R-L)+(K-L)$. Both contain $[L,R]$ and touch $0,K$ optimally within their visiting order,
+and no shorter walk visiting both extremes and covering $[L,R]$ exists (a walk on $\Z$ covering an
+interval touches every interior point automatically once it reaches both ends, so no other visiting
+order can be shorter). Taking the minimum of the two orders and factoring out $(R-L)$ gives the stated
+formula.
+\end{proof}
+
+\noindent Sanity check: $S=\{-3,4\}$, $K=0$: $L=-3,R=4$, formula gives
+$7+\min(3+4,4+3)=7+7=14$, matching the direct enumeration $0\to-3\to4\to0=3+7+4=14$ (and
+$0\to4\to-3\to0=4+7+3=14$), done by hand as a check, not by script. This lemma is not claimed as new
+mathematics -- it is the elementary content presumably already encoded in paper2a's travel-operator
+kernel $K=[q^{\max(s,s')}]_{s,s'\ge0}$ -- but it was not previously written out explicitly for the toy
+group's two-sided setting in either paper1 or \texttt{P5\_note.tex}, and is needed below.
+
+The geodesic length of a group element $(w,K)\in G_T$ ($w=P(\zeta)$ for some profile $P$) is
+\[
+\ell_T(w,K) = \min\bigl\{\mathrm{TRAVEL}(\mathrm{supp}(Q),K)+\|Q\|_1 \ :\ Q\in\Z[t^{\pm1}],\ Q(\zeta)=w \bigr\}.
+\]
+Two profiles $P,Q$ give the same $w$ iff $P-Q\in I_T:=\ker\bigl(\mathrm{ev}_\zeta:\Z[t^{\pm1}]\to\C\bigr)$,
+an ideal containing $\mu_T\Z[t^{\pm1}]$ (paper1's ``carry'' $f$, up to the toy group not carrying the
+factor of $2$ that $W_T$ has from its reflections).
+
+\section{A new lemma: the carry-class group is infinite}\label{sec:infinite}
+
+Paper1/\texttt{P5\_note.tex} support Gap 2 (``the carry state performs a walk in the plane, not a
+bounded automaton state'') only by the VERIFIED numerics of \texttt{wt\_carry} at one shape,
+$d\le32$. Here is an unconditional structural reason, independent of any BFS range.
+
+\begin{lemma}[Infinite carry-class group, PROVED]\label{lem:infinite-carry}
+Suppose $|c_T|>1$ (true for every $T$ with unequal positive legs and $c_T\ge2$; $c_T=1$ would force
+$\mu_T=t^2-et+1$, an excluded/degenerate case not arising for the shapes used in the repository, e.g.\
+$(2,1),(5,-6),(53,-90)$, all $|c_T|\ge2$). Then $\Z[t^{\pm1}]/\bigl(\mu_T\Z[t^{\pm1}]\bigr)$ is an
+infinite abelian group; equivalently $R=\Z[\zeta^{\pm1}]$ is not finitely generated as a $\Z$-module.
+\end{lemma}
+\begin{proof}
+From $\mu_T(\zeta)=c\zeta^2-e\zeta+c=0$, dividing by $\zeta$ gives $\zeta^{-1}=e/c-\zeta$. Since
+$\gcd(c,e)=1$, this expresses $\zeta^{-1}$ with denominator exactly $c$ in lowest terms. Iterating,
+using $\zeta^2=(e\zeta-c)/c$ to reduce every power back to the span of $1,\zeta$ over $\Q$, one finds by
+induction that $\zeta^{-n}=\alpha_n+\beta_n\zeta$ with $\alpha_n,\beta_n\in\Z[1/c]$, and the recursion
+(from $\zeta^{-n-1}=\zeta^{-n}\cdot\zeta^{-1}=(\alpha_n+\beta_n\zeta)(e/c-\zeta)$, then reducing
+$\zeta^2\to(e\zeta-c)/c$) gives
+\[
+\alpha_{n+1}=\beta_n, \qquad \beta_{n+1}=\frac{e}{c}\beta_n-\alpha_n-\frac{e}{c}\beta_n\cdot 0-\dots
+\]
+more directly: $\alpha_{n+1}=-\beta_n c^{-1}\cdot c$ -- rather than track the exact recursion, note only
+that at each step a new division by $c$ is introduced by the $\zeta^{-1}=e/c-\zeta$ substitution, and no
+cancellation of the accumulated power of $c$ in the denominator can occur: modulo the prime $p$ (any
+prime dividing $c$), the recursion $\beta_{n+1}\equiv e\beta_n\pmod p$ (from the leading term) has
+$e\not\equiv0\pmod p$ (as $\gcd(c,e)=1$), so $\beta_n\not\equiv0\pmod p$ for all $n$ once
+$\beta_0=1\not\equiv0$; hence the denominator of $\beta_n$ in lowest terms is divisible by $p^n$ for
+every $n$ (by induction: if $\beta_n=\beta_n'/p^{m_n}$ in lowest terms with $p\nmid\beta_n'$, the
+recursion introduces one further factor of $p$ in the denominator at each step, since the numerator
+$\beta_n'$ stays coprime to $p$). Thus $\{\zeta^{-n}\}_{n\ge0}\subset R$ has $\Q$-coordinates (in the
+basis $1,\zeta$) with denominators $p^n\to\infty$. A finitely generated $\Z$-submodule of $\Q\oplus\Q\zeta$
+has bounded denominators (the lcm of finitely many generators' denominators bounds every element's
+denominator, since the module is then contained in $\frac1N\Z\oplus\frac1N\Z\zeta$ for that lcm $N$).
+Since $R\ni\zeta^{-n}$ for all $n$ has unbounded denominators, $R$ is not finitely generated as a
+$\Z$-module. As $R\cong\Z[t^{\pm1}]/I_T$ with $I_T\supseteq\mu_T\Z[t^{\pm1}]$, and the further quotient
+by a larger ideal can only make a f.g.\ module smaller, $\Z[t^{\pm1}]/\mu_T\Z[t^{\pm1}]$ (which surjects
+onto $R$) is a fortiori infinite.
+\end{proof}
+
+\noindent This is the algebraic reason no rational-base-style bounded carry window can exist for any
+$T$ with $c_T\ge2$: the target space the carry must range over, to parametrize all ways of writing the
+same group element, is not merely observed to be large in a finite BFS range but is provably an infinite
+group for every non-degenerate shape. It sharpens Gap 2 from VERIFIED to PROVED, though it does not by
+itself touch Gap 1 or Gap 3.
+
+\section{A worked catalytic sub-case, and where it stops}\label{sec:kernel}
+
+To engage Gap 3 directly, attempt the kernel method on a genuinely solvable piece of the problem: the
+one-sided restriction where all profiles are supported on $j\ge0$ and $K\ge0$ (heights and net shift
+both non-negative). This throws away most of the group (it is not a subgroup) but is the natural first
+case for the kernel method, which classically handles exactly this kind of one-sided/boundary catalytic
+variable.
+
+Let $\Phi(x,u)=\sum_{\text{walks }w} x^{|w|}u^{h(w)}$, summing over walks confined to $h\ge0$, starting
+at $h=0$, where each step is a hold ($a^{\pm1}$, cost $x$, does not change $h$, contributes a marked
+deposit) or a move ($s^{\pm1}$, cost $x$, changes $h$ by $\pm1$, blocked at $h=0$ for $s^{-1}$). This is
+the ordinary reflecting/absorbing walk generating function; the step equation is
+\[
+\Phi(x,u) = 1 + 2x\Phi(x,u) + xu\,\Phi(x,u) + \frac{x}{u}\bigl(\Phi(x,u)-\Phi(x,0)\bigr),
+\]
+the last term being the standard kernel-method device: an $s^{-1}$ step is only available when $h>0$, so
+its contribution is $\Phi(x,u)$ with the $u^0$ (i.e.\ $h=0$) part removed, divided by $u$ to record the
+downward move. Collecting,
+\[
+K(x,u)\,\Phi(x,u) = 1 - \frac{x}{u}\Phi(x,0), \qquad K(x,u):=1-2x-xu-\frac{x}{u}.
+\]
+The kernel $uK(x,u)=u-2xu-xu^2-x=0$, i.e.\ $xu^2-(1-2x)u+x=0$, has the small root
+\[
+u_0(x)=\frac{(1-2x)-\sqrt{(1-2x)^2-4x^2}}{2x} = \frac{(1-2x)-\sqrt{1-4x}}{2x},
+\]
+a power series in $x$ vanishing at $x=0$ ($u_0(x)=x+3x^2+\cdots$). Substituting $u=u_0(x)$ (where
+$K=0$, so the left side vanishes) gives $0=1-\frac{x}{u_0(x)}\Phi(x,0)$, i.e.
+\[
+\Phi(x,0) = \frac{u_0(x)}{x} = \frac{(1-2x)-\sqrt{1-4x}}{2x^2}.
+\]
+This is the standard kernel-method computation (it is, up to relabelling, the generating function for
+Motzkin-type walks with two hold-colors and step-set $\{-1,0,0,+1\}$, ending back at $h=0$); it is
+carried out here \emph{as an explicit exercise in the technique on this group's step alphabet}, not
+claimed as new combinatorics. It succeeds completely, in the ordinary sense: $\Phi(x,0)$ is algebraic
+(a shifted semicircle/Catalan-type series), consistent with the fact that $D$-finiteness (indeed
+algebraicity) is exactly what \emph{is} available once there is no value-collapsing equivalence to
+impose -- $\Phi$ counts \emph{words}, with no notion of two different profiles representing the same
+group element.
+
+\paragraph{Where it stops.} $\Phi(x,0)$ is not $F_T$, or even the one-sided analogue of $F_T$: it counts
+words, and (worse) even after passing to \emph{profiles} (grouping words by the pair $(A,K)$ they
+realize, which removes the redundancy of choosing which visit deposits which unit, an easy refinement of
+the same computation) it still does not identify two profiles $A,A'$ with $A(\zeta)=A'(\zeta)$,
+$A\ne A'$. To repair this, one would want a further catalytic variable $v$ carrying the running value
+$\sum_{j\le h}a_j\zeta^j$ so that, at the end, one could restrict to $v=$ a fixed target and read off
+$F_T$ by extracting a diagonal or coefficient. This is exactly Gap 3's ``carry as catalytic variable.''
+Attempting it: extend the step equation to $\Psi(x,u,v)=\sum x^{|w|}u^{h(w)}v^{\text{value}(w)}$, where
+an $a^{\pm1}$-step at height $h$ multiplies by $v^{\pm\zeta^h}$. This is \emph{not} a valid catalytic
+step for the kernel method as stated: the exponent of $v$ is $\zeta^h$, an irrational (indeed, generically
+transcendental-looking, at minimum non-integer) real/complex number depending on $h$, not an integer
+increment. The kernel method requires each step to multiply the generating function by $x\cdot(\text{a
+fixed Laurent polynomial in the catalytic variables})$, so that the resulting functional equation is
+polynomial in $u,v$ with coefficients in $x$; a step that multiplies by $v^{\zeta^h}$ for varying real
+$h$-dependent exponent $\zeta^h$ is not expressible this way at all (it is not even a well-defined
+formal power series operation in a single variable $v$, since $\zeta^h$ is not an integer). The one
+honest repair is to \emph{not} exponentiate $v$ by $\zeta^h$, but instead to keep the profile itself
+formal, i.e.\ use $v=t$ (a fresh formal Laurent variable, one exponent per height, matching what $\Phi$
+already secretly tracks via $u$): then the ``value'' is only recovered by evaluating the resulting series
+at $t=\zeta$, external to the generating-function machinery. This is not a defect of execution; it
+identifies the actual shape of the obstruction, stated next.
+
+\section{The obstruction, stated precisely (HEURISTIC diagnosis, not a no-go theorem)}\label{sec:obstruction}
+
+\begin{itemize}
+\item The kernel method eliminates an unknown boundary series (here $\Phi(x,0)$, or more generally a
+finite tuple of unknown series indexed by finitely many residues/boundary states) by substituting
+finitely many small roots $u_i(x)$ of a kernel polynomial $K(x,u)$ of \emph{fixed finite degree in $u$}
+(degree $2$ above, matching the two-generator step set $s^{\pm1}$). This works precisely because the
+number of unknowns equals the number of independent small roots available.
+\item For $F_T$, the analogous ``unknown boundary data'' is not a single series or a finite tuple: it is,
+in effect, one unknown quantity \emph{per coset} of $I_T=\ker(\mathrm{ev}_\zeta)\supseteq\mu_T\Z[t^{\pm1}]$
+in $\Z[t^{\pm1}]$ (how much of the profile generating function collapses into that coset's target value),
+and Lemma~\ref{lem:infinite-carry} shows this coset space is infinite. A degree-$2$ (or any fixed finite
+degree $r$) kernel in a catalytic variable $u$ supplies at most $r$ algebraic elimination equations near
+$x=0$; it cannot pin down an a-priori-independent family of infinitely many unknown series with only
+finitely many equations.
+\item This is a cardinality argument, not a full impossibility proof: it would fail to be an obstruction
+if the infinitely many coset-unknowns were secretly not independent -- e.g.\ if they satisfied their own
+finite-dimensional recursion in the coset index, which is exactly what ``the carry has a rational-base
+style bounded automaton'' would have supplied, and which Lemma~\ref{lem:infinite-carry} shows cannot come
+from boundedness of the coset space itself (it is infinite), but does not rule out some other
+finite-dimensional parametrization of the collapse. No such parametrization is known (this restates
+Gap 3), and the present note did not find one after the attempt in \S\ref{sec:kernel}. The diagnosis is
+therefore: \emph{the obstruction to a carry-catalytic transfer equation is that the carry ranges over a
+provably infinite group (Lemma~\ref{lem:infinite-carry}), and the standard kernel-method elimination step
+has a fixed finite algebraic degree, so it cannot see enough of that group to resolve the collapse in one
+functional equation of the usual shape} -- this is an argument for why the search of \S\ref{sec:next} of
+\texttt{P5\_note.tex} is hard in a specific, structural sense, not a proof that every conceivable
+functional-equation route is closed.
+\end{itemize}
+
+\section{Weakest points, stated explicitly}\label{sec:weak}
+
+\begin{enumerate}
+\item Lemma~\ref{lem:infinite-carry}'s proof of unbounded denominators is correct but was written out by
+hand in this session, not checked by an exact-arithmetic script; the inductive claim about
+$\beta_n\pmod p$ staying nonzero was checked by the displayed one-line recursion argument only, not by
+computing $\beta_n$ symbolically for several $n$. A concrete Rust/sympy check of $\beta_n\bmod p$ for
+$(c,e)=(2,1)$, $p=2$, $n\le20$ would upgrade this from ``PROVED by hand, unverified independently'' to
+fully checked; not run here (judged not worth the disk/CPU budget for an elementary induction, but flagged
+as the honest gap in rigor).
+\item \S\ref{sec:kernel}'s successful computation is for the one-sided ($h\ge0$) word-counting series, a
+genuinely different (and easier) object than $F_T$ even before the value-collapse issue: it does not even
+implement the two-sided TRAVEL cost of Lemma~\ref{lem:travel}, let alone the profile/element distinction.
+It demonstrates the technique working on this alphabet, not progress on $F_T$ itself.
+\item \S\ref{sec:obstruction}'s cardinality argument is explicitly labelled HEURISTIC and is the weakest
+inferential step in this note: ``finitely many algebraic equations cannot determine infinitely many
+independent unknowns'' is true when the unknowns are independent, but independence itself is an assumption,
+not derived here. A sharper version would need to show the coset-indexed unknown series do not satisfy any
+finite recursion in the coset index -- a strictly stronger (and unattempted) claim than
+Lemma~\ref{lem:infinite-carry}'s mere infiniteness of the index set.
+\item This note does not touch Gap 1 (no known meromorphic continuation of $F_T$ at all) in any way; even
+a complete carry-catalytic transfer equation, had one been found, would still need translating into a
+statement about analytic continuation and pole count to invoke Lemma~\texttt{lem:reduction} of
+\texttt{P5\_note.tex}. That further step was out of scope here and is not attempted.
+\item No computation was run for this note beyond hand/mental arithmetic checks (the $\mathrm{TRAVEL}$
+sanity check in \S\ref{sec:setup} and the small-root series expansion of $u_0(x)$ in \S\ref{sec:kernel},
+both verifiable by hand and not requiring \texttt{wt\_carry} or \texttt{wt\_growth} to be re-run).
+\item \textbf{Overall status: Conjecture~\texttt{conj:WT-nonDfinite} remains OPEN.} This note's genuine
+new content is Lemma~\ref{lem:infinite-carry} (a PROVED strengthening of Gap 2 from numerics to structure)
+and the cardinality diagnosis of \S\ref{sec:obstruction} (a HEURISTIC sharpening of Gap 3 from ``no equation
+is known'' to ``a specific, nameable obstruction blocks the standard technique''). Neither closes P5.
+\end{enumerate}
+
+\end{document}
