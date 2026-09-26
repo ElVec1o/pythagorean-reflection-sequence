@@ -1509,6 +1509,34 @@ power series is equivalent to P-recursiveness of its coefficients \cite[\S6.4]{S
 poles at $x=1-2/(2n+1)$, $n\ge1$, infinitely many in $|x|<1$ and accumulating at $x=1$, and satisfies
 an algebraic differential equation. Whether $U$ and $V$ are $D$-algebraic is open; we expect not.
 
+\begin{remark}[the natural extension of this argument does not work]\label{rem:nonDalgebraic}
+It is tempting to extend Theorem~\ref{thm:nonDfinite} from linear to (nonlinear) algebraic
+differential equations by upgrading pole density: $U,V$'s poles are dense on an explicit
+positive-measure arc of $|x|=1$ (Corollary~\ref{cor:arcUV}), not just infinite in $D$, so one might
+hope a density-of-poles obstruction rules out $D$-algebraicity the way Lemma~\ref{lem:odeposes} rules
+out linearity. This does not work, and not merely for lack of trying: Lemma~\ref{lem:odeposes} is a
+fact about \emph{fixed} singularities of linear equations (poles confined to the zero set of the
+leading coefficient, independent of the solution), whereas solutions of nonlinear algebraic ODEs can
+have \emph{movable} singularities whose location depends on initial data; when the equation has the
+Painlev\'e property (e.g.\ the order-one Weierstrass equation $(y')^2=4y^3-g_2y-g_3$) those movable
+poles can be dense on a curve, so pole density on an arc is not by itself evidence against
+$D$-algebraicity. A companion note, \cite[]{Bonfioli2026P4}, examines this strategy in detail: it
+was adversarially reviewed (Reviewer AH), whose first pass caught a broken elliptic-function
+counterexample (an arithmetic error conflating the modulus and argument of a lattice pullback), which
+the note discloses and retracts rather than repairs cosmetically; no valid counterexample is exhibited
+either way. The note identifies the correct tool for this question as Nevanlinna-theoretic growth
+theorems for solutions of algebraic ODEs (Malmquist, Steinmetz, Bank--Kaufman), rather than the
+difference-Galois/Fredholm-determinant machinery of Theorem~\ref{thm:fredholm}, which is a statement
+about the spectral parameter $\lambda$ (respectively the difference structure in $q$), not about a
+differential equation in $x$, and so does not anchor a $D$-algebraicity argument. Closing the question
+in either direction needs (a) a quantitative lower bound on the pole-counting function $n(r,U)$ as
+$r\to1^-$ (density alone, as proved here, is only a topological statement), and (b) a disc-analog of
+the Bank--Kaufman/Steinmetz counting theorem, valid for functions meromorphic on a disc with a
+natural boundary rather than entire coefficients on all of $\C$; neither (a) nor (b) is established
+here or, as far as we know, in the literature in directly citable form. Item~(3) of
+Section~\ref{sec:conclusion} restates this.
+\end{remark}
+
 \begin{corollary}\label{cor:Wnotdfinite}
 The bivariate series $\mathcal W(x,y)\in\Z[y][[x]]\subset\Z[[x,y]]$ is not $D$-finite in $(x,y)$.
 \textup{(}Standing: Theorems~\ref{thm:model} and~\ref{thm:RJ}.\textup{)}
@@ -2633,7 +2661,14 @@ For $U$ and $V$ with $\frac aN\in[0.143,\frac16)$ it is open, although $Z_N\ne0$
 \item Can the hazard induction pass the golden threshold $\ell\approx0.484$ (Remark~\ref{rem:arcobstruction})? The
 triangle-inequality step cannot, for any hazard base. Reaching all of $\ell>0$, i.e.\ $\frac aN\in(0.0804,0.9196)$, needs
 a structured bound on the level-$n$ sums that is inductively closed.
-\item Are $U$ and $V$ $D$-algebraic? The pole argument does not decide this.
+\item Are $U$ and $V$ $D$-algebraic? The pole argument does not decide this
+(Remark~\ref{rem:nonDalgebraic}): the natural extension of Theorem~\ref{thm:nonDfinite}'s
+fixed-singularity argument to the nonlinear case fails, because algebraic ODEs can have movable
+singularities dense on a curve (Painlev\'e property). \cite{Bonfioli2026P4} identifies
+Nevanlinna-theoretic growth theorems (Malmquist, Steinmetz, Bank--Kaufman) as the right tool in
+place of Theorem~\ref{thm:fredholm}, and isolates the missing ingredients: a quantitative
+pole-counting rate for $U$ as $|x|\to1^-$, and a disc-version counting theorem; neither is
+established.
 \item Is the number $\beta_2$ transcendental? The question reduces to a value statement for a
 Hahn--Exton $q$-Bessel function, and the obstruction sits at the arithmetic ratio $\rho=\tfrac12$
 \cite[Appendix \textup{app:beta2}]{Bonfioli2026bB}.
@@ -2668,6 +2703,11 @@ reflection group: block assembly, analytic estimates and certificates}, companio
 
 \bibitem{Bonfioli2026c} V.~Bonfioli, \emph{Universality and a dimensional transcendence dichotomy
 for orthoscheme reflection groups}, preprint (2026), \texttt{doi:10.5281/zenodo.20370090}.
+
+\bibitem{Bonfioli2026P4} V.~Bonfioli, \emph{P4: is $U$ differentially algebraic? A negative result
+about the strategy, not about $U$}, internal note (2026),
+\texttt{code/zeta\_probe/rootunity\_zeros/general/P4/P4\_note.tex}, adversarially reviewed
+(Reviewer AH); not a standalone publication.
 
 \bibitem{BostChambertLoir2009} J.-B.~Bost and A.~Chambert-Loir, \emph{Analytic curves in algebraic
 varieties over number fields}, in: Algebra, Arithmetic, and Geometry (in honor of Yu.~I.~Manin),
