@@ -23,9 +23,15 @@ equation for $F_T$ (or the toy-group series) with the planar carry as an explici
 in Zeilberger's kernel-method sense. \textbf{Outcome: P5 stays OPEN.} No functional equation for $F_T$
 itself was obtained. What follows instead: (i) a clean combinatorial formula for the geodesic cost of a
 single profile (Lemma~\ref{lem:travel}, easy, essentially implicit in paper1/paper2a's travel-operator
-language, made explicit here); (ii) a new PROVED lemma that the carry-class group itself is infinite
-(Lemma~\ref{lem:infinite-carry}), sharpening Gap 2 from ``verified linear growth in one sampled range''
-to an unconditional structural statement; (iii) a worked one-sided sub-case where the catalytic/kernel
+language, made explicit here); (ii) \textbf{correction (post-review, Reviewer AO): Lemma~\ref{lem:infinite-carry}
+is NOT new.} It reproves, via an independent $p$-adic argument, the non-finite-generation of
+$R=A_T=\Z[\zeta_T^{\pm1}]$ already established in \texttt{paper1.tex}'s Proposition ``Structure of
+$W_T$'', part~(i) (a three-line B\'ezout argument: $e/c=\zeta+\zeta^{-1}\in A_T$ with $\gcd(c,e)=1$
+gives $1/c\in A_T$, hence $A_T\supseteq\Z[1/c]$, not finitely generated since $c\ge2$) -- a strictly
+simpler proof of the same fact, using the same object under a different name, that the original
+version of this note failed to cross-check against. It is kept below only because its explicit
+denominator-growth bookkeeping makes the connection to Gap 2's carry-boundedness question concrete,
+not as new mathematics; (iii) a worked one-sided sub-case where the catalytic/kernel
 method genuinely succeeds, to show the technique is being tried in earnest and to isolate exactly which
 step breaks when the real (two-sided, value-collapsing) problem is substituted in; (iv) a diagnosis,
 labelled HEURISTIC, of \emph{why} the kernel method's elimination step cannot close the gap between the
@@ -97,11 +103,12 @@ Paper1/\texttt{P5\_note.tex} support Gap 2 (``the carry state performs a walk in
 bounded automaton state'') only by the VERIFIED numerics of \texttt{wt\_carry} at one shape,
 $d\le32$. Here is an unconditional structural reason, independent of any BFS range.
 
-\begin{lemma}[Infinite carry-class group, PROVED]\label{lem:infinite-carry}
+\begin{lemma}[Infinite carry-class group -- NOT NEW, see correction above]\label{lem:infinite-carry}
 Suppose $|c_T|>1$ (true for every $T$ with unequal positive legs and $c_T\ge2$; $c_T=1$ would force
 $\mu_T=t^2-et+1$, an excluded/degenerate case not arising for the shapes used in the repository, e.g.\
-$(2,1),(5,-6),(53,-90)$, all $|c_T|\ge2$). Then $\Z[t^{\pm1}]/\bigl(\mu_T\Z[t^{\pm1}]\bigr)$ is an
-infinite abelian group; equivalently $R=\Z[\zeta^{\pm1}]$ is not finitely generated as a $\Z$-module.
+$(2,1),(5,-6),(53,-90)$, all $|c_T|\ge2$). Then $R=\Z[\zeta^{\pm1}]$ is not finitely generated as a
+$\Z$-module (hence, in particular, is an infinite abelian group; the converse implication is not
+claimed and is not needed).
 \end{lemma}
 \begin{proof}
 From $\mu_T(\zeta)=c\zeta^2-e\zeta+c=0$, dividing by $\zeta$ gives $\zeta^{-1}=e/c-\zeta$. Since
@@ -255,10 +262,12 @@ statement about analytic continuation and pole count to invoke Lemma~\texttt{lem
 \item No computation was run for this note beyond hand/mental arithmetic checks (the $\mathrm{TRAVEL}$
 sanity check in \S\ref{sec:setup} and the small-root series expansion of $u_0(x)$ in \S\ref{sec:kernel},
 both verifiable by hand and not requiring \texttt{wt\_carry} or \texttt{wt\_growth} to be re-run).
-\item \textbf{Overall status: Conjecture~\texttt{conj:WT-nonDfinite} remains OPEN.} This note's genuine
-new content is Lemma~\ref{lem:infinite-carry} (a PROVED strengthening of Gap 2 from numerics to structure)
-and the cardinality diagnosis of \S\ref{sec:obstruction} (a HEURISTIC sharpening of Gap 3 from ``no equation
-is known'' to ``a specific, nameable obstruction blocks the standard technique''). Neither closes P5.
+\item \textbf{Overall status: Conjecture~\texttt{conj:WT-nonDfinite} remains OPEN.} This note's only
+genuine new content is the cardinality diagnosis of \S\ref{sec:obstruction} (a HEURISTIC sharpening of
+Gap 3 from ``no equation is known'' to ``a specific, nameable obstruction blocks the standard
+technique'') and the worked kernel-method sub-case of \S\ref{sec:kernel}. Lemma~\ref{lem:infinite-carry}
+is, per the correction above, a reproof of an already-published fact (paper1.tex's \texttt{A\_T}
+non-finite-generation), not new mathematics. Nothing here closes P5.
 \end{enumerate}
 
 \end{document}
