@@ -452,3 +452,6 @@ name = "P3Separation"
 
 [[lean_lib]]
 name = "P3NoQRelation"
+
+[[lean_lib]]
+name = "P1eArcDensity"
