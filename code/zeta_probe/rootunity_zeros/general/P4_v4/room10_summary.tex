@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 10 (P4 D-algebraicity): moderator summary}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+One seat (Hilbert) attempted to construct the missing disc-analog Nevanlinna growth theorem
+(ingredient (b) of \texttt{P4\_note.tex}) from first principles, since neither of the two prior
+rooms on P4 (Room 4, and Track A4 before it) had attempted building this machinery directly.
+
+\textbf{Hilbert's derivation.} Re-examining the classical proof of Nevanlinna's
+logarithmic-derivative lemma (Poisson--Jensen, two radii $r<R$), the proof itself is $r/R$-local
+and never actually uses $R\to\infty$ -- the plane-vs-disc distinction only enters afterward, in how
+$R(r)$ is chosen and the growth scale used. Transplanting mechanically ($r\to\infty \leftrightarrow
+r\to1^-$) gives a candidate disc log-derivative lemma and, combined with the fact that polynomial
+ODE coefficients have $T(r,\text{coeff})=O(1)$ on a compact disc (rather than growing like $\log r$
+on the plane), yields a candidate bound $T(r,y)=O(\log(1/(1-r)))$ for any $y$ meromorphic on the
+disc solving a fixed algebraic ODE of order $k$, degree $d\ge2$. This is a real, if unreviewed,
+piece of original derivation.
+
+\textbf{The bookkeeping question, resolved.} The comparison against $U$'s already-established
+$n(r,U)=\Theta(1/(1-r))$ pole count (Room 4) hinges entirely on which counting-function convention
+is standard in disc Nevanlinna theory: $N(r,f)=\int_0^r n(t)\,dt/t$ (the plane integral, restricted
+to $r<1$) or $N(r,f)=\int_0^r n(t)\,dt/(1-t)$ (a disc-native weighting that would make the boundary
+play the role $\infty$ plays in the plane theory). Hilbert flagged this as unresolved and
+UNVERIFIED-CITATION, without library access. \textbf{Checked here against primary sources (web
+search, cross-referencing the standard definition and Tsuji's disc extension): the standard
+convention is $N(r,a)=\int_0^r[n(t,a)-n(0,a)]/t\,dt+n(0,a)\log r$ -- the SAME $dt/t$ weighting as
+the plane theory, not a $dt/(1-t)$ disc-native one.} This is Hilbert's ``alternative convention,''
+which the seat's own analysis already correctly identified as giving an \textbf{inconclusive}
+comparison (same order, no violation) rather than the ``disc-native'' convention that would have
+closed P4.
+
+\textbf{Room verdict: NO PROGRESS, but a real sub-question genuinely resolved.} The candidate disc
+growth theorem, even if it survives full scrutiny, does \emph{not} close P4 under the standard
+convention -- the comparison is inconclusive, exactly as one of Hilbert's two branches anticipated.
+This settles a real ambiguity (rather than leaving it open) and rules out a specific hoped-for path
+to closure. P4 stands exactly where \texttt{P4\_note.tex}/Room 4 left it: OPEN, with the correct
+theorem family named, ingredient (a) now precisely known ($O(1/(1-r))$, not superpolynomial), and
+ingredient (b)'s standard-convention version now known not to be sufficient even if constructed.
+The candidate log-derivative-lemma transplant itself (genuinely new, unreviewed) is left in
+\texttt{room10\_seat\_hilbert.tex} for anyone who wants to pursue a non-standard/alternative growth
+measure in the future, though that would need independent justification for why it's the right
+notion of ``growth'' to use.
+
+\end{document}

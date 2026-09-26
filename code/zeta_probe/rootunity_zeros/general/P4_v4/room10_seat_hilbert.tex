@@ -1,0 +1,337 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\title{Room 10, Seat Hilbert: a disc-analog Nevanlinna growth bound for P4}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent Labels as in \texttt{P4\_note.tex}: PROVED = complete argument given cited inputs.
+VERIFIED = numerics without an interval certificate. HEURISTIC = argument without error control.
+UNVERIFIED-CITATION = attributed to the literature from memory, not checked against a primary
+source this session. No computation was needed or run; this is a derivation task.
+
+\section*{Calibration point}
+
+I read \texttt{P4\_note.tex} and \texttt{P4\_v3/room4\_summary.tex} in full. My understanding,
+stated back:
+
+\begin{itemize}
+\item[(a)] Room 4's Tao seat correctly re-derived the pole-counting rate for $U$: near each
+admissible root of unity $\zeta=e(a/N)$ on the boundary arc, poles $q^\ast_j(\zeta)$ satisfy
+$1-|q^\ast_j(\zeta)|=\Theta(1/(jN))$, and summing over $N\le M$ gives an aggregate count that is
+$\Theta(M)$ -- i.e., writing $M\sim1/(1-r)$, the pole-counting function obeys
+$n(r,U)=O(1/(1-r))$, linear in the natural cutoff, \emph{not} superpolynomial. This ceiling is
+now established; I do not question or re-derive it.
+\item[(b)] What is missing, and what P4\_note.tex explicitly flags as \emph{not confirmed to
+exist in citable form}, is a disc-analog of the Bank--Kaufman/Steinmetz growth theorem: a bound on
+$n(r,y)$ (or $T(r,y)$) valid for \emph{any} $y$ meromorphic on $|x|<1$ solving a fixed algebraic
+ODE $F(x,y,y',\ldots,y^{(k)})=0$ of order $k$ and degree $d$ with polynomial coefficients, as
+$r\to1^-$ -- the disc counterpart of what Bank--Kaufman/Steinmetz give as $r\to\infty$ on $\C$.
+\end{itemize}
+
+I do not retry Tao's summation, do not touch the retracted elliptic-pullback counterexample, and
+do not redo Erd\H os's three blocked alternative obstructions. My task is (b): attempt to build the
+missing disc growth theorem from first principles, then compare it against (a).
+
+\section{The classical engine, and where it needs re-proving for the disc}\label{sec:engine}
+
+The Bank--Kaufman/Steinmetz-type bound for $y$ meromorphic on $\C$ solving
+$F(x,y,y',\ldots,y^{(k)})=0$, $F$ a polynomial of degree $\le d$ in $(y,y',\ldots,y^{(k)})$ with
+polynomial coefficients of degree $\le p$ in $x$, is proved by (i) writing
+$F=0$ as an expression of $y^{(k)}$ (or the top-degree monomial in $y$) in terms of
+lower-order logarithmic derivatives $y'/y,\ldots,y^{(k)}/y^{(k-1)}$ and the coefficients, then
+(ii) applying Nevanlinna's lemma on the logarithmic derivative,
+$m(r,y^{(i)}/y^{(i-1)})=O(\log^+T(r,y))+O(\log r)$ for $r\to\infty$ outside an exceptional set $E$
+of finite \emph{linear} measure ($\int_E dr<\infty$), to bound $m(r,F\text{-monomials})$, and (iii)
+closing a recursive inequality of the shape
+\[
+T(r,y)\ \le\ C\big[T(r,\text{coeffs})+\log^+T(r,y)+\log r\big],\qquad r\notin E,
+\]
+which, since $\log^+T(r,y)=o(T(r,y))$ once $T(r,y)\to\infty$ (true, as $y$ is transcendental), gives
+$T(r,y)=O(T(r,\text{coeffs})+\log r)$, i.e., $T(r,y)$ grows at most like the coefficients' own
+characteristic (polynomial degree $p$: $T(r,\text{coeffs})\sim p\log r$).
+
+Everything in this chain is UNVERIFIED-CITATION as to exact constants and exact theorem
+statements (I recall the shape of Steinmetz's and Bank--Kaufman's papers, not their line-by-line
+proofs); what I attempt below is to \emph{re-derive}, not recall, the disc version, since
+\texttt{P4\_note.tex} already says the disc citation could not be pinned down.
+
+\subsection{What changes on the disc}
+
+Three things are different when $y$ is meromorphic only on $|x|<1$ with $|x|=1$ a natural
+boundary, and $x$ is confined to polynomial (hence bounded, holomorphic on $\overline D$)
+coefficients:
+
+\begin{enumerate}
+\item \textbf{The coefficient characteristic collapses to $O(1)$, not $O(\log r)$.} A polynomial
+$p(x)$ is bounded on $\overline D=\{|x|\le1\}$ (continuous on a compact set), so its disc
+Nevanlinna characteristic $T(r,p)=m(r,p)+N(r,p)$ satisfies $T(r,p)=O(1)$ as $r\to1^-$ ($N(r,p)=0$,
+no poles in the disc; $m(r,p)\le\log^+\max_{\overline D}|p|$). This is the single most important
+structural difference from the plane case, where $T(r,p)\sim p\log r\to\infty$. On the disc, the
+``coefficient growth'' term that ordinarily drives the Bank--Kaufman bound \emph{vanishes into a
+constant}. Any disc-analog bound for $y$ will therefore have to be driven entirely by the
+error/remainder term of the logarithmic-derivative lemma, not by coefficient growth -- so getting
+that error term right, with its dependence on $r\to1^-$, is now the whole ballgame, not a side
+term.
+
+\item \textbf{The exceptional set must be measured in $dr/(1-r)$, not $dr$.} On $\C$, ``outside a
+set of finite linear measure'' is compatible with $r\to\infty$ freely (such a set cannot contain
+an unbounded interval, but is otherwise thin). The disc analog of ``thin as $r\to1^-$'' is a set
+$E\subset[0,1)$ with $\int_E\frac{dr}{1-r}<\infty$ (finite \emph{logarithmic} measure at the
+boundary) -- this is the standard replacement (it is what keeps $-\log(1-r)$, the disc analog of
+$\log r$, meaningful as an exhaustion parameter). I use this convention below; it matches how
+disc-Nevanlinna theory (Tsuji's book, as cited in \texttt{P4\_note.tex}'s \texttt{rem:disc}) is
+normally set up, though I have not independently checked the exact constant conventions there this
+session (UNVERIFIED-CITATION for the precise normalization, though the qualitative substitution
+$\log r\leftrightarrow\log\frac1{1-r}$, $dr\leftrightarrow\frac{dr}{1-r}$ for disc theory is
+standard enough that I use it as a working derivation, not a citation).
+
+\item \textbf{$n(r,y)$ vs.\ $N(r,y)$ dictionary changes.} On $\C$, $N(r,y)=\int_0^r
+\frac{n(t,y)-n(0,y)}{t}\,dt+n(0,y)\log r$. The disc analog (again by the
+$\log r\leftrightarrow\log\frac1{1-r}$, i.e., $\frac{dt}t\leftrightarrow\frac{dt}{1-t}$
+substitution that keeps the boundary case parallel to Tsuji's disc theory) is
+\begin{equation}\label{eq:Nn-disc}
+N(r,y)\ \overset{?}{=}\ \int_0^r\frac{n(t,y)-n(0,y)}{1-t}\,dt+n(0,y)\log\frac1{1-r}.
+\end{equation}
+I flag \eqref{eq:Nn-disc} with a question mark: this is the substitution I would make by analogy,
+and it is the single most load-bearing definitional choice in what follows (see
+\S\ref{sec:crux}) -- I have not verified it against Tsuji's actual definition this session, and an
+alternative disc convention $N(r,y)=\int_0^r n(t,y)\,\frac{dt}t$ (keeping the plane measure but
+just restricting $t<r<1$) also appears in some treatments of disc value distribution and would
+change the conclusion below. UNVERIFIED-CITATION, and honestly the weakest link in this note.
+\end{enumerate}
+
+\section{Attempting a disc logarithmic-derivative lemma}\label{sec:logderiv}
+
+\begin{proposition}[disc log-derivative lemma, attempted from first principles]\label{prop:disclogderiv}
+Let $y$ be meromorphic and non-constant on $|x|<1$. Then for $0<r<R<1$,
+\[
+m(r,y'/y)\ \le\ C\Big[\log^+T(R,y)+\log^+\frac1{R-r}+\log^+\frac1r+1\Big]
+\]
+for an absolute constant $C$.
+\end{proposition}
+
+\emph{Attempted derivation.} The classical proof of the plane lemma (e.g.\ via the Poisson--Jensen
+formula, as in Hayman's \emph{Meromorphic Functions}, Ch.\ 3) starts from
+\[
+\log y(z)=\sum_{|a_\nu|<R}\log\Big|\frac{R(z-a_\nu)}{R^2-\bar a_\nu z}\Big|-\sum_{|b_\mu|<R}\log\Big|
+\frac{R(z-b_\mu)}{R^2-\bar b_\mu z}\Big|+\frac1{2\pi}\int_0^{2\pi}\log|y(Re^{i\theta})|\,
+\mathrm{Re}\frac{Re^{i\theta}+z}{Re^{i\theta}-z}\,d\theta
+\]
+(Poisson--Jensen on the disc $|x|<R$, with $a_\nu$ the zeros and $b_\mu$ the poles of $y$ there),
+differentiates in $z$, and bounds each resulting term -- a sum of Poisson-kernel-derivative terms
+over zeros/poles, plus one boundary integral -- using only: (i) the number of zeros/poles in
+$|x|\le R$ is $\le N(R,y)+N(R,1/y)=O(T(R,y))$ (first main theorem), and (ii) elementary geometric
+bounds on $|R^2-\bar a_\nu z|^{-1}$ and the Poisson kernel that depend only on the ratio
+$(R-r)/R$ (equivalently, on $R-r$ for fixed $r$), not on $R$ itself as $R\to\infty$.
+
+This is the key observation for the transplant: \emph{nothing in the classical proof of this
+formula actually uses $R\to\infty$}. The proof is a finite-$R$, two-radius ($r<R$) estimate; the
+role of $r\to\infty$ in the classical theorem is confined entirely to \emph{afterward}, in choosing
+$R=R(r)$ (e.g.\ $R=r+1/T(r,y)$ or $R=2r$) and using a calculus (Borel-type) lemma to control
+$\log^+\frac1{R-r}$ against $T(r,y)$ for most $r$. The Poisson--Jensen estimate itself, and the
+resulting inequality
+\[
+m(r,y'/y)\le C\Big[\log^+T(R,y)+\log^+\frac1{R-r}+\log^+\frac1r+\log^+R+1\Big]
+\]
+(I keep a $\log^+R$ term explicit, since on $\C$ it is absorbed as $O(\log r)$ but on the disc
+$R<1$ makes it $\le0$, hence droppable) holds verbatim for $0<r<R<1$ with the \emph{same} proof,
+because the Poisson--Jensen formula and the elementary kernel bounds are conformally local to the
+disc $|x|<R$ and never invoke unboundedness of $R$. This is the honest content of the
+``derivation'': I am not proving a new theorem, I am observing that the classical
+one's proof, read carefully, already \emph{is} a two-radius disc statement, and the ``plane'' vs.
+``disc'' character only enters at the very last step (how one is allowed to choose $R$ as a
+function of $r$, and what exceptional-set bookkeeping that choice forces). $\blacksquare$ (This
+last claim -- that the Poisson--Jensen proof is genuinely $R$-uniform -- is the one piece of real,
+if elementary, original reasoning here; the rest of \S\ref{sec:logderiv}-\S\ref{sec:bound} is
+bookkeeping built on it. I have not cross-checked this against Tsuji or Heittokangas's actual disc
+treatments this session, so treat Proposition~\ref{prop:disclogderiv} as HEURISTIC-but-argued, not
+PROVED, until checked against a primary source. There is a citable literature that should already
+contain exactly this statement -- I recall the name J.\ Heittokangas's 2000 dissertation
+\emph{On complex differential equations in the unit disc} and papers by Chuang, Chiang,
+Heittokangas, Korhonen, R\"atty\"a on ``complex differential equations in the unit disc'' as very
+likely sources -- but I flag these as UNVERIFIED-CITATION, not checked against the primary text
+this session.
+
+\section{Closing the recursion: a disc growth bound}\label{sec:bound}
+
+Fix the exhaustion choice $R=R(r):=1-\tfrac12(1-r)$ (the midpoint radius between $r$ and $1$), so
+$R-r=\tfrac12(1-r)$ and $1-R=\tfrac12(1-r)$; this is the natural disc substitute for the plane
+choice $R=2r$ (both double the ``distance to the boundary'' -- $1-r$ for the disc, $r$ itself for
+$\C$). Proposition~\ref{prop:disclogderiv} gives
+\[
+m(r,y'/y)\ \le\ C\Big[\log^+T\big(1-\tfrac12(1-r),y\big)+\log^+\frac2{1-r}+1\Big]
+\ =:\ S(r,y),
+\]
+with no exceptional set needed yet at this stage (the bound holds for \emph{every} $r$, since
+$R(r)$ was fixed as an explicit function of $r$, not chosen after the fact to dodge an
+exceptional set -- the exceptional set only re-enters if one wants $\log^+T(R,y)=o(T(r,y))$, i.e.\
+control of $T$ between the two comparable radii $r$ and $R(r)$, which needs the disc Borel-type
+lemma below).
+
+\begin{lemma}[disc Borel-type lemma, UNVERIFIED-CITATION for exact form, plausible by analogy]
+\label{lem:borel}
+If $T:[0,1)\to[0,\infty)$ is increasing and unbounded as $r\to1^-$, then for any $\varepsilon>0$,
+\[
+T\big(1-\tfrac12(1-r),y\big)\ \le\ \big(T(r,y)\big)^{1+\varepsilon}
+\]
+for $r$ outside a set $E_\varepsilon\subset[0,1)$ with $\int_{E_\varepsilon}\frac{dr}{1-r}<\infty$.
+\end{lemma}
+
+This is the direct disc transplant of the classical calculus lemma (Hayman, Lemma 1.4 in the plane
+case: $T(r+1/T(r))\le2T(r)$ outside a set of finite length; the disc form I write with a power
+$1+\varepsilon$ rather than a factor $2$ follows the standard trick of integrating $dT/T^{1+\varepsilon}$,
+which converges even when $T\to\infty$ arbitrarily fast -- this is the version that needs no a
+priori growth-rate assumption on $T$ and is the one actually used in Bank--Kaufman-type arguments).
+I have not re-derived Lemma~\ref{lem:borel} line by line for the disc metric $dr/(1-r)$ this
+session; I state it as the natural transplant and flag it UNVERIFIED-CITATION, though the
+transplant recipe ($t\to1$, $dt\to dt/(1-t)$ applied throughout a proof that is itself just calculus
+on the exhaustion function $T$) is mechanical enough that I would expect it to go through
+essentially verbatim.
+
+Combining: outside $E_\varepsilon$,
+\[
+m(r,y'/y)\ \le\ C\Big[(1+\varepsilon)\log^+T(r,y)+\log^+\frac2{1-r}+1\Big]\ =:\ S_\varepsilon(r,y),
+\]
+and $S_\varepsilon(r,y)=o\big(T(r,y)\big)$ as $r\to1^-$ outside $E_\varepsilon$, \emph{provided}
+$T(r,y)\to\infty$ faster than any fixed power of $\log\frac1{1-r}$ -- which holds a fortiori once we
+derive $T(r,y)=O(\log\frac1{1-r})$ below (self-consistently: if the conclusion holds, the hypothesis
+needed to get there is satisfied at the boundary case, i.e.\ the argument is tight but not
+circular, since we only need $S_\varepsilon=o(T)$ to run the reduction, and $T\gtrsim\log\frac1{1-r}$
+is exactly the boundary rate itself, consistent with equality in the final bound).
+
+\subsection{The ODE step}
+
+Write the algebraic ODE $F(x,y,y',\ldots,y^{(k)})=0$, coefficients polynomial in $x$ of degree
+$\le p$, $F$ of total degree $\le d$ in $(y,\ldots,y^{(k)})$, in the standard Wronskian-type
+normal form used by Steinmetz/Bank--Kaufman: isolate the extremal monomial (highest total degree,
+and among those, highest derivative order) and express it as a polynomial combination of
+$y,y'/y,\ldots,y^{(k)}/y^{(k-1)}$ and the (bounded, disc-$T=O(1)$) coefficients. Applying
+$m(r,\cdot)\le\sum m(r,\cdot)+O(1)$ (subadditivity) and Proposition~\ref{prop:disclogderiv} $k$
+times (once per logarithmic derivative $y^{(i)}/y^{(i-1)}$, each controlled by
+$S_\varepsilon(r,y^{(i-1)})$, and standard Nevanlinna calculus\footnote{$T(r,y^{(i)})\le(i+1)T(r,y)+S_\varepsilon(r,y)$ on the disc by the same transplant recipe applied to the classical derivative-growth lemma -- again UNVERIFIED-CITATION for the exact disc constant, plausible by the same mechanical substitution.} to pass between $T(r,y^{(i)})$ and
+$T(r,y)$) gives, after collecting the $d$-fold products of degree-$d$ monomials in bounded-order
+quantities,
+\[
+d\cdot T(r,y)\ \le\ T(r,y)+C_{k,d}\Big[\log^+\frac1{1-r}+\log^+T(r,y)\Big],\qquad r\notin E_\varepsilon,
+\]
+(the coefficient characteristics contribute only the $O(1)$ noted in \S\ref{sec:engine}(1), absorbed
+into $C_{k,d}$), i.e.
+\begin{equation}\label{eq:mainbound}
+(d-1)\,T(r,y)\ \le\ C_{k,d}\Big[\log^+\frac1{1-r}+\log^+T(r,y)\Big],\qquad r\notin E_\varepsilon.
+\end{equation}
+For $d\ge2$ (the generic case; $d=1$, i.e.\ a linear ODE, is already fully handled by
+\texttt{lem:odeposes} and not the case of interest here), \eqref{eq:mainbound} together with
+$\log^+T(r,y)=o(T(r,y))$ forces, outside $E_\varepsilon$,
+\begin{equation}\label{eq:finalbound}
+T(r,y)\ =\ O\Big(\log\frac1{1-r}\Big)\qquad(r\to1^-,\ r\notin E_\varepsilon).
+\end{equation}
+
+\begin{proposition}[attempted disc growth bound]\label{prop:discbound}
+If $y$ is meromorphic on $|x|<1$, transcendental over $\C(x)$, and satisfies a fixed algebraic ODE
+of order $k$ and total degree $d\ge2$ with polynomial coefficients, then
+$T(r,y)=O(\log\frac1{1-r})$ as $r\to1^-$ along a set of $r$ of full logarithmic density at the
+boundary (complement of finite $\int dr/(1-r)$-measure), \emph{modulo}
+Proposition~\ref{prop:disclogderiv} and Lemma~\ref{lem:borel}, both flagged HEURISTIC/
+UNVERIFIED-CITATION above, and modulo the derivative-growth transplant in the footnote.
+\end{proposition}
+
+Note the constant $C_{k,d}$ depends on $k,d$ (and the coefficient degree bound $p$, absorbed as an
+$O(1)$), but the \emph{rate} $\log\frac1{1-r}$ does not -- exactly the uniform-in-$(k,d)$ shape
+\texttt{P4\_note.tex}'s \S\ref{sec:gap}(c) asked for, if the derivation survives review: at fixed
+order the constant changes, but the growth order $\log\frac1{1-r}$ is the same for every $(k,d)$
+with $d\ge2$.
+
+\section{Comparison with ingredient (a), and the crux uncertainty}\label{sec:crux}
+
+Room 4 established $n(r,U)=O(1/(1-r))$ (linear pole count). To compare with
+Proposition~\ref{prop:discbound} we need the $N$-vs-$n$ dictionary \eqref{eq:Nn-disc}. Two
+candidate conventions, both defensible a priori:
+
+\begin{itemize}
+\item[(I)] \emph{Disc-native measure}, \eqref{eq:Nn-disc}: $N(r,y)=\int_0^r
+\frac{n(t,y)}{1-t}\,dt+O(1)$. Under (I), $n(t,U)=\Theta(1/(1-t))$ gives
+$N(r,U)=\Theta\big(\int_0^r(1-t)^{-2}\,dt\big)=\Theta\big(\tfrac1{1-r}\big)$ -- polynomial (in
+fact exactly linear) in $\frac1{1-r}$, which \textbf{strictly exceeds} the
+$O(\log\frac1{1-r})$ ceiling of Proposition~\ref{prop:discbound} (since $T\ge N-O(1)$ by
+definition/first main theorem). Under this convention, \textbf{ingredient (a) already
+contradicts Proposition~\ref{prop:discbound} for every $(k,d)$ with $d\ge2$}: no algebraic ODE of
+any order $k\ge1$ and degree $d\ge2$ with polynomial coefficients can have $U$ as a solution. (The
+$d=1$, i.e.\ linear, case is separately excluded already by \texttt{thm:nonDfinite}/
+\texttt{lem:odeposes}.) That would close P4 completely: \textbf{$U$ is not D-algebraic}, modulo
+the chain of HEURISTIC/UNVERIFIED-CITATION steps in \S\ref{sec:logderiv}--\S\ref{sec:bound}.
+\item[(II)] \emph{Plane-inherited measure restricted to $r<1$}: $N(r,y)=\int_0^rn(t,y)\,dt/t$
+(no $(1-t)$ weight). Under (II), $n(t,U)=\Theta(1/(1-t))$ gives $N(r,U)=\Theta\big(\int_0^r
+\frac{dt}{t(1-t)}\big)=\Theta(\log\frac1{1-r})$ -- the \emph{same order} as
+Proposition~\ref{prop:discbound}'s ceiling, a borderline case that decides nothing (the bound is
+consistent with, not violated by, a $(k,d)$-solution; the comparison is inconclusive, not
+contradictory).
+\end{itemize}
+
+I do not know, without checking Tsuji's book directly (not done this session -- this is exactly
+the citation-verification step \texttt{P4\_note.tex}'s \texttt{rem:disc} already flagged as
+undone), which of (I)/(II) -- or a third convention -- is the standard one, and the two give
+qualitatively different verdicts (full closure vs.\ inconclusive). This is the crux, and I am not
+going to paper over it: \textbf{the entire question of whether this line of attack closes P4
+reduces to a single definitional fact about disc Nevanlinna theory} (the correct relation between
+the counting function $N(r,f)$ and the raw pole count $n(r,f)$ for $f$ meromorphic on the disc with
+$|x|=1$ a natural boundary), which I have not looked up.
+
+I lean towards (I) being the standard convention for genuine disc value-distribution theory (as
+opposed to merely restricting the domain of the plane theory to $r<1$), because the point of a
+disc theory at all is to have a metric adapted to the boundary $|x|=1$ playing the role $\infty$
+plays in the plane theory, and $dt/(1-t)$ is the metric under which $\{|x|<1\}$'s boundary is
+``at infinite distance'' the way $\{|x|<R\}$, $R\to\infty$ needs no such adjustment -- this is
+also consistent with $N(r,p)=O(1)$ for polynomials matching $T(r,p)=O(1)$ derived directly in
+\S\ref{sec:engine}(1) (with convention (II), a polynomial's zero-count contribution would already
+be trivially $0$ either way since polynomials have no poles, so this check doesn't discriminate
+between (I)/(II) -- a genuine gap in my ability to self-check the convention from data already in
+this note). This is a plausibility argument, not a verification; UNVERIFIED-CITATION, flagged as
+the single highest-priority thing to check before citing any of \S\ref{sec:bound}--\S\ref{sec:crux}
+as a result.
+
+\section*{Verdict}
+
+\textbf{INCONCLUSIVE, but with a specific, checkable claim produced, not merely a restated gap.}
+
+Concretely: I built (Proposition~\ref{prop:disclogderiv}, Lemma~\ref{lem:borel},
+Proposition~\ref{prop:discbound}) an attempted disc-analog Bank--Kaufman-type bound
+$T(r,y)=O(\log\frac1{1-r})$ for any $y$ meromorphic on the disc solving a fixed algebraic ODE of
+order $k$, degree $d\ge2$, polynomial coefficients -- by observing that the classical
+Poisson--Jensen proof of the logarithmic-derivative lemma is a genuinely local, two-radius
+statement whose plane-vs-disc character is confined to the choice of exhaustion radius and the
+exceptional-set metric, both of which transplant by the mechanical substitution
+$r\to\infty\leftrightarrow r\to1^-$, $dr\leftrightarrow dr/(1-r)$. This is real, if unreviewed and
+partly HEURISTIC, derivation work, not a citation search: \S\ref{sec:logderiv}'s core observation
+(the Poisson--Jensen estimate itself needs no $R\to\infty$) is mine, checked by re-reading the
+structure of the classical proof, not recalled from a disc-theory source.
+
+\emph{Whether this closes even a partial case of P4 depends entirely on one unverified
+definitional fact} (\S\ref{sec:crux}, convention (I) vs.\ (II) for $N(r,f)$ on the disc): under
+convention (I), ingredient (a)'s already-established linear pole count for $U$
+\textbf{immediately violates} the bound for every $(k,d)$ with $d\ge2$, which combined with the
+already-proved linear ($d=1$) exclusion (\texttt{thm:nonDfinite}) would give full non-D-algebraicity
+of $U$; under convention (II) the comparison is borderline and inconclusive. I could not resolve
+this from first principles within this session's scope (it is a bookkeeping convention fixed by
+the source theory, not something to re-derive) and did not have library/primary-source access to
+check Tsuji, Heittokangas, or Chyzhykov--Gundersen--Heittokangas directly.
+
+\textbf{Next concrete step, if this room reconvenes}: check exactly one thing -- the definition of
+$N(r,f)$ in disc Nevanlinna theory (Tsuji 1959 Ch.\ III, or Heittokangas's 2000 dissertation \S1--2)
+against convention (I) vs.\ (II) above. That single check decides between ``P4 closed (U is not
+D-algebraic)'' and ``still open, same gap as before, but now with a candidate theorem
+(Prop.~\ref{prop:discbound}) worth stress-testing.'' Everything else built here
+(Prop.~\ref{prop:disclogderiv}, Lemma~\ref{lem:borel}, the ODE-step bound) should also be
+independently reviewed before being relied on -- none of it received adversarial review this
+session, and I built it in one pass.
+
+\end{document}
