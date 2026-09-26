@@ -1,0 +1,213 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{proposition}{Proposition}
+\title{P6 v2: a genuinely different attempt at $\beta_2$'s arithmetic nature}
+\author{}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Scope and relation to P6\_note.tex.} The prior note
+(\texttt{code/zeta\_probe/rootunity\_zeros/general/P6/P6\_note.tex}) documents that five
+independent rational-approximation constructions to the Hahn--Exton $q$-Bessel value
+$S(q^\ast)=0$ all land at the same decay/denominator-growth ratio $\rho=1/2$, one factor of two
+below the $\rho\ge1$ threshold needed by classical $q$-irrationality criteria
+(Tschakaloff/Bézivin--Bundschuh--Väänänen-type). This note does \emph{not} try a sixth
+reparametrization of that same Diophantine-approximation route. Instead it asks the two
+specific questions posed for this task: (i) is $q^\ast$ (rather than $\beta_2$) tractable via a
+\emph{different} transcendence framework entirely (periods, Nesterenko, Schneider--Lang,
+modular functions), bypassing $q$-irrationality exponents altogether; and (ii) does the bare
+numerical value $q^\ast\approx0.4495$ match any known special constant, which would reveal
+hidden structure. Labels PROVED / VERIFIED / HEURISTIC / UNVERIFIED-CITATION follow the same
+convention as the prior note.
+
+\section{Idea 1: is $q^\ast$ a period, a Nesterenko-type value, or a singular modulus?}
+
+\textbf{Setup.} $q^\ast\in(0,1)$ is defined as the least positive root of
+\[
+S(q) = 1+\sum_{k\ge1}(-1)^k q^{2k(k-1)}\frac{[2q(1-q)]^k}{\prod_{j=1}^k(1-q^{2j-1})(1-q^{2j})},
+\]
+identified (paper2a, \texttt{beta2\_qniven\_ladder.py}) with a Hahn--Exton $q$-Bessel function
+$J^{(3)}_{-1/2}(\cdot;q^2)$ up to reparametrization. Three concrete frameworks were considered
+for whether $q^\ast$ itself, as opposed to the pair $(S,q^\ast)$, could be attacked
+independently of a $\rho$-type exponent:
+
+\begin{itemize}
+\item \textbf{Nesterenko's theorem (1996).} Nesterenko's theorem gives algebraic independence
+of $\pi$, $E_2(\tau)$/$E_4(\tau)$/$E_6(\tau)$-type quasimodular values at an algebraic $\tau$ in
+the upper half plane, or equivalently of $q,\,\prod(1-q^n)$ combinations built from the
+classical Eisenstein series/modular discriminant. It is a theorem about the transcendence
+\emph{degree of a fixed triple of numbers built from $q$}, not a tool for showing a specific
+$q$ satisfying an equation is itself transcendental --- it needs $q=e^{2\pi i\tau}$ with $\tau$
+algebraic \emph{as an input}, and produces transcendence of \emph{values of Eisenstein series
+at that q}, not information about which $q\in(0,1)$ solves an unrelated equation $S(q)=0$.
+Applying it here would require going the other direction: showing $q^\ast=e^{2\pi i \tau^\ast}$
+for some algebraic $\tau^\ast$ (which would make $q^\ast$ itself \emph{algebraic}, since
+$e^{2\pi i\tau}$ for algebraic $\tau\ne0$ is transcendental by Gelfond--Schneider unless $\tau$
+is rational, and $q^\ast\in(0,1)$ real forces $\tau^\ast$ purely imaginary, i.e.\
+$q^\ast=e^{-2\pi t}$ for some real $t$). \textbf{HEURISTIC/diagnosis:} there is no evident reason
+$q^\ast$ should be of the special form $e^{-2\pi t}$ with $t$ algebraic or even a period; nothing
+in the defining series $S$ ties $q$ to an exponential-of-algebraic ansatz. Nesterenko's theorem
+is the wrong tool: it is a statement about \emph{fixed, given} algebraic $\tau$, and $q^\ast$ is
+not given as $e^{2\pi i\tau}$ for any distinguished $\tau$ --- it is defined as a zero of a
+transcendental (in $q$) function. This route does not apply without additional structure that is
+not present. \textbf{Conclusion: does not pan out, and I can state precisely why} (wrong
+direction of implication; Nesterenko needs $\tau$ as the algebraic input, not as an unknown to be
+solved for).
+
+\item \textbf{Periods (Kontsevich--Zagier sense).} A period is (informally) the value of an
+absolutely convergent integral of an algebraic function over a domain cut out by polynomial
+inequalities with algebraic (in practice rational) coefficients. $q^\ast$ is defined as a root
+of a power series equation, not as an integral. One can ask whether $S(q)=0$ can be rewritten as
+a period-theoretic statement, e.g.\ via a contour-integral representation of the Hahn--Exton
+$q$-Bessel function (such representations exist, e.g.\ Jackson-integral / $q$-Mellin--Barnes
+forms with $q$ itself appearing as a parameter inside the integrand, not as the endpoint or the
+object being solved for). \textbf{HEURISTIC/diagnosis:} even if $S(q)$ for \emph{fixed} $q$ were
+exhibited as (a $q$-analogue of) a period-like integral, that would classify \emph{values of
+$S$ at algebraic $q$} as periods, which is the opposite of what is needed here: we need
+$q^\ast$, the location of a zero, to be shown transcendental, and ``the zero-locus of a period
+function'' is not itself generally known to consist of periods or of any specific arithmetic
+class --- zero sets of period-valued functions are exactly as hard as, e.g., zero sets of
+$L$-functions (cf.\ the open-ness of transcendence of nontrivial zeros of $\zeta$-adjacent
+objects). \textbf{Conclusion: the periods framework reclassifies the wrong object} (values of
+$S$, not zeros of $S$); it does not bypass the original difficulty, it relocates it.
+
+\item \textbf{Singular moduli / CM points.} If $q^\ast=e^{-\pi\sqrt N}$ (a nome at a CM point)
+for some rational $N>0$, then $q^\ast$ would be transcendental by the Chudnovsky/Nesterenko-type
+results on periods of CM elliptic curves (in fact by Schneider's classical theorem on singular
+moduli, $j(\tau)$ algebraic $\Rightarrow$ strong constraints, and the associated nome
+$q=e^{2\pi i\tau}$ for $\tau=i\sqrt N$ is transcendental by Gelfond--Schneider, since $\tau$ is
+then a quadratic irrational hence algebraic and $\ne$ rational, so $q^\ast=e^{2\pi i\tau^\ast}$
+would be transcendental \emph{immediately}, with no $\rho$-exponent needed at all). This is
+the one genuinely promising bypass: if $q^\ast$ happened to equal $e^{-\pi\sqrt N}$ for a
+positive rational $N$, transcendence of $q^\ast$ (hence of $\beta_2=q^{\ast-1/2}$) would follow
+in one line from Gelfond--Schneider, with no Diophantine-approximation exponent problem at all.
+\textbf{This was checked numerically below (Idea 2) and found NOT to hold} to 60-digit
+precision for any small rational $N$ (nor did \texttt{mpmath.identify} find any relation of
+$\tau^\ast:=-\ln(q^\ast)/\pi$ to a short list of standard constants). So the bypass is
+structurally available in principle but numerically excluded for $q^\ast$ as it actually is.
+\end{itemize}
+
+\textbf{Net assessment of Idea 1:} none of the three frameworks apply to $q^\ast$ as defined.
+Nesterenko's theorem needs $\tau$ as an algebraic input, not as something to be solved for, so
+it is inapplicable in the direction needed. The periods framework reclassifies values of $S$,
+not its zero-locus, and does not touch the actual difficulty. The singular-modulus/CM bypass
+would work immediately \emph{if} $q^\ast$ were of that special exponential form, but the
+numerics (Idea 2) say it is not, at least not with small $N$. \textbf{This is a genuine new
+diagnosis} (not a reparametrization of the $\rho=1/2$ Diophantine-approximation route): the
+obstruction is not merely ``$\rho$ is too small,'' it is that \emph{no known transcendence
+machinery currently classifies numbers defined as zero-loci of $q$-Bessel-type functions in
+their own base variable at all} --- not $q$-irrationality criteria (which need $\rho\ge1$), not
+Nesterenko (needs $\tau$ given, not solved-for), not periods (classifies values, not zero
+loci), and not Schneider-type CM results (needs the zero to happen to be a nome at a CM point,
+which it numerically is not). This sharpens, rather than resolves, report\_G1.md's observation
+that ``there is no base-variable theory for $q$-series that are neither modular nor Mahler'': the
+present analysis identifies \emph{three specific named theories} that were checked and shown
+inapplicable for three different, precise reasons, rather than leaving ``no theory applies'' as
+an unexamined blanket statement.
+
+\section{Idea 2: numerical recognition check on $q^\ast\approx0.4495$}
+
+\textbf{VERIFIED (this session, mpmath, 60-digit working precision, using the pre-existing
+2090-digit-certified value of $q^\ast$ from \texttt{private/ROOM/Beta2/g1\_certificate/bracket.txt}
+truncated to 60 digits, not re-derived from the series in this session):}
+\[
+q^\ast = 0.449453630558948046125545825395706089225112808545993877680333\ldots,\qquad
+\beta_2 = 1/\sqrt{q^\ast}.
+\]
+Sanity check performed: $1/\sqrt{q^\ast}-\beta_2 \approx 4.2\times10^{-60}$ (consistent to
+full working precision).
+
+\texttt{mpmath.identify} was run against the basis
+$\{\pi,e,\sqrt2,\sqrt3,\sqrt5,\varphi,\log2,\log3,\gamma_{\mathrm{Euler}},\text{Catalan},\zeta(3)\}$
+for both $q^\ast$ and $\beta_2$: \textbf{no relation found} (returned \texttt{None}) at 60-digit
+precision for either constant.
+
+\textbf{CM/nome check.} Set $\tau^\ast := -\ln(q^\ast)/\pi = 0.254559606032920872423\ldots$. If
+$q^\ast=e^{-\pi\sqrt N}$ for rational $N$, then $\tau^{\ast2}=N$ would be rational; computed
+$\tau^{\ast2}=0.0648005930236358846276\ldots$, which is not close to any small rational
+$p/q$ with small $q$ (checked by continued-fraction expansion of $\tau^{\ast2}$; no small-denominator
+convergent matches to 15+ digits, i.e.\ $\tau^{\ast2}$ does not look rational). \texttt{mpmath.identify}
+on $\tau^\ast$ itself against the same constant basis: also \texttt{None}. As an additional sanity
+check on the CM-point method itself (not on $q^\ast$), the true lemniscatic case $\tau=1$ was
+computed via elliptic theta functions ($k(\tau)=(\theta_2/\theta_3)^2$ at nome $q=e^{-\pi}$),
+correctly reproducing $k^2=1/2$ (the known lemniscatic value) --- confirming the numerical method
+used is sound, and its negative finding for $q^\ast$ is not a tooling artifact.
+
+\textbf{Conclusion of Idea 2:} $q^\ast$ does not match, to 60-digit precision, any of: (a) a
+simple algebraic combination of $\{\pi,e,\sqrt2,\sqrt3,\sqrt5,\varphi,\log2,\log3,\gamma,G,\zeta(3)\}$
+via \texttt{identify}'s search (bounded-degree/bounded-height rational combinations); (b) a nome
+$e^{-\pi\sqrt N}$ at a small rational $N$ (the CM/singular-modulus bypass of Idea 1). Both checks
+are negative, i.e.\ they rule out the two most obvious ``hidden structure'' hypotheses rather than
+finding one. This is a real (if negative) result: it closes off the CM bypass identified in Idea
+1 as numerically unavailable for $q^\ast$ as defined, so that particular one-line
+Gelfond--Schneider argument cannot be used.
+
+\section{Idea 3 (briefly considered, not pursued): Schneider--Lang}
+
+Schneider--Lang requires two algebraically independent meromorphic functions of order $\le\rho$
+satisfying a system such that some derivative/composition data is algebraic at sufficiently many
+points, and concludes transcendence of a point where extra algebraic relations would otherwise
+be forced. $S(q)$ is a single function of one base variable; no natural second, algebraically
+independent function of finite order sharing algebraic-valued data with $S$ at a growing set of
+points was found or constructed in this session. \textbf{HEURISTIC, brief:} Schneider--Lang's
+machinery is built for exponential/elliptic-function pairs (e.g.\ $e^z,\wp(z)$) where algebraic
+independence and finite order are both easy to certify; $S$'s $q$-series structure (order
+considerations for a $q$-Bessel-type function as $q\to1^-$ vs.\ its behavior as a formal/base
+variable) does not obviously fit this template, and constructing a genuine second function would
+itself likely be as hard as the original problem. Not pursued further; flagged here only so the
+route is documented as considered-and-set-aside rather than silently skipped.
+
+\section{Summary verdict}
+
+\begin{proposition}[status, mixed labels, this note]
+\begin{enumerate}
+\item[(a)] \textbf{HEURISTIC/diagnosis (new this session):} Nesterenko's theorem, the
+Kontsevich--Zagier periods framework, and Schneider--Lang do not apply to $q^\ast$ as defined,
+each for a distinct, statable reason (wrong direction of the algebraic-input hypothesis;
+classifies values not zero-loci; no natural second function of matching order found).
+\item[(b)] \textbf{VERIFIED (this session):} the one bypass that would work immediately if it
+held --- $q^\ast$ being a CM nome $e^{-\pi\sqrt N}$, $N\in\mathbb Q_{>0}$ --- is numerically
+excluded to 60-digit precision for small $N$; the numerical method was cross-validated on the
+true lemniscatic case ($N=1$).
+\item[(c)] \textbf{VERIFIED (this session):} no relation of $q^\ast$, $\beta_2$, or
+$\tau^\ast=-\ln(q^\ast)/\pi$ to a standard basis of constants was found by \texttt{mpmath.identify}.
+\item[(d)] \textbf{OPEN, and now more precisely scoped:} the obstruction to P6 is not solely the
+$\rho=1/2$ deficit of \texttt{P6\_note.tex} --- it is the absence of \emph{any} applicable named
+transcendence framework (four were checked here: Nesterenko, periods, singular moduli/CM,
+Schneider--Lang; five Diophantine-approximation reparametrizations were checked in the prior
+note) for numbers defined as zero-loci, in the base variable, of $q$-Bessel-type $q$-series. This
+restates report\_G1.md's ``no base-variable theory'' diagnosis with four specific named
+candidate theories now explicitly examined and excluded, rather than left as an unexamined gap.
+\end{enumerate}
+\end{proposition}
+
+\textbf{Honest bottom line:} no proof was found in this session, and none of the ``genuinely
+different'' frameworks solicited by the task (periods, Nesterenko, Schneider--Lang, CM/singular
+moduli via numerical recognition) pan out for $q^\ast$/$\beta_2$ as they are actually defined.
+The value of this note is diagnostic, not constructive: it (i) rules out the CM/nome bypass
+numerically, closing off the one framework that would have given an immediate one-line proof
+had it applied, and (ii) gives a precise, checkable reason each of the other three named
+frameworks fails to apply, sharpening ``no base-variable theory exists'' from a general
+observation into four specific closed doors.
+
+\section{Weak points of this note}
+
+\begin{itemize}
+\item The CM/nome check (\S2) was only run against small rational $N$ and a short constant
+basis for \texttt{identify}; it does not rule out $q^\ast$ being $e^{-\pi\sqrt N}$ for some
+large or non-obvious rational $N$, nor a more exotic CM-type transcendental combination outside
+the basis tried.
+\item The claim that Nesterenko's theorem is inapplicable (\S1) rests on the standard statement
+of the theorem as recalled from training and is flagged \textbf{UNVERIFIED-CITATION}: the exact
+hypotheses of Nesterenko 1996 were not re-checked against a primary source in this session.
+\item The Schneider--Lang discussion (\S3) is a brief plausibility argument, not an exhaustive
+search for a suitable second function; a more determined search (e.g.\ trying the second
+Hahn--Exton solution, or a Wronskian partner) was not attempted here for time/compute reasons.
+\item As in the prior note, this is a diagnosis of why known machinery does not apply, not a
+proof that no machinery ever could; ``genuinely new arithmetic input'' (per \S5 of the prior
+note) is still what is required, and this note does not supply it.
+\end{itemize}
+
+\end{document}

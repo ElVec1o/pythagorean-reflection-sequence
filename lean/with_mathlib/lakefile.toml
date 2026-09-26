@@ -42,7 +42,8 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "SparsityQuant",
   "ModelM",
   "BoundedDrift",
-  "P3Separation"]
+  "P3Separation",
+  "Beta2DegreeExclusion"]
 
 [[require]]
 name = "mathlib"
@@ -455,3 +456,6 @@ name = "P3NoQRelation"
 
 [[lean_lib]]
 name = "P1eArcDensity"
+
+[[lean_lib]]
+name = "Beta2DegreeExclusion"
