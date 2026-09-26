@@ -1,0 +1,127 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\e}{\mathrm{e}}
+\title{P2\_v2: does the Theorem-M hazard induction transfer to the block-model amplitudes $A_\pm$?\\
+\small research programme P2, second atom, 2026-09-26. Not reviewed. Result: NO (with evidence), item (C) of P2 stays OPEN.}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Task.} P2\_note.tex (Section~\ref{sec:model} there) leaves OPEN the non-vanishing of the two block-model amplitudes
+$A_\pm=\frac12(H_e\pm H_o)$ for a dense set of odd $N$, which is the one thing that would close item (C) (accumulation of zeros
+of $B$ at every point of the small arc $\ell\le0$, via Rouch\'e). The brief asked whether the hazard induction of P1e\_lemma.tex
+(Theorem M, $Z_N\ne0$ on $a/N\in[\frac15,\frac45]$) adapts, since $A_\pm$ are ``the same kind of object'' as $Z_N$: finite sums with
+near-cancellation. This note checks that structurally and numerically. Labels as in P2\_note.tex/P1e\_lemma.tex; PROVED, VERIFIED
+(numerics), HEURISTIC, OPEN.
+
+\section{The exact formulas (extracted from P2\_note.tex \S\ref{sec:model})}
+For $N$ odd, $\zeta=\e(a/N)$, $c=-2(1-\zeta)$, $s=c^{N/2}$ (either branch):
+\[H_e=\sum_{\rho=0}^{(N-1)/2}\frac{c^\rho\zeta^{\rho^2}}{(\zeta;\zeta)_{2\rho}},\qquad
+H_o=\frac1s\sum_{\kappa=(N+1)/2}^{N-1}\frac{c^\kappa\zeta^{\kappa^2}}{(\zeta;\zeta)_{2\kappa-N}},\qquad
+A_\pm=\tfrac12(H_e\pm H_o),\]
+where $(\zeta;\zeta)_m=\prod_{j=1}^m(1-\zeta^j)$. These are \emph{finite} sums, $O(N)$ terms each, evaluated exactly (no truncation,
+no analytic continuation) by \texttt{P2\_heads.py}/\texttt{P2v2\_scan.py}.
+
+\section{Does $Z_N$'s structural fact hold for $A_\pm$? NO}
+The hazard induction of Theorem M rests on one structural fact, stated at the top of P1e (Lemma R): $Z_N$ is the $N\to\infty$,
+$a/N\to p/q$ ($q$ fixed) limit of an object built from an analytic expansion in a separate small parameter, and the limit is
+literally $(1-w_q)^{-1/2q}Z_q(p/q)$ up to an error that $\to0$. That renormalisation is what lets the induction climb: $Z_N$
+near a rational $p/q$ is controlled by the already-known $Z_q$ at the smaller level $q$, with the gap made up by the size of
+the denominator (the ``hazard'' bookkeeping of Lemma H, purely a Diophantine-approximation argument on $\|mx\|$ for the
+frequency index $m$ of an infinite convergent series).
+
+$A_\pm$ have no such expansion parameter: $H_e,H_o$ are closed finite sums over a \emph{block index} $\rho$, not a Fourier/frequency
+index $m$ of a convergent series in $q$-adic $u_0$. There is no small parameter to expand in and no obvious sense in which
+$A_\pm(a/N)$ for large $N$ should be ``close to'' a smaller-level object $A_\pm(p/q)$ or $Z_q(p/q)$. I checked this directly:
+does $A_\pm(a/N)$ converge as $a/N\to p/q$ (here $p/q=\frac1{13}$) along good rational approximants $a/N$, $N\to\infty$?
+
+\begin{center}\small
+\begin{tabular}{lllll}\toprule
+$a/N$ & $N$ & $|A_+|$ & $|A_-|$ \\\midrule
+$1/13=0.076923$ & 13 & 1.460 & 1.458\\
+$2/27=0.074074$ & 27 & 2.134 & 0.560\\
+$4/53=0.075472$ & 53 & 2.261 & 0.967\\
+$6/79=0.075949$ & 79 & 1.379 & 2.278\\
+$10/131=0.076336$ & 131 & 2.576 & 2.443\\
+$20/261=0.076628$ & 261 & 5.490 & 5.875\\
+$40/521=0.076775$ & 521 & 30.36 & 30.43\\
+$80/1041=0.076849$ & 1041 & 874.6 & 874.6\\\bottomrule
+\end{tabular}\end{center}
+
+(\texttt{P2v2\_renorm.py}, mpmath 40 digits.) \textbf{$A_+,A_-$ do not converge; they grow, roughly like $\e^{cN}$, as $a/N\to1/13$
+with $N\to\infty$.} This is the opposite of what Lemma~R gives for $Z_N$ (a finite limit). So the one fact that makes the hazard
+induction work --- a renormalisation onto a fixed lower-level object --- fails outright for $A_\pm$: there is nothing to induct
+\emph{down to}. VERIFIED (this table; also consistent with P2\_note.tex's own table where $|A_\pm|$ at $\frac1{16},\frac1{20},\frac1{24}$
+already grows with $N$ at fixed $a$: $2.31,2.85,3.43$).
+
+\section{Why: the sum is spread, not edge-dominated}
+The hazard bookkeeping of Lemma H needs the sum to be dominated by rare ``bad'' terms (those $m$ with $\|mx\|$ small, i.e.\ close
+to a low-height rational), with the rest of the terms geometrically small and summable --- that is what lets a single nearby seed
+$j/n$ carry the whole estimate. I checked whether $H_e$'s terms have this shape: is $|c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}|$
+dominated by one or two $\rho$ (e.g.\ $\rho$ near $N/2$, where $2\rho\to N-1$ and $(\zeta;\zeta)_{2\rho}$ picks up a factor
+$1-\zeta^{N-1}=1-\zeta^{-1}$ close to $0$ exactly because $a/N$ is small)?
+
+At $a=10,N=131$ ($a/N\approx\frac1{13}$; \texttt{P2v2\_terms.py}), the ten largest terms of $H_e$ by magnitude occur at
+$\rho=7,1,8,14,0,2,15,9,20,21$, with magnitudes $2.30,2.17,1.93,1.56,1.0,0.95,0.75,0.62,0.57,0.56$ --- spread over $\rho\in[0,21]$
+(out of $65$ terms total), no single term or short run of terms dominating. This is the signature of a genuine
+oscillatory/Weyl-sum cancellation (comparable to a finite Gauss sum), not of a Diophantine-tail phenomenon. The hazard machinery
+has nothing to grab onto here: there is no analogue of ``the deepest hazard'' because closeness of $a/N$ to a rational does not
+concentrate the sum on a few terms the way it concentrates $Z_N$'s frequency-$m$ tail.
+
+\section{Verdict}
+\textbf{The hazard induction technique does not transfer to $A_\pm$.} Two independent reasons, both checked:
+\begin{enumerate}
+\item[(i)] No renormalisation limit exists to induct on (Section~2): $A_\pm(a/N)$ diverges, rather than converging to a
+fixed lower-level object, as $a/N\to p/q$, $N\to\infty$. Theorem M's whole architecture (base case at small $N$ + step relating
+level $N$ to a smaller level $q$ via a nearby seed) has no target for the step.
+\item[(ii)] The near-cancellation in $H_e,H_o$ is spread over $O(N)$ terms of comparable size (Section~3), not concentrated by
+Diophantine proximity to low-height rationals the way $Z_N$'s frequency sum is. So even a hazard-\emph{style} argument built from
+scratch (not literally reusing P1e's lemmas) would need a different mechanism: this looks like a Gauss-sum / theta-function
+non-vanishing problem (want: no odd-$N$ character sum of this shape vanishes, for a dense set of $N$), which is a different
+literature and a different set of tools (stationary phase / Weil-type bounds on incomplete Gauss sums, or exact evaluation via
+the finite theta transformation) than continued-fraction hazard bookkeeping.
+\item[(iii)] A further disanalogy, noted but not separately checked in depth: Theorem M's regime is $a/N\in[\frac15,\frac45]$
+($\ell\ge0.855$, $\zeta$ ``generic'', far from $1$), and P1e's own Remark (golden threshold) says the method provably cannot reach
+$\ell<0.48$ without removing the loss factor $\Lambda$ (an OPEN structured-moment induction). P2's window is $a/N\in(0,0.0804)$
+($\ell\le0$), i.e.\ $\zeta$ close to $1$ -- the opposite, and more degenerate, end of the same parameter range. So even where the
+sum-structure objection of (ii) did not apply, the parameter range needed for $A_\pm$ is exactly the range P1e already
+flags as needing new machinery, not an adaptation of what exists.
+\end{enumerate}
+No zero of $A_+A_-$ was found in a scan of $371$ reduced $a/N\in(0,0.0804)$, $3\le N\le151$ odd (\texttt{P2v2\_scan.py}): the
+minimum $|A_+A_-|$ found was $0.1248$ at $a/N=6/115$, well away from $0$. This is VERIFIED numerics only, consistent with
+non-vanishing on this finite range, and gives no route to a dense-$N$ statement.
+
+\paragraph{What would actually be needed.} Per Section~4(ii), the natural next attempt is not a transplant of Theorem M but a
+direct estimate on the finite sum $H_e$ (or $H_o$) as an incomplete quadratic Gauss sum with a slowly-varying $\rho$-dependent
+denominator weight $1/(\zeta;\zeta)_{2\rho}$: either (a) a stationary-phase/saddle treatment of the sum over $\rho$ (which the
+main P2 note already does for the \emph{outer} sum over $n$/$k$ in $B$ itself, suggesting the same $q$-Pochhammer-times-quadratic-phase
+technology might repackage $H_e,H_o$ as a genuine (not block-model) saddle-point quantity, side-stepping non-vanishing of a
+literal finite sum in favour of non-vanishing of a leading saddle contribution), or (b) treating $A_\pm$ for a fixed small
+family of $N$ (e.g.\ $N$ in one residue class) as an exponential sum amenable to Weil/Weyl bounds. Neither is attempted here;
+both are OPEN and look like separate research atoms, not a corollary of Theorem M.
+
+\section*{Weakest points of this note}
+\begin{itemize}
+\item The renormalisation-limit check (Section~2) used a single seed $p/q=\frac1{13}$ and one approximating sequence
+($a=\mathrm{round}(N/13)$). Divergence there is strong evidence but not a proof that no renormalisation limit exists for
+\emph{any} sequence or \emph{any} seed; a cleverer choice of approximants (e.g.\ genuine continued-fraction convergents, or
+comparing $A_\pm(a/N)$ against $A_\pm$ at level $q$ itself rather than against $Z_q$) was not tried.
+\item The term-spread check (Section~3) is a single case ($a/N\approx\frac1{13}$, $N=131$). It was not repeated across the
+window or for $H_o$.
+\item The scan for zeros of $A_+A_-$ (Section~5) only reaches $N\le151$; P2\_note.tex's own certified zeros go to $N=17$ and its
+numerics to $N=25$, so this is a modest extension in $N$ but no closer to a density statement.
+\item No attempt was made at the alternative route (Section~5, ``what would actually be needed''); this note only establishes
+that the \emph{specific} technique named in the brief does not transfer, not that non-vanishing is intractable.
+\item The disanalogy (iii) (parameter-range mismatch with P1e's golden threshold) was noted from reading P1e\_lemma.tex, not
+independently re-derived; it is offered as a plausibility check on why (i)-(ii) are not a numerical accident.
+\end{itemize}
+
+\paragraph{Files.} \texttt{P2v2\_scan.py} (\S5, the $371$-case scan and the $|A_+A_-|$ extremes), \texttt{P2v2\_renorm.py}
+(\S2, the renormalisation-limit table), \texttt{P2v2\_terms.py} (\S3, the term-magnitude profile at $a=10,N=131$). All runs
+mpmath (Python), $30$--$40$ decimal digits, each well under a second, run under \texttt{perl -e 'alarm 290; exec @ARGV'}.
+No BFS/enumeration; memory footprint negligible (a handful of $131\times131$-scale complex arrays at $40$ digits).
+
+\end{document}
