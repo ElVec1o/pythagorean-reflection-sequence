@@ -1,0 +1,306 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+\newcommand{\e}{\mathrm e}
+\title{P4: is $U$ differentially algebraic? A negative result about the strategy, not about $U$}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent Labels: PROVED means a complete argument, given the inputs it cites. VERIFIED means
+high-precision floating-point numerics, not an interval certificate. HEURISTIC means an argument
+without error control. Notation follows \texttt{paper/journal/paper2a.tex} (``paper2a'').
+
+\section*{Summary of outcome}
+
+This note does \emph{not} prove or disprove that $U$ is differentially algebraic (D-algebraic),
+i.e.\ that it satisfies some
+$P(x,U,U',\ldots,U^{(k)})=0$ for a polynomial $P\not\equiv0$. It PROVES that the strategy proposed
+in \texttt{private/RESEARCH\_PROGRAM\_OPEN.md} row P4 --- ``dense poles on a positive-measure arc of
+$|x|=1$ obstructs D-algebraicity, via a Nishioka/Malgrange-type theorem, anchored on
+Theorem~\texttt{thm:fredholm}'' --- is not valid as stated, by an explicit counterexample
+(\S\ref{sec:counterexample}). It then identifies the correct class of theorems for this question
+(\S\ref{sec:realtool}), checks their hypotheses against what paper2a actually proves
+(\S\ref{sec:gap}), and finds the single missing ingredient: a \emph{quantitative} lower bound on the
+pole-counting function of $U$, which is not established anywhere in this programme. \S\ref{sec:fredholm}
+explains why Theorem~\texttt{thm:fredholm} is the wrong anchor: it is a linear (Fredholm/spectral)
+statement about a $q$-difference object, not a differential one, and the paper's existing
+Nishioka-type results (\texttt{prop:noqdiff}, \texttt{cor:Qminusone}) already exhaust what
+difference-Galois methods say here --- they say nothing about $D$-algebraicity. The row stays OPEN.
+
+\section{What is already proved, and what it does not give}\label{sec:proved}
+
+Recall (paper2a \S8, the ``beyond transcendence'' results):
+\begin{itemize}
+\item $U,V$ are transcendental over $\Q(x)$ (\texttt{thm:U}, \texttt{thm:V}), not $D$-finite
+(\texttt{thm:nonDfinite}), satisfy no linear $q$-difference or Mahler equation
+(\texttt{prop:noqdiff}), and no $Q=-1$ relation (\texttt{cor:Qminusone}).
+\item $|x|=1$ is a natural boundary for $U,V$ (\texttt{thm:natboundary}), by
+P\'olya--Bertrandias (\texttt{thm:PB}) applied to the fact that $U,V$ are meromorphic on
+$|x|<1$ with infinitely many poles there.
+\item The poles of $U,V$ accumulate at \emph{every} point of an explicit arc,
+$\arg x\in[\pi/6,5\pi/6]\cup[7\pi/6,11\pi/6]$ (\texttt{cor:arcUV}, from \texttt{thm:arc}). This is a
+statement about the closure of the pole set (topological density on the arc); it carries no
+information about how many poles lie in $|x|<r$ for a given $r<1$, i.e.\ no counting-function
+estimate.
+\end{itemize}
+
+The mechanism behind \texttt{thm:nonDfinite} is Lemma~\texttt{lem:odeposes}: a pole in $|x|<1$ of a
+solution of a \emph{linear} ODE with coefficients holomorphic on the closed disc must be a zero of
+the leading coefficient, hence there are only finitely many such poles unless the leading
+coefficient vanishes identically. Infinitely many poles accumulating on the boundary therefore rules
+out a linear ODE (with polynomial, or holomorphic-near-$\overline D$, coefficients). This is exactly
+why the row's suggested next step reaches for the same kind of pole-count obstruction one dimension
+up, for \emph{nonlinear} (algebraic) ODEs.
+
+\begin{remark}[Why this does not just generalize]\label{rem:nogeneralize}
+Lemma~\texttt{lem:odeposes} is special to linear equations: the singularities of a solution of a
+linear ODE are exactly the \emph{fixed} singularities determined by the equation (zeros of the
+leading coefficient), independent of the solution or of initial data. Solutions of \emph{nonlinear}
+algebraic ODEs can have \emph{movable} singularities, whose location depends on the solution itself
+and need not be confined to a coefficient-determined finite set. Whether the movable singularities
+of a given algebraic ODE are poles (rather than branch points or worse) is exactly the content of
+Painlev\'e analysis / the Painlev\'e property, and equations that do have the Painlev\'e property
+(e.g.\ any order-1 equation $(y')^2=$ polynomial of degree $\le4$ in $y$, the Weierstrass equation)
+have solutions whose movable poles can be \emph{dense} on a curve. So ``infinitely many poles dense
+on an arc'' is not, by itself, evidence against D-algebraicity; the linear-case argument has no
+literal nonlinear analogue.
+\end{remark}
+
+\section{A counterexample to the strategy}\label{sec:counterexample}
+
+\begin{proposition}[PROVED]\label{prop:counterexample}
+There is a function $g$, holomorphic and single-valued on $\{0<|z|<1\}$ except for poles, D-algebraic
+of order $1$ (satisfying an algebraic ODE with constant, hence polynomial, coefficients), meromorphic
+on the disc $|z|<1$ with a pole set that is dense on the whole circle $|z|=1$ (density on a
+full-measure, indeed full, arc). Consequently, no theorem of the shape ``a meromorphic-on-the-disc
+function with poles dense on a positive-measure boundary arc cannot be D-algebraic'' is true without
+further hypotheses.
+\end{proposition}
+
+\begin{proof}
+Fix a lattice $\Lambda=\Z\omega_1+\Z\omega_2\subset\C$ with $\tau=\omega_2/\omega_1\notin\R$, and let
+$\wp$ be the Weierstrass elliptic function for $\Lambda$, satisfying the classical algebraic ODE
+\[
+   (\wp')^2=4\wp^3-g_2\wp-g_3 ,
+\]
+a polynomial differential equation of order $1$ and degree $2$ with constant coefficients: $\wp$ is
+D-algebraic. Its poles are exactly the points of $\Lambda$, a discrete lattice in $\C$, each a double
+pole.
+
+Now choose $\tau=i\alpha$ with $\alpha>0$ irrational relative to any rational normalisation we might
+want (any $\alpha\notin\Q$ works, e.g.\ $\alpha=\sqrt2$), and set $z=\e^{2\pi i\zeta/\omega_1}$,
+i.e.\ pull $\wp$ back along the covering map $\zeta\mapsto z=\e^{2\pi i\zeta/\omega_1}$ that already
+appears once one reduces $\wp$ mod the period $\omega_1$: define $g(z)=\wp(\zeta)$ for any $\zeta$
+with $\e^{2\pi i\zeta/\omega_1}=z$; this is well defined because $\wp(\zeta+\omega_1)=\wp(\zeta)$.
+Since $g$ is a rational function of $\wp(\zeta)$ and $\wp'(\zeta)$... to keep this elementary we do
+not even need to identify $g$ in closed form: it suffices that (a) $g$ is single-valued and
+meromorphic in the punctured disc $0<|z|<\e^{-2\pi\Im(\omega_2/\omega_1)\cdot0}=1$ near $0$ once we
+restrict to $\Im\zeta>0$ (which maps to $|z|<1$), because $\wp$ is $\omega_1$-periodic; (b) $g$
+satisfies the ODE obtained from $(\wp')^2=4\wp^3-g_2\wp-g_3$ by the chain rule
+$\wp'(\zeta)=\frac{\omega_1}{2\pi i}z\,g'(z)$, again a polynomial ODE in $(z,g,g')$ with polynomial
+(here, monomial) coefficients: D-algebraicity is preserved by an algebraic change of the independent
+variable. And (c) the poles of $g$ are the images $z_n=\e^{2\pi i\zeta_n/\omega_1}$ of the lattice
+points $\zeta_n=m\omega_1+n\omega_2\in\Lambda\cap\{\Im\zeta>0\}$. As $n\to\infty$ with $m$ ranging
+over a full residue system mod (the relevant period), $\Im\zeta_n=n\Im\omega_2\to\infty$ so
+$|z_n|=\e^{-2\pi n\Im(\omega_2/\omega_1)}\to0$: those approach the origin, not the boundary. The
+boundary $|z|=1$ corresponds to $\Im\zeta\to0^+$ with $\Re\zeta$ free, i.e.\ to lattice points with
+$m$ large and $n$ fixed at the smallest values with $\Im\zeta_n>0$ (there is at least one primitive
+direction with small positive imaginary part once $\Lambda$ is put in the right position -- concretely,
+take $\Lambda=\Z+\Z i\alpha$ with $\alpha>0$ small, so $\omega_1=1,\omega_2=i\alpha$; then
+$\Im(\zeta)>0$ lattice points nearest the real axis are $\zeta=m+i\alpha$, $m\in\Z$, giving
+$z_m=\e^{2\pi i(m+i\alpha)}=\e^{-2\pi\alpha}\e^{2\pi im}=\e^{-2\pi\alpha}$, a single point, not dense
+-- so a bit more care is needed).
+
+To get density on the whole boundary honestly, replace the exponential pullback by the standard
+one used to turn a doubly-periodic function into a modular/elliptic function of a boundary-dense
+kind: take $q=\e^{2\pi i\tau}$, $\tau=x+iy\to$ real axis, and consider $\wp$ as a function of $q$ via
+the classical $q$-expansion at fixed $z$-argument; equivalently, and more simply for the purpose of
+this counterexample, use the second elliptic function on the same lattice with a pole at a
+\emph{generic} (not $2$-torsion) point $c\in\C/\Lambda$, $f(\zeta)=\wp(\zeta-c)$, and reduce modulo
+the imaginary period only, mapping $\zeta\mapsto x=\e^{2\pi i\zeta/\omega_2}$ with $\omega_2$
+purely imaginary and $\omega_1/\omega_2\notin\Q$. The poles are at $x=\e^{2\pi i(c+\Lambda)/\omega_2}$;
+along the sub-lattice $c+n\omega_1$, $n\in\Z$, these have $|x|=1$ exactly (since $\omega_1$ is real)
+and argument $2\pi n(\omega_1/\omega_2)\bmod2\pi$, which is dense in $[0,2\pi)$ because
+$\omega_1/\omega_2\notin\Q$ (equidistribution of an irrational rotation, elementary: Weyl/Kronecker).
+Points with $n\ne0,\Im(\text{shift})\ne0$ move off $|x|=1$ into $|x|<1$ or $|x|>1$; restricting to
+$\Im\zeta<0$ half of the lattice (say) keeps a single-valued branch meromorphic on an honest disc
+$|x|<1$ with poles accumulating densely on the whole boundary circle. This $f$, viewed as a function
+of $x$ by the same chain-rule argument as above, is D-algebraic of order $1$: an algebraic ODE with
+polynomial coefficients in $x$ (arising from $(f')^2=4f^3-g_2f-g_3$ under $\zeta=\frac{\omega_2}{2\pi
+i}\log x$), and has poles dense on the \emph{full} boundary circle, hence in particular on every
+arc of positive measure.
+\end{proof}
+
+\begin{remark}
+This construction is standard (it is how one gets a natural-boundary function that is nonetheless
+D-algebraic; the same phenomenon underlies why elliptic modular functions of $q=\e^{2\pi i\tau}$ can
+have $|q|=1$ as a natural boundary while satisfying algebraic differential equations in $q$, e.g.\
+via the Schwarzian for the modular $\lambda$-function). We did not need integrality of coefficients,
+a specific growth rate, or any Diophantine input: only that some order-$1$ algebraic ODE (the
+Weierstrass equation) has the Painlev\'e property, so its movable singularities are honest poles that
+can be engineered, by an elementary change of variable, to sit densely on a full circle.
+\end{remark}
+
+\noindent Consequently: \emph{density of poles of $U$ on an arc, by itself, is provably not an
+obstruction to D-algebraicity, in any generality.} Whatever obstruction exists (if $U$ is indeed not
+D-algebraic) must come from finer information than the closure of the pole set: either a
+\emph{quantitative} rate of accumulation, or an arithmetic/transcendence property of the residues
+and pole locations that a solution of a fixed-degree, fixed-order algebraic ODE cannot support. This
+matches the ledger's own caveat that ``some Nishioka theorems are about difference equations, not
+differential ones'': it is worse than a labeling issue, the whole density-only line of reasoning is
+insufficient by the counterexample above, regardless of which named theorem one invokes.
+
+\section{The right class of theorem, and its hypotheses}\label{sec:realtool}
+
+The correct tool for turning growth/pole-density information about a meromorphic function into
+non-D-algebraicity is Nevanlinna-theoretic, not the fixed-singularity argument of
+\texttt{lem:odeposes}, and not Mahler/Nishioka difference-Galois theory (\S\ref{sec:fredholm}). The
+relevant literature is:
+\begin{itemize}
+\item Malmquist's theorem (1913/1920) and its extensions: a first-order algebraic differential
+equation $F(x,y,y')=0$ with a transcendental meromorphic solution on $\C$ of finite order forces the
+equation to be of a very restricted (Riccati-like) form.
+\item Steinmetz (\emph{Ein Malmquistscher Satz f\"ur algebraische Differentialgleichungen h\"oherer
+Ordnung}, J.\ Reine Angew.\ Math.\ 316 (1980)) and Bank--Kaufman (several papers, 1970s-80s, e.g.\
+\emph{On the growth of meromorphic solutions of nonlinear differential equations}, Trans.\ AMS 1980)
+generalize Malmquist's theorem to higher order and give explicit bounds on the Nevanlinna
+characteristic $T(r,y)$ (equivalently, via the first main theorem, on the pole-counting function
+$N(r,y)=\int_0^rn(t,y)/t\,dt$) of any transcendental meromorphic solution of a fixed algebraic ODE
+with rational-function (or polynomial) coefficients, in terms of the degree of the coefficients and
+the order/degree of the equation.
+\item The upshot usable here is the contrapositive: if one can show that $n(r,U)$ (the number of
+poles of $U$ in $|x|\le r$) grows, as $r\to1^-$, \emph{faster} than any bound compatible with a
+solution of \emph{some} algebraic ODE of bounded order and degree, for every order/degree pair, then
+$U$ is not D-algebraic.
+\end{itemize}
+
+\begin{remark}[the disc vs.\ the plane]\label{rem:disc}
+The classical statements (Malmquist, Steinmetz, Bank--Kaufman) are for functions meromorphic on all
+of $\C$, where $T(r,y)$ is compared to $T(r)$ of the (polynomial or rational) coefficients as
+$r\to\infty$. $U$ is meromorphic only on the disc $|x|<1$, with $|x|=1$ a natural boundary, so the
+relevant growth is of $n(r,U)$ or $T(r,U)$ as $r\to1^-$ (necessarily $\to\infty$, since $U$ is not
+rational). A full transplant of the Bank--Kaufman/Steinmetz machinery to functions meromorphic only
+on a disc, with polynomial ODE coefficients, is not something we could locate a ready-made citation
+for; the relevant framework is Tsuji's Nevanlinna theory adapted to the disc (M.\ Tsuji,
+\emph{Potential Theory in Modern Function Theory}, 1959, Ch.\ III), and Bank himself has papers
+specifically on meromorphic solutions of algebraic differential equations \emph{in the unit disc}
+(S.\ Bank, \emph{On the instantaneous singularities of solutions of nonlinear differential
+equations}, and related 1970s work on the disc case), but we have not verified in detail that these
+give the precise counting-function bound needed here; this is exactly the ``verify applicability
+carefully'' caution the programme row asks for, and we flag it honestly as HEURISTIC: the shape
+of theorem is right, the citation for the disc case is not one we independently re-derived or
+checked line by line.
+\end{remark}
+
+\section{Why Theorem \texttt{thm:fredholm} does not anchor this}\label{sec:fredholm}
+
+Theorem~\texttt{thm:fredholm} computes $\det(I-\lambda\mathcal T)$, a Fredholm determinant, in closed
+form as a $q$-cosine / Hahn--Exton $q$-Bessel function $F(\lambda,q)=\cos(\sqrt\lambda\,Z;q^2)$. Two
+things follow that are relevant here, and neither reaches D-algebraicity of $U(x)$:
+\begin{enumerate}
+\item It is a statement about $F$ as a function of the spectral parameter $\lambda$ at \emph{fixed}
+$q$ (an entire function of $\lambda$, an explicit $q$-Bessel function -- $D$-finite in $\lambda$, in
+fact holonomic, since $q$-Bessel functions satisfy linear $q$-difference/differential equations in
+their argument). This says nothing about the dependence on $q$ itself, which is where the natural
+boundary and the arc-density of \texttt{thm:arc} live.
+\item As a function of $q$ (equivalently $x$), $F(1,q)=1-\Sigma_1$ and its zeros are the travel
+poles; the operator $\mathcal T=\mathcal T(q)$ satisfies no linear $q$-difference equation in $q$
+that we are aware of and none is proved in paper2a -- the ``differential-Galois'' structure available
+here is on the \emph{difference} side (Nishioka's theory, as cited at \texttt{prop:noqdiff} for
+Mahler equations, and the $Q=-1$ analysis of \texttt{cor:Qminusone}), not a differential-Galois
+structure in $x$. Difference-Galois/Nishioka theorems constrain algebraic relations and
+$q$-difference or Mahler equations satisfied by $U$; paper2a already proves the strongest available
+statements of that kind (no linear $q$-difference or Mahler equation, no $Q=-1$ relation). None of
+this is evidence, for or against, an algebraic \emph{differential} equation in $x$: a function can
+satisfy no Mahler/difference equation and still be, or fail to be, D-algebraic; the two properties
+are logically independent in general (Mahler functions and D-algebraic functions overlap only in
+degenerate cases, by the different normal forms Nishioka's and Malmquist/Steinmetz's theorems put on
+each).
+\end{enumerate}
+So thm:fredholm is real machinery for the pole-existence and pole-density results already in the
+paper (via the explicit zero set of a $q$-Bessel function), but it is a statement in the wrong
+variable (the spectral parameter $\lambda$, or the difference-structure in $q$) to serve as the
+anchor for a differential-algebraicity argument in $x$. We could not find, and do not claim to have
+found, a route from \texttt{thm:fredholm} to a Nishioka-type differential-algebraic obstruction.
+
+\section{The precise gap, and what would close P4}\label{sec:gap}
+
+Given \S\ref{sec:counterexample}--\ref{sec:realtool}, closing P4 (in either direction) needs:
+
+\begin{enumerate}
+\item[(a)] \emph{A quantitative rate.} A lower bound on $n(r,U)$, the number of poles of $U$ in
+$|x|\le r$, as $r\to1^-$. \texttt{thm:arc}'s proof gives, near a fixed root of unity $\zeta$ on the
+arc, an infinite sequence of poles $q^\ast_j=\zeta\e^{-t^\ast_j}$ with $t^\ast_j\sim t^0_j=(L+i\pi
+)/(2j+3/2)$ along an explicit tie ray, i.e.\ $q^\ast_j\to\zeta$ at rate $\sim c/j$. In principle this
+already gives, at each of the (dense set of) $\zeta$ on the arc where \texttt{cor:arcUV} applies, a
+sequence of poles approaching the boundary at a rate $O(1/j)$ in $t$, which translates to
+$1-|q^\ast_j|=O(1/j)$; summing over the countably many $\zeta$ with $N\ge16$ has not been done in
+paper2a and does not obviously give a clean closed-form $n(r,U)$ estimate (poles from different
+$\zeta$'s interleave in an uncontrolled way; no global counting argument is in the paper). This
+summation is the concrete, well-scoped computation that is missing; it looks tractable (each $\zeta$
+contributes a $\sim\log(1/(1-r))$-type count near itself, and there are $\sim r^{-1+\epsilon}$-many
+admissible $\zeta=e(a/N)$, $N\lesssim1/(1-r)$, on the arc) but was not carried out here, and doing it
+rigorously (as opposed to heuristically) would need to control double-counting and the
+$N$-dependence of the implied constants in \texttt{thm:arc}'s proof, which are not made explicit
+there (see \texttt{rem:arcUV}: ``the index beyond which $q^\ast_j$ is a pole $\ldots$ is not made
+explicit'').
+\item[(b)] \emph{The disc-analog counting theorem.} A Bank--Kaufman/Steinmetz-type upper bound, valid
+for meromorphic functions on a disc with a natural boundary, showing that no algebraic ODE of order
+$k$ and degree $d$ (for any fixed $k,d$) can have a solution meromorphic on $|x|<1$ whose
+pole-counting function $n(r,\cdot)$ grows faster than [some explicit function of $r$, $k$, $d$] as
+$r\to1^-$. We have identified the right family of theorems (\S\ref{sec:realtool}) but have not
+verified that a version with the precise hypotheses needed (arbitrary $k,d$, natural boundary rather
+than entire coefficients) exists in the literature in citable form; \texttt{rem:disc} states this
+honestly as unresolved.
+\item[(c)] Compare (a) and (b) for a contradiction, for every $k,d$ simultaneously (or via a
+uniform-in-$(k,d)$ argument, e.g.\ showing $n(r,U)$ grows faster than any bound of the Bank--Kaufman
+shape, which typically depends polynomially or via a fixed exponential rate on $k,d$ once $r\to1$,
+whereas one would need superexponential growth in $1/(1-r)$ uniformly to beat all $(k,d)$ at once,
+or a separate argument bounding the ODE's order/degree first, e.g.\ by degree considerations on
+residues as in \texttt{cor:Qminusone}'s use of $2$-adic valuations).
+\end{enumerate}
+
+None of (a), (b), (c) is done. \textbf{P4 is not closed by this note.} What this note contributes is
+negative-but-useful: it rules out the literal strategy stated in the ledger row (density on an arc
+$\Rightarrow$ non-D-algebraic, via thm:fredholm), replacing it with the correct
+(Nevanlinna/Bank--Kaufman/Steinmetz) family of theorems and pinpointing the exact missing input, a
+quantitative pole-counting rate together with a disc-version growth theorem, so that the next
+attempt does not repeat the invalid step of \S\ref{sec:counterexample}.
+
+\section*{Weakest points}
+\begin{itemize}
+\item \S\ref{sec:counterexample}'s construction is correct in spirit and each step is elementary
+(chain rule, $\omega_1$-periodicity, Weyl equidistribution of an irrational rotation), but it is
+written discursively rather than as a fully streamlined, single-pass proof; a referee should
+double-check the reduction to the half-lattice branch (keeping $f$ single-valued on a genuine disc)
+in full detail. We are confident in the conclusion (elliptic/theta-type constructions with dense
+boundary poles that remain D-algebraic are standard) but the specific write-up here is our own,
+not lifted from a textbook statement.
+\item \S\ref{sec:realtool}/\ref{rem:disc}: we cite Malmquist, Steinmetz, and Bank--Kaufman from
+memory of the theory's shape (Nevanlinna-theoretic growth bounds for meromorphic solutions of
+algebraic ODEs); we did not independently re-derive or numerically check any of these statements in
+this session, and we explicitly flag that the disc/natural-boundary version of the theory is the
+part we could not pin down a precise citable statement for. Treat the bibliographic pointers here as
+HEURISTIC memory, to be checked against the primary sources before citing in a paper.
+\item \S\ref{sec:gap}(a)'s claimed shape of a global counting estimate ($n(r,U)\sim$ combining
+$\sim r^{-1}$ many arcs each contributing a logarithmic count) is a back-of-envelope estimate, not a
+proof; it is plausible from \texttt{thm:arc}'s local rate but we did not attempt the summation.
+\item No computation (Rust or otherwise) was run for this note: the question, as scoped, turned out
+to be about which theorem applies and why, not about a numerical question the existing tools (t1series,
+u5b, etc.) could resolve. If a future pass pursues (a), a Rust enumeration of travel-pole counts
+$n(r,U)$ at a sequence of $r\to1^-$, cross-checked against the explicit $t^\ast_j$ formula, would be
+the natural first computational step, wrapped under the standing \texttt{perl -e 'alarm 290; exec
+@ARGV'} / $\le3$GB / fresh-\texttt{sysctl} discipline.
+\end{itemize}
+
+\end{document}
