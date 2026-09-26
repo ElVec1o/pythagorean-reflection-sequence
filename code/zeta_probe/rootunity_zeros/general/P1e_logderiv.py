@@ -15,8 +15,14 @@ ctx.prec = 200
 PI = arb.pi(); I = acb(0, 1)
 def e(y): return (2*PI*I*y).exp()
 def data(p, q, M=None):
+    global PI, I
     for pr in (200, 400, 800, 1600, 3200):
         ctx.prec = pr
+        PI = arb.pi(); I = acb(0, 1)  # bug fix (Room 2, Ramanujan seat, 2026-09-26): PI/I were
+        # computed once at module-load (200-bit) and never refreshed inside this retry loop, so a
+        # ball radius stuck at ~1e-61 could overtake a shrinking midpoint at high n, producing
+        # spurious nan/ValueError near the good-arc edge (e.g. 17/203). Refreshing them each
+        # iteration at the current ctx.prec fixes this; verified against the failing case.
         r = data1(p, q, M)
         if bool(r[0] > 0) and r[0].rad() < 1e-6*r[0].mid() and r[2].is_finite(): return r
     return r

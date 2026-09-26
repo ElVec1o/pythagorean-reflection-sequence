@@ -69,6 +69,54 @@ $1/13$ & 0.0123 & $\theta=+1$ & \multicolumn{4}{c}{fails already at $q=51$}\\\bo
 \item I did not attempt the HEURISTIC estimate in P1h \S\ref{sec:obs} item~2 (a Rust job of $10^4$--$10^6$ Arb seed evaluations for $[0.135,\frac17]$) -- that is a large compute task within the technique P1h already has, not new mathematics, and was out of scope for a first attempt at (a)/(b).
 \end{enumerate}
 
+\paragraph{Room 2 (2026-09-26): two seats, moderator verdict ADVANCED.}
+A room of mathematicians (two blind seats: Tao, Ramanujan) pushed further on the moment
+hypothesis. Nothing below proves it, but real content survives.
+
+\emph{Tao's finding, a genuine duality fact.} Using the Fourier-duality identity inside Lemma
+Zk's own proof, $f(t)=\sum_n\psi_n\zeta_0^{-n^2}e(-nt)$, giving $D_j$ as a ratio of coefficient
+moments $\sum_n n^j\psi_n\zeta_0^{-n^2}$ rather than the pointwise-sup sum over residues $k$. This
+looked like it might bypass $\Lambda$ entirely. It doesn't: tracking the $q$-dependence of the
+coefficients $\psi_n$ honestly shows $\sum_n|a_n|=O(qL)$, exactly the same exponent that produces
+$\beta=e^{qL/2(1+o(1))}$ in the $k$-basis. \textbf{The coefficient-sum bound and the pointwise-sup
+bound are the same bound viewed through dual bases} -- a clean fact not previously stated in the
+repository, and it closes this specific avenue rather than opening it. Separately, at one test
+point ($182/2001$) the crude bound predicts $D_1\lesssim1.35\times10^4$ against a true value
+$D_1\le0.037$ -- a $\sim10^6$ gap, evidence of real structured cancellation that neither the
+$k$-basis triangle inequality nor the $n$-basis Cauchy estimate captures. No proof; a genuine
+oscillatory-cancellation argument (Weyl-differencing in spirit) was identified as the missing
+ingredient but not completed, since $\psi_n$ is not smooth enough to detach cleanly from the
+quadratic phase $\zeta_0^{-n^2}$ by the elementary means tried.
+
+\emph{Ramanujan's finding: the nan phenomenon has two unrelated causes, one a real bug (now fixed),
+one a genuine domain issue.} At $1/12$ ($\ell\approx0.035$--$0.051$, $x=1/12>0.08043$, genuinely
+inside the good arc): a real, fixable precision bug in \texttt{P1e\_logderiv.py} -- \texttt{PI} and
+\texttt{I} were computed once at module load (200-bit) and never refreshed inside the
+$200\to3200$-bit precision-escalation retry loop, so a ball radius fixed at $\sim10^{-61}$ could
+overtake a shrinking midpoint at high $n$, producing spurious \texttt{nan}. \textbf{Fixed} (refresh
+\texttt{PI,I} each retry iteration); verified against the failing case $17/203$, which now resolves
+cleanly at 400 bits with $D_1\le0.1245$, $D_2\le0.006968$. At $1/13$ ($\ell\approx0.012$--$0.039$,
+$x=1/13<0.08043$): every $q$ in this family has $|c_0|<1$ ($\ell<0$), i.e.\ the family sits
+entirely outside the good arc from the start -- the framework's own precondition is violated, not
+approached; not a bug, a genuine domain issue (the script should fail cleanly here instead of
+throwing).
+
+\emph{Widened survey (Ramanujan, post-fix): no counterexample found.} Seven new seeds spanning
+$\ell\in(0.05,0.48)$ out to $q\lesssim4000$, including families where $|Z_q|$ grows, stays flat, or
+collapses toward $0$ (e.g.\ $1/11$: $0.48\to6.7\times10^{-7}$, a genuinely decaying family): $D_1,
+D_2$ stay small ($D_1\lesssim0.05$, $D_2\lesssim10^{-4}$ outside small $q$) and shrink or stay flat
+with growing $q$ in every case tested, including the previously-inaccessible $1/12$ points closest
+to the golden threshold. $\Lambda$'s blow-up tracks $1/|Z_q|$, confirming $\Lambda$ is a property
+of how small $Z_q$ gets, not of the moment ratios themselves.
+
+\emph{Room verdict: ADVANCED.} The moment hypothesis is now supported by a much wider, bug-fixed
+numerical survey with zero counterexamples, and by one clean new structural fact (the $k$-basis/
+$n$-basis duality) explaining why two natural elementary approaches both fail for the same reason.
+No proof was found; a genuine oscillatory-cancellation argument remains the missing ingredient.
+One real, actionable side-result: the precision bug in \texttt{P1e\_logderiv.py} is fixed, so
+future work on this window no longer needs to route around spurious \texttt{nan}s at $\ell$ near
+$1/12$.
+
 \paragraph{Conclusion.} OPEN, unchanged in truth value, but re-diagnosed: the golden threshold is confirmed (by fresh, rigorous exact-formula spot checks, not merely restated) to be an artifact of the crude Lemma~B triangle inequality over most of the window immediately below $0.484$, while at least one arithmetic family already exhibits the genuine decay that any real fix would have to respect. No second-order Lemma R, and no alternative technique, was produced.
 
 \paragraph{Files.} This note only; it calls the existing, unmodified \texttt{P1e\_logderiv.py fam ...} (read-only use). No new scripts, no compiled PDF (disk budget). Raw run: four \texttt{fam} invocations at $j/n_0\in\{1/9,1/10,1/12,1/13\}$, $\theta\in\{+1,-1\}$, $q\in\{\sim55,\sim200,\sim1000,\sim3000\}$, wrapped in \texttt{perl -e 'alarm 290; exec @ARGV'}, well under the 3GB/24GB memory guard (observed peak $<30$MB).

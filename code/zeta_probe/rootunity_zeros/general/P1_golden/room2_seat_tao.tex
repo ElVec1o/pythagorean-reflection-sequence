@@ -1,0 +1,72 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\title{Room of mathematicians, item 2 (P1 golden threshold), Seat: Tao\\
+\small analytic/quantitative attempt at the moment hypothesis $D_1,D_2$ uniform bound --- 2026-09-26}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Verdict up front.} BOUND FAILS (for the route attempted here, which is genuinely different from the abandoned Cauchy--Schwarz-on-phases attempt), and the failure is pinpointed exactly: it is the same wall as $\Lambda$, arrived at from the opposite (Fourier/coefficient) side. No uniform proof of $D_1,D_2=O(1)$ was found. What is delivered instead is (i) an exact reformulation of $f(t)$ as a one-sided Fourier series with a clean duality identity, (ii) a coefficient-sum bound for $D_1,D_2$ via that identity, and (iii) a demonstration that this bound, done honestly (tracking the $q$-dependence of the coefficients $a_m$), collapses back onto $\sup_{|Y|=1}|e^{\Phi_q(Y)}|=\Lambda|Z_q|$ --- i.e.\ it does \emph{not} avoid the loss, it relocates it. Fresh numerics (below) show the true $D_1,D_2$ are far smaller than either crude bound predicts, confirming real, currently unexplained cancellation is present.
+
+\section{Calibration point}
+Read in full: \texttt{P1e\_lemma.tex} Lemma~R (\texttt{lem:R}) and its proof, and all of \S2 (``Why a $q$-uniform Lemma lap cannot close the induction''); and \texttt{P1\_golden/P1\_golden\_note.tex} in full.
+
+\paragraph{The moment hypothesis, reproduced by hand.} At level $q$, seed $p/q$, set $\zeta_0=e(p/q)$, $u=u_q$ ($|u|<1$), and
+\[\Phi_q(Y)=\sum_{m\ge1,\ q\nmid m}\frac{u^m}{m(1-\zeta_0^{-m})}Y^m,\qquad f(t)=\sum_{k\bmod q}\gamma_k\,e^{\Phi_q(\zeta_0^k e(-t))},\]
+with $\gamma_k=\frac1q\sum_\nu \zeta_0^{-\nu^2-k\nu}$ (Lemma Zk) and $e(x)=e^{2\pi i x}$. $\Phi_q$ is a power series in $Y$ convergent for $|Y|<1/|u|$; since $|u|<1$, it is analytic on an annulus/disc that strictly contains the unit circle, and in particular in the strip $t=v+iw$, $|w|<\eta_{\max}:=\log(1/|u|)/2\pi$ (this $\eta_{\max}$ is exactly the $\eta_i$ used region-by-region in Lemma B, up to the constraint $g_ie^{2\pi\eta_i}\le y$).
+$f(0)=Z_q(p/q)$ (Lemma Zk). The two moment ratios measured by \texttt{P1e\_logderiv.py} are
+\[D_1=\frac{|f'(0)|}{2\pi q\,|f(0)|},\qquad D_2=\frac{|f''(0)|}{(2\pi q)^2|f(0)|},\]
+i.e.\ \textbf{$D_1$ is the (normalised) first derivative of $f$ in the continuous twist parameter $t$ at $t=0$, and $D_2$ the second derivative} --- these are literally the first two Taylor coefficients of $\log$-free $f$ at $t=0$, rescaled by the natural frequency scale $2\pi q$ (since $f$'s Fourier support, once you unwind it, sits at frequencies $n$ with $|n|$ up to $O(q\cdot(\text{something}))$; see \S\ref{sec:dual}). $D_1,D_2$ small/bounded is exactly the statement that $f$ is ``slowly varying at scale $1/q$'' relative to its own value at the seed --- the structured alternative to bounding $\sup_k|e^{B_k}|$ by brute force that P1e's \S2 identifies as the missing ``second-order Lemma R''.
+
+\section{A genuinely different route: exact Fourier duality, not Cauchy--Schwarz on phases}\label{sec:dual}
+The abandoned route (recorded in \texttt{P1\_golden\_note.tex}) used $|\gamma_k|\equiv1/\sqrt q$ and tried Cauchy--Schwarz/equidistribution directly on the phases of $e^{B_k}$ across $k$. I do not repeat that. Instead I use the \emph{other} representation of $Z_q$ that Lemma~Zk's own proof already sets up (finite Fourier inversion the other way), which turns $f$ into an honest one-variable Fourier series and reduces $D_1,D_2$ to a question about Taylor coefficients of $e^{\Phi_q}$, not about cancellation across residues $k$.
+
+Write $e^{\Phi_q(Y)}=\sum_{n\ge0}\psi_n Y^n$ (the same $\psi_n$ as in P1d/P1e's original expansion of $\Sigma_N$; $\psi_0=1$, $|\psi_n|$ controlled by Lemma~A's majorant). By finite Fourier duality (the identity used inside the proof of Lemma~Zk, $\zeta_0^{-n^2}=\sum_k\gamma_k\zeta_0^{kn}$, run in reverse) one gets exactly
+\[
+f(t)=\sum_k\gamma_k\sum_n\psi_n\,\zeta_0^{kn}e(-nt)=\sum_n\psi_n\,e(-nt)\Big(\sum_k\gamma_k\zeta_0^{kn}\Big)=\sum_n\psi_n\,\zeta_0^{-n^2}\,e(-nt).
+\]
+So, writing $c_n:=\psi_n\zeta_0^{-n^2}$, \emph{$f$ is exactly the one-sided exponential-sum generating function of the sequence $c_n$}: $f(t)=\sum_n c_n e(-nt)$, and $f(0)=\sum_n c_n=Z_q$ (Lemma~Zk again, consistently). Termwise differentiation (justified since $\sum|\psi_n|<\infty$, Lemma~A) gives
+\[
+f^{(j)}(0)=(-2\pi i)^j\sum_n n^j c_n,\qquad D_j=\frac{\big|\sum_n n^j\psi_n\zeta_0^{-n^2}\big|}{q^j\,|Z_q|}.
+\]
+This is a genuinely different object from $\Lambda$: no $\gamma_k$, no $e^{B_k}$, no sum over $k$ at all --- a bound here would come purely from decay of $\psi_n$ in $n$, i.e.\ from analyticity of $e^{\Phi_q}$ in $Y$, via Cauchy's estimate on a circle $|Y|=\rho<1/|u_q|$:
+\[
+|\psi_n|\le \frac{\sup_{|Y|=\rho}|e^{\Phi_q(Y)}|}{\rho^n}\ \Longrightarrow\ \sum_n n^j|\psi_n|\ \text{bounded by a derivative of}\ \sup_{|Y|=\rho}|e^{\Phi_q(Y)}|\ \text{in}\ \rho.
+\]
+
+\subsection{Where this collapses back to $\Lambda$}
+Take $\rho=1$ (legitimate: $1<1/|u_q|$ since $|u_q|<1$). Lemma~A's majorant gives $|\Phi_q(Y)|\le\sum_{m}|a_m|\,|Y|^m$ with $a_m=u_q^m/(m(1-\zeta_0^{-m}))$. The point that breaks the naive hope of a $q$-independent bound: for $m$ small compared to $q$, $|1-\zeta_0^{-m}|\asymp 2\pi m|p|/q$ (the denominator itself is $O(1/q)$!), so $|a_m|\asymp \dfrac{q}{2\pi m^2|p|}u_q^m$ --- \emph{linear growth in $q$ for every fixed small $m$}. Summing, $\sum_m|a_m|=O(qL)$ with $L=-\log(1-y)$ exactly as in P1e's own exponent for $\beta=\exp\!\big(\tfrac{\bar w}{2n(1-\bar w)}+\tfrac n2L\big)$ (there $n=q$). Consequently the crude bound at $\rho=1$ gives
+\[
+\sup_{|Y|=1}|e^{\Phi_q(Y)}|\ \le\ \exp\Big(\sum_m|a_m|\Big)=O(1)\cdot\beta,
+\]
+\emph{the same} $\beta=e^{qL/2(1+o(1))}$ that drives $\Lambda$. So $\sum_n n^j|\psi_n|\lesssim_j \beta$ (Cauchy estimate with $\rho=1$ costs nothing extra since $\beta$ already dominates), and
+\[
+D_j\ \lesssim_j\ \frac{\beta}{q^j|Z_q|}.
+\]
+This is not a new bound: it is $\Lambda$ relocated from the $k$-sum to the $n$-sum. Concretely, $\sup_{|Y|=1}|e^{\Phi_q(Y)}|$ is (up to the same interpolation slack Lemma~B already pays for) the same quantity as $\sup_k|e^{X_k}|$, because $\{\zeta_0^k\}_{k}$ is exactly the full set of $q$-th roots of unity, i.e.\ exactly the discretisation of the circle $|Y|=1$ that the $k$-sum already samples. \textbf{So the Cauchy-estimate/coefficient-sum route and the triangle-inequality/pointwise-sup route are the same bound viewed from two dual bases}; neither one is intrinsically sharper. This is a cleanly stated new fact (not previously written down in P1e/P1\_golden as far as I read), but it closes off, rather than opens, this particular avenue: any single-scale ($\rho$ fixed, e.g.\ $\rho=1$ or $\rho=$ some fixed $\eta_i$-strip radius) sup-norm bound on $e^{\Phi_q}$ is provably as lossy for $D_1,D_2$ as it is for $\Lambda$, because both ultimately bound the \emph{same} quantity $\sup_{|Y|=1}|e^{\Phi_q(Y)}|$, just accessed through different bases of $L^1$ or $L^\infty$ functionals on the circle.
+
+\subsection{Why the true $D_1,D_2$ are nonetheless much smaller: real cancellation, not yet captured}
+Fresh run (read-only use of the existing, unmodified \texttt{P1e\_logderiv.py}, \texttt{fam} mode, $\theta=+1$ at $1/11$, perl \texttt{alarm 200}, peak RSS a few MB):
+\begin{center}\small\begin{tabular}{lllll}\toprule
+seed & $|Z_q|\ge$ & $\Lambda\le$ & $D_1\le$ & $D_2\le$\\\midrule
+19/208 & 0.6860 & 30.26 & 0.02648 & 0.004119\\
+91/1000 & 0.03825 & $1.036\times10^4$ & 0.03516 & 0.001675\\
+182/2001 & $9.951\times10^{-4}$ & $2.707\times10^7$ & 0.03658 & 0.001553\\\bottomrule
+\end{tabular}\end{center}
+(matches, to displayed precision, the table already in \texttt{P1e\_lemma.tex} \S2 for the same seeds). Two things follow from the derivation above, neither previously stated explicitly:
+\begin{itemize}
+\item The crude bound predicts $D_1\lesssim\beta/(q|Z_q|)$, and $\beta$ tracks $\Lambda|Z_q|$ (that is literally $\Lambda$'s definition), so the crude bound is $D_1\lesssim \Lambda/q$. At $182/2001$ that is $2.7\times10^7/2001\approx1.35\times10^4$ --- the crude bound is worse than useless (predicts $D_1\gg1$) while the true value is $0.037$. The gap between the crude bound ($\sim10^4$) and the truth ($\sim10^{-2}$) is a factor of $\sim10^6$, i.e.\ the cancellation being thrown away by \emph{either} triangle-inequality route ($k$-sum or $n$-sum) is enormous and highly structured --- it is not a slack of a few percent that a sharper elementary inequality could plausibly recover.
+\item Across this one family $|Z_q|$ drops by $\sim700\times$ ($0.686\to9.95\times10^{-4}$) while $D_1$ moves by only $\sim40\%$ ($0.026\to0.037$) and $D_2$ actually \emph{decreases}. So whatever mechanism keeps $D_1,D_2$ bounded is essentially decoupled from the mechanism that makes $|Z_q|$ small on this family --- another way of saying the moment hypothesis, if true, is a strictly different (and on this evidence, better-behaved) statement than nonvanishing/growth of $Z_q$ itself. That is encouraging for the programme (it suggests $D_1,D_2$ boundedness might be provable by methods that don't need to know anything about the size of $Z_q$), but I found no such method.
+\end{itemize}
+
+\section{Assessment}
+\begin{itemize}
+\item \textbf{Genuinely new content here:} the exact duality $f(t)=\sum_n\psi_n\zeta_0^{-n^2}e(-nt)$ (a clean, provable identity, immediate from Lemma~Zk's own construction, but not written down explicitly in \texttt{P1e\_lemma.tex} or \texttt{P1\_golden\_note.tex}), and the proof that the resulting coefficient-sum bound on $D_1,D_2$ is quantitatively identical (via $\sum_m|a_m|=O(qL)$, same constant $L$ as $\beta$) to the pointwise-sup bound that produces $\Lambda$. This rules out, rigorously, one entire family of naive attacks (any bound on $D_1,D_2$ via a single-radius Cauchy/majorant estimate on $e^{\Phi_q}$), and correctly predicts \emph{qualitatively} why that family fails: it is $L^\infty$-flavoured (one bad point/direction dominates), while the true smallness of $D_1,D_2$ must come from an $L^1$- or oscillatory-cancellation fact about the coefficients $\psi_n$ (or equivalently about $n\mapsto e^{B_k(t)}$'s phases across $k$) that neither this note nor \texttt{P1\_golden\_note.tex}'s Cauchy--Schwarz attempt manages to extract.
+\item \textbf{Precisely where uniformity fails:} at the single step ``bound $\sup_{|Y|=1}|e^{\Phi_q(Y)}|$'' (equivalently $\sup_k|e^{X_k}|$), which any first-moment-type argument (triangle inequality in either the $k$-basis or the $n$-basis) is forced to invoke, and which is provably $q$-dependent and unbounded along drift families (P1e \S2's own finding, $\Lambda\sim e^{0.008q}$ at $1/11$). A genuine fix needs a bound on $\big|\sum_n n^j\psi_n\zeta_0^{-n^2}\big|$ that beats $\sum_n n^j|\psi_n|$ by using the actual phases $\zeta_0^{-n^2}$ (a quadratic-in-$n$ phase --- classical territory for Weyl differencing/van der Corput \emph{if} $\psi_n$ were, say, roughly constant or slowly varying over dyadic ranges of $n$; but $\psi_n$ itself is not a simple smooth weight, it is the coefficient sequence of $\exp$ of a rational-denominator power series, and the two effects (quadratic phase in $\zeta_0^{-n^2}$, and $\psi_n$'s own $q$- and $m$-dependent structure from $1/(1-\zeta_0^{-m})$ near small $m$) are entangled). I attempted no further reduction of this combined object within the session budget; it is the natural next target but is not obviously either a bounded-derivative-in-$k$ fact (Cauchy, shown above to fail) or a pure Weyl-sum fact (the weight $\psi_n$ is not smooth enough to detach from the phase cleanly), and stating a correct Weyl-differencing setup for it is a nontrivial task of its own.
+\item \textbf{Verdict: INCONCLUSIVE-leaning-BOUND-FAILS.} No uniform bound on $D_1,D_2$ was proved. The one route fully carried out here (Fourier duality $\to$ Cauchy estimate) provably fails, and fails at exactly the same point as the $k$-representation triangle-inequality bound (a clean, previously-unstated equivalence), so it does not even reduce the problem's difficulty, only re-expresses it. The empirical smallness of $D_1,D_2$ (a factor $\sim10^6$ below what either crude bound gives, decoupled from $|Z_q|$'s own size) is real signal that a correct proof exists and is of a genuinely different (cancellation/oscillatory) character than either attempt made so far in this programme, but no such proof was found in this session.
+\end{itemize}
+
+\paragraph{Files.} This note only; read \texttt{P1e\_lemma.tex}, \texttt{P1\_golden\_note.tex} (both unmodified). Ran the existing, unmodified \texttt{P1e\_logderiv.py fam 1 11 1 200 1000 2000}, under \texttt{perl -e 'alarm 200; exec @ARGV'}, peak RSS a few MB, well under the 3\,GB guard. No new scripts written, no compilation attempted (disk $\approx7.4$\,GB free; kept minimal per instructions). Not committed.
+\end{document}

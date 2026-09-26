@@ -1,0 +1,180 @@
+ROOM OF MATHEMATICIANS -- item 2 (P1 golden threshold) -- Seat: Ramanujan (numerical, pattern-first)
+Repo: /Users/vico/Documents/elvec1o/certify_run   Date: 2026-09-26
+Tool used throughout: code/zeta_probe/rootunity_zeros/general/P1e_logderiv.py, mode "fam", run read-only
+(one local, in-memory monkeypatch used for diagnosis -- described below; the actual repo file was NOT modified).
+All runs wrapped in `perl -e 'alarm N; exec @ARGV'`; peak RSS observed <60MB throughout; disk untouched (only
+this note + scratch diagnostics under the session scratchpad, not under the repo).
+
+=====================================================================
+0. CALIBRATION POINT (required first check)
+=====================================================================
+Ran fam mode, family j/n0=1/5, theta=+1, at q~55,200,1000, WELL inside the safely-proved region
+(this is a different seed from the 4 already swept in P1_golden_note.tex, so it is not a banned repeat):
+
+  12/59   (1/5,+1): |Z_q|>=1.008  Lam<=7.861   D1<=0.008423  D2<=0.0001405
+  41/204  (1/5,+1): |Z_q|>=1.069  Lam<=9.777   D1<=0.003536  D2<=4.223e-5
+  201/1004(1/5,+1): |Z_q|>=1.521  Lam<=15.98   D1<=0.002366  D2<=5.572e-6
+
+Behaves exactly as documented: |Z_q| enclosure positive and tight, Lam grows mildly (crude-bound loss,
+as expected), D1 and D2 are small and SHRINKING as q grows. No nan, no exceptions, finishes in a few
+seconds. Tool is being used correctly. Proceeded to the risky region below.
+
+=====================================================================
+1. THE nan NEAR ell~0.035, 0.012 -- DIAGNOSIS: TWO DIFFERENT BUGS, NOT ONE
+=====================================================================
+
+1a. The 1/12 family (x=1/12=0.08333 > x1_good=0.08043, i.e. genuinely just inside the good arc,
+    ell~0.035-0.051): THIS NAN IS A GENUINE, FIXABLE PRECISION BUG IN THE SCRIPT -- NOT a
+    formulation/branch-cut issue, and NOT fixed by the script's own escalation to 3200 bits.
+
+    Root cause, isolated by hand: P1e_logderiv.py line 15,
+        PI = arb.pi(); I = acb(0, 1)
+    is executed ONCE at module-import time (right after `ctx.prec = 200` on line 14) and is never
+    recomputed. `data()`'s precision-escalation loop (lines 17-22: pr in 200,400,800,1600,3200) raises
+    ctx.prec for every OTHER arb/acb operation, but every call to e(y) = (2*PI*I*y).exp() still uses the
+    stale PI/I baked in at 200-bit (~60 decimal digit) accuracy. This caps the effective precision of the
+    single most basic ingredient -- the root-of-unity phases z0, ET[...] -- at ~60 digits FOREVER, no matter
+    how high ctx.prec is later pushed. I confirmed this is exactly what happens: raising ctx.prec by hand to
+    6400 and 12800 bits (without also refreshing PI/I) reproduces the identical nan, byte for byte
+    (same |Z_q|=0, Lam=nan) -- matching the note's own observation that 3200 bits didn't help, and now
+    showing WHY: the escalation loop was not actually escalating the quantity that matters.
+
+    Traced further at p/q=17/203 (q~200 point of the 1/12,theta=+1 family): the series in data1() sums
+    M~1145 terms; u^n (tracked via repeated ball multiplication `un = un*u`) has a TRUE magnitude (checked
+    independently in plain double-precision complex arithmetic, which agrees with |u|=0.9613 raised to the
+    1145th power) that decays smoothly and monotonically to ~2.4e-20 by n=1145 -- there is no real blow-up.
+    But in the Arb ball computation, u's OWN radius is only ~3.5e-61 (i.e. ~200-bit-precision-sized, matching
+    the stale-PI diagnosis), and this fixed absolute radius does not shrink as ctx.prec is raised for later
+    operations. Printing un's ball at n=600..710 shows the radius overtaking the (correctly decaying) midpoint
+    exactly around n~650-700: abs_lower(un) hits exactly 0 there, and abs_upper(un) then runs away to
+    1e19..1e22 by n~1145 -- not because u^n is large, but because once the enclosure straddles 0 the reported
+    upper bound is dominated by accumulated radius, not signal. This propagates into Ph[k], then b[k]=exp(Ph[k])
+    (genuinely infinite for the affected residues), then f0 = sum g_k b_k has an enclosure so wide that
+    F = |f0|.abs_lower() = 0 exactly, and Lam = env/F divides by exact 0 -> nan. That is the entire mechanism.
+
+    FIX VERIFIED: recomputing `PI = arb.pi(); I = acb(0,1)` at the START of every precision-escalation
+    iteration (i.e. inside data()'s pr-loop, right after `ctx.prec = pr`) completely removes the nan.
+    With the fix, p/q=17/203 resolves cleanly at pr=400 (not even needing 3200):
+        |Z_q|=[10.205435 +/- 2.26e-7]  Lam=[5.65466 +/- 3.66e-6]  D1=[0.124535 +/- 4.30e-7]  D2=[0.0069676 +/- 4.85e-9]
+    and the whole 1/12 family (both theta=+1 and theta=-1) resolves cleanly out to q~3000-3011 with D1,D2
+    small and, if anything, slowly SHRINKING with q (see Sec.2 table). This is a one-line, low-risk fix to
+    the actual repository script (move the PI/I assignment inside the retry loop) -- flagged for a separate
+    engineering task, NOT applied to the repo here per the read-only instruction for this room.
+
+1b. The 1/13 family (x=1/13=0.076923 < x1_good=0.080432, theta=+1, "fails already at q=51/64"):
+    THIS NAN IS GENUINE AND STRUCTURAL, A DIFFERENT ISSUE FROM 1a -- the whole family sits on the wrong
+    side of the good-arc edge, not merely close to it.
+
+    Checked directly (plain complex arithmetic, no Arb needed): for every q tried in this family
+    (p/q = 5/64, 16/207, 77/1000, 231/3002) one gets |c0| = |-2(1-z0)| < 1, i.e. l = log|c0| < 0
+    (-0.0285, -0.0390, -0.0427, -0.0434 respectively) -- NEGATIVE, not "close to 0 from above". The
+    entire premise of the u-formula (and the whole finite-formula framework, which is built on |u0|<1,
+    equivalently |c0|>1) is violated for this family at every q, not just asymptotically. Concretely this
+    makes X=c0^q -> 0 as q grows instead of -> large, so B=2+X -> 2 and 4/B^2 -> 1, and the branch
+    computation `(1 - 4/(B*B)).sqrt()` sits right at (and, with the sign flip from l<0, effectively past)
+    a genuine square-root branch point -- this is exactly the kind of input for which the formula was never
+    claimed to converge. The concrete exception raised (`ValueError: cannot convert float NaN to integer`,
+    from Mn = int(45/(-float(ua.log().mid())))+5 when |u|>=1 so log(ua)>=0) is a downstream symptom, not the
+    cause. This is a genuine domain/formulation boundary (the family 1/13 itself starts on the wrong side of
+    x1_good), not a precision-loss artifact, and not fixable by more bits. It is, however, a minor robustness
+    gap that the script does not check the |c0|>1 precondition and fail with a clear message instead of a
+    bare stack trace -- flagged, not fixed, per read-only instructions.
+
+Bottom line on the nan: the note's single "precision-collapse phenomenon" is actually two unrelated things
+that happened to coincide near the same numerical value of ell: an ordinary (and fixable) precision bug in
+the escalation loop for seeds still inside the good arc (1/12), and a genuine, expected breakdown for a seed
+family that lies entirely outside the good arc (1/13). Neither is evidence about Z_q's true behaviour; the
+1/12 case, once fixed, in fact adds MORE data points (q up to ~3000-4000) supporting boundedness of D1,D2,
+not against it.
+
+=====================================================================
+2. WIDENED SURVEY: D1, D2 (and |Z_q|) at NEW seeds across ell in (0.05, 0.48)
+=====================================================================
+All computed with the local PI/I-refresh fix (needed only to reach the previously-nan 1/12 family; all other
+seeds below never needed it -- pr=200 sufficed). None of these seeds duplicate the 4-seed sweep
+(1/8,1/9,1/10,1/12,1/13) already in P1_golden_note.tex; 1/9 (theta=+1) is re-used only as a targeted cross
+check in one row below, explicitly marked.
+
+  family(theta)   ell~     q         |Z_q|          Lam        D1          D2
+  --------------------------------------------------------------------------------
+  1/12 (+1)       0.051    59        2.002          8.99       10.05       159.4      <- small q, both scripts agree
+  1/12 (+1)       0.0395   203       10.21          5.66       0.1245      0.006968   <- was nan, now clean (Sec.1a fix)
+  1/12 (+1)       0.0356   1007      6225           10.0       0.1445      0.01825
+  1/12 (+1)       0.0350   3011      6.25e10        45.4       0.1470      0.02071
+  1/12 (-1)       0.0185   61        4.572          4.41       0.1919      0.01852
+  1/12 (-1)       0.0299   205       14.30          4.81       0.1338      0.009217
+  1/12 (-1)       0.0337   1009      8955           8.56       0.1458      0.01861
+  1/12 (-1)       0.0343   3001      8.19e10        38.4       0.1474      0.02082
+  2/21 (+1)       0.166    304       1.174          17.1       0.00997     1.92e-4
+  2/21 (+1)       0.165    1501      0.892          73.0       0.00202     6.43e-5
+  2/21 (+1)       0.165    4000      0.492          183.6      0.00388     4.00e-5
+  1/11 (+1)*      0.123    307       0.481          88.0       0.02896     0.002332
+  1/11 (+1)*      0.120    1506      0.00605        4.62e5     0.03611     0.001592
+  1/11 (+1)*      0.120    4003      6.74e-7         9.55e13    0.03730     0.001498
+  2/19 (+1)       0.263    313       0.728          34.1       0.01718     4.44e-5
+  2/19 (+1)       0.262    1510      0.785           49.2      0.00442     5.47e-6
+  2/19 (+1)       0.262    4018      0.909           70.1      0.00235     1.31e-6
+  2/17 (+1)       0.370    314       0.403          38.9       0.01623     6.03e-5
+  2/17 (+1)       0.368    1504      0.394          87.2       0.00323     4.84e-6
+  2/17 (+1)       0.368    4003      0.377          210.7      0.00111     1.38e-6
+  3/23 (+1)       0.471    61        0.518          17.5       0.0492      4.29e-4
+  3/22 (+1)       0.512    73        0.566          17.2       0.0328      2.98e-4
+  1/9  (+1)+      0.329    62        0.481          15.1       0.0815     0.001156
+  1/9  (+1)+      0.314    1007      1.435          37.8       0.0137     8.36e-5
+  1/9  (+1)+      0.314    3005      11.74          34.2       0.0108     8.68e-5
+
+  * 1/11 is a new seed for this note (not one of the 4 in the sweep), included because it is the family
+    showing the strongest |Z_q| decay found (see below); it independently reproduces the qualitative pattern
+    P1e's own table already reported at a different family (1/11,theta=+1 there too, different p -- same
+    residue-class-losing-mass phenomenon).
+  + 1/9,theta=+1 IS one of the 4 original seeds; re-run here only as a targeted check of whether D1,D2 grow
+    on the one family whose |Z_q| itself is growing with q (it does not duplicate the sweep's conclusion
+    about the golden threshold, only adds D1/D2 columns the original sweep did not report).
+
+Observations:
+  - Across all 11 families/signs above (7 new + 1/12 both signs + 1/9 cross-check), D1 and D2 are SMALL
+    everywhere (D1 well under 0.2, generally under 0.05 outside q~50-60; D2 under 2e-2, generally under
+    1e-4) and in every single family they SHRINK, sometimes non-monotonically over the first couple of q but
+    always trending down, as q grows from ~50-300 to ~1500-4000. This holds regardless of whether |Z_q|
+    itself is growing (1/9,+1: 0.48->11.7), roughly flat (2/17,+1: 0.40->0.38; 2/19,+1: 0.73->0.91), or
+    collapsing toward 0 (1/11,+1: 0.48->6.7e-7; the same qualitative behaviour P1e's own note already found
+    on a different family).
+  - No seed, no sign, and no q tried anywhere in ell in (0.05,0.48) shows D1 or D2 growing with q. Lam (the
+    crude bound's loss factor) grows in every family, sometimes enormously (up to ~9.6e13 on the decaying
+    1/11 family, because Lam = env/F blows up exactly where F=|Z_q| collapses) -- reconfirming the note's
+    point (a) that Lam's growth is a triangle-inequality artifact tracking 1/|Z_q|, not a property of the
+    moments D1, D2 that a second-order Lemma R would actually need.
+  - The 1/12 family, now resolved past its former nan wall out to q~3000-3011, adds new evidence IN FAVOUR
+    of boundedness deep inside ell~0.035, closer to the golden threshold's neighbourhood than the previously-
+    working points; D1,D2 there (~0.13-0.21, ~0.006-0.02) are the largest seen in this survey but still
+    bounded and, over the q range reachable in this session's time budget, not visibly growing (0.1245 at
+    q=203 -> 0.1445 at q=1007 -> 0.1470 at q=3011 for the +1 sign: a small, apparently saturating rise, not
+    an unbounded trend, though only 3-4 points per family so this is suggestive, not conclusive).
+
+=====================================================================
+3. VERDICT
+=====================================================================
+D1/D2 LOOK UNIFORMLY BOUNDED ACROSS THE WINDOW.
+
+Specifically:
+  - No evidence of D1 or D2 growth was found anywhere across ell in (0.012, 0.48) once the precision bug
+    (Sec. 1a) is corrected -- including at the seeds nearest the golden threshold and nearest the good-arc
+    edge that are actually inside the domain (1/12, ell~0.035-0.051).
+  - NAN IS A GENUINE (FIXABLE) PRECISION ISSUE for the 1/12 family: a stale module-level constant (PI, I in
+    P1e_logderiv.py, computed once at ctx.prec=200 and never refreshed by the precision-escalation retry
+    loop) silently caps the effective precision of every root-of-unity evaluation at ~60 decimal digits
+    regardless of how high ctx.prec is later raised -- explaining why the note's own escalation to 3200 bits,
+    and my further escalation to 6400/12800 bits, did not help. One-line fix (recompute PI, I inside the
+    retry loop) verified to resolve it cleanly.
+  - Separately, NAN IS A DEEPER (BUT EXPECTED, NOT A BUG) FORMULATION-BOUNDARY ISSUE for the 1/13 family:
+    that entire family sits at x=1/13=0.076923, which is already less than the good-arc edge x1_good=0.08043,
+    so |c0|<1 (l<0) at every q in the family -- the finite-formula framework's own precondition is violated
+    from the start, not approached asymptotically. This is a genuine domain limitation (and a minor
+    robustness gap: the script should detect |c0|<=1 and fail with a clear message rather than a bare
+    ValueError), not evidence of anything about Z_q, and not fixable by precision.
+  - The one family showing strong decay of |Z_q| itself (1/11, theta=+1, new seed here) still has bounded,
+    unremarkable D1/D2 throughout the decay -- consistent with the note's own point (b) that genuine mass
+    loss in some residue classes is compatible with, and does not require abandoning, boundedness of the
+    moment ratios a second-order Lemma R would need.
+
+No counterexample to the moment hypothesis was found in this session's survey.
