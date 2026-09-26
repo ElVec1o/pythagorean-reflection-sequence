@@ -1,0 +1,335 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+\title{P5: is the growth series $F_T$ of $W_T$ $D$-finite? A reduction, not a resolution}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\noindent Labels: PROVED means a complete argument, given the inputs it cites. VERIFIED means
+numerical/computational evidence with the precision or range stated (no error control unless said
+otherwise). HEURISTIC means an argument without a closed error bound, offered as an informed guess.
+Notation follows \texttt{paper/journal/paper1.tex} (``paper1'') for $W_T$ and
+\texttt{paper/journal/paper2a.tex} (``paper2a'') for $U,V$ and the travel operator.
+
+\section*{Summary of outcome}
+
+This note does \emph{not} resolve Conjecture~\texttt{conj:WT-nonDfinite} of paper1 (that $F_T$, the
+growth series of the rational right-triangle group $W_T$, is not $D$-finite). What it does:
+\begin{itemize}
+\item States precisely what is already PROVED (Theorem~\texttt{thm:WT-lowcomplexity}: no relation of
+complexity $\le d$ in explicit finite boxes) and what is only VERIFIED/HEURISTIC (the linear carry-width
+growth, the non-transfer of the travel-pole mechanism), reading paper1 \S8.7--8.9 in full.
+\item Isolates the exact mechanism that proves non-$D$-finiteness for $U,V$ in paper2a
+(Theorem~\texttt{thm:nonDfinite}, via Lemma~\texttt{lem:odeposes}) and states, as a genuinely new but
+easy PROVED lemma (\S\ref{sec:reduction}), the precise sufficient condition under which the same
+mechanism would give non-$D$-finiteness of $F_T$: a meromorphic continuation of $F_T$ to a domain
+containing infinitely many of its poles. This is an immediate corollary of the already-proved
+domain-general Lemma~\texttt{lem:odeposes}; the content is the reduction, not new analytic input.
+\item Explains precisely why that hypothesis is not currently available for $F_T$ (\S\ref{sec:gap}):
+unlike $U,V,G^T_0$, $F_T$ has no known continuation past its radius of convergence at all, so the
+sufficient condition of \S\ref{sec:reduction} cannot even be tested for $F_T$ with tools now in the
+repository.
+\item Records the FKS/Akiyama--Frougny analogy in the precise form paper1 already uses it
+(\S\ref{sec:analogy}), and states as HEURISTIC (paper1's own word) why the rational-base transfer
+picture is expected to fail for $W_T$: the numeration base $\zeta_T$ has $|\zeta_T|=1$, so nothing
+contracts the carry, and the carry-width data computed by \texttt{wt\_carry} shows linear growth in the
+sampled range, not the boundedness that drives the $\mathrm{BS}(p,q)$, $p\mid q$ rationality proof or
+the Akiyama--Frougny--Sakarovitch automaticity results.
+\item States the remaining gap as three independently missing ingredients (\S\ref{sec:gap}), none of
+which is closed here.
+\end{itemize}
+The row stays OPEN. No new computation was run for this note beyond re-deriving already-published
+numbers from the existing \texttt{wt\_carry}/\texttt{wt\_growth} output files, which were re-read but
+not regenerated (see \S\ref{sec:verif}).
+
+\section{What $W_T$ and $F_T$ are}\label{sec:def}
+
+Fix a right triangle $T$ with positive, unequal rational legs, encoded (paper1 \S8) by coprime
+integers $(c,e)$ with $0<e<2c$ via the minimal polynomial $\mu_T=ct^2-et+c$ of the rotation number
+$\zeta_T$ (a primitive root of $\mu_T$, $|\zeta_T|=1$, $\zeta_T\notin\R$). The group
+\[
+  W_T=\langle R_0,R_1,R_2\rangle\le\mathrm{Isom}(\R^2)
+\]
+is the image of the universal reflection group $W_{\mathrm{gen}}$ under the representation
+$\rho_T$ specializing the generic rotation parameter to $\zeta_T$ (paper1, \S2283--2340: $W_T$ is
+dense in $\mathrm{Isom}(\R^2)$, linear over $\Q$, solvable of derived length exactly $3$, not finitely
+presented, quasi-isometric to $\R^2\times$ a horocyclic product of Baumslag--Solitar-type spaces). Its
+\emph{growth series} with respect to the standard generating set $\{R_0,R_1,R_2\}$ is
+\[
+  F_T(x)=\sum_{d\ge0}u_d^T\,x^d,\qquad u_d^T=\#\{g\in W_T:\ \ell_T(g)=d\},
+\]
+paper1 line 2548. By Theorem~\texttt{thm:universality-sharp} the layers $u_d^T$ agree with the
+$T$-independent \emph{universal} layers $u_d$ (of $W_{\mathrm{gen}}$/its associated
+$\mathrm{Elt}$-model) up to a shape-dependent onset depth $n_T\ge c_T$
+(Corollary~\texttt{cor:kernel-classification-restate}), and only deviate from them beyond that depth.
+
+\paragraph{The $D$-finiteness question (P5).} $F_T$ is $D$-finite (holonomic) if it satisfies a linear
+ODE $\sum_{i=0}^r Q_i(x)F_T^{(i)}(x)=0$ with polynomial coefficients $Q_i$, $Q_r\not\equiv0$; equivalently
+(Stanley, \emph{Enumerative Combinatorics} II, \S6.4 — cited as in paper1/paper2a, not independently
+re-verified in this note) $(u_d^T)$ is P-recursive. Conjecture~\texttt{conj:WT-nonDfinite} (paper1, line
+2734) asserts $F_T$ is \emph{not} $D$-finite, for every such $T$, and likewise for the ``toy groups''
+$\Z[\zeta_T^{\pm1}]\rtimes_{\zeta_T}\Z$ with generators $\{1,\mathrm{shift}\}$.
+
+\section{What is already proved: a computer-assisted finite-order exclusion}\label{sec:proved}
+
+\begin{itemize}
+\item[(PROVED, computer-assisted)] Theorem~\texttt{thm:WT-lowcomplexity} (paper1, line 2564): for every
+such $T$, $F_T$ satisfies no algebraic relation $\sum_iP_iF_T^i=0$ with $(k,\max\deg P_i)$ at most
+$(1,14),(2,9),(3,6),(4,5),(5,4),(6,3)$, and $(u_d^T)$ satisfies no P-recursion with $(r,\max\deg Q_i)$
+at most $(1,14),\dots,(11,0)$ (paper1 line 2572--2574). The proof uses only the $33$ shape-independent
+universal terms $u_0,\dots,u_{32}$ (certified through $u_{22}$ by a \texttt{native\_decide} Lean
+computation, tier (ii) trust; through $u_{32}$ by an exact Rust BFS plus modular-plus-exact certificate,
+tier (iii) trust — see paper1 \S8.6/App.~\texttt{sec:reproduce}) and full-rank-mod-$(2^{61}-1)$ linear
+algebra in \texttt{code/zeta\_probe/wt\_growth/guess.py}, which is exact in the direction used (full
+rank mod $p$ implies full rank over $\Q$) but is a script, not formalized.
+\item[(PROVED, conditional)] Theorem~\texttt{thm:WT-blowup} (paper1, line 2625): \emph{if} the universal
+series $U$ is not $D$-finite (paper2a's Theorem~\texttt{thm:nonDfinite}, unconditional there — see
+\S\ref{sec:mechanism}), then for every complexity bound $d$ only finitely many similarity classes of
+$T$ have $F_T$ of complexity $\le d$. The proof is a clean finite-dimensional nested-kernel argument and
+is ineffective (ends at line 2670: ``The proof is ineffective: it gives no value of $N(d)$'').
+\item[(explicit calibration against a false positive, PROVED)] Remark~\texttt{rem:BS-calibration}
+(paper1, line 2604): the structurally similar Baumslag--Solitar group $\mathrm{BS}(1,2)$ \emph{does} have
+a rational growth series (Collins--Edjvet--Gill, cited), of type $(14,13)$, invisible to a
+finite-horizon search until $\ge29$ terms are available. This is why
+Theorem~\texttt{thm:WT-lowcomplexity}, a finite-order exclusion, cannot by itself be read as evidence
+for the conjecture: a rational $F_T$ of moderate type would currently be undetected.
+\end{itemize}
+None of the above proves Conjecture~\texttt{conj:WT-nonDfinite}. It proves an exclusion of relations in
+explicit finite boxes, and a conditional statement whose hypothesis is exactly (an instance of) the
+conjecture's cousin for the universal series $U$ — itself proved unconditionally in paper2a, but by a
+mechanism (\S\ref{sec:mechanism}) that paper1 explicitly records as not transferring to $F_T$
+(paper1, line 2766: ``does not appear to transfer'').
+
+\section{The mechanism that works for $U,V,G^T_0$}\label{sec:mechanism}
+
+Theorem~\texttt{thm:nonDfinite} of paper2a proves $U,V$, and the travel resolvent $G^T_0$ are not
+$D$-finite, via:
+\begin{enumerate}
+\item[(a)] a meromorphic continuation of the series to the open unit disc $D=\{|x|<1\}$ (for $G^T_0$,
+unconditionally, from the Fredholm-determinant representation of the travel operator
+$\mathcal T=D_eK$, $K=[q^{\max(s,s')}]_{s,s'\ge0}$; for $U,V$, standing on Theorems~\texttt{thm:model}
+and~\texttt{thm:RJ});
+\item[(b)] infinitely many poles of that continuation inside $D$ (for $G^T_0$ unconditional — every
+$q_m$ in $q$, every $\pm x_m$ in $x$; for $U,V$, at every $x_m$ resp.\ $\pm x_m$, from
+Theorems~\texttt{thm:V},~\texttt{thm:U} and Propositions~\texttt{prop:Vminusx},~\texttt{prop:minusx});
+\item[(c)] Lemma~\texttt{lem:odeposes} (paper2a, line 1468), a fully general and elementary fact: if $f$
+is meromorphic on a domain $\Omega$ and solves $\sum_{j\le r}a_jf^{(j)}=b$ off its poles, with
+$a_0,\dots,a_r,b$ holomorphic on $\Omega$ and $a_r\not\equiv0$, then every pole of $f$ in $\Omega$ is a
+zero of $a_r$. Since $a_r$ is holomorphic and not identically zero, its zero set in any relatively
+compact subdomain is finite. Infinitely many poles in $D$ (from (a),(b)) then contradicts a would-be
+holomorphic-coefficient ODE on a neighbourhood of $\overline D$, hence the coefficients cannot be
+polynomial either (a polynomial is holomorphic everywhere).
+\end{enumerate}
+This is the only mechanism the repository currently has for proving non-$D$-finiteness of a series of
+this general shape. Any attempt to prove Conjecture~\texttt{conj:WT-nonDfinite} by the same route needs
+(a) and (b) to hold for $F_T$ itself (or for some series determining $F_T$, e.g.\ the toy groups' growth
+series).
+
+\section{A trivial but honest reduction}\label{sec:reduction}
+
+\begin{lemma}[Reduction, PROVED — immediate from Lemma~\texttt{lem:odeposes}]\label{lem:reduction}
+Fix $T$. Suppose $F_T$ (equivalently, its analytic continuation from a neighbourhood of $0$, if one
+exists) extends to a meromorphic function on some domain $\Omega\subseteq\C$ containing $0$, and that
+this continuation has infinitely many poles lying in some relatively compact subset of $\Omega$. Then
+$F_T$ is not $D$-finite: it satisfies no linear ODE with coefficients holomorphic on $\Omega$
+(a fortiori none with polynomial coefficients, since a nonzero polynomial has finitely many zeros in
+$\C$, hence in any relatively compact set, unless it has none there at all — the same finiteness
+argument applies verbatim).
+\end{lemma}
+\begin{proof}
+Identical to the proof of Theorem~\texttt{thm:nonDfinite} in paper2a: apply Lemma~\texttt{lem:odeposes}
+with $\Omega$ in place of the unit disc. A pole of $F_T$ in $\Omega$ that is not a zero of the leading
+coefficient $a_r$ is impossible, and $a_r$ has only finitely many zeros in any relatively compact subset
+of $\Omega$ (identity theorem, $a_r\not\equiv0$ holomorphic), contradicting the assumed infinitude of
+poles there.
+\end{proof}
+
+\noindent This lemma has zero new mathematical content beyond paper2a's own argument; it is stated here
+only to make explicit that \emph{the entire missing step of P5 is producing hypotheses (a) and (b) for
+some domain $\Omega$} — nothing else is needed once they are available. This sharpens ``prove
+Conjecture~\texttt{conj:WT-nonDfinite}'' to ``find any domain and any continuation of $F_T$ into it with
+infinitely many poles there,'' which is the same reduction paper2a already performs for $U,V,G^T_0$, now
+made explicit as the target for $F_T$.
+
+\section{Why the hypotheses of Lemma~\ref{lem:reduction} are not available}\label{sec:gap}
+
+Paper1 (\S8.8, lines 2732--2774) already gives the precise reason the $U,V,G^T_0$ route does not
+obviously transfer, which this note restates without weakening it:
+
+\begin{enumerate}
+\item[\textbf{Gap 1 (no known continuation).}] Unlike $U,V,G^T_0$, there is no known representation of
+$F_T$ analogous to the Fredholm determinant of the travel operator (item (a) of \S\ref{sec:mechanism}).
+$F_T$ is presently known only as a power series from finite BFS layers (\texttt{wt\_growth}) plus the
+universality identification with $U$'s layers up to depth $n_T$. Nothing in the repository establishes
+that $F_T$ continues past its radius of convergence $1/\limsup(u_d^T)^{1/d}$ at all. Hypothesis (a) of
+Lemma~\ref{lem:reduction} is therefore currently untestable for $F_T$, not merely unproved.
+\item[\textbf{Gap 2 (the natural transfer variable is different, and its dynamics look wrong).}] The
+combinatorial source of $U,V$'s infinitely many poles is the travel block, a sub-transfer with
+catalytic variable that is \emph{not} damped: paper1 identifies the corresponding structure for $W_T$ as
+the \emph{carry} $f\in\Z[t^{\pm1}]$ in the identification $A\sim A+2\mu_Tf$ of edge profiles giving the
+same group element (Corollary~\texttt{cor:kernel-classification-restate}). Long division of a profile
+by $2\mu_T$ from the low end realizes numeration in base $\zeta_T$, $|\zeta_T|=1$. Because the base does
+not contract ($|\zeta_T|=1$, as opposed to a rational base $q/p>1$ that contracts a remainder to a
+bounded window), nothing forces the carry state to stay in a bounded set: it performs a walk in the
+plane $\Z[\zeta_T]$, not a bounded automaton state.
+\item[\textbf{Gap 3 (a proof would need a carry-catalytic transfer equation, and none exists).}]
+Paper1 states, explicitly labelled HEURISTIC there (line 2771, ``We have not proved this, and state it
+only as a heuristic''): the travel-pole mechanism of $U,V$ is believed to be collapsed by the carry
+mechanism, i.e.\ pure-travel elements remain distinct in $W_T$ but the \emph{magnitude sector} of the
+transfer producing the travel poles does not survive intact once carries are accounted for. No
+functional/transfer equation for $F_T$ with the planar carry as an explicit catalytic variable is
+known to exist (paper1, line 2772--2773: ``A proof of Conjecture~\texttt{conj:WT-nonDfinite} would seem
+to need a transfer in which the planar carry is the catalytic variable, and no such equation is
+available.''). This is the mathematical crux: without such an equation there is no candidate route to
+either hypothesis (a) or (b) of Lemma~\ref{lem:reduction} for $F_T$.
+\end{enumerate}
+
+\noindent Closing P5 unconditionally therefore requires, at minimum, either (i) an explicit meromorphic
+continuation of $F_T$ together with a proof of infinitely many poles inside its domain (the direct
+route, blocked by Gaps 1--3), or (ii) some entirely different obstruction to $D$-finiteness not based on
+pole confinement — e.g.\ a genuinely unbounded-state automaticity/numeration argument transferred from
+Akiyama--Frougny--Sakarovitch (\S\ref{sec:analogy}), which would need to be developed from scratch, since
+their theorems are stated for contracting (rational, $>1$) bases and $|\zeta_T|=1$ is exactly the
+boundary case they do not cover.
+
+\section{The FKS / Akiyama--Frougny analogy, read precisely}\label{sec:analogy}
+
+Paper1 (line 2741--2750) draws the analogy this note is asked to examine. Restated precisely, with the
+literature flagged (\S\ref{sec:lit}):
+\begin{itemize}
+\item Freden--Knudson--Schofield (cited in paper1's bibliography as
+\texttt{bibitem\{FKS2011\}}, ``Growth in Baumslag--Solitar groups'' or similarly titled — \textbf{FKS
+here stands for the surname initials of these three authors, Freden, Knudson, Schofield; it is not an
+acronym for Furstenberg or Flajolet--Kurshan--Steele}, contrary to one plausible guess raised in the
+task prompt) computed the growth of the horocyclic subgroup of $\mathrm{BS}(p,q)$ and proved it rational
+when $p\mid q$.
+\item For $p\nmid q$ (first case $\mathrm{BS}(2,3)$): no geodesic combing of that subgroup is
+context-free, and the growth series is conjectured (not proved, per paper1) irrational; the underlying
+arithmetic is numeration in the rational base $q/p$, whose integer expansions form a non-regular
+language, citing Akiyama--Frougny--Sakarovitch (\texttt{bibitem\{AFS2008\}} in paper1, ``Powers of
+rationals modulo 1 and rational base number systems'' or similarly titled).
+\item Paper1 explicitly calls Conjecture~\texttt{conj:WT-nonDfinite} ``the unit-circle counterpart of
+that situation, and \dots\ at least as hard'' (line 2749--2750). The analogy is therefore stated in
+paper1 itself as a difficulty comparison, not as a proof strategy with a known target theorem to invoke:
+the $p\nmid q$ non-rationality of $\mathrm{BS}(p,q)$'s horocyclic growth series is \emph{itself an open
+problem} in the cited literature (per paper1's own account), so P5's ``next step'' points at a technique
+whose home instance is unsolved.
+\end{itemize}
+\textbf{Consequence for P5.} The suggested approach (``bounded-state structure / rational-base
+numeration'') is exactly the numeration-in-base-$\zeta_T$ picture of Gap 2 above, and paper1 already
+tried it as far as the repository's tools allow: it looked for a bounded carry window (which would be
+the $W_T$ analogue of a contracting rational base giving a finite automaton) and found none, in the
+numerically sampled range (below).
+
+\section{The carry-width numerics, re-read (not regenerated)}\label{sec:verif}
+
+\begin{itemize}
+\item[(VERIFIED, in the narrow sense of ``re-read the existing output,'' not re-run)]
+\texttt{code/zeta\_probe/wt\_growth/src/bin/wt\_carry.rs} computes, for $(c,e)=(2,1)$ and $d\le32$, the
+exact optimal carry width (min-plus DP over carries $f$, exact \texttt{i128} arithmetic in
+$\Z[1/c][\zeta]$) needed to realize the $W_T$-geodesic length of every element of the universal ball of
+radius $d$. Paper1 (line 2761--2763) reports this width as $\lfloor(d-12)/2\rfloor$ for all $d\le32$ —
+linear growth, with no plateau, in the sampled range. This is exactly the opposite of the boundedness a
+finite-state/bounded-carry automaton picture (the P5 ``next step'') would need, in the one shape and
+depth range where it has been checked. Paper1 itself labels this ``verified, not proved'' (line
+2764--2765 and again at line 23 of \texttt{wt\_growth/README.md}: ``The carry-window law is verified,
+not proved.''). I did not re-run \texttt{wt\_carry} for this note (no new computation was judged
+necessary or worth the disk/CPU budget for a result already on file and already correctly labelled); I
+only re-read \texttt{code/zeta\_probe/wt\_growth/README.md} and the cited line range of paper1.tex to
+confirm the claim and its status label match.
+\item No sanity Rust/Arb script is added by this note. A genuinely new contribution here would be
+running \texttt{wt\_carry} at additional $(c,e)$ shapes and larger $d$ to test whether the linear law
+$\lfloor(d-12)/2\rfloor$ is shape-independent or an artifact of $(c,e)=(2,1)$; this was judged out of
+scope for this reduction note (it would extend, not close, the existing VERIFIED claim) and is recorded
+as the first concrete next action in \S\ref{sec:next}.
+\end{itemize}
+
+\section{Open gap / weakest points, stated explicitly}\label{sec:weak}
+
+\begin{enumerate}
+\item The single mathematical gap that would close P5 by the pole-confinement route is exactly Gap 1
+of \S\ref{sec:gap}: \emph{no domain $\Omega$ and no meromorphic continuation of $F_T$ into $\Omega$ is
+known}. Lemma~\ref{lem:reduction} (this note) shows this is the \emph{only} gap for that route — once
+(a) and (b) are supplied, non-$D$-finiteness follows by the identical (already-proved) argument as for
+$U,V,G^T_0$.
+\item The weakest point of the existing repository evidence is Theorem~\texttt{thm:WT-lowcomplexity}
+being read as more than it is: it is a finite-order exclusion, explicitly calibrated against a false
+positive ($\mathrm{BS}(1,2)$, Remark~\texttt{rem:BS-calibration}) that a search of comparable size would
+have missed. It gives no asymptotic information and cannot, by itself, ever prove
+Conjecture~\texttt{conj:WT-nonDfinite} (a conjecture about all orders, not any finite box).
+\item The carry-width linear growth (\S\ref{sec:verif}) is VERIFIED at one shape, one depth range
+($d\le32$, $(c,e)=(2,1)$), and paper1 itself does not claim it generalizes; it is not even a HEURISTIC
+argument for non-$D$-finiteness by itself, only evidence against the one concrete route (bounded carry
+automaton) that P5's own suggested next step names.
+\item The FKS/Akiyama--Frougny analogy (\S\ref{sec:analogy}) is, on inspection, an analogy to an
+\emph{open} problem ($\mathrm{BS}(p,q)$, $p\nmid q$, non-rationality), not a solved one whose method could
+be imported. This considerably weakens ``Bounded-state structure / Rational-base numeration'' as a
+stated next step: even a full transfer of the Akiyama--Frougny apparatus to $W_T$ would, at best, reduce
+P5 to the currently-open $\mathrm{BS}(p,q)$ problem's own difficulty, not solve it.
+\item This note performed no new computation and no new proof beyond Lemma~\ref{lem:reduction} (itself
+an immediate corollary of an existing lemma). It should not be read as progress on the conjecture, only
+as a precise map of where the difficulty is and an explicit, minimal target (Gap 1) for future work.
+\end{enumerate}
+
+\section{Concrete next actions (not carried out here)}\label{sec:next}
+\begin{enumerate}
+\item Run \texttt{wt\_carry} at additional shapes ($(c,e)=(5,-6)$ i.e.\ $(1,2)$, $(53,-90)$ i.e.\ $(2,7)$,
+and one or two more laboratory shapes) and larger $d$ (subject to the RSS/wall caps in
+\texttt{wt\_growth/lab.sh}, \texttt{lab2.sh}, i.e.\ $\le3000$MB, $\le285$s per run under
+\texttt{runcap.sh}) to see whether the carry width's linear law $\lfloor(d-12)/2\rfloor$ is
+shape-universal or shape-dependent. A shape-dependent law would be interesting; a universal one would
+still not prove non-$D$-finiteness (Gap 3), but would strengthen the heuristic.
+\item Attempt to write \emph{any} functional equation for $F_T$ or for the toy-group growth series
+$\sum u_d^{\mathrm{toy}}x^d$ with the planar carry as an explicit catalytic (extra) variable, even a
+conjectural one to be verified only numerically at first — this is the concrete missing object named at
+Gap 3, and the toy groups (already computed exactly, not modularly, in
+\texttt{code/zeta\_probe/zeta\_toy\_growth/}) are the more tractable target since their growth series are
+known exactly rather than only through a universality bound.
+\item If a transfer equation is found, check whether it exhibits a Fredholm-determinant structure whose
+zero set can be analyzed the way \texttt{thm:travelres} analyses $G^T_0$; if so, Lemma~\ref{lem:reduction}
+of this note applies immediately and would close P5.
+\end{enumerate}
+
+\section{Literature relied on — memory flags}\label{sec:lit}
+
+\begin{itemize}
+\item \textbf{Independently checked in this session}: every paper1.tex and paper2a.tex line/label cited
+above was read directly from the files in this repository (\texttt{paper/journal/paper1.tex},
+\texttt{paper/journal/paper2a.tex}) during this session; the \texttt{wt\_growth} README and
+\texttt{wt\_carry.rs} source comments were likewise read directly.
+\item \textbf{Cited from paper1's own bibliography, not independently verified against the primary
+source in this session} (i.e.\ I read paper1's citation of them, but did not fetch or check
+Freden--Knudson--Schofield or Akiyama--Frougny--Sakarovitch's papers themselves): the precise theorem
+statements attributed to \texttt{FKS2011} and \texttt{AFS2008} above are paper1's paraphrase, taken at
+face value. The identification of ``FKS'' with Freden--Knudson--Schofield rather than some other
+expansion is read off paper1's \texttt{\textbackslash bibitem\{FKS2011\}} entry
+(\texttt{paper/journal/paper1.tex}, line $\sim$5352: ``E.~M.~Freden, T.~Knudson and J.~Schofield,
+\emph{Growth in \dots}''), which \emph{was} read directly in this session, so this identification itself
+is independently checked, not a memory guess.
+\item \textbf{From the assistant's training-data memory, not checked against any source in this
+session, and flagged as such}: (i) the general fact that Baumslag--Solitar groups $\mathrm{BS}(p,q)$
+with $p\mid q$ have rational growth series and $p\nmid q$ is open/conjectured non-rational — this
+matches paper1's own statement and is not contradicted by it, but I did not independently verify it
+against Collins--Edjvet--Gill or Freden--Knudson--Schofield directly; (ii) any general background claim
+about the Akiyama--Frougny--Sakarovitch rational-base numeration system being a non-regular language and
+the associated automaticity theory — I recall this area exists and roughly what it says, but did not
+re-derive or re-check any specific theorem statement from it beyond what paper1 already states; this
+note's Gap 2/Gap 3 analysis does not depend on the precise form of any AFS theorem, only on the
+structural observation (independently verifiable from the $(c,e)=(2,1)$ carry data above) that
+$|\zeta_T|=1$ gives a non-contracting base, which is paper1's own point, not a citation-dependent one.
+\item \textbf{Stanley, \emph{Enumerative Combinatorics} vol.\ II, \S6.4} (equivalence of $D$-finite
+series and P-recursive coefficients): cited exactly as paper1 and paper2a cite it; not independently
+re-derived or checked against the book in this session.
+\end{itemize}
+
+\end{document}
