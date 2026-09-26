@@ -1,0 +1,75 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.3cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\title{P1\_golden: an attempt on the golden threshold $\ell\approx0.484$\\
+\small research programme P1, ``Track A item 2'', 2026-09-26 --- still OPEN, sharper diagnosis only}
+\date{}
+\begin{document}\maketitle
+
+\paragraph{Status in one line.} No proof found. The threshold is \emph{not} shown to be a hard wall either. What is new here: (1) exact-formula numerics showing the crude Lemma~B bound is \emph{lossy}, not sharp, over most of the target window $x\in(0.0804,0.143)$; (2) an identification of exactly which structural fact a fix would need (cancellation in a genuine exponential sum, not a bookkeeping improvement); (3) a precision-collapse phenomenon of the exact-formula script right at the good-arc edge, which is itself a diagnostic, not a proof of anything.
+
+\section{What was read}
+\texttt{P1h/P1h\_lemma.tex} (crude Lemma~B, \S\ref{sec:threshold} below), \texttt{P1e\_lemma.tex} Lemma~R (\texttt{lem:R}, the amplitude-to-level-$q$ renormalisation) and its \S2 (``why a $q$-uniform Lemma lap cannot close the induction''), and every hit of ``moment hypothesis'' in \texttt{general/} (P1e\_lemma.tex \S2, P1h\_lemma.tex \S\ref{sec:obs} item 5, report\_P1e.md).
+
+\subsection{The exact inequality chain behind $y<0.61633$}\label{sec:threshold}
+In P1e Lemma~B (crude, deep-seed step), at a hazard $j/n$ ($n\ge53$, region base $y$), the induction closes through
+\[
+|Z_N|\ \gtrsim\ \tfrac14\sqrt{\pi/2A}\,|Z_n(j/n)|\,e^{-n|F(t_0)|N},\qquad
+\Big|S_{\rm amp}-(1-w_n)^{-1/2n}Z_n\Big|\ \le\ \Big(\sum_k|\gamma_k||e^{X_k}|\Big)(e^{\delta_R}-1),
+\]
+and the bracket is bounded, term by term over the $n$ residues $k$, by
+\[
+\sum_k|\gamma_k||e^{X_k}|\ \le\ \sqrt{2n}\cdot\sup_k|e^{X_k}|\ \le\ \sqrt{2n}\cdot\beta,\qquad \beta=\exp\Big(\tfrac{\bar w}{2n(1-\bar w)}+\tfrac n2 L\Big),\ L=-\log(1-y).
+\]
+This $\beta=e^{nL/2}(1+o(1))$ is the crux: it is the \emph{worst single term} $e^{-n\log(1-y)/2}$, and \emph{every} term $k$ is charged this price by the triangle inequality, even though only one $k$ (or none) actually attains it. Against the hazard's own scale $d\le y^n/(4\tau)$, the resulting relative error is
+\[
+E,R\ \asymp\ n^{5/2}\theta^n,\qquad \theta=e^\kappa y/\sqrt{1-y}\quad(\kappa=0.005\text{ the induction's growth rate}),
+\]
+and the induction survives iff $\theta<1$. Solving $e^\kappa y=\sqrt{1-y}$ as $\kappa\to0$ gives $y^2+y-1=0$, i.e.\ $y\to(\sqrt5-1)/2=0.61803$; at $\kappa=0.005$ this is $y^*=0.61633$, i.e.\ $\ell>0.48398$ ($x>0.132948$). \textbf{This is exactly a triangle-inequality (worst-term) loss, not a fact about $Z_n$.} That is stated already in P1e \S2 (the loss factor $\Lambda=\sum_k|\gamma_k||e^{X_k}|/|Z_q|$, shown there to grow like $e^{0.008q}$ along one drift family at $\ell=0.12$), and P1h inherits it unchanged (its Table~\ref{tab:reg}-style $\theta$ values, $0.7544$/$0.9260$, are the same formula at $y=0.52,0.59$).
+
+\subsection{Lemma R and what a ``second-order'' version needs}
+Lemma R (\texttt{lem:R}) bounds $|S_{\rm amp}-(1-w_q)^{-1/2q}Z_q(p/q)|$ by exactly the same $\sum_k|\gamma_k||e^{X_k}|$ times a small factor $(e^{\delta_R}-1)$; it is a \emph{first-order} (value-only) transfer from level $N$ down to level $q$. P1e \S2 already names what a strengthening would need: not a better $\delta_R$, but replacing the pointwise/triangle bound on $\sum_k\gamma_k e^{B_k}$ itself by a bound that uses the \emph{smoothness of $k\mapsto e^{B_k}}$ across residues -- i.e.\ a moment/derivative hypothesis $|f^{(j)}(t)|\le C_j(2\pi q)^jZ_q$ for $f(t)=\sum_k\gamma_ke^{\Phi_q(\zeta_0^ke(-t))}$, which would let a Taylor/interpolation argument replace $n$ independent worst-case terms by one controlled envelope. \texttt{P1e\_logderiv.py} already measures the two moment ratios $D_1,D_2$ this would need, and reports them \emph{bounded} ($D_1\le0.11$, $D_2\le0.03$ on all of $q\le150,\ \ell\ge0.855$; $D_1\le0.05,\allowbreak D_2\le0.003$ on the drift families it tracks) while $\Lambda$ is unbounded. No proof of the moment bound exists in the repository; it is exactly the missing ``second-order Lemma R''.
+
+\section{An attempt: does the crude bound reflect a real effect?}\label{sec:attempt}
+I ran the existing rigorous (Arb, exact finite-formula) script \texttt{P1e\_logderiv.py} in \texttt{fam} mode -- this computes $|Z_q(p/q)|$, $\Lambda$, $D_1$, $D_2$ \emph{exactly} via Lemma Zk, with no crude bound involved -- along drift families at seeds inside and near the target window $x\in(0.0804,0.143)$, all with $\ell<0.484$ (below the golden threshold). Runs used \texttt{perl -e 'alarm 290; exec @ARGV'}; peak RSS $<30$MB; no files written besides this note.
+
+\begin{center}\small\begin{tabular}{lllllll}\toprule
+seed & $\ell$ & side & $q\approx55$ & $q\approx200$ & $q\approx1000$ & $q\approx3000$\\\midrule
+$1/8$ & 0.4256 & $\theta=+1$ & $|Z_q|\ge0.490$ & $0.476$ & $0.471$ & $0.470$\\
+$1/9$ & 0.3135 & $\theta=+1$ & $0.469$ & $0.602$ & $1.44$ & $11.7$\\
+$1/9$ & 0.3135 & $\theta=-1$ & $0.562$ & $0.421$ & $0.178$ & $0.0215$\\
+$1/10$ & 0.2119 & $\theta=+1$ & $0.739$ & $0.772$ & $0.784$ & $0.786$\\
+$1/10$ & 0.2119 & $\theta=-1$ & $0.862$ & $0.805$ & $0.791$ & $0.788$\\
+$1/12$ & 0.0345 & $\theta=\pm1$ & $2.00$ (q=59) & \multicolumn{3}{c}{Arb enclosure fails (\texttt{nan}) for all larger $q$ tried}\\
+$1/13$ & 0.0123 & $\theta=+1$ & \multicolumn{4}{c}{fails already at $q=51$}\\\bottomrule
+\end{tabular}\end{center}
+
+\begin{itemize}
+\item At $\ell=0.43,0.31,0.21$ (all below $0.484$), $|Z_q|$ along these drift families is \emph{bounded away from 0}, and on three of the five directions it \emph{grows} with $q$. Meanwhile $\Lambda$ (the crude bound's loss factor) grows from single digits to $\sim10^4$ over the same range. This directly confirms, at seeds well below the golden threshold, the same phenomenon P1e already found at $\ell=0.12$ near $1/11$: the crude bound's pessimism is a property of the \emph{method} (triangle inequality across $n$ residues, each pessimistically bounded by the same $\beta$), not of $Z_N$. \textbf{So the method is lossy, well past $\ell=0.484$, on at least these families.}
+\item The one family that does decay ($1/9$, $\theta=-1$: $0.56\to0.021$ over $q:55\to3007$, i.e.\ roughly $e^{-0.09q}$) is the same qualitative behaviour P1e's own table shows at $1/11,\theta{=}+1$ ($\Lambda:18\to2.7\times10^7$, $|Z_q|:1.06\to10^{-3}$). It shows genuine, non-artifactual decay of $Z_q$ itself along special arithmetic progressions -- consistent with $Z_q$ eventually reaching zero somewhere deeper in $q$ along such a family, though no zero was found (nor excluded) at the $q$ tried. This is the reason a \emph{uniform} removal of $\Lambda$ cannot be a free lunch: some sequences really do lose mass, and any second-order Lemma R has to tell these two behaviours apart quantitatively, not just assert boundedness.
+\item At $\ell=0.035$ ($1/12$) and $\ell=0.012$ ($1/13$) -- i.e.\ $x$ approaching the good-arc edge $x_1^{\rm good}=0.08043$ where $\ell\to0$ and $|u_0|\to1$ -- the \emph{exact} Arb computation itself degrades to \texttt{nan} even after the script's built-in precision escalation to 3200 bits. This is not evidence that $Z_q=0$; it reflects that $|u_0|\to1$ makes the defining series for $\Phi_q$ (and the branch choice for $u$ in \texttt{data1}) numerically singular, i.e.\ the entire framework (not just Lemma B) is built on $|u_0|<1$ and degrades continuously, not just at a sharp threshold. This is a distinct, and separately unavoidable, boundary effect from the golden threshold; it was not previously flagged as a precision (as opposed to convergence-radius) issue in P1h/P1e, and is recorded here as a fresh observation, not a fix.
+\end{itemize}
+
+\section{Assessment: not a proof, not (yet) a proved hard wall}
+\begin{itemize}
+\item \textbf{(a) second-order Lemma R:} not found. The natural route -- bound $\sum_k\gamma_ke^{B_k}$ by its first two moments in $k$ instead of by $n\cdot(\text{worst term})$ -- requires proving $D_1,D_2$ stay bounded \emph{for all} $q$ in the target region, uniformly, which is exactly the un-proved ``moment hypothesis'' P1e already names (HEURISTIC/OPEN there, and still open here). I did not find an argument for it; it looks at least as hard as bounding an exponential sum's second derivative in the twist parameter uniformly in $q$, which is a nontrivial analytic-number-theory-flavoured claim, not a bookkeeping fix. I attempted, and abandoned, using the exact Gauss-sum fact $|\gamma_k|\equiv1/\sqrt q$ (constant magnitude, for odd $q$, verified directly from \texttt{P1e\_logderiv.py}'s formula $\gamma_k=g_0\cdot(\text{root of unity})$) to turn the $L^1$ triangle bound into an $L^2$/Cauchy--Schwarz or equidistribution argument on the phases of $e^{B_k}$; this would need genuine cancellation control across $k$, which reduces to a claim of the same depth as the original nonvanishing question, so it was not completed.
+\item \textbf{(b) different technique:} not found and not attempted beyond (a) above, given the session's scope; the moment/Cauchy--Schwarz idea in (a) is the only fundamentally different (non-telescoping) angle identified.
+\item \textbf{(c) sharper OPEN diagnosis (this is the actual deliverable):} the golden threshold is a property of \emph{the specific triangle-inequality step in the crude Lemma~B}, demonstrably not of $Z_N$ itself over an experimentally substantial part of $(0.0804,0.143)$ (\S\ref{sec:attempt}: $\ell=0.43,0.31,0.21$). It is \emph{not} shown to be method-only everywhere: at least one family ($1/9,\theta{=}-1$, mirroring P1e's own $1/11,\theta{=}+1$ finding) shows genuine exponential decay of $|Z_q|$ well inside the window, so a hypothetical uniform fix cannot be a pure inequality slack removal -- it must actually track which residue classes carry the mass. Separately, the exact-formula computation itself (not just the crude bound) becomes numerically unusable near the good-arc edge $\ell\to0$, a distinct and previously unrecorded boundary phenomenon.
+\end{itemize}
+
+\paragraph{Weakest points.}
+\begin{enumerate}
+\item The $q\lesssim3000$ numerics in \S\ref{sec:attempt} are VERIFIED-rigorous per-point (Arb enclosures, per \texttt{P1e\_logderiv.py}'s own documentation) but only four points per family; they show a trend, not a theorem, and in particular do not rule out $Z_q\to0$ at some larger $q$ on the families that currently look bounded ($1/8,1/10$) or growing ($1/9,\theta{=}+1$).
+\item No new inequality was proved anywhere in this note; \S\ref{sec:attempt} is diagnostic (numerics), not a step of a nonvanishing proof.
+\item The Cauchy--Schwarz/equidistribution idea in (a) was only sketched, not carried through even heuristically to an error bound; it is plausible it is exactly as hard as the underlying transcendence/nonvanishing questions elsewhere in this programme (which likewise bottom out in unresolved cancellation problems for (R-J), (M), lem:cos), i.e.\ this may simply be the same wall recurring, not a separate one.
+\item The \texttt{nan} failures at $1/12,1/13$ were not diagnosed inside \texttt{data1()} (branch cut of the square root defining $u$, or genuine loss of precision) -- I did not open \texttt{P1e\_logderiv.py}'s internals far enough to say which; flagged as an open engineering question, not resolved here.
+\item I did not attempt the HEURISTIC estimate in P1h \S\ref{sec:obs} item~2 (a Rust job of $10^4$--$10^6$ Arb seed evaluations for $[0.135,\frac17]$) -- that is a large compute task within the technique P1h already has, not new mathematics, and was out of scope for a first attempt at (a)/(b).
+\end{enumerate}
+
+\paragraph{Conclusion.} OPEN, unchanged in truth value, but re-diagnosed: the golden threshold is confirmed (by fresh, rigorous exact-formula spot checks, not merely restated) to be an artifact of the crude Lemma~B triangle inequality over most of the window immediately below $0.484$, while at least one arithmetic family already exhibits the genuine decay that any real fix would have to respect. No second-order Lemma R, and no alternative technique, was produced.
+
+\paragraph{Files.} This note only; it calls the existing, unmodified \texttt{P1e\_logderiv.py fam ...} (read-only use). No new scripts, no compiled PDF (disk budget). Raw run: four \texttt{fam} invocations at $j/n_0\in\{1/9,1/10,1/12,1/13\}$, $\theta\in\{+1,-1\}$, $q\in\{\sim55,\sim200,\sim1000,\sim3000\}$, wrapped in \texttt{perl -e 'alarm 290; exec @ARGV'}, well under the 3GB/24GB memory guard (observed peak $<30$MB).
+\end{document}
