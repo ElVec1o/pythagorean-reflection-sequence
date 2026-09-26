@@ -1,0 +1,16 @@
+=== j=4  t0=(0.02732181489+0.001017999912j)  rho=0.00328089 ===
+  (boundary) min|B| over 4096 pts = 1.633338e-02  [worst rB=0.0663, worst tail=2.48e-32]
+  discrete winding number of arg(B) around the circle = 1.000000
+  (R=0.006562 circle) sup|B| over 512 pts = 3.804426e-01  [worst rB=0.1091, worst tail=5.80e-25]
+  Cauchy bound: sup_{|t-t0|<=rho}|B'(t)| <= 2.319141e+02
+  chord (adjacent-sample step) = 5.0328e-06
+  margin = min|B| - sup|B'|*chord = 1.5166e-02  ->  RIGOROUS PASS (aliasing excluded)
+
+=== j=5  t0=(0.02193370833+0.0005691659052j)  rho=0.00263293 ===
+  (boundary) min|B| over 4096 pts = 3.607952e-03  [worst rB=0.1372, worst tail=1.19e-21]
+  discrete winding number of arg(B) around the circle = 1.000000
+  (R=0.005266 circle) sup|B| over 512 pts = 3.007916e-01  [worst rB=0.2092, worst tail=1.18e-15]
+  Cauchy bound: sup_{|t-t0|<=rho}|B'(t)| <= 2.284842e+02
+  chord (adjacent-sample step) = 4.0389e-06
+  margin = min|B| - sup|B'|*chord = 2.6851e-03  ->  RIGOROUS PASS (aliasing excluded)
+

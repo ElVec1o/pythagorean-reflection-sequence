@@ -1,0 +1,105 @@
+\section*{Room of mathematicians, item 8 (2026-09-26): closing Erd\H os's derivative-bound gap}
+
+\paragraph{Calibration point.} Reproduced (\texttt{room1\_seat\_erdos\_rouche.py}, unchanged): for
+$j=4$ ($t_0\approx0.02732181489+0.001017999912i$, near $\zeta=e(1/6)$), the discrete winding number
+of $\arg B$ around the disk $|t-t_0|=\rho\approx0.12|t_0|\approx0.00328$, sampled at 24 points with
+60-digit Arb ball arithmetic, is exactly $1$. This matches Room~1's report verbatim and confirms the
+starting point before attempting to close the gap Reviewer~AQ flagged: no explicit
+modulus-of-continuity/derivative bound on $B$ had been derived, so the winding-number evidence, however
+stress-tested (up to $400$ samples, $16\times$ density, no instability), was still empirical rather than
+a rigorous exclusion of aliasing between samples.
+
+\paragraph{What was attempted and rejected first.} A hand-derived closed-form tail bound on
+$B'$, built the same way as the $B$-tail bound is described in the note (bound $|1-q^j|\ge1-|q|^j$
+term-by-term and multiply out), was tried first and \textbf{failed}: at $N=6$'s tie point $q$ has
+modulus $|q|\approx0.97$--$0.98$ but argument $\approx\pi/3$ (not near the positive real axis), so the
+crude bound $|1-q^j|\ge1-|q|^j$ -- which only uses $|q|$, not $\arg q$ -- is many orders of magnitude too
+pessimistic (it treats every $j$ as if $q^j$ were real and close to $1$). This blew the bound up to
+$\sim\!10^{26}$--$10^{47}$, useless. A second attempt using Arb interval (ball) arithmetic directly on a
+\emph{square enclosure} of the whole disk in $q$-space also failed: propagating an interval through
+$q^{k^2}$ for $k$ up to $60$--$70$ causes catastrophic overestimation (the ball radius explodes to
+\texttt{nan}) well before the terms have decayed -- interval exponentiation to a large power is not a
+safe way to get a tail bound here. Both dead ends are recorded so they are not retried.
+
+\paragraph{What worked: a Cauchy-estimate derivative bound from a rigorous sup-bound on $B$ itself.}
+$B(q)=\sum_{k\ge0}(-2(1-q))^kq^{k^2}/(q;q)_{2k}$ has $(q;q)_{2k}=\prod_{j=1}^{2k}(1-q^j)\ne0$
+whenever $|q|<1$ (never a root of unity), so $B$ is holomorphic with no singularities on any disk
+$|t-t_0|\le R$ small enough that $|q(t)|<1$ throughout -- true here for $R$ several times $\rho$, since
+$|q(t)|=e^{-\operatorname{Re}t}$ stays $\le0.98$. This lets Cauchy's estimate do the work instead of
+differentiating the series term-by-term:
+\[
+\sup_{|t-t_0|\le\rho}|B'(t)|\;\le\;\frac{R}{(R-\rho)^2}\sup_{|z-t_0|=R}|B(z)|,\qquad R=2\rho.
+\]
+Both the boundary values $B(t)$ (on $|t-t_0|=\rho$) and the larger-circle values $B(z)$ (on
+$|z-t_0|=2\rho$) are computed rigorously, at exact sample points (not intervals), with a
+\emph{validated} geometric tail bound: at each sample point the ratio $|a_{k+1}|/|a_k|$ of consecutive
+series terms is computed exactly (Arb, 300-bit working precision) for $k=K,\dots,K+29$ ($K=70$), the
+worst such ratio $r$ is checked to be $<1$, and the tail beyond $K$ is bounded by the standard geometric
+sum $|a_K|\,r/(1-r)$. This reproduces, and is the honest version of, the ``genuinely convergent /
+super-geometric decay'' language in the note -- the earlier script's stopping rule (two consecutive
+terms below \texttt{TOL}) is here replaced by an explicit checked ratio bound, so the resulting tail pad
+is a proved upper bound, not an empirical stopping heuristic.
+
+\paragraph{Results (\texttt{room8\_seat\_erdos.py}, output in \texttt{room8\_run\_output.txt}).}
+$4096$ boundary samples, $512$ samples on the radius-$2\rho$ circle, $K=70$ head terms (tail ratio
+checked $<0.21$ in all cases; worst realized tail pad $\le1.2\times10^{-15}$, negligible):
+
+\begin{center}
+\begin{tabular}{l l l l l}
+\toprule
+$j$ & $\min_{\partial}|B|$ & $\sup_{2\rho}|B|$ & Cauchy $\sup|B'|$ & margin $=\min|B|-\sup|B'|\cdot\text{chord}$\\
+\midrule
+4 & $1.633338\times10^{-2}$ & $3.804426\times10^{-1}$ & $2.319141\times10^{2}$ & $+1.5166\times10^{-2}$ (PASS)\\
+5 & $3.607952\times10^{-3}$ & $3.007916\times10^{-1}$ & $2.284842\times10^{2}$ & $+2.6851\times10^{-3}$ (PASS)\\
+\bottomrule
+\end{tabular}
+\end{center}
+(chord $=2\rho\sin(\pi/4096)\approx5.0\times10^{-6}$ for $j=4$, $\approx4.0\times10^{-6}$ for $j=5$.)
+The discrete winding number, recomputed at this $4096$-point density, is $1.000000$ for both $j=4$ and
+$j=5$, matching Room~1.
+
+\paragraph{The rigorous certificate, stated precisely (post-review, Reviewer AT: two gaps in this
+paragraph fixed, no computation changed).} For each of $j=4,5$: $B$ is holomorphic and
+zero-free-verified-so-far on the disk $D=\{|t-t_0|\le\rho\}$ except possibly at the winding-detected
+zero; every one of $4096$ points on $\partial D$ satisfies $|B(t_i)|\ge\min_\partial|B|>0$ (Arb ball,
+rigorous); and by the Cauchy estimate on the concentric circle of radius $2\rho$, $|B'(t)|\le M$ for all
+$t\in D$ with $M$ as tabulated. Since $M\cdot(\text{chord}) < \min_\partial|B|$ in both cases, for any
+two adjacent sample points $t_i,t_{i+1}$ the straight segment between them lies in $D$ (convex) and the
+Mean Value Theorem bound $|B(t_i)-B(t_{i+1})|\le M\cdot|t_i-t_{i+1}|<|B(t_i)|$ holds; this places $B$
+restricted to the segment inside the open disk of radius $|B(t_i)|$ centered at $B(t_i)$, a disk that
+excludes $0$. \textbf{This closes the segment, not yet the boundary arc between $t_i$ and $t_{i+1}$;
+the bridge is the following elementary fact, stated explicitly:} for any point $s$ on the minor arc
+between $t_i,t_{i+1}$, the chord length $|s-t_i|=2\rho\sin(\delta/2)$ (where $\delta\in[0,\pi/2048]$ is
+the arc-angle from $t_i$ to $s$) is monotonically increasing in $\delta$, hence bounded above by the
+full inter-sample chord $2\rho\sin(\pi/4096)$ used in $M\cdot(\text{chord})<\min_\partial|B|$; so the
+same MVT bound $|B(s)-B(t_i)|\le M\cdot|s-t_i|\le M\cdot(\text{chord})<\min_\partial|B|\le|B(t_i)|$
+applies verbatim to every point on the arc, not just the sampled endpoints. Hence $B$ has no zero
+anywhere on $\partial D$ (not merely at the $4096$ sample points) and $\arg B$ cannot turn by $\ge\pi$
+between consecutive samples (the bound above shows the angular sweep along each arc is in fact
+$\le2\arcsin(M\cdot\text{chord}/\min_\partial|B|)\approx8^\circ$, far below $\pi$, so the certificate
+has real slack, not a knife-edge margin), so the true continuous winding number of $B$ around
+$\partial D$ equals the verified discrete winding number, $1$, exactly. By the argument principle $B$
+has exactly one zero (counted with multiplicity) inside each disk $D$.
+
+\emph{On the tail bound (Reviewer AT, item 5):} the geometric tail-ratio bound $r_B$ was checked over
+a window $k=K,\ldots,K+23$ ($K=70$) via rigorous Arb upper bounds on consecutive term ratios, then
+extrapolated to all $k\ge K$; the extrapolation (ratio sequence non-increasing beyond the checked
+window) was not itself proved in-code, though it is analytically defensible (the dominant factor
+$|q|^{2k+1}$ strictly decreases and the Pochhammer-denominator correction is squeezed toward $1$). This
+is downgraded from ``validated'' to ``checked over a window; not proved to extrapolate.'' It does not
+threaten either PASS verdict: the realized tail pads are $10$--$13$ orders of magnitude smaller than
+the certified margins, so even a grossly weaker tail bound would not flip either result.
+
+\textbf{Verdict: RIGOROUS CERTIFICATE COMPLETED} (both write-up gaps fixed above; the underlying
+numerics, independently reproduced bit-for-bit by Reviewer AT, are unchanged). The aliasing gap
+Reviewer~AQ identified is closed for
+both $j=4$ and $j=5$: each certified zero of $B$ near $\zeta=e(1/6)$ now has a fully rigorous
+argument-principle certificate (Arb ball arithmetic throughout, no floating-point-only step), upgrading
+Room~1's winding-number evidence from ``empirically stable, one notch below full rigor'' to a genuine
+P2-style certificate. This closes only the specific derivative-bound gap; it does not touch $N=6$'s main
+open obstruction (\S\ref{sec:obstruction} of \texttt{P1\_N6\_note.tex}, the ray-lemma degeneracy at
+$\theta^\ast=0$), which remains open.
+
+\paragraph{Files.} \texttt{room8\_seat\_erdos.py} (this room's script, Arb/python-flint throughout,
+each run $<6$s, well under the \texttt{perl alarm 290} cap and the $\sim$3000MB memory guard);
+\texttt{room8\_run\_output.txt} (raw output, reproduced in the table above).

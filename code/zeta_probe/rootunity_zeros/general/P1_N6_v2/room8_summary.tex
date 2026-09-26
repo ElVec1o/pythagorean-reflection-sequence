@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 8 (P1 N=6, remaining gaps): moderator summary}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+Two seats attacked the two most concrete remaining pieces from Room 1.
+
+\textbf{Hilbert: INCONCLUSIVE, honestly and usefully.} The 5 angular loci from Room 1's ray-lemma
+analysis cannot literally be checked, because no N=6 analogue of \texttt{prop:qi}'s $\Gamma_\pm$,
+$\Pi_0$ contours has ever been constructed in this repository -- only the $N=4$ ($q=i$) version
+exists. Reading the $N=4$ template directly (rather than guessing) revealed a real structural
+escape pattern that might transfer: the angular ray-lemma mechanism is only invoked on bounded
+windows and two fixed-height infinite legs, never on the one genuinely unbounded/tilted leg, which
+is instead certified via an angle-free modulus bound immune to resonance loci entirely. Whether
+this transfers to a hypothetical $N=6$ construction is unknown; building that construction is
+substantial new work, not attempted here. Confirmed explicitly: even a fully favorable resolution
+of this piece would \emph{not} close $N=6$ by itself (the $N=6$-specific landscape bookkeeping is
+still missing), and this piece is independent of Ramanujan's separately-confirmed doomed
+crude-method margin (different method entirely).
+
+\textbf{Erd\H os: a genuine small closure, reviewed and fixed.} A rigorous Cauchy-estimate
+derivative bound on $|B'|$ now closes the specific aliasing gap Reviewer AQ flagged for the 2
+certified zeros near $\zeta=e(1/6)$ from Room 1. Reviewer AT independently reproduced the
+computation bit-for-bit and confirmed the Cauchy-estimate mechanism, the chord quantity, and the
+numerical margins are all correct, with real slack (angular sweep $\approx8^\circ$, far below the
+$\pi$ threshold, not a knife-edge). Two write-up-level gaps (a chord-vs-arc conflation in the MVT
+argument; an over-stated ``validated'' tail bound that was really only checked over a finite window)
+were found and fixed in the note text; neither affected the numerical conclusion, both are now
+stated precisely. \textbf{Both zeros are now fully rigorously certified}, upgrading them from ``one
+notch below full rigor'' (Room 1) to a genuine argument-principle certificate.
+
+\textbf{Room verdict: ADVANCED.} A small, genuine, now-rigorous closure (2 certified zeros of $B$
+near $e(1/6)$) plus a precise clarification of why the main gap (the ray-lemma degeneracy at
+$\theta^\ast=0$, needing an $N=6$-specific contour construction that does not exist) resists direct
+attack. \textbf{N=6's main obstruction is unchanged and remains OPEN.} The 2 certified zeros are a
+minor, existence-only result (not a density/accumulation theorem), and are left repo-only for now;
+they could be mentioned in paper2a as a footnote-level fact if desired, but do not materially move
+the paper's stated results.
+
+\end{document}

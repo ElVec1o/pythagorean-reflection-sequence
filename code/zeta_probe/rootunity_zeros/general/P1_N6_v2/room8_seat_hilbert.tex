@@ -1,0 +1,166 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 8 (seat: Hilbert) --- checking the five ray-lemma loci against the actual
+$\Gamma_\pm,\Pi_0$ contours of \texttt{prop:qi}}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+\section*{Calibration point}
+
+Reproduced from \texttt{P1\_N6\_note.tex}, Room~1 (Hilbert's seat), the $\theta=0$, $v_0=0$
+collapse: with $\mathcal D(a',\varphi)=\inf_{\rho\ge0}\max(\sigma(\varphi-\rho\sin\theta),
+1-e^{-a'-\rho\cos\theta})$, at $\theta=0$ the $\sigma(\varphi-\rho\sin\theta)$ term is constant
+($=\sigma(\varphi)$, since $\sin\theta=0$ kills the rotation), so
+$\mathcal D(0,\varphi)=\max(\sigma(\varphi),\inf_{\rho\ge0}(1-e^{-\rho}))=\sigma(\varphi)$
+(the modulus term $\to0$ as $\rho\to0$, so the $\max$ is governed by the constant angular
+term). For the five non-head resonance constants at $N=6$, $c=\zeta_6^i$, $i=1,\dots,5$
+(angles $60^\circ,120^\circ,180^\circ,240^\circ,300^\circ$), $\varphi=\operatorname{dist}(\arg c,
+2\pi\mathbb Z)$ takes the values $\pi/3,2\pi/3,\pi,2\pi/3,\pi/3$, all $\ge\pi/3$, so
+$\sigma(\varphi)=\sin\min(\varphi,\pi/2)\ge\sin(\pi/3)=\tfrac{\sqrt3}2\approx0.866$. This
+confirms $\mathcal D\ge0.866$ for every $\rho\ge0$ at this one slice ($\theta=0$, $v_0=0$): I
+reproduce it, and it is correct as stated. This is explicitly a single-slice computation with
+$v_0=0$ fixed; the open question flagged in Room~1 is uniformity over the unbounded $x$-contours
+of \texttt{prop:qi}'s proof, where $\operatorname{Im}(x)$ is \emph{not} fixed at $0$, and where
+five codimension-1 loci $\arg(\zeta_6^i)-2\operatorname{Im}(x)\equiv0\pmod{2\pi}$ (equivalently
+$\operatorname{Im}(x)\equiv\arg(\zeta_6^i)/2\pmod\pi$) make the angular safety net vanish.
+
+\section*{The actual contours of \texttt{prop:qi} (paper2a.tex, \S~near lem:qi-bounds / prop:qi)}
+
+\textbf{Important scope caveat, stated up front.} \texttt{prop:qi} and its proof, and the
+$\Gamma_\pm,\Pi_0$ contours, are written in \texttt{paper2a.tex} \emph{only} for the $q=i$
+degeneration (i.e.\ the $N=4$ resonance set $c\in\{1,i,-1,-i\}$, from $c_j=i^j$ / $\vartheta(z)$
+with $z_j=c_j^{-1}e^{2x}e^{-(4-j)t}$). There is no $N=6$ version of \texttt{prop:qi} written
+anywhere in the repository: \texttt{P1\_N6\_note.tex} says explicitly that no certificate was
+written and that closing $N=6$ would require ``the $q=i$ contour-through-$\operatorname{Re}x<0$
+technique of \texttt{lem:qi-bounds}(ii), generalised'' (paper2a.tex line $\sim$2612) --- a
+generalisation that has not been carried out. So the five $N=6$ loci (built from $\zeta_6$, a
+6th root of unity) cannot literally be checked against $\Gamma_\pm,\Pi_0$ as written, because
+those contours' own turning/reference points ($x_c$, $x_0$, $x_-$, the $\pi/8,3\pi/8$ heights)
+were derived from the $N=4$ saddle geometry ($\Phi_i$, $\theta_i$, $a_0=(\sqrt5-\sqrt3)/2$), not
+from any $N=6$ saddle geometry. What follows is therefore (a) an exact readout of the $N=4$
+contours' actual $\operatorname{Im}(x)$ behaviour, since that is the one concrete data point
+available, and (b) an assessment of whether the \emph{structural pattern} it reveals plausibly
+transfers to a hypothetical $N=6$ construction --- which is as far as this can honestly be
+pushed without writing the $N=6$ generalisation itself.
+
+From the proof of \texttt{prop:qi} (Step~1, ``an exact decomposition''), reading paper2a.tex
+directly:
+\begin{itemize}
+\item $x_c$: a half-integer point within $0.02$ of $-\frac\pi8(\cot\theta_i+i)$, so
+$\operatorname{Im}(x_c)\approx-\pi/8\approx-0.3927$.
+\item $\Gamma_-$: from $x_c$ to the line $\operatorname{Im}x=-\pi/8$, then along that line to
+$+\infty$, through $x_-$. Since $\operatorname{Im}(x_-)=\operatorname{Im}(x_0)-\pi/2=3\pi/8-\pi/2
+=-\pi/8$ (using $x_-=x_0-i\pi/2$), this whole ray, after a negligible initial move from
+$\operatorname{Im}(x_c)\approx-\pi/8$, sits at the \emph{constant} height
+$\operatorname{Im}(x)=-\pi/8$ out to $\operatorname{Re}(x)=+\infty$.
+\item $\Gamma_+$: from $x_c$ to $i\pi/8$ (so $\operatorname{Im}(x)$ moves from $\approx-\pi/8$ up
+to $+\pi/8$ on this first leg), then along the ray $i\pi/8+e^{i\cdot55^\circ}\mathbb R_{\ge0}$,
+on which $\operatorname{Im}(x)=\pi/8+\rho\sin55^\circ\to+\infty$ as $\rho\to\infty$: this leg is
+\emph{not} height-constant, and by construction sweeps through every residue of
+$\operatorname{Im}(x)\bmod\pi$ infinitely often.
+\item $\Pi_0$: from $x_c$ vertically to $\operatorname{Im}x=3\pi/8$ (covering
+$\operatorname{Im}(x)\in[-\pi/8,\,3\pi/8]$), then horizontally to $+\infty$ through $x_0$
+(constant height $\operatorname{Im}(x)=3\pi/8$, since $\operatorname{Im}(x_0)=3\pi/8$
+exactly).
+\end{itemize}
+
+\section*{Checking the five loci against these ranges}
+
+The five $N=6$ loci sit at $\operatorname{Im}(x)\equiv\pi/6,\ \pi/3,\ \pi/2,\ 2\pi/3,\ 5\pi/6
+\pmod\pi$ (numerically $0.5236,\,1.0472,\,1.5708,\,2.0944,\,2.6180$; these are exactly $30^\circ,
+60^\circ,90^\circ,120^\circ,150^\circ$, i.e.\ $\arg(\zeta_6^i)/2$).
+
+1. \emph{Range of $\operatorname{Im}(x)$ on the actual $N=4$ contours}: bounded pieces cover
+$\operatorname{Im}(x)\in[-\pi/8,3\pi/8]=[-0.393,1.178]$ (the start box, the rise on $\Gamma_+$,
+the vertical run on $\Pi_0$); two infinite legs sit at the fixed heights $-\pi/8=-0.393$
+($\Gamma_-$) and $3\pi/8=1.178$ ($\Pi_0$'s horizontal run); one infinite leg ($\Gamma_+$'s tilted
+ray) sweeps $\operatorname{Im}(x)$ unboundedly through every value mod $\pi$.
+
+2. \emph{Do the five $N=6$ loci intersect this?} Numerically: none of $\{0.524,1.047,1.571,
+2.094,2.618\}$ coincides with the two constant heights $-0.393$ or $1.178$ (nearest gaps
+$\approx0.13$--$0.39$), so on $\Gamma_-$'s flat leg and $\Pi_0$'s flat leg (mod their own $2.09$
+recurrence... but note $\pi\approx3.1416$, so mod $\pi$ these two fixed values do not equal any
+of the five loci). On the bounded region $[-0.393,1.178]$, however, three of the five loci
+\emph{do} fall inside the interval: $\pi/6=0.524$, $\pi/3=1.047$, and (marginally, just outside)
+$\pi/2=1.571\notin[-0.393,1.178]$ --- so $\pi/6$ and $\pi/3$ lie inside the bounded sweep region
+covered by the start box / $\Gamma_+$'s rising leg / $\Pi_0$'s vertical leg, and $\pi/2,2\pi/3,
+5\pi/6$ do not. And on $\Gamma_+$'s unbounded tilted leg, \emph{all five} loci are crossed
+infinitely often as $\rho\to\infty$, since that leg's $\operatorname{Im}(x)$ is unbounded and
+increasing through every residue mod $\pi$.
+
+3. \emph{Where a locus is crossed, is bare modulus decay sufficient?} This is exactly where the
+proof's own structure matters, and it is the key finding of this room: \textbf{the ray-lemma
+angular mechanism $d(x)/d'(x)$ (parts (i)/(ii) of lem:qi-bounds) is, in the actual proof, invoked
+only on the bounded windows and the two height-constant infinite legs} (``the start box,'' ``$\Pi_0$
+outside $|x-x_0|\le0.4$,'' ``$\Gamma_-$ outside $|x-x_-|\le0.4$''). The genuinely unbounded,
+non-height-constant leg --- $\Gamma_+$'s tilted ray, which is exactly the leg that sweeps through
+all five loci --- is certified in Step~2 of \texttt{prop:qi}'s proof \emph{not} via the ray lemma
+but via \textbf{part (iii)} of \texttt{lem:qi-bounds} (``$\Gamma_-$ for $n=-2$ and $\Gamma_+$ for
+$n=1$, including the tails, by (iii)''). Part (iii) is a direct geometric-series bound
+$-\log|1-w|\le|w|/(1-|w|)$ using only $|z_j|\le e^{-2X}$ for $\operatorname{Re}(x)\ge X>0$; it
+never touches $\mathcal D(a',\varphi)$, $d(x)$, or $d'(x)$ at all, so it is completely immune to
+the vanishing of the angular safety net at a resonance locus. So in the $N=4$ case, on the one
+leg that actually crosses all five (or in that case, all four, $N=4$-relevant) resonance loci,
+the proof never needed the ray lemma in the first place --- it used a different, angle-free
+estimate that only needs $\operatorname{Re}(x)$ bounded away from $0$.
+
+4. \emph{Does this mean the five loci ``resolve favourably''?} Only in the narrow, structural
+sense that the $N=4$ template shows a viable escape pattern: confine the ray-lemma/$d(x)$ usage
+to bounded windows plus height-constant infinite legs chosen to avoid the resonance loci (which,
+in the $N=4$ case, $-\pi/8$ and $3\pi/8$ do avoid, by explicit check above), and route any
+leg whose $\operatorname{Im}(x)$ is genuinely unbounded through the angle-free part-(iii) bound
+instead. Two of the five $N=6$ loci ($\pi/6,\pi/3$) do fall inside the bounded sweep region
+of the $N=4$-shaped construction, where the ray lemma \emph{is} used --- but that bounded region
+is small (roughly $1.6$ units of $\operatorname{Im}(x)$) and is exactly where the certificate
+in \texttt{prop:qi}'s Step~2/3 does interval-arithmetic verification of $d(x)\ge0.244$,
+$d'(x)\ge0.254$ directly (not relying on the generic $\ge0.866$ bound), i.e.\ the existing proof
+already treats the bounded region by brute numerical certification rather than by the clean
+angular argument, so a resonance falling inside it is not automatically fatal --- but whether the
+\emph{specific} $N=6$ interval-arithmetic bounds analogous to $d\ge0.244$ survive at $\zeta_6^i$
+resonances sitting exactly at $\pi/6,\pi/3$ inside that window has not been computed, because
+no $N=6$ version of this window, or of $x_c,x_0,x_-$, has been constructed.
+
+\section*{Verdict}
+
+\textbf{INCONCLUSIVE, with a partial positive structural finding.} The check as posed --- five
+$N=6$ loci (built from $\zeta_6$) against the ``actual'' $\Gamma_\pm,\Pi_0$ contours of
+\texttt{prop:qi} --- cannot be carried out literally, because \texttt{prop:qi} and its contours
+in \texttt{paper2a.tex} exist only for the $N=4$/$q=i$ degeneration; no $N=6$ analogue of $x_c$,
+$x_0$, $x_-$, or the $\pi/8,3\pi/8$ turning heights has been derived, so there is no concrete
+$N=6$ contour to test the loci against. What \emph{can} be said, checked against the real $N=4$
+contours:
+\begin{itemize}
+\item The ray-lemma's angular mechanism is used only on bounded windows and on two
+height-constant infinite legs (at $\operatorname{Im}x=-\pi/8$ and $3\pi/8$ in the $N=4$ case),
+never on the one leg whose $\operatorname{Im}(x)$ is genuinely unbounded --- that leg is instead
+certified by the angle-free part-(iii) bound. This is a real, checkable structural feature of
+the existing proof, not a guess.
+\item If (and only if) an $N=6$ generalisation could be built with the same shape --- angular
+($d(x)$-type) estimates confined to bounded windows plus constant-height legs chosen off the
+five resonance loci, and any unboundedly-sweeping leg routed through a part-(iii)-type
+angle-free bound --- then the five loci would not obstruct uniformity for the same reason they
+don't in the $N=4$ case for that leg. This is a plausible template, not a proof: it requires (a)
+actually constructing the $N=6$ saddle/contour geometry, which does not exist yet, and (b)
+checking that the two ``bounded-window'' loci ($\pi/6,\pi/3$, which \emph{do} fall inside the
+bounded region even in the $N=4$-shaped picture) don't break the interval-arithmetic
+certification there, which also has not been computed for $N=6$.
+\item Even granting the best case (all five loci resolve favourably in a hypothetical $N=6$
+construction), this would \emph{not} by itself close $N=6$: closing the ray-lemma uniformity gap
+only rescues \texttt{lem:qi-bounds}, which is the analytic engine of the $q=i$-style
+\emph{reflected-contour} method (the ``one alternative method on record''). Ramanujan's Room~1
+finding --- that the \emph{crude}, term-by-term method's own margin is a robust $\approx0.15$
+gap, confirmed doomed for any modulus-only rescue --- concerns a \emph{different} method
+entirely, not the reflected-contour/ray-lemma route. So Ramanujan's finding does not
+independently block a hypothetical closure via the ray-lemma route; but closing $N=6$ would
+still additionally require (per \texttt{P1\_N6\_note.tex}, \S``No certificate written'') writing
+out the full $N=6$ $\Upsilon(x)$, $M'(x)$, $K'(x)$ bookkeeping and an interval-arithmetic
+landscape certificate analogous to \texttt{certify\_landscape\_i.py}, none of which exists for
+$N=6$ yet. So even a fully favourable resolution of the five loci is necessary but nowhere near
+sufficient to close $N=6$.
+\end{itemize}
+
+No Arb/python-flint computation was needed beyond the elementary $\arg/\cos/\sin$ arithmetic
+above (reported inline); disk and memory were not touched beyond reading files.
+
+\end{document}
