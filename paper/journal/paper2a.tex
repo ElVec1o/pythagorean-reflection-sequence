@@ -1184,6 +1184,46 @@ Whether the \emph{number} $\beta_2$ is transcendental is a separate question, op
 clean reduction to a value statement for a Hahn--Exton $q$-Bessel function; it is treated in
 {\cite[Appendix \textup{app:beta2}]{Bonfioli2026bB}}, which is independent of everything else in this paper.
 
+\begin{remark}[arithmetic nature of $\beta_2$: what is proved, what is open]\label{rem:beta2arith}
+Write $q^\ast=\beta_2^{-2}\in(0,1)$ for the smallest travel pole of Corollary~\ref{cor:beta}, the
+least positive root of the base-variable series
+$S(q)=1+\sum_{k\ge1}(-1)^k q^{2k(k-1)}[2q(1-q)]^k/\prod_{j=1}^k(1-q^{2j-1})(1-q^{2j})$, identified
+with a Hahn--Exton (3rd Jackson) $q$-Bessel function $J^{(3)}_{-1/2}(\cdot;q^2)$ as in
+Corollary~\ref{cor:beta}. This is a question about the value of a $q$-series \emph{at} its own
+base point, not about Taylor coefficients of a fixed function, so it is neither a classical
+Mahler-function nor a modular-function transcendence question.
+
+\emph{New, genuinely proved content beyond Corollary~\ref{cor:beta}.} Using a rigorous LLL
+certificate on a $2090$-digit certified interval bracket for $q^\ast$ (and independently
+re-verified to $320$ digits in the present integration pass), with an explicit unimodularity
+check on the reduction matrix: $q^\ast$, and likewise $\beta_2$, is \textbf{PROVED} not to be a
+root of any integer polynomial of degree $\le64$ under the height caps of
+\texttt{private/ROOM/Beta2/report\_G1.md}. The same method excludes degree $\le128$
+under a further height cap, but that wider run predates the unimodularity check and is reported
+at the strictly weaker \textbf{VERIFIED}-only tier, per report\_G1.md's own two-tier convention
+and the correction supplied by Reviewer~AJ's review of
+\texttt{code/zeta\_probe/rootunity\_zeros/general/P6/P6\_note.tex}
+(verdict: gap, precision fix required; applied). Neither exclusion bound is an irrationality or
+transcendence proof; both are lower bounds on the degree of any integer polynomial $\beta_2$
+could satisfy.
+
+\emph{What remains open, precisely.} Five independent rational-approximation constructions for
+$S(q^\ast)=0$ (Padé approximants in $q$; the associated $q$-continued fraction; the $q$-Lommel/Niven
+ladder at the zero; the base$\leftrightarrow$argument swap for the underlying ${}_1\phi_1$; a
+Hankel-determinant construction) all land at the same ratio $\rho=1/2$ between archimedean decay
+and denominator growth, half of the threshold $\rho\ge1$ needed by the classical
+Tschakaloff/Bézivin--Bundschuh--Väänänen family of $q$-irrationality criteria. This is documented
+as \textbf{HEURISTIC} in \texttt{P6\_note.tex}: an inductive
+judgment from five failed constructions that $\rho=1/2$ is structural to the Hahn--Exton form of
+$S$ rather than an artifact of one bad parametrization, not a proof that no sixth
+reparametrization could reach $\rho\ge1$. Closing irrationality (let alone transcendence) of
+$\beta_2$ therefore needs one of: (i) a $q$-irrationality or $q$-Siegel--Shidlovskii-type
+criterion valid at $\rho=1/2$, or (ii) a value-transcendence theory for $q$-series that are
+transcendental in their own base variable and are neither modular nor Mahler functions. Neither
+is available; \textbf{irrationality and transcendence of $\beta_2$ remain open}, and nothing in
+this remark should be read as resolving either.
+\end{remark}
+
 \subsection{The true series \texorpdfstring{$U$}{U}}\label{sec:U}
 
 \begin{theorem}\label{thm:U}
