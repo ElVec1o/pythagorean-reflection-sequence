@@ -35,7 +35,9 @@ of unity $\zeta=\e(a/N)$ with $N$ odd, together with the limits of $t_1$ and of 
 These come from paper2a Corollary~\texttt{cor:arcUV}, i.e.\ P1f Theorem~C and the main theorem of
 \texttt{P1g\_lemma.tex}. So the standing is that of Theorems~\texttt{thm:model} and~\texttt{thm:RJ}, plus
 the computer-assisted inputs of those results (the Arb certificates of P1e and P1g and the landscape bounds
-of P1f). The range $\frac aN\in[\frac15,\frac45]$ is enough, for example $a=\frac{N-1}2$. Nothing else is
+of P1f). Corollary~\texttt{cor:arcUV} now covers $\frac aN\in[\frac16,\frac56]$ (after P1h); the proof only
+needs some infinite family of odd-order accumulation points, and $\frac aN\in[\frac15,\frac45]$, for example
+$a=\frac{N-1}2$, already suffices, so this update does not weaken anything. Nothing else is
 computer-assisted: the new steps (Lemmas~\ref{lem:finite}--\ref{lem:sep} and \S\ref{sec:proof}) are proved by hand.
 
 \noindent\emph{Idea.} Comparing pole \emph{sets} gives nothing at $Q=-1$ (\S\ref{sec:nogo}). What a relation
@@ -181,7 +183,10 @@ $v(X)=N$, and $v(X+4)=2$ because $N\ge3$. The discriminant of $w^2-(2+X)w+1$ is 
 $v(\omega-\sigma\omega)=\frac32$. In particular $\omega\notin K$, and $t_1^\ast\in K(w)\setminus K$.
 \end{lemma}
 \begin{proof}
-Embed $K(w,\lambda)$ in $\overline{K_{\mathfrak p}}$. Write $w=1-\delta$. From $(w-1)^2=Xw$ we get $v(\delta)=N/2$.
+Embed $K(w,\lambda)$ in $\overline{K_{\mathfrak p}}$. First, $v(w)=0$: from $w^2-(2+X)w+1=0$ we get
+$w+1/w=2+X$, and $v(2+X)=1$ since $v(X)=N\ge5>1=v(2)$. If $v(w)\ne0$ then $w$ and $1/w$ have valuations
+of opposite sign (as $v(w)+v(1/w)=0$), so $v(w+1/w)=\min(v(w),v(1/w))<0\ne1$, a contradiction; hence
+$v(w)=0$ exactly. Now write $w=1-\delta$. From $(w-1)^2=Xw$ we get $v(\delta^2)=v(X)+v(w)=N$, so $v(\delta)=N/2$.
 The principal $2$-adic root $w^{1/N}=\sum_k\binom{1/N}{k}(-\delta)^k$ converges ($N$ is a $2$-adic unit) and
 satisfies $w^{1/N}\equiv1$ modulo valuation $N/2$. Take $u_0:=w^{1/N}$ and let $\lambda$ be the square root
 of $cu_0$ with $\lambda^N=1-w$: we have $(cu_0)^N=c^Nw=(1-w)^2$, and since $N$ is odd one of $\pm\sqrt{cu_0}$
@@ -293,5 +298,10 @@ it shows that $\omega$ varies continuously, so a discontinuity route fails), \te
 $\frac13,\frac25,\frac38$), \texttt{P3\_conj.py} (the finite form, $\omega$ against $\sigma\omega$, branch
 independence), and \texttt{P3\_check.py} (Gauss identities, invariance, norm valuations). No heavy
 computation was needed, so no Rust or Arb run was made. The only computer-assisted inputs are the inherited ones.
+\texttt{P3\_field.py} and \texttt{P3\_degree.py} take the truncation order $K$ as an explicit argument; since
+$|u_0|\approx0.27$--$0.29$, the defining series converges slowly and $K\gtrsim15N$ is needed for reliable PSLQ
+convergence at the working precision. Both scripts now warn on the command line when $K<15N$, so a rerun with
+too small a $K$ (e.g.\ the $K=30$--$60$ used in some early exploratory runs) is flagged rather than silently
+read as a negative result.
 
 \end{document}

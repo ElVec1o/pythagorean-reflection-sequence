@@ -55,7 +55,9 @@ continue meromorphically to the disc $|x|<1$ and have infinitely many poles ther
 the unit circle. Consequently neither is algebraic over $\Q(x)$ or $D$-finite, so $(u_n)$ and
 $(v_n)$ are not P-recursive; neither satisfies a linear $q$-difference equation with $Q$ not a root
 of unity or a Mahler equation; and, by the P\'olya--Bertrandias theorem, $|x|=1$ is a natural
-boundary of both. The poles lie over the zeros of the Hahn--Exton $q$-Bessel function
+boundary of both. We also settle the remaining root-of-unity case $Q=-1$: neither $U$ nor $V$
+satisfies a linear $q$-difference equation $A_0(x)f(x)+A_1(x)f(-x)=b(x)$, by an arithmetic argument
+at infinitely many roots of unity of odd order in the accumulation arc above. The poles lie over the zeros of the Hahn--Exton $q$-Bessel function
 $J^{(3)}_{-1/2}(Z(q);q^2)$, $Z=\sqrt{2(1-q)/q}$, $q=x^2$, which up to a positive factor is the
 Fredholm determinant of the travel transfer operator; that there are infinitely many of them
 follows from a spectral argument with no asymptotic estimate. They survive in $U$ and $V$ because
@@ -125,8 +127,9 @@ infinitely many poles there, accumulating at the unit circle
 \item Consequently $U$ and $V$ are transcendental over $\Q(x)$ and not $D$-finite, so $(u_n)$ and
 $(v_n)$ are not P-recursive \textup{(}Theorem~\ref{thm:nonDfinite}\textup{)}; neither satisfies a
 linear $q$-difference equation $\sum_ia_i(x)f(Q^ix)=b(x)$ with $Q$ not a root of unity, nor a Mahler
-equation \textup{(}Proposition~\ref{prop:noqdiff}\textup{)}; and $|x|=1$ is a natural boundary of
-both \textup{(}Theorem~\ref{thm:natboundary}\textup{)}.
+equation \textup{(}Proposition~\ref{prop:noqdiff}\textup{)}; nor, at the remaining case $Q=-1$, one
+of the form $A_0(x)f(x)+A_1(x)f(-x)=b(x)$ \textup{(}Corollary~\ref{cor:Qminusone}\textup{)}; and
+$|x|=1$ is a natural boundary of both \textup{(}Theorem~\ref{thm:natboundary}\textup{)}.
 \item The travel resolvent $G^T_0=\Sigma_0/(1-\Sigma_1)\in\Z[[q]]$ has all of these properties in
 the variable $q$, with natural boundary $|q|=1$ \textup{(}Theorems~\ref{thm:travelres},
 \ref{thm:nonDfinite}, \ref{thm:natboundary}, Proposition~\ref{prop:noqdiff}\textup{)}.
@@ -1658,6 +1661,41 @@ $\omega=-1$ the evaluation cancels heavily: $S_e(-q_m)\,g(-q_m)\approx1.171$, an
 $|S_e(-q_{20})|\approx5\cdot10^{-715}$, computed at $1500$ digits. The same caveat applies to
 $G^T_0$ in $q$ at roots of unity other than $-1$.
 \end{remark}
+
+\begin{corollary}[$Q=-1$ for $U$ and $V$, PROVED]\label{cor:Qminusone}
+Let $f=U$ or $f=V$. There are no polynomials $A_0,A_1,b\in\C[x]$ with $(A_0,A_1)\ne(0,0)$ and
+\[
+   A_0(x)f(x)+A_1(x)f(-x)=b(x).
+\]
+By the Reduction step of Remark~\textup{\ref{rem:rootunity}}, more generally no relation
+$\sum_ia_i(x)f((-1)^ix)=b(x)$ holds unless $\sum_{i\text{ even}}a_i=\sum_{i\text{ odd}}a_i=0$.
+\textup{(}Standing: Theorems~\textup{\ref{thm:model}} and~\textup{\ref{thm:RJ}}, i.e.\ that of
+Corollary~\textup{\ref{cor:arcUV}}.\textup{)}
+\end{corollary}
+
+\begin{proof}[Proof sketch]
+This settles the case left open by Remark~\ref{rem:rootunity}, ``$Q=-1$ for $U$''. The identity
+$r(x_m)r(-x_m)=1$ derived there, together with the analogous identity for $V$, is not enough by
+itself; the argument instead uses the \emph{arithmetic} of the limit $t_1^\ast(\zeta)$ at
+infinitely many roots of unity $\zeta$ of odd order, taken from the accumulation family of
+Corollary~\ref{cor:arcUV}. At such a $\zeta=e(a/N)$, $t_1^\ast(\zeta)$ generates a specific
+quadratic extension $K(\sqrt{D_N})$ of $K=\Q(\zeta)$, $D_N=c^N(c^N+4)$, $c=-2(1-\zeta)$, and a
+relation as above would force a fixed algebraic combination $\kappa_U$ (resp.\ $\kappa_V$) of the
+values $A_0(x_0),A_1(x_0)$ at a square root $x_0$ of $\zeta$ to satisfy $\kappa D_N\in K^{\times2}$.
+Choosing $N$ large enough (depending on the finitely many roots of unity that occur as roots of the
+$2$-part of $A_0,A_1$ mod $2$) and computing $2$-adic valuations at a prime above $2$ -- where $D_N$
+has odd valuation $N+2$ while $\kappa$ has even valuation -- gives a contradiction. Full details,
+including the separation lemma that pins down $v(t_1^\ast(\zeta)-\sigma t_1^\ast(\zeta))=\frac32$ at
+primes above $2$, are in \texttt{code/zeta\_probe/rootunity\_zeros/general/P3/P3\_note.tex}
+(``P3''), with supporting scripts \texttt{P3\_field.py}, \texttt{P3\_degree.py},
+\texttt{P3\_conj.py}, \texttt{P3\_check.py} and \texttt{P3\_explore.py} in the same directory. The
+new hand-written steps of P3 were reviewed by Reviewer AG, who independently reverified the
+underlying algebraic number theory in PARI/GP (exact arithmetic, not floating point) and returned
+an overall verdict of \emph{correct}. As in Corollary~\ref{cor:arcUV}, only some infinite family of
+odd-order roots of unity in the arc is needed, and the standing is exactly that of
+Corollary~\ref{cor:arcUV}, hence of Theorems~\ref{thm:model} and~\ref{thm:RJ}; nothing else in
+P3 is computer-assisted beyond the inputs already used by Corollary~\ref{cor:arcUV}.
+\end{proof}
 
 \noindent The count in (ii) is made on the real axis on purpose. It uses only the travel poles that
 are proved to exist, and it needs no statement about where on the circle the poles of $f$
