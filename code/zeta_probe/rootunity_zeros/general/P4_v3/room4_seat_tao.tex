@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\title{Room of Mathematicians, item 4 (P4 D-algebraicity) --- Seat: Tao\\
+Re-derivation of the local pole-counting rate from the general \texttt{thm:B} formula}
+\date{2026-09-26 --- UNREVIEWED}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status: UNREVIEWED.} This note is a single-seat contribution to the room; it has
+not been adversarially reviewed and must not be treated as settled until it is. Labels follow the
+project convention (PROVED / VERIFIED / HEURISTIC).
+
+\section{Calibration point}
+
+The general saddle/Rouch\'e theorem that actually backs \texttt{thm:arc} is
+\texttt{thm:B} in \texttt{code/zeta\_probe/rootunity\_zeros/general/P1f/P1f\_lemma.tex}
+(line $\approx166$), not the $\zeta=-1$ special case \texttt{prop:minusone} that the retracted
+\texttt{P4\_v2\_note.tex} mistakenly generalized from. Quoting it exactly:
+
+\begin{quote}
+Let $N\ge16$ and $\zeta=e(a/N)$, $\frac15\le\frac aN\le\frac45$. Put
+$\Delta V = V_{n+s}-V_n=\dfrac{\pi i s}{N}\Big(L_n+\dfrac{i\pi s}{N}\Big)$,
+$\varrho=A(n+s)/A(n)$, and let $u_j$ be the solutions of $1+\varrho e^{\Delta V u}=0$ with
+$\operatorname{Re}u>0$, $\arg u\to-\theta^*$, ordered by modulus, $t^0_j=1/u_j$. There is $j_0$
+such that for $j\ge j_0$, $B(\zeta e^{-t})$ has exactly one simple zero $t^*_j$ in
+$D_j=\{|1/t-u_j|<1/|\Delta V|\}$, with $t^*_j=t^0_j+O(j^{-3})$.
+\end{quote}
+
+Here $s\in\{1,2\}$ according to the parity of $N$, and the $u_j$ (equivalently the poles $q^*_j$
+of $G^T_0$) are spaced $2\pi/|\Delta V|$ apart along the ray $\arg u\to-\theta^*$ -- this is exactly
+the ``spacing $2\pi/|\Delta V|$'' language in the task brief.
+
+\textbf{Cross-check against \texttt{P1f\_lemma.tex}'s own numerics} (line $\approx171$,
+\texttt{P1f\_zeros.py}, 30--300 digit floating point): at $j=8$, $|1/t^*_j-u_j|\,|\Delta V|=
+0.0018,\ 0.00036,\ 0.00014$ for the seeds $3/10$, $4/11$, $7/17$ respectively (decreasing like
+$|t_j|$, i.e.\ like $1/j$ as the theorem's $O(j^{-3})$ error predicts once multiplied by
+$|\Delta V|\cdot u_j=O(j)$), with tie rays $\theta^*=0^\circ,\,6.31^\circ,\,3.92^\circ$. This matches
+the numbers given in the task brief exactly, confirming I am reading the same theorem and the same
+verified run the task points at, and that \texttt{thm:B} (not \texttt{prop:minusone}) is the
+correct source of the local rate.
+
+\textbf{The one fact from \texttt{P1f\_lemma.tex} that resolves the whole question:} $|L_\mu|$ is a
+\emph{uniformly bounded} quantity, not one that grows with $N$. Lemma~\texttt{lem:LS}(b) (line
+$\approx124$) states $|L_\mu|\le\sqrt{\ell^2+(0.4594\ell+2\pi/16)^2}\le1.727$ for all $N\ge16$ and
+all $\mu$ in the relevant range, where $\ell=|\log(1-\zeta)|$-type quantity is itself bounded
+(order $\log 4$). So $L_n=O(1)$ \emph{uniformly in $N$}. This is the fact the retracted note's
+correction paragraph asserted but did not derive; I derive the consequence below.
+
+\section{Step-by-step derivation of $1-|q^*_j(\zeta)|$ as a function of $j$ and $N$}
+
+\paragraph{Step 1: scale of $\Delta V$.} By the formula above,
+\[\Delta V=\frac{\pi i s}{N}L_n-\frac{\pi^2 s^2}{N^2}.\]
+Since $L_n=O(1)$ uniformly in $N$ (Step 0 above) and $s\in\{1,2\}$, the second term is
+$O(1/N^2)=o(1/N)$ relative to the first, so for $N\to\infty$
+\[|\Delta V|=\frac{\pi s}{N}|L_n|\,(1+O(1/N))=\Theta\!\left(\frac1N\right),\]
+with the implied constant depending on $\zeta$ only through $|L_n|\in(0,1.727]$, which is itself
+bounded above and (since $L_n\ne0$ generically -- it is not claimed to vanish) bounded away from
+$0$ on the family in question. \textbf{This already falsifies the task brief's hypothesis (1) that
+the coefficient might be $O(N)$, growing with $N$: it is $\Theta(1/N)$, shrinking.} This is exactly
+Reviewer AN's conclusion in the retracted note's correction paragraph, now with the derivation
+spelled out rather than asserted.
+
+\paragraph{Step 2: scale of $u_j$, hence of $t^0_j$.} The $u_j$ are the poles $1/t^0_j$, spaced
+$2\pi/|\Delta V|$ apart along a fixed ray $\arg u=-\theta^*$ (theorem statement). So for large $j$,
+\[|u_j| = j\cdot\frac{2\pi}{|\Delta V|}+O(1) = \Theta(jN),\]
+(using Step 1's $|\Delta V|=\Theta(1/N)$), and correspondingly
+\[t^0_j=\frac1{u_j}\ \Longrightarrow\ |t^0_j|=\Theta\!\left(\frac1{jN}\right).\]
+
+\paragraph{Step 3: from $t^0_j$ to $1-|q^*_j|$.} $q^*_j=\zeta e^{-t^*_j}$ with $t^*_j=t^0_j+O(j^{-3})$
+(theorem), and $|t^0_j|=\Theta(1/(jN))=o(1)$ for $j,N$ large, so to leading order
+\[1-|q^*_j(\zeta)| = 1-e^{-\operatorname{Re}t^*_j}=\operatorname{Re}(t^*_j)+O(|t^*_j|^2)
+=\operatorname{Re}(t^0_j)+O(j^{-3})+O(j^{-2}N^{-2}).\]
+Since $\arg u_j\to-\theta^*$ is a fixed angle with $\cos\theta^*$ bounded away from $0$ on the
+family (this is exactly the non-degeneracy built into \texttt{thm:LS}/\texttt{thm:B}: $\theta^*$ is
+the tie angle of the two dominant saddles, and the whole apparatus of \texttt{P1f\_lemma.tex}
+requires $\cos\theta^*\ge0.9087$ in the even case, and an analogous bound in the odd case),
+$\arg t^0_j=+\theta^*$ also, so
+\[\operatorname{Re}(t^0_j)=|t^0_j|\cos\theta^* = \Theta\!\left(\frac1{jN}\right).\]
+
+\paragraph{Conclusion of the derivation.}
+\[\boxed{\,1-|q^*_j(\zeta)| = \frac{C(\zeta)}{jN}\big(1+o_j(1)\big),\qquad
+C(\zeta)=\frac{s\,|L_n|\cos\theta^*}{2}\in(0,\,1.727\cdot 1]\ \text{(bounded, $\zeta$-dependent, $N$-independent up to the $\Theta$)}\,}\]
+i.e.\ the correct joint dependence is $1-|q^*_j|=\Theta(1/(jN))$: linear decay in $j$ exactly as
+before, \emph{but now with an extra $1/N$ in the coefficient}, not an extra $N$. This directly
+confirms and makes precise the retracted note's correction-paragraph claim
+``$C(\zeta,N)=O(1/N)$,'' and refutes the alternative the task brief asked me to test for
+(coefficient growing like $O(N)$).
+
+\section{Second look / self-check}
+
+Before trusting Step 1--3, here is a sanity check via an entirely different route: dimensional/scaling
+reasoning on the original theorem statement.  $\Delta V$ is (up to the theorem's own definition) a
+difference of two saddle heights' derivatives at adjacent Fourier modes $n,n+s$ that are $s$ apart
+out of $N$ total modes on the unit circle; it is exactly the sort of quantity that must shrink like
+$1/N$ generically, because the $N$ modes have to fit around a fixed circle of total ``analytic
+budget'' $O(1)$ (the saddle heights $h_\mu$ live on a bounded scale, per \texttt{lem:LS}: $T=O(1)$,
+$\eta_N=O(1/N^2)$ level splittings). An $O(N)$ blow-up would need the per-step derivative of the
+saddle-height phase to itself grow with $N$, which nothing in \texttt{P1f\_lemma.tex} supports --
+every explicit bound on $L_\mu$, $h_\mu$, $R_\mu$ in that file is $N$-independent or shrinking in
+$N$ (e.g.\ $|L_\mu|\le1.727$, $\eta_N=\min(16.2/N^2,0.1)$, $\eta'_N=\min(34.2/N^2,0.1)$). So the
+scaling check agrees with the explicit computation: nothing in the source theorem supports
+coefficient growth in $N$; everything supports decay.
+
+I also checked the $\zeta=i$ special case (\texttt{prop:qi}, cited in the retracted note as giving
+"yet a third...offset ($2j+1$)"): that offset is a fixed-$N$ ($N=4$) artifact of the same general
+formula at a specific small $N$, not a counterexample to the $N$-dependence derived above -- it says
+nothing about how the coefficient scales as $N\to\infty$, only about its value at $N=4$. So it is
+consistent with, not in tension with, Step 1--3.
+
+\section{Consequence for the diagonal-summation / global count argument}
+
+The task asks: does letting $N\to\infty$ (rather than fixing $N\ge16$) make the global
+pole-counting rate $n(r,U)$ \emph{larger}, possibly superpolynomially, as $r\to1^-$?
+
+\textbf{No -- if anything the opposite.} For a single fixed $\zeta=e(a/N)$, the local count of poles
+with $1-|q^*_j|\ge 1-r$ is
+\[n_\zeta(r)\ \sim\ \#\{j: C(\zeta)/(jN)\ge 1-r\}\ =\ \Theta\!\left(\frac{C(\zeta)}{N(1-r)}\right),\]
+still \emph{linear} in $1/(1-r)$ (this qualitative shape survives from P4v1/P4v2 unchanged), but now
+with a coefficient that \emph{shrinks} as $1/N$ rather than growing.
+
+Summing over the admissible $(a,N)$ with $N\le M$ (roughly $\Theta(M)$ values of $a$ for each $N$,
+so $\Theta(M^2)$ pairs up to $M$, though many share the same limit point $\zeta$'s neighbourhood and
+double-count in a way that has never been controlled -- this is exactly Reviewer AN's flagged gap),
+the \emph{aggregate} coefficient at worst behaves like
+\[\sum_{N=16}^{M}\ \sum_{a}\ \frac{C(\zeta)}{N} \ \le\ \sum_{N=16}^{M} \Theta(N)\cdot\Theta(1/N)
+= \Theta(M),\]
+using that there are $\Theta(N)$ admissible $a$ for each $N$ (the range $\frac15\le a/N\le\frac45$).
+So the \emph{naive} upper bound on the aggregate coefficient grows only \emph{linearly} in the
+cutoff $M=\max N$, not superpolynomially, and this is before confronting the much harder problem
+that:
+\begin{itemize}
+\item the local expansion $t^*_j=t^0_j+O(j^{-3})$ is only valid for $j\ge j_0(\zeta)$, and
+$j_0$ is not shown to be uniformly bounded over the family (flagged as open already in
+\texttt{P1f\_lemma.tex}, \S\ref{sec:open}, item 3): as $N\to\infty$ the disc $D_j$ has radius
+$1/|\Delta V|=\Theta(N)$, so the "large $j$" regime where the Rouch\'e argument kicks in may itself
+require $j\gg $ some function of $N$, which would eat directly into the $\Theta(N)$ per-$N$ credit
+just computed and could suppress it back toward $O(1)$ or worse per $N$;
+\item poles belonging to different $(a,N)$ are only known to be non-overlapping/individually
+countable once $r$ is close enough to $1$ \emph{relative to each fixed $\zeta$}, i.e.\ the whole
+argument is not uniform in $N$, so "summing over $N\to\infty$ at a single $r\to1^-$" is not licensed
+by anything proved here -- exactly the caveat the task brief itself flags as the one honest
+qualitative point that survives from P4v1/P4v2.
+\end{itemize}
+Both of these considerations point toward the aggregate bound being \emph{weaker}, or at best no
+stronger, than the naive $\Theta(M)$ just derived, once made rigorous -- not toward a
+superpolynomial improvement.
+
+\section{Verdict}
+
+\textbf{BOUND STILL ONLY LINEAR-TYPE, and the corrected coefficient is $O(1/N)$ (shrinking), not
+$O(N)$ (growing).} The task's hypothesis that the corrected general formula might replace the
+retracted $O(1)$-in-$N$ guess with something \emph{larger} in $N$, and thereby yield a stronger
+(possibly superpolynomial) global bound via $N\to\infty$ diagonalization, is \textbf{refuted} by a
+direct reading of \texttt{thm:B} together with the uniform bound $|L_\mu|\le1.727$ from
+\texttt{lem:LS}(b) in \texttt{P1f\_lemma.tex}: the true local coefficient is
+$\Theta(1/N)$, which makes letting $N\to\infty$ a losing move for this particular summation
+strategy, not a winning one. This matches -- and gives an actual derivation for -- the one-line
+claim already made (but not derived) in the retracted \texttt{P4\_v2\_note.tex}'s correction
+paragraph. P4 (is $U$ D-algebraic) remains exactly as open as before this note; no new ingredient
+toward resolving it has been produced here, only a (still UNREVIEWED) correct account of why this
+particular route does not work.
+
+\textbf{Flag: UNREVIEWED.} This is a single seat's derivation, not yet checked by an adversarial
+reviewer or against a numerical certificate of $u_j$ vs.\ $N$ across multiple $N$ (the existing
+\texttt{P1f\_zeros.py} runs quoted above only vary $j$ at fixed small $N\in\{10,11,17\}$; no run in
+the repository varies $N$ at fixed $j$ to directly confirm the $1/N$ scaling numerically). That
+numerical check would be the natural next step before this is promoted beyond UNREVIEWED.
+
+\end{document}

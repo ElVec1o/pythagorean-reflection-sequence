@@ -1,0 +1,38 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 4 (P4 D-algebraicity): moderator summary}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+Two seats (Tao, Erd\H os), both UNREVIEWED at the seat level but with extra care taken given that
+this exact question already produced one retracted claim (\texttt{P4\_v2\_note.tex}).
+
+\textbf{Tao's redo of the pole-rate summation: BOUND STILL ONLY LINEAR-TYPE, this time correctly
+derived.} Using the actual general formula from \texttt{P1f\_lemma.tex} ($\Delta V=
+(\pi is/N)(L_n+i\pi s/N)$, $u_j$ spaced $2\pi/|\Delta V|$ apart) together with the uniform bound
+$|L_\mu|\le1.727$ for all $N\ge16$ (\texttt{lem:LS}(b)), the correct scaling is $|\Delta V|=
+\Theta(1/N)$, hence $1-|q^\ast_j(\zeta)|=\Theta(1/(jN))$: the per-$\zeta$ coefficient \emph{shrinks}
+like $1/N$, not the constant-in-$N$ or growing-in-$N$ behaviour either the original retracted
+attempt or this room's working hypothesis considered. Summing over $N\le M$ gives an aggregate
+coefficient of only $\Theta(M)$ -- still linear growth in the cutoff, not superpolynomial, and two
+further gaps (non-uniform $j_0(\zeta)$, non-uniform ``$r$ large enough'' threshold) would likely
+weaken this further. This \emph{confirms}, with an actual derivation, what the earlier retraction's
+correction paragraph asserted but did not derive -- no new false claim, no progress either.
+
+\textbf{Erd\H os's alternative-obstruction search: NOTHING WORKED, precisely diagnosed.} Three
+elementary candidates (functional-equation degree incompatibility, Wronskian/algebraic-independence
+search, Cauchy--Kovalevskaya parameter counting) were checked. Each either needs exactly the missing
+quantitative growth/counting ingredient \texttt{P4\_note.tex} already names, or is structurally
+blocked by results paper2a already proves in the opposite direction (\texttt{prop:noqdiff},
+\texttt{cor:Qminusone} rule out the functional relation a degree-counting argument would need).
+
+\textbf{Room verdict: NO PROGRESS,} honestly. Both seats independently converge on the same
+conclusion: the missing ingredient (a quantitative, superpolynomial-strength pole-counting or growth
+bound) is not reachable by the routes tried, and no alternative obstruction was found either. This
+is not a failure of the room -- it correctly avoided repeating the earlier error, and it closes off
+two more candidate routes with precise reasons rather than leaving them dangling. P4 stands exactly
+where \texttt{P4\_note.tex} (v10.19.0) left it: OPEN, with the right theorem family named and the
+same two missing ingredients.
+
+\end{document}
