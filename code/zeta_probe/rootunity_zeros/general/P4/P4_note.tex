@@ -24,11 +24,13 @@ without error control. Notation follows \texttt{paper/journal/paper2a.tex} (``pa
 
 This note does \emph{not} prove or disprove that $U$ is differentially algebraic (D-algebraic),
 i.e.\ that it satisfies some
-$P(x,U,U',\ldots,U^{(k)})=0$ for a polynomial $P\not\equiv0$. It PROVES that the strategy proposed
-in \texttt{private/RESEARCH\_PROGRAM\_OPEN.md} row P4 --- ``dense poles on a positive-measure arc of
-$|x|=1$ obstructs D-algebraicity, via a Nishioka/Malgrange-type theorem, anchored on
-Theorem~\texttt{thm:fredholm}'' --- is not valid as stated, by an explicit counterexample
-(\S\ref{sec:counterexample}). It then identifies the correct class of theorems for this question
+$P(x,U,U',\ldots,U^{(k)})=0$ for a polynomial $P\not\equiv0$. It gives reasons to distrust the strategy
+proposed in \texttt{private/RESEARCH\_PROGRAM\_OPEN.md} row P4 --- ``dense poles on a positive-measure
+arc of $|x|=1$ obstructs D-algebraicity, via a Nishioka/Malgrange-type theorem, anchored on
+Theorem~\texttt{thm:fredholm}'' --- without exhibiting a decisive counterexample
+(\S\ref{sec:counterexample}: an attempted explicit counterexample is shown to be broken on inspection,
+post-review; what survives is the qualitative movable-singularities objection of
+Remark~\ref{rem:nogeneralize}). It then identifies the correct class of theorems for this question
 (\S\ref{sec:realtool}), checks their hypotheses against what paper2a actually proves
 (\S\ref{sec:gap}), and finds the single missing ingredient: a \emph{quantitative} lower bound on the
 pole-counting function of $U$, which is not established anywhere in this programme. \S\ref{sec:fredholm}
@@ -76,89 +78,56 @@ on an arc'' is not, by itself, evidence against D-algebraicity; the linear-case 
 literal nonlinear analogue.
 \end{remark}
 
-\section{A counterexample to the strategy}\label{sec:counterexample}
+\section{No verified counterexample; the real objection is movable singularities}\label{sec:counterexample}
 
-\begin{proposition}[PROVED]\label{prop:counterexample}
-There is a function $g$, holomorphic and single-valued on $\{0<|z|<1\}$ except for poles, D-algebraic
-of order $1$ (satisfying an algebraic ODE with constant, hence polynomial, coefficients), meromorphic
-on the disc $|z|<1$ with a pole set that is dense on the whole circle $|z|=1$ (density on a
-full-measure, indeed full, arc). Consequently, no theorem of the shape ``a meromorphic-on-the-disc
-function with poles dense on a positive-measure boundary arc cannot be D-algebraic'' is true without
-further hypotheses.
+\noindent\textbf{Correction (post-review, Reviewer AH).} An earlier version of this section claimed a
+PROVED explicit counterexample: a Weierstrass $\wp$-function pulled back along $\zeta\mapsto
+x=\e^{2\pi i\zeta/\omega_2}$ ($\omega_2$ purely imaginary), asserting the sub-lattice $c+n\omega_1$
+lands exactly on $|x|=1$ with argument equidistributed by Weyl/Kronecker. This is arithmetically
+wrong: with $\omega_1$ real and $\omega_2$ purely imaginary, $\omega_1/\omega_2$ is purely
+\emph{imaginary}, not real, so $\zeta/\omega_2=c/\omega_2+n(\omega_1/\omega_2)+m$ has its $n$-dependence
+entirely in the \emph{modulus} of $x$ (via $\Im(\zeta/\omega_2)$), not its argument; the sub-lattice
+does not stay on $|x|=1$ at all, and shifting by the other generator changes $x$ by a root of unity,
+not a dense set. Worse, the two requirements needed for the construction --- $\tau=\omega_2/\omega_1$
+non-real (so $\wp$ is a genuine, non-degenerate elliptic function) and $\omega_1/\omega_2$ real (so the
+pullback's argument, not modulus, varies along a sub-lattice) --- are mutually exclusive for any
+lattice $\Lambda$. Both attempts in the original write-up reduce, on inspection, to the ordinary
+$q$-expansion pullback $g(q)=\wp(\zeta)$, $q=\e^{2\pi i\tau}$, whose poles accumulate only at $q=0$ and
+$q=\infty$ (the cusps), never on a circle of positive radius --- exactly the ``first attempt'' the
+original draft itself flagged as failing, restated with an incorrect modulus computation in the
+``fix''. \textbf{No explicit counterexample is exhibited here.} Proposition~\ref{prop:counterexample}
+below is downgraded from PROVED to a documented non-result, and Remark~\ref{rem:nogeneralize} --- which
+does not depend on this construction --- is the actual load-bearing objection to the ledger's proposed
+strategy.
+
+\begin{proposition}[OPEN: no verified example, construction attempted and found broken]\label{prop:counterexample}
+We looked for a function $g$, D-algebraic (satisfying a fixed algebraic ODE with polynomial
+coefficients), meromorphic on a disc $|x|<1$, with poles dense on a positive-measure arc of $|x|=1$.
+We did not find one: the natural candidate (an elliptic function pulled back by an exponential change
+of variable along a lattice direction) provably cannot work, by the incompatibility noted above.
+Whether such a $g$ exists (via, e.g., an automorphic/Fuchsian-group construction rather than a lattice
+pullback, or a genuinely different mechanism) is left open; we do not need it to make the point below,
+which rests instead on Remark~\ref{rem:nogeneralize}.
 \end{proposition}
 
-\begin{proof}
-Fix a lattice $\Lambda=\Z\omega_1+\Z\omega_2\subset\C$ with $\tau=\omega_2/\omega_1\notin\R$, and let
-$\wp$ be the Weierstrass elliptic function for $\Lambda$, satisfying the classical algebraic ODE
-\[
-   (\wp')^2=4\wp^3-g_2\wp-g_3 ,
-\]
-a polynomial differential equation of order $1$ and degree $2$ with constant coefficients: $\wp$ is
-D-algebraic. Its poles are exactly the points of $\Lambda$, a discrete lattice in $\C$, each a double
-pole.
-
-Now choose $\tau=i\alpha$ with $\alpha>0$ irrational relative to any rational normalisation we might
-want (any $\alpha\notin\Q$ works, e.g.\ $\alpha=\sqrt2$), and set $z=\e^{2\pi i\zeta/\omega_1}$,
-i.e.\ pull $\wp$ back along the covering map $\zeta\mapsto z=\e^{2\pi i\zeta/\omega_1}$ that already
-appears once one reduces $\wp$ mod the period $\omega_1$: define $g(z)=\wp(\zeta)$ for any $\zeta$
-with $\e^{2\pi i\zeta/\omega_1}=z$; this is well defined because $\wp(\zeta+\omega_1)=\wp(\zeta)$.
-Since $g$ is a rational function of $\wp(\zeta)$ and $\wp'(\zeta)$... to keep this elementary we do
-not even need to identify $g$ in closed form: it suffices that (a) $g$ is single-valued and
-meromorphic in the punctured disc $0<|z|<\e^{-2\pi\Im(\omega_2/\omega_1)\cdot0}=1$ near $0$ once we
-restrict to $\Im\zeta>0$ (which maps to $|z|<1$), because $\wp$ is $\omega_1$-periodic; (b) $g$
-satisfies the ODE obtained from $(\wp')^2=4\wp^3-g_2\wp-g_3$ by the chain rule
-$\wp'(\zeta)=\frac{\omega_1}{2\pi i}z\,g'(z)$, again a polynomial ODE in $(z,g,g')$ with polynomial
-(here, monomial) coefficients: D-algebraicity is preserved by an algebraic change of the independent
-variable. And (c) the poles of $g$ are the images $z_n=\e^{2\pi i\zeta_n/\omega_1}$ of the lattice
-points $\zeta_n=m\omega_1+n\omega_2\in\Lambda\cap\{\Im\zeta>0\}$. As $n\to\infty$ with $m$ ranging
-over a full residue system mod (the relevant period), $\Im\zeta_n=n\Im\omega_2\to\infty$ so
-$|z_n|=\e^{-2\pi n\Im(\omega_2/\omega_1)}\to0$: those approach the origin, not the boundary. The
-boundary $|z|=1$ corresponds to $\Im\zeta\to0^+$ with $\Re\zeta$ free, i.e.\ to lattice points with
-$m$ large and $n$ fixed at the smallest values with $\Im\zeta_n>0$ (there is at least one primitive
-direction with small positive imaginary part once $\Lambda$ is put in the right position -- concretely,
-take $\Lambda=\Z+\Z i\alpha$ with $\alpha>0$ small, so $\omega_1=1,\omega_2=i\alpha$; then
-$\Im(\zeta)>0$ lattice points nearest the real axis are $\zeta=m+i\alpha$, $m\in\Z$, giving
-$z_m=\e^{2\pi i(m+i\alpha)}=\e^{-2\pi\alpha}\e^{2\pi im}=\e^{-2\pi\alpha}$, a single point, not dense
--- so a bit more care is needed).
-
-To get density on the whole boundary honestly, replace the exponential pullback by the standard
-one used to turn a doubly-periodic function into a modular/elliptic function of a boundary-dense
-kind: take $q=\e^{2\pi i\tau}$, $\tau=x+iy\to$ real axis, and consider $\wp$ as a function of $q$ via
-the classical $q$-expansion at fixed $z$-argument; equivalently, and more simply for the purpose of
-this counterexample, use the second elliptic function on the same lattice with a pole at a
-\emph{generic} (not $2$-torsion) point $c\in\C/\Lambda$, $f(\zeta)=\wp(\zeta-c)$, and reduce modulo
-the imaginary period only, mapping $\zeta\mapsto x=\e^{2\pi i\zeta/\omega_2}$ with $\omega_2$
-purely imaginary and $\omega_1/\omega_2\notin\Q$. The poles are at $x=\e^{2\pi i(c+\Lambda)/\omega_2}$;
-along the sub-lattice $c+n\omega_1$, $n\in\Z$, these have $|x|=1$ exactly (since $\omega_1$ is real)
-and argument $2\pi n(\omega_1/\omega_2)\bmod2\pi$, which is dense in $[0,2\pi)$ because
-$\omega_1/\omega_2\notin\Q$ (equidistribution of an irrational rotation, elementary: Weyl/Kronecker).
-Points with $n\ne0,\Im(\text{shift})\ne0$ move off $|x|=1$ into $|x|<1$ or $|x|>1$; restricting to
-$\Im\zeta<0$ half of the lattice (say) keeps a single-valued branch meromorphic on an honest disc
-$|x|<1$ with poles accumulating densely on the whole boundary circle. This $f$, viewed as a function
-of $x$ by the same chain-rule argument as above, is D-algebraic of order $1$: an algebraic ODE with
-polynomial coefficients in $x$ (arising from $(f')^2=4f^3-g_2f-g_3$ under $\zeta=\frac{\omega_2}{2\pi
-i}\log x$), and has poles dense on the \emph{full} boundary circle, hence in particular on every
-arc of positive measure.
-\end{proof}
-
-\begin{remark}
-This construction is standard (it is how one gets a natural-boundary function that is nonetheless
-D-algebraic; the same phenomenon underlies why elliptic modular functions of $q=\e^{2\pi i\tau}$ can
-have $|q|=1$ as a natural boundary while satisfying algebraic differential equations in $q$, e.g.\
-via the Schwarzian for the modular $\lambda$-function). We did not need integrality of coefficients,
-a specific growth rate, or any Diophantine input: only that some order-$1$ algebraic ODE (the
-Weierstrass equation) has the Painlev\'e property, so its movable singularities are honest poles that
-can be engineered, by an elementary change of variable, to sit densely on a full circle.
-\end{remark}
-
-\noindent Consequently: \emph{density of poles of $U$ on an arc, by itself, is provably not an
-obstruction to D-algebraicity, in any generality.} Whatever obstruction exists (if $U$ is indeed not
-D-algebraic) must come from finer information than the closure of the pole set: either a
-\emph{quantitative} rate of accumulation, or an arithmetic/transcendence property of the residues
-and pole locations that a solution of a fixed-degree, fixed-order algebraic ODE cannot support. This
+\noindent Consequently: \emph{the ledger's strategy is not vindicated by an exhibited counterexample},
+but Remark~\ref{rem:nogeneralize} already gives an independent, qualitative reason to distrust it:
+Lemma~\texttt{lem:odeposes}'s pole-confinement argument is a fact about \emph{linear} ODEs (fixed
+singularities, at zeros of the leading coefficient, independent of the solution); solutions of
+\emph{nonlinear} algebraic ODEs can have \emph{movable} singularities whose location depends on
+initial data, and when an equation has the Painlev\'e property (e.g.\ the order-1 Weierstrass equation
+$(y')^2=4y^3-g_2y-g_3$, or more generally any Painlev\'e-type equation) those movable singularities are
+honest poles, not merely branch points, with no a priori constraint tying their location to a
+coefficient-determined finite set. This is a structural reason the linear argument does not
+literally generalize; it is not by itself a proof that density-on-an-arc is compatible with
+D-algebraicity for some specific function, since we have not exhibited one. What it shows is that a
+theorem of the form ``dense poles on a positive-measure boundary arc $\Rightarrow$ not D-algebraic''
+would have to say something genuinely new about movable singularities of nonlinear ODEs near a natural
+boundary -- it is not a corollary of the elementary fixed-singularity fact that makes the linear case
+(\texttt{thm:nonDfinite}) work, and no such theorem is currently known to us in citable form. This
 matches the ledger's own caveat that ``some Nishioka theorems are about difference equations, not
-differential ones'': it is worse than a labeling issue, the whole density-only line of reasoning is
-insufficient by the counterexample above, regardless of which named theorem one invokes.
+differential ones'': the density-only line of reasoning is not established to be sufficient, by any
+theorem we can cite, regardless of which named result one invokes.
 
 \section{The right class of theorem, and its hypotheses}\label{sec:realtool}
 
@@ -279,13 +248,15 @@ attempt does not repeat the invalid step of \S\ref{sec:counterexample}.
 
 \section*{Weakest points}
 \begin{itemize}
-\item \S\ref{sec:counterexample}'s construction is correct in spirit and each step is elementary
-(chain rule, $\omega_1$-periodicity, Weyl equidistribution of an irrational rotation), but it is
-written discursively rather than as a fully streamlined, single-pass proof; a referee should
-double-check the reduction to the half-lattice branch (keeping $f$ single-valued on a genuine disc)
-in full detail. We are confident in the conclusion (elliptic/theta-type constructions with dense
-boundary poles that remain D-algebraic are standard) but the specific write-up here is our own,
-not lifted from a textbook statement.
+\item \S\ref{sec:counterexample}'s original elliptic-pullback construction is \textbf{wrong}, not
+merely under-polished: Reviewer AH caught that the claim ``$|x|=1$ exactly, since $\omega_1$ is real''
+(original line 132) is arithmetically false for the stated map, and that the underlying requirements
+($\tau=\omega_2/\omega_1$ non-real for $\wp$ to be non-degenerate, vs.\ $\omega_1/\omega_2$ real for the
+pullback's argument to vary along $|x|=1$) are mutually exclusive. This is fixed above by downgrading
+Proposition~\ref{prop:counterexample} to an open, unresolved question and relying instead on the
+qualitative Remark~\ref{rem:nogeneralize} (movable singularities / Painlev\'e property), which does not
+depend on the broken construction. A genuine explicit example (if one exists) would need a different
+mechanism, e.g.\ Fuchsian/automorphic rather than lattice-elliptic.
 \item \S\ref{sec:realtool}/\ref{rem:disc}: we cite Malmquist, Steinmetz, and Bank--Kaufman from
 memory of the theory's shape (Nevanlinna-theoretic growth bounds for meromorphic solutions of
 algebraic ODEs); we did not independently re-derive or numerically check any of these statements in
