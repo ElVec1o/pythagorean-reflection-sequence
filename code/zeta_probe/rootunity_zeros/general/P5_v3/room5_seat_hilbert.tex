@@ -1,0 +1,213 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{lemma}{Lemma}
+\title{Room of Mathematicians, item 5 (P5, $W_T$ non-$D$-finite) --\\
+Seat: Hilbert -- search for any meromorphic continuation of $F_T$}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Calibration point}
+
+Paper1 (\S8.8 of \texttt{paper/journal/paper1.tex}, around line 2317
+for the Proposition and line 2548 onward for $F_T$) sets up $W_T$ as follows.
+$F_T(x)=\sum_{d\ge0}u_d^Tx^d$ is the spherical growth series of $W_T\le
+\mathrm{Isom}(\mathbb R^2)$, the side-reflection group of a rational right
+triangle $T$, with respect to the three reflection generators
+$\{R_0,R_1,R_2\}$: $u_d^T$ counts elements of word length exactly $d$.
+Every element of $W_T$ is represented by an \emph{edge profile}
+$A=\sum_j a_jt^j\in\mathbb Z[t^{\pm1}]$ (a formal Laurent polynomial recording,
+at each site $j$ of the one-dimensional ``lamp'' walk that a geodesic word
+induces, the signed deposit made there), and two profiles $A,A'$ represent the
+\emph{same} element of $W_T$ iff $A-A'=2\mu_Tf$ for some $f\in\mathbb
+Z[t^{\pm1}]$, where $\mu_T$ is $\zeta_T$'s minimal polynomial and $f$ is called
+a \emph{carry}. Evaluating a profile at $t=\zeta_T$ (a point on the unit
+circle, root of the primitive self-reciprocal quadratic $ct^2-et+c$) gives the
+actual translation vector in $\Lambda_T=2(\zeta_T-1)A_T\subset\mathbb C$, and
+$\zeta_T$ itself is the linear part of the ``rotation'' generator $r=R_xR_h$.
+
+So $F_T$ counts orbits of profiles under $A\mapsto A+2\mu_Tf$, weighted by the
+geodesic length of the group element each orbit represents. Concretely: to
+express a given target profile $A$ using the smallest possible word, one
+performs a division-with-remainder process, subtracting multiples of
+$2\mu_T$ from $A$'s low-degree end, exactly as in a positional numeral system
+with ``base'' $\zeta_T$ -- except that $|\zeta_T|=1$, so this base does not
+contract. In an ordinary numeration algorithm with an expanding/contracting
+base $b$, $|b|>1$, the running remainder (the ``carry'') stays in a bounded
+window because each division step shrinks it geometrically; here nothing
+shrinks it, and the carry state, tracked as a point of the lattice
+$\mathbb Z[\zeta_T]\subset\mathbb C$ (i.e.\ literally a point of the plane,
+not a bounded digit), performs an unbounded walk as $d$ grows. This is the
+``planar carry'': the state of the numeration/carry process used to compute
+$W_T$-geodesic length is not a bounded automaton state but a genuinely
+two-dimensional, apparently unbounded, walk. Paper1's own numerics
+(\texttt{wt\_growth/wt\_carry}, shape $(c,e)=(2,1)$) show the carry width
+needed to realize geodesics of the universal ball of radius $d$ growing like
+$\lfloor(d-12)/2\rfloor$, i.e.\ linearly, for all sampled $d\le32$ -- verified
+in that range, not proved in general.
+
+This reproduces, in my own words, exactly the mechanism paper1 and
+\texttt{P5\_note.tex}/\texttt{P5\_v2\_note.tex} describe; no correction to it
+is being made here.
+
+\section*{What was tried (different from the kernel-method route already
+attempted in P5\_v2)}
+
+P5\_v2 already tried, and found blocked, the kernel-method / catalytic-variable
+approach: it needs a functional equation of the form ``sum over the last step
+of a Laurent polynomial in a catalytic variable $v$ tracking the running
+carry value,'' and found that an $a^{\pm1}$-step at lamp-height $h$ forces $v$
+to be raised to the \emph{non-integer, $h$-dependent} exponent $\zeta_T^{\,h}$
+-- not a valid catalytic step for a formal-power-series kernel method (the
+method requires the exponent shift to be a fixed integer or fixed Laurent
+polynomial, independent of the step index). I did not re-attempt this; I
+looked for a genuinely different route into continuation of $F_T$, along the
+four lines the task specifies.
+
+\paragraph{(1) Integral/contour representation.} The natural candidate would
+be a Cauchy-type integral extracting, for each $d$, the number of
+carry-inequivalence classes of length exactly $d$, e.g.\ something of the
+shape
+\[
+u_d^T \;=\; \frac{1}{2\pi i}\oint \Phi(z,\zeta_T)\,\frac{dz}{z^{d+1}}
+\]
+for some kernel $\Phi$ built from the carry lattice. This requires knowing, in
+closed form, the indicator/weight of ``profile $A$ is $2\mu_T$-reducible to a
+given minimal-length representative'' as a function that can be Fourier/Cauchy
+expanded. For the travel operator behind $U,V,G^T_0$ this indicator comes from
+an explicit finite-state transfer matrix (the travel block), which is why a
+Fredholm-determinant representation exists there. For $F_T$ the corresponding
+``reducibility'' relation is division by $2\mu_T$ in $\mathbb Z[t^{\pm1}]$
+evaluated on the unit circle: this is long division in a Laurent-polynomial
+ring, not evaluation of a finite automaton, and I could not construct any
+kernel $\Phi$ whose contour integral reproduces even the first few $u_d^T$
+without already knowing the full carry-equivalence classes -- i.e.\ the
+integral representation I could write down is a tautological restatement of
+the counting problem (integrate an indicator function that is exactly as hard
+to describe as $F_T$ itself), not a genuine transform of a simpler object.
+This is not a proof that no such representation exists; it is a report that
+none was found, and a diagnosis of why the obvious attempt is circular: unlike
+a finite-state transfer, division by $2\mu_T$ does not admit a compact
+generating-function kernel because the remainder ranges over an infinite,
+non-compact index set (Gap 2 already isolates exactly this).
+
+\paragraph{(2) Special-function connection (theta / modular / $q$-Bessel).}
+The $q$-Bessel functions used elsewhere in this program (for the (R-J) /
+travel-pole analysis of $U,V$) arise from a genuinely different structure: a
+recursion in a variable that is being sent to $1$ along a specific limiting
+regime (the confluent/travel limit), with the q-difference structure coming
+from the finite-state travel block. $F_T$'s carry process has no such
+recursion in a small parameter -- $\zeta_T$ is a \emph{fixed} unit-circle
+algebraic number, not a deformation parameter, and the ``base'' does not
+degenerate to a nice limit. Theta functions and canonical modular objects
+typically arise from lattice sums $\sum_{\lambda\in L}q^{Q(\lambda)}$ for a
+contracting or at least well-behaved quadratic form $Q$ and a genuine radius
+of convergence in $q$; here the natural lattice sum would be over carry values
+$f\in\mathbb Z[\zeta_T^{\pm1}]$ weighted by geodesic length, but the weight
+(geodesic length as a function of the carry) is not given by a quadratic form
+or any other closed algebraic expression -- it is itself defined by an
+optimization (the min-plus DP that \texttt{wt\_carry} runs), which is exactly
+the ``no functional equation is known'' obstruction (Gap 3), not something a
+change of special-function variable bypasses. I did not find a substitution
+turning $F_T$ into a theta or $q$-Bessel object, and I do not believe one is
+likely to exist without first solving the min-plus optimization in closed
+form, which is the same open problem in different language.
+
+The one genuine structural fact available (Proposition~2, part (v) of
+paper1, ``Structure of $W_T$'') is that $H_T\le W_T$ is a cocompact lattice in
+$G_T=(\mathbb C\times\prod_{\pi\mid c_T}\mathbb Q(i)_\pi)\rtimes_{\zeta_T}
+\mathbb Z$, so $W_T$ is quasi-isometric to $\mathbb R^2$ times a horocyclic
+product of Bruhat--Tits trees (for $T=(1,2)$: the Diestel--Leader graph
+$\mathrm{DL}(5,5)$). This is worth recording as a considered-and-rejected
+route: growth series of $\mathrm{DL}(q,q)$ \emph{as a vertex-transitive graph}
+(equivalently, of the lamplighter group $\mathbb Z_q\wr\mathbb Z$ with its
+standard generators) are known to be rational (Bartholdi--Neuhauser--Woess-type
+results on lamplighter growth). But $H_T$'s lamp group here is $A_T\cong
+\mathbb Z[\zeta_T^{\pm1}]$, of rank $2$ over $\mathbb Z[1/c_T]$ and \emph{not}
+finite and \emph{not} finitely generated (paper1 Prop.\ (i)); the
+quasi-isometry to $\mathrm{DL}(5,5)$ is a coarse statement (Milnor--Švarc) that
+does not preserve the exact word-length metric or its generating function. So
+the known rational growth series of the finite-lamp Diestel--Leader graphs
+does not transfer, and paper1's own Remark on scope already flags that $W_T$
+is emphatically not an instance of the finite-lamp $\mathbb Z\wr\mathbb Z$
+picture. I record this as a route checked and rejected, not a new obstruction.
+
+\paragraph{(3) Coefficients against known sequences.} By universality
+(Theorem \texttt{thm:universality-sharp}), $u_d^T=u_d$ (the shape-independent
+universal sequence, OEIS A396406) for all $d\le n_T$, and only diverges from it
+beyond the shape-dependent onset $n_T\ge c_T$. So the early coefficients of
+$F_T$ for any specific $T$ are, by construction, not a new sequence to check
+against OEIS -- they coincide with the already-catalogued A396406 until the
+onset, and the repository's own numerics (\S ``Numerical record'' in
+paper1.tex, and \texttt{wt\_growth/}) already track the post-onset deficits
+$u_d-u_d^T$ for $(1,2)$ beyond depth 33. I read that table; it shows no
+periodicity or evident closed form in the deficits at the depths recorded, and
+Theorem~\texttt{thm:WT-lowcomplexity} already rules out rational/algebraic/
+P-recursive relations up to size boxes computed there for \emph{all} $T$ at
+once (using exactly the shape-independent layers). I did not re-run
+\texttt{wt\_growth} or \texttt{guess.py} for this note (both are read-only per
+task instructions and re-running would not change coefficients already
+certified); no hidden closed form suggests itself from re-reading this
+existing data.
+
+\paragraph{(4) Why continuation is hard here specifically.} The precise
+obstruction, sharper than ``nobody has tried'': continuation via pole
+confinement (the route that works for $U,V,G^T_0$) needs an explicit operator
+or transfer equation whose resolvent/Fredholm determinant \emph{is} the
+generating function, so that poles are visible as zeros of that determinant
+inside its domain of analyticity. That representation exists for $U,V,G^T_0$
+because their combinatorics come from a \emph{finite-state} travel block: a
+bounded catalytic variable, damped or at least confined, admitting a
+finite-dimensional transfer matrix whose characteristic/Fredholm data give
+meromorphic continuation for free. For $F_T$, the analogous catalytic
+structure -- the carry $f$ -- is proved (paper1's own numerics, and the
+$h$-dependent exponent $\zeta_T^{\,h}$ obstruction found independently by
+P5\_v2) to be an \emph{unbounded, genuinely two-dimensional} state, and worse,
+it enters the length function non-linearly (as the outcome of a min-plus
+optimization, not a fixed weight per carry value). Both of these facts block
+the standard routes to continuation, for related but distinct reasons:
+\begin{itemize}
+\item An unbounded catalytic variable defeats the finite-state/kernel-method
+machinery (this is Gap 2/Gap 3, and is what P5\_v2's non-integer-exponent
+computation makes precise).
+\item A non-fixed (optimization-defined) weight defeats any na\"ive lattice-sum
+or theta-function ansatz, because such ans\"atze need the weight of a lattice
+point to be given in closed form \emph{before} summing, whereas here the
+weight (geodesic length) is only known as the value of a dynamic program.
+\item The base being exactly on the unit circle ($|\zeta_T|=1$) is also the
+reason no results from contracting-base numeration systems (canonical number
+systems, Akiyama--Frougny--Sakarovitch rational-base systems, all of which
+require $|{\rm base}|>1$) apply even qualitatively: those theories all use
+contraction to bound the carry, and $|\zeta_T|=1$ is exactly the boundary case
+they exclude, not a variant of a case they cover.
+\end{itemize}
+None of these three points is new mathematics: they restate, in the
+integral/special-function language the task asked me to try, exactly the same
+Gap 2/Gap 3 obstruction paper1 and \texttt{P5\_note.tex}/\texttt{P5\_v2\_note.tex}
+already isolate. What is added here is the explicit report that the two most
+natural \emph{different-in-form} attempts (a Cauchy/contour kernel, and a
+theta/$q$-Bessel substitution) both run into the identical obstruction from a
+new angle, rather than a new gap.
+
+\section*{Verdict}
+
+\textbf{NOTHING WORKED.} No integral representation, no special-function
+identification, and no hidden closed form in the computed coefficients was
+found. Precisely why: any route to a meromorphic continuation of $F_T$ that
+mimics the $U/V/G_0^T$ route needs a finite-dimensional (or otherwise tame)
+transfer structure carrying the analytic information; the actual combinatorial
+engine of $F_T$ is division by $2\mu_T$ in $\mathbb Z[t^{\pm1}]$ evaluated at a
+unit-circle point $\zeta_T$, whose remainder (``carry'') is an unbounded planar
+walk entering the length function only through a min-plus optimization, not a
+fixed per-symbol weight. This is a structural mismatch with every method tried
+(kernel method in P5\_v2; contour/Cauchy kernel and theta/$q$-Bessel
+substitution here), not merely an unexplored direction, and it matches exactly
+what Gaps 1--3 of \texttt{P5\_note.tex} already say is missing. This note adds
+no new proved lemma and does not claim otherwise; it records two additional
+failed attempts and a sharper (still informal) diagnosis of the common
+obstruction, consistent with -- and not contradicting -- the existing gap
+statements.
+
+\end{document}

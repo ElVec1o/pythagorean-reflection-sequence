@@ -1,0 +1,163 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{lemma}{Lemma}
+\newtheorem{observation}[lemma]{Observation}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+\title{Room of mathematicians, item P5 (W\_T non-D-finite) --\\
+Seat: Erd\H{o}s (elementary/combinatorial re-encoding attempt)}
+\date{2026-09-26}
+\begin{document}
+\maketitle
+
+Labels as in \texttt{P5\_note.tex}/\texttt{P5\_v2\_note.tex}: PROVED, VERIFIED, HEURISTIC.
+\textbf{Outcome: NOTHING WORKED as a route to closing P5. Verdict: PARTIAL} --
+one idea (real/imaginary catalytic split) is shown to fail for a structural reason that is
+itself a small, previously-unstated observation; a second idea (coset-tower recursion) is a
+genuinely different-looking formal object but does not close anything and is explicitly not a
+functional equation in the kernel-method sense; a hand computation for $T=(2,1)$ is recorded.
+
+\section*{Calibration point (as required)}
+
+paper1.tex \S(rational $W_T$): $F_T(x)=\sum_d u_d^Tx^d$ is the growth series of
+$W_T=\rho_T(W)\le\mathrm{Isom}(\R^2)$. Conjecture \texttt{conj:WT-nonDfinite}: $F_T$ is not
+$D$-finite, for every $T=(c,e)$, $\mu_T=ct^2-et+c$, $\zeta=\zeta_T$ a root with $|\zeta|=1$. The
+obstruction (paper1, and made precise in \texttt{P5\_v2\_note.tex}): two edge profiles
+$A,A'\in\Z[t^{\pm1}]$ represent the same element of $W_T$ iff $A-A'\in I_T=\ker(\mathrm{ev}_\zeta)$,
+and dividing a profile by $2\mu_T$ from its low end produces, after $J$ steps, the prefix value
+$\sum_{j<J}a_jζ^j$ -- numeration in base $\zeta_T$ with $|\zeta_T|=1$, so nothing contracts the
+remainder and the carry performs a walk in the plane rather than staying in a bounded window
+(\texttt{wt\_carry}: carry width $\lfloor(d-12)/2\rfloor$ for $d\le32$ at $(2,1)$, VERIFIED not
+PROVED). The TRAVEL cost of a profile $A$ with support $S=\mathrm{supp}(A)$ ending at height $K$
+is, by hand (\texttt{P5\_v2\_note.tex} Lemma~1, reproduced here for self-containedness), with
+$L=\min(S\cup\{0,K\})$, $R=\max(S\cup\{0,K\})$:
+\[
+\mathrm{TRAVEL}(S,K)=(R-L)+\min\bigl((0-L)+(R-K),\ (R-0)+(K-L)\bigr),
+\]
+i.e.\ the shorter of the two orders (visit the left extreme first, or the right extreme first) of
+an out-and-back walk from $0$ to $K$ that must cover $[L,R]$; length is $\ell_T(w,K)=\min_Q
+\{\mathrm{TRAVEL}(\mathrm{supp}(Q),K)+\|Q\|_1: Q(\zeta)=w\}$. Checked by hand on
+$S=\{-3,4\},K=0$: $7+\min(7,7)=14$, matches direct enumeration.
+
+\emph{Why the catalytic-variable kernel method fails on the natural encoding}: the kernel method
+needs each generator-step to multiply the generating function by $x$ times a \emph{fixed Laurent
+monomial} in the catalytic variable(s) (so the functional equation is polynomial in $u$ with
+coefficients in $x$, and a kernel of bounded degree can be killed by finitely many small roots). An
+$a^{\pm1}$-step taken at height $h$ must multiply the tracked "running value" catalytic variable
+$v$ by $v^{\pm\zeta^h}$ if $v$ is to literally record $\sum a_j\zeta^j$ -- but $\zeta^h$ is not an
+integer (it is a point on the unit circle, generically irrational real and imaginary parts), so
+$v^{\zeta^h}$ is not a well-defined operation on a formal power series in one variable $v$ at all,
+let alone a fixed monomial independent of $h$. This is the "non-integer exponent issue" -- confirmed
+correct by direct inspection of the step rule, matching \texttt{P5\_v2\_note.tex} \S3's diagnosis.
+
+\section{Attempt 1: two integer-valued catalytic variables (real/imaginary split)}
+
+\textbf{Idea tested}: since $\mu_T$ is not monic ($\mu_T=ct^2-et+c$), pass to $\eta:=c\zeta$, which
+\emph{is} an algebraic integer: $\eta^2-e\eta+c^2=0$ is monic. Then $R=\Z[\zeta^{\pm1}]$ contains the
+rank-$2$ free $\Z$-module $\Z[\eta]=\Z\oplus\Z\eta$, and $\zeta^h=\eta^h/c^h$. Write
+$\eta^h=A_h+B_h\eta$ with $A_h,B_h\in\Z$ by the monic recursion $\eta^2=e\eta-c^2$; then
+$\zeta^h=(A_h+B_h\eta)/c^h=(A_h+cB_h\zeta)/c^h$, i.e.\ $\zeta^h$'s coordinates in the $\Z$-basis
+$\{1,\zeta\}$ of $\Q(\zeta)$ are $(A_h/c^h,\ cB_h/c^h)$. \textbf{Question}: can a walk track
+$(A_h,B_h)$ -- two \emph{integers} -- as two ordinary (unbounded but at least integer-valued, hence
+kernel-method-legal in principle) catalytic variables instead of the illegal $v^{\zeta^h}$?
+
+\textbf{Verdict: NO, and the reason is structural, not a failure to find the right substitution.}
+The catalytic variable in the kernel method must satisfy a step rule with \emph{bounded} degree
+shift (typically $\pm1$ or a fixed finite set) so that a fixed-degree kernel polynomial in $u$ can be
+solved by finitely many small roots. Here the recursion for $(A_h,B_h)$ is $A_{h+1}=-c^2B_h$,
+$B_{h+1}=eB_h+A_h$ (worked by hand below for $(c,e)=(2,1)$) -- linear, yes, but with the coefficient
+$c^2$ multiplying $B_h$ every step. Iterating, $|A_h|,|B_h|$ grow \emph{geometrically} (like $c^h$,
+matching $|\eta|=c$), not by bounded increments. A catalytic variable whose value can jump by a
+multiplicative factor $c$ at every single step is not expressible as multiplication by a Laurent
+\emph{polynomial} of fixed degree in a formal variable tracking it additively -- one would need the
+catalytic variable itself to already be $c^h$-scaled, which is exactly re-introducing the
+denominator-growth problem of \texttt{P5\_v2\_note.tex}'s Lemma~2 (infinite carry-class group) in new
+coordinates. In short: replacing the one non-integer-exponent catalytic variable by two
+integer-valued ones does not remove the unboundedness, it only relocates it from "the exponent is
+not an integer" to "the state is an integer but its two coordinates need $\Omega(c^h)$ bits," which
+is no more kernel-method-tractable (fixed-degree kernels handle bounded per-step increments, not
+geometric ones). This is consistent with, and gives an independent confirmation in different
+coordinates of, \texttt{P5\_v2\_note.tex}'s Lemma~2 (the carry-class group $R/(\text{f.g. submodule})$
+is infinite) -- it is the same obstruction seen through the integral basis $\{1,\eta\}$ instead of
+the $p$-adic-denominator argument there. \textbf{No sidestep found.}
+
+\subsection*{Hand computation, $T=(2,1)$: $\mu_T=2t^2-t+2$, $\zeta^2=(\zeta-2)/2$}
+
+Writing $\zeta^n=(a_n+b_n\zeta)/2^n$ (raw, before reducing common factors of $2$), the recursion
+$\zeta^{n+1}=\zeta^n\cdot\zeta$ combined with $\zeta^2=(\zeta-2)/2$ gives
+$a_{n+1}=-2b_n,\ b_{n+1}=2a_n+b_n$, $a_0=1,b_0=0$. By hand:
+\[
+\begin{array}{c|rrrrr}
+n & 0&1&2&3&4&5\\\hline
+(a_n,b_n) & (1,0)&(0,2)&(-4,2)&(-4,-6)&(12,-14)&(28,10)\\
+\text{reduced }\zeta^n=(a_n'+b_n'\zeta)/2^{k_n}& 1/1 & \zeta/1 & (-2+\zeta)/2 & (-2-3\zeta)/4 &
+(6-7\zeta)/8 & (14+5\zeta)/16
+\end{array}
+\]
+(checked by hand: at $n=2$, $\gcd(-4,2,4)=2$ reduces the raw denominator $4$ to $2$; at
+$n\ge3$ the $\gcd$ with $2^n$ is exactly $2$ each time, so the true minimal denominator is
+$2^{n-1}$ for $n\ge1$ -- growing without bound, exactly Lemma~2's conclusion, seen concretely).
+This matches the paper's stated carry-width growth and gives no new combinatorial pattern beyond
+confirming unboundedness at small $n$; no periodicity or short recursion in $(a_n,b_n)\bmod 2^m$
+was found by inspection at this range (too short to conclude anything either way -- a longer,
+Rust-based run is exactly \texttt{wt\_carry}, already run in paper1 to $d\le32$; not re-run here per
+the disk/CPU budget and "don't retry the direct method" instruction, since this would just be
+re-deriving \texttt{wt\_carry}'s existing VERIFIED numerics in new coordinates).
+
+\section{Attempt 2: a formal coset-tower recursion (not a kernel-method equation)}
+
+\textbf{Idea tested}: instead of a finite-state or classical-kernel-method transfer, write $F_T$
+as a structured (not closed-form) object indexed by the infinite coset space
+$\Z[t^{\pm1}]/I_T$, in a way that at least exposes a genuinely different formal shape.
+
+Fix the filtration by support radius: let $P_N=\{Q\in\Z[t^{\pm1}]:\mathrm{supp}(Q)\subseteq[-N,N]\}$,
+a free $\Z$-module of rank $2N+1$, and $I_T^{(N)}=I_T\cap P_N$. The finite quotient
+$P_N/I_T^{(N)}$ (finite because $P_N$ has finite rank and $I_T$ has finite index in each fixed-degree
+truncation once $N$ exceeds the "reach" of $\mu_T$-reduction relations up to that radius -- this
+needs $I_T^{(N)}$ to already separate cosets at radius $N$, which holds once $N$ is large enough
+that the $\mu_T$-reduction relations used in the carry have been applied; this finiteness is
+elementary but was not re-derived rigorously here, flagged as unverified) gives, for each $N$, a
+\emph{finite} weighted automaton: states = elements of $P_N/I_T^{(N)}$ (or rather, of the
+coset-classes reachable by profiles with support in $[-N,N]$), transitions given by the TRAVEL-cost
+increments of extending the profile. This produces a genuine generating function $F_T^{(N)}(x)$,
+rational in $x$ for each fixed $N$ (finite state space, standard transfer-matrix argument), with
+$F_T^{(N)}(x)\to F_T(x)$ coefficientwise as $N\to\infty$ (only elements needing carry radius $>N$ are
+missed). \textbf{This is a tower of rational approximations, each individual $F_T^{(N)}$ D-finite
+(rational, even), with $F_T$ recovered only in a non-uniform limit} -- structurally the same
+phenomenon as $q\to q/p$ non-regular-language numeration systems (AFS2008, already cited in
+paper1) but stated here as an explicit finite-automaton-per-radius tower for $W_T$ specifically,
+which is not written out in paper1/\texttt{P5\_note.tex}/\texttt{P5\_v2\_note.tex} (they state the
+analogy in words; this makes the finite automaton at each fixed radius, and the non-uniformity of
+its size in $N$, explicit as the actual formal object). \textbf{This does not close, or even
+attack, non-D-finiteness}: knowing each truncation is D-finite says nothing about the limit (indeed
+that is exactly Conjecture \texttt{conj:WT-nonDfinite}'s content), and the rate at which the
+automaton size in $N$ must grow (to keep matching $u_d^T$ for $d$ up to some bound) is precisely
+the un-open carry-width growth law $\lfloor(d-12)/2\rfloor$, already known and VERIFIED, not proved,
+in paper1. \textbf{No new leverage is obtained}: this is a repackaging, not progress, and is
+recorded only because it is a different-looking formal object than a kernel-method functional
+equation (per the task's suggestion 2), not because it advances the proof.
+
+\section{What was NOT retried}
+
+Per instructions: the direct catalytic kernel method on the natural encoding
+($v^{\zeta^h}$) was not retried (already shown to fail structurally, confirmed again above via the
+step-rule inspection); the carry-class-group-infinite fact (paper1's $A_T$ result) was not
+re-derived, only cited and used as the reason Attempt~1 fails.
+
+\section{Verdict}
+
+\textbf{PARTIAL.} No re-encoding was found that sidesteps the non-integer-exponent problem.
+Attempt~1 (integer real/imaginary catalytic pair) fails for a clean structural reason (geometric,
+not bounded, per-step growth of the integer coordinates -- an independent confirmation, in the
+integral basis $\{1,\eta\}$, of the carry-class group's infiniteness already proved in
+\texttt{P5\_v2\_note.tex}). Attempt~2 (coset-tower of finite automata) is a genuinely different
+formal object from a kernel-method equation, exhibited explicitly for $W_T$ for the first time
+here, but it is manifestly not a solution and does not reduce the open problem's difficulty -- it
+restates the same non-uniformity already known in words as an explicit (still infinite, still
+unsolved) family of finite automata. The hand computation for $T=(2,1)$ (Attempt~1's table) adds no
+new pattern. \textbf{Conjecture \texttt{conj:WT-nonDfinite} remains fully OPEN}; nothing here closes
+any gap of \texttt{P5\_note.tex} or \texttt{P5\_v2\_note.tex}.
+
+\end{document}
