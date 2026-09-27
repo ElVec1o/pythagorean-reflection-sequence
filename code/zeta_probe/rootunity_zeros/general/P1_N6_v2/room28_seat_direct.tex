@@ -1,0 +1,145 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 28 (seat: direct), P1 $N=6$: closing (or not) the near-saddle gap on the constant-height
+legs left open by Room 27}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Task and inputs read}
+Read in full: \texttt{room27\_seat\_direct.tex} and \texttt{room27\_landscape\_cert.py} (certified
+$\operatorname{Im}x=\mp\pi/6$ for $\operatorname{Re}x\in[4.2,50]$; explicitly left the region
+$\operatorname{Re}x\in(0,4.2)$, including the saddles $x_{-1},x_{-3}$ at $\operatorname{Re}x=0.349119$,
+open, diagnosing a $\mu$-linear real offset $-2\pi\mu H/N$ as the mechanism); \texttt{room22\_seat\_direct.tex}
+and \texttt{room22\_landscape\_cert.py} (real-axis analogue, certified $\operatorname{Re}x\in[0.88,50]$).
+
+\textbf{Task:} attempt to push the constant-height legs' certified region down toward
+$\operatorname{Re}x=0$, in particular near the saddles themselves, by (1) a tighter per-mode bound
+using each mode's own $V(\mu)$ rather than the shared $V_{\mathrm{ref}}$, and/or a sharper tail bound
+accounting for the known offset; (2) checking directly at/near the saddles; (3) if full certification
+is not achievable, finding precisely how far it CAN be pushed; (4) being honest if the gap needs genuinely
+new analytic work rather than tighter numerics.
+
+\section{Idea (1a): per-mode $V(\mu)$ reference is algebraically inert -- no possible gain}
+Before running anything, note the following exactly: \texttt{Wup}$(X,\mu,V_{\mathrm{ref}})$ computes
+$\operatorname{Re}((\Omega_\mu(x_{\mathrm{mid}})-V_{\mathrm{ref}})e^{-i\theta^\ast})+\mathrm{rad}(X)|\Omega_\mu'(X)|$.
+If one instead bounds with each mode's own reference $V(\mu)$ and adds back the (exactly known, since
+$V(\mu)$ and $V_{\mathrm{ref}}$ are both closed-form Arb quantities) correction
+$\operatorname{Re}((V(\mu)-V_{\mathrm{ref}})e^{-i\theta^\ast})$, the two additive pieces
+$\operatorname{Re}((\Omega_\mu-V(\mu))e^{-i\theta^\ast})+\operatorname{Re}((V(\mu)-V_{\mathrm{ref}})e^{-i\theta^\ast})$
+recombine to \emph{exactly} $\operatorname{Re}((\Omega_\mu-V_{\mathrm{ref}})e^{-i\theta^\ast})$ -- the same
+quantity as before, to the bit. Re-deriving the bound via a per-mode reference changes nothing
+mathematically; it is not a genuine tightening, only a relabelling. (It would help only if combined with a
+\emph{different, tighter} treatment of the $\Omega_\mu-V(\mu)$ piece itself near mode $\mu$'s own saddle
+-- e.g.\ the Taylor/ray-tail machinery Room 27/P1i already use for the two \emph{dominant} modes -- but
+that requires a steepest-descent path from a point on the leg to a saddle sitting at a \emph{different}
+height $\operatorname{Im}x_\mu=\pi(2\mu+1)/(2N)\ne\mp\pi/6$ for $\mu\ne-1,-3$; no such construction exists
+in any room read, and building one is exactly the ``genuinely new analytic work'' the task instructions
+ask to flag rather than force.)
+
+\section{Idea (1b)/(2): direct diagnostic -- is the gap a certificate artifact, or genuine?}
+This is the decisive check, and it settles the matter. \texttt{room28\_landscape\_cert.py} \S(A) evaluates,
+at floating precision, with \emph{no} box and \emph{no} $\mathrm{rad}(X)|\Omega_\mu'(X)|$ slack term at all
+-- i.e.\ the bare quantity $\operatorname{Re}((\Omega_\mu(x)-V_{\mathrm{ref}})e^{-i\theta^\ast})$ at exact
+points $x=x_0+iH$ -- for every explicit mode, at $x_0\in\{0.01,\,0.349119\ (\text{the saddle real part}),\,
+1,\,2,\,3\}$ on both legs:
+\begin{verbatim}
+leg Im x=-pi/6 (excl mu=-3):
+  x0=0.010000  exact worst=+13.55974 at mu=22
+  x0=0.349119  exact worst=+13.70778 at mu=22   <- AT the saddle's own real part
+  x0=1.000000  exact worst=+13.28125 at mu=22
+  x0=2.000000  exact worst=+10.97439 at mu=22
+  x0=3.000000  exact worst=+6.66754  at mu=22
+  true (uncertified) crossing point: x0=4.049034
+leg Im x=+pi/6 (excl mu=-22):
+  x0=0.010000  exact worst=+11.36649 at mu=-22
+  x0=0.349119  exact worst=+11.51454 at mu=-22
+  x0=1.000000  exact worst=+11.08800 at mu=-22
+  x0=2.000000  exact worst=+8.78115  at mu=-22
+  x0=3.000000  exact worst=+4.47430  at mu=-22
+  true (uncertified) crossing point: x0=3.739945
+\end{verbatim}
+This is not a certificate computation at all -- it is the exact (to double precision) value of the
+quantity the certificate is trying to bound, with the box/rad(X) slack term removed entirely. It is
+\textbf{positive throughout $(0,4.05)$ on the $-\pi/6$ leg and throughout $(0,3.74)$ on the $+\pi/6$ leg},
+including exactly at the saddles' own real part $0.349119$, by a large margin ($+11$ to $+14$, not a
+marginal $+0.001$). \textbf{Conclusion: the Room 27 gap is not a certificate-tightness artifact. It is a
+genuine fact about the exact landscape.} No box refinement, no per-mode reference bookkeeping, and no
+amount of tighter numerics can certify $\operatorname{Re}((\Omega_{22}(x)-V_{\mathrm{ref}})e^{-i\theta^\ast})
+\le-\eta$ for $\operatorname{Re}x<4.05$ on the $-\pi/6$ leg (mode $\mu=22$) or $\operatorname{Re}x<3.74$ on
+the $+\pi/6$ leg (mode $\mu=-22$), because the exact quantity itself is not negative there. This directly
+answers task items (1) and (2): the saddle region is exactly where this is worst (or comparably bad to
+nearby points -- the exact worst value is not even monotonic in $x_0$ near the saddle, peaking around
+$x_0\approx0.35$--$0.4$, see \S(A) output), and no per-mode or tail-bound trick changes the sign of an
+already-positive exact quantity.
+
+\section{Idea (3): how far the EXISTING machinery genuinely reaches}
+Room 27 used one shared, conservative $X_0=4.3$ for both legs (uniform, round-numbered). Since the two
+legs are not symmetric (the true crossings above, $4.049$ vs.\ $3.740$, differ by $0.31$), a real -- if
+modest -- improvement is available for free: certify each leg separately, at its own tight boundary.
+\texttt{room28\_landscape\_cert.py} \S(B) bisects (tol $0.01$, every point a genuine Arb certificate call,
+not a float check) the tightest $X_0\in[3,5]$ at which the unmodified \texttt{room27\_landscape\_cert.py:landscape\_leg}
+still certifies:
+\begin{verbatim}
+leg Im x=-pi/6  B: tightest certifiable X0 ~ 4.1250
+leg Im x=-pi/6  S: tightest certifiable X0 ~ 4.1641
+leg Im x=+pi/6  B: tightest certifiable X0 ~ 3.8203
+leg Im x=+pi/6  S: tightest certifiable X0 ~ 3.7031
+\end{verbatim}
+Final Arb-certified run at each leg's own boundary ($+0.01$ safety margin), $\Lambda=20$:
+\begin{verbatim}
+perl -e 'alarm 290; exec @ARGV' python3 room28_landscape_cert.py 20 0.05
+leg Im x=-pi/6  B: X0=4.1741  nd<=-0.2326  domfar<=-10.4321  rem<=-100.0000  -> CERTIFIED
+leg Im x=-pi/6  S: X0=4.1741  nd<=-0.0693  domfar<=-11.3933  rem<=-100.0000  -> CERTIFIED
+leg Im x=+pi/6  B: X0=3.8303  nd<=-0.0385  domfar<=-7.7758   rem<=-100.0000  -> CERTIFIED
+leg Im x=+pi/6  S: X0=3.8303  nd<=-0.6405  domfar<=-8.7476   rem<=-100.0000  -> CERTIFIED
+elapsed 0.3s, peak RSS 25 MB (cap 3000 MB)
+\end{verbatim}
+The bisected certified boundaries ($4.164$ on $-\pi/6$, $3.830$ on $+\pi/6$) sit within about $0.09$--$0.12$
+of the true (uncertified, floating) crossings found in \S2 ($4.049$, $3.740$) -- i.e.\ the certificate's
+own box/eta slack is already small, and Room 27's uniform $X_0=4.3$ was itself already close to optimal
+for the existing machinery (it was conservative mainly for using one shared bound for both legs rather than
+leg-specific ones). \textbf{Genuine, modest extension: the $+\pi/6$ leg now certifies down to
+$\operatorname{Re}x\approx3.83$}, versus Room 27's shared $4.3$; the $-\pi/6$ leg (the binding constraint)
+extends only marginally, from $4.3$ to $\approx4.17$. Memory/time: fresh \texttt{sysctl hw.memsize}
+$=25.77$\,GB, elapsed $0.3$s, peak RSS $25$\,MB, cap $3000$\,MB, all checked fresh at run time.
+
+\section*{Verdict}
+\textbf{PARTIALLY EXTENDED, and the remaining gap is diagnosed as requiring genuinely new analytic work,
+not tighter numerics.}
+\begin{itemize}
+\item Certified range improved from Room 27's shared $[4.3,50]$ to leg-specific
+$\operatorname{Re}x\in[4.17,50]$ (leg $\operatorname{Im}x=-\pi/6$) and $\operatorname{Re}x\in[3.83,50]$
+(leg $\operatorname{Im}x=+\pi/6$) -- both legs, both $B$ and $S_\pm$, Arb-certified, $128$-bit precision.
+This is a real but small gain (at most $0.47$ on the $+\pi/6$ leg), obtained purely by not sharing one
+conservative bound across both (asymmetric) legs.
+\item The region $\operatorname{Re}x\lesssim4.0$--$4.05$, including the saddles themselves at
+$\operatorname{Re}x=0.349119$, is \textbf{NOT certifiable with the current landscape formulation at all}
+-- not ``not yet certified'', but provably not certifiable as currently set up: \S2's exact
+(non-certificate, floating, box-free) evaluation shows the quantity the certificate needs
+$\le-\eta$ is actually $+11$ to $+14$ there, for explicit modes $\mu=\pm22$ (the extreme end of the
+explicit mode window) on both legs, including exactly at the saddles' own real part. This rules out task
+idea (1) definitively: no per-mode-reference or tail-bound refinement can flip an exact positive quantity
+negative.
+\item \textbf{This means the current per-mode, compare-against-a-fixed-$V_{\mathrm{ref}}$ landscape
+formulation is the wrong tool for the near-saddle stretch of the legs}, not merely imprecise there. Closing
+this region -- if it is even true, which this room does not determine -- would need one of: (i) a genuinely
+different global argument that does not require every individual explicit mode's height to separately beat
+$V_{\mathrm{ref}}$ pointwise (e.g.\ a bulk/aggregate bound across modes, since it is plausible the modes
+partially cancel in whatever the ultimate Rouch\'e quantity actually is, even though each one individually
+overshoots); or (ii) the un-derived crossing-region bookkeeping ($\Upsilon,M',K'$ with explicit mod-6
+constants, Room 19/20 \S5) that both Room 22 and Room 27 already flagged as the one remaining open
+analytic piece. Neither is attempted here, per the task's own instruction to not force a certificate.
+\item As Room 27 already noted and this room confirms unchanged: this does not connect to Room 22's
+real-axis certificate ($\operatorname{Im}x=0$, $[0.88,50]$), does not resolve the crossing region
+$\operatorname{Re}x\lesssim0$, does not redo the head check (H), and the window-exclusion mechanism
+around the on-leg saddle was again not load-bearing in the final certified runs (both leg boundaries sit
+well past $0.349$).
+\end{itemize}
+
+\paragraph{Files.} \texttt{room28\_landscape\_cert.py} (this directory), importing
+\texttt{Case}/\texttt{CertFail} from \texttt{../P1i/P1i\_landscape\_cert.py} and \texttt{landscape\_leg}
+from \texttt{room27\_landscape\_cert.py}, both unmodified. Usage:
+\texttt{perl -e 'alarm 290; exec @ARGV' python3 room28\_landscape\_cert.py [LAMBDA] [WIN]}.
+
+\end{document}
