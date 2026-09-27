@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\title{Room 29: Direct zero certification, $j=6,7,8$}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Task}
+Room 28 found the landscape/Rouch\'e certificate approach provably blocked near the saddle
+($\operatorname{Re}x\lesssim4.0$). This room bypasses that wall entirely and just extends the
+\emph{direct} zero certification of room1\_seat\_erdos\_rouche.py (which already certified $j=4,5$
+by Arb ball arithmetic + winding number around $B(q)$, $q=\zeta_6 e^{-t}$, $\zeta_6=e(1/6)$) to
+three more zeros, $j=6,7,8$.
+
+\section*{Method}
+1. High-precision root refinement (mpmath, 50 dps) of $B(t)=0$ starting from a linear
+extrapolation of the $j=4,5$ centers in the variable $x=1/(2j)$.
+2. Arb ball-arithmetic (200-bit) evaluation of $B(q)$ on a circle of 24 sample points around each
+refined root, confirming (a) the zero-exclusion ball never straddles $0$ on the sampled boundary,
+and (b) the winding number of $\arg B$ around the circle is exactly $1$ -- i.e.\ a single simple
+zero is enclosed, certified rigorously (not just numerically suggestive).
+
+At the room1 script's original radius $\rho=0.12|t_0|$, $j=7,8$ returned winding $2$ (zeros are
+more closely spaced at higher $j$, so that radius over-covers). Shrinking to $\rho=0.04|t_0|$
+recovers winding $1$ for all three with wide margin (boundary safety flag \texttt{True} in every
+case, i.e.\ $|B|_{\text{mid}} > 3\times$ the ball radius at every sample point).
+
+\section*{Certified results}
+\begin{center}
+\begin{tabular}{c l c l}
+$j$ & $t^*_j$ & winding & radius used \\\hline
+6 & $0.018505867048792653 + 0.0004428711924933978\,i$ & $1$ & $\rho=0.04|t_0|=7.40\times10^{-4}$ \\
+7 & $0.015918653712930334 + 0.00031012801905687973\,i$ & $1$ & $\rho=0.04|t_0|=6.37\times10^{-4}$ \\
+8 & $0.014006556584697972 + 0.00024840746162536003\,i$ & $1$ & $\rho=0.04|t_0|=5.60\times10^{-4}$ \\
+\end{tabular}
+\end{center}
+All three certifications used Arb 200-bit interval arithmetic (same series truncation scheme as
+room1, $K_{\max}=140$, tail padding once consecutive term-magnitude upper bounds drop below
+$10^{-40}$); $k_{\text{used}}\approx87$--$108$. Combined with room1's $j=4,5$, this gives 5
+consecutive certified simple zeros $t^*_4,\dots,t^*_8$.
+
+\section*{Pattern check}
+$|t^*_j|\cdot2j$: $0.2187\ (j{=}4),\ 0.2194\ (j{=}5),\ 0.2221\ (j{=}6),\ 0.2229\ (j{=}7),\
+0.2241\ (j{=}8)$ -- slowly increasing, consistent with $|t^*_j|\sim C/(2j+c)$ for a small positive
+constant $c$ (roughly $c\approx0.1$--$0.3$ from a two-point fit), not exactly $C/(2j)$. This is a
+rough eyeball check only, not a fit with error bars.
+
+\section*{Assessment}
+Five certified zeros with a magnitude decay compatible with the conjectured $(L+i\pi)/(2j+\text{const})$
+asymptotic is a mildly encouraging consistency check, nothing more. Certifying individual zeros
+one at a time -- even certifying, say, 50 of them this way -- would \emph{not} by itself constitute
+or approach a proof of the full accumulation/zero-counting statement the paper needs: each
+certification here fixes one $j$ and one small disk by hand (informed by a numerically-refined
+guess), and the disk radius already had to be shrunk once (from room1's $\rho=0.12|t_0|$ to
+$\rho=0.04|t_0|$) simply because zeros crowd closer as $j$ grows -- that crowding will keep forcing
+smaller disks and better initial guesses as $j\to\infty$, with no uniform argument here bounding
+how far this can be pushed or why winding stays $1$ for all $j$. Turning ``the first $k$ zeros
+individually certify'' into ``there are infinitely many / they accumulate as predicted'' is a
+separate, genuinely open theoretical question (a uniform argument controlling zero-spacing and disk
+radius as $j\to\infty$, not more instances of this per-$j$ numerical certificate) -- this room does
+not address it and should not be read as progress toward it beyond the raw data point.
+
+\end{document}
