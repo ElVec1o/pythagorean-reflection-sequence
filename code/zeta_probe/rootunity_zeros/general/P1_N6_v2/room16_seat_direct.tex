@@ -1,0 +1,193 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 16 (seat: direct attempt): route (b) retried with the exact gap
+Reviewer AY identified --- resolving it}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. The gap, restated precisely}
+
+Room 14's post-review correction identified a real error: the lemma's separation constant is
+\[
+d(x)=\min_{c^N=1}\mathcal D\bigl(2\operatorname{Re}x,\ \varphi_c(x)\bigr),\qquad
+\varphi_c(x)=\operatorname{dist}(\arg c-2\operatorname{Im}x,\,2\pi\Z),
+\]
+\[
+\mathcal D(a',\varphi)=\inf_{\rho\ge0}\max\bigl\{\sigma(\varphi-\rho\sin\theta),\,1-e^{-a'-\rho\cos\theta}\bigr\},
+\qquad \sigma(u)=\sin\min(\operatorname{dist}(u,2\pi\Z),\tfrac\pi2),
+\]
+where $\theta=\arg t$ is the construction's \emph{fixed tie-ray angle} (the direction of the
+Euler--Maclaurin ray used to sum $m\mapsto G(v_0+4tm)$ in the proof of \texttt{lem:qi-bounds}), and
+$\rho\ge0$ is that sum's own internal auxiliary variable --- not a position along the geometric
+$x$-leg. Room 14 set $\rho=$ (displacement of $x$ along the leg) and evaluated one slice of the
+$\max$, which is only ever an upper bound on an infimum, not a lower bound, unless $\sin\theta=0$
+is independently established for the construction's actual $\theta$. This room checks exactly that,
+and then redoes the infimum honestly.
+
+\section*{1. What $\theta$ actually is, and its value at $N=6$}
+
+\texttt{paper2a.tex} fixes $t=re^{i\theta}$ as \emph{the} asymptotic parameter of the whole
+$q\to$~root-of-unity expansion (Definition preceding \texttt{lem:qi-bounds}: ``$q=ip$, $p=e^{-t}$,
+$P=p^4$ and $t=re^{i\theta}$''); $\theta$ is the fixed direction of $t$ used throughout the lemma
+and its proof, in particular in the ray lemma's own Euler--Maclaurin step (proof of
+\texttt{lem:qi-bounds}, ``A ray lemma'' paragraph: ``along the ray $v_0+e^{i\theta}\R_{\ge0}$''). It
+is emphatically \emph{not} free to set to $0$ at will and is not the direction of the geometric
+$x$-contour: at $q=i$ ($N=4$) it equals $\theta_i=\arctan(\pi/(6\log2))\ne0$, and the whole
+$N$-generic diagnosis (\texttt{paper2a.tex}, discussion following \texttt{cor:arcUV}, ``The actual
+obstruction identified is that every part of \texttt{lem:qi-bounds} rests on a ray lemma whose proof
+needs $\sin\theta\ne0$ at the tie-ray angle $\theta$ \ldots at $N=6$ the certified tie-ray angle is
+exactly $\theta^\ast=0$'') states as a \emph{certified fact about the $N=6$ construction itself} ---
+not an assumption available to be waived --- that
+\[
+\boxed{\theta^\ast=0\ \text{exactly, at }N=6.}
+\]
+So for the $N=6$ legs, $\sin\theta=0$ and $\cos\theta=1$ are forced, not chosen. This is the one
+input room 14 needed to justify but did not.
+
+\section*{2. The infimum, done correctly, at fixed $x$}
+
+Fix a point $x$ on the leg (in particular $x=x_{-1}$, the saddle, or any other point with
+$\operatorname{Re}x\ge0$ on the constant-height leg $\operatorname{Im}x=\pi/6$) and let $c=c_1=\zeta_6$
+be the resonant root of unity for that leg (\S2 of room 14, unchanged and not in dispute). Put
+$a'=2\operatorname{Re}x\ge0$ and $\varphi=\varphi_{c_1}(x)=0$ (resonance: $\arg c_1-2\operatorname{Im}x
+\equiv0\pmod{2\pi}$ exactly on this leg). With $\sin\theta=0$, $\cos\theta=1$:
+\[
+\mathcal D(a',0)=\inf_{\rho\ge0}\max\bigl\{\sigma(0-\rho\cdot0),\ 1-e^{-a'-\rho}\bigr\}
+=\inf_{\rho\ge0}\max\bigl\{0,\ 1-e^{-a'-\rho}\bigr\}.
+\]
+\textbf{The $\sigma$-term is now literally constant in $\rho$} (it depends on $\rho$ only through
+the vanished factor $\rho\sin\theta$) \textbf{and equals $0$}, while $1-e^{-a'-\rho}$ is a strictly
+increasing function of $\rho\ge0$ for every fixed $a'\ge0$ (its derivative is $e^{-a'-\rho}>0$).
+Hence the function $\rho\mapsto\max\{0,1-e^{-a'-\rho}\}$ is itself \emph{non-decreasing} on
+$[0,\infty)$ --- it is a max of a constant and a strictly increasing nonnegative function --- so its
+infimum over $\rho\ge0$ is attained at $\rho=0$:
+\[
+\mathcal D(a',0)=\max\{0,\,1-e^{-a'}\}=1-e^{-a'}\qquad(a'\ge0).
+\]
+This is not "evaluating one slice and hoping it's representative" (Room 14's error, and exactly
+what Reviewer AY correctly flagged as invalid in general): it is a proof, by monotonicity, that the
+infimum \emph{equals} the $\rho=0$ value, whenever $\sin\theta=0$. The two situations coincide in
+their final formula only because the vanishing of $\sin\theta$ collapses the $\rho$-dependence of
+the first term to nothing, leaving a manifestly monotone second term; this fact is precisely what
+Room 14 never checked and needed to.
+
+\emph{The other roots of unity do not undercut this.} For any other $c$ with $c^6=1$ on this leg,
+$\varphi_c(x)\ne0$ (the six residue classes are separated by $\arg$-spacing $\pi/3$, and only the
+resonant class hits $\varphi=0$ exactly at this $\operatorname{Im}x$), and since the second term of
+$\mathcal D$ does not depend on $c$ at all, while $\sigma(\varphi_c)\ge0=\sigma(0)$, we get
+$\mathcal D(a',\varphi_c)\ge\mathcal D(a',0)$ for every such $c$. Hence the resonant class attains
+the minimum in $d(x)=\min_{c^6=1}\mathcal D(2\operatorname{Re}x,\varphi_c(x))$, and
+\[
+d(x)=1-e^{-2\operatorname{Re}x}\qquad\text{for every }x\text{ on this leg, }\operatorname{Re}x\ge0.
+\]
+
+\section*{3. Value at the saddle, and monotonicity along the leg}
+
+At $x=x_{-1}=0.3491187578768502\ldots+i\pi/6$ (Room 11's certified $N=6$ saddle; re-verified here,
+\texttt{perl -e 'alarm 60; exec @ARGV'} wrapper, mpmath 30 digits, negligible memory/disk):
+\[
+\operatorname{Re}(x_{-1})=0.3491187578768502\ldots,\qquad a'=2\operatorname{Re}(x_{-1})=0.6982375157537004\ldots,
+\]
+\[
+\boxed{d(x_{-1})=1-e^{-a'}=0.502538700696331561246458512376\ldots>0.}
+\]
+Since $\operatorname{Re}x$ only increases as one moves outward along the leg from the saddle, and
+$1-e^{-2\operatorname{Re}x}$ is strictly increasing in $\operatorname{Re}x$,
+\[
+d(x)\ \ge\ d(x_{-1})=0.5025387\ldots\ >0\qquad\text{for every }x\text{ on the leg, with equality only at the saddle.}
+\]
+By the conjugate-symmetric argument (resonant root $c_5=\overline{\zeta_6}$), the identical bound
+holds on the $x_{-3}$ leg.
+
+\section*{4. Where this differs from, and repairs, Room 14}
+
+Room 14's arithmetic table swept $x$ itself along the leg, computed $w(\rho)=c_1e^{-2x(\rho)}$ with
+$x(\rho)=x_{-1}+\rho$, and read off $|1-w(\rho)|\ge1-e^{-2\operatorname{Re}(x_{-1})}$ --- a true fact
+about $|1-w|$ \emph{at each such point}, but not, by itself, a lower bound on the lemma's $\delta$
+at any fixed point, since $\delta$'s own infimum ranges over the auxiliary Euler--Maclaurin ray (at
+\emph{fixed} $x$, varying the summation index $m$), not over positions of $x$. Reviewer AY's
+objection to that step stands and was correctly made.
+
+What repairs it is \S2 above: at a \emph{fixed} $x$, the lemma's own $\rho$ enters only through
+$e^{-a'-\rho\cos\theta}$ (decay along the auxiliary ray) and through $\sigma(\varphi-\rho\sin\theta)$
+(rotation of the resonance phase along that same ray). Because $\theta^\ast=0$ is a certified,
+non-negotiable fact of the $N=6$ construction (\S1), the rotation term is identically frozen at its
+$\rho=0$ value for every $\rho$, and the decay term is monotone, so elementary monotonicity --
+not a coincidental numerical match with Room 14's mis-parametrized sweep -- pins the infimum at
+$\rho=0$. The formula this produces, $d(x)=1-e^{-2\operatorname{Re}x}$, happens to have the same
+shape as Room 14's leg-sweep quantity because both reduce to $1-e^{-2\times(\text{something
+non-decreasing along the direction of travel})}$; the two computations are conceptually distinct
+(one moves $x$, the other moves the fixed-$x$ auxiliary $\rho$ at $\theta=0$), and only the second
+is the quantity \texttt{lem:qi-bounds} actually needs, but it recovers the same numerical value
+$0.5025387\ldots$ at the saddle, now for a specifically correct reason.
+
+\section*{5. Verdict}
+
+\textbf{GAP CLOSED.} $\theta^\ast=0$ is exact and forced (not a free choice) for the $N=6$
+resonance-pinned legs (\S1, citing \texttt{paper2a.tex}'s own certified diagnosis). With
+$\sin\theta=0$, the $\sigma$-term of $\mathcal D(a',\varphi)$ becomes constant in the lemma's
+internal $\rho$, the remaining term $1-e^{-a'-\rho}$ is strictly increasing in $\rho\ge0$, so the
+$\max$ of the two is non-decreasing in $\rho$ and its infimum is genuinely, provably attained at
+$\rho=0$ --- this is the monotonicity check the task asked for, and it holds. Consequently
+$d(x)=\max\{\sigma(0),1-e^{-2\operatorname{Re}x}\}=1-e^{-2\operatorname{Re}x}$ exactly along both
+$N=6$ resonance-pinned constant-height legs, giving the rigorous, unconditional bound
+\[
+d(x)\ \ge\ 1-e^{-2\operatorname{Re}(x_{-1})}=0.5025387\ldots>0
+\]
+for every point on the leg from the saddle outward. Room 14's boxed number was numerically correct;
+its justification was not (Reviewer AY's objection was valid against the argument as written). This
+room supplies the missing justification via the correct object (fixed-$x$ infimum over the lemma's
+own auxiliary $\rho$, using the certified $\theta^\ast=0$), and the number survives unchanged.
+
+\textbf{Scope, stated honestly (unchanged from Room 14's caveats, still open).} This closes only the
+ray-lemma's separation constant $d(x)>0$ for the leading-order, $t\to0$ picture, on Part~(i)'s
+formula (\texttt{lem:qi-bounds}(i), $\operatorname{Re}x\ge0$). It does not yet: (1) redo this with
+the genuine $O(t)$ shift ($jt$ in $v$, and the $4tm$ sum structure) rather than the leading-order
+proxy; (2) touch $M'(x)$, $K'(x)$, or the $\vartheta$-sum estimate needed for the full Part~(ii)
+bound; (3) verify the $N$-generic decomposition $c_j=\zeta_N^j$ against a written $N$-generic
+version of \texttt{lem:qi-bounds} (none was found to exist; the $N=4$ statement was generalised by
+analogy, cross-checked only against Room 8's independently-derived resonance loci). What is new
+here, precisely, is that the \emph{one piece Reviewer AY flagged as invalid} --- the claim that
+$\rho=0$ realises the infimum defining $\mathcal D$ --- is now a proved fact (via $\theta^\ast=0$
+and monotonicity) rather than an unjustified single-slice evaluation. Route (b)'s head-elimination
+mechanism for the ray lemma at $N=6$ is accordingly back on the table, restricted to the scope above.
+
+\end{document}
+
+
+\section*{Correction (post-review, Reviewer AZ): the gap MOVED, it did not close}
+
+\textbf{The single-slice error Reviewer AY caught in Room 14 has genuinely been fixed} (item 1:
+$\theta$ is confirmed the construction-global fixed tie-ray angle, not a free per-application
+choice; item 2: the monotonicity of $\max\{\text{const},1-e^{-a'-\rho}\}$ in $\rho$ is elementary
+and correct; item 3: $\sigma(\varphi)$ is genuinely constant in $\rho$ once $\sin\theta=0$ is
+substituted). \textbf{But the fix re-introduces the identical species of error one level up, in
+$\theta$ instead of $\rho$.} By direct analogy with the only fully-worked comparison case in the
+source (N=4/$q=i$), \texttt{paper2a.tex}'s actual application of \texttt{lem:qi-bounds} is over a
+\emph{band} $|\theta-\theta_i|\le10^{-3}$, not the single point $\theta=\theta_i$ -- the downstream
+Rouch\'e argument (Step 4 of \texttt{prop:qi}) needs the estimate to hold uniformly on the boundary
+of an open disc in the $t$-plane, not just along one ray. If N=6's construction needs the same
+band uniformity (assumed by analogy throughout this room, never separately checked), then on that
+band $\sin\theta$ is generically \emph{nonzero}, and the ``$\sigma$-term is constant'' simplification
+that this room's whole argument rests on fails. \textbf{The gap has moved from ``which $\rho$?'' to
+``pointwise-in-$\theta$ or band-in-$\theta$?'' -- it has not closed.}
+
+\textbf{What survives, and is real, new progress:} the six-residue-class argument (item 4) --
+since every non-resonant class $c$ has $\varphi_c\ne0$, giving $D(a',\varphi_c)\ge D(a',0)$
+uniformly (not case-by-case) when $\sin\theta=0$, the resonant class provably realizes the minimum
+defining $d(x)$. This closes a gap \texttt{P1\_N6\_note.tex} itself explicitly flagged as
+unchecked (``whether any of the six residues lies close enough to a positive-real resonance ...
+not attempted''). This piece would survive largely intact even if the band-vs-point question above
+resolves unfavorably, since it is a comparison between classes at the same $\theta$, not a
+statement about a single $\theta$-value being sufficient.
+
+\textbf{Next precise step (not attempted here):} determine whether N=6's actual downstream use
+(whatever plays the role of Step 4's Rouch\'e argument for N=6, which has itself never been
+written since no N=6 contour construction exists per Room 11/13) genuinely needs a $\theta$-band
+or can get away with a single $\theta=\theta^\ast=0$ evaluation. This is now a crisp, well-defined
+question, not a vague ``try harder.''
+
+\textbf{Route (b): still OPEN.} Two false starts on the leading-order estimate now correctly
+diagnosed and retracted (Room 14: $\rho$-slice error; Room 16: $\theta$-slice error, same species
+one level up), with one small piece of genuine progress (the six-class argument) kept.
