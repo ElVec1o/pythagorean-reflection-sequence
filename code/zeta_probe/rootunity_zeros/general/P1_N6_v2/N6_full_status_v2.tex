@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{P1 N=6: FULL consolidated status after 16 rooms, 9 reviewers}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{Corrected scope (Room 18/Reviewer BB, unchanged)}
+Accumulation of poles at $\zeta_0=e(1/6)$ was NEVER open -- \texttt{paper2a.tex} already proves it
+by closure. The open question is the strictly stronger \textbf{direct tie-ray statement at N=6}.
+
+\section*{PROVED, confirmed by independent review}
+\begin{itemize}
+\item \textbf{Separation constant, both sides (Rooms 17+19, 3 reviewers, no gap found):}
+$d(x)\ge1-e^{-2\operatorname{Re}(x)}$ for $\operatorname{Re}(x)\ge0$,
+$d'(x)\ge1-e^{2\operatorname{Re}(x)}$ for $\operatorname{Re}(x)\le0$, band-uniform, no seam.
+\item \textbf{Mod-6 Poisson-summation transform, domination constant, $K'^{(6)}(x)$'s
+coefficient structure (Room 21, confirmed by Reviewer BD -- re-derived independently from scratch,
+5-way cross-check against N=4, no error found).}
+\item \textbf{$f_e,f_o\to F_\rho$ generalization, $N'=3$, 3 branches (Room 23, confirmed by
+Reviewer BE -- correctly identified as already-existing general machinery, not new, numerically
+verified to 40 digits).}
+\item \textbf{$M'^{(N)}(x)$'s general-$N$ formula, $\kappa_N$, $\Sigma_N$ (Room 24, confirmed
+CORRECT arithmetic by Reviewer BF -- independently re-derived, reproduces every N=4 numeral
+exactly).}
+\item \textbf{Rigorous Arb certificate for the real-axis $\operatorname{Re}(x)>0$ approach segment
+(Room 22): CERTIFIED at $[0.88,10]$, $[1,50]$. Found a new precise crossover point
+$\operatorname{Re}(x)\approx0.879$.}
+\end{itemize}
+
+\section*{NOT proved: two specific, now-precisely-identified gaps (Reviewer BF, this round)}
+\textbf{Room 24's ``fully assembled'' verdict is DOWNGRADED.} Two concrete problems, not
+formalities:
+\begin{itemize}
+\item \textbf{$c_\ell^{(6)}$ has never been computed anywhere.} It appears as a bare symbol in
+Room 21's $K'^{(6)}(x)$ (flagged there as blocked) and Room 23 explicitly left this bookkeeping
+``not attempted.'' Room 24's summary table lists $K'^{(6)}(x)$ as ``DERIVED'' when this constant
+inside it is still unevaluated. \textbf{Concrete next step:} compute $c_\ell^{(6)}$ following
+whatever definition produces N=4's analogous constant in \texttt{qi\_bounds.tex}.
+\item \textbf{The ``$2\pi$ safety margin is $N$-independent'' claim is a tautology
+($N\times(2\pi/N)=2\pi$ for any $N$), not a re-verified inequality.} The actual content needed is
+that this margin represents a genuine net loss in the relevant regime (\texttt{qi\_bounds.tex}
+line 140's condition, roughly ``for $r\lesssim\pi/2\cos\theta$ this is a net loss when
+$\ell\ge2$''), and Room 21 itself found N=6's domination constant is \emph{weaker} than N=4's
+(exponent scaled by $2/3$). \textbf{Concrete next step:} explicitly re-check this net-loss
+condition at N=6's actual operating radius (Room 21 reports $\bar r\approx0.005$) with the weaker
+constant -- this has never been done and could plausibly fail.
+\end{itemize}
+
+\section*{Also still missing (unchanged from Room 20/22)}
+\begin{itemize}
+\item Constant-height leg certificates ($\operatorname{Im}x=\mp\pi/6$) -- Room 22 only certified
+the real-axis approach, not these legs.
+\item The actual Rouch\'e winding-number step itself.
+\end{itemize}
+
+\section*{Net assessment after this extraordinarily thorough investigation}
+\textbf{Genuine, substantial, independently-confirmed progress}: every major structural piece of
+an N=6 analogue of \texttt{lem:qi-bounds} has now been either proved or correctly derived and
+cross-checked, narrowing what started as ``the whole thing is missing'' (Room 11) down to two
+specific, well-defined, checkable remaining tasks plus the leg certificates and the Rouch\'e
+assembly. \textbf{Not closed.} This is the honest state after 16 rooms and 9 independent
+adversarial reviews (AK, AQ, AT, AV, AY, AZ, BA, BB, BC, BD, BE, BF -- 12 distinct reviewer
+identities across the whole N=6 thread), which caught and corrected 4 genuine errors along the way
+(Room 14's $\rho$-slice error; Room 16's $\theta$-slice error; Room 20's transcription errors,
+corrected by Room 21; Room 24's premature ``fully assembled'' claim, downgraded here). \textbf{Not
+integrated into paper2a}; repo-only, precisely documented for continuation.
+
+\end{document}

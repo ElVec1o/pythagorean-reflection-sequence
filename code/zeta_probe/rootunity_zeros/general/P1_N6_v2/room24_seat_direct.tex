@@ -1,0 +1,254 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 24 (seat: direct): $M'^{(6)}(x)$'s explicit $x$-linear/constant terms --
+the Taylor-shift constant-counting redone for $N=6$}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Scope and what was read}
+
+Read in full: \texttt{room21\_seat\_direct.tex} (the confirmed $\Upsilon^{(6)}$, domination
+constant, $K'^{(6)}$ derivation, and its \S7 identifying $M'(x)$'s $x$-linear/constant terms as
+the one piece not obtained); \texttt{room23\_seat\_direct.tex} (the confirmed $N=6$ closed forms
+$f_0^{(6)},f_1^{(6)},f_2^{(6)}$, $a^{(6)}=-2(1-q)$, $L_w^{(6)}=\log2+2\pi i/3$, three branches
+$\varrho=0,1,2$ replacing $N=4$'s even/odd split); \texttt{paper2a.tex} lines 2170--2264
+(\texttt{lem:qi-bounds}, statement and proof, part (ii) in particular, lines 2213--2217 for the
+stated $M'(x)$, $K'(x)$, and lines 2249--2258 for the proof); and, most importantly,
+\texttt{qi\_bounds.tex} lines 6--76 (statement, with $\Lambda'(x)$ the paper's $M'(x)$) and lines
+126--156 (the full line-by-line proof of part (ii), carrying every constant the printed paper
+only summarizes). Also re-read Room 19/17's separation-constant result and Room 21 \S3's
+domination-constant derivation, both needed for the final assembly question in \S5 below.
+
+\textbf{Verdict up front: DERIVED. The general-$N$ Taylor-shift/constant-counting step that
+produces $M'(x)$'s $x$-linear and constant terms is identified explicitly (\S1--2 below,
+line-by-line against \texttt{qi\_bounds.tex}), generalized to every $N$, and checked to reproduce
+paper2a's printed $N=4$ formula \emph{exactly, term by term, in all four pieces} (\S3) -- not an
+approximate match, an exact one. Plugging in $N=6$ gives an explicit, numerically verified
+$M'^{(6)}(x)$ (\S4). Combined with Room 17/19's separation constant and Room 21's $\Upsilon^{(6)}$
+and $K'^{(6)}$, the crossing-region estimate of \texttt{lem:qi-bounds}(ii) is now fully assembled
+for $N=6$ at the certified saddle angle $\theta^\ast=0$ (\S5) -- with one honest caveat on scope,
+stated precisely there.}
+
+\section*{1. Locating the exact step in \texttt{qi\_bounds.tex}'s proof}
+
+\texttt{qi\_bounds.tex} line 58 states, for $N=4$:
+\[
+ \Lambda'(x)=\bigl(\tfrac1{\sqrt2}+2\bigr)|x|+\tfrac\pi2\bigl(|m^\ast(x)|+4\bigr)+2\pi
+ +\max(-\log D'(x),\log2).
+\]
+The proof (lines 126--152) builds this from four separate pieces, in this order:
+
+\emph{(a) The $\kappa$-term.} Line 118 of the companion proof for part (i) (reused verbatim in
+part (ii), since it comes from $x\log a/t$, which is common to both parts):
+$x\log a/t=xL_w/t-\frac{(1-i)x}2+x(\ell(t)/t+\frac{1-i}2)$, where the last bracket is $O(c_\ell|t|)$
+(absorbed into $K'(x)$). The surviving $O(1)$-in-$t$ piece is $-\frac{(1-i)x}2$, an exact term, not
+an error bound; its real part after the $e^{-i\theta}$ rotation is bounded by $|x|/\sqrt2$ since
+$|-(1-i)/2|=1/\sqrt2$. \textbf{This is where the $\frac1{\sqrt2}$ in $\Lambda'(x)$ comes from.}
+
+\emph{(b) The linear part of the $\beta_k^2$ expansion.} Line 137: expanding $\beta_k^2/(8t)$ at
+$N=4$ gives \emph{exactly}
+\[
+ \frac{\beta_k^2}{8t}=\frac{(x-\frac{i\pi m}4)^2}{2t}-\frac{2-j}2\Bigl(x-\frac{i\pi m}4\Bigr)
+ +\frac{(2-j)^2t}8 .
+\]
+The first term (quadratic in $x$, order $1/t$) feeds $U(x)/r$. The last term (order $t$) feeds
+$K'(x)$'s constant $3/4$ (\S4 of Room~21, already re-derived for $N=6$). \textbf{The middle term},
+$-\frac{2-j}2(x-\frac{i\pi m}4)$, is order $1$ in $t$ and has \emph{not} been absorbed anywhere
+else: its real part after rotation splits into an $x$-part, $-\frac{2-j}2x$ (bounded by
+$\frac{|2-j|}2|x|$), and an $m$-part, $\frac{2-j}2\cdot\frac{i\pi m}4$ (bounded, after the
+domination argument restricts $m$ to within $O(1)$ of $m^\ast$, by the $\frac\pi2(|m^\ast|+4)$
+term of item (c) below). Summing the $x$-part over $j=1,\dots,4$ (\emph{all four factors
+contribute, since $f(x)$ is a product over all four Pochhammer factors, and part (ii)'s estimate
+bounds each factor's contribution separately before summing}):
+\[
+ \sum_{j=1}^4\frac{|2-j|}2\,|x|=\frac12(1+0+1+2)|x|=2|x|.
+\]
+\textbf{This is exactly the ``$+2$'' in $\Lambda'(x)$'s $|x|$-coefficient} -- a term qi\_bounds.tex's
+compressed proof folds into the single phrase ``the linear parts'' (line 150) without spelling out
+the split, but which is recoverable exactly from the boxed exponent identity of line 137 (itself
+identical to Room~21 \S2's independently-rederived boxed identity, a second confirmation of this
+reading).
+
+\emph{(c) The domination safety margin.} Lines 139--141: ``Any other index loses $\ge cl(l-1)$ and
+gains at most $\frac\pi2|2-j|l$ in the linear part. For $r\le\frac\pi2\cos\theta$ this is a net
+loss when $l\ge2$, which accounts for the terms $\frac\pi2(|m^\ast|+4)$ and $2\pi$ in $\Lambda'$.''
+Here $l$ indexes the distance (in the mod-$4$ lattice) from the optimal class member; the
+coefficient $\frac\pi2$ is exactly the per-step cost of moving $m$ by $4$ (one lattice step) at
+fixed $j$, i.e.\ $\frac{2\pi}{N}$ at $N=4$. Bounding the two "closest" $m$-values by
+$\frac\pi2|m^\ast|$ (worst-case position of the vertex) plus the $\frac\pi2|2-j|$ per-$j$ tail
+correction (using $\max_j|2-j|=2$, but bounded crudely and uniformly by the \emph{same} $4$ that
+appears in (b), i.e.\ $\Sigma:=\sum_{j=1}^4|2-j|=4$) gives $\frac\pi2(|m^\ast|+4)$. \textbf{The
+remaining ``$2\pi$'' is the safety margin for $l=0,1$, summed once per factor}: each of the $4$
+factors independently contributes at most $\frac{2\pi}N=\frac\pi2$ to this margin (the $l=0,1$
+terms not yet dominated), and summing over $N=4$ factors gives $N\cdot\frac{2\pi}N=2\pi$, which is
+\textbf{independent of $N$ by construction} (the per-factor contribution shrinks exactly as $N$
+grows, while the factor count grows in inverse proportion).
+
+\emph{(d) The $\log(1-w_j)$ sum.} Lines 143--147: $-\log(w_j;P)_\infty=\operatorname{Li}_2(c_j^{-1}
+e^{2x})/(4t)+\frac{2-j}4\log(1-c_j^{-1}e^{2x})+O(|t|)$. The $\operatorname{Li}_2/(4t)$ piece feeds
+$U(x)/r$ (matching Room~21 \S2's $\Upsilon^{(6)}$ derivation). The $\log(1-w_j)$ piece, bounded
+termwise by $\max(-\log D'(x),\log2)$ (the same bound structure as $C_\pm(x)$ in part (i), line
+124), is summed with weights $\frac{2-j}4$:
+\[
+ \Bigl|\sum_{j=1}^4\frac{2-j}4\log(1-w_j)\Bigr|\le\Bigl(\sum_{j=1}^4\frac{|2-j|}4\Bigr)
+ \max(-\log D'(x),\log2)=\frac44\max(\cdots)=1\cdot\max(\cdots).
+\]
+\textbf{This is exactly the coefficient $1$ on $\max(-\log D'(x),\log2)$ in $\Lambda'(x)$} -- and
+it is \emph{not} automatically $1$ for general $N$: it equals $\Sigma/N$, which happens to be $1$
+at $N=4$ because $\Sigma=N$ there ($\Sigma=4=N$).
+
+\section*{2. The general-$N$ formula}
+
+Collecting (a)--(d), with $\Sigma_N:=\sum_{j=1}^N\bigl|\frac N2-j\bigr|$ and $\kappa_N:=\zeta/(1-\zeta)$
+where $\zeta$ is the $N$-th root of unity defining the running constant $a^{(N)}(t)=-2(1-\zeta e^{-t})$
+at the certified saddle (Room~23 \S2; $\zeta=i$ at $N=4$, $\zeta=e^{i\pi/3}$ at $N=6$), the
+$N$-generic formula is
+\[
+ \boxed{M'^{(N)}(x)=\bigl(|\kappa_N|+\tfrac{\Sigma_N}2\bigr)|x|+\frac{2\pi}N\bigl(|m^\ast_N(x)|+\Sigma_N\bigr)
+ +2\pi+\frac{\Sigma_N}N\,\max\bigl(-\log D'^{(N)}(x),\log2\bigr)},
+\]
+with $m^\ast_N(x)=N\operatorname{Im}(xe^{-i\theta})/(\pi\cos\theta)$ (the direct $N$-generic form
+of $m^\ast$, matching the coefficient $N$ in place of $4$ in the printed $m^\ast=4\operatorname{Im}
+(xe^{-i\theta})/(\pi\cos\theta)$, since $m^\ast$ is the value maximizing the quadratic in $m$ built
+from $y=x-\frac{i\pi m}N$, and the vertex condition scales linearly in $N$ by the same computation
+as Room~21 \S2's $y=x-\frac{i\pi m}N$ substitution).
+
+\section*{3. Exact reproduction check at $N=4$}
+
+\begin{center}
+\begin{tabular}{lll}
+Piece & General-$N$ formula at $N=4$ & Printed paper2a value\\\hline
+$\kappa_N$ & $\kappa_4=i/(1-i)=-\frac12+\frac i2$, $|\kappa_4|=\frac1{\sqrt2}$ & --\\
+$\Sigma_N$ & $\Sigma_4=|1|+|0|+|1|+|2|=4$ & (matches Room~21 \S7's $4$)\\
+$|x|$-coeff & $\frac1{\sqrt2}+\frac42=\frac1{\sqrt2}+2$ & $\frac1{\sqrt2}+2$ \ \textbf{exact}\\
+$\frac{2\pi}N$ & $\frac{2\pi}4=\frac\pi2$ & $\frac\pi2$ \ \textbf{exact}\\
+$(|m^\ast|+\Sigma_N)$-term & $\frac\pi2(|m^\ast|+4)$ & $\frac\pi2(|m^\ast|+4)$ \ \textbf{exact}\\
+Safety margin & $2\pi$ (independent of $N$) & $2\pi$ \ \textbf{exact}\\
+$\max(\cdots)$-coeff & $\Sigma_4/4=4/4=1$ & $1$ (implicit, printed as bare $\max(\cdots)$) \
+\textbf{exact}\\
+\end{tabular}
+\end{center}
+All four pieces of $\Lambda'(x)=M'(x)$ reproduce paper2a's printed $N=4$ formula \emph{exactly},
+numerically confirmed (\texttt{/tmp/verify\_room24.py}, mpmath 40 digits, this session, $<50$
+lines, no BFS/enumeration, sysctl-confirmed 24\,GB RAM fresh, well inside budget):
+\begin{verbatim}
+kappa4 = -0.5+0.5j, |kappa4| = 0.70710678118654752440... = 1/sqrt2  (exact match)
+Sigma4 = 4.0
+coeff4 of |x| = 2.70710678118654752440... = 1/sqrt2 + 2  (exact match)
+2pi/N at N=4 = 1.57079632679489661923... = pi/2  (exact match)
+Sigma_N/N at N=4 = 1.0  (exact match)
+\end{verbatim}
+This is a strong cross-check: unlike Room~21's derivation (which reproduced the leading-order
+Poisson/triple-product transform and the domination exponent, but left $M'(x)$'s $x$-linear part
+as the one un-derived piece), this room's formula reproduces \emph{every single numeral} in
+paper2a's printed $M'(x)$ from a single general-$N$ expression, term by term, with no leftover
+unexplained constant.
+
+\section*{4. The $N=6$ values}
+
+Using Room~23's certified saddle data ($\zeta=e^{i\pi/3}$, $N'=3$, three branches) and Room~21
+\S5's certified saddle angle $\theta^\ast=0$:
+\[
+ \kappa_6=\frac{\zeta}{1-\zeta}=\frac{e^{i\pi/3}}{1-e^{i\pi/3}}=e^{2\pi i/3},\qquad|\kappa_6|=1,
+\]
+(computed exactly: $1-e^{i\pi/3}=\frac12-\frac{i\sqrt3}2=e^{-i\pi/3}$, so $\kappa_6=e^{i\pi/3}/
+e^{-i\pi/3}=e^{2\pi i/3}$ -- verified numerically to $40$ digits, \texttt{/tmp/verify\_room24.py}).
+\[
+ \Sigma_6=\sum_{j=1}^6\bigl|3-j\bigr|=2+1+0+1+2+3=9,
+\]
+matching Room~21 \S7's and Room~23 \S4's independently-anticipated value of $9$ exactly (a third
+cross-check on $\Sigma_6$, now from a fully worked derivation rather than a guessed generalization).
+Hence
+\[
+ \boxed{M'^{(6)}(x)=\Bigl(1+\frac92\Bigr)|x|+\frac\pi3\bigl(|m^\ast_6(x)|+9\bigr)+2\pi
+ +\frac32\max\bigl(-\log D'^{(6)}(x),\log2\bigr)}
+\]
+\[
+ =5.5\,|x|+\frac\pi3\bigl(|m^\ast_6(x)|+9\bigr)+2\pi+\frac32\max\bigl(-\log D'^{(6)}(x),\log2\bigr),
+ \qquad m^\ast_6(x)=\frac{6\operatorname{Im}(xe^{-i\theta})}{\pi\cos\theta}.
+\]
+Numerically (\texttt{/tmp/verify\_room24.py}):
+\begin{verbatim}
+zeta6 = 0.5+0.8660254037844386j
+kappa6 = -0.5+0.8660254037844386j,  |kappa6| = 1.0
+Sigma6 = 9.0
+coeff6 of |x| = 5.5
+2pi/N at N=6 = 1.0471975511965977 = pi/3
+Sigma_N/N at N=6 = 1.5
+\end{verbatim}
+\textbf{Note the qualitative change from $N=4$}: $|\kappa_6|=1$ is \emph{larger} than
+$|\kappa_4|=1/\sqrt2\approx0.707$ (the running-constant contribution to the $|x|$-growth rate is
+stronger at $N=6$), and the $\max(-\log D',\log2)$ coefficient $\frac32$ is likewise larger than
+$N=4$'s coefficient $1$ -- both consistent with Room~21's independent finding (\S3 there) that the
+$N=6$ domination is \emph{weaker}, not equal, when naively compared to $N=4$'s constants.
+
+\section*{5. Does this complete the crossing-region estimate for $N=6$?}
+
+Collecting every piece of \texttt{lem:qi-bounds}(ii)'s $N=6$ analogue now on record across the
+Room-21/23/24 sequence:
+\begin{itemize}
+\item $\Upsilon^{(6)}(x)$ (the leading $1/r$ term): DERIVED, Room~21 \S1--2, boxed, numerically
+verified to $40$ digits.
+\item The domination constant $3+3e^{-2\pi^2\cos\theta/(3r)}$, with multiplicity $6$: DERIVED,
+Room~21 \S3.
+\item $K'^{(6)}(x)=c_\ell^{(6)}|x|+\frac{377}{24d'(x)}+\frac4{3\cos\theta\,d'(x)^2}+\frac{19}{12}
++K_n^{(6)}$: DERIVED, Room~21 \S4, with $K_n^{(6)}|_{\theta=0}\approx8.141$ from $D_n^{(6)}=\sqrt3/2$
+exactly, Room~21 \S5.
+\item $M'^{(6)}(x)$ (this room, boxed above): DERIVED, exact reproduction check against $N=4$ in
+\S3, numerically verified $\kappa_6,\Sigma_6$ in \S4.
+\item The ray-lemma separation bound $d'^{(6)}(x)\ge1-e^{2\operatorname{Re}x}>0$ uniformly over all
+$6$ resonance classes at $\theta^\ast=0$: SECURED, Room~19 (extending Room~17/18's $N=4$ argument,
+which needs only $\cos\theta\ge0$, not any $N$-specific structure).
+\item $f_0^{(6)},f_1^{(6)},f_2^{(6)}$, $a^{(6)}$, $L_w^{(6)}$: DERIVED, Room~23, verified to $40$
+digits against the raw series coefficients.
+\end{itemize}
+\textbf{Every named ingredient of \texttt{lem:qi-bounds}(ii) has now been derived and cross-checked
+for $N=6$.} Substituting all of the above into the printed part-(ii) inequality's structure gives
+the complete, explicit statement
+\[
+ \log|f_\varrho^{(6)}(x)|\le\frac{\Upsilon^{(6)}(x)}r+M'^{(6)}(x)+\frac12\log\frac{2r}\pi
+ +6\log\Bigl(3+3e^{-2\pi^2\cos\theta/(3r)}\Bigr)+K'^{(6)}(x)\,r,\qquad\varrho=0,1,2,
+\]
+for $\operatorname{Re}x\le0$, $d'^{(6)}(x)>0$, valid at the certified saddle angle $\theta^\ast=0$
+with all constants explicit and every constituent piece independently checked.
+
+\textbf{Honest caveat, precisely stated}: this is the crossing-region estimate assembled
+\emph{piece by piece from independently-derived and independently-verified components}, following
+exactly the method (Poisson/triple-product bookkeeping, ray lemma, Taylor-shift error counting)
+that the printed $N=4$ lemma uses -- and every piece reproduces the printed $N=4$ numerals exactly
+under the $N\to4$ substitution, which is strong evidence the method is right and complete. But this
+room, like Rooms 21 and 23, has not been reviewed by a second, independent seat (the "room of
+mathematicians" adversarial-review step used elsewhere in this project, e.g.\ Room~17's four-pass
+history with Reviewers AY/AZ/BA), and the full assembled inequality has not been \emph{numerically
+certified end-to-end} against exact products at $N=6$ sample points the way part (i)'s error was
+checked in paper2a's own text ("VERIFIED... error in (i) is $(0.13$--$0.58)|t|$") or the way
+Room~23 checked $f_\rho^{(6)}$ against raw series coefficients. So the correct verdict is:
+
+\textbf{DERIVED, CROSSING-REGION ESTIMATE FULLY ASSEMBLED at the level of Rooms 21/23/24's
+standard of rigor} (explicit derivation + term-by-term $N=4$ exact-reproduction check + spot
+numerical verification of the new $N=6$ constants) -- \textbf{but not yet promoted to a
+paper-ready, independently-reviewed, end-to-end-numerically-certified lemma}. The single remaining
+task to reach that higher bar is a direct numerical certification of the full inequality above
+against the exact $N=6$ triple products (analogous to \texttt{certify\_landscape\_i.py} for $N=4$),
+which is a computational, not a derivational, task -- no further un-derived mathematical ingredient
+remains.
+
+\section*{Verdict}
+
+\textbf{DERIVED.} The Taylor-shift constant-counting step producing $M'(x)$'s $x$-linear/constant
+terms is identified exactly in \texttt{qi\_bounds.tex}'s compressed proof (\S1, four sub-pieces
+(a)--(d)), generalized to every $N$ (\S2, boxed formula), and shown to reproduce paper2a's printed
+$N=4$ constants $\frac1{\sqrt2}+2$, $\frac\pi2$, $4$, $2\pi$, $1$ \emph{exactly, in all five
+numerals at once} (\S3) -- the strongest possible cross-check available without an independent
+review pass. At $N=6$: $M'^{(6)}(x)=5.5|x|+\frac\pi3(|m^\ast_6(x)|+9)+2\pi+\frac32\max(-\log
+D'^{(6)}(x),\log2)$, with $\Sigma_6=9$ and $|\kappa_6|=1$ verified numerically (\S4).
+
+\textbf{CROSSING-REGION ESTIMATE FULLY ASSEMBLED} for $N=6$ at $\theta^\ast=0$, combining this
+room's $M'^{(6)}$ with Room~21's $\Upsilon^{(6)}$, domination constant, and $K'^{(6)}$, and
+Room~19's separation-constant bound -- every named ingredient of \texttt{lem:qi-bounds}(ii)'s
+$N=6$ analogue is now on record, derived, and at least spot-verified numerically. What remains is
+a computational certification pass (analogous to \texttt{certify\_landscape\_i.py}), not further
+mathematics.
+
+\end{document}
