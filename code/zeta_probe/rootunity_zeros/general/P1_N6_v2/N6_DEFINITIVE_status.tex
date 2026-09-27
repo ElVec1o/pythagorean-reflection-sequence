@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{P1 N=6: TRULY DEFINITIVE consolidated status, 19 rooms, 14 reviewer identities}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{Corrected scope (Room 18/Reviewer BB, unchanged throughout)}
+Accumulation of poles at $\zeta_0=e(1/6)$ was NEVER open -- \texttt{paper2a.tex} already proves it
+by closure. The open question, throughout this entire 19-room sub-investigation, has been the
+strictly stronger \textbf{direct tie-ray statement at N=6}: an explicit, N=6-specific sequence of
+zeros via an N=6 analogue of \texttt{prop:qi}'s own contour/Rouch\'e construction.
+
+\section*{ALL analytically-identified pieces of an N=6 analogue of \texttt{lem:qi-bounds} are now
+derived and independently confirmed}
+
+\begin{enumerate}
+\item \textbf{Separation constant, both sides} (Rooms 17, 19; Reviewers BA, BC, 2 rounds each):
+$d(x)\ge1-e^{-2\operatorname{Re}(x)}$ for $\operatorname{Re}(x)\ge0$,
+$d'(x)\ge1-e^{2\operatorname{Re}(x)}$ for $\operatorname{Re}(x)\le0$, band-uniform around
+$\theta^\ast=0$, no seam.
+\item \textbf{Mod-6 Poisson-summation/Jacobi-triple-product transform, domination constant,
+$K'^{(6)}(x)$'s coefficient structure} (Room 21; Reviewer BD): re-derived from scratch,
+independently re-verified every step, 5-way cross-check against N=4's printed constants, no error.
+\item \textbf{$f_e,f_o\to F_\rho$ generalization, $N'=3$, 3 branches} (Room 23; Reviewer BE):
+shown to be the pre-existing general \texttt{P1f\_lemma.tex} machinery, not a new gap; N=6 closed
+forms verified to 40 digits.
+\item \textbf{$M'^{(N)}(x)$'s general formula, $\kappa_N$, $\Sigma_N$} (Room 24; Reviewer BF):
+independently re-derived, reproduces every N=4 numeral exactly.
+\item \textbf{Net-loss condition} (Room 25; Reviewer BG): genuine, non-circular derivation,
+$r\le2\pi\cos\theta/N$ reproduces N=4's printed bound exactly; N=6 satisfies it with a
+$\sim$200--350$\times$ margin.
+\item \textbf{$c_\ell^{(6)}=1.0058732010\ldots$} (Room 26; Reviewer BH): correctly generalized via
+$\kappa=1/|1-\zeta|$, N=4 formula reproduces the printed $0.6063$ bound exactly.
+\end{enumerate}
+
+\noindent\textbf{Every one of these was independently re-derived (not merely spot-checked) by a
+separate reviewer, and every review either confirmed cleanly or caught a real, subsequently-fixed
+error.} Four genuine errors were caught and corrected along the way (Room 14's $\rho$-slice error;
+Room 16's $\theta$-slice error; Room 20's transcription errors, corrected by Room 21; Room 24's
+premature ``fully assembled'' framing, downgraded then fully resolved by Rooms 25--26). Three
+stale-reference echoes were also caught and corrected (Room 25 citing Room 21's pre-Room-23 note on
+$f_e/f_o$; Room 26 citing a pre-Room-24 snapshot claiming $M'(x)$ was open; Reviewer BH's own
+closing line propagating Room 26's stale claim one step further) -- a real hazard of a
+19-room, cross-referencing investigation, now resolved and flagged as a pattern to watch for.
+
+\section*{This combines into a genuine, fully explicit, all-constants-evaluated $N=6$ analogue of
+\texttt{lem:qi-bounds}} -- the separation-constant estimate on both sides of the contour, and the
+crossing-region estimate's every named constant, are now derived and confirmed.
+
+\section*{Still missing, unchanged in scope}
+\begin{itemize}
+\item \textbf{Constant-height leg certificates} ($\operatorname{Im}(x)=\mp\pi/6$): Room 22
+rigorously certified only the real-axis $\operatorname{Re}(x)>0$ approach segment. The legs
+themselves (where the contour actually crosses near the resonance) have not been certified.
+\item \textbf{The actual Rouch\'e winding-number step}: applying the now-complete estimate to an
+actual closed contour and computing the winding number, following \texttt{prop:qi} Step 4's
+pattern.
+\end{itemize}
+Both are now well-defined, mechanical(-in-spirit) tasks building on fully-derived machinery,
+not open mathematics requiring new ideas -- a qualitatively different, more tractable kind of
+remaining work than what this 19-room investigation started with.
+
+\section*{Net assessment}
+This is, by a wide margin, the single most thoroughly adversarially-tested line of mathematics in
+the entire multi-session P1--P6 research program: 19 rooms, roughly 14 distinct reviewer
+identities, 4 genuine mathematical errors caught and corrected, 3 stale-reference echoes caught and
+corrected, ending with a complete, independently-confirmed analytic foundation and two precisely-
+scoped remaining engineering tasks. \textbf{Not integrated into paper2a} -- this closes neither
+N=6's direct tie-ray statement nor changes the paper's own (already-correct) accumulation claim;
+it is repo-only, documented in full for continuation.
+
+\end{document}
