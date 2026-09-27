@@ -1,0 +1,275 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 21 (seat: direct): the mod-6 Poisson-summation/Jacobi-triple-product
+bookkeeping for $\Upsilon^{(6)}(x)$, $M'^{(6)}(x)$, $K'^{(6)}(x)$}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Scope and what was read}
+
+Read in full: \texttt{room20\_seat\_direct.tex} and \texttt{N6\_full\_status.tex} (the
+crossing-region gap this room targets); \texttt{paper2a.tex} lines 2170--2268, the complete
+statement and proof of \texttt{lem:qi-bounds}, especially part~(ii) (lines 2213--2217,
+2249--2258) and the companion line-by-line proof in \texttt{code/zeta\_probe/rootunity\_zeros/
+qi\_bounds.tex} lines 90--156, which carries every constant that the printed paper only
+summarizes; \texttt{room19\_seat\_direct.tex}, which correctly isolated this exact piece as the
+one un-derived ingredient and warned that the ``$3+3e^{-\pi^2\cos\theta/r}$'' constant needs
+rechecking, not just re-asserting.
+
+\textbf{Verdict up front: PARTIAL, but with the actually load-bearing pieces DERIVED AND
+VERIFIED, one concrete error in Room~20's transcription found and fixed, and the precise
+remaining gap isolated to a single missing input (the explicit $N=6$ functions $f_e^{(6)},
+f_o^{(6)}$, which are not written down anywhere in this repository).} Details below.
+
+\section*{1. The $N$-generic Poisson/Jacobi-triple-product transform, derived from scratch}
+
+The starting identity (Jacobi triple product, the form paper2a actually uses) is
+\[
+  (P;P)_\infty\,(z;P)_\infty\,(P/z;P)_\infty=\sum_{n\in\mathbb Z}(-1)^nP^{n(n-1)/2}z^n,
+  \qquad z=e^{-v},\ P=e^{-Nt}.
+\]
+With $(-1)^n=e^{i\pi n}$ and $P^{n(n-1)/2}=e^{-\frac{Nt}2n(n-1)}$, the exponent of the $n$-th
+term is $-\frac{Nt}2n^2+n\bigl(\frac{Nt}2-v+i\pi\bigr)$. Completing the square in $n$ with
+$\mu=A/(Nt)$, $A=\frac{Nt}2-v+i\pi$, gives
+\[
+  \sum_nP^{n(n-1)/2}(-1)^ne^{-nv}=e^{A^2/(2Nt)}\sum_ne^{-\frac{Nt}2(n-\mu)^2}.
+\]
+Poisson summation on the Gaussian, $\sum_ng(n)=\sum_k\hat g(k)$ with
+$g(n)=e^{-\frac{Nt}2(n-\mu)^2}$ and $\hat g(k)=\sqrt{2\pi/(Nt)}\,e^{-2\pi^2k^2/(Nt)}e^{-2\pi
+ik\mu}$, and combining the two exponents (they recombine into a single perfect square, exactly
+as at $N=4$):
+\[
+  \frac{A^2}{2Nt}-\frac{2\pi^2k^2}{Nt}-2\pi ik\frac A{Nt}=\frac{(A-2i\pi k)^2}{2Nt},
+\]
+gives the closed form, \textbf{for every $N$, not just $N=4$}:
+\[
+  \boxed{(P;P)_\infty\,\vartheta(e^{-v})=\sqrt{\frac{2\pi}{Nt}}\sum_{k\in\mathbb Z}
+  \exp\Bigl(\frac{\beta_k^2}{2Nt}\Bigr)},\qquad
+  \beta_k=\frac{Nt}2-v+i\pi(1-2k),\qquad P=e^{-Nt}.
+\]
+\textbf{Sanity check against the printed paper}: at $N=4$ this reads
+$\sqrt{\pi/(2t)}\sum_k\exp(\beta_k^2/(8t))$, $\beta_k=2t-v+i\pi(1-2k)$ -- \emph{identical} to
+paper2a line 2251 and \texttt{qi\_bounds.tex} line 131. This is not a coincidence check I
+introduced after the fact: the derivation above never used $N=4$ anywhere, it is the $N$-generic
+computation, and it reproduces the printed $N=4$ formula exactly.
+
+\textbf{At $N=6$}: $P=p^6=e^{-6t}$, and
+\[
+  (P;P)_\infty\,\vartheta(e^{-v})=\sqrt{\frac\pi{3t}}\sum_{k\in\mathbb Z}
+  \exp\Bigl(\frac{\beta_k^2}{12t}\Bigr),\qquad \beta_k=3t-v+i\pi(1-2k).
+\]
+\textbf{This corrects Room~20 \S5}: that room guessed $\beta_k=t-v+i\pi(1-2k)/3$, which is wrong
+in \emph{both} the real part (should be $3t$, not $t$) and the imaginary part (should be
+$i\pi(1-2k)$ with no $1/3$, not $i\pi(1-2k)/3$) -- the prefactor $\sqrt{\pi/(3t)}$ that Room~20
+guessed happened to be right, but the guessed $\beta_k$ was not. I verified the boxed formula
+numerically at both $N=4$ (reproducing the paper's own claim, as a check on my method) and $N=6$
+directly (\S6 below), each to $40$ significant digits.
+
+\section*{2. Substituting the sixth-root-of-unity factors: the mod-6 quadratic}
+
+Exactly as in paper2a's proof (line 2252), put $v_j=2x+jt-\frac{2\pi i}N\gamma_j$ with
+$c_j=e^{2\pi i\gamma_j/N}$, i.e.\ at $N=6$, $c_j=\zeta_6^j$ and $\gamma_j=j$. Substituting into
+$\beta_k$ and writing $y=x-\frac{i\pi m}N$, a direct algebraic identity (verified by hand, not
+just asserted) gives, \textbf{for every $N$},
+\[
+  \beta_k=-2y+\Bigl(\frac N2-j\Bigr)t,\qquad m=\gamma_j+\frac N2-Nk,
+\]
+so that
+\[
+  \frac{\beta_k^2}{2Nt}=\frac{2y^2}{Nt}-\frac{2(\frac N2-j)}N\,y+\frac{(\frac N2-j)^2t}{2N}.
+\]
+At $N=4$ this reproduces \emph{exactly} paper2a's stated
+$(x-\frac{i\pi m}4)^2/(2t)-\frac{2-j}2(x-\frac{i\pi m}4)+\frac{(2-j)^2t}8$ (line 2253), a second
+independent check on the method.
+
+\textbf{At $N=6$} ($j=1,\dots,6$, $\gamma_j=j$):
+\[
+  \frac{\beta_k^2}{12t}=\frac{y^2}{3t}-\frac{3-j}3\,y+\frac{(3-j)^2t}{12},\qquad
+  y=x-\frac{i\pi m}6,\qquad m=j+3-6k.
+\]
+As $j$ runs over $1,\dots,6$, $\gamma_j=j\bmod6$ runs over $\{1,2,3,4,5,0\}$ -- \textbf{each of the
+six residue classes mod $6$ exactly once}, confirming (not just asserting, as Room~20 did) the
+structural claim: the $N=6$ analogue of $\Upsilon(x)$'s sum is over $\varrho=0,\dots,5$, one term
+per $j$:
+\[
+  \Upsilon^{(6)}(x)=\operatorname{Re}\bigl((\text{$N=6$ analogue of }xL_w-x^2+c_0)e^{-i\theta}\bigr)
+  +\sum_{\varrho=0}^{5}\max_{m\equiv\varrho\,(6)}\tfrac12\operatorname{Re}\bigl((x-\tfrac{i\pi
+  m}6)^2e^{-i\theta}\bigr).
+\]
+(The additive constant $c_0$ in the first term is discussed in \S5 -- it is \emph{not} determined
+by the Poisson-summation step alone, see below.)
+
+\section*{3. The domination constant: derived, and Room 20's guess corrected}
+
+The real part of $\beta_k^2/(2Nt)$, as an \emph{exact} (not asymptotic) function of the integer
+$k$ through $m=\gamma_j+\frac N2-Nk$, is a quadratic with $k^2$-coefficient
+\[
+  \operatorname{Re}\Bigl(\frac{-2\pi^2N^2}{N^3t}\Bigr)=-\frac{2\pi^2\cos\theta}{Nr}.
+\]
+(This is exact, not a leading-order truncation: $\beta_k^2/(2Nt)$ is a genuine quadratic
+polynomial in $k$ because $m$ is affine in $k$.) At $N=4$ this is $-\pi^2\cos\theta/(2r)$,
+matching the ``leading coefficient $-\pi^2\cos\theta/(2r)$'' the paper states (line 2254) exactly
+-- a third independent check.
+
+The paper's domination lemma (\texttt{qi\_bounds.tex} line 134) is: if $A_k-A_{k_*}\le
+-c\,l(l-1)$ for $l=|k-k_*|$, where $-c$ is (twice?) the leading coefficient... more precisely
+\emph{$c$ equals the stated leading coefficient itself} ($c=\pi^2\cos\theta/(2r)$ at $N=4$), then
+$\sum_ke^{A_k}\le e^{A_{k_*}}(3+3e^{-2c})$. Generalizing $c\to c_N=2\pi^2\cos\theta/(Nr)$ (matching
+the exact leading coefficient derived above), this gives
+\[
+  \sum_ke^{A_k}\ \le\ e^{A_{k_*}}\bigl(3+3e^{-2c_N}\bigr)=e^{A_{k_*}}\Bigl(3+3e^{-4\pi^2\cos\theta/
+  (Nr)}\Bigr).
+\]
+At $N=4$: $3+3e^{-\pi^2\cos\theta/r}$, exactly the printed constant (line 2214) -- a fourth
+independent check, and it pins down unambiguously that the exponent scales as $4\pi^2\cos\theta/
+(Nr)$, \emph{not} $\pi^2\cos\theta/(Nr)$.
+
+\[
+  \boxed{\text{At }N=6:\quad \sum_ke^{A_k}\ \le\ e^{A_{k_*}}\Bigl(3+3e^{-2\pi^2\cos\theta/(3r)}\Bigr).}
+\]
+
+\textbf{This corrects Room~20 \S5}, which guessed the domination constant is ``structurally $\le
+3+3e^{-\pi^2\cos\theta/r}$ up to the changed leading coefficient, not recomputed'' -- i.e.\ it
+guessed the \emph{same} exponent as $N=4$ (only flagging the leading coefficient as possibly
+different without computing it). The correct $N=6$ exponent is $2\pi^2\cos\theta/(3r)$, which is
+\emph{smaller in magnitude} than $N=4$'s $\pi^2\cos\theta/r$ by a factor $3/2$ (i.e.\ the domination
+is weaker, not the same, at $N=6$) -- a real, substantive correction, not a cosmetic one.
+
+Also: at $N=4$ there are $4$ factors $j=1,\dots,4$, each contributing one copy of this
+$\log(3+3e^{-2c_N})$ term to the final bound, giving the printed $4\log(3+3e^{-\pi^2\cos\theta/
+r})$. At $N=6$ there are \textbf{6} factors, so the analogous term is
+\[
+  6\log\Bigl(3+3e^{-2\pi^2\cos\theta/(3r)}\Bigr),
+\]
+not $4\log(\cdots)$ as a naive copy-paste of the printed formula would give.
+
+\section*{4. The finite constants in $K'^{(6)}(x)$: derived}
+
+Tracing \texttt{qi\_bounds.tex} lines 144--152 (part (ii)'s error bookkeeping) line by line: the
+coefficient of $1/d'(x)$ in $K'(x)$ comes from three pieces, (a) the ray-lemma's own generic
+constant $4/3$ (from $|E_0|\le\frac{|t|}3(\frac1\delta+\frac1{\delta^2\cos\theta})$, $N$-independent),
+(b) a Taylor-shift error $\sum_{j=1}^N(N-j)^2/8$ (shift length $(N-j)|t|$ per factor), and (c) a
+$\sum_{j=1}^N(N-j)/2$ term from the half-weighted log piece. At $N=4$:
+$\sum_{j=1}^4(4-j)^2/8=14/8$ and $\sum_{j=1}^4(4-j)/2=3$, giving $4/3+14/8+3=73/12$ -- exactly the
+printed constant, confirming this decomposition.
+
+\textbf{At $N=6$}: $\sum_{j=1}^6(6-j)^2=5^2+4^2+3^2+2^2+1^2+0^2=55$, so $55/8$; and
+$\sum_{j=1}^6(6-j)=15$, so $15/2$. Hence
+\[
+  \boxed{K'^{(6)}(x)=c_\ell^{(6)}|x|+\frac{377}{24\,d'(x)}+\frac4{3\cos\theta\,d'(x)^2}+\frac{19}{12}
+  +K_n^{(6)}},\qquad \frac43+\frac{55}8+\frac{15}2=\frac{377}{24}.
+\]
+The closed-form general-$N$ formula (also checked against $N=4$: gives $73/12$ exactly) is
+\[
+  \text{coeff.\ of }1/d'(x)=\frac43+\frac{(N-1)N(2N-1)}{48}+\frac{N(N-1)}4.
+\]
+
+The additive constant ``$3/4$'' in $K'(x)$ (line 2217, from $\sum_{j=1}^4(2-j)^2/8=6/8=3/4$, the
+constant term $\frac{(N/2-j)^2t}{2N}$ in the exponent expansion of \S2) generalizes to
+\[
+  \sum_{j=1}^N\frac{(N/2-j)^2}{2N}=\frac{N^2+2}{24}
+\]
+(derived by direct expansion of the sum-of-squares; checked $N=4\Rightarrow18/24=3/4$, matching
+exactly). At $N=6$: $\frac{38}{24}=\frac{19}{12}$, as used above.
+
+\section*{5. $K_n^{(6)}$ at the certified saddle angle $\theta^*=0$: computed exactly}
+
+$K_n=\frac1{D_n}+\frac1{D_n^2\cos\theta}+\frac{4.75}{D_n}+\frac16+10^{-3}$ (line 2199, this
+\emph{formula} is $N$-independent) with $D_n=\mathcal D(0,\varphi_N)$, where $\varphi_N$ is the
+angular distance of the nearest nontrivial $N$-th root of unity to $1$: $\varphi_N=2\pi/N$ if
+$N\ge5$ (else $\pi$ for $N=2$, $2\pi/3$ for $N=3$, $\pi/2$ for $N=4$). \textbf{At $N=4$,
+$\varphi_4=\pi/2$}, matching the paper's own $D_n=\mathcal D(0,\pi/2)$ exactly (line 2202) -- this
+identifies precisely what "$D_n$" is (not previously stated explicitly in any Room file). At
+$N=6$, $\varphi_6=\pi/3$.
+
+At $N=6$'s certified saddle angle $\theta^*=0$ (Room 18/19), $\sin\theta=0$, so the angular part
+$\sigma(\varphi-\rho\sin\theta)=\sigma(\varphi_6)$ is constant in $\rho$, while
+$1-e^{-a'-\rho\cos\theta}=1-e^{-\rho}$ (at $a'=0$) is nondecreasing from $0$; hence
+$\mathcal D(0,\varphi_6)=\inf_{\rho\ge0}\max\{\sigma(\varphi_6),1-e^{-\rho}\}$ is attained at
+$\rho=0$, giving
+\[
+  D_n^{(6)}=\sigma(\pi/3)=\sin(\pi/3)=\frac{\sqrt3}2\approx0.86603.
+\]
+(This matches the ``Hilbert $0.866$ figure'' Room~19 mentions as a single-slice value -- this room
+identifies exactly why that number is $\sqrt3/2$: it is $D_n$ at $N=6$, $\theta=0$, not an
+unrelated constant.) Plugging in, at $\theta=0$ ($\cos\theta=1$):
+\[
+  K_n^{(6)}\Bigm|_{\theta=0}=\frac2{\sqrt3}+\frac43+\frac{4.75\cdot2}{\sqrt3}+\frac16+10^{-3}
+  \approx1.1547+1.3333+5.4849+0.1667+0.001\approx8.141.
+\]
+
+\section*{6. Numerical verification of the boxed transform (\S1)}
+
+Directly evaluated both sides of the boxed identity in \S1 with mpmath (40 digits), for $N=4$
+(as a check against the printed formula) and $N=6$ (the new claim), at generic $t=0.03+0.01i$,
+$v=0.2-0.1i$, summing $k$ from $-200$ to $200$ and the Pochhammer products to $4000$ terms:
+\begin{center}
+\begin{tabular}{lll}
+$N$ & LHS & relative difference \\
+$4$ & $-7.6752\ldots\times10^{-15}+2.8502\ldots\times10^{-14}i$ & $1.0\times10^{-39}$\\
+$6$ & $-1.35306\ldots\times10^{-9}+5.49719\ldots\times10^{-10}i$ & $6.6\times10^{-40}$\\
+\end{tabular}
+\end{center}
+Both agree with the RHS to essentially full working precision. I also numerically checked the
+domination sum $\sum_ke^{\operatorname{Re}A_k-\operatorname{Re}A_{k_*}}$ against the boxed bound
+of \S3 for $N=6$, $j=1,\dots,6$, at $\theta=0$, $r=0.003$ (the actual operating regime): the sums
+are all $\approx1.0$ (single-term domination), comfortably under the bound $\approx3.0$; pushing
+$r$ up to $8$ (far outside the certified regime, just to stress-test the formula) the sum grows to
+$\approx3.06$ while the derived bound grows to $\approx4.32$, still consistent. (Scripts:
+\texttt{/tmp/verify\_n6.py}, \texttt{/tmp/verify\_dom.py} in this session; not saved into the
+repo, rerun if needed -- both are $<40$ lines of direct mpmath evaluation, well inside the
+memory/OOM budget, no BFS/enumeration involved.)
+
+\section*{7. What is genuinely still missing, and why it is not a further mechanical step}
+
+The pieces above -- the transform itself, the mod-6 residue structure, the domination constant,
+and the $N$-generic error-sum constants in $K'$ -- are the parts of \texttt{lem:qi-bounds}(ii)'s
+proof that depend \emph{only} on $N$, the triple product, and the ray lemma. They are now derived
+and cross-checked against the $N=4$ printed formulas in five independent ways (\S1--4).
+
+\textbf{Not obtained: the additive $x$-linear/constant terms of $M'(x)$} -- the
+$(\frac1{\sqrt2}+2)|x|$, $\frac\pi2(|m^*|+9)$ [generalizing $N=4$'s $4$ via $\sum_{j=1}^N|N/2-j|=9$
+at $N=6$, checked: $|3-j|$ for $j=1..6$ is $2,1,0,1,2,3$, sum $9$], the "$2\pi$" term, and the
+overall additive constant $c_0$ inside $\Upsilon^{(6)}(x)$'s first term (what was $17\pi^2/96$ at
+$N=4$). \textbf{Why these are genuinely blocked, not just undone}: at $N=4$ these terms come from
+the specific closed forms of $f_e,f_o$ -- in particular the constants $a=-2(1-q)$, $c_0=-2+2i$,
+$L_w=\log c_0$, and the linear map $x\log a/t$ that appears in $f_e,f_o$'s definition (paper2a
+lines 2174--2179). \textbf{These $N=6$ analogues ($a^{(6)}$, $L_w^{(6)}$, and the exact closed
+forms of $f_e^{(6)},f_o^{(6)}$) are not written down anywhere in this repository} -- I checked
+\texttt{room8\_seat\_erdos.tex}, \texttt{room11\_seat\_erdos.tex}, and
+\texttt{P1\_N6/P1\_N6\_note.tex}; none of them state an $N=6$ analogue of $a,L_w,c_0$, only
+Room~11's numeric saddle locations $x_{-3},x_{-1}$ and Room~20's numeric root $t^*$. So the
+$x$-linear part of $M'$ cannot be derived by the same route as \S1--4 (pure Poisson/triple-product
+bookkeeping): it needs an explicit $N=6$ construction of $f_e,f_o$ first, which is a genuinely
+separate, un-started task (part of what Room~20 \S0 called ``the actual $N=6$ contour
+construction,'' one level below even the contour geometry it partially built). Similarly $c_\ell$
+(the Taylor-remainder constant for the $\ell(t)/t$ expansion) needs the explicit $N=6$ analogue of
+$u=\frac{1-i}2(1-e^{-t})$, which comes from the same missing $a^{(6)}$.
+
+\section*{Verdict}
+
+\textbf{PARTIAL, with a precisely delimited boundary.}
+\begin{itemize}
+\item[DERIVED AND VERIFIED] The $N$-generic Poisson/Jacobi-triple-product transform (\S1, boxed
+formula), reproducing paper2a's $N=4$ formula exactly and giving, at $N=6$: $\sqrt{\pi/(3t)}
+\sum_k\exp(\beta_k^2/(12t))$, $\beta_k=3t-v+i\pi(1-2k)$ -- \textbf{this corrects an error in
+Room~20's own transcription} ($\beta_k=t-v+i\pi(1-2k)/3$ was wrong).
+\item[DERIVED AND VERIFIED] The mod-6 residue structure of $\Upsilon^{(6)}(x)$'s sum (\S2): six
+classes, each hit once by $j=1,\dots,6$.
+\item[DERIVED AND VERIFIED] The domination constant $3+3e^{-2\pi^2\cos\theta/(3r)}$ (exponent
+$2\pi^2\cos\theta/(3r)$, not $\pi^2\cos\theta/r$ as Room~20 guessed), appearing with multiplicity
+$6$ (not $4$) in the final bound (\S3).
+\item[DERIVED AND VERIFIED] $K'^{(6)}(x)=c_\ell^{(6)}|x|+\frac{377}{24d'(x)}+\frac4{3\cos\theta
+d'(x)^2}+\frac{19}{12}+K_n^{(6)}$, with $K_n^{(6)}|_{\theta=0}\approx8.141$ from the exact value
+$D_n^{(6)}=\sqrt3/2$ (\S4--5).
+\item[BLOCKED, precisely located] The $x$-linear/constant terms of $M'(x)$ and $\Upsilon(x)$'s
+first-term constant, and $c_\ell^{(6)}$ itself, all require the explicit $N=6$ closed forms of
+$f_e^{(6)},f_o^{(6)}$ (i.e.\ the $N=6$ analogues of $a,L_w,c_0$ in paper2a lines 2174--2178), which
+exist nowhere in this repository. This is not a further instance of ``should generalize
+mechanically'': the pieces that generalize mechanically (the Poisson/triple-product layer, \S1--4)
+have now actually been generalized and checked; what remains is a genuinely separate construction
+task, one level below Room 20's contour geometry.
+\end{itemize}
+
+\end{document}

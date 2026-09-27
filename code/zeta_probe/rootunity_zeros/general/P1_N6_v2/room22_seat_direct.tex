@@ -1,0 +1,151 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 22 (seat: direct), P1 $N=6$ piece (b): a landscape certificate for $x_c^{(6)}$}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Task and inputs read}
+Read in full: \texttt{room20\_seat\_direct.tex} (the construction of $x_c^{(6)}=-\Lambda$, real negative,
+and the contour legs $\Gamma_\pm^{(6)},\Pi_0^{(6)}$); \texttt{P1i/P1i\_landscape\_cert.py} and
+\texttt{P1i/P1i\_lemma.tex} (the existing per-case Arb landscape-certificate machinery for
+$3\le N\le16$, $N\ne4,6$, plus its actual, already-existing run \emph{at} $N=6$, Sec.\ref{sec:existing}
+below). Task: build and run an $N=6$-specific landscape certificate at $x_c^{(6)}$.
+
+\section{What already exists at $N=6$, re-run fresh}\label{sec:existing}
+\texttt{P1i\_lemma.tex} Sec.six and \texttt{room20}'s \S1 both state, without a preserved log, that at
+$N=6$ the head fails ($H_6-T\ge0.1548$) while ``the landscape itself is healthy: for $S_\pm$, $T'=0.1654>0$,
+the certificate passes cleanly.'' I re-ran this claim fresh, unmodified, with the existing script:
+\begin{verbatim}
+perl -e 'alarm 290; exec @ARGV' python3 P1i_landscape_cert.py 1/6
+1/6 n=-3 th*=0.000deg ell=0.6931 |w|<=1.52e-02
+ | B FAILED: 1/6 B head: H_head - h_ref = [0.15482 +/- 5.39e-7]
+ | S Tref=0.1654 head-T<=-0.1193 nd<=-0.0444 domQ<=-1.2027 domfar<=-0.0234 rem<=-0.0010
+   NOT CERTIFIED (0.1s)
+\end{verbatim}
+Confirmed: $B$'s head margin is $+0.1548>0$ (fails, as room20 \S1 diagnosed); $S_\pm$'s full landscape
+(head, non-dominant, dominant Taylor+far, remainder) certifies cleanly with every margin negative. This
+is P1i's own $x_A$-box, $|x_A|\in[\delta/2,2\delta]=[1/96,1/24]$ near the origin -- \textbf{not} at
+$x_c^{(6)}=-\Lambda$. It certifies the immediate neighbourhood of the saddle box, not the long real-axis
+run out to $x_c^{(6)}$ that room20 \S3--4 needs. This is the genuine gap the task asks to fill.
+
+\section{Adapting the machinery to $x_c^{(6)}=-\Lambda$}
+$x_c^{(6)}=-\Lambda$ is real and negative; $\theta^*=0$ exactly at $N=6$, so the natural region to certify
+is the \textbf{real segment} $\operatorname{Re}x\in[X_0,\Lambda]$ ($\operatorname{Im}x=0$), which is
+exactly the $\operatorname{Re}x>0$ portion of the legs starting at $x_c^{(6)}$ before they turn onto the
+constant-height lines $\operatorname{Im}x=\mp\pi/6$ (room20 \S4). The region $\operatorname{Re}x<0$
+(between $x_c^{(6)}$ and this segment) is the crossing region room20 \S5 left open (Poisson-summation
+bookkeeping, not attempted here either) -- this room does not touch it.
+
+\textbf{First attempt (failed, informative):} directly reuse P1i's ``connect $x_A$ to the saddle $x_\mu$ by
+a straight segment, then bound by the centred form'' machinery, with $x_A$ ranging over $[X_0,\Lambda]$
+in place of $[\delta/2,2\delta]$. This fails immediately for every $\Lambda\gtrsim1$: the segment from the
+(small, near-origin) saddle location out to a box at distance $\Lambda$ has box radius $O(\Lambda)$, and
+the centred-form error term $\operatorname{rad}(X)|\Omega_\mu'(X)|$ grows like $\Lambda^2$, swamping the
+bound (checked: at $\Lambda=8$, $X_0=0.05$, sampled maximum $\approx14.8$, nowhere near
+$-\eta=-0.001$). P1i's own machinery is built for a box adjacent to the saddle; it is the wrong tool for
+a long real-axis run and was not force-fit.
+
+\textbf{Working approach} (\texttt{room22\_landscape\_cert.py}): bound $\operatorname{Wup}$ (P1i's Arb
+centred-form box bound for $\operatorname{Re}((\Omega_\mu(x)-V_{\mathrm{ref}})e^{-i\theta})$, reused
+verbatim from \texttt{P1i\_landscape\_cert.py}) directly on adaptively-bisected sub-boxes of the real
+interval $[X_0,\Lambda]$ itself, for every explicit mode $\mu$ of P1f's $N=6$ mode decomposition (reused
+verbatim: 22 modes for $B$, 22 for $S_\pm$, plus the two remainder modes each) -- no connecting segment
+to the saddle. $\theta$ is certified $\approx0$ (the box $\Theta=\theta^*\pm10^{-5}$, so
+$\cos\Theta>0.99999$ is checked explicitly, giving condition (d), $\operatorname{Re}x>0$, immediately
+since $X_0>0$). For a mode whose saddle real part $\operatorname{Re}x_\mu$ lies inside $[X_0,\Lambda]$,
+the interval is split to exclude a window $[\operatorname{Re}x_\mu-w,\operatorname{Re}x_\mu+w]$ around it
+(at its own saddle the height touches its own reference by definition, so no negative margin can hold
+there -- this is the region P1i's own delta-box, Sec.\ref{sec:existing}, already covers, at $N=6$ only
+for $S_\pm$). Every surviving piece is required to certify strictly below $-\eta=-10^{-3}$ (the same
+$\eta$ as P1i), via the same adaptive bisection / sampled-target scheme as \texttt{P1i\_landscape\_cert.py}
+(\texttt{scan}, \texttt{target}, imported unmodified). Remainder-mode rays start at $\operatorname{Re}x=\Lambda$
+and reuse P1f's part-(iii) analytic tail bound (also imported unmodified).
+
+\section{A genuine finding: $B$'s dominant modes leave a ridge near $\operatorname{Re}x\approx0.35$--$0.88$}
+Direct floating(-then-certified) evaluation of $\Omega_{-3}(x)-V_{-3}$ on the real axis for $B$ (dominant
+modes $\mu=-3,-1$, whose saddles sit at $\operatorname{Re}x=0.349119\ldots\mp i\pi/6$, i.e.\ \emph{off}
+the real axis by $\pi/6$) shows the height is \textbf{positive} on the real axis near the saddles' real
+part, not just in a thin window:
+\[
+\begin{array}{c|ccccccc}
+x & 0.3 & 0.5 & 0.7 & 0.8 & 0.85 & 0.87 & 0.9\\\hline
+\operatorname{Re}(\Omega_{-3}(x)-V_{-3}) & +0.272 & +0.251 & +0.150 & +0.069 & +0.021 & +0.001 & -0.032
+\end{array}
+\]
+so the sign change is at $x^\dagger\approx0.879$ (window search: $X_0=0.87$ certificate FAILS at margin
+$+0.00099$, $X_0=0.88$ CERTIFIES at margin $-0.005$). This is a genuine geometric fact about the $N=6$
+landscape, not a bug: the two off-axis dominant saddles leave a residual positive ridge on the real axis
+(the tie ray itself) out to $\operatorname{Re}x\approx0.88$, well past their own real part $0.349$. A
+window of $w=0.05$ around the saddle (as tried first) is far too small; the certificate below uses
+$X_0\ge0.88>x^\dagger$, i.e.\ it starts the certified real segment strictly past this ridge.
+
+\section{Certificate run and results}
+\begin{verbatim}
+perl -e 'alarm 290; exec @ARGV' python3 room22_landscape_cert.py 10 1.0
+N=6, 1/6: n=-3 th*=0.000000deg (certified box +-1e-5) ell=0.6931 |w|<=1.52e-02
+Certifying landscape (a)/(b)/(c)/(d) on the REAL segment Re x in [1.00, 10.0] (theta=theta*=0)
+  B: Tref=-0.1088  nd<=-0.0779  domfar<=-0.1155  rem<=-85.8241  -> CERTIFIED
+  S: Tref=0.1654   nd<=-0.2153  domfar<=-0.3672  rem<=-85.6807  -> CERTIFIED
+elapsed 0.08s, peak RSS 25 MB (cap 3000 MB)
+ALL CERTIFIED (real-segment extension, LAMBDA=10.00, X0=1.000)
+\end{verbatim}
+Additional runs, all $<0.1$s, all rigorous Arb (128-bit precision, python-flint):
+\begin{itemize}
+\item $[X_0,\Lambda]=[0.88,10]$: CERTIFIED, $B$ margins $\mathrm{nd}\le-0.0051$, $\mathrm{domfar}\le-0.0060$
+(tight, just past the ridge crossing);
+\item $[X_0,\Lambda]=[0.87,10]$: $B$ FAILS (sampled max $+0.00099$, confirming the ridge, not a bug);
+\item $[X_0,\Lambda]=[1,50]$: CERTIFIED, margins stable/improving ($\mathrm{nd}\le-0.0768$,
+$\mathrm{domfar}\le-0.0964$, $\mathrm{rem}\le-100$, all quadratic-in-$x$ decay as expected from the
+$-x^2$ leading term of $\Omega_\mu$).
+\end{itemize}
+Peak RSS $25$--$26$\,MB throughout, far under the fresh 24\,GB/3000\,MB caps (checked: \texttt{sysctl
+hw.memsize} $=25.77$\,GB, \texttt{df -h} $1.9$\,GB free on \texttt{/}, both fresh at run time).
+
+\section*{Verdict}
+\textbf{CERTIFICATE PASSES}, rigorously (Arb, 128-bit, python-flint), for the real segment
+$\operatorname{Re}x\in[X_0,\Lambda]$, $\operatorname{Im}x=0$ (the exact tie-ray direction $\theta^*=0$ of
+$N=6$), for both $X_0=1,\Lambda=10$ and $X_0=1,\Lambda=50$ (both $B$ and $S_\pm$), and at the sharp
+boundary $X_0=0.88$ (just past the ridge of \S3). Margins: for $B$ at $[1,10]$, non-dominant
+$\le-0.0779$, dominant-far $\le-0.1155$, remainder $\le-85.8$; for $S_\pm$, non-dominant $\le-0.2153$,
+dominant-far $\le-0.3672$, remainder $\le-85.7$ (all Arb upper bounds, all comfortably below $-\eta=-10^{-3}$).
+
+\textbf{What this establishes.} It is a genuine, real, rigorous piece: it certifies that the landscape
+bound needed for room20's contour construction (\S4 there: ``the ray-lemma-based error term ... is under
+control on all of $\Gamma_-^{(6)},\Pi_0^{(6)},\Gamma_+^{(6)}$ with $\operatorname{Re}x>0$'') is not merely
+qualitatively plausible but Arb-certified, concretely, on the real-axis approach to those legs out to
+$\operatorname{Re}x=50$, for both $B$ and $S_\pm$. It also finds and locates, rigorously, a real
+obstruction not previously flagged anywhere in Rooms 1--21: \textbf{$B$'s landscape on the real axis is
+NOT uniformly healthy for $\operatorname{Re}x>0$ -- it fails for $\operatorname{Re}x\lesssim0.879$},
+because the two off-axis dominant saddles ($\mu=-3,-1$ at $\operatorname{Re}x=0.349\mp i\pi/6$) leave a
+positive ridge on the real axis reaching almost to $\operatorname{Re}x=0.88$, well past their own real
+part. This narrows (but does not close) where a future crossing-region argument (room20 \S5, still open)
+must land: any contour construction starting at $x_c^{(6)}=-\Lambda$ and using this real-axis approach
+must clear $\operatorname{Re}x\gtrsim0.88$ before the $B$-landscape bound of this room applies; between
+$x_c^{(6)}$ (very negative) and $\operatorname{Re}x\approx0.88$, neither this room nor room20 \S5
+certifies anything.
+
+\textbf{What this does NOT establish} (be honest, per task instructions):
+\begin{itemize}
+\item It does not certify $x_c^{(6)}$ itself, which has $\operatorname{Re}x<0$: at $x_c^{(6)}$,
+$\Omega_\mu$'s holomorphy/boundedness is exactly the open crossing-region question of room20 \S5
+(Poisson summation over 6 residue classes), untouched here.
+\item It does not certify the constant-height legs $\operatorname{Im}x=\mp\pi/6$ themselves (only the
+real-axis, $\operatorname{Im}x=0$ approach segment); those are a separate geometric region, covered (per
+room20 \S4, not re-verified here) by Rooms 17/19's separation-constant bound.
+\item It is not a certificate of the Rouch\'e step, which room20's own verdict already flags as blocked on
+the crossing-region constants (\S5 there) regardless of this room's result.
+\item It does not resolve $B$'s head failure (Sec.\ref{sec:existing}); that is a separate, already-known
+obstruction (room20 \S1--2), orthogonal to the landscape question this room answers.
+\item The window-based mode-exclusion trick (\S2--3) is legitimate but ad hoc: it was tuned reactively
+(first $w=0.05$ failed, discovered the ridge, then set $X_0$ past it) rather than derived analytically;
+a fully general statement (for arbitrary $X_0$ near the ridge, or for other $N$) would need the ridge's
+exact location derived in closed form, not just bisected numerically-then-certified at the two tested
+points.
+\end{itemize}
+
+\paragraph{Files.} \texttt{room22\_landscape\_cert.py} (this directory), importing
+\texttt{Case}/\texttt{scan}/\texttt{target}/\texttt{Wup} unmodified from \texttt{../P1i/P1i\_landscape\_cert.py}.
+Usage: \texttt{perl -e 'alarm 290; exec @ARGV' python3 room22\_landscape\_cert.py [LAMBDA] [X0]}.
+
+\end{document}
