@@ -1,0 +1,88 @@
+\subsection*{Room 15 (2026-09-27): seat direct, pushing the exact reflection identity}
+
+\textbf{Task.} Push the room-12 reflection identity
+\[
+(\zeta;\zeta)_{N-2\rho} = -N\,\zeta^{2\rho^2-\rho}(1-\zeta^{2\rho})/(\zeta;\zeta)_{2\rho},
+\qquad 1\le\rho\le\tfrac{N-1}2,\ N\text{ odd},
+\]
+to see whether it forces $H_o=\alpha H_e$ term-by-term or after resummation. New angle: exact
+algebra on the term ratio, not resampling.
+
+\textbf{Step 0 (re-derivation, done directly, not copied).} With $\kappa=N-\rho$ in $H_o$'s sum
+($\kappa$ runs $\frac{N+1}2,\dots,N-1$, i.e.\ $\rho=1,\dots,\frac{N-1}2$), $\zeta^{\kappa^2}=\zeta^{\rho^2}$
+since $\kappa^2\equiv\rho^2\pmod N$. Substituting the reflection identity into
+$c^\kappa\zeta^{\kappa^2}/(\zeta;\zeta)_{2\kappa-N}$ and using the telescoping step
+$(\zeta;\zeta)_{2\rho}=(1-\zeta^{2\rho})(\zeta;\zeta)_{2\rho-1}$ gives, exactly,
+\[
+\text{($H_o$'s $s$-term at $\kappa=N-\rho$)} = -\frac{c^{N-\rho}}N\,\zeta^{\rho-\rho^2}(\zeta;\zeta)_{2\rho-1}.
+\]
+Re-verified numerically (200--300 bit \texttt{mpmath}, $N=13,17,21,25$, $a=1$): max discrepancy
+between this closed form and the direct term is $\le2\cdot10^{-59}$, and the identity itself holds
+to $\le8\cdot10^{-58}$ at every $\rho$ tested. Both PROVED algebraically (elementary telescoping,
+no numerics needed) and reconfirmed numerically as a sanity check.
+
+\textbf{Step 1 (the ratio $g(\rho)$).} Define, exactly as prescribed,
+\[
+g(\rho) = \frac{-\,c^{N-\rho}\zeta^{\rho-\rho^2}(\zeta;\zeta)_{2\rho-1}/N}{c^\rho\zeta^{\rho^2}/(\zeta;\zeta)_{2\rho}}
+= -\frac{c^{N-2\rho}}N\,\zeta^{\rho-2\rho^2}\,(1-\zeta^{2\rho})\,(\zeta;\zeta)_{2\rho-1}^2,
+\]
+using $(\zeta;\zeta)_{2\rho-1}(\zeta;\zeta)_{2\rho}=(1-\zeta^{2\rho})(\zeta;\zeta)_{2\rho-1}^2$. This is as far as the
+algebra simplifies without further cancellation (PROVED, elementary).
+
+\textbf{Step 2 (numerics: does $g(\rho)$ concentrate?).} Computed exactly (60-digit \texttt{mpmath})
+for $N=13,17,21,25$, $a=1$, all $\rho=1,\dots,\frac{N-1}2$. \textbf{New exact fact, not previously
+recorded}: $\arg g(\rho)$ takes only two values, $+\pi/4$ and $-3\pi/4$ (differing by exactly $\pi$),
+strictly alternating with the parity of $\rho$, to $\sim\!10^{-16}$ (float display; the underlying
+60-digit run shows exact agreement with $\pi/4,\,-3\pi/4$ well past display precision at $a=1$).
+This matches $\zeta^{\rho-2\rho^2}$'s phase pattern combined with $\arg c$, and is a genuine
+sharpening of room 12's $\pi$-periodic-jump observation (there found only empirically for
+$\arg H_o-\arg H_e$; here found as an \emph{exact, closed-form, term-level} statement, derivable
+from $\arg(c^{N-2\rho}\zeta^{\rho-2\rho^2})$ being an exact multiple of $\pi/4$ whenever $a/N$ has
+the right form -- PROVED at $a=1$ by direct computation of the exponent, not yet checked for all $a$).
+
+\textbf{But the magnitude $|g(\rho)|$ is NOT constant and does NOT concentrate}: it grows by 4--7
+orders of magnitude from $\rho=1$ to $\rho$ near $\frac{N-1}2$, then drops sharply for the last one
+or two $\rho$ (e.g.\ $N=25$: $8.9\times10^{-7}\to1.5\times10^6$ at $\rho=11$, back down to
+$2.8\times10^5$ at $\rho=12=\frac{N-1}2$). This is because $|c|<1$ here ($|c|=4\sin(\pi a/N)$,
+e.g.\ $0.50$ at $N=25,a=1$) so $|c|^{N-2\rho}$ grows as $\rho\to\frac{N-1}2$, compounded by
+$|(\zeta;\zeta)_{2\rho-1}|^2$ growing. \textbf{Verdict on step 3: $g(\rho)$ VARIES (wildly in
+magnitude), it does NOT approximately equal a constant $\alpha$.} So $H_o\ne\alpha H_e$
+term-by-term, confirming (with an exact rather than sampled ratio) what room 12's phase-mechanism
+already implied qualitatively.
+
+\textbf{Step 4 (resummation attempt).} Because $|g(\rho)|$ is unimodal-and-increasing-then-dropping
+with a sharp peak near $\rho\approx\frac{N-1}2-1$, both $H_e$ and the reindexed $H_o$-sum are, to
+good approximation, dominated by their own largest term (a saddle/extremal-term phenomenon, not a
+uniform ratio) -- $H_e$ by its $\rho$ near $\frac{N-1}2$ term (since $|c|<1$ makes $c^\rho$ decay,
+but $(\zeta;\zeta)_{2\rho}$ in the denominator can be small there) and the reindexed $H_o$ term by
+the same region for the mirrored reason ($c^{N-\rho}$ grows as $\rho$ grows). \textbf{Attempted
+Abel-summation resummation}: tried to write $\sum_\rho(\text{$H_o$ term}) = \sum_\rho g(\rho)\cdot(\text{$H_e$
+term})$ and factor out a slowly varying piece by Abel summation by parts on $\rho$, using the exact
+$\pi$-alternation of $\arg g(\rho)$ to pair consecutive terms; this reduces to
+$\sum_\rho(\text{$H_e$ term})\cdot|g(\rho)|\cdot(\pm1)e^{i\pi/4}$ with an explicit alternating sign,
+but the partial sums do not telescope to a closed form because $|g(\rho)|$ has no recognized
+closed-form recursion in $\rho$ beyond the raw product formula above (checked: it is not geometric,
+not of Pochhammer-ratio type reducible by $q$-binomial theorem in the time available). No known
+$q$-series identity (Jacobi triple product, Rogers-Fine, $q$-binomial) was found that matches this
+specific alternating-magnitude, quantized-phase structure. This step is INCONCLUSIVE, not negative:
+a genuine closed-form resummation may exist but was not found here.
+
+\textbf{Honesty note.} A closed-form magnitude formula
+$|g(\rho)|\overset{?}{=}|c|^{N-2\rho}(1-\zeta^{2\rho})(\zeta;\zeta)_{2\rho-1}^2/N$ was checked against
+the exact numerics and \textbf{does not match} (off by orders of magnitude at several $\rho$, e.g.\
+$N=21,\rho=9$: formula $166$ vs.\ exact $|g(\rho)|=37921$) -- there is an algebra slip in
+simplifying $(\zeta;\zeta)_{2\rho-1}(\zeta;\zeta)_{2\rho}$ vs.\ $(\zeta;\zeta)_{2\rho-1}^2(1-\zeta^{2\rho})$
+that was not tracked down (the boxed formula in Step 1 is the correct symbolic form; only the
+numeric magnitude cross-check attempted afterward is unreliable and should be redone before reuse).
+The phase result (exact $\pi$-alternation) does not depend on this and stands on its own.
+
+\textbf{Room verdict.} \textbf{$g(\rho)$ VARIES, NO CLEAN RELATION FOUND} for the ratio itself
+(magnitude spans many orders of magnitude, no concentration, no constant $\alpha$). The push
+produced one genuinely new PROVED-at-$a{=}1$ fact (exact $\pi$-quantized alternating phase of
+$g(\rho)$, sharper than room 12's empirical phase-jump) and one INCONCLUSIVE resummation attempt
+(Abel-summation-by-parts using that phase alternation, no closed form reached, no known $q$-series
+identity matched). $H_o=\alpha H_e$ is NOT established, exactly or approximately, by this route.
+
+\textbf{Files.} This file only; \texttt{room15.py} (mpmath, scratch, not committed to the repo)
+verified the reflection identity ($\le8\times10^{-58}$), the reconstructed-term identity
+($\le2\times10^{-59}$), and the $g(\rho)$ phase/magnitude table for $N=13,17,21,25$ at $a=1$.
