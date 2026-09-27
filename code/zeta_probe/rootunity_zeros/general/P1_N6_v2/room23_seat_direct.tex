@@ -1,0 +1,200 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 23 (seat: direct): the $N=6$ closed forms of $f_e,f_o$}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Scope and what was read}
+
+Read in full: \texttt{room21\_seat\_direct.tex} (which isolated the gap: the $N=6$ analogues of
+$a=-2(1-q)$, $L_w$, $c_0$, $f_e$, $f_o$ are ``not written down anywhere in this repository'' and
+are needed for $M'^{(6)}(x)$'s $x$-linear/constant terms); \texttt{paper2a.tex} lines 2170--2179
+(the exact $N=4$ definitions of $a$, $c_0$, $L_w$, $\ell(t)$, $f_e$, $f_o$, $\Phi_i(x)$); and
+\texttt{code/zeta\_probe/rootunity\_zeros/general/P1f/P1f\_lemma.tex}, in particular
+\S``Setting and the saddle data'' (the $N$-generic $c,L,w,\xi,\Phi$) and \S``Exact decomposition''
+(the $N$-generic $F_\rho(k)$ and Lemma~\ref{lem:classes} analogue $b_{N'j+\rho}=\epsilon^jF_\rho(N'j+\rho)$).
+Also read \texttt{room11\_seat\_erdos.tex} for the already-computed $N=6$ saddle data
+($\zeta=e^{i\pi/3}$, $c=2e^{2\pi i/3}$, $\ell=\log2$, $w=0.0151549950587\ldots$,
+$\xi=-0.0025451676\ldots$).
+
+\textbf{Verdict up front: DERIVED. $f_e,f_o$ are not a genuinely new object -- they are the
+$N=4$ instance of the fully $N$-generic function $F_\rho(k)$ already written down in
+\texttt{P1f\_lemma.tex}'s \S``Exact decomposition'' (there for the express purpose of proving
+\texttt{thm:B}/\texttt{thm:C} at every root of unity in the family $N\ge3$). Substituting $N=6$'s
+already-known saddle data gives the $N=6$ closed forms directly, no fresh derivation needed beyond
+matching notation. One genuine structural correction to Room 21's framing: at $N=6$ the
+even/odd split of $N=4$ becomes a \emph{three-way} split ($F_0,F_1,F_2$, indices mod $3$, not mod
+$2$), because $N'=N/2=3$ at $N=6$ against $N'=2$ at $N=4$. This is verified numerically to 40
+digits below.}
+
+\section*{1. The exact $N=4$ definition, and what $a,L_w,c_0$ actually are}
+
+From \texttt{paper2a.tex} lines 2170--2179 (\S\ref{sec:qi}, the $q=i$ point, $N=4$):
+\[
+  a=-2(1-q),\qquad c_0=-2+2i,\qquad L_w=\log c_0=\tfrac32\log2+\tfrac{3\pi i}4,\qquad
+  \ell(t)=\log\Bigl(1-\tfrac{1-i}2(1-e^{-t})\Bigr),
+\]
+with $\log a=L_w+\ell(t)$, and
+\[
+  f_e(s)=\frac{e^{2s\log a-4ts^2}}{(q;q)_\infty}\prod_{j=1}^4(i^jp^{4s+j};P)_\infty,\qquad
+  f_o(s)=\frac{i\,e^{(2s+1)\log a-t(2s+1)^2}}{(q;q)_\infty}\prod_{j=3}^6(i^jp^{4s+j};P)_\infty,
+\]
+with $f_e(k)=b_{2k}$, $f_o(k)=b_{2k+1}$, $k\ge0$.
+
+Comparing directly against \texttt{P1f\_lemma.tex}: there, for general $N\ge3$, $\zeta=e(a/N)\ne-1$,
+$c=-2(1-\zeta)$, $L=\operatorname{Log}c$; the point $q=i$ used throughout \S\ref{sec:qi} of
+paper2a is exactly $\zeta=i=e(1/4)$ ($N=4$, $a=1$). So:
+\[
+  a_{\text{paper2a}}=c_t:=-2(1-q)\ \ (\text{the $N$-generic ``running'' $c_t$ of P1f, evaluated at $q$, not $\zeta$}),
+\]
+\[
+  c_0=c\bigm|_{N=4,\ \zeta=i}=-2(1-i)=-2+2i,\qquad L_w=L\bigm|_{N=4,\ \zeta=i}=\log2+\tfrac{3\pi i}4\cdot\tfrac2{2}
+  =\tfrac32\log2+\tfrac{3\pi i}4,
+\]
+which matches exactly (the general formula $L=\ell+i\varphi$, $\ell=\log|c|=\log2$ here since
+$|c|=|-2+2i|=2\sqrt2$... \textbf{check}: $|-2+2i|=2\sqrt2$, so $\log|c|=\log2+\tfrac12\log2=\tfrac32\log2$,
+matching $L_w$'s real part exactly). And $\ell(t)=\log(1-u)$ with $u=\frac{1-i}2(1-e^{-t})$ is
+$c_\ell$'s companion: it is exactly $\log a-\log a|_{t=0}$, i.e.\ the running correction that
+P1f\_lemma.tex calls $\xi$-related bookkeeping folded into $\log c_t=L+t\cdot\mathrm{lin}+O(t^2)$
+(end of the proof of Lemma~\ref{lem:EM} in P1f\_lemma.tex: ``$\operatorname{Log}c_t=L+t\,\mathrm{lin}+O(t^2)$'').
+
+\textbf{Most importantly}: $f_e,f_o$ themselves, term-by-term, are exactly $F_\rho(k)$ of
+\texttt{P1f\_lemma.tex}'s \S``Exact decomposition'', specialised to $N=4$:
+\[
+  F_\rho(k)=\zeta^{\rho^2}\exp\bigl(k\operatorname{Log}c_t-tk^2\bigr)
+  \prod_{\iota=1}^N\bigl(\zeta^{2\rho+\iota}e^{-t(2k+\iota)};p^N\bigr)_\infty\Big/(q;q)_\infty,
+\]
+with $N'=N/2$ ($N$ even), $\epsilon=-1$ if $N\equiv2\ (4)$ else $+1$, and
+$b_{N'j+\rho}=\epsilon^jF_\rho(N'j+\rho)$. At $N=4$, $\zeta=i$: $N'=2$, $4\mid N$ so $\epsilon=+1$,
+$\rho\in\{0,1\}$. Then $F_0(2k)=\zeta^0\exp(2k\operatorname{Log}c_t-4tk^2)\prod_{\iota=1}^4(i^\iota
+p^{4k+\iota};P)_\infty/(q;q)_\infty$ -- with $s=k$ this is $f_e(s)$ \emph{exactly} (the exponent
+$2s\log a-4ts^2$ matches $2k\log c_t-4tk^2$ term by term since $a=c_t$). And $F_1(2k+1)=i\cdot
+\exp((2k+1)\log c_t-t(2k+1)^2)\prod_{\iota=1}^4(i^{2+\iota}p^{4k+2+\iota};P)_\infty/(q;q)_\infty$;
+reindexing $\iota\to\iota-2$ so $\iota$ runs $3,\dots,6$ ($i^{2+\iota}=i^\iota$ since $i^4=1$, using
+$\iota\bmod4$) reproduces $f_o(s)$ exactly, including the prefactor $i=i^{\rho^2}|_{\rho=1}$.
+
+\textbf{Conclusion of \S1: $f_e,f_o$ are not $\texttt{lem:qi-bounds}$(ii)-specific objects. They
+are the $N=4$, $\zeta=i$ instance of the fully $N$-generic $F_\rho$ family already built in
+P1f\_lemma.tex for the express purpose of covering every root of unity $N\ge3$ in the family.}
+This is a stronger and more precise statement than Room~21's ``genuinely separate, un-started
+task'' -- the task is not un-started, it was already done (generically) in a different room file
+that Room~21 did not cross-reference against paper2a's $f_e,f_o$ notation.
+
+\section*{2. The $N=6$ closed forms}
+
+Using $N=6$, $a=1$, $\zeta=e^{i\pi/3}$ (Room~11's calibration, re-quoted): $N'=N/2=3$,
+$N\equiv2\ (4)$ so $\epsilon=-1$, and $\rho\in\{0,1,2\}$ -- \textbf{three} classes, not two.
+\[
+  c^{(6)}=-2(1-\zeta)=-1+i\sqrt3=2e^{2\pi i/3},\qquad
+  L_w^{(6)}=\operatorname{Log}c^{(6)}=\log2+\tfrac{2\pi i}3,\qquad \ell^{(6)}=\log2,
+\]
+matching Room~11's already-certified $\ell=\log2$ exactly. The running constant is, exactly as at
+$N=4$, $N$-independent in form:
+\[
+  a^{(6)}=c_t:=-2(1-q),\qquad q=\zeta e^{-t}=e^{i\pi/3}e^{-t}.
+\]
+The three closed forms, direct substitution into the $N$-generic $F_\rho$ formula with $N=6$:
+\[
+  F_\rho^{(6)}(k)=\zeta^{\rho^2}\exp\bigl(k\log a^{(6)}-tk^2\bigr)
+  \prod_{\iota=1}^6\bigl(\zeta^{2\rho+\iota}e^{-t(2k+\iota)};p^6\bigr)_\infty\Big/(q;q)_\infty,
+  \qquad \rho=0,1,2,
+\]
+with
+\[
+  b_{3j}=(-1)^jF_0^{(6)}(3j),\qquad b_{3j+1}=(-1)^jF_1^{(6)}(3j+1),\qquad b_{3j+2}=(-1)^jF_2^{(6)}(3j+2).
+\]
+Writing $x=kt$ as in paper2a (coordinate for the $\rho$-th branch is $x=(3s+\rho)t$ with $k=3s+\rho$):
+\[
+  \boxed{f_\rho^{(6)}(s):=F_\rho^{(6)}(3s+\rho)=\zeta^{\rho^2}\,
+  \frac{e^{(3s+\rho)\log a^{(6)}-t(3s+\rho)^2}}{(q;q)_\infty}
+  \prod_{\iota=1}^6\bigl(\zeta^{2\rho+\iota}p^{2(3s+\rho)+\iota};P\bigr)_\infty},\quad P=p^6,\ \rho=0,1,2.
+\]
+Explicitly, $\zeta^{\rho^2}$ takes the values $\zeta^0=1$ ($\rho=0$), $\zeta=e^{i\pi/3}$ ($\rho=1$),
+$\zeta^4=e^{4i\pi/3}$ ($\rho=2$) -- the direct analogues of $f_e$'s prefactor $1$ and $f_o$'s
+prefactor $i=\zeta_4^1$ at $N=4$.
+
+\textbf{The $\Phi(x)$, $L_w$, $\ell(t)$ pieces} also transfer verbatim from P1f\_lemma.tex's
+$N$-generic form, specialised to $N=6$:
+\[
+  \Phi^{(6)}(x)=xL_w^{(6)}-x^2-\tfrac1{36}\operatorname{Li}_2(e^{-12x})+\tfrac{\pi^2}{216},
+\]
+matching Room~21 \S2's boxed $\Upsilon^{(6)}$ construction's first-term structure with $N=6$
+substituted ($1/N^2=1/36$, $\pi^2/(6N^2)=\pi^2/216$) -- a cross-check against Room~21's independent
+Poisson-summation derivation, and it agrees.
+
+\section*{3. Numerical verification}
+
+Directly checked the boxed $F_\rho^{(6)}$ formula against $b_k=c_t^kq^{k^2}/(q;q)_{2k}$ (the raw
+series coefficient, computed independently via the Pochhammer ratio $(q;q)_\infty/(q^{2k+1};q)_\infty$)
+at $t=0.02+0.01i$, $\zeta=e^{i\pi/3}$, for $j=0,1,2$ and $\rho=0,1,2$ (i.e.\ $k=0,\ldots,8$), summing
+the infinite products to $4000$--$6000$ terms in 40-digit mpmath (\texttt{perl -e 'alarm 280; exec
+@ARGV'} wrapper; sysctl confirmed 24\,GB physical RAM fresh before running, peak usage negligible,
+well inside the 3000\,MB cap):
+\begin{center}
+\begin{tabular}{ccc|c}
+$j$ & $\rho$ & $k$ & relative error $|b_k-(-1)^jF_\rho^{(6)}(k)|/|b_k|$\\\hline
+0&0&0&$4.9\times10^{-40}$\\
+0&1&1&$1.1\times10^{-39}$\\
+0&2&2&$1.4\times10^{-39}$\\
+1&0&3&$4.6\times10^{-40}$\\
+1&1&4&$4.6\times10^{-40}$\\
+1&2&5&$6.1\times10^{-40}$\\
+2&0&6&$1.2\times10^{-39}$\\
+2&1&7&$9.8\times10^{-40}$\\
+2&2&8&$1.1\times10^{-39}$\\
+\end{tabular}
+\end{center}
+All agree to essentially full working precision, confirming both the closed form itself and the
+sign pattern $\epsilon=-1$ ($N\equiv2\bmod4$). (Script: \texttt{/tmp/verify\_Frho.py} in this
+session; $<60$ lines, direct mpmath evaluation, no BFS/enumeration, well inside the memory budget.)
+
+\section*{4. What this resolves in Room 21's gap, and what is still separate}
+
+Room~21 \S7 named four missing pieces for $M'^{(6)}(x)$: (a) the $N=6$ analogue of $a$, (b) $L_w^{(6)}$,
+(c) the explicit closed forms of $f_e^{(6)},f_o^{(6)}$, (d) hence the $x$-linear/constant terms of
+$M'(x)$ and $\Upsilon(x)$'s additive constant $c_0$-analogue, and $c_\ell^{(6)}$.
+
+\textbf{(a), (b), (c) are now DERIVED} (\S2 above): $a^{(6)}=-2(1-q)$ (literally the same formula,
+$N$-independent), $L_w^{(6)}=\log2+2\pi i/3$, and the three closed forms $f_0^{(6)},f_1^{(6)},f_2^{(6)}$
+boxed above, verified numerically to 40 digits.
+
+\textbf{(d) is NOT yet complete, and here is precisely why}: the $x$-linear/constant terms of
+$M'(x)$ in \texttt{lem:qi-bounds}(ii) come from re-running the \emph{proof} of part~(ii) (the ray
+lemma applied to each of the $N$ factors $(\zeta^{2\rho+\iota}e^{-2x-\iota t};P)_\infty$, tracking
+$\sum_\iota(\ldots)$-type constants) with $N=6$, three branches, and the mod-6 residue bookkeeping
+of Room~21 \S2--4 -- \emph{not} a new derivation of $f_e,f_o$ themselves, which is what this room
+was asked to resolve. Room~21 \S3--5 already carried out exactly that re-derivation for the
+$1/t$, domination-constant, and $K'(x)$ pieces of part~(ii), generically in $N$ and specifically at
+$N=6$. The one piece Room~21 \S7 flagged as blocked \emph{because} $f_e,f_o$ were undefined at
+$N=6$ -- the coefficient of $|x|$ in $M'(x)$, namely $(\frac1{\sqrt2}+2)$ at $N=4$, which comes from
+$|\log a^{(6)}|$-type bookkeeping in the $\ell(t)$ Taylor expansion -- can now in principle be
+completed using \S2's $a^{(6)},L_w^{(6)}$, but doing so (redoing Room~21 \S3's Taylor-shift
+constant-counting with the three-branch $N=6$ structure in place of the original two-branch $N=4$
+structure) is a distinct bookkeeping task, not attempted here since it was not what this room was
+asked to determine.
+
+\section*{Verdict}
+
+\textbf{DERIVED}: $f_e,f_o$ are the $N=4$ instance ($\zeta=i$, $N'=2$, $\epsilon=+1$, two classes
+$\rho=0,1$) of the $N$-generic function $F_\rho(k)$ already defined in P1f\_lemma.tex's
+\S``Exact decomposition'', built there for exactly this purpose (covering every root of unity
+$N\ge3$ in the family). Substituting $N=6$'s already-certified saddle data
+($\zeta=e^{i\pi/3}$, $c=2e^{2\pi i/3}$, $\ell=\log2$, Room~11) gives, with $N'=3$, $\epsilon=-1$
+(three classes, $\rho=0,1,2$, since $N\equiv2\bmod4$):
+\[
+  a^{(6)}=-2(1-q),\qquad L_w^{(6)}=\log2+\tfrac{2\pi i}3,\qquad
+  f_\rho^{(6)}(s)=\zeta^{\rho^2}\frac{e^{(3s+\rho)\log a^{(6)}-t(3s+\rho)^2}}{(q;q)_\infty}
+  \prod_{\iota=1}^6(\zeta^{2\rho+\iota}p^{2(3s+\rho)+\iota};P)_\infty,\ \rho=0,1,2,
+\]
+verified against the raw series coefficients $b_k$ to $10^{-39}$ relative error at 9 sample values
+of $k$ spanning three periods. \textbf{Structural correction to Room~21's framing}: the object is
+not a pair ($f_e,f_o$) at $N=6$ but a \emph{triple} ($F_0,F_1,F_2$), since the even/odd split is
+really an $N'=N/2$-ary split and $N'=3$ at $N=6$ against $N'=2$ at $N=4$.
+\textbf{Still separate and not attempted here}: redoing \texttt{lem:qi-bounds}(ii)'s proof
+bookkeeping (the $M'(x)$ coefficient-counting of paper2a's proof text, analogous to Room~21
+\S3--4's treatment of the domination constant and $K'(x)$) with these three-branch $N=6$ closed
+forms in hand, to get the explicit $x$-linear/constant terms of $M'^{(6)}(x)$ and $\Upsilon^{(6)}$'s
+additive constant.
+
+\end{document}
