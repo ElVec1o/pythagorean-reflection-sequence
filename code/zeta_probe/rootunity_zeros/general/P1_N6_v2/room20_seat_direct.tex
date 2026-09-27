@@ -1,0 +1,216 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 20 (seat: direct): attempting the actual $N=6$ contour construction
+$x_c^{(6)}$, $\Gamma_\pm^{(6)}$, $\Pi_0^{(6)}$, and the Rouch\'e step}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Starting point}
+
+Read in full: \texttt{paper2a.tex}'s proof of \texttt{prop:qi} (every step); \texttt{P1f\_lemma.tex}
+(the $N$-generic machinery, Theorems~asym/B/C, proved for $N\ge16$ and, via per-case certificates,
+for 52 of the 56 members with $3\le N\le16$); \texttt{P1i\_lemma.tex} \S\ref{sec:six} (``$N=6$: exactly
+why it is not closed'' -- reproduced below); and this directory's Rooms~8, 11, 13, 17, 18, 19.
+
+\textbf{Corrected scope, taken as given (Room~18):} accumulation of the zeros of $B$ at $\zeta_0=\e(1/6)$,
+and of the poles of $U,V$ at $\pm\sqrt{\zeta_0},\pm\sqrt{\bar\zeta_0}$, is already PROVED by closure from
+P1h/P1f (dense accumulation set, closed). What is open is strictly stronger: the \emph{direct} $N=6$
+tie-ray statement, the literal \texttt{prop:qi} analogue at $N=6$ itself. This room attempts exactly
+that, using the secured separation-constant bound (Rooms~17/19) and the saddle data (Room~11) as inputs.
+
+\section*{1. Why the ``start at $s=0$'' scheme (P1f/P1i) fails at $N=6$, restated precisely}
+
+\texttt{P1i\_lemma.tex} \S\ref{sec:six}: at $\zeta_0=\e(\frac16)$, $c=2e^{2\pi i/3}$, $\ell=\log2$,
+$\theta^*=0$, tie pair $(-3,-1)$, $T=-0.10878$. P1f's decomposition writes $B=H+\sum(\text{integrals})$
+with $H=\sum_{k\le K}b_k\ni b_0=1$ and the integrals $=O(e^{(T+o(1))/r})\to0$. Since $T<0$, $|H|$ is
+generically $O(1)$ while the integrals vanish exponentially, so no bound $|H|\le e^{(T-\eta)/r}$ can hold:
+\textbf{the head, not the landscape, blocks the construction.} (The landscape itself is healthy: for
+$S_\pm$, $T'=0.1654>0$, and the certificate passes cleanly.) This is exactly the mechanism that also
+blocks $N=4$ at $q=i$ ($T=-0.0707<0$), and \texttt{prop:qi} is precisely the fix for that mechanism.
+The task at hand is to run the same fix at $N=6$.
+
+\section*{2. The head-elimination mechanism, made explicit}
+
+\texttt{prop:qi} Step~1 does not use $H=\sum_{k\le K}b_k$ at all. Instead it fixes a \emph{negative}
+half-integer $s_c<0$ and writes, using that $F$ (the entire interpolant, $F(k)=b_k$ for $k\ge0$)
+\emph{vanishes at every negative integer}:
+\[
+   \sum_{k\ge0}F(k)=\int_{\Gamma_-}FK_-\,ds+\int_{\Gamma_+}FK_+\,ds,\qquad
+   K_\mp=(1-e^{\mp2\pi is})^{-1}\ (\text{resp.\ its }e^{2\pi is}\text{-twist}),
+\]
+with $\Gamma_\mp$ leaving $s_c$. This is the residue theorem applied to $F(s)K(s)$ around the poles
+of the cotangent-type kernel $K$ at every integer $\ge s_c$: the residues at the finitely many negative
+integers between $s_c$ and $0$ are all zero (since $F$ vanishes there), so the sum of residues equals
+exactly $\sum_{k\ge0}F(k)=B$, with \textbf{no separate head term at all}. Pushing $s_c$ further negative
+costs nothing (no new poles contribute), so the only role of $s_c$ is to fix a starting point for the
+two paths $\Gamma_\mp$ -- it is a free geometric choice, not a truncation.
+
+\textbf{This mechanism is $N$-generic and does not need re-derivation for $N=6$}: it is exactly Lemma
+\texttt{classes} of \texttt{P1f\_lemma.tex} (``$F_\rho$ is entire and $b_{N'j+\rho}=\epsilon^jF_\rho(N'j+\rho)$
+for $j\ge0$''), run with the residue theorem's base point $s_\rho$ taken very negative instead of just
+past the cutoff $K$. \textbf{What P1f/P1i's own construction does NOT establish, and what is genuinely
+needed here, is that $F_\rho$ vanishes at negative integers} -- P1f only ever evaluates $F_\rho$ at
+$N'j+\rho$ for $j\ge0$ and uses the residue theorem with $s_\rho$ chosen \emph{positive} (just past $K$),
+so it never needed this vanishing property and never proved it. \texttt{prop:qi}'s $f_e,f_o$ are shown to
+vanish at negative integers elsewhere in the paper2a line (this is inherited from \texttt{prop:minusone}'s
+own Step~1, which explicitly invokes it for the $N=4$ functions). \textbf{For $N=6$'s $F_\rho$, this
+vanishing has not been checked anywhere in this repository.} I checked it numerically here (not
+rigorously): $F_0(s)$ built from the $N=6$ Pochhammer product with $\rho=0$ evaluated at $s=-1,-2,-3$
+gives $|F_0(m)|<10^{-30}$ (mpmath, 40 digits, direct evaluation of the analytic continuation via the
+defining product formula continued through its finitely many poles/zeros using the reflection identity
+$(z;P)_\infty=\vartheta(z)/(P/z;P)_\infty$ at the negative-integer points) -- \textbf{consistent with
+vanishing, not a proof.} A rigorous proof would mirror \texttt{prop:minusone}'s own argument (the
+Pochhammer ratio structure forces a zero factor at each negative integer); I did not carry that
+argument through for general $N$ here.
+
+\section*{3. Constructing $x_c^{(6)}$}
+
+\texttt{prop:qi}'s numeric choice $x_c\approx-\frac\pi8(\cot\theta_i+i)$ is not a fundamental formula:
+it is a convenient point with $\operatorname{Re}(x_c)<0$ (so that $s_c$ is a large negative half-integer
+in the sense above) whose imaginary part sits so that the two initial legs $\Gamma_\mp$ reach the
+constant-height lines $\operatorname{Im}x=\mp\pi/8$ (through $x_-,x_0$) at a reasonable angle. The
+$\cot\theta_i$ dependence comes from $\theta_i\ne0$ at $N=4$: the legs are drawn at angle $\theta_i$
+relative to the real axis (matching the tie-ray direction) so that the certified landscape bounds
+(Step~2 of \texttt{prop:qi}) apply uniformly along them.
+
+\textbf{At $N=6$, $\theta^*=0$ exactly}, so the $N=4$ formula's $\cot\theta_i$ term is not just
+inconvenient but ill-defined in the naive substitution ($\cot\theta^*\to\infty$). This is a genuine,
+new difference from the $N=4$ template, not previously flagged in Rooms~1--19. But it is a benign one:
+$\theta^*=0$ means the tie ray IS the real axis, so the natural, symmetric choice is
+\[
+   x_c^{(6)}=-\Lambda\qquad(\Lambda>0\text{ real, sufficiently large}),
+\]
+real and negative, matching a half-integer $s_c=x_c^{(6)}/(2t)$ (or $/(N't)$ in the P1f coordinate) on
+the negative real axis for each small $t=r$ (real, since $\theta^*=0$). By the $N=6$ saddle data (Room~11,
+confirmed here): $x_{-3}=0.349119-i\pi/6$, $x_{-1}=0.349119+i\pi/6$, symmetric about the real axis. A
+real, negative $x_c^{(6)}$ is symmetric with respect to both saddles simultaneously, which is the
+natural analogue of $N=4$'s asymmetric choice (there $\theta_i\ne0$ broke the symmetry; here $\theta^*=0$
+restores it). I did not certify a specific numeric value of $\Lambda$ (the paper2a analogue involves
+a certified admissibility window, ``within $0.02$ of'' the target, verified in
+\texttt{certify\_landscape\_i.py}); this is exactly the kind of certificate Room~17/19's bound would
+feed into but nobody has written for $N=6$.
+
+\section*{4. The contour legs $\Gamma_\pm^{(6)}$, $\Pi_0^{(6)}$}
+
+Taking Room~11's construction (Step~1--2 of \texttt{room11\_seat\_erdos.tex}) together with Room~18's
+correction (\S\ref{sec:secondary} there) as the current best reading:
+\begin{itemize}
+\item $\Gamma_-^{(6)}$: from $x_c^{(6)}$ to the constant-height line $\operatorname{Im}x=-\pi/6$, then
+along it to $+\infty$ through the saddle $x_{-3}=0.349119\ldots-i\pi/6$.
+\item $\Pi_0^{(6)}$ (playing $N=4$'s $\Pi_0$, through the \emph{other} tied saddle): from $x_c^{(6)}$
+to $\operatorname{Im}x=\pi/6$, then along it to $+\infty$ through $x_{-1}=0.349119\ldots+i\pi/6$.
+\item $\Gamma_+^{(6)}$: a third, genuinely unbounded tilted leg carrying the remainder-mode kernel
+terms, routed (as at $N=4$, and as Room~8/11 both note) through the angle-free part-(iii) bound of
+\texttt{lem:qi-bounds}, which needs only $\operatorname{Re}x\ge X>0$ and is $N$-generic
+(\texttt{P1f\_lemma.tex}'s own remainder-mode treatment, \S\ref{sec:est}, is exactly this bound, already
+proved for general $N$).
+\end{itemize}
+\textbf{Room~18's correction is the load-bearing fact that makes this workable}: the separation constant
+$d(x)\ge1-e^{-2\operatorname{Re}x}$ (Room~17) and $d'(x)\ge1-e^{2\operatorname{Re}x}$ (Room~19) are
+positive and \emph{band-uniform in $\theta$ and class-uniform in $\varphi$} on the entire
+$\operatorname{Re}x>0$ portion of both constant-height legs -- not merely at the two saddle points --
+because the bound never uses the angular term that would otherwise vanish on the resonance loci
+$\operatorname{Im}x=\pm\pi/6$. So \textbf{the ray-lemma-based error term of part~(i)/(iv)-type bounds
+is under control on all of $\Gamma_-^{(6)}$, $\Pi_0^{(6)}$, $\Gamma_+^{(6)}$ with $\operatorname{Re}x>0$},
+which is most of each leg's length.
+
+\section*{5. What is missing: the $\operatorname{Re}(x)\lesssim0$ crossing region}
+
+Near $x_c^{(6)}$ (very negative real part) each leg must cross $\operatorname{Re}x=0$ before reaching the
+resonance line where the secured bound applies. This is exactly the region \texttt{lem:qi-bounds}(ii)
+handles at $N=4$ (Poisson summation on the Jacobi triple product, $\Upsilon(x)/r+M'(x)+\ldots$), and
+Room~19 correctly identified this ``mod-6 Poisson-summation/triple-product bookkeeping'' as the one
+genuinely un-attempted piece. \textbf{I attempted this here, partially.}
+
+The $N$-generic shape, transcribed from paper2a's proof of part~(ii) (lines 2249--2258) with $N=4$
+replaced by $N=6$, $q=ip\to q=\zeta_0p$, and $c_j=i^j\to c_j=\zeta_6^j$: writing
+$(c_je^{-2x-jt};P)_\infty=\vartheta(c_je^{-2x-jt})/(P/(c_je^{-2x-jt});P)_\infty$ with $P=p^6$, the triple
+product plus Poisson summation gives, for $N=6$,
+\[
+ (P;P)_\infty\,\vartheta(c_je^{-v})=\sqrt{\pi/(3t)}\sum_{k\in\Z}\exp(\beta_k^2/(12t)),\qquad
+ \beta_k=t-v+i\pi(1-2k)/3\quad(\text{$N=6$ nome normalisation, }2Nt\to12t),
+\]
+by the standard Jacobi-theta Poisson transform at nome $P=e^{-6t}$ (replacing $N=4$'s $8t=2\cdot4t$ with
+$2\cdot6t=12t$). With $v=2x+jt-\frac{i\pi\gamma_j}3$ ($c_j=e^{i\pi\gamma_j/3}$, the $N=6$ sixth-root
+argument in place of $N=4$'s quarter-turn $\gamma_j/2$), the exponent becomes a quadratic in
+$m=\gamma_j+(\text{const})-6k$ running over \textbf{one class mod $6$} (not mod $4$) for each of the
+$j=1,\ldots,6$ factors of $(q;q)_\infty=\prod_{j=1}^6(\zeta_6^jp^{6s+j};P)_\infty$. The exponent's
+leading $k$-coefficient is $-\pi^2\cos\theta/(3r)$ (the $N=6$ analogue of $-\pi^2\cos\theta/(2r)$ at
+$N=4$ -- both are $-\pi^2\cos\theta N/(2\cdot\text{(nome exponent factor)})$; I did not independently
+re-verify the exact constant here, only its structural form), so the same concave-quadratic-in-$k$
+domination argument gives the sum bounded by (some explicit constant, structurally $\le3+3e^{-\pi^2\cos
+\theta/r}$ up to the changed leading coefficient, not recomputed) times its largest term.
+
+\textbf{This is as far as the mechanical transcription goes without a fresh, careful re-derivation.}
+The remaining, genuinely un-done work is exactly what Room~19 scoped:
+\begin{itemize}
+\item the literal mod-$6$ residue sum $\sum_{\varrho=0}^{5}\max_{m\equiv\varrho\,(6)}$ in the $N=6$
+analogue of $\Upsilon(x)$ (line 2190 of paper2a is mod-4; here it is mod-6, six residue classes instead
+of four, doubling the bookkeeping);
+\item rechecking the domination constant (``$3$'' at $N=4$) for the coarser mod-$6$ lattice -- I did
+not do this; the structural argument (concave quadratic dominated by its two largest terms) is
+$N$-generic, but the actual numeric constant was not rederived;
+\item the explicit constants in $M'(x)$, $K'(x)$ (which at $N=4$ come from termwise Euler--Maclaurin/
+ray-lemma error estimates on the specific $4$-term product $\prod_{j=1}^4$) need their $6$-term analogue
+$\prod_{j=1}^6(\zeta_6^jp^{6s+j};P)_\infty$ worked out from scratch. Not done here.
+\end{itemize}
+
+\section*{6. Fresh numerical check: does a zero actually exist on the predicted ray?}
+
+To add independent evidence (not previously in this repository, though \texttt{P1f\_zeros.py} already
+reported similar numbers per \texttt{P1i\_lemma.tex}), I recomputed $B(\zeta_0e^{-t})$ directly by
+summing $b_k=c_t^kq^{k^2}/(q;q)_{2k}$ (mpmath, 40 digits, \texttt{perl -e 'alarm 280; exec @ARGV'}
+wrapper, well inside the 24\,GB budget) and ran a complex Newton search for a root in $t$ starting from
+real seeds near the tie-ray direction $\theta^*=0$:
+\[
+   t^\ast\approx0.012485+0.000193i\ (\arg\approx0.887^\circ),\qquad
+   t^{\ast\ast}\approx0.006001+0.000045i\ (\arg\approx0.430^\circ),
+\]
+both with $|B(\zeta_0e^{-t^\ast})|<10^{-35}$ at the converged root, and both arguments shrinking toward
+$0^\circ=\theta^*$ as $|t^\ast|$ shrinks (0.89$^\circ\to$0.43$^\circ$ as $|t|$ roughly halves), exactly
+the $O(1/j)$ convergence to the tie ray predicted by the two-saddle model. This independently confirms
+(numerically, not rigorously) that genuine simple zeros of $B$ exist on the predicted $N=6$ tie ray,
+consistent with \texttt{P1i\_lemma.tex}'s own report, obtained here by direct root-finding rather than
+residual comparison to the two-saddle prediction.
+
+\section*{Verdict}
+
+\textbf{PARTIAL CONSTRUCTION.} Concretely, this room:
+\begin{itemize}
+\item[done] Identifies precisely \emph{why} the $N=6$ obstruction is a head-domination problem
+($T=-0.10878<0$), the same mechanism as $N=4$'s $q=i$ obstruction, confirming \texttt{P1i}'s diagnosis
+independently from the decomposition mechanics (\S1).
+\item[done] Makes explicit the head-elimination mechanism (residue theorem from a negative base point,
+using vanishing of $F_\rho$ at negative integers) that \texttt{prop:qi} uses and P1f/P1i's ``start at
+$s=0$'' scheme does not need (\S2) -- and flags, as a genuinely new finding, that \textbf{this vanishing
+property has never been proved for $N=6$'s $F_\rho}$, only checked numerically here to be consistent
+with it ($|F_0(-1)|,|F_0(-2)|,|F_0(-3)|<10^{-30}$).
+\item[done] Constructs an explicit $x_c^{(6)}$ (real, negative, $x_c^{(6)}=-\Lambda$, exploiting the
+$\theta^*=0$ symmetry that $N=4$ lacked) and the contour legs $\Gamma_\pm^{(6)},\Pi_0^{(6)}$, building
+on Room~11's exact saddle data and Room~17/19/18's corrected, band-and-class-uniform separation-constant
+bound, which covers the entire $\operatorname{Re}x>0$ portion of both constant-height legs (\S3--4).
+\item[done] Identifies precisely, and does not resolve, the one remaining piece: the $N=6$/six-class
+Poisson-summation bookkeeping for the $\operatorname{Re}x\lesssim0$ crossing region near $x_c^{(6)}$
+(\S5) -- transcribed the general shape from paper2a's proof, but did not rederive the explicit numeric
+constants ($\Upsilon,M',K'$ analogues), which is exactly the well-scoped remaining target Room~19
+identified.
+\item[done] Adds independent numerical confirmation (fresh Newton root-finding, not residual comparison)
+that simple zeros of $B$ exist on the predicted $N=6$ tie ray, converging to $\theta^*=0$ as $j\to\infty$
+(\S6).
+\end{itemize}
+\textbf{Not done:} the Rouch\'e step itself. Running Rouch\'e rigorously needs both (a) the crossing-region
+bound of \S5 with explicit constants (not obtained here) and (b) a certificate that $x_c^{(6)}$'s specific
+value $\Lambda$, and the resulting disc $D_j$ in the $t$-plane, actually satisfy all the landscape
+inequalities uniformly -- analogous to \texttt{certify\_landscape\_i.py}'s role at $N=4$, or
+\texttt{P1i\_landscape\_cert.py}'s role for the 52 already-closed small-$N$ members. Neither exists for
+$N=6$. So this room narrows the target further (the geometric contour and the separation-constant piece
+are now both explicit and largely secured; only the crossing-region bookkeeping and its certificate
+remain), but does not close $N=6$'s direct tie-ray statement, and the honest labels are: contour geometry
+and $x_c^{(6)}$ -- CONSTRUCTED (heuristically justified, not certified); separation constant on
+$\operatorname{Re}x>0$ -- PROVED (Rooms~17/19); vanishing of $F_\rho$ at negative integers -- VERIFIED
+numerically, NOT proved; crossing-region bookkeeping -- STRUCTURE TRANSCRIBED, constants NOT derived;
+Rouch\'e step -- NOT ATTEMPTED (blocked on the crossing-region constants); existence of zeros on the
+tie ray -- VERIFIED numerically (fresh, independent), consistent with everything above.
+
+\end{document}
