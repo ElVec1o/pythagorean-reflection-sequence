@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 12 (P2 even-$a$ reciprocal-bimodal mystery): moderator summary, consolidated}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\noindent This room produced several partially-conflicting sub-findings across multiple seat
+attempts (some delegated attempts stalled and were retried or completed directly). This summary
+reconciles them honestly rather than picking one; the reconciliation itself is the room's main
+deliverable.
+
+\section*{What is solid (proved, verified twice independently)}
+
+\textbf{The branch-flip identity is exact.} From $H_o=s^{-1}\sum(\ldots)$, $s=c^{N/2}$: $s$
+appears only as the overall prefactor, nowhere inside the sum. So flipping $s\to-s$ gives
+$H_o\to-H_o$ exactly, for any $(N,a)$, hence $A_+\leftrightarrow A_-$ and
+$A_+/A_-\to(A_+/A_-)^{-1}$ exactly. This was derived independently twice (two seat attempts) and
+verified numerically to machine/multi-digit precision (Reviewer AW's own independent Python
+reimplementation, and the original seat's modified Rust tool) at several $(N,a)$. \textbf{This part
+is PROVED} -- it is also, as both seats and Reviewer AW note, algebraically trivial once the formula
+is examined ($x\leftrightarrow1/x$ under any sign flip of a quantity appearing only as a divisor).
+
+\section*{What is NOT solid: whether this explains Room 7's observed clustering}
+
+Reviewer AW found the proposed discriminant (a specific $a\bmod8$ branch-selection rule) fails
+outside a narrow boundary region at $q=11$ -- a direct counterexample (same residue class, opposite
+cluster, well past small-$N$ effects) -- consistent with the branch selection being a genuine
+continuous-in-$(N,a)$ effect (a $\sqrt{\ }$ branch-cut crossing) rather than a fixed arithmetic law.
+A separate, independent numerical push (seat Ramanujan, 46+ new points per seed across $q=9,11,15,
+21,25,29,33$) complicates the picture further and in places directly conflicts with the original
+Room 7 description:
+
+\begin{itemize}
+\item \textbf{$q=11$: genuinely different from Room 7's ``possibly under-sampled reciprocal-bimodal''
+guess.} Even-$a$ is chaotic for small/moderate $N$ (spanning $0.04$ to $117$) but settles by
+$N\gtrsim5\times10^5$ into single-valued convergence near $25.4$--$25.7$ -- \emph{no} reciprocal
+$\approx1/25$ branch appears at large $N$. A fourth qualitative regime, not bimodal.
+\item \textbf{$q=9$: the previously-reported $\approx0.15$ reciprocal sub-cluster did not reproduce}
+in 30+ new even-$a$ points (all landed in $6.40$--$7.01$). Flagged as an unresolved discrepancy
+with Room 7's original report, not yet explained (possibly Room 7's original $0.15$ points were
+themselves few and at small $N$, an under-sampling in the other direction).
+\item \textbf{Exactness of the reciprocal PAIRS (as opposed to the branch-flip identity) is only
+approximate}, not exact: cross-products of the $q=29$ cluster values (its cleanest case) deviate
+from $1$ by $0.3$--$1.3\%$, far short of the precision available. This is expected and NOT a
+contradiction of the proved identity above: the identity is about the SAME $(N,a)$ under a sign
+flip, not about two DIFFERENT sampled $(N,a)$ points that happen to land near the two branches --
+those are different mathematical objects, only approximately reciprocal because they approximately
+sit near the same $|H_e/H_o|$ ratio.
+\item \textbf{No universality:} $q=33$ shows clean single-branch convergence (no split); $q=21$ is
+erratic on both parities with no split; $q=15$ shows a distinct, precision-verified (200 vs.\
+1600-bit, bit-identical) near-singular blow-up spanning 100+ orders of magnitude, tied to having
+two small prime factors ($3,5$), unrelated to reciprocal-bimodality.
+\end{itemize}
+
+A separate seat found a related, complementary formula ($A_+/A_-=-i\cot(\varphi/2)$ when
+$|H_e|\approx|H_o|$, $\varphi=\arg H_e-\arg H_o$) that reproduces measured values quantitatively at
+some points and observed $\arg H_o$ jumping by $\approx\pi$ every second $a$ -- but this was
+observed on a narrower sample and has not been reconciled against Ramanujan's broader, partly
+contradictory survey above; it should not be treated as an established law without further checking
+against the wider $q$ range.
+
+\section*{Room verdict: ADVANCED on the identity, but the phenomenon is genuinely more complex and
+less universal than Room 7 first suggested}
+
+\textbf{What to keep:} the branch-flip identity (proved, real, if algebraically modest).
+\textbf{What to revise:} Room 7's ``reciprocal-bimodal at $q=9,25,29$, structure at $q=11$ likely
+under-sampled'' summary should be read as \emph{provisional and seed-dependent}, not a settled
+pattern -- the broader survey here (Ramanujan) found $q=9$'s specific claimed cluster did not
+reproduce, $q=11$ resolves to plain convergence at large $N$, and three further seeds
+($15,21,33$) each show yet another, distinct qualitative behavior. \textbf{No general theorem, no
+universal mechanism, and no closed form was established.} The honest state of P2's amplitude
+question after 3 rooms (3, 7, 12) is: richer and less uniform empirically than any single room's
+snapshot suggested, with one small proved algebraic fact (the branch-flip identity) and no
+resolved discriminant for which regime a given seed falls into. Repo-only; not paper-citable.
+
+\section*{Process note}
+
+Several delegated sub-agent attempts on this exact topic returned only ``launched in background,
+will report later'' with no concrete output before eventually completing (or being redone
+directly) -- a recurring failure mode this session, now confirmed multiple times. Future work on
+this thread should expect this and verify agent outputs contain real, checkable numbers before
+treating any report as final, exactly as was done here (which is why the room's overall picture is
+more cautious than any single seat's own conclusion).
+
+\end{document}

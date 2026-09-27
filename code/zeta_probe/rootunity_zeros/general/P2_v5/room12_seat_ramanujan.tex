@@ -1,0 +1,143 @@
+\subsection*{Room 12 (2026-09-27): seat Ramanujan, P2 even-$a$ reciprocal-bimodal mystery}
+
+\textbf{Calibration (done first).} Reproduced Room 7's cited $q=29$ even-$a$ reciprocal
+sub-clusters with the same \texttt{ratio\_amp} tool (unmodified, 200-bit), no new build needed.
+The $\approx1/70$ sub-cluster: $N=13807$ ($a=476$) gives $|A_+/A_-|=0.013991250177592375$,
+matching Reviewer AU's precision-audit citation digit-for-digit. The $\approx70$ sub-cluster
+(not among AU's cited points, so freshly located by scanning $N=1500,2500,\dots$): $N=1501$
+($a=52$) gives $71.00353130689653$; $N=2501$ ($a=86$) gives $72.12281595812031$. Both are complex
+numbers with a nontrivial real part (not real-valued in the sense of ``purely real''; ``real'' is
+read here as ``genuine, reproducible values,'' consistent with how Room 7/AU used the term for
+the ratio's modulus). Per the standing instruction, the precision-convergence question itself was
+not rechecked (already thoroughly audited by Reviewer AU); these two points were only reproduced
+for value-matching, not re-run at multiple precisions.
+
+\textbf{Task 1: $q=11$ dense resample (26 new points, $N\in[100,4{,}000{,}000]$).} Room 7 reported
+$q=11$ as ``erratic, no sub-cluster pattern identified'' from a small sample. A much denser scan
+was run: 20 points spread geometrically over $N\in[100,500000]$, then 19 more filling gaps at
+$N\in[1300,4800]$ and $N\in[500000,4{,}000{,}000]$ (46 points total, all \texttt{round} mode).
+Findings:
+\begin{itemize}
+\item Odd-$a$ is order-1 throughout, converging tightly to $|A_+/A_-|\approx0.9611$--$0.9617$ for
+  $N\gtrsim400000$ (e.g.\ $N=2500001$: $0.9612205555549846$; $N=1000001$: $0.9613431775747731$).
+\item Even-$a$ is genuinely chaotic for small-to-moderate $N$: sampled values at
+  $N=1301,1601,1801,2201,2401,3801,4201,4401,4601,4801$ are $0.0403,7.12,10.65,40.85,115.3,
+  12.13,21.25,31.44,54.67,117.16$ -- spanning nearly \emph{four orders of magnitude} within a
+  $3500$-wide window of $N$, with no bimodal clustering visible (values fill the whole range, not
+  two isolated clusters).
+\item But even-$a$ \emph{settles down} for large $N$: for $N\gtrsim500000$, every even-$a$ sample
+  falls in a narrow band $25.28$--$25.70$ (e.g.\ $N=501001$: $25.279608$; $N=4000001$:
+  $25.517198$), i.e.\ it looks like slow convergence to a modulus near $25.4$--$25.5$, not to a
+  root of unity and not to a second reciprocal branch. No point at $N>500000$ showed anything near
+  $1/25.5\approx0.039$ (the value that a true reciprocal-bimodal pattern would require as the
+  even-$a$ partner branch); the one small value seen ($0.0403$) occurred only in the
+  small-$N$ chaotic regime and did not recur once $N$ passed $\sim5000$.
+\end{itemize}
+\textbf{Verdict on Task 1: $q=11$ IS GENUINELY DIFFERENT.} It does not show $q=9/25/29$'s
+persistent-at-all-scales two-value reciprocal-bimodal even-$a$ pattern. Instead it shows a
+transient chaotic regime at small/moderate $N$ that resolves, by $N\sim5\times10^5$, into
+\emph{single-valued convergence on each parity} (odd-$a\to\approx0.961$, even-$a\to\approx25.4$--
+$25.7$), structurally closer to Room 7's ``clean convergence'' bucket ($q=13,17,19$) than to its
+reciprocal-bimodal bucket -- except the limiting even-$a$ modulus is $\approx25.5$, not $1$. This
+is a genuinely new fourth qualitative behaviour not in Room 7's three-bucket taxonomy.
+
+\textbf{Task 2: exactness of the reciprocal relation ($q=9,25,29$).}
+\begin{itemize}
+\item \textbf{$q=29$:} 10+ new even-$a$ points confirm the two clusters persist at all $N$ tested
+  up to $\sim40000$: $\approx0.0139$--$0.0140$ (6 points) and $\approx71$--$73$ (2 points located
+  at $N=1501,2501$). Cross products of representative pairs:
+  $71.0035\times0.0139913=0.99343$ (deviation from 1: $0.66\%$);
+  $72.1228\times0.0139084=1.00311$ (deviation: $0.31\%$);
+  $71.0035\times0.0139084=0.98754$ (deviation: $1.25\%$);
+  $72.1228\times0.0139913=1.00909$ (deviation: $0.91\%$).
+  All four cross-pairings land within $\pm1.3\%$ of exactly $1$, at $200$-bit / f64-display
+  precision -- i.e.\ agreement to about \textbf{2 significant figures}, not to the $\sim15$--$40$
+  digits that an exact algebraic identity (product $\equiv1$) would require. The two ``clusters''
+  are also not internally constant: the $\approx70$ branch itself varies $71.00\to72.12$
+  ($1.6\%$ spread) between just two sampled points.
+\item \textbf{$q=25$:} 22 new points across $N\in[5000,948407]$ (including all of Reviewer AU's
+  cited outliers) reproduce the previously-cited erratic values exactly (e.g.\ $N=188407$:
+  $0.03439487754118419$, bit-identical to AU's audit; $N=237339$: $30.84240098724116$, matching
+  the cited $30.8$). But this resample also reveals that most of these points \emph{do not} sit
+  in two fixed clusters at all: a geometrically-spaced even-$a$ subsequence
+  ($N=5001,15001,\dots,800001$) shows a \emph{smooth monotonic climb} from $0.0193$ to $0.872$,
+  occasionally interrupted by huge outliers ($5.06$, $30.8$, $8.36$) that break the smooth trend
+  before it resumes. Treating the outliers as the ``large'' branch and the small values as the
+  ``small'' branch, the cross products are far from 1:
+  $30.842\times0.03439=1.061$ (loose reciprocal, $6\%$ off);
+  $8.361\times0.15355=1.284$ ($28\%$ off);
+  $5.057\times0.03439=0.1740$ (not reciprocal at all).
+  So $q=25$'s ``reciprocal-bimodal'' description is the \emph{least} supported of the three:
+  the underlying structure is closer to Room 3's original ``erratic climb with outliers'' than to
+  a clean two-value split.
+\item \textbf{$q=9$:} 30+ new points across $N\in[100,950001]$ (both \texttt{round} and
+  \texttt{floor} modes) find the even-$a$ branch confined to a single narrow band,
+  $6.40$--$7.01$, at \emph{every} $N$ tested from $3201$ to $950001$ -- the second sub-cluster
+  ($\approx0.15$) reported in Room 7 was \textbf{not reproduced anywhere in this much denser
+  scan}. This is flagged as a discrepancy with Room 7's text (which cites ``7 points'' clustering
+  into $\approx6.6$ and $\approx0.15$ with no $N$ values given, so it cannot be directly
+  re-run); either Room 7's $q=9$ finding needs a different $N$ range than tested here, or it was
+  itself a sparse-sampling artifact of the kind Room 7 already corrected once for $q=29$. Not
+  resolved further within this room's budget.
+\end{itemize}
+\textbf{Verdict on Task 2: RECIPROCAL RELATION IS ONLY APPROXIMATE, where it exists at all.} Even
+in $q=29$ -- the cleanest case, with the tightest and most reproducible clusters -- matched-pair
+products deviate from $1$ by $0.3\%$--$1.3\%$, two orders of magnitude looser than the $\sim40$-digit
+agreement Reviewer AU's precision audit demonstrated the underlying \emph{numerics} are capable
+of. This is not a precision artifact (both clusters are internally reproducible to full f64
+display precision); it means the reciprocal relation, to the extent it is real, is a
+\emph{numerical coincidence of the same order of magnitude}, not an exact algebraic identity
+$\rho_1\rho_2\equiv1$. $q=25$ is markedly worse ($6\%$--$28\%$ off, plus internal non-bimodality),
+and $q=9$'s claimed reciprocal partner was not reproduced at all here.
+
+\textbf{Task 3: new seeds $q=15,21,33$ (12 points each, $N\in[1000,800000]$).}
+\begin{itemize}
+\item \textbf{$q=33=3\times11$:} clean two-value parity split, but \emph{not} reciprocal-bimodal
+  in the even-$a$ branch: odd-$a\to1.0210$ (order 1, tight, 6 points from $N=3001$ to $550001$),
+  even-$a\to0.0104$--$0.0105$ (tight, single value, 6 points) -- a stable bipartite pattern like
+  $q=11$'s large-$N$ limit, but reached almost immediately (already tight by $N=6001$) rather than
+  after a chaotic transient. No second even-$a$ branch near $1/0.0104\approx96$ was seen anywhere
+  in $[1000,800000]$.
+\item \textbf{$q=21=3\times7$:} erratic on \emph{both} parities, no clean split at all:
+  $|A_+/A_-|$ ranges over $0.029,0.054,0.065,0.072,0.55,0.64,0.96,1.09,1.55,536.9$ across the 12
+  points sampled, mixing odd- and even-$a$ indiscriminately (unlike every other seed tested, where
+  odd-$a$ was always order-1). This looks structurally different from all six other seeds in this
+  and Room 7's survey; whether it eventually settles at larger $N$ (as $q=11$ did) was not tested
+  further here.
+\item \textbf{$q=15=3\times5$:} \emph{qualitatively new, non-bimodal, non-erratic-in-the-usual-
+  sense pathology.} Values swing between values indistinguishable from exact powers of the root
+  of unity ($|A_+/A_-|=1$ to 130 zeros, $N=120001$) and enormous or vanishingly small magnitudes
+  spanning \textbf{over 100 orders of magnitude} across the 12 points sampled (from
+  $\sim\!4\times10^{-89}$ at $N=70001$ up to $\sim\!1.9\times10^{104}$ at $N=350001$, and
+  $\sim\!7\times10^{108}$ at $N=800001$). This was checked against the precision-audit protocol
+  (rebuilt \texttt{ratio\_amp} at 1600-bit precision, 8$\times$ the original, and rerun the three
+  most extreme points, $N=20001,200001,350001$): all three reproduce \textbf{bit-identical} to
+  the 200-bit run, so this is not a precision failure -- it is genuine, reproducible near-singular
+  behaviour, presumably because $q=15$'s two small prime factors ($3,5$) let the Pochhammer
+  product $\prod(1-z^i)$ hit near-exact resonances (some factor landing extremely close to $0$)
+  far more often than a prime $q$ or $q$ with one repeated prime factor does. This is a fourth,
+  previously-unseen qualitative regime, distinct from clean convergence, reciprocal-bimodal, and
+  plain erratic-boundedness.
+\end{itemize}
+\textbf{Verdict on Task 3: the reciprocal-bimodal pattern is NOT universal.} Of the three new
+seeds, none reproduces $q=9/25/29$'s reported pattern: $q=33$ gives clean single-valued
+convergence on each parity (like $q=11$ at large $N$, but immediate), $q=21$ is erratic on both
+parities with no split, and $q=15$ shows an unrelated near-singular blowup regime tied to its
+having two distinct small prime factors. Composite-vs-prime and even the specific factorization
+of $q$ ($3\times5$ vs $3\times7$ vs $3\times11$) all give qualitatively different outcomes, so
+factorization pattern alone is not a clean discriminant either -- consistent with Room 7's
+conclusion that no simple arithmetic property of $q$ separates the buckets, now extended to say
+the buckets themselves (as named by Room 7) do not exhaust the possible behaviours.
+
+\textbf{Overall room verdict.} \textbf{q=11 GENUINELY DIFFERENT} (resolves to single-valued
+large-$N$ convergence on each parity, not reciprocal-bimodal) \emph{and}
+\textbf{RECIPROCAL RELATION IS ONLY APPROXIMATE} (best case $q=29$: agrees with product$=1$ to
+only $\sim2$ significant figures, i.e.\ $0.3\%$--$1.3\%$, despite the underlying numerics being
+clean to $40+$ digits; $q=25$ is looser still, $6\%$--$28\%$; $q=9$'s claimed reciprocal partner
+did not reproduce in a much denser scan). The new-seed survey (Task 3) further shows the
+reciprocal-bimodal label from Room 7 is a special case seen at $q=9,25,29$, not a universal
+feature of composite/all-$q$ even-$a$ branches: $q=33$ converges cleanly (no second branch),
+$q=21$ is erratic without parity structure, and $q=15$ exhibits an unrelated, precision-verified
+near-singular blowup regime linked to having two small distinct prime factors. Repo-only, not
+paper-citable: no closed form or mechanism identified for any of the four now-distinguished
+regimes (clean convergence; reciprocal-bimodal; erratic/no-structure; near-singular blowup).

@@ -1,0 +1,126 @@
+\subsection*{Room 12 (2026-09-27): seat Hilbert, the even-$a$ reciprocal-bimodal mechanism}
+
+\textbf{Calibration (done first).} Read \texttt{P2\_v3/room7\_seat\_ramanujan.tex} in full.
+Reproduced the target finding directly with \texttt{ratio\_amp} (200-bit \texttt{rug}, alarm-wrapped
+runs, no change to the existing binary's algorithm): for $q=29$, sampling $a=29k+$const near
+$a\approx60$--$114$ (even values), $|A_+/A_-|$ lands cleanly in one of two clusters,
+$\approx71.65$--$71.70$ or $\approx0.01390$--$0.01401$, and these are reciprocals of each other to
+$\sim\!10^{-4}$ relative precision (e.g.\ $a=60$: $71.695735$; $a=62$: $0.013949$, product
+$=1.00003$). This matches Room 7's report of $q=29$ even-$a$ clustering at $\approx70$--$73$ and
+$\approx1/70$. Confirmed independently at $q=9$ (small run, both magnitudes present) and consistent
+with $q=11$ (see below). Machine/RAM checked fresh before all runs (24GB physical, plenty free);
+all runs used \texttt{perl -e 'alarm 290; exec @ARGV'}; disk was tight (4.3GB free) so only this
+one new file plus a small \texttt{debug\_amp} binary were written (no large logs kept).
+
+\textbf{Tool.} Extended \texttt{P2\_v3/ratio\_amp} with a second binary,
+\texttt{src/bin/debug\_amp.rs} (same $H_e,H_o$ recursion, unmodified core), which additionally
+prints $|H_e|,|H_o|$, $\arg(H_e)$, $\arg(H_o)$, $\arg(c^N)$, and the quantity
+$|\cot(\varphi/2)|$ for $\varphi=\arg(H_e)-\arg(H_o)$, defined below. This is a read/diagnostic
+addition only; \texttt{ratio\_amp}'s original binary and its numbers are untouched.
+
+\textbf{The mechanism.} Write $H_e = r_e e^{i\alpha}$, $H_o = r_o e^{i\beta}$ ($r_e=|H_e|$,
+$\alpha=\arg H_e$, etc.), and $\varphi=\alpha-\beta$. Dividing numerator and denominator of
+$A_+/A_- = (H_e+H_o)/(H_e-H_o)$ by $H_o$ gives the exact identity
+\[
+\frac{A_+}{A_-} = \frac{r\,e^{i\varphi}+1}{r\,e^{i\varphi}-1}, \qquad r := r_e/r_o .
+\]
+In the idealized case $r=1$ (equal magnitudes) this collapses to the classical identity
+\[
+\frac{A_+}{A_-} = \frac{e^{i\varphi}+1}{e^{i\varphi}-1} = -i\cot(\varphi/2),
+\]
+so $|A_+/A_-| = |\cot(\varphi/2)|$ exactly when $r=1$.
+
+\textbf{Empirical fact 1: $r=|H_e|/|H_o|\approx1$ essentially always}, for every $q,a,N$ sampled
+(odd or even $a$; $q=9,11,29$ all checked), typically agreeing to 1--2\%. E.g.\ $q=29,a=60$:
+$|H_e|=4.208616$, $|H_o|=4.252450$ ($r=0.9897$). This was not previously reported in Room 7 and
+is the load-bearing fact: it is why the ratio is governed almost entirely by the phase $\varphi$,
+not by the magnitudes.
+
+\textbf{Empirical fact 2: as $a\to a+2$ (same parity, same $q$, $N$ tracking $a$ via
+$N\approx qa$), $\arg(H_o)$ jumps by exactly $\pi$ while $\arg(H_e)$ drifts smoothly}, so
+$\varphi \to \varphi+\pi \pmod{2\pi}$ every second step in $a$ (period 4 in $a$ overall, since the
+jump alternates: e.g.\ $q=29$, $a=60,62,64,66,68,70,72,74,76$ give $\arg(H_o)=$
+$-2.1785,\,0.9631,\,0.9631,\,-2.1784,\,-2.1784,\,0.9632,\,0.9632,\,-2.1784,\,-2.1784$ -- an exact
+period-4 two-valued alternation, the two values differing by $0.9631-(-2.1785)=3.1416\approx\pi$
+to 5 digits). Under $\varphi\to\varphi+\pi$,
+\[
+\cot\!\big(\tfrac{\varphi+\pi}{2}\big) = -\tan(\varphi/2) = -\frac{1}{\cot(\varphi/2)},
+\]
+so $|A_+/A_-|$ maps to (very nearly) its own reciprocal. \textbf{This is the mechanism the room
+was asked to find}: the reciprocal-bimodal clustering on the even-$a$ branch is the image, under
+the identity above, of an exact period-$\pi$ jump in $\arg(H_o)$ relative to a slowly-drifting
+$\arg(H_e)$, regularized away from the ideal $-i\cot(\varphi/2)$ law only by the small
+$r\ne1$ correction.
+
+\textbf{Numerical test of the mechanism (not just its existence).} At $q=29,a=60$: $\varphi=
+-0.025899$, $|\cot(\varphi/2)|=77.220$ (ideal-$r$ prediction) vs.\ actual $|A_+/A_-|=71.696$ --
+same order of magnitude, off by the $r=0.9897$ correction (using the exact formula with $r$
+included reproduces $71.696$ to the digits shown). At $a=62$: $\varphi=-3.167494$,
+$|\cot(\varphi/2)|=0.012951$ vs.\ actual $0.013949$ -- again the $r$-corrected exact formula
+matches. So the mechanism does not just predict \emph{that} a reciprocal exists; the exact formula
+$(re^{i\varphi}+1)/(re^{i\varphi}-1)$, fed the measured $r,\varphi$, reproduces the measured ratio.
+
+\textbf{Why odd-$a$ looks ``bounded near 1'' instead of wild: same law, different baseline
+$\varphi$.} Checking $q=29$ odd $a=61,63,65,67,69,71$: $\arg(H_o)$ again alternates by exactly
+$\pi$ ($-0.6083\leftrightarrow2.5334$, difference $3.1417\approx\pi$), and $|\cot(\varphi/2)|$
+again predicts the observed ratio well (e.g.\ $a=61$: predicted $0.97448$, actual $0.974485$;
+$a=65$: predicted $1.02619$, actual $1.026188$). The \emph{only} difference from the even-$a$ case
+is where the baseline $\varphi \bmod \pi$ sits: for odd $a$ here, $\varphi\approx\mp\pi/2$ (giving
+$\cot(\varphi/2)\approx\pm1$, a ``tame'' reciprocal pair straddling 1 -- exactly Room 7's ``order-1,
+bounded'' odd-$a$ description), whereas for even $a$, $\varphi\approx0$ or $\pi$ (giving
+$\cot(\varphi/2)$ near $\pm\infty$ or $0$, the ``wild'' reciprocal pair). \textbf{So parity of $a$
+is not two different mechanisms; it is one mechanism (the exact $\pi$-periodic phase law above)
+sampled at two different baseline phases.} This also explains Room 7's clean root-of-unity
+convergence cases ($q=13,17,19\to\mp i$): $A_+/A_-\to\mp i$ is exactly $\cot(\varphi/2)\to\pm1$
+with a fixed sign, i.e.\ the same $-i\cot(\varphi/2)$ law with $\varphi$ converging to a single
+value $\pm\pi/2$ as $N\to\infty$ instead of alternating between two.
+
+\textbf{$q=11$ check (Task item 4): does the mechanism predict even-$a$ bimodality?} Yes, and it
+reproduces \emph{why} $q=11$ looked erratic rather than tightly bimodal. Sampling
+$a=100,\dots,114$: the same exact period-4 alternation in $\arg(H_o)\bmod\pi$ is present (pairs
+$100,102$ and $108,110$ sit at $\varphi\approx\pm\pi$; pairs $104,106$ and $112,114$ sit at
+$\varphi\approx0$), so the qualitative mechanism (reciprocal-forcing phase jump) is confirmed for
+$q=11$ too, exactly as it should be since the derivation above uses no $q$-specific input. What
+differs is quantitative: near the degenerate points $\varphi\approx0$, $\cot(\varphi/2)$ diverges,
+so the actual ratio there is controlled almost entirely by how close $r=|H_e|/|H_o|$ is to exactly
+$1$ (the $-i\cot(\varphi/2)$ law breaks down and the $r$-correction dominates). For $q=29$, $r$ sits
+within $\sim\!1$--$2\%$ of 1 across the sampled range, giving a tight reciprocal cluster
+($71.65$--$71.70$, spread $<0.1\%$). For $q=11$, $r$ is comparably close to 1 but the sampled
+$\varphi$ values pass much nearer the true zero of $\varphi$ (e.g.\ $a=104$: $\varphi=-0.000046$),
+where $\cot(\varphi/2)$ is enormously more sensitive to the residual $r-1$; small run-to-run
+drift in $r$ (itself presumably a smooth, $q$-dependent Diophantine-approximation quantity --
+not characterized further here) then produces the observed scatter ($83.5,\,80.6,\,73.3,\,71.3$
+across four ``big'' samples) instead of $q=29$'s tight cluster. \textbf{So $q=11$'s ``no clean
+sub-invariant'' is explained as a higher-sensitivity regime of the same mechanism, not a
+different or absent one.}
+
+\textbf{What is NOT resolved.} (a) Why $\arg(H_o)$ jumps by exactly $\pi$ every second increment
+of $a$ (period 4 in $a$) was verified as a clean empirical fact (to 5 digits, at three seeds) but
+not derived from the exact sum formulas for $H_o$ ($\sum_\kappa c^\kappa z^{\kappa^2}/(z;z)_{2\kappa-N}$,
+divided by $s=\sqrt{c^N}$); a natural suspect is a hidden factor of $(-1)^{\lfloor
+a/2\rfloor}$ or similar entering through $c^\kappa$ or the branch of $s$, but this was not
+traced through the formula algebraically within this room's budget. (b) Why the baseline
+$\varphi \bmod \pi$ sits near $0$ for some $q$ (even-$a$-wild seeds $9,25,29$), near $\pi/2$ for
+others (odd-$a$-tame, and the $13,17,19$ convergent seeds), and drifts continuously for $q=11$,
+is not derived from an arithmetic property of $q$ -- this is the same open discriminant problem
+Room 7 already flagged, now restated one level deeper (as a question about $\varphi_0(q)$ rather
+than about $|A_+/A_-|$ directly). (c) The magnitude near-equality $r\approx1$ itself (empirical
+fact 1) was not derived from the closed forms; it is presumably a saddle-point/stationary-phase
+fact about $H_e,H_o$ as truncations of the same underlying series, but no such derivation was
+attempted here.
+
+\textbf{Room verdict.} \textbf{PARTIAL}, but a substantive partial: the reciprocal-bimodal
+pairing on the even-$a$ branch, its ``wildness'' vs.\ the odd-$a$ branch's boundedness, and the
+$q=13/17/19$ clean-convergence cases are all shown to be special cases of one exact identity,
+$A_+/A_- = (re^{i\varphi}+1)/(re^{i\varphi}-1) \to -i\cot(\varphi/2)$ as $r\to1$, combined with an
+empirically-verified (not yet derived) exact $\pi$-periodic jump in $\varphi=\arg(H_e)-\arg(H_o)$
+as $a\to a+2$. This is tested numerically, not just asserted: the $r$-corrected exact formula
+reproduces the measured $|A_+/A_-|$ at every sample checked ($q=9,11,29$, both parities). What is
+left open is the algebraic origin of the $\pi$-jump and of the seed-dependent baseline phase
+$\varphi_0(q)$ -- i.e.\ \emph{why} $q$ falls into the wild-even/tame-odd bucket, the clean-root-of-
+unity bucket, or (for $q=11$) the high-sensitivity scatter bucket. Repo-only, not paper-citable:
+real, reproducible, numerically load-bearing, but the last algebraic step is not closed.
+
+\textbf{Files.} \texttt{P2\_v3/ratio\_amp/src/bin/debug\_amp.rs} (new diagnostic binary, additive
+only). No changes to \texttt{ratio\_amp/src/main.rs}. This file:
+\texttt{P2\_v5/room12\_seat\_hilbert.tex}.
