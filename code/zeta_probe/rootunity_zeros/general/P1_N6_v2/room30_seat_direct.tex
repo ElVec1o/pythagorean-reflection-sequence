@@ -1,0 +1,157 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 30 (seat: direct), P1 $N=6$: does P1f\_lemma.tex's uniform $N$-generic asymptotic
+theorem (proved for $N\ge16$) offer a new route around the $T<0$ wall at $N=6$? -- verdict: no,
+same obstruction}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. The idea being tested}
+Room 29's closing paragraph flagged, as an untried next step, checking whether P1f\_lemma.tex's own
+uniform $N$-generic asymptotic theorem (Theorem~\texttt{thm:asym}/\texttt{thm:B}, proved
+unconditionally for $N\ge16$) could be specialised or degenerated to run at $N=6$, since that
+theorem is a \emph{different} proof technique from the \texttt{prop:qi}-style contour construction
+that Rooms 1--28 already found blocked by $T<0$ at $N=6$. This room reads P1f\_lemma.tex's proof of
+that theorem in full, and P1i\_lemma.tex (the existing small-$N$ extension, $N=3,\ldots,16$ except
+$4,6$), to determine precisely why $N\ge16$ is needed there, and whether $N=6$'s exclusion is the
+same mechanism or a different one.
+
+\section*{1. Why does the $N\ge16$ uniform theorem need $N\ge16$?}
+P1f\_lemma.tex's Theorem~\ref{thm:asym-ref} (its \texttt{thm:asym}) rests on three analytic
+ingredients that are each proved from \emph{crude, $N$-uniform} constants, chosen for algebraic
+simplicity rather than sharpness, and only verified positive for $N\ge16$:
+\begin{itemize}
+\item \textbf{Lemma head} (P1f \S\ref{sec:est-ref}, its \texttt{lem:head}): bounds $|H|=|\sum_{k\le
+K}b_k|$ by $H_{\rm head}=\delta(\ell+0.0837+r)+\ldots\le0.0167+r$, using a fixed per-factor
+constant $0.0837=2(-\log0.95929)$ that comes from a worst-case bound $|1-\zeta^ie^{-it}|\ge
+0.959|1-\zeta^i|$, itself derived from $2\sin(\pi/N)\ge6.24/N$ -- a bound that is loose for small
+$N$ and whose numeric safety margin (the $0.0167$ against the tie height $T\ge0.1499$, itself only
+proved $\ge0.1499$ for $N\ge16$ via $|w|\le2.3\times10^{-6}$, $\cos\theta^*\ge0.9087$) was simply
+never checked, let alone re-derived, below $N=16$.
+\item \textbf{Lemma LS / landscape} (\texttt{lem:LS}, \texttt{lem:LSp}): uses the crude remainder
+bound $|R_\mu|\le\pi^2/(6N^2)+\ldots$ (from $|\operatorname{Li}_2(e^{-2Nx})|\le\pi^2/6$, the trivial
+bound on the whole disk, not a sharper one near the saddle) and constants like the $16.2/N^2$,
+$34.2/N^2$ margins, all of which are positive only once $N$ is large enough that the $O(1/N^2)$
+terms are dominated by the fixed-size numerics. P1f states this outright in its own \S\ref{sec:open}
+(``What is not proved''): \emph{``The crude perturbation constant $\pi^2/(6N^2)$ in Lemma~LS(b)
+needs $N\ge10$ (with thin margins) and is taken at $N\ge16$.''}
+\item The tie-ray numerics of \S\ref{sec:set-ref} ($|\tan\theta^*|\le0.4594$, $\cos\theta^*\ge
+0.9087$, $|w|\le2.3\times10^{-6}$, $T\ge0.1499$) are themselves derived under the standing
+assumption $N\ge16$ used throughout to bound $|w|\le2e^{-N\ell_0}$.
+\end{itemize}
+\textbf{None of this $N\ge16$ threshold has anything to do with the sign of $T$.} At every member of
+the family with $N\ge16$ (and, per P1i, most members down to $N=3$), $T$ is comfortably positive
+(P1i's Table~\ref{tab:data-ref} lists $T$ from $0.093$ to $0.47$ over its 52 certified small-$N$
+members). The $N\ge16$ bound in P1f is purely a matter of \emph{how loose the fixed, closed-form,
+$N$-uniform safety-margin constants are} -- it is exactly analogous to using a single worst-case
+bound valid for all $N$ at once, which is wasteful for small $N$ but does not reflect any change in
+the underlying geometry (the true landscape, per P1i \S1, ``is fine except at $N=4,6$'', verified by
+the same floating sampler that flags $N=4,6$ specifically).
+
+\textbf{This is confirmed by P1i\_lemma.tex, which is precisely this generalisation already carried
+out.} P1i replaces P1f's crude $N$-uniform Lemma head/LS/LSp with \emph{per-case Arb certificates}
+(\texttt{P1i\_landscape\_cert.py}), and this closes Theorem~B for every one of $N=3,\ldots,16$
+\emph{except} $N=4$ and $N=6$ -- i.e.\ the $N\ge16$-uniform-constants obstruction is not a real wall
+at all; it was already known to be circumventable by exactly the kind of specialisation Room~29
+speculated about, and someone (P1i, dated the same day as P1f, 2026-09-24) already did it. The
+question this room needs to answer is therefore not ``can the uniform theorem be pushed to
+$N=6$'' -- that specific technical question is already closed, with a definite negative answer at
+$N=6$ specifically -- but ``why does even the strongest available version (P1i's per-case
+certificate) still fail exactly at $N=6$, and is that failure the same as Rooms 1--28's.''
+
+\section*{2. Why does $N=6$ specifically fail, even in P1i's stronger per-case version?}
+P1i\_lemma.tex \S\ref{sec:six-ref} gives this in full, and it is unambiguous:
+\begin{quote}
+At $\zeta=e(1/6)$: $c=2e^{2\pi i/3}$, $\ell=\log2$, $\theta^*=0$, tie pair $(-3,-1)$, and
+$T=-0.10878$ (certified). ``\emph{In the decomposition $B=H+\sum(\text{integrals})$, the integrals
+are $e^{(T+o(1))/r}\to0$ exponentially, while $H\ni b_0=1$. So $|H|$ is of order one unless it
+cancels. No bound of the form $|H|\le e^{(T-\eta)/r}$ can hold term by term, whatever cutoff $K$ is
+used; this is the same mechanism as at $q=i$, where $T=-0.0707$.}''
+\end{quote}
+P1i also states explicitly that \emph{the landscape itself is healthy at $N=6$} -- ``for $S_\pm$
+($T'=0.1654$) the certificate passes at $\frac16$ with every margin negative [i.e.\ every
+inequality satisfied]. So only the head blocks.'' This is the head-elimination/$T<0$ obstruction,
+not a landscape-margin issue: the tie height $T$ itself is negative at $N=6$ (below the height $0$
+of the head term $b_0=1$), so \emph{no} choice of numeric constants, however sharp, can produce a
+bound $|H|\le e^{(T-\eta)/r}\to0$ when $T<0$ -- the head term is asymptotically dominant over the
+saddle contribution, full stop. This is a structural fact about the geometry of the saddle/tie
+configuration at $N=6$ (specifically $T=h_n(\theta^*)<0$ for the tie pair $(-3,-1)$), not an
+artifact of any particular proof technique's constants.
+
+P1i's own diagnosis of the needed fix is exactly the \texttt{prop:qi} route already investigated (and
+found blocked, $T<0$, in Rooms 1--28 of this directory, under the name "landscape method fails"):
+``\emph{A proof needs the $q=i$ technique of a contour through $\operatorname{Re}x<0$ with theta
+reflection, generalised from 4 to 6 classes (OPEN).}'' This is verbatim the same mechanism cited for
+$N=4$ (\texttt{prop:qi}, $T=-0.0707<0$) in both P1f (\S\texttt{sec:open}, item 2: \emph{``except
+$N=2$, $N=4$: prop:minusone, prop:qi''}) and P1i (\S0(c): \emph{``the certificate reproduces the
+known obstruction there: $T=-0.0707<0$''}).
+
+\section*{3. Cross-check against Room 28's/N6\_DEFINITIVE\_status's own diagnosis}
+\texttt{N6\_DEFINITIVE\_status.tex} (the 19-room landscape/contour investigation this directory's
+earlier rooms are built on) states its own conclusion in the same words: line 69,
+\emph{``This is the same fundamental $T<0$ obstruction''}. So three independent write-ups --
+P1f\_lemma.tex's open-problems section (for $N=4$), P1i\_lemma.tex's dedicated $N=6$ section, and
+this directory's own 19-room investigation -- all converge on calling $T<0$ at the tie saddle the
+single named obstruction, and P1i explicitly names the $N=6$ instance of it as ``the same
+mechanism'' as the already-published $N=4$ instance.
+
+\section*{4. Verdict}
+\textbf{SAME OBSTRUCTION -- this route does not open a new door.} Precisely:
+\begin{itemize}
+\item P1f\_lemma.tex's $N\ge16$ threshold for its uniform asymptotic theorem is caused by loose,
+$N$-uniform closed-form safety-margin constants (head constant $0.0837$, landscape remainder bound
+$\pi^2/(6N^2)$, tie-height bound $T\ge0.1499$, etc.), each only verified positive for $N\ge16$.
+\textbf{This has nothing to do with the sign of $T$}; at $N\ge16$ (and at almost all smaller $N$)
+$T>0$ comfortably.
+\item This specific generalisation -- replacing the crude uniform constants with sharper, per-case
+ones to push the theorem down to small $N$ -- has \emph{already been carried out}, in
+P1i\_lemma.tex, successfully for every $3\le N\le16$ except $N=4,6$.
+\item $N=4$ and $N=6$ are excluded from P1i not because the per-case landscape certificate failed
+there (P1i states outright that the landscape at $N=6$ ``is healthy'', all its inequalities
+certified with margin), but because $T<0$ at both points: the tie height itself is negative, so the
+head term $b_0=1$ (of order $1$) asymptotically dominates the saddle contribution (of order
+$e^{T/r}\to0$), and \emph{no} choice of certificate constants -- crude or sharp, uniform or
+per-case -- can produce the needed bound $|H|\le e^{(T-\eta)/r}$ when $T<0$. P1i names this
+explicitly as ``the same mechanism as at $q=i$'' (the already-published $N=4$ case), and this
+directory's own prior 19-room investigation (\texttt{N6\_DEFINITIVE\_status.tex}) independently
+reaches and names the identical ``$T<0$ obstruction.''
+\item Consequently, specialising P1f\_lemma.tex's $N$-generic theorem to $N=6$ is not a new,
+independent route past the wall found in Rooms 1--28: it is the \emph{same} theorem whose small-$N$
+extension (P1i) already exists, already reaches down to $N=3$, and already hits exactly the same
+$T<0$ wall at exactly $N=6$ (and $N=4$), for the identical structural reason. There is no daylight
+between "the landscape method" of Rooms 1--28 and "P1f/P1i's uniform asymptotic machinery" at
+$N=6$: P1i's Theorem~C/B proof \emph{is} the landscape method (its own \S1 explicitly keeps ``the
+whole P1f architecture'' -- class decomposition, kernel expansion, EM lemma, Laplace, Rouch\'e --
+and only swaps in per-case Arb certificates for the landscape/head bounds), so finding that it too
+requires $T\ge0$ is not an independent confirmation from a different technique, it is the same
+technique already having been tried and having failed at $N=6$ for the recorded reason.
+\end{itemize}
+
+\paragraph{What would actually be needed (unattempted, and not attempted in this room either, for
+the honest reason that it is new analytic content, not a specialisation of anything already
+written).} Per P1i \S\ref{sec:six-ref} and consistent with Room~29 \S4's own conclusion: a genuine
+proof at $N=6$ requires generalising the \texttt{prop:qi} head-elimination technique (starting the
+contour at a negative half-integer $s_c$ so there is no head term to bound, and crossing
+$\operatorname{Re}x=0$ using the theta-reflection identity of \texttt{lem:qi-bounds}(ii)) from its
+proved $N=4$ (4 residue classes) case to $N=6$ (6 residue classes). This is explicitly flagged OPEN
+in both P1i and in this directory's own prior rooms, and nothing found while reading P1f/P1i in full
+for this room changes that: it remains new analytic work, not a numerics push.
+
+\paragraph{Honesty check on Room~29's speculation.} Room~29 \S4 speculated that checking P1f's
+uniform machinery against $N=6$ ``is a structurally different question from anything attempted in
+rooms 1--28.'' Having now read P1f\_lemma.tex and P1i\_lemma.tex in full: the question is not
+structurally different in outcome -- P1i already asked and answered it (2026-09-24, three days
+before this room), and answered it with the identical diagnosis Rooms 1--28 reached independently.
+Room~29's speculation was a reasonable thing to flag (it correctly identified that no one had
+articulated \emph{why} P1f needs $N\ge16$ specifically), but the premise that this might be a
+separate, more tractable technical limitation does not survive contact with P1f's own
+\S\texttt{sec:open} and P1i's dedicated $N=6$ section, both of which were sitting in the same
+directory tree the whole time.
+
+\paragraph{Files.} No new code was needed or written; this room is a documentary cross-read of
+\texttt{P1f\_lemma.tex} (\S\S set, amp, dec, est, main, open) and \texttt{P1i\_lemma.tex} (\S\S 1,
+6, and \texttt{sec:six}) against \texttt{N6\_DEFINITIVE\_status.tex} (line 69) and
+\texttt{room29\_seat\_direct.tex} \S4's own speculation.
+
+\end{document}
