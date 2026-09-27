@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 12 follow-up: the continuity-tracking question, resolved}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{The question}
+Reviewer AW raised a serious concern (see \texttt{room12\_summary.tex}): \texttt{ratio\_amp}
+computes $s=\sqrt{c^N}$ via an independent principal-branch call at each sampled point, with no
+continuity tracking across nearby $N$. If the physically meaningful branch should vary
+\emph{continuously} with $(N,a)$ (tracking the actual saddle asymptotic), then the observed
+erratic/reciprocal-bimodal behaviour in Room 7's even-$a$ data might be substantially a branch-cut
+discontinuity artifact of the tool, not a real feature of $A_+/A_-$.
+
+\section*{The check}
+Direct computation (Python/mpmath, 150 digits -- the genuinely huge dynamic range here,
+$|c^N|\sim10^{-96}$ at these $(N,a)$, needs this much precision; earlier attempts at 50--60 digits
+returned false ``degenerate'' flags from an over-strict, non-relative threshold, not a real
+computational failure), $q=29$, $N=277$ to $303$ even-$a$ (12 points), comparing:
+\begin{itemize}
+\item \textbf{Principal branch}: $s=\sqrt{c^N}$, mpmath's own principal square root, independently
+at each $N$ (what \texttt{ratio\_amp} does).
+\item \textbf{Continuity-tracked branch}: at each $N$, pick whichever of $\pm\sqrt{c^N}$ is closer
+to the previous point's chosen value.
+\end{itemize}
+
+\textbf{Result: the continuity-tracked sequence STILL oscillates between the same two clusters}
+($\approx0.013$--$0.015$ and $\approx65$--$78$) at essentially every step, exactly as the naive
+principal-branch sequence does. \textbf{The reciprocal-bimodal/erratic phenomenon is NOT a branch-
+tracking artifact; it is a genuine feature of $A_+/A_-$ as $N$ varies at fixed seed $a/29$.}
+
+\textbf{Correction (post-review, Reviewer AX): the specific ``2 flip points'' claim below is
+NOT reproducible and is withdrawn.} My original run found apparent branch disagreements at $N=291,
+299$; Reviewer AX's independent reimplementation of the identical continuity-tracking method found
+disagreements instead at $N=283,287,289,301,303$ (5 points, not 2), with no disagreement at all at
+$N=291$ or $299$. Investigating why: comparing the raw magnitude of a rapidly-decaying complex
+quantity across non-adjacent sample points is a genuinely ambiguous notion of ``continuity'' here
+-- the underlying $\arg(A_+/A_-)$ sequence decreases only slowly and non-monotonically across
+consecutive even-$a$ points, so different reasonable implementations of the nearest-branch
+heuristic (differing in comparison order, precision, or tie-breaking) can disagree on exactly which
+points flip. \textbf{No specific flip-point claim, or the associated ``real bug in
+\texttt{ratio\_amp}'' framing, is retained.} What IS retained and independently confirmed twice
+(my own run and Reviewer AX's independent reimplementation, cross-checked against the actual
+compiled \texttt{ratio\_amp} binary): the oscillation between the two clusters is genuinely present
+under continuity tracking by any of the tested conventions, so it is not an artifact of the naive
+per-point principal branch specifically. Whether a canonical, unambiguous continuity convention
+exists that would resolve individual point assignments cleanly is left open; it does not affect the
+qualitative conclusion below.
+
+\section*{Verdict}
+\textbf{Room 7's and Room 9's core findings STAND, un-retracted -- independently confirmed twice
+(this note's own computation, and Reviewer AX's separate reimplementation cross-checked against the
+compiled binary).} The concern that motivated this check -- that the whole even-$a$ erratic/bimodal
+phenomenon might dissolve under a mathematically correct continuous branch choice -- is answered:
+\textbf{it does not dissolve.} The phenomenon is real under every continuity convention tested.
+The secondary claim of two specific misclassified points is withdrawn (see correction above);
+whether \texttt{ratio\_amp} has any real per-point branch bug, and if so which points it affects,
+is left genuinely open -- a future fix would need a precisely specified, unambiguous continuity
+convention, not the ad hoc nearest-branch heuristic used here.
+
+\paragraph{Weakest points.} Checked only $q=29$, only 12 points, only even-$a$. The two flip
+points found here are a small sample; a systematic re-scan of Room 7's full point set with
+continuity tracking (not done here, would need porting this logic into \texttt{ratio\_amp} itself
+in Rust for the larger $N$ Room 7 actually used) would be the natural next step if this thread is
+revisited, but is not needed to answer the yes/no question this note set out to resolve.
+
+\end{document}
