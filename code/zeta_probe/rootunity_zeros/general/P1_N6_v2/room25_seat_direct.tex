@@ -1,0 +1,127 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 25 (seat: direct): checking the ``$2\pi$ safety margin / net-loss when
+$\ell\ge2$'' condition at $N=6$'s actual parameters}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. What was read}
+
+\texttt{N6\_full\_status\_v2.tex} (Reviewer BF's gap description); \texttt{room21\_seat\_direct.tex}
+in full (domination constant derivation, \S3); \texttt{code/zeta\_probe/rootunity\_zeros/
+qi\_bounds.tex}, the printed \texttt{lem:qi-bounds} statement and, crucially, the proof of part
+(ii) around the sentence containing ``net loss'' (the line right after the boxed Poisson/triple-
+product identity in the proof block, not the lemma statement itself -- the phrase does not appear
+in the statement, only in the proof).
+
+\section*{1. The exact statement, extracted}
+
+The relevant sentence, verbatim from the proof of part (ii) in \texttt{qi\_bounds.tex}:
+
+\begin{quote}
+``The index maximising the leading part is one of the two class members next to the vertex
+$m^*(x)$. Any other index loses $\ge c\,l(l-1)$ and gains at most $\frac\pi2|2-j|\,l$ in the
+linear part. For $r\le\frac\pi2\cos\theta$ this is a net loss when $l\ge2$, which accounts for the
+terms $\frac\pi2(|m^*|+4)$ and $2\pi$ in $\Lambda'$.''
+\end{quote}
+
+\textbf{What is being compared to what.} This is \emph{not} about the ``$2\pi$'' bookkeeping
+identity ($N\times2\pi/N=2\pi$) that Reviewer BF correctly flagged as a tautology -- that identity
+is a separate, trivial fact about the sum $\sum_j\frac\pi2|2-j|$ ($=\pi(1+0+1+2)=4\pi$, or the
+related quantity). The sentence above is a genuine inequality with content: it bounds, for a
+\emph{fixed} residue class $j$ (equivalently a fixed $m$-class mod $N$), the cost of using the
+$l$-th-nearest class member (in the $k$-index, $l=|k-k_*|$) instead of the best one, when
+assembling $\max_{m\equiv\varrho}$ into the sum that becomes $U(x)$ plus the $\Lambda'$/$K'$ error
+terms.
+\begin{itemize}
+\item \textbf{Loss}: the quadratic part of $A_k$ (the exponent, \S3 of \texttt{room21}) is concave
+in $k$ with leading coefficient $-c$, so stepping $l$ places from the optimal $k_*$ costs at least
+$c\,l(l-1)$ in the exponent -- this is exactly the domination-lemma quadratic used to bound
+$\sum_ke^{A_k}\le e^{A_{k_*}}(3+3e^{-2c})$.
+\item \textbf{Gain}: the \emph{linear}-in-$y$ term of $\beta_k^2/(2Nt)$, coefficient
+$\frac{2(N/2-j)}N$ (room21 \S2's boxed formula), moves by $\pi$ per unit $l$-step (since $m$ shifts
+by $N$ per unit $l$ and $y=x-\frac{i\pi m}N$ shifts by $i\pi l$), so the linear part changes by at
+most $\bigl|\frac{2(N/2-j)}N\bigr|\cdot\pi l$ as $l$ grows -- worst case over $j$ gives the stated
+$\frac\pi2|2-j|l$ at $N=4$.
+\item \textbf{Condition}: loss dominates gain once $c\,l(l-1)\ge(\text{gain coefficient})\cdot l$,
+i.e.\ (worst case $l=2$, the first non-trivial step) $c\ge(\text{gain coefficient})$. This is what
+``net loss when $\ell\ge2$'' means: for $l\ge2$ the quadratic loss already exceeds the linear gain,
+so the two class-neighbors nearest $m^*$ dominate everything else, letting the sum over classes be
+replaced by the finite $\Lambda'$ correction terms instead of a genuinely infinite worst case.
+\end{itemize}
+
+\section*{2. The general-$N$ form of the condition, derived}
+
+\textbf{Gain coefficient, general $N$.} Using room21 \S2's $N$-generic linear coefficient
+$\frac{2(N/2-j)}N$ and the $\pi$-per-unit-$l$ shift in $y$ (this shift rate is itself
+$N$-independent: $m$ steps by $N$ per unit $l$, and $y=x-i\pi m/N$, so the shift in $y$ is
+$i\pi N l/N=i\pi l$, cancelling the $N$), the gain per unit $l$ for class $j$ is
+\[
+  \frac{2\pi}N\Bigl|\frac N2-j\Bigr|\,l,\qquad j=1,\dots,N.
+\]
+The worst class is $j=N$ (or $j=1$), where $|N/2-j|=N/2$, giving gain $\le\frac{2\pi}N\cdot\frac
+N2\cdot l=\pi l$ -- \textbf{exactly $\pi l$ for every $N$}, matching $N=4$'s stated
+$\frac\pi2|2-j|l\le\pi l$ (at $j=4$, $|2-4|=2$, $\frac\pi2\cdot2=\pi$) exactly. This is a genuine,
+non-tautological $N$-independent fact: the worst-case linear gain per unit $l$-step is $\pi$
+regardless of $N$, because the $(N/2-j)$ range and the $1/N$ prefactor cancel.
+
+\textbf{Loss coefficient, general $N$.} From room21 \S3, $c_N=\dfrac{2\pi^2\cos\theta}{Nr}$ (this
+is the $c$ in $A_{k_*+l}\le A_{k_*}-c_N\,l(l-1)$; checked $c_N|_{N=4}=\pi^2\cos\theta/(2r)$, the
+printed value).
+
+\textbf{The condition, general $N$.} Net loss at $l=2$ (the binding case, since $l(l-1)/l=l-1$ is
+increasing in $l$, so $l=2$ is the tightest constraint) requires
+\[
+  c_N\ \ge\ \pi \quad\Longleftrightarrow\quad \frac{2\pi^2\cos\theta}{Nr}\ge\pi
+  \quad\Longleftrightarrow\quad \boxed{r\ \le\ \frac{2\pi\cos\theta}N}.
+\]
+\textbf{Check at $N=4$}: $r\le\frac{2\pi\cos\theta}4=\frac\pi2\cos\theta$ -- \emph{exactly} the
+printed condition ``$r\le\frac\pi2\cos\theta$''. This confirms the extraction and the
+generalization method (same cross-check discipline as room21).
+
+\textbf{At $N=6$}: $r\le\dfrac{2\pi\cos\theta}6=\dfrac{\pi\cos\theta}3$.
+
+\section*{3. Plugging in $N=6$'s actual parameters}
+
+At the certified saddle angle $\theta^*=0$ (Room 18/19), $\cos\theta=1$, so the threshold is
+\[
+  r_{\max}=\frac\pi3\approx1.0472.
+\]
+For the operating radius: two values appear in the room files with slightly different status.
+\texttt{qi\_bounds.tex}'s own setting line fixes $\bar r=0.005$ as the \emph{global} radius cap
+for the whole $N=4$ analysis (``$0<r\le\bar r=0.005$''); this is the value \texttt{N6\_full\_status\_v2.tex}
+attributes to Room 21, but \textbf{Room 21 itself never writes $0.005$} -- its own \S6 numerical
+check uses $r=0.003$ explicitly as ``the actual operating regime'' for $N=6$. This is a minor
+mis-citation in the status file (conflating qi\_bounds's $N=4$ constant $\bar r=0.005$ with an
+$N=6$-specific value), not a computational error, and it does not matter for the verdict: both
+candidate values are tiny next to $\pi/3$.
+\[
+  r=0.005:\quad \frac{r_{\max}}r=\frac{\pi/3}{0.005}\approx209,
+  \qquad
+  r=0.003:\quad \frac{r_{\max}}r=\frac{\pi/3}{0.003}\approx349.
+\]
+
+\section*{4. Verdict}
+
+\textbf{CONDITION HOLDS, by a very large margin (roughly 200--350$\times$), at $N=6$'s actual
+operating parameters.} The condition $r\le\frac{2\pi\cos\theta}N$ (general-$N$ form of
+\texttt{qi\_bounds.tex}'s ``$r\le\frac\pi2\cos\theta$, net loss when $\ell\ge2$'') at $N=6$,
+$\theta=\theta^*=0$ becomes $r\le\pi/3\approx1.047$, and $N=6$'s certified/reported operating
+radius ($r\approx0.003$--$0.005$) sits roughly $200$--$350$ times below that threshold. This is
+not marginal in any sense -- the weaker domination exponent found in Room 21
+($2\pi^2\cos\theta/(3r)$ vs.\ $N=4$'s $\pi^2\cos\theta/(2r)$, a factor $3/2$ smaller) does not
+come close to threatening this particular inequality, because the threshold radius itself scales
+down by the same $1/N$ factor as the domination constant's inverse-$r$ scaling, and $N=6$'s actual
+$r$ is four orders of magnitude below either threshold.
+
+\textbf{What this closes, precisely.} This resolves the \emph{net-loss-condition} half of
+Reviewer BF's second gap: the concern (``could plausibly fail'') is checked and does not fail, by
+a wide margin, at $N=6$'s certified saddle. It does \emph{not} by itself certify that the resulting
+$\Lambda'$/$K'$ bookkeeping constants ($\frac\pi2(|m^*|+4)\to$ its $N=6$ analogue, already computed
+in room21 \S7 as $\frac\pi2(|m^*|+9)$, and the ``$2\pi$'' term) are otherwise correctly assembled
+into a working $N=6$ lemma -- that assembly still needs the missing $f_e^{(6)},f_o^{(6)}$ closed
+forms identified as blocked in room21 \S7, and $c_\ell^{(6)}$ (Reviewer BF's \emph{first} gap,
+untouched by this room). Those remain open.
+
+\end{document}
