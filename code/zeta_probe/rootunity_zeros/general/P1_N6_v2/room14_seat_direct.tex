@@ -1,0 +1,172 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 14 (seat: direct attempt): route (b) done properly ---
+a modulus-only bound on the resonance-pinned $N=6$ legs}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. What was wrong with the earlier probe}
+
+\texttt{room13\_status.tex} flagged its own five-minute check as unreliable because it tested
+$w=ce^{-x}$ (some unspecified $c$, no factor of $2$ on $x$) instead of the lemma's actual
+resonance-relative quantity. This room re-derives that quantity from \texttt{lem:qi-bounds}'s proof
+text itself and redoes the computation with it.
+
+\section*{1. The exact definition of $w$, quoted from the source}
+
+From the proof of \texttt{lem:qi-bounds} (\emph{A ray lemma} paragraph), \texttt{paper2a.tex}:
+\begin{quote}
+``Let $|c|=1$, $G(v)=\log(1-ce^{-v})$, $|ce^{-v_0}|\le1$, and
+$\delta=\inf_{\rho\ge0}|1-ce^{-v_0-\rho e^{i\theta}}|>0$. \ldots Along the ray $w=ce^{-v}$ has
+$|w|\le e^{-a'-\rho\cos\theta}$ and $|1-w|\ge\max(1-|w|,\sigma(\arg w))$\ldots''
+\end{quote}
+So $w(\rho)=c\,e^{-v_0-\rho e^{i\theta}}$, and $|c|=1$ is a specific root of unity fixed by which
+factor of the theta-function product is being bounded. From Part (i)'s proof: ``For $f_e$,
+$\log(i^je^{-2x-jt};P)_\infty=\sum_mG_j(2x+jt+4tm)$ with $c=i^j$''\,---\,i.e.\ $v=2x+jt+4tm$, so the
+$x$-dependence of $v$ enters as $2x$, not $x$ (this is exactly the factor Room 13's probe dropped).
+From Part (ii)'s proof: ``With $v=2x+jt-\frac{i\pi\gamma_j}2$ ($c_j=e^{i\pi\gamma_j/2}$)\ldots The
+factors $(P/z_j;P)_\infty$ have argument $c_j^{-1}e^{2x}e^{-(4-j)t}$ of modulus $\le1$ and are
+treated by the ray lemma with $\delta\ge d'(x)$.'' So the resonance constant is one of the roots of
+unity $c_j=e^{i\pi\gamma_j/2}$ (for $N=4$: 8th roots, indexed by residue class $j$), and, dropping
+the $O(t)$ shift (which is what vanishes in the $t\to0$ asymptotic regime the whole construction
+lives in), the leading-order resonance-relative quantity is
+\[
+   w(x)=c_j\,e^{-2x},\qquad |c_j|=1.
+\]
+This is the quantity used throughout; Room 13's probe used $w=ce^{-x}$ (wrong power of $x$, and an
+unspecified $c$), which is exactly why it was flagged unreliable.
+
+\section*{2. The $N=6$ analogue: which resonance constant}
+
+\texttt{room8\_seat\_hilbert.tex} identifies the five $N=6$ resonance loci as
+$\operatorname{Im}(x)\equiv\arg(\zeta_6^i)/2\pmod\pi$, $i=1,\ldots,5$. The $N$-generic Pochhammer
+decomposition $(q;q)_\infty=\prod_{j=1}^{N-1}(\zeta_N^je^{-2x-jt};P)_\infty\times(j=N\text{ term})$
+(direct analogue of the $N=4$ case's $\prod_{j=1}^4(i^je^{-jt};P)_\infty$, with $\zeta_N=i$ read off
+at $N=4$) gives resonance constant $c_j=\zeta_N^j=\zeta_6^j$ for the $j$-th factor, and that factor's
+resonance locus is $\operatorname{Im}(x)=\arg(\zeta_6^j)/2\pmod\pi$ --- matching Room 8's list with
+$i=j$. The leg through $x_{-1}$ sits at $\operatorname{Im}(x)=+\pi/6=\arg(\zeta_6^1)/2$, so
+\[
+   c_1=\zeta_6=e^{i\pi/3}
+\]
+is the relevant resonance constant on that leg; by conjugate symmetry the leg through $x_{-3}$
+($\operatorname{Im}x=-\pi/6$) uses $c_5=\zeta_6^5=e^{-i\pi/3}=\overline{\zeta_6}$.
+
+\section*{3. Computation along the actual leg}
+
+Room 11's exact $N=6$ saddle data (re-verified here in 30-digit mpmath, \texttt{perl -e 'alarm 200;
+exec @ARGV'} wrapper, negligible memory/disk):
+\[
+   x_{-1}=0.3491187578768502+0.5235987755982989\,i\ \ (\operatorname{Im}=\pi/6\text{ exactly}).
+\]
+Following the leg exactly as specified (constant height $\operatorname{Im}x=\pi/6$, $\operatorname{Re}x$
+increasing outward from the saddle, $x(\rho)=x_{-1}+\rho$, $\rho\ge0$ real), with
+$w(\rho)=c_1e^{-2x(\rho)}$:
+\[
+   w(\rho)=e^{i\pi/3}e^{-2x_{-1}}e^{-2\rho}
+          =e^{i\pi/3}\cdot e^{-2\operatorname{Re}(x_{-1})}e^{-i\pi/3}\cdot e^{-2\rho}
+          =e^{-2\operatorname{Re}(x_{-1})}\,e^{-2\rho},
+\]
+using $\operatorname{Im}(x_{-1})=\pi/6$ exactly, so $e^{i\pi/3}e^{-2i\operatorname{Im}(x_{-1})}
+=e^{i\pi/3}e^{-i\pi/3}=1$ \textbf{exactly, algebraically, not just numerically}. So $w(\rho)$ is
+\emph{real and positive} for every $\rho\ge0$: the phase cancellation is exact, confirming
+$\theta^\ast=0$ (no rotation anywhere on this leg, as the papers already record), but the modulus
+tells the whole story on its own.
+
+Numerically (mpmath, 30 digits, agrees with the algebraic identity to the last printed digit,
+residual imaginary part $\sim10^{-32}$ is float noise):
+\[
+\begin{array}{c|c|c}
+\rho & w(\rho) & |1-w(\rho)|\\\hline
+0.0 & 0.497461 & 0.502539\\
+0.1 & 0.407287 & 0.592713\\
+0.5 & 0.183006 & 0.816994\\
+1.0 & 0.067324 & 0.932676\\
+2.0 & 0.009111 & 0.990889
+\end{array}
+\]
+$w(\rho)=e^{-2\operatorname{Re}(x_{-1})}e^{-2\rho}$ decreases \emph{monotonically} from
+$w(0)=e^{-2\cdot0.3491188\ldots}=0.4974613\ldots$ down to $0$ as $\rho\to\infty$: the point never
+approaches $w=1$ at all, it moves steadily away from it. Consequently
+\[
+   |1-w(\rho)|=1-w(\rho)
+\]
+is monotonically \emph{increasing} in $\rho$, with minimum at the saddle itself,
+\[
+   \boxed{|1-w(\rho)|\ \ge\ 1-e^{-2\operatorname{Re}(x_{-1})}=0.5025387\ldots>0\quad\text{for all }\rho\ge0.}
+\]
+By the conjugate-symmetric computation, the identical bound $|1-w(\rho)|\ge0.5025387\ldots$ holds on
+the $x_{-3}$ leg with $c_5=\overline{\zeta_6}$ (verified numerically above, same values to the
+printed digits, imaginary parts of $w$ again $\sim10^{-31}$ float noise).
+
+\section*{4. Verdict}
+
+\textbf{MODULUS-ONLY BOUND WORKS on both resonance-pinned constant-height legs, precisely stated
+as follows.} Along the $N=6$ contour's constant-height legs through $x_{-1}$
+($\operatorname{Im}x=\pi/6$) and $x_{-3}$ ($\operatorname{Im}x=-\pi/6$), parametrised by
+$x(\rho)=x_{\mp1\text{ or }-3}+\rho$, $\rho\ge0$, and using the correctly-identified resonance
+constants $c_1=\zeta_6$, $c_5=\overline{\zeta_6}$:
+\[
+   |1-w(\rho)|\ \ge\ 1-e^{-2\operatorname{Re}(x_{-1})}\ =\ 0.5025387\ldots\ >0,\qquad\text{for all }\rho\ge0,
+\]
+with equality at $\rho=0$ (the saddle) and the bound strictly improving as $\rho$ grows. The
+mechanism is not a rotation argument (there is none available, $\theta^\ast=0$ exactly, confirming
+the earlier diagnosis) but a pure accident of position: the saddle's real part,
+$\operatorname{Re}(x_{-1})=0.3491188\ldots>0$, is large enough that $|c_1e^{-2x_{-1}}|=
+e^{-2\operatorname{Re}(x_{-1})}\approx0.497<1$ starts (and stays) strictly inside the unit circle, so
+the leg never gets near the singular point $w=1$ regardless of the (exactly zero) argument. This
+is genuine, if narrow, progress: it replaces the ray lemma (which needs $\sin\theta\ne0$ and gives
+nothing here) with an elementary, fully rigorous, explicit bound valid along the \emph{entire}
+infinite leg --- not just asymptotically for $\operatorname{Re}x$ large (where part (iii)'s bound
+already applied), but starting exactly at the saddle, closing precisely the gap Room 11 identified
+(``it is precisely there\ldots that these two legs begin and run for a while before
+$\operatorname{Re}x$ grows enough for part (iii) to take over'').
+
+\textbf{Caveats, stated honestly.} (1) This bound is for the \emph{leading-order} $w=c_je^{-2x}$;
+the lemma's actual quantities carry $O(t)$ shifts ($jt$ in the exponent, and the sum over $m$ in
+$4tm$/$P$-powers) that were dropped here. Those shifts vanish as $t\to0$, which is the regime the
+whole pole-family construction operates in (Room 11's calibration: $t\in\overline{D_j}$,
+$|t|\le1.15\cdot10^{-3}$), and the margin found here ($0.50$, versus a bound that only needs to stay
+positive) is generous enough to absorb a genuinely $O(t)$ perturbation of $\arg w$ away from exactly
+$0$ --- but this was not verified quantitatively against the full $t$-dependent formula, only
+argued qualitatively. A complete treatment would need to redo Part (ii)'s actual sum (the full
+$\vartheta$/Poisson-summation expression, not just the single ray-lemma factor) with $t\ne0$ along
+the leg, which is beyond this room's scope. (2) The bound only controls \emph{this one factor}
+$(P/z_j;P)_\infty$ (equivalently the single resonance-constant piece); Part (ii)'s full bound also
+needs $M'(x)$, $K'(x)$ and the $\vartheta$-sum estimate, none of which were touched here. (3) The
+"$c_j=\zeta_N^j$" $N$-generic decomposition used in \S2 was reconstructed by analogy with the
+$N=4$ case's stated formula, not read off an $N$-generic lemma statement verbatim (no such
+statement was found in \texttt{P1f\_lemma.tex} in the material read for this room); it is internally
+consistent with Room 8's independently-derived resonance loci (exact match at $i=j=1,5$), which is
+good evidence it is the right generalisation, but it has not been cross-checked against a written
+$N$-generic version of \texttt{lem:qi-bounds} itself, because none appears to exist yet.
+
+\textbf{Net effect on the $N=6$ program.} This does not close $N=6$: it supplies exactly the one
+missing piece Room 11 flagged as absent (a modulus-only lower bound on $|1-w|$ along the
+resonance-pinned legs, near the saddle where part (iii) does not yet apply), for the
+\emph{leading-order} object, with an explicit constant $0.5025\ldots$. What remains before this can
+be called a closed sub-lemma: extending it to the true $t\ne0$ quantity (caveat 1), and folding it
+back into the full Part (ii)-style estimate together with $M'$, $K'$, and the $\vartheta$-sum
+piece (caveat 2), which is a real amount of remaining work, not a formality.
+
+\end{document}
+
+
+\section*{Correction (post-review, Reviewer AY): this does NOT constitute progress on route (b)}
+
+The claim above is \textbf{withdrawn as stated}. Reviewer AY found a fatal, subtle gap beyond this
+note's own caveats: the ray lemma's separation constant is
+$d(x)=\min_{c^4=1}\mathcal D(2\operatorname{Re}x,\operatorname{dist}(\arg c-2\operatorname{Im}x,2\pi\Z))$,
+$\mathcal D(a',\varphi)=\inf_{\rho\ge0}\max\{\sigma(\varphi-\rho\sin\theta),1-e^{-a'-\rho\cos\theta}\}$,
+where $\rho$ is the lemma's own \emph{internal} auxiliary variable (tied to the fixed direction
+$\theta=\arg t$ used in the Euler--Maclaurin sum over $m$), \emph{not} a position along the
+geometric $x$-contour. This note set $\rho$ to displacement along the leg
+($x(\rho)=x_{-1}+\rho$) and evaluated a single slice of the max-expression -- but $\mathcal D$ is
+an \emph{infimum} over its own $\rho$, so any single evaluation (including this note's $\rho=0$
+slice) is only an \emph{upper} bound on $\mathcal D$, never a lower bound, unless $\sin\theta=0$
+is separately established for the construction's actual fixed $\theta$. This note's claim that
+``$\theta^\ast=0$, no rotation anywhere on the leg'' conflates a different, trivially-true fact
+(the phase of $w$ is constant as $x$ moves along the leg, since the leg IS the resonance locus by
+construction) with the lemma's own rotation parameter, which was never checked. \textbf{The boxed
+quantity $0.5025$ is a numerically correct fact about a simplified proxy, not a valid lower bound
+on the ray lemma's actual separation constant.} Route (b) remains unresolved.
