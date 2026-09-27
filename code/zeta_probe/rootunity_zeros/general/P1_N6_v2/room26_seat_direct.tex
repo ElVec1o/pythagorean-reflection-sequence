@@ -1,0 +1,143 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 26 (seat: direct): the exact value of $c_\ell^{(6)}$}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Scope and what was read}
+
+Read in full: \texttt{room21\_seat\_direct.tex} (the room that left $c_\ell^{(6)}$ as a bare
+symbol in the boxed $K'^{(6)}(x)$ formula, \S4); \texttt{qi\_bounds.tex} lines 1--38 (the exact
+$N=4$ definition of $c_\ell$) and lines 103--124 (Part~(i) of the proof, which derives $c_\ell$
+from the Taylor expansion of $\ell(t)/t$); \texttt{room23\_seat\_direct.tex} (the room that
+already derived the $N=6$ closed forms of $f_e,f_o$ and their running constant $a^{(6)}$,
+$L_w^{(6)}$, and flagged $c_\ell^{(6)}$ as the one remaining unresolved piece of $M'^{(6)}(x)$);
+\texttt{room11\_seat\_erdos.tex} for the $N=6$ saddle data ($\zeta=e^{i\pi/3}$, $\ell=\log2$).
+
+\textbf{Verdict up front: COMPUTED.} $c_\ell$ is \emph{not} the geometric constant $\ell=\log2$
+(the length/saddle-value symbol reused throughout the $N=6$ rooms) -- that is a false-cognate
+trap from the shared letter $\ell$. $c_\ell$ is a completely different object: a Taylor-remainder
+bound for the correction term $\ell(t)/t$ in the expansion of $\log a$ near $t=0$. Its formula
+generalizes to every $N$ by replacing a single scalar $\kappa$ (the magnitude of a Cayley-type
+coefficient built from $\zeta$) that equals $\sqrt2/2$ at $N=4$ and equals $1$ at $N=6$. This
+gives $c_\ell^{(6)}=1.005873201\ldots$, computed below and cross-checked by reproducing the
+already-published $N=4$ bound $c_\ell\le0.6063$ from the same formula.
+
+\section*{1. What $c_\ell$ actually is (disambiguating from $\ell=\log2$)}
+
+From \texttt{qi\_bounds.tex} line 8: $a=-2(1-q)$, $q=\zeta e^{-t}$ ($\zeta=i$ at $N=4$),
+$c_0=a|_{t=0}=-2(1-\zeta)$, $L_w=\log c_0$, and
+\[
+  \ell(t)=\log\Bigl(1-\tfrac{1-i}2(1-e^{-t})\Bigr),\qquad \log a=L_w+\ell(t).
+\]
+This $\ell(t)$ is the \emph{multiplicative correction} carrying $\log a$ away from its $t=0$
+value $L_w$ -- it is a function of the free variable $t$ (the saddle-point expansion parameter,
+$0<r=|t|\le\bar r=0.005$), not a constant. $c_\ell$ (line 36) is the constant that bounds its
+own Taylor remainder:
+\[
+  c_\ell=\bar r^{-2}\Bigl(\tfrac{\sqrt2}2(e^{\bar r}-1-\bar r)+\tfrac{\mu^2}{2(1-\mu)}\Bigr),
+  \qquad \mu=\tfrac{\sqrt2}2(e^{\bar r}-1),
+\]
+proved in \texttt{qi\_bounds.tex} lines 118--120 (Part~(i) of the proof): writing
+$u=\frac{1-i}2(1-e^{-t})$, $|u-\frac{1-i}2t|\le\frac{\sqrt2}2(e^r-1-r)$ (Taylor remainder of
+$1-e^{-t}$ times the coefficient magnitude $|\frac{1-i}2|=\sqrt2/2$), $|u|\le\mu$, and
+$|\log(1-u)+u|\le|u|^2/(2(1-|u|))$ (Taylor remainder of $\log(1-u)$); combining gives
+$|\ell(t)/t+\frac{1-i}2|\le c_\ell|t|$, i.e.\ $c_\ell$ is the constant such that the linearization
+error of $\ell(t)/t$ around $t=0$ is $O(c_\ell|t|)$, used to bound the whole $E$-term in
+\texttt{lem:qi-bounds}. \textbf{This is unrelated to the geometric saddle constant $\ell=\log|c|$
+that appears throughout the $N=6$ rooms as ``$\ell=\log2$''} (Room~11's calibration) -- same
+letter, different object; the paper's own notation clash (not this room's).
+
+\section*{2. The $N$-generic formula, and why the coefficient changes from $N=4$ to $N=6$}
+
+Room~23 \S1 already identified the source of the coefficient $\frac{1-i}2$: writing
+$c_t=-2(1-q)$, $c=-2(1-\zeta)=c_t|_{t=0}$,
+\[
+  \frac{c_t}c=\frac{1-\zeta e^{-t}}{1-\zeta}=1+\frac\zeta{1-\zeta}(1-e^{-t}),
+\]
+so $\ell(t):=\log(c_t/c)=\log\bigl(1+\kappa_\zeta(1-e^{-t})\bigr)$ with
+$\kappa_\zeta:=\zeta/(1-\zeta)$. At $N=4$, $\zeta=i$: $\kappa_i=i/(1-i)=-\frac{1-i}2$, matching
+$\ell(t)=\log(1-\frac{1-i}2(1-e^{-t}))$ exactly (sign folded into the $-\kappa_\zeta$ used there).
+The magnitude that enters $c_\ell$ (both the Taylor-remainder bound and $\mu$) is
+$\kappa:=|\kappa_\zeta|=|\zeta|/|1-\zeta|=1/|1-\zeta|$ (since $|\zeta|=1$ always). At $N=4$,
+$|1-i|=\sqrt2$, so $\kappa=\sqrt2/2$ -- reproducing the printed formula's $\sqrt2/2$ exactly.
+
+\textbf{At $N=6$}: $\zeta=e^{i\pi/3}$ (Room~11), so $|1-\zeta|=2\sin(\pi/6)=1$, giving
+\[
+  \boxed{\kappa^{(6)}=1/|1-\zeta^{(6)}|=1.}
+\]
+(Exact: $1-e^{i\pi/3}=\tfrac12-\tfrac{i\sqrt3}2$, $|1-e^{i\pi/3}|=\sqrt{1/4+3/4}=1$.)
+
+The $N$-generic formula for $c_\ell$, replacing $\sqrt2/2$ by $\kappa$ throughout the derivation
+of \texttt{qi\_bounds.tex} lines 118--120 (the argument never used any other property of
+$\frac{1-i}2$ besides its magnitude $\sqrt2/2$; the Taylor-remainder and $|\log(1-u)+u|$ bounds
+are purely magnitude-based):
+\[
+  c_\ell^{(N)}=\bar r^{-2}\Bigl(\kappa\,(e^{\bar r}-1-\bar r)+\frac{\mu^2}{2(1-\mu)}\Bigr),
+  \qquad \mu=\kappa\,(e^{\bar r}-1),\qquad \kappa=1/|1-\zeta^{(N)}|,\qquad \bar r=0.005.
+\]
+($\bar r$ is the radius of the saddle-region disc $0<r\le\bar r$ fixed in the ``Setting''
+paragraph and is not $N$-dependent; it bounds $|t|$, the same free expansion variable at every
+$N$.)
+
+\section*{3. Numerical computation and cross-check}
+
+Computed both $N=4$ (reproducing the printed bound) and $N=6$ in 30-digit mpmath
+(\texttt{python3}, direct closed-form evaluation, well under a second, no BFS/enumeration, no
+memory concern):
+\begin{center}
+\begin{tabular}{c|c|c}
+$N$ & $\kappa$ & $c_\ell^{(N)}$ (30-digit) \\\hline
+4 & $\sqrt2/2=0.707106781186\ldots$ & $0.606290745164589021981949592156$ \\
+6 & $1$ & $\mathbf{1.00587320100608805376833870895}$
+\end{tabular}
+\end{center}
+The $N=4$ row matches \texttt{qi\_bounds.tex} line 179's printed bound ``$c_\ell\le0.6063$''
+exactly (the formula gives $0.60629\ldots$, and $0.6063$ is the printed 4-digit rounded-up
+bound used in the paper) -- this is a genuine cross-check, not a tautology, since the $N$-generic
+formula of \S2 was derived independently from the proof text and only afterwards evaluated at
+$N=4$.
+
+\[
+  \boxed{c_\ell^{(6)}=1.0058732010\ldots}
+\]
+
+\section*{4. Plugging into $K'^{(6)}(x)$}
+
+Room~21 \S4 left
+\[
+  K'^{(6)}(x)=c_\ell^{(6)}|x|+\frac{377}{24\,d'(x)}+\frac4{3\cos\theta\,d'(x)^2}+\frac{19}{12}+K_n^{(6)}.
+\]
+With $c_\ell^{(6)}$ now evaluated:
+\[
+  \boxed{K'^{(6)}(x)=1.0058732010\ldots\,|x|+\frac{377}{24\,d'(x)}+\frac4{3\cos\theta\,d'(x)^2}
+  +\frac{19}{12}+K_n^{(6)}.}
+\]
+($K_n^{(6)}$ is a separate, already-generic constant from $D_n^{(6)}$; not re-derived here, out
+of scope for this room.)
+
+\section*{5. What remains genuinely open (not resolved by this room)}
+
+Room~23 \S4 flagged that the \emph{$x$-linear/constant terms of $M'^{(6)}(x)$} (not $K'^{(6)}(x)$)
+still need the proof-text bookkeeping of \texttt{lem:qi-bounds}(ii) redone with three branches
+($\rho=0,1,2$) instead of two. That is a separate, larger re-derivation (re-tracking
+$\Lambda'(x)$'s $(\frac1{\sqrt2}+2)|x|$-type coefficient through the three-way split) and is
+\emph{not} what was asked of this room. This room's task -- the bare symbol $c_\ell^{(6)}$ inside
+the already-boxed $K'^{(6)}(x)$ of Room~21 -- is fully closed.
+
+\section*{Verdict}
+
+\textbf{COMPUTED.} $c_\ell$ is the Taylor-remainder constant for $\ell(t)/t$ (distinct from the
+geometric constant $\ell=\log2$ used elsewhere in the $N=6$ rooms -- a same-letter false
+cognate). Its defining formula generalizes from $N=4$ to every $N$ by replacing the scalar
+$\sqrt2/2=|\,i/(1-i)\,|$ with $\kappa^{(N)}=1/|1-\zeta^{(N)}|$; at $N=6$, $\zeta=e^{i\pi/3}$ gives
+$\kappa^{(6)}=1$ exactly, and
+\[
+  c_\ell^{(6)}=\bar r^{-2}\Bigl((e^{\bar r}-1-\bar r)+\tfrac{\mu^2}{2(1-\mu)}\Bigr),\ \ \mu=e^{\bar r}-1,\ \
+  \bar r=0.005\ \ \Longrightarrow\ \ c_\ell^{(6)}=1.0058732010\ldots,
+\]
+verified by reproducing the printed $N=4$ bound ($0.6063$) from the same $N$-generic formula.
+This closes the last bare-symbol gap in Room~21's boxed $K'^{(6)}(x)$.
+
+\end{document}
