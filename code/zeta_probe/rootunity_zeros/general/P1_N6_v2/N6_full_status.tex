@@ -1,0 +1,55 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{P1 N=6: full consolidated status after Rooms 1, 8, 11, 13--19 (6 reviewers)}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{Corrected scope (Room 18/Reviewer BB)}
+\textbf{Accumulation of poles at $\zeta_0=e(1/6)$ (and $\pm\sqrt{\cdot}$ for U,V) was NEVER open.}
+\texttt{paper2a.tex} already proves this via closure from \texttt{thm:arc}/\texttt{cor:arcUV}
+(its own text says so; the whole P1\_N6\_v2 series failed to cite it). The genuinely open question
+is strictly stronger: \textbf{the direct, N=6-specific tie-ray statement} -- an explicit sequence
+of zeros via an N=6 analogue of \texttt{prop:qi}'s own contour/Rouch\'e construction.
+
+\section*{What is now PROVED, on the ray-lemma side of that direct statement}
+Both halves of the separation-constant estimate that any such construction would need are secured,
+each confirmed by independent adversarial review:
+\begin{itemize}
+\item \textbf{$\operatorname{Re}(x)\ge0$ (Room 17, confirmed by Reviewer BA after 2 prior genuine
+errors caught in Rooms 14/16):} $d(x)=\min_{c^4=1}D(2\operatorname{Re}x,\cdot)\ge1-e^{-2\operatorname{Re}(x)}>0$,
+band-uniform in $\theta$ near $\theta^\ast=0$, no seam.
+\item \textbf{$\operatorname{Re}(x)\le0$ (Room 19, confirmed by Reviewer BC):} the paper's own
+sign convention already routes around the danger -- $d'(x)=\min_{c^4=1}D(-2\operatorname{Re}x,\cdot)$
+uses $a'=-2\operatorname{Re}(x)\ge0$ automatically on this domain, so the identical bound gives
+$d'(x)\ge1-e^{2\operatorname{Re}(x)}>0$, by the same elementary argument, no new work needed.
+\end{itemize}
+Together: \textbf{the ray-lemma-based separation constant is positive everywhere on both parts of
+the estimate, for the resonant class, uniformly in a band around $\theta^\ast=0$.} This closes the
+specific obstruction (the $\theta^\ast=0$ degeneracy) that originally motivated this entire
+investigation (\texttt{P1\_N6\_note.tex}, the very first room).
+
+\section*{What is still genuinely missing}
+\textbf{No N=6 contour construction exists anywhere in this repository} (confirmed independently
+by Rooms 11, 13, 18, and Reviewer BC): no analogue of \texttt{prop:qi}'s $x_c$, $\Gamma_\pm^{(6)}$,
+$\Pi_0^{(6)}$, or the Rouch\'e step that would turn the now-secured separation-constant bound into
+an actual theorem. Two further, unattempted pieces sit behind that:
+\begin{itemize}
+\item The mod-6 Poisson-summation/triple-product bookkeeping producing $\Upsilon(x)$, $M'(x)$,
+$K'(x)$ with correct numeric constants (\texttt{P1\_N6\_note.tex}'s original claim that this is
+``mechanical'' has never been verified, though no obstruction to it has been found either).
+\item The contour itself, and the Rouch\'e argument applied to it, which needs a genuine 2-D
+neighborhood (not a ray) per Room 17's own finding about Rouch\'e's structural requirements.
+\end{itemize}
+
+\section*{Net assessment}
+This 9-room, 6-reviewer sequence (Rooms 1, 8, 11, 13, 14, 16, 17, 18, 19) is the most thoroughly
+adversarially-tested single thread of this entire multi-room effort. It caught 2 genuine errors in
+sequence and 1 significant scope misunderstanding, ending with a real, confirmed, if narrow,
+positive result (the separation constant, both sides) and a precisely isolated remaining task (the
+contour construction + bookkeeping) for a future attempt. \textbf{Not integrated into paper2a}:
+this does not close the direct tie-ray statement, only removes one obstruction on the path to it,
+and the paper's own accumulation claim (which is what actually matters for the arc-density results
+already published) was never affected either way.
+
+\end{document}

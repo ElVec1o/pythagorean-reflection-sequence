@@ -1,0 +1,113 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 17 (seat: direct attempt): does the $N=6$ ray-lemma bound need a
+$\theta$-band, or is $\theta=\theta^\ast=0$ enough? -- Reviewer AZ's question, resolved}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. The question, restated}
+
+Room 16 proved $d(x)=1-e^{-2\operatorname{Re}x}>0$ at $N=6$ by a monotonicity argument valid
+\emph{exactly at} $\theta=\theta^\ast=0$. Reviewer AZ objected: \texttt{paper2a.tex}'s only worked
+comparison case ($N=4$, $q=i$) applies its ray lemma over a genuine open disc $D_j$ in the $t$-plane
+(\texttt{prop:qi}, Step~4), which subtends a nonzero range of $\arg t$ ($|\theta-\theta_i|\le10^{-3}$),
+not a single ray. If $N=6$'s (not yet written) analogue needs the same disc uniformity, Room~16's
+"$\sin\theta=0$ freezes the rotation term" argument only covers the single ray $\theta=0$ inside that
+disc, not the rest of it, where $\sin\theta\ne0$ generically. This room checks, directly against the
+ray lemma as printed in \texttt{paper2a.tex} (proof of \texttt{lem:qi-bounds}, paragraph "A ray
+lemma"), whether that gap is real.
+
+\section*{1. Rouch\'e is intrinsically about a closed curve}
+
+\texttt{prop:qi} Step~4 needs $|g_0|>0.28$ on the whole boundary circle $\partial D_j$ (not one point of
+it) so that the winding number of $g_0$ around $0$ on that circle can be compared, via Rouch\'e, to the
+winding number of $1-\Sigma_1$. A boundary consisting of a single ray, or a single point, has no
+winding number and Rouch\'e says nothing. Any genuine two-dimensional neighbourhood of a candidate zero,
+however it is shaped, has a boundary that sweeps through a continuous range of directions of the
+outward radius vector, hence (since $u=1/t$ is a nonconstant holomorphic map) through a continuous range
+of $\arg t$ as well. So yes: \textbf{a band (or some other genuinely 2-dimensional neighbourhood) is
+unavoidable for any Rouch\'e/winding-number argument}, including whatever eventually plays this role at
+$N=6$; there is no way to run this style of zero-location argument on a single ray. This matches Room~1's
+Erd\H{o}s-seat approach to $N=6$ (\texttt{P1\_N6/room1\_seat\_erdos.tex}), which independently needed a
+genuine disc (radius $\approx0.12|t_j^\ast|$) and a discrete winding count around it -- the same
+structural requirement, arrived at from a completely different, more elementary route.
+
+\section*{2. The actual dependence of $\mathcal D(a',\varphi)$ on $\theta$, checked directly}
+
+The object in question is exactly the paper's own $\delta\ge\mathcal D(a',\varphi)$ (proof of
+\texttt{lem:qi-bounds}, "A ray lemma" paragraph): along the ray, $|w|\le e^{-a'-\rho\cos\theta}$ and
+$|1-w|\ge\max(1-|w|,\sigma(\arg w))$, giving
+\[
+\mathcal D(a',\varphi)=\inf_{\rho\ge0}\max\bigl\{\sigma(\varphi-\rho\sin\theta),\ 1-e^{-a'-\rho\cos\theta}\bigr\}.
+\]
+\textbf{Key elementary fact, not used in Room 14 or Room 16:} for \emph{every} $\theta$ with
+$\cos\theta>0$ (the domain the lemma already requires, since $\cos\theta$ appears in its own error
+constant $4/(3\cos\theta\,d(x)^2)$) and \emph{every} $\varphi$,
+\[
+\max\{\sigma(\varphi-\rho\sin\theta),\,1-e^{-a'-\rho\cos\theta}\}\ \ge\ 1-e^{-a'-\rho\cos\theta}
+\ \ge\ 1-e^{-a'}\qquad\text{for every }\rho\ge0,
+\]
+because a max of two quantities is at least either one of them, and $\rho\mapsto1-e^{-a'-\rho\cos\theta}$
+is nondecreasing whenever $\cos\theta\ge0$ (its $\rho$-derivative is $\cos\theta\, e^{-a'-\rho\cos\theta}
+\ge0$), so its value at any $\rho\ge0$ dominates its value at $\rho=0$. Taking the infimum over
+$\rho\ge0$ of the left side therefore gives
+\[
+\boxed{\mathcal D(a',\varphi)\ \ge\ 1-e^{-a'}\qquad\text{for \emph{every} }\theta\text{ with }\cos\theta>0\text{ and \emph{every} }\varphi.}
+\]
+This uses only the second (decay) term of the max and never invokes $\sin\theta=0$, $\sin\theta\ne0$,
+or any property of $\sigma$ at all beyond $\sigma\ge0$. It reproduces Room~16's number
+$\mathcal D(a',0)=1-e^{-a'}$ at $\theta=0$ as the special case where the bound is also tight (since
+there $\sigma(0)=0$ makes the first term drop out and the two sides coincide), but it holds with the
+\emph{same} right-hand side literally unchanged as $\theta$ ranges over the whole band, and indeed over
+all of $(-\pi/2,\pi/2)$.
+
+\section*{3. Answering the four numbered checks}
+
+\textbf{(1)} Rouch\'e is intrinsically a closed-contour statement (\S1): yes, a band (or other
+2-dimensional patch) is structurally required for whatever plays the Step-4 role at $N=6$; there is no
+way to reduce that step itself to a single ray.
+
+\textbf{(2)/(3)} The proposed hybrid -- six-class dominance plus modulus-only monotonicity exactly at
+$\theta=0$, patched to the rotation-based ray lemma for $\theta\ne0$ elsewhere on the disc -- is not
+needed, because it is not the sharpest available fact. \S2 shows the \emph{same} modulus-only estimate
+(discard the $\sigma$ term, keep only $1-e^{-a'-\rho\cos\theta}$, evaluate the resulting monotone
+function at $\rho=0$) is valid on the \emph{entire} band $\cos\theta>0$ at once, with no case split and
+no seam at $\theta=0$ to patch across.
+
+\textbf{(4), the degeneration check.} As $\theta\to0$ ($\theta\ne0$), does the rotation-based bound
+degrade continuously to the modulus-only value, or blow up/vanish first? Directly from \S2:
+$\mathcal D(a',\varphi)\ge1-e^{-a'-\rho\cos\theta}|_{\rho=0}=1-e^{-a'}$ for \emph{every} $\theta$ in the
+band, with no $\theta$-dependence in the bound itself (only $\cos\theta>0$ is used, and $\cos\theta\to1$
+smoothly as $\theta\to0$, never touching $0$ on any band of interest here). There is no vanishing
+margin, no discontinuity, and no neighbourhood of $\theta=0$ where the bound degenerates: the quantity
+that matters, $1-e^{-a'-\rho\cos\theta}$ at $\rho=0$, does not depend on $\theta$ at all. The apparent
+fragility in Room~16 (freezing the $\sigma$-term via $\sin\theta=0$) was an artifact of using the
+\emph{first} term of the max as the load-bearing piece; the \emph{second} term alone already carries the
+whole bound, uniformly in $\theta$, and was available all along.
+
+\section*{4. Verdict}
+
+\textbf{HYBRID APPROACH WORKS -- and is superseded by something stronger and simpler.} Reviewer AZ's
+gap (band vs.\ point) is real as a question about method (Rouch\'e genuinely needs a 2-dimensional
+neighbourhood, \S1) but is not a problem for the specific quantity Room 16 was bounding: $d(x)$'s lower
+bound $1-e^{-2\operatorname{Re}x}$, obtained by discarding the $\sigma$-term and using only the decay
+term's monotonicity at $\rho=0$, holds \emph{uniformly on the whole disc $D_j$}, i.e.\ for every $\theta$
+with $\cos\theta>0$ and every root-of-unity class $\varphi_c$ simultaneously -- not merely at the single
+ray $\theta^\ast=0$, and not via any patching between two different techniques on two different
+sub-arcs. So there is no seam to worry about, no hybrid to construct, and no need to determine whether
+$N=6$'s actual downstream construction uses a point or a band: whichever it turns out to be, this bound
+already covers it.
+
+\textbf{What this does and does not establish.} This closes, band-robustly, exactly the piece Room~16
+closed ray-robustly: the ray lemma's separation constant $d(x)>0$ (hence Part~(i)'s error bound
+$|E|\le(\cdots+\tfrac4{3\cos\theta\,d(x)^2}+\cdots)|t|$ is finite and explicit) uniformly over any disc
+$D_j$ of the kind \texttt{prop:qi} Step~4 uses, once such a disc and its centre $u_j$ are actually
+constructed for $N=6$. It does \emph{not} construct that disc, that centre, or the $N=6$ analogue of
+Step~4 itself (per Room~11/13, no $N=6$ contour construction yet exists) -- \S1 says only that whatever
+that construction turns out to be, it will need a genuine 2-dimensional patch, and \S2--3 say the
+separation-constant estimate feeding it is now available on any such patch, not just at $\theta=0$.
+Route (b)'s remaining open items are exactly Room 16's \S5 list, items (1)--(3), unchanged; this room
+removes the one item Reviewer AZ added on top of them.
+
+\end{document}

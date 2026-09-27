@@ -1,0 +1,143 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{P1\_N6\_v2 (Room 19): the $\operatorname{Re}(x)\le0$ crossing-region estimate --
+identified as the SAME ray lemma as Room 17/18, not a separate construction}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{Question resolved first: is this the ray lemma again, or the separate part-(ii)
+machinery?}
+
+\textbf{Both, and they are not really separable.} Re-reading \texttt{lem:qi-bounds} in
+\texttt{paper2a.tex} (lines 2204--2264) line by line settles the ambiguity the task raised.
+Part~(ii) (line 2213) is:
+\[
+  \operatorname{Re}x\le0,\ d'(x)>0\ \implies\
+  \log|f(x)|\le \Upsilon(x)/r + M'(x) + \tfrac12\log\tfrac{2r}\pi
+   + 4\log(3+3e^{-\pi^2\cos\theta/r}) + K'(x)r,
+\]
+and its proof (line 2249 ff.) has exactly two ingredients:
+\begin{enumerate}
+\item the Jacobi-triple-product identity $(z;P)_\infty=\vartheta(z)/(P/z;P)_\infty$ plus Poisson
+summation on $\vartheta$, giving the $\Upsilon(x)/r$ landscape term and reducing the sum over
+$k\in\mathbb Z$ to (at most) its two largest terms via a concave-quadratic-in-$k$ argument
+(the ``$3+3e^{-\pi^2\cos\theta/r}$'' domination) -- this is the piece \texttt{P1\_N6\_note.tex}
+correctly calls fully $N$-generic;
+\item bounding the surviving factor $(P/z_j;P)_\infty$ -- \emph{exactly the same object as in
+part (i)}, a Pochhammer product along a ray -- by \textbf{the same ray lemma} proved once, at the
+top of the proof (line 2228), with $\delta\ge d'(x)$ instead of $\delta\ge d(x)$.
+\end{enumerate}
+So the answer to the task's clarifying question 1 is: \textbf{it is the same ray-lemma analysis
+as Room 17/18, evaluated at a different sign of the argument $a'$, wrapped inside a separate
+(but $N$-generic) bookkeeping layer (ingredient 1).} There is no second, independent
+``part-(ii) construction'' distinct from the ray lemma; \texttt{P1\_N6\_note.tex}'s framing of
+part (ii) as needing its own generalisation was really pointing at the same ray-lemma
+degeneracy problem Room 16/17/18 already dug into for part (i), just not phrased that way at the
+time.
+
+\section*{The key algebraic fact that resolves the task's point 2}
+
+The two separation constants are \emph{not} both $\mathcal D(2\operatorname{Re}x,\cdot)$. Reading
+the definitions at lines 2196--2197:
+\[
+ d(x)=\min_{c^N=1}\mathcal D\bigl(2\operatorname{Re}x,\,\cdot\bigr)\quad(\text{part (i)},\
+ \operatorname{Re}x\ge0),
+ \qquad
+ d'(x)=\min_{c^N=1}\mathcal D\bigl(-2\operatorname{Re}x,\,\cdot\bigr)\quad(\text{part (ii)},\
+ \operatorname{Re}x\le0).
+\]
+\textbf{The sign of the first argument of $\mathcal D$ flips between the two parts.} This is not
+a bookkeeping accident: it is exactly what keeps $a'\ge0$ in both regimes. In part (i),
+$\operatorname{Re}x\ge0\Rightarrow a'=2\operatorname{Re}x\ge0$. In part (ii),
+$\operatorname{Re}x\le0\Rightarrow a'=-2\operatorname{Re}x\ge0$. \textbf{So the worry raised in
+the task -- that $a'=2\operatorname{Re}(x)$ might go negative or make $1-e^{-a'}$ vacuous on
+$\operatorname{Re}(x)\le0$ -- does not arise, because that is not the quantity part (ii) actually
+uses.} The paper's own construction already routes around this by defining a second constant
+with the opposite sign convention. This was implicit in \texttt{lem:qi-bounds} itself and is
+independent of $N$: it is visible already at $N=4$, and nothing about it privileges $N=4$ over
+$N=6$.
+
+\section*{Consequence: Room 17/18's bound already secures the ray-lemma sub-piece of the
+crossing region}
+
+Room 17/18's proof (\texttt{room17\_consolidated.tex}) is: for $Y(\rho)=1-e^{-a'-\rho\cos\theta}$,
+$Y'(\rho)=\cos\theta\,e^{-a'-\rho\cos\theta}\ge0$ whenever $\cos\theta\ge0$, \emph{for any real
+$a'$}, so $Y$ is non-decreasing and $\mathcal D(a',\varphi)\ge Y(0)=1-e^{-a'}$. The proof never
+uses $a'\ge0$; it only needs $\cos\theta\ge0$. What makes the bound \emph{useful} (positive) is
+$a'\ge0$, and that is supplied automatically by $d'$'s sign convention on $\operatorname{Re}x\le0$
+exactly as it was supplied for $d$ on $\operatorname{Re}x\ge0$.
+
+At $N=6$'s certified saddle angle $\theta^\ast=0$ (so $\cos\theta^\ast=1\ge0$, the best case for
+this bound, as already noted in Room 17), this gives, for every $x$ with $\operatorname{Re}x\le0$
+on the relevant contours:
+\[
+ d'(x)\ \ge\ 1-e^{2\operatorname{Re}(x)}\ >\ 0,
+\]
+\textbf{uniformly over all $6$ resonance classes $c^6=1$ simultaneously} (the bound never needs to
+know which class is closest to resonance, exactly as Room 17 found for $d(x)$), and uniformly over
+$\operatorname{Im}(x)$, since the bound depends only on $\operatorname{Re}(x)$ once
+$\cos\theta\ge0$ is fixed. This directly resolves the \emph{Hilbert} concern recorded in
+\texttt{P1\_N6\_note.tex} (``five codimension-1 loci $\arg(\zeta_6^i)-2\operatorname{Im}(x)\equiv0$
+where the angular safety net vanishes''): those loci are where the \emph{angular} term
+$\sigma(\varphi-\rho\sin\theta)$ degenerates, but Room 17/18's bound never invokes the angular
+term at all -- it is a pure-modulus bound, $\max\{\sigma(\cdot),Y(\rho)\}\ge Y(\rho)$ discards the
+angular piece entirely. So the five loci are not actually dangerous for \emph{this} estimate; they
+would only matter for a bound that tried to extract the sharper, angle-dependent value of $d'(x)$
+(as Hilbert's $0.866$ figure did at the single slice $\theta=0,\rho=0$), which is not needed here
+since a genuine lower bound, not the exact value, is what part (ii)'s error term $K'(x)$ needs
+(exactly as Room 17 already noted for part (i)'s analogous term).
+
+\section*{What this does and does not close}
+
+\textbf{Secured (this room):} the ray-lemma sub-piece of \texttt{lem:qi-bounds}(ii) -- the bound
+$\delta\ge d'(x)$ on the surviving Pochhammer factor $(P/z_j;P)_\infty$ -- transfers to $N=6$ at
+$\theta^\ast=0$ by the identical argument as Room 17/18, with no sign obstruction and no
+per-resonance-class case analysis needed, because (a) part (ii) uses $a'=-2\operatorname{Re}x\ge0$
+on its own domain, not $2\operatorname{Re}x$, and (b) Room 17/18's bound is angle-independent once
+$\cos\theta\ge0$. This is a genuine, if narrow, positive extension: it answers ``does Room 17/18's
+fix survive into the crossing region'' with \textbf{yes, by construction of the paper's own sign
+convention, not by any new argument needed here}.
+
+\textbf{NOT secured (still open, unchanged from \texttt{P1\_N6\_note.tex}):} the \emph{other}
+ingredient of part (ii), the Jacobi-triple-product/Poisson-summation bookkeeping that produces
+$\Upsilon(x)$, $M'(x)$, $K'(x)$ with their explicit constants ($\frac1{\sqrt2}+2$, $\frac\pi2$,
+$\frac{73}{12}$, $\frac43$, \ldots) is asserted but not re-derived for $N=6$ anywhere in this
+repository. \texttt{P1\_N6\_note.tex}'s own weak point (\S\ref{sec:weak}, item 2 there) already
+flagged this honestly as unverified, and nothing in this room changes that: the mod-$4$ residue
+sum $\sum_{\varrho=0}^{3}\max_{m\equiv\varrho\,(4)}$ in $\Upsilon(x)$ (line 2190) needs its literal
+mod-$6$ analogue $\sum_{\varrho=0}^{5}\max_{m\equiv\varrho\,(6)}$ written out, the concave-quadratic
+domination constant ``$3+3e^{-\pi^2\cos\theta/r}$'' needs rechecking for the coarser mod-$6$
+lattice (the domination argument is structurally $N$-generic -- a concave quadratic in $k$ is
+dominated by its two largest terms regardless of the lattice spacing -- but the numeric constant
+$3$ came from the specific mod-$4$ tail sum and was not rederived for mod-$6$ here), and the
+explicit numeric constants inside $M'(x),K'(x)$ (which come from finitely many termwise
+Euler--Maclaurin/ray-lemma error estimates specific to the $4$-term product
+$\prod_{j=1}^4(i^jp^{4s+j};P)_\infty$) need their $6$-term analogue
+$\prod_{j=1}^6(\zeta_6^jp^{6s+j};P)_\infty$ worked out from scratch. This is exactly the
+``mechanical but unverified'' bookkeeping step, not the ray-lemma obstruction, and nothing found
+in this room closes it.
+
+\section*{Verdict}
+
+\textbf{CLARIFIED SCOPE, with one sub-piece SECURED.} Precisely:
+\begin{itemize}
+\item The task's ambiguity (ray lemma extended vs.\ separate part-(ii) construction) is resolved:
+part (ii) is not a separate construction, it is the same ray lemma applied to the same kind of
+Pochhammer factor with the opposite-signed argument $a'=-2\operatorname{Re}x$, wrapped in an
+$N$-generic Poisson-summation layer.
+\item The specific danger flagged in the task (Room 17's bound going vacuous or negative on
+$\operatorname{Re}(x)\le0$) \textbf{does not occur}: the paper's own $d'(x)$ already uses
+$-2\operatorname{Re}x\ge0$ on that domain, so Room 17/18's monotonicity argument secures
+$d'(x)\ge1-e^{2\operatorname{Re}x}>0$ at $N=6$'s $\theta^\ast=0$ with no new work, and as a
+byproduct resolves the ``five loci'' uniformity worry from \texttt{P1\_N6\_note.tex}'s Room~1
+(Hilbert seat), since that worry only threatened the angular term, which this bound never uses.
+\item The genuinely open remainder for the full $N=6$ analogue of part (ii) -- and hence for the
+direct tie-ray statement -- is now narrowed to a single, concrete, well-scoped task: writing out
+the mod-$6$ Poisson-summation/triple-product bookkeeping ($\Upsilon(x)$, $M'(x)$, $K'(x)$ with
+correct explicit constants for the $6$-term product) that \texttt{P1\_N6\_note.tex} asserted was
+``mechanical'' but never carried out. No obstruction to this has been found; it has simply not
+been attempted, here or elsewhere in the repository.
+\end{itemize}
+
+\end{document}
