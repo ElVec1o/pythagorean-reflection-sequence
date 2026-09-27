@@ -1,0 +1,192 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 18 (seat: direct) --- accumulation at $N=6$ is already proved; what remains open is
+strictly narrower than the contour construction}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{Verdict up front}
+
+\textbf{GENUINE PROGRESS TOWARD ACCUMULATION --- in fact the accumulation statement itself is
+already closed, unconditionally for $G^T_0$ and conditionally (on \texttt{thm:model},
+\texttt{thm:RJ}, exactly as everywhere else in the $U,V$ theory) for $U,V$.} This is not a new
+theorem: it is already written, as a proof, inside \texttt{paper2a.tex} (Theorem~\texttt{thm:arc}
+and Corollary~\texttt{cor:arcUV}), and it was already flagged in two places in this repository
+(\texttt{P1i\_lemma.tex} lines 27/186, and the older
+\texttt{P1\_N6/room1\_seat\_erdos.tex}). What Room~18 contributes is: (1) tracing the exact
+mechanism and confirming it really does cover the $N=6$ point with no gap, (2) noting explicitly
+that the entire $N=6$-v2 track (Rooms 8, 11, 13, 14, 16, 17 in this directory) never connected to
+this fact and so kept treating ``accumulation at $N=6$'' as blocked on the missing
+\texttt{prop:qi}-style contour, and (3) precisely re-scoping what actually remains open: not
+accumulation, but the strictly stronger \emph{direct tie-ray statement at $N=6$ itself}. A
+secondary finding (\S\ref{sec:secondary}) reassesses Room~11's stated wall against Room~17's fix
+and finds Room~11 overstated it: Room~17's bound does remove the obstruction on the bulk of the
+constant-height legs ($\operatorname{Re}x>0$), not just at isolated points, and the real remaining
+gap is narrower still.
+
+\section*{1. The closure mechanism, checked directly against paper2a.tex}
+
+\texttt{paper2a.tex}, \S\ref{sec:arc} (``The middle arc''), Theorem~\texttt{thm:arc}:
+\begin{quote}
+The zeros of $1-\Sigma_1=\cos(Z;q^2)$ in $0<|q|<1$, which are the poles of $G^T_0$, accumulate at
+\emph{every point} of the arc $\{|q|=1,\ \arg q\in[0.286\pi,1.714\pi]\}$.
+\end{quote}
+The proof sketch (checked in full, paper2a.tex lines 2508--2534) is: for every $\zeta=e^{2\pi ia/N}$
+with $\gcd(a,N)=1$, $\frac aN\in[0.143,0.857]$, and $N\ge17$ (or $N\ge16$ if $\frac aN\in[\frac16,
+\frac56]$), the \texttt{prop:qi}-style construction (P1f/P1h's Theorems M$'$, B$'$, landscape Lemma
+LS$(\ell_1)$, Rouch\'e against $1+\varrho e^{\Delta V/t}$) is actually carried out and gives an
+explicit sequence of zeros $q^\ast_j\to\zeta$. This makes each such $\zeta$ itself a genuine
+accumulation point of the actual pole set $P$ of $G^T_0$. The proof's last sentence is the step that
+matters here: \emph{``These $\zeta$ are dense in the arc, and the accumulation set is closed.''}
+
+This is a standard, elementary closure argument and it is fully general (it needs nothing about
+$N=6$ specifically):
+\begin{itemize}
+\item The derived set $P'$ (set of accumulation points) of any subset $P\subset\mathbb C$ is closed.
+(Standard: if $p$ is a limit of points of $P'$, each of which is itself a limit of points of $P$,
+a diagonal argument produces points of $P$ arbitrarily close to $p$.)
+\item Let $S=\{\zeta=e^{2\pi ia/N}:\gcd(a,N)=1,\ N\ge17\ (\text{or }N\ge16\text{ on }[\tfrac16,
+\tfrac56]),\ \tfrac aN\in[0.143,0.857]\}$. The theorem's proof shows $S\subseteq P'$.
+\item $S$ is dense in the arc $\{\arg q\in[0.286\pi,1.714\pi]\}$: for any target angle
+$2\pi r$ with $r\in[0.143,0.857]$ and any $\epsilon>0$, reduced fractions $a/N$ with $N$ as large as
+one likes and $|a/N-r|<\epsilon/(2\pi)$ exist (elementary density of $\mathbb Q$), and for $N$ large
+enough these automatically satisfy $N\ge17$ (or the sharper $N\ge16$ threshold if $r\in[\frac16,
+\frac56]$).
+\item Since $P'$ is closed and contains the dense set $S$, $P'$ contains the closure of $S$, which
+is the whole arc.
+\end{itemize}
+\textbf{Hence every point of the arc, including $\zeta_0=e^{2\pi i/6}=e^{i\pi/3}$ ($N=6$, $a=1$)
+itself, is an accumulation point of the poles of $G^T_0$.} The point $a/N=\frac16=0.1\overline6$
+satisfies $0.143<0.1\overline6<0.857$ strictly (it is well inside the arc, not a boundary case for
+this theorem), so there is no edge-case subtlety here at all: it is exactly the kind of point the
+theorem's closure step was built to reach.
+
+\section*{2. The same argument transfers to $U,V$}
+
+\texttt{Corollary~cor:arcUV} (paper2a.tex lines 2538--2564), conditional on \texttt{thm:model} and
+\texttt{thm:RJ} exactly as every other $U,V$-pole statement in the paper, states: for every
+$\zeta=e^{2\pi ia/N}$ with $\gcd(a,N)=1$, $N\ge16$, $\frac16\le\frac aN\le\frac56$, the poles of $U$
+and $V$ accumulate at $\pm\sqrt\zeta,\pm\sqrt{\bar\zeta}$, and \emph{``the points $\pm e^{\pm i\pi a/N}$
+are dense in the two arcs and the accumulation set is closed''} --- the identical mechanism,
+applied this time to the arc $\arg x\in[\frac\pi6,\frac{5\pi}6]\cup[\frac{7\pi}6,\frac{11\pi}6]$.
+Here $a/N=\frac16$ is the closed left endpoint of $[\frac16,\frac56]$, not an interior point, but
+this does not affect the argument: density of $S$ up to and including approach from inside the
+interval (e.g.\ $a_k/N_k\downarrow\frac16$ with $N_k\ge16$, $a_k/N_k\ne\frac16$) still makes
+$\frac16$ a limit point of $S$, and $P'$ closed still forces $\frac16\in$ the covered set.
+\textbf{So the poles of $U$ and $V$ accumulate at $x=e^{i\pi/6}$ (and $\pm e^{\pm i\pi/6}$'s
+partners $e^{5i\pi/6},e^{-i\pi/6},e^{-5i\pi/6}$), which are exactly $\pm\sqrt{\zeta_0}$,
+$\pm\sqrt{\bar\zeta_0}$ at $\zeta_0=e^{i\pi/3}$: the $N=6$ point.} This is conditional exactly as
+stated in \texttt{rem:arcUV} (on \texttt{thm:model}, \texttt{thm:RJ}), no more and no less than
+every other point on the two arcs already claimed as proved in the paper.
+
+\section*{3. Why this was missed in this track}
+
+\texttt{P1i\_lemma.tex} already states this (line 27: ``The bare statement `the zeros of $B$
+accumulate at $\zeta$' is \emph{already} a consequence of P1h... this includes $\frac16$ and
+$\frac56$''; line 186: ``Accumulation of the zeros of $B$ at $e(\frac16)$, and of the poles of
+$U,V$ at $\pm\sqrt{e(\pm\frac16)}$, holds anyway by closure from P1h... What is open at $\frac16$ is
+the direct tie-ray statement''), and the older \texttt{P1\_N6/room1\_seat\_erdos.tex} restates it
+almost verbatim as its own calibration point before going on to a different (elementary,
+Rouch\'e-on-a-small-disk) task. But none of Rooms 8, 11, 13, 14, 16, 17 in \emph{this} directory
+(\texttt{P1\_N6\_v2}) cite \texttt{P1i\_lemma.tex} or this closure fact anywhere (checked by
+\texttt{grep -l "closure\textbackslash|P1i\_lemma\textbackslash|P1h" *.tex}: only Room~8's files
+match, and only for an unrelated ``small closure'' of two certified zeros, explicitly disclaimed
+there as \emph{``not a density/accumulation theorem''}). Room~11's and Room~17's own framing (``What
+this does and does not achieve: NOT achieved, still OPEN: $N=6$ itself'') is accurate about the
+\emph{contour construction}, but conflates that with accumulation, which is a strictly weaker
+consequence already available for free.
+
+\section*{4. What is actually still open}
+
+The genuinely open target, precisely: an explicit, self-contained, \texttt{prop:qi}-style statement
+\emph{at $N=6$ itself} (not reached via a limit over other $N$): a sequence $t^\ast_j\to0$ with
+$\arg t^\ast_j\to\theta^\ast=0$, $q^\ast_j=\zeta_0e^{-t^\ast_j}$ the \emph{unique} zero of
+$1-\Sigma_1$ (or of $B$, in the P1f/P1i normalization) in an explicit disc $D_j$ shrinking like
+$1/j$, with the two-saddle asymptotic $t^\ast_j=t^0_j+O(j^{-3})$ and explicit amplitudes, exactly as
+Corollary~\texttt{cor:Ui} gives at $N=4$. This is strictly stronger than accumulation (it pins down
+\emph{which} points converge to $\zeta_0$, along which ray, at which rate, self-containedly at
+$N=6$, rather than merely that $\zeta_0$ is a limit of points where such statements hold for
+\emph{other}, larger $N$). It is this narrower target that Rooms 11--17 correctly found blocked, and
+it remains blocked here too: this room does not build the $N=6$ analogue of
+$\Gamma_\pm^{(6)},\Pi_0^{(6)}$, the Part-(ii) crossing-region estimate, or the six-class landscape
+certificate. \textbf{Nothing in \S\S1--3 above closes that.}
+
+\section*{5. Secondary finding: Room 17's fix reaches further than Room 17/Room 11 credited}
+\label{sec:secondary}
+
+Room~11 (\texttt{room11\_seat\_erdos.tex}, Step~2--3) argued the direct contour construction stalls
+because the two constant-height legs $\Gamma_-^{(6)}$ (through $x_{-3}$, $\operatorname{Im}x=
+-\pi/6$) and $\Pi_0^{(6)}$ (through $x_{-1}$, $\operatorname{Im}x=\pi/6$) sit exactly on two of the
+five $N=6$ resonance loci for their \emph{entire length}, and concluded: ``the ray lemma's proof
+gives no lower bound on the separation constant $\delta$ \emph{anywhere along these legs}.'' Tracing
+through the classical derivation ($\delta\ge\mathcal D(a',\varphi)$, $\mathcal
+D(a',\varphi)=\inf_{\rho\ge0}\max\{\sigma(\varphi-\rho\sin\theta),Y(\rho)\}$,
+$Y(\rho)=1-e^{-a'-\rho\cos\theta}$) at the resonant class ($\varphi=0$) with $\theta=\theta^\ast=0$
+(so $\sin\theta=0$ identically): the rotation term $\sigma(\varphi-\rho\sin\theta)=\sigma(0)=0$ for
+\emph{every} $\rho$ (the resonance really does kill it completely, confirming Room~11's diagnosis of
+\emph{why} the classical angular margin is useless here), but $\mathcal D(a',0)=\inf_\rho\max\{0,
+Y(\rho)\}=\inf_\rho Y(\rho)$. Since $Y$ is non-decreasing in $\rho$ whenever $\cos\theta\ge0$
+(exactly Room~17's monotonicity observation, independently re-derived here), this infimum is
+$Y(0)=1-e^{-a'}$, which is \emph{strictly positive whenever $a'=2\operatorname{Re}x>0$}, and $\to0$
+only in the genuine limit $\operatorname{Re}x\to0$. So the correct statement is: the separation
+constant is positive and explicit ($\ge1-e^{-2\operatorname{Re}x}$) at \emph{every} point of both
+constant-height legs with $\operatorname{Re}x>0$ --- which is all of both legs except the single
+point where each one crosses $\operatorname{Re}x=0$ on its way out from $x_c$ (which itself has
+$\operatorname{Re}x_c<0$). This is not ``no lower bound anywhere along these legs''; it is a clean,
+uniform, positive lower bound on the entire $\operatorname{Re}x>0$ portion, including both bounded
+saddle windows (Room~17's own $N=6$-saddle number, $d(x_{-1})\ge0.5025\ldots$, is the special case
+$\operatorname{Re}x=\operatorname{Re}(x_{-1})=0.349119\ldots$ of exactly this general statement, not
+an isolated coincidence).
+
+\textbf{What this narrows the remaining gap to.} The genuine obstruction is therefore not ``the ray
+lemma fails throughout the resonant legs'' but specifically the single transition region
+$\operatorname{Re}x\lesssim0$ where each leg passes from the start box near $x_c$ through
+$\operatorname{Re}x=0$ into the region just analysed. In the $N=4$ template this is exactly the
+region handled by \texttt{lem:qi-bounds}(ii) --- the Poisson-summation/triple-product argument
+($\vartheta(z)=(z;P)_\infty(P/z;P)_\infty$, giving $\Upsilon(x)/r+M'(x)+\ldots$), which is a
+genuinely different piece of machinery from the ray lemma and was \emph{not} touched by Rooms
+11--17's work on $d(x)$, $d'(x)$. Building the $N$-generic ($N=6$, six residue classes) analogue of
+part (ii) is therefore the actual remaining obstruction for the direct contour, not the separation
+constant on the bulk of the legs (which this room now considers resolved, modulo writing out
+part~(i)'s other, non-$\delta$ error constants $c_\ell,K_n$ for $N=6$, not attempted here).
+
+\section*{Honest rigor labels}
+
+\begin{itemize}
+\item \textbf{PROVED (already, in paper2a.tex, unconditionally):} the poles of $G^T_0$ accumulate at
+$\zeta_0=e^{i\pi/3}$ ($N=6$). Mechanism: closure of the dense accumulation-point set $S$ established
+by Theorem~\texttt{thm:arc}, applied at $a/N=\frac16\in(0.143,0.857)$. No new computation was needed;
+this room verified the argument line-by-line against paper2a.tex and confirmed $\frac16$ is strictly
+interior to the covered arc.
+\item \textbf{PROVED (already, in paper2a.tex, conditional on \texttt{thm:model},\texttt{thm:RJ},
+same conditionality as the rest of the $U,V$ theory):} the poles of $U,V$ accumulate at $\pm\sqrt{
+\zeta_0},\pm\sqrt{\bar\zeta_0}$. Mechanism: the identical closure argument via
+Corollary~\texttt{cor:arcUV}, with $\frac16$ as the (still-covered, by density-from-inside) left
+endpoint of $[\frac16,\frac56]$.
+\item \textbf{OPEN, correctly identified as such by Rooms 11/13/14/16/17, and still open after this
+room:} the direct, self-contained $N=6$ tie-ray statement (the literal \texttt{prop:qi} analogue at
+$N=6$ itself, with an explicit two-saddle asymptotic for $t^\ast_j$).
+\item \textbf{HEURISTIC/clarifying, this room, \S\ref{sec:secondary}:} Room~11's ``no lower bound
+anywhere along the legs'' is an overstatement; Room~17's bound (independently re-derived here via
+the classical $\mathcal D(a',\varphi)$ formula rather than asserted from scratch) gives a clean
+positive separation constant on all of $\operatorname{Re}x>0$ on both constant-height legs, not just
+at the saddle points. This narrows, but does not close, the remaining construction: what is missing
+is specifically an $N=6$/six-class analogue of \texttt{lem:qi-bounds}(ii) for the
+$\operatorname{Re}x\lesssim0$ crossing region, not the ray lemma itself.
+\end{itemize}
+
+\section*{Why routes (a)/(b) of the brief were not pursued further here}
+
+Given \S\S1--4, the brief's stated goal (``giving a sequence of zeros $t^\ast_j\to$ the saddle,
+hence accumulation at $e(1/6)$'') is achieved by a two-line closure argument already sitting in the
+paper, without needing route~(a)'s full contour or route~(b)'s longer certified sequence. Extending
+Room~1's direct Rouch\'e/winding-number certification (route~(b)) to more zeros $j=1,\ldots,J$ would
+still be worthwhile \emph{for the direct tie-ray statement} (\S4), since it is independent evidence
+for that narrower, still-open claim, but it would not add anything to the accumulation question
+itself, which this room found already closed. No new heavy computation was run in this room; the
+finding is a proof-reading/cross-referencing result, checked against the primary sources
+(\texttt{paper2a.tex} lines 2496--2564, \texttt{P1i\_lemma.tex} lines 14--31 and 178--199) rather
+than against any room summary.
+
+\end{document}

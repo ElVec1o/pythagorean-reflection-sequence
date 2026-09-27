@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{P1\_N6\_v2 series: scope correction (Room 18, confirmed by Reviewer BB)}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{Correction to the whole P1\_N6\_v2 series (Rooms 8, 11, 13, 14, 16, 17)}
+
+\textbf{Accumulation of poles at $\zeta_0=e(1/6)$ was never open.} \texttt{paper2a.tex} itself
+already states, verbatim, at the point where the N=6 obstruction is first discussed (the
+\texttt{rem:arcobstruction} paragraph following $N=6<16$): ``Accumulation of the zeros of $B$ at
+$e^{2\pi i/6}$, and of the poles of $U,V$ at $\pm\sqrt{e^{\pm2\pi i/6}}$, still holds
+unconditionally-in-method by closure from Theorem~\texttt{thm:arc}/Corollary~\texttt{cor:arcUV}
+... what is open at $1/6$ is only the direct, single-point, tie-ray statement.'' This is a
+straightforward instance of the closed-derived-set argument: $1/6\approx0.1667$ lies strictly
+inside the proved arc $[0.143,0.857]$ (\texttt{thm:arc}) and at the closed endpoint of
+$[1/6,5/6]$ (\texttt{cor:arcUV}), both proved dense-hence-closed accumulation sets. The same fact
+is also stated in \texttt{P1i\_lemma.tex} (lines 27, 186) and in the original
+\texttt{P1\_N6/room1\_seat\_erdos.tex} (line 20).
+
+\textbf{None of Rooms 8, 11, 13, 14, 16, 17 cited this}, and their stated goals (``close N=6,''
+``N=6 remains OPEN'') conflated the already-proved accumulation statement with a strictly
+\emph{stronger}, genuinely open question: \textbf{the direct tie-ray statement at N=6 itself} --
+an explicit, N=6-specific sequence of zeros along the tie ray, established via an N=6 analogue of
+\texttt{prop:qi}'s own contour/Rouch\'e construction, rather than via the closure argument.
+
+\textbf{Nothing mathematical in the series is wrong.} Room 17's separation-constant bound
+($D(a',\varphi)\ge1-e^{-a'}$, band-uniform, confirmed by 3 independent reviewers) is a real,
+correct fact about a real sub-piece of the (still hypothetical) direct construction. What needs
+correcting is only the framing: this work is progress toward the \emph{direct tie-ray statement},
+not toward accumulation (which needs nothing further).
+
+\textbf{Secondary correction (Room 18, confirmed):} Room 11's stated verdict --- ``the ray lemma
+gives no lower bound on the separation constant anywhere along the resonant legs'' --- was an
+overgeneralization. Room 11's own detailed argument only established this for the \emph{initial
+stretch} near the starting point $x_c$; Room 17's bound shows $\delta\ge1-e^{-2\operatorname{Re}(x)}$
+holds cleanly on the entire $\operatorname{Re}(x)>0$ portion of both legs. \textbf{The true
+remaining gap for the hypothetical direct construction is narrower still: specifically the
+$\operatorname{Re}(x)\lesssim0$ crossing region}, i.e.\ an N=6 analogue of
+\texttt{lem:qi-bounds}(ii), which nobody has attempted.
+
+\textbf{No paper2a edit needed} -- its own wording was already correct; only this repository's
+internal room notes needed the correction, recorded here.
+
+\section*{Corrected status, going forward}
+
+\begin{itemize}
+\item Accumulation at $e(1/6)$ (and $\pm\sqrt{\cdot}$ for U,V): \textbf{PROVED}, always was, via
+closure. Nothing to do here.
+\item Direct tie-ray statement at N=6: \textbf{OPEN}. Progress so far: the separation-constant
+piece on $\operatorname{Re}(x)>0$ is solved (Room 17). The $\operatorname{Re}(x)\lesssim0$
+crossing-region estimate (an N=6 analogue of \texttt{lem:qi-bounds}(ii)) is the next concrete,
+well-scoped target, not yet attempted.
+\end{itemize}
+
+\end{document}
