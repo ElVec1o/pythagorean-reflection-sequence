@@ -48,18 +48,43 @@ closing line propagating Room 26's stale claim one step further) -- a real hazar
 \texttt{lem:qi-bounds}} -- the separation-constant estimate on both sides of the contour, and the
 crossing-region estimate's every named constant, are now derived and confirmed.
 
-\section*{Still missing, unchanged in scope}
+\section*{Correction (post-Rooms 27--28): the remaining work is NOT purely mechanical after all}
+
+Room 27 certified the constant-height legs $\operatorname{Im}(x)=\mp\pi/6$ rigorously for
+$\operatorname{Re}(x)\gtrsim4$. Room 28 then tried to push this down toward the saddles
+themselves and found a \textbf{decisive negative}, not a numerics gap: for
+$\operatorname{Re}(x)\in(0,\sim4.0)$ on these legs -- including the saddle points
+$x_{-1},x_{-3}$ themselves, exactly where the eventual contour needs to pass -- the
+\emph{true, exact} landscape quantity (checked in plain floating point, no certificate
+looseness) is genuinely positive there (driven by the edge explicit modes $\mu=\pm22$), not
+merely uncertified. Two natural fixes (a per-mode reference instead of a fixed $V_{\rm ref}$;
+tighter mode-window bounds) were both ruled out rigorously as offering no possible gain -- one is
+a pure algebraic relabeling of the same quantity.
+
+\textbf{Conclusion: the current per-mode-vs-fixed-reference landscape formulation cannot reach
+the saddle-adjacent region, full stop.} Closing it needs either a genuinely different aggregate/
+bulk cancellation argument across modes (individual modes overshoot but might cancel in whatever
+quantity a real Rouch\'e argument actually needs), or the crossing-region bookkeeping
+($\Upsilon,M',K'$, now fully derived by Rooms 21/24/25/26) applied in a structurally different
+way than the term-by-term landscape check. \textbf{This is the same fundamental $T<0$ obstruction
+this entire N=6 investigation started from} (\texttt{P1\_N6\_note.tex}, the very first room),
+now understood far more precisely than at the start, but not resolved by the certificate-building
+approach that closed every other piece.
+
+\section*{Still missing (revised)}
 \begin{itemize}
-\item \textbf{Constant-height leg certificates} ($\operatorname{Im}(x)=\mp\pi/6$): Room 22
-rigorously certified only the real-axis $\operatorname{Re}(x)>0$ approach segment. The legs
-themselves (where the contour actually crosses near the resonance) have not been certified.
-\item \textbf{The actual Rouch\'e winding-number step}: applying the now-complete estimate to an
-actual closed contour and computing the winding number, following \texttt{prop:qi} Step 4's
-pattern.
+\item \textbf{The saddle-adjacent region on the constant-height legs} ($\operatorname{Re}(x)\in
+(0,\sim4)$): confirmed NOT closeable by the current method (Room 28). Needs new analytic work.
+\item \textbf{The crossing region} $\operatorname{Re}(x)\le0$: the constants are derived (Rooms
+21/24/25/26) but no certificate has been attempted there yet.
+\item \textbf{The head check}: mentioned but not attempted.
+\item \textbf{The actual Rouch\'e winding-number step}.
 \end{itemize}
-Both are now well-defined, mechanical(-in-spirit) tasks building on fully-derived machinery,
-not open mathematics requiring new ideas -- a qualitatively different, more tractable kind of
-remaining work than what this 19-room investigation started with.
+The separation-constant and crossing-region \emph{constants} (the analytic derivation phase) are
+still genuinely complete and confirmed (unchanged from above) -- what changed is that
+\emph{applying} them via the term-by-term landscape check does not, by itself, reach the one
+region that matters most. A full closure now plausibly needs one more genuine analytic idea, not
+just more certificate engineering.
 
 \section*{Net assessment}
 This is, by a wide margin, the single most thoroughly adversarially-tested line of mathematics in
