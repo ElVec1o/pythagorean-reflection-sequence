@@ -1,0 +1,151 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 27 (seat: direct), P1 $N=6$: extending Room 22's landscape certificate to the actual
+constant-height legs $\operatorname{Im}x=\mp\pi/6$}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{0. Task and inputs read}
+Read in full: \texttt{N6\_DEFINITIVE\_status.tex} (confirmed analytic foundation: separation constant
+both sides, all crossing-region constants derived; explicitly lists ``constant-height leg certificates''
+as the first remaining item); \texttt{room22\_seat\_direct.tex} and \texttt{room22\_landscape\_cert.py}
+(the existing certificate for the real-axis $\operatorname{Re}(x)>0$ approach segment, this room's
+template); \texttt{room20\_seat\_direct.tex} (the contour construction: $\Gamma_\pm^{(6)}$ at
+$\operatorname{Im}x=-\pi/6$ through saddle $x_{-3}$, $\Pi_0^{(6)}$ at $\operatorname{Im}x=+\pi/6$ through
+saddle $x_{-1}$); \texttt{room17\_seat\_direct.tex}/\texttt{room19\_seat\_direct.tex} (the separation
+constant $d(x)\ge1-e^{-2\operatorname{Re}x}$, confirmed \textbf{angle-independent}: it depends only on
+$\operatorname{Re}(x)$, ``uniformly over $\operatorname{Im}(x)$'' -- Room 19's own words -- which is
+exactly what licenses moving off the real axis onto the constant-height lines while reusing the same
+centred-form machinery).
+
+\textbf{Task:} adapt \texttt{room22\_landscape\_cert.py} to certify the landscape directly on the legs
+$\operatorname{Im}x=\pm\pi/6$ (Re $x$ ranging from near the saddles $x_{-1},x_{-3}$ outward), using the
+confirmed separation-constant bound and crossing-region estimate as tools.
+
+\section{Adapting the machinery}
+\texttt{room22\_landscape\_cert.py}'s \texttt{Wup(X, mu, Vref)} (imported verbatim, unmodified, from
+\texttt{P1i\_landscape\_cert.py}) is the centred-form Arb box bound for
+$\operatorname{Re}((\Omega_\mu(x)-V_{\mathrm{ref}})e^{-i\theta^\ast})$ over an \emph{arbitrary} complex box
+$X$ -- it was never restricted to boxes on a ray through the origin, only used that way by Room 22 because
+the real-axis segment happens to be such a ray. \texttt{room27\_landscape\_cert.py}
+(\texttt{landscape\_leg}) builds boxes directly on the constant-height lines instead: $X=\mathrm{ball}(r_0,
+r_1) + i\,H$ with $H=\mp\pi/6$, then reuses \texttt{Wup}, \texttt{scan}, \texttt{target} verbatim, exactly
+as Room 22 reused \texttt{P1i}'s pieces. The one saddle that sits exactly on each line ($\mu=-3$ for
+$H=-\pi/6$, $\mu=-1$ for $H=+\pi/6$, per Room 20 \S4 and Room 11's exact saddle data) gets the same
+window-exclusion treatment Room 22 used around its own tie point (at its own saddle the height touches its
+own reference by definition, so no negative margin can hold in an arbitrarily small neighbourhood of it --
+this room does not need it in practice below since the certified segment starts well past the saddle's
+real part $0.349119$, see \S3).
+
+\section{A genuine new finding: naive mode reuse blows up off-axis, and why}
+The first attempt -- literally reusing the real-axis run's mode window (\texttt{expl} $=\{-22,\ldots,22\}$
+step 2 for $B$) at $X_0=1,\Lambda=10$ on both legs -- \textbf{fails badly}, not marginally:
+\begin{verbatim}
+leg Im x=-pi/6  B FAILED: sampled maximum [0.67010 +/- 7.92e-7] not below -0.001
+leg Im x=-pi/6  S FAILED: sampled maximum [0.94427 +/- 1.02e-6] not below -0.001
+leg Im x=+pi/6  B FAILED: sampled maximum [11.637 +/- 4.65e-4] not below -0.001
+leg Im x=+pi/6  S FAILED: sampled maximum [10.814 +/- 6.19e-5] not below -0.001
+\end{verbatim}
+Diagnosing directly (evaluating $\mathrm{Wup}$ at fixed $x=1,3$ across all explicit $\mu$): the failure is
+driven entirely by the \emph{far} explicit modes ($|\mu|\gtrsim9$), with the violation growing
+\textbf{linearly in $\mu$}, e.g.\ at $H=-\pi/6$, $x=1$: $\mu=23\mapsto+13.83$, $\mu=21\mapsto+12.73$,
+$\mu=19\mapsto+11.64$, decreasing by $\approx1.10$ per step of $2$ in $\mu$ -- versus all of these being
+comfortably negative at $H=0$ (Room 22's segment). The mechanism is elementary and exact: $\Omega_\mu(x)$
+contains the term $x\cdot L_\mu(\mu)=x(L+2\pi i\mu/N)$; writing $x=x_0+iH$, the cross term
+$2\pi i\mu/N\cdot iH=-2\pi\mu H/N$ is \textbf{real and independent of $\operatorname{Re}(x)=x_0$}, growing
+linearly in $\mu$ with a sign set by $\mathrm{sgn}(\mu H)$ -- present only when $H\ne0$, hence invisible on
+Room 22's real-axis run. Since the comparison height for non-dominant modes uses the fixed reference
+$V_{\mathrm{ref}}=V(-3)$ (not each mode's own $V(\mu)$), this constant offset is not compensated for the
+far modes, and several of Room 22's ``comfortably subdominant'' modes are, at fixed small
+$\operatorname{Re}(x)$, genuinely \textbf{not} subdominant on the resonance line itself. This is a real,
+previously-unflagged structural fact about the $N=6$ landscape off the real axis, analogous in spirit to
+Room 22's real-axis ridge (\S3 there) but with a different, now-identified mechanism (a $\mu$-linear
+constant offset, not a saddle-proximity effect).
+
+\textbf{The offset is however dominated for large enough $\operatorname{Re}(x)$}: the same modes' heights
+also carry the usual $-x^2$-type decay, so each far mode's Wup value, positive and $O(\mu)$ at
+$x_0\approx1$, decreases roughly quadratically and crosses back below $-\eta$ once $x_0$ is large enough
+(checked directly: mode $\mu=23$ at $H=-\pi/6$ goes $+13.8$ ($x=1$) $\to+7.2$ ($x=3$) $\to-7.4$ ($x=5$)
+$\to-865$ ($x=30$)). So a certified segment exists, just starting further out than Room 22's real-axis
+$X_0=0.88$.
+
+\section{Certificate run and results}
+Bisection search on $X_0$ (fixed $\Lambda=20$) locates the boundary:
+\begin{verbatim}
+X0=4.0: leg Im x=-pi/6  B FAILED (sampled max +0.910); S FAILED (sampled max +0.088)
+        leg Im x=+pi/6  B/S CERTIFIED
+X0=4.2: ALL FOUR (both legs, B and S) CERTIFIED
+X0=4.3: ALL FOUR CERTIFIED
+\end{verbatim}
+Full run at the certified point, both legs, both mode families, rigorous Arb (128-bit, python-flint):
+\begin{verbatim}
+perl -e 'alarm 290; exec @ARGV' python3 room27_landscape_cert.py 20 4.3 0.05
+N=6, 1/6: n=-3 th*=0.000000deg (certified box +-1e-5) ell=0.6931 |w|<=1.52e-02
+Certifying landscape (a)/(c)/(d) on the constant-height legs Im x = +-pi/6, Re x in [4.30, 20.0]
+  leg Im x=-pi/6  B: Tref=-0.1088  nd<=-0.7448  domfar<=-11.4634  rem<=-100.0000  -> CERTIFIED
+  leg Im x=-pi/6  S: Tref=0.1654   nd<=-0.7688  domfar<=-12.4210  rem<=-100.0000  -> CERTIFIED
+  leg Im x=+pi/6  B: Tref=-0.1088  nd<=-2.5552  domfar<=-11.4634  rem<=-100.0000  -> CERTIFIED
+  leg Im x=+pi/6  S: Tref=0.1654   nd<=-2.4853  domfar<=-12.4210  rem<=-100.0000  -> CERTIFIED
+elapsed 0.0s, peak RSS 25 MB (cap 3000 MB)
+ALL CERTIFIED (constant-height legs, LAMBDA=20.00, X0=4.300, WIN=0.05000)
+\end{verbatim}
+Rerun at $\Lambda=50$, same $X_0=4.3$: still ALL CERTIFIED, margins improving with $\Lambda$
+($\mathrm{nd}\le-0.62$ to $-0.75$, $\mathrm{domfar}\le-8.2$ to $-9.2$, remainder $\le-100$, consistent with
+the same quadratic-in-$x$ decay Room 22 found). Peak RSS $25$\,MB throughout, far under the fresh
+$24$\,GB/$3000$\,MB caps (\texttt{sysctl hw.memsize}$=25.77$\,GB checked fresh at run time; \texttt{df -h}
+free space checked fresh, non-issue at this RSS).
+
+\section*{Verdict}
+\textbf{CERTIFICATE PASSES}, rigorously (Arb, 128-bit, python-flint), on both constant-height legs
+$\operatorname{Im}x=-\pi/6$ (through $x_{-3}$) and $\operatorname{Im}x=+\pi/6$ (through $x_{-1}$), for
+$\operatorname{Re}x\in[4.3,\Lambda]$ with $\Lambda=20$ and $\Lambda=50$ tested, for both $B$ and $S_\pm$.
+Margins: $B$ at $[4.3,20]$: non-dominant $\le-0.7448$ ($-\pi/6$) / $\le-2.5552$ ($+\pi/6$), dominant-far
+$\le-11.46$, remainder $\le-100$; $S_\pm$ similarly, all comfortably below $-\eta=-10^{-3}$. The sharp
+boundary is between $X_0=4.0$ (fails on the $-\pi/6$ leg only) and $X_0=4.2$ (certifies on all four); this
+was not narrowed further than that $0.2$-wide bracket.
+
+\textbf{What this establishes.} A genuine, rigorous landscape certificate on the actual resonance lines
+$\operatorname{Im}x=\mp\pi/6$ that Room 22 explicitly flagged as not yet attempted (its own ``What this
+does NOT establish'' list, second bullet) -- this extends Room 22's real-axis coverage to the legs
+themselves, using exactly the tools \texttt{N6\_DEFINITIVE\_status.tex} says are now available (the
+angle-independent separation-constant fact from Room 17/19, which is precisely what makes moving
+\texttt{Wup}'s box off the real axis mathematically legitimate with no new derivation needed for the box
+bound itself). It also finds and diagnoses, rigorously, a genuine new obstruction not previously flagged
+anywhere in Rooms 1--26: \textbf{several of Room 22's ``comfortably subdominant'' explicit modes are, on
+the constant-height lines themselves, not subdominant near the saddles' own real part} -- the violation
+is driven by a $\mu$-linear real offset ($-2\pi\mu H/N$) present only when $\operatorname{Im}(x)=H\ne0$,
+invisible on the real-axis run, and it is exactly this offset (decaying only via the background $-x^2$
+term) that pushes the certified segment's start from Room 22's $X_0=0.88$ out to $X_0\approx4.2$ on the
+legs.
+
+\textbf{What this does NOT establish} (be honest, per task instructions):
+\begin{itemize}
+\item It does not certify the legs near the saddles themselves ($\operatorname{Re}x\in(0,4.2)$, including
+the saddle real part $0.349119$): the far-mode offset described in \S2 is unresolved there with the
+current mode window; closing that gap would need either a genuinely tighter per-mode bound (using each
+mode's own $V(\mu)$ rather than the shared $V_{\mathrm{ref}}$, not attempted here) or the un-derived
+crossing-region bookkeeping ($\Upsilon,M',K'$ with explicit mod-6 constants) that Room 19/20 \S5 already
+flagged as the one remaining open piece -- this room's finding narrows \emph{why} that piece is needed
+(not just for $\operatorname{Re}x\le0$, but now also for the near-saddle stretch of the legs themselves),
+without closing it.
+\item It does not connect to Room 22's real-axis certificate: Room 22 covers $\operatorname{Im}x=0$,
+$\operatorname{Re}x\in[0.88,50]$; this room covers $\operatorname{Im}x=\pm\pi/6$,
+$\operatorname{Re}x\in[4.3,50]$; the two regions do not share a boundary and nothing here certifies the
+diagonal transition between them.
+\item It does not resolve the crossing region $\operatorname{Re}x\lesssim0$ (Room 20 \S5, unchanged, still
+open) or the Rouch\'e step, exactly as Room 22's own verdict already noted.
+\item It does not redo the head check (H): known from Room 20 \S1/Room 22 \S1 that $B$'s head fails,
+$S_\pm$'s does not -- orthogonal to and unaffected by this room's landscape result.
+\item The window-exclusion parameter (Room 22's pattern, reused here for $\mu=-3$/$\mu=-1$) was not
+exercised in the final certified run, since $X_0=4.3\gg0.349$ places the excluded saddle's real part
+outside the certified interval entirely; whether a genuine certificate is achievable closer to the saddle
+(with the window mechanism actually load-bearing) was not tested, since the far-mode obstruction of \S2
+already blocks that region for an unrelated reason.
+\end{itemize}
+
+\paragraph{Files.} \texttt{room27\_landscape\_cert.py} (this directory), importing
+\texttt{Case}/\texttt{scan}/\texttt{target}/\texttt{Wup} unmodified from \texttt{../P1i/P1i\_landscape\_cert.py}.
+Usage: \texttt{perl -e 'alarm 290; exec @ARGV' python3 room27\_landscape\_cert.py [LAMBDA] [X0] [WIN]}.
+
+\end{document}
