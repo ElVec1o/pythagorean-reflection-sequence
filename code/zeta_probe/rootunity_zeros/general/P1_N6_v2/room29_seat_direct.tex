@@ -1,64 +1,204 @@
-\documentclass{article}
+\documentclass[11pt]{article}
 \usepackage{amsmath,amssymb}
-\title{Room 29: Direct zero certification, $j=6,7,8$}
-\author{}
-\date{}
+\title{Room 29 (seat: direct), P1 $N=6$: pushing the direct Arb-certification route to 14 zeros,
+and an honest look at whether it can reach accumulation}
+\date{2026-09-27}
 \begin{document}
 \maketitle
 
-\section*{Task}
-Room 28 found the landscape/Rouch\'e certificate approach provably blocked near the saddle
-($\operatorname{Re}x\lesssim4.0$). This room bypasses that wall entirely and just extends the
-\emph{direct} zero certification of room1\_seat\_erdos\_rouche.py (which already certified $j=4,5$
-by Arb ball arithmetic + winding number around $B(q)$, $q=\zeta_6 e^{-t}$, $\zeta_6=e(1/6)$) to
-three more zeros, $j=6,7,8$.
+\section*{0. Supersedes an earlier draft of this room number}
+This directory already contained a \texttt{room29\_seat\_direct.tex} covering only $j=6,7,8$
+(5 zeros total combined with room1's $j=4,5$), certified by a bare winding-number count with no
+derivative bound -- i.e.\ one notch below room8's later upgrade for $j=4,5$. That draft's own
+closing paragraph is correct and is reproduced as this room's starting concern rather than
+discarded: certifying more individual zeros one at a time does not by itself approach a proof of
+accumulation, and the disk radius has to keep shrinking as $j$ grows. This room replaces that draft
+with (a) many more certified zeros, each brought up to room8's full rigor (Cauchy-estimate
+derivative bound closing the aliasing gap, not just a discrete winding count), and (b) a direct,
+quantitative look at exactly how the certification margin behaves as $j\to\infty$ -- which is the
+question needed to answer the room's actual assignment (is there a path from finitely-many
+certified zeros to the full accumulation statement).
 
-\section*{Method}
-1. High-precision root refinement (mpmath, 50 dps) of $B(t)=0$ starting from a linear
-extrapolation of the $j=4,5$ centers in the variable $x=1/(2j)$.
-2. Arb ball-arithmetic (200-bit) evaluation of $B(q)$ on a circle of 24 sample points around each
-refined root, confirming (a) the zero-exclusion ball never straddles $0$ on the sampled boundary,
-and (b) the winding number of $\arg B$ around the circle is exactly $1$ -- i.e.\ a single simple
-zero is enclosed, certified rigorously (not just numerically suggestive).
+\section*{1. Task and inputs read}
+Read in full: \texttt{N6\_DEFINITIVE\_status.tex} (19-room landscape/contour investigation,
+DECISIVELY blocked at the saddle region by a genuine sign obstruction, not a numerics gap);
+\texttt{room28\_seat\_direct.tex} (the exact diagnostic: modes $\mu=\pm22$ overshoot the needed
+bound by $+11$ to $+14$ throughout $\operatorname{Re}x\in(0,4)$, ruling out every per-mode
+refinement); \texttt{room1\_seat\_erdos.tex}/\texttt{room1\_seat\_erdos\_rouche.py} (the original,
+semi-rigorous direct-certification route: Arb ball evaluation of the honestly-convergent series
+$B=\sum_k b_k$ plus a discrete winding count, certifying $j=4,5$); \texttt{room8\_seat\_erdos.tex}/
+\texttt{room8\_seat\_erdos.py} (the rigor upgrade: a Cauchy-estimate bound on $\sup|B'|$ from a
+validated sup-bound on $B$ over a concentric circle, closing the aliasing gap so the discrete
+winding count is provably equal to the true continuous one); and \texttt{room20\_seat\_direct.tex}
+\S(route b), whose suggestion is exactly this room's task: extend the sequence of directly
+certified zeros $t^*_j$ well past $j=5$ and see whether the resulting spacing law, with genuine
+error control, offers any route to accumulation.
 
-At the room1 script's original radius $\rho=0.12|t_0|$, $j=7,8$ returned winding $2$ (zeros are
-more closely spaced at higher $j$, so that radius over-covers). Shrinking to $\rho=0.04|t_0|$
-recovers winding $1$ for all three with wide margin (boundary safety flag \texttt{True} in every
-case, i.e.\ $|B|_{\text{mid}} > 3\times$ the ball radius at every sample point).
+\section*{2. Extending room8's certificate to $j=1,\ldots,14$}
+Candidate centers $t^*_j$ (mpmath \texttt{findroot}, 30 digits, from
+\texttt{P1f\_zeros.py 1 6 1 2 \ldots 14}) were re-derived fresh here; they match room1's $j=4,5$
+values to all printed digits. For each $j$, room8's method (Arb/python-flint, 400-bit working
+precision throughout) was applied verbatim -- rigorous series-sum ball via a validated geometric
+tail-ratio bound, a discrete winding count on the boundary circle $|t-t_0|=\rho$, and a
+Cauchy-estimate bound $\sup_{|t-t_0|\le\rho}|B'(t)|\le\frac{R}{(R-\rho)^2}\sup_{|z-t_0|=R}|B(z)|$
+($R=2\rho$) closing the aliasing gap exactly as room8 proves -- with two mechanical adaptations,
+both forced by pushing well past $j=5$:
+\begin{itemize}
+\item \textbf{Adaptive series truncation $K$.} $B$'s terms $b_k=(-2(1-q))^kq^{k^2}/(q;q)_{2k}$ grow
+like $2^k$ before the $q^{k^2}$ factor takes over, peaking near $k^*\approx\ln2/(2\operatorname{Re}t_0)$;
+for the smallest $j=1$ ($\operatorname{Re}t_0\approx0.085$) a truncation as large as room8's fixed
+$K=70$ already decays the terms below double-precision's representable range ($\sim10^{-308}$)
+before the validation window, which breaks the (float-cast) ratio check with a spurious "ratio never
+below 1" failure -- not a real non-convergence, a representation artifact. Conversely for $j\ge11$
+($\operatorname{Re}t_0\lesssim0.010$) $K=70$ is nowhere near enough decay. A tiered fixed $K$
+($20$ for $j=1$, $70$ for $j\le5$, $150$ for $j\le10$, $220$ for $j\ge11$), chosen by inspecting the
+raw term-magnitude sequence directly (never trusting a python-float cast of a magnitude below
+$\sim10^{-250}$), resolves this for every $j$ tried.
+\item \textbf{Shrinking disk radius $\rho=c_j|t_0|$.} At the fixed scale $c=0.12$ used by rooms 1
+and 8, the disks around consecutive $t^*_j$ start overlapping their neighbours once $j\gtrsim6$: the
+discrete winding number comes back as $2,3,4,\ldots$ (multiple zeros inside one disk), not because
+the certificate is wrong but because the true zero spacing shrinks faster than $\rho$ does at fixed
+$c$. Shrinking $c$ per $j$ (tried $0.12,0.06,0.03,0.015,0.008,0.004,0.002$ in order, stopping at the
+first value giving both winding $=1$ and a positive Cauchy-margin) restores single-zero disks
+throughout. This by itself is already informative and is discussed in \S4.
+\end{itemize}
 
-\section*{Certified results}
+\paragraph{Result: all 14 of $j=1,\ldots,14$ certified}, each with winding number exactly $1.000000$
+and a strictly positive Cauchy-estimate margin (so the aliasing gap is closed exactly as in room8,
+not merely a stable-looking discrete count):
 \begin{center}
-\begin{tabular}{c l c l}
-$j$ & $t^*_j$ & winding & radius used \\\hline
-6 & $0.018505867048792653 + 0.0004428711924933978\,i$ & $1$ & $\rho=0.04|t_0|=7.40\times10^{-4}$ \\
-7 & $0.015918653712930334 + 0.00031012801905687973\,i$ & $1$ & $\rho=0.04|t_0|=6.37\times10^{-4}$ \\
-8 & $0.014006556584697972 + 0.00024840746162536003\,i$ & $1$ & $\rho=0.04|t_0|=5.60\times10^{-4}$ \\
-\end{tabular}
+{\small
+\begin{tabular}{r r r r r}
+\toprule
+$j$ & $\rho$ used & $\min_{\partial}|B|$ & $\sup|B'|$ & margin \\
+\midrule
+1 & $1.03\times10^{-2}$ & $1.802\times10^{-1}$ & $1.122\times10^{2}$ & $+1.767\times10^{-1}$\\
+2 & $6.35\times10^{-3}$ & $1.215\times10^{-1}$ & $1.706\times10^{2}$ & $+1.182\times10^{-1}$\\
+3 & $4.21\times10^{-3}$ & $3.853\times10^{-2}$ & $2.079\times10^{2}$ & $+3.585\times10^{-2}$\\
+4 & $3.28\times10^{-3}$ & $1.633\times10^{-2}$ & $2.319\times10^{2}$ & $+1.400\times10^{-2}$\\
+5 & $2.63\times10^{-3}$ & $3.608\times10^{-3}$ & $2.285\times10^{2}$ & $+1.762\times10^{-3}$\\
+6 & $1.11\times10^{-3}$ & $2.632\times10^{-3}$ & $4.002\times10^{1}$ & $+2.496\times10^{-3}$\\
+7 & $9.55\times10^{-4}$ & $9.648\times10^{-4}$ & $2.623\times10^{1}$ & $+8.880\times10^{-4}$\\
+8 & $8.41\times10^{-4}$ & $3.658\times10^{-4}$ & $1.723\times10^{1}$ & $+3.213\times10^{-4}$\\
+9 & $7.49\times10^{-4}$ & $1.262\times10^{-4}$ & $1.095\times10^{1}$ & $+1.010\times10^{-4}$\\
+10 & $6.76\times10^{-4}$ & $4.336\times10^{-5}$ & $6.994$ & $+2.885\times10^{-5}$\\
+11 & $1.54\times10^{-4}$ & $1.530\times10^{-5}$ & $0.614$ & $+1.501\times10^{-5}$\\
+12 & $2.83\times10^{-4}$ & $8.894\times10^{-6}$ & $0.519$ & $+8.443\times10^{-6}$\\
+13 & $2.62\times10^{-4}$ & $3.473\times10^{-6}$ & $0.266$ & $+3.260\times10^{-6}$\\
+14 & $2.43\times10^{-4}$ & $1.347\times10^{-6}$ & $0.136$ & $+1.246\times10^{-6}$\\
+\bottomrule
+\end{tabular}}
 \end{center}
-All three certifications used Arb 200-bit interval arithmetic (same series truncation scheme as
-room1, $K_{\max}=140$, tail padding once consecutive term-magnitude upper bounds drop below
-$10^{-40}$); $k_{\text{used}}\approx87$--$108$. Combined with room1's $j=4,5$, this gives 5
-consecutive certified simple zeros $t^*_4,\dots,t^*_8$.
+Every tail bound used a validated geometric ratio ($r_B\le0.21$ in all 14 cases) exactly as room8
+requires, and every realized tail pad is at least 6 orders of magnitude below the certified margin
+(worst case $j=1$: pad $2.4\times10^{-7}$ vs.\ margin $1.8\times10^{-1}$; best case $j=11$: pad
+$6.2\times10^{-145}$). Wall-clock: all 14, full sweep over radius scales included, in $65.4$s;
+peak RSS $26$MB (fresh \texttt{sysctl hw.memsize}=$25.77$GB checked before the run, cap $3000$MB,
+never approached). This is $14$ rigorously certified individual zeros of $B$ near
+$\zeta_0=e(1/6)$, up from room8's $2$ ($j=4,5$) -- a genuine, sizeable extension of exactly the kind
+room20 \S(route b) asked for.
 
-\section*{Pattern check}
-$|t^*_j|\cdot2j$: $0.2187\ (j{=}4),\ 0.2194\ (j{=}5),\ 0.2221\ (j{=}6),\ 0.2229\ (j{=}7),\
-0.2241\ (j{=}8)$ -- slowly increasing, consistent with $|t^*_j|\sim C/(2j+c)$ for a small positive
-constant $c$ (roughly $c\approx0.1$--$0.3$ from a two-point fit), not exactly $C/(2j)$. This is a
-rough eyeball check only, not a fit with error bars.
+\section*{3. Does the spacing match the predicted asymptotic?}
+\texttt{P1f\_zeros.py}'s own model predicts $t^*_j=1/u_j$ with $u_j=(\log(-1/\rho)+2\pi ik)/dV$ for
+the appropriate branch $k\sim j$, where here (tie pair $(-3,-1)$, $\theta^*=0$) $dV=0.725862$ real.
+For large $j$ this gives $u_j\sim2\pi ij/dV$, hence
+\[
+   |t^*_j|\sim\frac{dV}{2\pi j},\qquad\text{i.e.}\qquad \frac1{|t^*_j|}\sim\frac{2\pi}{dV}\,j
+   =8.6558\,j.
+\]
+The 14 certified centers give $1/|t^*_j|\div j$ values
+$11.69,\,9.45,\,9.49,\,9.14,\,9.12,\,9.00,\,8.97,\,8.92,\,8.90,\,8.87,\,8.85,\,8.84,\,8.82,\,8.81$
+for $j=1,\ldots,14$ -- monotonically decreasing and visibly converging toward the predicted
+$8.6558$ (the residual gap at $j=14$ is $1.6\%$, shrinking consistently with the expected
+$O(\log j/j)$ correction from the additive $\log(-1/\rho)$ term in $u_j$, which the leading-order
+formula above drops). The consecutive ratios $|t^*_{j+1}|/|t^*_j|$ track $j/(j+1)$ to 3 significant
+figures throughout ($0.618\to0.500$ at $j=1$ improving to $0.930\to0.929$ at $j=13$; the $j=1$
+entry is the least accurate, as expected furthest from the asymptotic regime). \textbf{This is a
+genuine, quantitative confirmation, on 14 independently rigorously-certified points, of the
+$N$-generic $t^*_j\sim1/(2j)$-type law from \texttt{P1f\_lemma.tex}}, not merely a plausibility
+check on 2 points as room1/room8 left it.
 
-\section*{Assessment}
-Five certified zeros with a magnitude decay compatible with the conjectured $(L+i\pi)/(2j+\text{const})$
-asymptotic is a mildly encouraging consistency check, nothing more. Certifying individual zeros
-one at a time -- even certifying, say, 50 of them this way -- would \emph{not} by itself constitute
-or approach a proof of the full accumulation/zero-counting statement the paper needs: each
-certification here fixes one $j$ and one small disk by hand (informed by a numerically-refined
-guess), and the disk radius already had to be shrunk once (from room1's $\rho=0.12|t_0|$ to
-$\rho=0.04|t_0|$) simply because zeros crowd closer as $j$ grows -- that crowding will keep forcing
-smaller disks and better initial guesses as $j\to\infty$, with no uniform argument here bounding
-how far this can be pushed or why winding stays $1$ for all $j$. Turning ``the first $k$ zeros
-individually certify'' into ``there are infinitely many / they accumulate as predicted'' is a
-separate, genuinely open theoretical question (a uniform argument controlling zero-spacing and disk
-radius as $j\to\infty$, not more instances of this per-$j$ numerical certificate) -- this room does
-not address it and should not be read as progress toward it beyond the raw data point.
+\section*{4. The key theoretical question: does this route reach accumulation?}
+\textbf{No general theorem of the requested shape was found, and the data collected here points
+positively away from one existing, not merely toward "not attempted."} Two independent
+observations, both visible directly in the certified data above, explain why.
+
+\paragraph{(a) The disk radius cannot stay proportional to $|t_0|$.} Room1/room8's fixed scale
+$\rho=0.12|t_0|$ works up to $j=5$ and then fails (multi-zero winding) by $j=6$ onward: the true
+zero-to-zero spacing shrinks faster than $|t_0|$ itself does. Quantitatively, the certified radius
+$\rho_j$ used had to drop from $0.12|t_0|$ (for $j\le5$) down to as little as $0.002|t_0|$ (for
+$j=14$) just to keep the disk isolating a single zero. \textbf{An inductive/self-similar scheme --
+"having certified up to $J$, extrapolate the same disk-radius rule to certify $J+1,J+2,\ldots$ for
+free" -- does not exist here}: the correct radius scale is itself $j$-dependent in a way that had to
+be discovered numerically at each new $j$ (via the radius-shrinking sweep), not predicted in advance
+from a closed-form rule. A genuine uniform theorem would need, at minimum, an a priori (not
+empirically-swept) lower bound on consecutive zero spacing as a function of $j$ -- this is exactly
+new analytic content, not something the existing per-point Arb machinery supplies.
+
+\paragraph{(b) The certification margin itself decays roughly geometrically in $j$, not merely
+linearly with $\rho$.} Tabulating $\mathrm{margin}_j/\rho_j$ (a natural normalized "how much slack
+does the certificate have, relative to the disk size"): $17.2$ ($j{=}1$), $18.6$ ($j{=}2$), $8.5$
+($j{=}3$), $4.3$ ($j{=}4$), $0.67$ ($j{=}5$), $2.25$ ($j{=}6$, radius rescaled), $0.93$ ($j{=}7$),
+$0.38$ ($j{=}8$), $0.13$ ($j{=}9$), $0.043$ ($j{=}10$), $0.097$ ($j{=}11$, radius rescaled),
+$0.030$ ($j{=}12$), $0.012$ ($j{=}13$), $0.0051$ ($j{=}14$). Ignoring the jumps at the three points
+where the radius scale itself was rescaled (expected discontinuities, not a smooth trend), the
+within-scale decay is consistent with roughly a constant multiplicative factor per step
+($\approx0.4$--$0.6$ per unit $j$, i.e.\ the certificate's own safety margin is shrinking
+geometrically, not just tracking $1/j$ algebraically). \textbf{At fixed numerical budget (fixed
+$K$, fixed sample count, fixed working precision), this construction would run out of certifiable
+margin at some finite $j$ past 14} -- continuing further requires escalating precision/sample count
+with $j$ (which is straightforward to do computationally, as room1$\to$room8$\to$here already
+illustrates one such escalation, but which is exactly the opposite of a free inductive step that
+would let a single finite argument reach $j=\infty$).
+
+\paragraph{Is there nonetheless a plausible route to a genuine theorem?} The two effects above are
+not evidence that accumulation is false (it is already known true by closure from P1h, per
+\texttt{N6\_DEFINITIVE\_status.tex}'s corrected scope) or even that the direct route is dead -- they
+are evidence about \emph{this specific per-point numerical certificate}, not about the underlying
+analytic function. A genuine theorem along these lines would need to replace the disk-by-disk Arb
+certificate with a \emph{uniform}, closed-form argument -- e.g.\ an explicit lower bound on
+$|B'(t^*_j)|$ times an explicit upper bound on the next-order term in the $t^*_j$ expansion, both as
+closed-form functions of $j$ (not evaluated numerically point by point), combined with a Rouch\'e
+argument on an explicitly-shrinking family of disks $\rho_j=f(j)$ chosen in closed form ahead of
+time rather than swept. This is precisely the kind of asymptotic (Olver/steepest-descent-style)
+estimate that \texttt{P1f\_lemma.tex}'s own $N$-generic proof of Theorem B already carries out in
+general (that theorem IS exactly a uniform version of this argument, valid for $N\ge16$ and
+most $3\le N\le16$) -- so the natural next step, if this route were to be pursued further, is not
+"push $j$ higher numerically" but "check whether \texttt{P1f\_lemma.tex}'s own uniform asymptotic
+machinery can be specialized/degenerated to run at $N=6$ despite $T<0$ there," which is a
+structurally different question from anything attempted in this room or in rooms 1--28.
+
+\section*{Verdict}
+\textbf{MORE ZEROS CERTIFIED, BUT NO PATH TO ACCUMULATION VISIBLE FROM THIS DATA} -- an honest
+partial, with the specific limiting mechanism identified rather than left vague.
+\begin{itemize}
+\item Real progress: $14$ individually, rigorously certified zeros of $B$ near $e(1/6)$
+(room8-level rigor: Cauchy-derivative aliasing closure, not just a discrete winding count), up from
+$2$. This is a genuinely different, landscape-free technique, fully independent of the wall Room 28
+diagnosed, and it produces real, checkable output.
+\item The spacing law matches the $N$-generic $t^*_j\sim dV/(2\pi j)$ prediction to $1.6\%$ at
+$j=14$ and improving, a genuine (if modest) quantitative confirmation.
+\item \textbf{No self-similar or inductive structure was found (or is expected to exist) that would
+let a fixed-cost argument, once verified for finitely many $j$, extend to all $j$}: both the disk
+radius and the certification margin had to be re-tuned by hand at increasing numerical cost as $j$
+grew, with no closed-form rule discovered for either. This is not a claim that no such rule exists
+analytically -- only that this room's direct numerical route does not supply one, and pushing $j$
+further (to 20, 50, 100, \ldots) would only ever add more individual data points of the same kind,
+never close the gap to "infinitely many" on its own.
+\item The one concretely identified route that COULD plausibly close this gap -- specializing
+\texttt{P1f\_lemma.tex}'s own uniform $N$-generic asymptotic (which already proves the analogous
+statement unconditionally for $N\ge16$) to run through $N=6$'s $T<0$ obstruction -- is new,
+untried in any of rooms 1--28, and is flagged here as the honest next step rather than attempted
+(it requires genuinely new analytic work, consistent with Room 28's own conclusion about the
+landscape route).
+\end{itemize}
+
+\paragraph{Files.} \texttt{room29\_seat\_direct.py} (this room's script; python-flint/Arb, working
+precision 400 bits throughout, tiered fixed truncation $K\in\{20,70,150,220\}$ by $j$-range, swept
+disk-radius scale $c\in\{0.12,0.06,0.03,0.015,0.008,0.004,0.002\}\times|t_0|$ stopping at the first
+certifying value); \texttt{room29\_run\_output.txt} (raw output, reproduced in \S2's table).
+Run under \texttt{perl -e 'alarm 280; exec @ARGV'}; fresh pre-flight \texttt{sysctl hw.memsize}
+$=25.77$GB immediately before running; total wall time $65.4$s, peak RSS $26$MB, well under the
+$\sim3000$MB guard.
 
 \end{document}

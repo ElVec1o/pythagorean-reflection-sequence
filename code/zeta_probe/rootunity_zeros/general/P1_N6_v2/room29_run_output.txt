@@ -1,0 +1,32 @@
+j= 1 t0=(0.08527657336+0.006563247233j)  rho_scale used  rho=1.0263e-02  winding=1.000000  min|B|=1.8020e-01  sup|B'|=1.1216e+02  chord=3.1488e-05  margin=1.7666e-01  CERTIFIED  (rB=0.148 tail=2.4e-07 Kmax_used=20 t=0.88s)
+j= 2 t0=(0.05271445399+0.00429830755j)  rho_scale used  rho=6.3467e-03  winding=1.000000  min|B|=1.2153e-01  sup|B'|=1.7056e+02  chord=1.9472e-05  margin=1.1821e-01  CERTIFIED  (rB=0.007 tail=6.8e-68 Kmax_used=70 t=1.95s)
+j= 3 t0=(0.03509147213+0.001335741484j)  rho_scale used  rho=4.2140e-03  winding=1.000000  min|B|=3.8533e-02  sup|B'|=2.0792e+02  chord=1.2928e-05  margin=3.5845e-02  CERTIFIED  (rB=0.045 tail=3.4e-38 Kmax_used=70 t=1.92s)
+j= 4 t0=(0.02732181489+0.001017999912j)  rho_scale used  rho=3.2809e-03  winding=1.000000  min|B|=1.6333e-02  sup|B'|=2.3191e+02  chord=1.0066e-05  margin=1.3999e-02  CERTIFIED  (rB=0.109 tail=5.8e-25 Kmax_used=70 t=1.93s)
+j= 5 t0=(0.02193370833+0.0005691659052j)  rho_scale used  rho=2.6329e-03  winding=1.000000  min|B|=3.6080e-03  sup|B'|=2.2848e+02  chord=8.0777e-06  margin=1.7623e-03  CERTIFIED  (rB=0.209 tail=1.2e-15 Kmax_used=70 t=1.83s)
+j= 6 t0=(0.01850586705+0.0004428711925j)  rho_scale used  rho=1.1107e-03  winding=1.000000  min|B|=2.6323e-03  sup|B'|=4.0022e+01  chord=3.4075e-06  margin=2.4960e-03  CERTIFIED  (rB=0.015 tail=9.4e-117 Kmax_used=150 t=3.28s)
+j= 7 t0=(0.01591865371+0.0003101280191j)  rho_scale used  rho=9.5530e-04  winding=1.000000  min|B|=9.6481e-04  sup|B'|=2.6225e+01  chord=2.9308e-06  margin=8.8795e-04  CERTIFIED  (rB=0.029 tail=5.9e-94 Kmax_used=150 t=3.42s)
+j= 8 t0=(0.01400655658+0.0002484074616j)  rho_scale used  rho=8.4053e-04  winding=1.000000  min|B|=3.6575e-04  sup|B'|=1.7234e+01  chord=2.5787e-06  margin=3.2131e-04  CERTIFIED  (rB=0.049 tail=4.6e-77 Kmax_used=150 t=3.28s)
+j= 9 t0=(0.01248463283+0.0001932414934j)  rho_scale used  rho=7.4917e-04  winding=1.000000  min|B|=1.2620e-04  sup|B'|=1.0949e+01  chord=2.2984e-06  margin=1.0103e-04  CERTIFIED  (rB=0.073 tail=1.4e-63 Kmax_used=150 t=3.23s)
+j=10 t0=(0.01127091954+0.0001595411873j)  rho_scale used  rho=6.7632e-04  winding=1.000000  min|B|=4.3360e-05  sup|B'|=6.9937e+00  chord=2.0749e-06  margin=2.8848e-05  CERTIFIED  (rB=0.104 tail=9.3e-53 Kmax_used=150 t=3.28s)
+j=11 t0=(0.01026720696+0.0001313345987j)  rho_scale used  rho=1.5402e-04  winding=1.000000  min|B|=1.5297e-05  sup|B'|=6.1424e-01  chord=4.7253e-07  margin=1.5007e-05  CERTIFIED  (rB=0.027 tail=6.2e-145 Kmax_used=220 t=8.80s)
+j=12 t0=(0.009430247745+0.0001113364088j)  rho_scale used  rho=2.8293e-04  winding=1.000000  min|B|=8.8939e-06  sup|B'|=5.1921e-01  chord=8.6801e-07  margin=8.4432e-06  CERTIFIED  (rB=0.040 tail=2.0e-121 Kmax_used=220 t=10.05s)
+j=13 t0=(0.008718077658+9.486643127e-05j)  rho_scale used  rho=2.6156e-04  winding=1.000000  min|B|=3.4728e-06  sup|B'|=2.6587e-01  chord=8.0245e-07  margin=3.2595e-06  CERTIFIED  (rB=0.055 tail=5.1e-107 Kmax_used=220 t=10.65s)
+j=14 t0=(0.008106642211+8.217672568e-05j)  rho_scale used  rho=2.4321e-04  winding=1.000000  min|B|=1.3470e-06  sup|B'|=1.3558e-01  chord=7.4616e-07  margin=1.2459e-06  CERTIFIED  (rB=0.072 tail=1.3e-94 Kmax_used=220 t=10.81s)
+       65.37 real        64.70 user         0.18 sys
+            26116096  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                3934  page reclaims
+                  13  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+               32314  involuntary context switches
+       1430043140412  instructions retired
+        244776427341  cycles elapsed
+            12960272  peak memory footprint
