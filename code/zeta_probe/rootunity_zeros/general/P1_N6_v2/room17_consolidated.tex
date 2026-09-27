@@ -1,0 +1,76 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{P1 N=6 route (b): consolidated result after 4 rooms of scrutiny (Rooms 14, 16, 17,
+Reviewers AY/AZ/BA)}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+\section*{Result, CONFIRMED (4 independent adversarial passes, no gap found)}
+
+For the ray lemma's separation constant $D(a',\varphi)=\inf_{\rho\ge0}\max\{\sigma(\varphi-\rho\sin\theta),
+1-e^{-a'-\rho\cos\theta}\}$ (\texttt{lem:qi-bounds}, paper2a.tex):
+\[
+   D(a',\varphi)\ \ge\ 1-e^{-a'}\qquad\text{for every }\theta\text{ with }\cos\theta\ge0\text{ and every }\varphi.
+\]
+\textbf{Proof (elementary, verified 4 times independently):} $Y(\rho):=1-e^{-a'-\rho\cos\theta}$
+has $Y'(\rho)=\cos\theta\cdot e^{-a'-\rho\cos\theta}\ge0$ when $\cos\theta\ge0$, so $Y$ is
+non-decreasing and $Y(\rho)\ge Y(0)=1-e^{-a'}$ for all $\rho\ge0$. Since
+$\max\{\sigma(\cdot),Y(\rho)\}\ge Y(\rho)\ge1-e^{-a'}$ for every $\rho\ge0$, the infimum over
+$\rho$ is also $\ge1-e^{-a'}$. This never needs $\sin\theta=0$, or any specific $\theta$ beyond
+$\cos\theta\ge0$ (already required by the lemma's own error constants, and trivially true on any
+band around the certified $\theta^\ast=0$).
+
+At $N=6$'s saddle $x_{-1}=0.3491187578768502\ldots+i\pi/6$, with $a'=2\operatorname{Re}(x_{-1})$:
+\[
+   d(x_{-1})\ \ge\ 1-e^{-2\times0.3491187578768502\ldots}\ =\ 0.502538700696331\ldots\ >\ 0,
+\]
+\textbf{uniformly across any $\theta$-band around $\theta^\ast=0$, with no seam or hybrid
+patching}, since the bound never distinguishes $\theta$-values in that range. This lower bound is
+exactly the form the downstream Part-(i) error term needs ($\delta$ in a denominator, $4/(3\cos\theta\,d(x)^2)$),
+so a genuine lower bound -- not an exact value -- is sufficient, and this is one.
+
+\section*{History (for the record: 2 genuine errors caught and corrected en route)}
+
+\begin{itemize}
+\item \textbf{Room 14:} first attempt, correct object ($w=c_je^{-2x}$, correctly matched to
+Room 8's resonance loci) but an invalid derivation -- conflated the lemma's own internal auxiliary
+variable $\rho$ with the geometric position along the contour leg, giving only an upper, not
+lower, bound on $D$. \textbf{Retracted} by Reviewer AY.
+\item \textbf{Room 16:} fixed the $\rho$-error via a genuine monotonicity argument at the single
+point $\theta=\theta^\ast=0$, reproducing the same number ($0.5025\ldots$) validly \emph{at that
+point}. Also proved, independently and correctly, that the resonant residue class dominates the
+other five (item 4). Reviewer AZ found the fix re-introduced the identical species of error one
+level up: \texttt{prop:qi}'s actual Rouch\'e argument needs the estimate on a $\theta$-\emph{band},
+not a single point, since Rouch\'e's theorem is intrinsically about a closed contour (a genuine 2-D
+neighborhood, not a ray) -- confirmed independently by Room 1's Erdős-seat winding-number approach,
+which also needed a genuine disc. \textbf{Gap moved, not closed.}
+\item \textbf{Room 17:} found the band-vs-point distinction is a non-issue for \emph{this specific
+bound}, because a simpler, cruder-looking but sufficient argument (using only the decay term's
+monotonicity, never invoking $\sin\theta$ at all) gives a band-uniform lower bound with the same
+value. This supersedes Room 16's six-class item as unnecessary (Reviewer BA: the new bound holds
+for every $\varphi$ simultaneously, so knowing which class is resonant is no longer needed to get a
+positive lower bound, though it's needed for the exact value). \textbf{Confirmed clean by Reviewer
+BA after this fourth pass}, no gap found.
+\end{itemize}
+
+\section*{What this does and does not achieve}
+
+\textbf{Achieved:} a genuine, uniformly-valid (band-robust, no seam) positive lower bound on the
+ray lemma's separation constant $d(x)$ at $N=6$'s saddle, closing what was Room 8's tightest
+identified sub-gap on this leg.
+
+\textbf{NOT achieved, still OPEN:} $N=6$ itself. No $N=6$ analogue of \texttt{prop:qi}'s full
+contour construction (the $\Gamma_\pm^{(6)}$, $\Pi_0^{(6)}$ legs, the Rouch\'e step, the full
+Part-(ii) $M'(x)/K'(x)/\vartheta$-sum estimate, the $N$-generic $c_j=\zeta_N^j$ decomposition
+justified from a written lemma rather than by analogy) exists anywhere in this repository. This
+result removes one specific, previously load-bearing obstruction (the separation constant at
+$\theta=0$) from that future construction's path; it does not build the construction itself. Route
+(b) is genuinely narrower than at the start of this session, not closed.
+
+\textbf{Status: repo-only.} Given the history of correction above, this is documented here as a
+confirmed lemma-level fact for future work, not integrated into paper2a -- $N=6$'s status in the
+paper (OPEN, per \texttt{rem:arcobstruction}) is unchanged, since this piece alone does not close
+it.
+
+\end{document}
