@@ -1,0 +1,31 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\title{Room 13 (P1 N=6 escape routes): status note, not attempted properly}
+\date{2026-09-27}
+\begin{document}
+\maketitle
+
+room11\_seat\_erdos.tex names two escape routes from the saddle-pinned-resonance obstruction:
+(a) a different contour decomposition whose constant-height legs avoid the resonance angle --
+already assessed there as ``not obviously possible,'' since the resonance angles are rigidly tied
+to $\zeta=e^{i\pi/3}$ itself; (b) a genuinely new, $\theta=0$-adapted replacement for the ray
+lemma, giving a lower bound on $|1-w|$ using only modulus decay, valid \emph{along a path lying
+exactly on the resonance line}, strictly harder than the already-unattempted generic modulus-only
+rescue in \texttt{P1\_N6\_note.tex}.
+
+\textbf{Attempted here: a quick sanity check of (b), found unreliable and not reported as a
+result.} A five-minute numerical probe (moving $x$ along the real direction from the $N=6$ saddle
+$x_{-1}$ and tracking $w=ce^{-x}$) found $\arg w$ constant at $90^\circ$ throughout, suggesting $w$
+never approaches the real axis and $|1-w|$ stays comfortably large -- but this used $w=ce^{-x}$
+directly rather than the lemma's actual resonance-relative quantity (built from one of the five
+specific $c_j=\zeta_6^i$ values, not $c$ itself), so it is very likely testing the wrong object.
+\textbf{This is flagged explicitly as an unreliable probe, not a finding}, to avoid introducing a
+false lead of the kind this session has already caught and corrected several times. A proper
+attempt at route (b) needs the exact resonance-relative $w$ from \texttt{lem:qi-bounds}'s actual
+statement, re-derived carefully for the $N=6$ saddle-pinned path, which was not done here.
+
+\textbf{Verdict: NOT ATTEMPTED (route a is closed off in room11's own analysis; route b needs a
+careful, properly-scoped attempt that this quick check did not provide).} Both routes remain
+genuinely open for a future session with a fresh, careful pass at the exact formulas.
+
+\end{document}
