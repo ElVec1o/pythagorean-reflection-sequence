@@ -210,4 +210,37 @@ proof that no machinery ever could; ``genuinely new arithmetic input'' (per \S5 
 note) is still what is required, and this note does not supply it.
 \end{itemize}
 
+\section{Addendum (2026-09-28): Rivoal/Zudilin linear-forms angle, checked and excluded}
+
+\textbf{Question.} Rivoal (odd zeta values) and Zudilin ($q$-analogues) prove ``at least one of
+several related values is irrational'' via a linear form $L_n=\sum_i A_{i,n}f_i$ with integer
+coefficients $A_{i,n}$, sidestepping the need to isolate a single object's Diophantine exponent.
+Does this bypass the $\rho=1/2$ obstruction (\S3 of the prior note, \texttt{P6\_note.tex}) for
+$\beta_2$?
+
+\textbf{Finding: no, for a structural reason distinct from $\rho=1/2$ itself.} Every version of
+this machinery recalled (UNVERIFIED-CITATION, not checked against primary sources) fixes the base
+parameter ($q$, or the nome) to a \emph{known} rational or algebraic value in advance, and lets the
+family vary over a free \emph{integer} index (weight/order), which is what lets the coefficients
+$A_{i,n}$ clear to honest integers. $q^\ast$ is the opposite kind of object: it is itself unknown,
+defined implicitly as a zero of $S$ in its own base variable. Concretely:
+\begin{itemize}
+\item Varying the Hahn--Exton order $\nu$ at \emph{fixed} $q=q^\ast$ via the 3-term recurrence
+gives a family of values whose recurrence coefficients are rational functions of $q$ evaluated at
+$q^\ast$ itself -- real numbers of the same unclassified arithmetic type as $q^\ast$, not known
+integers or elements of a known number field. Any linear-independence conclusion would be relative
+to $\mathbb{Q}(q^\ast)$, not a route to classifying $q^\ast$: circular in the same way the CM-nome
+bypass in \S1 reclassifies the wrong object.
+\item Varying $q$ over a free family of \emph{rational} points near $q^\ast$ (the only way to make
+``$q$ free'' honest) reduces exactly to the Tschakaloff/B\'ezivin--Bundschuh--V\"a\"an\"anen
+route already quantified by $\rho=1/2$. Rivoal-type multi-target results need the \emph{same or
+better} per-form exponent to get enough independent forms, not a relaxed one, so the multi-value
+bookkeeping buys nothing here even in principle.
+\end{itemize}
+
+\textbf{Verdict.} HEURISTIC diagnosis, not a proof: this is a sixth specific named route checked
+and excluded for a precise, stated reason (implicit-zero object vs.\ free-evaluation-point object),
+narrowing rather than restating the open problem. No progress toward irrationality/transcendence of
+$\beta_2$.
+
 \end{document}
