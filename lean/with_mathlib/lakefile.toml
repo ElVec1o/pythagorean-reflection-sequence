@@ -43,7 +43,7 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "ModelM",
   "BoundedDrift",
   "P3Separation",
-  "Beta2DegreeExclusion", "Paper1TierA"]
+  "Beta2DegreeExclusion", "Paper1TierA", "MergedNovelTierA", "Paper1TierB1"]
 
 [[require]]
 name = "mathlib"
@@ -465,3 +465,9 @@ name = "Beta2DegreeExclusion"
 
 [[lean_lib]]
 name = "Paper1TierA"
+
+[[lean_lib]]
+name = "MergedNovelTierA"
+
+[[lean_lib]]
+name = "Paper1TierB1"
