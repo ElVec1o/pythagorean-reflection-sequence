@@ -1,5 +1,5 @@
 name = "SymbolicVerification"
-defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "FredholmMinor", "ODEPoles", "OrthoschemeLoci", "RJIdentities", "RJShift", "RJClosedForm", "RJMain", "RJPhi", "RJLemmaJ", "RJMetricAll", "TstarCore", "TstarAmplitude", "RoomB34", "CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DihedralGeodesic", "DmLength", "BlockAdditivity", "BlockAdditivityGeneral", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
+defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "FredholmMinor", "ODEPoles", "OrthoschemeLoci", "RJIdentities", "RJShift", "RJClosedForm", "RJMain", "RJPhi", "RJLemmaJ", "RJMetricAll", "TstarCore", "TstarAmplitude", "RoomB34", "CostMerge", "ConfigLoop", "WalkSupport", "SitePlacement", "SiteCost", "MarkedSite", "PairingMatrix", "Realisation", "CutCross", "CutComponents", "Mobius", "MobiusL1", "Reciprocity", "Telescope", "SectionLadders", "SymbolicVerification", "SchurGeneral", "SymbolicUniversality", "ComputableUniversality", "Paper1TierACensus", "AtomN", "DeviationLattice", "BboundedSkeleton", "UAssembly", "SDAssembly", "EnvelopeDichotomy", "ShapeArith", "MooreCriterion", "OrthoschemeNormals", "RankTwoExclusion", "AntipairRows", "OverDetermination", "CoxeterTorsion", "DihedralGeodesic", "DmLength", "BlockAdditivity", "BlockAdditivityGeneral", "DiscreteConserved", "GateInputs", "GaussHS", "GramCasoratian", "NdimRate", "OrthoschemeDet", "PolyaCarlson", "QTrigIdentities", "SelowerSkeleton", "SigmaKernel", "UKernel", "QCosineExponents", "HexDistance", "StratumGeneric", "NoRecurrence", "ModPStateInfinite", "DFiniteReduction", "ModularRankCertificate", "NoDFiniteData", "NoDFiniteCertificates", "QCosineLattice", "QSiegelLedger", "QEffectiveExclusion", "QZeroSeries", "RotationRelations", "LinearPart", "PlaneGroup", "Bridge", "CorOnsetCount", "CensusWitness", "CensusUniversal", "CylCensus", "GraphLocalDistance", "HexGraph", "ReflectionTriple",
   "TranslationTrick",
   "TransferChain",
   "DiscriminantIdentity",
@@ -43,7 +43,7 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "ModelM",
   "BoundedDrift",
   "P3Separation",
-  "Beta2DegreeExclusion"]
+  "Beta2DegreeExclusion", "Paper1TierA"]
 
 [[require]]
 name = "mathlib"
@@ -94,6 +94,9 @@ name = "SymbolicUniversality"
 
 [[lean_lib]]
 name = "ComputableUniversality"
+
+[[lean_lib]]
+name = "Paper1TierACensus"
 
 [[lean_lib]]
 name = "AtomN"
@@ -459,3 +462,6 @@ name = "P1eArcDensity"
 
 [[lean_lib]]
 name = "Beta2DegreeExclusion"
+
+[[lean_lib]]
+name = "Paper1TierA"
