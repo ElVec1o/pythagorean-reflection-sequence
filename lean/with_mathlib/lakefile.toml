@@ -471,3 +471,6 @@ name = "MergedNovelTierA"
 
 [[lean_lib]]
 name = "Paper1TierB1"
+
+[[lean_lib]]
+name = "Paper4TierA"
