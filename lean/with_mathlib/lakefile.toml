@@ -43,7 +43,7 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "ModelM",
   "BoundedDrift",
   "P3Separation",
-  "Beta2DegreeExclusion", "Paper1TierA", "MergedNovelTierA", "Paper1TierB1"]
+  "Beta2DegreeExclusion", "Paper1TierA", "MergedNovelTierA", "Paper1TierB1", "BFSDataImport"]
 
 [[require]]
 name = "mathlib"
@@ -474,3 +474,6 @@ name = "Paper1TierB1"
 
 [[lean_lib]]
 name = "Paper4TierA"
+
+[[lean_lib]]
+name = "BFSDataImport"
