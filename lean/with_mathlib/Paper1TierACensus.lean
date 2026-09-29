@@ -127,6 +127,45 @@ theorem bonfioli_completeness_totals :
     (classSizes 10).length = 225 ∧ (classSizes 10).sum = 233 := by
   native_decide
 
+/-! ### `cor:abstract-fibonacci` -/
+
+/-- The Steinberg–Poincaré series `W(t) = (1+t)²/(1-t-t²)` has coefficients
+    defined by the Fibonacci recurrence (from the denominator) initialised by
+    `(1+t)²` (from the numerator): coeff(0)=1, coeff(1)=3. -/
+def steinbergCoeff : ℕ → ℕ
+  | 0 => 1
+  | 1 => 3
+  | (n + 2) => steinbergCoeff n + steinbergCoeff (n + 1)
+
+private theorem fib_step (n : ℕ) : fib (n + 2) = fib n + fib (n + 1) := rfl
+
+/-- Pair-induction: two consecutive Steinberg coefficients equal two consecutive
+    Fibonacci numbers, shifted by 3. -/
+private theorem steinbergCoeff_pair :
+    ∀ n : ℕ, steinbergCoeff (n + 1) = fib (n + 4) ∧ steinbergCoeff (n + 2) = fib (n + 5) := by
+  intro n
+  induction n with
+  | zero => decide
+  | succ m ih =>
+    obtain ⟨ih1, ih2⟩ := ih
+    refine ⟨ih2, ?_⟩
+    -- goal: steinbergCoeff (m + 3) = fib (m + 6)
+    show steinbergCoeff (m + 3) = fib (m + 6)
+    -- unfold recurrence: m + 3 = (m + 1) + 2
+    have hsc : steinbergCoeff (m + 3) = steinbergCoeff (m + 1) + steinbergCoeff (m + 2) := rfl
+    have hfib : fib (m + 6) = fib (m + 4) + fib (m + 5) := by
+      have h : m + 6 = (m + 4) + 2 := by omega
+      rw [h, fib_step, show m + 4 + 1 = m + 5 from by omega]
+    rw [hsc, ih1, ih2, ← hfib]
+
+/-- **`cor:abstract-fibonacci`**: for `d ≥ 1`, the `d`-th coefficient of the
+    Steinberg–Poincaré series `W(t) = (1+t)²/(1-t-t²)` is the Fibonacci number
+    `F_{d+3}`, where `F_0=0`, `F_1=F_2=1`. -/
+theorem abstract_fibonacci {d : ℕ} (hd : 1 ≤ d) :
+    steinbergCoeff d = fib (d + 3) := by
+  obtain ⟨n, rfl⟩ : ∃ n, d = n + 1 := ⟨d - 1, by omega⟩
+  exact (steinbergCoeff_pair n).1
+
 end Paper1TierACensus
 
 -- Rule 5 axiom audit.
@@ -134,3 +173,4 @@ end Paper1TierACensus
 #print axioms Paper1TierACensus.fibonacci_phase_deficit_at_10
 #print axioms Paper1TierACensus.bonfioli_completeness_class_sizes
 #print axioms Paper1TierACensus.bonfioli_completeness_totals
+#print axioms Paper1TierACensus.abstract_fibonacci
