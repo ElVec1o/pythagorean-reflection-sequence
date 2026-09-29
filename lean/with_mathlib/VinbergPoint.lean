@@ -138,9 +138,67 @@ theorem vinberg_exists_mod3_one (j : ℕ) :
     ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (3 * j + 2) = 0 :=
   ⟨xones, fun _ => le_refl 1, vinberg_n_mod3_one j⟩
 
+/-! ## lem:lorentz (partial) — iff characterisation for the all-ones Tits point -/
+
+-- The three non-zero slots from the period-6 invariant.
+theorem vinberg_ones_val_6k3 (k : ℕ) : contD xones (6 * k + 3) = -1 :=
+  (contD_ones_period6 k).2.1
+
+theorem vinberg_ones_val_6k4 (k : ℕ) : contD xones (6 * k + 4) = -1 :=
+  (contD_ones_period6 k).2.2.1
+
+theorem vinberg_ones_val_6k6 (k : ℕ) : contD xones (6 * k + 6) = 1 :=
+  (contD_ones_period6 k).2.2.2.2.1
+
+theorem vinberg_ones_val_6k7 (k : ℕ) : contD xones (6 * k + 7) = 1 :=
+  (contD_ones_period6 k).2.2.2.2.2
+
+-- D_{6k+1} = 1 (needed for the n ≡ 0 mod 6 non-zero case).
+private theorem vinberg_ones_val_6k1 (k : ℕ) : contD xones (6 * k + 1) = 1 := by
+  cases k with
+  | zero => simp [contD]
+  | succ m =>
+    have := vinberg_ones_val_6k7 m
+    convert this using 2
+
+/-- **lem:lorentz (key arithmetic half).**
+    For the all-ones Tits point, D_{n+1} = 0 if and only if n ≡ 1 (mod 3).
+    This is the discrete-arithmetic content of the eigenvalue formula
+    "zero eigenvalue ⟺ 2cos(kπ/(n+2)) = 1 ⟺ 3k = n+2 ⟺ n ≡ 1 (mod 3)". -/
+theorem lorentz_det_zero_iff (n : ℕ) :
+    contD xones (n + 1) = 0 ↔ ∃ j, n = 3 * j + 1 := by
+  constructor
+  · -- Forward: D_{n+1} = 0 → n ≡ 1 (mod 3), by mod-6 case analysis.
+    intro h
+    have hr : n % 6 = 0 ∨ n % 6 = 1 ∨ n % 6 = 2 ∨
+              n % 6 = 3 ∨ n % 6 = 4 ∨ n % 6 = 5 := by omega
+    rcases hr with h0 | h1 | h2 | h3 | h4 | h5
+    · -- n%6=0: n+1 = 6*(n/6)+1, D = 1 ≠ 0
+      have hv : contD xones (n + 1) = 1 := by
+        have := vinberg_ones_val_6k1 (n / 6); convert this using 2; omega
+      linarith
+    · exact ⟨2 * (n / 6), by omega⟩
+    · -- n%6=2: n+1 = 6*(n/6)+3, D = -1 ≠ 0
+      have hv : contD xones (n + 1) = -1 := by
+        have := vinberg_ones_val_6k3 (n / 6); convert this using 2; omega
+      linarith
+    · -- n%6=3: n+1 = 6*(n/6)+4, D = -1 ≠ 0
+      have hv : contD xones (n + 1) = -1 := by
+        have := vinberg_ones_val_6k4 (n / 6); convert this using 2; omega
+      linarith
+    · exact ⟨2 * (n / 6) + 1, by omega⟩
+    · -- n%6=5: n+1 = 6*(n/6)+6, D = 1 ≠ 0
+      have hv : contD xones (n + 1) = 1 := by
+        have := vinberg_ones_val_6k6 (n / 6); convert this using 2; omega
+      linarith
+  · -- Backward: n ≡ 1 (mod 3) → D_{n+1} = 0.
+    rintro ⟨j, rfl⟩
+    exact vinberg_n_mod3_one j
+
 end VinbergPoint
 
 -- Rule 5 axiom audit.
 #print axioms VinbergPoint.vinberg_n2_no_admissible
 #print axioms VinbergPoint.vinberg_n_mod3_one
 #print axioms VinbergPoint.vinberg_exists_mod3_one
+#print axioms VinbergPoint.lorentz_det_zero_iff
