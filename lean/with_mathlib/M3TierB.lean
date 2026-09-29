@@ -247,4 +247,65 @@ theorem dep_PhiAt_false (hk : P.kstar ≠ 0) (hd : P.delta = false) :
     P.PhiAt P.kstar = P.f (P.kstar - 1) - 1 := by
   simp [PathData.PhiAt, vArr_of_ne_zero hk, PathData.vL, vD_kstar, hd]
 
+-- ─────────────────────────────────────────────────────────────────────────────
+-- M3:lem:travel: sign independence at interior sites
+-- The travel block contribution depends only on |d_j|, not sign(d_j).
+-- The Lean content: at non-junction sites, siteCost = max|d(s-1)||d(s)|,
+-- which is invariant under sign flips of d.
+-- ─────────────────────────────────────────────────────────────────────────────
+
+/-- At a travel-interior site (s ≠ 0, s ≠ kstar, travel active at s-1),
+    siteCost is determined by |d(s-1)| and |d(s)|. -/
+theorem travel_interior_siteCost {s : ℤ} (h0 : s ≠ 0) (hk : s ≠ P.kstar) :
+    P.siteCost s = max (P.d (s - 1)).natAbs (P.d s).natAbs :=
+  local_siteCost h0 hk
+
+/-- `M3:lem:travel` (sign independence): two PathData that agree on kstar and
+    on the magnitudes |d j| have the same siteCost at every non-junction site. -/
+theorem siteCost_sign_indep {P Q : PathData}
+    (hk : P.kstar = Q.kstar)
+    (hd : ∀ j, (P.d j).natAbs = (Q.d j).natAbs)
+    {s : ℤ} (h0 : s ≠ 0) (hkP : s ≠ P.kstar) :
+    P.siteCost s = Q.siteCost s := by
+  have hkQ : s ≠ Q.kstar := hk ▸ hkP
+  rw [local_siteCost h0 hkP, local_siteCost h0 hkQ, hd (s - 1), hd s]
+
+/-- At a travel edge, mu(j) simplifies to max(|d(j)|, |travel(kstar,j)|). -/
+theorem mu_travel_edge {j : ℤ} (hf : travel P.kstar j ≠ 0) :
+    P.mu j = max (P.d j).natAbs (travel P.kstar j).natAbs := by
+  unfold PathData.mu
+  split_ifs with h
+  · exact absurd h.2 hf
+  · rfl
+
+/-- |travel(kstar, j)| = 1 when the edge is a travel edge. -/
+theorem travel_natAbs_eq_one {j : ℤ} (hf : travel P.kstar j ≠ 0) :
+    (travel P.kstar j).natAbs = 1 := by
+  rcases travel_cases P.kstar j with h | h | h
+  · exact absurd h hf
+  · simp [h]
+  · simp [h]
+
+/-- At a travel edge, mu(j) = max(|d(j)|, 1). -/
+theorem mu_travel_edge_one {j : ℤ} (hf : travel P.kstar j ≠ 0) :
+    P.mu j = max (P.d j).natAbs 1 := by
+  rw [mu_travel_edge hf, travel_natAbs_eq_one hf]
+
+/-- At a travel edge where |d(j)| ≥ 1, mu(j) = |d(j)|. -/
+theorem mu_eq_natAbs_of_travel {j : ℤ} (hf : travel P.kstar j ≠ 0)
+    (hd : P.d j ≠ 0) : P.mu j = (P.d j).natAbs := by
+  rw [mu_travel_edge_one hf]
+  exact Nat.max_eq_left (Int.natAbs_pos.mpr hd)
+
+/-- Travel deposits are non-zero: d(j) ≡ travel(kstar,j) (mod 2) and
+    travel(kstar,j) = ±1 forces d(j) odd, hence non-zero. -/
+theorem d_ne_zero_of_travel_ne_zero {j : ℤ} (hf : travel P.kstar j ≠ 0)
+    (hpar : (P.d j - travel P.kstar j) % 2 = 0) : P.d j ≠ 0 := by
+  intro h
+  rw [h, zero_sub] at hpar
+  rcases travel_cases P.kstar j with ht | ht | ht
+  · exact absurd ht hf
+  · rw [ht] at hpar; norm_num at hpar
+  · rw [ht] at hpar; norm_num at hpar
+
 end M3TierB
