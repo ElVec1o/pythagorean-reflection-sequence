@@ -47,7 +47,9 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "M3TierB",
   "Paper1TierB2",
   "VinbergPoint",
-  "LorpointDet"]
+  "LorpointDet",
+  "PathGramSingular",
+  "PathGramRadline"]
 
 [[require]]
 name = "mathlib"
@@ -508,3 +510,9 @@ name = "VinbergPoint"
 
 [[lean_lib]]
 name = "LorpointDet"
+
+[[lean_lib]]
+name = "PathGramSingular"
+
+[[lean_lib]]
+name = "PathGramRadline"
