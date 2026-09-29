@@ -46,7 +46,8 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "Beta2DegreeExclusion", "Paper1TierA", "MergedNovelTierA", "Paper1TierB1", "BFSDataImport", "W4Reflections", "Paper1TierA2", "Paper1TierA3", "Paper2TierA", "Paper1TierA4",
   "M3TierB",
   "Paper1TierB2",
-  "VinbergPoint"]
+  "VinbergPoint",
+  "LorpointDet"]
 
 [[require]]
 name = "mathlib"
@@ -504,3 +505,6 @@ name = "Paper1TierB2"
 
 [[lean_lib]]
 name = "VinbergPoint"
+
+[[lean_lib]]
+name = "LorpointDet"
