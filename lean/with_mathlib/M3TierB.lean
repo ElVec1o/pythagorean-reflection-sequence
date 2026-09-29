@@ -12,11 +12,13 @@ that is accessible without formal power series:
       definition of SameElt.  Surjectivity (constructing an Elt from a valid tuple)
       is deferred — it requires defining the abstract type G and an explicit constructor.
 
-  * M3:lem:local (PARTIAL):
-    - At a non-junction site (s ≠ 0 and s ≠ kstar): alphaAt s = d(s-1), betaAt s = d(s),
-      siteCost s = max|d(s-1)| |d(s)|.
-    - PhiAt s = f(s-1) at non-junction sites.
-    - Travel-interior sites (where f(s-1) ≠ 0) are never cuts.
+  * M3:lem:local (SUBSTANTIALLY COMPLETE):
+    - Non-junction (s ≠ 0, s ≠ kstar): alphaAt=d(s-1), betaAt=d(s), siteCost=max|d(s-1)||d(s)|,
+      PhiAt=f(s-1); sites with f(s-1)≠0 are never cuts.
+    - Arrival site (s=0, kstar≠0): alphaAt=d(-1)-1, betaAt=d(0), PhiAt=f(-1)+1; cut iff
+      d(-1)=1 ∧ d(0)=0 ∧ f(-1)=-1.
+    - Departure site (s=kstar, kstar≠0): both δ=true and δ=false cases for alphaAt, betaAt,
+      PhiAt fully proved.
 
 No `sorry`.
 -/
@@ -176,5 +178,73 @@ theorem not_cut_of_f_ne_zero {s : ℤ} (h0 : s ≠ 0) (hk : s ≠ P.kstar)
   rw [local_cut h0 hk]
   push Not
   exact fun _ _ => hf
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- M3:lem:local: junction-site formulas
+-- At s = 0 (arrival site): vArr 0 = 1, vD/vL/vR depend on whether kstar = 0.
+-- At s = kstar (departure site, kstar ≠ 0): vArr kstar = 0, vD kstar = 1.
+-- ─────────────────────────────────────────────────────────────────────────────
+
+/-- At the arrival site s = 0 (when kstar ≠ 0):
+    alphaAt 0 = d(-1) - 1, betaAt 0 = d(0), PhiAt 0 = f(-1) + 1. -/
+theorem arr_alphaAt (hk : P.kstar ≠ 0) :
+    P.alphaAt 0 = P.d (-1) - 1 := by
+  simp [PathData.alphaAt, vArr, vL_of_ne_kstar (Ne.symm hk)]
+
+theorem arr_betaAt (hk : P.kstar ≠ 0) :
+    P.betaAt 0 = P.d 0 := by
+  simp [PathData.betaAt, vR_of_ne_kstar (Ne.symm hk)]
+
+theorem arr_PhiAt (hk : P.kstar ≠ 0) :
+    P.PhiAt 0 = P.f (-1) + 1 := by
+  simp [PathData.PhiAt, vArr, vL_of_ne_kstar (Ne.symm hk)]
+
+/-- At the arrival site, the cut condition (when kstar ≠ 0):
+    d(-1) = 1 ∧ d(0) = 0 ∧ f(-1) = -1. -/
+theorem arr_cut (hk : P.kstar ≠ 0) :
+    P.cut 0 ↔ P.d (-1) = 1 ∧ P.d 0 = 0 ∧ P.f (-1) = -1 := by
+  simp [PathData.cut, arr_alphaAt hk, arr_betaAt hk, arr_PhiAt hk]
+  constructor
+  · rintro ⟨ha, hb, hc⟩; exact ⟨by linarith, hb, by linarith⟩
+  · rintro ⟨ha, hb, hc⟩; exact ⟨by linarith, hb, by linarith⟩
+
+/-- vD kstar = 1: the virtual departure fires at kstar. -/
+theorem vD_kstar : P.vD P.kstar = 1 := by simp [PathData.vD]
+
+/-- At the departure site s = kstar when delta = true (so vL = 0, vR = 1):
+    alphaAt kstar = d(kstar - 1). -/
+theorem dep_alphaAt_true (hk : P.kstar ≠ 0) (hd : P.delta = true) :
+    P.alphaAt P.kstar = P.d (P.kstar - 1) := by
+  simp [PathData.alphaAt, vArr_of_ne_zero hk, PathData.vL, hd]
+
+/-- At the departure site s = kstar when delta = false (so vL = 1, vR = 0):
+    alphaAt kstar = d(kstar - 1) + eps. -/
+theorem dep_alphaAt_false (hk : P.kstar ≠ 0) (hd : P.delta = false) :
+    P.alphaAt P.kstar = P.d (P.kstar - 1) + P.eps := by
+  simp [PathData.alphaAt, vArr_of_ne_zero hk, PathData.vL, vD_kstar, hd]
+
+/-- At the departure site s = kstar when delta = false:
+    betaAt kstar = d(kstar). -/
+theorem dep_betaAt_false (hd : P.delta = false) :
+    P.betaAt P.kstar = P.d P.kstar := by
+  simp [PathData.betaAt, PathData.vR, hd]
+
+/-- At the departure site s = kstar when delta = true:
+    betaAt kstar = d(kstar) - eps. -/
+theorem dep_betaAt_true (hd : P.delta = true) :
+    P.betaAt P.kstar = P.d P.kstar - P.eps := by
+  simp [PathData.betaAt, PathData.vR, vD_kstar, hd]
+
+/-- At the departure site s = kstar when delta = true:
+    PhiAt kstar = f(kstar - 1). -/
+theorem dep_PhiAt_true (hk : P.kstar ≠ 0) (hd : P.delta = true) :
+    P.PhiAt P.kstar = P.f (P.kstar - 1) := by
+  simp [PathData.PhiAt, vArr_of_ne_zero hk, PathData.vL, hd]
+
+/-- At the departure site s = kstar when delta = false:
+    PhiAt kstar = f(kstar - 1) - 1. -/
+theorem dep_PhiAt_false (hk : P.kstar ≠ 0) (hd : P.delta = false) :
+    P.PhiAt P.kstar = P.f (P.kstar - 1) - 1 := by
+  simp [PathData.PhiAt, vArr_of_ne_zero hk, PathData.vL, vD_kstar, hd]
 
 end M3TierB
