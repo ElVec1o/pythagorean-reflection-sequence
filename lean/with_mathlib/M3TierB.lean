@@ -351,4 +351,31 @@ theorem sign_decoupling_two (N : Bool → R) (F : Bool → Bool → Bool → R) 
 
 end SignDecoupling
 
+-- ─────────────────────────────────────────────────────────────────────────────
+-- M3:lem:bij  (bijection between G and valid data tuples)
+-- ─────────────────────────────────────────────────────────────────────────────
+-- The paper's bijection g ↦ (k, ε, δ, (d_j), chains) is exactly the projection
+-- (kstar, eps, delta, d).  Two directions:
+--   Injection: SameElt g h ↔ same tuple — trivial from the definition.
+--   Surjection: any valid (kstar, eps, delta, d) with a finite support witness
+--   is realized by an Elt, obtained by the constructor.
+
+/-- `M3:lem:bij` (injection): two Elts in the same SameElt-class have identical
+    (kstar, eps, delta, d). -/
+theorem bij_injection {g h : EltBridge.Elt} (H : SameElt g h) :
+    g.kstar = h.kstar ∧ g.eps = h.eps ∧ g.delta = h.delta ∧ g.d = h.d := H
+
+/-- `M3:lem:bij` (surjection): any valid tuple (kstar, eps, delta, d) with a finite
+    support witness is realized by some Elt.  The constructor delivers it directly. -/
+theorem bij_surjection (kstar eps : ℤ) (heps : eps = 1 ∨ eps = -1) (delta : Bool)
+    (d : ℤ → ℤ) (hpar : ∀ j, (d j - travel kstar j) % 2 = 0)
+    (supp : Finset ℤ) (hsupp : ∀ j, j ∉ supp → d j = 0 ∧ travel kstar j = 0) :
+    ∃ g : EltBridge.Elt,
+        g.kstar = kstar ∧ g.eps = eps ∧ g.delta = delta ∧ g.d = d :=
+  ⟨⟨kstar, eps, delta, heps, d, hpar, supp, hsupp⟩, rfl, rfl, rfl, rfl⟩
+
 end M3TierB
+
+-- Rule 5 axiom audit.
+#print axioms M3TierB.bij_injection
+#print axioms M3TierB.bij_surjection
