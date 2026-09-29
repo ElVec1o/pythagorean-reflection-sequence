@@ -524,3 +524,6 @@ name = "NosquareLemma"
 
 [[lean_lib]]
 name = "LorentzAssembly"
+
+[[lean_lib]]
+name = "M3SpanBounds"
