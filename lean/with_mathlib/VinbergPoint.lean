@@ -48,10 +48,11 @@ theorem vinberg_n2_no_admissible (x : ℕ → ℤ) (h0 : 1 ≤ x 0) (h1 : 1 ≤ 
 
 /-! ## n ≡ 1 (mod 3): all-ones sequence -/
 
-private def xones : ℕ → ℤ := fun _ => 1
+/-- The all-ones sequence x_k = 1, used for the path Gram matrix Tits point. -/
+def xones : ℕ → ℤ := fun _ => 1
 
 -- D_{n+2} = D_{n+1} − D_n for the all-ones sequence.
-private theorem xones_step (n : ℕ) :
+theorem xones_step (n : ℕ) :
     contD xones (n + 2) = contD xones (n + 1) - contD xones n := by
   rw [contD_succ]; simp [xones]
 
@@ -329,8 +330,145 @@ theorem vinberg_n_mod3_zero (j : ℕ) :
     have : 3 * (j + 1) + 1 = 6 * k + 7 := by omega
     rw [this]; exact vinberg_n_mod3_zero_odd k
 
--- ^^^ The proof has an error. The inductive computation gives h8 = D_{6m+8} = 1 - 2 = -1 (not 0).
--- The `linarith` from ih6=2 and ih7=1 and D_{6m+8}=D_{6m+7}-D_{6m+6} gives D_{6m+8}=-1. Let me redo.
+/-! ## n ≡ 2 (mod 3): sequence (2, 1, 3, 1, 1, ...) with last entry replaced by 3 -/
+
+-- Sequence with x_0 = 2, x_2 = 3, rest 1.
+private def xpure3 : ℕ → ℤ := fun k => if k = 0 then 2 else if k = 2 then 3 else 1
+
+-- D_{n+2} = D_{n+1} − D_n for n ≥ 3 (xpure3 n = 1 when n ≥ 3).
+private theorem xpure3_step (n : ℕ) (hn : 3 ≤ n) :
+    contD xpure3 (n + 2) = contD xpure3 (n + 1) - contD xpure3 n := by
+  rw [contD_succ]; simp [xpure3, show n ≠ 0 from by omega, show n ≠ 2 from by omega]
+
+/-- Period-6 invariant for xpure3 starting at offset 4: values are 1,3,2,−1,−3,−2. -/
+private theorem contD_pure3_period6 (k : ℕ) :
+    contD xpure3 (6 * k + 4) = 1 ∧
+    contD xpure3 (6 * k + 5) = 3 ∧
+    contD xpure3 (6 * k + 6) = 2 ∧
+    contD xpure3 (6 * k + 7) = -1 ∧
+    contD xpure3 (6 * k + 8) = -3 ∧
+    contD xpure3 (6 * k + 9) = -2 := by
+  induction k with
+  | zero => decide
+  | succ m ih =>
+    obtain ⟨ih4, ih5, ih6, ih7, ih8, ih9⟩ := ih
+    have h10 : contD xpure3 (6 * m + 10) = 1 := by
+      have := xpure3_step (6 * m + 8) (by omega)
+      simp only [show 6 * m + 8 + 2 = 6 * m + 10 from by omega,
+                 show 6 * m + 8 + 1 = 6 * m + 9 from by omega] at this; linarith
+    have h11 : contD xpure3 (6 * m + 11) = 3 := by
+      have := xpure3_step (6 * m + 9) (by omega)
+      simp only [show 6 * m + 9 + 2 = 6 * m + 11 from by omega,
+                 show 6 * m + 9 + 1 = 6 * m + 10 from by omega] at this; linarith
+    have h12 : contD xpure3 (6 * m + 12) = 2 := by
+      have := xpure3_step (6 * m + 10) (by omega)
+      simp only [show 6 * m + 10 + 2 = 6 * m + 12 from by omega,
+                 show 6 * m + 10 + 1 = 6 * m + 11 from by omega] at this; linarith
+    have h13 : contD xpure3 (6 * m + 13) = -1 := by
+      have := xpure3_step (6 * m + 11) (by omega)
+      simp only [show 6 * m + 11 + 2 = 6 * m + 13 from by omega,
+                 show 6 * m + 11 + 1 = 6 * m + 12 from by omega] at this; linarith
+    have h14 : contD xpure3 (6 * m + 14) = -3 := by
+      have := xpure3_step (6 * m + 12) (by omega)
+      simp only [show 6 * m + 12 + 2 = 6 * m + 14 from by omega,
+                 show 6 * m + 12 + 1 = 6 * m + 13 from by omega] at this; linarith
+    have h15 : contD xpure3 (6 * m + 15) = -2 := by
+      have := xpure3_step (6 * m + 13) (by omega)
+      simp only [show 6 * m + 13 + 2 = 6 * m + 15 from by omega,
+                 show 6 * m + 13 + 1 = 6 * m + 14 from by omega] at this; linarith
+    exact ⟨by convert h10 using 2, by convert h11 using 2, by convert h12 using 2,
+           by convert h13 using 2, by convert h14 using 2, by convert h15 using 2⟩
+
+-- Modify xpure3 at position m: use v instead of xpure3 m.
+private def xmod3 (m : ℕ) (v : ℤ) : ℕ → ℤ := fun k => if k = m then v else xpure3 k
+
+-- xmod3 with v=3 has all entries ≥ 1.
+private theorem xmod3_ge_one (m : ℕ) : ∀ i, (1 : ℤ) ≤ xmod3 m 3 i := by
+  intro i; simp [xmod3, xpure3]; split_ifs <;> omega
+
+-- contD of xmod3 and xpure3 agree at positions up to m+1.
+private theorem contD_xmod3_prefix (m : ℕ) (v : ℤ) (k : ℕ) (hk : k + 2 ≤ m + 1) :
+    contD (xmod3 m v) (k + 2) = contD xpure3 (k + 2) ∧
+    contD (xmod3 m v) (k + 1) = contD xpure3 (k + 1) := by
+  induction k with
+  | zero =>
+    refine ⟨?_, rfl⟩
+    have h0m : (0 : ℕ) ≠ m := Nat.ne_of_lt (by omega)
+    have hkey0 : (xmod3 m v) 0 = xpure3 0 := by simp [xmod3, if_neg h0m]
+    show contD (xmod3 m v) 2 = contD xpure3 2
+    have h2 : (2 : ℕ) = 0 + 2 := by omega
+    rw [h2, contD_succ, contD_one, contD_zero, contD_succ, contD_one, contD_zero, hkey0]
+  | succ p ih =>
+    obtain ⟨ih2, ih1⟩ := ih (by omega)
+    refine ⟨?_, ih2⟩
+    have hne : p + 1 ≠ m := Nat.ne_of_lt (by omega)
+    have hkey : (xmod3 m v) (p + 1) = xpure3 (p + 1) := by simp [xmod3, if_neg hne]
+    calc contD (xmod3 m v) (p + 1 + 2)
+        = contD (xmod3 m v) (p + 2) - (xmod3 m v) (p + 1) * contD (xmod3 m v) (p + 1) :=
+          contD_succ _ _
+      _ = contD xpure3 (p + 2) - xpure3 (p + 1) * contD xpure3 (p + 1) := by
+          rw [ih2, hkey, ih1]
+      _ = contD xpure3 (p + 1 + 2) := (contD_succ _ _).symm
+
+-- contD (xmod3 m 3) (m+2) = contD xpure3 (m+1) - 3 * contD xpure3 m.
+private theorem contD_xmod3_last (m : ℕ) (hm : 1 ≤ m) :
+    contD (xmod3 m 3) (m + 2) =
+    contD xpure3 (m + 1) - 3 * contD xpure3 m := by
+  rw [contD_succ]
+  obtain ⟨h1, h2⟩ := contD_xmod3_prefix m 3 (m - 1) (by omega)
+  rw [show m - 1 + 2 = m + 1 from by omega] at h1
+  rw [show m - 1 + 1 = m from by omega] at h2
+  rw [h1, h2]; simp [xmod3]
+
+/-- **lem:vinbergpoint (n ≡ 2 mod 3), sub-case j odd (n = 6j+5).**
+    xmod3 (6j+4) 3 has all entries ≥ 1 and gives D_{6j+6} = 0. -/
+theorem vinberg_n_mod3_two_a (j : ℕ) :
+    ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (6 * j + 6) = 0 := by
+  refine ⟨xmod3 (6 * j + 4) 3, xmod3_ge_one _, ?_⟩
+  rw [show 6 * j + 6 = (6 * j + 4) + 2 from by omega]
+  rw [contD_xmod3_last _ (by omega)]
+  have := contD_pure3_period6 j
+  linarith [this.1, this.2.1]
+
+/-- **lem:vinbergpoint (n ≡ 2 mod 3), sub-case j even (n = 6j+8).**
+    xmod3 (6j+7) 3 has all entries ≥ 1 and gives D_{6j+9} = 0. -/
+theorem vinberg_n_mod3_two_b (j : ℕ) :
+    ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (6 * j + 9) = 0 := by
+  refine ⟨xmod3 (6 * j + 7) 3, xmod3_ge_one _, ?_⟩
+  rw [show 6 * j + 9 = (6 * j + 7) + 2 from by omega]
+  rw [contD_xmod3_last _ (by omega)]
+  have := contD_pure3_period6 j
+  linarith [this.2.2.2.1, this.2.2.2.2.1]
+
+/-- **lem:vinbergpoint (n ≡ 2 mod 3, all cases, j ≥ 1).**
+    For j ≥ 1, there exists x with x_i ≥ 1 and D_{3*j+3} = 0  (covers n = 3j+2 ≥ 5). -/
+theorem vinberg_n_mod3_two (j : ℕ) (hj : 1 ≤ j) :
+    ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (3 * j + 3) = 0 := by
+  rcases Nat.even_or_odd j with ⟨k, hk⟩ | ⟨k, hk⟩
+  · -- j = 2k (even, k ≥ 1): 3*j+3 = 6k+3 = 6*(k-1)+9
+    have hk1 : 1 ≤ k := by omega
+    have heq : 3 * j + 3 = 6 * (k - 1) + 9 := by omega
+    rw [heq]; exact vinberg_n_mod3_two_b (k - 1)
+  · -- j = 2k+1 (odd): 3*j+3 = 6k+6
+    have heq : 3 * j + 3 = 6 * k + 6 := by omega
+    rw [heq]; exact vinberg_n_mod3_two_a k
+
+/-- **lem:vinbergpoint**: for every n ≥ 3, ∃ x with x_i ≥ 1 and D_{n+1} = 0. -/
+theorem lem_vinbergpoint (n : ℕ) (hn : 3 ≤ n) :
+    ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (n + 1) = 0 := by
+  have hr : n % 3 = 0 ∨ n % 3 = 1 ∨ n % 3 = 2 := by omega
+  rcases hr with h0 | h1 | h2
+  · -- n ≡ 0 mod 3: n = 3*(n/3), n/3 ≥ 1
+    have hq : 1 ≤ n / 3 := by omega
+    have heq : n + 1 = 3 * (n / 3 - 1 + 1) + 1 := by omega
+    rw [heq]; exact vinberg_n_mod3_zero (n / 3 - 1)
+  · -- n ≡ 1 mod 3: n = 3*(n/3)+1
+    have heq : n + 1 = 3 * (n / 3) + 2 := by omega
+    rw [heq]; exact vinberg_exists_mod3_one (n / 3)
+  · -- n ≡ 2 mod 3: n = 3*(n/3)+2, n/3 ≥ 1 (since n ≥ 5)
+    have hq : 1 ≤ n / 3 := by omega
+    have heq : n + 1 = 3 * (n / 3) + 3 := by omega
+    rw [heq]; exact vinberg_n_mod3_two (n / 3) hq
 
 end VinbergPoint
 
@@ -340,3 +478,4 @@ end VinbergPoint
 #print axioms VinbergPoint.vinberg_exists_mod3_one
 #print axioms VinbergPoint.lorentz_det_zero_iff
 #print axioms VinbergPoint.vinberg_n_mod3_zero
+#print axioms VinbergPoint.lem_vinbergpoint
