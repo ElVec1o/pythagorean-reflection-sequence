@@ -308,4 +308,47 @@ theorem d_ne_zero_of_travel_ne_zero {j : ℤ} (hf : travel P.kstar j ≠ 0)
   · rw [ht] at hpar; norm_num at hpar
   · rw [ht] at hpar; norm_num at hpar
 
+-- ─────────────────────────────────────────────────────────────────────────────
+-- M3:lem:sign  (sign decoupling)
+-- ─────────────────────────────────────────────────────────────────────────────
+-- The two junction signs σ_n (near, site 0) and σ_f (far, site k) parameterise
+-- the travel deposits.  F(σ,ε,δ) is the contribution of the far junction and its
+-- chain; N(σ) that of the near junction.
+-- Hypothesis: ∑_{ε,δ} F(σ,ε,δ) = Λ  (does not depend on σ).
+-- Conclusion:
+--   |k|=1 (shared sign): ∑_{σ,ε,δ} N(σ)·F(σ,ε,δ) = (∑_σ N(σ)) · Λ
+--   |k|≥2 (independent signs): ∑_{σn,σf,ε,δ} N(σn)·F(σf,ε,δ) = (∑_σ N(σ)) · (2·Λ)
+
+section SignDecoupling
+
+variable {R : Type*} [CommRing R]
+
+/-- `M3:lem:sign` (|k|=1 case):
+    When the near and far travel deposits share one sign σ, the sum
+    ∑_{σ,ε,δ} N(σ)·F(σ,ε,δ) = (∑_σ N(σ))·Λ. -/
+theorem sign_decoupling_one (N : Bool → R) (F : Bool → Bool → Bool → R) (Λ : R)
+    (hF : ∀ σ : Bool, ∑ ε : Bool, ∑ δ : Bool, F σ ε δ = Λ) :
+    ∑ σ : Bool, ∑ ε : Bool, ∑ δ : Bool, N σ * F σ ε δ =
+    (∑ σ : Bool, N σ) * Λ := by
+  have key : ∀ σ : Bool, ∑ ε : Bool, ∑ δ : Bool, N σ * F σ ε δ = N σ * Λ := fun σ => by
+    simp only [← Finset.mul_sum]
+    rw [hF σ]
+  simp_rw [key, ← Finset.sum_mul]
+
+/-- `M3:lem:sign` (|k|≥2 case):
+    When the near sign σ_n and far sign σ_f are independent, the sum
+    ∑_{σn,σf,ε,δ} N(σn)·F(σf,ε,δ) = (∑_σ N(σ))·(2·Λ). -/
+theorem sign_decoupling_two (N : Bool → R) (F : Bool → Bool → Bool → R) (Λ : R)
+    (hF : ∀ σ : Bool, ∑ ε : Bool, ∑ δ : Bool, F σ ε δ = Λ) :
+    ∑ σn : Bool, ∑ σf : Bool, ∑ ε : Bool, ∑ δ : Bool, N σn * F σf ε δ =
+    (∑ σ : Bool, N σ) * (2 * Λ) := by
+  have step1 : ∀ σn : Bool, ∑ σf : Bool, ∑ ε : Bool, ∑ δ : Bool, N σn * F σf ε δ =
+      N σn * (2 * Λ) := fun σn => by
+    simp_rw [← Finset.mul_sum, hF]
+    simp only [Finset.sum_const, Finset.card_univ, Fintype.card_bool, nsmul_eq_mul]
+    norm_cast
+  simp_rw [step1, ← Finset.sum_mul]
+
+end SignDecoupling
+
 end M3TierB
