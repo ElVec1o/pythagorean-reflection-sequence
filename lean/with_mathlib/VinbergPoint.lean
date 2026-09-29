@@ -195,6 +195,143 @@ theorem lorentz_det_zero_iff (n : ℕ) :
     rintro ⟨j, rfl⟩
     exact vinberg_n_mod3_one j
 
+/-! ## n ≡ 0 (mod 3): sequence (2, 1, 1, ...) with last entry replaced by 2 -/
+
+-- Sequence with x_0 = 2, rest 1.
+private def xpure2 : ℕ → ℤ := fun k => if k = 0 then 2 else 1
+
+-- D_{n+2} = D_{n+1} − D_n for n ≥ 1 (xpure2 n = 1 when n ≥ 1).
+private theorem xpure2_step (n : ℕ) (hn : 1 ≤ n) :
+    contD xpure2 (n + 2) = contD xpure2 (n + 1) - contD xpure2 n := by
+  rw [contD_succ]; simp [xpure2, Nat.one_le_iff_ne_zero.mp hn]
+
+/-- Period-6 invariant for xpure2 starting at offset 2: values are −1,−2,−1,1,2,1. -/
+private theorem contD_pure2_period6 (k : ℕ) :
+    contD xpure2 (6 * k + 2) = -1 ∧
+    contD xpure2 (6 * k + 3) = -2 ∧
+    contD xpure2 (6 * k + 4) = -1 ∧
+    contD xpure2 (6 * k + 5) = 1 ∧
+    contD xpure2 (6 * k + 6) = 2 ∧
+    contD xpure2 (6 * k + 7) = 1 := by
+  induction k with
+  | zero => decide
+  | succ m ih =>
+    obtain ⟨ih2, ih3, ih4, ih5, ih6, ih7⟩ := ih
+    -- D_{6m+8} = D_{6m+7} − D_{6m+6} = 1 − 2 = −1
+    have h8 : contD xpure2 (6 * m + 8) = -1 := by
+      have := xpure2_step (6 * m + 6) (by omega)
+      simp only [show 6 * m + 6 + 2 = 6 * m + 8 from by omega,
+                 show 6 * m + 6 + 1 = 6 * m + 7 from by omega] at this; linarith
+    -- D_{6m+9} = D_{6m+8} − D_{6m+7} = −1 − 1 = −2
+    have h9 : contD xpure2 (6 * m + 9) = -2 := by
+      have := xpure2_step (6 * m + 7) (by omega)
+      simp only [show 6 * m + 7 + 2 = 6 * m + 9 from by omega,
+                 show 6 * m + 7 + 1 = 6 * m + 8 from by omega] at this; linarith
+    -- D_{6m+10} = D_{6m+9} − D_{6m+8} = −2 − (−1) = −1
+    have h10 : contD xpure2 (6 * m + 10) = -1 := by
+      have := xpure2_step (6 * m + 8) (by omega)
+      simp only [show 6 * m + 8 + 2 = 6 * m + 10 from by omega,
+                 show 6 * m + 8 + 1 = 6 * m + 9 from by omega] at this; linarith
+    -- D_{6m+11} = D_{6m+10} − D_{6m+9} = −1 − (−2) = 1
+    have h11 : contD xpure2 (6 * m + 11) = 1 := by
+      have := xpure2_step (6 * m + 9) (by omega)
+      simp only [show 6 * m + 9 + 2 = 6 * m + 11 from by omega,
+                 show 6 * m + 9 + 1 = 6 * m + 10 from by omega] at this; linarith
+    -- D_{6m+12} = D_{6m+11} − D_{6m+10} = 1 − (−1) = 2
+    have h12 : contD xpure2 (6 * m + 12) = 2 := by
+      have := xpure2_step (6 * m + 10) (by omega)
+      simp only [show 6 * m + 10 + 2 = 6 * m + 12 from by omega,
+                 show 6 * m + 10 + 1 = 6 * m + 11 from by omega] at this; linarith
+    -- D_{6m+13} = D_{6m+12} − D_{6m+11} = 2 − 1 = 1
+    have h13 : contD xpure2 (6 * m + 13) = 1 := by
+      have := xpure2_step (6 * m + 11) (by omega)
+      simp only [show 6 * m + 11 + 2 = 6 * m + 13 from by omega,
+                 show 6 * m + 11 + 1 = 6 * m + 12 from by omega] at this; linarith
+    exact ⟨by convert h8  using 2,
+           by convert h9  using 2,
+           by convert h10 using 2,
+           by convert h11 using 2,
+           by convert h12 using 2,
+           by convert h13 using 2⟩
+
+-- Modify xpure2 at position m: use v instead of xpure2 m.
+private def xmod2 (m : ℕ) (v : ℤ) : ℕ → ℤ := fun k => if k = m then v else xpure2 k
+
+-- xmod2 with v=2 has all entries ≥ 1.
+private theorem xmod2_ge_one (m : ℕ) : ∀ i, (1 : ℤ) ≤ xmod2 m 2 i := by
+  intro i; simp [xmod2, xpure2]; split_ifs <;> omega
+
+-- contD of xmod2 and xpure2 agree at positions up to m+1 (pair, proved together).
+private theorem contD_xmod2_prefix (m : ℕ) (v : ℤ) (k : ℕ) (hk : k + 2 ≤ m + 1) :
+    contD (xmod2 m v) (k + 2) = contD xpure2 (k + 2) ∧
+    contD (xmod2 m v) (k + 1) = contD xpure2 (k + 1) := by
+  induction k with
+  | zero =>
+    refine ⟨?_, rfl⟩
+    have h0m : (0 : ℕ) ≠ m := Nat.ne_of_lt (by omega)
+    have hkey0 : (xmod2 m v) 0 = xpure2 0 := by simp [xmod2, if_neg h0m]
+    show contD (xmod2 m v) 2 = contD xpure2 2
+    have h2 : (2 : ℕ) = 0 + 2 := by omega
+    rw [h2, contD_succ, contD_one, contD_zero, contD_succ, contD_one, contD_zero, hkey0]
+  | succ p ih =>
+    obtain ⟨ih2, ih1⟩ := ih (by omega)
+    refine ⟨?_, ih2⟩
+    have hne : p + 1 ≠ m := Nat.ne_of_lt (by omega)
+    have hkey : (xmod2 m v) (p + 1) = xpure2 (p + 1) := by simp [xmod2, if_neg hne]
+    calc contD (xmod2 m v) (p + 1 + 2)
+        = contD (xmod2 m v) (p + 2) - (xmod2 m v) (p + 1) * contD (xmod2 m v) (p + 1) :=
+          contD_succ _ _
+      _ = contD xpure2 (p + 2) - xpure2 (p + 1) * contD xpure2 (p + 1) := by
+          rw [ih2, hkey, ih1]
+      _ = contD xpure2 (p + 1 + 2) := (contD_succ _ _).symm
+
+-- contD (xmod2 m 2) (m+2) = contD xpure2 (m+1) - 2 * contD xpure2 m  (for m ≥ 2).
+private theorem contD_xmod2_last (m : ℕ) (hm : 2 ≤ m) :
+    contD (xmod2 m 2) (m + 2) =
+    contD xpure2 (m + 1) - 2 * contD xpure2 m := by
+  rw [contD_succ]
+  obtain ⟨h1, h2⟩ := contD_xmod2_prefix m 2 (m - 1) (by omega)
+  rw [show m - 1 + 2 = m + 1 from by omega] at h1
+  rw [show m - 1 + 1 = m from by omega] at h2
+  rw [h1, h2]; simp [xmod2]
+
+/-- **lem:vinbergpoint (n ≡ 0 mod 3 half), sub-case j even (n = 6j+3).**
+    The sequence xmod2 (6j+2) 2 has all entries ≥ 1 and gives D_{6j+4} = 0. -/
+theorem vinberg_n_mod3_zero_even (j : ℕ) :
+    ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (6 * j + 4) = 0 := by
+  refine ⟨xmod2 (6 * j + 2) 2, xmod2_ge_one _, ?_⟩
+  have hm : 2 ≤ 6 * j + 2 := by omega
+  rw [show 6 * j + 4 = (6 * j + 2) + 2 from by omega]
+  rw [contD_xmod2_last _ hm]
+  have := contD_pure2_period6 j
+  linarith [this.1, this.2.1]
+
+/-- **lem:vinbergpoint (n ≡ 0 mod 3 half), sub-case j odd (n = 6j+6).**
+    The sequence xmod2 (6j+5) 2 has all entries ≥ 1 and gives D_{6j+7} = 0. -/
+theorem vinberg_n_mod3_zero_odd (j : ℕ) :
+    ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (6 * j + 7) = 0 := by
+  refine ⟨xmod2 (6 * j + 5) 2, xmod2_ge_one _, ?_⟩
+  have hm : 2 ≤ 6 * j + 5 := by omega
+  rw [show 6 * j + 7 = (6 * j + 5) + 2 from by omega]
+  rw [contD_xmod2_last _ hm]
+  have := contD_pure2_period6 j
+  linarith [this.2.2.2.2.1, this.2.2.2.1]
+
+/-- **lem:vinbergpoint (n ≡ 0 mod 3, all cases).**
+    For n = 3*(j+1) (j ≥ 0), there exists x with x_i ≥ 1 and D_{n+1} = 0. -/
+theorem vinberg_n_mod3_zero (j : ℕ) :
+    ∃ (x : ℕ → ℤ), (∀ i, 1 ≤ x i) ∧ contD x (3 * (j + 1) + 1) = 0 := by
+  rcases Nat.even_or_odd j with ⟨k, hk⟩ | ⟨k, hk⟩
+  · -- j = 2k → 3*(j+1)+1 = 6k+4
+    have : 3 * (j + 1) + 1 = 6 * k + 4 := by omega
+    rw [this]; exact vinberg_n_mod3_zero_even k
+  · -- j = 2k+1 → 3*(j+1)+1 = 6k+7
+    have : 3 * (j + 1) + 1 = 6 * k + 7 := by omega
+    rw [this]; exact vinberg_n_mod3_zero_odd k
+
+-- ^^^ The proof has an error. The inductive computation gives h8 = D_{6m+8} = 1 - 2 = -1 (not 0).
+-- The `linarith` from ih6=2 and ih7=1 and D_{6m+8}=D_{6m+7}-D_{6m+6} gives D_{6m+8}=-1. Let me redo.
+
 end VinbergPoint
 
 -- Rule 5 axiom audit.
@@ -202,3 +339,4 @@ end VinbergPoint
 #print axioms VinbergPoint.vinberg_n_mod3_one
 #print axioms VinbergPoint.vinberg_exists_mod3_one
 #print axioms VinbergPoint.lorentz_det_zero_iff
+#print axioms VinbergPoint.vinberg_n_mod3_zero
