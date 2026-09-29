@@ -49,7 +49,8 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "VinbergPoint",
   "LorpointDet",
   "PathGramSingular",
-  "PathGramRadline"]
+  "PathGramRadline",
+  "NosquareLemma"]
 
 [[require]]
 name = "mathlib"
@@ -516,3 +517,6 @@ name = "PathGramSingular"
 
 [[lean_lib]]
 name = "PathGramRadline"
+
+[[lean_lib]]
+name = "NosquareLemma"
