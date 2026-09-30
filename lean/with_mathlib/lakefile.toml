@@ -51,7 +51,9 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "PathGramSingular",
   "PathGramRadline",
   "NosquareLemma",
-  "LorentzAssembly"]
+  "LorentzAssembly",
+  "M3SpanBounds",
+  "CorPlane"]
 
 [[require]]
 name = "mathlib"
@@ -527,3 +529,6 @@ name = "LorentzAssembly"
 
 [[lean_lib]]
 name = "M3SpanBounds"
+
+[[lean_lib]]
+name = "CorPlane"
