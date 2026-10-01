@@ -292,6 +292,163 @@ theorem IsT_ideal (Q : ℤ →₀ ℤ) : IsT ((2 : ℤ) • (sh 1 Q - Q)) := by
     rw [h0]; simp
   · simp
 
+theorem comb_comb (δ : Bool) (P : ℤ →₀ ℤ) : comb δ (comb δ P) = P := by
+  cases δ <;> simp [comb_true, comb_false, rf_rf]
+
+theorem sh_sh (a b : ℤ) (P : ℤ →₀ ℤ) : sh a (sh b P) = sh (a + b) P := by
+  ext j; simp only [sh_apply]; congr 1; ring
+
+/-- Rotations `(R_h R_x)^m`. -/
+def rotW : ℕ → List Gen
+  | 0 => []
+  | (m + 1) => [Gen.h, Gen.x] ++ rotW m
+
+/-- Inverse rotations `(R_x R_h)^m`. -/
+def rotInvW : ℕ → List Gen
+  | 0 => []
+  | (m + 1) => [Gen.x, Gen.h] ++ rotInvW m
+
+theorem wd_rotW (m : ℕ) :
+    (wd (rotW m)).ε = 1 ∧ (wd (rotW m)).δ = false ∧ (wd (rotW m)).k = -(m : ℤ) := by
+  induction m with
+  | zero => simp [rotW, wd]
+  | succ m ih =>
+    obtain ⟨h1, h2, h3⟩ := ih
+    simp only [rotW, wd_append, wd_hx, mulD, h1, h2, h3]
+    refine ⟨by simp, by simp, ?_⟩
+    simp
+
+theorem wd_rotInvW (m : ℕ) :
+    (wd (rotInvW m)).ε = 1 ∧ (wd (rotInvW m)).δ = false ∧ (wd (rotInvW m)).k = (m : ℤ) := by
+  induction m with
+  | zero => simp [rotInvW, wd]
+  | succ m ih =>
+    obtain ⟨h1, h2, h3⟩ := ih
+    simp only [rotInvW, wd_append, wd_xh, mulD, h1, h2, h3]
+    refine ⟨by simp, by simp, ?_⟩
+    simp; ring
+
+theorem exists_base (k : ℤ) : ∃ w : List Gen, (wd w).ε = 1 ∧ (wd w).δ = false ∧ (wd w).k = k := by
+  rcases le_or_gt 0 k with hk | hk
+  · refine ⟨rotInvW k.toNat, ?_⟩
+    obtain ⟨h1, h2, h3⟩ := wd_rotInvW k.toNat
+    exact ⟨h1, h2, by rw [h3]; exact Int.toNat_of_nonneg hk⟩
+  · refine ⟨rotW (-k).toNat, ?_⟩
+    obtain ⟨h1, h2, h3⟩ := wd_rotW (-k).toNat
+    refine ⟨h1, h2, ?_⟩
+    rw [h3, Int.toNat_of_nonneg (by omega)]; ring
+
+theorem wd_cons_x (w : List Gen) :
+    (wd (Gen.x :: w)).ε = (wd w).ε ∧ (wd (Gen.x :: w)).δ = !(wd w).δ ∧
+      (wd (Gen.x :: w)).k = -(wd w).k := by
+  rw [wd_cons, gd_x]; simp [mulD]
+
+theorem wd_cons_y (w : List Gen) :
+    (wd (Gen.y :: w)).ε = -(wd w).ε ∧ (wd (Gen.y :: w)).δ = !(wd w).δ ∧
+      (wd (Gen.y :: w)).k = -(wd w).k := by
+  rw [wd_cons, gd_y]; simp [mulD]
+
+/-- Every symbolic class `(ε, δ, k)` is realised by a word. -/
+theorem exists_class (ε : ℤ) (hε : ε = 1 ∨ ε = -1) (δ : Bool) (k : ℤ) :
+    ∃ w : List Gen, (wd w).ε = ε ∧ (wd w).δ = δ ∧ (wd w).k = k := by
+  rcases hε with rfl | rfl <;> cases δ
+  · obtain ⟨w, h1, h2, h3⟩ := exists_base k
+    exact ⟨w, h1, h2, h3⟩
+  · obtain ⟨w, h1, h2, h3⟩ := exists_base (-k)
+    refine ⟨Gen.x :: w, ?_⟩
+    obtain ⟨a, b, c⟩ := wd_cons_x w
+    refine ⟨by rw [a, h1], by rw [b, h2]; rfl, by rw [c, h3]; ring⟩
+  · obtain ⟨w, h1, h2, h3⟩ := exists_base k
+    refine ⟨Gen.x :: Gen.y :: w, ?_⟩
+    obtain ⟨a, b, c⟩ := wd_cons_y w
+    obtain ⟨a', b', c'⟩ := wd_cons_x (Gen.y :: w)
+    refine ⟨by rw [a', a, h1], by rw [b', b, h2]; rfl, by rw [c', c, h3]; ring⟩
+  · obtain ⟨w, h1, h2, h3⟩ := exists_base (-k)
+    refine ⟨Gen.y :: w, ?_⟩
+    obtain ⟨a, b, c⟩ := wd_cons_y w
+    refine ⟨by rw [a, h1], by rw [b, h2]; rfl, by rw [c, h3]; ring⟩
+
+/-- The mod-2 class `P ≡ 1 + t^k` (equivalently `(1+t)(1+...+t^{|k|-1}) t^{min(k,0)}`). -/
+def ParT (k : ℤ) (P : ℤ →₀ ℤ) : Prop :=
+  ∀ j : ℤ, ((P j : ℤ) : ZMod 2) = (if j = 0 then 1 else 0) + (if j = k then 1 else 0)
+
+theorem IsT_comb {δ : Bool} {P : ℤ →₀ ℤ} (hP : IsT P) : IsT (comb δ P) := by
+  cases δ
+  · rwa [comb_false]
+  · rw [comb_true]; exact IsT_refl hP
+
+/-- **`thm:normal-form` (membership).**  A symbolic tuple `(ε, δ, k, P)` lies in `W_gen` iff
+`ε = ±1`, `P(1) = 0`, and `P ≡ 1 + t^k (mod 2)` (the dihedral cocycle, which depends only on `k`).
+So the word and membership problems for `W_gen` are solved explicitly. -/
+theorem normal_form_iff (ε : ℤ) (δ : Bool) (k : ℤ) (P : ℤ →₀ ℤ) :
+    (⟨ε, δ, k, P⟩ : Sym) ∈ WGen ↔ (ε = 1 ∨ ε = -1) ∧ tot P = 0 ∧ ParT k P := by
+  constructor
+  · rintro ⟨w, hw⟩
+    have hε : (wd w).ε = ε := by rw [hw]
+    have hk : (wd w).k = k := by rw [hw]
+    have hP : (wd w).P = P := by rw [hw]
+    have b := Bd_wd w
+    refine ⟨hε ▸ b.1, ?_, fun j => ?_⟩
+    · rw [← hP]; exact b.2.2.2.2
+    · have p := Par_wd w j
+      rw [hk, hP] at p
+      exact p
+  · rintro ⟨hε, htot, hpar⟩
+    obtain ⟨w₀, h1, h2, h3⟩ := exists_class ε hε δ k
+    obtain ⟨P₀, hd₀⟩ : ∃ P₀, wd w₀ = ⟨ε, δ, k, P₀⟩ :=
+      ⟨(wd w₀).P, by rcases hw : wd w₀ with ⟨a, b, c, d⟩; rw [hw] at h1 h2 h3;
+                     simp only at h1 h2 h3; subst h1; subst h2; subst h3; rfl⟩
+    have b0 := Bd_wd w₀
+    have p0 := Par_wd w₀
+    rw [hd₀] at b0 p0
+    obtain ⟨-, -, -, -, ht0⟩ := b0
+    simp only at ht0
+    -- the difference `R = P - P₀` is a pure translation
+    obtain ⟨R, hR⟩ : ∃ R, R = P - P₀ := ⟨_, rfl⟩
+    have htR : tot R = 0 := by
+      have : tot (P - P₀ + P₀) = tot (P - P₀) + tot P₀ := tot_add _ _
+      rw [sub_add_cancel] at this
+      rw [hR]; omega
+    have hevR : ∀ j, (2 : ℤ) ∣ R j := by
+      intro j
+      have : ((R j : ℤ) : ZMod 2) = 0 := by
+        simp only [hR, Finsupp.sub_apply]; push_cast
+        rw [hpar j, p0 j]; ring
+      exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ 2).mp this
+    have hTR : IsT R := (IsT_iff R).mpr ⟨htR, hevR⟩
+    -- choose the translation `Q` to append so that `ε t^k Q^δ = R`
+    set Q : ℤ →₀ ℤ := comb δ (sh (-k) (ε • R)) with hQ
+    have hTQ : IsT Q := IsT_comb (IsT_shift (IsT_smul hTR ε) (-k))
+    obtain ⟨u, hu⟩ := hTQ
+    refine ⟨w₀ ++ u, ?_⟩
+    rw [wd_append, hd₀, hu]
+    have hε2 : ε * ε = 1 := by rcases hε with rfl | rfl <;> norm_num
+    have hkey : ε • sh k (comb δ Q) = R := by
+      rw [hQ, comb_comb, sh_sh, show k + -k = 0 by ring, sh_zero_shift, smul_smul, hε2, one_smul]
+    simp only [mulD]
+    congr 1
+    · ring
+    · cases δ <;> simp
+    · cases δ <;> simp
+    · rw [hkey, hR]; simp
+
+/-! ### the edge lamplighter: right multiplication by the generators -/
+
+theorem mulD_gd_x (ε : ℤ) (δ : Bool) (k : ℤ) (P : ℤ →₀ ℤ) :
+    mulD ⟨ε, δ, k, P⟩ (gd Gen.x) = ⟨ε, !δ, k, P⟩ := by
+  rw [gd_x]; cases δ <;> simp [mulD, comb_zero, sh_zero]
+
+theorem mulD_gd_y (ε : ℤ) (δ : Bool) (k : ℤ) (P : ℤ →₀ ℤ) :
+    mulD ⟨ε, δ, k, P⟩ (gd Gen.y) = ⟨-ε, !δ, k, P⟩ := by
+  rw [gd_y]; cases δ <;> simp [mulD, comb_zero, sh_zero]
+
+/-- `R_h` moves the walker one site (down if `δ = 0`, up if `δ = 1`), flips `δ`, and deposits
+`ε t^k (1 - t^{-1})` (if `δ = 0`) resp. `ε t^k (1 - t)` (if `δ = 1`) on the traversed edge. -/
+theorem mulD_gd_h (ε : ℤ) (δ : Bool) (k : ℤ) (P : ℤ →₀ ℤ) :
+    mulD ⟨ε, δ, k, P⟩ (gd Gen.h) =
+      ⟨ε, !δ, k + (if δ then 1 else -1), P + ε • sh k (comb δ gP)⟩ := by
+  rw [gd_h]; cases δ <;> simp [mulD]
+
 end SymbolicGroup
 
-#print axioms SymbolicGroup.IsT_iff
+#print axioms SymbolicGroup.mulD_gd_h
