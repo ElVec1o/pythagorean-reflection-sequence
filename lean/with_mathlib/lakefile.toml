@@ -71,7 +71,7 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "CoxeterGrowthAlg",
   "SymbolicForm",
   "CollisionBound",
-  "SymbolicGroup"]
+  "SymbolicGroup", "W3struct", "DimDropAssembly", "GraphCoprime"]
 
 [[require]]
 name = "mathlib"
@@ -604,3 +604,12 @@ name = "CollisionBound"
 
 [[lean_lib]]
 name = "SymbolicGroup"
+
+[[lean_lib]]
+name = "W3struct"
+
+[[lean_lib]]
+name = "DimDropAssembly"
+
+[[lean_lib]]
+name = "GraphCoprime"
