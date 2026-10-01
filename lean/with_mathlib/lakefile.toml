@@ -57,7 +57,10 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "NoabAssembly",
   "PerronSym",
   "KplusPath",
-  "KplusForward"]
+  "KplusForward",
+  "KplusLocus",
+  "KplusLDL",
+  "KplusMain"]
 
 [[require]]
 name = "mathlib"
@@ -548,3 +551,12 @@ name = "KplusPath"
 
 [[lean_lib]]
 name = "KplusForward"
+
+[[lean_lib]]
+name = "KplusLocus"
+
+[[lean_lib]]
+name = "KplusLDL"
+
+[[lean_lib]]
+name = "KplusMain"
