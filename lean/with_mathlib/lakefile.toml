@@ -70,7 +70,8 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "EffUnivCore",
   "CoxeterGrowthAlg",
   "SymbolicForm",
-  "CollisionBound"]
+  "CollisionBound",
+  "SymbolicGroup"]
 
 [[require]]
 name = "mathlib"
@@ -600,3 +601,6 @@ name = "SymbolicForm"
 
 [[lean_lib]]
 name = "CollisionBound"
+
+[[lean_lib]]
+name = "SymbolicGroup"
