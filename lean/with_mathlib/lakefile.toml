@@ -68,7 +68,9 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "KplusIsolate",
   "KplusNofive",
   "EffUnivCore",
-  "CoxeterGrowthAlg"]
+  "CoxeterGrowthAlg",
+  "SymbolicForm",
+  "CollisionBound"]
 
 [[require]]
 name = "mathlib"
@@ -592,3 +594,9 @@ name = "EffUnivCore"
 
 [[lean_lib]]
 name = "CoxeterGrowthAlg"
+
+[[lean_lib]]
+name = "SymbolicForm"
+
+[[lean_lib]]
+name = "CollisionBound"
