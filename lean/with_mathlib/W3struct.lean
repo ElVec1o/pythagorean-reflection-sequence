@@ -37,7 +37,7 @@ theorem invol_mul_self (hR : ∀ i, R i ^ 2 = 1) (i : Fin 4) : R i * R i = 1 := 
   have := hR i; rwa [sq] at this
 
 theorem invol_inv (hR : ∀ i, R i ^ 2 = 1) (i : Fin 4) : (R i)⁻¹ = R i :=
-  eq_comm.mp (inv_eq_of_mul_eq_one_right (invol_mul_self R hR i))
+  inv_eq_of_mul_eq_one_right (invol_mul_self R hR i)
 
 /-! ## Part (A): The four conjugation identities -/
 
