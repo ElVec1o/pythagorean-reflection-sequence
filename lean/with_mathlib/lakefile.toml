@@ -60,7 +60,8 @@ defaultTargets = ["RoundNorm", "GapRuns", "NonDFinite", "OrthoschemeGram", "Fred
   "KplusForward",
   "KplusLocus",
   "KplusLDL",
-  "KplusMain"]
+  "KplusMain",
+  "KplusBij"]
 
 [[require]]
 name = "mathlib"
@@ -560,3 +561,6 @@ name = "KplusLDL"
 
 [[lean_lib]]
 name = "KplusMain"
+
+[[lean_lib]]
+name = "KplusBij"
