@@ -61,7 +61,18 @@ noncomputable def fPoly {n : ℕ} (G : SimpleGraph (Fin n)) :
 /-- Setting all edge variables to 0 gives det(I) = 1. -/
 theorem fPoly_constantTerm {n : ℕ} (G : SimpleGraph (Fin n)) :
     MvPolynomial.constantCoeff (fPoly G) = 1 := by
-  sorry
+  have hmap : (1 - adjMatrix G).map
+      (MvPolynomial.constantCoeff : MvPolynomial (Sym2 (Fin n)) ℤ →+* ℤ) =
+      (1 : Matrix (Fin n) (Fin n) ℤ) := by
+    ext i j
+    simp only [Matrix.map_apply, Matrix.sub_apply, adjMatrix, Matrix.of_apply, Matrix.one_apply]
+    split_ifs <;> simp [map_sub, map_one, map_zero, MvPolynomial.constantCoeff_X]
+  calc MvPolynomial.constantCoeff (fPoly G)
+      = MvPolynomial.constantCoeff (1 - adjMatrix G).det := by simp [fPoly]
+    _ = ((1 - adjMatrix G).map MvPolynomial.constantCoeff).det := by
+        simp [RingHom.map_det]
+    _ = (1 : Matrix (Fin n) (Fin n) ℤ).det := by rw [hmap]
+    _ = 1 := Matrix.det_one
 
 /-- **lem:nosquare**: if G has at least one edge, fPoly G is not a square. -/
 theorem lem_nosquare {n : ℕ} (G : SimpleGraph (Fin n))
@@ -102,3 +113,4 @@ theorem thm_irred {n : ℕ} (G : SimpleGraph (Fin n))
 end GraphCoprime
 
 #print axioms GraphCoprime.one_sub_sq_not_square
+#print axioms GraphCoprime.fPoly_constantTerm
