@@ -24,8 +24,9 @@ theorem collision_vanishing {ζ : ℂ} (hζ : ‖ζ‖ = 1) (w w' : List Gen) {e
     (hw : w.length ≤ e) (hw' : w'.length ≤ e)
     (hε : (wd w).ε = (wd w').ε) (hδ : (wd w).δ = (wd w').δ) (hk : (wd w).k = (wd w').k)
     (hcol : ∃ z, rho ζ w z = rho ζ w' z) (hne : (wd w).P ≠ (wd w').P) :
-    ∃ D : ℤ →₀ ℤ, D ≠ 0 ∧ evalP D ζ = 0 ∧ (∀ j, D j ≠ 0 → |j| ≤ e) ∧
-      (∀ j, |D j| ≤ 2 * e) ∧ tot D = 0 := by
+    ((wd w).P - (wd w').P) ≠ 0 ∧ evalP ((wd w).P - (wd w').P) ζ = 0 ∧
+      (∀ j, ((wd w).P - (wd w').P) j ≠ 0 → |j| ≤ e) ∧
+      (∀ j, |((wd w).P - (wd w').P) j| ≤ 2 * e) ∧ tot ((wd w).P - (wd w').P) = 0 := by
   obtain ⟨z, hz⟩ := hcol
   rw [rho_eq_act ζ hζ, rho_eq_act ζ hζ] at hz
   unfold act at hz
@@ -35,7 +36,7 @@ theorem collision_vanishing {ζ : ℂ} (hζ : ‖ζ‖ = 1) (w w' : List Gen) {e
     linear_combination this
   have b1 := Bd_wd w
   have b2 := Bd_wd w'
-  refine ⟨(wd w).P - (wd w').P, sub_ne_zero.mpr hne, ?_, ?_, ?_, ?_⟩
+  refine ⟨sub_ne_zero.mpr hne, ?_, ?_, ?_, ?_⟩
   · have : evalP ((wd w).P - (wd w').P) ζ = evalP (wd w).P ζ - evalP (wd w').P ζ := by
       have h1 : evalP ((wd w).P - (wd w').P + (wd w').P) ζ =
           evalP ((wd w).P - (wd w').P) ζ + evalP (wd w').P ζ := evalP_add _ _ _
@@ -145,7 +146,8 @@ theorem collision_complexity_bound {A E : ℤ} (hA : 0 < A) (hE : 0 < E) (hE2 : 
     (hε : (wd w).ε = (wd w').ε) (hδ : (wd w).δ = (wd w').δ) (hk : (wd w).k = (wd w').k)
     (hcol : ∃ z, rho ζ w z = rho ζ w' z) (hne : (wd w).P ≠ (wd w').P) : A ≤ 2 * e := by
   have hz0 : ζ ≠ 0 := by intro h; rw [h] at hζ; simp at hζ
-  obtain ⟨D, hD0, hDζ, hDs, hDc, -⟩ := collision_vanishing hζ w w' hw hw' hε hδ hk hcol hne
+  obtain ⟨hD0, hDζ, hDs, hDc, -⟩ := collision_vanishing hζ w w' hw hw' hε hδ hk hcol hne
+  set D := (wd w).P - (wd w').P with hD
   have hroot : aeval ζ (toPoly e D) = 0 := by
     rw [aeval_toPoly e D hDs hz0, hDζ, mul_zero]
   have hne' := toPoly_ne_zero e D hDs hD0
@@ -257,8 +259,64 @@ theorem universality_of_large_complexity {A E : ℤ} (hA : 0 < A) (hE : 0 < E) (
   have := effective_universality hA hE hE2 hprim hμ hζ hnr e h
   omega
 
+/-! ### the sharper bound `c_T <= e`, relative to the translation-lattice theorem -/
+
+/-- **`cor:kernel-classification-restate`, lower height bound, RELATIVE to `thm:translation-lattice`.**
+Hypothesis `hlat` is the consequence of the translation lattice `T = 2(t-1) Z[t^{±1}]` for collision
+differences: after multiplying by `t^e`, the difference `P_w - P_{w'}` of two equal-class words is
+divisible by `2(X-1)` in `Z[X]`.  Then a collision at depth `≤ e` forces `c_T ≤ e` (not just `2e`),
+because the extreme coefficient is `2 c_T`. -/
+theorem lower_height_bound {A E : ℤ} (hA : 0 < A) (hE : 0 < E) (hE2 : E < 2 * A)
+    (hprim : (EffUnivCore.mu A E).IsPrimitive) {ζ : ℂ} (hμ : aeval ζ (EffUnivCore.mu A E) = 0)
+    (hζ : ‖ζ‖ = 1) (hnr : ∀ m : ℕ, 0 < m → ζ ^ m ≠ 1) (w w' : List Gen) {e : ℕ}
+    (hw : w.length ≤ e) (hw' : w'.length ≤ e)
+    (hε : (wd w).ε = (wd w').ε) (hδ : (wd w).δ = (wd w').δ) (hk : (wd w).k = (wd w').k)
+    (hcol : ∃ z, rho ζ w z = rho ζ w' z) (hne : (wd w).P ≠ (wd w').P)
+    (hlat : ∃ G : ℤ[X], toPoly e ((wd w).P - (wd w').P) = 2 * (X - 1) * G) : A ≤ e := by
+  have hz0 : ζ ≠ 0 := by intro h; rw [h] at hζ; simp at hζ
+  obtain ⟨hD0, hDζ, hDs, hDc, -⟩ := collision_vanishing hζ w w' hw hw' hε hδ hk hcol hne
+  set D := (wd w).P - (wd w').P with hD
+  obtain ⟨G, hG⟩ := hlat
+  have hroot : aeval ζ (toPoly e D) = 0 := by
+    rw [aeval_toPoly e D hDs hz0, hDζ, mul_zero]
+  have hne' := toPoly_ne_zero e D hDs hD0
+  have hζ1 : ζ - 1 ≠ 0 := by
+    intro h; apply hnr 1 one_pos; simpa [sub_eq_zero] using h
+  have hGroot : aeval ζ G = 0 := by
+    rw [hG] at hroot
+    simp only [map_mul, map_sub, aeval_X, map_one, map_ofNat] at hroot
+    rcases mul_eq_zero.mp hroot with h | h
+    · rcases mul_eq_zero.mp h with h2 | h2
+      · exact absurd h2 (by norm_num)
+      · exact absurd h2 hζ1
+    · exact h
+  obtain ⟨H, hH⟩ := EffUnivCore.mu_dvd hA hE hE2 hprim ζ hμ G hGroot
+  have hH0 : H ≠ 0 := by
+    intro h0; apply hne'; rw [hG, hH, h0]; simp
+  have hlead : (toPoly e D).leadingCoeff = 2 * A * H.leadingCoeff := by
+    rw [hG, hH, Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_mul,
+      Polynomial.leadingCoeff_mul, EffUnivCore.mu_leadingCoeff hA.ne']
+    have h2 : (2 : ℤ[X]).leadingCoeff = 2 := by
+      have : (2 : ℤ[X]) = C 2 := by simp
+      rw [this, Polynomial.leadingCoeff_C]
+    have hX1 : (X - 1 : ℤ[X]).leadingCoeff = 1 := by
+      rw [show (X - 1 : ℤ[X]) = X - C 1 by simp]; exact Polynomial.leadingCoeff_X_sub_C 1
+    rw [h2, hX1]
+    ring
+  have hHl : H.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hH0
+  have h1 : 2 * A ≤ |(toPoly e D).leadingCoeff| := by
+    rw [hlead, abs_mul]
+    have : (1 : ℤ) ≤ |H.leadingCoeff| := Int.one_le_abs hHl
+    have hAabs : |2 * A| = 2 * A := abs_of_pos (by linarith)
+    rw [hAabs]
+    nlinarith
+  have h2 : |(toPoly e D).leadingCoeff| ≤ 2 * (e : ℤ) := by
+    rw [Polynomial.leadingCoeff, toPoly_coeff e D hDs]; exact hDc _
+  omega
+
 end CollisionBound
 
 #print axioms CollisionBound.collision_vanishing
 #print axioms CollisionBound.effective_universality
 #print axioms CollisionBound.universality_of_large_complexity
+#print axioms CollisionBound.lower_height_bound
