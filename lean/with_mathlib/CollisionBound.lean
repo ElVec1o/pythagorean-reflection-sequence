@@ -259,24 +259,80 @@ theorem universality_of_large_complexity {A E : ℤ} (hA : 0 < A) (hE : 0 < E) (
   have := effective_universality hA hE hE2 hprim hμ hζ hnr e h
   omega
 
-/-! ### the sharper bound `c_T <= e`, relative to the translation-lattice theorem -/
+/-! ### the sharper bound `c_T <= e`, unconditional in the symbolic model -/
 
-/-- **`cor:kernel-classification-restate`, lower height bound, RELATIVE to `thm:translation-lattice`.**
-Hypothesis `hlat` is the consequence of the translation lattice `T = 2(t-1) Z[t^{±1}]` for collision
-differences: after multiplying by `t^e`, the difference `P_w - P_{w'}` of two equal-class words is
-divisible by `2(X-1)` in `Z[X]`.  Then a collision at depth `≤ e` forces `c_T ≤ e` (not just `2e`),
-because the extreme coefficient is `2 c_T`. -/
+theorem eval_one_toPoly (e : ℕ) (D : ℤ →₀ ℤ) : (toPoly e D).eval 1 = tot D := by
+  unfold toPoly tot
+  rw [← Polynomial.coe_evalRingHom, map_finsuppSum]
+  refine Finsupp.sum_congr fun j _ => ?_
+  simp
+
+/-- Two equal-class words have difference `P_w - P_{w'}` with `t^e`-shift divisible by `2(X-1)`:
+the difference is even (mod-2 cocycle `P_w ≡ 1 + t^k`) and vanishes at `1`.  This is the content of
+the translation-lattice inclusion that `cor:kernel-classification-restate` needs, proved here
+directly. -/
+theorem diff_dvd (w w' : List Gen) {e : ℕ} (hw : w.length ≤ e) (hw' : w'.length ≤ e)
+    (hk : (wd w).k = (wd w').k) :
+    ∃ G : ℤ[X], toPoly e ((wd w).P - (wd w').P) = 2 * (X - 1) * G := by
+  set D := (wd w).P - (wd w').P with hD
+  have hDs : ∀ j, D j ≠ 0 → |j| ≤ e := by
+    intro j hj
+    have hj' : (wd w).P j - (wd w').P j ≠ 0 := by simpa [hD] using hj
+    have b1 := Bd_wd w
+    have b2 := Bd_wd w'
+    have hl : (w.length : ℤ) ≤ e := by exact_mod_cast hw
+    have hl' : (w'.length : ℤ) ≤ e := by exact_mod_cast hw'
+    by_cases h1 : (wd w).P j = 0
+    · have h2 : (wd w').P j ≠ 0 := by intro h; apply hj'; rw [h1, h]; simp
+      linarith [b2.2.2.1 j h2]
+    · linarith [b1.2.2.1 j h1]
+  have heven : ∀ j, (2 : ℤ) ∣ D j := by
+    intro j
+    have p1 := Par_wd w j
+    have p2 := Par_wd w' j
+    rw [hk] at p1
+    have : (((wd w).P j - (wd w').P j : ℤ) : ZMod 2) = 0 := by
+      push_cast; rw [p1, p2]; ring
+    have := (ZMod.intCast_zmod_eq_zero_iff_dvd _ 2).mp this
+    simpa [hD] using this
+  have hC : (C (2 : ℤ)) ∣ toPoly e D := by
+    rw [Polynomial.C_dvd_iff_dvd_coeff]
+    intro n; rw [toPoly_coeff e D hDs]; exact heven _
+  obtain ⟨Q, hQ⟩ := hC
+  have hev : (toPoly e D).eval 1 = 0 := by
+    rw [eval_one_toPoly]
+    have b1 := Bd_wd w
+    have b2 := Bd_wd w'
+    have : tot ((wd w).P - (wd w').P + (wd w').P) = tot ((wd w).P - (wd w').P) + tot (wd w').P :=
+      tot_add _ _
+    rw [sub_add_cancel] at this
+    rw [hD]; linarith [b1.2.2.2.2, b2.2.2.2.2]
+  have hQ1 : Q.eval 1 = 0 := by
+    rw [hQ, Polynomial.eval_mul, Polynomial.eval_C] at hev
+    rcases mul_eq_zero.mp hev with h | h
+    · norm_num at h
+    · exact h
+  have hdvd : (X - C 1 : ℤ[X]) ∣ Q := Polynomial.dvd_iff_isRoot.mpr hQ1
+  obtain ⟨G, hG⟩ := hdvd
+  refine ⟨G, ?_⟩
+  rw [hQ, hG]
+  simp only [map_one, map_ofNat]
+  ring
+
+/-- **`cor:kernel-classification-restate`, lower height bound, UNCONDITIONAL in the symbolic model.**
+A collision at depth `≤ e` between two equal-class words with different translation polynomials
+forces `c_T ≤ e`. -/
 theorem lower_height_bound {A E : ℤ} (hA : 0 < A) (hE : 0 < E) (hE2 : E < 2 * A)
     (hprim : (EffUnivCore.mu A E).IsPrimitive) {ζ : ℂ} (hμ : aeval ζ (EffUnivCore.mu A E) = 0)
     (hζ : ‖ζ‖ = 1) (hnr : ∀ m : ℕ, 0 < m → ζ ^ m ≠ 1) (w w' : List Gen) {e : ℕ}
     (hw : w.length ≤ e) (hw' : w'.length ≤ e)
     (hε : (wd w).ε = (wd w').ε) (hδ : (wd w).δ = (wd w').δ) (hk : (wd w).k = (wd w').k)
-    (hcol : ∃ z, rho ζ w z = rho ζ w' z) (hne : (wd w).P ≠ (wd w').P)
-    (hlat : ∃ G : ℤ[X], toPoly e ((wd w).P - (wd w').P) = 2 * (X - 1) * G) : A ≤ e := by
+    (hcol : ∃ z, rho ζ w z = rho ζ w' z) (hne : (wd w).P ≠ (wd w').P) : A ≤ e := by
   have hz0 : ζ ≠ 0 := by intro h; rw [h] at hζ; simp at hζ
   obtain ⟨hD0, hDζ, hDs, hDc, -⟩ := collision_vanishing hζ w w' hw hw' hε hδ hk hcol hne
   set D := (wd w).P - (wd w').P with hD
-  obtain ⟨G, hG⟩ := hlat
+  obtain ⟨G, hG⟩ := diff_dvd w w' hw hw' hk
+  rw [← hD] at hG
   have hroot : aeval ζ (toPoly e D) = 0 := by
     rw [aeval_toPoly e D hDs hz0, hDζ, mul_zero]
   have hne' := toPoly_ne_zero e D hDs hD0
@@ -314,9 +370,37 @@ theorem lower_height_bound {A E : ℤ} (hA : 0 < A) (hE : 0 < E) (hE2 : E < 2 * 
     rw [Polynomial.leadingCoeff, toPoly_coeff e D hDs]; exact hDc _
   omega
 
+/-- **`n_T ≥ c_T`**, formal form: `c_T > e` implies injectivity of evaluation on the symbolic ball
+of radius `e` (universality at depth `e`). -/
+theorem universality_of_complexity_gt {A E : ℤ} (hA : 0 < A) (hE : 0 < E) (hE2 : E < 2 * A)
+    (hprim : (EffUnivCore.mu A E).IsPrimitive) {ζ : ℂ} (hμ : aeval ζ (EffUnivCore.mu A E) = 0)
+    (hζ : ‖ζ‖ = 1) (hnr : ∀ m : ℕ, 0 < m → ζ ^ m ≠ 1) (e : ℕ) (hlarge : (e : ℤ) < A) :
+    Set.InjOn (fun d : Sym => act d ζ) (symBall e) := by
+  intro d hd d' hd' hact
+  by_contra hne
+  obtain ⟨w, hw, rfl⟩ := hd
+  obtain ⟨w', hw', rfl⟩ := hd'
+  have hact' : ∀ z, act (wd w) ζ z = act (wd w') ζ z := fun z => by
+    have := congrFun hact z
+    simpa using this
+  obtain ⟨hε, hδ, hk, hP⟩ := class_eq_of_act_eq hζ hnr (Bd_wd w).1 (Bd_wd w').1 hact'
+  have hPne : (wd w).P ≠ (wd w').P := by
+    intro hPeq
+    apply hne
+    rcases hd : wd w with ⟨e1, d1, k1, P1⟩
+    rcases hd' : wd w' with ⟨e2, d2, k2, P2⟩
+    rw [hd, hd'] at hε hδ hk hPeq
+    simp only at hε hδ hk hPeq
+    subst hε; subst hδ; subst hk; subst hPeq; rfl
+  have hcol : ∃ z, rho ζ w z = rho ζ w' z :=
+    ⟨0, by rw [rho_eq_act ζ hζ, rho_eq_act ζ hζ]; exact hact' 0⟩
+  have := lower_height_bound hA hE hE2 hprim hμ hζ hnr w w' hw hw' hε hδ hk hcol hPne
+  omega
+
 end CollisionBound
 
 #print axioms CollisionBound.collision_vanishing
 #print axioms CollisionBound.effective_universality
 #print axioms CollisionBound.universality_of_large_complexity
 #print axioms CollisionBound.lower_height_bound
+#print axioms CollisionBound.universality_of_complexity_gt

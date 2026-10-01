@@ -327,7 +327,70 @@ theorem symbolic_form (w : List Gen) :
     ∃ d : Sym, Bd d w.length ∧ ∀ ζ : ℂ, ‖ζ‖ = 1 → ∀ z, rho ζ w z = act d ζ z :=
   ⟨wd w, Bd_wd w, fun ζ hζ z => rho_eq_act ζ hζ w z⟩
 
+/-! ### the mod-2 cocycle: `P_w ≡ 1 + t^k (mod 2)` -/
+
+/-- `P ≡ 1 + t^k (mod 2)`, coefficientwise in `ZMod 2`. -/
+def Par (d : Sym) : Prop :=
+  ∀ j : ℤ, ((d.P j : ℤ) : ZMod 2) = (if j = 0 then 1 else 0) + (if j = d.k then 1 else 0)
+
+theorem Par_mulD {g w : Sym} (hε : g.ε = 1 ∨ g.ε = -1) (hg : Par g) (hw : Par w) :
+    Par (mulD g w) := by
+  intro j
+  have hP : (mulD g w).P j = g.P j + g.ε * comb g.δ w.P (j - g.k) := by
+    simp only [mulD, Finsupp.add_apply, Finsupp.smul_apply, sh_apply, smul_eq_mul]
+  have hε2 : ((g.ε : ℤ) : ZMod 2) = 1 := by rcases hε with h | h <;> simp [h]
+  have h2 : (2 : ZMod 2) = 0 := by decide
+  rw [hP]
+  push_cast
+  rw [hε2, one_mul, hg j, comb_apply]
+  have hk : (mulD g w).k = g.k + (if g.δ then -w.k else w.k) := rfl
+  rw [hk]
+  cases hδ : g.δ
+  · simp only [Bool.false_eq_true, if_false]
+    rw [hw (j - g.k)]
+    have e1 : (j - g.k = 0) ↔ (j = g.k) := by omega
+    have e2 : (j - g.k = w.k) ↔ (j = g.k + w.k) := by omega
+    simp only [e1, e2]
+    generalize (if j = 0 then (1 : ZMod 2) else 0) = x
+    generalize (if j = g.k then (1 : ZMod 2) else 0) = y
+    generalize (if j = g.k + w.k then (1 : ZMod 2) else 0) = z
+    linear_combination y * h2
+  · simp only [if_true]
+    rw [hw (-(j - g.k))]
+    have e1 : (-(j - g.k) = 0) ↔ (j = g.k) := by omega
+    have e2 : (-(j - g.k) = w.k) ↔ (j = g.k + -w.k) := by omega
+    simp only [e1, e2]
+    generalize (if j = 0 then (1 : ZMod 2) else 0) = x
+    generalize (if j = g.k then (1 : ZMod 2) else 0) = y
+    generalize (if j = g.k + -w.k then (1 : ZMod 2) else 0) = z
+    linear_combination y * h2
+
+theorem Par_gd (g : Gen) : Par (gd g) := by
+  intro j
+  have h2 : (2 : ZMod 2) = 0 := by decide
+  cases g
+  · simp only [gd, Finsupp.coe_zero, Pi.zero_apply, Int.cast_zero]
+    split_ifs <;> decide
+  · simp only [gd, Finsupp.coe_zero, Pi.zero_apply, Int.cast_zero]
+    split_ifs <;> decide
+  · simp only [gd]
+    rw [gh_apply]
+    push_cast
+    have e0 : ((0 : ℤ) = j) ↔ (j = 0) := eq_comm
+    have e1 : ((-1 : ℤ) = j) ↔ (j = -1) := eq_comm
+    simp only [e0, e1]
+    split_ifs <;> first | decide | (exfalso; omega)
+
+theorem Par_wd : ∀ w : List Gen, Par (wd w) := by
+  intro w
+  induction w with
+  | nil =>
+    intro j; simp only [wd, Finsupp.coe_zero, Pi.zero_apply, Int.cast_zero]
+    split_ifs <;> decide
+  | cons g w ih => exact Par_mulD (Bd_gd g).1 (Par_gd g) ih
+
 end SymbolicForm
 
 #print axioms SymbolicForm.act_mulD
 #print axioms SymbolicForm.symbolic_form
+#print axioms SymbolicForm.Par_wd
